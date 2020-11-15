@@ -49,19 +49,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CathodeEditorGUI.cs" />
+    <Compile Include="CathodeEditorGUI.cs">
+		<SubType>Form</SubType>
+	</Compile>
     <Compile Include="CathodeEditorGUI.designer.cs">
       <DependentUpon>CathodeEditorGUI.cs</DependentUpon>
     </Compile>
-    <Compile Include="CathodeEditorGUI_EditParam.cs" />
+    <Compile Include="CathodeEditorGUI_EditParam.cs">
+		<SubType>Form</SubType>
+	</Compile>
     <Compile Include="CathodeEditorGUI_EditParam.designer.cs">
       <DependentUpon>CathodeEditorGUI_EditParam.cs</DependentUpon>
     </Compile>
-    <Compile Include="CathodeEditorGUI_EditPin.cs" />
+    <Compile Include="CathodeEditorGUI_EditPin.cs">
+		<SubType>Form</SubType>
+	</Compile>
     <Compile Include="CathodeEditorGUI_EditPin.designer.cs">
       <DependentUpon>CathodeEditorGUI_EditPin.cs</DependentUpon>
     </Compile>
-    <Compile Include="CathodeEditorGUI_EditResource.cs" />
+    <Compile Include="CathodeEditorGUI_EditResource.cs">
+		<SubType>Form</SubType>
+	</Compile>
     <Compile Include="CathodeEditorGUI_EditResource.designer.cs">
       <DependentUpon>CathodeEditorGUI_EditResource.cs</DependentUpon>
     </Compile>
