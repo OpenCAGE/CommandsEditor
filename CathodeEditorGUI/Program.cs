@@ -16,10 +16,10 @@ namespace CathodeEditorGUI
         [STAThread]
         static void Main()
         {
-            if (Environment.GetCommandLineArgs().Length > 0)
-            {
-                SharedData.pathToAI = Environment.GetCommandLineArgs()[0];
-            }
+            string[] test = Environment.GetCommandLineArgs();
+            if (test.Length > 1) for (int i = 1; i < test.Length; i++) SharedData.pathToAI += test[i] + " ";
+            else SharedData.pathToAI = Environment.CurrentDirectory + " ";
+            SharedData.pathToAI = SharedData.pathToAI.Substring(0, SharedData.pathToAI.Length - 1);
 
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();
