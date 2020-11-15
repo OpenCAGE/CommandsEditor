@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("CathodeEditorGUI")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Alien Isolation Script Editor")]
+[assembly: AssemblyDescription("A tool to browse and edit Alien: Isolation's COMMANDS.PAK scripting files.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Matt Filer")]
 [assembly: AssemblyProduct("CathodeEditorGUI")]
-[assembly: AssemblyCopyright("Copyright ©  2020")]
+[assembly: AssemblyCopyright("Copyright © Matt Filer 2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
