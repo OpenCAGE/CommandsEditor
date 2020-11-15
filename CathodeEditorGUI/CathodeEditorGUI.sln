@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30128.74
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CathodeEditorGUI", "CathodeEditorGUI.csproj", "{16DFD523-54A4-41D3-B82C-7EA0A8ACC68E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CathodeEditorGUI", "CathodeEditorGUI.csproj", "{DDFD51D4-A1E6-430D-BF4C-858378E74D56}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{16DFD523-54A4-41D3-B82C-7EA0A8ACC68E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{16DFD523-54A4-41D3-B82C-7EA0A8ACC68E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{16DFD523-54A4-41D3-B82C-7EA0A8ACC68E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{16DFD523-54A4-41D3-B82C-7EA0A8ACC68E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DDFD51D4-A1E6-430D-BF4C-858378E74D56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDFD51D4-A1E6-430D-BF4C-858378E74D56}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDFD51D4-A1E6-430D-BF4C-858378E74D56}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDFD51D4-A1E6-430D-BF4C-858378E74D56}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {7AC7F820-C3B4-4E94-88CD-5EC911267CE5}
+		SolutionGuid = {9605BF33-2063-4EC8-BE66-FB48F8322502}
 	EndGlobalSection
 EndGlobal
