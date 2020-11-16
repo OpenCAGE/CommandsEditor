@@ -1,7 +1,7 @@
 # Alien: Isolation Script Editor
 
-A WinForms editor allowing visual editing of Alien: Isolation's scripting format.
+A tool to browse and modify Alien: Isolation's COMMANDS.PAK archives.
 
-The latest stable version is built to the root of this project, and must be run with the corresponding DLL(s).
+The latest stable version can be downloaded [by clicking here](https://github.com/OpenCAGE/CathodeEditorGUI/raw/master/Build/CathodeEditorGUI.exe).
 
-This project is a work-in-progress!
+Check out [AlienPAK](https://github.com/OpenCAGE/AlienPAK) to open the asset PAK files.
