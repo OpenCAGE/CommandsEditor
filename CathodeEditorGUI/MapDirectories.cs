@@ -13,8 +13,8 @@ namespace CathodeEditorGUI
             all_env_dirs.Add("BSP_LV426_PT01");
             all_env_dirs.Add("BSP_LV426_PT02");
             all_env_dirs.Add("BSP_TORRENS");
-            AddIfHasDLC("DLC/BSPNOSTROMO_RIPLEY");
-            AddIfHasDLC("DLC/BSPNOSTROMO_TWOTEAMS");
+            AddIfHasDLC("DLC/BSPNOSTROMO_RIPLEY_PATCH");
+            AddIfHasDLC("DLC/BSPNOSTROMO_TWOTEAMS_PATCH");
             AddIfHasDLC("DLC/CHALLENGEMAP1");
             AddIfHasDLC("DLC/CHALLENGEMAP3");
             AddIfHasDLC("DLC/CHALLENGEMAP4");
