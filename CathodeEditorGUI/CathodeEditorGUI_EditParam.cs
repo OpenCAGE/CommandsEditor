@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using CATHODE;
+using CATHODE.Commands;
 
 namespace CathodeEditorGUI
 {
@@ -60,18 +61,18 @@ namespace CathodeEditorGUI
             {
                 case CathodeDataType.POSITION:
                     CathodeTransform cTransform = (CathodeTransform)param_to_edit;
-                    transform_pos_x.Text = ((decimal)cTransform.position.x).ToString();
-                    transform_pos_y.Text = ((decimal)cTransform.position.y).ToString();
-                    transform_pos_z.Text = ((decimal)cTransform.position.z).ToString();
-                    transform_rot_x.Text = ((decimal)cTransform.rotation.x).ToString();
-                    transform_rot_y.Text = ((decimal)cTransform.rotation.y).ToString();
-                    transform_rot_z.Text = ((decimal)cTransform.rotation.z).ToString();
+                    transform_pos_x.Text = ((decimal)cTransform.position.X).ToString();
+                    transform_pos_y.Text = ((decimal)cTransform.position.Y).ToString();
+                    transform_pos_z.Text = ((decimal)cTransform.position.Z).ToString();
+                    transform_rot_x.Text = ((decimal)cTransform.rotation.X).ToString();
+                    transform_rot_y.Text = ((decimal)cTransform.rotation.Y).ToString();
+                    transform_rot_z.Text = ((decimal)cTransform.rotation.Z).ToString();
                     break;
                 case CathodeDataType.DIRECTION:
                     CathodeVector3 cVector = (CathodeVector3)param_to_edit;
-                    vector_x.Text = ((decimal)cVector.value.x).ToString();
-                    vector_y.Text = ((decimal)cVector.value.y).ToString();
-                    vector_z.Text = ((decimal)cVector.value.z).ToString();
+                    vector_x.Text = ((decimal)cVector.value.X).ToString();
+                    vector_y.Text = ((decimal)cVector.value.Y).ToString();
+                    vector_z.Text = ((decimal)cVector.value.Z).ToString();
                     break;
                 case CathodeDataType.INTEGER:
                     CathodeInteger cInt = (CathodeInteger)param_to_edit;
@@ -79,7 +80,6 @@ namespace CathodeEditorGUI
                     break;
                 case CathodeDataType.STRING:
                     CathodeString cString = (CathodeString)param_to_edit;
-                    parameter_input.MaxLength = cString.initial_length;
                     parameter_input.Text = cString.value;
                     break;
                 case CathodeDataType.FLOAT:
@@ -102,12 +102,12 @@ namespace CathodeEditorGUI
                         break;
                     }
                     CathodeTransform paramTransform = (CathodeTransform)param_to_edit;
-                    paramTransform.position.x = (float)Convert.ToDouble(transform_pos_x.Text);
-                    paramTransform.position.y = (float)Convert.ToDouble(transform_pos_y.Text);
-                    paramTransform.position.z = (float)Convert.ToDouble(transform_pos_z.Text);
-                    paramTransform.rotation.x = (float)Convert.ToDouble(transform_rot_x.Text);
-                    paramTransform.rotation.y = (float)Convert.ToDouble(transform_rot_y.Text);
-                    paramTransform.rotation.z = (float)Convert.ToDouble(transform_rot_z.Text);
+                    paramTransform.position.X = (float)Convert.ToDouble(transform_pos_x.Text);
+                    paramTransform.position.Y = (float)Convert.ToDouble(transform_pos_y.Text);
+                    paramTransform.position.Z = (float)Convert.ToDouble(transform_pos_z.Text);
+                    paramTransform.rotation.X = (float)Convert.ToDouble(transform_rot_x.Text);
+                    paramTransform.rotation.Y = (float)Convert.ToDouble(transform_rot_y.Text);
+                    paramTransform.rotation.Z = (float)Convert.ToDouble(transform_rot_z.Text);
                     this.Close();
                     break;
                 case CathodeDataType.DIRECTION:
@@ -117,9 +117,9 @@ namespace CathodeEditorGUI
                         break;
                     }
                     CathodeVector3 cVector = (CathodeVector3)param_to_edit;
-                    cVector.value.x = (float)Convert.ToDouble(vector_x.Text);
-                    cVector.value.y = (float)Convert.ToDouble(vector_y.Text);
-                    cVector.value.z = (float)Convert.ToDouble(vector_z.Text);
+                    cVector.value.X = (float)Convert.ToDouble(vector_x.Text);
+                    cVector.value.Y = (float)Convert.ToDouble(vector_y.Text);
+                    cVector.value.Z = (float)Convert.ToDouble(vector_z.Text);
                     this.Close();
                     break;
                 case CathodeDataType.INTEGER:

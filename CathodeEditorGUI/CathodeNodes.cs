@@ -1,4 +1,6 @@
-﻿namespace CATHODE
+﻿using CATHODE.Commands;
+
+namespace CATHODE
 {
 	//58-7C-11-BF
 	public class EntityMethodInterface {

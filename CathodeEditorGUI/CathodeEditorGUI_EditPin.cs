@@ -14,6 +14,7 @@ namespace CathodeEditorGUI
 {
     public partial class CathodeEditorGUI_EditPin : Form
     {
+#if X
         private CathodeNodeLink edit_pin = null;
         private CathodeFlowgraph flowgraph = null;
         public CathodeEditorGUI_EditPin(CathodeNodeLink pin_link, CathodeFlowgraph loaded_flowgraph)
@@ -68,5 +69,6 @@ namespace CathodeEditorGUI
         {
 
         }
+#endif
     }
 }

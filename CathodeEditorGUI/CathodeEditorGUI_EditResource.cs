@@ -11,10 +11,13 @@ using CATHODE;
 
 namespace CathodeEditorGUI
 {
+#if X
     public delegate void FinishedEditingIndexes(List<RenderableElement> updated_indexes, bool did_update);
+#endif
 
     public partial class CathodeEditorGUI_EditResource : Form
     {
+#if X
         private List<CS2> complete_model_list;
         private List<RenderableElement> reds_list_ORIGINAL;
 
@@ -108,5 +111,6 @@ namespace CathodeEditorGUI
             submesh_list.Height = 20 + (submesh_list.Controls.Count * 32);
             this.Height = 90 + submesh_list.Height;
         }
+#endif
     }
 }

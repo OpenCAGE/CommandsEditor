@@ -161,7 +161,7 @@
             this.save_pin.TabIndex = 11;
             this.save_pin.Text = "Save";
             this.save_pin.UseVisualStyleBackColor = true;
-            this.save_pin.Click += new System.EventHandler(this.save_pin_Click);
+            //this.save_pin.Click += new System.EventHandler(this.save_pin_Click);
             // 
             // CSE_Alpha_EditPin
             // 

@@ -80,7 +80,7 @@
             this.save_changes.TabIndex = 4;
             this.save_changes.Text = "Save";
             this.save_changes.UseVisualStyleBackColor = true;
-            this.save_changes.Click += new System.EventHandler(this.save_changes_Click);
+            //this.save_changes.Click += new System.EventHandler(this.save_changes_Click);
             // 
             // CSE_Alpha_EditResource
             // 
