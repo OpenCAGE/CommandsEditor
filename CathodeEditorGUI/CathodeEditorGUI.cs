@@ -10,6 +10,7 @@ using CATHODE.Commands;
 using CATHODE.Misc;
 using CATHODE.Models;
 using CATHODE.Textures;
+using CathodeEditorGUI.UserControls;
 using CathodeLib;
 
 namespace CathodeEditorGUI
@@ -21,25 +22,12 @@ namespace CathodeEditorGUI
         //private ModelPAK modelPAK = null;
         //private TexturePAK texturePAK = null;
 
-        private Dictionary<CathodeDataType, GroupBox> precachedParameterGUI = new Dictionary<CathodeDataType, GroupBox>();
         private TreeUtility treeHelper;
 
         public CathodeEditorGUI()
         {
             InitializeComponent();
             treeHelper = new TreeUtility(FileTree);
-
-            //New parameter UI
-            precachedParameterGUI.Add(CathodeDataType.POSITION, POSITION_VARIABLE_DUMMY);
-            precachedParameterGUI.Add(CathodeDataType.STRING, STRING_VARIABLE_DUMMY);
-            precachedParameterGUI.Add(CathodeDataType.FILEPATH, STRING_VARIABLE_DUMMY);
-            precachedParameterGUI.Add(CathodeDataType.DIRECTION, VECTOR_VARIABLE_DUMMY);
-            precachedParameterGUI.Add(CathodeDataType.ENUM, ENUM_VARIABLE_DUMMY);
-            precachedParameterGUI.Add(CathodeDataType.BOOL, BOOL_VARIABLE_DUMMY);
-            precachedParameterGUI.Add(CathodeDataType.SHORT_GUID, GUID_VARIABLE_DUMMY);
-            precachedParameterGUI.Add(CathodeDataType.INTEGER, NUMERIC_VARIABLE_DUMMY);
-            precachedParameterGUI.Add(CathodeDataType.FLOAT, NUMERIC_VARIABLE_DUMMY);
-            precachedParameterGUI.Add(CathodeDataType.SPLINE_DATA, UNIMPLEMENTED_VARIABLE_TYPE);
 
             //Populate available maps
             List<string> all_map_dirs = MapDirectories.GetAvailable();
@@ -201,7 +189,7 @@ namespace CathodeEditorGUI
                 switch (entities[i].variant)
                 {
                     case EntityVariant.DATATYPE:
-                        desc = NodeDB.GetName(entities[i].nodeID) + " (DataType " + ((DatatypeEntity)entities[i]).type.ToString() + ")";
+                        desc = NodeDB.GetName(((DatatypeEntity)entities[i]).parameter) + " (DataType " + ((DatatypeEntity)entities[i]).type.ToString() + ")";
                         break;
                     case EntityVariant.FUNCTION:
                         desc = NodeDB.GetFriendlyName(entities[i].nodeID) + " (" + NodeDB.GetNodeTypeName(((FunctionEntity)entities[i]).function, commandsPAK) + ")";
@@ -252,68 +240,70 @@ namespace CathodeEditorGUI
             for (int i = 0; i < edit_node.parameters.Count; i++)
             {
                 CathodeParameter this_param = edit_node.parameters[i].content;
-                GroupBox parameterGUI = precachedParameterGUI[this_param.dataType];
+                UserControl parameterGUI = null;
 
                 switch (this_param.dataType)
                 {
                     case CathodeDataType.POSITION:
-                        CathodeTransform cTrans = (CathodeTransform)this_param;
-                        ((NumericUpDown)parameterGUI.Controls[13]).Value = (decimal)cTrans.position.X;
-                        ((NumericUpDown)parameterGUI.Controls[11]).Value = (decimal)cTrans.position.Y;
-                        ((NumericUpDown)parameterGUI.Controls[9]).Value = (decimal)cTrans.position.Z;
-                        ((NumericUpDown)parameterGUI.Controls[6]).Value = (decimal)cTrans.rotation.X;
-                        ((NumericUpDown)parameterGUI.Controls[4]).Value = (decimal)cTrans.rotation.Y;
-                        ((NumericUpDown)parameterGUI.Controls[2]).Value = (decimal)cTrans.rotation.Z;
+                        parameterGUI = new GUI_TransformDataType();
+                        ((GUI_TransformDataType)parameterGUI).PopulateUI((CathodeTransform)this_param, edit_node.parameters[i].paramID);
                         break;
                     case CathodeDataType.INTEGER:
-                        CathodeInteger cInt = (CathodeInteger)this_param;
-                        ((NumericUpDown)parameterGUI.Controls[0]).Value = (decimal)cInt.value;
+                        parameterGUI = new GUI_NumericDataType();
+                        ((GUI_NumericDataType)parameterGUI).PopulateUI_Int((CathodeInteger)this_param, edit_node.parameters[i].paramID);
                         break;
                     case CathodeDataType.STRING:
-                        CathodeString cString = (CathodeString)this_param;
-                        ((TextBox)parameterGUI.Controls[0]).Text = cString.value;
+                        parameterGUI = new GUI_StringDataType();
+                        ((GUI_StringDataType)parameterGUI).PopulateUI((CathodeString)this_param, edit_node.parameters[i].paramID);
                         break;
                     case CathodeDataType.BOOL:
-                        CathodeBool cBool = (CathodeBool)this_param;
-                        ((CheckBox)parameterGUI.Controls[0]).Checked = cBool.value;
+                        parameterGUI = new GUI_BoolDataType();
+                        ((GUI_BoolDataType)parameterGUI).PopulateUI((CathodeBool)this_param, edit_node.parameters[i].paramID);
                         break;
                     case CathodeDataType.FLOAT:
-                        CathodeFloat cFloat = (CathodeFloat)this_param;
-                        ((NumericUpDown)parameterGUI.Controls[0]).Value = (decimal)cFloat.value;
-                        //((NumericUpDown)parameterGUI.Controls[0]).   - Set float type not int
+                        parameterGUI = new GUI_NumericDataType();
+                        ((GUI_NumericDataType)parameterGUI).PopulateUI_Float((CathodeFloat)this_param, edit_node.parameters[i].paramID);
                         break;
                     case CathodeDataType.DIRECTION:
-                        CathodeVector3 cVec3 = (CathodeVector3)this_param;
-                        ((NumericUpDown)parameterGUI.Controls[6]).Value = (decimal)cVec3.value.X;
-                        ((NumericUpDown)parameterGUI.Controls[4]).Value = (decimal)cVec3.value.Y;
-                        ((NumericUpDown)parameterGUI.Controls[2]).Value = (decimal)cVec3.value.Z;
+                        parameterGUI = new GUI_VectorDataType();
+                        ((GUI_VectorDataType)parameterGUI).PopulateUI((CathodeVector3)this_param, edit_node.parameters[i].paramID);
                         break;
                     case CathodeDataType.ENUM:
-                        CathodeEnum cEnum = (CathodeEnum)this_param;
-                        ((ComboBox)parameterGUI.Controls[1]).SelectedText = NodeDB.GetEnum(cEnum.enumID).Name;
-                        ((NumericUpDown)parameterGUI.Controls[0]).Value = cEnum.enumIndex;
+                        parameterGUI = new GUI_EnumDataType();
+                        ((GUI_EnumDataType)parameterGUI).PopulateUI((CathodeEnum)this_param, edit_node.parameters[i].paramID);
                         break;
                     case CathodeDataType.SHORT_GUID:
-                        CathodeResource cResource = (CathodeResource)this_param;
-                        ((TextBox)parameterGUI.Controls[0]).Text = BitConverter.ToString(new byte[] { cResource.resourceID.val[0] });
-                        ((TextBox)parameterGUI.Controls[1]).Text = BitConverter.ToString(new byte[] { cResource.resourceID.val[1] });
-                        ((TextBox)parameterGUI.Controls[2]).Text = BitConverter.ToString(new byte[] { cResource.resourceID.val[2] });
-                        ((TextBox)parameterGUI.Controls[3]).Text = BitConverter.ToString(new byte[] { cResource.resourceID.val[3] });
+                        parameterGUI = new GUI_HexDataType();
+                        ((GUI_HexDataType)parameterGUI).PopulateUI((CathodeResource)this_param, edit_node.parameters[i].paramID); 
                         break;
-                    default:
-
+                    case CathodeDataType.SPLINE_DATA:
+                        parameterGUI = new GUI_SplineDataType();
+                        ((GUI_SplineDataType)parameterGUI).PopulateUI((CathodeSpline)this_param, edit_node.parameters[i].paramID);
                         break;
                 }
 
                 parameterGUI.Location = new Point(19, current_ui_offset);
                 current_ui_offset += parameterGUI.Height + 6;
-                parameterGUI.Text = NodeDB.GetName(edit_node.parameters[i].paramID) + " (" + edit_node.parameters[i].paramID.ToString() + ")";
                 NodeParams.Controls.Add(parameterGUI);
             }
 
             RefreshNodeLinks();
 
             Cursor.Current = Cursors.Default;
+        }
+
+        /* Save a node that was loaded incase it changed */
+        private void SaveNode(CathodeEntity edit_node)
+        {
+            List<CathodeLoadedParameter> updatedParameters = new List<CathodeLoadedParameter>();
+            foreach (Control control in NodeParams.Controls)
+            {
+                if (!(control is GroupBox)) continue;
+                foreach (Control boxControl in ((GroupBox)control).Controls)
+                {
+
+                }
+            }
         }
 
         /* Refresh child/parent node links for selected node */
@@ -327,7 +317,7 @@ namespace CathodeEditorGUI
                 switch (selected_node.variant)
                 {
                     case EntityVariant.DATATYPE:
-                        desc = NodeDB.GetName(selected_node.nodeID) + " (DataType " + ((DatatypeEntity)selected_node).type.ToString() + ")";
+                        desc = NodeDB.GetName(((DatatypeEntity)selected_node).parameter) + " (DataType " + ((DatatypeEntity)selected_node).type.ToString() + ")";
                         break;
                     case EntityVariant.FUNCTION:
                         desc = NodeDB.GetFriendlyName(selected_node.nodeID) + " (" + NodeDB.GetNodeTypeName(((FunctionEntity)selected_node).function, commandsPAK) + ")";
