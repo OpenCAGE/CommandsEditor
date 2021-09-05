@@ -22,7 +22,7 @@ namespace CathodeEditorGUI.UserControls
 
         public void PopulateUI(CathodeSpline cSpline, cGUID paramID)
         {
-            UNIMPLEMENTED_VARIABLE_TYPE.Text = NodeDB.GetName(paramID) + " (" + paramID.ToString() + ")";
+            UNIMPLEMENTED_VARIABLE_TYPE.Text = NodeDB.GetName(paramID);
             //todo: dynamically populate UI
         }
     }

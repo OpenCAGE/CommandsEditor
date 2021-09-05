@@ -25,7 +25,7 @@ namespace CathodeEditorGUI.UserControls
         public void PopulateUI(CathodeTransform cTrans, cGUID paramID)
         {
             transformVal = cTrans;
-            POSITION_VARIABLE_DUMMY.Text = NodeDB.GetName(paramID) + " (" + paramID.ToString() + ")";
+            POSITION_VARIABLE_DUMMY.Text = NodeDB.GetName(paramID);
             POS_X.Value = (decimal)cTrans.position.X;
             POS_Y.Value = (decimal)cTrans.position.Y;
             POS_Z.Value = (decimal)cTrans.position.Z;
@@ -57,17 +57,17 @@ namespace CathodeEditorGUI.UserControls
 
         private void ROT_X_ValueChanged(object sender, EventArgs e)
         {
-            transformVal.position.X = (float)ROT_X.Value;
+            transformVal.rotation.X = (float)ROT_X.Value;
         }
 
         private void ROT_Y_ValueChanged(object sender, EventArgs e)
         {
-            transformVal.position.Y = (float)ROT_Y.Value;
+            transformVal.rotation.Y = (float)ROT_Y.Value;
         }
 
         private void ROT_Z_ValueChanged(object sender, EventArgs e)
         {
-            transformVal.position.Z = (float)ROT_Z.Value;
+            transformVal.rotation.Z = (float)ROT_Z.Value;
         }
     }
 }

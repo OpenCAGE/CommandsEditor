@@ -33,12 +33,14 @@
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.numericUpDown8 = new System.Windows.Forms.NumericUpDown();
             this.label13 = new System.Windows.Forms.Label();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             this.ENUM_VARIABLE_DUMMY.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown8)).BeginInit();
             this.SuspendLayout();
             // 
             // ENUM_VARIABLE_DUMMY
             // 
+            this.ENUM_VARIABLE_DUMMY.Controls.Add(this.textBox1);
             this.ENUM_VARIABLE_DUMMY.Controls.Add(this.label14);
             this.ENUM_VARIABLE_DUMMY.Controls.Add(this.comboBox1);
             this.ENUM_VARIABLE_DUMMY.Controls.Add(this.numericUpDown8);
@@ -248,6 +250,14 @@
             this.label13.TabIndex = 7;
             this.label13.Text = "Enum";
             // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(591, 35);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(88, 20);
+            this.textBox1.TabIndex = 11;
+            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+            // 
             // GUI_EnumDataType
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -269,5 +279,6 @@
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.NumericUpDown numericUpDown8;
         private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.TextBox textBox1;
     }
 }

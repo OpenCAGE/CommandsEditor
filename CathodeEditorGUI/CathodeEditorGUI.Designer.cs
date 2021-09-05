@@ -273,9 +273,9 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.flowgraph_content);
             this.groupBox4.Controls.Add(this.node_search_box);
             this.groupBox4.Controls.Add(this.node_search_btn);
-            this.groupBox4.Controls.Add(this.flowgraph_content);
             this.groupBox4.Location = new System.Drawing.Point(6, 19);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(631, 795);

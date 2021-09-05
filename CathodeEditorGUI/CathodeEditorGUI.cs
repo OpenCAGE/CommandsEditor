@@ -185,29 +185,36 @@ namespace CathodeEditorGUI
             List<CathodeEntity> entities = entry.GetEntities();
             for (int i = 0; i < entities.Count; i++)
             {
-                string desc = "";
-                switch (entities[i].variant)
-                {
-                    case EntityVariant.DATATYPE:
-                        desc = NodeDB.GetName(((DatatypeEntity)entities[i]).parameter) + " (DataType " + ((DatatypeEntity)entities[i]).type.ToString() + ")";
-                        break;
-                    case EntityVariant.FUNCTION:
-                        desc = NodeDB.GetFriendlyName(entities[i].nodeID) + " (" + NodeDB.GetNodeTypeName(((FunctionEntity)entities[i]).function, commandsPAK) + ")";
-                        break;
-                    case EntityVariant.OVERRIDE:
-                        desc = "OVERRIDE!"; //TODO
-                        break;
-                    case EntityVariant.PROXY:
-                        desc = "PROXY!"; //TODO
-                        break;
-                }
-
-                string thisentrytext = entities[i].nodeID.ToString() + " " + desc;
-                flowgraph_content.Items.Add(thisentrytext);
-                flowgraph_content_RAW.Add(thisentrytext);
+                string desc = GenerateNodeName(entities[i]);
+                flowgraph_content.Items.Add(desc);
+                flowgraph_content_RAW.Add(desc);
             }
-            groupBox1.Text = "Selected Flowgraph Content - (" + entry.nodeID.ToString() + " - " + entry.name + ")";
+            groupBox1.Text = entry.name;
             Cursor.Current = Cursors.Default;
+        }
+
+        private string GenerateNodeName(CathodeEntity entity)
+        {
+            string desc = "";
+            switch (entity.variant)
+            {
+                case EntityVariant.DATATYPE:
+                    desc = NodeDB.GetName(((DatatypeEntity)entity).parameter) + " (DataType " + ((DatatypeEntity)entity).type.ToString() + ")";
+                    break;
+                case EntityVariant.FUNCTION:
+                    desc = NodeDB.GetFriendlyName(entity.nodeID) + " (" + NodeDB.GetNodeTypeName(((FunctionEntity)entity).function, commandsPAK) + ")";
+                    break;
+                case EntityVariant.OVERRIDE:
+                    desc = "OVERRIDE!"; //TODO
+                    break;
+                case EntityVariant.PROXY:
+                    desc = "PROXY!"; //TODO
+                    break;
+                case EntityVariant.NOT_SETUP:
+                    desc = "NOT SETUP!"; //Huh?
+                    break;
+            }
+            return entity.nodeID.ToString() + " " + desc;
         }
 
         /* Load a node into the UI */
@@ -292,20 +299,6 @@ namespace CathodeEditorGUI
             Cursor.Current = Cursors.Default;
         }
 
-        /* Save a node that was loaded incase it changed */
-        private void SaveNode(CathodeEntity edit_node)
-        {
-            List<CathodeLoadedParameter> updatedParameters = new List<CathodeLoadedParameter>();
-            foreach (Control control in NodeParams.Controls)
-            {
-                if (!(control is GroupBox)) continue;
-                foreach (Control boxControl in ((GroupBox)control).Controls)
-                {
-
-                }
-            }
-        }
-
         /* Refresh child/parent node links for selected node */
         private void RefreshNodeLinks()
         {
@@ -313,30 +306,9 @@ namespace CathodeEditorGUI
             node_children.Items.Clear();
             foreach (CathodeNodeLink id in selected_node.childLinks)
             {
-                string desc = "";
-                switch (selected_node.variant)
-                {
-                    case EntityVariant.DATATYPE:
-                        desc = NodeDB.GetName(((DatatypeEntity)selected_node).parameter) + " (DataType " + ((DatatypeEntity)selected_node).type.ToString() + ")";
-                        break;
-                    case EntityVariant.FUNCTION:
-                        desc = NodeDB.GetFriendlyName(selected_node.nodeID) + " (" + NodeDB.GetNodeTypeName(((FunctionEntity)selected_node).function, commandsPAK) + ")";
-                        break;
-                    case EntityVariant.OVERRIDE:
-                        desc = "OVERRIDE!"; //TODO
-                        break;
-                    case EntityVariant.PROXY:
-                        desc = "PROXY!"; //TODO
-                        break;
-                }
+                string desc = GenerateNodeName(selected_node);
                 node_children.Items.Add("[" + id.connectionID.ToString() + "] Pin out " + id.parentParamID.ToString() + " (" + NodeDB.GetName(id.parentParamID) + "), goes to " + id.childParamID.ToString() + " (" + NodeDB.GetName(id.childParamID) + ") on node " + id.childID.ToString() + " (" + NodeDB.GetFriendlyName(id.childID) + desc + ")");
             }
-        }
-
-        /* User selected a new parameter to use, update it in CommandsPAK */
-        private void param_selector_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            //DEPRECATED
         }
 
         /* User selected parameter to edit, show edit UI & refresh when closed */

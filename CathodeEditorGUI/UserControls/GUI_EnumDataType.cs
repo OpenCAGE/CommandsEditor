@@ -25,10 +25,11 @@ namespace CathodeEditorGUI.UserControls
         public void PopulateUI(CathodeEnum cEnum, cGUID paramID)
         {
             enumVal = cEnum;
-            ENUM_VARIABLE_DUMMY.Text = NodeDB.GetName(paramID) + " (" + paramID.ToString() + ")";
+            ENUM_VARIABLE_DUMMY.Text = NodeDB.GetName(paramID);
             comboBox1.Text = NodeDB.GetEnum(cEnum.enumID).Name;
             //comboBox1.Enabled = false;
-            numericUpDown8.Value = cEnum.enumIndex;
+            //numericUpDown8.Value = cEnum.enumIndex;
+            textBox1.Text = cEnum.enumIndex.ToString();
             //numericUpDown8.DataBindings.Add("Value", cEnum.enumIndex, "");
         }
 
@@ -40,6 +41,11 @@ namespace CathodeEditorGUI.UserControls
         private void numericUpDown8_ValueChanged(object sender, EventArgs e)
         {
             enumVal.enumIndex = (int)numericUpDown8.Value;
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            enumVal.enumIndex = Convert.ToInt32(textBox1.Text);
         }
     }
 }

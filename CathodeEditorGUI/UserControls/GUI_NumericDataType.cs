@@ -26,7 +26,7 @@ namespace CathodeEditorGUI.UserControls
         public void PopulateUI_Float(CathodeFloat cFloat, cGUID paramID)
         {
             floatVal = cFloat;
-            NUMERIC_VARIABLE_DUMMY.Text = NodeDB.GetName(paramID) + " (" + paramID.ToString() + ")";
+            NUMERIC_VARIABLE_DUMMY.Text = NodeDB.GetName(paramID);
             //numericUpDown7.Value = (decimal)cFloat.value;
             textBox1.Text = cFloat.value.ToString();
             //numericUpDown7.DataBindings.Add("Value", (decimal)cFloat.value, "");
@@ -36,7 +36,7 @@ namespace CathodeEditorGUI.UserControls
         public void PopulateUI_Int(CathodeInteger cInt, cGUID paramID)
         {
             intVal = cInt;
-            NUMERIC_VARIABLE_DUMMY.Text = NodeDB.GetName(paramID) + " (" + paramID.ToString() + ")";
+            NUMERIC_VARIABLE_DUMMY.Text = NodeDB.GetName(paramID);
             //numericUpDown7.Value = (decimal)cInt.value;
             textBox1.Text = cInt.value.ToString();
             //numericUpDown7.DataBindings.Add("Value", (decimal)cInt.value, "");
