@@ -24,13 +24,16 @@ namespace CathodeEditorGUI.UserControls
 
         public void PopulateUI(CathodeResource cResource, cGUID paramID)
         {
-            GUID_VARIABLE_DUMMY.Text = NodeDB.GetName(paramID);
+            GUID_VARIABLE_DUMMY.Text = NodeDB.GetCathodeName(paramID) + " (" + paramID.ToString() + ")";
             resRef = cResource;
 
-            textBox2.Text = BitConverter.ToString(new byte[] { cResource.resourceID.val[0] });
-            textBox3.Text = BitConverter.ToString(new byte[] { cResource.resourceID.val[1] });
-            textBox5.Text = BitConverter.ToString(new byte[] { cResource.resourceID.val[2] });
-            textBox4.Text = BitConverter.ToString(new byte[] { cResource.resourceID.val[3] });
+            if (cResource.resourceID.val != null)
+            {
+                textBox2.Text = BitConverter.ToString(new byte[] { cResource.resourceID.val[0] });
+                textBox3.Text = BitConverter.ToString(new byte[] { cResource.resourceID.val[1] });
+                textBox5.Text = BitConverter.ToString(new byte[] { cResource.resourceID.val[2] });
+                textBox4.Text = BitConverter.ToString(new byte[] { cResource.resourceID.val[3] });
+            }
         }
 
         private void textBox2_TextChanged(object sender, EventArgs e)

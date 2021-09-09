@@ -38,7 +38,7 @@
             this.BOOL_VARIABLE_DUMMY.Controls.Add(this.checkBox1);
             this.BOOL_VARIABLE_DUMMY.Location = new System.Drawing.Point(3, 3);
             this.BOOL_VARIABLE_DUMMY.Name = "BOOL_VARIABLE_DUMMY";
-            this.BOOL_VARIABLE_DUMMY.Size = new System.Drawing.Size(700, 56);
+            this.BOOL_VARIABLE_DUMMY.Size = new System.Drawing.Size(334, 56);
             this.BOOL_VARIABLE_DUMMY.TabIndex = 18;
             this.BOOL_VARIABLE_DUMMY.TabStop = false;
             this.BOOL_VARIABLE_DUMMY.Text = "Parameter Name (00-00-00-00)";
@@ -60,7 +60,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.BOOL_VARIABLE_DUMMY);
             this.Name = "GUI_BoolDataType";
-            this.Size = new System.Drawing.Size(707, 61);
+            this.Size = new System.Drawing.Size(340, 61);
             this.BOOL_VARIABLE_DUMMY.ResumeLayout(false);
             this.BOOL_VARIABLE_DUMMY.PerformLayout();
             this.ResumeLayout(false);

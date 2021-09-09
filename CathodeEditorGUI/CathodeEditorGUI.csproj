@@ -70,6 +70,18 @@
     <Compile Include="CathodeEditorGUI.designer.cs">
       <DependentUpon>CathodeEditorGUI.cs</DependentUpon>
     </Compile>
+    <Compile Include="CathodeEditorGUI_AddNode.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CathodeEditorGUI_AddNode.Designer.cs">
+      <DependentUpon>CathodeEditorGUI_AddNode.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CathodeEditorGUI_AddParameter.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CathodeEditorGUI_AddParameter.Designer.cs">
+      <DependentUpon>CathodeEditorGUI_AddParameter.cs</DependentUpon>
+    </Compile>
     <Compile Include="CathodeEditorGUI_EditParam.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -144,6 +156,12 @@
     </Compile>
     <EmbeddedResource Include="CathodeEditorGUI.resx">
       <DependentUpon>CathodeEditorGUI.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CathodeEditorGUI_AddNode.resx">
+      <DependentUpon>CathodeEditorGUI_AddNode.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CathodeEditorGUI_AddParameter.resx">
+      <DependentUpon>CathodeEditorGUI_AddParameter.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CathodeEditorGUI_EditParam.resx">
       <DependentUpon>CathodeEditorGUI_EditParam.cs</DependentUpon>

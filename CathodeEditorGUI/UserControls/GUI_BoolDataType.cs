@@ -25,7 +25,7 @@ namespace CathodeEditorGUI.UserControls
         public void PopulateUI(CathodeBool cBool, cGUID paramID)
         {
             boolVal = cBool;
-            BOOL_VARIABLE_DUMMY.Text = NodeDB.GetName(paramID);
+            BOOL_VARIABLE_DUMMY.Text = NodeDB.GetCathodeName(paramID) + " (" + paramID.ToString() + ")";
             checkBox1.Checked = cBool.value;
             //checkBox1.DataBindings.Add("Checked", cBool.value, "");
         }

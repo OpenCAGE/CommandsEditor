@@ -70,7 +70,7 @@
             this.POSITION_VARIABLE_DUMMY.Controls.Add(this.POS_X);
             this.POSITION_VARIABLE_DUMMY.Location = new System.Drawing.Point(3, 3);
             this.POSITION_VARIABLE_DUMMY.Name = "POSITION_VARIABLE_DUMMY";
-            this.POSITION_VARIABLE_DUMMY.Size = new System.Drawing.Size(700, 70);
+            this.POSITION_VARIABLE_DUMMY.Size = new System.Drawing.Size(334, 108);
             this.POSITION_VARIABLE_DUMMY.TabIndex = 1;
             this.POSITION_VARIABLE_DUMMY.TabStop = false;
             this.POSITION_VARIABLE_DUMMY.Text = "Parameter Name (00-00-00-00)";
@@ -78,7 +78,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(373, 19);
+            this.label8.Location = new System.Drawing.Point(12, 58);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(47, 13);
             this.label8.TabIndex = 14;
@@ -87,7 +87,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(579, 38);
+            this.label10.Location = new System.Drawing.Point(218, 77);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(17, 13);
             this.label10.TabIndex = 13;
@@ -101,7 +101,7 @@
             0,
             0,
             851968});
-            this.ROT_Z.Location = new System.Drawing.Point(599, 35);
+            this.ROT_Z.Location = new System.Drawing.Point(238, 74);
             this.ROT_Z.Maximum = new decimal(new int[] {
             1874919423,
             2328306,
@@ -125,7 +125,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(476, 38);
+            this.label11.Location = new System.Drawing.Point(115, 77);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(17, 13);
             this.label11.TabIndex = 11;
@@ -139,7 +139,7 @@
             0,
             0,
             851968});
-            this.ROT_Y.Location = new System.Drawing.Point(495, 35);
+            this.ROT_Y.Location = new System.Drawing.Point(134, 74);
             this.ROT_Y.Maximum = new decimal(new int[] {
             1874919423,
             2328306,
@@ -163,7 +163,7 @@
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(373, 38);
+            this.label12.Location = new System.Drawing.Point(12, 77);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(17, 13);
             this.label12.TabIndex = 9;
@@ -177,7 +177,7 @@
             0,
             0,
             851968});
-            this.ROT_X.Location = new System.Drawing.Point(392, 35);
+            this.ROT_X.Location = new System.Drawing.Point(31, 74);
             this.ROT_X.Maximum = new decimal(new int[] {
             1874919423,
             2328306,
@@ -327,7 +327,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.POSITION_VARIABLE_DUMMY);
             this.Name = "GUI_TransformDataType";
-            this.Size = new System.Drawing.Size(707, 75);
+            this.Size = new System.Drawing.Size(340, 113);
             this.POSITION_VARIABLE_DUMMY.ResumeLayout(false);
             this.POSITION_VARIABLE_DUMMY.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ROT_Z)).EndInit();

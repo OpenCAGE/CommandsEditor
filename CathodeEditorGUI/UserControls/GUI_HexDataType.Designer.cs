@@ -44,7 +44,7 @@
             this.GUID_VARIABLE_DUMMY.Controls.Add(this.textBox2);
             this.GUID_VARIABLE_DUMMY.Location = new System.Drawing.Point(3, 3);
             this.GUID_VARIABLE_DUMMY.Name = "GUID_VARIABLE_DUMMY";
-            this.GUID_VARIABLE_DUMMY.Size = new System.Drawing.Size(700, 56);
+            this.GUID_VARIABLE_DUMMY.Size = new System.Drawing.Size(334, 56);
             this.GUID_VARIABLE_DUMMY.TabIndex = 19;
             this.GUID_VARIABLE_DUMMY.TabStop = false;
             this.GUID_VARIABLE_DUMMY.Text = "Parameter Name (00-00-00-00)";
@@ -87,7 +87,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.GUID_VARIABLE_DUMMY);
             this.Name = "GUI_HexDataType";
-            this.Size = new System.Drawing.Size(707, 61);
+            this.Size = new System.Drawing.Size(340, 61);
             this.GUID_VARIABLE_DUMMY.ResumeLayout(false);
             this.GUID_VARIABLE_DUMMY.PerformLayout();
             this.ResumeLayout(false);

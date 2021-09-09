@@ -18,10 +18,6 @@ namespace CathodeEditorGUI
     public partial class CathodeEditorGUI : Form
     {
         private CommandsPAK commandsPAK = null;
-        //private RenderableElementsBIN redsBIN = null;
-        //private ModelPAK modelPAK = null;
-        //private TexturePAK texturePAK = null;
-
         private TreeUtility treeHelper;
 
         public CathodeEditorGUI()
@@ -87,11 +83,6 @@ namespace CathodeEditorGUI
             commandsPAK = new CommandsPAK(path_to_ENV + "/WORLD/COMMANDS.PAK");
             treeHelper.UpdateFileTree(commandsPAK.GetFlowgraphNames().ToList());
 
-            //Load REDS.BIN, LEVEL_MODELS.PAK, and LEVEL_TEXTURES.ALL.PAK for resource assignment
-            //redsBIN = new RenderableElementsBIN(path_to_ENV + "/WORLD/REDS.BIN");
-            //modelPAK = new ModelPAK(path_to_ENV + "/RENDERABLE/LEVEL_MODELS.PAK"); modelPAK.Load();
-            //texturePAK = new TexturePAK(path_to_ENV + "/RENDERABLE/LEVEL_TEXTURES.ALL.PAK"); texturePAK.Load();
-
             //Show info in UI
             first_executed_flowgraph.Text = "Entry point: " + commandsPAK.EntryPoints[0].name;
             flowgraph_count.Text = "Flowgraph count: " + commandsPAK.Flowgraphs.Count;
@@ -102,7 +93,6 @@ namespace CathodeEditorGUI
         {
             if (commandsPAK == null) return;
             commandsPAK.Save();
-            //redsBIN.Save();
             MessageBox.Show("Saved changes!", "Saved.", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
@@ -128,24 +118,12 @@ namespace CathodeEditorGUI
             if (thisNodeInfo != null) LoadNode(thisNodeInfo);
         }
 
-        /* Go to parent link when selected */
-        private void node_parents_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            /*
-            if (node_parents.SelectedIndex == -1 || selected_flowgraph == null) return;
-            CathodeEntity thisNodeInfo = selected_flowgraph.GetEntityByID(selected_flowgraph.GetParentLinksByID(selected_node.nodeID)[node_parents.SelectedIndex].parentID);
-            if (thisNodeInfo != null) LoadNode(thisNodeInfo);
-            */
-        }
-
         /* Go to selected pin out on button press */
         private void out_pin_goto_Click(object sender, EventArgs e)
         {
-            /*
             if (node_children.SelectedIndex == -1 || selected_flowgraph == null) return;
-            CathodeEntity thisNodeInfo = selected_flowgraph.GetEntityByID(selected_flowgraph.GetChildLinksByID(selected_node.nodeID)[node_children.SelectedIndex].childID);
+            CathodeEntity thisNodeInfo = selected_flowgraph.GetEntityByID(selected_node.childLinks[node_children.SelectedIndex].childID);
             if (thisNodeInfo != null) LoadNode(thisNodeInfo);
-            */
         }
 
         /* Edit selected pin out on button press */
@@ -193,16 +171,17 @@ namespace CathodeEditorGUI
             Cursor.Current = Cursors.Default;
         }
 
+        /* Utility: generate nice node name to display in UI */
         private string GenerateNodeName(CathodeEntity entity)
         {
             string desc = "";
             switch (entity.variant)
             {
                 case EntityVariant.DATATYPE:
-                    desc = NodeDB.GetName(((DatatypeEntity)entity).parameter) + " (DataType " + ((DatatypeEntity)entity).type.ToString() + ")";
+                    desc = NodeDB.GetCathodeName(((DatatypeEntity)entity).parameter) + " (DataType " + ((DatatypeEntity)entity).type.ToString() + ")";
                     break;
                 case EntityVariant.FUNCTION:
-                    desc = NodeDB.GetFriendlyName(entity.nodeID) + " (" + NodeDB.GetNodeTypeName(((FunctionEntity)entity).function, commandsPAK) + ")";
+                    desc = NodeDB.GetEditorName(entity.nodeID) + " (" + NodeDB.GetCathodeName(((FunctionEntity)entity).function, commandsPAK) + ")";
                     break;
                 case EntityVariant.OVERRIDE:
                     desc = "OVERRIDE!"; //TODO
@@ -232,7 +211,7 @@ namespace CathodeEditorGUI
             switch (edit_node.variant)
             {
                 case EntityVariant.FUNCTION:
-                    nodetypedesc = NodeDB.GetNodeTypeName(((FunctionEntity)edit_node).function, commandsPAK);
+                    nodetypedesc = NodeDB.GetCathodeName(((FunctionEntity)edit_node).function, commandsPAK);
                     node_to_flowgraph_jump.Visible = (commandsPAK.GetFlowgraph(((FunctionEntity)edit_node).function) != null);
                     break;
                 case EntityVariant.DATATYPE:
@@ -240,10 +219,10 @@ namespace CathodeEditorGUI
                     break;
             }
             selected_node_type_description.Text = nodetypedesc;
-            selected_node_name.Text = NodeDB.GetFriendlyName(edit_node.nodeID);
+            selected_node_name.Text = NodeDB.GetEditorName(edit_node.nodeID);
 
             //populate parameter inputs
-            int current_ui_offset = 11;
+            int current_ui_offset = 7;
             for (int i = 0; i < edit_node.parameters.Count; i++)
             {
                 CathodeParameter this_param = edit_node.parameters[i].content;
@@ -289,7 +268,7 @@ namespace CathodeEditorGUI
                         break;
                 }
 
-                parameterGUI.Location = new Point(19, current_ui_offset);
+                parameterGUI.Location = new Point(15, current_ui_offset);
                 current_ui_offset += parameterGUI.Height + 6;
                 NodeParams.Controls.Add(parameterGUI);
             }
@@ -307,50 +286,79 @@ namespace CathodeEditorGUI
             foreach (CathodeNodeLink id in selected_node.childLinks)
             {
                 string desc = GenerateNodeName(selected_node);
-                node_children.Items.Add("[" + id.connectionID.ToString() + "] Pin out " + id.parentParamID.ToString() + " (" + NodeDB.GetName(id.parentParamID) + "), goes to " + id.childParamID.ToString() + " (" + NodeDB.GetName(id.childParamID) + ") on node " + id.childID.ToString() + " (" + NodeDB.GetFriendlyName(id.childID) + desc + ")");
+                node_children.Items.Add("[" + id.connectionID.ToString() + "] Pin out " + id.parentParamID.ToString() + " (" + NodeDB.GetCathodeName(id.parentParamID) + "), goes to " + id.childParamID.ToString() + " (" + NodeDB.GetCathodeName(id.childParamID) + ") on node " + id.childID.ToString() + " (" + NodeDB.GetEditorName(id.childID) + desc + ")");
             }
         }
 
-        /* User selected parameter to edit, show edit UI & refresh when closed */
-        CathodeResourceReference selected_reds_ref = null;
-        private void param_edit_btn_Click(object sender, EventArgs e)
+        /* Add a new parameter */
+        private void addNewParameter_Click(object sender, EventArgs e)
         {
-            /*
-            if (commandsPAK.GetParameter(Convert.ToInt32(((Button)sender).Name)).dataType == CathodeDataType.SHORT_GUID)
-            {
-                List<RenderableElement> redsList = new List<RenderableElement>();
-                CathodeResource cResource = (CathodeResource)commandsPAK.GetParameter(Convert.ToInt32(((Button)sender).Name));
-                CathodeResourceReference resRef = selected_flowgraph.GetResourceReferenceByID(cResource.resourceID);
-                if (resRef == null || resRef.entryType != CathodeResourceReferenceType.RENDERABLE_INSTANCE) return;
-                for (int p = 0; p < resRef.entryCountREDS; p++) redsList.Add(redsBIN.GetRenderableElement(resRef.entryIndexREDS + p));
-                if (resRef.entryCountREDS != redsList.Count || redsList.Count == 0) return; //TODO: handle this nicer
-                selected_reds_ref = resRef;
-                CathodeEditorGUI_EditResource res_editor = new CathodeEditorGUI_EditResource(modelPAK.GetCS2s(), redsList);
-                res_editor.Show();
-                res_editor.EditComplete += new FinishedEditingIndexes(res_editor_submitted);
-                return;
-            }
-
-            CathodeEditorGUI_EditParam param_editor = new CathodeEditorGUI_EditParam(commandsPAK.GetParameter(Convert.ToInt32(((Button)sender).Name)));
-            param_editor.Show();
-            param_editor.FormClosed += new FormClosedEventHandler(param_editor_closed);
+            if (selected_node == null) return;
+            CathodeEditorGUI_AddParameter add_parameter = new CathodeEditorGUI_AddParameter(selected_node);
+            add_parameter.Show();
+            add_parameter.FormClosed += new FormClosedEventHandler(param_add_closed);
         }
-        private void res_editor_submitted(List<RenderableElement> updated_indexes, bool did_update)
-        {
-            if (did_update)
-            {
-                //TODO: Cannot save like this. We're only allowed one model ref (potentially only one material ref also) per REDS.BIN.
-                //      Need to find existing ref of model and save that way - but then will block how many we can have sequentially.
-                selected_reds_ref.entryIndexREDS = redsBIN.GetRenderableElementsCount();
-                selected_reds_ref.entryCountREDS = updated_indexes.Count;
-                foreach (RenderableElement redEl in updated_indexes) redsBIN.AddRenderableElement(redEl);
-            }
-            this.Focus();
-            */
-        }
-        private void param_editor_closed(Object sender, FormClosedEventArgs e)
+        private void param_add_closed(Object sender, FormClosedEventArgs e)
         {
             LoadNode(selected_node);
+        }
+
+        /* Remove a parameter */
+        private void removeParameter_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("wip");
+        }
+
+        /* Add new entity */
+        private void addNewNode_Click(object sender, EventArgs e)
+        {
+            if (selected_flowgraph == null) return;
+            CathodeEditorGUI_AddNode add_parameter = new CathodeEditorGUI_AddNode(selected_flowgraph, commandsPAK.Flowgraphs);
+            add_parameter.Show();
+            add_parameter.FormClosed += new FormClosedEventHandler(add_node_closed);
+        }
+        private void add_node_closed(Object sender, FormClosedEventArgs e)
+        {
+            LoadFlowgraph(selected_flowgraph.name);
+            LoadNode(selected_node); //TODO: load returned new node
+        }
+
+        /* Remove selected entity */
+        private void removeSelectedNode_Click(object sender, EventArgs e)
+        {
+            if (selected_node == null) return;
+
+            switch (selected_node.variant)
+            {
+                case EntityVariant.DATATYPE:
+                    selected_flowgraph.datatypes.Remove((DatatypeEntity)selected_node);
+                    break;
+                case EntityVariant.FUNCTION:
+                    selected_flowgraph.functions.Remove((FunctionEntity)selected_node);
+                    break;
+                case EntityVariant.OVERRIDE:
+                    selected_flowgraph.overrides.Remove((OverrideEntity)selected_node);
+                    break;
+                case EntityVariant.PROXY:
+                    selected_flowgraph.proxies.Remove((ProxyEntity)selected_node);
+                    break;
+                case EntityVariant.NOT_SETUP:
+                    selected_flowgraph.unknowns.Remove(selected_node);
+                    break;
+            }
+
+            List<CathodeEntity> entities = selected_flowgraph.GetEntities();
+            for (int i = 0; i < entities.Count; i++)
+            {
+                List<CathodeNodeLink> nodeLinks = new List<CathodeNodeLink>();
+                for (int x = 0; x < entities[i].childLinks.Count; x++)
+                {
+                    if (entities[i].childLinks[x].childID != selected_node.nodeID) nodeLinks.Add(entities[i].childLinks[x]);
+                }
+                entities[i].childLinks = nodeLinks;
+            }
+
+            LoadFlowgraph(selected_flowgraph.name);
         }
     }
 }

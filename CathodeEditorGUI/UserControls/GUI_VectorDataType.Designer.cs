@@ -51,7 +51,7 @@
             this.VECTOR_VARIABLE_DUMMY.Controls.Add(this.POS_X_1);
             this.VECTOR_VARIABLE_DUMMY.Location = new System.Drawing.Point(3, 3);
             this.VECTOR_VARIABLE_DUMMY.Name = "VECTOR_VARIABLE_DUMMY";
-            this.VECTOR_VARIABLE_DUMMY.Size = new System.Drawing.Size(700, 56);
+            this.VECTOR_VARIABLE_DUMMY.Size = new System.Drawing.Size(334, 56);
             this.VECTOR_VARIABLE_DUMMY.TabIndex = 16;
             this.VECTOR_VARIABLE_DUMMY.TabStop = false;
             this.VECTOR_VARIABLE_DUMMY.Text = "Parameter Name (00-00-00-00)";
@@ -176,7 +176,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.VECTOR_VARIABLE_DUMMY);
             this.Name = "GUI_VectorDataType";
-            this.Size = new System.Drawing.Size(707, 61);
+            this.Size = new System.Drawing.Size(340, 61);
             this.VECTOR_VARIABLE_DUMMY.ResumeLayout(false);
             this.VECTOR_VARIABLE_DUMMY.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.POS_Z_1)).EndInit();

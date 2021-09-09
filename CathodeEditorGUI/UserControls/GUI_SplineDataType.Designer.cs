@@ -38,7 +38,7 @@
             this.UNIMPLEMENTED_VARIABLE_TYPE.Controls.Add(this.label15);
             this.UNIMPLEMENTED_VARIABLE_TYPE.Location = new System.Drawing.Point(3, 3);
             this.UNIMPLEMENTED_VARIABLE_TYPE.Name = "UNIMPLEMENTED_VARIABLE_TYPE";
-            this.UNIMPLEMENTED_VARIABLE_TYPE.Size = new System.Drawing.Size(700, 56);
+            this.UNIMPLEMENTED_VARIABLE_TYPE.Size = new System.Drawing.Size(334, 56);
             this.UNIMPLEMENTED_VARIABLE_TYPE.TabIndex = 18;
             this.UNIMPLEMENTED_VARIABLE_TYPE.TabStop = false;
             this.UNIMPLEMENTED_VARIABLE_TYPE.Text = "Parameter Name (00-00-00-00)";
@@ -58,7 +58,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.UNIMPLEMENTED_VARIABLE_TYPE);
             this.Name = "GUI_SplineDataType";
-            this.Size = new System.Drawing.Size(707, 61);
+            this.Size = new System.Drawing.Size(340, 61);
             this.UNIMPLEMENTED_VARIABLE_TYPE.ResumeLayout(false);
             this.UNIMPLEMENTED_VARIABLE_TYPE.PerformLayout();
             this.ResumeLayout(false);
