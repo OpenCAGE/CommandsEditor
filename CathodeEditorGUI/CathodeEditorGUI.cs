@@ -68,8 +68,6 @@ namespace CathodeEditorGUI
             //Reset all UI here
             ClearUI(true, true, true);
             commandsPAK = null;
-
-            //for (int i = 0; i < env_list.Items.Count; i++) commandsPAK = new CommandsPAK(Folders.GetPath(ToolPaths.Paths.FOLDER_ALIEN_ISOLATION) + "/DATA/ENV/PRODUCTION/" + env_list.Items[i].ToString() + "/WORLD/COMMANDS.PAK");
             string path_to_ENV = SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + env_list.SelectedItem;
 
             //Sanity check
@@ -110,6 +108,18 @@ namespace CathodeEditorGUI
             LoadFlowgraph(selected_node_type_description.Text);
         }
 
+        /* Add new flowgraph */
+        private void addNewFlowgraph_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("wip");
+        }
+
+        /* Remove selected flowgraph */
+        private void removeSelectedFlowgraph_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("wip");
+        }
+
         /* Select node from loaded flowgraph */
         private void flowgraph_content_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -118,27 +128,24 @@ namespace CathodeEditorGUI
             if (thisNodeInfo != null) LoadNode(thisNodeInfo);
         }
 
+        /* Add new out pin */
+        private void addNewLink_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("wip");
+        }
+
+        /* Remove selected out pin */
+        private void removeSelectedLink_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("wip");
+        }
+
         /* Go to selected pin out on button press */
         private void out_pin_goto_Click(object sender, EventArgs e)
         {
             if (node_children.SelectedIndex == -1 || selected_flowgraph == null) return;
             CathodeEntity thisNodeInfo = selected_flowgraph.GetEntityByID(selected_node.childLinks[node_children.SelectedIndex].childID);
             if (thisNodeInfo != null) LoadNode(thisNodeInfo);
-        }
-
-        /* Edit selected pin out on button press */
-        private void out_pin_edit_Click(object sender, EventArgs e)
-        {
-            /*
-            if (node_children.SelectedIndex == -1 || selected_flowgraph == null) return;
-            CathodeEditorGUI_EditPin pin_editor = new CathodeEditorGUI_EditPin(selected_flowgraph.GetChildLinksByID(selected_node.nodeID)[node_children.SelectedIndex], selected_flowgraph);
-            pin_editor.Show();
-            pin_editor.FormClosed += new FormClosedEventHandler(pin_editor_closed);
-        }
-        private void pin_editor_closed(Object sender, FormClosedEventArgs e)
-        {
-            RefreshNodeLinks();
-            */
         }
 
         /* Search node list */
@@ -200,6 +207,8 @@ namespace CathodeEditorGUI
         CathodeEntity selected_node = null;
         private void LoadNode(CathodeEntity edit_node)
         {
+            if (edit_node == null) return;
+
             ClearUI(false, false, true);
             selected_node = edit_node;
             Cursor.Current = Cursors.WaitCursor;

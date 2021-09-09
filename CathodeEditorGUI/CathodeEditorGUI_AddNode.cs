@@ -1,4 +1,5 @@
-﻿using CATHODE.Commands;
+﻿using CATHODE;
+using CATHODE.Commands;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -20,6 +21,10 @@ namespace CathodeEditorGUI
             flow = _flow;
             availableFlows = _flows;
             InitializeComponent();
+
+            //quick hack to reload dropdown
+            radioButton1.Checked = true;
+            radioButton2.Checked = true;
         }
 
         //Repopulate UI
@@ -851,6 +856,35 @@ namespace CathodeEditorGUI
                 comboBox1.Items.Add(availableFlows[i].name);
             }
             comboBox1.SelectedIndex = 0;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            var random = new Random();
+            cGUID thisID = Utilities.GenerateGUID(textBox1.Text + random.Next()); //TODO: need a way of properly generating these ids, and then saving them to lookup later
+
+            if (radioButton1.Checked)
+            {
+                DatatypeEntity newEntity = new DatatypeEntity(thisID);
+                newEntity.type = (CathodeDataType)comboBox1.SelectedIndex;
+                flow.datatypes.Add(newEntity);
+            }
+            else if (radioButton2.Checked)
+            {
+                FunctionEntity newEntity = new FunctionEntity(thisID);
+                newEntity.function = Utilities.GenerateGUID(comboBox1.Text);
+                flow.functions.Add(newEntity);
+            }
+            else if (radioButton3.Checked)
+            {
+                FunctionEntity newEntity = new FunctionEntity(thisID);
+                CathodeFlowgraph selectedFlowgraph = availableFlows.FirstOrDefault(o => o.name == comboBox1.Text);
+                if (selectedFlowgraph == null) throw new Exception("Failed to look up flowgraph.");
+                newEntity.function = selectedFlowgraph.nodeID;
+                flow.functions.Add(newEntity);
+            }
+
+            this.Close();
         }
     }
 }
