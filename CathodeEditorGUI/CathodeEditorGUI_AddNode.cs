@@ -19,7 +19,7 @@ namespace CathodeEditorGUI
         public CathodeEditorGUI_AddNode(CathodeFlowgraph _flow, List<CathodeFlowgraph> _flows)
         {
             flow = _flow;
-            availableFlows = _flows;
+            availableFlows = _flows.OrderBy(o => o.name).ToList();
             InitializeComponent();
 
             //quick hack to reload dropdown

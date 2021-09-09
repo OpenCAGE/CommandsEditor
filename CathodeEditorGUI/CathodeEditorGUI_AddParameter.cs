@@ -18,8 +18,8 @@ namespace CathodeEditorGUI
         public CathodeEditorGUI_AddParameter(CathodeEntity _node)
         {
             node = _node;
-            comboBox1.SelectedIndex = 0;
             InitializeComponent();
+            comboBox1.SelectedIndex = 0;
         }
 
         private void button1_Click(object sender, EventArgs e)
