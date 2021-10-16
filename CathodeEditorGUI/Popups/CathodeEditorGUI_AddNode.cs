@@ -860,8 +860,8 @@ namespace CathodeEditorGUI
 
         private void button1_Click(object sender, EventArgs e)
         {
-            var random = new Random();
-            cGUID thisID = Utilities.GenerateGUID(textBox1.Text + random.Next()); //TODO: need a way of properly generating these ids, and then saving them to lookup later
+            cGUID thisID = Utilities.GenerateGUID(DateTime.Now.ToString("G"));
+            //TODO: i wonder if we could add some extra info into COMMANDS.PAK to save the names there of new nodes?
 
             if (radioButton1.Checked)
             {

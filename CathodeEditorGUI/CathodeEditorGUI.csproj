@@ -70,34 +70,28 @@
     <Compile Include="CathodeEditorGUI.designer.cs">
       <DependentUpon>CathodeEditorGUI.cs</DependentUpon>
     </Compile>
-    <Compile Include="CathodeEditorGUI_AddNode.cs">
+    <Compile Include="Popups\CathodeEditorGUI_AddNode.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CathodeEditorGUI_AddNode.Designer.cs">
+    <Compile Include="Popups\CathodeEditorGUI_AddNode.Designer.cs">
       <DependentUpon>CathodeEditorGUI_AddNode.cs</DependentUpon>
     </Compile>
-    <Compile Include="CathodeEditorGUI_AddParameter.cs">
+    <Compile Include="Popups\CathodeEditorGUI_AddParameter.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CathodeEditorGUI_AddParameter.Designer.cs">
+    <Compile Include="Popups\CathodeEditorGUI_AddParameter.Designer.cs">
       <DependentUpon>CathodeEditorGUI_AddParameter.cs</DependentUpon>
     </Compile>
-    <Compile Include="CathodeEditorGUI_EditParam.cs">
+    <Compile Include="Popups\CathodeEditorGUI_AddPin.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CathodeEditorGUI_EditParam.designer.cs">
-      <DependentUpon>CathodeEditorGUI_EditParam.cs</DependentUpon>
+    <Compile Include="Popups\CathodeEditorGUI_AddPin.designer.cs">
+      <DependentUpon>CathodeEditorGUI_AddPin.cs</DependentUpon>
     </Compile>
-    <Compile Include="CathodeEditorGUI_EditPin.cs">
+    <Compile Include="LEGACY\CathodeEditorGUI_EditResource.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CathodeEditorGUI_EditPin.designer.cs">
-      <DependentUpon>CathodeEditorGUI_EditPin.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CathodeEditorGUI_EditResource.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CathodeEditorGUI_EditResource.designer.cs">
+    <Compile Include="LEGACY\CathodeEditorGUI_EditResource.designer.cs">
       <DependentUpon>CathodeEditorGUI_EditResource.cs</DependentUpon>
     </Compile>
     <Compile Include="CathodeEnums.cs" />
@@ -157,19 +151,16 @@
     <EmbeddedResource Include="CathodeEditorGUI.resx">
       <DependentUpon>CathodeEditorGUI.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CathodeEditorGUI_AddNode.resx">
+    <EmbeddedResource Include="Popups\CathodeEditorGUI_AddNode.resx">
       <DependentUpon>CathodeEditorGUI_AddNode.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CathodeEditorGUI_AddParameter.resx">
+    <EmbeddedResource Include="Popups\CathodeEditorGUI_AddParameter.resx">
       <DependentUpon>CathodeEditorGUI_AddParameter.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CathodeEditorGUI_EditParam.resx">
-      <DependentUpon>CathodeEditorGUI_EditParam.cs</DependentUpon>
+    <EmbeddedResource Include="Popups\CathodeEditorGUI_AddPin.resx">
+      <DependentUpon>CathodeEditorGUI_AddPin.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CathodeEditorGUI_EditPin.resx">
-      <DependentUpon>CathodeEditorGUI_EditPin.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CathodeEditorGUI_EditResource.resx">
+    <EmbeddedResource Include="LEGACY\CathodeEditorGUI_EditResource.resx">
       <DependentUpon>CathodeEditorGUI_EditResource.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -180,6 +171,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <EmbeddedResource Include="UserControls\GUI_BoolDataType.resx">
       <DependentUpon>GUI_BoolDataType.cs</DependentUpon>
@@ -221,6 +213,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <EmbeddedResource Include="Resources\_2560px_Arrow_east_svg.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
