@@ -33,6 +33,8 @@
             this.first_executed_flowgraph = new System.Windows.Forms.Label();
             this.save_commands_pak = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.removeSelectedFlowgraph = new System.Windows.Forms.Button();
+            this.addNewFlowgraph = new System.Windows.Forms.Button();
             this.FileTree = new System.Windows.Forms.TreeView();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
@@ -64,8 +66,7 @@
             this.env_list = new System.Windows.Forms.ComboBox();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
-            this.removeSelectedFlowgraph = new System.Windows.Forms.Button();
-            this.addNewFlowgraph = new System.Windows.Forms.Button();
+            this.showLinkParents = new System.Windows.Forms.Button();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -116,6 +117,26 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Cathode Flowgraphs";
             // 
+            // removeSelectedFlowgraph
+            // 
+            this.removeSelectedFlowgraph.Location = new System.Drawing.Point(191, 710);
+            this.removeSelectedFlowgraph.Name = "removeSelectedFlowgraph";
+            this.removeSelectedFlowgraph.Size = new System.Drawing.Size(181, 23);
+            this.removeSelectedFlowgraph.TabIndex = 150;
+            this.removeSelectedFlowgraph.Text = "Remove Selected";
+            this.removeSelectedFlowgraph.UseVisualStyleBackColor = true;
+            this.removeSelectedFlowgraph.Click += new System.EventHandler(this.removeSelectedFlowgraph_Click);
+            // 
+            // addNewFlowgraph
+            // 
+            this.addNewFlowgraph.Location = new System.Drawing.Point(6, 710);
+            this.addNewFlowgraph.Name = "addNewFlowgraph";
+            this.addNewFlowgraph.Size = new System.Drawing.Size(181, 23);
+            this.addNewFlowgraph.TabIndex = 149;
+            this.addNewFlowgraph.Text = "Add Flowgraph";
+            this.addNewFlowgraph.UseVisualStyleBackColor = true;
+            this.addNewFlowgraph.Click += new System.EventHandler(this.addNewFlowgraph_Click);
+            // 
             // FileTree
             // 
             this.FileTree.BorderStyle = System.Windows.Forms.BorderStyle.None;
@@ -133,7 +154,7 @@
             this.groupBox1.Controls.Add(this.groupBox2);
             this.groupBox1.Location = new System.Drawing.Point(392, 55);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(854, 744);
+            this.groupBox1.Size = new System.Drawing.Size(857, 744);
             this.groupBox1.TabIndex = 162;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Selected Flowgraph Content";
@@ -151,14 +172,14 @@
             this.groupBox7.Controls.Add(this.label1);
             this.groupBox7.Location = new System.Drawing.Point(469, 19);
             this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(379, 105);
+            this.groupBox7.Size = new System.Drawing.Size(382, 105);
             this.groupBox7.TabIndex = 151;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Selected Entity Info";
             // 
             // node_to_flowgraph_jump
             // 
-            this.node_to_flowgraph_jump.Location = new System.Drawing.Point(337, 15);
+            this.node_to_flowgraph_jump.Location = new System.Drawing.Point(339, 15);
             this.node_to_flowgraph_jump.Name = "node_to_flowgraph_jump";
             this.node_to_flowgraph_jump.Size = new System.Drawing.Size(35, 47);
             this.node_to_flowgraph_jump.TabIndex = 8;
@@ -243,24 +264,25 @@
             // 
             // groupBox5
             // 
+            this.groupBox5.Controls.Add(this.showLinkParents);
             this.groupBox5.Controls.Add(this.removeSelectedLink);
             this.groupBox5.Controls.Add(this.addNewLink);
             this.groupBox5.Controls.Add(this.out_pin_goto);
             this.groupBox5.Controls.Add(this.node_children);
             this.groupBox5.Location = new System.Drawing.Point(469, 600);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(379, 139);
+            this.groupBox5.Size = new System.Drawing.Size(382, 139);
             this.groupBox5.TabIndex = 149;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Selected Entity Links";
             // 
             // removeSelectedLink
             // 
-            this.removeSelectedLink.Location = new System.Drawing.Point(131, 109);
+            this.removeSelectedLink.Location = new System.Drawing.Point(100, 109);
             this.removeSelectedLink.Name = "removeSelectedLink";
-            this.removeSelectedLink.Size = new System.Drawing.Size(117, 23);
+            this.removeSelectedLink.Size = new System.Drawing.Size(94, 23);
             this.removeSelectedLink.TabIndex = 148;
-            this.removeSelectedLink.Text = "Remove Selected";
+            this.removeSelectedLink.Text = "Remove Link";
             this.removeSelectedLink.UseVisualStyleBackColor = true;
             this.removeSelectedLink.Click += new System.EventHandler(this.removeSelectedLink_Click);
             // 
@@ -268,19 +290,19 @@
             // 
             this.addNewLink.Location = new System.Drawing.Point(6, 109);
             this.addNewLink.Name = "addNewLink";
-            this.addNewLink.Size = new System.Drawing.Size(117, 23);
+            this.addNewLink.Size = new System.Drawing.Size(94, 23);
             this.addNewLink.TabIndex = 149;
-            this.addNewLink.Text = "Add Link";
+            this.addNewLink.Text = "Add New Link";
             this.addNewLink.UseVisualStyleBackColor = true;
             this.addNewLink.Click += new System.EventHandler(this.addNewLink_Click);
             // 
             // out_pin_goto
             // 
-            this.out_pin_goto.Location = new System.Drawing.Point(255, 109);
+            this.out_pin_goto.Location = new System.Drawing.Point(194, 109);
             this.out_pin_goto.Name = "out_pin_goto";
-            this.out_pin_goto.Size = new System.Drawing.Size(117, 23);
+            this.out_pin_goto.Size = new System.Drawing.Size(94, 23);
             this.out_pin_goto.TabIndex = 146;
-            this.out_pin_goto.Text = "Go To Selected";
+            this.out_pin_goto.Text = "Go To Link";
             this.out_pin_goto.UseVisualStyleBackColor = true;
             this.out_pin_goto.Click += new System.EventHandler(this.out_pin_goto_Click);
             // 
@@ -291,7 +313,7 @@
             this.node_children.HorizontalScrollbar = true;
             this.node_children.Location = new System.Drawing.Point(6, 21);
             this.node_children.Name = "node_children";
-            this.node_children.Size = new System.Drawing.Size(366, 82);
+            this.node_children.Size = new System.Drawing.Size(371, 82);
             this.node_children.TabIndex = 145;
             // 
             // groupBox4
@@ -363,16 +385,16 @@
             this.groupBox2.Controls.Add(this.NodeParams);
             this.groupBox2.Location = new System.Drawing.Point(469, 130);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(379, 464);
+            this.groupBox2.Size = new System.Drawing.Size(382, 464);
             this.groupBox2.TabIndex = 147;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Selected Entity Parameters";
             // 
             // removeParameter
             // 
-            this.removeParameter.Location = new System.Drawing.Point(194, 434);
+            this.removeParameter.Location = new System.Drawing.Point(193, 434);
             this.removeParameter.Name = "removeParameter";
-            this.removeParameter.Size = new System.Drawing.Size(179, 23);
+            this.removeParameter.Size = new System.Drawing.Size(184, 23);
             this.removeParameter.TabIndex = 150;
             this.removeParameter.Text = "Remove Parameter";
             this.removeParameter.UseVisualStyleBackColor = true;
@@ -380,9 +402,9 @@
             // 
             // addNewParameter
             // 
-            this.addNewParameter.Location = new System.Drawing.Point(7, 434);
+            this.addNewParameter.Location = new System.Drawing.Point(6, 434);
             this.addNewParameter.Name = "addNewParameter";
-            this.addNewParameter.Size = new System.Drawing.Size(179, 23);
+            this.addNewParameter.Size = new System.Drawing.Size(184, 23);
             this.addNewParameter.TabIndex = 149;
             this.addNewParameter.Text = "Add Parameter";
             this.addNewParameter.UseVisualStyleBackColor = true;
@@ -393,7 +415,7 @@
             this.NodeParams.AutoScroll = true;
             this.NodeParams.Location = new System.Drawing.Point(6, 20);
             this.NodeParams.Name = "NodeParams";
-            this.NodeParams.Size = new System.Drawing.Size(366, 408);
+            this.NodeParams.Size = new System.Drawing.Size(371, 408);
             this.NodeParams.TabIndex = 0;
             // 
             // load_commands_pak
@@ -421,7 +443,7 @@
             this.groupBox8.Controls.Add(this.flowgraph_count);
             this.groupBox8.Location = new System.Drawing.Point(565, 3);
             this.groupBox8.Name = "groupBox8";
-            this.groupBox8.Size = new System.Drawing.Size(681, 49);
+            this.groupBox8.Size = new System.Drawing.Size(684, 49);
             this.groupBox8.TabIndex = 174;
             this.groupBox8.TabStop = false;
             // 
@@ -436,31 +458,21 @@
             this.groupBox10.TabIndex = 175;
             this.groupBox10.TabStop = false;
             // 
-            // removeSelectedFlowgraph
+            // showLinkParents
             // 
-            this.removeSelectedFlowgraph.Location = new System.Drawing.Point(191, 710);
-            this.removeSelectedFlowgraph.Name = "removeSelectedFlowgraph";
-            this.removeSelectedFlowgraph.Size = new System.Drawing.Size(181, 23);
-            this.removeSelectedFlowgraph.TabIndex = 150;
-            this.removeSelectedFlowgraph.Text = "Remove Selected";
-            this.removeSelectedFlowgraph.UseVisualStyleBackColor = true;
-            this.removeSelectedFlowgraph.Click += new System.EventHandler(this.removeSelectedFlowgraph_Click);
-            // 
-            // addNewFlowgraph
-            // 
-            this.addNewFlowgraph.Location = new System.Drawing.Point(6, 710);
-            this.addNewFlowgraph.Name = "addNewFlowgraph";
-            this.addNewFlowgraph.Size = new System.Drawing.Size(181, 23);
-            this.addNewFlowgraph.TabIndex = 149;
-            this.addNewFlowgraph.Text = "Add Flowgraph";
-            this.addNewFlowgraph.UseVisualStyleBackColor = true;
-            this.addNewFlowgraph.Click += new System.EventHandler(this.addNewFlowgraph_Click);
+            this.showLinkParents.Location = new System.Drawing.Point(298, 109);
+            this.showLinkParents.Name = "showLinkParents";
+            this.showLinkParents.Size = new System.Drawing.Size(79, 23);
+            this.showLinkParents.TabIndex = 150;
+            this.showLinkParents.Text = "Parents";
+            this.showLinkParents.UseVisualStyleBackColor = true;
+            this.showLinkParents.Click += new System.EventHandler(this.showLinkParents_Click);
             // 
             // CathodeEditorGUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1252, 804);
+            this.ClientSize = new System.Drawing.Size(1254, 804);
             this.Controls.Add(this.groupBox10);
             this.Controls.Add(this.groupBox8);
             this.Controls.Add(this.groupBox3);
@@ -524,5 +536,6 @@
         private System.Windows.Forms.Button addNewLink;
         private System.Windows.Forms.Button removeSelectedFlowgraph;
         private System.Windows.Forms.Button addNewFlowgraph;
+        private System.Windows.Forms.Button showLinkParents;
     }
 }

@@ -19,6 +19,7 @@ namespace CathodeEditorGUI
     {
         private CommandsPAK commandsPAK = null;
         private TreeUtility treeHelper;
+        private bool currentlyShowingChildLinks = true;
 
         public CathodeEditorGUI()
         {
@@ -58,6 +59,7 @@ namespace CathodeEditorGUI
                 selected_node_name.Text = "";
                 NodeParams.Controls.Clear();
                 node_children.Items.Clear();
+                currentlyShowingChildLinks = true;
                 node_to_flowgraph_jump.Visible = false;
             }
         }
@@ -161,6 +163,13 @@ namespace CathodeEditorGUI
             if (node_children.SelectedIndex == -1 || selected_flowgraph == null) return;
             CathodeEntity thisNodeInfo = selected_flowgraph.GetEntityByID(selected_node.childLinks[node_children.SelectedIndex].childID);
             if (thisNodeInfo != null) LoadNode(thisNodeInfo);
+        }
+
+        /* Flip the child link list to contain parents (this is an expensive search, which is why we only do it on request) */
+        private void showLinkParents_Click(object sender, EventArgs e)
+        {
+            currentlyShowingChildLinks = !currentlyShowingChildLinks;
+            RefreshNodeLinks();
         }
 
         /* Search node list */
@@ -357,12 +366,41 @@ namespace CathodeEditorGUI
         /* Refresh child/parent node links for selected node */
         private void RefreshNodeLinks()
         {
-            //Child links (pins out of this node)
             node_children.Items.Clear();
-            foreach (CathodeNodeLink id in selected_node.childLinks)
+            addNewLink.Enabled = currentlyShowingChildLinks;
+            removeSelectedLink.Enabled = currentlyShowingChildLinks;
+            out_pin_goto.Enabled = currentlyShowingChildLinks;
+            showLinkParents.Text = (currentlyShowingChildLinks) ? "Parents" : "Children";
+
+            if (selected_flowgraph == null || selected_node == null) return;
+            if (currentlyShowingChildLinks)
             {
-                string desc = GenerateNodeName(selected_node);
-                node_children.Items.Add("[" + id.connectionID.ToString() + "] Pin out " + id.parentParamID.ToString() + " (" + NodeDB.GetCathodeName(id.parentParamID) + "), goes to " + id.childParamID.ToString() + " (" + NodeDB.GetCathodeName(id.childParamID) + ") on node " + id.childID.ToString() + " (" + NodeDB.GetEditorName(id.childID) + desc + ")");
+                //Child links (pins out of this node)
+                foreach (CathodeNodeLink link in selected_node.childLinks)
+                {
+                    node_children.Items.Add(
+                        /*"[" + link.connectionID.ToString() + "] " +*/
+                        "(" + NodeDB.GetCathodeName(link.parentParamID) + ") => " +
+                        NodeDB.GetEditorName(link.childID) + 
+                        " (" + NodeDB.GetCathodeName(link.childParamID) + ")");
+                }
+            }
+            else
+            {
+                //Parent links (pins into this node)
+                List<CathodeEntity> ents = selected_flowgraph.GetEntities();
+                foreach (CathodeEntity entity in ents)
+                {
+                    foreach (CathodeNodeLink link in entity.childLinks)
+                    {
+                        if (link.childID != selected_node.nodeID) continue;
+                        node_children.Items.Add(
+                            /*"[" + link.connectionID.ToString() + "] " +*/
+                            NodeDB.GetEditorName(entity.nodeID) +
+                            " (" + NodeDB.GetCathodeName(link.parentParamID) + ") => " +
+                            "(" + NodeDB.GetCathodeName(link.childParamID) + ")");
+                    }
+                }
             }
         }
 
