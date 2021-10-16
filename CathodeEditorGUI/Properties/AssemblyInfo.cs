@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Matt Filer")]
 [assembly: AssemblyProduct("OpenCAGE - Cathode Script Editor")]
-[assembly: AssemblyCopyright("Copyright © Matt Filer 2020")]
+[assembly: AssemblyCopyright("Copyright © Matt Filer 2022")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
