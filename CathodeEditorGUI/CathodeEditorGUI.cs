@@ -140,7 +140,7 @@ namespace CathodeEditorGUI
         /* Add new out pin */
         private void addNewLink_Click(object sender, EventArgs e)
         {
-            if (selected_flowgraph == null) return;
+            if (selected_flowgraph == null || selected_node == null) return;
             CathodeEditorGUI_AddPin add_pin = new CathodeEditorGUI_AddPin(selected_node, selected_flowgraph);
             add_pin.Show();
             add_pin.FormClosed += new FormClosedEventHandler(add_pin_closed);

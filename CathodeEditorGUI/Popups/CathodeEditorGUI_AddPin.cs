@@ -23,7 +23,7 @@ namespace CathodeEditorGUI
             InitializeComponent();
 
             List<CathodeEntity> ents = flowgraph.GetEntities();
-            ents.Sort();
+            ents = ents.OrderBy(o => NodeDB.GetEditorName(o.nodeID)).ToList<CathodeEntity>();
             for (int i = 0; i < ents.Count; i++)
             {
                 string this_node_string = "[" + ents[i].nodeID.ToString() + "] " + NodeDB.GetEditorName(ents[i].nodeID);

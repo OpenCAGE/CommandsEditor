@@ -17,6 +17,7 @@ namespace CathodeEditorGUI.UserControls
     {
         CathodeFloat floatVal = null;
         CathodeInteger intVal = null;
+        bool isIntInput = false;
 
         public GUI_NumericDataType()
         {
@@ -32,6 +33,7 @@ namespace CathodeEditorGUI.UserControls
 
         public void PopulateUI_Int(CathodeInteger cInt, cGUID paramID)
         {
+            isIntInput = true;
             intVal = cInt;
             NUMERIC_VARIABLE_DUMMY.Text = NodeDB.GetCathodeName(paramID) + " (" + paramID.ToString() + ")";
             textBox1.Text = cInt.value.ToString();
@@ -39,8 +41,14 @@ namespace CathodeEditorGUI.UserControls
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
-            if (floatVal != null) floatVal.value = Convert.ToSingle(textBox1.Text);
-            if (intVal != null) intVal.value = Convert.ToInt32(textBox1.Text);
+            if (isIntInput)
+            {
+                intVal.value = Convert.ToInt32(textBox1.Text);
+            }
+            else
+            {
+                floatVal.value = Convert.ToSingle(textBox1.Text);
+            }
         }
     }
 }
