@@ -58,6 +58,7 @@ namespace CathodeEditorGUI
                     break;
                 case CathodeDataType.ENUM:
                     thisParam = new CathodeEnum();
+                    ((CathodeEnum)thisParam).enumID = new cGUID("4C-B9-82-48"); //ALERTNESS_STATE is the first alphabetically
                     break;
                 case CathodeDataType.SHORT_GUID:
                     thisParam = new CathodeResource();

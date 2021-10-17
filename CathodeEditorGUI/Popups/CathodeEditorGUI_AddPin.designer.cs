@@ -71,6 +71,7 @@
             // pin_out_node
             // 
             this.pin_out_node.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.pin_out_node.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.pin_out_node.FormattingEnabled = true;
             this.pin_out_node.Location = new System.Drawing.Point(16, 40);
             this.pin_out_node.Name = "pin_out_node";
@@ -112,6 +113,7 @@
             // pin_in_node
             // 
             this.pin_in_node.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.pin_in_node.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.pin_in_node.FormattingEnabled = true;
             this.pin_in_node.Location = new System.Drawing.Point(16, 40);
             this.pin_in_node.Name = "pin_in_node";

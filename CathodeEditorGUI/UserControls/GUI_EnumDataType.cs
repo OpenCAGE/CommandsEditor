@@ -40,6 +40,7 @@ namespace CathodeEditorGUI.UserControls
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
+            textBox1.Text = EditorUtils.ForceStringNumeric(textBox1.Text);
             enumVal.enumIndex = Convert.ToInt32(textBox1.Text);
         }
     }

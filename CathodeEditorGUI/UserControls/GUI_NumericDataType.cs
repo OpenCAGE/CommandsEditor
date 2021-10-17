@@ -41,14 +41,9 @@ namespace CathodeEditorGUI.UserControls
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
-            if (isIntInput)
-            {
-                intVal.value = Convert.ToInt32(textBox1.Text);
-            }
-            else
-            {
-                floatVal.value = Convert.ToSingle(textBox1.Text);
-            }
+            textBox1.Text = EditorUtils.ForceStringNumeric(textBox1.Text, !isIntInput);
+            if (isIntInput) intVal.value = Convert.ToInt32(textBox1.Text);
+            else floatVal.value = Convert.ToSingle(textBox1.Text);
         }
     }
 }

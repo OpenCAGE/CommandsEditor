@@ -11,7 +11,9 @@ namespace CathodeEditorGUI
 {
     static class EditorUtils
     {
-        static CommandsPAK _pak = null;
+        private static CommandsPAK _pak = null;
+        public static CommandsPAK Commands { get { return _pak; } }
+
         public static void Setup(CommandsPAK commandsPAK)
         {
             _pak = commandsPAK;
@@ -70,6 +72,24 @@ namespace CathodeEditorGUI
                     //TODO: support other types here
             }
             return items;
+        }
+
+        /* Utility: force a string to be numeric */
+        public static string ForceStringNumeric(string str, bool allowDots = false)
+        {
+            string editedText = "";
+            bool hasIncludedDot = false;
+            for (int i = 0; i < str.Length; i++)
+            {
+                if (Char.IsNumber(str[i]) || (str[i] == '.' && allowDots))
+                {
+                    if (str[i] == '.' && hasIncludedDot) continue;
+                    if (str[i] == '.') hasIncludedDot = true;
+                    editedText += str[i];
+                }
+            }
+            if (editedText == "") editedText = "0";
+            return editedText;
         }
     }
 }

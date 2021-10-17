@@ -78,6 +78,12 @@
     <Compile Include="Popups\CathodeEditorGUI_AddNode.Designer.cs">
       <DependentUpon>CathodeEditorGUI_AddNode.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\CathodeEditorGUI_AddFlowgraph.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\CathodeEditorGUI_AddFlowgraph.Designer.cs">
+      <DependentUpon>CathodeEditorGUI_AddFlowgraph.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popups\CathodeEditorGUI_AddParameter.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -155,6 +161,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\CathodeEditorGUI_AddNode.resx">
       <DependentUpon>CathodeEditorGUI_AddNode.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\CathodeEditorGUI_AddFlowgraph.resx">
+      <DependentUpon>CathodeEditorGUI_AddFlowgraph.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\CathodeEditorGUI_AddParameter.resx">
       <DependentUpon>CathodeEditorGUI_AddParameter.cs</DependentUpon>

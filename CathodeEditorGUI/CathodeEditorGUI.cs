@@ -121,13 +121,36 @@ namespace CathodeEditorGUI
         /* Add new flowgraph */
         private void addNewFlowgraph_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("wip");
+            if (commandsPAK == null) return;
+            CathodeEditorGUI_AddFlowgraph add_flow = new CathodeEditorGUI_AddFlowgraph();
+            add_flow.Show();
+            add_flow.FormClosed += new FormClosedEventHandler(add_flow_closed);
+        }
+        private void add_flow_closed(Object sender, FormClosedEventArgs e)
+        {
+            treeHelper.UpdateFileTree(commandsPAK.GetFlowgraphNames().ToList());
         }
 
         /* Remove selected flowgraph */
         private void removeSelectedFlowgraph_Click(object sender, EventArgs e)
         {
             MessageBox.Show("wip");
+            return;
+
+            if (selected_flowgraph == null) return;
+            for (int i = 0; i < commandsPAK.EntryPoints.Count(); i++)
+            {
+                if (selected_flowgraph.nodeID == commandsPAK.EntryPoints[i].nodeID)
+                {
+                    MessageBox.Show("Cannot delete a flowgraph which is set as an entry point!", "Cannot delete.", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+            }
+            
+            //todo: delete flowgraph, delete all nodes using flowgraph, delete all node links to node using flowgraph
+
+            ClearUI(false, true, true);
+            treeHelper.UpdateFileTree(commandsPAK.GetFlowgraphNames().ToList());
         }
 
         /* Select node from loaded flowgraph */
