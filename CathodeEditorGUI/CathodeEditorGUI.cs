@@ -74,6 +74,7 @@ namespace CathodeEditorGUI
             //Load
             string path_to_ENV = SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + env_list.SelectedItem;
             commandsPAK = new CommandsPAK(path_to_ENV + "/WORLD/COMMANDS.PAK");
+            EditorUtils.Setup(commandsPAK);
 
             //Sanity check
             if (!commandsPAK.Loaded)
@@ -133,7 +134,7 @@ namespace CathodeEditorGUI
         private void flowgraph_content_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (flowgraph_content.SelectedIndex == -1 || selected_flowgraph == null) return;
-            CathodeEntity thisNodeInfo = selected_flowgraph.GetEntityByID(new cGUID(flowgraph_content.SelectedItem.ToString().Substring(0, 11)));
+            CathodeEntity thisNodeInfo = selected_flowgraph.GetEntityByID(new cGUID(flowgraph_content.SelectedItem.ToString().Substring(1, 11)));
             if (thisNodeInfo != null) LoadNode(thisNodeInfo);
         }
 
@@ -194,7 +195,7 @@ namespace CathodeEditorGUI
             List<CathodeEntity> entities = entry.GetEntities();
             for (int i = 0; i < entities.Count; i++)
             {
-                string desc = GenerateNodeName(entities[i]);
+                string desc = EditorUtils.GenerateNodeName(entities[i]);
                 flowgraph_content.Items.Add(desc);
                 flowgraph_content_RAW.Add(desc);
             }
@@ -252,31 +253,6 @@ namespace CathodeEditorGUI
             }
 
             LoadFlowgraph(selected_flowgraph.name);
-        }
-
-        /* Utility: generate nice entity name to display in UI */
-        private string GenerateNodeName(CathodeEntity entity)
-        {
-            string desc = "";
-            switch (entity.variant)
-            {
-                case EntityVariant.DATATYPE:
-                    desc = NodeDB.GetCathodeName(((DatatypeEntity)entity).parameter) + " (DataType " + ((DatatypeEntity)entity).type.ToString() + ")";
-                    break;
-                case EntityVariant.FUNCTION:
-                    desc = NodeDB.GetEditorName(entity.nodeID) + " (" + NodeDB.GetCathodeName(((FunctionEntity)entity).function, commandsPAK) + ")";
-                    break;
-                case EntityVariant.OVERRIDE:
-                    desc = "OVERRIDE!"; //TODO
-                    break;
-                case EntityVariant.PROXY:
-                    desc = "PROXY!"; //TODO
-                    break;
-                case EntityVariant.NOT_SETUP:
-                    desc = "NOT SETUP!"; //Huh?
-                    break;
-            }
-            return entity.nodeID.ToString() + " " + desc;
         }
 
         /* Load a entity into the UI */

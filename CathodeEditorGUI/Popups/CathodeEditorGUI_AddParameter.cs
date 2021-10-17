@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using CATHODE;
 using CATHODE.Commands;
+using CathodeLib;
 
 namespace CathodeEditorGUI
 {
@@ -19,12 +20,16 @@ namespace CathodeEditorGUI
         {
             node = _node;
             InitializeComponent();
-            comboBox1.SelectedIndex = 0;
+            param_datatype.SelectedIndex = 0;
+
+            List<string> options = EditorUtils.GenerateParameterList(_node);
+            for (int i = 0; i < options.Count; i++) param_name.Items.Add(options[i]);
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            cGUID thisParamID = Utilities.GenerateGUID(textBox1.Text);
+            if (param_name.Text == "") return;
+            cGUID thisParamID = Utilities.GenerateGUID(param_name.Text);
 
             foreach (CathodeLoadedParameter param in node.parameters)
             {
@@ -36,7 +41,7 @@ namespace CathodeEditorGUI
             }
 
             CathodeParameter thisParam = null;
-            switch ((CathodeDataType)comboBox1.SelectedIndex)
+            switch ((CathodeDataType)param_datatype.SelectedIndex)
             {
                 case CathodeDataType.POSITION:
                     thisParam = new CathodeTransform();

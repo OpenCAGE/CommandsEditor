@@ -71,6 +71,7 @@
     <Compile Include="CathodeEditorGUI.designer.cs">
       <DependentUpon>CathodeEditorGUI.cs</DependentUpon>
     </Compile>
+    <Compile Include="EditorUtils.cs" />
     <Compile Include="Popups\CathodeEditorGUI_AddNode.cs">
       <SubType>Form</SubType>
     </Compile>

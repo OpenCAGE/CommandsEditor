@@ -29,21 +29,21 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.button1 = new System.Windows.Forms.Button();
+            this.create_param = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.param_datatype = new System.Windows.Forms.ComboBox();
+            this.param_name = new System.Windows.Forms.ComboBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.button1);
+            this.groupBox1.Controls.Add(this.param_name);
+            this.groupBox1.Controls.Add(this.create_param);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Controls.Add(this.textBox1);
-            this.groupBox1.Controls.Add(this.comboBox1);
+            this.groupBox1.Controls.Add(this.param_datatype);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(776, 122);
@@ -51,15 +51,15 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "New Parameter";
             // 
-            // button1
+            // create_param
             // 
-            this.button1.Location = new System.Drawing.Point(644, 81);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(101, 23);
-            this.button1.TabIndex = 4;
-            this.button1.Text = "Create";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.create_param.Location = new System.Drawing.Point(644, 81);
+            this.create_param.Name = "create_param";
+            this.create_param.Size = new System.Drawing.Size(101, 23);
+            this.create_param.TabIndex = 4;
+            this.create_param.Text = "Create";
+            this.create_param.UseVisualStyleBackColor = true;
+            this.create_param.Click += new System.EventHandler(this.button1_Click);
             // 
             // label2
             // 
@@ -79,18 +79,11 @@
             this.label1.TabIndex = 2;
             this.label1.Text = "Param Name";
             // 
-            // textBox1
+            // param_datatype
             // 
-            this.textBox1.Location = new System.Drawing.Point(104, 28);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(641, 20);
-            this.textBox1.TabIndex = 1;
-            // 
-            // comboBox1
-            // 
-            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Items.AddRange(new object[] {
+            this.param_datatype.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.param_datatype.FormattingEnabled = true;
+            this.param_datatype.Items.AddRange(new object[] {
             "POSITION",
             "FLOAT",
             "STRING",
@@ -101,10 +94,18 @@
             "BOOL",
             "DIRECTION",
             "INTEGER"});
-            this.comboBox1.Location = new System.Drawing.Point(104, 54);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(641, 21);
-            this.comboBox1.TabIndex = 0;
+            this.param_datatype.Location = new System.Drawing.Point(104, 54);
+            this.param_datatype.Name = "param_datatype";
+            this.param_datatype.Size = new System.Drawing.Size(641, 21);
+            this.param_datatype.TabIndex = 0;
+            // 
+            // param_name
+            // 
+            this.param_name.FormattingEnabled = true;
+            this.param_name.Location = new System.Drawing.Point(104, 27);
+            this.param_name.Name = "param_name";
+            this.param_name.Size = new System.Drawing.Size(641, 21);
+            this.param_name.TabIndex = 5;
             // 
             // CathodeEditorGUI_AddParameter
             // 
@@ -125,10 +126,10 @@
         #endregion
 
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button create_param;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox param_datatype;
+        private System.Windows.Forms.ComboBox param_name;
     }
 }

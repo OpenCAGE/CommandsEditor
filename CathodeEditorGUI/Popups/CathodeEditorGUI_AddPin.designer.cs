@@ -31,16 +31,16 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CathodeEditorGUI_AddPin));
             this.label3 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.pin_out_node = new System.Windows.Forms.ComboBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.pin_in_node = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
             this.save_pin = new System.Windows.Forms.Button();
-            this.parameter_out = new System.Windows.Forms.TextBox();
-            this.parameter_in = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.pin_out_node = new System.Windows.Forms.ComboBox();
-            this.label2 = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.pin_out_param = new System.Windows.Forms.ComboBox();
+            this.pin_in_param = new System.Windows.Forms.ComboBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -57,9 +57,9 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.pin_out_param);
             this.groupBox1.Controls.Add(this.pin_out_node);
             this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Controls.Add(this.parameter_out);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
@@ -68,9 +68,28 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Pin Out";
             // 
+            // pin_out_node
+            // 
+            this.pin_out_node.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.pin_out_node.FormattingEnabled = true;
+            this.pin_out_node.Location = new System.Drawing.Point(16, 40);
+            this.pin_out_node.Name = "pin_out_node";
+            this.pin_out_node.Size = new System.Drawing.Size(367, 21);
+            this.pin_out_node.TabIndex = 6;
+            this.pin_out_node.SelectedIndexChanged += new System.EventHandler(this.pin_out_node_SelectedIndexChanged);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(13, 24);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(121, 13);
+            this.label2.TabIndex = 7;
+            this.label2.Text = "Connects out from entity";
+            // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.parameter_in);
+            this.groupBox2.Controls.Add(this.pin_in_param);
             this.groupBox2.Controls.Add(this.label1);
             this.groupBox2.Controls.Add(this.pin_in_node);
             this.groupBox2.Controls.Add(this.label6);
@@ -81,6 +100,15 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Pin In";
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(13, 64);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(117, 13);
+            this.label1.TabIndex = 6;
+            this.label1.Text = "Parameter on this entity";
+            // 
             // pin_in_node
             // 
             this.pin_in_node.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -89,6 +117,7 @@
             this.pin_in_node.Name = "pin_in_node";
             this.pin_in_node.Size = new System.Drawing.Size(367, 21);
             this.pin_in_node.TabIndex = 1;
+            this.pin_in_node.SelectedIndexChanged += new System.EventHandler(this.pin_in_node_SelectedIndexChanged);
             // 
             // label6
             // 
@@ -109,47 +138,6 @@
             this.save_pin.UseVisualStyleBackColor = true;
             this.save_pin.Click += new System.EventHandler(this.save_pin_Click);
             // 
-            // parameter_out
-            // 
-            this.parameter_out.Location = new System.Drawing.Point(16, 80);
-            this.parameter_out.Name = "parameter_out";
-            this.parameter_out.Size = new System.Drawing.Size(367, 20);
-            this.parameter_out.TabIndex = 5;
-            // 
-            // parameter_in
-            // 
-            this.parameter_in.Location = new System.Drawing.Point(16, 80);
-            this.parameter_in.Name = "parameter_in";
-            this.parameter_in.Size = new System.Drawing.Size(367, 20);
-            this.parameter_in.TabIndex = 7;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(13, 64);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(117, 13);
-            this.label1.TabIndex = 6;
-            this.label1.Text = "Parameter on this entity";
-            // 
-            // pin_out_node
-            // 
-            this.pin_out_node.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.pin_out_node.FormattingEnabled = true;
-            this.pin_out_node.Location = new System.Drawing.Point(16, 40);
-            this.pin_out_node.Name = "pin_out_node";
-            this.pin_out_node.Size = new System.Drawing.Size(367, 21);
-            this.pin_out_node.TabIndex = 6;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(13, 24);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(121, 13);
-            this.label2.TabIndex = 7;
-            this.label2.Text = "Connects out from entity";
-            // 
             // pictureBox1
             // 
             this.pictureBox1.BackgroundImage = global::CathodeEditorGUI.Properties.Resources.arrow;
@@ -159,6 +147,22 @@
             this.pictureBox1.Size = new System.Drawing.Size(70, 21);
             this.pictureBox1.TabIndex = 12;
             this.pictureBox1.TabStop = false;
+            // 
+            // pin_out_param
+            // 
+            this.pin_out_param.FormattingEnabled = true;
+            this.pin_out_param.Location = new System.Drawing.Point(16, 79);
+            this.pin_out_param.Name = "pin_out_param";
+            this.pin_out_param.Size = new System.Drawing.Size(367, 21);
+            this.pin_out_param.TabIndex = 8;
+            // 
+            // pin_in_param
+            // 
+            this.pin_in_param.FormattingEnabled = true;
+            this.pin_in_param.Location = new System.Drawing.Point(16, 80);
+            this.pin_in_param.Name = "pin_in_param";
+            this.pin_in_param.Size = new System.Drawing.Size(367, 21);
+            this.pin_in_param.TabIndex = 9;
             // 
             // CathodeEditorGUI_AddPin
             // 
@@ -191,11 +195,11 @@
         private System.Windows.Forms.ComboBox pin_in_node;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Button save_pin;
-        private System.Windows.Forms.TextBox parameter_out;
         private System.Windows.Forms.ComboBox pin_out_node;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox parameter_in;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.ComboBox pin_out_param;
+        private System.Windows.Forms.ComboBox pin_in_param;
     }
 }
