@@ -297,13 +297,17 @@ namespace CathodeEditorGUI
                 case EntityVariant.FUNCTION:
                     nodetypedesc = NodeDB.GetCathodeName(((FunctionEntity)edit_node).function, commandsPAK);
                     node_to_flowgraph_jump.Visible = (commandsPAK.GetFlowgraph(((FunctionEntity)edit_node).function) != null);
+                    selected_node_name.Text = NodeDB.GetEditorName(edit_node.nodeID);
                     break;
                 case EntityVariant.DATATYPE:
                     nodetypedesc = "DataType " + ((DatatypeEntity)edit_node).type.ToString();
+                    selected_node_name.Text = NodeDB.GetCathodeName(((DatatypeEntity)edit_node).parameter);
+                    break;
+                default:
+                    selected_node_name.Text = NodeDB.GetEditorName(edit_node.nodeID);
                     break;
             }
             selected_node_type_description.Text = nodetypedesc;
-            selected_node_name.Text = NodeDB.GetEditorName(edit_node.nodeID);
 
             //populate parameter inputs
             int current_ui_offset = 7;

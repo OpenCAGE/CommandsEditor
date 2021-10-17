@@ -55,15 +55,23 @@ namespace CathodeEditorGUI
                 case EntityVariant.FUNCTION:
                     cGUID function = ((FunctionEntity)entity).function;
                     string[] options = NodeDB.GetEntityParameterList(NodeDB.GetCathodeName(function));
+                    items.Add("trigger"); items.Add("reference"); //TODO: populate all params from EntityMethodInterface?
                     if (options == null)
                     {
                         CathodeFlowgraph flow = _pak.GetFlowgraph(function);
                         if (flow == null) break;
-                        for (int i = 0; i < flow.datatypes.Count; i++) items.Add(NodeDB.GetCathodeName(flow.datatypes[i].parameter));
+                        for (int i = 0; i < flow.datatypes.Count; i++)
+                        {
+                            string to_add = NodeDB.GetCathodeName(flow.datatypes[i].parameter);
+                            if (!items.Contains(to_add)) items.Add(to_add);
+                        }
                     }
                     else
                     {
-                        for (int i = 0; i < options.Length; i++) items.Add(options[i]);
+                        for (int i = 0; i < options.Length; i++)
+                        {
+                            if (!items.Contains(options[i])) items.Add(options[i]);
+                        }
                     }
                     break;
                 case EntityVariant.DATATYPE:
@@ -71,6 +79,7 @@ namespace CathodeEditorGUI
                     break;
                     //TODO: support other types here
             }
+            items.Sort();
             return items;
         }
 
