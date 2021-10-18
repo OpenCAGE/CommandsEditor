@@ -29,10 +29,10 @@
         private void InitializeComponent()
         {
             this.ENUM_VARIABLE_DUMMY = new System.Windows.Forms.GroupBox();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             this.label14 = new System.Windows.Forms.Label();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.label13 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
             this.ENUM_VARIABLE_DUMMY.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -49,6 +49,14 @@
             this.ENUM_VARIABLE_DUMMY.TabStop = false;
             this.ENUM_VARIABLE_DUMMY.Text = "Parameter Name (00-00-00-00)";
             // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(245, 35);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(80, 20);
+            this.textBox1.TabIndex = 11;
+            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+            // 
             // label14
             // 
             this.label14.AutoSize = true;
@@ -63,26 +71,25 @@
             this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox1.FormattingEnabled = true;
             this.comboBox1.Items.AddRange(new object[] {
+            "AGGRESSION_GAIN",
             "ALERTNESS_STATE",
             "ALIEN_CONFIGURATION_TYPE",
             "ALIEN_DEVELOPMENT_MANAGER_ABILITIES",
             "ALIEN_DEVELOPMENT_MANAGER_ABILITY_MASKS",
             "ALIEN_DEVELOPMENT_MANAGER_STAGES",
-            "ALIEN_DISTANCE",
-            "ALIEN_THREAT_AWARE_OF",
             "ALLIANCE_GROUP",
-            "ALLIANCE_STANCE",
+            "AMBUSH_TYPE",
             "AMMO_TYPE",
             "ANIM_CALLBACK_ENUM",
             "ANIM_MODE",
             "ANIM_TRACK_TYPE",
             "ANIM_TREE_ENUM",
             "ANIMATION_EFFECT_TYPE",
-            "ANIMATION_MASK_RESOURCE",
             "AREA_SWEEP_TYPE",
             "AREA_SWEEP_TYPE_CODE",
             "BEHAVIOR_TREE_BRANCH_TYPE",
             "BEHAVIOUR_MOOD_SET",
+            "BEHAVIOUR_TREE_FLAGS",
             "BLEND_MODE",
             "BLUEPRINT_LEVEL",
             "BUTTON_TYPE",
@@ -123,7 +130,6 @@
             "DIALOGUE_VOICE_ACTOR",
             "DIFFICULTY_SETTING_TYPE",
             "DOOR_MECHANISM",
-            "DOOR_STATE",
             "DUCK_HEIGHT",
             "ENEMY_TYPE",
             "ENVIRONMENT_ARCHETYPE",
@@ -139,7 +145,9 @@
             "FOLLOW_TYPE",
             "FRAME_FLAGS",
             "FRONTEND_STATE",
+            "GAME_CLIP",
             "GATING_TOOL_TYPE",
+            "IDLE",
             "IDLE_STYLE",
             "IMPACT_CHARACTER_BODY_LOCATION_TYPE",
             "INPUT_DEVICE_TYPE",
@@ -189,11 +197,12 @@
             "SECONDARY_ANIMATION_LAYER",
             "SENSE_SET",
             "SENSE_SET_SYSTEM",
+            "SENSORY_TYPE",
             "SHAKE_TYPE",
+            "SIDE",
             "SOUND_POOL",
             "SPEECH_PRIORITY",
             "STEAL_CAMERA_TYPE",
-            "STREAMED_COMBAT",
             "SUB_OBJECTIVE_TYPE",
             "SUSPECT_RESPONSE_PHASE",
             "SUSPICIOUS_ITEM",
@@ -201,7 +210,6 @@
             "SUSPICIOUS_ITEM_CLOSE_REACTION_DETAIL",
             "SUSPICIOUS_ITEM_REACTION",
             "SUSPICIOUS_ITEM_STAGE",
-            "SUSPICIOUS_ITEM_START_OR_CONTINUE_STATE",
             "SUSPICIOUS_ITEM_TRIGGER",
             "TASK_CHARACTER_CLASS_FILTER",
             "TASK_OPERATION_MODE",
@@ -222,7 +230,6 @@
             "WEAPON_IMPACT_EFFECT_ORIENTATION",
             "WEAPON_IMPACT_EFFECT_TYPE",
             "WEAPON_IMPACT_FILTER_ORIENTATION",
-            "WEAPON_PROPERTY",
             "WEAPON_TYPE"});
             this.comboBox1.Location = new System.Drawing.Point(12, 35);
             this.comboBox1.Name = "comboBox1";
@@ -238,14 +245,6 @@
             this.label13.Size = new System.Drawing.Size(34, 13);
             this.label13.TabIndex = 7;
             this.label13.Text = "Enum";
-            // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(245, 35);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(80, 20);
-            this.textBox1.TabIndex = 11;
-            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // GUI_EnumDataType
             // 
