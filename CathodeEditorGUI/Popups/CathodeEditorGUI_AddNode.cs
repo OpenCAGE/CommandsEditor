@@ -867,6 +867,7 @@ namespace CathodeEditorGUI
             {
                 DatatypeEntity newEntity = new DatatypeEntity(thisID);
                 newEntity.type = (CathodeDataType)comboBox1.SelectedIndex;
+                newEntity.parameter = Utilities.GenerateGUID(textBox1.Text);
                 flow.datatypes.Add(newEntity);
             }
             else if (radioButton2.Checked)
