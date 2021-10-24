@@ -429,6 +429,7 @@ namespace CathodeEditorGUI
         private void removeParameter_Click(object sender, EventArgs e)
         {
             if (selected_node == null) return;
+            if (selected_node.parameters.Count == 0) return;
             CathodeEditorGUI_RemoveParameter remove_parameter = new CathodeEditorGUI_RemoveParameter(selected_node);
             remove_parameter.Show();
             remove_parameter.FormClosed += new FormClosedEventHandler(param_remove_closed);
