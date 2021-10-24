@@ -25,7 +25,7 @@ namespace CathodeEditorGUI.UserControls
         public void PopulateUI(CathodeVector3 cVec, cGUID paramID)
         {
             vectorVal = cVec;
-            VECTOR_VARIABLE_DUMMY.Text = NodeDB.GetCathodeName(paramID) + " (" + paramID.ToString() + ")";
+            VECTOR_VARIABLE_DUMMY.Text = NodeDBEx.GetParameterName(paramID) + " (" + paramID.ToString() + ")";
             POS_X_1.Value = (decimal)cVec.value.X;
             POS_Y_1.Value = (decimal)cVec.value.Y;
             POS_Z_1.Value = (decimal)cVec.value.Z;

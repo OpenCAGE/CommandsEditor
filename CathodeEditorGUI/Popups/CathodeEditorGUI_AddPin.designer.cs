@@ -31,16 +31,16 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CathodeEditorGUI_AddPin));
             this.label3 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.pin_out_param = new System.Windows.Forms.ComboBox();
             this.pin_out_node = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.pin_in_param = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.pin_in_node = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
             this.save_pin = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.pin_out_param = new System.Windows.Forms.ComboBox();
-            this.pin_in_param = new System.Windows.Forms.ComboBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -67,6 +67,14 @@
             this.groupBox1.TabIndex = 9;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Pin Out";
+            // 
+            // pin_out_param
+            // 
+            this.pin_out_param.FormattingEnabled = true;
+            this.pin_out_param.Location = new System.Drawing.Point(16, 79);
+            this.pin_out_param.Name = "pin_out_param";
+            this.pin_out_param.Size = new System.Drawing.Size(367, 21);
+            this.pin_out_param.TabIndex = 8;
             // 
             // pin_out_node
             // 
@@ -100,6 +108,14 @@
             this.groupBox2.TabIndex = 10;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Pin In";
+            // 
+            // pin_in_param
+            // 
+            this.pin_in_param.FormattingEnabled = true;
+            this.pin_in_param.Location = new System.Drawing.Point(16, 80);
+            this.pin_in_param.Name = "pin_in_param";
+            this.pin_in_param.Size = new System.Drawing.Size(367, 21);
+            this.pin_in_param.TabIndex = 9;
             // 
             // label1
             // 
@@ -149,22 +165,6 @@
             this.pictureBox1.Size = new System.Drawing.Size(70, 21);
             this.pictureBox1.TabIndex = 12;
             this.pictureBox1.TabStop = false;
-            // 
-            // pin_out_param
-            // 
-            this.pin_out_param.FormattingEnabled = true;
-            this.pin_out_param.Location = new System.Drawing.Point(16, 79);
-            this.pin_out_param.Name = "pin_out_param";
-            this.pin_out_param.Size = new System.Drawing.Size(367, 21);
-            this.pin_out_param.TabIndex = 8;
-            // 
-            // pin_in_param
-            // 
-            this.pin_in_param.FormattingEnabled = true;
-            this.pin_in_param.Location = new System.Drawing.Point(16, 80);
-            this.pin_in_param.Name = "pin_in_param";
-            this.pin_in_param.Size = new System.Drawing.Size(367, 21);
-            this.pin_in_param.TabIndex = 9;
             // 
             // CathodeEditorGUI_AddPin
             // 

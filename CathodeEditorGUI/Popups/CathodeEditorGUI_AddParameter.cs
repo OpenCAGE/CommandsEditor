@@ -75,6 +75,13 @@ namespace CathodeEditorGUI
                     break;
             }
             node.parameters.Add(new CathodeLoadedParameter(thisParamID, thisParam));
+
+            //If this parameter doesn't come up in the CATHODE string table, add it to our own
+            if (NodeDB.GetCathodeName(thisParamID) == thisParamID.ToString())
+            {
+                NodeDBEx.AddNewParameterName(thisParamID, param_name.Text);
+            }
+
             this.Close();
         }
     }

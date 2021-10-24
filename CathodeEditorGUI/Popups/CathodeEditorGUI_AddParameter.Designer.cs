@@ -28,12 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CathodeEditorGUI_AddParameter));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.param_name = new System.Windows.Forms.ComboBox();
             this.create_param = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.param_datatype = new System.Windows.Forms.ComboBox();
-            this.param_name = new System.Windows.Forms.ComboBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -50,6 +51,14 @@
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "New Parameter";
+            // 
+            // param_name
+            // 
+            this.param_name.FormattingEnabled = true;
+            this.param_name.Location = new System.Drawing.Point(104, 27);
+            this.param_name.Name = "param_name";
+            this.param_name.Size = new System.Drawing.Size(641, 21);
+            this.param_name.TabIndex = 5;
             // 
             // create_param
             // 
@@ -99,14 +108,6 @@
             this.param_datatype.Size = new System.Drawing.Size(641, 21);
             this.param_datatype.TabIndex = 0;
             // 
-            // param_name
-            // 
-            this.param_name.FormattingEnabled = true;
-            this.param_name.Location = new System.Drawing.Point(104, 27);
-            this.param_name.Name = "param_name";
-            this.param_name.Size = new System.Drawing.Size(641, 21);
-            this.param_name.TabIndex = 5;
-            // 
             // CathodeEditorGUI_AddParameter
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -114,6 +115,7 @@
             this.ClientSize = new System.Drawing.Size(800, 144);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "CathodeEditorGUI_AddParameter";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "New Parameter";

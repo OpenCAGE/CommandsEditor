@@ -25,7 +25,7 @@ namespace CathodeEditorGUI.UserControls
         public void PopulateUI(CathodeString cString, cGUID paramID)
         {
             stringVal = cString;
-            STRING_VARIABLE_DUMMY.Text = NodeDB.GetCathodeName(paramID) + " (" + paramID.ToString() + ")";
+            STRING_VARIABLE_DUMMY.Text = NodeDBEx.GetParameterName(paramID) + " (" + paramID.ToString() + ")";
             textBox1.Text = cString.value;
             //textBox1.DataBindings.Add("Text", cString.value, "");
         }

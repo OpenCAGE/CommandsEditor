@@ -25,7 +25,7 @@ namespace CathodeEditorGUI.UserControls
         public void PopulateUI(CathodeTransform cTrans, cGUID paramID)
         {
             transformVal = cTrans;
-            POSITION_VARIABLE_DUMMY.Text = NodeDB.GetCathodeName(paramID) + " (" + paramID.ToString() + ")";
+            POSITION_VARIABLE_DUMMY.Text = NodeDBEx.GetParameterName(paramID) + " (" + paramID.ToString() + ")";
             POS_X.Value = (decimal)cTrans.position.X;
             POS_Y.Value = (decimal)cTrans.position.Y;
             POS_Z.Value = (decimal)cTrans.position.Z;

@@ -88,6 +88,9 @@ namespace CathodeEditorGUI
                 return;
             }
 
+            //Load in any custom param/node names
+            NodeDBEx.LoadNamesForPak(ref commandsPAK);
+
             //Populate file tree
             treeHelper.UpdateFileTree(commandsPAK.GetFlowgraphNames().ToList());
 
@@ -101,6 +104,8 @@ namespace CathodeEditorGUI
         {
             if (commandsPAK == null) return;
             commandsPAK.Save();
+            //TODO: currently i'm not tidying up unused names in NodeDBEx, this could get messy!
+            NodeDBEx.SaveNamesForPak(commandsPAK.Filepath);
             MessageBox.Show("Saved changes!", "Saved.", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
@@ -295,16 +300,16 @@ namespace CathodeEditorGUI
             switch (edit_node.variant)
             {
                 case EntityVariant.FUNCTION:
-                    nodetypedesc = NodeDB.GetCathodeName(((FunctionEntity)edit_node).function, commandsPAK);
+                    nodetypedesc = NodeDBEx.GetParameterName(((FunctionEntity)edit_node).function);
                     node_to_flowgraph_jump.Visible = (commandsPAK.GetFlowgraph(((FunctionEntity)edit_node).function) != null);
-                    selected_node_name.Text = NodeDB.GetEditorName(edit_node.nodeID);
+                    selected_node_name.Text = NodeDBEx.GetEntityName(edit_node.nodeID);
                     break;
                 case EntityVariant.DATATYPE:
                     nodetypedesc = "DataType " + ((DatatypeEntity)edit_node).type.ToString();
-                    selected_node_name.Text = NodeDB.GetCathodeName(((DatatypeEntity)edit_node).parameter);
+                    selected_node_name.Text = NodeDBEx.GetParameterName(((DatatypeEntity)edit_node).parameter);
                     break;
                 default:
-                    selected_node_name.Text = NodeDB.GetEditorName(edit_node.nodeID);
+                    selected_node_name.Text = NodeDBEx.GetEntityName(edit_node.nodeID);
                     break;
             }
             selected_node_type_description.Text = nodetypedesc;
@@ -383,9 +388,9 @@ namespace CathodeEditorGUI
                 {
                     node_children.Items.Add(
                         /*"[" + link.connectionID.ToString() + "] " +*/
-                        "(" + NodeDB.GetCathodeName(link.parentParamID) + ") => " +
-                        NodeDB.GetEditorName(link.childID) + 
-                        " (" + NodeDB.GetCathodeName(link.childParamID) + ")");
+                        "(" + NodeDBEx.GetParameterName(link.parentParamID) + ") => " +
+                        NodeDBEx.GetEntityName(link.childID) + 
+                        " (" + NodeDBEx.GetParameterName(link.childParamID) + ")");
                 }
             }
             else
@@ -399,9 +404,9 @@ namespace CathodeEditorGUI
                         if (link.childID != selected_node.nodeID) continue;
                         node_children.Items.Add(
                             /*"[" + link.connectionID.ToString() + "] " +*/
-                            NodeDB.GetEditorName(entity.nodeID) +
-                            " (" + NodeDB.GetCathodeName(link.parentParamID) + ") => " +
-                            "(" + NodeDB.GetCathodeName(link.childParamID) + ")");
+                            NodeDBEx.GetEntityName(entity.nodeID) +
+                            " (" + NodeDBEx.GetParameterName(link.parentParamID) + ") => " +
+                            "(" + NodeDBEx.GetParameterName(link.childParamID) + ")");
                     }
                 }
             }

@@ -48,6 +48,7 @@
             this.selected_node_id = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.showLinkParents = new System.Windows.Forms.Button();
             this.removeSelectedLink = new System.Windows.Forms.Button();
             this.addNewLink = new System.Windows.Forms.Button();
             this.out_pin_goto = new System.Windows.Forms.Button();
@@ -66,7 +67,6 @@
             this.env_list = new System.Windows.Forms.ComboBox();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
-            this.showLinkParents = new System.Windows.Forms.Button();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -276,6 +276,16 @@
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Selected Entity Links";
             // 
+            // showLinkParents
+            // 
+            this.showLinkParents.Location = new System.Drawing.Point(298, 109);
+            this.showLinkParents.Name = "showLinkParents";
+            this.showLinkParents.Size = new System.Drawing.Size(79, 23);
+            this.showLinkParents.TabIndex = 150;
+            this.showLinkParents.Text = "Parents";
+            this.showLinkParents.UseVisualStyleBackColor = true;
+            this.showLinkParents.Click += new System.EventHandler(this.showLinkParents_Click);
+            // 
             // removeSelectedLink
             // 
             this.removeSelectedLink.Location = new System.Drawing.Point(100, 109);
@@ -457,16 +467,6 @@
             this.groupBox10.Size = new System.Drawing.Size(551, 49);
             this.groupBox10.TabIndex = 175;
             this.groupBox10.TabStop = false;
-            // 
-            // showLinkParents
-            // 
-            this.showLinkParents.Location = new System.Drawing.Point(298, 109);
-            this.showLinkParents.Name = "showLinkParents";
-            this.showLinkParents.Size = new System.Drawing.Size(79, 23);
-            this.showLinkParents.TabIndex = 150;
-            this.showLinkParents.Text = "Parents";
-            this.showLinkParents.UseVisualStyleBackColor = true;
-            this.showLinkParents.Click += new System.EventHandler(this.showLinkParents_Click);
             // 
             // CathodeEditorGUI
             // 

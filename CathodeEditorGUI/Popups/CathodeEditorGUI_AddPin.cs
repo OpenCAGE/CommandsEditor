@@ -24,7 +24,7 @@ namespace CathodeEditorGUI
             InitializeComponent();
 
             _entityList = flowgraph.GetEntities();
-            _entityList = _entityList.OrderBy(o => NodeDB.GetEditorName(o.nodeID)).ToList<CathodeEntity>();
+            _entityList = _entityList.OrderBy(o => NodeDBEx.GetEntityName(o.nodeID)).ToList<CathodeEntity>();
             for (int i = 0; i < _entityList.Count; i++)
             {
                 string this_node_string = EditorUtils.GenerateNodeName(_entityList[i]);

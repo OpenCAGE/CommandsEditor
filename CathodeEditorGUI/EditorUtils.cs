@@ -27,10 +27,10 @@ namespace CathodeEditorGUI
             switch (entity.variant)
             {
                 case EntityVariant.DATATYPE:
-                    desc = NodeDB.GetCathodeName(((DatatypeEntity)entity).parameter) + " (DataType " + ((DatatypeEntity)entity).type.ToString() + ")";
+                    desc = NodeDBEx.GetParameterName(((DatatypeEntity)entity).parameter) + " (DataType " + ((DatatypeEntity)entity).type.ToString() + ")";
                     break;
                 case EntityVariant.FUNCTION:
-                    desc = NodeDB.GetEditorName(entity.nodeID) + " (" + NodeDB.GetCathodeName(((FunctionEntity)entity).function, _pak) + ")";
+                    desc = NodeDBEx.GetEntityName(entity.nodeID) + " (" + NodeDBEx.GetParameterName(((FunctionEntity)entity).function) + ")";
                     break;
                 case EntityVariant.OVERRIDE:
                     desc = "OVERRIDE!"; //TODO
@@ -54,7 +54,7 @@ namespace CathodeEditorGUI
             {
                 case EntityVariant.FUNCTION:
                     cGUID function = ((FunctionEntity)entity).function;
-                    string[] options = NodeDB.GetEntityParameterList(NodeDB.GetCathodeName(function));
+                    string[] options = NodeDB.GetEntityParameterList(NodeDBEx.GetParameterName(function));
                     items.Add("trigger"); items.Add("reference"); //TODO: populate all params from EntityMethodInterface?
                     if (options == null)
                     {
@@ -62,7 +62,7 @@ namespace CathodeEditorGUI
                         if (flow == null) break;
                         for (int i = 0; i < flow.datatypes.Count; i++)
                         {
-                            string to_add = NodeDB.GetCathodeName(flow.datatypes[i].parameter);
+                            string to_add = NodeDBEx.GetParameterName(flow.datatypes[i].parameter);
                             if (!items.Contains(to_add)) items.Add(to_add);
                         }
                     }
@@ -75,7 +75,7 @@ namespace CathodeEditorGUI
                     }
                     break;
                 case EntityVariant.DATATYPE:
-                    items.Add(NodeDB.GetCathodeName(((DatatypeEntity)entity).parameter));
+                    items.Add(NodeDBEx.GetParameterName(((DatatypeEntity)entity).parameter));
                     break;
                     //TODO: support other types here
             }

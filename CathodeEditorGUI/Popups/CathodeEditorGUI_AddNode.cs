@@ -861,7 +861,7 @@ namespace CathodeEditorGUI
         private void button1_Click(object sender, EventArgs e)
         {
             cGUID thisID = Utilities.GenerateGUID(DateTime.Now.ToString("G"));
-            //TODO: i wonder if we could add some extra info into COMMANDS.PAK to save the names there of new nodes?
+            NodeDBEx.AddNewNodeName(thisID, textBox1.Text);
 
             if (radioButton1.Checked)
             {

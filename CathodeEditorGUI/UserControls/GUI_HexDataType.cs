@@ -24,7 +24,7 @@ namespace CathodeEditorGUI.UserControls
 
         public void PopulateUI(CathodeResource cResource, cGUID paramID)
         {
-            GUID_VARIABLE_DUMMY.Text = NodeDB.GetCathodeName(paramID) + " (" + paramID.ToString() + ")";
+            GUID_VARIABLE_DUMMY.Text = NodeDBEx.GetParameterName(paramID) + " (" + paramID.ToString() + ")";
             resRef = cResource;
 
             if (cResource.resourceID.val != null)
