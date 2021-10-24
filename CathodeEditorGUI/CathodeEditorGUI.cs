@@ -150,6 +150,7 @@ namespace CathodeEditorGUI
                     return;
                 }
             }
+            if (!ConfirmAction("Are you sure you want to remove this flowgraph?")) return;
 
             //Remove any entities or links that reference this flowgraph
             for (int i = 0; i < commandsPAK.Flowgraphs.Count; i++)
@@ -206,6 +207,7 @@ namespace CathodeEditorGUI
         /* Remove selected out pin */
         private void removeSelectedLink_Click(object sender, EventArgs e)
         {
+            if (!ConfirmAction("Are you sure you want to remove this link?")) return;
             selected_node.childLinks.RemoveAt(node_children.SelectedIndex);
             RefreshNodeLinks();
         }
@@ -275,6 +277,7 @@ namespace CathodeEditorGUI
         private void removeSelectedNode_Click(object sender, EventArgs e)
         {
             if (selected_node == null) return;
+            if (!ConfirmAction("Are you sure you want to remove this entity?")) return;
 
             switch (selected_node.variant)
             {
@@ -467,6 +470,12 @@ namespace CathodeEditorGUI
             LoadNode(selected_node);
             this.BringToFront();
             this.Focus();
+        }
+
+        /* Confirm an action */
+        private bool ConfirmAction(string msg)
+        {
+            return (MessageBox.Show(msg, "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes);
         }
     }
 }
