@@ -861,7 +861,6 @@ namespace CathodeEditorGUI
         private void button1_Click(object sender, EventArgs e)
         {
             cGUID thisID = Utilities.GenerateGUID(DateTime.Now.ToString("G"));
-            NodeDBEx.AddNewNodeName(thisID, textBox1.Text);
 
             if (radioButton1.Checked)
             {
@@ -869,12 +868,14 @@ namespace CathodeEditorGUI
                 newEntity.type = (CathodeDataType)comboBox1.SelectedIndex;
                 newEntity.parameter = Utilities.GenerateGUID(textBox1.Text);
                 flow.datatypes.Add(newEntity);
+                NodeDBEx.AddNewParameterName(thisID, textBox1.Text);
             }
             else if (radioButton2.Checked)
             {
                 FunctionEntity newEntity = new FunctionEntity(thisID);
                 newEntity.function = Utilities.GenerateGUID(comboBox1.Text);
                 flow.functions.Add(newEntity);
+                NodeDBEx.AddNewNodeName(thisID, textBox1.Text);
             }
             else if (radioButton3.Checked)
             {
@@ -883,6 +884,7 @@ namespace CathodeEditorGUI
                 if (selectedFlowgraph == null) throw new Exception("Failed to look up flowgraph.");
                 newEntity.function = selectedFlowgraph.nodeID;
                 flow.functions.Add(newEntity);
+                NodeDBEx.AddNewNodeName(thisID, textBox1.Text);
             }
 
             this.Close();

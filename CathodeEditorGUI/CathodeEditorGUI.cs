@@ -134,14 +134,13 @@ namespace CathodeEditorGUI
         private void add_flow_closed(Object sender, FormClosedEventArgs e)
         {
             treeHelper.UpdateFileTree(commandsPAK.GetFlowgraphNames().ToList());
+            this.BringToFront();
+            this.Focus();
         }
 
         /* Remove selected flowgraph */
         private void removeSelectedFlowgraph_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("wip");
-            return;
-
             if (selected_flowgraph == null) return;
             for (int i = 0; i < commandsPAK.EntryPoints.Count(); i++)
             {
@@ -151,9 +150,32 @@ namespace CathodeEditorGUI
                     return;
                 }
             }
-            
-            //todo: delete flowgraph, delete all nodes using flowgraph, delete all node links to node using flowgraph
 
+            //Remove any entities or links that reference this flowgraph
+            for (int i = 0; i < commandsPAK.Flowgraphs.Count; i++)
+            {
+                List<FunctionEntity> prunedFunctionEntities = new List<FunctionEntity>();
+                for (int x = 0; x < commandsPAK.Flowgraphs[i].functions.Count; x++)
+                {
+                    if (commandsPAK.Flowgraphs[i].functions[x].function == selected_flowgraph.nodeID) continue;
+                    List<CathodeNodeLink> prunedNodeLinks = new List<CathodeNodeLink>();
+                    for (int l = 0; l < commandsPAK.Flowgraphs[i].functions[x].childLinks.Count; l++)
+                    {
+                        CathodeEntity linkedNode = commandsPAK.Flowgraphs[i].GetEntityByID(commandsPAK.Flowgraphs[i].functions[x].childLinks[l].childID);
+                        if (linkedNode != null && linkedNode.variant == EntityVariant.FUNCTION) if (((FunctionEntity)linkedNode).function == selected_flowgraph.nodeID) continue;
+                        prunedNodeLinks.Add(commandsPAK.Flowgraphs[i].functions[x].childLinks[l]);
+                    }
+                    commandsPAK.Flowgraphs[i].functions[x].childLinks = prunedNodeLinks;
+                    prunedFunctionEntities.Add(commandsPAK.Flowgraphs[i].functions[x]);
+                }
+                commandsPAK.Flowgraphs[i].functions = prunedFunctionEntities;
+            }
+            //TODO: remove proxies etc that also reference any of the removed nodes
+
+            //Remove the flowgraph
+            commandsPAK.Flowgraphs.Remove(selected_flowgraph);
+
+            //Refresh UI
             ClearUI(false, true, true);
             treeHelper.UpdateFileTree(commandsPAK.GetFlowgraphNames().ToList());
         }
@@ -177,6 +199,8 @@ namespace CathodeEditorGUI
         private void add_pin_closed(Object sender, FormClosedEventArgs e)
         {
             RefreshNodeLinks();
+            this.BringToFront();
+            this.Focus();
         }
 
         /* Remove selected out pin */
@@ -243,6 +267,8 @@ namespace CathodeEditorGUI
         {
             LoadFlowgraph(selected_flowgraph.name);
             LoadNode(selected_node); //TODO: load returned new node
+            this.BringToFront();
+            this.Focus();
         }
 
         /* Remove selected entity */
@@ -423,6 +449,8 @@ namespace CathodeEditorGUI
         private void param_add_closed(Object sender, FormClosedEventArgs e)
         {
             LoadNode(selected_node);
+            this.BringToFront();
+            this.Focus();
         }
 
         /* Remove a parameter */
@@ -437,6 +465,8 @@ namespace CathodeEditorGUI
         private void param_remove_closed(Object sender, FormClosedEventArgs e)
         {
             LoadNode(selected_node);
+            this.BringToFront();
+            this.Focus();
         }
     }
 }
