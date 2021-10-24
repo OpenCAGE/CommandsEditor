@@ -1,5 +1,6 @@
 ﻿using CATHODE;
 using CATHODE.Commands;
+using CathodeLib;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -868,7 +869,8 @@ namespace CathodeEditorGUI
                 newEntity.type = (CathodeDataType)comboBox1.SelectedIndex;
                 newEntity.parameter = Utilities.GenerateGUID(textBox1.Text);
                 flow.datatypes.Add(newEntity);
-                NodeDBEx.AddNewParameterName(thisID, textBox1.Text);
+                if (NodeDB.GetCathodeName(newEntity.parameter) == newEntity.parameter.ToString())
+                    NodeDBEx.AddNewParameterName(newEntity.parameter, textBox1.Text);
             }
             else if (radioButton2.Checked)
             {
