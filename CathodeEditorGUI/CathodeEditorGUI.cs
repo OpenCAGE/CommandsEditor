@@ -207,8 +207,33 @@ namespace CathodeEditorGUI
         /* Remove selected out pin */
         private void removeSelectedLink_Click(object sender, EventArgs e)
         {
+            if (selected_node == null || selected_flowgraph == null) return;
             if (!ConfirmAction("Are you sure you want to remove this link?")) return;
-            selected_node.childLinks.RemoveAt(node_children.SelectedIndex);
+            if (currentlyShowingChildLinks)
+            {
+                selected_node.childLinks.RemoveAt(node_children.SelectedIndex);
+            }
+            else
+            {
+                List<CathodeEntity> ents = selected_flowgraph.GetEntities();
+                int deleteIndex = -1;
+                foreach (CathodeEntity entity in ents)
+                {
+                    for (int i = 0; i < entity.childLinks.Count; i++)
+                    {
+                        if (entity.childLinks[i].connectionID == linkedNodeListIDs[node_children.SelectedIndex])
+                        {
+                            deleteIndex = i;
+                            break;
+                        }
+                    }
+                    if (deleteIndex != -1)
+                    {
+                        entity.childLinks.RemoveAt(deleteIndex);
+                        break;
+                    }
+                }
+            }
             RefreshNodeLinks();
         }
 
@@ -216,7 +241,28 @@ namespace CathodeEditorGUI
         private void out_pin_goto_Click(object sender, EventArgs e)
         {
             if (node_children.SelectedIndex == -1 || selected_flowgraph == null) return;
-            CathodeEntity thisNodeInfo = selected_flowgraph.GetEntityByID(selected_node.childLinks[node_children.SelectedIndex].childID);
+
+            CathodeEntity thisNodeInfo = null;
+            if (currentlyShowingChildLinks)
+            {
+                thisNodeInfo = selected_flowgraph.GetEntityByID(selected_node.childLinks[node_children.SelectedIndex].childID);
+            }
+            else
+            {
+                List<CathodeEntity> ents = selected_flowgraph.GetEntities();
+                foreach (CathodeEntity entity in ents)
+                {
+                    for (int i = 0; i < entity.childLinks.Count; i++)
+                    {
+                        if (entity.childLinks[i].connectionID == linkedNodeListIDs[node_children.SelectedIndex])
+                        {
+                            thisNodeInfo = entity;
+                            break;
+                        }
+                    }
+                    if (thisNodeInfo != null) break;
+                }
+            }
             if (thisNodeInfo != null) LoadNode(thisNodeInfo);
         }
 
@@ -401,12 +447,14 @@ namespace CathodeEditorGUI
         }
 
         /* Refresh child/parent node links for selected node */
+        List<cGUID> linkedNodeListIDs = new List<cGUID>();
         private void RefreshNodeLinks()
         {
             node_children.Items.Clear();
+            linkedNodeListIDs.Clear();
             addNewLink.Enabled = currentlyShowingChildLinks;
-            removeSelectedLink.Enabled = currentlyShowingChildLinks;
-            out_pin_goto.Enabled = currentlyShowingChildLinks;
+            //removeSelectedLink.Enabled = currentlyShowingChildLinks;
+            //out_pin_goto.Enabled = currentlyShowingChildLinks;
             showLinkParents.Text = (currentlyShowingChildLinks) ? "Parents" : "Children";
 
             if (selected_flowgraph == null || selected_node == null) return;
@@ -420,6 +468,7 @@ namespace CathodeEditorGUI
                         "(" + NodeDBEx.GetParameterName(link.parentParamID) + ") => " +
                         NodeDBEx.GetEntityName(link.childID) + 
                         " (" + NodeDBEx.GetParameterName(link.childParamID) + ")");
+                    linkedNodeListIDs.Add(link.connectionID);
                 }
             }
             else
@@ -436,6 +485,7 @@ namespace CathodeEditorGUI
                             NodeDBEx.GetEntityName(entity.nodeID) +
                             " (" + NodeDBEx.GetParameterName(link.parentParamID) + ") => " +
                             "(" + NodeDBEx.GetParameterName(link.childParamID) + ")");
+                        linkedNodeListIDs.Add(link.connectionID);
                     }
                 }
             }
