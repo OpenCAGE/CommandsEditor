@@ -113,6 +113,7 @@ namespace CathodeEditorGUI
                 ModelsMVR modelsMVR = new ModelsMVR(commandsPAK.Filepath.Replace("COMMANDS.PAK", "MODELS.MVR"));
                 for (int i = 0; i < modelsMVR.Movers.Count; i++)
                 {
+                    /*
                     if (modelsMVR.Movers[i].IsThisTypeID == MoverType.STATIC_MODEL)
                     {
                         CathodeFlowgraph flowgraph = GetFlowgraphContainingNode(modelsMVR.Movers[i].NodeID);
@@ -122,6 +123,12 @@ namespace CathodeEditorGUI
                         mover.IsThisTypeID = MoverType.DYNAMIC_MODEL;
                         modelsMVR.Movers[i] = mover;
                     }
+                    */
+                    CathodeMover mover = modelsMVR.Movers[i];
+                    mover.Transform = Matrix4x4.CreateScale(new Vector3(0, 0, 0)) * Matrix4x4.CreateFromQuaternion(Quaternion.Identity) * Matrix4x4.CreateTranslation(new Vector3(-9999.0f, -9999.0f, -9999.0f));
+                    mover.IsThisTypeID = MoverType.DYNAMIC_MODEL;
+                    mover.NodeID = new cGUID("00-00-00-00");
+                    modelsMVR.Movers[i] = mover;
                 }
                 if (modelsMVR.FilePath != "") modelsMVR.Save();
             }
@@ -564,9 +571,11 @@ namespace CathodeEditorGUI
             return (MessageBox.Show(msg, "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes);
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void CathodeEditorGUI_Load(object sender, EventArgs e)
         {
-            ModelsMVR modelsMVR = new ModelsMVR(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\ENV\PRODUCTION\TECH_RND\WORLD\MODELS.MVR");
+            return;
+
+            ModelsMVR modelsMVR = new ModelsMVR(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\ENV\PRODUCTION\BSP_TORRENS\WORLD\MODELS.MVR");
             //modelsMVR.Movers = modelsMVR.Movers.OrderBy(o => o.IsThisTypeID).ToList<alien_mvr_entry>();
             for (int i = 0; i < modelsMVR.Movers.Count; i++)
             {
@@ -580,6 +589,10 @@ namespace CathodeEditorGUI
                 //EnvironmentMapBINIndex
                 //IsThisTypeID
 
+                mvr.Transform = Matrix4x4.CreateScale(new Vector3(0,0,0)) * Matrix4x4.CreateFromQuaternion(Quaternion.Identity) * Matrix4x4.CreateTranslation(new Vector3(-9999.0f, -9999.0f, -9999.0f));
+                //mvr.IsThisTypeID = MoverType.DYNAMIC_MODEL;
+                mvr.IsThisTypeID = MoverType.DYNAMIC_MODEL;
+                mvr.NodeID = new cGUID("00-00-00-00");
 
                 //mvr.Unknowns5_ = new Vector4(0, 0, 0, 0);
 
@@ -601,15 +614,15 @@ namespace CathodeEditorGUI
                 //mvr.InstanceState[2].Z = 0;  //this seems to define some sort of offset for particle systems
 
                 //mvr.InstanceState[2].W = 10; //unused?
-               // mvr.InstanceState[3].X = 1; //unused?
+                // mvr.InstanceState[3].X = 1; //unused?
 
-               // mvr.InstanceState[3].Y = 100; //Light radius?
+                // mvr.InstanceState[3].Y = 100; //Light radius?
 
                 //mvr.InstanceState[3].Z = 10; //Diffuse texture tile horizontal
-               // mvr.InstanceState[3].W = 1; //Diffuse texture tile vertical
+                // mvr.InstanceState[3].W = 1; //Diffuse texture tile vertical
 
                 //maybe these are normal/specular map scales if the above is diffuse?
-               // mvr.InstanceState[4].X = 10; //unused?
+                // mvr.InstanceState[4].X = 10; //unused?
                 //mvr.InstanceState[4].Y = 500; //unsued?
                 //mvr.InstanceState[4].Z = 100; //unused?
                 //mvr.InstanceState[4].W = 50; //unused?
@@ -645,7 +658,15 @@ namespace CathodeEditorGUI
                 modelsMVR.Movers[i] = mvr;
             }
             modelsMVR.Save();
-            return;
+
+            modelsMVR = new ModelsMVR(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\ENV\PRODUCTION\TECH_HUB\WORLD\MODELS.MVR");
+            modelsMVR.Save();
+
+            modelsMVR = new ModelsMVR(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\ENV\PRODUCTION\BSP_TORRENS\WORLD\MODELS.MVR");
+            modelsMVR.Movers.RemoveAll(o => o.NodeID != new cGUID(0));
+            modelsMVR.Save();
+
+            Application.Exit();
         }
     }
 

@@ -480,8 +480,8 @@
             this.modifyMVR.Size = new System.Drawing.Size(50, 17);
             this.modifyMVR.TabIndex = 174;
             this.modifyMVR.Text = "MVR";
-            this.toolTip1.SetToolTip(this.modifyMVR, "Modify the MVR file? This WIP option may solve some weird lingering model issues," +
-        " however could produce unwanted issues.");
+            this.toolTip1.SetToolTip(this.modifyMVR, "This option may solve some issues with deleted geometry persisting, however could" +
+        " produce unwanted issues.");
             this.modifyMVR.UseVisualStyleBackColor = true;
             // 
             // CathodeEditorGUI
@@ -499,6 +499,7 @@
             this.Name = "CathodeEditorGUI";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "OpenCAGE Cathode Editor (ALPHA)";
+            this.Load += new System.EventHandler(this.CathodeEditorGUI_Load);
             this.groupBox3.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox7.ResumeLayout(false);
