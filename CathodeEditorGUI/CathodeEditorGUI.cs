@@ -4,6 +4,7 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Windows.Forms;
 using CATHODE;
 using CATHODE.Commands;
@@ -102,11 +103,46 @@ namespace CathodeEditorGUI
         /* Save the current edits */
         private void save_commands_pak_Click(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.WaitCursor;
             if (commandsPAK == null) return;
             commandsPAK.Save();
-            //TODO: currently i'm not tidying up unused names in NodeDBEx, this could get messy!
             NodeDBEx.SaveNamesForPak(commandsPAK.Filepath);
+
+            if (modifyMVR.Checked)
+            {
+                ModelsMVR modelsMVR = new ModelsMVR(commandsPAK.Filepath.Replace("COMMANDS.PAK", "MODELS.MVR"));
+                for (int i = 0; i < modelsMVR.Movers.Count; i++)
+                {
+                    if (modelsMVR.Movers[i].IsThisTypeID == MoverType.STATIC_MODEL)
+                    {
+                        CathodeFlowgraph flowgraph = GetFlowgraphContainingNode(modelsMVR.Movers[i].NodeID);
+                        if (flowgraph == null) continue;
+                        if (flowgraph.name.Contains("REQUIRED_ASSETS") && flowgraph.name.Contains("VFX")) continue;
+                        CathodeMover mover = modelsMVR.Movers[i];
+                        mover.IsThisTypeID = MoverType.DYNAMIC_MODEL;
+                        modelsMVR.Movers[i] = mover;
+                    }
+                }
+                if (modelsMVR.FilePath != "") modelsMVR.Save();
+            }
+
+            Cursor.Current = Cursors.Default;
             MessageBox.Show("Saved changes!", "Saved.", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+        private CathodeFlowgraph GetFlowgraphContainingNode(cGUID nodeID)
+        {
+            for (int i = 0; i < commandsPAK.Flowgraphs.Count; i++)
+            {
+                List<CathodeEntity> entities = commandsPAK.Flowgraphs[i].GetEntities();
+                for (int x = 0; x < entities.Count; x++)
+                {
+                    if (entities[x].nodeID == nodeID)
+                    {
+                        return commandsPAK.Flowgraphs[i];
+                    }
+                }
+            }
+            return null;
         }
 
         /* Load nodes for selected script */
@@ -526,6 +562,102 @@ namespace CathodeEditorGUI
         private bool ConfirmAction(string msg)
         {
             return (MessageBox.Show(msg, "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            ModelsMVR modelsMVR = new ModelsMVR(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\ENV\PRODUCTION\TECH_RND\WORLD\MODELS.MVR");
+            //modelsMVR.Movers = modelsMVR.Movers.OrderBy(o => o.IsThisTypeID).ToList<alien_mvr_entry>();
+            for (int i = 0; i < modelsMVR.Movers.Count; i++)
+            {
+                CathodeMover mvr = modelsMVR.Movers[i];
+
+                //Transform
+                //CollisionMapThingID
+                //REDSIndex
+                //ModelCount
+                //ResourcesBINIndex
+                //EnvironmentMapBINIndex
+                //IsThisTypeID
+
+
+                //mvr.Unknowns5_ = new Vector4(0, 0, 0, 0);
+
+
+                //mvr.InstanceState[0].X = 1; //Light R
+                //mvr.InstanceState[0].Y = 1; //Light G
+                //mvr.InstanceState[0].Z = 1; //Light B
+
+                //mvr.InstanceState[0].W = 0; //Unused?
+
+                //mvr.InstanceState[1].X = 1; //Material tint R
+                //mvr.InstanceState[1].Y = 1; //Material tint G
+                //mvr.InstanceState[1].Z = 1; //Material tint B
+
+                //mvr.InstanceState[1].W = 1; //Unused?
+
+                // mvr.InstanceState[2].X = 10; //Brightness of volumetric light meshes
+                //mvr.InstanceState[2].Y = 0.50f; //setting this to zero makes all particle sprites black, anything higher than one fucks with lighting
+                //mvr.InstanceState[2].Z = 0;  //this seems to define some sort of offset for particle systems
+
+                //mvr.InstanceState[2].W = 10; //unused?
+               // mvr.InstanceState[3].X = 1; //unused?
+
+               // mvr.InstanceState[3].Y = 100; //Light radius?
+
+                //mvr.InstanceState[3].Z = 10; //Diffuse texture tile horizontal
+               // mvr.InstanceState[3].W = 1; //Diffuse texture tile vertical
+
+                //maybe these are normal/specular map scales if the above is diffuse?
+               // mvr.InstanceState[4].X = 10; //unused?
+                //mvr.InstanceState[4].Y = 500; //unsued?
+                //mvr.InstanceState[4].Z = 100; //unused?
+                //mvr.InstanceState[4].W = 50; //unused?
+
+                //none of these seem to do anything??
+                //mvr.UnknownID = new cGUID("00-00-00-00");
+                //mvr.NodeID = new cGUID("00-00-00-00");
+                //mvr.ResourcesBINID = new cGUID("00-00-00-00");
+                //mvr.UnknownMinMax_[0] = new Vector3(0, 0, 0);
+                //mvr.UnknownMinMax_[1] = new Vector3(0, 0, 0);
+                //mvr.UnknownValue1 = 0;
+                //mvr.UnknownValue = 0;
+                //mvr.Unknown5_ = 0;
+                //mvr.Unknowns61_ = 0;
+                //mvr.Unknowns60_ = 0;
+                //mvr.Unknown17_ = 0;
+                //mvr.Unknowns70_ = 0;
+                //mvr.Unknowns71_ = 0;
+                //mvr.UnknownMinMax_[0] = new Vector3(0, 0, 0);
+                //mvr.UnknownMinMax_[1] = new Vector3(0, 0, 0);
+
+                //one of these contains some sort of lighting info
+                //mvr.UnknownValue3_ = 0;
+                //mvr.UnknownValue4_ = 0;
+                //mvr.Unknown2_ = 0;
+                //mvr.Unknowns2_[0] = 0;
+                //mvr.Unknowns2_[1] = 0;
+                //mvr.Unknown3_.X = 0;
+                //mvr.Unknown3_.Y = 0;
+                //mvr.Unknown3_.Z = 0;
+                //mvr.Unknown3_.W = 0;
+
+                modelsMVR.Movers[i] = mvr;
+            }
+            modelsMVR.Save();
+            return;
+        }
+    }
+
+    public struct CathodeGloballyTransformedEntity
+    {
+        public MoverType type;
+        public CathodeEntity entity;
+        public Matrix4x4 transform;
+
+        public void SetTransform(Vector3 position, Quaternion rotation, Vector3 scale)
+        {
+            transform = Matrix4x4.CreateScale(scale) * Matrix4x4.CreateFromQuaternion(rotation) * Matrix4x4.CreateTranslation(position);
         }
     }
 }

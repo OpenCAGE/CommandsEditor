@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CathodeEditorGUI));
             this.flowgraph_count = new System.Windows.Forms.Label();
             this.first_executed_flowgraph = new System.Windows.Forms.Label();
@@ -67,6 +68,8 @@
             this.env_list = new System.Windows.Forms.ComboBox();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
+            this.modifyMVR = new System.Windows.Forms.CheckBox();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -97,7 +100,7 @@
             // 
             // save_commands_pak
             // 
-            this.save_commands_pak.Location = new System.Drawing.Point(457, 16);
+            this.save_commands_pak.Location = new System.Drawing.Point(391, 16);
             this.save_commands_pak.Name = "save_commands_pak";
             this.save_commands_pak.Size = new System.Drawing.Size(86, 23);
             this.save_commands_pak.TabIndex = 164;
@@ -430,7 +433,7 @@
             // 
             // load_commands_pak
             // 
-            this.load_commands_pak.Location = new System.Drawing.Point(365, 16);
+            this.load_commands_pak.Location = new System.Drawing.Point(299, 16);
             this.load_commands_pak.Name = "load_commands_pak";
             this.load_commands_pak.Size = new System.Drawing.Size(86, 23);
             this.load_commands_pak.TabIndex = 160;
@@ -444,29 +447,42 @@
             this.env_list.FormattingEnabled = true;
             this.env_list.Location = new System.Drawing.Point(9, 17);
             this.env_list.Name = "env_list";
-            this.env_list.Size = new System.Drawing.Size(350, 21);
+            this.env_list.Size = new System.Drawing.Size(284, 21);
             this.env_list.TabIndex = 173;
             // 
             // groupBox8
             // 
             this.groupBox8.Controls.Add(this.first_executed_flowgraph);
             this.groupBox8.Controls.Add(this.flowgraph_count);
-            this.groupBox8.Location = new System.Drawing.Point(565, 3);
+            this.groupBox8.Location = new System.Drawing.Point(554, 3);
             this.groupBox8.Name = "groupBox8";
-            this.groupBox8.Size = new System.Drawing.Size(684, 49);
+            this.groupBox8.Size = new System.Drawing.Size(695, 49);
             this.groupBox8.TabIndex = 174;
             this.groupBox8.TabStop = false;
             // 
             // groupBox10
             // 
+            this.groupBox10.Controls.Add(this.modifyMVR);
             this.groupBox10.Controls.Add(this.env_list);
             this.groupBox10.Controls.Add(this.load_commands_pak);
             this.groupBox10.Controls.Add(this.save_commands_pak);
             this.groupBox10.Location = new System.Drawing.Point(8, 3);
             this.groupBox10.Name = "groupBox10";
-            this.groupBox10.Size = new System.Drawing.Size(551, 49);
+            this.groupBox10.Size = new System.Drawing.Size(540, 49);
             this.groupBox10.TabIndex = 175;
             this.groupBox10.TabStop = false;
+            // 
+            // modifyMVR
+            // 
+            this.modifyMVR.AutoSize = true;
+            this.modifyMVR.Location = new System.Drawing.Point(483, 20);
+            this.modifyMVR.Name = "modifyMVR";
+            this.modifyMVR.Size = new System.Drawing.Size(50, 17);
+            this.modifyMVR.TabIndex = 174;
+            this.modifyMVR.Text = "MVR";
+            this.toolTip1.SetToolTip(this.modifyMVR, "Modify the MVR file? This WIP option may solve some weird lingering model issues," +
+        " however could produce unwanted issues.");
+            this.modifyMVR.UseVisualStyleBackColor = true;
             // 
             // CathodeEditorGUI
             // 
@@ -494,6 +510,7 @@
             this.groupBox8.ResumeLayout(false);
             this.groupBox8.PerformLayout();
             this.groupBox10.ResumeLayout(false);
+            this.groupBox10.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -537,5 +554,7 @@
         private System.Windows.Forms.Button removeSelectedFlowgraph;
         private System.Windows.Forms.Button addNewFlowgraph;
         private System.Windows.Forms.Button showLinkParents;
+        private System.Windows.Forms.CheckBox modifyMVR;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }
