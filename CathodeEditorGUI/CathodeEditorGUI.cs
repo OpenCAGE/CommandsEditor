@@ -32,6 +32,10 @@ namespace CathodeEditorGUI
             env_list.Items.Clear();
             foreach (string map in all_map_dirs) env_list.Items.Add(map);
             env_list.SelectedIndex = 0;
+
+#if DEBUG
+            button1.Visible = true;
+#endif
         }
 
         /* Clear the UI */
@@ -62,6 +66,7 @@ namespace CathodeEditorGUI
                 node_children.Items.Clear();
                 currentlyShowingChildLinks = true;
                 node_to_flowgraph_jump.Visible = false;
+                editCAGEAnimationKeyframes.Visible = false;
             }
         }
 
@@ -425,13 +430,7 @@ namespace CathodeEditorGUI
                     nodetypedesc = NodeDBEx.GetParameterName(((FunctionEntity)edit_node).function);
                     node_to_flowgraph_jump.Visible = (commandsPAK.GetFlowgraph(((FunctionEntity)edit_node).function) != null);
                     selected_node_name.Text = NodeDBEx.GetEntityName(edit_node.nodeID);
-
-                    if (nodetypedesc == "CAGEAnimation")
-                    {
-                        CATHODE.Commands.CAGEAnimation node = (CATHODE.Commands.CAGEAnimation)edit_node;
-                        string bleh = "";
-                    }
-
+                    editCAGEAnimationKeyframes.Visible = nodetypedesc == "CAGEAnimation";
                     break;
                 case EntityVariant.DATATYPE:
                     nodetypedesc = "DataType " + ((DatatypeEntity)edit_node).type.ToString();
@@ -576,6 +575,13 @@ namespace CathodeEditorGUI
             this.Focus();
         }
 
+        /* Edit CAGEAnimation keyframes */
+        private void editCAGEAnimationKeyframes_Click(object sender, EventArgs e)
+        {
+            CAGEAnimationEditor keyframeEditor = new CAGEAnimationEditor((CAGEAnimation)selected_node, selected_flowgraph);
+            keyframeEditor.Show();
+        }
+
         /* Confirm an action */
         private bool ConfirmAction(string msg)
         {
@@ -680,11 +686,12 @@ namespace CathodeEditorGUI
             Application.Exit();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void button1_Click_1(object sender, EventArgs e)
         {
             LoadCommandsPAK(@"DLC\BSPNOSTROMO_TWOTEAMS_PATCH");
-            CathodeEntity ent = commandsPAK.Flowgraphs.FirstOrDefault(o => o.name == @"DLC\PREORDER\PODLC_TWOTEAMS").GetEntities().FirstOrDefault(o => o.nodeID == new cGUID("03-2D-F4-38"));
-            CAGEAnimationEditor edit = new CAGEAnimationEditor((CATHODE.Commands.CAGEAnimation)ent);
+            CathodeFlowgraph flow = commandsPAK.Flowgraphs.FirstOrDefault(o => o.name == @"DLC\PREORDER\PODLC_TWOTEAMS");
+            CathodeEntity ent = flow.GetEntities().FirstOrDefault(o => o.nodeID == new cGUID("03-2D-F4-38"));
+            CAGEAnimationEditor edit = new CAGEAnimationEditor((CATHODE.Commands.CAGEAnimation)ent, flow);
             edit.Show();
         }
     }

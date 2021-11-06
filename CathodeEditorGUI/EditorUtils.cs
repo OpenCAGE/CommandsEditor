@@ -100,5 +100,23 @@ namespace CathodeEditorGUI
             if (editedText == "") editedText = "0";
             return editedText;
         }
+
+        /* Resolve a node hierarchy */
+        public static CathodeEntity ResolveHierarchy(List<cGUID> hierarchy, CathodeFlowgraph flowgraph)
+        {
+            CathodeFlowgraph currentFlowgraphToSearch = flowgraph;
+            CathodeEntity entity = null;
+            for (int i = 0; i < hierarchy.Count; i++)
+            {
+                if (hierarchy[i] == new cGUID("00-00-00-00")) break;
+                entity = flowgraph.GetEntityByID(hierarchy[i]);
+                if (entity != null && entity.variant == EntityVariant.FUNCTION)
+                {
+                    CathodeFlowgraph flowRef = _pak.GetFlowgraph(((FunctionEntity)entity).function);
+                    if (flowRef != null) currentFlowgraphToSearch = flowRef;
+                }
+            }
+            return entity;
+        }
     }
 }

@@ -125,6 +125,12 @@
     <Compile Include="Popups\CathodeEditorGUI_RemoveParameter.Designer.cs">
       <DependentUpon>CathodeEditorGUI_RemoveParameter.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\SelectEntity.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\SelectEntity.Designer.cs">
+      <DependentUpon>SelectEntity.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TreeUtility.cs" />

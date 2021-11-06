@@ -61,16 +61,17 @@
             this.node_search_box = new System.Windows.Forms.TextBox();
             this.node_search_btn = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.editCAGEAnimationKeyframes = new System.Windows.Forms.Button();
             this.removeParameter = new System.Windows.Forms.Button();
             this.addNewParameter = new System.Windows.Forms.Button();
             this.NodeParams = new System.Windows.Forms.Panel();
             this.load_commands_pak = new System.Windows.Forms.Button();
             this.env_list = new System.Windows.Forms.ComboBox();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.button1 = new System.Windows.Forms.Button();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.modifyMVR = new System.Windows.Forms.CheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.button1 = new System.Windows.Forms.Button();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -394,6 +395,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.editCAGEAnimationKeyframes);
             this.groupBox2.Controls.Add(this.removeParameter);
             this.groupBox2.Controls.Add(this.addNewParameter);
             this.groupBox2.Controls.Add(this.NodeParams);
@@ -403,6 +405,17 @@
             this.groupBox2.TabIndex = 147;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Selected Entity Parameters";
+            // 
+            // editCAGEAnimationKeyframes
+            // 
+            this.editCAGEAnimationKeyframes.Location = new System.Drawing.Point(231, -1);
+            this.editCAGEAnimationKeyframes.Name = "editCAGEAnimationKeyframes";
+            this.editCAGEAnimationKeyframes.Size = new System.Drawing.Size(143, 23);
+            this.editCAGEAnimationKeyframes.TabIndex = 175;
+            this.editCAGEAnimationKeyframes.Text = "Edit Keyframes";
+            this.editCAGEAnimationKeyframes.UseVisualStyleBackColor = true;
+            this.editCAGEAnimationKeyframes.Visible = false;
+            this.editCAGEAnimationKeyframes.Click += new System.EventHandler(this.editCAGEAnimationKeyframes_Click);
             // 
             // removeParameter
             // 
@@ -462,6 +475,17 @@
             this.groupBox8.TabIndex = 174;
             this.groupBox8.TabStop = false;
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(546, 17);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(143, 23);
+            this.button1.TabIndex = 176;
+            this.button1.Text = "Edit Keyframes";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Visible = false;
+            this.button1.Click += new System.EventHandler(this.button1_Click_1);
+            // 
             // groupBox10
             // 
             this.groupBox10.Controls.Add(this.modifyMVR);
@@ -485,16 +509,6 @@
             this.toolTip1.SetToolTip(this.modifyMVR, "This option may solve some issues with deleted geometry persisting, however could" +
         " produce unwanted issues.");
             this.modifyMVR.UseVisualStyleBackColor = true;
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(598, 16);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(86, 23);
-            this.button1.TabIndex = 175;
-            this.button1.Text = "Load";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // CathodeEditorGUI
             // 
@@ -569,6 +583,7 @@
         private System.Windows.Forms.Button showLinkParents;
         private System.Windows.Forms.CheckBox modifyMVR;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.Button editCAGEAnimationKeyframes;
         private System.Windows.Forms.Button button1;
     }
 }
