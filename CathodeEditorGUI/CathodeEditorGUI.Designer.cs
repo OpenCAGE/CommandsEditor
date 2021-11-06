@@ -70,6 +70,7 @@
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.modifyMVR = new System.Windows.Forms.CheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.button1 = new System.Windows.Forms.Button();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -452,6 +453,7 @@
             // 
             // groupBox8
             // 
+            this.groupBox8.Controls.Add(this.button1);
             this.groupBox8.Controls.Add(this.first_executed_flowgraph);
             this.groupBox8.Controls.Add(this.flowgraph_count);
             this.groupBox8.Location = new System.Drawing.Point(554, 3);
@@ -483,6 +485,16 @@
             this.toolTip1.SetToolTip(this.modifyMVR, "This option may solve some issues with deleted geometry persisting, however could" +
         " produce unwanted issues.");
             this.modifyMVR.UseVisualStyleBackColor = true;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(598, 16);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(86, 23);
+            this.button1.TabIndex = 175;
+            this.button1.Text = "Load";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // CathodeEditorGUI
             // 
@@ -557,5 +569,6 @@
         private System.Windows.Forms.Button showLinkParents;
         private System.Windows.Forms.CheckBox modifyMVR;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.Button button1;
     }
 }

@@ -72,6 +72,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BespokeNodes\CAGEAnimationEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BespokeNodes\CAGEAnimationEditor.Designer.cs">
+      <DependentUpon>CAGEAnimationEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="CathodeEditorGUI.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -170,6 +176,9 @@
     <Compile Include="UserControls\GUI_VectorDataType.Designer.cs">
       <DependentUpon>GUI_VectorDataType.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="BespokeNodes\CAGEAnimationEditor.resx">
+      <DependentUpon>CAGEAnimationEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CathodeEditorGUI.resx">
       <DependentUpon>CathodeEditorGUI.cs</DependentUpon>
     </EmbeddedResource>

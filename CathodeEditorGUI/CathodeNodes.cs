@@ -1,5 +1,6 @@
 ﻿using CATHODE.Commands;
 
+/*
 namespace CATHODE
 {
 	//58-7C-11-BF
@@ -9692,3 +9693,4 @@ namespace CATHODE
 		//fully_lit_threshold
 	//};
 }
+*/
