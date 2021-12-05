@@ -20,7 +20,7 @@ namespace CathodeEditorGUI
         }
 
         /* Utility: generate nice entity name to display in UI */
-        public static string GenerateNodeName(CathodeEntity entity)
+        public static string GenerateNodeName(CathodeEntity entity, CathodeFlowgraph currentFlowgraph)
         {
             if (_pak == null) return "";
             string desc = "";
@@ -33,13 +33,16 @@ namespace CathodeEditorGUI
                     desc = NodeDBEx.GetEntityName(entity.nodeID) + " (" + NodeDBEx.GetParameterName(((FunctionEntity)entity).function) + ")";
                     break;
                 case EntityVariant.OVERRIDE:
-                    desc = "OVERRIDE!"; //TODO
+                    //desc = NodeDBEx.GetEntityName(entity.nodeID) + " (" + HierarchyToString(((OverrideEntity)entity).hierarchy, currentFlowgraph) + ")";
+                    desc = NodeDBEx.GetEntityName(entity.nodeID) + " (*OVERRIDE*)";
                     break;
                 case EntityVariant.PROXY:
-                    desc = "PROXY!"; //TODO
+                    //desc = NodeDBEx.GetEntityName(entity.nodeID) + " (" + HierarchyToString(((ProxyEntity)entity).hierarchy, currentFlowgraph) + ")";
+                    desc = NodeDBEx.GetEntityName(entity.nodeID) + " (*PROXY*)";
                     break;
                 case EntityVariant.NOT_SETUP:
-                    desc = "NOT SETUP!"; //Huh?
+                    //desc = NodeDBEx.GetEntityName(entity.nodeID);
+                    desc = NodeDBEx.GetEntityName(entity.nodeID) + " (*NOT SETUP*)";
                     break;
             }
             return "[" + entity.nodeID.ToString() + "] " + desc;
@@ -88,10 +91,14 @@ namespace CathodeEditorGUI
         {
             string editedText = "";
             bool hasIncludedDot = false;
+            bool hasIncludedMinus = false;
             for (int i = 0; i < str.Length; i++)
             {
-                if (Char.IsNumber(str[i]) || (str[i] == '.' && allowDots))
+                if (Char.IsNumber(str[i]) || (str[i] == '.' && allowDots) || (str[i] == '-'))
                 {
+                    if (str[i] == '-' && hasIncludedMinus) continue;
+                    if (str[i] == '-' && i != 0) continue;
+                    if (str[i] == '-') hasIncludedMinus = true;
                     if (str[i] == '.' && hasIncludedDot) continue;
                     if (str[i] == '.') hasIncludedDot = true;
                     editedText += str[i];
@@ -102,21 +109,43 @@ namespace CathodeEditorGUI
         }
 
         /* Resolve a node hierarchy */
-        public static CathodeEntity ResolveHierarchy(List<cGUID> hierarchy, CathodeFlowgraph flowgraph)
+        public static CathodeEntity ResolveHierarchy(List<cGUID> hierarchy, CathodeFlowgraph flowgraph, out CathodeFlowgraph containedFlowgraph)
         {
             CathodeFlowgraph currentFlowgraphToSearch = flowgraph;
             CathodeEntity entity = null;
             for (int i = 0; i < hierarchy.Count; i++)
             {
                 if (hierarchy[i] == new cGUID("00-00-00-00")) break;
-                entity = flowgraph.GetEntityByID(hierarchy[i]);
+                entity = currentFlowgraphToSearch.GetEntityByID(hierarchy[i]);
                 if (entity != null && entity.variant == EntityVariant.FUNCTION)
                 {
                     CathodeFlowgraph flowRef = _pak.GetFlowgraph(((FunctionEntity)entity).function);
                     if (flowRef != null) currentFlowgraphToSearch = flowRef;
                 }
             }
+            containedFlowgraph = currentFlowgraphToSearch;
             return entity;
+        }
+
+        /* Display an entity hierarchy as a string */
+        public static string HierarchyToString(List<cGUID> hierarchy, CathodeFlowgraph flowgraph)
+        {
+            CathodeFlowgraph currentFlowgraphToSearch = flowgraph;
+            CathodeEntity entity = null;
+            string combinedString = "";
+            for (int i = 0; i < hierarchy.Count; i++)
+            {
+                if (hierarchy[i] == new cGUID("00-00-00-00")) break;
+                entity = currentFlowgraphToSearch.GetEntityByID(hierarchy[i]);
+                if (entity != null) combinedString += NodeDBEx.GetEntityName(entity.nodeID) + " -> ";
+                if (entity != null && entity.variant == EntityVariant.FUNCTION)
+                {
+                    CathodeFlowgraph flowRef = _pak.GetFlowgraph(((FunctionEntity)entity).function);
+                    if (flowRef != null) currentFlowgraphToSearch = flowRef;
+                }
+            }
+            if (combinedString.Length >= 4) combinedString = combinedString.Substring(0, combinedString.Length - 4);
+            return combinedString;
         }
     }
 }

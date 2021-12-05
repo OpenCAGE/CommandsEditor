@@ -78,6 +78,12 @@
     <Compile Include="BespokeNodes\CAGEAnimationEditor.Designer.cs">
       <DependentUpon>CAGEAnimationEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="BespokeNodes\ModelReferenceEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BespokeNodes\ModelReferenceEditor.Designer.cs">
+      <DependentUpon>ModelReferenceEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="CathodeEditorGUI.cs">
       <SubType>Form</SubType>
     </Compile>

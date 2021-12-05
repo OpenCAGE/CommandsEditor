@@ -59,21 +59,25 @@ namespace CathodeEditorGUI
 
                 CathodeParameterKeyframe paramData = animNode.keyframeData.FirstOrDefault(o => o.ID == animNode.keyframeHeaders[i].keyframeDataID);
                 //TODO: populate full min max keyframes so new ones can be created
-                int keyframeWidth = 0;
-                for (int x = 0; x < paramData.keyframes.Count; x++)
+                int keyframeWidth = paramName.Location.X + paramName.Width;
+                if (paramData != null)
                 {
-                    Button keyframeBtn = new Button();
-                    keyframeBtn.Size = new Size(27, 23);
-                    keyframeBtn.Location = new Point(134 + ((keyframeBtn.Size.Width + 6) * x), 18 + (countInGroup * 23));
-                    keyframeBtn.Text = paramData.keyframes[x].secondsSinceStart.ToString();
-                    keyframeBtn.AccessibleDescription = paramData.ID.ToString() + " " + x + " " + paramName.Text;
-                    keyframeBtn.Click += KeyframeBtn_Click;
-                    currentGroupBox.Controls.Add(keyframeBtn);
-                    if (keyframeBtn.Location.X > maxWidth) maxWidth = keyframeBtn.Location.X;
-                    keyframeWidth = keyframeBtn.Location.X + keyframeBtn.Width;
+                    for (int x = 0; x < paramData.keyframes.Count; x++)
+                    {
+                        Button keyframeBtn = new Button();
+                        keyframeBtn.Size = new Size(27, 23);
+                        keyframeBtn.Location = new Point(134 + ((keyframeBtn.Size.Width + 6) * x), 18 + (countInGroup * 23));
+                        keyframeBtn.Text = paramData.keyframes[x].secondsSinceStart.ToString();
+                        keyframeBtn.AccessibleDescription = paramData.ID.ToString() + " " + x + " " + paramName.Text;
+                        keyframeBtn.Click += KeyframeBtn_Click;
+                        currentGroupBox.Controls.Add(keyframeBtn);
+                        if (keyframeBtn.Location.X > maxWidth) maxWidth = keyframeBtn.Location.X;
+                        keyframeWidth = keyframeBtn.Location.X + keyframeBtn.Width;
+                    }
                 }
 
-                CathodeEntity resolvedEntity = EditorUtils.ResolveHierarchy(animNode.keyframeHeaders[i].connectedEntity, _flow);
+                CathodeFlowgraph flow;
+                CathodeEntity resolvedEntity = EditorUtils.ResolveHierarchy(animNode.keyframeHeaders[i].connectedEntity, _flow, out flow);
                 if (resolvedEntity != null)
                 {
                     TextBox controllingEntity = new TextBox();

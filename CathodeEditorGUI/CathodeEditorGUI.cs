@@ -134,6 +134,7 @@ namespace CathodeEditorGUI
                     }
                     */
                     CathodeMover mover = modelsMVR.Movers[i];
+                    //This is a **TEMP** hack!
                     mover.Transform = Matrix4x4.CreateScale(new Vector3(0, 0, 0)) * Matrix4x4.CreateFromQuaternion(Quaternion.Identity) * Matrix4x4.CreateTranslation(new Vector3(-9999.0f, -9999.0f, -9999.0f));
                     mover.IsThisTypeID = MoverType.DYNAMIC_MODEL;
                     mover.NodeID = new cGUID("00-00-00-00");
@@ -172,7 +173,35 @@ namespace CathodeEditorGUI
         /* If selected node is a flowgraph instance, allow jump to it */
         private void node_to_flowgraph_jump_Click(object sender, EventArgs e)
         {
-            LoadFlowgraph(selected_node_type_description.Text);
+            CathodeFlowgraph flow;
+            switch (selected_node.variant)
+            {
+                case EntityVariant.OVERRIDE:
+                {
+                    CathodeEntity entity = EditorUtils.ResolveHierarchy(((OverrideEntity)selected_node).hierarchy, selected_flowgraph, out flow);
+                    if (entity != null)
+                    {
+                        LoadFlowgraph(flow.name);
+                        LoadNode(entity);
+                    }
+                    break;
+                }
+                case EntityVariant.PROXY:
+                {
+                    CathodeEntity entity = EditorUtils.ResolveHierarchy(((ProxyEntity)selected_node).hierarchy, selected_flowgraph, out flow);
+                    if (entity != null)
+                    {
+                        LoadFlowgraph(flow.name);
+                        LoadNode(entity);
+                    }
+                    break;
+                }
+                case EntityVariant.FUNCTION:
+                {
+                    LoadFlowgraph(selected_node_type_description.Text);
+                    break;
+                }
+            }
         }
 
         /* Add new flowgraph */
@@ -347,7 +376,7 @@ namespace CathodeEditorGUI
             List<CathodeEntity> entities = entry.GetEntities();
             for (int i = 0; i < entities.Count; i++)
             {
-                string desc = EditorUtils.GenerateNodeName(entities[i]);
+                string desc = EditorUtils.GenerateNodeName(entities[i], selected_flowgraph);
                 flowgraph_content.Items.Add(desc);
                 flowgraph_content_RAW.Add(desc);
             }
@@ -435,6 +464,11 @@ namespace CathodeEditorGUI
                 case EntityVariant.DATATYPE:
                     nodetypedesc = "DataType " + ((DatatypeEntity)edit_node).type.ToString();
                     selected_node_name.Text = NodeDBEx.GetParameterName(((DatatypeEntity)edit_node).parameter);
+                    break;
+                case EntityVariant.PROXY:
+                case EntityVariant.OVERRIDE:
+                    node_to_flowgraph_jump.Visible = true;
+                    selected_node_name.Text = NodeDBEx.GetEntityName(edit_node.nodeID);
                     break;
                 default:
                     selected_node_name.Text = NodeDBEx.GetEntityName(edit_node.nodeID);
