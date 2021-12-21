@@ -18,7 +18,6 @@ namespace CathodeEditorGUI
 {
     public partial class CathodeEditorGUI : Form
     {
-        private CommandsPAK commandsPAK = null;
         private TreeUtility treeHelper;
         private bool currentlyShowingChildLinks = true;
 
@@ -53,11 +52,11 @@ namespace CathodeEditorGUI
                 groupBox1.Text = "Selected Flowgraph Content";
                 flowgraph_content.Items.Clear();
                 flowgraph_content_RAW.Clear();
-                selected_flowgraph = null;
+                CurrentInstance.selectedFlowgraph = null;
             }
             if (clear_parameter_list)
             {
-                selected_node = null;
+                CurrentInstance.selectedEntity = null;
                 selected_node_id.Text = "";
                 selected_node_type.Text = "";
                 selected_node_type_description.Text = "";
@@ -75,34 +74,33 @@ namespace CathodeEditorGUI
         {
             //Reset UI
             ClearUI(true, true, true);
-            commandsPAK = null;
+            CurrentInstance.commandsPAK = null;
 
             //Load
             string path_to_ENV = SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + level;
-            commandsPAK = new CommandsPAK(path_to_ENV + "/WORLD/COMMANDS.PAK");
-            EditorUtils.Setup(commandsPAK);
+            CurrentInstance.commandsPAK = new CommandsPAK(path_to_ENV + "/WORLD/COMMANDS.PAK");
 
             //Sanity check
-            if (!commandsPAK.Loaded)
+            if (!CurrentInstance.commandsPAK.Loaded)
             {
                 MessageBox.Show("Failed to load COMMANDS.PAK!\nPlease place this executable in your Alien: Isolation folder.", "Environment error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            else if (commandsPAK.EntryPoints[0] == null)
+            else if (CurrentInstance.commandsPAK.EntryPoints[0] == null)
             {
                 MessageBox.Show("Failed to load COMMANDS.PAK!\nPlease reset your game files.", "COMMANDS.PAK corrupted!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
             //Load in any custom param/node names
-            NodeDBEx.LoadNamesForPak(ref commandsPAK);
+            NodeDBEx.LoadNames();
 
             //Populate file tree
-            treeHelper.UpdateFileTree(commandsPAK.GetFlowgraphNames().ToList());
+            treeHelper.UpdateFileTree(CurrentInstance.commandsPAK.GetFlowgraphNames().ToList());
 
             //Show info in UI
-            first_executed_flowgraph.Text = "Entry point: " + commandsPAK.EntryPoints[0].name;
-            flowgraph_count.Text = "Flowgraph count: " + commandsPAK.Flowgraphs.Count;
+            first_executed_flowgraph.Text = "Entry point: " + CurrentInstance.commandsPAK.EntryPoints[0].name;
+            flowgraph_count.Text = "Flowgraph count: " + CurrentInstance.commandsPAK.Flowgraphs.Count;
         }
         private void load_commands_pak_Click(object sender, EventArgs e)
         {
@@ -110,16 +108,16 @@ namespace CathodeEditorGUI
         }
 
         /* Save the current edits */
-        private void save_commands_pak_Click(object sender, EventArgs e)
+        public void SaveCommandsPAK()
         {
             Cursor.Current = Cursors.WaitCursor;
-            if (commandsPAK == null) return;
-            commandsPAK.Save();
-            NodeDBEx.SaveNamesForPak(commandsPAK.Filepath);
+            if (CurrentInstance.commandsPAK == null) return;
+            CurrentInstance.commandsPAK.Save();
+            NodeDBEx.SaveNames();
 
             if (modifyMVR.Checked)
             {
-                ModelsMVR modelsMVR = new ModelsMVR(commandsPAK.Filepath.Replace("COMMANDS.PAK", "MODELS.MVR"));
+                ModelsMVR modelsMVR = new ModelsMVR(CurrentInstance.commandsPAK.Filepath.Replace("COMMANDS.PAK", "MODELS.MVR"));
                 for (int i = 0; i < modelsMVR.Movers.Count; i++)
                 {
                     /*
@@ -144,18 +142,22 @@ namespace CathodeEditorGUI
             }
 
             Cursor.Current = Cursors.Default;
+        }
+        private void save_commands_pak_Click(object sender, EventArgs e)
+        {
+            SaveCommandsPAK();
             MessageBox.Show("Saved changes!", "Saved.", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         private CathodeFlowgraph GetFlowgraphContainingNode(cGUID nodeID)
         {
-            for (int i = 0; i < commandsPAK.Flowgraphs.Count; i++)
+            for (int i = 0; i < CurrentInstance.commandsPAK.Flowgraphs.Count; i++)
             {
-                List<CathodeEntity> entities = commandsPAK.Flowgraphs[i].GetEntities();
+                List<CathodeEntity> entities = CurrentInstance.commandsPAK.Flowgraphs[i].GetEntities();
                 for (int x = 0; x < entities.Count; x++)
                 {
                     if (entities[x].nodeID == nodeID)
                     {
-                        return commandsPAK.Flowgraphs[i];
+                        return CurrentInstance.commandsPAK.Flowgraphs[i];
                     }
                 }
             }
@@ -174,11 +176,11 @@ namespace CathodeEditorGUI
         private void node_to_flowgraph_jump_Click(object sender, EventArgs e)
         {
             CathodeFlowgraph flow;
-            switch (selected_node.variant)
+            switch (CurrentInstance.selectedEntity.variant)
             {
                 case EntityVariant.OVERRIDE:
                 {
-                    CathodeEntity entity = EditorUtils.ResolveHierarchy(((OverrideEntity)selected_node).hierarchy, selected_flowgraph, out flow);
+                    CathodeEntity entity = EditorUtils.ResolveHierarchy(((OverrideEntity)CurrentInstance.selectedEntity).hierarchy, out flow);
                     if (entity != null)
                     {
                         LoadFlowgraph(flow.name);
@@ -188,7 +190,7 @@ namespace CathodeEditorGUI
                 }
                 case EntityVariant.PROXY:
                 {
-                    CathodeEntity entity = EditorUtils.ResolveHierarchy(((ProxyEntity)selected_node).hierarchy, selected_flowgraph, out flow);
+                    CathodeEntity entity = EditorUtils.ResolveHierarchy(((ProxyEntity)CurrentInstance.selectedEntity).hierarchy, out flow);
                     if (entity != null)
                     {
                         LoadFlowgraph(flow.name);
@@ -207,14 +209,14 @@ namespace CathodeEditorGUI
         /* Add new flowgraph */
         private void addNewFlowgraph_Click(object sender, EventArgs e)
         {
-            if (commandsPAK == null) return;
+            if (CurrentInstance.commandsPAK == null) return;
             CathodeEditorGUI_AddFlowgraph add_flow = new CathodeEditorGUI_AddFlowgraph();
             add_flow.Show();
             add_flow.FormClosed += new FormClosedEventHandler(add_flow_closed);
         }
         private void add_flow_closed(Object sender, FormClosedEventArgs e)
         {
-            treeHelper.UpdateFileTree(commandsPAK.GetFlowgraphNames().ToList());
+            treeHelper.UpdateFileTree(CurrentInstance.commandsPAK.GetFlowgraphNames().ToList());
             this.BringToFront();
             this.Focus();
         }
@@ -222,10 +224,10 @@ namespace CathodeEditorGUI
         /* Remove selected flowgraph */
         private void removeSelectedFlowgraph_Click(object sender, EventArgs e)
         {
-            if (selected_flowgraph == null) return;
-            for (int i = 0; i < commandsPAK.EntryPoints.Count(); i++)
+            if (CurrentInstance.selectedFlowgraph == null) return;
+            for (int i = 0; i < CurrentInstance.commandsPAK.EntryPoints.Count(); i++)
             {
-                if (selected_flowgraph.nodeID == commandsPAK.EntryPoints[i].nodeID)
+                if (CurrentInstance.selectedFlowgraph.nodeID == CurrentInstance.commandsPAK.EntryPoints[i].nodeID)
                 {
                     MessageBox.Show("Cannot delete a flowgraph which is set as an entry point!", "Cannot delete.", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
@@ -234,47 +236,47 @@ namespace CathodeEditorGUI
             if (!ConfirmAction("Are you sure you want to remove this flowgraph?")) return;
 
             //Remove any entities or links that reference this flowgraph
-            for (int i = 0; i < commandsPAK.Flowgraphs.Count; i++)
+            for (int i = 0; i < CurrentInstance.commandsPAK.Flowgraphs.Count; i++)
             {
                 List<FunctionEntity> prunedFunctionEntities = new List<FunctionEntity>();
-                for (int x = 0; x < commandsPAK.Flowgraphs[i].functions.Count; x++)
+                for (int x = 0; x < CurrentInstance.commandsPAK.Flowgraphs[i].functions.Count; x++)
                 {
-                    if (commandsPAK.Flowgraphs[i].functions[x].function == selected_flowgraph.nodeID) continue;
+                    if (CurrentInstance.commandsPAK.Flowgraphs[i].functions[x].function == CurrentInstance.selectedFlowgraph.nodeID) continue;
                     List<CathodeNodeLink> prunedNodeLinks = new List<CathodeNodeLink>();
-                    for (int l = 0; l < commandsPAK.Flowgraphs[i].functions[x].childLinks.Count; l++)
+                    for (int l = 0; l < CurrentInstance.commandsPAK.Flowgraphs[i].functions[x].childLinks.Count; l++)
                     {
-                        CathodeEntity linkedNode = commandsPAK.Flowgraphs[i].GetEntityByID(commandsPAK.Flowgraphs[i].functions[x].childLinks[l].childID);
-                        if (linkedNode != null && linkedNode.variant == EntityVariant.FUNCTION) if (((FunctionEntity)linkedNode).function == selected_flowgraph.nodeID) continue;
-                        prunedNodeLinks.Add(commandsPAK.Flowgraphs[i].functions[x].childLinks[l]);
+                        CathodeEntity linkedNode = CurrentInstance.commandsPAK.Flowgraphs[i].GetEntityByID(CurrentInstance.commandsPAK.Flowgraphs[i].functions[x].childLinks[l].childID);
+                        if (linkedNode != null && linkedNode.variant == EntityVariant.FUNCTION) if (((FunctionEntity)linkedNode).function == CurrentInstance.selectedFlowgraph.nodeID) continue;
+                        prunedNodeLinks.Add(CurrentInstance.commandsPAK.Flowgraphs[i].functions[x].childLinks[l]);
                     }
-                    commandsPAK.Flowgraphs[i].functions[x].childLinks = prunedNodeLinks;
-                    prunedFunctionEntities.Add(commandsPAK.Flowgraphs[i].functions[x]);
+                    CurrentInstance.commandsPAK.Flowgraphs[i].functions[x].childLinks = prunedNodeLinks;
+                    prunedFunctionEntities.Add(CurrentInstance.commandsPAK.Flowgraphs[i].functions[x]);
                 }
-                commandsPAK.Flowgraphs[i].functions = prunedFunctionEntities;
+                CurrentInstance.commandsPAK.Flowgraphs[i].functions = prunedFunctionEntities;
             }
             //TODO: remove proxies etc that also reference any of the removed nodes
 
             //Remove the flowgraph
-            commandsPAK.Flowgraphs.Remove(selected_flowgraph);
+            CurrentInstance.commandsPAK.Flowgraphs.Remove(CurrentInstance.selectedFlowgraph);
 
             //Refresh UI
             ClearUI(false, true, true);
-            treeHelper.UpdateFileTree(commandsPAK.GetFlowgraphNames().ToList());
+            treeHelper.UpdateFileTree(CurrentInstance.commandsPAK.GetFlowgraphNames().ToList());
         }
 
         /* Select node from loaded flowgraph */
         private void flowgraph_content_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (flowgraph_content.SelectedIndex == -1 || selected_flowgraph == null) return;
-            CathodeEntity thisNodeInfo = selected_flowgraph.GetEntityByID(new cGUID(flowgraph_content.SelectedItem.ToString().Substring(1, 11)));
+            if (flowgraph_content.SelectedIndex == -1 || CurrentInstance.selectedFlowgraph == null) return;
+            CathodeEntity thisNodeInfo = CurrentInstance.selectedFlowgraph.GetEntityByID(new cGUID(flowgraph_content.SelectedItem.ToString().Substring(1, 11)));
             if (thisNodeInfo != null) LoadNode(thisNodeInfo);
         }
 
         /* Add new out pin */
         private void addNewLink_Click(object sender, EventArgs e)
         {
-            if (selected_flowgraph == null || selected_node == null) return;
-            CathodeEditorGUI_AddPin add_pin = new CathodeEditorGUI_AddPin(selected_node, selected_flowgraph);
+            if (CurrentInstance.selectedFlowgraph == null || CurrentInstance.selectedEntity == null) return;
+            CathodeEditorGUI_AddPin add_pin = new CathodeEditorGUI_AddPin(CurrentInstance.selectedEntity, CurrentInstance.selectedFlowgraph);
             add_pin.Show();
             add_pin.FormClosed += new FormClosedEventHandler(add_pin_closed);
         }
@@ -288,15 +290,15 @@ namespace CathodeEditorGUI
         /* Remove selected out pin */
         private void removeSelectedLink_Click(object sender, EventArgs e)
         {
-            if (selected_node == null || selected_flowgraph == null) return;
+            if (CurrentInstance.selectedEntity == null || CurrentInstance.selectedFlowgraph == null) return;
             if (!ConfirmAction("Are you sure you want to remove this link?")) return;
             if (currentlyShowingChildLinks)
             {
-                selected_node.childLinks.RemoveAt(node_children.SelectedIndex);
+                CurrentInstance.selectedEntity.childLinks.RemoveAt(node_children.SelectedIndex);
             }
             else
             {
-                List<CathodeEntity> ents = selected_flowgraph.GetEntities();
+                List<CathodeEntity> ents = CurrentInstance.selectedFlowgraph.GetEntities();
                 int deleteIndex = -1;
                 foreach (CathodeEntity entity in ents)
                 {
@@ -321,16 +323,16 @@ namespace CathodeEditorGUI
         /* Go to selected pin out on button press */
         private void out_pin_goto_Click(object sender, EventArgs e)
         {
-            if (node_children.SelectedIndex == -1 || selected_flowgraph == null) return;
+            if (node_children.SelectedIndex == -1 || CurrentInstance.selectedFlowgraph == null) return;
 
             CathodeEntity thisNodeInfo = null;
             if (currentlyShowingChildLinks)
             {
-                thisNodeInfo = selected_flowgraph.GetEntityByID(selected_node.childLinks[node_children.SelectedIndex].childID);
+                thisNodeInfo = CurrentInstance.selectedFlowgraph.GetEntityByID(CurrentInstance.selectedEntity.childLinks[node_children.SelectedIndex].childID);
             }
             else
             {
-                List<CathodeEntity> ents = selected_flowgraph.GetEntities();
+                List<CathodeEntity> ents = CurrentInstance.selectedFlowgraph.GetEntities();
                 foreach (CathodeEntity entity in ents)
                 {
                     for (int i = 0; i < entity.childLinks.Count; i++)
@@ -364,19 +366,18 @@ namespace CathodeEditorGUI
         }
 
         /* Load a flowgraph into the UI */
-        CathodeFlowgraph selected_flowgraph = null;
         List<string> flowgraph_content_RAW = new List<string>();
         private void LoadFlowgraph(string FileName)
         {
             ClearUI(false, true, true);
-            CathodeFlowgraph entry = commandsPAK.Flowgraphs[commandsPAK.GetFileIndex(FileName)];
-            selected_flowgraph = entry;
+            CathodeFlowgraph entry = CurrentInstance.commandsPAK.Flowgraphs[CurrentInstance.commandsPAK.GetFileIndex(FileName)];
+            CurrentInstance.selectedFlowgraph = entry;
             Cursor.Current = Cursors.WaitCursor;
 
             List<CathodeEntity> entities = entry.GetEntities();
             for (int i = 0; i < entities.Count; i++)
             {
-                string desc = EditorUtils.GenerateNodeName(entities[i], selected_flowgraph);
+                string desc = EditorUtils.GenerateNodeName(entities[i], CurrentInstance.selectedFlowgraph);
                 flowgraph_content.Items.Add(desc);
                 flowgraph_content_RAW.Add(desc);
             }
@@ -387,15 +388,15 @@ namespace CathodeEditorGUI
         /* Add new entity */
         private void addNewNode_Click(object sender, EventArgs e)
         {
-            if (selected_flowgraph == null) return;
-            CathodeEditorGUI_AddNode add_parameter = new CathodeEditorGUI_AddNode(selected_flowgraph, commandsPAK.Flowgraphs);
+            if (CurrentInstance.selectedFlowgraph == null) return;
+            CathodeEditorGUI_AddNode add_parameter = new CathodeEditorGUI_AddNode(CurrentInstance.selectedFlowgraph, CurrentInstance.commandsPAK.Flowgraphs);
             add_parameter.Show();
             add_parameter.FormClosed += new FormClosedEventHandler(add_node_closed);
         }
         private void add_node_closed(Object sender, FormClosedEventArgs e)
         {
-            LoadFlowgraph(selected_flowgraph.name);
-            LoadNode(selected_node); //TODO: load returned new node
+            LoadFlowgraph(CurrentInstance.selectedFlowgraph.name);
+            LoadNode(CurrentInstance.selectedEntity); //TODO: load returned new node
             this.BringToFront();
             this.Focus();
         }
@@ -403,50 +404,49 @@ namespace CathodeEditorGUI
         /* Remove selected entity */
         private void removeSelectedNode_Click(object sender, EventArgs e)
         {
-            if (selected_node == null) return;
+            if (CurrentInstance.selectedEntity == null) return;
             if (!ConfirmAction("Are you sure you want to remove this entity?")) return;
 
-            switch (selected_node.variant)
+            switch (CurrentInstance.selectedEntity.variant)
             {
                 case EntityVariant.DATATYPE:
-                    selected_flowgraph.datatypes.Remove((DatatypeEntity)selected_node);
+                    CurrentInstance.selectedFlowgraph.datatypes.Remove((DatatypeEntity)CurrentInstance.selectedEntity);
                     break;
                 case EntityVariant.FUNCTION:
-                    selected_flowgraph.functions.Remove((FunctionEntity)selected_node);
+                    CurrentInstance.selectedFlowgraph.functions.Remove((FunctionEntity)CurrentInstance.selectedEntity);
                     break;
                 case EntityVariant.OVERRIDE:
-                    selected_flowgraph.overrides.Remove((OverrideEntity)selected_node);
+                    CurrentInstance.selectedFlowgraph.overrides.Remove((OverrideEntity)CurrentInstance.selectedEntity);
                     break;
                 case EntityVariant.PROXY:
-                    selected_flowgraph.proxies.Remove((ProxyEntity)selected_node);
+                    CurrentInstance.selectedFlowgraph.proxies.Remove((ProxyEntity)CurrentInstance.selectedEntity);
                     break;
                 case EntityVariant.NOT_SETUP:
-                    selected_flowgraph.unknowns.Remove(selected_node);
+                    CurrentInstance.selectedFlowgraph.unknowns.Remove(CurrentInstance.selectedEntity);
                     break;
             }
 
-            List<CathodeEntity> entities = selected_flowgraph.GetEntities();
+            List<CathodeEntity> entities = CurrentInstance.selectedFlowgraph.GetEntities();
             for (int i = 0; i < entities.Count; i++)
             {
                 List<CathodeNodeLink> nodeLinks = new List<CathodeNodeLink>();
                 for (int x = 0; x < entities[i].childLinks.Count; x++)
                 {
-                    if (entities[i].childLinks[x].childID != selected_node.nodeID) nodeLinks.Add(entities[i].childLinks[x]);
+                    if (entities[i].childLinks[x].childID != CurrentInstance.selectedEntity.nodeID) nodeLinks.Add(entities[i].childLinks[x]);
                 }
                 entities[i].childLinks = nodeLinks;
             }
 
-            LoadFlowgraph(selected_flowgraph.name);
+            LoadFlowgraph(CurrentInstance.selectedFlowgraph.name);
         }
 
         /* Load a entity into the UI */
-        CathodeEntity selected_node = null;
         private void LoadNode(CathodeEntity edit_node)
         {
             if (edit_node == null) return;
 
             ClearUI(false, false, true);
-            selected_node = edit_node;
+            CurrentInstance.selectedEntity = edit_node;
             Cursor.Current = Cursors.WaitCursor;
 
             //populate info labels
@@ -457,7 +457,7 @@ namespace CathodeEditorGUI
             {
                 case EntityVariant.FUNCTION:
                     nodetypedesc = NodeDBEx.GetParameterName(((FunctionEntity)edit_node).function);
-                    node_to_flowgraph_jump.Visible = (commandsPAK.GetFlowgraph(((FunctionEntity)edit_node).function) != null);
+                    node_to_flowgraph_jump.Visible = (CurrentInstance.commandsPAK.GetFlowgraph(((FunctionEntity)edit_node).function) != null);
                     selected_node_name.Text = NodeDBEx.GetEntityName(edit_node.nodeID);
                     editCAGEAnimationKeyframes.Visible = nodetypedesc == "CAGEAnimation";
                     break;
@@ -515,7 +515,7 @@ namespace CathodeEditorGUI
                         break;
                     case CathodeDataType.SHORT_GUID:
                         parameterGUI = new GUI_HexDataType();
-                        ((GUI_HexDataType)parameterGUI).PopulateUI((CathodeResource)this_param, edit_node.parameters[i].paramID); 
+                        ((GUI_HexDataType)parameterGUI).PopulateUI((CathodeResource)this_param, edit_node.parameters[i].paramID, CurrentInstance.selectedFlowgraph); 
                         break;
                     case CathodeDataType.SPLINE_DATA:
                         parameterGUI = new GUI_SplineDataType();
@@ -544,11 +544,11 @@ namespace CathodeEditorGUI
             //out_pin_goto.Enabled = currentlyShowingChildLinks;
             showLinkParents.Text = (currentlyShowingChildLinks) ? "Parents" : "Children";
 
-            if (selected_flowgraph == null || selected_node == null) return;
+            if (CurrentInstance.selectedFlowgraph == null || CurrentInstance.selectedEntity == null) return;
             if (currentlyShowingChildLinks)
             {
                 //Child links (pins out of this node)
-                foreach (CathodeNodeLink link in selected_node.childLinks)
+                foreach (CathodeNodeLink link in CurrentInstance.selectedEntity.childLinks)
                 {
                     node_children.Items.Add(
                         /*"[" + link.connectionID.ToString() + "] " +*/
@@ -561,12 +561,12 @@ namespace CathodeEditorGUI
             else
             {
                 //Parent links (pins into this node)
-                List<CathodeEntity> ents = selected_flowgraph.GetEntities();
+                List<CathodeEntity> ents = CurrentInstance.selectedFlowgraph.GetEntities();
                 foreach (CathodeEntity entity in ents)
                 {
                     foreach (CathodeNodeLink link in entity.childLinks)
                     {
-                        if (link.childID != selected_node.nodeID) continue;
+                        if (link.childID != CurrentInstance.selectedEntity.nodeID) continue;
                         node_children.Items.Add(
                             /*"[" + link.connectionID.ToString() + "] " +*/
                             NodeDBEx.GetEntityName(entity.nodeID) +
@@ -581,14 +581,14 @@ namespace CathodeEditorGUI
         /* Add a new parameter */
         private void addNewParameter_Click(object sender, EventArgs e)
         {
-            if (selected_node == null) return;
-            CathodeEditorGUI_AddParameter add_parameter = new CathodeEditorGUI_AddParameter(selected_node);
+            if (CurrentInstance.selectedEntity == null) return;
+            CathodeEditorGUI_AddParameter add_parameter = new CathodeEditorGUI_AddParameter(CurrentInstance.selectedEntity);
             add_parameter.Show();
             add_parameter.FormClosed += new FormClosedEventHandler(param_add_closed);
         }
         private void param_add_closed(Object sender, FormClosedEventArgs e)
         {
-            LoadNode(selected_node);
+            LoadNode(CurrentInstance.selectedEntity);
             this.BringToFront();
             this.Focus();
         }
@@ -596,15 +596,15 @@ namespace CathodeEditorGUI
         /* Remove a parameter */
         private void removeParameter_Click(object sender, EventArgs e)
         {
-            if (selected_node == null) return;
-            if (selected_node.parameters.Count == 0) return;
-            CathodeEditorGUI_RemoveParameter remove_parameter = new CathodeEditorGUI_RemoveParameter(selected_node);
+            if (CurrentInstance.selectedEntity == null) return;
+            if (CurrentInstance.selectedEntity.parameters.Count == 0) return;
+            CathodeEditorGUI_RemoveParameter remove_parameter = new CathodeEditorGUI_RemoveParameter(CurrentInstance.selectedEntity);
             remove_parameter.Show();
             remove_parameter.FormClosed += new FormClosedEventHandler(param_remove_closed);
         }
         private void param_remove_closed(Object sender, FormClosedEventArgs e)
         {
-            LoadNode(selected_node);
+            LoadNode(CurrentInstance.selectedEntity);
             this.BringToFront();
             this.Focus();
         }
@@ -612,7 +612,7 @@ namespace CathodeEditorGUI
         /* Edit CAGEAnimation keyframes */
         private void editCAGEAnimationKeyframes_Click(object sender, EventArgs e)
         {
-            CAGEAnimationEditor keyframeEditor = new CAGEAnimationEditor((CAGEAnimation)selected_node, selected_flowgraph);
+            CAGEAnimationEditor keyframeEditor = new CAGEAnimationEditor((CAGEAnimation)CurrentInstance.selectedEntity);
             keyframeEditor.Show();
         }
 
@@ -722,11 +722,20 @@ namespace CathodeEditorGUI
 
         private void button1_Click_1(object sender, EventArgs e)
         {
+            /*
             LoadCommandsPAK(@"DLC\BSPNOSTROMO_TWOTEAMS_PATCH");
-            CathodeFlowgraph flow = commandsPAK.Flowgraphs.FirstOrDefault(o => o.name == @"DLC\PREORDER\PODLC_TWOTEAMS");
+            CathodeFlowgraph flow = CurrentInstance.commandsPAK.Flowgraphs.FirstOrDefault(o => o.name == @"DLC\PREORDER\PODLC_TWOTEAMS");
             CathodeEntity ent = flow.GetEntities().FirstOrDefault(o => o.nodeID == new cGUID("03-2D-F4-38"));
-            CAGEAnimationEditor edit = new CAGEAnimationEditor((CATHODE.Commands.CAGEAnimation)ent, flow);
+            CAGEAnimationEditor edit = new CAGEAnimationEditor((CATHODE.Commands.CAGEAnimation)ent);
             edit.Show();
+            */
+            LoadCommandsPAK(@"HAB_ShoppingCentre");
+            foreach (CathodeFlowgraph flow in CurrentInstance.commandsPAK.Flowgraphs)
+            {
+                flow.proxies.Clear();
+            }
+            modifyMVR.Checked = false;
+            SaveCommandsPAK();
         }
     }
 

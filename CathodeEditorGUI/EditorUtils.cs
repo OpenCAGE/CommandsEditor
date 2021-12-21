@@ -11,18 +11,10 @@ namespace CathodeEditorGUI
 {
     static class EditorUtils
     {
-        private static CommandsPAK _pak = null;
-        public static CommandsPAK Commands { get { return _pak; } }
-
-        public static void Setup(CommandsPAK commandsPAK)
-        {
-            _pak = commandsPAK;
-        }
-
         /* Utility: generate nice entity name to display in UI */
         public static string GenerateNodeName(CathodeEntity entity, CathodeFlowgraph currentFlowgraph)
         {
-            if (_pak == null) return "";
+            if (CurrentInstance.commandsPAK == null) return "";
             string desc = "";
             switch (entity.variant)
             {
@@ -52,7 +44,7 @@ namespace CathodeEditorGUI
         public static List<string> GenerateParameterList(CathodeEntity entity)
         {
             List<string> items = new List<string>();
-            if (_pak == null) return items;
+            if (CurrentInstance.commandsPAK == null) return items;
             switch (entity.variant)
             {
                 case EntityVariant.FUNCTION:
@@ -61,7 +53,7 @@ namespace CathodeEditorGUI
                     items.Add("trigger"); items.Add("reference"); //TODO: populate all params from EntityMethodInterface?
                     if (options == null)
                     {
-                        CathodeFlowgraph flow = _pak.GetFlowgraph(function);
+                        CathodeFlowgraph flow = CurrentInstance.commandsPAK.GetFlowgraph(function);
                         if (flow == null) break;
                         for (int i = 0; i < flow.datatypes.Count; i++)
                         {
@@ -109,9 +101,9 @@ namespace CathodeEditorGUI
         }
 
         /* Resolve a node hierarchy */
-        public static CathodeEntity ResolveHierarchy(List<cGUID> hierarchy, CathodeFlowgraph flowgraph, out CathodeFlowgraph containedFlowgraph)
+        public static CathodeEntity ResolveHierarchy(List<cGUID> hierarchy, out CathodeFlowgraph containedFlowgraph)
         {
-            CathodeFlowgraph currentFlowgraphToSearch = flowgraph;
+            CathodeFlowgraph currentFlowgraphToSearch = CurrentInstance.selectedFlowgraph;
             CathodeEntity entity = null;
             for (int i = 0; i < hierarchy.Count; i++)
             {
@@ -119,7 +111,7 @@ namespace CathodeEditorGUI
                 entity = currentFlowgraphToSearch.GetEntityByID(hierarchy[i]);
                 if (entity != null && entity.variant == EntityVariant.FUNCTION)
                 {
-                    CathodeFlowgraph flowRef = _pak.GetFlowgraph(((FunctionEntity)entity).function);
+                    CathodeFlowgraph flowRef = CurrentInstance.commandsPAK.GetFlowgraph(((FunctionEntity)entity).function);
                     if (flowRef != null) currentFlowgraphToSearch = flowRef;
                 }
             }
@@ -128,9 +120,9 @@ namespace CathodeEditorGUI
         }
 
         /* Display an entity hierarchy as a string */
-        public static string HierarchyToString(List<cGUID> hierarchy, CathodeFlowgraph flowgraph)
+        public static string HierarchyToString(List<cGUID> hierarchy)
         {
-            CathodeFlowgraph currentFlowgraphToSearch = flowgraph;
+            CathodeFlowgraph currentFlowgraphToSearch = CurrentInstance.selectedFlowgraph;
             CathodeEntity entity = null;
             string combinedString = "";
             for (int i = 0; i < hierarchy.Count; i++)
@@ -140,7 +132,7 @@ namespace CathodeEditorGUI
                 if (entity != null) combinedString += NodeDBEx.GetEntityName(entity.nodeID) + " -> ";
                 if (entity != null && entity.variant == EntityVariant.FUNCTION)
                 {
-                    CathodeFlowgraph flowRef = _pak.GetFlowgraph(((FunctionEntity)entity).function);
+                    CathodeFlowgraph flowRef = CurrentInstance.commandsPAK.GetFlowgraph(((FunctionEntity)entity).function);
                     if (flowRef != null) currentFlowgraphToSearch = flowRef;
                 }
             }

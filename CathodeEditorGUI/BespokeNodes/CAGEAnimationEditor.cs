@@ -15,7 +15,7 @@ namespace CathodeEditorGUI
     public partial class CAGEAnimationEditor : Form
     {
         CAGEAnimation animNode = null;
-        public CAGEAnimationEditor(CAGEAnimation _node, CathodeFlowgraph _flow)
+        public CAGEAnimationEditor(CAGEAnimation _node)
         {
             animNode = _node;
             InitializeComponent();
@@ -77,7 +77,7 @@ namespace CathodeEditorGUI
                 }
 
                 CathodeFlowgraph flow;
-                CathodeEntity resolvedEntity = EditorUtils.ResolveHierarchy(animNode.keyframeHeaders[i].connectedEntity, _flow, out flow);
+                CathodeEntity resolvedEntity = EditorUtils.ResolveHierarchy(animNode.keyframeHeaders[i].connectedEntity, out flow);
                 if (resolvedEntity != null)
                 {
                     TextBox controllingEntity = new TextBox();

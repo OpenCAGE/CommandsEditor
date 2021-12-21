@@ -22,7 +22,7 @@ namespace CathodeEditorGUI.UserControls
 
         private CathodeResource resRef = null;
 
-        public void PopulateUI(CathodeResource cResource, cGUID paramID)
+        public void PopulateUI(CathodeResource cResource, cGUID paramID, CathodeFlowgraph selected_flowgraph)
         {
             GUID_VARIABLE_DUMMY.Text = NodeDBEx.GetParameterName(paramID) + " (" + paramID.ToString() + ")";
             resRef = cResource;
@@ -34,6 +34,17 @@ namespace CathodeEditorGUI.UserControls
                 textBox5.Text = BitConverter.ToString(new byte[] { cResource.resourceID.val[2] });
                 textBox4.Text = BitConverter.ToString(new byte[] { cResource.resourceID.val[3] });
             }
+
+            /*
+            List<RenderableElement> redsList = new List<RenderableElement>();
+            CathodeResourceReference resRef = selected_flowgraph.resources.FirstOrDefault(o => o.resourceRefID == cResource.resourceID);
+            if (resRef == null || resRef.entryType != CathodeResourceReferenceType.RENDERABLE_INSTANCE) return;
+            for (int p = 0; p < resRef.entryCountREDS; p++) redsList.Add(redsBIN.GetRenderableElement(resRef.entryIndexREDS + p));
+            if (resRef.entryCountREDS != redsList.Count || redsList.Count == 0) return; //TODO: handle this nicer
+            CathodeEditorGUI_EditResource res_editor = new CathodeEditorGUI_EditResource(modelPAK.GetCS2s(), redsList);
+            res_editor.Show();
+            res_editor.EditComplete += new FinishedEditingIndexes(res_editor_submitted);
+            */
         }
 
         private void textBox2_TextChanged(object sender, EventArgs e)

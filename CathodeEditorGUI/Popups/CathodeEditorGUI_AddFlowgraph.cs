@@ -23,9 +23,9 @@ namespace CathodeEditorGUI
         private void button1_Click(object sender, EventArgs e)
         {
             if (textBox1.Text == "") return;
-            for (int i = 0; i < EditorUtils.Commands.Flowgraphs.Count; i++)
+            for (int i = 0; i < CurrentInstance.commandsPAK.Flowgraphs.Count; i++)
             {
-                if (EditorUtils.Commands.Flowgraphs[i].name == textBox1.Text)
+                if (CurrentInstance.commandsPAK.Flowgraphs[i].name == textBox1.Text)
                 {
                     MessageBox.Show("Failed to create flowgraph.\nA flowgraph with this name already exists.", "Flowgraph already exists.", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
@@ -34,7 +34,7 @@ namespace CathodeEditorGUI
 
             CathodeFlowgraph newFlowgraph = new CathodeFlowgraph();
             newFlowgraph.name = textBox1.Text;
-            EditorUtils.Commands.Flowgraphs.Add(newFlowgraph);
+            CurrentInstance.commandsPAK.Flowgraphs.Add(newFlowgraph);
             this.Close();
         }
     }

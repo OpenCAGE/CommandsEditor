@@ -90,6 +90,7 @@
     <Compile Include="CathodeEditorGUI.designer.cs">
       <DependentUpon>CathodeEditorGUI.cs</DependentUpon>
     </Compile>
+    <Compile Include="CurrentInstance.cs" />
     <Compile Include="NodeDBEx.cs" />
     <Compile Include="EditorUtils.cs" />
     <Compile Include="Popups\CathodeEditorGUI_AddNode.cs">

@@ -16,16 +16,14 @@ namespace CathodeEditorGUI
     {
         private static List<ShortGUIDDescriptor> customParamNames = null;
         private static List<ShortGUIDDescriptor> customNodeNames = null;
-        private static CommandsPAK pakRef = null;
 
         //To be called directly after loading the pak using CathodeLib
-        public static void LoadNamesForPak(ref CommandsPAK pak)
+        public static void LoadNames()
         {
             customParamNames = new List<ShortGUIDDescriptor>();
             customNodeNames = new List<ShortGUIDDescriptor>();
-            pakRef = pak;
 
-            BinaryReader reader = new BinaryReader(File.OpenRead(pak.Filepath));
+            BinaryReader reader = new BinaryReader(File.OpenRead(CurrentInstance.commandsPAK.Filepath));
             reader.BaseStream.Position = 20;
             int end_of_pak = reader.ReadInt32() * 4;
             end_of_pak += reader.ReadInt32() * 4;
@@ -56,9 +54,9 @@ namespace CathodeEditorGUI
         }
 
         //To be called directly after saving the pak using CathodeLib
-        public static void SaveNamesForPak(string pak)
+        public static void SaveNames()
         {
-            BinaryWriter writer = new BinaryWriter(File.OpenWrite(pak));
+            BinaryWriter writer = new BinaryWriter(File.OpenWrite(CurrentInstance.commandsPAK.Filepath));
             writer.BaseStream.Position = writer.BaseStream.Length;
 
             writer.Write(customParamNames.Count);
@@ -106,7 +104,7 @@ namespace CathodeEditorGUI
         public static string GetParameterName(cGUID id)
         {
             ShortGUIDDescriptor desc = customParamNames.FirstOrDefault(o => o.ID == id);
-            if (desc == null) return NodeDB.GetCathodeName(id, pakRef);
+            if (desc == null) return NodeDB.GetCathodeName(id, CurrentInstance.commandsPAK);
             return desc.Description;
         }
         public static string GetEntityName(cGUID id)
