@@ -117,28 +117,28 @@ namespace CathodeEditorGUI
 
             if (modifyMVR.Checked)
             {
-                ModelsMVR modelsMVR = new ModelsMVR(CurrentInstance.commandsPAK.Filepath.Replace("COMMANDS.PAK", "MODELS.MVR"));
-                for (int i = 0; i < modelsMVR.Movers.Count; i++)
+                CathodeMovers mvr = new CathodeMovers(CurrentInstance.commandsPAK.Filepath.Replace("COMMANDS.PAK", "MODELS.MVR"));
+                for (int i = 0; i < mvr.Movers.Count; i++)
                 {
                     /*
-                    if (modelsMVR.Movers[i].IsThisTypeID == MoverType.STATIC_MODEL)
+                    if (mvr.Movers[i].IsThisTypeID == MoverType.STATIC_MODEL)
                     {
-                        CathodeFlowgraph flowgraph = GetFlowgraphContainingNode(modelsMVR.Movers[i].NodeID);
+                        CathodeFlowgraph flowgraph = GetFlowgraphContainingNode(mvr.Movers[i].NodeID);
                         if (flowgraph == null) continue;
                         if (flowgraph.name.Contains("REQUIRED_ASSETS") && flowgraph.name.Contains("VFX")) continue;
-                        CathodeMover mover = modelsMVR.Movers[i];
+                        MoverEntry mover = mvr.Movers[i];
                         mover.IsThisTypeID = MoverType.DYNAMIC_MODEL;
-                        modelsMVR.Movers[i] = mover;
+                        mvr.Movers[i] = mover;
                     }
                     */
-                    CathodeMover mover = modelsMVR.Movers[i];
+                    MoverEntry mover = mvr.Movers[i];
                     //This is a **TEMP** hack!
                     mover.Transform = Matrix4x4.CreateScale(new Vector3(0, 0, 0)) * Matrix4x4.CreateFromQuaternion(Quaternion.Identity) * Matrix4x4.CreateTranslation(new Vector3(-9999.0f, -9999.0f, -9999.0f));
                     mover.IsThisTypeID = MoverType.DYNAMIC_MODEL;
                     mover.NodeID = new cGUID("00-00-00-00");
-                    modelsMVR.Movers[i] = mover;
+                    mvr.Movers[i] = mover;
                 }
-                if (modelsMVR.FilePath != "") modelsMVR.Save();
+                if (mvr.FilePath != "") mvr.Save();
             }
 
             Cursor.Current = Cursors.Default;
@@ -626,11 +626,11 @@ namespace CathodeEditorGUI
         {
             return;
 
-            ModelsMVR modelsMVR = new ModelsMVR(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\ENV\PRODUCTION\BSP_TORRENS\WORLD\MODELS.MVR");
-            //modelsMVR.Movers = modelsMVR.Movers.OrderBy(o => o.IsThisTypeID).ToList<alien_mvr_entry>();
-            for (int i = 0; i < modelsMVR.Movers.Count; i++)
+            CathodeMovers mvr = new CathodeMovers(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\ENV\PRODUCTION\BSP_TORRENS\WORLD\MODELS.MVR");
+            //CathodeMovers.Movers = CathodeMovers.Movers.OrderBy(o => o.IsThisTypeID).ToList<alien_mvr_entry>();
+            for (int i = 0; i < mvr.Movers.Count; i++)
             {
-                CathodeMover mvr = modelsMVR.Movers[i];
+                MoverEntry thisMvr = mvr.Movers[i];
 
                 //Transform
                 //CollisionMapThingID
@@ -640,10 +640,10 @@ namespace CathodeEditorGUI
                 //EnvironmentMapBINIndex
                 //IsThisTypeID
 
-                mvr.Transform = Matrix4x4.CreateScale(new Vector3(0,0,0)) * Matrix4x4.CreateFromQuaternion(Quaternion.Identity) * Matrix4x4.CreateTranslation(new Vector3(-9999.0f, -9999.0f, -9999.0f));
+                thisMvr.Transform = Matrix4x4.CreateScale(new Vector3(0,0,0)) * Matrix4x4.CreateFromQuaternion(Quaternion.Identity) * Matrix4x4.CreateTranslation(new Vector3(-9999.0f, -9999.0f, -9999.0f));
                 //mvr.IsThisTypeID = MoverType.DYNAMIC_MODEL;
-                mvr.IsThisTypeID = MoverType.DYNAMIC_MODEL;
-                mvr.NodeID = new cGUID("00-00-00-00");
+                thisMvr.IsThisTypeID = MoverType.DYNAMIC_MODEL;
+                thisMvr.NodeID = new cGUID("00-00-00-00");
 
                 //mvr.Unknowns5_ = new Vector4(0, 0, 0, 0);
 
@@ -706,16 +706,16 @@ namespace CathodeEditorGUI
                 //mvr.Unknown3_.Z = 0;
                 //mvr.Unknown3_.W = 0;
 
-                modelsMVR.Movers[i] = mvr;
+                mvr.Movers[i] = thisMvr;
             }
-            modelsMVR.Save();
+            mvr.Save();
 
-            modelsMVR = new ModelsMVR(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\ENV\PRODUCTION\TECH_HUB\WORLD\MODELS.MVR");
-            modelsMVR.Save();
+            mvr = new CathodeMovers(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\ENV\PRODUCTION\TECH_HUB\WORLD\MODELS.MVR");
+            mvr.Save();
 
-            modelsMVR = new ModelsMVR(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\ENV\PRODUCTION\BSP_TORRENS\WORLD\MODELS.MVR");
-            modelsMVR.Movers.RemoveAll(o => o.NodeID != new cGUID(0));
-            modelsMVR.Save();
+            mvr = new CathodeMovers(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\ENV\PRODUCTION\BSP_TORRENS\WORLD\MODELS.MVR");
+            mvr.Movers.RemoveAll(o => o.NodeID != new cGUID(0));
+            mvr.Save();
 
             Application.Exit();
         }
