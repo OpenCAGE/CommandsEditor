@@ -34,6 +34,7 @@ namespace CathodeEditorGUI
 
             CathodeFlowgraph newFlowgraph = new CathodeFlowgraph();
             newFlowgraph.name = textBox1.Text;
+            newFlowgraph.nodeID = Utilities.GenerateGUID(DateTime.Now.ToString("G"));
             CurrentInstance.commandsPAK.Flowgraphs.Add(newFlowgraph);
             this.Close();
         }
