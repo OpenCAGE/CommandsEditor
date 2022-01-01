@@ -40,6 +40,7 @@ namespace CathodeEditorGUI
                 thisDesc.Description = reader.ReadString();
                 customParamNames.Add(thisDesc);
             }
+            for (int i = 0; i < customParamNames.Count; i++) customParamNames[i].ID_cachedstring = customParamNames[i].ID.ToString();
 
             int number_of_custom_node_names = reader.ReadInt32();
             for (int i = 0; i < number_of_custom_node_names; i++)
@@ -49,6 +50,7 @@ namespace CathodeEditorGUI
                 thisDesc.Description = reader.ReadString();
                 customNodeNames.Add(thisDesc);
             }
+            for (int i = 0; i < customNodeNames.Count; i++) customNodeNames[i].ID_cachedstring = customNodeNames[i].ID.ToString();
 
             reader.Close();
         }
@@ -79,7 +81,7 @@ namespace CathodeEditorGUI
         //Add new param/node names
         public static void AddNewParameterName(cGUID id, string name)
         {
-            customParamNames.Add(new ShortGUIDDescriptor{ ID = id, Description = name });
+            customParamNames.Add(new ShortGUIDDescriptor{ ID = id, ID_cachedstring = id.ToString(), Description = name });
         }
         public static void RemoveNewParameterName(cGUID id)
         {
@@ -90,7 +92,7 @@ namespace CathodeEditorGUI
         //--
         public static void AddNewNodeName(cGUID id, string name)
         {
-            customNodeNames.Add(new ShortGUIDDescriptor { ID = id, Description = name });
+            customNodeNames.Add(new ShortGUIDDescriptor { ID = id, ID_cachedstring = id.ToString(), Description = name });
         }
         public static void RemoveNewNodeName(cGUID id)
         {
@@ -103,13 +105,15 @@ namespace CathodeEditorGUI
         //We fall through to NodeDB here which means we can replace all NodeDB calls to Cathode/Editor name in the GUI app
         public static string GetParameterName(cGUID id)
         {
-            ShortGUIDDescriptor desc = customParamNames.FirstOrDefault(o => o.ID == id);
+            string id_string = id.ToString();
+            ShortGUIDDescriptor desc = customParamNames.FirstOrDefault(o => o.ID_cachedstring == id_string);
             if (desc == null) return NodeDB.GetCathodeName(id, CurrentInstance.commandsPAK);
             return desc.Description;
         }
         public static string GetEntityName(cGUID id)
         {
-            ShortGUIDDescriptor desc = customNodeNames.FirstOrDefault(o => o.ID == id);
+            string id_string = id.ToString();
+            ShortGUIDDescriptor desc = customNodeNames.FirstOrDefault(o => o.ID_cachedstring == id_string);
             if (desc == null) return NodeDB.GetEditorName(id);
             return desc.Description;
         }

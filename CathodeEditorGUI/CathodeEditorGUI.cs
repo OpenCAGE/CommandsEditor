@@ -26,6 +26,29 @@ namespace CathodeEditorGUI
             InitializeComponent();
             treeHelper = new TreeUtility(FileTree);
 
+            /*
+            string level = "TECH_RND_HZDLAB";
+            string[] files = Directory.GetFiles(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\ENV\", "COMMANDS.PAK", SearchOption.AllDirectories);
+            CommandsPAK newFlows = new CommandsPAK(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\ENV\PRODUCTION\" + level + @"\WORLD\COMMANDS.PAK");
+            for (int i = 0; i < files.Length; i++)
+            {
+                if (files[i].Contains(level)) continue;
+                CommandsPAK pak = new CommandsPAK(files[i]);
+                for (int x = 0;x < pak.Flowgraphs.Count; x++)
+                {
+                    //if (pak.Flowgraphs[x].name.Contains(":")) continue;
+                    CathodeFlowgraph flow = newFlows.Flowgraphs.FirstOrDefault(o => o.nodeID == pak.Flowgraphs[x].nodeID);
+                    if (flow == null)
+                    {
+                        newFlows.Flowgraphs.Add(pak.Flowgraphs[x]);
+                    }
+                }
+                if (i == 2) break;
+            }
+            newFlows.Save();
+            return;
+            */
+
             //Populate available maps
             List<string> all_map_dirs = MapDirectories.GetAvailable();
             env_list.Items.Clear();
@@ -42,7 +65,9 @@ namespace CathodeEditorGUI
         {
             if (clear_flowgraph_list)
             {
+                FileTree.BeginUpdate();
                 FileTree.Nodes.Clear();
+                FileTree.EndUpdate();
                 first_executed_flowgraph.Text = "Entry point: ";
                 flowgraph_count.Text = "Flowgraph count: ";
             }
@@ -50,8 +75,10 @@ namespace CathodeEditorGUI
             {
                 node_search_box.Text = "";
                 groupBox1.Text = "Selected Flowgraph Content";
+                flowgraph_content.BeginUpdate();
                 flowgraph_content.Items.Clear();
                 flowgraph_content_RAW.Clear();
+                flowgraph_content.EndUpdate();
                 CurrentInstance.selectedFlowgraph = null;
             }
             if (clear_parameter_list)
@@ -361,8 +388,10 @@ namespace CathodeEditorGUI
         {
             List<string> matched = new List<string>();
             foreach (string item in flowgraph_content_RAW) if (item.ToUpper().Contains(node_search_box.Text.ToUpper())) matched.Add(item);
+            flowgraph_content.BeginUpdate();
             flowgraph_content.Items.Clear();
             for (int i = 0; i < matched.Count; i++) flowgraph_content.Items.Add(matched[i]);
+            flowgraph_content.EndUpdate();
         }
 
         /* Load a flowgraph into the UI */
@@ -374,6 +403,7 @@ namespace CathodeEditorGUI
             CurrentInstance.selectedFlowgraph = entry;
             Cursor.Current = Cursors.WaitCursor;
 
+            flowgraph_content.BeginUpdate();
             List<CathodeEntity> entities = entry.GetEntities();
             for (int i = 0; i < entities.Count; i++)
             {
@@ -381,6 +411,8 @@ namespace CathodeEditorGUI
                 flowgraph_content.Items.Add(desc);
                 flowgraph_content_RAW.Add(desc);
             }
+            flowgraph_content.EndUpdate();
+
             groupBox1.Text = entry.name;
             Cursor.Current = Cursors.Default;
         }
@@ -537,6 +569,7 @@ namespace CathodeEditorGUI
         List<cGUID> linkedNodeListIDs = new List<cGUID>();
         private void RefreshNodeLinks()
         {
+            node_children.BeginUpdate();
             node_children.Items.Clear();
             linkedNodeListIDs.Clear();
             addNewLink.Enabled = currentlyShowingChildLinks;
@@ -576,6 +609,7 @@ namespace CathodeEditorGUI
                     }
                 }
             }
+            node_children.EndUpdate();
         }
 
         /* Add a new parameter */
