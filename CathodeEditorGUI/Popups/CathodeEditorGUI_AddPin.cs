@@ -25,6 +25,9 @@ namespace CathodeEditorGUI
 
             _entityList = flowgraph.GetEntities();
             _entityList = _entityList.OrderBy(o => NodeDBEx.GetEntityName(o.nodeID)).ToList<CathodeEntity>();
+
+            pin_out_node.BeginUpdate();
+            pin_in_node.BeginUpdate();
             for (int i = 0; i < _entityList.Count; i++)
             {
                 string this_node_string = EditorUtils.GenerateNodeName(_entityList[i], flowgraph);
@@ -33,8 +36,16 @@ namespace CathodeEditorGUI
 
                 if (pin_out_node.SelectedIndex == -1 && _entityList[i].nodeID == entity.nodeID) pin_out_node.SelectedIndex = i;
             }
-            if (pin_out_node.SelectedIndex == -1) throw new Exception("Failed to fetch entity in flowgraph!");
             pin_out_node.Enabled = false;
+            pin_out_node.EndUpdate();
+            pin_in_node.EndUpdate();
+
+            if (pin_out_node.SelectedIndex == -1)
+            {
+                MessageBox.Show("Failed to fetch entity in flowgraph!", "Failure!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                this.Close();
+                return;
+            }
 
             RefreshPinInParams();
             RefreshPinOutParams();
@@ -64,10 +75,12 @@ namespace CathodeEditorGUI
         }
         private void RefreshPinInParams()
         {
+            pin_in_param.BeginUpdate();
             pin_in_param.Items.Clear();
             if (pin_in_node.SelectedIndex == -1) return;
             List<string> items = EditorUtils.GenerateParameterList(_entityList[pin_in_node.SelectedIndex]);
             for (int i = 0; i < items.Count; i++) pin_in_param.Items.Add(items[i]);
+            pin_in_param.EndUpdate();
         }
 
         private void pin_out_node_SelectedIndexChanged(object sender, EventArgs e)
@@ -76,10 +89,12 @@ namespace CathodeEditorGUI
         }
         private void RefreshPinOutParams()
         {
+            pin_out_param.BeginUpdate();
             pin_out_param.Items.Clear();
             if (pin_out_node.SelectedIndex == -1) return;
             List<string> items = EditorUtils.GenerateParameterList(_entityList[pin_out_node.SelectedIndex]);
             for (int i = 0; i < items.Count; i++) pin_out_param.Items.Add(items[i]);
+            pin_out_param.EndUpdate();
         }
     }
 }
