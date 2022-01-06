@@ -158,7 +158,7 @@ namespace CathodeEditorGUI
                         mvr.Movers[i] = mover;
                     }
                     */
-                    MoverEntry mover = mvr.Movers[i];
+                    MOVER_DESCRIPTOR mover = mvr.Movers[i];
                     //This is a **TEMP** hack!
                     mover.Transform = Matrix4x4.CreateScale(new Vector3(0, 0, 0)) * Matrix4x4.CreateFromQuaternion(Quaternion.Identity) * Matrix4x4.CreateTranslation(new Vector3(-9999.0f, -9999.0f, -9999.0f));
                     mover.IsThisTypeID = MoverType.DYNAMIC_MODEL;
@@ -664,7 +664,7 @@ namespace CathodeEditorGUI
             //CathodeMovers.Movers = CathodeMovers.Movers.OrderBy(o => o.IsThisTypeID).ToList<alien_mvr_entry>();
             for (int i = 0; i < mvr.Movers.Count; i++)
             {
-                MoverEntry thisMvr = mvr.Movers[i];
+                MOVER_DESCRIPTOR thisMvr = mvr.Movers[i];
 
                 //Transform
                 //CollisionMapThingID
