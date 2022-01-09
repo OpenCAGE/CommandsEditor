@@ -3,6 +3,7 @@ using CATHODE.Commands;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -48,26 +49,29 @@ namespace CathodeEditorGUI
         private static List<EntityDefinition> entities = new List<EntityDefinition>();
         static CathodeEntityDatabase()
         {
-            JObject cathode_node_db = JObject.Parse(Properties.Resources.cathode_entities);
-            foreach (JObject node in cathode_node_db["nodes"])
+            MemoryStream readerStream = new MemoryStream(Properties.Resources.cathode_entities);
+            BinaryReader reader = new BinaryReader(readerStream);
+            int entry_count = reader.ReadInt32();
+            for (int i = 0; i < entry_count; i++)
             {
                 EntityDefinition entityDefinition = new EntityDefinition();
-                entityDefinition.guidName = node["name"].Value<string>().Replace(@"\\", @"\");
+                entityDefinition.guidName = reader.ReadString().Replace(@"\\", @"\");
                 entityDefinition.guid = Utilities.GenerateGUID(entityDefinition.guidName);
-                entityDefinition.className = node["class"].Value<string>();
+                entityDefinition.className = reader.ReadString();
                 entityDefinition.parameters = new List<ParameterDefinition>();
-                foreach (JObject parameter in node["parameters"])
+                int param_count = reader.ReadInt32();
+                for (int x = 0; x < param_count; x++)
                 {
                     ParameterDefinition parameterDefinition = new ParameterDefinition();
-                    parameterDefinition.name = parameter["name"].Value<string>();
-                    parameterDefinition.variable = parameter["variable"].Value<string>();
-                    parameterDefinition.usage = (ParameterUsage)Enum.Parse(typeof(ParameterUsage), parameter["usage"].Value<string>().ToUpper());
-                    parameterDefinition.datatype = parameter["datatype"].Value<string>();
+                    parameterDefinition.name = reader.ReadString();
+                    parameterDefinition.variable = reader.ReadString();
+                    parameterDefinition.usage = (ParameterUsage)Enum.Parse(typeof(ParameterUsage), reader.ReadString().ToUpper());
+                    parameterDefinition.datatype = reader.ReadString();
                     entityDefinition.parameters.Add(parameterDefinition);
                 }
                 entities.Add(entityDefinition);
             }
-            entities = entities.OrderBy(o => o.guidName).ToList();
+            entities = entities.OrderBy(o => o.className).ToList();
         }
 
         public static List<EntityDefinition> GetEntities()
@@ -101,7 +105,7 @@ namespace CathodeEditorGUI
         public static List<ParameterDefinition> GetParametersFromEntity(cGUID node_guid)
         {
             string node_name = GetEntityClassName(node_guid);
-            return entities.FirstOrDefault(o => o.guidName == node_name).parameters;
+            return entities.FirstOrDefault(o => o.className == node_name).parameters;
         }
 
         public static ParameterDefinition GetParameterFromEntity(string node_name, string parameter_name, bool usingGuidName = true)
@@ -111,7 +115,7 @@ namespace CathodeEditorGUI
         public static ParameterDefinition GetParameterFromEntity(cGUID node_guid, string parameter_name)
         {
             string node_name = GetEntityClassName(node_guid);
-            return entities.FirstOrDefault(o => o.guidName == node_name).parameters.FirstOrDefault(o => o.name == parameter_name);
+            return entities.FirstOrDefault(o => o.className == node_name).parameters.FirstOrDefault(o => o.name == parameter_name);
         }
 
         public static CathodeParameter ParameterDefinitionToParameter(ParameterDefinition def)

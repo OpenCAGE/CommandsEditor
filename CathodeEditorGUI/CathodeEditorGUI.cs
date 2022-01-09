@@ -231,7 +231,7 @@ namespace CathodeEditorGUI
                     if (entity != null)
                     {
                         LoadFlowgraph(flow.name);
-                        LoadNode(entity);
+                        LoadEntity(entity);
                     }
                     break;
                 }
@@ -241,7 +241,7 @@ namespace CathodeEditorGUI
                     if (entity != null)
                     {
                         LoadFlowgraph(flow.name);
-                        LoadNode(entity);
+                        LoadEntity(entity);
                     }
                     break;
                 }
@@ -315,8 +315,16 @@ namespace CathodeEditorGUI
         private void flowgraph_content_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (flowgraph_content.SelectedIndex == -1 || CurrentInstance.selectedFlowgraph == null) return;
-            CathodeEntity thisNodeInfo = CurrentInstance.selectedFlowgraph.GetEntityByID(new cGUID(flowgraph_content.SelectedItem.ToString().Substring(1, 11)));
-            if (thisNodeInfo != null) LoadNode(thisNodeInfo);
+            try
+            {
+                cGUID entityID = new cGUID(flowgraph_content.SelectedItem.ToString().Substring(1, 11));
+                CathodeEntity thisEntity = CurrentInstance.selectedFlowgraph.GetEntityByID(entityID);
+                if (thisEntity != null) LoadEntity(thisEntity);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Encountered an issue while looking up entity!\nPlease report this on GitHub!\n" + ex.Message, "Failed lookup!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         /* Add new out pin */
@@ -393,7 +401,7 @@ namespace CathodeEditorGUI
                     if (thisNodeInfo != null) break;
                 }
             }
-            if (thisNodeInfo != null) LoadNode(thisNodeInfo);
+            if (thisNodeInfo != null) LoadEntity(thisNodeInfo);
         }
 
         /* Flip the child link list to contain parents (this is an expensive search, which is why we only do it on request) */
@@ -448,7 +456,7 @@ namespace CathodeEditorGUI
         private void add_node_closed(Object sender, FormClosedEventArgs e)
         {
             LoadFlowgraph(CurrentInstance.selectedFlowgraph.name);
-            LoadNode(CurrentInstance.selectedEntity); //TODO: load returned new node
+            LoadEntity(CurrentInstance.selectedEntity); //TODO: load returned new node
             this.BringToFront();
             this.Focus();
         }
@@ -493,7 +501,7 @@ namespace CathodeEditorGUI
         }
 
         /* Load a entity into the UI */
-        private void LoadNode(CathodeEntity edit_node)
+        private void LoadEntity(CathodeEntity edit_node)
         {
             if (edit_node == null) return;
 
@@ -642,7 +650,7 @@ namespace CathodeEditorGUI
         }
         private void param_add_closed(Object sender, FormClosedEventArgs e)
         {
-            LoadNode(CurrentInstance.selectedEntity);
+            LoadEntity(CurrentInstance.selectedEntity);
             this.BringToFront();
             this.Focus();
         }
@@ -658,7 +666,7 @@ namespace CathodeEditorGUI
         }
         private void param_remove_closed(Object sender, FormClosedEventArgs e)
         {
-            LoadNode(CurrentInstance.selectedEntity);
+            LoadEntity(CurrentInstance.selectedEntity);
             this.BringToFront();
             this.Focus();
         }

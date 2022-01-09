@@ -71,34 +71,12 @@ namespace CathodeEditorGUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {
-        ///  &quot;nodes&quot;: [
-        ///    {
-        ///      &quot;name&quot;: &quot;ScriptInterface&quot;,
-        ///      &quot;class&quot;: &quot;ScriptInterface&quot;,
-        ///      &quot;parameters&quot;: [
-        ///        {
-        ///          &quot;name&quot;: &quot;delete_me&quot;,
-        ///          &quot;variable&quot;: &quot;m_delete_me&quot;,
-        ///          &quot;usage&quot;: &quot;state&quot;,
-        ///          &quot;datatype&quot;: &quot;bool&quot;
-        ///        },
-        ///        {
-        ///          &quot;name&quot;: &quot;name&quot;,
-        ///          &quot;variable&quot;: &quot;m_name&quot;,
-        ///          &quot;usage&quot;: &quot;parameter&quot;,
-        ///          &quot;datatype&quot;: &quot;String&quot;
-        ///        }
-        ///      ]
-        ///    },
-        ///    {
-        ///      &quot;name&quot;: &quot;NetworkProxy&quot;,
-        ///      &quot;class&quot;: &quot;NetworkProxy&quot;,
-        ///      &quot;par [rest of string was truncated]&quot;;.
+        ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static string cathode_entities {
+        internal static byte[] cathode_entities {
             get {
-                return ResourceManager.GetString("cathode_entities", resourceCulture);
+                object obj = ResourceManager.GetObject("cathode_entities", resourceCulture);
+                return ((byte[])(obj));
             }
         }
     }

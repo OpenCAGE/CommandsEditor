@@ -87,6 +87,7 @@ namespace CathodeEditorGUI
             {
                 FunctionEntity newEntity = new FunctionEntity(thisID);
                 newEntity.function = CathodeEntityDatabase.GetEntityAtIndex(comboBox1.SelectedIndex).guid;
+                //Todo: auto populate params here
                 flow.functions.Add(newEntity);
                 NodeDBEx.AddNewNodeName(thisID, textBox1.Text);
             }
