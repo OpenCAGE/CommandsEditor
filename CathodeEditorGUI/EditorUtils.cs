@@ -49,6 +49,9 @@ namespace CathodeEditorGUI
             {
                 case EntityVariant.FUNCTION:
                     cGUID function = ((FunctionEntity)entity).function;
+                    List<CathodeEntityDatabase.ParameterDefinition> parameters = CathodeEntityDatabase.GetParametersFromEntity(function);
+                    for (int i = 0; i < parameters.Count; i++) items.Add(parameters[i].name);
+                    /*
                     string[] options = NodeDB.GetEntityParameterList(NodeDBEx.GetParameterName(function));
                     items.Add("trigger"); items.Add("reference"); //TODO: populate all params from EntityMethodInterface?
                     if (options == null)
@@ -68,6 +71,7 @@ namespace CathodeEditorGUI
                             if (!items.Contains(options[i])) items.Add(options[i]);
                         }
                     }
+                    */
                     break;
                 case EntityVariant.DATATYPE:
                     items.Add(NodeDBEx.GetParameterName(((DatatypeEntity)entity).parameter));

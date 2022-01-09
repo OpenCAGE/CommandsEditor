@@ -23,7 +23,9 @@ namespace CathodeEditorGUI
             param_datatype.SelectedIndex = 0;
 
             List<string> options = EditorUtils.GenerateParameterList(_node);
+            param_name.BeginUpdate();
             for (int i = 0; i < options.Count; i++) param_name.Items.Add(options[i]);
+            param_name.EndUpdate();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -98,7 +100,7 @@ namespace CathodeEditorGUI
         {
             param_datatype.Enabled = true;
             if (node.variant != EntityVariant.FUNCTION) return;
-            CathodeEntityDatabase.ParameterDefinition def = CathodeEntityDatabase.GetParameterFromNodeByNodeName(NodeDB.GetCathodeName(((FunctionEntity)node).function), param_name.Text);
+            CathodeEntityDatabase.ParameterDefinition def = CathodeEntityDatabase.GetParameterFromEntity(((FunctionEntity)node).function, param_name.Text);
             if (def.name == null) return;
             if (def.usage == CathodeEntityDatabase.ParameterUsage.TARGET)
             {
