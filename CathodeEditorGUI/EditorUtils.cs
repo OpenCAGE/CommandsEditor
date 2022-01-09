@@ -50,28 +50,32 @@ namespace CathodeEditorGUI
                 case EntityVariant.FUNCTION:
                     cGUID function = ((FunctionEntity)entity).function;
                     List<CathodeEntityDatabase.ParameterDefinition> parameters = CathodeEntityDatabase.GetParametersFromEntity(function);
-                    for (int i = 0; i < parameters.Count; i++) items.Add(parameters[i].name);
-                    /*
-                    string[] options = NodeDB.GetEntityParameterList(NodeDBEx.GetParameterName(function));
-                    items.Add("trigger"); items.Add("reference"); //TODO: populate all params from EntityMethodInterface?
-                    if (options == null)
+                    if (parameters != null)
                     {
-                        CathodeFlowgraph flow = CurrentInstance.commandsPAK.GetFlowgraph(function);
-                        if (flow == null) break;
-                        for (int i = 0; i < flow.datatypes.Count; i++)
-                        {
-                            string to_add = NodeDBEx.GetParameterName(flow.datatypes[i].parameter);
-                            if (!items.Contains(to_add)) items.Add(to_add);
-                        }
+                        for (int i = 0; i < parameters.Count; i++) items.Add(parameters[i].name);
                     }
                     else
                     {
-                        for (int i = 0; i < options.Length; i++)
+                        string[] options = NodeDB.GetEntityParameterList(NodeDBEx.GetParameterName(function));
+                        items.Add("trigger"); items.Add("reference"); //TODO: populate all params from EntityMethodInterface?
+                        if (options == null)
                         {
-                            if (!items.Contains(options[i])) items.Add(options[i]);
+                            CathodeFlowgraph flow = CurrentInstance.commandsPAK.GetFlowgraph(function);
+                            if (flow == null) break;
+                            for (int i = 0; i < flow.datatypes.Count; i++)
+                            {
+                                string to_add = NodeDBEx.GetParameterName(flow.datatypes[i].parameter);
+                                if (!items.Contains(to_add)) items.Add(to_add);
+                            }
+                        }
+                        else
+                        {
+                            for (int i = 0; i < options.Length; i++)
+                            {
+                                if (!items.Contains(options[i])) items.Add(options[i]);
+                            }
                         }
                     }
-                    */
                     break;
                 case EntityVariant.DATATYPE:
                     items.Add(NodeDBEx.GetParameterName(((DatatypeEntity)entity).parameter));

@@ -16,6 +16,7 @@ namespace CathodeEditorGUI
     public partial class CathodeEditorGUI_AddParameter : Form
     {
         CathodeEntity node = null;
+        bool loadedParamsFromDB = false;
         public CathodeEditorGUI_AddParameter(CathodeEntity _node)
         {
             node = _node;
@@ -26,6 +27,7 @@ namespace CathodeEditorGUI
             param_name.BeginUpdate();
             for (int i = 0; i < options.Count; i++) param_name.Items.Add(options[i]);
             param_name.EndUpdate();
+            loadedParamsFromDB = (CathodeEntityDatabase.GetParametersFromEntity(((FunctionEntity)_node).function) != null);
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -100,6 +102,7 @@ namespace CathodeEditorGUI
         {
             param_datatype.Enabled = true;
             if (node.variant != EntityVariant.FUNCTION) return;
+            if (!loadedParamsFromDB) return;
             CathodeEntityDatabase.ParameterDefinition def = CathodeEntityDatabase.GetParameterFromEntity(((FunctionEntity)node).function, param_name.Text);
             if (def.name == null) return;
             if (def.usage == CathodeEntityDatabase.ParameterUsage.TARGET)
