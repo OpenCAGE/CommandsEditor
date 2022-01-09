@@ -907,7 +907,12 @@ namespace CathodeEditorGUI
             {
                 FunctionEntity newEntity = new FunctionEntity(thisID);
                 CathodeFlowgraph selectedFlowgraph = availableFlows.FirstOrDefault(o => o.name == comboBox1.Text);
-                if (selectedFlowgraph == null) throw new Exception("Failed to look up flowgraph.");
+                if (selectedFlowgraph == null)
+                {
+                    //throw new Exception("Failed to look up flowgraph.");
+                    MessageBox.Show("Failed to look up flowgraph!\nPlease report this issue on GitHub.\n\n" + comboBox1.Text, "Could not find flowgraph!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
                 newEntity.function = selectedFlowgraph.nodeID;
                 flow.functions.Add(newEntity);
                 NodeDBEx.AddNewNodeName(thisID, textBox1.Text);

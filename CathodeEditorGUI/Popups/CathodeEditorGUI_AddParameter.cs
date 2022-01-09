@@ -84,5 +84,33 @@ namespace CathodeEditorGUI
 
             this.Close();
         }
+
+        //wip
+        private void param_name_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            AutoSelectDataType();
+        }
+        private void param_name_TextChanged(object sender, EventArgs e)
+        {
+            AutoSelectDataType();
+        }
+        private void AutoSelectDataType()
+        {
+            param_datatype.Enabled = true;
+            if (node.variant != EntityVariant.FUNCTION) return;
+            CathodeEntityDatabase.ParameterDefinition def = CathodeEntityDatabase.GetParameterFromNodeByNodeName(NodeDB.GetCathodeName(((FunctionEntity)node).function), param_name.Text);
+            if (def.name == null) return;
+            if (def.usage == CathodeEntityDatabase.ParameterUsage.TARGET)
+            {
+                param_datatype.Text = "FLOAT";
+            }
+            else
+            {
+                CathodeParameter param = CathodeEntityDatabase.ParameterDefinitionToParameter(def);
+                if (param == null) return;
+                param_datatype.Text = param.dataType.ToString();
+            }
+            param_datatype.Enabled = false;
+        }
     }
 }

@@ -59,6 +59,8 @@
             this.param_name.Name = "param_name";
             this.param_name.Size = new System.Drawing.Size(641, 21);
             this.param_name.TabIndex = 5;
+            this.param_name.SelectedIndexChanged += new System.EventHandler(this.param_name_SelectedIndexChanged);
+            this.param_name.TextChanged += new System.EventHandler(this.param_name_TextChanged);
             // 
             // create_param
             // 

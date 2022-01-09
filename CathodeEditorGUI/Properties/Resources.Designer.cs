@@ -69,5 +69,37 @@ namespace CathodeEditorGUI.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {
+        ///  &quot;nodes&quot;: [
+        ///    {
+        ///      &quot;name&quot;: &quot;ScriptInterface&quot;,
+        ///      &quot;class&quot;: &quot;ScriptInterface&quot;,
+        ///      &quot;parameters&quot;: [
+        ///        {
+        ///          &quot;name&quot;: &quot;delete_me&quot;,
+        ///          &quot;variable&quot;: &quot;m_delete_me&quot;,
+        ///          &quot;usage&quot;: &quot;state&quot;,
+        ///          &quot;datatype&quot;: &quot;bool&quot;
+        ///        },
+        ///        {
+        ///          &quot;name&quot;: &quot;name&quot;,
+        ///          &quot;variable&quot;: &quot;m_name&quot;,
+        ///          &quot;usage&quot;: &quot;parameter&quot;,
+        ///          &quot;datatype&quot;: &quot;String&quot;
+        ///        }
+        ///      ]
+        ///    },
+        ///    {
+        ///      &quot;name&quot;: &quot;NetworkProxy&quot;,
+        ///      &quot;class&quot;: &quot;NetworkProxy&quot;,
+        ///      &quot;par [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string cathode_entities {
+            get {
+                return ResourceManager.GetString("cathode_entities", resourceCulture);
+            }
+        }
     }
 }
