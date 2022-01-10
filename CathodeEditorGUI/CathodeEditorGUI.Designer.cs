@@ -72,6 +72,8 @@
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.modifyMVR = new System.Windows.Forms.CheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.duplicateSelectedNode = new System.Windows.Forms.Button();
+            this.renameSelectedNode = new System.Windows.Forms.Button();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -333,6 +335,8 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.renameSelectedNode);
+            this.groupBox4.Controls.Add(this.duplicateSelectedNode);
             this.groupBox4.Controls.Add(this.removeSelectedNode);
             this.groupBox4.Controls.Add(this.addNewNode);
             this.groupBox4.Controls.Add(this.flowgraph_content);
@@ -347,9 +351,9 @@
             // 
             // removeSelectedNode
             // 
-            this.removeSelectedNode.Location = new System.Drawing.Point(232, 690);
+            this.removeSelectedNode.Location = new System.Drawing.Point(117, 690);
             this.removeSelectedNode.Name = "removeSelectedNode";
-            this.removeSelectedNode.Size = new System.Drawing.Size(219, 23);
+            this.removeSelectedNode.Size = new System.Drawing.Size(111, 23);
             this.removeSelectedNode.TabIndex = 148;
             this.removeSelectedNode.Text = "Remove Selected";
             this.removeSelectedNode.UseVisualStyleBackColor = true;
@@ -359,7 +363,7 @@
             // 
             this.addNewNode.Location = new System.Drawing.Point(6, 690);
             this.addNewNode.Name = "addNewNode";
-            this.addNewNode.Size = new System.Drawing.Size(219, 23);
+            this.addNewNode.Size = new System.Drawing.Size(111, 23);
             this.addNewNode.TabIndex = 147;
             this.addNewNode.Text = "Add Entity";
             this.addNewNode.UseVisualStyleBackColor = true;
@@ -510,6 +514,26 @@
         " produce unwanted issues.");
             this.modifyMVR.UseVisualStyleBackColor = true;
             // 
+            // duplicateSelectedNode
+            // 
+            this.duplicateSelectedNode.Location = new System.Drawing.Point(228, 690);
+            this.duplicateSelectedNode.Name = "duplicateSelectedNode";
+            this.duplicateSelectedNode.Size = new System.Drawing.Size(111, 23);
+            this.duplicateSelectedNode.TabIndex = 149;
+            this.duplicateSelectedNode.Text = "Duplicate Selected";
+            this.duplicateSelectedNode.UseVisualStyleBackColor = true;
+            this.duplicateSelectedNode.Click += new System.EventHandler(this.duplicateSelectedNode_Click);
+            // 
+            // renameSelectedNode
+            // 
+            this.renameSelectedNode.Location = new System.Drawing.Point(339, 690);
+            this.renameSelectedNode.Name = "renameSelectedNode";
+            this.renameSelectedNode.Size = new System.Drawing.Size(111, 23);
+            this.renameSelectedNode.TabIndex = 150;
+            this.renameSelectedNode.Text = "Rename Selected";
+            this.renameSelectedNode.UseVisualStyleBackColor = true;
+            this.renameSelectedNode.Click += new System.EventHandler(this.renameSelectedNode_Click);
+            // 
             // CathodeEditorGUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -585,5 +609,7 @@
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Button editCAGEAnimationKeyframes;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button duplicateSelectedNode;
+        private System.Windows.Forms.Button renameSelectedNode;
     }
 }

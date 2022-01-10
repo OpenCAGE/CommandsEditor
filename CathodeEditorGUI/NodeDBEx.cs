@@ -81,7 +81,9 @@ namespace CathodeEditorGUI
         //Add new param/node names
         public static void AddNewParameterName(cGUID id, string name)
         {
-            customParamNames.Add(new ShortGUIDDescriptor{ ID = id, ID_cachedstring = id.ToString(), Description = name });
+            ShortGUIDDescriptor desc = customParamNames.FirstOrDefault(o => o.ID == id);
+            if (desc != null) desc.Description = name;
+            else customParamNames.Add(new ShortGUIDDescriptor{ ID = id, ID_cachedstring = id.ToString(), Description = name });
         }
         public static void RemoveNewParameterName(cGUID id)
         {
@@ -92,7 +94,9 @@ namespace CathodeEditorGUI
         //--
         public static void AddNewNodeName(cGUID id, string name)
         {
-            customNodeNames.Add(new ShortGUIDDescriptor { ID = id, ID_cachedstring = id.ToString(), Description = name });
+            ShortGUIDDescriptor desc = customNodeNames.FirstOrDefault(o => o.ID == id);
+            if (desc != null) desc.Description = name;
+            else customNodeNames.Add(new ShortGUIDDescriptor { ID = id, ID_cachedstring = id.ToString(), Description = name });
         }
         public static void RemoveNewNodeName(cGUID id)
         {

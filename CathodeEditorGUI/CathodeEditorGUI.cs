@@ -4,7 +4,7 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Numerics;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows.Forms;
 using CATHODE;
 using CATHODE.Commands;
@@ -25,6 +25,9 @@ namespace CathodeEditorGUI
         {
             InitializeComponent();
             treeHelper = new TreeUtility(FileTree);
+
+            //CathodeStringDB cathodeStringDB = new CathodeStringDB(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\GLOBAL\ANIM_STRING_DB_DEBUG.BIN");
+            //CathodeStringDB cathodeStringDB2 = new CathodeStringDB(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\GLOBAL\ANIM_STRING_DB.BIN");
 
             /*
             string level = "TECH_RND_HZDLAB";
@@ -180,7 +183,10 @@ namespace CathodeEditorGUI
                     */
                     MOVER_DESCRIPTOR mover = mvr.Movers[i];
                     //This is a **TEMP** hack!
-                    mover.Transform = Matrix4x4.CreateScale(new Vector3(0, 0, 0)) * Matrix4x4.CreateFromQuaternion(Quaternion.Identity) * Matrix4x4.CreateTranslation(new Vector3(-9999.0f, -9999.0f, -9999.0f));
+                    mover.Transform = 
+                        System.Numerics.Matrix4x4.CreateScale(new System.Numerics.Vector3(0, 0, 0)) * 
+                        System.Numerics.Matrix4x4.CreateFromQuaternion(System.Numerics.Quaternion.Identity) * 
+                        System.Numerics.Matrix4x4.CreateTranslation(new System.Numerics.Vector3(-9999.0f, -9999.0f, -9999.0f));
                     mover.IsThisTypeID = MoverType.DYNAMIC_MODEL;
                     mover.NodeID = new cGUID("00-00-00-00");
                     mvr.Movers[i] = mover;
@@ -500,6 +506,88 @@ namespace CathodeEditorGUI
             LoadFlowgraph(CurrentInstance.selectedFlowgraph.name);
         }
 
+        /* Duplicate selected entity */
+        private void duplicateSelectedNode_Click(object sender, EventArgs e)
+        {
+            if (CurrentInstance.selectedEntity == null) return;
+            if (!ConfirmAction("Are you sure you want to duplicate this entity?")) return;
+
+            //Hacky way of avoiding the cloneable interface
+            MemoryStream SaveFileStream = new MemoryStream();
+            new BinaryFormatter().Serialize(SaveFileStream, CurrentInstance.selectedEntity);
+            SaveFileStream.Position = 0;
+            CathodeEntity newEnt = (CathodeEntity)new BinaryFormatter().Deserialize(SaveFileStream);
+            SaveFileStream.Close();
+
+            //Generate new node ID and name
+            newEnt.nodeID = Utilities.GenerateGUID(DateTime.Now.ToString("G"));
+            NodeDBEx.AddNewNodeName(newEnt.nodeID, NodeDBEx.GetEntityName(CurrentInstance.selectedEntity.nodeID) + "_clone");
+
+            //Add parent links in to this node that linked in to the other node
+            List<CathodeEntity> ents = CurrentInstance.selectedFlowgraph.GetEntities();
+            List<CathodeNodeLink> newLinks = new List<CathodeNodeLink>();
+            int num_of_new_things = 1;
+            foreach (CathodeEntity entity in ents)
+            {
+                newLinks.Clear();
+                foreach (CathodeNodeLink link in entity.childLinks)
+                {
+                    if (link.childID == CurrentInstance.selectedEntity.nodeID)
+                    {
+                        CathodeNodeLink newLink = new CathodeNodeLink();
+                        newLink.connectionID = Utilities.GenerateGUID(DateTime.Now.ToString("G") + num_of_new_things.ToString()); num_of_new_things++;
+                        newLink.childID = newEnt.nodeID;
+                        newLink.childParamID = link.childParamID;
+                        newLink.parentParamID = link.parentParamID;
+                        newLinks.Add(newLink);
+                    }
+                }
+                if (newLinks.Count != 0) entity.childLinks.AddRange(newLinks);
+            }
+
+            //Save back to flowgraph
+            switch (newEnt.variant)
+            {
+                case EntityVariant.FUNCTION:
+                    CurrentInstance.selectedFlowgraph.functions.Add((FunctionEntity)newEnt);
+                    break;
+                case EntityVariant.DATATYPE:
+                    CurrentInstance.selectedFlowgraph.datatypes.Add((DatatypeEntity)newEnt);
+                    break;
+                case EntityVariant.PROXY:
+                    CurrentInstance.selectedFlowgraph.proxies.Add((ProxyEntity)newEnt);
+                    break;
+                case EntityVariant.OVERRIDE:
+                    CurrentInstance.selectedFlowgraph.overrides.Add((OverrideEntity)newEnt);
+                    break;
+                case EntityVariant.NOT_SETUP:
+                    CurrentInstance.selectedFlowgraph.unknowns.Add(newEnt);
+                    break;
+            }
+            LoadFlowgraph(CurrentInstance.selectedFlowgraph.name);
+        }
+
+        /* Rename selected entity */
+        private void renameSelectedNode_Click(object sender, EventArgs e)
+        {
+            if (CurrentInstance.selectedEntity == null) return;
+            CathodeEditorGUI_RenameNode rename_node = new CathodeEditorGUI_RenameNode(CurrentInstance.selectedEntity.nodeID);
+            rename_node.Show();
+            rename_node.FormClosed += new FormClosedEventHandler(rename_node_closed);
+        }
+        private void rename_node_closed(Object sender, FormClosedEventArgs e)
+        {
+            if (((CathodeEditorGUI_RenameNode)sender).didSave &&
+                ((CathodeEditorGUI_RenameNode)sender).NodeID == CurrentInstance.selectedEntity.nodeID)
+            {
+                NodeDBEx.AddNewNodeName(CurrentInstance.selectedEntity.nodeID, ((CathodeEditorGUI_RenameNode)sender).NodeName);
+                LoadFlowgraph(CurrentInstance.selectedFlowgraph.name);
+                LoadEntity(CurrentInstance.selectedEntity); //TODO: load returned new node
+            }
+            this.BringToFront();
+            this.Focus();
+        }
+
         /* Load a entity into the UI */
         private void LoadEntity(CathodeEntity edit_node)
         {
@@ -702,7 +790,10 @@ namespace CathodeEditorGUI
                 //EnvironmentMapBINIndex
                 //IsThisTypeID
 
-                thisMvr.Transform = Matrix4x4.CreateScale(new Vector3(0,0,0)) * Matrix4x4.CreateFromQuaternion(Quaternion.Identity) * Matrix4x4.CreateTranslation(new Vector3(-9999.0f, -9999.0f, -9999.0f));
+                thisMvr.Transform = 
+                    System.Numerics.Matrix4x4.CreateScale(new System.Numerics.Vector3(0,0,0)) * 
+                    System.Numerics.Matrix4x4.CreateFromQuaternion(System.Numerics.Quaternion.Identity) * 
+                    System.Numerics.Matrix4x4.CreateTranslation(new System.Numerics.Vector3(-9999.0f, -9999.0f, -9999.0f));
                 //mvr.IsThisTypeID = MoverType.DYNAMIC_MODEL;
                 thisMvr.IsThisTypeID = MoverType.DYNAMIC_MODEL;
                 thisMvr.NodeID = new cGUID("00-00-00-00");
@@ -805,11 +896,11 @@ namespace CathodeEditorGUI
     {
         public MoverType type;
         public CathodeEntity entity;
-        public Matrix4x4 transform;
+        public System.Numerics.Matrix4x4 transform;
 
-        public void SetTransform(Vector3 position, Quaternion rotation, Vector3 scale)
+        public void SetTransform(System.Numerics.Vector3 position, System.Numerics.Quaternion rotation, System.Numerics.Vector3 scale)
         {
-            transform = Matrix4x4.CreateScale(scale) * Matrix4x4.CreateFromQuaternion(rotation) * Matrix4x4.CreateTranslation(position);
+            transform = System.Numerics.Matrix4x4.CreateScale(scale) * System.Numerics.Matrix4x4.CreateFromQuaternion(rotation) * System.Numerics.Matrix4x4.CreateTranslation(position);
         }
     }
 }

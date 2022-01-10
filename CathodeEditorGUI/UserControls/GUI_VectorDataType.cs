@@ -26,9 +26,9 @@ namespace CathodeEditorGUI.UserControls
         {
             vectorVal = cVec;
             VECTOR_VARIABLE_DUMMY.Text = NodeDBEx.GetParameterName(paramID) + " (" + paramID.ToString() + ")";
-            POS_X_1.Value = (decimal)cVec.value.X;
-            POS_Y_1.Value = (decimal)cVec.value.Y;
-            POS_Z_1.Value = (decimal)cVec.value.Z;
+            POS_X_1.Value = (decimal)cVec.value.x;
+            POS_Y_1.Value = (decimal)cVec.value.y;
+            POS_Z_1.Value = (decimal)cVec.value.z;
             //POS_X_1.DataBindings.Add("Value", (decimal)cVec.value.X, "");
             //POS_Y_1.DataBindings.Add("Value", (decimal)cVec.value.Y, "");
             //POS_Z_1.DataBindings.Add("Value", (decimal)cVec.value.Z, "");
@@ -36,17 +36,17 @@ namespace CathodeEditorGUI.UserControls
 
         private void POS_X_1_ValueChanged(object sender, EventArgs e)
         {
-            vectorVal.value.X = (float)POS_X_1.Value;
+            vectorVal.value.x = (float)POS_X_1.Value;
         }
 
         private void POS_Y_1_ValueChanged(object sender, EventArgs e)
         {
-            vectorVal.value.Y = (float)POS_Y_1.Value;
+            vectorVal.value.y = (float)POS_Y_1.Value;
         }
 
         private void POS_Z_1_ValueChanged(object sender, EventArgs e)
         {
-            vectorVal.value.Z = (float)POS_Z_1.Value;
+            vectorVal.value.z = (float)POS_Z_1.Value;
         }
     }
 }
