@@ -91,6 +91,8 @@ namespace CathodeEditorGUI
                 selected_node_type.Text = "";
                 selected_node_type_description.Text = "";
                 selected_node_name.Text = "";
+                for (int i = 0; i < NodeParams.Controls.Count; i++) 
+                    NodeParams.Controls[i].Dispose();
                 NodeParams.Controls.Clear();
                 node_children.Items.Clear();
                 currentlyShowingChildLinks = true;
