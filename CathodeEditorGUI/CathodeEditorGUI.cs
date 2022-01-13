@@ -657,7 +657,7 @@ namespace CathodeEditorGUI
         /* Perform a partial UI reload for a newly added entity */
         private void ReloadUIForNewEntity(CathodeEntity newEnt)
         {
-            if (CurrentInstance.selectedFlowgraph == null) return;
+            if (CurrentInstance.selectedFlowgraph == null || newEnt == null) return;
             if (currentSearch == "")
             {
                 string newNodeName = EditorUtils.GenerateNodeName(newEnt, CurrentInstance.selectedFlowgraph);
