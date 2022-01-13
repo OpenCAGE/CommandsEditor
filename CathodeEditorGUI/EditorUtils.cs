@@ -50,10 +50,12 @@ namespace CathodeEditorGUI
         /* Generate a cache of entity names to save re-generating them every time */
         private static bool hasFinishedCachingEntityNames = false;
         private static Dictionary<cGUID, string> cachedEntityName = new Dictionary<cGUID, string>();
-        public static void GenerateEntityNameCache()
+        public static void GenerateEntityNameCache(CathodeEditorGUI mainInst)
         {
-            hasFinishedCachingEntityNames = false;
             if (CurrentInstance.commandsPAK == null) return;
+            hasFinishedCachingEntityNames = false;
+            mainInst.EnableLoadingOfPaks(false);
+            cachedEntityName.Clear();
             for (int i = 0; i < CurrentInstance.commandsPAK.Flowgraphs.Count; i++)
             {
                 List<CathodeEntity> ents = CurrentInstance.commandsPAK.Flowgraphs[i].GetEntities();
@@ -66,6 +68,7 @@ namespace CathodeEditorGUI
                     cachedEntityName.Remove(queuedForRemoval[i]);
                 queuedForRemoval.Clear();
             }
+            mainInst.EnableLoadingOfPaks(true);
             hasFinishedCachingEntityNames = true;
         }
         private static List<cGUID> queuedForRemoval = new List<cGUID>();

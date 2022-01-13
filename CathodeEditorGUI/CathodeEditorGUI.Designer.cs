@@ -512,9 +512,9 @@
             // 
             // groupBox10
             // 
+            this.groupBox10.Controls.Add(this.load_commands_pak);
             this.groupBox10.Controls.Add(this.modifyMVR);
             this.groupBox10.Controls.Add(this.env_list);
-            this.groupBox10.Controls.Add(this.load_commands_pak);
             this.groupBox10.Controls.Add(this.save_commands_pak);
             this.groupBox10.Location = new System.Drawing.Point(8, 3);
             this.groupBox10.Name = "groupBox10";
