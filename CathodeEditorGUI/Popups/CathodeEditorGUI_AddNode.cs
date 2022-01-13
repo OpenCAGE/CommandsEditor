@@ -15,6 +15,8 @@ namespace CathodeEditorGUI
 {
     public partial class CathodeEditorGUI_AddNode : Form
     {
+        public CathodeEntity NewEntity = null;
+
         CathodeFlowgraph flow = null;
         List<CathodeFlowgraph> availableFlows = null;
         List<CathodeEntityDatabase.EntityDefinition> availableEntities = null;
@@ -82,6 +84,7 @@ namespace CathodeEditorGUI
                 flow.datatypes.Add(newEntity);
                 if (NodeDB.GetCathodeName(newEntity.parameter) == newEntity.parameter.ToString())
                     NodeDBEx.AddNewParameterName(newEntity.parameter, textBox1.Text);
+                NewEntity = newEntity;
             }
             else if (radioButton2.Checked)
             {
@@ -90,6 +93,7 @@ namespace CathodeEditorGUI
                 //Todo: auto populate params here
                 flow.functions.Add(newEntity);
                 NodeDBEx.AddNewNodeName(thisID, textBox1.Text);
+                NewEntity = newEntity;
             }
             else if (radioButton3.Checked)
             {
@@ -104,6 +108,7 @@ namespace CathodeEditorGUI
                 newEntity.function = selectedFlowgraph.nodeID;
                 flow.functions.Add(newEntity);
                 NodeDBEx.AddNewNodeName(thisID, textBox1.Text);
+                NewEntity = newEntity;
             }
 
             this.Close();

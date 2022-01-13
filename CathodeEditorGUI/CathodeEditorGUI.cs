@@ -26,6 +26,11 @@ namespace CathodeEditorGUI
             InitializeComponent();
             treeHelper = new TreeUtility(FileTree);
 
+            //CathodeNavMesh navmesh = new CathodeNavMesh(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\ENV\PRODUCTION\BSP_TORRENS\WORLD\STATE_0\NAV_MESH");
+            //CathodeNavMesh navmesh_orig = new CathodeNavMesh(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\ENV\PRODUCTION\BSP_TORRENS\WORLD\STATE_0\NAV_MESH5");
+
+            //string bleh = "";
+
             //CathodeStringDB cathodeStringDB = new CathodeStringDB(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\GLOBAL\ANIM_STRING_DB_DEBUG.BIN");
             //CathodeStringDB cathodeStringDB2 = new CathodeStringDB(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\GLOBAL\ANIM_STRING_DB.BIN");
 
@@ -77,6 +82,7 @@ namespace CathodeEditorGUI
             if (clear_node_list)
             {
                 node_search_box.Text = "";
+                currentSearch = "";
                 groupBox1.Text = "Selected Flowgraph Content";
                 flowgraph_content.BeginUpdate();
                 flowgraph_content.Items.Clear();
@@ -420,14 +426,17 @@ namespace CathodeEditorGUI
         }
 
         /* Search node list */
+        private string currentSearch = "";
         private void node_search_btn_Click(object sender, EventArgs e)
         {
+            if (node_search_box.Text == currentSearch) return;
             List<string> matched = new List<string>();
             foreach (string item in flowgraph_content_RAW) if (item.ToUpper().Contains(node_search_box.Text.ToUpper())) matched.Add(item);
             flowgraph_content.BeginUpdate();
             flowgraph_content.Items.Clear();
             for (int i = 0; i < matched.Count; i++) flowgraph_content.Items.Add(matched[i]);
             flowgraph_content.EndUpdate();
+            currentSearch = node_search_box.Text;
         }
 
         /* Load a flowgraph into the UI */
@@ -463,8 +472,7 @@ namespace CathodeEditorGUI
         }
         private void add_node_closed(Object sender, FormClosedEventArgs e)
         {
-            LoadFlowgraph(CurrentInstance.selectedFlowgraph.name);
-            LoadEntity(CurrentInstance.selectedEntity); //TODO: load returned new node
+            ReloadUIForNewEntity(((CathodeEditorGUI_AddNode)sender).NewEntity);
             this.BringToFront();
             this.Focus();
         }
@@ -474,6 +482,8 @@ namespace CathodeEditorGUI
         {
             if (CurrentInstance.selectedEntity == null) return;
             if (!ConfirmAction("Are you sure you want to remove this entity?")) return;
+
+            string removedID = CurrentInstance.selectedEntity.nodeID.ToString();
 
             switch (CurrentInstance.selectedEntity.variant)
             {
@@ -505,7 +515,29 @@ namespace CathodeEditorGUI
                 entities[i].childLinks = nodeLinks;
             }
 
-            LoadFlowgraph(CurrentInstance.selectedFlowgraph.name);
+            int indexToRemove = -1;
+            for (int i = 0; i < flowgraph_content.Items.Count; i++)
+            {
+                if (flowgraph_content.Items[i].ToString().Substring(1, 11) == removedID)
+                {
+                    indexToRemove = i;
+                    break;
+                }
+            }
+            if (indexToRemove != -1) flowgraph_content.Items.RemoveAt(indexToRemove);
+            indexToRemove = -1;
+            for (int i = 0; i < flowgraph_content_RAW.Count; i++)
+            {
+                if (flowgraph_content_RAW[i].Substring(1, 11) == removedID)
+                {
+                    indexToRemove = i;
+                    break;
+                }
+            }
+            if (indexToRemove != -1) flowgraph_content_RAW.RemoveAt(indexToRemove);
+            else LoadFlowgraph(CurrentInstance.selectedFlowgraph.name);
+
+            ClearUI(false, false, true);
         }
 
         /* Duplicate selected entity */
@@ -566,7 +598,9 @@ namespace CathodeEditorGUI
                     CurrentInstance.selectedFlowgraph.unknowns.Add(newEnt);
                     break;
             }
-            LoadFlowgraph(CurrentInstance.selectedFlowgraph.name);
+
+            //Load in to UI
+            ReloadUIForNewEntity(newEnt);
         }
 
         /* Rename selected entity */
@@ -583,11 +617,45 @@ namespace CathodeEditorGUI
                 ((CathodeEditorGUI_RenameNode)sender).NodeID == CurrentInstance.selectedEntity.nodeID)
             {
                 NodeDBEx.AddNewNodeName(CurrentInstance.selectedEntity.nodeID, ((CathodeEditorGUI_RenameNode)sender).NodeName);
-                LoadFlowgraph(CurrentInstance.selectedFlowgraph.name);
-                LoadEntity(CurrentInstance.selectedEntity); //TODO: load returned new node
+                string nodeID = CurrentInstance.selectedEntity.nodeID.ToString();
+                string newNodeName = EditorUtils.GenerateNodeName(CurrentInstance.selectedEntity, CurrentInstance.selectedFlowgraph);
+                for (int i = 0; i < flowgraph_content.Items.Count; i++)
+                {
+                    if (flowgraph_content.Items[i].ToString().Substring(1, 11) == nodeID)
+                    {
+                        flowgraph_content.Items[i] = newNodeName;
+                        break;
+                    }
+                }
+                for (int i = 0; i < flowgraph_content_RAW.Count; i++)
+                {
+                    if (flowgraph_content_RAW[i].Substring(1, 11) == nodeID)
+                    {
+                        flowgraph_content_RAW[i] = newNodeName;
+                        break;
+                    }
+                }
+                LoadEntity(CurrentInstance.selectedEntity);
             }
             this.BringToFront();
             this.Focus();
+        }
+        
+        /* Perform a partial UI reload for a newly added entity */
+        private void ReloadUIForNewEntity(CathodeEntity newEnt)
+        {
+            if (CurrentInstance.selectedFlowgraph == null) return;
+            if (currentSearch == "")
+            {
+                string newNodeName = EditorUtils.GenerateNodeName(newEnt, CurrentInstance.selectedFlowgraph);
+                flowgraph_content.Items.Add(newNodeName);
+                flowgraph_content_RAW.Add(newNodeName);
+            }
+            else
+            {
+                LoadFlowgraph(CurrentInstance.selectedFlowgraph.name);
+            }
+            LoadEntity(newEnt);
         }
 
         /* Load a entity into the UI */
