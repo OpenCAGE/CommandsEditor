@@ -14,7 +14,14 @@ namespace CathodeEditorGUI
         /* Utility: generate nice entity name to display in UI */
         public static string GenerateNodeName(CathodeEntity entity, CathodeFlowgraph currentFlowgraph)
         {
-            if (CurrentInstance.commandsPAK == null) return "";
+            if (CurrentInstance.commandsPAK == null) 
+                return "";
+            if (hasFinishedCachingEntityNames && cachedEntityName.ContainsKey(entity.nodeID)) 
+                return cachedEntityName[entity.nodeID];
+            return GenerateNodeNameInternal(entity, currentFlowgraph);
+        }
+        private static string GenerateNodeNameInternal(CathodeEntity entity, CathodeFlowgraph currentFlowgraph)
+        {
             string desc = "";
             switch (entity.variant)
             {
@@ -38,6 +45,34 @@ namespace CathodeEditorGUI
                     break;
             }
             return "[" + entity.nodeID.ToString() + "] " + desc;
+        }
+
+        /* Generate a cache of entity names to save re-generating them every time */
+        private static bool hasFinishedCachingEntityNames = false;
+        private static Dictionary<cGUID, string> cachedEntityName = new Dictionary<cGUID, string>();
+        public static void GenerateEntityNameCache()
+        {
+            hasFinishedCachingEntityNames = false;
+            if (CurrentInstance.commandsPAK == null) return;
+            for (int i = 0; i < CurrentInstance.commandsPAK.Flowgraphs.Count; i++)
+            {
+                List<CathodeEntity> ents = CurrentInstance.commandsPAK.Flowgraphs[i].GetEntities();
+                for (int x = 0; x < ents.Count; x++)
+                    cachedEntityName.Add(ents[x].nodeID, GenerateNodeNameInternal(ents[x], CurrentInstance.commandsPAK.Flowgraphs[i]));
+            }
+            if (queuedForRemoval.Count != 0)
+            {
+                for (int i = 0; i < queuedForRemoval.Count; i++)
+                    cachedEntityName.Remove(queuedForRemoval[i]);
+                queuedForRemoval.Clear();
+            }
+            hasFinishedCachingEntityNames = true;
+        }
+        private static List<cGUID> queuedForRemoval = new List<cGUID>();
+        public static void PurgeEntityNameFromCache(cGUID entId)
+        {
+            if (!hasFinishedCachingEntityNames) queuedForRemoval.Add(entId);
+            else cachedEntityName.Remove(entId);
         }
 
         /* Utility: generate a list of suggested parameters for an entity */

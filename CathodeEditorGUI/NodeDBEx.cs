@@ -97,6 +97,7 @@ namespace CathodeEditorGUI
             ShortGUIDDescriptor desc = customNodeNames.FirstOrDefault(o => o.ID == id);
             if (desc != null) desc.Description = name;
             else customNodeNames.Add(new ShortGUIDDescriptor { ID = id, ID_cachedstring = id.ToString(), Description = name });
+            EditorUtils.PurgeEntityNameFromCache(id);
         }
         public static void RemoveNewNodeName(cGUID id)
         {

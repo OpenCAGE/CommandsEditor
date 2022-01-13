@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using CATHODE;
 using CATHODE.Commands;
@@ -141,6 +142,9 @@ namespace CathodeEditorGUI
 
             //Load in any custom param/node names
             NodeDBEx.LoadNames();
+
+            //Begin caching entity names so we don't have to keep generating them
+            Task.Factory.StartNew(() => EditorUtils.GenerateEntityNameCache());
 
             //Populate file tree
             treeHelper.UpdateFileTree(CurrentInstance.commandsPAK.GetFlowgraphNames().ToList());
@@ -959,6 +963,21 @@ namespace CathodeEditorGUI
             }
             modifyMVR.Checked = false;
             SaveCommandsPAK();
+        }
+
+        //An attempt at optimisation for entity naming
+        private bool hasFinishedCachingEntityNames = false;
+        private Dictionary<cGUID, string> cachedEntityName = new Dictionary<cGUID, string>();
+        private void GenerateEntityNameCache()
+        {
+            for (int i = 0; i < CurrentInstance.commandsPAK.Flowgraphs.Count; i++)
+            {
+                List<CathodeEntity> ents = CurrentInstance.commandsPAK.Flowgraphs[i].GetEntities();
+                for (int x = 0; x < ents.Count; x++)
+                {
+                    cachedEntityName.Add(ents[x].nodeID, EditorUtils.GenerateNodeName(ents[x], CurrentInstance.commandsPAK.Flowgraphs[i]));
+                }
+            }
         }
     }
 

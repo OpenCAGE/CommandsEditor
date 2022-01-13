@@ -55,6 +55,8 @@
             this.out_pin_goto = new System.Windows.Forms.Button();
             this.node_children = new System.Windows.Forms.ListBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.renameSelectedNode = new System.Windows.Forms.Button();
+            this.duplicateSelectedNode = new System.Windows.Forms.Button();
             this.removeSelectedNode = new System.Windows.Forms.Button();
             this.addNewNode = new System.Windows.Forms.Button();
             this.flowgraph_content = new System.Windows.Forms.ListBox();
@@ -72,8 +74,6 @@
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.modifyMVR = new System.Windows.Forms.CheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.duplicateSelectedNode = new System.Windows.Forms.Button();
-            this.renameSelectedNode = new System.Windows.Forms.Button();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -349,6 +349,26 @@
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Entities";
             // 
+            // renameSelectedNode
+            // 
+            this.renameSelectedNode.Location = new System.Drawing.Point(339, 690);
+            this.renameSelectedNode.Name = "renameSelectedNode";
+            this.renameSelectedNode.Size = new System.Drawing.Size(111, 23);
+            this.renameSelectedNode.TabIndex = 150;
+            this.renameSelectedNode.Text = "Rename Selected";
+            this.renameSelectedNode.UseVisualStyleBackColor = true;
+            this.renameSelectedNode.Click += new System.EventHandler(this.renameSelectedNode_Click);
+            // 
+            // duplicateSelectedNode
+            // 
+            this.duplicateSelectedNode.Location = new System.Drawing.Point(228, 690);
+            this.duplicateSelectedNode.Name = "duplicateSelectedNode";
+            this.duplicateSelectedNode.Size = new System.Drawing.Size(111, 23);
+            this.duplicateSelectedNode.TabIndex = 149;
+            this.duplicateSelectedNode.Text = "Duplicate Selected";
+            this.duplicateSelectedNode.UseVisualStyleBackColor = true;
+            this.duplicateSelectedNode.Click += new System.EventHandler(this.duplicateSelectedNode_Click);
+            // 
             // removeSelectedNode
             // 
             this.removeSelectedNode.Location = new System.Drawing.Point(117, 690);
@@ -481,11 +501,11 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(546, 17);
+            this.button1.Location = new System.Drawing.Point(594, 17);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(143, 23);
+            this.button1.Size = new System.Drawing.Size(95, 23);
             this.button1.TabIndex = 176;
-            this.button1.Text = "Edit Keyframes";
+            this.button1.Text = "debug button";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Visible = false;
             this.button1.Click += new System.EventHandler(this.button1_Click_1);
@@ -513,26 +533,6 @@
             this.toolTip1.SetToolTip(this.modifyMVR, "This option may solve some issues with deleted geometry persisting, however could" +
         " produce unwanted issues.");
             this.modifyMVR.UseVisualStyleBackColor = true;
-            // 
-            // duplicateSelectedNode
-            // 
-            this.duplicateSelectedNode.Location = new System.Drawing.Point(228, 690);
-            this.duplicateSelectedNode.Name = "duplicateSelectedNode";
-            this.duplicateSelectedNode.Size = new System.Drawing.Size(111, 23);
-            this.duplicateSelectedNode.TabIndex = 149;
-            this.duplicateSelectedNode.Text = "Duplicate Selected";
-            this.duplicateSelectedNode.UseVisualStyleBackColor = true;
-            this.duplicateSelectedNode.Click += new System.EventHandler(this.duplicateSelectedNode_Click);
-            // 
-            // renameSelectedNode
-            // 
-            this.renameSelectedNode.Location = new System.Drawing.Point(339, 690);
-            this.renameSelectedNode.Name = "renameSelectedNode";
-            this.renameSelectedNode.Size = new System.Drawing.Size(111, 23);
-            this.renameSelectedNode.TabIndex = 150;
-            this.renameSelectedNode.Text = "Rename Selected";
-            this.renameSelectedNode.UseVisualStyleBackColor = true;
-            this.renameSelectedNode.Click += new System.EventHandler(this.renameSelectedNode_Click);
             // 
             // CathodeEditorGUI
             // 
