@@ -60,7 +60,17 @@ namespace CathodeEditorGUI
             {
                 List<CathodeEntity> ents = CurrentInstance.commandsPAK.Flowgraphs[i].GetEntities();
                 for (int x = 0; x < ents.Count; x++)
-                    cachedEntityName.Add(ents[x].nodeID, GenerateNodeNameInternal(ents[x], CurrentInstance.commandsPAK.Flowgraphs[i]));
+                {
+                    if (cachedEntityName.ContainsKey(ents[x].nodeID))
+                    {
+                        //TODO: Figure out why this is happening... aren't node IDs meant to be unique to the whole PAK? Maybe it's per flowgraph?
+                        string bleh = "";
+                    }
+                    else
+                    {
+                        cachedEntityName.Add(ents[x].nodeID, GenerateNodeNameInternal(ents[x], CurrentInstance.commandsPAK.Flowgraphs[i]));
+                    }
+                }
             }
             if (queuedForRemoval.Count != 0)
             {

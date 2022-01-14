@@ -89,6 +89,16 @@ namespace CathodeEditorGUI
             else if (radioButton2.Checked)
             {
                 FunctionEntity newEntity = new FunctionEntity(thisID);
+                //Todo: find a nicer way of instancing functionentity types
+                switch (comboBox1.Text)
+                {
+                    case "CAGEAnimation":
+                        newEntity = new CAGEAnimation(thisID);
+                        break;
+                    case "TriggerSequence":
+                        newEntity = new TriggerSequence(thisID);
+                        break;
+                }
                 newEntity.function = CathodeEntityDatabase.GetEntityAtIndex(comboBox1.SelectedIndex).guid;
                 //Todo: auto populate params here
                 flow.functions.Add(newEntity);
