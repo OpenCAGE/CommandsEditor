@@ -864,7 +864,7 @@ namespace CathodeEditorGUI
         private void editNodeResources_Click(object sender, EventArgs e)
         {
             //CurrentInstance.currentEntity - .parameters.FirstOrDefault("resources") - .resources
-            CathodeEditorGUI_EditResource resourceEditor = new CathodeEditorGUI_EditResource();
+            CathodeEditorGUI_AddOrEditResource resourceEditor = new CathodeEditorGUI_AddOrEditResource(CurrentInstance.selectedEntity);
             resourceEditor.Show();
         }
 
@@ -872,7 +872,7 @@ namespace CathodeEditorGUI
         private void editFlowgraphResources_Click(object sender, EventArgs e)
         {
             //CurrentInstance.currentFlowgraph.resources
-            CathodeEditorGUI_EditResource resourceEditor = new CathodeEditorGUI_EditResource();
+            CathodeEditorGUI_AddOrEditResource resourceEditor = new CathodeEditorGUI_AddOrEditResource(CurrentInstance.selectedFlowgraph);
             resourceEditor.Show();
         }
 

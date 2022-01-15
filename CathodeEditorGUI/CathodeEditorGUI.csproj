@@ -78,11 +78,11 @@
     <Compile Include="BespokeNodes\CAGEAnimationEditor.Designer.cs">
       <DependentUpon>CAGEAnimationEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="BespokeNodes\ModelReferenceEditor.cs">
+    <Compile Include="Popups\CathodeEditorGUI_AddOrEditResource.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="BespokeNodes\ModelReferenceEditor.Designer.cs">
-      <DependentUpon>ModelReferenceEditor.cs</DependentUpon>
+    <Compile Include="Popups\CathodeEditorGUI_AddOrEditResource.Designer.cs">
+      <DependentUpon>CathodeEditorGUI_AddOrEditResource.cs</DependentUpon>
     </Compile>
     <Compile Include="CathodeEditorGUI.cs">
       <SubType>Form</SubType>
@@ -207,6 +207,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\CathodeEditorGUI_AddFlowgraph.resx">
       <DependentUpon>CathodeEditorGUI_AddFlowgraph.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\CathodeEditorGUI_AddOrEditResource.resx">
+      <DependentUpon>CathodeEditorGUI_AddOrEditResource.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\CathodeEditorGUI_AddParameter.resx">
       <DependentUpon>CathodeEditorGUI_AddParameter.cs</DependentUpon>

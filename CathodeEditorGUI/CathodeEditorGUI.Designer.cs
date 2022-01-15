@@ -557,7 +557,6 @@
             this.editFlowgraphResources.TabIndex = 177;
             this.editFlowgraphResources.Text = "Edit Resources";
             this.editFlowgraphResources.UseVisualStyleBackColor = true;
-            this.editFlowgraphResources.Visible = false;
             this.editFlowgraphResources.Click += new System.EventHandler(this.editFlowgraphResources_Click);
             // 
             // CathodeEditorGUI
