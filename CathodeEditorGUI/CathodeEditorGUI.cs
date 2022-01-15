@@ -90,6 +90,7 @@ namespace CathodeEditorGUI
                 flowgraph_content_RAW.Clear();
                 flowgraph_content.EndUpdate();
                 CurrentInstance.selectedFlowgraph = null;
+                //editFlowgraphResources.Visible = false;
             }
             if (clear_parameter_list)
             {
@@ -105,6 +106,7 @@ namespace CathodeEditorGUI
                 currentlyShowingChildLinks = true;
                 node_to_flowgraph_jump.Visible = false;
                 editCAGEAnimationKeyframes.Visible = false;
+                editNodeResources.Visible = false;
             }
         }
 
@@ -125,16 +127,18 @@ namespace CathodeEditorGUI
 
             //Load
             string path_to_ENV = SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + level;
-            try
-            {
+            //try
+            //{
                 CurrentInstance.commandsPAK = new CommandsPAK(path_to_ENV + "/WORLD/COMMANDS.PAK");
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show("Failed to load COMMANDS.PAK!\n" + e.Message, "Failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                CurrentInstance.commandsPAK = null;
-                return;
-            }
+            //}
+            //catch (Exception e)
+            //{
+///MessageBox.Show("Failed to load COMMANDS.PAK!\n" + e.Message, "Failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //    CurrentInstance.commandsPAK = null;
+           //     return;
+           // }
+
+            CommandsPAK pak = CurrentInstance.commandsPAK;
 
             //Sanity check
             if (!CurrentInstance.commandsPAK.Loaded)
@@ -707,10 +711,17 @@ namespace CathodeEditorGUI
             }
             selected_node_type_description.Text = nodetypedesc;
 
+            //show resource editor button if this node has a resource reference
+            cGUID resourceParamID = Utilities.GenerateGUID("resource");
+            CathodeLoadedParameter resourceParam = CurrentInstance.selectedEntity.parameters.FirstOrDefault(o => o.paramID == resourceParamID);
+            editNodeResources.Visible = ((resourceParam != null) || CurrentInstance.selectedEntity.resources.Count != 0);
+
             //populate parameter inputs
             int current_ui_offset = 7;
             for (int i = 0; i < edit_node.parameters.Count; i++)
             {
+                if (edit_node.parameters[i].paramID == resourceParamID) continue; //We use the resource editor button (above) for resource parameters
+
                 CathodeParameter this_param = edit_node.parameters[i].content;
                 UserControl parameterGUI = null;
 
@@ -847,6 +858,22 @@ namespace CathodeEditorGUI
         {
             CAGEAnimationEditor keyframeEditor = new CAGEAnimationEditor((CAGEAnimation)CurrentInstance.selectedEntity);
             keyframeEditor.Show();
+        }
+
+        /* Edit resources referenced by the entity */
+        private void editNodeResources_Click(object sender, EventArgs e)
+        {
+            //CurrentInstance.currentEntity - .parameters.FirstOrDefault("resources") - .resources
+            CathodeEditorGUI_EditResource resourceEditor = new CathodeEditorGUI_EditResource();
+            resourceEditor.Show();
+        }
+
+        /* Edit resources referenced by the flowgraph */
+        private void editFlowgraphResources_Click(object sender, EventArgs e)
+        {
+            //CurrentInstance.currentFlowgraph.resources
+            CathodeEditorGUI_EditResource resourceEditor = new CathodeEditorGUI_EditResource();
+            resourceEditor.Show();
         }
 
         /* Confirm an action */

@@ -74,6 +74,8 @@
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.modifyMVR = new System.Windows.Forms.CheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.editNodeResources = new System.Windows.Forms.Button();
+            this.editFlowgraphResources = new System.Windows.Forms.Button();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -155,7 +157,10 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.editFlowgraphResources);
+            this.groupBox1.Controls.Add(this.editNodeResources);
             this.groupBox1.Controls.Add(this.groupBox7);
+            this.groupBox1.Controls.Add(this.editCAGEAnimationKeyframes);
             this.groupBox1.Controls.Add(this.groupBox5);
             this.groupBox1.Controls.Add(this.groupBox4);
             this.groupBox1.Controls.Add(this.groupBox2);
@@ -419,7 +424,6 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.editCAGEAnimationKeyframes);
             this.groupBox2.Controls.Add(this.removeParameter);
             this.groupBox2.Controls.Add(this.addNewParameter);
             this.groupBox2.Controls.Add(this.NodeParams);
@@ -432,9 +436,9 @@
             // 
             // editCAGEAnimationKeyframes
             // 
-            this.editCAGEAnimationKeyframes.Location = new System.Drawing.Point(231, -1);
+            this.editCAGEAnimationKeyframes.Location = new System.Drawing.Point(645, 123);
             this.editCAGEAnimationKeyframes.Name = "editCAGEAnimationKeyframes";
-            this.editCAGEAnimationKeyframes.Size = new System.Drawing.Size(143, 23);
+            this.editCAGEAnimationKeyframes.Size = new System.Drawing.Size(99, 23);
             this.editCAGEAnimationKeyframes.TabIndex = 175;
             this.editCAGEAnimationKeyframes.Text = "Edit Keyframes";
             this.editCAGEAnimationKeyframes.UseVisualStyleBackColor = true;
@@ -534,6 +538,28 @@
         " produce unwanted issues.");
             this.modifyMVR.UseVisualStyleBackColor = true;
             // 
+            // editNodeResources
+            // 
+            this.editNodeResources.Location = new System.Drawing.Point(750, 123);
+            this.editNodeResources.Name = "editNodeResources";
+            this.editNodeResources.Size = new System.Drawing.Size(99, 23);
+            this.editNodeResources.TabIndex = 176;
+            this.editNodeResources.Text = "Edit Resources";
+            this.editNodeResources.UseVisualStyleBackColor = true;
+            this.editNodeResources.Visible = false;
+            this.editNodeResources.Click += new System.EventHandler(this.editNodeResources_Click);
+            // 
+            // editFlowgraphResources
+            // 
+            this.editFlowgraphResources.Location = new System.Drawing.Point(366, -1);
+            this.editFlowgraphResources.Name = "editFlowgraphResources";
+            this.editFlowgraphResources.Size = new System.Drawing.Size(99, 23);
+            this.editFlowgraphResources.TabIndex = 177;
+            this.editFlowgraphResources.Text = "Edit Resources";
+            this.editFlowgraphResources.UseVisualStyleBackColor = true;
+            this.editFlowgraphResources.Visible = false;
+            this.editFlowgraphResources.Click += new System.EventHandler(this.editFlowgraphResources_Click);
+            // 
             // CathodeEditorGUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -611,5 +637,7 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button duplicateSelectedNode;
         private System.Windows.Forms.Button renameSelectedNode;
+        private System.Windows.Forms.Button editNodeResources;
+        private System.Windows.Forms.Button editFlowgraphResources;
     }
 }
