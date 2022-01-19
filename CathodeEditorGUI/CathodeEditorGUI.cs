@@ -127,18 +127,16 @@ namespace CathodeEditorGUI
 
             //Load
             string path_to_ENV = SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + level;
-            //try
-            //{
+            try
+            {
                 CurrentInstance.commandsPAK = new CommandsPAK(path_to_ENV + "/WORLD/COMMANDS.PAK");
-            //}
-            //catch (Exception e)
-            //{
-///MessageBox.Show("Failed to load COMMANDS.PAK!\n" + e.Message, "Failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //    CurrentInstance.commandsPAK = null;
-           //     return;
-           // }
-
-            CommandsPAK pak = CurrentInstance.commandsPAK;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Failed to load COMMANDS.PAK!\n" + e.Message, "Failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                CurrentInstance.commandsPAK = null;
+                return;
+            }
 
             //Sanity check
             if (!CurrentInstance.commandsPAK.Loaded)
@@ -187,7 +185,6 @@ namespace CathodeEditorGUI
                 MessageBox.Show("Failed to save COMMANDS.PAK!\n" + e.Message, "Failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-
             NodeDBEx.SaveNames();
 
             if (modifyMVR.Checked)

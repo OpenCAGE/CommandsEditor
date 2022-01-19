@@ -89,8 +89,9 @@ namespace CathodeEditorGUI
         }
 
         /* Utility: generate a list of suggested parameters for an entity */
-        public static List<string> GenerateParameterList(CathodeEntity entity)
+        public static List<string> GenerateParameterList(CathodeEntity entity, out bool didGenerateFromDB)
         {
+            didGenerateFromDB = false;
             List<string> items = new List<string>();
             if (CurrentInstance.commandsPAK == null) return items;
             switch (entity.variant)
@@ -100,6 +101,7 @@ namespace CathodeEditorGUI
                     List<CathodeEntityDatabase.ParameterDefinition> parameters = CathodeEntityDatabase.GetParametersFromEntity(function);
                     if (parameters != null)
                     {
+                        didGenerateFromDB = true;
                         for (int i = 0; i < parameters.Count; i++) items.Add(parameters[i].name);
                     }
                     else

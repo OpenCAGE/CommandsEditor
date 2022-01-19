@@ -23,11 +23,10 @@ namespace CathodeEditorGUI
             InitializeComponent();
             param_datatype.SelectedIndex = 0;
 
-            List<string> options = EditorUtils.GenerateParameterList(_node);
+            List<string> options = EditorUtils.GenerateParameterList(_node, out loadedParamsFromDB);
             param_name.BeginUpdate();
             for (int i = 0; i < options.Count; i++) param_name.Items.Add(options[i]);
             param_name.EndUpdate();
-            loadedParamsFromDB = (CathodeEntityDatabase.GetParametersFromEntity(((FunctionEntity)_node).function) != null);
         }
 
         private void button1_Click(object sender, EventArgs e)

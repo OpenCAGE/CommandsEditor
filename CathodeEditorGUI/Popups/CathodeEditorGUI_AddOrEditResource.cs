@@ -25,7 +25,7 @@ namespace CathodeEditorGUI
             resRef.AddRange(_ent.resources);
             cGUID resourceParamID = Utilities.GenerateGUID("resource");
             CathodeLoadedParameter resourceParam = CurrentInstance.selectedEntity.parameters.FirstOrDefault(o => o.paramID == resourceParamID);
-            if (resourceParam != null) resRef.Add(((CathodeResource)resourceParam.content).value);
+            if (resourceParam != null) resRef.AddRange(((CathodeResource)resourceParam.content).value);
 
             Setup();
         }
@@ -49,7 +49,6 @@ namespace CathodeEditorGUI
             {
                 MessageBox.Show(resRef[i].entryType.ToString());
             }
-            this.Close();
         }
     }
 }
