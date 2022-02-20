@@ -155,6 +155,7 @@ namespace CathodeEditorGUI
                 }
             }
             if (editedText == "") editedText = "0";
+            if (editedText == "-") editedText = "-0";
             return editedText;
         }
 

@@ -28,17 +28,17 @@ namespace CathodeEditorGUI
             InitializeComponent();
 
             //quick hack to reload dropdown
-            radioButton1.Checked = true;
-            radioButton2.Checked = true;
+            createDatatypeEntity.Checked = true;
+            createFunctionEntity.Checked = true;
         }
 
         //Repopulate UI
-        private void radioButton1_CheckedChanged(object sender, EventArgs e)
+        private void selectedDatatypeEntity(object sender, EventArgs e)
         {
             //Datatype
-            comboBox1.BeginUpdate();
-            comboBox1.Items.Clear();
-            comboBox1.Items.AddRange(new object[] {
+            entityVariant.BeginUpdate();
+            entityVariant.Items.Clear();
+            entityVariant.Items.AddRange(new object[] {
                                     "POSITION",
                                     "FLOAT",
                                     "STRING",
@@ -50,47 +50,47 @@ namespace CathodeEditorGUI
                                     "DIRECTION",
                                     "INTEGER"
             });
-            comboBox1.EndUpdate();
-            comboBox1.SelectedIndex = 0;
+            entityVariant.EndUpdate();
+            entityVariant.SelectedIndex = 0;
         }
-        private void radioButton2_CheckedChanged(object sender, EventArgs e)
+        private void selectedFunctionEntity(object sender, EventArgs e)
         {
             //Function
-            comboBox1.BeginUpdate();
-            comboBox1.Items.Clear();
-            for (int i = 0; i < availableEntities.Count; i++) comboBox1.Items.Add(availableEntities[i].className);
-            comboBox1.EndUpdate();
-            comboBox1.SelectedIndex = 0;
+            entityVariant.BeginUpdate();
+            entityVariant.Items.Clear();
+            for (int i = 0; i < availableEntities.Count; i++) entityVariant.Items.Add(availableEntities[i].className);
+            entityVariant.EndUpdate();
+            entityVariant.SelectedIndex = 0;
         }
-        private void radioButton3_CheckedChanged(object sender, EventArgs e)
+        private void selectedFlowgraphEntity(object sender, EventArgs e)
         {
             //Flowgraph
-            comboBox1.BeginUpdate();
-            comboBox1.Items.Clear();
-            for (int i = 0; i < availableFlows.Count; i++) comboBox1.Items.Add(availableFlows[i].name);
-            comboBox1.EndUpdate();
-            comboBox1.SelectedIndex = 0;
+            entityVariant.BeginUpdate();
+            entityVariant.Items.Clear();
+            for (int i = 0; i < availableFlows.Count; i++) entityVariant.Items.Add(availableFlows[i].name);
+            entityVariant.EndUpdate();
+            entityVariant.SelectedIndex = 0;
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             cGUID thisID = Utilities.GenerateGUID(DateTime.Now.ToString("G"));
 
-            if (radioButton1.Checked)
+            if (createDatatypeEntity.Checked)
             {
                 DatatypeEntity newEntity = new DatatypeEntity(thisID);
-                newEntity.type = (CathodeDataType)comboBox1.SelectedIndex;
+                newEntity.type = (CathodeDataType)entityVariant.SelectedIndex;
                 newEntity.parameter = Utilities.GenerateGUID(textBox1.Text);
                 flow.datatypes.Add(newEntity);
                 if (NodeDB.GetCathodeName(newEntity.parameter) == newEntity.parameter.ToString())
                     NodeDBEx.AddNewParameterName(newEntity.parameter, textBox1.Text);
                 NewEntity = newEntity;
             }
-            else if (radioButton2.Checked)
+            else if (createFunctionEntity.Checked)
             {
                 FunctionEntity newEntity = new FunctionEntity(thisID);
                 //Todo: find a nicer way of instancing functionentity types
-                switch (comboBox1.Text)
+                switch (entityVariant.Text)
                 {
                     case "CAGEAnimation":
                         newEntity = new CAGEAnimation(thisID);
@@ -99,20 +99,20 @@ namespace CathodeEditorGUI
                         newEntity = new TriggerSequence(thisID);
                         break;
                 }
-                newEntity.function = CathodeEntityDatabase.GetEntityAtIndex(comboBox1.SelectedIndex).guid;
+                newEntity.function = CathodeEntityDatabase.GetEntityAtIndex(entityVariant.SelectedIndex).guid;
                 //Todo: auto populate params here
                 flow.functions.Add(newEntity);
                 NodeDBEx.AddNewNodeName(thisID, textBox1.Text);
                 NewEntity = newEntity;
             }
-            else if (radioButton3.Checked)
+            else if (createFlowgraphEntity.Checked)
             {
                 FunctionEntity newEntity = new FunctionEntity(thisID);
-                CathodeFlowgraph selectedFlowgraph = availableFlows.FirstOrDefault(o => o.name == comboBox1.Text);
+                CathodeFlowgraph selectedFlowgraph = availableFlows.FirstOrDefault(o => o.name == entityVariant.Text);
                 if (selectedFlowgraph == null)
                 {
                     //throw new Exception("Failed to look up flowgraph.");
-                    MessageBox.Show("Failed to look up flowgraph!\nPlease report this issue on GitHub.\n\n" + comboBox1.Text, "Could not find flowgraph!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Failed to look up flowgraph!\nPlease report this issue on GitHub.\n\n" + entityVariant.Text, "Could not find flowgraph!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
                 newEntity.function = selectedFlowgraph.nodeID;

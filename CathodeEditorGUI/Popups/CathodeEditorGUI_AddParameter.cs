@@ -88,7 +88,6 @@ namespace CathodeEditorGUI
             this.Close();
         }
 
-        //wip
         private void param_name_SelectedIndexChanged(object sender, EventArgs e)
         {
             AutoSelectDataType();
@@ -100,21 +99,29 @@ namespace CathodeEditorGUI
         private void AutoSelectDataType()
         {
             param_datatype.Enabled = true;
-            if (node.variant != EntityVariant.FUNCTION) return;
-            if (!loadedParamsFromDB) return;
-            CathodeEntityDatabase.ParameterDefinition def = CathodeEntityDatabase.GetParameterFromEntity(((FunctionEntity)node).function, param_name.Text);
-            if (def.name == null) return;
-            if (def.usage == CathodeEntityDatabase.ParameterUsage.TARGET)
+            switch (node.variant)
             {
-                param_datatype.Text = "FLOAT";
+                case EntityVariant.FUNCTION:
+                    if (!loadedParamsFromDB) return;
+                    CathodeEntityDatabase.ParameterDefinition def = CathodeEntityDatabase.GetParameterFromEntity(((FunctionEntity)node).function, param_name.Text);
+                    if (def.name == null) return;
+                    if (def.usage == CathodeEntityDatabase.ParameterUsage.TARGET)
+                    {
+                        //"TARGET" usage type does not have a datatype since it is not data, it's an event trigger.
+                        //The FLOAT datatype is a placeholder for this.
+                        param_datatype.Text = "FLOAT";
+                    }
+                    else
+                    {
+                        CathodeParameter param = CathodeEntityDatabase.ParameterDefinitionToParameter(def);
+                        if (param == null) return;
+                        param_datatype.Text = param.dataType.ToString();
+                    }
+                    param_datatype.Enabled = false;
+                    break;
+                default:
+                    return;
             }
-            else
-            {
-                CathodeParameter param = CathodeEntityDatabase.ParameterDefinitionToParameter(def);
-                if (param == null) return;
-                param_datatype.Text = param.dataType.ToString();
-            }
-            param_datatype.Enabled = false;
         }
     }
 }

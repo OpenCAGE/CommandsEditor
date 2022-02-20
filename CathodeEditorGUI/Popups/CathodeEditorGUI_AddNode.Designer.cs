@@ -29,44 +29,44 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CathodeEditorGUI_AddNode));
-            this.radioButton1 = new System.Windows.Forms.RadioButton();
-            this.radioButton2 = new System.Windows.Forms.RadioButton();
+            this.createDatatypeEntity = new System.Windows.Forms.RadioButton();
+            this.createFunctionEntity = new System.Windows.Forms.RadioButton();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label3 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.radioButton3 = new System.Windows.Forms.RadioButton();
+            this.createFlowgraphEntity = new System.Windows.Forms.RadioButton();
             this.button1 = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.entityVariant = new System.Windows.Forms.ComboBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // radioButton1
             // 
-            this.radioButton1.AutoSize = true;
-            this.radioButton1.Location = new System.Drawing.Point(18, 19);
-            this.radioButton1.Name = "radioButton1";
-            this.radioButton1.Size = new System.Drawing.Size(101, 17);
-            this.radioButton1.TabIndex = 0;
-            this.radioButton1.Text = "DataType Entity";
-            this.radioButton1.UseVisualStyleBackColor = true;
-            this.radioButton1.CheckedChanged += new System.EventHandler(this.radioButton1_CheckedChanged);
+            this.createDatatypeEntity.AutoSize = true;
+            this.createDatatypeEntity.Location = new System.Drawing.Point(18, 19);
+            this.createDatatypeEntity.Name = "radioButton1";
+            this.createDatatypeEntity.Size = new System.Drawing.Size(101, 17);
+            this.createDatatypeEntity.TabIndex = 0;
+            this.createDatatypeEntity.Text = "DataType Entity";
+            this.createDatatypeEntity.UseVisualStyleBackColor = true;
+            this.createDatatypeEntity.CheckedChanged += new System.EventHandler(this.selectedDatatypeEntity);
             // 
             // radioButton2
             // 
-            this.radioButton2.AutoSize = true;
-            this.radioButton2.Checked = true;
-            this.radioButton2.Location = new System.Drawing.Point(125, 19);
-            this.radioButton2.Name = "radioButton2";
-            this.radioButton2.Size = new System.Drawing.Size(95, 17);
-            this.radioButton2.TabIndex = 1;
-            this.radioButton2.TabStop = true;
-            this.radioButton2.Text = "Function Entity";
-            this.radioButton2.UseVisualStyleBackColor = true;
-            this.radioButton2.CheckedChanged += new System.EventHandler(this.radioButton2_CheckedChanged);
+            this.createFunctionEntity.AutoSize = true;
+            this.createFunctionEntity.Checked = true;
+            this.createFunctionEntity.Location = new System.Drawing.Point(125, 19);
+            this.createFunctionEntity.Name = "radioButton2";
+            this.createFunctionEntity.Size = new System.Drawing.Size(95, 17);
+            this.createFunctionEntity.TabIndex = 1;
+            this.createFunctionEntity.TabStop = true;
+            this.createFunctionEntity.Text = "Function Entity";
+            this.createFunctionEntity.UseVisualStyleBackColor = true;
+            this.createFunctionEntity.CheckedChanged += new System.EventHandler(this.selectedFunctionEntity);
             // 
             // groupBox1
             // 
@@ -76,7 +76,7 @@
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.textBox1);
-            this.groupBox1.Controls.Add(this.comboBox1);
+            this.groupBox1.Controls.Add(this.entityVariant);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(776, 179);
@@ -95,9 +95,9 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.radioButton1);
-            this.groupBox2.Controls.Add(this.radioButton3);
-            this.groupBox2.Controls.Add(this.radioButton2);
+            this.groupBox2.Controls.Add(this.createDatatypeEntity);
+            this.groupBox2.Controls.Add(this.createFlowgraphEntity);
+            this.groupBox2.Controls.Add(this.createFunctionEntity);
             this.groupBox2.Location = new System.Drawing.Point(104, 54);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(641, 50);
@@ -106,14 +106,14 @@
             // 
             // radioButton3
             // 
-            this.radioButton3.AutoSize = true;
-            this.radioButton3.Location = new System.Drawing.Point(226, 19);
-            this.radioButton3.Name = "radioButton3";
-            this.radioButton3.Size = new System.Drawing.Size(103, 17);
-            this.radioButton3.TabIndex = 3;
-            this.radioButton3.Text = "Flowgraph Entity";
-            this.radioButton3.UseVisualStyleBackColor = true;
-            this.radioButton3.CheckedChanged += new System.EventHandler(this.radioButton3_CheckedChanged);
+            this.createFlowgraphEntity.AutoSize = true;
+            this.createFlowgraphEntity.Location = new System.Drawing.Point(226, 19);
+            this.createFlowgraphEntity.Name = "radioButton3";
+            this.createFlowgraphEntity.Size = new System.Drawing.Size(103, 17);
+            this.createFlowgraphEntity.TabIndex = 3;
+            this.createFlowgraphEntity.Text = "Flowgraph Entity";
+            this.createFlowgraphEntity.UseVisualStyleBackColor = true;
+            this.createFlowgraphEntity.CheckedChanged += new System.EventHandler(this.selectedFlowgraphEntity);
             // 
             // button1
             // 
@@ -152,9 +152,9 @@
             // 
             // comboBox1
             // 
-            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Items.AddRange(new object[] {
+            this.entityVariant.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.entityVariant.FormattingEnabled = true;
+            this.entityVariant.Items.AddRange(new object[] {
             "POSITION",
             "FLOAT",
             "STRING",
@@ -165,10 +165,10 @@
             "BOOL",
             "DIRECTION",
             "INTEGER"});
-            this.comboBox1.Location = new System.Drawing.Point(104, 110);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(641, 21);
-            this.comboBox1.TabIndex = 0;
+            this.entityVariant.Location = new System.Drawing.Point(104, 110);
+            this.entityVariant.Name = "comboBox1";
+            this.entityVariant.Size = new System.Drawing.Size(641, 21);
+            this.entityVariant.TabIndex = 0;
             // 
             // CathodeEditorGUI_AddNode
             // 
@@ -191,11 +191,11 @@
 
         #endregion
 
-        private System.Windows.Forms.RadioButton radioButton1;
-        private System.Windows.Forms.RadioButton radioButton2;
+        private System.Windows.Forms.RadioButton createDatatypeEntity;
+        private System.Windows.Forms.RadioButton createFunctionEntity;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.RadioButton radioButton3;
+        private System.Windows.Forms.ComboBox entityVariant;
+        private System.Windows.Forms.RadioButton createFlowgraphEntity;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
