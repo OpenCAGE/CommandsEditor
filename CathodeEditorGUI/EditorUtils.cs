@@ -115,6 +115,7 @@ namespace CathodeEditorGUI
                             for (int i = 0; i < flow.datatypes.Count; i++)
                             {
                                 string to_add = NodeDBEx.GetParameterName(flow.datatypes[i].parameter);
+                                //TODO: also return datatype here
                                 if (!items.Contains(to_add)) items.Add(to_add);
                             }
                         }

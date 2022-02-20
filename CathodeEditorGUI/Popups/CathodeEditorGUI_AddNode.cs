@@ -72,15 +72,55 @@ namespace CathodeEditorGUI
             entityVariant.SelectedIndex = 0;
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void createEntity(object sender, EventArgs e)
         {
             cGUID thisID = Utilities.GenerateGUID(DateTime.Now.ToString("G"));
 
             if (createDatatypeEntity.Checked)
             {
+                //Make the DatatypeEntity
                 DatatypeEntity newEntity = new DatatypeEntity(thisID);
                 newEntity.type = (CathodeDataType)entityVariant.SelectedIndex;
                 newEntity.parameter = Utilities.GenerateGUID(textBox1.Text);
+
+                //Make the parameter to give this DatatypeEntity a value (the only time you WOULDN'T want this is if the val is coming from a linked entity)
+                CathodeParameter thisParam = null;
+                switch (newEntity.type)
+                {
+                    case CathodeDataType.POSITION:
+                        thisParam = new CathodeTransform();
+                        break;
+                    case CathodeDataType.FLOAT:
+                        thisParam = new CathodeFloat();
+                        break;
+                    case CathodeDataType.FILEPATH:
+                    case CathodeDataType.STRING:
+                        thisParam = new CathodeString();
+                        break;
+                    case CathodeDataType.SPLINE_DATA:
+                        thisParam = new CathodeSpline();
+                        break;
+                    case CathodeDataType.ENUM:
+                        thisParam = new CathodeEnum();
+                        ((CathodeEnum)thisParam).enumID = new cGUID("4C-B9-82-48"); //ALERTNESS_STATE is the first alphabetically
+                        break;
+                    case CathodeDataType.SHORT_GUID:
+                        thisParam = new CathodeResource();
+                        ((CathodeResource)thisParam).resourceID = new cGUID("00-00-00-00");
+                        break;
+                    case CathodeDataType.BOOL:
+                        thisParam = new CathodeBool();
+                        break;
+                    case CathodeDataType.DIRECTION:
+                        thisParam = new CathodeVector3();
+                        break;
+                    case CathodeDataType.INTEGER:
+                        thisParam = new CathodeInteger();
+                        break;
+                }
+                newEntity.parameters.Add(new CathodeLoadedParameter(newEntity.parameter, thisParam));
+
+                //Add to flowgraph & save name
                 flow.datatypes.Add(newEntity);
                 if (NodeDB.GetCathodeName(newEntity.parameter) == newEntity.parameter.ToString())
                     NodeDBEx.AddNewParameterName(newEntity.parameter, textBox1.Text);
@@ -88,10 +128,11 @@ namespace CathodeEditorGUI
             }
             else if (createFunctionEntity.Checked)
             {
+                //Create FunctionEntity
                 FunctionEntity newEntity = new FunctionEntity(thisID);
-                //Todo: find a nicer way of instancing functionentity types
                 switch (entityVariant.Text)
                 {
+                    //TODO: find a nicer way of auto selecting this (E.G. can we reflect to class names?)
                     case "CAGEAnimation":
                         newEntity = new CAGEAnimation(thisID);
                         break;
@@ -100,22 +141,26 @@ namespace CathodeEditorGUI
                         break;
                 }
                 newEntity.function = CathodeEntityDatabase.GetEntityAtIndex(entityVariant.SelectedIndex).guid;
-                //Todo: auto populate params here
+                //TODO: auto populate params here
+
+                //Add to flowgraph & save name
                 flow.functions.Add(newEntity);
                 NodeDBEx.AddNewNodeName(thisID, textBox1.Text);
                 NewEntity = newEntity;
             }
             else if (createFlowgraphEntity.Checked)
             {
+                //Create FunctionEntity
                 FunctionEntity newEntity = new FunctionEntity(thisID);
                 CathodeFlowgraph selectedFlowgraph = availableFlows.FirstOrDefault(o => o.name == entityVariant.Text);
                 if (selectedFlowgraph == null)
-                {
-                    //throw new Exception("Failed to look up flowgraph.");
+                { 
                     MessageBox.Show("Failed to look up flowgraph!\nPlease report this issue on GitHub.\n\n" + entityVariant.Text, "Could not find flowgraph!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
                 newEntity.function = selectedFlowgraph.nodeID;
+
+                //Add to flowgraph & save name
                 flow.functions.Add(newEntity);
                 NodeDBEx.AddNewNodeName(thisID, textBox1.Text);
                 NewEntity = newEntity;
