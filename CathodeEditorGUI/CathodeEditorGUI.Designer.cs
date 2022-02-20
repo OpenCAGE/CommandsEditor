@@ -38,6 +38,8 @@
             this.addNewFlowgraph = new System.Windows.Forms.Button();
             this.FileTree = new System.Windows.Forms.TreeView();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.editFlowgraphResources = new System.Windows.Forms.Button();
+            this.editNodeResources = new System.Windows.Forms.Button();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.node_to_flowgraph_jump = new System.Windows.Forms.Button();
             this.selected_node_name = new System.Windows.Forms.Label();
@@ -48,6 +50,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.selected_node_id = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
+            this.editCAGEAnimationKeyframes = new System.Windows.Forms.Button();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.showLinkParents = new System.Windows.Forms.Button();
             this.removeSelectedLink = new System.Windows.Forms.Button();
@@ -63,7 +66,6 @@
             this.node_search_box = new System.Windows.Forms.TextBox();
             this.node_search_btn = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.editCAGEAnimationKeyframes = new System.Windows.Forms.Button();
             this.removeParameter = new System.Windows.Forms.Button();
             this.addNewParameter = new System.Windows.Forms.Button();
             this.NodeParams = new System.Windows.Forms.Panel();
@@ -74,8 +76,7 @@
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.modifyMVR = new System.Windows.Forms.CheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.editNodeResources = new System.Windows.Forms.Button();
-            this.editFlowgraphResources = new System.Windows.Forms.Button();
+            this.editEntryPoint = new System.Windows.Forms.Button();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -157,6 +158,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.button1);
             this.groupBox1.Controls.Add(this.editFlowgraphResources);
             this.groupBox1.Controls.Add(this.editNodeResources);
             this.groupBox1.Controls.Add(this.groupBox7);
@@ -170,6 +172,27 @@
             this.groupBox1.TabIndex = 162;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Selected Flowgraph Content";
+            // 
+            // editFlowgraphResources
+            // 
+            this.editFlowgraphResources.Location = new System.Drawing.Point(366, -1);
+            this.editFlowgraphResources.Name = "editFlowgraphResources";
+            this.editFlowgraphResources.Size = new System.Drawing.Size(99, 23);
+            this.editFlowgraphResources.TabIndex = 177;
+            this.editFlowgraphResources.Text = "Edit Resources";
+            this.editFlowgraphResources.UseVisualStyleBackColor = true;
+            this.editFlowgraphResources.Click += new System.EventHandler(this.editFlowgraphResources_Click);
+            // 
+            // editNodeResources
+            // 
+            this.editNodeResources.Location = new System.Drawing.Point(750, 123);
+            this.editNodeResources.Name = "editNodeResources";
+            this.editNodeResources.Size = new System.Drawing.Size(99, 23);
+            this.editNodeResources.TabIndex = 176;
+            this.editNodeResources.Text = "Edit Resources";
+            this.editNodeResources.UseVisualStyleBackColor = true;
+            this.editNodeResources.Visible = false;
+            this.editNodeResources.Click += new System.EventHandler(this.editNodeResources_Click);
             // 
             // groupBox7
             // 
@@ -273,6 +296,17 @@
             this.label1.Size = new System.Drawing.Size(62, 13);
             this.label1.TabIndex = 0;
             this.label1.Text = "Node ID: ";
+            // 
+            // editCAGEAnimationKeyframes
+            // 
+            this.editCAGEAnimationKeyframes.Location = new System.Drawing.Point(645, 123);
+            this.editCAGEAnimationKeyframes.Name = "editCAGEAnimationKeyframes";
+            this.editCAGEAnimationKeyframes.Size = new System.Drawing.Size(99, 23);
+            this.editCAGEAnimationKeyframes.TabIndex = 175;
+            this.editCAGEAnimationKeyframes.Text = "Edit Keyframes";
+            this.editCAGEAnimationKeyframes.UseVisualStyleBackColor = true;
+            this.editCAGEAnimationKeyframes.Visible = false;
+            this.editCAGEAnimationKeyframes.Click += new System.EventHandler(this.editCAGEAnimationKeyframes_Click);
             // 
             // groupBox5
             // 
@@ -434,17 +468,6 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Selected Entity Parameters";
             // 
-            // editCAGEAnimationKeyframes
-            // 
-            this.editCAGEAnimationKeyframes.Location = new System.Drawing.Point(645, 123);
-            this.editCAGEAnimationKeyframes.Name = "editCAGEAnimationKeyframes";
-            this.editCAGEAnimationKeyframes.Size = new System.Drawing.Size(99, 23);
-            this.editCAGEAnimationKeyframes.TabIndex = 175;
-            this.editCAGEAnimationKeyframes.Text = "Edit Keyframes";
-            this.editCAGEAnimationKeyframes.UseVisualStyleBackColor = true;
-            this.editCAGEAnimationKeyframes.Visible = false;
-            this.editCAGEAnimationKeyframes.Click += new System.EventHandler(this.editCAGEAnimationKeyframes_Click);
-            // 
             // removeParameter
             // 
             this.removeParameter.Location = new System.Drawing.Point(193, 434);
@@ -494,7 +517,7 @@
             // 
             // groupBox8
             // 
-            this.groupBox8.Controls.Add(this.button1);
+            this.groupBox8.Controls.Add(this.editEntryPoint);
             this.groupBox8.Controls.Add(this.first_executed_flowgraph);
             this.groupBox8.Controls.Add(this.flowgraph_count);
             this.groupBox8.Location = new System.Drawing.Point(554, 3);
@@ -505,7 +528,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(594, 17);
+            this.button1.Location = new System.Drawing.Point(171, -1);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(95, 23);
             this.button1.TabIndex = 176;
@@ -538,26 +561,15 @@
         " produce unwanted issues.");
             this.modifyMVR.UseVisualStyleBackColor = true;
             // 
-            // editNodeResources
+            // editEntryPoint
             // 
-            this.editNodeResources.Location = new System.Drawing.Point(750, 123);
-            this.editNodeResources.Name = "editNodeResources";
-            this.editNodeResources.Size = new System.Drawing.Size(99, 23);
-            this.editNodeResources.TabIndex = 176;
-            this.editNodeResources.Text = "Edit Resources";
-            this.editNodeResources.UseVisualStyleBackColor = true;
-            this.editNodeResources.Visible = false;
-            this.editNodeResources.Click += new System.EventHandler(this.editNodeResources_Click);
-            // 
-            // editFlowgraphResources
-            // 
-            this.editFlowgraphResources.Location = new System.Drawing.Point(366, -1);
-            this.editFlowgraphResources.Name = "editFlowgraphResources";
-            this.editFlowgraphResources.Size = new System.Drawing.Size(99, 23);
-            this.editFlowgraphResources.TabIndex = 177;
-            this.editFlowgraphResources.Text = "Edit Resources";
-            this.editFlowgraphResources.UseVisualStyleBackColor = true;
-            this.editFlowgraphResources.Click += new System.EventHandler(this.editFlowgraphResources_Click);
+            this.editEntryPoint.Location = new System.Drawing.Point(597, 9);
+            this.editEntryPoint.Name = "editEntryPoint";
+            this.editEntryPoint.Size = new System.Drawing.Size(95, 23);
+            this.editEntryPoint.TabIndex = 177;
+            this.editEntryPoint.Text = "Edit Entry Point";
+            this.editEntryPoint.UseVisualStyleBackColor = true;
+            this.editEntryPoint.Click += new System.EventHandler(this.editEntryPoint_Click);
             // 
             // CathodeEditorGUI
             // 
@@ -638,5 +650,6 @@
         private System.Windows.Forms.Button renameSelectedNode;
         private System.Windows.Forms.Button editNodeResources;
         private System.Windows.Forms.Button editFlowgraphResources;
+        private System.Windows.Forms.Button editEntryPoint;
     }
 }

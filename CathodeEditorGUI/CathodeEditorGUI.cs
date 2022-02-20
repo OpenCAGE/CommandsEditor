@@ -161,12 +161,16 @@ namespace CathodeEditorGUI
             treeHelper.UpdateFileTree(CurrentInstance.commandsPAK.GetFlowgraphNames().ToList());
 
             //Show info in UI
-            first_executed_flowgraph.Text = "Entry point: " + CurrentInstance.commandsPAK.EntryPoints[0].name;
-            flowgraph_count.Text = "Flowgraph count: " + CurrentInstance.commandsPAK.Flowgraphs.Count;
+            RefreshStatsUI();
         }
         private void load_commands_pak_Click(object sender, EventArgs e)
         {
             LoadCommandsPAK(env_list.SelectedItem.ToString());
+        }
+        private void RefreshStatsUI()
+        {
+            first_executed_flowgraph.Text = "Entry point: " + CurrentInstance.commandsPAK.EntryPoints[0].name;
+            flowgraph_count.Text = "Flowgraph count: " + CurrentInstance.commandsPAK.Flowgraphs.Count;
         }
 
         /* Save the current edits */
@@ -239,6 +243,21 @@ namespace CathodeEditorGUI
             return null;
         }
 
+        /* Edit the loaded COMMANDS.PAK entry point */
+        private void editEntryPoint_Click(object sender, EventArgs e)
+        {
+            if (CurrentInstance.commandsPAK == null || !CurrentInstance.commandsPAK.Loaded) return;
+            CathodeEditorGUI_EditEntryPoint edit_entrypoint = new CathodeEditorGUI_EditEntryPoint();
+            edit_entrypoint.Show();
+            edit_entrypoint.FormClosed += new FormClosedEventHandler(edit_entrypoint_closed);
+        }
+        private void edit_entrypoint_closed(Object sender, FormClosedEventArgs e)
+        {
+            RefreshStatsUI();
+            this.BringToFront();
+            this.Focus();
+        }
+
         /* Load nodes for selected script */
         private void FileTree_AfterSelect(object sender, TreeViewEventArgs e)
         {
@@ -292,6 +311,7 @@ namespace CathodeEditorGUI
         private void add_flow_closed(Object sender, FormClosedEventArgs e)
         {
             treeHelper.UpdateFileTree(CurrentInstance.commandsPAK.GetFlowgraphNames().ToList());
+            RefreshStatsUI();
             this.BringToFront();
             this.Focus();
         }
@@ -336,6 +356,7 @@ namespace CathodeEditorGUI
 
             //Refresh UI
             ClearUI(false, true, true);
+            RefreshStatsUI();
             treeHelper.UpdateFileTree(CurrentInstance.commandsPAK.GetFlowgraphNames().ToList());
         }
 
