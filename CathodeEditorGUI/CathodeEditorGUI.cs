@@ -581,14 +581,8 @@ namespace CathodeEditorGUI
             if (CurrentInstance.selectedEntity == null) return;
             if (!ConfirmAction("Are you sure you want to duplicate this entity?")) return;
 
-            //Hacky way of avoiding the cloneable interface
-            MemoryStream SaveFileStream = new MemoryStream();
-            new BinaryFormatter().Serialize(SaveFileStream, CurrentInstance.selectedEntity);
-            SaveFileStream.Position = 0;
-            CathodeEntity newEnt = (CathodeEntity)new BinaryFormatter().Deserialize(SaveFileStream);
-            SaveFileStream.Close();
-
             //Generate new node ID and name
+            CathodeEntity newEnt = Utilities.CloneObject(CurrentInstance.selectedEntity);
             newEnt.nodeID = Utilities.GenerateGUID(DateTime.Now.ToString("G"));
             NodeDBEx.AddNewNodeName(newEnt.nodeID, NodeDBEx.GetEntityName(CurrentInstance.selectedEntity.nodeID) + "_clone");
 
