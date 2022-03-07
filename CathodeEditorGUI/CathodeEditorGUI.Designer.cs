@@ -38,6 +38,7 @@
             this.addNewFlowgraph = new System.Windows.Forms.Button();
             this.FileTree = new System.Windows.Forms.TreeView();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.button1 = new System.Windows.Forms.Button();
             this.editFlowgraphResources = new System.Windows.Forms.Button();
             this.editNodeResources = new System.Windows.Forms.Button();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
@@ -72,11 +73,10 @@
             this.load_commands_pak = new System.Windows.Forms.Button();
             this.env_list = new System.Windows.Forms.ComboBox();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
-            this.button1 = new System.Windows.Forms.Button();
+            this.editEntryPoint = new System.Windows.Forms.Button();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.modifyMVR = new System.Windows.Forms.CheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.editEntryPoint = new System.Windows.Forms.Button();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -173,6 +173,17 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Selected Flowgraph Content";
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(171, -1);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(95, 23);
+            this.button1.TabIndex = 176;
+            this.button1.Text = "debug button";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Visible = false;
+            this.button1.Click += new System.EventHandler(this.button1_Click_1);
+            // 
             // editFlowgraphResources
             // 
             this.editFlowgraphResources.Location = new System.Drawing.Point(366, -1);
@@ -181,6 +192,7 @@
             this.editFlowgraphResources.TabIndex = 177;
             this.editFlowgraphResources.Text = "Edit Resources";
             this.editFlowgraphResources.UseVisualStyleBackColor = true;
+            this.editFlowgraphResources.Visible = false;
             this.editFlowgraphResources.Click += new System.EventHandler(this.editFlowgraphResources_Click);
             // 
             // editNodeResources
@@ -526,16 +538,15 @@
             this.groupBox8.TabIndex = 174;
             this.groupBox8.TabStop = false;
             // 
-            // button1
+            // editEntryPoint
             // 
-            this.button1.Location = new System.Drawing.Point(171, -1);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(95, 23);
-            this.button1.TabIndex = 176;
-            this.button1.Text = "debug button";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Visible = false;
-            this.button1.Click += new System.EventHandler(this.button1_Click_1);
+            this.editEntryPoint.Location = new System.Drawing.Point(597, 9);
+            this.editEntryPoint.Name = "editEntryPoint";
+            this.editEntryPoint.Size = new System.Drawing.Size(95, 23);
+            this.editEntryPoint.TabIndex = 177;
+            this.editEntryPoint.Text = "Edit Entry Point";
+            this.editEntryPoint.UseVisualStyleBackColor = true;
+            this.editEntryPoint.Click += new System.EventHandler(this.editEntryPoint_Click);
             // 
             // groupBox10
             // 
@@ -560,16 +571,6 @@
             this.toolTip1.SetToolTip(this.modifyMVR, "This option may solve some issues with deleted geometry persisting, however could" +
         " produce unwanted issues.");
             this.modifyMVR.UseVisualStyleBackColor = true;
-            // 
-            // editEntryPoint
-            // 
-            this.editEntryPoint.Location = new System.Drawing.Point(597, 9);
-            this.editEntryPoint.Name = "editEntryPoint";
-            this.editEntryPoint.Size = new System.Drawing.Size(95, 23);
-            this.editEntryPoint.TabIndex = 177;
-            this.editEntryPoint.Text = "Edit Entry Point";
-            this.editEntryPoint.UseVisualStyleBackColor = true;
-            this.editEntryPoint.Click += new System.EventHandler(this.editEntryPoint_Click);
             // 
             // CathodeEditorGUI
             // 

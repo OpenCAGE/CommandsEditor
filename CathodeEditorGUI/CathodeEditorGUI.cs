@@ -90,7 +90,7 @@ namespace CathodeEditorGUI
                 flowgraph_content_RAW.Clear();
                 flowgraph_content.EndUpdate();
                 CurrentInstance.selectedFlowgraph = null;
-                //editFlowgraphResources.Visible = false;
+                editFlowgraphResources.Visible = false;
             }
             if (clear_parameter_list)
             {
@@ -493,6 +493,10 @@ namespace CathodeEditorGUI
             }
             flowgraph_content.EndUpdate();
 
+#if DEBUG //TODO: PULL THIS INTO STABLE
+            editFlowgraphResources.Visible = true;
+#endif
+
             groupBox1.Text = entry.name;
             Cursor.Current = Cursors.Default;
         }
@@ -706,7 +710,9 @@ namespace CathodeEditorGUI
                     nodetypedesc = NodeDBEx.GetParameterName(((FunctionEntity)edit_node).function);
                     node_to_flowgraph_jump.Visible = (CurrentInstance.commandsPAK.GetFlowgraph(((FunctionEntity)edit_node).function) != null);
                     selected_node_name.Text = NodeDBEx.GetEntityName(edit_node.nodeID);
+#if DEBUG //TODO: PULL THIS INTO STABLE
                     editCAGEAnimationKeyframes.Visible = nodetypedesc == "CAGEAnimation";
+#endif
                     break;
                 case EntityVariant.DATATYPE:
                     nodetypedesc = "DataType " + ((DatatypeEntity)edit_node).type.ToString();
@@ -726,7 +732,9 @@ namespace CathodeEditorGUI
             //show resource editor button if this node has a resource reference
             cGUID resourceParamID = Utilities.GenerateGUID("resource");
             CathodeLoadedParameter resourceParam = CurrentInstance.selectedEntity.parameters.FirstOrDefault(o => o.paramID == resourceParamID);
+#if DEBUG //TODO: PULL THIS INTO STABLE
             editNodeResources.Visible = ((resourceParam != null) || CurrentInstance.selectedEntity.resources.Count != 0);
+#endif
 
             //populate parameter inputs
             int current_ui_offset = 7;
