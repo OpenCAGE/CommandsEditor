@@ -34,6 +34,7 @@ namespace CathodeEditorGUI
         /* Update the file tree GUI */
         public void UpdateFileTree(List<string> FilesToList, ContextMenuStrip contextMenu = null)
         {
+            FileTree.BeginUpdate();
             FileTree.Nodes.Clear();
             foreach (string FileName in FilesToList)
             {
@@ -42,6 +43,7 @@ namespace CathodeEditorGUI
                 AddFileToTree(FileNameParts, 0, FileTree.Nodes, contextMenu);
             }
             FileTree.Sort();
+            FileTree.EndUpdate();
         }
 
         /* Add a file to the GUI tree structure */
