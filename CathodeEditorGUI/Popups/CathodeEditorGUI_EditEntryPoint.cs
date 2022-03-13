@@ -13,13 +13,15 @@ namespace CathodeEditorGUI
 {
     public partial class CathodeEditorGUI_EditEntryPoint : Form
     {
+        List<CathodeFlowgraph> flows = null;
+
         public CathodeEditorGUI_EditEntryPoint()
         {
             InitializeComponent();
             comboBox1.BeginUpdate();
             comboBox1.Items.Clear();
             comboBox1.SelectedIndex = -1;
-            List<CathodeFlowgraph> flows = CurrentInstance.commandsPAK.Flowgraphs;
+            flows = CurrentInstance.commandsPAK.Flowgraphs.OrderBy(o => o.name).ToList();
             for (int i = 0; i < flows.Count; i++)
             {
                 comboBox1.Items.Add(flows[i].name);
@@ -35,7 +37,7 @@ namespace CathodeEditorGUI
         private void button1_Click(object sender, EventArgs e)
         {
             if (comboBox1.SelectedIndex == -1) return;
-            CurrentInstance.commandsPAK.SetEntryPoint(CurrentInstance.commandsPAK.Flowgraphs[comboBox1.SelectedIndex].nodeID);
+            CurrentInstance.commandsPAK.SetEntryPoint(flows[comboBox1.SelectedIndex].nodeID);
             this.Close();
         }
     }
