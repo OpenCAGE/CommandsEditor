@@ -10,42 +10,42 @@ namespace CathodeEditorGUI
         {
             all_env_dirs.Clear();
 
-            all_env_dirs.Add("BSP_LV426_PT01");
-            all_env_dirs.Add("BSP_LV426_PT02");
-            all_env_dirs.Add("BSP_TORRENS");
-            AddIfHasDLC("DLC/BSPNOSTROMO_RIPLEY_PATCH"); //We use _PATCH as that's the COMMANDS.PAK that is loaded
-            AddIfHasDLC("DLC/BSPNOSTROMO_TWOTEAMS_PATCH"); //We use _PATCH as that's the COMMANDS.PAK that is loaded
-            AddIfHasDLC("DLC/CHALLENGEMAP1");
-            AddIfHasDLC("DLC/CHALLENGEMAP3");
-            AddIfHasDLC("DLC/CHALLENGEMAP4");
-            AddIfHasDLC("DLC/CHALLENGEMAP5");
-            AddIfHasDLC("DLC/CHALLENGEMAP7");
-            AddIfHasDLC("DLC/CHALLENGEMAP9");
-            AddIfHasDLC("DLC/CHALLENGEMAP11");
-            AddIfHasDLC("DLC/CHALLENGEMAP12");
-            AddIfHasDLC("DLC/CHALLENGEMAP14");
-            AddIfHasDLC("DLC/CHALLENGEMAP16");
-            AddIfHasDLC("DLC/SALVAGEMODE1");
-            AddIfHasDLC("DLC/SALVAGEMODE2");
-            all_env_dirs.Add("ENG_ALIEN_NEST");
-            all_env_dirs.Add("ENG_REACTORCORE");
-            all_env_dirs.Add("ENG_TOWPLATFORM");
-            all_env_dirs.Add("FRONTEND");
-            all_env_dirs.Add("HAB_AIRPORT");
-            all_env_dirs.Add("HAB_CORPORATEPENT");
-            all_env_dirs.Add("HAB_SHOPPINGCENTRE");
-            all_env_dirs.Add("SCI_ANDROIDLAB");
-            all_env_dirs.Add("SCI_HOSPITALLOWER");
-            all_env_dirs.Add("SCI_HOSPITALUPPER");
-            all_env_dirs.Add("SCI_HUB");
-            all_env_dirs.Add("SOLACE");
-            all_env_dirs.Add("TECH_COMMS");
-            all_env_dirs.Add("TECH_HUB");
-            all_env_dirs.Add("TECH_MUTHRCORE");
-            all_env_dirs.Add("TECH_RND");
-            all_env_dirs.Add("TECH_RND_HZDLAB");
+            AddIfAvailable("BSP_LV426_Pt01");
+            AddIfAvailable("BSP_LV426_Pt02");
+            AddIfAvailable("BSP_Torrens");
+            AddIfAvailable("DLC/BSPNostromo_Ripley_Patch"); //We use _PATCH as that's the COMMANDS.PAK that is loaded
+            AddIfAvailable("DLC/BSPNostromo_TwoTeams_Patch"); //We use _PATCH as that's the COMMANDS.PAK that is loaded
+            AddIfAvailable("DLC/ChallengeMap1");
+            AddIfAvailable("DLC/ChallengeMap3");
+            AddIfAvailable("DLC/ChallengeMap4");
+            AddIfAvailable("DLC/ChallengeMap5");
+            AddIfAvailable("DLC/ChallengeMap7");
+            AddIfAvailable("DLC/ChallengeMap9");
+            AddIfAvailable("DLC/ChallengeMap11");
+            AddIfAvailable("DLC/ChallengeMap12");
+            AddIfAvailable("DLC/ChallengeMap14");
+            AddIfAvailable("DLC/ChallengeMap16");
+            AddIfAvailable("DLC/SalvageMode1");
+            AddIfAvailable("DLC/SalvageMode2");
+            AddIfAvailable("ENG_Alien_Nest");
+            AddIfAvailable("ENG_ReactorCore");
+            AddIfAvailable("ENG_TowPlatform");
+            AddIfAvailable("Frontend");
+            AddIfAvailable("HAB_Airport");
+            AddIfAvailable("HAB_CorporatePent");
+            AddIfAvailable("HAB_ShoppingCentre");
+            AddIfAvailable("SCI_AndroidLab");
+            AddIfAvailable("SCI_HospitalLower");
+            AddIfAvailable("SCI_HospitalUpper");
+            AddIfAvailable("SCI_Hub");
+            AddIfAvailable("Solace");
+            AddIfAvailable("Tech_Comms");
+            AddIfAvailable("Tech_Hub");
+            AddIfAvailable("Tech_MuthrCore");
+            AddIfAvailable("Tech_RnD");
+            AddIfAvailable("Tech_RnD_HzdLab");
         }
-        private static void AddIfHasDLC(string MapName)
+        private static void AddIfAvailable(string MapName)
         {
             if (!File.Exists(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + MapName + "/WORLD/COMMANDS.PAK")) return;
             all_env_dirs.Add(MapName);

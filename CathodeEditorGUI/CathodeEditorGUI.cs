@@ -113,7 +113,7 @@ namespace CathodeEditorGUI
         /* Enable the option to load COMMANDS */
         public void EnableLoadingOfPaks(bool shouldEnable)
         {
-            load_commands_pak.Invoke(new Action(() => { load_commands_pak.Enabled = shouldEnable; }));
+            load_commands_pak.Invoke(new Action(() => { load_commands_pak.Enabled = shouldEnable; load_commands_pak.Text = (shouldEnable) ? "Load" : "Caching..."; }));
             env_list.Invoke(new Action(() => { env_list.Enabled = shouldEnable; }));
         }
 
