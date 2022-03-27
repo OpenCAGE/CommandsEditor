@@ -77,6 +77,7 @@
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.modifyMVR = new System.Windows.Forms.CheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.editTriggerSequence = new System.Windows.Forms.Button();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -158,6 +159,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.editTriggerSequence);
             this.groupBox1.Controls.Add(this.button1);
             this.groupBox1.Controls.Add(this.editFlowgraphResources);
             this.groupBox1.Controls.Add(this.editNodeResources);
@@ -572,6 +574,17 @@
         " produce unwanted issues.");
             this.modifyMVR.UseVisualStyleBackColor = true;
             // 
+            // editTriggerSequence
+            // 
+            this.editTriggerSequence.Location = new System.Drawing.Point(512, 123);
+            this.editTriggerSequence.Name = "editTriggerSequence";
+            this.editTriggerSequence.Size = new System.Drawing.Size(128, 23);
+            this.editTriggerSequence.TabIndex = 178;
+            this.editTriggerSequence.Text = "Edit TriggerSequence";
+            this.editTriggerSequence.UseVisualStyleBackColor = true;
+            this.editTriggerSequence.Visible = false;
+            this.editTriggerSequence.Click += new System.EventHandler(this.editTriggerSequence_Click);
+            // 
             // CathodeEditorGUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -652,5 +665,6 @@
         private System.Windows.Forms.Button editNodeResources;
         private System.Windows.Forms.Button editFlowgraphResources;
         private System.Windows.Forms.Button editEntryPoint;
+        private System.Windows.Forms.Button editTriggerSequence;
     }
 }

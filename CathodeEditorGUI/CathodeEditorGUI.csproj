@@ -133,6 +133,12 @@
     <Compile Include="Popups\CathodeEditorGUI_EditEntryPoint.Designer.cs">
       <DependentUpon>CathodeEditorGUI_EditEntryPoint.cs</DependentUpon>
     </Compile>
+    <Compile Include="BespokeNodes\TriggerSequenceEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BespokeNodes\TriggerSequenceEditor.Designer.cs">
+      <DependentUpon>TriggerSequenceEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popups\CathodeEditorGUI_RemoveParameter.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -228,6 +234,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\CathodeEditorGUI_EditEntryPoint.resx">
       <DependentUpon>CathodeEditorGUI_EditEntryPoint.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BespokeNodes\TriggerSequenceEditor.resx">
+      <DependentUpon>TriggerSequenceEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\CathodeEditorGUI_RemoveParameter.resx">
       <DependentUpon>CathodeEditorGUI_RemoveParameter.cs</DependentUpon>

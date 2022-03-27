@@ -105,6 +105,7 @@ namespace CathodeEditorGUI
                 node_children.Items.Clear();
                 currentlyShowingChildLinks = true;
                 node_to_flowgraph_jump.Visible = false;
+                editTriggerSequence.Visible = false;
                 editCAGEAnimationKeyframes.Visible = false;
                 editNodeResources.Visible = false;
             }
@@ -552,6 +553,21 @@ namespace CathodeEditorGUI
                     if (entities[i].childLinks[x].childID != CurrentInstance.selectedEntity.nodeID) nodeLinks.Add(entities[i].childLinks[x]);
                 }
                 entities[i].childLinks = nodeLinks;
+
+                if (entities[i].variant == EntityVariant.FUNCTION && NodeDB.GetCathodeName(((FunctionEntity)entities[i]).function) == "TriggerSequence")
+                {
+                    TriggerSequence triggerSequence = (TriggerSequence)entities[i];
+                    List<TEMP_TriggerSequenceExtraDataHolder1> triggers = new List<TEMP_TriggerSequenceExtraDataHolder1>();
+                    for (int x = 0; x < triggerSequence.triggers.Count; x++)
+                    {
+                        if (triggerSequence.triggers[x].hierarchy.Count < 2 ||
+                            triggerSequence.triggers[x].hierarchy[triggerSequence.triggers[x].hierarchy.Count - 2] != CurrentInstance.selectedEntity.nodeID)
+                        {
+                            triggers.Add(triggerSequence.triggers[x]);
+                        }
+                    }
+                    triggerSequence.triggers = triggers;
+                }
             }
 
             int indexToRemove = -1;
@@ -711,6 +727,7 @@ namespace CathodeEditorGUI
                     node_to_flowgraph_jump.Visible = (CurrentInstance.commandsPAK.GetFlowgraph(((FunctionEntity)edit_node).function) != null);
                     selected_node_name.Text = NodeDBEx.GetEntityName(edit_node.nodeID);
 #if DEBUG //TODO: PULL THIS INTO STABLE
+                    editTriggerSequence.Visible = nodetypedesc == "TriggerSequence";
                     editCAGEAnimationKeyframes.Visible = nodetypedesc == "CAGEAnimation";
 #endif
                     break;
@@ -871,6 +888,13 @@ namespace CathodeEditorGUI
             LoadEntity(CurrentInstance.selectedEntity);
             this.BringToFront();
             this.Focus();
+        }
+
+        /* Edit a TriggerSequence */
+        private void editTriggerSequence_Click(object sender, EventArgs e)
+        {
+            TriggerSequenceEditor keyframeEditor = new TriggerSequenceEditor((TriggerSequence)CurrentInstance.selectedEntity);
+            keyframeEditor.Show();
         }
 
         /* Edit CAGEAnimation keyframes */
