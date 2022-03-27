@@ -313,11 +313,11 @@
             // 
             // editCAGEAnimationKeyframes
             // 
-            this.editCAGEAnimationKeyframes.Location = new System.Drawing.Point(645, 123);
+            this.editCAGEAnimationKeyframes.Location = new System.Drawing.Point(623, 123);
             this.editCAGEAnimationKeyframes.Name = "editCAGEAnimationKeyframes";
-            this.editCAGEAnimationKeyframes.Size = new System.Drawing.Size(99, 23);
+            this.editCAGEAnimationKeyframes.Size = new System.Drawing.Size(121, 23);
             this.editCAGEAnimationKeyframes.TabIndex = 175;
-            this.editCAGEAnimationKeyframes.Text = "Edit Keyframes";
+            this.editCAGEAnimationKeyframes.Text = "Edit CAGEAnimation";
             this.editCAGEAnimationKeyframes.UseVisualStyleBackColor = true;
             this.editCAGEAnimationKeyframes.Visible = false;
             this.editCAGEAnimationKeyframes.Click += new System.EventHandler(this.editCAGEAnimationKeyframes_Click);
@@ -576,9 +576,9 @@
             // 
             // editTriggerSequence
             // 
-            this.editTriggerSequence.Location = new System.Drawing.Point(512, 123);
+            this.editTriggerSequence.Location = new System.Drawing.Point(500, 123);
             this.editTriggerSequence.Name = "editTriggerSequence";
-            this.editTriggerSequence.Size = new System.Drawing.Size(128, 23);
+            this.editTriggerSequence.Size = new System.Drawing.Size(121, 23);
             this.editTriggerSequence.TabIndex = 178;
             this.editTriggerSequence.Text = "Edit TriggerSequence";
             this.editTriggerSequence.UseVisualStyleBackColor = true;

@@ -1036,13 +1036,68 @@ namespace CathodeEditorGUI
             CAGEAnimationEditor edit = new CAGEAnimationEditor((CATHODE.Commands.CAGEAnimation)ent);
             edit.Show();
             */
-            LoadCommandsPAK(@"HAB_ShoppingCentre");
+            //LoadCommandsPAK(@"HAB_ShoppingCentre");
+            int originalProxyCount = 0;
+            int newProxyCount = 0;
+            int originalOverrideCount = 0;
+            int newOverrideCount = 0;
+            int originalTriggerCount = 0;
+            int newTriggerCount = 0;
             foreach (CathodeFlowgraph flow in CurrentInstance.commandsPAK.Flowgraphs)
             {
-                flow.proxies.Clear();
+                CurrentInstance.selectedFlowgraph = flow;
+                List<OverrideEntity> overridePurged = new List<OverrideEntity>();
+                for (int i = 0; i < flow.overrides.Count; i++)
+                {
+                    if (EditorUtils.ResolveHierarchy(flow.overrides[i].hierarchy, out CathodeFlowgraph flowTemp) != null)
+                    {
+                        overridePurged.Add(flow.overrides[i]);
+                        continue;
+                    }
+                }
+                originalOverrideCount += flow.overrides.Count;
+                newOverrideCount += overridePurged.Count;
+                flow.overrides = overridePurged;
+
+                List<ProxyEntity> proxyPurged = new List<ProxyEntity>();
+                for (int i = 0; i < flow.proxies.Count; i++)
+                {
+                    if (EditorUtils.ResolveHierarchy(flow.proxies[i].hierarchy, out CathodeFlowgraph flowTemp) != null)
+                    {
+                        proxyPurged.Add(flow.proxies[i]);
+                        continue;
+                    }
+                }
+                originalProxyCount += flow.proxies.Count;
+                newProxyCount += proxyPurged.Count;
+                flow.proxies = proxyPurged;
+
+                for (int i = 0; i < flow.functions.Count; i++)
+                {
+                    if (NodeDB.GetCathodeName(flow.functions[i].function) == "TriggerSequence")
+                    {
+                        TriggerSequence trig = (TriggerSequence)flow.functions[i];
+                        List<TEMP_TriggerSequenceExtraDataHolder1> trigSeq = new List<TEMP_TriggerSequenceExtraDataHolder1>();
+                        for (int x = 0; x < trig.triggers.Count; x++)
+                        {
+                            if (EditorUtils.ResolveHierarchy(trig.triggers[x].hierarchy, out CathodeFlowgraph flowTemp) != null)
+                            {
+                                trigSeq.Add(trig.triggers[x]);
+                            }
+                        }
+                        originalTriggerCount += trig.triggers.Count;
+                        newTriggerCount += trigSeq.Count;
+                        trig.triggers = trigSeq;
+                    }
+                }
             }
-            modifyMVR.Checked = false;
-            SaveCommandsPAK();
+            MessageBox.Show(
+                "Purged all dead hierarchies!" +
+                "\n - " + (originalProxyCount - newProxyCount) + " proxies (of " + originalProxyCount + ")" +
+                "\n - " + (originalOverrideCount - newOverrideCount) + " overrides (of " + originalOverrideCount + ")" +
+                "\n - " + (originalTriggerCount - newTriggerCount) + " triggers (of " + originalTriggerCount + ")");
+            //modifyMVR.Checked = false;
+            //SaveCommandsPAK();
         }
     }
 
