@@ -37,7 +37,7 @@
             // listBox1
             // 
             this.listBox1.FormattingEnabled = true;
-            this.listBox1.Location = new System.Drawing.Point(12, 63);
+            this.listBox1.Location = new System.Drawing.Point(47, 343);
             this.listBox1.Name = "listBox1";
             this.listBox1.Size = new System.Drawing.Size(695, 407);
             this.listBox1.TabIndex = 0;
@@ -45,7 +45,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 47);
+            this.label1.Location = new System.Drawing.Point(47, 327);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(45, 13);
             this.label1.TabIndex = 1;
@@ -54,7 +54,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(722, 47);
+            this.label2.Location = new System.Drawing.Point(757, 327);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(40, 13);
             this.label2.TabIndex = 3;
@@ -63,7 +63,7 @@
             // listBox2
             // 
             this.listBox2.FormattingEnabled = true;
-            this.listBox2.Location = new System.Drawing.Point(722, 63);
+            this.listBox2.Location = new System.Drawing.Point(757, 343);
             this.listBox2.Name = "listBox2";
             this.listBox2.Size = new System.Drawing.Size(695, 407);
             this.listBox2.TabIndex = 2;

@@ -105,6 +105,7 @@
             this.first_executed_flowgraph.Size = new System.Drawing.Size(63, 13);
             this.first_executed_flowgraph.TabIndex = 170;
             this.first_executed_flowgraph.Text = "Entry point: ";
+            this.first_executed_flowgraph.DoubleClick += SelectEntryPointUI;
             // 
             // save_commands_pak
             // 

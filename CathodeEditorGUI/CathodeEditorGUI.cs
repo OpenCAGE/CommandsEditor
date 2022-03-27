@@ -64,9 +64,9 @@ namespace CathodeEditorGUI
             foreach (string map in all_map_dirs) env_list.Items.Add(map);
             env_list.SelectedIndex = 0;
 
-#if DEBUG
+//#if DEBUG
             button1.Visible = true;
-#endif
+//#endif
         }
 
         /* Clear the UI */
@@ -124,6 +124,7 @@ namespace CathodeEditorGUI
         {
             //Reset UI
             ClearUI(true, true, true);
+            EditorUtils.ResetHierarchyPurgeCache();
             CurrentInstance.commandsPAK = null;
 
             //Load
@@ -163,6 +164,9 @@ namespace CathodeEditorGUI
 
             //Show info in UI
             RefreshStatsUI();
+
+            //Select entry point flowgraph
+            LoadFlowgraph(CurrentInstance.commandsPAK.EntryPoints[0].name);
         }
         private void load_commands_pak_Click(object sender, EventArgs e)
         {
@@ -299,6 +303,13 @@ namespace CathodeEditorGUI
                     break;
                 }
             }
+        }
+
+        /* Select entry point from top of UI */
+        private void SelectEntryPointUI(object sender, System.EventArgs e)
+        {
+            if (CurrentInstance.commandsPAK == null || !CurrentInstance.commandsPAK.Loaded) return;
+            LoadFlowgraph(CurrentInstance.commandsPAK.EntryPoints[0].name);
         }
 
         /* Add new flowgraph */
@@ -495,9 +506,9 @@ namespace CathodeEditorGUI
             }
             flowgraph_content.EndUpdate();
 
-#if DEBUG //TODO: PULL THIS INTO STABLE
+//#if DEBUG //TODO: PULL THIS INTO STABLE
             editFlowgraphResources.Visible = true;
-#endif
+//#endif
 
             groupBox1.Text = entry.name;
             Cursor.Current = Cursors.Default;
@@ -546,7 +557,7 @@ namespace CathodeEditorGUI
             }
 
             List<CathodeEntity> entities = CurrentInstance.selectedFlowgraph.GetEntities();
-            for (int i = 0; i < entities.Count; i++)
+            for (int i = 0; i < entities.Count; i++) //We should actually query every node in the PAK, since we might be ref'd by a proxy or override
             {
                 List<CathodeNodeLink> nodeLinks = new List<CathodeNodeLink>();
                 for (int x = 0; x < entities[i].childLinks.Count; x++)
@@ -555,19 +566,38 @@ namespace CathodeEditorGUI
                 }
                 entities[i].childLinks = nodeLinks;
 
-                if (entities[i].variant == EntityVariant.FUNCTION && NodeDB.GetCathodeName(((FunctionEntity)entities[i]).function) == "TriggerSequence")
+                if (entities[i].variant == EntityVariant.FUNCTION)
                 {
-                    TriggerSequence triggerSequence = (TriggerSequence)entities[i];
-                    List<TEMP_TriggerSequenceExtraDataHolder1> triggers = new List<TEMP_TriggerSequenceExtraDataHolder1>();
-                    for (int x = 0; x < triggerSequence.triggers.Count; x++)
+                    string nodeType = NodeDB.GetCathodeName(((FunctionEntity)entities[i]).function);
+                    switch (nodeType)
                     {
-                        if (triggerSequence.triggers[x].hierarchy.Count < 2 ||
-                            triggerSequence.triggers[x].hierarchy[triggerSequence.triggers[x].hierarchy.Count - 2] != CurrentInstance.selectedEntity.nodeID)
-                        {
-                            triggers.Add(triggerSequence.triggers[x]);
-                        }
+                        case "TriggerSequence":
+                            TriggerSequence triggerSequence = (TriggerSequence)entities[i];
+                            List<TEMP_TriggerSequenceExtraDataHolder1> triggers = new List<TEMP_TriggerSequenceExtraDataHolder1>();
+                            for (int x = 0; x < triggerSequence.triggers.Count; x++)
+                            {
+                                if (triggerSequence.triggers[x].hierarchy.Count < 2 ||
+                                    triggerSequence.triggers[x].hierarchy[triggerSequence.triggers[x].hierarchy.Count - 2] != CurrentInstance.selectedEntity.nodeID)
+                                {
+                                    triggers.Add(triggerSequence.triggers[x]);
+                                }
+                            }
+                            triggerSequence.triggers = triggers;
+                            break;
+                        case "CAGEAnimation":
+                            CAGEAnimation cageAnim = (CAGEAnimation)entities[i];
+                            List<CathodeParameterKeyframeHeader> headers = new List<CathodeParameterKeyframeHeader>();
+                            for (int x = 0; x < cageAnim.keyframeHeaders.Count; x++)
+                            {
+                                if (cageAnim.keyframeHeaders[x].connectedEntity.Count < 2 ||
+                                    cageAnim.keyframeHeaders[x].connectedEntity[cageAnim.keyframeHeaders[x].connectedEntity.Count - 2] != CurrentInstance.selectedEntity.nodeID)
+                                {
+                                    headers.Add(cageAnim.keyframeHeaders[x]);
+                                }
+                            }
+                            cageAnim.keyframeHeaders = headers;
+                            break;
                     }
-                    triggerSequence.triggers = triggers;
                 }
             }
 
@@ -727,10 +757,10 @@ namespace CathodeEditorGUI
                     nodetypedesc = NodeDBEx.GetParameterName(((FunctionEntity)edit_node).function);
                     node_to_flowgraph_jump.Visible = (CurrentInstance.commandsPAK.GetFlowgraph(((FunctionEntity)edit_node).function) != null);
                     selected_node_name.Text = NodeDBEx.GetEntityName(edit_node.nodeID);
-#if DEBUG //TODO: PULL THIS INTO STABLE
+//#if DEBUG //TODO: PULL THIS INTO STABLE
                     editTriggerSequence.Visible = nodetypedesc == "TriggerSequence";
                     editCAGEAnimationKeyframes.Visible = nodetypedesc == "CAGEAnimation";
-#endif
+//#endif
                     break;
                 case EntityVariant.DATATYPE:
                     nodetypedesc = "DataType " + ((DatatypeEntity)edit_node).type.ToString();
@@ -750,9 +780,9 @@ namespace CathodeEditorGUI
             //show resource editor button if this node has a resource reference
             cGUID resourceParamID = Utilities.GenerateGUID("resource");
             CathodeLoadedParameter resourceParam = CurrentInstance.selectedEntity.parameters.FirstOrDefault(o => o.paramID == resourceParamID);
-#if DEBUG //TODO: PULL THIS INTO STABLE
+//#if DEBUG //TODO: PULL THIS INTO STABLE
             editNodeResources.Visible = ((resourceParam != null) || CurrentInstance.selectedEntity.resources.Count != 0);
-#endif
+//#endif
 
             //populate parameter inputs
             int current_ui_offset = 7;

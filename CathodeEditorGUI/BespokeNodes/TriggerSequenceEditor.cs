@@ -32,7 +32,7 @@ namespace CathodeEditorGUI
 
             for (int i = 0; i < node.events.Count; i++)
             {
-                listBox2.Items.Add("EventID: " + node.events[i].EventID + ", StartedID: " + node.events[i].StartedID + ", FinishedID: " + node.events[i].FinishedID);
+                listBox2.Items.Add(NodeDBEx.GetParameterName(node.events[i].EventID) + "\n  - StartedID: " + NodeDBEx.GetParameterName(node.events[i].StartedID) + "\n  - FinishedID: " + NodeDBEx.GetParameterName(node.events[i].FinishedID));
             }
 
 

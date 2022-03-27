@@ -161,10 +161,17 @@ namespace CathodeEditorGUI
         }
 
         /* Resolve a node hierarchy: **firstHierarchyIsFlowgraph should be TRUE for proxies!** */
-        public static CathodeEntity ResolveHierarchy(List<cGUID> hierarchy, bool firstHierarchyIsFlowgraph, out CathodeFlowgraph containedFlowgraph)
+        public static CathodeEntity ResolveHierarchy(List<cGUID> hierarchy, bool isProxy, out CathodeFlowgraph containedFlowgraph)
         {
-            CathodeFlowgraph currentFlowgraphToSearch = (firstHierarchyIsFlowgraph) ? CurrentInstance.commandsPAK.GetFlowgraph(hierarchy[0]) : CurrentInstance.selectedFlowgraph;
-            if (firstHierarchyIsFlowgraph) hierarchy.RemoveAt(0);
+            CathodeFlowgraph currentFlowgraphToSearch = CurrentInstance.selectedFlowgraph;
+            if (isProxy)
+            {
+                currentFlowgraphToSearch = CurrentInstance.commandsPAK.GetFlowgraph(hierarchy[0]);
+                if (currentFlowgraphToSearch == null)
+                    currentFlowgraphToSearch = CurrentInstance.commandsPAK.EntryPoints[0];
+                else
+                    hierarchy.RemoveAt(0);
+            }
             CathodeEntity entity = null;
             for (int i = 0; i < hierarchy.Count; i++)
             {
@@ -202,8 +209,13 @@ namespace CathodeEditorGUI
         }
 
         /* CA's CAGE doesn't properly tidy up hierarchies pointing to deleted nodes - so we do that here to save confusion */
+        private static List<cGUID> purgedFlows = new List<cGUID>();
         public static void PurgeDeadHierarchiesInActiveFlowgraph()
         {
+            CathodeFlowgraph flow = CurrentInstance.selectedFlowgraph;
+            if (purgedFlows.Contains(flow.nodeID)) return;
+            purgedFlows.Add(flow.nodeID);
+
             int originalProxyCount = 0;
             int newProxyCount = 0;
             int originalOverrideCount = 0;
@@ -212,7 +224,6 @@ namespace CathodeEditorGUI
             int newTriggerCount = 0;
             int originalAnimCount = 0;
             int newAnimCount = 0;
-            CathodeFlowgraph flow = CurrentInstance.selectedFlowgraph;
 
             //Clear overrides
             List<OverrideEntity> overridePurged = new List<OverrideEntity>();
@@ -268,6 +279,10 @@ namespace CathodeEditorGUI
                 "\n - " + (originalOverrideCount - newOverrideCount) + " overrides (of " + originalOverrideCount + ")" +
                 "\n - " + (originalTriggerCount - newTriggerCount) + " triggers (of " + originalTriggerCount + ")" +
                 "\n - " + (originalAnimCount - newAnimCount) + " anims (of " + originalAnimCount + ")");
+        }
+        public static void ResetHierarchyPurgeCache()
+        {
+            purgedFlows.Clear();
         }
     }
 }
