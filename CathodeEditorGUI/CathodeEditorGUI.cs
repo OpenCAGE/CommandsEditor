@@ -275,7 +275,7 @@ namespace CathodeEditorGUI
             {
                 case EntityVariant.OVERRIDE:
                 {
-                    CathodeEntity entity = EditorUtils.ResolveHierarchy(((OverrideEntity)CurrentInstance.selectedEntity).hierarchy, out flow);
+                    CathodeEntity entity = EditorUtils.ResolveHierarchy(((OverrideEntity)CurrentInstance.selectedEntity).hierarchy, false, out flow);
                     if (entity != null)
                     {
                         LoadFlowgraph(flow.name);
@@ -285,7 +285,7 @@ namespace CathodeEditorGUI
                 }
                 case EntityVariant.PROXY:
                 {
-                    CathodeEntity entity = EditorUtils.ResolveHierarchy(((ProxyEntity)CurrentInstance.selectedEntity).hierarchy, out flow);
+                    CathodeEntity entity = EditorUtils.ResolveHierarchy(((ProxyEntity)CurrentInstance.selectedEntity).hierarchy, true, out flow);
                     if (entity != null)
                     {
                         LoadFlowgraph(flow.name);
@@ -1049,7 +1049,8 @@ namespace CathodeEditorGUI
                 List<OverrideEntity> overridePurged = new List<OverrideEntity>();
                 for (int i = 0; i < flow.overrides.Count; i++)
                 {
-                    if (EditorUtils.ResolveHierarchy(flow.overrides[i].hierarchy, out CathodeFlowgraph flowTemp) != null)
+                    //if (DoesEntityExist(flow.overrides[i].hierarchy))
+                    if (EditorUtils.ResolveHierarchy(flow.overrides[i].hierarchy, false, out CathodeFlowgraph flowTemp) != null)
                     {
                         overridePurged.Add(flow.overrides[i]);
                         continue;
@@ -1062,7 +1063,8 @@ namespace CathodeEditorGUI
                 List<ProxyEntity> proxyPurged = new List<ProxyEntity>();
                 for (int i = 0; i < flow.proxies.Count; i++)
                 {
-                    if (EditorUtils.ResolveHierarchy(flow.proxies[i].hierarchy, out CathodeFlowgraph flowTemp) != null)
+                    //if (DoesEntityExist(flow.proxies[i].hierarchy))
+                    if (EditorUtils.ResolveHierarchy(flow.proxies[i].hierarchy, true, out CathodeFlowgraph flowTemp) != null)
                     {
                         proxyPurged.Add(flow.proxies[i]);
                         continue;
@@ -1080,7 +1082,8 @@ namespace CathodeEditorGUI
                         List<TEMP_TriggerSequenceExtraDataHolder1> trigSeq = new List<TEMP_TriggerSequenceExtraDataHolder1>();
                         for (int x = 0; x < trig.triggers.Count; x++)
                         {
-                            if (EditorUtils.ResolveHierarchy(trig.triggers[x].hierarchy, out CathodeFlowgraph flowTemp) != null)
+                            //if (DoesEntityExist(trig.triggers[x].hierarchy))
+                            if (EditorUtils.ResolveHierarchy(trig.triggers[x].hierarchy, false, out CathodeFlowgraph flowTemp) != null)
                             {
                                 trigSeq.Add(trig.triggers[x]);
                             }
@@ -1098,6 +1101,21 @@ namespace CathodeEditorGUI
                 "\n - " + (originalTriggerCount - newTriggerCount) + " triggers (of " + originalTriggerCount + ")");
             //modifyMVR.Checked = false;
             //SaveCommandsPAK();
+        }
+
+        private bool DoesEntityExist(List<cGUID> hierarchy)
+        {
+            if (hierarchy.Count < 2) return false;
+            return DoesEntityExist(hierarchy[hierarchy.Count - 2]);
+        }
+        private bool DoesEntityExist(cGUID id)
+        {
+            for (int i = 0; i < CurrentInstance.commandsPAK.Flowgraphs.Count; i++) 
+            {
+                List<CathodeEntity> ents = CurrentInstance.commandsPAK.Flowgraphs[i].GetEntities();
+                for (int x = 0; x < ents.Count; x++) if (ents[x].nodeID == id) return true;
+            }
+            return false;
         }
     }
 

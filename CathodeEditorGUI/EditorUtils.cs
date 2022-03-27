@@ -160,8 +160,8 @@ namespace CathodeEditorGUI
             return editedText;
         }
 
-        /* Resolve a node hierarchy */
-        public static CathodeEntity ResolveHierarchy(List<cGUID> hierarchy, out CathodeFlowgraph containedFlowgraph)
+        /* Resolve a node hierarchy: **firstHierarchyIsFlowgraph should be TRUE for proxies!** */
+        public static CathodeEntity ResolveHierarchy(List<cGUID> hierarchy, bool firstHierarchyIsFlowgraph, out CathodeFlowgraph containedFlowgraph)
         {
             CathodeFlowgraph currentFlowgraphToSearch = CurrentInstance.selectedFlowgraph;
             CathodeEntity entity = null;
