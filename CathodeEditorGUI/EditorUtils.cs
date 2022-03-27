@@ -163,7 +163,8 @@ namespace CathodeEditorGUI
         /* Resolve a node hierarchy: **firstHierarchyIsFlowgraph should be TRUE for proxies!** */
         public static CathodeEntity ResolveHierarchy(List<cGUID> hierarchy, bool firstHierarchyIsFlowgraph, out CathodeFlowgraph containedFlowgraph)
         {
-            CathodeFlowgraph currentFlowgraphToSearch = CurrentInstance.selectedFlowgraph;
+            CathodeFlowgraph currentFlowgraphToSearch = (firstHierarchyIsFlowgraph) ? CurrentInstance.commandsPAK.GetFlowgraph(hierarchy[0]) : CurrentInstance.selectedFlowgraph;
+            if (firstHierarchyIsFlowgraph) hierarchy.RemoveAt(0);
             CathodeEntity entity = null;
             for (int i = 0; i < hierarchy.Count; i++)
             {
@@ -198,6 +199,75 @@ namespace CathodeEditorGUI
             }
             if (combinedString.Length >= 4) combinedString = combinedString.Substring(0, combinedString.Length - 4);
             return combinedString;
+        }
+
+        /* CA's CAGE doesn't properly tidy up hierarchies pointing to deleted nodes - so we do that here to save confusion */
+        public static void PurgeDeadHierarchiesInActiveFlowgraph()
+        {
+            int originalProxyCount = 0;
+            int newProxyCount = 0;
+            int originalOverrideCount = 0;
+            int newOverrideCount = 0;
+            int originalTriggerCount = 0;
+            int newTriggerCount = 0;
+            int originalAnimCount = 0;
+            int newAnimCount = 0;
+            CathodeFlowgraph flow = CurrentInstance.selectedFlowgraph;
+
+            //Clear overrides
+            List<OverrideEntity> overridePurged = new List<OverrideEntity>();
+            for (int i = 0; i < flow.overrides.Count; i++)
+                if (ResolveHierarchy(flow.overrides[i].hierarchy, false, out CathodeFlowgraph flowTemp) != null)
+                    overridePurged.Add(flow.overrides[i]);
+            originalOverrideCount += flow.overrides.Count;
+            newOverrideCount += overridePurged.Count;
+            flow.overrides = overridePurged;
+
+            //Clear proxies
+            List<ProxyEntity> proxyPurged = new List<ProxyEntity>();
+            for (int i = 0; i < flow.proxies.Count; i++)
+                if (ResolveHierarchy(flow.proxies[i].hierarchy, true, out CathodeFlowgraph flowTemp) != null)
+                    proxyPurged.Add(flow.proxies[i]);
+            originalProxyCount += flow.proxies.Count;
+            newProxyCount += proxyPurged.Count;
+            flow.proxies = proxyPurged;
+
+            //Clear TriggerSequence and CAGEAnimation entities
+            for (int i = 0; i < flow.functions.Count; i++)
+            {
+                switch (NodeDB.GetCathodeName(flow.functions[i].function))
+                {
+                    case "TriggerSequence":
+                        TriggerSequence trig = (TriggerSequence)flow.functions[i];
+                        List<TEMP_TriggerSequenceExtraDataHolder1> trigSeq = new List<TEMP_TriggerSequenceExtraDataHolder1>();
+                        for (int x = 0; x < trig.triggers.Count; x++)
+                            if (ResolveHierarchy(trig.triggers[x].hierarchy, false, out CathodeFlowgraph flowTemp) != null)
+                                trigSeq.Add(trig.triggers[x]);
+                        originalTriggerCount += trig.triggers.Count;
+                        newTriggerCount += trigSeq.Count;
+                        trig.triggers = trigSeq;
+                        break;
+                    case "CAGEAnimation":
+                        CAGEAnimation anim = (CAGEAnimation)flow.functions[i];
+                        List<CathodeParameterKeyframeHeader> headers = new List<CathodeParameterKeyframeHeader>();
+                        for (int x = 0; x < anim.keyframeHeaders.Count; x++)
+                            if (ResolveHierarchy(anim.keyframeHeaders[x].connectedEntity, false, out CathodeFlowgraph flowTemp) != null)
+                                headers.Add(anim.keyframeHeaders[x]);
+                        originalAnimCount += anim.keyframeHeaders.Count;
+                        newAnimCount += headers.Count;
+                        anim.keyframeHeaders = headers;
+                        break;
+                }
+                if (NodeDB.GetCathodeName(flow.functions[i].function) != "TriggerSequence") continue;
+            }
+
+            if ((originalProxyCount - newProxyCount) + (originalOverrideCount - newOverrideCount) + (originalTriggerCount - newTriggerCount) + (originalAnimCount - newAnimCount) == 0) return;
+            Console.WriteLine(
+                "Purged all dead hierarchies in " + flow.name + "!" +
+                "\n - " + (originalProxyCount - newProxyCount) + " proxies (of " + originalProxyCount + ")" +
+                "\n - " + (originalOverrideCount - newOverrideCount) + " overrides (of " + originalOverrideCount + ")" +
+                "\n - " + (originalTriggerCount - newTriggerCount) + " triggers (of " + originalTriggerCount + ")" +
+                "\n - " + (originalAnimCount - newAnimCount) + " anims (of " + originalAnimCount + ")");
         }
     }
 }
