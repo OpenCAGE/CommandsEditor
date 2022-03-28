@@ -38,6 +38,7 @@
             this.addNewFlowgraph = new System.Windows.Forms.Button();
             this.FileTree = new System.Windows.Forms.TreeView();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.editTriggerSequence = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.editFlowgraphResources = new System.Windows.Forms.Button();
             this.editNodeResources = new System.Windows.Forms.Button();
@@ -77,7 +78,6 @@
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.modifyMVR = new System.Windows.Forms.CheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.editTriggerSequence = new System.Windows.Forms.Button();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -105,7 +105,6 @@
             this.first_executed_flowgraph.Size = new System.Drawing.Size(63, 13);
             this.first_executed_flowgraph.TabIndex = 170;
             this.first_executed_flowgraph.Text = "Entry point: ";
-            this.first_executed_flowgraph.DoubleClick += SelectEntryPointUI;
             // 
             // save_commands_pak
             // 
@@ -161,7 +160,6 @@
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.editTriggerSequence);
-            this.groupBox1.Controls.Add(this.button1);
             this.groupBox1.Controls.Add(this.editFlowgraphResources);
             this.groupBox1.Controls.Add(this.editNodeResources);
             this.groupBox1.Controls.Add(this.groupBox7);
@@ -176,13 +174,25 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Selected Flowgraph Content";
             // 
+            // editTriggerSequence
+            // 
+            this.editTriggerSequence.Location = new System.Drawing.Point(500, 123);
+            this.editTriggerSequence.Name = "editTriggerSequence";
+            this.editTriggerSequence.Size = new System.Drawing.Size(121, 23);
+            this.editTriggerSequence.TabIndex = 178;
+            this.editTriggerSequence.Text = "Edit TriggerSequence";
+            this.editTriggerSequence.UseVisualStyleBackColor = true;
+            this.editTriggerSequence.Visible = false;
+            this.editTriggerSequence.Click += new System.EventHandler(this.editTriggerSequence_Click);
+            // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(171, -1);
+            this.button1.ForeColor = System.Drawing.Color.Red;
+            this.button1.Location = new System.Drawing.Point(399, 9);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(95, 23);
+            this.button1.Size = new System.Drawing.Size(192, 23);
             this.button1.TabIndex = 176;
-            this.button1.Text = "debug button";
+            this.button1.Text = "DEBUG: Purge all dead hierarchies.";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Visible = false;
             this.button1.Click += new System.EventHandler(this.button1_Click_1);
@@ -533,6 +543,7 @@
             // groupBox8
             // 
             this.groupBox8.Controls.Add(this.editEntryPoint);
+            this.groupBox8.Controls.Add(this.button1);
             this.groupBox8.Controls.Add(this.first_executed_flowgraph);
             this.groupBox8.Controls.Add(this.flowgraph_count);
             this.groupBox8.Location = new System.Drawing.Point(554, 3);
@@ -574,17 +585,6 @@
             this.toolTip1.SetToolTip(this.modifyMVR, "This option may solve some issues with deleted geometry persisting, however could" +
         " produce unwanted issues.");
             this.modifyMVR.UseVisualStyleBackColor = true;
-            // 
-            // editTriggerSequence
-            // 
-            this.editTriggerSequence.Location = new System.Drawing.Point(500, 123);
-            this.editTriggerSequence.Name = "editTriggerSequence";
-            this.editTriggerSequence.Size = new System.Drawing.Size(121, 23);
-            this.editTriggerSequence.TabIndex = 178;
-            this.editTriggerSequence.Text = "Edit TriggerSequence";
-            this.editTriggerSequence.UseVisualStyleBackColor = true;
-            this.editTriggerSequence.Visible = false;
-            this.editTriggerSequence.Click += new System.EventHandler(this.editTriggerSequence_Click);
             // 
             // CathodeEditorGUI
             // 

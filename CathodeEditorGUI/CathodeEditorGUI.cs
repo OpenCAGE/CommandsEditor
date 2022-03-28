@@ -27,46 +27,23 @@ namespace CathodeEditorGUI
             InitializeComponent();
             treeHelper = new TreeUtility(FileTree);
 
-            //CathodeNavMesh navmesh = new CathodeNavMesh(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\ENV\PRODUCTION\BSP_TORRENS\WORLD\STATE_0\NAV_MESH");
-            //CathodeNavMesh navmesh_orig = new CathodeNavMesh(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\ENV\PRODUCTION\BSP_TORRENS\WORLD\STATE_0\NAV_MESH5");
-
-            //string bleh = "";
-
-            //CathodeStringDB cathodeStringDB = new CathodeStringDB(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\GLOBAL\ANIM_STRING_DB_DEBUG.BIN");
-            //CathodeStringDB cathodeStringDB2 = new CathodeStringDB(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\GLOBAL\ANIM_STRING_DB.BIN");
-
-            /*
-            string level = "TECH_RND_HZDLAB";
-            string[] files = Directory.GetFiles(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\ENV\", "COMMANDS.PAK", SearchOption.AllDirectories);
-            CommandsPAK newFlows = new CommandsPAK(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\ENV\PRODUCTION\" + level + @"\WORLD\COMMANDS.PAK");
-            for (int i = 0; i < files.Length; i++)
-            {
-                if (files[i].Contains(level)) continue;
-                CommandsPAK pak = new CommandsPAK(files[i]);
-                for (int x = 0;x < pak.Flowgraphs.Count; x++)
-                {
-                    //if (pak.Flowgraphs[x].name.Contains(":")) continue;
-                    CathodeFlowgraph flow = newFlows.Flowgraphs.FirstOrDefault(o => o.nodeID == pak.Flowgraphs[x].nodeID);
-                    if (flow == null)
-                    {
-                        newFlows.Flowgraphs.Add(pak.Flowgraphs[x]);
-                    }
-                }
-                if (i == 2) break;
-            }
-            newFlows.Save();
-            return;
-            */
-
             //Populate available maps
-            List<string> all_map_dirs = MapDirectories.GetAvailable();
             env_list.Items.Clear();
-            foreach (string map in all_map_dirs) env_list.Items.Add(map);
-            env_list.SelectedIndex = 0;
+            List<string> mapList = Directory.GetFiles(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            for (int i = 0; i < mapList.Count; i++)
+            {
+                string[] fileSplit = mapList[i].Split(new[] { "PRODUCTION" }, StringSplitOptions.None);
+                string mapName = fileSplit[fileSplit.Length - 1].Substring(1, fileSplit[fileSplit.Length - 1].Length - 20);
+                mapList[i] = (mapName);
+            }
+            mapList.Remove("DLC\\BSPNOSTROMO_RIPLEY"); mapList.Remove("DLC\\BSPNOSTROMO_TWOTEAMS");
+            env_list.Items.AddRange(mapList.ToArray());
+            if (env_list.Items.Contains("FRONTEND")) env_list.SelectedItem = "FRONTEND";
+            else env_list.SelectedIndex = 0;
 
-//#if DEBUG
+#if DEBUG
             button1.Visible = true;
-//#endif
+#endif
         }
 
         /* Clear the UI */
@@ -506,9 +483,9 @@ namespace CathodeEditorGUI
             }
             flowgraph_content.EndUpdate();
 
-//#if DEBUG //TODO: PULL THIS INTO STABLE
+#if DEBUG //TODO: PULL THIS INTO STABLE
             editFlowgraphResources.Visible = true;
-//#endif
+#endif
 
             groupBox1.Text = entry.name;
             Cursor.Current = Cursors.Default;
@@ -757,10 +734,10 @@ namespace CathodeEditorGUI
                     nodetypedesc = NodeDBEx.GetParameterName(((FunctionEntity)edit_node).function);
                     node_to_flowgraph_jump.Visible = (CurrentInstance.commandsPAK.GetFlowgraph(((FunctionEntity)edit_node).function) != null);
                     selected_node_name.Text = NodeDBEx.GetEntityName(edit_node.nodeID);
-//#if DEBUG //TODO: PULL THIS INTO STABLE
+#if DEBUG //TODO: PULL THIS INTO STABLE
                     editTriggerSequence.Visible = nodetypedesc == "TriggerSequence";
                     editCAGEAnimationKeyframes.Visible = nodetypedesc == "CAGEAnimation";
-//#endif
+#endif
                     break;
                 case EntityVariant.DATATYPE:
                     nodetypedesc = "DataType " + ((DatatypeEntity)edit_node).type.ToString();
@@ -780,9 +757,9 @@ namespace CathodeEditorGUI
             //show resource editor button if this node has a resource reference
             cGUID resourceParamID = Utilities.GenerateGUID("resource");
             CathodeLoadedParameter resourceParam = CurrentInstance.selectedEntity.parameters.FirstOrDefault(o => o.paramID == resourceParamID);
-//#if DEBUG //TODO: PULL THIS INTO STABLE
+#if DEBUG //TODO: PULL THIS INTO STABLE
             editNodeResources.Visible = ((resourceParam != null) || CurrentInstance.selectedEntity.resources.Count != 0);
-//#endif
+#endif
 
             //populate parameter inputs
             int current_ui_offset = 7;
