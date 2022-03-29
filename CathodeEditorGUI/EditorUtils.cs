@@ -247,8 +247,8 @@ namespace CathodeEditorGUI
             int newLinkCount = 0;
 
             //Clear unknowns
-            //originalUnknownCount = flow.unknowns.Count;
-            //flow.unknowns.Clear();
+            originalUnknownCount = flow.unknowns.Count;
+            flow.unknowns.Clear();
 
             //Clear overrides
             List<OverrideEntity> overridePurged = new List<OverrideEntity>();

@@ -1059,6 +1059,7 @@ namespace CathodeEditorGUI
                         CurrentInstance.selectedFlowgraph = flow;
                         EditorUtils.PurgeDeadHierarchiesInActiveFlowgraph();
                     }
+                    CurrentInstance.commandsPAK.Save();
                 }
                 return;
             }
