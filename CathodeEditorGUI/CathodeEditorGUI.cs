@@ -605,6 +605,15 @@ namespace CathodeEditorGUI
             ClearUI(false, false, true);
         }
 
+        /* Remove selected node when DELETE key is pressed */
+        private void Flowgraph_content_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                removeSelectedNode.PerformClick();
+            }
+        }
+
         /* Duplicate selected entity */
         private void duplicateSelectedNode_Click(object sender, EventArgs e)
         {

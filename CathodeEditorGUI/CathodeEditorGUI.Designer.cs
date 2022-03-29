@@ -453,6 +453,7 @@
             this.flowgraph_content.Size = new System.Drawing.Size(444, 641);
             this.flowgraph_content.TabIndex = 144;
             this.flowgraph_content.SelectedIndexChanged += new System.EventHandler(this.flowgraph_content_SelectedIndexChanged);
+            this.flowgraph_content.KeyDown += Flowgraph_content_KeyDown;
             // 
             // node_search_box
             // 

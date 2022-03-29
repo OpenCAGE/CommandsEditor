@@ -202,8 +202,6 @@ namespace CathodeEditorGUI
                     }
                     else
                     {
-                        //CRAP! ModelReference nodes are sometimes pointed to and then internally pointed to to get a submesh.
-                        //TODO: How can we handle this??!!
                         entity = null;
                         break;
                     }
