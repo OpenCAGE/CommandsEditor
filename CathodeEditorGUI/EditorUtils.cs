@@ -1,4 +1,4 @@
-﻿using CATHODE;
+using CATHODE;
 using CATHODE.Commands;
 using CathodeLib;
 using System;
@@ -161,50 +161,68 @@ namespace CathodeEditorGUI
         }
 
         /* Resolve a node hierarchy: **firstHierarchyIsFlowgraph should be TRUE for proxies!** */
-        public static CathodeEntity ResolveHierarchy(List<cGUID> hierarchy, bool isProxy, out CathodeFlowgraph containedFlowgraph)
+        public static CathodeEntity ResolveHierarchy(List<cGUID> hierarchy, out CathodeFlowgraph containedFlowgraph)
         {
-            CathodeFlowgraph currentFlowgraphToSearch = CurrentInstance.selectedFlowgraph;
-            if (isProxy)
+            if (hierarchy.Count == 0)
             {
-                currentFlowgraphToSearch = CurrentInstance.commandsPAK.GetFlowgraph(hierarchy[0]);
-                if (currentFlowgraphToSearch == null)
-                    currentFlowgraphToSearch = CurrentInstance.commandsPAK.EntryPoints[0];
-                else
-                    hierarchy.RemoveAt(0);
+                containedFlowgraph = null;
+                return null;
             }
+
+            CathodeFlowgraph currentFlowgraphToSearch = CurrentInstance.selectedFlowgraph;
+            if (currentFlowgraphToSearch == null || currentFlowgraphToSearch.GetEntityByID(hierarchy[0]) == null)
+            {
+                currentFlowgraphToSearch = CurrentInstance.commandsPAK.EntryPoints[0];
+                if (currentFlowgraphToSearch == null || currentFlowgraphToSearch.GetEntityByID(hierarchy[0]) == null)
+                {
+                    currentFlowgraphToSearch = CurrentInstance.commandsPAK.GetFlowgraph(hierarchy[0]);
+                    if (currentFlowgraphToSearch == null || currentFlowgraphToSearch.GetEntityByID(hierarchy[0]) == null)
+                    {
+                        containedFlowgraph = null;
+                        return null;
+                    }
+                    hierarchy.RemoveAt(0);
+                }
+            }
+
             CathodeEntity entity = null;
             for (int i = 0; i < hierarchy.Count; i++)
             {
-                if (hierarchy[i] == new cGUID("00-00-00-00")) break;
                 entity = currentFlowgraphToSearch.GetEntityByID(hierarchy[i]);
-                if (entity != null && entity.variant == EntityVariant.FUNCTION)
+
+                if (entity == null) break;
+                if (i >= hierarchy.Count - 2) break; //Last is always 00-00-00-00
+
+                if (entity.variant == EntityVariant.FUNCTION)
                 {
                     CathodeFlowgraph flowRef = CurrentInstance.commandsPAK.GetFlowgraph(((FunctionEntity)entity).function);
-                    if (flowRef != null) currentFlowgraphToSearch = flowRef;
+                    if (flowRef != null)
+                    {
+                        currentFlowgraphToSearch = flowRef;
+                    }
+                    else
+                    {
+                        //CRAP! ModelReference nodes are sometimes pointed to and then internally pointed to to get a submesh.
+                        //TODO: How can we handle this??!!
+                        entity = null;
+                        break;
+                    }
                 }
             }
-            containedFlowgraph = currentFlowgraphToSearch;
+            containedFlowgraph = (entity == null) ? null : currentFlowgraphToSearch;
             return entity;
         }
 
         /* Display an entity hierarchy as a string */
         public static string HierarchyToString(List<cGUID> hierarchy)
         {
-            CathodeFlowgraph currentFlowgraphToSearch = CurrentInstance.selectedFlowgraph;
-            CathodeEntity entity = null;
             string combinedString = "";
             for (int i = 0; i < hierarchy.Count; i++)
             {
-                if (hierarchy[i] == new cGUID("00-00-00-00")) break;
-                entity = currentFlowgraphToSearch.GetEntityByID(hierarchy[i]);
-                if (entity != null) combinedString += NodeDBEx.GetEntityName(entity.nodeID) + " -> ";
-                if (entity != null && entity.variant == EntityVariant.FUNCTION)
-                {
-                    CathodeFlowgraph flowRef = CurrentInstance.commandsPAK.GetFlowgraph(((FunctionEntity)entity).function);
-                    if (flowRef != null) currentFlowgraphToSearch = flowRef;
-                }
+                combinedString += NodeDBEx.GetEntityName(hierarchy[i]);
+                if (i == hierarchy.Count - 2) break; //Last is always 00-00-00-00
+                combinedString += " -> ";
             }
-            if (combinedString.Length >= 4) combinedString = combinedString.Substring(0, combinedString.Length - 4);
             return combinedString;
         }
 
@@ -224,11 +242,13 @@ namespace CathodeEditorGUI
             int newTriggerCount = 0;
             int originalAnimCount = 0;
             int newAnimCount = 0;
+            int originalLinkCount = 0;
+            int newLinkCount = 0;
 
             //Clear overrides
             List<OverrideEntity> overridePurged = new List<OverrideEntity>();
             for (int i = 0; i < flow.overrides.Count; i++)
-                if (ResolveHierarchy(flow.overrides[i].hierarchy, false, out CathodeFlowgraph flowTemp) != null)
+                if (ResolveHierarchy(flow.overrides[i].hierarchy, out CathodeFlowgraph flowTemp) != null)
                     overridePurged.Add(flow.overrides[i]);
             originalOverrideCount += flow.overrides.Count;
             newOverrideCount += overridePurged.Count;
@@ -237,7 +257,7 @@ namespace CathodeEditorGUI
             //Clear proxies
             List<ProxyEntity> proxyPurged = new List<ProxyEntity>();
             for (int i = 0; i < flow.proxies.Count; i++)
-                if (ResolveHierarchy(flow.proxies[i].hierarchy, true, out CathodeFlowgraph flowTemp) != null)
+                if (ResolveHierarchy(flow.proxies[i].hierarchy, out CathodeFlowgraph flowTemp) != null)
                     proxyPurged.Add(flow.proxies[i]);
             originalProxyCount += flow.proxies.Count;
             newProxyCount += proxyPurged.Count;
@@ -252,7 +272,7 @@ namespace CathodeEditorGUI
                         TriggerSequence trig = (TriggerSequence)flow.functions[i];
                         List<TEMP_TriggerSequenceExtraDataHolder1> trigSeq = new List<TEMP_TriggerSequenceExtraDataHolder1>();
                         for (int x = 0; x < trig.triggers.Count; x++)
-                            if (ResolveHierarchy(trig.triggers[x].hierarchy, false, out CathodeFlowgraph flowTemp) != null)
+                            if (ResolveHierarchy(trig.triggers[x].hierarchy, out CathodeFlowgraph flowTemp) != null)
                                 trigSeq.Add(trig.triggers[x]);
                         originalTriggerCount += trig.triggers.Count;
                         newTriggerCount += trigSeq.Count;
@@ -262,23 +282,41 @@ namespace CathodeEditorGUI
                         CAGEAnimation anim = (CAGEAnimation)flow.functions[i];
                         List<CathodeParameterKeyframeHeader> headers = new List<CathodeParameterKeyframeHeader>();
                         for (int x = 0; x < anim.keyframeHeaders.Count; x++)
-                            if (ResolveHierarchy(anim.keyframeHeaders[x].connectedEntity, false, out CathodeFlowgraph flowTemp) != null)
+                            if (ResolveHierarchy(anim.keyframeHeaders[x].connectedEntity, out CathodeFlowgraph flowTemp) != null)
                                 headers.Add(anim.keyframeHeaders[x]);
                         originalAnimCount += anim.keyframeHeaders.Count;
                         newAnimCount += headers.Count;
                         anim.keyframeHeaders = headers;
                         break;
                 }
-                if (NodeDB.GetCathodeName(flow.functions[i].function) != "TriggerSequence") continue;
             }
 
-            if ((originalProxyCount - newProxyCount) + (originalOverrideCount - newOverrideCount) + (originalTriggerCount - newTriggerCount) + (originalAnimCount - newAnimCount) == 0) return;
+            //Clear links 
+            List<CathodeEntity> entities = flow.GetEntities();
+            for (int i = 0; i < entities.Count; i++)
+            {
+                List<CathodeNodeLink> childLinksPurged = new List<CathodeNodeLink>();
+                for (int x = 0; x < entities[i].childLinks.Count; x++)
+                    if (flow.GetEntityByID(entities[i].childLinks[x].childID) != null)
+                        childLinksPurged.Add(entities[i].childLinks[x]);
+                originalLinkCount += entities[i].childLinks.Count;
+                newLinkCount += childLinksPurged.Count;
+                entities[i].childLinks = childLinksPurged;
+            }
+
+            if ((originalProxyCount - newProxyCount) + 
+                (originalOverrideCount - newOverrideCount) + 
+                (originalTriggerCount - newTriggerCount) + 
+                (originalAnimCount - newAnimCount) + 
+                (originalLinkCount - newLinkCount) == 0) 
+                return;
             Console.WriteLine(
                 "Purged all dead hierarchies in " + flow.name + "!" +
                 "\n - " + (originalProxyCount - newProxyCount) + " proxies (of " + originalProxyCount + ")" +
                 "\n - " + (originalOverrideCount - newOverrideCount) + " overrides (of " + originalOverrideCount + ")" +
                 "\n - " + (originalTriggerCount - newTriggerCount) + " triggers (of " + originalTriggerCount + ")" +
-                "\n - " + (originalAnimCount - newAnimCount) + " anims (of " + originalAnimCount + ")");
+                "\n - " + (originalAnimCount - newAnimCount) + " anims (of " + originalAnimCount + ")" +
+                "\n - " + (originalLinkCount - newLinkCount) + " links (of " + originalLinkCount + ")");
         }
         public static void ResetHierarchyPurgeCache()
         {

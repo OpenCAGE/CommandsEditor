@@ -76,8 +76,7 @@ namespace CathodeEditorGUI
                     }
                 }
 
-                CathodeFlowgraph flow;
-                CathodeEntity resolvedEntity = EditorUtils.ResolveHierarchy(animNode.keyframeHeaders[i].connectedEntity, false, out flow);
+                CathodeEntity resolvedEntity = EditorUtils.ResolveHierarchy(animNode.keyframeHeaders[i].connectedEntity, out CathodeFlowgraph flow);
                 if (resolvedEntity != null)
                 {
                     TextBox controllingEntity = new TextBox();

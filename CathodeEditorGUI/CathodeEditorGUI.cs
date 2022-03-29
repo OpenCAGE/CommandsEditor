@@ -256,7 +256,7 @@ namespace CathodeEditorGUI
             {
                 case EntityVariant.OVERRIDE:
                 {
-                    CathodeEntity entity = EditorUtils.ResolveHierarchy(((OverrideEntity)CurrentInstance.selectedEntity).hierarchy, false, out flow);
+                    CathodeEntity entity = EditorUtils.ResolveHierarchy(((OverrideEntity)CurrentInstance.selectedEntity).hierarchy, out flow);
                     if (entity != null)
                     {
                         LoadFlowgraph(flow.name);
@@ -266,7 +266,7 @@ namespace CathodeEditorGUI
                 }
                 case EntityVariant.PROXY:
                 {
-                    CathodeEntity entity = EditorUtils.ResolveHierarchy(((ProxyEntity)CurrentInstance.selectedEntity).hierarchy, true, out flow);
+                    CathodeEntity entity = EditorUtils.ResolveHierarchy(((ProxyEntity)CurrentInstance.selectedEntity).hierarchy, out flow);
                     if (entity != null)
                     {
                         LoadFlowgraph(flow.name);
