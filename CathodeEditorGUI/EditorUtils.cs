@@ -1,4 +1,4 @@
-using CATHODE;
+﻿using CATHODE;
 using CATHODE.Commands;
 using CathodeLib;
 using System;
@@ -176,7 +176,7 @@ namespace CathodeEditorGUI
                 if (currentFlowgraphToSearch == null || currentFlowgraphToSearch.GetEntityByID(hierarchy[0]) == null)
                 {
                     currentFlowgraphToSearch = CurrentInstance.commandsPAK.GetFlowgraph(hierarchy[0]);
-                    if (currentFlowgraphToSearch == null || currentFlowgraphToSearch.GetEntityByID(hierarchy[0]) == null)
+                    if (currentFlowgraphToSearch == null || currentFlowgraphToSearch.GetEntityByID(hierarchy[1]) == null)
                     {
                         containedFlowgraph = null;
                         return null;
@@ -219,7 +219,7 @@ namespace CathodeEditorGUI
             string combinedString = "";
             for (int i = 0; i < hierarchy.Count; i++)
             {
-                combinedString += NodeDBEx.GetEntityName(hierarchy[i]);
+                combinedString += "[" + hierarchy[i].ToString() + "] " + NodeDBEx.GetEntityName(hierarchy[i]);
                 if (i == hierarchy.Count - 2) break; //Last is always 00-00-00-00
                 combinedString += " -> ";
             }
@@ -230,10 +230,13 @@ namespace CathodeEditorGUI
         private static List<cGUID> purgedFlows = new List<cGUID>();
         public static void PurgeDeadHierarchiesInActiveFlowgraph()
         {
+            return;
+
             CathodeFlowgraph flow = CurrentInstance.selectedFlowgraph;
             if (purgedFlows.Contains(flow.nodeID)) return;
             purgedFlows.Add(flow.nodeID);
 
+            int originalUnknownCount = 0;
             int originalProxyCount = 0;
             int newProxyCount = 0;
             int originalOverrideCount = 0;
@@ -244,6 +247,10 @@ namespace CathodeEditorGUI
             int newAnimCount = 0;
             int originalLinkCount = 0;
             int newLinkCount = 0;
+
+            //Clear unknowns
+            //originalUnknownCount = flow.unknowns.Count;
+            //flow.unknowns.Clear();
 
             //Clear overrides
             List<OverrideEntity> overridePurged = new List<OverrideEntity>();
@@ -304,14 +311,16 @@ namespace CathodeEditorGUI
                 entities[i].childLinks = childLinksPurged;
             }
 
-            if ((originalProxyCount - newProxyCount) + 
+            if (originalUnknownCount + 
+                (originalProxyCount - newProxyCount) + 
                 (originalOverrideCount - newOverrideCount) + 
                 (originalTriggerCount - newTriggerCount) + 
                 (originalAnimCount - newAnimCount) + 
                 (originalLinkCount - newLinkCount) == 0) 
                 return;
             Console.WriteLine(
-                "Purged all dead hierarchies in " + flow.name + "!" +
+                "Purged all dead hierarchies and nodes in " + flow.name + "!" +
+                "\n - " + originalUnknownCount + " unknown nodes" +
                 "\n - " + (originalProxyCount - newProxyCount) + " proxies (of " + originalProxyCount + ")" +
                 "\n - " + (originalOverrideCount - newOverrideCount) + " overrides (of " + originalOverrideCount + ")" +
                 "\n - " + (originalTriggerCount - newTriggerCount) + " triggers (of " + originalTriggerCount + ")" +

@@ -39,7 +39,6 @@
             this.FileTree = new System.Windows.Forms.TreeView();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.editTriggerSequence = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
             this.editFlowgraphResources = new System.Windows.Forms.Button();
             this.editNodeResources = new System.Windows.Forms.Button();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
@@ -71,6 +70,7 @@
             this.removeParameter = new System.Windows.Forms.Button();
             this.addNewParameter = new System.Windows.Forms.Button();
             this.NodeParams = new System.Windows.Forms.Panel();
+            this.button1 = new System.Windows.Forms.Button();
             this.load_commands_pak = new System.Windows.Forms.Button();
             this.env_list = new System.Windows.Forms.ComboBox();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
@@ -78,6 +78,8 @@
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.modifyMVR = new System.Windows.Forms.CheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.button2 = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -184,18 +186,6 @@
             this.editTriggerSequence.UseVisualStyleBackColor = true;
             this.editTriggerSequence.Visible = false;
             this.editTriggerSequence.Click += new System.EventHandler(this.editTriggerSequence_Click);
-            // 
-            // button1
-            // 
-            this.button1.ForeColor = System.Drawing.Color.Red;
-            this.button1.Location = new System.Drawing.Point(399, 9);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(192, 23);
-            this.button1.TabIndex = 176;
-            this.button1.Text = "DEBUG: Purge all dead hierarchies.";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Visible = false;
-            this.button1.Click += new System.EventHandler(this.button1_Click_1);
             // 
             // editFlowgraphResources
             // 
@@ -521,6 +511,18 @@
             this.NodeParams.Size = new System.Drawing.Size(371, 408);
             this.NodeParams.TabIndex = 0;
             // 
+            // button1
+            // 
+            this.button1.ForeColor = System.Drawing.Color.Red;
+            this.button1.Location = new System.Drawing.Point(399, 9);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(192, 23);
+            this.button1.TabIndex = 176;
+            this.button1.Text = "DEBUG: Purge all dead hierarchies.";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Visible = false;
+            this.button1.Click += new System.EventHandler(this.button1_Click_1);
+            // 
             // load_commands_pak
             // 
             this.load_commands_pak.Location = new System.Drawing.Point(299, 16);
@@ -542,6 +544,7 @@
             // 
             // groupBox8
             // 
+            this.groupBox8.Controls.Add(this.button2);
             this.groupBox8.Controls.Add(this.editEntryPoint);
             this.groupBox8.Controls.Add(this.button1);
             this.groupBox8.Controls.Add(this.first_executed_flowgraph);
@@ -586,11 +589,36 @@
         " produce unwanted issues.");
             this.modifyMVR.UseVisualStyleBackColor = true;
             // 
+            // button2
+            // 
+            this.button2.ForeColor = System.Drawing.Color.Red;
+            this.button2.Location = new System.Drawing.Point(203, 9);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(192, 23);
+            this.button2.TabIndex = 178;
+            this.button2.Text = "DEBUG: Clear unknown header vals";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Visible = false;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // button3
+            // 
+            this.button3.ForeColor = System.Drawing.Color.Red;
+            this.button3.Location = new System.Drawing.Point(911, 37);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(234, 23);
+            this.button3.TabIndex = 179;
+            this.button3.Text = "DEBUG: Dump override chains in this flow";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Visible = false;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
             // CathodeEditorGUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1254, 804);
+            this.Controls.Add(this.button3);
             this.Controls.Add(this.groupBox10);
             this.Controls.Add(this.groupBox8);
             this.Controls.Add(this.groupBox3);
@@ -667,5 +695,7 @@
         private System.Windows.Forms.Button editFlowgraphResources;
         private System.Windows.Forms.Button editEntryPoint;
         private System.Windows.Forms.Button editTriggerSequence;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button3;
     }
 }

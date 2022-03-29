@@ -43,6 +43,8 @@ namespace CathodeEditorGUI
 
 #if DEBUG
             button1.Visible = true;
+            button2.Visible = true;
+            button3.Visible = true;
 #endif
         }
 
@@ -1037,10 +1039,45 @@ namespace CathodeEditorGUI
 
         private void button1_Click_1(object sender, EventArgs e)
         {
+            if (CurrentInstance.selectedFlowgraph == null)
+            {
+                for (int mm = 0; mm < env_list.Items.Count; mm++)
+                {
+                    CurrentInstance.commandsPAK = new CommandsPAK(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + env_list.Items[mm].ToString() + "/WORLD/COMMANDS.PAK");
+                    NodeDBEx.LoadNames();
+                    foreach (CathodeFlowgraph flow in CurrentInstance.commandsPAK.Flowgraphs)
+                    {
+                        CurrentInstance.selectedFlowgraph = flow;
+                        EditorUtils.PurgeDeadHierarchiesInActiveFlowgraph();
+                    }
+                }
+                return;
+            }
+
             foreach (CathodeFlowgraph flow in CurrentInstance.commandsPAK.Flowgraphs)
             {
                 CurrentInstance.selectedFlowgraph = flow;
                 EditorUtils.PurgeDeadHierarchiesInActiveFlowgraph();
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            foreach (CathodeFlowgraph flow in CurrentInstance.commandsPAK.Flowgraphs)
+            {
+                flow.unknownPair = new OffsetPair(0, 0);
+            }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            if (CurrentInstance.selectedFlowgraph == null) return;
+            Console.WriteLine(CurrentInstance.selectedFlowgraph.name);
+            foreach (OverrideEntity overrider in CurrentInstance.selectedFlowgraph.overrides)
+            {
+                Console.WriteLine(NodeDBEx.GetEntityName(overrider.nodeID));
+                Console.WriteLine(EditorUtils.HierarchyToString(overrider.hierarchy));
+                Console.WriteLine("-----");
             }
         }
     }
