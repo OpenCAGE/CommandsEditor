@@ -24,6 +24,10 @@ namespace CathodeEditorGUI
 
         public CathodeEditorGUI()
         {
+            //CathodeModels mdl = new CathodeModels(
+            //    @"F:\Alien Isolation Modding\Isolation Mod Tools\Alien Isolation PC Final\DATA\ENV\PRODUCTION\BSP_LV426_PT01\RENDERABLE\MODELS_LEVEL.BIN",
+            //    @"F:\Alien Isolation Modding\Isolation Mod Tools\Alien Isolation PC Final\DATA\ENV\PRODUCTION\BSP_LV426_PT01\RENDERABLE\LEVEL_MODELS.PAK");
+
             InitializeComponent();
             treeHelper = new TreeUtility(FileTree);
 

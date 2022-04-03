@@ -148,7 +148,7 @@
             this.addNewFlowgraph.TabIndex = 149;
             this.addNewFlowgraph.Text = "Add Composite";
             this.addNewFlowgraph.UseVisualStyleBackColor = true;
-            this.addNewFlowgraph.Click += new System.EventHandler(this.addNewFlowgraph_Click);
+            this.addNewFlowgraph.Click += new System.EventHandler(this.addNewComposite_Click);
             // 
             // FileTree
             // 
