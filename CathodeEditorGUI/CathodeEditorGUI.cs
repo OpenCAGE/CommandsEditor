@@ -1,19 +1,15 @@
+using CATHODE;
+using CATHODE.Commands;
+using CATHODE.Models;
+using CathodeEditorGUI.UserControls;
+using CathodeLib;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using CATHODE;
-using CATHODE.Commands;
-using CATHODE.Misc;
-using CATHODE.Models;
-using CATHODE.Textures;
-using CathodeEditorGUI.UserControls;
-using CathodeLib;
 
 namespace CathodeEditorGUI
 {
@@ -53,7 +49,7 @@ namespace CathodeEditorGUI
         }
 
         /* Clear the UI */
-        private void ClearUI(bool clear_composite_list, bool clear_node_list, bool clear_parameter_list)
+        private void ClearUI(bool clear_composite_list, bool clear_entity_list, bool clear_parameter_list)
         {
             if (clear_composite_list)
             {
@@ -63,9 +59,9 @@ namespace CathodeEditorGUI
                 root_composite_display.Text = "Entry point: ";
                 composite_count_display.Text = "Composite count: ";
             }
-            if (clear_node_list)
+            if (clear_entity_list)
             {
-                node_search_box.Text = "";
+                entity_search_box.Text = "";
                 currentSearch = "";
                 groupBox1.Text = "Selected Composite Content";
                 composite_content.BeginUpdate();
@@ -78,19 +74,19 @@ namespace CathodeEditorGUI
             if (clear_parameter_list)
             {
                 CurrentInstance.selectedEntity = null;
-                selected_node_id.Text = "";
-                selected_node_type.Text = "";
+                selected_entity_id.Text = "";
+                selected_entity_type.Text = "";
                 selected_entity_type_description.Text = "";
-                selected_node_name.Text = "";
-                for (int i = 0; i < NodeParams.Controls.Count; i++) 
-                    NodeParams.Controls[i].Dispose();
-                NodeParams.Controls.Clear();
-                node_children.Items.Clear();
+                selected_entity_name.Text = "";
+                for (int i = 0; i < entity_params.Controls.Count; i++) 
+                    entity_params.Controls[i].Dispose();
+                entity_params.Controls.Clear();
+                entity_children.Items.Clear();
                 currentlyShowingChildLinks = true;
                 jumpToComposite.Visible = false;
                 editTriggerSequence.Visible = false;
                 editCAGEAnimationKeyframes.Visible = false;
-                editNodeResources.Visible = false;
+                editEntityResources.Visible = false;
             }
         }
 
@@ -135,7 +131,7 @@ namespace CathodeEditorGUI
                 return;
             }
 
-            //Load in any custom param/node names
+            //Load in any custom param/entity names
             EntityDBEx.LoadNames();
 
             //Begin caching entity names so we don't have to keep generating them
@@ -332,19 +328,19 @@ namespace CathodeEditorGUI
                 for (int x = 0; x < CurrentInstance.commandsPAK.Composites[i].functions.Count; x++)
                 {
                     if (CurrentInstance.commandsPAK.Composites[i].functions[x].function == CurrentInstance.selectedComposite.shortGUID) continue;
-                    List<CathodeEntityLink> prunedNodeLinks = new List<CathodeEntityLink>();
+                    List<CathodeEntityLink> prunedEntityLinks = new List<CathodeEntityLink>();
                     for (int l = 0; l < CurrentInstance.commandsPAK.Composites[i].functions[x].childLinks.Count; l++)
                     {
                         CathodeEntity linkedEntity = CurrentInstance.commandsPAK.Composites[i].GetEntityByID(CurrentInstance.commandsPAK.Composites[i].functions[x].childLinks[l].childID);
                         if (linkedEntity != null && linkedEntity.variant == EntityVariant.FUNCTION) if (((FunctionEntity)linkedEntity).function == CurrentInstance.selectedComposite.shortGUID) continue;
-                        prunedNodeLinks.Add(CurrentInstance.commandsPAK.Composites[i].functions[x].childLinks[l]);
+                        prunedEntityLinks.Add(CurrentInstance.commandsPAK.Composites[i].functions[x].childLinks[l]);
                     }
-                    CurrentInstance.commandsPAK.Composites[i].functions[x].childLinks = prunedNodeLinks;
+                    CurrentInstance.commandsPAK.Composites[i].functions[x].childLinks = prunedEntityLinks;
                     prunedFunctionEntities.Add(CurrentInstance.commandsPAK.Composites[i].functions[x]);
                 }
                 CurrentInstance.commandsPAK.Composites[i].functions = prunedFunctionEntities;
             }
-            //TODO: remove proxies etc that also reference any of the removed nodes
+            //TODO: remove proxies etc that also reference any of the removed entities
 
             //Remove the composite
             CurrentInstance.commandsPAK.Composites.Remove(CurrentInstance.selectedComposite);
@@ -355,7 +351,7 @@ namespace CathodeEditorGUI
             treeHelper.UpdateFileTree(CurrentInstance.commandsPAK.GetCompositeNames().ToList());
         }
 
-        /* Select node from loaded composite */
+        /* Select entity from loaded composite */
         private void composite_content_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (composite_content.SelectedIndex == -1 || CurrentInstance.selectedComposite == null) return;
@@ -381,7 +377,7 @@ namespace CathodeEditorGUI
         }
         private void add_pin_closed(Object sender, FormClosedEventArgs e)
         {
-            RefreshNodeLinks();
+            RefreshEntityLinks();
             this.BringToFront();
             this.Focus();
         }
@@ -393,7 +389,7 @@ namespace CathodeEditorGUI
             if (!ConfirmAction("Are you sure you want to remove this link?")) return;
             if (currentlyShowingChildLinks)
             {
-                CurrentInstance.selectedEntity.childLinks.RemoveAt(node_children.SelectedIndex);
+                CurrentInstance.selectedEntity.childLinks.RemoveAt(entity_children.SelectedIndex);
             }
             else
             {
@@ -403,7 +399,7 @@ namespace CathodeEditorGUI
                 {
                     for (int i = 0; i < entity.childLinks.Count; i++)
                     {
-                        if (entity.childLinks[i].connectionID == linkedNodeListIDs[node_children.SelectedIndex])
+                        if (entity.childLinks[i].connectionID == linkedEntityListIDs[entity_children.SelectedIndex])
                         {
                             deleteIndex = i;
                             break;
@@ -416,18 +412,18 @@ namespace CathodeEditorGUI
                     }
                 }
             }
-            RefreshNodeLinks();
+            RefreshEntityLinks();
         }
 
         /* Go to selected pin out on button press */
         private void out_pin_goto_Click(object sender, EventArgs e)
         {
-            if (node_children.SelectedIndex == -1 || CurrentInstance.selectedComposite == null) return;
+            if (entity_children.SelectedIndex == -1 || CurrentInstance.selectedComposite == null) return;
 
-            CathodeEntity thisNodeInfo = null;
+            CathodeEntity thisEntity = null;
             if (currentlyShowingChildLinks)
             {
-                thisNodeInfo = CurrentInstance.selectedComposite.GetEntityByID(CurrentInstance.selectedEntity.childLinks[node_children.SelectedIndex].childID);
+                thisEntity = CurrentInstance.selectedComposite.GetEntityByID(CurrentInstance.selectedEntity.childLinks[entity_children.SelectedIndex].childID);
             }
             else
             {
@@ -436,37 +432,37 @@ namespace CathodeEditorGUI
                 {
                     for (int i = 0; i < entity.childLinks.Count; i++)
                     {
-                        if (entity.childLinks[i].connectionID == linkedNodeListIDs[node_children.SelectedIndex])
+                        if (entity.childLinks[i].connectionID == linkedEntityListIDs[entity_children.SelectedIndex])
                         {
-                            thisNodeInfo = entity;
+                            thisEntity = entity;
                             break;
                         }
                     }
-                    if (thisNodeInfo != null) break;
+                    if (thisEntity != null) break;
                 }
             }
-            if (thisNodeInfo != null) LoadEntity(thisNodeInfo);
+            if (thisEntity != null) LoadEntity(thisEntity);
         }
 
         /* Flip the child link list to contain parents (this is an expensive search, which is why we only do it on request) */
         private void showLinkParents_Click(object sender, EventArgs e)
         {
             currentlyShowingChildLinks = !currentlyShowingChildLinks;
-            RefreshNodeLinks();
+            RefreshEntityLinks();
         }
 
-        /* Search node list */
+        /* Search entity list */
         private string currentSearch = "";
-        private void node_search_btn_Click(object sender, EventArgs e)
+        private void entity_search_btn_Click(object sender, EventArgs e)
         {
-            if (node_search_box.Text == currentSearch) return;
+            if (entity_search_box.Text == currentSearch) return;
             List<string> matched = new List<string>();
-            foreach (string item in composite_content_RAW) if (item.ToUpper().Contains(node_search_box.Text.ToUpper())) matched.Add(item);
+            foreach (string item in composite_content_RAW) if (item.ToUpper().Contains(entity_search_box.Text.ToUpper())) matched.Add(item);
             composite_content.BeginUpdate();
             composite_content.Items.Clear();
             for (int i = 0; i < matched.Count; i++) composite_content.Items.Add(matched[i]);
             composite_content.EndUpdate();
-            currentSearch = node_search_box.Text;
+            currentSearch = entity_search_box.Text;
         }
 
         /* Load a composite into the UI */
@@ -483,7 +479,7 @@ namespace CathodeEditorGUI
             List<CathodeEntity> entities = entry.GetEntities();
             for (int i = 0; i < entities.Count; i++)
             {
-                string desc = EditorUtils.GenerateNodeName(entities[i], CurrentInstance.selectedComposite);
+                string desc = EditorUtils.GenerateEntityName(entities[i], CurrentInstance.selectedComposite);
                 composite_content.Items.Add(desc);
                 composite_content_RAW.Add(desc);
             }
@@ -498,14 +494,14 @@ namespace CathodeEditorGUI
         }
 
         /* Add new entity */
-        private void addNewNode_Click(object sender, EventArgs e)
+        private void addNewEntity_Click(object sender, EventArgs e)
         {
             if (CurrentInstance.selectedComposite == null) return;
             CathodeEditorGUI_AddEntity add_parameter = new CathodeEditorGUI_AddEntity(CurrentInstance.selectedComposite, CurrentInstance.commandsPAK.Composites);
             add_parameter.Show();
-            add_parameter.FormClosed += new FormClosedEventHandler(add_node_closed);
+            add_parameter.FormClosed += new FormClosedEventHandler(add_entity_closed);
         }
-        private void add_node_closed(Object sender, FormClosedEventArgs e)
+        private void add_entity_closed(Object sender, FormClosedEventArgs e)
         {
             ReloadUIForNewEntity(((CathodeEditorGUI_AddEntity)sender).NewEntity);
             this.BringToFront();
@@ -513,7 +509,7 @@ namespace CathodeEditorGUI
         }
 
         /* Remove selected entity */
-        private void removeSelectedNode_Click(object sender, EventArgs e)
+        private void removeSelectedEntity_Click(object sender, EventArgs e)
         {
             if (CurrentInstance.selectedEntity == null) return;
             if (!ConfirmAction("Are you sure you want to remove this entity?")) return;
@@ -540,19 +536,19 @@ namespace CathodeEditorGUI
             }
 
             List<CathodeEntity> entities = CurrentInstance.selectedComposite.GetEntities();
-            for (int i = 0; i < entities.Count; i++) //We should actually query every node in the PAK, since we might be ref'd by a proxy or override
+            for (int i = 0; i < entities.Count; i++) //We should actually query every entity in the PAK, since we might be ref'd by a proxy or override
             {
-                List<CathodeEntityLink> nodeLinks = new List<CathodeEntityLink>();
+                List<CathodeEntityLink> entLinks = new List<CathodeEntityLink>();
                 for (int x = 0; x < entities[i].childLinks.Count; x++)
                 {
-                    if (entities[i].childLinks[x].childID != CurrentInstance.selectedEntity.shortGUID) nodeLinks.Add(entities[i].childLinks[x]);
+                    if (entities[i].childLinks[x].childID != CurrentInstance.selectedEntity.shortGUID) entLinks.Add(entities[i].childLinks[x]);
                 }
-                entities[i].childLinks = nodeLinks;
+                entities[i].childLinks = entLinks;
 
                 if (entities[i].variant == EntityVariant.FUNCTION)
                 {
-                    string nodeType = EntityDB.GetCathodeName(((FunctionEntity)entities[i]).function);
-                    switch (nodeType)
+                    string entType = EntityDB.GetCathodeName(((FunctionEntity)entities[i]).function);
+                    switch (entType)
                     {
                         case "TriggerSequence":
                             TriggerSequence triggerSequence = (TriggerSequence)entities[i];
@@ -609,27 +605,27 @@ namespace CathodeEditorGUI
             ClearUI(false, false, true);
         }
 
-        /* Remove selected node when DELETE key is pressed in composite */
+        /* Remove selected entity when DELETE key is pressed in composite */
         private void composite_content_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete)
             {
-                removeSelectedNode.PerformClick();
+                removeSelectedEntity.PerformClick();
             }
         }
 
         /* Duplicate selected entity */
-        private void duplicateSelectedNode_Click(object sender, EventArgs e)
+        private void duplicateSelectedEntity_Click(object sender, EventArgs e)
         {
             if (CurrentInstance.selectedEntity == null) return;
             if (!ConfirmAction("Are you sure you want to duplicate this entity?")) return;
 
-            //Generate new node ID and name
+            //Generate new entity ID and name
             CathodeEntity newEnt = Utilities.CloneObject(CurrentInstance.selectedEntity);
             newEnt.shortGUID = Utilities.GenerateGUID(DateTime.Now.ToString("G"));
             EntityDBEx.AddNewEntityName(newEnt.shortGUID, EntityDBEx.GetEntityName(CurrentInstance.selectedEntity.shortGUID) + "_clone");
 
-            //Add parent links in to this node that linked in to the other node
+            //Add parent links in to this entity that linked in to the other entity
             List<CathodeEntity> ents = CurrentInstance.selectedComposite.GetEntities();
             List<CathodeEntityLink> newLinks = new List<CathodeEntityLink>();
             int num_of_new_things = 1;
@@ -676,34 +672,34 @@ namespace CathodeEditorGUI
         }
 
         /* Rename selected entity */
-        private void renameSelectedNode_Click(object sender, EventArgs e)
+        private void renameSelectedEntity_Click(object sender, EventArgs e)
         {
             if (CurrentInstance.selectedEntity == null) return;
-            CathodeEditorGUI_RenameEntity rename_node = new CathodeEditorGUI_RenameEntity(CurrentInstance.selectedEntity.shortGUID);
-            rename_node.Show();
-            rename_node.FormClosed += new FormClosedEventHandler(rename_node_closed);
+            CathodeEditorGUI_RenameEntity rename_entity = new CathodeEditorGUI_RenameEntity(CurrentInstance.selectedEntity.shortGUID);
+            rename_entity.Show();
+            rename_entity.FormClosed += new FormClosedEventHandler(rename_entity_closed);
         }
-        private void rename_node_closed(Object sender, FormClosedEventArgs e)
+        private void rename_entity_closed(Object sender, FormClosedEventArgs e)
         {
             if (((CathodeEditorGUI_RenameEntity)sender).didSave &&
-                ((CathodeEditorGUI_RenameEntity)sender).NodeID == CurrentInstance.selectedEntity.shortGUID)
+                ((CathodeEditorGUI_RenameEntity)sender).EntityID == CurrentInstance.selectedEntity.shortGUID)
             {
-                EntityDBEx.AddNewEntityName(CurrentInstance.selectedEntity.shortGUID, ((CathodeEditorGUI_RenameEntity)sender).NodeName);
-                string nodeID = CurrentInstance.selectedEntity.shortGUID.ToString();
-                string newNodeName = EditorUtils.GenerateNodeName(CurrentInstance.selectedEntity, CurrentInstance.selectedComposite);
+                EntityDBEx.AddNewEntityName(CurrentInstance.selectedEntity.shortGUID, ((CathodeEditorGUI_RenameEntity)sender).EntityName);
+                string entityID = CurrentInstance.selectedEntity.shortGUID.ToString();
+                string newEntityName = EditorUtils.GenerateEntityName(CurrentInstance.selectedEntity, CurrentInstance.selectedComposite);
                 for (int i = 0; i < composite_content.Items.Count; i++)
                 {
-                    if (composite_content.Items[i].ToString().Substring(1, 11) == nodeID)
+                    if (composite_content.Items[i].ToString().Substring(1, 11) == entityID)
                     {
-                        composite_content.Items[i] = newNodeName;
+                        composite_content.Items[i] = newEntityName;
                         break;
                     }
                 }
                 for (int i = 0; i < composite_content_RAW.Count; i++)
                 {
-                    if (composite_content_RAW[i].Substring(1, 11) == nodeID)
+                    if (composite_content_RAW[i].Substring(1, 11) == entityID)
                     {
-                        composite_content_RAW[i] = newNodeName;
+                        composite_content_RAW[i] = newEntityName;
                         break;
                     }
                 }
@@ -719,9 +715,9 @@ namespace CathodeEditorGUI
             if (CurrentInstance.selectedComposite == null || newEnt == null) return;
             if (currentSearch == "")
             {
-                string newNodeName = EditorUtils.GenerateNodeName(newEnt, CurrentInstance.selectedComposite);
-                composite_content.Items.Add(newNodeName);
-                composite_content_RAW.Add(newNodeName);
+                string newEntityName = EditorUtils.GenerateEntityName(newEnt, CurrentInstance.selectedComposite);
+                composite_content.Items.Add(newEntityName);
+                composite_content_RAW.Add(newEntityName);
             }
             else
             {
@@ -731,117 +727,117 @@ namespace CathodeEditorGUI
         }
 
         /* Load a entity into the UI */
-        private void LoadEntity(CathodeEntity edit_node)
+        private void LoadEntity(CathodeEntity entity)
         {
-            if (edit_node == null) return;
+            if (entity == null) return;
 
             ClearUI(false, false, true);
-            CurrentInstance.selectedEntity = edit_node;
+            CurrentInstance.selectedEntity = entity;
             Cursor.Current = Cursors.WaitCursor;
 
             //populate info labels
-            selected_node_id.Text = edit_node.shortGUID.ToString();
-            selected_node_type.Text = edit_node.variant.ToString();
-            string nodetypedesc = "";
-            switch (edit_node.variant)
+            selected_entity_id.Text = entity.shortGUID.ToString();
+            selected_entity_type.Text = entity.variant.ToString();
+            string description = "";
+            switch (entity.variant)
             {
                 case EntityVariant.FUNCTION:
-                    nodetypedesc = EntityDBEx.GetParameterName(((FunctionEntity)edit_node).function);
-                    jumpToComposite.Visible = (CurrentInstance.commandsPAK.GetComposite(((FunctionEntity)edit_node).function) != null);
-                    selected_node_name.Text = EntityDBEx.GetEntityName(edit_node.shortGUID);
+                    description = EntityDBEx.GetParameterName(((FunctionEntity)entity).function);
+                    jumpToComposite.Visible = (CurrentInstance.commandsPAK.GetComposite(((FunctionEntity)entity).function) != null);
+                    selected_entity_name.Text = EntityDBEx.GetEntityName(entity.shortGUID);
 //#if debug //TODO: PULL THIS INTO STABLE
-                    editTriggerSequence.Visible = nodetypedesc == "TriggerSequence";
-                    editCAGEAnimationKeyframes.Visible = nodetypedesc == "CAGEAnimation";
+                    editTriggerSequence.Visible = description == "TriggerSequence";
+                    editCAGEAnimationKeyframes.Visible = description == "CAGEAnimation";
 //#endif
                     break;
                 case EntityVariant.DATATYPE:
-                    nodetypedesc = "DataType " + ((DatatypeEntity)edit_node).type.ToString();
-                    selected_node_name.Text = EntityDBEx.GetParameterName(((DatatypeEntity)edit_node).parameter);
+                    description = "DataType " + ((DatatypeEntity)entity).type.ToString();
+                    selected_entity_name.Text = EntityDBEx.GetParameterName(((DatatypeEntity)entity).parameter);
                     break;
                 case EntityVariant.PROXY:
                 case EntityVariant.OVERRIDE:
                     jumpToComposite.Visible = true;
-                    selected_node_name.Text = EntityDBEx.GetEntityName(edit_node.shortGUID);
+                    selected_entity_name.Text = EntityDBEx.GetEntityName(entity.shortGUID);
                     break;
                 default:
-                    selected_node_name.Text = EntityDBEx.GetEntityName(edit_node.shortGUID);
+                    selected_entity_name.Text = EntityDBEx.GetEntityName(entity.shortGUID);
                     break;
             }
-            selected_entity_type_description.Text = nodetypedesc;
+            selected_entity_type_description.Text = description;
 
-            //show resource editor button if this node has a resource reference
+            //show resource editor button if this entity has a resource reference
             cGUID resourceParamID = Utilities.GenerateGUID("resource");
             CathodeLoadedParameter resourceParam = CurrentInstance.selectedEntity.parameters.FirstOrDefault(o => o.shortGUID == resourceParamID);
 //#if debug //TODO: PULL THIS INTO STABLE
-            editNodeResources.Visible = ((resourceParam != null) || CurrentInstance.selectedEntity.resources.Count != 0);
+            editEntityResources.Visible = ((resourceParam != null) || CurrentInstance.selectedEntity.resources.Count != 0);
 //#endif
 
             //populate parameter inputs
             int current_ui_offset = 7;
-            for (int i = 0; i < edit_node.parameters.Count; i++)
+            for (int i = 0; i < entity.parameters.Count; i++)
             {
-                if (edit_node.parameters[i].shortGUID == resourceParamID) continue; //We use the resource editor button (above) for resource parameters
+                if (entity.parameters[i].shortGUID == resourceParamID) continue; //We use the resource editor button (above) for resource parameters
 
-                CathodeParameter this_param = edit_node.parameters[i].content;
+                CathodeParameter this_param = entity.parameters[i].content;
                 UserControl parameterGUI = null;
 
                 switch (this_param.dataType)
                 {
                     case CathodeDataType.POSITION:
                         parameterGUI = new GUI_TransformDataType();
-                        ((GUI_TransformDataType)parameterGUI).PopulateUI((CathodeTransform)this_param, edit_node.parameters[i].shortGUID);
+                        ((GUI_TransformDataType)parameterGUI).PopulateUI((CathodeTransform)this_param, entity.parameters[i].shortGUID);
                         break;
                     case CathodeDataType.INTEGER:
                         parameterGUI = new GUI_NumericDataType();
-                        ((GUI_NumericDataType)parameterGUI).PopulateUI_Int((CathodeInteger)this_param, edit_node.parameters[i].shortGUID);
+                        ((GUI_NumericDataType)parameterGUI).PopulateUI_Int((CathodeInteger)this_param, entity.parameters[i].shortGUID);
                         break;
                     case CathodeDataType.STRING:
                         parameterGUI = new GUI_StringDataType();
-                        ((GUI_StringDataType)parameterGUI).PopulateUI((CathodeString)this_param, edit_node.parameters[i].shortGUID);
+                        ((GUI_StringDataType)parameterGUI).PopulateUI((CathodeString)this_param, entity.parameters[i].shortGUID);
                         break;
                     case CathodeDataType.BOOL:
                         parameterGUI = new GUI_BoolDataType();
-                        ((GUI_BoolDataType)parameterGUI).PopulateUI((CathodeBool)this_param, edit_node.parameters[i].shortGUID);
+                        ((GUI_BoolDataType)parameterGUI).PopulateUI((CathodeBool)this_param, entity.parameters[i].shortGUID);
                         break;
                     case CathodeDataType.FLOAT:
                         parameterGUI = new GUI_NumericDataType();
-                        ((GUI_NumericDataType)parameterGUI).PopulateUI_Float((CathodeFloat)this_param, edit_node.parameters[i].shortGUID);
+                        ((GUI_NumericDataType)parameterGUI).PopulateUI_Float((CathodeFloat)this_param, entity.parameters[i].shortGUID);
                         break;
                     case CathodeDataType.DIRECTION:
                         parameterGUI = new GUI_VectorDataType();
-                        ((GUI_VectorDataType)parameterGUI).PopulateUI((CathodeVector3)this_param, edit_node.parameters[i].shortGUID);
+                        ((GUI_VectorDataType)parameterGUI).PopulateUI((CathodeVector3)this_param, entity.parameters[i].shortGUID);
                         break;
                     case CathodeDataType.ENUM:
                         parameterGUI = new GUI_EnumDataType();
-                        ((GUI_EnumDataType)parameterGUI).PopulateUI((CathodeEnum)this_param, edit_node.parameters[i].shortGUID);
+                        ((GUI_EnumDataType)parameterGUI).PopulateUI((CathodeEnum)this_param, entity.parameters[i].shortGUID);
                         break;
                     case CathodeDataType.SHORT_GUID:
                         parameterGUI = new GUI_HexDataType();
-                        ((GUI_HexDataType)parameterGUI).PopulateUI((CathodeResource)this_param, edit_node.parameters[i].shortGUID, CurrentInstance.selectedComposite); 
+                        ((GUI_HexDataType)parameterGUI).PopulateUI((CathodeResource)this_param, entity.parameters[i].shortGUID, CurrentInstance.selectedComposite); 
                         break;
                     case CathodeDataType.SPLINE_DATA:
                         parameterGUI = new GUI_SplineDataType();
-                        ((GUI_SplineDataType)parameterGUI).PopulateUI((CathodeSpline)this_param, edit_node.parameters[i].shortGUID);
+                        ((GUI_SplineDataType)parameterGUI).PopulateUI((CathodeSpline)this_param, entity.parameters[i].shortGUID);
                         break;
                 }
 
                 parameterGUI.Location = new Point(15, current_ui_offset);
                 current_ui_offset += parameterGUI.Height + 6;
-                NodeParams.Controls.Add(parameterGUI);
+                entity_params.Controls.Add(parameterGUI);
             }
 
-            RefreshNodeLinks();
+            RefreshEntityLinks();
 
             Cursor.Current = Cursors.Default;
         }
 
-        /* Refresh child/parent node links for selected node */
-        List<cGUID> linkedNodeListIDs = new List<cGUID>();
-        private void RefreshNodeLinks()
+        /* Refresh child/parent links for selected entity */
+        List<cGUID> linkedEntityListIDs = new List<cGUID>();
+        private void RefreshEntityLinks()
         {
-            node_children.BeginUpdate();
-            node_children.Items.Clear();
-            linkedNodeListIDs.Clear();
+            entity_children.BeginUpdate();
+            entity_children.Items.Clear();
+            linkedEntityListIDs.Clear();
             addNewLink.Enabled = currentlyShowingChildLinks;
             //removeSelectedLink.Enabled = currentlyShowingChildLinks;
             //out_pin_goto.Enabled = currentlyShowingChildLinks;
@@ -850,36 +846,36 @@ namespace CathodeEditorGUI
             if (CurrentInstance.selectedComposite == null || CurrentInstance.selectedEntity == null) return;
             if (currentlyShowingChildLinks)
             {
-                //Child links (pins out of this node)
+                //Child links (pins out of this entity)
                 foreach (CathodeEntityLink link in CurrentInstance.selectedEntity.childLinks)
                 {
-                    node_children.Items.Add(
+                    entity_children.Items.Add(
                         /*"[" + link.connectionID.ToString() + "] " +*/
                         "(" + EntityDBEx.GetParameterName(link.parentParamID) + ") => " +
                         EntityDBEx.GetEntityName(link.childID) + 
                         " (" + EntityDBEx.GetParameterName(link.childParamID) + ")");
-                    linkedNodeListIDs.Add(link.connectionID);
+                    linkedEntityListIDs.Add(link.connectionID);
                 }
             }
             else
             {
-                //Parent links (pins into this node)
+                //Parent links (pins into this entity)
                 List<CathodeEntity> ents = CurrentInstance.selectedComposite.GetEntities();
                 foreach (CathodeEntity entity in ents)
                 {
                     foreach (CathodeEntityLink link in entity.childLinks)
                     {
                         if (link.childID != CurrentInstance.selectedEntity.shortGUID) continue;
-                        node_children.Items.Add(
+                        entity_children.Items.Add(
                             /*"[" + link.connectionID.ToString() + "] " +*/
                             EntityDBEx.GetEntityName(entity.shortGUID) +
                             " (" + EntityDBEx.GetParameterName(link.parentParamID) + ") => " +
                             "(" + EntityDBEx.GetParameterName(link.childParamID) + ")");
-                        linkedNodeListIDs.Add(link.connectionID);
+                        linkedEntityListIDs.Add(link.connectionID);
                     }
                 }
             }
-            node_children.EndUpdate();
+            entity_children.EndUpdate();
         }
 
         /* Add a new parameter */
@@ -928,7 +924,7 @@ namespace CathodeEditorGUI
         }
 
         /* Edit resources referenced by the entity */
-        private void editNodeResources_Click(object sender, EventArgs e)
+        private void editEntityResources_Click(object sender, EventArgs e)
         {
             //CurrentInstance.currentEntity - .parameters.FirstOrDefault("resources") - .resources
             CathodeEditorGUI_AddOrEditResource resourceEditor = new CathodeEditorGUI_AddOrEditResource(CurrentInstance.selectedEntity);

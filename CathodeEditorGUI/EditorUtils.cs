@@ -3,24 +3,21 @@ using CATHODE.Commands;
 using CathodeLib;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CathodeEditorGUI
 {
     static class EditorUtils
     {
         /* Utility: generate nice entity name to display in UI */
-        public static string GenerateNodeName(CathodeEntity entity, CathodeComposite currentFlowgraph)
+        public static string GenerateEntityName(CathodeEntity entity, CathodeComposite currentFlowgraph)
         {
             if (CurrentInstance.commandsPAK == null) 
                 return "";
             if (hasFinishedCachingEntityNames && cachedEntityName.ContainsKey(entity.shortGUID)) 
                 return cachedEntityName[entity.shortGUID];
-            return GenerateNodeNameInternal(entity, currentFlowgraph);
+            return GenerateEntityNameInternal(entity, currentFlowgraph);
         }
-        private static string GenerateNodeNameInternal(CathodeEntity entity, CathodeComposite currentFlowgraph)
+        private static string GenerateEntityNameInternal(CathodeEntity entity, CathodeComposite currentFlowgraph)
         {
             string desc = "";
             switch (entity.variant)
@@ -68,7 +65,7 @@ namespace CathodeEditorGUI
                     }
                     else
                     {
-                        cachedEntityName.Add(ents[x].shortGUID, GenerateNodeNameInternal(ents[x], CurrentInstance.commandsPAK.Composites[i]));
+                        cachedEntityName.Add(ents[x].shortGUID, GenerateEntityNameInternal(ents[x], CurrentInstance.commandsPAK.Composites[i]));
                     }
                 }
             }
@@ -224,15 +221,15 @@ namespace CathodeEditorGUI
             return combinedString;
         }
 
-        /* CA's CAGE doesn't properly tidy up hierarchies pointing to deleted nodes - so we do that here to save confusion */
-        private static List<cGUID> purgedFlows = new List<cGUID>();
+        /* CA's CAGE doesn't properly tidy up hierarchies pointing to deleted entities - so we do that here to save confusion */
+        private static List<cGUID> purgedComps = new List<cGUID>();
         public static void PurgeDeadHierarchiesInActiveComposite()
         {
             return;
 
-            CathodeComposite flow = CurrentInstance.selectedComposite;
-            if (purgedFlows.Contains(flow.shortGUID)) return;
-            purgedFlows.Add(flow.shortGUID);
+            CathodeComposite comp = CurrentInstance.selectedComposite;
+            if (purgedComps.Contains(comp.shortGUID)) return;
+            purgedComps.Add(comp.shortGUID);
 
             int originalUnknownCount = 0;
             int originalProxyCount = 0;
@@ -247,34 +244,34 @@ namespace CathodeEditorGUI
             int newLinkCount = 0;
 
             //Clear unknowns
-            originalUnknownCount = flow.unknowns.Count;
-            flow.unknowns.Clear();
+            originalUnknownCount = comp.unknowns.Count;
+            comp.unknowns.Clear();
 
             //Clear overrides
             List<OverrideEntity> overridePurged = new List<OverrideEntity>();
-            for (int i = 0; i < flow.overrides.Count; i++)
-                if (ResolveHierarchy(flow.overrides[i].hierarchy, out CathodeComposite flowTemp) != null)
-                    overridePurged.Add(flow.overrides[i]);
-            originalOverrideCount += flow.overrides.Count;
+            for (int i = 0; i < comp.overrides.Count; i++)
+                if (ResolveHierarchy(comp.overrides[i].hierarchy, out CathodeComposite flowTemp) != null)
+                    overridePurged.Add(comp.overrides[i]);
+            originalOverrideCount += comp.overrides.Count;
             newOverrideCount += overridePurged.Count;
-            flow.overrides = overridePurged;
+            comp.overrides = overridePurged;
 
             //Clear proxies
             List<ProxyEntity> proxyPurged = new List<ProxyEntity>();
-            for (int i = 0; i < flow.proxies.Count; i++)
-                if (ResolveHierarchy(flow.proxies[i].hierarchy, out CathodeComposite flowTemp) != null)
-                    proxyPurged.Add(flow.proxies[i]);
-            originalProxyCount += flow.proxies.Count;
+            for (int i = 0; i < comp.proxies.Count; i++)
+                if (ResolveHierarchy(comp.proxies[i].hierarchy, out CathodeComposite flowTemp) != null)
+                    proxyPurged.Add(comp.proxies[i]);
+            originalProxyCount += comp.proxies.Count;
             newProxyCount += proxyPurged.Count;
-            flow.proxies = proxyPurged;
+            comp.proxies = proxyPurged;
 
             //Clear TriggerSequence and CAGEAnimation entities
-            for (int i = 0; i < flow.functions.Count; i++)
+            for (int i = 0; i < comp.functions.Count; i++)
             {
-                switch (EntityDB.GetCathodeName(flow.functions[i].function))
+                switch (EntityDB.GetCathodeName(comp.functions[i].function))
                 {
                     case "TriggerSequence":
-                        TriggerSequence trig = (TriggerSequence)flow.functions[i];
+                        TriggerSequence trig = (TriggerSequence)comp.functions[i];
                         List<TEMP_TriggerSequenceExtraDataHolder1> trigSeq = new List<TEMP_TriggerSequenceExtraDataHolder1>();
                         for (int x = 0; x < trig.triggers.Count; x++)
                             if (ResolveHierarchy(trig.triggers[x].hierarchy, out CathodeComposite flowTemp) != null)
@@ -284,7 +281,7 @@ namespace CathodeEditorGUI
                         trig.triggers = trigSeq;
                         break;
                     case "CAGEAnimation":
-                        CAGEAnimation anim = (CAGEAnimation)flow.functions[i];
+                        CAGEAnimation anim = (CAGEAnimation)comp.functions[i];
                         List<CathodeParameterKeyframeHeader> headers = new List<CathodeParameterKeyframeHeader>();
                         for (int x = 0; x < anim.keyframeHeaders.Count; x++)
                             if (ResolveHierarchy(anim.keyframeHeaders[x].connectedEntity, out CathodeComposite flowTemp) != null)
@@ -297,12 +294,12 @@ namespace CathodeEditorGUI
             }
 
             //Clear links 
-            List<CathodeEntity> entities = flow.GetEntities();
+            List<CathodeEntity> entities = comp.GetEntities();
             for (int i = 0; i < entities.Count; i++)
             {
                 List<CathodeEntityLink> childLinksPurged = new List<CathodeEntityLink>();
                 for (int x = 0; x < entities[i].childLinks.Count; x++)
-                    if (flow.GetEntityByID(entities[i].childLinks[x].childID) != null)
+                    if (comp.GetEntityByID(entities[i].childLinks[x].childID) != null)
                         childLinksPurged.Add(entities[i].childLinks[x]);
                 originalLinkCount += entities[i].childLinks.Count;
                 newLinkCount += childLinksPurged.Count;
@@ -317,8 +314,8 @@ namespace CathodeEditorGUI
                 (originalLinkCount - newLinkCount) == 0) 
                 return;
             Console.WriteLine(
-                "Purged all dead hierarchies and nodes in " + flow.name + "!" +
-                "\n - " + originalUnknownCount + " unknown nodes" +
+                "Purged all dead hierarchies and entities in " + comp.name + "!" +
+                "\n - " + originalUnknownCount + " unknown entities" +
                 "\n - " + (originalProxyCount - newProxyCount) + " proxies (of " + originalProxyCount + ")" +
                 "\n - " + (originalOverrideCount - newOverrideCount) + " overrides (of " + originalOverrideCount + ")" +
                 "\n - " + (originalTriggerCount - newTriggerCount) + " triggers (of " + originalTriggerCount + ")" +
@@ -327,7 +324,7 @@ namespace CathodeEditorGUI
         }
         public static void ResetHierarchyPurgeCache()
         {
-            purgedFlows.Clear();
+            purgedComps.Clear();
         }
     }
 }

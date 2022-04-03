@@ -13,15 +13,15 @@ namespace CathodeEditorGUI
 {
     public partial class CathodeEditorGUI_RenameEntity : Form
     {
-        public string NodeName { get { return entity_name.Text; } }
-        public cGUID NodeID;
+        public string EntityName { get { return entity_name.Text; } }
+        public cGUID EntityID;
         public bool didSave = false;
 
         public CathodeEditorGUI_RenameEntity(cGUID node)
         {
             InitializeComponent();
             entity_name.Text = EntityDBEx.GetEntityName(node);
-            NodeID = node;
+            EntityID = node;
         }
 
         private void save_entity_name_Click(object sender, EventArgs e)

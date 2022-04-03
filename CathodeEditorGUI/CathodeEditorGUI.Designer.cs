@@ -40,16 +40,16 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.editTriggerSequence = new System.Windows.Forms.Button();
             this.editCompositeResources = new System.Windows.Forms.Button();
-            this.editNodeResources = new System.Windows.Forms.Button();
+            this.editEntityResources = new System.Windows.Forms.Button();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.jumpToComposite = new System.Windows.Forms.Button();
-            this.selected_node_name = new System.Windows.Forms.Label();
+            this.selected_entity_name = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.selected_entity_type_description = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.selected_node_type = new System.Windows.Forms.Label();
+            this.selected_entity_type = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.selected_node_id = new System.Windows.Forms.Label();
+            this.selected_entity_id = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.editCAGEAnimationKeyframes = new System.Windows.Forms.Button();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
@@ -57,19 +57,19 @@
             this.removeSelectedLink = new System.Windows.Forms.Button();
             this.addNewLink = new System.Windows.Forms.Button();
             this.out_pin_goto = new System.Windows.Forms.Button();
-            this.node_children = new System.Windows.Forms.ListBox();
+            this.entity_children = new System.Windows.Forms.ListBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.renameSelectedNode = new System.Windows.Forms.Button();
             this.duplicateSelectedNode = new System.Windows.Forms.Button();
-            this.removeSelectedNode = new System.Windows.Forms.Button();
+            this.removeSelectedEntity = new System.Windows.Forms.Button();
             this.addNewNode = new System.Windows.Forms.Button();
             this.composite_content = new System.Windows.Forms.ListBox();
-            this.node_search_box = new System.Windows.Forms.TextBox();
+            this.entity_search_box = new System.Windows.Forms.TextBox();
             this.node_search_btn = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.removeParameter = new System.Windows.Forms.Button();
             this.addNewParameter = new System.Windows.Forms.Button();
-            this.NodeParams = new System.Windows.Forms.Panel();
+            this.entity_params = new System.Windows.Forms.Panel();
             this.button1 = new System.Windows.Forms.Button();
             this.load_commands_pak = new System.Windows.Forms.Button();
             this.env_list = new System.Windows.Forms.ComboBox();
@@ -163,7 +163,7 @@
             // 
             this.groupBox1.Controls.Add(this.editTriggerSequence);
             this.groupBox1.Controls.Add(this.editCompositeResources);
-            this.groupBox1.Controls.Add(this.editNodeResources);
+            this.groupBox1.Controls.Add(this.editEntityResources);
             this.groupBox1.Controls.Add(this.groupBox7);
             this.groupBox1.Controls.Add(this.editCAGEAnimationKeyframes);
             this.groupBox1.Controls.Add(this.groupBox5);
@@ -200,25 +200,25 @@
             // 
             // editNodeResources
             // 
-            this.editNodeResources.Location = new System.Drawing.Point(750, 123);
-            this.editNodeResources.Name = "editNodeResources";
-            this.editNodeResources.Size = new System.Drawing.Size(99, 23);
-            this.editNodeResources.TabIndex = 176;
-            this.editNodeResources.Text = "Edit Resources";
-            this.editNodeResources.UseVisualStyleBackColor = true;
-            this.editNodeResources.Visible = false;
-            this.editNodeResources.Click += new System.EventHandler(this.editNodeResources_Click);
+            this.editEntityResources.Location = new System.Drawing.Point(750, 123);
+            this.editEntityResources.Name = "editNodeResources";
+            this.editEntityResources.Size = new System.Drawing.Size(99, 23);
+            this.editEntityResources.TabIndex = 176;
+            this.editEntityResources.Text = "Edit Resources";
+            this.editEntityResources.UseVisualStyleBackColor = true;
+            this.editEntityResources.Visible = false;
+            this.editEntityResources.Click += new System.EventHandler(this.editEntityResources_Click);
             // 
             // groupBox7
             // 
             this.groupBox7.Controls.Add(this.jumpToComposite);
-            this.groupBox7.Controls.Add(this.selected_node_name);
+            this.groupBox7.Controls.Add(this.selected_entity_name);
             this.groupBox7.Controls.Add(this.label9);
             this.groupBox7.Controls.Add(this.selected_entity_type_description);
             this.groupBox7.Controls.Add(this.label6);
-            this.groupBox7.Controls.Add(this.selected_node_type);
+            this.groupBox7.Controls.Add(this.selected_entity_type);
             this.groupBox7.Controls.Add(this.label4);
-            this.groupBox7.Controls.Add(this.selected_node_id);
+            this.groupBox7.Controls.Add(this.selected_entity_id);
             this.groupBox7.Controls.Add(this.label1);
             this.groupBox7.Location = new System.Drawing.Point(469, 19);
             this.groupBox7.Name = "groupBox7";
@@ -240,11 +240,11 @@
             // 
             // selected_node_name
             // 
-            this.selected_node_name.AutoSize = true;
-            this.selected_node_name.Location = new System.Drawing.Point(86, 63);
-            this.selected_node_name.Name = "selected_node_name";
-            this.selected_node_name.Size = new System.Drawing.Size(0, 13);
-            this.selected_node_name.TabIndex = 7;
+            this.selected_entity_name.AutoSize = true;
+            this.selected_entity_name.Location = new System.Drawing.Point(86, 63);
+            this.selected_entity_name.Name = "selected_node_name";
+            this.selected_entity_name.Size = new System.Drawing.Size(0, 13);
+            this.selected_entity_name.TabIndex = 7;
             // 
             // label9
             // 
@@ -276,12 +276,12 @@
             // 
             // selected_node_type
             // 
-            this.selected_node_type.AutoSize = true;
-            this.selected_node_type.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.selected_node_type.Location = new System.Drawing.Point(83, 38);
-            this.selected_node_type.Name = "selected_node_type";
-            this.selected_node_type.Size = new System.Drawing.Size(0, 13);
-            this.selected_node_type.TabIndex = 3;
+            this.selected_entity_type.AutoSize = true;
+            this.selected_entity_type.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.selected_entity_type.Location = new System.Drawing.Point(83, 38);
+            this.selected_entity_type.Name = "selected_node_type";
+            this.selected_entity_type.Size = new System.Drawing.Size(0, 13);
+            this.selected_entity_type.TabIndex = 3;
             // 
             // label4
             // 
@@ -295,12 +295,12 @@
             // 
             // selected_node_id
             // 
-            this.selected_node_id.AutoSize = true;
-            this.selected_node_id.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.selected_node_id.Location = new System.Drawing.Point(69, 22);
-            this.selected_node_id.Name = "selected_node_id";
-            this.selected_node_id.Size = new System.Drawing.Size(0, 13);
-            this.selected_node_id.TabIndex = 1;
+            this.selected_entity_id.AutoSize = true;
+            this.selected_entity_id.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.selected_entity_id.Location = new System.Drawing.Point(69, 22);
+            this.selected_entity_id.Name = "selected_node_id";
+            this.selected_entity_id.Size = new System.Drawing.Size(0, 13);
+            this.selected_entity_id.TabIndex = 1;
             // 
             // label1
             // 
@@ -329,7 +329,7 @@
             this.groupBox5.Controls.Add(this.removeSelectedLink);
             this.groupBox5.Controls.Add(this.addNewLink);
             this.groupBox5.Controls.Add(this.out_pin_goto);
-            this.groupBox5.Controls.Add(this.node_children);
+            this.groupBox5.Controls.Add(this.entity_children);
             this.groupBox5.Location = new System.Drawing.Point(469, 600);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(382, 139);
@@ -379,22 +379,22 @@
             // 
             // node_children
             // 
-            this.node_children.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.node_children.FormattingEnabled = true;
-            this.node_children.HorizontalScrollbar = true;
-            this.node_children.Location = new System.Drawing.Point(6, 21);
-            this.node_children.Name = "node_children";
-            this.node_children.Size = new System.Drawing.Size(371, 82);
-            this.node_children.TabIndex = 145;
+            this.entity_children.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.entity_children.FormattingEnabled = true;
+            this.entity_children.HorizontalScrollbar = true;
+            this.entity_children.Location = new System.Drawing.Point(6, 21);
+            this.entity_children.Name = "node_children";
+            this.entity_children.Size = new System.Drawing.Size(371, 82);
+            this.entity_children.TabIndex = 145;
             // 
             // groupBox4
             // 
             this.groupBox4.Controls.Add(this.renameSelectedNode);
             this.groupBox4.Controls.Add(this.duplicateSelectedNode);
-            this.groupBox4.Controls.Add(this.removeSelectedNode);
+            this.groupBox4.Controls.Add(this.removeSelectedEntity);
             this.groupBox4.Controls.Add(this.addNewNode);
             this.groupBox4.Controls.Add(this.composite_content);
-            this.groupBox4.Controls.Add(this.node_search_box);
+            this.groupBox4.Controls.Add(this.entity_search_box);
             this.groupBox4.Controls.Add(this.node_search_btn);
             this.groupBox4.Location = new System.Drawing.Point(6, 19);
             this.groupBox4.Name = "groupBox4";
@@ -411,7 +411,7 @@
             this.renameSelectedNode.TabIndex = 150;
             this.renameSelectedNode.Text = "Rename Selected";
             this.renameSelectedNode.UseVisualStyleBackColor = true;
-            this.renameSelectedNode.Click += new System.EventHandler(this.renameSelectedNode_Click);
+            this.renameSelectedNode.Click += new System.EventHandler(this.renameSelectedEntity_Click);
             // 
             // duplicateSelectedNode
             // 
@@ -421,17 +421,17 @@
             this.duplicateSelectedNode.TabIndex = 149;
             this.duplicateSelectedNode.Text = "Duplicate Selected";
             this.duplicateSelectedNode.UseVisualStyleBackColor = true;
-            this.duplicateSelectedNode.Click += new System.EventHandler(this.duplicateSelectedNode_Click);
+            this.duplicateSelectedNode.Click += new System.EventHandler(this.duplicateSelectedEntity_Click);
             // 
             // removeSelectedNode
             // 
-            this.removeSelectedNode.Location = new System.Drawing.Point(117, 690);
-            this.removeSelectedNode.Name = "removeSelectedNode";
-            this.removeSelectedNode.Size = new System.Drawing.Size(111, 23);
-            this.removeSelectedNode.TabIndex = 148;
-            this.removeSelectedNode.Text = "Remove Selected";
-            this.removeSelectedNode.UseVisualStyleBackColor = true;
-            this.removeSelectedNode.Click += new System.EventHandler(this.removeSelectedNode_Click);
+            this.removeSelectedEntity.Location = new System.Drawing.Point(117, 690);
+            this.removeSelectedEntity.Name = "removeSelectedNode";
+            this.removeSelectedEntity.Size = new System.Drawing.Size(111, 23);
+            this.removeSelectedEntity.TabIndex = 148;
+            this.removeSelectedEntity.Text = "Remove Selected";
+            this.removeSelectedEntity.UseVisualStyleBackColor = true;
+            this.removeSelectedEntity.Click += new System.EventHandler(this.removeSelectedEntity_Click);
             // 
             // addNewNode
             // 
@@ -441,7 +441,7 @@
             this.addNewNode.TabIndex = 147;
             this.addNewNode.Text = "Add Entity";
             this.addNewNode.UseVisualStyleBackColor = true;
-            this.addNewNode.Click += new System.EventHandler(this.addNewNode_Click);
+            this.addNewNode.Click += new System.EventHandler(this.addNewEntity_Click);
             // 
             // flowgraph_content
             // 
@@ -456,10 +456,10 @@
             // 
             // node_search_box
             // 
-            this.node_search_box.Location = new System.Drawing.Point(6, 17);
-            this.node_search_box.Name = "node_search_box";
-            this.node_search_box.Size = new System.Drawing.Size(348, 20);
-            this.node_search_box.TabIndex = 146;
+            this.entity_search_box.Location = new System.Drawing.Point(6, 17);
+            this.entity_search_box.Name = "node_search_box";
+            this.entity_search_box.Size = new System.Drawing.Size(348, 20);
+            this.entity_search_box.TabIndex = 146;
             // 
             // node_search_btn
             // 
@@ -469,13 +469,13 @@
             this.node_search_btn.TabIndex = 145;
             this.node_search_btn.Text = "Search";
             this.node_search_btn.UseVisualStyleBackColor = true;
-            this.node_search_btn.Click += new System.EventHandler(this.node_search_btn_Click);
+            this.node_search_btn.Click += new System.EventHandler(this.entity_search_btn_Click);
             // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.removeParameter);
             this.groupBox2.Controls.Add(this.addNewParameter);
-            this.groupBox2.Controls.Add(this.NodeParams);
+            this.groupBox2.Controls.Add(this.entity_params);
             this.groupBox2.Location = new System.Drawing.Point(469, 130);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(382, 464);
@@ -505,11 +505,11 @@
             // 
             // NodeParams
             // 
-            this.NodeParams.AutoScroll = true;
-            this.NodeParams.Location = new System.Drawing.Point(6, 20);
-            this.NodeParams.Name = "NodeParams";
-            this.NodeParams.Size = new System.Drawing.Size(371, 408);
-            this.NodeParams.TabIndex = 0;
+            this.entity_params.AutoScroll = true;
+            this.entity_params.Location = new System.Drawing.Point(6, 20);
+            this.entity_params.Name = "NodeParams";
+            this.entity_params.Size = new System.Drawing.Size(371, 408);
+            this.entity_params.TabIndex = 0;
             // 
             // button1
             // 
@@ -657,26 +657,26 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label selected_entity_type_description;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label selected_node_type;
+        private System.Windows.Forms.Label selected_entity_type;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label selected_node_id;
+        private System.Windows.Forms.Label selected_entity_id;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.GroupBox groupBox5;
-        private System.Windows.Forms.ListBox node_children;
+        private System.Windows.Forms.ListBox entity_children;
         private System.Windows.Forms.GroupBox groupBox4;
-        private System.Windows.Forms.TextBox node_search_box;
+        private System.Windows.Forms.TextBox entity_search_box;
         private System.Windows.Forms.Button node_search_btn;
         private System.Windows.Forms.ListBox composite_content;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.Panel NodeParams;
+        private System.Windows.Forms.Panel entity_params;
         private System.Windows.Forms.Button load_commands_pak;
         private System.Windows.Forms.ComboBox env_list;
         private System.Windows.Forms.GroupBox groupBox8;
         private System.Windows.Forms.GroupBox groupBox10;
-        private System.Windows.Forms.Label selected_node_name;
+        private System.Windows.Forms.Label selected_entity_name;
         private System.Windows.Forms.Button out_pin_goto;
         private System.Windows.Forms.Button jumpToComposite;
-        private System.Windows.Forms.Button removeSelectedNode;
+        private System.Windows.Forms.Button removeSelectedEntity;
         private System.Windows.Forms.Button addNewNode;
         private System.Windows.Forms.Button removeParameter;
         private System.Windows.Forms.Button addNewParameter;
@@ -691,7 +691,7 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button duplicateSelectedNode;
         private System.Windows.Forms.Button renameSelectedNode;
-        private System.Windows.Forms.Button editNodeResources;
+        private System.Windows.Forms.Button editEntityResources;
         private System.Windows.Forms.Button editCompositeResources;
         private System.Windows.Forms.Button editEntryPoint;
         private System.Windows.Forms.Button editTriggerSequence;
