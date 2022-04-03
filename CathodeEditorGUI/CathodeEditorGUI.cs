@@ -49,41 +49,41 @@ namespace CathodeEditorGUI
         }
 
         /* Clear the UI */
-        private void ClearUI(bool clear_flowgraph_list, bool clear_node_list, bool clear_parameter_list)
+        private void ClearUI(bool clear_composite_list, bool clear_node_list, bool clear_parameter_list)
         {
-            if (clear_flowgraph_list)
+            if (clear_composite_list)
             {
                 FileTree.BeginUpdate();
                 FileTree.Nodes.Clear();
                 FileTree.EndUpdate();
-                first_executed_flowgraph.Text = "Entry point: ";
-                flowgraph_count.Text = "Flowgraph count: ";
+                root_composite_display.Text = "Entry point: ";
+                composite_count_display.Text = "Composite count: ";
             }
             if (clear_node_list)
             {
                 node_search_box.Text = "";
                 currentSearch = "";
-                groupBox1.Text = "Selected Flowgraph Content";
-                flowgraph_content.BeginUpdate();
-                flowgraph_content.Items.Clear();
-                flowgraph_content_RAW.Clear();
-                flowgraph_content.EndUpdate();
-                CurrentInstance.selectedFlowgraph = null;
-                editFlowgraphResources.Visible = false;
+                groupBox1.Text = "Selected Composite Content";
+                composite_content.BeginUpdate();
+                composite_content.Items.Clear();
+                composite_content_RAW.Clear();
+                composite_content.EndUpdate();
+                CurrentInstance.selectedComposite = null;
+                editCompositeResources.Visible = false;
             }
             if (clear_parameter_list)
             {
                 CurrentInstance.selectedEntity = null;
                 selected_node_id.Text = "";
                 selected_node_type.Text = "";
-                selected_node_type_description.Text = "";
+                selected_entity_type_description.Text = "";
                 selected_node_name.Text = "";
                 for (int i = 0; i < NodeParams.Controls.Count; i++) 
                     NodeParams.Controls[i].Dispose();
                 NodeParams.Controls.Clear();
                 node_children.Items.Clear();
                 currentlyShowingChildLinks = true;
-                node_to_flowgraph_jump.Visible = false;
+                jumpToComposite.Visible = false;
                 editTriggerSequence.Visible = false;
                 editCAGEAnimationKeyframes.Visible = false;
                 editNodeResources.Visible = false;
@@ -132,20 +132,20 @@ namespace CathodeEditorGUI
             }
 
             //Load in any custom param/node names
-            NodeDBEx.LoadNames();
+            EntityDBEx.LoadNames();
 
             //Begin caching entity names so we don't have to keep generating them
             if (currentBackgroundCacher != null) currentBackgroundCacher.Dispose();
             currentBackgroundCacher = Task.Factory.StartNew(() => EditorUtils.GenerateEntityNameCache(this));
 
             //Populate file tree
-            treeHelper.UpdateFileTree(CurrentInstance.commandsPAK.GetFlowgraphNames().ToList());
+            treeHelper.UpdateFileTree(CurrentInstance.commandsPAK.GetCompositeNames().ToList());
 
             //Show info in UI
             RefreshStatsUI();
 
-            //Select entry point flowgraph
-            LoadFlowgraph(CurrentInstance.commandsPAK.EntryPoints[0].name);
+            //Select entry point composite
+            LoadComposite(CurrentInstance.commandsPAK.EntryPoints[0].name);
         }
         private void load_commands_pak_Click(object sender, EventArgs e)
         {
@@ -153,8 +153,8 @@ namespace CathodeEditorGUI
         }
         private void RefreshStatsUI()
         {
-            first_executed_flowgraph.Text = "Entry point: " + CurrentInstance.commandsPAK.EntryPoints[0].name;
-            flowgraph_count.Text = "Flowgraph count: " + CurrentInstance.commandsPAK.Flowgraphs.Count;
+            root_composite_display.Text = "Entry point: " + CurrentInstance.commandsPAK.EntryPoints[0].name;
+            composite_count_display.Text = "Composite count: " + CurrentInstance.commandsPAK.Composites.Count;
         }
 
         /* Save the current edits */
@@ -173,7 +173,7 @@ namespace CathodeEditorGUI
                 MessageBox.Show("Failed to save COMMANDS.PAK!\n" + e.Message, "Failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            NodeDBEx.SaveNames();
+            EntityDBEx.SaveNames();
 
             if (modifyMVR.Checked)
             {
@@ -211,16 +211,16 @@ namespace CathodeEditorGUI
             SaveCommandsPAK();
             MessageBox.Show("Saved changes!", "Saved.", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
-        private CathodeFlowgraph GetFlowgraphContainingNode(cGUID nodeID)
+        private CathodeComposite GetCompositeContainingEntity(cGUID entityID)
         {
-            for (int i = 0; i < CurrentInstance.commandsPAK.Flowgraphs.Count; i++)
+            for (int i = 0; i < CurrentInstance.commandsPAK.Composites.Count; i++)
             {
-                List<CathodeEntity> entities = CurrentInstance.commandsPAK.Flowgraphs[i].GetEntities();
+                List<CathodeEntity> entities = CurrentInstance.commandsPAK.Composites[i].GetEntities();
                 for (int x = 0; x < entities.Count; x++)
                 {
-                    if (entities[x].nodeID == nodeID)
+                    if (entities[x].shortGUID == entityID)
                     {
-                        return CurrentInstance.commandsPAK.Flowgraphs[i];
+                        return CurrentInstance.commandsPAK.Composites[i];
                     }
                 }
             }
@@ -231,7 +231,7 @@ namespace CathodeEditorGUI
         private void editEntryPoint_Click(object sender, EventArgs e)
         {
             if (CurrentInstance.commandsPAK == null || !CurrentInstance.commandsPAK.Loaded) return;
-            CathodeEditorGUI_EditEntryPoint edit_entrypoint = new CathodeEditorGUI_EditEntryPoint();
+            CathodeEditorGUI_EditRootComposite edit_entrypoint = new CathodeEditorGUI_EditRootComposite();
             edit_entrypoint.Show();
             edit_entrypoint.FormClosed += new FormClosedEventHandler(edit_entrypoint_closed);
         }
@@ -242,18 +242,18 @@ namespace CathodeEditorGUI
             this.Focus();
         }
 
-        /* Load nodes for selected script */
+        /* Load entities for selected composite */
         private void FileTree_AfterSelect(object sender, TreeViewEventArgs e)
         {
             if (FileTree.SelectedNode == null) return;
             if (((TreeItem)FileTree.SelectedNode.Tag).Item_Type != TreeItemType.EXPORTABLE_FILE) return;
-            LoadFlowgraph(((TreeItem)FileTree.SelectedNode.Tag).String_Value);
+            LoadComposite(((TreeItem)FileTree.SelectedNode.Tag).String_Value);
         }
 
-        /* If selected node is a flowgraph instance, allow jump to it */
-        private void node_to_flowgraph_jump_Click(object sender, EventArgs e)
+        /* If selected entity is a composite instance, allow jump to it */
+        private void jumpToComposite_Click(object sender, EventArgs e)
         {
-            CathodeFlowgraph flow;
+            CathodeComposite flow;
             switch (CurrentInstance.selectedEntity.variant)
             {
                 case EntityVariant.OVERRIDE:
@@ -261,7 +261,7 @@ namespace CathodeEditorGUI
                     CathodeEntity entity = EditorUtils.ResolveHierarchy(((OverrideEntity)CurrentInstance.selectedEntity).hierarchy, out flow);
                     if (entity != null)
                     {
-                        LoadFlowgraph(flow.name);
+                        LoadComposite(flow.name);
                         LoadEntity(entity);
                     }
                     break;
@@ -271,14 +271,14 @@ namespace CathodeEditorGUI
                     CathodeEntity entity = EditorUtils.ResolveHierarchy(((ProxyEntity)CurrentInstance.selectedEntity).hierarchy, out flow);
                     if (entity != null)
                     {
-                        LoadFlowgraph(flow.name);
+                        LoadComposite(flow.name);
                         LoadEntity(entity);
                     }
                     break;
                 }
                 case EntityVariant.FUNCTION:
                 {
-                    LoadFlowgraph(selected_node_type_description.Text);
+                    LoadComposite(selected_entity_type_description.Text);
                     break;
                 }
             }
@@ -288,77 +288,77 @@ namespace CathodeEditorGUI
         private void SelectEntryPointUI(object sender, System.EventArgs e)
         {
             if (CurrentInstance.commandsPAK == null || !CurrentInstance.commandsPAK.Loaded) return;
-            LoadFlowgraph(CurrentInstance.commandsPAK.EntryPoints[0].name);
+            LoadComposite(CurrentInstance.commandsPAK.EntryPoints[0].name);
         }
 
-        /* Add new flowgraph */
-        private void addNewFlowgraph_Click(object sender, EventArgs e)
+        /* Add new composite (really we should be able to do this OFF OF entities, like making a prefab) */
+        private void addNewComposite_Click(object sender, EventArgs e)
         {
             if (CurrentInstance.commandsPAK == null) return;
-            CathodeEditorGUI_AddFlowgraph add_flow = new CathodeEditorGUI_AddFlowgraph();
+            CathodeEditorGUI_AddComposite add_flow = new CathodeEditorGUI_AddComposite();
             add_flow.Show();
             add_flow.FormClosed += new FormClosedEventHandler(add_flow_closed);
         }
         private void add_flow_closed(Object sender, FormClosedEventArgs e)
         {
-            treeHelper.UpdateFileTree(CurrentInstance.commandsPAK.GetFlowgraphNames().ToList());
+            treeHelper.UpdateFileTree(CurrentInstance.commandsPAK.GetCompositeNames().ToList());
             RefreshStatsUI();
             this.BringToFront();
             this.Focus();
         }
 
-        /* Remove selected flowgraph */
-        private void removeSelectedFlowgraph_Click(object sender, EventArgs e)
+        /* Remove selected composite */
+        private void removeSelectedComposite_Click(object sender, EventArgs e)
         {
-            if (CurrentInstance.selectedFlowgraph == null) return;
+            if (CurrentInstance.selectedComposite == null) return;
             for (int i = 0; i < CurrentInstance.commandsPAK.EntryPoints.Count(); i++)
             {
-                if (CurrentInstance.selectedFlowgraph.nodeID == CurrentInstance.commandsPAK.EntryPoints[i].nodeID)
+                if (CurrentInstance.selectedComposite.shortGUID == CurrentInstance.commandsPAK.EntryPoints[i].shortGUID)
                 {
-                    MessageBox.Show("Cannot delete a flowgraph which is set as an entry point!", "Cannot delete.", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Cannot delete a composite which is set as an entry point!", "Cannot delete.", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
             }
-            if (!ConfirmAction("Are you sure you want to remove this flowgraph?")) return;
+            if (!ConfirmAction("Are you sure you want to remove this composite?")) return;
 
-            //Remove any entities or links that reference this flowgraph
-            for (int i = 0; i < CurrentInstance.commandsPAK.Flowgraphs.Count; i++)
+            //Remove any entities or links that reference this composite
+            for (int i = 0; i < CurrentInstance.commandsPAK.Composites.Count; i++)
             {
                 List<FunctionEntity> prunedFunctionEntities = new List<FunctionEntity>();
-                for (int x = 0; x < CurrentInstance.commandsPAK.Flowgraphs[i].functions.Count; x++)
+                for (int x = 0; x < CurrentInstance.commandsPAK.Composites[i].functions.Count; x++)
                 {
-                    if (CurrentInstance.commandsPAK.Flowgraphs[i].functions[x].function == CurrentInstance.selectedFlowgraph.nodeID) continue;
-                    List<CathodeNodeLink> prunedNodeLinks = new List<CathodeNodeLink>();
-                    for (int l = 0; l < CurrentInstance.commandsPAK.Flowgraphs[i].functions[x].childLinks.Count; l++)
+                    if (CurrentInstance.commandsPAK.Composites[i].functions[x].function == CurrentInstance.selectedComposite.shortGUID) continue;
+                    List<CathodeEntityLink> prunedNodeLinks = new List<CathodeEntityLink>();
+                    for (int l = 0; l < CurrentInstance.commandsPAK.Composites[i].functions[x].childLinks.Count; l++)
                     {
-                        CathodeEntity linkedNode = CurrentInstance.commandsPAK.Flowgraphs[i].GetEntityByID(CurrentInstance.commandsPAK.Flowgraphs[i].functions[x].childLinks[l].childID);
-                        if (linkedNode != null && linkedNode.variant == EntityVariant.FUNCTION) if (((FunctionEntity)linkedNode).function == CurrentInstance.selectedFlowgraph.nodeID) continue;
-                        prunedNodeLinks.Add(CurrentInstance.commandsPAK.Flowgraphs[i].functions[x].childLinks[l]);
+                        CathodeEntity linkedEntity = CurrentInstance.commandsPAK.Composites[i].GetEntityByID(CurrentInstance.commandsPAK.Composites[i].functions[x].childLinks[l].childID);
+                        if (linkedEntity != null && linkedEntity.variant == EntityVariant.FUNCTION) if (((FunctionEntity)linkedEntity).function == CurrentInstance.selectedComposite.shortGUID) continue;
+                        prunedNodeLinks.Add(CurrentInstance.commandsPAK.Composites[i].functions[x].childLinks[l]);
                     }
-                    CurrentInstance.commandsPAK.Flowgraphs[i].functions[x].childLinks = prunedNodeLinks;
-                    prunedFunctionEntities.Add(CurrentInstance.commandsPAK.Flowgraphs[i].functions[x]);
+                    CurrentInstance.commandsPAK.Composites[i].functions[x].childLinks = prunedNodeLinks;
+                    prunedFunctionEntities.Add(CurrentInstance.commandsPAK.Composites[i].functions[x]);
                 }
-                CurrentInstance.commandsPAK.Flowgraphs[i].functions = prunedFunctionEntities;
+                CurrentInstance.commandsPAK.Composites[i].functions = prunedFunctionEntities;
             }
             //TODO: remove proxies etc that also reference any of the removed nodes
 
-            //Remove the flowgraph
-            CurrentInstance.commandsPAK.Flowgraphs.Remove(CurrentInstance.selectedFlowgraph);
+            //Remove the composite
+            CurrentInstance.commandsPAK.Composites.Remove(CurrentInstance.selectedComposite);
 
             //Refresh UI
             ClearUI(false, true, true);
             RefreshStatsUI();
-            treeHelper.UpdateFileTree(CurrentInstance.commandsPAK.GetFlowgraphNames().ToList());
+            treeHelper.UpdateFileTree(CurrentInstance.commandsPAK.GetCompositeNames().ToList());
         }
 
-        /* Select node from loaded flowgraph */
-        private void flowgraph_content_SelectedIndexChanged(object sender, EventArgs e)
+        /* Select node from loaded composite */
+        private void composite_content_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (flowgraph_content.SelectedIndex == -1 || CurrentInstance.selectedFlowgraph == null) return;
+            if (composite_content.SelectedIndex == -1 || CurrentInstance.selectedComposite == null) return;
             try
             {
-                cGUID entityID = new cGUID(flowgraph_content.SelectedItem.ToString().Substring(1, 11));
-                CathodeEntity thisEntity = CurrentInstance.selectedFlowgraph.GetEntityByID(entityID);
+                cGUID entityID = new cGUID(composite_content.SelectedItem.ToString().Substring(1, 11));
+                CathodeEntity thisEntity = CurrentInstance.selectedComposite.GetEntityByID(entityID);
                 if (thisEntity != null) LoadEntity(thisEntity);
             }
             catch (Exception ex)
@@ -370,8 +370,8 @@ namespace CathodeEditorGUI
         /* Add new out pin */
         private void addNewLink_Click(object sender, EventArgs e)
         {
-            if (CurrentInstance.selectedFlowgraph == null || CurrentInstance.selectedEntity == null) return;
-            CathodeEditorGUI_AddPin add_pin = new CathodeEditorGUI_AddPin(CurrentInstance.selectedEntity, CurrentInstance.selectedFlowgraph);
+            if (CurrentInstance.selectedComposite == null || CurrentInstance.selectedEntity == null) return;
+            CathodeEditorGUI_AddPin add_pin = new CathodeEditorGUI_AddPin(CurrentInstance.selectedEntity, CurrentInstance.selectedComposite);
             add_pin.Show();
             add_pin.FormClosed += new FormClosedEventHandler(add_pin_closed);
         }
@@ -385,7 +385,7 @@ namespace CathodeEditorGUI
         /* Remove selected out pin */
         private void removeSelectedLink_Click(object sender, EventArgs e)
         {
-            if (CurrentInstance.selectedEntity == null || CurrentInstance.selectedFlowgraph == null) return;
+            if (CurrentInstance.selectedEntity == null || CurrentInstance.selectedComposite == null) return;
             if (!ConfirmAction("Are you sure you want to remove this link?")) return;
             if (currentlyShowingChildLinks)
             {
@@ -393,7 +393,7 @@ namespace CathodeEditorGUI
             }
             else
             {
-                List<CathodeEntity> ents = CurrentInstance.selectedFlowgraph.GetEntities();
+                List<CathodeEntity> ents = CurrentInstance.selectedComposite.GetEntities();
                 int deleteIndex = -1;
                 foreach (CathodeEntity entity in ents)
                 {
@@ -418,16 +418,16 @@ namespace CathodeEditorGUI
         /* Go to selected pin out on button press */
         private void out_pin_goto_Click(object sender, EventArgs e)
         {
-            if (node_children.SelectedIndex == -1 || CurrentInstance.selectedFlowgraph == null) return;
+            if (node_children.SelectedIndex == -1 || CurrentInstance.selectedComposite == null) return;
 
             CathodeEntity thisNodeInfo = null;
             if (currentlyShowingChildLinks)
             {
-                thisNodeInfo = CurrentInstance.selectedFlowgraph.GetEntityByID(CurrentInstance.selectedEntity.childLinks[node_children.SelectedIndex].childID);
+                thisNodeInfo = CurrentInstance.selectedComposite.GetEntityByID(CurrentInstance.selectedEntity.childLinks[node_children.SelectedIndex].childID);
             }
             else
             {
-                List<CathodeEntity> ents = CurrentInstance.selectedFlowgraph.GetEntities();
+                List<CathodeEntity> ents = CurrentInstance.selectedComposite.GetEntities();
                 foreach (CathodeEntity entity in ents)
                 {
                     for (int i = 0; i < entity.childLinks.Count; i++)
@@ -457,36 +457,36 @@ namespace CathodeEditorGUI
         {
             if (node_search_box.Text == currentSearch) return;
             List<string> matched = new List<string>();
-            foreach (string item in flowgraph_content_RAW) if (item.ToUpper().Contains(node_search_box.Text.ToUpper())) matched.Add(item);
-            flowgraph_content.BeginUpdate();
-            flowgraph_content.Items.Clear();
-            for (int i = 0; i < matched.Count; i++) flowgraph_content.Items.Add(matched[i]);
-            flowgraph_content.EndUpdate();
+            foreach (string item in composite_content_RAW) if (item.ToUpper().Contains(node_search_box.Text.ToUpper())) matched.Add(item);
+            composite_content.BeginUpdate();
+            composite_content.Items.Clear();
+            for (int i = 0; i < matched.Count; i++) composite_content.Items.Add(matched[i]);
+            composite_content.EndUpdate();
             currentSearch = node_search_box.Text;
         }
 
-        /* Load a flowgraph into the UI */
-        List<string> flowgraph_content_RAW = new List<string>();
-        private void LoadFlowgraph(string FileName)
+        /* Load a composite into the UI */
+        List<string> composite_content_RAW = new List<string>();
+        private void LoadComposite(string FileName)
         {
             ClearUI(false, true, true);
-            CathodeFlowgraph entry = CurrentInstance.commandsPAK.Flowgraphs[CurrentInstance.commandsPAK.GetFileIndex(FileName)];
-            CurrentInstance.selectedFlowgraph = entry;
-            EditorUtils.PurgeDeadHierarchiesInActiveFlowgraph();
+            CathodeComposite entry = CurrentInstance.commandsPAK.Composites[CurrentInstance.commandsPAK.GetFileIndex(FileName)];
+            CurrentInstance.selectedComposite = entry;
+            EditorUtils.PurgeDeadHierarchiesInActiveComposite();
             Cursor.Current = Cursors.WaitCursor;
 
-            flowgraph_content.BeginUpdate();
+            composite_content.BeginUpdate();
             List<CathodeEntity> entities = entry.GetEntities();
             for (int i = 0; i < entities.Count; i++)
             {
-                string desc = EditorUtils.GenerateNodeName(entities[i], CurrentInstance.selectedFlowgraph);
-                flowgraph_content.Items.Add(desc);
-                flowgraph_content_RAW.Add(desc);
+                string desc = EditorUtils.GenerateNodeName(entities[i], CurrentInstance.selectedComposite);
+                composite_content.Items.Add(desc);
+                composite_content_RAW.Add(desc);
             }
-            flowgraph_content.EndUpdate();
+            composite_content.EndUpdate();
 
 //#if debug //TODO: PULL THIS INTO STABLE
-            editFlowgraphResources.Visible = true;
+            editCompositeResources.Visible = true;
 //#endif
 
             groupBox1.Text = entry.name;
@@ -496,14 +496,14 @@ namespace CathodeEditorGUI
         /* Add new entity */
         private void addNewNode_Click(object sender, EventArgs e)
         {
-            if (CurrentInstance.selectedFlowgraph == null) return;
-            CathodeEditorGUI_AddNode add_parameter = new CathodeEditorGUI_AddNode(CurrentInstance.selectedFlowgraph, CurrentInstance.commandsPAK.Flowgraphs);
+            if (CurrentInstance.selectedComposite == null) return;
+            CathodeEditorGUI_AddEntity add_parameter = new CathodeEditorGUI_AddEntity(CurrentInstance.selectedComposite, CurrentInstance.commandsPAK.Composites);
             add_parameter.Show();
             add_parameter.FormClosed += new FormClosedEventHandler(add_node_closed);
         }
         private void add_node_closed(Object sender, FormClosedEventArgs e)
         {
-            ReloadUIForNewEntity(((CathodeEditorGUI_AddNode)sender).NewEntity);
+            ReloadUIForNewEntity(((CathodeEditorGUI_AddEntity)sender).NewEntity);
             this.BringToFront();
             this.Focus();
         }
@@ -514,40 +514,40 @@ namespace CathodeEditorGUI
             if (CurrentInstance.selectedEntity == null) return;
             if (!ConfirmAction("Are you sure you want to remove this entity?")) return;
 
-            string removedID = CurrentInstance.selectedEntity.nodeID.ToString();
+            string removedID = CurrentInstance.selectedEntity.shortGUID.ToString();
 
             switch (CurrentInstance.selectedEntity.variant)
             {
                 case EntityVariant.DATATYPE:
-                    CurrentInstance.selectedFlowgraph.datatypes.Remove((DatatypeEntity)CurrentInstance.selectedEntity);
+                    CurrentInstance.selectedComposite.datatypes.Remove((DatatypeEntity)CurrentInstance.selectedEntity);
                     break;
                 case EntityVariant.FUNCTION:
-                    CurrentInstance.selectedFlowgraph.functions.Remove((FunctionEntity)CurrentInstance.selectedEntity);
+                    CurrentInstance.selectedComposite.functions.Remove((FunctionEntity)CurrentInstance.selectedEntity);
                     break;
                 case EntityVariant.OVERRIDE:
-                    CurrentInstance.selectedFlowgraph.overrides.Remove((OverrideEntity)CurrentInstance.selectedEntity);
+                    CurrentInstance.selectedComposite.overrides.Remove((OverrideEntity)CurrentInstance.selectedEntity);
                     break;
                 case EntityVariant.PROXY:
-                    CurrentInstance.selectedFlowgraph.proxies.Remove((ProxyEntity)CurrentInstance.selectedEntity);
+                    CurrentInstance.selectedComposite.proxies.Remove((ProxyEntity)CurrentInstance.selectedEntity);
                     break;
                 case EntityVariant.NOT_SETUP:
-                    CurrentInstance.selectedFlowgraph.unknowns.Remove(CurrentInstance.selectedEntity);
+                    CurrentInstance.selectedComposite.unknowns.Remove(CurrentInstance.selectedEntity);
                     break;
             }
 
-            List<CathodeEntity> entities = CurrentInstance.selectedFlowgraph.GetEntities();
+            List<CathodeEntity> entities = CurrentInstance.selectedComposite.GetEntities();
             for (int i = 0; i < entities.Count; i++) //We should actually query every node in the PAK, since we might be ref'd by a proxy or override
             {
-                List<CathodeNodeLink> nodeLinks = new List<CathodeNodeLink>();
+                List<CathodeEntityLink> nodeLinks = new List<CathodeEntityLink>();
                 for (int x = 0; x < entities[i].childLinks.Count; x++)
                 {
-                    if (entities[i].childLinks[x].childID != CurrentInstance.selectedEntity.nodeID) nodeLinks.Add(entities[i].childLinks[x]);
+                    if (entities[i].childLinks[x].childID != CurrentInstance.selectedEntity.shortGUID) nodeLinks.Add(entities[i].childLinks[x]);
                 }
                 entities[i].childLinks = nodeLinks;
 
                 if (entities[i].variant == EntityVariant.FUNCTION)
                 {
-                    string nodeType = NodeDB.GetCathodeName(((FunctionEntity)entities[i]).function);
+                    string nodeType = EntityDB.GetCathodeName(((FunctionEntity)entities[i]).function);
                     switch (nodeType)
                     {
                         case "TriggerSequence":
@@ -556,7 +556,7 @@ namespace CathodeEditorGUI
                             for (int x = 0; x < triggerSequence.triggers.Count; x++)
                             {
                                 if (triggerSequence.triggers[x].hierarchy.Count < 2 ||
-                                    triggerSequence.triggers[x].hierarchy[triggerSequence.triggers[x].hierarchy.Count - 2] != CurrentInstance.selectedEntity.nodeID)
+                                    triggerSequence.triggers[x].hierarchy[triggerSequence.triggers[x].hierarchy.Count - 2] != CurrentInstance.selectedEntity.shortGUID)
                                 {
                                     triggers.Add(triggerSequence.triggers[x]);
                                 }
@@ -569,7 +569,7 @@ namespace CathodeEditorGUI
                             for (int x = 0; x < cageAnim.keyframeHeaders.Count; x++)
                             {
                                 if (cageAnim.keyframeHeaders[x].connectedEntity.Count < 2 ||
-                                    cageAnim.keyframeHeaders[x].connectedEntity[cageAnim.keyframeHeaders[x].connectedEntity.Count - 2] != CurrentInstance.selectedEntity.nodeID)
+                                    cageAnim.keyframeHeaders[x].connectedEntity[cageAnim.keyframeHeaders[x].connectedEntity.Count - 2] != CurrentInstance.selectedEntity.shortGUID)
                                 {
                                     headers.Add(cageAnim.keyframeHeaders[x]);
                                 }
@@ -581,32 +581,32 @@ namespace CathodeEditorGUI
             }
 
             int indexToRemove = -1;
-            for (int i = 0; i < flowgraph_content.Items.Count; i++)
+            for (int i = 0; i < composite_content.Items.Count; i++)
             {
-                if (flowgraph_content.Items[i].ToString().Substring(1, 11) == removedID)
+                if (composite_content.Items[i].ToString().Substring(1, 11) == removedID)
                 {
                     indexToRemove = i;
                     break;
                 }
             }
-            if (indexToRemove != -1) flowgraph_content.Items.RemoveAt(indexToRemove);
+            if (indexToRemove != -1) composite_content.Items.RemoveAt(indexToRemove);
             indexToRemove = -1;
-            for (int i = 0; i < flowgraph_content_RAW.Count; i++)
+            for (int i = 0; i < composite_content_RAW.Count; i++)
             {
-                if (flowgraph_content_RAW[i].Substring(1, 11) == removedID)
+                if (composite_content_RAW[i].Substring(1, 11) == removedID)
                 {
                     indexToRemove = i;
                     break;
                 }
             }
-            if (indexToRemove != -1) flowgraph_content_RAW.RemoveAt(indexToRemove);
-            else LoadFlowgraph(CurrentInstance.selectedFlowgraph.name);
+            if (indexToRemove != -1) composite_content_RAW.RemoveAt(indexToRemove);
+            else LoadComposite(CurrentInstance.selectedComposite.name);
 
             ClearUI(false, false, true);
         }
 
-        /* Remove selected node when DELETE key is pressed */
-        private void Flowgraph_content_KeyDown(object sender, KeyEventArgs e)
+        /* Remove selected node when DELETE key is pressed in composite */
+        private void composite_content_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete)
             {
@@ -622,23 +622,23 @@ namespace CathodeEditorGUI
 
             //Generate new node ID and name
             CathodeEntity newEnt = Utilities.CloneObject(CurrentInstance.selectedEntity);
-            newEnt.nodeID = Utilities.GenerateGUID(DateTime.Now.ToString("G"));
-            NodeDBEx.AddNewNodeName(newEnt.nodeID, NodeDBEx.GetEntityName(CurrentInstance.selectedEntity.nodeID) + "_clone");
+            newEnt.shortGUID = Utilities.GenerateGUID(DateTime.Now.ToString("G"));
+            EntityDBEx.AddNewEntityName(newEnt.shortGUID, EntityDBEx.GetEntityName(CurrentInstance.selectedEntity.shortGUID) + "_clone");
 
             //Add parent links in to this node that linked in to the other node
-            List<CathodeEntity> ents = CurrentInstance.selectedFlowgraph.GetEntities();
-            List<CathodeNodeLink> newLinks = new List<CathodeNodeLink>();
+            List<CathodeEntity> ents = CurrentInstance.selectedComposite.GetEntities();
+            List<CathodeEntityLink> newLinks = new List<CathodeEntityLink>();
             int num_of_new_things = 1;
             foreach (CathodeEntity entity in ents)
             {
                 newLinks.Clear();
-                foreach (CathodeNodeLink link in entity.childLinks)
+                foreach (CathodeEntityLink link in entity.childLinks)
                 {
-                    if (link.childID == CurrentInstance.selectedEntity.nodeID)
+                    if (link.childID == CurrentInstance.selectedEntity.shortGUID)
                     {
-                        CathodeNodeLink newLink = new CathodeNodeLink();
+                        CathodeEntityLink newLink = new CathodeEntityLink();
                         newLink.connectionID = Utilities.GenerateGUID(DateTime.Now.ToString("G") + num_of_new_things.ToString()); num_of_new_things++;
-                        newLink.childID = newEnt.nodeID;
+                        newLink.childID = newEnt.shortGUID;
                         newLink.childParamID = link.childParamID;
                         newLink.parentParamID = link.parentParamID;
                         newLinks.Add(newLink);
@@ -647,23 +647,23 @@ namespace CathodeEditorGUI
                 if (newLinks.Count != 0) entity.childLinks.AddRange(newLinks);
             }
 
-            //Save back to flowgraph
+            //Save back to composite
             switch (newEnt.variant)
             {
                 case EntityVariant.FUNCTION:
-                    CurrentInstance.selectedFlowgraph.functions.Add((FunctionEntity)newEnt);
+                    CurrentInstance.selectedComposite.functions.Add((FunctionEntity)newEnt);
                     break;
                 case EntityVariant.DATATYPE:
-                    CurrentInstance.selectedFlowgraph.datatypes.Add((DatatypeEntity)newEnt);
+                    CurrentInstance.selectedComposite.datatypes.Add((DatatypeEntity)newEnt);
                     break;
                 case EntityVariant.PROXY:
-                    CurrentInstance.selectedFlowgraph.proxies.Add((ProxyEntity)newEnt);
+                    CurrentInstance.selectedComposite.proxies.Add((ProxyEntity)newEnt);
                     break;
                 case EntityVariant.OVERRIDE:
-                    CurrentInstance.selectedFlowgraph.overrides.Add((OverrideEntity)newEnt);
+                    CurrentInstance.selectedComposite.overrides.Add((OverrideEntity)newEnt);
                     break;
                 case EntityVariant.NOT_SETUP:
-                    CurrentInstance.selectedFlowgraph.unknowns.Add(newEnt);
+                    CurrentInstance.selectedComposite.unknowns.Add(newEnt);
                     break;
             }
 
@@ -675,31 +675,31 @@ namespace CathodeEditorGUI
         private void renameSelectedNode_Click(object sender, EventArgs e)
         {
             if (CurrentInstance.selectedEntity == null) return;
-            CathodeEditorGUI_RenameNode rename_node = new CathodeEditorGUI_RenameNode(CurrentInstance.selectedEntity.nodeID);
+            CathodeEditorGUI_RenameEntity rename_node = new CathodeEditorGUI_RenameEntity(CurrentInstance.selectedEntity.shortGUID);
             rename_node.Show();
             rename_node.FormClosed += new FormClosedEventHandler(rename_node_closed);
         }
         private void rename_node_closed(Object sender, FormClosedEventArgs e)
         {
-            if (((CathodeEditorGUI_RenameNode)sender).didSave &&
-                ((CathodeEditorGUI_RenameNode)sender).NodeID == CurrentInstance.selectedEntity.nodeID)
+            if (((CathodeEditorGUI_RenameEntity)sender).didSave &&
+                ((CathodeEditorGUI_RenameEntity)sender).NodeID == CurrentInstance.selectedEntity.shortGUID)
             {
-                NodeDBEx.AddNewNodeName(CurrentInstance.selectedEntity.nodeID, ((CathodeEditorGUI_RenameNode)sender).NodeName);
-                string nodeID = CurrentInstance.selectedEntity.nodeID.ToString();
-                string newNodeName = EditorUtils.GenerateNodeName(CurrentInstance.selectedEntity, CurrentInstance.selectedFlowgraph);
-                for (int i = 0; i < flowgraph_content.Items.Count; i++)
+                EntityDBEx.AddNewEntityName(CurrentInstance.selectedEntity.shortGUID, ((CathodeEditorGUI_RenameEntity)sender).NodeName);
+                string nodeID = CurrentInstance.selectedEntity.shortGUID.ToString();
+                string newNodeName = EditorUtils.GenerateNodeName(CurrentInstance.selectedEntity, CurrentInstance.selectedComposite);
+                for (int i = 0; i < composite_content.Items.Count; i++)
                 {
-                    if (flowgraph_content.Items[i].ToString().Substring(1, 11) == nodeID)
+                    if (composite_content.Items[i].ToString().Substring(1, 11) == nodeID)
                     {
-                        flowgraph_content.Items[i] = newNodeName;
+                        composite_content.Items[i] = newNodeName;
                         break;
                     }
                 }
-                for (int i = 0; i < flowgraph_content_RAW.Count; i++)
+                for (int i = 0; i < composite_content_RAW.Count; i++)
                 {
-                    if (flowgraph_content_RAW[i].Substring(1, 11) == nodeID)
+                    if (composite_content_RAW[i].Substring(1, 11) == nodeID)
                     {
-                        flowgraph_content_RAW[i] = newNodeName;
+                        composite_content_RAW[i] = newNodeName;
                         break;
                     }
                 }
@@ -712,16 +712,16 @@ namespace CathodeEditorGUI
         /* Perform a partial UI reload for a newly added entity */
         private void ReloadUIForNewEntity(CathodeEntity newEnt)
         {
-            if (CurrentInstance.selectedFlowgraph == null || newEnt == null) return;
+            if (CurrentInstance.selectedComposite == null || newEnt == null) return;
             if (currentSearch == "")
             {
-                string newNodeName = EditorUtils.GenerateNodeName(newEnt, CurrentInstance.selectedFlowgraph);
-                flowgraph_content.Items.Add(newNodeName);
-                flowgraph_content_RAW.Add(newNodeName);
+                string newNodeName = EditorUtils.GenerateNodeName(newEnt, CurrentInstance.selectedComposite);
+                composite_content.Items.Add(newNodeName);
+                composite_content_RAW.Add(newNodeName);
             }
             else
             {
-                LoadFlowgraph(CurrentInstance.selectedFlowgraph.name);
+                LoadComposite(CurrentInstance.selectedComposite.name);
             }
             LoadEntity(newEnt);
         }
@@ -736,15 +736,15 @@ namespace CathodeEditorGUI
             Cursor.Current = Cursors.WaitCursor;
 
             //populate info labels
-            selected_node_id.Text = edit_node.nodeID.ToString();
+            selected_node_id.Text = edit_node.shortGUID.ToString();
             selected_node_type.Text = edit_node.variant.ToString();
             string nodetypedesc = "";
             switch (edit_node.variant)
             {
                 case EntityVariant.FUNCTION:
-                    nodetypedesc = NodeDBEx.GetParameterName(((FunctionEntity)edit_node).function);
-                    node_to_flowgraph_jump.Visible = (CurrentInstance.commandsPAK.GetFlowgraph(((FunctionEntity)edit_node).function) != null);
-                    selected_node_name.Text = NodeDBEx.GetEntityName(edit_node.nodeID);
+                    nodetypedesc = EntityDBEx.GetParameterName(((FunctionEntity)edit_node).function);
+                    jumpToComposite.Visible = (CurrentInstance.commandsPAK.GetComposite(((FunctionEntity)edit_node).function) != null);
+                    selected_node_name.Text = EntityDBEx.GetEntityName(edit_node.shortGUID);
 //#if debug //TODO: PULL THIS INTO STABLE
                     editTriggerSequence.Visible = nodetypedesc == "TriggerSequence";
                     editCAGEAnimationKeyframes.Visible = nodetypedesc == "CAGEAnimation";
@@ -752,22 +752,22 @@ namespace CathodeEditorGUI
                     break;
                 case EntityVariant.DATATYPE:
                     nodetypedesc = "DataType " + ((DatatypeEntity)edit_node).type.ToString();
-                    selected_node_name.Text = NodeDBEx.GetParameterName(((DatatypeEntity)edit_node).parameter);
+                    selected_node_name.Text = EntityDBEx.GetParameterName(((DatatypeEntity)edit_node).parameter);
                     break;
                 case EntityVariant.PROXY:
                 case EntityVariant.OVERRIDE:
-                    node_to_flowgraph_jump.Visible = true;
-                    selected_node_name.Text = NodeDBEx.GetEntityName(edit_node.nodeID);
+                    jumpToComposite.Visible = true;
+                    selected_node_name.Text = EntityDBEx.GetEntityName(edit_node.shortGUID);
                     break;
                 default:
-                    selected_node_name.Text = NodeDBEx.GetEntityName(edit_node.nodeID);
+                    selected_node_name.Text = EntityDBEx.GetEntityName(edit_node.shortGUID);
                     break;
             }
-            selected_node_type_description.Text = nodetypedesc;
+            selected_entity_type_description.Text = nodetypedesc;
 
             //show resource editor button if this node has a resource reference
             cGUID resourceParamID = Utilities.GenerateGUID("resource");
-            CathodeLoadedParameter resourceParam = CurrentInstance.selectedEntity.parameters.FirstOrDefault(o => o.paramID == resourceParamID);
+            CathodeLoadedParameter resourceParam = CurrentInstance.selectedEntity.parameters.FirstOrDefault(o => o.shortGUID == resourceParamID);
 //#if debug //TODO: PULL THIS INTO STABLE
             editNodeResources.Visible = ((resourceParam != null) || CurrentInstance.selectedEntity.resources.Count != 0);
 //#endif
@@ -776,7 +776,7 @@ namespace CathodeEditorGUI
             int current_ui_offset = 7;
             for (int i = 0; i < edit_node.parameters.Count; i++)
             {
-                if (edit_node.parameters[i].paramID == resourceParamID) continue; //We use the resource editor button (above) for resource parameters
+                if (edit_node.parameters[i].shortGUID == resourceParamID) continue; //We use the resource editor button (above) for resource parameters
 
                 CathodeParameter this_param = edit_node.parameters[i].content;
                 UserControl parameterGUI = null;
@@ -785,39 +785,39 @@ namespace CathodeEditorGUI
                 {
                     case CathodeDataType.POSITION:
                         parameterGUI = new GUI_TransformDataType();
-                        ((GUI_TransformDataType)parameterGUI).PopulateUI((CathodeTransform)this_param, edit_node.parameters[i].paramID);
+                        ((GUI_TransformDataType)parameterGUI).PopulateUI((CathodeTransform)this_param, edit_node.parameters[i].shortGUID);
                         break;
                     case CathodeDataType.INTEGER:
                         parameterGUI = new GUI_NumericDataType();
-                        ((GUI_NumericDataType)parameterGUI).PopulateUI_Int((CathodeInteger)this_param, edit_node.parameters[i].paramID);
+                        ((GUI_NumericDataType)parameterGUI).PopulateUI_Int((CathodeInteger)this_param, edit_node.parameters[i].shortGUID);
                         break;
                     case CathodeDataType.STRING:
                         parameterGUI = new GUI_StringDataType();
-                        ((GUI_StringDataType)parameterGUI).PopulateUI((CathodeString)this_param, edit_node.parameters[i].paramID);
+                        ((GUI_StringDataType)parameterGUI).PopulateUI((CathodeString)this_param, edit_node.parameters[i].shortGUID);
                         break;
                     case CathodeDataType.BOOL:
                         parameterGUI = new GUI_BoolDataType();
-                        ((GUI_BoolDataType)parameterGUI).PopulateUI((CathodeBool)this_param, edit_node.parameters[i].paramID);
+                        ((GUI_BoolDataType)parameterGUI).PopulateUI((CathodeBool)this_param, edit_node.parameters[i].shortGUID);
                         break;
                     case CathodeDataType.FLOAT:
                         parameterGUI = new GUI_NumericDataType();
-                        ((GUI_NumericDataType)parameterGUI).PopulateUI_Float((CathodeFloat)this_param, edit_node.parameters[i].paramID);
+                        ((GUI_NumericDataType)parameterGUI).PopulateUI_Float((CathodeFloat)this_param, edit_node.parameters[i].shortGUID);
                         break;
                     case CathodeDataType.DIRECTION:
                         parameterGUI = new GUI_VectorDataType();
-                        ((GUI_VectorDataType)parameterGUI).PopulateUI((CathodeVector3)this_param, edit_node.parameters[i].paramID);
+                        ((GUI_VectorDataType)parameterGUI).PopulateUI((CathodeVector3)this_param, edit_node.parameters[i].shortGUID);
                         break;
                     case CathodeDataType.ENUM:
                         parameterGUI = new GUI_EnumDataType();
-                        ((GUI_EnumDataType)parameterGUI).PopulateUI((CathodeEnum)this_param, edit_node.parameters[i].paramID);
+                        ((GUI_EnumDataType)parameterGUI).PopulateUI((CathodeEnum)this_param, edit_node.parameters[i].shortGUID);
                         break;
                     case CathodeDataType.SHORT_GUID:
                         parameterGUI = new GUI_HexDataType();
-                        ((GUI_HexDataType)parameterGUI).PopulateUI((CathodeResource)this_param, edit_node.parameters[i].paramID, CurrentInstance.selectedFlowgraph); 
+                        ((GUI_HexDataType)parameterGUI).PopulateUI((CathodeResource)this_param, edit_node.parameters[i].shortGUID, CurrentInstance.selectedComposite); 
                         break;
                     case CathodeDataType.SPLINE_DATA:
                         parameterGUI = new GUI_SplineDataType();
-                        ((GUI_SplineDataType)parameterGUI).PopulateUI((CathodeSpline)this_param, edit_node.parameters[i].paramID);
+                        ((GUI_SplineDataType)parameterGUI).PopulateUI((CathodeSpline)this_param, edit_node.parameters[i].shortGUID);
                         break;
                 }
 
@@ -843,34 +843,34 @@ namespace CathodeEditorGUI
             //out_pin_goto.Enabled = currentlyShowingChildLinks;
             showLinkParents.Text = (currentlyShowingChildLinks) ? "Parents" : "Children";
 
-            if (CurrentInstance.selectedFlowgraph == null || CurrentInstance.selectedEntity == null) return;
+            if (CurrentInstance.selectedComposite == null || CurrentInstance.selectedEntity == null) return;
             if (currentlyShowingChildLinks)
             {
                 //Child links (pins out of this node)
-                foreach (CathodeNodeLink link in CurrentInstance.selectedEntity.childLinks)
+                foreach (CathodeEntityLink link in CurrentInstance.selectedEntity.childLinks)
                 {
                     node_children.Items.Add(
                         /*"[" + link.connectionID.ToString() + "] " +*/
-                        "(" + NodeDBEx.GetParameterName(link.parentParamID) + ") => " +
-                        NodeDBEx.GetEntityName(link.childID) + 
-                        " (" + NodeDBEx.GetParameterName(link.childParamID) + ")");
+                        "(" + EntityDBEx.GetParameterName(link.parentParamID) + ") => " +
+                        EntityDBEx.GetEntityName(link.childID) + 
+                        " (" + EntityDBEx.GetParameterName(link.childParamID) + ")");
                     linkedNodeListIDs.Add(link.connectionID);
                 }
             }
             else
             {
                 //Parent links (pins into this node)
-                List<CathodeEntity> ents = CurrentInstance.selectedFlowgraph.GetEntities();
+                List<CathodeEntity> ents = CurrentInstance.selectedComposite.GetEntities();
                 foreach (CathodeEntity entity in ents)
                 {
-                    foreach (CathodeNodeLink link in entity.childLinks)
+                    foreach (CathodeEntityLink link in entity.childLinks)
                     {
-                        if (link.childID != CurrentInstance.selectedEntity.nodeID) continue;
+                        if (link.childID != CurrentInstance.selectedEntity.shortGUID) continue;
                         node_children.Items.Add(
                             /*"[" + link.connectionID.ToString() + "] " +*/
-                            NodeDBEx.GetEntityName(entity.nodeID) +
-                            " (" + NodeDBEx.GetParameterName(link.parentParamID) + ") => " +
-                            "(" + NodeDBEx.GetParameterName(link.childParamID) + ")");
+                            EntityDBEx.GetEntityName(entity.shortGUID) +
+                            " (" + EntityDBEx.GetParameterName(link.parentParamID) + ") => " +
+                            "(" + EntityDBEx.GetParameterName(link.childParamID) + ")");
                         linkedNodeListIDs.Add(link.connectionID);
                     }
                 }
@@ -931,11 +931,11 @@ namespace CathodeEditorGUI
             resourceEditor.Show();
         }
 
-        /* Edit resources referenced by the flowgraph */
-        private void editFlowgraphResources_Click(object sender, EventArgs e)
+        /* Edit resources referenced by the composite */
+        private void editCompositeResources_Click(object sender, EventArgs e)
         {
-            //CurrentInstance.currentFlowgraph.resources
-            CathodeEditorGUI_AddOrEditResource resourceEditor = new CathodeEditorGUI_AddOrEditResource(CurrentInstance.selectedFlowgraph);
+            //CurrentInstance.currentComposite.resources
+            CathodeEditorGUI_AddOrEditResource resourceEditor = new CathodeEditorGUI_AddOrEditResource(CurrentInstance.selectedComposite);
             resourceEditor.Show();
         }
 
@@ -1048,32 +1048,32 @@ namespace CathodeEditorGUI
 
         private void button1_Click_1(object sender, EventArgs e)
         {
-            if (CurrentInstance.selectedFlowgraph == null)
+            if (CurrentInstance.selectedComposite == null)
             {
                 for (int mm = 0; mm < env_list.Items.Count; mm++)
                 {
                     CurrentInstance.commandsPAK = new CommandsPAK(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + env_list.Items[mm].ToString() + "/WORLD/COMMANDS.PAK");
-                    NodeDBEx.LoadNames();
-                    foreach (CathodeFlowgraph flow in CurrentInstance.commandsPAK.Flowgraphs)
+                    EntityDBEx.LoadNames();
+                    foreach (CathodeComposite flow in CurrentInstance.commandsPAK.Composites)
                     {
-                        CurrentInstance.selectedFlowgraph = flow;
-                        EditorUtils.PurgeDeadHierarchiesInActiveFlowgraph();
+                        CurrentInstance.selectedComposite = flow;
+                        EditorUtils.PurgeDeadHierarchiesInActiveComposite();
                     }
                     CurrentInstance.commandsPAK.Save();
                 }
                 return;
             }
 
-            foreach (CathodeFlowgraph flow in CurrentInstance.commandsPAK.Flowgraphs)
+            foreach (CathodeComposite flow in CurrentInstance.commandsPAK.Composites)
             {
-                CurrentInstance.selectedFlowgraph = flow;
-                EditorUtils.PurgeDeadHierarchiesInActiveFlowgraph();
+                CurrentInstance.selectedComposite = flow;
+                EditorUtils.PurgeDeadHierarchiesInActiveComposite();
             }
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            foreach (CathodeFlowgraph flow in CurrentInstance.commandsPAK.Flowgraphs)
+            foreach (CathodeComposite flow in CurrentInstance.commandsPAK.Composites)
             {
                 flow.unknownPair = new OffsetPair(0, 0);
             }
@@ -1081,11 +1081,11 @@ namespace CathodeEditorGUI
 
         private void button3_Click(object sender, EventArgs e)
         {
-            if (CurrentInstance.selectedFlowgraph == null) return;
-            Console.WriteLine(CurrentInstance.selectedFlowgraph.name);
-            foreach (OverrideEntity overrider in CurrentInstance.selectedFlowgraph.overrides)
+            if (CurrentInstance.selectedComposite == null) return;
+            Console.WriteLine(CurrentInstance.selectedComposite.name);
+            foreach (OverrideEntity overrider in CurrentInstance.selectedComposite.overrides)
             {
-                Console.WriteLine(NodeDBEx.GetEntityName(overrider.nodeID));
+                Console.WriteLine(EntityDBEx.GetEntityName(overrider.shortGUID));
                 Console.WriteLine(EditorUtils.HierarchyToString(overrider.hierarchy));
                 Console.WriteLine("-----");
             }

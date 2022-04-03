@@ -30,8 +30,8 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CathodeEditorGUI));
-            this.flowgraph_count = new System.Windows.Forms.Label();
-            this.first_executed_flowgraph = new System.Windows.Forms.Label();
+            this.composite_count_display = new System.Windows.Forms.Label();
+            this.root_composite_display = new System.Windows.Forms.Label();
             this.save_commands_pak = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.removeSelectedFlowgraph = new System.Windows.Forms.Button();
@@ -39,13 +39,13 @@
             this.FileTree = new System.Windows.Forms.TreeView();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.editTriggerSequence = new System.Windows.Forms.Button();
-            this.editFlowgraphResources = new System.Windows.Forms.Button();
+            this.editCompositeResources = new System.Windows.Forms.Button();
             this.editNodeResources = new System.Windows.Forms.Button();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
-            this.node_to_flowgraph_jump = new System.Windows.Forms.Button();
+            this.jumpToComposite = new System.Windows.Forms.Button();
             this.selected_node_name = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
-            this.selected_node_type_description = new System.Windows.Forms.Label();
+            this.selected_entity_type_description = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.selected_node_type = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
@@ -63,7 +63,7 @@
             this.duplicateSelectedNode = new System.Windows.Forms.Button();
             this.removeSelectedNode = new System.Windows.Forms.Button();
             this.addNewNode = new System.Windows.Forms.Button();
-            this.flowgraph_content = new System.Windows.Forms.ListBox();
+            this.composite_content = new System.Windows.Forms.ListBox();
             this.node_search_box = new System.Windows.Forms.TextBox();
             this.node_search_btn = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -74,11 +74,11 @@
             this.load_commands_pak = new System.Windows.Forms.Button();
             this.env_list = new System.Windows.Forms.ComboBox();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.button2 = new System.Windows.Forms.Button();
             this.editEntryPoint = new System.Windows.Forms.Button();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.modifyMVR = new System.Windows.Forms.CheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -92,21 +92,21 @@
             // 
             // flowgraph_count
             // 
-            this.flowgraph_count.AutoSize = true;
-            this.flowgraph_count.Location = new System.Drawing.Point(6, 28);
-            this.flowgraph_count.Name = "flowgraph_count";
-            this.flowgraph_count.Size = new System.Drawing.Size(95, 13);
-            this.flowgraph_count.TabIndex = 172;
-            this.flowgraph_count.Text = "Flowgraph count:  ";
+            this.composite_count_display.AutoSize = true;
+            this.composite_count_display.Location = new System.Drawing.Point(6, 28);
+            this.composite_count_display.Name = "flowgraph_count";
+            this.composite_count_display.Size = new System.Drawing.Size(95, 13);
+            this.composite_count_display.TabIndex = 172;
+            this.composite_count_display.Text = "Flowgraph count:  ";
             // 
             // first_executed_flowgraph
             // 
-            this.first_executed_flowgraph.AutoSize = true;
-            this.first_executed_flowgraph.Location = new System.Drawing.Point(6, 12);
-            this.first_executed_flowgraph.Name = "first_executed_flowgraph";
-            this.first_executed_flowgraph.Size = new System.Drawing.Size(63, 13);
-            this.first_executed_flowgraph.TabIndex = 170;
-            this.first_executed_flowgraph.Text = "Entry point: ";
+            this.root_composite_display.AutoSize = true;
+            this.root_composite_display.Location = new System.Drawing.Point(6, 12);
+            this.root_composite_display.Name = "first_executed_flowgraph";
+            this.root_composite_display.Size = new System.Drawing.Size(63, 13);
+            this.root_composite_display.TabIndex = 170;
+            this.root_composite_display.Text = "Entry point: ";
             // 
             // save_commands_pak
             // 
@@ -128,7 +128,7 @@
             this.groupBox3.Size = new System.Drawing.Size(378, 744);
             this.groupBox3.TabIndex = 163;
             this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Cathode Flowgraphs";
+            this.groupBox3.Text = "Composites";
             // 
             // removeSelectedFlowgraph
             // 
@@ -138,7 +138,7 @@
             this.removeSelectedFlowgraph.TabIndex = 150;
             this.removeSelectedFlowgraph.Text = "Remove Selected";
             this.removeSelectedFlowgraph.UseVisualStyleBackColor = true;
-            this.removeSelectedFlowgraph.Click += new System.EventHandler(this.removeSelectedFlowgraph_Click);
+            this.removeSelectedFlowgraph.Click += new System.EventHandler(this.removeSelectedComposite_Click);
             // 
             // addNewFlowgraph
             // 
@@ -146,7 +146,7 @@
             this.addNewFlowgraph.Name = "addNewFlowgraph";
             this.addNewFlowgraph.Size = new System.Drawing.Size(181, 23);
             this.addNewFlowgraph.TabIndex = 149;
-            this.addNewFlowgraph.Text = "Add Flowgraph";
+            this.addNewFlowgraph.Text = "Add Composite";
             this.addNewFlowgraph.UseVisualStyleBackColor = true;
             this.addNewFlowgraph.Click += new System.EventHandler(this.addNewFlowgraph_Click);
             // 
@@ -162,7 +162,7 @@
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.editTriggerSequence);
-            this.groupBox1.Controls.Add(this.editFlowgraphResources);
+            this.groupBox1.Controls.Add(this.editCompositeResources);
             this.groupBox1.Controls.Add(this.editNodeResources);
             this.groupBox1.Controls.Add(this.groupBox7);
             this.groupBox1.Controls.Add(this.editCAGEAnimationKeyframes);
@@ -174,7 +174,7 @@
             this.groupBox1.Size = new System.Drawing.Size(857, 744);
             this.groupBox1.TabIndex = 162;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Selected Flowgraph Content";
+            this.groupBox1.Text = "Selected Composite Content";
             // 
             // editTriggerSequence
             // 
@@ -189,14 +189,14 @@
             // 
             // editFlowgraphResources
             // 
-            this.editFlowgraphResources.Location = new System.Drawing.Point(366, -1);
-            this.editFlowgraphResources.Name = "editFlowgraphResources";
-            this.editFlowgraphResources.Size = new System.Drawing.Size(99, 23);
-            this.editFlowgraphResources.TabIndex = 177;
-            this.editFlowgraphResources.Text = "Edit Resources";
-            this.editFlowgraphResources.UseVisualStyleBackColor = true;
-            this.editFlowgraphResources.Visible = false;
-            this.editFlowgraphResources.Click += new System.EventHandler(this.editFlowgraphResources_Click);
+            this.editCompositeResources.Location = new System.Drawing.Point(366, -1);
+            this.editCompositeResources.Name = "editFlowgraphResources";
+            this.editCompositeResources.Size = new System.Drawing.Size(99, 23);
+            this.editCompositeResources.TabIndex = 177;
+            this.editCompositeResources.Text = "Edit Resources";
+            this.editCompositeResources.UseVisualStyleBackColor = true;
+            this.editCompositeResources.Visible = false;
+            this.editCompositeResources.Click += new System.EventHandler(this.editCompositeResources_Click);
             // 
             // editNodeResources
             // 
@@ -211,10 +211,10 @@
             // 
             // groupBox7
             // 
-            this.groupBox7.Controls.Add(this.node_to_flowgraph_jump);
+            this.groupBox7.Controls.Add(this.jumpToComposite);
             this.groupBox7.Controls.Add(this.selected_node_name);
             this.groupBox7.Controls.Add(this.label9);
-            this.groupBox7.Controls.Add(this.selected_node_type_description);
+            this.groupBox7.Controls.Add(this.selected_entity_type_description);
             this.groupBox7.Controls.Add(this.label6);
             this.groupBox7.Controls.Add(this.selected_node_type);
             this.groupBox7.Controls.Add(this.label4);
@@ -229,14 +229,14 @@
             // 
             // node_to_flowgraph_jump
             // 
-            this.node_to_flowgraph_jump.Location = new System.Drawing.Point(339, 15);
-            this.node_to_flowgraph_jump.Name = "node_to_flowgraph_jump";
-            this.node_to_flowgraph_jump.Size = new System.Drawing.Size(35, 47);
-            this.node_to_flowgraph_jump.TabIndex = 8;
-            this.node_to_flowgraph_jump.Text = "Go To";
-            this.node_to_flowgraph_jump.UseVisualStyleBackColor = true;
-            this.node_to_flowgraph_jump.Visible = false;
-            this.node_to_flowgraph_jump.Click += new System.EventHandler(this.node_to_flowgraph_jump_Click);
+            this.jumpToComposite.Location = new System.Drawing.Point(339, 15);
+            this.jumpToComposite.Name = "node_to_flowgraph_jump";
+            this.jumpToComposite.Size = new System.Drawing.Size(35, 47);
+            this.jumpToComposite.TabIndex = 8;
+            this.jumpToComposite.Text = "Go To";
+            this.jumpToComposite.UseVisualStyleBackColor = true;
+            this.jumpToComposite.Visible = false;
+            this.jumpToComposite.Click += new System.EventHandler(this.jumpToComposite_Click);
             // 
             // selected_node_name
             // 
@@ -258,11 +258,11 @@
             // 
             // selected_node_type_description
             // 
-            this.selected_node_type_description.AutoSize = true;
-            this.selected_node_type_description.Location = new System.Drawing.Point(151, 80);
-            this.selected_node_type_description.Name = "selected_node_type_description";
-            this.selected_node_type_description.Size = new System.Drawing.Size(0, 13);
-            this.selected_node_type_description.TabIndex = 5;
+            this.selected_entity_type_description.AutoSize = true;
+            this.selected_entity_type_description.Location = new System.Drawing.Point(151, 80);
+            this.selected_entity_type_description.Name = "selected_node_type_description";
+            this.selected_entity_type_description.Size = new System.Drawing.Size(0, 13);
+            this.selected_entity_type_description.TabIndex = 5;
             // 
             // label6
             // 
@@ -393,7 +393,7 @@
             this.groupBox4.Controls.Add(this.duplicateSelectedNode);
             this.groupBox4.Controls.Add(this.removeSelectedNode);
             this.groupBox4.Controls.Add(this.addNewNode);
-            this.groupBox4.Controls.Add(this.flowgraph_content);
+            this.groupBox4.Controls.Add(this.composite_content);
             this.groupBox4.Controls.Add(this.node_search_box);
             this.groupBox4.Controls.Add(this.node_search_btn);
             this.groupBox4.Location = new System.Drawing.Point(6, 19);
@@ -445,15 +445,14 @@
             // 
             // flowgraph_content
             // 
-            this.flowgraph_content.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.flowgraph_content.FormattingEnabled = true;
-            this.flowgraph_content.HorizontalScrollbar = true;
-            this.flowgraph_content.Location = new System.Drawing.Point(6, 43);
-            this.flowgraph_content.Name = "flowgraph_content";
-            this.flowgraph_content.Size = new System.Drawing.Size(444, 641);
-            this.flowgraph_content.TabIndex = 144;
-            this.flowgraph_content.SelectedIndexChanged += new System.EventHandler(this.flowgraph_content_SelectedIndexChanged);
-            this.flowgraph_content.KeyDown += Flowgraph_content_KeyDown;
+            this.composite_content.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.composite_content.FormattingEnabled = true;
+            this.composite_content.HorizontalScrollbar = true;
+            this.composite_content.Location = new System.Drawing.Point(6, 43);
+            this.composite_content.Name = "flowgraph_content";
+            this.composite_content.Size = new System.Drawing.Size(444, 641);
+            this.composite_content.TabIndex = 144;
+            this.composite_content.SelectedIndexChanged += new System.EventHandler(this.composite_content_SelectedIndexChanged);
             // 
             // node_search_box
             // 
@@ -548,13 +547,25 @@
             this.groupBox8.Controls.Add(this.button2);
             this.groupBox8.Controls.Add(this.editEntryPoint);
             this.groupBox8.Controls.Add(this.button1);
-            this.groupBox8.Controls.Add(this.first_executed_flowgraph);
-            this.groupBox8.Controls.Add(this.flowgraph_count);
+            this.groupBox8.Controls.Add(this.root_composite_display);
+            this.groupBox8.Controls.Add(this.composite_count_display);
             this.groupBox8.Location = new System.Drawing.Point(554, 3);
             this.groupBox8.Name = "groupBox8";
             this.groupBox8.Size = new System.Drawing.Size(695, 49);
             this.groupBox8.TabIndex = 174;
             this.groupBox8.TabStop = false;
+            // 
+            // button2
+            // 
+            this.button2.ForeColor = System.Drawing.Color.Red;
+            this.button2.Location = new System.Drawing.Point(203, 9);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(192, 23);
+            this.button2.TabIndex = 178;
+            this.button2.Text = "DEBUG: Clear unknown header vals";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Visible = false;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // editEntryPoint
             // 
@@ -589,18 +600,6 @@
             this.toolTip1.SetToolTip(this.modifyMVR, "This option may solve some issues with deleted geometry persisting, however could" +
         " produce unwanted issues.");
             this.modifyMVR.UseVisualStyleBackColor = true;
-            // 
-            // button2
-            // 
-            this.button2.ForeColor = System.Drawing.Color.Red;
-            this.button2.Location = new System.Drawing.Point(203, 9);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(192, 23);
-            this.button2.TabIndex = 178;
-            this.button2.Text = "DEBUG: Clear unknown header vals";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Visible = false;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // button3
             // 
@@ -648,15 +647,15 @@
         }
 
         #endregion
-        private System.Windows.Forms.Label flowgraph_count;
-        private System.Windows.Forms.Label first_executed_flowgraph;
+        private System.Windows.Forms.Label composite_count_display;
+        private System.Windows.Forms.Label root_composite_display;
         private System.Windows.Forms.Button save_commands_pak;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.TreeView FileTree;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox7;
         private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.Label selected_node_type_description;
+        private System.Windows.Forms.Label selected_entity_type_description;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label selected_node_type;
         private System.Windows.Forms.Label label4;
@@ -667,7 +666,7 @@
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.TextBox node_search_box;
         private System.Windows.Forms.Button node_search_btn;
-        private System.Windows.Forms.ListBox flowgraph_content;
+        private System.Windows.Forms.ListBox composite_content;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Panel NodeParams;
         private System.Windows.Forms.Button load_commands_pak;
@@ -676,7 +675,7 @@
         private System.Windows.Forms.GroupBox groupBox10;
         private System.Windows.Forms.Label selected_node_name;
         private System.Windows.Forms.Button out_pin_goto;
-        private System.Windows.Forms.Button node_to_flowgraph_jump;
+        private System.Windows.Forms.Button jumpToComposite;
         private System.Windows.Forms.Button removeSelectedNode;
         private System.Windows.Forms.Button addNewNode;
         private System.Windows.Forms.Button removeParameter;
@@ -693,7 +692,7 @@
         private System.Windows.Forms.Button duplicateSelectedNode;
         private System.Windows.Forms.Button renameSelectedNode;
         private System.Windows.Forms.Button editNodeResources;
-        private System.Windows.Forms.Button editFlowgraphResources;
+        private System.Windows.Forms.Button editCompositeResources;
         private System.Windows.Forms.Button editEntryPoint;
         private System.Windows.Forms.Button editTriggerSequence;
         private System.Windows.Forms.Button button2;

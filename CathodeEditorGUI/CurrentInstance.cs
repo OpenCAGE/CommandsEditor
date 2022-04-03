@@ -10,7 +10,7 @@ namespace CathodeEditorGUI
     public static class CurrentInstance
     {
         public static CommandsPAK commandsPAK;
-        public static CathodeFlowgraph selectedFlowgraph;
+        public static CathodeComposite selectedComposite;
         public static CathodeEntity selectedEntity;
     }
 }

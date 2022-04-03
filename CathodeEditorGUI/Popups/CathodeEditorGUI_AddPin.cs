@@ -18,7 +18,7 @@ namespace CathodeEditorGUI
         CathodeEntity _entity = null;
         List<CathodeEntity> _entityList = null;
 
-        public CathodeEditorGUI_AddPin(CathodeEntity entity, CathodeFlowgraph flowgraph)
+        public CathodeEditorGUI_AddPin(CathodeEntity entity, CathodeComposite flowgraph)
         {
             _entity = entity;
             InitializeComponent();
@@ -49,10 +49,10 @@ namespace CathodeEditorGUI
                 return;
             }
 
-            CathodeNodeLink newNodeLink = new CathodeNodeLink();
+            CathodeEntityLink newNodeLink = new CathodeEntityLink();
             newNodeLink.connectionID = Utilities.GenerateGUID(DateTime.Now.ToString("G"));
             newNodeLink.parentParamID = Utilities.GenerateGUID(pin_out_param.Text);
-            newNodeLink.childID = _entityList[pin_in_node.SelectedIndex].nodeID;
+            newNodeLink.childID = _entityList[pin_in_node.SelectedIndex].shortGUID;
             newNodeLink.childParamID = Utilities.GenerateGUID(pin_in_param.Text);
             _entity.childLinks.Add(newNodeLink);
 

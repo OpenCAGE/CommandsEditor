@@ -25,8 +25,8 @@ namespace CathodeEditorGUI.UserControls
         public void PopulateUI(CathodeEnum cEnum, cGUID paramID)
         {
             enumVal = cEnum;
-            ENUM_VARIABLE_DUMMY.Text = NodeDBEx.GetParameterName(paramID) + " (" + paramID.ToString() + ")";
-            comboBox1.Text = NodeDB.GetEnum(cEnum.enumID).Name;
+            ENUM_VARIABLE_DUMMY.Text = EntityDBEx.GetParameterName(paramID) + " (" + paramID.ToString() + ")";
+            comboBox1.Text = EntityDB.GetEnum(cEnum.enumID).Name;
             //comboBox1.Enabled = false;
             //numericUpDown8.Value = cEnum.enumIndex;
             textBox1.Text = cEnum.enumIndex.ToString();

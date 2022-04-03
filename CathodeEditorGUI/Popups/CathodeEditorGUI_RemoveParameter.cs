@@ -30,7 +30,7 @@ namespace CathodeEditorGUI
             parameterToDelete.Items.Clear();
             for (int i = 0; i < _entity.parameters.Count; i++)
             {
-                parameterToDelete.Items.Add(NodeDBEx.GetParameterName(_entity.parameters[i].paramID));
+                parameterToDelete.Items.Add(EntityDBEx.GetParameterName(_entity.parameters[i].shortGUID));
             }
             parameterToDelete.SelectedIndex = 0;
             parameterToDelete.EndUpdate();

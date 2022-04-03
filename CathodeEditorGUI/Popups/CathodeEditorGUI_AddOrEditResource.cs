@@ -15,7 +15,7 @@ namespace CathodeEditorGUI
     public partial class CathodeEditorGUI_AddOrEditResource : Form
     {
         CathodeEntity _ent = null;
-        CathodeFlowgraph _flow = null;
+        CathodeComposite _flow = null;
         List<CathodeResourceReference> resRef = new List<CathodeResourceReference>(); //FOR TESTING ONLY
         public CathodeEditorGUI_AddOrEditResource(CathodeEntity entity)
         {
@@ -24,12 +24,12 @@ namespace CathodeEditorGUI
             //FOR TESTING ONLY
             resRef.AddRange(_ent.resources);
             cGUID resourceParamID = Utilities.GenerateGUID("resource");
-            CathodeLoadedParameter resourceParam = CurrentInstance.selectedEntity.parameters.FirstOrDefault(o => o.paramID == resourceParamID);
+            CathodeLoadedParameter resourceParam = CurrentInstance.selectedEntity.parameters.FirstOrDefault(o => o.shortGUID == resourceParamID);
             if (resourceParam != null) resRef.AddRange(((CathodeResource)resourceParam.content).value);
 
             Setup();
         }
-        public CathodeEditorGUI_AddOrEditResource(CathodeFlowgraph flowgraph)
+        public CathodeEditorGUI_AddOrEditResource(CathodeComposite flowgraph)
         {
             _flow = flowgraph;
 

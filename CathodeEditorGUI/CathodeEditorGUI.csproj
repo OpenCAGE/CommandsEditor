@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="packages\Costura.Fody.4.1.0\build\Costura.Fody.props" Condition="Exists('packages\Costura.Fody.4.1.0\build\Costura.Fody.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
@@ -92,19 +92,19 @@
     </Compile>
     <Compile Include="CathodeEntityDatabase.cs" />
     <Compile Include="CurrentInstance.cs" />
-    <Compile Include="NodeDBEx.cs" />
+    <Compile Include="EntityDBEx.cs" />
     <Compile Include="EditorUtils.cs" />
-    <Compile Include="Popups\CathodeEditorGUI_AddNode.cs">
+    <Compile Include="Popups\CathodeEditorGUI_AddEntity.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Popups\CathodeEditorGUI_AddNode.Designer.cs">
-      <DependentUpon>CathodeEditorGUI_AddNode.cs</DependentUpon>
+    <Compile Include="Popups\CathodeEditorGUI_AddEntity.Designer.cs">
+      <DependentUpon>CathodeEditorGUI_AddEntity.cs</DependentUpon>
     </Compile>
-    <Compile Include="Popups\CathodeEditorGUI_AddFlowgraph.cs">
+    <Compile Include="Popups\CathodeEditorGUI_AddComposite.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Popups\CathodeEditorGUI_AddFlowgraph.Designer.cs">
-      <DependentUpon>CathodeEditorGUI_AddFlowgraph.cs</DependentUpon>
+    <Compile Include="Popups\CathodeEditorGUI_AddComposite.Designer.cs">
+      <DependentUpon>CathodeEditorGUI_AddComposite.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\CathodeEditorGUI_AddParameter.cs">
       <SubType>Form</SubType>
@@ -127,11 +127,11 @@
     <Compile Include="CathodeEnums.cs" />
     <Compile Include="CathodeNodes.cs" />
     <Compile Include="MapDirectories.cs" />
-    <Compile Include="Popups\CathodeEditorGUI_EditEntryPoint.cs">
+    <Compile Include="Popups\CathodeEditorGUI_EditRootComposite.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Popups\CathodeEditorGUI_EditEntryPoint.Designer.cs">
-      <DependentUpon>CathodeEditorGUI_EditEntryPoint.cs</DependentUpon>
+    <Compile Include="Popups\CathodeEditorGUI_EditRootComposite.Designer.cs">
+      <DependentUpon>CathodeEditorGUI_EditRootComposite.cs</DependentUpon>
     </Compile>
     <Compile Include="BespokeNodes\TriggerSequenceEditor.cs">
       <SubType>Form</SubType>
@@ -145,11 +145,11 @@
     <Compile Include="Popups\CathodeEditorGUI_RemoveParameter.Designer.cs">
       <DependentUpon>CathodeEditorGUI_RemoveParameter.cs</DependentUpon>
     </Compile>
-    <Compile Include="Popups\CathodeEditorGUI_RenameNode.cs">
+    <Compile Include="Popups\CathodeEditorGUI_RenameEntity.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Popups\CathodeEditorGUI_RenameNode.Designer.cs">
-      <DependentUpon>CathodeEditorGUI_RenameNode.cs</DependentUpon>
+    <Compile Include="Popups\CathodeEditorGUI_RenameEntity.Designer.cs">
+      <DependentUpon>CathodeEditorGUI_RenameEntity.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\SelectEntity.cs">
       <SubType>Form</SubType>
@@ -214,11 +214,11 @@
     <EmbeddedResource Include="CathodeEditorGUI.resx">
       <DependentUpon>CathodeEditorGUI.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Popups\CathodeEditorGUI_AddNode.resx">
-      <DependentUpon>CathodeEditorGUI_AddNode.cs</DependentUpon>
+    <EmbeddedResource Include="Popups\CathodeEditorGUI_AddEntity.resx">
+      <DependentUpon>CathodeEditorGUI_AddEntity.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Popups\CathodeEditorGUI_AddFlowgraph.resx">
-      <DependentUpon>CathodeEditorGUI_AddFlowgraph.cs</DependentUpon>
+    <EmbeddedResource Include="Popups\CathodeEditorGUI_AddComposite.resx">
+      <DependentUpon>CathodeEditorGUI_AddComposite.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\CathodeEditorGUI_AddOrEditResource.resx">
       <DependentUpon>CathodeEditorGUI_AddOrEditResource.cs</DependentUpon>
@@ -232,8 +232,8 @@
     <EmbeddedResource Include="LEGACY\CathodeEditorGUI_EditResource.resx">
       <DependentUpon>CathodeEditorGUI_EditResource.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Popups\CathodeEditorGUI_EditEntryPoint.resx">
-      <DependentUpon>CathodeEditorGUI_EditEntryPoint.cs</DependentUpon>
+    <EmbeddedResource Include="Popups\CathodeEditorGUI_EditRootComposite.resx">
+      <DependentUpon>CathodeEditorGUI_EditRootComposite.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="BespokeNodes\TriggerSequenceEditor.resx">
       <DependentUpon>TriggerSequenceEditor.cs</DependentUpon>
@@ -241,8 +241,8 @@
     <EmbeddedResource Include="Popups\CathodeEditorGUI_RemoveParameter.resx">
       <DependentUpon>CathodeEditorGUI_RemoveParameter.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Popups\CathodeEditorGUI_RenameNode.resx">
-      <DependentUpon>CathodeEditorGUI_RenameNode.cs</DependentUpon>
+    <EmbeddedResource Include="Popups\CathodeEditorGUI_RenameEntity.resx">
+      <DependentUpon>CathodeEditorGUI_RenameEntity.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

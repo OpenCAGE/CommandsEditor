@@ -24,7 +24,7 @@ namespace CathodeEditorGUI
                 string toAdd = "[TIMING: " + node.triggers[i].timing + "] Hierarchy: ";
                 for (int x = 0; x < node.triggers[i].hierarchy.Count - 1; x++)
                 {
-                    toAdd += "[" + NodeDBEx.GetEntityName(node.triggers[i].hierarchy[x]) + "]";
+                    toAdd += "[" + EntityDBEx.GetEntityName(node.triggers[i].hierarchy[x]) + "]";
                     if (x != node.triggers[i].hierarchy.Count - 2) toAdd += "->";
                 }
                 listBox1.Items.Add(toAdd);
@@ -32,7 +32,7 @@ namespace CathodeEditorGUI
 
             for (int i = 0; i < node.events.Count; i++)
             {
-                listBox2.Items.Add(NodeDBEx.GetParameterName(node.events[i].EventID) + "\n  - StartedID: " + NodeDBEx.GetParameterName(node.events[i].StartedID) + "\n  - FinishedID: " + NodeDBEx.GetParameterName(node.events[i].FinishedID));
+                listBox2.Items.Add(EntityDBEx.GetParameterName(node.events[i].EventID) + "\n  - StartedID: " + EntityDBEx.GetParameterName(node.events[i].StartedID) + "\n  - FinishedID: " + EntityDBEx.GetParameterName(node.events[i].FinishedID));
             }
 
 

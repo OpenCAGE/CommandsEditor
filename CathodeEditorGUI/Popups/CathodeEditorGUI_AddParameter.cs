@@ -36,7 +36,7 @@ namespace CathodeEditorGUI
 
             foreach (CathodeLoadedParameter param in node.parameters)
             {
-                if (param.paramID == thisParamID)
+                if (param.shortGUID == thisParamID)
                 {
                     MessageBox.Show("This parameter already exists on the entity!");
                     return;
@@ -80,9 +80,9 @@ namespace CathodeEditorGUI
             node.parameters.Add(new CathodeLoadedParameter(thisParamID, thisParam));
 
             //If this parameter doesn't come up in the CATHODE string table, add it to our own
-            if (NodeDB.GetCathodeName(thisParamID) == thisParamID.ToString())
+            if (EntityDB.GetCathodeName(thisParamID) == thisParamID.ToString())
             {
-                NodeDBEx.AddNewParameterName(thisParamID, param_name.Text);
+                EntityDBEx.AddNewParameterName(thisParamID, param_name.Text);
             }
 
             this.Close();

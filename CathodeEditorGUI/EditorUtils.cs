@@ -12,39 +12,39 @@ namespace CathodeEditorGUI
     static class EditorUtils
     {
         /* Utility: generate nice entity name to display in UI */
-        public static string GenerateNodeName(CathodeEntity entity, CathodeFlowgraph currentFlowgraph)
+        public static string GenerateNodeName(CathodeEntity entity, CathodeComposite currentFlowgraph)
         {
             if (CurrentInstance.commandsPAK == null) 
                 return "";
-            if (hasFinishedCachingEntityNames && cachedEntityName.ContainsKey(entity.nodeID)) 
-                return cachedEntityName[entity.nodeID];
+            if (hasFinishedCachingEntityNames && cachedEntityName.ContainsKey(entity.shortGUID)) 
+                return cachedEntityName[entity.shortGUID];
             return GenerateNodeNameInternal(entity, currentFlowgraph);
         }
-        private static string GenerateNodeNameInternal(CathodeEntity entity, CathodeFlowgraph currentFlowgraph)
+        private static string GenerateNodeNameInternal(CathodeEntity entity, CathodeComposite currentFlowgraph)
         {
             string desc = "";
             switch (entity.variant)
             {
                 case EntityVariant.DATATYPE:
-                    desc = NodeDBEx.GetParameterName(((DatatypeEntity)entity).parameter) + " (DataType " + ((DatatypeEntity)entity).type.ToString() + ")";
+                    desc = EntityDBEx.GetParameterName(((DatatypeEntity)entity).parameter) + " (DataType " + ((DatatypeEntity)entity).type.ToString() + ")";
                     break;
                 case EntityVariant.FUNCTION:
-                    desc = NodeDBEx.GetEntityName(entity.nodeID) + " (" + NodeDBEx.GetParameterName(((FunctionEntity)entity).function) + ")";
+                    desc = EntityDBEx.GetEntityName(entity.shortGUID) + " (" + EntityDBEx.GetParameterName(((FunctionEntity)entity).function) + ")";
                     break;
                 case EntityVariant.OVERRIDE:
                     //desc = NodeDBEx.GetEntityName(entity.nodeID) + " (" + HierarchyToString(((OverrideEntity)entity).hierarchy, currentFlowgraph) + ")";
-                    desc = NodeDBEx.GetEntityName(entity.nodeID) + " (*OVERRIDE*)";
+                    desc = EntityDBEx.GetEntityName(entity.shortGUID) + " (*OVERRIDE*)";
                     break;
                 case EntityVariant.PROXY:
                     //desc = NodeDBEx.GetEntityName(entity.nodeID) + " (" + HierarchyToString(((ProxyEntity)entity).hierarchy, currentFlowgraph) + ")";
-                    desc = NodeDBEx.GetEntityName(entity.nodeID) + " (*PROXY*)";
+                    desc = EntityDBEx.GetEntityName(entity.shortGUID) + " (*PROXY*)";
                     break;
                 case EntityVariant.NOT_SETUP:
                     //desc = NodeDBEx.GetEntityName(entity.nodeID);
-                    desc = NodeDBEx.GetEntityName(entity.nodeID) + " (*NOT SETUP*)";
+                    desc = EntityDBEx.GetEntityName(entity.shortGUID) + " (*NOT SETUP*)";
                     break;
             }
-            return "[" + entity.nodeID.ToString() + "] " + desc;
+            return "[" + entity.shortGUID.ToString() + "] " + desc;
         }
 
         /* Generate a cache of entity names to save re-generating them every time */
@@ -56,19 +56,19 @@ namespace CathodeEditorGUI
             hasFinishedCachingEntityNames = false;
             mainInst.EnableLoadingOfPaks(false);
             cachedEntityName.Clear();
-            for (int i = 0; i < CurrentInstance.commandsPAK.Flowgraphs.Count; i++)
+            for (int i = 0; i < CurrentInstance.commandsPAK.Composites.Count; i++)
             {
-                List<CathodeEntity> ents = CurrentInstance.commandsPAK.Flowgraphs[i].GetEntities();
+                List<CathodeEntity> ents = CurrentInstance.commandsPAK.Composites[i].GetEntities();
                 for (int x = 0; x < ents.Count; x++)
                 {
-                    if (cachedEntityName.ContainsKey(ents[x].nodeID))
+                    if (cachedEntityName.ContainsKey(ents[x].shortGUID))
                     {
                         //TODO: Figure out why this is happening... aren't node IDs meant to be unique to the whole PAK? Maybe it's per flowgraph?
                         string bleh = "";
                     }
                     else
                     {
-                        cachedEntityName.Add(ents[x].nodeID, GenerateNodeNameInternal(ents[x], CurrentInstance.commandsPAK.Flowgraphs[i]));
+                        cachedEntityName.Add(ents[x].shortGUID, GenerateNodeNameInternal(ents[x], CurrentInstance.commandsPAK.Composites[i]));
                     }
                 }
             }
@@ -106,15 +106,15 @@ namespace CathodeEditorGUI
                     }
                     else
                     {
-                        string[] options = NodeDB.GetEntityParameterList(NodeDBEx.GetParameterName(function));
+                        string[] options = EntityDB.GetEntityParameterList(EntityDBEx.GetParameterName(function));
                         items.Add("trigger"); items.Add("reference"); //TODO: populate all params from EntityMethodInterface?
                         if (options == null)
                         {
-                            CathodeFlowgraph flow = CurrentInstance.commandsPAK.GetFlowgraph(function);
+                            CathodeComposite flow = CurrentInstance.commandsPAK.GetComposite(function);
                             if (flow == null) break;
                             for (int i = 0; i < flow.datatypes.Count; i++)
                             {
-                                string to_add = NodeDBEx.GetParameterName(flow.datatypes[i].parameter);
+                                string to_add = EntityDBEx.GetParameterName(flow.datatypes[i].parameter);
                                 //TODO: also return datatype here
                                 if (!items.Contains(to_add)) items.Add(to_add);
                             }
@@ -129,7 +129,7 @@ namespace CathodeEditorGUI
                     }
                     break;
                 case EntityVariant.DATATYPE:
-                    items.Add(NodeDBEx.GetParameterName(((DatatypeEntity)entity).parameter));
+                    items.Add(EntityDBEx.GetParameterName(((DatatypeEntity)entity).parameter));
                     break;
                     //TODO: support other types here
             }
@@ -161,7 +161,7 @@ namespace CathodeEditorGUI
         }
 
         /* Resolve a node hierarchy: **firstHierarchyIsFlowgraph should be TRUE for proxies!** */
-        public static CathodeEntity ResolveHierarchy(List<cGUID> hierarchy, out CathodeFlowgraph containedFlowgraph)
+        public static CathodeEntity ResolveHierarchy(List<cGUID> hierarchy, out CathodeComposite containedFlowgraph)
         {
             if (hierarchy.Count == 0)
             {
@@ -169,13 +169,13 @@ namespace CathodeEditorGUI
                 return null;
             }
 
-            CathodeFlowgraph currentFlowgraphToSearch = CurrentInstance.selectedFlowgraph;
+            CathodeComposite currentFlowgraphToSearch = CurrentInstance.selectedComposite;
             if (currentFlowgraphToSearch == null || currentFlowgraphToSearch.GetEntityByID(hierarchy[0]) == null)
             {
                 currentFlowgraphToSearch = CurrentInstance.commandsPAK.EntryPoints[0];
                 if (currentFlowgraphToSearch == null || currentFlowgraphToSearch.GetEntityByID(hierarchy[0]) == null)
                 {
-                    currentFlowgraphToSearch = CurrentInstance.commandsPAK.GetFlowgraph(hierarchy[0]);
+                    currentFlowgraphToSearch = CurrentInstance.commandsPAK.GetComposite(hierarchy[0]);
                     if (currentFlowgraphToSearch == null || currentFlowgraphToSearch.GetEntityByID(hierarchy[1]) == null)
                     {
                         containedFlowgraph = null;
@@ -195,7 +195,7 @@ namespace CathodeEditorGUI
 
                 if (entity.variant == EntityVariant.FUNCTION)
                 {
-                    CathodeFlowgraph flowRef = CurrentInstance.commandsPAK.GetFlowgraph(((FunctionEntity)entity).function);
+                    CathodeComposite flowRef = CurrentInstance.commandsPAK.GetComposite(((FunctionEntity)entity).function);
                     if (flowRef != null)
                     {
                         currentFlowgraphToSearch = flowRef;
@@ -217,7 +217,7 @@ namespace CathodeEditorGUI
             string combinedString = "";
             for (int i = 0; i < hierarchy.Count; i++)
             {
-                combinedString += "[" + hierarchy[i].ToString() + "] " + NodeDBEx.GetEntityName(hierarchy[i]);
+                combinedString += "[" + hierarchy[i].ToString() + "] " + EntityDBEx.GetEntityName(hierarchy[i]);
                 if (i == hierarchy.Count - 2) break; //Last is always 00-00-00-00
                 combinedString += " -> ";
             }
@@ -226,13 +226,13 @@ namespace CathodeEditorGUI
 
         /* CA's CAGE doesn't properly tidy up hierarchies pointing to deleted nodes - so we do that here to save confusion */
         private static List<cGUID> purgedFlows = new List<cGUID>();
-        public static void PurgeDeadHierarchiesInActiveFlowgraph()
+        public static void PurgeDeadHierarchiesInActiveComposite()
         {
             return;
 
-            CathodeFlowgraph flow = CurrentInstance.selectedFlowgraph;
-            if (purgedFlows.Contains(flow.nodeID)) return;
-            purgedFlows.Add(flow.nodeID);
+            CathodeComposite flow = CurrentInstance.selectedComposite;
+            if (purgedFlows.Contains(flow.shortGUID)) return;
+            purgedFlows.Add(flow.shortGUID);
 
             int originalUnknownCount = 0;
             int originalProxyCount = 0;
@@ -253,7 +253,7 @@ namespace CathodeEditorGUI
             //Clear overrides
             List<OverrideEntity> overridePurged = new List<OverrideEntity>();
             for (int i = 0; i < flow.overrides.Count; i++)
-                if (ResolveHierarchy(flow.overrides[i].hierarchy, out CathodeFlowgraph flowTemp) != null)
+                if (ResolveHierarchy(flow.overrides[i].hierarchy, out CathodeComposite flowTemp) != null)
                     overridePurged.Add(flow.overrides[i]);
             originalOverrideCount += flow.overrides.Count;
             newOverrideCount += overridePurged.Count;
@@ -262,7 +262,7 @@ namespace CathodeEditorGUI
             //Clear proxies
             List<ProxyEntity> proxyPurged = new List<ProxyEntity>();
             for (int i = 0; i < flow.proxies.Count; i++)
-                if (ResolveHierarchy(flow.proxies[i].hierarchy, out CathodeFlowgraph flowTemp) != null)
+                if (ResolveHierarchy(flow.proxies[i].hierarchy, out CathodeComposite flowTemp) != null)
                     proxyPurged.Add(flow.proxies[i]);
             originalProxyCount += flow.proxies.Count;
             newProxyCount += proxyPurged.Count;
@@ -271,13 +271,13 @@ namespace CathodeEditorGUI
             //Clear TriggerSequence and CAGEAnimation entities
             for (int i = 0; i < flow.functions.Count; i++)
             {
-                switch (NodeDB.GetCathodeName(flow.functions[i].function))
+                switch (EntityDB.GetCathodeName(flow.functions[i].function))
                 {
                     case "TriggerSequence":
                         TriggerSequence trig = (TriggerSequence)flow.functions[i];
                         List<TEMP_TriggerSequenceExtraDataHolder1> trigSeq = new List<TEMP_TriggerSequenceExtraDataHolder1>();
                         for (int x = 0; x < trig.triggers.Count; x++)
-                            if (ResolveHierarchy(trig.triggers[x].hierarchy, out CathodeFlowgraph flowTemp) != null)
+                            if (ResolveHierarchy(trig.triggers[x].hierarchy, out CathodeComposite flowTemp) != null)
                                 trigSeq.Add(trig.triggers[x]);
                         originalTriggerCount += trig.triggers.Count;
                         newTriggerCount += trigSeq.Count;
@@ -287,7 +287,7 @@ namespace CathodeEditorGUI
                         CAGEAnimation anim = (CAGEAnimation)flow.functions[i];
                         List<CathodeParameterKeyframeHeader> headers = new List<CathodeParameterKeyframeHeader>();
                         for (int x = 0; x < anim.keyframeHeaders.Count; x++)
-                            if (ResolveHierarchy(anim.keyframeHeaders[x].connectedEntity, out CathodeFlowgraph flowTemp) != null)
+                            if (ResolveHierarchy(anim.keyframeHeaders[x].connectedEntity, out CathodeComposite flowTemp) != null)
                                 headers.Add(anim.keyframeHeaders[x]);
                         originalAnimCount += anim.keyframeHeaders.Count;
                         newAnimCount += headers.Count;
@@ -300,7 +300,7 @@ namespace CathodeEditorGUI
             List<CathodeEntity> entities = flow.GetEntities();
             for (int i = 0; i < entities.Count; i++)
             {
-                List<CathodeNodeLink> childLinksPurged = new List<CathodeNodeLink>();
+                List<CathodeEntityLink> childLinksPurged = new List<CathodeEntityLink>();
                 for (int x = 0; x < entities[i].childLinks.Count; x++)
                     if (flow.GetEntityByID(entities[i].childLinks[x].childID) != null)
                         childLinksPurged.Add(entities[i].childLinks[x]);
