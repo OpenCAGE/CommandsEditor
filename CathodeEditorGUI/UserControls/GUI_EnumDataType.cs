@@ -25,7 +25,7 @@ namespace CathodeEditorGUI.UserControls
         public void PopulateUI(CathodeEnum cEnum, ShortGuid paramID)
         {
             enumVal = cEnum;
-            ENUM_VARIABLE_DUMMY.Text = EntityDBEx.GetParameterName(paramID) + " (" + paramID.ToString() + ")";
+            ENUM_VARIABLE_DUMMY.Text = ShortGuidUtils.FindString(paramID) + " (" + paramID.ToString() + ")";
             comboBox1.Text = EntityDB.GetEnum(cEnum.enumID).Name;
             //comboBox1.Enabled = false;
             //numericUpDown8.Value = cEnum.enumIndex;
@@ -35,7 +35,7 @@ namespace CathodeEditorGUI.UserControls
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            enumVal.enumID = Utilities.GenerateGUID(comboBox1.Text);
+            enumVal.enumID = ShortGuidUtils.Generate(comboBox1.Text);
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)

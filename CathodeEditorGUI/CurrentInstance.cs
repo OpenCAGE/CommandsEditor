@@ -10,6 +10,9 @@ namespace CathodeEditorGUI
     public static class CurrentInstance
     {
         public static CommandsPAK commandsPAK;
+
+        public static CompositeNameLookup compositeLookup;
+
         public static CathodeComposite selectedComposite;
         public static CathodeEntity selectedEntity;
     }

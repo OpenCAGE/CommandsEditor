@@ -17,28 +17,28 @@ namespace CathodeEditorGUI
                 return cachedEntityName[entity.shortGUID];
             return GenerateEntityNameInternal(entity, currentFlowgraph);
         }
-        private static string GenerateEntityNameInternal(CathodeEntity entity, CathodeComposite currentFlowgraph)
+        private static string GenerateEntityNameInternal(CathodeEntity entity, CathodeComposite composite)
         {
             string desc = "";
             switch (entity.variant)
             {
                 case EntityVariant.DATATYPE:
-                    desc = EntityDBEx.GetParameterName(((DatatypeEntity)entity).parameter) + " (DataType " + ((DatatypeEntity)entity).type.ToString() + ")";
+                    desc = ShortGuidUtils.FindString(((DatatypeEntity)entity).parameter) + " (DataType " + ((DatatypeEntity)entity).type.ToString() + ")";
                     break;
                 case EntityVariant.FUNCTION:
-                    desc = EntityDBEx.GetEntityName(entity.shortGUID) + " (" + EntityDBEx.GetParameterName(((FunctionEntity)entity).function) + ")";
+                    desc = CurrentInstance.compositeLookup.GetEntityName(composite.shortGUID, entity.shortGUID) + " (" + ShortGuidUtils.FindString(((FunctionEntity)entity).function) + ")";
                     break;
                 case EntityVariant.OVERRIDE:
                     //desc = NodeDBEx.GetEntityName(entity.nodeID) + " (" + HierarchyToString(((OverrideEntity)entity).hierarchy, currentFlowgraph) + ")";
-                    desc = EntityDBEx.GetEntityName(entity.shortGUID) + " (*OVERRIDE*)";
+                    desc = CurrentInstance.compositeLookup.GetEntityName(composite.shortGUID, entity.shortGUID) + " (*OVERRIDE*)";
                     break;
                 case EntityVariant.PROXY:
                     //desc = NodeDBEx.GetEntityName(entity.nodeID) + " (" + HierarchyToString(((ProxyEntity)entity).hierarchy, currentFlowgraph) + ")";
-                    desc = EntityDBEx.GetEntityName(entity.shortGUID) + " (*PROXY*)";
+                    desc = CurrentInstance.compositeLookup.GetEntityName(composite.shortGUID, entity.shortGUID) + " (*PROXY*)";
                     break;
                 case EntityVariant.NOT_SETUP:
                     //desc = NodeDBEx.GetEntityName(entity.nodeID);
-                    desc = EntityDBEx.GetEntityName(entity.shortGUID) + " (*NOT SETUP*)";
+                    desc = CurrentInstance.compositeLookup.GetEntityName(composite.shortGUID, entity.shortGUID) + " (*NOT SETUP*)";
                     break;
             }
             return "[" + entity.shortGUID.ToString() + "] " + desc;
@@ -103,7 +103,7 @@ namespace CathodeEditorGUI
                     }
                     else
                     {
-                        string[] options = EntityDB.GetEntityParameterList(EntityDBEx.GetParameterName(function));
+                        string[] options = EntityDB.GetEntityParameterList(ShortGuidUtils.FindString(function));
                         items.Add("trigger"); items.Add("reference"); //TODO: populate all params from EntityMethodInterface?
                         if (options == null)
                         {
@@ -111,7 +111,7 @@ namespace CathodeEditorGUI
                             if (flow == null) break;
                             for (int i = 0; i < flow.datatypes.Count; i++)
                             {
-                                string to_add = EntityDBEx.GetParameterName(flow.datatypes[i].parameter);
+                                string to_add = ShortGuidUtils.FindString(flow.datatypes[i].parameter);
                                 //TODO: also return datatype here
                                 if (!items.Contains(to_add)) items.Add(to_add);
                             }
@@ -126,7 +126,7 @@ namespace CathodeEditorGUI
                     }
                     break;
                 case EntityVariant.DATATYPE:
-                    items.Add(EntityDBEx.GetParameterName(((DatatypeEntity)entity).parameter));
+                    items.Add(ShortGuidUtils.FindString(((DatatypeEntity)entity).parameter));
                     break;
                     //TODO: support other types here
             }
@@ -214,7 +214,8 @@ namespace CathodeEditorGUI
             string combinedString = "";
             for (int i = 0; i < hierarchy.Count; i++)
             {
-                combinedString += "[" + hierarchy[i].ToString() + "] " + EntityDBEx.GetEntityName(hierarchy[i]);
+                //TODO: how can i get the composite containing the node if we are chasing a hierarchy?
+                //combinedString += "[" + hierarchy[i].ToString() + "] " + EntityDBEx.GetEntityName(hierarchy[i]);
                 if (i == hierarchy.Count - 2) break; //Last is always 00-00-00-00
                 combinedString += " -> ";
             }
@@ -267,7 +268,7 @@ namespace CathodeEditorGUI
             for (int i = 0; i < comp.functions.Count; i++)
             {
                 //TODO: will this also clear up TriggerSequence/CAGEAnimation data for proxies?
-                switch (EntityDB.GetCathodeName(comp.functions[i].function))
+                switch (ShortGuidUtils.FindString(comp.functions[i].function))
                 {
                     case "TriggerSequence":
                         TriggerSequence trig = (TriggerSequence)comp.functions[i];

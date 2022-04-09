@@ -55,7 +55,7 @@ namespace CathodeEditorGUI
             {
                 EntityDefinition entityDefinition = new EntityDefinition();
                 entityDefinition.guidName = reader.ReadString().Replace(@"\\", @"\");
-                entityDefinition.guid = Utilities.GenerateGUID(entityDefinition.guidName);
+                entityDefinition.guid = ShortGuidUtils.Generate(entityDefinition.guidName);
                 entityDefinition.className = reader.ReadString();
                 entityDefinition.parameters = new List<ParameterDefinition>();
                 int param_count = reader.ReadInt32();

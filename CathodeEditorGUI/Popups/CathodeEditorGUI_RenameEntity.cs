@@ -1,4 +1,5 @@
 ﻿using CATHODE;
+using CATHODE.Commands;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,11 +18,11 @@ namespace CathodeEditorGUI
         public ShortGuid EntityID;
         public bool didSave = false;
 
-        public CathodeEditorGUI_RenameEntity(ShortGuid node)
+        public CathodeEditorGUI_RenameEntity(ShortGuid entityID)
         {
             InitializeComponent();
-            entity_name.Text = EntityDBEx.GetEntityName(node);
-            EntityID = node;
+            entity_name.Text = CurrentInstance.compositeLookup.GetEntityName(CurrentInstance.selectedComposite.shortGUID, entityID);
+            EntityID = entityID;
         }
 
         private void save_entity_name_Click(object sender, EventArgs e)

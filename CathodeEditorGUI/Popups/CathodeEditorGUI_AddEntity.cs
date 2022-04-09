@@ -74,14 +74,14 @@ namespace CathodeEditorGUI
 
         private void createEntity(object sender, EventArgs e)
         {
-            ShortGuid thisID = Utilities.GenerateGUID(DateTime.Now.ToString("G"));
+            ShortGuid thisID = ShortGuidUtils.Generate(DateTime.Now.ToString("G"));
 
             if (createDatatypeEntity.Checked)
             {
                 //Make the DatatypeEntity
                 DatatypeEntity newEntity = new DatatypeEntity(thisID);
                 newEntity.type = (CathodeDataType)entityVariant.SelectedIndex;
-                newEntity.parameter = Utilities.GenerateGUID(textBox1.Text);
+                newEntity.parameter = ShortGuidUtils.Generate(textBox1.Text);
 
                 //Make the parameter to give this DatatypeEntity a value (the only time you WOULDN'T want this is if the val is coming from a linked entity)
                 CathodeParameter thisParam = null;
@@ -122,8 +122,7 @@ namespace CathodeEditorGUI
 
                 //Add to composite & save name
                 composite.datatypes.Add(newEntity);
-                if (EntityDB.GetCathodeName(newEntity.parameter) == newEntity.parameter.ToString())
-                    EntityDBEx.AddNewParameterName(newEntity.parameter, textBox1.Text);
+                ShortGuidUtils.Generate(textBox1.Text);
                 NewEntity = newEntity;
             }
             else if (createFunctionEntity.Checked)
@@ -146,7 +145,7 @@ namespace CathodeEditorGUI
 
                 //Add to composite & save name
                 composite.functions.Add(newEntity);
-                EntityDBEx.AddNewEntityName(thisID, textBox1.Text);
+                CurrentInstance.compositeLookup.SetEntityName(composite.shortGUID, thisID, textBox1.Text);
                 NewEntity = newEntity;
             }
             else if (createCompositeEntity.Checked)
@@ -163,7 +162,7 @@ namespace CathodeEditorGUI
 
                 //Add to composite & save name
                 this.composite.functions.Add(newEntity);
-                EntityDBEx.AddNewEntityName(thisID, textBox1.Text);
+                CurrentInstance.compositeLookup.SetEntityName(composite.shortGUID, thisID, textBox1.Text);
                 NewEntity = newEntity;
             }
 

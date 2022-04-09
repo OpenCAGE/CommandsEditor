@@ -24,7 +24,8 @@ namespace CathodeEditorGUI
                 string toAdd = "[TIMING: " + node.triggers[i].timing + "] Hierarchy: ";
                 for (int x = 0; x < node.triggers[i].hierarchy.Count - 1; x++)
                 {
-                    toAdd += "[" + EntityDBEx.GetEntityName(node.triggers[i].hierarchy[x]) + "]";
+                    //TODO: how can i get the composite containing the node if we are chasing a hierarchy?
+                    //toAdd += "[" + EntityDBEx.GetEntityName(node.triggers[i].hierarchy[x]) + "]";
                     if (x != node.triggers[i].hierarchy.Count - 2) toAdd += "->";
                 }
                 listBox1.Items.Add(toAdd);
@@ -32,7 +33,7 @@ namespace CathodeEditorGUI
 
             for (int i = 0; i < node.events.Count; i++)
             {
-                listBox2.Items.Add(EntityDBEx.GetParameterName(node.events[i].EventID) + "\n  - StartedID: " + EntityDBEx.GetParameterName(node.events[i].StartedID) + "\n  - FinishedID: " + EntityDBEx.GetParameterName(node.events[i].FinishedID));
+                listBox2.Items.Add(ShortGuidUtils.FindString(node.events[i].EventID) + "\n  - StartedID: " + ShortGuidUtils.FindString(node.events[i].StartedID) + "\n  - FinishedID: " + ShortGuidUtils.FindString(node.events[i].FinishedID));
             }
 
 

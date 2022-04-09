@@ -25,7 +25,7 @@ namespace CathodeEditorGUI.UserControls
         public void PopulateUI(CathodeVector3 cVec, ShortGuid paramID)
         {
             vectorVal = cVec;
-            VECTOR_VARIABLE_DUMMY.Text = EntityDBEx.GetParameterName(paramID) + " (" + paramID.ToString() + ")";
+            VECTOR_VARIABLE_DUMMY.Text = ShortGuidUtils.FindString(paramID) + " (" + paramID.ToString() + ")";
             POS_X_1.Value = (decimal)cVec.value.x;
             POS_Y_1.Value = (decimal)cVec.value.y;
             POS_Z_1.Value = (decimal)cVec.value.z;

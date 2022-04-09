@@ -30,7 +30,7 @@ namespace CathodeEditorGUI
             GroupBox currentGroupBox = null;
             for (int i = 0; i < animNode.keyframeHeaders.Count; i++)
             {
-                string paramGroupName = EntityDBEx.GetParameterName(animNode.keyframeHeaders[i].parameterID);
+                string paramGroupName = ShortGuidUtils.FindString(animNode.keyframeHeaders[i].parameterID);
                 if (i == 0 || previousGroup != paramGroupName)
                 {
                     if (currentGroupBox != null)
@@ -51,7 +51,7 @@ namespace CathodeEditorGUI
                 previousGroup = paramGroupName;
 
                 TextBox paramName = new TextBox();
-                paramName.Text = EntityDBEx.GetParameterName(animNode.keyframeHeaders[i].parameterSubID);
+                paramName.Text = ShortGuidUtils.FindString(animNode.keyframeHeaders[i].parameterSubID);
                 paramName.ReadOnly = true;
                 paramName.Location = new Point(6, 19 + (countInGroup * 23));
                 paramName.Size = new Size(119, 20);
@@ -76,11 +76,12 @@ namespace CathodeEditorGUI
                     }
                 }
 
-                CathodeEntity resolvedEntity = EditorUtils.ResolveHierarchy(animNode.keyframeHeaders[i].connectedEntity, out CathodeComposite flow);
+                CathodeComposite resolvedComposite = null;
+                CathodeEntity resolvedEntity = EditorUtils.ResolveHierarchy(animNode.keyframeHeaders[i].connectedEntity, out resolvedComposite);
                 if (resolvedEntity != null)
                 {
                     TextBox controllingEntity = new TextBox();
-                    controllingEntity.Text = "Controlling: " + EntityDBEx.GetEntityName(resolvedEntity.shortGUID);
+                    controllingEntity.Text = "Controlling: " + CurrentInstance.compositeLookup.GetEntityName(resolvedComposite.shortGUID, resolvedEntity.shortGUID);
                     controllingEntity.Location = new Point(keyframeWidth + 5, 18 + (countInGroup * 23));
                     controllingEntity.Size = new Size(200, 20);
                     controllingEntity.ReadOnly = true;

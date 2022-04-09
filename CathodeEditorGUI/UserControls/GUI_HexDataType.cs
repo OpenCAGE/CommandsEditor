@@ -24,7 +24,7 @@ namespace CathodeEditorGUI.UserControls
 
         public void PopulateUI(CathodeResource cResource, ShortGuid paramID, CathodeComposite selected_flowgraph)
         {
-            GUID_VARIABLE_DUMMY.Text = EntityDBEx.GetParameterName(paramID) + " (" + paramID.ToString() + ")";
+            GUID_VARIABLE_DUMMY.Text = ShortGuidUtils.FindString(paramID) + " (" + paramID.ToString() + ")";
             resRef = cResource;
 
             if (cResource.resourceID.val != null)

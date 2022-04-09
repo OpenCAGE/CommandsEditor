@@ -134,10 +134,8 @@ namespace CathodeEditorGUI
                 return;
             }
 
-            //Load in any custom param/entity names
-            EntityDBEx.LoadNames();
-
             //Begin caching entity names so we don't have to keep generating them
+            CurrentInstance.compositeLookup = new CompositeNameLookup(CurrentInstance.commandsPAK);
             if (currentBackgroundCacher != null) currentBackgroundCacher.Dispose();
             currentBackgroundCacher = Task.Factory.StartNew(() => EditorUtils.GenerateEntityNameCache(this));
 
@@ -176,7 +174,6 @@ namespace CathodeEditorGUI
                 MessageBox.Show("Failed to save COMMANDS.PAK!\n" + e.Message, "Failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            EntityDBEx.SaveNames();
 
             if (modifyMVR.Checked)
             {
@@ -550,7 +547,7 @@ namespace CathodeEditorGUI
 
                 if (entities[i].variant == EntityVariant.FUNCTION)
                 {
-                    string entType = EntityDB.GetCathodeName(((FunctionEntity)entities[i]).function);
+                    string entType = ShortGuidUtils.FindString(((FunctionEntity)entities[i]).function);
                     switch (entType)
                     {
                         case "TriggerSequence":
@@ -625,8 +622,11 @@ namespace CathodeEditorGUI
 
             //Generate new entity ID and name
             CathodeEntity newEnt = Utilities.CloneObject(CurrentInstance.selectedEntity);
-            newEnt.shortGUID = Utilities.GenerateGUID(DateTime.Now.ToString("G"));
-            EntityDBEx.AddNewEntityName(newEnt.shortGUID, EntityDBEx.GetEntityName(CurrentInstance.selectedEntity.shortGUID) + "_clone");
+            newEnt.shortGUID = ShortGuidUtils.Generate(DateTime.Now.ToString("G"));
+            CurrentInstance.compositeLookup.SetEntityName(
+                CurrentInstance.selectedComposite.shortGUID,
+                newEnt.shortGUID,
+                CurrentInstance.compositeLookup.GetEntityName(CurrentInstance.selectedComposite.shortGUID, CurrentInstance.selectedEntity.shortGUID) + "_clone");
 
             //Add parent links in to this entity that linked in to the other entity
             List<CathodeEntity> ents = CurrentInstance.selectedComposite.GetEntities();
@@ -640,7 +640,7 @@ namespace CathodeEditorGUI
                     if (link.childID == CurrentInstance.selectedEntity.shortGUID)
                     {
                         CathodeEntityLink newLink = new CathodeEntityLink();
-                        newLink.connectionID = Utilities.GenerateGUID(DateTime.Now.ToString("G") + num_of_new_things.ToString()); num_of_new_things++;
+                        newLink.connectionID = ShortGuidUtils.Generate(DateTime.Now.ToString("G") + num_of_new_things.ToString()); num_of_new_things++;
                         newLink.childID = newEnt.shortGUID;
                         newLink.childParamID = link.childParamID;
                         newLink.parentParamID = link.parentParamID;
@@ -687,7 +687,11 @@ namespace CathodeEditorGUI
             if (((CathodeEditorGUI_RenameEntity)sender).didSave &&
                 ((CathodeEditorGUI_RenameEntity)sender).EntityID == CurrentInstance.selectedEntity.shortGUID)
             {
-                EntityDBEx.AddNewEntityName(CurrentInstance.selectedEntity.shortGUID, ((CathodeEditorGUI_RenameEntity)sender).EntityName);
+                CurrentInstance.compositeLookup.SetEntityName(
+                    CurrentInstance.selectedComposite.shortGUID,
+                    CurrentInstance.selectedEntity.shortGUID,
+                    ((CathodeEditorGUI_RenameEntity)sender).EntityName);
+
                 string entityID = CurrentInstance.selectedEntity.shortGUID.ToString();
                 string newEntityName = EditorUtils.GenerateEntityName(CurrentInstance.selectedEntity, CurrentInstance.selectedComposite);
                 for (int i = 0; i < composite_content.Items.Count; i++)
@@ -748,8 +752,8 @@ namespace CathodeEditorGUI
                     ShortGuid thisFunction = ((FunctionEntity)entity).function;
                     bool isCompositeRef = CurrentInstance.commandsPAK.GetComposite(thisFunction) != null;
                     jumpToComposite.Visible = isCompositeRef;
-                    description = EntityDBEx.GetParameterName(thisFunction);
-                    selected_entity_name.Text = EntityDBEx.GetEntityName(entity.shortGUID);
+                    description = ShortGuidUtils.FindString(thisFunction);
+                    selected_entity_name.Text = CurrentInstance.compositeLookup.GetEntityName(CurrentInstance.selectedComposite.shortGUID, entity.shortGUID);
 //#if debug //TODO: PULL THIS INTO STABLE
                     if (!isCompositeRef)
                     {
@@ -761,21 +765,21 @@ namespace CathodeEditorGUI
                     break;
                 case EntityVariant.DATATYPE:
                     description = "DataType " + ((DatatypeEntity)entity).type.ToString();
-                    selected_entity_name.Text = EntityDBEx.GetParameterName(((DatatypeEntity)entity).parameter);
+                    selected_entity_name.Text = ShortGuidUtils.FindString(((DatatypeEntity)entity).parameter);
                     break;
                 case EntityVariant.PROXY:
                 case EntityVariant.OVERRIDE:
                     jumpToComposite.Visible = true;
-                    selected_entity_name.Text = EntityDBEx.GetEntityName(entity.shortGUID);
+                    selected_entity_name.Text = CurrentInstance.compositeLookup.GetEntityName(CurrentInstance.selectedComposite.shortGUID, entity.shortGUID);
                     break;
                 default:
-                    selected_entity_name.Text = EntityDBEx.GetEntityName(entity.shortGUID);
+                    selected_entity_name.Text = CurrentInstance.compositeLookup.GetEntityName(CurrentInstance.selectedComposite.shortGUID, entity.shortGUID);
                     break;
             }
             selected_entity_type_description.Text = description;
 
             //show resource editor button if this entity has a resource reference
-            ShortGuid resourceParamID = Utilities.GenerateGUID("resource");
+            ShortGuid resourceParamID = ShortGuidUtils.Generate("resource");
             CathodeLoadedParameter resourceParam = CurrentInstance.selectedEntity.parameters.FirstOrDefault(o => o.shortGUID == resourceParamID);
 //#if debug //TODO: PULL THIS INTO STABLE
             editEntityResources.Visible = ((resourceParam != null) || CurrentInstance.selectedEntity.resources.Count != 0);
@@ -860,9 +864,9 @@ namespace CathodeEditorGUI
                 {
                     entity_children.Items.Add(
                         /*"[" + link.connectionID.ToString() + "] " +*/
-                        "(" + EntityDBEx.GetParameterName(link.parentParamID) + ") => " +
-                        EntityDBEx.GetEntityName(link.childID) + 
-                        " (" + EntityDBEx.GetParameterName(link.childParamID) + ")");
+                        "(" + ShortGuidUtils.FindString(link.parentParamID) + ") => " +
+                        CurrentInstance.compositeLookup.GetEntityName(CurrentInstance.selectedComposite.shortGUID, link.childID) + 
+                        " (" + ShortGuidUtils.FindString(link.childParamID) + ")");
                     linkedEntityListIDs.Add(link.connectionID);
                 }
             }
@@ -877,9 +881,9 @@ namespace CathodeEditorGUI
                         if (link.childID != CurrentInstance.selectedEntity.shortGUID) continue;
                         entity_children.Items.Add(
                             /*"[" + link.connectionID.ToString() + "] " +*/
-                            EntityDBEx.GetEntityName(entity.shortGUID) +
-                            " (" + EntityDBEx.GetParameterName(link.parentParamID) + ") => " +
-                            "(" + EntityDBEx.GetParameterName(link.childParamID) + ")");
+                            CurrentInstance.compositeLookup.GetEntityName(CurrentInstance.selectedComposite.shortGUID, entity.shortGUID) +
+                            " (" + ShortGuidUtils.FindString(link.parentParamID) + ") => " +
+                            "(" + ShortGuidUtils.FindString(link.childParamID) + ")");
                         linkedEntityListIDs.Add(link.connectionID);
                     }
                 }
@@ -1062,7 +1066,6 @@ namespace CathodeEditorGUI
                 for (int mm = 0; mm < env_list.Items.Count; mm++)
                 {
                     CurrentInstance.commandsPAK = new CommandsPAK(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + env_list.Items[mm].ToString() + "/WORLD/COMMANDS.PAK");
-                    EntityDBEx.LoadNames();
                     foreach (CathodeComposite flow in CurrentInstance.commandsPAK.Composites)
                     {
                         CurrentInstance.selectedComposite = flow;
@@ -1094,9 +1097,9 @@ namespace CathodeEditorGUI
             Console.WriteLine(CurrentInstance.selectedComposite.name);
             foreach (OverrideEntity overrider in CurrentInstance.selectedComposite.overrides)
             {
-                Console.WriteLine(EntityDBEx.GetEntityName(overrider.shortGUID));
-                Console.WriteLine(EditorUtils.HierarchyToString(overrider.hierarchy));
-                Console.WriteLine("-----");
+                //Console.WriteLine(EntityDBEx.GetEntityName(overrider.shortGUID));
+                //Console.WriteLine(EditorUtils.HierarchyToString(overrider.hierarchy));
+                //Console.WriteLine("-----");
             }
         }
 
@@ -1110,201 +1113,204 @@ namespace CathodeEditorGUI
 
         private void button5_Click(object sender, EventArgs e)
         {
+            /*
             List<string> dumps = Directory.GetFiles(@"E:\GitHub Repos\alien_assets_daniel\DEBUG", "alien_commands_bin_*", SearchOption.AllDirectories).ToList<string>();
             List<Task> tasks = new List<Task>();
             foreach (string dump in dumps)
             {
                 tasks.Add(Task.Factory.StartNew(() => ParseCommandBinDump(dump)));
             }
-
-
-            /*
-            for (int i = 0; i < CurrentInstance.selectedComposite.resources.Count; i++)
-            {
-                Console.WriteLine(CurrentInstance.selectedComposite.resources[i].entryType);
-            }
-            for (int i = 0; i < CurrentInstance.selectedComposite.GetEntities().Count; i++)
-            {
-                for (int x = 0; x < CurrentInstance.selectedComposite.GetEntities()[i].resources.Count; x++)
-                {
-                    Console.WriteLine(CurrentInstance.selectedComposite.GetEntities()[i].resources[x].entryType);
-                }
-            }
             */
-        }
-        private void ParseCommandBinDump(string dump)
-        { 
-            List<ShortGuidDescriptor> descs_flows = new List<ShortGuidDescriptor>();
-            List<ShortGuidDescriptor> descs_param = new List<ShortGuidDescriptor>();
-            List<ShortGuidDescriptor> descs_node = new List<ShortGuidDescriptor>();
-            string[] content = File.ReadAllLines(dump);
-            //COMPOSITES
-            for (int i = 0; i < content.Length; i++)
+            List<string> dumps = Directory.GetFiles(@"E:\OpenCAGE_2021\CathodeEditorGUI\Build\out2", "*.bin", SearchOption.AllDirectories).ToList<string>();
+            List<BinComposite> composites = new List<BinComposite>();
+            foreach (string dump in dumps)
             {
-                if (content[i].Substring(0, 1) != "1") continue;
-
-                string[] split = content[i].Split(new char[] { '\'' }, 2);
-                if (split.Length != 2) continue;
-                if (split[0].Substring(split[0].Length - 2, 1) != "2") continue;
-
-                ShortGuid id;
-                try
+                BinaryReader reader = new BinaryReader(File.OpenRead(dump));
+                int compCount = reader.ReadInt32();
+                for (int i = 0; i < compCount; i++)
                 {
-                    id = new ShortGuid(content[i].Substring(13, 2) + "-" + content[i].Substring(11, 2) + "-" + content[i].Substring(9, 2) + "-" + content[i].Substring(7, 2));
-                }
-                catch
-                {
-                    continue;
-                }
-
-                string name = split[1].Substring(0, split[1].Length - 1);
-
-                bool didAdd = false;
-                for (int x = 0; x < descs_flows.Count; x++)
-                {
-                    if (descs_flows[x].ID == id)
+                    ShortGuid compositeID = Utilities.Consume<ShortGuid>(reader);
+                    BinComposite composite = composites.FirstOrDefault(o => o.id == compositeID);
+                    if (composite == null)
                     {
-                        descs_flows[x].ID_cachedstring = name;
-                        didAdd = true;
-                        break;
+                        composite = new BinComposite();
+                        composite.id = compositeID;
+                        composites.Add(composite);
+                    }
+                    string thisPath = reader.ReadString();
+                    if (composite.path != "" && thisPath != composite.path)
+                    {
+                        Console.WriteLine("WARNING: " + composite.id + " name mismatch!");
+                        Console.WriteLine("         " + composite.path);
+                        Console.WriteLine("         " + thisPath);
+                    }
+                    composite.path = thisPath;
+                    int entityCount = reader.ReadInt32();
+                    for (int x = 0; x < entityCount; x++)
+                    {
+                        ShortGuid entityID = Utilities.Consume<ShortGuid>(reader);
+                        BinEntity entity = composite.entities.FirstOrDefault(o => o.id == entityID);
+                        if (entity == null)
+                        {
+                            entity = new BinEntity();
+                            entity.id = entityID;
+                            composite.entities.Add(entity);
+                        }
+                        string thisName = reader.ReadString();
+                        if (entity.name != "" && thisName != entity.name)
+                        {
+                            Console.WriteLine("WARNING: " + entity.id + " name mismatch!");
+                            Console.WriteLine("         " + entity.name);
+                            Console.WriteLine("         " + thisName);
+                        }
+                        entity.name = thisName;
                     }
                 }
-                if (didAdd) continue;
-
-                ShortGuidDescriptor guidString = new ShortGuidDescriptor();
-                guidString.ID = id;
-                guidString.ID_cachedstring = name;
-                descs_flows.Add(guidString);
+                reader.Close();
             }
-            //PARAMETERS
-            for (int i = 0; i < content.Length; i++)
-            {
-                if (content[i].Substring(0, 1) != "8") continue;
-
-                string[] split = content[i].Split(new char[] { '\'' }, 2);
-                if (split.Length != 2) continue;
-                if (split[0].Substring(split[0].Length - 2, 1) != "2") continue;
-
-                if (content[i].Length < 28) continue;
-
-                ShortGuid id;
-                try
-                {
-                    id = new ShortGuid(content[i].Substring(26, 2) + "-" + content[i].Substring(24, 2) + "-" + content[i].Substring(22, 2) + "-" + content[i].Substring(20, 2));
-                }
-                catch
-                {
-                    continue;
-                }
-                if (descs_param.FirstOrDefault(o => o.ID == id) != null)
-                {
-                    continue;
-                }
-
-                ShortGuidDescriptor guidString = new ShortGuidDescriptor();
-                guidString.ID = id;
-                guidString.ID_cachedstring = split[1].Substring(0, split[1].Length - 1);
-                descs_param.Add(guidString);
-            }
-            //ENTITIES
-            for (int i = 0; i < content.Length; i++)
-            {
-                //ENTITY NAME
-                if (content[i].Substring(0, 1) != "2") continue;
-
-                string[] split = content[i].Split(new char[] { '\'' }, 2);
-                if (split.Length != 2) continue;
-                if (split[0].Substring(split[0].Length - 2, 1) != "2") continue;
-
-                string name = split[1].Substring(0, split[1].Length - 1);
-                if (name == "") continue;
-
-                ShortGuid id;
-                try
-                {
-                    id = new ShortGuid(content[i].Substring(26, 2) + "-" + content[i].Substring(24, 2) + "-" + content[i].Substring(22, 2) + "-" + content[i].Substring(20, 2));
-                }
-                catch
-                {
-                    continue;
-                }
-
-                if (descs_node.FirstOrDefault(o => o.ID == id) != null)
-                {
-                    continue;
-                }
-
-                ShortGuidDescriptor guidString = new ShortGuidDescriptor();
-                guidString.ID = id;
-                guidString.ID_cachedstring = name;
-                descs_node.Add(guidString);
-            }
-            for (int i = 0; i < content.Length; i++)
-            {
-                //NAME PARAMETER
-                if (content[i].Substring(0, 1) != "5") continue;
-
-                string[] split = content[i].Split(new char[] { '\'' }, 2);
-                if (split.Length != 2) continue;
-                if (split[0].Substring(split[0].Length - 2, 1) != "2") continue;
-
-                if (content[i].Length < 14) continue;
-                if (split[0].Substring(split[0].Length - 13) != "0x58EBAC79 2 ") continue;
-
-                string name = split[1].Substring(0, split[1].Length - 1);
-                if (name == "") continue;
-
-                ShortGuid id;
-                try
-                {
-                    id = new ShortGuid(content[i].Substring(26, 2) + "-" + content[i].Substring(24, 2) + "-" + content[i].Substring(22, 2) + "-" + content[i].Substring(20, 2));
-                }
-                catch
-                {
-                    continue;
-                }
-
-                ShortGuidDescriptor existing = descs_node.FirstOrDefault(o => o.ID == id);
-                if (existing != null && existing.ID_cachedstring != "" && existing.ID_cachedstring != name)
-                {
-                    Console.WriteLine("Renaming " + id + " from '" + existing.ID_cachedstring + "' to '" + name + "'");
-                    //continue;
-                }
-
-                ShortGuidDescriptor guidString = new ShortGuidDescriptor();
-                guidString.ID = id;
-                guidString.ID_cachedstring = name;
-                descs_node.Add(guidString);
-            }
-
-            descs_param = descs_param.OrderBy(o => o.ID_cachedstring).ToList();
-            descs_node = descs_node.OrderBy(o => o.ID_cachedstring).ToList();
-
-            if (!Directory.Exists("out")) Directory.CreateDirectory("out");
-
-            List<string> debugDump = new List<string>();
-            BinaryWriter writer = new BinaryWriter(File.OpenWrite("out/" + Path.GetFileNameWithoutExtension(dump) + "_composites.bin"));
+            BinaryWriter writer = new BinaryWriter(File.OpenWrite("out2/COMBINED.bin"));
             writer.BaseStream.SetLength(0);
-            writer.Write((char)0x00);
-            for (int i = 0; i < descs_flows.Count; i++)
+            writer.Write(composites.Count);
+            for (int i = 0; i < composites.Count; i++)
             {
-                Utilities.Write<ShortGuid>(writer, descs_flows[i].ID);
-                writer.Write(descs_flows[i].ID_cachedstring);
-                debugDump.Add(descs_flows[i].ID.ToString() + " => " + descs_flows[i].ID_cachedstring);
+                Utilities.Write<ShortGuid>(writer, composites[i].id);
+                writer.Write(composites[i].path);
+                writer.Write(composites[i].entities.Count);
+                for (int x = 0; x < composites[i].entities.Count; x++)
+                {
+                    Utilities.Write<ShortGuid>(writer, composites[i].entities[x].id);
+                    writer.Write(composites[i].entities[x].name);
+                }
             }
-            File.WriteAllLines("out/" + Path.GetFileNameWithoutExtension(dump) + "_composites.txt", debugDump);
             writer.Close();
-            debugDump.Clear();
-            writer = new BinaryWriter(File.OpenWrite("out/" + Path.GetFileNameWithoutExtension(dump) + "_entities.bin"));
-            writer.BaseStream.SetLength(0);
-            writer.Write((char)0x00);
-            for (int i = 0; i < descs_node.Count; i++)
+        }
+        private void ParseCommandBinDump(string dump)
+        {
+            List<BinComposite> composites = new List<BinComposite>();
+            string[] content = File.ReadAllLines(dump);
+            for (int i = 0; i < content.Length; i++)
             {
-                Utilities.Write<ShortGuid>(writer, descs_node[i].ID);
-                writer.Write(descs_node[i].ID_cachedstring);
-                debugDump.Add(descs_node[i].ID.ToString() + " => " + descs_node[i].ID_cachedstring);
+                string[] split = content[i].Split(new char[] { '\'' }, 2);
+                if (split.Length != 2) continue;
+                if (split[0].Substring(split[0].Length - 2, 1) != "2") continue;
+                string value = split[1].Substring(0, split[1].Length - 1);
+                if (value == "") continue;
+
+                ShortGuid compositeID;
+                try
+                {
+                    compositeID = new ShortGuid(content[i].Substring(13, 2) + "-" + content[i].Substring(11, 2) + "-" + content[i].Substring(9, 2) + "-" + content[i].Substring(7, 2));
+                }
+                catch
+                {
+                    continue;
+                }
+                BinComposite composite = composites.FirstOrDefault(o => o.id == compositeID);
+
+                switch (content[i].Substring(0, 1))
+                {
+                    case "1":
+                    {
+                        //Composite name definition! First is name, second is path.
+                        if (composite == null)
+                        {
+                            composite = new BinComposite();
+                            composite.id = compositeID;
+                            composite.name = value;
+                            composites.Add(composite);
+                        }
+                        else
+                        {
+                            composite.path = value;
+                        }
+                        break;
+                    }
+                    case "2":
+                    {
+                        if (content[i].Length < 28) continue;
+                        ShortGuid entityID;
+                        try
+                        {
+                            entityID = new ShortGuid(content[i].Substring(26, 2) + "-" + content[i].Substring(24, 2) + "-" + content[i].Substring(22, 2) + "-" + content[i].Substring(20, 2));
+                        }
+                        catch
+                        {
+                            continue;
+                        }
+                        if (composite == null)
+                        {
+                            composite = new BinComposite();
+                            composite.id = compositeID;
+                            composites.Add(composite);
+                        }
+                        BinEntity entity = composite.entities.FirstOrDefault(o => o.id == entityID);
+                        if (entity == null)
+                        {
+                            entity = new BinEntity();
+                            entity.id = entityID;
+                            composite.entities.Add(entity);
+                        }
+                        else if (entity.name != value)
+                        {
+                            Console.WriteLine("Renaming " + entityID + " from '" + entity.name + "' to '" + value + "'");
+                        }
+                        entity.name = value;
+                        break;
+                    }
+                    case "5":
+                    {
+                        if (split[0].Substring(split[0].Length - 13) != "0x58EBAC79 2 ") continue;
+                        if (content[i].Length < 28) continue;
+                        ShortGuid entityID;
+                        try
+                        {
+                            entityID = new ShortGuid(content[i].Substring(26, 2) + "-" + content[i].Substring(24, 2) + "-" + content[i].Substring(22, 2) + "-" + content[i].Substring(20, 2));
+                        }
+                        catch
+                        {
+                            continue;
+                        }
+                        if (composite == null)
+                        {
+                            composite = new BinComposite();
+                            composite.id = compositeID;
+                            composites.Add(composite);
+                        }
+                        BinEntity entity = composite.entities.FirstOrDefault(o => o.id == entityID);
+                        if (entity == null)
+                        {
+                            entity = new BinEntity();
+                            entity.id = entityID;
+                            composite.entities.Add(entity);
+                        }
+                        else if (entity.name != value)
+                        {
+                            Console.WriteLine("Renaming " + entityID + " from '" + entity.name + "' to '" + value + "'");
+                        }
+                        entity.name = value;
+                        break;
+                    }
+                    //CASE 8 would be parameter definition
+                }
             }
-            File.WriteAllLines("out/" + Path.GetFileNameWithoutExtension(dump) + "_entities.txt", debugDump);
+
+            if (!Directory.Exists("out2")) Directory.CreateDirectory("out2");
+
+            BinaryWriter writer = new BinaryWriter(File.OpenWrite("out2/" + Path.GetFileNameWithoutExtension(dump) + ".bin"));
+            writer.BaseStream.SetLength(0);
+            writer.Write(composites.Count);
+            for (int i = 0; i < composites.Count; i++)
+            {
+                Utilities.Write<ShortGuid>(writer, composites[i].id);
+                writer.Write(composites[i].path);
+                writer.Write(composites[i].entities.Count);
+                for (int x = 0; x < composites[i].entities.Count; x++)
+                {
+                    Utilities.Write<ShortGuid>(writer, composites[i].entities[x].id);
+                    writer.Write(composites[i].entities[x].name);
+                }
+            }
+            writer.Close();
         }
 
         private void button6_Click(object sender, EventArgs e)
@@ -1325,6 +1331,25 @@ namespace CathodeEditorGUI
             }
             File.WriteAllLines("bleh.txt", test);
         }
+    }
+
+    public class BinComposite
+    {
+        public ShortGuid id;
+        public string name = "";
+        public string path = "";
+        public List<BinEntity> entities = new List<BinEntity>();
+    }
+    public class BinEntity
+    {
+        public ShortGuid id;
+        public string name = "";
+        public List<BinParameter> parameters = new List<BinParameter>();
+    }
+    public class BinParameter
+    {
+        public ShortGuid id;
+        public string name;
     }
 
     public struct CathodeGloballyTransformedEntity

@@ -32,7 +32,7 @@ namespace CathodeEditorGUI
         private void button1_Click(object sender, EventArgs e)
         {
             if (param_name.Text == "") return;
-            ShortGuid thisParamID = Utilities.GenerateGUID(param_name.Text);
+            ShortGuid thisParamID = ShortGuidUtils.Generate(param_name.Text);
 
             foreach (CathodeLoadedParameter param in node.parameters)
             {
@@ -78,12 +78,6 @@ namespace CathodeEditorGUI
                     break;
             }
             node.parameters.Add(new CathodeLoadedParameter(thisParamID, thisParam));
-
-            //If this parameter doesn't come up in the CATHODE string table, add it to our own
-            if (EntityDB.GetCathodeName(thisParamID) == thisParamID.ToString())
-            {
-                EntityDBEx.AddNewParameterName(thisParamID, param_name.Text);
-            }
 
             this.Close();
         }

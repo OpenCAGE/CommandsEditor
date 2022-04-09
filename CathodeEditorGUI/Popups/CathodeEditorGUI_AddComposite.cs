@@ -31,10 +31,10 @@ namespace CathodeEditorGUI
                     return;
                 }
             }
-
+            
             CathodeComposite newFlowgraph = new CathodeComposite();
             newFlowgraph.name = textBox1.Text;
-            newFlowgraph.shortGUID = Utilities.GenerateGUID(DateTime.Now.ToString("G"));
+            newFlowgraph.shortGUID = ShortGuidUtils.Generate(DateTime.Now.ToString("G"));
             CurrentInstance.commandsPAK.Composites.Add(newFlowgraph);
             this.Close();
         }

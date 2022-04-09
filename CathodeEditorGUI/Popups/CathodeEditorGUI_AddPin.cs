@@ -50,10 +50,10 @@ namespace CathodeEditorGUI
             }
 
             CathodeEntityLink newNodeLink = new CathodeEntityLink();
-            newNodeLink.connectionID = Utilities.GenerateGUID(DateTime.Now.ToString("G"));
-            newNodeLink.parentParamID = Utilities.GenerateGUID(pin_out_param.Text);
+            newNodeLink.connectionID = ShortGuidUtils.Generate(DateTime.Now.ToString("G"));
+            newNodeLink.parentParamID = ShortGuidUtils.Generate(pin_out_param.Text);
             newNodeLink.childID = _entityList[pin_in_node.SelectedIndex].shortGUID;
-            newNodeLink.childParamID = Utilities.GenerateGUID(pin_in_param.Text);
+            newNodeLink.childParamID = ShortGuidUtils.Generate(pin_in_param.Text);
             _entity.childLinks.Add(newNodeLink);
 
             this.Close();
