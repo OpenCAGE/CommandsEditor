@@ -1174,7 +1174,7 @@ namespace CathodeEditorGUI
             for (int i = 0; i < composites.Count; i++)
             {
                 Utilities.Write<ShortGuid>(writer, composites[i].id);
-                writer.Write(composites[i].path);
+                //writer.Write(composites[i].path);
                 writer.Write(composites[i].entities.Count);
                 for (int x = 0; x < composites[i].entities.Count; x++)
                 {
