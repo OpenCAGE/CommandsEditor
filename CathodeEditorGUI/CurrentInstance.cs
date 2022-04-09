@@ -11,7 +11,7 @@ namespace CathodeEditorGUI
     {
         public static CommandsPAK commandsPAK;
 
-        public static CompositeNameLookup compositeLookup;
+        public static EntityNameLookup compositeLookup;
 
         public static CathodeComposite selectedComposite;
         public static CathodeEntity selectedEntity;

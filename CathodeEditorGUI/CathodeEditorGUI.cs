@@ -135,7 +135,7 @@ namespace CathodeEditorGUI
             }
 
             //Begin caching entity names so we don't have to keep generating them
-            CurrentInstance.compositeLookup = new CompositeNameLookup(CurrentInstance.commandsPAK);
+            CurrentInstance.compositeLookup = new EntityNameLookup(CurrentInstance.commandsPAK);
             if (currentBackgroundCacher != null) currentBackgroundCacher.Dispose();
             currentBackgroundCacher = Task.Factory.StartNew(() => EditorUtils.GenerateEntityNameCache(this));
 
@@ -1181,6 +1181,15 @@ namespace CathodeEditorGUI
                     Utilities.Write<ShortGuid>(writer, composites[i].entities[x].id);
                     writer.Write(composites[i].entities[x].name);
                 }
+            }
+            writer.Close();
+            writer = new BinaryWriter(File.OpenWrite("out2/composites_only.bin"));
+            writer.BaseStream.SetLength(0);
+            writer.Write(composites.Count);
+            for (int i = 0; i < composites.Count; i++)
+            {
+                Utilities.Write<ShortGuid>(writer, composites[i].id);
+                writer.Write(composites[i].path);
             }
             writer.Close();
         }
