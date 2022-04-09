@@ -22,7 +22,7 @@ namespace CathodeEditorGUI.UserControls
             InitializeComponent();
         }
 
-        public void PopulateUI(CathodeEnum cEnum, cGUID paramID)
+        public void PopulateUI(CathodeEnum cEnum, ShortGuid paramID)
         {
             enumVal = cEnum;
             ENUM_VARIABLE_DUMMY.Text = EntityDBEx.GetParameterName(paramID) + " (" + paramID.ToString() + ")";

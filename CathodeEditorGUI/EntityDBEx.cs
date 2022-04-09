@@ -14,14 +14,14 @@ namespace CathodeEditorGUI
 {
     static class EntityDBEx
     {
-        private static List<ShortGUIDDescriptor> customParamNames = null;
-        private static List<ShortGUIDDescriptor> customEntityNames = null;
+        private static List<ShortGuidDescriptor> customParamNames = null;
+        private static List<ShortGuidDescriptor> customEntityNames = null;
 
         //To be called directly after loading the pak using CathodeLib
         public static void LoadNames()
         {
-            customParamNames = new List<ShortGUIDDescriptor>();
-            customEntityNames = new List<ShortGUIDDescriptor>();
+            customParamNames = new List<ShortGuidDescriptor>();
+            customEntityNames = new List<ShortGuidDescriptor>();
 
             BinaryReader reader = new BinaryReader(File.OpenRead(CurrentInstance.commandsPAK.Filepath));
             reader.BaseStream.Position = 20;
@@ -35,8 +35,8 @@ namespace CathodeEditorGUI
             int number_of_custom_param_names = reader.ReadInt32();
             for (int i = 0; i < number_of_custom_param_names; i++)
             {
-                ShortGUIDDescriptor thisDesc = new ShortGUIDDescriptor();
-                thisDesc.ID = Utilities.Consume<cGUID>(reader);
+                ShortGuidDescriptor thisDesc = new ShortGuidDescriptor();
+                thisDesc.ID = Utilities.Consume<ShortGuid>(reader);
                 thisDesc.Description = reader.ReadString();
                 customParamNames.Add(thisDesc);
             }
@@ -45,8 +45,8 @@ namespace CathodeEditorGUI
             int number_of_custom_entity_names = reader.ReadInt32();
             for (int i = 0; i < number_of_custom_entity_names; i++)
             {
-                ShortGUIDDescriptor thisDesc = new ShortGUIDDescriptor();
-                thisDesc.ID = Utilities.Consume<cGUID>(reader);
+                ShortGuidDescriptor thisDesc = new ShortGuidDescriptor();
+                thisDesc.ID = Utilities.Consume<ShortGuid>(reader);
                 thisDesc.Description = reader.ReadString();
                 customEntityNames.Add(thisDesc);
             }
@@ -64,14 +64,14 @@ namespace CathodeEditorGUI
             writer.Write(customParamNames.Count);
             for (int i = 0; i < customParamNames.Count; i++)
             {
-                Utilities.Write<cGUID>(writer, customParamNames[i].ID);
+                Utilities.Write<ShortGuid>(writer, customParamNames[i].ID);
                 writer.Write(customParamNames[i].Description);
             }
 
             writer.Write(customEntityNames.Count);
             for (int i = 0; i < customEntityNames.Count; i++)
             {
-                Utilities.Write<cGUID>(writer, customEntityNames[i].ID);
+                Utilities.Write<ShortGuid>(writer, customEntityNames[i].ID);
                 writer.Write(customEntityNames[i].Description);
             }
 
@@ -79,46 +79,46 @@ namespace CathodeEditorGUI
         }
 
         //Add new param/entity names
-        public static void AddNewParameterName(cGUID id, string name)
+        public static void AddNewParameterName(ShortGuid id, string name)
         {
-            ShortGUIDDescriptor desc = customParamNames.FirstOrDefault(o => o.ID == id);
+            ShortGuidDescriptor desc = customParamNames.FirstOrDefault(o => o.ID == id);
             if (desc != null) desc.Description = name;
-            else customParamNames.Add(new ShortGUIDDescriptor{ ID = id, ID_cachedstring = id.ToString(), Description = name });
+            else customParamNames.Add(new ShortGuidDescriptor{ ID = id, ID_cachedstring = id.ToString(), Description = name });
         }
-        public static void RemoveNewParameterName(cGUID id)
+        public static void RemoveNewParameterName(ShortGuid id)
         {
-            ShortGUIDDescriptor desc = customParamNames.FirstOrDefault(o => o.ID == id);
+            ShortGuidDescriptor desc = customParamNames.FirstOrDefault(o => o.ID == id);
             if (desc == null) return;
             customParamNames.Remove(desc);
         }
         //--
-        public static void AddNewEntityName(cGUID id, string name)
+        public static void AddNewEntityName(ShortGuid id, string name)
         {
-            ShortGUIDDescriptor desc = customEntityNames.FirstOrDefault(o => o.ID == id);
+            ShortGuidDescriptor desc = customEntityNames.FirstOrDefault(o => o.ID == id);
             if (desc != null) desc.Description = name;
-            else customEntityNames.Add(new ShortGUIDDescriptor { ID = id, ID_cachedstring = id.ToString(), Description = name });
+            else customEntityNames.Add(new ShortGuidDescriptor { ID = id, ID_cachedstring = id.ToString(), Description = name });
             EditorUtils.PurgeEntityNameFromCache(id);
         }
-        public static void RemoveNewEntityName(cGUID id)
+        public static void RemoveNewEntityName(ShortGuid id)
         {
-            ShortGUIDDescriptor desc = customEntityNames.FirstOrDefault(o => o.ID == id);
+            ShortGuidDescriptor desc = customEntityNames.FirstOrDefault(o => o.ID == id);
             if (desc == null) return;
             customEntityNames.Remove(desc);
         }
 
         //Get parameter/entity name
         //We fall through to EntityDB here which means we can replace all EntityDB calls to Cathode/Editor name in the GUI app
-        public static string GetParameterName(cGUID id)
+        public static string GetParameterName(ShortGuid id)
         {
             string id_string = id.ToString();
-            ShortGUIDDescriptor desc = customParamNames.FirstOrDefault(o => o.ID_cachedstring == id_string);
+            ShortGuidDescriptor desc = customParamNames.FirstOrDefault(o => o.ID_cachedstring == id_string);
             if (desc == null) return EntityDB.GetCathodeName(id, CurrentInstance.commandsPAK);
             return desc.Description;
         }
-        public static string GetEntityName(cGUID id)
+        public static string GetEntityName(ShortGuid id)
         {
             string id_string = id.ToString();
-            ShortGUIDDescriptor desc = customEntityNames.FirstOrDefault(o => o.ID_cachedstring == id_string);
+            ShortGuidDescriptor desc = customEntityNames.FirstOrDefault(o => o.ID_cachedstring == id_string);
             if (desc == null) return EntityDB.GetEditorName(id);
             return desc.Description;
         }
@@ -136,7 +136,7 @@ namespace CathodeEditorGUI
                     {
                         try
                         {
-                            cGUID id = new cGUID(content[i]);
+                            ShortGuid id = new ShortGuid(content[i]);
                             content[i] = GetParameterName(id);
                         }
                         catch { }

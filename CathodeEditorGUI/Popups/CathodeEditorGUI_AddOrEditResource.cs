@@ -23,7 +23,7 @@ namespace CathodeEditorGUI
 
             //FOR TESTING ONLY
             resRef.AddRange(_ent.resources);
-            cGUID resourceParamID = Utilities.GenerateGUID("resource");
+            ShortGuid resourceParamID = Utilities.GenerateGUID("resource");
             CathodeLoadedParameter resourceParam = CurrentInstance.selectedEntity.parameters.FirstOrDefault(o => o.shortGUID == resourceParamID);
             if (resourceParam != null) resRef.AddRange(((CathodeResource)resourceParam.content).value);
 

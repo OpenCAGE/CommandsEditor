@@ -22,7 +22,7 @@ namespace CathodeEditorGUI.UserControls
             InitializeComponent();
         }
 
-        public void PopulateUI(CathodeTransform cTrans, cGUID paramID)
+        public void PopulateUI(CathodeTransform cTrans, ShortGuid paramID)
         {
             transformVal = cTrans;
             POSITION_VARIABLE_DUMMY.Text = EntityDBEx.GetParameterName(paramID) + " (" + paramID.ToString() + ")";

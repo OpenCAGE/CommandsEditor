@@ -74,12 +74,15 @@
             this.load_commands_pak = new System.Windows.Forms.Button();
             this.env_list = new System.Windows.Forms.ComboBox();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.button5 = new System.Windows.Forms.Button();
+            this.button4 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.editEntryPoint = new System.Windows.Forms.Button();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.modifyMVR = new System.Windows.Forms.CheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.button3 = new System.Windows.Forms.Button();
+            this.button6 = new System.Windows.Forms.Button();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -90,23 +93,23 @@
             this.groupBox10.SuspendLayout();
             this.SuspendLayout();
             // 
-            // flowgraph_count
+            // composite_count_display
             // 
             this.composite_count_display.AutoSize = true;
             this.composite_count_display.Location = new System.Drawing.Point(6, 28);
-            this.composite_count_display.Name = "flowgraph_count";
+            this.composite_count_display.Name = "composite_count_display";
             this.composite_count_display.Size = new System.Drawing.Size(95, 13);
             this.composite_count_display.TabIndex = 172;
-            this.composite_count_display.Text = "Flowgraph count:  ";
+            this.composite_count_display.Text = "Composite count:  ";
             // 
-            // first_executed_flowgraph
+            // root_composite_display
             // 
             this.root_composite_display.AutoSize = true;
             this.root_composite_display.Location = new System.Drawing.Point(6, 12);
-            this.root_composite_display.Name = "first_executed_flowgraph";
-            this.root_composite_display.Size = new System.Drawing.Size(63, 13);
+            this.root_composite_display.Name = "root_composite_display";
+            this.root_composite_display.Size = new System.Drawing.Size(84, 13);
             this.root_composite_display.TabIndex = 170;
-            this.root_composite_display.Text = "Entry point: ";
+            this.root_composite_display.Text = "Root composite:";
             // 
             // save_commands_pak
             // 
@@ -187,10 +190,10 @@
             this.editTriggerSequence.Visible = false;
             this.editTriggerSequence.Click += new System.EventHandler(this.editTriggerSequence_Click);
             // 
-            // editFlowgraphResources
+            // editCompositeResources
             // 
             this.editCompositeResources.Location = new System.Drawing.Point(366, -1);
-            this.editCompositeResources.Name = "editFlowgraphResources";
+            this.editCompositeResources.Name = "editCompositeResources";
             this.editCompositeResources.Size = new System.Drawing.Size(99, 23);
             this.editCompositeResources.TabIndex = 177;
             this.editCompositeResources.Text = "Edit Resources";
@@ -198,10 +201,10 @@
             this.editCompositeResources.Visible = false;
             this.editCompositeResources.Click += new System.EventHandler(this.editCompositeResources_Click);
             // 
-            // editNodeResources
+            // editEntityResources
             // 
             this.editEntityResources.Location = new System.Drawing.Point(750, 123);
-            this.editEntityResources.Name = "editNodeResources";
+            this.editEntityResources.Name = "editEntityResources";
             this.editEntityResources.Size = new System.Drawing.Size(99, 23);
             this.editEntityResources.TabIndex = 176;
             this.editEntityResources.Text = "Edit Resources";
@@ -227,10 +230,10 @@
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Selected Entity Info";
             // 
-            // node_to_flowgraph_jump
+            // jumpToComposite
             // 
             this.jumpToComposite.Location = new System.Drawing.Point(339, 15);
-            this.jumpToComposite.Name = "node_to_flowgraph_jump";
+            this.jumpToComposite.Name = "jumpToComposite";
             this.jumpToComposite.Size = new System.Drawing.Size(35, 47);
             this.jumpToComposite.TabIndex = 8;
             this.jumpToComposite.Text = "Go To";
@@ -238,11 +241,11 @@
             this.jumpToComposite.Visible = false;
             this.jumpToComposite.Click += new System.EventHandler(this.jumpToComposite_Click);
             // 
-            // selected_node_name
+            // selected_entity_name
             // 
             this.selected_entity_name.AutoSize = true;
             this.selected_entity_name.Location = new System.Drawing.Point(86, 63);
-            this.selected_entity_name.Name = "selected_node_name";
+            this.selected_entity_name.Name = "selected_entity_name";
             this.selected_entity_name.Size = new System.Drawing.Size(0, 13);
             this.selected_entity_name.TabIndex = 7;
             // 
@@ -256,11 +259,11 @@
             this.label9.TabIndex = 6;
             this.label9.Text = "Node Name: ";
             // 
-            // selected_node_type_description
+            // selected_entity_type_description
             // 
             this.selected_entity_type_description.AutoSize = true;
             this.selected_entity_type_description.Location = new System.Drawing.Point(151, 80);
-            this.selected_entity_type_description.Name = "selected_node_type_description";
+            this.selected_entity_type_description.Name = "selected_entity_type_description";
             this.selected_entity_type_description.Size = new System.Drawing.Size(0, 13);
             this.selected_entity_type_description.TabIndex = 5;
             // 
@@ -274,12 +277,12 @@
             this.label6.TabIndex = 4;
             this.label6.Text = "Node Type Description:";
             // 
-            // selected_node_type
+            // selected_entity_type
             // 
             this.selected_entity_type.AutoSize = true;
             this.selected_entity_type.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.selected_entity_type.Location = new System.Drawing.Point(83, 38);
-            this.selected_entity_type.Name = "selected_node_type";
+            this.selected_entity_type.Name = "selected_entity_type";
             this.selected_entity_type.Size = new System.Drawing.Size(0, 13);
             this.selected_entity_type.TabIndex = 3;
             // 
@@ -293,12 +296,12 @@
             this.label4.TabIndex = 2;
             this.label4.Text = "Node Type:";
             // 
-            // selected_node_id
+            // selected_entity_id
             // 
             this.selected_entity_id.AutoSize = true;
             this.selected_entity_id.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.selected_entity_id.Location = new System.Drawing.Point(69, 22);
-            this.selected_entity_id.Name = "selected_node_id";
+            this.selected_entity_id.Name = "selected_entity_id";
             this.selected_entity_id.Size = new System.Drawing.Size(0, 13);
             this.selected_entity_id.TabIndex = 1;
             // 
@@ -377,13 +380,13 @@
             this.out_pin_goto.UseVisualStyleBackColor = true;
             this.out_pin_goto.Click += new System.EventHandler(this.out_pin_goto_Click);
             // 
-            // node_children
+            // entity_children
             // 
             this.entity_children.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.entity_children.FormattingEnabled = true;
             this.entity_children.HorizontalScrollbar = true;
             this.entity_children.Location = new System.Drawing.Point(6, 21);
-            this.entity_children.Name = "node_children";
+            this.entity_children.Name = "entity_children";
             this.entity_children.Size = new System.Drawing.Size(371, 82);
             this.entity_children.TabIndex = 145;
             // 
@@ -423,10 +426,10 @@
             this.duplicateSelectedNode.UseVisualStyleBackColor = true;
             this.duplicateSelectedNode.Click += new System.EventHandler(this.duplicateSelectedEntity_Click);
             // 
-            // removeSelectedNode
+            // removeSelectedEntity
             // 
             this.removeSelectedEntity.Location = new System.Drawing.Point(117, 690);
-            this.removeSelectedEntity.Name = "removeSelectedNode";
+            this.removeSelectedEntity.Name = "removeSelectedEntity";
             this.removeSelectedEntity.Size = new System.Drawing.Size(111, 23);
             this.removeSelectedEntity.TabIndex = 148;
             this.removeSelectedEntity.Text = "Remove Selected";
@@ -443,21 +446,21 @@
             this.addNewNode.UseVisualStyleBackColor = true;
             this.addNewNode.Click += new System.EventHandler(this.addNewEntity_Click);
             // 
-            // flowgraph_content
+            // composite_content
             // 
             this.composite_content.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.composite_content.FormattingEnabled = true;
             this.composite_content.HorizontalScrollbar = true;
             this.composite_content.Location = new System.Drawing.Point(6, 43);
-            this.composite_content.Name = "flowgraph_content";
+            this.composite_content.Name = "composite_content";
             this.composite_content.Size = new System.Drawing.Size(444, 641);
             this.composite_content.TabIndex = 144;
             this.composite_content.SelectedIndexChanged += new System.EventHandler(this.composite_content_SelectedIndexChanged);
             // 
-            // node_search_box
+            // entity_search_box
             // 
             this.entity_search_box.Location = new System.Drawing.Point(6, 17);
-            this.entity_search_box.Name = "node_search_box";
+            this.entity_search_box.Name = "entity_search_box";
             this.entity_search_box.Size = new System.Drawing.Size(348, 20);
             this.entity_search_box.TabIndex = 146;
             // 
@@ -503,18 +506,18 @@
             this.addNewParameter.UseVisualStyleBackColor = true;
             this.addNewParameter.Click += new System.EventHandler(this.addNewParameter_Click);
             // 
-            // NodeParams
+            // entity_params
             // 
             this.entity_params.AutoScroll = true;
             this.entity_params.Location = new System.Drawing.Point(6, 20);
-            this.entity_params.Name = "NodeParams";
+            this.entity_params.Name = "entity_params";
             this.entity_params.Size = new System.Drawing.Size(371, 408);
             this.entity_params.TabIndex = 0;
             // 
             // button1
             // 
             this.button1.ForeColor = System.Drawing.Color.Red;
-            this.button1.Location = new System.Drawing.Point(399, 9);
+            this.button1.Location = new System.Drawing.Point(424, 9);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(192, 23);
             this.button1.TabIndex = 176;
@@ -544,6 +547,9 @@
             // 
             // groupBox8
             // 
+            this.groupBox8.Controls.Add(this.button6);
+            this.groupBox8.Controls.Add(this.button5);
+            this.groupBox8.Controls.Add(this.button4);
             this.groupBox8.Controls.Add(this.button2);
             this.groupBox8.Controls.Add(this.editEntryPoint);
             this.groupBox8.Controls.Add(this.button1);
@@ -555,10 +561,34 @@
             this.groupBox8.TabIndex = 174;
             this.groupBox8.TabStop = false;
             // 
+            // button5
+            // 
+            this.button5.ForeColor = System.Drawing.Color.Red;
+            this.button5.Location = new System.Drawing.Point(72, 34);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(182, 23);
+            this.button5.TabIndex = 180;
+            this.button5.Text = "DEBUG: PARSE DAN DUMP";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Visible = false;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
+            // 
+            // button4
+            // 
+            this.button4.ForeColor = System.Drawing.Color.Red;
+            this.button4.Location = new System.Drawing.Point(260, 34);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(116, 23);
+            this.button4.TabIndex = 180;
+            this.button4.Text = "DEBUG: purge all";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Visible = false;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
             // button2
             // 
             this.button2.ForeColor = System.Drawing.Color.Red;
-            this.button2.Location = new System.Drawing.Point(203, 9);
+            this.button2.Location = new System.Drawing.Point(228, 9);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(192, 23);
             this.button2.TabIndex = 178;
@@ -569,11 +599,11 @@
             // 
             // editEntryPoint
             // 
-            this.editEntryPoint.Location = new System.Drawing.Point(597, 9);
+            this.editEntryPoint.Location = new System.Drawing.Point(619, 9);
             this.editEntryPoint.Name = "editEntryPoint";
-            this.editEntryPoint.Size = new System.Drawing.Size(95, 23);
+            this.editEntryPoint.Size = new System.Drawing.Size(73, 23);
             this.editEntryPoint.TabIndex = 177;
-            this.editEntryPoint.Text = "Edit Entry Point";
+            this.editEntryPoint.Text = "Edit Root";
             this.editEntryPoint.UseVisualStyleBackColor = true;
             this.editEntryPoint.Click += new System.EventHandler(this.editEntryPoint_Click);
             // 
@@ -592,19 +622,20 @@
             // modifyMVR
             // 
             this.modifyMVR.AutoSize = true;
-            this.modifyMVR.Location = new System.Drawing.Point(483, 20);
+            this.modifyMVR.Location = new System.Drawing.Point(483, 13);
             this.modifyMVR.Name = "modifyMVR";
-            this.modifyMVR.Size = new System.Drawing.Size(50, 17);
+            this.modifyMVR.Size = new System.Drawing.Size(50, 30);
             this.modifyMVR.TabIndex = 174;
-            this.modifyMVR.Text = "MVR";
-            this.toolTip1.SetToolTip(this.modifyMVR, "This option may solve some issues with deleted geometry persisting, however could" +
-        " produce unwanted issues.");
+            this.modifyMVR.Text = "Clear\r\nMVR";
+            this.toolTip1.SetToolTip(this.modifyMVR, "HIGHLY EXPERIMENTAL! This option will clear the level\'s MVR file, which will remo" +
+        "ve any lingering geometry, but will likely cause unwanted issues in base-game le" +
+        "vels.");
             this.modifyMVR.UseVisualStyleBackColor = true;
             // 
             // button3
             // 
             this.button3.ForeColor = System.Drawing.Color.Red;
-            this.button3.Location = new System.Drawing.Point(911, 37);
+            this.button3.Location = new System.Drawing.Point(936, 37);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(234, 23);
             this.button3.TabIndex = 179;
@@ -612,6 +643,18 @@
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Visible = false;
             this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
+            // button6
+            // 
+            this.button6.ForeColor = System.Drawing.Color.Red;
+            this.button6.Location = new System.Drawing.Point(96, 9);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(127, 23);
+            this.button6.TabIndex = 181;
+            this.button6.Text = "DEBUG: decomp dump";
+            this.button6.UseVisualStyleBackColor = true;
+            this.button6.Visible = false;
+            this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
             // CathodeEditorGUI
             // 
@@ -697,5 +740,8 @@
         private System.Windows.Forms.Button editTriggerSequence;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.Button button6;
     }
 }

@@ -20,7 +20,7 @@ namespace CathodeEditorGUI.UserControls
             InitializeComponent();
         }
 
-        public void PopulateUI(CathodeSpline cSpline, cGUID paramID)
+        public void PopulateUI(CathodeSpline cSpline, ShortGuid paramID)
         {
             UNIMPLEMENTED_VARIABLE_TYPE.Text = EntityDBEx.GetParameterName(paramID) + " (" + paramID.ToString() + ")";
             //todo: dynamically populate UI

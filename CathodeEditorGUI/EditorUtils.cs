@@ -46,7 +46,7 @@ namespace CathodeEditorGUI
 
         /* Generate a cache of entity names to save re-generating them every time */
         private static bool hasFinishedCachingEntityNames = false;
-        private static Dictionary<cGUID, string> cachedEntityName = new Dictionary<cGUID, string>();
+        private static Dictionary<ShortGuid, string> cachedEntityName = new Dictionary<ShortGuid, string>();
         public static void GenerateEntityNameCache(CathodeEditorGUI mainInst)
         {
             if (CurrentInstance.commandsPAK == null) return;
@@ -60,7 +60,7 @@ namespace CathodeEditorGUI
                 {
                     if (cachedEntityName.ContainsKey(ents[x].shortGUID))
                     {
-                        //TODO: Figure out why this is happening... aren't node IDs meant to be unique to the whole PAK? Maybe it's per flowgraph?
+                        //TODO: Figure out why this is happening... aren't node IDs meant to be unique to the whole PAK? Maybe it's per composite?
                         string bleh = "";
                     }
                     else
@@ -78,8 +78,8 @@ namespace CathodeEditorGUI
             mainInst.EnableLoadingOfPaks(true);
             hasFinishedCachingEntityNames = true;
         }
-        private static List<cGUID> queuedForRemoval = new List<cGUID>();
-        public static void PurgeEntityNameFromCache(cGUID entId)
+        private static List<ShortGuid> queuedForRemoval = new List<ShortGuid>();
+        public static void PurgeEntityNameFromCache(ShortGuid entId)
         {
             if (!hasFinishedCachingEntityNames) queuedForRemoval.Add(entId);
             else cachedEntityName.Remove(entId);
@@ -94,7 +94,7 @@ namespace CathodeEditorGUI
             switch (entity.variant)
             {
                 case EntityVariant.FUNCTION:
-                    cGUID function = ((FunctionEntity)entity).function;
+                    ShortGuid function = ((FunctionEntity)entity).function;
                     List<CathodeEntityDatabase.ParameterDefinition> parameters = CathodeEntityDatabase.GetParametersFromEntity(function);
                     if (parameters != null)
                     {
@@ -158,7 +158,7 @@ namespace CathodeEditorGUI
         }
 
         /* Resolve a node hierarchy: **firstHierarchyIsFlowgraph should be TRUE for proxies!** */
-        public static CathodeEntity ResolveHierarchy(List<cGUID> hierarchy, out CathodeComposite containedFlowgraph)
+        public static CathodeEntity ResolveHierarchy(List<ShortGuid> hierarchy, out CathodeComposite containedFlowgraph)
         {
             if (hierarchy.Count == 0)
             {
@@ -209,7 +209,7 @@ namespace CathodeEditorGUI
         }
 
         /* Display an entity hierarchy as a string */
-        public static string HierarchyToString(List<cGUID> hierarchy)
+        public static string HierarchyToString(List<ShortGuid> hierarchy)
         {
             string combinedString = "";
             for (int i = 0; i < hierarchy.Count; i++)
@@ -222,11 +222,9 @@ namespace CathodeEditorGUI
         }
 
         /* CA's CAGE doesn't properly tidy up hierarchies pointing to deleted entities - so we do that here to save confusion */
-        private static List<cGUID> purgedComps = new List<cGUID>();
+        private static List<ShortGuid> purgedComps = new List<ShortGuid>();
         public static void PurgeDeadHierarchiesInActiveComposite()
         {
-            return;
-
             CathodeComposite comp = CurrentInstance.selectedComposite;
             if (purgedComps.Contains(comp.shortGUID)) return;
             purgedComps.Add(comp.shortGUID);
@@ -268,6 +266,7 @@ namespace CathodeEditorGUI
             //Clear TriggerSequence and CAGEAnimation entities
             for (int i = 0; i < comp.functions.Count; i++)
             {
+                //TODO: will this also clear up TriggerSequence/CAGEAnimation data for proxies?
                 switch (EntityDB.GetCathodeName(comp.functions[i].function))
                 {
                     case "TriggerSequence":

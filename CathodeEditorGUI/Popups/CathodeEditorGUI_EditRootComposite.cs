@@ -37,7 +37,7 @@ namespace CathodeEditorGUI
         private void button1_Click(object sender, EventArgs e)
         {
             if (rootComposite.SelectedIndex == -1) return;
-            CurrentInstance.commandsPAK.SetEntryPoint(composites[rootComposite.SelectedIndex].shortGUID);
+            CurrentInstance.commandsPAK.SetRootComposite(composites[rootComposite.SelectedIndex].shortGUID);
             this.Close();
         }
     }

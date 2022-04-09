@@ -22,7 +22,7 @@ namespace CathodeEditorGUI.UserControls
             InitializeComponent();
         }
 
-        public void PopulateUI(CathodeBool cBool, cGUID paramID)
+        public void PopulateUI(CathodeBool cBool, ShortGuid paramID)
         {
             boolVal = cBool;
             BOOL_VARIABLE_DUMMY.Text = EntityDBEx.GetParameterName(paramID) + " (" + paramID.ToString() + ")";

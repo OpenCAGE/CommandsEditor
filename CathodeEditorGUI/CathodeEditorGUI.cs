@@ -1,6 +1,6 @@
 using CATHODE;
 using CATHODE.Commands;
-using CATHODE.Models;
+using CATHODE.Misc;
 using CathodeEditorGUI.UserControls;
 using CathodeLib;
 using System;
@@ -45,7 +45,10 @@ namespace CathodeEditorGUI
             button1.Visible = true;
             button2.Visible = true;
             button3.Visible = true;
-//#endif
+            button4.Visible = true;
+            button5.Visible = true;
+            button6.Visible = true;
+            //#endif
         }
 
         /* Clear the UI */
@@ -56,7 +59,7 @@ namespace CathodeEditorGUI
                 FileTree.BeginUpdate();
                 FileTree.Nodes.Clear();
                 FileTree.EndUpdate();
-                root_composite_display.Text = "Entry point: ";
+                root_composite_display.Text = "Root composite: ";
                 composite_count_display.Text = "Composite count: ";
             }
             if (clear_entity_list)
@@ -144,7 +147,7 @@ namespace CathodeEditorGUI
             //Show info in UI
             RefreshStatsUI();
 
-            //Select entry point composite
+            //Load root composite
             LoadComposite(CurrentInstance.commandsPAK.EntryPoints[0].name);
         }
         private void load_commands_pak_Click(object sender, EventArgs e)
@@ -153,7 +156,7 @@ namespace CathodeEditorGUI
         }
         private void RefreshStatsUI()
         {
-            root_composite_display.Text = "Entry point: " + CurrentInstance.commandsPAK.EntryPoints[0].name;
+            root_composite_display.Text = "Root composite: " + CurrentInstance.commandsPAK.EntryPoints[0].name;
             composite_count_display.Text = "Composite count: " + CurrentInstance.commandsPAK.Composites.Count;
         }
 
@@ -177,7 +180,7 @@ namespace CathodeEditorGUI
 
             if (modifyMVR.Checked)
             {
-                CathodeMovers mvr = new CathodeMovers(CurrentInstance.commandsPAK.Filepath.Replace("COMMANDS.PAK", "MODELS.MVR"));
+                MoverDatabase mvr = new MoverDatabase(CurrentInstance.commandsPAK.Filepath.Replace("COMMANDS.PAK", "MODELS.MVR"));
                 for (int i = 0; i < mvr.Movers.Count; i++)
                 {
                     /*
@@ -198,7 +201,7 @@ namespace CathodeEditorGUI
                         System.Numerics.Matrix4x4.CreateFromQuaternion(System.Numerics.Quaternion.Identity) * 
                         System.Numerics.Matrix4x4.CreateTranslation(new System.Numerics.Vector3(-9999.0f, -9999.0f, -9999.0f));
                     mover.IsThisTypeID = MoverType.DYNAMIC_MODEL;
-                    mover.NodeID = new cGUID("00-00-00-00");
+                    mover.NodeID = new ShortGuid("00-00-00-00");
                     mvr.Movers[i] = mover;
                 }
                 if (mvr.FilePath != "") mvr.Save();
@@ -211,7 +214,7 @@ namespace CathodeEditorGUI
             SaveCommandsPAK();
             MessageBox.Show("Saved changes!", "Saved.", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
-        private CathodeComposite GetCompositeContainingEntity(cGUID entityID)
+        private CathodeComposite GetCompositeContainingEntity(ShortGuid entityID)
         {
             for (int i = 0; i < CurrentInstance.commandsPAK.Composites.Count; i++)
             {
@@ -227,7 +230,7 @@ namespace CathodeEditorGUI
             return null;
         }
 
-        /* Edit the loaded COMMANDS.PAK entry point */
+        /* Edit the loaded COMMANDS.PAK's root composite */
         private void editEntryPoint_Click(object sender, EventArgs e)
         {
             if (CurrentInstance.commandsPAK == null || !CurrentInstance.commandsPAK.Loaded) return;
@@ -284,7 +287,7 @@ namespace CathodeEditorGUI
             }
         }
 
-        /* Select entry point from top of UI */
+        /* Select root composite from top of UI */
         private void SelectEntryPointUI(object sender, System.EventArgs e)
         {
             if (CurrentInstance.commandsPAK == null || !CurrentInstance.commandsPAK.Loaded) return;
@@ -315,7 +318,7 @@ namespace CathodeEditorGUI
             {
                 if (CurrentInstance.selectedComposite.shortGUID == CurrentInstance.commandsPAK.EntryPoints[i].shortGUID)
                 {
-                    MessageBox.Show("Cannot delete a composite which is set as an entry point!", "Cannot delete.", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Cannot delete a composite which is the root, global, or pause menu!", "Cannot delete.", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
             }
@@ -357,7 +360,7 @@ namespace CathodeEditorGUI
             if (composite_content.SelectedIndex == -1 || CurrentInstance.selectedComposite == null) return;
             try
             {
-                cGUID entityID = new cGUID(composite_content.SelectedItem.ToString().Substring(1, 11));
+                ShortGuid entityID = new ShortGuid(composite_content.SelectedItem.ToString().Substring(1, 11));
                 CathodeEntity thisEntity = CurrentInstance.selectedComposite.GetEntityByID(entityID);
                 if (thisEntity != null) LoadEntity(thisEntity);
             }
@@ -742,12 +745,18 @@ namespace CathodeEditorGUI
             switch (entity.variant)
             {
                 case EntityVariant.FUNCTION:
-                    description = EntityDBEx.GetParameterName(((FunctionEntity)entity).function);
-                    jumpToComposite.Visible = (CurrentInstance.commandsPAK.GetComposite(((FunctionEntity)entity).function) != null);
+                    ShortGuid thisFunction = ((FunctionEntity)entity).function;
+                    bool isCompositeRef = CurrentInstance.commandsPAK.GetComposite(thisFunction) != null;
+                    jumpToComposite.Visible = isCompositeRef;
+                    description = EntityDBEx.GetParameterName(thisFunction);
                     selected_entity_name.Text = EntityDBEx.GetEntityName(entity.shortGUID);
 //#if debug //TODO: PULL THIS INTO STABLE
-                    editTriggerSequence.Visible = description == "TriggerSequence";
-                    editCAGEAnimationKeyframes.Visible = description == "CAGEAnimation";
+                    if (!isCompositeRef)
+                    {
+                        CathodeFunctionType function = CommandsUtils.GetFunctionType(thisFunction);
+                        editTriggerSequence.Visible = function == CathodeFunctionType.TriggerSequence;
+                        editCAGEAnimationKeyframes.Visible = function == CathodeFunctionType.CAGEAnimation;
+                    }
 //#endif
                     break;
                 case EntityVariant.DATATYPE:
@@ -766,7 +775,7 @@ namespace CathodeEditorGUI
             selected_entity_type_description.Text = description;
 
             //show resource editor button if this entity has a resource reference
-            cGUID resourceParamID = Utilities.GenerateGUID("resource");
+            ShortGuid resourceParamID = Utilities.GenerateGUID("resource");
             CathodeLoadedParameter resourceParam = CurrentInstance.selectedEntity.parameters.FirstOrDefault(o => o.shortGUID == resourceParamID);
 //#if debug //TODO: PULL THIS INTO STABLE
             editEntityResources.Visible = ((resourceParam != null) || CurrentInstance.selectedEntity.resources.Count != 0);
@@ -832,7 +841,7 @@ namespace CathodeEditorGUI
         }
 
         /* Refresh child/parent links for selected entity */
-        List<cGUID> linkedEntityListIDs = new List<cGUID>();
+        List<ShortGuid> linkedEntityListIDs = new List<ShortGuid>();
         private void RefreshEntityLinks()
         {
             entity_children.BeginUpdate();
@@ -949,7 +958,7 @@ namespace CathodeEditorGUI
         {
             return;
 
-            CathodeMovers mvr = new CathodeMovers(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\ENV\PRODUCTION\BSP_TORRENS\WORLD\MODELS.MVR");
+            MoverDatabase mvr = new MoverDatabase(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\ENV\PRODUCTION\BSP_TORRENS\WORLD\MODELS.MVR");
             //CathodeMovers.Movers = CathodeMovers.Movers.OrderBy(o => o.IsThisTypeID).ToList<alien_mvr_entry>();
             for (int i = 0; i < mvr.Movers.Count; i++)
             {
@@ -969,7 +978,7 @@ namespace CathodeEditorGUI
                     System.Numerics.Matrix4x4.CreateTranslation(new System.Numerics.Vector3(-9999.0f, -9999.0f, -9999.0f));
                 //mvr.IsThisTypeID = MoverType.DYNAMIC_MODEL;
                 thisMvr.IsThisTypeID = MoverType.DYNAMIC_MODEL;
-                thisMvr.NodeID = new cGUID("00-00-00-00");
+                thisMvr.NodeID = new ShortGuid("00-00-00-00");
 
                 //mvr.Unknowns5_ = new Vector4(0, 0, 0, 0);
 
@@ -1036,11 +1045,11 @@ namespace CathodeEditorGUI
             }
             mvr.Save();
 
-            mvr = new CathodeMovers(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\ENV\PRODUCTION\TECH_HUB\WORLD\MODELS.MVR");
+            mvr = new MoverDatabase(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\ENV\PRODUCTION\TECH_HUB\WORLD\MODELS.MVR");
             mvr.Save();
 
-            mvr = new CathodeMovers(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\ENV\PRODUCTION\BSP_TORRENS\WORLD\MODELS.MVR");
-            mvr.Movers.RemoveAll(o => o.NodeID != new cGUID(0));
+            mvr = new MoverDatabase(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\ENV\PRODUCTION\BSP_TORRENS\WORLD\MODELS.MVR");
+            mvr.Movers.RemoveAll(o => o.NodeID != new ShortGuid(0));
             mvr.Save();
 
             Application.Exit();
@@ -1089,6 +1098,232 @@ namespace CathodeEditorGUI
                 Console.WriteLine(EditorUtils.HierarchyToString(overrider.hierarchy));
                 Console.WriteLine("-----");
             }
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            //CurrentInstance.commandsPAK.Composites.RemoveAll(o => o.name != "GLOBAL" && o.name != "PAUSEMENU" && o.name != CurrentInstance.commandsPAK.EntryPoints[0].name);
+            CurrentInstance.commandsPAK.EntryPoints[0].name = "RootComposite";
+            CurrentInstance.commandsPAK.Composites.RemoveAll(o => o.name.Length > 3 && o.name.Substring(0, 3) == "AYZ");
+            CurrentInstance.commandsPAK.Save();
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            List<string> dumps = Directory.GetFiles(@"E:\GitHub Repos\alien_assets_daniel\DEBUG", "alien_commands_bin_*", SearchOption.AllDirectories).ToList<string>();
+            List<Task> tasks = new List<Task>();
+            foreach (string dump in dumps)
+            {
+                tasks.Add(Task.Factory.StartNew(() => ParseCommandBinDump(dump)));
+            }
+
+
+            /*
+            for (int i = 0; i < CurrentInstance.selectedComposite.resources.Count; i++)
+            {
+                Console.WriteLine(CurrentInstance.selectedComposite.resources[i].entryType);
+            }
+            for (int i = 0; i < CurrentInstance.selectedComposite.GetEntities().Count; i++)
+            {
+                for (int x = 0; x < CurrentInstance.selectedComposite.GetEntities()[i].resources.Count; x++)
+                {
+                    Console.WriteLine(CurrentInstance.selectedComposite.GetEntities()[i].resources[x].entryType);
+                }
+            }
+            */
+        }
+        private void ParseCommandBinDump(string dump)
+        { 
+            List<ShortGuidDescriptor> descs_flows = new List<ShortGuidDescriptor>();
+            List<ShortGuidDescriptor> descs_param = new List<ShortGuidDescriptor>();
+            List<ShortGuidDescriptor> descs_node = new List<ShortGuidDescriptor>();
+            string[] content = File.ReadAllLines(dump);
+            //COMPOSITES
+            for (int i = 0; i < content.Length; i++)
+            {
+                if (content[i].Substring(0, 1) != "1") continue;
+
+                string[] split = content[i].Split(new char[] { '\'' }, 2);
+                if (split.Length != 2) continue;
+                if (split[0].Substring(split[0].Length - 2, 1) != "2") continue;
+
+                ShortGuid id;
+                try
+                {
+                    id = new ShortGuid(content[i].Substring(13, 2) + "-" + content[i].Substring(11, 2) + "-" + content[i].Substring(9, 2) + "-" + content[i].Substring(7, 2));
+                }
+                catch
+                {
+                    continue;
+                }
+
+                string name = split[1].Substring(0, split[1].Length - 1);
+
+                bool didAdd = false;
+                for (int x = 0; x < descs_flows.Count; x++)
+                {
+                    if (descs_flows[x].ID == id)
+                    {
+                        descs_flows[x].ID_cachedstring = name;
+                        didAdd = true;
+                        break;
+                    }
+                }
+                if (didAdd) continue;
+
+                ShortGuidDescriptor guidString = new ShortGuidDescriptor();
+                guidString.ID = id;
+                guidString.ID_cachedstring = name;
+                descs_flows.Add(guidString);
+            }
+            //PARAMETERS
+            for (int i = 0; i < content.Length; i++)
+            {
+                if (content[i].Substring(0, 1) != "8") continue;
+
+                string[] split = content[i].Split(new char[] { '\'' }, 2);
+                if (split.Length != 2) continue;
+                if (split[0].Substring(split[0].Length - 2, 1) != "2") continue;
+
+                if (content[i].Length < 28) continue;
+
+                ShortGuid id;
+                try
+                {
+                    id = new ShortGuid(content[i].Substring(26, 2) + "-" + content[i].Substring(24, 2) + "-" + content[i].Substring(22, 2) + "-" + content[i].Substring(20, 2));
+                }
+                catch
+                {
+                    continue;
+                }
+                if (descs_param.FirstOrDefault(o => o.ID == id) != null)
+                {
+                    continue;
+                }
+
+                ShortGuidDescriptor guidString = new ShortGuidDescriptor();
+                guidString.ID = id;
+                guidString.ID_cachedstring = split[1].Substring(0, split[1].Length - 1);
+                descs_param.Add(guidString);
+            }
+            //ENTITIES
+            for (int i = 0; i < content.Length; i++)
+            {
+                //ENTITY NAME
+                if (content[i].Substring(0, 1) != "2") continue;
+
+                string[] split = content[i].Split(new char[] { '\'' }, 2);
+                if (split.Length != 2) continue;
+                if (split[0].Substring(split[0].Length - 2, 1) != "2") continue;
+
+                string name = split[1].Substring(0, split[1].Length - 1);
+                if (name == "") continue;
+
+                ShortGuid id;
+                try
+                {
+                    id = new ShortGuid(content[i].Substring(26, 2) + "-" + content[i].Substring(24, 2) + "-" + content[i].Substring(22, 2) + "-" + content[i].Substring(20, 2));
+                }
+                catch
+                {
+                    continue;
+                }
+
+                if (descs_node.FirstOrDefault(o => o.ID == id) != null)
+                {
+                    continue;
+                }
+
+                ShortGuidDescriptor guidString = new ShortGuidDescriptor();
+                guidString.ID = id;
+                guidString.ID_cachedstring = name;
+                descs_node.Add(guidString);
+            }
+            for (int i = 0; i < content.Length; i++)
+            {
+                //NAME PARAMETER
+                if (content[i].Substring(0, 1) != "5") continue;
+
+                string[] split = content[i].Split(new char[] { '\'' }, 2);
+                if (split.Length != 2) continue;
+                if (split[0].Substring(split[0].Length - 2, 1) != "2") continue;
+
+                if (content[i].Length < 14) continue;
+                if (split[0].Substring(split[0].Length - 13) != "0x58EBAC79 2 ") continue;
+
+                string name = split[1].Substring(0, split[1].Length - 1);
+                if (name == "") continue;
+
+                ShortGuid id;
+                try
+                {
+                    id = new ShortGuid(content[i].Substring(26, 2) + "-" + content[i].Substring(24, 2) + "-" + content[i].Substring(22, 2) + "-" + content[i].Substring(20, 2));
+                }
+                catch
+                {
+                    continue;
+                }
+
+                ShortGuidDescriptor existing = descs_node.FirstOrDefault(o => o.ID == id);
+                if (existing != null && existing.ID_cachedstring != "" && existing.ID_cachedstring != name)
+                {
+                    Console.WriteLine("Renaming " + id + " from '" + existing.ID_cachedstring + "' to '" + name + "'");
+                    //continue;
+                }
+
+                ShortGuidDescriptor guidString = new ShortGuidDescriptor();
+                guidString.ID = id;
+                guidString.ID_cachedstring = name;
+                descs_node.Add(guidString);
+            }
+
+            descs_param = descs_param.OrderBy(o => o.ID_cachedstring).ToList();
+            descs_node = descs_node.OrderBy(o => o.ID_cachedstring).ToList();
+
+            if (!Directory.Exists("out")) Directory.CreateDirectory("out");
+
+            List<string> debugDump = new List<string>();
+            BinaryWriter writer = new BinaryWriter(File.OpenWrite("out/" + Path.GetFileNameWithoutExtension(dump) + "_composites.bin"));
+            writer.BaseStream.SetLength(0);
+            writer.Write((char)0x00);
+            for (int i = 0; i < descs_flows.Count; i++)
+            {
+                Utilities.Write<ShortGuid>(writer, descs_flows[i].ID);
+                writer.Write(descs_flows[i].ID_cachedstring);
+                debugDump.Add(descs_flows[i].ID.ToString() + " => " + descs_flows[i].ID_cachedstring);
+            }
+            File.WriteAllLines("out/" + Path.GetFileNameWithoutExtension(dump) + "_composites.txt", debugDump);
+            writer.Close();
+            debugDump.Clear();
+            writer = new BinaryWriter(File.OpenWrite("out/" + Path.GetFileNameWithoutExtension(dump) + "_entities.bin"));
+            writer.BaseStream.SetLength(0);
+            writer.Write((char)0x00);
+            for (int i = 0; i < descs_node.Count; i++)
+            {
+                Utilities.Write<ShortGuid>(writer, descs_node[i].ID);
+                writer.Write(descs_node[i].ID_cachedstring);
+                debugDump.Add(descs_node[i].ID.ToString() + " => " + descs_node[i].ID_cachedstring);
+            }
+            File.WriteAllLines("out/" + Path.GetFileNameWithoutExtension(dump) + "_entities.txt", debugDump);
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            string[] decomp = File.ReadAllLines(@"C:\Users\mattf_cr4e5zq\AI ios.c");
+            List<string> test = new List<string>();
+            for (int i = 0; i < decomp.Length; i++)
+            {
+                string[] split = decomp[i].Split(new[] { "ShortGuid(" }, StringSplitOptions.None);
+                if (split.Length < 2) continue;
+                test.Add(split[1]);
+                continue;
+                string[] split2 = split[1].Split('"');
+                if (split2.Length < 3) continue;
+                string text = split2[1];
+                if (test.Contains(text)) continue;
+                test.Add(text);
+            }
+            File.WriteAllLines("bleh.txt", test);
         }
     }
 

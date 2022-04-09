@@ -22,7 +22,7 @@ namespace CathodeEditorGUI.UserControls
             InitializeComponent();
         }
 
-        public void PopulateUI(CathodeVector3 cVec, cGUID paramID)
+        public void PopulateUI(CathodeVector3 cVec, ShortGuid paramID)
         {
             vectorVal = cVec;
             VECTOR_VARIABLE_DUMMY.Text = EntityDBEx.GetParameterName(paramID) + " (" + paramID.ToString() + ")";

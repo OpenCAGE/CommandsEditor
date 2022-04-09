@@ -14,7 +14,7 @@ namespace CathodeEditorGUI
         public struct EntityDefinition
         {
             public string guidName;
-            public cGUID guid;
+            public ShortGuid guid;
             public string className;
             public List<ParameterDefinition> parameters;
         }
@@ -92,7 +92,7 @@ namespace CathodeEditorGUI
         {
             return entities.FirstOrDefault(o => (usingGuidName) ? o.guidName == node_name : o.className == node_name).className;
         }
-        public static string GetEntityClassName(cGUID node_guid)
+        public static string GetEntityClassName(ShortGuid node_guid)
         {
             return entities.FirstOrDefault(o => o.guid == node_guid).className;
         }
@@ -101,7 +101,7 @@ namespace CathodeEditorGUI
         {
             return entities.FirstOrDefault(o => (usingGuidName) ? o.guidName == node_name : o.className == node_name).parameters;
         }
-        public static List<ParameterDefinition> GetParametersFromEntity(cGUID node_guid)
+        public static List<ParameterDefinition> GetParametersFromEntity(ShortGuid node_guid)
         {
             string node_name = GetEntityClassName(node_guid);
             return entities.FirstOrDefault(o => o.className == node_name).parameters;
@@ -111,7 +111,7 @@ namespace CathodeEditorGUI
         {
             return entities.FirstOrDefault(o => (usingGuidName) ? o.guidName == node_name : o.className == node_name).parameters.FirstOrDefault(o => o.name == parameter_name);
         }
-        public static ParameterDefinition GetParameterFromEntity(cGUID node_guid, string parameter_name)
+        public static ParameterDefinition GetParameterFromEntity(ShortGuid node_guid, string parameter_name)
         {
             string node_name = GetEntityClassName(node_guid);
             return entities.FirstOrDefault(o => o.className == node_name).parameters.FirstOrDefault(o => o.name == parameter_name);

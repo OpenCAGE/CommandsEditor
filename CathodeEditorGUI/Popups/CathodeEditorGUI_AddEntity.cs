@@ -74,7 +74,7 @@ namespace CathodeEditorGUI
 
         private void createEntity(object sender, EventArgs e)
         {
-            cGUID thisID = Utilities.GenerateGUID(DateTime.Now.ToString("G"));
+            ShortGuid thisID = Utilities.GenerateGUID(DateTime.Now.ToString("G"));
 
             if (createDatatypeEntity.Checked)
             {
@@ -102,11 +102,11 @@ namespace CathodeEditorGUI
                         break;
                     case CathodeDataType.ENUM:
                         thisParam = new CathodeEnum();
-                        ((CathodeEnum)thisParam).enumID = new cGUID("4C-B9-82-48"); //ALERTNESS_STATE is the first alphabetically
+                        ((CathodeEnum)thisParam).enumID = new ShortGuid("4C-B9-82-48"); //ALERTNESS_STATE is the first alphabetically
                         break;
                     case CathodeDataType.SHORT_GUID:
                         thisParam = new CathodeResource();
-                        ((CathodeResource)thisParam).resourceID = new cGUID("00-00-00-00");
+                        ((CathodeResource)thisParam).resourceID = new ShortGuid("00-00-00-00");
                         break;
                     case CathodeDataType.BOOL:
                         thisParam = new CathodeBool();
@@ -130,18 +130,19 @@ namespace CathodeEditorGUI
             {
                 //Create FunctionEntity
                 FunctionEntity newEntity = new FunctionEntity(thisID);
-                switch (entityVariant.Text)
+                ShortGuid function = CathodeEntityDatabase.GetEntityAtIndex(entityVariant.SelectedIndex).guid;
+                switch (CommandsUtils.GetFunctionType(function))
                 {
                     //TODO: find a nicer way of auto selecting this (E.G. can we reflect to class names?)
-                    case "CAGEAnimation":
+                    case CathodeFunctionType.CAGEAnimation:
                         newEntity = new CAGEAnimation(thisID);
                         break;
-                    case "TriggerSequence":
+                    case CathodeFunctionType.TriggerSequence:
                         newEntity = new TriggerSequence(thisID);
                         break;
                 }
-                newEntity.function = CathodeEntityDatabase.GetEntityAtIndex(entityVariant.SelectedIndex).guid;
-                //TODO: auto populate params here
+                newEntity.function = function;
+                //TODO: auto populate params here based on defaults
 
                 //Add to composite & save name
                 composite.functions.Add(newEntity);

@@ -32,7 +32,7 @@ namespace CathodeEditorGUI
         private void button1_Click(object sender, EventArgs e)
         {
             if (param_name.Text == "") return;
-            cGUID thisParamID = Utilities.GenerateGUID(param_name.Text);
+            ShortGuid thisParamID = Utilities.GenerateGUID(param_name.Text);
 
             foreach (CathodeLoadedParameter param in node.parameters)
             {
@@ -61,11 +61,11 @@ namespace CathodeEditorGUI
                     break;
                 case CathodeDataType.ENUM:
                     thisParam = new CathodeEnum();
-                    ((CathodeEnum)thisParam).enumID = new cGUID("4C-B9-82-48"); //ALERTNESS_STATE is the first alphabetically
+                    ((CathodeEnum)thisParam).enumID = new ShortGuid("4C-B9-82-48"); //ALERTNESS_STATE is the first alphabetically
                     break;
                 case CathodeDataType.SHORT_GUID:
                     thisParam = new CathodeResource();
-                    ((CathodeResource)thisParam).resourceID = new cGUID("00-00-00-00");
+                    ((CathodeResource)thisParam).resourceID = new ShortGuid("00-00-00-00");
                     break;
                 case CathodeDataType.BOOL:
                     thisParam = new CathodeBool();

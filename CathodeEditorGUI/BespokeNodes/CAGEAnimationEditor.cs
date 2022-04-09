@@ -103,7 +103,7 @@ namespace CathodeEditorGUI
         {
             string info = ((Button)sender).AccessibleDescription;
             string[] infoS = info.Split(' ');
-            cGUID id = new cGUID(infoS[0]);
+            ShortGuid id = new ShortGuid(infoS[0]);
             currentEditData = animNode.keyframeData.FirstOrDefault(o => o.ID == id).keyframes[Convert.ToInt32(infoS[1])];
             textBox2.Text = currentEditData.paramValue.ToString();
             groupBox1.Visible = true;

@@ -14,10 +14,10 @@ namespace CathodeEditorGUI
     public partial class CathodeEditorGUI_RenameEntity : Form
     {
         public string EntityName { get { return entity_name.Text; } }
-        public cGUID EntityID;
+        public ShortGuid EntityID;
         public bool didSave = false;
 
-        public CathodeEditorGUI_RenameEntity(cGUID node)
+        public CathodeEditorGUI_RenameEntity(ShortGuid node)
         {
             InitializeComponent();
             entity_name.Text = EntityDBEx.GetEntityName(node);
