@@ -119,7 +119,7 @@ namespace CathodeEditorGUI
             trigger.hierarchy = new List<ShortGuid>();
             trigger.hierarchy.Add(new ShortGuid("00-00-00-00"));
 
-            int insertIndex = (trigger_list.SelectedIndex == -1) ? node.triggers.Count : trigger_list.SelectedIndex;
+            int insertIndex = (trigger_list.SelectedIndex == -1) ? node.triggers.Count : trigger_list.SelectedIndex + 1;
             node.triggers.Insert(insertIndex, trigger);
 
             ReloadTriggerList();
@@ -131,6 +131,8 @@ namespace CathodeEditorGUI
         {
             if (trigger_list.SelectedIndex == -1) return;
             node.triggers.RemoveAt(trigger_list.SelectedIndex);
+            ReloadTriggerList();
+            LoadSelectedTrigger();
         }
     }
 }
