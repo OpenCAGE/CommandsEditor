@@ -15,11 +15,13 @@ namespace CathodeEditorGUI
 {
     public partial class CathodeEditorGUI_AddEntity : Form
     {
-        public CathodeEntity NewEntity = null;
+        public Action<CathodeEntity> OnNewEntity;
 
         CathodeComposite composite = null;
         List<CathodeComposite> composites = null;
         List<CathodeEntityDatabase.EntityDefinition> availableEntities = null;
+        List<ShortGuid> hierarchy = null;
+
         public CathodeEditorGUI_AddEntity(CathodeComposite _comp, List<CathodeComposite> _comps)
         {
             composite = _comp;
@@ -36,6 +38,10 @@ namespace CathodeEditorGUI
         private void selectedDatatypeEntity(object sender, EventArgs e)
         {
             //Datatype
+            entityVariant.Visible = true;
+            label2.Visible = true;
+            generateHierarchy.Visible = false;
+            createNewEntity.Enabled = true;
             entityVariant.BeginUpdate();
             entityVariant.Items.Clear();
             entityVariant.Items.AddRange(new object[] {
@@ -56,6 +62,10 @@ namespace CathodeEditorGUI
         private void selectedFunctionEntity(object sender, EventArgs e)
         {
             //Function
+            entityVariant.Visible = true;
+            label2.Visible = true;
+            generateHierarchy.Visible = false;
+            createNewEntity.Enabled = true;
             entityVariant.BeginUpdate();
             entityVariant.Items.Clear();
             for (int i = 0; i < availableEntities.Count; i++) entityVariant.Items.Add(availableEntities[i].className);
@@ -65,15 +75,74 @@ namespace CathodeEditorGUI
         private void selectedCompositeEntity(object sender, EventArgs e)
         {
             //Composite
+            entityVariant.Visible = true;
+            label2.Visible = true;
+            generateHierarchy.Visible = false;
+            createNewEntity.Enabled = true;
             entityVariant.BeginUpdate();
             entityVariant.Items.Clear();
             for (int i = 0; i < composites.Count; i++) entityVariant.Items.Add(composites[i].name);
             entityVariant.EndUpdate();
             entityVariant.SelectedIndex = 0;
         }
+        private void selectedProxyEntity(object sender, EventArgs e)
+        {
+            //Proxy
+            entityVariant.Visible = false;
+            label2.Visible = false;
+            generateHierarchy.Visible = true;
+            createNewEntity.Enabled = false;
+            hierarchy = null;
+        }
+        private void selectedOverrideEntity(object sender, EventArgs e)
+        {
+            //Override
+            entityVariant.Visible = false;
+            label2.Visible = false;
+            generateHierarchy.Visible = true;
+            createNewEntity.Enabled = false;
+            hierarchy = null;
+        }
+
+        /* Generate hierarchy for proxy/override */
+        private void generateHierarchy_Click(object sender, EventArgs e)
+        {
+            CathodeEditorGUI_EditHierarchy hierarchyEditor = null;
+            if (createProxyEntity.Checked)
+            {
+                hierarchyEditor = new CathodeEditorGUI_EditHierarchy(CurrentInstance.commandsPAK.EntryPoints[0]);
+            }
+            else if (createOverrideEntity.Checked)
+            {
+                hierarchyEditor = new CathodeEditorGUI_EditHierarchy(CurrentInstance.selectedComposite);
+            }
+            hierarchyEditor.Show();
+            hierarchyEditor.OnHierarchyGenerated += HierarchyEditor_HierarchyGenerated;
+        }
+        private void HierarchyEditor_HierarchyGenerated(List<ShortGuid> generatedHierarchy)
+        {
+            if (createProxyEntity.Checked)
+            {
+                hierarchy = new List<ShortGuid>();
+                hierarchy.Add(CurrentInstance.commandsPAK.EntryPoints[0].shortGUID);
+                hierarchy.AddRange(generatedHierarchy);
+                createNewEntity.Enabled = true;
+            }
+            else if(createOverrideEntity.Checked)
+            {
+                hierarchy = generatedHierarchy;
+                createNewEntity.Enabled = true;
+            }
+        }
 
         private void createEntity(object sender, EventArgs e)
         {
+            if (textBox1.Text == "")
+            {
+                MessageBox.Show("Please enter an entity name!", "No name.", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             ShortGuid thisID = ShortGuidUtils.Generate(DateTime.Now.ToString("G"));
 
             if (createDatatypeEntity.Checked)
@@ -123,7 +192,7 @@ namespace CathodeEditorGUI
                 //Add to composite & save name
                 composite.datatypes.Add(newEntity);
                 ShortGuidUtils.Generate(textBox1.Text);
-                NewEntity = newEntity;
+                OnNewEntity?.Invoke(newEntity);
             }
             else if (createFunctionEntity.Checked)
             {
@@ -146,7 +215,7 @@ namespace CathodeEditorGUI
                 //Add to composite & save name
                 composite.functions.Add(newEntity);
                 CurrentInstance.compositeLookup.SetEntityName(composite.shortGUID, thisID, textBox1.Text);
-                NewEntity = newEntity;
+                OnNewEntity?.Invoke(newEntity);
             }
             else if (createCompositeEntity.Checked)
             {
@@ -163,9 +232,31 @@ namespace CathodeEditorGUI
                 //Add to composite & save name
                 this.composite.functions.Add(newEntity);
                 CurrentInstance.compositeLookup.SetEntityName(composite.shortGUID, thisID, textBox1.Text);
-                NewEntity = newEntity;
+                OnNewEntity?.Invoke(newEntity);
             }
+            else if (createProxyEntity.Checked)
+            {
+                //Create ProxyEntity
+                ProxyEntity newEntity = new ProxyEntity(thisID);
+                newEntity.hierarchy = hierarchy;
+                newEntity.extraId = ShortGuidUtils.Generate("temp"); //TODO: how do we generate this? Disabling proxy creation until we figure it out.
 
+                //Add to composite & save name
+                composite.proxies.Add(newEntity);
+                CurrentInstance.compositeLookup.SetEntityName(composite.shortGUID, thisID, textBox1.Text);
+                OnNewEntity?.Invoke(newEntity);
+            }
+            else if (createOverrideEntity.Checked)
+            {
+                //Create OverrideEntity
+                OverrideEntity newEntity = new OverrideEntity(thisID);
+                newEntity.hierarchy = hierarchy;
+
+                //Add to composite & save name
+                composite.overrides.Add(newEntity);
+                CurrentInstance.compositeLookup.SetEntityName(composite.shortGUID, thisID, textBox1.Text);
+                OnNewEntity?.Invoke(newEntity);
+            }
             this.Close();
         }
     }

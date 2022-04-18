@@ -32,10 +32,13 @@
             this.createDatatypeEntity = new System.Windows.Forms.RadioButton();
             this.createFunctionEntity = new System.Windows.Forms.RadioButton();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.generateHierarchy = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.createOverrideEntity = new System.Windows.Forms.RadioButton();
+            this.createProxyEntity = new System.Windows.Forms.RadioButton();
             this.createCompositeEntity = new System.Windows.Forms.RadioButton();
-            this.button1 = new System.Windows.Forms.Button();
+            this.createNewEntity = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
@@ -70,9 +73,10 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.generateHierarchy);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.groupBox2);
-            this.groupBox1.Controls.Add(this.button1);
+            this.groupBox1.Controls.Add(this.createNewEntity);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.textBox1);
@@ -83,6 +87,16 @@
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "New Entity";
+            // 
+            // generateHierarchy
+            // 
+            this.generateHierarchy.Location = new System.Drawing.Point(104, 110);
+            this.generateHierarchy.Name = "generateHierarchy";
+            this.generateHierarchy.Size = new System.Drawing.Size(641, 23);
+            this.generateHierarchy.TabIndex = 6;
+            this.generateHierarchy.Text = "Select Entity To Point To";
+            this.generateHierarchy.UseVisualStyleBackColor = true;
+            this.generateHierarchy.Click += new System.EventHandler(this.generateHierarchy_Click);
             // 
             // label3
             // 
@@ -95,6 +109,8 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.createOverrideEntity);
+            this.groupBox2.Controls.Add(this.createProxyEntity);
             this.groupBox2.Controls.Add(this.createDatatypeEntity);
             this.groupBox2.Controls.Add(this.createCompositeEntity);
             this.groupBox2.Controls.Add(this.createFunctionEntity);
@@ -103,6 +119,29 @@
             this.groupBox2.Size = new System.Drawing.Size(641, 50);
             this.groupBox2.TabIndex = 4;
             this.groupBox2.TabStop = false;
+            // 
+            // createOverrideEntity
+            // 
+            this.createOverrideEntity.AutoSize = true;
+            this.createOverrideEntity.Location = new System.Drawing.Point(421, 19);
+            this.createOverrideEntity.Name = "createOverrideEntity";
+            this.createOverrideEntity.Size = new System.Drawing.Size(94, 17);
+            this.createOverrideEntity.TabIndex = 5;
+            this.createOverrideEntity.Text = "Override Entity";
+            this.createOverrideEntity.UseVisualStyleBackColor = true;
+            this.createOverrideEntity.CheckedChanged += new System.EventHandler(this.selectedOverrideEntity);
+            // 
+            // createProxyEntity
+            // 
+            this.createProxyEntity.AutoSize = true;
+            this.createProxyEntity.Enabled = false;
+            this.createProxyEntity.Location = new System.Drawing.Point(335, 19);
+            this.createProxyEntity.Name = "createProxyEntity";
+            this.createProxyEntity.Size = new System.Drawing.Size(80, 17);
+            this.createProxyEntity.TabIndex = 4;
+            this.createProxyEntity.Text = "Proxy Entity";
+            this.createProxyEntity.UseVisualStyleBackColor = true;
+            this.createProxyEntity.CheckedChanged += new System.EventHandler(this.selectedProxyEntity);
             // 
             // createCompositeEntity
             // 
@@ -115,15 +154,15 @@
             this.createCompositeEntity.UseVisualStyleBackColor = true;
             this.createCompositeEntity.CheckedChanged += new System.EventHandler(this.selectedCompositeEntity);
             // 
-            // button1
+            // createNewEntity
             // 
-            this.button1.Location = new System.Drawing.Point(644, 137);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(101, 23);
-            this.button1.TabIndex = 4;
-            this.button1.Text = "Create";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.createEntity);
+            this.createNewEntity.Location = new System.Drawing.Point(644, 137);
+            this.createNewEntity.Name = "createNewEntity";
+            this.createNewEntity.Size = new System.Drawing.Size(101, 23);
+            this.createNewEntity.TabIndex = 4;
+            this.createNewEntity.Text = "Create";
+            this.createNewEntity.UseVisualStyleBackColor = true;
+            this.createNewEntity.Click += new System.EventHandler(this.createEntity);
             // 
             // label2
             // 
@@ -196,11 +235,14 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.ComboBox entityVariant;
         private System.Windows.Forms.RadioButton createCompositeEntity;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button createNewEntity;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.RadioButton createProxyEntity;
+        private System.Windows.Forms.Button generateHierarchy;
+        private System.Windows.Forms.RadioButton createOverrideEntity;
     }
 }

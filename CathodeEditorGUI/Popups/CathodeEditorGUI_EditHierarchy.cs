@@ -15,7 +15,7 @@ namespace CathodeEditorGUI
 {
     public partial class CathodeEditorGUI_EditHierarchy : Form
     {
-        public List<ShortGuid> GeneratedHierarchy { get { return hierarchy; } }
+        public Action<List<ShortGuid>> OnHierarchyGenerated;
         private List<ShortGuid> hierarchy = new List<ShortGuid>();
 
         private CathodeEntity selectedEntity = null;
@@ -62,6 +62,7 @@ namespace CathodeEditorGUI
             selectedComposite = CurrentInstance.commandsPAK.Composites[CurrentInstance.commandsPAK.GetFileIndex(FileName)];
             compositeName.Text = selectedComposite.name;
             composite_content.BeginUpdate();
+            composite_content.Items.Clear();
             //We only populate function entities here
             for (int i = 0; i < selectedComposite.functions.Count; i++)
             {
@@ -88,6 +89,8 @@ namespace CathodeEditorGUI
         {
             hierarchy.Add(selectedEntity.shortGUID);
             hierarchy.Add(new ShortGuid("00-00-00-00"));
+            OnHierarchyGenerated?.Invoke(hierarchy);
+            this.Close();
         }
     }
 }

@@ -509,11 +509,11 @@ namespace CathodeEditorGUI
             if (CurrentInstance.selectedComposite == null) return;
             CathodeEditorGUI_AddEntity add_parameter = new CathodeEditorGUI_AddEntity(CurrentInstance.selectedComposite, CurrentInstance.commandsPAK.Composites);
             add_parameter.Show();
-            add_parameter.FormClosed += new FormClosedEventHandler(add_entity_closed);
+            add_parameter.OnNewEntity += OnAddNewEntity;
         }
-        private void add_entity_closed(Object sender, FormClosedEventArgs e)
+        private void OnAddNewEntity(CathodeEntity entity)
         {
-            ReloadUIForNewEntity(((CathodeEditorGUI_AddEntity)sender).NewEntity);
+            ReloadUIForNewEntity(entity);
             this.BringToFront();
             this.Focus();
         }
