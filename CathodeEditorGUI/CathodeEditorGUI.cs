@@ -760,12 +760,15 @@ namespace CathodeEditorGUI
             {
                 case EntityVariant.FUNCTION:
                     ShortGuid thisFunction = ((FunctionEntity)entity).function;
-                    bool isCompositeRef = CurrentInstance.commandsPAK.GetComposite(thisFunction) != null;
-                    jumpToComposite.Visible = isCompositeRef;
-                    description = ShortGuidUtils.FindString(thisFunction);
+                    CathodeComposite funcComposite = CurrentInstance.commandsPAK.GetComposite(thisFunction);
+                    jumpToComposite.Visible = funcComposite != null;
+                    if (funcComposite != null)
+                        description = funcComposite.name;
+                    else
+                        description = ShortGuidUtils.FindString(((FunctionEntity)entity).function);
                     selected_entity_name.Text = CurrentInstance.compositeLookup.GetEntityName(CurrentInstance.selectedComposite.shortGUID, entity.shortGUID);
 //#if debug //TODO: PULL THIS INTO STABLE
-                    if (!isCompositeRef)
+                    if (funcComposite == null)
                     {
                         CathodeFunctionType function = CommandsUtils.GetFunctionType(thisFunction);
                         editTriggerSequence.Visible = function == CathodeFunctionType.TriggerSequence;
@@ -779,6 +782,7 @@ namespace CathodeEditorGUI
                     break;
                 case EntityVariant.PROXY:
                 case EntityVariant.OVERRIDE:
+                    //TODO: populate description
                     jumpToComposite.Visible = true;
                     selected_entity_name.Text = CurrentInstance.compositeLookup.GetEntityName(CurrentInstance.selectedComposite.shortGUID, entity.shortGUID);
                     break;

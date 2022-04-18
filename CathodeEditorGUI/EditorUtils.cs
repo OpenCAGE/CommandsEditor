@@ -26,7 +26,11 @@ namespace CathodeEditorGUI
                     desc = ShortGuidUtils.FindString(((DatatypeEntity)entity).parameter) + " (DataType " + ((DatatypeEntity)entity).type.ToString() + ")";
                     break;
                 case EntityVariant.FUNCTION:
-                    desc = CurrentInstance.compositeLookup.GetEntityName(composite.shortGUID, entity.shortGUID) + " (" + ShortGuidUtils.FindString(((FunctionEntity)entity).function) + ")";
+                    CathodeComposite funcComposite = CurrentInstance.commandsPAK.GetComposite(((FunctionEntity)entity).function);
+                    if (funcComposite != null)
+                        desc = CurrentInstance.compositeLookup.GetEntityName(composite.shortGUID, entity.shortGUID) + " (" + funcComposite.name + ")";
+                    else
+                        desc = CurrentInstance.compositeLookup.GetEntityName(composite.shortGUID, entity.shortGUID) + " (" + ShortGuidUtils.FindString(((FunctionEntity)entity).function) + ")";
                     break;
                 case EntityVariant.OVERRIDE:
                     //desc = NodeDBEx.GetEntityName(entity.nodeID) + " (" + HierarchyToString(((OverrideEntity)entity).hierarchy, currentFlowgraph) + ")";
