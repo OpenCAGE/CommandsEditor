@@ -241,6 +241,15 @@ namespace CathodeEditorGUI
                 newEntity.hierarchy = hierarchy;
                 newEntity.extraId = ShortGuidUtils.Generate("temp"); //TODO: how do we generate this?
 
+                newEntity.parameters.Add(new CathodeLoadedParameter(ShortGuidUtils.Generate("proxy_filter_targets"), new CathodeBool() { value = false }));
+                newEntity.parameters.Add(new CathodeLoadedParameter(ShortGuidUtils.Generate("proxy_enable_on_reset"), new CathodeBool() { value = false }));
+                newEntity.parameters.Add(new CathodeLoadedParameter(ShortGuidUtils.Generate("proxy_enable"), new CathodeFloat() { value = 0.0f }));
+                newEntity.parameters.Add(new CathodeLoadedParameter(ShortGuidUtils.Generate("proxy_enabled"), new CathodeFloat() { value = 0.0f }));
+                newEntity.parameters.Add(new CathodeLoadedParameter(ShortGuidUtils.Generate("proxy_disable"), new CathodeFloat() { value = 0.0f }));
+                newEntity.parameters.Add(new CathodeLoadedParameter(ShortGuidUtils.Generate("proxy_disabled"), new CathodeFloat() { value = 0.0f }));
+                newEntity.parameters.Add(new CathodeLoadedParameter(ShortGuidUtils.Generate("reference"), new CathodeString() { value = "" }));
+                newEntity.parameters.Add(new CathodeLoadedParameter(ShortGuidUtils.Generate("trigger"), new CathodeFloat() { value = 0.0f }));
+
                 //Add to composite & save name
                 composite.proxies.Add(newEntity);
                 CurrentInstance.compositeLookup.SetEntityName(composite.shortGUID, thisID, textBox1.Text);
