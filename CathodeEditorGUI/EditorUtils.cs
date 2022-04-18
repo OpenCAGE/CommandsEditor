@@ -170,11 +170,12 @@ namespace CathodeEditorGUI
         }
 
         /* Resolve a node hierarchy */
-        public static CathodeEntity ResolveHierarchy(List<ShortGuid> hierarchy, out CathodeComposite containedFlowgraph)
+        public static CathodeEntity ResolveHierarchy(List<ShortGuid> hierarchy, out CathodeComposite containedFlowgraph, out string asString)
         {
             if (hierarchy.Count == 0)
             {
                 containedFlowgraph = null;
+                asString = "";
                 return null;
             }
 
@@ -188,6 +189,7 @@ namespace CathodeEditorGUI
                     if (currentFlowgraphToSearch == null || currentFlowgraphToSearch.GetEntityByID(hierarchy[1]) == null)
                     {
                         containedFlowgraph = null;
+                        asString = "";
                         return null;
                     }
                     hierarchy.RemoveAt(0);
@@ -195,12 +197,15 @@ namespace CathodeEditorGUI
             }
 
             CathodeEntity entity = null;
+            string hierarchyString = "";
             for (int i = 0; i < hierarchy.Count; i++)
             {
                 entity = currentFlowgraphToSearch.GetEntityByID(hierarchy[i]);
 
                 if (entity == null) break;
+                hierarchyString += CurrentInstance.compositeLookup.GetEntityName(currentFlowgraphToSearch.shortGUID, entity.shortGUID);
                 if (i >= hierarchy.Count - 2) break; //Last is always 00-00-00-00
+                hierarchyString += " -> ";
 
                 if (entity.variant == EntityVariant.FUNCTION)
                 {
@@ -217,22 +222,8 @@ namespace CathodeEditorGUI
                 }
             }
             containedFlowgraph = (entity == null) ? null : currentFlowgraphToSearch;
+            asString = hierarchyString;
             return entity;
-        }
-
-        /* Display an entity hierarchy as a string */
-        public static string HierarchyToString(List<ShortGuid> hierarchy)
-        {
-            string combinedString = "";
-            for (int i = 0; i < hierarchy.Count; i++)
-            {
-                //TODO: how can i get the composite containing the node if we are chasing a hierarchy?
-                //combinedString += "[" + hierarchy[i].ToString() + "] " + EntityDBEx.GetEntityName(hierarchy[i]);
-                combinedString += hierarchy[i].ToString();
-                if (i == hierarchy.Count - 2) break; //Last is always 00-00-00-00
-                combinedString += " -> ";
-            }
-            return combinedString;
         }
 
         /* CA's CAGE doesn't properly tidy up hierarchies pointing to deleted entities - so we do that here to save confusion */
@@ -262,7 +253,7 @@ namespace CathodeEditorGUI
             //Clear overrides
             List<OverrideEntity> overridePurged = new List<OverrideEntity>();
             for (int i = 0; i < comp.overrides.Count; i++)
-                if (ResolveHierarchy(comp.overrides[i].hierarchy, out CathodeComposite flowTemp) != null)
+                if (ResolveHierarchy(comp.overrides[i].hierarchy, out CathodeComposite flowTemp, out string hierarchy) != null)
                     overridePurged.Add(comp.overrides[i]);
             originalOverrideCount += comp.overrides.Count;
             newOverrideCount += overridePurged.Count;
@@ -271,7 +262,7 @@ namespace CathodeEditorGUI
             //Clear proxies
             List<ProxyEntity> proxyPurged = new List<ProxyEntity>();
             for (int i = 0; i < comp.proxies.Count; i++)
-                if (ResolveHierarchy(comp.proxies[i].hierarchy, out CathodeComposite flowTemp) != null)
+                if (ResolveHierarchy(comp.proxies[i].hierarchy, out CathodeComposite flowTemp, out string hierarchy) != null)
                     proxyPurged.Add(comp.proxies[i]);
             originalProxyCount += comp.proxies.Count;
             newProxyCount += proxyPurged.Count;
@@ -287,7 +278,7 @@ namespace CathodeEditorGUI
                         TriggerSequence trig = (TriggerSequence)comp.functions[i];
                         List<TEMP_TriggerSequenceExtraDataHolder1> trigSeq = new List<TEMP_TriggerSequenceExtraDataHolder1>();
                         for (int x = 0; x < trig.triggers.Count; x++)
-                            if (ResolveHierarchy(trig.triggers[x].hierarchy, out CathodeComposite flowTemp) != null)
+                            if (ResolveHierarchy(trig.triggers[x].hierarchy, out CathodeComposite flowTemp, out string hierarchy) != null)
                                 trigSeq.Add(trig.triggers[x]);
                         originalTriggerCount += trig.triggers.Count;
                         newTriggerCount += trigSeq.Count;
@@ -297,7 +288,7 @@ namespace CathodeEditorGUI
                         CAGEAnimation anim = (CAGEAnimation)comp.functions[i];
                         List<CathodeParameterKeyframeHeader> headers = new List<CathodeParameterKeyframeHeader>();
                         for (int x = 0; x < anim.keyframeHeaders.Count; x++)
-                            if (ResolveHierarchy(anim.keyframeHeaders[x].connectedEntity, out CathodeComposite flowTemp) != null)
+                            if (ResolveHierarchy(anim.keyframeHeaders[x].connectedEntity, out CathodeComposite flowTemp, out string hierarchy) != null)
                                 headers.Add(anim.keyframeHeaders[x]);
                         originalAnimCount += anim.keyframeHeaders.Count;
                         newAnimCount += headers.Count;

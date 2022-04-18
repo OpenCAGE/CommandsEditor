@@ -175,16 +175,16 @@ namespace CathodeEditorGUI
             if (CurrentInstance.commandsPAK == null) return;
             Cursor.Current = Cursors.WaitCursor;
 
-            //try
+            try
             {
                 CurrentInstance.commandsPAK.Save();
             }
-            //catch (Exception e)
-            //{
-            //    Cursor.Current = Cursors.Default;
-            //    MessageBox.Show("Failed to save COMMANDS.PAK!\n" + e.Message, "Failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //    return;
-            //}
+            catch (Exception e)
+            {
+                Cursor.Current = Cursors.Default;
+                MessageBox.Show("Failed to save COMMANDS.PAK!\n" + e.Message, "Failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
             if (modifyMVR.Checked)
             {
@@ -269,7 +269,7 @@ namespace CathodeEditorGUI
             {
                 case EntityVariant.OVERRIDE:
                 {
-                    CathodeEntity entity = EditorUtils.ResolveHierarchy(((OverrideEntity)CurrentInstance.selectedEntity).hierarchy, out flow);
+                    CathodeEntity entity = EditorUtils.ResolveHierarchy(((OverrideEntity)CurrentInstance.selectedEntity).hierarchy, out flow, out string hierarchy);
                     if (entity != null)
                     {
                         LoadComposite(flow.name);
@@ -279,7 +279,7 @@ namespace CathodeEditorGUI
                 }
                 case EntityVariant.PROXY:
                 {
-                    CathodeEntity entity = EditorUtils.ResolveHierarchy(((ProxyEntity)CurrentInstance.selectedEntity).hierarchy, out flow);
+                    CathodeEntity entity = EditorUtils.ResolveHierarchy(((ProxyEntity)CurrentInstance.selectedEntity).hierarchy, out flow, out string hierarchy);
                     if (entity != null)
                     {
                         LoadComposite(flow.name);
@@ -785,8 +785,10 @@ namespace CathodeEditorGUI
                 case EntityVariant.PROXY:
                 case EntityVariant.OVERRIDE:
                     hierarchyDisplay.Visible = true;
-                    if (entity.variant == EntityVariant.PROXY) hierarchyDisplay.Text = EditorUtils.HierarchyToString(((ProxyEntity)entity).hierarchy);
-                    else hierarchyDisplay.Text = EditorUtils.HierarchyToString(((OverrideEntity)entity).hierarchy);
+                    string hierarchy = "";
+                    if (entity.variant == EntityVariant.PROXY) EditorUtils.ResolveHierarchy(((ProxyEntity)entity).hierarchy, out CathodeComposite comp, out hierarchy);
+                    else EditorUtils.ResolveHierarchy(((OverrideEntity)entity).hierarchy, out CathodeComposite comp, out hierarchy);
+                    hierarchyDisplay.Text = hierarchy;
                     jumpToComposite.Visible = true;
                     selected_entity_name.Text = CurrentInstance.compositeLookup.GetEntityName(CurrentInstance.selectedComposite.shortGUID, entity.shortGUID);
                     break;
