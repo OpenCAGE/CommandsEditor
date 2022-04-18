@@ -53,12 +53,12 @@ namespace CathodeEditorGUI
             else env_list.SelectedIndex = 0;
 
 //#if debug
-            button1.Visible = true;
-            button2.Visible = true;
-            button3.Visible = true;
-            button4.Visible = true;
-            button5.Visible = true;
-            button6.Visible = true;
+            //button1.Visible = true;
+            //button2.Visible = true;
+            //button3.Visible = true;
+            //button4.Visible = true;
+            //button5.Visible = true;
+            //button6.Visible = true;
             //#endif
         }
 
@@ -1390,6 +1390,44 @@ namespace CathodeEditorGUI
 
         private void button6_Click(object sender, EventArgs e)
         {
+            string[] decomp = File.ReadAllLines(@"E:\GitHub Repos\isolation_testground\enum_dump.txt");
+            Dictionary<string, List<string>> enums = new Dictionary<string, List<string>>();
+            List<string> dumpForWiki = new List<string>();
+            for (int i = 0; i < decomp.Length; i++)
+            {
+                string[] thisSplit = decomp[i].Split(new char[] { ' ' }, 2);
+                string enum_name = thisSplit[0];
+                string[] thisSplit2 = thisSplit[1].Split('"');
+                string enum_value = thisSplit2[1];
+
+                if (enum_name == enum_value)
+                {
+                    dumpForWiki.Add("## " + enum_name);
+                    enums.Add(enum_name, new List<string>());
+                }
+                else
+                {
+                    dumpForWiki.Add(" * " + enum_value);
+                    enums[enum_name].Add(enum_value);
+                }
+            }
+
+            File.WriteAllLines("out.md", dumpForWiki);
+            dumpForWiki.Clear();
+            foreach (var item in enums.OrderBy(x => x.Key))
+            {
+                if (item.Value.Count == 0) continue;
+                dumpForWiki.Add("## " + item.Key);
+                foreach (string val in item.Value)
+                {
+                    dumpForWiki.Add(" * " + val);
+                }
+                dumpForWiki.Add("");
+            }
+            File.WriteAllLines("out_ordered.md", dumpForWiki);
+            string breakhere = "";
+
+            /*
             string decomp = File.ReadAllText(@"C:\Users\mattf_cr4e5zq\AI ios.c");
             string[] decompSplit = decomp.Split(new[] { "ShortGuid::ShortGuid" }, StringSplitOptions.None);
             List<string> test = new List<string>();
@@ -1440,6 +1478,8 @@ namespace CathodeEditorGUI
                 writer.Write(test2[i]);
             }
             writer.Close();
+
+            */
         }
     }
 
