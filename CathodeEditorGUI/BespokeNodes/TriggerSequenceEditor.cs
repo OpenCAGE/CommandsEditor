@@ -44,7 +44,7 @@ namespace CathodeEditorGUI
         {
             for (int i = 0; i < node.events.Count; i++)
             {
-                event_list.Items.Add(ShortGuidUtils.FindString(node.events[i].EventID) + "\n  - StartedID: " + ShortGuidUtils.FindString(node.events[i].StartedID) + "\n  - FinishedID: " + ShortGuidUtils.FindString(node.events[i].FinishedID));
+                event_list.Items.Add(ShortGuidUtils.FindString(node.events[i].EventID) + " - " + ShortGuidUtils.FindString(node.events[i].StartedID) + " - " + ShortGuidUtils.FindString(node.events[i].FinishedID));
             }
         }
 

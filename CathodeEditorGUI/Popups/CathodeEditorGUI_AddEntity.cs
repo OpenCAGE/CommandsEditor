@@ -231,7 +231,7 @@ namespace CathodeEditorGUI
 
                 //Add to composite & save name
                 this.composite.functions.Add(newEntity);
-                CurrentInstance.compositeLookup.SetEntityName(composite.shortGUID, thisID, textBox1.Text);
+                CurrentInstance.compositeLookup.SetEntityName(this.composite.shortGUID, thisID, textBox1.Text);
                 OnNewEntity?.Invoke(newEntity);
             }
             else if (createProxyEntity.Checked)

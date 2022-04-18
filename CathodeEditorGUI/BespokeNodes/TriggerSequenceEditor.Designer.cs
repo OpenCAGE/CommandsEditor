@@ -174,7 +174,7 @@
             this.groupBox2.Size = new System.Drawing.Size(1194, 315);
             this.groupBox2.TabIndex = 5;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Entity Triggers";
+            this.groupBox2.Text = "Event Triggers";
             // 
             // button1
             // 
