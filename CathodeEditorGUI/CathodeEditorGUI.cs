@@ -563,7 +563,7 @@ namespace CathodeEditorGUI
                     {
                         case "TriggerSequence":
                             TriggerSequence triggerSequence = (TriggerSequence)entities[i];
-                            List<TEMP_TriggerSequenceExtraDataHolder1> triggers = new List<TEMP_TriggerSequenceExtraDataHolder1>();
+                            List<CathodeTriggerSequenceTrigger> triggers = new List<CathodeTriggerSequenceTrigger>();
                             for (int x = 0; x < triggerSequence.triggers.Count; x++)
                             {
                                 if (triggerSequence.triggers[x].hierarchy.Count < 2 ||
@@ -947,6 +947,12 @@ namespace CathodeEditorGUI
         {
             TriggerSequenceEditor keyframeEditor = new TriggerSequenceEditor((TriggerSequence)CurrentInstance.selectedEntity);
             keyframeEditor.Show();
+            keyframeEditor.FormClosed += KeyframeEditor_FormClosed;
+        }
+        private void KeyframeEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            this.BringToFront();
+            this.Focus();
         }
 
         /* Edit CAGEAnimation keyframes */
@@ -954,6 +960,12 @@ namespace CathodeEditorGUI
         {
             CAGEAnimationEditor keyframeEditor = new CAGEAnimationEditor((CAGEAnimation)CurrentInstance.selectedEntity);
             keyframeEditor.Show();
+            keyframeEditor.FormClosed += KeyframeEditor_FormClosed1;
+        }
+        private void KeyframeEditor_FormClosed1(object sender, FormClosedEventArgs e)
+        {
+            this.BringToFront();
+            this.Focus();
         }
 
         /* Edit resources referenced by the entity */
@@ -962,6 +974,12 @@ namespace CathodeEditorGUI
             //CurrentInstance.currentEntity - .parameters.FirstOrDefault("resources") - .resources
             CathodeEditorGUI_AddOrEditResource resourceEditor = new CathodeEditorGUI_AddOrEditResource(CurrentInstance.selectedEntity);
             resourceEditor.Show();
+            resourceEditor.FormClosed += ResourceEditor_FormClosed;
+        }
+        private void ResourceEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            this.BringToFront();
+            this.Focus();
         }
 
         /* Edit resources referenced by the composite */
@@ -970,6 +988,12 @@ namespace CathodeEditorGUI
             //CurrentInstance.currentComposite.resources
             CathodeEditorGUI_AddOrEditResource resourceEditor = new CathodeEditorGUI_AddOrEditResource(CurrentInstance.selectedComposite);
             resourceEditor.Show();
+            resourceEditor.FormClosed += ResourceEditor_FormClosed1;
+        }
+        private void ResourceEditor_FormClosed1(object sender, FormClosedEventArgs e)
+        {
+            this.BringToFront();
+            this.Focus();
         }
 
         /* Confirm an action */

@@ -276,7 +276,7 @@ namespace CathodeEditorGUI
                 {
                     case "TriggerSequence":
                         TriggerSequence trig = (TriggerSequence)comp.functions[i];
-                        List<TEMP_TriggerSequenceExtraDataHolder1> trigSeq = new List<TEMP_TriggerSequenceExtraDataHolder1>();
+                        List<CathodeTriggerSequenceTrigger> trigSeq = new List<CathodeTriggerSequenceTrigger>();
                         for (int x = 0; x < trig.triggers.Count; x++)
                             if (ResolveHierarchy(trig.triggers[x].hierarchy, out CathodeComposite flowTemp, out string hierarchy) != null)
                                 trigSeq.Add(trig.triggers[x]);

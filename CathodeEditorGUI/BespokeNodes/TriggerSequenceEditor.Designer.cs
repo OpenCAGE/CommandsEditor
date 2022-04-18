@@ -31,9 +31,19 @@
             this.trigger_list = new System.Windows.Forms.ListBox();
             this.event_list = new System.Windows.Forms.ListBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.deleteSelectedTrigger = new System.Windows.Forms.Button();
+            this.addNewTrigger = new System.Windows.Forms.Button();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.saveTriggerTime = new System.Windows.Forms.Button();
+            this.triggerDelay = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.triggerHierarchy = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.selectEntToPointTo = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.button1 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -44,6 +54,7 @@
             this.trigger_list.Name = "trigger_list";
             this.trigger_list.Size = new System.Drawing.Size(695, 290);
             this.trigger_list.TabIndex = 0;
+            this.trigger_list.SelectedIndexChanged += new System.EventHandler(this.trigger_list_SelectedIndexChanged);
             // 
             // event_list
             // 
@@ -55,38 +66,131 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.deleteSelectedTrigger);
+            this.groupBox1.Controls.Add(this.addNewTrigger);
+            this.groupBox1.Controls.Add(this.groupBox3);
             this.groupBox1.Controls.Add(this.trigger_list);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(1395, 315);
+            this.groupBox1.Size = new System.Drawing.Size(1194, 315);
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Entity Triggers";
+            // 
+            // deleteSelectedTrigger
+            // 
+            this.deleteSelectedTrigger.Location = new System.Drawing.Point(707, 276);
+            this.deleteSelectedTrigger.Name = "deleteSelectedTrigger";
+            this.deleteSelectedTrigger.Size = new System.Drawing.Size(170, 26);
+            this.deleteSelectedTrigger.TabIndex = 3;
+            this.deleteSelectedTrigger.Text = "Delete Selected Trigger";
+            this.deleteSelectedTrigger.UseVisualStyleBackColor = true;
+            this.deleteSelectedTrigger.Click += new System.EventHandler(this.deleteSelectedTrigger_Click);
+            // 
+            // addNewTrigger
+            // 
+            this.addNewTrigger.Location = new System.Drawing.Point(707, 244);
+            this.addNewTrigger.Name = "addNewTrigger";
+            this.addNewTrigger.Size = new System.Drawing.Size(170, 26);
+            this.addNewTrigger.TabIndex = 2;
+            this.addNewTrigger.Text = "Add New Trigger";
+            this.addNewTrigger.UseVisualStyleBackColor = true;
+            this.addNewTrigger.Click += new System.EventHandler(this.addNewTrigger_Click);
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.saveTriggerTime);
+            this.groupBox3.Controls.Add(this.triggerDelay);
+            this.groupBox3.Controls.Add(this.label2);
+            this.groupBox3.Controls.Add(this.triggerHierarchy);
+            this.groupBox3.Controls.Add(this.label1);
+            this.groupBox3.Controls.Add(this.selectEntToPointTo);
+            this.groupBox3.Location = new System.Drawing.Point(707, 46);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(481, 161);
+            this.groupBox3.TabIndex = 1;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Selected Trigger Details";
+            // 
+            // saveTriggerTime
+            // 
+            this.saveTriggerTime.Location = new System.Drawing.Point(340, 114);
+            this.saveTriggerTime.Name = "saveTriggerTime";
+            this.saveTriggerTime.Size = new System.Drawing.Size(121, 23);
+            this.saveTriggerTime.TabIndex = 7;
+            this.saveTriggerTime.Text = "Save Time";
+            this.saveTriggerTime.UseVisualStyleBackColor = true;
+            this.saveTriggerTime.Click += new System.EventHandler(this.saveTriggerTime_Click);
+            // 
+            // triggerDelay
+            // 
+            this.triggerDelay.Location = new System.Drawing.Point(17, 116);
+            this.triggerDelay.Name = "triggerDelay";
+            this.triggerDelay.Size = new System.Drawing.Size(317, 20);
+            this.triggerDelay.TabIndex = 6;
+            this.triggerDelay.TextChanged += new System.EventHandler(this.triggerDelay_TextChanged);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(16, 100);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(218, 13);
+            this.label2.TabIndex = 5;
+            this.label2.Text = "Time To Wait Before Triggering (In Seconds)";
+            // 
+            // triggerHierarchy
+            // 
+            this.triggerHierarchy.Location = new System.Drawing.Point(17, 42);
+            this.triggerHierarchy.Name = "triggerHierarchy";
+            this.triggerHierarchy.ReadOnly = true;
+            this.triggerHierarchy.Size = new System.Drawing.Size(444, 20);
+            this.triggerHierarchy.TabIndex = 3;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(16, 26);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(85, 13);
+            this.label1.TabIndex = 2;
+            this.label1.Text = "Entity To Trigger";
+            // 
+            // selectEntToPointTo
+            // 
+            this.selectEntToPointTo.Location = new System.Drawing.Point(17, 66);
+            this.selectEntToPointTo.Name = "selectEntToPointTo";
+            this.selectEntToPointTo.Size = new System.Drawing.Size(444, 23);
+            this.selectEntToPointTo.TabIndex = 1;
+            this.selectEntToPointTo.Text = "Select Entity To Point To";
+            this.selectEntToPointTo.UseVisualStyleBackColor = true;
+            this.selectEntToPointTo.Click += new System.EventHandler(this.selectEntToPointTo_Click);
             // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.event_list);
             this.groupBox2.Location = new System.Drawing.Point(12, 333);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(1395, 315);
+            this.groupBox2.Size = new System.Drawing.Size(1194, 315);
             this.groupBox2.TabIndex = 5;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Entity Triggers";
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(1264, 654);
+            this.button1.Location = new System.Drawing.Point(1063, 654);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(143, 32);
             this.button1.TabIndex = 6;
-            this.button1.Text = "Save";
+            this.button1.Text = "Close";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // TriggerSequenceEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1419, 695);
+            this.ClientSize = new System.Drawing.Size(1217, 695);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -95,6 +199,8 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "TriggerSequence Editor";
             this.groupBox1.ResumeLayout(false);
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -107,5 +213,14 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.TextBox triggerHierarchy;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button selectEntToPointTo;
+        private System.Windows.Forms.Button deleteSelectedTrigger;
+        private System.Windows.Forms.Button addNewTrigger;
+        private System.Windows.Forms.TextBox triggerDelay;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button saveTriggerTime;
     }
 }
