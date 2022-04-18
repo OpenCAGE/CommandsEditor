@@ -42,6 +42,7 @@
             this.editCompositeResources = new System.Windows.Forms.Button();
             this.editEntityResources = new System.Windows.Forms.Button();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.hierarchyDisplay = new System.Windows.Forms.TextBox();
             this.jumpToComposite = new System.Windows.Forms.Button();
             this.selected_entity_name = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
@@ -74,6 +75,7 @@
             this.load_commands_pak = new System.Windows.Forms.Button();
             this.env_list = new System.Windows.Forms.ComboBox();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.button6 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
@@ -82,7 +84,6 @@
             this.modifyMVR = new System.Windows.Forms.CheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.button3 = new System.Windows.Forms.Button();
-            this.button6 = new System.Windows.Forms.Button();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -214,6 +215,7 @@
             // 
             // groupBox7
             // 
+            this.groupBox7.Controls.Add(this.hierarchyDisplay);
             this.groupBox7.Controls.Add(this.jumpToComposite);
             this.groupBox7.Controls.Add(this.selected_entity_name);
             this.groupBox7.Controls.Add(this.label9);
@@ -229,6 +231,14 @@
             this.groupBox7.TabIndex = 151;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Selected Entity Info";
+            // 
+            // hierarchyDisplay
+            // 
+            this.hierarchyDisplay.Location = new System.Drawing.Point(10, 76);
+            this.hierarchyDisplay.Name = "hierarchyDisplay";
+            this.hierarchyDisplay.ReadOnly = true;
+            this.hierarchyDisplay.Size = new System.Drawing.Size(364, 20);
+            this.hierarchyDisplay.TabIndex = 9;
             // 
             // jumpToComposite
             // 
@@ -561,6 +571,18 @@
             this.groupBox8.TabIndex = 174;
             this.groupBox8.TabStop = false;
             // 
+            // button6
+            // 
+            this.button6.ForeColor = System.Drawing.Color.Red;
+            this.button6.Location = new System.Drawing.Point(96, 9);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(127, 23);
+            this.button6.TabIndex = 181;
+            this.button6.Text = "DEBUG: decomp dump";
+            this.button6.UseVisualStyleBackColor = true;
+            this.button6.Visible = false;
+            this.button6.Click += new System.EventHandler(this.button6_Click);
+            // 
             // button5
             // 
             this.button5.ForeColor = System.Drawing.Color.Red;
@@ -643,18 +665,6 @@
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Visible = false;
             this.button3.Click += new System.EventHandler(this.button3_Click);
-            // 
-            // button6
-            // 
-            this.button6.ForeColor = System.Drawing.Color.Red;
-            this.button6.Location = new System.Drawing.Point(96, 9);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(127, 23);
-            this.button6.TabIndex = 181;
-            this.button6.Text = "DEBUG: decomp dump";
-            this.button6.UseVisualStyleBackColor = true;
-            this.button6.Visible = false;
-            this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
             // CathodeEditorGUI
             // 
@@ -743,5 +753,6 @@
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Button button6;
+        private System.Windows.Forms.TextBox hierarchyDisplay;
     }
 }

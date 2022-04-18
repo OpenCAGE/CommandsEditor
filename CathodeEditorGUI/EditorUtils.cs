@@ -9,12 +9,20 @@ namespace CathodeEditorGUI
     static class EditorUtils
     {
         /* Utility: generate nice entity name to display in UI */
-        public static string GenerateEntityName(CathodeEntity entity, CathodeComposite currentFlowgraph)
+        public static string GenerateEntityName(CathodeEntity entity, CathodeComposite currentFlowgraph, bool regenCache = false)
         {
             if (CurrentInstance.commandsPAK == null) 
-                return "";
+                return entity.shortGUID.ToString();
+
+            if (hasFinishedCachingEntityNames && regenCache)
+            {
+                if (cachedEntityName.ContainsKey(entity.shortGUID)) cachedEntityName.Remove(entity.shortGUID);
+                cachedEntityName.Add(entity.shortGUID, GenerateEntityNameInternal(entity, currentFlowgraph));
+            }
+
             if (hasFinishedCachingEntityNames && cachedEntityName.ContainsKey(entity.shortGUID)) 
                 return cachedEntityName[entity.shortGUID];
+
             return GenerateEntityNameInternal(entity, currentFlowgraph);
         }
         private static string GenerateEntityNameInternal(CathodeEntity entity, CathodeComposite composite)
@@ -220,6 +228,7 @@ namespace CathodeEditorGUI
             {
                 //TODO: how can i get the composite containing the node if we are chasing a hierarchy?
                 //combinedString += "[" + hierarchy[i].ToString() + "] " + EntityDBEx.GetEntityName(hierarchy[i]);
+                combinedString += hierarchy[i].ToString();
                 if (i == hierarchy.Count - 2) break; //Last is always 00-00-00-00
                 combinedString += " -> ";
             }

@@ -3,6 +3,7 @@ using CATHODE.Commands;
 using CATHODE.Misc;
 using CathodeEditorGUI.UserControls;
 using CathodeLib;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -174,16 +175,16 @@ namespace CathodeEditorGUI
             if (CurrentInstance.commandsPAK == null) return;
             Cursor.Current = Cursors.WaitCursor;
 
-            try
+            //try
             {
                 CurrentInstance.commandsPAK.Save();
             }
-            catch (Exception e)
-            {
-                Cursor.Current = Cursors.Default;
-                MessageBox.Show("Failed to save COMMANDS.PAK!\n" + e.Message, "Failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
+            //catch (Exception e)
+            //{
+            //    Cursor.Current = Cursors.Default;
+            //    MessageBox.Show("Failed to save COMMANDS.PAK!\n" + e.Message, "Failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //    return;
+            //}
 
             if (modifyMVR.Checked)
             {
@@ -703,7 +704,7 @@ namespace CathodeEditorGUI
                     ((CathodeEditorGUI_RenameEntity)sender).EntityName);
 
                 string entityID = CurrentInstance.selectedEntity.shortGUID.ToString();
-                string newEntityName = EditorUtils.GenerateEntityName(CurrentInstance.selectedEntity, CurrentInstance.selectedComposite);
+                string newEntityName = EditorUtils.GenerateEntityName(CurrentInstance.selectedEntity, CurrentInstance.selectedComposite, true);
                 for (int i = 0; i < composite_content.Items.Count; i++)
                 {
                     if (composite_content.Items[i].ToString().Substring(1, 11) == entityID)
@@ -755,6 +756,7 @@ namespace CathodeEditorGUI
             //populate info labels
             selected_entity_id.Text = entity.shortGUID.ToString();
             selected_entity_type.Text = entity.variant.ToString();
+            hierarchyDisplay.Visible = false;
             string description = "";
             switch (entity.variant)
             {
@@ -782,7 +784,9 @@ namespace CathodeEditorGUI
                     break;
                 case EntityVariant.PROXY:
                 case EntityVariant.OVERRIDE:
-                    //TODO: populate description
+                    hierarchyDisplay.Visible = true;
+                    if (entity.variant == EntityVariant.PROXY) hierarchyDisplay.Text = EditorUtils.HierarchyToString(((ProxyEntity)entity).hierarchy);
+                    else hierarchyDisplay.Text = EditorUtils.HierarchyToString(((OverrideEntity)entity).hierarchy);
                     jumpToComposite.Visible = true;
                     selected_entity_name.Text = CurrentInstance.compositeLookup.GetEntityName(CurrentInstance.selectedComposite.shortGUID, entity.shortGUID);
                     break;
@@ -1135,6 +1139,20 @@ namespace CathodeEditorGUI
                 tasks.Add(Task.Factory.StartNew(() => ParseCommandBinDump(dump)));
             }
             */
+
+            List<string> allStrings = new List<string>();
+            List<string> dumps = Directory.GetFiles(@"E:\OpenCAGE_2021\CathodeEditorGUI\Build", "OUT_STRINGS_*", SearchOption.AllDirectories).ToList<string>();
+            foreach (string dump in dumps)
+            {
+                foreach (string line in File.ReadAllLines(dump))
+                {
+                    if (allStrings.Contains(line)) continue;
+                    allStrings.Add(line);
+                }
+            }
+            File.WriteAllLines("OUT_STRINGS.txt", allStrings);
+
+            /*
             List<string> dumps = Directory.GetFiles(@"E:\OpenCAGE_2021\CathodeEditorGUI\Build\out2", "*.bin", SearchOption.AllDirectories).ToList<string>();
             List<BinComposite> composites = new List<BinComposite>();
             foreach (string dump in dumps)
@@ -1206,18 +1224,23 @@ namespace CathodeEditorGUI
                 writer.Write(composites[i].path);
             }
             writer.Close();
+            */
         }
         private void ParseCommandBinDump(string dump)
         {
             List<BinComposite> composites = new List<BinComposite>();
             string[] content = File.ReadAllLines(dump);
+            List<string> strings = new List<string>();
             for (int i = 0; i < content.Length; i++)
             {
                 string[] split = content[i].Split(new char[] { '\'' }, 2);
                 if (split.Length != 2) continue;
                 if (split[0].Substring(split[0].Length - 2, 1) != "2") continue;
                 string value = split[1].Substring(0, split[1].Length - 1);
+                strings.Add(value);
                 if (value == "") continue;
+
+                continue;
 
                 ShortGuid compositeID;
                 try
@@ -1317,6 +1340,9 @@ namespace CathodeEditorGUI
                 }
             }
 
+            File.WriteAllLines("OUT_STRINGS_" + Path.GetFileNameWithoutExtension(dump) + ".txt", strings);
+            return;
+
             if (!Directory.Exists("out2")) Directory.CreateDirectory("out2");
 
             BinaryWriter writer = new BinaryWriter(File.OpenWrite("out2/" + Path.GetFileNameWithoutExtension(dump) + ".bin"));
@@ -1338,23 +1364,56 @@ namespace CathodeEditorGUI
 
         private void button6_Click(object sender, EventArgs e)
         {
-            /*
             string decomp = File.ReadAllText(@"C:\Users\mattf_cr4e5zq\AI ios.c");
+            string[] decompSplit = decomp.Split(new[] { "ShortGuid::ShortGuid" }, StringSplitOptions.None);
             List<string> test = new List<string>();
-            for (int i = 0; i < decomp.Length; i++)
+            for (int i = 0; i < decompSplit.Length; i++)
             {
-                string[] split = decomp[i].Split(new[] { "ShortGuid(" }, StringSplitOptions.None);
-                if (split.Length < 2) continue;
-                test.Add(split[1]);
-                continue;
-                string[] split2 = split[1].Split('"');
-                if (split2.Length < 3) continue;
-                string text = split2[1];
-                if (test.Contains(text)) continue;
-                test.Add(text);
+                string[] thisSplit = decompSplit[i].Split(new char[] { ',' }, 2);
+                if (thisSplit.Length < 2) continue;
+                if (thisSplit[1][0] != '"') continue;
+                string[] thisNewSplit = thisSplit[1].Split('"');
+                test.Add(thisNewSplit[1]);
             }
-            File.WriteAllLines("bleh.txt", test);
-            */
+            List<string> test2 = new List<string>();
+            for (int i =0; i <test.Count; i++)
+            {
+                if (test2.Contains(test[i])) continue;
+                test2.Add(test[i]);
+            }
+            File.WriteAllLines("bleh.txt", test2);
+
+            JObject obj = JObject.Parse(File.ReadAllText(@"C:\Users\mattf_cr4e5zq\Downloads\out.json"));
+            JArray objA = ((JArray)obj["nodes"]);
+            for (int i = 0; i < objA.Count; i++)
+            {
+                JArray objAP = (JArray)objA[i]["parameters"];
+                for (int x = 0; x < objAP.Count; x++)
+                {
+                    if (test2.Contains(objAP[x]["name"].ToString())) continue;
+                    test2.Add(objAP[x]["name"].ToString());
+                    Console.WriteLine("Added " + objAP[x]["name"].ToString());
+                }
+            }
+
+            BinaryReader reader = new BinaryReader(File.OpenRead(@"E:\OpenCAGE_2021\CathodeEditorGUI\CathodeLib\CathodeLib\Resources\NodeDBs\entity_parameter_names.bin"));
+            reader.BaseStream.Position += 1;
+            while (reader.BaseStream.Position < reader.BaseStream.Length)
+            {
+                reader.BaseStream.Position += 4;
+                string str = reader.ReadString();
+                if (test2.Contains(str)) continue;
+                test2.Add(str);
+            }
+            reader.Close();
+
+            BinaryWriter writer = new BinaryWriter(File.OpenWrite("bleh4.bin"));
+            for (int i = 0; i < test2.Count; i++)
+            {
+                Utilities.Write<ShortGuid>(writer, ShortGuidUtils.Generate(test2[i]));
+                writer.Write(test2[i]);
+            }
+            writer.Close();
         }
     }
 

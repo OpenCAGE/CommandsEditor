@@ -239,7 +239,7 @@ namespace CathodeEditorGUI
                 //Create ProxyEntity
                 ProxyEntity newEntity = new ProxyEntity(thisID);
                 newEntity.hierarchy = hierarchy;
-                newEntity.extraId = ShortGuidUtils.Generate("temp"); //TODO: how do we generate this? Disabling proxy creation until we figure it out.
+                newEntity.extraId = ShortGuidUtils.Generate("temp"); //TODO: how do we generate this?
 
                 //Add to composite & save name
                 composite.proxies.Add(newEntity);
@@ -251,6 +251,7 @@ namespace CathodeEditorGUI
                 //Create OverrideEntity
                 OverrideEntity newEntity = new OverrideEntity(thisID);
                 newEntity.hierarchy = hierarchy;
+                newEntity.checksum = ShortGuidUtils.Generate("temp"); //TODO: how do we generate this?
 
                 //Add to composite & save name
                 composite.overrides.Add(newEntity);

@@ -134,7 +134,6 @@
             // createProxyEntity
             // 
             this.createProxyEntity.AutoSize = true;
-            this.createProxyEntity.Enabled = false;
             this.createProxyEntity.Location = new System.Drawing.Point(335, 19);
             this.createProxyEntity.Name = "createProxyEntity";
             this.createProxyEntity.Size = new System.Drawing.Size(80, 17);
