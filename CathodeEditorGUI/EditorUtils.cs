@@ -203,7 +203,7 @@ namespace CathodeEditorGUI
                 entity = currentFlowgraphToSearch.GetEntityByID(hierarchy[i]);
 
                 if (entity == null) break;
-                hierarchyString += CurrentInstance.compositeLookup.GetEntityName(currentFlowgraphToSearch.shortGUID, entity.shortGUID);
+                hierarchyString += "[" + entity.shortGUID + "] " + CurrentInstance.compositeLookup.GetEntityName(currentFlowgraphToSearch.shortGUID, entity.shortGUID);
                 if (i >= hierarchy.Count - 2) break; //Last is always 00-00-00-00
                 hierarchyString += " -> ";
 

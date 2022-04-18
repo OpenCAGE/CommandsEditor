@@ -82,6 +82,7 @@ namespace CathodeEditorGUI
         }
         private void HierarchyEditor_HierarchyGenerated(List<ShortGuid> generatedHierarchy)
         {
+            if (trigger_list.SelectedIndex == -1) return;
             int index = trigger_list.SelectedIndex;
             node.triggers[index].hierarchy = generatedHierarchy;
             LoadSelectedTrigger();
@@ -91,6 +92,7 @@ namespace CathodeEditorGUI
 
         private void saveTriggerTime_Click(object sender, EventArgs e)
         {
+            if (trigger_list.SelectedIndex == -1) return;
             int index = trigger_list.SelectedIndex;
             node.triggers[index].timing = Convert.ToSingle(triggerDelay.Text);
             LoadSelectedTrigger();
