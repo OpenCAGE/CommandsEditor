@@ -157,7 +157,7 @@ namespace CathodeEditorGUI
             return editedText;
         }
 
-        /* Resolve a node hierarchy: **firstHierarchyIsFlowgraph should be TRUE for proxies!** */
+        /* Resolve a node hierarchy */
         public static CathodeEntity ResolveHierarchy(List<ShortGuid> hierarchy, out CathodeComposite containedFlowgraph)
         {
             if (hierarchy.Count == 0)

@@ -24,6 +24,16 @@ namespace CathodeEditorGUI
             //    @"F:\Alien Isolation Modding\Isolation Mod Tools\Alien Isolation PC Final\DATA\ENV\PRODUCTION\BSP_LV426_PT01\RENDERABLE\MODELS_LEVEL.BIN",
             //    @"F:\Alien Isolation Modding\Isolation Mod Tools\Alien Isolation PC Final\DATA\ENV\PRODUCTION\BSP_LV426_PT01\RENDERABLE\LEVEL_MODELS.PAK");
 
+            //uint hashed = Utilities.AnimationHashedString("REFERENCE_ROOT");
+            //string bleh = BitConverter.ToString(BitConverter.GetBytes(hashed));
+
+            /*
+            AnimationStringDB stringdb = new AnimationStringDB(@"C:\Users\mattf_cr4e5zq\animation.pak\DATA\ANIM_SYS\ANIM_STRING_DB.BIN");
+            stringdb.Save(); 
+            stringdb = new AnimationStringDB(@"C:\Users\mattf_cr4e5zq\animation.pak\DATA\ANIM_SYS\ANIM_STRING_DB_DEBUG.BIN");
+            stringdb.Save();
+            */
+
             InitializeComponent();
             treeHelper = new TreeUtility(FileTree);
 
@@ -1324,7 +1334,8 @@ namespace CathodeEditorGUI
 
         private void button6_Click(object sender, EventArgs e)
         {
-            string[] decomp = File.ReadAllLines(@"C:\Users\mattf_cr4e5zq\AI ios.c");
+            /*
+            string decomp = File.ReadAllText(@"C:\Users\mattf_cr4e5zq\AI ios.c");
             List<string> test = new List<string>();
             for (int i = 0; i < decomp.Length; i++)
             {
@@ -1339,6 +1350,7 @@ namespace CathodeEditorGUI
                 test.Add(text);
             }
             File.WriteAllLines("bleh.txt", test);
+            */
         }
     }
 

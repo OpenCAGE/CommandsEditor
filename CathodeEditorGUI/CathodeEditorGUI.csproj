@@ -126,6 +126,12 @@
     <Compile Include="CathodeEnums.cs" />
     <Compile Include="CathodeNodes.cs" />
     <Compile Include="MapDirectories.cs" />
+    <Compile Include="Popups\CathodeEditorGUI_EditHierarchy.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\CathodeEditorGUI_EditHierarchy.Designer.cs">
+      <DependentUpon>CathodeEditorGUI_EditHierarchy.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popups\CathodeEditorGUI_EditRootComposite.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -149,12 +155,6 @@
     </Compile>
     <Compile Include="Popups\CathodeEditorGUI_RenameEntity.Designer.cs">
       <DependentUpon>CathodeEditorGUI_RenameEntity.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Popups\SelectEntity.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Popups\SelectEntity.Designer.cs">
-      <DependentUpon>SelectEntity.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -230,6 +230,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="LEGACY\CathodeEditorGUI_EditResource.resx">
       <DependentUpon>CathodeEditorGUI_EditResource.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\CathodeEditorGUI_EditHierarchy.resx">
+      <DependentUpon>CathodeEditorGUI_EditHierarchy.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\CathodeEditorGUI_EditRootComposite.resx">
       <DependentUpon>CathodeEditorGUI_EditRootComposite.cs</DependentUpon>

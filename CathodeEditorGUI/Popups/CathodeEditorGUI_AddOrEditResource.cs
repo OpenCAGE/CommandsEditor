@@ -43,6 +43,8 @@ namespace CathodeEditorGUI
         {
             InitializeComponent();
 
+            resRef[0].unknownInteger1 = 54;
+
             //FOR TESTING ONLY
             MessageBox.Show(resRef.Count + " resource references");
             for (int i =0; i < resRef.Count; i++)
