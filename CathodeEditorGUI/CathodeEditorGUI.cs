@@ -1501,16 +1501,4 @@ namespace CathodeEditorGUI
         public ShortGuid id;
         public string name;
     }
-
-    public struct CathodeGloballyTransformedEntity
-    {
-        public MoverType type;
-        public CathodeEntity entity;
-        public System.Numerics.Matrix4x4 transform;
-
-        public void SetTransform(System.Numerics.Vector3 position, System.Numerics.Quaternion rotation, System.Numerics.Vector3 scale)
-        {
-            transform = System.Numerics.Matrix4x4.CreateScale(scale) * System.Numerics.Matrix4x4.CreateFromQuaternion(rotation) * System.Numerics.Matrix4x4.CreateTranslation(position);
-        }
-    }
 }

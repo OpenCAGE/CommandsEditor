@@ -33,7 +33,7 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.deleteSelectedTrigger = new System.Windows.Forms.Button();
             this.addNewTrigger = new System.Windows.Forms.Button();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.selectedTriggerDetails = new System.Windows.Forms.GroupBox();
             this.saveTriggerTime = new System.Windows.Forms.Button();
             this.triggerDelay = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -43,7 +43,7 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.button1 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
-            this.groupBox3.SuspendLayout();
+            this.selectedTriggerDetails.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -68,14 +68,14 @@
             // 
             this.groupBox1.Controls.Add(this.deleteSelectedTrigger);
             this.groupBox1.Controls.Add(this.addNewTrigger);
-            this.groupBox1.Controls.Add(this.groupBox3);
+            this.groupBox1.Controls.Add(this.selectedTriggerDetails);
             this.groupBox1.Controls.Add(this.trigger_list);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(1194, 315);
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Entity Triggers";
+            this.groupBox1.Text = "Entities";
             // 
             // deleteSelectedTrigger
             // 
@@ -97,20 +97,20 @@
             this.addNewTrigger.UseVisualStyleBackColor = true;
             this.addNewTrigger.Click += new System.EventHandler(this.addNewTrigger_Click);
             // 
-            // groupBox3
+            // selectedTriggerDetails
             // 
-            this.groupBox3.Controls.Add(this.saveTriggerTime);
-            this.groupBox3.Controls.Add(this.triggerDelay);
-            this.groupBox3.Controls.Add(this.label2);
-            this.groupBox3.Controls.Add(this.triggerHierarchy);
-            this.groupBox3.Controls.Add(this.label1);
-            this.groupBox3.Controls.Add(this.selectEntToPointTo);
-            this.groupBox3.Location = new System.Drawing.Point(707, 46);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(481, 161);
-            this.groupBox3.TabIndex = 1;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Selected Trigger Details";
+            this.selectedTriggerDetails.Controls.Add(this.saveTriggerTime);
+            this.selectedTriggerDetails.Controls.Add(this.triggerDelay);
+            this.selectedTriggerDetails.Controls.Add(this.label2);
+            this.selectedTriggerDetails.Controls.Add(this.triggerHierarchy);
+            this.selectedTriggerDetails.Controls.Add(this.label1);
+            this.selectedTriggerDetails.Controls.Add(this.selectEntToPointTo);
+            this.selectedTriggerDetails.Location = new System.Drawing.Point(707, 46);
+            this.selectedTriggerDetails.Name = "selectedTriggerDetails";
+            this.selectedTriggerDetails.Size = new System.Drawing.Size(481, 161);
+            this.selectedTriggerDetails.TabIndex = 1;
+            this.selectedTriggerDetails.TabStop = false;
+            this.selectedTriggerDetails.Text = "Selected Trigger Details";
             // 
             // saveTriggerTime
             // 
@@ -174,7 +174,7 @@
             this.groupBox2.Size = new System.Drawing.Size(1194, 315);
             this.groupBox2.TabIndex = 5;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Event Triggers";
+            this.groupBox2.Text = "Triggers";
             // 
             // button1
             // 
@@ -199,8 +199,8 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "TriggerSequence Editor";
             this.groupBox1.ResumeLayout(false);
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
+            this.selectedTriggerDetails.ResumeLayout(false);
+            this.selectedTriggerDetails.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -213,7 +213,7 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.GroupBox selectedTriggerDetails;
         private System.Windows.Forms.TextBox triggerHierarchy;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button selectEntToPointTo;

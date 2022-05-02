@@ -21,6 +21,7 @@ namespace CathodeEditorGUI
 
             triggerDelay.Text = "0.0";
             this.Text = "TriggerSequence Editor: " + CurrentInstance.compositeLookup.GetEntityName(CurrentInstance.selectedComposite.shortGUID, _node.shortGUID);
+            selectedTriggerDetails.Visible = false;
 
             ReloadTriggerList();
             ReloadEventList();
@@ -42,10 +43,13 @@ namespace CathodeEditorGUI
         }
         private void ReloadEventList()
         {
+            event_list.BeginUpdate();
+            event_list.Items.Clear();
             for (int i = 0; i < node.events.Count; i++)
             {
                 event_list.Items.Add(ShortGuidUtils.FindString(node.events[i].EventID) + " - " + ShortGuidUtils.FindString(node.events[i].StartedID) + " - " + ShortGuidUtils.FindString(node.events[i].FinishedID));
             }
+            event_list.EndUpdate();
         }
 
         private void triggerDelay_TextChanged(object sender, EventArgs e)
@@ -64,6 +68,7 @@ namespace CathodeEditorGUI
             {
                 triggerHierarchy.Text = "";
                 triggerDelay.Text = "0.0";
+                selectedTriggerDetails.Visible = false;
                 return;
             }
 
@@ -72,6 +77,7 @@ namespace CathodeEditorGUI
 
             triggerHierarchy.Text = thisHierarchy;
             triggerDelay.Text = node.triggers[trigger_list.SelectedIndex].timing.ToString();
+            selectedTriggerDetails.Visible = true;
         }
 
         private void selectEntToPointTo_Click(object sender, EventArgs e)
