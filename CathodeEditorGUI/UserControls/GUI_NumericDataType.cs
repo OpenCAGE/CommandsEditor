@@ -24,18 +24,18 @@ namespace CathodeEditorGUI.UserControls
             InitializeComponent();
         }
 
-        public void PopulateUI_Float(CathodeFloat cFloat, cGUID paramID)
+        public void PopulateUI_Float(CathodeFloat cFloat, ShortGuid paramID)
         {
             floatVal = cFloat;
-            NUMERIC_VARIABLE_DUMMY.Text = NodeDBEx.GetParameterName(paramID) + " (" + paramID.ToString() + ")";
+            NUMERIC_VARIABLE_DUMMY.Text = ShortGuidUtils.FindString(paramID) + " (" + paramID.ToString() + ")";
             textBox1.Text = cFloat.value.ToString();
         }
 
-        public void PopulateUI_Int(CathodeInteger cInt, cGUID paramID)
+        public void PopulateUI_Int(CathodeInteger cInt, ShortGuid paramID)
         {
             isIntInput = true;
             intVal = cInt;
-            NUMERIC_VARIABLE_DUMMY.Text = NodeDBEx.GetParameterName(paramID) + " (" + paramID.ToString() + ")";
+            NUMERIC_VARIABLE_DUMMY.Text = ShortGuidUtils.FindString(paramID) + " (" + paramID.ToString() + ")";
             textBox1.Text = cInt.value.ToString();
         }
 

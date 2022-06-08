@@ -22,10 +22,10 @@ namespace CathodeEditorGUI.UserControls
             InitializeComponent();
         }
 
-        public void PopulateUI(CathodeTransform cTrans, cGUID paramID)
+        public void PopulateUI(CathodeTransform cTrans, ShortGuid paramID)
         {
             transformVal = cTrans;
-            POSITION_VARIABLE_DUMMY.Text = NodeDBEx.GetParameterName(paramID) + " (" + paramID.ToString() + ")";
+            POSITION_VARIABLE_DUMMY.Text = ShortGuidUtils.FindString(paramID) + " (" + paramID.ToString() + ")";
             POS_X.Value = (decimal)cTrans.position.x;
             POS_Y.Value = (decimal)cTrans.position.y;
             POS_Z.Value = (decimal)cTrans.position.z;

@@ -22,10 +22,10 @@ namespace CathodeEditorGUI.UserControls
             InitializeComponent();
         }
 
-        public void PopulateUI(CathodeString cString, cGUID paramID)
+        public void PopulateUI(CathodeString cString, ShortGuid paramID)
         {
             stringVal = cString;
-            STRING_VARIABLE_DUMMY.Text = NodeDBEx.GetParameterName(paramID) + " (" + paramID.ToString() + ")";
+            STRING_VARIABLE_DUMMY.Text = ShortGuidUtils.FindString(paramID) + " (" + paramID.ToString() + ")";
             textBox1.Text = cString.value;
             //textBox1.DataBindings.Add("Text", cString.value, "");
         }

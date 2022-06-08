@@ -18,23 +18,23 @@ namespace CathodeEditorGUI
         CathodeEntity _entity = null;
         List<CathodeEntity> _entityList = null;
 
-        public CathodeEditorGUI_AddPin(CathodeEntity entity, CathodeFlowgraph flowgraph)
+        public CathodeEditorGUI_AddPin(CathodeEntity entity, CathodeComposite flowgraph)
         {
             _entity = entity;
             InitializeComponent();
 
             _entityList = flowgraph.GetEntities();
-            _entityList = _entityList.OrderBy(o => EditorUtils.GenerateNodeName(o, flowgraph).Substring(13)).ToList<CathodeEntity>();
+            _entityList = _entityList.OrderBy(o => EditorUtils.GenerateEntityName(o, flowgraph).Substring(13)).ToList<CathodeEntity>();
 
             pin_in_node.BeginUpdate();
             for (int i = 0; i < _entityList.Count; i++)
             {
-                string this_node_string = EditorUtils.GenerateNodeName(_entityList[i], flowgraph);
+                string this_node_string = EditorUtils.GenerateEntityName(_entityList[i], flowgraph);
                 pin_in_node.Items.Add(this_node_string);
             }
             pin_in_node.EndUpdate();
 
-            pin_out_node.Text = EditorUtils.GenerateNodeName(_entity, flowgraph);
+            pin_out_node.Text = EditorUtils.GenerateEntityName(_entity, flowgraph);
             pin_out_node.Enabled = false;
 
             RefreshPinInParams();
@@ -49,11 +49,11 @@ namespace CathodeEditorGUI
                 return;
             }
 
-            CathodeNodeLink newNodeLink = new CathodeNodeLink();
-            newNodeLink.connectionID = Utilities.GenerateGUID(DateTime.Now.ToString("G"));
-            newNodeLink.parentParamID = Utilities.GenerateGUID(pin_out_param.Text);
-            newNodeLink.childID = _entityList[pin_in_node.SelectedIndex].nodeID;
-            newNodeLink.childParamID = Utilities.GenerateGUID(pin_in_param.Text);
+            CathodeEntityLink newNodeLink = new CathodeEntityLink();
+            newNodeLink.connectionID = ShortGuidUtils.Generate(DateTime.Now.ToString("G"));
+            newNodeLink.parentParamID = ShortGuidUtils.Generate(pin_out_param.Text);
+            newNodeLink.childID = _entityList[pin_in_node.SelectedIndex].shortGUID;
+            newNodeLink.childParamID = ShortGuidUtils.Generate(pin_in_param.Text);
             _entity.childLinks.Add(newNodeLink);
 
             this.Close();

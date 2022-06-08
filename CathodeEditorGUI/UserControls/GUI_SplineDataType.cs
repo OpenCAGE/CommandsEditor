@@ -20,9 +20,9 @@ namespace CathodeEditorGUI.UserControls
             InitializeComponent();
         }
 
-        public void PopulateUI(CathodeSpline cSpline, cGUID paramID)
+        public void PopulateUI(CathodeSpline cSpline, ShortGuid paramID)
         {
-            UNIMPLEMENTED_VARIABLE_TYPE.Text = NodeDBEx.GetParameterName(paramID) + " (" + paramID.ToString() + ")";
+            UNIMPLEMENTED_VARIABLE_TYPE.Text = ShortGuidUtils.FindString(paramID) + " (" + paramID.ToString() + ")";
             //todo: dynamically populate UI
         }
     }

@@ -30,7 +30,7 @@ namespace CathodeEditorGUI
             GroupBox currentGroupBox = null;
             for (int i = 0; i < animNode.keyframeHeaders.Count; i++)
             {
-                string paramGroupName = NodeDBEx.GetParameterName(animNode.keyframeHeaders[i].parameterID);
+                string paramGroupName = ShortGuidUtils.FindString(animNode.keyframeHeaders[i].parameterID);
                 if (i == 0 || previousGroup != paramGroupName)
                 {
                     if (currentGroupBox != null)
@@ -51,7 +51,7 @@ namespace CathodeEditorGUI
                 previousGroup = paramGroupName;
 
                 TextBox paramName = new TextBox();
-                paramName.Text = NodeDBEx.GetParameterName(animNode.keyframeHeaders[i].parameterSubID);
+                paramName.Text = ShortGuidUtils.FindString(animNode.keyframeHeaders[i].parameterSubID);
                 paramName.ReadOnly = true;
                 paramName.Location = new Point(6, 19 + (countInGroup * 23));
                 paramName.Size = new Size(119, 20);
@@ -76,12 +76,12 @@ namespace CathodeEditorGUI
                     }
                 }
 
-                CathodeFlowgraph flow;
-                CathodeEntity resolvedEntity = EditorUtils.ResolveHierarchy(animNode.keyframeHeaders[i].connectedEntity, out flow);
+                CathodeComposite resolvedComposite = null;
+                CathodeEntity resolvedEntity = EditorUtils.ResolveHierarchy(animNode.keyframeHeaders[i].connectedEntity, out resolvedComposite, out string hierarchy);
                 if (resolvedEntity != null)
                 {
                     TextBox controllingEntity = new TextBox();
-                    controllingEntity.Text = "Controlling: " + NodeDBEx.GetEntityName(resolvedEntity.nodeID);
+                    controllingEntity.Text = "Controlling: " + CurrentInstance.compositeLookup.GetEntityName(resolvedComposite.shortGUID, resolvedEntity.shortGUID);
                     controllingEntity.Location = new Point(keyframeWidth + 5, 18 + (countInGroup * 23));
                     controllingEntity.Size = new Size(200, 20);
                     controllingEntity.ReadOnly = true;
@@ -104,7 +104,7 @@ namespace CathodeEditorGUI
         {
             string info = ((Button)sender).AccessibleDescription;
             string[] infoS = info.Split(' ');
-            cGUID id = new cGUID(infoS[0]);
+            ShortGuid id = new ShortGuid(infoS[0]);
             currentEditData = animNode.keyframeData.FirstOrDefault(o => o.ID == id).keyframes[Convert.ToInt32(infoS[1])];
             textBox2.Text = currentEditData.paramValue.ToString();
             groupBox1.Visible = true;

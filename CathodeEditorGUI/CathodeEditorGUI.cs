@@ -1,19 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using CATHODE;
 using CATHODE.Commands;
 using CATHODE.Misc;
-using CATHODE.Models;
-using CATHODE.Textures;
 using CathodeEditorGUI.UserControls;
 using CathodeLib;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace CathodeEditorGUI
 {
@@ -27,86 +24,69 @@ namespace CathodeEditorGUI
             InitializeComponent();
             treeHelper = new TreeUtility(FileTree);
 
-            //CathodeNavMesh navmesh = new CathodeNavMesh(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\ENV\PRODUCTION\BSP_TORRENS\WORLD\STATE_0\NAV_MESH");
-            //CathodeNavMesh navmesh_orig = new CathodeNavMesh(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\ENV\PRODUCTION\BSP_TORRENS\WORLD\STATE_0\NAV_MESH5");
-
-            //string bleh = "";
-
-            //CathodeStringDB cathodeStringDB = new CathodeStringDB(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\GLOBAL\ANIM_STRING_DB_DEBUG.BIN");
-            //CathodeStringDB cathodeStringDB2 = new CathodeStringDB(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\GLOBAL\ANIM_STRING_DB.BIN");
-
-            /*
-            string level = "TECH_RND_HZDLAB";
-            string[] files = Directory.GetFiles(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\ENV\", "COMMANDS.PAK", SearchOption.AllDirectories);
-            CommandsPAK newFlows = new CommandsPAK(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\ENV\PRODUCTION\" + level + @"\WORLD\COMMANDS.PAK");
-            for (int i = 0; i < files.Length; i++)
-            {
-                if (files[i].Contains(level)) continue;
-                CommandsPAK pak = new CommandsPAK(files[i]);
-                for (int x = 0;x < pak.Flowgraphs.Count; x++)
-                {
-                    //if (pak.Flowgraphs[x].name.Contains(":")) continue;
-                    CathodeFlowgraph flow = newFlows.Flowgraphs.FirstOrDefault(o => o.nodeID == pak.Flowgraphs[x].nodeID);
-                    if (flow == null)
-                    {
-                        newFlows.Flowgraphs.Add(pak.Flowgraphs[x]);
-                    }
-                }
-                if (i == 2) break;
-            }
-            newFlows.Save();
-            return;
-            */
-
             //Populate available maps
-            List<string> all_map_dirs = MapDirectories.GetAvailable();
             env_list.Items.Clear();
-            foreach (string map in all_map_dirs) env_list.Items.Add(map);
-            env_list.SelectedIndex = 0;
+            List<string> mapList = Directory.GetFiles(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            for (int i = 0; i < mapList.Count; i++)
+            {
+                string[] fileSplit = mapList[i].Split(new[] { "PRODUCTION" }, StringSplitOptions.None);
+                string mapName = fileSplit[fileSplit.Length - 1].Substring(1, fileSplit[fileSplit.Length - 1].Length - 20);
+                mapList[i] = (mapName);
+            }
+            mapList.Remove("DLC\\BSPNOSTROMO_RIPLEY"); mapList.Remove("DLC\\BSPNOSTROMO_TWOTEAMS");
+            env_list.Items.AddRange(mapList.ToArray());
+            if (env_list.Items.Contains("FRONTEND")) env_list.SelectedItem = "FRONTEND";
+            else env_list.SelectedIndex = 0;
 
-#if DEBUG
+#if debug
             button1.Visible = true;
+            button2.Visible = true;
+            button3.Visible = true;
+            button4.Visible = true;
+            button5.Visible = true;
+            button6.Visible = true;
 #endif
         }
 
         /* Clear the UI */
-        private void ClearUI(bool clear_flowgraph_list, bool clear_node_list, bool clear_parameter_list)
+        private void ClearUI(bool clear_composite_list, bool clear_entity_list, bool clear_parameter_list)
         {
-            if (clear_flowgraph_list)
+            if (clear_composite_list)
             {
                 FileTree.BeginUpdate();
                 FileTree.Nodes.Clear();
                 FileTree.EndUpdate();
-                first_executed_flowgraph.Text = "Entry point: ";
-                flowgraph_count.Text = "Flowgraph count: ";
+                root_composite_display.Text = "Root composite: ";
+                composite_count_display.Text = "Composite count: ";
             }
-            if (clear_node_list)
+            if (clear_entity_list)
             {
-                node_search_box.Text = "";
+                entity_search_box.Text = "";
                 currentSearch = "";
-                groupBox1.Text = "Selected Flowgraph Content";
-                flowgraph_content.BeginUpdate();
-                flowgraph_content.Items.Clear();
-                flowgraph_content_RAW.Clear();
-                flowgraph_content.EndUpdate();
-                CurrentInstance.selectedFlowgraph = null;
-                editFlowgraphResources.Visible = false;
+                groupBox1.Text = "Selected Composite Content";
+                composite_content.BeginUpdate();
+                composite_content.Items.Clear();
+                composite_content_RAW.Clear();
+                composite_content.EndUpdate();
+                CurrentInstance.selectedComposite = null;
+                editCompositeResources.Visible = false;
             }
             if (clear_parameter_list)
             {
                 CurrentInstance.selectedEntity = null;
-                selected_node_id.Text = "";
-                selected_node_type.Text = "";
-                selected_node_type_description.Text = "";
-                selected_node_name.Text = "";
-                for (int i = 0; i < NodeParams.Controls.Count; i++) 
-                    NodeParams.Controls[i].Dispose();
-                NodeParams.Controls.Clear();
-                node_children.Items.Clear();
+                selected_entity_id.Text = "";
+                selected_entity_type.Text = "";
+                selected_entity_type_description.Text = "";
+                selected_entity_name.Text = "";
+                for (int i = 0; i < entity_params.Controls.Count; i++) 
+                    entity_params.Controls[i].Dispose();
+                entity_params.Controls.Clear();
+                entity_children.Items.Clear();
                 currentlyShowingChildLinks = true;
-                node_to_flowgraph_jump.Visible = false;
+                jumpToComposite.Visible = false;
+                editTriggerSequence.Visible = false;
                 editCAGEAnimationKeyframes.Visible = false;
-                editNodeResources.Visible = false;
+                editEntityResources.Visible = false;
             }
         }
 
@@ -123,6 +103,7 @@ namespace CathodeEditorGUI
         {
             //Reset UI
             ClearUI(true, true, true);
+            EditorUtils.ResetHierarchyPurgeCache();
             CurrentInstance.commandsPAK = null;
 
             //Load
@@ -150,18 +131,19 @@ namespace CathodeEditorGUI
                 return;
             }
 
-            //Load in any custom param/node names
-            NodeDBEx.LoadNames();
-
             //Begin caching entity names so we don't have to keep generating them
+            CurrentInstance.compositeLookup = new EntityNameLookup(CurrentInstance.commandsPAK);
             if (currentBackgroundCacher != null) currentBackgroundCacher.Dispose();
             currentBackgroundCacher = Task.Factory.StartNew(() => EditorUtils.GenerateEntityNameCache(this));
 
             //Populate file tree
-            treeHelper.UpdateFileTree(CurrentInstance.commandsPAK.GetFlowgraphNames().ToList());
+            treeHelper.UpdateFileTree(CurrentInstance.commandsPAK.GetCompositeNames().ToList());
 
             //Show info in UI
             RefreshStatsUI();
+
+            //Load root composite
+            LoadComposite(CurrentInstance.commandsPAK.EntryPoints[0].name);
         }
         private void load_commands_pak_Click(object sender, EventArgs e)
         {
@@ -169,8 +151,8 @@ namespace CathodeEditorGUI
         }
         private void RefreshStatsUI()
         {
-            first_executed_flowgraph.Text = "Entry point: " + CurrentInstance.commandsPAK.EntryPoints[0].name;
-            flowgraph_count.Text = "Flowgraph count: " + CurrentInstance.commandsPAK.Flowgraphs.Count;
+            root_composite_display.Text = "Root composite: " + CurrentInstance.commandsPAK.EntryPoints[0].name;
+            composite_count_display.Text = "Composite count: " + CurrentInstance.commandsPAK.Composites.Count;
         }
 
         /* Save the current edits */
@@ -189,11 +171,10 @@ namespace CathodeEditorGUI
                 MessageBox.Show("Failed to save COMMANDS.PAK!\n" + e.Message, "Failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            NodeDBEx.SaveNames();
 
             if (modifyMVR.Checked)
             {
-                CathodeMovers mvr = new CathodeMovers(CurrentInstance.commandsPAK.Filepath.Replace("COMMANDS.PAK", "MODELS.MVR"));
+                MoverDatabase mvr = new MoverDatabase(CurrentInstance.commandsPAK.Filepath.Replace("COMMANDS.PAK", "MODELS.MVR"));
                 for (int i = 0; i < mvr.Movers.Count; i++)
                 {
                     /*
@@ -213,8 +194,8 @@ namespace CathodeEditorGUI
                         System.Numerics.Matrix4x4.CreateScale(new System.Numerics.Vector3(0, 0, 0)) * 
                         System.Numerics.Matrix4x4.CreateFromQuaternion(System.Numerics.Quaternion.Identity) * 
                         System.Numerics.Matrix4x4.CreateTranslation(new System.Numerics.Vector3(-9999.0f, -9999.0f, -9999.0f));
-                    mover.IsThisTypeID = MoverType.DYNAMIC_MODEL;
-                    mover.NodeID = new cGUID("00-00-00-00");
+                    mover.MoverFlags = 6;
+                    mover.NodeID = new ShortGuid("00-00-00-00");
                     mvr.Movers[i] = mover;
                 }
                 if (mvr.FilePath != "") mvr.Save();
@@ -227,27 +208,27 @@ namespace CathodeEditorGUI
             SaveCommandsPAK();
             MessageBox.Show("Saved changes!", "Saved.", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
-        private CathodeFlowgraph GetFlowgraphContainingNode(cGUID nodeID)
+        private CathodeComposite GetCompositeContainingEntity(ShortGuid entityID)
         {
-            for (int i = 0; i < CurrentInstance.commandsPAK.Flowgraphs.Count; i++)
+            for (int i = 0; i < CurrentInstance.commandsPAK.Composites.Count; i++)
             {
-                List<CathodeEntity> entities = CurrentInstance.commandsPAK.Flowgraphs[i].GetEntities();
+                List<CathodeEntity> entities = CurrentInstance.commandsPAK.Composites[i].GetEntities();
                 for (int x = 0; x < entities.Count; x++)
                 {
-                    if (entities[x].nodeID == nodeID)
+                    if (entities[x].shortGUID == entityID)
                     {
-                        return CurrentInstance.commandsPAK.Flowgraphs[i];
+                        return CurrentInstance.commandsPAK.Composites[i];
                     }
                 }
             }
             return null;
         }
 
-        /* Edit the loaded COMMANDS.PAK entry point */
+        /* Edit the loaded COMMANDS.PAK's root composite */
         private void editEntryPoint_Click(object sender, EventArgs e)
         {
             if (CurrentInstance.commandsPAK == null || !CurrentInstance.commandsPAK.Loaded) return;
-            CathodeEditorGUI_EditEntryPoint edit_entrypoint = new CathodeEditorGUI_EditEntryPoint();
+            CathodeEditorGUI_EditRootComposite edit_entrypoint = new CathodeEditorGUI_EditRootComposite();
             edit_entrypoint.Show();
             edit_entrypoint.FormClosed += new FormClosedEventHandler(edit_entrypoint_closed);
         }
@@ -258,116 +239,123 @@ namespace CathodeEditorGUI
             this.Focus();
         }
 
-        /* Load nodes for selected script */
+        /* Load entities for selected composite */
         private void FileTree_AfterSelect(object sender, TreeViewEventArgs e)
         {
             if (FileTree.SelectedNode == null) return;
             if (((TreeItem)FileTree.SelectedNode.Tag).Item_Type != TreeItemType.EXPORTABLE_FILE) return;
-            LoadFlowgraph(((TreeItem)FileTree.SelectedNode.Tag).String_Value);
+            LoadComposite(((TreeItem)FileTree.SelectedNode.Tag).String_Value);
         }
 
-        /* If selected node is a flowgraph instance, allow jump to it */
-        private void node_to_flowgraph_jump_Click(object sender, EventArgs e)
+        /* If selected entity is a composite instance, allow jump to it */
+        private void jumpToComposite_Click(object sender, EventArgs e)
         {
-            CathodeFlowgraph flow;
+            CathodeComposite flow;
             switch (CurrentInstance.selectedEntity.variant)
             {
                 case EntityVariant.OVERRIDE:
                 {
-                    CathodeEntity entity = EditorUtils.ResolveHierarchy(((OverrideEntity)CurrentInstance.selectedEntity).hierarchy, out flow);
+                    CathodeEntity entity = EditorUtils.ResolveHierarchy(((OverrideEntity)CurrentInstance.selectedEntity).hierarchy, out flow, out string hierarchy);
                     if (entity != null)
                     {
-                        LoadFlowgraph(flow.name);
+                        LoadComposite(flow.name);
                         LoadEntity(entity);
                     }
                     break;
                 }
                 case EntityVariant.PROXY:
                 {
-                    CathodeEntity entity = EditorUtils.ResolveHierarchy(((ProxyEntity)CurrentInstance.selectedEntity).hierarchy, out flow);
+                    CathodeEntity entity = EditorUtils.ResolveHierarchy(((ProxyEntity)CurrentInstance.selectedEntity).hierarchy, out flow, out string hierarchy);
                     if (entity != null)
                     {
-                        LoadFlowgraph(flow.name);
+                        LoadComposite(flow.name);
                         LoadEntity(entity);
                     }
                     break;
                 }
                 case EntityVariant.FUNCTION:
                 {
-                    LoadFlowgraph(selected_node_type_description.Text);
+                    LoadComposite(selected_entity_type_description.Text);
                     break;
                 }
             }
         }
 
-        /* Add new flowgraph */
-        private void addNewFlowgraph_Click(object sender, EventArgs e)
+        /* Select root composite from top of UI */
+        private void SelectEntryPointUI(object sender, System.EventArgs e)
+        {
+            if (CurrentInstance.commandsPAK == null || !CurrentInstance.commandsPAK.Loaded) return;
+            LoadComposite(CurrentInstance.commandsPAK.EntryPoints[0].name);
+        }
+
+        /* Add new composite (really we should be able to do this OFF OF entities, like making a prefab) */
+        private void addNewComposite_Click(object sender, EventArgs e)
         {
             if (CurrentInstance.commandsPAK == null) return;
-            CathodeEditorGUI_AddFlowgraph add_flow = new CathodeEditorGUI_AddFlowgraph();
+            CathodeEditorGUI_AddComposite add_flow = new CathodeEditorGUI_AddComposite();
             add_flow.Show();
             add_flow.FormClosed += new FormClosedEventHandler(add_flow_closed);
         }
         private void add_flow_closed(Object sender, FormClosedEventArgs e)
         {
-            treeHelper.UpdateFileTree(CurrentInstance.commandsPAK.GetFlowgraphNames().ToList());
+            treeHelper.UpdateFileTree(CurrentInstance.commandsPAK.GetCompositeNames().ToList());
             RefreshStatsUI();
             this.BringToFront();
             this.Focus();
         }
 
-        /* Remove selected flowgraph */
-        private void removeSelectedFlowgraph_Click(object sender, EventArgs e)
+        /* Remove selected composite */
+        private void removeSelectedComposite_Click(object sender, EventArgs e)
         {
-            if (CurrentInstance.selectedFlowgraph == null) return;
+            if (CurrentInstance.selectedComposite == null) return;
             for (int i = 0; i < CurrentInstance.commandsPAK.EntryPoints.Count(); i++)
             {
-                if (CurrentInstance.selectedFlowgraph.nodeID == CurrentInstance.commandsPAK.EntryPoints[i].nodeID)
+                if (CurrentInstance.selectedComposite.shortGUID == CurrentInstance.commandsPAK.EntryPoints[i].shortGUID)
                 {
-                    MessageBox.Show("Cannot delete a flowgraph which is set as an entry point!", "Cannot delete.", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Cannot delete a composite which is the root, global, or pause menu!", "Cannot delete.", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
             }
-            if (!ConfirmAction("Are you sure you want to remove this flowgraph?")) return;
+            if (!ConfirmAction("Are you sure you want to remove this composite?")) return;
 
-            //Remove any entities or links that reference this flowgraph
-            for (int i = 0; i < CurrentInstance.commandsPAK.Flowgraphs.Count; i++)
+            //Remove any entities or links that reference this composite
+            for (int i = 0; i < CurrentInstance.commandsPAK.Composites.Count; i++)
             {
                 List<FunctionEntity> prunedFunctionEntities = new List<FunctionEntity>();
-                for (int x = 0; x < CurrentInstance.commandsPAK.Flowgraphs[i].functions.Count; x++)
+                for (int x = 0; x < CurrentInstance.commandsPAK.Composites[i].functions.Count; x++)
                 {
-                    if (CurrentInstance.commandsPAK.Flowgraphs[i].functions[x].function == CurrentInstance.selectedFlowgraph.nodeID) continue;
-                    List<CathodeNodeLink> prunedNodeLinks = new List<CathodeNodeLink>();
-                    for (int l = 0; l < CurrentInstance.commandsPAK.Flowgraphs[i].functions[x].childLinks.Count; l++)
+                    if (CurrentInstance.commandsPAK.Composites[i].functions[x].function == CurrentInstance.selectedComposite.shortGUID) continue;
+                    List<CathodeEntityLink> prunedEntityLinks = new List<CathodeEntityLink>();
+                    for (int l = 0; l < CurrentInstance.commandsPAK.Composites[i].functions[x].childLinks.Count; l++)
                     {
-                        CathodeEntity linkedNode = CurrentInstance.commandsPAK.Flowgraphs[i].GetEntityByID(CurrentInstance.commandsPAK.Flowgraphs[i].functions[x].childLinks[l].childID);
-                        if (linkedNode != null && linkedNode.variant == EntityVariant.FUNCTION) if (((FunctionEntity)linkedNode).function == CurrentInstance.selectedFlowgraph.nodeID) continue;
-                        prunedNodeLinks.Add(CurrentInstance.commandsPAK.Flowgraphs[i].functions[x].childLinks[l]);
+                        CathodeEntity linkedEntity = CurrentInstance.commandsPAK.Composites[i].GetEntityByID(CurrentInstance.commandsPAK.Composites[i].functions[x].childLinks[l].childID);
+                        if (linkedEntity != null && linkedEntity.variant == EntityVariant.FUNCTION) if (((FunctionEntity)linkedEntity).function == CurrentInstance.selectedComposite.shortGUID) continue;
+                        prunedEntityLinks.Add(CurrentInstance.commandsPAK.Composites[i].functions[x].childLinks[l]);
                     }
-                    CurrentInstance.commandsPAK.Flowgraphs[i].functions[x].childLinks = prunedNodeLinks;
-                    prunedFunctionEntities.Add(CurrentInstance.commandsPAK.Flowgraphs[i].functions[x]);
+                    CurrentInstance.commandsPAK.Composites[i].functions[x].childLinks = prunedEntityLinks;
+                    prunedFunctionEntities.Add(CurrentInstance.commandsPAK.Composites[i].functions[x]);
                 }
-                CurrentInstance.commandsPAK.Flowgraphs[i].functions = prunedFunctionEntities;
+                CurrentInstance.commandsPAK.Composites[i].functions = prunedFunctionEntities;
             }
-            //TODO: remove proxies etc that also reference any of the removed nodes
+            //TODO: remove proxies etc that also reference any of the removed entities
 
-            //Remove the flowgraph
-            CurrentInstance.commandsPAK.Flowgraphs.Remove(CurrentInstance.selectedFlowgraph);
+            //Remove the composite
+            CurrentInstance.commandsPAK.Composites.Remove(CurrentInstance.selectedComposite);
 
             //Refresh UI
             ClearUI(false, true, true);
             RefreshStatsUI();
-            treeHelper.UpdateFileTree(CurrentInstance.commandsPAK.GetFlowgraphNames().ToList());
+            treeHelper.UpdateFileTree(CurrentInstance.commandsPAK.GetCompositeNames().ToList());
         }
 
-        /* Select node from loaded flowgraph */
-        private void flowgraph_content_SelectedIndexChanged(object sender, EventArgs e)
+        /* Select entity from loaded composite */
+        private void composite_content_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (flowgraph_content.SelectedIndex == -1 || CurrentInstance.selectedFlowgraph == null) return;
+            if (composite_content.SelectedIndex == -1 || CurrentInstance.selectedComposite == null) return;
             try
             {
-                cGUID entityID = new cGUID(flowgraph_content.SelectedItem.ToString().Substring(1, 11));
-                CathodeEntity thisEntity = CurrentInstance.selectedFlowgraph.GetEntityByID(entityID);
+                ShortGuid entityID = new ShortGuid(composite_content.SelectedItem.ToString().Substring(1, 11));
+                CathodeEntity thisEntity = CurrentInstance.selectedComposite.GetEntityByID(entityID);
                 if (thisEntity != null) LoadEntity(thisEntity);
             }
             catch (Exception ex)
@@ -379,14 +367,14 @@ namespace CathodeEditorGUI
         /* Add new out pin */
         private void addNewLink_Click(object sender, EventArgs e)
         {
-            if (CurrentInstance.selectedFlowgraph == null || CurrentInstance.selectedEntity == null) return;
-            CathodeEditorGUI_AddPin add_pin = new CathodeEditorGUI_AddPin(CurrentInstance.selectedEntity, CurrentInstance.selectedFlowgraph);
+            if (CurrentInstance.selectedComposite == null || CurrentInstance.selectedEntity == null) return;
+            CathodeEditorGUI_AddPin add_pin = new CathodeEditorGUI_AddPin(CurrentInstance.selectedEntity, CurrentInstance.selectedComposite);
             add_pin.Show();
             add_pin.FormClosed += new FormClosedEventHandler(add_pin_closed);
         }
         private void add_pin_closed(Object sender, FormClosedEventArgs e)
         {
-            RefreshNodeLinks();
+            RefreshEntityLinks();
             this.BringToFront();
             this.Focus();
         }
@@ -394,21 +382,21 @@ namespace CathodeEditorGUI
         /* Remove selected out pin */
         private void removeSelectedLink_Click(object sender, EventArgs e)
         {
-            if (CurrentInstance.selectedEntity == null || CurrentInstance.selectedFlowgraph == null) return;
+            if (CurrentInstance.selectedEntity == null || CurrentInstance.selectedComposite == null) return;
             if (!ConfirmAction("Are you sure you want to remove this link?")) return;
             if (currentlyShowingChildLinks)
             {
-                CurrentInstance.selectedEntity.childLinks.RemoveAt(node_children.SelectedIndex);
+                CurrentInstance.selectedEntity.childLinks.RemoveAt(entity_children.SelectedIndex);
             }
             else
             {
-                List<CathodeEntity> ents = CurrentInstance.selectedFlowgraph.GetEntities();
+                List<CathodeEntity> ents = CurrentInstance.selectedComposite.GetEntities();
                 int deleteIndex = -1;
                 foreach (CathodeEntity entity in ents)
                 {
                     for (int i = 0; i < entity.childLinks.Count; i++)
                     {
-                        if (entity.childLinks[i].connectionID == linkedNodeListIDs[node_children.SelectedIndex])
+                        if (entity.childLinks[i].connectionID == linkedEntityListIDs[entity_children.SelectedIndex])
                         {
                             deleteIndex = i;
                             break;
@@ -421,80 +409,81 @@ namespace CathodeEditorGUI
                     }
                 }
             }
-            RefreshNodeLinks();
+            RefreshEntityLinks();
         }
 
         /* Go to selected pin out on button press */
         private void out_pin_goto_Click(object sender, EventArgs e)
         {
-            if (node_children.SelectedIndex == -1 || CurrentInstance.selectedFlowgraph == null) return;
+            if (entity_children.SelectedIndex == -1 || CurrentInstance.selectedComposite == null) return;
 
-            CathodeEntity thisNodeInfo = null;
+            CathodeEntity thisEntity = null;
             if (currentlyShowingChildLinks)
             {
-                thisNodeInfo = CurrentInstance.selectedFlowgraph.GetEntityByID(CurrentInstance.selectedEntity.childLinks[node_children.SelectedIndex].childID);
+                thisEntity = CurrentInstance.selectedComposite.GetEntityByID(CurrentInstance.selectedEntity.childLinks[entity_children.SelectedIndex].childID);
             }
             else
             {
-                List<CathodeEntity> ents = CurrentInstance.selectedFlowgraph.GetEntities();
+                List<CathodeEntity> ents = CurrentInstance.selectedComposite.GetEntities();
                 foreach (CathodeEntity entity in ents)
                 {
                     for (int i = 0; i < entity.childLinks.Count; i++)
                     {
-                        if (entity.childLinks[i].connectionID == linkedNodeListIDs[node_children.SelectedIndex])
+                        if (entity.childLinks[i].connectionID == linkedEntityListIDs[entity_children.SelectedIndex])
                         {
-                            thisNodeInfo = entity;
+                            thisEntity = entity;
                             break;
                         }
                     }
-                    if (thisNodeInfo != null) break;
+                    if (thisEntity != null) break;
                 }
             }
-            if (thisNodeInfo != null) LoadEntity(thisNodeInfo);
+            if (thisEntity != null) LoadEntity(thisEntity);
         }
 
         /* Flip the child link list to contain parents (this is an expensive search, which is why we only do it on request) */
         private void showLinkParents_Click(object sender, EventArgs e)
         {
             currentlyShowingChildLinks = !currentlyShowingChildLinks;
-            RefreshNodeLinks();
+            RefreshEntityLinks();
         }
 
-        /* Search node list */
+        /* Search entity list */
         private string currentSearch = "";
-        private void node_search_btn_Click(object sender, EventArgs e)
+        private void entity_search_btn_Click(object sender, EventArgs e)
         {
-            if (node_search_box.Text == currentSearch) return;
+            if (entity_search_box.Text == currentSearch) return;
             List<string> matched = new List<string>();
-            foreach (string item in flowgraph_content_RAW) if (item.ToUpper().Contains(node_search_box.Text.ToUpper())) matched.Add(item);
-            flowgraph_content.BeginUpdate();
-            flowgraph_content.Items.Clear();
-            for (int i = 0; i < matched.Count; i++) flowgraph_content.Items.Add(matched[i]);
-            flowgraph_content.EndUpdate();
-            currentSearch = node_search_box.Text;
+            foreach (string item in composite_content_RAW) if (item.ToUpper().Contains(entity_search_box.Text.ToUpper())) matched.Add(item);
+            composite_content.BeginUpdate();
+            composite_content.Items.Clear();
+            for (int i = 0; i < matched.Count; i++) composite_content.Items.Add(matched[i]);
+            composite_content.EndUpdate();
+            currentSearch = entity_search_box.Text;
         }
 
-        /* Load a flowgraph into the UI */
-        List<string> flowgraph_content_RAW = new List<string>();
-        private void LoadFlowgraph(string FileName)
+        /* Load a composite into the UI */
+        List<string> composite_content_RAW = new List<string>();
+        private void LoadComposite(string FileName)
         {
             ClearUI(false, true, true);
-            CathodeFlowgraph entry = CurrentInstance.commandsPAK.Flowgraphs[CurrentInstance.commandsPAK.GetFileIndex(FileName)];
-            CurrentInstance.selectedFlowgraph = entry;
+            CathodeComposite entry = CurrentInstance.commandsPAK.Composites[CurrentInstance.commandsPAK.GetFileIndex(FileName)];
+            CurrentInstance.selectedComposite = entry;
+            EditorUtils.PurgeDeadHierarchiesInActiveComposite();
             Cursor.Current = Cursors.WaitCursor;
 
-            flowgraph_content.BeginUpdate();
+            composite_content.BeginUpdate();
             List<CathodeEntity> entities = entry.GetEntities();
             for (int i = 0; i < entities.Count; i++)
             {
-                string desc = EditorUtils.GenerateNodeName(entities[i], CurrentInstance.selectedFlowgraph);
-                flowgraph_content.Items.Add(desc);
-                flowgraph_content_RAW.Add(desc);
+                string desc = EditorUtils.GenerateEntityName(entities[i], CurrentInstance.selectedComposite);
+                composite_content.Items.Add(desc);
+                composite_content_RAW.Add(desc);
             }
-            flowgraph_content.EndUpdate();
+            composite_content.EndUpdate();
 
-#if DEBUG //TODO: PULL THIS INTO STABLE
-            editFlowgraphResources.Visible = true;
+#if debug //TODO: PULL THIS INTO STABLE
+            editCompositeResources.Visible = true;
 #endif
 
             groupBox1.Text = entry.name;
@@ -502,108 +491,154 @@ namespace CathodeEditorGUI
         }
 
         /* Add new entity */
-        private void addNewNode_Click(object sender, EventArgs e)
+        private void addNewEntity_Click(object sender, EventArgs e)
         {
-            if (CurrentInstance.selectedFlowgraph == null) return;
-            CathodeEditorGUI_AddNode add_parameter = new CathodeEditorGUI_AddNode(CurrentInstance.selectedFlowgraph, CurrentInstance.commandsPAK.Flowgraphs);
+            if (CurrentInstance.selectedComposite == null) return;
+            CathodeEditorGUI_AddEntity add_parameter = new CathodeEditorGUI_AddEntity(CurrentInstance.selectedComposite, CurrentInstance.commandsPAK.Composites);
             add_parameter.Show();
-            add_parameter.FormClosed += new FormClosedEventHandler(add_node_closed);
+            add_parameter.OnNewEntity += OnAddNewEntity;
         }
-        private void add_node_closed(Object sender, FormClosedEventArgs e)
+        private void OnAddNewEntity(CathodeEntity entity)
         {
-            ReloadUIForNewEntity(((CathodeEditorGUI_AddNode)sender).NewEntity);
+            ReloadUIForNewEntity(entity);
             this.BringToFront();
             this.Focus();
         }
 
         /* Remove selected entity */
-        private void removeSelectedNode_Click(object sender, EventArgs e)
+        private void removeSelectedEntity_Click(object sender, EventArgs e)
         {
             if (CurrentInstance.selectedEntity == null) return;
             if (!ConfirmAction("Are you sure you want to remove this entity?")) return;
 
-            string removedID = CurrentInstance.selectedEntity.nodeID.ToString();
+            string removedID = CurrentInstance.selectedEntity.shortGUID.ToString();
 
             switch (CurrentInstance.selectedEntity.variant)
             {
                 case EntityVariant.DATATYPE:
-                    CurrentInstance.selectedFlowgraph.datatypes.Remove((DatatypeEntity)CurrentInstance.selectedEntity);
+                    CurrentInstance.selectedComposite.datatypes.Remove((DatatypeEntity)CurrentInstance.selectedEntity);
                     break;
                 case EntityVariant.FUNCTION:
-                    CurrentInstance.selectedFlowgraph.functions.Remove((FunctionEntity)CurrentInstance.selectedEntity);
+                    CurrentInstance.selectedComposite.functions.Remove((FunctionEntity)CurrentInstance.selectedEntity);
                     break;
                 case EntityVariant.OVERRIDE:
-                    CurrentInstance.selectedFlowgraph.overrides.Remove((OverrideEntity)CurrentInstance.selectedEntity);
+                    CurrentInstance.selectedComposite.overrides.Remove((OverrideEntity)CurrentInstance.selectedEntity);
                     break;
                 case EntityVariant.PROXY:
-                    CurrentInstance.selectedFlowgraph.proxies.Remove((ProxyEntity)CurrentInstance.selectedEntity);
+                    CurrentInstance.selectedComposite.proxies.Remove((ProxyEntity)CurrentInstance.selectedEntity);
                     break;
                 case EntityVariant.NOT_SETUP:
-                    CurrentInstance.selectedFlowgraph.unknowns.Remove(CurrentInstance.selectedEntity);
+                    CurrentInstance.selectedComposite.unknowns.Remove(CurrentInstance.selectedEntity);
                     break;
             }
 
-            List<CathodeEntity> entities = CurrentInstance.selectedFlowgraph.GetEntities();
-            for (int i = 0; i < entities.Count; i++)
+            List<CathodeEntity> entities = CurrentInstance.selectedComposite.GetEntities();
+            for (int i = 0; i < entities.Count; i++) //We should actually query every entity in the PAK, since we might be ref'd by a proxy or override
             {
-                List<CathodeNodeLink> nodeLinks = new List<CathodeNodeLink>();
+                List<CathodeEntityLink> entLinks = new List<CathodeEntityLink>();
                 for (int x = 0; x < entities[i].childLinks.Count; x++)
                 {
-                    if (entities[i].childLinks[x].childID != CurrentInstance.selectedEntity.nodeID) nodeLinks.Add(entities[i].childLinks[x]);
+                    if (entities[i].childLinks[x].childID != CurrentInstance.selectedEntity.shortGUID) entLinks.Add(entities[i].childLinks[x]);
                 }
-                entities[i].childLinks = nodeLinks;
+                entities[i].childLinks = entLinks;
+
+                if (entities[i].variant == EntityVariant.FUNCTION)
+                {
+                    string entType = ShortGuidUtils.FindString(((FunctionEntity)entities[i]).function);
+                    switch (entType)
+                    {
+                        case "TriggerSequence":
+                            TriggerSequence triggerSequence = (TriggerSequence)entities[i];
+                            List<CathodeTriggerSequenceTrigger> triggers = new List<CathodeTriggerSequenceTrigger>();
+                            for (int x = 0; x < triggerSequence.triggers.Count; x++)
+                            {
+                                if (triggerSequence.triggers[x].hierarchy.Count < 2 ||
+                                    triggerSequence.triggers[x].hierarchy[triggerSequence.triggers[x].hierarchy.Count - 2] != CurrentInstance.selectedEntity.shortGUID)
+                                {
+                                    triggers.Add(triggerSequence.triggers[x]);
+                                }
+                            }
+                            triggerSequence.triggers = triggers;
+                            break;
+                        case "CAGEAnimation":
+                            CAGEAnimation cageAnim = (CAGEAnimation)entities[i];
+                            List<CathodeParameterKeyframeHeader> headers = new List<CathodeParameterKeyframeHeader>();
+                            for (int x = 0; x < cageAnim.keyframeHeaders.Count; x++)
+                            {
+                                if (cageAnim.keyframeHeaders[x].connectedEntity.Count < 2 ||
+                                    cageAnim.keyframeHeaders[x].connectedEntity[cageAnim.keyframeHeaders[x].connectedEntity.Count - 2] != CurrentInstance.selectedEntity.shortGUID)
+                                {
+                                    headers.Add(cageAnim.keyframeHeaders[x]);
+                                }
+                            }
+                            cageAnim.keyframeHeaders = headers;
+                            break;
+                    }
+                }
             }
 
             int indexToRemove = -1;
-            for (int i = 0; i < flowgraph_content.Items.Count; i++)
+            for (int i = 0; i < composite_content.Items.Count; i++)
             {
-                if (flowgraph_content.Items[i].ToString().Substring(1, 11) == removedID)
+                if (composite_content.Items[i].ToString().Substring(1, 11) == removedID)
                 {
                     indexToRemove = i;
                     break;
                 }
             }
-            if (indexToRemove != -1) flowgraph_content.Items.RemoveAt(indexToRemove);
+            if (indexToRemove != -1) composite_content.Items.RemoveAt(indexToRemove);
             indexToRemove = -1;
-            for (int i = 0; i < flowgraph_content_RAW.Count; i++)
+            for (int i = 0; i < composite_content_RAW.Count; i++)
             {
-                if (flowgraph_content_RAW[i].Substring(1, 11) == removedID)
+                if (composite_content_RAW[i].Substring(1, 11) == removedID)
                 {
                     indexToRemove = i;
                     break;
                 }
             }
-            if (indexToRemove != -1) flowgraph_content_RAW.RemoveAt(indexToRemove);
-            else LoadFlowgraph(CurrentInstance.selectedFlowgraph.name);
+            if (indexToRemove != -1) composite_content_RAW.RemoveAt(indexToRemove);
+            else LoadComposite(CurrentInstance.selectedComposite.name);
 
             ClearUI(false, false, true);
         }
 
+        /* Remove selected entity when DELETE key is pressed in composite */
+        private void composite_content_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                removeSelectedEntity.PerformClick();
+            }
+        }
+
         /* Duplicate selected entity */
-        private void duplicateSelectedNode_Click(object sender, EventArgs e)
+        private void duplicateSelectedEntity_Click(object sender, EventArgs e)
         {
             if (CurrentInstance.selectedEntity == null) return;
             if (!ConfirmAction("Are you sure you want to duplicate this entity?")) return;
 
-            //Generate new node ID and name
+            //Generate new entity ID and name
             CathodeEntity newEnt = Utilities.CloneObject(CurrentInstance.selectedEntity);
-            newEnt.nodeID = Utilities.GenerateGUID(DateTime.Now.ToString("G"));
-            NodeDBEx.AddNewNodeName(newEnt.nodeID, NodeDBEx.GetEntityName(CurrentInstance.selectedEntity.nodeID) + "_clone");
+            newEnt.shortGUID = ShortGuidUtils.Generate(DateTime.Now.ToString("G"));
+            CurrentInstance.compositeLookup.SetEntityName(
+                CurrentInstance.selectedComposite.shortGUID,
+                newEnt.shortGUID,
+                CurrentInstance.compositeLookup.GetEntityName(CurrentInstance.selectedComposite.shortGUID, CurrentInstance.selectedEntity.shortGUID) + "_clone");
 
-            //Add parent links in to this node that linked in to the other node
-            List<CathodeEntity> ents = CurrentInstance.selectedFlowgraph.GetEntities();
-            List<CathodeNodeLink> newLinks = new List<CathodeNodeLink>();
+            //Add parent links in to this entity that linked in to the other entity
+            List<CathodeEntity> ents = CurrentInstance.selectedComposite.GetEntities();
+            List<CathodeEntityLink> newLinks = new List<CathodeEntityLink>();
             int num_of_new_things = 1;
             foreach (CathodeEntity entity in ents)
             {
                 newLinks.Clear();
-                foreach (CathodeNodeLink link in entity.childLinks)
+                foreach (CathodeEntityLink link in entity.childLinks)
                 {
-                    if (link.childID == CurrentInstance.selectedEntity.nodeID)
+                    if (link.childID == CurrentInstance.selectedEntity.shortGUID)
                     {
-                        CathodeNodeLink newLink = new CathodeNodeLink();
-                        newLink.connectionID = Utilities.GenerateGUID(DateTime.Now.ToString("G") + num_of_new_things.ToString()); num_of_new_things++;
-                        newLink.childID = newEnt.nodeID;
+                        CathodeEntityLink newLink = new CathodeEntityLink();
+                        newLink.connectionID = ShortGuidUtils.Generate(DateTime.Now.ToString("G") + num_of_new_things.ToString()); num_of_new_things++;
+                        newLink.childID = newEnt.shortGUID;
                         newLink.childParamID = link.childParamID;
                         newLink.parentParamID = link.parentParamID;
                         newLinks.Add(newLink);
@@ -612,23 +647,23 @@ namespace CathodeEditorGUI
                 if (newLinks.Count != 0) entity.childLinks.AddRange(newLinks);
             }
 
-            //Save back to flowgraph
+            //Save back to composite
             switch (newEnt.variant)
             {
                 case EntityVariant.FUNCTION:
-                    CurrentInstance.selectedFlowgraph.functions.Add((FunctionEntity)newEnt);
+                    CurrentInstance.selectedComposite.functions.Add((FunctionEntity)newEnt);
                     break;
                 case EntityVariant.DATATYPE:
-                    CurrentInstance.selectedFlowgraph.datatypes.Add((DatatypeEntity)newEnt);
+                    CurrentInstance.selectedComposite.datatypes.Add((DatatypeEntity)newEnt);
                     break;
                 case EntityVariant.PROXY:
-                    CurrentInstance.selectedFlowgraph.proxies.Add((ProxyEntity)newEnt);
+                    CurrentInstance.selectedComposite.proxies.Add((ProxyEntity)newEnt);
                     break;
                 case EntityVariant.OVERRIDE:
-                    CurrentInstance.selectedFlowgraph.overrides.Add((OverrideEntity)newEnt);
+                    CurrentInstance.selectedComposite.overrides.Add((OverrideEntity)newEnt);
                     break;
                 case EntityVariant.NOT_SETUP:
-                    CurrentInstance.selectedFlowgraph.unknowns.Add(newEnt);
+                    CurrentInstance.selectedComposite.unknowns.Add(newEnt);
                     break;
             }
 
@@ -637,34 +672,38 @@ namespace CathodeEditorGUI
         }
 
         /* Rename selected entity */
-        private void renameSelectedNode_Click(object sender, EventArgs e)
+        private void renameSelectedEntity_Click(object sender, EventArgs e)
         {
             if (CurrentInstance.selectedEntity == null) return;
-            CathodeEditorGUI_RenameNode rename_node = new CathodeEditorGUI_RenameNode(CurrentInstance.selectedEntity.nodeID);
-            rename_node.Show();
-            rename_node.FormClosed += new FormClosedEventHandler(rename_node_closed);
+            CathodeEditorGUI_RenameEntity rename_entity = new CathodeEditorGUI_RenameEntity(CurrentInstance.selectedEntity.shortGUID);
+            rename_entity.Show();
+            rename_entity.FormClosed += new FormClosedEventHandler(rename_entity_closed);
         }
-        private void rename_node_closed(Object sender, FormClosedEventArgs e)
+        private void rename_entity_closed(Object sender, FormClosedEventArgs e)
         {
-            if (((CathodeEditorGUI_RenameNode)sender).didSave &&
-                ((CathodeEditorGUI_RenameNode)sender).NodeID == CurrentInstance.selectedEntity.nodeID)
+            if (((CathodeEditorGUI_RenameEntity)sender).didSave &&
+                ((CathodeEditorGUI_RenameEntity)sender).EntityID == CurrentInstance.selectedEntity.shortGUID)
             {
-                NodeDBEx.AddNewNodeName(CurrentInstance.selectedEntity.nodeID, ((CathodeEditorGUI_RenameNode)sender).NodeName);
-                string nodeID = CurrentInstance.selectedEntity.nodeID.ToString();
-                string newNodeName = EditorUtils.GenerateNodeName(CurrentInstance.selectedEntity, CurrentInstance.selectedFlowgraph);
-                for (int i = 0; i < flowgraph_content.Items.Count; i++)
+                CurrentInstance.compositeLookup.SetEntityName(
+                    CurrentInstance.selectedComposite.shortGUID,
+                    CurrentInstance.selectedEntity.shortGUID,
+                    ((CathodeEditorGUI_RenameEntity)sender).EntityName);
+
+                string entityID = CurrentInstance.selectedEntity.shortGUID.ToString();
+                string newEntityName = EditorUtils.GenerateEntityName(CurrentInstance.selectedEntity, CurrentInstance.selectedComposite, true);
+                for (int i = 0; i < composite_content.Items.Count; i++)
                 {
-                    if (flowgraph_content.Items[i].ToString().Substring(1, 11) == nodeID)
+                    if (composite_content.Items[i].ToString().Substring(1, 11) == entityID)
                     {
-                        flowgraph_content.Items[i] = newNodeName;
+                        composite_content.Items[i] = newEntityName;
                         break;
                     }
                 }
-                for (int i = 0; i < flowgraph_content_RAW.Count; i++)
+                for (int i = 0; i < composite_content_RAW.Count; i++)
                 {
-                    if (flowgraph_content_RAW[i].Substring(1, 11) == nodeID)
+                    if (composite_content_RAW[i].Substring(1, 11) == entityID)
                     {
-                        flowgraph_content_RAW[i] = newNodeName;
+                        composite_content_RAW[i] = newEntityName;
                         break;
                     }
                 }
@@ -677,169 +716,185 @@ namespace CathodeEditorGUI
         /* Perform a partial UI reload for a newly added entity */
         private void ReloadUIForNewEntity(CathodeEntity newEnt)
         {
-            if (CurrentInstance.selectedFlowgraph == null || newEnt == null) return;
+            if (CurrentInstance.selectedComposite == null || newEnt == null) return;
             if (currentSearch == "")
             {
-                string newNodeName = EditorUtils.GenerateNodeName(newEnt, CurrentInstance.selectedFlowgraph);
-                flowgraph_content.Items.Add(newNodeName);
-                flowgraph_content_RAW.Add(newNodeName);
+                string newEntityName = EditorUtils.GenerateEntityName(newEnt, CurrentInstance.selectedComposite);
+                composite_content.Items.Add(newEntityName);
+                composite_content_RAW.Add(newEntityName);
             }
             else
             {
-                LoadFlowgraph(CurrentInstance.selectedFlowgraph.name);
+                LoadComposite(CurrentInstance.selectedComposite.name);
             }
             LoadEntity(newEnt);
         }
 
         /* Load a entity into the UI */
-        private void LoadEntity(CathodeEntity edit_node)
+        private void LoadEntity(CathodeEntity entity)
         {
-            if (edit_node == null) return;
+            if (entity == null) return;
 
             ClearUI(false, false, true);
-            CurrentInstance.selectedEntity = edit_node;
+            CurrentInstance.selectedEntity = entity;
             Cursor.Current = Cursors.WaitCursor;
 
             //populate info labels
-            selected_node_id.Text = edit_node.nodeID.ToString();
-            selected_node_type.Text = edit_node.variant.ToString();
-            string nodetypedesc = "";
-            switch (edit_node.variant)
+            selected_entity_id.Text = entity.shortGUID.ToString();
+            selected_entity_type.Text = entity.variant.ToString();
+            hierarchyDisplay.Visible = false;
+            string description = "";
+            switch (entity.variant)
             {
                 case EntityVariant.FUNCTION:
-                    nodetypedesc = NodeDBEx.GetParameterName(((FunctionEntity)edit_node).function);
-                    node_to_flowgraph_jump.Visible = (CurrentInstance.commandsPAK.GetFlowgraph(((FunctionEntity)edit_node).function) != null);
-                    selected_node_name.Text = NodeDBEx.GetEntityName(edit_node.nodeID);
-#if DEBUG //TODO: PULL THIS INTO STABLE
-                    editCAGEAnimationKeyframes.Visible = nodetypedesc == "CAGEAnimation";
+                    ShortGuid thisFunction = ((FunctionEntity)entity).function;
+                    CathodeComposite funcComposite = CurrentInstance.commandsPAK.GetComposite(thisFunction);
+                    jumpToComposite.Visible = funcComposite != null;
+                    if (funcComposite != null)
+                        description = funcComposite.name;
+                    else
+                        description = ShortGuidUtils.FindString(((FunctionEntity)entity).function);
+                    selected_entity_name.Text = CurrentInstance.compositeLookup.GetEntityName(CurrentInstance.selectedComposite.shortGUID, entity.shortGUID);
+#if debug //TODO: PULL THIS INTO STABLE
+                    if (funcComposite == null)
+                    {
+                        CathodeFunctionType function = CommandsUtils.GetFunctionType(thisFunction);
+                        editTriggerSequence.Visible = function == CathodeFunctionType.TriggerSequence;
+                        editCAGEAnimationKeyframes.Visible = function == CathodeFunctionType.CAGEAnimation;
+                    }
 #endif
                     break;
                 case EntityVariant.DATATYPE:
-                    nodetypedesc = "DataType " + ((DatatypeEntity)edit_node).type.ToString();
-                    selected_node_name.Text = NodeDBEx.GetParameterName(((DatatypeEntity)edit_node).parameter);
+                    description = "DataType " + ((DatatypeEntity)entity).type.ToString();
+                    selected_entity_name.Text = ShortGuidUtils.FindString(((DatatypeEntity)entity).parameter);
                     break;
                 case EntityVariant.PROXY:
                 case EntityVariant.OVERRIDE:
-                    node_to_flowgraph_jump.Visible = true;
-                    selected_node_name.Text = NodeDBEx.GetEntityName(edit_node.nodeID);
+                    hierarchyDisplay.Visible = true;
+                    string hierarchy = "";
+                    if (entity.variant == EntityVariant.PROXY) EditorUtils.ResolveHierarchy(((ProxyEntity)entity).hierarchy, out CathodeComposite comp, out hierarchy);
+                    else EditorUtils.ResolveHierarchy(((OverrideEntity)entity).hierarchy, out CathodeComposite comp, out hierarchy);
+                    hierarchyDisplay.Text = hierarchy;
+                    jumpToComposite.Visible = true;
+                    selected_entity_name.Text = CurrentInstance.compositeLookup.GetEntityName(CurrentInstance.selectedComposite.shortGUID, entity.shortGUID);
                     break;
                 default:
-                    selected_node_name.Text = NodeDBEx.GetEntityName(edit_node.nodeID);
+                    selected_entity_name.Text = CurrentInstance.compositeLookup.GetEntityName(CurrentInstance.selectedComposite.shortGUID, entity.shortGUID);
                     break;
             }
-            selected_node_type_description.Text = nodetypedesc;
+            selected_entity_type_description.Text = description;
 
-            //show resource editor button if this node has a resource reference
-            cGUID resourceParamID = Utilities.GenerateGUID("resource");
-            CathodeLoadedParameter resourceParam = CurrentInstance.selectedEntity.parameters.FirstOrDefault(o => o.paramID == resourceParamID);
-#if DEBUG //TODO: PULL THIS INTO STABLE
-            editNodeResources.Visible = ((resourceParam != null) || CurrentInstance.selectedEntity.resources.Count != 0);
+            //show resource editor button if this entity has a resource reference
+            ShortGuid resourceParamID = ShortGuidUtils.Generate("resource");
+            CathodeLoadedParameter resourceParam = CurrentInstance.selectedEntity.parameters.FirstOrDefault(o => o.shortGUID == resourceParamID);
+#if debug //TODO: PULL THIS INTO STABLE
+            editEntityResources.Visible = ((resourceParam != null) || CurrentInstance.selectedEntity.resources.Count != 0);
 #endif
 
             //populate parameter inputs
             int current_ui_offset = 7;
-            for (int i = 0; i < edit_node.parameters.Count; i++)
+            for (int i = 0; i < entity.parameters.Count; i++)
             {
-                if (edit_node.parameters[i].paramID == resourceParamID) continue; //We use the resource editor button (above) for resource parameters
+                if (entity.parameters[i].shortGUID == resourceParamID) continue; //We use the resource editor button (above) for resource parameters
 
-                CathodeParameter this_param = edit_node.parameters[i].content;
+                CathodeParameter this_param = entity.parameters[i].content;
                 UserControl parameterGUI = null;
 
                 switch (this_param.dataType)
                 {
                     case CathodeDataType.POSITION:
                         parameterGUI = new GUI_TransformDataType();
-                        ((GUI_TransformDataType)parameterGUI).PopulateUI((CathodeTransform)this_param, edit_node.parameters[i].paramID);
+                        ((GUI_TransformDataType)parameterGUI).PopulateUI((CathodeTransform)this_param, entity.parameters[i].shortGUID);
                         break;
                     case CathodeDataType.INTEGER:
                         parameterGUI = new GUI_NumericDataType();
-                        ((GUI_NumericDataType)parameterGUI).PopulateUI_Int((CathodeInteger)this_param, edit_node.parameters[i].paramID);
+                        ((GUI_NumericDataType)parameterGUI).PopulateUI_Int((CathodeInteger)this_param, entity.parameters[i].shortGUID);
                         break;
                     case CathodeDataType.STRING:
                         parameterGUI = new GUI_StringDataType();
-                        ((GUI_StringDataType)parameterGUI).PopulateUI((CathodeString)this_param, edit_node.parameters[i].paramID);
+                        ((GUI_StringDataType)parameterGUI).PopulateUI((CathodeString)this_param, entity.parameters[i].shortGUID);
                         break;
                     case CathodeDataType.BOOL:
                         parameterGUI = new GUI_BoolDataType();
-                        ((GUI_BoolDataType)parameterGUI).PopulateUI((CathodeBool)this_param, edit_node.parameters[i].paramID);
+                        ((GUI_BoolDataType)parameterGUI).PopulateUI((CathodeBool)this_param, entity.parameters[i].shortGUID);
                         break;
                     case CathodeDataType.FLOAT:
                         parameterGUI = new GUI_NumericDataType();
-                        ((GUI_NumericDataType)parameterGUI).PopulateUI_Float((CathodeFloat)this_param, edit_node.parameters[i].paramID);
+                        ((GUI_NumericDataType)parameterGUI).PopulateUI_Float((CathodeFloat)this_param, entity.parameters[i].shortGUID);
                         break;
                     case CathodeDataType.DIRECTION:
                         parameterGUI = new GUI_VectorDataType();
-                        ((GUI_VectorDataType)parameterGUI).PopulateUI((CathodeVector3)this_param, edit_node.parameters[i].paramID);
+                        ((GUI_VectorDataType)parameterGUI).PopulateUI((CathodeVector3)this_param, entity.parameters[i].shortGUID);
                         break;
                     case CathodeDataType.ENUM:
                         parameterGUI = new GUI_EnumDataType();
-                        ((GUI_EnumDataType)parameterGUI).PopulateUI((CathodeEnum)this_param, edit_node.parameters[i].paramID);
+                        ((GUI_EnumDataType)parameterGUI).PopulateUI((CathodeEnum)this_param, entity.parameters[i].shortGUID);
                         break;
                     case CathodeDataType.SHORT_GUID:
                         parameterGUI = new GUI_HexDataType();
-                        ((GUI_HexDataType)parameterGUI).PopulateUI((CathodeResource)this_param, edit_node.parameters[i].paramID, CurrentInstance.selectedFlowgraph); 
+                        ((GUI_HexDataType)parameterGUI).PopulateUI((CathodeResource)this_param, entity.parameters[i].shortGUID, CurrentInstance.selectedComposite); 
                         break;
                     case CathodeDataType.SPLINE_DATA:
                         parameterGUI = new GUI_SplineDataType();
-                        ((GUI_SplineDataType)parameterGUI).PopulateUI((CathodeSpline)this_param, edit_node.parameters[i].paramID);
+                        ((GUI_SplineDataType)parameterGUI).PopulateUI((CathodeSpline)this_param, entity.parameters[i].shortGUID);
                         break;
                 }
 
                 parameterGUI.Location = new Point(15, current_ui_offset);
                 current_ui_offset += parameterGUI.Height + 6;
-                NodeParams.Controls.Add(parameterGUI);
+                entity_params.Controls.Add(parameterGUI);
             }
 
-            RefreshNodeLinks();
+            RefreshEntityLinks();
 
             Cursor.Current = Cursors.Default;
         }
 
-        /* Refresh child/parent node links for selected node */
-        List<cGUID> linkedNodeListIDs = new List<cGUID>();
-        private void RefreshNodeLinks()
+        /* Refresh child/parent links for selected entity */
+        List<ShortGuid> linkedEntityListIDs = new List<ShortGuid>();
+        private void RefreshEntityLinks()
         {
-            node_children.BeginUpdate();
-            node_children.Items.Clear();
-            linkedNodeListIDs.Clear();
+            entity_children.BeginUpdate();
+            entity_children.Items.Clear();
+            linkedEntityListIDs.Clear();
             addNewLink.Enabled = currentlyShowingChildLinks;
             //removeSelectedLink.Enabled = currentlyShowingChildLinks;
             //out_pin_goto.Enabled = currentlyShowingChildLinks;
             showLinkParents.Text = (currentlyShowingChildLinks) ? "Parents" : "Children";
 
-            if (CurrentInstance.selectedFlowgraph == null || CurrentInstance.selectedEntity == null) return;
+            if (CurrentInstance.selectedComposite == null || CurrentInstance.selectedEntity == null) return;
             if (currentlyShowingChildLinks)
             {
-                //Child links (pins out of this node)
-                foreach (CathodeNodeLink link in CurrentInstance.selectedEntity.childLinks)
+                //Child links (pins out of this entity)
+                foreach (CathodeEntityLink link in CurrentInstance.selectedEntity.childLinks)
                 {
-                    node_children.Items.Add(
+                    entity_children.Items.Add(
                         /*"[" + link.connectionID.ToString() + "] " +*/
-                        "(" + NodeDBEx.GetParameterName(link.parentParamID) + ") => " +
-                        NodeDBEx.GetEntityName(link.childID) + 
-                        " (" + NodeDBEx.GetParameterName(link.childParamID) + ")");
-                    linkedNodeListIDs.Add(link.connectionID);
+                        "this [" + ShortGuidUtils.FindString(link.parentParamID) + "] => " +
+                        EditorUtils.GenerateEntityNameWithoutID(CurrentInstance.selectedComposite.GetEntities().FirstOrDefault(o => o.shortGUID == link.childID), CurrentInstance.selectedComposite) +
+                        " [" + ShortGuidUtils.FindString(link.childParamID) + "]");
+                    linkedEntityListIDs.Add(link.connectionID);
                 }
             }
             else
             {
-                //Parent links (pins into this node)
-                List<CathodeEntity> ents = CurrentInstance.selectedFlowgraph.GetEntities();
+                //Parent links (pins into this entity)
+                List<CathodeEntity> ents = CurrentInstance.selectedComposite.GetEntities();
                 foreach (CathodeEntity entity in ents)
                 {
-                    foreach (CathodeNodeLink link in entity.childLinks)
+                    foreach (CathodeEntityLink link in entity.childLinks)
                     {
-                        if (link.childID != CurrentInstance.selectedEntity.nodeID) continue;
-                        node_children.Items.Add(
+                        if (link.childID != CurrentInstance.selectedEntity.shortGUID) continue;
+                        entity_children.Items.Add(
                             /*"[" + link.connectionID.ToString() + "] " +*/
-                            NodeDBEx.GetEntityName(entity.nodeID) +
-                            " (" + NodeDBEx.GetParameterName(link.parentParamID) + ") => " +
-                            "(" + NodeDBEx.GetParameterName(link.childParamID) + ")");
-                        linkedNodeListIDs.Add(link.connectionID);
+                            EditorUtils.GenerateEntityNameWithoutID(entity, CurrentInstance.selectedComposite) +
+                            " [" + ShortGuidUtils.FindString(link.parentParamID) + "] => " +
+                            "this [" + ShortGuidUtils.FindString(link.childParamID) + "]");
+                        linkedEntityListIDs.Add(link.connectionID);
                     }
                 }
             }
-            node_children.EndUpdate();
+            entity_children.EndUpdate();
         }
 
         /* Add a new parameter */
@@ -873,27 +928,58 @@ namespace CathodeEditorGUI
             this.Focus();
         }
 
+        /* Edit a TriggerSequence */
+        private void editTriggerSequence_Click(object sender, EventArgs e)
+        {
+            TriggerSequenceEditor keyframeEditor = new TriggerSequenceEditor((TriggerSequence)CurrentInstance.selectedEntity);
+            keyframeEditor.Show();
+            keyframeEditor.FormClosed += KeyframeEditor_FormClosed;
+        }
+        private void KeyframeEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            this.BringToFront();
+            this.Focus();
+        }
+
         /* Edit CAGEAnimation keyframes */
         private void editCAGEAnimationKeyframes_Click(object sender, EventArgs e)
         {
             CAGEAnimationEditor keyframeEditor = new CAGEAnimationEditor((CAGEAnimation)CurrentInstance.selectedEntity);
             keyframeEditor.Show();
+            keyframeEditor.FormClosed += KeyframeEditor_FormClosed1;
+        }
+        private void KeyframeEditor_FormClosed1(object sender, FormClosedEventArgs e)
+        {
+            this.BringToFront();
+            this.Focus();
         }
 
         /* Edit resources referenced by the entity */
-        private void editNodeResources_Click(object sender, EventArgs e)
+        private void editEntityResources_Click(object sender, EventArgs e)
         {
             //CurrentInstance.currentEntity - .parameters.FirstOrDefault("resources") - .resources
             CathodeEditorGUI_AddOrEditResource resourceEditor = new CathodeEditorGUI_AddOrEditResource(CurrentInstance.selectedEntity);
             resourceEditor.Show();
+            resourceEditor.FormClosed += ResourceEditor_FormClosed;
+        }
+        private void ResourceEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            this.BringToFront();
+            this.Focus();
         }
 
-        /* Edit resources referenced by the flowgraph */
-        private void editFlowgraphResources_Click(object sender, EventArgs e)
+        /* Edit resources referenced by the composite */
+        private void editCompositeResources_Click(object sender, EventArgs e)
         {
-            //CurrentInstance.currentFlowgraph.resources
-            CathodeEditorGUI_AddOrEditResource resourceEditor = new CathodeEditorGUI_AddOrEditResource(CurrentInstance.selectedFlowgraph);
+            //CurrentInstance.currentComposite.resources
+            CathodeEditorGUI_AddOrEditResource resourceEditor = new CathodeEditorGUI_AddOrEditResource(CurrentInstance.selectedComposite);
             resourceEditor.Show();
+            resourceEditor.FormClosed += ResourceEditor_FormClosed1;
+        }
+        private void ResourceEditor_FormClosed1(object sender, FormClosedEventArgs e)
+        {
+            this.BringToFront();
+            this.Focus();
         }
 
         /* Confirm an action */
@@ -906,7 +992,7 @@ namespace CathodeEditorGUI
         {
             return;
 
-            CathodeMovers mvr = new CathodeMovers(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\ENV\PRODUCTION\BSP_TORRENS\WORLD\MODELS.MVR");
+            MoverDatabase mvr = new MoverDatabase(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\ENV\PRODUCTION\BSP_TORRENS\WORLD\MODELS.MVR");
             //CathodeMovers.Movers = CathodeMovers.Movers.OrderBy(o => o.IsThisTypeID).ToList<alien_mvr_entry>();
             for (int i = 0; i < mvr.Movers.Count; i++)
             {
@@ -925,8 +1011,8 @@ namespace CathodeEditorGUI
                     System.Numerics.Matrix4x4.CreateFromQuaternion(System.Numerics.Quaternion.Identity) * 
                     System.Numerics.Matrix4x4.CreateTranslation(new System.Numerics.Vector3(-9999.0f, -9999.0f, -9999.0f));
                 //mvr.IsThisTypeID = MoverType.DYNAMIC_MODEL;
-                thisMvr.IsThisTypeID = MoverType.DYNAMIC_MODEL;
-                thisMvr.NodeID = new cGUID("00-00-00-00");
+                thisMvr.MoverFlags = 6;
+                thisMvr.NodeID = new ShortGuid("00-00-00-00");
 
                 //mvr.Unknowns5_ = new Vector4(0, 0, 0, 0);
 
@@ -993,11 +1079,11 @@ namespace CathodeEditorGUI
             }
             mvr.Save();
 
-            mvr = new CathodeMovers(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\ENV\PRODUCTION\TECH_HUB\WORLD\MODELS.MVR");
+            mvr = new MoverDatabase(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\ENV\PRODUCTION\TECH_HUB\WORLD\MODELS.MVR");
             mvr.Save();
 
-            mvr = new CathodeMovers(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\ENV\PRODUCTION\BSP_TORRENS\WORLD\MODELS.MVR");
-            mvr.Movers.RemoveAll(o => o.NodeID != new cGUID(0));
+            mvr = new MoverDatabase(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\ENV\PRODUCTION\BSP_TORRENS\WORLD\MODELS.MVR");
+            mvr.Movers.RemoveAll(o => o.NodeID != new ShortGuid(0));
             mvr.Save();
 
             Application.Exit();
@@ -1005,32 +1091,454 @@ namespace CathodeEditorGUI
 
         private void button1_Click_1(object sender, EventArgs e)
         {
-            /*
-            LoadCommandsPAK(@"DLC\BSPNOSTROMO_TWOTEAMS_PATCH");
-            CathodeFlowgraph flow = CurrentInstance.commandsPAK.Flowgraphs.FirstOrDefault(o => o.name == @"DLC\PREORDER\PODLC_TWOTEAMS");
-            CathodeEntity ent = flow.GetEntities().FirstOrDefault(o => o.nodeID == new cGUID("03-2D-F4-38"));
-            CAGEAnimationEditor edit = new CAGEAnimationEditor((CATHODE.Commands.CAGEAnimation)ent);
-            edit.Show();
-            */
-            LoadCommandsPAK(@"HAB_ShoppingCentre");
-            foreach (CathodeFlowgraph flow in CurrentInstance.commandsPAK.Flowgraphs)
+            if (CurrentInstance.selectedComposite == null)
             {
-                flow.proxies.Clear();
+                for (int mm = 0; mm < env_list.Items.Count; mm++)
+                {
+                    CurrentInstance.commandsPAK = new CommandsPAK(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + env_list.Items[mm].ToString() + "/WORLD/COMMANDS.PAK");
+                    foreach (CathodeComposite flow in CurrentInstance.commandsPAK.Composites)
+                    {
+                        CurrentInstance.selectedComposite = flow;
+                        EditorUtils.PurgeDeadHierarchiesInActiveComposite();
+                    }
+                    CurrentInstance.commandsPAK.Save();
+                }
+                return;
             }
-            modifyMVR.Checked = false;
-            SaveCommandsPAK();
+
+            foreach (CathodeComposite flow in CurrentInstance.commandsPAK.Composites)
+            {
+                CurrentInstance.selectedComposite = flow;
+                EditorUtils.PurgeDeadHierarchiesInActiveComposite();
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            foreach (CathodeComposite flow in CurrentInstance.commandsPAK.Composites)
+            {
+                flow.unknownPair = new OffsetPair(0, 0);
+            }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            if (CurrentInstance.selectedComposite == null) return;
+            Console.WriteLine(CurrentInstance.selectedComposite.name);
+            foreach (OverrideEntity overrider in CurrentInstance.selectedComposite.overrides)
+            {
+                //Console.WriteLine(EntityDBEx.GetEntityName(overrider.shortGUID));
+                //Console.WriteLine(EditorUtils.HierarchyToString(overrider.hierarchy));
+                //Console.WriteLine("-----");
+            }
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            //CurrentInstance.commandsPAK.Composites.RemoveAll(o => o.name != "GLOBAL" && o.name != "PAUSEMENU" && o.name != CurrentInstance.commandsPAK.EntryPoints[0].name);
+            CurrentInstance.commandsPAK.EntryPoints[0].name = "RootComposite";
+            CurrentInstance.commandsPAK.Composites.RemoveAll(o => o.name.Length > 3 && o.name.Substring(0, 3) == "AYZ");
+            CurrentInstance.commandsPAK.Save();
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            List<string> output = new List<string>();
+            
+            BinaryReader reader = new BinaryReader(File.OpenRead(@"E:\OpenCAGE_2021\CathodeEditorGUI\CathodeLib\CathodeLib\Resources\NodeDBs\entity_parameter_names.bin"));
+            while (reader.BaseStream.Position < reader.BaseStream.Length)
+            {
+                reader.BaseStream.Position += 4;
+                string bleh = reader.ReadString();
+                if (!output.Contains(bleh)) output.Add(bleh);
+            }
+            reader.Close();
+            reader = new BinaryReader(File.OpenRead(@"E:\OpenCAGE_2021\CathodeLib\CathodeLib\Resources\NodeDBs\cathode_id_map.bin"));
+            while (reader.BaseStream.Position < reader.BaseStream.Length)
+            {
+                reader.BaseStream.Position += 4;
+                string bleh = reader.ReadString();
+                if (!output.Contains(bleh)) output.Add(bleh);
+            }
+            reader.Close();
+            reader = new BinaryReader(File.OpenRead(@"E:\OpenCAGE_2021\CathodeLib\CathodeLib\Resources\NodeDBs\cathode_id_map_DUMP_ONLY.bin"));
+            while (reader.BaseStream.Position < reader.BaseStream.Length)
+            {
+                reader.BaseStream.Position += 4;
+                string bleh = reader.ReadString();
+                if (!output.Contains(bleh)) output.Add(bleh);
+            }
+            reader.Close();
+            
+            List<string> dump1 = Directory.GetFiles(@"E:\GitHub Repos\alien_assets_daniel\DEBUG\commands_bin_dumps", "*", SearchOption.AllDirectories).ToList<string>();
+            foreach (string dump in dump1)
+            {
+                List<string> lines = File.ReadAllLines(dump).ToList<string>();
+                foreach (string line in lines)
+                {
+                    if (line.Length == 0 || line.Substring(0, 1) != "8") continue;
+                    if (line.Substring(line.Length - 1) == "'")
+                    {
+                        List<string> content = line.Split('\'').ToList<string>();
+                        if (content.Count > 1)
+                        {
+                            string name = content[content.Count - 2];
+                            if (!output.Contains(name)) output.Add(name);
+                        }
+                    }
+                }
+            }
+
+            BinaryWriter writer = new BinaryWriter(File.OpenWrite("binout.bin"));
+            foreach (string out1 in output) {
+                Utilities.Write<ShortGuid>(writer, ShortGuidUtils.Generate(out1));
+                writer.Write(out1);
+            };
+            writer.Close();
+            return;
+
+            /*
+            List<string> dumps = Directory.GetFiles(@"E:\GitHub Repos\alien_assets_daniel\DEBUG", "alien_commands_bin_*", SearchOption.AllDirectories).ToList<string>();
+            List<Task> tasks = new List<Task>();
+            foreach (string dump in dumps)
+            {
+                tasks.Add(Task.Factory.StartNew(() => ParseCommandBinDump(dump)));
+            }
+            */
+
+            List<string> allStrings = new List<string>();
+            List<string> dumps = Directory.GetFiles(@"E:\OpenCAGE_2021\CathodeEditorGUI\Build", "OUT_STRINGS_*", SearchOption.AllDirectories).ToList<string>();
+            foreach (string dump in dumps)
+            {
+                foreach (string line in File.ReadAllLines(dump))
+                {
+                    if (allStrings.Contains(line)) continue;
+                    allStrings.Add(line);
+                }
+            }
+            File.WriteAllLines("OUT_STRINGS.txt", allStrings);
+
+            /*
+            List<string> dumps = Directory.GetFiles(@"E:\OpenCAGE_2021\CathodeEditorGUI\Build\out2", "*.bin", SearchOption.AllDirectories).ToList<string>();
+            List<BinComposite> composites = new List<BinComposite>();
+            foreach (string dump in dumps)
+            {
+                BinaryReader reader = new BinaryReader(File.OpenRead(dump));
+                int compCount = reader.ReadInt32();
+                for (int i = 0; i < compCount; i++)
+                {
+                    ShortGuid compositeID = Utilities.Consume<ShortGuid>(reader);
+                    BinComposite composite = composites.FirstOrDefault(o => o.id == compositeID);
+                    if (composite == null)
+                    {
+                        composite = new BinComposite();
+                        composite.id = compositeID;
+                        composites.Add(composite);
+                    }
+                    string thisPath = reader.ReadString();
+                    if (composite.path != "" && thisPath != composite.path)
+                    {
+                        Console.WriteLine("WARNING: " + composite.id + " name mismatch!");
+                        Console.WriteLine("         " + composite.path);
+                        Console.WriteLine("         " + thisPath);
+                    }
+                    composite.path = thisPath;
+                    int entityCount = reader.ReadInt32();
+                    for (int x = 0; x < entityCount; x++)
+                    {
+                        ShortGuid entityID = Utilities.Consume<ShortGuid>(reader);
+                        BinEntity entity = composite.entities.FirstOrDefault(o => o.id == entityID);
+                        if (entity == null)
+                        {
+                            entity = new BinEntity();
+                            entity.id = entityID;
+                            composite.entities.Add(entity);
+                        }
+                        string thisName = reader.ReadString();
+                        if (entity.name != "" && thisName != entity.name)
+                        {
+                            Console.WriteLine("WARNING: " + entity.id + " name mismatch!");
+                            Console.WriteLine("         " + entity.name);
+                            Console.WriteLine("         " + thisName);
+                        }
+                        entity.name = thisName;
+                    }
+                }
+                reader.Close();
+            }
+            BinaryWriter writer = new BinaryWriter(File.OpenWrite("out2/COMBINED.bin"));
+            writer.BaseStream.SetLength(0);
+            writer.Write(composites.Count);
+            for (int i = 0; i < composites.Count; i++)
+            {
+                Utilities.Write<ShortGuid>(writer, composites[i].id);
+                //writer.Write(composites[i].path);
+                writer.Write(composites[i].entities.Count);
+                for (int x = 0; x < composites[i].entities.Count; x++)
+                {
+                    Utilities.Write<ShortGuid>(writer, composites[i].entities[x].id);
+                    writer.Write(composites[i].entities[x].name);
+                }
+            }
+            writer.Close();
+            writer = new BinaryWriter(File.OpenWrite("out2/composites_only.bin"));
+            writer.BaseStream.SetLength(0);
+            writer.Write(composites.Count);
+            for (int i = 0; i < composites.Count; i++)
+            {
+                Utilities.Write<ShortGuid>(writer, composites[i].id);
+                writer.Write(composites[i].path);
+            }
+            writer.Close();
+            */
+        }
+        private void ParseCommandBinDump(string dump)
+        {
+            List<BinComposite> composites = new List<BinComposite>();
+            string[] content = File.ReadAllLines(dump);
+            List<string> strings = new List<string>();
+            for (int i = 0; i < content.Length; i++)
+            {
+                string[] split = content[i].Split(new char[] { '\'' }, 2);
+                if (split.Length != 2) continue;
+                if (split[0].Substring(split[0].Length - 2, 1) != "2") continue;
+                string value = split[1].Substring(0, split[1].Length - 1);
+                strings.Add(value);
+                if (value == "") continue;
+
+                continue;
+
+                ShortGuid compositeID;
+                try
+                {
+                    compositeID = new ShortGuid(content[i].Substring(13, 2) + "-" + content[i].Substring(11, 2) + "-" + content[i].Substring(9, 2) + "-" + content[i].Substring(7, 2));
+                }
+                catch
+                {
+                    continue;
+                }
+                BinComposite composite = composites.FirstOrDefault(o => o.id == compositeID);
+
+                switch (content[i].Substring(0, 1))
+                {
+                    case "1":
+                    {
+                        //Composite name definition! First is name, second is path.
+                        if (composite == null)
+                        {
+                            composite = new BinComposite();
+                            composite.id = compositeID;
+                            composite.name = value;
+                            composites.Add(composite);
+                        }
+                        else
+                        {
+                            composite.path = value;
+                        }
+                        break;
+                    }
+                    case "2":
+                    {
+                        if (content[i].Length < 28) continue;
+                        ShortGuid entityID;
+                        try
+                        {
+                            entityID = new ShortGuid(content[i].Substring(26, 2) + "-" + content[i].Substring(24, 2) + "-" + content[i].Substring(22, 2) + "-" + content[i].Substring(20, 2));
+                        }
+                        catch
+                        {
+                            continue;
+                        }
+                        if (composite == null)
+                        {
+                            composite = new BinComposite();
+                            composite.id = compositeID;
+                            composites.Add(composite);
+                        }
+                        BinEntity entity = composite.entities.FirstOrDefault(o => o.id == entityID);
+                        if (entity == null)
+                        {
+                            entity = new BinEntity();
+                            entity.id = entityID;
+                            composite.entities.Add(entity);
+                        }
+                        else if (entity.name != value)
+                        {
+                            Console.WriteLine("Renaming " + entityID + " from '" + entity.name + "' to '" + value + "'");
+                        }
+                        entity.name = value;
+                        break;
+                    }
+                    case "5":
+                    {
+                        if (split[0].Substring(split[0].Length - 13) != "0x58EBAC79 2 ") continue;
+                        if (content[i].Length < 28) continue;
+                        ShortGuid entityID;
+                        try
+                        {
+                            entityID = new ShortGuid(content[i].Substring(26, 2) + "-" + content[i].Substring(24, 2) + "-" + content[i].Substring(22, 2) + "-" + content[i].Substring(20, 2));
+                        }
+                        catch
+                        {
+                            continue;
+                        }
+                        if (composite == null)
+                        {
+                            composite = new BinComposite();
+                            composite.id = compositeID;
+                            composites.Add(composite);
+                        }
+                        BinEntity entity = composite.entities.FirstOrDefault(o => o.id == entityID);
+                        if (entity == null)
+                        {
+                            entity = new BinEntity();
+                            entity.id = entityID;
+                            composite.entities.Add(entity);
+                        }
+                        else if (entity.name != value)
+                        {
+                            Console.WriteLine("Renaming " + entityID + " from '" + entity.name + "' to '" + value + "'");
+                        }
+                        entity.name = value;
+                        break;
+                    }
+                    //CASE 8 would be parameter definition
+                }
+            }
+
+            File.WriteAllLines("OUT_STRINGS_" + Path.GetFileNameWithoutExtension(dump) + ".txt", strings);
+            return;
+
+            if (!Directory.Exists("out2")) Directory.CreateDirectory("out2");
+
+            BinaryWriter writer = new BinaryWriter(File.OpenWrite("out2/" + Path.GetFileNameWithoutExtension(dump) + ".bin"));
+            writer.BaseStream.SetLength(0);
+            writer.Write(composites.Count);
+            for (int i = 0; i < composites.Count; i++)
+            {
+                Utilities.Write<ShortGuid>(writer, composites[i].id);
+                writer.Write(composites[i].path);
+                writer.Write(composites[i].entities.Count);
+                for (int x = 0; x < composites[i].entities.Count; x++)
+                {
+                    Utilities.Write<ShortGuid>(writer, composites[i].entities[x].id);
+                    writer.Write(composites[i].entities[x].name);
+                }
+            }
+            writer.Close();
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            string[] decomp = File.ReadAllLines(@"E:\GitHub Repos\isolation_testground\enum_dump.txt");
+            Dictionary<string, List<string>> enums = new Dictionary<string, List<string>>();
+            List<string> dumpForWiki = new List<string>();
+            for (int i = 0; i < decomp.Length; i++)
+            {
+                string[] thisSplit = decomp[i].Split(new char[] { ' ' }, 2);
+                string enum_name = thisSplit[0];
+                string[] thisSplit2 = thisSplit[1].Split('"');
+                string enum_value = thisSplit2[1];
+
+                if (enum_name == enum_value)
+                {
+                    dumpForWiki.Add("## " + enum_name);
+                    enums.Add(enum_name, new List<string>());
+                }
+                else
+                {
+                    dumpForWiki.Add(" * " + enum_value);
+                    enums[enum_name].Add(enum_value);
+                }
+            }
+
+            File.WriteAllLines("out.md", dumpForWiki);
+            dumpForWiki.Clear();
+            foreach (var item in enums.OrderBy(x => x.Key))
+            {
+                if (item.Value.Count == 0) continue;
+                dumpForWiki.Add("## " + item.Key);
+                foreach (string val in item.Value)
+                {
+                    dumpForWiki.Add(" * " + val);
+                }
+                dumpForWiki.Add("");
+            }
+            File.WriteAllLines("out_ordered.md", dumpForWiki);
+            string breakhere = "";
+
+            /*
+            string decomp = File.ReadAllText(@"C:\Users\mattf_cr4e5zq\AI ios.c");
+            string[] decompSplit = decomp.Split(new[] { "ShortGuid::ShortGuid" }, StringSplitOptions.None);
+            List<string> test = new List<string>();
+            for (int i = 0; i < decompSplit.Length; i++)
+            {
+                string[] thisSplit = decompSplit[i].Split(new char[] { ',' }, 2);
+                if (thisSplit.Length < 2) continue;
+                if (thisSplit[1][0] != '"') continue;
+                string[] thisNewSplit = thisSplit[1].Split('"');
+                test.Add(thisNewSplit[1]);
+            }
+            List<string> test2 = new List<string>();
+            for (int i =0; i <test.Count; i++)
+            {
+                if (test2.Contains(test[i])) continue;
+                test2.Add(test[i]);
+            }
+            File.WriteAllLines("bleh.txt", test2);
+
+            JObject obj = JObject.Parse(File.ReadAllText(@"C:\Users\mattf_cr4e5zq\Downloads\out.json"));
+            JArray objA = ((JArray)obj["nodes"]);
+            for (int i = 0; i < objA.Count; i++)
+            {
+                JArray objAP = (JArray)objA[i]["parameters"];
+                for (int x = 0; x < objAP.Count; x++)
+                {
+                    if (test2.Contains(objAP[x]["name"].ToString())) continue;
+                    test2.Add(objAP[x]["name"].ToString());
+                    Console.WriteLine("Added " + objAP[x]["name"].ToString());
+                }
+            }
+
+            BinaryReader reader = new BinaryReader(File.OpenRead(@"E:\OpenCAGE_2021\CathodeEditorGUI\CathodeLib\CathodeLib\Resources\NodeDBs\entity_parameter_names.bin"));
+            reader.BaseStream.Position += 1;
+            while (reader.BaseStream.Position < reader.BaseStream.Length)
+            {
+                reader.BaseStream.Position += 4;
+                string str = reader.ReadString();
+                if (test2.Contains(str)) continue;
+                test2.Add(str);
+            }
+            reader.Close();
+
+            BinaryWriter writer = new BinaryWriter(File.OpenWrite("bleh4.bin"));
+            for (int i = 0; i < test2.Count; i++)
+            {
+                Utilities.Write<ShortGuid>(writer, ShortGuidUtils.Generate(test2[i]));
+                writer.Write(test2[i]);
+            }
+            writer.Close();
+
+            */
         }
     }
 
-    public struct CathodeGloballyTransformedEntity
+    public class BinComposite
     {
-        public MoverType type;
-        public CathodeEntity entity;
-        public System.Numerics.Matrix4x4 transform;
-
-        public void SetTransform(System.Numerics.Vector3 position, System.Numerics.Quaternion rotation, System.Numerics.Vector3 scale)
-        {
-            transform = System.Numerics.Matrix4x4.CreateScale(scale) * System.Numerics.Matrix4x4.CreateFromQuaternion(rotation) * System.Numerics.Matrix4x4.CreateTranslation(position);
-        }
+        public ShortGuid id;
+        public string name = "";
+        public string path = "";
+        public List<BinEntity> entities = new List<BinEntity>();
+    }
+    public class BinEntity
+    {
+        public ShortGuid id;
+        public string name = "";
+        public List<BinParameter> parameters = new List<BinParameter>();
+    }
+    public class BinParameter
+    {
+        public ShortGuid id;
+        public string name;
     }
 }

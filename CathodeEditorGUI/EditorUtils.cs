@@ -3,72 +3,85 @@ using CATHODE.Commands;
 using CathodeLib;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CathodeEditorGUI
 {
     static class EditorUtils
     {
         /* Utility: generate nice entity name to display in UI */
-        public static string GenerateNodeName(CathodeEntity entity, CathodeFlowgraph currentFlowgraph)
+        public static string GenerateEntityName(CathodeEntity entity, CathodeComposite composite, bool regenCache = false)
         {
             if (CurrentInstance.commandsPAK == null) 
-                return "";
-            if (hasFinishedCachingEntityNames && cachedEntityName.ContainsKey(entity.nodeID)) 
-                return cachedEntityName[entity.nodeID];
-            return GenerateNodeNameInternal(entity, currentFlowgraph);
+                return entity.shortGUID.ToString();
+
+            if (hasFinishedCachingEntityNames && regenCache)
+            {
+                if (cachedEntityName.ContainsKey(entity.shortGUID)) cachedEntityName.Remove(entity.shortGUID);
+                cachedEntityName.Add(entity.shortGUID, GenerateEntityNameInternal(entity, composite));
+            }
+
+            if (hasFinishedCachingEntityNames && cachedEntityName.ContainsKey(entity.shortGUID)) 
+                return cachedEntityName[entity.shortGUID];
+
+            return GenerateEntityNameInternal(entity, composite);
         }
-        private static string GenerateNodeNameInternal(CathodeEntity entity, CathodeFlowgraph currentFlowgraph)
+        public static string GenerateEntityNameWithoutID(CathodeEntity entity, CathodeComposite composite, bool regenCache = false)
+        {
+            return GenerateEntityName(entity, composite, regenCache).Substring(14);
+        }
+        private static string GenerateEntityNameInternal(CathodeEntity entity, CathodeComposite composite)
         {
             string desc = "";
             switch (entity.variant)
             {
                 case EntityVariant.DATATYPE:
-                    desc = NodeDBEx.GetParameterName(((DatatypeEntity)entity).parameter) + " (DataType " + ((DatatypeEntity)entity).type.ToString() + ")";
+                    desc = ShortGuidUtils.FindString(((DatatypeEntity)entity).parameter) + " (DataType " + ((DatatypeEntity)entity).type.ToString() + ")";
                     break;
                 case EntityVariant.FUNCTION:
-                    desc = NodeDBEx.GetEntityName(entity.nodeID) + " (" + NodeDBEx.GetParameterName(((FunctionEntity)entity).function) + ")";
+                    CathodeComposite funcComposite = CurrentInstance.commandsPAK.GetComposite(((FunctionEntity)entity).function);
+                    if (funcComposite != null)
+                        desc = CurrentInstance.compositeLookup.GetEntityName(composite.shortGUID, entity.shortGUID) + " (" + funcComposite.name + ")";
+                    else
+                        desc = CurrentInstance.compositeLookup.GetEntityName(composite.shortGUID, entity.shortGUID) + " (" + ShortGuidUtils.FindString(((FunctionEntity)entity).function) + ")";
                     break;
                 case EntityVariant.OVERRIDE:
                     //desc = NodeDBEx.GetEntityName(entity.nodeID) + " (" + HierarchyToString(((OverrideEntity)entity).hierarchy, currentFlowgraph) + ")";
-                    desc = NodeDBEx.GetEntityName(entity.nodeID) + " (*OVERRIDE*)";
+                    desc = CurrentInstance.compositeLookup.GetEntityName(composite.shortGUID, entity.shortGUID) + " (*OVERRIDE*)";
                     break;
                 case EntityVariant.PROXY:
                     //desc = NodeDBEx.GetEntityName(entity.nodeID) + " (" + HierarchyToString(((ProxyEntity)entity).hierarchy, currentFlowgraph) + ")";
-                    desc = NodeDBEx.GetEntityName(entity.nodeID) + " (*PROXY*)";
+                    desc = CurrentInstance.compositeLookup.GetEntityName(composite.shortGUID, entity.shortGUID) + " (*PROXY*)";
                     break;
                 case EntityVariant.NOT_SETUP:
                     //desc = NodeDBEx.GetEntityName(entity.nodeID);
-                    desc = NodeDBEx.GetEntityName(entity.nodeID) + " (*NOT SETUP*)";
+                    desc = CurrentInstance.compositeLookup.GetEntityName(composite.shortGUID, entity.shortGUID) + " (*NOT SETUP*)";
                     break;
             }
-            return "[" + entity.nodeID.ToString() + "] " + desc;
+            return "[" + entity.shortGUID.ToString() + "] " + desc;
         }
 
         /* Generate a cache of entity names to save re-generating them every time */
         private static bool hasFinishedCachingEntityNames = false;
-        private static Dictionary<cGUID, string> cachedEntityName = new Dictionary<cGUID, string>();
+        private static Dictionary<ShortGuid, string> cachedEntityName = new Dictionary<ShortGuid, string>();
         public static void GenerateEntityNameCache(CathodeEditorGUI mainInst)
         {
             if (CurrentInstance.commandsPAK == null) return;
             hasFinishedCachingEntityNames = false;
             mainInst.EnableLoadingOfPaks(false);
             cachedEntityName.Clear();
-            for (int i = 0; i < CurrentInstance.commandsPAK.Flowgraphs.Count; i++)
+            for (int i = 0; i < CurrentInstance.commandsPAK.Composites.Count; i++)
             {
-                List<CathodeEntity> ents = CurrentInstance.commandsPAK.Flowgraphs[i].GetEntities();
+                List<CathodeEntity> ents = CurrentInstance.commandsPAK.Composites[i].GetEntities();
                 for (int x = 0; x < ents.Count; x++)
                 {
-                    if (cachedEntityName.ContainsKey(ents[x].nodeID))
+                    if (cachedEntityName.ContainsKey(ents[x].shortGUID))
                     {
-                        //TODO: Figure out why this is happening... aren't node IDs meant to be unique to the whole PAK? Maybe it's per flowgraph?
+                        //TODO: Figure out why this is happening... aren't node IDs meant to be unique to the whole PAK? Maybe it's per composite?
                         string bleh = "";
                     }
                     else
                     {
-                        cachedEntityName.Add(ents[x].nodeID, GenerateNodeNameInternal(ents[x], CurrentInstance.commandsPAK.Flowgraphs[i]));
+                        cachedEntityName.Add(ents[x].shortGUID, GenerateEntityNameInternal(ents[x], CurrentInstance.commandsPAK.Composites[i]));
                     }
                 }
             }
@@ -81,8 +94,8 @@ namespace CathodeEditorGUI
             mainInst.EnableLoadingOfPaks(true);
             hasFinishedCachingEntityNames = true;
         }
-        private static List<cGUID> queuedForRemoval = new List<cGUID>();
-        public static void PurgeEntityNameFromCache(cGUID entId)
+        private static List<ShortGuid> queuedForRemoval = new List<ShortGuid>();
+        public static void PurgeEntityNameFromCache(ShortGuid entId)
         {
             if (!hasFinishedCachingEntityNames) queuedForRemoval.Add(entId);
             else cachedEntityName.Remove(entId);
@@ -97,7 +110,7 @@ namespace CathodeEditorGUI
             switch (entity.variant)
             {
                 case EntityVariant.FUNCTION:
-                    cGUID function = ((FunctionEntity)entity).function;
+                    ShortGuid function = ((FunctionEntity)entity).function;
                     List<CathodeEntityDatabase.ParameterDefinition> parameters = CathodeEntityDatabase.GetParametersFromEntity(function);
                     if (parameters != null)
                     {
@@ -106,15 +119,15 @@ namespace CathodeEditorGUI
                     }
                     else
                     {
-                        string[] options = NodeDB.GetEntityParameterList(NodeDBEx.GetParameterName(function));
+                        string[] options = EntityDB.GetEntityParameterList(ShortGuidUtils.FindString(function));
                         items.Add("trigger"); items.Add("reference"); //TODO: populate all params from EntityMethodInterface?
                         if (options == null)
                         {
-                            CathodeFlowgraph flow = CurrentInstance.commandsPAK.GetFlowgraph(function);
+                            CathodeComposite flow = CurrentInstance.commandsPAK.GetComposite(function);
                             if (flow == null) break;
                             for (int i = 0; i < flow.datatypes.Count; i++)
                             {
-                                string to_add = NodeDBEx.GetParameterName(flow.datatypes[i].parameter);
+                                string to_add = ShortGuidUtils.FindString(flow.datatypes[i].parameter);
                                 //TODO: also return datatype here
                                 if (!items.Contains(to_add)) items.Add(to_add);
                             }
@@ -129,7 +142,7 @@ namespace CathodeEditorGUI
                     }
                     break;
                 case EntityVariant.DATATYPE:
-                    items.Add(NodeDBEx.GetParameterName(((DatatypeEntity)entity).parameter));
+                    items.Add(ShortGuidUtils.FindString(((DatatypeEntity)entity).parameter));
                     break;
                     //TODO: support other types here
             }
@@ -161,43 +174,165 @@ namespace CathodeEditorGUI
         }
 
         /* Resolve a node hierarchy */
-        public static CathodeEntity ResolveHierarchy(List<cGUID> hierarchy, out CathodeFlowgraph containedFlowgraph)
+        public static CathodeEntity ResolveHierarchy(List<ShortGuid> hierarchy, out CathodeComposite containedFlowgraph, out string asString)
         {
-            CathodeFlowgraph currentFlowgraphToSearch = CurrentInstance.selectedFlowgraph;
-            CathodeEntity entity = null;
-            for (int i = 0; i < hierarchy.Count; i++)
+            if (hierarchy.Count == 0)
             {
-                if (hierarchy[i] == new cGUID("00-00-00-00")) break;
-                entity = currentFlowgraphToSearch.GetEntityByID(hierarchy[i]);
-                if (entity != null && entity.variant == EntityVariant.FUNCTION)
+                containedFlowgraph = null;
+                asString = "";
+                return null;
+            }
+
+            CathodeComposite currentFlowgraphToSearch = CurrentInstance.selectedComposite;
+            if (currentFlowgraphToSearch == null || currentFlowgraphToSearch.GetEntityByID(hierarchy[0]) == null)
+            {
+                currentFlowgraphToSearch = CurrentInstance.commandsPAK.EntryPoints[0];
+                if (currentFlowgraphToSearch == null || currentFlowgraphToSearch.GetEntityByID(hierarchy[0]) == null)
                 {
-                    CathodeFlowgraph flowRef = CurrentInstance.commandsPAK.GetFlowgraph(((FunctionEntity)entity).function);
-                    if (flowRef != null) currentFlowgraphToSearch = flowRef;
+                    currentFlowgraphToSearch = CurrentInstance.commandsPAK.GetComposite(hierarchy[0]);
+                    if (currentFlowgraphToSearch == null || currentFlowgraphToSearch.GetEntityByID(hierarchy[1]) == null)
+                    {
+                        containedFlowgraph = null;
+                        asString = "";
+                        return null;
+                    }
+                    hierarchy.RemoveAt(0);
                 }
             }
-            containedFlowgraph = currentFlowgraphToSearch;
+
+            CathodeEntity entity = null;
+            string hierarchyString = "";
+            for (int i = 0; i < hierarchy.Count; i++)
+            {
+                entity = currentFlowgraphToSearch.GetEntityByID(hierarchy[i]);
+
+                if (entity == null) break;
+                hierarchyString += "[" + entity.shortGUID + "] " + CurrentInstance.compositeLookup.GetEntityName(currentFlowgraphToSearch.shortGUID, entity.shortGUID);
+                if (i >= hierarchy.Count - 2) break; //Last is always 00-00-00-00
+                hierarchyString += " -> ";
+
+                if (entity.variant == EntityVariant.FUNCTION)
+                {
+                    CathodeComposite flowRef = CurrentInstance.commandsPAK.GetComposite(((FunctionEntity)entity).function);
+                    if (flowRef != null)
+                    {
+                        currentFlowgraphToSearch = flowRef;
+                    }
+                    else
+                    {
+                        entity = null;
+                        break;
+                    }
+                }
+            }
+            containedFlowgraph = (entity == null) ? null : currentFlowgraphToSearch;
+            asString = hierarchyString;
             return entity;
         }
 
-        /* Display an entity hierarchy as a string */
-        public static string HierarchyToString(List<cGUID> hierarchy)
+        /* CA's CAGE doesn't properly tidy up hierarchies pointing to deleted entities - so we do that here to save confusion */
+        private static List<ShortGuid> purgedComps = new List<ShortGuid>();
+        public static void PurgeDeadHierarchiesInActiveComposite()
         {
-            CathodeFlowgraph currentFlowgraphToSearch = CurrentInstance.selectedFlowgraph;
-            CathodeEntity entity = null;
-            string combinedString = "";
-            for (int i = 0; i < hierarchy.Count; i++)
+            CathodeComposite comp = CurrentInstance.selectedComposite;
+            if (purgedComps.Contains(comp.shortGUID)) return;
+            purgedComps.Add(comp.shortGUID);
+
+            int originalUnknownCount = 0;
+            int originalProxyCount = 0;
+            int newProxyCount = 0;
+            int originalOverrideCount = 0;
+            int newOverrideCount = 0;
+            int originalTriggerCount = 0;
+            int newTriggerCount = 0;
+            int originalAnimCount = 0;
+            int newAnimCount = 0;
+            int originalLinkCount = 0;
+            int newLinkCount = 0;
+
+            //Clear unknowns
+            originalUnknownCount = comp.unknowns.Count;
+            comp.unknowns.Clear();
+
+            //Clear overrides
+            List<OverrideEntity> overridePurged = new List<OverrideEntity>();
+            for (int i = 0; i < comp.overrides.Count; i++)
+                if (ResolveHierarchy(comp.overrides[i].hierarchy, out CathodeComposite flowTemp, out string hierarchy) != null)
+                    overridePurged.Add(comp.overrides[i]);
+            originalOverrideCount += comp.overrides.Count;
+            newOverrideCount += overridePurged.Count;
+            comp.overrides = overridePurged;
+
+            //Clear proxies
+            List<ProxyEntity> proxyPurged = new List<ProxyEntity>();
+            for (int i = 0; i < comp.proxies.Count; i++)
+                if (ResolveHierarchy(comp.proxies[i].hierarchy, out CathodeComposite flowTemp, out string hierarchy) != null)
+                    proxyPurged.Add(comp.proxies[i]);
+            originalProxyCount += comp.proxies.Count;
+            newProxyCount += proxyPurged.Count;
+            comp.proxies = proxyPurged;
+
+            //Clear TriggerSequence and CAGEAnimation entities
+            for (int i = 0; i < comp.functions.Count; i++)
             {
-                if (hierarchy[i] == new cGUID("00-00-00-00")) break;
-                entity = currentFlowgraphToSearch.GetEntityByID(hierarchy[i]);
-                if (entity != null) combinedString += NodeDBEx.GetEntityName(entity.nodeID) + " -> ";
-                if (entity != null && entity.variant == EntityVariant.FUNCTION)
+                //TODO: will this also clear up TriggerSequence/CAGEAnimation data for proxies?
+                switch (ShortGuidUtils.FindString(comp.functions[i].function))
                 {
-                    CathodeFlowgraph flowRef = CurrentInstance.commandsPAK.GetFlowgraph(((FunctionEntity)entity).function);
-                    if (flowRef != null) currentFlowgraphToSearch = flowRef;
+                    case "TriggerSequence":
+                        TriggerSequence trig = (TriggerSequence)comp.functions[i];
+                        List<CathodeTriggerSequenceTrigger> trigSeq = new List<CathodeTriggerSequenceTrigger>();
+                        for (int x = 0; x < trig.triggers.Count; x++)
+                            if (ResolveHierarchy(trig.triggers[x].hierarchy, out CathodeComposite flowTemp, out string hierarchy) != null)
+                                trigSeq.Add(trig.triggers[x]);
+                        originalTriggerCount += trig.triggers.Count;
+                        newTriggerCount += trigSeq.Count;
+                        trig.triggers = trigSeq;
+                        break;
+                    case "CAGEAnimation":
+                        CAGEAnimation anim = (CAGEAnimation)comp.functions[i];
+                        List<CathodeParameterKeyframeHeader> headers = new List<CathodeParameterKeyframeHeader>();
+                        for (int x = 0; x < anim.keyframeHeaders.Count; x++)
+                            if (ResolveHierarchy(anim.keyframeHeaders[x].connectedEntity, out CathodeComposite flowTemp, out string hierarchy) != null)
+                                headers.Add(anim.keyframeHeaders[x]);
+                        originalAnimCount += anim.keyframeHeaders.Count;
+                        newAnimCount += headers.Count;
+                        anim.keyframeHeaders = headers;
+                        break;
                 }
             }
-            if (combinedString.Length >= 4) combinedString = combinedString.Substring(0, combinedString.Length - 4);
-            return combinedString;
+
+            //Clear links 
+            List<CathodeEntity> entities = comp.GetEntities();
+            for (int i = 0; i < entities.Count; i++)
+            {
+                List<CathodeEntityLink> childLinksPurged = new List<CathodeEntityLink>();
+                for (int x = 0; x < entities[i].childLinks.Count; x++)
+                    if (comp.GetEntityByID(entities[i].childLinks[x].childID) != null)
+                        childLinksPurged.Add(entities[i].childLinks[x]);
+                originalLinkCount += entities[i].childLinks.Count;
+                newLinkCount += childLinksPurged.Count;
+                entities[i].childLinks = childLinksPurged;
+            }
+
+            if (originalUnknownCount + 
+                (originalProxyCount - newProxyCount) + 
+                (originalOverrideCount - newOverrideCount) + 
+                (originalTriggerCount - newTriggerCount) + 
+                (originalAnimCount - newAnimCount) + 
+                (originalLinkCount - newLinkCount) == 0) 
+                return;
+            Console.WriteLine(
+                "Purged all dead hierarchies and entities in " + comp.name + "!" +
+                "\n - " + originalUnknownCount + " unknown entities" +
+                "\n - " + (originalProxyCount - newProxyCount) + " proxies (of " + originalProxyCount + ")" +
+                "\n - " + (originalOverrideCount - newOverrideCount) + " overrides (of " + originalOverrideCount + ")" +
+                "\n - " + (originalTriggerCount - newTriggerCount) + " triggers (of " + originalTriggerCount + ")" +
+                "\n - " + (originalAnimCount - newAnimCount) + " anims (of " + originalAnimCount + ")" +
+                "\n - " + (originalLinkCount - newLinkCount) + " links (of " + originalLinkCount + ")");
+        }
+        public static void ResetHierarchyPurgeCache()
+        {
+            purgedComps.Clear();
         }
     }
 }
