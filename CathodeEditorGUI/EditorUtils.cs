@@ -9,7 +9,7 @@ namespace CathodeEditorGUI
     static class EditorUtils
     {
         /* Utility: generate nice entity name to display in UI */
-        public static string GenerateEntityName(CathodeEntity entity, CathodeComposite currentFlowgraph, bool regenCache = false)
+        public static string GenerateEntityName(CathodeEntity entity, CathodeComposite composite, bool regenCache = false)
         {
             if (CurrentInstance.commandsPAK == null) 
                 return entity.shortGUID.ToString();
@@ -17,13 +17,17 @@ namespace CathodeEditorGUI
             if (hasFinishedCachingEntityNames && regenCache)
             {
                 if (cachedEntityName.ContainsKey(entity.shortGUID)) cachedEntityName.Remove(entity.shortGUID);
-                cachedEntityName.Add(entity.shortGUID, GenerateEntityNameInternal(entity, currentFlowgraph));
+                cachedEntityName.Add(entity.shortGUID, GenerateEntityNameInternal(entity, composite));
             }
 
             if (hasFinishedCachingEntityNames && cachedEntityName.ContainsKey(entity.shortGUID)) 
                 return cachedEntityName[entity.shortGUID];
 
-            return GenerateEntityNameInternal(entity, currentFlowgraph);
+            return GenerateEntityNameInternal(entity, composite);
+        }
+        public static string GenerateEntityNameWithoutID(CathodeEntity entity, CathodeComposite composite, bool regenCache = false)
+        {
+            return GenerateEntityName(entity, composite, regenCache).Substring(14);
         }
         private static string GenerateEntityNameInternal(CathodeEntity entity, CathodeComposite composite)
         {

@@ -21,20 +21,6 @@ namespace CathodeEditorGUI
 
         public CathodeEditorGUI()
         {
-            //CathodeModels mdl = new CathodeModels(
-            //    @"F:\Alien Isolation Modding\Isolation Mod Tools\Alien Isolation PC Final\DATA\ENV\PRODUCTION\BSP_LV426_PT01\RENDERABLE\MODELS_LEVEL.BIN",
-            //    @"F:\Alien Isolation Modding\Isolation Mod Tools\Alien Isolation PC Final\DATA\ENV\PRODUCTION\BSP_LV426_PT01\RENDERABLE\LEVEL_MODELS.PAK");
-
-            //uint hashed = Utilities.AnimationHashedString("REFERENCE_ROOT");
-            //string bleh = BitConverter.ToString(BitConverter.GetBytes(hashed));
-
-            /*
-            AnimationStringDB stringdb = new AnimationStringDB(@"C:\Users\mattf_cr4e5zq\animation.pak\DATA\ANIM_SYS\ANIM_STRING_DB.BIN");
-            stringdb.Save(); 
-            stringdb = new AnimationStringDB(@"C:\Users\mattf_cr4e5zq\animation.pak\DATA\ANIM_SYS\ANIM_STRING_DB_DEBUG.BIN");
-            stringdb.Save();
-            */
-
             InitializeComponent();
             treeHelper = new TreeUtility(FileTree);
 
@@ -208,7 +194,7 @@ namespace CathodeEditorGUI
                         System.Numerics.Matrix4x4.CreateScale(new System.Numerics.Vector3(0, 0, 0)) * 
                         System.Numerics.Matrix4x4.CreateFromQuaternion(System.Numerics.Quaternion.Identity) * 
                         System.Numerics.Matrix4x4.CreateTranslation(new System.Numerics.Vector3(-9999.0f, -9999.0f, -9999.0f));
-                    mover.IsThisTypeID = MoverType.DYNAMIC_MODEL;
+                    mover.MoverFlags = 6;
                     mover.NodeID = new ShortGuid("00-00-00-00");
                     mvr.Movers[i] = mover;
                 }
@@ -884,9 +870,9 @@ namespace CathodeEditorGUI
                 {
                     entity_children.Items.Add(
                         /*"[" + link.connectionID.ToString() + "] " +*/
-                        "(" + ShortGuidUtils.FindString(link.parentParamID) + ") => " +
-                        CurrentInstance.compositeLookup.GetEntityName(CurrentInstance.selectedComposite.shortGUID, link.childID) + 
-                        " (" + ShortGuidUtils.FindString(link.childParamID) + ")");
+                        "this [" + ShortGuidUtils.FindString(link.parentParamID) + "] => " +
+                        EditorUtils.GenerateEntityNameWithoutID(CurrentInstance.selectedComposite.GetEntities().FirstOrDefault(o => o.shortGUID == link.childID), CurrentInstance.selectedComposite) +
+                        " [" + ShortGuidUtils.FindString(link.childParamID) + "]");
                     linkedEntityListIDs.Add(link.connectionID);
                 }
             }
@@ -901,9 +887,9 @@ namespace CathodeEditorGUI
                         if (link.childID != CurrentInstance.selectedEntity.shortGUID) continue;
                         entity_children.Items.Add(
                             /*"[" + link.connectionID.ToString() + "] " +*/
-                            CurrentInstance.compositeLookup.GetEntityName(CurrentInstance.selectedComposite.shortGUID, entity.shortGUID) +
-                            " (" + ShortGuidUtils.FindString(link.parentParamID) + ") => " +
-                            "(" + ShortGuidUtils.FindString(link.childParamID) + ")");
+                            EditorUtils.GenerateEntityNameWithoutID(entity, CurrentInstance.selectedComposite) +
+                            " [" + ShortGuidUtils.FindString(link.parentParamID) + "] => " +
+                            "this [" + ShortGuidUtils.FindString(link.childParamID) + "]");
                         linkedEntityListIDs.Add(link.connectionID);
                     }
                 }
@@ -1025,7 +1011,7 @@ namespace CathodeEditorGUI
                     System.Numerics.Matrix4x4.CreateFromQuaternion(System.Numerics.Quaternion.Identity) * 
                     System.Numerics.Matrix4x4.CreateTranslation(new System.Numerics.Vector3(-9999.0f, -9999.0f, -9999.0f));
                 //mvr.IsThisTypeID = MoverType.DYNAMIC_MODEL;
-                thisMvr.IsThisTypeID = MoverType.DYNAMIC_MODEL;
+                thisMvr.MoverFlags = 6;
                 thisMvr.NodeID = new ShortGuid("00-00-00-00");
 
                 //mvr.Unknowns5_ = new Vector4(0, 0, 0, 0);
