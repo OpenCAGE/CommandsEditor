@@ -1143,6 +1143,60 @@ namespace CathodeEditorGUI
 
         private void button5_Click(object sender, EventArgs e)
         {
+            List<string> output = new List<string>();
+            
+            BinaryReader reader = new BinaryReader(File.OpenRead(@"E:\OpenCAGE_2021\CathodeEditorGUI\CathodeLib\CathodeLib\Resources\NodeDBs\entity_parameter_names.bin"));
+            while (reader.BaseStream.Position < reader.BaseStream.Length)
+            {
+                reader.BaseStream.Position += 4;
+                string bleh = reader.ReadString();
+                if (!output.Contains(bleh)) output.Add(bleh);
+            }
+            reader.Close();
+            reader = new BinaryReader(File.OpenRead(@"E:\OpenCAGE_2021\CathodeLib\CathodeLib\Resources\NodeDBs\cathode_id_map.bin"));
+            while (reader.BaseStream.Position < reader.BaseStream.Length)
+            {
+                reader.BaseStream.Position += 4;
+                string bleh = reader.ReadString();
+                if (!output.Contains(bleh)) output.Add(bleh);
+            }
+            reader.Close();
+            reader = new BinaryReader(File.OpenRead(@"E:\OpenCAGE_2021\CathodeLib\CathodeLib\Resources\NodeDBs\cathode_id_map_DUMP_ONLY.bin"));
+            while (reader.BaseStream.Position < reader.BaseStream.Length)
+            {
+                reader.BaseStream.Position += 4;
+                string bleh = reader.ReadString();
+                if (!output.Contains(bleh)) output.Add(bleh);
+            }
+            reader.Close();
+            
+            List<string> dump1 = Directory.GetFiles(@"E:\GitHub Repos\alien_assets_daniel\DEBUG\commands_bin_dumps", "*", SearchOption.AllDirectories).ToList<string>();
+            foreach (string dump in dump1)
+            {
+                List<string> lines = File.ReadAllLines(dump).ToList<string>();
+                foreach (string line in lines)
+                {
+                    if (line.Length == 0 || line.Substring(0, 1) != "8") continue;
+                    if (line.Substring(line.Length - 1) == "'")
+                    {
+                        List<string> content = line.Split('\'').ToList<string>();
+                        if (content.Count > 1)
+                        {
+                            string name = content[content.Count - 2];
+                            if (!output.Contains(name)) output.Add(name);
+                        }
+                    }
+                }
+            }
+
+            BinaryWriter writer = new BinaryWriter(File.OpenWrite("binout.bin"));
+            foreach (string out1 in output) {
+                Utilities.Write<ShortGuid>(writer, ShortGuidUtils.Generate(out1));
+                writer.Write(out1);
+            };
+            writer.Close();
+            return;
+
             /*
             List<string> dumps = Directory.GetFiles(@"E:\GitHub Repos\alien_assets_daniel\DEBUG", "alien_commands_bin_*", SearchOption.AllDirectories).ToList<string>();
             List<Task> tasks = new List<Task>();
