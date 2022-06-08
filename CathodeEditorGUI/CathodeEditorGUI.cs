@@ -38,14 +38,14 @@ namespace CathodeEditorGUI
             if (env_list.Items.Contains("FRONTEND")) env_list.SelectedItem = "FRONTEND";
             else env_list.SelectedIndex = 0;
 
-//#if debug
-            //button1.Visible = true;
-            //button2.Visible = true;
-            //button3.Visible = true;
-            //button4.Visible = true;
-            //button5.Visible = true;
-            //button6.Visible = true;
-            //#endif
+#if debug
+            button1.Visible = true;
+            button2.Visible = true;
+            button3.Visible = true;
+            button4.Visible = true;
+            button5.Visible = true;
+            button6.Visible = true;
+#endif
         }
 
         /* Clear the UI */
@@ -482,9 +482,9 @@ namespace CathodeEditorGUI
             }
             composite_content.EndUpdate();
 
-//#if debug //TODO: PULL THIS INTO STABLE
+#if debug //TODO: PULL THIS INTO STABLE
             editCompositeResources.Visible = true;
-//#endif
+#endif
 
             groupBox1.Text = entry.name;
             Cursor.Current = Cursors.Default;
@@ -755,14 +755,14 @@ namespace CathodeEditorGUI
                     else
                         description = ShortGuidUtils.FindString(((FunctionEntity)entity).function);
                     selected_entity_name.Text = CurrentInstance.compositeLookup.GetEntityName(CurrentInstance.selectedComposite.shortGUID, entity.shortGUID);
-//#if debug //TODO: PULL THIS INTO STABLE
+#if debug //TODO: PULL THIS INTO STABLE
                     if (funcComposite == null)
                     {
                         CathodeFunctionType function = CommandsUtils.GetFunctionType(thisFunction);
                         editTriggerSequence.Visible = function == CathodeFunctionType.TriggerSequence;
                         editCAGEAnimationKeyframes.Visible = function == CathodeFunctionType.CAGEAnimation;
                     }
-//#endif
+#endif
                     break;
                 case EntityVariant.DATATYPE:
                     description = "DataType " + ((DatatypeEntity)entity).type.ToString();
@@ -787,9 +787,9 @@ namespace CathodeEditorGUI
             //show resource editor button if this entity has a resource reference
             ShortGuid resourceParamID = ShortGuidUtils.Generate("resource");
             CathodeLoadedParameter resourceParam = CurrentInstance.selectedEntity.parameters.FirstOrDefault(o => o.shortGUID == resourceParamID);
-//#if debug //TODO: PULL THIS INTO STABLE
+#if debug //TODO: PULL THIS INTO STABLE
             editEntityResources.Visible = ((resourceParam != null) || CurrentInstance.selectedEntity.resources.Count != 0);
-//#endif
+#endif
 
             //populate parameter inputs
             int current_ui_offset = 7;
