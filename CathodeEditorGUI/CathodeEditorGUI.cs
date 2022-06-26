@@ -791,6 +791,9 @@ namespace CathodeEditorGUI
             editEntityResources.Visible = ((resourceParam != null) || CurrentInstance.selectedEntity.resources.Count != 0);
 #endif
 
+            //sort parameters by type, to improve visibility in UI
+            entity.parameters = entity.parameters.OrderBy(o => o.content?.dataType).ToList();
+
             //populate parameter inputs
             int current_ui_offset = 7;
             for (int i = 0; i < entity.parameters.Count; i++)
