@@ -183,32 +183,36 @@ namespace CathodeEditorGUI
                 return null;
             }
 
+            List<ShortGuid> hierarchyCopy = new List<ShortGuid>();
+            for (int x = 0; x < hierarchy.Count; x++)
+                hierarchyCopy.Add(new ShortGuid((byte[])hierarchy[x].val.Clone()));
+
             CathodeComposite currentFlowgraphToSearch = CurrentInstance.selectedComposite;
-            if (currentFlowgraphToSearch == null || currentFlowgraphToSearch.GetEntityByID(hierarchy[0]) == null)
+            if (currentFlowgraphToSearch == null || currentFlowgraphToSearch.GetEntityByID(hierarchyCopy[0]) == null)
             {
                 currentFlowgraphToSearch = CurrentInstance.commandsPAK.EntryPoints[0];
-                if (currentFlowgraphToSearch == null || currentFlowgraphToSearch.GetEntityByID(hierarchy[0]) == null)
+                if (currentFlowgraphToSearch == null || currentFlowgraphToSearch.GetEntityByID(hierarchyCopy[0]) == null)
                 {
-                    currentFlowgraphToSearch = CurrentInstance.commandsPAK.GetComposite(hierarchy[0]);
-                    if (currentFlowgraphToSearch == null || currentFlowgraphToSearch.GetEntityByID(hierarchy[1]) == null)
+                    currentFlowgraphToSearch = CurrentInstance.commandsPAK.GetComposite(hierarchyCopy[0]);
+                    if (currentFlowgraphToSearch == null || currentFlowgraphToSearch.GetEntityByID(hierarchyCopy[1]) == null)
                     {
                         containedFlowgraph = null;
                         asString = "";
                         return null;
                     }
-                    hierarchy.RemoveAt(0);
+                    hierarchyCopy.RemoveAt(0);
                 }
             }
 
             CathodeEntity entity = null;
             string hierarchyString = "";
-            for (int i = 0; i < hierarchy.Count; i++)
+            for (int i = 0; i < hierarchyCopy.Count; i++)
             {
-                entity = currentFlowgraphToSearch.GetEntityByID(hierarchy[i]);
+                entity = currentFlowgraphToSearch.GetEntityByID(hierarchyCopy[i]);
 
                 if (entity == null) break;
                 hierarchyString += "[" + entity.shortGUID + "] " + CurrentInstance.compositeLookup.GetEntityName(currentFlowgraphToSearch.shortGUID, entity.shortGUID);
-                if (i >= hierarchy.Count - 2) break; //Last is always 00-00-00-00
+                if (i >= hierarchyCopy.Count - 2) break; //Last is always 00-00-00-00
                 hierarchyString += " -> ";
 
                 if (entity.variant == EntityVariant.FUNCTION)
