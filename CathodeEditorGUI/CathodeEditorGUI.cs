@@ -87,6 +87,8 @@ namespace CathodeEditorGUI
                 editTriggerSequence.Visible = false;
                 editCAGEAnimationKeyframes.Visible = false;
                 editEntityResources.Visible = false;
+                renameSelectedNode.Enabled = true;
+                duplicateSelectedNode.Enabled = true;
             }
         }
 
@@ -767,6 +769,8 @@ namespace CathodeEditorGUI
                 case EntityVariant.DATATYPE:
                     description = "DataType " + ((DatatypeEntity)entity).type.ToString();
                     selected_entity_name.Text = ShortGuidUtils.FindString(((DatatypeEntity)entity).parameter);
+                    renameSelectedNode.Enabled = false;
+                    duplicateSelectedNode.Enabled = false;
                     break;
                 case EntityVariant.PROXY:
                 case EntityVariant.OVERRIDE:
