@@ -43,6 +43,13 @@ namespace CathodeEditorGUI
                 }
             }
 
+            //TODO: when we have custom ShortGuid saving, this can be deprecated.
+            if (ShortGuidUtils.FindString(thisParamID) != param_name.Text)
+            {
+                MessageBox.Show("This parameter name is not supported by the Cathode scripting system!");
+                return;
+            }
+
             CathodeParameter thisParam = null;
             switch ((CathodeDataType)param_datatype.SelectedIndex)
             {
