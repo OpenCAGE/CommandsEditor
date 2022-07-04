@@ -25,13 +25,10 @@ namespace CathodeEditorGUI.UserControls
         public void PopulateUI(CathodeVector3 cVec, ShortGuid paramID)
         {
             vectorVal = cVec;
-            VECTOR_VARIABLE_DUMMY.Text = ShortGuidUtils.FindString(paramID) + " (" + paramID.ToString() + ")";
+            label1.Text = ShortGuidUtils.FindString(paramID);
             POS_X_1.Value = (decimal)cVec.value.x;
             POS_Y_1.Value = (decimal)cVec.value.y;
             POS_Z_1.Value = (decimal)cVec.value.z;
-            //POS_X_1.DataBindings.Add("Value", (decimal)cVec.value.X, "");
-            //POS_Y_1.DataBindings.Add("Value", (decimal)cVec.value.Y, "");
-            //POS_Z_1.DataBindings.Add("Value", (decimal)cVec.value.Z, "");
         }
 
         private void POS_X_1_ValueChanged(object sender, EventArgs e)

@@ -28,45 +28,42 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.STRING_VARIABLE_DUMMY = new System.Windows.Forms.GroupBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.STRING_VARIABLE_DUMMY.SuspendLayout();
+            this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
-            // 
-            // STRING_VARIABLE_DUMMY
-            // 
-            this.STRING_VARIABLE_DUMMY.Controls.Add(this.textBox1);
-            this.STRING_VARIABLE_DUMMY.Location = new System.Drawing.Point(3, 3);
-            this.STRING_VARIABLE_DUMMY.Name = "STRING_VARIABLE_DUMMY";
-            this.STRING_VARIABLE_DUMMY.Size = new System.Drawing.Size(334, 56);
-            this.STRING_VARIABLE_DUMMY.TabIndex = 17;
-            this.STRING_VARIABLE_DUMMY.TabStop = false;
-            this.STRING_VARIABLE_DUMMY.Text = "Parameter Name (00-00-00-00)";
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(6, 21);
+            this.textBox1.Location = new System.Drawing.Point(3, 20);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(322, 20);
             this.textBox1.TabIndex = 8;
             this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(3, 4);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(152, 13);
+            this.label1.TabIndex = 20;
+            this.label1.Text = "Parameter Name (00-00-00-00)";
+            // 
             // GUI_StringDataType
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.STRING_VARIABLE_DUMMY);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.textBox1);
             this.Name = "GUI_StringDataType";
-            this.Size = new System.Drawing.Size(340, 61);
-            this.STRING_VARIABLE_DUMMY.ResumeLayout(false);
-            this.STRING_VARIABLE_DUMMY.PerformLayout();
+            this.Size = new System.Drawing.Size(340, 45);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.GroupBox STRING_VARIABLE_DUMMY;
         private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Label label1;
     }
 }
