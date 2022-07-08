@@ -802,7 +802,9 @@ namespace CathodeEditorGUI
             int current_ui_offset = 7;
             for (int i = 0; i < entity.parameters.Count; i++)
             {
+#if debug //TODO: PULL THIS INTO STABLE
                 if (entity.parameters[i].shortGUID == resourceParamID) continue; //We use the resource editor button (above) for resource parameters
+#endif
 
                 CathodeParameter this_param = entity.parameters[i].content;
                 UserControl parameterGUI = null;
