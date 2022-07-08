@@ -25,9 +25,8 @@ namespace CathodeEditorGUI.UserControls
         public void PopulateUI(CathodeBool cBool, ShortGuid paramID)
         {
             boolVal = cBool;
-            BOOL_VARIABLE_DUMMY.Text = ShortGuidUtils.FindString(paramID) + " (" + paramID.ToString() + ")";
+            checkBox1.Text = ShortGuidUtils.FindString(paramID);
             checkBox1.Checked = cBool.value;
-            //checkBox1.DataBindings.Add("Checked", cBool.value, "");
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)

@@ -28,38 +28,22 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.VECTOR_VARIABLE_DUMMY = new System.Windows.Forms.GroupBox();
             this.label18 = new System.Windows.Forms.Label();
             this.POS_Z_1 = new System.Windows.Forms.NumericUpDown();
             this.label19 = new System.Windows.Forms.Label();
             this.POS_Y_1 = new System.Windows.Forms.NumericUpDown();
             this.label20 = new System.Windows.Forms.Label();
             this.POS_X_1 = new System.Windows.Forms.NumericUpDown();
-            this.VECTOR_VARIABLE_DUMMY.SuspendLayout();
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.POS_Z_1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.POS_Y_1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.POS_X_1)).BeginInit();
             this.SuspendLayout();
             // 
-            // VECTOR_VARIABLE_DUMMY
-            // 
-            this.VECTOR_VARIABLE_DUMMY.Controls.Add(this.label18);
-            this.VECTOR_VARIABLE_DUMMY.Controls.Add(this.POS_Z_1);
-            this.VECTOR_VARIABLE_DUMMY.Controls.Add(this.label19);
-            this.VECTOR_VARIABLE_DUMMY.Controls.Add(this.POS_Y_1);
-            this.VECTOR_VARIABLE_DUMMY.Controls.Add(this.label20);
-            this.VECTOR_VARIABLE_DUMMY.Controls.Add(this.POS_X_1);
-            this.VECTOR_VARIABLE_DUMMY.Location = new System.Drawing.Point(3, 3);
-            this.VECTOR_VARIABLE_DUMMY.Name = "VECTOR_VARIABLE_DUMMY";
-            this.VECTOR_VARIABLE_DUMMY.Size = new System.Drawing.Size(334, 56);
-            this.VECTOR_VARIABLE_DUMMY.TabIndex = 16;
-            this.VECTOR_VARIABLE_DUMMY.TabStop = false;
-            this.VECTOR_VARIABLE_DUMMY.Text = "Parameter Name (00-00-00-00)";
-            // 
             // label18
             // 
             this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(218, 25);
+            this.label18.Location = new System.Drawing.Point(210, 25);
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(17, 13);
             this.label18.TabIndex = 6;
@@ -73,7 +57,7 @@
             0,
             0,
             851968});
-            this.POS_Z_1.Location = new System.Drawing.Point(238, 22);
+            this.POS_Z_1.Location = new System.Drawing.Point(230, 22);
             this.POS_Z_1.Maximum = new decimal(new int[] {
             1874919423,
             2328306,
@@ -97,7 +81,7 @@
             // label19
             // 
             this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(115, 25);
+            this.label19.Location = new System.Drawing.Point(107, 25);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(17, 13);
             this.label19.TabIndex = 4;
@@ -111,7 +95,7 @@
             0,
             0,
             851968});
-            this.POS_Y_1.Location = new System.Drawing.Point(134, 22);
+            this.POS_Y_1.Location = new System.Drawing.Point(126, 22);
             this.POS_Y_1.Maximum = new decimal(new int[] {
             1874919423,
             2328306,
@@ -135,7 +119,7 @@
             // label20
             // 
             this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(12, 25);
+            this.label20.Location = new System.Drawing.Point(4, 25);
             this.label20.Name = "label20";
             this.label20.Size = new System.Drawing.Size(17, 13);
             this.label20.TabIndex = 2;
@@ -149,7 +133,7 @@
             0,
             0,
             851968});
-            this.POS_X_1.Location = new System.Drawing.Point(31, 22);
+            this.POS_X_1.Location = new System.Drawing.Point(23, 22);
             this.POS_X_1.Maximum = new decimal(new int[] {
             1874919423,
             2328306,
@@ -170,30 +154,43 @@
             -2147483648});
             this.POS_X_1.ValueChanged += new System.EventHandler(this.POS_X_1_ValueChanged);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(3, 4);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(152, 13);
+            this.label1.TabIndex = 17;
+            this.label1.Text = "Parameter Name (00-00-00-00)";
+            // 
             // GUI_VectorDataType
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.VECTOR_VARIABLE_DUMMY);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.label18);
+            this.Controls.Add(this.POS_Z_1);
+            this.Controls.Add(this.POS_X_1);
+            this.Controls.Add(this.label19);
+            this.Controls.Add(this.label20);
+            this.Controls.Add(this.POS_Y_1);
             this.Name = "GUI_VectorDataType";
-            this.Size = new System.Drawing.Size(340, 61);
-            this.VECTOR_VARIABLE_DUMMY.ResumeLayout(false);
-            this.VECTOR_VARIABLE_DUMMY.PerformLayout();
+            this.Size = new System.Drawing.Size(340, 48);
             ((System.ComponentModel.ISupportInitialize)(this.POS_Z_1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.POS_Y_1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.POS_X_1)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.GroupBox VECTOR_VARIABLE_DUMMY;
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.NumericUpDown POS_Z_1;
         private System.Windows.Forms.Label label19;
         private System.Windows.Forms.NumericUpDown POS_Y_1;
         private System.Windows.Forms.Label label20;
         private System.Windows.Forms.NumericUpDown POS_X_1;
+        private System.Windows.Forms.Label label1;
     }
 }

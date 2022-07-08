@@ -25,12 +25,9 @@ namespace CathodeEditorGUI.UserControls
         public void PopulateUI(CathodeEnum cEnum, ShortGuid paramID)
         {
             enumVal = cEnum;
-            ENUM_VARIABLE_DUMMY.Text = ShortGuidUtils.FindString(paramID) + " (" + paramID.ToString() + ")";
+            label13.Text = ShortGuidUtils.FindString(paramID);
             comboBox1.Text = EntityDB.GetEnum(cEnum.enumID).Name;
-            //comboBox1.Enabled = false;
-            //numericUpDown8.Value = cEnum.enumIndex;
             textBox1.Text = cEnum.enumIndex.ToString();
-            //numericUpDown8.DataBindings.Add("Value", cEnum.enumIndex, "");
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)

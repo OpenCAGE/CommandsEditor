@@ -28,43 +28,18 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.ENUM_VARIABLE_DUMMY = new System.Windows.Forms.GroupBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.label14 = new System.Windows.Forms.Label();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.label13 = new System.Windows.Forms.Label();
-            this.ENUM_VARIABLE_DUMMY.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // ENUM_VARIABLE_DUMMY
-            // 
-            this.ENUM_VARIABLE_DUMMY.Controls.Add(this.textBox1);
-            this.ENUM_VARIABLE_DUMMY.Controls.Add(this.label14);
-            this.ENUM_VARIABLE_DUMMY.Controls.Add(this.comboBox1);
-            this.ENUM_VARIABLE_DUMMY.Controls.Add(this.label13);
-            this.ENUM_VARIABLE_DUMMY.Location = new System.Drawing.Point(3, 3);
-            this.ENUM_VARIABLE_DUMMY.Name = "ENUM_VARIABLE_DUMMY";
-            this.ENUM_VARIABLE_DUMMY.Size = new System.Drawing.Size(334, 70);
-            this.ENUM_VARIABLE_DUMMY.TabIndex = 17;
-            this.ENUM_VARIABLE_DUMMY.TabStop = false;
-            this.ENUM_VARIABLE_DUMMY.Text = "Parameter Name (00-00-00-00)";
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(245, 35);
+            this.textBox1.Location = new System.Drawing.Point(239, 20);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(80, 20);
             this.textBox1.TabIndex = 11;
             this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(242, 19);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(33, 13);
-            this.label14.TabIndex = 10;
-            this.label14.Text = "Index";
             // 
             // comboBox1
             // 
@@ -231,7 +206,7 @@
             "WEAPON_IMPACT_EFFECT_TYPE",
             "WEAPON_IMPACT_FILTER_ORIENTATION",
             "WEAPON_TYPE"});
-            this.comboBox1.Location = new System.Drawing.Point(12, 35);
+            this.comboBox1.Location = new System.Drawing.Point(6, 20);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(227, 21);
             this.comboBox1.TabIndex = 9;
@@ -240,29 +215,27 @@
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(9, 19);
+            this.label13.Location = new System.Drawing.Point(3, 4);
             this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(34, 13);
+            this.label13.Size = new System.Drawing.Size(152, 13);
             this.label13.TabIndex = 7;
-            this.label13.Text = "Enum";
+            this.label13.Text = "Parameter Name (00-00-00-00)";
             // 
             // GUI_EnumDataType
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.ENUM_VARIABLE_DUMMY);
+            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.comboBox1);
+            this.Controls.Add(this.label13);
             this.Name = "GUI_EnumDataType";
-            this.Size = new System.Drawing.Size(340, 75);
-            this.ENUM_VARIABLE_DUMMY.ResumeLayout(false);
-            this.ENUM_VARIABLE_DUMMY.PerformLayout();
+            this.Size = new System.Drawing.Size(340, 45);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.GroupBox ENUM_VARIABLE_DUMMY;
-        private System.Windows.Forms.Label label14;
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.TextBox textBox1;

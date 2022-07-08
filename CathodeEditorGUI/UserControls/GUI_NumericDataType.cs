@@ -27,7 +27,7 @@ namespace CathodeEditorGUI.UserControls
         public void PopulateUI_Float(CathodeFloat cFloat, ShortGuid paramID)
         {
             floatVal = cFloat;
-            NUMERIC_VARIABLE_DUMMY.Text = ShortGuidUtils.FindString(paramID) + " (" + paramID.ToString() + ")";
+            label1.Text = ShortGuidUtils.FindString(paramID);
             textBox1.Text = cFloat.value.ToString();
         }
 
@@ -35,7 +35,7 @@ namespace CathodeEditorGUI.UserControls
         {
             isIntInput = true;
             intVal = cInt;
-            NUMERIC_VARIABLE_DUMMY.Text = ShortGuidUtils.FindString(paramID) + " (" + paramID.ToString() + ")";
+            label1.Text = ShortGuidUtils.FindString(paramID);
             textBox1.Text = cInt.value.ToString();
         }
 

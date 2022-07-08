@@ -25,9 +25,8 @@ namespace CathodeEditorGUI.UserControls
         public void PopulateUI(CathodeString cString, ShortGuid paramID)
         {
             stringVal = cString;
-            STRING_VARIABLE_DUMMY.Text = ShortGuidUtils.FindString(paramID) + " (" + paramID.ToString() + ")";
+            label1.Text = ShortGuidUtils.FindString(paramID);
             textBox1.Text = cString.value;
-            //textBox1.DataBindings.Add("Text", cString.value, "");
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
