@@ -38,6 +38,24 @@ namespace CathodeEditorGUI
             if (env_list.Items.Contains("FRONTEND")) env_list.SelectedItem = "FRONTEND";
             else env_list.SelectedIndex = 0;
 
+            this.Text = "OpenCAGE Cathode Editor";
+            if (OpenCAGE.SettingsManager.GetBool("CONFIG_ShowPlatform") &&
+                OpenCAGE.SettingsManager.GetString("META_GameVersion") != "")
+            {
+                switch (OpenCAGE.SettingsManager.GetString("META_GameVersion"))
+                {
+                    case "STEAM":
+                        this.Text += " - Steam";
+                        break;
+                    case "EPIC_GAMES_STORE":
+                        this.Text += " - Epic Games Store";
+                        break;
+                    case "GOG":
+                        this.Text += " - GoG";
+                        break;
+                }
+            }
+
 #if debug
             button1.Visible = true;
             button2.Visible = true;
