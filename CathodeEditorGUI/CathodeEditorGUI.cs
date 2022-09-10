@@ -56,7 +56,7 @@ namespace CathodeEditorGUI
                 }
             }
 
-#if debug
+#if DEBUG
             button1.Visible = true;
             button2.Visible = true;
             button3.Visible = true;
@@ -502,7 +502,7 @@ namespace CathodeEditorGUI
             }
             composite_content.EndUpdate();
 
-#if debug //TODO: PULL THIS INTO STABLE
+#if DEBUG //TODO: PULL THIS INTO STABLE
             editCompositeResources.Visible = true;
 #endif
 
@@ -775,14 +775,14 @@ namespace CathodeEditorGUI
                     else
                         description = ShortGuidUtils.FindString(((FunctionEntity)entity).function);
                     selected_entity_name.Text = CurrentInstance.compositeLookup.GetEntityName(CurrentInstance.selectedComposite.shortGUID, entity.shortGUID);
-#if debug //TODO: PULL THIS INTO STABLE
                     if (funcComposite == null)
                     {
                         CathodeFunctionType function = CommandsUtils.GetFunctionType(thisFunction);
                         editTriggerSequence.Visible = function == CathodeFunctionType.TriggerSequence;
+#if DEBUG //TODO: PULL THIS INTO STABLE
                         editCAGEAnimationKeyframes.Visible = function == CathodeFunctionType.CAGEAnimation;
-                    }
 #endif
+                    }
                     break;
                 case EntityVariant.DATATYPE:
                     description = "DataType " + ((DatatypeEntity)entity).type.ToString();
@@ -809,7 +809,7 @@ namespace CathodeEditorGUI
             //show resource editor button if this entity has a resource reference
             ShortGuid resourceParamID = ShortGuidUtils.Generate("resource");
             CathodeLoadedParameter resourceParam = CurrentInstance.selectedEntity.parameters.FirstOrDefault(o => o.shortGUID == resourceParamID);
-#if debug //TODO: PULL THIS INTO STABLE
+#if DEBUG //TODO: PULL THIS INTO STABLE
             editEntityResources.Visible = ((resourceParam != null) || CurrentInstance.selectedEntity.resources.Count != 0);
 #endif
 
@@ -820,7 +820,7 @@ namespace CathodeEditorGUI
             int current_ui_offset = 7;
             for (int i = 0; i < entity.parameters.Count; i++)
             {
-#if debug //TODO: PULL THIS INTO STABLE
+#if DEBUG //TODO: PULL THIS INTO STABLE
                 if (entity.parameters[i].shortGUID == resourceParamID) continue; //We use the resource editor button (above) for resource parameters
 #endif
 

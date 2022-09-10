@@ -166,10 +166,10 @@
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.editTriggerSequence);
+            this.groupBox1.Controls.Add(this.editCAGEAnimationKeyframes);
             this.groupBox1.Controls.Add(this.editCompositeResources);
             this.groupBox1.Controls.Add(this.editEntityResources);
             this.groupBox1.Controls.Add(this.groupBox7);
-            this.groupBox1.Controls.Add(this.editCAGEAnimationKeyframes);
             this.groupBox1.Controls.Add(this.groupBox5);
             this.groupBox1.Controls.Add(this.groupBox4);
             this.groupBox1.Controls.Add(this.groupBox2);
@@ -182,7 +182,7 @@
             // 
             // editTriggerSequence
             // 
-            this.editTriggerSequence.Location = new System.Drawing.Point(500, 123);
+            this.editTriggerSequence.Location = new System.Drawing.Point(729, 121);
             this.editTriggerSequence.Name = "editTriggerSequence";
             this.editTriggerSequence.Size = new System.Drawing.Size(121, 23);
             this.editTriggerSequence.TabIndex = 178;
@@ -204,7 +204,7 @@
             // 
             // editEntityResources
             // 
-            this.editEntityResources.Location = new System.Drawing.Point(750, 123);
+            this.editEntityResources.Location = new System.Drawing.Point(625, 121);
             this.editEntityResources.Name = "editEntityResources";
             this.editEntityResources.Size = new System.Drawing.Size(99, 23);
             this.editEntityResources.TabIndex = 176;
@@ -327,7 +327,7 @@
             // 
             // editCAGEAnimationKeyframes
             // 
-            this.editCAGEAnimationKeyframes.Location = new System.Drawing.Point(623, 123);
+            this.editCAGEAnimationKeyframes.Location = new System.Drawing.Point(729, 121);
             this.editCAGEAnimationKeyframes.Name = "editCAGEAnimationKeyframes";
             this.editCAGEAnimationKeyframes.Size = new System.Drawing.Size(121, 23);
             this.editCAGEAnimationKeyframes.TabIndex = 175;
