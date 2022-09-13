@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -27,6 +29,11 @@ namespace CathodeEditorGUI
 
             //Verify location
             if (!File.Exists(SharedData.pathToAI + "/AI.exe")) throw new Exception("This tool was launched incorrectly, or was not placed within the Alien: Isolation directory.");
+            
+            //Make sure we're using the UK culture to format our numbers correctly
+            CultureInfo newCulture = CultureInfo.CreateSpecificCulture("en-GB");
+            Thread.CurrentThread.CurrentUICulture = newCulture;
+            Thread.CurrentThread.CurrentCulture = newCulture;
 
             //Run app
             Application.EnableVisualStyles();
