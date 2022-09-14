@@ -61,6 +61,8 @@ namespace CathodeEditorGUI
             {
                 GroupBox resourceGroup = new GroupBox();
                 resourceGroup.Text = resRef[i].entryType.ToString();
+                resourceGroup.Height = 30; //TEMP
+                resourceGroup.Width = 850; //TEMP
                 switch (resRef[i].entryType)
                 {
                     case CathodeResourceReferenceType.RENDERABLE_INSTANCE:
@@ -73,10 +75,9 @@ namespace CathodeEditorGUI
                             ui.Location = new Point(15, 20 + ((ui.Height + 6) * (x - resRef[i].startIndex)));
                             resourceGroup.Controls.Add(ui);
 
-                            resourceGroup.Height += ui.Height;
+                            resourceGroup.Height += ui.Height + 20;
                             resourceGroup.Width = ui.Width + 30;
 
-                            //TODO: needs to support multiple
                             /*
                             MessageBox.Show("Model: " + models.GetModelNameByIndex(e.ModelIndex) + "\n" +
                                             "Submesh: " + models.GetModelSubmeshNameByIndex(e.ModelIndex) + "\n" +
