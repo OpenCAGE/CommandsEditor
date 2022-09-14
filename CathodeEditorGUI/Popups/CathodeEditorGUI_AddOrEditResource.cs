@@ -1,5 +1,6 @@
 ﻿using CATHODE;
 using CATHODE.Commands;
+using CATHODE.Misc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -43,11 +44,18 @@ namespace CathodeEditorGUI
         {
             InitializeComponent();
 
-            //FOR TESTING ONLY
-            MessageBox.Show(resRef.Count + " resource references");
             for (int i =0; i < resRef.Count; i++)
             {
-                MessageBox.Show(resRef[i].entryType.ToString());
+                switch (resRef[i].entryType)
+                {
+                    case CathodeResourceReferenceType.RENDERABLE_INSTANCE:
+                        RenderableElementsDatabase reds = new RenderableElementsDatabase(CurrentInstance.commandsPAK.Filepath.Substring(0, CurrentInstance.commandsPAK.Filepath.Length - ("COMMANDS.PAK").Length) + "REDS.BIN");
+                        for (int x = resRef[i].startIndex; x < resRef[i].startIndex + resRef[i].count; x++)
+                        {
+                            MessageBox.Show("Model Index " + reds.RenderableElements[x].ModelIndex);
+                        }
+                        break;
+                }
             }
         }
     }
