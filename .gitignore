@@ -364,3 +364,4 @@ FodyWeavers.xsd
 
 CathodeEditorGUI.exe.config
 CathodeEditorGUI.pdb
+Build/*.xml
