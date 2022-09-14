@@ -985,7 +985,7 @@ namespace CathodeEditorGUI
         private void editEntityResources_Click(object sender, EventArgs e)
         {
             //CurrentInstance.currentEntity - .parameters.FirstOrDefault("resources") - .resources
-            CathodeEditorGUI_AddOrEditResource resourceEditor = new CathodeEditorGUI_AddOrEditResource(CurrentInstance.selectedEntity);
+            CathodeEditorGUI_AddOrEditResource resourceEditor = new CathodeEditorGUI_AddOrEditResource(CurrentInstance.selectedEntity, CurrentInstance.selectedComposite);
             resourceEditor.Show();
             resourceEditor.FormClosed += ResourceEditor_FormClosed;
         }
