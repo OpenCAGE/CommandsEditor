@@ -239,7 +239,7 @@ namespace CathodeEditorGUI
                 //Create ProxyEntity
                 ProxyEntity newEntity = new ProxyEntity(thisID);
                 newEntity.hierarchy = hierarchy;
-                newEntity.extraId = ShortGuidUtils.Generate("temp"); //TODO: how do we generate this?
+                newEntity.extraId = ShortGuidUtils.Generate("temp"); //dunno what this val is meant to be, but apparently this works!
 
                 newEntity.parameters.Add(new CathodeLoadedParameter(ShortGuidUtils.Generate("proxy_filter_targets"), new CathodeBool() { value = false }));
                 newEntity.parameters.Add(new CathodeLoadedParameter(ShortGuidUtils.Generate("proxy_enable_on_reset"), new CathodeBool() { value = false }));
@@ -260,7 +260,7 @@ namespace CathodeEditorGUI
                 //Create OverrideEntity
                 OverrideEntity newEntity = new OverrideEntity(thisID);
                 newEntity.hierarchy = hierarchy;
-                newEntity.checksum = ShortGuidUtils.Generate("temp"); //TODO: how do we generate this?
+                newEntity.checksum = ShortGuidUtils.Generate("temp"); //TODO: how do we generate this? without it, i think overrides won't work.
 
                 //Add to composite & save name
                 composite.overrides.Add(newEntity);
