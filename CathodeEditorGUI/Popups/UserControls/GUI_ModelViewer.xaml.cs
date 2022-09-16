@@ -1,8 +1,11 @@
-﻿using HelixToolkit.Wpf;
+﻿using CATHODE.Assets;
+using CATHODE.LEGACY;
+using HelixToolkit.Wpf;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -15,6 +18,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static CATHODE.LEGACY.CathodeModels;
 
 namespace CathodeEditorGUI.Popups.UserControls
 {
@@ -23,24 +27,18 @@ namespace CathodeEditorGUI.Popups.UserControls
     /// </summary>
     public partial class GUI_ModelViewer : UserControl
     {
-        public GUI_ModelViewer(string path_to_model = "")
+        CS2Reader reader = null;
+
+        public GUI_ModelViewer()
         {
             InitializeComponent();
-
-            //Load and display model
-            if (File.Exists(path_to_model))
-            {
-                using (Stream model_loader = File.Open(path_to_model, FileMode.Open, FileAccess.Read))
-                {
-                    try
-                    {
-                        ObjReader CurrentHelixObjReader = new ObjReader();
-                        Model3DGroup MyModel = CurrentHelixObjReader.Read(model_loader);
-                        modelPreview.Content = MyModel;
-                    }
-                    catch { } //Will fail if model has MTL linked
-                }
-            }
+            reader = new CS2Reader();
         }
+
+        public void ShowModel(CathodeModels ModelsPAK, int index)
+        {
+            modelPreview.Content = reader.Read(ModelsPAK, index);
+        }
+        
     }
 }

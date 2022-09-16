@@ -185,6 +185,7 @@
     <Compile Include="Popups\CathodeEditorGUI_SelectModel.Designer.cs">
       <DependentUpon>CathodeEditorGUI_SelectModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\UserControls\CS2Reader.cs" />
     <Compile Include="Popups\UserControls\GUI_ModelViewer.xaml.cs">
       <DependentUpon>GUI_ModelViewer.xaml</DependentUpon>
     </Compile>

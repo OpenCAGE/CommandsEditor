@@ -56,14 +56,14 @@ namespace CathodeEditorGUI
                 }
             }
 
-#if DEBUG
+//#if DEBUG
             button1.Visible = true;
             button2.Visible = true;
             button3.Visible = true;
             button4.Visible = true;
             button5.Visible = true;
             button6.Visible = true;
-#endif
+//#endif
         }
 
         /* Clear the UI */
@@ -1150,6 +1150,10 @@ namespace CathodeEditorGUI
 
         private void button3_Click(object sender, EventArgs e)
         {
+            CathodeEditorGUI_SelectModel modelthing = new CathodeEditorGUI_SelectModel();
+            modelthing.Show();
+            return;
+
             if (CurrentInstance.selectedComposite == null) return;
             Console.WriteLine(CurrentInstance.selectedComposite.name);
             foreach (OverrideEntity overrider in CurrentInstance.selectedComposite.overrides)
