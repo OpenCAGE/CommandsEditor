@@ -1,5 +1,6 @@
 using CATHODE;
 using CATHODE.Commands;
+using CATHODE.LEGACY;
 using CATHODE.Misc;
 using CathodeEditorGUI.UserControls;
 using CathodeLib;
@@ -56,14 +57,14 @@ namespace CathodeEditorGUI
                 }
             }
 
-//#if DEBUG
+#if DEBUG
             button1.Visible = true;
             button2.Visible = true;
             button3.Visible = true;
             button4.Visible = true;
             button5.Visible = true;
             button6.Visible = true;
-//#endif
+#endif
         }
 
         /* Clear the UI */
@@ -150,6 +151,18 @@ namespace CathodeEditorGUI
                 MessageBox.Show("Failed to load COMMANDS.PAK!\nPlease reset your game files.", "COMMANDS.PAK corrupted!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+
+            //Load assets (expensive! look at doing this elsewhere)
+            try
+            {
+                string baseLevelPath = CurrentInstance.commandsPAK.Filepath.Substring(0, CurrentInstance.commandsPAK.Filepath.Length - ("WORLD/COMMANDS.PAK").Length);
+                CurrentInstance.modelDB = new CathodeModels(baseLevelPath + "RENDERABLE/MODELS_LEVEL.BIN",
+                                                            baseLevelPath + "RENDERABLE/LEVEL_MODELS.PAK");
+                CurrentInstance.materialDB = new MaterialDatabase(baseLevelPath + "RENDERABLE/LEVEL_MODELS.MTL");
+                CurrentInstance.textureDB = new CathodeTextures(baseLevelPath + "RENDERABLE/LEVEL_TEXTURES.ALL.PAK",
+                                                                baseLevelPath + "RENDERABLE/LEVEL_TEXTURE_HEADERS.ALL.BIN");
+            }
+            catch { } //Can fail if we're loading a PAK outside the game structure
 
             //Begin caching entity names so we don't have to keep generating them
             CurrentInstance.compositeLookup = new EntityNameLookup(CurrentInstance.commandsPAK);

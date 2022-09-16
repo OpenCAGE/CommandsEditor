@@ -71,7 +71,7 @@ namespace CathodeEditorGUI
                             RenderableElementsDatabase.RenderableElement e = db.RenderableElements[x];
 
                             GUI_Resource_RenderableInstance ui = new GUI_Resource_RenderableInstance();
-                            ui.PopulateUI(models.GetModelNameByIndex(e.ModelIndex) + " -> " + models.GetModelSubmeshNameByIndex(e.ModelIndex), materials.MaterialNames[e.MaterialLibraryIndex]);
+                            ui.PopulateUI(e.ModelIndex, e.MaterialLibraryIndex);
                             ui.Location = new Point(15, 20 + ((ui.Height + 6) * (x - resRef[i].startIndex)));
                             resourceGroup.Controls.Add(ui);
 
