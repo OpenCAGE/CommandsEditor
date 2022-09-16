@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace CathodeEditorGUI
@@ -26,28 +26,30 @@ namespace CathodeEditorGUI
     class TreeUtility
     {
         private TreeView FileTree;
-        public TreeUtility(TreeView tree)
+        private bool IsModelTree;
+        public TreeUtility(TreeView tree, bool isModelTree = false)
         {
             FileTree = tree;
+            IsModelTree = isModelTree;
         }
 
         /* Update the file tree GUI */
-        public void UpdateFileTree(List<string> FilesToList, ContextMenuStrip contextMenu = null)
+        public void UpdateFileTree(List<string> FilesToList, ContextMenuStrip contextMenu = null, List<string> tags = null)
         {
             FileTree.BeginUpdate();
             FileTree.Nodes.Clear();
-            foreach (string FileName in FilesToList)
+            for (int i = 0; i < FilesToList.Count; i++)
             {
-                string[] FileNameParts = FileName.Split('/');
-                if (FileNameParts.Length == 1) { FileNameParts = FileName.Split('\\'); }
-                AddFileToTree(FileNameParts, 0, FileTree.Nodes, contextMenu);
+                string[] FileNameParts = FilesToList[i].Split('/');
+                if (FileNameParts.Length == 1) { FileNameParts = FilesToList[i].Split('\\'); }
+                AddFileToTree(FileNameParts, 0, FileTree.Nodes, contextMenu, (tags == null) ? "" : tags[i]);
             }
             FileTree.Sort();
             FileTree.EndUpdate();
         }
 
         /* Add a file to the GUI tree structure */
-        private void AddFileToTree(string[] FileNameParts, int index, TreeNodeCollection LoopedNodeCollection, ContextMenuStrip contextMenu = null)
+        private void AddFileToTree(string[] FileNameParts, int index, TreeNodeCollection LoopedNodeCollection, ContextMenuStrip contextMenu = null, string tag = "")
         {
             if (FileNameParts.Length <= index)
             {
@@ -60,7 +62,7 @@ namespace CathodeEditorGUI
                 if (ThisFileNode.Text == FileNameParts[index])
                 {
                     should = false;
-                    AddFileToTree(FileNameParts, index + 1, ThisFileNode.Nodes);
+                    AddFileToTree(FileNameParts, index + 1, ThisFileNode.Nodes, contextMenu, tag);
                     break;
                 }
             }
@@ -71,11 +73,16 @@ namespace CathodeEditorGUI
                 if (FileNameParts.Length - 1 == index)
                 {
                     //Node is a file
-                    for (int i = 0; i < FileNameParts.Length; i++)
+                    if (tag == "")
                     {
-                        ThisTag.String_Value += FileNameParts[i] + "/";
+                        for (int i = 0; i < FileNameParts.Length; i++)
+                        {
+                            ThisTag.String_Value += FileNameParts[i] + "/";
+                        }
+                        ThisTag.String_Value = ThisTag.String_Value.ToString().Substring(0, ThisTag.String_Value.ToString().Length - 1);
                     }
-                    ThisTag.String_Value = ThisTag.String_Value.ToString().Substring(0, ThisTag.String_Value.ToString().Length - 1);
+                    else 
+                        ThisTag.String_Value = tag;
 
                     ThisTag.Item_Type = TreeItemType.EXPORTABLE_FILE;
                     FileNode.ImageIndex = (int)TreeItemIcon.FILE;
@@ -88,7 +95,7 @@ namespace CathodeEditorGUI
                     ThisTag.Item_Type = TreeItemType.DIRECTORY;
                     FileNode.ImageIndex = (int)TreeItemIcon.FOLDER;
                     FileNode.SelectedImageIndex = (int)TreeItemIcon.FOLDER;
-                    AddFileToTree(FileNameParts, index + 1, FileNode.Nodes);
+                    AddFileToTree(FileNameParts, index + 1, FileNode.Nodes, contextMenu, tag);
                 }
 
                 FileNode.Tag = ThisTag;

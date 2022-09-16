@@ -1,5 +1,6 @@
 ﻿using CATHODE.Assets;
 using CATHODE.LEGACY;
+using CATHODE.Misc;
 using HelixToolkit.Wpf;
 using System;
 using System.Collections.Generic;
@@ -35,9 +36,9 @@ namespace CathodeEditorGUI.Popups.UserControls
             reader = new CS2Reader();
         }
 
-        public void ShowModel(CathodeModels ModelsPAK, int index)
+        public void ShowModel(int modelIndex)
         {
-            modelPreview.Content = reader.Read(ModelsPAK, index);
+            modelPreview.Content = reader.Read(modelIndex);
         }
         
     }

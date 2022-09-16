@@ -1,4 +1,6 @@
 ﻿using CATHODE.Commands;
+using CATHODE.LEGACY;
+using CATHODE.Misc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,5 +17,10 @@ namespace CathodeEditorGUI
 
         public static CathodeComposite selectedComposite;
         public static CathodeEntity selectedEntity;
+
+        //Chonky assets - don't keep these loaded all the time
+        public static CathodeModels modelDB;
+        public static MaterialDatabase materialDB;
+        public static CathodeTextures textureDB;
     }
 }

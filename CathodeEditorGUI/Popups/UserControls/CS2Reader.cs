@@ -13,23 +13,25 @@ using HelixToolkit.Wpf;
 using CATHODE.LEGACY;
 using static CATHODE.LEGACY.CathodeModels;
 using System.Numerics;
+using CATHODE.Misc;
+using System.Runtime.InteropServices;
 
 namespace CathodeEditorGUI.Popups.UserControls
 {
     public class CS2Reader : IModelReader
     {
-        public Model3DGroup Read(CathodeModels ModelsPAK, int EntryIndex)
+        public Model3DGroup Read(int ModelIndex)
         {
             Model3DGroup modelGroup = new Model3DGroup();
-            ModelData ChunkArray = ModelsPAK.Models[EntryIndex];
+            ModelData ChunkArray = CurrentInstance.modelDB.Models[ModelIndex];
             for (int ChunkIndex = 0; ChunkIndex < ChunkArray.Header.SubmeshCount; ++ChunkIndex)
             {
                 int BINIndex = ChunkArray.Submeshes[ChunkIndex].binIndex;
-                alien_model_bin_model_info Model = ModelsPAK.modelBIN.Models[BINIndex];
+                alien_model_bin_model_info Model = CurrentInstance.modelDB.modelBIN.Models[BINIndex];
                 //if (Model.BlockSize == 0) continue;
 
-                alien_vertex_buffer_format VertexInput = ModelsPAK.modelBIN.VertexBufferFormats[Model.VertexFormatIndex];
-                alien_vertex_buffer_format VertexInputLowDetail = ModelsPAK.modelBIN.VertexBufferFormats[Model.VertexFormatIndexLowDetail];
+                alien_vertex_buffer_format VertexInput = CurrentInstance.modelDB.modelBIN.VertexBufferFormats[Model.VertexFormatIndex];
+                alien_vertex_buffer_format VertexInputLowDetail = CurrentInstance.modelDB.modelBIN.VertexBufferFormats[Model.VertexFormatIndexLowDetail];
 
                 BinaryReader Stream = new BinaryReader(new MemoryStream(ChunkArray.Submeshes[ChunkIndex].content));
 
@@ -201,6 +203,13 @@ namespace CathodeEditorGUI.Popups.UserControls
 
                 if (InVertices.Count == 0) continue;
 
+                Material material = HelixToolkit.Wpf.Materials.Yellow;
+                MaterialTextureReference[] textures = CurrentInstance.materialDB.Materials[Model.MaterialLibraryIndex].TextureReferences;
+                if (textures.Length >= 1)
+                {
+                    //material = HelixToolkit.Wpf.MaterialHelper.CreateImageMaterial()
+                }
+
                 modelGroup.Children.Add(new GeometryModel3D
                 {
                     Geometry = new MeshGeometry3D
@@ -210,12 +219,59 @@ namespace CathodeEditorGUI.Popups.UserControls
                         Normals = InNormals,
                         TextureCoordinates = InUVs0
                     },
-                    Material = HelixToolkit.Wpf.Materials.Yellow,
-                    BackMaterial = HelixToolkit.Wpf.Materials.Yellow,
+                    Material = material,
+                    BackMaterial = material,
                 });
             }
             return modelGroup;
         }
+
+        /* Convert a DDS file to System Bitmap */
+        /*
+        private BitmapImage GetAsBitmap(string FileName)
+        {
+            BitmapImage toReturn = null;
+            if (Path.GetExtension(FileName).ToUpper() != ".DDS") return toReturn;
+
+            try
+            {
+                MemoryStream imageStream = new MemoryStream(GetFileAsBytes(FileName));
+                using (var image = Pfim.Pfim.FromStream(imageStream))
+                {
+                    System.Drawing.Imaging.PixelFormat format = System.Drawing.Imaging.PixelFormat.DontCare;
+                    switch (image.Format)
+                    {
+                        case Pfim.ImageFormat.Rgba32:
+                            format = System.Drawing.Imaging.PixelFormat.Format32bppArgb;
+                            break;
+                        case Pfim.ImageFormat.Rgb24:
+                            format = System.Drawing.Imaging.PixelFormat.Format24bppRgb;
+                            break;
+                        default:
+                            Console.WriteLine("Unsupported DDS: " + image.Format);
+                            break;
+                    }
+                    if (format != System.Drawing.Imaging.PixelFormat.DontCare)
+                    {
+                        var handle = GCHandle.Alloc(image.Data, GCHandleType.Pinned);
+                        try
+                        {
+                            var data = Marshal.UnsafeAddrOfPinnedArrayElement(image.Data, 0);
+                            toReturn = new BitmapImage();
+                            image.Width, image.Height, image.Stride, format, data);
+                        }
+                        finally
+                        {
+                            handle.Free();
+                        }
+                    }
+                }
+            }
+            catch { }
+
+            return toReturn;
+        }
+        */
 
         public Model3DGroup Read(string path)
         {
