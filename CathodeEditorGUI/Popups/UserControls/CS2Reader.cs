@@ -15,6 +15,8 @@ using static CATHODE.LEGACY.CathodeModels;
 using System.Numerics;
 using CATHODE.Misc;
 using System.Runtime.InteropServices;
+using System.Drawing;
+using CATHODE.Assets;
 
 namespace CathodeEditorGUI.Popups.UserControls
 {
@@ -136,8 +138,8 @@ namespace CathodeEditorGUI.Popups.UserControls
                                                     InBoneWeights.Add(Value / Sum);
                                                     break;
                                                 case alien_vertex_input_slot.AlienVertexInputSlot_UV:
-                                                    InUVs2.Add(new Point(Value.X, Value.Y));
-                                                    InUVs3.Add(new Point(Value.Z, Value.W));
+                                                    InUVs2.Add(new System.Windows.Point(Value.X, Value.Y));
+                                                    InUVs3.Add(new System.Windows.Point(Value.Z, Value.W));
                                                     break;
                                             }
                                             break;
@@ -145,7 +147,7 @@ namespace CathodeEditorGUI.Popups.UserControls
 
                                     case alien_vertex_input_type.AlienVertexInputType_v2s16_UV:
                                         {
-                                            Point Value = new Point(Stream.ReadInt16() / 2048.0f, Stream.ReadInt16() / 2048.0f);
+                                            System.Windows.Point Value = new System.Windows.Point(Stream.ReadInt16() / 2048.0f, Stream.ReadInt16() / 2048.0f);
                                             switch (Input.ShaderSlot)
                                             {
                                                 case alien_vertex_input_slot.AlienVertexInputSlot_UV:
@@ -205,9 +207,34 @@ namespace CathodeEditorGUI.Popups.UserControls
 
                 Material material = HelixToolkit.Wpf.Materials.Yellow;
                 MaterialTextureReference[] textures = CurrentInstance.materialDB.Materials[Model.MaterialLibraryIndex].TextureReferences;
-                if (textures.Length >= 1)
+                if (textures.Length > 0)
                 {
-                    //material = HelixToolkit.Wpf.MaterialHelper.CreateImageMaterial()
+                    for (int i = CurrentInstance.materialDB.Materials[Model.MaterialLibraryIndex].TextureReferences.Length - 1; i >= 0; i--) 
+                    {
+                        try
+                        {
+
+                            if (CurrentInstance.materialDB.Materials[Model.MaterialLibraryIndex].MaterialIndex != Model.MaterialLibraryIndex)
+                            {
+                                string bleh = "";
+                            }
+
+                            int tableIndex = CurrentInstance.materialDB.Materials[Model.MaterialLibraryIndex].TextureReferences[i].TextureTableIndex;
+                            Textures texDB = CurrentInstance.textureDB;
+                            if (tableIndex == 2) texDB = CurrentInstance.textureDB_Global;
+
+                            string texFileName = texDB.GetFileNames()[CurrentInstance.materialDB.Materials[Model.MaterialLibraryIndex].TextureReferences[i].TextureIndex];
+
+                            texDB.ExportFile(Path.GetFileNameWithoutExtension(texFileName) + ".dds", texFileName);
+                            Bitmap bmp = GetAsBitmap(Path.GetFileNameWithoutExtension(texFileName) + ".dds");
+                            if (bmp == null) continue;
+                            bmp.Save(Path.GetFileNameWithoutExtension(texFileName) + ".png");
+                            material = HelixToolkit.Wpf.MaterialHelper.CreateImageMaterial(Path.GetFileNameWithoutExtension(texFileName) + ".png");
+
+                            break;
+                        }
+                        catch { }
+                    }
                 }
 
                 modelGroup.Children.Add(new GeometryModel3D
@@ -227,15 +254,14 @@ namespace CathodeEditorGUI.Popups.UserControls
         }
 
         /* Convert a DDS file to System Bitmap */
-        /*
-        private BitmapImage GetAsBitmap(string FileName)
+        private Bitmap GetAsBitmap(string FileName)
         {
-            BitmapImage toReturn = null;
+            Bitmap toReturn = null;
             if (Path.GetExtension(FileName).ToUpper() != ".DDS") return toReturn;
 
             try
             {
-                MemoryStream imageStream = new MemoryStream(GetFileAsBytes(FileName));
+                MemoryStream imageStream = new MemoryStream(File.ReadAllBytes(FileName));
                 using (var image = Pfim.Pfim.FromStream(imageStream))
                 {
                     System.Drawing.Imaging.PixelFormat format = System.Drawing.Imaging.PixelFormat.DontCare;
@@ -257,8 +283,7 @@ namespace CathodeEditorGUI.Popups.UserControls
                         try
                         {
                             var data = Marshal.UnsafeAddrOfPinnedArrayElement(image.Data, 0);
-                            toReturn = new BitmapImage();
-                            image.Width, image.Height, image.Stride, format, data);
+                            toReturn = new Bitmap(image.Width, image.Height, image.Stride, format, data);
                         }
                         finally
                         {
@@ -271,7 +296,6 @@ namespace CathodeEditorGUI.Popups.UserControls
 
             return toReturn;
         }
-        */
 
         public Model3DGroup Read(string path)
         {

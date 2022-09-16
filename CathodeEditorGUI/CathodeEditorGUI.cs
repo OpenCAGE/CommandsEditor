@@ -1,4 +1,5 @@
 using CATHODE;
+using CATHODE.Assets;
 using CATHODE.Commands;
 using CATHODE.LEGACY;
 using CATHODE.Misc;
@@ -159,8 +160,10 @@ namespace CathodeEditorGUI
                 CurrentInstance.modelDB = new CathodeModels(baseLevelPath + "RENDERABLE/MODELS_LEVEL.BIN",
                                                             baseLevelPath + "RENDERABLE/LEVEL_MODELS.PAK");
                 CurrentInstance.materialDB = new MaterialDatabase(baseLevelPath + "RENDERABLE/LEVEL_MODELS.MTL");
-                CurrentInstance.textureDB = new CathodeTextures(baseLevelPath + "RENDERABLE/LEVEL_TEXTURES.ALL.PAK",
-                                                                baseLevelPath + "RENDERABLE/LEVEL_TEXTURE_HEADERS.ALL.BIN");
+                CurrentInstance.textureDB = new Textures(baseLevelPath + "RENDERABLE/LEVEL_TEXTURES.ALL.PAK");
+                CurrentInstance.textureDB.Load();
+                CurrentInstance.textureDB_Global = new Textures(SharedData.pathToAI + "/DATA/ENV/GLOBAL/WORLD/GLOBAL_TEXTURES.ALL.PAK");
+                CurrentInstance.textureDB_Global.Load();
             }
             catch { } //Can fail if we're loading a PAK outside the game structure
 

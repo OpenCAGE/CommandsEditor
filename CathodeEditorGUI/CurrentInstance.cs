@@ -1,4 +1,5 @@
-﻿using CATHODE.Commands;
+﻿using CATHODE.Assets;
+using CATHODE.Commands;
 using CATHODE.LEGACY;
 using CATHODE.Misc;
 using System;
@@ -21,6 +22,7 @@ namespace CathodeEditorGUI
         //Chonky assets - don't keep these loaded all the time
         public static CathodeModels modelDB;
         public static MaterialDatabase materialDB;
-        public static CathodeTextures textureDB;
+        public static Textures textureDB;
+        public static Textures textureDB_Global;
     }
 }
