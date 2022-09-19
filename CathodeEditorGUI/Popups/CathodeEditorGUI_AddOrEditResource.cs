@@ -17,22 +17,21 @@ namespace CathodeEditorGUI
 {
     public partial class CathodeEditorGUI_AddOrEditResource : Form
     {
-        CathodeEntity _ent = null;
-        CathodeComposite _flow = null;
-        List<CathodeResourceReference> resRef = new List<CathodeResourceReference>(); //FOR TESTING ONLY
+        public CathodeEntity EditEntity = null;
+        public CathodeComposite EditComposite = null;
+
+        private ShortGuid resourceParamID = ShortGuidUtils.Generate("resource");
+        private int current_ui_offset = 7;
+
+        private bool hasResourceParams = false;
+        private bool isEditingEntity { get { return EditEntity != null; } }
+
         public CathodeEditorGUI_AddOrEditResource(CathodeEntity entity, CathodeComposite composite)
         {
             InitializeComponent();
             this.Text += " - " + EditorUtils.GenerateEntityName(entity, composite);
             
-            _ent = entity;
-
-            //FOR TESTING ONLY
-            resRef.AddRange(_ent.resources);
-            ShortGuid resourceParamID = ShortGuidUtils.Generate("resource");
-            CathodeLoadedParameter resourceParam = CurrentInstance.selectedEntity.parameters.FirstOrDefault(o => o.shortGUID == resourceParamID);
-            if (resourceParam != null) resRef.AddRange(((CathodeResource)resourceParam.content).value);
-
+            EditEntity = entity;
             Setup();
         }
         public CathodeEditorGUI_AddOrEditResource(CathodeComposite flowgraph)
@@ -40,11 +39,7 @@ namespace CathodeEditorGUI
             InitializeComponent();
             this.Text += " - " + flowgraph.name;
             
-            _flow = flowgraph;
-
-            //FOR TESTING ONLY
-            resRef.AddRange(_flow.resources);
-
+            EditComposite = flowgraph;
             Setup();
         }
 
@@ -52,46 +47,102 @@ namespace CathodeEditorGUI
         {
             string baseLevelPath = CurrentInstance.commandsPAK.Filepath.Substring(0, CurrentInstance.commandsPAK.Filepath.Length - ("WORLD/COMMANDS.PAK").Length);
 
-            RenderableElementsDatabase db = new RenderableElementsDatabase(baseLevelPath + "WORLD/REDS.BIN");
-            Models models = new Models(baseLevelPath + "RENDERABLE/LEVEL_MODELS.PAK"); models.Load();
-            MaterialDatabase materials = new MaterialDatabase(baseLevelPath + "RENDERABLE/LEVEL_MODELS.MTL");
+            current_ui_offset = 7;
+            resource_panel.Controls.Clear();
 
-            int current_ui_offset = 7;
-            for (int i = 0; i < resRef.Count; i++)
+            List<CathodeResourceReference> resRefs = (isEditingEntity) ? EditEntity.resources : EditComposite.resources;
+            PopulateWithResourceRefs(resRefs);
+
+            //Entities can also have a resource parameter that links resources
+            if (isEditingEntity)
             {
-                GroupBox resourceGroup = new GroupBox();
-                resourceGroup.Text = resRef[i].entryType.ToString();
-                resourceGroup.Height = 30; //TEMP
-                resourceGroup.Width = 850; //TEMP
-                switch (resRef[i].entryType)
+                CathodeLoadedParameter resourceParam = EditEntity.parameters.FirstOrDefault(o => o.shortGUID == resourceParamID);
+                if (resourceParam != null)
+                {
+                    hasResourceParams = true;
+                    PopulateWithResourceRefs(((CathodeResource)resourceParam.content).value);
+                }
+            }
+        }
+
+        private void PopulateWithResourceRefs(List<CathodeResourceReference> resRefs)
+        {
+            for (int i = 0; i < resRefs.Count; i++)
+            {
+                ResourceUserControl resourceGroup = new ResourceUserControl();
+                switch (resRefs[i].entryType)
                 {
                     case CathodeResourceReferenceType.RENDERABLE_INSTANCE:
-                        for (int x = resRef[i].startIndex; x < resRef[i].startIndex + resRef[i].count; x++)
+                        //Convert model BIN index from REDs to PAK index
+                        int pakModelIndex = -1;
+                        for (int y = 0; y < CurrentInstance.modelDB.Models.Count; y++)
                         {
-                            RenderableElementsDatabase.RenderableElement e = db.RenderableElements[x];
-
-                            GUI_Resource_RenderableInstance ui = new GUI_Resource_RenderableInstance();
-                            ui.PopulateUI(e.ModelIndex, e.MaterialLibraryIndex);
-                            ui.Location = new Point(15, 20 + ((ui.Height + 6) * (x - resRef[i].startIndex)));
-                            resourceGroup.Controls.Add(ui);
-
-                            resourceGroup.Height += ui.Height + 20;
-                            resourceGroup.Width = ui.Width + 30;
-
-                            /*
-                            MessageBox.Show("Model: " + models.GetModelNameByIndex(e.ModelIndex) + "\n" +
-                                            "Submesh: " + models.GetModelSubmeshNameByIndex(e.ModelIndex) + "\n" +
-                                            "Size: " + models.GetModelByIndex(e.ModelIndex).BlockSize + "\n" +
-                                            "Material: " + materials.MaterialNames[e.MaterialLibraryIndex] + "\n" +
-                                            "Additional Nums: " + e.ModelLODIndex + " " + e.ModelLODPrimitiveCount);
-                            */
+                            for (int z = 0; z < CurrentInstance.modelDB.Models[y].Submeshes.Count; z++)
+                            {
+                                if (CurrentInstance.modelDB.Models[y].Submeshes[z].binIndex == CurrentInstance.redsDB.RenderableElements[resRefs[i].startIndex].ModelIndex)
+                                {
+                                    pakModelIndex = y;
+                                    break;
+                                }
+                            }
+                            if (pakModelIndex != -1) break;
                         }
+
+                        //Get all remapped materials from REDs
+                        List<int> modelMaterialIndexes = new List<int>();
+                        for (int y = 0; y < resRefs[i].count; y++)
+                            modelMaterialIndexes.Add(CurrentInstance.redsDB.RenderableElements[resRefs[i].startIndex + y].MaterialLibraryIndex);
+
+                        GUI_Resource_RenderableInstance ui = new GUI_Resource_RenderableInstance();
+                        ui.PopulateUI(pakModelIndex, modelMaterialIndexes);
+                        resourceGroup = ui;
                         break;
                 }
+                resourceGroup.ResourceReference = resRefs[i];
                 resourceGroup.Location = new Point(15, current_ui_offset);
                 current_ui_offset += resourceGroup.Height + 6;
                 resource_panel.Controls.Add(resourceGroup);
             }
+        }
+
+        private void SaveChanges_Click(object sender, EventArgs e)
+        {
+            List<CathodeResourceReference> newResourceReferences = new List<CathodeResourceReference>();
+            List<CathodeResourceReference> newResourceReferencesAsParams = new List<CathodeResourceReference>();
+            for (int i = 0; i < resource_panel.Controls.Count; i++)
+            {
+                CathodeResourceReference resourceRef = ((ResourceUserControl)resource_panel.Controls[i]).ResourceReference;
+                switch (resourceRef.entryType)
+                {
+                    case CathodeResourceReferenceType.RENDERABLE_INSTANCE:
+                        GUI_Resource_RenderableInstance ui = (GUI_Resource_RenderableInstance)resource_panel.Controls[i];
+                        resourceRef.count = ui.SelectedMaterialIndexes.Count;
+                        resourceRef.startIndex = CurrentInstance.redsDB.RenderableElements.Count;
+                        for (int y = 0; y < ui.SelectedMaterialIndexes.Count; y++)
+                        {
+                            RenderableElementsDatabase.RenderableElement newRed = new RenderableElementsDatabase.RenderableElement();
+                            newRed.ModelIndex = CurrentInstance.modelDB.Models[ui.SelectedModelIndex].Submeshes[y].binIndex;
+                            newRed.MaterialLibraryIndex = ui.SelectedMaterialIndexes[y];
+                            CurrentInstance.redsDB.RenderableElements.Add(newRed);
+                        }
+                        break;
+                }
+                if (((ResourceUserControl)resource_panel.Controls[i]).IsFromParams)
+                    newResourceReferencesAsParams.Add(resourceRef);
+                else
+                    newResourceReferences.Add(resourceRef);
+            }
+
+
+            if (EditEntity != null)
+            {
+                EditEntity.resources = newResourceReferences;
+                if (hasResourceParams) ((CathodeResource)EditEntity.parameters.FirstOrDefault(o => o.shortGUID == resourceParamID).content).value = newResourceReferencesAsParams;
+            }
+            if (EditComposite != null)
+                EditComposite.resources = newResourceReferences;
+
+            this.Close();
         }
     }
 }

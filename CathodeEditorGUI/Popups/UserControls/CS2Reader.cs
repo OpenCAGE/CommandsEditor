@@ -206,6 +206,7 @@ namespace CathodeEditorGUI.Popups.UserControls
                 if (InVertices.Count == 0) continue;
 
                 Material material = HelixToolkit.Wpf.Materials.Yellow;
+                /*
                 MaterialTextureReference[] textures = CurrentInstance.materialDB.Materials[Model.MaterialLibraryIndex].TextureReferences;
                 if (textures.Length > 0)
                 {
@@ -236,6 +237,7 @@ namespace CathodeEditorGUI.Popups.UserControls
                         catch { }
                     }
                 }
+                */
 
                 modelGroup.Children.Add(new GeometryModel3D
                 {

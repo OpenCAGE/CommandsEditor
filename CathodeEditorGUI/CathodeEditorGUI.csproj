@@ -199,6 +199,12 @@
     <Compile Include="Popups\UserControls\GUI_Resource_RenderableInstance.Designer.cs">
       <DependentUpon>GUI_Resource_RenderableInstance.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\UserControls\ResourceUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Popups\UserControls\ResourceUserControl.Designer.cs">
+      <DependentUpon>ResourceUserControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TreeUtility.cs" />

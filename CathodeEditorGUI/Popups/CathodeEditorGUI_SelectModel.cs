@@ -18,6 +18,9 @@ namespace CathodeEditorGUI
         GUI_ModelViewer modelViewer = null;
         TreeUtility treeHelper;
 
+        public int SelectedIndelIndex = -1;
+        public List<int> SelectedModelMaterialIndexes = new List<int>();
+
         public CathodeEditorGUI_SelectModel(int defaultModelIndex = -1)
         {
             InitializeComponent();
@@ -28,12 +31,8 @@ namespace CathodeEditorGUI
 
             for (int i = 0; i < CurrentInstance.modelDB.Models.Count; i++)
             {
-                //We always just pull the name of the first submesh as they'll all be the same (or at least should be)
-                int binIndex = CurrentInstance.modelDB.Models[i].Submeshes[0].binIndex;
-                if (CurrentInstance.modelDB.modelBIN.ModelLODPartNames[binIndex] == "")
-                    allModelFileNames.Add(CurrentInstance.modelDB.modelBIN.ModelFilePaths[binIndex]);
-                else
-                    allModelFileNames.Add(CurrentInstance.modelDB.modelBIN.ModelFilePaths[binIndex] + "/" + CurrentInstance.modelDB.modelBIN.ModelLODPartNames[binIndex]);
+                //We always just pull the name of the first submesh as they'll all be the same
+                allModelFileNames.Add(GenerateNodeTag(i));
                 allModelTagsNames.Add(i.ToString());
             }
             treeHelper.UpdateFileTree(allModelFileNames, null, allModelTagsNames);
@@ -41,8 +40,46 @@ namespace CathodeEditorGUI
             modelViewer = new GUI_ModelViewer();
             modelRendererHost.Child = modelViewer;
 
-            if (defaultModelIndex != -1) 
-                ShowModel(defaultModelIndex);
+            if (defaultModelIndex != -1)
+                SelectModelNode(defaultModelIndex);
+        }
+
+        private string GenerateNodeTag(int pakIndex)
+        {
+            //We always just pull the name of the first submesh as they'll all be the same
+            int binIndex = CurrentInstance.modelDB.Models[pakIndex].Submeshes[0].binIndex;
+            if (CurrentInstance.modelDB.modelBIN.ModelLODPartNames[binIndex] == "")
+                return CurrentInstance.modelDB.modelBIN.ModelFilePaths[binIndex];
+            else
+                return CurrentInstance.modelDB.modelBIN.ModelFilePaths[binIndex] + "/" + CurrentInstance.modelDB.modelBIN.ModelLODPartNames[binIndex];
+        }
+
+        private void SelectModelNode(int pakIndex)
+        {
+            string thisTag = GenerateNodeTag(pakIndex);
+            string[] FileNameParts = thisTag.Split('/');
+            if (FileNameParts.Length == 1) { FileNameParts = thisTag.Split('\\'); }
+            FileTree.SelectedNode = null;
+
+            TreeNodeCollection nodeCollection = FileTree.Nodes;
+            for (int x = 0; x < FileNameParts.Length; x++)
+            {
+                for (int i = 0; i < nodeCollection.Count; i++)
+                {
+                    if (nodeCollection[i].Text == FileNameParts[x])
+                    {
+                        if (x == FileNameParts.Length - 1)
+                        {
+                            FileTree.SelectedNode = nodeCollection[i];
+                        }
+                        else
+                        {
+                            nodeCollection = nodeCollection[i].Nodes;
+                        }
+                        break;
+                    }
+                }
+            }
         }
 
         private void FileTree_AfterSelect(object sender, TreeViewEventArgs e)
@@ -53,11 +90,11 @@ namespace CathodeEditorGUI
             ShowModel(index);
         }
 
-        private void ShowModel(int index)
+        private void ShowModel(int pakIndex)
         {
             //This renders all submeshes within the model index!!
-            modelViewer.ShowModel(index);
-            int binIndex = CurrentInstance.modelDB.Models[index].Submeshes[0].binIndex;
+            modelViewer.ShowModel(pakIndex);
+            int binIndex = CurrentInstance.modelDB.Models[pakIndex].Submeshes[0].binIndex;
             modelPreviewArea.Text = CurrentInstance.modelDB.modelBIN.ModelFilePaths[binIndex];
             if (CurrentInstance.modelDB.modelBIN.ModelLODPartNames[binIndex] != "")
                 modelPreviewArea.Text += " -> [" + CurrentInstance.modelDB.modelBIN.ModelLODPartNames[binIndex] + "]";
@@ -65,7 +102,11 @@ namespace CathodeEditorGUI
 
         private void selectModel_Click(object sender, EventArgs e)
         {
-
+            SelectedIndelIndex = Convert.ToInt32(((TreeItem)FileTree.SelectedNode.Tag).String_Value);
+            SelectedModelMaterialIndexes.Clear();
+            for (int i = 0; i < CurrentInstance.modelDB.Models[SelectedIndelIndex].Header.SubmeshCount; i++)
+                SelectedModelMaterialIndexes.Add(CurrentInstance.modelDB.modelBIN.Models[CurrentInstance.modelDB.Models[SelectedIndelIndex].Submeshes[i].binIndex].MaterialLibraryIndex);
+            this.Close();
         }
     }
 }

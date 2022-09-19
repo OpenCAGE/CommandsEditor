@@ -14,45 +14,47 @@ using CATHODE.LEGACY;
 
 namespace CathodeEditorGUI.Popups.UserControls
 {
-    public partial class GUI_Resource_RenderableInstance : UserControl
+    public partial class GUI_Resource_RenderableInstance : ResourceUserControl
     {
-        int ModelIndex, MaterialIndex;
+        public int SelectedModelIndex;
+        public List<int> SelectedMaterialIndexes = new List<int>();
 
         public GUI_Resource_RenderableInstance()
         {
             InitializeComponent();
         }
 
-        public void PopulateUI(int modelIndex, int materialIndex)
+        public void PopulateUI(int modelIndex, List<int> materialIndexes)
         {
-            modelInfoTextbox.Text = CurrentInstance.modelDB.modelBIN.ModelFilePaths[modelIndex];
-            if (CurrentInstance.modelDB.modelBIN.ModelLODPartNames[modelIndex] != "")
-                modelInfoTextbox.Text += " -> [" + CurrentInstance.modelDB.modelBIN.ModelLODPartNames[modelIndex] + "]";
-            materialInfoTextbox.Text = CurrentInstance.materialDB.MaterialNames[materialIndex];
+            SelectedModelIndex = modelIndex;
+            SelectedMaterialIndexes = materialIndexes;
 
-            //TODO: IS THIS RENDERABLE INSTANCE JUST ALL THE SUBMESHES OF THE ONE PAK MODEL? IF SO, CAN'T WE SHOW IT AS SUCH?
+            int binIndex = CurrentInstance.modelDB.Models[modelIndex].Submeshes[0].binIndex;
+            modelInfoTextbox.Text = CurrentInstance.modelDB.modelBIN.ModelFilePaths[binIndex];
+            if (CurrentInstance.modelDB.modelBIN.ModelLODPartNames[binIndex] != "")
+                modelInfoTextbox.Text += " -> [" + CurrentInstance.modelDB.modelBIN.ModelLODPartNames[binIndex] + "]";
 
-            //We are passed the BIN INDEX here, so look it up in the PAK & get the model we're a submesh for so we can render the whole thing later!
-            ModelIndex = -1;
-            for (int i = 0; i < CurrentInstance.modelDB.Models.Count; i++)
+            materials.Items.Clear();
+            for (int i = 0; i < materialIndexes.Count; i++)
             {
-                for (int x = 0; x < CurrentInstance.modelDB.Models[i].Submeshes.Count; x++)
-                {
-                    if (CurrentInstance.modelDB.Models[i].Submeshes[x].binIndex == modelIndex)
-                    {
-                        ModelIndex = i;
-                        break;
-                    }
-                }
-                if (ModelIndex != -1) break;
+                materials.Items.Add(CurrentInstance.materialDB.MaterialNames[materialIndexes[i]]);
             }
-            MaterialIndex = materialIndex;
         }
 
         private void editModel_Click(object sender, EventArgs e)
         {
-            CathodeEditorGUI_SelectModel modelthing = new CathodeEditorGUI_SelectModel(ModelIndex);
+            CathodeEditorGUI_SelectModel modelthing = new CathodeEditorGUI_SelectModel(SelectedModelIndex);
             modelthing.Show();
+            modelthing.FormClosed += Modelthing_FormClosed;
+        }
+        private void Modelthing_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            this.BringToFront();
+            this.Focus();
+
+            CathodeEditorGUI_SelectModel modelthing = (CathodeEditorGUI_SelectModel)sender;
+            if (modelthing.SelectedIndelIndex == -1 || modelthing.SelectedModelMaterialIndexes.Count == 0) return;
+            PopulateUI(modelthing.SelectedIndelIndex, modelthing.SelectedModelMaterialIndexes);
         }
 
         private void editMaterial_Click(object sender, EventArgs e)

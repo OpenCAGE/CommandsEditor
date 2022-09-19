@@ -24,5 +24,6 @@ namespace CathodeEditorGUI
         public static MaterialDatabase materialDB;
         public static Textures textureDB;
         public static Textures textureDB_Global;
+        public static RenderableElementsDatabase redsDB;
     }
 }

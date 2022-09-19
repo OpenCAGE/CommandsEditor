@@ -159,6 +159,7 @@ namespace CathodeEditorGUI
                 string baseLevelPath = CurrentInstance.commandsPAK.Filepath.Substring(0, CurrentInstance.commandsPAK.Filepath.Length - ("WORLD/COMMANDS.PAK").Length);
                 CurrentInstance.modelDB = new CathodeModels(baseLevelPath + "RENDERABLE/MODELS_LEVEL.BIN",
                                                             baseLevelPath + "RENDERABLE/LEVEL_MODELS.PAK");
+                CurrentInstance.redsDB = new RenderableElementsDatabase(baseLevelPath + "WORLD/REDS.BIN");
                 CurrentInstance.materialDB = new MaterialDatabase(baseLevelPath + "RENDERABLE/LEVEL_MODELS.MTL");
                 CurrentInstance.textureDB = new Textures(baseLevelPath + "RENDERABLE/LEVEL_TEXTURES.ALL.PAK");
                 CurrentInstance.textureDB.Load();
@@ -236,6 +237,9 @@ namespace CathodeEditorGUI
                 }
                 if (mvr.FilePath != "") mvr.Save();
             }
+
+            if (CurrentInstance.redsDB != null && CurrentInstance.redsDB.RenderableElements != null)
+                CurrentInstance.redsDB.Save();
 
             Cursor.Current = Cursors.Default;
         }
