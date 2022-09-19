@@ -43,23 +43,38 @@ namespace CathodeEditorGUI.Popups.UserControls
 
         private void editModel_Click(object sender, EventArgs e)
         {
-            CathodeEditorGUI_SelectModel modelthing = new CathodeEditorGUI_SelectModel(SelectedModelIndex);
-            modelthing.Show();
-            modelthing.FormClosed += Modelthing_FormClosed;
+            CathodeEditorGUI_SelectModel selectModel = new CathodeEditorGUI_SelectModel(SelectedModelIndex);
+            selectModel.Show();
+            selectModel.FormClosed += SelectModel_FormClosed;
         }
-        private void Modelthing_FormClosed(object sender, FormClosedEventArgs e)
+        private void SelectModel_FormClosed(object sender, FormClosedEventArgs e)
         {
             this.BringToFront();
             this.Focus();
 
-            CathodeEditorGUI_SelectModel modelthing = (CathodeEditorGUI_SelectModel)sender;
-            if (modelthing.SelectedIndelIndex == -1 || modelthing.SelectedModelMaterialIndexes.Count == 0) return;
-            PopulateUI(modelthing.SelectedIndelIndex, modelthing.SelectedModelMaterialIndexes);
+            CathodeEditorGUI_SelectModel selectModel = (CathodeEditorGUI_SelectModel)sender;
+            if (selectModel.SelectedIndelIndex == -1 || selectModel.SelectedModelMaterialIndexes.Count == 0) return;
+            PopulateUI(selectModel.SelectedIndelIndex, selectModel.SelectedModelMaterialIndexes);
         }
 
         private void editMaterial_Click(object sender, EventArgs e)
         {
+            if (materials.SelectedIndex == -1) return;
 
+            CathodeEditorGUI_SelectMaterial selectMaterial = new CathodeEditorGUI_SelectMaterial(materials.SelectedIndex, SelectedMaterialIndexes[materials.SelectedIndex]);
+            selectMaterial.Show();
+            selectMaterial.FormClosed += SelectMaterial_FormClosed;
+        }
+        private void SelectMaterial_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            this.BringToFront();
+            this.Focus();
+
+            CathodeEditorGUI_SelectMaterial selectMaterial = (CathodeEditorGUI_SelectMaterial)sender;
+            if (selectMaterial.SelectedMaterialIndex == -1) return;
+            SelectedMaterialIndexes[selectMaterial.MaterialIndexToEdit] = selectMaterial.SelectedMaterialIndex;
+            PopulateUI(SelectedModelIndex, SelectedMaterialIndexes);
+            materials.SelectedIndex = selectMaterial.MaterialIndexToEdit;
         }
     }
 }

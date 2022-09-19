@@ -183,6 +183,12 @@
     <Compile Include="Popups\CathodeEditorGUI_RenameEntity.Designer.cs">
       <DependentUpon>CathodeEditorGUI_RenameEntity.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\CathodeEditorGUI_SelectMaterial.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\CathodeEditorGUI_SelectMaterial.Designer.cs">
+      <DependentUpon>CathodeEditorGUI_SelectMaterial.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popups\CathodeEditorGUI_SelectModel.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -295,6 +301,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\CathodeEditorGUI_RenameEntity.resx">
       <DependentUpon>CathodeEditorGUI_RenameEntity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\CathodeEditorGUI_SelectMaterial.resx">
+      <DependentUpon>CathodeEditorGUI_SelectMaterial.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\CathodeEditorGUI_SelectModel.resx">
       <DependentUpon>CathodeEditorGUI_SelectModel.cs</DependentUpon>
