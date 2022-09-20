@@ -205,6 +205,12 @@
     <Compile Include="Popups\UserControls\GUI_Resource_RenderableInstance.Designer.cs">
       <DependentUpon>GUI_Resource_RenderableInstance.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\UserControls\GUI_Resource_TempPlaceholder.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Popups\UserControls\GUI_Resource_TempPlaceholder.Designer.cs">
+      <DependentUpon>GUI_Resource_TempPlaceholder.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popups\UserControls\ResourceUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -310,6 +316,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\UserControls\GUI_Resource_RenderableInstance.resx">
       <DependentUpon>GUI_Resource_RenderableInstance.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\UserControls\GUI_Resource_TempPlaceholder.resx">
+      <DependentUpon>GUI_Resource_TempPlaceholder.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

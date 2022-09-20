@@ -1170,6 +1170,17 @@ namespace CathodeEditorGUI
 
         private void button3_Click(object sender, EventArgs e)
         {
+            for (int i = 0; i < CurrentInstance.redsDB.RenderableElements.Count; i++)
+            {
+                CurrentInstance.redsDB.RenderableElements[i].ModelIndex = 100;
+                CurrentInstance.redsDB.RenderableElements[i].MaterialLibraryIndex = 100;
+
+                CurrentInstance.redsDB.RenderableElements[i].ModelLODIndex = -1;
+                CurrentInstance.redsDB.RenderableElements[i].ModelLODPrimitiveCount = 0;
+            }
+            CurrentInstance.redsDB.Save();
+            return;
+
             CathodeEditorGUI_SelectModel modelthing = new CathodeEditorGUI_SelectModel();
             modelthing.Show();
             return;

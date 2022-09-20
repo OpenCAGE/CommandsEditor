@@ -97,6 +97,11 @@ namespace CathodeEditorGUI
                         ui.PopulateUI(pakModelIndex, modelMaterialIndexes);
                         resourceGroup = ui;
                         break;
+                    default:
+                        GUI_Resource_TempPlaceholder ui2 = new GUI_Resource_TempPlaceholder();
+                        ui2.PopulateUI(resRefs[i].entryType.ToString());
+                        resourceGroup = ui2;
+                        break;
                 }
                 resourceGroup.ResourceReference = resRefs[i];
                 resourceGroup.Location = new Point(15, current_ui_offset);
