@@ -153,7 +153,7 @@ namespace CathodeEditorGUI
                 return;
             }
 
-            //Load assets (expensive! look at doing this elsewhere)
+            //Load assets (expensive! look at doing this elsewhere - thread it?)
             try
             {
                 string baseLevelPath = CurrentInstance.commandsPAK.Filepath.Substring(0, CurrentInstance.commandsPAK.Filepath.Length - ("WORLD/COMMANDS.PAK").Length);
@@ -166,7 +166,16 @@ namespace CathodeEditorGUI
                 CurrentInstance.textureDB_Global = new Textures(SharedData.pathToAI + "/DATA/ENV/GLOBAL/WORLD/GLOBAL_TEXTURES.ALL.PAK");
                 CurrentInstance.textureDB_Global.Load();
             }
-            catch { } //Can fail if we're loading a PAK outside the game structure
+            catch
+            {
+                //Can fail if we're loading a PAK outside the game structure
+                MessageBox.Show("Failed to load asset PAKs!\nAre you opening a Commands PAK outside of a map directory?\nResource editing disabled.", "Resource editing disabled.", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                CurrentInstance.modelDB = null;
+                CurrentInstance.redsDB = null;
+                CurrentInstance.materialDB = null;
+                CurrentInstance.textureDB = null;
+                CurrentInstance.textureDB_Global = null;
+            } 
 
             //Begin caching entity names so we don't have to keep generating them
             CurrentInstance.compositeLookup = new EntityNameLookup(CurrentInstance.commandsPAK);
@@ -523,7 +532,8 @@ namespace CathodeEditorGUI
             composite_content.EndUpdate();
 
 #if DEBUG //TODO: PULL THIS INTO STABLE
-            editCompositeResources.Visible = true;
+            if (CurrentInstance.textureDB != null)
+                editCompositeResources.Visible = true;
 #endif
 
             groupBox1.Text = entry.name;
@@ -830,7 +840,8 @@ namespace CathodeEditorGUI
             ShortGuid resourceParamID = ShortGuidUtils.Generate("resource");
             CathodeLoadedParameter resourceParam = CurrentInstance.selectedEntity.parameters.FirstOrDefault(o => o.shortGUID == resourceParamID);
 #if DEBUG //TODO: PULL THIS INTO STABLE
-            editEntityResources.Visible = ((resourceParam != null) || CurrentInstance.selectedEntity.resources.Count != 0);
+            if (CurrentInstance.textureDB != null)
+                editEntityResources.Visible = ((resourceParam != null) || CurrentInstance.selectedEntity.resources.Count != 0);
 #endif
 
             //sort parameters by type, to improve visibility in UI
@@ -1172,11 +1183,11 @@ namespace CathodeEditorGUI
         {
             for (int i = 0; i < CurrentInstance.redsDB.RenderableElements.Count; i++)
             {
-                CurrentInstance.redsDB.RenderableElements[i].ModelIndex = 100;
-                CurrentInstance.redsDB.RenderableElements[i].MaterialLibraryIndex = 100;
+                //CurrentInstance.redsDB.RenderableElements[i].ModelIndex = 100;
+                CurrentInstance.redsDB.RenderableElements[i].MaterialLibraryIndex -= 1;
 
-                CurrentInstance.redsDB.RenderableElements[i].ModelLODIndex = -1;
-                CurrentInstance.redsDB.RenderableElements[i].ModelLODPrimitiveCount = 0;
+                //CurrentInstance.redsDB.RenderableElements[i].ModelLODIndex = -1;
+                //CurrentInstance.redsDB.RenderableElements[i].ModelLODPrimitiveCount = 0;
             }
             CurrentInstance.redsDB.Save();
             return;
