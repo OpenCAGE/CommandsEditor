@@ -177,6 +177,19 @@ namespace CathodeEditorGUI
                 CurrentInstance.textureDB_Global = null;
             } 
 
+            //Load mover descriptors
+            try
+            {
+                string baseLevelPath = CurrentInstance.commandsPAK.Filepath.Substring(0, CurrentInstance.commandsPAK.Filepath.Length - ("WORLD/COMMANDS.PAK").Length);
+                CurrentInstance.moverDB = new MoverDatabase(baseLevelPath + "WORLD/MODELS.MVR");
+            }
+            catch
+            {
+                //Can fail if we're loading a MVR outside the game structure
+                MessageBox.Show("Failed to load mover descriptor database!\nAre you opening a Commands PAK outside of a map directory?\nMVR editing disabled.", "MVR editing disabled.", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                CurrentInstance.moverDB = null;
+            }
+
             //Begin caching entity names so we don't have to keep generating them
             CurrentInstance.compositeLookup = new EntityNameLookup(CurrentInstance.commandsPAK);
             if (currentBackgroundCacher != null) currentBackgroundCacher.Dispose();
@@ -1181,6 +1194,10 @@ namespace CathodeEditorGUI
 
         private void button3_Click(object sender, EventArgs e)
         {
+            CathodeEditorGUI_EditMVR mvrEditor = new CathodeEditorGUI_EditMVR();
+            mvrEditor.Show();
+            return;
+
             for (int i = 0; i < CurrentInstance.redsDB.RenderableElements.Count; i++)
             {
                 //CurrentInstance.redsDB.RenderableElements[i].ModelIndex = 100;

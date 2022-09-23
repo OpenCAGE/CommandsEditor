@@ -159,6 +159,12 @@
     <Compile Include="Popups\CathodeEditorGUI_EditHierarchy.Designer.cs">
       <DependentUpon>CathodeEditorGUI_EditHierarchy.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\CathodeEditorGUI_EditMVR.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\CathodeEditorGUI_EditMVR.Designer.cs">
+      <DependentUpon>CathodeEditorGUI_EditMVR.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popups\CathodeEditorGUI_EditRootComposite.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -295,6 +301,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\CathodeEditorGUI_EditHierarchy.resx">
       <DependentUpon>CathodeEditorGUI_EditHierarchy.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\CathodeEditorGUI_EditMVR.resx">
+      <DependentUpon>CathodeEditorGUI_EditMVR.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\CathodeEditorGUI_EditRootComposite.resx">
       <DependentUpon>CathodeEditorGUI_EditRootComposite.cs</DependentUpon>

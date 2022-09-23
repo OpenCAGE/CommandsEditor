@@ -12,14 +12,18 @@ namespace CathodeEditorGUI
 {
     public static class CurrentInstance
     {
+        //Level descriptors & scripting
         public static CommandsPAK commandsPAK;
+        public static MoverDatabase moverDB;
 
+        //Helpers
         public static EntityNameLookup compositeLookup;
 
+        //Scripting state info
         public static CathodeComposite selectedComposite;
         public static CathodeEntity selectedEntity;
 
-        //Chonky assets - don't keep these loaded all the time
+        //Assets and various DBs
         public static CathodeModels modelDB;
         public static MaterialDatabase materialDB;
         public static Textures textureDB;

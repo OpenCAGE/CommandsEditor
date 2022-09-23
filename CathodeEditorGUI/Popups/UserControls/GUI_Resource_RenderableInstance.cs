@@ -24,12 +24,12 @@ namespace CathodeEditorGUI.Popups.UserControls
             InitializeComponent();
         }
 
-        public void PopulateUI(int modelIndex, List<int> materialIndexes)
+        public void PopulateUI(int modelIndexPAK, List<int> materialIndexes)
         {
-            SelectedModelIndex = modelIndex;
+            SelectedModelIndex = modelIndexPAK;
             SelectedMaterialIndexes = materialIndexes;
 
-            int binIndex = CurrentInstance.modelDB.Models[modelIndex].Submeshes[0].binIndex;
+            int binIndex = CurrentInstance.modelDB.Models[modelIndexPAK].Submeshes[0].binIndex;
             modelInfoTextbox.Text = CurrentInstance.modelDB.modelBIN.ModelFilePaths[binIndex];
             if (CurrentInstance.modelDB.modelBIN.ModelLODPartNames[binIndex] != "")
                 modelInfoTextbox.Text += " -> [" + CurrentInstance.modelDB.modelBIN.ModelLODPartNames[binIndex] + "]";
