@@ -39,6 +39,7 @@
             this.FileTree = new System.Windows.Forms.TreeView();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.editTriggerSequence = new System.Windows.Forms.Button();
+            this.editCAGEAnimationKeyframes = new System.Windows.Forms.Button();
             this.editCompositeResources = new System.Windows.Forms.Button();
             this.editEntityResources = new System.Windows.Forms.Button();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
@@ -52,7 +53,6 @@
             this.label4 = new System.Windows.Forms.Label();
             this.selected_entity_id = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.editCAGEAnimationKeyframes = new System.Windows.Forms.Button();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.showLinkParents = new System.Windows.Forms.Button();
             this.removeSelectedLink = new System.Windows.Forms.Button();
@@ -84,6 +84,7 @@
             this.modifyMVR = new System.Windows.Forms.CheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.button3 = new System.Windows.Forms.Button();
+            this.editEntityMovers = new System.Windows.Forms.Button();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -165,6 +166,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.editEntityMovers);
             this.groupBox1.Controls.Add(this.editTriggerSequence);
             this.groupBox1.Controls.Add(this.editCAGEAnimationKeyframes);
             this.groupBox1.Controls.Add(this.editCompositeResources);
@@ -190,6 +192,17 @@
             this.editTriggerSequence.UseVisualStyleBackColor = true;
             this.editTriggerSequence.Visible = false;
             this.editTriggerSequence.Click += new System.EventHandler(this.editTriggerSequence_Click);
+            // 
+            // editCAGEAnimationKeyframes
+            // 
+            this.editCAGEAnimationKeyframes.Location = new System.Drawing.Point(729, 121);
+            this.editCAGEAnimationKeyframes.Name = "editCAGEAnimationKeyframes";
+            this.editCAGEAnimationKeyframes.Size = new System.Drawing.Size(121, 23);
+            this.editCAGEAnimationKeyframes.TabIndex = 175;
+            this.editCAGEAnimationKeyframes.Text = "Edit CAGEAnimation";
+            this.editCAGEAnimationKeyframes.UseVisualStyleBackColor = true;
+            this.editCAGEAnimationKeyframes.Visible = false;
+            this.editCAGEAnimationKeyframes.Click += new System.EventHandler(this.editCAGEAnimationKeyframes_Click);
             // 
             // editCompositeResources
             // 
@@ -324,17 +337,6 @@
             this.label1.Size = new System.Drawing.Size(62, 13);
             this.label1.TabIndex = 0;
             this.label1.Text = "Node ID: ";
-            // 
-            // editCAGEAnimationKeyframes
-            // 
-            this.editCAGEAnimationKeyframes.Location = new System.Drawing.Point(729, 121);
-            this.editCAGEAnimationKeyframes.Name = "editCAGEAnimationKeyframes";
-            this.editCAGEAnimationKeyframes.Size = new System.Drawing.Size(121, 23);
-            this.editCAGEAnimationKeyframes.TabIndex = 175;
-            this.editCAGEAnimationKeyframes.Text = "Edit CAGEAnimation";
-            this.editCAGEAnimationKeyframes.UseVisualStyleBackColor = true;
-            this.editCAGEAnimationKeyframes.Visible = false;
-            this.editCAGEAnimationKeyframes.Click += new System.EventHandler(this.editCAGEAnimationKeyframes_Click);
             // 
             // groupBox5
             // 
@@ -666,6 +668,17 @@
             this.button3.Visible = false;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
+            // editEntityMovers
+            // 
+            this.editEntityMovers.Location = new System.Drawing.Point(520, 121);
+            this.editEntityMovers.Name = "editEntityMovers";
+            this.editEntityMovers.Size = new System.Drawing.Size(99, 23);
+            this.editEntityMovers.TabIndex = 179;
+            this.editEntityMovers.Text = "Edit Movers";
+            this.editEntityMovers.UseVisualStyleBackColor = true;
+            this.editEntityMovers.Visible = false;
+            this.editEntityMovers.Click += new System.EventHandler(this.editEntityMovers_Click);
+            // 
             // CathodeEditorGUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -754,5 +767,6 @@
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Button button6;
         private System.Windows.Forms.TextBox hierarchyDisplay;
+        private System.Windows.Forms.Button editEntityMovers;
     }
 }

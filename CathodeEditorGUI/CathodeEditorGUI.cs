@@ -107,6 +107,7 @@ namespace CathodeEditorGUI
                 editTriggerSequence.Visible = false;
                 editCAGEAnimationKeyframes.Visible = false;
                 editEntityResources.Visible = false;
+                editEntityMovers.Visible = false;
                 renameSelectedNode.Enabled = true;
                 duplicateSelectedNode.Enabled = true;
             }
@@ -249,12 +250,12 @@ namespace CathodeEditorGUI
                     */
                     MOVER_DESCRIPTOR mover = mvr.Movers[i];
                     //This is a **TEMP** hack!
-                    mover.Transform = 
+                    mover.transform = 
                         System.Numerics.Matrix4x4.CreateScale(new System.Numerics.Vector3(0, 0, 0)) * 
                         System.Numerics.Matrix4x4.CreateFromQuaternion(System.Numerics.Quaternion.Identity) * 
                         System.Numerics.Matrix4x4.CreateTranslation(new System.Numerics.Vector3(-9999.0f, -9999.0f, -9999.0f));
-                    mover.MoverFlags = 6;
-                    mover.NodeID = new ShortGuid("00-00-00-00");
+                    mover.instanceTypeFlags = 6;
+                    mover.commandsNodeID = new ShortGuid("00-00-00-00");
                     mvr.Movers[i] = mover;
                 }
                 if (mvr.FilePath != "") mvr.Save();
@@ -855,6 +856,8 @@ namespace CathodeEditorGUI
 #if DEBUG //TODO: PULL THIS INTO STABLE
             if (CurrentInstance.textureDB != null)
                 editEntityResources.Visible = ((resourceParam != null) || CurrentInstance.selectedEntity.resources.Count != 0);
+            if (CurrentInstance.moverDB != null && CurrentInstance.moverDB.Movers.FindAll(o => o.commandsNodeID == CurrentInstance.selectedEntity.shortGUID).Count != 0)
+                editEntityMovers.Visible = true;
 #endif
 
             //sort parameters by type, to improve visibility in UI
@@ -1028,12 +1031,24 @@ namespace CathodeEditorGUI
         /* Edit resources referenced by the entity */
         private void editEntityResources_Click(object sender, EventArgs e)
         {
-            //CurrentInstance.currentEntity - .parameters.FirstOrDefault("resources") - .resources
             CathodeEditorGUI_AddOrEditResource resourceEditor = new CathodeEditorGUI_AddOrEditResource(CurrentInstance.selectedEntity, CurrentInstance.selectedComposite);
             resourceEditor.Show();
             resourceEditor.FormClosed += ResourceEditor_FormClosed;
         }
         private void ResourceEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            this.BringToFront();
+            this.Focus();
+        }
+
+        /* Edit mover instances of this entity */
+        private void editEntityMovers_Click(object sender, EventArgs e)
+        {
+            CathodeEditorGUI_EditMVR moverEditor = new CathodeEditorGUI_EditMVR(CurrentInstance.selectedEntity.shortGUID);
+            moverEditor.Show();
+            moverEditor.FormClosed += MoverEditor_FormClosed;
+        }
+        private void MoverEditor_FormClosed(object sender, FormClosedEventArgs e)
         {
             this.BringToFront();
             this.Focus();
@@ -1077,13 +1092,13 @@ namespace CathodeEditorGUI
                 //EnvironmentMapBINIndex
                 //IsThisTypeID
 
-                thisMvr.Transform = 
+                thisMvr.transform = 
                     System.Numerics.Matrix4x4.CreateScale(new System.Numerics.Vector3(0,0,0)) * 
                     System.Numerics.Matrix4x4.CreateFromQuaternion(System.Numerics.Quaternion.Identity) * 
                     System.Numerics.Matrix4x4.CreateTranslation(new System.Numerics.Vector3(-9999.0f, -9999.0f, -9999.0f));
                 //mvr.IsThisTypeID = MoverType.DYNAMIC_MODEL;
-                thisMvr.MoverFlags = 6;
-                thisMvr.NodeID = new ShortGuid("00-00-00-00");
+                thisMvr.instanceTypeFlags = 6;
+                thisMvr.commandsNodeID = new ShortGuid("00-00-00-00");
 
                 //mvr.Unknowns5_ = new Vector4(0, 0, 0, 0);
 
@@ -1154,7 +1169,7 @@ namespace CathodeEditorGUI
             mvr.Save();
 
             mvr = new MoverDatabase(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\ENV\PRODUCTION\BSP_TORRENS\WORLD\MODELS.MVR");
-            mvr.Movers.RemoveAll(o => o.NodeID != new ShortGuid(0));
+            mvr.Movers.RemoveAll(o => o.commandsNodeID != new ShortGuid(0));
             mvr.Save();
 
             Application.Exit();
