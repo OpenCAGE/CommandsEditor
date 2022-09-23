@@ -102,5 +102,33 @@ namespace CathodeEditorGUI
                 LoopedNodeCollection.Add(FileNode);
             }
         }
+
+        /* Select a node in the tree based on the path */
+        public void SelectNode(string path)
+        {
+            string[] FileNameParts = path.Split('/');
+            if (FileNameParts.Length == 1) { FileNameParts = path.Split('\\'); }
+            FileTree.SelectedNode = null;
+
+            TreeNodeCollection nodeCollection = FileTree.Nodes;
+            for (int x = 0; x < FileNameParts.Length; x++)
+            {
+                for (int i = 0; i < nodeCollection.Count; i++)
+                {
+                    if (nodeCollection[i].Text == FileNameParts[x])
+                    {
+                        if (x == FileNameParts.Length - 1)
+                        {
+                            FileTree.SelectedNode = nodeCollection[i];
+                        }
+                        else
+                        {
+                            nodeCollection = nodeCollection[i].Nodes;
+                        }
+                        break;
+                    }
+                }
+            }
+        }
     }
 }

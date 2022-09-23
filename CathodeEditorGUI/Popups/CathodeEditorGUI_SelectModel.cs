@@ -57,29 +57,7 @@ namespace CathodeEditorGUI
         private void SelectModelNode(int pakIndex)
         {
             string thisTag = GenerateNodeTag(pakIndex);
-            string[] FileNameParts = thisTag.Split('/');
-            if (FileNameParts.Length == 1) { FileNameParts = thisTag.Split('\\'); }
-            FileTree.SelectedNode = null;
-
-            TreeNodeCollection nodeCollection = FileTree.Nodes;
-            for (int x = 0; x < FileNameParts.Length; x++)
-            {
-                for (int i = 0; i < nodeCollection.Count; i++)
-                {
-                    if (nodeCollection[i].Text == FileNameParts[x])
-                    {
-                        if (x == FileNameParts.Length - 1)
-                        {
-                            FileTree.SelectedNode = nodeCollection[i];
-                        }
-                        else
-                        {
-                            nodeCollection = nodeCollection[i].Nodes;
-                        }
-                        break;
-                    }
-                }
-            }
+            treeHelper.SelectNode(thisTag);
         }
 
         private void FileTree_AfterSelect(object sender, TreeViewEventArgs e)

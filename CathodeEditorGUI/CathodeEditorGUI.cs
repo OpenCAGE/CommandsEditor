@@ -9,6 +9,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -58,13 +59,17 @@ namespace CathodeEditorGUI
                 }
             }
 
+            ClearUI(true, true, true);
+
 #if DEBUG
+            /*
             button1.Visible = true;
             button2.Visible = true;
             button3.Visible = true;
             button4.Visible = true;
             button5.Visible = true;
             button6.Visible = true;
+            */
 #endif
         }
 
@@ -94,8 +99,7 @@ namespace CathodeEditorGUI
             if (clear_parameter_list)
             {
                 CurrentInstance.selectedEntity = null;
-                selected_entity_id.Text = "";
-                selected_entity_type.Text = "";
+                entityInfoGroup.Text = "Selected Entity Info";
                 selected_entity_type_description.Text = "";
                 selected_entity_name.Text = "";
                 for (int i = 0; i < entity_params.Controls.Count; i++) 
@@ -104,12 +108,12 @@ namespace CathodeEditorGUI
                 entity_children.Items.Clear();
                 currentlyShowingChildLinks = true;
                 jumpToComposite.Visible = false;
-                editTriggerSequence.Visible = false;
-                editCAGEAnimationKeyframes.Visible = false;
-                editEntityResources.Visible = false;
-                editEntityMovers.Visible = false;
+                editFunction.Enabled = false;
+                editEntityResources.Enabled = false;
+                editEntityMovers.Enabled = false;
                 renameSelectedNode.Enabled = true;
                 duplicateSelectedNode.Enabled = true;
+                hierarchyDisplay.Visible = false;
             }
         }
 
@@ -203,7 +207,7 @@ namespace CathodeEditorGUI
             RefreshStatsUI();
 
             //Load root composite
-            LoadComposite(CurrentInstance.commandsPAK.EntryPoints[0].name);
+            treeHelper.SelectNode(CurrentInstance.commandsPAK.EntryPoints[0].name);
         }
         private void load_commands_pak_Click(object sender, EventArgs e)
         {
@@ -804,9 +808,7 @@ namespace CathodeEditorGUI
             Cursor.Current = Cursors.WaitCursor;
 
             //populate info labels
-            selected_entity_id.Text = entity.shortGUID.ToString();
-            selected_entity_type.Text = entity.variant.ToString();
-            hierarchyDisplay.Visible = false;
+            entityInfoGroup.Text = "Selected " + CultureInfo.CurrentCulture.TextInfo.ToTitleCase(entity.variant.ToString().ToLower().Replace('_', ' ')) + " Info";
             string description = "";
             switch (entity.variant)
             {
@@ -822,9 +824,8 @@ namespace CathodeEditorGUI
                     if (funcComposite == null)
                     {
                         CathodeFunctionType function = CommandsUtils.GetFunctionType(thisFunction);
-                        editTriggerSequence.Visible = function == CathodeFunctionType.TriggerSequence;
 #if DEBUG //TODO: PULL THIS INTO STABLE
-                        editCAGEAnimationKeyframes.Visible = function == CathodeFunctionType.CAGEAnimation;
+                        editFunction.Enabled = function == CathodeFunctionType.CAGEAnimation || function == CathodeFunctionType.TriggerSequence;
 #endif
                     }
                     break;
@@ -855,9 +856,9 @@ namespace CathodeEditorGUI
             CathodeLoadedParameter resourceParam = CurrentInstance.selectedEntity.parameters.FirstOrDefault(o => o.shortGUID == resourceParamID);
 #if DEBUG //TODO: PULL THIS INTO STABLE
             if (CurrentInstance.textureDB != null)
-                editEntityResources.Visible = ((resourceParam != null) || CurrentInstance.selectedEntity.resources.Count != 0);
+                editEntityResources.Enabled = ((resourceParam != null) || CurrentInstance.selectedEntity.resources.Count != 0);
             if (CurrentInstance.moverDB != null && CurrentInstance.moverDB.Movers.FindAll(o => o.commandsNodeID == CurrentInstance.selectedEntity.shortGUID).Count != 0)
-                editEntityMovers.Visible = true;
+                editEntityMovers.Enabled = true;
 #endif
 
             //sort parameters by type, to improve visibility in UI
@@ -1002,27 +1003,26 @@ namespace CathodeEditorGUI
             this.Focus();
         }
 
-        /* Edit a TriggerSequence */
-        private void editTriggerSequence_Click(object sender, EventArgs e)
+        /* Edit function entity (CAGEAnimation/TriggerSequence) */
+        private void editFunction_Click(object sender, EventArgs e)
         {
-            TriggerSequenceEditor keyframeEditor = new TriggerSequenceEditor((TriggerSequence)CurrentInstance.selectedEntity);
-            keyframeEditor.Show();
-            keyframeEditor.FormClosed += KeyframeEditor_FormClosed;
+            if (CurrentInstance.selectedEntity.variant != EntityVariant.FUNCTION) return;
+            string function = ShortGuidUtils.FindString(((FunctionEntity)CurrentInstance.selectedEntity).function);
+            switch (function.ToUpper())
+            {
+                case "CAGEANIMATION":
+                    CAGEAnimationEditor cageAnimationEditor = new CAGEAnimationEditor((CAGEAnimation)CurrentInstance.selectedEntity);
+                    cageAnimationEditor.Show();
+                    cageAnimationEditor.FormClosed += FunctionEditor_FormClosed;
+                    break;
+                case "TRIGGERSEQUENCE":
+                    TriggerSequenceEditor triggerSequenceEditor = new TriggerSequenceEditor((TriggerSequence)CurrentInstance.selectedEntity);
+                    triggerSequenceEditor.Show();
+                    triggerSequenceEditor.FormClosed += FunctionEditor_FormClosed;
+                    break;
+            }
         }
-        private void KeyframeEditor_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            this.BringToFront();
-            this.Focus();
-        }
-
-        /* Edit CAGEAnimation keyframes */
-        private void editCAGEAnimationKeyframes_Click(object sender, EventArgs e)
-        {
-            CAGEAnimationEditor keyframeEditor = new CAGEAnimationEditor((CAGEAnimation)CurrentInstance.selectedEntity);
-            keyframeEditor.Show();
-            keyframeEditor.FormClosed += KeyframeEditor_FormClosed1;
-        }
-        private void KeyframeEditor_FormClosed1(object sender, FormClosedEventArgs e)
+        private void FunctionEditor_FormClosed(object sender, FormClosedEventArgs e)
         {
             this.BringToFront();
             this.Focus();

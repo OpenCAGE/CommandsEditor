@@ -38,21 +38,16 @@
             this.addNewFlowgraph = new System.Windows.Forms.Button();
             this.FileTree = new System.Windows.Forms.TreeView();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.editTriggerSequence = new System.Windows.Forms.Button();
-            this.editCAGEAnimationKeyframes = new System.Windows.Forms.Button();
+            this.editEntityMovers = new System.Windows.Forms.Button();
             this.editCompositeResources = new System.Windows.Forms.Button();
             this.editEntityResources = new System.Windows.Forms.Button();
-            this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.entityInfoGroup = new System.Windows.Forms.GroupBox();
             this.hierarchyDisplay = new System.Windows.Forms.TextBox();
             this.jumpToComposite = new System.Windows.Forms.Button();
             this.selected_entity_name = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.selected_entity_type_description = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.selected_entity_type = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.selected_entity_id = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.showLinkParents = new System.Windows.Forms.Button();
             this.removeSelectedLink = new System.Windows.Forms.Button();
@@ -71,6 +66,7 @@
             this.removeParameter = new System.Windows.Forms.Button();
             this.addNewParameter = new System.Windows.Forms.Button();
             this.entity_params = new System.Windows.Forms.Panel();
+            this.editFunction = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.load_commands_pak = new System.Windows.Forms.Button();
             this.env_list = new System.Windows.Forms.ComboBox();
@@ -84,10 +80,9 @@
             this.modifyMVR = new System.Windows.Forms.CheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.button3 = new System.Windows.Forms.Button();
-            this.editEntityMovers = new System.Windows.Forms.Button();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            this.groupBox7.SuspendLayout();
+            this.entityInfoGroup.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -167,14 +162,13 @@
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.editEntityMovers);
-            this.groupBox1.Controls.Add(this.editTriggerSequence);
-            this.groupBox1.Controls.Add(this.editCAGEAnimationKeyframes);
             this.groupBox1.Controls.Add(this.editCompositeResources);
             this.groupBox1.Controls.Add(this.editEntityResources);
-            this.groupBox1.Controls.Add(this.groupBox7);
+            this.groupBox1.Controls.Add(this.entityInfoGroup);
             this.groupBox1.Controls.Add(this.groupBox5);
             this.groupBox1.Controls.Add(this.groupBox4);
             this.groupBox1.Controls.Add(this.groupBox2);
+            this.groupBox1.Controls.Add(this.editFunction);
             this.groupBox1.Location = new System.Drawing.Point(392, 55);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(857, 744);
@@ -182,27 +176,15 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Selected Composite Content";
             // 
-            // editTriggerSequence
+            // editEntityMovers
             // 
-            this.editTriggerSequence.Location = new System.Drawing.Point(729, 121);
-            this.editTriggerSequence.Name = "editTriggerSequence";
-            this.editTriggerSequence.Size = new System.Drawing.Size(121, 23);
-            this.editTriggerSequence.TabIndex = 178;
-            this.editTriggerSequence.Text = "Edit TriggerSequence";
-            this.editTriggerSequence.UseVisualStyleBackColor = true;
-            this.editTriggerSequence.Visible = false;
-            this.editTriggerSequence.Click += new System.EventHandler(this.editTriggerSequence_Click);
-            // 
-            // editCAGEAnimationKeyframes
-            // 
-            this.editCAGEAnimationKeyframes.Location = new System.Drawing.Point(729, 121);
-            this.editCAGEAnimationKeyframes.Name = "editCAGEAnimationKeyframes";
-            this.editCAGEAnimationKeyframes.Size = new System.Drawing.Size(121, 23);
-            this.editCAGEAnimationKeyframes.TabIndex = 175;
-            this.editCAGEAnimationKeyframes.Text = "Edit CAGEAnimation";
-            this.editCAGEAnimationKeyframes.UseVisualStyleBackColor = true;
-            this.editCAGEAnimationKeyframes.Visible = false;
-            this.editCAGEAnimationKeyframes.Click += new System.EventHandler(this.editCAGEAnimationKeyframes_Click);
+            this.editEntityMovers.Location = new System.Drawing.Point(469, 94);
+            this.editEntityMovers.Name = "editEntityMovers";
+            this.editEntityMovers.Size = new System.Drawing.Size(121, 23);
+            this.editEntityMovers.TabIndex = 179;
+            this.editEntityMovers.Text = "Edit Movers";
+            this.editEntityMovers.UseVisualStyleBackColor = true;
+            this.editEntityMovers.Click += new System.EventHandler(this.editEntityMovers_Click);
             // 
             // editCompositeResources
             // 
@@ -217,47 +199,42 @@
             // 
             // editEntityResources
             // 
-            this.editEntityResources.Location = new System.Drawing.Point(625, 121);
+            this.editEntityResources.Location = new System.Drawing.Point(600, 94);
             this.editEntityResources.Name = "editEntityResources";
-            this.editEntityResources.Size = new System.Drawing.Size(99, 23);
+            this.editEntityResources.Size = new System.Drawing.Size(121, 23);
             this.editEntityResources.TabIndex = 176;
             this.editEntityResources.Text = "Edit Resources";
             this.editEntityResources.UseVisualStyleBackColor = true;
-            this.editEntityResources.Visible = false;
             this.editEntityResources.Click += new System.EventHandler(this.editEntityResources_Click);
             // 
-            // groupBox7
+            // entityInfoGroup
             // 
-            this.groupBox7.Controls.Add(this.hierarchyDisplay);
-            this.groupBox7.Controls.Add(this.jumpToComposite);
-            this.groupBox7.Controls.Add(this.selected_entity_name);
-            this.groupBox7.Controls.Add(this.label9);
-            this.groupBox7.Controls.Add(this.selected_entity_type_description);
-            this.groupBox7.Controls.Add(this.label6);
-            this.groupBox7.Controls.Add(this.selected_entity_type);
-            this.groupBox7.Controls.Add(this.label4);
-            this.groupBox7.Controls.Add(this.selected_entity_id);
-            this.groupBox7.Controls.Add(this.label1);
-            this.groupBox7.Location = new System.Drawing.Point(469, 19);
-            this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(382, 105);
-            this.groupBox7.TabIndex = 151;
-            this.groupBox7.TabStop = false;
-            this.groupBox7.Text = "Selected Entity Info";
+            this.entityInfoGroup.Controls.Add(this.hierarchyDisplay);
+            this.entityInfoGroup.Controls.Add(this.jumpToComposite);
+            this.entityInfoGroup.Controls.Add(this.selected_entity_name);
+            this.entityInfoGroup.Controls.Add(this.label9);
+            this.entityInfoGroup.Controls.Add(this.selected_entity_type_description);
+            this.entityInfoGroup.Controls.Add(this.label6);
+            this.entityInfoGroup.Location = new System.Drawing.Point(469, 19);
+            this.entityInfoGroup.Name = "entityInfoGroup";
+            this.entityInfoGroup.Size = new System.Drawing.Size(382, 69);
+            this.entityInfoGroup.TabIndex = 151;
+            this.entityInfoGroup.TabStop = false;
+            this.entityInfoGroup.Text = "Selected Entity Info";
             // 
             // hierarchyDisplay
             // 
-            this.hierarchyDisplay.Location = new System.Drawing.Point(10, 76);
+            this.hierarchyDisplay.Location = new System.Drawing.Point(6, 37);
             this.hierarchyDisplay.Name = "hierarchyDisplay";
             this.hierarchyDisplay.ReadOnly = true;
-            this.hierarchyDisplay.Size = new System.Drawing.Size(364, 20);
+            this.hierarchyDisplay.Size = new System.Drawing.Size(323, 20);
             this.hierarchyDisplay.TabIndex = 9;
             // 
             // jumpToComposite
             // 
-            this.jumpToComposite.Location = new System.Drawing.Point(339, 15);
+            this.jumpToComposite.Location = new System.Drawing.Point(335, 15);
             this.jumpToComposite.Name = "jumpToComposite";
-            this.jumpToComposite.Size = new System.Drawing.Size(35, 47);
+            this.jumpToComposite.Size = new System.Drawing.Size(39, 45);
             this.jumpToComposite.TabIndex = 8;
             this.jumpToComposite.Text = "Go To";
             this.jumpToComposite.UseVisualStyleBackColor = true;
@@ -267,7 +244,7 @@
             // selected_entity_name
             // 
             this.selected_entity_name.AutoSize = true;
-            this.selected_entity_name.Location = new System.Drawing.Point(86, 63);
+            this.selected_entity_name.Location = new System.Drawing.Point(54, 22);
             this.selected_entity_name.Name = "selected_entity_name";
             this.selected_entity_name.Size = new System.Drawing.Size(0, 13);
             this.selected_entity_name.TabIndex = 7;
@@ -276,16 +253,16 @@
             // 
             this.label9.AutoSize = true;
             this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.Location = new System.Drawing.Point(7, 63);
+            this.label9.Location = new System.Drawing.Point(9, 22);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(81, 13);
+            this.label9.Size = new System.Drawing.Size(47, 13);
             this.label9.TabIndex = 6;
-            this.label9.Text = "Node Name: ";
+            this.label9.Text = "Name: ";
             // 
             // selected_entity_type_description
             // 
             this.selected_entity_type_description.AutoSize = true;
-            this.selected_entity_type_description.Location = new System.Drawing.Point(151, 80);
+            this.selected_entity_type_description.Location = new System.Drawing.Point(54, 41);
             this.selected_entity_type_description.Name = "selected_entity_type_description";
             this.selected_entity_type_description.Size = new System.Drawing.Size(0, 13);
             this.selected_entity_type_description.TabIndex = 5;
@@ -294,49 +271,11 @@
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(7, 79);
+            this.label6.Location = new System.Drawing.Point(13, 40);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(141, 13);
+            this.label6.Size = new System.Drawing.Size(39, 13);
             this.label6.TabIndex = 4;
-            this.label6.Text = "Node Type Description:";
-            // 
-            // selected_entity_type
-            // 
-            this.selected_entity_type.AutoSize = true;
-            this.selected_entity_type.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.selected_entity_type.Location = new System.Drawing.Point(83, 38);
-            this.selected_entity_type.Name = "selected_entity_type";
-            this.selected_entity_type.Size = new System.Drawing.Size(0, 13);
-            this.selected_entity_type.TabIndex = 3;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(7, 38);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(73, 13);
-            this.label4.TabIndex = 2;
-            this.label4.Text = "Node Type:";
-            // 
-            // selected_entity_id
-            // 
-            this.selected_entity_id.AutoSize = true;
-            this.selected_entity_id.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.selected_entity_id.Location = new System.Drawing.Point(69, 22);
-            this.selected_entity_id.Name = "selected_entity_id";
-            this.selected_entity_id.Size = new System.Drawing.Size(0, 13);
-            this.selected_entity_id.TabIndex = 1;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(7, 22);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(62, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Node ID: ";
+            this.label6.Text = "Type:";
             // 
             // groupBox5
             // 
@@ -491,16 +430,16 @@
             this.groupBox2.Controls.Add(this.removeParameter);
             this.groupBox2.Controls.Add(this.addNewParameter);
             this.groupBox2.Controls.Add(this.entity_params);
-            this.groupBox2.Location = new System.Drawing.Point(469, 130);
+            this.groupBox2.Location = new System.Drawing.Point(469, 123);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(382, 464);
+            this.groupBox2.Size = new System.Drawing.Size(382, 471);
             this.groupBox2.TabIndex = 147;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Selected Entity Parameters";
             // 
             // removeParameter
             // 
-            this.removeParameter.Location = new System.Drawing.Point(193, 434);
+            this.removeParameter.Location = new System.Drawing.Point(193, 440);
             this.removeParameter.Name = "removeParameter";
             this.removeParameter.Size = new System.Drawing.Size(184, 23);
             this.removeParameter.TabIndex = 150;
@@ -510,7 +449,7 @@
             // 
             // addNewParameter
             // 
-            this.addNewParameter.Location = new System.Drawing.Point(6, 434);
+            this.addNewParameter.Location = new System.Drawing.Point(6, 440);
             this.addNewParameter.Name = "addNewParameter";
             this.addNewParameter.Size = new System.Drawing.Size(184, 23);
             this.addNewParameter.TabIndex = 149;
@@ -523,8 +462,18 @@
             this.entity_params.AutoScroll = true;
             this.entity_params.Location = new System.Drawing.Point(6, 20);
             this.entity_params.Name = "entity_params";
-            this.entity_params.Size = new System.Drawing.Size(371, 408);
+            this.entity_params.Size = new System.Drawing.Size(371, 414);
             this.entity_params.TabIndex = 0;
+            // 
+            // editFunction
+            // 
+            this.editFunction.Location = new System.Drawing.Point(730, 94);
+            this.editFunction.Name = "editFunction";
+            this.editFunction.Size = new System.Drawing.Size(121, 23);
+            this.editFunction.TabIndex = 178;
+            this.editFunction.Text = "Edit Function";
+            this.editFunction.UseVisualStyleBackColor = true;
+            this.editFunction.Click += new System.EventHandler(this.editFunction_Click);
             // 
             // button1
             // 
@@ -668,17 +617,6 @@
             this.button3.Visible = false;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
-            // editEntityMovers
-            // 
-            this.editEntityMovers.Location = new System.Drawing.Point(520, 121);
-            this.editEntityMovers.Name = "editEntityMovers";
-            this.editEntityMovers.Size = new System.Drawing.Size(99, 23);
-            this.editEntityMovers.TabIndex = 179;
-            this.editEntityMovers.Text = "Edit Movers";
-            this.editEntityMovers.UseVisualStyleBackColor = true;
-            this.editEntityMovers.Visible = false;
-            this.editEntityMovers.Click += new System.EventHandler(this.editEntityMovers_Click);
-            // 
             // CathodeEditorGUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -698,8 +636,8 @@
             this.Load += new System.EventHandler(this.CathodeEditorGUI_Load);
             this.groupBox3.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
-            this.groupBox7.ResumeLayout(false);
-            this.groupBox7.PerformLayout();
+            this.entityInfoGroup.ResumeLayout(false);
+            this.entityInfoGroup.PerformLayout();
             this.groupBox5.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
@@ -719,14 +657,10 @@
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.TreeView FileTree;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.GroupBox groupBox7;
+        private System.Windows.Forms.GroupBox entityInfoGroup;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label selected_entity_type_description;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label selected_entity_type;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label selected_entity_id;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.ListBox entity_children;
         private System.Windows.Forms.GroupBox groupBox4;
@@ -753,14 +687,13 @@
         private System.Windows.Forms.Button showLinkParents;
         private System.Windows.Forms.CheckBox modifyMVR;
         private System.Windows.Forms.ToolTip toolTip1;
-        private System.Windows.Forms.Button editCAGEAnimationKeyframes;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button duplicateSelectedNode;
         private System.Windows.Forms.Button renameSelectedNode;
         private System.Windows.Forms.Button editEntityResources;
         private System.Windows.Forms.Button editCompositeResources;
         private System.Windows.Forms.Button editEntryPoint;
-        private System.Windows.Forms.Button editTriggerSequence;
+        private System.Windows.Forms.Button editFunction;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button4;
