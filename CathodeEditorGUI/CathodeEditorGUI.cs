@@ -124,76 +124,18 @@ namespace CathodeEditorGUI
             env_list.Invoke(new Action(() => { env_list.Enabled = shouldEnable; }));
         }
 
-        /* Load a COMMANDS.PAK into the editor */
+        /* Load a COMMANDS.PAK into the editor with additional stuff */
         Task currentBackgroundCacher = null;
         public void LoadCommandsPAK(string level)
         {
             //Reset UI
             ClearUI(true, true, true);
             EditorUtils.ResetHierarchyPurgeCache();
-            CurrentInstance.commandsPAK = null;
 
-            //Load
-            string path_to_ENV = SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + level;
-            try
-            {
-                CurrentInstance.commandsPAK = new CommandsPAK(path_to_ENV + "/WORLD/COMMANDS.PAK");
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show("Failed to load COMMANDS.PAK!\n" + e.Message, "Failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                CurrentInstance.commandsPAK = null;
-                return;
-            }
-
-            //Sanity check
-            if (!CurrentInstance.commandsPAK.Loaded)
-            {
-                MessageBox.Show("Failed to load COMMANDS.PAK!\nPlease place this executable in your Alien: Isolation folder.", "Environment error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-            else if (CurrentInstance.commandsPAK.EntryPoints[0] == null)
-            {
-                MessageBox.Show("Failed to load COMMANDS.PAK!\nPlease reset your game files.", "COMMANDS.PAK corrupted!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            //Load assets (expensive! look at doing this elsewhere - thread it?)
-            try
-            {
-                string baseLevelPath = CurrentInstance.commandsPAK.Filepath.Substring(0, CurrentInstance.commandsPAK.Filepath.Length - ("WORLD/COMMANDS.PAK").Length);
-                CurrentInstance.modelDB = new CathodeModels(baseLevelPath + "RENDERABLE/MODELS_LEVEL.BIN",
-                                                            baseLevelPath + "RENDERABLE/LEVEL_MODELS.PAK");
-                CurrentInstance.redsDB = new RenderableElementsDatabase(baseLevelPath + "WORLD/REDS.BIN");
-                CurrentInstance.materialDB = new MaterialDatabase(baseLevelPath + "RENDERABLE/LEVEL_MODELS.MTL");
-                CurrentInstance.textureDB = new Textures(baseLevelPath + "RENDERABLE/LEVEL_TEXTURES.ALL.PAK");
-                CurrentInstance.textureDB.Load();
-                CurrentInstance.textureDB_Global = new Textures(SharedData.pathToAI + "/DATA/ENV/GLOBAL/WORLD/GLOBAL_TEXTURES.ALL.PAK");
-                CurrentInstance.textureDB_Global.Load();
-            }
-            catch
-            {
-                //Can fail if we're loading a PAK outside the game structure
-                MessageBox.Show("Failed to load asset PAKs!\nAre you opening a Commands PAK outside of a map directory?\nResource editing disabled.", "Resource editing disabled.", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                CurrentInstance.modelDB = null;
-                CurrentInstance.redsDB = null;
-                CurrentInstance.materialDB = null;
-                CurrentInstance.textureDB = null;
-                CurrentInstance.textureDB_Global = null;
-            } 
-
-            //Load mover descriptors
-            try
-            {
-                string baseLevelPath = CurrentInstance.commandsPAK.Filepath.Substring(0, CurrentInstance.commandsPAK.Filepath.Length - ("WORLD/COMMANDS.PAK").Length);
-                CurrentInstance.moverDB = new MoverDatabase(baseLevelPath + "WORLD/MODELS.MVR");
-            }
-            catch
-            {
-                //Can fail if we're loading a MVR outside the game structure
-                MessageBox.Show("Failed to load mover descriptor database!\nAre you opening a Commands PAK outside of a map directory?\nMVR editing disabled.", "MVR editing disabled.", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                CurrentInstance.moverDB = null;
-            }
+            //Load everything
+            LoadCommands(level);
+            /*Task.Factory.StartNew(() => */LoadAssets()/*)*/;
+            /*Task.Factory.StartNew(() => */LoadMovers()/*)*/;
 
             //Begin caching entity names so we don't have to keep generating them
             CurrentInstance.compositeLookup = new EntityNameLookup(CurrentInstance.commandsPAK);
@@ -219,6 +161,78 @@ namespace CathodeEditorGUI
             composite_count_display.Text = "Composite count: " + CurrentInstance.commandsPAK.Composites.Count;
         }
 
+        /* Load commands */
+        private void LoadCommands(string level)
+        {
+            CurrentInstance.commandsPAK = null;
+
+            string path_to_ENV = SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + level;
+            try
+            {
+                CurrentInstance.commandsPAK = new CommandsPAK(path_to_ENV + "/WORLD/COMMANDS.PAK");
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Failed to load COMMANDS.PAK!\n" + e.Message, "Failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                CurrentInstance.commandsPAK = null;
+                return;
+            }
+
+            if (!CurrentInstance.commandsPAK.Loaded)
+            {
+                MessageBox.Show("Failed to load COMMANDS.PAK!\nPlease place this executable in your Alien: Isolation folder.", "Environment error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            else if (CurrentInstance.commandsPAK.EntryPoints[0] == null)
+            {
+                MessageBox.Show("Failed to load COMMANDS.PAK!\nPlease reset your game files.", "COMMANDS.PAK corrupted!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+        }
+
+        /* Load assets */
+        private void LoadAssets()
+        {
+            try
+            {
+                string baseLevelPath = CurrentInstance.commandsPAK.Filepath.Substring(0, CurrentInstance.commandsPAK.Filepath.Length - ("WORLD/COMMANDS.PAK").Length);
+                CurrentInstance.modelDB = new CathodeModels(baseLevelPath + "RENDERABLE/MODELS_LEVEL.BIN",
+                                                            baseLevelPath + "RENDERABLE/LEVEL_MODELS.PAK");
+                CurrentInstance.redsDB = new RenderableElementsDatabase(baseLevelPath + "WORLD/REDS.BIN");
+                CurrentInstance.materialDB = new MaterialDatabase(baseLevelPath + "RENDERABLE/LEVEL_MODELS.MTL");
+                CurrentInstance.textureDB = new Textures(baseLevelPath + "RENDERABLE/LEVEL_TEXTURES.ALL.PAK");
+                CurrentInstance.textureDB.Load();
+                CurrentInstance.textureDB_Global = new Textures(SharedData.pathToAI + "/DATA/ENV/GLOBAL/WORLD/GLOBAL_TEXTURES.ALL.PAK");
+                CurrentInstance.textureDB_Global.Load();
+            }
+            catch
+            {
+                //Can fail if we're loading a PAK outside the game structure
+                MessageBox.Show("Failed to load asset PAKs!\nAre you opening a Commands PAK outside of a map directory?\nResource editing disabled.", "Resource editing disabled.", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                CurrentInstance.modelDB = null;
+                CurrentInstance.redsDB = null;
+                CurrentInstance.materialDB = null;
+                CurrentInstance.textureDB = null;
+                CurrentInstance.textureDB_Global = null;
+            }
+        }
+
+        /* Load mover descriptors */
+        private void LoadMovers()
+        {
+            try
+            {
+                string baseLevelPath = CurrentInstance.commandsPAK.Filepath.Substring(0, CurrentInstance.commandsPAK.Filepath.Length - ("WORLD/COMMANDS.PAK").Length);
+                CurrentInstance.moverDB = new MoverDatabase(baseLevelPath + "WORLD/MODELS.MVR");
+            }
+            catch
+            {
+                //Can fail if we're loading a MVR outside the game structure
+                MessageBox.Show("Failed to load mover descriptor database!\nAre you opening a Commands PAK outside of a map directory?\nMVR editing disabled.", "MVR editing disabled.", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                CurrentInstance.moverDB = null;
+            }
+        }
+
         /* Save the current edits */
         public void SaveCommandsPAK()
         {
@@ -236,37 +250,11 @@ namespace CathodeEditorGUI
                 return;
             }
 
-            if (modifyMVR.Checked)
-            {
-                MoverDatabase mvr = new MoverDatabase(CurrentInstance.commandsPAK.Filepath.Replace("COMMANDS.PAK", "MODELS.MVR"));
-                for (int i = 0; i < mvr.Movers.Count; i++)
-                {
-                    /*
-                    if (mvr.Movers[i].IsThisTypeID == MoverType.STATIC_MODEL)
-                    {
-                        CathodeFlowgraph flowgraph = GetFlowgraphContainingNode(mvr.Movers[i].NodeID);
-                        if (flowgraph == null) continue;
-                        if (flowgraph.name.Contains("REQUIRED_ASSETS") && flowgraph.name.Contains("VFX")) continue;
-                        MoverEntry mover = mvr.Movers[i];
-                        mover.IsThisTypeID = MoverType.DYNAMIC_MODEL;
-                        mvr.Movers[i] = mover;
-                    }
-                    */
-                    MOVER_DESCRIPTOR mover = mvr.Movers[i];
-                    //This is a **TEMP** hack!
-                    mover.transform = 
-                        System.Numerics.Matrix4x4.CreateScale(new System.Numerics.Vector3(0, 0, 0)) * 
-                        System.Numerics.Matrix4x4.CreateFromQuaternion(System.Numerics.Quaternion.Identity) * 
-                        System.Numerics.Matrix4x4.CreateTranslation(new System.Numerics.Vector3(-9999.0f, -9999.0f, -9999.0f));
-                    mover.instanceTypeFlags = 6;
-                    mover.commandsNodeID = new ShortGuid("00-00-00-00");
-                    mvr.Movers[i] = mover;
-                }
-                if (mvr.FilePath != "") mvr.Save();
-            }
-
             if (CurrentInstance.redsDB != null && CurrentInstance.redsDB.RenderableElements != null)
                 CurrentInstance.redsDB.Save();
+
+            if (CurrentInstance.moverDB != null && CurrentInstance.moverDB.Movers != null)
+                CurrentInstance.moverDB.Save();
 
             Cursor.Current = Cursors.Default;
         }
@@ -550,7 +538,7 @@ namespace CathodeEditorGUI
             composite_content.EndUpdate();
 
 #if DEBUG //TODO: PULL THIS INTO STABLE
-            if (CurrentInstance.textureDB != null)
+            if (CurrentInstance.textureDB != null && entry.resources.Count != 0)
                 editCompositeResources.Visible = true;
 #endif
 

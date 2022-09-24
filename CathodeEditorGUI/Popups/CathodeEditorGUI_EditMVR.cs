@@ -16,9 +16,19 @@ namespace CathodeEditorGUI
 {
     public partial class CathodeEditorGUI_EditMVR : Form
     {
+        private int loadedMvrIndex = -1;
+        private ShortGuid filteredNodeID;
+
         public CathodeEditorGUI_EditMVR(ShortGuid nodeID = new ShortGuid())
         {
             InitializeComponent();
+
+            PopulateUI(nodeID);
+        }
+
+        private void PopulateUI(ShortGuid nodeID)
+        {
+            filteredNodeID = nodeID;
 
             listBox1.BeginUpdate();
             for (int i = 0; i < CurrentInstance.moverDB.Movers.Count; i++)
@@ -34,12 +44,14 @@ namespace CathodeEditorGUI
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
+            loadedMvrIndex = -1;
             if (listBox1.SelectedIndex == -1) return;
             LoadMVR(Convert.ToInt32(listBox1.SelectedItem.ToString()));
         }
 
         private void LoadMVR(int mvrIndex)
         {
+            loadedMvrIndex = mvrIndex;
             MOVER_DESCRIPTOR mvr = CurrentInstance.moverDB.Movers[mvrIndex];
 
             //Convert model BIN index from REDs to PAK index
@@ -72,8 +84,22 @@ namespace CathodeEditorGUI
             transformData.position = new CATHODE.Vector3(position.X, position.Y, position.Z);
             transform.PopulateUI(transformData, ShortGuidUtils.Generate("position"));
 
+            visibleInfo.Text = mvr.visibility.ToString();
+            typeInfo.Text = mvr.instanceTypeFlags.ToString();
             visible.Checked = (mvr.visibility == 1);
             //mvr.
+        }
+
+        private void saveMover_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void deleteMover_Click(object sender, EventArgs e)
+        {
+            if (loadedMvrIndex == -1) return;
+            CurrentInstance.moverDB.Movers.RemoveAt(loadedMvrIndex);
+            PopulateUI(filteredNodeID);
         }
     }
 }

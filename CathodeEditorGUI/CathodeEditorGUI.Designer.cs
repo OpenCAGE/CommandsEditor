@@ -77,7 +77,6 @@
             this.button2 = new System.Windows.Forms.Button();
             this.editEntryPoint = new System.Windows.Forms.Button();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
-            this.modifyMVR = new System.Windows.Forms.CheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.button3 = new System.Windows.Forms.Button();
             this.groupBox3.SuspendLayout();
@@ -472,6 +471,7 @@
             this.editFunction.Size = new System.Drawing.Size(121, 23);
             this.editFunction.TabIndex = 178;
             this.editFunction.Text = "Edit Function";
+            this.toolTip1.SetToolTip(this.editFunction, "Available on TriggerSequence and CAGEAnimation nodes");
             this.editFunction.UseVisualStyleBackColor = true;
             this.editFunction.Click += new System.EventHandler(this.editFunction_Click);
             // 
@@ -516,9 +516,9 @@
             this.groupBox8.Controls.Add(this.button1);
             this.groupBox8.Controls.Add(this.root_composite_display);
             this.groupBox8.Controls.Add(this.composite_count_display);
-            this.groupBox8.Location = new System.Drawing.Point(554, 3);
+            this.groupBox8.Location = new System.Drawing.Point(501, 3);
             this.groupBox8.Name = "groupBox8";
-            this.groupBox8.Size = new System.Drawing.Size(695, 49);
+            this.groupBox8.Size = new System.Drawing.Size(748, 49);
             this.groupBox8.TabIndex = 174;
             this.groupBox8.TabStop = false;
             // 
@@ -572,9 +572,9 @@
             // 
             // editEntryPoint
             // 
-            this.editEntryPoint.Location = new System.Drawing.Point(619, 9);
+            this.editEntryPoint.Location = new System.Drawing.Point(668, 14);
             this.editEntryPoint.Name = "editEntryPoint";
-            this.editEntryPoint.Size = new System.Drawing.Size(73, 23);
+            this.editEntryPoint.Size = new System.Drawing.Size(73, 25);
             this.editEntryPoint.TabIndex = 177;
             this.editEntryPoint.Text = "Edit Root";
             this.editEntryPoint.UseVisualStyleBackColor = true;
@@ -583,27 +583,13 @@
             // groupBox10
             // 
             this.groupBox10.Controls.Add(this.load_commands_pak);
-            this.groupBox10.Controls.Add(this.modifyMVR);
             this.groupBox10.Controls.Add(this.env_list);
             this.groupBox10.Controls.Add(this.save_commands_pak);
             this.groupBox10.Location = new System.Drawing.Point(8, 3);
             this.groupBox10.Name = "groupBox10";
-            this.groupBox10.Size = new System.Drawing.Size(540, 49);
+            this.groupBox10.Size = new System.Drawing.Size(487, 49);
             this.groupBox10.TabIndex = 175;
             this.groupBox10.TabStop = false;
-            // 
-            // modifyMVR
-            // 
-            this.modifyMVR.AutoSize = true;
-            this.modifyMVR.Location = new System.Drawing.Point(483, 13);
-            this.modifyMVR.Name = "modifyMVR";
-            this.modifyMVR.Size = new System.Drawing.Size(50, 30);
-            this.modifyMVR.TabIndex = 174;
-            this.modifyMVR.Text = "Clear\r\nMVR";
-            this.toolTip1.SetToolTip(this.modifyMVR, "HIGHLY EXPERIMENTAL! This option will clear the level\'s MVR file, which will remo" +
-        "ve any lingering geometry, but will likely cause unwanted issues in base-game le" +
-        "vels.");
-            this.modifyMVR.UseVisualStyleBackColor = true;
             // 
             // button3
             // 
@@ -645,7 +631,6 @@
             this.groupBox8.ResumeLayout(false);
             this.groupBox8.PerformLayout();
             this.groupBox10.ResumeLayout(false);
-            this.groupBox10.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -685,7 +670,6 @@
         private System.Windows.Forms.Button removeSelectedFlowgraph;
         private System.Windows.Forms.Button addNewFlowgraph;
         private System.Windows.Forms.Button showLinkParents;
-        private System.Windows.Forms.CheckBox modifyMVR;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button duplicateSelectedNode;
