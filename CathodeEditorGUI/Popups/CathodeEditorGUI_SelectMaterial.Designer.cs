@@ -43,7 +43,7 @@
             this.modelPreviewArea.Size = new System.Drawing.Size(298, 634);
             this.modelPreviewArea.TabIndex = 105;
             this.modelPreviewArea.TabStop = false;
-            this.modelPreviewArea.Text = "groupBox1";
+            this.modelPreviewArea.Text = "Preview";
             // 
             // selectMaterial
             // 

@@ -53,8 +53,11 @@ namespace CathodeEditorGUI
             LoadMVR(Convert.ToInt32(listBox1.SelectedItem.ToString()));
         }
 
+        CathodeTransform transformData = null;
+        private bool hasLoaded = false;
         private void LoadMVR(int mvrIndex)
         {
+            hasLoaded = false;
             loadedMvrIndex = mvrIndex;
             MOVER_DESCRIPTOR mvr = CurrentInstance.moverDB.Movers[loadedMvrIndex];
 
@@ -84,14 +87,13 @@ namespace CathodeEditorGUI
             Quaternion rotation;
             Vector3 position;
             Matrix4x4.Decompose(mvr.transform, out scale, out rotation, out position);
-            CathodeTransform transformData = new CathodeTransform();
-            transformData.position = new CATHODE.Vector3(position.X, position.Y, position.Z);
-            transform.PopulateUI(transformData, ShortGuidUtils.Generate("position"));
+            POS_X.Value = (decimal)position.X; POS_Y.Value = (decimal)position.Y; POS_Z.Value = (decimal)position.Z;
+            ROT_X.Value = (decimal)rotation.X; ROT_Y.Value = (decimal)rotation.Y; ROT_Z.Value = (decimal)rotation.Z; ROT_W.Value = (decimal)rotation.W;
+            SCALE_X.Value = (decimal)scale.X; SCALE_Y.Value = (decimal)scale.Y; SCALE_Z.Value = (decimal)scale.Z;
 
             visibleInfo.Text = mvr.visibility.ToString();
-            typeInfo.Text = mvr.instanceTypeFlags.ToString();
-            visible.Checked = (mvr.visibility == 1);
-            //mvr.
+            type_dropdown.SelectedItem = mvr.instanceTypeFlags.ToString();
+            hasLoaded = true;
         }
 
         private void saveMover_Click(object sender, EventArgs e)
@@ -111,11 +113,19 @@ namespace CathodeEditorGUI
 
         private void SaveMVR()
         {
-            if (loadedMvrIndex == -1) return;
+            if (!hasLoaded || loadedMvrIndex == -1) return;
 
             MOVER_DESCRIPTOR mvr = CurrentInstance.moverDB.Movers[loadedMvrIndex];
+
             mvr.renderableElementCount = (uint)renderable.SelectedMaterialIndexes.Count;
             mvr.renderableElementIndex = (uint)CurrentInstance.redsDB.RenderableElements.Count;
+
+            mvr.transform = Matrix4x4.CreateScale(new Vector3((float)SCALE_X.Value, (float)SCALE_Y.Value, (float)SCALE_Z.Value)) *
+                            Matrix4x4.CreateFromQuaternion(new Quaternion((float)ROT_W.Value, (float)ROT_X.Value, (float)ROT_Y.Value, (float)ROT_Z.Value)) *
+                            Matrix4x4.CreateTranslation(new Vector3((float)POS_X.Value, (float)POS_Y.Value, (float)POS_Z.Value));
+
+            mvr.instanceTypeFlags = (ushort)Convert.ToInt32(type_dropdown.SelectedItem.ToString());
+
             CurrentInstance.moverDB.Movers[loadedMvrIndex] = mvr;
 
             for (int y = 0; y < renderable.SelectedMaterialIndexes.Count; y++)
@@ -126,7 +136,8 @@ namespace CathodeEditorGUI
                 CurrentInstance.redsDB.RenderableElements.Add(newRed);
             }
 
-            MessageBox.Show("Saved changes for mover " + loadedMvrIndex + "!", "Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            Console.WriteLine("SAVED");
+            //MessageBox.Show("Saved changes for mover " + loadedMvrIndex + "!", "Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void deleteMover_Click(object sender, EventArgs e)
@@ -137,6 +148,61 @@ namespace CathodeEditorGUI
             CurrentInstance.moverDB.Movers[loadedMvrIndex] = CurrentInstance.moverDB.Movers[0];
 
             PopulateUI(filteredNodeID);
+        }
+
+        private void POS_X_ValueChanged(object sender, EventArgs e)
+        {
+            SaveMVR();
+        }
+
+        private void POS_Y_ValueChanged(object sender, EventArgs e)
+        {
+            SaveMVR();
+        }
+
+        private void POS_Z_ValueChanged(object sender, EventArgs e)
+        {
+            SaveMVR();
+        }
+
+        private void ROT_X_ValueChanged(object sender, EventArgs e)
+        {
+            SaveMVR();
+        }
+
+        private void ROT_Y_ValueChanged(object sender, EventArgs e)
+        {
+            SaveMVR();
+        }
+
+        private void ROT_Z_ValueChanged(object sender, EventArgs e)
+        {
+            SaveMVR();
+        }
+
+        private void ROT_W_ValueChanged(object sender, EventArgs e)
+        {
+            SaveMVR();
+        }
+
+        private void SCALE_X_ValueChanged(object sender, EventArgs e)
+        {
+            SaveMVR();
+        }
+
+        private void SCALE_Y_ValueChanged(object sender, EventArgs e)
+        {
+            SaveMVR();
+        }
+
+        private void SCALE_Z_ValueChanged(object sender, EventArgs e)
+        {
+            SaveMVR();
+        }
+
+        private void type_dropdown_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            SaveMVR();
         }
     }
 }

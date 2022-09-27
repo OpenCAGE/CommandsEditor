@@ -25,7 +25,7 @@ namespace CathodeEditorGUI.UserControls
         public void PopulateUI(CathodeTransform cTrans, ShortGuid paramID)
         {
             transformVal = cTrans;
-            POSITION_VARIABLE_DUMMY.Text = ShortGuidUtils.FindString(paramID);
+            POSITION_VARIABLE_DUMMY.Text = (paramID.val == null) ? "" : ShortGuidUtils.FindString(paramID);
             POS_X.Value = (decimal)cTrans.position.x;
             POS_Y.Value = (decimal)cTrans.position.y;
             POS_Z.Value = (decimal)cTrans.position.z;
