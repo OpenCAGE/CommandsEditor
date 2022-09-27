@@ -59,6 +59,7 @@
             this.visible.TabIndex = 3;
             this.visible.Text = "Is Visible";
             this.visible.UseVisualStyleBackColor = true;
+            this.visible.Visible = false;
             // 
             // renderable
             // 
@@ -73,6 +74,7 @@
             this.transform.Name = "transform";
             this.transform.Size = new System.Drawing.Size(340, 113);
             this.transform.TabIndex = 1;
+            this.transform.Visible = false;
             // 
             // typeInfo
             // 
@@ -80,6 +82,7 @@
             this.typeInfo.Name = "typeInfo";
             this.typeInfo.Size = new System.Drawing.Size(100, 20);
             this.typeInfo.TabIndex = 4;
+            this.typeInfo.Visible = false;
             // 
             // label1
             // 
@@ -89,6 +92,7 @@
             this.label1.Size = new System.Drawing.Size(31, 13);
             this.label1.TabIndex = 5;
             this.label1.Text = "Type";
+            this.label1.Visible = false;
             // 
             // label2
             // 
@@ -98,6 +102,7 @@
             this.label2.Size = new System.Drawing.Size(48, 13);
             this.label2.TabIndex = 7;
             this.label2.Text = "Is Visible";
+            this.label2.Visible = false;
             // 
             // visibleInfo
             // 
@@ -105,6 +110,7 @@
             this.visibleInfo.Name = "visibleInfo";
             this.visibleInfo.Size = new System.Drawing.Size(100, 20);
             this.visibleInfo.TabIndex = 6;
+            this.visibleInfo.Visible = false;
             // 
             // saveMover
             // 
@@ -114,16 +120,19 @@
             this.saveMover.TabIndex = 8;
             this.saveMover.Text = "Save This Mover";
             this.saveMover.UseVisualStyleBackColor = true;
+            this.saveMover.Visible = false;
             this.saveMover.Click += new System.EventHandler(this.saveMover_Click);
             // 
             // deleteMover
             // 
+            this.deleteMover.Enabled = false;
             this.deleteMover.Location = new System.Drawing.Point(853, 283);
             this.deleteMover.Name = "deleteMover";
             this.deleteMover.Size = new System.Drawing.Size(208, 34);
             this.deleteMover.TabIndex = 9;
             this.deleteMover.Text = "Delete This Mover";
             this.deleteMover.UseVisualStyleBackColor = true;
+            this.deleteMover.Visible = false;
             this.deleteMover.Click += new System.EventHandler(this.deleteMover_Click);
             // 
             // CathodeEditorGUI_EditMVR

@@ -18,7 +18,7 @@ namespace CathodeEditorGUI
         GUI_ModelViewer modelViewer = null;
         TreeUtility treeHelper;
 
-        public int SelectedIndelIndex = -1;
+        public int SelectedModelIndex = -1;
         public List<int> SelectedModelMaterialIndexes = new List<int>();
 
         public CathodeEditorGUI_SelectModel(int defaultModelIndex = -1)
@@ -80,10 +80,10 @@ namespace CathodeEditorGUI
 
         private void selectModel_Click(object sender, EventArgs e)
         {
-            SelectedIndelIndex = Convert.ToInt32(((TreeItem)FileTree.SelectedNode.Tag).String_Value);
+            SelectedModelIndex = Convert.ToInt32(((TreeItem)FileTree.SelectedNode.Tag).String_Value);
             SelectedModelMaterialIndexes.Clear();
-            for (int i = 0; i < CurrentInstance.modelDB.Models[SelectedIndelIndex].Header.SubmeshCount; i++)
-                SelectedModelMaterialIndexes.Add(CurrentInstance.modelDB.modelBIN.Models[CurrentInstance.modelDB.Models[SelectedIndelIndex].Submeshes[i].binIndex].MaterialLibraryIndex);
+            for (int i = 0; i < CurrentInstance.modelDB.Models[SelectedModelIndex].Header.SubmeshCount; i++)
+                SelectedModelMaterialIndexes.Add(CurrentInstance.modelDB.modelBIN.Models[CurrentInstance.modelDB.Models[SelectedModelIndex].Submeshes[i].binIndex].MaterialLibraryIndex);
             this.Close();
         }
     }

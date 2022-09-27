@@ -19,6 +19,9 @@ namespace CathodeEditorGUI.Popups.UserControls
         public int SelectedModelIndex;
         public List<int> SelectedMaterialIndexes = new List<int>();
 
+        public Action<int, int> OnMaterialSelected; //int = submesh index, int = level material index
+        public Action<int> OnModelSelected; //int = model pak index
+
         public GUI_Resource_RenderableInstance()
         {
             InitializeComponent();
@@ -53,8 +56,10 @@ namespace CathodeEditorGUI.Popups.UserControls
             this.Focus();
 
             CathodeEditorGUI_SelectModel selectModel = (CathodeEditorGUI_SelectModel)sender;
-            if (selectModel.SelectedIndelIndex == -1 || selectModel.SelectedModelMaterialIndexes.Count == 0) return;
-            PopulateUI(selectModel.SelectedIndelIndex, selectModel.SelectedModelMaterialIndexes);
+            if (selectModel.SelectedModelIndex == -1 || selectModel.SelectedModelMaterialIndexes.Count == 0) return;
+            PopulateUI(selectModel.SelectedModelIndex, selectModel.SelectedModelMaterialIndexes);
+
+            OnModelSelected?.Invoke(selectModel.SelectedModelIndex);
         }
 
         private void editMaterial_Click(object sender, EventArgs e)
@@ -75,6 +80,8 @@ namespace CathodeEditorGUI.Popups.UserControls
             SelectedMaterialIndexes[selectMaterial.MaterialIndexToEdit] = selectMaterial.SelectedMaterialIndex;
             PopulateUI(SelectedModelIndex, SelectedMaterialIndexes);
             materials.SelectedIndex = selectMaterial.MaterialIndexToEdit;
+
+            OnMaterialSelected?.Invoke(selectMaterial.MaterialIndexToEdit, selectMaterial.SelectedMaterialIndex);
         }
     }
 }

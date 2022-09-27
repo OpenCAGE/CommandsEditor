@@ -24,6 +24,9 @@ namespace CathodeEditorGUI
             InitializeComponent();
 
             PopulateUI(nodeID);
+
+            renderable.OnMaterialSelected += OnMaterialSelected;
+            renderable.OnModelSelected += OnModelSelected;
         }
 
         private void PopulateUI(ShortGuid nodeID)
@@ -31,6 +34,7 @@ namespace CathodeEditorGUI
             filteredNodeID = nodeID;
 
             listBox1.BeginUpdate();
+            listBox1.Items.Clear();
             for (int i = 0; i < CurrentInstance.moverDB.Movers.Count; i++)
             {
                 if (nodeID.val != null && CurrentInstance.moverDB.Movers[i].commandsNodeID != nodeID) continue;
@@ -52,7 +56,7 @@ namespace CathodeEditorGUI
         private void LoadMVR(int mvrIndex)
         {
             loadedMvrIndex = mvrIndex;
-            MOVER_DESCRIPTOR mvr = CurrentInstance.moverDB.Movers[mvrIndex];
+            MOVER_DESCRIPTOR mvr = CurrentInstance.moverDB.Movers[loadedMvrIndex];
 
             //Convert model BIN index from REDs to PAK index
             int pakModelIndex = -1;
@@ -92,13 +96,46 @@ namespace CathodeEditorGUI
 
         private void saveMover_Click(object sender, EventArgs e)
         {
+            SaveMVR();
+        }
 
+        private void OnMaterialSelected(int submeshIndex, int materialIndex)
+        {
+            SaveMVR();
+        }
+
+        private void OnModelSelected(int modelPakIndex)
+        {
+            SaveMVR();
+        }
+
+        private void SaveMVR()
+        {
+            if (loadedMvrIndex == -1) return;
+
+            MOVER_DESCRIPTOR mvr = CurrentInstance.moverDB.Movers[loadedMvrIndex];
+            mvr.renderableElementCount = (uint)renderable.SelectedMaterialIndexes.Count;
+            mvr.renderableElementIndex = (uint)CurrentInstance.redsDB.RenderableElements.Count;
+            CurrentInstance.moverDB.Movers[loadedMvrIndex] = mvr;
+
+            for (int y = 0; y < renderable.SelectedMaterialIndexes.Count; y++)
+            {
+                RenderableElementsDatabase.RenderableElement newRed = new RenderableElementsDatabase.RenderableElement();
+                newRed.ModelIndex = CurrentInstance.modelDB.Models[renderable.SelectedModelIndex].Submeshes[y].binIndex;
+                newRed.MaterialLibraryIndex = renderable.SelectedMaterialIndexes[y];
+                CurrentInstance.redsDB.RenderableElements.Add(newRed);
+            }
+
+            MessageBox.Show("Saved changes for mover " + loadedMvrIndex + "!", "Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void deleteMover_Click(object sender, EventArgs e)
         {
             if (loadedMvrIndex == -1) return;
-            CurrentInstance.moverDB.Movers.RemoveAt(loadedMvrIndex);
+            //CurrentInstance.moverDB.Movers.RemoveAt(loadedMvrIndex);
+
+            CurrentInstance.moverDB.Movers[loadedMvrIndex] = CurrentInstance.moverDB.Movers[0];
+
             PopulateUI(filteredNodeID);
         }
     }
