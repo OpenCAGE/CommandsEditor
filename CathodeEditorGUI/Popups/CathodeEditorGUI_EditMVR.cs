@@ -91,7 +91,6 @@ namespace CathodeEditorGUI
             ROT_X.Value = (decimal)rotation.X; ROT_Y.Value = (decimal)rotation.Y; ROT_Z.Value = (decimal)rotation.Z; ROT_W.Value = (decimal)rotation.W;
             SCALE_X.Value = (decimal)scale.X; SCALE_Y.Value = (decimal)scale.Y; SCALE_Z.Value = (decimal)scale.Z;
 
-            visibleInfo.Text = mvr.visibility.ToString();
             type_dropdown.SelectedItem = mvr.instanceTypeFlags.ToString();
             hasLoaded = true;
         }

@@ -4,8 +4,6 @@ using CATHODE.Commands;
 using CATHODE.LEGACY;
 using CATHODE.Misc;
 using CathodeEditorGUI.UserControls;
-using CathodeLib;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -537,10 +535,8 @@ namespace CathodeEditorGUI
             }
             composite_content.EndUpdate();
 
-#if DEBUG //TODO: PULL THIS INTO STABLE
             if (CurrentInstance.textureDB != null && entry.resources.Count != 0)
                 editCompositeResources.Visible = true;
-#endif
 
             groupBox1.Text = entry.name;
             Cursor.Current = Cursors.Default;
@@ -812,9 +808,7 @@ namespace CathodeEditorGUI
                     if (funcComposite == null)
                     {
                         CathodeFunctionType function = CommandsUtils.GetFunctionType(thisFunction);
-#if DEBUG //TODO: PULL THIS INTO STABLE
                         editFunction.Enabled = function == CathodeFunctionType.CAGEAnimation || function == CathodeFunctionType.TriggerSequence;
-#endif
                     }
                     break;
                 case EntityVariant.DATATYPE:
@@ -842,12 +836,10 @@ namespace CathodeEditorGUI
             //show resource editor button if this entity has a resource reference
             ShortGuid resourceParamID = ShortGuidUtils.Generate("resource");
             CathodeLoadedParameter resourceParam = CurrentInstance.selectedEntity.parameters.FirstOrDefault(o => o.shortGUID == resourceParamID);
-#if DEBUG //TODO: PULL THIS INTO STABLE
             if (CurrentInstance.textureDB != null)
                 editEntityResources.Enabled = ((resourceParam != null) || CurrentInstance.selectedEntity.resources.Count != 0);
             if (CurrentInstance.moverDB != null && CurrentInstance.moverDB.Movers.FindAll(o => o.commandsNodeID == CurrentInstance.selectedEntity.shortGUID).Count != 0)
                 editEntityMovers.Enabled = true;
-#endif
 
             //sort parameters by type, to improve visibility in UI
             entity.parameters = entity.parameters.OrderBy(o => o.content?.dataType).ToList();
@@ -856,9 +848,7 @@ namespace CathodeEditorGUI
             int current_ui_offset = 7;
             for (int i = 0; i < entity.parameters.Count; i++)
             {
-#if DEBUG //TODO: PULL THIS INTO STABLE
                 if (entity.parameters[i].shortGUID == resourceParamID) continue; //We use the resource editor button (above) for resource parameters
-#endif
 
                 CathodeParameter this_param = entity.parameters[i].content;
                 UserControl parameterGUI = null;

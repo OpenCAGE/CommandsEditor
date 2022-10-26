@@ -32,11 +32,13 @@
             this.modelPreviewArea = new System.Windows.Forms.GroupBox();
             this.selectMaterial = new System.Windows.Forms.Button();
             this.materialList = new System.Windows.Forms.ListBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.modelPreviewArea.SuspendLayout();
             this.SuspendLayout();
             // 
             // modelPreviewArea
             // 
+            this.modelPreviewArea.Controls.Add(this.label1);
             this.modelPreviewArea.Controls.Add(this.selectMaterial);
             this.modelPreviewArea.Location = new System.Drawing.Point(384, 6);
             this.modelPreviewArea.Name = "modelPreviewArea";
@@ -63,6 +65,15 @@
             this.materialList.Size = new System.Drawing.Size(366, 628);
             this.materialList.TabIndex = 106;
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(112, 134);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(73, 13);
+            this.label1.TabIndex = 2;
+            this.label1.Text = "Coming Soon!";
+            // 
             // CathodeEditorGUI_SelectMaterial
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -76,6 +87,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Select Material";
             this.modelPreviewArea.ResumeLayout(false);
+            this.modelPreviewArea.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -85,5 +97,6 @@
         private System.Windows.Forms.GroupBox modelPreviewArea;
         private System.Windows.Forms.Button selectMaterial;
         private System.Windows.Forms.ListBox materialList;
+        private System.Windows.Forms.Label label1;
     }
 }

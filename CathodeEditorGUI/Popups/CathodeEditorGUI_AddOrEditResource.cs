@@ -51,6 +51,11 @@ namespace CathodeEditorGUI
             resource_panel.Controls.Clear();
 
             List<CathodeResourceReference> resRefs = (isEditingEntity) ? EditEntity.resources : EditComposite.resources;
+            if (isEditingEntity)
+            {
+                CathodeLoadedParameter resourceParam = EditEntity.parameters.FirstOrDefault(o => o.shortGUID == resourceParamID);
+                if (resourceParam != null) resRefs.AddRange(((CathodeResource)resourceParam.content).value);
+            }
             PopulateWithResourceRefs(resRefs);
 
             //Entities can also have a resource parameter that links resources
@@ -69,7 +74,7 @@ namespace CathodeEditorGUI
         {
             for (int i = 0; i < resRefs.Count; i++)
             {
-                ResourceUserControl resourceGroup = new ResourceUserControl();
+                ResourceUserControl resourceGroup;
                 switch (resRefs[i].entryType)
                 {
                     case CathodeResourceReferenceType.RENDERABLE_INSTANCE:
