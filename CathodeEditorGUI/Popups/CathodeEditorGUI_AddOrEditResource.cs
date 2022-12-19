@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CathodeEditorGUI.Popups.UserControls;
+using CATHODE.Assets.Utilities;
 
 namespace CathodeEditorGUI
 {
@@ -99,12 +100,12 @@ namespace CathodeEditorGUI
                             modelMaterialIndexes.Add(CurrentInstance.redsDB.RenderableElements[resRefs[i].startIndex + y].MaterialLibraryIndex);
 
                         GUI_Resource_RenderableInstance ui = new GUI_Resource_RenderableInstance();
-                        ui.PopulateUI(pakModelIndex, modelMaterialIndexes);
+                        ui.PopulateUI(pakModelIndex, modelMaterialIndexes, WorkOutWhoUsesThisResource(resRefs[i]));
                         resourceGroup = ui;
                         break;
                     default:
                         GUI_Resource_TempPlaceholder ui2 = new GUI_Resource_TempPlaceholder();
-                        ui2.PopulateUI(resRefs[i].entryType.ToString());
+                        ui2.PopulateUI(resRefs[i].entryType.ToString(), WorkOutWhoUsesThisResource(resRefs[i]));
                         resourceGroup = ui2;
                         break;
                 }
@@ -113,6 +114,33 @@ namespace CathodeEditorGUI
                 current_ui_offset += resourceGroup.Height + 6;
                 resource_panel.Controls.Add(resourceGroup);
             }
+        }
+
+        private string WorkOutWhoUsesThisResource(CathodeResourceReference resRef)
+        {
+            /*
+                string otherUsers = "";
+                foreach (CathodeComposite comp in CurrentInstance.commandsPAK.Composites)
+                {
+                    if (EditComposite == comp) continue;
+
+                    foreach (CathodeResourceReference re in comp.resources)
+                        if (re.resourceID == resRef.resourceID)
+                            otherUsers += comp.name + ", ";
+
+                    foreach (CathodeEntity ent in comp.GetEntities())
+                    {
+                        if (EditEntity == ent) continue;
+                        foreach (CathodeResourceReference re in ent.resources)
+                            if (re.resourceID == resRef.resourceID)
+                                otherUsers += EditorUtils.GenerateEntityName(ent, comp) + ", ";
+                    }
+                }
+                if (otherUsers != "")
+                    otherUsers = otherUsers.Substring(0, otherUsers.Length - 2);
+                return otherUsers;
+            */
+            return "";
         }
 
         private void SaveChanges_Click(object sender, EventArgs e)
