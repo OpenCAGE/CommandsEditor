@@ -1062,6 +1062,7 @@ namespace CathodeEditorGUI
             return (MessageBox.Show(msg, "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes);
         }
 
+        #region LOCAL_TESTS
         private void CathodeEditorGUI_Load(object sender, EventArgs e)
         {
             return;
@@ -1614,6 +1615,7 @@ namespace CathodeEditorGUI
 
             */
         }
+        #endregion
     }
 
     public class BinComposite

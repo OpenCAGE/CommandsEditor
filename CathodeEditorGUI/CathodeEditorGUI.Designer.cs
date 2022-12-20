@@ -67,18 +67,18 @@
             this.addNewParameter = new System.Windows.Forms.Button();
             this.entity_params = new System.Windows.Forms.Panel();
             this.editFunction = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
             this.load_commands_pak = new System.Windows.Forms.Button();
             this.env_list = new System.Windows.Forms.ComboBox();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
-            this.button6 = new System.Windows.Forms.Button();
-            this.button5 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
             this.editEntryPoint = new System.Windows.Forms.Button();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.button3 = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
+            this.button4 = new System.Windows.Forms.Button();
+            this.button5 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
+            this.button6 = new System.Windows.Forms.Button();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.entityInfoGroup.SuspendLayout();
@@ -181,17 +181,17 @@
             this.editEntityMovers.Name = "editEntityMovers";
             this.editEntityMovers.Size = new System.Drawing.Size(121, 23);
             this.editEntityMovers.TabIndex = 179;
-            this.editEntityMovers.Text = "Edit Movers";
+            this.editEntityMovers.Text = "Associated Movers";
             this.editEntityMovers.UseVisualStyleBackColor = true;
             this.editEntityMovers.Click += new System.EventHandler(this.editEntityMovers_Click);
             // 
             // editCompositeResources
             // 
-            this.editCompositeResources.Location = new System.Drawing.Point(366, -1);
+            this.editCompositeResources.Location = new System.Drawing.Point(345, -1);
             this.editCompositeResources.Name = "editCompositeResources";
-            this.editCompositeResources.Size = new System.Drawing.Size(99, 23);
+            this.editCompositeResources.Size = new System.Drawing.Size(120, 23);
             this.editCompositeResources.TabIndex = 177;
-            this.editCompositeResources.Text = "Edit Resources";
+            this.editCompositeResources.Text = "Attached Resources";
             this.editCompositeResources.UseVisualStyleBackColor = true;
             this.editCompositeResources.Visible = false;
             this.editCompositeResources.Click += new System.EventHandler(this.editCompositeResources_Click);
@@ -202,7 +202,7 @@
             this.editEntityResources.Name = "editEntityResources";
             this.editEntityResources.Size = new System.Drawing.Size(121, 23);
             this.editEntityResources.TabIndex = 176;
-            this.editEntityResources.Text = "Edit Resources";
+            this.editEntityResources.Text = "Attached Resources";
             this.editEntityResources.UseVisualStyleBackColor = true;
             this.editEntityResources.Click += new System.EventHandler(this.editEntityResources_Click);
             // 
@@ -475,18 +475,6 @@
             this.editFunction.UseVisualStyleBackColor = true;
             this.editFunction.Click += new System.EventHandler(this.editFunction_Click);
             // 
-            // button1
-            // 
-            this.button1.ForeColor = System.Drawing.Color.Red;
-            this.button1.Location = new System.Drawing.Point(424, 9);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(192, 23);
-            this.button1.TabIndex = 176;
-            this.button1.Text = "DEBUG: Purge all dead hierarchies.";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Visible = false;
-            this.button1.Click += new System.EventHandler(this.button1_Click_1);
-            // 
             // load_commands_pak
             // 
             this.load_commands_pak.Location = new System.Drawing.Point(299, 16);
@@ -522,54 +510,6 @@
             this.groupBox8.TabIndex = 174;
             this.groupBox8.TabStop = false;
             // 
-            // button6
-            // 
-            this.button6.ForeColor = System.Drawing.Color.Red;
-            this.button6.Location = new System.Drawing.Point(96, 9);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(127, 23);
-            this.button6.TabIndex = 181;
-            this.button6.Text = "DEBUG: decomp dump";
-            this.button6.UseVisualStyleBackColor = true;
-            this.button6.Visible = false;
-            this.button6.Click += new System.EventHandler(this.button6_Click);
-            // 
-            // button5
-            // 
-            this.button5.ForeColor = System.Drawing.Color.Red;
-            this.button5.Location = new System.Drawing.Point(72, 34);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(182, 23);
-            this.button5.TabIndex = 180;
-            this.button5.Text = "DEBUG: PARSE DAN DUMP";
-            this.button5.UseVisualStyleBackColor = true;
-            this.button5.Visible = false;
-            this.button5.Click += new System.EventHandler(this.button5_Click);
-            // 
-            // button4
-            // 
-            this.button4.ForeColor = System.Drawing.Color.Red;
-            this.button4.Location = new System.Drawing.Point(260, 34);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(116, 23);
-            this.button4.TabIndex = 180;
-            this.button4.Text = "DEBUG: purge all";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Visible = false;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
-            // 
-            // button2
-            // 
-            this.button2.ForeColor = System.Drawing.Color.Red;
-            this.button2.Location = new System.Drawing.Point(228, 9);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(192, 23);
-            this.button2.TabIndex = 178;
-            this.button2.Text = "DEBUG: Clear unknown header vals";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Visible = false;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
-            // 
             // editEntryPoint
             // 
             this.editEntryPoint.Location = new System.Drawing.Point(668, 14);
@@ -602,6 +542,66 @@
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Visible = false;
             this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
+            // button1
+            // 
+            this.button1.ForeColor = System.Drawing.Color.Red;
+            this.button1.Location = new System.Drawing.Point(424, 9);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(192, 23);
+            this.button1.TabIndex = 176;
+            this.button1.Text = "DEBUG: Purge all dead hierarchies.";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Visible = false;
+            this.button1.Click += new System.EventHandler(this.button1_Click_1);
+            // 
+            // button4
+            // 
+            this.button4.ForeColor = System.Drawing.Color.Red;
+            this.button4.Location = new System.Drawing.Point(260, 34);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(116, 23);
+            this.button4.TabIndex = 180;
+            this.button4.Text = "DEBUG: purge all";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Visible = false;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
+            // button5
+            // 
+            this.button5.ForeColor = System.Drawing.Color.Red;
+            this.button5.Location = new System.Drawing.Point(72, 34);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(182, 23);
+            this.button5.TabIndex = 180;
+            this.button5.Text = "DEBUG: PARSE DAN DUMP";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Visible = false;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
+            // 
+            // button2
+            // 
+            this.button2.ForeColor = System.Drawing.Color.Red;
+            this.button2.Location = new System.Drawing.Point(228, 9);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(192, 23);
+            this.button2.TabIndex = 178;
+            this.button2.Text = "DEBUG: Clear unknown header vals";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Visible = false;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // button6
+            // 
+            this.button6.ForeColor = System.Drawing.Color.Red;
+            this.button6.Location = new System.Drawing.Point(96, 9);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(127, 23);
+            this.button6.TabIndex = 181;
+            this.button6.Text = "DEBUG: decomp dump";
+            this.button6.UseVisualStyleBackColor = true;
+            this.button6.Visible = false;
+            this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
             // CathodeEditorGUI
             // 
@@ -671,19 +671,19 @@
         private System.Windows.Forms.Button addNewFlowgraph;
         private System.Windows.Forms.Button showLinkParents;
         private System.Windows.Forms.ToolTip toolTip1;
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button duplicateSelectedNode;
         private System.Windows.Forms.Button renameSelectedNode;
         private System.Windows.Forms.Button editEntityResources;
         private System.Windows.Forms.Button editCompositeResources;
         private System.Windows.Forms.Button editEntryPoint;
         private System.Windows.Forms.Button editFunction;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button button4;
-        private System.Windows.Forms.Button button5;
-        private System.Windows.Forms.Button button6;
         private System.Windows.Forms.TextBox hierarchyDisplay;
         private System.Windows.Forms.Button editEntityMovers;
+        private System.Windows.Forms.Button button6;
+        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button button3;
     }
 }
