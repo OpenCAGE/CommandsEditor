@@ -51,6 +51,7 @@ namespace CathodeEditorGUI
             current_ui_offset = 7;
             resource_panel.Controls.Clear();
 
+            //TODO: THIS IS CAUSING A ISSUE, WE ARE ADDING TO THE ORIGINAL RESOURCES AND NOT UN-ADDING
             List<CathodeResourceReference> resRefs = (isEditingEntity) ? EditEntity.resources : EditComposite.resources;
             if (isEditingEntity)
             {

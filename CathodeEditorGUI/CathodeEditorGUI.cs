@@ -852,7 +852,7 @@ namespace CathodeEditorGUI
                 editEntityMovers.Enabled = true;
 
             //sort parameters by type, to improve visibility in UI
-            entity.parameters = entity.parameters.OrderBy(o => o.content?.dataType).ToList();
+            //entity.parameters = entity.parameters.OrderBy(o => o.content?.dataType).ToList();
 
             //populate parameter inputs
             int current_ui_offset = 7;
