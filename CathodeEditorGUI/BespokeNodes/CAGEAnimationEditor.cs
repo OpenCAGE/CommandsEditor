@@ -20,6 +20,8 @@ namespace CathodeEditorGUI
             animNode = _node;
             InitializeComponent();
 
+            MessageBox.Show("The CAGEAnimation editor is still VERY early in development. It'll likely not work, or encounter issues which may corrupt your CommandsPAK, and is provided as a preview of upcoming functionality.\n\nUse it at your own risk!", "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
             animNode.keyframeHeaders = animNode.keyframeHeaders.OrderBy(o => o.parameterID).ToList();
             string previousGroup = "";
             int groupCount = 0;
