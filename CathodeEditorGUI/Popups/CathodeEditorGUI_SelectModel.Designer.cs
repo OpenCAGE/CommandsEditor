@@ -33,6 +33,7 @@
             this.FileTree = new System.Windows.Forms.TreeView();
             this.modelPreviewArea = new System.Windows.Forms.GroupBox();
             this.selectModel = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
             this.modelPreviewArea.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -56,6 +57,7 @@
             // 
             // modelPreviewArea
             // 
+            this.modelPreviewArea.Controls.Add(this.label1);
             this.modelPreviewArea.Controls.Add(this.selectModel);
             this.modelPreviewArea.Controls.Add(this.modelRendererHost);
             this.modelPreviewArea.Location = new System.Drawing.Point(384, 6);
@@ -75,6 +77,15 @@
             this.selectModel.UseVisualStyleBackColor = true;
             this.selectModel.Click += new System.EventHandler(this.selectModel_Click);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(9, 572);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(117, 39);
+            this.label1.TabIndex = 2;
+            this.label1.Text = "[Zoom] = Scrollwheel\r\n[Rotate] = Right Mouse\r\n[Drag] = Middle Mouse";
+            // 
             // CathodeEditorGUI_SelectModel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -88,6 +99,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Select Model";
             this.modelPreviewArea.ResumeLayout(false);
+            this.modelPreviewArea.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -98,5 +110,6 @@
         private System.Windows.Forms.TreeView FileTree;
         private System.Windows.Forms.GroupBox modelPreviewArea;
         private System.Windows.Forms.Button selectModel;
+        private System.Windows.Forms.Label label1;
     }
 }

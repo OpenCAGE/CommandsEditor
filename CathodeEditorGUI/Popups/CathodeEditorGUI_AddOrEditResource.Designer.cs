@@ -31,6 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CathodeEditorGUI_AddOrEditResource));
             this.resource_panel = new System.Windows.Forms.Panel();
             this.SaveChanges = new System.Windows.Forms.Button();
+            this.addNewResource = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // resource_panel
@@ -51,11 +52,21 @@
             this.SaveChanges.UseVisualStyleBackColor = true;
             this.SaveChanges.Click += new System.EventHandler(this.SaveChanges_Click);
             // 
+            // addNewResource
+            // 
+            this.addNewResource.Location = new System.Drawing.Point(12, 556);
+            this.addNewResource.Name = "addNewResource";
+            this.addNewResource.Size = new System.Drawing.Size(186, 28);
+            this.addNewResource.TabIndex = 4;
+            this.addNewResource.Text = "Add New Resource";
+            this.addNewResource.UseVisualStyleBackColor = true;
+            // 
             // CathodeEditorGUI_AddOrEditResource
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(936, 596);
+            this.Controls.Add(this.addNewResource);
             this.Controls.Add(this.SaveChanges);
             this.Controls.Add(this.resource_panel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
@@ -71,5 +82,6 @@
 
         private System.Windows.Forms.Panel resource_panel;
         private System.Windows.Forms.Button SaveChanges;
+        private System.Windows.Forms.Button addNewResource;
     }
 }

@@ -46,11 +46,12 @@
             // label15
             // 
             this.label15.AutoSize = true;
+            this.label15.ForeColor = System.Drawing.Color.Crimson;
             this.label15.Location = new System.Drawing.Point(12, 26);
             this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(41, 13);
+            this.label15.Size = new System.Drawing.Size(223, 13);
             this.label15.TabIndex = 0;
-            this.label15.Text = "label15";
+            this.label15.Text = "Support for editing spline data is coming soon!";
             // 
             // GUI_SplineDataType
             // 

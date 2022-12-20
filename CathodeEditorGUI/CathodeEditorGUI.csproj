@@ -239,11 +239,11 @@
     <Compile Include="UserControls\GUI_EnumDataType.Designer.cs">
       <DependentUpon>GUI_EnumDataType.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\GUI_HexDataType.cs">
+    <Compile Include="UserControls\GUI_ResourceDataType.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UserControls\GUI_HexDataType.Designer.cs">
-      <DependentUpon>GUI_HexDataType.cs</DependentUpon>
+    <Compile Include="UserControls\GUI_ResourceDataType.Designer.cs">
+      <DependentUpon>GUI_ResourceDataType.cs</DependentUpon>
     </Compile>
     <Compile Include="UserControls\GUI_NumericDataType.cs">
       <SubType>UserControl</SubType>
@@ -345,8 +345,8 @@
     <EmbeddedResource Include="UserControls\GUI_EnumDataType.resx">
       <DependentUpon>GUI_EnumDataType.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UserControls\GUI_HexDataType.resx">
-      <DependentUpon>GUI_HexDataType.cs</DependentUpon>
+    <EmbeddedResource Include="UserControls\GUI_ResourceDataType.resx">
+      <DependentUpon>GUI_ResourceDataType.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserControls\GUI_NumericDataType.resx">
       <DependentUpon>GUI_NumericDataType.cs</DependentUpon>

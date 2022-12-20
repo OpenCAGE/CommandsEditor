@@ -100,7 +100,7 @@
             "STRING",
             "SPLINE_DATA",
             "ENUM",
-            "SHORT_GUID",
+            "RESOURCE",
             "FILEPATH",
             "BOOL",
             "DIRECTION",

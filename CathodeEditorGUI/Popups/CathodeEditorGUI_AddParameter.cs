@@ -50,6 +50,13 @@ namespace CathodeEditorGUI
                 return;
             }
 
+            //TODO: Remove this when resource adding is supported
+            if ((CathodeDataType)param_datatype.SelectedIndex == CathodeDataType.RESOURCE)
+            {
+                MessageBox.Show("Adding resources is currently unsupported and will cause issues.\nThis functionality will be added in an upcoming OpenCAGE release.", "Coming soon...", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
             CathodeParameter thisParam = null;
             switch ((CathodeDataType)param_datatype.SelectedIndex)
             {
@@ -70,9 +77,9 @@ namespace CathodeEditorGUI
                     thisParam = new CathodeEnum();
                     ((CathodeEnum)thisParam).enumID = new ShortGuid("4C-B9-82-48"); //ALERTNESS_STATE is the first alphabetically
                     break;
-                case CathodeDataType.SHORT_GUID:
+                case CathodeDataType.RESOURCE:
                     thisParam = new CathodeResource();
-                    ((CathodeResource)thisParam).resourceID = new ShortGuid("00-00-00-00");
+                    ((CathodeResource)thisParam).resourceID = new ShortGuid("00-00-00-00"); //TODO: This will cause issues
                     break;
                 case CathodeDataType.BOOL:
                     thisParam = new CathodeBool();

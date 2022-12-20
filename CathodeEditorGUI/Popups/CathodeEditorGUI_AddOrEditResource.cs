@@ -18,62 +18,22 @@ namespace CathodeEditorGUI
 {
     public partial class CathodeEditorGUI_AddOrEditResource : Form
     {
-        public CathodeEntity EditEntity = null;
-        public CathodeComposite EditComposite = null;
+        public List<CathodeResourceReference> Resources = null;
 
-        private ShortGuid resourceParamID = ShortGuidUtils.Generate("resource");
         private int current_ui_offset = 7;
 
-        private bool hasResourceParams = false;
-        private bool isEditingEntity { get { return EditEntity != null; } }
+        public CathodeEditorGUI_AddOrEditResource(List<CathodeResourceReference> resRefs, string windowTitle, bool enableAdding = false)
+        {
+            Resources = resRefs;
 
-        public CathodeEditorGUI_AddOrEditResource(CathodeEntity entity, CathodeComposite composite)
-        {
             InitializeComponent();
-            this.Text += " - " + EditorUtils.GenerateEntityName(entity, composite);
-            
-            EditEntity = entity;
-            Setup();
-        }
-        public CathodeEditorGUI_AddOrEditResource(CathodeComposite flowgraph)
-        {
-            InitializeComponent();
-            this.Text += " - " + flowgraph.name;
-            
-            EditComposite = flowgraph;
-            Setup();
-        }
 
-        private void Setup()
-        {
-            string baseLevelPath = CurrentInstance.commandsPAK.Filepath.Substring(0, CurrentInstance.commandsPAK.Filepath.Length - ("WORLD/COMMANDS.PAK").Length);
+            this.Text += " - " + windowTitle;
+            addNewResource.Visible = enableAdding;
 
             current_ui_offset = 7;
             resource_panel.Controls.Clear();
 
-            //TODO: THIS IS CAUSING A ISSUE, WE ARE ADDING TO THE ORIGINAL RESOURCES AND NOT UN-ADDING
-            List<CathodeResourceReference> resRefs = (isEditingEntity) ? EditEntity.resources : EditComposite.resources;
-            if (isEditingEntity)
-            {
-                CathodeLoadedParameter resourceParam = EditEntity.parameters.FirstOrDefault(o => o.shortGUID == resourceParamID);
-                if (resourceParam != null) resRefs.AddRange(((CathodeResource)resourceParam.content).value);
-            }
-            PopulateWithResourceRefs(resRefs);
-
-            //Entities can also have a resource parameter that links resources
-            if (isEditingEntity)
-            {
-                CathodeLoadedParameter resourceParam = EditEntity.parameters.FirstOrDefault(o => o.shortGUID == resourceParamID);
-                if (resourceParam != null)
-                {
-                    hasResourceParams = true;
-                    PopulateWithResourceRefs(((CathodeResource)resourceParam.content).value);
-                }
-            }
-        }
-
-        private void PopulateWithResourceRefs(List<CathodeResourceReference> resRefs)
-        {
             for (int i = 0; i < resRefs.Count; i++)
             {
                 ResourceUserControl resourceGroup;
@@ -115,6 +75,11 @@ namespace CathodeEditorGUI
                 current_ui_offset += resourceGroup.Height + 6;
                 resource_panel.Controls.Add(resourceGroup);
             }
+
+            //TODO
+#if !DEBUG
+            addNewResource.Visible = false;
+#endif
         }
 
         private string WorkOutWhoUsesThisResource(CathodeResourceReference resRef)
@@ -147,7 +112,6 @@ namespace CathodeEditorGUI
         private void SaveChanges_Click(object sender, EventArgs e)
         {
             List<CathodeResourceReference> newResourceReferences = new List<CathodeResourceReference>();
-            List<CathodeResourceReference> newResourceReferencesAsParams = new List<CathodeResourceReference>();
             for (int i = 0; i < resource_panel.Controls.Count; i++)
             {
                 CathodeResourceReference resourceRef = ((ResourceUserControl)resource_panel.Controls[i]).ResourceReference;
@@ -166,21 +130,10 @@ namespace CathodeEditorGUI
                         }
                         break;
                 }
-                if (((ResourceUserControl)resource_panel.Controls[i]).IsFromParams)
-                    newResourceReferencesAsParams.Add(resourceRef);
-                else
-                    newResourceReferences.Add(resourceRef);
+                newResourceReferences.Add(resourceRef);
             }
 
-
-            if (EditEntity != null)
-            {
-                EditEntity.resources = newResourceReferences;
-                if (hasResourceParams) ((CathodeResource)EditEntity.parameters.FirstOrDefault(o => o.shortGUID == resourceParamID).content).value = newResourceReferencesAsParams;
-            }
-            if (EditComposite != null)
-                EditComposite.resources = newResourceReferences;
-
+            Resources = newResourceReferences;
             this.Close();
         }
     }

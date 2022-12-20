@@ -14,7 +14,6 @@ namespace CathodeEditorGUI.Popups.UserControls
     public partial class ResourceUserControl : UserControl
     {
         public CathodeResourceReference ResourceReference;
-        public bool IsFromParams = false;
 
         public ResourceUserControl()
         {

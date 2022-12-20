@@ -4,6 +4,7 @@ using CATHODE.Commands;
 using CATHODE.LEGACY;
 using CATHODE.Misc;
 using CathodeEditorGUI.UserControls;
+using CathodeLib;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -844,10 +845,8 @@ namespace CathodeEditorGUI
             selected_entity_type_description.Text = description;
 
             //show resource editor button if this entity has a resource reference
-            ShortGuid resourceParamID = ShortGuidUtils.Generate("resource");
-            CathodeLoadedParameter resourceParam = CurrentInstance.selectedEntity.parameters.FirstOrDefault(o => o.shortGUID == resourceParamID);
             if (CurrentInstance.textureDB != null)
-                editEntityResources.Enabled = ((resourceParam != null) || CurrentInstance.selectedEntity.resources.Count != 0);
+                editEntityResources.Enabled = CurrentInstance.selectedEntity.resources.Count != 0;
             if (CurrentInstance.moverDB != null && CurrentInstance.moverDB.Movers.FindAll(o => o.commandsNodeID == CurrentInstance.selectedEntity.shortGUID).Count != 0)
                 editEntityMovers.Enabled = true;
 
@@ -858,8 +857,6 @@ namespace CathodeEditorGUI
             int current_ui_offset = 7;
             for (int i = 0; i < entity.parameters.Count; i++)
             {
-                if (entity.parameters[i].shortGUID == resourceParamID) continue; //We use the resource editor button (above) for resource parameters
-
                 CathodeParameter this_param = entity.parameters[i].content;
                 UserControl parameterGUI = null;
 
@@ -893,9 +890,9 @@ namespace CathodeEditorGUI
                         parameterGUI = new GUI_EnumDataType();
                         ((GUI_EnumDataType)parameterGUI).PopulateUI((CathodeEnum)this_param, entity.parameters[i].shortGUID);
                         break;
-                    case CathodeDataType.SHORT_GUID:
-                        parameterGUI = new GUI_HexDataType();
-                        ((GUI_HexDataType)parameterGUI).PopulateUI((CathodeResource)this_param, entity.parameters[i].shortGUID, CurrentInstance.selectedComposite); 
+                    case CathodeDataType.RESOURCE:
+                        parameterGUI = new GUI_ResourceDataType();
+                        ((GUI_ResourceDataType)parameterGUI).PopulateUI((CathodeResource)this_param, entity.parameters[i].shortGUID);
                         break;
                     case CathodeDataType.SPLINE_DATA:
                         parameterGUI = new GUI_SplineDataType();
@@ -1019,12 +1016,13 @@ namespace CathodeEditorGUI
         /* Edit resources referenced by the entity */
         private void editEntityResources_Click(object sender, EventArgs e)
         {
-            CathodeEditorGUI_AddOrEditResource resourceEditor = new CathodeEditorGUI_AddOrEditResource(CurrentInstance.selectedEntity, CurrentInstance.selectedComposite);
+            CathodeEditorGUI_AddOrEditResource resourceEditor = new CathodeEditorGUI_AddOrEditResource(CurrentInstance.selectedEntity.resources, EditorUtils.GenerateEntityName(CurrentInstance.selectedEntity, CurrentInstance.selectedComposite), true);
             resourceEditor.Show();
             resourceEditor.FormClosed += ResourceEditor_FormClosed;
         }
         private void ResourceEditor_FormClosed(object sender, FormClosedEventArgs e)
         {
+            CurrentInstance.selectedEntity.resources = ((CathodeEditorGUI_AddOrEditResource)sender).Resources;
             this.BringToFront();
             this.Focus();
         }
@@ -1046,12 +1044,13 @@ namespace CathodeEditorGUI
         private void editCompositeResources_Click(object sender, EventArgs e)
         {
             //CurrentInstance.currentComposite.resources
-            CathodeEditorGUI_AddOrEditResource resourceEditor = new CathodeEditorGUI_AddOrEditResource(CurrentInstance.selectedComposite);
+            CathodeEditorGUI_AddOrEditResource resourceEditor = new CathodeEditorGUI_AddOrEditResource(CurrentInstance.selectedComposite.resources, CurrentInstance.selectedComposite.name, true);
             resourceEditor.Show();
             resourceEditor.FormClosed += ResourceEditor_FormClosed1;
         }
         private void ResourceEditor_FormClosed1(object sender, FormClosedEventArgs e)
         {
+            CurrentInstance.selectedComposite.resources = ((CathodeEditorGUI_AddOrEditResource)sender).Resources;
             this.BringToFront();
             this.Focus();
         }
