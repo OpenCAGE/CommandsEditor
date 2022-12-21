@@ -61,14 +61,12 @@ namespace CathodeEditorGUI
             ClearUI(true, true, true);
 
 #if DEBUG
-            /*
             button1.Visible = true;
-            button2.Visible = true;
-            button3.Visible = true;
-            button4.Visible = true;
-            button5.Visible = true;
-            button6.Visible = true;
-            */
+            //button2.Visible = true;
+            //button3.Visible = true;
+            //button4.Visible = true;
+            //button5.Visible = true;
+            //button6.Visible = true;
 #endif
         }
 
@@ -93,7 +91,6 @@ namespace CathodeEditorGUI
                 composite_content_RAW.Clear();
                 composite_content.EndUpdate();
                 CurrentInstance.selectedComposite = null;
-                editCompositeResources.Visible = false;
             }
             if (clear_parameter_list)
             {
@@ -533,7 +530,7 @@ namespace CathodeEditorGUI
             ClearUI(false, true, true);
             CathodeComposite entry = CurrentInstance.commandsPAK.Composites[CurrentInstance.commandsPAK.GetFileIndex(FileName)];
             CurrentInstance.selectedComposite = entry;
-            EditorUtils.PurgeDeadHierarchiesInActiveComposite();
+            EditorUtils.PurgeDeadHierarchiesInActiveComposite(); //TODO: We should really just skip this info when parsing, can remove "unknown" on composite then
             Cursor.Current = Cursors.WaitCursor;
 
             composite_content.BeginUpdate();
@@ -545,9 +542,6 @@ namespace CathodeEditorGUI
                 composite_content_RAW.Add(desc);
             }
             composite_content.EndUpdate();
-
-            if (CurrentInstance.textureDB != null && entry.resources.Count != 0)
-                editCompositeResources.Visible = true;
 
             groupBox1.Text = entry.name;
             Cursor.Current = Cursors.Default;
@@ -1040,21 +1034,6 @@ namespace CathodeEditorGUI
             this.Focus();
         }
 
-        /* Edit resources referenced by the composite */
-        private void editCompositeResources_Click(object sender, EventArgs e)
-        {
-            //CurrentInstance.currentComposite.resources
-            CathodeEditorGUI_AddOrEditResource resourceEditor = new CathodeEditorGUI_AddOrEditResource(CurrentInstance.selectedComposite.resources, CurrentInstance.selectedComposite.name, true);
-            resourceEditor.Show();
-            resourceEditor.FormClosed += ResourceEditor_FormClosed1;
-        }
-        private void ResourceEditor_FormClosed1(object sender, FormClosedEventArgs e)
-        {
-            CurrentInstance.selectedComposite.resources = ((CathodeEditorGUI_AddOrEditResource)sender).Resources;
-            this.BringToFront();
-            this.Focus();
-        }
-
         /* Confirm an action */
         private bool ConfirmAction(string msg)
         {
@@ -1170,21 +1149,21 @@ namespace CathodeEditorGUI
                 for (int mm = 0; mm < env_list.Items.Count; mm++)
                 {
                     CurrentInstance.commandsPAK = new CommandsPAK(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + env_list.Items[mm].ToString() + "/WORLD/COMMANDS.PAK");
-                    foreach (CathodeComposite flow in CurrentInstance.commandsPAK.Composites)
-                    {
-                        CurrentInstance.selectedComposite = flow;
-                        EditorUtils.PurgeDeadHierarchiesInActiveComposite();
-                    }
-                    CurrentInstance.commandsPAK.Save();
+                    //foreach (CathodeComposite flow in CurrentInstance.commandsPAK.Composites)
+                    //{
+                    //    CurrentInstance.selectedComposite = flow;
+                    //    EditorUtils.PurgeDeadHierarchiesInActiveComposite();
+                    //}
+                    //CurrentInstance.commandsPAK.Save();
                 }
                 return;
             }
 
-            foreach (CathodeComposite flow in CurrentInstance.commandsPAK.Composites)
-            {
-                CurrentInstance.selectedComposite = flow;
-                EditorUtils.PurgeDeadHierarchiesInActiveComposite();
-            }
+            //foreach (CathodeComposite flow in CurrentInstance.commandsPAK.Composites)
+            //{
+            //    CurrentInstance.selectedComposite = flow;
+            //    EditorUtils.PurgeDeadHierarchiesInActiveComposite();
+            //}
         }
 
         private void button2_Click(object sender, EventArgs e)
