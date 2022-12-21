@@ -230,16 +230,18 @@ namespace CathodeEditorGUI
             if (CurrentInstance.commandsPAK == null) return;
             Cursor.Current = Cursors.WaitCursor;
 
-            byte[] backup = File.ReadAllBytes(CurrentInstance.commandsPAK.Filepath);
+            byte[] backup = null;
             try
             {
+                backup = File.ReadAllBytes(CurrentInstance.commandsPAK.Filepath);
                 CurrentInstance.commandsPAK.Save();
             }
             catch (Exception e)
             {
                 try
                 {
-                    File.WriteAllBytes(CurrentInstance.commandsPAK.Filepath, backup);
+                    if (backup != null)
+                        File.WriteAllBytes(CurrentInstance.commandsPAK.Filepath, backup);
                 }
                 catch { }
 
