@@ -1039,23 +1039,4 @@ namespace CathodeEditorGUI
         }
         #endregion
     }
-
-    public class BinComposite
-    {
-        public ShortGuid id;
-        public string name = "";
-        public string path = "";
-        public List<BinEntity> entities = new List<BinEntity>();
-    }
-    public class BinEntity
-    {
-        public ShortGuid id;
-        public string name = "";
-        public List<BinParameter> parameters = new List<BinParameter>();
-    }
-    public class BinParameter
-    {
-        public ShortGuid id;
-        public string name;
-    }
 }
