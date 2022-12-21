@@ -216,6 +216,23 @@ namespace CathodeEditorGUI
                 newEntity.function = function;
                 //TODO: auto populate params here based on defaults
 
+                // TODO: these types of entities seem to have their own non-parameterised resources:
+                // - ParticleEmitterReference
+                // - RibbonEmitterReference
+                // - TRAV_1ShotSpline
+                // - LightReference
+                // - SurfaceEffectSphere
+                // - FogSphere
+                // - NavMeshBarrier
+                // - FogBox
+                // - SoundBarrier
+                // - SurfaceEffectBox
+                // - SimpleWater
+                // - SimpleRefraction
+                // - CollisionBarrier
+                // - PhysicsSystem (Although these don't seem to keep the entity ID)
+                // ... we should probably auto-generate these resources when adding new entities of these types.
+
                 //Add to composite & save name
                 composite.functions.Add(newEntity);
                 CurrentInstance.compositeLookup.SetEntityName(composite.shortGUID, thisID, textBox1.Text);

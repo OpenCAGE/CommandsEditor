@@ -52,10 +52,6 @@ namespace CathodeEditorGUI
                     //desc = NodeDBEx.GetEntityName(entity.nodeID) + " (" + HierarchyToString(((ProxyEntity)entity).hierarchy, currentFlowgraph) + ")";
                     desc = CurrentInstance.compositeLookup.GetEntityName(composite.shortGUID, entity.shortGUID) + " (*PROXY*)";
                     break;
-                case EntityVariant.NOT_SETUP:
-                    //desc = NodeDBEx.GetEntityName(entity.nodeID);
-                    desc = CurrentInstance.compositeLookup.GetEntityName(composite.shortGUID, entity.shortGUID) + " (*NOT SETUP*)";
-                    break;
             }
             return "[" + entity.shortGUID.ToString() + "] " + desc;
         }
@@ -77,7 +73,7 @@ namespace CathodeEditorGUI
                     if (cachedEntityName.ContainsKey(ents[x].shortGUID))
                     {
                         //TODO: Figure out why this is happening... aren't node IDs meant to be unique to the whole PAK? Maybe it's per composite?
-                        string bleh = "";
+                        //TODO-MAJOR: update!! i've re-written this system now to make it per-composite, we should handle that here!!
                     }
                     else
                     {
@@ -254,10 +250,6 @@ namespace CathodeEditorGUI
             int newAnimCount = 0;
             int originalLinkCount = 0;
             int newLinkCount = 0;
-
-            //Clear unknowns
-            originalUnknownCount = comp.unknowns.Count;
-            comp.unknowns.Clear();
 
             //Clear overrides
             List<OverrideEntity> overridePurged = new List<OverrideEntity>();
