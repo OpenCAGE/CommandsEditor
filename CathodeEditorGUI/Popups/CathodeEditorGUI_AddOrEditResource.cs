@@ -20,16 +20,17 @@ namespace CathodeEditorGUI
     {
         public List<CathodeResourceReference> Resources = null;
 
+        private ShortGuid guid_parent;
         private int current_ui_offset = 7;
 
-        public CathodeEditorGUI_AddOrEditResource(List<CathodeResourceReference> resRefs, string windowTitle, bool enableAdding = false)
+        public CathodeEditorGUI_AddOrEditResource(List<CathodeResourceReference> resRefs, ShortGuid parent, string windowTitle)
         {
             Resources = resRefs;
+            guid_parent = parent;
 
             InitializeComponent();
 
             this.Text += " - " + windowTitle;
-            addNewResource.Visible = enableAdding;
 
             current_ui_offset = 7;
             resource_panel.Controls.Clear();
@@ -61,12 +62,12 @@ namespace CathodeEditorGUI
                             modelMaterialIndexes.Add(CurrentInstance.redsDB.RenderableElements[resRefs[i].startIndex + y].MaterialLibraryIndex);
 
                         GUI_Resource_RenderableInstance ui = new GUI_Resource_RenderableInstance();
-                        ui.PopulateUI(pakModelIndex, modelMaterialIndexes, WorkOutWhoUsesThisResource(resRefs[i]));
+                        ui.PopulateUI(pakModelIndex, modelMaterialIndexes);
                         resourceGroup = ui;
                         break;
                     default:
                         GUI_Resource_TempPlaceholder ui2 = new GUI_Resource_TempPlaceholder();
-                        ui2.PopulateUI(resRefs[i].entryType.ToString(), WorkOutWhoUsesThisResource(resRefs[i]));
+                        ui2.PopulateUI(resRefs[i].entryType.ToString());
                         resourceGroup = ui2;
                         break;
                 }
@@ -75,38 +76,16 @@ namespace CathodeEditorGUI
                 current_ui_offset += resourceGroup.Height + 6;
                 resource_panel.Controls.Add(resourceGroup);
             }
-
-            //TODO
-#if !DEBUG
-            addNewResource.Visible = false;
-#endif
         }
 
-        private string WorkOutWhoUsesThisResource(CathodeResourceReference resRef)
+        private void addResource_Click(object sender, EventArgs e)
         {
-            /*
-                string otherUsers = "";
-                foreach (CathodeComposite comp in CurrentInstance.commandsPAK.Composites)
-                {
-                    if (EditComposite == comp) continue;
+            //TODO: when making new resources, link them back to guid_parent
+        }
 
-                    foreach (CathodeResourceReference re in comp.resources)
-                        if (re.resourceID == resRef.resourceID)
-                            otherUsers += comp.name + ", ";
-
-                    foreach (CathodeEntity ent in comp.GetEntities())
-                    {
-                        if (EditEntity == ent) continue;
-                        foreach (CathodeResourceReference re in ent.resources)
-                            if (re.resourceID == resRef.resourceID)
-                                otherUsers += EditorUtils.GenerateEntityName(ent, comp) + ", ";
-                    }
-                }
-                if (otherUsers != "")
-                    otherUsers = otherUsers.Substring(0, otherUsers.Length - 2);
-                return otherUsers;
-            */
-            return "";
+        private void deleteResource_Click(object sender, EventArgs e)
+        {
+            //TODO
         }
 
         private void SaveChanges_Click(object sender, EventArgs e)

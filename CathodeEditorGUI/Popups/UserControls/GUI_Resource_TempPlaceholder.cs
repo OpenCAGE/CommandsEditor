@@ -17,13 +17,9 @@ namespace CathodeEditorGUI.Popups.UserControls
             InitializeComponent();
         }
 
-        public void PopulateUI(string type, string alsoUsedBy)
+        public void PopulateUI(string type)
         {
             resourceTypeInfo.Text = type;
-
-            //TEMP
-            if (alsoUsedBy != "")
-                groupBox1.Text += " (Also used by: " + alsoUsedBy + ")";
         }
     }
 }

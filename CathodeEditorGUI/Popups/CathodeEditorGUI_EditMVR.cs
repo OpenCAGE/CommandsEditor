@@ -80,7 +80,7 @@ namespace CathodeEditorGUI
             List<int> modelMaterialIndexes = new List<int>();
             for (int y = 0; y < mvr.renderableElementCount; y++)
                 modelMaterialIndexes.Add(CurrentInstance.redsDB.RenderableElements[(int)mvr.renderableElementIndex + y].MaterialLibraryIndex);
-            renderable.PopulateUI(pakModelIndex, modelMaterialIndexes, "");
+            renderable.PopulateUI(pakModelIndex, modelMaterialIndexes);
 
             //Load transform from matrix
             Vector3 scale;

@@ -30,7 +30,7 @@ namespace CathodeEditorGUI.UserControls
         /* Edit resources referenced by the resource param */
         private void openResourceEditor_Click(object sender, EventArgs e)
         {
-            CathodeEditorGUI_AddOrEditResource resourceEditor = new CathodeEditorGUI_AddOrEditResource(resRef.value, GUID_VARIABLE_DUMMY.Text, false); //todo: can we allow adding? unsure if supported by cathode even though we could support it here
+            CathodeEditorGUI_AddOrEditResource resourceEditor = new CathodeEditorGUI_AddOrEditResource(resRef.value, resRef.resourceID, GUID_VARIABLE_DUMMY.Text);
             resourceEditor.Show();
             resourceEditor.FormClosed += ResourceEditor_FormClosed1;
         }

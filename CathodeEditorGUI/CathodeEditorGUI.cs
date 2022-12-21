@@ -803,8 +803,7 @@ namespace CathodeEditorGUI
                         CathodeFunctionType function = CommandsUtils.GetFunctionType(thisFunction);
                         editFunction.Enabled = function == CathodeFunctionType.CAGEAnimation || function == CathodeFunctionType.TriggerSequence;
                     }
-                    if (CurrentInstance.textureDB != null)
-                        editEntityResources.Enabled = ((FunctionEntity)entity).resources.Count != 0;
+                    editEntityResources.Enabled = (CurrentInstance.textureDB != null);
                     break;
                 case EntityVariant.DATATYPE:
                     description = "DataType " + ((DatatypeEntity)entity).type.ToString();
@@ -998,7 +997,7 @@ namespace CathodeEditorGUI
         /* Edit resources referenced by the entity */
         private void editEntityResources_Click(object sender, EventArgs e)
         {
-            CathodeEditorGUI_AddOrEditResource resourceEditor = new CathodeEditorGUI_AddOrEditResource(((FunctionEntity)CurrentInstance.selectedEntity).resources, EditorUtils.GenerateEntityName(CurrentInstance.selectedEntity, CurrentInstance.selectedComposite), true);
+            CathodeEditorGUI_AddOrEditResource resourceEditor = new CathodeEditorGUI_AddOrEditResource(((FunctionEntity)CurrentInstance.selectedEntity).resources, CurrentInstance.selectedEntity.shortGUID, EditorUtils.GenerateEntityName(CurrentInstance.selectedEntity, CurrentInstance.selectedComposite));
             resourceEditor.Show();
             resourceEditor.FormClosed += ResourceEditor_FormClosed;
         }

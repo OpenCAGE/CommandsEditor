@@ -27,7 +27,7 @@ namespace CathodeEditorGUI.Popups.UserControls
             InitializeComponent();
         }
 
-        public void PopulateUI(int modelIndexPAK, List<int> materialIndexes, string alsoUsedBy)
+        public void PopulateUI(int modelIndexPAK, List<int> materialIndexes)
         {
             SelectedModelIndex = modelIndexPAK;
             SelectedMaterialIndexes = materialIndexes;
@@ -42,10 +42,6 @@ namespace CathodeEditorGUI.Popups.UserControls
             {
                 materials.Items.Add(CurrentInstance.materialDB.MaterialNames[materialIndexes[i]]);
             }
-
-            //TEMP
-            if (alsoUsedBy != "")
-                groupBox1.Text += " (Also used by: " + alsoUsedBy + ")";
         }
 
         private void editModel_Click(object sender, EventArgs e)
@@ -61,7 +57,7 @@ namespace CathodeEditorGUI.Popups.UserControls
 
             CathodeEditorGUI_SelectModel selectModel = (CathodeEditorGUI_SelectModel)sender;
             if (selectModel.SelectedModelIndex == -1 || selectModel.SelectedModelMaterialIndexes.Count == 0) return;
-            PopulateUI(selectModel.SelectedModelIndex, selectModel.SelectedModelMaterialIndexes, "");
+            PopulateUI(selectModel.SelectedModelIndex, selectModel.SelectedModelMaterialIndexes);
 
             OnModelSelected?.Invoke(selectModel.SelectedModelIndex);
         }
@@ -82,7 +78,7 @@ namespace CathodeEditorGUI.Popups.UserControls
             CathodeEditorGUI_SelectMaterial selectMaterial = (CathodeEditorGUI_SelectMaterial)sender;
             if (selectMaterial.SelectedMaterialIndex == -1) return;
             SelectedMaterialIndexes[selectMaterial.MaterialIndexToEdit] = selectMaterial.SelectedMaterialIndex;
-            PopulateUI(SelectedModelIndex, SelectedMaterialIndexes, "");
+            PopulateUI(SelectedModelIndex, SelectedMaterialIndexes);
             materials.SelectedIndex = selectMaterial.MaterialIndexToEdit;
 
             OnMaterialSelected?.Invoke(selectMaterial.MaterialIndexToEdit, selectMaterial.SelectedMaterialIndex);
