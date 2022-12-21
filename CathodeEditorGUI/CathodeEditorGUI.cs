@@ -796,13 +796,15 @@ namespace CathodeEditorGUI
                     if (funcComposite != null)
                         description = funcComposite.name;
                     else
-                        description = ShortGuidUtils.FindString(((FunctionEntity)entity).function);
+                        description = ShortGuidUtils.FindString(thisFunction);
                     selected_entity_name.Text = CurrentInstance.compositeLookup.GetEntityName(CurrentInstance.selectedComposite.shortGUID, entity.shortGUID);
                     if (funcComposite == null)
                     {
                         CathodeFunctionType function = CommandsUtils.GetFunctionType(thisFunction);
                         editFunction.Enabled = function == CathodeFunctionType.CAGEAnimation || function == CathodeFunctionType.TriggerSequence;
                     }
+                    if (CurrentInstance.textureDB != null)
+                        editEntityResources.Enabled = ((FunctionEntity)entity).resources.Count != 0;
                     break;
                 case EntityVariant.DATATYPE:
                     description = "DataType " + ((DatatypeEntity)entity).type.ToString();
@@ -826,9 +828,7 @@ namespace CathodeEditorGUI
             }
             selected_entity_type_description.Text = description;
 
-            //show resource editor button if this entity has a resource reference
-            if (CurrentInstance.textureDB != null)
-                editEntityResources.Enabled = CurrentInstance.selectedEntity.resources.Count != 0;
+            //show mvr editor button if this entity has a mvr link
             if (CurrentInstance.moverDB != null && CurrentInstance.moverDB.Movers.FindAll(o => o.commandsNodeID == CurrentInstance.selectedEntity.shortGUID).Count != 0)
                 editEntityMovers.Enabled = true;
 
@@ -998,13 +998,13 @@ namespace CathodeEditorGUI
         /* Edit resources referenced by the entity */
         private void editEntityResources_Click(object sender, EventArgs e)
         {
-            CathodeEditorGUI_AddOrEditResource resourceEditor = new CathodeEditorGUI_AddOrEditResource(CurrentInstance.selectedEntity.resources, EditorUtils.GenerateEntityName(CurrentInstance.selectedEntity, CurrentInstance.selectedComposite), true);
+            CathodeEditorGUI_AddOrEditResource resourceEditor = new CathodeEditorGUI_AddOrEditResource(((FunctionEntity)CurrentInstance.selectedEntity).resources, EditorUtils.GenerateEntityName(CurrentInstance.selectedEntity, CurrentInstance.selectedComposite), true);
             resourceEditor.Show();
             resourceEditor.FormClosed += ResourceEditor_FormClosed;
         }
         private void ResourceEditor_FormClosed(object sender, FormClosedEventArgs e)
         {
-            CurrentInstance.selectedEntity.resources = ((CathodeEditorGUI_AddOrEditResource)sender).Resources;
+            ((FunctionEntity)CurrentInstance.selectedEntity).resources = ((CathodeEditorGUI_AddOrEditResource)sender).Resources;
             this.BringToFront();
             this.Focus();
         }
