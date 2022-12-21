@@ -230,17 +230,16 @@ namespace CathodeEditorGUI
             if (CurrentInstance.commandsPAK == null) return;
             Cursor.Current = Cursors.WaitCursor;
 
+            byte[] backup = File.ReadAllBytes(CurrentInstance.commandsPAK.Filepath);
             try
             {
-                File.Copy(CurrentInstance.commandsPAK.Filepath, "temp", true);
                 CurrentInstance.commandsPAK.Save();
             }
             catch (Exception e)
             {
                 try
                 {
-                    File.Copy("temp", CurrentInstance.commandsPAK.Filepath, true);
-                    File.Delete("temp");
+                    File.WriteAllBytes(CurrentInstance.commandsPAK.Filepath, backup);
                 }
                 catch { }
 
@@ -248,8 +247,6 @@ namespace CathodeEditorGUI
                 MessageBox.Show("Failed to save changes!\n" + e.Message, "Failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            if (File.Exists("temp"))
-                File.Delete("temp");
 
             if (CurrentInstance.redsDB != null && CurrentInstance.redsDB.RenderableElements != null)
                 CurrentInstance.redsDB.Save();
