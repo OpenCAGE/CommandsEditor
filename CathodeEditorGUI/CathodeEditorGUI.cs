@@ -187,6 +187,17 @@ namespace CathodeEditorGUI
             try
             {
                 string baseLevelPath = CurrentInstance.commandsPAK.Filepath.Substring(0, CurrentInstance.commandsPAK.Filepath.Length - ("WORLD/COMMANDS.PAK").Length);
+
+                //The game has two hard-coded _PATCH overrides which change the CommandsPAK but not the assets
+                string levelName = env_list.Items[env_list.SelectedIndex].ToString();
+                switch (levelName)
+                {
+                    case @"DLC\BSPNOSTROMO_RIPLEY_PATCH":
+                    case @"DLC\BSPNOSTROMO_TWOTEAMS_PATCH":
+                        baseLevelPath = baseLevelPath.Replace(levelName, levelName.Substring(0, levelName.Length - ("_PATCH").Length));
+                        break;
+                }
+                
                 CurrentInstance.modelDB = new CathodeModels(baseLevelPath + "RENDERABLE/MODELS_LEVEL.BIN",
                                                             baseLevelPath + "RENDERABLE/LEVEL_MODELS.PAK");
                 CurrentInstance.redsDB = new RenderableElementsDatabase(baseLevelPath + "WORLD/REDS.BIN");
