@@ -32,13 +32,18 @@ namespace CathodeEditorGUI
 
             this.Text += " - " + windowTitle;
 
+            RefreshUI();
+        }
+
+        private void RefreshUI()
+        {
             current_ui_offset = 7;
             resource_panel.Controls.Clear();
 
-            for (int i = 0; i < resRefs.Count; i++)
+            for (int i = 0; i < Resources.Count; i++)
             {
                 ResourceUserControl resourceGroup;
-                switch (resRefs[i].entryType)
+                switch (Resources[i].entryType)
                 {
                     case CathodeResourceReferenceType.RENDERABLE_INSTANCE:
                         //Convert model BIN index from REDs to PAK index
@@ -47,7 +52,7 @@ namespace CathodeEditorGUI
                         {
                             for (int z = 0; z < CurrentInstance.modelDB.Models[y].Submeshes.Count; z++)
                             {
-                                if (CurrentInstance.modelDB.Models[y].Submeshes[z].binIndex == CurrentInstance.redsDB.RenderableElements[resRefs[i].startIndex].ModelIndex)
+                                if (CurrentInstance.modelDB.Models[y].Submeshes[z].binIndex == CurrentInstance.redsDB.RenderableElements[Resources[i].startIndex].ModelIndex)
                                 {
                                     pakModelIndex = y;
                                     break;
@@ -58,8 +63,8 @@ namespace CathodeEditorGUI
 
                         //Get all remapped materials from REDs
                         List<int> modelMaterialIndexes = new List<int>();
-                        for (int y = 0; y < resRefs[i].count; y++)
-                            modelMaterialIndexes.Add(CurrentInstance.redsDB.RenderableElements[resRefs[i].startIndex + y].MaterialLibraryIndex);
+                        for (int y = 0; y < Resources[i].count; y++)
+                            modelMaterialIndexes.Add(CurrentInstance.redsDB.RenderableElements[Resources[i].startIndex + y].MaterialLibraryIndex);
 
                         GUI_Resource_RenderableInstance ui = new GUI_Resource_RenderableInstance();
                         ui.PopulateUI(pakModelIndex, modelMaterialIndexes);
@@ -67,11 +72,11 @@ namespace CathodeEditorGUI
                         break;
                     default:
                         GUI_Resource_TempPlaceholder ui2 = new GUI_Resource_TempPlaceholder();
-                        ui2.PopulateUI(resRefs[i].entryType.ToString());
+                        ui2.PopulateUI(Resources[i].entryType.ToString());
                         resourceGroup = ui2;
                         break;
                 }
-                resourceGroup.ResourceReference = resRefs[i];
+                resourceGroup.ResourceReference = Resources[i];
                 resourceGroup.Location = new Point(15, current_ui_offset);
                 current_ui_offset += resourceGroup.Height + 6;
                 resource_panel.Controls.Add(resourceGroup);
@@ -80,6 +85,15 @@ namespace CathodeEditorGUI
 
         private void addResource_Click(object sender, EventArgs e)
         {
+            CathodeResourceReference test = new CathodeResourceReference();
+            test.entityID = guid_parent;
+            test.entryType = CathodeResourceReferenceType.RENDERABLE_INSTANCE;
+            test.startIndex = 50;
+            test.count = 1;
+            Resources.Add(test);
+
+            RefreshUI();
+
             //TODO: when making new resources, link them back to guid_parent
         }
 

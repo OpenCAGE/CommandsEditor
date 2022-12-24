@@ -225,7 +225,7 @@ namespace CathodeEditorGUI
         }
 
         /* Save the current edits */
-        public void SaveCommandsPAK()
+        private void save_commands_pak_Click(object sender, EventArgs e)
         {
             if (CurrentInstance.commandsPAK == null) return;
             Cursor.Current = Cursors.WaitCursor;
@@ -236,7 +236,7 @@ namespace CathodeEditorGUI
                 backup = File.ReadAllBytes(CurrentInstance.commandsPAK.Filepath);
                 CurrentInstance.commandsPAK.Save();
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
                 try
                 {
@@ -246,7 +246,7 @@ namespace CathodeEditorGUI
                 catch { }
 
                 Cursor.Current = Cursors.Default;
-                MessageBox.Show("Failed to save changes!\n" + e.Message, "Failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Failed to save changes!\n" + ex.Message, "Failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -257,26 +257,7 @@ namespace CathodeEditorGUI
                 CurrentInstance.moverDB.Save();
 
             Cursor.Current = Cursors.Default;
-        }
-        private void save_commands_pak_Click(object sender, EventArgs e)
-        {
-            SaveCommandsPAK();
             MessageBox.Show("Saved changes!", "Saved.", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-        private CathodeComposite GetCompositeContainingEntity(ShortGuid entityID)
-        {
-            for (int i = 0; i < CurrentInstance.commandsPAK.Composites.Count; i++)
-            {
-                List<CathodeEntity> entities = CurrentInstance.commandsPAK.Composites[i].GetEntities();
-                for (int x = 0; x < entities.Count; x++)
-                {
-                    if (entities[x].shortGUID == entityID)
-                    {
-                        return CurrentInstance.commandsPAK.Composites[i];
-                    }
-                }
-            }
-            return null;
         }
 
         /* Edit the loaded COMMANDS.PAK's root composite */
