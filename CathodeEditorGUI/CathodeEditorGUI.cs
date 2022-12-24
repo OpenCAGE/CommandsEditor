@@ -231,24 +231,24 @@ namespace CathodeEditorGUI
             Cursor.Current = Cursors.WaitCursor;
 
             byte[] backup = null;
-            //try
-            //{
+            try
+            {
                 backup = File.ReadAllBytes(CurrentInstance.commandsPAK.Filepath);
                 CurrentInstance.commandsPAK.Save();
-            //}
-            //catch (Exception ex)
-            //{
-            //    try
-            //    {
-            //        if (backup != null)
-            //            File.WriteAllBytes(CurrentInstance.commandsPAK.Filepath, backup);
-            //    }
-            //    catch { }
-            //
-            //    Cursor.Current = Cursors.Default;
-            //    MessageBox.Show("Failed to save changes!\n" + ex.Message, "Failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //    return;
-            //}
+            }
+            catch (Exception ex)
+            {
+                try
+                {
+                    if (backup != null)
+                        File.WriteAllBytes(CurrentInstance.commandsPAK.Filepath, backup);
+                }
+                catch { }
+            
+                Cursor.Current = Cursors.Default;
+                MessageBox.Show("Failed to save changes!\n" + ex.Message, "Failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
             if (CurrentInstance.redsDB != null && CurrentInstance.redsDB.RenderableElements != null)
                 CurrentInstance.redsDB.Save();

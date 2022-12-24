@@ -49,7 +49,7 @@
             this.openResourceEditor.Name = "openResourceEditor";
             this.openResourceEditor.Size = new System.Drawing.Size(304, 23);
             this.openResourceEditor.TabIndex = 0;
-            this.openResourceEditor.Text = "Edit Resource";
+            this.openResourceEditor.Text = "Edit Resource References";
             this.openResourceEditor.UseVisualStyleBackColor = true;
             this.openResourceEditor.Click += new System.EventHandler(this.openResourceEditor_Click);
             // 
