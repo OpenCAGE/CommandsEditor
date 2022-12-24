@@ -32,8 +32,8 @@
             this.modelRendererHost = new System.Windows.Forms.Integration.ElementHost();
             this.FileTree = new System.Windows.Forms.TreeView();
             this.modelPreviewArea = new System.Windows.Forms.GroupBox();
-            this.selectModel = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.selectModel = new System.Windows.Forms.Button();
             this.modelPreviewArea.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -67,6 +67,15 @@
             this.modelPreviewArea.TabStop = false;
             this.modelPreviewArea.Text = "groupBox1";
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(9, 572);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(117, 39);
+            this.label1.TabIndex = 2;
+            this.label1.Text = "[Zoom] = Scrollwheel\r\n[Rotate] = Right Mouse\r\n[Drag] = Middle Mouse";
+            // 
             // selectModel
             // 
             this.selectModel.Location = new System.Drawing.Point(536, 572);
@@ -77,15 +86,6 @@
             this.selectModel.UseVisualStyleBackColor = true;
             this.selectModel.Click += new System.EventHandler(this.selectModel_Click);
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(9, 572);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(117, 39);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "[Zoom] = Scrollwheel\r\n[Rotate] = Right Mouse\r\n[Drag] = Middle Mouse";
-            // 
             // CathodeEditorGUI_SelectModel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -95,6 +95,7 @@
             this.Controls.Add(this.FileTree);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
             this.Name = "CathodeEditorGUI_SelectModel";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Select Model";

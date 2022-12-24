@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CathodeEditorGUI_RenameEntity));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.entity_name = new System.Windows.Forms.TextBox();
             this.save_entity_name = new System.Windows.Forms.Button();
@@ -73,14 +74,16 @@
             this.label1.TabIndex = 2;
             this.label1.Text = "Entity Name";
             // 
-            // CathodeEditorGUI_RenameNode
+            // CathodeEditorGUI_RenameEntity
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 116);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Name = "CathodeEditorGUI_RenameNode";
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
+            this.Name = "CathodeEditorGUI_RenameEntity";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Rename Entity";
             this.groupBox1.ResumeLayout(false);

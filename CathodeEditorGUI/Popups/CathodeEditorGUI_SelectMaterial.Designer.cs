@@ -30,9 +30,9 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CathodeEditorGUI_SelectMaterial));
             this.modelPreviewArea = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.selectMaterial = new System.Windows.Forms.Button();
             this.materialList = new System.Windows.Forms.ListBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.modelPreviewArea.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -46,6 +46,15 @@
             this.modelPreviewArea.TabIndex = 105;
             this.modelPreviewArea.TabStop = false;
             this.modelPreviewArea.Text = "Preview";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(112, 134);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(73, 13);
+            this.label1.TabIndex = 2;
+            this.label1.Text = "Coming Soon!";
             // 
             // selectMaterial
             // 
@@ -65,15 +74,6 @@
             this.materialList.Size = new System.Drawing.Size(366, 628);
             this.materialList.TabIndex = 106;
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(112, 134);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(73, 13);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "Coming Soon!";
-            // 
             // CathodeEditorGUI_SelectMaterial
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -83,6 +83,7 @@
             this.Controls.Add(this.modelPreviewArea);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
             this.Name = "CathodeEditorGUI_SelectMaterial";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Select Material";
