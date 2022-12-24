@@ -32,11 +32,15 @@ namespace CathodeEditorGUI.UserControls
         {
             CathodeEditorGUI_AddOrEditResource resourceEditor = new CathodeEditorGUI_AddOrEditResource(resRef.value, resRef.resourceID, GUID_VARIABLE_DUMMY.Text);
             resourceEditor.Show();
-            resourceEditor.FormClosed += ResourceEditor_FormClosed1;
+            resourceEditor.OnSaved += OnResourceEditorSaved;
+            resourceEditor.FormClosed += ResourceEditor_FormClosed;
         }
-        private void ResourceEditor_FormClosed1(object sender, FormClosedEventArgs e)
+        private void OnResourceEditorSaved(List<CathodeResourceReference> resources)
         {
-            resRef.value = ((CathodeEditorGUI_AddOrEditResource)sender).Resources;
+            resRef.value = resources;
+        }
+        private void ResourceEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
             this.BringToFront();
             this.Focus();
         }

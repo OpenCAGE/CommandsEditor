@@ -231,24 +231,24 @@ namespace CathodeEditorGUI
             Cursor.Current = Cursors.WaitCursor;
 
             byte[] backup = null;
-            try
-            {
+            //try
+            //{
                 backup = File.ReadAllBytes(CurrentInstance.commandsPAK.Filepath);
                 CurrentInstance.commandsPAK.Save();
-            }
-            catch (Exception ex)
-            {
-                try
-                {
-                    if (backup != null)
-                        File.WriteAllBytes(CurrentInstance.commandsPAK.Filepath, backup);
-                }
-                catch { }
-
-                Cursor.Current = Cursors.Default;
-                MessageBox.Show("Failed to save changes!\n" + ex.Message, "Failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    try
+            //    {
+            //        if (backup != null)
+            //            File.WriteAllBytes(CurrentInstance.commandsPAK.Filepath, backup);
+            //    }
+            //    catch { }
+            //
+            //    Cursor.Current = Cursors.Default;
+            //    MessageBox.Show("Failed to save changes!\n" + ex.Message, "Failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //    return;
+            //}
 
             if (CurrentInstance.redsDB != null && CurrentInstance.redsDB.RenderableElements != null)
                 CurrentInstance.redsDB.Save();
@@ -976,15 +976,23 @@ namespace CathodeEditorGUI
         }
 
         /* Edit resources referenced by the entity */
+        private FunctionEntity resourceFunctionToEdit = null;
         private void editEntityResources_Click(object sender, EventArgs e)
         {
+            resourceFunctionToEdit = ((FunctionEntity)CurrentInstance.selectedEntity);
+
             CathodeEditorGUI_AddOrEditResource resourceEditor = new CathodeEditorGUI_AddOrEditResource(((FunctionEntity)CurrentInstance.selectedEntity).resources, CurrentInstance.selectedEntity.shortGUID, EditorUtils.GenerateEntityName(CurrentInstance.selectedEntity, CurrentInstance.selectedComposite));
             resourceEditor.Show();
+            resourceEditor.OnSaved += OnResourceEditorSaved;
             resourceEditor.FormClosed += ResourceEditor_FormClosed;
+        }
+        private void OnResourceEditorSaved(List<CathodeResourceReference> resources)
+        {
+            if (resourceFunctionToEdit != null)
+                resourceFunctionToEdit.resources = resources;
         }
         private void ResourceEditor_FormClosed(object sender, FormClosedEventArgs e)
         {
-            ((FunctionEntity)CurrentInstance.selectedEntity).resources = ((CathodeEditorGUI_AddOrEditResource)sender).Resources;
             this.BringToFront();
             this.Focus();
         }
