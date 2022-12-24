@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CathodeEditorGUI_EditRootComposite));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.button1 = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
@@ -66,7 +67,7 @@
             this.label2.TabIndex = 3;
             this.label2.Text = "Root Composite";
             // 
-            // comboBox1
+            // rootComposite
             // 
             this.rootComposite.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.rootComposite.FormattingEnabled = true;
@@ -82,18 +83,20 @@
             "DIRECTION",
             "INTEGER"});
             this.rootComposite.Location = new System.Drawing.Point(110, 24);
-            this.rootComposite.Name = "comboBox1";
+            this.rootComposite.Name = "rootComposite";
             this.rootComposite.Size = new System.Drawing.Size(641, 21);
             this.rootComposite.TabIndex = 0;
             // 
-            // CathodeEditorGUI_EditEntryPoint
+            // CathodeEditorGUI_EditRootComposite
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 114);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Name = "CathodeEditorGUI_EditEntryPoint";
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
+            this.Name = "CathodeEditorGUI_EditRootComposite";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Edit Root Composite";
             this.groupBox1.ResumeLayout(false);

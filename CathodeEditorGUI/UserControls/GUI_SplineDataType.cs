@@ -15,6 +15,8 @@ namespace CathodeEditorGUI.UserControls
 {
     public partial class GUI_SplineDataType : UserControl
     {
+        //TODO TODO TODO TODO !!!!!!!!!!!!!
+
         public GUI_SplineDataType()
         {
             InitializeComponent();
@@ -22,7 +24,8 @@ namespace CathodeEditorGUI.UserControls
 
         public void PopulateUI(CathodeSpline cSpline, ShortGuid paramID)
         {
-            UNIMPLEMENTED_VARIABLE_TYPE.Text = ShortGuidUtils.FindString(paramID) + " (" + paramID.ToString() + ")";
+            UNIMPLEMENTED_VARIABLE_TYPE.Text = ShortGuidUtils.FindString(paramID);
+
             //todo: dynamically populate UI
         }
     }

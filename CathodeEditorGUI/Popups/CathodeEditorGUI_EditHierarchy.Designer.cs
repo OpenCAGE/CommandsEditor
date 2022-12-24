@@ -33,6 +33,8 @@
             this.compositeName = new System.Windows.Forms.Label();
             this.SelectEntity = new System.Windows.Forms.Button();
             this.FollowEntityThrough = new System.Windows.Forms.Button();
+            this.searchList = new System.Windows.Forms.Button();
+            this.searchQuery = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // composite_content
@@ -40,9 +42,9 @@
             this.composite_content.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.composite_content.FormattingEnabled = true;
             this.composite_content.HorizontalScrollbar = true;
-            this.composite_content.Location = new System.Drawing.Point(12, 35);
+            this.composite_content.Location = new System.Drawing.Point(12, 61);
             this.composite_content.Name = "composite_content";
-            this.composite_content.Size = new System.Drawing.Size(444, 641);
+            this.composite_content.Size = new System.Drawing.Size(444, 615);
             this.composite_content.TabIndex = 145;
             this.composite_content.SelectedIndexChanged += new System.EventHandler(this.composite_content_SelectedIndexChanged);
             // 
@@ -75,17 +77,37 @@
             this.FollowEntityThrough.UseVisualStyleBackColor = true;
             this.FollowEntityThrough.Click += new System.EventHandler(this.FollowEntityThrough_Click);
             // 
+            // searchList
+            // 
+            this.searchList.Location = new System.Drawing.Point(381, 32);
+            this.searchList.Name = "searchList";
+            this.searchList.Size = new System.Drawing.Size(75, 23);
+            this.searchList.TabIndex = 149;
+            this.searchList.Text = "Search";
+            this.searchList.UseVisualStyleBackColor = true;
+            this.searchList.Click += new System.EventHandler(this.searchList_Click);
+            // 
+            // searchQuery
+            // 
+            this.searchQuery.Location = new System.Drawing.Point(12, 33);
+            this.searchQuery.Name = "searchQuery";
+            this.searchQuery.Size = new System.Drawing.Size(363, 20);
+            this.searchQuery.TabIndex = 150;
+            // 
             // CathodeEditorGUI_EditHierarchy
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(468, 717);
+            this.Controls.Add(this.searchQuery);
+            this.Controls.Add(this.searchList);
             this.Controls.Add(this.FollowEntityThrough);
             this.Controls.Add(this.SelectEntity);
             this.Controls.Add(this.compositeName);
             this.Controls.Add(this.composite_content);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
             this.Name = "CathodeEditorGUI_EditHierarchy";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Edit Hierarchy";
@@ -100,5 +122,7 @@
         private System.Windows.Forms.Label compositeName;
         private System.Windows.Forms.Button SelectEntity;
         private System.Windows.Forms.Button FollowEntityThrough;
+        private System.Windows.Forms.Button searchList;
+        private System.Windows.Forms.TextBox searchQuery;
     }
 }

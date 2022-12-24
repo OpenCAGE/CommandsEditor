@@ -18,6 +18,8 @@ namespace CathodeEditorGUI
         public Action<List<ShortGuid>> OnHierarchyGenerated;
         private List<ShortGuid> hierarchy = new List<ShortGuid>();
 
+        private List<string> composite_content_RAW = new List<string>();
+
         private CathodeEntity selectedEntity = null;
         private CathodeComposite selectedComposite = null;
 
@@ -25,6 +27,20 @@ namespace CathodeEditorGUI
         {
             InitializeComponent();
             LoadComposite(startingComposite.name);
+        }
+
+        /* Search the list */
+        private string currentSearch = "";
+        private void searchList_Click(object sender, EventArgs e)
+        {
+            if (searchQuery.Text == currentSearch) return;
+            List<string> matched = new List<string>();
+            foreach (string item in composite_content_RAW) if (item.ToUpper().Contains(searchQuery.Text.ToUpper())) matched.Add(item);
+            composite_content.BeginUpdate();
+            composite_content.Items.Clear();
+            for (int i = 0; i < matched.Count; i++) composite_content.Items.Add(matched[i]);
+            composite_content.EndUpdate();
+            currentSearch = searchQuery.Text;
         }
 
         /* Select a new entity from the composite, show fall through option if available */
@@ -62,12 +78,14 @@ namespace CathodeEditorGUI
             selectedComposite = CurrentInstance.commandsPAK.Composites[CurrentInstance.commandsPAK.GetFileIndex(FileName)];
             compositeName.Text = selectedComposite.name;
             composite_content.BeginUpdate();
+            composite_content_RAW.Clear();
             composite_content.Items.Clear();
             //We only populate function entities here
             for (int i = 0; i < selectedComposite.functions.Count; i++)
             {
                 string desc = EditorUtils.GenerateEntityName(selectedComposite.functions[i], selectedComposite);
                 composite_content.Items.Add(desc);
+                composite_content_RAW.Add(desc);
             }
             composite_content.EndUpdate();
         }

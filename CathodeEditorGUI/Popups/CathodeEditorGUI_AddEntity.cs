@@ -102,6 +102,10 @@ namespace CathodeEditorGUI
             generateHierarchy.Visible = true;
             createNewEntity.Enabled = false;
             hierarchy = null;
+
+            //TODO: Remove this warning when the checksum is figured out :)
+            if (createOverrideEntity.Checked)
+                MessageBox.Show("Please be aware that overrides are currently non-functional in-game due to an extra checksum used by Cathode to verify their existence, which has not yet been reverse engineered.\n\nIf you think you can help, feel free to submit a PR to CathodeLib on GitHub with the fix!", "Wait a minute!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
         /* Generate hierarchy for proxy/override */
@@ -173,7 +177,7 @@ namespace CathodeEditorGUI
                         thisParam = new CathodeEnum();
                         ((CathodeEnum)thisParam).enumID = new ShortGuid("4C-B9-82-48"); //ALERTNESS_STATE is the first alphabetically
                         break;
-                    case CathodeDataType.SHORT_GUID:
+                    case CathodeDataType.RESOURCE:
                         thisParam = new CathodeResource();
                         ((CathodeResource)thisParam).resourceID = new ShortGuid("00-00-00-00");
                         break;
@@ -212,6 +216,23 @@ namespace CathodeEditorGUI
                 newEntity.function = function;
                 //TODO: auto populate params here based on defaults
 
+                // TODO: these types of entities seem to have their own non-parameterised resources:
+                // - ParticleEmitterReference
+                // - RibbonEmitterReference
+                // - TRAV_1ShotSpline
+                // - LightReference
+                // - SurfaceEffectSphere
+                // - FogSphere
+                // - NavMeshBarrier
+                // - FogBox
+                // - SoundBarrier
+                // - SurfaceEffectBox
+                // - SimpleWater
+                // - SimpleRefraction
+                // - CollisionBarrier
+                // - PhysicsSystem (Although these don't seem to keep the entity ID)
+                // ... we should probably auto-generate these resources when adding new entities of these types.
+
                 //Add to composite & save name
                 composite.functions.Add(newEntity);
                 CurrentInstance.compositeLookup.SetEntityName(composite.shortGUID, thisID, textBox1.Text);
@@ -239,7 +260,7 @@ namespace CathodeEditorGUI
                 //Create ProxyEntity
                 ProxyEntity newEntity = new ProxyEntity(thisID);
                 newEntity.hierarchy = hierarchy;
-                newEntity.extraId = ShortGuidUtils.Generate("temp"); //TODO: how do we generate this?
+                newEntity.extraId = ShortGuidUtils.Generate("temp"); //dunno what this val is meant to be, but apparently this works!
 
                 newEntity.parameters.Add(new CathodeLoadedParameter(ShortGuidUtils.Generate("proxy_filter_targets"), new CathodeBool() { value = false }));
                 newEntity.parameters.Add(new CathodeLoadedParameter(ShortGuidUtils.Generate("proxy_enable_on_reset"), new CathodeBool() { value = false }));
@@ -260,7 +281,7 @@ namespace CathodeEditorGUI
                 //Create OverrideEntity
                 OverrideEntity newEntity = new OverrideEntity(thisID);
                 newEntity.hierarchy = hierarchy;
-                newEntity.checksum = ShortGuidUtils.Generate("temp"); //TODO: how do we generate this?
+                newEntity.checksum = ShortGuidUtils.Generate("temp"); //TODO: how do we generate this? without it, i think overrides won't work.
 
                 //Add to composite & save name
                 composite.overrides.Add(newEntity);

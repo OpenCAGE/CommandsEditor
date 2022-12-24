@@ -1,12 +1,14 @@
 using CATHODE;
+using CATHODE.Assets;
 using CATHODE.Commands;
+using CATHODE.LEGACY;
 using CATHODE.Misc;
 using CathodeEditorGUI.UserControls;
 using CathodeLib;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -38,13 +40,28 @@ namespace CathodeEditorGUI
             if (env_list.Items.Contains("FRONTEND")) env_list.SelectedItem = "FRONTEND";
             else env_list.SelectedIndex = 0;
 
-#if debug
+            this.Text = "OpenCAGE Cathode Editor";
+            if (OpenCAGE.SettingsManager.GetBool("CONFIG_ShowPlatform") &&
+                OpenCAGE.SettingsManager.GetString("META_GameVersion") != "")
+            {
+                switch (OpenCAGE.SettingsManager.GetString("META_GameVersion"))
+                {
+                    case "STEAM":
+                        this.Text += " - Steam";
+                        break;
+                    case "EPIC_GAMES_STORE":
+                        this.Text += " - Epic Games Store";
+                        break;
+                    case "GOG":
+                        this.Text += " - GoG";
+                        break;
+                }
+            }
+
+            ClearUI(true, true, true);
+
+#if DEBUG
             button1.Visible = true;
-            button2.Visible = true;
-            button3.Visible = true;
-            button4.Visible = true;
-            button5.Visible = true;
-            button6.Visible = true;
 #endif
         }
 
@@ -69,13 +86,11 @@ namespace CathodeEditorGUI
                 composite_content_RAW.Clear();
                 composite_content.EndUpdate();
                 CurrentInstance.selectedComposite = null;
-                editCompositeResources.Visible = false;
             }
             if (clear_parameter_list)
             {
                 CurrentInstance.selectedEntity = null;
-                selected_entity_id.Text = "";
-                selected_entity_type.Text = "";
+                entityInfoGroup.Text = "Selected Entity Info";
                 selected_entity_type_description.Text = "";
                 selected_entity_name.Text = "";
                 for (int i = 0; i < entity_params.Controls.Count; i++) 
@@ -84,11 +99,12 @@ namespace CathodeEditorGUI
                 entity_children.Items.Clear();
                 currentlyShowingChildLinks = true;
                 jumpToComposite.Visible = false;
-                editTriggerSequence.Visible = false;
-                editCAGEAnimationKeyframes.Visible = false;
-                editEntityResources.Visible = false;
+                editFunction.Enabled = false;
+                editEntityResources.Enabled = false;
+                editEntityMovers.Enabled = false;
                 renameSelectedNode.Enabled = true;
                 duplicateSelectedNode.Enabled = true;
+                hierarchyDisplay.Visible = false;
             }
         }
 
@@ -99,39 +115,18 @@ namespace CathodeEditorGUI
             env_list.Invoke(new Action(() => { env_list.Enabled = shouldEnable; }));
         }
 
-        /* Load a COMMANDS.PAK into the editor */
+        /* Load a COMMANDS.PAK into the editor with additional stuff */
         Task currentBackgroundCacher = null;
         public void LoadCommandsPAK(string level)
         {
             //Reset UI
             ClearUI(true, true, true);
             EditorUtils.ResetHierarchyPurgeCache();
-            CurrentInstance.commandsPAK = null;
 
-            //Load
-            string path_to_ENV = SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + level;
-            try
-            {
-                CurrentInstance.commandsPAK = new CommandsPAK(path_to_ENV + "/WORLD/COMMANDS.PAK");
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show("Failed to load COMMANDS.PAK!\n" + e.Message, "Failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                CurrentInstance.commandsPAK = null;
-                return;
-            }
-
-            //Sanity check
-            if (!CurrentInstance.commandsPAK.Loaded)
-            {
-                MessageBox.Show("Failed to load COMMANDS.PAK!\nPlease place this executable in your Alien: Isolation folder.", "Environment error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-            else if (CurrentInstance.commandsPAK.EntryPoints[0] == null)
-            {
-                MessageBox.Show("Failed to load COMMANDS.PAK!\nPlease reset your game files.", "COMMANDS.PAK corrupted!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
+            //Load everything
+            LoadCommands(level);
+            /*Task.Factory.StartNew(() => */LoadAssets()/*)*/;
+            /*Task.Factory.StartNew(() => */LoadMovers()/*)*/;
 
             //Begin caching entity names so we don't have to keep generating them
             CurrentInstance.compositeLookup = new EntityNameLookup(CurrentInstance.commandsPAK);
@@ -145,7 +140,7 @@ namespace CathodeEditorGUI
             RefreshStatsUI();
 
             //Load root composite
-            LoadComposite(CurrentInstance.commandsPAK.EntryPoints[0].name);
+            treeHelper.SelectNode(CurrentInstance.commandsPAK.EntryPoints[0].name);
         }
         private void load_commands_pak_Click(object sender, EventArgs e)
         {
@@ -157,73 +152,112 @@ namespace CathodeEditorGUI
             composite_count_display.Text = "Composite count: " + CurrentInstance.commandsPAK.Composites.Count;
         }
 
+        /* Load commands */
+        private void LoadCommands(string level)
+        {
+            CurrentInstance.commandsPAK = null;
+
+            string path_to_ENV = SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + level;
+            try
+            {
+                CurrentInstance.commandsPAK = new CommandsPAK(path_to_ENV + "/WORLD/COMMANDS.PAK");
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Failed to load COMMANDS.PAK!\n" + e.Message, "Failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                CurrentInstance.commandsPAK = null;
+                return;
+            }
+
+            if (!CurrentInstance.commandsPAK.Loaded)
+            {
+                MessageBox.Show("Failed to load COMMANDS.PAK!\nPlease place this executable in your Alien: Isolation folder.", "Environment error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            else if (CurrentInstance.commandsPAK.EntryPoints[0] == null)
+            {
+                MessageBox.Show("Failed to load COMMANDS.PAK!\nPlease reset your game files.", "COMMANDS.PAK corrupted!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+        }
+
+        /* Load assets */
+        private void LoadAssets()
+        {
+            try
+            {
+                string baseLevelPath = CurrentInstance.commandsPAK.Filepath.Substring(0, CurrentInstance.commandsPAK.Filepath.Length - ("WORLD/COMMANDS.PAK").Length);
+                CurrentInstance.modelDB = new CathodeModels(baseLevelPath + "RENDERABLE/MODELS_LEVEL.BIN",
+                                                            baseLevelPath + "RENDERABLE/LEVEL_MODELS.PAK");
+                CurrentInstance.redsDB = new RenderableElementsDatabase(baseLevelPath + "WORLD/REDS.BIN");
+                CurrentInstance.materialDB = new MaterialDatabase(baseLevelPath + "RENDERABLE/LEVEL_MODELS.MTL");
+                CurrentInstance.textureDB = new Textures(baseLevelPath + "RENDERABLE/LEVEL_TEXTURES.ALL.PAK");
+                CurrentInstance.textureDB.Load();
+                CurrentInstance.textureDB_Global = new Textures(SharedData.pathToAI + "/DATA/ENV/GLOBAL/WORLD/GLOBAL_TEXTURES.ALL.PAK");
+                CurrentInstance.textureDB_Global.Load();
+            }
+            catch
+            {
+                //Can fail if we're loading a PAK outside the game structure
+                MessageBox.Show("Failed to load asset PAKs!\nAre you opening a Commands PAK outside of a map directory?\nResource editing disabled.", "Resource editing disabled.", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                CurrentInstance.modelDB = null;
+                CurrentInstance.redsDB = null;
+                CurrentInstance.materialDB = null;
+                CurrentInstance.textureDB = null;
+                CurrentInstance.textureDB_Global = null;
+            }
+        }
+
+        /* Load mover descriptors */
+        private void LoadMovers()
+        {
+            try
+            {
+                string baseLevelPath = CurrentInstance.commandsPAK.Filepath.Substring(0, CurrentInstance.commandsPAK.Filepath.Length - ("WORLD/COMMANDS.PAK").Length);
+                CurrentInstance.moverDB = new MoverDatabase(baseLevelPath + "WORLD/MODELS.MVR");
+            }
+            catch
+            {
+                //Can fail if we're loading a MVR outside the game structure
+                MessageBox.Show("Failed to load mover descriptor database!\nAre you opening a Commands PAK outside of a map directory?\nMVR editing disabled.", "MVR editing disabled.", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                CurrentInstance.moverDB = null;
+            }
+        }
+
         /* Save the current edits */
-        public void SaveCommandsPAK()
+        private void save_commands_pak_Click(object sender, EventArgs e)
         {
             if (CurrentInstance.commandsPAK == null) return;
             Cursor.Current = Cursors.WaitCursor;
 
+            byte[] backup = null;
             try
             {
+                backup = File.ReadAllBytes(CurrentInstance.commandsPAK.Filepath);
                 CurrentInstance.commandsPAK.Save();
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
+                try
+                {
+                    if (backup != null)
+                        File.WriteAllBytes(CurrentInstance.commandsPAK.Filepath, backup);
+                }
+                catch { }
+            
                 Cursor.Current = Cursors.Default;
-                MessageBox.Show("Failed to save COMMANDS.PAK!\n" + e.Message, "Failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Failed to save changes!\n" + ex.Message, "Failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            if (modifyMVR.Checked)
-            {
-                MoverDatabase mvr = new MoverDatabase(CurrentInstance.commandsPAK.Filepath.Replace("COMMANDS.PAK", "MODELS.MVR"));
-                for (int i = 0; i < mvr.Movers.Count; i++)
-                {
-                    /*
-                    if (mvr.Movers[i].IsThisTypeID == MoverType.STATIC_MODEL)
-                    {
-                        CathodeFlowgraph flowgraph = GetFlowgraphContainingNode(mvr.Movers[i].NodeID);
-                        if (flowgraph == null) continue;
-                        if (flowgraph.name.Contains("REQUIRED_ASSETS") && flowgraph.name.Contains("VFX")) continue;
-                        MoverEntry mover = mvr.Movers[i];
-                        mover.IsThisTypeID = MoverType.DYNAMIC_MODEL;
-                        mvr.Movers[i] = mover;
-                    }
-                    */
-                    MOVER_DESCRIPTOR mover = mvr.Movers[i];
-                    //This is a **TEMP** hack!
-                    mover.Transform = 
-                        System.Numerics.Matrix4x4.CreateScale(new System.Numerics.Vector3(0, 0, 0)) * 
-                        System.Numerics.Matrix4x4.CreateFromQuaternion(System.Numerics.Quaternion.Identity) * 
-                        System.Numerics.Matrix4x4.CreateTranslation(new System.Numerics.Vector3(-9999.0f, -9999.0f, -9999.0f));
-                    mover.MoverFlags = 6;
-                    mover.NodeID = new ShortGuid("00-00-00-00");
-                    mvr.Movers[i] = mover;
-                }
-                if (mvr.FilePath != "") mvr.Save();
-            }
+            if (CurrentInstance.redsDB != null && CurrentInstance.redsDB.RenderableElements != null)
+                CurrentInstance.redsDB.Save();
+
+            if (CurrentInstance.moverDB != null && CurrentInstance.moverDB.Movers != null)
+                CurrentInstance.moverDB.Save();
 
             Cursor.Current = Cursors.Default;
-        }
-        private void save_commands_pak_Click(object sender, EventArgs e)
-        {
-            SaveCommandsPAK();
             MessageBox.Show("Saved changes!", "Saved.", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-        private CathodeComposite GetCompositeContainingEntity(ShortGuid entityID)
-        {
-            for (int i = 0; i < CurrentInstance.commandsPAK.Composites.Count; i++)
-            {
-                List<CathodeEntity> entities = CurrentInstance.commandsPAK.Composites[i].GetEntities();
-                for (int x = 0; x < entities.Count; x++)
-                {
-                    if (entities[x].shortGUID == entityID)
-                    {
-                        return CurrentInstance.commandsPAK.Composites[i];
-                    }
-                }
-            }
-            return null;
         }
 
         /* Edit the loaded COMMANDS.PAK's root composite */
@@ -471,7 +505,7 @@ namespace CathodeEditorGUI
             ClearUI(false, true, true);
             CathodeComposite entry = CurrentInstance.commandsPAK.Composites[CurrentInstance.commandsPAK.GetFileIndex(FileName)];
             CurrentInstance.selectedComposite = entry;
-            EditorUtils.PurgeDeadHierarchiesInActiveComposite();
+            EditorUtils.PurgeDeadHierarchiesInActiveComposite(); //TODO: We should really just skip this info when parsing, can remove "unknown" on composite then
             Cursor.Current = Cursors.WaitCursor;
 
             composite_content.BeginUpdate();
@@ -483,10 +517,6 @@ namespace CathodeEditorGUI
                 composite_content_RAW.Add(desc);
             }
             composite_content.EndUpdate();
-
-#if debug //TODO: PULL THIS INTO STABLE
-            editCompositeResources.Visible = true;
-#endif
 
             groupBox1.Text = entry.name;
             Cursor.Current = Cursors.Default;
@@ -528,9 +558,6 @@ namespace CathodeEditorGUI
                     break;
                 case EntityVariant.PROXY:
                     CurrentInstance.selectedComposite.proxies.Remove((ProxyEntity)CurrentInstance.selectedEntity);
-                    break;
-                case EntityVariant.NOT_SETUP:
-                    CurrentInstance.selectedComposite.unknowns.Remove(CurrentInstance.selectedEntity);
                     break;
             }
 
@@ -664,9 +691,6 @@ namespace CathodeEditorGUI
                 case EntityVariant.OVERRIDE:
                     CurrentInstance.selectedComposite.overrides.Add((OverrideEntity)newEnt);
                     break;
-                case EntityVariant.NOT_SETUP:
-                    CurrentInstance.selectedComposite.unknowns.Add(newEnt);
-                    break;
             }
 
             //Load in to UI
@@ -742,9 +766,7 @@ namespace CathodeEditorGUI
             Cursor.Current = Cursors.WaitCursor;
 
             //populate info labels
-            selected_entity_id.Text = entity.shortGUID.ToString();
-            selected_entity_type.Text = entity.variant.ToString();
-            hierarchyDisplay.Visible = false;
+            entityInfoGroup.Text = "Selected " + CultureInfo.CurrentCulture.TextInfo.ToTitleCase(entity.variant.ToString().ToLower().Replace('_', ' ')) + " Info";
             string description = "";
             switch (entity.variant)
             {
@@ -755,16 +777,14 @@ namespace CathodeEditorGUI
                     if (funcComposite != null)
                         description = funcComposite.name;
                     else
-                        description = ShortGuidUtils.FindString(((FunctionEntity)entity).function);
+                        description = ShortGuidUtils.FindString(thisFunction);
                     selected_entity_name.Text = CurrentInstance.compositeLookup.GetEntityName(CurrentInstance.selectedComposite.shortGUID, entity.shortGUID);
-#if debug //TODO: PULL THIS INTO STABLE
                     if (funcComposite == null)
                     {
                         CathodeFunctionType function = CommandsUtils.GetFunctionType(thisFunction);
-                        editTriggerSequence.Visible = function == CathodeFunctionType.TriggerSequence;
-                        editCAGEAnimationKeyframes.Visible = function == CathodeFunctionType.CAGEAnimation;
+                        editFunction.Enabled = function == CathodeFunctionType.CAGEAnimation || function == CathodeFunctionType.TriggerSequence;
                     }
-#endif
+                    editEntityResources.Enabled = (CurrentInstance.textureDB != null);
                     break;
                 case EntityVariant.DATATYPE:
                     description = "DataType " + ((DatatypeEntity)entity).type.ToString();
@@ -788,22 +808,17 @@ namespace CathodeEditorGUI
             }
             selected_entity_type_description.Text = description;
 
-            //show resource editor button if this entity has a resource reference
-            ShortGuid resourceParamID = ShortGuidUtils.Generate("resource");
-            CathodeLoadedParameter resourceParam = CurrentInstance.selectedEntity.parameters.FirstOrDefault(o => o.shortGUID == resourceParamID);
-#if debug //TODO: PULL THIS INTO STABLE
-            editEntityResources.Visible = ((resourceParam != null) || CurrentInstance.selectedEntity.resources.Count != 0);
-#endif
+            //show mvr editor button if this entity has a mvr link
+            if (CurrentInstance.moverDB != null && CurrentInstance.moverDB.Movers.FindAll(o => o.commandsNodeID == CurrentInstance.selectedEntity.shortGUID).Count != 0)
+                editEntityMovers.Enabled = true;
 
             //sort parameters by type, to improve visibility in UI
-            entity.parameters = entity.parameters.OrderBy(o => o.content?.dataType).ToList();
+            //entity.parameters = entity.parameters.OrderBy(o => o.content?.dataType).ToList();
 
             //populate parameter inputs
             int current_ui_offset = 7;
             for (int i = 0; i < entity.parameters.Count; i++)
             {
-                if (entity.parameters[i].shortGUID == resourceParamID) continue; //We use the resource editor button (above) for resource parameters
-
                 CathodeParameter this_param = entity.parameters[i].content;
                 UserControl parameterGUI = null;
 
@@ -837,9 +852,9 @@ namespace CathodeEditorGUI
                         parameterGUI = new GUI_EnumDataType();
                         ((GUI_EnumDataType)parameterGUI).PopulateUI((CathodeEnum)this_param, entity.parameters[i].shortGUID);
                         break;
-                    case CathodeDataType.SHORT_GUID:
-                        parameterGUI = new GUI_HexDataType();
-                        ((GUI_HexDataType)parameterGUI).PopulateUI((CathodeResource)this_param, entity.parameters[i].shortGUID, CurrentInstance.selectedComposite); 
+                    case CathodeDataType.RESOURCE:
+                        parameterGUI = new GUI_ResourceDataType();
+                        ((GUI_ResourceDataType)parameterGUI).PopulateUI((CathodeResource)this_param, entity.parameters[i].shortGUID);
                         break;
                     case CathodeDataType.SPLINE_DATA:
                         parameterGUI = new GUI_SplineDataType();
@@ -935,39 +950,46 @@ namespace CathodeEditorGUI
             this.Focus();
         }
 
-        /* Edit a TriggerSequence */
-        private void editTriggerSequence_Click(object sender, EventArgs e)
+        /* Edit function entity (CAGEAnimation/TriggerSequence) */
+        private void editFunction_Click(object sender, EventArgs e)
         {
-            TriggerSequenceEditor keyframeEditor = new TriggerSequenceEditor((TriggerSequence)CurrentInstance.selectedEntity);
-            keyframeEditor.Show();
-            keyframeEditor.FormClosed += KeyframeEditor_FormClosed;
+            if (CurrentInstance.selectedEntity.variant != EntityVariant.FUNCTION) return;
+            string function = ShortGuidUtils.FindString(((FunctionEntity)CurrentInstance.selectedEntity).function);
+            switch (function.ToUpper())
+            {
+                case "CAGEANIMATION":
+                    CAGEAnimationEditor cageAnimationEditor = new CAGEAnimationEditor((CAGEAnimation)CurrentInstance.selectedEntity);
+                    cageAnimationEditor.Show();
+                    cageAnimationEditor.FormClosed += FunctionEditor_FormClosed;
+                    break;
+                case "TRIGGERSEQUENCE":
+                    TriggerSequenceEditor triggerSequenceEditor = new TriggerSequenceEditor((TriggerSequence)CurrentInstance.selectedEntity);
+                    triggerSequenceEditor.Show();
+                    triggerSequenceEditor.FormClosed += FunctionEditor_FormClosed;
+                    break;
+            }
         }
-        private void KeyframeEditor_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            this.BringToFront();
-            this.Focus();
-        }
-
-        /* Edit CAGEAnimation keyframes */
-        private void editCAGEAnimationKeyframes_Click(object sender, EventArgs e)
-        {
-            CAGEAnimationEditor keyframeEditor = new CAGEAnimationEditor((CAGEAnimation)CurrentInstance.selectedEntity);
-            keyframeEditor.Show();
-            keyframeEditor.FormClosed += KeyframeEditor_FormClosed1;
-        }
-        private void KeyframeEditor_FormClosed1(object sender, FormClosedEventArgs e)
+        private void FunctionEditor_FormClosed(object sender, FormClosedEventArgs e)
         {
             this.BringToFront();
             this.Focus();
         }
 
         /* Edit resources referenced by the entity */
+        private FunctionEntity resourceFunctionToEdit = null;
         private void editEntityResources_Click(object sender, EventArgs e)
         {
-            //CurrentInstance.currentEntity - .parameters.FirstOrDefault("resources") - .resources
-            CathodeEditorGUI_AddOrEditResource resourceEditor = new CathodeEditorGUI_AddOrEditResource(CurrentInstance.selectedEntity);
+            resourceFunctionToEdit = ((FunctionEntity)CurrentInstance.selectedEntity);
+
+            CathodeEditorGUI_AddOrEditResource resourceEditor = new CathodeEditorGUI_AddOrEditResource(((FunctionEntity)CurrentInstance.selectedEntity).resources, CurrentInstance.selectedEntity.shortGUID, EditorUtils.GenerateEntityName(CurrentInstance.selectedEntity, CurrentInstance.selectedComposite));
             resourceEditor.Show();
+            resourceEditor.OnSaved += OnResourceEditorSaved;
             resourceEditor.FormClosed += ResourceEditor_FormClosed;
+        }
+        private void OnResourceEditorSaved(List<CathodeResourceReference> resources)
+        {
+            if (resourceFunctionToEdit != null)
+                resourceFunctionToEdit.resources = resources;
         }
         private void ResourceEditor_FormClosed(object sender, FormClosedEventArgs e)
         {
@@ -975,15 +997,14 @@ namespace CathodeEditorGUI
             this.Focus();
         }
 
-        /* Edit resources referenced by the composite */
-        private void editCompositeResources_Click(object sender, EventArgs e)
+        /* Edit mover instances of this entity */
+        private void editEntityMovers_Click(object sender, EventArgs e)
         {
-            //CurrentInstance.currentComposite.resources
-            CathodeEditorGUI_AddOrEditResource resourceEditor = new CathodeEditorGUI_AddOrEditResource(CurrentInstance.selectedComposite);
-            resourceEditor.Show();
-            resourceEditor.FormClosed += ResourceEditor_FormClosed1;
+            CathodeEditorGUI_EditMVR moverEditor = new CathodeEditorGUI_EditMVR(CurrentInstance.selectedEntity.shortGUID);
+            moverEditor.Show();
+            moverEditor.FormClosed += MoverEditor_FormClosed;
         }
-        private void ResourceEditor_FormClosed1(object sender, FormClosedEventArgs e)
+        private void MoverEditor_FormClosed(object sender, FormClosedEventArgs e)
         {
             this.BringToFront();
             this.Focus();
@@ -995,557 +1016,14 @@ namespace CathodeEditorGUI
             return (MessageBox.Show(msg, "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes);
         }
 
-        private void CathodeEditorGUI_Load(object sender, EventArgs e)
-        {
-            return;
-
-            MoverDatabase mvr = new MoverDatabase(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\ENV\PRODUCTION\BSP_TORRENS\WORLD\MODELS.MVR");
-            //CathodeMovers.Movers = CathodeMovers.Movers.OrderBy(o => o.IsThisTypeID).ToList<alien_mvr_entry>();
-            for (int i = 0; i < mvr.Movers.Count; i++)
-            {
-                MOVER_DESCRIPTOR thisMvr = mvr.Movers[i];
-
-                //Transform
-                //CollisionMapThingID
-                //REDSIndex
-                //ModelCount
-                //ResourcesBINIndex
-                //EnvironmentMapBINIndex
-                //IsThisTypeID
-
-                thisMvr.Transform = 
-                    System.Numerics.Matrix4x4.CreateScale(new System.Numerics.Vector3(0,0,0)) * 
-                    System.Numerics.Matrix4x4.CreateFromQuaternion(System.Numerics.Quaternion.Identity) * 
-                    System.Numerics.Matrix4x4.CreateTranslation(new System.Numerics.Vector3(-9999.0f, -9999.0f, -9999.0f));
-                //mvr.IsThisTypeID = MoverType.DYNAMIC_MODEL;
-                thisMvr.MoverFlags = 6;
-                thisMvr.NodeID = new ShortGuid("00-00-00-00");
-
-                //mvr.Unknowns5_ = new Vector4(0, 0, 0, 0);
-
-
-                //mvr.InstanceState[0].X = 1; //Light R
-                //mvr.InstanceState[0].Y = 1; //Light G
-                //mvr.InstanceState[0].Z = 1; //Light B
-
-                //mvr.InstanceState[0].W = 0; //Unused?
-
-                //mvr.InstanceState[1].X = 1; //Material tint R
-                //mvr.InstanceState[1].Y = 1; //Material tint G
-                //mvr.InstanceState[1].Z = 1; //Material tint B
-
-                //mvr.InstanceState[1].W = 1; //Unused?
-
-                // mvr.InstanceState[2].X = 10; //Brightness of volumetric light meshes
-                //mvr.InstanceState[2].Y = 0.50f; //setting this to zero makes all particle sprites black, anything higher than one fucks with lighting
-                //mvr.InstanceState[2].Z = 0;  //this seems to define some sort of offset for particle systems
-
-                //mvr.InstanceState[2].W = 10; //unused?
-                // mvr.InstanceState[3].X = 1; //unused?
-
-                // mvr.InstanceState[3].Y = 100; //Light radius?
-
-                //mvr.InstanceState[3].Z = 10; //Diffuse texture tile horizontal
-                // mvr.InstanceState[3].W = 1; //Diffuse texture tile vertical
-
-                //maybe these are normal/specular map scales if the above is diffuse?
-                // mvr.InstanceState[4].X = 10; //unused?
-                //mvr.InstanceState[4].Y = 500; //unsued?
-                //mvr.InstanceState[4].Z = 100; //unused?
-                //mvr.InstanceState[4].W = 50; //unused?
-
-                //none of these seem to do anything??
-                //mvr.UnknownID = new cGUID("00-00-00-00");
-                //mvr.NodeID = new cGUID("00-00-00-00");
-                //mvr.ResourcesBINID = new cGUID("00-00-00-00");
-                //mvr.UnknownMinMax_[0] = new Vector3(0, 0, 0);
-                //mvr.UnknownMinMax_[1] = new Vector3(0, 0, 0);
-                //mvr.UnknownValue1 = 0;
-                //mvr.UnknownValue = 0;
-                //mvr.Unknown5_ = 0;
-                //mvr.Unknowns61_ = 0;
-                //mvr.Unknowns60_ = 0;
-                //mvr.Unknown17_ = 0;
-                //mvr.Unknowns70_ = 0;
-                //mvr.Unknowns71_ = 0;
-                //mvr.UnknownMinMax_[0] = new Vector3(0, 0, 0);
-                //mvr.UnknownMinMax_[1] = new Vector3(0, 0, 0);
-
-                //one of these contains some sort of lighting info
-                //mvr.UnknownValue3_ = 0;
-                //mvr.UnknownValue4_ = 0;
-                //mvr.Unknown2_ = 0;
-                //mvr.Unknowns2_[0] = 0;
-                //mvr.Unknowns2_[1] = 0;
-                //mvr.Unknown3_.X = 0;
-                //mvr.Unknown3_.Y = 0;
-                //mvr.Unknown3_.Z = 0;
-                //mvr.Unknown3_.W = 0;
-
-                mvr.Movers[i] = thisMvr;
-            }
-            mvr.Save();
-
-            mvr = new MoverDatabase(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\ENV\PRODUCTION\TECH_HUB\WORLD\MODELS.MVR");
-            mvr.Save();
-
-            mvr = new MoverDatabase(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\ENV\PRODUCTION\BSP_TORRENS\WORLD\MODELS.MVR");
-            mvr.Movers.RemoveAll(o => o.NodeID != new ShortGuid(0));
-            mvr.Save();
-
-            Application.Exit();
-        }
-
+        #region LOCAL_TESTS
         private void button1_Click_1(object sender, EventArgs e)
         {
-            if (CurrentInstance.selectedComposite == null)
+            for (int mm = 0; mm < env_list.Items.Count; mm++)
             {
-                for (int mm = 0; mm < env_list.Items.Count; mm++)
-                {
-                    CurrentInstance.commandsPAK = new CommandsPAK(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + env_list.Items[mm].ToString() + "/WORLD/COMMANDS.PAK");
-                    foreach (CathodeComposite flow in CurrentInstance.commandsPAK.Composites)
-                    {
-                        CurrentInstance.selectedComposite = flow;
-                        EditorUtils.PurgeDeadHierarchiesInActiveComposite();
-                    }
-                    CurrentInstance.commandsPAK.Save();
-                }
-                return;
-            }
-
-            foreach (CathodeComposite flow in CurrentInstance.commandsPAK.Composites)
-            {
-                CurrentInstance.selectedComposite = flow;
-                EditorUtils.PurgeDeadHierarchiesInActiveComposite();
+                CurrentInstance.commandsPAK = new CommandsPAK(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + env_list.Items[mm].ToString() + "/WORLD/COMMANDS.PAK");
             }
         }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            foreach (CathodeComposite flow in CurrentInstance.commandsPAK.Composites)
-            {
-                flow.unknownPair = new OffsetPair(0, 0);
-            }
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-            if (CurrentInstance.selectedComposite == null) return;
-            Console.WriteLine(CurrentInstance.selectedComposite.name);
-            foreach (OverrideEntity overrider in CurrentInstance.selectedComposite.overrides)
-            {
-                //Console.WriteLine(EntityDBEx.GetEntityName(overrider.shortGUID));
-                //Console.WriteLine(EditorUtils.HierarchyToString(overrider.hierarchy));
-                //Console.WriteLine("-----");
-            }
-        }
-
-        private void button4_Click(object sender, EventArgs e)
-        {
-            //CurrentInstance.commandsPAK.Composites.RemoveAll(o => o.name != "GLOBAL" && o.name != "PAUSEMENU" && o.name != CurrentInstance.commandsPAK.EntryPoints[0].name);
-            CurrentInstance.commandsPAK.EntryPoints[0].name = "RootComposite";
-            CurrentInstance.commandsPAK.Composites.RemoveAll(o => o.name.Length > 3 && o.name.Substring(0, 3) == "AYZ");
-            CurrentInstance.commandsPAK.Save();
-        }
-
-        private void button5_Click(object sender, EventArgs e)
-        {
-            List<string> output = new List<string>();
-            
-            BinaryReader reader = new BinaryReader(File.OpenRead(@"E:\OpenCAGE_2021\CathodeEditorGUI\CathodeLib\CathodeLib\Resources\NodeDBs\entity_parameter_names.bin"));
-            while (reader.BaseStream.Position < reader.BaseStream.Length)
-            {
-                reader.BaseStream.Position += 4;
-                string bleh = reader.ReadString();
-                if (!output.Contains(bleh)) output.Add(bleh);
-            }
-            reader.Close();
-            reader = new BinaryReader(File.OpenRead(@"E:\OpenCAGE_2021\CathodeLib\CathodeLib\Resources\NodeDBs\cathode_id_map.bin"));
-            while (reader.BaseStream.Position < reader.BaseStream.Length)
-            {
-                reader.BaseStream.Position += 4;
-                string bleh = reader.ReadString();
-                if (!output.Contains(bleh)) output.Add(bleh);
-            }
-            reader.Close();
-            reader = new BinaryReader(File.OpenRead(@"E:\OpenCAGE_2021\CathodeLib\CathodeLib\Resources\NodeDBs\cathode_id_map_DUMP_ONLY.bin"));
-            while (reader.BaseStream.Position < reader.BaseStream.Length)
-            {
-                reader.BaseStream.Position += 4;
-                string bleh = reader.ReadString();
-                if (!output.Contains(bleh)) output.Add(bleh);
-            }
-            reader.Close();
-            
-            List<string> dump1 = Directory.GetFiles(@"E:\GitHub Repos\alien_assets_daniel\DEBUG\commands_bin_dumps", "*", SearchOption.AllDirectories).ToList<string>();
-            foreach (string dump in dump1)
-            {
-                List<string> lines = File.ReadAllLines(dump).ToList<string>();
-                foreach (string line in lines)
-                {
-                    if (line.Length == 0 || line.Substring(0, 1) != "8") continue;
-                    if (line.Substring(line.Length - 1) == "'")
-                    {
-                        List<string> content = line.Split('\'').ToList<string>();
-                        if (content.Count > 1)
-                        {
-                            string name = content[content.Count - 2];
-                            if (!output.Contains(name)) output.Add(name);
-                        }
-                    }
-                }
-            }
-
-            BinaryWriter writer = new BinaryWriter(File.OpenWrite("binout.bin"));
-            foreach (string out1 in output) {
-                Utilities.Write<ShortGuid>(writer, ShortGuidUtils.Generate(out1));
-                writer.Write(out1);
-            };
-            writer.Close();
-            return;
-
-            /*
-            List<string> dumps = Directory.GetFiles(@"E:\GitHub Repos\alien_assets_daniel\DEBUG", "alien_commands_bin_*", SearchOption.AllDirectories).ToList<string>();
-            List<Task> tasks = new List<Task>();
-            foreach (string dump in dumps)
-            {
-                tasks.Add(Task.Factory.StartNew(() => ParseCommandBinDump(dump)));
-            }
-            */
-
-            List<string> allStrings = new List<string>();
-            List<string> dumps = Directory.GetFiles(@"E:\OpenCAGE_2021\CathodeEditorGUI\Build", "OUT_STRINGS_*", SearchOption.AllDirectories).ToList<string>();
-            foreach (string dump in dumps)
-            {
-                foreach (string line in File.ReadAllLines(dump))
-                {
-                    if (allStrings.Contains(line)) continue;
-                    allStrings.Add(line);
-                }
-            }
-            File.WriteAllLines("OUT_STRINGS.txt", allStrings);
-
-            /*
-            List<string> dumps = Directory.GetFiles(@"E:\OpenCAGE_2021\CathodeEditorGUI\Build\out2", "*.bin", SearchOption.AllDirectories).ToList<string>();
-            List<BinComposite> composites = new List<BinComposite>();
-            foreach (string dump in dumps)
-            {
-                BinaryReader reader = new BinaryReader(File.OpenRead(dump));
-                int compCount = reader.ReadInt32();
-                for (int i = 0; i < compCount; i++)
-                {
-                    ShortGuid compositeID = Utilities.Consume<ShortGuid>(reader);
-                    BinComposite composite = composites.FirstOrDefault(o => o.id == compositeID);
-                    if (composite == null)
-                    {
-                        composite = new BinComposite();
-                        composite.id = compositeID;
-                        composites.Add(composite);
-                    }
-                    string thisPath = reader.ReadString();
-                    if (composite.path != "" && thisPath != composite.path)
-                    {
-                        Console.WriteLine("WARNING: " + composite.id + " name mismatch!");
-                        Console.WriteLine("         " + composite.path);
-                        Console.WriteLine("         " + thisPath);
-                    }
-                    composite.path = thisPath;
-                    int entityCount = reader.ReadInt32();
-                    for (int x = 0; x < entityCount; x++)
-                    {
-                        ShortGuid entityID = Utilities.Consume<ShortGuid>(reader);
-                        BinEntity entity = composite.entities.FirstOrDefault(o => o.id == entityID);
-                        if (entity == null)
-                        {
-                            entity = new BinEntity();
-                            entity.id = entityID;
-                            composite.entities.Add(entity);
-                        }
-                        string thisName = reader.ReadString();
-                        if (entity.name != "" && thisName != entity.name)
-                        {
-                            Console.WriteLine("WARNING: " + entity.id + " name mismatch!");
-                            Console.WriteLine("         " + entity.name);
-                            Console.WriteLine("         " + thisName);
-                        }
-                        entity.name = thisName;
-                    }
-                }
-                reader.Close();
-            }
-            BinaryWriter writer = new BinaryWriter(File.OpenWrite("out2/COMBINED.bin"));
-            writer.BaseStream.SetLength(0);
-            writer.Write(composites.Count);
-            for (int i = 0; i < composites.Count; i++)
-            {
-                Utilities.Write<ShortGuid>(writer, composites[i].id);
-                //writer.Write(composites[i].path);
-                writer.Write(composites[i].entities.Count);
-                for (int x = 0; x < composites[i].entities.Count; x++)
-                {
-                    Utilities.Write<ShortGuid>(writer, composites[i].entities[x].id);
-                    writer.Write(composites[i].entities[x].name);
-                }
-            }
-            writer.Close();
-            writer = new BinaryWriter(File.OpenWrite("out2/composites_only.bin"));
-            writer.BaseStream.SetLength(0);
-            writer.Write(composites.Count);
-            for (int i = 0; i < composites.Count; i++)
-            {
-                Utilities.Write<ShortGuid>(writer, composites[i].id);
-                writer.Write(composites[i].path);
-            }
-            writer.Close();
-            */
-        }
-        private void ParseCommandBinDump(string dump)
-        {
-            List<BinComposite> composites = new List<BinComposite>();
-            string[] content = File.ReadAllLines(dump);
-            List<string> strings = new List<string>();
-            for (int i = 0; i < content.Length; i++)
-            {
-                string[] split = content[i].Split(new char[] { '\'' }, 2);
-                if (split.Length != 2) continue;
-                if (split[0].Substring(split[0].Length - 2, 1) != "2") continue;
-                string value = split[1].Substring(0, split[1].Length - 1);
-                strings.Add(value);
-                if (value == "") continue;
-
-                continue;
-
-                ShortGuid compositeID;
-                try
-                {
-                    compositeID = new ShortGuid(content[i].Substring(13, 2) + "-" + content[i].Substring(11, 2) + "-" + content[i].Substring(9, 2) + "-" + content[i].Substring(7, 2));
-                }
-                catch
-                {
-                    continue;
-                }
-                BinComposite composite = composites.FirstOrDefault(o => o.id == compositeID);
-
-                switch (content[i].Substring(0, 1))
-                {
-                    case "1":
-                    {
-                        //Composite name definition! First is name, second is path.
-                        if (composite == null)
-                        {
-                            composite = new BinComposite();
-                            composite.id = compositeID;
-                            composite.name = value;
-                            composites.Add(composite);
-                        }
-                        else
-                        {
-                            composite.path = value;
-                        }
-                        break;
-                    }
-                    case "2":
-                    {
-                        if (content[i].Length < 28) continue;
-                        ShortGuid entityID;
-                        try
-                        {
-                            entityID = new ShortGuid(content[i].Substring(26, 2) + "-" + content[i].Substring(24, 2) + "-" + content[i].Substring(22, 2) + "-" + content[i].Substring(20, 2));
-                        }
-                        catch
-                        {
-                            continue;
-                        }
-                        if (composite == null)
-                        {
-                            composite = new BinComposite();
-                            composite.id = compositeID;
-                            composites.Add(composite);
-                        }
-                        BinEntity entity = composite.entities.FirstOrDefault(o => o.id == entityID);
-                        if (entity == null)
-                        {
-                            entity = new BinEntity();
-                            entity.id = entityID;
-                            composite.entities.Add(entity);
-                        }
-                        else if (entity.name != value)
-                        {
-                            Console.WriteLine("Renaming " + entityID + " from '" + entity.name + "' to '" + value + "'");
-                        }
-                        entity.name = value;
-                        break;
-                    }
-                    case "5":
-                    {
-                        if (split[0].Substring(split[0].Length - 13) != "0x58EBAC79 2 ") continue;
-                        if (content[i].Length < 28) continue;
-                        ShortGuid entityID;
-                        try
-                        {
-                            entityID = new ShortGuid(content[i].Substring(26, 2) + "-" + content[i].Substring(24, 2) + "-" + content[i].Substring(22, 2) + "-" + content[i].Substring(20, 2));
-                        }
-                        catch
-                        {
-                            continue;
-                        }
-                        if (composite == null)
-                        {
-                            composite = new BinComposite();
-                            composite.id = compositeID;
-                            composites.Add(composite);
-                        }
-                        BinEntity entity = composite.entities.FirstOrDefault(o => o.id == entityID);
-                        if (entity == null)
-                        {
-                            entity = new BinEntity();
-                            entity.id = entityID;
-                            composite.entities.Add(entity);
-                        }
-                        else if (entity.name != value)
-                        {
-                            Console.WriteLine("Renaming " + entityID + " from '" + entity.name + "' to '" + value + "'");
-                        }
-                        entity.name = value;
-                        break;
-                    }
-                    //CASE 8 would be parameter definition
-                }
-            }
-
-            File.WriteAllLines("OUT_STRINGS_" + Path.GetFileNameWithoutExtension(dump) + ".txt", strings);
-            return;
-
-            if (!Directory.Exists("out2")) Directory.CreateDirectory("out2");
-
-            BinaryWriter writer = new BinaryWriter(File.OpenWrite("out2/" + Path.GetFileNameWithoutExtension(dump) + ".bin"));
-            writer.BaseStream.SetLength(0);
-            writer.Write(composites.Count);
-            for (int i = 0; i < composites.Count; i++)
-            {
-                Utilities.Write<ShortGuid>(writer, composites[i].id);
-                writer.Write(composites[i].path);
-                writer.Write(composites[i].entities.Count);
-                for (int x = 0; x < composites[i].entities.Count; x++)
-                {
-                    Utilities.Write<ShortGuid>(writer, composites[i].entities[x].id);
-                    writer.Write(composites[i].entities[x].name);
-                }
-            }
-            writer.Close();
-        }
-
-        private void button6_Click(object sender, EventArgs e)
-        {
-            string[] decomp = File.ReadAllLines(@"E:\GitHub Repos\isolation_testground\enum_dump.txt");
-            Dictionary<string, List<string>> enums = new Dictionary<string, List<string>>();
-            List<string> dumpForWiki = new List<string>();
-            for (int i = 0; i < decomp.Length; i++)
-            {
-                string[] thisSplit = decomp[i].Split(new char[] { ' ' }, 2);
-                string enum_name = thisSplit[0];
-                string[] thisSplit2 = thisSplit[1].Split('"');
-                string enum_value = thisSplit2[1];
-
-                if (enum_name == enum_value)
-                {
-                    dumpForWiki.Add("## " + enum_name);
-                    enums.Add(enum_name, new List<string>());
-                }
-                else
-                {
-                    dumpForWiki.Add(" * " + enum_value);
-                    enums[enum_name].Add(enum_value);
-                }
-            }
-
-            File.WriteAllLines("out.md", dumpForWiki);
-            dumpForWiki.Clear();
-            foreach (var item in enums.OrderBy(x => x.Key))
-            {
-                if (item.Value.Count == 0) continue;
-                dumpForWiki.Add("## " + item.Key);
-                foreach (string val in item.Value)
-                {
-                    dumpForWiki.Add(" * " + val);
-                }
-                dumpForWiki.Add("");
-            }
-            File.WriteAllLines("out_ordered.md", dumpForWiki);
-            string breakhere = "";
-
-            /*
-            string decomp = File.ReadAllText(@"C:\Users\mattf_cr4e5zq\AI ios.c");
-            string[] decompSplit = decomp.Split(new[] { "ShortGuid::ShortGuid" }, StringSplitOptions.None);
-            List<string> test = new List<string>();
-            for (int i = 0; i < decompSplit.Length; i++)
-            {
-                string[] thisSplit = decompSplit[i].Split(new char[] { ',' }, 2);
-                if (thisSplit.Length < 2) continue;
-                if (thisSplit[1][0] != '"') continue;
-                string[] thisNewSplit = thisSplit[1].Split('"');
-                test.Add(thisNewSplit[1]);
-            }
-            List<string> test2 = new List<string>();
-            for (int i =0; i <test.Count; i++)
-            {
-                if (test2.Contains(test[i])) continue;
-                test2.Add(test[i]);
-            }
-            File.WriteAllLines("bleh.txt", test2);
-
-            JObject obj = JObject.Parse(File.ReadAllText(@"C:\Users\mattf_cr4e5zq\Downloads\out.json"));
-            JArray objA = ((JArray)obj["nodes"]);
-            for (int i = 0; i < objA.Count; i++)
-            {
-                JArray objAP = (JArray)objA[i]["parameters"];
-                for (int x = 0; x < objAP.Count; x++)
-                {
-                    if (test2.Contains(objAP[x]["name"].ToString())) continue;
-                    test2.Add(objAP[x]["name"].ToString());
-                    Console.WriteLine("Added " + objAP[x]["name"].ToString());
-                }
-            }
-
-            BinaryReader reader = new BinaryReader(File.OpenRead(@"E:\OpenCAGE_2021\CathodeEditorGUI\CathodeLib\CathodeLib\Resources\NodeDBs\entity_parameter_names.bin"));
-            reader.BaseStream.Position += 1;
-            while (reader.BaseStream.Position < reader.BaseStream.Length)
-            {
-                reader.BaseStream.Position += 4;
-                string str = reader.ReadString();
-                if (test2.Contains(str)) continue;
-                test2.Add(str);
-            }
-            reader.Close();
-
-            BinaryWriter writer = new BinaryWriter(File.OpenWrite("bleh4.bin"));
-            for (int i = 0; i < test2.Count; i++)
-            {
-                Utilities.Write<ShortGuid>(writer, ShortGuidUtils.Generate(test2[i]));
-                writer.Write(test2[i]);
-            }
-            writer.Close();
-
-            */
-        }
-    }
-
-    public class BinComposite
-    {
-        public ShortGuid id;
-        public string name = "";
-        public string path = "";
-        public List<BinEntity> entities = new List<BinEntity>();
-    }
-    public class BinEntity
-    {
-        public ShortGuid id;
-        public string name = "";
-        public List<BinParameter> parameters = new List<BinParameter>();
-    }
-    public class BinParameter
-    {
-        public ShortGuid id;
-        public string name;
+        #endregion
     }
 }
