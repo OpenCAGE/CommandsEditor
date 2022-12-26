@@ -29,6 +29,8 @@ namespace CathodeEditorGUI.Popups.UserControls
 
         public void PopulateUI(int modelIndexPAK, List<int> materialIndexes)
         {
+            //TODO: does RENDERABLE_INSTANCE utilise position/rotation?
+
             SelectedModelIndex = modelIndexPAK;
             SelectedMaterialIndexes = materialIndexes;
 

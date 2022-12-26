@@ -50,11 +50,12 @@ namespace CathodeEditorGUI
                                     "STRING",
                                     "SPLINE_DATA",
                                     "ENUM",
-                                    "SHORT_GUID",
+                                    "RESOURCE",
                                     "FILEPATH",
                                     "BOOL",
                                     "DIRECTION",
                                     "INTEGER"
+                                    // TODO: we should support other types here, such as ZONE_LINK_PTR used in doors
             });
             entityVariant.EndUpdate();
             entityVariant.SelectedIndex = 0;
