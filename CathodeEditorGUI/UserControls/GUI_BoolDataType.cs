@@ -15,14 +15,14 @@ namespace CathodeEditorGUI.UserControls
 {
     public partial class GUI_BoolDataType : UserControl
     {
-        CathodeBool boolVal = null;
+        cBool boolVal = null;
 
         public GUI_BoolDataType()
         {
             InitializeComponent();
         }
 
-        public void PopulateUI(CathodeBool cBool, ShortGuid paramID)
+        public void PopulateUI(cBool cBool, ShortGuid paramID)
         {
             boolVal = cBool;
             checkBox1.Text = ShortGuidUtils.FindString(paramID);

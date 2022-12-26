@@ -32,7 +32,7 @@ namespace CathodeEditorGUI
                 }
             }
             
-            CathodeComposite newFlowgraph = new CathodeComposite();
+            Composite newFlowgraph = new Composite();
             newFlowgraph.name = textBox1.Text;
             newFlowgraph.shortGUID = ShortGuidUtils.Generate(DateTime.Now.ToString("G"));
             CurrentInstance.commandsPAK.Composites.Add(newFlowgraph);

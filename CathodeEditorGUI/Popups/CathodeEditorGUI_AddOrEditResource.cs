@@ -19,17 +19,17 @@ namespace CathodeEditorGUI
 {
     public partial class CathodeEditorGUI_AddOrEditResource : Form
     {
-        public Action<List<CathodeResourceReference>> OnSaved;
+        public Action<List<ResourceReference>> OnSaved;
         
-        private List<CathodeResourceReference> resources = null;
+        private List<ResourceReference> resources = null;
         private ShortGuid guid_parent;
         private int current_ui_offset = 7;
 
-        public CathodeEditorGUI_AddOrEditResource(List<CathodeResourceReference> resRefs, ShortGuid parent, string windowTitle)
+        public CathodeEditorGUI_AddOrEditResource(List<ResourceReference> resRefs, ShortGuid parent, string windowTitle)
         {
-            CathodeResourceReference[] copy = new CathodeResourceReference[resRefs.Count];
+            ResourceReference[] copy = new ResourceReference[resRefs.Count];
             resRefs.CopyTo(copy);
-            resources = copy.ToList<CathodeResourceReference>();
+            resources = copy.ToList<ResourceReference>();
             guid_parent = parent;
 
             InitializeComponent();
@@ -47,39 +47,71 @@ namespace CathodeEditorGUI
 
             for (int i = 0; i < resources.Count; i++)
             {
-                ResourceUserControl resourceGroup;
+                ResourceUserControl resourceGroup = null;
                 switch (resources[i].entryType)
                 {
-                    case CathodeResourceReferenceType.RENDERABLE_INSTANCE:
-                        //Convert model BIN index from REDs to PAK index
-                        int pakModelIndex = -1;
-                        for (int y = 0; y < CurrentInstance.modelDB.Models.Count; y++)
+                    case ResourceType.ANIMATED_MODEL:
                         {
-                            for (int z = 0; z < CurrentInstance.modelDB.Models[y].Submeshes.Count; z++)
-                            {
-                                if (CurrentInstance.modelDB.Models[y].Submeshes[z].binIndex == CurrentInstance.redsDB.RenderableElements[resources[i].startIndex].ModelIndex)
-                                {
-                                    pakModelIndex = y;
-                                    break;
-                                }
-                            }
-                            if (pakModelIndex != -1) break;
+                            resourceGroup = new GUI_Resource_AnimatedModel();
+                            ((GUI_Resource_AnimatedModel)resourceGroup).PopulateUI(resources[i].startIndex);
+                            break;
                         }
+                    case ResourceType.COLLISION_MAPPING:
+                        {
+                            resourceGroup = new GUI_Resource_CollisionMapping();
+                            ((GUI_Resource_CollisionMapping)resourceGroup).PopulateUI();
+                            break;
+                        }
+                    case ResourceType.DYNAMIC_PHYSICS_SYSTEM:
+                        {
+                            resourceGroup = new GUI_Resource_DynamicPhysicsSystem();
+                            ((GUI_Resource_DynamicPhysicsSystem)resourceGroup).PopulateUI(resources[i].startIndex);
+                            break;
+                        }
+                    case ResourceType.EXCLUSIVE_MASTER_STATE_RESOURCE:
+                        {
+                            resourceGroup = new GUI_Resource_ExclusiveMasterStateResource();
+                            ((GUI_Resource_ExclusiveMasterStateResource)resourceGroup).PopulateUI();
+                            break;
+                        }
+                    case ResourceType.NAV_MESH_BARRIER_RESOURCE:
+                        {
+                            resourceGroup = new GUI_Resource_NavMeshBarrierResource();
+                            ((GUI_Resource_NavMeshBarrierResource)resourceGroup).PopulateUI();
+                            break;
+                        }
+                    case ResourceType.RENDERABLE_INSTANCE:
+                        {
+                            //Convert model BIN index from REDs to PAK index
+                            int pakModelIndex = -1;
+                            for (int y = 0; y < CurrentInstance.modelDB.Models.Count; y++)
+                            {
+                                for (int z = 0; z < CurrentInstance.modelDB.Models[y].Submeshes.Count; z++)
+                                {
+                                    if (CurrentInstance.modelDB.Models[y].Submeshes[z].binIndex == CurrentInstance.redsDB.RenderableElements[resources[i].startIndex].ModelIndex)
+                                    {
+                                        pakModelIndex = y;
+                                        break;
+                                    }
+                                }
+                                if (pakModelIndex != -1) break;
+                            }
 
-                        //Get all remapped materials from REDs
-                        List<int> modelMaterialIndexes = new List<int>();
-                        for (int y = 0; y < resources[i].count; y++)
-                            modelMaterialIndexes.Add(CurrentInstance.redsDB.RenderableElements[resources[i].startIndex + y].MaterialLibraryIndex);
+                            //Get all remapped materials from REDs
+                            List<int> modelMaterialIndexes = new List<int>();
+                            for (int y = 0; y < resources[i].count; y++)
+                                modelMaterialIndexes.Add(CurrentInstance.redsDB.RenderableElements[resources[i].startIndex + y].MaterialLibraryIndex);
 
-                        GUI_Resource_RenderableInstance ui = new GUI_Resource_RenderableInstance();
-                        ui.PopulateUI(pakModelIndex, modelMaterialIndexes);
-                        resourceGroup = ui;
-                        break;
-                    default:
-                        GUI_Resource_TempPlaceholder ui2 = new GUI_Resource_TempPlaceholder();
-                        ui2.PopulateUI(resources[i].entryType.ToString());
-                        resourceGroup = ui2;
-                        break;
+                            resourceGroup = new GUI_Resource_RenderableInstance();
+                            ((GUI_Resource_RenderableInstance)resourceGroup).PopulateUI(pakModelIndex, modelMaterialIndexes);
+                            break;
+                        }
+                    case ResourceType.TRAVERSAL_SEGMENT:
+                        {
+                            resourceGroup = new GUI_Resource_TraversalSegment();
+                            ((GUI_Resource_TraversalSegment)resourceGroup).PopulateUI();
+                            break;
+                        }
                 }
                 resourceGroup.ResourceReference = resources[i];
                 resourceGroup.Location = new Point(15, current_ui_offset);
@@ -91,7 +123,7 @@ namespace CathodeEditorGUI
         /* Add a new resource reference to the list */
         private void addResource_Click(object sender, EventArgs e)
         {
-            CathodeResourceReferenceType type = (CathodeResourceReferenceType)resourceType.SelectedIndex;
+            ResourceType type = (ResourceType)resourceType.SelectedIndex;
 
             //A resource reference list can only ever point to one of a type
             for (int i = 0; i < resources.Count; i++)
@@ -103,19 +135,23 @@ namespace CathodeEditorGUI
                 }
             }
 
-            //TODO: remove this once we support other types in the GUI
-            if (type != CathodeResourceReferenceType.RENDERABLE_INSTANCE)
-            {
-                MessageBox.Show("Type " + type + " is currently unsupported.\nThis functionality will be added in a future OpenCAGE update!", "Coming soon...", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                return;
-            }
-
-            CathodeResourceReference newReference = new CathodeResourceReference();
+            ResourceReference newReference = new ResourceReference();
             newReference.resourceID = guid_parent;
             newReference.entryType = type;
-            newReference.startIndex = 0;
-            newReference.count = 1;
-            newReference.entityID = new ShortGuid("00-00-00-00");
+            switch (newReference.entryType)
+            {
+                case ResourceType.DYNAMIC_PHYSICS_SYSTEM:
+                case ResourceType.RENDERABLE_INSTANCE:
+                case ResourceType.ANIMATED_MODEL: 
+                    newReference.startIndex = 0;
+                    break;            
+                case ResourceType.EXCLUSIVE_MASTER_STATE_RESOURCE:
+                case ResourceType.NAV_MESH_BARRIER_RESOURCE:      
+                case ResourceType.TRAVERSAL_SEGMENT:              //Sure this one doesn't use startIndex?
+                case ResourceType.COLLISION_MAPPING:              //Sure this one doesn't use startIndex?
+                    //This type just uses the default values
+                    break;
+            }
             resources.Add(newReference);
 
             RefreshUI();
@@ -124,8 +160,8 @@ namespace CathodeEditorGUI
         /* Delete an existing resource reference from the list */
         private void deleteResource_Click(object sender, EventArgs e)
         {
-            CathodeResourceReferenceType type = (CathodeResourceReferenceType)resourceType.SelectedIndex;
-            CathodeResourceReference reference = resources.FirstOrDefault(o => o.entryType == type);
+            ResourceType type = (ResourceType)resourceType.SelectedIndex;
+            ResourceReference reference = resources.FirstOrDefault(o => o.entryType == type);
             if (reference == null)
             {
                 MessageBox.Show("Resource type " + type + " is not referenced!\nThere is nothing to delete.", "Type not referenced!", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -143,24 +179,54 @@ namespace CathodeEditorGUI
         /* Save all changes back out */
         private void SaveChanges_Click(object sender, EventArgs e)
         {
-            List<CathodeResourceReference> newResourceReferences = new List<CathodeResourceReference>();
+            List<ResourceReference> newResourceReferences = new List<ResourceReference>();
             for (int i = 0; i < resource_panel.Controls.Count; i++)
             {
-                CathodeResourceReference resourceRef = ((ResourceUserControl)resource_panel.Controls[i]).ResourceReference;
+                ResourceReference resourceRef = ((ResourceUserControl)resource_panel.Controls[i]).ResourceReference;
                 switch (resourceRef.entryType)
                 {
-                    case CathodeResourceReferenceType.RENDERABLE_INSTANCE:
-                        GUI_Resource_RenderableInstance ui = (GUI_Resource_RenderableInstance)resource_panel.Controls[i];
-                        resourceRef.count = ui.SelectedMaterialIndexes.Count;
-                        resourceRef.startIndex = CurrentInstance.redsDB.RenderableElements.Count;
-                        for (int y = 0; y < ui.SelectedMaterialIndexes.Count; y++)
+                    case ResourceType.ANIMATED_MODEL:
                         {
-                            RenderableElementsDatabase.RenderableElement newRed = new RenderableElementsDatabase.RenderableElement();
-                            newRed.ModelIndex = CurrentInstance.modelDB.Models[ui.SelectedModelIndex].Submeshes[y].binIndex;
-                            newRed.MaterialLibraryIndex = ui.SelectedMaterialIndexes[y];
-                            CurrentInstance.redsDB.RenderableElements.Add(newRed);
+                            GUI_Resource_AnimatedModel ui = (GUI_Resource_AnimatedModel)resource_panel.Controls[i];
+                            resourceRef.startIndex = ui.UnknownIndex;
+                            break;
                         }
-                        break;
+                    case ResourceType.COLLISION_MAPPING:
+                        {
+                            break;
+                        }
+                    case ResourceType.DYNAMIC_PHYSICS_SYSTEM:
+                        {
+                            GUI_Resource_DynamicPhysicsSystem ui = (GUI_Resource_DynamicPhysicsSystem)resource_panel.Controls[i];
+                            resourceRef.startIndex = ui.UnknownIndex;
+                            break;
+                        }
+                    case ResourceType.EXCLUSIVE_MASTER_STATE_RESOURCE:
+                        {
+                            break;
+                        }
+                    case ResourceType.NAV_MESH_BARRIER_RESOURCE:
+                        {
+                            break;
+                        }
+                    case ResourceType.RENDERABLE_INSTANCE:
+                        {
+                            GUI_Resource_RenderableInstance ui = (GUI_Resource_RenderableInstance)resource_panel.Controls[i];
+                            resourceRef.count = ui.SelectedMaterialIndexes.Count;
+                            resourceRef.startIndex = CurrentInstance.redsDB.RenderableElements.Count;
+                            for (int y = 0; y < ui.SelectedMaterialIndexes.Count; y++)
+                            {
+                                RenderableElementsDatabase.RenderableElement newRed = new RenderableElementsDatabase.RenderableElement();
+                                newRed.ModelIndex = CurrentInstance.modelDB.Models[ui.SelectedModelIndex].Submeshes[y].binIndex;
+                                newRed.MaterialLibraryIndex = ui.SelectedMaterialIndexes[y];
+                                CurrentInstance.redsDB.RenderableElements.Add(newRed);
+                            }
+                            break;
+                        }
+                    case ResourceType.TRAVERSAL_SEGMENT:
+                        {
+                            break;
+                        }
                 }
                 newResourceReferences.Add(resourceRef);
             }

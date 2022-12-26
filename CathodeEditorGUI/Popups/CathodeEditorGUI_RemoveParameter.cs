@@ -13,9 +13,9 @@ namespace CathodeEditorGUI
 {
     public partial class CathodeEditorGUI_RemoveParameter : Form
     {
-        private CathodeEntity _entity;
+        private Entity _entity;
 
-        public CathodeEditorGUI_RemoveParameter(CathodeEntity entity)
+        public CathodeEditorGUI_RemoveParameter(Entity entity)
         {
             InitializeComponent();
 

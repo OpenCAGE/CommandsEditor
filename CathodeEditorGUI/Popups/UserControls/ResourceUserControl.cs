@@ -13,7 +13,7 @@ namespace CathodeEditorGUI.Popups.UserControls
 {
     public partial class ResourceUserControl : UserControl
     {
-        public CathodeResourceReference ResourceReference;
+        public ResourceReference ResourceReference;
 
         public ResourceUserControl()
         {

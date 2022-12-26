@@ -15,14 +15,14 @@ namespace CathodeEditorGUI.UserControls
 {
     public partial class GUI_EnumDataType : UserControl
     {
-        CathodeEnum enumVal = null;
+        cEnum enumVal = null;
 
         public GUI_EnumDataType()
         {
             InitializeComponent();
         }
 
-        public void PopulateUI(CathodeEnum cEnum, ShortGuid paramID)
+        public void PopulateUI(cEnum cEnum, ShortGuid paramID)
         {
             enumVal = cEnum;
             label13.Text = ShortGuidUtils.FindString(paramID);

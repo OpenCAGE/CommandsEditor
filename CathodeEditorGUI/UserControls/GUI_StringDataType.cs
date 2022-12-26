@@ -15,14 +15,14 @@ namespace CathodeEditorGUI.UserControls
 {
     public partial class GUI_StringDataType : UserControl
     {
-        CathodeString stringVal = null;
+        CATHODE.Commands.cString stringVal = null;
 
         public GUI_StringDataType()
         {
             InitializeComponent();
         }
 
-        public void PopulateUI(CathodeString cString, ShortGuid paramID)
+        public void PopulateUI(CATHODE.Commands.cString cString, ShortGuid paramID)
         {
             stringVal = cString;
             label1.Text = ShortGuidUtils.FindString(paramID);

@@ -20,8 +20,8 @@ namespace CathodeEditorGUI
         public static EntityNameLookup compositeLookup;
 
         //Scripting state info
-        public static CathodeComposite selectedComposite;
-        public static CathodeEntity selectedEntity;
+        public static Composite selectedComposite;
+        public static Entity selectedEntity;
 
         //Assets and various DBs
         public static CathodeModels modelDB;

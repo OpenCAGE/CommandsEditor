@@ -15,16 +15,16 @@ namespace CathodeEditorGUI
 {
     public partial class CathodeEditorGUI_AddPin : Form
     {
-        CathodeEntity _entity = null;
-        List<CathodeEntity> _entityList = null;
+        Entity _entity = null;
+        List<Entity> _entityList = null;
 
-        public CathodeEditorGUI_AddPin(CathodeEntity entity, CathodeComposite flowgraph)
+        public CathodeEditorGUI_AddPin(Entity entity, Composite flowgraph)
         {
             _entity = entity;
             InitializeComponent();
 
             _entityList = flowgraph.GetEntities();
-            _entityList = _entityList.OrderBy(o => EditorUtils.GenerateEntityName(o, flowgraph).Substring(13)).ToList<CathodeEntity>();
+            _entityList = _entityList.OrderBy(o => EditorUtils.GenerateEntityName(o, flowgraph).Substring(13)).ToList<Entity>();
 
             pin_in_node.BeginUpdate();
             for (int i = 0; i < _entityList.Count; i++)

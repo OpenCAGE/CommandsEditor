@@ -15,9 +15,9 @@ namespace CathodeEditorGUI
 {
     public partial class CathodeEditorGUI_AddParameter : Form
     {
-        CathodeEntity node = null;
+        Entity node = null;
         bool loadedParamsFromDB = false;
-        public CathodeEditorGUI_AddParameter(CathodeEntity _node)
+        public CathodeEditorGUI_AddParameter(Entity _node)
         {
             node = _node;
             InitializeComponent();
@@ -34,7 +34,7 @@ namespace CathodeEditorGUI
             if (param_name.Text == "") return;
             ShortGuid thisParamID = ShortGuidUtils.Generate(param_name.Text);
 
-            foreach (CathodeLoadedParameter param in node.parameters)
+            foreach (Parameter param in node.parameters)
             {
                 if (param.shortGUID == thisParamID)
                 {
@@ -50,41 +50,40 @@ namespace CathodeEditorGUI
                 return;
             }
 
-            CathodeParameter thisParam = null;
-            switch ((CathodeDataType)param_datatype.SelectedIndex)
+            ParameterData thisParam = null;
+            switch ((DataType)param_datatype.SelectedIndex)
             {
-                case CathodeDataType.POSITION:
-                    thisParam = new CathodeTransform();
+                case DataType.POSITION:
+                    thisParam = new cTransform();
                     break;
-                case CathodeDataType.FLOAT:
-                    thisParam = new CathodeFloat();
+                case DataType.FLOAT:
+                    thisParam = new cFloat();
                     break;
-                case CathodeDataType.FILEPATH:
-                case CathodeDataType.STRING:
-                    thisParam = new CathodeString();
+                case DataType.FILEPATH:
+                case DataType.STRING:
+                    thisParam = new cString();
                     break;
-                case CathodeDataType.SPLINE_DATA:
-                    thisParam = new CathodeSpline();
+                case DataType.SPLINE_DATA:
+                    thisParam = new cSpline();
                     break;
-                case CathodeDataType.ENUM:
-                    thisParam = new CathodeEnum();
-                    ((CathodeEnum)thisParam).enumID = new ShortGuid("4C-B9-82-48"); //ALERTNESS_STATE is the first alphabetically
+                case DataType.ENUM:
+                    thisParam = new cEnum("ALERTNESS_STATE", 0); //ALERTNESS_STATE is the first alphabetically
                     break;
-                case CathodeDataType.RESOURCE:
-                    thisParam = new CathodeResource();
-                    ((CathodeResource)thisParam).resourceID = ShortGuidUtils.Generate(DateTime.Now.ToString("G"));
+                case DataType.RESOURCE:
+                    thisParam = new cResource();
+                    ((cResource)thisParam).resourceID = ShortGuidUtils.Generate(DateTime.Now.ToString("G"));
                     break;
-                case CathodeDataType.BOOL:
-                    thisParam = new CathodeBool();
+                case DataType.BOOL:
+                    thisParam = new cBool();
                     break;
-                case CathodeDataType.DIRECTION:
-                    thisParam = new CathodeVector3();
+                case DataType.DIRECTION:
+                    thisParam = new cVector3();
                     break;
-                case CathodeDataType.INTEGER:
-                    thisParam = new CathodeInteger();
+                case DataType.INTEGER:
+                    thisParam = new cInteger();
                     break;
             }
-            node.parameters.Add(new CathodeLoadedParameter(thisParamID, thisParam));
+            node.parameters.Add(new Parameter(thisParamID, thisParam));
 
             this.Close();
         }
@@ -114,7 +113,7 @@ namespace CathodeEditorGUI
                     }
                     else
                     {
-                        CathodeParameter param = CathodeEntityDatabase.ParameterDefinitionToParameter(def);
+                        ParameterData param = CathodeEntityDatabase.ParameterDefinitionToParameter(def);
                         if (param == null) return;
                         param_datatype.Text = param.dataType.ToString();
                     }

@@ -20,10 +20,10 @@ namespace CathodeEditorGUI
 
         private List<string> composite_content_RAW = new List<string>();
 
-        private CathodeEntity selectedEntity = null;
-        private CathodeComposite selectedComposite = null;
+        private Entity selectedEntity = null;
+        private Composite selectedComposite = null;
 
-        public CathodeEditorGUI_EditHierarchy(CathodeComposite startingComposite)
+        public CathodeEditorGUI_EditHierarchy(Composite startingComposite)
         {
             InitializeComponent();
             LoadComposite(startingComposite.name);
@@ -96,7 +96,7 @@ namespace CathodeEditorGUI
             if (selectedEntity == null) return;
             if (selectedEntity.variant != EntityVariant.FUNCTION) return;
 
-            CathodeComposite composite = CurrentInstance.commandsPAK.GetComposite(((FunctionEntity)selectedEntity).function);
+            Composite composite = CurrentInstance.commandsPAK.GetComposite(((FunctionEntity)selectedEntity).function);
             if (composite == null) return;
 
             LoadComposite(composite.name);

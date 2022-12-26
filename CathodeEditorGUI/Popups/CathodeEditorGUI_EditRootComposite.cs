@@ -13,7 +13,7 @@ namespace CathodeEditorGUI
 {
     public partial class CathodeEditorGUI_EditRootComposite : Form
     {
-        List<CathodeComposite> composites = null;
+        List<Composite> composites = null;
 
         public CathodeEditorGUI_EditRootComposite()
         {

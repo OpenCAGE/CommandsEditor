@@ -117,32 +117,32 @@ namespace CathodeEditorGUI
             return entities.FirstOrDefault(o => o.className == node_name).parameters.FirstOrDefault(o => o.name == parameter_name);
         }
 
-        public static CathodeParameter ParameterDefinitionToParameter(ParameterDefinition def)
+        public static ParameterData ParameterDefinitionToParameter(ParameterDefinition def)
         {
-            CathodeParameter this_param = null;
+            ParameterData this_param = null;
             switch (def.datatype.ToUpper())
             {
                 case "POSITION":
-                    this_param = new CathodeTransform();
+                    this_param = new cTransform();
                     break;
                 case "FLOAT":
-                    this_param = new CathodeFloat();
+                    this_param = new cFloat();
                     break;
                 case "FILEPATH":
                 case "STRING":
-                    this_param = new CathodeString();
+                    this_param = new CATHODE.Commands.cString();
                     break;
                 case "SPLINEDATA":
-                    this_param = new CathodeSpline();
+                    this_param = new cSpline();
                     break;
                 case "BOOL":
-                    this_param = new CathodeBool();
+                    this_param = new cBool();
                     break;
                 case "DIRECTION":
-                    this_param = new CathodeVector3();
+                    this_param = new cVector3();
                     break;
                 case "INT":
-                    this_param = new CathodeInteger();
+                    this_param = new cInteger();
                     break;
                     /*
                 case "ENUM":

@@ -15,14 +15,14 @@ namespace CathodeEditorGUI
 {
     public partial class CathodeEditorGUI_AddEntity : Form
     {
-        public Action<CathodeEntity> OnNewEntity;
+        public Action<Entity> OnNewEntity;
 
-        CathodeComposite composite = null;
-        List<CathodeComposite> composites = null;
+        Composite composite = null;
+        List<Composite> composites = null;
         List<CathodeEntityDatabase.EntityDefinition> availableEntities = null;
         List<ShortGuid> hierarchy = null;
 
-        public CathodeEditorGUI_AddEntity(CathodeComposite _comp, List<CathodeComposite> _comps)
+        public CathodeEditorGUI_AddEntity(Composite _comp, List<Composite> _comps)
         {
             composite = _comp;
             composites = _comps.OrderBy(o => o.name).ToList();
@@ -154,45 +154,44 @@ namespace CathodeEditorGUI
             {
                 //Make the DatatypeEntity
                 DatatypeEntity newEntity = new DatatypeEntity(thisID);
-                newEntity.type = (CathodeDataType)entityVariant.SelectedIndex;
+                newEntity.type = (DataType)entityVariant.SelectedIndex;
                 newEntity.parameter = ShortGuidUtils.Generate(textBox1.Text);
 
                 //Make the parameter to give this DatatypeEntity a value (the only time you WOULDN'T want this is if the val is coming from a linked entity)
-                CathodeParameter thisParam = null;
+                ParameterData thisParam = null;
                 switch (newEntity.type)
                 {
-                    case CathodeDataType.POSITION:
-                        thisParam = new CathodeTransform();
+                    case DataType.POSITION:
+                        thisParam = new cTransform();
                         break;
-                    case CathodeDataType.FLOAT:
-                        thisParam = new CathodeFloat();
+                    case DataType.FLOAT:
+                        thisParam = new cFloat();
                         break;
-                    case CathodeDataType.FILEPATH:
-                    case CathodeDataType.STRING:
-                        thisParam = new CathodeString();
+                    case DataType.FILEPATH:
+                    case DataType.STRING:
+                        thisParam = new cString();
                         break;
-                    case CathodeDataType.SPLINE_DATA:
-                        thisParam = new CathodeSpline();
+                    case DataType.SPLINE_DATA:
+                        thisParam = new cSpline();
                         break;
-                    case CathodeDataType.ENUM:
-                        thisParam = new CathodeEnum();
-                        ((CathodeEnum)thisParam).enumID = new ShortGuid("4C-B9-82-48"); //ALERTNESS_STATE is the first alphabetically
+                    case DataType.ENUM:
+                        thisParam = new cEnum("ALERTNESS_STATE", 0); //ALERTNESS_STATE is the first alphabetically
                         break;
-                    case CathodeDataType.RESOURCE:
-                        thisParam = new CathodeResource();
-                        ((CathodeResource)thisParam).resourceID = ShortGuidUtils.Generate(DateTime.Now.ToString("G"));
+                    case DataType.RESOURCE:
+                        thisParam = new cResource();
+                        ((cResource)thisParam).resourceID = ShortGuidUtils.Generate(DateTime.Now.ToString("G"));
                         break;
-                    case CathodeDataType.BOOL:
-                        thisParam = new CathodeBool();
+                    case DataType.BOOL:
+                        thisParam = new cBool();
                         break;
-                    case CathodeDataType.DIRECTION:
-                        thisParam = new CathodeVector3();
+                    case DataType.DIRECTION:
+                        thisParam = new cVector3();
                         break;
-                    case CathodeDataType.INTEGER:
-                        thisParam = new CathodeInteger();
+                    case DataType.INTEGER:
+                        thisParam = new cInteger();
                         break;
                 }
-                newEntity.parameters.Add(new CathodeLoadedParameter(newEntity.parameter, thisParam));
+                newEntity.parameters.Add(new Parameter(newEntity.parameter, thisParam));
 
                 //Add to composite & save name
                 composite.datatypes.Add(newEntity);
@@ -207,10 +206,10 @@ namespace CathodeEditorGUI
                 switch (CommandsUtils.GetFunctionType(function))
                 {
                     //TODO: find a nicer way of auto selecting this (E.G. can we reflect to class names?)
-                    case CathodeFunctionType.CAGEAnimation:
+                    case FunctionType.CAGEAnimation:
                         newEntity = new CAGEAnimation(thisID);
                         break;
-                    case CathodeFunctionType.TriggerSequence:
+                    case FunctionType.TriggerSequence:
                         newEntity = new TriggerSequence(thisID);
                         break;
                 }
@@ -243,7 +242,7 @@ namespace CathodeEditorGUI
             {
                 //Create FunctionEntity
                 FunctionEntity newEntity = new FunctionEntity(thisID);
-                CathodeComposite composite = composites.FirstOrDefault(o => o.name == entityVariant.Text);
+                Composite composite = composites.FirstOrDefault(o => o.name == entityVariant.Text);
                 if (composite == null)
                 { 
                     MessageBox.Show("Failed to look up composite!\nPlease report this issue on GitHub.\n\n" + entityVariant.Text, "Could not find composite!", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -263,14 +262,14 @@ namespace CathodeEditorGUI
                 newEntity.hierarchy = hierarchy;
                 newEntity.extraId = ShortGuidUtils.Generate("temp"); //dunno what this val is meant to be, but apparently this works!
 
-                newEntity.parameters.Add(new CathodeLoadedParameter(ShortGuidUtils.Generate("proxy_filter_targets"), new CathodeBool() { value = false }));
-                newEntity.parameters.Add(new CathodeLoadedParameter(ShortGuidUtils.Generate("proxy_enable_on_reset"), new CathodeBool() { value = false }));
-                newEntity.parameters.Add(new CathodeLoadedParameter(ShortGuidUtils.Generate("proxy_enable"), new CathodeFloat() { value = 0.0f }));
-                newEntity.parameters.Add(new CathodeLoadedParameter(ShortGuidUtils.Generate("proxy_enabled"), new CathodeFloat() { value = 0.0f }));
-                newEntity.parameters.Add(new CathodeLoadedParameter(ShortGuidUtils.Generate("proxy_disable"), new CathodeFloat() { value = 0.0f }));
-                newEntity.parameters.Add(new CathodeLoadedParameter(ShortGuidUtils.Generate("proxy_disabled"), new CathodeFloat() { value = 0.0f }));
-                newEntity.parameters.Add(new CathodeLoadedParameter(ShortGuidUtils.Generate("reference"), new CathodeString() { value = "" }));
-                newEntity.parameters.Add(new CathodeLoadedParameter(ShortGuidUtils.Generate("trigger"), new CathodeFloat() { value = 0.0f }));
+                newEntity.parameters.Add(new Parameter(ShortGuidUtils.Generate("proxy_filter_targets"), new cBool() { value = false }));
+                newEntity.parameters.Add(new Parameter(ShortGuidUtils.Generate("proxy_enable_on_reset"), new cBool() { value = false }));
+                newEntity.parameters.Add(new Parameter(ShortGuidUtils.Generate("proxy_enable"), new cFloat() { value = 0.0f }));
+                newEntity.parameters.Add(new Parameter(ShortGuidUtils.Generate("proxy_enabled"), new cFloat() { value = 0.0f }));
+                newEntity.parameters.Add(new Parameter(ShortGuidUtils.Generate("proxy_disable"), new cFloat() { value = 0.0f }));
+                newEntity.parameters.Add(new Parameter(ShortGuidUtils.Generate("proxy_disabled"), new cFloat() { value = 0.0f }));
+                newEntity.parameters.Add(new Parameter(ShortGuidUtils.Generate("reference"), new CATHODE.Commands.cString() { value = "" }));
+                newEntity.parameters.Add(new Parameter(ShortGuidUtils.Generate("trigger"), new cFloat() { value = 0.0f }));
 
                 //Add to composite & save name
                 composite.proxies.Add(newEntity);

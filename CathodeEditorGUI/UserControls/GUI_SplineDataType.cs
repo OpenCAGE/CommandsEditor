@@ -22,7 +22,7 @@ namespace CathodeEditorGUI.UserControls
             InitializeComponent();
         }
 
-        public void PopulateUI(CathodeSpline cSpline, ShortGuid paramID)
+        public void PopulateUI(cSpline cSpline, ShortGuid paramID)
         {
             UNIMPLEMENTED_VARIABLE_TYPE.Text = ShortGuidUtils.FindString(paramID);
 

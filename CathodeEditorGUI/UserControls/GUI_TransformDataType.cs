@@ -15,14 +15,14 @@ namespace CathodeEditorGUI.UserControls
 {
     public partial class GUI_TransformDataType : UserControl
     {
-        CathodeTransform transformVal = null;
+        cTransform transformVal = null;
 
         public GUI_TransformDataType()
         {
             InitializeComponent();
         }
 
-        public void PopulateUI(CathodeTransform cTrans, ShortGuid paramID)
+        public void PopulateUI(cTransform cTrans, ShortGuid paramID)
         {
             transformVal = cTrans;
             POSITION_VARIABLE_DUMMY.Text = (paramID.val == null) ? "" : ShortGuidUtils.FindString(paramID);

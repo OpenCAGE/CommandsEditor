@@ -78,8 +78,8 @@ namespace CathodeEditorGUI
                     }
                 }
 
-                CathodeComposite resolvedComposite = null;
-                CathodeEntity resolvedEntity = EditorUtils.ResolveHierarchy(animNode.keyframeHeaders[i].connectedEntity, out resolvedComposite, out string hierarchy);
+                Composite resolvedComposite = null;
+                Entity resolvedEntity = EditorUtils.ResolveHierarchy(animNode.keyframeHeaders[i].connectedEntity, out resolvedComposite, out string hierarchy);
                 if (resolvedEntity != null)
                 {
                     TextBox controllingEntity = new TextBox();

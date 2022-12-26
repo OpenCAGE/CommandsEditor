@@ -15,8 +15,8 @@ namespace CathodeEditorGUI.UserControls
 {
     public partial class GUI_NumericDataType : UserControl
     {
-        CathodeFloat floatVal = null;
-        CathodeInteger intVal = null;
+        cFloat floatVal = null;
+        cInteger intVal = null;
         bool isIntInput = false;
 
         public GUI_NumericDataType()
@@ -24,14 +24,14 @@ namespace CathodeEditorGUI.UserControls
             InitializeComponent();
         }
 
-        public void PopulateUI_Float(CathodeFloat cFloat, ShortGuid paramID)
+        public void PopulateUI_Float(cFloat cFloat, ShortGuid paramID)
         {
             floatVal = cFloat;
             label1.Text = ShortGuidUtils.FindString(paramID);
             textBox1.Text = cFloat.value.ToString();
         }
 
-        public void PopulateUI_Int(CathodeInteger cInt, ShortGuid paramID)
+        public void PopulateUI_Int(cInteger cInt, ShortGuid paramID)
         {
             isIntInput = true;
             intVal = cInt;

@@ -53,7 +53,7 @@ namespace CathodeEditorGUI
             LoadMVR(Convert.ToInt32(listBox1.SelectedItem.ToString()));
         }
 
-        CathodeTransform transformData = null;
+        cTransform transformData = null;
         private bool hasLoaded = false;
         private void LoadMVR(int mvrIndex)
         {

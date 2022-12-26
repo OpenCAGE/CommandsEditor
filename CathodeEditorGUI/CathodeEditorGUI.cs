@@ -62,6 +62,11 @@ namespace CathodeEditorGUI
 
 #if DEBUG
             button1.Visible = true;
+
+            env_list.SelectedItem = "BSP_TORRENS";
+            //LoadCommandsPAK(env_list.SelectedItem.ToString());
+            //LoadComposite("DisplayModel:ALIEN");
+            //LoadEntity(CurrentInstance.selectedComposite.GetEntityByID(new ShortGuid("")));
 #endif
         }
 
@@ -297,12 +302,12 @@ namespace CathodeEditorGUI
         /* If selected entity is a composite instance, allow jump to it */
         private void jumpToComposite_Click(object sender, EventArgs e)
         {
-            CathodeComposite flow;
+            Composite flow;
             switch (CurrentInstance.selectedEntity.variant)
             {
                 case EntityVariant.OVERRIDE:
                 {
-                    CathodeEntity entity = EditorUtils.ResolveHierarchy(((OverrideEntity)CurrentInstance.selectedEntity).hierarchy, out flow, out string hierarchy);
+                    Entity entity = EditorUtils.ResolveHierarchy(((OverrideEntity)CurrentInstance.selectedEntity).hierarchy, out flow, out string hierarchy);
                     if (entity != null)
                     {
                         LoadComposite(flow.name);
@@ -312,7 +317,7 @@ namespace CathodeEditorGUI
                 }
                 case EntityVariant.PROXY:
                 {
-                    CathodeEntity entity = EditorUtils.ResolveHierarchy(((ProxyEntity)CurrentInstance.selectedEntity).hierarchy, out flow, out string hierarchy);
+                    Entity entity = EditorUtils.ResolveHierarchy(((ProxyEntity)CurrentInstance.selectedEntity).hierarchy, out flow, out string hierarchy);
                     if (entity != null)
                     {
                         LoadComposite(flow.name);
@@ -375,7 +380,7 @@ namespace CathodeEditorGUI
                     List<CathodeEntityLink> prunedEntityLinks = new List<CathodeEntityLink>();
                     for (int l = 0; l < CurrentInstance.commandsPAK.Composites[i].functions[x].childLinks.Count; l++)
                     {
-                        CathodeEntity linkedEntity = CurrentInstance.commandsPAK.Composites[i].GetEntityByID(CurrentInstance.commandsPAK.Composites[i].functions[x].childLinks[l].childID);
+                        Entity linkedEntity = CurrentInstance.commandsPAK.Composites[i].GetEntityByID(CurrentInstance.commandsPAK.Composites[i].functions[x].childLinks[l].childID);
                         if (linkedEntity != null && linkedEntity.variant == EntityVariant.FUNCTION) if (((FunctionEntity)linkedEntity).function == CurrentInstance.selectedComposite.shortGUID) continue;
                         prunedEntityLinks.Add(CurrentInstance.commandsPAK.Composites[i].functions[x].childLinks[l]);
                     }
@@ -402,7 +407,7 @@ namespace CathodeEditorGUI
             try
             {
                 ShortGuid entityID = new ShortGuid(composite_content.SelectedItem.ToString().Substring(1, 11));
-                CathodeEntity thisEntity = CurrentInstance.selectedComposite.GetEntityByID(entityID);
+                Entity thisEntity = CurrentInstance.selectedComposite.GetEntityByID(entityID);
                 if (thisEntity != null) LoadEntity(thisEntity);
             }
             catch (Exception ex)
@@ -437,9 +442,9 @@ namespace CathodeEditorGUI
             }
             else
             {
-                List<CathodeEntity> ents = CurrentInstance.selectedComposite.GetEntities();
+                List<Entity> ents = CurrentInstance.selectedComposite.GetEntities();
                 int deleteIndex = -1;
-                foreach (CathodeEntity entity in ents)
+                foreach (Entity entity in ents)
                 {
                     for (int i = 0; i < entity.childLinks.Count; i++)
                     {
@@ -464,15 +469,15 @@ namespace CathodeEditorGUI
         {
             if (entity_children.SelectedIndex == -1 || CurrentInstance.selectedComposite == null) return;
 
-            CathodeEntity thisEntity = null;
+            Entity thisEntity = null;
             if (currentlyShowingChildLinks)
             {
                 thisEntity = CurrentInstance.selectedComposite.GetEntityByID(CurrentInstance.selectedEntity.childLinks[entity_children.SelectedIndex].childID);
             }
             else
             {
-                List<CathodeEntity> ents = CurrentInstance.selectedComposite.GetEntities();
-                foreach (CathodeEntity entity in ents)
+                List<Entity> ents = CurrentInstance.selectedComposite.GetEntities();
+                foreach (Entity entity in ents)
                 {
                     for (int i = 0; i < entity.childLinks.Count; i++)
                     {
@@ -514,13 +519,13 @@ namespace CathodeEditorGUI
         private void LoadComposite(string FileName)
         {
             ClearUI(false, true, true);
-            CathodeComposite entry = CurrentInstance.commandsPAK.Composites[CurrentInstance.commandsPAK.GetFileIndex(FileName)];
+            Composite entry = CurrentInstance.commandsPAK.Composites[CurrentInstance.commandsPAK.GetFileIndex(FileName)];
             CurrentInstance.selectedComposite = entry;
             EditorUtils.PurgeDeadHierarchiesInActiveComposite(); //TODO: We should really just skip this info when parsing, can remove "unknown" on composite then
             Cursor.Current = Cursors.WaitCursor;
 
             composite_content.BeginUpdate();
-            List<CathodeEntity> entities = entry.GetEntities();
+            List<Entity> entities = entry.GetEntities();
             for (int i = 0; i < entities.Count; i++)
             {
                 string desc = EditorUtils.GenerateEntityName(entities[i], CurrentInstance.selectedComposite);
@@ -541,7 +546,7 @@ namespace CathodeEditorGUI
             add_parameter.Show();
             add_parameter.OnNewEntity += OnAddNewEntity;
         }
-        private void OnAddNewEntity(CathodeEntity entity)
+        private void OnAddNewEntity(Entity entity)
         {
             ReloadUIForNewEntity(entity);
             this.BringToFront();
@@ -572,7 +577,7 @@ namespace CathodeEditorGUI
                     break;
             }
 
-            List<CathodeEntity> entities = CurrentInstance.selectedComposite.GetEntities();
+            List<Entity> entities = CurrentInstance.selectedComposite.GetEntities();
             for (int i = 0; i < entities.Count; i++) //We should actually query every entity in the PAK, since we might be ref'd by a proxy or override
             {
                 List<CathodeEntityLink> entLinks = new List<CathodeEntityLink>();
@@ -658,7 +663,7 @@ namespace CathodeEditorGUI
             if (!ConfirmAction("Are you sure you want to duplicate this entity?")) return;
 
             //Generate new entity ID and name
-            CathodeEntity newEnt = Utilities.CloneObject(CurrentInstance.selectedEntity);
+            Entity newEnt = Utilities.CloneObject(CurrentInstance.selectedEntity);
             newEnt.shortGUID = ShortGuidUtils.Generate(DateTime.Now.ToString("G"));
             CurrentInstance.compositeLookup.SetEntityName(
                 CurrentInstance.selectedComposite.shortGUID,
@@ -666,10 +671,10 @@ namespace CathodeEditorGUI
                 CurrentInstance.compositeLookup.GetEntityName(CurrentInstance.selectedComposite.shortGUID, CurrentInstance.selectedEntity.shortGUID) + "_clone");
 
             //Add parent links in to this entity that linked in to the other entity
-            List<CathodeEntity> ents = CurrentInstance.selectedComposite.GetEntities();
+            List<Entity> ents = CurrentInstance.selectedComposite.GetEntities();
             List<CathodeEntityLink> newLinks = new List<CathodeEntityLink>();
             int num_of_new_things = 1;
-            foreach (CathodeEntity entity in ents)
+            foreach (Entity entity in ents)
             {
                 newLinks.Clear();
                 foreach (CathodeEntityLink link in entity.childLinks)
@@ -751,7 +756,7 @@ namespace CathodeEditorGUI
         }
         
         /* Perform a partial UI reload for a newly added entity */
-        private void ReloadUIForNewEntity(CathodeEntity newEnt)
+        private void ReloadUIForNewEntity(Entity newEnt)
         {
             if (CurrentInstance.selectedComposite == null || newEnt == null) return;
             if (currentSearch == "")
@@ -768,7 +773,7 @@ namespace CathodeEditorGUI
         }
 
         /* Load a entity into the UI */
-        private void LoadEntity(CathodeEntity entity)
+        private void LoadEntity(Entity entity)
         {
             if (entity == null) return;
 
@@ -783,7 +788,7 @@ namespace CathodeEditorGUI
             {
                 case EntityVariant.FUNCTION:
                     ShortGuid thisFunction = ((FunctionEntity)entity).function;
-                    CathodeComposite funcComposite = CurrentInstance.commandsPAK.GetComposite(thisFunction);
+                    Composite funcComposite = CurrentInstance.commandsPAK.GetComposite(thisFunction);
                     jumpToComposite.Visible = funcComposite != null;
                     if (funcComposite != null)
                         description = funcComposite.name;
@@ -792,8 +797,8 @@ namespace CathodeEditorGUI
                     selected_entity_name.Text = CurrentInstance.compositeLookup.GetEntityName(CurrentInstance.selectedComposite.shortGUID, entity.shortGUID);
                     if (funcComposite == null)
                     {
-                        CathodeFunctionType function = CommandsUtils.GetFunctionType(thisFunction);
-                        editFunction.Enabled = function == CathodeFunctionType.CAGEAnimation || function == CathodeFunctionType.TriggerSequence;
+                        FunctionType function = CommandsUtils.GetFunctionType(thisFunction);
+                        editFunction.Enabled = function == FunctionType.CAGEAnimation || function == FunctionType.TriggerSequence;
                     }
                     editEntityResources.Enabled = (CurrentInstance.textureDB != null);
                     break;
@@ -807,8 +812,8 @@ namespace CathodeEditorGUI
                 case EntityVariant.OVERRIDE:
                     hierarchyDisplay.Visible = true;
                     string hierarchy = "";
-                    if (entity.variant == EntityVariant.PROXY) EditorUtils.ResolveHierarchy(((ProxyEntity)entity).hierarchy, out CathodeComposite comp, out hierarchy);
-                    else EditorUtils.ResolveHierarchy(((OverrideEntity)entity).hierarchy, out CathodeComposite comp, out hierarchy);
+                    if (entity.variant == EntityVariant.PROXY) EditorUtils.ResolveHierarchy(((ProxyEntity)entity).hierarchy, out Composite comp, out hierarchy);
+                    else EditorUtils.ResolveHierarchy(((OverrideEntity)entity).hierarchy, out Composite comp, out hierarchy);
                     hierarchyDisplay.Text = hierarchy;
                     jumpToComposite.Visible = true;
                     selected_entity_name.Text = CurrentInstance.compositeLookup.GetEntityName(CurrentInstance.selectedComposite.shortGUID, entity.shortGUID);
@@ -830,46 +835,46 @@ namespace CathodeEditorGUI
             int current_ui_offset = 7;
             for (int i = 0; i < entity.parameters.Count; i++)
             {
-                CathodeParameter this_param = entity.parameters[i].content;
+                ParameterData this_param = entity.parameters[i].content;
                 UserControl parameterGUI = null;
 
                 switch (this_param.dataType)
                 {
-                    case CathodeDataType.POSITION:
+                    case DataType.POSITION:
                         parameterGUI = new GUI_TransformDataType();
-                        ((GUI_TransformDataType)parameterGUI).PopulateUI((CathodeTransform)this_param, entity.parameters[i].shortGUID);
+                        ((GUI_TransformDataType)parameterGUI).PopulateUI((cTransform)this_param, entity.parameters[i].shortGUID);
                         break;
-                    case CathodeDataType.INTEGER:
+                    case DataType.INTEGER:
                         parameterGUI = new GUI_NumericDataType();
-                        ((GUI_NumericDataType)parameterGUI).PopulateUI_Int((CathodeInteger)this_param, entity.parameters[i].shortGUID);
+                        ((GUI_NumericDataType)parameterGUI).PopulateUI_Int((cInteger)this_param, entity.parameters[i].shortGUID);
                         break;
-                    case CathodeDataType.STRING:
+                    case DataType.STRING:
                         parameterGUI = new GUI_StringDataType();
-                        ((GUI_StringDataType)parameterGUI).PopulateUI((CathodeString)this_param, entity.parameters[i].shortGUID);
+                        ((GUI_StringDataType)parameterGUI).PopulateUI((CATHODE.Commands.cString)this_param, entity.parameters[i].shortGUID);
                         break;
-                    case CathodeDataType.BOOL:
+                    case DataType.BOOL:
                         parameterGUI = new GUI_BoolDataType();
-                        ((GUI_BoolDataType)parameterGUI).PopulateUI((CathodeBool)this_param, entity.parameters[i].shortGUID);
+                        ((GUI_BoolDataType)parameterGUI).PopulateUI((cBool)this_param, entity.parameters[i].shortGUID);
                         break;
-                    case CathodeDataType.FLOAT:
+                    case DataType.FLOAT:
                         parameterGUI = new GUI_NumericDataType();
-                        ((GUI_NumericDataType)parameterGUI).PopulateUI_Float((CathodeFloat)this_param, entity.parameters[i].shortGUID);
+                        ((GUI_NumericDataType)parameterGUI).PopulateUI_Float((cFloat)this_param, entity.parameters[i].shortGUID);
                         break;
-                    case CathodeDataType.DIRECTION:
+                    case DataType.DIRECTION:
                         parameterGUI = new GUI_VectorDataType();
-                        ((GUI_VectorDataType)parameterGUI).PopulateUI((CathodeVector3)this_param, entity.parameters[i].shortGUID);
+                        ((GUI_VectorDataType)parameterGUI).PopulateUI((cVector3)this_param, entity.parameters[i].shortGUID);
                         break;
-                    case CathodeDataType.ENUM:
+                    case DataType.ENUM:
                         parameterGUI = new GUI_EnumDataType();
-                        ((GUI_EnumDataType)parameterGUI).PopulateUI((CathodeEnum)this_param, entity.parameters[i].shortGUID);
+                        ((GUI_EnumDataType)parameterGUI).PopulateUI((cEnum)this_param, entity.parameters[i].shortGUID);
                         break;
-                    case CathodeDataType.RESOURCE:
+                    case DataType.RESOURCE:
                         parameterGUI = new GUI_ResourceDataType();
-                        ((GUI_ResourceDataType)parameterGUI).PopulateUI((CathodeResource)this_param, entity.parameters[i].shortGUID);
+                        ((GUI_ResourceDataType)parameterGUI).PopulateUI((cResource)this_param, entity.parameters[i].shortGUID);
                         break;
-                    case CathodeDataType.SPLINE_DATA:
+                    case DataType.SPLINE_DATA:
                         parameterGUI = new GUI_SplineDataType();
-                        ((GUI_SplineDataType)parameterGUI).PopulateUI((CathodeSpline)this_param, entity.parameters[i].shortGUID);
+                        ((GUI_SplineDataType)parameterGUI).PopulateUI((cSpline)this_param, entity.parameters[i].shortGUID);
                         break;
                 }
 
@@ -912,8 +917,8 @@ namespace CathodeEditorGUI
             else
             {
                 //Parent links (pins into this entity)
-                List<CathodeEntity> ents = CurrentInstance.selectedComposite.GetEntities();
-                foreach (CathodeEntity entity in ents)
+                List<Entity> ents = CurrentInstance.selectedComposite.GetEntities();
+                foreach (Entity entity in ents)
                 {
                     foreach (CathodeEntityLink link in entity.childLinks)
                     {
@@ -997,7 +1002,7 @@ namespace CathodeEditorGUI
             resourceEditor.OnSaved += OnResourceEditorSaved;
             resourceEditor.FormClosed += ResourceEditor_FormClosed;
         }
-        private void OnResourceEditorSaved(List<CathodeResourceReference> resources)
+        private void OnResourceEditorSaved(List<ResourceReference> resources)
         {
             if (resourceFunctionToEdit != null)
                 resourceFunctionToEdit.resources = resources;
