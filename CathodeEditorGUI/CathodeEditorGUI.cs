@@ -205,7 +205,7 @@ namespace CathodeEditorGUI
                         baseLevelPath = baseLevelPath.Replace(levelName, levelName.Substring(0, levelName.Length - ("_PATCH").Length));
                         break;
                 }
-                
+
                 CurrentInstance.modelDB = new CathodeModels(baseLevelPath + "RENDERABLE/MODELS_LEVEL.BIN",
                                                             baseLevelPath + "RENDERABLE/LEVEL_MODELS.PAK");
                 CurrentInstance.redsDB = new RenderableElementsDatabase(baseLevelPath + "WORLD/REDS.BIN");
@@ -218,7 +218,7 @@ namespace CathodeEditorGUI
             catch
             {
                 //Can fail if we're loading a PAK outside the game structure
-                MessageBox.Show("Failed to load asset PAKs!\nAre you opening a Commands PAK outside of a map directory?\nResource editing disabled.", "Resource editing disabled.", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show("Failed to load asset PAKs!\nAre you opening a Commands PAK outside of a map directory?\nIf not, please try again.", "Resource editing disabled.", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 CurrentInstance.modelDB = null;
                 CurrentInstance.redsDB = null;
                 CurrentInstance.materialDB = null;
