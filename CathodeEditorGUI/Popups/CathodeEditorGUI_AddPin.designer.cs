@@ -63,7 +63,7 @@
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(397, 116);
+            this.groupBox1.Size = new System.Drawing.Size(876, 116);
             this.groupBox1.TabIndex = 9;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Pin Out";
@@ -73,17 +73,16 @@
             this.pin_out_param.FormattingEnabled = true;
             this.pin_out_param.Location = new System.Drawing.Point(16, 79);
             this.pin_out_param.Name = "pin_out_param";
-            this.pin_out_param.Size = new System.Drawing.Size(367, 21);
+            this.pin_out_param.Size = new System.Drawing.Size(844, 21);
             this.pin_out_param.TabIndex = 8;
             // 
             // pin_out_node
             // 
-            this.pin_out_node.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.pin_out_node.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.pin_out_node.FormattingEnabled = true;
             this.pin_out_node.Location = new System.Drawing.Point(16, 40);
             this.pin_out_node.Name = "pin_out_node";
-            this.pin_out_node.Size = new System.Drawing.Size(367, 21);
+            this.pin_out_node.Size = new System.Drawing.Size(844, 21);
             this.pin_out_node.TabIndex = 6;
             this.pin_out_node.SelectedIndexChanged += new System.EventHandler(this.pin_out_node_SelectedIndexChanged);
             // 
@@ -102,9 +101,9 @@
             this.groupBox2.Controls.Add(this.label1);
             this.groupBox2.Controls.Add(this.pin_in_node);
             this.groupBox2.Controls.Add(this.label6);
-            this.groupBox2.Location = new System.Drawing.Point(491, 12);
+            this.groupBox2.Location = new System.Drawing.Point(12, 186);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(397, 116);
+            this.groupBox2.Size = new System.Drawing.Size(876, 116);
             this.groupBox2.TabIndex = 10;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Pin In";
@@ -114,7 +113,7 @@
             this.pin_in_param.FormattingEnabled = true;
             this.pin_in_param.Location = new System.Drawing.Point(16, 80);
             this.pin_in_param.Name = "pin_in_param";
-            this.pin_in_param.Size = new System.Drawing.Size(367, 21);
+            this.pin_in_param.Size = new System.Drawing.Size(844, 21);
             this.pin_in_param.TabIndex = 9;
             // 
             // label1
@@ -128,12 +127,11 @@
             // 
             // pin_in_node
             // 
-            this.pin_in_node.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.pin_in_node.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.pin_in_node.FormattingEnabled = true;
             this.pin_in_node.Location = new System.Drawing.Point(16, 40);
             this.pin_in_node.Name = "pin_in_node";
-            this.pin_in_node.Size = new System.Drawing.Size(367, 21);
+            this.pin_in_node.Size = new System.Drawing.Size(844, 21);
             this.pin_in_node.TabIndex = 1;
             this.pin_in_node.SelectedIndexChanged += new System.EventHandler(this.pin_in_node_SelectedIndexChanged);
             // 
@@ -148,7 +146,7 @@
             // 
             // save_pin
             // 
-            this.save_pin.Location = new System.Drawing.Point(783, 134);
+            this.save_pin.Location = new System.Drawing.Point(792, 363);
             this.save_pin.Name = "save_pin";
             this.save_pin.Size = new System.Drawing.Size(105, 23);
             this.save_pin.TabIndex = 11;
@@ -158,9 +156,8 @@
             // 
             // pictureBox1
             // 
-            this.pictureBox1.BackgroundImage = global::CathodeEditorGUI.Properties.Resources.arrow;
             this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.pictureBox1.Location = new System.Drawing.Point(415, 62);
+            this.pictureBox1.Location = new System.Drawing.Point(300, 147);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(70, 21);
             this.pictureBox1.TabIndex = 12;
@@ -170,7 +167,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(900, 166);
+            this.ClientSize = new System.Drawing.Size(900, 398);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.save_pin);
             this.Controls.Add(this.groupBox2);

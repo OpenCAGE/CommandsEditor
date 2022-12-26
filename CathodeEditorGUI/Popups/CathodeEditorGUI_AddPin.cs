@@ -34,7 +34,8 @@ namespace CathodeEditorGUI
             }
             pin_in_node.EndUpdate();
 
-            pin_out_node.Text = EditorUtils.GenerateEntityName(_entity, flowgraph);
+            pin_out_node.Items.Add(EditorUtils.GenerateEntityName(_entity, flowgraph));
+            pin_out_node.SelectedIndex = 0;
             pin_out_node.Enabled = false;
 
             RefreshPinInParams();
