@@ -5,8 +5,10 @@ using CATHODE.LEGACY;
 using CATHODE.Misc;
 using CathodeEditorGUI.UserControls;
 using CathodeLib;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -62,6 +64,7 @@ namespace CathodeEditorGUI
 
 #if DEBUG
             button1.Visible = true;
+            button2.Visible = true;
 
             env_list.SelectedItem = "BSP_TORRENS";
             //LoadCommandsPAK(env_list.SelectedItem.ToString());
@@ -377,7 +380,7 @@ namespace CathodeEditorGUI
                 for (int x = 0; x < CurrentInstance.commandsPAK.Composites[i].functions.Count; x++)
                 {
                     if (CurrentInstance.commandsPAK.Composites[i].functions[x].function == CurrentInstance.selectedComposite.shortGUID) continue;
-                    List<CathodeEntityLink> prunedEntityLinks = new List<CathodeEntityLink>();
+                    List<EntityLink> prunedEntityLinks = new List<EntityLink>();
                     for (int l = 0; l < CurrentInstance.commandsPAK.Composites[i].functions[x].childLinks.Count; l++)
                     {
                         Entity linkedEntity = CurrentInstance.commandsPAK.Composites[i].GetEntityByID(CurrentInstance.commandsPAK.Composites[i].functions[x].childLinks[l].childID);
@@ -580,7 +583,7 @@ namespace CathodeEditorGUI
             List<Entity> entities = CurrentInstance.selectedComposite.GetEntities();
             for (int i = 0; i < entities.Count; i++) //We should actually query every entity in the PAK, since we might be ref'd by a proxy or override
             {
-                List<CathodeEntityLink> entLinks = new List<CathodeEntityLink>();
+                List<EntityLink> entLinks = new List<EntityLink>();
                 for (int x = 0; x < entities[i].childLinks.Count; x++)
                 {
                     if (entities[i].childLinks[x].childID != CurrentInstance.selectedEntity.shortGUID) entLinks.Add(entities[i].childLinks[x]);
@@ -672,16 +675,16 @@ namespace CathodeEditorGUI
 
             //Add parent links in to this entity that linked in to the other entity
             List<Entity> ents = CurrentInstance.selectedComposite.GetEntities();
-            List<CathodeEntityLink> newLinks = new List<CathodeEntityLink>();
+            List<EntityLink> newLinks = new List<EntityLink>();
             int num_of_new_things = 1;
             foreach (Entity entity in ents)
             {
                 newLinks.Clear();
-                foreach (CathodeEntityLink link in entity.childLinks)
+                foreach (EntityLink link in entity.childLinks)
                 {
                     if (link.childID == CurrentInstance.selectedEntity.shortGUID)
                     {
-                        CathodeEntityLink newLink = new CathodeEntityLink();
+                        EntityLink newLink = new EntityLink();
                         newLink.connectionID = ShortGuidUtils.Generate(DateTime.Now.ToString("G") + num_of_new_things.ToString()); num_of_new_things++;
                         newLink.childID = newEnt.shortGUID;
                         newLink.childParamID = link.childParamID;
@@ -904,7 +907,7 @@ namespace CathodeEditorGUI
             if (currentlyShowingChildLinks)
             {
                 //Child links (pins out of this entity)
-                foreach (CathodeEntityLink link in CurrentInstance.selectedEntity.childLinks)
+                foreach (EntityLink link in CurrentInstance.selectedEntity.childLinks)
                 {
                     entity_children.Items.Add(
                         /*"[" + link.connectionID.ToString() + "] " +*/
@@ -920,7 +923,7 @@ namespace CathodeEditorGUI
                 List<Entity> ents = CurrentInstance.selectedComposite.GetEntities();
                 foreach (Entity entity in ents)
                 {
-                    foreach (CathodeEntityLink link in entity.childLinks)
+                    foreach (EntityLink link in entity.childLinks)
                     {
                         if (link.childID != CurrentInstance.selectedEntity.shortGUID) continue;
                         entity_children.Items.Add(
@@ -1035,9 +1038,111 @@ namespace CathodeEditorGUI
         #region LOCAL_TESTS
         private void button1_Click_1(object sender, EventArgs e)
         {
+#if DEBUG
+            for (int mm = 0; mm < env_list.Items.Count; mm++)
+            {
+                //if (env_list.Items[mm].ToString() != "BSP_TORRENS") continue;
+
+                CurrentInstance.commandsPAK = new CommandsPAK(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + env_list.Items[mm].ToString() + "/WORLD/COMMANDS.PAK");
+                Console.WriteLine("Loading: " + CurrentInstance.commandsPAK.Filepath + "...");
+                //CurrentInstance.compositeLookup = new EntityNameLookup(CurrentInstance.commandsPAK);
+
+                //EnvironmentAnimationDatabase db = new EnvironmentAnimationDatabase(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + env_list.Items[mm].ToString() + "/WORLD/ENVIRONMENT_ANIMATION.DAT");
+                //Console.WriteLine(db.Header.MatrixCount0);
+                //Console.WriteLine(db.Header.MatrixCount1);
+                //Console.WriteLine(db.Header.EntryCount1);
+                //Console.WriteLine(db.Header.EntryCount0);
+                //Console.WriteLine(db.Header.IDCount0);
+                //Console.WriteLine(db.Header.IDCount1);
+                //Console.WriteLine(db.Header.Unknown1_);
+
+                string[] towrite = new string[200];
+                for (int i = 0; i < CurrentInstance.commandsPAK.Composites.Count; i++)
+                {
+                    for (int x = 0; x < CurrentInstance.commandsPAK.Composites[i].functions.Count; x++)
+                    {
+                        if (!CommandsUtils.FunctionTypeExists(CurrentInstance.commandsPAK.Composites[i].functions[x].function)) continue;
+                        FunctionType type = CommandsUtils.GetFunctionType(CurrentInstance.commandsPAK.Composites[i].functions[x].function);
+                        switch (type)
+                        {
+                            case FunctionType.CollisionBarrier:
+                                //ResourceReference rr = CurrentInstance.commandsPAK.Composites[i].functions[x].resources.FirstOrDefault(o => o.entryType == ResourceType.COLLISION_MAPPING);
+                                //if (rr == null)
+                                //{
+                                //    Console.WriteLine("NULL");
+                                //}
+                                //else
+                                //{
+                                //    Console.WriteLine(rr.startIndex + " / " + rr.count + " / " + rr.entityID);
+                                //    //Console.WriteLine(JsonConvert.SerializeObject(rr));
+                                //}
+
+                                if (CurrentInstance.commandsPAK.Composites[i].functions[x].resources.Count != 0)
+                                {
+                                    string breasdfdf = "";
+                                    if (CurrentInstance.commandsPAK.Composites[i].functions[x].GetResource(ResourceType.COLLISION_MAPPING) == null)
+                                    {
+                                        string sdfsd = "";
+                                    }
+                                }
+                                
+
+                                //Console.WriteLine(CurrentInstance.commandsPAK.Composites[i].name + " -> " + CurrentInstance.commandsPAK.Composites[i].functions[x].shortGUID + " -> " +  type);
+                                //for (int y = 0; y < CurrentInstance.commandsPAK.Composites[i].functions[x].resources.Count; y++)
+                                //{
+                                //    Console.WriteLine("\t" + CurrentInstance.commandsPAK.Composites[i].functions[x].resources[y].entryType);
+                                //}
+
+
+                                //Console.WriteLine(type);
+
+                                //Console.WriteLine("");
+
+                                //Composite comp = CurrentInstance.commandsPAK.Composites[i];
+                                //List<ResourceReference> rr = ((cResource)comp.functions[x].GetParameter("resource").content).value;
+                                //towrite[rr[0].startIndex] = rr[0].startIndex  + "\n\t" + comp.name + "\n\t" + CurrentInstance.compositeLookup.GetEntityName(comp.shortGUID, comp.functions[x].shortGUID);
+
+                                //Console.WriteLine(rr.Count);
+
+
+                                //Console.WriteLine(CurrentInstance.commandsPAK.Composites[i].name + " -> " + CurrentInstance.commandsPAK.Composites[i].functions[x].shortGUID + " -> " +  type);
+
+                                //for (int y = 0; y < CurrentInstance.commandsPAK.Composites[i].functions[x].resources.Count; y++)
+                                //{
+                                //    ResourceReference rr = CurrentInstance.commandsPAK.Composites[i].functions[x].resources[y];
+                                //    if (rr.entryType != ResourceType.RENDERABLE_INSTANCE)
+                                //    {
+                                //        Console.WriteLine(" !!!!!!!  FOUND " + rr.entryType);
+                                //    }
+                                //    Console.WriteLine(JsonConvert.SerializeObject(rr));
+                                //}
+                                break;
+                        }
+                    }
+                }
+                //foreach (string line in towrite)
+                //{
+                //    if (line == null)
+                //    {
+                //        Console.WriteLine("--");
+                //    }
+                //    else
+                //    {
+                //        Console.WriteLine(line);
+                //    }
+                //}
+
+                //CurrentInstance.commandsPAK.Save();
+            }
+#endif
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
             for (int mm = 0; mm < env_list.Items.Count; mm++)
             {
                 CurrentInstance.commandsPAK = new CommandsPAK(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + env_list.Items[mm].ToString() + "/WORLD/COMMANDS.PAK");
+                CurrentInstance.commandsPAK.Save();
             }
         }
         #endregion

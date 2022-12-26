@@ -49,7 +49,7 @@ namespace CathodeEditorGUI
                 return;
             }
 
-            CathodeEntityLink newNodeLink = new CathodeEntityLink();
+            EntityLink newNodeLink = new EntityLink();
             newNodeLink.connectionID = ShortGuidUtils.Generate(DateTime.Now.ToString("G"));
             newNodeLink.parentParamID = ShortGuidUtils.Generate(pin_out_param.Text);
             newNodeLink.childID = _entityList[pin_in_node.SelectedIndex].shortGUID;

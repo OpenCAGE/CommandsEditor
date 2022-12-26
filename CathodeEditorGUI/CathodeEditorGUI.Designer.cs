@@ -73,6 +73,7 @@
             this.button1 = new System.Windows.Forms.Button();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.button2 = new System.Windows.Forms.Button();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.entityInfoGroup.SuspendLayout();
@@ -478,6 +479,7 @@
             // 
             // groupBox8
             // 
+            this.groupBox8.Controls.Add(this.button2);
             this.groupBox8.Controls.Add(this.editEntryPoint);
             this.groupBox8.Controls.Add(this.button1);
             this.groupBox8.Controls.Add(this.root_composite_display);
@@ -520,6 +522,18 @@
             this.groupBox10.Size = new System.Drawing.Size(487, 49);
             this.groupBox10.TabIndex = 175;
             this.groupBox10.TabStop = false;
+            // 
+            // button2
+            // 
+            this.button2.ForeColor = System.Drawing.Color.Red;
+            this.button2.Location = new System.Drawing.Point(226, 9);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(192, 23);
+            this.button2.TabIndex = 178;
+            this.button2.Text = "DEBUG: SAVE ALL COMMANDS";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Visible = false;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // CathodeEditorGUI
             // 
@@ -595,5 +609,6 @@
         private System.Windows.Forms.TextBox hierarchyDisplay;
         private System.Windows.Forms.Button editEntityMovers;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button button2;
     }
 }

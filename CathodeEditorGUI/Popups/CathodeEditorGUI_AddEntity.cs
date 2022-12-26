@@ -178,8 +178,7 @@ namespace CathodeEditorGUI
                         thisParam = new cEnum("ALERTNESS_STATE", 0); //ALERTNESS_STATE is the first alphabetically
                         break;
                     case DataType.RESOURCE:
-                        thisParam = new cResource();
-                        ((cResource)thisParam).resourceID = ShortGuidUtils.Generate(DateTime.Now.ToString("G"));
+                        thisParam = new cResource(ShortGuidUtils.Generate(DateTime.Now.ToString("G")));
                         break;
                     case DataType.BOOL:
                         thisParam = new cBool();
@@ -260,16 +259,15 @@ namespace CathodeEditorGUI
                 //Create ProxyEntity
                 ProxyEntity newEntity = new ProxyEntity(thisID);
                 newEntity.hierarchy = hierarchy;
-                newEntity.extraId = ShortGuidUtils.Generate("temp"); //dunno what this val is meant to be, but apparently this works!
-
-                newEntity.parameters.Add(new Parameter(ShortGuidUtils.Generate("proxy_filter_targets"), new cBool() { value = false }));
-                newEntity.parameters.Add(new Parameter(ShortGuidUtils.Generate("proxy_enable_on_reset"), new cBool() { value = false }));
-                newEntity.parameters.Add(new Parameter(ShortGuidUtils.Generate("proxy_enable"), new cFloat() { value = 0.0f }));
-                newEntity.parameters.Add(new Parameter(ShortGuidUtils.Generate("proxy_enabled"), new cFloat() { value = 0.0f }));
-                newEntity.parameters.Add(new Parameter(ShortGuidUtils.Generate("proxy_disable"), new cFloat() { value = 0.0f }));
-                newEntity.parameters.Add(new Parameter(ShortGuidUtils.Generate("proxy_disabled"), new cFloat() { value = 0.0f }));
-                newEntity.parameters.Add(new Parameter(ShortGuidUtils.Generate("reference"), new CATHODE.Commands.cString() { value = "" }));
-                newEntity.parameters.Add(new Parameter(ShortGuidUtils.Generate("trigger"), new cFloat() { value = 0.0f }));
+                newEntity.extraId = ShortGuidUtils.Generate(DateTime.Now.ToString("G") + "temp");
+                newEntity.parameters.Add(new Parameter("proxy_filter_targets", new cBool(false)));
+                newEntity.parameters.Add(new Parameter("proxy_enable_on_reset", new cBool(false)));
+                newEntity.parameters.Add(new Parameter("proxy_enable", new cFloat(0.0f)));
+                newEntity.parameters.Add(new Parameter("proxy_enabled", new cFloat(0.0f)));
+                newEntity.parameters.Add(new Parameter("proxy_disable", new cFloat(0.0f)));
+                newEntity.parameters.Add(new Parameter("proxy_disabled", new cFloat(0.0f)));
+                newEntity.parameters.Add(new Parameter("reference", new cString("")));
+                newEntity.parameters.Add(new Parameter("trigger", new cFloat(0.0f)));
 
                 //Add to composite & save name
                 composite.proxies.Add(newEntity);

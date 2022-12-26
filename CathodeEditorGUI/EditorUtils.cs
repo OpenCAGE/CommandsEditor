@@ -302,7 +302,7 @@ namespace CathodeEditorGUI
             List<Entity> entities = comp.GetEntities();
             for (int i = 0; i < entities.Count; i++)
             {
-                List<CathodeEntityLink> childLinksPurged = new List<CathodeEntityLink>();
+                List<EntityLink> childLinksPurged = new List<EntityLink>();
                 for (int x = 0; x < entities[i].childLinks.Count; x++)
                     if (comp.GetEntityByID(entities[i].childLinks[x].childID) != null)
                         childLinksPurged.Add(entities[i].childLinks[x]);
