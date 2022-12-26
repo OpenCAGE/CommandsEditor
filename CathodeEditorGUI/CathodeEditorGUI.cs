@@ -843,7 +843,7 @@ namespace CathodeEditorGUI
 
                 switch (this_param.dataType)
                 {
-                    case DataType.POSITION:
+                    case DataType.TRANSFORM:
                         parameterGUI = new GUI_TransformDataType();
                         ((GUI_TransformDataType)parameterGUI).PopulateUI((cTransform)this_param, entity.parameters[i].shortGUID);
                         break;
@@ -863,7 +863,7 @@ namespace CathodeEditorGUI
                         parameterGUI = new GUI_NumericDataType();
                         ((GUI_NumericDataType)parameterGUI).PopulateUI_Float((cFloat)this_param, entity.parameters[i].shortGUID);
                         break;
-                    case DataType.DIRECTION:
+                    case DataType.VECTOR:
                         parameterGUI = new GUI_VectorDataType();
                         ((GUI_VectorDataType)parameterGUI).PopulateUI((cVector3)this_param, entity.parameters[i].shortGUID);
                         break;
@@ -875,7 +875,7 @@ namespace CathodeEditorGUI
                         parameterGUI = new GUI_ResourceDataType();
                         ((GUI_ResourceDataType)parameterGUI).PopulateUI((cResource)this_param, entity.parameters[i].shortGUID);
                         break;
-                    case DataType.SPLINE_DATA:
+                    case DataType.SPLINE:
                         parameterGUI = new GUI_SplineDataType();
                         ((GUI_SplineDataType)parameterGUI).PopulateUI((cSpline)this_param, entity.parameters[i].shortGUID);
                         break;

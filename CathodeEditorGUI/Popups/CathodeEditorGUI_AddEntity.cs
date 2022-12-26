@@ -9,6 +9,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Documents;
 using System.Windows.Forms;
 
 namespace CathodeEditorGUI
@@ -45,16 +46,14 @@ namespace CathodeEditorGUI
             entityVariant.BeginUpdate();
             entityVariant.Items.Clear();
             entityVariant.Items.AddRange(new object[] {
-                                    "POSITION",
-                                    "FLOAT",
                                     "STRING",
-                                    "SPLINE_DATA",
-                                    "ENUM",
-                                    "RESOURCE",
-                                    "FILEPATH",
+                                    "FLOAT",
+                                    "INTEGER",
                                     "BOOL",
-                                    "DIRECTION",
-                                    "INTEGER"
+                                    "VECTOR",
+                                    "TRANSFORM",
+                                    "ENUM",
+                                    "SPLINE"
                                     // TODO: we should support other types here, such as ZONE_LINK_PTR used in doors
             });
             entityVariant.EndUpdate();
@@ -161,33 +160,29 @@ namespace CathodeEditorGUI
                 ParameterData thisParam = null;
                 switch (newEntity.type)
                 {
-                    case DataType.POSITION:
-                        thisParam = new cTransform();
+                    case DataType.STRING:
+                        thisParam = new cString("");
                         break;
                     case DataType.FLOAT:
-                        thisParam = new cFloat();
+                        thisParam = new cFloat(0.0f);
                         break;
-                    case DataType.FILEPATH:
-                    case DataType.STRING:
-                        thisParam = new cString();
+                    case DataType.INTEGER:
+                        thisParam = new cInteger(0);
                         break;
-                    case DataType.SPLINE_DATA:
-                        thisParam = new cSpline();
+                    case DataType.BOOL:
+                        thisParam = new cBool(true);
+                        break;
+                    case DataType.VECTOR:
+                        thisParam = new cVector3(new Vector3(0, 0, 0));
+                        break;
+                    case DataType.TRANSFORM:
+                        thisParam = new cTransform(new Vector3(0, 0, 0), new Vector3(0, 0, 0));
                         break;
                     case DataType.ENUM:
                         thisParam = new cEnum("ALERTNESS_STATE", 0); //ALERTNESS_STATE is the first alphabetically
                         break;
-                    case DataType.RESOURCE:
-                        thisParam = new cResource(ShortGuidUtils.Generate(DateTime.Now.ToString("G")));
-                        break;
-                    case DataType.BOOL:
-                        thisParam = new cBool();
-                        break;
-                    case DataType.DIRECTION:
-                        thisParam = new cVector3();
-                        break;
-                    case DataType.INTEGER:
-                        thisParam = new cInteger();
+                    case DataType.SPLINE:
+                        thisParam = new cSpline();
                         break;
                 }
                 newEntity.parameters.Add(new Parameter(newEntity.parameter, thisParam));
@@ -211,26 +206,55 @@ namespace CathodeEditorGUI
                     case FunctionType.TriggerSequence:
                         newEntity = new TriggerSequence(thisID);
                         break;
-                }
-                newEntity.function = function;
-                //TODO: auto populate params here based on defaults
 
-                // TODO: these types of entities seem to have their own non-parameterised resources:
-                // - ParticleEmitterReference
-                // - RibbonEmitterReference
-                // - TRAV_1ShotSpline
-                // - LightReference
-                // - SurfaceEffectSphere
-                // - FogSphere
-                // - NavMeshBarrier
-                // - FogBox
-                // - SoundBarrier
-                // - SurfaceEffectBox
-                // - SimpleWater
-                // - SimpleRefraction
-                // - CollisionBarrier
-                // - PhysicsSystem (Although these don't seem to keep the entity ID)
-                // ... we should probably auto-generate these resources when adding new entities of these types.
+                    case FunctionType.ModelReference:
+                        cResource resourceData = new cResource(newEntity.shortGUID);
+                        resourceData.AddResource(ResourceType.RENDERABLE_INSTANCE);
+                        resourceData.AddResource(ResourceType.COLLISION_MAPPING); //TODO: do we really wanna add this?
+                        newEntity.parameters.Add(new Parameter("resource", resourceData));
+                        break;
+                    case FunctionType.SoundBarrier:
+                        newEntity.AddResource(ResourceType.COLLISION_MAPPING);
+                        break;
+                    case FunctionType.ExclusiveMaster:
+                        newEntity.AddResource(ResourceType.EXCLUSIVE_MASTER_STATE_RESOURCE);
+                        break;
+                    case FunctionType.CollisionBarrier:
+                        newEntity.AddResource(ResourceType.COLLISION_MAPPING);
+                        break;
+                    case FunctionType.TRAV_1ShotSpline:
+                        //TODO: There are loads of TRAV_ entities which are unused in the vanilla game, so I'm not sure if they should apply to those too...
+                        newEntity.AddResource(ResourceType.TRAVERSAL_SEGMENT);
+                        break;
+                    case FunctionType.NavMeshBarrier:
+                        newEntity.AddResource(ResourceType.NAV_MESH_BARRIER_RESOURCE);
+                        newEntity.AddResource(ResourceType.COLLISION_MAPPING);
+                        break;
+                    case FunctionType.PhysicsSystem:
+                        newEntity.parameters.Add(new Parameter("system_index", new cInteger(0)));
+                        newEntity.AddResource(ResourceType.DYNAMIC_PHYSICS_SYSTEM).startIndex = 0;
+                        break;
+                    case FunctionType.EnvironmentModelReference:
+                        cResource resourceData2 = new cResource(newEntity.shortGUID);
+                        resourceData2.AddResource(ResourceType.ANIMATED_MODEL); //TODO: need to figure out what startIndex links to, so we can set that!
+                        newEntity.parameters.Add(new Parameter("resource", resourceData2));
+                        break;
+
+                    // TODO: these should point to the commented models, but we need to figure out the REDS index!
+                    case FunctionType.ParticleEmitterReference:   /// [dynamic_mesh]
+                    case FunctionType.RibbonEmitterReference:     /// [dynamic_mesh]
+                    case FunctionType.SurfaceEffectBox:           /// Global/Props/fogbox.CS2 -> [VolumeFog]
+                    case FunctionType.FogBox:                     /// Global/Props/fogplane.CS2 -> [Plane01] 
+                    case FunctionType.SurfaceEffectSphere:        /// Global/Props/fogsphere.CS2 -> [Sphere01]
+                    case FunctionType.FogSphere:                  /// Global/Props/fogsphere.CS2 -> [Sphere01]
+                    case FunctionType.SimpleRefraction:           /// Global/Props/refraction.CS2 -> [Plane01]
+                    case FunctionType.SimpleWater:                /// Global/Props/noninteractive_water.CS2 -> [Plane01]
+                    case FunctionType.LightReference:             /// Global/Props/deferred_point_light.cs2 -> [Sphere01],  Global/Props/deferred_spot_light.cs2 -> [Sphere02], Global/Props/deferred_strip_light.cs2 -> [Sphere01]
+                        newEntity.AddResource(ResourceType.RENDERABLE_INSTANCE);
+                        break;
+                }
+                newEntity.parameters.Add(new Parameter("position", new cTransform()));
+                newEntity.function = function;
 
                 //Add to composite & save name
                 composite.functions.Add(newEntity);

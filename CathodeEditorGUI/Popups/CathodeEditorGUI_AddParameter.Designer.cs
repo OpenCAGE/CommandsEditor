@@ -95,16 +95,14 @@
             this.param_datatype.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.param_datatype.FormattingEnabled = true;
             this.param_datatype.Items.AddRange(new object[] {
-            "POSITION",
-            "FLOAT",
             "STRING",
-            "SPLINE_DATA",
-            "ENUM",
-            "RESOURCE",
-            "FILEPATH",
+            "FLOAT",
+            "INTEGER",
             "BOOL",
-            "DIRECTION",
-            "INTEGER"});
+            "VECTOR",
+            "TRANSFORM",
+            "ENUM",
+            "SPLINE"});
             this.param_datatype.Location = new System.Drawing.Point(104, 54);
             this.param_datatype.Name = "param_datatype";
             this.param_datatype.Size = new System.Drawing.Size(641, 21);

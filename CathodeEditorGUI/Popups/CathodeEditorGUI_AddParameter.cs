@@ -43,44 +43,32 @@ namespace CathodeEditorGUI
                 }
             }
 
-            //TODO: when we have custom ShortGuid saving, this can be deprecated.
-            if (ShortGuidUtils.FindString(thisParamID) != param_name.Text)
-            {
-                MessageBox.Show("This parameter name is not supported by the Cathode scripting system!");
-                return;
-            }
-
             ParameterData thisParam = null;
             switch ((DataType)param_datatype.SelectedIndex)
             {
-                case DataType.POSITION:
-                    thisParam = new cTransform();
+                case DataType.STRING:
+                    thisParam = new cString("");
                     break;
                 case DataType.FLOAT:
-                    thisParam = new cFloat();
+                    thisParam = new cFloat(0.0f);
                     break;
-                case DataType.FILEPATH:
-                case DataType.STRING:
-                    thisParam = new cString();
+                case DataType.INTEGER:
+                    thisParam = new cInteger(0);
                     break;
-                case DataType.SPLINE_DATA:
-                    thisParam = new cSpline();
+                case DataType.BOOL:
+                    thisParam = new cBool(true);
+                    break;
+                case DataType.VECTOR:
+                    thisParam = new cVector3(new Vector3(0,0,0));
+                    break;
+                case DataType.TRANSFORM:
+                    thisParam = new cTransform(new Vector3(0,0,0), new Vector3(0,0,0));
                     break;
                 case DataType.ENUM:
                     thisParam = new cEnum("ALERTNESS_STATE", 0); //ALERTNESS_STATE is the first alphabetically
                     break;
-                case DataType.RESOURCE:
-                    thisParam = new cResource();
-                    ((cResource)thisParam).resourceID = ShortGuidUtils.Generate(DateTime.Now.ToString("G"));
-                    break;
-                case DataType.BOOL:
-                    thisParam = new cBool();
-                    break;
-                case DataType.DIRECTION:
-                    thisParam = new cVector3();
-                    break;
-                case DataType.INTEGER:
-                    thisParam = new cInteger();
+                case DataType.SPLINE:
+                    thisParam = new cSpline();
                     break;
             }
             node.parameters.Add(new Parameter(thisParamID, thisParam));
