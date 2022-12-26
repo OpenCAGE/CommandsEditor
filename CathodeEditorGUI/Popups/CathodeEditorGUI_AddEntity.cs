@@ -180,7 +180,7 @@ namespace CathodeEditorGUI
                         break;
                     case CathodeDataType.RESOURCE:
                         thisParam = new CathodeResource();
-                        ((CathodeResource)thisParam).resourceID = new ShortGuid("00-00-00-00");
+                        ((CathodeResource)thisParam).resourceID = ShortGuidUtils.Generate(DateTime.Now.ToString("G"));
                         break;
                     case CathodeDataType.BOOL:
                         thisParam = new CathodeBool();
