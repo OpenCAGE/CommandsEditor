@@ -73,7 +73,6 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.generateHierarchy);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.groupBox2);
             this.groupBox1.Controls.Add(this.createNewEntity);
@@ -81,6 +80,7 @@
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.textBox1);
             this.groupBox1.Controls.Add(this.entityVariant);
+            this.groupBox1.Controls.Add(this.generateHierarchy);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(776, 179);
@@ -190,7 +190,6 @@
             // 
             // entityVariant
             // 
-            this.entityVariant.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.entityVariant.FormattingEnabled = true;
             this.entityVariant.Items.AddRange(new object[] {
             "POSITION",

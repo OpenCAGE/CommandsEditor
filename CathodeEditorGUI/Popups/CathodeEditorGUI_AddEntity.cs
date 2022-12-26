@@ -58,6 +58,7 @@ namespace CathodeEditorGUI
             });
             entityVariant.EndUpdate();
             entityVariant.SelectedIndex = 0;
+            entityVariant.DropDownStyle = ComboBoxStyle.DropDownList;
         }
         private void selectedFunctionEntity(object sender, EventArgs e)
         {
@@ -71,6 +72,7 @@ namespace CathodeEditorGUI
             for (int i = 0; i < availableEntities.Count; i++) entityVariant.Items.Add(availableEntities[i].className);
             entityVariant.EndUpdate();
             entityVariant.SelectedIndex = 0;
+            entityVariant.DropDownStyle = ComboBoxStyle.DropDown;
         }
         private void selectedCompositeEntity(object sender, EventArgs e)
         {
@@ -84,6 +86,7 @@ namespace CathodeEditorGUI
             for (int i = 0; i < composites.Count; i++) entityVariant.Items.Add(composites[i].name);
             entityVariant.EndUpdate();
             entityVariant.SelectedIndex = 0;
+            entityVariant.DropDownStyle = ComboBoxStyle.DropDownList;
         }
         private void selectedProxyEntity(object sender, EventArgs e)
         {
@@ -196,7 +199,12 @@ namespace CathodeEditorGUI
             {
                 //Create FunctionEntity
                 FunctionEntity newEntity = new FunctionEntity(thisID);
-                ShortGuid function = CathodeEntityDatabase.GetEntityAtIndex(entityVariant.SelectedIndex).guid;
+                ShortGuid function = CathodeEntityDatabase.GetEntity(entityVariant.Text).guid;
+                if (function.val == null)
+                {
+                    MessageBox.Show("Please make sure you have typed or selected a valid entity class to create.", "Invalid entity class", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
                 switch (CommandsUtils.GetFunctionType(function))
                 {
                     //TODO: find a nicer way of auto selecting this (E.G. can we reflect to class names?)
