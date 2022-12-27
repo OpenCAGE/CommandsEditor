@@ -10,11 +10,14 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Design;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 
 namespace CathodeEditorGUI
 {
@@ -1035,10 +1038,185 @@ namespace CathodeEditorGUI
             return (MessageBox.Show(msg, "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes);
         }
 
+        class EntityDef
+        {
+            public string title = "";
+            public Dictionary<string, List<Val>> stuff = new Dictionary<string, List<Val>>();
+        }
+        class Val
+        {
+            public string name;
+            public string datatype;
+        }
+
         #region LOCAL_TESTS
         private void button1_Click_1(object sender, EventArgs e)
         {
 #if DEBUG
+            List<string> sdfdf = new List<string>();
+
+            List<string> content = File.ReadAllLines(@"C:\Users\mattf\Downloads\all_nodes_with_params.html").ToList<string>();
+            List<EntityDef> ents = new List<EntityDef>();
+            EntityDef currentEnt = null;
+            for (int i = 0; i < content.Count; i++)
+            {
+                if (content[i].Length > 3 && content[i].Substring(0, 3) == "<h3")
+                {
+                    if (currentEnt != null)
+                    {
+                        ents.Add(currentEnt);
+                    }
+                    currentEnt = new EntityDef();
+                    string split = content[i].Split('>')[1];
+                    currentEnt.title = split.Substring(0, split.Length - 4);
+                }
+                else if (content[i].Length > 3 && content[i].Substring(0, 3) == "<li")
+                {
+                    string type = content[i].Split('[')[1].Split(']')[0];
+                    if (!currentEnt.stuff.ContainsKey(type)) currentEnt.stuff.Add(type, new List<Val>());
+                    string split = content[i].Split(']')[1];
+                    if (split.Contains("["))
+                    {
+                        split = split.Split('[')[0];
+                        split = split.Substring(1, split.Length - 2);
+                    }
+                    else
+                    {
+                        split = split.Substring(1, split.Length - 6);
+                    }
+                    string[] split2_l = content[i].Split(new string[] { "DataType: " }, StringSplitOptions.None);
+                    string split2 = (split2_l.Length > 1) ? split2_l[1].Substring(0, split2_l[1].Length - 6) : "";
+                    currentEnt.stuff[type].Add(new Val() { datatype = split2, name = split });
+
+                    if (!sdfdf.Contains(split2))
+                    {
+                        sdfdf.Add(split2);
+                    }
+
+                }
+            }
+            Console.WriteLine(JsonConvert.SerializeObject(sdfdf, Formatting.Indented));
+            ents.Add(currentEnt);
+
+            List<string> scripting = new List<string>();
+            foreach (EntityDef def in ents)
+            {
+                if (def.title == @"n:\\content\\build\\library\\archetypes\\gameplay\\gcip_worldpickup")
+                    def.title = "GCIP_WorldPickup";
+                if (def.title == @"n:\\content\\build\\library\\ayz\\animation\\logichelpers\\playforminduration")
+                    def.title = "PlayForMinDuration";
+                if (def.title == @"n:\\content\\build\\library\\archetypes\\script\\gameplay\\torch_control")
+                    def.title = "Torch_Control";
+
+                if (def.stuff.Count != 0)
+                {
+                    scripting.Add("case FunctionType." + def.title + ":");
+                    if (def.title == "CAGEAnimation") scripting.Add("\tnewEntity = new CAGEAnimation(thisID);");
+                    if (def.title == "TriggerSequence") scripting.Add("\tnewEntity = new TriggerSequence(thisID);");
+                }
+                foreach (var val in def.stuff)
+                {
+                    foreach (Val valu in val.Value)
+                    {
+                        if (valu.name == "resource")
+                        {
+                            if (def.title != "ModelReference" && def.title != "EnvironmentModelReference")
+                                scripting.Add("\tnewEntity.AddResource(ResourceType." + valu.datatype + ");");
+                        }
+                        else
+                        {
+                            string defaults = "";
+                            string type = "";
+                            switch (valu.datatype)
+                            {
+                                case "":
+                                    type = "ParameterData"; //this is something that you shouldn't be able to assign
+                                    break;
+                                case "Object":
+                                    type = "ParameterData"; //TODO: object pointer
+                                    break;
+                                case "ZonePtr":
+                                    type = "ParameterData"; //TODO: zone pointer
+                                    break;
+                                case "ZoneLinkPtr":
+                                    type = "ParameterData"; //TODO: zone pointer
+                                    break;
+                                case "ResourceID":
+                                    type = "ParameterData"; //TODO: resource id????
+                                    break;
+                                case "ReferenceFramePtr":
+                                    type = "ParameterData"; //TODO: resource id????
+                                    break;
+                                case "CHARACTER":
+                                    type = "ParameterData"; //TODO: resource id????
+                                    break;
+
+                                case "int":
+                                    type = "cInteger";
+                                    break;
+                                case "bool":
+                                    type = "cBool";
+                                    break;
+                                case "float":
+                                    type = "cFloat";
+                                    break;
+                                case "String":
+                                    type = "cString";
+                                    break;
+                                case "Position":
+                                    type = "cTransform";
+                                    break;
+                                case "FilePath":
+                                    type = "cString";
+                                    break;
+                                case "SPLINE":
+                                case "SplineData":
+                                    type = "cSpline";
+                                    break;
+                                case "Direction":
+                                    type = "cVector3";
+                                    break;
+                                case "Enum":
+                                    type = "cEnum";
+                                    break;
+                                default:
+                                    type = "cEnum";
+                                    defaults = "\"" + valu.datatype + "\", 0";
+                                    break;
+                            }
+                            scripting.Add("\tnewEntity.parameters.Add(new Parameter(\"" + valu.name + "\", new " + type + "(" + defaults + "))); //" + valu.datatype);
+                        }
+                    }
+                }
+                if (def.stuff.Count != 0)
+                {
+                    if (def.title == "ModelReference")
+                    {
+                        scripting.Add("\tcResource resourceData = new cResource(newEntity.shortGUID);");
+                        scripting.Add("\tresourceData.AddResource(ResourceType.RENDERABLE_INSTANCE);");
+                        scripting.Add("\tnewEntity.parameters.Add(new Parameter(\"resource\", resourceData));");
+                    }
+                    if (def.title == "EnvironmentModelReference")
+                    {
+                        scripting.Add("\tcResource resourceData2 = new cResource(newEntity.shortGUID);");
+                        scripting.Add("\tresourceData2.AddResource(ResourceType.ANIMATED_MODEL); //TODO: need to figure out what startIndex links to, so we can set that!");
+                        scripting.Add("\tnewEntity.parameters.Add(new Parameter(\"resource\", resourceData2));");
+                    }
+                    if (def.title == "PhysicsSystem") scripting.Add("\tnewEntity.AddResource(ResourceType.DYNAMIC_PHYSICS_SYSTEM).startIndex = 0;");
+                    scripting.Add("break;");
+                }
+            }
+            File.WriteAllLines("out.cs", scripting);
+
+            string bleh = JsonConvert.SerializeObject(ents, Formatting.Indented);
+            File.WriteAllText("out.json" , bleh);
+
+            return;
+
+
+
+
+
             for (int mm = 0; mm < env_list.Items.Count; mm++)
             {
                 //if (env_list.Items[mm].ToString() != "BSP_TORRENS") continue;
@@ -1065,7 +1243,7 @@ namespace CathodeEditorGUI
                         FunctionType type = CommandsUtils.GetFunctionType(CurrentInstance.commandsPAK.Composites[i].functions[x].function);
                         switch (type)
                         {
-                            case FunctionType.CollisionBarrier:
+                            case FunctionType.CoverLine:
                                 //ResourceReference rr = CurrentInstance.commandsPAK.Composites[i].functions[x].resources.FirstOrDefault(o => o.entryType == ResourceType.COLLISION_MAPPING);
                                 //if (rr == null)
                                 //{
@@ -1077,14 +1255,14 @@ namespace CathodeEditorGUI
                                 //    //Console.WriteLine(JsonConvert.SerializeObject(rr));
                                 //}
 
-                                if (CurrentInstance.commandsPAK.Composites[i].functions[x].resources.Count != 0)
-                                {
-                                    string breasdfdf = "";
-                                    if (CurrentInstance.commandsPAK.Composites[i].functions[x].GetResource(ResourceType.COLLISION_MAPPING) == null)
-                                    {
-                                        string sdfsd = "";
-                                    }
-                                }
+                                //if (CurrentInstance.commandsPAK.Composites[i].functions[x].resources.Count != 0)
+                                //{
+                                //    string breasdfdf = "";
+                                //    if (CurrentInstance.commandsPAK.Composites[i].functions[x].GetResource(ResourceType.COLLISION_MAPPING) == null)
+                                //    {
+                                //        string sdfsd = "";
+                                //    }
+                                //}
                                 
 
                                 //Console.WriteLine(CurrentInstance.commandsPAK.Composites[i].name + " -> " + CurrentInstance.commandsPAK.Composites[i].functions[x].shortGUID + " -> " +  type);
@@ -1105,7 +1283,7 @@ namespace CathodeEditorGUI
                                 //Console.WriteLine(rr.Count);
 
 
-                                //Console.WriteLine(CurrentInstance.commandsPAK.Composites[i].name + " -> " + CurrentInstance.commandsPAK.Composites[i].functions[x].shortGUID + " -> " +  type);
+                                Console.WriteLine(CurrentInstance.commandsPAK.Composites[i].name + " -> " + CurrentInstance.commandsPAK.Composites[i].functions[x].shortGUID + " -> " +  type);
 
                                 //for (int y = 0; y < CurrentInstance.commandsPAK.Composites[i].functions[x].resources.Count; y++)
                                 //{
