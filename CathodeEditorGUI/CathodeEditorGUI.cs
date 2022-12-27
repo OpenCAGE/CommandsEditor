@@ -119,6 +119,8 @@ namespace CathodeEditorGUI
                 renameSelectedNode.Enabled = true;
                 duplicateSelectedNode.Enabled = true;
                 hierarchyDisplay.Visible = false;
+                addNewParameter.Enabled = true;
+                removeParameter.Enabled = true;
             }
         }
 
@@ -816,6 +818,8 @@ namespace CathodeEditorGUI
                     selected_entity_name.Text = ShortGuidUtils.FindString(((DatatypeEntity)entity).parameter);
                     renameSelectedNode.Enabled = false;
                     duplicateSelectedNode.Enabled = false;
+                    addNewParameter.Enabled = false;
+                    removeParameter.Enabled = false;
                     break;
                 case EntityVariant.PROXY:
                 case EntityVariant.OVERRIDE:
@@ -1268,7 +1272,7 @@ namespace CathodeEditorGUI
                                     if (spl.Length > 1) defaults = "\"" + spl[0].Substring(0, spl[0].Length - 1) + "\", " + spl[1].Substring(0, spl[1].Length - 1);
                                     else
                                     {
-                                        if (EntityDB.GetEnum(ShortGuidUtils.Generate(valu.datatype)) == null)
+                                        if (EnumUtils.GetEnum(ShortGuidUtils.Generate(valu.datatype)) == null)
                                         {
                                             type = "cResource";
                                             defaults = "new ResourceReference[]{ new ResourceReference(ResourceType." + valu.datatype + ") }.ToList<ResourceReference>(), newEntity.shortGUID";

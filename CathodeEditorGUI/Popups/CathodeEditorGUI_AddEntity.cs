@@ -59,6 +59,7 @@ namespace CathodeEditorGUI
             entityVariant.EndUpdate();
             entityVariant.SelectedIndex = 0;
             entityVariant.DropDownStyle = ComboBoxStyle.DropDownList;
+            addDefaultParams.Visible = false;
         }
         private void selectedFunctionEntity(object sender, EventArgs e)
         {

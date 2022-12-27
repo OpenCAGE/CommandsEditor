@@ -98,43 +98,27 @@ namespace CathodeEditorGUI
         }
 
         /* Utility: generate a list of suggested parameters for an entity */
-        public static List<string> GenerateParameterList(Entity entity, out bool didGenerateFromDB)
+        public static List<string> GenerateParameterList(Entity entity)
         {
-            didGenerateFromDB = false;
             List<string> items = new List<string>();
             if (Editor.commands == null) return items;
             switch (entity.variant)
             {
                 case EntityVariant.FUNCTION:
                     ShortGuid function = ((FunctionEntity)entity).function;
-                    List<CathodeEntityDatabase.ParameterDefinition> parameters = CathodeEntityDatabase.GetParametersFromEntity(function);
-                    if (parameters != null)
+                    if (CommandsUtils.FunctionTypeExists(function))
                     {
-                        didGenerateFromDB = true;
-                        for (int i = 0; i < parameters.Count; i++) items.Add(parameters[i].name);
+                        //Function node
+                        List<CathodeEntityDatabase.ParameterDefinition> parameters = CathodeEntityDatabase.GetParametersFromEntity(function);
+                        if (parameters == null) break;
+                        for (int i = 0; i < parameters.Count; i++) 
+                            items.Add(parameters[i].name);
                     }
                     else
                     {
-                        string[] options = EntityDB.GetEntityParameterList(ShortGuidUtils.FindString(function));
-                        items.Add("trigger"); items.Add("reference"); //TODO: populate all params from EntityMethodInterface?
-                        if (options == null)
-                        {
-                            Composite flow = Editor.commands.GetComposite(function);
-                            if (flow == null) break;
-                            for (int i = 0; i < flow.datatypes.Count; i++)
-                            {
-                                string to_add = ShortGuidUtils.FindString(flow.datatypes[i].parameter);
-                                //TODO: also return datatype here
-                                if (!items.Contains(to_add)) items.Add(to_add);
-                            }
-                        }
-                        else
-                        {
-                            for (int i = 0; i < options.Length; i++)
-                            {
-                                if (!items.Contains(options[i])) items.Add(options[i]);
-                            }
-                        }
+                        //Composite node
+                        foreach (DatatypeEntity ent in Editor.commands.GetComposite(function).datatypes)
+                            items.Add(ShortGuidUtils.FindString(ent.parameter));
                     }
                     break;
                 case EntityVariant.DATATYPE:

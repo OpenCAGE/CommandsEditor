@@ -60,7 +60,6 @@ namespace CathodeEditorGUI
             this.Close();
         }
 
-        bool didPopulateInFromDB = false;
         private void pin_in_node_SelectedIndexChanged(object sender, EventArgs e)
         {
             RefreshPinInParams();
@@ -70,12 +69,11 @@ namespace CathodeEditorGUI
             pin_in_param.BeginUpdate();
             pin_in_param.Items.Clear();
             if (pin_in_node.SelectedIndex == -1) return;
-            List<string> items = EditorUtils.GenerateParameterList(_entityList[pin_in_node.SelectedIndex], out didPopulateInFromDB);
+            List<string> items = EditorUtils.GenerateParameterList(_entityList[pin_in_node.SelectedIndex]);
             for (int i = 0; i < items.Count; i++) pin_in_param.Items.Add(items[i]);
             pin_in_param.EndUpdate();
         }
 
-        bool didPopulateOutFromDB = false;
         private void pin_out_node_SelectedIndexChanged(object sender, EventArgs e)
         {
             RefreshPinOutParams();
@@ -84,7 +82,7 @@ namespace CathodeEditorGUI
         {
             pin_out_param.BeginUpdate();
             pin_out_param.Items.Clear();
-            List<string> items = EditorUtils.GenerateParameterList(_entity, out didPopulateOutFromDB);
+            List<string> items = EditorUtils.GenerateParameterList(_entity);
             for (int i = 0; i < items.Count; i++) pin_out_param.Items.Add(items[i]);
             pin_out_param.EndUpdate();
         }

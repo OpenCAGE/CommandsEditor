@@ -1,22 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using CATHODE.Commands;
 using CathodeLib;
-using CATHODE;
 
 namespace CathodeEditorGUI.UserControls
 {
     public partial class GUI_EnumDataType : UserControl
     {
         cEnum enumVal = null;
-        EnumDescriptor enumDesc = null;
+        EnumUtils.EnumDescriptor enumDesc = null;
 
         public GUI_EnumDataType()
         {
@@ -31,7 +23,7 @@ namespace CathodeEditorGUI.UserControls
         public void PopulateUI(cEnum cEnum, ShortGuid paramID)
         {
             enumVal = cEnum;
-            enumDesc = EntityDB.GetEnum(cEnum.enumID);
+            enumDesc = EnumUtils.GetEnum(cEnum.enumID);
 
             label13.Text = ShortGuidUtils.FindString(paramID);
             comboBox1.Text = enumDesc.Name;
