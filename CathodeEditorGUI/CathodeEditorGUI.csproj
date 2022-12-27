@@ -118,7 +118,7 @@
       <DependentUpon>CathodeEditorGUI.cs</DependentUpon>
     </Compile>
     <Compile Include="CathodeEntityDatabase.cs" />
-    <Compile Include="CurrentInstance.cs" />
+    <Compile Include="Editor.cs" />
     <Compile Include="EditorUtils.cs" />
     <Compile Include="Popups\CathodeEditorGUI_AddEntity.cs">
       <SubType>Form</SubType>

@@ -20,7 +20,7 @@ namespace CathodeEditorGUI
             node = _node;
 
             triggerDelay.Text = "0.0";
-            this.Text = "TriggerSequence Editor: " + CurrentInstance.compositeLookup.GetName(CurrentInstance.selectedComposite.shortGUID, _node.shortGUID);
+            this.Text = "TriggerSequence Editor: " + Editor.util.entity.GetName(Editor.selected.composite.shortGUID, _node.shortGUID);
             selectedTriggerDetails.Visible = false;
 
             ReloadTriggerList();
@@ -82,7 +82,7 @@ namespace CathodeEditorGUI
 
         private void selectEntToPointTo_Click(object sender, EventArgs e)
         {
-            CathodeEditorGUI_EditHierarchy hierarchyEditor = new CathodeEditorGUI_EditHierarchy(CurrentInstance.selectedComposite);
+            CathodeEditorGUI_EditHierarchy hierarchyEditor = new CathodeEditorGUI_EditHierarchy(Editor.selected.composite);
             hierarchyEditor.Show();
             hierarchyEditor.OnHierarchyGenerated += HierarchyEditor_HierarchyGenerated;
         }

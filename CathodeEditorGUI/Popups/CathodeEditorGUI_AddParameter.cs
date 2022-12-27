@@ -32,16 +32,6 @@ namespace CathodeEditorGUI
         private void button1_Click(object sender, EventArgs e)
         {
             if (param_name.Text == "") return;
-            ShortGuid thisParamID = ShortGuidUtils.Generate(param_name.Text);
-
-            foreach (Parameter param in node.parameters)
-            {
-                if (param.shortGUID == thisParamID)
-                {
-                    MessageBox.Show("This parameter already exists on the entity!");
-                    return;
-                }
-            }
 
             ParameterData thisParam = null;
             switch ((DataType)param_datatype.SelectedIndex)
@@ -71,7 +61,7 @@ namespace CathodeEditorGUI
                     thisParam = new cSpline();
                     break;
             }
-            node.parameters.Add(new Parameter(thisParamID, thisParam));
+            node.AddParameter(param_name.Text, thisParam);
 
             this.Close();
         }

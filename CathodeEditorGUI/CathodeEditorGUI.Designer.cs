@@ -69,11 +69,11 @@
             this.load_commands_pak = new System.Windows.Forms.Button();
             this.env_list = new System.Windows.Forms.ComboBox();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.DBG_LoadAllCommands = new System.Windows.Forms.Button();
             this.editEntryPoint = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.DBG_CompileParamList = new System.Windows.Forms.Button();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.button2 = new System.Windows.Forms.Button();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.entityInfoGroup.SuspendLayout();
@@ -479,9 +479,9 @@
             // 
             // groupBox8
             // 
-            this.groupBox8.Controls.Add(this.button2);
+            this.groupBox8.Controls.Add(this.DBG_LoadAllCommands);
             this.groupBox8.Controls.Add(this.editEntryPoint);
-            this.groupBox8.Controls.Add(this.button1);
+            this.groupBox8.Controls.Add(this.DBG_CompileParamList);
             this.groupBox8.Controls.Add(this.root_composite_display);
             this.groupBox8.Controls.Add(this.composite_count_display);
             this.groupBox8.Location = new System.Drawing.Point(501, 3);
@@ -489,6 +489,18 @@
             this.groupBox8.Size = new System.Drawing.Size(748, 49);
             this.groupBox8.TabIndex = 174;
             this.groupBox8.TabStop = false;
+            // 
+            // DBG_LoadAllCommands
+            // 
+            this.DBG_LoadAllCommands.ForeColor = System.Drawing.Color.Red;
+            this.DBG_LoadAllCommands.Location = new System.Drawing.Point(226, 9);
+            this.DBG_LoadAllCommands.Name = "DBG_LoadAllCommands";
+            this.DBG_LoadAllCommands.Size = new System.Drawing.Size(192, 23);
+            this.DBG_LoadAllCommands.TabIndex = 178;
+            this.DBG_LoadAllCommands.Text = "DEBUG: LOAD ALL COMMANDS";
+            this.DBG_LoadAllCommands.UseVisualStyleBackColor = true;
+            this.DBG_LoadAllCommands.Visible = false;
+            this.DBG_LoadAllCommands.Click += new System.EventHandler(this.button2_Click);
             // 
             // editEntryPoint
             // 
@@ -500,17 +512,17 @@
             this.editEntryPoint.UseVisualStyleBackColor = true;
             this.editEntryPoint.Click += new System.EventHandler(this.editEntryPoint_Click);
             // 
-            // button1
+            // DBG_CompileParamList
             // 
-            this.button1.ForeColor = System.Drawing.Color.Red;
-            this.button1.Location = new System.Drawing.Point(424, 9);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(192, 23);
-            this.button1.TabIndex = 176;
-            this.button1.Text = "DEBUG: LOAD ALL COMMANDS";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Visible = false;
-            this.button1.Click += new System.EventHandler(this.button1_Click_1);
+            this.DBG_CompileParamList.ForeColor = System.Drawing.Color.Red;
+            this.DBG_CompileParamList.Location = new System.Drawing.Point(424, 9);
+            this.DBG_CompileParamList.Name = "DBG_CompileParamList";
+            this.DBG_CompileParamList.Size = new System.Drawing.Size(192, 23);
+            this.DBG_CompileParamList.TabIndex = 176;
+            this.DBG_CompileParamList.Text = "DEBUG: COMPILE PARAMETERS";
+            this.DBG_CompileParamList.UseVisualStyleBackColor = true;
+            this.DBG_CompileParamList.Visible = false;
+            this.DBG_CompileParamList.Click += new System.EventHandler(this.BuildNodeParameterDatabase);
             // 
             // groupBox10
             // 
@@ -522,18 +534,6 @@
             this.groupBox10.Size = new System.Drawing.Size(487, 49);
             this.groupBox10.TabIndex = 175;
             this.groupBox10.TabStop = false;
-            // 
-            // button2
-            // 
-            this.button2.ForeColor = System.Drawing.Color.Red;
-            this.button2.Location = new System.Drawing.Point(226, 9);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(192, 23);
-            this.button2.TabIndex = 178;
-            this.button2.Text = "DEBUG: SAVE ALL COMMANDS";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Visible = false;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // CathodeEditorGUI
             // 
@@ -608,7 +608,7 @@
         private System.Windows.Forms.Button editFunction;
         private System.Windows.Forms.TextBox hierarchyDisplay;
         private System.Windows.Forms.Button editEntityMovers;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button DBG_CompileParamList;
+        private System.Windows.Forms.Button DBG_LoadAllCommands;
     }
 }

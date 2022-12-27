@@ -22,8 +22,8 @@ namespace CathodeEditorGUI.Popups
             InitializeComponent();
 
             MaterialIndexToEdit = materialIndexToEdit;
-            for (int i = 0; i < CurrentInstance.materialDB.MaterialNames.Count; i++)
-                _materials.Add(new ListedMaterial(CurrentInstance.materialDB.MaterialNames[i], i));
+            for (int i = 0; i < Editor.resource.materials.MaterialNames.Count; i++)
+                _materials.Add(new ListedMaterial(Editor.resource.materials.MaterialNames[i], i));
             _materials.Sort();
             _materials.Reverse();
 

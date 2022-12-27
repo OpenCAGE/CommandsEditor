@@ -34,15 +34,15 @@ namespace CathodeEditorGUI.Popups.UserControls
             SelectedModelIndex = modelIndexPAK;
             SelectedMaterialIndexes = materialIndexes;
 
-            int binIndex = CurrentInstance.modelDB.Models[modelIndexPAK].Submeshes[0].binIndex;
-            modelInfoTextbox.Text = CurrentInstance.modelDB.modelBIN.ModelFilePaths[binIndex];
-            if (CurrentInstance.modelDB.modelBIN.ModelLODPartNames[binIndex] != "")
-                modelInfoTextbox.Text += " -> [" + CurrentInstance.modelDB.modelBIN.ModelLODPartNames[binIndex] + "]";
+            int binIndex = Editor.resource.models.Models[modelIndexPAK].Submeshes[0].binIndex;
+            modelInfoTextbox.Text = Editor.resource.models.modelBIN.ModelFilePaths[binIndex];
+            if (Editor.resource.models.modelBIN.ModelLODPartNames[binIndex] != "")
+                modelInfoTextbox.Text += " -> [" + Editor.resource.models.modelBIN.ModelLODPartNames[binIndex] + "]";
 
             materials.Items.Clear();
             for (int i = 0; i < materialIndexes.Count; i++)
             {
-                materials.Items.Add(CurrentInstance.materialDB.MaterialNames[materialIndexes[i]]);
+                materials.Items.Add(Editor.resource.materials.MaterialNames[materialIndexes[i]]);
             }
         }
 

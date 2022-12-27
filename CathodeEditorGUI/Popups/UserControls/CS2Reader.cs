@@ -25,15 +25,15 @@ namespace CathodeEditorGUI.Popups.UserControls
         public Model3DGroup Read(int ModelIndex)
         {
             Model3DGroup modelGroup = new Model3DGroup();
-            ModelData ChunkArray = CurrentInstance.modelDB.Models[ModelIndex];
+            ModelData ChunkArray = Editor.resource.models.Models[ModelIndex];
             for (int ChunkIndex = 0; ChunkIndex < ChunkArray.Header.SubmeshCount; ++ChunkIndex)
             {
                 int BINIndex = ChunkArray.Submeshes[ChunkIndex].binIndex;
-                alien_model_bin_model_info Model = CurrentInstance.modelDB.modelBIN.Models[BINIndex];
+                alien_model_bin_model_info Model = Editor.resource.models.modelBIN.Models[BINIndex];
                 //if (Model.BlockSize == 0) continue;
 
-                alien_vertex_buffer_format VertexInput = CurrentInstance.modelDB.modelBIN.VertexBufferFormats[Model.VertexFormatIndex];
-                alien_vertex_buffer_format VertexInputLowDetail = CurrentInstance.modelDB.modelBIN.VertexBufferFormats[Model.VertexFormatIndexLowDetail];
+                alien_vertex_buffer_format VertexInput = Editor.resource.models.modelBIN.VertexBufferFormats[Model.VertexFormatIndex];
+                alien_vertex_buffer_format VertexInputLowDetail = Editor.resource.models.modelBIN.VertexBufferFormats[Model.VertexFormatIndexLowDetail];
 
                 BinaryReader Stream = new BinaryReader(new MemoryStream(ChunkArray.Submeshes[ChunkIndex].content));
 

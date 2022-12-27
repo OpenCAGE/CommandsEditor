@@ -55,7 +55,7 @@ namespace CathodeEditorGUI
                 FollowEntityThrough.Enabled = false;
 
                 if (selectedEntity.variant != EntityVariant.FUNCTION) return;
-                FollowEntityThrough.Enabled = CurrentInstance.commandsPAK.GetComposite(((FunctionEntity)selectedEntity).function) != null;
+                FollowEntityThrough.Enabled = Editor.commands.GetComposite(((FunctionEntity)selectedEntity).function) != null;
             }
             catch (Exception ex)
             {
@@ -75,7 +75,7 @@ namespace CathodeEditorGUI
             SelectEntity.Enabled = false;
             FollowEntityThrough.Enabled = false;
 
-            selectedComposite = CurrentInstance.commandsPAK.Composites[CurrentInstance.commandsPAK.GetFileIndex(FileName)];
+            selectedComposite = Editor.commands.Composites[Editor.commands.GetFileIndex(FileName)];
             compositeName.Text = selectedComposite.name;
             composite_content.BeginUpdate();
             composite_content_RAW.Clear();
@@ -96,7 +96,7 @@ namespace CathodeEditorGUI
             if (selectedEntity == null) return;
             if (selectedEntity.variant != EntityVariant.FUNCTION) return;
 
-            Composite composite = CurrentInstance.commandsPAK.GetComposite(((FunctionEntity)selectedEntity).function);
+            Composite composite = Editor.commands.GetComposite(((FunctionEntity)selectedEntity).function);
             if (composite == null) return;
 
             LoadComposite(composite.name);

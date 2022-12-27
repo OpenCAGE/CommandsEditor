@@ -6,6 +6,7 @@ using CATHODE.Misc;
 using CathodeEditorGUI.UserControls;
 using CathodeLib;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,9 +16,11 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
+using System.Windows.Media.Animation;
 
 namespace CathodeEditorGUI
 {
@@ -66,8 +69,8 @@ namespace CathodeEditorGUI
             ClearUI(true, true, true);
 
 #if DEBUG
-            button1.Visible = true;
-            button2.Visible = true;
+            DBG_CompileParamList.Visible = true;
+            DBG_LoadAllCommands.Visible = true;
 
             env_list.SelectedItem = "BSP_TORRENS";
             //LoadCommandsPAK(env_list.SelectedItem.ToString());
@@ -96,11 +99,11 @@ namespace CathodeEditorGUI
                 composite_content.Items.Clear();
                 composite_content_RAW.Clear();
                 composite_content.EndUpdate();
-                CurrentInstance.selectedComposite = null;
+                Editor.selected.composite = null;
             }
             if (clear_parameter_list)
             {
-                CurrentInstance.selectedEntity = null;
+                Editor.selected.entity = null;
                 entityInfoGroup.Text = "Selected Entity Info";
                 selected_entity_type_description.Text = "";
                 selected_entity_name.Text = "";
@@ -140,18 +143,18 @@ namespace CathodeEditorGUI
             /*Task.Factory.StartNew(() => */LoadMovers()/*)*/;
 
             //Begin caching entity names so we don't have to keep generating them
-            CurrentInstance.compositeLookup = new EntityUtils(CurrentInstance.commandsPAK);
+            Editor.util.entity = new EntityUtils(Editor.commands);
             if (currentBackgroundCacher != null) currentBackgroundCacher.Dispose();
             currentBackgroundCacher = Task.Factory.StartNew(() => EditorUtils.GenerateEntityNameCache(this));
 
             //Populate file tree
-            treeHelper.UpdateFileTree(CurrentInstance.commandsPAK.GetCompositeNames().ToList());
+            treeHelper.UpdateFileTree(Editor.commands.GetCompositeNames().ToList());
 
             //Show info in UI
             RefreshStatsUI();
 
             //Load root composite
-            treeHelper.SelectNode(CurrentInstance.commandsPAK.EntryPoints[0].name);
+            treeHelper.SelectNode(Editor.commands.EntryPoints[0].name);
         }
         private void load_commands_pak_Click(object sender, EventArgs e)
         {
@@ -159,33 +162,33 @@ namespace CathodeEditorGUI
         }
         private void RefreshStatsUI()
         {
-            root_composite_display.Text = "Root composite: " + CurrentInstance.commandsPAK.EntryPoints[0].name;
-            composite_count_display.Text = "Composite count: " + CurrentInstance.commandsPAK.Composites.Count;
+            root_composite_display.Text = "Root composite: " + Editor.commands.EntryPoints[0].name;
+            composite_count_display.Text = "Composite count: " + Editor.commands.Composites.Count;
         }
 
         /* Load commands */
         private void LoadCommands(string level)
         {
-            CurrentInstance.commandsPAK = null;
+            Editor.commands = null;
 
             string path_to_ENV = SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + level;
             try
             {
-                CurrentInstance.commandsPAK = new CommandsPAK(path_to_ENV + "/WORLD/COMMANDS.PAK");
+                Editor.commands = new CommandsPAK(path_to_ENV + "/WORLD/COMMANDS.PAK");
             }
             catch (Exception e)
             {
                 MessageBox.Show("Failed to load COMMANDS.PAK!\n" + e.Message, "Failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                CurrentInstance.commandsPAK = null;
+                Editor.commands = null;
                 return;
             }
 
-            if (!CurrentInstance.commandsPAK.Loaded)
+            if (!Editor.commands.Loaded)
             {
                 MessageBox.Show("Failed to load COMMANDS.PAK!\nPlease place this executable in your Alien: Isolation folder.", "Environment error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            else if (CurrentInstance.commandsPAK.EntryPoints[0] == null)
+            else if (Editor.commands.EntryPoints[0] == null)
             {
                 MessageBox.Show("Failed to load COMMANDS.PAK!\nPlease reset your game files.", "COMMANDS.PAK corrupted!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -197,7 +200,7 @@ namespace CathodeEditorGUI
         {
             try
             {
-                string baseLevelPath = CurrentInstance.commandsPAK.Filepath.Substring(0, CurrentInstance.commandsPAK.Filepath.Length - ("WORLD/COMMANDS.PAK").Length);
+                string baseLevelPath = Editor.commands.Filepath.Substring(0, Editor.commands.Filepath.Length - ("WORLD/COMMANDS.PAK").Length);
 
                 //The game has two hard-coded _PATCH overrides which change the CommandsPAK but not the assets
                 string levelName = env_list.Items[env_list.SelectedIndex].ToString();
@@ -209,24 +212,24 @@ namespace CathodeEditorGUI
                         break;
                 }
 
-                CurrentInstance.modelDB = new CathodeModels(baseLevelPath + "RENDERABLE/MODELS_LEVEL.BIN",
+                Editor.resource.models = new CathodeModels(baseLevelPath + "RENDERABLE/MODELS_LEVEL.BIN",
                                                             baseLevelPath + "RENDERABLE/LEVEL_MODELS.PAK");
-                CurrentInstance.redsDB = new RenderableElementsDatabase(baseLevelPath + "WORLD/REDS.BIN");
-                CurrentInstance.materialDB = new MaterialDatabase(baseLevelPath + "RENDERABLE/LEVEL_MODELS.MTL");
-                CurrentInstance.textureDB = new Textures(baseLevelPath + "RENDERABLE/LEVEL_TEXTURES.ALL.PAK");
-                CurrentInstance.textureDB.Load();
-                CurrentInstance.textureDB_Global = new Textures(SharedData.pathToAI + "/DATA/ENV/GLOBAL/WORLD/GLOBAL_TEXTURES.ALL.PAK");
-                CurrentInstance.textureDB_Global.Load();
+                Editor.resource.reds = new RenderableElementsDatabase(baseLevelPath + "WORLD/REDS.BIN");
+                Editor.resource.materials = new MaterialDatabase(baseLevelPath + "RENDERABLE/LEVEL_MODELS.MTL");
+                Editor.resource.textures = new Textures(baseLevelPath + "RENDERABLE/LEVEL_TEXTURES.ALL.PAK");
+                Editor.resource.textures.Load();
+                Editor.resource.textures_Global = new Textures(SharedData.pathToAI + "/DATA/ENV/GLOBAL/WORLD/GLOBAL_TEXTURES.ALL.PAK");
+                Editor.resource.textures_Global.Load();
             }
             catch
             {
                 //Can fail if we're loading a PAK outside the game structure
                 MessageBox.Show("Failed to load asset PAKs!\nAre you opening a Commands PAK outside of a map directory?\nIf not, please try again.", "Resource editing disabled.", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                CurrentInstance.modelDB = null;
-                CurrentInstance.redsDB = null;
-                CurrentInstance.materialDB = null;
-                CurrentInstance.textureDB = null;
-                CurrentInstance.textureDB_Global = null;
+                Editor.resource.models = null;
+                Editor.resource.reds = null;
+                Editor.resource.materials = null;
+                Editor.resource.textures = null;
+                Editor.resource.textures_Global = null;
             }
         }
 
@@ -235,35 +238,35 @@ namespace CathodeEditorGUI
         {
             try
             {
-                string baseLevelPath = CurrentInstance.commandsPAK.Filepath.Substring(0, CurrentInstance.commandsPAK.Filepath.Length - ("WORLD/COMMANDS.PAK").Length);
-                CurrentInstance.moverDB = new MoverDatabase(baseLevelPath + "WORLD/MODELS.MVR");
+                string baseLevelPath = Editor.commands.Filepath.Substring(0, Editor.commands.Filepath.Length - ("WORLD/COMMANDS.PAK").Length);
+                Editor.mvr = new MoverDatabase(baseLevelPath + "WORLD/MODELS.MVR");
             }
             catch
             {
                 //Can fail if we're loading a MVR outside the game structure
                 MessageBox.Show("Failed to load mover descriptor database!\nAre you opening a Commands PAK outside of a map directory?\nMVR editing disabled.", "MVR editing disabled.", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                CurrentInstance.moverDB = null;
+                Editor.mvr = null;
             }
         }
 
         /* Save the current edits */
         private void save_commands_pak_Click(object sender, EventArgs e)
         {
-            if (CurrentInstance.commandsPAK == null) return;
+            if (Editor.commands == null) return;
             Cursor.Current = Cursors.WaitCursor;
 
             byte[] backup = null;
             try
             {
-                backup = File.ReadAllBytes(CurrentInstance.commandsPAK.Filepath);
-                CurrentInstance.commandsPAK.Save();
+                backup = File.ReadAllBytes(Editor.commands.Filepath);
+                Editor.commands.Save();
             }
             catch (Exception ex)
             {
                 try
                 {
                     if (backup != null)
-                        File.WriteAllBytes(CurrentInstance.commandsPAK.Filepath, backup);
+                        File.WriteAllBytes(Editor.commands.Filepath, backup);
                 }
                 catch { }
             
@@ -272,11 +275,11 @@ namespace CathodeEditorGUI
                 return;
             }
 
-            if (CurrentInstance.redsDB != null && CurrentInstance.redsDB.RenderableElements != null)
-                CurrentInstance.redsDB.Save();
+            if (Editor.resource.reds != null && Editor.resource.reds.RenderableElements != null)
+                Editor.resource.reds.Save();
 
-            if (CurrentInstance.moverDB != null && CurrentInstance.moverDB.Movers != null)
-                CurrentInstance.moverDB.Save();
+            if (Editor.mvr != null && Editor.mvr.Movers != null)
+                Editor.mvr.Save();
 
             Cursor.Current = Cursors.Default;
             MessageBox.Show("Saved changes!", "Saved.", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -285,7 +288,7 @@ namespace CathodeEditorGUI
         /* Edit the loaded COMMANDS.PAK's root composite */
         private void editEntryPoint_Click(object sender, EventArgs e)
         {
-            if (CurrentInstance.commandsPAK == null || !CurrentInstance.commandsPAK.Loaded) return;
+            if (Editor.commands == null || !Editor.commands.Loaded) return;
             CathodeEditorGUI_EditRootComposite edit_entrypoint = new CathodeEditorGUI_EditRootComposite();
             edit_entrypoint.Show();
             edit_entrypoint.FormClosed += new FormClosedEventHandler(edit_entrypoint_closed);
@@ -309,11 +312,11 @@ namespace CathodeEditorGUI
         private void jumpToComposite_Click(object sender, EventArgs e)
         {
             Composite flow;
-            switch (CurrentInstance.selectedEntity.variant)
+            switch (Editor.selected.entity.variant)
             {
                 case EntityVariant.OVERRIDE:
                 {
-                    Entity entity = EditorUtils.ResolveHierarchy(((OverrideEntity)CurrentInstance.selectedEntity).hierarchy, out flow, out string hierarchy);
+                    Entity entity = EditorUtils.ResolveHierarchy(((OverrideEntity)Editor.selected.entity).hierarchy, out flow, out string hierarchy);
                     if (entity != null)
                     {
                         LoadComposite(flow.name);
@@ -323,7 +326,7 @@ namespace CathodeEditorGUI
                 }
                 case EntityVariant.PROXY:
                 {
-                    Entity entity = EditorUtils.ResolveHierarchy(((ProxyEntity)CurrentInstance.selectedEntity).hierarchy, out flow, out string hierarchy);
+                    Entity entity = EditorUtils.ResolveHierarchy(((ProxyEntity)Editor.selected.entity).hierarchy, out flow, out string hierarchy);
                     if (entity != null)
                     {
                         LoadComposite(flow.name);
@@ -342,21 +345,21 @@ namespace CathodeEditorGUI
         /* Select root composite from top of UI */
         private void SelectEntryPointUI(object sender, System.EventArgs e)
         {
-            if (CurrentInstance.commandsPAK == null || !CurrentInstance.commandsPAK.Loaded) return;
-            LoadComposite(CurrentInstance.commandsPAK.EntryPoints[0].name);
+            if (Editor.commands == null || !Editor.commands.Loaded) return;
+            LoadComposite(Editor.commands.EntryPoints[0].name);
         }
 
         /* Add new composite (really we should be able to do this OFF OF entities, like making a prefab) */
         private void addNewComposite_Click(object sender, EventArgs e)
         {
-            if (CurrentInstance.commandsPAK == null) return;
+            if (Editor.commands == null) return;
             CathodeEditorGUI_AddComposite add_flow = new CathodeEditorGUI_AddComposite();
             add_flow.Show();
             add_flow.FormClosed += new FormClosedEventHandler(add_flow_closed);
         }
         private void add_flow_closed(Object sender, FormClosedEventArgs e)
         {
-            treeHelper.UpdateFileTree(CurrentInstance.commandsPAK.GetCompositeNames().ToList());
+            treeHelper.UpdateFileTree(Editor.commands.GetCompositeNames().ToList());
             RefreshStatsUI();
             this.BringToFront();
             this.Focus();
@@ -365,10 +368,10 @@ namespace CathodeEditorGUI
         /* Remove selected composite */
         private void removeSelectedComposite_Click(object sender, EventArgs e)
         {
-            if (CurrentInstance.selectedComposite == null) return;
-            for (int i = 0; i < CurrentInstance.commandsPAK.EntryPoints.Count(); i++)
+            if (Editor.selected.composite == null) return;
+            for (int i = 0; i < Editor.commands.EntryPoints.Count(); i++)
             {
-                if (CurrentInstance.selectedComposite.shortGUID == CurrentInstance.commandsPAK.EntryPoints[i].shortGUID)
+                if (Editor.selected.composite.shortGUID == Editor.commands.EntryPoints[i].shortGUID)
                 {
                     MessageBox.Show("Cannot delete a composite which is the root, global, or pause menu!", "Cannot delete.", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
@@ -377,43 +380,43 @@ namespace CathodeEditorGUI
             if (!ConfirmAction("Are you sure you want to remove this composite?")) return;
 
             //Remove any entities or links that reference this composite
-            for (int i = 0; i < CurrentInstance.commandsPAK.Composites.Count; i++)
+            for (int i = 0; i < Editor.commands.Composites.Count; i++)
             {
                 List<FunctionEntity> prunedFunctionEntities = new List<FunctionEntity>();
-                for (int x = 0; x < CurrentInstance.commandsPAK.Composites[i].functions.Count; x++)
+                for (int x = 0; x < Editor.commands.Composites[i].functions.Count; x++)
                 {
-                    if (CurrentInstance.commandsPAK.Composites[i].functions[x].function == CurrentInstance.selectedComposite.shortGUID) continue;
+                    if (Editor.commands.Composites[i].functions[x].function == Editor.selected.composite.shortGUID) continue;
                     List<EntityLink> prunedEntityLinks = new List<EntityLink>();
-                    for (int l = 0; l < CurrentInstance.commandsPAK.Composites[i].functions[x].childLinks.Count; l++)
+                    for (int l = 0; l < Editor.commands.Composites[i].functions[x].childLinks.Count; l++)
                     {
-                        Entity linkedEntity = CurrentInstance.commandsPAK.Composites[i].GetEntityByID(CurrentInstance.commandsPAK.Composites[i].functions[x].childLinks[l].childID);
-                        if (linkedEntity != null && linkedEntity.variant == EntityVariant.FUNCTION) if (((FunctionEntity)linkedEntity).function == CurrentInstance.selectedComposite.shortGUID) continue;
-                        prunedEntityLinks.Add(CurrentInstance.commandsPAK.Composites[i].functions[x].childLinks[l]);
+                        Entity linkedEntity = Editor.commands.Composites[i].GetEntityByID(Editor.commands.Composites[i].functions[x].childLinks[l].childID);
+                        if (linkedEntity != null && linkedEntity.variant == EntityVariant.FUNCTION) if (((FunctionEntity)linkedEntity).function == Editor.selected.composite.shortGUID) continue;
+                        prunedEntityLinks.Add(Editor.commands.Composites[i].functions[x].childLinks[l]);
                     }
-                    CurrentInstance.commandsPAK.Composites[i].functions[x].childLinks = prunedEntityLinks;
-                    prunedFunctionEntities.Add(CurrentInstance.commandsPAK.Composites[i].functions[x]);
+                    Editor.commands.Composites[i].functions[x].childLinks = prunedEntityLinks;
+                    prunedFunctionEntities.Add(Editor.commands.Composites[i].functions[x]);
                 }
-                CurrentInstance.commandsPAK.Composites[i].functions = prunedFunctionEntities;
+                Editor.commands.Composites[i].functions = prunedFunctionEntities;
             }
             //TODO: remove proxies etc that also reference any of the removed entities
 
             //Remove the composite
-            CurrentInstance.commandsPAK.Composites.Remove(CurrentInstance.selectedComposite);
+            Editor.commands.Composites.Remove(Editor.selected.composite);
 
             //Refresh UI
             ClearUI(false, true, true);
             RefreshStatsUI();
-            treeHelper.UpdateFileTree(CurrentInstance.commandsPAK.GetCompositeNames().ToList());
+            treeHelper.UpdateFileTree(Editor.commands.GetCompositeNames().ToList());
         }
 
         /* Select entity from loaded composite */
         private void composite_content_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (composite_content.SelectedIndex == -1 || CurrentInstance.selectedComposite == null) return;
+            if (composite_content.SelectedIndex == -1 || Editor.selected.composite == null) return;
             try
             {
                 ShortGuid entityID = new ShortGuid(composite_content.SelectedItem.ToString().Substring(1, 11));
-                Entity thisEntity = CurrentInstance.selectedComposite.GetEntityByID(entityID);
+                Entity thisEntity = Editor.selected.composite.GetEntityByID(entityID);
                 if (thisEntity != null) LoadEntity(thisEntity);
             }
             catch (Exception ex)
@@ -425,8 +428,8 @@ namespace CathodeEditorGUI
         /* Add new out pin */
         private void addNewLink_Click(object sender, EventArgs e)
         {
-            if (CurrentInstance.selectedComposite == null || CurrentInstance.selectedEntity == null) return;
-            CathodeEditorGUI_AddPin add_pin = new CathodeEditorGUI_AddPin(CurrentInstance.selectedEntity, CurrentInstance.selectedComposite);
+            if (Editor.selected.composite == null || Editor.selected.entity == null) return;
+            CathodeEditorGUI_AddPin add_pin = new CathodeEditorGUI_AddPin(Editor.selected.entity, Editor.selected.composite);
             add_pin.Show();
             add_pin.FormClosed += new FormClosedEventHandler(add_pin_closed);
         }
@@ -440,15 +443,15 @@ namespace CathodeEditorGUI
         /* Remove selected out pin */
         private void removeSelectedLink_Click(object sender, EventArgs e)
         {
-            if (CurrentInstance.selectedEntity == null || CurrentInstance.selectedComposite == null) return;
+            if (Editor.selected.entity == null || Editor.selected.composite == null) return;
             if (!ConfirmAction("Are you sure you want to remove this link?")) return;
             if (currentlyShowingChildLinks)
             {
-                CurrentInstance.selectedEntity.childLinks.RemoveAt(entity_children.SelectedIndex);
+                Editor.selected.entity.childLinks.RemoveAt(entity_children.SelectedIndex);
             }
             else
             {
-                List<Entity> ents = CurrentInstance.selectedComposite.GetEntities();
+                List<Entity> ents = Editor.selected.composite.GetEntities();
                 int deleteIndex = -1;
                 foreach (Entity entity in ents)
                 {
@@ -473,16 +476,16 @@ namespace CathodeEditorGUI
         /* Go to selected pin out on button press */
         private void out_pin_goto_Click(object sender, EventArgs e)
         {
-            if (entity_children.SelectedIndex == -1 || CurrentInstance.selectedComposite == null) return;
+            if (entity_children.SelectedIndex == -1 || Editor.selected.composite == null) return;
 
             Entity thisEntity = null;
             if (currentlyShowingChildLinks)
             {
-                thisEntity = CurrentInstance.selectedComposite.GetEntityByID(CurrentInstance.selectedEntity.childLinks[entity_children.SelectedIndex].childID);
+                thisEntity = Editor.selected.composite.GetEntityByID(Editor.selected.entity.childLinks[entity_children.SelectedIndex].childID);
             }
             else
             {
-                List<Entity> ents = CurrentInstance.selectedComposite.GetEntities();
+                List<Entity> ents = Editor.selected.composite.GetEntities();
                 foreach (Entity entity in ents)
                 {
                     for (int i = 0; i < entity.childLinks.Count; i++)
@@ -525,8 +528,8 @@ namespace CathodeEditorGUI
         private void LoadComposite(string FileName)
         {
             ClearUI(false, true, true);
-            Composite entry = CurrentInstance.commandsPAK.Composites[CurrentInstance.commandsPAK.GetFileIndex(FileName)];
-            CurrentInstance.selectedComposite = entry;
+            Composite entry = Editor.commands.Composites[Editor.commands.GetFileIndex(FileName)];
+            Editor.selected.composite = entry;
             EditorUtils.PurgeDeadHierarchiesInActiveComposite(); //TODO: We should really just skip this info when parsing, can remove "unknown" on composite then
             Cursor.Current = Cursors.WaitCursor;
 
@@ -534,7 +537,7 @@ namespace CathodeEditorGUI
             List<Entity> entities = entry.GetEntities();
             for (int i = 0; i < entities.Count; i++)
             {
-                string desc = EditorUtils.GenerateEntityName(entities[i], CurrentInstance.selectedComposite);
+                string desc = EditorUtils.GenerateEntityName(entities[i], Editor.selected.composite);
                 composite_content.Items.Add(desc);
                 composite_content_RAW.Add(desc);
             }
@@ -547,8 +550,8 @@ namespace CathodeEditorGUI
         /* Add new entity */
         private void addNewEntity_Click(object sender, EventArgs e)
         {
-            if (CurrentInstance.selectedComposite == null) return;
-            CathodeEditorGUI_AddEntity add_parameter = new CathodeEditorGUI_AddEntity(CurrentInstance.selectedComposite, CurrentInstance.commandsPAK.Composites);
+            if (Editor.selected.composite == null) return;
+            CathodeEditorGUI_AddEntity add_parameter = new CathodeEditorGUI_AddEntity(Editor.selected.composite, Editor.commands.Composites);
             add_parameter.Show();
             add_parameter.OnNewEntity += OnAddNewEntity;
         }
@@ -562,34 +565,34 @@ namespace CathodeEditorGUI
         /* Remove selected entity */
         private void removeSelectedEntity_Click(object sender, EventArgs e)
         {
-            if (CurrentInstance.selectedEntity == null) return;
+            if (Editor.selected.entity == null) return;
             if (!ConfirmAction("Are you sure you want to remove this entity?")) return;
 
-            string removedID = CurrentInstance.selectedEntity.shortGUID.ToString();
+            string removedID = Editor.selected.entity.shortGUID.ToString();
 
-            switch (CurrentInstance.selectedEntity.variant)
+            switch (Editor.selected.entity.variant)
             {
                 case EntityVariant.DATATYPE:
-                    CurrentInstance.selectedComposite.datatypes.Remove((DatatypeEntity)CurrentInstance.selectedEntity);
+                    Editor.selected.composite.datatypes.Remove((DatatypeEntity)Editor.selected.entity);
                     break;
                 case EntityVariant.FUNCTION:
-                    CurrentInstance.selectedComposite.functions.Remove((FunctionEntity)CurrentInstance.selectedEntity);
+                    Editor.selected.composite.functions.Remove((FunctionEntity)Editor.selected.entity);
                     break;
                 case EntityVariant.OVERRIDE:
-                    CurrentInstance.selectedComposite.overrides.Remove((OverrideEntity)CurrentInstance.selectedEntity);
+                    Editor.selected.composite.overrides.Remove((OverrideEntity)Editor.selected.entity);
                     break;
                 case EntityVariant.PROXY:
-                    CurrentInstance.selectedComposite.proxies.Remove((ProxyEntity)CurrentInstance.selectedEntity);
+                    Editor.selected.composite.proxies.Remove((ProxyEntity)Editor.selected.entity);
                     break;
             }
 
-            List<Entity> entities = CurrentInstance.selectedComposite.GetEntities();
+            List<Entity> entities = Editor.selected.composite.GetEntities();
             for (int i = 0; i < entities.Count; i++) //We should actually query every entity in the PAK, since we might be ref'd by a proxy or override
             {
                 List<EntityLink> entLinks = new List<EntityLink>();
                 for (int x = 0; x < entities[i].childLinks.Count; x++)
                 {
-                    if (entities[i].childLinks[x].childID != CurrentInstance.selectedEntity.shortGUID) entLinks.Add(entities[i].childLinks[x]);
+                    if (entities[i].childLinks[x].childID != Editor.selected.entity.shortGUID) entLinks.Add(entities[i].childLinks[x]);
                 }
                 entities[i].childLinks = entLinks;
 
@@ -604,7 +607,7 @@ namespace CathodeEditorGUI
                             for (int x = 0; x < triggerSequence.triggers.Count; x++)
                             {
                                 if (triggerSequence.triggers[x].hierarchy.Count < 2 ||
-                                    triggerSequence.triggers[x].hierarchy[triggerSequence.triggers[x].hierarchy.Count - 2] != CurrentInstance.selectedEntity.shortGUID)
+                                    triggerSequence.triggers[x].hierarchy[triggerSequence.triggers[x].hierarchy.Count - 2] != Editor.selected.entity.shortGUID)
                                 {
                                     triggers.Add(triggerSequence.triggers[x]);
                                 }
@@ -617,7 +620,7 @@ namespace CathodeEditorGUI
                             for (int x = 0; x < cageAnim.keyframeHeaders.Count; x++)
                             {
                                 if (cageAnim.keyframeHeaders[x].connectedEntity.Count < 2 ||
-                                    cageAnim.keyframeHeaders[x].connectedEntity[cageAnim.keyframeHeaders[x].connectedEntity.Count - 2] != CurrentInstance.selectedEntity.shortGUID)
+                                    cageAnim.keyframeHeaders[x].connectedEntity[cageAnim.keyframeHeaders[x].connectedEntity.Count - 2] != Editor.selected.entity.shortGUID)
                                 {
                                     headers.Add(cageAnim.keyframeHeaders[x]);
                                 }
@@ -648,7 +651,7 @@ namespace CathodeEditorGUI
                 }
             }
             if (indexToRemove != -1) composite_content_RAW.RemoveAt(indexToRemove);
-            else LoadComposite(CurrentInstance.selectedComposite.name);
+            else LoadComposite(Editor.selected.composite.name);
 
             ClearUI(false, false, true);
         }
@@ -665,19 +668,19 @@ namespace CathodeEditorGUI
         /* Duplicate selected entity */
         private void duplicateSelectedEntity_Click(object sender, EventArgs e)
         {
-            if (CurrentInstance.selectedEntity == null) return;
+            if (Editor.selected.entity == null) return;
             if (!ConfirmAction("Are you sure you want to duplicate this entity?")) return;
 
             //Generate new entity ID and name
-            Entity newEnt = Utilities.CloneObject(CurrentInstance.selectedEntity);
+            Entity newEnt = Utilities.CloneObject(Editor.selected.entity);
             newEnt.shortGUID = ShortGuidUtils.Generate(DateTime.Now.ToString("G"));
-            CurrentInstance.compositeLookup.SetName(
-                CurrentInstance.selectedComposite.shortGUID,
+            Editor.util.entity.SetName(
+                Editor.selected.composite.shortGUID,
                 newEnt.shortGUID,
-                CurrentInstance.compositeLookup.GetName(CurrentInstance.selectedComposite.shortGUID, CurrentInstance.selectedEntity.shortGUID) + "_clone");
+                Editor.util.entity.GetName(Editor.selected.composite.shortGUID, Editor.selected.entity.shortGUID) + "_clone");
 
             //Add parent links in to this entity that linked in to the other entity
-            List<Entity> ents = CurrentInstance.selectedComposite.GetEntities();
+            List<Entity> ents = Editor.selected.composite.GetEntities();
             List<EntityLink> newLinks = new List<EntityLink>();
             int num_of_new_things = 1;
             foreach (Entity entity in ents)
@@ -685,7 +688,7 @@ namespace CathodeEditorGUI
                 newLinks.Clear();
                 foreach (EntityLink link in entity.childLinks)
                 {
-                    if (link.childID == CurrentInstance.selectedEntity.shortGUID)
+                    if (link.childID == Editor.selected.entity.shortGUID)
                     {
                         EntityLink newLink = new EntityLink();
                         newLink.connectionID = ShortGuidUtils.Generate(DateTime.Now.ToString("G") + num_of_new_things.ToString()); num_of_new_things++;
@@ -702,16 +705,16 @@ namespace CathodeEditorGUI
             switch (newEnt.variant)
             {
                 case EntityVariant.FUNCTION:
-                    CurrentInstance.selectedComposite.functions.Add((FunctionEntity)newEnt);
+                    Editor.selected.composite.functions.Add((FunctionEntity)newEnt);
                     break;
                 case EntityVariant.DATATYPE:
-                    CurrentInstance.selectedComposite.datatypes.Add((DatatypeEntity)newEnt);
+                    Editor.selected.composite.datatypes.Add((DatatypeEntity)newEnt);
                     break;
                 case EntityVariant.PROXY:
-                    CurrentInstance.selectedComposite.proxies.Add((ProxyEntity)newEnt);
+                    Editor.selected.composite.proxies.Add((ProxyEntity)newEnt);
                     break;
                 case EntityVariant.OVERRIDE:
-                    CurrentInstance.selectedComposite.overrides.Add((OverrideEntity)newEnt);
+                    Editor.selected.composite.overrides.Add((OverrideEntity)newEnt);
                     break;
             }
 
@@ -722,23 +725,23 @@ namespace CathodeEditorGUI
         /* Rename selected entity */
         private void renameSelectedEntity_Click(object sender, EventArgs e)
         {
-            if (CurrentInstance.selectedEntity == null) return;
-            CathodeEditorGUI_RenameEntity rename_entity = new CathodeEditorGUI_RenameEntity(CurrentInstance.selectedEntity.shortGUID);
+            if (Editor.selected.entity == null) return;
+            CathodeEditorGUI_RenameEntity rename_entity = new CathodeEditorGUI_RenameEntity(Editor.selected.entity.shortGUID);
             rename_entity.Show();
             rename_entity.FormClosed += new FormClosedEventHandler(rename_entity_closed);
         }
         private void rename_entity_closed(Object sender, FormClosedEventArgs e)
         {
             if (((CathodeEditorGUI_RenameEntity)sender).didSave &&
-                ((CathodeEditorGUI_RenameEntity)sender).EntityID == CurrentInstance.selectedEntity.shortGUID)
+                ((CathodeEditorGUI_RenameEntity)sender).EntityID == Editor.selected.entity.shortGUID)
             {
-                CurrentInstance.compositeLookup.SetName(
-                    CurrentInstance.selectedComposite.shortGUID,
-                    CurrentInstance.selectedEntity.shortGUID,
+                Editor.util.entity.SetName(
+                    Editor.selected.composite.shortGUID,
+                    Editor.selected.entity.shortGUID,
                     ((CathodeEditorGUI_RenameEntity)sender).EntityName);
 
-                string entityID = CurrentInstance.selectedEntity.shortGUID.ToString();
-                string newEntityName = EditorUtils.GenerateEntityName(CurrentInstance.selectedEntity, CurrentInstance.selectedComposite, true);
+                string entityID = Editor.selected.entity.shortGUID.ToString();
+                string newEntityName = EditorUtils.GenerateEntityName(Editor.selected.entity, Editor.selected.composite, true);
                 for (int i = 0; i < composite_content.Items.Count; i++)
                 {
                     if (composite_content.Items[i].ToString().Substring(1, 11) == entityID)
@@ -755,7 +758,7 @@ namespace CathodeEditorGUI
                         break;
                     }
                 }
-                LoadEntity(CurrentInstance.selectedEntity);
+                LoadEntity(Editor.selected.entity);
             }
             this.BringToFront();
             this.Focus();
@@ -764,16 +767,16 @@ namespace CathodeEditorGUI
         /* Perform a partial UI reload for a newly added entity */
         private void ReloadUIForNewEntity(Entity newEnt)
         {
-            if (CurrentInstance.selectedComposite == null || newEnt == null) return;
+            if (Editor.selected.composite == null || newEnt == null) return;
             if (currentSearch == "")
             {
-                string newEntityName = EditorUtils.GenerateEntityName(newEnt, CurrentInstance.selectedComposite);
+                string newEntityName = EditorUtils.GenerateEntityName(newEnt, Editor.selected.composite);
                 composite_content.Items.Add(newEntityName);
                 composite_content_RAW.Add(newEntityName);
             }
             else
             {
-                LoadComposite(CurrentInstance.selectedComposite.name);
+                LoadComposite(Editor.selected.composite.name);
             }
             LoadEntity(newEnt);
         }
@@ -784,7 +787,7 @@ namespace CathodeEditorGUI
             if (entity == null) return;
 
             ClearUI(false, false, true);
-            CurrentInstance.selectedEntity = entity;
+            Editor.selected.entity = entity;
             Cursor.Current = Cursors.WaitCursor;
 
             //populate info labels
@@ -794,19 +797,19 @@ namespace CathodeEditorGUI
             {
                 case EntityVariant.FUNCTION:
                     ShortGuid thisFunction = ((FunctionEntity)entity).function;
-                    Composite funcComposite = CurrentInstance.commandsPAK.GetComposite(thisFunction);
+                    Composite funcComposite = Editor.commands.GetComposite(thisFunction);
                     jumpToComposite.Visible = funcComposite != null;
                     if (funcComposite != null)
                         description = funcComposite.name;
                     else
                         description = ShortGuidUtils.FindString(thisFunction);
-                    selected_entity_name.Text = CurrentInstance.compositeLookup.GetName(CurrentInstance.selectedComposite.shortGUID, entity.shortGUID);
+                    selected_entity_name.Text = Editor.util.entity.GetName(Editor.selected.composite.shortGUID, entity.shortGUID);
                     if (funcComposite == null)
                     {
                         FunctionType function = CommandsUtils.GetFunctionType(thisFunction);
                         editFunction.Enabled = function == FunctionType.CAGEAnimation || function == FunctionType.TriggerSequence;
                     }
-                    editEntityResources.Enabled = (CurrentInstance.textureDB != null);
+                    editEntityResources.Enabled = (Editor.resource.textures != null);
                     break;
                 case EntityVariant.DATATYPE:
                     description = "DataType " + ((DatatypeEntity)entity).type.ToString();
@@ -822,16 +825,16 @@ namespace CathodeEditorGUI
                     else EditorUtils.ResolveHierarchy(((OverrideEntity)entity).hierarchy, out Composite comp, out hierarchy);
                     hierarchyDisplay.Text = hierarchy;
                     jumpToComposite.Visible = true;
-                    selected_entity_name.Text = CurrentInstance.compositeLookup.GetName(CurrentInstance.selectedComposite.shortGUID, entity.shortGUID);
+                    selected_entity_name.Text = Editor.util.entity.GetName(Editor.selected.composite.shortGUID, entity.shortGUID);
                     break;
                 default:
-                    selected_entity_name.Text = CurrentInstance.compositeLookup.GetName(CurrentInstance.selectedComposite.shortGUID, entity.shortGUID);
+                    selected_entity_name.Text = Editor.util.entity.GetName(Editor.selected.composite.shortGUID, entity.shortGUID);
                     break;
             }
             selected_entity_type_description.Text = description;
 
             //show mvr editor button if this entity has a mvr link
-            if (CurrentInstance.moverDB != null && CurrentInstance.moverDB.Movers.FindAll(o => o.commandsNodeID == CurrentInstance.selectedEntity.shortGUID).Count != 0)
+            if (Editor.mvr != null && Editor.mvr.Movers.FindAll(o => o.commandsNodeID == Editor.selected.entity.shortGUID).Count != 0)
                 editEntityMovers.Enabled = true;
 
             //sort parameters by type, to improve visibility in UI
@@ -906,16 +909,16 @@ namespace CathodeEditorGUI
             //out_pin_goto.Enabled = currentlyShowingChildLinks;
             showLinkParents.Text = (currentlyShowingChildLinks) ? "Parents" : "Children";
 
-            if (CurrentInstance.selectedComposite == null || CurrentInstance.selectedEntity == null) return;
+            if (Editor.selected.composite == null || Editor.selected.entity == null) return;
             if (currentlyShowingChildLinks)
             {
                 //Child links (pins out of this entity)
-                foreach (EntityLink link in CurrentInstance.selectedEntity.childLinks)
+                foreach (EntityLink link in Editor.selected.entity.childLinks)
                 {
                     entity_children.Items.Add(
                         /*"[" + link.connectionID.ToString() + "] " +*/
                         "this [" + ShortGuidUtils.FindString(link.parentParamID) + "] => " +
-                        EditorUtils.GenerateEntityNameWithoutID(CurrentInstance.selectedComposite.GetEntities().FirstOrDefault(o => o.shortGUID == link.childID), CurrentInstance.selectedComposite) +
+                        EditorUtils.GenerateEntityNameWithoutID(Editor.selected.composite.GetEntities().FirstOrDefault(o => o.shortGUID == link.childID), Editor.selected.composite) +
                         " [" + ShortGuidUtils.FindString(link.childParamID) + "]");
                     linkedEntityListIDs.Add(link.connectionID);
                 }
@@ -923,15 +926,15 @@ namespace CathodeEditorGUI
             else
             {
                 //Parent links (pins into this entity)
-                List<Entity> ents = CurrentInstance.selectedComposite.GetEntities();
+                List<Entity> ents = Editor.selected.composite.GetEntities();
                 foreach (Entity entity in ents)
                 {
                     foreach (EntityLink link in entity.childLinks)
                     {
-                        if (link.childID != CurrentInstance.selectedEntity.shortGUID) continue;
+                        if (link.childID != Editor.selected.entity.shortGUID) continue;
                         entity_children.Items.Add(
                             /*"[" + link.connectionID.ToString() + "] " +*/
-                            EditorUtils.GenerateEntityNameWithoutID(entity, CurrentInstance.selectedComposite) +
+                            EditorUtils.GenerateEntityNameWithoutID(entity, Editor.selected.composite) +
                             " [" + ShortGuidUtils.FindString(link.parentParamID) + "] => " +
                             "this [" + ShortGuidUtils.FindString(link.childParamID) + "]");
                         linkedEntityListIDs.Add(link.connectionID);
@@ -944,14 +947,14 @@ namespace CathodeEditorGUI
         /* Add a new parameter */
         private void addNewParameter_Click(object sender, EventArgs e)
         {
-            if (CurrentInstance.selectedEntity == null) return;
-            CathodeEditorGUI_AddParameter add_parameter = new CathodeEditorGUI_AddParameter(CurrentInstance.selectedEntity);
+            if (Editor.selected.entity == null) return;
+            CathodeEditorGUI_AddParameter add_parameter = new CathodeEditorGUI_AddParameter(Editor.selected.entity);
             add_parameter.Show();
             add_parameter.FormClosed += new FormClosedEventHandler(param_add_closed);
         }
         private void param_add_closed(Object sender, FormClosedEventArgs e)
         {
-            LoadEntity(CurrentInstance.selectedEntity);
+            LoadEntity(Editor.selected.entity);
             this.BringToFront();
             this.Focus();
         }
@@ -959,15 +962,15 @@ namespace CathodeEditorGUI
         /* Remove a parameter */
         private void removeParameter_Click(object sender, EventArgs e)
         {
-            if (CurrentInstance.selectedEntity == null) return;
-            if (CurrentInstance.selectedEntity.parameters.Count == 0) return;
-            CathodeEditorGUI_RemoveParameter remove_parameter = new CathodeEditorGUI_RemoveParameter(CurrentInstance.selectedEntity);
+            if (Editor.selected.entity == null) return;
+            if (Editor.selected.entity.parameters.Count == 0) return;
+            CathodeEditorGUI_RemoveParameter remove_parameter = new CathodeEditorGUI_RemoveParameter(Editor.selected.entity);
             remove_parameter.Show();
             remove_parameter.FormClosed += new FormClosedEventHandler(param_remove_closed);
         }
         private void param_remove_closed(Object sender, FormClosedEventArgs e)
         {
-            LoadEntity(CurrentInstance.selectedEntity);
+            LoadEntity(Editor.selected.entity);
             this.BringToFront();
             this.Focus();
         }
@@ -975,17 +978,17 @@ namespace CathodeEditorGUI
         /* Edit function entity (CAGEAnimation/TriggerSequence) */
         private void editFunction_Click(object sender, EventArgs e)
         {
-            if (CurrentInstance.selectedEntity.variant != EntityVariant.FUNCTION) return;
-            string function = ShortGuidUtils.FindString(((FunctionEntity)CurrentInstance.selectedEntity).function);
+            if (Editor.selected.entity.variant != EntityVariant.FUNCTION) return;
+            string function = ShortGuidUtils.FindString(((FunctionEntity)Editor.selected.entity).function);
             switch (function.ToUpper())
             {
                 case "CAGEANIMATION":
-                    CAGEAnimationEditor cageAnimationEditor = new CAGEAnimationEditor((CAGEAnimation)CurrentInstance.selectedEntity);
+                    CAGEAnimationEditor cageAnimationEditor = new CAGEAnimationEditor((CAGEAnimation)Editor.selected.entity);
                     cageAnimationEditor.Show();
                     cageAnimationEditor.FormClosed += FunctionEditor_FormClosed;
                     break;
                 case "TRIGGERSEQUENCE":
-                    TriggerSequenceEditor triggerSequenceEditor = new TriggerSequenceEditor((TriggerSequence)CurrentInstance.selectedEntity);
+                    TriggerSequenceEditor triggerSequenceEditor = new TriggerSequenceEditor((TriggerSequence)Editor.selected.entity);
                     triggerSequenceEditor.Show();
                     triggerSequenceEditor.FormClosed += FunctionEditor_FormClosed;
                     break;
@@ -1001,9 +1004,9 @@ namespace CathodeEditorGUI
         private FunctionEntity resourceFunctionToEdit = null;
         private void editEntityResources_Click(object sender, EventArgs e)
         {
-            resourceFunctionToEdit = ((FunctionEntity)CurrentInstance.selectedEntity);
+            resourceFunctionToEdit = ((FunctionEntity)Editor.selected.entity);
 
-            CathodeEditorGUI_AddOrEditResource resourceEditor = new CathodeEditorGUI_AddOrEditResource(((FunctionEntity)CurrentInstance.selectedEntity).resources, CurrentInstance.selectedEntity.shortGUID, EditorUtils.GenerateEntityName(CurrentInstance.selectedEntity, CurrentInstance.selectedComposite));
+            CathodeEditorGUI_AddOrEditResource resourceEditor = new CathodeEditorGUI_AddOrEditResource(((FunctionEntity)Editor.selected.entity).resources, Editor.selected.entity.shortGUID, EditorUtils.GenerateEntityName(Editor.selected.entity, Editor.selected.composite));
             resourceEditor.Show();
             resourceEditor.OnSaved += OnResourceEditorSaved;
             resourceEditor.FormClosed += ResourceEditor_FormClosed;
@@ -1022,7 +1025,7 @@ namespace CathodeEditorGUI
         /* Edit mover instances of this entity */
         private void editEntityMovers_Click(object sender, EventArgs e)
         {
-            CathodeEditorGUI_EditMVR moverEditor = new CathodeEditorGUI_EditMVR(CurrentInstance.selectedEntity.shortGUID);
+            CathodeEditorGUI_EditMVR moverEditor = new CathodeEditorGUI_EditMVR(Editor.selected.entity.shortGUID);
             moverEditor.Show();
             moverEditor.FormClosed += MoverEditor_FormClosed;
         }
@@ -1038,24 +1041,68 @@ namespace CathodeEditorGUI
             return (MessageBox.Show(msg, "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes);
         }
 
-        class EntityDef
+        #region LOCAL_TESTS
+
+        private class EntityDef
         {
             public string title = "";
-            public Dictionary<string, List<Val>> stuff = new Dictionary<string, List<Val>>();
+            public Dictionary<ParameterVariant, List<ParameterDef>> stuff = new Dictionary<ParameterVariant, List<ParameterDef>>();
         }
-        class Val
+        private class ParameterDef
         {
             public string name;
             public string datatype;
+            public string defaultval;
         }
 
-        #region LOCAL_TESTS
-        private void button1_Click_1(object sender, EventArgs e)
+        private void BuildNodeParameterDatabase(object sender, EventArgs e)
         {
-#if DEBUG
-            List<string> sdfdf = new List<string>();
+            /*
+            List<string> bruhmoment = File.ReadAllLines(@"C:\Users\mattf\Downloads\enums.txt").ToList<string>();
+            Dictionary<string, List<string>> outputtt = new Dictionary<string, List<string>>();
+            string currenteunm = "";
+            foreach (string str in bruhmoment)
+            {
+                if (str.Length > 2 && str.Substring(0, 2) == "##")
+                {
+                    currenteunm = str.Substring(3).Trim();
+                    outputtt.Add(currenteunm, new List<string>());
+                }
+                if (str.Length > 2 && str.Substring(0, 2) == " *")
+                {
+                    outputtt[currenteunm].Add(str.Substring(3).Trim());
+                }
+            }
+            File.WriteAllText("enums.json", JsonConvert.SerializeObject(outputtt, Formatting.Indented));
 
-            List<string> content = File.ReadAllLines(@"C:\Users\mattf\Downloads\all_nodes_with_params.html").ToList<string>();
+            List<string> enums = new List<string>();
+            foreach (var val in outputtt)
+            {
+                enums.Add(val.Key);
+            }
+            File.WriteAllLines("enums.txt", enums);
+
+            BinaryWriter write = new BinaryWriter(File.OpenWrite("enums.bin"));
+            write.BaseStream.SetLength(0);
+            foreach (var str in outputtt)
+            {
+                write.Write(ShortGuidUtils.Generate(str.Key).val);
+                write.Write(str.Key);
+                write.Write(str.Value.Count);
+                foreach (string str_ in str.Value)
+                {
+                    write.Write(str_);
+                }
+            }
+            write.Close();
+            return;
+            */
+
+            List<string> all_datatypes = new List<string>();
+            List<string> all_types = new List<string>();
+
+            List<string> content = File.ReadAllLines(@"C:\Users\mattf\Downloads\all_nodes_with_params.html").ToList<string>(); //https://myfiles.mattfiler.co.uk/all_nodes_with_params.html
+            List<string> content2 = File.ReadAllLines(@"C:\Users\mattf\Downloads\all_nodes_with_params1.html").ToList<string>(); //https://myfiles.mattfiler.co.uk/all_nodes_with_params1.html
             List<EntityDef> ents = new List<EntityDef>();
             EntityDef currentEnt = null;
             for (int i = 0; i < content.Count; i++)
@@ -1072,8 +1119,12 @@ namespace CathodeEditorGUI
                 }
                 else if (content[i].Length > 3 && content[i].Substring(0, 3) == "<li")
                 {
-                    string type = content[i].Split('[')[1].Split(']')[0];
-                    if (!currentEnt.stuff.ContainsKey(type)) currentEnt.stuff.Add(type, new List<Val>());
+                    string type_s = (content[i].Split('[')[1].Split(']')[0]).ToUpper();
+                    if (type_s == "RESOURCE") continue;
+
+                    Enum.TryParse(type_s, out ParameterVariant type);
+                    if (!currentEnt.stuff.ContainsKey(type)) currentEnt.stuff.Add(type, new List<ParameterDef>());
+
                     string split = content[i].Split(']')[1];
                     if (split.Contains("["))
                     {
@@ -1085,18 +1136,54 @@ namespace CathodeEditorGUI
                         split = split.Substring(1, split.Length - 6);
                     }
                     string[] split2_l = content[i].Split(new string[] { "DataType: " }, StringSplitOptions.None);
-                    string split2 = (split2_l.Length > 1) ? split2_l[1].Substring(0, split2_l[1].Length - 6) : "";
-                    currentEnt.stuff[type].Add(new Val() { datatype = split2, name = split });
+                    string[] split_3 = content2[i].Split(new string[] { "DefaultVal: " }, StringSplitOptions.None);
+                    string datatype = (split2_l.Length > 1) ? split2_l[1].Substring(0, split2_l[1].Length - 6) : "";
+                    string defaultval = (split_3.Length > 1) ? split_3[1].Substring(0, split_3[1].Length - 6) : "";
 
-                    if (!sdfdf.Contains(split2))
-                    {
-                        sdfdf.Add(split2);
-                    }
+                    currentEnt.stuff[type].Add(new ParameterDef() { datatype = datatype, name = split, defaultval = defaultval });
+
+                    if (!all_types.Contains(type.ToString()))
+                        all_types.Add(type.ToString());
+                    if (!all_datatypes.Contains(datatype))
+                        all_datatypes.Add(datatype);
 
                 }
             }
-            Console.WriteLine(JsonConvert.SerializeObject(sdfdf, Formatting.Indented));
             ents.Add(currentEnt);
+
+            List<string> type_dump = new List<string>();
+            type_dump.Add("{\"data\":[");
+            foreach (EntityDef def in ents)
+            {
+                if (def.title == @"n:\\content\\build\\library\\archetypes\\gameplay\\gcip_worldpickup")
+                    def.title = "GCIP_WorldPickup";
+                if (def.title == @"n:\\content\\build\\library\\ayz\\animation\\logichelpers\\playforminduration")
+                    def.title = "PlayForMinDuration";
+                if (def.title == @"n:\\content\\build\\library\\archetypes\\script\\gameplay\\torch_control")
+                    def.title = "Torch_Control";
+
+                type_dump.Add("{\"type\": \"" + def.title + "\", \"data\": {");
+                foreach (var val in def.stuff)
+                {
+                    type_dump.Add("\"" + val.Key + "\": [");
+                    foreach (ParameterDef valu in val.Value)
+                    {
+                        type_dump.Add("\"" + valu.name + "\", ");
+                    }
+                    if (val.Value.Count != 0) type_dump[type_dump.Count - 1] = type_dump[type_dump.Count - 1].Substring(0, type_dump[type_dump.Count - 1].Length - 2);
+                    type_dump.Add("], ");
+                }
+                if (def.stuff.Count != 0) type_dump[type_dump.Count - 1] = "]";
+                type_dump.Add("}},");
+            }
+            if (ents.Count != 0) type_dump[type_dump.Count - 1] = "}}";
+            type_dump.Add("]}");
+            string ffff = "";
+            for (int i = 0; i < type_dump.Count; i++)
+                ffff += type_dump[i];
+            File.WriteAllText("types.json", JObject.Parse(ffff).ToString(Formatting.Indented));
+
+            List<string> resource_types = new List<string>();
 
             List<string> scripting = new List<string>();
             foreach (EntityDef def in ents)
@@ -1116,7 +1203,7 @@ namespace CathodeEditorGUI
                 }
                 foreach (var val in def.stuff)
                 {
-                    foreach (Val valu in val.Value)
+                    foreach (ParameterDef valu in val.Value)
                     {
                         if (valu.name == "resource")
                         {
@@ -1127,28 +1214,18 @@ namespace CathodeEditorGUI
                         {
                             string defaults = "";
                             string type = "";
+                            defaults = valu.defaultval;
                             switch (valu.datatype)
                             {
                                 case "":
-                                    type = "ParameterData"; //this is something that you shouldn't be able to assign
-                                    break;
                                 case "Object":
-                                    type = "ParameterData"; //TODO: object pointer
-                                    break;
                                 case "ZonePtr":
-                                    type = "ParameterData"; //TODO: zone pointer
-                                    break;
                                 case "ZoneLinkPtr":
-                                    type = "ParameterData"; //TODO: zone pointer
-                                    break;
                                 case "ResourceID":
-                                    type = "ParameterData"; //TODO: resource id????
-                                    break;
                                 case "ReferenceFramePtr":
-                                    type = "ParameterData"; //TODO: resource id????
-                                    break;
-                                case "CHARACTER":
-                                    type = "ParameterData"; //TODO: resource id????
+                                case "AnimationInfoPtr":
+                                    type = "ParameterData"; //TODO
+                                    defaults = "";
                                     break;
 
                                 case "int":
@@ -1159,9 +1236,11 @@ namespace CathodeEditorGUI
                                     break;
                                 case "float":
                                     type = "cFloat";
+                                    if (defaults != "") defaults += "f";
                                     break;
                                 case "String":
                                     type = "cString";
+                                    defaults = "\"" + defaults + "\"";
                                     break;
                                 case "Position":
                                     type = "cTransform";
@@ -1172,19 +1251,39 @@ namespace CathodeEditorGUI
                                 case "SPLINE":
                                 case "SplineData":
                                     type = "cSpline";
+                                    if (defaults == "0") defaults = "";
                                     break;
                                 case "Direction":
                                     type = "cVector3";
+                                    if (defaults == "0") defaults = "";
+                                    if (defaults == "default_Direction") defaults = "";
                                     break;
                                 case "Enum":
                                     type = "cEnum";
+                                    if (defaults == "0xffffffff00000000") defaults = "";
                                     break;
                                 default:
                                     type = "cEnum";
-                                    defaults = "\"" + valu.datatype + "\", 0";
+                                    string[] spl = valu.defaultval.Split('(');
+                                    if (spl.Length > 1) defaults = "\"" + spl[0].Substring(0, spl[0].Length - 1) + "\", " + spl[1].Substring(0, spl[1].Length - 1);
+                                    else
+                                    {
+                                        if (EntityDB.GetEnum(ShortGuidUtils.Generate(valu.datatype)) == null)
+                                        {
+                                            type = "cResource";
+                                            defaults = "new ResourceReference[]{ new ResourceReference(ResourceType." + valu.datatype + ") }.ToList<ResourceReference>(), newEntity.shortGUID";
+                                            if (!resource_types.Contains(valu.datatype.ToString()))
+                                                resource_types.Add(valu.datatype.ToString());
+                                        }
+                                        else
+                                        {
+                                            defaults = "\"" + valu.datatype + "\", 0";
+                                        }
+                                    }
                                     break;
                             }
-                            scripting.Add("\tnewEntity.parameters.Add(new Parameter(\"" + valu.name + "\", new " + type + "(" + defaults + "))); //" + valu.datatype);
+                            if (defaults.Length > ("NEON_fmov").Length && defaults.Substring(0, ("NEON_fmov").Length) == "NEON_fmov") defaults = "";
+                            scripting.Add("\tnewEntity.AddParameter(\"" + valu.name + "\", new " + type + "(" + defaults + "), ParameterVariant." + val.Key + "); //" + valu.datatype);
                         }
                     }
                 }
@@ -1208,21 +1307,22 @@ namespace CathodeEditorGUI
             }
             File.WriteAllLines("out.cs", scripting);
 
+            Console.WriteLine(JsonConvert.SerializeObject(all_types, Formatting.Indented));
+            Console.WriteLine(JsonConvert.SerializeObject(all_datatypes, Formatting.Indented));
+            Console.WriteLine(JsonConvert.SerializeObject(resource_types, Formatting.Indented));
+
             string bleh = JsonConvert.SerializeObject(ents, Formatting.Indented);
             File.WriteAllText("out.json" , bleh);
+        }
 
-            return;
-
-
-
-
-
+        private void button2_Click(object sender, EventArgs e)
+        {
             for (int mm = 0; mm < env_list.Items.Count; mm++)
             {
                 //if (env_list.Items[mm].ToString() != "BSP_TORRENS") continue;
 
-                CurrentInstance.commandsPAK = new CommandsPAK(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + env_list.Items[mm].ToString() + "/WORLD/COMMANDS.PAK");
-                Console.WriteLine("Loading: " + CurrentInstance.commandsPAK.Filepath + "...");
+                Editor.commands = new CommandsPAK(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + env_list.Items[mm].ToString() + "/WORLD/COMMANDS.PAK");
+                Console.WriteLine("Loading: " + Editor.commands.Filepath + "...");
                 //CurrentInstance.compositeLookup = new EntityNameLookup(CurrentInstance.commandsPAK);
 
                 //EnvironmentAnimationDatabase db = new EnvironmentAnimationDatabase(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + env_list.Items[mm].ToString() + "/WORLD/ENVIRONMENT_ANIMATION.DAT");
@@ -1235,15 +1335,20 @@ namespace CathodeEditorGUI
                 //Console.WriteLine(db.Header.Unknown1_);
 
                 string[] towrite = new string[200];
-                for (int i = 0; i < CurrentInstance.commandsPAK.Composites.Count; i++)
+                for (int i = 0; i < Editor.commands.Composites.Count; i++)
                 {
-                    for (int x = 0; x < CurrentInstance.commandsPAK.Composites[i].functions.Count; x++)
+                    for (int x = 0; x < Editor.commands.Composites[i].functions.Count; x++)
                     {
-                        if (!CommandsUtils.FunctionTypeExists(CurrentInstance.commandsPAK.Composites[i].functions[x].function)) continue;
-                        FunctionType type = CommandsUtils.GetFunctionType(CurrentInstance.commandsPAK.Composites[i].functions[x].function);
+                        if (!CommandsUtils.FunctionTypeExists(Editor.commands.Composites[i].functions[x].function)) continue;
+                        FunctionType type = CommandsUtils.GetFunctionType(Editor.commands.Composites[i].functions[x].function);
                         switch (type)
                         {
-                            case FunctionType.CoverLine:
+                            case FunctionType.CameraShake:
+                            case FunctionType.BoneAttachedCamera:
+                            case FunctionType.CamPeek:
+                            case FunctionType.ClipPlanesController:
+                            case FunctionType.ControllableRange:
+                            case FunctionType.FixedCamera:
                                 //ResourceReference rr = CurrentInstance.commandsPAK.Composites[i].functions[x].resources.FirstOrDefault(o => o.entryType == ResourceType.COLLISION_MAPPING);
                                 //if (rr == null)
                                 //{
@@ -1263,7 +1368,7 @@ namespace CathodeEditorGUI
                                 //        string sdfsd = "";
                                 //    }
                                 //}
-                                
+
 
                                 //Console.WriteLine(CurrentInstance.commandsPAK.Composites[i].name + " -> " + CurrentInstance.commandsPAK.Composites[i].functions[x].shortGUID + " -> " +  type);
                                 //for (int y = 0; y < CurrentInstance.commandsPAK.Composites[i].functions[x].resources.Count; y++)
@@ -1283,7 +1388,7 @@ namespace CathodeEditorGUI
                                 //Console.WriteLine(rr.Count);
 
 
-                                Console.WriteLine(CurrentInstance.commandsPAK.Composites[i].name + " -> " + CurrentInstance.commandsPAK.Composites[i].functions[x].shortGUID + " -> " +  type);
+                                Console.WriteLine(Editor.commands.Composites[i].name + " -> " + Editor.commands.Composites[i].functions[x].shortGUID + " -> " + type);
 
                                 //for (int y = 0; y < CurrentInstance.commandsPAK.Composites[i].functions[x].resources.Count; y++)
                                 //{
@@ -1311,16 +1416,6 @@ namespace CathodeEditorGUI
                 //}
 
                 //CurrentInstance.commandsPAK.Save();
-            }
-#endif
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            for (int mm = 0; mm < env_list.Items.Count; mm++)
-            {
-                CurrentInstance.commandsPAK = new CommandsPAK(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + env_list.Items[mm].ToString() + "/WORLD/COMMANDS.PAK");
-                CurrentInstance.commandsPAK.Save();
             }
         }
         #endregion

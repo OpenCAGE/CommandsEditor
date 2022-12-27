@@ -32,7 +32,6 @@
             this.createDatatypeEntity = new System.Windows.Forms.RadioButton();
             this.createFunctionEntity = new System.Windows.Forms.RadioButton();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.generateHierarchy = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.createOverrideEntity = new System.Windows.Forms.RadioButton();
@@ -43,6 +42,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.entityVariant = new System.Windows.Forms.ComboBox();
+            this.generateHierarchy = new System.Windows.Forms.Button();
+            this.addDefaultParams = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -73,6 +74,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.addDefaultParams);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.groupBox2);
             this.groupBox1.Controls.Add(this.createNewEntity);
@@ -87,16 +89,6 @@
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "New Entity";
-            // 
-            // generateHierarchy
-            // 
-            this.generateHierarchy.Location = new System.Drawing.Point(104, 110);
-            this.generateHierarchy.Name = "generateHierarchy";
-            this.generateHierarchy.Size = new System.Drawing.Size(641, 23);
-            this.generateHierarchy.TabIndex = 6;
-            this.generateHierarchy.Text = "Select Entity To Point To";
-            this.generateHierarchy.UseVisualStyleBackColor = true;
-            this.generateHierarchy.Click += new System.EventHandler(this.generateHierarchy_Click);
             // 
             // label3
             // 
@@ -207,6 +199,26 @@
             this.entityVariant.Size = new System.Drawing.Size(641, 21);
             this.entityVariant.TabIndex = 0;
             // 
+            // generateHierarchy
+            // 
+            this.generateHierarchy.Location = new System.Drawing.Point(104, 110);
+            this.generateHierarchy.Name = "generateHierarchy";
+            this.generateHierarchy.Size = new System.Drawing.Size(641, 23);
+            this.generateHierarchy.TabIndex = 6;
+            this.generateHierarchy.Text = "Select Entity To Point To";
+            this.generateHierarchy.UseVisualStyleBackColor = true;
+            this.generateHierarchy.Click += new System.EventHandler(this.generateHierarchy_Click);
+            // 
+            // addDefaultParams
+            // 
+            this.addDefaultParams.AutoSize = true;
+            this.addDefaultParams.Location = new System.Drawing.Point(44, 143);
+            this.addDefaultParams.Name = "addDefaultParams";
+            this.addDefaultParams.Size = new System.Drawing.Size(138, 17);
+            this.addDefaultParams.TabIndex = 7;
+            this.addDefaultParams.Text = "Add Default Parameters";
+            this.addDefaultParams.UseVisualStyleBackColor = true;
+            // 
             // CathodeEditorGUI_AddEntity
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -243,5 +255,6 @@
         private System.Windows.Forms.RadioButton createProxyEntity;
         private System.Windows.Forms.Button generateHierarchy;
         private System.Windows.Forms.RadioButton createOverrideEntity;
+        private System.Windows.Forms.CheckBox addDefaultParams;
     }
 }

@@ -16,18 +16,32 @@ namespace CathodeEditorGUI.UserControls
     public partial class GUI_EnumDataType : UserControl
     {
         cEnum enumVal = null;
+        EnumDescriptor enumDesc = null;
 
         public GUI_EnumDataType()
         {
             InitializeComponent();
+
+            comboBox1.BeginUpdate();
+            comboBox1.Items.Clear();
+            comboBox1.Items.AddRange(Enum.GetNames(typeof(EnumType)));
+            comboBox1.EndUpdate();
         }
 
         public void PopulateUI(cEnum cEnum, ShortGuid paramID)
         {
             enumVal = cEnum;
+            enumDesc = EntityDB.GetEnum(cEnum.enumID);
+
             label13.Text = ShortGuidUtils.FindString(paramID);
-            comboBox1.Text = EntityDB.GetEnum(cEnum.enumID).Name;
+            comboBox1.Text = enumDesc.Name;
             textBox1.Text = cEnum.enumIndex.ToString();
+
+            try
+            {
+                toolTip1.SetToolTip(textBox1, enumDesc.Entries[cEnum.enumIndex]);
+            }
+            catch { }
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
