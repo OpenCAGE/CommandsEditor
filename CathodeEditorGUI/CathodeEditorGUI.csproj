@@ -272,6 +272,12 @@
     <Compile Include="UserControls\GUI_EnumDataType.Designer.cs">
       <DependentUpon>GUI_EnumDataType.cs</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\GUI_Link.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\GUI_Link.Designer.cs">
+      <DependentUpon>GUI_Link.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\GUI_ResourceDataType.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -387,6 +393,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UserControls\GUI_EnumDataType.resx">
       <DependentUpon>GUI_EnumDataType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\GUI_Link.resx">
+      <DependentUpon>GUI_Link.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserControls\GUI_ResourceDataType.resx">
       <DependentUpon>GUI_ResourceDataType.cs</DependentUpon>

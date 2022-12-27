@@ -110,7 +110,6 @@ namespace CathodeEditorGUI
                 for (int i = 0; i < entity_params.Controls.Count; i++) 
                     entity_params.Controls[i].Dispose();
                 entity_params.Controls.Clear();
-                entity_children.Items.Clear();
                 currentlyShowingChildLinks = true;
                 jumpToComposite.Visible = false;
                 editFunction.Enabled = false;
@@ -437,7 +436,7 @@ namespace CathodeEditorGUI
         }
         private void add_pin_closed(Object sender, FormClosedEventArgs e)
         {
-            RefreshEntityLinks();
+            LoadEntity(Editor.selected.entity); //TODO: TEMP
             this.BringToFront();
             this.Focus();
         }
@@ -445,6 +444,7 @@ namespace CathodeEditorGUI
         /* Remove selected out pin */
         private void removeSelectedLink_Click(object sender, EventArgs e)
         {
+            /*
             if (Editor.selected.entity == null || Editor.selected.composite == null) return;
             if (!ConfirmAction("Are you sure you want to remove this link?")) return;
             if (currentlyShowingChildLinks)
@@ -473,42 +473,7 @@ namespace CathodeEditorGUI
                 }
             }
             RefreshEntityLinks();
-        }
-
-        /* Go to selected pin out on button press */
-        private void out_pin_goto_Click(object sender, EventArgs e)
-        {
-            if (entity_children.SelectedIndex == -1 || Editor.selected.composite == null) return;
-
-            Entity thisEntity = null;
-            if (currentlyShowingChildLinks)
-            {
-                thisEntity = Editor.selected.composite.GetEntityByID(Editor.selected.entity.childLinks[entity_children.SelectedIndex].childID);
-            }
-            else
-            {
-                List<Entity> ents = Editor.selected.composite.GetEntities();
-                foreach (Entity entity in ents)
-                {
-                    for (int i = 0; i < entity.childLinks.Count; i++)
-                    {
-                        if (entity.childLinks[i].connectionID == linkedEntityListIDs[entity_children.SelectedIndex])
-                        {
-                            thisEntity = entity;
-                            break;
-                        }
-                    }
-                    if (thisEntity != null) break;
-                }
-            }
-            if (thisEntity != null) LoadEntity(thisEntity);
-        }
-
-        /* Flip the child link list to contain parents (this is an expensive search, which is why we only do it on request) */
-        private void showLinkParents_Click(object sender, EventArgs e)
-        {
-            currentlyShowingChildLinks = !currentlyShowingChildLinks;
-            RefreshEntityLinks();
+            */
         }
 
         /* Search entity list */
@@ -786,10 +751,19 @@ namespace CathodeEditorGUI
         /* Load a entity into the UI */
         private void LoadEntity(Entity entity)
         {
-            if (entity == null) return;
-
             ClearUI(false, false, true);
             Editor.selected.entity = entity;
+
+            //Correct the UI, and return early if we have to change index, so we don't trigger twice
+            int correctSelectedIndex = composite_content.Items.IndexOf(EditorUtils.GenerateEntityName(entity, Editor.selected.composite));
+            if (composite_content.SelectedIndex != correctSelectedIndex)
+            {
+                composite_content.SelectedIndex = correctSelectedIndex;
+                return;
+            }
+
+            if (entity == null) return;
+
             Cursor.Current = Cursors.WaitCursor;
 
             //populate info labels
@@ -841,16 +815,28 @@ namespace CathodeEditorGUI
             if (Editor.mvr != null && Editor.mvr.Movers.FindAll(o => o.commandsNodeID == Editor.selected.entity.shortGUID).Count != 0)
                 editEntityMovers.Enabled = true;
 
-            //sort parameters by type, to improve visibility in UI
-            //entity.parameters = entity.parameters.OrderBy(o => o.content?.dataType).ToList();
+            //populate linked params IN
+            int current_ui_offset = 7;
+            List<Entity> ents = Editor.selected.composite.GetEntities();
+            foreach (Entity ent in ents)
+            {
+                foreach (EntityLink link in ent.childLinks)
+                {
+                    if (link.childID != entity.shortGUID) continue;
+                    GUI_Link parameterGUI = new GUI_Link();
+                    parameterGUI.PopulateUI(link, false, ent.shortGUID);
+                    parameterGUI.GoToEntity += LoadEntity;
+                    parameterGUI.Location = new Point(15, current_ui_offset);
+                    current_ui_offset += parameterGUI.Height + 6;
+                    entity_params.Controls.Add(parameterGUI);
+                }
+            }
 
             //populate parameter inputs
-            int current_ui_offset = 7;
             for (int i = 0; i < entity.parameters.Count; i++)
             {
                 ParameterData this_param = entity.parameters[i].content;
                 UserControl parameterGUI = null;
-
                 switch (this_param.dataType)
                 {
                     case DataType.TRANSFORM:
@@ -863,7 +849,7 @@ namespace CathodeEditorGUI
                         break;
                     case DataType.STRING:
                         parameterGUI = new GUI_StringDataType();
-                        ((GUI_StringDataType)parameterGUI).PopulateUI((CATHODE.Commands.cString)this_param, entity.parameters[i].shortGUID);
+                        ((GUI_StringDataType)parameterGUI).PopulateUI((cString)this_param, entity.parameters[i].shortGUID);
                         break;
                     case DataType.BOOL:
                         parameterGUI = new GUI_BoolDataType();
@@ -890,62 +876,23 @@ namespace CathodeEditorGUI
                         ((GUI_SplineDataType)parameterGUI).PopulateUI((cSpline)this_param, entity.parameters[i].shortGUID);
                         break;
                 }
-
                 parameterGUI.Location = new Point(15, current_ui_offset);
                 current_ui_offset += parameterGUI.Height + 6;
                 entity_params.Controls.Add(parameterGUI);
             }
 
-            RefreshEntityLinks();
+            //populate linked params OUT
+            for (int i = 0; i < entity.childLinks.Count; i++)
+            {
+                GUI_Link parameterGUI = new GUI_Link();
+                parameterGUI.PopulateUI(entity.childLinks[i], true);
+                parameterGUI.GoToEntity += LoadEntity;
+                parameterGUI.Location = new Point(15, current_ui_offset);
+                current_ui_offset += parameterGUI.Height + 6;
+                entity_params.Controls.Add(parameterGUI);
+            }
 
             Cursor.Current = Cursors.Default;
-        }
-
-        /* Refresh child/parent links for selected entity */
-        List<ShortGuid> linkedEntityListIDs = new List<ShortGuid>();
-        private void RefreshEntityLinks()
-        {
-            entity_children.BeginUpdate();
-            entity_children.Items.Clear();
-            linkedEntityListIDs.Clear();
-            addNewLink.Enabled = currentlyShowingChildLinks;
-            //removeSelectedLink.Enabled = currentlyShowingChildLinks;
-            //out_pin_goto.Enabled = currentlyShowingChildLinks;
-            showLinkParents.Text = (currentlyShowingChildLinks) ? "Parents" : "Children";
-
-            if (Editor.selected.composite == null || Editor.selected.entity == null) return;
-            if (currentlyShowingChildLinks)
-            {
-                //Child links (pins out of this entity)
-                foreach (EntityLink link in Editor.selected.entity.childLinks)
-                {
-                    entity_children.Items.Add(
-                        /*"[" + link.connectionID.ToString() + "] " +*/
-                        "this [" + ShortGuidUtils.FindString(link.parentParamID) + "] => " +
-                        EditorUtils.GenerateEntityNameWithoutID(Editor.selected.composite.GetEntities().FirstOrDefault(o => o.shortGUID == link.childID), Editor.selected.composite) +
-                        " [" + ShortGuidUtils.FindString(link.childParamID) + "]");
-                    linkedEntityListIDs.Add(link.connectionID);
-                }
-            }
-            else
-            {
-                //Parent links (pins into this entity)
-                List<Entity> ents = Editor.selected.composite.GetEntities();
-                foreach (Entity entity in ents)
-                {
-                    foreach (EntityLink link in entity.childLinks)
-                    {
-                        if (link.childID != Editor.selected.entity.shortGUID) continue;
-                        entity_children.Items.Add(
-                            /*"[" + link.connectionID.ToString() + "] " +*/
-                            EditorUtils.GenerateEntityNameWithoutID(entity, Editor.selected.composite) +
-                            " [" + ShortGuidUtils.FindString(link.parentParamID) + "] => " +
-                            "this [" + ShortGuidUtils.FindString(link.childParamID) + "]");
-                        linkedEntityListIDs.Add(link.connectionID);
-                    }
-                }
-            }
-            entity_children.EndUpdate();
         }
 
         /* Add a new parameter */

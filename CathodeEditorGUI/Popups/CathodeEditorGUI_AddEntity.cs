@@ -212,7 +212,7 @@ namespace CathodeEditorGUI
                 }
                 if (addDefaultParams.Checked)
                 {
-                    Editor.util.entity.ApplyDefaults(newEntity);
+                    EntityUtils.ApplyDefaults(newEntity);
                     newEntity.parameters.RemoveAll(o => o.content.dataType == DataType.NONE); //TODO
                     newEntity.parameters.RemoveAll(o => o.content.dataType == DataType.RESOURCE); //TODO
                 }
@@ -234,7 +234,7 @@ namespace CathodeEditorGUI
                     return;
                 }
                 newEntity.function = CommandsUtils.GetFunctionTypeGUID(FunctionType.CompositeInterface);
-                Editor.util.entity.ApplyDefaults(newEntity);
+                EntityUtils.ApplyDefaults(newEntity);
                 newEntity.function = composite.shortGUID;
 
                 //Add to composite & save name
