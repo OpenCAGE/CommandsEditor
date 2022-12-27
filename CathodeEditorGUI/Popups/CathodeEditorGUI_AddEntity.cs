@@ -5747,7 +5747,7 @@ namespace CathodeEditorGUI
 
                 //Add to composite & save name
                 composite.functions.Add(newEntity);
-                CurrentInstance.compositeLookup.SetEntityName(composite.shortGUID, thisID, textBox1.Text);
+                CurrentInstance.compositeLookup.SetName(composite.shortGUID, thisID, textBox1.Text);
                 OnNewEntity?.Invoke(newEntity);
             }
             else if (createCompositeEntity.Checked)
@@ -5765,7 +5765,7 @@ namespace CathodeEditorGUI
 
                 //Add to composite & save name
                 this.composite.functions.Add(newEntity);
-                CurrentInstance.compositeLookup.SetEntityName(this.composite.shortGUID, thisID, textBox1.Text);
+                CurrentInstance.compositeLookup.SetName(this.composite.shortGUID, thisID, textBox1.Text);
                 OnNewEntity?.Invoke(newEntity);
             }
             else if (createProxyEntity.Checked)
@@ -5785,7 +5785,7 @@ namespace CathodeEditorGUI
 
                 //Add to composite & save name
                 composite.proxies.Add(newEntity);
-                CurrentInstance.compositeLookup.SetEntityName(composite.shortGUID, thisID, textBox1.Text);
+                CurrentInstance.compositeLookup.SetName(composite.shortGUID, thisID, textBox1.Text);
                 OnNewEntity?.Invoke(newEntity);
             }
             else if (createOverrideEntity.Checked)
@@ -5797,7 +5797,7 @@ namespace CathodeEditorGUI
 
                 //Add to composite & save name
                 composite.overrides.Add(newEntity);
-                CurrentInstance.compositeLookup.SetEntityName(composite.shortGUID, thisID, textBox1.Text);
+                CurrentInstance.compositeLookup.SetName(composite.shortGUID, thisID, textBox1.Text);
                 OnNewEntity?.Invoke(newEntity);
             }
             this.Close();

@@ -40,17 +40,17 @@ namespace CathodeEditorGUI
                 case EntityVariant.FUNCTION:
                     Composite funcComposite = CurrentInstance.commandsPAK.GetComposite(((FunctionEntity)entity).function);
                     if (funcComposite != null)
-                        desc = CurrentInstance.compositeLookup.GetEntityName(composite.shortGUID, entity.shortGUID) + " (" + funcComposite.name + ")";
+                        desc = CurrentInstance.compositeLookup.GetName(composite.shortGUID, entity.shortGUID) + " (" + funcComposite.name + ")";
                     else
-                        desc = CurrentInstance.compositeLookup.GetEntityName(composite.shortGUID, entity.shortGUID) + " (" + ShortGuidUtils.FindString(((FunctionEntity)entity).function) + ")";
+                        desc = CurrentInstance.compositeLookup.GetName(composite.shortGUID, entity.shortGUID) + " (" + ShortGuidUtils.FindString(((FunctionEntity)entity).function) + ")";
                     break;
                 case EntityVariant.OVERRIDE:
                     //desc = NodeDBEx.GetEntityName(entity.nodeID) + " (" + HierarchyToString(((OverrideEntity)entity).hierarchy, currentFlowgraph) + ")";
-                    desc = CurrentInstance.compositeLookup.GetEntityName(composite.shortGUID, entity.shortGUID) + " (*OVERRIDE*)";
+                    desc = CurrentInstance.compositeLookup.GetName(composite.shortGUID, entity.shortGUID) + " (*OVERRIDE*)";
                     break;
                 case EntityVariant.PROXY:
                     //desc = NodeDBEx.GetEntityName(entity.nodeID) + " (" + HierarchyToString(((ProxyEntity)entity).hierarchy, currentFlowgraph) + ")";
-                    desc = CurrentInstance.compositeLookup.GetEntityName(composite.shortGUID, entity.shortGUID) + " (*PROXY*)";
+                    desc = CurrentInstance.compositeLookup.GetName(composite.shortGUID, entity.shortGUID) + " (*PROXY*)";
                     break;
             }
             return "[" + entity.shortGUID.ToString() + "] " + desc;
@@ -208,7 +208,7 @@ namespace CathodeEditorGUI
                 entity = currentFlowgraphToSearch.GetEntityByID(hierarchyCopy[i]);
 
                 if (entity == null) break;
-                hierarchyString += "[" + entity.shortGUID + "] " + CurrentInstance.compositeLookup.GetEntityName(currentFlowgraphToSearch.shortGUID, entity.shortGUID);
+                hierarchyString += "[" + entity.shortGUID + "] " + CurrentInstance.compositeLookup.GetName(currentFlowgraphToSearch.shortGUID, entity.shortGUID);
                 if (i >= hierarchyCopy.Count - 2) break; //Last is always 00-00-00-00
                 hierarchyString += " -> ";
 

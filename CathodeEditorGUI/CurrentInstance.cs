@@ -17,7 +17,7 @@ namespace CathodeEditorGUI
         public static MoverDatabase moverDB;
 
         //Helpers
-        public static EntityNameLookup compositeLookup;
+        public static EntityUtils compositeLookup;
 
         //Scripting state info
         public static Composite selectedComposite;

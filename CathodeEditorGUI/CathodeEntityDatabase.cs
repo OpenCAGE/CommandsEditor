@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 
 namespace CathodeEditorGUI
 {
+    /* TODO: DEPRECATE THIS IN FAVOUR OF A SOLUTION IN THE LIBRARY */
+
     public static class CathodeEntityDatabase
     {
         public struct EntityDefinition
@@ -130,7 +132,7 @@ namespace CathodeEditorGUI
                     break;
                 case "FILEPATH":
                 case "STRING":
-                    this_param = new CATHODE.Commands.cString();
+                    this_param = new cString();
                     break;
                 case "SPLINEDATA":
                     this_param = new cSpline();

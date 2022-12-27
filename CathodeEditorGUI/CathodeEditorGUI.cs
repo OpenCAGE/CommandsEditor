@@ -140,7 +140,7 @@ namespace CathodeEditorGUI
             /*Task.Factory.StartNew(() => */LoadMovers()/*)*/;
 
             //Begin caching entity names so we don't have to keep generating them
-            CurrentInstance.compositeLookup = new EntityNameLookup(CurrentInstance.commandsPAK);
+            CurrentInstance.compositeLookup = new EntityUtils(CurrentInstance.commandsPAK);
             if (currentBackgroundCacher != null) currentBackgroundCacher.Dispose();
             currentBackgroundCacher = Task.Factory.StartNew(() => EditorUtils.GenerateEntityNameCache(this));
 
@@ -671,10 +671,10 @@ namespace CathodeEditorGUI
             //Generate new entity ID and name
             Entity newEnt = Utilities.CloneObject(CurrentInstance.selectedEntity);
             newEnt.shortGUID = ShortGuidUtils.Generate(DateTime.Now.ToString("G"));
-            CurrentInstance.compositeLookup.SetEntityName(
+            CurrentInstance.compositeLookup.SetName(
                 CurrentInstance.selectedComposite.shortGUID,
                 newEnt.shortGUID,
-                CurrentInstance.compositeLookup.GetEntityName(CurrentInstance.selectedComposite.shortGUID, CurrentInstance.selectedEntity.shortGUID) + "_clone");
+                CurrentInstance.compositeLookup.GetName(CurrentInstance.selectedComposite.shortGUID, CurrentInstance.selectedEntity.shortGUID) + "_clone");
 
             //Add parent links in to this entity that linked in to the other entity
             List<Entity> ents = CurrentInstance.selectedComposite.GetEntities();
@@ -732,7 +732,7 @@ namespace CathodeEditorGUI
             if (((CathodeEditorGUI_RenameEntity)sender).didSave &&
                 ((CathodeEditorGUI_RenameEntity)sender).EntityID == CurrentInstance.selectedEntity.shortGUID)
             {
-                CurrentInstance.compositeLookup.SetEntityName(
+                CurrentInstance.compositeLookup.SetName(
                     CurrentInstance.selectedComposite.shortGUID,
                     CurrentInstance.selectedEntity.shortGUID,
                     ((CathodeEditorGUI_RenameEntity)sender).EntityName);
@@ -800,7 +800,7 @@ namespace CathodeEditorGUI
                         description = funcComposite.name;
                     else
                         description = ShortGuidUtils.FindString(thisFunction);
-                    selected_entity_name.Text = CurrentInstance.compositeLookup.GetEntityName(CurrentInstance.selectedComposite.shortGUID, entity.shortGUID);
+                    selected_entity_name.Text = CurrentInstance.compositeLookup.GetName(CurrentInstance.selectedComposite.shortGUID, entity.shortGUID);
                     if (funcComposite == null)
                     {
                         FunctionType function = CommandsUtils.GetFunctionType(thisFunction);
@@ -822,10 +822,10 @@ namespace CathodeEditorGUI
                     else EditorUtils.ResolveHierarchy(((OverrideEntity)entity).hierarchy, out Composite comp, out hierarchy);
                     hierarchyDisplay.Text = hierarchy;
                     jumpToComposite.Visible = true;
-                    selected_entity_name.Text = CurrentInstance.compositeLookup.GetEntityName(CurrentInstance.selectedComposite.shortGUID, entity.shortGUID);
+                    selected_entity_name.Text = CurrentInstance.compositeLookup.GetName(CurrentInstance.selectedComposite.shortGUID, entity.shortGUID);
                     break;
                 default:
-                    selected_entity_name.Text = CurrentInstance.compositeLookup.GetEntityName(CurrentInstance.selectedComposite.shortGUID, entity.shortGUID);
+                    selected_entity_name.Text = CurrentInstance.compositeLookup.GetName(CurrentInstance.selectedComposite.shortGUID, entity.shortGUID);
                     break;
             }
             selected_entity_type_description.Text = description;

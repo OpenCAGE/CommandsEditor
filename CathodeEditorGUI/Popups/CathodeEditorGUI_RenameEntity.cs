@@ -21,7 +21,7 @@ namespace CathodeEditorGUI
         public CathodeEditorGUI_RenameEntity(ShortGuid entityID)
         {
             InitializeComponent();
-            entity_name.Text = CurrentInstance.compositeLookup.GetEntityName(CurrentInstance.selectedComposite.shortGUID, entityID);
+            entity_name.Text = CurrentInstance.compositeLookup.GetName(CurrentInstance.selectedComposite.shortGUID, entityID);
             EntityID = entityID;
         }
 
