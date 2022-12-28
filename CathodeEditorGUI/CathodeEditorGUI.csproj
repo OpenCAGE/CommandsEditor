@@ -106,6 +106,7 @@
       <DependentUpon>CAGEAnimationEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="CathodeEntityDatabase.cs" />
+    <Compile Include="LocalDebug.cs" />
     <Compile Include="Popups\CathodeEditorGUI_AddOrEditResource.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -150,7 +151,6 @@
     <Compile Include="LEGACY\CathodeEditorGUI_EditResource.designer.cs">
       <DependentUpon>CathodeEditorGUI_EditResource.cs</DependentUpon>
     </Compile>
-    <Compile Include="MapDirectories.cs" />
     <Compile Include="Popups\CathodeEditorGUI_EditHierarchy.cs">
       <SubType>Form</SubType>
     </Compile>
