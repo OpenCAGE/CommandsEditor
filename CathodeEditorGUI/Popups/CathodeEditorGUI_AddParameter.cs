@@ -48,10 +48,10 @@ namespace CathodeEditorGUI
                     thisParam = new cBool(true);
                     break;
                 case DataType.VECTOR:
-                    thisParam = new cVector3(new Vector3(0,0,0));
+                    thisParam = new cVector3(new Vector3(0, 0, 0));
                     break;
                 case DataType.TRANSFORM:
-                    thisParam = new cTransform(new Vector3(0,0,0), new Vector3(0,0,0));
+                    thisParam = new cTransform(new Vector3(0, 0, 0), new Vector3(0, 0, 0));
                     break;
                 case DataType.ENUM:
                     thisParam = new cEnum("ALERTNESS_STATE", 0); //ALERTNESS_STATE is the first alphabetically

@@ -101,7 +101,7 @@
             this.groupBox2.Controls.Add(this.label1);
             this.groupBox2.Controls.Add(this.pin_in_node);
             this.groupBox2.Controls.Add(this.label6);
-            this.groupBox2.Location = new System.Drawing.Point(12, 186);
+            this.groupBox2.Location = new System.Drawing.Point(12, 222);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(876, 116);
             this.groupBox2.TabIndex = 10;
@@ -146,7 +146,7 @@
             // 
             // save_pin
             // 
-            this.save_pin.Location = new System.Drawing.Point(792, 363);
+            this.save_pin.Location = new System.Drawing.Point(783, 344);
             this.save_pin.Name = "save_pin";
             this.save_pin.Size = new System.Drawing.Size(105, 23);
             this.save_pin.TabIndex = 11;
@@ -156,10 +156,12 @@
             // 
             // pictureBox1
             // 
+            this.pictureBox1.BackgroundImage = global::CathodeEditorGUI.Properties.Resources.arrow;
             this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.pictureBox1.Location = new System.Drawing.Point(300, 147);
+            this.pictureBox1.InitialImage = global::CathodeEditorGUI.Properties.Resources.arrow;
+            this.pictureBox1.Location = new System.Drawing.Point(431, 134);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(70, 21);
+            this.pictureBox1.Size = new System.Drawing.Size(34, 82);
             this.pictureBox1.TabIndex = 12;
             this.pictureBox1.TabStop = false;
             // 
@@ -167,7 +169,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(900, 398);
+            this.ClientSize = new System.Drawing.Size(900, 377);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.save_pin);
             this.Controls.Add(this.groupBox2);

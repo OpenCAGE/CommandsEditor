@@ -56,10 +56,8 @@
             this.entity_search_box = new System.Windows.Forms.TextBox();
             this.node_search_btn = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.removeSelectedLink = new System.Windows.Forms.Button();
             this.removeParameter = new System.Windows.Forms.Button();
             this.addNewParameter = new System.Windows.Forms.Button();
-            this.addNewLink = new System.Windows.Forms.Button();
             this.entity_params = new System.Windows.Forms.Panel();
             this.editFunction = new System.Windows.Forms.Button();
             this.load_commands_pak = new System.Windows.Forms.Button();
@@ -70,6 +68,7 @@
             this.DBG_CompileParamList = new System.Windows.Forms.Button();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.addLinkOut = new System.Windows.Forms.Button();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.entityInfoGroup.SuspendLayout();
@@ -339,10 +338,9 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.removeSelectedLink);
+            this.groupBox2.Controls.Add(this.addLinkOut);
             this.groupBox2.Controls.Add(this.removeParameter);
             this.groupBox2.Controls.Add(this.addNewParameter);
-            this.groupBox2.Controls.Add(this.addNewLink);
             this.groupBox2.Controls.Add(this.entity_params);
             this.groupBox2.Location = new System.Drawing.Point(469, 123);
             this.groupBox2.Name = "groupBox2";
@@ -351,52 +349,32 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Selected Entity Parameters";
             // 
-            // removeSelectedLink
-            // 
-            this.removeSelectedLink.Location = new System.Drawing.Point(193, 586);
-            this.removeSelectedLink.Name = "removeSelectedLink";
-            this.removeSelectedLink.Size = new System.Drawing.Size(184, 23);
-            this.removeSelectedLink.TabIndex = 148;
-            this.removeSelectedLink.Text = "Remove Link";
-            this.removeSelectedLink.UseVisualStyleBackColor = true;
-            this.removeSelectedLink.Click += new System.EventHandler(this.removeSelectedLink_Click);
-            // 
             // removeParameter
             // 
-            this.removeParameter.Location = new System.Drawing.Point(193, 562);
+            this.removeParameter.Location = new System.Drawing.Point(256, 586);
             this.removeParameter.Name = "removeParameter";
-            this.removeParameter.Size = new System.Drawing.Size(184, 23);
+            this.removeParameter.Size = new System.Drawing.Size(125, 23);
             this.removeParameter.TabIndex = 150;
-            this.removeParameter.Text = "Remove Parameter";
+            this.removeParameter.Text = "Remove Param/Link";
             this.removeParameter.UseVisualStyleBackColor = true;
             this.removeParameter.Click += new System.EventHandler(this.removeParameter_Click);
             // 
             // addNewParameter
             // 
-            this.addNewParameter.Location = new System.Drawing.Point(6, 562);
+            this.addNewParameter.Location = new System.Drawing.Point(6, 586);
             this.addNewParameter.Name = "addNewParameter";
-            this.addNewParameter.Size = new System.Drawing.Size(184, 23);
+            this.addNewParameter.Size = new System.Drawing.Size(125, 23);
             this.addNewParameter.TabIndex = 149;
             this.addNewParameter.Text = "Add Parameter";
             this.addNewParameter.UseVisualStyleBackColor = true;
             this.addNewParameter.Click += new System.EventHandler(this.addNewParameter_Click);
-            // 
-            // addNewLink
-            // 
-            this.addNewLink.Location = new System.Drawing.Point(6, 586);
-            this.addNewLink.Name = "addNewLink";
-            this.addNewLink.Size = new System.Drawing.Size(184, 23);
-            this.addNewLink.TabIndex = 149;
-            this.addNewLink.Text = "Add New Link";
-            this.addNewLink.UseVisualStyleBackColor = true;
-            this.addNewLink.Click += new System.EventHandler(this.addNewLink_Click);
             // 
             // entity_params
             // 
             this.entity_params.AutoScroll = true;
             this.entity_params.Location = new System.Drawing.Point(6, 20);
             this.entity_params.Name = "entity_params";
-            this.entity_params.Size = new System.Drawing.Size(375, 536);
+            this.entity_params.Size = new System.Drawing.Size(375, 560);
             this.entity_params.TabIndex = 0;
             // 
             // editFunction
@@ -487,6 +465,16 @@
             this.groupBox10.TabIndex = 175;
             this.groupBox10.TabStop = false;
             // 
+            // addLinkOut
+            // 
+            this.addLinkOut.Location = new System.Drawing.Point(131, 586);
+            this.addLinkOut.Name = "addLinkOut";
+            this.addLinkOut.Size = new System.Drawing.Size(125, 23);
+            this.addLinkOut.TabIndex = 151;
+            this.addLinkOut.Text = "Add Link Out";
+            this.addLinkOut.UseVisualStyleBackColor = true;
+            this.addLinkOut.Click += new System.EventHandler(this.addLinkOut_Click);
+            // 
             // CathodeEditorGUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -543,8 +531,6 @@
         private System.Windows.Forms.Button addNewNode;
         private System.Windows.Forms.Button removeParameter;
         private System.Windows.Forms.Button addNewParameter;
-        private System.Windows.Forms.Button removeSelectedLink;
-        private System.Windows.Forms.Button addNewLink;
         private System.Windows.Forms.Button removeSelectedFlowgraph;
         private System.Windows.Forms.Button addNewFlowgraph;
         private System.Windows.Forms.ToolTip toolTip1;
@@ -557,5 +543,6 @@
         private System.Windows.Forms.Button editEntityMovers;
         private System.Windows.Forms.Button DBG_CompileParamList;
         private System.Windows.Forms.Button DBG_LoadAllCommands;
+        private System.Windows.Forms.Button addLinkOut;
     }
 }

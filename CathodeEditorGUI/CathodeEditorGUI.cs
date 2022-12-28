@@ -901,29 +901,32 @@ namespace CathodeEditorGUI
             if (Editor.selected.entity == null) return;
             CathodeEditorGUI_AddParameter add_parameter = new CathodeEditorGUI_AddParameter(Editor.selected.entity);
             add_parameter.Show();
-            add_parameter.FormClosed += new FormClosedEventHandler(param_add_closed);
+            add_parameter.FormClosed += new FormClosedEventHandler(refresh_entity_event);
         }
-        private void param_add_closed(Object sender, FormClosedEventArgs e)
+        private void refresh_entity_event(Object sender, FormClosedEventArgs e)
         {
             LoadEntity(Editor.selected.entity);
             this.BringToFront();
             this.Focus();
         }
 
+        /* Add a new link out */
+        private void addLinkOut_Click(object sender, EventArgs e)
+        {
+            if (Editor.selected.entity == null) return;
+            CathodeEditorGUI_AddPin add_link = new CathodeEditorGUI_AddPin(Editor.selected.entity, Editor.selected.composite);
+            add_link.Show();
+            add_link.FormClosed += new FormClosedEventHandler(refresh_entity_event);
+        }
+
         /* Remove a parameter */
         private void removeParameter_Click(object sender, EventArgs e)
         {
             if (Editor.selected.entity == null) return;
-            if (Editor.selected.entity.parameters.Count == 0) return;
+            if (entity_params.Controls.Count == 0) return;
             CathodeEditorGUI_RemoveParameter remove_parameter = new CathodeEditorGUI_RemoveParameter(Editor.selected.entity);
             remove_parameter.Show();
-            remove_parameter.FormClosed += new FormClosedEventHandler(param_remove_closed);
-        }
-        private void param_remove_closed(Object sender, FormClosedEventArgs e)
-        {
-            LoadEntity(Editor.selected.entity);
-            this.BringToFront();
-            this.Focus();
+            remove_parameter.FormClosed += new FormClosedEventHandler(refresh_entity_event);
         }
 
         /* Edit function entity (CAGEAnimation/TriggerSequence) */
