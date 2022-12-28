@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -79,19 +80,38 @@ namespace CathodeEditorGUI
             switch (node.variant)
             {
                 case EntityVariant.FUNCTION:
-                    CathodeEntityDatabase.ParameterDefinition def = CathodeEntityDatabase.GetParameterFromEntity(((FunctionEntity)node).function, param_name.Text);
-                    if (def.name == null) return;
-                    if (def.usage == CathodeEntityDatabase.ParameterUsage.TARGET)
+                    FunctionEntity ent = ((FunctionEntity)node);
+                    if (CommandsUtils.FunctionTypeExists(ent.function))
                     {
-                        //"TARGET" usage type does not have a datatype since it is not data, it's an event trigger.
-                        //The FLOAT datatype is a placeholder for this.
-                        param_datatype.Text = "FLOAT";
+                        //Function entity
+                        CathodeEntityDatabase.ParameterDefinition def = CathodeEntityDatabase.GetParameterFromEntity(ent.function, param_name.Text);
+                        if (def.name == null) return;
+                        if (def.usage == CathodeEntityDatabase.ParameterUsage.TARGET)
+                        {
+                            //"TARGET" usage type does not have a datatype since it is not data, it's an event trigger.
+                            //The FLOAT datatype is a placeholder for this.
+                            param_datatype.Text = "FLOAT";
+                        }
+                        else
+                        {
+                            ParameterData param = CathodeEntityDatabase.ParameterDefinitionToParameter(def);
+                            if (param == null) return;
+                            param_datatype.Text = param.dataType.ToString();
+                        }
                     }
                     else
                     {
-                        ParameterData param = CathodeEntityDatabase.ParameterDefinitionToParameter(def);
-                        if (param == null) return;
-                        param_datatype.Text = param.dataType.ToString();
+                        //Composite link
+                        ShortGuid param = ShortGuidUtils.Generate(param_name.Text);
+                        VariableEntity var = Editor.commands.GetComposite(ent.function).variables.FirstOrDefault(o => o.parameter == param);
+                        if (var.type == DataType.NONE)
+                        {
+                            param_datatype.Text = "FLOAT";
+                        }
+                        else
+                        {
+                            param_datatype.Text = var.type.ToString();
+                        }
                     }
                     param_datatype.Enabled = false;
                     break;

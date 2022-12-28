@@ -32,6 +32,12 @@ namespace CathodeEditorGUI
             {
                 parameterToDelete.Items.Add(ShortGuidUtils.FindString(_entity.parameters[i].shortGUID));
             }
+            for (int i = 0; i < _entity.childLinks.Count; i++)
+            {
+                parameterToDelete.Items.Add("Link out: [" + ShortGuidUtils.FindString(_entity.childLinks[i].parentParamID) + "] -> " + 
+                    EditorUtils.GenerateEntityName(Editor.selected.composite.GetEntityByID(_entity.childLinks[i].childID), Editor.selected.composite) + 
+                    " [" + ShortGuidUtils.FindString(_entity.childLinks[i].childParamID) + "]");
+            }
             parameterToDelete.SelectedIndex = 0;
             parameterToDelete.EndUpdate();
         }
@@ -39,7 +45,15 @@ namespace CathodeEditorGUI
         private void delete_param_Click(object sender, EventArgs e)
         {
             if (parameterToDelete.SelectedIndex == -1) return;
-            _entity.parameters.RemoveAt(parameterToDelete.SelectedIndex);
+            int link_index = parameterToDelete.SelectedIndex - _entity.parameters.Count;
+            if (link_index >= 0) 
+            {
+                _entity.childLinks.RemoveAt(link_index);
+            }
+            else
+            {
+                _entity.parameters.RemoveAt(parameterToDelete.SelectedIndex);
+            }
             this.Close();
         }
     }

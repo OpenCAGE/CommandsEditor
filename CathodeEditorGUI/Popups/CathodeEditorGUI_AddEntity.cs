@@ -160,7 +160,7 @@ namespace CathodeEditorGUI
             if (createDatatypeEntity.Checked)
             {
                 //Make the DatatypeEntity
-                DatatypeEntity newEntity = new DatatypeEntity(thisID);
+                VariableEntity newEntity = new VariableEntity(thisID);
                 newEntity.type = (DataType)entityVariant.SelectedIndex;
                 newEntity.parameter = ShortGuidUtils.Generate(textBox1.Text);
 
@@ -196,7 +196,7 @@ namespace CathodeEditorGUI
                 newEntity.parameters.Add(new Parameter(newEntity.parameter, thisParam));
 
                 //Add to composite & save name
-                composite.datatypes.Add(newEntity);
+                composite.variables.Add(newEntity);
                 ShortGuidUtils.Generate(textBox1.Text);
                 OnNewEntity?.Invoke(newEntity);
             }

@@ -495,7 +495,7 @@ namespace CathodeEditorGUI
             switch (Editor.selected.entity.variant)
             {
                 case EntityVariant.DATATYPE:
-                    Editor.selected.composite.datatypes.Remove((DatatypeEntity)Editor.selected.entity);
+                    Editor.selected.composite.variables.Remove((VariableEntity)Editor.selected.entity);
                     break;
                 case EntityVariant.FUNCTION:
                     Editor.selected.composite.functions.Remove((FunctionEntity)Editor.selected.entity);
@@ -630,7 +630,7 @@ namespace CathodeEditorGUI
                     Editor.selected.composite.functions.Add((FunctionEntity)newEnt);
                     break;
                 case EntityVariant.DATATYPE:
-                    Editor.selected.composite.datatypes.Add((DatatypeEntity)newEnt);
+                    Editor.selected.composite.variables.Add((VariableEntity)newEnt);
                     break;
                 case EntityVariant.PROXY:
                     Editor.selected.composite.proxies.Add((ProxyEntity)newEnt);
@@ -743,8 +743,8 @@ namespace CathodeEditorGUI
                     editEntityResources.Enabled = (Editor.resource.textures != null);
                     break;
                 case EntityVariant.DATATYPE:
-                    description = "DataType " + ((DatatypeEntity)entity).type.ToString();
-                    selected_entity_name.Text = ShortGuidUtils.FindString(((DatatypeEntity)entity).parameter);
+                    description = "DataType " + ((VariableEntity)entity).type.ToString();
+                    selected_entity_name.Text = ShortGuidUtils.FindString(((VariableEntity)entity).parameter);
                     renameSelectedNode.Enabled = false;
                     duplicateSelectedNode.Enabled = false;
                     addNewParameter.Enabled = false;

@@ -46,7 +46,7 @@
             this.groupBox1.Size = new System.Drawing.Size(776, 92);
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Remove Parameter";
+            this.groupBox1.Text = "Remove Parameter/Link";
             // 
             // delete_param
             // 
@@ -98,7 +98,7 @@
             this.MaximizeBox = false;
             this.Name = "CathodeEditorGUI_RemoveParameter";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Remove Parameter";
+            this.Text = "Remove Parameter/Link";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);

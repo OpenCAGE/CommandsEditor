@@ -35,7 +35,7 @@ namespace CathodeEditorGUI
             switch (entity.variant)
             {
                 case EntityVariant.DATATYPE:
-                    desc = ShortGuidUtils.FindString(((DatatypeEntity)entity).parameter) + " (DataType " + ((DatatypeEntity)entity).type.ToString() + ")";
+                    desc = ShortGuidUtils.FindString(((VariableEntity)entity).parameter) + " (DataType " + ((VariableEntity)entity).type.ToString() + ")";
                     break;
                 case EntityVariant.FUNCTION:
                     Composite funcComposite = Editor.commands.GetComposite(((FunctionEntity)entity).function);
@@ -117,12 +117,12 @@ namespace CathodeEditorGUI
                     else
                     {
                         //Composite node
-                        foreach (DatatypeEntity ent in Editor.commands.GetComposite(function).datatypes)
+                        foreach (VariableEntity ent in Editor.commands.GetComposite(function).variables)
                             items.Add(ShortGuidUtils.FindString(ent.parameter));
                     }
                     break;
                 case EntityVariant.DATATYPE:
-                    items.Add(ShortGuidUtils.FindString(((DatatypeEntity)entity).parameter));
+                    items.Add(ShortGuidUtils.FindString(((VariableEntity)entity).parameter));
                     break;
                     //TODO: support other types here
             }
