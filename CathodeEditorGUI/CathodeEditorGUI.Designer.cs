@@ -69,8 +69,6 @@
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.addLinkOut = new System.Windows.Forms.Button();
-            this.composite_search = new System.Windows.Forms.TextBox();
-            this.composite_search_btn = new System.Windows.Forms.Button();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.entityInfoGroup.SuspendLayout();
@@ -110,8 +108,6 @@
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.composite_search);
-            this.groupBox3.Controls.Add(this.composite_search_btn);
             this.groupBox3.Controls.Add(this.removeSelectedFlowgraph);
             this.groupBox3.Controls.Add(this.addNewFlowgraph);
             this.groupBox3.Controls.Add(this.FileTree);
@@ -145,9 +141,9 @@
             // FileTree
             // 
             this.FileTree.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.FileTree.Location = new System.Drawing.Point(6, 45);
+            this.FileTree.Location = new System.Drawing.Point(6, 19);
             this.FileTree.Name = "FileTree";
-            this.FileTree.Size = new System.Drawing.Size(366, 658);
+            this.FileTree.Size = new System.Drawing.Size(366, 684);
             this.FileTree.TabIndex = 99;
             this.FileTree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.FileTree_AfterSelect);
             // 
@@ -479,23 +475,6 @@
             this.addLinkOut.UseVisualStyleBackColor = true;
             this.addLinkOut.Click += new System.EventHandler(this.addLinkOut_Click);
             // 
-            // composite_search
-            // 
-            this.composite_search.Location = new System.Drawing.Point(6, 19);
-            this.composite_search.Name = "composite_search";
-            this.composite_search.Size = new System.Drawing.Size(270, 20);
-            this.composite_search.TabIndex = 152;
-            // 
-            // composite_search_btn
-            // 
-            this.composite_search_btn.Location = new System.Drawing.Point(282, 17);
-            this.composite_search_btn.Name = "composite_search_btn";
-            this.composite_search_btn.Size = new System.Drawing.Size(90, 23);
-            this.composite_search_btn.TabIndex = 151;
-            this.composite_search_btn.Text = "Search";
-            this.composite_search_btn.UseVisualStyleBackColor = true;
-            this.composite_search_btn.Click += new System.EventHandler(this.composite_search_btn_Click);
-            // 
             // CathodeEditorGUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -512,7 +491,6 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "OpenCAGE Cathode Editor (ALPHA)";
             this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.entityInfoGroup.ResumeLayout(false);
             this.entityInfoGroup.PerformLayout();
@@ -566,7 +544,5 @@
         private System.Windows.Forms.Button DBG_CompileParamList;
         private System.Windows.Forms.Button DBG_LoadAllCommands;
         private System.Windows.Forms.Button addLinkOut;
-        private System.Windows.Forms.TextBox composite_search;
-        private System.Windows.Forms.Button composite_search_btn;
     }
 }

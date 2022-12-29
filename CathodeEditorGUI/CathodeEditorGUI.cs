@@ -440,11 +440,6 @@ namespace CathodeEditorGUI
             currentSearch = entity_search_box.Text;
         }
 
-        private void composite_search_btn_Click(object sender, EventArgs e)
-        {
-            //composite_search
-        }
-
         /* Load a composite into the UI */
         List<string> composite_content_RAW = new List<string>();
         private void LoadComposite(string FileName)
@@ -958,7 +953,15 @@ namespace CathodeEditorGUI
         }
         private void button2_Click(object sender, EventArgs e)
         {
-            LocalDebug.FindAllNodesInCommands();
+            ShortGuid id = ShortGuidUtils.Generate("GAS_GIANT_GLOW");
+
+            EnvironmentAnimationDatabase db = new EnvironmentAnimationDatabase(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\ENV\PRODUCTION\BSP_TORRENS\WORLD\ENVIRONMENT_ANIMATION.DAT");
+
+            //RenderableElementsDatabase db2 = new RenderableElementsDatabase("reds.bin");
+            //db2.RenderableElements.Add(new RenderableElementsDatabase.RenderableElement(){ MaterialLibraryIndex = 5, ModelIndex = 4, ModelLODIndex = 0, ModelLODPrimitiveCount = 2 });
+            //db2.Save();
+
+            //LocalDebug.FindAllNodesInCommands();
         }
         #endregion
     }

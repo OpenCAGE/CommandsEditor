@@ -53,9 +53,9 @@
             this.createDatatypeEntity.AutoSize = true;
             this.createDatatypeEntity.Location = new System.Drawing.Point(18, 19);
             this.createDatatypeEntity.Name = "createDatatypeEntity";
-            this.createDatatypeEntity.Size = new System.Drawing.Size(101, 17);
+            this.createDatatypeEntity.Size = new System.Drawing.Size(92, 17);
             this.createDatatypeEntity.TabIndex = 0;
-            this.createDatatypeEntity.Text = "DataType Entity";
+            this.createDatatypeEntity.Text = "Variable Entity";
             this.createDatatypeEntity.UseVisualStyleBackColor = true;
             this.createDatatypeEntity.CheckedChanged += new System.EventHandler(this.selectedDatatypeEntity);
             // 
@@ -63,7 +63,7 @@
             // 
             this.createFunctionEntity.AutoSize = true;
             this.createFunctionEntity.Checked = true;
-            this.createFunctionEntity.Location = new System.Drawing.Point(125, 19);
+            this.createFunctionEntity.Location = new System.Drawing.Point(116, 19);
             this.createFunctionEntity.Name = "createFunctionEntity";
             this.createFunctionEntity.Size = new System.Drawing.Size(95, 17);
             this.createFunctionEntity.TabIndex = 1;
@@ -115,7 +115,7 @@
             // createOverrideEntity
             // 
             this.createOverrideEntity.AutoSize = true;
-            this.createOverrideEntity.Location = new System.Drawing.Point(421, 19);
+            this.createOverrideEntity.Location = new System.Drawing.Point(412, 19);
             this.createOverrideEntity.Name = "createOverrideEntity";
             this.createOverrideEntity.Size = new System.Drawing.Size(94, 17);
             this.createOverrideEntity.TabIndex = 5;
@@ -126,7 +126,7 @@
             // createProxyEntity
             // 
             this.createProxyEntity.AutoSize = true;
-            this.createProxyEntity.Location = new System.Drawing.Point(335, 19);
+            this.createProxyEntity.Location = new System.Drawing.Point(326, 19);
             this.createProxyEntity.Name = "createProxyEntity";
             this.createProxyEntity.Size = new System.Drawing.Size(80, 17);
             this.createProxyEntity.TabIndex = 4;
@@ -137,7 +137,7 @@
             // createCompositeEntity
             // 
             this.createCompositeEntity.AutoSize = true;
-            this.createCompositeEntity.Location = new System.Drawing.Point(226, 19);
+            this.createCompositeEntity.Location = new System.Drawing.Point(217, 19);
             this.createCompositeEntity.Name = "createCompositeEntity";
             this.createCompositeEntity.Size = new System.Drawing.Size(103, 17);
             this.createCompositeEntity.TabIndex = 3;

@@ -59,7 +59,7 @@ namespace CathodeEditorGUI
         {
             hasLoaded = false;
             loadedMvrIndex = mvrIndex;
-            MOVER_DESCRIPTOR mvr = Editor.mvr.Movers[loadedMvrIndex];
+            MoverDatabase.MOVER_DESCRIPTOR mvr = Editor.mvr.Movers[loadedMvrIndex];
 
             //Convert model BIN index from REDs to PAK index
             int pakModelIndex = -1;
@@ -114,7 +114,7 @@ namespace CathodeEditorGUI
         {
             if (!hasLoaded || loadedMvrIndex == -1) return;
 
-            MOVER_DESCRIPTOR mvr = Editor.mvr.Movers[loadedMvrIndex];
+            MoverDatabase.MOVER_DESCRIPTOR mvr = Editor.mvr.Movers[loadedMvrIndex];
 
             mvr.renderableElementCount = (uint)renderable.SelectedMaterialIndexes.Count;
             mvr.renderableElementIndex = (uint)Editor.resource.reds.RenderableElements.Count;
