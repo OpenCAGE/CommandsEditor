@@ -49,14 +49,7 @@ namespace CathodeEditorGUI
                 MessageBox.Show("Please complete all information for the link before saving!", "Incomplete information.", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-
-            EntityLink newNodeLink = new EntityLink();
-            newNodeLink.connectionID = ShortGuidUtils.GenerateRandom();
-            newNodeLink.parentParamID = ShortGuidUtils.Generate(pin_out_param.Text);
-            newNodeLink.childID = _entityList[pin_in_node.SelectedIndex].shortGUID;
-            newNodeLink.childParamID = ShortGuidUtils.Generate(pin_in_param.Text);
-            _entity.childLinks.Add(newNodeLink);
-
+            _entity.AddParameterLink(pin_out_param.Text, _entityList[pin_in_node.SelectedIndex], pin_in_param.Text);
             this.Close();
         }
 
