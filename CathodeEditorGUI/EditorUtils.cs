@@ -16,12 +16,14 @@ namespace CathodeEditorGUI
 
             if (hasFinishedCachingEntityNames && regenCache)
             {
-                if (cachedEntityName.ContainsKey(entity.shortGUID)) cachedEntityName.Remove(entity.shortGUID);
-                cachedEntityName.Add(entity.shortGUID, GenerateEntityNameInternal(entity, composite));
+                if (!cachedEntityName.ContainsKey(composite.shortGUID)) cachedEntityName.Add(composite.shortGUID, new Dictionary<ShortGuid, string>());
+
+                if (cachedEntityName[composite.shortGUID].ContainsKey(entity.shortGUID)) cachedEntityName[composite.shortGUID].Remove(entity.shortGUID);
+                cachedEntityName[composite.shortGUID].Add(entity.shortGUID, GenerateEntityNameInternal(entity, composite));
             }
 
-            if (hasFinishedCachingEntityNames && cachedEntityName.ContainsKey(entity.shortGUID)) 
-                return cachedEntityName[entity.shortGUID];
+            if (hasFinishedCachingEntityNames && cachedEntityName[composite.shortGUID].ContainsKey(entity.shortGUID)) 
+                return cachedEntityName[composite.shortGUID][entity.shortGUID];
 
             return GenerateEntityNameInternal(entity, composite);
         }
@@ -58,7 +60,7 @@ namespace CathodeEditorGUI
 
         /* Generate a cache of entity names to save re-generating them every time */
         private static bool hasFinishedCachingEntityNames = false;
-        private static Dictionary<ShortGuid, string> cachedEntityName = new Dictionary<ShortGuid, string>();
+        private static Dictionary<ShortGuid, Dictionary<ShortGuid, string>> cachedEntityName = new Dictionary<ShortGuid, Dictionary<ShortGuid, string>>();
         public static void GenerateEntityNameCache(CathodeEditorGUI mainInst)
         {
             if (Editor.commands == null) return;
@@ -67,34 +69,14 @@ namespace CathodeEditorGUI
             cachedEntityName.Clear();
             for (int i = 0; i < Editor.commands.Composites.Count; i++)
             {
-                List<Entity> ents = Editor.commands.Composites[i].GetEntities();
+                Composite comp = Editor.commands.Composites[i];
+                cachedEntityName.Add(comp.shortGUID, new Dictionary<ShortGuid, string>());
+                List<Entity> ents = comp.GetEntities();
                 for (int x = 0; x < ents.Count; x++)
-                {
-                    if (cachedEntityName.ContainsKey(ents[x].shortGUID))
-                    {
-                        //TODO: Figure out why this is happening... aren't node IDs meant to be unique to the whole PAK? Maybe it's per composite?
-                        //TODO-MAJOR: update!! i've re-written this system now to make it per-composite, we should handle that here!!
-                    }
-                    else
-                    {
-                        cachedEntityName.Add(ents[x].shortGUID, GenerateEntityNameInternal(ents[x], Editor.commands.Composites[i]));
-                    }
-                }
-            }
-            if (queuedForRemoval.Count != 0)
-            {
-                for (int i = 0; i < queuedForRemoval.Count; i++)
-                    cachedEntityName.Remove(queuedForRemoval[i]);
-                queuedForRemoval.Clear();
+                    cachedEntityName[comp.shortGUID].Add(ents[x].shortGUID, GenerateEntityNameInternal(ents[x], comp));
             }
             mainInst.EnableLoadingOfPaks(true);
             hasFinishedCachingEntityNames = true;
-        }
-        private static List<ShortGuid> queuedForRemoval = new List<ShortGuid>();
-        public static void PurgeEntityNameFromCache(ShortGuid entId)
-        {
-            if (!hasFinishedCachingEntityNames) queuedForRemoval.Add(entId);
-            else cachedEntityName.Remove(entId);
         }
 
         /* Utility: generate a list of suggested parameters for an entity */
