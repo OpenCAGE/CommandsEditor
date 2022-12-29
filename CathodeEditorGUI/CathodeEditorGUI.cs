@@ -590,7 +590,7 @@ namespace CathodeEditorGUI
 
             //Generate new entity ID and name
             Entity newEnt = Utilities.CloneObject(Editor.selected.entity);
-            newEnt.shortGUID = ShortGuidUtils.Generate(DateTime.Now.ToString("G"));
+            newEnt.shortGUID = ShortGuidUtils.GenerateRandom();
             Editor.util.entity.SetName(
                 Editor.selected.composite.shortGUID,
                 newEnt.shortGUID,
@@ -953,8 +953,6 @@ namespace CathodeEditorGUI
         }
         private void button2_Click(object sender, EventArgs e)
         {
-            ShortGuid id = ShortGuidUtils.Generate("GAS_GIANT_GLOW");
-
             EnvironmentAnimationDatabase db = new EnvironmentAnimationDatabase(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\ENV\PRODUCTION\BSP_TORRENS\WORLD\ENVIRONMENT_ANIMATION.DAT");
 
             //RenderableElementsDatabase db2 = new RenderableElementsDatabase("reds.bin");
