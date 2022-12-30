@@ -221,6 +221,7 @@ namespace CathodeEditorGUI
                 Editor.resource.textures.Load();
                 Editor.resource.textures_Global = new Textures(SharedData.pathToAI + "/DATA/ENV/GLOBAL/WORLD/GLOBAL_TEXTURES.ALL.PAK");
                 Editor.resource.textures_Global.Load();
+                Editor.resource.env_animations = new EnvironmentAnimationDatabase(baseLevelPath + "WORLD/ENVIRONMENT_ANIMATION.DAT");
             }
             catch
             {
@@ -231,6 +232,7 @@ namespace CathodeEditorGUI
                 Editor.resource.materials = null;
                 Editor.resource.textures = null;
                 Editor.resource.textures_Global = null;
+                Editor.resource.env_animations = null;
             }
         }
 

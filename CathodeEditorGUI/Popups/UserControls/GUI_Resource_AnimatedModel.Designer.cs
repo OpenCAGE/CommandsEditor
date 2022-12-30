@@ -29,27 +29,40 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.type_placeholder = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.animatedModelIndex = new System.Windows.Forms.ComboBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.type_placeholder);
+            this.groupBox1.Controls.Add(this.label1);
+            this.groupBox1.Controls.Add(this.animatedModelIndex);
             this.groupBox1.Location = new System.Drawing.Point(3, 3);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(832, 56);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "unsupported";
+            this.groupBox1.Text = "ANIMATED_MODEL";
             // 
-            // type_placeholder
+            // label1
             // 
-            this.type_placeholder.Location = new System.Drawing.Point(6, 21);
-            this.type_placeholder.Name = "type_placeholder";
-            this.type_placeholder.Size = new System.Drawing.Size(808, 20);
-            this.type_placeholder.TabIndex = 0;
-            this.type_placeholder.TextChanged += new System.EventHandler(this.type_placeholder_TextChanged);
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(18, 24);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(118, 13);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "Environment Animation:";
+            // 
+            // animatedModelIndex
+            // 
+            this.animatedModelIndex.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.animatedModelIndex.FormattingEnabled = true;
+            this.animatedModelIndex.Location = new System.Drawing.Point(142, 21);
+            this.animatedModelIndex.Name = "animatedModelIndex";
+            this.animatedModelIndex.Size = new System.Drawing.Size(253, 21);
+            this.animatedModelIndex.TabIndex = 0;
+            this.animatedModelIndex.SelectedIndexChanged += new System.EventHandler(this.animatedModelIndex_SelectedIndexChanged);
             // 
             // GUI_Resource_AnimatedModel
             // 
@@ -67,6 +80,7 @@
         #endregion
 
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.TextBox type_placeholder;
+        private System.Windows.Forms.ComboBox animatedModelIndex;
+        private System.Windows.Forms.Label label1;
     }
 }

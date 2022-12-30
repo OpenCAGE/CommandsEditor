@@ -62,6 +62,7 @@ namespace CathodeEditorGUI
                             ((GUI_Resource_CollisionMapping)resourceGroup).PopulateUI();
                             break;
                         }
+                        //TODO: should we even bother showing this?
                     case ResourceType.DYNAMIC_PHYSICS_SYSTEM:
                         {
                             resourceGroup = new GUI_Resource_DynamicPhysicsSystem();
@@ -188,7 +189,7 @@ namespace CathodeEditorGUI
                     case ResourceType.ANIMATED_MODEL:
                         {
                             GUI_Resource_AnimatedModel ui = (GUI_Resource_AnimatedModel)resource_panel.Controls[i];
-                            resourceRef.startIndex = ui.UnknownIndex;
+                            resourceRef.startIndex = ui.EnvironmentAnimIndex;
                             break;
                         }
                     case ResourceType.COLLISION_MAPPING:

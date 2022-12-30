@@ -33,6 +33,7 @@ namespace CathodeEditorGUI
             public Textures textures;
             public Textures textures_Global;
             public RenderableElementsDatabase reds;
+            public EnvironmentAnimationDatabase env_animations;
         }
 
         //Helpers
