@@ -955,6 +955,9 @@ namespace CathodeEditorGUI
         }
         private void button2_Click(object sender, EventArgs e)
         {
+            ShortGuid test = ShortGuidUtils.Generate("test");
+            return;
+
             EnvironmentAnimationDatabase db = new EnvironmentAnimationDatabase(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\ENV\PRODUCTION\BSP_TORRENS\WORLD\ENVIRONMENT_ANIMATION.DAT");
 
             //RenderableElementsDatabase db2 = new RenderableElementsDatabase("reds.bin");

@@ -42,7 +42,7 @@ namespace CathodeEditorGUI.Popups.UserControls
             materials.Items.Clear();
             for (int i = 0; i < materialIndexes.Count; i++)
             {
-                materials.Items.Add(Editor.resource.materials.MaterialNames[materialIndexes[i]]);
+                materials.Items.Add(Editor.resource.materials._materialNames[materialIndexes[i]]);
             }
         }
 
