@@ -1,4 +1,5 @@
-﻿using CATHODE.Commands;
+﻿using CATHODE;
+using CATHODE.Scripting;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

@@ -1,4 +1,4 @@
-﻿using CATHODE.Commands;
+﻿using CATHODE.Scripting;
 using CathodeEditorGUI.Popups.UserControls;
 using System;
 using System.Collections.Generic;

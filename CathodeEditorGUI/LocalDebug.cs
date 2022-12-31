@@ -1,4 +1,5 @@
-﻿using CATHODE.Commands;
+﻿using CATHODE;
+using CATHODE.Scripting;
 using CathodeLib;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -308,7 +309,7 @@ namespace CathodeEditorGUI
             {
                 //if (env_list.Items[mm].ToString() != "BSP_TORRENS") continue;
 
-                Editor.commands = new CommandsPAK(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + mapList[mm].ToString() + "/WORLD/COMMANDS.PAK");
+                Editor.commands = new Commands(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + mapList[mm].ToString() + "/WORLD/COMMANDS.PAK");
                 Console.WriteLine("Loading: " + Editor.commands.Filepath + "...");
                 //CurrentInstance.compositeLookup = new EntityNameLookup(CurrentInstance.commandsPAK);
 

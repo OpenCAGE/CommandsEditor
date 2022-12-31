@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
-using CATHODE.Commands;
+using CATHODE.Scripting;
 using CathodeLib;
 
 namespace CathodeEditorGUI.UserControls

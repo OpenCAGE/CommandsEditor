@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CATHODE;
-using CATHODE.Commands;
+using CATHODE.Scripting;
 
 namespace CathodeEditorGUI
 {

@@ -1,6 +1,6 @@
 ﻿using CATHODE;
 using CATHODE.Assets;
-using CATHODE.Commands;
+using CATHODE.Scripting;
 using CATHODE.LEGACY;
 using System;
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ namespace CathodeEditorGUI
     public static class Editor
     {
         //Level descriptors & scripting
-        public static CommandsPAK commands;
+        public static Commands commands;
         public static MoverDatabase mvr;
 
         //Scripting state info

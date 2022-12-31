@@ -1,6 +1,6 @@
 using CATHODE;
 using CATHODE.Assets;
-using CATHODE.Commands;
+using CATHODE.Scripting;
 using CATHODE.LEGACY;
 using CathodeEditorGUI.UserControls;
 using CathodeLib;
@@ -174,7 +174,7 @@ namespace CathodeEditorGUI
             string path_to_ENV = SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + level;
             try
             {
-                Editor.commands = new CommandsPAK(path_to_ENV + "/WORLD/COMMANDS.PAK");
+                Editor.commands = new Commands(path_to_ENV + "/WORLD/COMMANDS.PAK");
             }
             catch (Exception e)
             {
