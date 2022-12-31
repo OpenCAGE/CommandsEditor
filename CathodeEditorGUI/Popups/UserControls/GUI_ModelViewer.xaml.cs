@@ -1,6 +1,5 @@
 ﻿using CATHODE.Assets;
 using CATHODE.LEGACY;
-using CATHODE.Misc;
 using HelixToolkit.Wpf;
 using System;
 using System.Collections.Generic;

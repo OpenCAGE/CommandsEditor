@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
@@ -13,10 +11,10 @@ using HelixToolkit.Wpf;
 using CATHODE.LEGACY;
 using static CATHODE.LEGACY.CathodeModels;
 using System.Numerics;
-using CATHODE.Misc;
 using System.Runtime.InteropServices;
 using System.Drawing;
 using CATHODE.Assets;
+using CathodeLib;
 
 namespace CathodeEditorGUI.Popups.UserControls
 {
@@ -200,7 +198,7 @@ namespace CathodeEditorGUI.Popups.UserControls
                             }
                         }
                     }
-                    CATHODE.Utilities.Align(Stream, 16);
+                    Utilities.Align(Stream, 16);
                 }
 
                 if (InVertices.Count == 0) continue;

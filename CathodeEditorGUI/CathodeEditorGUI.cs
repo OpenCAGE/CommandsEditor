@@ -2,7 +2,6 @@ using CATHODE;
 using CATHODE.Assets;
 using CATHODE.Commands;
 using CATHODE.LEGACY;
-using CATHODE.Misc;
 using CathodeEditorGUI.UserControls;
 using CathodeLib;
 using Newtonsoft.Json;

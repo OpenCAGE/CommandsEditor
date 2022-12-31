@@ -1,7 +1,7 @@
-﻿using CATHODE.Assets;
+﻿using CATHODE;
+using CATHODE.Assets;
 using CATHODE.Commands;
 using CATHODE.LEGACY;
-using CATHODE.Misc;
 using System;
 using System.Collections.Generic;
 using System.Linq;

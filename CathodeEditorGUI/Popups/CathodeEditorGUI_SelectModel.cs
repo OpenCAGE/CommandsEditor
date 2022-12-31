@@ -1,5 +1,4 @@
 ﻿using CATHODE.LEGACY;
-using CATHODE.Misc;
 using CathodeEditorGUI.Popups.UserControls;
 using System;
 using System.Collections.Generic;
