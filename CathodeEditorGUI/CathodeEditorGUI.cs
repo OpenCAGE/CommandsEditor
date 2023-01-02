@@ -183,7 +183,7 @@ namespace CathodeEditorGUI
                 return;
             }
 
-            if (!Editor.commands.Loaded)
+            if (Editor.commands.EntryPoints == null)
             {
                 MessageBox.Show("Failed to load COMMANDS.PAK!\nPlease place this executable in your Alien: Isolation folder.", "Environment error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -290,7 +290,7 @@ namespace CathodeEditorGUI
         /* Edit the loaded COMMANDS.PAK's root composite */
         private void editEntryPoint_Click(object sender, EventArgs e)
         {
-            if (Editor.commands == null || !Editor.commands.Loaded) return;
+            if (Editor.commands == null || Editor.commands.EntryPoints == null) return;
             CathodeEditorGUI_EditRootComposite edit_entrypoint = new CathodeEditorGUI_EditRootComposite();
             edit_entrypoint.Show();
             edit_entrypoint.FormClosed += new FormClosedEventHandler(edit_entrypoint_closed);
@@ -347,7 +347,7 @@ namespace CathodeEditorGUI
         /* Select root composite from top of UI */
         private void SelectEntryPointUI(object sender, System.EventArgs e)
         {
-            if (Editor.commands == null || !Editor.commands.Loaded) return;
+            if (Editor.commands == null || Editor.commands.EntryPoints == null) return;
             LoadComposite(Editor.commands.EntryPoints[0].name);
         }
 
@@ -954,16 +954,7 @@ namespace CathodeEditorGUI
         }
         private void button2_Click(object sender, EventArgs e)
         {
-            ShortGuid test = ShortGuidUtils.Generate("test");
-            return;
-
-            EnvironmentAnimationDatabase db = new EnvironmentAnimationDatabase(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\ENV\PRODUCTION\BSP_TORRENS\WORLD\ENVIRONMENT_ANIMATION.DAT");
-
-            //RenderableElementsDatabase db2 = new RenderableElementsDatabase("reds.bin");
-            //db2.RenderableElements.Add(new RenderableElementsDatabase.RenderableElement(){ MaterialLibraryIndex = 5, ModelIndex = 4, ModelLODIndex = 0, ModelLODPrimitiveCount = 2 });
-            //db2.Save();
-
-            //LocalDebug.FindAllNodesInCommands();
+            LocalDebug.FindAllNodesInCommands();
         }
         #endregion
     }
