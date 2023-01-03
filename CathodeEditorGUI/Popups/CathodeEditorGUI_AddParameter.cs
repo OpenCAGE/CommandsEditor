@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using CATHODE;
 using CATHODE.Scripting;
+using CATHODE.Scripting.Internal;
 using CathodeLib;
 
 namespace CathodeEditorGUI
@@ -55,7 +56,7 @@ namespace CathodeEditorGUI
                     thisParam = new cTransform(new Vector3(0, 0, 0), new Vector3(0, 0, 0));
                     break;
                 case DataType.ENUM:
-                    thisParam = new cEnum("ALERTNESS_STATE", 0); //ALERTNESS_STATE is the first alphabetically
+                    thisParam = new cEnum(EnumType.ALERTNESS_STATE, 0); 
                     break;
                 case DataType.SPLINE:
                     thisParam = new cSpline();
@@ -104,6 +105,7 @@ namespace CathodeEditorGUI
                         //Composite link
                         ShortGuid param = ShortGuidUtils.Generate(param_name.Text);
                         VariableEntity var = Editor.commands.GetComposite(ent.function).variables.FirstOrDefault(o => o.parameter == param);
+                        if (var == null) return;
                         if (var.type == DataType.NONE)
                         {
                             param_datatype.Text = "FLOAT";

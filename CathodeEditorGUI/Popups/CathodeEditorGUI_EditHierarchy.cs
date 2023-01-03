@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using CATHODE;
 using CATHODE.Scripting;
+using CATHODE.Scripting.Internal;
 
 namespace CathodeEditorGUI
 {
@@ -74,7 +75,7 @@ namespace CathodeEditorGUI
             SelectEntity.Enabled = false;
             FollowEntityThrough.Enabled = false;
 
-            selectedComposite = Editor.commands.Composites[Editor.commands.GetFileIndex(FileName)];
+            selectedComposite = Editor.commands.GetComposite(FileName);
             compositeName.Text = selectedComposite.name;
             composite_content.BeginUpdate();
             composite_content_RAW.Clear();

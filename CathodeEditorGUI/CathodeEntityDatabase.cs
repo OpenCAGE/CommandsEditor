@@ -1,5 +1,6 @@
 ﻿using CATHODE;
 using CATHODE.Scripting;
+using CATHODE.Scripting.Internal;
 using System;
 using System.Collections.Generic;
 using System.IO;

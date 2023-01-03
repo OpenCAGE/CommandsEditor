@@ -4,21 +4,15 @@ using CATHODE.Scripting;
 using CATHODE.LEGACY;
 using CathodeEditorGUI.UserControls;
 using CathodeLib;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Design;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net.Http.Headers;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
+using CATHODE.Scripting.Internal;
 using System.Windows.Media.Animation;
 
 namespace CathodeEditorGUI
@@ -446,7 +440,7 @@ namespace CathodeEditorGUI
         private void LoadComposite(string FileName)
         {
             ClearUI(false, true, true);
-            Composite entry = Editor.commands.Composites[Editor.commands.GetFileIndex(FileName)];
+            Composite entry = Editor.commands.GetComposite(FileName);
             Editor.selected.composite = entry;
             EditorUtils.PurgeDeadHierarchiesInActiveComposite(); //TODO: We should really just skip this info when parsing, can remove "unknown" on composite then
             Cursor.Current = Cursors.WaitCursor;
@@ -486,7 +480,7 @@ namespace CathodeEditorGUI
             if (Editor.selected.entity == null) return;
             if (!ConfirmAction("Are you sure you want to remove this entity?")) return;
 
-            string removedID = Editor.selected.entity.shortGUID.ToString();
+            string removedID = Editor.selected.entity.shortGUID.ToByteString();
 
             switch (Editor.selected.entity.variant)
             {
@@ -658,7 +652,7 @@ namespace CathodeEditorGUI
                     Editor.selected.entity.shortGUID,
                     ((CathodeEditorGUI_RenameEntity)sender).EntityName);
 
-                string entityID = Editor.selected.entity.shortGUID.ToString();
+                string entityID = Editor.selected.entity.shortGUID.ToByteString();
                 string newEntityName = EditorUtils.GenerateEntityName(Editor.selected.entity, Editor.selected.composite, true);
                 for (int i = 0; i < composite_content.Items.Count; i++)
                 {
@@ -949,13 +943,231 @@ namespace CathodeEditorGUI
         #region LOCAL_TESTS
         private void BuildNodeParameterDatabase(object sender, EventArgs e)
         {
+            Commands cmd = new Commands(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\ENV\PRODUCTION\BSP_TORRENS\WORLD\COMMANDS.PAK");
+            List<string> script = new List<string>();
+            script.Add("Commands cmd = new Commands(\"COMMANDS.PAK\");");
+            script.Add("cmd.Composites.Clear();");
+            for (int i = 0; i < cmd.Composites.Count; i++)
+            {
+                string compositeName = "COMP_" + cmd.Composites[i].shortGUID.ToByteString().Replace('-', '_');
+                script.Add("Composite " + compositeName + " = cmd.AddComposite(@\"" + cmd.Composites[i].name + "\");");
+
+                for (int x = 0; x < cmd.Composites[i].functions.Count; x++)
+                {
+                    string entityName = "ENT_" + cmd.Composites[i].functions[x].shortGUID.ToByteString().Replace('-', '_');
+                    script.Add("FunctionEntity " + entityName + " = " + compositeName + ".AddFunction(");
+                    if (CommandsUtils.FunctionTypeExists(cmd.Composites[i].functions[x].function)) script[script.Count - 1] += "FunctionType." + CommandsUtils.GetFunctionType(cmd.Composites[i].functions[x].function) + ");";
+                    else script[script.Count - 1] += "@\"" + cmd.GetComposite(cmd.Composites[i].functions[x].function).name + "\");";
+
+                    for (int y = 0; y < cmd.Composites[i].functions[x].resources.Count; y++)
+                    {
+                        string resourceName = "RES_" + cmd.Composites[i].functions[x].resources[y].GetHashCode().ToString().Replace('-', '_');
+                        switch (cmd.Composites[i].functions[x].resources[y].entryType)
+                        {
+                            case ResourceType.RENDERABLE_INSTANCE:
+                                script.Add("ResourceReference " + resourceName + " = " + entityName + ".AddResource(ResourceType." + cmd.Composites[i].functions[x].resources[y].entryType + ");");
+                                Vector3 pos = cmd.Composites[i].functions[x].resources[y].position;
+                                script.Add(resourceName + ".position = new Vector3(" + pos.x + "f, " + pos.y + "f, " + pos.z + "f);");
+                                Vector3 rot = cmd.Composites[i].functions[x].resources[y].rotation;
+                                script.Add(resourceName + ".rotation = new Vector3(" + rot.x + "f, " + rot.y + "f, " + rot.z + "f);");
+                                script.Add(resourceName + ".startIndex = " + cmd.Composites[i].functions[x].resources[y].startIndex + ";");
+                                script.Add(resourceName + ".count = " + cmd.Composites[i].functions[x].resources[y].count + ";");
+                                break;
+                            default:
+                                throw new Exception("Unhandled resource");
+                        }
+                    }
+                }
+                for (int x = 0; x < cmd.Composites[i].variables.Count; x++)
+                {
+                    string entityName = "ENT_" + cmd.Composites[i].variables[x].shortGUID.ToByteString().Replace('-', '_');
+                    script.Add("VariableEntity " + entityName + " = " + compositeName + ".AddVariable(\"" + ShortGuidUtils.FindString(cmd.Composites[i].variables[x].parameter) + "\", DataType." + cmd.Composites[i].variables[x].type.ToString() + ");");
+                }
+                for (int x = 0; x < cmd.Composites[i].proxies.Count; x++)
+                {
+                    throw new Exception("Unhandled proxy");
+                }
+                for (int x = 0; x < cmd.Composites[i].overrides.Count; x++)
+                {
+                    throw new Exception("Unhandled override");
+                }
+
+                List<Entity> entities = cmd.Composites[i].GetEntities();
+                for (int x = 0; x < entities.Count; x++)
+                {
+                    string entityName = "ENT_" + entities[x].shortGUID.ToByteString().Replace('-', '_');
+                    for (int y = 0; y < entities[x].parameters.Count; y++)
+                    {
+                        string paramName = ShortGuidUtils.FindString(entities[x].parameters[y].shortGUID);
+                        script.Add(entityName + ".AddParameter(" + ((paramName == entities[x].parameters[y].shortGUID.ToByteString()) ? "new ShortGuid(\"" : "\"") + paramName + "\"" + ((paramName == entities[x].parameters[y].shortGUID.ToByteString()) ? ")" : "") + ", new ");
+                        switch (entities[x].parameters[y].content.dataType)
+                        {
+                            case DataType.FLOAT:
+                                script[script.Count - 1] += "cFloat(" + ((cFloat)entities[x].parameters[y].content).value + "f)";
+                                break;
+                            case DataType.BOOL:
+                                script[script.Count - 1] += "cBool(" + ((cBool)entities[x].parameters[y].content).value.ToString().ToLower() + ")";
+                                break;
+                            case DataType.ENUM:
+                                cEnum en = ((cEnum)entities[x].parameters[y].content);
+                                script[script.Count - 1] += "cEnum(\"" + ShortGuidUtils.FindString(en.enumID) + "\", " + en.enumIndex + ")";
+                                break;
+                            case DataType.FILEPATH:
+                            case DataType.STRING:
+                                script[script.Count - 1] += "cString(@\"" + ((cString)entities[x].parameters[y].content).value + "\")";
+                                break;
+                            case DataType.INTEGER:
+                                script[script.Count - 1] += "cInteger(" + ((cInteger)entities[x].parameters[y].content).value + ")";
+                                break;
+                            case DataType.VECTOR:
+                                Vector3 vc = ((cVector3)entities[x].parameters[y].content).value;
+                                script[script.Count - 1] += "cVector3(new Vector3(" + vc.x + "f, " + vc.y + "f, " + vc.z + "f))";
+                                break;
+                            case DataType.TRANSFORM:
+                                Vector3 rot = ((cTransform)entities[x].parameters[y].content).rotation;
+                                Vector3 pos = ((cTransform)entities[x].parameters[y].content).position;
+                                script[script.Count - 1] += "cTransform(new Vector3(" + pos.x + "f, " + pos.y + "f, " + pos.z + "f), new Vector3(" + rot.x + "f, " + rot.y + "f, " + rot.z + "f))";
+                                break;
+                            default:
+                                throw new Exception("Unhandled parameter datatype");
+                        }
+                        script[script.Count - 1] += ");";
+                    }
+                    for (int y = 0; y < entities[x].childLinks.Count; y++)
+                    {
+                        string connectedEntityName = "ENT_" + entities[x].childLinks[y].childID.ToByteString().Replace('-', '_');
+                        script.Add(entityName + ".AddParameterLink(\"" + ShortGuidUtils.FindString(entities[x].childLinks[y].parentParamID) + "\", " + connectedEntityName + ", \"" + ShortGuidUtils.FindString(entities[x].childLinks[y].childParamID) + "\");");
+                    }
+                }
+            }
+            script.Add("cmd.Save();");
+            File.WriteAllLines("out.txt", script);
+
             //LocalDebug.DumpEnumList();
-            LocalDebug.DumpCathodeEntities();
+            //LocalDebug.DumpCathodeEntities();
         }
         private void button2_Click(object sender, EventArgs e)
         {
-            LocalDebug.FindAllNodesInCommands();
+            string commandsPath = "G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\ENG_ALIEN_NEST\\WORLD\\COMMANDS.PAK";
+            //if (File.Exists(commandsPath)) File.Delete(commandsPath);
+
+            Commands commands = new Commands(commandsPath);
+            Composite composite = commands.AddComposite("test", true);
+            FunctionEntity checkpoint = composite.AddFunction(FunctionType.Checkpoint);
+            FunctionEntity playerSpawn = composite.AddFunction(commands.GetComposite("ARCHETYPES\\SCRIPT\\MISSION\\SPAWNPOSITIONSELECT"));
+            checkpoint.AddParameter("is_first_checkpoint", new cBool(true));
+            checkpoint.AddParameter("section", new cString("Entry"));
+            checkpoint.AddParameterLink("on_checkpoint", playerSpawn, "SpawnPlayer");
+            commands.Save();
+
+
+            string fgdg = "";
+
+            /*
+            //Create our Commands file to contain our scripts
+            Commands commands = new Commands(commandsPath);
+
+            //Create our first script (a "Composite") and give it a name
+            Composite composite = commands.AddComposite("My Cool Script", true);
+
+            //Add a "Checkpoint" function to our script
+            FunctionEntity checkpoint = composite.AddFunction(FunctionType.Checkpoint);
+
+            //Let the game know we want to load in to our checkpoint
+            checkpoint.AddParameter("is_first_checkpoint", new cBool(true));
+
+            //Give our checkpoint a name
+            checkpoint.AddParameter("section", new cString("Entry"));
+
+            //Add a "SetPrimaryObjective" function to our script
+            FunctionEntity objective = composite.AddFunction(FunctionType.SetPrimaryObjective);
+
+            //Give our objective a title (visible in the initial popup, and tab menu)
+            objective.AddParameter("title", new cString("Do Something!"));
+
+            //Give our objective a description (visible in the tab menu)
+            objective.AddParameter("additional_info", new cString("Hey, you should go and do something!"));
+
+            //Trigger our objective when our checkpoint has finished loading
+            checkpoint.AddParameterLink("finished_loading", objective, "trigger");
+
+            //Save the Commands file
+            commands.Save();
+            */
+
+            /*
+            Commands commands = new Commands(commandsPath);
+
+            Composite composite = commands.AddComposite(@"My Cool Script", true);
+
+            FunctionEntity checkpoint = composite.AddFunction(FunctionType.Checkpoint);
+            checkpoint.AddParameter("is_first_checkpoint", new cBool(true));
+            checkpoint.AddParameter("section", new cString("Entry"));
+
+            FunctionEntity fadeIn = composite.AddFunction(FunctionType.ScreenFadeInTimed);
+            fadeIn.AddParameter("time", new cFloat(2.0f));
+            checkpoint.AddParameterLink("finished_loading", fadeIn, "start");
+
+            FunctionEntity player = composite.AddFunction(FunctionType.Character);
+            player.AddParameter("anim_set", new cString("1ST_PERSON"));
+            player.AddParameter("spawn", new cFloat(0.1f));
+            player.AddParameter("reference_skeleton", new cString("FEMALE_FP"));
+            player.AddParameter("is_player", new cBool(true));
+            player.AddParameter("activate_on_reset", new cString("true"));
+            player.AddParameter("attribute_set", new cString("THE_PLAYER"));
+            player.AddParameter("footwear_sound", new cString("Trainers"));
+            player.AddParameter("alliance_group", new cEnum("ALLIANCE_GROUP", 1));
+            player.AddParameter(new ShortGuid("CD-8E-31-AF"), new cString("THE_PLAYER"));
+            player.AddParameter("position", new cTransform(new Vector3(12.05990000f, 7.60228000f, -12.62150000f), new Vector3(-0.00000149f, -135.00000000f, 0.00000042f)));
+            player.AddParameter("display_model", new cString("PLAYER_FP"));
+            player.AddParameter("character_class", new cEnum("CHARACTER_CLASS", 0));
+            player.AddParameter("spawn_on_reset", new cBool(false));
+            player.AddParameter("finished_spawning", new cFloat(0.1f));
+            fadeIn.AddParameterLink("started", player, "spawn");
+
+            FunctionEntity objective = composite.AddFunction(FunctionType.SetPrimaryObjective);
+            objective.AddParameter("title", new cString("You Bruh!"));
+            objective.AddParameter("additional_info", new cString("Hey, you should go and do something!"));
+            player.AddParameterLink("spawned", objective, "trigger"); //why is finished_spawning not triggering?
+
+            FunctionEntity giveMotionTracker = composite.AddFunction(FunctionType.WEAPON_GiveToPlayer);
+            giveMotionTracker.AddParameter("weapon", new cEnum("EQUIPMENT_SLOT", 6));
+            player.AddParameterLink("spawned", giveMotionTracker, "trigger");
+
+            FunctionEntity globalSpawnEvent = composite.AddFunction(FunctionType.GlobalEvent);
+            globalSpawnEvent.AddParameter("EventName", new cString("Player_Spawned"));
+            globalSpawnEvent.AddParameter("EventValue", new cFloat(3.0f));
+            player.AddParameterLink("spawned", globalSpawnEvent, "trigger");
+
+            FunctionEntity alwaysReturnsTrue = composite.AddFunction(FunctionType.FloatLessThanOrEqual);
+            alwaysReturnsTrue.AddParameter("LHS", new cFloat(1.0f));
+            alwaysReturnsTrue.AddParameter("RHS", new cFloat(1.0f));
+            player.AddParameterLink("spawned", alwaysReturnsTrue, "trigger");
+
+            FunctionEntity enableFunctionality = composite.AddFunction(FunctionType.ToggleFunctionality);
+            enableFunctionality.AddParameterLink("enable_radial", alwaysReturnsTrue, "on_true");
+            enableFunctionality.AddParameterLink("enable_radial_hacking_info", alwaysReturnsTrue, "on_true");
+            enableFunctionality.AddParameterLink("enable_radial_cutting_info", alwaysReturnsTrue, "on_true");
+            enableFunctionality.AddParameterLink("enable_radial_battery_info", alwaysReturnsTrue, "on_true");
+            enableFunctionality.AddParameterLink("enable_hud_battery_info", alwaysReturnsTrue, "on_true");
+
+            //TODO do we need to TriggerBindCharacter to VariableThePlayer?
+
+
+            FunctionEntity map = composite.AddFunction(FunctionType.MapAnchor);
+            map.AddParameter("map_scale", new cFloat(2.7f));
+            map.AddParameter("keyframe", new cString("Bsp_Torrens_1"));
+            map.AddParameter("world_pos", new cTransform(new Vector3(-5.12215000f, 7.79390000f, -0.74270500f), new Vector3(0, 0, 0)));
+            player.AddParameterLink("spawned", map, "trigger");
+
+
+            commands.Save();
+            */
+
+            //LocalDebug.FindAllNodesInCommands();
         }
+
+        
         #endregion
     }
 }

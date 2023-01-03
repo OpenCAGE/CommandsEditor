@@ -56,6 +56,7 @@
             this.entity_search_box = new System.Windows.Forms.TextBox();
             this.node_search_btn = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.addLinkOut = new System.Windows.Forms.Button();
             this.removeParameter = new System.Windows.Forms.Button();
             this.addNewParameter = new System.Windows.Forms.Button();
             this.entity_params = new System.Windows.Forms.Panel();
@@ -68,7 +69,6 @@
             this.DBG_CompileParamList = new System.Windows.Forms.Button();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.addLinkOut = new System.Windows.Forms.Button();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.entityInfoGroup.SuspendLayout();
@@ -349,6 +349,16 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Selected Entity Parameters";
             // 
+            // addLinkOut
+            // 
+            this.addLinkOut.Location = new System.Drawing.Point(131, 586);
+            this.addLinkOut.Name = "addLinkOut";
+            this.addLinkOut.Size = new System.Drawing.Size(125, 23);
+            this.addLinkOut.TabIndex = 151;
+            this.addLinkOut.Text = "Add Link Out";
+            this.addLinkOut.UseVisualStyleBackColor = true;
+            this.addLinkOut.Click += new System.EventHandler(this.addLinkOut_Click);
+            // 
             // removeParameter
             // 
             this.removeParameter.Location = new System.Drawing.Point(256, 586);
@@ -464,16 +474,6 @@
             this.groupBox10.Size = new System.Drawing.Size(487, 49);
             this.groupBox10.TabIndex = 175;
             this.groupBox10.TabStop = false;
-            // 
-            // addLinkOut
-            // 
-            this.addLinkOut.Location = new System.Drawing.Point(131, 586);
-            this.addLinkOut.Name = "addLinkOut";
-            this.addLinkOut.Size = new System.Drawing.Size(125, 23);
-            this.addLinkOut.TabIndex = 151;
-            this.addLinkOut.Text = "Add Link Out";
-            this.addLinkOut.UseVisualStyleBackColor = true;
-            this.addLinkOut.Click += new System.EventHandler(this.addLinkOut_Click);
             // 
             // CathodeEditorGUI
             // 

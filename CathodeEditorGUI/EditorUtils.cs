@@ -1,5 +1,6 @@
 ﻿using CATHODE;
 using CATHODE.Scripting;
+using CATHODE.Scripting.Internal;
 using CathodeLib;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace CathodeEditorGUI
         public static string GenerateEntityName(Entity entity, Composite composite, bool regenCache = false)
         {
             if (Editor.commands == null) 
-                return entity.shortGUID.ToString();
+                return entity.shortGUID.ToByteString();
 
             if (hasFinishedCachingEntityNames && regenCache)
             {
@@ -55,7 +56,7 @@ namespace CathodeEditorGUI
                     desc = Editor.util.entity.GetName(composite.shortGUID, entity.shortGUID) + " (*PROXY*)";
                     break;
             }
-            return "[" + entity.shortGUID.ToString() + "] " + desc;
+            return "[" + entity.shortGUID.ToByteString() + "] " + desc;
         }
 
         /* Generate a cache of entity names to save re-generating them every time */

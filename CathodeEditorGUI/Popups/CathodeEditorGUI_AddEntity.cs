@@ -1,5 +1,6 @@
 ﻿using CATHODE;
 using CATHODE.Scripting;
+using CATHODE.Scripting.Internal;
 using CathodeLib;
 using System;
 using System.Collections.Generic;
@@ -183,13 +184,13 @@ namespace CathodeEditorGUI
             else if (createCompositeEntity.Checked)
             {
                 //Make sure the composite is valid
-                Composite composite = composites.FirstOrDefault(o => o.name == entityVariant.Text);
-                if (composite == null)
+                Composite compRef = composites.FirstOrDefault(o => o.name == entityVariant.Text);
+                if (compRef == null)
                 { 
                     MessageBox.Show("Failed to look up composite!\nPlease report this issue on GitHub.\n\n" + entityVariant.Text, "Could not find composite!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-                FunctionEntity newEntity = composite.AddFunction(composite, addDefaultParams.Checked);
+                FunctionEntity newEntity = composite.AddFunction(compRef, addDefaultParams.Checked);
                 Editor.util.entity.SetName(this.composite.shortGUID, newEntity.shortGUID, textBox1.Text);
                 OnNewEntity?.Invoke(newEntity);
             }

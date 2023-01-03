@@ -1,5 +1,6 @@
 ﻿using CATHODE;
 using CATHODE.Scripting;
+using CATHODE.Scripting.Internal;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -70,7 +71,7 @@ namespace CathodeEditorGUI
                         keyframeBtn.Size = new Size(27, 23);
                         keyframeBtn.Location = new Point(134 + ((keyframeBtn.Size.Width + 6) * x), 18 + (countInGroup * 23));
                         keyframeBtn.Text = paramData.keyframes[x].secondsSinceStart.ToString();
-                        keyframeBtn.AccessibleDescription = paramData.ID.ToString() + " " + x + " " + paramName.Text;
+                        keyframeBtn.AccessibleDescription = paramData.ID.ToByteString() + " " + x + " " + paramName.Text;
                         keyframeBtn.Click += KeyframeBtn_Click;
                         currentGroupBox.Controls.Add(keyframeBtn);
                         if (keyframeBtn.Location.X > maxWidth) maxWidth = keyframeBtn.Location.X;
