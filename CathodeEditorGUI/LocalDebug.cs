@@ -1,5 +1,6 @@
 ﻿using CATHODE;
 using CATHODE.Scripting;
+using CATHODE.Scripting.Internal;
 using CathodeLib;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -406,6 +407,165 @@ namespace CathodeEditorGUI
                 //CurrentInstance.commandsPAK.Save();
             }
 #endif
+        }
+
+        public static void LoadAndSaveAllCommands()
+        {
+#if DEBUG
+            List<string> pairs = new List<string>();
+            List<string> commandsFiles = Directory.GetFiles(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            for (int i = 0; i < commandsFiles.Count; i++)
+            {
+                Console.WriteLine(commandsFiles[i]);
+                Commands cmd = new Commands(commandsFiles[i]);
+
+                /*
+                foreach (Composite comp in cmd.Composites)
+                {
+                    int numberOfFunctionNodes = comp.functions.FindAll(o => CommandsUtils.FunctionTypeExists(o.function)).Count;
+                    int numberOfFunctionNodesIncludingCompositeRefs = comp.functions.Count;
+
+                    int numberOfExcludedNodes = 0;
+                    numberOfExcludedNodes += comp.functions.FindAll(o => o.resources.Count != 0).Count;
+
+                    //numberOfExcludedNodes += comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.Zone)).Count;
+                    //numberOfExcludedNodes += comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.TriggerSequence)).Count;
+                    //numberOfExcludedNodes += comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.ParticleEmitterReference)).Count;
+                    //numberOfExcludedNodes += comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.Master)).Count; //OR LogicGate
+
+                    //numberOfExcludedNodes += comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.ModelReference)).Count;
+                    //numberOfExcludedNodes += comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.SoundEnvironmentMarker)).Count;
+                    //numberOfExcludedNodes += comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.LightReference)).Count;
+                    //numberOfExcludedNodes += comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.ModelReference)).Count;
+                    //numberOfExcludedNodes += comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.EnvironmentModelReference)).Count;
+                    //numberOfExcludedNodes += comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.GPU_PFXEmitterReference)).Count;
+                    //numberOfExcludedNodes += comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.RibbonEmitterReference)).Count;
+
+                    numberOfFunctionNodes -= numberOfExcludedNodes;
+                    numberOfFunctionNodesIncludingCompositeRefs -= numberOfExcludedNodes;
+
+                    pairs.Add(comp.name + " => " + comp.unk1 + ", " + comp.unk2 + " => " + numberOfFunctionNodes + ", " + numberOfFunctionNodesIncludingCompositeRefs);
+
+                    if (comp.unk1 != numberOfFunctionNodes || comp.unk2 != numberOfFunctionNodesIncludingCompositeRefs)
+                    {
+                        Dictionary<string, int> counts = new Dictionary<string, int>();
+                        foreach (FunctionEntity ent in comp.functions.FindAll(o => CommandsUtils.FunctionTypeExists(o.function)))
+                        {
+                            if (!counts.ContainsKey(ent.function.ToString()))
+                                counts.Add(ent.function.ToString(), 0);
+                            counts[ent.function.ToString()]++;
+                        }
+
+                        string breakhere = "";
+                    }
+                }
+                */
+                cmd.Save();
+            }
+            string fdfsdf = "";
+#endif
+        }
+
+        public static List<string> CommandsToScript(Commands cmd)
+        {
+            List<string> script = new List<string>();
+            script.Add("Commands cmd = new Commands(\"COMMANDS.PAK\");");
+            script.Add("cmd.Composites.Clear();");
+            for (int i = 0; i < cmd.Composites.Count; i++)
+            {
+                string compositeName = "COMP_" + cmd.Composites[i].shortGUID.ToByteString().Replace('-', '_');
+                script.Add("Composite " + compositeName + " = cmd.AddComposite(@\"" + cmd.Composites[i].name + "\");");
+
+                for (int x = 0; x < cmd.Composites[i].functions.Count; x++)
+                {
+                    string entityName = "ENT_" + cmd.Composites[i].functions[x].shortGUID.ToByteString().Replace('-', '_');
+                    script.Add("FunctionEntity " + entityName + " = " + compositeName + ".AddFunction(");
+                    if (CommandsUtils.FunctionTypeExists(cmd.Composites[i].functions[x].function)) script[script.Count - 1] += "FunctionType." + CommandsUtils.GetFunctionType(cmd.Composites[i].functions[x].function) + ");";
+                    else script[script.Count - 1] += "@\"" + cmd.GetComposite(cmd.Composites[i].functions[x].function).name + "\");";
+
+                    for (int y = 0; y < cmd.Composites[i].functions[x].resources.Count; y++)
+                    {
+                        string resourceName = "RES_" + cmd.Composites[i].functions[x].resources[y].GetHashCode().ToString().Replace('-', '_');
+                        switch (cmd.Composites[i].functions[x].resources[y].entryType)
+                        {
+                            case ResourceType.RENDERABLE_INSTANCE:
+                                script.Add("ResourceReference " + resourceName + " = " + entityName + ".AddResource(ResourceType." + cmd.Composites[i].functions[x].resources[y].entryType + ");");
+                                Vector3 pos = cmd.Composites[i].functions[x].resources[y].position;
+                                script.Add(resourceName + ".position = new Vector3(" + pos.x + "f, " + pos.y + "f, " + pos.z + "f);");
+                                Vector3 rot = cmd.Composites[i].functions[x].resources[y].rotation;
+                                script.Add(resourceName + ".rotation = new Vector3(" + rot.x + "f, " + rot.y + "f, " + rot.z + "f);");
+                                script.Add(resourceName + ".startIndex = " + cmd.Composites[i].functions[x].resources[y].startIndex + ";");
+                                script.Add(resourceName + ".count = " + cmd.Composites[i].functions[x].resources[y].count + ";");
+                                break;
+                            default:
+                                throw new Exception("Unhandled resource");
+                        }
+                    }
+                }
+                for (int x = 0; x < cmd.Composites[i].variables.Count; x++)
+                {
+                    string entityName = "ENT_" + cmd.Composites[i].variables[x].shortGUID.ToByteString().Replace('-', '_');
+                    script.Add("VariableEntity " + entityName + " = " + compositeName + ".AddVariable(\"" + ShortGuidUtils.FindString(cmd.Composites[i].variables[x].parameter) + "\", DataType." + cmd.Composites[i].variables[x].type.ToString() + ");");
+                }
+                for (int x = 0; x < cmd.Composites[i].proxies.Count; x++)
+                {
+                    throw new Exception("Unhandled proxy");
+                }
+                for (int x = 0; x < cmd.Composites[i].overrides.Count; x++)
+                {
+                    throw new Exception("Unhandled override");
+                }
+
+                List<Entity> entities = cmd.Composites[i].GetEntities();
+                for (int x = 0; x < entities.Count; x++)
+                {
+                    string entityName = "ENT_" + entities[x].shortGUID.ToByteString().Replace('-', '_');
+                    for (int y = 0; y < entities[x].parameters.Count; y++)
+                    {
+                        string paramName = ShortGuidUtils.FindString(entities[x].parameters[y].shortGUID);
+                        script.Add(entityName + ".AddParameter(" + ((paramName == entities[x].parameters[y].shortGUID.ToByteString()) ? "new ShortGuid(\"" : "\"") + paramName + "\"" + ((paramName == entities[x].parameters[y].shortGUID.ToByteString()) ? ")" : "") + ", new ");
+                        switch (entities[x].parameters[y].content.dataType)
+                        {
+                            case DataType.FLOAT:
+                                script[script.Count - 1] += "cFloat(" + ((cFloat)entities[x].parameters[y].content).value + "f)";
+                                break;
+                            case DataType.BOOL:
+                                script[script.Count - 1] += "cBool(" + ((cBool)entities[x].parameters[y].content).value.ToString().ToLower() + ")";
+                                break;
+                            case DataType.ENUM:
+                                cEnum en = ((cEnum)entities[x].parameters[y].content);
+                                script[script.Count - 1] += "cEnum(\"" + ShortGuidUtils.FindString(en.enumID) + "\", " + en.enumIndex + ")";
+                                break;
+                            case DataType.FILEPATH:
+                            case DataType.STRING:
+                                script[script.Count - 1] += "cString(@\"" + ((cString)entities[x].parameters[y].content).value + "\")";
+                                break;
+                            case DataType.INTEGER:
+                                script[script.Count - 1] += "cInteger(" + ((cInteger)entities[x].parameters[y].content).value + ")";
+                                break;
+                            case DataType.VECTOR:
+                                Vector3 vc = ((cVector3)entities[x].parameters[y].content).value;
+                                script[script.Count - 1] += "cVector3(new Vector3(" + vc.x + "f, " + vc.y + "f, " + vc.z + "f))";
+                                break;
+                            case DataType.TRANSFORM:
+                                Vector3 rot = ((cTransform)entities[x].parameters[y].content).rotation;
+                                Vector3 pos = ((cTransform)entities[x].parameters[y].content).position;
+                                script[script.Count - 1] += "cTransform(new Vector3(" + pos.x + "f, " + pos.y + "f, " + pos.z + "f), new Vector3(" + rot.x + "f, " + rot.y + "f, " + rot.z + "f))";
+                                break;
+                            default:
+                                throw new Exception("Unhandled parameter datatype");
+                        }
+                        script[script.Count - 1] += ");";
+                    }
+                    for (int y = 0; y < entities[x].childLinks.Count; y++)
+                    {
+                        string connectedEntityName = "ENT_" + entities[x].childLinks[y].childID.ToByteString().Replace('-', '_');
+                        script.Add(entityName + ".AddParameterLink(\"" + ShortGuidUtils.FindString(entities[x].childLinks[y].parentParamID) + "\", " + connectedEntityName + ", \"" + ShortGuidUtils.FindString(entities[x].childLinks[y].childParamID) + "\");");
+                    }
+                }
+            }
+            script.Add("cmd.Save();");
+            return script;
         }
     }
 }
