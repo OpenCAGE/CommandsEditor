@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using CATHODE.Commands;
+using CATHODE.Scripting;
 using CATHODE;
 using CathodeLib;
 
@@ -20,8 +20,8 @@ namespace CathodeEditorGUI.UserControls
             InitializeComponent();
         }
 
-        private CathodeResource resRef = null;
-        public void PopulateUI(CathodeResource cResource, ShortGuid paramID)
+        private cResource resRef = null;
+        public void PopulateUI(cResource cResource, ShortGuid paramID)
         {
             GUID_VARIABLE_DUMMY.Text = ShortGuidUtils.FindString(paramID);
             resRef = cResource;
@@ -35,7 +35,7 @@ namespace CathodeEditorGUI.UserControls
             resourceEditor.OnSaved += OnResourceEditorSaved;
             resourceEditor.FormClosed += ResourceEditor_FormClosed;
         }
-        private void OnResourceEditorSaved(List<CathodeResourceReference> resources)
+        private void OnResourceEditorSaved(List<ResourceReference> resources)
         {
             resRef.value = resources;
         }

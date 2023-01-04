@@ -4,26 +4,27 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CATHODE;
-using CATHODE.Commands;
+using CATHODE.Scripting;
+using CATHODE.Scripting.Internal;
 using CathodeLib;
 
 namespace CathodeEditorGUI
 {
     public partial class CathodeEditorGUI_AddParameter : Form
     {
-        CathodeEntity node = null;
-        bool loadedParamsFromDB = false;
-        public CathodeEditorGUI_AddParameter(CathodeEntity _node)
+        Entity node = null;
+        public CathodeEditorGUI_AddParameter(Entity _node)
         {
             node = _node;
             InitializeComponent();
             param_datatype.SelectedIndex = 0;
 
-            List<string> options = EditorUtils.GenerateParameterList(_node, out loadedParamsFromDB);
+            List<string> options = EditorUtils.GenerateParameterList(_node);
             param_name.BeginUpdate();
             for (int i = 0; i < options.Count; i++) param_name.Items.Add(options[i]);
             param_name.EndUpdate();
@@ -32,59 +33,36 @@ namespace CathodeEditorGUI
         private void button1_Click(object sender, EventArgs e)
         {
             if (param_name.Text == "") return;
-            ShortGuid thisParamID = ShortGuidUtils.Generate(param_name.Text);
 
-            foreach (CathodeLoadedParameter param in node.parameters)
+            ParameterData thisParam = null;
+            switch ((DataType)param_datatype.SelectedIndex)
             {
-                if (param.shortGUID == thisParamID)
-                {
-                    MessageBox.Show("This parameter already exists on the entity!");
-                    return;
-                }
-            }
-
-            //TODO: when we have custom ShortGuid saving, this can be deprecated.
-            if (ShortGuidUtils.FindString(thisParamID) != param_name.Text)
-            {
-                MessageBox.Show("This parameter name is not supported by the Cathode scripting system!");
-                return;
-            }
-
-            CathodeParameter thisParam = null;
-            switch ((CathodeDataType)param_datatype.SelectedIndex)
-            {
-                case CathodeDataType.POSITION:
-                    thisParam = new CathodeTransform();
+                case DataType.STRING:
+                    thisParam = new cString("");
                     break;
-                case CathodeDataType.FLOAT:
-                    thisParam = new CathodeFloat();
+                case DataType.FLOAT:
+                    thisParam = new cFloat(0.0f);
                     break;
-                case CathodeDataType.FILEPATH:
-                case CathodeDataType.STRING:
-                    thisParam = new CathodeString();
+                case DataType.INTEGER:
+                    thisParam = new cInteger(0);
                     break;
-                case CathodeDataType.SPLINE_DATA:
-                    thisParam = new CathodeSpline();
+                case DataType.BOOL:
+                    thisParam = new cBool(true);
                     break;
-                case CathodeDataType.ENUM:
-                    thisParam = new CathodeEnum();
-                    ((CathodeEnum)thisParam).enumID = new ShortGuid("4C-B9-82-48"); //ALERTNESS_STATE is the first alphabetically
+                case DataType.VECTOR:
+                    thisParam = new cVector3(new Vector3(0, 0, 0));
                     break;
-                case CathodeDataType.RESOURCE:
-                    thisParam = new CathodeResource();
-                    ((CathodeResource)thisParam).resourceID = ShortGuidUtils.Generate(DateTime.Now.ToString("G"));
+                case DataType.TRANSFORM:
+                    thisParam = new cTransform(new Vector3(0, 0, 0), new Vector3(0, 0, 0));
                     break;
-                case CathodeDataType.BOOL:
-                    thisParam = new CathodeBool();
+                case DataType.ENUM:
+                    thisParam = new cEnum(EnumType.ALERTNESS_STATE, 0); 
                     break;
-                case CathodeDataType.DIRECTION:
-                    thisParam = new CathodeVector3();
-                    break;
-                case CathodeDataType.INTEGER:
-                    thisParam = new CathodeInteger();
+                case DataType.SPLINE:
+                    thisParam = new cSpline();
                     break;
             }
-            node.parameters.Add(new CathodeLoadedParameter(thisParamID, thisParam));
+            node.AddParameter(param_name.Text, thisParam);
 
             this.Close();
         }
@@ -103,20 +81,39 @@ namespace CathodeEditorGUI
             switch (node.variant)
             {
                 case EntityVariant.FUNCTION:
-                    if (!loadedParamsFromDB) return;
-                    CathodeEntityDatabase.ParameterDefinition def = CathodeEntityDatabase.GetParameterFromEntity(((FunctionEntity)node).function, param_name.Text);
-                    if (def.name == null) return;
-                    if (def.usage == CathodeEntityDatabase.ParameterUsage.TARGET)
+                    FunctionEntity ent = ((FunctionEntity)node);
+                    if (CommandsUtils.FunctionTypeExists(ent.function))
                     {
-                        //"TARGET" usage type does not have a datatype since it is not data, it's an event trigger.
-                        //The FLOAT datatype is a placeholder for this.
-                        param_datatype.Text = "FLOAT";
+                        //Function entity
+                        CathodeEntityDatabase.ParameterDefinition def = CathodeEntityDatabase.GetParameterFromEntity(ent.function, param_name.Text);
+                        if (def.name == null) return;
+                        if (def.usage == CathodeEntityDatabase.ParameterUsage.TARGET)
+                        {
+                            //"TARGET" usage type does not have a datatype since it is not data, it's an event trigger.
+                            //The FLOAT datatype is a placeholder for this.
+                            param_datatype.Text = "FLOAT";
+                        }
+                        else
+                        {
+                            ParameterData param = CathodeEntityDatabase.ParameterDefinitionToParameter(def);
+                            if (param == null) return;
+                            param_datatype.Text = param.dataType.ToString();
+                        }
                     }
                     else
                     {
-                        CathodeParameter param = CathodeEntityDatabase.ParameterDefinitionToParameter(def);
-                        if (param == null) return;
-                        param_datatype.Text = param.dataType.ToString();
+                        //Composite link
+                        ShortGuid param = ShortGuidUtils.Generate(param_name.Text);
+                        VariableEntity var = Editor.commands.GetComposite(ent.function).variables.FirstOrDefault(o => o.parameter == param);
+                        if (var == null) return;
+                        if (var.type == DataType.NONE)
+                        {
+                            param_datatype.Text = "FLOAT";
+                        }
+                        else
+                        {
+                            param_datatype.Text = var.type.ToString();
+                        }
                     }
                     param_datatype.Enabled = false;
                     break;

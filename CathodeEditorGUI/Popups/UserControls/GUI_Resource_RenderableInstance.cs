@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using CATHODE.Commands;
+using CATHODE.Scripting;
 using CathodeLib;
 using CATHODE;
 using CATHODE.LEGACY;
@@ -29,18 +29,20 @@ namespace CathodeEditorGUI.Popups.UserControls
 
         public void PopulateUI(int modelIndexPAK, List<int> materialIndexes)
         {
+            //TODO: does RENDERABLE_INSTANCE utilise position/rotation?
+
             SelectedModelIndex = modelIndexPAK;
             SelectedMaterialIndexes = materialIndexes;
 
-            int binIndex = CurrentInstance.modelDB.Models[modelIndexPAK].Submeshes[0].binIndex;
-            modelInfoTextbox.Text = CurrentInstance.modelDB.modelBIN.ModelFilePaths[binIndex];
-            if (CurrentInstance.modelDB.modelBIN.ModelLODPartNames[binIndex] != "")
-                modelInfoTextbox.Text += " -> [" + CurrentInstance.modelDB.modelBIN.ModelLODPartNames[binIndex] + "]";
+            int binIndex = Editor.resource.models.Models[modelIndexPAK].Submeshes[0].binIndex;
+            modelInfoTextbox.Text = Editor.resource.models.modelBIN.ModelFilePaths[binIndex];
+            if (Editor.resource.models.modelBIN.ModelLODPartNames[binIndex] != "")
+                modelInfoTextbox.Text += " -> [" + Editor.resource.models.modelBIN.ModelLODPartNames[binIndex] + "]";
 
             materials.Items.Clear();
             for (int i = 0; i < materialIndexes.Count; i++)
             {
-                materials.Items.Add(CurrentInstance.materialDB.MaterialNames[materialIndexes[i]]);
+                materials.Items.Add(Editor.resource.materials._materialNames[materialIndexes[i]]);
             }
         }
 

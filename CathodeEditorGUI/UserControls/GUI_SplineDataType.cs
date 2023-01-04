@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using CATHODE.Commands;
+using CATHODE.Scripting;
 using CATHODE;
 using CathodeLib;
 
@@ -22,7 +22,7 @@ namespace CathodeEditorGUI.UserControls
             InitializeComponent();
         }
 
-        public void PopulateUI(CathodeSpline cSpline, ShortGuid paramID)
+        public void PopulateUI(cSpline cSpline, ShortGuid paramID)
         {
             UNIMPLEMENTED_VARIABLE_TYPE.Text = ShortGuidUtils.FindString(paramID);
 

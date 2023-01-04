@@ -1,5 +1,5 @@
 ﻿using CATHODE;
-using CATHODE.Commands;
+using CATHODE.Scripting;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -21,7 +21,7 @@ namespace CathodeEditorGUI
         public CathodeEditorGUI_RenameEntity(ShortGuid entityID)
         {
             InitializeComponent();
-            entity_name.Text = CurrentInstance.compositeLookup.GetEntityName(CurrentInstance.selectedComposite.shortGUID, entityID);
+            entity_name.Text = Editor.util.entity.GetName(Editor.selected.composite.shortGUID, entityID);
             EntityID = entityID;
         }
 

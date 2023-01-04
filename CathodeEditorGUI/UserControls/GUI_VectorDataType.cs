@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using CATHODE.Commands;
+using CATHODE.Scripting;
 using CathodeLib;
 using CATHODE;
 
@@ -15,14 +15,14 @@ namespace CathodeEditorGUI.UserControls
 {
     public partial class GUI_VectorDataType : UserControl
     {
-        CathodeVector3 vectorVal = null;
+        cVector3 vectorVal = null;
 
         public GUI_VectorDataType()
         {
             InitializeComponent();
         }
 
-        public void PopulateUI(CathodeVector3 cVec, ShortGuid paramID)
+        public void PopulateUI(cVector3 cVec, ShortGuid paramID)
         {
             vectorVal = cVec;
             label1.Text = ShortGuidUtils.FindString(paramID);

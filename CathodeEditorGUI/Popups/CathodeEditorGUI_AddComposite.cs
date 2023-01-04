@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CATHODE;
-using CATHODE.Commands;
+using CATHODE.Scripting;
 using CathodeLib;
 
 namespace CathodeEditorGUI
@@ -23,19 +23,19 @@ namespace CathodeEditorGUI
         private void button1_Click(object sender, EventArgs e)
         {
             if (textBox1.Text == "") return;
-            for (int i = 0; i < CurrentInstance.commandsPAK.Composites.Count; i++)
+            for (int i = 0; i < Editor.commands.Composites.Count; i++)
             {
-                if (CurrentInstance.commandsPAK.Composites[i].name == textBox1.Text)
+                if (Editor.commands.Composites[i].name == textBox1.Text)
                 {
                     MessageBox.Show("Failed to create composite.\nA composite with this name already exists.", "Composite already exists.", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
             }
             
-            CathodeComposite newFlowgraph = new CathodeComposite();
+            Composite newFlowgraph = new Composite();
             newFlowgraph.name = textBox1.Text;
-            newFlowgraph.shortGUID = ShortGuidUtils.Generate(DateTime.Now.ToString("G"));
-            CurrentInstance.commandsPAK.Composites.Add(newFlowgraph);
+            newFlowgraph.shortGUID = ShortGuidUtils.GenerateRandom();
+            Editor.commands.Composites.Add(newFlowgraph);
             this.Close();
         }
     }

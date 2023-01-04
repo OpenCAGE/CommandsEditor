@@ -105,6 +105,8 @@
     <Compile Include="BespokeNodes\CAGEAnimationEditor.Designer.cs">
       <DependentUpon>CAGEAnimationEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="CathodeEntityDatabase.cs" />
+    <Compile Include="LocalDebug.cs" />
     <Compile Include="Popups\CathodeEditorGUI_AddOrEditResource.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -117,8 +119,7 @@
     <Compile Include="CathodeEditorGUI.designer.cs">
       <DependentUpon>CathodeEditorGUI.cs</DependentUpon>
     </Compile>
-    <Compile Include="CathodeEntityDatabase.cs" />
-    <Compile Include="CurrentInstance.cs" />
+    <Compile Include="Editor.cs" />
     <Compile Include="EditorUtils.cs" />
     <Compile Include="Popups\CathodeEditorGUI_AddEntity.cs">
       <SubType>Form</SubType>
@@ -150,9 +151,6 @@
     <Compile Include="LEGACY\CathodeEditorGUI_EditResource.designer.cs">
       <DependentUpon>CathodeEditorGUI_EditResource.cs</DependentUpon>
     </Compile>
-    <Compile Include="CathodeEnums.cs" />
-    <Compile Include="CathodeNodes.cs" />
-    <Compile Include="MapDirectories.cs" />
     <Compile Include="Popups\CathodeEditorGUI_EditHierarchy.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -205,17 +203,47 @@
     <Compile Include="Popups\UserControls\GUI_ModelViewer.xaml.cs">
       <DependentUpon>GUI_ModelViewer.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Popups\UserControls\GUI_Resource_AnimatedModel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Popups\UserControls\GUI_Resource_AnimatedModel.Designer.cs">
+      <DependentUpon>GUI_Resource_AnimatedModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\UserControls\GUI_Resource_CollisionMapping.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Popups\UserControls\GUI_Resource_CollisionMapping.Designer.cs">
+      <DependentUpon>GUI_Resource_CollisionMapping.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\UserControls\GUI_Resource_DynamicPhysicsSystem.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Popups\UserControls\GUI_Resource_DynamicPhysicsSystem.Designer.cs">
+      <DependentUpon>GUI_Resource_DynamicPhysicsSystem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\UserControls\GUI_Resource_ExclusiveMasterStateResource.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Popups\UserControls\GUI_Resource_ExclusiveMasterStateResource.Designer.cs">
+      <DependentUpon>GUI_Resource_ExclusiveMasterStateResource.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\UserControls\GUI_Resource_NavMeshBarrierResource.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Popups\UserControls\GUI_Resource_NavMeshBarrierResource.Designer.cs">
+      <DependentUpon>GUI_Resource_NavMeshBarrierResource.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popups\UserControls\GUI_Resource_RenderableInstance.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Popups\UserControls\GUI_Resource_RenderableInstance.Designer.cs">
       <DependentUpon>GUI_Resource_RenderableInstance.cs</DependentUpon>
     </Compile>
-    <Compile Include="Popups\UserControls\GUI_Resource_TempPlaceholder.cs">
+    <Compile Include="Popups\UserControls\GUI_Resource_TraversalSegment.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Popups\UserControls\GUI_Resource_TempPlaceholder.Designer.cs">
-      <DependentUpon>GUI_Resource_TempPlaceholder.cs</DependentUpon>
+    <Compile Include="Popups\UserControls\GUI_Resource_TraversalSegment.Designer.cs">
+      <DependentUpon>GUI_Resource_TraversalSegment.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\UserControls\ResourceUserControl.cs">
       <SubType>UserControl</SubType>
@@ -225,6 +253,11 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="TreeUtility.cs" />
     <Compile Include="SettingsManager.cs" />
     <Compile Include="UserControls\GUI_BoolDataType.cs">
@@ -238,6 +271,12 @@
     </Compile>
     <Compile Include="UserControls\GUI_EnumDataType.Designer.cs">
       <DependentUpon>GUI_EnumDataType.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\GUI_Link.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\GUI_Link.Designer.cs">
+      <DependentUpon>GUI_Link.cs</DependentUpon>
     </Compile>
     <Compile Include="UserControls\GUI_ResourceDataType.cs">
       <SubType>UserControl</SubType>
@@ -323,27 +362,40 @@
     <EmbeddedResource Include="Popups\CathodeEditorGUI_SelectModel.resx">
       <DependentUpon>CathodeEditorGUI_SelectModel.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Popups\UserControls\GUI_Resource_AnimatedModel.resx">
+      <DependentUpon>GUI_Resource_AnimatedModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\UserControls\GUI_Resource_CollisionMapping.resx">
+      <DependentUpon>GUI_Resource_CollisionMapping.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\UserControls\GUI_Resource_DynamicPhysicsSystem.resx">
+      <DependentUpon>GUI_Resource_DynamicPhysicsSystem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\UserControls\GUI_Resource_ExclusiveMasterStateResource.resx">
+      <DependentUpon>GUI_Resource_ExclusiveMasterStateResource.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\UserControls\GUI_Resource_NavMeshBarrierResource.resx">
+      <DependentUpon>GUI_Resource_NavMeshBarrierResource.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Popups\UserControls\GUI_Resource_RenderableInstance.resx">
       <DependentUpon>GUI_Resource_RenderableInstance.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Popups\UserControls\GUI_Resource_TempPlaceholder.resx">
-      <DependentUpon>GUI_Resource_TempPlaceholder.cs</DependentUpon>
+    <EmbeddedResource Include="Popups\UserControls\GUI_Resource_TraversalSegment.resx">
+      <DependentUpon>GUI_Resource_TraversalSegment.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <EmbeddedResource Include="UserControls\GUI_BoolDataType.resx">
       <DependentUpon>GUI_BoolDataType.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserControls\GUI_EnumDataType.resx">
       <DependentUpon>GUI_EnumDataType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\GUI_Link.resx">
+      <DependentUpon>GUI_Link.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserControls\GUI_ResourceDataType.resx">
       <DependentUpon>GUI_ResourceDataType.cs</DependentUpon>

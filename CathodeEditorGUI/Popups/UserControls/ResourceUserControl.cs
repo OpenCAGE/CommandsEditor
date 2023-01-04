@@ -1,4 +1,4 @@
-﻿using CATHODE.Commands;
+﻿using CATHODE.Scripting;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,7 +13,7 @@ namespace CathodeEditorGUI.Popups.UserControls
 {
     public partial class ResourceUserControl : UserControl
     {
-        public CathodeResourceReference ResourceReference;
+        public ResourceReference ResourceReference;
 
         public ResourceUserControl()
         {

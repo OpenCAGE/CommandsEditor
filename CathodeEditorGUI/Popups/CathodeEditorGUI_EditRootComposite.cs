@@ -1,4 +1,4 @@
-﻿using CATHODE.Commands;
+﻿using CATHODE.Scripting;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,7 +13,7 @@ namespace CathodeEditorGUI
 {
     public partial class CathodeEditorGUI_EditRootComposite : Form
     {
-        List<CathodeComposite> composites = null;
+        List<Composite> composites = null;
 
         public CathodeEditorGUI_EditRootComposite()
         {
@@ -21,12 +21,12 @@ namespace CathodeEditorGUI
             rootComposite.BeginUpdate();
             rootComposite.Items.Clear();
             rootComposite.SelectedIndex = -1;
-            composites = CurrentInstance.commandsPAK.Composites.OrderBy(o => o.name).ToList();
+            composites = Editor.commands.Composites.OrderBy(o => o.name).ToList();
             for (int i = 0; i < composites.Count; i++)
             {
                 rootComposite.Items.Add(composites[i].name);
                 if (rootComposite.SelectedIndex == -1 && 
-                    composites[i].shortGUID == CurrentInstance.commandsPAK.EntryPoints[0].shortGUID)
+                    composites[i].shortGUID == Editor.commands.EntryPoints[0].shortGUID)
                 {
                     rootComposite.SelectedIndex = i;
                 }
@@ -37,7 +37,7 @@ namespace CathodeEditorGUI
         private void button1_Click(object sender, EventArgs e)
         {
             if (rootComposite.SelectedIndex == -1) return;
-            CurrentInstance.commandsPAK.SetRootComposite(composites[rootComposite.SelectedIndex].shortGUID);
+            Editor.commands.SetRootComposite(composites[rootComposite.SelectedIndex].shortGUID);
             this.Close();
         }
     }

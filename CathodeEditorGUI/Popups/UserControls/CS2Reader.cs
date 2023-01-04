@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
@@ -13,10 +11,10 @@ using HelixToolkit.Wpf;
 using CATHODE.LEGACY;
 using static CATHODE.LEGACY.CathodeModels;
 using System.Numerics;
-using CATHODE.Misc;
 using System.Runtime.InteropServices;
 using System.Drawing;
 using CATHODE.Assets;
+using CathodeLib;
 
 namespace CathodeEditorGUI.Popups.UserControls
 {
@@ -25,15 +23,15 @@ namespace CathodeEditorGUI.Popups.UserControls
         public Model3DGroup Read(int ModelIndex)
         {
             Model3DGroup modelGroup = new Model3DGroup();
-            ModelData ChunkArray = CurrentInstance.modelDB.Models[ModelIndex];
+            ModelData ChunkArray = Editor.resource.models.Models[ModelIndex];
             for (int ChunkIndex = 0; ChunkIndex < ChunkArray.Header.SubmeshCount; ++ChunkIndex)
             {
                 int BINIndex = ChunkArray.Submeshes[ChunkIndex].binIndex;
-                alien_model_bin_model_info Model = CurrentInstance.modelDB.modelBIN.Models[BINIndex];
+                alien_model_bin_model_info Model = Editor.resource.models.modelBIN.Models[BINIndex];
                 //if (Model.BlockSize == 0) continue;
 
-                alien_vertex_buffer_format VertexInput = CurrentInstance.modelDB.modelBIN.VertexBufferFormats[Model.VertexFormatIndex];
-                alien_vertex_buffer_format VertexInputLowDetail = CurrentInstance.modelDB.modelBIN.VertexBufferFormats[Model.VertexFormatIndexLowDetail];
+                alien_vertex_buffer_format VertexInput = Editor.resource.models.modelBIN.VertexBufferFormats[Model.VertexFormatIndex];
+                alien_vertex_buffer_format VertexInputLowDetail = Editor.resource.models.modelBIN.VertexBufferFormats[Model.VertexFormatIndexLowDetail];
 
                 BinaryReader Stream = new BinaryReader(new MemoryStream(ChunkArray.Submeshes[ChunkIndex].content));
 
@@ -200,7 +198,7 @@ namespace CathodeEditorGUI.Popups.UserControls
                             }
                         }
                     }
-                    CATHODE.Utilities.Align(Stream, 16);
+                    Utilities.Align(Stream, 16);
                 }
 
                 if (InVertices.Count == 0) continue;

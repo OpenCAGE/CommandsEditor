@@ -1,5 +1,6 @@
 ﻿using CATHODE;
-using CATHODE.Commands;
+using CATHODE.Scripting;
+using CATHODE.Scripting.Internal;
 using CathodeLib;
 using System;
 using System.Collections.Generic;
@@ -9,136 +10,102 @@ namespace CathodeEditorGUI
     static class EditorUtils
     {
         /* Utility: generate nice entity name to display in UI */
-        public static string GenerateEntityName(CathodeEntity entity, CathodeComposite composite, bool regenCache = false)
+        public static string GenerateEntityName(Entity entity, Composite composite, bool regenCache = false)
         {
-            if (CurrentInstance.commandsPAK == null) 
-                return entity.shortGUID.ToString();
+            if (Editor.commands == null) 
+                return entity.shortGUID.ToByteString();
 
             if (hasFinishedCachingEntityNames && regenCache)
             {
-                if (cachedEntityName.ContainsKey(entity.shortGUID)) cachedEntityName.Remove(entity.shortGUID);
-                cachedEntityName.Add(entity.shortGUID, GenerateEntityNameInternal(entity, composite));
+                if (!cachedEntityName.ContainsKey(composite.shortGUID)) cachedEntityName.Add(composite.shortGUID, new Dictionary<ShortGuid, string>());
+
+                if (cachedEntityName[composite.shortGUID].ContainsKey(entity.shortGUID)) cachedEntityName[composite.shortGUID].Remove(entity.shortGUID);
+                cachedEntityName[composite.shortGUID].Add(entity.shortGUID, GenerateEntityNameInternal(entity, composite));
             }
 
-            if (hasFinishedCachingEntityNames && cachedEntityName.ContainsKey(entity.shortGUID)) 
-                return cachedEntityName[entity.shortGUID];
+            if (hasFinishedCachingEntityNames && cachedEntityName[composite.shortGUID].ContainsKey(entity.shortGUID)) 
+                return cachedEntityName[composite.shortGUID][entity.shortGUID];
 
             return GenerateEntityNameInternal(entity, composite);
         }
-        public static string GenerateEntityNameWithoutID(CathodeEntity entity, CathodeComposite composite, bool regenCache = false)
+        public static string GenerateEntityNameWithoutID(Entity entity, Composite composite, bool regenCache = false)
         {
             return GenerateEntityName(entity, composite, regenCache).Substring(14);
         }
-        private static string GenerateEntityNameInternal(CathodeEntity entity, CathodeComposite composite)
+        private static string GenerateEntityNameInternal(Entity entity, Composite composite)
         {
             string desc = "";
             switch (entity.variant)
             {
                 case EntityVariant.DATATYPE:
-                    desc = ShortGuidUtils.FindString(((DatatypeEntity)entity).parameter) + " (DataType " + ((DatatypeEntity)entity).type.ToString() + ")";
+                    desc = ShortGuidUtils.FindString(((VariableEntity)entity).parameter) + " (DataType " + ((VariableEntity)entity).type.ToString() + ")";
                     break;
                 case EntityVariant.FUNCTION:
-                    CathodeComposite funcComposite = CurrentInstance.commandsPAK.GetComposite(((FunctionEntity)entity).function);
+                    Composite funcComposite = Editor.commands.GetComposite(((FunctionEntity)entity).function);
                     if (funcComposite != null)
-                        desc = CurrentInstance.compositeLookup.GetEntityName(composite.shortGUID, entity.shortGUID) + " (" + funcComposite.name + ")";
+                        desc = Editor.util.entity.GetName(composite.shortGUID, entity.shortGUID) + " (" + funcComposite.name + ")";
                     else
-                        desc = CurrentInstance.compositeLookup.GetEntityName(composite.shortGUID, entity.shortGUID) + " (" + ShortGuidUtils.FindString(((FunctionEntity)entity).function) + ")";
+                        desc = Editor.util.entity.GetName(composite.shortGUID, entity.shortGUID) + " (" + ShortGuidUtils.FindString(((FunctionEntity)entity).function) + ")";
                     break;
                 case EntityVariant.OVERRIDE:
                     //desc = NodeDBEx.GetEntityName(entity.nodeID) + " (" + HierarchyToString(((OverrideEntity)entity).hierarchy, currentFlowgraph) + ")";
-                    desc = CurrentInstance.compositeLookup.GetEntityName(composite.shortGUID, entity.shortGUID) + " (*OVERRIDE*)";
+                    desc = Editor.util.entity.GetName(composite.shortGUID, entity.shortGUID) + " (*OVERRIDE*)";
                     break;
                 case EntityVariant.PROXY:
                     //desc = NodeDBEx.GetEntityName(entity.nodeID) + " (" + HierarchyToString(((ProxyEntity)entity).hierarchy, currentFlowgraph) + ")";
-                    desc = CurrentInstance.compositeLookup.GetEntityName(composite.shortGUID, entity.shortGUID) + " (*PROXY*)";
+                    desc = Editor.util.entity.GetName(composite.shortGUID, entity.shortGUID) + " (*PROXY*)";
                     break;
             }
-            return "[" + entity.shortGUID.ToString() + "] " + desc;
+            return "[" + entity.shortGUID.ToByteString() + "] " + desc;
         }
 
         /* Generate a cache of entity names to save re-generating them every time */
         private static bool hasFinishedCachingEntityNames = false;
-        private static Dictionary<ShortGuid, string> cachedEntityName = new Dictionary<ShortGuid, string>();
+        private static Dictionary<ShortGuid, Dictionary<ShortGuid, string>> cachedEntityName = new Dictionary<ShortGuid, Dictionary<ShortGuid, string>>();
         public static void GenerateEntityNameCache(CathodeEditorGUI mainInst)
         {
-            if (CurrentInstance.commandsPAK == null) return;
+            if (Editor.commands == null) return;
             hasFinishedCachingEntityNames = false;
             mainInst.EnableLoadingOfPaks(false);
             cachedEntityName.Clear();
-            for (int i = 0; i < CurrentInstance.commandsPAK.Composites.Count; i++)
+            for (int i = 0; i < Editor.commands.Composites.Count; i++)
             {
-                List<CathodeEntity> ents = CurrentInstance.commandsPAK.Composites[i].GetEntities();
+                Composite comp = Editor.commands.Composites[i];
+                cachedEntityName.Add(comp.shortGUID, new Dictionary<ShortGuid, string>());
+                List<Entity> ents = comp.GetEntities();
                 for (int x = 0; x < ents.Count; x++)
-                {
-                    if (cachedEntityName.ContainsKey(ents[x].shortGUID))
-                    {
-                        //TODO: Figure out why this is happening... aren't node IDs meant to be unique to the whole PAK? Maybe it's per composite?
-                        //TODO-MAJOR: update!! i've re-written this system now to make it per-composite, we should handle that here!!
-                    }
-                    else
-                    {
-                        cachedEntityName.Add(ents[x].shortGUID, GenerateEntityNameInternal(ents[x], CurrentInstance.commandsPAK.Composites[i]));
-                    }
-                }
-            }
-            if (queuedForRemoval.Count != 0)
-            {
-                for (int i = 0; i < queuedForRemoval.Count; i++)
-                    cachedEntityName.Remove(queuedForRemoval[i]);
-                queuedForRemoval.Clear();
+                    cachedEntityName[comp.shortGUID].Add(ents[x].shortGUID, GenerateEntityNameInternal(ents[x], comp));
             }
             mainInst.EnableLoadingOfPaks(true);
             hasFinishedCachingEntityNames = true;
         }
-        private static List<ShortGuid> queuedForRemoval = new List<ShortGuid>();
-        public static void PurgeEntityNameFromCache(ShortGuid entId)
-        {
-            if (!hasFinishedCachingEntityNames) queuedForRemoval.Add(entId);
-            else cachedEntityName.Remove(entId);
-        }
 
         /* Utility: generate a list of suggested parameters for an entity */
-        public static List<string> GenerateParameterList(CathodeEntity entity, out bool didGenerateFromDB)
+        public static List<string> GenerateParameterList(Entity entity)
         {
-            didGenerateFromDB = false;
             List<string> items = new List<string>();
-            if (CurrentInstance.commandsPAK == null) return items;
+            if (Editor.commands == null) return items;
             switch (entity.variant)
             {
                 case EntityVariant.FUNCTION:
                     ShortGuid function = ((FunctionEntity)entity).function;
-                    List<CathodeEntityDatabase.ParameterDefinition> parameters = CathodeEntityDatabase.GetParametersFromEntity(function);
-                    if (parameters != null)
+                    if (CommandsUtils.FunctionTypeExists(function))
                     {
-                        didGenerateFromDB = true;
-                        for (int i = 0; i < parameters.Count; i++) items.Add(parameters[i].name);
+                        //Function node
+                        List<CathodeEntityDatabase.ParameterDefinition> parameters = CathodeEntityDatabase.GetParametersFromEntity(function);
+                        if (parameters == null) break;
+                        for (int i = 0; i < parameters.Count; i++) 
+                            items.Add(parameters[i].name);
                     }
                     else
                     {
-                        string[] options = EntityDB.GetEntityParameterList(ShortGuidUtils.FindString(function));
-                        items.Add("trigger"); items.Add("reference"); //TODO: populate all params from EntityMethodInterface?
-                        if (options == null)
-                        {
-                            CathodeComposite flow = CurrentInstance.commandsPAK.GetComposite(function);
-                            if (flow == null) break;
-                            for (int i = 0; i < flow.datatypes.Count; i++)
-                            {
-                                string to_add = ShortGuidUtils.FindString(flow.datatypes[i].parameter);
-                                //TODO: also return datatype here
-                                if (!items.Contains(to_add)) items.Add(to_add);
-                            }
-                        }
-                        else
-                        {
-                            for (int i = 0; i < options.Length; i++)
-                            {
-                                if (!items.Contains(options[i])) items.Add(options[i]);
-                            }
-                        }
+                        //Composite node
+                        foreach (VariableEntity ent in Editor.commands.GetComposite(function).variables)
+                            items.Add(ShortGuidUtils.FindString(ent.parameter));
                     }
                     break;
                 case EntityVariant.DATATYPE:
-                    items.Add(ShortGuidUtils.FindString(((DatatypeEntity)entity).parameter));
+                    items.Add(ShortGuidUtils.FindString(((VariableEntity)entity).parameter));
                     break;
                     //TODO: support other types here
             }
@@ -171,7 +138,7 @@ namespace CathodeEditorGUI
         }
 
         /* Resolve a node hierarchy */
-        public static CathodeEntity ResolveHierarchy(List<ShortGuid> hierarchy, out CathodeComposite containedFlowgraph, out string asString)
+        public static Entity ResolveHierarchy(List<ShortGuid> hierarchy, out Composite containedFlowgraph, out string asString)
         {
             if (hierarchy.Count == 0)
             {
@@ -184,13 +151,13 @@ namespace CathodeEditorGUI
             for (int x = 0; x < hierarchy.Count; x++)
                 hierarchyCopy.Add(new ShortGuid((byte[])hierarchy[x].val.Clone()));
 
-            CathodeComposite currentFlowgraphToSearch = CurrentInstance.selectedComposite;
+            Composite currentFlowgraphToSearch = Editor.selected.composite;
             if (currentFlowgraphToSearch == null || currentFlowgraphToSearch.GetEntityByID(hierarchyCopy[0]) == null)
             {
-                currentFlowgraphToSearch = CurrentInstance.commandsPAK.EntryPoints[0];
+                currentFlowgraphToSearch = Editor.commands.EntryPoints[0];
                 if (currentFlowgraphToSearch == null || currentFlowgraphToSearch.GetEntityByID(hierarchyCopy[0]) == null)
                 {
-                    currentFlowgraphToSearch = CurrentInstance.commandsPAK.GetComposite(hierarchyCopy[0]);
+                    currentFlowgraphToSearch = Editor.commands.GetComposite(hierarchyCopy[0]);
                     if (currentFlowgraphToSearch == null || currentFlowgraphToSearch.GetEntityByID(hierarchyCopy[1]) == null)
                     {
                         containedFlowgraph = null;
@@ -201,20 +168,20 @@ namespace CathodeEditorGUI
                 }
             }
 
-            CathodeEntity entity = null;
+            Entity entity = null;
             string hierarchyString = "";
             for (int i = 0; i < hierarchyCopy.Count; i++)
             {
                 entity = currentFlowgraphToSearch.GetEntityByID(hierarchyCopy[i]);
 
                 if (entity == null) break;
-                hierarchyString += "[" + entity.shortGUID + "] " + CurrentInstance.compositeLookup.GetEntityName(currentFlowgraphToSearch.shortGUID, entity.shortGUID);
+                hierarchyString += "[" + entity.shortGUID + "] " + Editor.util.entity.GetName(currentFlowgraphToSearch.shortGUID, entity.shortGUID);
                 if (i >= hierarchyCopy.Count - 2) break; //Last is always 00-00-00-00
                 hierarchyString += " -> ";
 
                 if (entity.variant == EntityVariant.FUNCTION)
                 {
-                    CathodeComposite flowRef = CurrentInstance.commandsPAK.GetComposite(((FunctionEntity)entity).function);
+                    Composite flowRef = Editor.commands.GetComposite(((FunctionEntity)entity).function);
                     if (flowRef != null)
                     {
                         currentFlowgraphToSearch = flowRef;
@@ -235,7 +202,7 @@ namespace CathodeEditorGUI
         private static List<ShortGuid> purgedComps = new List<ShortGuid>();
         public static void PurgeDeadHierarchiesInActiveComposite()
         {
-            CathodeComposite comp = CurrentInstance.selectedComposite;
+            Composite comp = Editor.selected.composite;
             if (purgedComps.Contains(comp.shortGUID)) return;
             purgedComps.Add(comp.shortGUID);
 
@@ -254,7 +221,7 @@ namespace CathodeEditorGUI
             //Clear overrides
             List<OverrideEntity> overridePurged = new List<OverrideEntity>();
             for (int i = 0; i < comp.overrides.Count; i++)
-                if (ResolveHierarchy(comp.overrides[i].hierarchy, out CathodeComposite flowTemp, out string hierarchy) != null)
+                if (ResolveHierarchy(comp.overrides[i].hierarchy, out Composite flowTemp, out string hierarchy) != null)
                     overridePurged.Add(comp.overrides[i]);
             originalOverrideCount += comp.overrides.Count;
             newOverrideCount += overridePurged.Count;
@@ -263,7 +230,7 @@ namespace CathodeEditorGUI
             //Clear proxies
             List<ProxyEntity> proxyPurged = new List<ProxyEntity>();
             for (int i = 0; i < comp.proxies.Count; i++)
-                if (ResolveHierarchy(comp.proxies[i].hierarchy, out CathodeComposite flowTemp, out string hierarchy) != null)
+                if (ResolveHierarchy(comp.proxies[i].hierarchy, out Composite flowTemp, out string hierarchy) != null)
                     proxyPurged.Add(comp.proxies[i]);
             originalProxyCount += comp.proxies.Count;
             newProxyCount += proxyPurged.Count;
@@ -279,7 +246,7 @@ namespace CathodeEditorGUI
                         TriggerSequence trig = (TriggerSequence)comp.functions[i];
                         List<CathodeTriggerSequenceTrigger> trigSeq = new List<CathodeTriggerSequenceTrigger>();
                         for (int x = 0; x < trig.triggers.Count; x++)
-                            if (ResolveHierarchy(trig.triggers[x].hierarchy, out CathodeComposite flowTemp, out string hierarchy) != null)
+                            if (ResolveHierarchy(trig.triggers[x].hierarchy, out Composite flowTemp, out string hierarchy) != null)
                                 trigSeq.Add(trig.triggers[x]);
                         originalTriggerCount += trig.triggers.Count;
                         newTriggerCount += trigSeq.Count;
@@ -289,7 +256,7 @@ namespace CathodeEditorGUI
                         CAGEAnimation anim = (CAGEAnimation)comp.functions[i];
                         List<CathodeParameterKeyframeHeader> headers = new List<CathodeParameterKeyframeHeader>();
                         for (int x = 0; x < anim.keyframeHeaders.Count; x++)
-                            if (ResolveHierarchy(anim.keyframeHeaders[x].connectedEntity, out CathodeComposite flowTemp, out string hierarchy) != null)
+                            if (ResolveHierarchy(anim.keyframeHeaders[x].connectedEntity, out Composite flowTemp, out string hierarchy) != null)
                                 headers.Add(anim.keyframeHeaders[x]);
                         originalAnimCount += anim.keyframeHeaders.Count;
                         newAnimCount += headers.Count;
@@ -299,10 +266,10 @@ namespace CathodeEditorGUI
             }
 
             //Clear links 
-            List<CathodeEntity> entities = comp.GetEntities();
+            List<Entity> entities = comp.GetEntities();
             for (int i = 0; i < entities.Count; i++)
             {
-                List<CathodeEntityLink> childLinksPurged = new List<CathodeEntityLink>();
+                List<EntityLink> childLinksPurged = new List<EntityLink>();
                 for (int x = 0; x < entities[i].childLinks.Count; x++)
                     if (comp.GetEntityByID(entities[i].childLinks[x].childID) != null)
                         childLinksPurged.Add(entities[i].childLinks[x]);

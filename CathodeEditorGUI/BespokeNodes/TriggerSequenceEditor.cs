@@ -1,4 +1,5 @@
-﻿using CATHODE.Commands;
+﻿using CATHODE;
+using CATHODE.Scripting;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -20,7 +21,7 @@ namespace CathodeEditorGUI
             node = _node;
 
             triggerDelay.Text = "0.0";
-            this.Text = "TriggerSequence Editor: " + CurrentInstance.compositeLookup.GetEntityName(CurrentInstance.selectedComposite.shortGUID, _node.shortGUID);
+            this.Text = "TriggerSequence Editor: " + Editor.util.entity.GetName(Editor.selected.composite.shortGUID, _node.shortGUID);
             selectedTriggerDetails.Visible = false;
 
             ReloadTriggerList();
@@ -34,7 +35,7 @@ namespace CathodeEditorGUI
             for (int i = 0; i < node.triggers.Count; i++)
             {
                 string thisHierarchy;
-                EditorUtils.ResolveHierarchy(node.triggers[i].hierarchy, out CathodeComposite comp, out thisHierarchy);
+                EditorUtils.ResolveHierarchy(node.triggers[i].hierarchy, out Composite comp, out thisHierarchy);
 
                 string toAdd = "[" + node.triggers[i].timing + "s] " + thisHierarchy;
                 trigger_list.Items.Add(toAdd);
@@ -73,7 +74,7 @@ namespace CathodeEditorGUI
             }
 
             string thisHierarchy;
-            EditorUtils.ResolveHierarchy(node.triggers[trigger_list.SelectedIndex].hierarchy, out CathodeComposite comp, out thisHierarchy);
+            EditorUtils.ResolveHierarchy(node.triggers[trigger_list.SelectedIndex].hierarchy, out Composite comp, out thisHierarchy);
 
             triggerHierarchy.Text = thisHierarchy;
             triggerDelay.Text = node.triggers[trigger_list.SelectedIndex].timing.ToString();
@@ -82,7 +83,7 @@ namespace CathodeEditorGUI
 
         private void selectEntToPointTo_Click(object sender, EventArgs e)
         {
-            CathodeEditorGUI_EditHierarchy hierarchyEditor = new CathodeEditorGUI_EditHierarchy(CurrentInstance.selectedComposite);
+            CathodeEditorGUI_EditHierarchy hierarchyEditor = new CathodeEditorGUI_EditHierarchy(Editor.selected.composite);
             hierarchyEditor.Show();
             hierarchyEditor.OnHierarchyGenerated += HierarchyEditor_HierarchyGenerated;
         }

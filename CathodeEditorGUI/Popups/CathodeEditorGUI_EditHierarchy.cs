@@ -8,8 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CATHODE;
-using CATHODE.Commands;
-using CATHODE.Misc;
+using CATHODE.Scripting;
+using CATHODE.Scripting.Internal;
 
 namespace CathodeEditorGUI
 {
@@ -20,10 +20,10 @@ namespace CathodeEditorGUI
 
         private List<string> composite_content_RAW = new List<string>();
 
-        private CathodeEntity selectedEntity = null;
-        private CathodeComposite selectedComposite = null;
+        private Entity selectedEntity = null;
+        private Composite selectedComposite = null;
 
-        public CathodeEditorGUI_EditHierarchy(CathodeComposite startingComposite)
+        public CathodeEditorGUI_EditHierarchy(Composite startingComposite)
         {
             InitializeComponent();
             LoadComposite(startingComposite.name);
@@ -55,7 +55,7 @@ namespace CathodeEditorGUI
                 FollowEntityThrough.Enabled = false;
 
                 if (selectedEntity.variant != EntityVariant.FUNCTION) return;
-                FollowEntityThrough.Enabled = CurrentInstance.commandsPAK.GetComposite(((FunctionEntity)selectedEntity).function) != null;
+                FollowEntityThrough.Enabled = Editor.commands.GetComposite(((FunctionEntity)selectedEntity).function) != null;
             }
             catch (Exception ex)
             {
@@ -75,7 +75,7 @@ namespace CathodeEditorGUI
             SelectEntity.Enabled = false;
             FollowEntityThrough.Enabled = false;
 
-            selectedComposite = CurrentInstance.commandsPAK.Composites[CurrentInstance.commandsPAK.GetFileIndex(FileName)];
+            selectedComposite = Editor.commands.GetComposite(FileName);
             compositeName.Text = selectedComposite.name;
             composite_content.BeginUpdate();
             composite_content_RAW.Clear();
@@ -96,7 +96,7 @@ namespace CathodeEditorGUI
             if (selectedEntity == null) return;
             if (selectedEntity.variant != EntityVariant.FUNCTION) return;
 
-            CathodeComposite composite = CurrentInstance.commandsPAK.GetComposite(((FunctionEntity)selectedEntity).function);
+            Composite composite = Editor.commands.GetComposite(((FunctionEntity)selectedEntity).function);
             if (composite == null) return;
 
             LoadComposite(composite.name);

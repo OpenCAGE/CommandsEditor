@@ -1,5 +1,6 @@
 ﻿using CATHODE;
-using CATHODE.Commands;
+using CATHODE.Scripting;
+using CATHODE.Scripting.Internal;
 using CathodeLib;
 using System;
 using System.Collections.Generic;
@@ -9,20 +10,21 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Documents;
 using System.Windows.Forms;
 
 namespace CathodeEditorGUI
 {
     public partial class CathodeEditorGUI_AddEntity : Form
     {
-        public Action<CathodeEntity> OnNewEntity;
+        public Action<Entity> OnNewEntity;
 
-        CathodeComposite composite = null;
-        List<CathodeComposite> composites = null;
+        Composite composite = null;
+        List<Composite> composites = null;
         List<CathodeEntityDatabase.EntityDefinition> availableEntities = null;
         List<ShortGuid> hierarchy = null;
 
-        public CathodeEditorGUI_AddEntity(CathodeComposite _comp, List<CathodeComposite> _comps)
+        public CathodeEditorGUI_AddEntity(Composite _comp, List<Composite> _comps)
         {
             composite = _comp;
             composites = _comps.OrderBy(o => o.name).ToList();
@@ -45,19 +47,20 @@ namespace CathodeEditorGUI
             entityVariant.BeginUpdate();
             entityVariant.Items.Clear();
             entityVariant.Items.AddRange(new object[] {
-                                    "POSITION",
-                                    "FLOAT",
                                     "STRING",
-                                    "SPLINE_DATA",
-                                    "ENUM",
-                                    "SHORT_GUID",
-                                    "FILEPATH",
+                                    "FLOAT",
+                                    "INTEGER",
                                     "BOOL",
-                                    "DIRECTION",
-                                    "INTEGER"
+                                    "VECTOR",
+                                    "TRANSFORM",
+                                    "ENUM",
+                                    "SPLINE"
+                                    // TODO: we should support other types here, such as ZONE_LINK_PTR used in doors
             });
             entityVariant.EndUpdate();
             entityVariant.SelectedIndex = 0;
+            entityVariant.DropDownStyle = ComboBoxStyle.DropDownList;
+            addDefaultParams.Visible = false;
         }
         private void selectedFunctionEntity(object sender, EventArgs e)
         {
@@ -71,6 +74,8 @@ namespace CathodeEditorGUI
             for (int i = 0; i < availableEntities.Count; i++) entityVariant.Items.Add(availableEntities[i].className);
             entityVariant.EndUpdate();
             entityVariant.SelectedIndex = 0;
+            entityVariant.DropDownStyle = ComboBoxStyle.DropDown;
+            addDefaultParams.Visible = true;
         }
         private void selectedCompositeEntity(object sender, EventArgs e)
         {
@@ -84,6 +89,8 @@ namespace CathodeEditorGUI
             for (int i = 0; i < composites.Count; i++) entityVariant.Items.Add(composites[i].name);
             entityVariant.EndUpdate();
             entityVariant.SelectedIndex = 0;
+            entityVariant.DropDownStyle = ComboBoxStyle.DropDownList;
+            addDefaultParams.Visible = true;
         }
         private void selectedProxyEntity(object sender, EventArgs e)
         {
@@ -93,6 +100,7 @@ namespace CathodeEditorGUI
             generateHierarchy.Visible = true;
             createNewEntity.Enabled = false;
             hierarchy = null;
+            addDefaultParams.Visible = false;
         }
         private void selectedOverrideEntity(object sender, EventArgs e)
         {
@@ -102,6 +110,7 @@ namespace CathodeEditorGUI
             generateHierarchy.Visible = true;
             createNewEntity.Enabled = false;
             hierarchy = null;
+            addDefaultParams.Visible = false;
 
             //TODO: Remove this warning when the checksum is figured out :)
             if (createOverrideEntity.Checked)
@@ -114,11 +123,11 @@ namespace CathodeEditorGUI
             CathodeEditorGUI_EditHierarchy hierarchyEditor = null;
             if (createProxyEntity.Checked)
             {
-                hierarchyEditor = new CathodeEditorGUI_EditHierarchy(CurrentInstance.commandsPAK.EntryPoints[0]);
+                hierarchyEditor = new CathodeEditorGUI_EditHierarchy(Editor.commands.EntryPoints[0]);
             }
             else if (createOverrideEntity.Checked)
             {
-                hierarchyEditor = new CathodeEditorGUI_EditHierarchy(CurrentInstance.selectedComposite);
+                hierarchyEditor = new CathodeEditorGUI_EditHierarchy(Editor.selected.composite);
             }
             hierarchyEditor.Show();
             hierarchyEditor.OnHierarchyGenerated += HierarchyEditor_HierarchyGenerated;
@@ -128,7 +137,7 @@ namespace CathodeEditorGUI
             if (createProxyEntity.Checked)
             {
                 hierarchy = new List<ShortGuid>();
-                hierarchy.Add(CurrentInstance.commandsPAK.EntryPoints[0].shortGUID);
+                hierarchy.Add(Editor.commands.EntryPoints[0].shortGUID);
                 hierarchy.AddRange(generatedHierarchy);
                 createNewEntity.Enabled = true;
             }
@@ -147,145 +156,75 @@ namespace CathodeEditorGUI
                 return;
             }
 
-            ShortGuid thisID = ShortGuidUtils.Generate(DateTime.Now.ToString("G"));
-
             if (createDatatypeEntity.Checked)
             {
-                //Make the DatatypeEntity
-                DatatypeEntity newEntity = new DatatypeEntity(thisID);
-                newEntity.type = (CathodeDataType)entityVariant.SelectedIndex;
-                newEntity.parameter = ShortGuidUtils.Generate(textBox1.Text);
-
-                //Make the parameter to give this DatatypeEntity a value (the only time you WOULDN'T want this is if the val is coming from a linked entity)
-                CathodeParameter thisParam = null;
-                switch (newEntity.type)
-                {
-                    case CathodeDataType.POSITION:
-                        thisParam = new CathodeTransform();
-                        break;
-                    case CathodeDataType.FLOAT:
-                        thisParam = new CathodeFloat();
-                        break;
-                    case CathodeDataType.FILEPATH:
-                    case CathodeDataType.STRING:
-                        thisParam = new CathodeString();
-                        break;
-                    case CathodeDataType.SPLINE_DATA:
-                        thisParam = new CathodeSpline();
-                        break;
-                    case CathodeDataType.ENUM:
-                        thisParam = new CathodeEnum();
-                        ((CathodeEnum)thisParam).enumID = new ShortGuid("4C-B9-82-48"); //ALERTNESS_STATE is the first alphabetically
-                        break;
-                    case CathodeDataType.RESOURCE:
-                        thisParam = new CathodeResource();
-                        ((CathodeResource)thisParam).resourceID = new ShortGuid("00-00-00-00");
-                        break;
-                    case CathodeDataType.BOOL:
-                        thisParam = new CathodeBool();
-                        break;
-                    case CathodeDataType.DIRECTION:
-                        thisParam = new CathodeVector3();
-                        break;
-                    case CathodeDataType.INTEGER:
-                        thisParam = new CathodeInteger();
-                        break;
-                }
-                newEntity.parameters.Add(new CathodeLoadedParameter(newEntity.parameter, thisParam));
-
-                //Add to composite & save name
-                composite.datatypes.Add(newEntity);
-                ShortGuidUtils.Generate(textBox1.Text);
+                VariableEntity newEntity = composite.AddVariable(textBox1.Text, (DataType)entityVariant.SelectedIndex, true);
                 OnNewEntity?.Invoke(newEntity);
             }
             else if (createFunctionEntity.Checked)
             {
-                //Create FunctionEntity
-                FunctionEntity newEntity = new FunctionEntity(thisID);
-                ShortGuid function = CathodeEntityDatabase.GetEntityAtIndex(entityVariant.SelectedIndex).guid;
-                switch (CommandsUtils.GetFunctionType(function))
+                //Make sure the function is valid
+                if (!Enum.TryParse(entityVariant.Text, out FunctionType function))
                 {
-                    //TODO: find a nicer way of auto selecting this (E.G. can we reflect to class names?)
-                    case CathodeFunctionType.CAGEAnimation:
-                        newEntity = new CAGEAnimation(thisID);
-                        break;
-                    case CathodeFunctionType.TriggerSequence:
-                        newEntity = new TriggerSequence(thisID);
-                        break;
+                    MessageBox.Show("Please make sure you have typed or selected a valid entity class to create.", "Invalid entity class", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
                 }
-                newEntity.function = function;
-                //TODO: auto populate params here based on defaults
+                FunctionEntity newEntity = composite.AddFunction(entityVariant.Text, addDefaultParams.Checked);
 
-                // TODO: these types of entities seem to have their own non-parameterised resources:
-                // - ParticleEmitterReference
-                // - RibbonEmitterReference
-                // - TRAV_1ShotSpline
-                // - LightReference
-                // - SurfaceEffectSphere
-                // - FogSphere
-                // - NavMeshBarrier
-                // - FogBox
-                // - SoundBarrier
-                // - SurfaceEffectBox
-                // - SimpleWater
-                // - SimpleRefraction
-                // - CollisionBarrier
-                // - PhysicsSystem (Although these don't seem to keep the entity ID)
-                // ... we should probably auto-generate these resources when adding new entities of these types.
+                //TODO: currently we don't support these properly
+                if (addDefaultParams.Checked)
+                {
+                    newEntity.parameters.RemoveAll(o => o.content.dataType == DataType.NONE); //TODO
+                    newEntity.parameters.RemoveAll(o => o.content.dataType == DataType.RESOURCE); //TODO
+                }
 
-                //Add to composite & save name
-                composite.functions.Add(newEntity);
-                CurrentInstance.compositeLookup.SetEntityName(composite.shortGUID, thisID, textBox1.Text);
+                Editor.util.entity.SetName(composite.shortGUID, newEntity.shortGUID, textBox1.Text);
                 OnNewEntity?.Invoke(newEntity);
             }
             else if (createCompositeEntity.Checked)
             {
-                //Create FunctionEntity
-                FunctionEntity newEntity = new FunctionEntity(thisID);
-                CathodeComposite composite = composites.FirstOrDefault(o => o.name == entityVariant.Text);
-                if (composite == null)
+                //Make sure the composite is valid
+                Composite compRef = composites.FirstOrDefault(o => o.name == entityVariant.Text);
+                if (compRef == null)
                 { 
                     MessageBox.Show("Failed to look up composite!\nPlease report this issue on GitHub.\n\n" + entityVariant.Text, "Could not find composite!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-                newEntity.function = composite.shortGUID;
-
-                //Add to composite & save name
-                this.composite.functions.Add(newEntity);
-                CurrentInstance.compositeLookup.SetEntityName(this.composite.shortGUID, thisID, textBox1.Text);
+                FunctionEntity newEntity = composite.AddFunction(compRef, addDefaultParams.Checked);
+                Editor.util.entity.SetName(this.composite.shortGUID, newEntity.shortGUID, textBox1.Text);
                 OnNewEntity?.Invoke(newEntity);
             }
             else if (createProxyEntity.Checked)
             {
                 //Create ProxyEntity
-                ProxyEntity newEntity = new ProxyEntity(thisID);
+                ProxyEntity newEntity = new ProxyEntity(ShortGuidUtils.GenerateRandom());
                 newEntity.hierarchy = hierarchy;
-                newEntity.extraId = ShortGuidUtils.Generate("temp"); //dunno what this val is meant to be, but apparently this works!
-
-                newEntity.parameters.Add(new CathodeLoadedParameter(ShortGuidUtils.Generate("proxy_filter_targets"), new CathodeBool() { value = false }));
-                newEntity.parameters.Add(new CathodeLoadedParameter(ShortGuidUtils.Generate("proxy_enable_on_reset"), new CathodeBool() { value = false }));
-                newEntity.parameters.Add(new CathodeLoadedParameter(ShortGuidUtils.Generate("proxy_enable"), new CathodeFloat() { value = 0.0f }));
-                newEntity.parameters.Add(new CathodeLoadedParameter(ShortGuidUtils.Generate("proxy_enabled"), new CathodeFloat() { value = 0.0f }));
-                newEntity.parameters.Add(new CathodeLoadedParameter(ShortGuidUtils.Generate("proxy_disable"), new CathodeFloat() { value = 0.0f }));
-                newEntity.parameters.Add(new CathodeLoadedParameter(ShortGuidUtils.Generate("proxy_disabled"), new CathodeFloat() { value = 0.0f }));
-                newEntity.parameters.Add(new CathodeLoadedParameter(ShortGuidUtils.Generate("reference"), new CathodeString() { value = "" }));
-                newEntity.parameters.Add(new CathodeLoadedParameter(ShortGuidUtils.Generate("trigger"), new CathodeFloat() { value = 0.0f }));
+                newEntity.extraId = ShortGuidUtils.Generate("temp"); //TODO: what is this value?
+                newEntity.parameters.Add(new Parameter("proxy_filter_targets", new cBool(false)));
+                newEntity.parameters.Add(new Parameter("proxy_enable_on_reset", new cBool(false)));
+                newEntity.parameters.Add(new Parameter("proxy_enable", new cFloat(0.0f)));
+                newEntity.parameters.Add(new Parameter("proxy_enabled", new cFloat(0.0f)));
+                newEntity.parameters.Add(new Parameter("proxy_disable", new cFloat(0.0f)));
+                newEntity.parameters.Add(new Parameter("proxy_disabled", new cFloat(0.0f)));
+                newEntity.parameters.Add(new Parameter("reference", new cString("")));
+                newEntity.parameters.Add(new Parameter("trigger", new cFloat(0.0f)));
+                //TODO: Populate the above from interface defaults
 
                 //Add to composite & save name
                 composite.proxies.Add(newEntity);
-                CurrentInstance.compositeLookup.SetEntityName(composite.shortGUID, thisID, textBox1.Text);
+                Editor.util.entity.SetName(composite.shortGUID, newEntity.shortGUID, textBox1.Text);
                 OnNewEntity?.Invoke(newEntity);
             }
             else if (createOverrideEntity.Checked)
             {
                 //Create OverrideEntity
-                OverrideEntity newEntity = new OverrideEntity(thisID);
+                OverrideEntity newEntity = new OverrideEntity(ShortGuidUtils.GenerateRandom());
                 newEntity.hierarchy = hierarchy;
                 newEntity.checksum = ShortGuidUtils.Generate("temp"); //TODO: how do we generate this? without it, i think overrides won't work.
 
                 //Add to composite & save name
                 composite.overrides.Add(newEntity);
-                CurrentInstance.compositeLookup.SetEntityName(composite.shortGUID, thisID, textBox1.Text);
+                Editor.util.entity.SetName(composite.shortGUID, newEntity.shortGUID, textBox1.Text);
                 OnNewEntity?.Invoke(newEntity);
             }
             this.Close();

@@ -32,7 +32,6 @@
             this.createDatatypeEntity = new System.Windows.Forms.RadioButton();
             this.createFunctionEntity = new System.Windows.Forms.RadioButton();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.generateHierarchy = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.createOverrideEntity = new System.Windows.Forms.RadioButton();
@@ -43,6 +42,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.entityVariant = new System.Windows.Forms.ComboBox();
+            this.generateHierarchy = new System.Windows.Forms.Button();
+            this.addDefaultParams = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -52,9 +53,9 @@
             this.createDatatypeEntity.AutoSize = true;
             this.createDatatypeEntity.Location = new System.Drawing.Point(18, 19);
             this.createDatatypeEntity.Name = "createDatatypeEntity";
-            this.createDatatypeEntity.Size = new System.Drawing.Size(101, 17);
+            this.createDatatypeEntity.Size = new System.Drawing.Size(92, 17);
             this.createDatatypeEntity.TabIndex = 0;
-            this.createDatatypeEntity.Text = "DataType Entity";
+            this.createDatatypeEntity.Text = "Variable Entity";
             this.createDatatypeEntity.UseVisualStyleBackColor = true;
             this.createDatatypeEntity.CheckedChanged += new System.EventHandler(this.selectedDatatypeEntity);
             // 
@@ -62,7 +63,7 @@
             // 
             this.createFunctionEntity.AutoSize = true;
             this.createFunctionEntity.Checked = true;
-            this.createFunctionEntity.Location = new System.Drawing.Point(125, 19);
+            this.createFunctionEntity.Location = new System.Drawing.Point(116, 19);
             this.createFunctionEntity.Name = "createFunctionEntity";
             this.createFunctionEntity.Size = new System.Drawing.Size(95, 17);
             this.createFunctionEntity.TabIndex = 1;
@@ -73,7 +74,7 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.generateHierarchy);
+            this.groupBox1.Controls.Add(this.addDefaultParams);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.groupBox2);
             this.groupBox1.Controls.Add(this.createNewEntity);
@@ -81,22 +82,13 @@
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.textBox1);
             this.groupBox1.Controls.Add(this.entityVariant);
+            this.groupBox1.Controls.Add(this.generateHierarchy);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(776, 179);
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "New Entity";
-            // 
-            // generateHierarchy
-            // 
-            this.generateHierarchy.Location = new System.Drawing.Point(104, 110);
-            this.generateHierarchy.Name = "generateHierarchy";
-            this.generateHierarchy.Size = new System.Drawing.Size(641, 23);
-            this.generateHierarchy.TabIndex = 6;
-            this.generateHierarchy.Text = "Select Entity To Point To";
-            this.generateHierarchy.UseVisualStyleBackColor = true;
-            this.generateHierarchy.Click += new System.EventHandler(this.generateHierarchy_Click);
             // 
             // label3
             // 
@@ -123,7 +115,7 @@
             // createOverrideEntity
             // 
             this.createOverrideEntity.AutoSize = true;
-            this.createOverrideEntity.Location = new System.Drawing.Point(421, 19);
+            this.createOverrideEntity.Location = new System.Drawing.Point(412, 19);
             this.createOverrideEntity.Name = "createOverrideEntity";
             this.createOverrideEntity.Size = new System.Drawing.Size(94, 17);
             this.createOverrideEntity.TabIndex = 5;
@@ -134,7 +126,7 @@
             // createProxyEntity
             // 
             this.createProxyEntity.AutoSize = true;
-            this.createProxyEntity.Location = new System.Drawing.Point(335, 19);
+            this.createProxyEntity.Location = new System.Drawing.Point(326, 19);
             this.createProxyEntity.Name = "createProxyEntity";
             this.createProxyEntity.Size = new System.Drawing.Size(80, 17);
             this.createProxyEntity.TabIndex = 4;
@@ -145,7 +137,7 @@
             // createCompositeEntity
             // 
             this.createCompositeEntity.AutoSize = true;
-            this.createCompositeEntity.Location = new System.Drawing.Point(226, 19);
+            this.createCompositeEntity.Location = new System.Drawing.Point(217, 19);
             this.createCompositeEntity.Name = "createCompositeEntity";
             this.createCompositeEntity.Size = new System.Drawing.Size(103, 17);
             this.createCompositeEntity.TabIndex = 3;
@@ -190,7 +182,6 @@
             // 
             // entityVariant
             // 
-            this.entityVariant.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.entityVariant.FormattingEnabled = true;
             this.entityVariant.Items.AddRange(new object[] {
             "POSITION",
@@ -207,6 +198,26 @@
             this.entityVariant.Name = "entityVariant";
             this.entityVariant.Size = new System.Drawing.Size(641, 21);
             this.entityVariant.TabIndex = 0;
+            // 
+            // generateHierarchy
+            // 
+            this.generateHierarchy.Location = new System.Drawing.Point(104, 110);
+            this.generateHierarchy.Name = "generateHierarchy";
+            this.generateHierarchy.Size = new System.Drawing.Size(641, 23);
+            this.generateHierarchy.TabIndex = 6;
+            this.generateHierarchy.Text = "Select Entity To Point To";
+            this.generateHierarchy.UseVisualStyleBackColor = true;
+            this.generateHierarchy.Click += new System.EventHandler(this.generateHierarchy_Click);
+            // 
+            // addDefaultParams
+            // 
+            this.addDefaultParams.AutoSize = true;
+            this.addDefaultParams.Location = new System.Drawing.Point(44, 143);
+            this.addDefaultParams.Name = "addDefaultParams";
+            this.addDefaultParams.Size = new System.Drawing.Size(138, 17);
+            this.addDefaultParams.TabIndex = 7;
+            this.addDefaultParams.Text = "Add Default Parameters";
+            this.addDefaultParams.UseVisualStyleBackColor = true;
             // 
             // CathodeEditorGUI_AddEntity
             // 
@@ -244,5 +255,6 @@
         private System.Windows.Forms.RadioButton createProxyEntity;
         private System.Windows.Forms.Button generateHierarchy;
         private System.Windows.Forms.RadioButton createOverrideEntity;
+        private System.Windows.Forms.CheckBox addDefaultParams;
     }
 }

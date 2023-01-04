@@ -1,5 +1,6 @@
 ﻿using CATHODE;
-using CATHODE.Commands;
+using CATHODE.Scripting;
+using CATHODE.Scripting.Internal;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -70,7 +71,7 @@ namespace CathodeEditorGUI
                         keyframeBtn.Size = new Size(27, 23);
                         keyframeBtn.Location = new Point(134 + ((keyframeBtn.Size.Width + 6) * x), 18 + (countInGroup * 23));
                         keyframeBtn.Text = paramData.keyframes[x].secondsSinceStart.ToString();
-                        keyframeBtn.AccessibleDescription = paramData.ID.ToString() + " " + x + " " + paramName.Text;
+                        keyframeBtn.AccessibleDescription = paramData.ID.ToByteString() + " " + x + " " + paramName.Text;
                         keyframeBtn.Click += KeyframeBtn_Click;
                         currentGroupBox.Controls.Add(keyframeBtn);
                         if (keyframeBtn.Location.X > maxWidth) maxWidth = keyframeBtn.Location.X;
@@ -78,12 +79,12 @@ namespace CathodeEditorGUI
                     }
                 }
 
-                CathodeComposite resolvedComposite = null;
-                CathodeEntity resolvedEntity = EditorUtils.ResolveHierarchy(animNode.keyframeHeaders[i].connectedEntity, out resolvedComposite, out string hierarchy);
+                Composite resolvedComposite = null;
+                Entity resolvedEntity = EditorUtils.ResolveHierarchy(animNode.keyframeHeaders[i].connectedEntity, out resolvedComposite, out string hierarchy);
                 if (resolvedEntity != null)
                 {
                     TextBox controllingEntity = new TextBox();
-                    controllingEntity.Text = "Controlling: " + CurrentInstance.compositeLookup.GetEntityName(resolvedComposite.shortGUID, resolvedEntity.shortGUID);
+                    controllingEntity.Text = "Controlling: " + Editor.util.entity.GetName(resolvedComposite.shortGUID, resolvedEntity.shortGUID);
                     controllingEntity.Location = new Point(keyframeWidth + 5, 18 + (countInGroup * 23));
                     controllingEntity.Size = new Size(200, 20);
                     controllingEntity.ReadOnly = true;

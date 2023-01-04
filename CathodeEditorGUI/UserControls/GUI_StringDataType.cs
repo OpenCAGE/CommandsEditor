@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using CATHODE.Commands;
+using CATHODE.Scripting;
 using CATHODE;
 using CathodeLib;
 
@@ -15,14 +15,14 @@ namespace CathodeEditorGUI.UserControls
 {
     public partial class GUI_StringDataType : UserControl
     {
-        CathodeString stringVal = null;
+        CATHODE.Scripting.cString stringVal = null;
 
         public GUI_StringDataType()
         {
             InitializeComponent();
         }
 
-        public void PopulateUI(CathodeString cString, ShortGuid paramID)
+        public void PopulateUI(CATHODE.Scripting.cString cString, ShortGuid paramID)
         {
             stringVal = cString;
             label1.Text = ShortGuidUtils.FindString(paramID);
