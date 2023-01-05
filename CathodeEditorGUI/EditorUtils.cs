@@ -84,7 +84,7 @@ namespace CathodeEditorGUI
         public static List<string> GenerateParameterList(Entity entity)
         {
             List<string> items = new List<string>();
-            if (Editor.commands == null) return items;
+            if (Editor.commands == null || entity == null) return items;
             switch (entity.variant)
             {
                 case EntityVariant.FUNCTION:
@@ -107,7 +107,10 @@ namespace CathodeEditorGUI
                 case EntityVariant.DATATYPE:
                     items.Add(ShortGuidUtils.FindString(((VariableEntity)entity).name));
                     break;
-                    //TODO: support other types here
+                case EntityVariant.OVERRIDE:
+                    return GenerateParameterList(EditorUtils.ResolveHierarchy(((OverrideEntity)Editor.selected.entity).hierarchy, out Composite comp1, out string hierarchy1));
+                case EntityVariant.PROXY:
+                    return GenerateParameterList(EditorUtils.ResolveHierarchy(((ProxyEntity)Editor.selected.entity).hierarchy, out Composite comp2, out string hierarchy2));
             }
             items.Sort();
             return items;
