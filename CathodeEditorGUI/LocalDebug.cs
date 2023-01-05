@@ -243,7 +243,7 @@ namespace CathodeEditorGUI
                                 default:
                                     type = "cEnum";
                                     string[] spl = valu.defaultval.Split('(');
-                                    if (spl.Length > 1) defaults = "\"" + spl[0].Substring(0, spl[0].Length - 1) + "\", " + spl[1].Substring(0, spl[1].Length - 1);
+                                    if (spl.Length > 1) defaults = "EnumType." + spl[0].Substring(0, spl[0].Length - 1) + ", " + spl[1].Substring(0, spl[1].Length - 1);
                                     else
                                     {
                                         if (EnumUtils.GetEnum(ShortGuidUtils.Generate(valu.datatype)) == null)
@@ -271,13 +271,13 @@ namespace CathodeEditorGUI
                     {
                         scripting.Add("\tcResource resourceData = new cResource(newEntity.shortGUID);");
                         scripting.Add("\tresourceData.AddResource(ResourceType.RENDERABLE_INSTANCE);");
-                        scripting.Add("\tnewEntity.parameters.Add(new Parameter(\"resource\", resourceData));");
+                        scripting.Add("\tnewEntity.parameters.Add(new Parameter(\"resource\", resourceData, ParameterVariant.INTERNAL));");
                     }
                     if (def.title == "EnvironmentModelReference")
                     {
                         scripting.Add("\tcResource resourceData2 = new cResource(newEntity.shortGUID);");
-                        scripting.Add("\tresourceData2.AddResource(ResourceType.ANIMATED_MODEL); //TODO: need to figure out what startIndex links to, so we can set that!");
-                        scripting.Add("\tnewEntity.parameters.Add(new Parameter(\"resource\", resourceData2));");
+                        scripting.Add("\tresourceData2.AddResource(ResourceType.ANIMATED_MODEL);");
+                        scripting.Add("\tnewEntity.parameters.Add(new Parameter(\"resource\", resourceData2, ParameterVariant.INTERNAL));");
                     }
                     if (def.title == "PhysicsSystem") scripting.Add("\tnewEntity.AddResource(ResourceType.DYNAMIC_PHYSICS_SYSTEM).startIndex = 0;");
                     scripting.Add("break;");

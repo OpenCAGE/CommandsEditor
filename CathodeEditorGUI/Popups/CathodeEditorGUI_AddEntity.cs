@@ -169,7 +169,7 @@ namespace CathodeEditorGUI
                     MessageBox.Show("Please make sure you have typed or selected a valid entity class to create.", "Invalid entity class", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-                FunctionEntity newEntity = composite.AddFunction(entityVariant.Text, addDefaultParams.Checked);
+                FunctionEntity newEntity = composite.AddFunction(function, addDefaultParams.Checked);
 
                 //TODO: currently we don't support these properly
                 if (addDefaultParams.Checked)
