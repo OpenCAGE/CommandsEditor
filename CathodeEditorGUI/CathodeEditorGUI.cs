@@ -734,7 +734,7 @@ namespace CathodeEditorGUI
                     break;
                 case EntityVariant.DATATYPE:
                     description = "DataType " + ((VariableEntity)entity).type.ToString();
-                    selected_entity_name.Text = ShortGuidUtils.FindString(((VariableEntity)entity).parameter);
+                    selected_entity_name.Text = ShortGuidUtils.FindString(((VariableEntity)entity).name);
                     renameSelectedNode.Enabled = false;
                     duplicateSelectedNode.Enabled = false;
                     addNewParameter.Enabled = false;
@@ -786,39 +786,39 @@ namespace CathodeEditorGUI
                 {
                     case DataType.TRANSFORM:
                         parameterGUI = new GUI_TransformDataType();
-                        ((GUI_TransformDataType)parameterGUI).PopulateUI((cTransform)this_param, entity.parameters[i].shortGUID);
+                        ((GUI_TransformDataType)parameterGUI).PopulateUI((cTransform)this_param, entity.parameters[i].name);
                         break;
                     case DataType.INTEGER:
                         parameterGUI = new GUI_NumericDataType();
-                        ((GUI_NumericDataType)parameterGUI).PopulateUI_Int((cInteger)this_param, entity.parameters[i].shortGUID);
+                        ((GUI_NumericDataType)parameterGUI).PopulateUI_Int((cInteger)this_param, entity.parameters[i].name);
                         break;
                     case DataType.STRING:
                         parameterGUI = new GUI_StringDataType();
-                        ((GUI_StringDataType)parameterGUI).PopulateUI((cString)this_param, entity.parameters[i].shortGUID);
+                        ((GUI_StringDataType)parameterGUI).PopulateUI((cString)this_param, entity.parameters[i].name);
                         break;
                     case DataType.BOOL:
                         parameterGUI = new GUI_BoolDataType();
-                        ((GUI_BoolDataType)parameterGUI).PopulateUI((cBool)this_param, entity.parameters[i].shortGUID);
+                        ((GUI_BoolDataType)parameterGUI).PopulateUI((cBool)this_param, entity.parameters[i].name);
                         break;
                     case DataType.FLOAT:
                         parameterGUI = new GUI_NumericDataType();
-                        ((GUI_NumericDataType)parameterGUI).PopulateUI_Float((cFloat)this_param, entity.parameters[i].shortGUID);
+                        ((GUI_NumericDataType)parameterGUI).PopulateUI_Float((cFloat)this_param, entity.parameters[i].name);
                         break;
                     case DataType.VECTOR:
                         parameterGUI = new GUI_VectorDataType();
-                        ((GUI_VectorDataType)parameterGUI).PopulateUI((cVector3)this_param, entity.parameters[i].shortGUID);
+                        ((GUI_VectorDataType)parameterGUI).PopulateUI((cVector3)this_param, entity.parameters[i].name);
                         break;
                     case DataType.ENUM:
                         parameterGUI = new GUI_EnumDataType();
-                        ((GUI_EnumDataType)parameterGUI).PopulateUI((cEnum)this_param, entity.parameters[i].shortGUID);
+                        ((GUI_EnumDataType)parameterGUI).PopulateUI((cEnum)this_param, entity.parameters[i].name);
                         break;
                     case DataType.RESOURCE:
                         parameterGUI = new GUI_ResourceDataType();
-                        ((GUI_ResourceDataType)parameterGUI).PopulateUI((cResource)this_param, entity.parameters[i].shortGUID);
+                        ((GUI_ResourceDataType)parameterGUI).PopulateUI((cResource)this_param, entity.parameters[i].name);
                         break;
                     case DataType.SPLINE:
                         parameterGUI = new GUI_SplineDataType();
-                        ((GUI_SplineDataType)parameterGUI).PopulateUI((cSpline)this_param, entity.parameters[i].shortGUID);
+                        ((GUI_SplineDataType)parameterGUI).PopulateUI((cSpline)this_param, entity.parameters[i].name);
                         break;
                 }
                 parameterGUI.Location = new Point(15, current_ui_offset);
@@ -943,6 +943,31 @@ namespace CathodeEditorGUI
         #region LOCAL_TESTS
         private void BuildNodeParameterDatabase(object sender, EventArgs e)
         {
+            //This time, we load an existing Commands file, from the game's ENG_ALIEN_NEST level
+            Commands commands = new Commands("Alien Isolation/DATA/ENV/PRODUCTION/ENG_ALIEN_NEST/WORLD/COMMANDS.PAK");
+
+            //Create our new composite and set it as the one that loads first in the level's Commands
+            Composite composite = commands.AddComposite("My Cool Script 2", true);
+
+            //Create our checkpoint just like last time to act on the level entry, and apply its parameters
+            FunctionEntity checkpoint = composite.AddFunction(FunctionType.Checkpoint, true);
+            checkpoint.AddParameter("is_first_checkpoint", new cBool(true));
+            checkpoint.AddParameter("section", new cString("Entry"));
+
+            //Since we loaded in our Commands file, we can grab composites that already exist within it 
+            Composite spawnPositionSelect = commands.GetComposite("ARCHETYPES\\SCRIPT\\MISSION\\SPAWNPOSITIONSELECT");
+
+            //We can then create function entities that instance these composites to execute their functionality
+            FunctionEntity playerSpawn = composite.AddFunction(spawnPositionSelect, true);
+
+            //This particular composite implements a public variable called SpawnPlayer which spawns the player
+            //Lets link to that public variable off of our checkpoint when it finishes loading
+            checkpoint.AddParameterLink("finished_loading", playerSpawn, "SpawnPlayer");
+
+            //Save the Commands out back to ENG_ALIEN_NEST
+            commands.Save();
+
+
             LocalDebug.LoadAndSaveAllCommands();
 
             //File.WriteAllLines("out.txt", LocalDebug.CommandsToScript(new Commands(@"G:\SteamLibrary\steamapps\common\Alien Isolation\DATA\ENV\PRODUCTION\BSP_TORRENS\WORLD\COMMANDS.PAK")));
@@ -976,14 +1001,16 @@ namespace CathodeEditorGUI
             //File.Delete("G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\ENG_ALIEN_NEST\\WORLD\\COMMANDS.PAK");
             Commands commands = new Commands("G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\ENG_ALIEN_NEST\\WORLD\\COMMANDS.PAK");
 
-            Composite composite = commands.AddComposite("My Cool Script", true);
+            Composite composite = commands.AddComposite("My Cool Script 2", true);
 
-            FunctionEntity checkpoint = composite.AddFunction(FunctionType.Checkpoint);
+            FunctionEntity checkpoint = composite.AddFunction(FunctionType.Checkpoint, true);
+            FunctionEntity objective = composite.AddFunction(FunctionType.SetPrimaryObjective, true);
             FunctionEntity playerSpawn = composite.AddFunction(commands.GetComposite("ARCHETYPES\\SCRIPT\\MISSION\\SPAWNPOSITIONSELECT"));
 
             checkpoint.AddParameter("is_first_checkpoint", new cBool(true));
             checkpoint.AddParameter("section", new cString("Entry"));
 
+            checkpoint.AddParameterLink("finished_loading", objective, "trigger");
             checkpoint.AddParameterLink("finished_loading", playerSpawn, "SpawnPlayer");
 
             //Save the Commands file

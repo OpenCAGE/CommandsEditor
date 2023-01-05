@@ -61,6 +61,9 @@ namespace CathodeEditorGUI
                 case DataType.SPLINE:
                     thisParam = new cSpline();
                     break;
+                case DataType.RESOURCE:
+                    thisParam = new cResource(node.shortGUID);
+                    break;
             }
             node.AddParameter(param_name.Text, thisParam);
 
@@ -104,7 +107,7 @@ namespace CathodeEditorGUI
                     {
                         //Composite link
                         ShortGuid param = ShortGuidUtils.Generate(param_name.Text);
-                        VariableEntity var = Editor.commands.GetComposite(ent.function).variables.FirstOrDefault(o => o.parameter == param);
+                        VariableEntity var = Editor.commands.GetComposite(ent.function).variables.FirstOrDefault(o => o.name == param);
                         if (var == null) return;
                         if (var.type == DataType.NONE)
                         {

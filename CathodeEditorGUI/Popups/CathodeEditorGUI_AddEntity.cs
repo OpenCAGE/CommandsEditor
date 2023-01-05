@@ -54,7 +54,8 @@ namespace CathodeEditorGUI
                                     "VECTOR",
                                     "TRANSFORM",
                                     "ENUM",
-                                    "SPLINE"
+                                    "SPLINE",
+                                    "RESOURCE"
                                     // TODO: we should support other types here, such as ZONE_LINK_PTR used in doors
             });
             entityVariant.EndUpdate();

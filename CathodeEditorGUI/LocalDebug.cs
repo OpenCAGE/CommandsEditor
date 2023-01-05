@@ -505,7 +505,7 @@ namespace CathodeEditorGUI
                 for (int x = 0; x < cmd.Composites[i].variables.Count; x++)
                 {
                     string entityName = "ENT_" + cmd.Composites[i].variables[x].shortGUID.ToByteString().Replace('-', '_');
-                    script.Add("VariableEntity " + entityName + " = " + compositeName + ".AddVariable(\"" + ShortGuidUtils.FindString(cmd.Composites[i].variables[x].parameter) + "\", DataType." + cmd.Composites[i].variables[x].type.ToString() + ");");
+                    script.Add("VariableEntity " + entityName + " = " + compositeName + ".AddVariable(\"" + ShortGuidUtils.FindString(cmd.Composites[i].variables[x].name) + "\", DataType." + cmd.Composites[i].variables[x].type.ToString() + ");");
                 }
                 for (int x = 0; x < cmd.Composites[i].proxies.Count; x++)
                 {
@@ -522,8 +522,8 @@ namespace CathodeEditorGUI
                     string entityName = "ENT_" + entities[x].shortGUID.ToByteString().Replace('-', '_');
                     for (int y = 0; y < entities[x].parameters.Count; y++)
                     {
-                        string paramName = ShortGuidUtils.FindString(entities[x].parameters[y].shortGUID);
-                        script.Add(entityName + ".AddParameter(" + ((paramName == entities[x].parameters[y].shortGUID.ToByteString()) ? "new ShortGuid(\"" : "\"") + paramName + "\"" + ((paramName == entities[x].parameters[y].shortGUID.ToByteString()) ? ")" : "") + ", new ");
+                        string paramName = ShortGuidUtils.FindString(entities[x].parameters[y].name);
+                        script.Add(entityName + ".AddParameter(" + ((paramName == entities[x].parameters[y].name.ToByteString()) ? "new ShortGuid(\"" : "\"") + paramName + "\"" + ((paramName == entities[x].parameters[y].name.ToByteString()) ? ")" : "") + ", new ");
                         switch (entities[x].parameters[y].content.dataType)
                         {
                             case DataType.FLOAT:

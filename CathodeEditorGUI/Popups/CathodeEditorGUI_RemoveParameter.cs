@@ -31,7 +31,7 @@ namespace CathodeEditorGUI
             parameterToDelete.Items.Clear();
             for (int i = 0; i < _entity.parameters.Count; i++)
             {
-                parameterToDelete.Items.Add(ShortGuidUtils.FindString(_entity.parameters[i].shortGUID));
+                parameterToDelete.Items.Add(ShortGuidUtils.FindString(_entity.parameters[i].name));
             }
             for (int i = 0; i < _entity.childLinks.Count; i++)
             {
