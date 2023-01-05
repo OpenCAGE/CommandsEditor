@@ -425,6 +425,10 @@ namespace CathodeEditorGUI
         private string currentSearch = "";
         private void entity_search_btn_Click(object sender, EventArgs e)
         {
+            DoSearch();
+        }
+        private void DoSearch()
+        {
             if (entity_search_box.Text == currentSearch) return;
             List<string> matched = new List<string>();
             foreach (string item in composite_content_RAW) if (item.ToUpper().Contains(entity_search_box.Text.ToUpper())) matched.Add(item);
@@ -701,6 +705,12 @@ namespace CathodeEditorGUI
 
             //Correct the UI, and return early if we have to change index, so we don't trigger twice
             int correctSelectedIndex = composite_content.Items.IndexOf(EditorUtils.GenerateEntityName(entity, Editor.selected.composite));
+            if (correctSelectedIndex == -1 && entity_search_box.Text != "")
+            {
+                entity_search_box.Text = "";
+                DoSearch();
+                correctSelectedIndex = composite_content.Items.IndexOf(EditorUtils.GenerateEntityName(entity, Editor.selected.composite));
+            }
             if (composite_content.SelectedIndex != correctSelectedIndex)
             {
                 composite_content.SelectedIndex = correctSelectedIndex;

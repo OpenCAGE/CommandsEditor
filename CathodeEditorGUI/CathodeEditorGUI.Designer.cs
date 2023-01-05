@@ -54,7 +54,7 @@
             this.addNewNode = new System.Windows.Forms.Button();
             this.composite_content = new System.Windows.Forms.ListBox();
             this.entity_search_box = new System.Windows.Forms.TextBox();
-            this.node_search_btn = new System.Windows.Forms.Button();
+            this.entity_search_btn = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.addLinkOut = new System.Windows.Forms.Button();
             this.removeParameter = new System.Windows.Forms.Button();
@@ -260,7 +260,7 @@
             this.groupBox4.Controls.Add(this.addNewNode);
             this.groupBox4.Controls.Add(this.composite_content);
             this.groupBox4.Controls.Add(this.entity_search_box);
-            this.groupBox4.Controls.Add(this.node_search_btn);
+            this.groupBox4.Controls.Add(this.entity_search_btn);
             this.groupBox4.Location = new System.Drawing.Point(6, 19);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(457, 720);
@@ -326,15 +326,15 @@
             this.entity_search_box.Size = new System.Drawing.Size(348, 20);
             this.entity_search_box.TabIndex = 146;
             // 
-            // node_search_btn
+            // entity_search_btn
             // 
-            this.node_search_btn.Location = new System.Drawing.Point(360, 15);
-            this.node_search_btn.Name = "node_search_btn";
-            this.node_search_btn.Size = new System.Drawing.Size(90, 23);
-            this.node_search_btn.TabIndex = 145;
-            this.node_search_btn.Text = "Search";
-            this.node_search_btn.UseVisualStyleBackColor = true;
-            this.node_search_btn.Click += new System.EventHandler(this.entity_search_btn_Click);
+            this.entity_search_btn.Location = new System.Drawing.Point(360, 15);
+            this.entity_search_btn.Name = "entity_search_btn";
+            this.entity_search_btn.Size = new System.Drawing.Size(90, 23);
+            this.entity_search_btn.TabIndex = 145;
+            this.entity_search_btn.Text = "Search";
+            this.entity_search_btn.UseVisualStyleBackColor = true;
+            this.entity_search_btn.Click += new System.EventHandler(this.entity_search_btn_Click);
             // 
             // groupBox2
             // 
@@ -517,7 +517,7 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.TextBox entity_search_box;
-        private System.Windows.Forms.Button node_search_btn;
+        private System.Windows.Forms.Button entity_search_btn;
         private System.Windows.Forms.ListBox composite_content;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Panel entity_params;
