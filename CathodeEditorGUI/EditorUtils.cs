@@ -108,9 +108,9 @@ namespace CathodeEditorGUI
                     items.Add(ShortGuidUtils.FindString(((VariableEntity)entity).name));
                     break;
                 case EntityVariant.OVERRIDE:
-                    return GenerateParameterList(EditorUtils.ResolveHierarchy(((OverrideEntity)Editor.selected.entity).hierarchy, out Composite comp1, out string hierarchy1));
+                    return GenerateParameterList(EditorUtils.ResolveHierarchy(((OverrideEntity)entity).hierarchy, out Composite comp1, out string hierarchy1));
                 case EntityVariant.PROXY:
-                    return GenerateParameterList(EditorUtils.ResolveHierarchy(((ProxyEntity)Editor.selected.entity).hierarchy, out Composite comp2, out string hierarchy2));
+                    return GenerateParameterList(EditorUtils.ResolveHierarchy(((ProxyEntity)entity).hierarchy, out Composite comp2, out string hierarchy2));
             }
             items.Sort();
             return items;
