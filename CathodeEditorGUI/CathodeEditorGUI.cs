@@ -859,7 +859,7 @@ namespace CathodeEditorGUI
         private void addLinkOut_Click(object sender, EventArgs e)
         {
             if (Editor.selected.entity == null) return;
-            CathodeEditorGUI_AddPin add_link = new CathodeEditorGUI_AddPin(Editor.selected.entity, Editor.selected.composite);
+            CathodeEditorGUI_AddOrEditLink add_link = new CathodeEditorGUI_AddOrEditLink(Editor.selected.composite, Editor.selected.entity);
             add_link.Show();
             add_link.FormClosed += new FormClosedEventHandler(refresh_entity_event);
         }

@@ -1,6 +1,6 @@
 ﻿namespace CathodeEditorGUI
 {
-    partial class CathodeEditorGUI_AddPin
+    partial class CathodeEditorGUI_AddOrEditLink
     {
         /// <summary>
         /// Required designer variable.
@@ -28,16 +28,16 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CathodeEditorGUI_AddPin));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CathodeEditorGUI_AddOrEditLink));
             this.label3 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.pin_out_param = new System.Windows.Forms.ComboBox();
-            this.pin_out_node = new System.Windows.Forms.ComboBox();
+            this.parentParameter = new System.Windows.Forms.ComboBox();
+            this.parentEntityList = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.pin_in_param = new System.Windows.Forms.ComboBox();
+            this.childParameter = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.pin_in_node = new System.Windows.Forms.ComboBox();
+            this.childEntityList = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
             this.save_pin = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
@@ -57,8 +57,8 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.pin_out_param);
-            this.groupBox1.Controls.Add(this.pin_out_node);
+            this.groupBox1.Controls.Add(this.parentParameter);
+            this.groupBox1.Controls.Add(this.parentEntityList);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
@@ -70,21 +70,21 @@
             // 
             // pin_out_param
             // 
-            this.pin_out_param.FormattingEnabled = true;
-            this.pin_out_param.Location = new System.Drawing.Point(16, 79);
-            this.pin_out_param.Name = "pin_out_param";
-            this.pin_out_param.Size = new System.Drawing.Size(844, 21);
-            this.pin_out_param.TabIndex = 8;
+            this.parentParameter.FormattingEnabled = true;
+            this.parentParameter.Location = new System.Drawing.Point(16, 79);
+            this.parentParameter.Name = "pin_out_param";
+            this.parentParameter.Size = new System.Drawing.Size(844, 21);
+            this.parentParameter.TabIndex = 8;
             // 
             // pin_out_node
             // 
-            this.pin_out_node.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.pin_out_node.FormattingEnabled = true;
-            this.pin_out_node.Location = new System.Drawing.Point(16, 40);
-            this.pin_out_node.Name = "pin_out_node";
-            this.pin_out_node.Size = new System.Drawing.Size(844, 21);
-            this.pin_out_node.TabIndex = 6;
-            this.pin_out_node.SelectedIndexChanged += new System.EventHandler(this.pin_out_node_SelectedIndexChanged);
+            this.parentEntityList.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.parentEntityList.FormattingEnabled = true;
+            this.parentEntityList.Location = new System.Drawing.Point(16, 40);
+            this.parentEntityList.Name = "pin_out_node";
+            this.parentEntityList.Size = new System.Drawing.Size(844, 21);
+            this.parentEntityList.TabIndex = 6;
+            this.parentEntityList.SelectedIndexChanged += new System.EventHandler(this.pin_out_node_SelectedIndexChanged);
             // 
             // label2
             // 
@@ -97,9 +97,9 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.pin_in_param);
+            this.groupBox2.Controls.Add(this.childParameter);
             this.groupBox2.Controls.Add(this.label1);
-            this.groupBox2.Controls.Add(this.pin_in_node);
+            this.groupBox2.Controls.Add(this.childEntityList);
             this.groupBox2.Controls.Add(this.label6);
             this.groupBox2.Location = new System.Drawing.Point(12, 222);
             this.groupBox2.Name = "groupBox2";
@@ -110,11 +110,11 @@
             // 
             // pin_in_param
             // 
-            this.pin_in_param.FormattingEnabled = true;
-            this.pin_in_param.Location = new System.Drawing.Point(16, 80);
-            this.pin_in_param.Name = "pin_in_param";
-            this.pin_in_param.Size = new System.Drawing.Size(844, 21);
-            this.pin_in_param.TabIndex = 9;
+            this.childParameter.FormattingEnabled = true;
+            this.childParameter.Location = new System.Drawing.Point(16, 80);
+            this.childParameter.Name = "pin_in_param";
+            this.childParameter.Size = new System.Drawing.Size(844, 21);
+            this.childParameter.TabIndex = 9;
             // 
             // label1
             // 
@@ -127,13 +127,13 @@
             // 
             // pin_in_node
             // 
-            this.pin_in_node.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.pin_in_node.FormattingEnabled = true;
-            this.pin_in_node.Location = new System.Drawing.Point(16, 40);
-            this.pin_in_node.Name = "pin_in_node";
-            this.pin_in_node.Size = new System.Drawing.Size(844, 21);
-            this.pin_in_node.TabIndex = 1;
-            this.pin_in_node.SelectedIndexChanged += new System.EventHandler(this.pin_in_node_SelectedIndexChanged);
+            this.childEntityList.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.childEntityList.FormattingEnabled = true;
+            this.childEntityList.Location = new System.Drawing.Point(16, 40);
+            this.childEntityList.Name = "pin_in_node";
+            this.childEntityList.Size = new System.Drawing.Size(844, 21);
+            this.childEntityList.TabIndex = 1;
+            this.childEntityList.SelectedIndexChanged += new System.EventHandler(this.pin_in_node_SelectedIndexChanged);
             // 
             // label6
             // 
@@ -193,14 +193,14 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.ComboBox pin_in_node;
+        private System.Windows.Forms.ComboBox childEntityList;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Button save_pin;
-        private System.Windows.Forms.ComboBox pin_out_node;
+        private System.Windows.Forms.ComboBox parentEntityList;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.ComboBox pin_out_param;
-        private System.Windows.Forms.ComboBox pin_in_param;
+        private System.Windows.Forms.ComboBox parentParameter;
+        private System.Windows.Forms.ComboBox childParameter;
     }
 }
