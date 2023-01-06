@@ -30,7 +30,6 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CathodeEditorGUI));
-            this.composite_count_display = new System.Windows.Forms.Label();
             this.root_composite_display = new System.Windows.Forms.Label();
             this.save_commands_pak = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
@@ -69,6 +68,7 @@
             this.DBG_CompileParamList = new System.Windows.Forms.Button();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.enableBackups = new System.Windows.Forms.CheckBox();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.entityInfoGroup.SuspendLayout();
@@ -77,15 +77,6 @@
             this.groupBox8.SuspendLayout();
             this.groupBox10.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // composite_count_display
-            // 
-            this.composite_count_display.AutoSize = true;
-            this.composite_count_display.Location = new System.Drawing.Point(6, 28);
-            this.composite_count_display.Name = "composite_count_display";
-            this.composite_count_display.Size = new System.Drawing.Size(95, 13);
-            this.composite_count_display.TabIndex = 172;
-            this.composite_count_display.Text = "Composite count:  ";
             // 
             // root_composite_display
             // 
@@ -419,11 +410,11 @@
             // 
             // groupBox8
             // 
+            this.groupBox8.Controls.Add(this.enableBackups);
             this.groupBox8.Controls.Add(this.DBG_LoadAllCommands);
             this.groupBox8.Controls.Add(this.editEntryPoint);
             this.groupBox8.Controls.Add(this.DBG_CompileParamList);
             this.groupBox8.Controls.Add(this.root_composite_display);
-            this.groupBox8.Controls.Add(this.composite_count_display);
             this.groupBox8.Location = new System.Drawing.Point(501, 3);
             this.groupBox8.Name = "groupBox8";
             this.groupBox8.Size = new System.Drawing.Size(748, 49);
@@ -475,6 +466,19 @@
             this.groupBox10.TabIndex = 175;
             this.groupBox10.TabStop = false;
             // 
+            // enableBackups
+            // 
+            this.enableBackups.AutoSize = true;
+            this.enableBackups.Location = new System.Drawing.Point(9, 26);
+            this.enableBackups.Name = "enableBackups";
+            this.enableBackups.Size = new System.Drawing.Size(104, 17);
+            this.enableBackups.TabIndex = 179;
+            this.enableBackups.Text = "Enable Backups";
+            this.toolTip1.SetToolTip(this.enableBackups, "If checked, the currently loaded Commands file will be backed up every 5 minutes " +
+        "to /DATA/MODTOOLS/COMMANDS_BACKUPS/");
+            this.enableBackups.UseVisualStyleBackColor = true;
+            this.enableBackups.CheckedChanged += new System.EventHandler(this.enableBackups_CheckedChanged);
+            // 
             // CathodeEditorGUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -505,7 +509,6 @@
         }
 
         #endregion
-        private System.Windows.Forms.Label composite_count_display;
         private System.Windows.Forms.Label root_composite_display;
         private System.Windows.Forms.Button save_commands_pak;
         private System.Windows.Forms.GroupBox groupBox3;
@@ -544,5 +547,6 @@
         private System.Windows.Forms.Button DBG_CompileParamList;
         private System.Windows.Forms.Button DBG_LoadAllCommands;
         private System.Windows.Forms.Button addLinkOut;
+        private System.Windows.Forms.CheckBox enableBackups;
     }
 }

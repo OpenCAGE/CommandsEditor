@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using CATHODE.Scripting.Internal;
 using System.Windows.Media.Animation;
+using System.Threading;
 
 namespace CathodeEditorGUI
 {
@@ -81,7 +82,6 @@ namespace CathodeEditorGUI
                 FileTree.Nodes.Clear();
                 FileTree.EndUpdate();
                 root_composite_display.Text = "Root composite: ";
-                composite_count_display.Text = "Composite count: ";
             }
             if (clear_entity_list)
             {
@@ -117,10 +117,12 @@ namespace CathodeEditorGUI
         }
 
         /* Enable the option to load COMMANDS */
-        public void EnableLoadingOfPaks(bool shouldEnable)
+        public void EnableLoadingOfPaks(bool shouldEnable, string text = "Caching...")
         {
-            load_commands_pak.Invoke(new Action(() => { load_commands_pak.Enabled = shouldEnable; load_commands_pak.Text = (shouldEnable) ? "Load" : "Caching..."; }));
+            load_commands_pak.Invoke(new Action(() => { load_commands_pak.Enabled = shouldEnable; load_commands_pak.Text = (shouldEnable) ? "Load" : text; }));
+            save_commands_pak.Invoke(new Action(() => { save_commands_pak.Enabled = shouldEnable; }));
             env_list.Invoke(new Action(() => { env_list.Enabled = shouldEnable; }));
+            enableBackups.Invoke(new Action(() => { enableBackups.Enabled = shouldEnable; }));
         }
 
         /* Load a COMMANDS.PAK into the editor with additional stuff */
@@ -137,7 +139,7 @@ namespace CathodeEditorGUI
             /*Task.Factory.StartNew(() => */LoadMovers()/*)*/;
 
             //Begin caching entity names so we don't have to keep generating them
-            Editor.util.entity = new EntityUtils(Editor.commands);
+            EntityUtils.LinkCommands(Editor.commands);
             if (currentBackgroundCacher != null) currentBackgroundCacher.Dispose();
             currentBackgroundCacher = Task.Factory.StartNew(() => EditorUtils.GenerateEntityNameCache(this));
 
@@ -157,7 +159,6 @@ namespace CathodeEditorGUI
         private void RefreshStatsUI()
         {
             root_composite_display.Text = "Root composite: " + Editor.commands.EntryPoints[0].name;
-            composite_count_display.Text = "Composite count: " + Editor.commands.Composites.Count;
         }
 
         /* Load commands */
@@ -409,16 +410,20 @@ namespace CathodeEditorGUI
         private void composite_content_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (composite_content.SelectedIndex == -1 || Editor.selected.composite == null) return;
+#if !DEBUG
             try
             {
+#endif
                 ShortGuid entityID = new ShortGuid(composite_content.SelectedItem.ToString().Substring(1, 11));
                 Entity thisEntity = Editor.selected.composite.GetEntityByID(entityID);
                 if (thisEntity != null) LoadEntity(thisEntity);
+#if !DEBUG
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Encountered an issue while looking up entity!\nPlease report this on GitHub!\n" + ex.Message, "Failed lookup!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+#endif
         }
 
         /* Search entity list */
@@ -590,10 +595,10 @@ namespace CathodeEditorGUI
             //Generate new entity ID and name
             Entity newEnt = Utilities.CloneObject(Editor.selected.entity);
             newEnt.shortGUID = ShortGuidUtils.GenerateRandom();
-            Editor.util.entity.SetName(
+            EntityUtils.SetName(
                 Editor.selected.composite.shortGUID,
                 newEnt.shortGUID,
-                Editor.util.entity.GetName(Editor.selected.composite.shortGUID, Editor.selected.entity.shortGUID) + "_clone");
+                EntityUtils.GetName(Editor.selected.composite.shortGUID, Editor.selected.entity.shortGUID) + "_clone");
 
             //Add parent links in to this entity that linked in to the other entity
             List<Entity> ents = Editor.selected.composite.GetEntities();
@@ -651,7 +656,7 @@ namespace CathodeEditorGUI
             if (((CathodeEditorGUI_RenameEntity)sender).didSave &&
                 ((CathodeEditorGUI_RenameEntity)sender).EntityID == Editor.selected.entity.shortGUID)
             {
-                Editor.util.entity.SetName(
+                EntityUtils.SetName(
                     Editor.selected.composite.shortGUID,
                     Editor.selected.entity.shortGUID,
                     ((CathodeEditorGUI_RenameEntity)sender).EntityName);
@@ -734,7 +739,7 @@ namespace CathodeEditorGUI
                         description = funcComposite.name;
                     else
                         description = ShortGuidUtils.FindString(thisFunction);
-                    selected_entity_name.Text = Editor.util.entity.GetName(Editor.selected.composite.shortGUID, entity.shortGUID);
+                    selected_entity_name.Text = EntityUtils.GetName(Editor.selected.composite.shortGUID, entity.shortGUID);
                     if (funcComposite == null)
                     {
                         FunctionType function = CommandsUtils.GetFunctionType(thisFunction);
@@ -758,10 +763,10 @@ namespace CathodeEditorGUI
                     else EditorUtils.ResolveHierarchy(((OverrideEntity)entity).hierarchy, out Composite comp, out hierarchy);
                     hierarchyDisplay.Text = hierarchy;
                     jumpToComposite.Visible = true;
-                    selected_entity_name.Text = Editor.util.entity.GetName(Editor.selected.composite.shortGUID, entity.shortGUID);
+                    selected_entity_name.Text = EntityUtils.GetName(Editor.selected.composite.shortGUID, entity.shortGUID);
                     break;
                 default:
-                    selected_entity_name.Text = Editor.util.entity.GetName(Editor.selected.composite.shortGUID, entity.shortGUID);
+                    selected_entity_name.Text = EntityUtils.GetName(Editor.selected.composite.shortGUID, entity.shortGUID);
                     break;
             }
             selected_entity_type_description.Text = description;
@@ -942,6 +947,26 @@ namespace CathodeEditorGUI
         {
             this.BringToFront();
             this.Focus();
+        }
+
+        /* Enable/disable backups */
+        Task backgroundBackups = null;
+        private void enableBackups_CheckedChanged(object sender, EventArgs e)
+        {
+            if (backgroundBackups != null) backgroundBackups.Dispose();
+            if (enableBackups.Checked)
+                backgroundBackups = Task.Factory.StartNew(() => BackupCommands(this));
+        }
+        private void BackupCommands(CathodeEditorGUI mainInst)
+        {
+            while (true)
+            {
+                if (Editor.commands == null) return;
+                mainInst.EnableLoadingOfPaks(false, "Backup...");
+                Editor.commands.Save(Editor.commands.Filepath + ".bak", false);
+                mainInst.EnableLoadingOfPaks(true);
+                Thread.Sleep(300000);
+            }
         }
 
         /* Confirm an action */
@@ -1141,7 +1166,7 @@ namespace CathodeEditorGUI
             //LocalDebug.FindAllNodesInCommands();
         }
 
-        
+
         #endregion
     }
 }

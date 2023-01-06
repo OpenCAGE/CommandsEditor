@@ -33,40 +33,7 @@ namespace CathodeEditorGUI
         private void button1_Click(object sender, EventArgs e)
         {
             if (param_name.Text == "") return;
-
-            ParameterData thisParam = null;
-            switch ((DataType)param_datatype.SelectedIndex)
-            {
-                case DataType.STRING:
-                    thisParam = new cString("");
-                    break;
-                case DataType.FLOAT:
-                    thisParam = new cFloat(0.0f);
-                    break;
-                case DataType.INTEGER:
-                    thisParam = new cInteger(0);
-                    break;
-                case DataType.BOOL:
-                    thisParam = new cBool(true);
-                    break;
-                case DataType.VECTOR:
-                    thisParam = new cVector3(new Vector3(0, 0, 0));
-                    break;
-                case DataType.TRANSFORM:
-                    thisParam = new cTransform(new Vector3(0, 0, 0), new Vector3(0, 0, 0));
-                    break;
-                case DataType.ENUM:
-                    thisParam = new cEnum(EnumType.ALERTNESS_STATE, 0); 
-                    break;
-                case DataType.SPLINE:
-                    thisParam = new cSpline();
-                    break;
-                case DataType.RESOURCE:
-                    thisParam = new cResource(node.shortGUID);
-                    break;
-            }
-            node.AddParameter(param_name.Text, thisParam);
-
+            node.AddParameter(param_name.Text, (DataType)param_datatype.SelectedIndex);
             this.Close();
         }
 

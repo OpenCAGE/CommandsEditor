@@ -179,7 +179,7 @@ namespace CathodeEditorGUI
                     newEntity.parameters.RemoveAll(o => o.content.dataType == DataType.RESOURCE); //TODO
                 }
 
-                Editor.util.entity.SetName(composite.shortGUID, newEntity.shortGUID, textBox1.Text);
+                EntityUtils.SetName(composite.shortGUID, newEntity.shortGUID, textBox1.Text);
                 OnNewEntity?.Invoke(newEntity);
             }
             else if (createCompositeEntity.Checked)
@@ -192,7 +192,7 @@ namespace CathodeEditorGUI
                     return;
                 }
                 FunctionEntity newEntity = composite.AddFunction(compRef, addDefaultParams.Checked);
-                Editor.util.entity.SetName(this.composite.shortGUID, newEntity.shortGUID, textBox1.Text);
+                EntityUtils.SetName(this.composite.shortGUID, newEntity.shortGUID, textBox1.Text);
                 OnNewEntity?.Invoke(newEntity);
             }
             else if (createProxyEntity.Checked)
@@ -213,7 +213,7 @@ namespace CathodeEditorGUI
 
                 //Add to composite & save name
                 composite.proxies.Add(newEntity);
-                Editor.util.entity.SetName(composite.shortGUID, newEntity.shortGUID, textBox1.Text);
+                EntityUtils.SetName(composite.shortGUID, newEntity.shortGUID, textBox1.Text);
                 OnNewEntity?.Invoke(newEntity);
             }
             else if (createOverrideEntity.Checked)
@@ -225,7 +225,7 @@ namespace CathodeEditorGUI
 
                 //Add to composite & save name
                 composite.overrides.Add(newEntity);
-                Editor.util.entity.SetName(composite.shortGUID, newEntity.shortGUID, textBox1.Text);
+                EntityUtils.SetName(composite.shortGUID, newEntity.shortGUID, textBox1.Text);
                 OnNewEntity?.Invoke(newEntity);
             }
             this.Close();

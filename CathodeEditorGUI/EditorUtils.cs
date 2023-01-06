@@ -43,17 +43,17 @@ namespace CathodeEditorGUI
                 case EntityVariant.FUNCTION:
                     Composite funcComposite = Editor.commands.GetComposite(((FunctionEntity)entity).function);
                     if (funcComposite != null)
-                        desc = Editor.util.entity.GetName(composite.shortGUID, entity.shortGUID) + " (" + funcComposite.name + ")";
+                        desc = EntityUtils.GetName(composite.shortGUID, entity.shortGUID) + " (" + funcComposite.name + ")";
                     else
-                        desc = Editor.util.entity.GetName(composite.shortGUID, entity.shortGUID) + " (" + ShortGuidUtils.FindString(((FunctionEntity)entity).function) + ")";
+                        desc = EntityUtils.GetName(composite.shortGUID, entity.shortGUID) + " (" + ShortGuidUtils.FindString(((FunctionEntity)entity).function) + ")";
                     break;
                 case EntityVariant.OVERRIDE:
                     //desc = NodeDBEx.GetEntityName(entity.nodeID) + " (" + HierarchyToString(((OverrideEntity)entity).hierarchy, currentFlowgraph) + ")";
-                    desc = Editor.util.entity.GetName(composite.shortGUID, entity.shortGUID) + " (*OVERRIDE*)";
+                    desc = EntityUtils.GetName(composite.shortGUID, entity.shortGUID) + " (*OVERRIDE*)";
                     break;
                 case EntityVariant.PROXY:
                     //desc = NodeDBEx.GetEntityName(entity.nodeID) + " (" + HierarchyToString(((ProxyEntity)entity).hierarchy, currentFlowgraph) + ")";
-                    desc = Editor.util.entity.GetName(composite.shortGUID, entity.shortGUID) + " (*PROXY*)";
+                    desc = EntityUtils.GetName(composite.shortGUID, entity.shortGUID) + " (*PROXY*)";
                     break;
             }
             return "[" + entity.shortGUID.ToByteString() + "] " + desc;
@@ -178,7 +178,7 @@ namespace CathodeEditorGUI
                 entity = currentFlowgraphToSearch.GetEntityByID(hierarchyCopy[i]);
 
                 if (entity == null) break;
-                hierarchyString += "[" + entity.shortGUID + "] " + Editor.util.entity.GetName(currentFlowgraphToSearch.shortGUID, entity.shortGUID);
+                hierarchyString += "[" + entity.shortGUID + "] " + EntityUtils.GetName(currentFlowgraphToSearch.shortGUID, entity.shortGUID);
                 if (i >= hierarchyCopy.Count - 2) break; //Last is always 00-00-00-00
                 hierarchyString += " -> ";
 
