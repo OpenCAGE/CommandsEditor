@@ -1007,6 +1007,45 @@ namespace CathodeEditorGUI
             string fgdg = "";
             */
 
+
+            Commands commands = new Commands("G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\ENG_ALIEN_NEST\\WORLD\\COMMANDS.PAK");
+
+            Composite composite = commands.AddComposite("My Cool Script5ert5", true);
+
+            FunctionEntity objective = composite.AddFunction(FunctionType.SetPrimaryObjective, true);
+            FunctionEntity checkpoint = composite.AddFunction(FunctionType.Checkpoint, true);
+            FunctionEntity playerSpawn = composite.AddFunction(commands.GetComposite("ARCHETYPES\\SCRIPT\\MISSION\\SPAWNPOSITIONSELECT"), true);
+
+            checkpoint.AddParameter("is_first_checkpoint", new cBool(true));
+            checkpoint.AddParameter("section", new cString("Entry"));
+
+            checkpoint.AddParameterLink("finished_loading", playerSpawn, "SpawnPlayer");
+            checkpoint.AddParameterLink("finished_loading", objective, "trigger");
+
+            objective.AddParameter("title", new cString("Do Something!"));
+            objective.AddParameter("additional_info", new cString("Hey, you should go and do something!"));
+
+            for (int i = 0; i < 99; i++)
+            {
+                Composite composite2 = commands.AddComposite("My Cool Script " + i, false);
+                for (int x = 0; x < 99; x++)
+                {
+
+                    FunctionEntity checkpointe55 = composite.AddFunction(FunctionType.WEAPON_DidHitSomethingFilter, true);
+                    FunctionEntity checkpoint55 = composite.AddFunction(FunctionType.Checkpoint, true);
+                    for (int y = 0;y < 9; y++)
+                    {
+                        checkpoint55.AddParameterLink("finished_loading", objective, "trigger");
+                        checkpointe55.AddParameterLink("sfhgjsdh", objective, "trigger");
+                        checkpoint55.AddParameterLink("sdfsdf", objective, "trigger");
+                    }
+                }
+            }
+
+            commands.Save();
+
+
+            /*
             //Create our Commands file to contain our scripts
             //File.Delete("G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\ENG_ALIEN_NEST\\WORLD\\COMMANDS.PAK");
             Commands commands = new Commands("G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\ENG_ALIEN_NEST\\WORLD\\COMMANDS.PAK");
@@ -1025,7 +1064,7 @@ namespace CathodeEditorGUI
 
             //Save the Commands file
             commands.Save();
-
+            */
 
 
 
