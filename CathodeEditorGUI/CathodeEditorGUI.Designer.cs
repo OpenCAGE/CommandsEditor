@@ -474,8 +474,8 @@
             this.enableBackups.Size = new System.Drawing.Size(104, 17);
             this.enableBackups.TabIndex = 179;
             this.enableBackups.Text = "Enable Backups";
-            this.toolTip1.SetToolTip(this.enableBackups, "If checked, the currently loaded Commands file will be backed up every 5 minutes " +
-        "to /DATA/MODTOOLS/COMMANDS_BACKUPS/");
+            this.toolTip1.SetToolTip(this.enableBackups, "If checked, the currently loaded Commands file will be backed up every 5 minutes." +
+        "\r\n");
             this.enableBackups.UseVisualStyleBackColor = true;
             this.enableBackups.CheckedChanged += new System.EventHandler(this.enableBackups_CheckedChanged);
             // 

@@ -193,8 +193,10 @@ namespace CathodeEditorGUI
         /* Load assets */
         private void LoadAssets()
         {
+#if !DEBUG
             try
             {
+#endif
                 string baseLevelPath = Editor.commands.Filepath.Substring(0, Editor.commands.Filepath.Length - ("WORLD/COMMANDS.PAK").Length);
 
                 //The game has two hard-coded _PATCH overrides which change the CommandsPAK but not the assets
@@ -216,6 +218,7 @@ namespace CathodeEditorGUI
                 Editor.resource.textures_Global = new Textures(SharedData.pathToAI + "/DATA/ENV/GLOBAL/WORLD/GLOBAL_TEXTURES.ALL.PAK");
                 Editor.resource.textures_Global.Load();
                 Editor.resource.env_animations = new EnvironmentAnimationDatabase(baseLevelPath + "WORLD/ENVIRONMENT_ANIMATION.DAT");
+#if !DEBUG
             }
             catch
             {
@@ -228,6 +231,7 @@ namespace CathodeEditorGUI
                 Editor.resource.textures_Global = null;
                 Editor.resource.env_animations = null;
             }
+#endif
         }
 
         /* Load mover descriptors */
@@ -552,27 +556,8 @@ namespace CathodeEditorGUI
                 }
             }
 
-            int indexToRemove = -1;
-            for (int i = 0; i < composite_content.Items.Count; i++)
-            {
-                if (composite_content.Items[i].ToString().Substring(1, 11) == removedID)
-                {
-                    indexToRemove = i;
-                    break;
-                }
-            }
-            if (indexToRemove != -1) composite_content.Items.RemoveAt(indexToRemove);
-            indexToRemove = -1;
-            for (int i = 0; i < composite_content_RAW.Count; i++)
-            {
-                if (composite_content_RAW[i].Substring(1, 11) == removedID)
-                {
-                    indexToRemove = i;
-                    break;
-                }
-            }
-            if (indexToRemove != -1) composite_content_RAW.RemoveAt(indexToRemove);
-            else LoadComposite(Editor.selected.composite.name);
+            EditorUtils.ResetHierarchyPurgeCache();
+            LoadComposite(Editor.selected.composite.name);
 
             ClearUI(false, false, true);
         }
@@ -961,11 +946,12 @@ namespace CathodeEditorGUI
         {
             while (true)
             {
+                Thread.Sleep(150000);
                 if (Editor.commands == null) return;
                 mainInst.EnableLoadingOfPaks(false, "Backup...");
                 Editor.commands.Save(Editor.commands.Filepath + ".bak", false);
                 mainInst.EnableLoadingOfPaks(true);
-                Thread.Sleep(300000);
+                Thread.Sleep(150000);
             }
         }
 
