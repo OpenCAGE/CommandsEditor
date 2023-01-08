@@ -37,7 +37,7 @@ namespace CathodeEditorGUI
             string desc = "";
             switch (entity.variant)
             {
-                case EntityVariant.DATATYPE:
+                case EntityVariant.VARIABLE:
                     desc = ShortGuidUtils.FindString(((VariableEntity)entity).name) + " (DataType " + ((VariableEntity)entity).type.ToString() + ")";
                     break;
                 case EntityVariant.FUNCTION:
@@ -104,7 +104,7 @@ namespace CathodeEditorGUI
                             items.Add(ShortGuidUtils.FindString(ent.name));
                     }
                     break;
-                case EntityVariant.DATATYPE:
+                case EntityVariant.VARIABLE:
                     items.Add(ShortGuidUtils.FindString(((VariableEntity)entity).name));
                     break;
                 case EntityVariant.OVERRIDE:

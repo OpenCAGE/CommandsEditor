@@ -521,7 +521,7 @@ namespace CathodeEditorGUI
 
             switch (Editor.selected.entity.variant)
             {
-                case EntityVariant.DATATYPE:
+                case EntityVariant.VARIABLE:
                     Editor.selected.composite.variables.Remove((VariableEntity)Editor.selected.entity);
                     break;
                 case EntityVariant.FUNCTION:
@@ -604,10 +604,11 @@ namespace CathodeEditorGUI
             //Generate new entity ID and name
             Entity newEnt = Utilities.CloneObject(Editor.selected.entity);
             newEnt.shortGUID = ShortGuidUtils.GenerateRandom();
-            EntityUtils.SetName(
-                Editor.selected.composite.shortGUID,
-                newEnt.shortGUID,
-                EntityUtils.GetName(Editor.selected.composite.shortGUID, Editor.selected.entity.shortGUID) + "_clone");
+            if (newEnt.variant != EntityVariant.VARIABLE)
+                EntityUtils.SetName(
+                    Editor.selected.composite.shortGUID,
+                    newEnt.shortGUID,
+                    EntityUtils.GetName(Editor.selected.composite.shortGUID, Editor.selected.entity.shortGUID) + "_clone");
 
             //Add parent links in to this entity that linked in to the other entity
             List<Entity> ents = Editor.selected.composite.GetEntities();
@@ -637,7 +638,7 @@ namespace CathodeEditorGUI
                 case EntityVariant.FUNCTION:
                     Editor.selected.composite.functions.Add((FunctionEntity)newEnt);
                     break;
-                case EntityVariant.DATATYPE:
+                case EntityVariant.VARIABLE:
                     Editor.selected.composite.variables.Add((VariableEntity)newEnt);
                     break;
                 case EntityVariant.PROXY:
@@ -656,22 +657,17 @@ namespace CathodeEditorGUI
         private void renameSelectedEntity_Click(object sender, EventArgs e)
         {
             if (Editor.selected.entity == null) return;
-            CathodeEditorGUI_RenameEntity rename_entity = new CathodeEditorGUI_RenameEntity(Editor.selected.entity.shortGUID);
+            CathodeEditorGUI_RenameEntity rename_entity = new CathodeEditorGUI_RenameEntity(Editor.selected.composite, Editor.selected.entity);
             rename_entity.Show();
-            rename_entity.FormClosed += new FormClosedEventHandler(rename_entity_closed);
+            rename_entity.OnSaved += OnEntityRenamed;
         }
-        private void rename_entity_closed(Object sender, FormClosedEventArgs e)
+        private void OnEntityRenamed(Composite composite, Entity entity)
         {
-            if (((CathodeEditorGUI_RenameEntity)sender).didSave &&
-                ((CathodeEditorGUI_RenameEntity)sender).EntityID == Editor.selected.entity.shortGUID)
-            {
-                EntityUtils.SetName(
-                    Editor.selected.composite.shortGUID,
-                    Editor.selected.entity.shortGUID,
-                    ((CathodeEditorGUI_RenameEntity)sender).EntityName);
+            string entityID = entity.shortGUID.ToByteString();
+            string newEntityName = EditorUtils.GenerateEntityName(entity, composite, true);
 
-                string entityID = Editor.selected.entity.shortGUID.ToByteString();
-                string newEntityName = EditorUtils.GenerateEntityName(Editor.selected.entity, Editor.selected.composite, true);
+            if (composite == Editor.selected.composite)
+            {
                 for (int i = 0; i < composite_content.Items.Count; i++)
                 {
                     if (composite_content.Items[i].ToString().Substring(1, 11) == entityID)
@@ -688,8 +684,9 @@ namespace CathodeEditorGUI
                         break;
                     }
                 }
-                LoadEntity(Editor.selected.entity);
+                LoadEntity(entity);
             }
+
             this.BringToFront();
             this.Focus();
         }
@@ -756,13 +753,10 @@ namespace CathodeEditorGUI
                     }
                     editEntityResources.Enabled = (Editor.resource.textures != null);
                     break;
-                case EntityVariant.DATATYPE:
+                case EntityVariant.VARIABLE:
                     description = "DataType " + ((VariableEntity)entity).type.ToString();
                     selected_entity_name.Text = ShortGuidUtils.FindString(((VariableEntity)entity).name);
-                    renameSelectedNode.Enabled = false;
-                    duplicateSelectedNode.Enabled = false;
-                    addNewParameter.Enabled = false;
-                    removeParameter.Enabled = false;
+                    //renameSelectedNode.Enabled = false;
                     break;
                 case EntityVariant.PROXY:
                 case EntityVariant.OVERRIDE:

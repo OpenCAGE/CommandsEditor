@@ -1,5 +1,6 @@
 ﻿using CATHODE;
 using CATHODE.Scripting;
+using CATHODE.Scripting.Internal;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,21 +15,43 @@ namespace CathodeEditorGUI
 {
     public partial class CathodeEditorGUI_RenameEntity : Form
     {
-        public string EntityName { get { return entity_name.Text; } }
-        public ShortGuid EntityID;
-        public bool didSave = false;
+        public Action<Composite, Entity> OnSaved;
+        private Entity _ent;
+        private Composite _comp;
 
-        public CathodeEditorGUI_RenameEntity(ShortGuid entityID)
+        public CathodeEditorGUI_RenameEntity(Composite comp, Entity entity)
         {
             InitializeComponent();
-            entity_name.Text = EntityUtils.GetName(Editor.selected.composite.shortGUID, entityID);
-            EntityID = entityID;
+
+            _comp = comp;
+            _ent = entity;
+
+            switch (_ent.variant)
+            {
+                case EntityVariant.VARIABLE:
+                    entity_name.Text = ShortGuidUtils.FindString(((VariableEntity)_ent).name);
+                    break;
+                default:
+                    entity_name.Text = EntityUtils.GetName(comp, _ent);
+                    break;
+            }
         }
 
         private void save_entity_name_Click(object sender, EventArgs e)
         {
             if (entity_name.Text == "") return;
-            didSave = true;
+
+            switch (_ent.variant)
+            {
+                case EntityVariant.VARIABLE:
+                    ((VariableEntity)_ent).name = ShortGuidUtils.Generate(entity_name.Text);
+                    break;
+                default:
+                    EntityUtils.SetName(_comp, _ent, entity_name.Text);
+                    break;
+            }
+
+            OnSaved?.Invoke(_comp, _ent);
             this.Close();
         }
     }
