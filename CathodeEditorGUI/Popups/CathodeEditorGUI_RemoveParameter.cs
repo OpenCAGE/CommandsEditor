@@ -20,11 +20,6 @@ namespace CathodeEditorGUI
         {
             InitializeComponent();
 
-            if (entity.parameters.Count == 0)
-            {
-                this.Close();
-                return;
-            }
             _entity = entity;
 
             parameterToDelete.BeginUpdate();
