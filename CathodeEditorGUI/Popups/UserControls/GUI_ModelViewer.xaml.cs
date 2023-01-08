@@ -1,24 +1,6 @@
-﻿using CATHODE.Assets;
-using CATHODE.LEGACY;
-using HelixToolkit.Wpf;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Collections.Generic;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using static CATHODE.LEGACY.CathodeModels;
 
 namespace CathodeEditorGUI.Popups.UserControls
 {
@@ -35,10 +17,44 @@ namespace CathodeEditorGUI.Popups.UserControls
             reader = new CS2Reader();
         }
 
-        public void ShowModel(int modelIndex)
+        public void ShowModel(List<Model> models)
         {
-            modelPreview.Content = reader.Read(modelIndex);
+            Model3DGroup group = new Model3DGroup();
+            for (int i = 0; i < models.Count; i++)
+                group.Children.Add(OffsetModel(models[i].modelIndex, models[i].position, models[i].rotation));
+            modelPreview.Content = group;
         }
         
+        private Model3DGroup OffsetModel(int modelIndex, Vector3D position, Vector3D rotation)
+        {
+            Model3DGroup model = reader.Read(modelIndex);
+            var pos = new TranslateTransform3D(position);
+            var rot = new RotateTransform3D(new AxisAngleRotation3D(), rotation.X, rotation.Y, rotation.Z);
+            var transform = new Transform3DGroup();
+            transform.Children.Add(pos);
+            transform.Children.Add(rot);
+            model.Transform = transform;
+            return model;
+        }
+
+        public class Model
+        {
+            public Model(int modelIndex)
+            {
+                this.modelIndex = modelIndex;
+                position = new Vector3D(0, 0, 0);
+                rotation = new Vector3D(0, 0, 0);
+            }
+            public Model(int modelIndex, Vector3D position, Vector3D rotation)
+            {
+                this.modelIndex = modelIndex;
+                this.position = position;
+                this.rotation = rotation;
+            }
+
+            public int modelIndex;
+            public Vector3D position;
+            public Vector3D rotation;
+        }
     }
 }

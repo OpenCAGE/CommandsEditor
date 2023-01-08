@@ -69,8 +69,10 @@ namespace CathodeEditorGUI
 
         private void ShowModel(int pakIndex)
         {
-            //This renders all submeshes within the model index!!
-            modelViewer.ShowModel(pakIndex);
+            List<GUI_ModelViewer.Model> models = new List<GUI_ModelViewer.Model>();
+            models.Add(new GUI_ModelViewer.Model(pakIndex));
+            modelViewer.ShowModel(models);
+
             int binIndex = Editor.resource.models.Models[pakIndex].Submeshes[0].binIndex;
             modelPreviewArea.Text = Editor.resource.models.modelBIN.ModelFilePaths[binIndex];
             if (Editor.resource.models.modelBIN.ModelLODPartNames[binIndex] != "")

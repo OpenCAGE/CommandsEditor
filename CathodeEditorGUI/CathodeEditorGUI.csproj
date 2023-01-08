@@ -151,6 +151,12 @@
     <Compile Include="LEGACY\CathodeEditorGUI_EditResource.designer.cs">
       <DependentUpon>CathodeEditorGUI_EditResource.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\CathodeEditorGUI_Composite3D.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\CathodeEditorGUI_Composite3D.Designer.cs">
+      <DependentUpon>CathodeEditorGUI_Composite3D.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popups\CathodeEditorGUI_EditHierarchy.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -337,6 +343,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="LEGACY\CathodeEditorGUI_EditResource.resx">
       <DependentUpon>CathodeEditorGUI_EditResource.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\CathodeEditorGUI_Composite3D.resx">
+      <DependentUpon>CathodeEditorGUI_Composite3D.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\CathodeEditorGUI_EditHierarchy.resx">
       <DependentUpon>CathodeEditorGUI_EditHierarchy.cs</DependentUpon>

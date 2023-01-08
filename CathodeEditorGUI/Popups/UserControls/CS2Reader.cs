@@ -1,19 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
-using System.IO.Compression;
-using System.Windows;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using HelixToolkit.Wpf;
-using CATHODE.LEGACY;
 using static CATHODE.LEGACY.CathodeModels;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Drawing;
-using CATHODE.Assets;
 using CathodeLib;
 
 namespace CathodeEditorGUI.Popups.UserControls

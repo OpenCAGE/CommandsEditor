@@ -15,6 +15,7 @@ using System.Windows.Forms;
 using CATHODE.Scripting.Internal;
 using System.Windows.Media.Animation;
 using System.Threading;
+using CathodeEditorGUI.Popups.UserControls;
 
 namespace CathodeEditorGUI
 {
@@ -1190,5 +1191,12 @@ namespace CathodeEditorGUI
 
 
         #endregion
+
+        GUI_ModelViewer modelViewer = null;
+        private void show3D_Click(object sender, EventArgs e)
+        {
+            CathodeEditorGUI_Composite3D viewer = new CathodeEditorGUI_Composite3D(Editor.selected.composite);
+            viewer.Show();
+        }
     }
 }

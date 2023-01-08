@@ -47,6 +47,7 @@
             this.selected_entity_type_description = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.show3D = new System.Windows.Forms.Button();
             this.renameSelectedNode = new System.Windows.Forms.Button();
             this.duplicateSelectedNode = new System.Windows.Forms.Button();
             this.removeSelectedEntity = new System.Windows.Forms.Button();
@@ -63,12 +64,12 @@
             this.load_commands_pak = new System.Windows.Forms.Button();
             this.env_list = new System.Windows.Forms.ComboBox();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.enableBackups = new System.Windows.Forms.CheckBox();
             this.DBG_LoadAllCommands = new System.Windows.Forms.Button();
             this.editEntryPoint = new System.Windows.Forms.Button();
             this.DBG_CompileParamList = new System.Windows.Forms.Button();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.enableBackups = new System.Windows.Forms.CheckBox();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.entityInfoGroup.SuspendLayout();
@@ -245,6 +246,7 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.show3D);
             this.groupBox4.Controls.Add(this.renameSelectedNode);
             this.groupBox4.Controls.Add(this.duplicateSelectedNode);
             this.groupBox4.Controls.Add(this.removeSelectedEntity);
@@ -258,6 +260,16 @@
             this.groupBox4.TabIndex = 148;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Entities";
+            // 
+            // show3D
+            // 
+            this.show3D.Location = new System.Drawing.Point(282, 0);
+            this.show3D.Name = "show3D";
+            this.show3D.Size = new System.Drawing.Size(90, 23);
+            this.show3D.TabIndex = 151;
+            this.show3D.Text = "test";
+            this.show3D.UseVisualStyleBackColor = true;
+            this.show3D.Click += new System.EventHandler(this.show3D_Click);
             // 
             // renameSelectedNode
             // 
@@ -421,6 +433,19 @@
             this.groupBox8.TabIndex = 174;
             this.groupBox8.TabStop = false;
             // 
+            // enableBackups
+            // 
+            this.enableBackups.AutoSize = true;
+            this.enableBackups.Location = new System.Drawing.Point(9, 26);
+            this.enableBackups.Name = "enableBackups";
+            this.enableBackups.Size = new System.Drawing.Size(104, 17);
+            this.enableBackups.TabIndex = 179;
+            this.enableBackups.Text = "Enable Backups";
+            this.toolTip1.SetToolTip(this.enableBackups, "If checked, the currently loaded Commands file will be backed up every 5 minutes." +
+        "\r\n");
+            this.enableBackups.UseVisualStyleBackColor = true;
+            this.enableBackups.CheckedChanged += new System.EventHandler(this.enableBackups_CheckedChanged);
+            // 
             // DBG_LoadAllCommands
             // 
             this.DBG_LoadAllCommands.ForeColor = System.Drawing.Color.Red;
@@ -465,19 +490,6 @@
             this.groupBox10.Size = new System.Drawing.Size(487, 49);
             this.groupBox10.TabIndex = 175;
             this.groupBox10.TabStop = false;
-            // 
-            // enableBackups
-            // 
-            this.enableBackups.AutoSize = true;
-            this.enableBackups.Location = new System.Drawing.Point(9, 26);
-            this.enableBackups.Name = "enableBackups";
-            this.enableBackups.Size = new System.Drawing.Size(104, 17);
-            this.enableBackups.TabIndex = 179;
-            this.enableBackups.Text = "Enable Backups";
-            this.toolTip1.SetToolTip(this.enableBackups, "If checked, the currently loaded Commands file will be backed up every 5 minutes." +
-        "\r\n");
-            this.enableBackups.UseVisualStyleBackColor = true;
-            this.enableBackups.CheckedChanged += new System.EventHandler(this.enableBackups_CheckedChanged);
             // 
             // CathodeEditorGUI
             // 
@@ -548,5 +560,6 @@
         private System.Windows.Forms.Button DBG_LoadAllCommands;
         private System.Windows.Forms.Button addLinkOut;
         private System.Windows.Forms.CheckBox enableBackups;
+        private System.Windows.Forms.Button show3D;
     }
 }
