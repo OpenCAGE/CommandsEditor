@@ -140,6 +140,7 @@ namespace CathodeEditorGUI
 
             //Begin caching entity names so we don't have to keep generating them
             EntityUtils.LinkCommands(Editor.commands);
+            ShortGuidUtils.LinkCommands(Editor.commands);
             if (currentBackgroundCacher != null) currentBackgroundCacher.Dispose();
             currentBackgroundCacher = Task.Factory.StartNew(() => EditorUtils.GenerateEntityNameCache(this));
 
