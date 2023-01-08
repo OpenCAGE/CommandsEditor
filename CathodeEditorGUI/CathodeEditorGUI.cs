@@ -954,22 +954,39 @@ namespace CathodeEditorGUI
 
         /* Enable/disable backups */
         Task backgroundBackups = null;
+        CancellationToken backupCancellationToken;
         private void enableBackups_CheckedChanged(object sender, EventArgs e)
         {
-            if (backgroundBackups != null) backgroundBackups.Dispose();
+            CancellationTokenSource tokenSource = new CancellationTokenSource();
+            backupCancellationToken = tokenSource.Token;
+            if (backgroundBackups != null) tokenSource.Cancel();
+            while (backgroundBackups != null) Thread.Sleep(100);
+
             if (enableBackups.Checked)
                 backgroundBackups = Task.Factory.StartNew(() => BackupCommands(this));
         }
         private void BackupCommands(CathodeEditorGUI mainInst)
         {
+            int i = 0;
             while (true)
             {
-                Thread.Sleep(150000);
-                if (Editor.commands == null) return;
+                i = 0;
+                while (i < 300000)
+                {
+                    if (backupCancellationToken.IsCancellationRequested)
+                    {
+                        backgroundBackups = null;
+                        return;
+                    }
+                    Thread.Sleep(500);
+                    i += 500;
+                }
+
+                if (Editor.commands == null) continue;
+
                 mainInst.EnableLoadingOfPaks(false, "Backup...");
                 Editor.commands.Save(Editor.commands.Filepath + ".bak", false);
                 mainInst.EnableLoadingOfPaks(true);
-                Thread.Sleep(150000);
             }
         }
 
