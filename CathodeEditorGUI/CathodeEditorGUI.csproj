@@ -139,11 +139,11 @@
     <Compile Include="Popups\CathodeEditorGUI_AddParameter.Designer.cs">
       <DependentUpon>CathodeEditorGUI_AddParameter.cs</DependentUpon>
     </Compile>
-    <Compile Include="Popups\CathodeEditorGUI_AddPin.cs">
+    <Compile Include="Popups\CathodeEditorGUI_AddOrEditLink.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Popups\CathodeEditorGUI_AddPin.designer.cs">
-      <DependentUpon>CathodeEditorGUI_AddPin.cs</DependentUpon>
+    <Compile Include="Popups\CathodeEditorGUI_AddOrEditLink.designer.cs">
+      <DependentUpon>CathodeEditorGUI_AddOrEditLink.cs</DependentUpon>
     </Compile>
     <Compile Include="LEGACY\CathodeEditorGUI_EditResource.cs">
       <SubType>Form</SubType>
@@ -332,8 +332,8 @@
     <EmbeddedResource Include="Popups\CathodeEditorGUI_AddParameter.resx">
       <DependentUpon>CathodeEditorGUI_AddParameter.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Popups\CathodeEditorGUI_AddPin.resx">
-      <DependentUpon>CathodeEditorGUI_AddPin.cs</DependentUpon>
+    <EmbeddedResource Include="Popups\CathodeEditorGUI_AddOrEditLink.resx">
+      <DependentUpon>CathodeEditorGUI_AddOrEditLink.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="LEGACY\CathodeEditorGUI_EditResource.resx">
       <DependentUpon>CathodeEditorGUI_EditResource.cs</DependentUpon>

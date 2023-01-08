@@ -243,7 +243,7 @@ namespace CathodeEditorGUI
                                 default:
                                     type = "cEnum";
                                     string[] spl = valu.defaultval.Split('(');
-                                    if (spl.Length > 1) defaults = "\"" + spl[0].Substring(0, spl[0].Length - 1) + "\", " + spl[1].Substring(0, spl[1].Length - 1);
+                                    if (spl.Length > 1) defaults = "EnumType." + spl[0].Substring(0, spl[0].Length - 1) + ", " + spl[1].Substring(0, spl[1].Length - 1);
                                     else
                                     {
                                         if (EnumUtils.GetEnum(ShortGuidUtils.Generate(valu.datatype)) == null)
@@ -271,13 +271,13 @@ namespace CathodeEditorGUI
                     {
                         scripting.Add("\tcResource resourceData = new cResource(newEntity.shortGUID);");
                         scripting.Add("\tresourceData.AddResource(ResourceType.RENDERABLE_INSTANCE);");
-                        scripting.Add("\tnewEntity.parameters.Add(new Parameter(\"resource\", resourceData));");
+                        scripting.Add("\tnewEntity.parameters.Add(new Parameter(\"resource\", resourceData, ParameterVariant.INTERNAL));");
                     }
                     if (def.title == "EnvironmentModelReference")
                     {
                         scripting.Add("\tcResource resourceData2 = new cResource(newEntity.shortGUID);");
-                        scripting.Add("\tresourceData2.AddResource(ResourceType.ANIMATED_MODEL); //TODO: need to figure out what startIndex links to, so we can set that!");
-                        scripting.Add("\tnewEntity.parameters.Add(new Parameter(\"resource\", resourceData2));");
+                        scripting.Add("\tresourceData2.AddResource(ResourceType.ANIMATED_MODEL);");
+                        scripting.Add("\tnewEntity.parameters.Add(new Parameter(\"resource\", resourceData2, ParameterVariant.INTERNAL));");
                     }
                     if (def.title == "PhysicsSystem") scripting.Add("\tnewEntity.AddResource(ResourceType.DYNAMIC_PHYSICS_SYSTEM).startIndex = 0;");
                     scripting.Add("break;");
@@ -505,7 +505,7 @@ namespace CathodeEditorGUI
                 for (int x = 0; x < cmd.Composites[i].variables.Count; x++)
                 {
                     string entityName = "ENT_" + cmd.Composites[i].variables[x].shortGUID.ToByteString().Replace('-', '_');
-                    script.Add("VariableEntity " + entityName + " = " + compositeName + ".AddVariable(\"" + ShortGuidUtils.FindString(cmd.Composites[i].variables[x].parameter) + "\", DataType." + cmd.Composites[i].variables[x].type.ToString() + ");");
+                    script.Add("VariableEntity " + entityName + " = " + compositeName + ".AddVariable(\"" + ShortGuidUtils.FindString(cmd.Composites[i].variables[x].name) + "\", DataType." + cmd.Composites[i].variables[x].type.ToString() + ");");
                 }
                 for (int x = 0; x < cmd.Composites[i].proxies.Count; x++)
                 {
@@ -522,8 +522,8 @@ namespace CathodeEditorGUI
                     string entityName = "ENT_" + entities[x].shortGUID.ToByteString().Replace('-', '_');
                     for (int y = 0; y < entities[x].parameters.Count; y++)
                     {
-                        string paramName = ShortGuidUtils.FindString(entities[x].parameters[y].shortGUID);
-                        script.Add(entityName + ".AddParameter(" + ((paramName == entities[x].parameters[y].shortGUID.ToByteString()) ? "new ShortGuid(\"" : "\"") + paramName + "\"" + ((paramName == entities[x].parameters[y].shortGUID.ToByteString()) ? ")" : "") + ", new ");
+                        string paramName = ShortGuidUtils.FindString(entities[x].parameters[y].name);
+                        script.Add(entityName + ".AddParameter(" + ((paramName == entities[x].parameters[y].name.ToByteString()) ? "new ShortGuid(\"" : "\"") + paramName + "\"" + ((paramName == entities[x].parameters[y].name.ToByteString()) ? ")" : "") + ", new ");
                         switch (entities[x].parameters[y].content.dataType)
                         {
                             case DataType.FLOAT:

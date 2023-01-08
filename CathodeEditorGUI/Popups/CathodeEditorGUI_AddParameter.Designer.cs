@@ -102,7 +102,8 @@
             "VECTOR",
             "TRANSFORM",
             "ENUM",
-            "SPLINE"});
+            "SPLINE",
+            "RESOURCE"});
             this.param_datatype.Location = new System.Drawing.Point(104, 54);
             this.param_datatype.Name = "param_datatype";
             this.param_datatype.Size = new System.Drawing.Size(641, 21);

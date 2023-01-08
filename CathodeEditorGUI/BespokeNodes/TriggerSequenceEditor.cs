@@ -21,7 +21,7 @@ namespace CathodeEditorGUI
             node = _node;
 
             triggerDelay.Text = "0.0";
-            this.Text = "TriggerSequence Editor: " + Editor.util.entity.GetName(Editor.selected.composite.shortGUID, _node.shortGUID);
+            this.Text = "TriggerSequence Editor: " + EntityUtils.GetName(Editor.selected.composite.shortGUID, _node.shortGUID);
             selectedTriggerDetails.Visible = false;
 
             ReloadTriggerList();

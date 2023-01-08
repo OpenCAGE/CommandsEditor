@@ -1,13 +1,6 @@
 ﻿using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace CathodeEditorGUI.UserControls
@@ -17,6 +10,9 @@ namespace CathodeEditorGUI.UserControls
         public Action<Entity> GoToEntity;
         private Entity _linkedEntity;
 
+        private EntityLink _link;
+        private bool _isLinkOut;
+
         public GUI_Link()
         {
             InitializeComponent();
@@ -24,6 +20,9 @@ namespace CathodeEditorGUI.UserControls
 
         public void PopulateUI(EntityLink link, bool isLinkOut, ShortGuid linkInGuid = new ShortGuid()) // linkInGuid only needs to be given if linkInGuid is false
         {
+            _link = link;
+            _isLinkOut = isLinkOut;
+
             if (isLinkOut)
             {
                 _linkedEntity = Editor.selected.composite.GetEntityByID(link.childID);
@@ -36,6 +35,7 @@ namespace CathodeEditorGUI.UserControls
                 group.Text = ShortGuidUtils.FindString(link.childParamID);
                 label1.Text = "Connects IN from \"" + ShortGuidUtils.FindString(link.parentParamID) + "\" on: ";
             }
+
             textBox1.Text = EditorUtils.GenerateEntityName(_linkedEntity, Editor.selected.composite);
         }
 
@@ -46,7 +46,18 @@ namespace CathodeEditorGUI.UserControls
 
         private void EditLink_Click(object sender, EventArgs e)
         {
+            CathodeEditorGUI_AddOrEditLink editor;
+            if (_isLinkOut)
+                editor = new CathodeEditorGUI_AddOrEditLink(Editor.selected.composite, Editor.selected.entity, _linkedEntity, _link, true);
+            else
+                editor = new CathodeEditorGUI_AddOrEditLink(Editor.selected.composite, _linkedEntity, Editor.selected.entity, _link, false);
 
+            editor.Show();
+            editor.OnSaved += link_editor_OnSaved;
+        }
+        private void link_editor_OnSaved()
+        {
+            GoToEntity?.Invoke(Editor.selected.entity);
         }
     }
 }

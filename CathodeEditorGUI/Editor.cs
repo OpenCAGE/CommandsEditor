@@ -36,12 +36,5 @@ namespace CathodeEditorGUI
             public RenderableElementsDatabase reds;
             public EnvironmentAnimationDatabase env_animations;
         }
-
-        //Helpers
-        public static Util util;
-        public struct Util
-        {
-            public EntityUtils entity;
-        }
     }
 }

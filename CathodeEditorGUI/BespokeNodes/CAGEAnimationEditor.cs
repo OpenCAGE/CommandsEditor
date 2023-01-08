@@ -84,7 +84,7 @@ namespace CathodeEditorGUI
                 if (resolvedEntity != null)
                 {
                     TextBox controllingEntity = new TextBox();
-                    controllingEntity.Text = "Controlling: " + Editor.util.entity.GetName(resolvedComposite.shortGUID, resolvedEntity.shortGUID);
+                    controllingEntity.Text = "Controlling: " + EntityUtils.GetName(resolvedComposite.shortGUID, resolvedEntity.shortGUID);
                     controllingEntity.Location = new Point(keyframeWidth + 5, 18 + (countInGroup * 23));
                     controllingEntity.Size = new Size(200, 20);
                     controllingEntity.ReadOnly = true;
