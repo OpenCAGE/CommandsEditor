@@ -8,7 +8,7 @@
     <ProjectGuid>{DDFD51D4-A1E6-430D-BF4C-858378E74D56}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>CathodeEditorGUI</RootNamespace>
-    <AssemblyName>CathodeEditorGUI</AssemblyName>
+    <AssemblyName>CommandsEditor</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
