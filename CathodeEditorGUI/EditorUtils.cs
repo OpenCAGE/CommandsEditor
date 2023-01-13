@@ -220,6 +220,17 @@ namespace CathodeEditorGUI
             int newAnimCount = 0;
             int originalLinkCount = 0;
             int newLinkCount = 0;
+            int originalFuncCount = 0;
+            int newFuncCount = 0;
+
+            //Clear functions
+            List<FunctionEntity> functionsPurged = new List<FunctionEntity>();
+            for (int i = 0; i < comp.functions.Count; i++)
+                if (CommandsUtils.FunctionTypeExists(comp.functions[i].function) || Editor.commands.GetComposite(comp.functions[i].function) != null)
+                    functionsPurged.Add(comp.functions[i]);
+            originalFuncCount += comp.functions.Count;
+            newFuncCount += functionsPurged.Count;
+            comp.functions = functionsPurged;
 
             //Clear overrides
             List<OverrideEntity> overridePurged = new List<OverrideEntity>();
@@ -281,7 +292,8 @@ namespace CathodeEditorGUI
                 entities[i].childLinks = childLinksPurged;
             }
 
-            if (originalUnknownCount + 
+            if (originalUnknownCount +
+                (originalFuncCount - newFuncCount) +
                 (originalProxyCount - newProxyCount) + 
                 (originalOverrideCount - newOverrideCount) + 
                 (originalTriggerCount - newTriggerCount) + 
@@ -291,6 +303,7 @@ namespace CathodeEditorGUI
             Console.WriteLine(
                 "Purged all dead hierarchies and entities in " + comp.name + "!" +
                 "\n - " + originalUnknownCount + " unknown entities" +
+                "\n - " + (originalFuncCount - newFuncCount) + " functions (of " + originalFuncCount + ")" +
                 "\n - " + (originalProxyCount - newProxyCount) + " proxies (of " + originalProxyCount + ")" +
                 "\n - " + (originalOverrideCount - newOverrideCount) + " overrides (of " + originalOverrideCount + ")" +
                 "\n - " + (originalTriggerCount - newTriggerCount) + " triggers (of " + originalTriggerCount + ")" +
