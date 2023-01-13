@@ -28,14 +28,17 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CathodeEditorGUI_Composite3D));
             this.modelRendererHost = new System.Windows.Forms.Integration.ElementHost();
             this.SuspendLayout();
             // 
             // modelRendererHost
             // 
-            this.modelRendererHost.Location = new System.Drawing.Point(12, 12);
+            this.modelRendererHost.AutoSize = true;
+            this.modelRendererHost.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.modelRendererHost.Location = new System.Drawing.Point(0, 0);
             this.modelRendererHost.Name = "modelRendererHost";
-            this.modelRendererHost.Size = new System.Drawing.Size(673, 597);
+            this.modelRendererHost.Size = new System.Drawing.Size(693, 619);
             this.modelRendererHost.TabIndex = 1;
             this.modelRendererHost.Text = "elementHost1";
             this.modelRendererHost.Child = null;
@@ -46,9 +49,12 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(693, 619);
             this.Controls.Add(this.modelRendererHost);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "CathodeEditorGUI_Composite3D";
-            this.Text = "CathodeEditorGUI_Composite3D";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Composite 3D Preview";
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 

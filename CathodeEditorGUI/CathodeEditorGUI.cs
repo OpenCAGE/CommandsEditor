@@ -63,7 +63,9 @@ namespace CathodeEditorGUI
 
             ClearUI(true, true, true);
 
+            show3D.Visible = false;
 #if DEBUG
+            show3D.Visible = true;
             DBG_CompileParamList.Visible = true;
             DBG_LoadAllCommands.Visible = true;
 

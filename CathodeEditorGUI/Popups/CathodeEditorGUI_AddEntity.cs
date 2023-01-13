@@ -157,20 +157,15 @@ namespace CathodeEditorGUI
                 return;
             }
 
-            if (createDatatypeEntity.Checked)
+            Entity newEntity = null;
+            if (createFunctionEntity.Checked)
             {
-                VariableEntity newEntity = composite.AddVariable(textBox1.Text, (DataType)entityVariant.SelectedIndex, true);
-                OnNewEntity?.Invoke(newEntity);
-            }
-            else if (createFunctionEntity.Checked)
-            {
-                //Make sure the function is valid
                 if (!Enum.TryParse(entityVariant.Text, out FunctionType function))
                 {
                     MessageBox.Show("Please make sure you have typed or selected a valid entity class to create.", "Invalid entity class", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-                FunctionEntity newEntity = composite.AddFunction(function, addDefaultParams.Checked);
+                newEntity = composite.AddFunction(function, addDefaultParams.Checked);
 
                 //TODO: currently we don't support these properly
                 if (addDefaultParams.Checked)
@@ -178,9 +173,6 @@ namespace CathodeEditorGUI
                     newEntity.parameters.RemoveAll(o => o.content.dataType == DataType.NONE); //TODO
                     newEntity.parameters.RemoveAll(o => o.content.dataType == DataType.RESOURCE); //TODO
                 }
-
-                EntityUtils.SetName(composite.shortGUID, newEntity.shortGUID, textBox1.Text);
-                OnNewEntity?.Invoke(newEntity);
             }
             else if (createCompositeEntity.Checked)
             {
@@ -191,43 +183,21 @@ namespace CathodeEditorGUI
                     MessageBox.Show("Failed to look up composite!\nPlease report this issue on GitHub.\n\n" + entityVariant.Text, "Could not find composite!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-                FunctionEntity newEntity = composite.AddFunction(compRef, addDefaultParams.Checked);
-                EntityUtils.SetName(this.composite.shortGUID, newEntity.shortGUID, textBox1.Text);
-                OnNewEntity?.Invoke(newEntity);
+                newEntity = composite.AddFunction(compRef, addDefaultParams.Checked);
             }
+            else if (createDatatypeEntity.Checked)
+                newEntity = composite.AddVariable(textBox1.Text, (DataType)entityVariant.SelectedIndex, true);
             else if (createProxyEntity.Checked)
-            {
-                //Create ProxyEntity
-                ProxyEntity newEntity = new ProxyEntity(ShortGuidUtils.GenerateRandom());
-                newEntity.hierarchy = hierarchy;
-                newEntity.extraId = ShortGuidUtils.Generate("temp"); //TODO: what is this value?
-                newEntity.parameters.Add(new Parameter("proxy_filter_targets", new cBool(false)));
-                newEntity.parameters.Add(new Parameter("proxy_enable_on_reset", new cBool(false)));
-                newEntity.parameters.Add(new Parameter("proxy_enable", new cFloat(0.0f)));
-                newEntity.parameters.Add(new Parameter("proxy_enabled", new cFloat(0.0f)));
-                newEntity.parameters.Add(new Parameter("proxy_disable", new cFloat(0.0f)));
-                newEntity.parameters.Add(new Parameter("proxy_disabled", new cFloat(0.0f)));
-                newEntity.parameters.Add(new Parameter("reference", new cString("")));
-                newEntity.parameters.Add(new Parameter("trigger", new cFloat(0.0f)));
-                //TODO: Populate the above from interface defaults
-
-                //Add to composite & save name
-                composite.proxies.Add(newEntity);
-                EntityUtils.SetName(composite.shortGUID, newEntity.shortGUID, textBox1.Text);
-                OnNewEntity?.Invoke(newEntity);
-            }
+                newEntity = composite.AddProxy(hierarchy, true);
             else if (createOverrideEntity.Checked)
-            {
-                //Create OverrideEntity
-                OverrideEntity newEntity = new OverrideEntity(ShortGuidUtils.GenerateRandom());
-                newEntity.hierarchy = hierarchy;
-                newEntity.checksum = ShortGuidUtils.Generate("temp"); //TODO: how do we generate this? without it, i think overrides won't work.
+                newEntity = composite.AddOverride(hierarchy);
+            else
+                return;
 
-                //Add to composite & save name
-                composite.overrides.Add(newEntity);
-                EntityUtils.SetName(composite.shortGUID, newEntity.shortGUID, textBox1.Text);
-                OnNewEntity?.Invoke(newEntity);
-            }
+            if (!createDatatypeEntity.Checked) 
+                EntityUtils.SetName(composite, newEntity, textBox1.Text);
+
+            OnNewEntity?.Invoke(newEntity);
             this.Close();
         }
     }

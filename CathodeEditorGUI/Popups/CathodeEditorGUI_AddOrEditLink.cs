@@ -75,6 +75,9 @@ namespace CathodeEditorGUI
 
                 parentParameter.Text = ShortGuidUtils.FindString(link.parentParamID);
                 childParameter.Text = ShortGuidUtils.FindString(link.childParamID);
+
+                RefreshPinInParams();
+                RefreshPinOutParams();
             }
         }
 
@@ -117,6 +120,7 @@ namespace CathodeEditorGUI
         {
             parentParameter.BeginUpdate();
             parentParameter.Items.Clear();
+            if (!_isEditingLinkOut && parentEntityList.SelectedIndex == -1) return;
             List<string> items = EditorUtils.GenerateParameterList((!_isEditingLinkOut) ? _entityList[parentEntityList.SelectedIndex] : _parentEntity);
             for (int i = 0; i < items.Count; i++) parentParameter.Items.Add(items[i]);
             parentParameter.EndUpdate();

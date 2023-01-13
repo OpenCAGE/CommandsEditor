@@ -22,6 +22,7 @@ namespace CathodeEditorGUI
         public CathodeEditorGUI_Composite3D(Composite comp)
         {
             InitializeComponent();
+            this.Text += ": " + comp.name;
 
             List<GUI_ModelViewer.Model> models = new List<GUI_ModelViewer.Model>();
             models.AddRange(LoadComposite(comp));
@@ -34,7 +35,10 @@ namespace CathodeEditorGUI
         private List<GUI_ModelViewer.Model> LoadComposite(Composite comp, cTransform offset = null)
         {
             List<GUI_ModelViewer.Model> models = new List<GUI_ModelViewer.Model>();
-            foreach (Entity entity in comp.GetEntities())
+            if (comp == null) return models;
+
+            List<Entity> entities = comp.GetEntities();
+            foreach (Entity entity in entities)
             {
                 Parameter positionParameter = entity.GetParameter("position");
                 if (entity.variant == EntityVariant.FUNCTION)
@@ -79,12 +83,7 @@ namespace CathodeEditorGUI
                     Vector3 rotationOffset = (offset == null) ? new Vector3() : new Vector3(offset.rotation.x, offset.rotation.y, offset.rotation.z);
                     if (positionParameter != null) rotationOffset += ((cTransform)positionParameter.content).rotation;
 
-                    models.Add(
-                        new GUI_ModelViewer.Model(
-                            pakModelIndex,
-                            new Vector3D(positionOffset.x, positionOffset.y, positionOffset.z),
-                            new Vector3D(rotationOffset.x, rotationOffset.y, rotationOffset.z)
-                        ));
+                    models.Add(new GUI_ModelViewer.Model(pakModelIndex, positionOffset, rotationOffset));
                 }
             }
             return models;

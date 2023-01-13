@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using CathodeLib;
+using System.Collections.Generic;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Media.Media3D;
 
 namespace CathodeEditorGUI.Popups.UserControls
@@ -27,12 +29,13 @@ namespace CathodeEditorGUI.Popups.UserControls
         
         private Model3DGroup OffsetModel(int modelIndex, Vector3D position, Vector3D rotation)
         {
+            float scale = 100.0f;
+
             Model3DGroup model = reader.Read(modelIndex);
-            var pos = new TranslateTransform3D(position);
-            var rot = new RotateTransform3D(new AxisAngleRotation3D(), rotation.X, rotation.Y, rotation.Z);
-            var transform = new Transform3DGroup();
-            transform.Children.Add(pos);
-            transform.Children.Add(rot);
+            Transform3DGroup transform = new Transform3DGroup();
+            transform.Children.Add(new ScaleTransform3D(scale, scale, scale));
+            //transform.Children.Add(new RotateTransform3D(new (rotation.X, rotation.Y, rotation.Z, 0.0f));
+            transform.Children.Add(new TranslateTransform3D(position.X, position.Y, position.Z));
             model.Transform = transform;
             return model;
         }
@@ -50,6 +53,12 @@ namespace CathodeEditorGUI.Popups.UserControls
                 this.modelIndex = modelIndex;
                 this.position = position;
                 this.rotation = rotation;
+            }
+            public Model(int modelIndex, Vector3 position, Vector3 rotation)
+            {
+                this.modelIndex = modelIndex;
+                this.position = new Vector3D(position.x, position.y, position.z);
+                this.rotation = new Vector3D(rotation.x, rotation.y, rotation.z);
             }
 
             public int modelIndex;
