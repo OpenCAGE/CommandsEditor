@@ -70,6 +70,7 @@
             this.DBG_CompileParamList = new System.Windows.Forms.Button();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.button1 = new System.Windows.Forms.Button();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.entityInfoGroup.SuspendLayout();
@@ -246,6 +247,7 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.button1);
             this.groupBox4.Controls.Add(this.show3D);
             this.groupBox4.Controls.Add(this.renameSelectedNode);
             this.groupBox4.Controls.Add(this.duplicateSelectedNode);
@@ -491,6 +493,16 @@
             this.groupBox10.TabIndex = 175;
             this.groupBox10.TabStop = false;
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(378, 0);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(90, 23);
+            this.button1.TabIndex = 152;
+            this.button1.Text = "websocket";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // CathodeEditorGUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -561,5 +573,6 @@
         private System.Windows.Forms.Button addLinkOut;
         private System.Windows.Forms.CheckBox enableBackups;
         private System.Windows.Forms.Button show3D;
+        private System.Windows.Forms.Button button1;
     }
 }

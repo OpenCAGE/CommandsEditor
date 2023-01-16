@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
+using System.Numerics;
 
 namespace CathodeEditorGUI.Popups.UserControls
 {
@@ -57,8 +58,8 @@ namespace CathodeEditorGUI.Popups.UserControls
             public Model(int modelIndex, Vector3 position, Vector3 rotation)
             {
                 this.modelIndex = modelIndex;
-                this.position = new Vector3D(position.x, position.y, position.z);
-                this.rotation = new Vector3D(rotation.x, rotation.y, rotation.z);
+                this.position = new Vector3D(position.X, position.Y, position.Z);
+                this.rotation = new Vector3D(rotation.X, rotation.Y, rotation.Z);
             }
 
             public int modelIndex;

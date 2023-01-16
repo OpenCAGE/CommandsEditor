@@ -13,21 +13,29 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CATHODE.Scripting.Internal;
-using System.Windows.Media.Animation;
 using System.Threading;
 using CathodeEditorGUI.Popups.UserControls;
+using System.Windows;
+using WebSocketSharp.Server;
+using MessageBox = System.Windows.Forms.MessageBox;
+using Point = System.Drawing.Point;
+using System.Numerics;
 
 namespace CathodeEditorGUI
 {
     public partial class CathodeEditorGUI : Form
     {
         private TreeUtility treeHelper;
-        private bool currentlyShowingChildLinks = true;
+        private WebSocketServer server;
 
         public CathodeEditorGUI()
         {
             InitializeComponent();
             treeHelper = new TreeUtility(FileTree);
+
+            server = new WebSocketServer("ws://localhost:1702");
+            server.AddWebSocketService<WebsocketServer>("/commands_editor");
+            server.Start();
 
             //Populate available maps
             env_list.Items.Clear();
@@ -106,7 +114,6 @@ namespace CathodeEditorGUI
                 for (int i = 0; i < entity_params.Controls.Count; i++) 
                     entity_params.Controls[i].Dispose();
                 entity_params.Controls.Clear();
-                currentlyShowingChildLinks = true;
                 jumpToComposite.Visible = false;
                 editFunction.Enabled = false;
                 editEntityResources.Enabled = false;
@@ -1199,6 +1206,32 @@ namespace CathodeEditorGUI
         {
             CathodeEditorGUI_Composite3D viewer = new CathodeEditorGUI_Composite3D(Editor.selected.composite);
             viewer.Show();
+        }
+
+        private string levelLoaded = "";
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (levelLoaded != env_list.SelectedItem.ToString())
+            {
+                levelLoaded = env_list.SelectedItem.ToString();
+                server.WebSocketServices["/commands_editor"].Sessions.Broadcast("1" + levelLoaded);
+                return;
+            }
+
+            try
+            {
+                //Vector3 vec = ((cTransform)Editor.selected.entity.GetParameter("position").content).position;
+                //server.WebSocketServices["/commands_editor"].Sessions.Broadcast(((int)MessageType.GO_TO_POSITION).ToString() + vec.X + ">" + vec.Y + ">" + vec.Z);
+
+                string str = "";
+                for (int i = 0; i < Editor.mvr.Movers.Count; i++)
+                {
+                    if (Editor.mvr.Movers[i].commandsNodeID != Editor.selected.entity.shortGUID) continue;
+                    str += i + ">";
+                }
+                server.WebSocketServices["/commands_editor"].Sessions.Broadcast(((int)MessageType.GO_TO_REDS).ToString() + str);
+            }
+            catch { }
         }
     }
 }

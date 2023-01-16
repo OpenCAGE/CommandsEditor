@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Numerics;
 
 namespace CathodeEditorGUI
 {
@@ -491,9 +492,9 @@ namespace CathodeEditorGUI
                             case ResourceType.RENDERABLE_INSTANCE:
                                 script.Add("ResourceReference " + resourceName + " = " + entityName + ".AddResource(ResourceType." + cmd.Composites[i].functions[x].resources[y].entryType + ");");
                                 Vector3 pos = cmd.Composites[i].functions[x].resources[y].position;
-                                script.Add(resourceName + ".position = new Vector3(" + pos.x + "f, " + pos.y + "f, " + pos.z + "f);");
+                                script.Add(resourceName + ".position = new Vector3(" + pos.X + "f, " + pos.Y + "f, " + pos.Z + "f);");
                                 Vector3 rot = cmd.Composites[i].functions[x].resources[y].rotation;
-                                script.Add(resourceName + ".rotation = new Vector3(" + rot.x + "f, " + rot.y + "f, " + rot.z + "f);");
+                                script.Add(resourceName + ".rotation = new Vector3(" + rot.X + "f, " + rot.Y + "f, " + rot.Z + "f);");
                                 script.Add(resourceName + ".startIndex = " + cmd.Composites[i].functions[x].resources[y].startIndex + ";");
                                 script.Add(resourceName + ".count = " + cmd.Composites[i].functions[x].resources[y].count + ";");
                                 break;
@@ -545,12 +546,12 @@ namespace CathodeEditorGUI
                                 break;
                             case DataType.VECTOR:
                                 Vector3 vc = ((cVector3)entities[x].parameters[y].content).value;
-                                script[script.Count - 1] += "cVector3(new Vector3(" + vc.x + "f, " + vc.y + "f, " + vc.z + "f))";
+                                script[script.Count - 1] += "cVector3(new Vector3(" + vc.X + "f, " + vc.Y + "f, " + vc.Z + "f))";
                                 break;
                             case DataType.TRANSFORM:
                                 Vector3 rot = ((cTransform)entities[x].parameters[y].content).rotation;
                                 Vector3 pos = ((cTransform)entities[x].parameters[y].content).position;
-                                script[script.Count - 1] += "cTransform(new Vector3(" + pos.x + "f, " + pos.y + "f, " + pos.z + "f), new Vector3(" + rot.x + "f, " + rot.y + "f, " + rot.z + "f))";
+                                script[script.Count - 1] += "cTransform(new Vector3(" + pos.X + "f, " + pos.Y + "f, " + pos.Z + "f), new Vector3(" + rot.X + "f, " + rot.Y + "f, " + rot.Z + "f))";
                                 break;
                             default:
                                 throw new Exception("Unhandled parameter datatype");

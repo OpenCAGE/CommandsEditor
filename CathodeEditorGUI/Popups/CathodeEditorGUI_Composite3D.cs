@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Media.Media3D;
 using CathodeLib;
+using System.Numerics;
 
 namespace CathodeEditorGUI
 {
@@ -46,9 +47,9 @@ namespace CathodeEditorGUI
                     FunctionEntity function = (FunctionEntity)entity;
                     if (!CommandsUtils.FunctionTypeExists(function.function))
                     {
-                        Vector3 positionOffset = (offset == null) ? new Vector3() : new Vector3(offset.position.x, offset.position.y, offset.position.z);
+                        Vector3 positionOffset = (offset == null) ? new Vector3() : new Vector3(offset.position.X, offset.position.Y, offset.position.Z);
                         if (positionParameter != null) positionOffset += ((cTransform)positionParameter.content).position;
-                        Vector3 rotationOffset = (offset == null) ? new Vector3() : new Vector3(offset.rotation.x, offset.rotation.y, offset.rotation.z);
+                        Vector3 rotationOffset = (offset == null) ? new Vector3() : new Vector3(offset.rotation.X, offset.rotation.Y, offset.rotation.Z);
                         if (positionParameter != null) rotationOffset += ((cTransform)positionParameter.content).rotation;
 
                         cTransform newOffset = new cTransform(positionOffset, rotationOffset);
@@ -78,9 +79,9 @@ namespace CathodeEditorGUI
                         if (pakModelIndex != -1) break;
                     }
 
-                    Vector3 positionOffset = (offset == null) ? new Vector3() : new Vector3(offset.position.x, offset.position.y, offset.position.z);
+                    Vector3 positionOffset = (offset == null) ? new Vector3() : new Vector3(offset.position.X, offset.position.Y, offset.position.Z);
                     if (positionParameter != null) positionOffset += ((cTransform)positionParameter.content).position;
-                    Vector3 rotationOffset = (offset == null) ? new Vector3() : new Vector3(offset.rotation.x, offset.rotation.y, offset.rotation.z);
+                    Vector3 rotationOffset = (offset == null) ? new Vector3() : new Vector3(offset.rotation.X, offset.rotation.Y, offset.rotation.Z);
                     if (positionParameter != null) rotationOffset += ((cTransform)positionParameter.content).rotation;
 
                     models.Add(new GUI_ModelViewer.Model(pakModelIndex, positionOffset, rotationOffset));
