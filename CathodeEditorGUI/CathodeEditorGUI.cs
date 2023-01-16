@@ -217,48 +217,31 @@ namespace CathodeEditorGUI
             Editor.resource.env_animations = null;
 
 #if !CATHODE_FAIL_HARD
-            bool hasLoaded = false;
-            int retryCount = 0;
-            while (!hasLoaded && retryCount < 3)
+            try
             {
-                try
-                {
 #endif
-                    string baseLevelPath = Editor.commands.Filepath.Substring(0, Editor.commands.Filepath.Length - ("WORLD/COMMANDS.PAK").Length);
+                string baseLevelPath = Editor.commands.Filepath.Substring(0, Editor.commands.Filepath.Length - ("WORLD/COMMANDS.PAK").Length);
 
-                    //The game has two hard-coded _PATCH overrides which change the CommandsPAK but not the assets
-                    string levelName = env_list.Items[env_list.SelectedIndex].ToString();
-                    switch (levelName)
-                    {
-                        case @"DLC\BSPNOSTROMO_RIPLEY_PATCH":
-                        case @"DLC\BSPNOSTROMO_TWOTEAMS_PATCH":
-                            baseLevelPath = baseLevelPath.Replace(levelName, levelName.Substring(0, levelName.Length - ("_PATCH").Length));
-                            break;
-                    }
-
-                    Editor.resource.models = new CathodeModels(baseLevelPath + "RENDERABLE/MODELS_LEVEL.BIN",
-                                                                baseLevelPath + "RENDERABLE/LEVEL_MODELS.PAK");
-                    Editor.resource.reds = new RenderableElementsDatabase(baseLevelPath + "WORLD/REDS.BIN");
-                    Editor.resource.materials = new MaterialDatabase(baseLevelPath + "RENDERABLE/LEVEL_MODELS.MTL");
-                    Editor.resource.textures = new Textures(baseLevelPath + "RENDERABLE/LEVEL_TEXTURES.ALL.PAK");
-                    Editor.resource.textures_Global = new Textures(SharedData.pathToAI + "/DATA/ENV/GLOBAL/WORLD/GLOBAL_TEXTURES.ALL.PAK");
-                    Editor.resource.env_animations = new EnvironmentAnimationDatabase(baseLevelPath + "WORLD/ENVIRONMENT_ANIMATION.DAT");
-#if !CATHODE_FAIL_HARD
-                    hasLoaded = true;
-                }
-                catch
+                //The game has two hard-coded _PATCH overrides which change the CommandsPAK but not the assets
+                string levelName = env_list.Items[env_list.SelectedIndex].ToString();
+                switch (levelName)
                 {
-                    Editor.resource.models = null;
-                    Editor.resource.reds = null;
-                    Editor.resource.materials = null;
-                    Editor.resource.textures = null;
-                    Editor.resource.textures_Global = null;
-                    Editor.resource.env_animations = null;
-                    hasLoaded = false;
+                    case @"DLC\BSPNOSTROMO_RIPLEY_PATCH":
+                    case @"DLC\BSPNOSTROMO_TWOTEAMS_PATCH":
+                        baseLevelPath = baseLevelPath.Replace(levelName, levelName.Substring(0, levelName.Length - ("_PATCH").Length));
+                        break;
                 }
-                retryCount++;
+
+                Editor.resource.models = new CathodeModels(baseLevelPath + "RENDERABLE/MODELS_LEVEL.BIN",
+                                                            baseLevelPath + "RENDERABLE/LEVEL_MODELS.PAK");
+                Editor.resource.reds = new RenderableElementsDatabase(baseLevelPath + "WORLD/REDS.BIN");
+                Editor.resource.materials = new MaterialDatabase(baseLevelPath + "RENDERABLE/LEVEL_MODELS.MTL");
+                //Editor.resource.textures = new Textures(baseLevelPath + "RENDERABLE/LEVEL_TEXTURES.ALL.PAK");
+                //Editor.resource.textures_Global = new Textures(SharedData.pathToAI + "/DATA/ENV/GLOBAL/WORLD/GLOBAL_TEXTURES.ALL.PAK");
+                Editor.resource.env_animations = new EnvironmentAnimationDatabase(baseLevelPath + "WORLD/ENVIRONMENT_ANIMATION.DAT");
+#if !CATHODE_FAIL_HARD
             }
-            if (!hasLoaded)
+            catch
             {
                 //Can fail if we're loading a PAK outside the game structure
                 MessageBox.Show("Failed to load asset PAKs!\nAre you opening a Commands PAK outside of a map directory?\nIf not, please try and load again.", "Resource editing disabled.", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -772,7 +755,7 @@ namespace CathodeEditorGUI
                         FunctionType function = CommandsUtils.GetFunctionType(thisFunction);
                         editFunction.Enabled = function == FunctionType.CAGEAnimation || function == FunctionType.TriggerSequence;
                     }
-                    editEntityResources.Enabled = (Editor.resource.textures != null);
+                    editEntityResources.Enabled = (Editor.resource.models != null);
                     break;
                 case EntityVariant.VARIABLE:
                     description = "DataType " + ((VariableEntity)entity).type.ToString();
