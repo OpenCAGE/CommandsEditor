@@ -179,9 +179,12 @@ namespace CathodeEditorGUI
             Editor.commands = null;
 
             string path_to_ENV = SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + level;
+#if !CATHODE_FAIL_HARD
             try
             {
+#endif
                 Editor.commands = new Commands(path_to_ENV + "/WORLD/COMMANDS.PAK");
+#if !CATHODE_FAIL_HARD
             }
             catch (Exception e)
             {
@@ -189,6 +192,7 @@ namespace CathodeEditorGUI
                 Editor.commands = null;
                 return;
             }
+#endif
 
             if (Editor.commands.EntryPoints == null)
             {
@@ -212,7 +216,7 @@ namespace CathodeEditorGUI
             Editor.resource.textures_Global = null;
             Editor.resource.env_animations = null;
 
-#if !DEBUG
+#if !CATHODE_FAIL_HARD
             bool hasLoaded = false;
             int retryCount = 0;
             while (!hasLoaded && retryCount < 3)
@@ -236,12 +240,10 @@ namespace CathodeEditorGUI
                                                                 baseLevelPath + "RENDERABLE/LEVEL_MODELS.PAK");
                     Editor.resource.reds = new RenderableElementsDatabase(baseLevelPath + "WORLD/REDS.BIN");
                     Editor.resource.materials = new MaterialDatabase(baseLevelPath + "RENDERABLE/LEVEL_MODELS.MTL");
-                    Editor.resource.textures = new CATHODE.LEGACY.Assets.Textures(baseLevelPath + "RENDERABLE/LEVEL_TEXTURES.ALL.PAK");
-                    Editor.resource.textures.Load();
-                    Editor.resource.textures_Global = new CATHODE.LEGACY.Assets.Textures(SharedData.pathToAI + "/DATA/ENV/GLOBAL/WORLD/GLOBAL_TEXTURES.ALL.PAK");
-                    Editor.resource.textures_Global.Load();
+                    Editor.resource.textures = new Textures(baseLevelPath + "RENDERABLE/LEVEL_TEXTURES.ALL.PAK");
+                    Editor.resource.textures_Global = new Textures(SharedData.pathToAI + "/DATA/ENV/GLOBAL/WORLD/GLOBAL_TEXTURES.ALL.PAK");
                     Editor.resource.env_animations = new EnvironmentAnimationDatabase(baseLevelPath + "WORLD/ENVIRONMENT_ANIMATION.DAT");
-#if !DEBUG
+#if !CATHODE_FAIL_HARD
                     hasLoaded = true;
                 }
                 catch
@@ -273,10 +275,13 @@ namespace CathodeEditorGUI
         /* Load mover descriptors */
         private void LoadMovers()
         {
+#if !CATHODE_FAIL_HARD
             try
             {
+#endif
                 string baseLevelPath = Editor.commands.Filepath.Substring(0, Editor.commands.Filepath.Length - ("WORLD/COMMANDS.PAK").Length);
                 Editor.mvr = new MoverDatabase(baseLevelPath + "WORLD/MODELS.MVR");
+#if !CATHODE_FAIL_HARD
             }
             catch
             {
@@ -284,6 +289,7 @@ namespace CathodeEditorGUI
                 MessageBox.Show("Failed to load mover descriptor database!\nAre you opening a Commands PAK outside of a map directory?\nMVR editing disabled.", "MVR editing disabled.", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 Editor.mvr = null;
             }
+#endif
         }
 
         /* Save the current edits */
@@ -292,11 +298,14 @@ namespace CathodeEditorGUI
             if (Editor.commands == null) return;
             Cursor.Current = Cursors.WaitCursor;
 
+#if !CATHODE_FAIL_HARD
             byte[] backup = null;
             try
             {
                 backup = File.ReadAllBytes(Editor.commands.Filepath);
+#endif
                 Editor.commands.Save();
+#if !CATHODE_FAIL_HARD
             }
             catch (Exception ex)
             {
@@ -311,6 +320,7 @@ namespace CathodeEditorGUI
                 MessageBox.Show("Failed to save changes!\n" + ex.Message, "Failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+#endif
 
             if (Editor.resource.reds != null && Editor.resource.reds.RenderableElements != null)
                 Editor.resource.reds.Save();
@@ -450,14 +460,14 @@ namespace CathodeEditorGUI
         private void composite_content_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (composite_content.SelectedIndex == -1 || Editor.selected.composite == null) return;
-#if !DEBUG
+#if !CATHODE_FAIL_HARD
             try
             {
 #endif
                 ShortGuid entityID = new ShortGuid(composite_content.SelectedItem.ToString().Substring(1, 11));
                 Entity thisEntity = Editor.selected.composite.GetEntityByID(entityID);
                 if (thisEntity != null) LoadEntity(thisEntity);
-#if !DEBUG
+#if !CATHODE_FAIL_HARD
             }
             catch (Exception ex)
             {
@@ -1007,7 +1017,7 @@ namespace CathodeEditorGUI
             return (MessageBox.Show(msg, "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes);
         }
 
-        #region LOCAL_TESTS
+#region LOCAL_TESTS
         private void BuildNodeParameterDatabase(object sender, EventArgs e)
         {
             //This time, we load an existing Commands file, from the game's ENG_ALIEN_NEST level
@@ -1199,7 +1209,7 @@ namespace CathodeEditorGUI
         }
 
 
-        #endregion
+#endregion
 
         GUI_ModelViewer modelViewer = null;
         private void show3D_Click(object sender, EventArgs e)

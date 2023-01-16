@@ -31,8 +31,8 @@ namespace CathodeEditorGUI
         {
             public CathodeModels models;
             public MaterialDatabase materials;
-            public CATHODE.LEGACY.Assets.Textures textures;
-            public CATHODE.LEGACY.Assets.Textures textures_Global;
+            public Textures textures;
+            public Textures textures_Global;
             public RenderableElementsDatabase reds;
             public EnvironmentAnimationDatabase env_animations;
         }
