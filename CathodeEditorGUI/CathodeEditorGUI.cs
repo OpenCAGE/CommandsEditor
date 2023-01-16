@@ -72,8 +72,10 @@ namespace CathodeEditorGUI
             ClearUI(true, true, true);
 
             show3D.Visible = false;
+            DBG_WebsocketTest.Visible = false;
 #if DEBUG
             show3D.Visible = true;
+            DBG_WebsocketTest.Visible = true;
             DBG_CompileParamList.Visible = true;
             DBG_LoadAllCommands.Visible = true;
 
