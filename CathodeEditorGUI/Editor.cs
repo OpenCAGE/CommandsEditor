@@ -1,5 +1,5 @@
 ﻿using CATHODE;
-using CATHODE.Assets;
+using CATHODE.LEGACY.Assets;
 using CATHODE.Scripting;
 using CATHODE.LEGACY;
 using System;
@@ -31,8 +31,8 @@ namespace CathodeEditorGUI
         {
             public CathodeModels models;
             public MaterialDatabase materials;
-            public Textures textures;
-            public Textures textures_Global;
+            public CATHODE.LEGACY.Assets.Textures textures;
+            public CATHODE.LEGACY.Assets.Textures textures_Global;
             public RenderableElementsDatabase reds;
             public EnvironmentAnimationDatabase env_animations;
         }

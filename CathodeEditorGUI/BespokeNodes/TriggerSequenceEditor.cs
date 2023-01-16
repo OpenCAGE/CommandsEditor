@@ -35,7 +35,7 @@ namespace CathodeEditorGUI
             for (int i = 0; i < node.triggers.Count; i++)
             {
                 string thisHierarchy;
-                EditorUtils.ResolveHierarchy(node.triggers[i].hierarchy, out Composite comp, out thisHierarchy);
+                CommandsUtils.ResolveHierarchy(Editor.commands, Editor.selected.composite, node.triggers[i].hierarchy, out Composite comp, out thisHierarchy);
 
                 string toAdd = "[" + node.triggers[i].timing + "s] " + thisHierarchy;
                 trigger_list.Items.Add(toAdd);
@@ -74,7 +74,7 @@ namespace CathodeEditorGUI
             }
 
             string thisHierarchy;
-            EditorUtils.ResolveHierarchy(node.triggers[trigger_list.SelectedIndex].hierarchy, out Composite comp, out thisHierarchy);
+            CommandsUtils.ResolveHierarchy(Editor.commands, Editor.selected.composite, node.triggers[trigger_list.SelectedIndex].hierarchy, out Composite comp, out thisHierarchy);
 
             triggerHierarchy.Text = thisHierarchy;
             triggerDelay.Text = node.triggers[trigger_list.SelectedIndex].timing.ToString();
@@ -123,7 +123,7 @@ namespace CathodeEditorGUI
 
         private void addNewTrigger_Click(object sender, EventArgs e)
         {
-            CathodeTriggerSequenceTrigger trigger = new CathodeTriggerSequenceTrigger();
+            TriggerSequence.Trigger trigger = new TriggerSequence.Trigger();
             trigger.timing = 0.0f;
             trigger.hierarchy = new List<ShortGuid>();
             trigger.hierarchy.Add(new ShortGuid("00-00-00-00"));

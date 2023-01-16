@@ -1,6 +1,5 @@
 ﻿using CATHODE;
 using CATHODE.Scripting;
-using CATHODE.Assets;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,7 +10,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CathodeEditorGUI.Popups.UserControls;
-using CATHODE.Assets.Utilities;
 using System.Windows.Interop;
 
 namespace CathodeEditorGUI

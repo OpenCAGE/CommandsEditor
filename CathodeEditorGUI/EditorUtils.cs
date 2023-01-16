@@ -7,6 +7,7 @@ using System.Collections.Generic;
 
 namespace CathodeEditorGUI
 {
+    //Wrappers around CathodeLib utils, and some utils for formatting strings
     static class EditorUtils
     {
         /* Utility: generate nice entity name to display in UI */
@@ -108,9 +109,9 @@ namespace CathodeEditorGUI
                     items.Add(ShortGuidUtils.FindString(((VariableEntity)entity).name));
                     break;
                 case EntityVariant.OVERRIDE:
-                    return GenerateParameterList(EditorUtils.ResolveHierarchy(((OverrideEntity)entity).hierarchy, out Composite comp1, out string hierarchy1));
+                    return GenerateParameterList(CommandsUtils.ResolveHierarchy(Editor.commands, Editor.selected.composite, ((OverrideEntity)entity).hierarchy, out Composite comp1, out string hierarchy1));
                 case EntityVariant.PROXY:
-                    return GenerateParameterList(EditorUtils.ResolveHierarchy(((ProxyEntity)entity).hierarchy, out Composite comp2, out string hierarchy2));
+                    return GenerateParameterList(CommandsUtils.ResolveHierarchy(Editor.commands, Editor.selected.composite, ((ProxyEntity)entity).hierarchy, out Composite comp2, out string hierarchy2));
             }
             items.Sort();
             return items;
@@ -138,181 +139,6 @@ namespace CathodeEditorGUI
             if (editedText == "-") editedText = "-0";
             if (editedText == ".") editedText = "0";
             return editedText;
-        }
-
-        /* Resolve a node hierarchy */
-        public static Entity ResolveHierarchy(List<ShortGuid> hierarchy, out Composite containedFlowgraph, out string asString)
-        {
-            if (hierarchy.Count == 0)
-            {
-                containedFlowgraph = null;
-                asString = "";
-                return null;
-            }
-
-            List<ShortGuid> hierarchyCopy = new List<ShortGuid>();
-            for (int x = 0; x < hierarchy.Count; x++)
-                hierarchyCopy.Add(new ShortGuid((byte[])hierarchy[x].val.Clone()));
-
-            Composite currentFlowgraphToSearch = Editor.selected.composite;
-            if (currentFlowgraphToSearch == null || currentFlowgraphToSearch.GetEntityByID(hierarchyCopy[0]) == null)
-            {
-                currentFlowgraphToSearch = Editor.commands.EntryPoints[0];
-                if (currentFlowgraphToSearch == null || currentFlowgraphToSearch.GetEntityByID(hierarchyCopy[0]) == null)
-                {
-                    currentFlowgraphToSearch = Editor.commands.GetComposite(hierarchyCopy[0]);
-                    if (currentFlowgraphToSearch == null || currentFlowgraphToSearch.GetEntityByID(hierarchyCopy[1]) == null)
-                    {
-                        containedFlowgraph = null;
-                        asString = "";
-                        return null;
-                    }
-                    hierarchyCopy.RemoveAt(0);
-                }
-            }
-
-            Entity entity = null;
-            string hierarchyString = "";
-            for (int i = 0; i < hierarchyCopy.Count; i++)
-            {
-                entity = currentFlowgraphToSearch.GetEntityByID(hierarchyCopy[i]);
-
-                if (entity == null) break;
-                hierarchyString += "[" + entity.shortGUID + "] " + EntityUtils.GetName(currentFlowgraphToSearch.shortGUID, entity.shortGUID);
-                if (i >= hierarchyCopy.Count - 2) break; //Last is always 00-00-00-00
-                hierarchyString += " -> ";
-
-                if (entity.variant == EntityVariant.FUNCTION)
-                {
-                    Composite flowRef = Editor.commands.GetComposite(((FunctionEntity)entity).function);
-                    if (flowRef != null)
-                    {
-                        currentFlowgraphToSearch = flowRef;
-                    }
-                    else
-                    {
-                        entity = null;
-                        break;
-                    }
-                }
-            }
-            containedFlowgraph = (entity == null) ? null : currentFlowgraphToSearch;
-            asString = hierarchyString;
-            return entity;
-        }
-
-        /* CA's CAGE doesn't properly tidy up hierarchies pointing to deleted entities - so we do that here to save confusion */
-        private static List<ShortGuid> purgedComps = new List<ShortGuid>();
-        public static void PurgeDeadHierarchiesInActiveComposite()
-        {
-            Composite comp = Editor.selected.composite;
-            if (purgedComps.Contains(comp.shortGUID)) return;
-            purgedComps.Add(comp.shortGUID);
-
-            int originalUnknownCount = 0;
-            int originalProxyCount = 0;
-            int newProxyCount = 0;
-            int originalOverrideCount = 0;
-            int newOverrideCount = 0;
-            int originalTriggerCount = 0;
-            int newTriggerCount = 0;
-            int originalAnimCount = 0;
-            int newAnimCount = 0;
-            int originalLinkCount = 0;
-            int newLinkCount = 0;
-            int originalFuncCount = 0;
-            int newFuncCount = 0;
-
-            //Clear functions
-            List<FunctionEntity> functionsPurged = new List<FunctionEntity>();
-            for (int i = 0; i < comp.functions.Count; i++)
-                if (CommandsUtils.FunctionTypeExists(comp.functions[i].function) || Editor.commands.GetComposite(comp.functions[i].function) != null)
-                    functionsPurged.Add(comp.functions[i]);
-            originalFuncCount += comp.functions.Count;
-            newFuncCount += functionsPurged.Count;
-            comp.functions = functionsPurged;
-
-            //Clear overrides
-            List<OverrideEntity> overridePurged = new List<OverrideEntity>();
-            for (int i = 0; i < comp.overrides.Count; i++)
-                if (ResolveHierarchy(comp.overrides[i].hierarchy, out Composite flowTemp, out string hierarchy) != null)
-                    overridePurged.Add(comp.overrides[i]);
-            originalOverrideCount += comp.overrides.Count;
-            newOverrideCount += overridePurged.Count;
-            comp.overrides = overridePurged;
-
-            //Clear proxies
-            List<ProxyEntity> proxyPurged = new List<ProxyEntity>();
-            for (int i = 0; i < comp.proxies.Count; i++)
-                if (ResolveHierarchy(comp.proxies[i].hierarchy, out Composite flowTemp, out string hierarchy) != null)
-                    proxyPurged.Add(comp.proxies[i]);
-            originalProxyCount += comp.proxies.Count;
-            newProxyCount += proxyPurged.Count;
-            comp.proxies = proxyPurged;
-
-            //Clear TriggerSequence and CAGEAnimation entities
-            for (int i = 0; i < comp.functions.Count; i++)
-            {
-                //TODO: will this also clear up TriggerSequence/CAGEAnimation data for proxies?
-                switch (ShortGuidUtils.FindString(comp.functions[i].function))
-                {
-                    case "TriggerSequence":
-                        TriggerSequence trig = (TriggerSequence)comp.functions[i];
-                        List<CathodeTriggerSequenceTrigger> trigSeq = new List<CathodeTriggerSequenceTrigger>();
-                        for (int x = 0; x < trig.triggers.Count; x++)
-                            if (ResolveHierarchy(trig.triggers[x].hierarchy, out Composite flowTemp, out string hierarchy) != null)
-                                trigSeq.Add(trig.triggers[x]);
-                        originalTriggerCount += trig.triggers.Count;
-                        newTriggerCount += trigSeq.Count;
-                        trig.triggers = trigSeq;
-                        break;
-                    case "CAGEAnimation":
-                        CAGEAnimation anim = (CAGEAnimation)comp.functions[i];
-                        List<CathodeParameterKeyframeHeader> headers = new List<CathodeParameterKeyframeHeader>();
-                        for (int x = 0; x < anim.keyframeHeaders.Count; x++)
-                            if (ResolveHierarchy(anim.keyframeHeaders[x].connectedEntity, out Composite flowTemp, out string hierarchy) != null)
-                                headers.Add(anim.keyframeHeaders[x]);
-                        originalAnimCount += anim.keyframeHeaders.Count;
-                        newAnimCount += headers.Count;
-                        anim.keyframeHeaders = headers;
-                        break;
-                }
-            }
-
-            //Clear links 
-            List<Entity> entities = comp.GetEntities();
-            for (int i = 0; i < entities.Count; i++)
-            {
-                List<EntityLink> childLinksPurged = new List<EntityLink>();
-                for (int x = 0; x < entities[i].childLinks.Count; x++)
-                    if (comp.GetEntityByID(entities[i].childLinks[x].childID) != null)
-                        childLinksPurged.Add(entities[i].childLinks[x]);
-                originalLinkCount += entities[i].childLinks.Count;
-                newLinkCount += childLinksPurged.Count;
-                entities[i].childLinks = childLinksPurged;
-            }
-
-            if (originalUnknownCount +
-                (originalFuncCount - newFuncCount) +
-                (originalProxyCount - newProxyCount) + 
-                (originalOverrideCount - newOverrideCount) + 
-                (originalTriggerCount - newTriggerCount) + 
-                (originalAnimCount - newAnimCount) + 
-                (originalLinkCount - newLinkCount) == 0) 
-                return;
-            Console.WriteLine(
-                "Purged all dead hierarchies and entities in " + comp.name + "!" +
-                "\n - " + originalUnknownCount + " unknown entities" +
-                "\n - " + (originalFuncCount - newFuncCount) + " functions (of " + originalFuncCount + ")" +
-                "\n - " + (originalProxyCount - newProxyCount) + " proxies (of " + originalProxyCount + ")" +
-                "\n - " + (originalOverrideCount - newOverrideCount) + " overrides (of " + originalOverrideCount + ")" +
-                "\n - " + (originalTriggerCount - newTriggerCount) + " triggers (of " + originalTriggerCount + ")" +
-                "\n - " + (originalAnimCount - newAnimCount) + " anims (of " + originalAnimCount + ")" +
-                "\n - " + (originalLinkCount - newLinkCount) + " links (of " + originalLinkCount + ")");
-        }
-        public static void ResetHierarchyPurgeCache()
-        {
-            purgedComps.Clear();
         }
     }
 }

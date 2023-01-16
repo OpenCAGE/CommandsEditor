@@ -1,5 +1,5 @@
 using CATHODE;
-using CATHODE.Assets;
+using CATHODE.LEGACY.Assets;
 using CATHODE.Scripting;
 using CATHODE.LEGACY;
 using CathodeEditorGUI.UserControls;
@@ -141,7 +141,6 @@ namespace CathodeEditorGUI
         {
             //Reset UI
             ClearUI(true, true, true);
-            EditorUtils.ResetHierarchyPurgeCache();
 
             //Load everything
             LoadCommands(level);
@@ -235,9 +234,9 @@ namespace CathodeEditorGUI
                                                                 baseLevelPath + "RENDERABLE/LEVEL_MODELS.PAK");
                     Editor.resource.reds = new RenderableElementsDatabase(baseLevelPath + "WORLD/REDS.BIN");
                     Editor.resource.materials = new MaterialDatabase(baseLevelPath + "RENDERABLE/LEVEL_MODELS.MTL");
-                    Editor.resource.textures = new Textures(baseLevelPath + "RENDERABLE/LEVEL_TEXTURES.ALL.PAK");
+                    Editor.resource.textures = new CATHODE.LEGACY.Assets.Textures(baseLevelPath + "RENDERABLE/LEVEL_TEXTURES.ALL.PAK");
                     Editor.resource.textures.Load();
-                    Editor.resource.textures_Global = new Textures(SharedData.pathToAI + "/DATA/ENV/GLOBAL/WORLD/GLOBAL_TEXTURES.ALL.PAK");
+                    Editor.resource.textures_Global = new CATHODE.LEGACY.Assets.Textures(SharedData.pathToAI + "/DATA/ENV/GLOBAL/WORLD/GLOBAL_TEXTURES.ALL.PAK");
                     Editor.resource.textures_Global.Load();
                     Editor.resource.env_animations = new EnvironmentAnimationDatabase(baseLevelPath + "WORLD/ENVIRONMENT_ANIMATION.DAT");
 #if !DEBUG
@@ -352,7 +351,7 @@ namespace CathodeEditorGUI
             {
                 case EntityVariant.OVERRIDE:
                 {
-                    Entity entity = EditorUtils.ResolveHierarchy(((OverrideEntity)Editor.selected.entity).hierarchy, out flow, out string hierarchy);
+                    Entity entity = CommandsUtils.ResolveHierarchy(Editor.commands, Editor.selected.composite, ((OverrideEntity)Editor.selected.entity).hierarchy, out flow, out string hierarchy);
                     if (entity != null)
                     {
                         LoadComposite(flow.name);
@@ -362,7 +361,7 @@ namespace CathodeEditorGUI
                 }
                 case EntityVariant.PROXY:
                 {
-                    Entity entity = EditorUtils.ResolveHierarchy(((ProxyEntity)Editor.selected.entity).hierarchy, out flow, out string hierarchy);
+                    Entity entity = CommandsUtils.ResolveHierarchy(Editor.commands, Editor.selected.composite, ((ProxyEntity)Editor.selected.entity).hierarchy, out flow, out string hierarchy);
                     if (entity != null)
                     {
                         LoadComposite(flow.name);
@@ -489,8 +488,8 @@ namespace CathodeEditorGUI
         {
             ClearUI(false, true, true);
             Composite entry = Editor.commands.GetComposite(FileName);
+            CommandsUtils.PurgeDeadLinks(Editor.commands, entry);
             Editor.selected.composite = entry;
-            EditorUtils.PurgeDeadHierarchiesInActiveComposite(); //TODO: We should really just skip this info when parsing, can remove "unknown" on composite then
             Cursor.Current = Cursors.WaitCursor;
 
             composite_content.BeginUpdate();
@@ -563,7 +562,7 @@ namespace CathodeEditorGUI
                     {
                         case "TriggerSequence":
                             TriggerSequence triggerSequence = (TriggerSequence)entities[i];
-                            List<CathodeTriggerSequenceTrigger> triggers = new List<CathodeTriggerSequenceTrigger>();
+                            List<TriggerSequence.Trigger> triggers = new List<TriggerSequence.Trigger>();
                             for (int x = 0; x < triggerSequence.triggers.Count; x++)
                             {
                                 if (triggerSequence.triggers[x].hierarchy.Count < 2 ||
@@ -576,7 +575,7 @@ namespace CathodeEditorGUI
                             break;
                         case "CAGEAnimation":
                             CAGEAnimation cageAnim = (CAGEAnimation)entities[i];
-                            List<CathodeParameterKeyframeHeader> headers = new List<CathodeParameterKeyframeHeader>();
+                            List<CAGEAnimation.Header> headers = new List<CAGEAnimation.Header>();
                             for (int x = 0; x < cageAnim.keyframeHeaders.Count; x++)
                             {
                                 if (cageAnim.keyframeHeaders[x].connectedEntity.Count < 2 ||
@@ -591,7 +590,6 @@ namespace CathodeEditorGUI
                 }
             }
 
-            EditorUtils.ResetHierarchyPurgeCache();
             LoadComposite(Editor.selected.composite.name);
 
             ClearUI(false, false, true);
@@ -773,8 +771,8 @@ namespace CathodeEditorGUI
                 case EntityVariant.OVERRIDE:
                     hierarchyDisplay.Visible = true;
                     string hierarchy = "";
-                    if (entity.variant == EntityVariant.PROXY) EditorUtils.ResolveHierarchy(((ProxyEntity)entity).hierarchy, out Composite comp, out hierarchy);
-                    else EditorUtils.ResolveHierarchy(((OverrideEntity)entity).hierarchy, out Composite comp, out hierarchy);
+                    if (entity.variant == EntityVariant.PROXY) CommandsUtils.ResolveHierarchy(Editor.commands, Editor.selected.composite, ((ProxyEntity)entity).hierarchy, out Composite comp, out hierarchy);
+                    else CommandsUtils.ResolveHierarchy(Editor.commands, Editor.selected.composite, ((OverrideEntity)entity).hierarchy, out Composite comp, out hierarchy);
                     hierarchyDisplay.Text = hierarchy;
                     jumpToComposite.Visible = true;
                     selected_entity_name.Text = EntityUtils.GetName(Editor.selected.composite.shortGUID, entity.shortGUID);
