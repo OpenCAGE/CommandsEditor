@@ -38,7 +38,7 @@ namespace CathodeEditorGUI
             //Run app
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new CathodeEditorGUI());
+            Application.Run(new client_test());
         }
     }
 }

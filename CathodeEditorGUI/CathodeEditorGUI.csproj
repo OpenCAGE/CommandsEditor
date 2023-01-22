@@ -114,6 +114,12 @@
       <DependentUpon>CAGEAnimationEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="CathodeEntityDatabase.cs" />
+    <Compile Include="client_test.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="client_test.Designer.cs">
+      <DependentUpon>client_test.cs</DependentUpon>
+    </Compile>
     <Compile Include="LocalDebug.cs" />
     <Compile Include="Popups\CathodeEditorGUI_AddOrEditResource.cs">
       <SubType>Form</SubType>
@@ -334,6 +340,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CathodeEditorGUI.resx">
       <DependentUpon>CathodeEditorGUI.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="client_test.resx">
+      <DependentUpon>client_test.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\CathodeEditorGUI_AddEntity.resx">
       <DependentUpon>CathodeEditorGUI_AddEntity.cs</DependentUpon>
