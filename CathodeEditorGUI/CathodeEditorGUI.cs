@@ -239,11 +239,11 @@ namespace CathodeEditorGUI
                 }
 
                 Editor.resource.models = new CathodeModels(baseLevelPath + "RENDERABLE/MODELS_LEVEL.BIN", baseLevelPath + "RENDERABLE/LEVEL_MODELS.PAK");
-                Editor.resource.reds = new RenderableElementsDatabase(baseLevelPath + "WORLD/REDS.BIN");
-                Editor.resource.materials = new MaterialDatabase(baseLevelPath + "RENDERABLE/LEVEL_MODELS.MTL");
+                Editor.resource.reds = new RenderableElements(baseLevelPath + "WORLD/REDS.BIN");
+                Editor.resource.materials = new Materials(baseLevelPath + "RENDERABLE/LEVEL_MODELS.MTL");
                 //Editor.resource.textures = new Textures(baseLevelPath + "RENDERABLE/LEVEL_TEXTURES.ALL.PAK");
                 //Editor.resource.textures_Global = new Textures(SharedData.pathToAI + "/DATA/ENV/GLOBAL/WORLD/GLOBAL_TEXTURES.ALL.PAK");
-                Editor.resource.env_animations = new EnvironmentAnimationDatabase(baseLevelPath + "WORLD/ENVIRONMENT_ANIMATION.DAT");
+                Editor.resource.env_animations = new EnvironmentAnimations(baseLevelPath + "WORLD/ENVIRONMENT_ANIMATION.DAT");
 #if !CATHODE_FAIL_HARD
             }
             catch
@@ -268,7 +268,7 @@ namespace CathodeEditorGUI
             {
 #endif
                 string baseLevelPath = Editor.commands.Filepath.Substring(0, Editor.commands.Filepath.Length - ("WORLD/COMMANDS.PAK").Length);
-                Editor.mvr = new MoverDatabase(baseLevelPath + "WORLD/MODELS.MVR");
+                Editor.mvr = new Movers(baseLevelPath + "WORLD/MODELS.MVR");
 #if !CATHODE_FAIL_HARD
             }
             catch

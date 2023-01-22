@@ -59,7 +59,7 @@ namespace CathodeEditorGUI
         {
             hasLoaded = false;
             loadedMvrIndex = mvrIndex;
-            MoverDatabase.MOVER_DESCRIPTOR mvr = Editor.mvr.Entries[loadedMvrIndex];
+            Movers.MOVER_DESCRIPTOR mvr = Editor.mvr.Entries[loadedMvrIndex];
 
             //Convert model BIN index from REDs to PAK index
             int pakModelIndex = -1;
@@ -79,7 +79,7 @@ namespace CathodeEditorGUI
             //Get all remapped materials from REDs
             List<int> modelMaterialIndexes = new List<int>();
             for (int y = 0; y < mvr.renderableElementCount; y++)
-                modelMaterialIndexes.Add(Editor.resource.reds.Entries[(int)mvr.renderableElementIndex + y].MaterialLibraryIndex);
+                modelMaterialIndexes.Add(Editor.resource.reds.Entries[(int)mvr.renderableElementIndex + y].MaterialIndex);
             renderable.PopulateUI(pakModelIndex, modelMaterialIndexes);
 
             //Load transform from matrix
@@ -114,7 +114,7 @@ namespace CathodeEditorGUI
         {
             if (!hasLoaded || loadedMvrIndex == -1) return;
 
-            MoverDatabase.MOVER_DESCRIPTOR mvr = Editor.mvr.Entries[loadedMvrIndex];
+            Movers.MOVER_DESCRIPTOR mvr = Editor.mvr.Entries[loadedMvrIndex];
 
             mvr.renderableElementCount = (uint)renderable.SelectedMaterialIndexes.Count;
             mvr.renderableElementIndex = (uint)Editor.resource.reds.Entries.Count;
@@ -129,9 +129,9 @@ namespace CathodeEditorGUI
 
             for (int y = 0; y < renderable.SelectedMaterialIndexes.Count; y++)
             {
-                RenderableElementsDatabase.RenderableElement newRed = new RenderableElementsDatabase.RenderableElement();
+                RenderableElements.Element newRed = new RenderableElements.Element();
                 newRed.ModelIndex = Editor.resource.models.Models[renderable.SelectedModelIndex].Submeshes[y].binIndex;
-                newRed.MaterialLibraryIndex = renderable.SelectedMaterialIndexes[y];
+                newRed.MaterialIndex = renderable.SelectedMaterialIndexes[y];
                 Editor.resource.reds.Entries.Add(newRed);
             }
 

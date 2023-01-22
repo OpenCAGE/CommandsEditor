@@ -98,7 +98,7 @@ namespace CathodeEditorGUI
                             //Get all remapped materials from REDs
                             List<int> modelMaterialIndexes = new List<int>();
                             for (int y = 0; y < resources[i].count; y++)
-                                modelMaterialIndexes.Add(Editor.resource.reds.Entries[resources[i].startIndex + y].MaterialLibraryIndex);
+                                modelMaterialIndexes.Add(Editor.resource.reds.Entries[resources[i].startIndex + y].MaterialIndex);
 
                             resourceGroup = new GUI_Resource_RenderableInstance();
                             ((GUI_Resource_RenderableInstance)resourceGroup).PopulateUI(pakModelIndex, modelMaterialIndexes);
@@ -214,9 +214,9 @@ namespace CathodeEditorGUI
                             resourceRef.startIndex = Editor.resource.reds.Entries.Count;
                             for (int y = 0; y < ui.SelectedMaterialIndexes.Count; y++)
                             {
-                                RenderableElementsDatabase.RenderableElement newRed = new RenderableElementsDatabase.RenderableElement();
+                                RenderableElements.Element newRed = new RenderableElements.Element();
                                 newRed.ModelIndex = Editor.resource.models.Models[ui.SelectedModelIndex].Submeshes[y].binIndex;
-                                newRed.MaterialLibraryIndex = ui.SelectedMaterialIndexes[y];
+                                newRed.MaterialIndex = ui.SelectedMaterialIndexes[y];
                                 Editor.resource.reds.Entries.Add(newRed);
                             }
                             break;

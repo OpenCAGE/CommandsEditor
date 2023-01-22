@@ -15,7 +15,7 @@ namespace CathodeEditorGUI
     {
         //Level descriptors & scripting
         public static Commands commands;
-        public static MoverDatabase mvr;
+        public static Movers mvr;
 
         //Scripting state info
         public static Selected selected;
@@ -30,11 +30,11 @@ namespace CathodeEditorGUI
         public struct Resource
         {
             public CathodeModels models;
-            public MaterialDatabase materials;
+            public Materials materials;
             public Textures textures;
             public Textures textures_Global;
-            public RenderableElementsDatabase reds;
-            public EnvironmentAnimationDatabase env_animations;
+            public RenderableElements reds;
+            public EnvironmentAnimations env_animations;
         }
     }
 }
