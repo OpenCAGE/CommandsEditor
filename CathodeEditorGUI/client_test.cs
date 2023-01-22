@@ -48,7 +48,7 @@ namespace CathodeEditorGUI
                 client = null;
             }
 
-            client = new WebSocket("ws://localhost:1702/commands_editor");
+            client = new WebSocket(textBox2.Text);
             client.OnMessage += OnMessage;
             client.OnOpen += Client_OnOpen;
             client.OnClose += OnClose;
