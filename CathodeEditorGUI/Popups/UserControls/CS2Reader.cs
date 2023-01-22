@@ -9,6 +9,7 @@ using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Drawing;
 using CathodeLib;
+using System.Linq.Expressions;
 
 namespace CathodeEditorGUI.Popups.UserControls
 {
@@ -58,14 +59,37 @@ namespace CathodeEditorGUI.Popups.UserControls
                 List<Vector4> InBoneIndexes = new List<Vector4>(); //The indexes of 4 bones that affect each vertex
                 List<Vector4> InBoneWeights = new List<Vector4>(); //The weights for each bone
 
+                List<string> plaintext = new List<string>();
+
                 for (int VertexArrayIndex = 0; VertexArrayIndex < Elements.Count; ++VertexArrayIndex)
                 {
                     alien_vertex_buffer_format_element Inputs = Elements[VertexArrayIndex][0];
                     if (Inputs.ArrayIndex == 0xFF)
                     {
+                        List<int> bleh = new List<int>();
                         for (int i = 0; i < Model.IndexCount; i++)
                         {
-                            InIndices.Add(Stream.ReadUInt16());
+                            plaintext.Add("f " + (Stream.ReadUInt16() + 1));
+                            if (bleh.Count == 12)
+                            {
+                                plaintext.Add("f " +
+                                    bleh[0] + "/" + bleh[1] + "/" + bleh[2] + " " +
+                                    bleh[3] + "/" + bleh[4] + "/" + bleh[5] + " " +
+                                    bleh[6] + "/" + bleh[7] + "/" + bleh[8] + " " +
+                                    bleh[9] + "/" + bleh[10] + "/" + bleh[11]);
+                                bleh.Clear();
+                            }
+                            //InIndices.Add(Stream.ReadUInt16());
+                            //plaintext.Add(InIndices[InIndices.Count - 1].ToString());
+                        }
+                        if (bleh.Count == 12)
+                        {
+                            plaintext.Add("f " +
+                                bleh[0] + "/" + bleh[1] + "/" + bleh[2] + " " +
+                                bleh[3] + "/" + bleh[4] + "/" + bleh[5] + " " +
+                                bleh[6] + "/" + bleh[7] + "/" + bleh[8] + " " +
+                                bleh[9] + "/" + bleh[10] + "/" + bleh[11]);
+                            bleh.Clear();
                         }
                     }
                     else
@@ -84,11 +108,14 @@ namespace CathodeEditorGUI.Popups.UserControls
                                             {
                                                 case alien_vertex_input_slot.AlienVertexInputSlot_N:
                                                     InNormals.Add(Value);
+                                                    //plaintext.Add("InNormals: " + InNormals[InNormals.Count - 1]);
                                                     break;
                                                 case alien_vertex_input_slot.AlienVertexInputSlot_T:
                                                     InTangents.Add(new Vector4((float)Value.X, (float)Value.Y, (float)Value.Z, 0));
+                                                    //plaintext.Add("InTangents: " + InTangents[InNormals.Count - 1]);
                                                     break;
                                                 case alien_vertex_input_slot.AlienVertexInputSlot_UV:
+                                                    //plaintext.Add("AlienVertexInputType_v3 -> AlienVertexInputSlot_UV: " + Value);
                                                     //TODO: 3D UVW
                                                     break;
                                             };
@@ -98,6 +125,7 @@ namespace CathodeEditorGUI.Popups.UserControls
                                     case alien_vertex_input_type.AlienVertexInputType_u32_C:
                                         {
                                             int Value = Stream.ReadInt32();
+                                            //plaintext.Add("AlienVertexInputType_u32_C: " + Value);
                                             switch (Input.ShaderSlot)
                                             {
                                                 case alien_vertex_input_slot.AlienVertexInputSlot_C:
@@ -114,6 +142,7 @@ namespace CathodeEditorGUI.Popups.UserControls
                                             {
                                                 case alien_vertex_input_slot.AlienVertexInputSlot_BI:
                                                     InBoneIndexes.Add(Value);
+                                                    //plaintext.Add("InBoneIndexes: " + InBoneIndexes[InBoneIndexes.Count - 1]);
                                                     break;
                                             }
                                             break;
@@ -128,10 +157,13 @@ namespace CathodeEditorGUI.Popups.UserControls
                                                 case alien_vertex_input_slot.AlienVertexInputSlot_BW:
                                                     float Sum = Value.X + Value.Y + Value.Z + Value.W;
                                                     InBoneWeights.Add(Value / Sum);
+                                                    //plaintext.Add("InBoneWeights: " + InBoneWeights[InBoneWeights.Count - 1]);
                                                     break;
                                                 case alien_vertex_input_slot.AlienVertexInputSlot_UV:
                                                     InUVs2.Add(new System.Windows.Point(Value.X, Value.Y));
                                                     InUVs3.Add(new System.Windows.Point(Value.Z, Value.W));
+                                                    //plaintext.Add("InUVs2: " + InUVs2[InUVs2.Count - 1]);
+                                                    //plaintext.Add("InUVs3: " + InUVs3[InUVs2.Count - 1]);
                                                     break;
                                             }
                                             break;
@@ -153,6 +185,7 @@ namespace CathodeEditorGUI.Popups.UserControls
                                                     else if (Input.VariantIndex == 2) InUVs2.Add(Value);
                                                     else if (Input.VariantIndex == 3) InUVs3.Add(Value);
                                                     else if (Input.VariantIndex == 7) InUVs7.Add(Value);
+                                                    //plaintext.Add("AlienVertexInputType_v2s16_UV -> AlienVertexInputSlot_UV: " + Value);
                                                     break;
                                             }
                                             break;
@@ -166,6 +199,7 @@ namespace CathodeEditorGUI.Popups.UserControls
                                             {
                                                 case alien_vertex_input_slot.AlienVertexInputSlot_P:
                                                     InVertices.Add(new Point3D(Value.X, Value.Y, Value.Z));
+                                                    plaintext.Add("v " + Value.X + " " + Value.Y + " " + Value.Z);
                                                     break;
                                             }
                                             break;
@@ -180,10 +214,13 @@ namespace CathodeEditorGUI.Popups.UserControls
                                             {
                                                 case alien_vertex_input_slot.AlienVertexInputSlot_N:
                                                     InNormals.Add(new Vector3D(Value.X, Value.Y, Value.Z));
+                                                    //plaintext.Add("InNormals: " + InNormals[InNormals.Count - 1]);
                                                     break;
                                                 case alien_vertex_input_slot.AlienVertexInputSlot_T:
+                                                    //plaintext.Add("AlienVertexInputType_v4u8_NTB -> AlienVertexInputSlot_T: " + Value);
                                                     break;
                                                 case alien_vertex_input_slot.AlienVertexInputSlot_B:
+                                                    //plaintext.Add("AlienVertexInputSlot_B -> AlienVertexInputSlot_B: " + Value);
                                                     break;
                                             }
                                         }
@@ -194,6 +231,8 @@ namespace CathodeEditorGUI.Popups.UserControls
                     }
                     Utilities.Align(Stream, 16);
                 }
+
+                File.WriteAllLines("plaintext.obj", plaintext);
 
                 if (InVertices.Count == 0) continue;
 

@@ -69,9 +69,9 @@ namespace CathodeEditorGUI
             hasFinishedCachingEntityNames = false;
             mainInst.EnableLoadingOfPaks(false);
             cachedEntityName.Clear();
-            for (int i = 0; i < Editor.commands.Composites.Count; i++)
+            for (int i = 0; i < Editor.commands.Entries.Count; i++)
             {
-                Composite comp = Editor.commands.Composites[i];
+                Composite comp = Editor.commands.Entries[i];
                 cachedEntityName.Add(comp.shortGUID, new Dictionary<ShortGuid, string>());
                 List<Entity> ents = comp.GetEntities();
                 for (int x = 0; x < ents.Count; x++)

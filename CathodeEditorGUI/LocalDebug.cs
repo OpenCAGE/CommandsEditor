@@ -11,11 +11,334 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Numerics;
+using System.Diagnostics;
+using System.Security.Cryptography;
+using System.Windows.Forms.Design;
+using System.CodeDom;
+using System.Windows.Media.Media3D;
+using static CATHODE.Models;
 
 namespace CathodeEditorGUI
 {
     public static class LocalDebug
     {
+        public static void ModelTestStuff()
+        {
+            /*
+            AlienVBF vertexFormat = new AlienVBF();
+            vertexFormat.Elements.Add(new AlienVBF.Element()
+            {
+                ArrayIndex = 0,
+                Offset = 0,
+                ShaderSlot = VBFE_InputSlot.VERTEX,
+                Unknown_ = 2,
+                VariableType = VBFE_InputType.VECTOR3,
+                VariantIndex = 0,
+            });
+            vertexFormat.Elements.Add(new AlienVBF.Element()
+            {
+                ArrayIndex = 255,
+                Offset = 0,
+                ShaderSlot = VBFE_InputSlot.VERTEX,
+                Unknown_ = 2,
+                VariableType = VBFE_InputType.AlienVertexInputType_u16, // TODO!!!!! IS THIS ALWAYS THE LAST?
+                VariantIndex = 0,
+            });
+
+            byte[] content = new byte[240];
+            using (BinaryWriter writer = new BinaryWriter(new MemoryStream(content)))
+            {
+                writer.Write((float)(1)); writer.Write((float)(1)); writer.Write((float)(-1));
+                writer.Write((float)(1)); writer.Write((float)(-1)); writer.Write((float)(-1));
+                writer.Write((float)(1)); writer.Write((float)(1)); writer.Write((float)(1));
+                writer.Write((float)(1)); writer.Write((float)(-1)); writer.Write((float)(1));
+                writer.Write((float)(-1)); writer.Write((float)(1)); writer.Write((float)(-1));
+                writer.Write((float)(-1)); writer.Write((float)(-1)); writer.Write((float)(-1));
+                writer.Write((float)(-1)); writer.Write((float)(1)); writer.Write((float)(1));
+                writer.Write((float)(-1)); writer.Write((float)(-1)); writer.Write((float)(1));
+                //96
+            
+                writer.Write((Int16)0); writer.Write((Int16)0); writer.Write((Int16)0);
+                writer.Write((Int16)4); writer.Write((Int16)4); writer.Write((Int16)0);
+                writer.Write((Int16)6); writer.Write((Int16)8); writer.Write((Int16)0);
+                writer.Write((Int16)2); writer.Write((Int16)2); writer.Write((Int16)0);
+
+                writer.Write((Int16)3); writer.Write((Int16)3); writer.Write((Int16)1);
+                writer.Write((Int16)2); writer.Write((Int16)2); writer.Write((Int16)1);
+                writer.Write((Int16)6); writer.Write((Int16)9); writer.Write((Int16)1);
+                writer.Write((Int16)7); writer.Write((Int16)11); writer.Write((Int16)1);
+
+                writer.Write((Int16)7); writer.Write((Int16)12); writer.Write((Int16)2);
+                writer.Write((Int16)6); writer.Write((Int16)10); writer.Write((Int16)2);
+                writer.Write((Int16)4); writer.Write((Int16)5); writer.Write((Int16)2);
+                writer.Write((Int16)5); writer.Write((Int16)7); writer.Write((Int16)2);
+
+                writer.Write((Int16)5); writer.Write((Int16)6); writer.Write((Int16)3);
+                writer.Write((Int16)1); writer.Write((Int16)1); writer.Write((Int16)3);
+                writer.Write((Int16)3); writer.Write((Int16)3); writer.Write((Int16)3);
+                writer.Write((Int16)7); writer.Write((Int16)13); writer.Write((Int16)3);
+
+                writer.Write((Int16)1); writer.Write((Int16)1); writer.Write((Int16)4);
+                writer.Write((Int16)0); writer.Write((Int16)0); writer.Write((Int16)4);
+                writer.Write((Int16)2); writer.Write((Int16)2); writer.Write((Int16)4);
+                writer.Write((Int16)3); writer.Write((Int16)3); writer.Write((Int16)4);
+
+                writer.Write((Int16)5); writer.Write((Int16)7); writer.Write((Int16)5);
+                writer.Write((Int16)4); writer.Write((Int16)5); writer.Write((Int16)5);
+                writer.Write((Int16)0); writer.Write((Int16)0); writer.Write((Int16)5);
+                writer.Write((Int16)1); writer.Write((Int16)1); writer.Write((Int16)5);
+                //144
+            }
+
+            */
+            CS2 model = new CS2();
+            model.Name = "SomeTestShit";
+            model.Submeshes.Add(new CS2.Submesh()
+            {
+                Name = "Test",
+                LODMinDistance_ = 0,
+                LODMaxDistance_ = 10000,
+                AABBMin = new Vector3(),
+                AABBMax = new Vector3(),
+                MaterialLibraryIndex = 1,
+                Unknown2_ = 134239232,
+                UnknownIndex = -1,
+                CollisionIndex_ = -1,
+                // VertexFormat = vertexFormat,
+                // VertexFormatLowDetail = vertexFormat,
+                ScaleFactor = 4,
+                HeadRelated_ = -1,
+            });
+            //model.Submeshes[0].content = content;
+            model.Submeshes[0].IndexCount = 48;
+            model.Submeshes[0].VertexCount = 8;
+
+            CathodeLib.Level lvl = new Level(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/opencage/");
+            /*
+            CS2 model = lvl.AllModels.Entries.FirstOrDefault(o => o.Name == "SomeTestShit");
+            if (model == null)
+            {
+                throw new Exception("bruh");
+            }
+            */
+
+            CS2 modelCopy = lvl.AllModels.Entries.FirstOrDefault(o => o.Submeshes.FirstOrDefault(x => x.Name.Contains("Sphere")) != null);
+            if (modelCopy == null)
+            {
+                throw new Exception("bruh");
+            }
+
+            model.Submeshes[0].VertexFormat = modelCopy.Submeshes[0].VertexFormat;
+            model.Submeshes[0].VertexFormatLowDetail = modelCopy.Submeshes[0].VertexFormatLowDetail;
+            model.Submeshes[0].content = modelCopy.Submeshes[0].content;
+            model.Submeshes[0].IndexCount = modelCopy.Submeshes[0].IndexCount;
+            model.Submeshes[0].VertexCount = modelCopy.Submeshes[0].VertexCount;
+            model.Submeshes[0].Unknown2_ = modelCopy.Submeshes[0].Unknown2_;
+            model.Submeshes[0].AABBMax = modelCopy.Submeshes[0].AABBMax;
+            model.Submeshes[0].AABBMin = modelCopy.Submeshes[0].AABBMin;
+
+            File.WriteAllBytes("out.bin", model.Submeshes[0].content);
+
+            AlienVBF vertexFormat = new AlienVBF();
+            vertexFormat.Elements.Add(new AlienVBF.Element()
+            {
+                ArrayIndex = 0,
+                Offset = 0,
+                ShaderSlot = VBFE_InputSlot.VERTEX,
+                VariableType = VBFE_InputType.VECTOR4_INT16_DIVMAX,
+                VariantIndex = 0,
+            });
+            vertexFormat.Elements.Add(new AlienVBF.Element()
+            {
+                ArrayIndex = 255,
+                Offset = 0,
+                ShaderSlot = VBFE_InputSlot.VERTEX,
+                VariableType = VBFE_InputType.AlienVertexInputType_u16, // TODO!!!!! IS THIS ALWAYS THE LAST?
+                VariantIndex = 0,
+            });
+
+            //TODO: go through using vertex format and pull out verts and indices, and then only write them
+            //using (BinaryWriter writer = new BinaryWriter(new MemoryStream(model.Submeshes[0].content)))
+            //{
+            //
+            //}
+            //model.Submeshes[0].content = content;
+            //model.Submeshes[0].VertexFormat = vertexFormat;
+            //model.Submeshes[0].VertexFormatLowDetail = vertexFormat;
+
+            lvl.Save();
+        }
+
+        public static void LoadAllFileTests()
+        {
+            //Models mdls = new Models("G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\BSP_TORRENS\\RENDERABLE\\LEVEL_MODELS.PAK");
+            //mdls.Save();
+            /*
+            CathodeModels mdls_old = new CathodeModels(
+                "G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\BSP_TORRENS\\RENDERABLE\\MODELS_LEVEL.BIN",
+                "G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\BSP_TORRENS\\RENDERABLE\\LEVEL_MODELS.PAK");
+
+            int binIndex = 0;
+            for (int i = 0; i < mdls.Entries.Count; i++)
+            {
+                for (int y = 0; y < mdls.Entries[i].Submeshes.Count; y++)
+                {
+                    File.WriteAllBytes(binIndex + "_new.bin", mdls.Entries[i].Submeshes[y].content);
+                    binIndex++;
+                }
+            }
+
+            for (int i = 0; i < mdls_old.Models.Count; i++)
+            {
+                for (int y = 0; y < mdls_old.Models[i].Submeshes.Count; y++)
+                {
+                    File.WriteAllBytes(mdls_old.Models[i].Submeshes[y].binIndex + "_old.bin", mdls_old.Models[i].Submeshes[y].content);
+                }
+            }
+
+           // mdls.Save();
+
+            for (int i = 0; i < mdls_old.Models.Count; i++)
+            {
+                for (int x = 0;x < mdls_old.Models[i].Submeshes.Count; x++)
+                {
+                    int correct = mdls_old.Models[i].Submeshes[x].content.Length;
+                    int newmethod = mdls.Entries[i].Submeshes[x].content.Length;
+                    Console.WriteLine("Correct = " + correct + ", new = " + newmethod);
+                }
+            }
+            */
+            //return;
+
+            //string sdffds = "";
+
+            //Models mdls = new Models("G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\ENG_ALIEN_NEST\\RENDERABLE\\LEVEL_MODELS.PAK");
+            //mdls.Save();
+            ////Textures tex34 = new Textures("G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\BSP_LV426_PT01\\RENDERABLE\\LEVEL_TEXTURES.ALL.PAK");
+            ////tex34.Save();
+            //return;
+
+            /*
+            List<string> files = Directory.GetFiles(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/", "LEVEL_TEXTURES.ALL.PAK", SearchOption.AllDirectories).ToList<string>();
+            Textures texBase = new Textures("LEVEL_TEXTURES.ALL.PAK");
+            foreach (string file in files)
+            {
+                Textures tex = new Textures(file);
+                for (int i = 0; i < tex.Entries.Count; i++)
+                {
+                    Textures.TEX4 texture = texBase.Entries.FirstOrDefault(o => o.FileName == tex.Entries[i].FileName);
+                    if (texture != null) continue;
+                    texBase.Entries.Add(tex.Entries[i]);
+                }
+
+
+                //Models mdl = new Models(file);
+                //Console.WriteLine(mdl.Loaded + " -> " + file);
+                //Console.WriteLine("Saved: " + mdl.Save());
+                //return;
+            }
+            texBase.Save();
+
+            return;
+            */
+
+            /*
+            List<string> files = Directory.GetFiles(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/", "LEVEL_MODELS.PAK", SearchOption.AllDirectories).ToList<string>();
+            //Models texBase = new Models("LEVEL_MODELS.PAK");
+            List<AlienVBF> formats = new List<AlienVBF>();
+            foreach (string file in files)
+            {
+                Console.WriteLine(file);
+                Models tex = new Models(file);
+                for (int i = 0; i < tex.Entries.Count; i++)
+                {
+                    for (int y = 0; y < tex.Entries[i].Submeshes.Count; y++)
+                    {
+                        /*
+                        if (tex.Entries[i].Submeshes[y].VertexFormat.Elements.Count == 2)
+                        {
+                            if (!formats.Contains(tex.Entries[i].Submeshes[y].VertexFormat))
+                                formats.Add(tex.Entries[i].Submeshes[y].VertexFormat);
+                        }
+                        if (tex.Entries[i].Submeshes[y].VertexFormatLowDetail.Elements.Count == 2)
+                        {
+                            if (!formats.Contains(tex.Entries[i].Submeshes[y].VertexFormatLowDetail))
+                                formats.Add(tex.Entries[i].Submeshes[y].VertexFormatLowDetail);
+                        }
+                        */
+            /*
+                        for (int x= 0; x < tex.Entries[i].Submeshes[y].VertexFormat.Elements.Count; x++)
+                        {
+                            if (tex.Entries[i].Submeshes[y].VertexFormat.Elements[x].ArrayIndex != 0 &&
+                                tex.Entries[i].Submeshes[y].VertexFormat.Elements[x].ArrayIndex != 255)
+                            {
+                                string sdfsdf = "";
+                            }
+                        }
+                    }
+                }
+                 
+                //for (int i = 0; i < tex.Entries.Count; i++)
+                //{
+                //     Models.CS2 texture = texBase.Entries.FirstOrDefault(o => o.name == tex.Entries[i].name);
+                //    if (texture != null) continue;
+                //     texBase.Entries.Add(tex.Entries[i]);
+                // }
+
+
+                //Models mdl = new Models(file);
+                //Console.WriteLine(mdl.Loaded + " -> " + file);
+                //Console.WriteLine("Saved: " + mdl.Save());
+                //return;
+            }
+            //texBase.Save();
+
+            return;*/
+        }
+
+        public static void TestAllPhysMap()
+        {
+            List<string> files = Directory.GetFiles(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/", "LEVEL_MODELS.PAK", SearchOption.AllDirectories).ToList<string>();
+            foreach (string file in files)
+            {
+                Models phys = new Models(file);
+                Console.WriteLine("[" + phys.Loaded + "] " + file);
+                for (int i = 0; i < phys.Entries.Count; i++)
+                {
+                    for (int x = 0; x < phys.Entries[i].Submeshes.Count; x++)
+                    {
+                        for (int y = 0; y < phys.Entries[i].Submeshes[x].VertexFormat.Elements.Count; y++)
+                        {
+                            //if (phys.Entries[i].Submeshes[x].VertexFormat.Elements[y].Unknown_ != 2)
+                            //{
+                            //    throw new Exception("");
+                            //}
+                        }
+                        for (int y = 0; y < phys.Entries[i].Submeshes[x].VertexFormatLowDetail.Elements.Count; y++)
+                        {
+                            //if (phys.Entries[i].Submeshes[x].VertexFormat.Elements[y].Unknown_ != 2)
+                            //{
+                            //    throw new Exception("");
+                            //}
+                        }
+                    }
+                }
+                //phys.Save();
+            }
+        }
+
+        private static void WriteVert(float x, float y, float z, BinaryWriter writer)
+        {
+            Int16 x_16 = ((Int16)(x * Int16.MaxValue));
+            Int16 y_16 = ((Int16)(y * Int16.MaxValue));
+            Int16 z_16 = ((Int16)(z * Int16.MaxValue));
+            writer.Write(x_16);
+            writer.Write(y_16);
+            writer.Write(z_16);
+            writer.Write((Int16)(-Int16.MaxValue));
+        }
+
+
         public static void DumpEnumList()
         {
 #if DEBUG
@@ -325,12 +648,12 @@ namespace CathodeEditorGUI
                 //Console.WriteLine(db.Header.Unknown1_);
 
                 string[] towrite = new string[200];
-                for (int i = 0; i < Editor.commands.Composites.Count; i++)
+                for (int i = 0; i < Editor.commands.Entries.Count; i++)
                 {
-                    for (int x = 0; x < Editor.commands.Composites[i].functions.Count; x++)
+                    for (int x = 0; x < Editor.commands.Entries[i].functions.Count; x++)
                     {
-                        if (!CommandsUtils.FunctionTypeExists(Editor.commands.Composites[i].functions[x].function)) continue;
-                        FunctionType type = CommandsUtils.GetFunctionType(Editor.commands.Composites[i].functions[x].function);
+                        if (!CommandsUtils.FunctionTypeExists(Editor.commands.Entries[i].functions[x].function)) continue;
+                        FunctionType type = CommandsUtils.GetFunctionType(Editor.commands.Entries[i].functions[x].function);
                         switch (type)
                         {
                             case FunctionType.CameraShake:
@@ -378,7 +701,7 @@ namespace CathodeEditorGUI
                                 //Console.WriteLine(rr.Count);
 
 
-                                Console.WriteLine(Editor.commands.Composites[i].name + " -> " + Editor.commands.Composites[i].functions[x].shortGUID + " -> " + type);
+                                Console.WriteLine(Editor.commands.Entries[i].name + " -> " + Editor.commands.Entries[i].functions[x].shortGUID + " -> " + type);
 
                                 //for (int y = 0; y < CurrentInstance.commandsPAK.Composites[i].functions[x].resources.Count; y++)
                                 //{
@@ -472,52 +795,52 @@ namespace CathodeEditorGUI
             List<string> script = new List<string>();
             script.Add("Commands cmd = new Commands(\"COMMANDS.PAK\");");
             script.Add("cmd.Composites.Clear();");
-            for (int i = 0; i < cmd.Composites.Count; i++)
+            for (int i = 0; i < cmd.Entries.Count; i++)
             {
-                string compositeName = "COMP_" + cmd.Composites[i].shortGUID.ToByteString().Replace('-', '_');
-                script.Add("Composite " + compositeName + " = cmd.AddComposite(@\"" + cmd.Composites[i].name + "\");");
+                string compositeName = "COMP_" + cmd.Entries[i].shortGUID.ToByteString().Replace('-', '_');
+                script.Add("Composite " + compositeName + " = cmd.AddComposite(@\"" + cmd.Entries[i].name + "\");");
 
-                for (int x = 0; x < cmd.Composites[i].functions.Count; x++)
+                for (int x = 0; x < cmd.Entries[i].functions.Count; x++)
                 {
-                    string entityName = "ENT_" + cmd.Composites[i].functions[x].shortGUID.ToByteString().Replace('-', '_');
+                    string entityName = "ENT_" + cmd.Entries[i].functions[x].shortGUID.ToByteString().Replace('-', '_');
                     script.Add("FunctionEntity " + entityName + " = " + compositeName + ".AddFunction(");
-                    if (CommandsUtils.FunctionTypeExists(cmd.Composites[i].functions[x].function)) script[script.Count - 1] += "FunctionType." + CommandsUtils.GetFunctionType(cmd.Composites[i].functions[x].function) + ");";
-                    else script[script.Count - 1] += "@\"" + cmd.GetComposite(cmd.Composites[i].functions[x].function).name + "\");";
+                    if (CommandsUtils.FunctionTypeExists(cmd.Entries[i].functions[x].function)) script[script.Count - 1] += "FunctionType." + CommandsUtils.GetFunctionType(cmd.Entries[i].functions[x].function) + ");";
+                    else script[script.Count - 1] += "@\"" + cmd.GetComposite(cmd.Entries[i].functions[x].function).name + "\");";
 
-                    for (int y = 0; y < cmd.Composites[i].functions[x].resources.Count; y++)
+                    for (int y = 0; y < cmd.Entries[i].functions[x].resources.Count; y++)
                     {
-                        string resourceName = "RES_" + cmd.Composites[i].functions[x].resources[y].GetHashCode().ToString().Replace('-', '_');
-                        switch (cmd.Composites[i].functions[x].resources[y].entryType)
+                        string resourceName = "RES_" + cmd.Entries[i].functions[x].resources[y].GetHashCode().ToString().Replace('-', '_');
+                        switch (cmd.Entries[i].functions[x].resources[y].entryType)
                         {
                             case ResourceType.RENDERABLE_INSTANCE:
-                                script.Add("ResourceReference " + resourceName + " = " + entityName + ".AddResource(ResourceType." + cmd.Composites[i].functions[x].resources[y].entryType + ");");
-                                Vector3 pos = cmd.Composites[i].functions[x].resources[y].position;
+                                script.Add("ResourceReference " + resourceName + " = " + entityName + ".AddResource(ResourceType." + cmd.Entries[i].functions[x].resources[y].entryType + ");");
+                                Vector3 pos = cmd.Entries[i].functions[x].resources[y].position;
                                 script.Add(resourceName + ".position = new Vector3(" + pos.X + "f, " + pos.Y + "f, " + pos.Z + "f);");
-                                Vector3 rot = cmd.Composites[i].functions[x].resources[y].rotation;
+                                Vector3 rot = cmd.Entries[i].functions[x].resources[y].rotation;
                                 script.Add(resourceName + ".rotation = new Vector3(" + rot.X + "f, " + rot.Y + "f, " + rot.Z + "f);");
-                                script.Add(resourceName + ".startIndex = " + cmd.Composites[i].functions[x].resources[y].startIndex + ";");
-                                script.Add(resourceName + ".count = " + cmd.Composites[i].functions[x].resources[y].count + ";");
+                                script.Add(resourceName + ".startIndex = " + cmd.Entries[i].functions[x].resources[y].startIndex + ";");
+                                script.Add(resourceName + ".count = " + cmd.Entries[i].functions[x].resources[y].count + ";");
                                 break;
                             default:
                                 throw new Exception("Unhandled resource");
                         }
                     }
                 }
-                for (int x = 0; x < cmd.Composites[i].variables.Count; x++)
+                for (int x = 0; x < cmd.Entries[i].variables.Count; x++)
                 {
-                    string entityName = "ENT_" + cmd.Composites[i].variables[x].shortGUID.ToByteString().Replace('-', '_');
-                    script.Add("VariableEntity " + entityName + " = " + compositeName + ".AddVariable(\"" + ShortGuidUtils.FindString(cmd.Composites[i].variables[x].name) + "\", DataType." + cmd.Composites[i].variables[x].type.ToString() + ");");
+                    string entityName = "ENT_" + cmd.Entries[i].variables[x].shortGUID.ToByteString().Replace('-', '_');
+                    script.Add("VariableEntity " + entityName + " = " + compositeName + ".AddVariable(\"" + ShortGuidUtils.FindString(cmd.Entries[i].variables[x].name) + "\", DataType." + cmd.Entries[i].variables[x].type.ToString() + ");");
                 }
-                for (int x = 0; x < cmd.Composites[i].proxies.Count; x++)
+                for (int x = 0; x < cmd.Entries[i].proxies.Count; x++)
                 {
                     throw new Exception("Unhandled proxy");
                 }
-                for (int x = 0; x < cmd.Composites[i].overrides.Count; x++)
+                for (int x = 0; x < cmd.Entries[i].overrides.Count; x++)
                 {
                     throw new Exception("Unhandled override");
                 }
 
-                List<Entity> entities = cmd.Composites[i].GetEntities();
+                List<Entity> entities = cmd.Entries[i].GetEntities();
                 for (int x = 0; x < entities.Count; x++)
                 {
                     string entityName = "ENT_" + entities[x].shortGUID.ToByteString().Replace('-', '_');

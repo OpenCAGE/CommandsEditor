@@ -86,7 +86,7 @@ namespace CathodeEditorGUI
                             {
                                 for (int z = 0; z < Editor.resource.models.Models[y].Submeshes.Count; z++)
                                 {
-                                    if (Editor.resource.models.Models[y].Submeshes[z].binIndex == Editor.resource.reds.RenderableElements[resources[i].startIndex].ModelIndex)
+                                    if (Editor.resource.models.Models[y].Submeshes[z].binIndex == Editor.resource.reds.Entries[resources[i].startIndex].ModelIndex)
                                     {
                                         pakModelIndex = y;
                                         break;
@@ -98,7 +98,7 @@ namespace CathodeEditorGUI
                             //Get all remapped materials from REDs
                             List<int> modelMaterialIndexes = new List<int>();
                             for (int y = 0; y < resources[i].count; y++)
-                                modelMaterialIndexes.Add(Editor.resource.reds.RenderableElements[resources[i].startIndex + y].MaterialLibraryIndex);
+                                modelMaterialIndexes.Add(Editor.resource.reds.Entries[resources[i].startIndex + y].MaterialLibraryIndex);
 
                             resourceGroup = new GUI_Resource_RenderableInstance();
                             ((GUI_Resource_RenderableInstance)resourceGroup).PopulateUI(pakModelIndex, modelMaterialIndexes);
@@ -211,13 +211,13 @@ namespace CathodeEditorGUI
                         {
                             GUI_Resource_RenderableInstance ui = (GUI_Resource_RenderableInstance)resource_panel.Controls[i];
                             resourceRef.count = ui.SelectedMaterialIndexes.Count;
-                            resourceRef.startIndex = Editor.resource.reds.RenderableElements.Count;
+                            resourceRef.startIndex = Editor.resource.reds.Entries.Count;
                             for (int y = 0; y < ui.SelectedMaterialIndexes.Count; y++)
                             {
                                 RenderableElementsDatabase.RenderableElement newRed = new RenderableElementsDatabase.RenderableElement();
                                 newRed.ModelIndex = Editor.resource.models.Models[ui.SelectedModelIndex].Submeshes[y].binIndex;
                                 newRed.MaterialLibraryIndex = ui.SelectedMaterialIndexes[y];
-                                Editor.resource.reds.RenderableElements.Add(newRed);
+                                Editor.resource.reds.Entries.Add(newRed);
                             }
                             break;
                         }

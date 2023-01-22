@@ -6,7 +6,6 @@ using CathodeEditorGUI.UserControls;
 using CathodeLib;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -15,27 +14,34 @@ using System.Windows.Forms;
 using CATHODE.Scripting.Internal;
 using System.Threading;
 using CathodeEditorGUI.Popups.UserControls;
-using System.Windows;
 using WebSocketSharp.Server;
 using MessageBox = System.Windows.Forms.MessageBox;
 using Point = System.Drawing.Point;
-using System.Numerics;
 
 namespace CathodeEditorGUI
 {
     public partial class CathodeEditorGUI : Form
     {
         private TreeUtility treeHelper;
+
+#if DEBUG
         private WebSocketServer server;
+#endif
 
         public CathodeEditorGUI()
         {
+            //LocalDebug.TestAllPhysMap();
+            //return;
+
+
             InitializeComponent();
             treeHelper = new TreeUtility(FileTree);
 
+#if DEBUG
             server = new WebSocketServer("ws://localhost:1702");
             server.AddWebSocketService<WebsocketServer>("/commands_editor");
             server.Start();
+#endif
 
             //Populate available maps
             env_list.Items.Clear();
@@ -232,8 +238,7 @@ namespace CathodeEditorGUI
                         break;
                 }
 
-                Editor.resource.models = new CathodeModels(baseLevelPath + "RENDERABLE/MODELS_LEVEL.BIN",
-                                                            baseLevelPath + "RENDERABLE/LEVEL_MODELS.PAK");
+                Editor.resource.models = new CathodeModels(baseLevelPath + "RENDERABLE/MODELS_LEVEL.BIN", baseLevelPath + "RENDERABLE/LEVEL_MODELS.PAK");
                 Editor.resource.reds = new RenderableElementsDatabase(baseLevelPath + "WORLD/REDS.BIN");
                 Editor.resource.materials = new MaterialDatabase(baseLevelPath + "RENDERABLE/LEVEL_MODELS.MTL");
                 //Editor.resource.textures = new Textures(baseLevelPath + "RENDERABLE/LEVEL_TEXTURES.ALL.PAK");
@@ -305,10 +310,10 @@ namespace CathodeEditorGUI
             }
 #endif
 
-            if (Editor.resource.reds != null && Editor.resource.reds.RenderableElements != null)
+            if (Editor.resource.reds != null && Editor.resource.reds.Entries != null)
                 Editor.resource.reds.Save();
 
-            if (Editor.mvr != null && Editor.mvr.Movers != null)
+            if (Editor.mvr != null && Editor.mvr.Entries != null)
                 Editor.mvr.Save();
 
             Cursor.Current = Cursors.Default;
@@ -410,28 +415,28 @@ namespace CathodeEditorGUI
             if (!ConfirmAction("Are you sure you want to remove this composite?")) return;
 
             //Remove any entities or links that reference this composite
-            for (int i = 0; i < Editor.commands.Composites.Count; i++)
+            for (int i = 0; i < Editor.commands.Entries.Count; i++)
             {
                 List<FunctionEntity> prunedFunctionEntities = new List<FunctionEntity>();
-                for (int x = 0; x < Editor.commands.Composites[i].functions.Count; x++)
+                for (int x = 0; x < Editor.commands.Entries[i].functions.Count; x++)
                 {
-                    if (Editor.commands.Composites[i].functions[x].function == Editor.selected.composite.shortGUID) continue;
+                    if (Editor.commands.Entries[i].functions[x].function == Editor.selected.composite.shortGUID) continue;
                     List<EntityLink> prunedEntityLinks = new List<EntityLink>();
-                    for (int l = 0; l < Editor.commands.Composites[i].functions[x].childLinks.Count; l++)
+                    for (int l = 0; l < Editor.commands.Entries[i].functions[x].childLinks.Count; l++)
                     {
-                        Entity linkedEntity = Editor.commands.Composites[i].GetEntityByID(Editor.commands.Composites[i].functions[x].childLinks[l].childID);
+                        Entity linkedEntity = Editor.commands.Entries[i].GetEntityByID(Editor.commands.Entries[i].functions[x].childLinks[l].childID);
                         if (linkedEntity != null && linkedEntity.variant == EntityVariant.FUNCTION) if (((FunctionEntity)linkedEntity).function == Editor.selected.composite.shortGUID) continue;
-                        prunedEntityLinks.Add(Editor.commands.Composites[i].functions[x].childLinks[l]);
+                        prunedEntityLinks.Add(Editor.commands.Entries[i].functions[x].childLinks[l]);
                     }
-                    Editor.commands.Composites[i].functions[x].childLinks = prunedEntityLinks;
-                    prunedFunctionEntities.Add(Editor.commands.Composites[i].functions[x]);
+                    Editor.commands.Entries[i].functions[x].childLinks = prunedEntityLinks;
+                    prunedFunctionEntities.Add(Editor.commands.Entries[i].functions[x]);
                 }
-                Editor.commands.Composites[i].functions = prunedFunctionEntities;
+                Editor.commands.Entries[i].functions = prunedFunctionEntities;
             }
             //TODO: remove proxies etc that also reference any of the removed entities
 
             //Remove the composite
-            Editor.commands.Composites.Remove(Editor.selected.composite);
+            Editor.commands.Entries.Remove(Editor.selected.composite);
 
             //Refresh UI
             ClearUI(false, true, true);
@@ -505,7 +510,7 @@ namespace CathodeEditorGUI
         private void addNewEntity_Click(object sender, EventArgs e)
         {
             if (Editor.selected.composite == null) return;
-            CathodeEditorGUI_AddEntity add_parameter = new CathodeEditorGUI_AddEntity(Editor.selected.composite, Editor.commands.Composites);
+            CathodeEditorGUI_AddEntity add_parameter = new CathodeEditorGUI_AddEntity(Editor.selected.composite, Editor.commands.Entries);
             add_parameter.Show();
             add_parameter.OnNewEntity += OnAddNewEntity;
         }
@@ -779,7 +784,7 @@ namespace CathodeEditorGUI
             selected_entity_type_description.Text = description;
 
             //show mvr editor button if this entity has a mvr link
-            if (Editor.mvr != null && Editor.mvr.Movers.FindAll(o => o.commandsNodeID == Editor.selected.entity.shortGUID).Count != 0)
+            if (Editor.mvr != null && Editor.mvr.Entries.FindAll(o => o.commandsNodeID == Editor.selected.entity.shortGUID).Count != 0)
                 editEntityMovers.Enabled = true;
 
             //populate linked params IN
@@ -1204,6 +1209,7 @@ namespace CathodeEditorGUI
         private string levelLoaded = "";
         private void button1_Click(object sender, EventArgs e)
         {
+#if DEBUG
             if (levelLoaded != env_list.SelectedItem.ToString())
             {
                 levelLoaded = env_list.SelectedItem.ToString();
@@ -1217,14 +1223,15 @@ namespace CathodeEditorGUI
                 //server.WebSocketServices["/commands_editor"].Sessions.Broadcast(((int)MessageType.GO_TO_POSITION).ToString() + vec.X + ">" + vec.Y + ">" + vec.Z);
 
                 string str = "";
-                for (int i = 0; i < Editor.mvr.Movers.Count; i++)
+                for (int i = 0; i < Editor.mvr.Entries.Count; i++)
                 {
-                    if (Editor.mvr.Movers[i].commandsNodeID != Editor.selected.entity.shortGUID) continue;
+                    if (Editor.mvr.Entries[i].commandsNodeID != Editor.selected.entity.shortGUID) continue;
                     str += i + ">";
                 }
                 server.WebSocketServices["/commands_editor"].Sessions.Broadcast(((int)MessageType.GO_TO_REDS).ToString() + str);
             }
             catch { }
+#endif
         }
     }
 }

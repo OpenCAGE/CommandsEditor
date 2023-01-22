@@ -21,7 +21,7 @@ namespace CathodeEditorGUI
             rootComposite.BeginUpdate();
             rootComposite.Items.Clear();
             rootComposite.SelectedIndex = -1;
-            composites = Editor.commands.Composites.OrderBy(o => o.name).ToList();
+            composites = Editor.commands.Entries.OrderBy(o => o.name).ToList();
             for (int i = 0; i < composites.Count; i++)
             {
                 rootComposite.Items.Add(composites[i].name);

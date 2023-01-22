@@ -70,7 +70,7 @@ namespace CathodeEditorGUI
                     {
                         for (int z = 0; z < Editor.resource.models.Models[y].Submeshes.Count; z++)
                         {
-                            if (Editor.resource.models.Models[y].Submeshes[z].binIndex == Editor.resource.reds.RenderableElements[resource.startIndex].ModelIndex)
+                            if (Editor.resource.models.Models[y].Submeshes[z].binIndex == Editor.resource.reds.Entries[resource.startIndex].ModelIndex)
                             {
                                 pakModelIndex = y;
                                 break;
