@@ -24,6 +24,7 @@ namespace CathodeEditorGUI
     {
         public static void ModelTestStuff()
         {
+#if DEBUG
             /*
             AlienVBF vertexFormat = new AlienVBF();
             vertexFormat.Elements.Add(new AlienVBF.Element()
@@ -122,7 +123,7 @@ namespace CathodeEditorGUI
             }
             */
 
-            CS2 modelCopy = lvl.AllModels.Entries.FirstOrDefault(o => o.Submeshes.FirstOrDefault(x => x.Name.Contains("Sphere")) != null);
+            CS2 modelCopy = lvl.Models.Entries.FirstOrDefault(o => o.Submeshes.FirstOrDefault(x => x.Name.Contains("Sphere")) != null);
             if (modelCopy == null)
             {
                 throw new Exception("bruh");
@@ -140,9 +141,10 @@ namespace CathodeEditorGUI
             File.WriteAllBytes("out.bin", model.Submeshes[0].content);
 
             AlienVBF vertexFormat = new AlienVBF();
+            /*
             vertexFormat.Elements.Add(new AlienVBF.Element()
             {
-                ArrayIndex = 0,
+                //ArrayIndex = 0,
                 Offset = 0,
                 ShaderSlot = VBFE_InputSlot.VERTEX,
                 VariableType = VBFE_InputType.VECTOR4_INT16_DIVMAX,
@@ -150,12 +152,12 @@ namespace CathodeEditorGUI
             });
             vertexFormat.Elements.Add(new AlienVBF.Element()
             {
-                ArrayIndex = 255,
+                //ArrayIndex = 255,
                 Offset = 0,
                 ShaderSlot = VBFE_InputSlot.VERTEX,
                 VariableType = VBFE_InputType.AlienVertexInputType_u16, // TODO!!!!! IS THIS ALWAYS THE LAST?
                 VariantIndex = 0,
-            });
+            });*/
 
             //TODO: go through using vertex format and pull out verts and indices, and then only write them
             //using (BinaryWriter writer = new BinaryWriter(new MemoryStream(model.Submeshes[0].content)))
@@ -167,10 +169,12 @@ namespace CathodeEditorGUI
             //model.Submeshes[0].VertexFormatLowDetail = vertexFormat;
 
             lvl.Save();
+#endif
         }
 
         public static void LoadAllFileTests()
         {
+#if DEBUG
             //Models mdls = new Models("G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\BSP_TORRENS\\RENDERABLE\\LEVEL_MODELS.PAK");
             //mdls.Save();
             /*
@@ -294,10 +298,12 @@ namespace CathodeEditorGUI
             //texBase.Save();
 
             return;*/
+#endif
         }
 
         public static void TestAllPhysMap()
         {
+#if DEBUG
             List<string> files = Directory.GetFiles(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/", "LEVEL_MODELS.PAK", SearchOption.AllDirectories).ToList<string>();
             foreach (string file in files)
             {
@@ -325,6 +331,7 @@ namespace CathodeEditorGUI
                 }
                 //phys.Save();
             }
+#endif
         }
 
         private static void WriteVert(float x, float y, float z, BinaryWriter writer)

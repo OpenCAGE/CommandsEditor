@@ -30,6 +30,11 @@ namespace CathodeEditorGUI
 
         public CathodeEditorGUI()
         {
+            //Level lvl = new Level("G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\ENG_REACTORCORE");
+            //lvl.Save();
+            //return;
+
+
             //LocalDebug.TestAllPhysMap();
             //return;
 
