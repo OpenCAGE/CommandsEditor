@@ -901,6 +901,7 @@ namespace CathodeEditorGUI
         {
             if (Editor.selected.entity == null) return;
             if (entity_params.Controls.Count == 0) return;
+            if (Editor.selected.entity.childLinks.Count + Editor.selected.entity.parameters.Count == 0) return;
             CathodeEditorGUI_RemoveParameter remove_parameter = new CathodeEditorGUI_RemoveParameter(Editor.selected.entity);
             remove_parameter.Show();
             remove_parameter.FormClosed += new FormClosedEventHandler(refresh_entity_event);
