@@ -80,28 +80,14 @@ namespace CathodeEditorGUI
                         }
                     case ResourceType.RENDERABLE_INSTANCE:
                         {
-                            //Convert model BIN index from REDs to PAK index
-                            int pakModelIndex = -1;
-                            for (int y = 0; y < Editor.resource.models.Models.Count; y++)
-                            {
-                                for (int z = 0; z < Editor.resource.models.Models[y].Submeshes.Count; z++)
-                                {
-                                    if (Editor.resource.models.Models[y].Submeshes[z].binIndex == Editor.resource.reds.Entries[resources[i].startIndex].ModelIndex)
-                                    {
-                                        pakModelIndex = y;
-                                        break;
-                                    }
-                                }
-                                if (pakModelIndex != -1) break;
-                            }
-
                             //Get all remapped materials from REDs
                             List<int> modelMaterialIndexes = new List<int>();
                             for (int y = 0; y < resources[i].count; y++)
                                 modelMaterialIndexes.Add(Editor.resource.reds.Entries[resources[i].startIndex + y].MaterialIndex);
 
+                            //Since model indexes are always sequential, we can just rely on our model processor's understanding of the CS2 structure & not count each REDs index
                             resourceGroup = new GUI_Resource_RenderableInstance();
-                            ((GUI_Resource_RenderableInstance)resourceGroup).PopulateUI(pakModelIndex, modelMaterialIndexes);
+                            ((GUI_Resource_RenderableInstance)resourceGroup).PopulateUI(Editor.resource.reds.Entries[resources[i].startIndex].ModelIndex, modelMaterialIndexes);
                             break;
                         }
                     case ResourceType.TRAVERSAL_SEGMENT:
@@ -215,7 +201,7 @@ namespace CathodeEditorGUI
                             for (int y = 0; y < ui.SelectedMaterialIndexes.Count; y++)
                             {
                                 RenderableElements.Element newRed = new RenderableElements.Element();
-                                newRed.ModelIndex = Editor.resource.models.Models[ui.SelectedModelIndex].Submeshes[y].binIndex;
+                                newRed.ModelIndex = Editor.resource.models.GetWriteIndex(ui.SelectedModel.Submeshes[y]);
                                 newRed.MaterialIndex = ui.SelectedMaterialIndexes[y];
                                 Editor.resource.reds.Entries.Add(newRed);
                             }
