@@ -616,7 +616,7 @@ namespace CathodeEditorGUI
             if (!ConfirmAction("Are you sure you want to duplicate this entity?")) return;
 
             //Generate new entity ID and name
-            Entity newEnt = Utilities.CloneObject(Editor.selected.entity);
+            Entity newEnt = Editor.selected.entity.Copy();
             newEnt.shortGUID = ShortGuidUtils.GenerateRandom();
             if (newEnt.variant != EntityVariant.VARIABLE)
                 EntityUtils.SetName(

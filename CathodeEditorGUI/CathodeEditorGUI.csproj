@@ -115,6 +115,7 @@
     </Compile>
     <Compile Include="CathodeEntityDatabase.cs" />
     <Compile Include="LocalDebug.cs" />
+    <Compile Include="ObjectExtensions.cs" />
     <Compile Include="Popups\CathodeEditorGUI_AddOrEditResource.cs">
       <SubType>Form</SubType>
     </Compile>
