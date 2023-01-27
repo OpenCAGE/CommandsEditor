@@ -1,4 +1,5 @@
-﻿using CATHODE.LEGACY;
+﻿using CATHODE;
+using CATHODE.LEGACY;
 using CathodeEditorGUI.Popups.UserControls;
 using System;
 using System.Collections.Generic;
@@ -28,11 +29,12 @@ namespace CathodeEditorGUI
             List<string> allModelFileNames = new List<string>();
             List<string> allModelTagsNames = new List<string>();
 
-            for (int i = 0; i < Editor.resource.models.Models.Count; i++)
+            int i = 0;
+            while (Editor.resource.models.GetAtWriteIndex(i) != null)
             {
-                //We always just pull the name of the first submesh as they'll all be the same
                 allModelFileNames.Add(GenerateNodeTag(i));
                 allModelTagsNames.Add(i.ToString());
+                i++;
             }
             treeHelper.UpdateFileTree(allModelFileNames, null, allModelTagsNames);
 
@@ -43,14 +45,16 @@ namespace CathodeEditorGUI
                 SelectModelNode(defaultModelIndex);
         }
 
-        private string GenerateNodeTag(int pakIndex)
+        private string GenerateNodeTag(int i)
         {
-            //We always just pull the name of the first submesh as they'll all be the same
-            int binIndex = Editor.resource.models.Models[pakIndex].Submeshes[0].binIndex;
-            if (Editor.resource.models.modelBIN.ModelLODPartNames[binIndex] == "")
-                return Editor.resource.models.modelBIN.ModelFilePaths[binIndex];
+            //TODO: submesh names are not necessarily always the same
+            Models.CS2.Submesh submesh = Editor.resource.models.GetAtWriteIndex(i);
+            Models.CS2 mesh = Editor.resource.models.FindModelForSubmesh(submesh);
+            if (mesh == null || submesh == null) return ""; //TODO: we currently skip empty submeshes, e.g. ballistics
+            if (submesh.Name == "")
+                return mesh.Name.Replace('\\', '/');
             else
-                return Editor.resource.models.modelBIN.ModelFilePaths[binIndex] + "/" + Editor.resource.models.modelBIN.ModelLODPartNames[binIndex];
+                return mesh.Name.Replace('\\', '/') + "/" + submesh.Name.Replace('\\', '/');
         }
 
         private void SelectModelNode(int pakIndex)
@@ -67,24 +71,23 @@ namespace CathodeEditorGUI
             ShowModel(index);
         }
 
-        private void ShowModel(int pakIndex)
+        private void ShowModel(int i)
         {
             List<GUI_ModelViewer.Model> models = new List<GUI_ModelViewer.Model>();
-            models.Add(new GUI_ModelViewer.Model(pakIndex));
+            models.Add(new GUI_ModelViewer.Model(i));
             modelViewer.ShowModel(models);
-
-            int binIndex = Editor.resource.models.Models[pakIndex].Submeshes[0].binIndex;
-            modelPreviewArea.Text = Editor.resource.models.modelBIN.ModelFilePaths[binIndex];
-            if (Editor.resource.models.modelBIN.ModelLODPartNames[binIndex] != "")
-                modelPreviewArea.Text += " -> [" + Editor.resource.models.modelBIN.ModelLODPartNames[binIndex] + "]";
+            modelPreviewArea.Text = GenerateNodeTag(i);
         }
 
         private void selectModel_Click(object sender, EventArgs e)
         {
             SelectedModelIndex = Convert.ToInt32(((TreeItem)FileTree.SelectedNode.Tag).String_Value);
             SelectedModelMaterialIndexes.Clear();
-            for (int i = 0; i < Editor.resource.models.Models[SelectedModelIndex].Header.SubmeshCount; i++)
-                SelectedModelMaterialIndexes.Add(Editor.resource.models.modelBIN.Models[Editor.resource.models.Models[SelectedModelIndex].Submeshes[i].binIndex].MaterialLibraryIndex);
+
+            //TODO TODO TODO URGENT! THIS CANNOT WORK WITH OUR NEW MODEL PARSER
+
+            //for (int i = 0; i < Editor.resource.models.Entries[SelectedModelIndex].Header.SubmeshCount; i++)
+            //    SelectedModelMaterialIndexes.Add(Editor.resource.models.modelBIN.Models[Editor.resource.models.Models[SelectedModelIndex].Submeshes[i].binIndex].MaterialLibraryIndex);
             this.Close();
         }
     }

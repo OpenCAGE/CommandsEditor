@@ -1,5 +1,4 @@
 using CATHODE;
-using CATHODE.LEGACY.Assets;
 using CATHODE.Scripting;
 using CATHODE.LEGACY;
 using CathodeEditorGUI.UserControls;
@@ -243,7 +242,7 @@ namespace CathodeEditorGUI
                         break;
                 }
 
-                Editor.resource.models = new CathodeModels(baseLevelPath + "RENDERABLE/MODELS_LEVEL.BIN", baseLevelPath + "RENDERABLE/LEVEL_MODELS.PAK");
+                Editor.resource.models = new Models(baseLevelPath + "RENDERABLE/LEVEL_MODELS.PAK");
                 Editor.resource.reds = new RenderableElements(baseLevelPath + "WORLD/REDS.BIN");
                 Editor.resource.materials = new Materials(baseLevelPath + "RENDERABLE/LEVEL_MODELS.MTL");
                 //Editor.resource.textures = new Textures(baseLevelPath + "RENDERABLE/LEVEL_TEXTURES.ALL.PAK");

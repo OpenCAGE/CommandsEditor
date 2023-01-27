@@ -1,5 +1,4 @@
 ﻿using CATHODE;
-using CATHODE.LEGACY.Assets;
 using CATHODE.Scripting;
 using CATHODE.LEGACY;
 using System;
@@ -29,7 +28,7 @@ namespace CathodeEditorGUI
         public static Resource resource;
         public struct Resource
         {
-            public CathodeModels models;
+            public Models models;
             public Materials materials;
             public Textures textures;
             public Textures textures_Global;

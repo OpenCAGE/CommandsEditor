@@ -60,27 +60,7 @@ namespace CathodeEditorGUI
             hasLoaded = false;
             loadedMvrIndex = mvrIndex;
             Movers.MOVER_DESCRIPTOR mvr = Editor.mvr.Entries[loadedMvrIndex];
-
-            //Convert model BIN index from REDs to PAK index
-            int pakModelIndex = -1;
-            for (int y = 0; y < Editor.resource.models.Models.Count; y++)
-            {
-                for (int z = 0; z < Editor.resource.models.Models[y].Submeshes.Count; z++)
-                {
-                    if (Editor.resource.models.Models[y].Submeshes[z].binIndex == Editor.resource.reds.Entries[(int)mvr.renderableElementIndex].ModelIndex)
-                    {
-                        pakModelIndex = y;
-                        break;
-                    }
-                }
-                if (pakModelIndex != -1) break;
-            }
-
-            //Get all remapped materials from REDs
-            List<int> modelMaterialIndexes = new List<int>();
-            for (int y = 0; y < mvr.renderableElementCount; y++)
-                modelMaterialIndexes.Add(Editor.resource.reds.Entries[(int)mvr.renderableElementIndex + y].MaterialIndex);
-            renderable.PopulateUI(pakModelIndex, modelMaterialIndexes);
+            renderable.PopulateUI((int)mvr.renderableElementIndex, (int)mvr.renderableElementCount);
 
             //Load transform from matrix
             Vector3 scale;
@@ -130,7 +110,7 @@ namespace CathodeEditorGUI
             for (int y = 0; y < renderable.SelectedMaterialIndexes.Count; y++)
             {
                 RenderableElements.Element newRed = new RenderableElements.Element();
-                newRed.ModelIndex = Editor.resource.models.Models[renderable.SelectedModelIndex].Submeshes[y].binIndex;
+                newRed.ModelIndex = renderable.SelectedModelIndex + y; //assumes sequential write
                 newRed.MaterialIndex = renderable.SelectedMaterialIndexes[y];
                 Editor.resource.reds.Entries.Add(newRed);
             }
