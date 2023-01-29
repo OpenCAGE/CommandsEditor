@@ -70,11 +70,12 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(9, 572);
+            this.label1.Location = new System.Drawing.Point(6, 564);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(117, 39);
+            this.label1.Size = new System.Drawing.Size(172, 52);
             this.label1.TabIndex = 2;
-            this.label1.Text = "[Zoom] = Scrollwheel\r\n[Rotate] = Right Mouse\r\n[Drag] = Middle Mouse";
+            this.label1.Text = "[Zoom] = Scrollwheel\r\n[Rotate] = Right Mouse\r\n[Drag] = Middle Mouse\r\n[Recenter] =" +
+    " Double Middle Mouse";
             // 
             // selectModel
             // 

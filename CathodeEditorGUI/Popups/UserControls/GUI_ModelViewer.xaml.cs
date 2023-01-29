@@ -26,6 +26,7 @@ namespace CathodeEditorGUI.Popups.UserControls
             for (int i = 0; i < models.Count; i++)
                 group.Children.Add(OffsetModel(models[i].modelIndex, models[i].position, models[i].rotation));
             modelPreview.Content = group;
+            myView.ZoomExtents();
         }
         
         private Model3DGroup OffsetModel(int modelIndex, Vector3D position, Vector3D rotation)

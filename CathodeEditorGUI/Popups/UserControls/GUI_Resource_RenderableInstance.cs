@@ -34,21 +34,25 @@ namespace CathodeEditorGUI.Popups.UserControls
             for (int y = 0; y < redsCount; y++)
                 materialIndexes.Add(Editor.resource.reds.Entries[redsIndex + y].MaterialIndex);
 
+            PopulateUI(Editor.resource.reds.Entries[redsIndex].ModelIndex, materialIndexes);
+        }
+        public void PopulateUI(int modelIndex, List<int> materialIndexes)
+        {
             //TODO: does RENDERABLE_INSTANCE utilise position/rotation?
 
-            SelectedModelIndex = Editor.resource.reds.Entries[redsIndex].ModelIndex;
+            SelectedModelIndex = modelIndex;
             SelectedMaterialIndexes = materialIndexes;
 
             Models.CS2.Submesh submesh = Editor.resource.models.GetAtWriteIndex(SelectedModelIndex);
-            modelInfoTextbox.Text = Editor.resource.models.FindModelForSubmesh(submesh).Name;
+            Models.CS2 mesh = Editor.resource.models.FindModelForSubmesh(submesh);
+
+            modelInfoTextbox.Text = mesh?.Name;
             if (submesh.Name != "")
                 modelInfoTextbox.Text += " -> [" + submesh.Name + "]"; //TODO: CS2s can have varying submesh names pointed by the same REDs
 
             materials.Items.Clear();
-            for (int i = 0; i < materialIndexes.Count; i++)
-            {
-                materials.Items.Add(Editor.resource.materials.Entries[materialIndexes[i]].Name);
-            }
+            for (int i = 0; i < mesh.Submeshes.Count; i++)
+                materials.Items.Add("[" + mesh.Submeshes[i].Name + "] " + Editor.resource.materials.Entries[materialIndexes[i]].Name);
         }
 
         private void editModel_Click(object sender, EventArgs e)
@@ -64,7 +68,7 @@ namespace CathodeEditorGUI.Popups.UserControls
 
             CathodeEditorGUI_SelectModel selectModel = (CathodeEditorGUI_SelectModel)sender;
             if (selectModel.SelectedModelIndex == -1 || selectModel.SelectedModelMaterialIndexes.Count == 0) return;
-            //PopulateUI(selectModel.SelectedModelIndex, selectModel.SelectedModelMaterialIndexes);
+            PopulateUI(selectModel.SelectedModelIndex, selectModel.SelectedModelMaterialIndexes);
 
             OnModelSelected?.Invoke(selectModel.SelectedModelIndex);
         }
@@ -85,7 +89,7 @@ namespace CathodeEditorGUI.Popups.UserControls
             CathodeEditorGUI_SelectMaterial selectMaterial = (CathodeEditorGUI_SelectMaterial)sender;
             if (selectMaterial.SelectedMaterialIndex == -1) return;
             SelectedMaterialIndexes[selectMaterial.MaterialIndexToEdit] = selectMaterial.SelectedMaterialIndex;
-            //PopulateUI(SelectedModelIndex, SelectedMaterialIndexes);
+            PopulateUI(SelectedModelIndex, SelectedMaterialIndexes);
             materials.SelectedIndex = selectMaterial.MaterialIndexToEdit;
 
             OnMaterialSelected?.Invoke(selectMaterial.MaterialIndexToEdit, selectMaterial.SelectedMaterialIndex);

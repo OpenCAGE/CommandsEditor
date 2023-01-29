@@ -84,10 +84,11 @@ namespace CathodeEditorGUI
             SelectedModelIndex = Convert.ToInt32(((TreeItem)FileTree.SelectedNode.Tag).String_Value);
             SelectedModelMaterialIndexes.Clear();
 
-            //TODO TODO TODO URGENT! THIS CANNOT WORK WITH OUR NEW MODEL PARSER
+            Models.CS2.Submesh submesh = Editor.resource.models.GetAtWriteIndex(SelectedModelIndex);
+            Models.CS2 mesh = Editor.resource.models.FindModelForSubmesh(submesh);
 
-            //for (int i = 0; i < Editor.resource.models.Entries[SelectedModelIndex].Header.SubmeshCount; i++)
-            //    SelectedModelMaterialIndexes.Add(Editor.resource.models.modelBIN.Models[Editor.resource.models.Models[SelectedModelIndex].Submeshes[i].binIndex].MaterialLibraryIndex);
+            for (int i = 0; i < mesh.Submeshes.Count; i++)
+                SelectedModelMaterialIndexes.Add(mesh.Submeshes[i].MaterialLibraryIndex);
             this.Close();
         }
     }
