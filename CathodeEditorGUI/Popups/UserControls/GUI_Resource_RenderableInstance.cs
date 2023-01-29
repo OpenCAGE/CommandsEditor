@@ -51,8 +51,8 @@ namespace CathodeEditorGUI.Popups.UserControls
                 modelInfoTextbox.Text += " -> [" + submesh.Name + "]"; //TODO: CS2s can have varying submesh names pointed by the same REDs
 
             materials.Items.Clear();
-            for (int i = 0; i < mesh.Submeshes.Count; i++)
-                materials.Items.Add("[" + mesh.Submeshes[i].Name + "] " + Editor.resource.materials.Entries[materialIndexes[i]].Name);
+            for (int i = 0; i < materialIndexes.Count; i++)
+                materials.Items.Add(/*"[" + mesh.Submeshes[i].Name + "] " + */Editor.resource.materials.Entries[materialIndexes[i]].Name);
         }
 
         private void editModel_Click(object sender, EventArgs e)
