@@ -140,5 +140,26 @@ namespace CathodeEditorGUI
             if (editedText == ".") editedText = "0";
             return editedText;
         }
+
+        /* Utility: work out if any proxies/overrides reference the currently selected entity */
+        public static bool IsPointedToByAnyOverridesOrProxies()
+        {
+            foreach (Composite comp in Editor.commands.Entries)
+            {
+                foreach (OverrideEntity ovr in comp.overrides)
+                {
+                    Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, comp, ovr.hierarchy, out Composite compRef, out string str);
+                    if (ent != Editor.selected.entity) continue;
+                    return true;
+                }
+                foreach (ProxyEntity prox in comp.proxies)
+                {
+                    Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, comp, prox.hierarchy, out Composite compRef, out string str);
+                    if (ent != Editor.selected.entity) continue;
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }

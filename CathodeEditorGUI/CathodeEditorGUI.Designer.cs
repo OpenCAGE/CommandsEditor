@@ -47,6 +47,7 @@
             this.selected_entity_type_description = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.DBG_WebsocketTest = new System.Windows.Forms.Button();
             this.show3D = new System.Windows.Forms.Button();
             this.renameSelectedNode = new System.Windows.Forms.Button();
             this.duplicateSelectedNode = new System.Windows.Forms.Button();
@@ -70,7 +71,7 @@
             this.DBG_CompileParamList = new System.Windows.Forms.Button();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.DBG_WebsocketTest = new System.Windows.Forms.Button();
+            this.showOverridesAndProxies = new System.Windows.Forms.Button();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.entityInfoGroup.SuspendLayout();
@@ -142,12 +143,13 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.showOverridesAndProxies);
             this.groupBox1.Controls.Add(this.editEntityMovers);
             this.groupBox1.Controls.Add(this.editEntityResources);
             this.groupBox1.Controls.Add(this.entityInfoGroup);
+            this.groupBox1.Controls.Add(this.editFunction);
             this.groupBox1.Controls.Add(this.groupBox4);
             this.groupBox1.Controls.Add(this.groupBox2);
-            this.groupBox1.Controls.Add(this.editFunction);
             this.groupBox1.Location = new System.Drawing.Point(392, 55);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(857, 744);
@@ -159,19 +161,22 @@
             // 
             this.editEntityMovers.Location = new System.Drawing.Point(469, 94);
             this.editEntityMovers.Name = "editEntityMovers";
-            this.editEntityMovers.Size = new System.Drawing.Size(121, 23);
+            this.editEntityMovers.Size = new System.Drawing.Size(95, 23);
             this.editEntityMovers.TabIndex = 179;
-            this.editEntityMovers.Text = "Associated Movers";
+            this.editEntityMovers.Text = "Movers";
+            this.toolTip1.SetToolTip(this.editEntityMovers, "Movers are statically baked instances in the level which derive from this entity." +
+        "");
             this.editEntityMovers.UseVisualStyleBackColor = true;
             this.editEntityMovers.Click += new System.EventHandler(this.editEntityMovers_Click);
             // 
             // editEntityResources
             // 
-            this.editEntityResources.Location = new System.Drawing.Point(600, 94);
+            this.editEntityResources.Location = new System.Drawing.Point(565, 94);
             this.editEntityResources.Name = "editEntityResources";
-            this.editEntityResources.Size = new System.Drawing.Size(121, 23);
+            this.editEntityResources.Size = new System.Drawing.Size(95, 23);
             this.editEntityResources.TabIndex = 176;
-            this.editEntityResources.Text = "Attached Resources";
+            this.editEntityResources.Text = "Resources";
+            this.toolTip1.SetToolTip(this.editEntityResources, "Resources linked to this entity may be renderable, collision, etc.");
             this.editEntityResources.UseVisualStyleBackColor = true;
             this.editEntityResources.Click += new System.EventHandler(this.editEntityResources_Click);
             // 
@@ -262,6 +267,16 @@
             this.groupBox4.TabIndex = 148;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Entities";
+            // 
+            // DBG_WebsocketTest
+            // 
+            this.DBG_WebsocketTest.Location = new System.Drawing.Point(378, 0);
+            this.DBG_WebsocketTest.Name = "DBG_WebsocketTest";
+            this.DBG_WebsocketTest.Size = new System.Drawing.Size(90, 23);
+            this.DBG_WebsocketTest.TabIndex = 152;
+            this.DBG_WebsocketTest.Text = "websocket";
+            this.DBG_WebsocketTest.UseVisualStyleBackColor = true;
+            this.DBG_WebsocketTest.Click += new System.EventHandler(this.button1_Click);
             // 
             // show3D
             // 
@@ -394,9 +409,9 @@
             // 
             // editFunction
             // 
-            this.editFunction.Location = new System.Drawing.Point(730, 94);
+            this.editFunction.Location = new System.Drawing.Point(756, 94);
             this.editFunction.Name = "editFunction";
-            this.editFunction.Size = new System.Drawing.Size(121, 23);
+            this.editFunction.Size = new System.Drawing.Size(95, 23);
             this.editFunction.TabIndex = 178;
             this.editFunction.Text = "Edit Function";
             this.toolTip1.SetToolTip(this.editFunction, "Available on TriggerSequence and CAGEAnimation nodes");
@@ -493,15 +508,16 @@
             this.groupBox10.TabIndex = 175;
             this.groupBox10.TabStop = false;
             // 
-            // button1
+            // showOverridesAndProxies
             // 
-            this.DBG_WebsocketTest.Location = new System.Drawing.Point(378, 0);
-            this.DBG_WebsocketTest.Name = "button1";
-            this.DBG_WebsocketTest.Size = new System.Drawing.Size(90, 23);
-            this.DBG_WebsocketTest.TabIndex = 152;
-            this.DBG_WebsocketTest.Text = "websocket";
-            this.DBG_WebsocketTest.UseVisualStyleBackColor = true;
-            this.DBG_WebsocketTest.Click += new System.EventHandler(this.button1_Click);
+            this.showOverridesAndProxies.Location = new System.Drawing.Point(660, 94);
+            this.showOverridesAndProxies.Name = "showOverridesAndProxies";
+            this.showOverridesAndProxies.Size = new System.Drawing.Size(95, 23);
+            this.showOverridesAndProxies.TabIndex = 180;
+            this.showOverridesAndProxies.Text = "References";
+            this.toolTip1.SetToolTip(this.showOverridesAndProxies, "Find overrides and proxies that reference this entity.");
+            this.showOverridesAndProxies.UseVisualStyleBackColor = true;
+            this.showOverridesAndProxies.Click += new System.EventHandler(this.showOverridesAndProxies_Click);
             // 
             // CathodeEditorGUI
             // 
@@ -574,5 +590,6 @@
         private System.Windows.Forms.CheckBox enableBackups;
         private System.Windows.Forms.Button show3D;
         private System.Windows.Forms.Button DBG_WebsocketTest;
+        private System.Windows.Forms.Button showOverridesAndProxies;
     }
 }

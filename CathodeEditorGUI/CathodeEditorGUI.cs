@@ -29,7 +29,7 @@ namespace CathodeEditorGUI
 
         public CathodeEditorGUI()
         {
-            LocalDebug.TestAllCmds();
+            //LocalDebug.TestAllCmds();
 
             //Level lvl = new Level("G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\ENG_REACTORCORE");
             //lvl.Save();
@@ -132,6 +132,7 @@ namespace CathodeEditorGUI
                 editFunction.Enabled = false;
                 editEntityResources.Enabled = false;
                 editEntityMovers.Enabled = false;
+                showOverridesAndProxies.Enabled = false;
                 renameSelectedNode.Enabled = true;
                 duplicateSelectedNode.Enabled = true;
                 hierarchyDisplay.Visible = false;
@@ -490,16 +491,19 @@ namespace CathodeEditorGUI
 
         /* Load a composite into the UI */
         List<string> composite_content_RAW = new List<string>();
-        private void LoadComposite(string FileName)
+        private void LoadComposite(string filename)
+        {
+            LoadComposite(Editor.commands.GetComposite(filename));
+        }
+        private void LoadComposite(Composite comp, Entity ent = null)
         {
             ClearUI(false, true, true);
-            Composite entry = Editor.commands.GetComposite(FileName);
-            CommandsUtils.PurgeDeadLinks(Editor.commands, entry);
-            Editor.selected.composite = entry;
+            CommandsUtils.PurgeDeadLinks(Editor.commands, comp);
+            Editor.selected.composite = comp;
             Cursor.Current = Cursors.WaitCursor;
 
             composite_content.BeginUpdate();
-            List<Entity> entities = entry.GetEntities();
+            List<Entity> entities = comp.GetEntities();
             for (int i = 0; i < entities.Count; i++)
             {
                 string desc = EditorUtils.GenerateEntityName(entities[i], Editor.selected.composite);
@@ -508,8 +512,10 @@ namespace CathodeEditorGUI
             }
             composite_content.EndUpdate();
 
-            groupBox1.Text = entry.name;
+            groupBox1.Text = comp.name;
             Cursor.Current = Cursors.Default;
+
+            if (ent != null) LoadEntity(ent);
         }
 
         /* Add new entity */
@@ -793,6 +799,10 @@ namespace CathodeEditorGUI
             if (Editor.mvr != null && Editor.mvr.Entries.FindAll(o => o.commandsNodeID == Editor.selected.entity.shortGUID).Count != 0)
                 editEntityMovers.Enabled = true;
 
+            //show cross-refs button if we have them (TODO: thread this as it slows every entity load!)
+            if (EditorUtils.IsPointedToByAnyOverridesOrProxies())
+                showOverridesAndProxies.Enabled = true;
+
             //populate linked params IN
             int current_ui_offset = 7;
             List<Entity> ents = Editor.selected.composite.GetEntities();
@@ -966,6 +976,18 @@ namespace CathodeEditorGUI
         {
             this.BringToFront();
             this.Focus();
+        }
+
+        /* Show overrides and proxies that point to this entity */
+        private void showOverridesAndProxies_Click(object sender, EventArgs e)
+        {
+            CathodeEditorGUI_ShowCrossRefs crossRefs = new CathodeEditorGUI_ShowCrossRefs();
+            crossRefs.Show();
+            crossRefs.OnEntitySelected += OnCrossRefsEntitySelected;
+        }
+        private void OnCrossRefsEntitySelected(ShortGuid entity, Composite composite)
+        {
+            LoadComposite(composite, composite.GetEntityByID(entity));
         }
 
         /* Enable/disable backups */
