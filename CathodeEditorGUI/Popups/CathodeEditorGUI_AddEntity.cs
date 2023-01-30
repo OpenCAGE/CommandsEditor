@@ -188,7 +188,7 @@ namespace CathodeEditorGUI
             else if (createDatatypeEntity.Checked)
                 newEntity = composite.AddVariable(textBox1.Text, (DataType)entityVariant.SelectedIndex, true);
             else if (createProxyEntity.Checked)
-                newEntity = composite.AddProxy(hierarchy, true);
+                newEntity = composite.AddProxy(Editor.commands, hierarchy, true);
             else if (createOverrideEntity.Checked)
                 newEntity = composite.AddOverride(hierarchy);
             else

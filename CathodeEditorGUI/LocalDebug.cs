@@ -334,6 +334,17 @@ namespace CathodeEditorGUI
 #endif
         }
 
+        public static void TestAllCmds()
+        {
+#if DEBUG
+            List<string> files = Directory.GetFiles(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            foreach (string file in files)
+            {
+                Commands phys = new Commands(file);
+            }
+#endif
+        }
+
         private static void WriteVert(float x, float y, float z, BinaryWriter writer)
         {
             Int16 x_16 = ((Int16)(x * Int16.MaxValue));
