@@ -190,7 +190,7 @@ namespace CathodeEditorGUI
         /* Load commands */
         private void LoadCommands(string level)
         {
-            Editor.commands = null;
+            if (Editor.commands != null) Editor.commands.Entries.Clear();
 
             string path_to_ENV = SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + level;
 #if !CATHODE_FAIL_HARD
@@ -223,12 +223,12 @@ namespace CathodeEditorGUI
         /* Load assets */
         private void LoadAssets()
         {
-            Editor.resource.models = null;
-            Editor.resource.reds = null;
-            Editor.resource.materials = null;
-            Editor.resource.textures = null;
-            Editor.resource.textures_Global = null;
-            Editor.resource.env_animations = null;
+            if (Editor.resource.models != null) Editor.resource.models.Entries.Clear();
+            if (Editor.resource.reds != null) Editor.resource.reds.Entries.Clear();
+            if (Editor.resource.materials != null) Editor.resource.materials.Entries.Clear();
+            if (Editor.resource.textures != null) Editor.resource.textures.Entries.Clear();
+            if (Editor.resource.textures_Global != null) Editor.resource.textures_Global.Entries.Clear();
+            if (Editor.resource.env_animations != null) Editor.resource.env_animations.Entries.Clear();
 
 #if !CATHODE_FAIL_HARD
             try
@@ -753,8 +753,8 @@ namespace CathodeEditorGUI
             if (entity == null) return;
 
             Cursor.Current = Cursors.WaitCursor;
-            Task.Factory.StartNew(() => BackgroundEntityLoader(entity, this));
             entity_params.SuspendLayout();
+            Task.Factory.StartNew(() => BackgroundEntityLoader(entity, this));
 
             //populate info labels
             entityInfoGroup.Text = "Selected " + CultureInfo.CurrentCulture.TextInfo.ToTitleCase(entity.variant.ToString().ToLower().Replace('_', ' ')) + " Info";
