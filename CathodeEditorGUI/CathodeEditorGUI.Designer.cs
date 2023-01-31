@@ -37,6 +37,7 @@
             this.addNewFlowgraph = new System.Windows.Forms.Button();
             this.FileTree = new System.Windows.Forms.TreeView();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.showOverridesAndProxies = new System.Windows.Forms.Button();
             this.editEntityMovers = new System.Windows.Forms.Button();
             this.editEntityResources = new System.Windows.Forms.Button();
             this.entityInfoGroup = new System.Windows.Forms.GroupBox();
@@ -46,6 +47,7 @@
             this.label9 = new System.Windows.Forms.Label();
             this.selected_entity_type_description = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
+            this.editFunction = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.DBG_WebsocketTest = new System.Windows.Forms.Button();
             this.show3D = new System.Windows.Forms.Button();
@@ -61,7 +63,6 @@
             this.removeParameter = new System.Windows.Forms.Button();
             this.addNewParameter = new System.Windows.Forms.Button();
             this.entity_params = new System.Windows.Forms.Panel();
-            this.editFunction = new System.Windows.Forms.Button();
             this.load_commands_pak = new System.Windows.Forms.Button();
             this.env_list = new System.Windows.Forms.ComboBox();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
@@ -71,7 +72,6 @@
             this.DBG_CompileParamList = new System.Windows.Forms.Button();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.showOverridesAndProxies = new System.Windows.Forms.Button();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.entityInfoGroup.SuspendLayout();
@@ -156,6 +156,17 @@
             this.groupBox1.TabIndex = 162;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Selected Composite Content";
+            // 
+            // showOverridesAndProxies
+            // 
+            this.showOverridesAndProxies.Location = new System.Drawing.Point(660, 94);
+            this.showOverridesAndProxies.Name = "showOverridesAndProxies";
+            this.showOverridesAndProxies.Size = new System.Drawing.Size(95, 23);
+            this.showOverridesAndProxies.TabIndex = 180;
+            this.showOverridesAndProxies.Text = "References";
+            this.toolTip1.SetToolTip(this.showOverridesAndProxies, "Find overrides and proxies that reference this entity.");
+            this.showOverridesAndProxies.UseVisualStyleBackColor = true;
+            this.showOverridesAndProxies.Click += new System.EventHandler(this.showOverridesAndProxies_Click);
             // 
             // editEntityMovers
             // 
@@ -249,6 +260,17 @@
             this.label6.Size = new System.Drawing.Size(39, 13);
             this.label6.TabIndex = 4;
             this.label6.Text = "Type:";
+            // 
+            // editFunction
+            // 
+            this.editFunction.Location = new System.Drawing.Point(756, 94);
+            this.editFunction.Name = "editFunction";
+            this.editFunction.Size = new System.Drawing.Size(95, 23);
+            this.editFunction.TabIndex = 178;
+            this.editFunction.Text = "Edit Function";
+            this.toolTip1.SetToolTip(this.editFunction, "Available on TriggerSequence and CAGEAnimation nodes");
+            this.editFunction.UseVisualStyleBackColor = true;
+            this.editFunction.Click += new System.EventHandler(this.editFunction_Click);
             // 
             // groupBox4
             // 
@@ -407,17 +429,6 @@
             this.entity_params.Size = new System.Drawing.Size(375, 560);
             this.entity_params.TabIndex = 0;
             // 
-            // editFunction
-            // 
-            this.editFunction.Location = new System.Drawing.Point(756, 94);
-            this.editFunction.Name = "editFunction";
-            this.editFunction.Size = new System.Drawing.Size(95, 23);
-            this.editFunction.TabIndex = 178;
-            this.editFunction.Text = "Edit Function";
-            this.toolTip1.SetToolTip(this.editFunction, "Available on TriggerSequence and CAGEAnimation nodes");
-            this.editFunction.UseVisualStyleBackColor = true;
-            this.editFunction.Click += new System.EventHandler(this.editFunction_Click);
-            // 
             // load_commands_pak
             // 
             this.load_commands_pak.Location = new System.Drawing.Point(299, 16);
@@ -508,17 +519,6 @@
             this.groupBox10.TabIndex = 175;
             this.groupBox10.TabStop = false;
             // 
-            // showOverridesAndProxies
-            // 
-            this.showOverridesAndProxies.Location = new System.Drawing.Point(660, 94);
-            this.showOverridesAndProxies.Name = "showOverridesAndProxies";
-            this.showOverridesAndProxies.Size = new System.Drawing.Size(95, 23);
-            this.showOverridesAndProxies.TabIndex = 180;
-            this.showOverridesAndProxies.Text = "References";
-            this.toolTip1.SetToolTip(this.showOverridesAndProxies, "Find overrides and proxies that reference this entity.");
-            this.showOverridesAndProxies.UseVisualStyleBackColor = true;
-            this.showOverridesAndProxies.Click += new System.EventHandler(this.showOverridesAndProxies_Click);
-            // 
             // CathodeEditorGUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -533,7 +533,7 @@
             this.MaximizeBox = false;
             this.Name = "CathodeEditorGUI";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "OpenCAGE Cathode Editor (ALPHA)";
+            this.Text = "OpenCAGE Commands Editor";
             this.groupBox3.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.entityInfoGroup.ResumeLayout(false);
