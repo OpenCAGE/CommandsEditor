@@ -39,7 +39,7 @@ namespace CathodeEditorGUI
             switch (entity.variant)
             {
                 case EntityVariant.VARIABLE:
-                    desc = ShortGuidUtils.FindString(((VariableEntity)entity).name) + " (DataType " + ((VariableEntity)entity).type.ToString() + ")";
+                    desc = "[" + ((VariableEntity)entity).type.ToString() + " VARIABLE] " + ShortGuidUtils.FindString(((VariableEntity)entity).name);
                     break;
                 case EntityVariant.FUNCTION:
                     Composite funcComposite = Editor.commands.GetComposite(((FunctionEntity)entity).function);
@@ -49,12 +49,12 @@ namespace CathodeEditorGUI
                         desc = EntityUtils.GetName(composite.shortGUID, entity.shortGUID) + " (" + ShortGuidUtils.FindString(((FunctionEntity)entity).function) + ")";
                     break;
                 case EntityVariant.OVERRIDE:
-                    //desc = NodeDBEx.GetEntityName(entity.nodeID) + " (" + HierarchyToString(((OverrideEntity)entity).hierarchy, currentFlowgraph) + ")";
-                    desc = EntityUtils.GetName(composite.shortGUID, entity.shortGUID) + " (*OVERRIDE*)";
+                    CommandsUtils.ResolveHierarchy(Editor.commands, composite, ((OverrideEntity)entity).hierarchy, out Composite c, out string s, false);
+                    desc = "[OVERRIDE] " + s;
                     break;
                 case EntityVariant.PROXY:
-                    //desc = NodeDBEx.GetEntityName(entity.nodeID) + " (" + HierarchyToString(((ProxyEntity)entity).hierarchy, currentFlowgraph) + ")";
-                    desc = EntityUtils.GetName(composite.shortGUID, entity.shortGUID) + " (*PROXY*)";
+                    CommandsUtils.ResolveHierarchy(Editor.commands, composite, ((ProxyEntity)entity).hierarchy, out Composite c2, out string s2, false);
+                    desc = "[PROXY] " + EntityUtils.GetName(composite.shortGUID, entity.shortGUID) + " (" + s2 + ")";
                     break;
             }
             return "[" + entity.shortGUID.ToByteString() + "] " + desc;
