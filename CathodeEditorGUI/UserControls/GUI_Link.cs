@@ -48,9 +48,9 @@ namespace CathodeEditorGUI.UserControls
         {
             CathodeEditorGUI_AddOrEditLink editor;
             if (_isLinkOut)
-                editor = new CathodeEditorGUI_AddOrEditLink(Editor.selected.composite, Editor.selected.entity, _linkedEntity, _link, true);
+                editor = new CathodeEditorGUI_AddOrEditLink(Editor.selected.composite, Editor.selected.entity, _linkedEntity, ShortGuidUtils.FindString(_link.parentParamID), ShortGuidUtils.FindString(_link.childParamID), true, _link.connectionID);
             else
-                editor = new CathodeEditorGUI_AddOrEditLink(Editor.selected.composite, _linkedEntity, Editor.selected.entity, _link, false);
+                editor = new CathodeEditorGUI_AddOrEditLink(Editor.selected.composite, _linkedEntity, Editor.selected.entity, ShortGuidUtils.FindString(_link.parentParamID), ShortGuidUtils.FindString(_link.childParamID), false, _link.connectionID);
 
             editor.Show();
             editor.OnSaved += link_editor_OnSaved;
