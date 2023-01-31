@@ -83,7 +83,7 @@ namespace CathodeEditorGUI
 
         private void selectEntToPointTo_Click(object sender, EventArgs e)
         {
-            CathodeEditorGUI_EditHierarchy hierarchyEditor = new CathodeEditorGUI_EditHierarchy(Editor.selected.composite);
+            CathodeEditorGUI_EditHierarchy hierarchyEditor = new CathodeEditorGUI_EditHierarchy(Editor.selected.composite, true);
             hierarchyEditor.Show();
             hierarchyEditor.OnHierarchyGenerated += HierarchyEditor_HierarchyGenerated;
         }

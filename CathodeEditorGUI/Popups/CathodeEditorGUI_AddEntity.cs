@@ -124,11 +124,11 @@ namespace CathodeEditorGUI
             CathodeEditorGUI_EditHierarchy hierarchyEditor = null;
             if (createProxyEntity.Checked)
             {
-                hierarchyEditor = new CathodeEditorGUI_EditHierarchy(Editor.commands.EntryPoints[0]);
+                hierarchyEditor = new CathodeEditorGUI_EditHierarchy(Editor.commands.EntryPoints[0], true);
             }
             else if (createOverrideEntity.Checked)
             {
-                hierarchyEditor = new CathodeEditorGUI_EditHierarchy(Editor.selected.composite);
+                hierarchyEditor = new CathodeEditorGUI_EditHierarchy(Editor.selected.composite, false);
             }
             hierarchyEditor.Show();
             hierarchyEditor.OnHierarchyGenerated += HierarchyEditor_HierarchyGenerated;

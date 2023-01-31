@@ -16,6 +16,7 @@ using CathodeEditorGUI.Popups.UserControls;
 using WebSocketSharp.Server;
 using MessageBox = System.Windows.Forms.MessageBox;
 using Point = System.Drawing.Point;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace CathodeEditorGUI
 {
@@ -752,6 +753,8 @@ namespace CathodeEditorGUI
             if (entity == null) return;
 
             Cursor.Current = Cursors.WaitCursor;
+            Task.Factory.StartNew(() => BackgroundEntityLoader(entity, this));
+            entity_params.SuspendLayout();
 
             //populate info labels
             entityInfoGroup.Text = "Selected " + CultureInfo.CurrentCulture.TextInfo.ToTitleCase(entity.variant.ToString().ToLower().Replace('_', ' ')) + " Info";
@@ -798,10 +801,6 @@ namespace CathodeEditorGUI
             //show mvr editor button if this entity has a mvr link
             if (Editor.mvr != null && Editor.mvr.Entries.FindAll(o => o.commandsNodeID == Editor.selected.entity.shortGUID).Count != 0)
                 editEntityMovers.Enabled = true;
-
-            //show cross-refs button if we have them (TODO: thread this as it slows every entity load!)
-            if (EditorUtils.IsPointedToByAnyOverridesOrProxies())
-                showOverridesAndProxies.Enabled = true;
 
             //populate linked params IN
             int current_ui_offset = 7;
@@ -880,7 +879,18 @@ namespace CathodeEditorGUI
                 entity_params.Controls.Add(parameterGUI);
             }
 
+            entity_params.ResumeLayout();
             Cursor.Current = Cursors.Default;
+        }
+        private void BackgroundEntityLoader(Entity ent, CathodeEditorGUI mainInst)
+        {
+            bool isPointedTo = EditorUtils.IsPointedToByAnyOverridesOrProxies();
+            mainInst.ThreadedEntityUIUpdate(ent, isPointedTo);
+        }
+        public void ThreadedEntityUIUpdate(Entity ent, bool isPointedTo)
+        {
+            if (ent != Editor.selected.entity) return;
+            showOverridesAndProxies.Invoke(new Action(() => { showOverridesAndProxies.Enabled = isPointedTo; }));
         }
 
         /* Add a new parameter */

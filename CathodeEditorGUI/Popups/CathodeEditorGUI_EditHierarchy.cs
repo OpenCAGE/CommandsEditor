@@ -23,8 +23,13 @@ namespace CathodeEditorGUI
         private Entity selectedEntity = null;
         private Composite selectedComposite = null;
 
-        public CathodeEditorGUI_EditHierarchy(Composite startingComposite)
+        private bool onlyShowFunctions = false;
+
+        //PROXIES can only point to FunctionEntities - OVERRIDES can point to FunctionEntities, ProxyEntities, VariableEntities
+        public CathodeEditorGUI_EditHierarchy(Composite startingComposite, bool onlyFunctions)
         {
+            onlyShowFunctions = onlyFunctions;
+
             InitializeComponent();
             LoadComposite(startingComposite.name);
         }
@@ -80,13 +85,29 @@ namespace CathodeEditorGUI
             composite_content.BeginUpdate();
             composite_content_RAW.Clear();
             composite_content.Items.Clear();
-            //We only populate function entities here
+
             for (int i = 0; i < selectedComposite.functions.Count; i++)
             {
                 string desc = EditorUtils.GenerateEntityName(selectedComposite.functions[i], selectedComposite);
                 composite_content.Items.Add(desc);
                 composite_content_RAW.Add(desc);
             }
+            if (!onlyShowFunctions)
+            {
+                for (int i = 0; i < selectedComposite.proxies.Count; i++)
+                {
+                    string desc = EditorUtils.GenerateEntityName(selectedComposite.proxies[i], selectedComposite);
+                    composite_content.Items.Add(desc);
+                    composite_content_RAW.Add(desc);
+                }
+                for (int i = 0; i < selectedComposite.variables.Count; i++)
+                {
+                    string desc = EditorUtils.GenerateEntityName(selectedComposite.variables[i], selectedComposite);
+                    composite_content.Items.Add(desc);
+                    composite_content_RAW.Add(desc);
+                }
+            }
+
             composite_content.EndUpdate();
         }
 
