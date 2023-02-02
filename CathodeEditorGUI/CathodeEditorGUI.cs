@@ -22,10 +22,11 @@ namespace CathodeEditorGUI
 {
     public partial class CathodeEditorGUI : Form
     {
-        private TreeUtility treeHelper;
+        private TreeUtility _treeHelper;
+        private Composite _previousComposite = null;
 
 #if DEBUG
-        private WebSocketServer server;
+        private WebSocketServer _server;
 #endif
 
         public CathodeEditorGUI()
@@ -42,12 +43,12 @@ namespace CathodeEditorGUI
 
 
             InitializeComponent();
-            treeHelper = new TreeUtility(FileTree);
+            _treeHelper = new TreeUtility(FileTree);
 
 #if DEBUG
-            server = new WebSocketServer("ws://localhost:1702");
-            server.AddWebSocketService<WebsocketServer>("/commands_editor");
-            server.Start();
+            _server = new WebSocketServer("ws://localhost:1702");
+            _server.AddWebSocketService<WebsocketServer>("/commands_editor");
+            _server.Start();
 #endif
 
             //Populate available maps
@@ -64,7 +65,7 @@ namespace CathodeEditorGUI
             if (env_list.Items.Contains("FRONTEND")) env_list.SelectedItem = "FRONTEND";
             else env_list.SelectedIndex = 0;
 
-            this.Text = "OpenCAGE Cathode Editor";
+            this.Text = "OpenCAGE Commands Editor";
             if (OpenCAGE.SettingsManager.GetBool("CONFIG_ShowPlatform") &&
                 OpenCAGE.SettingsManager.GetString("META_GameVersion") != "")
             {
@@ -108,6 +109,7 @@ namespace CathodeEditorGUI
                 FileTree.Nodes.Clear();
                 FileTree.EndUpdate();
                 root_composite_display.Text = "Root composite: ";
+                _previousComposite = null;
             }
             if (clear_entity_list)
             {
@@ -140,6 +142,8 @@ namespace CathodeEditorGUI
                 addNewParameter.Enabled = true;
                 removeParameter.Enabled = true;
             }
+            goBackToPrevComp.Enabled = _previousComposite != null;
+            toolTip1.SetToolTip(goBackToPrevComp, "Go back to: " + ((_previousComposite != null) ? _previousComposite.name : ""));
         }
 
         /* Enable the option to load COMMANDS */
@@ -170,13 +174,13 @@ namespace CathodeEditorGUI
             currentBackgroundCacher = Task.Factory.StartNew(() => EditorUtils.GenerateEntityNameCache(this));
 
             //Populate file tree
-            treeHelper.UpdateFileTree(Editor.commands.GetCompositeNames().ToList());
+            _treeHelper.UpdateFileTree(Editor.commands.GetCompositeNames().ToList());
 
             //Show info in UI
             RefreshStatsUI();
 
             //Load root composite
-            treeHelper.SelectNode(Editor.commands.EntryPoints[0].name);
+            _treeHelper.SelectNode(Editor.commands.EntryPoints[0].name);
         }
         private void load_commands_pak_Click(object sender, EventArgs e)
         {
@@ -402,7 +406,7 @@ namespace CathodeEditorGUI
         }
         private void add_flow_closed(Object sender, FormClosedEventArgs e)
         {
-            treeHelper.UpdateFileTree(Editor.commands.GetCompositeNames().ToList());
+            _treeHelper.UpdateFileTree(Editor.commands.GetCompositeNames().ToList());
             RefreshStatsUI();
             this.BringToFront();
             this.Focus();
@@ -449,7 +453,7 @@ namespace CathodeEditorGUI
             //Refresh UI
             ClearUI(false, true, true);
             RefreshStatsUI();
-            treeHelper.UpdateFileTree(Editor.commands.GetCompositeNames().ToList());
+            _treeHelper.UpdateFileTree(Editor.commands.GetCompositeNames().ToList());
         }
 
         /* Select entity from loaded composite */
@@ -498,10 +502,12 @@ namespace CathodeEditorGUI
         }
         private void LoadComposite(Composite comp, Entity ent = null)
         {
+            _previousComposite = Editor.selected.composite;
             ClearUI(false, true, true);
-            CommandsUtils.PurgeDeadLinks(Editor.commands, comp);
             Editor.selected.composite = comp;
+
             Cursor.Current = Cursors.WaitCursor;
+            CommandsUtils.PurgeDeadLinks(Editor.commands, comp);
 
             composite_content.BeginUpdate();
             List<Entity> entities = comp.GetEntities();
@@ -1038,6 +1044,13 @@ namespace CathodeEditorGUI
             }
         }
 
+        /* Go back to the previous composite */
+        private void goBackToPrevComp_Click(object sender, EventArgs e)
+        {
+            Editor.selected.composite = null;
+            LoadComposite(_previousComposite);
+        }
+
         /* Confirm an action */
         private bool ConfirmAction(string msg)
         {
@@ -1252,7 +1265,7 @@ namespace CathodeEditorGUI
             if (levelLoaded != env_list.SelectedItem.ToString())
             {
                 levelLoaded = env_list.SelectedItem.ToString();
-                server.WebSocketServices["/commands_editor"].Sessions.Broadcast("1" + levelLoaded);
+                _server.WebSocketServices["/commands_editor"].Sessions.Broadcast("1" + levelLoaded);
                 return;
             }
 
@@ -1267,7 +1280,7 @@ namespace CathodeEditorGUI
                     if (Editor.mvr.Entries[i].commandsNodeID != Editor.selected.entity.shortGUID) continue;
                     str += i + ">";
                 }
-                server.WebSocketServices["/commands_editor"].Sessions.Broadcast(((int)MessageType.GO_TO_REDS).ToString() + str);
+                _server.WebSocketServices["/commands_editor"].Sessions.Broadcast(((int)MessageType.GO_TO_REDS).ToString() + str);
             }
             catch { }
 #endif

@@ -72,6 +72,7 @@
             this.DBG_CompileParamList = new System.Windows.Forms.Button();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.goBackToPrevComp = new System.Windows.Forms.Button();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.entityInfoGroup.SuspendLayout();
@@ -102,6 +103,7 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.goBackToPrevComp);
             this.groupBox3.Controls.Add(this.removeSelectedFlowgraph);
             this.groupBox3.Controls.Add(this.addNewFlowgraph);
             this.groupBox3.Controls.Add(this.FileTree);
@@ -519,6 +521,17 @@
             this.groupBox10.TabIndex = 175;
             this.groupBox10.TabStop = false;
             // 
+            // goBackToPrevComp
+            // 
+            this.goBackToPrevComp.Location = new System.Drawing.Point(354, 7);
+            this.goBackToPrevComp.Name = "goBackToPrevComp";
+            this.goBackToPrevComp.Size = new System.Drawing.Size(23, 23);
+            this.goBackToPrevComp.TabIndex = 151;
+            this.goBackToPrevComp.Text = "<";
+            this.toolTip1.SetToolTip(this.goBackToPrevComp, "Go back to the previously selected composite");
+            this.goBackToPrevComp.UseVisualStyleBackColor = true;
+            this.goBackToPrevComp.Click += new System.EventHandler(this.goBackToPrevComp_Click);
+            // 
             // CathodeEditorGUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -591,5 +604,6 @@
         private System.Windows.Forms.Button show3D;
         private System.Windows.Forms.Button DBG_WebsocketTest;
         private System.Windows.Forms.Button showOverridesAndProxies;
+        private System.Windows.Forms.Button goBackToPrevComp;
     }
 }
