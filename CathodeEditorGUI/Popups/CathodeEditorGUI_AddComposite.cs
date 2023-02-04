@@ -23,19 +23,16 @@ namespace CathodeEditorGUI
         private void button1_Click(object sender, EventArgs e)
         {
             if (textBox1.Text == "") return;
-            for (int i = 0; i < Editor.commands.Composites.Count; i++)
+            for (int i = 0; i < Editor.commands.Entries.Count; i++)
             {
-                if (Editor.commands.Composites[i].name == textBox1.Text)
+                if (Editor.commands.Entries[i].name == textBox1.Text)
                 {
                     MessageBox.Show("Failed to create composite.\nA composite with this name already exists.", "Composite already exists.", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
             }
             
-            Composite newFlowgraph = new Composite();
-            newFlowgraph.name = textBox1.Text;
-            newFlowgraph.shortGUID = ShortGuidUtils.GenerateRandom();
-            Editor.commands.Composites.Add(newFlowgraph);
+            Editor.commands.AddComposite(textBox1.Text);
             this.Close();
         }
     }

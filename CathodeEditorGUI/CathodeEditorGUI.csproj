@@ -8,7 +8,7 @@
     <ProjectGuid>{DDFD51D4-A1E6-430D-BF4C-858378E74D56}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>CathodeEditorGUI</RootNamespace>
-    <AssemblyName>CathodeEditorGUI</AssemblyName>
+    <AssemblyName>CommandsEditor</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -23,15 +23,20 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <OutputPath>..\Build\</OutputPath>
-    <DefineConstants>DEBUG</DefineConstants>
+    <DefineConstants>DEBUG;CATHODE_FAIL_HARD</DefineConstants>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <OutputPath>..\Build\</OutputPath>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <Reference Include="CathodeLib">
       <HintPath>..\CathodeLib\CathodeLib\bin\Debug\netstandard2.0\CathodeLib.dll</HintPath>
+    </Reference>
+    <Reference Include="WebsocketSharp">
+      <HintPath>lib\WebsocketSharp\websocket-sharp.dll</HintPath>
     </Reference>
     <Reference Include="HelixToolkit">
       <HintPath>lib\HelixToolkit\Debug\HelixToolkit.dll</HintPath>
@@ -46,6 +51,9 @@
   <ItemGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <Reference Include="CathodeLib">
       <HintPath>..\CathodeLib\CathodeLib\bin\Release\netstandard2.0\CathodeLib.dll</HintPath>
+    </Reference>
+    <Reference Include="WebsocketSharp">
+      <HintPath>lib\WebsocketSharp\websocket-sharp.dll</HintPath>
     </Reference>
     <Reference Include="HelixToolkit">
       <HintPath>lib\HelixToolkit\Release\HelixToolkit.dll</HintPath>
@@ -69,7 +77,9 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="System" />
+    <Reference Include="System">
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.2\System.dll</HintPath>
+    </Reference>
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
     </Reference>
@@ -107,6 +117,7 @@
     </Compile>
     <Compile Include="CathodeEntityDatabase.cs" />
     <Compile Include="LocalDebug.cs" />
+    <Compile Include="ObjectExtensions.cs" />
     <Compile Include="Popups\CathodeEditorGUI_AddOrEditResource.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -150,6 +161,12 @@
     </Compile>
     <Compile Include="LEGACY\CathodeEditorGUI_EditResource.designer.cs">
       <DependentUpon>CathodeEditorGUI_EditResource.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\CathodeEditorGUI_Composite3D.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\CathodeEditorGUI_Composite3D.Designer.cs">
+      <DependentUpon>CathodeEditorGUI_Composite3D.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\CathodeEditorGUI_EditHierarchy.cs">
       <SubType>Form</SubType>
@@ -199,6 +216,12 @@
     <Compile Include="Popups\CathodeEditorGUI_SelectModel.Designer.cs">
       <DependentUpon>CathodeEditorGUI_SelectModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\CathodeEditorGUI_ShowCrossRefs.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\CathodeEditorGUI_ShowCrossRefs.Designer.cs">
+      <DependentUpon>CathodeEditorGUI_ShowCrossRefs.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popups\UserControls\CS2Reader.cs" />
     <Compile Include="Popups\UserControls\GUI_ModelViewer.xaml.cs">
       <DependentUpon>GUI_ModelViewer.xaml</DependentUpon>
@@ -215,18 +238,6 @@
     <Compile Include="Popups\UserControls\GUI_Resource_CollisionMapping.Designer.cs">
       <DependentUpon>GUI_Resource_CollisionMapping.cs</DependentUpon>
     </Compile>
-    <Compile Include="Popups\UserControls\GUI_Resource_DynamicPhysicsSystem.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Popups\UserControls\GUI_Resource_DynamicPhysicsSystem.Designer.cs">
-      <DependentUpon>GUI_Resource_DynamicPhysicsSystem.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Popups\UserControls\GUI_Resource_ExclusiveMasterStateResource.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Popups\UserControls\GUI_Resource_ExclusiveMasterStateResource.Designer.cs">
-      <DependentUpon>GUI_Resource_ExclusiveMasterStateResource.cs</DependentUpon>
-    </Compile>
     <Compile Include="Popups\UserControls\GUI_Resource_NavMeshBarrierResource.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -238,12 +249,6 @@
     </Compile>
     <Compile Include="Popups\UserControls\GUI_Resource_RenderableInstance.Designer.cs">
       <DependentUpon>GUI_Resource_RenderableInstance.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Popups\UserControls\GUI_Resource_TraversalSegment.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Popups\UserControls\GUI_Resource_TraversalSegment.Designer.cs">
-      <DependentUpon>GUI_Resource_TraversalSegment.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\UserControls\ResourceUserControl.cs">
       <SubType>UserControl</SubType>
@@ -260,6 +265,7 @@
     </Compile>
     <Compile Include="TreeUtility.cs" />
     <Compile Include="SettingsManager.cs" />
+    <Compile Include="WebsocketServer.cs" />
     <Compile Include="UserControls\GUI_BoolDataType.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -338,6 +344,9 @@
     <EmbeddedResource Include="LEGACY\CathodeEditorGUI_EditResource.resx">
       <DependentUpon>CathodeEditorGUI_EditResource.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Popups\CathodeEditorGUI_Composite3D.resx">
+      <DependentUpon>CathodeEditorGUI_Composite3D.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Popups\CathodeEditorGUI_EditHierarchy.resx">
       <DependentUpon>CathodeEditorGUI_EditHierarchy.cs</DependentUpon>
     </EmbeddedResource>
@@ -362,26 +371,20 @@
     <EmbeddedResource Include="Popups\CathodeEditorGUI_SelectModel.resx">
       <DependentUpon>CathodeEditorGUI_SelectModel.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Popups\CathodeEditorGUI_ShowCrossRefs.resx">
+      <DependentUpon>CathodeEditorGUI_ShowCrossRefs.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Popups\UserControls\GUI_Resource_AnimatedModel.resx">
       <DependentUpon>GUI_Resource_AnimatedModel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\UserControls\GUI_Resource_CollisionMapping.resx">
       <DependentUpon>GUI_Resource_CollisionMapping.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Popups\UserControls\GUI_Resource_DynamicPhysicsSystem.resx">
-      <DependentUpon>GUI_Resource_DynamicPhysicsSystem.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Popups\UserControls\GUI_Resource_ExclusiveMasterStateResource.resx">
-      <DependentUpon>GUI_Resource_ExclusiveMasterStateResource.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Popups\UserControls\GUI_Resource_NavMeshBarrierResource.resx">
       <DependentUpon>GUI_Resource_NavMeshBarrierResource.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\UserControls\GUI_Resource_RenderableInstance.resx">
       <DependentUpon>GUI_Resource_RenderableInstance.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Popups\UserControls\GUI_Resource_TraversalSegment.resx">
-      <DependentUpon>GUI_Resource_TraversalSegment.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

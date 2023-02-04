@@ -1,4 +1,4 @@
-﻿using CATHODE.Scripting;
+using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using System;
 using System.Collections.Generic;
@@ -34,6 +34,13 @@ namespace CathodeEditorGUI
                     EditorUtils.GenerateEntityName(Editor.selected.composite.GetEntityByID(_entity.childLinks[i].childID), Editor.selected.composite) + 
                     " [" + ShortGuidUtils.FindString(_entity.childLinks[i].childParamID) + "]");
             }
+
+            if (parameterToDelete.Items.Count == 0)
+            {
+                this.Close();
+                return;
+            }
+
             parameterToDelete.SelectedIndex = 0;
             parameterToDelete.EndUpdate();
         }

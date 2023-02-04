@@ -37,6 +37,7 @@
             this.addNewFlowgraph = new System.Windows.Forms.Button();
             this.FileTree = new System.Windows.Forms.TreeView();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.showOverridesAndProxies = new System.Windows.Forms.Button();
             this.editEntityMovers = new System.Windows.Forms.Button();
             this.editEntityResources = new System.Windows.Forms.Button();
             this.entityInfoGroup = new System.Windows.Forms.GroupBox();
@@ -46,7 +47,10 @@
             this.label9 = new System.Windows.Forms.Label();
             this.selected_entity_type_description = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
+            this.editFunction = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.DBG_WebsocketTest = new System.Windows.Forms.Button();
+            this.show3D = new System.Windows.Forms.Button();
             this.renameSelectedNode = new System.Windows.Forms.Button();
             this.duplicateSelectedNode = new System.Windows.Forms.Button();
             this.removeSelectedEntity = new System.Windows.Forms.Button();
@@ -59,16 +63,16 @@
             this.removeParameter = new System.Windows.Forms.Button();
             this.addNewParameter = new System.Windows.Forms.Button();
             this.entity_params = new System.Windows.Forms.Panel();
-            this.editFunction = new System.Windows.Forms.Button();
             this.load_commands_pak = new System.Windows.Forms.Button();
             this.env_list = new System.Windows.Forms.ComboBox();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.enableBackups = new System.Windows.Forms.CheckBox();
             this.DBG_LoadAllCommands = new System.Windows.Forms.Button();
             this.editEntryPoint = new System.Windows.Forms.Button();
             this.DBG_CompileParamList = new System.Windows.Forms.Button();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.enableBackups = new System.Windows.Forms.CheckBox();
+            this.goBackToPrevComp = new System.Windows.Forms.Button();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.entityInfoGroup.SuspendLayout();
@@ -99,6 +103,7 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.goBackToPrevComp);
             this.groupBox3.Controls.Add(this.removeSelectedFlowgraph);
             this.groupBox3.Controls.Add(this.addNewFlowgraph);
             this.groupBox3.Controls.Add(this.FileTree);
@@ -140,12 +145,13 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.showOverridesAndProxies);
             this.groupBox1.Controls.Add(this.editEntityMovers);
             this.groupBox1.Controls.Add(this.editEntityResources);
             this.groupBox1.Controls.Add(this.entityInfoGroup);
+            this.groupBox1.Controls.Add(this.editFunction);
             this.groupBox1.Controls.Add(this.groupBox4);
             this.groupBox1.Controls.Add(this.groupBox2);
-            this.groupBox1.Controls.Add(this.editFunction);
             this.groupBox1.Location = new System.Drawing.Point(392, 55);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(857, 744);
@@ -153,23 +159,37 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Selected Composite Content";
             // 
+            // showOverridesAndProxies
+            // 
+            this.showOverridesAndProxies.Location = new System.Drawing.Point(660, 94);
+            this.showOverridesAndProxies.Name = "showOverridesAndProxies";
+            this.showOverridesAndProxies.Size = new System.Drawing.Size(95, 23);
+            this.showOverridesAndProxies.TabIndex = 180;
+            this.showOverridesAndProxies.Text = "References";
+            this.toolTip1.SetToolTip(this.showOverridesAndProxies, "Find overrides and proxies that reference this entity.");
+            this.showOverridesAndProxies.UseVisualStyleBackColor = true;
+            this.showOverridesAndProxies.Click += new System.EventHandler(this.showOverridesAndProxies_Click);
+            // 
             // editEntityMovers
             // 
             this.editEntityMovers.Location = new System.Drawing.Point(469, 94);
             this.editEntityMovers.Name = "editEntityMovers";
-            this.editEntityMovers.Size = new System.Drawing.Size(121, 23);
+            this.editEntityMovers.Size = new System.Drawing.Size(95, 23);
             this.editEntityMovers.TabIndex = 179;
-            this.editEntityMovers.Text = "Associated Movers";
+            this.editEntityMovers.Text = "Movers";
+            this.toolTip1.SetToolTip(this.editEntityMovers, "Movers are statically baked instances in the level which derive from this entity." +
+        "");
             this.editEntityMovers.UseVisualStyleBackColor = true;
             this.editEntityMovers.Click += new System.EventHandler(this.editEntityMovers_Click);
             // 
             // editEntityResources
             // 
-            this.editEntityResources.Location = new System.Drawing.Point(600, 94);
+            this.editEntityResources.Location = new System.Drawing.Point(565, 94);
             this.editEntityResources.Name = "editEntityResources";
-            this.editEntityResources.Size = new System.Drawing.Size(121, 23);
+            this.editEntityResources.Size = new System.Drawing.Size(95, 23);
             this.editEntityResources.TabIndex = 176;
-            this.editEntityResources.Text = "Attached Resources";
+            this.editEntityResources.Text = "Resources";
+            this.toolTip1.SetToolTip(this.editEntityResources, "Resources linked to this entity may be renderable, collision, etc.");
             this.editEntityResources.UseVisualStyleBackColor = true;
             this.editEntityResources.Click += new System.EventHandler(this.editEntityResources_Click);
             // 
@@ -243,8 +263,21 @@
             this.label6.TabIndex = 4;
             this.label6.Text = "Type:";
             // 
+            // editFunction
+            // 
+            this.editFunction.Location = new System.Drawing.Point(756, 94);
+            this.editFunction.Name = "editFunction";
+            this.editFunction.Size = new System.Drawing.Size(95, 23);
+            this.editFunction.TabIndex = 178;
+            this.editFunction.Text = "Edit Function";
+            this.toolTip1.SetToolTip(this.editFunction, "Available on TriggerSequence and CAGEAnimation nodes");
+            this.editFunction.UseVisualStyleBackColor = true;
+            this.editFunction.Click += new System.EventHandler(this.editFunction_Click);
+            // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.DBG_WebsocketTest);
+            this.groupBox4.Controls.Add(this.show3D);
             this.groupBox4.Controls.Add(this.renameSelectedNode);
             this.groupBox4.Controls.Add(this.duplicateSelectedNode);
             this.groupBox4.Controls.Add(this.removeSelectedEntity);
@@ -258,6 +291,26 @@
             this.groupBox4.TabIndex = 148;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Entities";
+            // 
+            // DBG_WebsocketTest
+            // 
+            this.DBG_WebsocketTest.Location = new System.Drawing.Point(378, 0);
+            this.DBG_WebsocketTest.Name = "DBG_WebsocketTest";
+            this.DBG_WebsocketTest.Size = new System.Drawing.Size(90, 23);
+            this.DBG_WebsocketTest.TabIndex = 152;
+            this.DBG_WebsocketTest.Text = "websocket";
+            this.DBG_WebsocketTest.UseVisualStyleBackColor = true;
+            this.DBG_WebsocketTest.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // show3D
+            // 
+            this.show3D.Location = new System.Drawing.Point(282, 0);
+            this.show3D.Name = "show3D";
+            this.show3D.Size = new System.Drawing.Size(90, 23);
+            this.show3D.TabIndex = 151;
+            this.show3D.Text = "test";
+            this.show3D.UseVisualStyleBackColor = true;
+            this.show3D.Click += new System.EventHandler(this.show3D_Click);
             // 
             // renameSelectedNode
             // 
@@ -378,17 +431,6 @@
             this.entity_params.Size = new System.Drawing.Size(375, 560);
             this.entity_params.TabIndex = 0;
             // 
-            // editFunction
-            // 
-            this.editFunction.Location = new System.Drawing.Point(730, 94);
-            this.editFunction.Name = "editFunction";
-            this.editFunction.Size = new System.Drawing.Size(121, 23);
-            this.editFunction.TabIndex = 178;
-            this.editFunction.Text = "Edit Function";
-            this.toolTip1.SetToolTip(this.editFunction, "Available on TriggerSequence and CAGEAnimation nodes");
-            this.editFunction.UseVisualStyleBackColor = true;
-            this.editFunction.Click += new System.EventHandler(this.editFunction_Click);
-            // 
             // load_commands_pak
             // 
             this.load_commands_pak.Location = new System.Drawing.Point(299, 16);
@@ -420,6 +462,19 @@
             this.groupBox8.Size = new System.Drawing.Size(748, 49);
             this.groupBox8.TabIndex = 174;
             this.groupBox8.TabStop = false;
+            // 
+            // enableBackups
+            // 
+            this.enableBackups.AutoSize = true;
+            this.enableBackups.Location = new System.Drawing.Point(9, 26);
+            this.enableBackups.Name = "enableBackups";
+            this.enableBackups.Size = new System.Drawing.Size(104, 17);
+            this.enableBackups.TabIndex = 179;
+            this.enableBackups.Text = "Enable Backups";
+            this.toolTip1.SetToolTip(this.enableBackups, "If checked, the currently loaded Commands file will be backed up every 5 minutes." +
+        "\r\n");
+            this.enableBackups.UseVisualStyleBackColor = true;
+            this.enableBackups.CheckedChanged += new System.EventHandler(this.enableBackups_CheckedChanged);
             // 
             // DBG_LoadAllCommands
             // 
@@ -466,18 +521,16 @@
             this.groupBox10.TabIndex = 175;
             this.groupBox10.TabStop = false;
             // 
-            // enableBackups
+            // goBackToPrevComp
             // 
-            this.enableBackups.AutoSize = true;
-            this.enableBackups.Location = new System.Drawing.Point(9, 26);
-            this.enableBackups.Name = "enableBackups";
-            this.enableBackups.Size = new System.Drawing.Size(104, 17);
-            this.enableBackups.TabIndex = 179;
-            this.enableBackups.Text = "Enable Backups";
-            this.toolTip1.SetToolTip(this.enableBackups, "If checked, the currently loaded Commands file will be backed up every 5 minutes." +
-        "\r\n");
-            this.enableBackups.UseVisualStyleBackColor = true;
-            this.enableBackups.CheckedChanged += new System.EventHandler(this.enableBackups_CheckedChanged);
+            this.goBackToPrevComp.Location = new System.Drawing.Point(354, 7);
+            this.goBackToPrevComp.Name = "goBackToPrevComp";
+            this.goBackToPrevComp.Size = new System.Drawing.Size(23, 23);
+            this.goBackToPrevComp.TabIndex = 151;
+            this.goBackToPrevComp.Text = "<";
+            this.toolTip1.SetToolTip(this.goBackToPrevComp, "Go back to the previously selected composite");
+            this.goBackToPrevComp.UseVisualStyleBackColor = true;
+            this.goBackToPrevComp.Click += new System.EventHandler(this.goBackToPrevComp_Click);
             // 
             // CathodeEditorGUI
             // 
@@ -493,7 +546,7 @@
             this.MaximizeBox = false;
             this.Name = "CathodeEditorGUI";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "OpenCAGE Cathode Editor (ALPHA)";
+            this.Text = "OpenCAGE Commands Editor";
             this.groupBox3.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.entityInfoGroup.ResumeLayout(false);
@@ -548,5 +601,9 @@
         private System.Windows.Forms.Button DBG_LoadAllCommands;
         private System.Windows.Forms.Button addLinkOut;
         private System.Windows.Forms.CheckBox enableBackups;
+        private System.Windows.Forms.Button show3D;
+        private System.Windows.Forms.Button DBG_WebsocketTest;
+        private System.Windows.Forms.Button showOverridesAndProxies;
+        private System.Windows.Forms.Button goBackToPrevComp;
     }
 }

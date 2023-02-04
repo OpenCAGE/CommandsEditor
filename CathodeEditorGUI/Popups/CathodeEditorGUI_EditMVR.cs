@@ -35,9 +35,9 @@ namespace CathodeEditorGUI
 
             listBox1.BeginUpdate();
             listBox1.Items.Clear();
-            for (int i = 0; i < Editor.mvr.Movers.Count; i++)
+            for (int i = 0; i < Editor.mvr.Entries.Count; i++)
             {
-                if (nodeID.val != null && Editor.mvr.Movers[i].commandsNodeID != nodeID) continue;
+                if (nodeID.val != null && Editor.mvr.Entries[i].commandsNodeID != nodeID) continue;
                 listBox1.Items.Add(i.ToString());
             }
             listBox1.EndUpdate();
@@ -59,28 +59,8 @@ namespace CathodeEditorGUI
         {
             hasLoaded = false;
             loadedMvrIndex = mvrIndex;
-            MoverDatabase.MOVER_DESCRIPTOR mvr = Editor.mvr.Movers[loadedMvrIndex];
-
-            //Convert model BIN index from REDs to PAK index
-            int pakModelIndex = -1;
-            for (int y = 0; y < Editor.resource.models.Models.Count; y++)
-            {
-                for (int z = 0; z < Editor.resource.models.Models[y].Submeshes.Count; z++)
-                {
-                    if (Editor.resource.models.Models[y].Submeshes[z].binIndex == Editor.resource.reds.RenderableElements[(int)mvr.renderableElementIndex].ModelIndex)
-                    {
-                        pakModelIndex = y;
-                        break;
-                    }
-                }
-                if (pakModelIndex != -1) break;
-            }
-
-            //Get all remapped materials from REDs
-            List<int> modelMaterialIndexes = new List<int>();
-            for (int y = 0; y < mvr.renderableElementCount; y++)
-                modelMaterialIndexes.Add(Editor.resource.reds.RenderableElements[(int)mvr.renderableElementIndex + y].MaterialLibraryIndex);
-            renderable.PopulateUI(pakModelIndex, modelMaterialIndexes);
+            Movers.MOVER_DESCRIPTOR mvr = Editor.mvr.Entries[loadedMvrIndex];
+            renderable.PopulateUI((int)mvr.renderableElementIndex, (int)mvr.renderableElementCount);
 
             //Load transform from matrix
             Vector3 scale;
@@ -114,10 +94,10 @@ namespace CathodeEditorGUI
         {
             if (!hasLoaded || loadedMvrIndex == -1) return;
 
-            MoverDatabase.MOVER_DESCRIPTOR mvr = Editor.mvr.Movers[loadedMvrIndex];
+            Movers.MOVER_DESCRIPTOR mvr = Editor.mvr.Entries[loadedMvrIndex];
 
             mvr.renderableElementCount = (uint)renderable.SelectedMaterialIndexes.Count;
-            mvr.renderableElementIndex = (uint)Editor.resource.reds.RenderableElements.Count;
+            mvr.renderableElementIndex = (uint)Editor.resource.reds.Entries.Count;
 
             mvr.transform = Matrix4x4.CreateScale(new Vector3((float)SCALE_X.Value, (float)SCALE_Y.Value, (float)SCALE_Z.Value)) *
                             Matrix4x4.CreateFromQuaternion(new Quaternion((float)ROT_W.Value, (float)ROT_X.Value, (float)ROT_Y.Value, (float)ROT_Z.Value)) *
@@ -125,14 +105,14 @@ namespace CathodeEditorGUI
 
             mvr.instanceTypeFlags = (ushort)Convert.ToInt32(type_dropdown.SelectedItem.ToString());
 
-            Editor.mvr.Movers[loadedMvrIndex] = mvr;
+            Editor.mvr.Entries[loadedMvrIndex] = mvr;
 
             for (int y = 0; y < renderable.SelectedMaterialIndexes.Count; y++)
             {
-                RenderableElementsDatabase.RenderableElement newRed = new RenderableElementsDatabase.RenderableElement();
-                newRed.ModelIndex = Editor.resource.models.Models[renderable.SelectedModelIndex].Submeshes[y].binIndex;
-                newRed.MaterialLibraryIndex = renderable.SelectedMaterialIndexes[y];
-                Editor.resource.reds.RenderableElements.Add(newRed);
+                RenderableElements.Element newRed = new RenderableElements.Element();
+                newRed.ModelIndex = renderable.SelectedModelIndex + y; //assumes sequential write
+                newRed.MaterialIndex = renderable.SelectedMaterialIndexes[y];
+                Editor.resource.reds.Entries.Add(newRed);
             }
 
             Console.WriteLine("SAVED");
@@ -144,7 +124,7 @@ namespace CathodeEditorGUI
             if (loadedMvrIndex == -1) return;
             //CurrentInstance.moverDB.Movers.RemoveAt(loadedMvrIndex);
 
-            Editor.mvr.Movers[loadedMvrIndex] = Editor.mvr.Movers[0];
+            Editor.mvr.Entries[loadedMvrIndex] = Editor.mvr.Entries[0];
 
             PopulateUI(filteredNodeID);
         }

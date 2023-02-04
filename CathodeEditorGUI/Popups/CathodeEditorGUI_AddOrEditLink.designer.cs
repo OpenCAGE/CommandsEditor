@@ -31,11 +31,11 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CathodeEditorGUI_AddOrEditLink));
             this.label3 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.parentParameter = new System.Windows.Forms.ComboBox();
+            this.parentParameterList = new System.Windows.Forms.ComboBox();
             this.parentEntityList = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.childParameter = new System.Windows.Forms.ComboBox();
+            this.childParameterList = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.childEntityList = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
@@ -57,7 +57,7 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.parentParameter);
+            this.groupBox1.Controls.Add(this.parentParameterList);
             this.groupBox1.Controls.Add(this.parentEntityList);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.label3);
@@ -70,11 +70,11 @@
             // 
             // pin_out_param
             // 
-            this.parentParameter.FormattingEnabled = true;
-            this.parentParameter.Location = new System.Drawing.Point(16, 79);
-            this.parentParameter.Name = "pin_out_param";
-            this.parentParameter.Size = new System.Drawing.Size(844, 21);
-            this.parentParameter.TabIndex = 8;
+            this.parentParameterList.FormattingEnabled = true;
+            this.parentParameterList.Location = new System.Drawing.Point(16, 79);
+            this.parentParameterList.Name = "pin_out_param";
+            this.parentParameterList.Size = new System.Drawing.Size(844, 21);
+            this.parentParameterList.TabIndex = 8;
             // 
             // pin_out_node
             // 
@@ -97,7 +97,7 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.childParameter);
+            this.groupBox2.Controls.Add(this.childParameterList);
             this.groupBox2.Controls.Add(this.label1);
             this.groupBox2.Controls.Add(this.childEntityList);
             this.groupBox2.Controls.Add(this.label6);
@@ -110,11 +110,11 @@
             // 
             // pin_in_param
             // 
-            this.childParameter.FormattingEnabled = true;
-            this.childParameter.Location = new System.Drawing.Point(16, 80);
-            this.childParameter.Name = "pin_in_param";
-            this.childParameter.Size = new System.Drawing.Size(844, 21);
-            this.childParameter.TabIndex = 9;
+            this.childParameterList.FormattingEnabled = true;
+            this.childParameterList.Location = new System.Drawing.Point(16, 80);
+            this.childParameterList.Name = "pin_in_param";
+            this.childParameterList.Size = new System.Drawing.Size(844, 21);
+            this.childParameterList.TabIndex = 9;
             // 
             // label1
             // 
@@ -200,7 +200,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.ComboBox parentParameter;
-        private System.Windows.Forms.ComboBox childParameter;
+        private System.Windows.Forms.ComboBox parentParameterList;
+        private System.Windows.Forms.ComboBox childParameterList;
     }
 }

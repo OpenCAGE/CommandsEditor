@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using CATHODE.Scripting;
 using CathodeLib;
 using CATHODE;
+using System.Numerics;
 
 namespace CathodeEditorGUI.UserControls
 {
@@ -26,24 +27,24 @@ namespace CathodeEditorGUI.UserControls
         {
             vectorVal = cVec;
             label1.Text = ShortGuidUtils.FindString(paramID);
-            POS_X_1.Value = (decimal)cVec.value.x;
-            POS_Y_1.Value = (decimal)cVec.value.y;
-            POS_Z_1.Value = (decimal)cVec.value.z;
+            POS_X_1.Value = (decimal)cVec.value.X;
+            POS_Y_1.Value = (decimal)cVec.value.Y;
+            POS_Z_1.Value = (decimal)cVec.value.Z;
         }
 
         private void POS_X_1_ValueChanged(object sender, EventArgs e)
         {
-            vectorVal.value.x = (float)POS_X_1.Value;
+            vectorVal.value.X = (float)POS_X_1.Value;
         }
 
         private void POS_Y_1_ValueChanged(object sender, EventArgs e)
         {
-            vectorVal.value.y = (float)POS_Y_1.Value;
+            vectorVal.value.Y = (float)POS_Y_1.Value;
         }
 
         private void POS_Z_1_ValueChanged(object sender, EventArgs e)
         {
-            vectorVal.value.z = (float)POS_Z_1.Value;
+            vectorVal.value.Z = (float)POS_Z_1.Value;
         }
     }
 }

@@ -1,11 +1,9 @@
 # Alien: Isolation Script Editor
 
-A tool to browse and modify scripts within Alien: Isolation's COMMANDS.PAK archives.
+A tool to browse and modify scripts within Alien: Isolation's Commands files.
 
-The latest stable version can be downloaded [by clicking here](https://github.com/OpenCAGE/CathodeEditorGUI/raw/master/Build/CathodeEditorGUI.exe).
+The latest stable version can be downloaded [by clicking here](https://github.com/OpenCAGE/CommandsEditor/raw/master/Build/CommandsEditor.exe).
 
-Run the tool from your Alien: Isolation root directory.
+Run the tool from your Alien: Isolation root directory, or download OpenCAGE, where it's included!
 
-Check out [AlienPAK](https://github.com/OpenCAGE/AlienPAK) to open the asset PAK files.
-
-This project is still a **work in progress** and may have some unstable features. Work is still ongoing to add support for resources, CAGEAnimations, TriggerSequences, and much more.
+This project is still a **work in progress** and may have some unstable features

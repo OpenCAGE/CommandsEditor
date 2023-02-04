@@ -11,11 +11,15 @@ using CATHODE.Scripting;
 using CathodeLib;
 using CATHODE;
 using CATHODE.LEGACY;
+using System.Numerics;
 
 namespace CathodeEditorGUI.Popups.UserControls
 {
     public partial class GUI_Resource_RenderableInstance : ResourceUserControl
     {
+        public Vector3 Position { get { return new Vector3((float)POS_X.Value, (float)POS_Y.Value, (float)POS_Z.Value); } }
+        public Vector3 Rotation { get { return new Vector3((float)ROT_X.Value, (float)ROT_Y.Value, (float)ROT_Z.Value); } }
+
         public int SelectedModelIndex;
         public List<int> SelectedMaterialIndexes = new List<int>();
 
@@ -27,23 +31,50 @@ namespace CathodeEditorGUI.Popups.UserControls
             InitializeComponent();
         }
 
-        public void PopulateUI(int modelIndexPAK, List<int> materialIndexes)
+        public void PopulateUI(Vector3 position, Vector3 rotation, int redsIndex, int redsCount)
+        {
+            POS_X.Value = (decimal)position.X;
+            POS_Y.Value = (decimal)position.Y;
+            POS_Z.Value = (decimal)position.Z;
+
+            ROT_X.Value = (decimal)rotation.X;
+            ROT_Y.Value = (decimal)rotation.Y;
+            ROT_Z.Value = (decimal)rotation.Z;
+
+            PopulateUI(redsIndex, redsCount);
+
+            groupBox1.Size = new Size(832, 227);
+            this.Size = new Size(838, 232);
+        }
+        public void PopulateUI(int redsIndex, int redsCount)
+        {
+            //Get all remapped materials from REDs
+            List<int> materialIndexes = new List<int>();
+            for (int y = 0; y < redsCount; y++)
+                materialIndexes.Add(Editor.resource.reds.Entries[redsIndex + y].MaterialIndex);
+
+            PopulateUI(Editor.resource.reds.Entries[redsIndex].ModelIndex, materialIndexes);
+        }
+        public void PopulateUI(int modelIndex, List<int> materialIndexes)
         {
             //TODO: does RENDERABLE_INSTANCE utilise position/rotation?
 
-            SelectedModelIndex = modelIndexPAK;
+            SelectedModelIndex = modelIndex;
             SelectedMaterialIndexes = materialIndexes;
 
-            int binIndex = Editor.resource.models.Models[modelIndexPAK].Submeshes[0].binIndex;
-            modelInfoTextbox.Text = Editor.resource.models.modelBIN.ModelFilePaths[binIndex];
-            if (Editor.resource.models.modelBIN.ModelLODPartNames[binIndex] != "")
-                modelInfoTextbox.Text += " -> [" + Editor.resource.models.modelBIN.ModelLODPartNames[binIndex] + "]";
+            Models.CS2.Submesh submesh = Editor.resource.models.GetAtWriteIndex(SelectedModelIndex);
+            Models.CS2 mesh = Editor.resource.models.FindModelForSubmesh(submesh);
+
+            modelInfoTextbox.Text = mesh?.Name;
+            if (submesh.Name != "")
+                modelInfoTextbox.Text += " -> [" + submesh.Name + "]"; //TODO: CS2s can have varying submesh names pointed by the same REDs
 
             materials.Items.Clear();
             for (int i = 0; i < materialIndexes.Count; i++)
-            {
-                materials.Items.Add(Editor.resource.materials._materialNames[materialIndexes[i]]);
-            }
+                materials.Items.Add(/*"[" + mesh.Submeshes[i].Name + "] " + */Editor.resource.materials.Entries[materialIndexes[i]].Name);
+
+            groupBox1.Size = new Size(832, 180);
+            this.Size = new Size(838, 186);
         }
 
         private void editModel_Click(object sender, EventArgs e)

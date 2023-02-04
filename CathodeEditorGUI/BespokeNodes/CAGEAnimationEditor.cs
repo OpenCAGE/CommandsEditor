@@ -60,7 +60,7 @@ namespace CathodeEditorGUI
                 paramName.Size = new Size(119, 20);
                 currentGroupBox.Controls.Add(paramName);
 
-                CathodeParameterKeyframe paramData = animNode.keyframeData.FirstOrDefault(o => o.ID == animNode.keyframeHeaders[i].keyframeDataID);
+                CAGEAnimation.Keyframe paramData = animNode.keyframeData.FirstOrDefault(o => o.ID == animNode.keyframeHeaders[i].keyframeDataID);
                 //TODO: populate full min max keyframes so new ones can be created
                 int keyframeWidth = paramName.Location.X + paramName.Width;
                 if (paramData != null)
@@ -80,7 +80,7 @@ namespace CathodeEditorGUI
                 }
 
                 Composite resolvedComposite = null;
-                Entity resolvedEntity = EditorUtils.ResolveHierarchy(animNode.keyframeHeaders[i].connectedEntity, out resolvedComposite, out string hierarchy);
+                Entity resolvedEntity = CommandsUtils.ResolveHierarchy(Editor.commands, Editor.selected.composite, animNode.keyframeHeaders[i].connectedEntity, out resolvedComposite, out string hierarchy);
                 if (resolvedEntity != null)
                 {
                     TextBox controllingEntity = new TextBox();
@@ -102,7 +102,7 @@ namespace CathodeEditorGUI
             }
         }
 
-        CathodeKeyframe currentEditData = null;
+        CAGEAnimation.Keyframe.Data currentEditData = null;
         private void KeyframeBtn_Click(object sender, EventArgs e)
         {
             string info = ((Button)sender).AccessibleDescription;
