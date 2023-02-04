@@ -56,7 +56,7 @@ namespace CathodeEditorGUI
                     case ResourceType.COLLISION_MAPPING:
                         {
                             resourceGroup = new GUI_Resource_CollisionMapping();
-                            ((GUI_Resource_CollisionMapping)resourceGroup).PopulateUI(resources[i].position, resources[i].rotation);
+                            ((GUI_Resource_CollisionMapping)resourceGroup).PopulateUI(resources[i].position, resources[i].rotation, resources[i].collisionID);
                             break;
                         }
                     case ResourceType.NAV_MESH_BARRIER_RESOURCE:
@@ -157,6 +157,7 @@ namespace CathodeEditorGUI
                             GUI_Resource_CollisionMapping ui = (GUI_Resource_CollisionMapping)resource_panel.Controls[i];
                             resourceRef.position = ui.Position;
                             resourceRef.rotation = ui.Rotation;
+                            resourceRef.collisionID = ui.CollisionID;
                             break;
                         }
                     case ResourceType.NAV_MESH_BARRIER_RESOURCE:

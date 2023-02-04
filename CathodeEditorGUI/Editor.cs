@@ -25,9 +25,12 @@ namespace CathodeEditorGUI
             public Models models;
             public Materials materials;
             public Textures textures;
-            public Textures textures_Global;
+            public Textures textures_global;
+
             public RenderableElements reds;
+
             public EnvironmentAnimations env_animations;
+            public CollisionMaps collision_maps;
         }
     }
 }

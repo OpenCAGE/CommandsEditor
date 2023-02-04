@@ -232,8 +232,9 @@ namespace CathodeEditorGUI
             if (Editor.resource.reds != null) Editor.resource.reds.Entries.Clear();
             if (Editor.resource.materials != null) Editor.resource.materials.Entries.Clear();
             if (Editor.resource.textures != null) Editor.resource.textures.Entries.Clear();
-            if (Editor.resource.textures_Global != null) Editor.resource.textures_Global.Entries.Clear();
+            if (Editor.resource.textures_global != null) Editor.resource.textures_global.Entries.Clear();
             if (Editor.resource.env_animations != null) Editor.resource.env_animations.Entries.Clear();
+            if (Editor.resource.collision_maps != null) Editor.resource.collision_maps.Entries.Clear();
 
 #if !CATHODE_FAIL_HARD
             try
@@ -257,6 +258,7 @@ namespace CathodeEditorGUI
                 //Editor.resource.textures = new Textures(baseLevelPath + "RENDERABLE/LEVEL_TEXTURES.ALL.PAK");
                 //Editor.resource.textures_Global = new Textures(SharedData.pathToAI + "/DATA/ENV/GLOBAL/WORLD/GLOBAL_TEXTURES.ALL.PAK");
                 Editor.resource.env_animations = new EnvironmentAnimations(baseLevelPath + "WORLD/ENVIRONMENT_ANIMATION.DAT");
+                Editor.resource.collision_maps = new CollisionMaps(baseLevelPath + "WORLD/COLLISION.MAP");
 #if !CATHODE_FAIL_HARD
             }
             catch
@@ -267,8 +269,9 @@ namespace CathodeEditorGUI
                 Editor.resource.reds = null;
                 Editor.resource.materials = null;
                 Editor.resource.textures = null;
-                Editor.resource.textures_Global = null;
+                Editor.resource.textures_global = null;
                 Editor.resource.env_animations = null;
+                Editor.resource.collision_maps = null;
             }
 #endif
         }
