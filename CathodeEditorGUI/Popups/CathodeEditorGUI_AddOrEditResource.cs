@@ -56,40 +56,23 @@ namespace CathodeEditorGUI
                     case ResourceType.COLLISION_MAPPING:
                         {
                             resourceGroup = new GUI_Resource_CollisionMapping();
-                            ((GUI_Resource_CollisionMapping)resourceGroup).PopulateUI();
-                            break;
-                        }
-                        //TODO: should we even bother showing this?
-                    case ResourceType.DYNAMIC_PHYSICS_SYSTEM:
-                        {
-                            resourceGroup = new GUI_Resource_DynamicPhysicsSystem();
-                            ((GUI_Resource_DynamicPhysicsSystem)resourceGroup).PopulateUI(resources[i].startIndex);
-                            break;
-                        }
-                    case ResourceType.EXCLUSIVE_MASTER_STATE_RESOURCE:
-                        {
-                            resourceGroup = new GUI_Resource_ExclusiveMasterStateResource();
-                            ((GUI_Resource_ExclusiveMasterStateResource)resourceGroup).PopulateUI();
+                            ((GUI_Resource_CollisionMapping)resourceGroup).PopulateUI(resources[i].position, resources[i].rotation);
                             break;
                         }
                     case ResourceType.NAV_MESH_BARRIER_RESOURCE:
                         {
                             resourceGroup = new GUI_Resource_NavMeshBarrierResource();
-                            ((GUI_Resource_NavMeshBarrierResource)resourceGroup).PopulateUI();
+                            ((GUI_Resource_NavMeshBarrierResource)resourceGroup).PopulateUI(resources[i].position, resources[i].rotation);
                             break;
                         }
                     case ResourceType.RENDERABLE_INSTANCE:
                         {
                             resourceGroup = new GUI_Resource_RenderableInstance();
-                            ((GUI_Resource_RenderableInstance)resourceGroup).PopulateUI(resources[i].startIndex, resources[i].count);
+                            ((GUI_Resource_RenderableInstance)resourceGroup).PopulateUI(resources[i].position, resources[i].rotation, resources[i].startIndex, resources[i].count);
                             break;
                         }
-                    case ResourceType.TRAVERSAL_SEGMENT:
-                        {
-                            resourceGroup = new GUI_Resource_TraversalSegment();
-                            ((GUI_Resource_TraversalSegment)resourceGroup).PopulateUI();
-                            break;
-                        }
+                    default:
+                        continue;
                 }
                 resourceGroup.ResourceReference = resources[i];
                 resourceGroup.Location = new Point(15, current_ui_offset);
@@ -101,7 +84,7 @@ namespace CathodeEditorGUI
         /* Add a new resource reference to the list */
         private void addResource_Click(object sender, EventArgs e)
         {
-            ResourceType type = (ResourceType)resourceType.SelectedIndex;
+            ResourceType type = (ResourceType)Enum.Parse(typeof(ResourceType), resourceType.Items[resourceType.SelectedIndex].ToString());
 
             //A resource reference list can only ever point to one of a type
             for (int i = 0; i < resources.Count; i++)
@@ -138,7 +121,7 @@ namespace CathodeEditorGUI
         /* Delete an existing resource reference from the list */
         private void deleteResource_Click(object sender, EventArgs e)
         {
-            ResourceType type = (ResourceType)resourceType.SelectedIndex;
+            ResourceType type = (ResourceType)Enum.Parse(typeof(ResourceType), resourceType.Items[resourceType.SelectedIndex].ToString());
             ResourceReference reference = resources.FirstOrDefault(o => o.entryType == type);
             if (reference == null)
             {
@@ -171,25 +154,23 @@ namespace CathodeEditorGUI
                         }
                     case ResourceType.COLLISION_MAPPING:
                         {
-                            break;
-                        }
-                    case ResourceType.DYNAMIC_PHYSICS_SYSTEM:
-                        {
-                            GUI_Resource_DynamicPhysicsSystem ui = (GUI_Resource_DynamicPhysicsSystem)resource_panel.Controls[i];
-                            resourceRef.startIndex = ui.UnknownIndex;
-                            break;
-                        }
-                    case ResourceType.EXCLUSIVE_MASTER_STATE_RESOURCE:
-                        {
+                            GUI_Resource_CollisionMapping ui = (GUI_Resource_CollisionMapping)resource_panel.Controls[i];
+                            resourceRef.position = ui.Position;
+                            resourceRef.rotation = ui.Rotation;
                             break;
                         }
                     case ResourceType.NAV_MESH_BARRIER_RESOURCE:
                         {
+                            GUI_Resource_NavMeshBarrierResource ui = (GUI_Resource_NavMeshBarrierResource)resource_panel.Controls[i];
+                            resourceRef.position = ui.Position;
+                            resourceRef.rotation = ui.Rotation;
                             break;
                         }
                     case ResourceType.RENDERABLE_INSTANCE:
                         {
                             GUI_Resource_RenderableInstance ui = (GUI_Resource_RenderableInstance)resource_panel.Controls[i];
+                            resourceRef.position = ui.Position;
+                            resourceRef.rotation = ui.Rotation;
                             resourceRef.count = ui.SelectedMaterialIndexes.Count;
                             resourceRef.startIndex = Editor.resource.reds.Entries.Count;
                             for (int y = 0; y < ui.SelectedMaterialIndexes.Count; y++)
@@ -199,10 +180,6 @@ namespace CathodeEditorGUI
                                 newRed.MaterialIndex = ui.SelectedMaterialIndexes[y];
                                 Editor.resource.reds.Entries.Add(newRed);
                             }
-                            break;
-                        }
-                    case ResourceType.TRAVERSAL_SEGMENT:
-                        {
                             break;
                         }
                 }

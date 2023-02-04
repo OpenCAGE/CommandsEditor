@@ -338,10 +338,10 @@ namespace CathodeEditorGUI
         {
 #if DEBUG
             List<string> files = Directory.GetFiles(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
-            foreach (string file in files)
+            Parallel.ForEach(files, file =>
             {
                 Commands phys = new Commands(file);
-            }
+            });
 #endif
         }
 

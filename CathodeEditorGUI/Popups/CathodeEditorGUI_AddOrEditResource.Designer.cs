@@ -81,13 +81,10 @@
             this.resourceType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.resourceType.FormattingEnabled = true;
             this.resourceType.Items.AddRange(new object[] {
+            "ANIMATED_MODEL",
             "COLLISION_MAPPING",
-            "DYNAMIC_PHYSICS_SYSTEM",
-            "EXCLUSIVE_MASTER_STATE_RESOURCE",
-            "NAV_MESH_BARRIER_RESOURCE",
             "RENDERABLE_INSTANCE",
-            "TRAVERSAL_SEGMENT",
-            "ANIMATED_MODEL"});
+            "NAV_MESH_BARRIER_RESOURCE"});
             this.resourceType.Location = new System.Drawing.Point(6, 19);
             this.resourceType.Name = "resourceType";
             this.resourceType.Size = new System.Drawing.Size(302, 21);
