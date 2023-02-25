@@ -11,7 +11,7 @@ using CATHODE.Scripting;
 using CATHODE;
 using CathodeLib;
 
-namespace CathodeEditorGUI.UserControls
+namespace CommandsEditor.UserControls
 {
     public partial class GUI_TransformDataType : UserControl
     {

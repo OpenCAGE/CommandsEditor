@@ -10,7 +10,7 @@ using System.Drawing;
 using CathodeLib;
 using System.Linq.Expressions;
 
-namespace CathodeEditorGUI.Popups.UserControls
+namespace CommandsEditor.Popups.UserControls
 {
     public class CS2Reader : IModelReader
     {

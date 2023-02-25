@@ -11,7 +11,7 @@ using CATHODE.Scripting;
 using CATHODE;
 using CathodeLib;
 
-namespace CathodeEditorGUI.UserControls
+namespace CommandsEditor.UserControls
 {
     public partial class GUI_ResourceDataType : UserControl
     {
@@ -30,7 +30,7 @@ namespace CathodeEditorGUI.UserControls
         /* Edit resources referenced by the resource param */
         private void openResourceEditor_Click(object sender, EventArgs e)
         {
-            CathodeEditorGUI_AddOrEditResource resourceEditor = new CathodeEditorGUI_AddOrEditResource(resRef.value, resRef.shortGUID, GUID_VARIABLE_DUMMY.Text);
+            AddOrEditResource resourceEditor = new AddOrEditResource(resRef.value, resRef.shortGUID, GUID_VARIABLE_DUMMY.Text);
             resourceEditor.Show();
             resourceEditor.OnSaved += OnResourceEditorSaved;
             resourceEditor.FormClosed += ResourceEditor_FormClosed;

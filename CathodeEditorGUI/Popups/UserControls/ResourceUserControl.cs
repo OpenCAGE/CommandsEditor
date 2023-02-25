@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace CathodeEditorGUI.Popups.UserControls
+namespace CommandsEditor.Popups.UserControls
 {
     public partial class ResourceUserControl : UserControl
     {

@@ -1,4 +1,4 @@
-﻿namespace CathodeEditorGUI.Popups.UserControls
+﻿namespace CommandsEditor.Popups.UserControls
 {
     partial class GUI_Resource_RenderableInstance
     {

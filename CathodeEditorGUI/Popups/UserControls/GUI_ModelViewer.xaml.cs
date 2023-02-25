@@ -5,7 +5,7 @@ using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Numerics;
 
-namespace CathodeEditorGUI.Popups.UserControls
+namespace CommandsEditor.Popups.UserControls
 {
     /// <summary>
     /// Interaction logic for GUI_ModelViewer.xaml

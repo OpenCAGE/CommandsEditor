@@ -3,7 +3,7 @@ using CATHODE.Scripting.Internal;
 using System;
 using System.Windows.Forms;
 
-namespace CathodeEditorGUI.UserControls
+namespace CommandsEditor.UserControls
 {
     public partial class GUI_Link : UserControl
     {
@@ -46,11 +46,11 @@ namespace CathodeEditorGUI.UserControls
 
         private void EditLink_Click(object sender, EventArgs e)
         {
-            CathodeEditorGUI_AddOrEditLink editor;
+            AddOrEditLink editor;
             if (_isLinkOut)
-                editor = new CathodeEditorGUI_AddOrEditLink(Editor.selected.composite, Editor.selected.entity, _linkedEntity, ShortGuidUtils.FindString(_link.parentParamID), ShortGuidUtils.FindString(_link.childParamID), true, _link.connectionID);
+                editor = new AddOrEditLink(Editor.selected.composite, Editor.selected.entity, _linkedEntity, ShortGuidUtils.FindString(_link.parentParamID), ShortGuidUtils.FindString(_link.childParamID), true, _link.connectionID);
             else
-                editor = new CathodeEditorGUI_AddOrEditLink(Editor.selected.composite, _linkedEntity, Editor.selected.entity, ShortGuidUtils.FindString(_link.parentParamID), ShortGuidUtils.FindString(_link.childParamID), false, _link.connectionID);
+                editor = new AddOrEditLink(Editor.selected.composite, _linkedEntity, Editor.selected.entity, ShortGuidUtils.FindString(_link.parentParamID), ShortGuidUtils.FindString(_link.childParamID), false, _link.connectionID);
 
             editor.Show();
             editor.OnSaved += link_editor_OnSaved;

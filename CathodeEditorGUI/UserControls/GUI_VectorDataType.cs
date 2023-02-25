@@ -12,7 +12,7 @@ using CathodeLib;
 using CATHODE;
 using System.Numerics;
 
-namespace CathodeEditorGUI.UserControls
+namespace CommandsEditor.UserControls
 {
     public partial class GUI_VectorDataType : UserControl
     {
