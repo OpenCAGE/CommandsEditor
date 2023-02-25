@@ -61,6 +61,7 @@
             this.splinePoints.Name = "splinePoints";
             this.splinePoints.Size = new System.Drawing.Size(207, 21);
             this.splinePoints.TabIndex = 3;
+            this.splinePoints.SelectedIndexChanged += new System.EventHandler(this.splinePoints_SelectedIndexChanged);
             // 
             // addPoint
             // 

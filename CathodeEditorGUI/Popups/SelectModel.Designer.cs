@@ -72,22 +72,22 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(6, 564);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(172, 52);
+            this.label1.Size = new System.Drawing.Size(117, 52);
             this.label1.TabIndex = 2;
             this.label1.Text = "[Zoom] = Scrollwheel\r\n[Rotate] = Right Mouse\r\n[Drag] = Middle Mouse\r\n[Recenter] =" +
-    " Double Middle Mouse";
+    " Home";
             // 
             // selectModelBtn
             // 
             this.selectModelBtn.Location = new System.Drawing.Point(536, 572);
-            this.selectModelBtn.Name = "selectModel";
+            this.selectModelBtn.Name = "selectModelBtn";
             this.selectModelBtn.Size = new System.Drawing.Size(134, 35);
             this.selectModelBtn.TabIndex = 1;
             this.selectModelBtn.Text = "Select This Model";
             this.selectModelBtn.UseVisualStyleBackColor = true;
             this.selectModelBtn.Click += new System.EventHandler(this.selectModel_Click);
             // 
-            // CathodeEditorGUI_SelectModel
+            // SelectModel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -97,7 +97,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.Name = "CathodeEditorGUI_SelectModel";
+            this.Name = "SelectModel";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Select Model";
             this.modelPreviewArea.ResumeLayout(false);

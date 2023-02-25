@@ -29,7 +29,7 @@ namespace CommandsEditor.UserControls
 
         private void openSplineEditor_Click(object sender, EventArgs e)
         {
-            EditSpline splineEditor = new EditSpline(spline);
+            EditSpline splineEditor = new EditSpline(spline, Editor.selected.entity.GetParameter("loop"));
             splineEditor.Show();
             splineEditor.OnSaved += OnSplineEditorSaved;
             splineEditor.FormClosed += SplineEditor_FormClosed;

@@ -1,4 +1,5 @@
 ﻿using CATHODE.Scripting;
+using CommandsEditor.Popups.UserControls;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,24 +16,79 @@ namespace CommandsEditor
     {
         public Action<cSpline> OnSaved;
 
-        public EditSpline(cSpline spline)
+        private GUI_SplineViewer splineViewer;
+        private cSpline spline;
+        private bool firstUpdate = true;
+        private bool isClosedLoop = false; //Default loop val is false
+
+        public EditSpline(cSpline _spline, Parameter _closed)
         {
             InitializeComponent();
+            spline = _spline.Copy();
+            if (_closed != null) isClosedLoop = ((cBool)_closed.content).value;
+
+            splineViewer = new GUI_SplineViewer();
+            modelRendererHost.Child = splineViewer;
+
+            UpdateSplineVisual();
+            pointTransform.OnValueChanged += UpdateSplineVisual;
+
+            RefreshPointList();
+        }
+
+        private void UpdateSplineVisual()
+        {
+            splineViewer.ShowSpline(spline, firstUpdate, isClosedLoop);
+            firstUpdate = false;
+        }
+
+        private void RefreshPointList()
+        {
+            splinePoints.Items.Clear();
+            splinePoints.SelectedIndex = -1;
+            if (spline.splinePoints.Count > 0)
+            {
+                for (int i = 0; i < spline.splinePoints.Count; i++)
+                    splinePoints.Items.Add(spline.splinePoints[i].ToString());
+                splinePoints.SelectedIndex = 0;
+                splineViewer.HighlightPoint(0);
+            }
+            else
+                splineViewer.ClearHighlight();
+        }
+
+        private void splinePoints_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (splinePoints.SelectedIndex == -1)
+            {
+                splineViewer.ClearHighlight();
+                pointTransform.Visible = false;
+                return;
+            }
+            pointTransform.Visible = true;
+            splineViewer.HighlightPoint(splinePoints.SelectedIndex);
+            pointTransform.PopulateUI(spline.splinePoints[splinePoints.SelectedIndex], "Spline Point " + splinePoints.SelectedIndex);
         }
 
         private void addPoint_Click(object sender, EventArgs e)
         {
-
+            spline.splinePoints.Add(new cTransform());
+            UpdateSplineVisual();
+            RefreshPointList();
         }
 
         private void removePoint_Click(object sender, EventArgs e)
         {
-
+            if (splinePoints.SelectedIndex == -1) return;
+            spline.splinePoints.RemoveAt(splinePoints.SelectedIndex);
+            UpdateSplineVisual();
+            RefreshPointList();
         }
 
         private void saveSpline_Click(object sender, EventArgs e)
         {
-
+            OnSaved?.Invoke(spline);
+            this.Close();
         }
     }
 }

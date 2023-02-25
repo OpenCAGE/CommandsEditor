@@ -117,6 +117,9 @@
     <Compile Include="Popups\Function Editors\CAGEAnimationEditor.Designer.cs">
       <DependentUpon>CAGEAnimationEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\UserControls\GUI_SplineViewer.xaml.cs">
+      <DependentUpon>GUI_SplineViewer.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Scripts\CathodeEntityDatabase.cs" />
     <Compile Include="Scripts\LocalDebug.cs" />
     <Compile Include="Scripts\ObjectExtensions.cs" />
@@ -437,6 +440,10 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Popups\UserControls\GUI_SplineViewer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Popups\UserControls\GUI_ModelViewer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
