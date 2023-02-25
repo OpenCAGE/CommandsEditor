@@ -15,10 +15,10 @@ using CathodeLib;
 
 namespace CommandsEditor
 {
-    public partial class CathodeEditorGUI_AddParameter : Form
+    public partial class AddParameter : Form
     {
         Entity node = null;
-        public CathodeEditorGUI_AddParameter(Entity _node)
+        public AddParameter(Entity _node)
         {
             node = _node;
             InitializeComponent();

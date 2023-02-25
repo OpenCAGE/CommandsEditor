@@ -11,11 +11,11 @@ using System.Windows.Forms;
 
 namespace CommandsEditor
 {
-    public partial class CathodeEditorGUI_EditRootComposite : Form
+    public partial class EditRootComposite : Form
     {
         List<Composite> composites = null;
 
-        public CathodeEditorGUI_EditRootComposite()
+        public EditRootComposite()
         {
             InitializeComponent();
             rootComposite.BeginUpdate();

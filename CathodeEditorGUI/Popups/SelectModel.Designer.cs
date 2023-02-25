@@ -33,7 +33,7 @@
             this.FileTree = new System.Windows.Forms.TreeView();
             this.modelPreviewArea = new System.Windows.Forms.GroupBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.selectModel = new System.Windows.Forms.Button();
+            this.selectModelBtn = new System.Windows.Forms.Button();
             this.modelPreviewArea.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -58,7 +58,7 @@
             // modelPreviewArea
             // 
             this.modelPreviewArea.Controls.Add(this.label1);
-            this.modelPreviewArea.Controls.Add(this.selectModel);
+            this.modelPreviewArea.Controls.Add(this.selectModelBtn);
             this.modelPreviewArea.Controls.Add(this.modelRendererHost);
             this.modelPreviewArea.Location = new System.Drawing.Point(384, 6);
             this.modelPreviewArea.Name = "modelPreviewArea";
@@ -77,15 +77,15 @@
             this.label1.Text = "[Zoom] = Scrollwheel\r\n[Rotate] = Right Mouse\r\n[Drag] = Middle Mouse\r\n[Recenter] =" +
     " Double Middle Mouse";
             // 
-            // selectModel
+            // selectModelBtn
             // 
-            this.selectModel.Location = new System.Drawing.Point(536, 572);
-            this.selectModel.Name = "selectModel";
-            this.selectModel.Size = new System.Drawing.Size(134, 35);
-            this.selectModel.TabIndex = 1;
-            this.selectModel.Text = "Select This Model";
-            this.selectModel.UseVisualStyleBackColor = true;
-            this.selectModel.Click += new System.EventHandler(this.selectModel_Click);
+            this.selectModelBtn.Location = new System.Drawing.Point(536, 572);
+            this.selectModelBtn.Name = "selectModel";
+            this.selectModelBtn.Size = new System.Drawing.Size(134, 35);
+            this.selectModelBtn.TabIndex = 1;
+            this.selectModelBtn.Text = "Select This Model";
+            this.selectModelBtn.UseVisualStyleBackColor = true;
+            this.selectModelBtn.Click += new System.EventHandler(this.selectModel_Click);
             // 
             // CathodeEditorGUI_SelectModel
             // 
@@ -111,7 +111,7 @@
         private System.Windows.Forms.Integration.ElementHost modelRendererHost;
         private System.Windows.Forms.TreeView FileTree;
         private System.Windows.Forms.GroupBox modelPreviewArea;
-        private System.Windows.Forms.Button selectModel;
+        private System.Windows.Forms.Button selectModelBtn;
         private System.Windows.Forms.Label label1;
     }
 }

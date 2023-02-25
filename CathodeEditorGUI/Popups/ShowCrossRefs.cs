@@ -12,14 +12,14 @@ using System.Windows.Forms;
 
 namespace CommandsEditor
 {
-    public partial class CathodeEditorGUI_ShowCrossRefs : Form
+    public partial class ShowCrossRefs : Form
     {
         public Action<ShortGuid, Composite> OnEntitySelected;
 
         private List<EntityRef> proxies = new List<EntityRef>();
         private List<EntityRef> overrides = new List<EntityRef>();
 
-        public CathodeEditorGUI_ShowCrossRefs()
+        public ShowCrossRefs()
         {
             InitializeComponent();
 

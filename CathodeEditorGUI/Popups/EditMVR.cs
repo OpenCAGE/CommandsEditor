@@ -14,12 +14,12 @@ using CATHODE;
 
 namespace CommandsEditor
 {
-    public partial class CathodeEditorGUI_EditMVR : Form
+    public partial class EditMVR : Form
     {
         private int loadedMvrIndex = -1;
         private ShortGuid filteredNodeID;
 
-        public CathodeEditorGUI_EditMVR(ShortGuid nodeID = new ShortGuid())
+        public EditMVR(ShortGuid nodeID = new ShortGuid())
         {
             InitializeComponent();
 

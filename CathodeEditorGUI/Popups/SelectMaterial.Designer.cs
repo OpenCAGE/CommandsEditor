@@ -31,7 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SelectMaterial));
             this.modelPreviewArea = new System.Windows.Forms.GroupBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.selectMaterial = new System.Windows.Forms.Button();
+            this.selectMaterialBtn = new System.Windows.Forms.Button();
             this.materialList = new System.Windows.Forms.ListBox();
             this.modelPreviewArea.SuspendLayout();
             this.SuspendLayout();
@@ -39,7 +39,7 @@
             // modelPreviewArea
             // 
             this.modelPreviewArea.Controls.Add(this.label1);
-            this.modelPreviewArea.Controls.Add(this.selectMaterial);
+            this.modelPreviewArea.Controls.Add(this.selectMaterialBtn);
             this.modelPreviewArea.Location = new System.Drawing.Point(384, 6);
             this.modelPreviewArea.Name = "modelPreviewArea";
             this.modelPreviewArea.Size = new System.Drawing.Size(298, 634);
@@ -56,15 +56,15 @@
             this.label1.TabIndex = 2;
             this.label1.Text = "Coming Soon!";
             // 
-            // selectMaterial
+            // selectMaterialBtn
             // 
-            this.selectMaterial.Location = new System.Drawing.Point(158, 593);
-            this.selectMaterial.Name = "selectMaterial";
-            this.selectMaterial.Size = new System.Drawing.Size(134, 35);
-            this.selectMaterial.TabIndex = 1;
-            this.selectMaterial.Text = "Select This Material";
-            this.selectMaterial.UseVisualStyleBackColor = true;
-            this.selectMaterial.Click += new System.EventHandler(this.selectMaterial_Click);
+            this.selectMaterialBtn.Location = new System.Drawing.Point(158, 593);
+            this.selectMaterialBtn.Name = "selectMaterial";
+            this.selectMaterialBtn.Size = new System.Drawing.Size(134, 35);
+            this.selectMaterialBtn.TabIndex = 1;
+            this.selectMaterialBtn.Text = "Select This Material";
+            this.selectMaterialBtn.UseVisualStyleBackColor = true;
+            this.selectMaterialBtn.Click += new System.EventHandler(this.selectMaterial_Click);
             // 
             // materialList
             // 
@@ -96,7 +96,7 @@
         #endregion
 
         private System.Windows.Forms.GroupBox modelPreviewArea;
-        private System.Windows.Forms.Button selectMaterial;
+        private System.Windows.Forms.Button selectMaterialBtn;
         private System.Windows.Forms.ListBox materialList;
         private System.Windows.Forms.Label label1;
     }

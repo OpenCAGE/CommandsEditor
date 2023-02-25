@@ -1,6 +1,6 @@
 ﻿namespace CommandsEditor
 {
-    partial class CathodeEditorGUI_RemoveParameter
+    partial class RemoveParameter
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CathodeEditorGUI_RemoveParameter));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RemoveParameter));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.delete_param = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();

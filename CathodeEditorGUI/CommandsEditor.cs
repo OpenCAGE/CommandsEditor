@@ -340,7 +340,7 @@ namespace CommandsEditor
         private void editEntryPoint_Click(object sender, EventArgs e)
         {
             if (Editor.commands == null || Editor.commands.EntryPoints == null) return;
-            CathodeEditorGUI_EditRootComposite edit_entrypoint = new CathodeEditorGUI_EditRootComposite();
+            EditRootComposite edit_entrypoint = new EditRootComposite();
             edit_entrypoint.Show();
             edit_entrypoint.FormClosed += new FormClosedEventHandler(edit_entrypoint_closed);
         }
@@ -689,7 +689,7 @@ namespace CommandsEditor
         private void renameSelectedEntity_Click(object sender, EventArgs e)
         {
             if (Editor.selected.entity == null) return;
-            CathodeEditorGUI_RenameEntity rename_entity = new CathodeEditorGUI_RenameEntity(Editor.selected.composite, Editor.selected.entity);
+            RenameEntity rename_entity = new RenameEntity(Editor.selected.composite, Editor.selected.entity);
             rename_entity.Show();
             rename_entity.OnSaved += OnEntityRenamed;
         }
@@ -907,7 +907,7 @@ namespace CommandsEditor
         private void addNewParameter_Click(object sender, EventArgs e)
         {
             if (Editor.selected.entity == null) return;
-            CathodeEditorGUI_AddParameter add_parameter = new CathodeEditorGUI_AddParameter(Editor.selected.entity);
+            AddParameter add_parameter = new AddParameter(Editor.selected.entity);
             add_parameter.Show();
             add_parameter.FormClosed += new FormClosedEventHandler(refresh_entity_event);
         }
@@ -933,7 +933,7 @@ namespace CommandsEditor
             if (Editor.selected.entity == null) return;
             if (entity_params.Controls.Count == 0) return;
             if (Editor.selected.entity.childLinks.Count + Editor.selected.entity.parameters.Count == 0) return;
-            CathodeEditorGUI_RemoveParameter remove_parameter = new CathodeEditorGUI_RemoveParameter(Editor.selected.entity);
+            RemoveParameter remove_parameter = new RemoveParameter(Editor.selected.entity);
             remove_parameter.Show();
             remove_parameter.FormClosed += new FormClosedEventHandler(refresh_entity_event);
         }
@@ -988,7 +988,7 @@ namespace CommandsEditor
         /* Edit mover instances of this entity */
         private void editEntityMovers_Click(object sender, EventArgs e)
         {
-            CathodeEditorGUI_EditMVR moverEditor = new CathodeEditorGUI_EditMVR(Editor.selected.entity.shortGUID);
+            EditMVR moverEditor = new EditMVR(Editor.selected.entity.shortGUID);
             moverEditor.Show();
             moverEditor.FormClosed += MoverEditor_FormClosed;
         }
@@ -1001,7 +1001,7 @@ namespace CommandsEditor
         /* Show overrides and proxies that point to this entity */
         private void showOverridesAndProxies_Click(object sender, EventArgs e)
         {
-            CathodeEditorGUI_ShowCrossRefs crossRefs = new CathodeEditorGUI_ShowCrossRefs();
+            ShowCrossRefs crossRefs = new ShowCrossRefs();
             crossRefs.Show();
             crossRefs.OnEntitySelected += OnCrossRefsEntitySelected;
         }

@@ -1,6 +1,6 @@
 ﻿namespace CommandsEditor
 {
-    partial class CathodeEditorGUI_EditMVR
+    partial class EditMVR
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CathodeEditorGUI_EditMVR));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditMVR));
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.renderable = new Popups.UserControls.GUI_Resource_RenderableInstance();
             this.label1 = new System.Windows.Forms.Label();

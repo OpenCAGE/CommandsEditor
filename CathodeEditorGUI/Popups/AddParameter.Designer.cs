@@ -1,6 +1,6 @@
 ﻿namespace CommandsEditor
 {
-    partial class CathodeEditorGUI_AddParameter
+    partial class AddParameter
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CathodeEditorGUI_AddParameter));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AddParameter));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.param_name = new System.Windows.Forms.ComboBox();
             this.create_param = new System.Windows.Forms.Button();

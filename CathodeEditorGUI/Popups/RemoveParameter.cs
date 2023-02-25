@@ -12,11 +12,11 @@ using System.Windows.Forms;
 
 namespace CommandsEditor
 {
-    public partial class CathodeEditorGUI_RemoveParameter : Form
+    public partial class RemoveParameter : Form
     {
         private Entity _entity;
 
-        public CathodeEditorGUI_RemoveParameter(Entity entity)
+        public RemoveParameter(Entity entity)
         {
             InitializeComponent();
 

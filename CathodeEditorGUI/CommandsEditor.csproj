@@ -105,6 +105,12 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Popups\EditSpline.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\EditSpline.Designer.cs">
+      <DependentUpon>EditSpline.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popups\Function Editors\CAGEAnimationEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -310,6 +316,9 @@
     <Compile Include="UserControls\GUI_VectorDataType.Designer.cs">
       <DependentUpon>GUI_VectorDataType.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Popups\EditSpline.resx">
+      <DependentUpon>EditSpline.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Popups\Function Editors\CAGEAnimationEditor.resx">
       <DependentUpon>CAGEAnimationEditor.cs</DependentUpon>
     </EmbeddedResource>

@@ -13,13 +13,13 @@ using System.Windows.Forms;
 
 namespace CommandsEditor
 {
-    public partial class CathodeEditorGUI_RenameEntity : Form
+    public partial class RenameEntity : Form
     {
         public Action<Composite, Entity> OnSaved;
         private Entity _ent;
         private Composite _comp;
 
-        public CathodeEditorGUI_RenameEntity(Composite comp, Entity entity)
+        public RenameEntity(Composite comp, Entity entity)
         {
             InitializeComponent();
 
