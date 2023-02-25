@@ -92,6 +92,7 @@ namespace CathodeEditorGUI
             }
 
             */
+            /*
             CS2 model = new CS2();
             model.Name = "SomeTestShit";
             model.Submeshes.Add(new CS2.Submesh()
@@ -122,7 +123,7 @@ namespace CathodeEditorGUI
                 throw new Exception("bruh");
             }
             */
-
+            /*
             CS2 modelCopy = lvl.Models.Entries.FirstOrDefault(o => o.Submeshes.FirstOrDefault(x => x.Name.Contains("Sphere")) != null);
             if (modelCopy == null)
             {
@@ -168,7 +169,7 @@ namespace CathodeEditorGUI
             //model.Submeshes[0].VertexFormat = vertexFormat;
             //model.Submeshes[0].VertexFormatLowDetail = vertexFormat;
 
-            lvl.Save();
+            //lvl.Save();
 #endif
         }
 
@@ -311,23 +312,7 @@ namespace CathodeEditorGUI
                 Console.WriteLine("[" + phys.Loaded + "] " + file);
                 for (int i = 0; i < phys.Entries.Count; i++)
                 {
-                    for (int x = 0; x < phys.Entries[i].Submeshes.Count; x++)
-                    {
-                        for (int y = 0; y < phys.Entries[i].Submeshes[x].VertexFormat.Elements.Count; y++)
-                        {
-                            //if (phys.Entries[i].Submeshes[x].VertexFormat.Elements[y].Unknown_ != 2)
-                            //{
-                            //    throw new Exception("");
-                            //}
-                        }
-                        for (int y = 0; y < phys.Entries[i].Submeshes[x].VertexFormatLowDetail.Elements.Count; y++)
-                        {
-                            //if (phys.Entries[i].Submeshes[x].VertexFormat.Elements[y].Unknown_ != 2)
-                            //{
-                            //    throw new Exception("");
-                            //}
-                        }
-                    }
+
                 }
                 //phys.Save();
             }

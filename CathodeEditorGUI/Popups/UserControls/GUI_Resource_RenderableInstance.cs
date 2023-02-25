@@ -57,17 +57,16 @@ namespace CathodeEditorGUI.Popups.UserControls
         }
         public void PopulateUI(int modelIndex, List<int> materialIndexes)
         {
-            //TODO: does RENDERABLE_INSTANCE utilise position/rotation?
-
             SelectedModelIndex = modelIndex;
             SelectedMaterialIndexes = materialIndexes;
 
-            Models.CS2.Submesh submesh = Editor.resource.models.GetAtWriteIndex(SelectedModelIndex);
+            Models.CS2.LOD.Submesh submesh = Editor.resource.models.GetAtWriteIndex(SelectedModelIndex);
+            Models.CS2.LOD lod = Editor.resource.models.FindModelLODForSubmesh(submesh);
             Models.CS2 mesh = Editor.resource.models.FindModelForSubmesh(submesh);
 
             modelInfoTextbox.Text = mesh?.Name;
-            if (submesh.Name != "")
-                modelInfoTextbox.Text += " -> [" + submesh.Name + "]"; //TODO: CS2s can have varying submesh names pointed by the same REDs
+            if (lod.Name != "")
+                modelInfoTextbox.Text += " -> [" + lod.Name + "]"; 
 
             materials.Items.Clear();
             for (int i = 0; i < materialIndexes.Count; i++)

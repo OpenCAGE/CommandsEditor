@@ -47,14 +47,16 @@ namespace CathodeEditorGUI
 
         private string GenerateNodeTag(int i)
         {
-            //TODO: submesh names are not necessarily always the same
-            Models.CS2.Submesh submesh = Editor.resource.models.GetAtWriteIndex(i);
+            Models.CS2.LOD.Submesh submesh = Editor.resource.models.GetAtWriteIndex(i);
+            Models.CS2.LOD lod = Editor.resource.models.FindModelLODForSubmesh(submesh);
             Models.CS2 mesh = Editor.resource.models.FindModelForSubmesh(submesh);
-            if (mesh == null || submesh == null) return ""; //TODO: we currently skip empty submeshes, e.g. ballistics
-            if (submesh.Name == "")
+
+            if (mesh == null || submesh == null) return ""; //we currently skip empty submeshes, e.g. ballistics
+
+            if (lod.Name == "")
                 return mesh.Name.Replace('\\', '/');
             else
-                return mesh.Name.Replace('\\', '/') + "/" + submesh.Name.Replace('\\', '/');
+                return mesh.Name.Replace('\\', '/') + "/" + lod.Name.Replace('\\', '/');
         }
 
         private void SelectModelNode(int pakIndex)
@@ -84,11 +86,11 @@ namespace CathodeEditorGUI
             SelectedModelIndex = Convert.ToInt32(((TreeItem)FileTree.SelectedNode.Tag).String_Value);
             SelectedModelMaterialIndexes.Clear();
 
-            Models.CS2.Submesh submesh = Editor.resource.models.GetAtWriteIndex(SelectedModelIndex);
-            Models.CS2 mesh = Editor.resource.models.FindModelForSubmesh(submesh);
+            Models.CS2 mesh = Editor.resource.models.FindModelForSubmesh(Editor.resource.models.GetAtWriteIndex(SelectedModelIndex));
+            for (int x = 0; x < mesh.LODs.Count; x++)
+                for (int i = 0; i < mesh.LODs[x].Submeshes.Count; i++)
+                    SelectedModelMaterialIndexes.Add(mesh.LODs[x].Submeshes[i].MaterialLibraryIndex);
 
-            for (int i = 0; i < mesh.Submeshes.Count; i++)
-                SelectedModelMaterialIndexes.Add(mesh.Submeshes[i].MaterialLibraryIndex);
             this.Close();
         }
     }
