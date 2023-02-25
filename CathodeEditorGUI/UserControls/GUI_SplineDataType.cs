@@ -15,18 +15,33 @@ namespace CommandsEditor.UserControls
 {
     public partial class GUI_SplineDataType : UserControl
     {
-        //TODO TODO TODO TODO !!!!!!!!!!!!!
-
         public GUI_SplineDataType()
         {
             InitializeComponent();
         }
 
+        private cSpline spline = null;
         public void PopulateUI(cSpline cSpline, ShortGuid paramID)
         {
-            UNIMPLEMENTED_VARIABLE_TYPE.Text = ShortGuidUtils.FindString(paramID);
+            SPLINE_CONTAINER.Text = ShortGuidUtils.FindString(paramID);
+            spline = cSpline;
+        }
 
-            //todo: dynamically populate UI
+        private void openSplineEditor_Click(object sender, EventArgs e)
+        {
+            EditSpline splineEditor = new EditSpline(spline);
+            splineEditor.Show();
+            splineEditor.OnSaved += OnSplineEditorSaved;
+            splineEditor.FormClosed += SplineEditor_FormClosed;
+        } 
+        private void OnSplineEditorSaved(cSpline newSpline)
+        {
+            spline.splinePoints = newSpline.splinePoints;
+        }
+        private void SplineEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            this.BringToFront();
+            this.Focus();
         }
     }
 }
