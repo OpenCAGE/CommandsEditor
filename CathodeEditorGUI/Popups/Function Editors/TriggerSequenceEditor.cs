@@ -20,64 +20,87 @@ namespace CommandsEditor
             InitializeComponent();
             node = _node;
 
-            triggerDelay.Text = "0.0";
+            entityTriggerDelay.Text = "0.0";
             this.Text = "TriggerSequence Editor: " + EntityUtils.GetName(Editor.selected.composite.shortGUID, _node.shortGUID);
+            selectedEntityDetails.Visible = false;
             selectedTriggerDetails.Visible = false;
 
+            ReloadEntityList();
             ReloadTriggerList();
-            ReloadEventList();
         }
 
+        private void ReloadEntityList()
+        {
+            entity_list.BeginUpdate();
+            entity_list.Items.Clear();
+            for (int i = 0; i < node.entities.Count; i++)
+            {
+                string thisHierarchy;
+                CommandsUtils.ResolveHierarchy(Editor.commands, Editor.selected.composite, node.entities[i].hierarchy, out Composite comp, out thisHierarchy);
+
+                string toAdd = "[" + node.entities[i].timing + "s] " + thisHierarchy;
+                entity_list.Items.Add(toAdd);
+            }
+            entity_list.EndUpdate();
+        }
         private void ReloadTriggerList()
         {
             trigger_list.BeginUpdate();
             trigger_list.Items.Clear();
-            for (int i = 0; i < node.triggers.Count; i++)
-            {
-                string thisHierarchy;
-                CommandsUtils.ResolveHierarchy(Editor.commands, Editor.selected.composite, node.triggers[i].hierarchy, out Composite comp, out thisHierarchy);
-
-                string toAdd = "[" + node.triggers[i].timing + "s] " + thisHierarchy;
-                trigger_list.Items.Add(toAdd);
-            }
-            trigger_list.EndUpdate();
-        }
-        private void ReloadEventList()
-        {
-            event_list.BeginUpdate();
-            event_list.Items.Clear();
             for (int i = 0; i < node.events.Count; i++)
             {
-                event_list.Items.Add(ShortGuidUtils.FindString(node.events[i].EventID) + " - " + ShortGuidUtils.FindString(node.events[i].StartedID) + " - " + ShortGuidUtils.FindString(node.events[i].FinishedID));
+                trigger_list.Items.Add(ShortGuidUtils.FindString(node.events[i].start) + " -> " + ShortGuidUtils.FindString(node.events[i].end));
             }
-            event_list.EndUpdate();
+            trigger_list.EndUpdate();
         }
 
         private void triggerDelay_TextChanged(object sender, EventArgs e)
         {
-            triggerDelay.Text = EditorUtils.ForceStringNumeric(triggerDelay.Text, true);
+            entityTriggerDelay.Text = EditorUtils.ForceStringNumeric(entityTriggerDelay.Text, true);
+
+            if (entity_list.SelectedIndex == -1) return;
+            int index = entity_list.SelectedIndex;
+            node.entities[index].timing = Convert.ToSingle(entityTriggerDelay.Text);
+            LoadSelectedEntity();
+            ReloadEntityList();
+            entity_list.SelectedIndex = index;
         }
 
         private void trigger_list_SelectedIndexChanged(object sender, EventArgs e)
         {
-            LoadSelectedTrigger();
+            LoadSelectedEntity();
         }
 
-        private void LoadSelectedTrigger()
+        private void LoadSelectedEntity()
         {
-            if (trigger_list.SelectedIndex == -1)
+            if (entity_list.SelectedIndex == -1)
             {
-                triggerHierarchy.Text = "";
-                triggerDelay.Text = "0.0";
-                selectedTriggerDetails.Visible = false;
+                entityHierarchy.Text = "";
+                entityTriggerDelay.Text = "0.0";
+                selectedEntityDetails.Visible = false;
                 return;
             }
 
             string thisHierarchy;
-            CommandsUtils.ResolveHierarchy(Editor.commands, Editor.selected.composite, node.triggers[trigger_list.SelectedIndex].hierarchy, out Composite comp, out thisHierarchy);
+            CommandsUtils.ResolveHierarchy(Editor.commands, Editor.selected.composite, node.entities[entity_list.SelectedIndex].hierarchy, out Composite comp, out thisHierarchy);
 
-            triggerHierarchy.Text = thisHierarchy;
-            triggerDelay.Text = node.triggers[trigger_list.SelectedIndex].timing.ToString();
+            entityHierarchy.Text = thisHierarchy;
+            entityTriggerDelay.Text = node.entities[entity_list.SelectedIndex].timing.ToString();
+            selectedEntityDetails.Visible = true;
+        }
+
+        private void LoadSelectedTriggers()
+        {
+            if (trigger_list.SelectedIndex == -1)
+            {
+                triggerStartParam.Text = "";
+                triggerEndParam.Text = "";
+                selectedTriggerDetails.Visible = false;
+                return;
+            }
+
+            triggerStartParam.Text = ShortGuidUtils.FindString(node.events[trigger_list.SelectedIndex].start);
+            triggerEndParam.Text = ShortGuidUtils.FindString(node.events[trigger_list.SelectedIndex].end);
             selectedTriggerDetails.Visible = true;
         }
 
@@ -89,29 +112,19 @@ namespace CommandsEditor
         }
         private void HierarchyEditor_HierarchyGenerated(List<ShortGuid> generatedHierarchy)
         {
-            if (trigger_list.SelectedIndex == -1) return;
-            int index = trigger_list.SelectedIndex;
-            node.triggers[index].hierarchy = generatedHierarchy;
-            LoadSelectedTrigger();
-            ReloadTriggerList();
-            trigger_list.SelectedIndex = index;
-        }
-
-        private void saveTriggerTime_Click(object sender, EventArgs e)
-        {
-            if (trigger_list.SelectedIndex == -1) return;
-            int index = trigger_list.SelectedIndex;
-            node.triggers[index].timing = Convert.ToSingle(triggerDelay.Text);
-            LoadSelectedTrigger();
-            ReloadTriggerList();
-            trigger_list.SelectedIndex = index;
+            if (entity_list.SelectedIndex == -1) return;
+            int index = entity_list.SelectedIndex;
+            node.entities[index].hierarchy = generatedHierarchy;
+            LoadSelectedEntity();
+            ReloadEntityList();
+            entity_list.SelectedIndex = index;
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            for (int i = 0; i < node.triggers.Count; i++)
+            for (int i = 0; i < node.entities.Count; i++)
             {
-                if (node.triggers[i].hierarchy.Count == 0 || node.triggers[i].hierarchy.Count == 1)
+                if (node.entities[i].hierarchy.Count == 0 || node.entities[i].hierarchy.Count == 1)
                 {
                     MessageBox.Show("One or more triggers does not point to a node!", "Trigger setup incorrectly!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
@@ -121,27 +134,59 @@ namespace CommandsEditor
             this.Close();
         }
 
-        private void addNewTrigger_Click(object sender, EventArgs e)
+        private void addNewEntity_Click(object sender, EventArgs e)
         {
-            TriggerSequence.Trigger trigger = new TriggerSequence.Trigger();
-            trigger.timing = 0.0f;
-            trigger.hierarchy = new List<ShortGuid>();
-            trigger.hierarchy.Add(new ShortGuid("00-00-00-00"));
+            TriggerSequence.Entity trigger = new TriggerSequence.Entity();
 
-            int insertIndex = (trigger_list.SelectedIndex == -1) ? node.triggers.Count : trigger_list.SelectedIndex + 1;
-            node.triggers.Insert(insertIndex, trigger);
+            int insertIndex = (entity_list.SelectedIndex == -1) ? node.entities.Count : entity_list.SelectedIndex + 1;
+            node.entities.Insert(insertIndex, trigger);
+
+            ReloadEntityList();
+            entity_list.SelectedIndex = insertIndex;
+            LoadSelectedEntity();
+        }
+        private void deleteSelectedEntity_Click(object sender, EventArgs e)
+        {
+            if (entity_list.SelectedIndex == -1) return;
+            node.entities.RemoveAt(entity_list.SelectedIndex);
+            ReloadEntityList();
+            LoadSelectedEntity();
+        }
+
+        private void addNewParamTrigger_Click(object sender, EventArgs e)
+        {
+            TriggerSequence.Event trigger = new TriggerSequence.Event(ShortGuidUtils.Generate(triggerStartParam.Text), ShortGuidUtils.Generate(triggerEndParam.Text));
+
+            int insertIndex = (trigger_list.SelectedIndex == -1) ? node.events.Count : trigger_list.SelectedIndex + 1;
+            node.events.Insert(insertIndex, trigger);
 
             ReloadTriggerList();
             trigger_list.SelectedIndex = insertIndex;
-            LoadSelectedTrigger();
+            LoadSelectedTriggers();
         }
-
-        private void deleteSelectedTrigger_Click(object sender, EventArgs e)
+        private void deleteParamTrigger_Click(object sender, EventArgs e)
         {
             if (trigger_list.SelectedIndex == -1) return;
-            node.triggers.RemoveAt(trigger_list.SelectedIndex);
+            node.events.RemoveAt(trigger_list.SelectedIndex);
             ReloadTriggerList();
-            LoadSelectedTrigger();
+            LoadSelectedTriggers();
         }
+
+        private void saveTrigger_Click(object sender, EventArgs e)
+        {
+            if (trigger_list.SelectedIndex == -1) return;
+            int index = trigger_list.SelectedIndex;
+            node.events[index].start = ShortGuidUtils.Generate(triggerStartParam.Text);
+            node.events[index].end = ShortGuidUtils.Generate(triggerEndParam.Text);
+            LoadSelectedTriggers();
+            ReloadTriggerList();
+            trigger_list.SelectedIndex = index;
+        }
+
+        private void trigger_list_SelectedIndexChanged_1(object sender, EventArgs e)
+        {
+            LoadSelectedTriggers();
+        }
+
     }
 }

@@ -585,16 +585,16 @@ namespace CommandsEditor
                     {
                         case "TriggerSequence":
                             TriggerSequence triggerSequence = (TriggerSequence)entities[i];
-                            List<TriggerSequence.Trigger> triggers = new List<TriggerSequence.Trigger>();
-                            for (int x = 0; x < triggerSequence.triggers.Count; x++)
+                            List<TriggerSequence.Entity> triggers = new List<TriggerSequence.Entity>();
+                            for (int x = 0; x < triggerSequence.entities.Count; x++)
                             {
-                                if (triggerSequence.triggers[x].hierarchy.Count < 2 ||
-                                    triggerSequence.triggers[x].hierarchy[triggerSequence.triggers[x].hierarchy.Count - 2] != Editor.selected.entity.shortGUID)
+                                if (triggerSequence.entities[x].hierarchy.Count < 2 ||
+                                    triggerSequence.entities[x].hierarchy[triggerSequence.entities[x].hierarchy.Count - 2] != Editor.selected.entity.shortGUID)
                                 {
-                                    triggers.Add(triggerSequence.triggers[x]);
+                                    triggers.Add(triggerSequence.entities[x]);
                                 }
                             }
-                            triggerSequence.triggers = triggers;
+                            triggerSequence.entities = triggers;
                             break;
                         case "CAGEAnimation":
                             CAGEAnimation cageAnim = (CAGEAnimation)entities[i];

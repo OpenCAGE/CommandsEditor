@@ -49,7 +49,7 @@ namespace CommandsEditor
             if (spline.splinePoints.Count > 0)
             {
                 for (int i = 0; i < spline.splinePoints.Count; i++)
-                    splinePoints.Items.Add(spline.splinePoints[i].ToString());
+                    splinePoints.Items.Add("Spline Point " + i);
                 splinePoints.SelectedIndex = 0;
                 splineViewer.HighlightPoint(0);
             }

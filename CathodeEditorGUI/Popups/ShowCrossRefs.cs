@@ -106,7 +106,7 @@ namespace CommandsEditor
                     case CurrentDisplay.TRIGGERSEQUENCES:
                         foreach (TriggerSequence trig in comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.TriggerSequence)))
                         {
-                            foreach (TriggerSequence.Trigger trigger in trig.triggers)
+                            foreach (TriggerSequence.Entity trigger in trig.entities)
                             {
                                 Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, comp, trigger.hierarchy, out Composite compRef, out string str);
                                 if (ent != Editor.selected.entity) continue;
