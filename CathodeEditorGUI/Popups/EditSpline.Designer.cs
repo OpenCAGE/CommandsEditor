@@ -30,7 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditSpline));
             this.modelRendererHost = new System.Windows.Forms.Integration.ElementHost();
-            this.pointTransform = new CommandsEditor.UserControls.GUI_TransformDataType();
+            this.pointTransform = new UserControls.GUI_TransformDataType();
             this.splinePoints = new System.Windows.Forms.ComboBox();
             this.addPoint = new System.Windows.Forms.Button();
             this.removePoint = new System.Windows.Forms.Button();
@@ -115,7 +115,7 @@
         #endregion
 
         private System.Windows.Forms.Integration.ElementHost modelRendererHost;
-        private CommandsEditor.UserControls.GUI_TransformDataType pointTransform;
+        private UserControls.GUI_TransformDataType pointTransform;
         private System.Windows.Forms.ComboBox splinePoints;
         private System.Windows.Forms.Button addPoint;
         private System.Windows.Forms.Button removePoint;
