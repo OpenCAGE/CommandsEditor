@@ -16,44 +16,124 @@ namespace CommandsEditor
     {
         public Action<ShortGuid, Composite> OnEntitySelected;
 
-        private List<EntityRef> proxies = new List<EntityRef>();
-        private List<EntityRef> overrides = new List<EntityRef>();
+        private List<EntityRef> entities = new List<EntityRef>();
 
         public ShowCrossRefs()
         {
             InitializeComponent();
+#if !DEBUG
+            showLinkedCageAnimations.Visible = false;
+#endif
+            UpdateUI(CurrentDisplay.PROXIES);
+        }
+
+        private void jumpToEntity_Click(object sender, EventArgs e)
+        {
+            if (referenceList.SelectedIndex == -1) return;
+            OnEntitySelected?.Invoke(entities[referenceList.SelectedIndex].entity, entities[referenceList.SelectedIndex].composite);
+            this.Close();
+        }
+
+        private void showLinkedProxies_Click(object sender, EventArgs e)
+        {
+            UpdateUI(CurrentDisplay.PROXIES);
+        }
+        private void showLinkedOverrides_Click(object sender, EventArgs e)
+        {
+            UpdateUI(CurrentDisplay.OVERRIDES);
+        }
+        private void showLinkedTriggerSequences_Click(object sender, EventArgs e)
+        {
+            UpdateUI(CurrentDisplay.TRIGGERSEQUENCES);
+        }
+        private void showLinkedCageAnimations_Click(object sender, EventArgs e)
+        {
+            UpdateUI(CurrentDisplay.CAGEANIMATIONS);
+        }
+
+        private void UpdateUI(CurrentDisplay display)
+        {
+            referenceList.BeginUpdate();
+            Cursor.Current = Cursors.WaitCursor;
+
+            showLinkedProxies.Enabled = display != CurrentDisplay.PROXIES;
+            showLinkedOverrides.Enabled = display != CurrentDisplay.OVERRIDES;
+            showLinkedTriggerSequences.Enabled = display != CurrentDisplay.TRIGGERSEQUENCES;
+            showLinkedCageAnimations.Enabled = display != CurrentDisplay.CAGEANIMATIONS;
+
+            switch (display)
+            {
+                case CurrentDisplay.PROXIES:
+                    label.Text = "Proxies";
+                    break;
+                case CurrentDisplay.OVERRIDES:
+                    label.Text = "Overrides";
+                    break;
+                case CurrentDisplay.TRIGGERSEQUENCES:
+                    label.Text = "TriggerSequences";
+                    break;
+                case CurrentDisplay.CAGEANIMATIONS:
+                    label.Text = "CAGEAnimations";
+                    break;
+            }
+            label.Text += " pointing to this entity:";
+
+            referenceList.Items.Clear();
+            entities.Clear();
 
             foreach (Composite comp in Editor.commands.Entries)
             {
-                foreach (OverrideEntity ovr in comp.overrides)
+                switch (display)
                 {
-                    Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, comp, ovr.hierarchy, out Composite compRef, out string str);
-                    if (ent != Editor.selected.entity) continue;
-                    overrides.Add(new EntityRef() { composite = comp, entity = ovr.shortGUID });
-                    overridesUI.Items.Add(EditorUtils.GenerateEntityName(ovr, comp));
-                }
-                foreach (ProxyEntity prox in comp.proxies)
-                {
-                    Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, comp, prox.hierarchy, out Composite compRef, out string str);
-                    if (ent != Editor.selected.entity) continue;
-                    proxies.Add(new EntityRef() { composite = comp, entity = prox.shortGUID });
-                    proxiesUI.Items.Add(EditorUtils.GenerateEntityName(prox, comp));
+                    case CurrentDisplay.PROXIES:
+                        foreach (ProxyEntity prox in comp.proxies)
+                        {
+                            Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, comp, prox.hierarchy, out Composite compRef, out string str);
+                            if (ent != Editor.selected.entity) continue;
+                            entities.Add(new EntityRef() { composite = comp, entity = prox.shortGUID });
+                            referenceList.Items.Add(EditorUtils.GenerateEntityName(prox, comp));
+                        }
+                        break;
+                    case CurrentDisplay.OVERRIDES:
+                        foreach (OverrideEntity ovr in comp.overrides)
+                        {
+                            Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, comp, ovr.hierarchy, out Composite compRef, out string str);
+                            if (ent != Editor.selected.entity) continue;
+                            entities.Add(new EntityRef() { composite = comp, entity = ovr.shortGUID });
+                            referenceList.Items.Add(EditorUtils.GenerateEntityName(ovr, comp));
+                        }
+                        break;
+                    case CurrentDisplay.TRIGGERSEQUENCES:
+                        foreach (TriggerSequence trig in comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.TriggerSequence)))
+                        {
+                            foreach (TriggerSequence.Trigger trigger in trig.triggers)
+                            {
+                                Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, comp, trigger.hierarchy, out Composite compRef, out string str);
+                                if (ent != Editor.selected.entity) continue;
+                                entities.Add(new EntityRef() { composite = comp, entity = trig.shortGUID });
+                                referenceList.Items.Add(EditorUtils.GenerateEntityName(trig, comp));
+                            }
+                        }
+                        break;
+                    case CurrentDisplay.CAGEANIMATIONS:
+                        foreach (CAGEAnimation anim in comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.CAGEAnimation)))
+                        {
+                            //TODO!
+                        }
+                        break;
                 }
             }
+
+            Cursor.Current = Cursors.Default;
+            referenceList.EndUpdate();
         }
 
-        private void jumpToProxy_Click(object sender, EventArgs e)
+        private enum CurrentDisplay
         {
-            if (proxiesUI.SelectedIndex == -1) return;
-            OnEntitySelected?.Invoke(proxies[proxiesUI.SelectedIndex].entity, proxies[proxiesUI.SelectedIndex].composite);
-            this.Close();
-        }
-
-        private void jumpToOverride_Click(object sender, EventArgs e)
-        {
-            if (overridesUI.SelectedIndex == -1) return;
-            OnEntitySelected?.Invoke(overrides[overridesUI.SelectedIndex].entity, overrides[overridesUI.SelectedIndex].composite);
-            this.Close();
+            PROXIES,
+            OVERRIDES,
+            TRIGGERSEQUENCES,
+            CAGEANIMATIONS,
         }
 
         private struct EntityRef

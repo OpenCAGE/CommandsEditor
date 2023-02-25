@@ -48,7 +48,7 @@
             // 
             // pointTransform
             // 
-            this.pointTransform.Location = new System.Drawing.Point(726, 240);
+            this.pointTransform.Location = new System.Drawing.Point(726, 253);
             this.pointTransform.Name = "pointTransform";
             this.pointTransform.Size = new System.Drawing.Size(340, 113);
             this.pointTransform.TabIndex = 2;
@@ -57,7 +57,7 @@
             // 
             this.splinePoints.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.splinePoints.FormattingEnabled = true;
-            this.splinePoints.Location = new System.Drawing.Point(727, 213);
+            this.splinePoints.Location = new System.Drawing.Point(727, 226);
             this.splinePoints.Name = "splinePoints";
             this.splinePoints.Size = new System.Drawing.Size(207, 21);
             this.splinePoints.TabIndex = 3;
@@ -65,7 +65,7 @@
             // 
             // addPoint
             // 
-            this.addPoint.Location = new System.Drawing.Point(943, 212);
+            this.addPoint.Location = new System.Drawing.Point(943, 225);
             this.addPoint.Name = "addPoint";
             this.addPoint.Size = new System.Drawing.Size(57, 23);
             this.addPoint.TabIndex = 4;
@@ -75,7 +75,7 @@
             // 
             // removePoint
             // 
-            this.removePoint.Location = new System.Drawing.Point(1006, 212);
+            this.removePoint.Location = new System.Drawing.Point(1006, 225);
             this.removePoint.Name = "removePoint";
             this.removePoint.Size = new System.Drawing.Size(57, 23);
             this.removePoint.TabIndex = 5;

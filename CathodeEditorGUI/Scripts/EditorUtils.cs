@@ -142,7 +142,7 @@ namespace CommandsEditor
         }
 
         /* Utility: work out if any proxies/overrides reference the currently selected entity */
-        public static bool IsPointedToByAnyOverridesOrProxies()
+        public static bool IsSelectedEntityReferencedExternally()
         {
             foreach (Composite comp in Editor.commands.Entries)
             {
@@ -158,6 +158,21 @@ namespace CommandsEditor
                     if (ent != Editor.selected.entity) continue;
                     return true;
                 }
+                foreach (TriggerSequence trig in comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.TriggerSequence)))
+                {
+                    foreach (TriggerSequence.Trigger trigger in trig.triggers)
+                    {
+                        Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, comp, trigger.hierarchy, out Composite compRef, out string str);
+                        if (ent != Editor.selected.entity) continue;
+                        return true;
+                    }
+                }
+                /*
+                foreach (CAGEAnimation anim in comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.CAGEAnimation)))
+                {
+                    //TODO!
+                }
+                */
             }
             return false;
         }

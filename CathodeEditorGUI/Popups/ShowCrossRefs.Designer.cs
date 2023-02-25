@@ -29,101 +29,114 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ShowCrossRefs));
-            this.overridesUI = new System.Windows.Forms.ListBox();
-            this.proxiesUI = new System.Windows.Forms.ListBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.jumpToOverride = new System.Windows.Forms.Button();
-            this.jumpToProxy = new System.Windows.Forms.Button();
+            this.referenceList = new System.Windows.Forms.ListBox();
+            this.label = new System.Windows.Forms.Label();
+            this.jumpToEntity = new System.Windows.Forms.Button();
+            this.showLinkedProxies = new System.Windows.Forms.Button();
+            this.showLinkedOverrides = new System.Windows.Forms.Button();
+            this.showLinkedTriggerSequences = new System.Windows.Forms.Button();
+            this.showLinkedCageAnimations = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // overridesUI
+            // referenceList
             // 
-            this.overridesUI.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.overridesUI.FormattingEnabled = true;
-            this.overridesUI.HorizontalScrollbar = true;
-            this.overridesUI.Location = new System.Drawing.Point(12, 29);
-            this.overridesUI.Name = "overridesUI";
-            this.overridesUI.Size = new System.Drawing.Size(444, 381);
-            this.overridesUI.TabIndex = 145;
+            this.referenceList.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.referenceList.FormattingEnabled = true;
+            this.referenceList.HorizontalScrollbar = true;
+            this.referenceList.Location = new System.Drawing.Point(132, 29);
+            this.referenceList.Name = "referenceList";
+            this.referenceList.Size = new System.Drawing.Size(738, 381);
+            this.referenceList.TabIndex = 146;
             // 
-            // proxiesUI
+            // label
             // 
-            this.proxiesUI.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.proxiesUI.FormattingEnabled = true;
-            this.proxiesUI.HorizontalScrollbar = true;
-            this.proxiesUI.Location = new System.Drawing.Point(462, 29);
-            this.proxiesUI.Name = "proxiesUI";
-            this.proxiesUI.Size = new System.Drawing.Size(444, 381);
-            this.proxiesUI.TabIndex = 146;
+            this.label.AutoSize = true;
+            this.label.Location = new System.Drawing.Point(129, 11);
+            this.label.Name = "label";
+            this.label.Size = new System.Drawing.Size(143, 13);
+            this.label.TabIndex = 148;
+            this.label.Text = "Proxies pointing to this entity:";
             // 
-            // label1
+            // jumpToEntity
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(10, 11);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(154, 13);
-            this.label1.TabIndex = 147;
-            this.label1.Text = "Overrides pointing to this entity:";
+            this.jumpToEntity.Location = new System.Drawing.Point(723, 416);
+            this.jumpToEntity.Name = "jumpToEntity";
+            this.jumpToEntity.Size = new System.Drawing.Size(147, 23);
+            this.jumpToEntity.TabIndex = 150;
+            this.jumpToEntity.Text = "Jump To Selected";
+            this.jumpToEntity.UseVisualStyleBackColor = true;
+            this.jumpToEntity.Click += new System.EventHandler(this.jumpToEntity_Click);
             // 
-            // label2
+            // showLinkedProxies
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(459, 11);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(143, 13);
-            this.label2.TabIndex = 148;
-            this.label2.Text = "Proxies pointing to this entity:";
+            this.showLinkedProxies.Location = new System.Drawing.Point(10, 29);
+            this.showLinkedProxies.Name = "showLinkedProxies";
+            this.showLinkedProxies.Size = new System.Drawing.Size(114, 41);
+            this.showLinkedProxies.TabIndex = 151;
+            this.showLinkedProxies.Text = "Proxies";
+            this.showLinkedProxies.UseVisualStyleBackColor = true;
+            this.showLinkedProxies.Click += new System.EventHandler(this.showLinkedProxies_Click);
             // 
-            // jumpToOverride
+            // showLinkedOverrides
             // 
-            this.jumpToOverride.Location = new System.Drawing.Point(320, 416);
-            this.jumpToOverride.Name = "jumpToOverride";
-            this.jumpToOverride.Size = new System.Drawing.Size(136, 23);
-            this.jumpToOverride.TabIndex = 149;
-            this.jumpToOverride.Text = "Jump To Override";
-            this.jumpToOverride.UseVisualStyleBackColor = true;
-            this.jumpToOverride.Click += new System.EventHandler(this.jumpToOverride_Click);
+            this.showLinkedOverrides.Location = new System.Drawing.Point(10, 76);
+            this.showLinkedOverrides.Name = "showLinkedOverrides";
+            this.showLinkedOverrides.Size = new System.Drawing.Size(114, 41);
+            this.showLinkedOverrides.TabIndex = 152;
+            this.showLinkedOverrides.Text = "Overrides";
+            this.showLinkedOverrides.UseVisualStyleBackColor = true;
+            this.showLinkedOverrides.Click += new System.EventHandler(this.showLinkedOverrides_Click);
             // 
-            // jumpToProxy
+            // showLinkedTriggerSequences
             // 
-            this.jumpToProxy.Location = new System.Drawing.Point(770, 416);
-            this.jumpToProxy.Name = "jumpToProxy";
-            this.jumpToProxy.Size = new System.Drawing.Size(136, 23);
-            this.jumpToProxy.TabIndex = 150;
-            this.jumpToProxy.Text = "Jump To Proxy";
-            this.jumpToProxy.UseVisualStyleBackColor = true;
-            this.jumpToProxy.Click += new System.EventHandler(this.jumpToProxy_Click);
+            this.showLinkedTriggerSequences.Location = new System.Drawing.Point(10, 123);
+            this.showLinkedTriggerSequences.Name = "showLinkedTriggerSequences";
+            this.showLinkedTriggerSequences.Size = new System.Drawing.Size(114, 41);
+            this.showLinkedTriggerSequences.TabIndex = 153;
+            this.showLinkedTriggerSequences.Text = "TriggerSequences";
+            this.showLinkedTriggerSequences.UseVisualStyleBackColor = true;
+            this.showLinkedTriggerSequences.Click += new System.EventHandler(this.showLinkedTriggerSequences_Click);
             // 
-            // CathodeEditorGUI_ShowCrossRefs
+            // showLinkedCageAnimations
+            // 
+            this.showLinkedCageAnimations.Location = new System.Drawing.Point(10, 170);
+            this.showLinkedCageAnimations.Name = "showLinkedCageAnimations";
+            this.showLinkedCageAnimations.Size = new System.Drawing.Size(114, 41);
+            this.showLinkedCageAnimations.TabIndex = 154;
+            this.showLinkedCageAnimations.Text = "CAGEAnimations";
+            this.showLinkedCageAnimations.UseVisualStyleBackColor = true;
+            this.showLinkedCageAnimations.Click += new System.EventHandler(this.showLinkedCageAnimations_Click);
+            // 
+            // ShowCrossRefs
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(919, 448);
-            this.Controls.Add(this.jumpToProxy);
-            this.Controls.Add(this.jumpToOverride);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.proxiesUI);
-            this.Controls.Add(this.overridesUI);
+            this.ClientSize = new System.Drawing.Size(882, 448);
+            this.Controls.Add(this.showLinkedCageAnimations);
+            this.Controls.Add(this.showLinkedTriggerSequences);
+            this.Controls.Add(this.showLinkedOverrides);
+            this.Controls.Add(this.showLinkedProxies);
+            this.Controls.Add(this.jumpToEntity);
+            this.Controls.Add(this.label);
+            this.Controls.Add(this.referenceList);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.Name = "CathodeEditorGUI_ShowCrossRefs";
+            this.Name = "ShowCrossRefs";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Linked Overrides and Proxies";
+            this.Text = "External References";
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.ListBox overridesUI;
-        private System.Windows.Forms.ListBox proxiesUI;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Button jumpToOverride;
-        private System.Windows.Forms.Button jumpToProxy;
+        private System.Windows.Forms.ListBox referenceList;
+        private System.Windows.Forms.Label label;
+        private System.Windows.Forms.Button jumpToEntity;
+        private System.Windows.Forms.Button showLinkedProxies;
+        private System.Windows.Forms.Button showLinkedOverrides;
+        private System.Windows.Forms.Button showLinkedTriggerSequences;
+        private System.Windows.Forms.Button showLinkedCageAnimations;
     }
 }

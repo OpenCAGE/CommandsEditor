@@ -894,7 +894,7 @@ namespace CommandsEditor
         }
         private void BackgroundEntityLoader(Entity ent, CommandsEditor mainInst)
         {
-            bool isPointedTo = EditorUtils.IsPointedToByAnyOverridesOrProxies();
+            bool isPointedTo = EditorUtils.IsSelectedEntityReferencedExternally();
             mainInst.ThreadedEntityUIUpdate(ent, isPointedTo);
         }
         public void ThreadedEntityUIUpdate(Entity ent, bool isPointedTo)
