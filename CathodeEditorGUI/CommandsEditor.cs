@@ -17,6 +17,9 @@ using WebSocketSharp.Server;
 using MessageBox = System.Windows.Forms.MessageBox;
 using Point = System.Drawing.Point;
 using static System.Net.Mime.MediaTypeNames;
+using CATHODE.EXPERIMENTAL;
+using System.Windows.Media.Animation;
+using System.Diagnostics;
 
 namespace CommandsEditor
 {
@@ -31,6 +34,26 @@ namespace CommandsEditor
 
         public CommandsEditor()
         {
+#if !DEBUG
+            //Hotfix for users of OpenCAGE with a previous install that did not utilise Costura.Fody
+            try
+            {
+                List<string> files = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.dll", SearchOption.AllDirectories).ToList<string>();
+                foreach (string file in files) File.Delete(file);
+                if (files.Count != 0)
+                {
+                    MessageBox.Show("Configuration complete. Please re-launch the Commands Editor!", "Commands Editor", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    Environment.Exit(0);
+                    this.Close();
+                }
+            }
+            catch { }
+#endif
+
+
+            //SoundNodeNetwork network = new SoundNodeNetwork("G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\HAB_AIRPORT\\WORLD\\SNDNODENETWORK.DAT");
+            //return;
+
             //LocalDebug.TestAllCmds();
 
 
