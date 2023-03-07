@@ -1,4 +1,4 @@
-﻿namespace CathodeEditorGUI.UserControls
+﻿namespace CommandsEditor.UserControls
 {
     partial class GUI_ResourceDataType
     {

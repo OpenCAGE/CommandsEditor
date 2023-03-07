@@ -1,0 +1,581 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="packages\Costura.Fody.5.7.0\build\Costura.Fody.props" Condition="Exists('packages\Costura.Fody.5.7.0\build\Costura.Fody.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{DDFD51D4-A1E6-430D-BF4C-858378E74D56}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>CommandsEditor</RootNamespace>
+    <AssemblyName>CommandsEditor</AssemblyName>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <OutputPath>..\Build\</OutputPath>
+    <DefineConstants>DEBUG;CATHODE_FAIL_HARD</DefineConstants>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <OutputPath>..\Build\</OutputPath>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <Reference Include="CathodeLib">
+      <HintPath>..\CathodeLib\CathodeLib\bin\Debug\netstandard2.0\CathodeLib.dll</HintPath>
+    </Reference>
+    <Reference Include="WebsocketSharp">
+      <HintPath>lib\WebsocketSharp\websocket-sharp.dll</HintPath>
+    </Reference>
+    <Reference Include="HelixToolkit">
+      <HintPath>lib\HelixToolkit\Debug\HelixToolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="HelixToolkit.Wpf">
+      <HintPath>lib\HelixToolkit\Debug\HelixToolkit.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Logging.Abstractions">
+      <HintPath>lib\HelixToolkit\Debug\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <Reference Include="CathodeLib">
+      <HintPath>..\CathodeLib\CathodeLib\bin\Release\netstandard2.0\CathodeLib.dll</HintPath>
+    </Reference>
+    <Reference Include="WebsocketSharp">
+      <HintPath>lib\WebsocketSharp\websocket-sharp.dll</HintPath>
+    </Reference>
+    <Reference Include="HelixToolkit">
+      <HintPath>lib\HelixToolkit\Release\HelixToolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="HelixToolkit.Wpf">
+      <HintPath>lib\HelixToolkit\Release\HelixToolkit.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Logging.Abstractions">
+      <HintPath>lib\HelixToolkit\Release\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Costura, Version=5.7.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Costura.Fody.5.7.0\lib\netstandard1.0\Costura.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Win32.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Win32.Primitives.4.3.0\lib\net46\Microsoft.Win32.Primitives.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Pfim, Version=0.10.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Pfim.0.10.3\lib\netstandard2.0\Pfim.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System">
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.2\System.dll</HintPath>
+    </Reference>
+    <Reference Include="System.AppContext, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.AppContext.4.3.0\lib\net46\System.AppContext.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Console, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Console.4.3.0\lib\net46\System.Console.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Diagnostics.DiagnosticSource.4.3.0\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Diagnostics.Tracing, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Diagnostics.Tracing.4.3.0\lib\net462\System.Diagnostics.Tracing.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Globalization.Calendars, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Globalization.Calendars.4.3.0\lib\net46\System.Globalization.Calendars.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.IO.4.3.0\lib\net462\System.IO.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.Compression, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>packages\System.IO.Compression.4.3.0\lib\net46\System.IO.Compression.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.IO.Compression.ZipFile, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>packages\System.IO.Compression.ZipFile.4.3.0\lib\net46\System.IO.Compression.ZipFile.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.FileSystem, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.IO.FileSystem.4.3.0\lib\net46\System.IO.FileSystem.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.FileSystem.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.IO.FileSystem.Primitives.4.3.0\lib\net46\System.IO.FileSystem.Primitives.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Net.Http.4.3.0\lib\net46\System.Net.Http.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Net.Sockets, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Net.Sockets.4.3.0\lib\net46\System.Net.Sockets.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reflection, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Reflection.4.3.0\lib\net462\System.Reflection.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Runtime.4.3.0\lib\net462\System.Runtime.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Extensions, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Runtime.Extensions.4.3.0\lib\net462\System.Runtime.Extensions.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.InteropServices, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Runtime.InteropServices.4.3.0\lib\net462\System.Runtime.InteropServices.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Algorithms, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Security.Cryptography.Algorithms.4.3.0\lib\net461\System.Security.Cryptography.Algorithms.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Encoding, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Security.Cryptography.Encoding.4.3.0\lib\net46\System.Security.Cryptography.Encoding.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Security.Cryptography.Primitives.4.3.0\lib\net46\System.Security.Cryptography.Primitives.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Security.Cryptography.X509Certificates.4.3.0\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.ReaderWriter, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Xml.ReaderWriter.4.3.0\lib\net46\System.Xml.ReaderWriter.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Popups\EditSpline.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\EditSpline.Designer.cs">
+      <DependentUpon>EditSpline.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\Function Editors\CAGEAnimationEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\Function Editors\CAGEAnimationEditor.Designer.cs">
+      <DependentUpon>CAGEAnimationEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\UserControls\GUI_SplineViewer.xaml.cs">
+      <DependentUpon>GUI_SplineViewer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Scripts\CathodeEntityDatabase.cs" />
+    <Compile Include="Scripts\LocalDebug.cs" />
+    <Compile Include="Scripts\ObjectExtensions.cs" />
+    <Compile Include="Popups\AddOrEditResource.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\AddOrEditResource.Designer.cs">
+      <DependentUpon>AddOrEditResource.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CommandsEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CommandsEditor.designer.cs">
+      <DependentUpon>CommandsEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Scripts\Editor.cs" />
+    <Compile Include="Scripts\EditorUtils.cs" />
+    <Compile Include="Popups\AddEntity.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\AddEntity.Designer.cs">
+      <DependentUpon>AddEntity.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\AddComposite.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\AddComposite.Designer.cs">
+      <DependentUpon>AddComposite.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\AddParameter.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\AddParameter.Designer.cs">
+      <DependentUpon>AddParameter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\AddOrEditLink.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\AddOrEditLink.designer.cs">
+      <DependentUpon>AddOrEditLink.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\Composite3D.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\Composite3D.Designer.cs">
+      <DependentUpon>Composite3D.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\EditHierarchy.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\EditHierarchy.Designer.cs">
+      <DependentUpon>EditHierarchy.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\EditMVR.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\EditMVR.Designer.cs">
+      <DependentUpon>EditMVR.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\EditRootComposite.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\EditRootComposite.Designer.cs">
+      <DependentUpon>EditRootComposite.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\Function Editors\TriggerSequenceEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\Function Editors\TriggerSequenceEditor.Designer.cs">
+      <DependentUpon>TriggerSequenceEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\RemoveParameter.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\RemoveParameter.Designer.cs">
+      <DependentUpon>RemoveParameter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\RenameEntity.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\RenameEntity.Designer.cs">
+      <DependentUpon>RenameEntity.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\SelectMaterial.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\SelectMaterial.Designer.cs">
+      <DependentUpon>SelectMaterial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\SelectModel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\SelectModel.Designer.cs">
+      <DependentUpon>SelectModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\ShowCrossRefs.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\ShowCrossRefs.Designer.cs">
+      <DependentUpon>ShowCrossRefs.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\UserControls\CS2Reader.cs" />
+    <Compile Include="Popups\UserControls\GUI_ModelViewer.xaml.cs">
+      <DependentUpon>GUI_ModelViewer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\UserControls\GUI_Resource_AnimatedModel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Popups\UserControls\GUI_Resource_AnimatedModel.Designer.cs">
+      <DependentUpon>GUI_Resource_AnimatedModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\UserControls\GUI_Resource_CollisionMapping.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Popups\UserControls\GUI_Resource_CollisionMapping.Designer.cs">
+      <DependentUpon>GUI_Resource_CollisionMapping.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\UserControls\GUI_Resource_NavMeshBarrierResource.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Popups\UserControls\GUI_Resource_NavMeshBarrierResource.Designer.cs">
+      <DependentUpon>GUI_Resource_NavMeshBarrierResource.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\UserControls\GUI_Resource_RenderableInstance.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Popups\UserControls\GUI_Resource_RenderableInstance.Designer.cs">
+      <DependentUpon>GUI_Resource_RenderableInstance.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\UserControls\ResourceUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Popups\UserControls\ResourceUserControl.Designer.cs">
+      <DependentUpon>ResourceUserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Scripts\TreeUtility.cs" />
+    <Compile Include="Scripts\SettingsManager.cs" />
+    <Compile Include="Scripts\WebsocketServer.cs" />
+    <Compile Include="UserControls\GUI_BoolDataType.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\GUI_BoolDataType.Designer.cs">
+      <DependentUpon>GUI_BoolDataType.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\GUI_EnumDataType.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\GUI_EnumDataType.Designer.cs">
+      <DependentUpon>GUI_EnumDataType.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\GUI_Link.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\GUI_Link.Designer.cs">
+      <DependentUpon>GUI_Link.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\GUI_ResourceDataType.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\GUI_ResourceDataType.Designer.cs">
+      <DependentUpon>GUI_ResourceDataType.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\GUI_NumericDataType.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\GUI_NumericDataType.Designer.cs">
+      <DependentUpon>GUI_NumericDataType.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\GUI_SplineDataType.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\GUI_SplineDataType.Designer.cs">
+      <DependentUpon>GUI_SplineDataType.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\GUI_StringDataType.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\GUI_StringDataType.Designer.cs">
+      <DependentUpon>GUI_StringDataType.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\GUI_TransformDataType.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\GUI_TransformDataType.Designer.cs">
+      <DependentUpon>GUI_TransformDataType.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\GUI_VectorDataType.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\GUI_VectorDataType.Designer.cs">
+      <DependentUpon>GUI_VectorDataType.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Popups\EditSpline.resx">
+      <DependentUpon>EditSpline.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Function Editors\CAGEAnimationEditor.resx">
+      <DependentUpon>CAGEAnimationEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CommandsEditor.resx">
+      <DependentUpon>CommandsEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\AddEntity.resx">
+      <DependentUpon>AddEntity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\AddComposite.resx">
+      <DependentUpon>AddComposite.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\AddOrEditResource.resx">
+      <DependentUpon>AddOrEditResource.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\AddParameter.resx">
+      <DependentUpon>AddParameter.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\AddOrEditLink.resx">
+      <DependentUpon>AddOrEditLink.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Composite3D.resx">
+      <DependentUpon>Composite3D.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\EditHierarchy.resx">
+      <DependentUpon>EditHierarchy.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\EditMVR.resx">
+      <DependentUpon>EditMVR.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\EditRootComposite.resx">
+      <DependentUpon>EditRootComposite.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Function Editors\TriggerSequenceEditor.resx">
+      <DependentUpon>TriggerSequenceEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\RemoveParameter.resx">
+      <DependentUpon>RemoveParameter.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\RenameEntity.resx">
+      <DependentUpon>RenameEntity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\SelectMaterial.resx">
+      <DependentUpon>SelectMaterial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\SelectModel.resx">
+      <DependentUpon>SelectModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\ShowCrossRefs.resx">
+      <DependentUpon>ShowCrossRefs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\UserControls\GUI_Resource_AnimatedModel.resx">
+      <DependentUpon>GUI_Resource_AnimatedModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\UserControls\GUI_Resource_CollisionMapping.resx">
+      <DependentUpon>GUI_Resource_CollisionMapping.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\UserControls\GUI_Resource_NavMeshBarrierResource.resx">
+      <DependentUpon>GUI_Resource_NavMeshBarrierResource.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\UserControls\GUI_Resource_RenderableInstance.resx">
+      <DependentUpon>GUI_Resource_RenderableInstance.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\GUI_BoolDataType.resx">
+      <DependentUpon>GUI_BoolDataType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\GUI_EnumDataType.resx">
+      <DependentUpon>GUI_EnumDataType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\GUI_Link.resx">
+      <DependentUpon>GUI_Link.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\GUI_ResourceDataType.resx">
+      <DependentUpon>GUI_ResourceDataType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\GUI_NumericDataType.resx">
+      <DependentUpon>GUI_NumericDataType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\GUI_SplineDataType.resx">
+      <DependentUpon>GUI_SplineDataType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\GUI_StringDataType.resx">
+      <DependentUpon>GUI_StringDataType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\GUI_TransformDataType.resx">
+      <DependentUpon>GUI_TransformDataType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\GUI_VectorDataType.resx">
+      <DependentUpon>GUI_VectorDataType.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <None Include="Resources\cathode_entities.bin" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="icon.ico" />
+    <None Include="Resources\_2560px_Arrow_east_svg.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Popups\UserControls\GUI_SplineViewer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Popups\UserControls\GUI_ModelViewer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="packages\Fody.6.5.5\build\Fody.targets" Condition="Exists('packages\Fody.6.5.5\build\Fody.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('packages\Fody.6.5.5\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Fody.6.5.5\build\Fody.targets'))" />
+    <Error Condition="!Exists('packages\Costura.Fody.5.7.0\build\Costura.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Costura.Fody.5.7.0\build\Costura.Fody.props'))" />
+    <Error Condition="!Exists('packages\Costura.Fody.5.7.0\build\Costura.Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Costura.Fody.5.7.0\build\Costura.Fody.targets'))" />
+  </Target>
+  <Import Project="packages\Costura.Fody.5.7.0\build\Costura.Fody.targets" Condition="Exists('packages\Costura.Fody.5.7.0\build\Costura.Fody.targets')" />
+</Project>

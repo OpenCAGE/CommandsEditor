@@ -1,4 +1,4 @@
-﻿namespace CathodeEditorGUI.UserControls
+﻿namespace CommandsEditor.UserControls
 {
     partial class GUI_TransformDataType
     {
@@ -115,11 +115,6 @@
             this.ROT_Z.Name = "ROT_Z";
             this.ROT_Z.Size = new System.Drawing.Size(80, 20);
             this.ROT_Z.TabIndex = 12;
-            this.ROT_Z.Value = new decimal(new int[] {
-            1874919423,
-            2328306,
-            0,
-            -2147483648});
             this.ROT_Z.ValueChanged += new System.EventHandler(this.ROT_Z_ValueChanged);
             // 
             // label11
@@ -153,11 +148,6 @@
             this.ROT_Y.Name = "ROT_Y";
             this.ROT_Y.Size = new System.Drawing.Size(80, 20);
             this.ROT_Y.TabIndex = 10;
-            this.ROT_Y.Value = new decimal(new int[] {
-            1874919423,
-            2328306,
-            0,
-            -2147483648});
             this.ROT_Y.ValueChanged += new System.EventHandler(this.ROT_Y_ValueChanged);
             // 
             // label12
@@ -191,11 +181,6 @@
             this.ROT_X.Name = "ROT_X";
             this.ROT_X.Size = new System.Drawing.Size(80, 20);
             this.ROT_X.TabIndex = 8;
-            this.ROT_X.Value = new decimal(new int[] {
-            1874919423,
-            2328306,
-            0,
-            -2147483648});
             this.ROT_X.ValueChanged += new System.EventHandler(this.ROT_X_ValueChanged);
             // 
             // label7
@@ -238,11 +223,6 @@
             this.POS_Z.Name = "POS_Z";
             this.POS_Z.Size = new System.Drawing.Size(80, 20);
             this.POS_Z.TabIndex = 5;
-            this.POS_Z.Value = new decimal(new int[] {
-            1874919423,
-            2328306,
-            0,
-            -2147483648});
             this.POS_Z.ValueChanged += new System.EventHandler(this.POS_Z_ValueChanged);
             // 
             // label3
@@ -276,11 +256,6 @@
             this.POS_Y.Name = "POS_Y";
             this.POS_Y.Size = new System.Drawing.Size(80, 20);
             this.POS_Y.TabIndex = 3;
-            this.POS_Y.Value = new decimal(new int[] {
-            1874919423,
-            2328306,
-            0,
-            -2147483648});
             this.POS_Y.ValueChanged += new System.EventHandler(this.POS_Y_ValueChanged);
             // 
             // label2
@@ -314,11 +289,6 @@
             this.POS_X.Name = "POS_X";
             this.POS_X.Size = new System.Drawing.Size(80, 20);
             this.POS_X.TabIndex = 1;
-            this.POS_X.Value = new decimal(new int[] {
-            1874919423,
-            2328306,
-            0,
-            -2147483648});
             this.POS_X.ValueChanged += new System.EventHandler(this.POS_X_ValueChanged);
             // 
             // GUI_TransformDataType

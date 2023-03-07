@@ -4,8 +4,9 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Numerics;
+using CATHODE;
 
-namespace CathodeEditorGUI.Popups.UserControls
+namespace CommandsEditor.Popups.UserControls
 {
     /// <summary>
     /// Interaction logic for GUI_ModelViewer.xaml
@@ -31,11 +32,10 @@ namespace CathodeEditorGUI.Popups.UserControls
         
         private Model3DGroup OffsetModel(int modelIndex, Vector3D position, Vector3D rotation)
         {
-            float scale = 100.0f;
-
-            Model3DGroup model = reader.Read(modelIndex);
+            Models.CS2.LOD.Submesh submesh = Editor.resource.models.GetAtWriteIndex(modelIndex);
+            Model3DGroup model = Editor.resource.models.GetMesh(submesh);
             Transform3DGroup transform = new Transform3DGroup();
-            transform.Children.Add(new ScaleTransform3D(scale, scale, scale));
+            transform.Children.Add(new ScaleTransform3D(submesh.ScaleFactor, submesh.ScaleFactor, submesh.ScaleFactor));
             //transform.Children.Add(new RotateTransform3D(new (rotation.X, rotation.Y, rotation.Z, 0.0f));
             transform.Children.Add(new TranslateTransform3D(position.X, position.Y, position.Z));
             model.Transform = transform;

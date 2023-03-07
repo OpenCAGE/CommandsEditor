@@ -3,7 +3,7 @@ using System.Windows.Forms;
 using CATHODE.Scripting;
 using CathodeLib;
 
-namespace CathodeEditorGUI.UserControls
+namespace CommandsEditor.UserControls
 {
     public partial class GUI_EnumDataType : UserControl
     {
