@@ -2,6 +2,7 @@ using CATHODE;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CathodeLib;
+using CommandsEditor.UserControls;
 using System;
 using System.Collections.Generic;
 
@@ -175,6 +176,41 @@ namespace CommandsEditor
                 */
             }
             return false;
+        }
+
+        /* Utility: try figure out what zone this entity is in (if any) */
+        public static FunctionEntity TryFindZoneForSelectedEntity()
+        {
+            Func<Composite, FunctionEntity> findZone = comp => { 
+                foreach (TriggerSequence trig in comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.TriggerSequence)))
+                {
+                    foreach (TriggerSequence.Entity trigger in trig.entities)
+                    {
+                        if (CommandsUtils.ResolveHierarchy(Editor.commands, comp, trigger.hierarchy, out Composite compRef, out string str) != Editor.selected.entity) continue;
+
+                        List<FunctionEntity> zones = comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.Zone));
+                        foreach (FunctionEntity z in zones)
+                        {
+                            foreach (EntityLink link in z.childLinks)
+                            {
+                                if (link.parentParamID != ShortGuidUtils.Generate("composites")) continue;
+                                if (link.childID != trig.shortGUID) continue;
+                                return z;
+                            }
+                        }
+                    }
+                }
+                return null;
+            };
+
+            FunctionEntity zone = findZone(Editor.selected.composite);
+            if (zone != null) return zone;
+            foreach (Composite comp in Editor.commands.Entries)
+            {
+                zone = findZone(comp);
+                if (zone != null) return zone;
+            }
+            return null;
         }
     }
 }

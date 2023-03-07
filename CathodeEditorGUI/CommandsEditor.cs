@@ -20,6 +20,7 @@ using static System.Net.Mime.MediaTypeNames;
 using CATHODE.EXPERIMENTAL;
 using System.Windows.Media.Animation;
 using System.Diagnostics;
+using System.Security.Policy;
 
 namespace CommandsEditor
 {
@@ -918,12 +919,22 @@ namespace CommandsEditor
         private void BackgroundEntityLoader(Entity ent, CommandsEditor mainInst)
         {
             bool isPointedTo = EditorUtils.IsSelectedEntityReferencedExternally();
-            mainInst.ThreadedEntityUIUpdate(ent, isPointedTo);
+            FunctionEntity zone = EditorUtils.TryFindZoneForSelectedEntity();
+            mainInst.ThreadedEntityUIUpdate(ent, isPointedTo, zone);
         }
-        public void ThreadedEntityUIUpdate(Entity ent, bool isPointedTo)
+        private FunctionEntity zoneForSelectedEntity = null;
+        public void ThreadedEntityUIUpdate(Entity ent, bool isPointedTo, FunctionEntity zone)
         {
             if (ent != Editor.selected.entity) return;
             showOverridesAndProxies.Invoke(new Action(() => { showOverridesAndProxies.Enabled = isPointedTo; }));
+            zoneForSelectedEntity = zone;
+            string zoneText = "Zone";
+            if (zone != null)
+            {
+                Parameter name = zone.GetParameter("name");
+                if (name != null) zoneText += " (" + ((cString)name.content).value + ")";
+            }
+            goToZone.Invoke(new Action(() => { goToZone.Enabled = zone != null; goToZone.Text = zoneText; }));
         }
 
         /* Add a new parameter */
@@ -1031,6 +1042,12 @@ namespace CommandsEditor
         private void OnCrossRefsEntitySelected(ShortGuid entity, Composite composite)
         {
             LoadComposite(composite, composite.GetEntityByID(entity));
+        }
+
+        private void goToZone_Click(object sender, EventArgs e)
+        {
+            LoadComposite(flow.name);
+            LoadEntity(zoneForSelectedEntity);
         }
 
         /* Enable/disable backups */

@@ -33,6 +33,7 @@
             this.root_composite_display = new System.Windows.Forms.Label();
             this.save_commands_pak = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.goBackToPrevComp = new System.Windows.Forms.Button();
             this.removeSelectedFlowgraph = new System.Windows.Forms.Button();
             this.addNewFlowgraph = new System.Windows.Forms.Button();
             this.FileTree = new System.Windows.Forms.TreeView();
@@ -72,7 +73,7 @@
             this.DBG_CompileParamList = new System.Windows.Forms.Button();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.goBackToPrevComp = new System.Windows.Forms.Button();
+            this.goToZone = new System.Windows.Forms.Button();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.entityInfoGroup.SuspendLayout();
@@ -114,6 +115,17 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Composites";
             // 
+            // goBackToPrevComp
+            // 
+            this.goBackToPrevComp.Location = new System.Drawing.Point(354, 7);
+            this.goBackToPrevComp.Name = "goBackToPrevComp";
+            this.goBackToPrevComp.Size = new System.Drawing.Size(23, 23);
+            this.goBackToPrevComp.TabIndex = 151;
+            this.goBackToPrevComp.Text = "<";
+            this.toolTip1.SetToolTip(this.goBackToPrevComp, "Go back to the previously selected composite");
+            this.goBackToPrevComp.UseVisualStyleBackColor = true;
+            this.goBackToPrevComp.Click += new System.EventHandler(this.goBackToPrevComp_Click);
+            // 
             // removeSelectedFlowgraph
             // 
             this.removeSelectedFlowgraph.Location = new System.Drawing.Point(191, 710);
@@ -145,6 +157,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.goToZone);
             this.groupBox1.Controls.Add(this.showOverridesAndProxies);
             this.groupBox1.Controls.Add(this.editEntityMovers);
             this.groupBox1.Controls.Add(this.editEntityResources);
@@ -161,7 +174,7 @@
             // 
             // showOverridesAndProxies
             // 
-            this.showOverridesAndProxies.Location = new System.Drawing.Point(660, 94);
+            this.showOverridesAndProxies.Location = new System.Drawing.Point(570, 94);
             this.showOverridesAndProxies.Name = "showOverridesAndProxies";
             this.showOverridesAndProxies.Size = new System.Drawing.Size(95, 23);
             this.showOverridesAndProxies.TabIndex = 180;
@@ -184,7 +197,7 @@
             // 
             // editEntityResources
             // 
-            this.editEntityResources.Location = new System.Drawing.Point(565, 94);
+            this.editEntityResources.Location = new System.Drawing.Point(469, 119);
             this.editEntityResources.Name = "editEntityResources";
             this.editEntityResources.Size = new System.Drawing.Size(95, 23);
             this.editEntityResources.TabIndex = 176;
@@ -265,7 +278,7 @@
             // 
             // editFunction
             // 
-            this.editFunction.Location = new System.Drawing.Point(756, 94);
+            this.editFunction.Location = new System.Drawing.Point(570, 119);
             this.editFunction.Name = "editFunction";
             this.editFunction.Size = new System.Drawing.Size(95, 23);
             this.editFunction.TabIndex = 178;
@@ -386,16 +399,16 @@
             this.groupBox2.Controls.Add(this.removeParameter);
             this.groupBox2.Controls.Add(this.addNewParameter);
             this.groupBox2.Controls.Add(this.entity_params);
-            this.groupBox2.Location = new System.Drawing.Point(469, 123);
+            this.groupBox2.Location = new System.Drawing.Point(469, 189);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(382, 616);
+            this.groupBox2.Size = new System.Drawing.Size(382, 550);
             this.groupBox2.TabIndex = 147;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Selected Entity Parameters";
             // 
             // addLinkOut
             // 
-            this.addLinkOut.Location = new System.Drawing.Point(131, 586);
+            this.addLinkOut.Location = new System.Drawing.Point(131, 515);
             this.addLinkOut.Name = "addLinkOut";
             this.addLinkOut.Size = new System.Drawing.Size(125, 23);
             this.addLinkOut.TabIndex = 151;
@@ -405,7 +418,7 @@
             // 
             // removeParameter
             // 
-            this.removeParameter.Location = new System.Drawing.Point(256, 586);
+            this.removeParameter.Location = new System.Drawing.Point(256, 515);
             this.removeParameter.Name = "removeParameter";
             this.removeParameter.Size = new System.Drawing.Size(125, 23);
             this.removeParameter.TabIndex = 150;
@@ -415,7 +428,7 @@
             // 
             // addNewParameter
             // 
-            this.addNewParameter.Location = new System.Drawing.Point(6, 586);
+            this.addNewParameter.Location = new System.Drawing.Point(6, 515);
             this.addNewParameter.Name = "addNewParameter";
             this.addNewParameter.Size = new System.Drawing.Size(125, 23);
             this.addNewParameter.TabIndex = 149;
@@ -428,7 +441,7 @@
             this.entity_params.AutoScroll = true;
             this.entity_params.Location = new System.Drawing.Point(6, 20);
             this.entity_params.Name = "entity_params";
-            this.entity_params.Size = new System.Drawing.Size(375, 560);
+            this.entity_params.Size = new System.Drawing.Size(375, 491);
             this.entity_params.TabIndex = 0;
             // 
             // load_commands_pak
@@ -521,18 +534,18 @@
             this.groupBox10.TabIndex = 175;
             this.groupBox10.TabStop = false;
             // 
-            // goBackToPrevComp
+            // goToZone
             // 
-            this.goBackToPrevComp.Location = new System.Drawing.Point(354, 7);
-            this.goBackToPrevComp.Name = "goBackToPrevComp";
-            this.goBackToPrevComp.Size = new System.Drawing.Size(23, 23);
-            this.goBackToPrevComp.TabIndex = 151;
-            this.goBackToPrevComp.Text = "<";
-            this.toolTip1.SetToolTip(this.goBackToPrevComp, "Go back to the previously selected composite");
-            this.goBackToPrevComp.UseVisualStyleBackColor = true;
-            this.goBackToPrevComp.Click += new System.EventHandler(this.goBackToPrevComp_Click);
+            this.goToZone.Location = new System.Drawing.Point(671, 94);
+            this.goToZone.Name = "goToZone";
+            this.goToZone.Size = new System.Drawing.Size(95, 23);
+            this.goToZone.TabIndex = 181;
+            this.goToZone.Text = "Zone";
+            this.toolTip1.SetToolTip(this.goToZone, "Available on TriggerSequence and CAGEAnimation nodes");
+            this.goToZone.UseVisualStyleBackColor = true;
+            this.goToZone.Click += new System.EventHandler(this.goToZone_Click);
             // 
-            // CathodeEditorGUI
+            // CommandsEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -544,7 +557,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.Name = "CathodeEditorGUI";
+            this.Name = "CommandsEditor";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "OpenCAGE Commands Editor";
             this.groupBox3.ResumeLayout(false);
@@ -605,5 +618,6 @@
         private System.Windows.Forms.Button DBG_WebsocketTest;
         private System.Windows.Forms.Button showOverridesAndProxies;
         private System.Windows.Forms.Button goBackToPrevComp;
+        private System.Windows.Forms.Button goToZone;
     }
 }
