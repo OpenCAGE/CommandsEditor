@@ -21,9 +21,9 @@ namespace CommandsEditor.UserControls
         }
 
         private cSpline spline = null;
-        public void PopulateUI(cSpline cSpline, ShortGuid paramID)
+        public void PopulateUI(cSpline cSpline, string paramID)
         {
-            SPLINE_CONTAINER.Text = ShortGuidUtils.FindString(paramID);
+            SPLINE_CONTAINER.Text = paramID;
             spline = cSpline;
         }
 

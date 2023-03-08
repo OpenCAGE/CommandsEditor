@@ -21,9 +21,9 @@ namespace CommandsEditor.UserControls
         }
 
         private cResource resRef = null;
-        public void PopulateUI(cResource cResource, ShortGuid paramID)
+        public void PopulateUI(cResource cResource, string paramID)
         {
-            GUID_VARIABLE_DUMMY.Text = ShortGuidUtils.FindString(paramID);
+            GUID_VARIABLE_DUMMY.Text = paramID;
             resRef = cResource;
         }
 

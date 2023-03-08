@@ -23,10 +23,10 @@ namespace CommandsEditor.UserControls
             InitializeComponent();
         }
 
-        public void PopulateUI(cVector3 cVec, ShortGuid paramID)
+        public void PopulateUI(cVector3 cVec, string paramID)
         {
             vectorVal = cVec;
-            label1.Text = ShortGuidUtils.FindString(paramID);
+            label1.Text = paramID;
             POS_X_1.Value = (decimal)cVec.value.X;
             POS_Y_1.Value = (decimal)cVec.value.Y;
             POS_Z_1.Value = (decimal)cVec.value.Z;

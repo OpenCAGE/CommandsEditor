@@ -22,10 +22,10 @@ namespace CommandsEditor.UserControls
             InitializeComponent();
         }
 
-        public void PopulateUI(cVector3 cVec, ShortGuid paramID)
+        public void PopulateUI(cVector3 cVec, string paramID)
         {
             vector = cVec;
-            GUID_VARIABLE_DUMMY.Text = ShortGuidUtils.FindString(paramID);
+            GUID_VARIABLE_DUMMY.Text = paramID;
             pictureBox1.BackColor = VectorToColour();
         }
 

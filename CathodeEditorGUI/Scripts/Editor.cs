@@ -1,6 +1,8 @@
 ﻿using CATHODE;
+using CATHODE.EXPERIMENTAL;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
+using System.Collections.Generic;
 
 namespace CommandsEditor
 {
@@ -18,7 +20,7 @@ namespace CommandsEditor
             public Entity entity;
         }
 
-        //Assets and various DBs
+        //Level-specific assets and various DBs
         public static Resource resource;
         public struct Resource
         {
@@ -31,6 +33,17 @@ namespace CommandsEditor
 
             public EnvironmentAnimations env_animations;
             public CollisionMaps collision_maps;
+
+            public SoundBankData sound_bankdata;
+            public SoundDialogueLookups sound_dialoguelookups;
+            public SoundEventData sound_eventdata;
         }
+
+        //Global animation strings
+        public static AnimationStrings animstrings;
+        public static AnimationStrings animstrings_debug;
+
+        //Global localised string DBs for English
+        public static Dictionary<string, Strings> strings = new Dictionary<string, Strings>();
     }
 }

@@ -108,6 +108,27 @@ namespace CommandsEditor
                 }
             }
 
+            //Populate localised text string databases (in English)
+            List<string> textList = Directory.GetFiles(SharedData.pathToAI + "/DATA/TEXT/ENGLISH/", "*.TXT", SearchOption.AllDirectories).ToList<string>();
+            foreach (string text in textList)
+            {
+                Editor.strings.Add(Path.GetFileNameWithoutExtension(text), new Strings(text));
+            }
+
+            //Populate animation strings
+            string pathToStringDB = SharedData.pathToAI + "/DATA/GLOBAL/ANIM_STRING_DB.BIN";
+            string pathToStringDB_Debug = SharedData.pathToAI + "/DATA/GLOBAL/ANIM_STRING_DB_DEBUG.BIN";
+            if (!File.Exists(pathToStringDB) || !File.Exists(pathToStringDB_Debug))
+            {
+                PAK2 animPAK = new PAK2(SharedData.pathToAI + "/DATA/GLOBAL/ANIMATION.PAK");
+                byte[] content = animPAK.Entries.FirstOrDefault(o => o.Filename.Contains("ANIM_STRING_DB.BIN")).Content;
+                File.WriteAllBytes(pathToStringDB, content);
+                content = animPAK.Entries.FirstOrDefault(o => o.Filename.Contains("ANIM_STRING_DB_DEBUG.BIN")).Content;
+                File.WriteAllBytes(pathToStringDB_Debug, content);
+            }
+            Editor.animstrings = new AnimationStrings(pathToStringDB);
+            Editor.animstrings_debug = new AnimationStrings(pathToStringDB_Debug);
+
             ClearUI(true, true, true);
 
             show3D.Visible = false;
@@ -260,12 +281,15 @@ namespace CommandsEditor
             if (Editor.resource.textures_global != null) Editor.resource.textures_global.Entries.Clear();
             if (Editor.resource.env_animations != null) Editor.resource.env_animations.Entries.Clear();
             if (Editor.resource.collision_maps != null) Editor.resource.collision_maps.Entries.Clear();
+            if (Editor.resource.sound_bankdata != null) Editor.resource.sound_bankdata.Entries.Clear();
+            if (Editor.resource.sound_dialoguelookups != null) Editor.resource.sound_dialoguelookups.Entries.Clear();
+            if (Editor.resource.sound_eventdata != null) Editor.resource.sound_eventdata.Entries.Clear();
 
 #if !CATHODE_FAIL_HARD
             try
             {
 #endif
-                string baseLevelPath = Editor.commands.Filepath.Substring(0, Editor.commands.Filepath.Length - ("WORLD/COMMANDS.PAK").Length);
+            string baseLevelPath = Editor.commands.Filepath.Substring(0, Editor.commands.Filepath.Length - ("WORLD/COMMANDS.PAK").Length);
 
                 //The game has two hard-coded _PATCH overrides which change the CommandsPAK but not the assets
                 string levelName = env_list.Items[env_list.SelectedIndex].ToString();
@@ -284,6 +308,9 @@ namespace CommandsEditor
                 //Editor.resource.textures_Global = new Textures(SharedData.pathToAI + "/DATA/ENV/GLOBAL/WORLD/GLOBAL_TEXTURES.ALL.PAK");
                 Editor.resource.env_animations = new EnvironmentAnimations(baseLevelPath + "WORLD/ENVIRONMENT_ANIMATION.DAT");
                 Editor.resource.collision_maps = new CollisionMaps(baseLevelPath + "WORLD/COLLISION.MAP");
+                Editor.resource.sound_bankdata = new SoundBankData(baseLevelPath + "WORLD/SOUNDBANKDATA.DAT");
+                Editor.resource.sound_dialoguelookups = new SoundDialogueLookups(baseLevelPath + "WORLD/SOUNDDIALOGUELOOKUPS.DAT");
+                Editor.resource.sound_eventdata = new SoundEventData(baseLevelPath + "WORLD/SOUNDEVENTDATA.DAT");
 #if !CATHODE_FAIL_HARD
             }
             catch
@@ -297,6 +324,9 @@ namespace CommandsEditor
                 Editor.resource.textures_global = null;
                 Editor.resource.env_animations = null;
                 Editor.resource.collision_maps = null;
+                Editor.resource.sound_bankdata = null;
+                Editor.resource.sound_dialoguelookups = null;
+                Editor.resource.sound_eventdata = null;
             }
 #endif
         }
@@ -860,51 +890,80 @@ namespace CommandsEditor
             {
                 ParameterData this_param = entity.parameters[i].content;
                 UserControl parameterGUI = null;
+                string paramName = entity.parameters[i].name.ToString();
                 switch (this_param.dataType)
                 {
                     case DataType.TRANSFORM:
                         parameterGUI = new GUI_TransformDataType();
-                        ((GUI_TransformDataType)parameterGUI).PopulateUI((cTransform)this_param, entity.parameters[i].name);
+                        ((GUI_TransformDataType)parameterGUI).PopulateUI((cTransform)this_param, paramName);
                         break;
                     case DataType.INTEGER:
                         parameterGUI = new GUI_NumericDataType();
-                        ((GUI_NumericDataType)parameterGUI).PopulateUI_Int((cInteger)this_param, entity.parameters[i].name);
+                        ((GUI_NumericDataType)parameterGUI).PopulateUI_Int((cInteger)this_param, paramName);
                         break;
                     case DataType.STRING:
-                        parameterGUI = new GUI_StringDataType();
-                        ((GUI_StringDataType)parameterGUI).PopulateUI((cString)this_param, entity.parameters[i].name);
+                        //if (paramName == "Animation")
+                        //{
+                        //    parameterGUI = new GUI_StringVariant_AssetDropdown();
+                        //    ((GUI_StringVariant_AssetDropdown)parameterGUI).PopulateUI((cString)this_param, paramName, GUI_StringVariant_AssetDropdown.AssetType.ANIMATIONS);
+                        //}
+                        //else
+                        //{
+                            parameterGUI = new GUI_StringDataType();
+                            ((GUI_StringDataType)parameterGUI).PopulateUI((cString)this_param, paramName);
+                        //}
                         break;
                     case DataType.BOOL:
                         parameterGUI = new GUI_BoolDataType();
-                        ((GUI_BoolDataType)parameterGUI).PopulateUI((cBool)this_param, entity.parameters[i].name);
+                        ((GUI_BoolDataType)parameterGUI).PopulateUI((cBool)this_param, paramName);
                         break;
                     case DataType.FLOAT:
                         parameterGUI = new GUI_NumericDataType();
-                        ((GUI_NumericDataType)parameterGUI).PopulateUI_Float((cFloat)this_param, entity.parameters[i].name);
+                        ((GUI_NumericDataType)parameterGUI).PopulateUI_Float((cFloat)this_param, paramName);
                         break;
                     case DataType.VECTOR:
-                        if (entity.parameters[i].name.ToString() == "color" || entity.parameters[i].name.ToString() == "colour")
+                        if (paramName == "AMBIENT_LIGHTING_COLOUR" ||
+                            paramName == "COLOUR_TINT_START" ||
+                            paramName == "COLOUR_TINT_MID" ||
+                            paramName == "COLOUR_TINT_END" ||
+                            paramName == "COLOUR_TINT" ||
+                            paramName == "COLOUR_TINT_OUTER" ||
+                            paramName == "DEPTH_INTERSECT_COLOUR_VALUE" ||
+                            paramName == "DEPTH_INTERSECT_INITIAL_COLOUR" ||
+                            paramName == "DEPTH_INTERSECT_MIDPOINT_COLOUR" ||
+                            paramName == "DEPTH_INTERSECT_END_COLOUR" ||
+                            paramName == "DEPTH_FOG_INITIAL_COLOUR" ||
+                            paramName == "DEPTH_FOG_MIDPOINT_COLOUR" ||
+                            paramName == "DEPTH_FOG_END_COLOUR" ||
+                            paramName == "ColourFactor" ||
+                            paramName == "lens_flare_colour" ||
+                            paramName == "light_shaft_colour" ||
+                            paramName == "initial_colour" ||
+                            paramName == "near_colour" ||
+                            paramName == "far_colour" ||
+                            paramName == "colour" ||
+                            paramName == "Colour")
                         {
                             parameterGUI = new GUI_VectorVariant_Colour();
-                            ((GUI_VectorVariant_Colour)parameterGUI).PopulateUI((cVector3)this_param, entity.parameters[i].name);
+                            ((GUI_VectorVariant_Colour)parameterGUI).PopulateUI((cVector3)this_param, paramName);
                         }
                         else
                         {
                             parameterGUI = new GUI_VectorDataType();
-                            ((GUI_VectorDataType)parameterGUI).PopulateUI((cVector3)this_param, entity.parameters[i].name);
+                            ((GUI_VectorDataType)parameterGUI).PopulateUI((cVector3)this_param, paramName);
                         }
                         break;
                     case DataType.ENUM:
                         parameterGUI = new GUI_EnumDataType();
-                        ((GUI_EnumDataType)parameterGUI).PopulateUI((cEnum)this_param, entity.parameters[i].name);
+                        ((GUI_EnumDataType)parameterGUI).PopulateUI((cEnum)this_param, paramName);
                         break;
                     case DataType.RESOURCE:
                         parameterGUI = new GUI_ResourceDataType();
-                        ((GUI_ResourceDataType)parameterGUI).PopulateUI((cResource)this_param, entity.parameters[i].name);
+                        ((GUI_ResourceDataType)parameterGUI).PopulateUI((cResource)this_param, paramName);
                         break;
                     case DataType.SPLINE:
                         parameterGUI = new GUI_SplineDataType();
-                        ((GUI_SplineDataType)parameterGUI).PopulateUI((cSpline)this_param, entity.parameters[i].name);
+                        ((GUI_SplineDataType)parameterGUI).PopulateUI((cSpline)this_param, paramName);
                         break;
                 }
                 parameterGUI.Location = new Point(15, current_ui_offset);

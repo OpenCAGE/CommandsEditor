@@ -20,12 +20,12 @@ namespace CommandsEditor.UserControls
             comboBox1.EndUpdate();
         }
 
-        public void PopulateUI(cEnum cEnum, ShortGuid paramID)
+        public void PopulateUI(cEnum cEnum, string paramID)
         {
             enumVal = cEnum;
             enumDesc = EnumUtils.GetEnum(cEnum.enumID);
 
-            label13.Text = ShortGuidUtils.FindString(paramID);
+            label13.Text = paramID;
             comboBox1.Text = enumDesc.Name;
             textBox1.Text = cEnum.enumIndex.ToString();
 
