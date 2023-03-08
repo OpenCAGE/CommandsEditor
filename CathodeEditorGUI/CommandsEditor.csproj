@@ -383,6 +383,12 @@
     <Compile Include="Scripts\TreeUtility.cs" />
     <Compile Include="Scripts\SettingsManager.cs" />
     <Compile Include="Scripts\WebsocketServer.cs" />
+    <Compile Include="UserControls\Custom Entries\GUI_CE_Colour.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\Custom Entries\GUI_CE_Colour.Designer.cs">
+      <DependentUpon>GUI_CE_Colour.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\GUI_BoolDataType.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -507,6 +513,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\Custom Entries\GUI_CE_Colour.resx">
+      <DependentUpon>GUI_CE_Colour.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserControls\GUI_BoolDataType.resx">
       <DependentUpon>GUI_BoolDataType.cs</DependentUpon>

@@ -882,8 +882,16 @@ namespace CommandsEditor
                         ((GUI_NumericDataType)parameterGUI).PopulateUI_Float((cFloat)this_param, entity.parameters[i].name);
                         break;
                     case DataType.VECTOR:
-                        parameterGUI = new GUI_VectorDataType();
-                        ((GUI_VectorDataType)parameterGUI).PopulateUI((cVector3)this_param, entity.parameters[i].name);
+                        if (entity.parameters[i].name.ToString() == "color" || entity.parameters[i].name.ToString() == "colour")
+                        {
+                            parameterGUI = new GUI_CE_Colour();
+                            ((GUI_CE_Colour)parameterGUI).PopulateUI((cVector3)this_param, entity.parameters[i].name);
+                        }
+                        else
+                        {
+                            parameterGUI = new GUI_VectorDataType();
+                            ((GUI_VectorDataType)parameterGUI).PopulateUI((cVector3)this_param, entity.parameters[i].name);
+                        }
                         break;
                     case DataType.ENUM:
                         parameterGUI = new GUI_EnumDataType();
