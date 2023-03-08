@@ -383,11 +383,23 @@
     <Compile Include="Scripts\TreeUtility.cs" />
     <Compile Include="Scripts\SettingsManager.cs" />
     <Compile Include="Scripts\WebsocketServer.cs" />
-    <Compile Include="UserControls\Custom Entries\GUI_CE_Colour.cs">
+    <Compile Include="UserControls\Variants\GUI_StringVariant_AssetDropdown.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UserControls\Custom Entries\GUI_CE_Colour.Designer.cs">
-      <DependentUpon>GUI_CE_Colour.cs</DependentUpon>
+    <Compile Include="UserControls\Variants\GUI_StringVariant_AssetDropdown.Designer.cs">
+      <DependentUpon>GUI_StringVariant_AssetDropdown.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\Variants\GUI_NumericVariant_Slider.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\Variants\GUI_NumericVariant_Slider.Designer.cs">
+      <DependentUpon>GUI_NumericVariant_Slider.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\Variants\GUI_VectorVariant_Colour.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\Variants\GUI_VectorVariant_Colour.Designer.cs">
+      <DependentUpon>GUI_VectorVariant_Colour.cs</DependentUpon>
     </Compile>
     <Compile Include="UserControls\GUI_BoolDataType.cs">
       <SubType>UserControl</SubType>
@@ -514,8 +526,14 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="UserControls\Custom Entries\GUI_CE_Colour.resx">
-      <DependentUpon>GUI_CE_Colour.cs</DependentUpon>
+    <EmbeddedResource Include="UserControls\Variants\GUI_StringVariant_AssetDropdown.resx">
+      <DependentUpon>GUI_StringVariant_AssetDropdown.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\Variants\GUI_NumericVariant_Slider.resx">
+      <DependentUpon>GUI_NumericVariant_Slider.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\Variants\GUI_VectorVariant_Colour.resx">
+      <DependentUpon>GUI_VectorVariant_Colour.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserControls\GUI_BoolDataType.resx">
       <DependentUpon>GUI_BoolDataType.cs</DependentUpon>

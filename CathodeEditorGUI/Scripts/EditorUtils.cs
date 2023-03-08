@@ -181,7 +181,8 @@ namespace CommandsEditor
         /* Utility: try figure out what zone this entity is in (if any) */
         public static FunctionEntity TryFindZoneForSelectedEntity()
         {
-            Func<Composite, FunctionEntity> findZone = comp => { 
+            Func<Composite, FunctionEntity> findZone = comp => {
+                if (comp == null) return null;
                 foreach (TriggerSequence trig in comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.TriggerSequence)))
                 {
                     foreach (TriggerSequence.Entity trigger in trig.entities)

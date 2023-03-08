@@ -1,6 +1,6 @@
 ﻿namespace CommandsEditor.UserControls
 {
-    partial class GUI_CE_Colour
+    partial class GUI_VectorVariant_Colour
     {
         /// <summary> 
         /// Required designer variable.

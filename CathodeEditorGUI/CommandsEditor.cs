@@ -161,6 +161,7 @@ namespace CommandsEditor
                 editEntityResources.Enabled = false;
                 editEntityMovers.Enabled = false;
                 showOverridesAndProxies.Enabled = false;
+                goToZone.Enabled = false;
                 renameSelectedNode.Enabled = true;
                 duplicateSelectedNode.Enabled = true;
                 hierarchyDisplay.Visible = false;
@@ -884,8 +885,8 @@ namespace CommandsEditor
                     case DataType.VECTOR:
                         if (entity.parameters[i].name.ToString() == "color" || entity.parameters[i].name.ToString() == "colour")
                         {
-                            parameterGUI = new GUI_CE_Colour();
-                            ((GUI_CE_Colour)parameterGUI).PopulateUI((cVector3)this_param, entity.parameters[i].name);
+                            parameterGUI = new GUI_VectorVariant_Colour();
+                            ((GUI_VectorVariant_Colour)parameterGUI).PopulateUI((cVector3)this_param, entity.parameters[i].name);
                         }
                         else
                         {

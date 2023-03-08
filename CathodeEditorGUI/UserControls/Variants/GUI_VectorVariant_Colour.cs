@@ -13,18 +13,18 @@ using CATHODE;
 
 namespace CommandsEditor.UserControls
 {
-    public partial class GUI_CE_Colour : UserControl
+    public partial class GUI_VectorVariant_Colour : UserControl
     {
         cVector3 vector = null;
 
-        public GUI_CE_Colour()
+        public GUI_VectorVariant_Colour()
         {
             InitializeComponent();
         }
 
-        public void PopulateUI(cVector3 vec, ShortGuid paramID)
+        public void PopulateUI(cVector3 cVec, ShortGuid paramID)
         {
-            vector = vec;
+            vector = cVec;
             GUID_VARIABLE_DUMMY.Text = ShortGuidUtils.FindString(paramID);
             pictureBox1.BackColor = VectorToColour();
         }
