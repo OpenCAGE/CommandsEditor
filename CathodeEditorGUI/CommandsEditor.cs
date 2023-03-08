@@ -284,12 +284,13 @@ namespace CommandsEditor
             if (Editor.resource.sound_bankdata != null) Editor.resource.sound_bankdata.Entries.Clear();
             if (Editor.resource.sound_dialoguelookups != null) Editor.resource.sound_dialoguelookups.Entries.Clear();
             if (Editor.resource.sound_eventdata != null) Editor.resource.sound_eventdata.Entries.Clear();
+            if (Editor.resource.sound_environmentdata != null) Editor.resource.sound_environmentdata.Entries.Clear();
 
 #if !CATHODE_FAIL_HARD
             try
             {
 #endif
-            string baseLevelPath = Editor.commands.Filepath.Substring(0, Editor.commands.Filepath.Length - ("WORLD/COMMANDS.PAK").Length);
+                string baseLevelPath = Editor.commands.Filepath.Substring(0, Editor.commands.Filepath.Length - ("WORLD/COMMANDS.PAK").Length);
 
                 //The game has two hard-coded _PATCH overrides which change the CommandsPAK but not the assets
                 string levelName = env_list.Items[env_list.SelectedIndex].ToString();
@@ -311,6 +312,7 @@ namespace CommandsEditor
                 Editor.resource.sound_bankdata = new SoundBankData(baseLevelPath + "WORLD/SOUNDBANKDATA.DAT");
                 Editor.resource.sound_dialoguelookups = new SoundDialogueLookups(baseLevelPath + "WORLD/SOUNDDIALOGUELOOKUPS.DAT");
                 Editor.resource.sound_eventdata = new SoundEventData(baseLevelPath + "WORLD/SOUNDEVENTDATA.DAT");
+                Editor.resource.sound_environmentdata = new SoundEnvironmentData(baseLevelPath + "WORLD/SOUNDENVIRONMENTDATA.DAT");
 #if !CATHODE_FAIL_HARD
             }
             catch
@@ -327,6 +329,7 @@ namespace CommandsEditor
                 Editor.resource.sound_bankdata = null;
                 Editor.resource.sound_dialoguelookups = null;
                 Editor.resource.sound_eventdata = null;
+                Editor.resource.sound_environmentdata = null;
             }
 #endif
         }
@@ -902,16 +905,67 @@ namespace CommandsEditor
                         ((GUI_NumericDataType)parameterGUI).PopulateUI_Int((cInteger)this_param, paramName);
                         break;
                     case DataType.STRING:
-                        //if (paramName == "Animation")
-                        //{
-                        //    parameterGUI = new GUI_StringVariant_AssetDropdown();
-                        //    ((GUI_StringVariant_AssetDropdown)parameterGUI).PopulateUI((cString)this_param, paramName, GUI_StringVariant_AssetDropdown.AssetType.ANIMATIONS);
-                        //}
-                        //else
-                        //{
+                        GUI_StringVariant_AssetDropdown.AssetType asset = GUI_StringVariant_AssetDropdown.AssetType.NONE;
+                        string asset_arg = "";
+                        //TODO: We can figure out a lot of these from the iOS dump.
+                        //      For example - SoundEnvironmentMarker shows reverb_name as DataType SOUND_REVERB!
+                        switch (paramName)
+                        {
+                            //case "Animation":
+                            //    asset = GUI_StringVariant_AssetDropdown.AssetType.ANIMATIONS;
+                            //    break;
+                            case "material":
+                                asset = GUI_StringVariant_AssetDropdown.AssetType.MATERIAL;
+                                break;
+                            case "title":
+                                asset = GUI_StringVariant_AssetDropdown.AssetType.LOCALISED_STRING;
+                                asset_arg = "OBJECTIVES";
+                                break;
+                            case "title_id":
+                            case "message_id":
+                            case "unlocked_text":
+                            case "locked_text":
+                            case "action_text":
+                                asset = GUI_StringVariant_AssetDropdown.AssetType.LOCALISED_STRING;
+                                asset_arg = "UI";
+                                break;
+                            case "sound_event":
+                            case "music_event":
+                            case "stop_event":
+                            case "line_01_event":
+                            case "line_02_event":
+                            case "line_03_event":
+                            case "line_04_event":
+                            case "line_05_event":
+                            case "line_06_event":
+                            case "line_07_event":
+                            case "line_08_event":
+                            case "line_09_event":
+                            case "line_10_event":
+                            case "on_enter_event":
+                            case "on_exit_event":
+                            case "music_start_event":
+                            case "music_end_event":
+                            case "music_restart_event":
+                                asset = GUI_StringVariant_AssetDropdown.AssetType.SOUND_EVENT;
+                                break;
+                            case "reverb_name":
+                                asset = GUI_StringVariant_AssetDropdown.AssetType.SOUND_REVERB;
+                                break;
+                            case "sound_bank":
+                                asset = GUI_StringVariant_AssetDropdown.AssetType.SOUND_BANK;
+                                break;
+                        }
+                        if (asset != GUI_StringVariant_AssetDropdown.AssetType.NONE)
+                        {
+                            parameterGUI = new GUI_StringVariant_AssetDropdown();
+                            ((GUI_StringVariant_AssetDropdown)parameterGUI).PopulateUI((cString)this_param, paramName, asset, asset_arg);
+                        }
+                        else
+                        {
                             parameterGUI = new GUI_StringDataType();
                             ((GUI_StringDataType)parameterGUI).PopulateUI((cString)this_param, paramName);
-                        //}
+                        }
                         break;
                     case DataType.BOOL:
                         parameterGUI = new GUI_BoolDataType();

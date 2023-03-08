@@ -37,6 +37,7 @@ namespace CommandsEditor
             public SoundBankData sound_bankdata;
             public SoundDialogueLookups sound_dialoguelookups;
             public SoundEventData sound_eventdata;
+            public SoundEnvironmentData sound_environmentdata;
         }
 
         //Global animation strings
