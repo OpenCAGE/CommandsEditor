@@ -854,6 +854,7 @@ namespace CommandsEditor
             }
 
             //populate parameter inputs
+            entity.parameters = entity.parameters.OrderBy(o => o.name.ToString()).ToList();
             for (int i = 0; i < entity.parameters.Count; i++)
             {
                 ParameterData this_param = entity.parameters[i].content;
@@ -1046,7 +1047,8 @@ namespace CommandsEditor
 
         private void goToZone_Click(object sender, EventArgs e)
         {
-            LoadComposite(flow.name);
+            //TODO! TODO!
+            //LoadComposite(flow.name);
             LoadEntity(zoneForSelectedEntity);
         }
 
