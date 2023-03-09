@@ -1,5 +1,6 @@
 ﻿using CATHODE;
 using CATHODE.Scripting;
+using CommandsEditor.Popups.Base;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,10 +13,10 @@ using System.Windows.Forms;
 
 namespace CommandsEditor
 {
-    public partial class TriggerSequenceEditor : Form
+    public partial class TriggerSequenceEditor : BaseWindow
     {
         TriggerSequence node = null;
-        public TriggerSequenceEditor(TriggerSequence _node)
+        public TriggerSequenceEditor(TriggerSequence _node) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             InitializeComponent();
             node = _node;

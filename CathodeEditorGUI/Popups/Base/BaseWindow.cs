@@ -21,8 +21,16 @@ namespace CommandsEditor.Popups.Base
         private Entity _startEntity;
         private Composite _startComposite;
 
+        [Obsolete("Designer only", true)]
+        public BaseWindow()
+        {
+            InitializeComponent();
+        }
+
         public BaseWindow(WindowClosesOn config)
         {
+            InitializeComponent();
+
             _closesOn = config;
 
             _startCommands = Editor.commands;
@@ -81,5 +89,7 @@ namespace CommandsEditor.Popups.Base
         COMMANDS_RELOAD = 1,
         NEW_ENTITY_SELECTION = 2,
         NEW_COMPOSITE_SELECTION = 4,
+
+        NONE = 8,
     }
 }

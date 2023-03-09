@@ -16,7 +16,7 @@ namespace CommandsEditor
 {
     public partial class AddComposite : BaseWindow
     {
-        public AddComposite() : base()
+        public AddComposite() : base(WindowClosesOn.COMMANDS_RELOAD)
         {
             InitializeComponent();
         }

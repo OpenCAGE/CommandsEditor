@@ -2,6 +2,7 @@
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CathodeLib;
+using CommandsEditor.Popups.Base;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +16,7 @@ using System.Windows.Forms;
 
 namespace CommandsEditor
 {
-    public partial class AddEntity : Form
+    public partial class AddEntity : BaseWindow
     {
         public Action<Entity> OnNewEntity;
 
@@ -24,7 +25,7 @@ namespace CommandsEditor
         List<CathodeEntityDatabase.EntityDefinition> availableEntities = null;
         List<ShortGuid> hierarchy = null;
 
-        public AddEntity(Composite _comp, List<Composite> _comps)
+        public AddEntity(Composite _comp, List<Composite> _comps) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             composite = _comp;
             composites = _comps.OrderBy(o => o.name).ToList();

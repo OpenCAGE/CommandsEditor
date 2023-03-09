@@ -12,13 +12,14 @@ using CATHODE;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CathodeLib;
+using CommandsEditor.Popups.Base;
 
 namespace CommandsEditor
 {
-    public partial class AddParameter : Form
+    public partial class AddParameter : BaseWindow
     {
         Entity node = null;
-        public AddParameter(Entity _node)
+        public AddParameter(Entity _node) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             node = _node;
             InitializeComponent();

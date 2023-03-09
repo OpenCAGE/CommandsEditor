@@ -249,6 +249,7 @@ namespace CommandsEditor
             {
 #endif
                 Editor.commands = new Commands(path_to_ENV + "/WORLD/COMMANDS.PAK");
+                Editor.OnCommandsSelected?.Invoke(Editor.commands);
 #if !CATHODE_FAIL_HARD
             }
             catch (Exception e)
@@ -567,6 +568,7 @@ namespace CommandsEditor
             _previousComposite = Editor.selected.composite;
             ClearUI(false, true, true);
             Editor.selected.composite = comp;
+            Editor.OnCompositeSelected?.Invoke(Editor.selected.composite);
 
             Cursor.Current = Cursors.WaitCursor;
             CommandsUtils.PurgeDeadLinks(Editor.commands, comp);
@@ -803,6 +805,7 @@ namespace CommandsEditor
         {
             ClearUI(false, false, true);
             Editor.selected.entity = entity;
+            Editor.OnEntitySelected?.Invoke(Editor.selected.entity);
 
             //Correct the UI, and return early if we have to change index, so we don't trigger twice
             int correctSelectedIndex = composite_content.Items.IndexOf(EditorUtils.GenerateEntityName(entity, Editor.selected.composite));

@@ -11,15 +11,16 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Numerics;
 using CATHODE;
+using CommandsEditor.Popups.Base;
 
 namespace CommandsEditor
 {
-    public partial class EditMVR : Form
+    public partial class EditMVR : BaseWindow
     {
         private int loadedMvrIndex = -1;
         private ShortGuid filteredNodeID;
 
-        public EditMVR(ShortGuid nodeID = new ShortGuid())
+        public EditMVR(ShortGuid nodeID = new ShortGuid()) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             InitializeComponent();
 

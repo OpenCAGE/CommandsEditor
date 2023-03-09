@@ -1,4 +1,5 @@
 ﻿using CATHODE.Scripting;
+using CommandsEditor.Popups.Base;
 using CommandsEditor.Popups.UserControls;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ using System.Windows.Forms;
 
 namespace CommandsEditor
 {
-    public partial class EditSpline : Form
+    public partial class EditSpline : BaseWindow
     {
         public Action<cSpline> OnSaved;
 
@@ -21,7 +22,7 @@ namespace CommandsEditor
         private bool firstUpdate = true;
         private bool isClosedLoop = false; //Default loop val is false
 
-        public EditSpline(cSpline _spline, Parameter _closed)
+        public EditSpline(cSpline _spline, Parameter _closed) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             InitializeComponent();
             spline = _spline.Copy();

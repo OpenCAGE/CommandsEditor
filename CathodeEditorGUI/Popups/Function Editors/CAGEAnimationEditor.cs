@@ -1,6 +1,7 @@
 ﻿using CATHODE;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
+using CommandsEditor.Popups.Base;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,10 +14,10 @@ using System.Windows.Forms;
 
 namespace CommandsEditor
 {
-    public partial class CAGEAnimationEditor : Form
+    public partial class CAGEAnimationEditor : BaseWindow
     {
         CAGEAnimation animNode = null;
-        public CAGEAnimationEditor(CAGEAnimation _node)
+        public CAGEAnimationEditor(CAGEAnimation _node) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             animNode = _node;
             InitializeComponent();

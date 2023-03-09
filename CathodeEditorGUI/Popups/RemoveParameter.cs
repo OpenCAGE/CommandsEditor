@@ -1,5 +1,6 @@
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
+using CommandsEditor.Popups.Base;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,11 +13,11 @@ using System.Windows.Forms;
 
 namespace CommandsEditor
 {
-    public partial class RemoveParameter : Form
+    public partial class RemoveParameter : BaseWindow
     {
         private Entity _entity;
 
-        public RemoveParameter(Entity entity)
+        public RemoveParameter(Entity entity) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             InitializeComponent();
 

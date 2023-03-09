@@ -1,5 +1,6 @@
 ﻿using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
+using CommandsEditor.Popups.Base;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,13 +13,13 @@ using System.Windows.Forms;
 
 namespace CommandsEditor
 {
-    public partial class ShowCrossRefs : Form
+    public partial class ShowCrossRefs : BaseWindow
     {
         public Action<ShortGuid, Composite> OnEntitySelected;
 
         private List<EntityRef> entities = new List<EntityRef>();
 
-        public ShowCrossRefs()
+        public ShowCrossRefs() : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             InitializeComponent();
 #if !DEBUG
