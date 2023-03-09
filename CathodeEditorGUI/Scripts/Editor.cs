@@ -1,5 +1,4 @@
 ﻿using CATHODE;
-using CATHODE.EXPERIMENTAL;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using System.Collections.Generic;

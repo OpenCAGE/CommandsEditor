@@ -383,9 +383,7 @@
     <Compile Include="Scripts\TreeUtility.cs" />
     <Compile Include="Scripts\SettingsManager.cs" />
     <Compile Include="Scripts\WebsocketServer.cs" />
-    <Compile Include="UserControls\Variants\GUI_StringVariant_AssetDropdown.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Include="UserControls\Variants\GUI_StringVariant_AssetDropdown.cs" />
     <Compile Include="UserControls\Variants\GUI_StringVariant_AssetDropdown.Designer.cs">
       <DependentUpon>GUI_StringVariant_AssetDropdown.cs</DependentUpon>
     </Compile>

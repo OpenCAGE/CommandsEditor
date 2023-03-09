@@ -905,20 +905,20 @@ namespace CommandsEditor
                         ((GUI_NumericDataType)parameterGUI).PopulateUI_Int((cInteger)this_param, paramName);
                         break;
                     case DataType.STRING:
-                        GUI_StringVariant_AssetDropdown.AssetType asset = GUI_StringVariant_AssetDropdown.AssetType.NONE;
+                        AssetList.Type asset = AssetList.Type.NONE;
                         string asset_arg = "";
                         //TODO: We can figure out a lot of these from the iOS dump.
                         //      For example - SoundEnvironmentMarker shows reverb_name as DataType SOUND_REVERB!
                         switch (paramName)
                         {
                             //case "Animation":
-                            //    asset = GUI_StringVariant_AssetDropdown.AssetType.ANIMATIONS;
+                            //    asset = AssetList.Type.ANIMATIONS;
                             //    break;
                             case "material":
-                                asset = GUI_StringVariant_AssetDropdown.AssetType.MATERIAL;
+                                asset = AssetList.Type.MATERIAL;
                                 break;
                             case "title":
-                                asset = GUI_StringVariant_AssetDropdown.AssetType.LOCALISED_STRING;
+                                asset = AssetList.Type.LOCALISED_STRING;
                                 asset_arg = "OBJECTIVES";
                                 break;
                             case "title_id":
@@ -926,7 +926,7 @@ namespace CommandsEditor
                             case "unlocked_text":
                             case "locked_text":
                             case "action_text":
-                                asset = GUI_StringVariant_AssetDropdown.AssetType.LOCALISED_STRING;
+                                asset = AssetList.Type.LOCALISED_STRING;
                                 asset_arg = "UI";
                                 break;
                             case "sound_event":
@@ -947,16 +947,16 @@ namespace CommandsEditor
                             case "music_start_event":
                             case "music_end_event":
                             case "music_restart_event":
-                                asset = GUI_StringVariant_AssetDropdown.AssetType.SOUND_EVENT;
+                                asset = AssetList.Type.SOUND_EVENT;
                                 break;
                             case "reverb_name":
-                                asset = GUI_StringVariant_AssetDropdown.AssetType.SOUND_REVERB;
+                                asset = AssetList.Type.SOUND_REVERB;
                                 break;
                             case "sound_bank":
-                                asset = GUI_StringVariant_AssetDropdown.AssetType.SOUND_BANK;
+                                asset = AssetList.Type.SOUND_BANK;
                                 break;
                         }
-                        if (asset != GUI_StringVariant_AssetDropdown.AssetType.NONE)
+                        if (asset != AssetList.Type.NONE)
                         {
                             parameterGUI = new GUI_StringVariant_AssetDropdown();
                             ((GUI_StringVariant_AssetDropdown)parameterGUI).PopulateUI((cString)this_param, paramName, asset, asset_arg);
