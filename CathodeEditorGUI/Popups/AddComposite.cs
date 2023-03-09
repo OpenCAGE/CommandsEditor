@@ -10,12 +10,13 @@ using System.Windows.Forms;
 using CATHODE;
 using CATHODE.Scripting;
 using CathodeLib;
+using CommandsEditor.Popups.Base;
 
 namespace CommandsEditor
 {
-    public partial class AddComposite : Form
+    public partial class AddComposite : BaseWindow
     {
-        public AddComposite()
+        public AddComposite() : base()
         {
             InitializeComponent();
         }

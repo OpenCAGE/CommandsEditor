@@ -223,6 +223,12 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Popups\Base\BaseWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\Base\BaseWindow.Designer.cs">
+      <DependentUpon>BaseWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popups\EditSpline.cs">
       <SubType>Form</SubType>
     </Compile>

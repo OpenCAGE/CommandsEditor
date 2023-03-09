@@ -1,6 +1,7 @@
 ﻿using CATHODE;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
+using System;
 using System.Collections.Generic;
 
 namespace CommandsEditor
@@ -45,5 +46,10 @@ namespace CommandsEditor
 
         //Global localised string DBs for English
         public static Dictionary<string, Strings> strings = new Dictionary<string, Strings>();
+
+        //Events for new commands/entity/composite being selected
+        public static Action<Commands> OnCommandsSelected;
+        public static Action<Entity> OnEntitySelected;
+        public static Action<Composite> OnCompositeSelected;
     }
 }
