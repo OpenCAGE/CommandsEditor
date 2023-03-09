@@ -38,6 +38,7 @@
             this.addNewFlowgraph = new System.Windows.Forms.Button();
             this.FileTree = new System.Windows.Forms.TreeView();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.goToZone = new System.Windows.Forms.Button();
             this.showOverridesAndProxies = new System.Windows.Forms.Button();
             this.editEntityMovers = new System.Windows.Forms.Button();
             this.editEntityResources = new System.Windows.Forms.Button();
@@ -73,7 +74,6 @@
             this.DBG_CompileParamList = new System.Windows.Forms.Button();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.goToZone = new System.Windows.Forms.Button();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.entityInfoGroup.SuspendLayout();
@@ -172,22 +172,33 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Selected Composite Content";
             // 
+            // goToZone
+            // 
+            this.goToZone.Location = new System.Drawing.Point(702, 94);
+            this.goToZone.Name = "goToZone";
+            this.goToZone.Size = new System.Drawing.Size(73, 23);
+            this.goToZone.TabIndex = 181;
+            this.goToZone.Text = "Zone";
+            this.toolTip1.SetToolTip(this.goToZone, "Go to the Zone this entity is grouped to");
+            this.goToZone.UseVisualStyleBackColor = true;
+            this.goToZone.Click += new System.EventHandler(this.goToZone_Click);
+            // 
             // showOverridesAndProxies
             // 
-            this.showOverridesAndProxies.Location = new System.Drawing.Point(570, 94);
+            this.showOverridesAndProxies.Location = new System.Drawing.Point(546, 94);
             this.showOverridesAndProxies.Name = "showOverridesAndProxies";
-            this.showOverridesAndProxies.Size = new System.Drawing.Size(95, 23);
+            this.showOverridesAndProxies.Size = new System.Drawing.Size(73, 23);
             this.showOverridesAndProxies.TabIndex = 180;
             this.showOverridesAndProxies.Text = "References";
-            this.toolTip1.SetToolTip(this.showOverridesAndProxies, "Find overrides and proxies that reference this entity.");
+            this.toolTip1.SetToolTip(this.showOverridesAndProxies, "Find other entities that reference this entity.");
             this.showOverridesAndProxies.UseVisualStyleBackColor = true;
             this.showOverridesAndProxies.Click += new System.EventHandler(this.showOverridesAndProxies_Click);
             // 
             // editEntityMovers
             // 
-            this.editEntityMovers.Location = new System.Drawing.Point(469, 94);
+            this.editEntityMovers.Location = new System.Drawing.Point(468, 94);
             this.editEntityMovers.Name = "editEntityMovers";
-            this.editEntityMovers.Size = new System.Drawing.Size(95, 23);
+            this.editEntityMovers.Size = new System.Drawing.Size(73, 23);
             this.editEntityMovers.TabIndex = 179;
             this.editEntityMovers.Text = "Movers";
             this.toolTip1.SetToolTip(this.editEntityMovers, "Movers are statically baked instances in the level which derive from this entity." +
@@ -197,9 +208,9 @@
             // 
             // editEntityResources
             // 
-            this.editEntityResources.Location = new System.Drawing.Point(469, 119);
+            this.editEntityResources.Location = new System.Drawing.Point(624, 94);
             this.editEntityResources.Name = "editEntityResources";
-            this.editEntityResources.Size = new System.Drawing.Size(95, 23);
+            this.editEntityResources.Size = new System.Drawing.Size(73, 23);
             this.editEntityResources.TabIndex = 176;
             this.editEntityResources.Text = "Resources";
             this.toolTip1.SetToolTip(this.editEntityResources, "Resources linked to this entity may be renderable, collision, etc.");
@@ -278,11 +289,11 @@
             // 
             // editFunction
             // 
-            this.editFunction.Location = new System.Drawing.Point(570, 119);
+            this.editFunction.Location = new System.Drawing.Point(780, 94);
             this.editFunction.Name = "editFunction";
-            this.editFunction.Size = new System.Drawing.Size(95, 23);
+            this.editFunction.Size = new System.Drawing.Size(73, 23);
             this.editFunction.TabIndex = 178;
-            this.editFunction.Text = "Edit Function";
+            this.editFunction.Text = "Function";
             this.toolTip1.SetToolTip(this.editFunction, "Available on TriggerSequence and CAGEAnimation nodes");
             this.editFunction.UseVisualStyleBackColor = true;
             this.editFunction.Click += new System.EventHandler(this.editFunction_Click);
@@ -399,16 +410,16 @@
             this.groupBox2.Controls.Add(this.removeParameter);
             this.groupBox2.Controls.Add(this.addNewParameter);
             this.groupBox2.Controls.Add(this.entity_params);
-            this.groupBox2.Location = new System.Drawing.Point(469, 189);
+            this.groupBox2.Location = new System.Drawing.Point(469, 123);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(382, 550);
+            this.groupBox2.Size = new System.Drawing.Size(382, 616);
             this.groupBox2.TabIndex = 147;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Selected Entity Parameters";
             // 
             // addLinkOut
             // 
-            this.addLinkOut.Location = new System.Drawing.Point(131, 515);
+            this.addLinkOut.Location = new System.Drawing.Point(131, 585);
             this.addLinkOut.Name = "addLinkOut";
             this.addLinkOut.Size = new System.Drawing.Size(125, 23);
             this.addLinkOut.TabIndex = 151;
@@ -418,7 +429,7 @@
             // 
             // removeParameter
             // 
-            this.removeParameter.Location = new System.Drawing.Point(256, 515);
+            this.removeParameter.Location = new System.Drawing.Point(256, 585);
             this.removeParameter.Name = "removeParameter";
             this.removeParameter.Size = new System.Drawing.Size(125, 23);
             this.removeParameter.TabIndex = 150;
@@ -428,7 +439,7 @@
             // 
             // addNewParameter
             // 
-            this.addNewParameter.Location = new System.Drawing.Point(6, 515);
+            this.addNewParameter.Location = new System.Drawing.Point(6, 585);
             this.addNewParameter.Name = "addNewParameter";
             this.addNewParameter.Size = new System.Drawing.Size(125, 23);
             this.addNewParameter.TabIndex = 149;
@@ -441,7 +452,7 @@
             this.entity_params.AutoScroll = true;
             this.entity_params.Location = new System.Drawing.Point(6, 20);
             this.entity_params.Name = "entity_params";
-            this.entity_params.Size = new System.Drawing.Size(375, 491);
+            this.entity_params.Size = new System.Drawing.Size(375, 559);
             this.entity_params.TabIndex = 0;
             // 
             // load_commands_pak
@@ -533,17 +544,6 @@
             this.groupBox10.Size = new System.Drawing.Size(487, 49);
             this.groupBox10.TabIndex = 175;
             this.groupBox10.TabStop = false;
-            // 
-            // goToZone
-            // 
-            this.goToZone.Location = new System.Drawing.Point(671, 94);
-            this.goToZone.Name = "goToZone";
-            this.goToZone.Size = new System.Drawing.Size(95, 23);
-            this.goToZone.TabIndex = 181;
-            this.goToZone.Text = "Zone";
-            this.toolTip1.SetToolTip(this.goToZone, "Available on TriggerSequence and CAGEAnimation nodes");
-            this.goToZone.UseVisualStyleBackColor = true;
-            this.goToZone.Click += new System.EventHandler(this.goToZone_Click);
             // 
             // CommandsEditor
             // 
