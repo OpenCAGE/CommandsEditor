@@ -35,38 +35,6 @@ namespace CommandsEditor
 
         public CommandsEditor()
         {
-#if !DEBUG
-            //Hotfix for users of OpenCAGE with a previous install that did not utilise Costura.Fody
-            try
-            {
-                List<string> files = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.dll", SearchOption.AllDirectories).ToList<string>();
-                foreach (string file in files) File.Delete(file);
-                if (files.Count != 0)
-                {
-                    MessageBox.Show("Configuration complete. Please re-launch the Commands Editor!", "Commands Editor", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                    Environment.Exit(0);
-                    this.Close();
-                }
-            }
-            catch { }
-#endif
-
-
-            //SoundNodeNetwork network = new SoundNodeNetwork("G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\HAB_AIRPORT\\WORLD\\SNDNODENETWORK.DAT");
-            //return;
-
-            //LocalDebug.TestAllCmds();
-
-
-            //Level lvl = new Level("G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\ENG_REACTORCORE");
-            //lvl.Save();
-            //return;
-
-
-            //LocalDebug.TestAllPhysMap();
-            //return;
-
-
             InitializeComponent();
             _treeHelper = new TreeUtility(FileTree);
 
@@ -915,12 +883,14 @@ namespace CommandsEditor
                         switch (paramName)
                         {
                             //case "Animation":
-                            //    asset = AssetList.Type.ANIMATIONS;
+                            //    asset = AssetList.Type.ANIMATION;
                             //    break;
                             case "material":
                                 asset = AssetList.Type.MATERIAL;
                                 break;
                             case "title":
+                            case "map_description":
+                            case "additional_info": //TODO: this is only true if entity is SetPrimaryObjective
                                 asset = AssetList.Type.LOCALISED_STRING;
                                 asset_arg = "OBJECTIVES";
                                 break;

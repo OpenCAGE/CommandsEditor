@@ -7,36 +7,12 @@ using CATHODE.Scripting;
 
 namespace CommandsEditor.UserControls
 {
-    public class AssetList
-    {
-        public string level = "";
-
-        public Type assets = Type.NONE;
-        public string args = "";
-
-        public string[] strings = null;
-
-        public enum Type
-        {
-            NONE,
-
-            TEXTURE,
-            MATERIAL,
-
-            SOUND_DIALOGUE,
-            SOUND_BANK,
-            SOUND_EVENT,
-            SOUND_REVERB,
-
-            ANIMATION,
-
-            LOCALISED_STRING,
-        }
-    }
-
     public partial class GUI_StringVariant_AssetDropdown : UserControl
     {
         cString stringVal = null;
+
+        AssetList.Type type = AssetList.Type.NONE;
+        string typeArgs = "";
 
         static List<AssetList> assetlist_cache = new List<AssetList>();
 
@@ -49,6 +25,8 @@ namespace CommandsEditor.UserControls
         {
             stringVal = cString;
             label1.Text = paramID;
+            type = assets;
+            typeArgs = args;
 
             //TODO: we never clear up these lists for old levels, which could lead to a slow memory leak!
 
@@ -126,8 +104,8 @@ namespace CommandsEditor.UserControls
                         //      We should populate it by parsing the contents of ANIMATIONS.PAK, loading skeletons relative to animations, and then populating animations relative to the selected skeleton.
                         foreach (KeyValuePair<uint, string> entry in Editor.animstrings.Entries)
                         {
-                            //if (!strings.Contains(entry.Value))
-                            //    strings.Add(entry.Value);
+                            if (!strings.Contains(entry.Value))
+                                strings.Add(entry.Value);
                         }
                         break;
                 }
@@ -147,7 +125,47 @@ namespace CommandsEditor.UserControls
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             stringVal.value = comboBox1.Text;
+            
+            if (type == AssetList.Type.LOCALISED_STRING)
+            {
+                foreach (KeyValuePair<string, Strings> entry in Editor.strings)
+                {
+                    if (typeArgs != "" && typeArgs != entry.Key) continue;
+                    if (entry.Value.Entries.ContainsKey(comboBox1.Text))
+                    {
+                        toolTip1.SetToolTip(comboBox1, entry.Value.Entries[comboBox1.Text]);
+                        return;
+                    }
+                }
+            }
         }
-
     }
+
+    public class AssetList
+    {
+        public string level = "";
+
+        public Type assets = Type.NONE;
+        public string args = "";
+
+        public string[] strings = null;
+
+        public enum Type
+        {
+            NONE,
+
+            TEXTURE,
+            MATERIAL,
+
+            SOUND_DIALOGUE,
+            SOUND_BANK,
+            SOUND_EVENT,
+            SOUND_REVERB,
+
+            ANIMATION,
+
+            LOCALISED_STRING,
+        }
+    }
+
 }
