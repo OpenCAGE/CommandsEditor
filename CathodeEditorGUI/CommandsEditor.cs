@@ -1112,7 +1112,7 @@ namespace CommandsEditor
                 case "CAGEANIMATION":
                     CAGEAnimationEditor cageAnimationEditor = new CAGEAnimationEditor((CAGEAnimation)Editor.selected.entity);
                     cageAnimationEditor.Show();
-                    cageAnimationEditor.FormClosed += FunctionEditor_FormClosed;
+                    cageAnimationEditor.OnSaved += CAGEAnimationEditor_OnSaved;
                     break;
                 case "TRIGGERSEQUENCE":
                     TriggerSequenceEditor triggerSequenceEditor = new TriggerSequenceEditor((TriggerSequence)Editor.selected.entity);
@@ -1120,6 +1120,16 @@ namespace CommandsEditor
                     triggerSequenceEditor.FormClosed += FunctionEditor_FormClosed;
                     break;
             }
+        }
+        private void CAGEAnimationEditor_OnSaved(CAGEAnimation newEntity)
+        {
+            CAGEAnimation entity = (CAGEAnimation)Editor.selected.entity;
+            entity.headers = newEntity.headers;
+            entity.events = newEntity.events;
+            entity.animations = newEntity.animations;
+
+            this.BringToFront();
+            this.Focus();
         }
         private void FunctionEditor_FormClosed(object sender, FormClosedEventArgs e)
         {

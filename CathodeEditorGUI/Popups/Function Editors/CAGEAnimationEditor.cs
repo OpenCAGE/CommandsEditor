@@ -20,165 +20,187 @@ namespace CommandsEditor
 {
     public partial class CAGEAnimationEditor : BaseWindow
     {
+        public Action<CAGEAnimation> OnSaved;
+
         float anim_length = 0;
-        CAGEAnimation animEntity = null;
+        CAGEAnimation animEntity = null; //this is a unique instance we can write to
+
+        Dictionary<Keyframe, CAGEAnimation.Animation.Keyframe> keyframeHandlesAnim;
+        Dictionary<Keyframe, CAGEAnimation.Event.Keyframe> keyframeHandlesEvent;
+        CurrentDisplay currentDisplay = CurrentDisplay.ANIMATION_KEYFRAMES;
 
         public CAGEAnimationEditor(CAGEAnimation entity) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
-            animEntity = entity;
+            animEntity = entity.Copy();
             InitializeComponent();
 
-            //TODO: this is a param on the entity, should we sync that on save? <- YES
-            for (int i = 0; i < entity.animations.Count; i++)
+            displaySelection.SelectedIndex = 0;
+
+#if DEBUG
+            Parameter anim_length_param = animEntity.GetParameter("anim_length");
+            if (anim_length_param != null && anim_length_param.content != null)
             {
-                for (int x = 0; x < entity.animations[i].keyframes.Count; x++)
+                if (((cFloat)anim_length_param.content).value != anim_length)
+                    Console.WriteLine("WARNING: CAGEAnimation 'anim_length' does not match calculated length based on keyframes!");
+            }
+#endif
+
+            this.BringToFront();
+            this.Focus();
+        }
+
+        private void displaySelection_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            currentDisplay = (CurrentDisplay)displaySelection.SelectedIndex;
+
+            CalculateAnimLength();
+            SetupTimeline();
+        }
+
+        public void CalculateAnimLength()
+        {
+            for (int i = 0; i < animEntity.animations.Count; i++)
+            {
+                for (int x = 0; x < animEntity.animations[i].keyframes.Count; x++)
                 {
-                    if (anim_length < entity.animations[i].keyframes[x].secondsSinceStart)
-                        anim_length = entity.animations[i].keyframes[x].secondsSinceStart;
+                    if (anim_length < animEntity.animations[i].keyframes[x].secondsSinceStart)
+                        anim_length = animEntity.animations[i].keyframes[x].secondsSinceStart;
                 }
             }
-            for (int i = 0; i < entity.events.Count; i++)
+            for (int i = 0; i < animEntity.events.Count; i++)
             {
-                for (int x = 0; x < entity.events[i].keyframes.Count; x++)
+                for (int x = 0; x < animEntity.events[i].keyframes.Count; x++)
                 {
-                    if (anim_length < entity.events[i].keyframes[x].secondsSinceStart)
-                        anim_length = entity.events[i].keyframes[x].secondsSinceStart;
+                    if (anim_length < animEntity.events[i].keyframes[x].secondsSinceStart)
+                        anim_length = animEntity.events[i].keyframes[x].secondsSinceStart;
                 }
             }
+        }
+
+        private void SetupTimeline()
+        {
+            keyframeHandlesAnim = new Dictionary<Keyframe, CAGEAnimation.Animation.Keyframe>();
+            keyframeHandlesEvent = new Dictionary<Keyframe, CAGEAnimation.Event.Keyframe>();
+
+            activeAnimKeyframe = null;
+            activeEventKeyframe = null;
+            previousKeyframeUI = null;
 
             Timeline timeline = new Timeline(animHost.Width, animHost.Height);
             timeline.Setup(0, anim_length, anim_length / 10.0f, 150);
-            for (int i = 0; i < entity.animations.Count; i++)
+            switch (currentDisplay)
             {
-                for (int x = 0; x < entity.animations[i].keyframes.Count; x++)
-                {
-                    timeline.AddElement(entity.animations[i].keyframes[x].secondsSinceStart, i + 1);
-                }
+                case CurrentDisplay.ANIMATION_KEYFRAMES:
+                    for (int i = 0; i < animEntity.animations.Count; i++)
+                    {
+                        for (int x = 0; x < animEntity.animations[i].keyframes.Count; x++)
+                        {
+                            CAGEAnimation.Animation.Keyframe keyframeData = animEntity.animations[i].keyframes[x];
+                            Keyframe keyframeUI = timeline.AddKeyframe(keyframeData.secondsSinceStart, i + 1);
+                            keyframeUI.OnMoved += OnHandleMoved;
+                            keyframeHandlesAnim.Add(keyframeUI, keyframeData);
+                        }
+                    }
+                    break;
+                case CurrentDisplay.EVENT_KEYFRAMES:
+                    for (int i = 0; i < animEntity.events.Count; i++)
+                    {
+                        for (int x = 0; x < animEntity.events[i].keyframes.Count; x++)
+                        {
+                            CAGEAnimation.Event.Keyframe keyframeData = animEntity.events[i].keyframes[x];
+                            Keyframe keyframeUI = timeline.AddKeyframe(keyframeData.secondsSinceStart, i + 1);
+                            keyframeUI.OnMoved += OnHandleMoved;
+                            keyframeHandlesEvent.Add(keyframeUI, keyframeData);
+                        }
+                    }
+                    break;
             }
-
             animHost.Child = timeline;
+        }
 
-            this.BringToFront();
-            this.Focus();
-            return;
+        CAGEAnimation.Animation.Keyframe activeAnimKeyframe = null;
+        CAGEAnimation.Event.Keyframe activeEventKeyframe = null;
+        Keyframe previousKeyframeUI = null;
+        private void OnHandleMoved(Keyframe handle, float time)
+        {
+            animKeyframeData.Visible = currentDisplay == CurrentDisplay.ANIMATION_KEYFRAMES;
+            eventKeyframeData.Visible = currentDisplay == CurrentDisplay.EVENT_KEYFRAMES;
 
+            if (previousKeyframeUI != null) previousKeyframeUI.Highlight(false);
+            handle.Highlight();
+            previousKeyframeUI = handle;
 
-
-
-            //MessageBox.Show("The CAGEAnimation editor is still VERY early in development. It'll likely not work, or encounter issues which may corrupt your CommandsPAK, and is provided as a preview of upcoming functionality.\n\nUse it at your own risk!", "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-
-            File.WriteAllText("out.json", JsonConvert.SerializeObject(animEntity, Formatting.Indented));
-
-            animEntity.headers = animEntity.headers.OrderBy(o => o.parameterID).ToList();
-            string previousGroup = "";
-            int groupCount = 0;
-            int maxWidth = 0;
-            int groupBoxOffset = 3;
-            int groupHeight = 0;
-            int countInGroup = 0;
-            GroupBox currentGroupBox = null;
-            for (int i = 0; i < animEntity.headers.Count; i++)
+            switch (currentDisplay)
             {
-                string paramGroupName = ShortGuidUtils.FindString(animEntity.headers[i].parameterID);
-                if (i == 0 || previousGroup != paramGroupName)
-                {
-                    if (currentGroupBox != null)
-                    {
-                        currentGroupBox.Size = new Size(maxWidth, groupHeight);
-                        groupBoxOffset += currentGroupBox.Size.Height + 10;
-                    }
-
-                    currentGroupBox = new GroupBox();
-                    currentGroupBox.Text = paramGroupName;
-                    currentGroupBox.Location = new Point(3, groupBoxOffset);
-                    //NodeParams.Controls.Add(currentGroupBox);
-                    groupCount++;
-                    maxWidth = 0;
-                    groupHeight = 0;
-                    countInGroup = 0;
-                }
-                previousGroup = paramGroupName;
-
-                TextBox paramName = new TextBox();
-                paramName.Text = ShortGuidUtils.FindString(animEntity.headers[i].parameterSubID);
-                paramName.ReadOnly = true;
-                paramName.Location = new Point(6, 19 + (countInGroup * 23));
-                paramName.Size = new Size(119, 20);
-                currentGroupBox.Controls.Add(paramName);
-
-                CAGEAnimation.Animation paramData = animEntity.animations.FirstOrDefault(o => o.shortGUID == animEntity.headers[i].keyframeID);
-                //TODO: populate full min max keyframes so new ones can be created
-                int keyframeWidth = paramName.Location.X + paramName.Width;
-                if (paramData != null)
-                {
-                    for (int x = 0; x < paramData.keyframes.Count; x++)
-                    {
-                        Button keyframeBtn = new Button();
-                        keyframeBtn.Size = new Size(27, 23);
-                        keyframeBtn.Location = new Point(134 + ((keyframeBtn.Size.Width + 6) * x), 18 + (countInGroup * 23));
-                        keyframeBtn.Text = paramData.keyframes[x].secondsSinceStart.ToString();
-                        keyframeBtn.AccessibleDescription = paramData.shortGUID.ToByteString() + " " + x + " " + paramName.Text;
-                        keyframeBtn.Click += KeyframeBtn_Click;
-                        currentGroupBox.Controls.Add(keyframeBtn);
-                        if (keyframeBtn.Location.X > maxWidth) maxWidth = keyframeBtn.Location.X;
-                        keyframeWidth = keyframeBtn.Location.X + keyframeBtn.Width;
-                    }
-                }
-
-                Composite resolvedComposite = null;
-                Entity resolvedEntity = CommandsUtils.ResolveHierarchy(Editor.commands, Editor.selected.composite, animEntity.headers[i].connectedEntity, out resolvedComposite, out string hierarchy);
-                if (resolvedEntity != null)
-                {
-                    TextBox controllingEntity = new TextBox();
-                    controllingEntity.Text = "Controlling: " + EntityUtils.GetName(resolvedComposite.shortGUID, resolvedEntity.shortGUID);
-                    controllingEntity.Location = new Point(keyframeWidth + 5, 18 + (countInGroup * 23));
-                    controllingEntity.Size = new Size(200, 20);
-                    controllingEntity.ReadOnly = true;
-                    currentGroupBox.Controls.Add(controllingEntity);
-                    int thisWidth = controllingEntity.Location.X + controllingEntity.Width + 5;
-                    if (thisWidth > maxWidth) maxWidth = thisWidth;
-                }
-
-                groupHeight = paramName.Location.Y + paramName.Height + 5;
-                countInGroup++;
+                case CurrentDisplay.ANIMATION_KEYFRAMES:
+                    activeAnimKeyframe = keyframeHandlesAnim[handle];
+                    activeAnimKeyframe.secondsSinceStart = time;
+                    animKeyframeValue.Text = activeAnimKeyframe.paramValue.ToString();
+                    startVelX.Text = activeAnimKeyframe.startVelocity.X.ToString();
+                    startVelY.Text = activeAnimKeyframe.startVelocity.Y.ToString();
+                    endVelX.Text = activeAnimKeyframe.endVelocity.X.ToString();
+                    endVelY.Text = activeAnimKeyframe.endVelocity.Y.ToString();
+                    break;
+                case CurrentDisplay.EVENT_KEYFRAMES:
+                    activeEventKeyframe = keyframeHandlesEvent[handle];
+                    activeEventKeyframe.secondsSinceStart = time;
+                    eventParam1.Text = activeEventKeyframe.start.ToString();
+                    eventParam2.Text = activeEventKeyframe.unk3.ToString();
+                    break;
             }
-            if (currentGroupBox != null)
-            {
-                currentGroupBox.Size = new Size(maxWidth, groupHeight);
-            }
-
-            this.BringToFront();
-            this.Focus();
         }
 
-        CAGEAnimation.Animation.Keyframe currentEditData = null;
-        private void KeyframeBtn_Click(object sender, EventArgs e)
+        private void SaveEntity_Click(object sender, EventArgs e)
         {
-            string info = ((Button)sender).AccessibleDescription;
-            string[] infoS = info.Split(' ');
-            ShortGuid id = new ShortGuid(infoS[0]);
-            currentEditData = animEntity.animations.FirstOrDefault(o => o.shortGUID == id).keyframes[Convert.ToInt32(infoS[1])];
-            textBox2.Text = currentEditData.paramValue.ToString();
-            groupBox1.Visible = true;
-            string name = "";
-            for (int i = 2; i < infoS.Length; i++) name += infoS[i];
-            groupBox1.Text = name + ": " + currentEditData.secondsSinceStart + " seconds";
+            CalculateAnimLength();
+            animEntity.AddParameter("anim_length", new cFloat(anim_length));
+            OnSaved?.Invoke(animEntity);
+            this.Close();
         }
 
-        private void button9_Click(object sender, EventArgs e)
+        private enum CurrentDisplay
         {
-            if (currentEditData == null) return;
-            currentEditData.paramValue = Convert.ToSingle(textBox2.Text);
+            ANIMATION_KEYFRAMES,
+            EVENT_KEYFRAMES,
         }
 
-        private void textBox2_TextChanged(object sender, EventArgs e)
+        private void animKeyframeValue_TextChanged(object sender, EventArgs e)
         {
-            textBox2.Text = EditorUtils.ForceStringNumeric(textBox2.Text, true);
+            animKeyframeValue.Text = EditorUtils.ForceStringNumeric(animKeyframeValue.Text, true);
+            activeAnimKeyframe.paramValue = Convert.ToSingle(animKeyframeValue.Text);
         }
-    }
+        private void startVelX_TextChanged(object sender, EventArgs e)
+        {
+            startVelX.Text = EditorUtils.ForceStringNumeric(startVelX.Text, true);
+            activeAnimKeyframe.startVelocity.X = Convert.ToSingle(startVelX.Text);
+        }
+        private void startVelY_TextChanged(object sender, EventArgs e)
+        {
+            startVelY.Text = EditorUtils.ForceStringNumeric(startVelY.Text, true);
+            activeAnimKeyframe.startVelocity.Y = Convert.ToSingle(startVelY.Text);
+        }
+        private void endVelX_TextChanged(object sender, EventArgs e)
+        {
+            endVelX.Text = EditorUtils.ForceStringNumeric(endVelX.Text, true);
+            activeAnimKeyframe.endVelocity.X = Convert.ToSingle(endVelX.Text);
+        }
+        private void endVelY_TextChanged(object sender, EventArgs e)
+        {
+            endVelY.Text = EditorUtils.ForceStringNumeric(endVelY.Text, true);
+            activeAnimKeyframe.endVelocity.Y = Convert.ToSingle(endVelY.Text);
+        }
 
-    public class CAGEAnimationKeyframes
-    {
-
+        private void eventParam1_TextChanged(object sender, EventArgs e)
+        {
+            //Handle non-convertable param names
+            if (activeEventKeyframe.start.ToByteString() == eventParam1.Text) return;
+            activeEventKeyframe.start = ShortGuidUtils.Generate(eventParam1.Text);
+        }
+        private void eventParam2_TextChanged(object sender, EventArgs e)
+        {
+            //Handle non-convertable param names
+            if (activeEventKeyframe.unk3.ToByteString() == eventParam2.Text) return;
+            activeEventKeyframe.unk3 = ShortGuidUtils.Generate(eventParam2.Text);
+        }
     }
 }

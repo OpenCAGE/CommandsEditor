@@ -9,17 +9,24 @@ namespace TimelineFramework
         public float Seconds { get { return seconds; } }
         float seconds;
 
+        public Track Track { get { return track; } }
+        Track track;
+
+        public Action<Keyframe, float> OnMoved;
+
         Timeline parent;
         double canvasLeft;
         double mouseXInitial;
         bool primed = false;
+        bool highlighted = false;
 
-        public Keyframe(Timeline parent, float seconds)
+        public Keyframe(Timeline parent, float seconds, Track track)
         {
             InitializeComponent();
 
             this.seconds = seconds;
             this.parent = parent;
+            this.track = track;
 
             // Setup for draggability
             this.MouseEnter += TimelineElement_MouseEnter;
@@ -27,23 +34,27 @@ namespace TimelineFramework
             this.MouseLeftButtonDown += TimelineElement_MouseLeftButtonDown;
         }
 
-        // Called by the parent to give it updated seconds based on its position
+        public void Highlight(bool active = true)
+        {
+            highlighted = active;
+            diamond.Opacity = active ? 1.0f : 0.5f;
+        }
+
         public void SetSeconds(float seconds)
         {
             this.seconds = seconds;
-            Console.WriteLine(seconds);
             diamond.ToolTip = seconds.ToString("0.00") + "s";
+            OnMoved?.Invoke(this, seconds);
         }
 
-        // Listeners
         private void TimelineElement_MouseEnter(object sender, MouseEventArgs e)
         {
-            diamond.Opacity = 0.7;
+            if (!highlighted) diamond.Opacity = 0.7;
             primed = true;
         }
         private void TimelineElement_MouseLeave(object sender, MouseEventArgs e)
         {
-            diamond.Opacity = 0.5;
+            if (!highlighted) diamond.Opacity = 0.5;
             primed = false;
         }
         private void TimelineElement_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -61,7 +72,6 @@ namespace TimelineFramework
             }
         }
 
-        // Dragging handler
         private void Parent_MouseMove(object sender, MouseEventArgs e)
         {
             double diff = mouseXInitial - Mouse.GetPosition(parent).X;
@@ -73,7 +83,7 @@ namespace TimelineFramework
         }
         private void Parent_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            diamond.Opacity = 0.5;
+            if (!highlighted) diamond.Opacity = 0.5;
 
             // Reset to default 'stance'
             primed = false;

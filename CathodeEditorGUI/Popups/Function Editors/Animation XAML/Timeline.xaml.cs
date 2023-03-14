@@ -33,7 +33,7 @@ namespace TimelineFramework
             border.Height = h;
         }
 
-        public void AddElement(float seconds, int trackIndex)
+        public Keyframe AddKeyframe(float seconds, int trackIndex)
         {
             double trackOffset = elementTop + (trackIndex * 20.0f);
 
@@ -51,12 +51,13 @@ namespace TimelineFramework
                 mainCanvas.Height = _border.Height + 30;
             }
 
-            Keyframe key = new Keyframe(this, seconds);
+            Keyframe key = new Keyframe(this, seconds, track);
             _keyframes.Add(key);
             mainCanvas.Children.Add(key);
             Canvas.SetTop(key, trackOffset);
             Canvas.SetLeft(key, (pixelDistance * (seconds - startSeconds) / (endSeconds - startSeconds)) - 2);
             Canvas.SetZIndex(track, 10);
+            return key;
         }
 
         public void RefreshElement(Keyframe key)
