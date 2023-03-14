@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 
 namespace TimelineFramework
 {
-    /// <summary>
-    /// Interaction logic for Timeline.xaml
-    /// </summary>
     public partial class Timeline : UserControl
     {
         List<TimeMarker> _timeMarkers = new List<TimeMarker>();
@@ -19,7 +17,6 @@ namespace TimelineFramework
 
         int width;
         int height;
-        int innerHeight;
         int elementTop;
         int spacing;
         float startSeconds;
@@ -48,7 +45,10 @@ namespace TimelineFramework
                 mainCanvas.Children.Add(track);
                 Canvas.SetTop(track, trackOffset + 5);
                 Canvas.SetLeft(track, 0);
-                Canvas.SetZIndex(track, 0);
+                Canvas.SetZIndex(track, 5);
+
+                _border.Height = trackOffset + 12.0f;
+                mainCanvas.Height = _border.Height + 30;
             }
 
             Keyframe key = new Keyframe(this, seconds);
@@ -56,7 +56,7 @@ namespace TimelineFramework
             mainCanvas.Children.Add(key);
             Canvas.SetTop(key, trackOffset);
             Canvas.SetLeft(key, (pixelDistance * (seconds - startSeconds) / (endSeconds - startSeconds)) - 2);
-            Canvas.SetZIndex(track, 1);
+            Canvas.SetZIndex(track, 10);
         }
 
         public void RefreshElement(Keyframe key)
@@ -66,12 +66,14 @@ namespace TimelineFramework
 
         public void Setup(float startSeconds, float endSeconds, float intervalSeconds, int spacing)
         {
-            this.startSeconds = startSeconds;
-            this.endSeconds = endSeconds;
-            this.spacing = spacing;
+            this. startSeconds = startSeconds;
+            this. endSeconds = endSeconds;
+            this. spacing = spacing;
+
+            float boxHeight = height - 46; // To account for TimelineMark height & scrollbar height. This value assumes the height of the Aero-style scrollbar.
 
             // Create first mark
-            TimeMarker tmStart = new TimeMarker(startSeconds);
+            TimeMarker tmStart = new TimeMarker(startSeconds, boxHeight);
             _timeMarkers.Add(tmStart);
             mainCanvas.Children.Add(tmStart);
 
@@ -79,13 +81,13 @@ namespace TimelineFramework
             int intervalCount = (int)(((endSeconds - startSeconds) / intervalSeconds) - 1);
             for (int i = 1; i <= intervalCount; i++)
             {
-                TimeMarker tm = new TimeMarker(startSeconds + (intervalSeconds * i));
+                TimeMarker tm = new TimeMarker(startSeconds + (intervalSeconds * i), boxHeight);
                 _timeMarkers.Add(tm);
                 mainCanvas.Children.Add(tm);
             }
 
             // Create last mark
-            TimeMarker tmEnd = new TimeMarker(endSeconds);
+            TimeMarker tmEnd = new TimeMarker(endSeconds, boxHeight);
             _timeMarkers.Add(tmEnd);
             mainCanvas.Children.Add(tmEnd);
 
@@ -94,6 +96,7 @@ namespace TimelineFramework
             {
                 Canvas.SetLeft(_timeMarkers[k], spacing * k);
                 Canvas.SetTop(_timeMarkers[k], 1);
+                Canvas.SetZIndex(_timeMarkers[k], 1);
             }
 
             // Size & place the controls
@@ -105,14 +108,15 @@ namespace TimelineFramework
             _border.BorderBrush = new SolidColorBrush(Color.FromRgb(12, 12, 12));
             _border.Background = new SolidColorBrush(Color.FromRgb(248, 248, 248));
             mainCanvas.Children.Add(_border);
-            Canvas.SetTop(_border, 1 + tmStart.ActualHeight);
-            elementTop = 1 + (int)tmStart.ActualHeight + 1; // Canvas.Top value for TimelineElements
+            Canvas.SetTop(_border, 1 + tmStart.ActualHeight - boxHeight);
+            Canvas.SetZIndex(_border, 0);
+            elementTop = 1 + (int)tmStart.ActualHeight - (int)boxHeight + 1; // Canvas.Top value for TimelineElements
             _border.Width = 1 + Canvas.GetLeft(tmEnd);
-            _border.Height = height - 46; // To account for TimelineMark height & scrollbar height. This value assumes the height of the Aero-style scrollbar.
-            innerHeight = height - 46 - 2; // Height of region inside the border
+            _border.Height = boxHeight; 
 
             pixelDistance = (int)_border.Width - 1; // Region of the border aka the timeline's length in pixels
             mainCanvas.Width = (spacing * (_timeMarkers.Count - 1)) + (int)tmEnd.ActualWidth; // Set the canvas's width so the ScrollViewer knows how big it is
+            mainCanvas.Height = boxHeight + 40;
         }
     }
 }

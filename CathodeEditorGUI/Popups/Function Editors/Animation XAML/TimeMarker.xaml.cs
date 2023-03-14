@@ -4,10 +4,11 @@ namespace TimelineFramework
 {
     public partial class TimeMarker : UserControl
     {
-        public TimeMarker(float seconds)
+        public TimeMarker(float seconds, double lineHeight)
         {
             InitializeComponent();
-            this.text.Text = seconds.ToString("0.00") + "s";
+            text.Text = seconds.ToString("0.00") + "s";
+            verticalLine.Height = lineHeight;
         }
     }
 }

@@ -25,6 +25,8 @@ namespace CommandsEditor
     {
         public static void TestAllCmds()
         {
+
+            return;
 #if DEBUG
             List<string> files = Directory.GetFiles(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
             Parallel.ForEach(files, file =>

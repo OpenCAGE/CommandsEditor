@@ -2,6 +2,7 @@
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CommandsEditor.Popups.Base;
+using CommandsEditor.Popups.UserControls;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -13,27 +14,62 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TimelineFramework;
 
 namespace CommandsEditor
 {
     public partial class CAGEAnimationEditor : BaseWindow
     {
-        /// <summary>
-        /// https://blog.naver.com/goldrushing/221925047151
-        /// </summary>
+        float anim_length = 0;
+        CAGEAnimation animEntity = null;
 
-
-        CAGEAnimation animNode = null;
-        public CAGEAnimationEditor(CAGEAnimation _node) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
+        public CAGEAnimationEditor(CAGEAnimation entity) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
-            animNode = _node;
+            animEntity = entity;
             InitializeComponent();
+
+            //TODO: this is a param on the entity, should we sync that on save? <- YES
+            for (int i = 0; i < entity.animations.Count; i++)
+            {
+                for (int x = 0; x < entity.animations[i].keyframes.Count; x++)
+                {
+                    if (anim_length < entity.animations[i].keyframes[x].secondsSinceStart)
+                        anim_length = entity.animations[i].keyframes[x].secondsSinceStart;
+                }
+            }
+            for (int i = 0; i < entity.events.Count; i++)
+            {
+                for (int x = 0; x < entity.events[i].keyframes.Count; x++)
+                {
+                    if (anim_length < entity.events[i].keyframes[x].secondsSinceStart)
+                        anim_length = entity.events[i].keyframes[x].secondsSinceStart;
+                }
+            }
+
+            Timeline timeline = new Timeline(animHost.Width, animHost.Height);
+            timeline.Setup(0, anim_length, anim_length / 10.0f, 150);
+            for (int i = 0; i < entity.animations.Count; i++)
+            {
+                for (int x = 0; x < entity.animations[i].keyframes.Count; x++)
+                {
+                    timeline.AddElement(entity.animations[i].keyframes[x].secondsSinceStart, i + 1);
+                }
+            }
+
+            animHost.Child = timeline;
+
+            this.BringToFront();
+            this.Focus();
+            return;
+
+
+
 
             //MessageBox.Show("The CAGEAnimation editor is still VERY early in development. It'll likely not work, or encounter issues which may corrupt your CommandsPAK, and is provided as a preview of upcoming functionality.\n\nUse it at your own risk!", "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
-            File.WriteAllText("out.json", JsonConvert.SerializeObject(animNode, Formatting.Indented));
+            File.WriteAllText("out.json", JsonConvert.SerializeObject(animEntity, Formatting.Indented));
 
-            animNode.headers = animNode.headers.OrderBy(o => o.parameterID).ToList();
+            animEntity.headers = animEntity.headers.OrderBy(o => o.parameterID).ToList();
             string previousGroup = "";
             int groupCount = 0;
             int maxWidth = 0;
@@ -41,9 +77,9 @@ namespace CommandsEditor
             int groupHeight = 0;
             int countInGroup = 0;
             GroupBox currentGroupBox = null;
-            for (int i = 0; i < animNode.headers.Count; i++)
+            for (int i = 0; i < animEntity.headers.Count; i++)
             {
-                string paramGroupName = ShortGuidUtils.FindString(animNode.headers[i].parameterID);
+                string paramGroupName = ShortGuidUtils.FindString(animEntity.headers[i].parameterID);
                 if (i == 0 || previousGroup != paramGroupName)
                 {
                     if (currentGroupBox != null)
@@ -55,7 +91,7 @@ namespace CommandsEditor
                     currentGroupBox = new GroupBox();
                     currentGroupBox.Text = paramGroupName;
                     currentGroupBox.Location = new Point(3, groupBoxOffset);
-                    NodeParams.Controls.Add(currentGroupBox);
+                    //NodeParams.Controls.Add(currentGroupBox);
                     groupCount++;
                     maxWidth = 0;
                     groupHeight = 0;
@@ -64,13 +100,13 @@ namespace CommandsEditor
                 previousGroup = paramGroupName;
 
                 TextBox paramName = new TextBox();
-                paramName.Text = ShortGuidUtils.FindString(animNode.headers[i].parameterSubID);
+                paramName.Text = ShortGuidUtils.FindString(animEntity.headers[i].parameterSubID);
                 paramName.ReadOnly = true;
                 paramName.Location = new Point(6, 19 + (countInGroup * 23));
                 paramName.Size = new Size(119, 20);
                 currentGroupBox.Controls.Add(paramName);
 
-                CAGEAnimation.Animation paramData = animNode.animations.FirstOrDefault(o => o.shortGUID == animNode.headers[i].keyframeID);
+                CAGEAnimation.Animation paramData = animEntity.animations.FirstOrDefault(o => o.shortGUID == animEntity.headers[i].keyframeID);
                 //TODO: populate full min max keyframes so new ones can be created
                 int keyframeWidth = paramName.Location.X + paramName.Width;
                 if (paramData != null)
@@ -90,7 +126,7 @@ namespace CommandsEditor
                 }
 
                 Composite resolvedComposite = null;
-                Entity resolvedEntity = CommandsUtils.ResolveHierarchy(Editor.commands, Editor.selected.composite, animNode.headers[i].connectedEntity, out resolvedComposite, out string hierarchy);
+                Entity resolvedEntity = CommandsUtils.ResolveHierarchy(Editor.commands, Editor.selected.composite, animEntity.headers[i].connectedEntity, out resolvedComposite, out string hierarchy);
                 if (resolvedEntity != null)
                 {
                     TextBox controllingEntity = new TextBox();
@@ -121,7 +157,7 @@ namespace CommandsEditor
             string info = ((Button)sender).AccessibleDescription;
             string[] infoS = info.Split(' ');
             ShortGuid id = new ShortGuid(infoS[0]);
-            currentEditData = animNode.animations.FirstOrDefault(o => o.shortGUID == id).keyframes[Convert.ToInt32(infoS[1])];
+            currentEditData = animEntity.animations.FirstOrDefault(o => o.shortGUID == id).keyframes[Convert.ToInt32(infoS[1])];
             textBox2.Text = currentEditData.paramValue.ToString();
             groupBox1.Visible = true;
             string name = "";

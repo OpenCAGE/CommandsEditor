@@ -36,6 +36,7 @@ namespace CommandsEditor
 
         public CommandsEditor()
         {
+            /*
             LocalDebug.TestAllCmds();
             return;
 
@@ -54,14 +55,14 @@ namespace CommandsEditor
                     keyD.unk5 = 0;
                 }
             }
-            */
+            *//*
             commands.Save();
 
             Environment.Exit(0);
             return;
 
             string bruh = "";
-
+            */
             InitializeComponent();
             _treeHelper = new TreeUtility(FileTree);
 

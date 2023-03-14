@@ -4,9 +4,6 @@ using System.Windows.Input;
 
 namespace TimelineFramework
 {
-    /// <summary>
-    /// Interaction logic for TimelineElement.xaml
-    /// </summary>
     public partial class Keyframe : UserControl
     {
         public float Seconds { get { return seconds; } }
