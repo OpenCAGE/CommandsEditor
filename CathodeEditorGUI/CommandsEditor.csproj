@@ -235,6 +235,18 @@
     <Compile Include="Popups\EditSpline.Designer.cs">
       <DependentUpon>EditSpline.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\Function Editors\Animation XAML\Keyframe.xaml.cs">
+      <DependentUpon>Keyframe.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\Function Editors\Animation XAML\Timeline.xaml.cs">
+      <DependentUpon>Timeline.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\Function Editors\Animation XAML\TimeMarker.xaml.cs">
+      <DependentUpon>TimeMarker.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\Function Editors\Animation XAML\Track.xaml.cs">
+      <DependentUpon>Track.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Popups\Function Editors\CAGEAnimationEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -591,6 +603,22 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Popups\Function Editors\Animation XAML\Keyframe.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Popups\Function Editors\Animation XAML\Timeline.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Popups\Function Editors\Animation XAML\TimeMarker.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Popups\Function Editors\Animation XAML\Track.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Popups\UserControls\GUI_SplineViewer.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -600,6 +628,7 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="packages\Fody.6.5.5\build\Fody.targets" Condition="Exists('packages\Fody.6.5.5\build\Fody.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

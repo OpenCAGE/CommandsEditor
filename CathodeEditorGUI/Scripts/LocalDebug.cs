@@ -17,11 +17,131 @@ using System.Windows.Forms.Design;
 using System.CodeDom;
 using System.Windows.Media.Media3D;
 using static CATHODE.Models;
+using System.Windows.Media.Animation;
 
 namespace CommandsEditor
 {
     public static class LocalDebug
     {
+        public static void TestAllCmds()
+        {
+#if DEBUG
+            List<string> files = Directory.GetFiles(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            Parallel.ForEach(files, file =>
+            {
+                Commands phys = new Commands(file);
+                Parallel.ForEach(phys.Entries, comp =>
+                {
+                    List<FunctionEntity> ents = comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.CAGEAnimation));
+                    Parallel.ForEach(ents, ent =>
+                    {
+                        CAGEAnimation anim = (CAGEAnimation)ent;
+
+                        //File.WriteAllText("out.json", JsonConvert.SerializeObject(anim, Formatting.Indented));
+
+                        foreach (CAGEAnimation.Animation key in anim.animations)
+                        {
+                            foreach (CAGEAnimation.Animation.Keyframe keyData in key.keyframes)
+                            {
+                                //Console.WriteLine("unk2 -> " + keyData.unk2 + " -> unk3 -> " + keyData.unk3 + " -> unk4 -> " + keyData.unk4 + " -> unk5 -> " + keyData.unk5);
+
+                                if (Math.Floor(keyData.secondsSinceStart) != keyData.secondsSinceStart)
+                                {
+                                    string bruh = "";
+                                }
+                                else
+                                {
+                                    string bruh = "";
+                                }
+
+                            }
+                        }
+
+                        foreach (CAGEAnimation.Event key in anim.events)
+                        {
+                            foreach (CAGEAnimation.Event.Keyframe keyData in key.keyframes)
+                            {
+                                //Console.WriteLine("unk2 -> " + keyData.unk2 + " -> unk3 -> " + keyData.unk3 + " -> unk4 -> " + keyData.unk4);
+
+                                if (Math.Floor(keyData.secondsSinceStart) != keyData.secondsSinceStart)
+                                {
+                                    string bruh = "";
+                                }
+                                else
+                                {
+                                    string bruh = "";
+                                }
+
+                                if (keyData.start.ToString() != keyData.start.ToByteString())
+                                {
+                                    //Console.WriteLine(keyData.unk2.ToString());
+                                }
+
+                            }
+                        }
+
+                        string s = "";
+                    });
+                });
+            });
+#endif
+        }
+
+        private static List<string> unnamed_params = new List<string>();
+        public static void DumpAllUnnamedParams()
+        {
+//#if DEBUG
+            List<string> files = Directory.GetFiles(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            foreach (string file in files)
+            {
+                Commands phys = new Commands(file);
+                foreach (Composite comp in phys.Entries)
+                {
+                    List<FunctionEntity> anims = comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.CAGEAnimation));
+                    foreach (FunctionEntity ent in anims)
+                    {
+                        CAGEAnimation anim = (CAGEAnimation)ent;
+                        foreach (CAGEAnimation.Event key in anim.events)
+                        {
+                            foreach (CAGEAnimation.Event.Keyframe keyData in key.keyframes)
+                            {
+                                AddToListIfUnnamed(keyData.start);
+                                AddToListIfUnnamed(keyData.unk3);
+                            }
+                        }
+                    }
+
+                    List<FunctionEntity> trigs = comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.TriggerSequence));
+                    foreach (FunctionEntity ent in trigs)
+                    {
+                        TriggerSequence trig = (TriggerSequence)ent;
+                        foreach (TriggerSequence.Event e in trig.events)
+                        {
+                            AddToListIfUnnamed(e.start);
+                            AddToListIfUnnamed(e.end);
+                        }
+                    }
+
+                    foreach (Entity ent in comp.GetEntities())
+                    {
+                        foreach (Parameter p in ent.parameters)
+                        {
+                            AddToListIfUnnamed(p.name);
+                        }
+                    }
+                }
+            }
+            File.WriteAllLines("unnamed.txt", unnamed_params);
+//#endif
+        }
+        private static void AddToListIfUnnamed(ShortGuid id)
+        {
+            if (id.ToString() != id.ToByteString()) return;
+            if (unnamed_params.Contains(id.ToByteString())) return;
+            unnamed_params.Add(id.ToByteString());
+        }
+
+
         public static void ModelTestStuff()
         {
 #if DEBUG
@@ -316,17 +436,6 @@ namespace CommandsEditor
                 }
                 //phys.Save();
             }
-#endif
-        }
-
-        public static void TestAllCmds()
-        {
-#if DEBUG
-            List<string> files = Directory.GetFiles(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
-            Parallel.ForEach(files, file =>
-            {
-                Commands phys = new Commands(file);
-            });
 #endif
         }
 

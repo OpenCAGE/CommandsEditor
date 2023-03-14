@@ -2,11 +2,13 @@
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CommandsEditor.Popups.Base;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,15 +18,22 @@ namespace CommandsEditor
 {
     public partial class CAGEAnimationEditor : BaseWindow
     {
+        /// <summary>
+        /// https://blog.naver.com/goldrushing/221925047151
+        /// </summary>
+
+
         CAGEAnimation animNode = null;
         public CAGEAnimationEditor(CAGEAnimation _node) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             animNode = _node;
             InitializeComponent();
 
-            MessageBox.Show("The CAGEAnimation editor is still VERY early in development. It'll likely not work, or encounter issues which may corrupt your CommandsPAK, and is provided as a preview of upcoming functionality.\n\nUse it at your own risk!", "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            //MessageBox.Show("The CAGEAnimation editor is still VERY early in development. It'll likely not work, or encounter issues which may corrupt your CommandsPAK, and is provided as a preview of upcoming functionality.\n\nUse it at your own risk!", "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
-            animNode.keyframeHeaders = animNode.keyframeHeaders.OrderBy(o => o.parameterID).ToList();
+            File.WriteAllText("out.json", JsonConvert.SerializeObject(animNode, Formatting.Indented));
+
+            animNode.headers = animNode.headers.OrderBy(o => o.parameterID).ToList();
             string previousGroup = "";
             int groupCount = 0;
             int maxWidth = 0;
@@ -32,9 +41,9 @@ namespace CommandsEditor
             int groupHeight = 0;
             int countInGroup = 0;
             GroupBox currentGroupBox = null;
-            for (int i = 0; i < animNode.keyframeHeaders.Count; i++)
+            for (int i = 0; i < animNode.headers.Count; i++)
             {
-                string paramGroupName = ShortGuidUtils.FindString(animNode.keyframeHeaders[i].parameterID);
+                string paramGroupName = ShortGuidUtils.FindString(animNode.headers[i].parameterID);
                 if (i == 0 || previousGroup != paramGroupName)
                 {
                     if (currentGroupBox != null)
@@ -55,13 +64,13 @@ namespace CommandsEditor
                 previousGroup = paramGroupName;
 
                 TextBox paramName = new TextBox();
-                paramName.Text = ShortGuidUtils.FindString(animNode.keyframeHeaders[i].parameterSubID);
+                paramName.Text = ShortGuidUtils.FindString(animNode.headers[i].parameterSubID);
                 paramName.ReadOnly = true;
                 paramName.Location = new Point(6, 19 + (countInGroup * 23));
                 paramName.Size = new Size(119, 20);
                 currentGroupBox.Controls.Add(paramName);
 
-                CAGEAnimation.Keyframe paramData = animNode.keyframeData.FirstOrDefault(o => o.ID == animNode.keyframeHeaders[i].keyframeDataID);
+                CAGEAnimation.Animation paramData = animNode.animations.FirstOrDefault(o => o.shortGUID == animNode.headers[i].keyframeID);
                 //TODO: populate full min max keyframes so new ones can be created
                 int keyframeWidth = paramName.Location.X + paramName.Width;
                 if (paramData != null)
@@ -72,7 +81,7 @@ namespace CommandsEditor
                         keyframeBtn.Size = new Size(27, 23);
                         keyframeBtn.Location = new Point(134 + ((keyframeBtn.Size.Width + 6) * x), 18 + (countInGroup * 23));
                         keyframeBtn.Text = paramData.keyframes[x].secondsSinceStart.ToString();
-                        keyframeBtn.AccessibleDescription = paramData.ID.ToByteString() + " " + x + " " + paramName.Text;
+                        keyframeBtn.AccessibleDescription = paramData.shortGUID.ToByteString() + " " + x + " " + paramName.Text;
                         keyframeBtn.Click += KeyframeBtn_Click;
                         currentGroupBox.Controls.Add(keyframeBtn);
                         if (keyframeBtn.Location.X > maxWidth) maxWidth = keyframeBtn.Location.X;
@@ -81,7 +90,7 @@ namespace CommandsEditor
                 }
 
                 Composite resolvedComposite = null;
-                Entity resolvedEntity = CommandsUtils.ResolveHierarchy(Editor.commands, Editor.selected.composite, animNode.keyframeHeaders[i].connectedEntity, out resolvedComposite, out string hierarchy);
+                Entity resolvedEntity = CommandsUtils.ResolveHierarchy(Editor.commands, Editor.selected.composite, animNode.headers[i].connectedEntity, out resolvedComposite, out string hierarchy);
                 if (resolvedEntity != null)
                 {
                     TextBox controllingEntity = new TextBox();
@@ -101,15 +110,18 @@ namespace CommandsEditor
             {
                 currentGroupBox.Size = new Size(maxWidth, groupHeight);
             }
+
+            this.BringToFront();
+            this.Focus();
         }
 
-        CAGEAnimation.Keyframe.Data currentEditData = null;
+        CAGEAnimation.Animation.Keyframe currentEditData = null;
         private void KeyframeBtn_Click(object sender, EventArgs e)
         {
             string info = ((Button)sender).AccessibleDescription;
             string[] infoS = info.Split(' ');
             ShortGuid id = new ShortGuid(infoS[0]);
-            currentEditData = animNode.keyframeData.FirstOrDefault(o => o.ID == id).keyframes[Convert.ToInt32(infoS[1])];
+            currentEditData = animNode.animations.FirstOrDefault(o => o.shortGUID == id).keyframes[Convert.ToInt32(infoS[1])];
             textBox2.Text = currentEditData.paramValue.ToString();
             groupBox1.Visible = true;
             string name = "";

@@ -21,6 +21,7 @@ using CATHODE.EXPERIMENTAL;
 using System.Windows.Media.Animation;
 using System.Diagnostics;
 using System.Security.Policy;
+using Newtonsoft.Json;
 
 namespace CommandsEditor
 {
@@ -35,6 +36,32 @@ namespace CommandsEditor
 
         public CommandsEditor()
         {
+            LocalDebug.TestAllCmds();
+            return;
+
+
+            Commands commands = new Commands("G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\DLC\\BSPNOSTROMO_TWOTEAMS_PATCH\\WORLD\\COMMANDS.PAK");
+            CAGEAnimation animNode = (CAGEAnimation)commands.GetComposite("DLC\\PREORDER\\PODLC_TWOTEAMS").functions.FirstOrDefault(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.CAGEAnimation));
+            File.WriteAllText("out.json", JsonConvert.SerializeObject(animNode, Formatting.Indented));
+            /*
+            foreach (CAGEAnimation.Animation key in animNode.animations)
+            {
+                foreach (CAGEAnimation.Animation.Keyframe keyD in key.keyframes)
+                {
+                    keyD.unk2 = 10;
+                    keyD.unk3 = 0;
+                    keyD.unk4 = -5;
+                    keyD.unk5 = 0;
+                }
+            }
+            */
+            commands.Save();
+
+            Environment.Exit(0);
+            return;
+
+            string bruh = "";
+
             InitializeComponent();
             _treeHelper = new TreeUtility(FileTree);
 
@@ -106,11 +133,17 @@ namespace CommandsEditor
             DBG_WebsocketTest.Visible = true;
             DBG_CompileParamList.Visible = true;
             DBG_LoadAllCommands.Visible = true;
+#endif
+        }
 
-            env_list.SelectedItem = "BSP_TORRENS";
-            //LoadCommandsPAK(env_list.SelectedItem.ToString());
-            //LoadComposite("DisplayModel:ALIEN");
-            //LoadEntity(CurrentInstance.selectedComposite.GetEntityByID(new ShortGuid("")));
+        private void CommandsEditor_Load(object sender, EventArgs e)
+        {
+#if DEBUG
+            env_list.SelectedItem = "DLC\\BSPNOSTROMO_TWOTEAMS_PATCH";
+            LoadCommandsPAK(env_list.SelectedItem.ToString());
+            LoadComposite("DLC\\PREORDER\\PODLC_TWOTEAMS");
+            LoadEntity(Editor.selected.composite.functions.FirstOrDefault(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.CAGEAnimation)));
+            editFunction.PerformClick();
 #endif
         }
 
@@ -627,15 +660,15 @@ namespace CommandsEditor
                         case "CAGEAnimation":
                             CAGEAnimation cageAnim = (CAGEAnimation)entities[i];
                             List<CAGEAnimation.Header> headers = new List<CAGEAnimation.Header>();
-                            for (int x = 0; x < cageAnim.keyframeHeaders.Count; x++)
+                            for (int x = 0; x < cageAnim.headers.Count; x++)
                             {
-                                if (cageAnim.keyframeHeaders[x].connectedEntity.Count < 2 ||
-                                    cageAnim.keyframeHeaders[x].connectedEntity[cageAnim.keyframeHeaders[x].connectedEntity.Count - 2] != Editor.selected.entity.shortGUID)
+                                if (cageAnim.headers[x].connectedEntity.Count < 2 ||
+                                    cageAnim.headers[x].connectedEntity[cageAnim.headers[x].connectedEntity.Count - 2] != Editor.selected.entity.shortGUID)
                                 {
-                                    headers.Add(cageAnim.keyframeHeaders[x]);
+                                    headers.Add(cageAnim.headers[x]);
                                 }
                             }
-                            cageAnim.keyframeHeaders = headers;
+                            cageAnim.headers = headers;
                             break;
                     }
                 }
