@@ -25,8 +25,6 @@ namespace CommandsEditor
     {
         public static void TestAllCmds()
         {
-
-            return;
 #if DEBUG
             List<string> files = Directory.GetFiles(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
             Parallel.ForEach(files, file =>
@@ -39,22 +37,106 @@ namespace CommandsEditor
                     {
                         CAGEAnimation anim = (CAGEAnimation)ent;
 
+
                         //File.WriteAllText("out.json", JsonConvert.SerializeObject(anim, Formatting.Indented));
+
+                        foreach (CAGEAnimation.Connection connection in anim.connections)
+                        {
+                            List<CAGEAnimation.Animation> anim_target = anim.animations.FindAll(o => o.shortGUID == connection.keyframeID);
+                            List<CAGEAnimation.Event> event_target = anim.events.FindAll(o => o.shortGUID == connection.keyframeID);
+                            if (anim_target.Count == 0 && event_target.Count == 0)
+                            {
+                                //CommandsUtils.ResolveHierarchy(phys, comp, connection.connectedEntity, out Composite comp2, out string compP);
+                                //Console.WriteLine(comp.name + " -> " + EntityUtils.GetName(comp, ent) + " -> " + connection.parameterID + "\n\t" + compP);
+
+                                continue; //TODO: we should probs just delete these connections
+                            }
+
+                            if (anim_target.Count != 0 && event_target.Count != 0)
+                            {
+                                throw new Exception();
+                            }
+                            if (anim_target.Count > 1 || event_target.Count > 1)
+                            {
+                                throw new Exception();
+                            }
+
+                            if (connection.objectType == ObjectType.ENTITY)
+                            {
+                                //ENTITY links always point to Animation keyframes
+                                if (anim_target.Count == 0 || event_target.Count != 0)
+                                {
+                                    throw new Exception();
+                                }
+
+                                //ENTITY links must always point to params, these appear to only be TRANSFORM or FLOAT in vanilla PAKs
+                                if (connection.parameterDataType != DataType.TRANSFORM &&
+                                    connection.parameterDataType != DataType.FLOAT)
+                                {
+                                    throw new Exception();
+                                }
+
+                                //Check sub IDs for pointed datatypes
+                                if (connection.parameterDataType == DataType.TRANSFORM)
+                                {
+                                    if (connection.parameterSubID.ToString() != "Yaw" &&
+                                        connection.parameterSubID.ToString() != "Pitch" &&
+                                        connection.parameterSubID.ToString() != "Roll" &&
+                                        connection.parameterSubID.ToString() != "x" &&
+                                        connection.parameterSubID.ToString() != "y" &&
+                                        connection.parameterSubID.ToString() != "z")
+                                    {
+                                        throw new Exception();
+                                    }
+                                    //TODO: validate that all these vals are modified at the same keyframe times (can simplify UI!)
+                                }
+                                if (connection.parameterDataType == DataType.FLOAT)
+                                {
+                                    if (connection.parameterSubID.ToString() != "")
+                                    {
+                                        throw new Exception();
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                //CHARACTER and MARKER links always point to Event keyframes
+                                if (anim_target.Count != 0 || event_target.Count == 0)
+                                {
+                                    throw new Exception();
+                                }
+
+                                //CHARACTER links usually pair with MARKER links - check that
+                                if (connection.objectType == ObjectType.CHARACTER)
+                                {
+                                    List<CAGEAnimation.Connection> pairedMarker = anim.connections.FindAll(o => o.objectType == ObjectType.MARKER && o.keyframeID == connection.keyframeID);
+                                    if (pairedMarker.Count != 1)
+                                    {
+                                        //throw new Exception();
+                                    }
+                                    List<CAGEAnimation.Connection> duplicateCharRef = anim.connections.FindAll(o => o.objectType == ObjectType.CHARACTER && o.keyframeID == connection.keyframeID && o.shortGUID != connection.shortGUID);
+                                    if (duplicateCharRef.Count != 0)
+                                    {
+                                        throw new Exception();
+                                    }
+                                }
+
+                                //As we point to events and not parameters, this info should always be empty
+                                if (connection.parameterID.ToString() != "" ||
+                                    connection.parameterDataType != DataType.NONE ||
+                                    connection.parameterSubID.ToString() != "")
+                                {
+                                    File.WriteAllText("out.json", JsonConvert.SerializeObject(anim, Formatting.Indented));
+                                    throw new Exception();
+                                }
+                            }
+                        }
 
                         foreach (CAGEAnimation.Animation key in anim.animations)
                         {
                             foreach (CAGEAnimation.Animation.Keyframe keyData in key.keyframes)
                             {
                                 //Console.WriteLine("unk2 -> " + keyData.unk2 + " -> unk3 -> " + keyData.unk3 + " -> unk4 -> " + keyData.unk4 + " -> unk5 -> " + keyData.unk5);
-
-                                if (Math.Floor(keyData.secondsSinceStart) != keyData.secondsSinceStart)
-                                {
-                                    string bruh = "";
-                                }
-                                else
-                                {
-                                    string bruh = "";
-                                }
 
                             }
                         }
@@ -65,14 +147,6 @@ namespace CommandsEditor
                             {
                                 //Console.WriteLine("unk2 -> " + keyData.unk2 + " -> unk3 -> " + keyData.unk3 + " -> unk4 -> " + keyData.unk4);
 
-                                if (Math.Floor(keyData.secondsSinceStart) != keyData.secondsSinceStart)
-                                {
-                                    string bruh = "";
-                                }
-                                else
-                                {
-                                    string bruh = "";
-                                }
 
                                 if (keyData.start.ToString() != keyData.start.ToByteString())
                                 {

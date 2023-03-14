@@ -36,7 +36,6 @@ namespace CommandsEditor
 
         public CommandsEditor()
         {
-            /*
             LocalDebug.TestAllCmds();
             return;
 
@@ -660,16 +659,16 @@ namespace CommandsEditor
                             break;
                         case "CAGEAnimation":
                             CAGEAnimation cageAnim = (CAGEAnimation)entities[i];
-                            List<CAGEAnimation.Header> headers = new List<CAGEAnimation.Header>();
-                            for (int x = 0; x < cageAnim.headers.Count; x++)
+                            List<CAGEAnimation.Connection> headers = new List<CAGEAnimation.Connection>();
+                            for (int x = 0; x < cageAnim.connections.Count; x++)
                             {
-                                if (cageAnim.headers[x].connectedEntity.Count < 2 ||
-                                    cageAnim.headers[x].connectedEntity[cageAnim.headers[x].connectedEntity.Count - 2] != Editor.selected.entity.shortGUID)
+                                if (cageAnim.connections[x].connectedEntity.Count < 2 ||
+                                    cageAnim.connections[x].connectedEntity[cageAnim.connections[x].connectedEntity.Count - 2] != Editor.selected.entity.shortGUID)
                                 {
-                                    headers.Add(cageAnim.headers[x]);
+                                    headers.Add(cageAnim.connections[x]);
                                 }
                             }
-                            cageAnim.headers = headers;
+                            cageAnim.connections = headers;
                             break;
                     }
                 }
@@ -1124,7 +1123,7 @@ namespace CommandsEditor
         private void CAGEAnimationEditor_OnSaved(CAGEAnimation newEntity)
         {
             CAGEAnimation entity = (CAGEAnimation)Editor.selected.entity;
-            entity.headers = newEntity.headers;
+            entity.connections = newEntity.connections;
             entity.events = newEntity.events;
             entity.animations = newEntity.animations;
 
