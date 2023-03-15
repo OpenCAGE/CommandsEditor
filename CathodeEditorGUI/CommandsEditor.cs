@@ -924,9 +924,13 @@ namespace CommandsEditor
                                 break;
                             case "title":
                             case "map_description":
-                            case "additional_info": //TODO: this is only true if entity is SetPrimaryObjective
+                            case "content_title":
+                            case "additional_info": //TODO: this is a good example of why we should handle this per-entity
                                 asset = AssetList.Type.LOCALISED_STRING;
-                                asset_arg = "OBJECTIVES";
+                                if (entity.variant == EntityVariant.FUNCTION && CommandsUtils.GetFunctionType(((FunctionEntity)entity).function).ToString().Contains("Objective"))
+                                    asset_arg = "OBJECTIVES";
+                                else
+                                    asset_arg = "UI";
                                 break;
                             case "title_id":
                             case "message_id":
