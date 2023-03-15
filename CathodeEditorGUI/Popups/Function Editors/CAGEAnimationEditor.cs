@@ -39,6 +39,8 @@ namespace CommandsEditor
             }
             animLength.Text = anim_length.ToString();
 
+            //TODO: if we don't already have an event track that is not in connections (e.g. triggered on us) we should make one
+
             UpdateEntityList();
 
             SetupAnimTimeline();
@@ -150,7 +152,7 @@ namespace CommandsEditor
                 for (int x = 0; x < animEntity.events[i].keyframes.Count; x++)
                 {
                     CAGEAnimation.Event.Keyframe keyframeData = animEntity.events[i].keyframes[x];
-                    Keyframe keyframeUI = eventTimeline.AddKeyframe(keyframeData.secondsSinceStart, (connection == null) ? "GLOBAL" : connection.connectedEntity.GetHierarchyAsString(Editor.commands, Editor.selected.composite));
+                    Keyframe keyframeUI = eventTimeline.AddKeyframe(keyframeData.secondsSinceStart, (connection == null) ? EntityUtils.GetName(Editor.selected.composite, animEntity) : connection.connectedEntity.GetHierarchyAsString(Editor.commands, Editor.selected.composite));
                     keyframeUI.OnMoved += OnHandleMoved;
                     keyframeHandlesEvent.Add(keyframeUI, keyframeData);
                     if (!tracksEvent.ContainsKey(keyframeUI.Track)) tracksEvent.Add(keyframeUI.Track, animEntity.events[i]);
@@ -240,26 +242,50 @@ namespace CommandsEditor
         }
         private void HierarchyEditor_HierarchyGenerated(List<ShortGuid> generatedHierarchy)
         {
-            //TODO: creating a placeholder here that points to nothing so that the dropdown will pick it up - not ideal, but shouldn't affect in-game
-            CAGEAnimation.Connection connection = new CAGEAnimation.Connection();
-            connection.connectedEntity.hierarchy = generatedHierarchy;
-            connection.objectType = ObjectType.ENTITY;
-            animEntity.connections.Add(connection);
+            EntityHierarchy hierarchy = new EntityHierarchy(generatedHierarchy);
+
+            //Prevent the same entity being added again (doesn't make sense as the list is unique)
+            for (int i = 0; i < entityListToHierarchies.Count; i++)
+            {
+                if (entityListToHierarchies[i] == hierarchy)
+                {
+                    entityList.SelectedIndex = i;
+                    this.BringToFront();
+                    this.Focus();
+                    return;
+                }
+            }
+
+            //Creating a placeholder here that points to nothing so that the dropdown will pick it up - not ideal, but shouldn't affect anything
+            CAGEAnimation.Connection newConnection = new CAGEAnimation.Connection();
+            newConnection.connectedEntity.hierarchy = generatedHierarchy;
+            newConnection.objectType = ObjectType.ENTITY;
+            animEntity.connections.Add(newConnection);
 
             UpdateEntityList();
             entityList.SelectedIndex = entityList.Items.Count - 1;
+            this.BringToFront();
+            this.Focus();
         }
 
         private void addAnimationTrack_Click(object sender, EventArgs e)
         {
             if (entityList.SelectedIndex == -1) return;
-            //TODO: Filter these params to stop users being able to add the same one multiple times
             CAGEAnimation_SelectParameter paramSelector = new CAGEAnimation_SelectParameter(entityListToHierarchies[entityList.SelectedIndex].GetPointedEntity(Editor.commands, Editor.selected.composite));
             paramSelector.OnParamSelected += OnParameterSelected;
             paramSelector.Show();
         }
         private void OnParameterSelected(Parameter param)
         {
+            //Make sure the same parameter isn't being added twice for the same entity
+            if (animEntity.connections.FindAll(o => o.connectedEntity == entityListToHierarchies[entityList.SelectedIndex] && o.parameterID == param.name).Count != 0)
+            {
+                MessageBox.Show("This parameter is already controlled by the CAGEAnimation!", "Parameter already selected", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                this.BringToFront();
+                this.Focus();
+                return;
+            }
+
             CAGEAnimation.Connection connection = new CAGEAnimation.Connection();
             connection.connectedEntity.hierarchy = entityListToHierarchies[entityList.SelectedIndex].hierarchy;
             connection.objectType = ObjectType.ENTITY;
@@ -306,6 +332,8 @@ namespace CommandsEditor
             }
 
             SetupAnimTimeline();
+            this.BringToFront();
+            this.Focus();
         }
         private void AddNewConnectionSet(CAGEAnimation.Connection conn, float defaultKeyValue, ShortGuid paramID, string subProp = "")
         {
@@ -329,16 +357,16 @@ namespace CommandsEditor
 
         private void deleteAnimationTrack_Click(object sender, EventArgs e)
         {
-
+            MessageBox.Show("This is coming VERY soon!");
         }
 
         private void addEventTrack_Click(object sender, EventArgs e)
         {
-
+            MessageBox.Show("This is coming VERY soon!");
         }
         private void deleteEventTrack_Click(object sender, EventArgs e)
         {
-
+            MessageBox.Show("This is coming VERY soon!");
         }
 
         private void SaveEntity_Click(object sender, EventArgs e)
