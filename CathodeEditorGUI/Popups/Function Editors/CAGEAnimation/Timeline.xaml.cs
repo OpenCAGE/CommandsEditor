@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace TimelineFramework
+namespace CommandsEditor
 {
     public partial class Timeline : UserControl
     {

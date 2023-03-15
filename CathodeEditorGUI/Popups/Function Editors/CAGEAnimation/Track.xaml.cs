@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace TimelineFramework
+namespace CommandsEditor
 {
     public partial class Track : UserControl
     {

@@ -255,6 +255,7 @@
             this.label9.Size = new System.Drawing.Size(34, 13);
             this.label9.TabIndex = 24;
             this.label9.Text = "????:";
+            this.label9.Visible = false;
             // 
             // label8
             // 
@@ -271,6 +272,7 @@
             this.eventParam2.Name = "eventParam2";
             this.eventParam2.Size = new System.Drawing.Size(184, 20);
             this.eventParam2.TabIndex = 10;
+            this.eventParam2.Visible = false;
             this.eventParam2.TextChanged += new System.EventHandler(this.eventParam2_TextChanged);
             // 
             // eventParam1

@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace TimelineFramework
+namespace CommandsEditor
 {
     public partial class TimeMarker : UserControl
     {

@@ -235,16 +235,22 @@
     <Compile Include="Popups\EditSpline.Designer.cs">
       <DependentUpon>EditSpline.cs</DependentUpon>
     </Compile>
-    <Compile Include="Popups\Function Editors\Animation XAML\Keyframe.xaml.cs">
+    <Compile Include="Popups\Function Editors\CAGEAnimation\CAGEAnimation_SelectParameter.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\Function Editors\CAGEAnimation\CAGEAnimation_SelectParameter.Designer.cs">
+      <DependentUpon>CAGEAnimation_SelectParameter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\Function Editors\CAGEAnimation\Keyframe.xaml.cs">
       <DependentUpon>Keyframe.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Popups\Function Editors\Animation XAML\Timeline.xaml.cs">
+    <Compile Include="Popups\Function Editors\CAGEAnimation\Timeline.xaml.cs">
       <DependentUpon>Timeline.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Popups\Function Editors\Animation XAML\TimeMarker.xaml.cs">
+    <Compile Include="Popups\Function Editors\CAGEAnimation\TimeMarker.xaml.cs">
       <DependentUpon>TimeMarker.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Popups\Function Editors\Animation XAML\Track.xaml.cs">
+    <Compile Include="Popups\Function Editors\CAGEAnimation\Track.xaml.cs">
       <DependentUpon>Track.xaml</DependentUpon>
     </Compile>
     <Compile Include="Popups\Function Editors\CAGEAnimationEditor.cs">
@@ -603,19 +609,19 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Popups\Function Editors\Animation XAML\Keyframe.xaml">
+    <Page Include="Popups\Function Editors\CAGEAnimation\Keyframe.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Popups\Function Editors\Animation XAML\Timeline.xaml">
+    <Page Include="Popups\Function Editors\CAGEAnimation\Timeline.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Popups\Function Editors\Animation XAML\TimeMarker.xaml">
+    <Page Include="Popups\Function Editors\CAGEAnimation\TimeMarker.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Popups\Function Editors\Animation XAML\Track.xaml">
+    <Page Include="Popups\Function Editors\CAGEAnimation\Track.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

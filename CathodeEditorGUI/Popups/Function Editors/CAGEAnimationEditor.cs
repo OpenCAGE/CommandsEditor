@@ -1,20 +1,9 @@
-﻿using CATHODE;
-using CATHODE.Scripting;
-using CATHODE.Scripting.Internal;
+﻿using CATHODE.Scripting;
 using CommandsEditor.Popups.Base;
-using CommandsEditor.Popups.UserControls;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using TimelineFramework;
 
 namespace CommandsEditor
 {
@@ -256,7 +245,7 @@ namespace CommandsEditor
 
         private void addAnimationTrack_Click(object sender, EventArgs e)
         {
-
+            if (entityList.SelectedIndex == -1) return;
         }
         private void deleteAnimationTrack_Click(object sender, EventArgs e)
         {
