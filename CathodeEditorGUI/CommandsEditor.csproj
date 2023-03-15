@@ -515,6 +515,9 @@
     <EmbeddedResource Include="Popups\EditRootComposite.resx">
       <DependentUpon>EditRootComposite.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Function Editors\CAGEAnimation\CAGEAnimation_SelectParameter.resx">
+      <DependentUpon>CAGEAnimation_SelectParameter.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Popups\Function Editors\TriggerSequenceEditor.resx">
       <DependentUpon>TriggerSequenceEditor.cs</DependentUpon>
     </EmbeddedResource>

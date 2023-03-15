@@ -43,6 +43,8 @@ namespace CommandsEditor.Popups.Base
                 Editor.OnEntitySelected += OnEntitySelected;
             if (_closesOn.HasFlag(WindowClosesOn.NEW_COMPOSITE_SELECTION))
                 Editor.OnCompositeSelected += OnCompositeSelected;
+            if (_closesOn.HasFlag(WindowClosesOn.NEW_CAGEANIM_EDITOR_OPENED))
+                Editor.OnCAGEAnimationEditorOpened += OnCAGEAnimationEditorOpened;
 
             this.BringToFront();
             this.Focus();
@@ -56,6 +58,8 @@ namespace CommandsEditor.Popups.Base
                 Editor.OnEntitySelected -= OnEntitySelected;
             if (_closesOn.HasFlag(WindowClosesOn.NEW_COMPOSITE_SELECTION))
                 Editor.OnCompositeSelected -= OnCompositeSelected;
+            if (_closesOn.HasFlag(WindowClosesOn.NEW_CAGEANIM_EDITOR_OPENED))
+                Editor.OnCAGEAnimationEditorOpened -= OnCAGEAnimationEditorOpened;
         }
 
         private void OnCommandsSelected(Commands commands)
@@ -81,6 +85,11 @@ namespace CommandsEditor.Popups.Base
                 (_startComposite.shortGUID != composite.shortGUID))
                 this.Close();
         }
+
+        private void OnCAGEAnimationEditorOpened()
+        {
+            this.Close();
+        }
     }
 
     [Flags]
@@ -90,6 +99,8 @@ namespace CommandsEditor.Popups.Base
         NEW_ENTITY_SELECTION = 2,
         NEW_COMPOSITE_SELECTION = 4,
 
-        NONE = 8,
+        NEW_CAGEANIM_EDITOR_OPENED = 8,
+
+        NONE = 16,
     }
 }

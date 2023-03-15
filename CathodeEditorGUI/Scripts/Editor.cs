@@ -51,5 +51,6 @@ namespace CommandsEditor
         public static Action<Commands> OnCommandsSelected;
         public static Action<Entity> OnEntitySelected;
         public static Action<Composite> OnCompositeSelected;
+        public static Action OnCAGEAnimationEditorOpened;
     }
 }

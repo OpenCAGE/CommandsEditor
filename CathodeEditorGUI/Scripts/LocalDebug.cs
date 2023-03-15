@@ -37,7 +37,7 @@ namespace CommandsEditor
                     Parallel.ForEach(ents, ent =>
                     {
                         CAGEAnimation anim = (CAGEAnimation)ent;
-                        File.WriteAllText("out.json", JsonConvert.SerializeObject(anim, Formatting.Indented));
+                        //File.WriteAllText("out.json", JsonConvert.SerializeObject(anim, Formatting.Indented));
 
                         List<CAGEAnimation.Connection> prunedConnections = new List<CAGEAnimation.Connection>();
                         foreach (CAGEAnimation.Connection connection in anim.connections)

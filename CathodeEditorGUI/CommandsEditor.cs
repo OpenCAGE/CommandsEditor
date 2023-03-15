@@ -1114,6 +1114,7 @@ namespace CommandsEditor
             switch (function.ToUpper())
             {
                 case "CAGEANIMATION":
+                    Editor.OnCAGEAnimationEditorOpened?.Invoke();
                     CAGEAnimationEditor cageAnimationEditor = new CAGEAnimationEditor((CAGEAnimation)Editor.selected.entity);
                     cageAnimationEditor.Show();
                     cageAnimationEditor.OnSaved += CAGEAnimationEditor_OnSaved;

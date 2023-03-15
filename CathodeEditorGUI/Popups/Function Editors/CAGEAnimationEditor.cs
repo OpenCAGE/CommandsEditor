@@ -1,7 +1,9 @@
 ﻿using CATHODE.Scripting;
 using CommandsEditor.Popups.Base;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -22,9 +24,10 @@ namespace CommandsEditor
 
         List<EntityHierarchy> entityListToHierarchies;
 
-        public CAGEAnimationEditor(CAGEAnimation entity) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
+        public CAGEAnimationEditor(CAGEAnimation entity) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_CAGEANIM_EDITOR_OPENED | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             animEntity = entity.Copy();
+            File.WriteAllText("out.json", JsonConvert.SerializeObject(animEntity, Formatting.Indented));
             InitializeComponent();
 
             anim_length = CalculateAnimLength();
@@ -48,6 +51,7 @@ namespace CommandsEditor
         private void UpdateEntityList()
         {
             entityListToHierarchies = new List<EntityHierarchy>();
+            entityList.BeginUpdate();
             entityList.Items.Clear();
             foreach (CAGEAnimation.Connection connection in animEntity.connections)
             {
@@ -58,6 +62,7 @@ namespace CommandsEditor
                     entityListToHierarchies.Add(connection.connectedEntity);
                 }
             }
+            entityList.EndUpdate();
             entityList.SelectedIndex = (entityList.Items.Count < 1) ? -1 : 0;
         }
 
@@ -110,10 +115,11 @@ namespace CommandsEditor
             animTimeline.Setup(0, anim_length, anim_step, 150);
             for (int i = 0; i < filteredAnims.Count; i++)
             {
+                CAGEAnimation.Connection connection = filteredConnections.FirstOrDefault(o => o.keyframeID == filteredAnims[i].shortGUID);
                 for (int x = 0; x < filteredAnims[i].keyframes.Count; x++)
                 {
                     CAGEAnimation.Animation.Keyframe keyframeData = filteredAnims[i].keyframes[x];
-                    Keyframe keyframeUI = animTimeline.AddKeyframe(keyframeData.secondsSinceStart, (i + 1).ToString());
+                    Keyframe keyframeUI = animTimeline.AddKeyframe(keyframeData.secondsSinceStart, connection.parameterSubID.val == null || connection.parameterSubID.ToString() == "" ? connection.parameterID.ToString() : connection.parameterID.ToString() + " [" + connection.parameterSubID.ToString() + "]");
                     keyframeUI.OnMoved += OnHandleMoved;
                     keyframeUI.HandleText = keyframeData.paramValue.ToString("0.00");
                     keyframeHandlesAnim.Add(keyframeUI, keyframeData);
@@ -140,10 +146,11 @@ namespace CommandsEditor
             eventTimeline.Setup(0, anim_length, anim_step, 150);
             for (int i = 0; i < animEntity.events.Count; i++)
             {
+                CAGEAnimation.Connection connection = animEntity.connections.FirstOrDefault(o => o.keyframeID == animEntity.connections[i].shortGUID);
                 for (int x = 0; x < animEntity.events[i].keyframes.Count; x++)
                 {
                     CAGEAnimation.Event.Keyframe keyframeData = animEntity.events[i].keyframes[x];
-                    Keyframe keyframeUI = eventTimeline.AddKeyframe(keyframeData.secondsSinceStart, (i + 1).ToString());
+                    Keyframe keyframeUI = eventTimeline.AddKeyframe(keyframeData.secondsSinceStart, (connection == null) ? "GLOBAL" : connection.connectedEntity.GetHierarchyAsString(Editor.commands, Editor.selected.composite));
                     keyframeUI.OnMoved += OnHandleMoved;
                     keyframeHandlesEvent.Add(keyframeUI, keyframeData);
                     if (!tracksEvent.ContainsKey(keyframeUI.Track)) tracksEvent.Add(keyframeUI.Track, animEntity.events[i]);
@@ -246,7 +253,80 @@ namespace CommandsEditor
         private void addAnimationTrack_Click(object sender, EventArgs e)
         {
             if (entityList.SelectedIndex == -1) return;
+            //TODO: Filter these params to stop users being able to add the same one multiple times
+            CAGEAnimation_SelectParameter paramSelector = new CAGEAnimation_SelectParameter(entityListToHierarchies[entityList.SelectedIndex].GetPointedEntity(Editor.commands, Editor.selected.composite));
+            paramSelector.OnParamSelected += OnParameterSelected;
+            paramSelector.Show();
         }
+        private void OnParameterSelected(Parameter param)
+        {
+            CAGEAnimation.Connection connection = new CAGEAnimation.Connection();
+            connection.connectedEntity.hierarchy = entityListToHierarchies[entityList.SelectedIndex].hierarchy;
+            connection.objectType = ObjectType.ENTITY;
+            connection.parameterDataType = param.content.dataType;
+
+            switch (param.content.dataType)
+            {
+                case DataType.FLOAT:
+                    AddNewConnectionSet(connection.Copy(), ((cFloat)param.content).value, param.name);
+                    break;
+                case DataType.TRANSFORM:
+                    string[] transformSubProperties = new string[6] { "x", "y", "z", "Yaw", "Pitch", "Roll" };
+                    foreach (string subProp in transformSubProperties)
+                    {
+                        float val = 0;
+                        switch (subProp)
+                        {
+                            case "x":
+                                val = ((cTransform)param.content).position.X;
+                                break;
+                            case "y":
+                                val = ((cTransform)param.content).position.Y;
+                                break;
+                            case "z":
+                                val = ((cTransform)param.content).position.Z;
+                                break;
+                            case "Yaw":
+                                val = ((cTransform)param.content).rotation.Y;
+                                break;
+                            case "Pitch":
+                                val = ((cTransform)param.content).rotation.X;
+                                break;
+                            case "Roll":
+                                val = ((cTransform)param.content).rotation.Z;
+                                break;
+                        }
+                        AddNewConnectionSet(connection.Copy(), val, param.name, subProp);
+                    }
+                    break;
+                //TODO: even though the base game doesn't use other datatypes in anims, we probably can!
+                default:
+                    MessageBox.Show("The datatype of the parameter you selected is not currently supported - please select either a FLOAT or TRANSFORM parameter to animate.", "Unsupported datatype", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+            }
+
+            SetupAnimTimeline();
+        }
+        private void AddNewConnectionSet(CAGEAnimation.Connection conn, float defaultKeyValue, ShortGuid paramID, string subProp = "")
+        {
+            CAGEAnimation.Animation.Keyframe keyStart = new CAGEAnimation.Animation.Keyframe();
+            keyStart.secondsSinceStart = anim_length;
+            keyStart.paramValue = defaultKeyValue;
+            CAGEAnimation.Animation.Keyframe keyEnd = new CAGEAnimation.Animation.Keyframe();
+            keyEnd.secondsSinceStart = anim_length;
+            keyEnd.paramValue = defaultKeyValue;
+            CAGEAnimation.Animation anim = new CAGEAnimation.Animation();
+            anim.shortGUID = ShortGuidUtils.GenerateRandom();
+            anim.keyframes.Add(keyStart);
+            anim.keyframes.Add(keyEnd);
+            animEntity.animations.Add(anim);
+            conn.shortGUID = ShortGuidUtils.GenerateRandom();
+            conn.parameterID = paramID;
+            conn.parameterSubID = ShortGuidUtils.Generate(subProp);
+            conn.keyframeID = anim.shortGUID;
+            animEntity.connections.Add(conn);
+        }
+
         private void deleteAnimationTrack_Click(object sender, EventArgs e)
         {
 
