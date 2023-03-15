@@ -18,6 +18,7 @@ using System.CodeDom;
 using System.Windows.Media.Media3D;
 using static CATHODE.Models;
 using System.Windows.Media.Animation;
+using System.Collections.Specialized;
 
 namespace CommandsEditor
 {
@@ -36,22 +37,24 @@ namespace CommandsEditor
                     Parallel.ForEach(ents, ent =>
                     {
                         CAGEAnimation anim = (CAGEAnimation)ent;
-
-
                         //File.WriteAllText("out.json", JsonConvert.SerializeObject(anim, Formatting.Indented));
+
+                        List<CAGEAnimation.Connection> prunedConnections = new List<CAGEAnimation.Connection>();
+                        foreach (CAGEAnimation.Connection connection in anim.connections)
+                        {
+                            List<CAGEAnimation.Animation> anim_target = anim.animations.FindAll(o => o.shortGUID == connection.keyframeID);
+                            List<CAGEAnimation.Event> event_target = anim.events.FindAll(o => o.shortGUID == connection.keyframeID);
+                            if (anim_target.Count == 0 && event_target.Count == 0) continue;
+                            prunedConnections.Add(connection);
+                        }
+                        anim.connections = prunedConnections;
 
                         foreach (CAGEAnimation.Connection connection in anim.connections)
                         {
                             List<CAGEAnimation.Animation> anim_target = anim.animations.FindAll(o => o.shortGUID == connection.keyframeID);
                             List<CAGEAnimation.Event> event_target = anim.events.FindAll(o => o.shortGUID == connection.keyframeID);
-                            if (anim_target.Count == 0 && event_target.Count == 0)
-                            {
-                                //CommandsUtils.ResolveHierarchy(phys, comp, connection.connectedEntity, out Composite comp2, out string compP);
-                                //Console.WriteLine(comp.name + " -> " + EntityUtils.GetName(comp, ent) + " -> " + connection.parameterID + "\n\t" + compP);
 
-                                continue; //TODO: we should probs just delete these connections
-                            }
-
+                            //We expect to never point to both
                             if (anim_target.Count != 0 && event_target.Count != 0)
                             {
                                 throw new Exception();
@@ -74,6 +77,43 @@ namespace CommandsEditor
                                     connection.parameterDataType != DataType.FLOAT)
                                 {
                                     throw new Exception();
+                                }
+
+                                //Check to make sure all TRANSFORM keys happen on the same intervals & are complete
+                                if (connection.parameterDataType == DataType.TRANSFORM)
+                                {
+                                    List<CAGEAnimation.Connection> transform = anim.connections.FindAll(o => o.ConnectedEntityMatches(connection.connectedEntity) && o.parameterID.ToString() == "position");
+                                    if (transform.Count != 6 && transform.Count != 3 && transform.Count != 5) //x,y,z,Yaw,Pitch,Roll
+                                    {
+                                        throw new Exception();
+                                    }
+                                    List<float> keyframeIntervals = null;
+                                    foreach (CAGEAnimation.Connection transformPart in transform)
+                                    {
+                                        CAGEAnimation.Animation keyframes = anim.animations.FirstOrDefault(o => o.shortGUID == connection.keyframeID);
+                                        if (keyframeIntervals == null)
+                                        {
+                                            keyframeIntervals = new List<float>();
+                                            foreach (CAGEAnimation.Animation.Keyframe keyframe in keyframes.keyframes)
+                                            {
+                                                keyframeIntervals.Add(keyframe.secondsSinceStart);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (keyframeIntervals.Count != keyframes.keyframes.Count)
+                                            {
+                                                throw new Exception();
+                                            }
+                                            for (int i = 0; i < keyframes.keyframes.Count; i++)
+                                            {
+                                                if (keyframeIntervals[i] != keyframes.keyframes[i].secondsSinceStart)
+                                                {
+                                                    throw new Exception();
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
 
                                 //Check sub IDs for pointed datatypes
@@ -131,32 +171,6 @@ namespace CommandsEditor
                                 }
                             }
                         }
-
-                        foreach (CAGEAnimation.Animation key in anim.animations)
-                        {
-                            foreach (CAGEAnimation.Animation.Keyframe keyData in key.keyframes)
-                            {
-                                //Console.WriteLine("unk2 -> " + keyData.unk2 + " -> unk3 -> " + keyData.unk3 + " -> unk4 -> " + keyData.unk4 + " -> unk5 -> " + keyData.unk5);
-
-                            }
-                        }
-
-                        foreach (CAGEAnimation.Event key in anim.events)
-                        {
-                            foreach (CAGEAnimation.Event.Keyframe keyData in key.keyframes)
-                            {
-                                //Console.WriteLine("unk2 -> " + keyData.unk2 + " -> unk3 -> " + keyData.unk3 + " -> unk4 -> " + keyData.unk4);
-
-
-                                if (keyData.start.ToString() != keyData.start.ToByteString())
-                                {
-                                    //Console.WriteLine(keyData.unk2.ToString());
-                                }
-
-                            }
-                        }
-
-                        string s = "";
                     });
                 });
             });
