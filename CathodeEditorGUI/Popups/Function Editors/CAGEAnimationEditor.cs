@@ -55,7 +55,8 @@ namespace CommandsEditor
             entityListToHierarchies = new List<EntityHierarchy>();
             entityList.BeginUpdate();
             entityList.Items.Clear();
-            foreach (CAGEAnimation.Connection connection in animEntity.connections)
+            List<CAGEAnimation.Connection> connections = animEntity.connections.FindAll(o => o.objectType == ObjectType.ENTITY);
+            foreach (CAGEAnimation.Connection connection in connections)
             {
                 string connectionLink = connection.connectedEntity.GetHierarchyAsString(Editor.commands, Editor.selected.composite);
                 if (!entityList.Items.Contains(connectionLink))
@@ -148,11 +149,12 @@ namespace CommandsEditor
             eventTimeline.Setup(0, anim_length, anim_step, 150);
             for (int i = 0; i < animEntity.events.Count; i++)
             {
-                CAGEAnimation.Connection connection = animEntity.connections.FirstOrDefault(o => o.keyframeID == animEntity.connections[i].shortGUID);
+                //TODO: Frequently CHARACTER and MARKER objects both point to the same Event object - need to handle this better!
+                CAGEAnimation.Connection connection = animEntity.connections.FirstOrDefault(o => o.keyframeID == animEntity.events[i].shortGUID);
                 for (int x = 0; x < animEntity.events[i].keyframes.Count; x++)
                 {
                     CAGEAnimation.Event.Keyframe keyframeData = animEntity.events[i].keyframes[x];
-                    Keyframe keyframeUI = eventTimeline.AddKeyframe(keyframeData.secondsSinceStart, (connection == null) ? EntityUtils.GetName(Editor.selected.composite, animEntity) : connection.connectedEntity.GetHierarchyAsString(Editor.commands, Editor.selected.composite));
+                    Keyframe keyframeUI = eventTimeline.AddKeyframe(keyframeData.secondsSinceStart, (connection == null) ? EntityUtils.GetName(Editor.selected.composite, animEntity) : connection.connectedEntity.GetHierarchyAsString(Editor.commands, Editor.selected.composite, false));
                     keyframeUI.OnMoved += OnHandleMoved;
                     keyframeHandlesEvent.Add(keyframeUI, keyframeData);
                     if (!tracksEvent.ContainsKey(keyframeUI.Track)) tracksEvent.Add(keyframeUI.Track, animEntity.events[i]);
