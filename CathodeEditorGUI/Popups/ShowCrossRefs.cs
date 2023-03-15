@@ -89,7 +89,7 @@ namespace CommandsEditor
                     case CurrentDisplay.PROXIES:
                         foreach (ProxyEntity prox in comp.proxies)
                         {
-                            Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, comp, prox.hierarchy, out Composite compRef, out string str);
+                            Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, comp, prox.connectedEntity.hierarchy, out Composite compRef, out string str);
                             if (ent != Editor.selected.entity) continue;
                             entities.Add(new EntityRef() { composite = comp, entity = prox.shortGUID });
                             referenceList.Items.Add(EditorUtils.GenerateEntityName(prox, comp));
@@ -98,7 +98,7 @@ namespace CommandsEditor
                     case CurrentDisplay.OVERRIDES:
                         foreach (OverrideEntity ovr in comp.overrides)
                         {
-                            Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, comp, ovr.hierarchy, out Composite compRef, out string str);
+                            Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, comp, ovr.connectedEntity.hierarchy, out Composite compRef, out string str);
                             if (ent != Editor.selected.entity) continue;
                             entities.Add(new EntityRef() { composite = comp, entity = ovr.shortGUID });
                             referenceList.Items.Add(EditorUtils.GenerateEntityName(ovr, comp));
@@ -109,7 +109,7 @@ namespace CommandsEditor
                         {
                             foreach (TriggerSequence.Entity trigger in trig.entities)
                             {
-                                Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, comp, trigger.hierarchy, out Composite compRef, out string str);
+                                Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, comp, trigger.connectedEntity.hierarchy, out Composite compRef, out string str);
                                 if (ent != Editor.selected.entity) continue;
                                 entities.Add(new EntityRef() { composite = comp, entity = trig.shortGUID });
                                 referenceList.Items.Add(EditorUtils.GenerateEntityName(trig, comp));

@@ -58,12 +58,12 @@ namespace TimelineFramework
             }
             trackIndex += 1;
 
-            double trackOffset = elementTop + (trackIndex * 20.0f);
+            double trackOffset = elementTop + (trackIndex * 40.0f) - 15.0f;
             Canvas.SetTop(track, trackOffset + 5);
             Canvas.SetLeft(track, 0);
             Canvas.SetZIndex(track, 5);
 
-            if (trackIndex == _tracks.Count - 1)
+            if (trackIndex == _tracks.Count)
             {
                 _border.Height = trackOffset + 12.0f;
                 mainCanvas.Height = _border.Height + 30;

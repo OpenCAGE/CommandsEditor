@@ -31,6 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CAGEAnimationEditor));
             this.animKeyframeValue = new System.Windows.Forms.TextBox();
             this.animKeyframeData = new System.Windows.Forms.GroupBox();
+            this.deleteAnimKeyframe = new System.Windows.Forms.Button();
             this.label7 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
@@ -45,15 +46,23 @@
             this.animHost = new System.Windows.Forms.Integration.ElementHost();
             this.SaveEntity = new System.Windows.Forms.Button();
             this.eventKeyframeData = new System.Windows.Forms.GroupBox();
+            this.deleteEventKeyframe = new System.Windows.Forms.Button();
             this.label9 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.eventParam2 = new System.Windows.Forms.TextBox();
             this.eventParam1 = new System.Windows.Forms.TextBox();
             this.eventHost = new System.Windows.Forms.Integration.ElementHost();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.addNewEntityRef = new System.Windows.Forms.Button();
+            this.addAnimationTrack = new System.Windows.Forms.Button();
+            this.deleteAnimationTrack = new System.Windows.Forms.Button();
+            this.entityList = new System.Windows.Forms.ComboBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.addEventTrack = new System.Windows.Forms.Button();
+            this.deleteEventTrack = new System.Windows.Forms.Button();
+            this.animLength = new System.Windows.Forms.TextBox();
+            this.editAnimLength = new System.Windows.Forms.Button();
+            this.label10 = new System.Windows.Forms.Label();
             this.animKeyframeData.SuspendLayout();
             this.eventKeyframeData.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -70,7 +79,7 @@
             // 
             // animKeyframeData
             // 
-            this.animKeyframeData.Controls.Add(this.button1);
+            this.animKeyframeData.Controls.Add(this.deleteAnimKeyframe);
             this.animKeyframeData.Controls.Add(this.label7);
             this.animKeyframeData.Controls.Add(this.label6);
             this.animKeyframeData.Controls.Add(this.label5);
@@ -83,12 +92,22 @@
             this.animKeyframeData.Controls.Add(this.startVelY);
             this.animKeyframeData.Controls.Add(this.startVelX);
             this.animKeyframeData.Controls.Add(this.animKeyframeValue);
-            this.animKeyframeData.Location = new System.Drawing.Point(863, 19);
+            this.animKeyframeData.Location = new System.Drawing.Point(863, 47);
             this.animKeyframeData.Name = "animKeyframeData";
             this.animKeyframeData.Size = new System.Drawing.Size(198, 164);
             this.animKeyframeData.TabIndex = 12;
             this.animKeyframeData.TabStop = false;
             this.animKeyframeData.Text = "Selected Keyframe Data";
+            // 
+            // deleteAnimKeyframe
+            // 
+            this.deleteAnimKeyframe.Location = new System.Drawing.Point(6, 132);
+            this.deleteAnimKeyframe.Name = "deleteAnimKeyframe";
+            this.deleteAnimKeyframe.Size = new System.Drawing.Size(184, 26);
+            this.deleteAnimKeyframe.TabIndex = 16;
+            this.deleteAnimKeyframe.Text = "Delete Keyframe";
+            this.deleteAnimKeyframe.UseVisualStyleBackColor = true;
+            this.deleteAnimKeyframe.Click += new System.EventHandler(this.deleteAnimKeyframe_Click);
             // 
             // label7
             // 
@@ -187,16 +206,16 @@
             // 
             // animHost
             // 
-            this.animHost.Location = new System.Drawing.Point(6, 19);
+            this.animHost.Location = new System.Drawing.Point(6, 46);
             this.animHost.Name = "animHost";
-            this.animHost.Size = new System.Drawing.Size(851, 459);
+            this.animHost.Size = new System.Drawing.Size(851, 262);
             this.animHost.TabIndex = 13;
             this.animHost.Text = "elementHost1";
             this.animHost.Child = null;
             // 
             // SaveEntity
             // 
-            this.SaveEntity.Location = new System.Drawing.Point(911, 751);
+            this.SaveEntity.Location = new System.Drawing.Point(911, 578);
             this.SaveEntity.Name = "SaveEntity";
             this.SaveEntity.Size = new System.Drawing.Size(167, 36);
             this.SaveEntity.TabIndex = 12;
@@ -206,7 +225,7 @@
             // 
             // eventKeyframeData
             // 
-            this.eventKeyframeData.Controls.Add(this.button2);
+            this.eventKeyframeData.Controls.Add(this.deleteEventKeyframe);
             this.eventKeyframeData.Controls.Add(this.label9);
             this.eventKeyframeData.Controls.Add(this.label8);
             this.eventKeyframeData.Controls.Add(this.eventParam2);
@@ -217,6 +236,16 @@
             this.eventKeyframeData.TabIndex = 14;
             this.eventKeyframeData.TabStop = false;
             this.eventKeyframeData.Text = "Selected Keyframe Data";
+            // 
+            // deleteEventKeyframe
+            // 
+            this.deleteEventKeyframe.Location = new System.Drawing.Point(6, 93);
+            this.deleteEventKeyframe.Name = "deleteEventKeyframe";
+            this.deleteEventKeyframe.Size = new System.Drawing.Size(184, 26);
+            this.deleteEventKeyframe.TabIndex = 23;
+            this.deleteEventKeyframe.Text = "Delete Keyframe";
+            this.deleteEventKeyframe.UseVisualStyleBackColor = true;
+            this.deleteEventKeyframe.Click += new System.EventHandler(this.deleteEventKeyframe_Click);
             // 
             // label9
             // 
@@ -261,51 +290,128 @@
             this.eventHost.Text = "elementHost1";
             this.eventHost.Child = null;
             // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(6, 132);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(184, 26);
-            this.button1.TabIndex = 16;
-            this.button1.Text = "Delete Keyframe";
-            this.button1.UseVisualStyleBackColor = true;
-            // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(6, 93);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(184, 26);
-            this.button2.TabIndex = 23;
-            this.button2.Text = "Delete Keyframe";
-            this.button2.UseVisualStyleBackColor = true;
-            // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.addNewEntityRef);
+            this.groupBox1.Controls.Add(this.addAnimationTrack);
+            this.groupBox1.Controls.Add(this.deleteAnimationTrack);
+            this.groupBox1.Controls.Add(this.entityList);
             this.groupBox1.Controls.Add(this.animHost);
             this.groupBox1.Controls.Add(this.animKeyframeData);
             this.groupBox1.Location = new System.Drawing.Point(7, 6);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(1071, 491);
+            this.groupBox1.Size = new System.Drawing.Size(1071, 318);
             this.groupBox1.TabIndex = 16;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Animation Sequences";
             // 
+            // addNewEntityRef
+            // 
+            this.addNewEntityRef.Location = new System.Drawing.Point(863, 17);
+            this.addNewEntityRef.Name = "addNewEntityRef";
+            this.addNewEntityRef.Size = new System.Drawing.Size(198, 23);
+            this.addNewEntityRef.TabIndex = 18;
+            this.addNewEntityRef.Text = "Add New Entity Link";
+            this.addNewEntityRef.UseVisualStyleBackColor = true;
+            // 
+            // addAnimationTrack
+            // 
+            this.addAnimationTrack.Location = new System.Drawing.Point(863, 260);
+            this.addAnimationTrack.Name = "addAnimationTrack";
+            this.addAnimationTrack.Size = new System.Drawing.Size(198, 23);
+            this.addAnimationTrack.TabIndex = 17;
+            this.addAnimationTrack.Text = "Add Animation Track";
+            this.addAnimationTrack.UseVisualStyleBackColor = true;
+            this.addAnimationTrack.Click += new System.EventHandler(this.addAnimationTrack_Click);
+            // 
+            // deleteAnimationTrack
+            // 
+            this.deleteAnimationTrack.Location = new System.Drawing.Point(863, 285);
+            this.deleteAnimationTrack.Name = "deleteAnimationTrack";
+            this.deleteAnimationTrack.Size = new System.Drawing.Size(198, 23);
+            this.deleteAnimationTrack.TabIndex = 16;
+            this.deleteAnimationTrack.Text = "Delete Animation Track";
+            this.deleteAnimationTrack.UseVisualStyleBackColor = true;
+            this.deleteAnimationTrack.Click += new System.EventHandler(this.deleteAnimationTrack_Click);
+            // 
+            // entityList
+            // 
+            this.entityList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.entityList.FormattingEnabled = true;
+            this.entityList.Location = new System.Drawing.Point(6, 19);
+            this.entityList.Name = "entityList";
+            this.entityList.Size = new System.Drawing.Size(851, 21);
+            this.entityList.TabIndex = 14;
+            this.entityList.SelectedIndexChanged += new System.EventHandler(this.entityList_SelectedIndexChanged);
+            // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.addEventTrack);
+            this.groupBox2.Controls.Add(this.deleteEventTrack);
             this.groupBox2.Controls.Add(this.eventHost);
             this.groupBox2.Controls.Add(this.eventKeyframeData);
-            this.groupBox2.Location = new System.Drawing.Point(7, 503);
+            this.groupBox2.Location = new System.Drawing.Point(7, 330);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(1071, 242);
             this.groupBox2.TabIndex = 17;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Event Sequences";
             // 
+            // addEventTrack
+            // 
+            this.addEventTrack.Location = new System.Drawing.Point(863, 184);
+            this.addEventTrack.Name = "addEventTrack";
+            this.addEventTrack.Size = new System.Drawing.Size(198, 23);
+            this.addEventTrack.TabIndex = 19;
+            this.addEventTrack.Text = "Add Event Track";
+            this.addEventTrack.UseVisualStyleBackColor = true;
+            this.addEventTrack.Click += new System.EventHandler(this.addEventTrack_Click);
+            // 
+            // deleteEventTrack
+            // 
+            this.deleteEventTrack.Location = new System.Drawing.Point(863, 209);
+            this.deleteEventTrack.Name = "deleteEventTrack";
+            this.deleteEventTrack.Size = new System.Drawing.Size(198, 23);
+            this.deleteEventTrack.TabIndex = 18;
+            this.deleteEventTrack.Text = "Delete Event Track";
+            this.deleteEventTrack.UseVisualStyleBackColor = true;
+            this.deleteEventTrack.Click += new System.EventHandler(this.deleteEventTrack_Click);
+            // 
+            // animLength
+            // 
+            this.animLength.Location = new System.Drawing.Point(7, 591);
+            this.animLength.Name = "animLength";
+            this.animLength.Size = new System.Drawing.Size(184, 20);
+            this.animLength.TabIndex = 25;
+            this.animLength.TextChanged += new System.EventHandler(this.animLength_TextChanged);
+            // 
+            // editAnimLength
+            // 
+            this.editAnimLength.Location = new System.Drawing.Point(197, 590);
+            this.editAnimLength.Name = "editAnimLength";
+            this.editAnimLength.Size = new System.Drawing.Size(94, 23);
+            this.editAnimLength.TabIndex = 26;
+            this.editAnimLength.Text = "Edit Length";
+            this.editAnimLength.UseVisualStyleBackColor = true;
+            this.editAnimLength.Click += new System.EventHandler(this.editAnimLength_Click);
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(4, 577);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(105, 13);
+            this.label10.TabIndex = 25;
+            this.label10.Text = "Total time (seconds):";
+            // 
             // CAGEAnimationEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1083, 793);
+            this.ClientSize = new System.Drawing.Size(1083, 620);
+            this.Controls.Add(this.label10);
+            this.Controls.Add(this.editAnimLength);
+            this.Controls.Add(this.animLength);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.SaveEntity);
@@ -322,6 +428,7 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -347,9 +454,18 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Integration.ElementHost eventHost;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button deleteAnimKeyframe;
+        private System.Windows.Forms.Button deleteEventKeyframe;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Button addAnimationTrack;
+        private System.Windows.Forms.Button deleteAnimationTrack;
+        private System.Windows.Forms.ComboBox entityList;
+        private System.Windows.Forms.Button addEventTrack;
+        private System.Windows.Forms.Button deleteEventTrack;
+        private System.Windows.Forms.Button addNewEntityRef;
+        private System.Windows.Forms.TextBox animLength;
+        private System.Windows.Forms.Button editAnimLength;
+        private System.Windows.Forms.Label label10;
     }
 }

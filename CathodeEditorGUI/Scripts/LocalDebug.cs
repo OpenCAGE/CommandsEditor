@@ -37,7 +37,7 @@ namespace CommandsEditor
                     Parallel.ForEach(ents, ent =>
                     {
                         CAGEAnimation anim = (CAGEAnimation)ent;
-                        //File.WriteAllText("out.json", JsonConvert.SerializeObject(anim, Formatting.Indented));
+                        File.WriteAllText("out.json", JsonConvert.SerializeObject(anim, Formatting.Indented));
 
                         List<CAGEAnimation.Connection> prunedConnections = new List<CAGEAnimation.Connection>();
                         foreach (CAGEAnimation.Connection connection in anim.connections)
@@ -82,7 +82,7 @@ namespace CommandsEditor
                                 //Check to make sure all TRANSFORM keys happen on the same intervals & are complete
                                 if (connection.parameterDataType == DataType.TRANSFORM)
                                 {
-                                    List<CAGEAnimation.Connection> transform = anim.connections.FindAll(o => o.ConnectedEntityMatches(connection.connectedEntity) && o.parameterID.ToString() == "position");
+                                    List<CAGEAnimation.Connection> transform = anim.connections.FindAll(o => o.connectedEntity == connection.connectedEntity && o.parameterID.ToString() == "position");
                                     if (transform.Count != 6 && transform.Count != 3 && transform.Count != 5) //x,y,z,Yaw,Pitch,Roll
                                     {
                                         throw new Exception();
@@ -166,7 +166,6 @@ namespace CommandsEditor
                                     connection.parameterDataType != DataType.NONE ||
                                     connection.parameterSubID.ToString() != "")
                                 {
-                                    File.WriteAllText("out.json", JsonConvert.SerializeObject(anim, Formatting.Indented));
                                     throw new Exception();
                                 }
                             }

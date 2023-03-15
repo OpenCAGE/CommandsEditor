@@ -37,7 +37,7 @@ namespace CommandsEditor
             for (int i = 0; i < node.entities.Count; i++)
             {
                 string thisHierarchy;
-                CommandsUtils.ResolveHierarchy(Editor.commands, Editor.selected.composite, node.entities[i].hierarchy, out Composite comp, out thisHierarchy);
+                CommandsUtils.ResolveHierarchy(Editor.commands, Editor.selected.composite, node.entities[i].connectedEntity.hierarchy, out Composite comp, out thisHierarchy);
 
                 string toAdd = "[" + node.entities[i].timing + "s] " + thisHierarchy;
                 entity_list.Items.Add(toAdd);
@@ -83,7 +83,7 @@ namespace CommandsEditor
             }
 
             string thisHierarchy;
-            CommandsUtils.ResolveHierarchy(Editor.commands, Editor.selected.composite, node.entities[entity_list.SelectedIndex].hierarchy, out Composite comp, out thisHierarchy);
+            CommandsUtils.ResolveHierarchy(Editor.commands, Editor.selected.composite, node.entities[entity_list.SelectedIndex].connectedEntity.hierarchy, out Composite comp, out thisHierarchy);
 
             entityHierarchy.Text = thisHierarchy;
             entityTriggerDelay.Text = node.entities[entity_list.SelectedIndex].timing.ToString();
@@ -115,7 +115,7 @@ namespace CommandsEditor
         {
             if (entity_list.SelectedIndex == -1) return;
             int index = entity_list.SelectedIndex;
-            node.entities[index].hierarchy = generatedHierarchy;
+            node.entities[index].connectedEntity.hierarchy = generatedHierarchy;
             LoadSelectedEntity();
             ReloadEntityList();
             entity_list.SelectedIndex = index;
@@ -125,7 +125,7 @@ namespace CommandsEditor
         {
             for (int i = 0; i < node.entities.Count; i++)
             {
-                if (node.entities[i].hierarchy.Count == 0 || node.entities[i].hierarchy.Count == 1)
+                if (node.entities[i].connectedEntity.hierarchy.Count == 0 || node.entities[i].connectedEntity.hierarchy.Count == 1)
                 {
                     MessageBox.Show("One or more triggers does not point to a node!", "Trigger setup incorrectly!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;

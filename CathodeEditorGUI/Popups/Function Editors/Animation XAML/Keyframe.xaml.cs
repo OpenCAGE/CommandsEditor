@@ -12,6 +12,8 @@ namespace TimelineFramework
         public Track Track { get { return track; } }
         Track track;
 
+        public string HandleText { get { return keyVal.Content.ToString(); } set { keyVal.Content = value; } }
+
         public Action<Keyframe, float> OnMoved;
 
         Timeline parent;
@@ -27,6 +29,7 @@ namespace TimelineFramework
             this.seconds = seconds;
             this.parent = parent;
             this.track = track;
+            keyVal.Content = "";
 
             // Setup for draggability
             this.MouseEnter += TimelineElement_MouseEnter;

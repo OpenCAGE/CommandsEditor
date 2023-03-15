@@ -36,8 +36,11 @@ namespace CommandsEditor
             animEntity = entity.Copy();
             InitializeComponent();
 
-            CalculateAnimLength();
-            SetupTimeline();
+            anim_length = CalculateAnimLength();
+            animLength.Text = anim_length.ToString();
+
+            SetupAnimTimeline();
+            SetupEventTimeline();
 
 #if DEBUG
             Parameter anim_length_param = animEntity.GetParameter("anim_length");
@@ -52,40 +55,36 @@ namespace CommandsEditor
             this.Focus();
         }
 
-        public void CalculateAnimLength()
+        public float CalculateAnimLength()
         {
+            float animLength = 0.0f;
             for (int i = 0; i < animEntity.animations.Count; i++)
             {
                 for (int x = 0; x < animEntity.animations[i].keyframes.Count; x++)
                 {
-                    if (anim_length < animEntity.animations[i].keyframes[x].secondsSinceStart)
-                        anim_length = animEntity.animations[i].keyframes[x].secondsSinceStart;
+                    if (animLength < animEntity.animations[i].keyframes[x].secondsSinceStart)
+                        animLength = animEntity.animations[i].keyframes[x].secondsSinceStart;
                 }
             }
             for (int i = 0; i < animEntity.events.Count; i++)
             {
                 for (int x = 0; x < animEntity.events[i].keyframes.Count; x++)
                 {
-                    if (anim_length < animEntity.events[i].keyframes[x].secondsSinceStart)
-                        anim_length = animEntity.events[i].keyframes[x].secondsSinceStart;
+                    if (animLength < animEntity.events[i].keyframes[x].secondsSinceStart)
+                        animLength = animEntity.events[i].keyframes[x].secondsSinceStart;
                 }
             }
+            return animLength;
         }
 
-        private void SetupTimeline()
+        private void SetupAnimTimeline()
         {
             keyframeHandlesAnim = new Dictionary<Keyframe, CAGEAnimation.Animation.Keyframe>();
-            keyframeHandlesEvent = new Dictionary<Keyframe, CAGEAnimation.Event.Keyframe>();
             tracksAnim = new Dictionary<Track, CAGEAnimation.Animation>();
-            tracksEvent = new Dictionary<Track, CAGEAnimation.Event>();
 
             activeAnimKeyframe = null;
-            activeEventKeyframe = null;
-            previousAnimHandle = null;
-            previousEventHandle = null;
-
+            activeAnimHandle = null;
             animKeyframeData.Visible = false;
-            eventKeyframeData.Visible = false;
 
             float anim_step = anim_length < 10.0f ? 1.0f : anim_length / 10.0f;
 
@@ -99,11 +98,24 @@ namespace CommandsEditor
                     CAGEAnimation.Animation.Keyframe keyframeData = animEntity.animations[i].keyframes[x];
                     Keyframe keyframeUI = animTimeline.AddKeyframe(keyframeData.secondsSinceStart, (i + 1).ToString());
                     keyframeUI.OnMoved += OnHandleMoved;
+                    keyframeUI.HandleText = keyframeData.paramValue.ToString("0.00");
                     keyframeHandlesAnim.Add(keyframeUI, keyframeData);
                     if (!tracksAnim.ContainsKey(keyframeUI.Track)) tracksAnim.Add(keyframeUI.Track, animEntity.animations[i]);
                 }
             }
             animHost.Child = animTimeline;
+        }
+
+        private void SetupEventTimeline()
+        {
+            keyframeHandlesEvent = new Dictionary<Keyframe, CAGEAnimation.Event.Keyframe>();
+            tracksEvent = new Dictionary<Track, CAGEAnimation.Event>();
+
+            activeEventKeyframe = null;
+            activeEventHandle = null;
+            eventKeyframeData.Visible = false;
+
+            float anim_step = anim_length < 10.0f ? 1.0f : anim_length / 10.0f;
 
             Timeline eventTimeline = new Timeline(eventHost.Width, eventHost.Height);
             eventTimeline.OnNewKeyframe += OnKeyframeAddedToTrack_Event;
@@ -130,7 +142,6 @@ namespace CommandsEditor
             e.keyframes.Add(keyData);
             keyframeHandlesAnim.Add(key, keyData);
             key.OnMoved += OnHandleMoved;
-            Console.WriteLine("Added new entity anim keyframe");
         }
         private void OnKeyframeAddedToTrack_Event(Keyframe key)
         {
@@ -140,20 +151,19 @@ namespace CommandsEditor
             e.keyframes.Add(keyData);
             keyframeHandlesEvent.Add(key, keyData);
             key.OnMoved += OnHandleMoved;
-            Console.WriteLine("Added new event keyframe");
         }
 
         CAGEAnimation.Animation.Keyframe activeAnimKeyframe = null;
         CAGEAnimation.Event.Keyframe activeEventKeyframe = null;
-        Keyframe previousAnimHandle = null;
-        Keyframe previousEventHandle = null;
+        Keyframe activeAnimHandle = null;
+        Keyframe activeEventHandle = null;
         private void OnHandleMoved(Keyframe handle, float time)
         {
             if (keyframeHandlesAnim.ContainsKey(handle))
             {
-                if (previousAnimHandle != null) previousAnimHandle.Highlight(false);
+                if (activeAnimHandle != null) activeAnimHandle.Highlight(false);
                 handle.Highlight();
-                previousAnimHandle = handle;
+                activeAnimHandle = handle;
 
                 activeAnimKeyframe = keyframeHandlesAnim[handle];
                 activeAnimKeyframe.secondsSinceStart = time;
@@ -166,9 +176,9 @@ namespace CommandsEditor
             }
             else if (keyframeHandlesEvent.ContainsKey(handle))
             {
-                if (previousEventHandle != null) previousEventHandle.Highlight(false);
+                if (activeEventHandle != null) activeEventHandle.Highlight(false);
                 handle.Highlight();
-                previousEventHandle = handle;
+                activeEventHandle = handle;
 
                 activeEventKeyframe = keyframeHandlesEvent[handle];
                 activeEventKeyframe.secondsSinceStart = time;
@@ -182,6 +192,33 @@ namespace CommandsEditor
             }
         }
 
+        private void deleteAnimKeyframe_Click(object sender, EventArgs e)
+        {
+            tracksAnim[activeAnimHandle.Track].keyframes.Remove(activeAnimKeyframe);
+        }
+        private void deleteEventKeyframe_Click(object sender, EventArgs e)
+        {
+            tracksEvent[activeEventHandle.Track].keyframes.Remove(activeEventKeyframe);
+        }
+
+        private void addAnimationTrack_Click(object sender, EventArgs e)
+        {
+
+        }
+        private void deleteAnimationTrack_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void addEventTrack_Click(object sender, EventArgs e)
+        {
+
+        }
+        private void deleteEventTrack_Click(object sender, EventArgs e)
+        {
+
+        }
+
         private void SaveEntity_Click(object sender, EventArgs e)
         {
             CalculateAnimLength();
@@ -190,16 +227,11 @@ namespace CommandsEditor
             this.Close();
         }
 
-        private enum CurrentDisplay
-        {
-            ANIMATION_KEYFRAMES,
-            EVENT_KEYFRAMES,
-        }
-
         private void animKeyframeValue_TextChanged(object sender, EventArgs e)
         {
             animKeyframeValue.Text = EditorUtils.ForceStringNumeric(animKeyframeValue.Text, true);
             activeAnimKeyframe.paramValue = Convert.ToSingle(animKeyframeValue.Text);
+            activeAnimHandle.HandleText = activeAnimKeyframe.paramValue.ToString("0.00");
         }
         private void startVelX_TextChanged(object sender, EventArgs e)
         {
@@ -233,6 +265,34 @@ namespace CommandsEditor
             //Handle non-convertable param names
             if (activeEventKeyframe.unk3.ToByteString() == eventParam2.Text) return;
             activeEventKeyframe.unk3 = ShortGuidUtils.Generate(eventParam2.Text);
+        }
+
+        private void entityList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            SetupAnimTimeline();
+        }
+
+        private void animLength_TextChanged(object sender, EventArgs e)
+        {
+            animLength.Text = EditorUtils.ForceStringNumeric(animLength.Text, true);
+        }
+        private void editAnimLength_Click(object sender, EventArgs e)
+        {
+            animLength.Text = EditorUtils.ForceStringNumeric(animLength.Text, true);
+            float newAnimLength = Convert.ToSingle(animLength.Text);
+
+            //Validate no keyframes are below the new length
+            float actualAnimLength = CalculateAnimLength();
+            if (actualAnimLength > newAnimLength)
+            {
+                MessageBox.Show("There are keyframes that are placed beyond the new animation length.\nPlease move these keyframes within range before updating the length!", "Actual animation exceeds requested length!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                animLength.Text = anim_length.ToString();
+                return;
+            }
+
+            anim_length = newAnimLength;
+            SetupAnimTimeline();
+            SetupEventTimeline();
         }
     }
 }

@@ -428,7 +428,7 @@ namespace CommandsEditor
             {
                 case EntityVariant.OVERRIDE:
                 {
-                    Entity entity = CommandsUtils.ResolveHierarchy(Editor.commands, Editor.selected.composite, ((OverrideEntity)Editor.selected.entity).hierarchy, out flow, out string hierarchy);
+                    Entity entity = CommandsUtils.ResolveHierarchy(Editor.commands, Editor.selected.composite, ((OverrideEntity)Editor.selected.entity).connectedEntity.hierarchy, out flow, out string hierarchy);
                     if (entity != null)
                     {
                         LoadComposite(flow.name);
@@ -438,7 +438,7 @@ namespace CommandsEditor
                 }
                 case EntityVariant.PROXY:
                 {
-                    Entity entity = CommandsUtils.ResolveHierarchy(Editor.commands, Editor.selected.composite, ((ProxyEntity)Editor.selected.entity).hierarchy, out flow, out string hierarchy);
+                    Entity entity = CommandsUtils.ResolveHierarchy(Editor.commands, Editor.selected.composite, ((ProxyEntity)Editor.selected.entity).connectedEntity.hierarchy, out flow, out string hierarchy);
                     if (entity != null)
                     {
                         LoadComposite(flow.name);
@@ -650,8 +650,8 @@ namespace CommandsEditor
                             List<TriggerSequence.Entity> triggers = new List<TriggerSequence.Entity>();
                             for (int x = 0; x < triggerSequence.entities.Count; x++)
                             {
-                                if (triggerSequence.entities[x].hierarchy.Count < 2 ||
-                                    triggerSequence.entities[x].hierarchy[triggerSequence.entities[x].hierarchy.Count - 2] != Editor.selected.entity.shortGUID)
+                                if (triggerSequence.entities[x].connectedEntity.hierarchy.Count < 2 ||
+                                    triggerSequence.entities[x].connectedEntity.hierarchy[triggerSequence.entities[x].connectedEntity.hierarchy.Count - 2] != Editor.selected.entity.shortGUID)
                                 {
                                     triggers.Add(triggerSequence.entities[x]);
                                 }
@@ -663,8 +663,8 @@ namespace CommandsEditor
                             List<CAGEAnimation.Connection> headers = new List<CAGEAnimation.Connection>();
                             for (int x = 0; x < cageAnim.connections.Count; x++)
                             {
-                                if (cageAnim.connections[x].connectedEntity.Count < 2 ||
-                                    cageAnim.connections[x].connectedEntity[cageAnim.connections[x].connectedEntity.Count - 2] != Editor.selected.entity.shortGUID)
+                                if (cageAnim.connections[x].connectedEntity.hierarchy.Count < 2 ||
+                                    cageAnim.connections[x].connectedEntity.hierarchy[cageAnim.connections[x].connectedEntity.hierarchy.Count - 2] != Editor.selected.entity.shortGUID)
                                 {
                                     headers.Add(cageAnim.connections[x]);
                                 }
@@ -859,8 +859,8 @@ namespace CommandsEditor
                 case EntityVariant.OVERRIDE:
                     hierarchyDisplay.Visible = true;
                     string hierarchy = "";
-                    if (entity.variant == EntityVariant.PROXY) CommandsUtils.ResolveHierarchy(Editor.commands, Editor.selected.composite, ((ProxyEntity)entity).hierarchy, out Composite comp, out hierarchy);
-                    else CommandsUtils.ResolveHierarchy(Editor.commands, Editor.selected.composite, ((OverrideEntity)entity).hierarchy, out Composite comp, out hierarchy);
+                    if (entity.variant == EntityVariant.PROXY) CommandsUtils.ResolveHierarchy(Editor.commands, Editor.selected.composite, ((ProxyEntity)entity).connectedEntity.hierarchy, out Composite comp, out hierarchy);
+                    else CommandsUtils.ResolveHierarchy(Editor.commands, Editor.selected.composite, ((OverrideEntity)entity).connectedEntity.hierarchy, out Composite comp, out hierarchy);
                     hierarchyDisplay.Text = hierarchy;
                     jumpToComposite.Visible = true;
                     selected_entity_name.Text = EntityUtils.GetName(Editor.selected.composite.shortGUID, entity.shortGUID);

@@ -50,11 +50,11 @@ namespace CommandsEditor
                         desc = EntityUtils.GetName(composite.shortGUID, entity.shortGUID) + " (" + ShortGuidUtils.FindString(((FunctionEntity)entity).function) + ")";
                     break;
                 case EntityVariant.OVERRIDE:
-                    CommandsUtils.ResolveHierarchy(Editor.commands, composite, ((OverrideEntity)entity).hierarchy, out Composite c, out string s, false);
+                    CommandsUtils.ResolveHierarchy(Editor.commands, composite, ((OverrideEntity)entity).connectedEntity.hierarchy, out Composite c, out string s, false);
                     desc = "[OVERRIDE] " + s;
                     break;
                 case EntityVariant.PROXY:
-                    CommandsUtils.ResolveHierarchy(Editor.commands, composite, ((ProxyEntity)entity).hierarchy, out Composite c2, out string s2, false);
+                    CommandsUtils.ResolveHierarchy(Editor.commands, composite, ((ProxyEntity)entity).connectedEntity.hierarchy, out Composite c2, out string s2, false);
                     desc = "[PROXY] " + EntityUtils.GetName(composite.shortGUID, entity.shortGUID) + " (" + s2 + ")";
                     break;
             }
@@ -110,9 +110,9 @@ namespace CommandsEditor
                     items.Add(ShortGuidUtils.FindString(((VariableEntity)entity).name));
                     break;
                 case EntityVariant.OVERRIDE:
-                    return GenerateParameterList(CommandsUtils.ResolveHierarchy(Editor.commands, Editor.selected.composite, ((OverrideEntity)entity).hierarchy, out Composite comp1, out string hierarchy1));
+                    return GenerateParameterList(CommandsUtils.ResolveHierarchy(Editor.commands, Editor.selected.composite, ((OverrideEntity)entity).connectedEntity.hierarchy, out Composite comp1, out string hierarchy1));
                 case EntityVariant.PROXY:
-                    return GenerateParameterList(CommandsUtils.ResolveHierarchy(Editor.commands, Editor.selected.composite, ((ProxyEntity)entity).hierarchy, out Composite comp2, out string hierarchy2));
+                    return GenerateParameterList(CommandsUtils.ResolveHierarchy(Editor.commands, Editor.selected.composite, ((ProxyEntity)entity).connectedEntity.hierarchy, out Composite comp2, out string hierarchy2));
             }
             items.Sort();
             return items;
@@ -149,13 +149,13 @@ namespace CommandsEditor
             {
                 foreach (OverrideEntity ovr in comp.overrides)
                 {
-                    Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, comp, ovr.hierarchy, out Composite compRef, out string str);
+                    Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, comp, ovr.connectedEntity.hierarchy, out Composite compRef, out string str);
                     if (ent != Editor.selected.entity) continue;
                     return true;
                 }
                 foreach (ProxyEntity prox in comp.proxies)
                 {
-                    Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, comp, prox.hierarchy, out Composite compRef, out string str);
+                    Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, comp, prox.connectedEntity.hierarchy, out Composite compRef, out string str);
                     if (ent != Editor.selected.entity) continue;
                     return true;
                 }
@@ -163,7 +163,7 @@ namespace CommandsEditor
                 {
                     foreach (TriggerSequence.Entity trigger in trig.entities)
                     {
-                        Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, comp, trigger.hierarchy, out Composite compRef, out string str);
+                        Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, comp, trigger.connectedEntity.hierarchy, out Composite compRef, out string str);
                         if (ent != Editor.selected.entity) continue;
                         return true;
                     }
@@ -187,7 +187,7 @@ namespace CommandsEditor
                 {
                     foreach (TriggerSequence.Entity trigger in trig.entities)
                     {
-                        if (CommandsUtils.ResolveHierarchy(Editor.commands, comp, trigger.hierarchy, out Composite compRef, out string str) != Editor.selected.entity) continue;
+                        if (CommandsUtils.ResolveHierarchy(Editor.commands, comp, trigger.connectedEntity.hierarchy, out Composite compRef, out string str) != Editor.selected.entity) continue;
 
                         List<FunctionEntity> zones = comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.Zone));
                         foreach (FunctionEntity z in zones)
