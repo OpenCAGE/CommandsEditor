@@ -36,6 +36,7 @@ namespace CommandsEditor
 
         public CommandsEditor()
         {
+            /*
             LocalDebug.TestAllCmds();
             return;
 

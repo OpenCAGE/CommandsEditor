@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 
 namespace TimelineFramework
@@ -15,10 +13,11 @@ namespace TimelineFramework
         List<Track> _tracks = new List<Track>();
         Border _border;
 
+        public Action<Keyframe> OnNewKeyframe;
+
         int width;
         int height;
         int elementTop;
-        int spacing;
         float startSeconds;
         float endSeconds;
         internal int pixelDistance;
@@ -33,20 +32,39 @@ namespace TimelineFramework
             border.Height = h;
         }
 
-        public Keyframe AddKeyframe(float seconds, int trackIndex)
+        public Keyframe AddKeyframe(float seconds, string trackName)
         {
-            double trackOffset = elementTop + (trackIndex * 20.0f);
-
-            Track track = _tracks.FirstOrDefault(o => o.Index == trackIndex);
-            if (track == null)
+            int trackIndex = -1;
+            for (int i = 0; i < _tracks.Count; i++)
             {
-                track = new Track(_border.Width, trackIndex);
+                if (_tracks[i].TrackName == trackName)
+                {
+                    trackIndex = i;
+                    break;
+                }
+            }
+            Track track;
+            if (trackIndex == -1)
+            {
+                track = new Track(_border.Width, trackName, _tracks.Count);
+                track.OnNewKeyframe += OnTrackAddedKeyframe;
+                trackIndex = _tracks.Count;
                 _tracks.Add(track);
                 mainCanvas.Children.Add(track);
-                Canvas.SetTop(track, trackOffset + 5);
-                Canvas.SetLeft(track, 0);
-                Canvas.SetZIndex(track, 5);
+            }
+            else
+            {
+                track = _tracks[trackIndex];
+            }
+            trackIndex += 1;
 
+            double trackOffset = elementTop + (trackIndex * 20.0f);
+            Canvas.SetTop(track, trackOffset + 5);
+            Canvas.SetLeft(track, 0);
+            Canvas.SetZIndex(track, 5);
+
+            if (trackIndex == _tracks.Count - 1)
+            {
                 _border.Height = trackOffset + 12.0f;
                 mainCanvas.Height = _border.Height + 30;
             }
@@ -57,7 +75,14 @@ namespace TimelineFramework
             Canvas.SetTop(key, trackOffset);
             Canvas.SetLeft(key, (pixelDistance * (seconds - startSeconds) / (endSeconds - startSeconds)) - 2);
             Canvas.SetZIndex(track, 10);
+
             return key;
+        }
+
+        private void OnTrackAddedKeyframe(Track track)
+        {
+            Keyframe key = AddKeyframe(endSeconds, track.TrackName);
+            OnNewKeyframe?.Invoke(key);
         }
 
         public void RefreshElement(Keyframe key)
@@ -69,7 +94,6 @@ namespace TimelineFramework
         {
             this. startSeconds = startSeconds;
             this. endSeconds = endSeconds;
-            this. spacing = spacing;
 
             float boxHeight = height - 46; // To account for TimelineMark height & scrollbar height. This value assumes the height of the Aero-style scrollbar.
 

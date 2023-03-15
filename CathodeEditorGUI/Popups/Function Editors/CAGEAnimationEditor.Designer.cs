@@ -49,9 +49,15 @@
             this.label8 = new System.Windows.Forms.Label();
             this.eventParam2 = new System.Windows.Forms.TextBox();
             this.eventParam1 = new System.Windows.Forms.TextBox();
-            this.displaySelection = new System.Windows.Forms.ComboBox();
+            this.eventHost = new System.Windows.Forms.Integration.ElementHost();
+            this.button1 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.animKeyframeData.SuspendLayout();
             this.eventKeyframeData.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // animKeyframeValue
@@ -64,6 +70,7 @@
             // 
             // animKeyframeData
             // 
+            this.animKeyframeData.Controls.Add(this.button1);
             this.animKeyframeData.Controls.Add(this.label7);
             this.animKeyframeData.Controls.Add(this.label6);
             this.animKeyframeData.Controls.Add(this.label5);
@@ -76,12 +83,12 @@
             this.animKeyframeData.Controls.Add(this.startVelY);
             this.animKeyframeData.Controls.Add(this.startVelX);
             this.animKeyframeData.Controls.Add(this.animKeyframeValue);
-            this.animKeyframeData.Location = new System.Drawing.Point(661, 473);
+            this.animKeyframeData.Location = new System.Drawing.Point(863, 19);
             this.animKeyframeData.Name = "animKeyframeData";
-            this.animKeyframeData.Size = new System.Drawing.Size(198, 136);
+            this.animKeyframeData.Size = new System.Drawing.Size(198, 164);
             this.animKeyframeData.TabIndex = 12;
             this.animKeyframeData.TabStop = false;
-            this.animKeyframeData.Text = "Animation Keyframe Data";
+            this.animKeyframeData.Text = "Selected Keyframe Data";
             // 
             // label7
             // 
@@ -180,7 +187,7 @@
             // 
             // animHost
             // 
-            this.animHost.Location = new System.Drawing.Point(8, 8);
+            this.animHost.Location = new System.Drawing.Point(6, 19);
             this.animHost.Name = "animHost";
             this.animHost.Size = new System.Drawing.Size(851, 459);
             this.animHost.TabIndex = 13;
@@ -189,9 +196,9 @@
             // 
             // SaveEntity
             // 
-            this.SaveEntity.Location = new System.Drawing.Point(8, 622);
+            this.SaveEntity.Location = new System.Drawing.Point(911, 751);
             this.SaveEntity.Name = "SaveEntity";
-            this.SaveEntity.Size = new System.Drawing.Size(111, 23);
+            this.SaveEntity.Size = new System.Drawing.Size(167, 36);
             this.SaveEntity.TabIndex = 12;
             this.SaveEntity.Text = "Save";
             this.SaveEntity.UseVisualStyleBackColor = true;
@@ -199,16 +206,17 @@
             // 
             // eventKeyframeData
             // 
+            this.eventKeyframeData.Controls.Add(this.button2);
             this.eventKeyframeData.Controls.Add(this.label9);
             this.eventKeyframeData.Controls.Add(this.label8);
             this.eventKeyframeData.Controls.Add(this.eventParam2);
             this.eventKeyframeData.Controls.Add(this.eventParam1);
-            this.eventKeyframeData.Location = new System.Drawing.Point(351, 473);
+            this.eventKeyframeData.Location = new System.Drawing.Point(863, 19);
             this.eventKeyframeData.Name = "eventKeyframeData";
-            this.eventKeyframeData.Size = new System.Drawing.Size(304, 95);
+            this.eventKeyframeData.Size = new System.Drawing.Size(198, 127);
             this.eventKeyframeData.TabIndex = 14;
             this.eventKeyframeData.TabStop = false;
-            this.eventKeyframeData.Text = "Event Keyframe Data";
+            this.eventKeyframeData.Text = "Selected Keyframe Data";
             // 
             // label9
             // 
@@ -232,7 +240,7 @@
             // 
             this.eventParam2.Location = new System.Drawing.Point(6, 67);
             this.eventParam2.Name = "eventParam2";
-            this.eventParam2.Size = new System.Drawing.Size(291, 20);
+            this.eventParam2.Size = new System.Drawing.Size(184, 20);
             this.eventParam2.TabIndex = 10;
             this.eventParam2.TextChanged += new System.EventHandler(this.eventParam2_TextChanged);
             // 
@@ -240,43 +248,79 @@
             // 
             this.eventParam1.Location = new System.Drawing.Point(6, 30);
             this.eventParam1.Name = "eventParam1";
-            this.eventParam1.Size = new System.Drawing.Size(291, 20);
+            this.eventParam1.Size = new System.Drawing.Size(184, 20);
             this.eventParam1.TabIndex = 9;
             this.eventParam1.TextChanged += new System.EventHandler(this.eventParam1_TextChanged);
             // 
-            // displaySelection
+            // eventHost
             // 
-            this.displaySelection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.displaySelection.FormattingEnabled = true;
-            this.displaySelection.Items.AddRange(new object[] {
-            "Animation Keyframes",
-            "Event Keyframes"});
-            this.displaySelection.Location = new System.Drawing.Point(12, 518);
-            this.displaySelection.Name = "displaySelection";
-            this.displaySelection.Size = new System.Drawing.Size(188, 21);
-            this.displaySelection.TabIndex = 15;
-            this.displaySelection.SelectedIndexChanged += new System.EventHandler(this.displaySelection_SelectedIndexChanged);
+            this.eventHost.Location = new System.Drawing.Point(6, 19);
+            this.eventHost.Name = "eventHost";
+            this.eventHost.Size = new System.Drawing.Size(851, 213);
+            this.eventHost.TabIndex = 15;
+            this.eventHost.Text = "elementHost1";
+            this.eventHost.Child = null;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(6, 132);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(184, 26);
+            this.button1.TabIndex = 16;
+            this.button1.Text = "Delete Keyframe";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(6, 93);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(184, 26);
+            this.button2.TabIndex = 23;
+            this.button2.Text = "Delete Keyframe";
+            this.button2.UseVisualStyleBackColor = true;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.animHost);
+            this.groupBox1.Controls.Add(this.animKeyframeData);
+            this.groupBox1.Location = new System.Drawing.Point(7, 6);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(1071, 491);
+            this.groupBox1.TabIndex = 16;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Animation Sequences";
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.eventHost);
+            this.groupBox2.Controls.Add(this.eventKeyframeData);
+            this.groupBox2.Location = new System.Drawing.Point(7, 503);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(1071, 242);
+            this.groupBox2.TabIndex = 17;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Event Sequences";
             // 
             // CAGEAnimationEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(867, 671);
-            this.Controls.Add(this.displaySelection);
-            this.Controls.Add(this.eventKeyframeData);
+            this.ClientSize = new System.Drawing.Size(1083, 793);
+            this.Controls.Add(this.groupBox2);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.SaveEntity);
-            this.Controls.Add(this.animHost);
-            this.Controls.Add(this.animKeyframeData);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "CAGEAnimationEditor";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Keyframe Editor";
+            this.Text = "CAGEAnimation Editor";
             this.animKeyframeData.ResumeLayout(false);
             this.animKeyframeData.PerformLayout();
             this.eventKeyframeData.ResumeLayout(false);
             this.eventKeyframeData.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -302,6 +346,10 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.ComboBox displaySelection;
+        private System.Windows.Forms.Integration.ElementHost eventHost;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox groupBox2;
     }
 }

@@ -27,14 +27,17 @@ namespace CommandsEditor
 
         Dictionary<Keyframe, CAGEAnimation.Animation.Keyframe> keyframeHandlesAnim;
         Dictionary<Keyframe, CAGEAnimation.Event.Keyframe> keyframeHandlesEvent;
-        CurrentDisplay currentDisplay = CurrentDisplay.ANIMATION_KEYFRAMES;
+
+        Dictionary<Track, CAGEAnimation.Animation> tracksAnim;
+        Dictionary<Track, CAGEAnimation.Event> tracksEvent;
 
         public CAGEAnimationEditor(CAGEAnimation entity) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             animEntity = entity.Copy();
             InitializeComponent();
 
-            displaySelection.SelectedIndex = 0;
+            CalculateAnimLength();
+            SetupTimeline();
 
 #if DEBUG
             Parameter anim_length_param = animEntity.GetParameter("anim_length");
@@ -47,14 +50,6 @@ namespace CommandsEditor
 
             this.BringToFront();
             this.Focus();
-        }
-
-        private void displaySelection_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            currentDisplay = (CurrentDisplay)displaySelection.SelectedIndex;
-
-            CalculateAnimLength();
-            SetupTimeline();
         }
 
         public void CalculateAnimLength()
@@ -81,72 +76,109 @@ namespace CommandsEditor
         {
             keyframeHandlesAnim = new Dictionary<Keyframe, CAGEAnimation.Animation.Keyframe>();
             keyframeHandlesEvent = new Dictionary<Keyframe, CAGEAnimation.Event.Keyframe>();
+            tracksAnim = new Dictionary<Track, CAGEAnimation.Animation>();
+            tracksEvent = new Dictionary<Track, CAGEAnimation.Event>();
 
             activeAnimKeyframe = null;
             activeEventKeyframe = null;
-            previousKeyframeUI = null;
+            previousAnimHandle = null;
+            previousEventHandle = null;
 
-            Timeline timeline = new Timeline(animHost.Width, animHost.Height);
-            timeline.Setup(0, anim_length, anim_length / 10.0f, 150);
-            switch (currentDisplay)
+            animKeyframeData.Visible = false;
+            eventKeyframeData.Visible = false;
+
+            float anim_step = anim_length < 10.0f ? 1.0f : anim_length / 10.0f;
+
+            Timeline animTimeline = new Timeline(animHost.Width, animHost.Height);
+            animTimeline.OnNewKeyframe += OnKeyframeAddedToTrack_Anim;
+            animTimeline.Setup(0, anim_length, anim_step, 150);
+            for (int i = 0; i < animEntity.animations.Count; i++)
             {
-                case CurrentDisplay.ANIMATION_KEYFRAMES:
-                    for (int i = 0; i < animEntity.animations.Count; i++)
-                    {
-                        for (int x = 0; x < animEntity.animations[i].keyframes.Count; x++)
-                        {
-                            CAGEAnimation.Animation.Keyframe keyframeData = animEntity.animations[i].keyframes[x];
-                            Keyframe keyframeUI = timeline.AddKeyframe(keyframeData.secondsSinceStart, i + 1);
-                            keyframeUI.OnMoved += OnHandleMoved;
-                            keyframeHandlesAnim.Add(keyframeUI, keyframeData);
-                        }
-                    }
-                    break;
-                case CurrentDisplay.EVENT_KEYFRAMES:
-                    for (int i = 0; i < animEntity.events.Count; i++)
-                    {
-                        for (int x = 0; x < animEntity.events[i].keyframes.Count; x++)
-                        {
-                            CAGEAnimation.Event.Keyframe keyframeData = animEntity.events[i].keyframes[x];
-                            Keyframe keyframeUI = timeline.AddKeyframe(keyframeData.secondsSinceStart, i + 1);
-                            keyframeUI.OnMoved += OnHandleMoved;
-                            keyframeHandlesEvent.Add(keyframeUI, keyframeData);
-                        }
-                    }
-                    break;
+                for (int x = 0; x < animEntity.animations[i].keyframes.Count; x++)
+                {
+                    CAGEAnimation.Animation.Keyframe keyframeData = animEntity.animations[i].keyframes[x];
+                    Keyframe keyframeUI = animTimeline.AddKeyframe(keyframeData.secondsSinceStart, (i + 1).ToString());
+                    keyframeUI.OnMoved += OnHandleMoved;
+                    keyframeHandlesAnim.Add(keyframeUI, keyframeData);
+                    if (!tracksAnim.ContainsKey(keyframeUI.Track)) tracksAnim.Add(keyframeUI.Track, animEntity.animations[i]);
+                }
             }
-            animHost.Child = timeline;
+            animHost.Child = animTimeline;
+
+            Timeline eventTimeline = new Timeline(eventHost.Width, eventHost.Height);
+            eventTimeline.OnNewKeyframe += OnKeyframeAddedToTrack_Event;
+            eventTimeline.Setup(0, anim_length, anim_step, 150);
+            for (int i = 0; i < animEntity.events.Count; i++)
+            {
+                for (int x = 0; x < animEntity.events[i].keyframes.Count; x++)
+                {
+                    CAGEAnimation.Event.Keyframe keyframeData = animEntity.events[i].keyframes[x];
+                    Keyframe keyframeUI = eventTimeline.AddKeyframe(keyframeData.secondsSinceStart, (i + 1).ToString());
+                    keyframeUI.OnMoved += OnHandleMoved;
+                    keyframeHandlesEvent.Add(keyframeUI, keyframeData);
+                    if (!tracksEvent.ContainsKey(keyframeUI.Track)) tracksEvent.Add(keyframeUI.Track, animEntity.events[i]);
+                }
+            }
+            eventHost.Child = eventTimeline;
+        }
+
+        private void OnKeyframeAddedToTrack_Anim(Keyframe key)
+        {
+            CAGEAnimation.Animation e = tracksAnim[key.Track];
+            CAGEAnimation.Animation.Keyframe keyData = new CAGEAnimation.Animation.Keyframe();
+            keyData.secondsSinceStart = key.Seconds;
+            e.keyframes.Add(keyData);
+            keyframeHandlesAnim.Add(key, keyData);
+            key.OnMoved += OnHandleMoved;
+            Console.WriteLine("Added new entity anim keyframe");
+        }
+        private void OnKeyframeAddedToTrack_Event(Keyframe key)
+        {
+            CAGEAnimation.Event e = tracksEvent[key.Track];
+            CAGEAnimation.Event.Keyframe keyData = new CAGEAnimation.Event.Keyframe();
+            keyData.secondsSinceStart = key.Seconds;
+            e.keyframes.Add(keyData);
+            keyframeHandlesEvent.Add(key, keyData);
+            key.OnMoved += OnHandleMoved;
+            Console.WriteLine("Added new event keyframe");
         }
 
         CAGEAnimation.Animation.Keyframe activeAnimKeyframe = null;
         CAGEAnimation.Event.Keyframe activeEventKeyframe = null;
-        Keyframe previousKeyframeUI = null;
+        Keyframe previousAnimHandle = null;
+        Keyframe previousEventHandle = null;
         private void OnHandleMoved(Keyframe handle, float time)
         {
-            animKeyframeData.Visible = currentDisplay == CurrentDisplay.ANIMATION_KEYFRAMES;
-            eventKeyframeData.Visible = currentDisplay == CurrentDisplay.EVENT_KEYFRAMES;
-
-            if (previousKeyframeUI != null) previousKeyframeUI.Highlight(false);
-            handle.Highlight();
-            previousKeyframeUI = handle;
-
-            switch (currentDisplay)
+            if (keyframeHandlesAnim.ContainsKey(handle))
             {
-                case CurrentDisplay.ANIMATION_KEYFRAMES:
-                    activeAnimKeyframe = keyframeHandlesAnim[handle];
-                    activeAnimKeyframe.secondsSinceStart = time;
-                    animKeyframeValue.Text = activeAnimKeyframe.paramValue.ToString();
-                    startVelX.Text = activeAnimKeyframe.startVelocity.X.ToString();
-                    startVelY.Text = activeAnimKeyframe.startVelocity.Y.ToString();
-                    endVelX.Text = activeAnimKeyframe.endVelocity.X.ToString();
-                    endVelY.Text = activeAnimKeyframe.endVelocity.Y.ToString();
-                    break;
-                case CurrentDisplay.EVENT_KEYFRAMES:
-                    activeEventKeyframe = keyframeHandlesEvent[handle];
-                    activeEventKeyframe.secondsSinceStart = time;
-                    eventParam1.Text = activeEventKeyframe.start.ToString();
-                    eventParam2.Text = activeEventKeyframe.unk3.ToString();
-                    break;
+                if (previousAnimHandle != null) previousAnimHandle.Highlight(false);
+                handle.Highlight();
+                previousAnimHandle = handle;
+
+                activeAnimKeyframe = keyframeHandlesAnim[handle];
+                activeAnimKeyframe.secondsSinceStart = time;
+                animKeyframeData.Visible = true;
+                animKeyframeValue.Text = activeAnimKeyframe.paramValue.ToString();
+                startVelX.Text = activeAnimKeyframe.startVelocity.X.ToString();
+                startVelY.Text = activeAnimKeyframe.startVelocity.Y.ToString();
+                endVelX.Text = activeAnimKeyframe.endVelocity.X.ToString();
+                endVelY.Text = activeAnimKeyframe.endVelocity.Y.ToString();
+            }
+            else if (keyframeHandlesEvent.ContainsKey(handle))
+            {
+                if (previousEventHandle != null) previousEventHandle.Highlight(false);
+                handle.Highlight();
+                previousEventHandle = handle;
+
+                activeEventKeyframe = keyframeHandlesEvent[handle];
+                activeEventKeyframe.secondsSinceStart = time;
+                eventKeyframeData.Visible = true;
+                eventParam1.Text = activeEventKeyframe.start.ToString();
+                eventParam2.Text = activeEventKeyframe.unk3.ToString();
+            }
+            else
+            {
+                //WARNING: Invalid logic!
             }
         }
 

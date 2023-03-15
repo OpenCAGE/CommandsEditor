@@ -4,5 +4,21 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d">
-    <Rectangle x:Name="rectOuter" Fill="#FF404040" Height="2" Width="100" Opacity="0.1" IsHitTestVisible="False" />
+    <DockPanel>
+        <Rectangle x:Name="rectOuter" Fill="#FF404040" Height="2" Width="100" Opacity="0.1" DockPanel.Dock="Top" IsHitTestVisible="False" />
+        <Button x:Name="addkeyframebutton" Content="+" FontFamily="Consolas" FontSize="10" Width="17" Height="17" DockPanel.Dock="Right" ToolTip="Add Keyframe" >
+            <Button.RenderTransform>
+                <TransformGroup>
+                    <TranslateTransform X="25" Y="-12"/>
+                </TransformGroup>
+            </Button.RenderTransform>
+        </Button>
+        <Label x:Name="tracknameui" Content="Track name" FontFamily="Consolas" FontSize="10" IsHitTestVisible="False" >
+            <Label.RenderTransform>
+                <TransformGroup>
+                    <TranslateTransform X="0" Y="-12"/>
+                </TransformGroup>
+            </Label.RenderTransform>
+        </Label>
+    </DockPanel>
 </UserControl>
