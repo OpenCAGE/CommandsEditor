@@ -313,6 +313,7 @@
             this.addNewEntityRef.TabIndex = 18;
             this.addNewEntityRef.Text = "Add New Entity Link";
             this.addNewEntityRef.UseVisualStyleBackColor = true;
+            this.addNewEntityRef.Click += new System.EventHandler(this.addNewEntityRef_Click);
             // 
             // addAnimationTrack
             // 

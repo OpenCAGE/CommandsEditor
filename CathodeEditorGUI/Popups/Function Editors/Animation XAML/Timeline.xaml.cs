@@ -79,6 +79,13 @@ namespace TimelineFramework
             return key;
         }
 
+        public void RemoveKeyframe(Keyframe key)
+        {
+            _keyframes.Remove(key);
+            mainCanvas.Children.Remove(key);
+            key.Visibility = Visibility.Hidden;
+        }
+
         private void OnTrackAddedKeyframe(Track track)
         {
             Keyframe key = AddKeyframe(endSeconds, track.TrackName);

@@ -31,28 +31,45 @@ namespace CommandsEditor
         Dictionary<Track, CAGEAnimation.Animation> tracksAnim;
         Dictionary<Track, CAGEAnimation.Event> tracksEvent;
 
+        List<EntityHierarchy> entityListToHierarchies;
+
         public CAGEAnimationEditor(CAGEAnimation entity) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             animEntity = entity.Copy();
             InitializeComponent();
 
             anim_length = CalculateAnimLength();
+            Parameter anim_length_param = animEntity.GetParameter("anim_length");
+            if (anim_length_param != null && anim_length_param.content != null)
+            {
+                float animLengthParam = ((cFloat)anim_length_param.content).value;
+                if (animLengthParam > anim_length) anim_length = animLengthParam;
+            }
             animLength.Text = anim_length.ToString();
+
+            UpdateEntityList();
 
             SetupAnimTimeline();
             SetupEventTimeline();
 
-#if DEBUG
-            Parameter anim_length_param = animEntity.GetParameter("anim_length");
-            if (anim_length_param != null && anim_length_param.content != null)
-            {
-                if (((cFloat)anim_length_param.content).value != anim_length)
-                    Console.WriteLine("WARNING: CAGEAnimation 'anim_length' does not match calculated length based on keyframes!");
-            }
-#endif
-
             this.BringToFront();
             this.Focus();
+        }
+
+        private void UpdateEntityList()
+        {
+            entityListToHierarchies = new List<EntityHierarchy>();
+            entityList.Items.Clear();
+            foreach (CAGEAnimation.Connection connection in animEntity.connections)
+            {
+                string connectionLink = connection.connectedEntity.GetHierarchyAsString(Editor.commands, Editor.selected.composite);
+                if (!entityList.Items.Contains(connectionLink))
+                {
+                    entityList.Items.Add(connectionLink);
+                    entityListToHierarchies.Add(connection.connectedEntity);
+                }
+            }
+            entityList.SelectedIndex = (entityList.Items.Count < 1) ? -1 : 0;
         }
 
         public float CalculateAnimLength()
@@ -84,23 +101,34 @@ namespace CommandsEditor
 
             activeAnimKeyframe = null;
             activeAnimHandle = null;
+            animHost.Child = null;
             animKeyframeData.Visible = false;
+
+            //Filter down anims to the selected entity in the dropdown
+            if (entityList.SelectedIndex == -1) return;
+            List<CAGEAnimation.Animation> filteredAnims = new List<CAGEAnimation.Animation>();
+            List<CAGEAnimation.Connection> filteredConnections = animEntity.connections.FindAll(o => o.connectedEntity == entityListToHierarchies[entityList.SelectedIndex]);
+            for (int i = 0; i < filteredConnections.Count; i++)
+            {
+                CAGEAnimation.Animation anim = animEntity.animations.FirstOrDefault(o => o.shortGUID == filteredConnections[i].keyframeID);
+                if (anim != null) filteredAnims.Add(anim);
+            }
 
             float anim_step = anim_length < 10.0f ? 1.0f : anim_length / 10.0f;
 
             Timeline animTimeline = new Timeline(animHost.Width, animHost.Height);
             animTimeline.OnNewKeyframe += OnKeyframeAddedToTrack_Anim;
             animTimeline.Setup(0, anim_length, anim_step, 150);
-            for (int i = 0; i < animEntity.animations.Count; i++)
+            for (int i = 0; i < filteredAnims.Count; i++)
             {
-                for (int x = 0; x < animEntity.animations[i].keyframes.Count; x++)
+                for (int x = 0; x < filteredAnims[i].keyframes.Count; x++)
                 {
-                    CAGEAnimation.Animation.Keyframe keyframeData = animEntity.animations[i].keyframes[x];
+                    CAGEAnimation.Animation.Keyframe keyframeData = filteredAnims[i].keyframes[x];
                     Keyframe keyframeUI = animTimeline.AddKeyframe(keyframeData.secondsSinceStart, (i + 1).ToString());
                     keyframeUI.OnMoved += OnHandleMoved;
                     keyframeUI.HandleText = keyframeData.paramValue.ToString("0.00");
                     keyframeHandlesAnim.Add(keyframeUI, keyframeData);
-                    if (!tracksAnim.ContainsKey(keyframeUI.Track)) tracksAnim.Add(keyframeUI.Track, animEntity.animations[i]);
+                    if (!tracksAnim.ContainsKey(keyframeUI.Track)) tracksAnim.Add(keyframeUI.Track, filteredAnims[i]);
                 }
             }
             animHost.Child = animTimeline;
@@ -113,6 +141,7 @@ namespace CommandsEditor
 
             activeEventKeyframe = null;
             activeEventHandle = null;
+            eventHost.Child = null;
             eventKeyframeData.Visible = false;
 
             float anim_step = anim_length < 10.0f ? 1.0f : anim_length / 10.0f;
@@ -195,10 +224,34 @@ namespace CommandsEditor
         private void deleteAnimKeyframe_Click(object sender, EventArgs e)
         {
             tracksAnim[activeAnimHandle.Track].keyframes.Remove(activeAnimKeyframe);
+            ((Timeline)animHost.Child).RemoveKeyframe(activeAnimHandle);
+            activeAnimHandle = null;
+            animKeyframeData.Visible = false;
         }
         private void deleteEventKeyframe_Click(object sender, EventArgs e)
         {
             tracksEvent[activeEventHandle.Track].keyframes.Remove(activeEventKeyframe);
+            ((Timeline)eventHost.Child).RemoveKeyframe(activeEventHandle);
+            activeEventHandle = null;
+            eventKeyframeData.Visible = false;
+        }
+
+        private void addNewEntityRef_Click(object sender, EventArgs e)
+        {
+            EditHierarchy hierarchyEditor = new EditHierarchy(Editor.selected.composite, false);
+            hierarchyEditor.Show();
+            hierarchyEditor.OnHierarchyGenerated += HierarchyEditor_HierarchyGenerated;
+        }
+        private void HierarchyEditor_HierarchyGenerated(List<ShortGuid> generatedHierarchy)
+        {
+            //TODO: creating a placeholder here that points to nothing so that the dropdown will pick it up - not ideal, but shouldn't affect in-game
+            CAGEAnimation.Connection connection = new CAGEAnimation.Connection();
+            connection.connectedEntity.hierarchy = generatedHierarchy;
+            connection.objectType = ObjectType.ENTITY;
+            animEntity.connections.Add(connection);
+
+            UpdateEntityList();
+            entityList.SelectedIndex = entityList.Items.Count - 1;
         }
 
         private void addAnimationTrack_Click(object sender, EventArgs e)
@@ -221,7 +274,6 @@ namespace CommandsEditor
 
         private void SaveEntity_Click(object sender, EventArgs e)
         {
-            CalculateAnimLength();
             animEntity.AddParameter("anim_length", new cFloat(anim_length));
             OnSaved?.Invoke(animEntity);
             this.Close();

@@ -1127,7 +1127,8 @@ namespace CommandsEditor
             entity.connections = newEntity.connections;
             entity.events = newEntity.events;
             entity.animations = newEntity.animations;
-
+            entity.parameters = newEntity.parameters;
+            LoadEntity(Editor.selected.entity);
             this.BringToFront();
             this.Focus();
         }
