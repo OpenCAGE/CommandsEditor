@@ -34,6 +34,9 @@ namespace CommandsEditor
 
             parentEntityList.SelectedIndex = _entityList.IndexOf(parentEntity);
             parentEntityList.Enabled = false;
+
+            parentParameterList.AutoSelectOff();
+            childParameterList.AutoSelectOff();
         }
 
         //FOR EDITING AN EXISTING LINK
@@ -56,6 +59,9 @@ namespace CommandsEditor
 
             _initialParentEntity = parentEntity;
             _initialLinkID = initialLinkID;
+
+            parentParameterList.AutoSelectOff();
+            childParameterList.AutoSelectOff();
         }
 
         private void RefreshEntityLists(Composite comp)

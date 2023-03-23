@@ -24,7 +24,63 @@ namespace CommandsEditor
 {
     public static class LocalDebug
     {
-        public static void TestAllCmds()
+        public static void CommandsTest()
+        {
+#if DEBUG
+            List<string> files = Directory.GetFiles(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            Parallel.ForEach(files, file =>
+            {
+                Commands phys = new Commands(file);
+                Parallel.ForEach(phys.Entries, comp =>
+                {
+                    Parallel.ForEach(comp.GetEntities(), ent =>
+                    {
+                        Parallel.ForEach(ent.parameters, param =>
+                        {
+                            if (param.content.dataType == DataType.ENUM)
+                            {
+                                cEnum e = (cEnum)param.content;
+                                Console.WriteLine(e.enumID.ToString() + ", " + e.enumIndex);
+                            }
+                        });
+                    });
+                });
+            });
+#endif
+        }
+
+        public static void CheckMissingCageAnimParams()
+        {
+#if DEBUG
+            List<string> files = Directory.GetFiles(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            Parallel.ForEach(files, file =>
+            {
+                Commands phys = new Commands(file);
+                Composite gui = phys.GetComposite("ARCHETYPES\\GAMEPLAY\\UI_OBJECTIVE");
+                if (gui != null)
+                {
+                    ShortGuid id = gui.shortGUID;
+                    Parallel.ForEach(phys.Entries, comp =>
+                    {
+                        Parallel.ForEach(comp.functions.FindAll(o => o.function == id), ent =>
+                        {
+                            Console.WriteLine(file + "\n\t" + comp.name + "\n\t\t" + EntityUtils.GetName(comp, ent));
+
+                            //Parallel.ForEach(ent.parameters, param =>
+                            //{
+                            //    if (list.Contains(param.name))
+                            //    {
+                            //        Console.WriteLine(file + "\n\t" + comp.name + "\n\t\t" + EntityUtils.GetName(comp, ent) + " -> " + param.name.ToString());
+                            //    }
+                            //});
+                        });
+                    });
+                }
+            });
+#endif
+        }
+
+        public static void SanityCheckCAGEAnimation()
         {
 #if DEBUG
             List<string> files = Directory.GetFiles(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();

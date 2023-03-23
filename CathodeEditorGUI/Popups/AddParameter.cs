@@ -29,6 +29,8 @@ namespace CommandsEditor
             param_name.BeginUpdate();
             for (int i = 0; i < options.Count; i++) param_name.Items.Add(options[i]);
             param_name.EndUpdate();
+
+            param_name.AutoSelectOff();
         }
 
         private void button1_Click(object sender, EventArgs e)

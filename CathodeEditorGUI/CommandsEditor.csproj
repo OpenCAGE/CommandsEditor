@@ -263,6 +263,7 @@
       <DependentUpon>GUI_SplineViewer.xaml</DependentUpon>
     </Compile>
     <Compile Include="Scripts\CathodeEntityDatabase.cs" />
+    <Compile Include="Scripts\ComboBoxExtensions.cs" />
     <Compile Include="Scripts\LocalDebug.cs" />
     <Compile Include="Scripts\ObjectExtensions.cs" />
     <Compile Include="Popups\AddOrEditResource.cs">

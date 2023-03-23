@@ -120,9 +120,11 @@ namespace CommandsEditor.UserControls
             comboBox1.Text = cString.value;
             comboBox1.SelectedItem = cString.value;
             comboBox1.EndUpdate();
+
+            comboBox1.AutoSelectOff();
         }
 
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        private void comboBox1_Changed(object sender, EventArgs e)
         {
             stringVal.value = comboBox1.Text;
             

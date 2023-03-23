@@ -36,6 +36,12 @@ namespace CommandsEditor
 
         public CommandsEditor()
         {
+            //LocalDebug.CheckMissingCageAnimParams();
+            //string sdfd = "";
+
+            //LocalDebug.CommandsTest();
+            //return;
+
             /*
             LocalDebug.TestAllCmds();
             return;
@@ -61,7 +67,6 @@ namespace CommandsEditor
             Environment.Exit(0);
             return;
 
-            string bruh = "";
             */
             InitializeComponent();
             _treeHelper = new TreeUtility(FileTree);
@@ -139,6 +144,7 @@ namespace CommandsEditor
 
         private void CommandsEditor_Load(object sender, EventArgs e)
         {
+            return;
 #if DEBUG
             env_list.SelectedItem = "DLC\\BSPNOSTROMO_TWOTEAMS_PATCH";
             LoadCommandsPAK(env_list.SelectedItem.ToString());
