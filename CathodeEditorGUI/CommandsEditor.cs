@@ -174,6 +174,7 @@ namespace CommandsEditor
             {
                 Editor.selected.entity = null;
                 entityInfoGroup.Text = "Selected Entity Info";
+                entityParamGroup.Text = "Selected Entity Parameters";
                 selected_entity_type_description.Text = "";
                 selected_entity_name.Text = "";
                 for (int i = 0; i < entity_params.Controls.Count; i++) 
@@ -230,6 +231,24 @@ namespace CommandsEditor
 
             //Load root composite
             _treeHelper.SelectNode(Editor.commands.EntryPoints[0].name);
+
+            //TEMP: Testing out new brute-forced ShortGuids
+            ShortGuidUtils.Generate("Win");
+            ShortGuidUtils.Generate("End");
+            ShortGuidUtils.Generate("Cut");
+            for (int i = 0; i < 26; i++)
+                ShortGuidUtils.Generate("cut" + i);
+            //ShortGuidUtils.Generate("temp");
+            //ShortGuidUtils.Generate("test");
+            //ShortGuidUtils.Generate("M01");
+            //ShortGuidUtils.Generate("M02");
+            //ShortGuidUtils.Generate("M03");
+            //ShortGuidUtils.Generate("TEST");
+            //ShortGuidUtils.Generate("CORE");
+            //ShortGuidUtils.Generate("left");
+            //ShortGuidUtils.Generate("back");
+            //ShortGuidUtils.Generate("bind");
+            //ShortGuidUtils.Generate("cam");
         }
         private void load_commands_pak_Click(object sender, EventArgs e)
         {
@@ -830,7 +849,8 @@ namespace CommandsEditor
             Task.Factory.StartNew(() => BackgroundEntityLoader(entity, this));
 
             //populate info labels
-            entityInfoGroup.Text = "Selected " + CultureInfo.CurrentCulture.TextInfo.ToTitleCase(entity.variant.ToString().ToLower().Replace('_', ' ')) + " Info";
+            entityInfoGroup.Text = "Selected " + CultureInfo.CurrentCulture.TextInfo.ToTitleCase(entity.variant.ToString().ToLower().Replace('_', ' ')) + " Entity Info";
+            entityParamGroup.Text = "Selected " + CultureInfo.CurrentCulture.TextInfo.ToTitleCase(entity.variant.ToString().ToLower().Replace('_', ' ')) + " Entity Parameters";
             string description = "";
             switch (entity.variant)
             {

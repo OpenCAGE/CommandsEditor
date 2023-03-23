@@ -59,5 +59,15 @@ namespace CommandsEditor.UserControls
         {
             GoToEntity?.Invoke(Editor.selected.entity);
         }
+
+        private void DeleteLink_Click(object sender, EventArgs e)
+        {
+            if (_isLinkOut)
+                Editor.selected.entity.childLinks.RemoveAll(o => o.connectionID == _link.connectionID);
+            else
+                _linkedEntity.childLinks.RemoveAll(o => o.connectionID == _link.connectionID);
+
+            GoToEntity?.Invoke(Editor.selected.entity);
+        }
     }
 }

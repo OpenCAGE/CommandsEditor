@@ -60,7 +60,7 @@
             this.composite_content = new System.Windows.Forms.ListBox();
             this.entity_search_box = new System.Windows.Forms.TextBox();
             this.entity_search_btn = new System.Windows.Forms.Button();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.entityParamGroup = new System.Windows.Forms.GroupBox();
             this.addLinkOut = new System.Windows.Forms.Button();
             this.removeParameter = new System.Windows.Forms.Button();
             this.addNewParameter = new System.Windows.Forms.Button();
@@ -78,7 +78,7 @@
             this.groupBox1.SuspendLayout();
             this.entityInfoGroup.SuspendLayout();
             this.groupBox4.SuspendLayout();
-            this.groupBox2.SuspendLayout();
+            this.entityParamGroup.SuspendLayout();
             this.groupBox8.SuspendLayout();
             this.groupBox10.SuspendLayout();
             this.SuspendLayout();
@@ -164,7 +164,7 @@
             this.groupBox1.Controls.Add(this.entityInfoGroup);
             this.groupBox1.Controls.Add(this.editFunction);
             this.groupBox1.Controls.Add(this.groupBox4);
-            this.groupBox1.Controls.Add(this.groupBox2);
+            this.groupBox1.Controls.Add(this.entityParamGroup);
             this.groupBox1.Location = new System.Drawing.Point(392, 55);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(857, 744);
@@ -404,18 +404,18 @@
             this.entity_search_btn.UseVisualStyleBackColor = true;
             this.entity_search_btn.Click += new System.EventHandler(this.entity_search_btn_Click);
             // 
-            // groupBox2
+            // entityParamGroup
             // 
-            this.groupBox2.Controls.Add(this.addLinkOut);
-            this.groupBox2.Controls.Add(this.removeParameter);
-            this.groupBox2.Controls.Add(this.addNewParameter);
-            this.groupBox2.Controls.Add(this.entity_params);
-            this.groupBox2.Location = new System.Drawing.Point(469, 123);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(382, 616);
-            this.groupBox2.TabIndex = 147;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Selected Entity Parameters";
+            this.entityParamGroup.Controls.Add(this.addLinkOut);
+            this.entityParamGroup.Controls.Add(this.removeParameter);
+            this.entityParamGroup.Controls.Add(this.addNewParameter);
+            this.entityParamGroup.Controls.Add(this.entity_params);
+            this.entityParamGroup.Location = new System.Drawing.Point(469, 123);
+            this.entityParamGroup.Name = "entityParamGroup";
+            this.entityParamGroup.Size = new System.Drawing.Size(382, 616);
+            this.entityParamGroup.TabIndex = 147;
+            this.entityParamGroup.TabStop = false;
+            this.entityParamGroup.Text = "Selected Entity Parameters";
             // 
             // addLinkOut
             // 
@@ -567,7 +567,7 @@
             this.entityInfoGroup.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
+            this.entityParamGroup.ResumeLayout(false);
             this.groupBox8.ResumeLayout(false);
             this.groupBox8.PerformLayout();
             this.groupBox10.ResumeLayout(false);
@@ -589,7 +589,7 @@
         private System.Windows.Forms.TextBox entity_search_box;
         private System.Windows.Forms.Button entity_search_btn;
         private System.Windows.Forms.ListBox composite_content;
-        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.GroupBox entityParamGroup;
         private System.Windows.Forms.Panel entity_params;
         private System.Windows.Forms.Button load_commands_pak;
         private System.Windows.Forms.ComboBox env_list;

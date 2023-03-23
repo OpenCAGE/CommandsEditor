@@ -340,7 +340,7 @@ namespace CommandsEditor
         private void AddNewConnectionSet(CAGEAnimation.Connection conn, float defaultKeyValue, ShortGuid paramID, string subProp = "")
         {
             CAGEAnimation.Animation.Keyframe keyStart = new CAGEAnimation.Animation.Keyframe();
-            keyStart.secondsSinceStart = anim_length;
+            keyStart.secondsSinceStart = 0.0f;
             keyStart.paramValue = defaultKeyValue;
             CAGEAnimation.Animation.Keyframe keyEnd = new CAGEAnimation.Animation.Keyframe();
             keyEnd.secondsSinceStart = anim_length;
