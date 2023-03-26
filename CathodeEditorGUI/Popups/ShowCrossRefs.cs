@@ -22,9 +22,6 @@ namespace CommandsEditor
         public ShowCrossRefs() : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             InitializeComponent();
-#if !DEBUG
-            showLinkedCageAnimations.Visible = false;
-#endif
             UpdateUI(CurrentDisplay.PROXIES);
         }
 
@@ -119,7 +116,13 @@ namespace CommandsEditor
                     case CurrentDisplay.CAGEANIMATIONS:
                         foreach (CAGEAnimation anim in comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.CAGEAnimation)))
                         {
-                            //TODO!
+                            foreach (CAGEAnimation.Connection connection in anim.connections)
+                            {
+                                Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, comp, connection.connectedEntity.hierarchy, out Composite compRef, out string str);
+                                if (ent != Editor.selected.entity) continue;
+                                entities.Add(new EntityRef() { composite = comp, entity = anim.shortGUID });
+                                referenceList.Items.Add(EditorUtils.GenerateEntityName(anim, comp));
+                            }
                         }
                         break;
                 }

@@ -167,12 +167,15 @@ namespace CommandsEditor
                         return true;
                     }
                 }
-                /*
                 foreach (CAGEAnimation anim in comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.CAGEAnimation)))
                 {
-                    //TODO!
+                    foreach (CAGEAnimation.Connection connection in anim.connections)
+                    {
+                        Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, comp, connection.connectedEntity.hierarchy, out Composite compRef, out string str);
+                        if (ent != Editor.selected.entity) continue;
+                        return true;
+                    }
                 }
-                */
             }
             return false;
         }
