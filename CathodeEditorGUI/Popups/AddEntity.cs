@@ -102,7 +102,7 @@ namespace CommandsEditor
             generateHierarchy.Visible = true;
             createNewEntity.Enabled = false;
             hierarchy = null;
-            addDefaultParams.Visible = false;
+            addDefaultParams.Visible = true;
         }
         private void selectedOverrideEntity(object sender, EventArgs e)
         {
@@ -189,7 +189,7 @@ namespace CommandsEditor
             else if (createDatatypeEntity.Checked)
                 newEntity = composite.AddVariable(textBox1.Text, (DataType)entityVariant.SelectedIndex, true);
             else if (createProxyEntity.Checked)
-                newEntity = composite.AddProxy(Editor.commands, hierarchy, true);
+                newEntity = composite.AddProxy(Editor.commands, hierarchy, addDefaultParams.Checked);
             else if (createOverrideEntity.Checked)
                 newEntity = composite.AddOverride(hierarchy);
             else

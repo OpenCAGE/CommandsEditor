@@ -12,6 +12,8 @@ namespace CommandsEditor
 {
     /* TODO: DEPRECATE THIS IN FAVOUR OF A SOLUTION IN THE LIBRARY */
 
+    //NOTE TO SELF: this db is dumped by the cathode_vartype tool in isolation_testground
+
     public static class CathodeEntityDatabase
     {
         public struct EntityDefinition
@@ -36,6 +38,12 @@ namespace CommandsEditor
             OUTPUT,
             PARAMETER,
             INTERNAL,
+
+            REFERENCE, // <- this isn't actually a usage, but EntityMethodInterface seems to give this functionality to all entities
+
+            METHOD,
+            FINISHED,
+            RELAY,
         }
         public enum ParameterDatatype
         {

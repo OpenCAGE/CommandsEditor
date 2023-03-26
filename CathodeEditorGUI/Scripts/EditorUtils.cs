@@ -91,20 +91,19 @@ namespace CommandsEditor
             {
                 case EntityVariant.FUNCTION:
                     ShortGuid function = ((FunctionEntity)entity).function;
-                    if (CommandsUtils.FunctionTypeExists(function))
-                    {
-                        //Function node
-                        List<CathodeEntityDatabase.ParameterDefinition> parameters = CathodeEntityDatabase.GetParametersFromEntity(function);
-                        if (parameters == null) break;
-                        for (int i = 0; i < parameters.Count; i++) 
-                            items.Add(parameters[i].name);
-                    }
-                    else
-                    {
-                        //Composite node
-                        foreach (VariableEntity ent in Editor.commands.GetComposite(function).variables)
-                            items.Add(ShortGuidUtils.FindString(ent.name));
-                    }
+                    bool isComposite = !CommandsUtils.FunctionTypeExists(function);
+                    if (isComposite) function = CommandsUtils.GetFunctionTypeGUID(FunctionType.CompositeInterface);
+
+                    List<CathodeEntityDatabase.ParameterDefinition> parameters = CathodeEntityDatabase.GetParametersFromEntity(function);
+                    if (parameters == null) break;
+                    for (int i = 0; i < parameters.Count; i++) 
+                        items.Add(parameters[i].name);
+
+                    if (!isComposite) break;
+
+                    foreach (VariableEntity ent in Editor.commands.GetComposite(((FunctionEntity)entity).function).variables)
+                        if (!items.Contains(ent.name.ToString()))
+                            items.Add(ent.name.ToString());
                     break;
                 case EntityVariant.VARIABLE:
                     items.Add(ShortGuidUtils.FindString(((VariableEntity)entity).name));

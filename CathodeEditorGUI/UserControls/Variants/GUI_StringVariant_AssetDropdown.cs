@@ -14,7 +14,7 @@ namespace CommandsEditor.UserControls
         AssetList.Type type = AssetList.Type.NONE;
         string typeArgs = "";
 
-        static List<AssetList> assetlist_cache = new List<AssetList>();
+        static List<AssetList> assetlist_cache = new List<AssetList>(); //TODO: cache controls, not just the contents of the controls
 
         public GUI_StringVariant_AssetDropdown()
         {
