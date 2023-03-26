@@ -77,6 +77,10 @@ namespace CommandsEditor
                     parameterDefinition.variable = reader.ReadString();
                     parameterDefinition.usage = (ParameterUsage)Enum.Parse(typeof(ParameterUsage), reader.ReadString().ToUpper());
                     parameterDefinition.datatype = reader.ReadString();
+
+                    //TODO: this is a hotfix to hide the "name" param on all entities except zones, as i think this is the value that compiles to the string we handle via EntityUtils
+                    if (entityDefinition.className != "Zone" && parameterDefinition.name == "name") continue;
+
                     entityDefinition.parameters.Add(parameterDefinition);
                 }
                 entities.Add(entityDefinition);
