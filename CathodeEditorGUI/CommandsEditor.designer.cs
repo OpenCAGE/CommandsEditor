@@ -69,9 +69,7 @@
             this.env_list = new System.Windows.Forms.ComboBox();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
             this.enableBackups = new System.Windows.Forms.CheckBox();
-            this.DBG_LoadAllCommands = new System.Windows.Forms.Button();
             this.editEntryPoint = new System.Windows.Forms.Button();
-            this.DBG_CompileParamList = new System.Windows.Forms.Button();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.groupBox3.SuspendLayout();
@@ -300,8 +298,6 @@
             // 
             // groupBox4
             // 
-            this.groupBox4.Controls.Add(this.DBG_WebsocketTest);
-            this.groupBox4.Controls.Add(this.show3D);
             this.groupBox4.Controls.Add(this.renameSelectedNode);
             this.groupBox4.Controls.Add(this.duplicateSelectedNode);
             this.groupBox4.Controls.Add(this.removeSelectedEntity);
@@ -318,21 +314,23 @@
             // 
             // DBG_WebsocketTest
             // 
-            this.DBG_WebsocketTest.Location = new System.Drawing.Point(378, 0);
+            this.DBG_WebsocketTest.ForeColor = System.Drawing.Color.IndianRed;
+            this.DBG_WebsocketTest.Location = new System.Drawing.Point(541, 14);
             this.DBG_WebsocketTest.Name = "DBG_WebsocketTest";
             this.DBG_WebsocketTest.Size = new System.Drawing.Size(90, 23);
             this.DBG_WebsocketTest.TabIndex = 152;
-            this.DBG_WebsocketTest.Text = "websocket";
+            this.DBG_WebsocketTest.Text = "Websocket";
             this.DBG_WebsocketTest.UseVisualStyleBackColor = true;
             this.DBG_WebsocketTest.Click += new System.EventHandler(this.button1_Click);
             // 
             // show3D
             // 
-            this.show3D.Location = new System.Drawing.Point(282, 0);
+            this.show3D.ForeColor = System.Drawing.Color.IndianRed;
+            this.show3D.Location = new System.Drawing.Point(445, 14);
             this.show3D.Name = "show3D";
             this.show3D.Size = new System.Drawing.Size(90, 23);
             this.show3D.TabIndex = 151;
-            this.show3D.Text = "test";
+            this.show3D.Text = "Node Test";
             this.show3D.UseVisualStyleBackColor = true;
             this.show3D.Click += new System.EventHandler(this.show3D_Click);
             // 
@@ -476,10 +474,10 @@
             // 
             // groupBox8
             // 
+            this.groupBox8.Controls.Add(this.DBG_WebsocketTest);
             this.groupBox8.Controls.Add(this.enableBackups);
-            this.groupBox8.Controls.Add(this.DBG_LoadAllCommands);
+            this.groupBox8.Controls.Add(this.show3D);
             this.groupBox8.Controls.Add(this.editEntryPoint);
-            this.groupBox8.Controls.Add(this.DBG_CompileParamList);
             this.groupBox8.Controls.Add(this.root_composite_display);
             this.groupBox8.Location = new System.Drawing.Point(501, 3);
             this.groupBox8.Name = "groupBox8";
@@ -500,18 +498,6 @@
             this.enableBackups.UseVisualStyleBackColor = true;
             this.enableBackups.CheckedChanged += new System.EventHandler(this.enableBackups_CheckedChanged);
             // 
-            // DBG_LoadAllCommands
-            // 
-            this.DBG_LoadAllCommands.ForeColor = System.Drawing.Color.Red;
-            this.DBG_LoadAllCommands.Location = new System.Drawing.Point(226, 9);
-            this.DBG_LoadAllCommands.Name = "DBG_LoadAllCommands";
-            this.DBG_LoadAllCommands.Size = new System.Drawing.Size(192, 23);
-            this.DBG_LoadAllCommands.TabIndex = 178;
-            this.DBG_LoadAllCommands.Text = "DEBUG: LOAD ALL COMMANDS";
-            this.DBG_LoadAllCommands.UseVisualStyleBackColor = true;
-            this.DBG_LoadAllCommands.Visible = false;
-            this.DBG_LoadAllCommands.Click += new System.EventHandler(this.button2_Click);
-            // 
             // editEntryPoint
             // 
             this.editEntryPoint.Location = new System.Drawing.Point(668, 14);
@@ -521,18 +507,6 @@
             this.editEntryPoint.Text = "Edit Root";
             this.editEntryPoint.UseVisualStyleBackColor = true;
             this.editEntryPoint.Click += new System.EventHandler(this.editEntryPoint_Click);
-            // 
-            // DBG_CompileParamList
-            // 
-            this.DBG_CompileParamList.ForeColor = System.Drawing.Color.Red;
-            this.DBG_CompileParamList.Location = new System.Drawing.Point(424, 9);
-            this.DBG_CompileParamList.Name = "DBG_CompileParamList";
-            this.DBG_CompileParamList.Size = new System.Drawing.Size(192, 23);
-            this.DBG_CompileParamList.TabIndex = 176;
-            this.DBG_CompileParamList.Text = "DEBUG: COMPILE PARAMETERS";
-            this.DBG_CompileParamList.UseVisualStyleBackColor = true;
-            this.DBG_CompileParamList.Visible = false;
-            this.DBG_CompileParamList.Click += new System.EventHandler(this.BuildNodeParameterDatabase);
             // 
             // groupBox10
             // 
@@ -611,8 +585,6 @@
         private System.Windows.Forms.Button editFunction;
         private System.Windows.Forms.TextBox hierarchyDisplay;
         private System.Windows.Forms.Button editEntityMovers;
-        private System.Windows.Forms.Button DBG_CompileParamList;
-        private System.Windows.Forms.Button DBG_LoadAllCommands;
         private System.Windows.Forms.Button addLinkOut;
         private System.Windows.Forms.CheckBox enableBackups;
         private System.Windows.Forms.Button show3D;

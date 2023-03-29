@@ -9,6 +9,7 @@ using System.Windows;
 
 namespace CommandsEditor
 {
+    #region I think these are right?
     public enum CHECKPOINT_TYPE
     {
         CAMPAIGN,
@@ -16,6 +17,19 @@ namespace CommandsEditor
         CAMPAIGN_MISSION,
         MISSION_TEMP_STATE = -1, //perhaps?
     }
+
+    public enum LIGHT_ANIM
+    {
+        UNIFORM = -1, // this has a val of -1 somewhere so perhaps?
+        PULSATE = 1,
+        OSCILLATE,
+        FLICKER,
+        FLUCTUATE,
+        FLICKER_OFF,
+        SPARKING,
+        BLINK,
+    }
+    #endregion
 
     public enum AGGRESSION_GAIN
     {
@@ -153,14 +167,6 @@ namespace CommandsEditor
         STUN_DAMAGE_CALLBACK,
     }
 
-    public enum ANIM_MODE
-    {
-        FORWARD,
-        BACKWARD,
-        BOUNCE,
-        RANDOM,
-    }
-
     public enum ANIM_TRACK_TYPE
     {
         T_FLOAT,
@@ -200,81 +206,6 @@ namespace CommandsEditor
         AUTO,
         FORCE_ON,
         FORCE_OFF,
-    }
-
-    public enum BEHAVIOR_TREE_BRANCH_TYPE
-    {
-        NONE,
-        CINEMATIC_BRANCH,
-        ATTACK_BRANCH,
-        AIM_BRANCH,
-        DESPAWN_BRANCH,
-        FOLLOW_BRANCH,
-        STANDARD_BRANCH,
-        SEARCH_BRANCH,
-        AREA_SWEEP_BRANCH,
-        BACKSTAGE_AREA_SWEEP_BRANCH,
-        SHOT_BRANCH,
-        SUSPECT_TARGET_RESPONSE_BRANCH,
-        THREAT_AWARE_BRANCH,
-        BACKSTAGE_AMBUSH_BRANCH,
-        IDLE_JOB_BRANCH,
-        USE_COVER_BRANCH,
-        ASSAULT_BRANCH,
-        MELEE_BRANCH,
-        RETREAT_BRANCH,
-        CLOSE_ON_TARGET_BRANCH,
-        MUTUAL_MELEE_ONLY_BRANCH,
-        VENT_MELEE_BRANCH,
-        ASSAULT_NOT_ALLOWED_BRANCH,
-        IN_VENT_BRANCH,
-        CLOSE_COMBAT_BRANCH,
-        DRAW_WEAPON_BRANCH,
-        PURSUE_TARGET_BRANCH,
-        RANGED_ATTACK_BRANCH,
-        RANGED_COMBAT_BRANCH,
-        PRIMARY_CONTROL_RESPONSE_BRANCH,
-        DEAD_BRANCH,
-        SCRIPT_BRANCH,
-        IDLE_BRANCH,
-        DOWN_BUT_NOT_OUT_BRANCH,
-        MELEE_BLOCK_BRANCH,
-        AGRESSIVE_BRANCH,
-        ALERT_BRANCH,
-        SHOOTING_BRANCH,
-        GRAPPLE_BREAK_BRANCH,
-        REACT_TO_WEAPON_FIRE_BRANCH,
-        IN_COVER_BRANCH,
-        SUSPICIOUS_ITEM_BRANCH_HIGH,
-        SUSPICIOUS_ITEM_BRANCH_MEDIUM,
-        SUSPICIOUS_ITEM_BRANCH_LOW,
-        AGGRESSION_ESCALATION_BRANCH,
-        STUN_DAMAGE_BRANCH,
-        BREAKOUT_BRANCH,
-        SUSPEND_BRANCH,
-        TARGET_IS_NPC_BRANCH,
-        PLAYER_HIDING_BRANCH,
-        ATTACK_CORE_BRANCH,
-        CORPSE_TRAP_BRANCH,
-        OBSERVE_TARGET_BRANCH,
-        TARGET_IN_CRAWLSPACE_BRANCH,
-        MB_SUSPICIOUS_ITEM_ATLEAST_MOVE_CLOSE_TO,
-        MB_THREAT_AWARE_ATTACK_TARGET_WITHIN_CLOSE_RANGE,
-        MB_THREAT_AWARE_ATTACK_TARGET_WITHIN_VERY_CLOSE_RANGE,
-        MB_THREAT_AWARE_ATTACK_TARGET_FLAMED_ME,
-        MB_THREAT_AWARE_ATTACK_WEAPON_NOT_AIMED,
-        MB_THREAT_AWARE_MOVE_TO_LOST_VISUAL,
-        MB_THREAT_AWARE_MOVE_TO_BEFORE_ANIM,
-        MB_THREAT_AWARE_MOVE_TO_AFTER_ANIM,
-        MB_THREAT_AWARE_MOVE_TO_FLANKED_VENT,
-        KILLTRAP_BRANCH,
-        PANIC_BRANCH,
-        BACKSTAGE_ALIEN_RESPONSE_BRANCH,
-        NPC_VS_ALIEN_BRANCH,
-        USE_COVER_VS_ALIEN_BRANCH,
-        IN_COVER_VS_ALIEN_BRANCH,
-        REPEATED_PATHFIND_FAILS_BRANCH,
-        ALL_SEARCH_VARIANTS_BRANCH,
     }
 
     public enum BEHAVIOUR_MOOD_SET
@@ -322,12 +253,6 @@ namespace CommandsEditor
         LEVEL_1,
         LEVEL_2,
         LEVEL_3,
-    }
-
-    public enum BUTTON_TYPE
-    {
-        KEYS,
-        DISK,
     }
 
     public enum CAMERA_PATH_CLASS
@@ -414,31 +339,6 @@ namespace CommandsEditor
         BOOTS,
         FLATS,
         TRAINERS,
-    }
-
-    public enum CHARACTER_NODE
-    {
-        HEAD1,
-        HEAD,
-        HIPS,
-        TORSO,
-        SPINE2,
-        SPINE1,
-        SPINE,
-        LEFT_ARM,
-        RIGHT_ARM,
-        LEFT_HAND,
-        RIGHT_HAND,
-        LEFT_LEG,
-        RIGHT_LEG,
-        LEFT_FOOT,
-        RIGHT_FOOT,
-        LEFT_WEAPON_BONE,
-        RIGHT_WEAPON_BONE,
-        LEFT_SHOULDER,
-        RIGHT_SHOULDER,
-        WEAPON,
-        ROOT,
     }
 
     public enum CLIPPING_PLANES_PRESETS
@@ -628,13 +528,6 @@ namespace CommandsEditor
         ANY,
     }
 
-    public enum DAMAGE_MODE
-    {
-        DAMAGED_BY_ALL,
-        DAMAGED_BY_PLAYER_ONLY,
-        INVINCIBLE,
-    }
-
     public enum DEATH_STYLE
     {
         PDS_DROP_DEAD,
@@ -805,38 +698,6 @@ namespace CommandsEditor
         NOVICE,
     }
 
-    public enum DOOR_MECHANISM
-    {
-        NONE,
-        BLANK,
-        KEYPAD,
-        LEVER,
-        BUTTON,
-        HACKING,
-        HIDDEN_KEYPAD,
-        HIDDEN_LEVER,
-        HIDDEN_HACKING,
-        HIDDEN_BUTTON,
-    }
-
-    public enum DOOR_STATE
-    {
-        USE_KEYCARD,
-        USE_KEYCODE,
-        USE_LEVER,
-        USE_HACKING,
-        USE_CUTTING,
-        USE_BUTTON,
-        USE_MECHANISM,
-        UPGRADE_HACKING,
-        HACKING_REQUIRED,
-        RESTORE_POWER,
-        UPGRADE_CUTTING,
-        CUTTING_REQUIRED,
-        KEYCARD_REQUIRED,
-        LOCKED,
-    }
-
     public enum DUCK_HEIGHT
     {
         LOW,
@@ -864,51 +725,12 @@ namespace CommandsEditor
         ENGINEERING,
     }
 
-    public enum EQUIPMENT_SLOT
-    {
-        USE_CURRENT_SLOT,
-        ANY_WEAPON_SLOT,
-        WEAPON_SLOT_SHOTGUN,
-        WEAPON_SLOT_PISTOL,
-        MELEE_SLOT,
-        CATTLEPROD_SLOT,
-        WEAPON_SLOT_FLAMETHROWER,
-        WEAPON_SLOT_BOLTGUN,
-        MOTION_TRACKER_SLOT,
-        TORCH_SLOT,
-        MEDIPEN_SLOT,
-        TEMPORARY_WEAPON_SLOT,
-        NO_WEAPON_SLOT,
-    }
-
     public enum EVENT_OCCURED_TYPE
     {
         SENSED_TARGET,
         SENSED_SUSPICIOUS_ITEM,
         TARGET_HIDEING,
         SUSPECT_TARGET_RESPONSE,
-    }
-
-    public enum EXIT_WAYPOINT
-    {
-        SOLACE,
-        AIRPORT,
-        TECH_HUB,
-        TECH_COMMS,
-        SCI_HUB,
-        HOSPITAL_UPPER,
-        HOSPITAL_LOWER,
-        ANDROID_LAB,
-        SHOPPING_CENTRE,
-        LV426,
-        TECH_RND,
-        REACTOR_CORE,
-        RND_HAZLAB,
-        CORP_PENT,
-        APPOLLO_CORE,
-        DRY_DOCKS,
-        GRAVITY_ANCHORS,
-        TOWING_PLATFORM,
     }
 
     public enum FLAG_CHANGE_SOURCE_TYPE
@@ -941,13 +763,6 @@ namespace CommandsEditor
     {
         BOX,
         PLANE,
-    }
-
-    public enum FOLDER_LOCK_TYPE
-    {
-        LOCKED,
-        NONE,
-        KEYCODE,
     }
 
     public enum FOLLOW_CAMERA_MODIFIERS
@@ -1007,12 +822,6 @@ namespace CommandsEditor
         BOLTGUN_AIM_VENTS,
     }
 
-    public enum FOLLOW_TYPE
-    {
-        LEADING_THE_WAY,
-        EXPLORATION,
-    }
-
     public enum FRAME_FLAGS
     {
         SUSPICIOUS_ITEM_LOW_PRIORITY,
@@ -1049,18 +858,6 @@ namespace CommandsEditor
         ON_TARGET,
         FLAMIN_JOE,
         DEATH_FROM_ABOVE,
-    }
-
-    public enum GATING_TOOL_TYPE
-    {
-        KEY,
-        AXE,
-        CROWBAR,
-        GAS_MASK,
-        CUTTING_TOOL,
-        HACKING_TOOL,
-        REWIRE,
-        CABLE_CLAMPS,
     }
 
     public enum IDLE
@@ -1148,28 +945,10 @@ namespace CommandsEditor
         AI_MEM_SMOKE_MANAGER_CONTAINER,
     }
 
-    public enum LEVER_TYPE
-    {
-        PULL,
-        ROTATE,
-    }
-
     public enum LIGHT_ADAPTATION_MECHANISM
     {
         PERCENTILE,
         BRACKETED_MEAN,
-    }
-
-    public enum LIGHT_ANIM
-    {
-        UNIFORM,
-        PULSATE,
-        OSCILLATE,
-        FLICKER,
-        FLUCTUATE,
-        FLICKER_OFF,
-        SPARKING,
-        BLINK,
     }
 
     public enum LIGHT_FADE_TYPE
@@ -1303,29 +1082,6 @@ namespace CommandsEditor
         LEADING_LOOK,
     }
 
-    public enum MAP_ICON_TYPE
-    {
-        REWIRE,
-        HACKING,
-        KEYPAD,
-        LOCKED,
-        SAVEPOINT,
-        WAYPOINT,
-        TOOL_PICKUP,
-        WEAPON_PICKUP,
-        CUTTING_POINT,
-        LEVEL_LOAD,
-        LADDER,
-        CONTAINER,
-        TERMINAL_INTERACTION,
-        LOCKED_DOOR,
-        UNLOCKED_DOOR,
-        HIDDEN,
-        GENERIC_INTERACTION,
-        POWERED_DOWN_DOOR,
-        KEYCODE,
-    }
-
     public enum MELEE_ATTACK_TYPE
     {
         HIT_ATTACK,
@@ -1344,33 +1100,11 @@ namespace CommandsEditor
         ANDROID_CORPSE_TRAP_GRAPPLE,
     }
 
-    public enum MOOD
-    {
-        NEUTRAL,
-        SCARED,
-        ANGRY,
-        HAPPY,
-        SAD,
-        SUSPICIOUS,
-        INJURED,
-    }
-
     public enum MOOD_INTENSITY
     {
         LOW,
         MEDIUM,
         HIGH,
-    }
-
-    public enum MOVE
-    {
-        SLOW_WALK,
-        WALK,
-        FAST_WALK,
-        RUN,
-        OBSOLETE_1,
-        OBSOLETE_2,
-        TELEPORT,
     }
 
     public enum MUSIC_RTPC_MODE
@@ -1487,19 +1221,6 @@ namespace CommandsEditor
         KNOCKED_OUT,
     }
 
-    public enum PICKUP_CATEGORY
-    {
-        UNKNOWN,
-        WEAPON,
-        AMMO,
-        ITEM,
-        KILLTRAP,
-        DOOR,
-        COMPUTER,
-        ALIEN,
-        SAVE_TERMINAL,
-    }
-
     public enum PLATFORM_TYPE
     {
         PL_PC,
@@ -1560,36 +1281,6 @@ namespace CommandsEditor
         ON_DEATH_POINT,
         NEAR_DEATH_POINT,
         NEAR_COMPANION,
-    }
-
-    public enum REWIRE_SYSTEM_NAME
-    {
-        AI_UI_MAIN_LIGHTING,
-        AI_UI_DOOR_SYSTEM,
-        AI_UI_VENT_ACCESS,
-        AI_UI_SECURITY_CAMERAS,
-        AI_UI_TANNOY,
-        AI_UI_ALARMS,
-        AI_UI_SPRINKLERS,
-        AI_UI_RELEASE_VALVE,
-        AI_UI_GAS_LEAK,
-        AI_UI_AIR_CONDITIONING,
-        AI_UI_UNSTABLE_SYSTEM,
-    }
-
-    public enum REWIRE_SYSTEM_TYPE
-    {
-        AI_UI_MAIN_LIGHTING,
-        AI_UI_DOOR_SYSTEM,
-        AI_UI_VENT_ACCESS,
-        AI_UI_SECURITY_CAMERAS,
-        AI_UI_TANNOY,
-        AI_UI_ALARMS,
-        AI_UI_SPRINKLERS,
-        AI_UI_RELEASE_VALVE,
-        AI_UI_GAS_LEAK,
-        AI_UI_AIR_CONDITIONING,
-        AI_UI_UNSTABLE_SYSTEM,
     }
 
     public enum SECONDARY_ANIMATION_LAYER
@@ -1671,15 +1362,6 @@ namespace CommandsEditor
         FORCE_STEAL,
         BUTTON_PROMPT,
         JUST_CONVERGE,
-    }
-
-    public enum SUB_OBJECTIVE_TYPE
-    {
-        NONE,
-        POINT,
-        SMALL_AREA,
-        MEDIUM_AREA,
-        LARGE_AREA,
     }
 
     public enum SUSPECT_RESPONSE_PHASE
@@ -1798,12 +1480,6 @@ namespace CommandsEditor
         EXCLUDE_CHARACTER_PIN,
     }
 
-    public enum TASK_OPERATION_MODE
-    {
-        FULLY_SHARED,
-        SINGLE_AND_EXCLUSIVE,
-    }
-
     public enum TASK_PRIORITY
     {
         NORMAL,
@@ -1883,22 +1559,10 @@ namespace CommandsEditor
         CONTAINER,
     }
 
-    public enum UI_KEYGATE_TYPE
-    {
-        KEYCARD,
-        KEYPAD,
-    }
-
     public enum VENT_LOCK_REASON
     {
         FLANKED_VENT_ATTACK_FROM_ATTACK,
         FLANKED_VENT_ATTACK_FROM_THREAT_AWARE,
-    }
-
-    public enum VIEWCONE_TYPE
-    {
-        RECTANGLE,
-        ELLIPSE,
     }
 
     public enum VISIBILITY_SETTINGS_TYPE
@@ -1911,15 +1575,6 @@ namespace CommandsEditor
         VIEWCONESET_SLEEPING,
         VIEWCONESET_ANDROID,
         VIEWCONESET_ANDROID_HIEGHTENED,
-    }
-
-    public enum WAVE_SHAPE
-    {
-        SIN,
-        SAW,
-        REV_SAW,
-        SQUARE,
-        TRIANGLE,
     }
 
     public enum WEAPON_HANDEDNESS
@@ -1967,6 +1622,355 @@ namespace CommandsEditor
     }
 
 
+    #region Dan thinks these are ok
+
+    public enum ANIM_MODE
+    {
+        FORWARD,
+        BACKWARD,
+        BOUNCE,
+        RANDOM,
+    }
+
+    public enum FOLDER_LOCK_TYPE
+    {
+        LOCKED,
+        NONE,
+        KEYCODE,
+    }
+
+    public enum CHARACTER_NODE
+    {
+        HEAD1,
+        HEAD,
+        HIPS,
+        TORSO,
+        SPINE2,
+        SPINE1,
+        SPINE,
+        LEFT_ARM,
+        RIGHT_ARM,
+        LEFT_HAND,
+        RIGHT_HAND,
+        LEFT_LEG,
+        RIGHT_LEG,
+        LEFT_FOOT,
+        RIGHT_FOOT,
+        LEFT_WEAPON_BONE,
+        RIGHT_WEAPON_BONE,
+        LEFT_SHOULDER,
+        RIGHT_SHOULDER,
+        WEAPON,
+        ROOT,
+    }
+
+    public enum BEHAVIOR_TREE_BRANCH_TYPE
+    {
+        NONE,
+        CINEMATIC_BRANCH,
+        ATTACK_BRANCH,
+        AIM_BRANCH,
+        DESPAWN_BRANCH,
+        FOLLOW_BRANCH,
+        STANDARD_BRANCH,
+        SEARCH_BRANCH,
+        AREA_SWEEP_BRANCH,
+        BACKSTAGE_AREA_SWEEP_BRANCH,
+        SHOT_BRANCH,
+        SUSPECT_TARGET_RESPONSE_BRANCH,
+        THREAT_AWARE_BRANCH,
+        BACKSTAGE_AMBUSH_BRANCH,
+        IDLE_JOB_BRANCH,
+        USE_COVER_BRANCH,
+        ASSAULT_BRANCH,
+        MELEE_BRANCH,
+        RETREAT_BRANCH,
+        CLOSE_ON_TARGET_BRANCH,
+        MUTUAL_MELEE_ONLY_BRANCH,
+        VENT_MELEE_BRANCH,
+        ASSAULT_NOT_ALLOWED_BRANCH,
+        IN_VENT_BRANCH,
+        CLOSE_COMBAT_BRANCH,
+        DRAW_WEAPON_BRANCH,
+        PURSUE_TARGET_BRANCH,
+        RANGED_ATTACK_BRANCH,
+        RANGED_COMBAT_BRANCH,
+        PRIMARY_CONTROL_RESPONSE_BRANCH,
+        DEAD_BRANCH,
+        SCRIPT_BRANCH,
+        IDLE_BRANCH,
+        DOWN_BUT_NOT_OUT_BRANCH,
+        MELEE_BLOCK_BRANCH,
+        AGRESSIVE_BRANCH,
+        ALERT_BRANCH,
+        SHOOTING_BRANCH,
+        GRAPPLE_BREAK_BRANCH,
+        REACT_TO_WEAPON_FIRE_BRANCH,
+        IN_COVER_BRANCH,
+        SUSPICIOUS_ITEM_BRANCH_HIGH,
+        SUSPICIOUS_ITEM_BRANCH_MEDIUM,
+        SUSPICIOUS_ITEM_BRANCH_LOW,
+        AGGRESSION_ESCALATION_BRANCH,
+        STUN_DAMAGE_BRANCH,
+        BREAKOUT_BRANCH,
+        SUSPEND_BRANCH,
+        TARGET_IS_NPC_BRANCH,
+        PLAYER_HIDING_BRANCH,
+        ATTACK_CORE_BRANCH,
+        CORPSE_TRAP_BRANCH,
+        OBSERVE_TARGET_BRANCH,
+        TARGET_IN_CRAWLSPACE_BRANCH,
+        MB_SUSPICIOUS_ITEM_ATLEAST_MOVE_CLOSE_TO,
+        MB_THREAT_AWARE_ATTACK_TARGET_WITHIN_CLOSE_RANGE,
+        MB_THREAT_AWARE_ATTACK_TARGET_WITHIN_VERY_CLOSE_RANGE,
+        MB_THREAT_AWARE_ATTACK_TARGET_FLAMED_ME,
+        MB_THREAT_AWARE_ATTACK_WEAPON_NOT_AIMED,
+        MB_THREAT_AWARE_MOVE_TO_LOST_VISUAL,
+        MB_THREAT_AWARE_MOVE_TO_BEFORE_ANIM,
+        MB_THREAT_AWARE_MOVE_TO_AFTER_ANIM,
+        MB_THREAT_AWARE_MOVE_TO_FLANKED_VENT,
+        KILLTRAP_BRANCH,
+        PANIC_BRANCH,
+        BACKSTAGE_ALIEN_RESPONSE_BRANCH,
+        NPC_VS_ALIEN_BRANCH,
+        USE_COVER_VS_ALIEN_BRANCH,
+        IN_COVER_VS_ALIEN_BRANCH,
+        REPEATED_PATHFIND_FAILS_BRANCH,
+        ALL_SEARCH_VARIANTS_BRANCH,
+    }
+
+    public enum EQUIPMENT_SLOT
+    {
+        USE_CURRENT_SLOT = -2,
+        ANY_WEAPON_SLOT,
+        WEAPON_SLOT_SHOTGUN,
+        WEAPON_SLOT_PISTOL,
+        MELEE_SLOT,
+        CATTLEPROD_SLOT,
+        WEAPON_SLOT_FLAMETHROWER,
+        WEAPON_SLOT_BOLTGUN,
+        MOTION_TRACKER_SLOT,
+        TORCH_SLOT,
+        MEDIPEN_SLOT,
+        TEMPORARY_WEAPON_SLOT,
+        NO_WEAPON_SLOT = -3,
+    }
+
+    public enum DAMAGE_MODE
+    {
+        DAMAGED_BY_ALL,
+        DAMAGED_BY_PLAYER_ONLY,
+        INVINCIBLE,
+    }
+
+    public enum MAP_ICON_TYPE
+    {
+        REWIRE,
+        HACKING,
+        KEYPAD,
+        LOCKED,
+        SAVEPOINT,
+        WAYPOINT,
+        TOOL_PICKUP,
+        WEAPON_PICKUP,
+        CUTTING_POINT,
+        LEVEL_LOAD,
+        LADDER,
+        CONTAINER,
+        TERMINAL_INTERACTION,
+        LOCKED_DOOR,
+        UNLOCKED_DOOR,
+        HIDDEN,
+        GENERIC_INTERACTION,
+        POWERED_DOWN_DOOR,
+        KEYCODE,
+    }
+
+    public enum GATING_TOOL_TYPE
+    {
+        KEY,
+        AXE,
+        CROWBAR,
+        GAS_MASK,
+        CUTTING_TOOL,
+        HACKING_TOOL,
+        REWIRE,
+        CABLE_CLAMPS,
+    }
+
+    public enum MOOD
+    {
+        NEUTRAL,
+        SCARED,
+        ANGRY,
+        HAPPY,
+        SAD,
+        SUSPICIOUS,
+        INJURED,
+    }
+
+    public enum FOLLOW_TYPE
+    {
+        LEADING_THE_WAY,
+        EXPLORATION,
+    }
+
+    public enum TASK_OPERATION_MODE
+    {
+        FULLY_SHARED,
+        SINGLE_AND_EXCLUSIVE,
+    }
+
+    public enum MOVE
+    {
+        SLOW_WALK,
+        WALK,
+        FAST_WALK,
+        RUN,
+        OBSOLETE_1,
+        OBSOLETE_2,
+        TELEPORT,
+    }
+
+    public enum SUB_OBJECTIVE_TYPE
+    {
+        NONE,
+        POINT,
+        SMALL_AREA,
+        MEDIUM_AREA,
+        LARGE_AREA,
+    }
+
+    public enum LEVER_TYPE
+    {
+        PULL,
+        ROTATE,
+    }
+
+    public enum BUTTON_TYPE
+    {
+        KEYS,
+        DISK,
+    }
+
+    public enum DOOR_MECHANISM
+    {
+        NONE,
+        BLANK,
+        KEYPAD,
+        LEVER,
+        BUTTON,
+        HACKING,
+        HIDDEN_KEYPAD,
+        HIDDEN_LEVER,
+        HIDDEN_HACKING,
+        HIDDEN_BUTTON,
+    }
+
+    public enum DOOR_STATE
+    {
+        USE_KEYCARD,
+        USE_KEYCODE,
+        USE_LEVER,
+        USE_HACKING,
+        USE_CUTTING,
+        USE_BUTTON,
+        USE_MECHANISM,
+        UPGRADE_HACKING,
+        HACKING_REQUIRED,
+        RESTORE_POWER,
+        UPGRADE_CUTTING,
+        CUTTING_REQUIRED,
+        KEYCARD_REQUIRED,
+        LOCKED,
+    }
+
+    public enum PICKUP_CATEGORY
+    {
+        UNKNOWN,
+        WEAPON,
+        AMMO,
+        ITEM,
+        KILLTRAP,
+        DOOR,
+        COMPUTER,
+        ALIEN,
+        SAVE_TERMINAL,
+    }
+
+    public enum REWIRE_SYSTEM_NAME
+    {
+        AI_UI_MAIN_LIGHTING,
+        AI_UI_DOOR_SYSTEM,
+        AI_UI_VENT_ACCESS,
+        AI_UI_SECURITY_CAMERAS,
+        AI_UI_TANNOY,
+        AI_UI_ALARMS,
+        AI_UI_SPRINKLERS,
+        AI_UI_RELEASE_VALVE,
+        AI_UI_GAS_LEAK,
+        AI_UI_AIR_CONDITIONING,
+        AI_UI_UNSTABLE_SYSTEM,
+    }
+
+    public enum REWIRE_SYSTEM_TYPE
+    {
+        AI_UI_MAIN_LIGHTING,
+        AI_UI_DOOR_SYSTEM,
+        AI_UI_VENT_ACCESS,
+        AI_UI_SECURITY_CAMERAS,
+        AI_UI_TANNOY,
+        AI_UI_ALARMS,
+        AI_UI_SPRINKLERS,
+        AI_UI_RELEASE_VALVE,
+        AI_UI_GAS_LEAK,
+        AI_UI_AIR_CONDITIONING,
+        AI_UI_UNSTABLE_SYSTEM,
+    }
+
+    public enum EXIT_WAYPOINT
+    {
+        SOLACE,
+        AIRPORT,
+        TECH_HUB,
+        TECH_COMMS,
+        SCI_HUB,
+        HOSPITAL_UPPER,
+        HOSPITAL_LOWER,
+        ANDROID_LAB,
+        SHOPPING_CENTRE,
+        LV426,
+        TECH_RND,
+        REACTOR_CORE,
+        RND_HAZLAB,
+        CORP_PENT,
+        APPOLLO_CORE,
+        DRY_DOCKS,
+        GRAVITY_ANCHORS,
+        TOWING_PLATFORM,
+    }
+
+    public enum VIEWCONE_TYPE
+    {
+        RECTANGLE = 1,
+        ELLIPSE,
+    }
+
+    public enum WAVE_SHAPE
+    {
+        SIN,
+        SAW,
+        REV_SAW,
+        SQUARE,
+        TRIANGLE,
+    }
+
+    public enum UI_KEYGATE_TYPE
+    {
+        KEYCARD,
+        KEYPAD,
+    }
+    #endregion
 
 
     //Below here I'm confident on the indexes
