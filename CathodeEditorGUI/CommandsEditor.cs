@@ -142,8 +142,6 @@ namespace CommandsEditor
 #if DEBUG
             show3D.Visible = true;
             DBG_WebsocketTest.Visible = true;
-            DBG_CompileParamList.Visible = true;
-            DBG_LoadAllCommands.Visible = true;
 #endif
         }
 
