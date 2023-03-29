@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows.Forms;
 using CATHODE.Scripting;
 using CathodeLib;
@@ -22,29 +23,39 @@ namespace CommandsEditor.UserControls
 
         public void PopulateUI(cEnum cEnum, string paramID)
         {
+            label13.Text = paramID;
+
             enumVal = cEnum;
             enumDesc = EnumUtils.GetEnum(cEnum.enumID);
 
-            label13.Text = paramID;
             comboBox1.Text = enumDesc.Name;
-            textBox1.Text = cEnum.enumIndex.ToString();
+            comboBox1.SelectedIndexChanged += comboBox1_SelectedIndexChanged;
 
-            try
-            {
-                toolTip1.SetToolTip(textBox1, enumDesc.Entries[cEnum.enumIndex]);
-            }
-            catch { }
+            PopulateEnumEntries();
+
+            EnumUtils.EnumDescriptor.Entry enumEntry = enumDesc.Entries.FirstOrDefault(o => o.Index == cEnum.enumIndex);
+            if (enumEntry == null)
+                MessageBox.Show("WARNING!!! COULD NOT MATCH ENUM!!!");
+            else
+                comboBox2.SelectedItem = enumEntry.Name;
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             enumVal.enumID = ShortGuidUtils.Generate(comboBox1.Text);
+            enumDesc = EnumUtils.GetEnum(enumVal.enumID);
+            PopulateEnumEntries();
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
+        private void PopulateEnumEntries()
         {
-            textBox1.Text = EditorUtils.ForceStringNumeric(textBox1.Text);
-            enumVal.enumIndex = Convert.ToInt32(textBox1.Text);
+            comboBox2.BeginUpdate();
+            comboBox2.Items.Clear();
+            foreach (EnumUtils.EnumDescriptor.Entry entry in enumDesc.Entries)
+            {
+                comboBox2.Items.Add(entry.Name);
+            }
+            comboBox2.EndUpdate();
         }
     }
 }

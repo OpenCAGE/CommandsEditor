@@ -36,6 +36,8 @@ namespace CommandsEditor
 
         public CommandsEditor()
         {
+            //LocalDebug.SyncEnumValuesAndDump();
+            //return;
 
             //ShortGuid guid = ShortGuidUtils.Generate("gravity_force");
             //Console.WriteLine(guid.ToByteString());
