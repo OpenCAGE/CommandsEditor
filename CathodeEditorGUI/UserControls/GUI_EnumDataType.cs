@@ -45,6 +45,7 @@ namespace CommandsEditor.UserControls
             enumVal.enumID = ShortGuidUtils.Generate(comboBox1.Text);
             enumDesc = EnumUtils.GetEnum(enumVal.enumID);
             PopulateEnumEntries();
+            comboBox2.SelectedIndex = 0;
         }
 
         private void PopulateEnumEntries()
@@ -56,6 +57,12 @@ namespace CommandsEditor.UserControls
                 comboBox2.Items.Add(entry.Name);
             }
             comboBox2.EndUpdate();
+        }
+
+        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            EnumUtils.EnumDescriptor.Entry enumEntry = enumDesc.Entries.FirstOrDefault(o => o.Name == comboBox2.SelectedItem.ToString());
+            enumVal.enumIndex = enumEntry.Index;
         }
     }
 }
