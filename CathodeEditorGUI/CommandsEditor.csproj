@@ -277,7 +277,7 @@
     <Compile Include="Scripts\CathodeEntityDatabase.cs" />
     <Compile Include="Scripts\ComboBoxExtensions.cs" />
     <Compile Include="Scripts\LocalDebug.cs" />
-    <Compile Include="Scripts\Nodes\TestEnt.cs" />
+    <Compile Include="Scripts\Nodes\Checkpoint.cs" />
     <Compile Include="Scripts\ObjectExtensions.cs" />
     <Compile Include="Popups\AddOrEditResource.cs">
       <SubType>Form</SubType>
