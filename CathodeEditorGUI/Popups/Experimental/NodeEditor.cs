@@ -34,6 +34,8 @@ namespace CommandsEditor
             stNodeTreeView1.PropertyGrid.SetInfoKey("Author", "Mail", "Link", "Show Help");
 
             stNodeEditor1.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom;
+            stNodeTreeView1.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Bottom;
+            stNodePropertyGrid1.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom;
 
             contextMenuStrip1.ShowImageMargin = false;
             contextMenuStrip1.Renderer = new ToolStripRendererEx();

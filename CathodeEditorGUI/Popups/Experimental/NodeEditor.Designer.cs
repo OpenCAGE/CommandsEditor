@@ -65,42 +65,45 @@
             this.lockLocationToolStripMenuItem,
             this.lockConnectionToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(164, 70);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(178, 70);
             // 
             // removeToolStripMenuItem
             // 
             this.removeToolStripMenuItem.Name = "removeToolStripMenuItem";
-            this.removeToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.removeToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
             this.removeToolStripMenuItem.Text = "&Remove";
             this.removeToolStripMenuItem.Click += new System.EventHandler(this.removeToolStripMenuItem_Click);
             // 
             // lockLocationToolStripMenuItem
             // 
             this.lockLocationToolStripMenuItem.Name = "lockLocationToolStripMenuItem";
-            this.lockLocationToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.lockLocationToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
             this.lockLocationToolStripMenuItem.Text = "U/Lock &Location";
             this.lockLocationToolStripMenuItem.Click += new System.EventHandler(this.lockLocationToolStripMenuItem_Click);
             // 
             // lockConnectionToolStripMenuItem
             // 
             this.lockConnectionToolStripMenuItem.Name = "lockConnectionToolStripMenuItem";
-            this.lockConnectionToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.lockConnectionToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
             this.lockConnectionToolStripMenuItem.Text = "U/Lock &Connection";
             this.lockConnectionToolStripMenuItem.Click += new System.EventHandler(this.lockConnectionToolStripMenuItem_Click);
             // 
             // stNodePropertyGrid1
             // 
+            this.stNodePropertyGrid1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.stNodePropertyGrid1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(35)))), ((int)(((byte)(35)))));
             this.stNodePropertyGrid1.DescriptionColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(184)))), ((int)(((byte)(134)))), ((int)(((byte)(11)))));
             this.stNodePropertyGrid1.ErrorColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(165)))), ((int)(((byte)(42)))), ((int)(((byte)(42)))));
             this.stNodePropertyGrid1.ForeColor = System.Drawing.Color.White;
             this.stNodePropertyGrid1.ItemHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(125)))), ((int)(((byte)(125)))), ((int)(((byte)(125)))));
             this.stNodePropertyGrid1.ItemValueBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-            this.stNodePropertyGrid1.Location = new System.Drawing.Point(12, 273);
+            this.stNodePropertyGrid1.Location = new System.Drawing.Point(656, 32);
             this.stNodePropertyGrid1.MinimumSize = new System.Drawing.Size(120, 50);
             this.stNodePropertyGrid1.Name = "stNodePropertyGrid1";
             this.stNodePropertyGrid1.ShowTitle = true;
-            this.stNodePropertyGrid1.Size = new System.Drawing.Size(200, 228);
+            this.stNodePropertyGrid1.Size = new System.Drawing.Size(200, 469);
             this.stNodePropertyGrid1.TabIndex = 2;
             this.stNodePropertyGrid1.Text = "stNodePropertyGrid1";
             this.stNodePropertyGrid1.TitleColor = System.Drawing.Color.FromArgb(((int)(((byte)(127)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
@@ -108,6 +111,9 @@
             // stNodeEditor1
             // 
             this.stNodeEditor1.AllowDrop = true;
+            this.stNodeEditor1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.stNodeEditor1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(34)))), ((int)(((byte)(34)))));
             this.stNodeEditor1.Curvature = 0.3F;
             this.stNodeEditor1.Location = new System.Drawing.Point(218, 32);
@@ -132,23 +138,23 @@
             this.stNodeTreeView1.MinimumSize = new System.Drawing.Size(100, 60);
             this.stNodeTreeView1.Name = "stNodeTreeView1";
             this.stNodeTreeView1.ShowFolderCount = true;
-            this.stNodeTreeView1.Size = new System.Drawing.Size(200, 235);
+            this.stNodeTreeView1.Size = new System.Drawing.Size(200, 469);
             this.stNodeTreeView1.TabIndex = 0;
             this.stNodeTreeView1.Text = "stNodeTreeView1";
             this.stNodeTreeView1.TextBoxColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.stNodeTreeView1.TitleColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
             // 
-            // Form1
+            // NodeEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(662, 513);
+            this.ClientSize = new System.Drawing.Size(869, 513);
             this.Controls.Add(this.btn_save);
             this.Controls.Add(this.btn_open);
             this.Controls.Add(this.stNodePropertyGrid1);
             this.Controls.Add(this.stNodeEditor1);
             this.Controls.Add(this.stNodeTreeView1);
-            this.Name = "Form1";
+            this.Name = "NodeEditor";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.contextMenuStrip1.ResumeLayout(false);
