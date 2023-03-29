@@ -35,6 +35,9 @@
     <Reference Include="CathodeLib">
       <HintPath>..\CathodeLib\CathodeLib\bin\Debug\netstandard2.0\CathodeLib.dll</HintPath>
     </Reference>
+    <Reference Include="ST.Library.UI">
+      <HintPath>..\STNodeEditor\ST.Library.UI\bin\Debug\ST.Library.UI.dll</HintPath>
+    </Reference>
     <Reference Include="WebsocketSharp">
       <HintPath>lib\WebsocketSharp\websocket-sharp.dll</HintPath>
     </Reference>
@@ -51,6 +54,9 @@
   <ItemGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <Reference Include="CathodeLib">
       <HintPath>..\CathodeLib\CathodeLib\bin\Release\netstandard2.0\CathodeLib.dll</HintPath>
+    </Reference>
+    <Reference Include="ST.Library.UI">
+      <HintPath>..\STNodeEditor\ST.Library.UI\bin\Release\ST.Library.UI.dll</HintPath>
     </Reference>
     <Reference Include="WebsocketSharp">
       <HintPath>lib\WebsocketSharp\websocket-sharp.dll</HintPath>
@@ -235,6 +241,12 @@
     <Compile Include="Popups\EditSpline.Designer.cs">
       <DependentUpon>EditSpline.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\Experimental\NodeEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\Experimental\NodeEditor.Designer.cs">
+      <DependentUpon>NodeEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popups\Function Editors\CAGEAnimation\CAGEAnimation_SelectParameter.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -265,6 +277,7 @@
     <Compile Include="Scripts\CathodeEntityDatabase.cs" />
     <Compile Include="Scripts\ComboBoxExtensions.cs" />
     <Compile Include="Scripts\LocalDebug.cs" />
+    <Compile Include="Scripts\Nodes\TestEnt.cs" />
     <Compile Include="Scripts\ObjectExtensions.cs" />
     <Compile Include="Popups\AddOrEditResource.cs">
       <SubType>Form</SubType>
@@ -304,10 +317,10 @@
     <Compile Include="Popups\AddOrEditLink.designer.cs">
       <DependentUpon>AddOrEditLink.cs</DependentUpon>
     </Compile>
-    <Compile Include="Popups\Composite3D.cs">
+    <Compile Include="Popups\Experimental\Composite3D.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Popups\Composite3D.Designer.cs">
+    <Compile Include="Popups\Experimental\Composite3D.Designer.cs">
       <DependentUpon>Composite3D.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\EditHierarchy.cs">
@@ -405,6 +418,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Scripts\ToolstripRendererExcs.cs" />
     <Compile Include="Scripts\TreeUtility.cs" />
     <Compile Include="Scripts\SettingsManager.cs" />
     <Compile Include="Scripts\WebsocketServer.cs" />
@@ -483,6 +497,9 @@
     <EmbeddedResource Include="Popups\EditSpline.resx">
       <DependentUpon>EditSpline.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Experimental\NodeEditor.resx">
+      <DependentUpon>NodeEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Popups\Function Editors\CAGEAnimationEditor.resx">
       <DependentUpon>CAGEAnimationEditor.cs</DependentUpon>
     </EmbeddedResource>
@@ -504,7 +521,7 @@
     <EmbeddedResource Include="Popups\AddOrEditLink.resx">
       <DependentUpon>AddOrEditLink.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Popups\Composite3D.resx">
+    <EmbeddedResource Include="Popups\Experimental\Composite3D.resx">
       <DependentUpon>Composite3D.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\EditHierarchy.resx">

@@ -36,7 +36,12 @@ namespace CommandsEditor
 
         public CommandsEditor()
         {
-            //LocalDebug.CheckMissingCageAnimParams();
+
+            //ShortGuid guid = ShortGuidUtils.Generate("gravity_force");
+            //Console.WriteLine(guid.ToByteString());
+            //return;
+            //
+            //LocalDebug.CommandsTest();
             //string sdfd = "";
 
             //LocalDebug.CommandsTest();
@@ -1471,8 +1476,12 @@ namespace CommandsEditor
         GUI_ModelViewer modelViewer = null;
         private void show3D_Click(object sender, EventArgs e)
         {
+            /*
             Composite3D viewer = new Composite3D(Editor.selected.composite);
             viewer.Show();
+            */
+            NodeEditor editor = new NodeEditor();
+            editor.Show();
         }
 
         private string levelLoaded = "";

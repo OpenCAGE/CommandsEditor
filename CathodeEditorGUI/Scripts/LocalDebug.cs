@@ -19,6 +19,7 @@ using System.Windows.Media.Media3D;
 using static CATHODE.Models;
 using System.Windows.Media.Animation;
 using System.Collections.Specialized;
+using System.Runtime.InteropServices;
 
 namespace CommandsEditor
 {
@@ -33,16 +34,12 @@ namespace CommandsEditor
                 Commands phys = new Commands(file);
                 Parallel.ForEach(phys.Entries, comp =>
                 {
-                    Parallel.ForEach(comp.GetEntities(), ent =>
+                    Parallel.ForEach(comp.functions, ent =>
                     {
-                        Parallel.ForEach(ent.parameters, param =>
+                        if (comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.PhysicsModifyGravity)).Count != 0)
                         {
-                            if (param.content.dataType == DataType.ENUM)
-                            {
-                                cEnum e = (cEnum)param.content;
-                                Console.WriteLine(e.enumID.ToString() + ", " + e.enumIndex);
-                            }
-                        });
+                            Console.WriteLine(file + "\n\t" + comp.name);
+                        }
                     });
                 });
             });
