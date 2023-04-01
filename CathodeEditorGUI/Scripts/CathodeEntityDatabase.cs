@@ -21,6 +21,7 @@ namespace CommandsEditor
             public string guidName;
             public ShortGuid guid;
             public string className;
+            public bool isEntity; //if false, this is a template
             public List<ParameterDefinition> parameters;
         }
         public struct ParameterDefinition
@@ -68,6 +69,7 @@ namespace CommandsEditor
                 entityDefinition.guidName = reader.ReadString().Replace(@"\\", @"\");
                 entityDefinition.guid = ShortGuidUtils.Generate(entityDefinition.guidName);
                 entityDefinition.className = reader.ReadString();
+                entityDefinition.isEntity = reader.ReadBoolean();
                 entityDefinition.parameters = new List<ParameterDefinition>();
                 int param_count = reader.ReadInt32();
                 for (int x = 0; x < param_count; x++)
@@ -88,8 +90,10 @@ namespace CommandsEditor
             entities = entities.OrderBy(o => o.className).ToList();
         }
 
-        public static List<EntityDefinition> GetEntities()
+        public static List<EntityDefinition> GetEntities(bool includeInterfaces = false)
         {
+            if (!includeInterfaces)
+                return entities.FindAll(o => o.isEntity);
             return entities;
         }
 

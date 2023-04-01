@@ -21,11 +21,37 @@ using System.Windows.Media.Animation;
 using System.Collections.Specialized;
 using System.Runtime.InteropServices;
 using static CATHODE.Scripting.EnumUtils;
+using CommandsEditor.UserControls;
 
 namespace CommandsEditor
 {
     public static class LocalDebug
     {
+
+        public static void TestNewEnumDropdowns()
+        {
+#if DEBUG
+            List<string> files = Directory.GetFiles(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            GUI_EnumDataType enumUI = new GUI_EnumDataType();
+            Parallel.ForEach(files, file =>
+            {
+                Commands phys = new Commands(file);
+                Parallel.ForEach(phys.Entries, comp =>
+                {
+                    Parallel.ForEach(comp.GetEntities(), ent =>
+                    {
+                        Parallel.ForEach(ent.parameters, param =>
+                        {
+                            if (param.content.dataType == DataType.ENUM)
+                                enumUI.PopulateUI((cEnum)param.content, file + "," + comp.name + "," + EntityUtils.GetName(comp, ent) + "," + param.name.ToString() + ",");
+                        });
+                    });
+                });
+            });
+#endif
+        }
+
+
         public static void SyncEnumValuesAndDump()
         {
             List<EnumDescriptor> lookup_enum = new List<EnumDescriptor>();

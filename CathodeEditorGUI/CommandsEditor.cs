@@ -36,6 +36,9 @@ namespace CommandsEditor
 
         public CommandsEditor()
         {
+            //LocalDebug.TestNewEnumDropdowns();
+            //return;
+
             //LocalDebug.SyncEnumValuesAndDump();
             //return;
 

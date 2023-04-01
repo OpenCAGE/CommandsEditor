@@ -95,9 +95,9 @@ namespace CommandsEditor
                     if (isComposite) function = CommandsUtils.GetFunctionTypeGUID(FunctionType.CompositeInterface);
 
                     List<CathodeEntityDatabase.ParameterDefinition> parameters = CathodeEntityDatabase.GetParametersFromEntity(function);
-                    if (parameters == null) break;
-                    for (int i = 0; i < parameters.Count; i++) 
-                        items.Add(parameters[i].name);
+                    if (parameters != null)
+                        for (int i = 0; i < parameters.Count; i++) 
+                            items.Add(parameters[i].name);
 
                     if (!isComposite) break;
 
