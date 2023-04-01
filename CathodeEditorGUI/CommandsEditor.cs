@@ -36,7 +36,7 @@ namespace CommandsEditor
 
         public CommandsEditor()
         {
-            //LocalDebug.TestNewEnumDropdowns();
+            //LocalDebug.TestOrders();
             //return;
 
             //LocalDebug.SyncEnumValuesAndDump();
@@ -959,10 +959,13 @@ namespace CommandsEditor
                             case "title":
                             case "map_description":
                             case "content_title":
+                            case "folder_title":
                             case "additional_info": //TODO: this is a good example of why we should handle this per-entity
                                 asset = AssetList.Type.LOCALISED_STRING;
                                 if (entity.variant == EntityVariant.FUNCTION && CommandsUtils.GetFunctionType(((FunctionEntity)entity).function).ToString().Contains("Objective"))
                                     asset_arg = "OBJECTIVES";
+                                else if (entity.variant == EntityVariant.FUNCTION && CommandsUtils.GetFunctionType(((FunctionEntity)entity).function).ToString().Contains("Terminal"))
+                                    asset_arg = "T0001/UI"; //TODO: we should also support TEXT dbs in the level folder for DLC stuff
                                 else
                                     asset_arg = "UI";
                                 break;

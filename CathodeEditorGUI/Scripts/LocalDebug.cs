@@ -27,6 +27,76 @@ namespace CommandsEditor
 {
     public static class LocalDebug
     {
+        public static void TestOrders()
+        {
+#if DEBUG
+            List<string> files = Directory.GetFiles(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            GUI_EnumDataType enumUI = new GUI_EnumDataType();
+            Parallel.ForEach(files, file =>
+            {
+                Commands phys = new Commands(file);
+                Parallel.ForEach(phys.Entries, comp =>
+                {
+                    UInt32 prevVal = 0;
+                    /*
+                    Console.WriteLine("\t FUNCTIONS");
+                    foreach (FunctionEntity ent in comp.functions)
+                    {
+                        UInt32 currVal = ent.shortGUID.ToUInt32();
+                        if (prevVal > currVal)
+                            Console.WriteLine("NOPE");
+                        else
+                            Console.WriteLine("YES");
+                        prevVal = currVal;
+
+                        //Console.WriteLine(ent.shortGUID.ToByteString() + " = " + ent.shortGUID.ToUInt32());
+                    }*/
+                    //Console.WriteLine("----");
+                    //Console.WriteLine("\t OVERRIDES");
+                    foreach (OverrideEntity ent in comp.overrides)
+                    {
+                        UInt32 currVal = ent.shortGUID.ToUInt32();
+                        if (prevVal > currVal)
+                            Console.WriteLine("NOPE");
+                        else
+                            Console.WriteLine("YES");
+                        prevVal = currVal;
+
+                        //Console.WriteLine(ent.shortGUID.ToByteString() + " = " + ent.shortGUID.ToUInt32());
+                    }
+                    //Console.WriteLine("----");
+                    //Console.WriteLine("\t PROXIES");
+                    foreach (ProxyEntity ent in comp.proxies)
+                    {
+                        UInt32 currVal = ent.shortGUID.ToUInt32();
+                        if (prevVal > currVal)
+                            Console.WriteLine("NOPE");
+                        else
+                            Console.WriteLine("YES");
+                        prevVal = currVal;
+
+                        //Console.WriteLine(ent.shortGUID.ToByteString() + " = " + ent.shortGUID.ToUInt32());
+                    }
+                    /*
+                    Console.WriteLine("----");
+                    Console.WriteLine("\t VARIABLES");
+                    foreach (VariableEntity ent in comp.variables)
+                    {
+                        UInt32 currVal = ent.shortGUID.ToUInt32();
+                        if (prevVal > currVal)
+                            Console.WriteLine("NOPE");
+                        else
+                            Console.WriteLine("YES");
+                        prevVal = currVal;
+
+                        //Console.WriteLine(ent.shortGUID.ToByteString() + " = " + ent.shortGUID.ToUInt32());
+                    }
+                    */
+                    //Console.WriteLine("----");
+                });
+            });
+#endif
+        }
 
         public static void TestNewEnumDropdowns()
         {
