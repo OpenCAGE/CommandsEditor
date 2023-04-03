@@ -23,7 +23,7 @@ namespace CommandsEditor.UserControls
 
         public void PopulateUI(cEnum cEnum, string paramID)
         {
-            label13.Text = paramID;
+            groupBox1.Text = paramID;
 
             enumVal = cEnum;
             enumDesc = EnumUtils.GetEnum(cEnum.enumID);
@@ -38,29 +38,6 @@ namespace CommandsEditor.UserControls
                 MessageBox.Show("WARNING!!! COULD NOT MATCH ENUM!!!");
             else
                 comboBox2.SelectedItem = enumEntry.Name;
-
-            /*
-             
-            label13.Text = paramID;
-
-            enumVal = cEnum;
-            enumDesc = EnumUtils.GetEnum(cEnum.enumID);
-
-            //comboBox1.Text = enumDesc.Name;
-            //comboBox1.SelectedIndexChanged += comboBox1_SelectedIndexChanged;
-
-            //PopulateEnumEntries();
-
-            EnumUtils.EnumDescriptor.Entry enumEntry = enumDesc.Entries.FirstOrDefault(o => o.Index == cEnum.enumIndex);
-            if (enumEntry == null)
-            {
-                Console.WriteLine(paramID + "," + cEnum.ToString().Replace(" -> ", ","));
-                //MessageBox.Show("WARNING!!! COULD NOT MATCH ENUM!!!");
-            }
-            //else
-                //comboBox2.SelectedItem = enumEntry.Name;
-
-            */
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)

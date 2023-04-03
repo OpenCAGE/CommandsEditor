@@ -10,11 +10,12 @@ using System.Windows;
 namespace CommandsEditor
 {
     #region I think these are right?
+    //Index 3 exists
     public enum CHECKPOINT_TYPE
     {
         CAMPAIGN,
-        MANUAL, //confirmed via savestation
-        CAMPAIGN_MISSION,
+        MANUAL = 1,
+        CAMPAIGN_MISSION = 2,
         MISSION_TEMP_STATE = -1, //perhaps?
     }
 
@@ -36,52 +37,6 @@ namespace CommandsEditor
         LOW_AGGRESSION_GAIN,
         MED_AGGRESSION_GAIN,
         HIGH_AGGRESSION_GAIN,
-    }
-
-    public enum ALERTNESS_STATE
-    {
-        IGNORE_PLAYER,
-        ALERT,
-        AGGRESSIVE,
-    }
-
-    public enum ALIEN_CONFIGURATION_TYPE
-    {
-        DEFAULT,
-        MILD,
-        MODERATE,
-        INTENSE,
-        BACKSTAGEHOLD,
-        MODERATELY_INTENSE,
-        BACKSTAGEALERT,
-        BACSTAGEHOLD_CLOSE,
-        BACKSTAGEHOLD_VCLOSE,
-    }
-
-    public enum ALIEN_DEVELOPMENT_MANAGER_ABILITIES
-    {
-        NONE,
-        THREAT_AWARE,
-        LIKES_TO_CLOSE_VIA_BACKSTAGE,
-        WILL_KILLTRAP,
-        WILL_FLANK,
-        WILL_FLANK_FROM_THREAT_AWARE,
-        WILL_AMBUSH,
-        SEARCH_LOCKERS,
-        SEARCH_UNDER_STUFF,
-    }
-
-    public enum ALIEN_DEVELOPMENT_MANAGER_ABILITY_MASKS
-    {
-        NONE,
-        THREAT_AWARE,
-        LIKES_TO_CLOSE_VIA_BACKSTAGE,
-        WILL_KILLTRAP,
-        WILL_FLANK,
-        WILL_FLANK_FROM_THREAT_AWARE,
-        WILL_AMBUSH,
-        SEARCH_LOCKERS,
-        SEARCH_UNDER_STUFF,
     }
 
     public enum ALIEN_DEVELOPMENT_MANAGER_STAGES
@@ -161,28 +116,6 @@ namespace CommandsEditor
         ENVIRONMENT_FLAME,
     }
 
-    public enum ANIM_CALLBACK_ENUM
-    {
-        NONE,
-        STUN_DAMAGE_CALLBACK,
-    }
-
-    public enum ANIM_TRACK_TYPE
-    {
-        T_FLOAT,
-        T_FLOAT3,
-        T_POSITION,
-        T_STRING,
-        T_GUID,
-        T_MASTERING,
-    }
-
-    public enum ANIM_TREE_ENUM
-    {
-        NONE,
-        STUN_DAMAGE_TREE,
-    }
-
     public enum ANIMATION_EFFECT_TYPE
     {
         STUMBLE,
@@ -194,28 +127,11 @@ namespace CommandsEditor
         FIXED_RADIUS_AROUND_POSITION,
     }
 
-    public enum AREA_SWEEP_TYPE_CODE
-    {
-        IN_AND_OUT_BETWEEN_TARGET_AND_POSITION,
-        FIXED_RADIUS_AROUND_POSITION,
-        AROUND_TARGET,
-    }
-
     public enum AUTODETECT
     {
         AUTO,
         FORCE_ON,
         FORCE_OFF,
-    }
-
-    public enum BEHAVIOUR_MOOD_SET
-    {
-        NEUTRAL,
-        THREAT_ESCALATION_AGGRESSIVE,
-        THREAT_ESCALATION_PANICKED,
-        AGGRESSIVE,
-        PANICKED,
-        SUSPICIOUS,
     }
 
     public enum BEHAVIOUR_TREE_FLAGS
@@ -248,13 +164,6 @@ namespace CommandsEditor
         ADDITIVE,
     }
 
-    public enum BLUEPRINT_LEVEL
-    {
-        LEVEL_1,
-        LEVEL_2,
-        LEVEL_3,
-    }
-
     public enum CAMERA_PATH_CLASS
     {
         GENERIC,
@@ -267,78 +176,6 @@ namespace CommandsEditor
     {
         LINEAR,
         BEZIER,
-    }
-
-    public enum CHARACTER_BB_ENTRY_TYPE
-    {
-        CBB_HAVE_CURRENT_TARGET,
-        CBB_MOST_RECENT_TARGET_SENSE_IS_ACTIVATED,
-        CBB_MOST_RECENT_TARGET_SENSE_HAS_BEEN_ACTIVATED,
-        CBB_SENSE_ABOVE_FIRST,
-        CBB_SENSE_ABOVE_LAST,
-        CBB_SENSE_TRIGGERED_FIRST,
-        CBB_SENSE_TRIGGERED_LAST,
-        CBB_SENSE_BEEN_ABOVE_FIRST,
-        CBB_SENSE_BEEN_ABOVE_LAST,
-        CBB_SENSE_LAST_TIME_FIRST,
-        CBB_SENSE_LAST_TIME_LAST,
-        CBB_TARGET_CLOSEST_THRESHOLD,
-        CBB_CAN_MOVE_TO_TARGET,
-        CBB_HAVE_NEXT_TARGET,
-        CBB_AGENT_MOTIVATION,
-        CBB_GAUGE_AMOUNT_ABOVE_RETREAT,
-        CBB_GAUGE_AMOUNT_ABOVE_FIRST,
-        CBB_GAUGE_AMOUNT_ABOVE_MELEE_DEFENSE,
-        CBB_GAUGE_AMOUNT_ABOVE_STUN_DAMAGE,
-        CBB_GAUGE_AMOUNT_ABOVE_LAST,
-        CBB_HAS_MELEE_ATTACK_AVAILABLE,
-        CBB_ALLOWED_TO_ATTACK_TARGET,
-        CBB_ALERTNESS_STATE,
-        CBB_HAS_A_WEAPON,
-        CBB_WEAPON_IS_EQUIPPED,
-        CBB_WEAPON_NEEDS_RELOADING,
-        CBB_LOGIC_CHARACTER_SUSPECT_TARGET_RESPONSE_TIMER,
-        CBB_LOGIC_CHARACTER_TIMER_FIRST,
-        CBB_LOGIC_CHARACTER_THREAT_AWARE_TIMEOUT_TIMER,
-        CBB_LOGIC_CHARACTER_THREAT_AWARE_DURATION_TIMER,
-        CBB_LOGIC_CHARACTER_SEARCH_TIMEOUT_TIMER,
-        CBB_LOGIC_CHARACTER_BACKSTAGE_STALK_TIMEOUT_TIMER,
-        CBB_LOGIC_CHARACTER_AMBUSH_TIMEOUT_TIMER,
-        CBB_LOGIC_CHARACTER_BACKSTAGE_STALK_PICK_KILLTRAP_TIMER,
-        CBB_LOGIC_CHARACTER_ATTACK_BAN_TIMER,
-        CBB_LOGIC_CHARACTER_MELEE_ATTACK_BAN_TIMER,
-        CBB_LOGIC_CHARACTER_VENT_BAN_TIMER,
-        CBB_LOGIC_CHARACTER_NPC_STAY_IN_COVER_TIMER,
-        CBB_LOGIC_CHARACTER_NPC_JUST_LEFT_COMBAT_TIMER,
-        CBB_LOGIC_CHARACTER_ATTACK_KEEP_CHASING_TIMER,
-        CBB_LOGIC_CHARACTER_DELAY_RETURN_TO_SPAWN_POINT_TIMER,
-        CBB_LOGIC_CHARACTER_TARGET_IN_CRAWLSPACE_TIMER,
-        CBB_LOGIC_CHARACTER_DURATION_SINCE_SEARCH_TIMER,
-        CBB_LOGIC_CHARACTER_HEIGHTENED_SENSES_TIMER,
-        CBB_LOGIC_CHARACTER_FLANKED_VENT_ATTACK_TIMER,
-        CBB_LOGIC_CHARACTER_THREAT_AWARE_VISUAL_RETENTION_TIMER,
-        CBB_LOGIC_CHARACTER_RESPONSE_TO_BACKSTAGE_ALIEN_TIMEOUT_TIMER,
-        CBB_LOGIC_CHARACTER_VENT_ATTRACT_TIMER,
-        CBB_LOGIC_CHARACTER_SEEN_PLAYER_AIM_WEAPON_TIMER,
-        CBB_LOGIC_CHARACTER_SEARCH_BAN_TIMER,
-        CBB_LOGIC_CHARACTER_OBSERVE_TARGET_TIMER,
-        CBB_LOGIC_CHARACTER_REPEATED_PATHFIND_FAILUREST_TIMER,
-        CBB_LOGIC_CHARACTER_TIMER_LAST,
-        CBB_AFFECTED_BY_TARGETS_FLAME_THROWER,
-    }
-
-    public enum CHARACTER_FOLEY_SOUND
-    {
-        LEATHER,
-        HEAVY_JACKET,
-        HEAVY_OVERALLS,
-        SHIRT,
-        SUIT_JACKET,
-        SUIT_TROUSERS,
-        JEANS,
-        BOOTS,
-        FLATS,
-        TRAINERS,
     }
 
     public enum CLIPPING_PLANES_PRESETS
@@ -394,13 +231,6 @@ namespace CommandsEditor
         ALLOW_OBSERVE_TARGET,
     }
 
-    public enum CROUCH_MODE
-    {
-        FORCE_CROUCH,
-        FORCE_UNCROUCH,
-        ALLOW_UNCROUCH,
-    }
-
     public enum CUSTOM_CHARACTER_ACCESSORY_OVERRIDE
     {
         ACCESSORY_OVERRIDE_NONE,
@@ -430,42 +260,6 @@ namespace CommandsEditor
         ASSETSET_10,
     }
 
-    public enum CUSTOM_CHARACTER_BUILD
-    {
-        STANDARD,
-        HEAVY,
-    }
-
-    public enum CUSTOM_CHARACTER_COMPONENT
-    {
-        TORSO,
-        LEGS,
-        SHOES,
-        HEAD,
-        ARMS,
-        COLLISION,
-    }
-
-    public enum CUSTOM_CHARACTER_ETHNICITY
-    {
-        AFRICAN,
-        CAUCASIAN,
-        ASIAN,
-    }
-
-    public enum CUSTOM_CHARACTER_GENDER
-    {
-        MALE,
-        FEMALE,
-    }
-
-    public enum CUSTOM_CHARACTER_MODEL
-    {
-        NPC,
-        ANDROID,
-        CORPSE,
-    }
-
     public enum CUSTOM_CHARACTER_POPULATION
     {
         POPULATION_01,
@@ -480,37 +274,11 @@ namespace CommandsEditor
         POPULATION_10,
     }
 
-    public enum CUSTOM_CHARACTER_SLEEVETYPE
-    {
-        LONG,
-        MEDIUM,
-        SHORT,
-    }
-
     public enum CUSTOM_CHARACTER_TYPE
     {
         NONE,
         RANDOM,
         NAMED,
-    }
-
-    public enum DAMAGE_EFFECT_TYPE_FLAGS
-    {
-        NONE,
-        INCENDIARY,
-        STUN,
-        BLIND,
-        EMP,
-        ACID,
-        GAS,
-        IMPACT,
-        COLLISION,
-        SLIDING,
-        MELEE,
-        ALL,
-        INVALID_FLAG_MASK,
-        PROJECTILE,
-        ANY_IMPACTING_WEAPON,
     }
 
     public enum DAMAGE_EFFECTS
@@ -533,91 +301,6 @@ namespace CommandsEditor
         PDS_DROP_DEAD,
         PDS_SKIP_ALL_ANIMS,
         PDS_SKIP_ALL_ANIMS_NO_RAGDOLL,
-    }
-
-    public enum DEVICE_INTERACTION_MODE
-    {
-        NONE,
-        HACKING,
-        HACKING_REACTION,
-        REWIRE,
-        CONTAINER,
-        KEYPAD,
-        INTERACTIVE_TERMINAL,
-        CUTTING_PANEL,
-    }
-
-    public enum DIALOGUE_ACTION
-    {
-        Suspicious_Warning,
-        Suspicious_Warning_Fail,
-        Missing_Buddy,
-        Search_Starts,
-        Search_Loop,
-        Search_Fail,
-        Detected_Enemy,
-        Interrogative,
-        Warning,
-        Last_Chance,
-        Stand_Down,
-        Use_Cover,
-        No_Cover,
-        Shoot_From_Cover,
-        Cover_Invalidated,
-        Alamo,
-        Panic,
-        Attack,
-        Hit_By_Weapon,
-        Blocks_Blow,
-        Final_Hit,
-        Ally_Death,
-        Incoming_IED,
-        Alert_Squad,
-        Idle_Chatter,
-        Enter_Grapple,
-        Grab_From_Cover,
-        Player_Observed,
-        Suspicious_Item_Initial,
-        Suspicious_Item_CloseTo,
-        Melee,
-        Advance,
-        Death,
-        Alien_Heard_Backstage,
-    }
-
-    public enum DIALOGUE_ARGUMENT
-    {
-        Character_Voice,
-        Dialogue_Progression,
-        Target_Character,
-        NPC_Group_Status,
-        NPC_Dialogue_Mode,
-        Action,
-        Seen_Target,
-        Call_Response,
-        Android_Escalation,
-        Suspicious_Item_Type,
-        Last_Activated_Sense,
-        Last_Hit_By_Weapon,
-        Injured_State,
-    }
-
-    public enum DIALOGUE_NPC_COMBAT_MODE
-    {
-        Area_Sweep,
-        Attack,
-        Idle,
-        Suspect_Response,
-        Systematic_Search,
-        Target_Lost,
-    }
-
-    public enum DIALOGUE_NPC_CONTEXT
-    {
-        Alamo,
-        Been_In_Combat,
-        Seen_Target,
-        Unknown_Target,
     }
 
     public enum DIALOGUE_NPC_EVENT
@@ -661,43 +344,6 @@ namespace CommandsEditor
         ALIEN_ATTACKING_ME,
     }
 
-    public enum DIALOGUE_VOICE_ACTOR
-    {
-        AUTO,
-        CV1,
-        CV2,
-        CV3,
-        CV4,
-        CV5,
-        CV6,
-        RT1,
-        RT2,
-        RT3,
-        RT4,
-        AN1,
-        AN2,
-        AN3,
-        ANH,
-        TOTAL,
-        FIRST_CIVILIAN_MALE_VOICE,
-        LAST_CIVILIAN_MALE_VOICE,
-        FIRST_CIVILIAN_FEMALE_VOICE,
-        LAST_CIVILIAN_FEMALE_VOICE,
-        FIRST_SECURITY_MALE_VOICE,
-        LAST_SECURITY_MALE_VOICE,
-        FIRST_ANDROID_VOICE,
-        LAST_ANDROID_VOICE,
-    }
-
-    public enum DIFFICULTY_SETTING_TYPE
-    {
-        EASY,
-        MEDIUM,
-        HARD,
-        IRON,
-        NOVICE,
-    }
-
     public enum DUCK_HEIGHT
     {
         LOW,
@@ -715,28 +361,6 @@ namespace CommandsEditor
         HUMANOID,
         ALIEN,
         ANY,
-    }
-
-    public enum ENVIRONMENT_ARCHETYPE
-    {
-        SCIENCE,
-        HABITATION,
-        TECHNICAL,
-        ENGINEERING,
-    }
-
-    public enum EVENT_OCCURED_TYPE
-    {
-        SENSED_TARGET,
-        SENSED_SUSPICIOUS_ITEM,
-        TARGET_HIDEING,
-        SUSPECT_TARGET_RESPONSE,
-    }
-
-    public enum FLAG_CHANGE_SOURCE_TYPE
-    {
-        SCRIPT,
-        ACTION,
     }
 
     public enum FLASH_INVOKE_TYPE
@@ -822,17 +446,6 @@ namespace CommandsEditor
         BOLTGUN_AIM_VENTS,
     }
 
-    public enum FRAME_FLAGS
-    {
-        SUSPICIOUS_ITEM_LOW_PRIORITY,
-        SUSPICIOUS_ITEM_MEDIUM_PRIORITY,
-        SUSPICIOUS_ITEM_HIGH_PRIORITY,
-        COULD_SEARCH,
-        COULD_RESPOND_TO_HIDING_PLAYER,
-        COULD_DO_SUSPICIOUS_ITEM_HIGH_PRIORITY,
-        COULD_DO_SUSPECT_TARGET_RESPONSE_MOVE_TO,
-    }
-
     public enum FRONTEND_STATE
     {
         FRONTEND_STATE_SPLASH,
@@ -899,52 +512,6 @@ namespace CommandsEditor
         GAMEPAD,
     }
 
-    public enum JOB_TYPE
-    {
-        IDLE,
-        DESPAWN,
-        AREA_SWEEP,
-        AREA_SWEEP_FLARE,
-        SYSTEMATIC_SEARCH_TARGET_JOB,
-        SYSTEMATIC_SEARCH,
-        SYSTEMATIC_SEARCH_FLARE,
-        SYSTEMATIC_SEARCH_SPOTTING_POSITION,
-        SYSTEMATIC_SEARCH_CRAWL_SPACE_SPOTTING_POSITION,
-        PICKUP_WEAPON,
-        ASSAULT,
-        PLAYER_HIDING,
-        FOLLOW,
-        FOLLOW_CENTRE,
-        PANIC,
-    }
-
-    public enum LEVEL_HEAP_TAG
-    {
-        AI_MEM_A_CHARACTER,
-        AI_MEM_A_ENTITIES,
-        AI_MEM_A_JOBS,
-        AI_MEM_A_NAV_MESH,
-        AI_MEM_AGG_MANAGER,
-        AI_MEM_ENEMY_RECORD_CONTAINER,
-        AI_MEM_SPOT_TASK_CONTAINER,
-        AI_MEM_SUS_ITEM_CONTAINER,
-        AI_MEM_SEARCH_TASK_CONTAINER,
-        AI_MEM_VENT_MANAGER_CONTAINER,
-        AI_MEM_COVER_CONTAINER,
-        AI_MEM_DIALOGUE_CONTAINER,
-        AI_MEM_SQUAD_CONTAINER,
-        AI_MEM_NPC_COMBAT_CONTAINER,
-        AI_MEM_NPC_CHARACTER_CONTAINER,
-        AI_MEM_NPC_GROUP_MEMBER_CONTAINER,
-        AI_MEM_JOB_CONTAINER,
-        AI_MEM_VENT_CONTAINER,
-        AI_MEM_BLACKBOARD_CONTAINER,
-        AI_MEM_CATHODE_SUBS_CONTAINER,
-        AI_MEM_PUBLISHER_CONTAINER,
-        AI_MEM_THROWN_CONTAINER,
-        AI_MEM_SMOKE_MANAGER_CONTAINER,
-    }
-
     public enum LIGHT_ADAPTATION_MECHANISM
     {
         PERCENTILE,
@@ -993,86 +560,6 @@ namespace CommandsEditor
         FASTEST,
     }
 
-    public enum LOGIC_CHARACTER_FLAGS
-    {
-        DONE_BREAKOUT,
-        SHOULD_RESET,
-        DO_ASSAULT_ATTACK_CHECKS,
-        IS_IN_VENT,
-        BANNED_FROM_VENT,
-        HAS_DONE_GRAPPLE_BREAK,
-        HAS_RECEIVED_DOT,
-        IS_SITTING,
-        DONE_ESCALATION_JOB,
-        SHOULD_BREAKOUT,
-        SHOULD_ATTACK,
-        SHOULD_HIT_AND_RUN,
-        DONE_HIT_AND_RUN,
-        PLAYER_HIDING,
-        ATTACK_HIDING_PLAYER,
-        ALIEN_ALWAYS_KNOWS_WHEN_IN_VENT,
-        IS_CORPSE_TRAP_ON_START,
-        SHOULD_DESPAWN,
-        ATTACK_HAS_GOT_WITHIN_ROUTING_THRESHOLD,
-        LOCK_BACKSTAGE_STALK,
-        TOTALLY_BLIND_IN_DARK,
-        PLAYER_WON_HIDING_QTE,
-        ANDROID_IS_INERT,
-        ANDROID_IS_SHOWROOM_DUMMY,
-        SHOULD_AMBUSH,
-        NEVER_AGGRESSIVE,
-        MUTE_DYNAMIC_DIALOGUE,
-        DOING_THREAT_AWARE_ANIM,
-        DONE_THREAT_AWARE,
-        BLOCK_AMBUSH_AND_KILLTRAPS,
-        PREVENT_GRAPPLES,
-        PREVENT_ALL_ATTACKS,
-        ALLOW_FLANKED_VENT_ATTACK,
-        IGNORE_PLAYER_IN_VENT_BEHAVIOUR,
-        USE_AIMED_STANCE_FOR_IDLE_JOBS,
-        USE_AIMED_LOW_STANCE_FOR_IDLE_JOBS,
-        CLOSE_TO_BACKSTAGE_ALIEN,
-        IS_IN_EXPLOITABLE_AREA,
-        IS_ON_LADDER,
-        HAS_REPEATED_PATHFIND_FAILURES,
-    }
-
-    public enum LOGIC_CHARACTER_GAUGE_TYPE
-    {
-        RETREAT_GAUGE,
-        STUN_DAMAGE_GAUGE,
-    }
-
-    public enum LOGIC_CHARACTER_TIMER_TYPE
-    {
-        SUSPECT_TARGET_RESPONSE_DELAY_TIMER,
-        FIRST_LOGIC_CHARACTER_TIMER,
-        THREAT_AWARE_TIMEOUT_TIMER,
-        THREAT_AWARE_DURATION_TIMER,
-        SEARCH_TIMEOUT_TIMER,
-        BACKSTAGE_STALK_TIMEOUT_TIMER,
-        AMBUSH_TIMEOUT_TIMER,
-        ATTACK_BAN_TIMER,
-        MELEE_ATTACK_BAN_TIMER,
-        VENT_BAN_TIMER,
-        NPC_STAY_IN_COVER_SHOOT_TIMER,
-        NPC_JUST_LEFT_COMBAT_TIMER,
-        ATTACK_KEEP_CHASING_TIMER,
-        DELAY_RETURN_TO_SPAWN_POINT_TIMER,
-        TARGET_IN_CRAWLSPACE_TIMER,
-        DURATION_SINCE_SEARCH_TIMER,
-        HEIGHTENED_SENSES_TIMER,
-        BACKSTAGE_STALK_PICK_KILLTRAP_TIMER,
-        FLANKED_VENT_ATTACK_TIMER,
-        THREAT_AWARE_VISUAL_RETENTION_TIMER,
-        RESPONSE_TO_BACKSTAGE_ALIEN_TIMEOUT_TIMER,
-        VENT_ATTRACT_TIMER,
-        SEEN_PLAYER_AIM_WEAPON_TIMER,
-        SEARCH_BAN_TIMER,
-        OBSERVE_TARGET_TIMER,
-        REPEATED_PATHFIND_FAILUREST_TIMER,
-    }
-
     public enum LOOK_SPEED
     {
         SLOW,
@@ -1100,13 +587,6 @@ namespace CommandsEditor
         ANDROID_CORPSE_TRAP_GRAPPLE,
     }
 
-    public enum MOOD_INTENSITY
-    {
-        LOW,
-        MEDIUM,
-        HIGH,
-    }
-
     public enum MUSIC_RTPC_MODE
     {
         UNCHANGED,
@@ -1123,76 +603,10 @@ namespace CommandsEditor
         EXPENSIVE,
     }
 
-    public enum NAVIGATION_CHARACTER_CLASS
-    {
-        PLAYER,
-        ALIEN,
-        ANDROID,
-        HUMAN_NPC,
-        FACEHUGGER,
-    }
-
-    public enum NAVIGATION_CHARACTER_CLASS_COMBINATION
-    {
-        NONE,
-        PLAYER,
-        ALIEN,
-        ANDROID,
-        HUMAN_NPC,
-        FACEHUGGER,
-        HUMAN,
-        HUMANOID_NPC,
-        HUMANOID,
-        ANDROID_AND_ALIEN,
-        PLAYER_AND_ALIEN,
-        ALL,
-    }
-
     public enum NOISE_TYPE
     {
         HARMONIC,
         FRACTAL,
-    }
-
-    public enum NPC_AGGRO_LEVEL
-    {
-        NONE,
-        STAND_DOWN,
-        INTERROGATIVE,
-        WARNING,
-        LAST_CHANCE,
-        NO_LIMIT,
-        AGGRESSIVE,
-    }
-
-    public enum NPC_COMBAT_STATE
-    {
-        NONE,
-        WARNING,
-        ATTACKING,
-        REACHED_OBJECTIVE,
-        ENTERED_COVER,
-        LEAVE_COVER,
-        START_RETREATING,
-        REACHED_RETREAT,
-        LOST_SENSE,
-        SUSPICIOUS_WARNING,
-        SUSPICIOUS_WARNING_FAILED,
-        START_ADVANCE,
-        DONE_ADVANCE,
-        BLOCKING,
-        HEARD_BS_ALIEN,
-        ALIEN_SIGHTED,
-    }
-
-    public enum NPC_COVER_REQUEST_TYPE
-    {
-        DEFAULT,
-        RETREAT,
-        AGGRESSIVE,
-        DEFENSIVE,
-        ALIEN,
-        PLAYER_IN_VENT,
     }
 
     public enum NPC_GUN_AIM_MODE
@@ -1214,11 +628,6 @@ namespace CommandsEditor
         CHARACTER_PROJECTION,
         POINT_PROJECTION,
         TIME_PROGRESS,
-    }
-
-    public enum PAUSE_SENSES_TYPE
-    {
-        KNOCKED_OUT,
     }
 
     public enum PLATFORM_TYPE
@@ -1294,41 +703,6 @@ namespace CommandsEditor
         FACE,
     }
 
-    public enum SENSE_SET
-    {
-        SET_1,
-        SET_2,
-        SET_3,
-    }
-
-    public enum SENSE_SET_DEFAULT
-    {
-        SET_NORMAL,
-        SET_HEIGHTENED,
-    }
-
-    public enum SENSE_SET_SYSTEM
-    {
-        SET_1_NORMAL,
-        SET_1_HEIGHTENED,
-        SET_LAST_DEFAULT,
-        SET_2,
-        SET_3,
-    }
-
-    public enum SENSORY_TYPE
-    {
-        NONE,
-        VISUAL,
-        WEAPON_SOUND,
-        MOVEMENT_SOUND,
-        DAMAGE_CAUSED,
-        TOUCHED,
-        AFFECTED_BY_FLAME_THROWER,
-        SEE_FLASH_LIGHT,
-        COMBINED_SENSE,
-    }
-
     public enum SHAKE_TYPE
     {
         CONSTANT,
@@ -1364,87 +738,11 @@ namespace CommandsEditor
         JUST_CONVERGE,
     }
 
-    public enum SUSPECT_RESPONSE_PHASE
-    {
-        HEARD_GUN_SHOT,
-        IDLE,
-        VISUAL_SUCCESS,
-        VISUAL_FAIL,
-    }
-
-    public enum SUSPICIOUS_ITEM
-    {
-        EXPLOSION,
-        DEAD_BODY,
-        ALARM,
-        VENT_HISS,
-        ACTIVE_FLARE,
-        CUT_PANEL,
-        FIRE_EXTINGUISHER,
-        LIGHTS_ON,
-        LIGHTS_OFF,
-        DOOR_OPENED,
-        DOOR_CLOSED,
-        DISGUARDED_GUN,
-        DEAD_FLARE,
-        GLOW_STICK,
-        OPEN_CONTAINER,
-        NOISE_MAKER,
-        EMP_MINE,
-        FLASH_BANG,
-        MOLOTOV,
-        PIPE_BOMB,
-        SMOKE_BOMB,
-    }
-
     public enum SUSPICIOUS_ITEM_BEHAVIOUR_TREE_PRIORITY
     {
         LOW,
         MEDIUM,
         HIGH,
-    }
-
-    public enum SUSPICIOUS_ITEM_CLOSE_REACTION_DETAIL
-    {
-        VISUAL_FLOOR,
-        VISUAL_WALL,
-    }
-
-    public enum SUSPICIOUS_ITEM_REACTION
-    {
-        INITIAL_REACTION,
-        CLOSE_TO_FIRST_GROUP_MEMBER_REACTION,
-        CLOSE_TO_SUBSEQUENT_GROUP_MEMBER_REACTION,
-    }
-
-    public enum SUSPICIOUS_ITEM_STAGE
-    {
-        NONE,
-        FIRST_SENSED,
-        INITIAL_REACTION,
-        WAIT_FOR_TEAM_MEMBERS_ROUTING,
-        MOVE_CLOSE_TO,
-        CLOSE_TO_REACTION,
-        CLOSE_TO_WAIT_FOR_GROUP_MEMBERS,
-        SEARCH_AREA,
-    }
-
-    public enum SUSPICIOUS_ITEM_START_OR_CONTINUE_STATE
-    {
-        VALID_CURRENT_AND_IN_PROGRESS,
-        VALID_TO_DO_INITIAL_REACTION,
-        VALID_TO_DO_FURTHER_REACTION,
-        LAST_VALID_STATE,
-        DELAYED_INTERACTION_DELAY,
-        LAST_VALID_OR_DELAYED_STATE,
-        INVALID_NO_ITEM,
-        INVALID_ALREADY_COMPLETED,
-        INVALID_ALREADY_DONE_MIN_STAGE,
-        INVALID_NO_MUST_DO_STAGE,
-        INVALID_INTERACTION_DELAYED,
-        INVALID_MEMBER_NOT_ALLOWED_TO_PROGRESS,
-        INVALID_FUTHER_REACTION_TIMED_OUT_IN_PROGRESS,
-        INVALID_FUTHER_REACTION_TIMED_OUT_LAST_TIME_TRIGGERED,
     }
 
     public enum SUSPICIOUS_ITEM_TRIGGER
@@ -1526,55 +824,10 @@ namespace CommandsEditor
         CENTER,
     }
 
-    public enum TRAVERSAL_ANIMS
-    {
-        Leap_Small,
-        Leap_Medium,
-        Leap_Large,
-        Mantle_Small,
-        Mantle_Medium,
-        Mantle_Large,
-        Vault_Small,
-        Vault_Medium,
-        Vault_Large,
-        Custom,
-    }
-
-    public enum TRAVERSAL_TYPE
-    {
-        VAULT,
-        MANTLE,
-        CLIMB_OVER,
-        JUMP_DOWN,
-        VENT_ENTRY,
-        VENT_EXIT,
-        LADDER,
-        FLOOR_VENT_ENTRY,
-        FLOOR_VENT_EXIT,
-    }
-
     public enum UI_ICON_ICON
     {
         IMPORTANT,
         CONTAINER,
-    }
-
-    public enum VENT_LOCK_REASON
-    {
-        FLANKED_VENT_ATTACK_FROM_ATTACK,
-        FLANKED_VENT_ATTACK_FROM_THREAT_AWARE,
-    }
-
-    public enum VISIBILITY_SETTINGS_TYPE
-    {
-        VIEWCONESET_NONE,
-        VIEWCONESET_STANDARD,
-        VIEWCONESET_STANDARD_HIEGHTENED,
-        VIEWCONESET_HUMAN,
-        VIEWCONESET_HUMAN_HIEGHTENED,
-        VIEWCONESET_SLEEPING,
-        VIEWCONESET_ANDROID,
-        VIEWCONESET_ANDROID_HIEGHTENED,
     }
 
     public enum WEAPON_HANDEDNESS
@@ -1603,11 +856,6 @@ namespace CommandsEditor
         CEILING,
         FLOOR,
         WALL,
-    }
-
-    public enum WEAPON_PROPERTY
-    {
-        ALIEN_THREAT_AWARE_OF,
     }
 
     public enum WEAPON_TYPE
@@ -1639,29 +887,347 @@ namespace CommandsEditor
         KEYCODE,
     }
 
-    public enum CHARACTER_NODE
+    public enum EQUIPMENT_SLOT
     {
-        HEAD1,
-        HEAD,
-        HIPS,
-        TORSO,
-        SPINE2,
-        SPINE1,
-        SPINE,
-        LEFT_ARM,
-        RIGHT_ARM,
-        LEFT_HAND,
-        RIGHT_HAND,
-        LEFT_LEG,
-        RIGHT_LEG,
-        LEFT_FOOT,
-        RIGHT_FOOT,
-        LEFT_WEAPON_BONE,
-        RIGHT_WEAPON_BONE,
-        LEFT_SHOULDER,
-        RIGHT_SHOULDER,
+        USE_CURRENT_SLOT = -2,
+        ANY_WEAPON_SLOT,
+        WEAPON_SLOT_SHOTGUN,
+        WEAPON_SLOT_PISTOL,
+        MELEE_SLOT,
+        CATTLEPROD_SLOT,
+        WEAPON_SLOT_FLAMETHROWER,
+        WEAPON_SLOT_BOLTGUN,
+        MOTION_TRACKER_SLOT,
+        TORCH_SLOT,
+        MEDIPEN_SLOT,
+        TEMPORARY_WEAPON_SLOT,
+        NO_WEAPON_SLOT = -3,
+    }
+
+    public enum DAMAGE_MODE
+    {
+        DAMAGED_BY_ALL,
+        DAMAGED_BY_PLAYER_ONLY,
+        INVINCIBLE,
+    }
+
+    public enum GATING_TOOL_TYPE
+    {
+        KEY,
+        AXE,
+        CROWBAR,
+        GAS_MASK,
+        CUTTING_TOOL,
+        HACKING_TOOL,
+        REWIRE,
+        CABLE_CLAMPS,
+    }
+
+    public enum FOLLOW_TYPE
+    {
+        LEADING_THE_WAY,
+        EXPLORATION,
+    }
+
+    public enum TASK_OPERATION_MODE
+    {
+        FULLY_SHARED,
+        SINGLE_AND_EXCLUSIVE,
+    }
+
+    public enum MOVE
+    {
+        SLOW_WALK,
+        WALK,
+        FAST_WALK,
+        RUN,
+        OBSOLETE_1,
+        OBSOLETE_2,
+        TELEPORT,
+    }
+
+    public enum SUB_OBJECTIVE_TYPE
+    {
+        NONE,
+        POINT,
+        SMALL_AREA,
+        MEDIUM_AREA,
+        LARGE_AREA,
+    }
+
+    public enum LEVER_TYPE
+    {
+        PULL,
+        ROTATE,
+    }
+
+    public enum BUTTON_TYPE
+    {
+        KEYS,
+        DISK,
+    }
+
+    public enum DOOR_MECHANISM
+    {
+        NONE,
+        BLANK,
+        KEYPAD,
+        LEVER,
+        BUTTON,
+        HACKING,
+        HIDDEN_KEYPAD,
+        HIDDEN_LEVER,
+        HIDDEN_HACKING,
+        HIDDEN_BUTTON,
+    }
+
+    public enum PICKUP_CATEGORY
+    {
+        UNKNOWN,
         WEAPON,
-        ROOT,
+        AMMO,
+        ITEM,
+        KILLTRAP,
+        DOOR,
+        COMPUTER,
+        ALIEN,
+        SAVE_TERMINAL,
+    }
+
+    public enum REWIRE_SYSTEM_TYPE
+    {
+        AI_UI_MAIN_LIGHTING,
+        AI_UI_DOOR_SYSTEM,
+        AI_UI_VENT_ACCESS,
+        AI_UI_SECURITY_CAMERAS,
+        AI_UI_TANNOY,
+        AI_UI_ALARMS,
+        AI_UI_SPRINKLERS,
+        AI_UI_RELEASE_VALVE,
+        AI_UI_GAS_LEAK,
+        AI_UI_AIR_CONDITIONING,
+        AI_UI_UNSTABLE_SYSTEM,
+    }
+
+    public enum VIEWCONE_TYPE
+    {
+        RECTANGLE = 1,
+        ELLIPSE,
+    }
+
+    public enum WAVE_SHAPE
+    {
+        SIN,
+        SAW,
+        REV_SAW,
+        SQUARE,
+        TRIANGLE,
+    }
+
+    public enum UI_KEYGATE_TYPE
+    {
+        KEYCARD,
+        KEYPAD,
+    }
+    #endregion
+
+
+    //Below here I'm confident on the indexes
+
+    public enum CHARACTER_STANCE
+    {
+        DONT_CHANGE,
+        STAND,
+        CROUCHED,
+    }
+
+    public enum CI_MESSAGE_TYPE 
+    {
+        MSG_NORMAL,
+        MSG_IMPORTANT,
+        MSG_ERROR,
+    }
+
+    //Index 35 exists in PAK
+    public enum CHARACTER_CLASS_COMBINATION
+    {
+        NONE = 0x0,
+        PLAYER_ONLY = 0x1,
+        ALIEN_ONLY = 0x2,
+        ANDROID_ONLY = 0x4,
+        CIVILIAN_ONLY = 0x8,
+        SECURITY_ONLY = 0x10,
+        FACEHUGGER_ONLY = 0x20,
+        INNOCENT_ONLY = 0x40,
+        ANDROID_HEAVY_ONLY = 0x80,
+        MOTION_TRACKER = 0x100,
+        MELEE_HUMAN_ONLY = 0x200,
+        ANDROIDS = ANDROID_ONLY | ANDROID_HEAVY_ONLY,
+        ALIENS = ALIEN_ONLY | FACEHUGGER_ONLY,
+        HUMAN_NPC = CIVILIAN_ONLY | SECURITY_ONLY | INNOCENT_ONLY | MELEE_HUMAN_ONLY,
+        HUMAN = HUMAN_NPC | PLAYER_ONLY,
+        HUMANOID_NPC = HUMAN_NPC | ANDROIDS,
+        HUMANOID = HUMANOID_NPC | PLAYER_ONLY,
+        ANDROIDS_AND_ALIEN = ANDROIDS | ALIENS,
+        PLAYER_AND_ALIEN = PLAYER_ONLY | ALIEN_ONLY,
+        ALL = ALIENS | HUMANOID | MOTION_TRACKER,
+    }
+
+    public enum DIFFICULTY_SETTING_TYPE
+    {
+        EASY,
+        MEDIUM,
+        HARD,
+        IRON,
+        NOVICE,
+    }
+
+    public enum EXIT_WAYPOINT
+    {
+        SOLACE,
+        AIRPORT,
+        TECH_HUB,
+        TECH_COMMS,
+        SCI_HUB,
+        HOSPITAL_UPPER,
+        HOSPITAL_LOWER,
+        ANDROID_LAB,
+        SHOPPING_CENTRE,
+        LV426,
+        TECH_RND,
+        REACTOR_CORE,
+        RND_HAZLAB,
+        CORP_PENT,
+        APPOLLO_CORE,
+        DRY_DOCKS,
+        GRAVITY_ANCHORS,
+        TOWING_PLATFORM,
+    }
+
+    public enum CHARACTER_CLASS
+    {
+        PLAYER,
+        ALIEN,
+        ANDROID,
+        CIVILIAN,
+        SECURITY,
+        FACEHUGGER,
+        INNOCENT,
+        ANDROID_HEAVY,
+        MOTION_TRACKER,
+        MELEE_HUMAN,
+    }
+
+    public enum CHARACTER_FOLEY_SOUND
+    {
+        LEATHER,
+        HEAVY_JACKET,
+        HEAVY_OVERALLS,
+        SHIRT,
+        SUIT_JACKET,
+        SUIT_TROUSERS,
+        JEANS,
+        BOOTS,
+        FLATS,
+        TRAINERS,
+    }
+
+    public enum SENSORY_TYPE
+    {
+        NONE = -1,
+        VISUAL,
+        WEAPON_SOUND,
+        MOVEMENT_SOUND,
+        DAMAGE_CAUSED,
+        TOUCHED,
+        AFFECTED_BY_FLAME_THROWER,
+        SEE_FLASH_LIGHT,
+        COMBINED_SENSE,
+    }
+
+    public enum SENSE_SET
+    {
+        SET_1 = 1,
+        SET_2 = 2,
+        SET_3 = 3,
+    }
+
+    public enum ALERTNESS_STATE
+    {
+        IGNORE_PLAYER,
+        ALERT,
+        AGGRESSIVE,
+    }
+
+    public enum MOOD
+    {
+        NEUTRAL,
+        SCARED,
+        ANGRY,
+        HAPPY,
+        SAD,
+        SUSPICIOUS,
+        INJURED,
+    }
+
+    public enum BEHAVIOUR_MOOD_SET
+    {
+        NEUTRAL,
+        THREAT_ESCALATION_AGGRESSIVE,
+        THREAT_ESCALATION_PANICKED,
+        AGGRESSIVE,
+        PANICKED,
+        SUSPICIOUS,
+    }
+
+    public enum MOOD_INTENSITY
+    {
+        LOW,
+        MEDIUM,
+        HIGH,
+    }
+
+    public enum MAP_ICON_TYPE
+    {
+        REWIRE,
+        HACKING,
+        KEYPAD,
+        LOCKED,
+        SAVEPOINT,
+        WAYPOINT,
+        TOOL_PICKUP,
+        WEAPON_PICKUP,
+        CUTTING_POINT,
+        LEVEL_LOAD,
+        LADDER,
+        CONTAINER,
+        TERMINAL_INTERACTION,
+        LOCKED_DOOR,
+        UNLOCKED_DOOR,
+        HIDDEN,
+        GENERIC_INTERACTION,
+        POWERED_DOWN_DOOR,
+        KEYCODE,
+    }
+
+    public enum NPC_COMBAT_STATE
+    {
+        NONE,
+        WARNING,
+        ATTACKING,
+        REACHED_OBJECTIVE,
+        ENTERED_COVER,
+        LEAVE_COVER,
+        START_RETREATING,
+        REACHED_RETREAT,
+        LOST_SENSE,
+        SUSPICIOUS_WARNING,
+        SUSPICIOUS_WARNING_FAILED,
+        START_ADVANCE,
+        DONE_ADVANCE,
+        BLOCKING,
+        HEARD_BS_ALIEN,
+        ALIEN_SIGHTED,
     }
 
     public enum BEHAVIOR_TREE_BRANCH_TYPE
@@ -1739,163 +1305,113 @@ namespace CommandsEditor
         ALL_SEARCH_VARIANTS_BRANCH,
     }
 
-    public enum EQUIPMENT_SLOT
+    public enum DIALOGUE_VOICE_ACTOR
     {
-        USE_CURRENT_SLOT = -2,
-        ANY_WEAPON_SLOT,
-        WEAPON_SLOT_SHOTGUN,
-        WEAPON_SLOT_PISTOL,
-        MELEE_SLOT,
-        CATTLEPROD_SLOT,
-        WEAPON_SLOT_FLAMETHROWER,
-        WEAPON_SLOT_BOLTGUN,
-        MOTION_TRACKER_SLOT,
-        TORCH_SLOT,
-        MEDIPEN_SLOT,
-        TEMPORARY_WEAPON_SLOT,
-        NO_WEAPON_SLOT = -3,
+        AUTO,
+        CV1,
+        CV2,
+        CV3,
+        CV4,
+        CV5,
+        CV6,
+        RT1,
+        RT2,
+        RT3,
+        RT4,
+        AN1,
+        AN2,
+        AN3,
+        ANH,
+        TOTAL,
+
+        // The options below are available via CATHODE::DIALOGUE_VOICE_ACTOR__Class::element_name, but invalidated by CATHODE::DIALOGUE_VOICE_ACTOR::to_string:
+        //FIRST_CIVILIAN_MALE_VOICE,
+        //LAST_CIVILIAN_MALE_VOICE,
+        //FIRST_CIVILIAN_FEMALE_VOICE,
+        //LAST_CIVILIAN_FEMALE_VOICE,
+        //FIRST_SECURITY_MALE_VOICE,
+        //LAST_SECURITY_MALE_VOICE,
+        //FIRST_ANDROID_VOICE,
+        //LAST_ANDROID_VOICE,
     }
 
-    public enum DAMAGE_MODE
+    public enum CHARACTER_NODE
     {
-        DAMAGED_BY_ALL,
-        DAMAGED_BY_PLAYER_ONLY,
-        INVINCIBLE,
-    }
-
-    public enum MAP_ICON_TYPE
-    {
-        REWIRE,
-        HACKING,
-        KEYPAD,
-        LOCKED,
-        SAVEPOINT,
-        WAYPOINT,
-        TOOL_PICKUP,
-        WEAPON_PICKUP,
-        CUTTING_POINT,
-        LEVEL_LOAD,
-        LADDER,
-        CONTAINER,
-        TERMINAL_INTERACTION,
-        LOCKED_DOOR,
-        UNLOCKED_DOOR,
-        HIDDEN,
-        GENERIC_INTERACTION,
-        POWERED_DOWN_DOOR,
-        KEYCODE,
-    }
-
-    public enum GATING_TOOL_TYPE
-    {
-        KEY,
-        AXE,
-        CROWBAR,
-        GAS_MASK,
-        CUTTING_TOOL,
-        HACKING_TOOL,
-        REWIRE,
-        CABLE_CLAMPS,
-    }
-
-    public enum MOOD
-    {
-        NEUTRAL,
-        SCARED,
-        ANGRY,
-        HAPPY,
-        SAD,
-        SUSPICIOUS,
-        INJURED,
-    }
-
-    public enum FOLLOW_TYPE
-    {
-        LEADING_THE_WAY,
-        EXPLORATION,
-    }
-
-    public enum TASK_OPERATION_MODE
-    {
-        FULLY_SHARED,
-        SINGLE_AND_EXCLUSIVE,
-    }
-
-    public enum MOVE
-    {
-        SLOW_WALK,
-        WALK,
-        FAST_WALK,
-        RUN,
-        OBSOLETE_1,
-        OBSOLETE_2,
-        TELEPORT,
-    }
-
-    public enum SUB_OBJECTIVE_TYPE
-    {
-        NONE,
-        POINT,
-        SMALL_AREA,
-        MEDIUM_AREA,
-        LARGE_AREA,
-    }
-
-    public enum LEVER_TYPE
-    {
-        PULL,
-        ROTATE,
-    }
-
-    public enum BUTTON_TYPE
-    {
-        KEYS,
-        DISK,
-    }
-
-    public enum DOOR_MECHANISM
-    {
-        NONE,
-        BLANK,
-        KEYPAD,
-        LEVER,
-        BUTTON,
-        HACKING,
-        HIDDEN_KEYPAD,
-        HIDDEN_LEVER,
-        HIDDEN_HACKING,
-        HIDDEN_BUTTON,
-    }
-
-    public enum DOOR_STATE
-    {
-        USE_KEYCARD,
-        USE_KEYCODE,
-        USE_LEVER,
-        USE_HACKING,
-        USE_CUTTING,
-        USE_BUTTON,
-        USE_MECHANISM,
-        UPGRADE_HACKING,
-        HACKING_REQUIRED,
-        RESTORE_POWER,
-        UPGRADE_CUTTING,
-        CUTTING_REQUIRED,
-        KEYCARD_REQUIRED,
-        LOCKED,
-    }
-
-    public enum PICKUP_CATEGORY
-    {
-        UNKNOWN,
+        HEAD1,
+        HEAD,
+        HIPS,
+        TORSO,
+        SPINE2,
+        SPINE1,
+        SPINE,
+        LEFT_ARM,
+        RIGHT_ARM,
+        LEFT_HAND,
+        RIGHT_HAND,
+        LEFT_LEG,
+        RIGHT_LEG,
+        LEFT_FOOT,
+        RIGHT_FOOT,
+        LEFT_WEAPON_BONE,
+        RIGHT_WEAPON_BONE,
+        LEFT_SHOULDER,
+        RIGHT_SHOULDER,
         WEAPON,
-        AMMO,
-        ITEM,
-        KILLTRAP,
-        DOOR,
-        COMPUTER,
+        ROOT,
+    }
+
+    public enum SUSPICIOUS_ITEM
+    {
+        EXPLOSION,
+        DEAD_BODY,
+        ALARM,
+        VENT_HISS,
+        ACTIVE_FLARE,
+        CUT_PANEL,
+        FIRE_EXTINGUISHER,
+        LIGHTS_ON,
+        LIGHTS_OFF,
+        DOOR_OPENED,
+        DOOR_CLOSED,
+        DISGUARDED_GUN,
+        DEAD_FLARE,
+        GLOW_STICK,
+        OPEN_CONTAINER,
+        NOISE_MAKER,
+        EMP_MINE,
+        FLASH_BANG,
+        MOLOTOV,
+        PIPE_BOMB,
+        SMOKE_BOMB,
+    }
+
+    public enum SUSPICIOUS_ITEM_STAGE
+    {
+        NONE,
+        FIRST_SENSED,
+        INITIAL_REACTION,
+        WAIT_FOR_TEAM_MEMBERS_ROUTING,
+        MOVE_CLOSE_TO,
+        CLOSE_TO_REACTION,
+        CLOSE_TO_WAIT_FOR_GROUP_MEMBERS,
+        SEARCH_AREA,
+    }
+
+    public enum SUSPICIOUS_ITEM_REACTION
+    {
+        INITIAL_REACTION,
+        CLOSE_TO_FIRST_GROUP_MEMBER_REACTION,
+        CLOSE_TO_SUBSEQUENT_GROUP_MEMBER_REACTION,
+    }
+
+    public enum NPC_COVER_REQUEST_TYPE
+    {
+        DEFAULT,
+        RETREAT,
+        AGGRESSIVE,
+        DEFENSIVE,
         ALIEN,
-        SAVE_TERMINAL,
+        PLAYER_IN_VENT,
     }
 
     public enum REWIRE_SYSTEM_NAME
@@ -1913,117 +1429,21 @@ namespace CommandsEditor
         AI_UI_UNSTABLE_SYSTEM,
     }
 
-    public enum REWIRE_SYSTEM_TYPE
+    public enum NPC_AGGRO_LEVEL
     {
-        AI_UI_MAIN_LIGHTING,
-        AI_UI_DOOR_SYSTEM,
-        AI_UI_VENT_ACCESS,
-        AI_UI_SECURITY_CAMERAS,
-        AI_UI_TANNOY,
-        AI_UI_ALARMS,
-        AI_UI_SPRINKLERS,
-        AI_UI_RELEASE_VALVE,
-        AI_UI_GAS_LEAK,
-        AI_UI_AIR_CONDITIONING,
-        AI_UI_UNSTABLE_SYSTEM,
+        NONE = -1,
+        STAND_DOWN,
+        INTERROGATIVE,
+        WARNING,
+        LAST_CHANCE,
+        NO_LIMIT,
+        AGGRESSIVE,
     }
 
-    public enum EXIT_WAYPOINT
+    public enum BLUEPRINT_LEVEL
     {
-        SOLACE,
-        AIRPORT,
-        TECH_HUB,
-        TECH_COMMS,
-        SCI_HUB,
-        HOSPITAL_UPPER,
-        HOSPITAL_LOWER,
-        ANDROID_LAB,
-        SHOPPING_CENTRE,
-        LV426,
-        TECH_RND,
-        REACTOR_CORE,
-        RND_HAZLAB,
-        CORP_PENT,
-        APPOLLO_CORE,
-        DRY_DOCKS,
-        GRAVITY_ANCHORS,
-        TOWING_PLATFORM,
-    }
-
-    public enum VIEWCONE_TYPE
-    {
-        RECTANGLE = 1,
-        ELLIPSE,
-    }
-
-    public enum WAVE_SHAPE
-    {
-        SIN,
-        SAW,
-        REV_SAW,
-        SQUARE,
-        TRIANGLE,
-    }
-
-    public enum UI_KEYGATE_TYPE
-    {
-        KEYCARD,
-        KEYPAD,
-    }
-    #endregion
-
-
-    //Below here I'm confident on the indexes
-
-    public enum CHARACTER_STANCE
-    {
-        DONT_CHANGE,
-        STAND,
-        CROUCHED,
-    }
-
-    public enum CI_MESSAGE_TYPE 
-    {
-        MSG_NORMAL,
-        MSG_IMPORTANT,
-        MSG_ERROR,
-    }
-
-    public enum CHARACTER_CLASS
-    {
-        PLAYER,
-        ALIEN,
-        ANDROID,
-        CIVILIAN,
-        SECURITY,
-        FACEHUGGER,
-        INNOCENT,
-        ANDROID_HEAVY,
-        MOTION_TRACKER,
-        MELEE_HUMAN,
-    }
-
-    public enum CHARACTER_CLASS_COMBINATION
-    {
-        NONE = 0x0,
-        PLAYER_ONLY = 0x1,
-        ALIEN_ONLY = 0x2,
-        ANDROID_ONLY = 0x4,
-        CIVILIAN_ONLY = 0x8,
-        SECURITY_ONLY = 0x10,
-        FACEHUGGER_ONLY = 0x20,
-        INNOCENT_ONLY = 0x40,
-        ANDROID_HEAVY_ONLY = 0x80,
-        MOTION_TRACKER = 0x100,
-        MELEE_HUMAN_ONLY = 0x200,
-        ANDROIDS = ANDROID_ONLY | ANDROID_HEAVY_ONLY,
-        ALIENS = ALIEN_ONLY | FACEHUGGER_ONLY,
-        HUMAN_NPC = CIVILIAN_ONLY | SECURITY_ONLY | INNOCENT_ONLY | MELEE_HUMAN_ONLY,
-        HUMAN = HUMAN_NPC | PLAYER_ONLY,
-        HUMANOID_NPC = HUMAN_NPC | ANDROIDS,
-        HUMANOID = HUMANOID_NPC | PLAYER_ONLY,
-        ANDROIDS_AND_ALIEN = ANDROIDS | ALIENS,
-        PLAYER_AND_ALIEN = PLAYER_ONLY | ALIEN_ONLY,
-        ALL = ALIENS | HUMANOID | MOTION_TRACKER,
+        LEVEL_1 = 1,
+        LEVEL_2 = 2,
+        LEVEL_3 = 3,
     }
 }

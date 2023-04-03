@@ -113,7 +113,9 @@ namespace CommandsEditor
                         Parallel.ForEach(ent.parameters, param =>
                         {
                             if (param.content.dataType == DataType.ENUM)
-                                enumUI.PopulateUI((cEnum)param.content, file + "," + comp.name + "," + EntityUtils.GetName(comp, ent) + "," + param.name.ToString() + ",");
+                                Console.WriteLine(file + "," + comp.name + "," + EntityUtils.GetName(comp, ent) + "," + param.name + "," + ((cEnum)param.content).enumID.ToString() + "," + ((cEnum)param.content).enumIndex);
+                            //if (param.content.dataType == DataType.ENUM)
+                            //    enumUI.PopulateUI((cEnum)param.content, file + "," + comp.name + "," + EntityUtils.GetName(comp, ent) + "," + param.name.ToString() + ",");
                         });
                     });
                 });
