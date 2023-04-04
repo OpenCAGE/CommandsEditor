@@ -36,7 +36,7 @@ namespace CommandsEditor
 
         public CommandsEditor()
         {
-            //LocalDebug.TestOrders();
+            //LocalDebug.SyncEnumValuesAndDump();
             //return;
 
             //LocalDebug.SyncEnumValuesAndDump();
@@ -1024,35 +1024,36 @@ namespace CommandsEditor
                         ((GUI_NumericDataType)parameterGUI).PopulateUI_Float((cFloat)this_param, paramName);
                         break;
                     case DataType.VECTOR:
-                        if (paramName == "AMBIENT_LIGHTING_COLOUR" ||
-                            paramName == "COLOUR_TINT_START" ||
-                            paramName == "COLOUR_TINT_MID" ||
-                            paramName == "COLOUR_TINT_END" ||
-                            paramName == "COLOUR_TINT" ||
-                            paramName == "COLOUR_TINT_OUTER" ||
-                            paramName == "DEPTH_INTERSECT_COLOUR_VALUE" ||
-                            paramName == "DEPTH_INTERSECT_INITIAL_COLOUR" ||
-                            paramName == "DEPTH_INTERSECT_MIDPOINT_COLOUR" ||
-                            paramName == "DEPTH_INTERSECT_END_COLOUR" ||
-                            paramName == "DEPTH_FOG_INITIAL_COLOUR" ||
-                            paramName == "DEPTH_FOG_MIDPOINT_COLOUR" ||
-                            paramName == "DEPTH_FOG_END_COLOUR" ||
-                            paramName == "ColourFactor" ||
-                            paramName == "lens_flare_colour" ||
-                            paramName == "light_shaft_colour" ||
-                            paramName == "initial_colour" ||
-                            paramName == "near_colour" ||
-                            paramName == "far_colour" ||
-                            paramName == "colour" ||
-                            paramName == "Colour")
+                        switch (paramName)
                         {
-                            parameterGUI = new GUI_VectorVariant_Colour();
-                            ((GUI_VectorVariant_Colour)parameterGUI).PopulateUI((cVector3)this_param, paramName);
-                        }
-                        else
-                        {
-                            parameterGUI = new GUI_VectorDataType();
-                            ((GUI_VectorDataType)parameterGUI).PopulateUI((cVector3)this_param, paramName);
+                            case "AMBIENT_LIGHTING_COLOUR":
+                            case "COLOUR_TINT_START":
+                            case "COLOUR_TINT_MID":
+                            case "COLOUR_TINT_END":
+                            case "COLOUR_TINT":
+                            case "COLOUR_TINT_OUTER":
+                            case "DEPTH_INTERSECT_COLOUR_VALUE":
+                            case "DEPTH_INTERSECT_INITIAL_COLOUR":
+                            case "DEPTH_INTERSECT_MIDPOINT_COLOUR":
+                            case "DEPTH_INTERSECT_END_COLOUR":
+                            case "DEPTH_FOG_INITIAL_COLOUR":
+                            case "DEPTH_FOG_MIDPOINT_COLOUR":
+                            case "DEPTH_FOG_END_COLOUR":
+                            case "ColourFactor":
+                            case "lens_flare_colour":
+                            case "light_shaft_colour":
+                            case "initial_colour":
+                            case "near_colour":
+                            case "far_colour":
+                            case "colour":
+                            case "Colour":
+                                parameterGUI = new GUI_VectorVariant_Colour();
+                                ((GUI_VectorVariant_Colour)parameterGUI).PopulateUI((cVector3)this_param, paramName);
+                                break;
+                            default:
+                                parameterGUI = new GUI_VectorDataType();
+                                ((GUI_VectorDataType)parameterGUI).PopulateUI((cVector3)this_param, paramName);
+                                break;
                         }
                         break;
                     case DataType.ENUM:

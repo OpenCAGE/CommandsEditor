@@ -9,6 +9,7 @@ using System.Windows;
 
 namespace CommandsEditor
 {
+    #region Uncertain
     //-1-3
     public enum CHECKPOINT_TYPE
     {
@@ -29,52 +30,6 @@ namespace CommandsEditor
         FLICKER_OFF,
         SPARKING,
         BLINK,
-    }
-
-    //done
-    public enum AGGRESSION_GAIN
-    {
-        LOW_AGGRESSION_GAIN,
-        MED_AGGRESSION_GAIN,
-        HIGH_AGGRESSION_GAIN,
-    }
-
-    //done
-    public enum ALIEN_DEVELOPMENT_MANAGER_STAGES
-    {
-        NAIVE,
-        THREAT_AWARE,
-        GETTING_SNEAKY,
-        REALLY_SNEAKY,
-    }
-
-    //done
-    public enum ALLIANCE_GROUP
-    {
-        NEUTRAL,
-        PLAYER,
-        PLAYER_ALLY,
-        ALIEN,
-        ANDROID,
-        CIVILIAN,
-        SECURITY,
-        DEAD,
-        DEAD_MAN_WALKING,
-    }
-
-    //done
-    public enum ALLIANCE_STANCE
-    {
-        FRIEND,
-        NEUTRAL,
-        ENEMY,
-    }
-
-    //done
-    public enum AMBUSH_TYPE
-    {
-        KILLTRAP,
-        FRONTSTAGE_AMBUSH,
     }
 
     //-1 -> 38
@@ -121,19 +76,6 @@ namespace CommandsEditor
         ENVIRONMENT_FLAME,
     }
 
-    //done
-    public enum ANIMATION_EFFECT_TYPE
-    {
-        STUMBLE,
-    }
-
-    //done
-    public enum AREA_SWEEP_TYPE
-    {
-        IN_AND_OUT_BETWEEN_TARGET_AND_POSITION,
-        FIXED_RADIUS_AROUND_POSITION,
-    }
-
     public enum AUTODETECT
     {
         AUTO,
@@ -166,37 +108,339 @@ namespace CommandsEditor
         IS_ON_LADDER,
     }
 
-    //done
+    public enum CUSTOM_CHARACTER_ACCESSORY_OVERRIDE
+    {
+        ACCESSORY_OVERRIDE_NONE,
+        ACCESSORY_OVERRIDE_01,
+        ACCESSORY_OVERRIDE_02,
+        ACCESSORY_OVERRIDE_03,
+        ACCESSORY_OVERRIDE_04,
+        ACCESSORY_OVERRIDE_05,
+        ACCESSORY_OVERRIDE_06,
+        ACCESSORY_OVERRIDE_07,
+        ACCESSORY_OVERRIDE_08,
+        ACCESSORY_OVERRIDE_09,
+        ACCESSORY_OVERRIDE_10,
+    }
+
+    //-65536-1.342177E+08
+    public enum DAMAGE_EFFECTS
+    {
+        INCENDIARY,
+        EMP,
+        ACID,
+        GAS,
+        IMPACT,
+        BALLISTIC,
+        COLLISION,
+        SLIDING,
+        MELEE,
+        BALLISTIC_OR_MELEE,
+        ANY,
+    }
+
+    public enum DUCK_HEIGHT
+    {
+        LOW,
+        LOWER,
+        LOWEST,
+    }
+
+    //1-1 (default val is 15 -> any?)
+    public enum ENEMY_TYPE
+    {
+        PLAYER,
+        HUMAN,
+        HUMAN_AND_PLAYER,
+        ANDROID,
+        NPC_HUMANOID,
+        HUMANOID,
+        ALIEN,
+        ANY,
+    }
+
+    //-1-10
+    public enum GAME_CLIP
+    {
+        DEATH_FROM_BELOW,
+        THE_HUNT_BEGINS,
+        SYNTHETIC_OFFLINE,
+        ACCESS_ALL_AREAS, //yes
+        GOING_DOWN,
+        JUST_IN_TIME,
+        SYNTHETIC_INFERNO,
+        SYSTEMS_SHOCK,
+        HIGHLY_ADAPTABLE,
+        GET_BACK, //yes
+        HUNTED,
+        A_HAZARD_CONTAINED,
+        ON_TARGET,
+        FLAMIN_JOE,
+        DEATH_FROM_ABOVE,
+    }
+
+    //2-3
+    public enum IMPACT_CHARACTER_BODY_LOCATION_TYPE
+    {
+        ALL,
+        ARMS,
+        HEAD,
+        NECK,
+        TORSO,
+        LEGS,
+        HEAD_NECK,
+        TORSO_LEGS,
+        TORSO_ARMS,
+        TORSO_ARMS_LEGS,
+        ARMS_LEGS,
+    }
+
+    //-1-2
+    public enum LIGHT_FADE_TYPE
+    {
+        NONE,
+        SHADOW,
+        LIGHT,
+    }
+
+    //-1-5
+    public enum LIGHT_TRANSITION
+    {
+        INSTANT,
+        FADE,
+        FLICKER,
+        FLICKER_CUSTOM,
+        FADE_FLICKER_CUSTOM,
+    }
+
+    public enum NPC_GUN_AIM_MODE
+    {
+        AUTO,
+        GUN_DOWN,
+        GUN_RAISED,
+    }
+
+    //1-1 (default is 2 - flag?)
+    public enum ORIENTATION_AXIS
+    {
+        X_AXIS,
+        Y_AXIS,
+        Z_AXIS,
+    }
+
+    public enum POPUP_MESSAGE_ICON
+    {
+        ALERT,
+        AUDIOLOG,
+    }
+
+    //0-1024
+    public enum TASK_CHARACTER_CLASS_FILTER
+    {
+        USE_CHARACTER_PIN,
+        PLAYER_ONLY,
+        ALIEN_ONLY,
+        ANDROID_ONLY,
+        CIVILIAN_ONLY,
+        SECURITY_ONLY,
+        FACEHUGGER_ONLY,
+        INNOCENT_ONLY,
+        ANDROID_HEAVY_ONLY,
+        MOTION_TRACKER,
+        MELEE_HUMAN_ONLY,
+        ANDROIDS,
+        ALIENS,
+        HUMAN_NPC,
+        HUMAN,
+        HUMANOID_NPC,
+        HUMANOID,
+        ANDROIDS_AND_ALIEN,
+        PLAYER_AND_ALIEN,
+        ALL,
+        USE_FILTER_PIN,
+        EXCLUDE_CHARACTER_PIN,
+    }
+
+    public enum TRANSITION_DIRECTION
+    {
+        POSITIVE_X,
+        NEGATIVE_X,
+        POSITIVE_Y,
+        NEGATIVE_Y,
+        CENTER,
+    }
+
+    //-1-2 (looks like maybe -1=TWO_HANDED and 2 is deleted)
+    public enum WEAPON_HANDEDNESS
+    {
+        TWO_HANDED,
+        ONE_HANDED,
+        ONE_OR_TWO_HANDED,
+    }
+
+    //-3-9
+    public enum EQUIPMENT_SLOT
+    {
+        USE_CURRENT_SLOT = -3,
+        ANY_WEAPON_SLOT,
+        WEAPON_SLOT_SHOTGUN = 0,
+        WEAPON_SLOT_PISTOL,
+        MELEE_SLOT,
+        CATTLEPROD_SLOT,
+        WEAPON_SLOT_FLAMETHROWER,
+        WEAPON_SLOT_BOLTGUN,
+        MOTION_TRACKER_SLOT,
+        TORCH_SLOT,
+        MEDIPEN_SLOT,
+        TEMPORARY_WEAPON_SLOT,
+        NO_WEAPON_SLOT,
+    }
+
+    //-1,0,1
+    public enum LEVER_TYPE
+    {
+        PULL,
+        ROTATE,
+    }
+
+    //-1-9
+    public enum DOOR_MECHANISM
+    {
+        NONE,
+        BLANK,
+        KEYPAD,
+        LEVER,
+        BUTTON,
+        HACKING,
+        HIDDEN_KEYPAD,
+        HIDDEN_LEVER,
+        HIDDEN_HACKING,
+        HIDDEN_BUTTON,
+    }
+
+    //-1-10
+    public enum REWIRE_SYSTEM_NAME
+    {
+        AI_UI_MAIN_LIGHTING,
+        AI_UI_DOOR_SYSTEM,
+        AI_UI_VENT_ACCESS,
+        AI_UI_SECURITY_CAMERAS,
+        AI_UI_TANNOY,
+        AI_UI_ALARMS,
+        AI_UI_SPRINKLERS,
+        AI_UI_RELEASE_VALVE,
+        AI_UI_GAS_LEAK,
+        AI_UI_AIR_CONDITIONING,
+        AI_UI_UNSTABLE_SYSTEM,
+    }
+
+    //-1-10
+    public enum REWIRE_SYSTEM_TYPE
+    {
+        AI_UI_MAIN_LIGHTING,
+        AI_UI_DOOR_SYSTEM,
+        AI_UI_VENT_ACCESS,
+        AI_UI_SECURITY_CAMERAS,
+        AI_UI_TANNOY,
+        AI_UI_ALARMS,
+        AI_UI_SPRINKLERS,
+        AI_UI_RELEASE_VALVE,
+        AI_UI_GAS_LEAK,
+        AI_UI_AIR_CONDITIONING,
+        AI_UI_UNSTABLE_SYSTEM,
+    }
+
+    public enum CHARACTER_STANCE
+    {
+        DONT_CHANGE,
+        STAND,
+        CROUCHED,
+    }
+
+    //Index 35 exists in PAK
+    public enum CHARACTER_CLASS_COMBINATION
+    {
+        NONE = 0x0,
+        PLAYER_ONLY = 0x1,
+        ALIEN_ONLY = 0x2,
+        ANDROID_ONLY = 0x4,
+        CIVILIAN_ONLY = 0x8,
+        SECURITY_ONLY = 0x10,
+        FACEHUGGER_ONLY = 0x20,
+        INNOCENT_ONLY = 0x40,
+        ANDROID_HEAVY_ONLY = 0x80,
+        MOTION_TRACKER = 0x100,
+        MELEE_HUMAN_ONLY = 0x200,
+        ANDROIDS = ANDROID_ONLY | ANDROID_HEAVY_ONLY,
+        ALIENS = ALIEN_ONLY | FACEHUGGER_ONLY,
+        HUMAN_NPC = CIVILIAN_ONLY | SECURITY_ONLY | INNOCENT_ONLY | MELEE_HUMAN_ONLY,
+        HUMAN = HUMAN_NPC | PLAYER_ONLY,
+        HUMANOID_NPC = HUMAN_NPC | ANDROIDS,
+        HUMANOID = HUMANOID_NPC | PLAYER_ONLY,
+        ANDROIDS_AND_ALIEN = ANDROIDS | ALIENS,
+        PLAYER_AND_ALIEN = PLAYER_ONLY | ALIEN_ONLY,
+        ALL = ALIENS | HUMANOID | MOTION_TRACKER,
+    }
+    #endregion
+
+    public enum AGGRESSION_GAIN
+    {
+        LOW_AGGRESSION_GAIN,
+        MED_AGGRESSION_GAIN,
+        HIGH_AGGRESSION_GAIN,
+    }
+
+    public enum ALIEN_DEVELOPMENT_MANAGER_STAGES
+    {
+        NAIVE,
+        THREAT_AWARE,
+        GETTING_SNEAKY,
+        REALLY_SNEAKY,
+    }
+
+    public enum ALLIANCE_GROUP
+    {
+        NEUTRAL,
+        PLAYER,
+        PLAYER_ALLY,
+        ALIEN,
+        ANDROID,
+        CIVILIAN,
+        SECURITY,
+        DEAD,
+        DEAD_MAN_WALKING,
+    }
+
+    public enum ALLIANCE_STANCE
+    {
+        FRIEND,
+        NEUTRAL,
+        ENEMY,
+    }
+
+    public enum AMBUSH_TYPE
+    {
+        KILLTRAP,
+        FRONTSTAGE_AMBUSH,
+    }
+
+    public enum ANIMATION_EFFECT_TYPE
+    {
+        STUMBLE,
+    }
+
+    public enum AREA_SWEEP_TYPE
+    {
+        IN_AND_OUT_BETWEEN_TARGET_AND_POSITION,
+        FIXED_RADIUS_AROUND_POSITION,
+    }
+
     public enum BLEND_MODE
     {
         BLEND = 1,
         ADDITIVE,
     }
 
-    public enum CAMERA_PATH_CLASS
-    {
-        GENERIC,
-        POSITION,
-        TARGET,
-        REFERENCE,
-    }
-
-    public enum CAMERA_PATH_TYPE
-    {
-        LINEAR,
-        BEZIER,
-    }
-
-    public enum CLIPPING_PLANES_PRESETS
-    {
-        MACRO,
-        CLOSE,
-        MID,
-        WIDE,
-        ULTRA,
-    }
-
-    //done
     public enum COLLISION_TYPE
     {
         LINE_OF_SIGHT_COL,
@@ -209,7 +453,6 @@ namespace CommandsEditor
         DETECTABLE,
     }
 
-    //done
     public enum COMBAT_BEHAVIOUR
     {
         ALLOW_ATTACK,
@@ -242,22 +485,6 @@ namespace CommandsEditor
         ALLOW_OBSERVE_TARGET,
     }
 
-    public enum CUSTOM_CHARACTER_ACCESSORY_OVERRIDE
-    {
-        ACCESSORY_OVERRIDE_NONE,
-        ACCESSORY_OVERRIDE_01,
-        ACCESSORY_OVERRIDE_02,
-        ACCESSORY_OVERRIDE_03,
-        ACCESSORY_OVERRIDE_04,
-        ACCESSORY_OVERRIDE_05,
-        ACCESSORY_OVERRIDE_06,
-        ACCESSORY_OVERRIDE_07,
-        ACCESSORY_OVERRIDE_08,
-        ACCESSORY_OVERRIDE_09,
-        ACCESSORY_OVERRIDE_10,
-    }
-
-    //done ??
     public enum CUSTOM_CHARACTER_ASSETS
     {
         ASSETSET_01,
@@ -272,7 +499,6 @@ namespace CommandsEditor
         ASSETSET_10,
     }
 
-    //done ??
     public enum CUSTOM_CHARACTER_POPULATION
     {
         POPULATION_01,
@@ -287,7 +513,6 @@ namespace CommandsEditor
         POPULATION_10,
     }
 
-    //done
     public enum CUSTOM_CHARACTER_TYPE
     {
         NONE,
@@ -295,23 +520,6 @@ namespace CommandsEditor
         NAMED,
     }
 
-    //-65536-1.342177E+08
-    public enum DAMAGE_EFFECTS
-    {
-        INCENDIARY,
-        EMP,
-        ACID,
-        GAS,
-        IMPACT,
-        BALLISTIC,
-        COLLISION,
-        SLIDING,
-        MELEE,
-        BALLISTIC_OR_MELEE,
-        ANY,
-    }
-
-    //done
     public enum DEATH_STYLE
     {
         PDS_DROP_DEAD,
@@ -319,10 +527,9 @@ namespace CommandsEditor
         PDS_SKIP_ALL_ANIMS_NO_RAGDOLL,
     }
 
-    //done ??
     public enum DIALOGUE_NPC_EVENT
     {
-        SUSPICIOUS_WARNING,
+        SUSPICIOUS_WARNING = -1,
         SUSPICIOUS_WARNING_FAIL,
         MISSING_BUDDY,
         SEARCH_STARTED,
@@ -361,27 +568,6 @@ namespace CommandsEditor
         ALIEN_ATTACKING_ME,
     }
 
-    public enum DUCK_HEIGHT
-    {
-        LOW,
-        LOWER,
-        LOWEST,
-    }
-
-    //done ??
-    public enum ENEMY_TYPE
-    {
-        PLAYER,
-        HUMAN,
-        HUMAN_AND_PLAYER,
-        ANDROID,
-        NPC_HUMANOID,
-        HUMANOID,
-        ALIEN,
-        ANY,
-    }
-
-    //done
     public enum ENVIRONMENT_ARCHETYPE
     {
         SCIENCE,
@@ -390,7 +576,6 @@ namespace CommandsEditor
         ENGINEERING,
     }
 
-    //done
     public enum FLASH_INVOKE_TYPE
     {
         NONE,
@@ -404,7 +589,6 @@ namespace CommandsEditor
         FLOAT_FLOAT_FLOAT,
     }
 
-    //done
     public enum FLASH_SCRIPT_RENDER_TYPE
     {
         NORMAL,
@@ -412,14 +596,12 @@ namespace CommandsEditor
         MULTI_RENDER_TO_TEXTURE,
     }
 
-    //done
     public enum FOG_BOX_TYPE
     {
         BOX,
         PLANE,
     }
 
-    //done
     public enum FOLLOW_CAMERA_MODIFIERS
     {
         WALKING,
@@ -477,7 +659,6 @@ namespace CommandsEditor
         BOLTGUN_AIM_VENTS,
     }
 
-    //done
     public enum FRONTEND_STATE
     {
         FRONTEND_STATE_SPLASH,
@@ -486,27 +667,6 @@ namespace CommandsEditor
         FRONTEND_STATE_DLC_MAP,
     }
 
-    //-1-10
-    public enum GAME_CLIP
-    {
-        DEATH_FROM_BELOW,
-        THE_HUNT_BEGINS,
-        SYNTHETIC_OFFLINE,
-        ACCESS_ALL_AREAS, //yes
-        GOING_DOWN,
-        JUST_IN_TIME,
-        SYNTHETIC_INFERNO,
-        SYSTEMS_SHOCK,
-        HIGHLY_ADAPTABLE,
-        GET_BACK, //yes
-        HUNTED,
-        A_HAZARD_CONTAINED,
-        ON_TARGET,
-        FLAMIN_JOE,
-        DEATH_FROM_ABOVE,
-    }
-
-    //done ??
     public enum IDLE
     {
         STAND,
@@ -517,7 +677,6 @@ namespace CommandsEditor
         IN_COVER,
     }
 
-    //done ??
     public enum IDLE_STYLE
     {
         NO_FIDGETS,
@@ -526,54 +685,12 @@ namespace CommandsEditor
         CORPSE_TRAP,
     }
 
-    //2-3
-    public enum IMPACT_CHARACTER_BODY_LOCATION_TYPE
-    {
-        ALL,
-        ARMS,
-        HEAD,
-        NECK,
-        TORSO,
-        LEGS,
-        HEAD_NECK,
-        TORSO_LEGS,
-        TORSO_ARMS,
-        TORSO_ARMS_LEGS,
-        ARMS_LEGS,
-    }
-
-    public enum INPUT_DEVICE_TYPE
-    {
-        MOUSE_AND_KEYBOARD,
-        GAMEPAD,
-    }
-
-    //done
     public enum LIGHT_ADAPTATION_MECHANISM
     {
         PERCENTILE,
         BRACKETED_MEAN,
     }
 
-    //-1-2
-    public enum LIGHT_FADE_TYPE
-    {
-        NONE,
-        SHADOW,
-        LIGHT,
-    }
-
-    //-1-5
-    public enum LIGHT_TRANSITION
-    {
-        INSTANT,
-        FADE,
-        FLICKER,
-        FLICKER_CUSTOM,
-        FADE_FLICKER_CUSTOM,
-    }
-
-    //done
     public enum LIGHT_TYPE
     {
         OMNI,
@@ -581,7 +698,6 @@ namespace CommandsEditor
         STRIP,
     }
 
-    //done
     public enum LOCOMOTION_STATE
     {
         WALKING,
@@ -593,7 +709,6 @@ namespace CommandsEditor
         IDLING,
     }
 
-    //done
     public enum LOCOMOTION_TARGET_SPEED
     {
         SLOWEST,
@@ -602,16 +717,23 @@ namespace CommandsEditor
         FASTEST,
     }
 
-    public enum LOOK_SPEED
+    public enum MELEE_CONTEXT_TYPE
     {
-        SLOW,
-        MODERATE,
-        FAST,
-        FREE_LOOK,
-        LEADING_LOOK,
+        ANDROID_LOW_COVER_GRAPPLE,
+        ANDROID_HIGH_COVER_GRAPPLE,
+        ANDROID_CORPSE_TRAP_GRAPPLE,
     }
 
-    //done ??
+    public enum MUSIC_RTPC_MODE
+    {
+        UNCHANGED,
+        THREAT,
+        STEALTH,
+        ALIEN_DISTANCE,
+        MANUAL,
+        OBJECT_DISTANCE,
+    }
+
     public enum MELEE_ATTACK_TYPE
     {
         HIT_ATTACK,
@@ -623,60 +745,6 @@ namespace CommandsEditor
         NONE,
     }
 
-    //done
-    public enum MELEE_CONTEXT_TYPE
-    {
-        ANDROID_LOW_COVER_GRAPPLE,
-        ANDROID_HIGH_COVER_GRAPPLE,
-        ANDROID_CORPSE_TRAP_GRAPPLE,
-    }
-
-    //done
-    public enum MUSIC_RTPC_MODE
-    {
-        UNCHANGED,
-        THREAT,
-        STEALTH,
-        ALIEN_DISTANCE,
-        MANUAL,
-        OBJECT_DISTANCE,
-    }
-
-    public enum NAV_MESH_AREA_TYPE
-    {
-        BACKSTAGE,
-        EXPENSIVE,
-    }
-
-    public enum NOISE_TYPE
-    {
-        HARMONIC,
-        FRACTAL,
-    }
-
-    public enum NPC_GUN_AIM_MODE
-    {
-        AUTO,
-        GUN_DOWN,
-        GUN_RAISED,
-    }
-
-    //done ??
-    public enum ORIENTATION_AXIS
-    {
-        X_AXIS,
-        Y_AXIS,
-        Z_AXIS,
-    }
-
-    public enum PATH_DRIVEN_TYPE
-    {
-        CHARACTER_PROJECTION,
-        POINT_PROJECTION,
-        TIME_PROGRESS,
-    }
-
-    //done ??
     public enum PLATFORM_TYPE
     {
         PL_PC,
@@ -688,7 +756,6 @@ namespace CommandsEditor
         PL_NEXTGEN,
     }
 
-    //done
     public enum PLAYER_INVENTORY_SET
     {
         DEFAULT_PLAYER,
@@ -696,13 +763,6 @@ namespace CommandsEditor
         OTHER_PLAYER,
     }
 
-    public enum POPUP_MESSAGE_ICON
-    {
-        ALERT,
-        AUDIOLOG,
-    }
-
-    //done ??
     public enum POPUP_MESSAGE_SOUND
     {
         NONE,
@@ -711,7 +771,6 @@ namespace CommandsEditor
         OBJECTIVE_COMPLETED,
     }
 
-    //done ??
     public enum PRIORITY
     {
         LOWEST,
@@ -721,14 +780,12 @@ namespace CommandsEditor
         HIGHEST,
     }
 
-    //done
     public enum RANGE_TEST_SHAPE
     {
         SPHERE,
         VERTICAL_CYLINDER,
     }
 
-    //done
     public enum RAYCAST_PRIORITY
     {
         LOW,
@@ -737,14 +794,6 @@ namespace CommandsEditor
         CRITICAL,
     }
 
-    public enum RESPAWN_MODE
-    {
-        ON_DEATH_POINT,
-        NEAR_DEATH_POINT,
-        NEAR_COMPANION,
-    }
-
-    //done
     public enum SECONDARY_ANIMATION_LAYER
     {
         GENERAL_ADDITIVE,
@@ -756,27 +805,18 @@ namespace CommandsEditor
         FACE,
     }
 
-    //done
     public enum SHAKE_TYPE
     {
         CONSTANT,
         IMPULSE,
     }
 
-    public enum SIDE
-    {
-        LEFT,
-        RIGHT,
-    }
-
-    //done
     public enum SOUND_POOL
     {
         GENERAL,
         PLAYER_WEAPON,
     }
 
-    //done
     public enum SPEECH_PRIORITY
     {
         LOW,
@@ -787,7 +827,6 @@ namespace CommandsEditor
         DEATH,
     }
 
-    //done
     public enum STEAL_CAMERA_TYPE
     {
         FORCE_STEAL,
@@ -795,7 +834,6 @@ namespace CommandsEditor
         JUST_CONVERGE,
     }
 
-    //done
     public enum SUSPICIOUS_ITEM_BEHAVIOUR_TREE_PRIORITY
     {
         LOW,
@@ -803,7 +841,6 @@ namespace CommandsEditor
         HIGH,
     }
 
-    //done
     public enum SUSPICIOUS_ITEM_TRIGGER
     {
         VISBLE,
@@ -811,34 +848,6 @@ namespace CommandsEditor
         CONTINUOUS,
     }
 
-    //0-1024
-    public enum TASK_CHARACTER_CLASS_FILTER
-    {
-        USE_CHARACTER_PIN,
-        PLAYER_ONLY,
-        ALIEN_ONLY,
-        ANDROID_ONLY,
-        CIVILIAN_ONLY,
-        SECURITY_ONLY,
-        FACEHUGGER_ONLY,
-        INNOCENT_ONLY,
-        ANDROID_HEAVY_ONLY,
-        MOTION_TRACKER,
-        MELEE_HUMAN_ONLY,
-        ANDROIDS,
-        ALIENS,
-        HUMAN_NPC,
-        HUMAN,
-        HUMANOID_NPC,
-        HUMANOID,
-        ANDROIDS_AND_ALIEN,
-        PLAYER_AND_ALIEN,
-        ALL,
-        USE_FILTER_PIN,
-        EXCLUDE_CHARACTER_PIN,
-    }
-
-    //done
     public enum TASK_PRIORITY
     {
         NORMAL,
@@ -846,7 +855,6 @@ namespace CommandsEditor
         HIGH,
     }
 
-    //done
     public enum TERMINAL_LOCATION
     {
         SEVASTOPOL,
@@ -854,7 +862,6 @@ namespace CommandsEditor
         NOSTROMO,
     }
 
-    //done
     public enum TEXT_ALIGNMENT
     {
         TOP_LEFT,
@@ -868,7 +875,6 @@ namespace CommandsEditor
         BOTTOM_RIGHT,
     }
 
-    //done ??
     public enum THRESHOLD_QUALIFIER
     {
         UNSET,
@@ -879,7 +885,6 @@ namespace CommandsEditor
         UPPER,
     }
 
-    //done
     public enum TRAVERSAL_ANIMS
     {
         Leap_Small,
@@ -894,31 +899,12 @@ namespace CommandsEditor
         Custom,
     }
 
-    public enum TRANSITION_DIRECTION
-    {
-        POSITIVE_X,
-        NEGATIVE_X,
-        POSITIVE_Y,
-        NEGATIVE_Y,
-        CENTER,
-    }
-
-    //done
     public enum UI_ICON_ICON
     {
         IMPORTANT,
         CONTAINER,
     }
 
-    //-1-2 (looks like maybe -1=TWO_HANDED and 2 is deleted)
-    public enum WEAPON_HANDEDNESS
-    {
-        TWO_HANDED,
-        ONE_HANDED,
-        ONE_OR_TWO_HANDED,
-    }
-
-    //done
     public enum WEAPON_IMPACT_EFFECT_ORIENTATION
     {
         HIT_NORMAL,
@@ -927,14 +913,12 @@ namespace CommandsEditor
         UP,
     }
 
-    //done
     public enum WEAPON_IMPACT_EFFECT_TYPE
     {
         STANDARD,
         CHARACTER_DAMAGE,
     }
 
-    //done
     public enum WEAPON_IMPACT_FILTER_ORIENTATION
     {
         CEILING,
@@ -942,7 +926,6 @@ namespace CommandsEditor
         WALL,
     }
 
-    //done
     public enum WEAPON_TYPE
     {
         NO_WEAPON,
@@ -954,7 +937,6 @@ namespace CommandsEditor
         CATTLEPROD,
     }
 
-    //done
     public enum ANIM_MODE
     {
         FORWARD,
@@ -963,7 +945,6 @@ namespace CommandsEditor
         RANDOM,
     }
 
-    //done
     public enum FOLDER_LOCK_TYPE
     {
         LOCKED,
@@ -971,25 +952,6 @@ namespace CommandsEditor
         KEYCODE,
     }
 
-    //-3-9
-    public enum EQUIPMENT_SLOT
-    {
-        USE_CURRENT_SLOT = -3,
-        ANY_WEAPON_SLOT,
-        WEAPON_SLOT_SHOTGUN = 0,
-        WEAPON_SLOT_PISTOL,
-        MELEE_SLOT,
-        CATTLEPROD_SLOT,
-        WEAPON_SLOT_FLAMETHROWER,
-        WEAPON_SLOT_BOLTGUN,
-        MOTION_TRACKER_SLOT,
-        TORCH_SLOT,
-        MEDIPEN_SLOT,
-        TEMPORARY_WEAPON_SLOT,
-        NO_WEAPON_SLOT,
-    }
-
-    //done
     public enum DAMAGE_MODE
     {
         DAMAGED_BY_ALL,
@@ -997,7 +959,6 @@ namespace CommandsEditor
         INVINCIBLE,
     }
 
-    //done
     public enum GATING_TOOL_TYPE
     {
         KEY,
@@ -1010,21 +971,18 @@ namespace CommandsEditor
         CABLE_CLAMPS,
     }
 
-    //done
     public enum FOLLOW_TYPE
     {
         LEADING_THE_WAY,
         EXPLORATION,
     }
 
-    //done
     public enum TASK_OPERATION_MODE
     {
         FULLY_SHARED,
         SINGLE_AND_EXCLUSIVE,
     }
 
-    //done
     public enum MOVE
     {
         SLOW_WALK,
@@ -1036,7 +994,6 @@ namespace CommandsEditor
         TELEPORT,
     }
 
-    //done
     public enum SUB_OBJECTIVE_TYPE
     {
         NONE,
@@ -1046,36 +1003,12 @@ namespace CommandsEditor
         LARGE_AREA,
     }
 
-    //-1,0,1
-    public enum LEVER_TYPE
-    {
-        PULL,
-        ROTATE,
-    }
-
-    //done
     public enum BUTTON_TYPE
     {
         KEYS,
         DISK,
     }
 
-    //-1-9
-    public enum DOOR_MECHANISM
-    {
-        NONE,
-        BLANK,
-        KEYPAD,
-        LEVER,
-        BUTTON,
-        HACKING,
-        HIDDEN_KEYPAD,
-        HIDDEN_LEVER,
-        HIDDEN_HACKING,
-        HIDDEN_BUTTON,
-    }
-
-    //done
     public enum PICKUP_CATEGORY
     {
         UNKNOWN,
@@ -1089,30 +1022,12 @@ namespace CommandsEditor
         SAVE_TERMINAL,
     }
 
-    //-1-10
-    public enum REWIRE_SYSTEM_TYPE
-    {
-        AI_UI_MAIN_LIGHTING,
-        AI_UI_DOOR_SYSTEM,
-        AI_UI_VENT_ACCESS,
-        AI_UI_SECURITY_CAMERAS,
-        AI_UI_TANNOY,
-        AI_UI_ALARMS,
-        AI_UI_SPRINKLERS,
-        AI_UI_RELEASE_VALVE,
-        AI_UI_GAS_LEAK,
-        AI_UI_AIR_CONDITIONING,
-        AI_UI_UNSTABLE_SYSTEM,
-    }
-
-    //done
     public enum VIEWCONE_TYPE
     {
         RECTANGLE = 1,
         ELLIPSE,
     }
 
-    //done
     public enum WAVE_SHAPE
     {
         SIN,
@@ -1122,54 +1037,19 @@ namespace CommandsEditor
         TRIANGLE,
     }
 
-    //done
     public enum UI_KEYGATE_TYPE
     {
         KEYCARD,
         KEYPAD,
     }
 
-    public enum CHARACTER_STANCE
-    {
-        DONT_CHANGE,
-        STAND,
-        CROUCHED,
-    }
-
-    //done
-    public enum CI_MESSAGE_TYPE 
+    public enum CI_MESSAGE_TYPE
     {
         MSG_NORMAL,
         MSG_IMPORTANT,
         MSG_ERROR,
     }
 
-    //Index 35 exists in PAK
-    public enum CHARACTER_CLASS_COMBINATION
-    {
-        NONE = 0x0,
-        PLAYER_ONLY = 0x1,
-        ALIEN_ONLY = 0x2,
-        ANDROID_ONLY = 0x4,
-        CIVILIAN_ONLY = 0x8,
-        SECURITY_ONLY = 0x10,
-        FACEHUGGER_ONLY = 0x20,
-        INNOCENT_ONLY = 0x40,
-        ANDROID_HEAVY_ONLY = 0x80,
-        MOTION_TRACKER = 0x100,
-        MELEE_HUMAN_ONLY = 0x200,
-        ANDROIDS = ANDROID_ONLY | ANDROID_HEAVY_ONLY,
-        ALIENS = ALIEN_ONLY | FACEHUGGER_ONLY,
-        HUMAN_NPC = CIVILIAN_ONLY | SECURITY_ONLY | INNOCENT_ONLY | MELEE_HUMAN_ONLY,
-        HUMAN = HUMAN_NPC | PLAYER_ONLY,
-        HUMANOID_NPC = HUMAN_NPC | ANDROIDS,
-        HUMANOID = HUMANOID_NPC | PLAYER_ONLY,
-        ANDROIDS_AND_ALIEN = ANDROIDS | ALIENS,
-        PLAYER_AND_ALIEN = PLAYER_ONLY | ALIEN_ONLY,
-        ALL = ALIENS | HUMANOID | MOTION_TRACKER,
-    }
-
-    //done
     public enum DIFFICULTY_SETTING_TYPE
     {
         EASY,
@@ -1179,7 +1059,6 @@ namespace CommandsEditor
         NOVICE,
     }
 
-    //done
     public enum EXIT_WAYPOINT
     {
         SOLACE,
@@ -1202,7 +1081,6 @@ namespace CommandsEditor
         TOWING_PLATFORM,
     }
 
-    //done
     public enum CHARACTER_CLASS
     {
         PLAYER,
@@ -1231,7 +1109,6 @@ namespace CommandsEditor
         TRAINERS,
     }
 
-    //done
     public enum SENSORY_TYPE
     {
         NONE = -1,
@@ -1252,7 +1129,6 @@ namespace CommandsEditor
         SET_3 = 3,
     }
 
-    //done
     public enum ALERTNESS_STATE
     {
         IGNORE_PLAYER,
@@ -1260,7 +1136,6 @@ namespace CommandsEditor
         AGGRESSIVE,
     }
 
-    //done
     public enum MOOD
     {
         NEUTRAL,
@@ -1282,7 +1157,6 @@ namespace CommandsEditor
         SUSPICIOUS,
     }
 
-    //done
     public enum MOOD_INTENSITY
     {
         LOW,
@@ -1290,7 +1164,6 @@ namespace CommandsEditor
         HIGH,
     }
 
-    //done
     public enum MAP_ICON_TYPE
     {
         REWIRE,
@@ -1334,7 +1207,6 @@ namespace CommandsEditor
         ALIEN_SIGHTED,
     }
 
-    //done
     public enum BEHAVIOR_TREE_BRANCH_TYPE
     {
         NONE,
@@ -1410,7 +1282,6 @@ namespace CommandsEditor
         ALL_SEARCH_VARIANTS_BRANCH,
     }
 
-    //done
     public enum DIALOGUE_VOICE_ACTOR
     {
         AUTO,
@@ -1431,17 +1302,86 @@ namespace CommandsEditor
         TOTAL,
 
         // The options below are available via CATHODE::DIALOGUE_VOICE_ACTOR__Class::element_name, but invalidated by CATHODE::DIALOGUE_VOICE_ACTOR::to_string:
-        //FIRST_CIVILIAN_MALE_VOICE,
-        //LAST_CIVILIAN_MALE_VOICE,
-        //FIRST_CIVILIAN_FEMALE_VOICE,
-        //LAST_CIVILIAN_FEMALE_VOICE,
-        //FIRST_SECURITY_MALE_VOICE,
-        //LAST_SECURITY_MALE_VOICE,
-        //FIRST_ANDROID_VOICE,
-        //LAST_ANDROID_VOICE,
+        FIRST_CIVILIAN_MALE_VOICE,
+        LAST_CIVILIAN_MALE_VOICE,
+        FIRST_CIVILIAN_FEMALE_VOICE,
+        LAST_CIVILIAN_FEMALE_VOICE,
+        FIRST_SECURITY_MALE_VOICE,
+        LAST_SECURITY_MALE_VOICE,
+        FIRST_ANDROID_VOICE,
+        LAST_ANDROID_VOICE,
     }
 
-    //done
+    public enum CAMERA_PATH_CLASS
+    {
+        GENERIC,
+        POSITION,
+        TARGET,
+        REFERENCE,
+    }
+
+    public enum CAMERA_PATH_TYPE
+    {
+        LINEAR,
+        BEZIER,
+    }
+
+    public enum INPUT_DEVICE_TYPE
+    {
+        MOUSE_AND_KEYBOARD,
+        GAMEPAD,
+    }
+
+    public enum LOOK_SPEED
+    {
+        SLOW,
+        MODERATE,
+        FAST,
+        FREE_LOOK,
+        LEADING_LOOK,
+    }
+
+    public enum NAV_MESH_AREA_TYPE
+    {
+        BACKSTAGE,
+        EXPENSIVE,
+    }
+
+    public enum NOISE_TYPE
+    {
+        HARMONIC,
+        FRACTAL,
+    }
+
+    public enum SIDE
+    {
+        LEFT,
+        RIGHT,
+    }
+
+    public enum RESPAWN_MODE
+    {
+        ON_DEATH_POINT,
+        NEAR_DEATH_POINT,
+        NEAR_COMPANION,
+    }
+
+    public enum PATH_DRIVEN_TYPE
+    {
+        CHARACTER_PROJECTION,
+        POINT_PROJECTION,
+        TIME_PROGRESS,
+    }
+
+    public enum CLIPPING_PLANES_PRESETS
+    {
+        MACRO,
+        CLOSE,
+        MID,
+        WIDE,
+        ULTRA,
+    }
+
     public enum CHARACTER_NODE
     {
         HEAD1,
@@ -1467,7 +1407,6 @@ namespace CommandsEditor
         ROOT,
     }
 
-    //done
     public enum SUSPICIOUS_ITEM
     {
         EXPLOSION,
@@ -1493,7 +1432,6 @@ namespace CommandsEditor
         SMOKE_BOMB,
     }
 
-    //done
     public enum SUSPICIOUS_ITEM_STAGE
     {
         NONE,
@@ -1523,23 +1461,6 @@ namespace CommandsEditor
         PLAYER_IN_VENT,
     }
 
-    //-1-10
-    public enum REWIRE_SYSTEM_NAME
-    {
-        AI_UI_MAIN_LIGHTING,
-        AI_UI_DOOR_SYSTEM,
-        AI_UI_VENT_ACCESS,
-        AI_UI_SECURITY_CAMERAS,
-        AI_UI_TANNOY,
-        AI_UI_ALARMS,
-        AI_UI_SPRINKLERS,
-        AI_UI_RELEASE_VALVE,
-        AI_UI_GAS_LEAK,
-        AI_UI_AIR_CONDITIONING,
-        AI_UI_UNSTABLE_SYSTEM,
-    }
-
-    //done
     public enum NPC_AGGRO_LEVEL
     {
         NONE = -1,
@@ -1551,7 +1472,6 @@ namespace CommandsEditor
         AGGRESSIVE,
     }
 
-    //done
     public enum BLUEPRINT_LEVEL
     {
         LEVEL_1 = 1,
