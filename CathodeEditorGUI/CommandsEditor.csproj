@@ -1222,6 +1222,12 @@
     <Compile Include="Scripts\TreeUtility.cs" />
     <Compile Include="Scripts\SettingsManager.cs" />
     <Compile Include="Scripts\WebsocketServer.cs" />
+    <Compile Include="UserControls\Base\BaseUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\Base\BaseUserControl.Designer.cs">
+      <DependentUpon>BaseUserControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\Variants\GUI_StringVariant_AssetDropdown.cs">
       <SubType>UserControl</SubType>
     </Compile>

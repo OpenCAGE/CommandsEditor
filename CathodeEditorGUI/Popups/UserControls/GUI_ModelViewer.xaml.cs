@@ -13,12 +13,16 @@ namespace CommandsEditor.Popups.UserControls
     /// </summary>
     public partial class GUI_ModelViewer : UserControl
     {
+        protected CommandsEditor _editor;
+        protected Editor Editor { get { return _editor.Loaded; } } //hotfix for old Editor. static
+
         CS2Reader reader = null;
 
-        public GUI_ModelViewer()
+        public GUI_ModelViewer(CommandsEditor editor)
         {
             InitializeComponent();
             reader = new CS2Reader();
+            _editor = editor;
         }
 
         public void ShowModel(List<Model> models)

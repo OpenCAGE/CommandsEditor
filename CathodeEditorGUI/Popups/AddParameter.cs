@@ -19,7 +19,7 @@ namespace CommandsEditor
     public partial class AddParameter : BaseWindow
     {
         Entity node = null;
-        public AddParameter(Entity _node) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
+        public AddParameter(CommandsEditor editor, Entity _node) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
         {
             node = _node;
             InitializeComponent();

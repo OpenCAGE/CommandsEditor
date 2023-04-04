@@ -7,7 +7,7 @@ using CATHODE.Scripting;
 
 namespace CommandsEditor.UserControls
 {
-    public partial class GUI_StringVariant_AssetDropdown : UserControl
+    public partial class GUI_StringVariant_AssetDropdown : BaseUserControl
     {
         cString stringVal = null;
 
@@ -17,7 +17,7 @@ namespace CommandsEditor.UserControls
         static List<AssetList> assetlist_cache = new List<AssetList>(); //TODO: cache controls, not just the contents of the controls
         AssetList content = null;
 
-        public GUI_StringVariant_AssetDropdown()
+        public GUI_StringVariant_AssetDropdown(CommandsEditor editor) : base(editor)
         {
             InitializeComponent();
         }

@@ -30,7 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditMVR));
             this.listBox1 = new System.Windows.Forms.ListBox();
-            this.renderable = new Popups.UserControls.GUI_Resource_RenderableInstance();
+            this.renderable = new Popups.UserControls.GUI_Resource_RenderableInstance(null);
             this.label1 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();

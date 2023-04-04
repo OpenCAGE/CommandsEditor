@@ -24,7 +24,7 @@ namespace CommandsEditor
         private ShortGuid _initialLinkID;
 
         //FOR CREATING A NEW LINK
-        public AddOrEditLink(Composite flowgraph, Entity parentEntity) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
+        public AddOrEditLink(CommandsEditor editor, Composite flowgraph, Entity parentEntity) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
         {
             InitializeComponent();
 
@@ -40,7 +40,7 @@ namespace CommandsEditor
         }
 
         //FOR EDITING AN EXISTING LINK
-        public AddOrEditLink(Composite flowgraph, Entity parentEntity, Entity childEntity, string parentParameter, string childParameter, bool isLinkingToChild, ShortGuid initialLinkID) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
+        public AddOrEditLink(CommandsEditor editor, Composite flowgraph, Entity parentEntity, Entity childEntity, string parentParameter, string childParameter, bool isLinkingToChild, ShortGuid initialLinkID) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
         {
             InitializeComponent();
 

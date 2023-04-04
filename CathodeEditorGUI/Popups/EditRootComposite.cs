@@ -16,7 +16,7 @@ namespace CommandsEditor
     {
         List<Composite> composites = null;
 
-        public EditRootComposite() : base(WindowClosesOn.COMMANDS_RELOAD)
+        public EditRootComposite(CommandsEditor editor) : base(WindowClosesOn.COMMANDS_RELOAD, editor)
         {
             InitializeComponent();
             rootComposite.BeginUpdate();

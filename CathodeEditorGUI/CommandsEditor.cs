@@ -27,6 +27,8 @@ namespace CommandsEditor
 {
     public partial class CommandsEditor : Form
     {
+        public Editor Loaded = new Editor();
+
         private TreeUtility _treeHelper;
         private Composite _previousComposite = null;
 
@@ -78,6 +80,8 @@ namespace CommandsEditor
             return;
 
             */
+
+            EditorUtils.SetEditor(this);
             InitializeComponent();
             _treeHelper = new TreeUtility(FileTree);
 
@@ -123,7 +127,7 @@ namespace CommandsEditor
             List<string> textList = Directory.GetFiles(SharedData.pathToAI + "/DATA/TEXT/ENGLISH/", "*.TXT", SearchOption.AllDirectories).ToList<string>();
             foreach (string text in textList)
             {
-                Editor.strings.Add(Path.GetFileNameWithoutExtension(text), new Strings(text));
+                Loaded.strings.Add(Path.GetFileNameWithoutExtension(text), new Strings(text));
             }
 
             //Populate animation strings
@@ -137,8 +141,8 @@ namespace CommandsEditor
                 content = animPAK.Entries.FirstOrDefault(o => o.Filename.Contains("ANIM_STRING_DB_DEBUG.BIN")).Content;
                 File.WriteAllBytes(pathToStringDB_Debug, content);
             }
-            Editor.animstrings = new AnimationStrings(pathToStringDB);
-            Editor.animstrings_debug = new AnimationStrings(pathToStringDB_Debug);
+            Loaded.animstrings = new AnimationStrings(pathToStringDB);
+            Loaded.animstrings_debug = new AnimationStrings(pathToStringDB_Debug);
 
             ClearUI(true, true, true);
 
@@ -182,11 +186,11 @@ namespace CommandsEditor
                 composite_content.Items.Clear();
                 composite_content_RAW.Clear();
                 composite_content.EndUpdate();
-                Editor.selected.composite = null;
+                Loaded.selected.composite = null;
             }
             if (clear_parameter_list)
             {
-                Editor.selected.entity = null;
+                Loaded.selected.entity = null;
                 entityInfoGroup.Text = "Selected Entity Info";
                 entityParamGroup.Text = "Selected Entity Parameters";
                 selected_entity_type_description.Text = "";
@@ -232,19 +236,24 @@ namespace CommandsEditor
             /*Task.Factory.StartNew(() => */LoadMovers()/*)*/;
 
             //Begin caching entity names so we don't have to keep generating them
-            EntityUtils.LinkCommands(Editor.commands);
-            ShortGuidUtils.LinkCommands(Editor.commands);
+            EntityUtils.LinkCommands(Loaded.commands);
+            ShortGuidUtils.LinkCommands(Loaded.commands);
             if (currentBackgroundCacher != null) currentBackgroundCacher.Dispose();
             currentBackgroundCacher = Task.Factory.StartNew(() => EditorUtils.GenerateEntityNameCache(this));
 
             //Populate file tree
-            _treeHelper.UpdateFileTree(Editor.commands.GetCompositeNames().ToList());
+            _treeHelper.UpdateFileTree(Loaded.commands.GetCompositeNames().ToList());
 
             //Show info in UI
             RefreshStatsUI();
 
             //Load root composite
-            _treeHelper.SelectNode(Editor.commands.EntryPoints[0].name);
+            _treeHelper.SelectNode(Loaded.commands.EntryPoints[0].name);
+
+            //Force collect
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
 
             //TEMP: Testing out new brute-forced ShortGuids
             ShortGuidUtils.Generate("Win");
@@ -270,37 +279,37 @@ namespace CommandsEditor
         }
         private void RefreshStatsUI()
         {
-            root_composite_display.Text = "Root composite: " + Editor.commands.EntryPoints[0].name;
+            root_composite_display.Text = "Root composite: " + Loaded.commands.EntryPoints[0].name;
         }
 
         /* Load commands */
         private void LoadCommands(string level)
         {
-            if (Editor.commands != null) Editor.commands.Entries.Clear();
+            if (Loaded.commands != null) Loaded.commands.Entries.Clear();
 
             string path_to_ENV = SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + level;
 #if !CATHODE_FAIL_HARD
             try
             {
 #endif
-                Editor.commands = new Commands(path_to_ENV + "/WORLD/COMMANDS.PAK");
-                Editor.OnCommandsSelected?.Invoke(Editor.commands);
+                Loaded.commands = new Commands(path_to_ENV + "/WORLD/COMMANDS.PAK");
+                Loaded.OnCommandsSelected?.Invoke(Loaded.commands);
 #if !CATHODE_FAIL_HARD
             }
             catch (Exception e)
             {
                 MessageBox.Show("Failed to load COMMANDS.PAK!\n" + e.Message, "Failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Editor.commands = null;
+                Loaded.commands = null;
                 return;
             }
 #endif
 
-            if (Editor.commands.EntryPoints == null)
+            if (Loaded.commands.EntryPoints == null)
             {
                 MessageBox.Show("Failed to load COMMANDS.PAK!\nPlease place this executable in your Alien: Isolation folder.", "Environment error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            else if (Editor.commands.EntryPoints[0] == null)
+            else if (Loaded.commands.EntryPoints[0] == null)
             {
                 MessageBox.Show("Failed to load COMMANDS.PAK!\nPlease reset your game files.", "COMMANDS.PAK corrupted!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -310,23 +319,23 @@ namespace CommandsEditor
         /* Load assets */
         private void LoadAssets()
         {
-            if (Editor.resource.models != null) Editor.resource.models.Entries.Clear();
-            if (Editor.resource.reds != null) Editor.resource.reds.Entries.Clear();
-            if (Editor.resource.materials != null) Editor.resource.materials.Entries.Clear();
-            if (Editor.resource.textures != null) Editor.resource.textures.Entries.Clear();
-            if (Editor.resource.textures_global != null) Editor.resource.textures_global.Entries.Clear();
-            if (Editor.resource.env_animations != null) Editor.resource.env_animations.Entries.Clear();
-            if (Editor.resource.collision_maps != null) Editor.resource.collision_maps.Entries.Clear();
-            if (Editor.resource.sound_bankdata != null) Editor.resource.sound_bankdata.Entries.Clear();
-            if (Editor.resource.sound_dialoguelookups != null) Editor.resource.sound_dialoguelookups.Entries.Clear();
-            if (Editor.resource.sound_eventdata != null) Editor.resource.sound_eventdata.Entries.Clear();
-            if (Editor.resource.sound_environmentdata != null) Editor.resource.sound_environmentdata.Entries.Clear();
+            if (Loaded.resource.models != null) Loaded.resource.models.Entries.Clear();
+            if (Loaded.resource.reds != null) Loaded.resource.reds.Entries.Clear();
+            if (Loaded.resource.materials != null) Loaded.resource.materials.Entries.Clear();
+            if (Loaded.resource.textures != null) Loaded.resource.textures.Entries.Clear();
+            if (Loaded.resource.textures_global != null) Loaded.resource.textures_global.Entries.Clear();
+            if (Loaded.resource.env_animations != null) Loaded.resource.env_animations.Entries.Clear();
+            if (Loaded.resource.collision_maps != null) Loaded.resource.collision_maps.Entries.Clear();
+            if (Loaded.resource.sound_bankdata != null) Loaded.resource.sound_bankdata.Entries.Clear();
+            if (Loaded.resource.sound_dialoguelookups != null) Loaded.resource.sound_dialoguelookups.Entries.Clear();
+            if (Loaded.resource.sound_eventdata != null) Loaded.resource.sound_eventdata.Entries.Clear();
+            if (Loaded.resource.sound_environmentdata != null) Loaded.resource.sound_environmentdata.Entries.Clear();
 
 #if !CATHODE_FAIL_HARD
             try
             {
 #endif
-                string baseLevelPath = Editor.commands.Filepath.Substring(0, Editor.commands.Filepath.Length - ("WORLD/COMMANDS.PAK").Length);
+                string baseLevelPath = Loaded.commands.Filepath.Substring(0, Loaded.commands.Filepath.Length - ("WORLD/COMMANDS.PAK").Length);
 
                 //The game has two hard-coded _PATCH overrides which change the CommandsPAK but not the assets
                 string levelName = env_list.Items[env_list.SelectedIndex].ToString();
@@ -338,34 +347,34 @@ namespace CommandsEditor
                         break;
                 }
 
-                Editor.resource.models = new Models(baseLevelPath + "RENDERABLE/LEVEL_MODELS.PAK");
-                Editor.resource.reds = new RenderableElements(baseLevelPath + "WORLD/REDS.BIN");
-                Editor.resource.materials = new Materials(baseLevelPath + "RENDERABLE/LEVEL_MODELS.MTL");
+                Loaded.resource.models = new Models(baseLevelPath + "RENDERABLE/LEVEL_MODELS.PAK");
+                Loaded.resource.reds = new RenderableElements(baseLevelPath + "WORLD/REDS.BIN");
+                Loaded.resource.materials = new Materials(baseLevelPath + "RENDERABLE/LEVEL_MODELS.MTL");
                 //Editor.resource.textures = new Textures(baseLevelPath + "RENDERABLE/LEVEL_TEXTURES.ALL.PAK");
                 //Editor.resource.textures_Global = new Textures(SharedData.pathToAI + "/DATA/ENV/GLOBAL/WORLD/GLOBAL_TEXTURES.ALL.PAK");
-                Editor.resource.env_animations = new EnvironmentAnimations(baseLevelPath + "WORLD/ENVIRONMENT_ANIMATION.DAT");
-                Editor.resource.collision_maps = new CollisionMaps(baseLevelPath + "WORLD/COLLISION.MAP");
-                Editor.resource.sound_bankdata = new SoundBankData(baseLevelPath + "WORLD/SOUNDBANKDATA.DAT");
-                Editor.resource.sound_dialoguelookups = new SoundDialogueLookups(baseLevelPath + "WORLD/SOUNDDIALOGUELOOKUPS.DAT");
-                Editor.resource.sound_eventdata = new SoundEventData(baseLevelPath + "WORLD/SOUNDEVENTDATA.DAT");
-                Editor.resource.sound_environmentdata = new SoundEnvironmentData(baseLevelPath + "WORLD/SOUNDENVIRONMENTDATA.DAT");
+                Loaded.resource.env_animations = new EnvironmentAnimations(baseLevelPath + "WORLD/ENVIRONMENT_ANIMATION.DAT");
+                Loaded.resource.collision_maps = new CollisionMaps(baseLevelPath + "WORLD/COLLISION.MAP");
+                Loaded.resource.sound_bankdata = new SoundBankData(baseLevelPath + "WORLD/SOUNDBANKDATA.DAT");
+                Loaded.resource.sound_dialoguelookups = new SoundDialogueLookups(baseLevelPath + "WORLD/SOUNDDIALOGUELOOKUPS.DAT");
+                Loaded.resource.sound_eventdata = new SoundEventData(baseLevelPath + "WORLD/SOUNDEVENTDATA.DAT");
+                Loaded.resource.sound_environmentdata = new SoundEnvironmentData(baseLevelPath + "WORLD/SOUNDENVIRONMENTDATA.DAT");
 #if !CATHODE_FAIL_HARD
             }
             catch
             {
                 //Can fail if we're loading a PAK outside the game structure
                 MessageBox.Show("Failed to load asset PAKs!\nAre you opening a Commands PAK outside of a map directory?\nIf not, please try and load again.", "Resource editing disabled.", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                Editor.resource.models = null;
-                Editor.resource.reds = null;
-                Editor.resource.materials = null;
-                Editor.resource.textures = null;
-                Editor.resource.textures_global = null;
-                Editor.resource.env_animations = null;
-                Editor.resource.collision_maps = null;
-                Editor.resource.sound_bankdata = null;
-                Editor.resource.sound_dialoguelookups = null;
-                Editor.resource.sound_eventdata = null;
-                Editor.resource.sound_environmentdata = null;
+                Loaded.resource.models = null;
+                Loaded.resource.reds = null;
+                Loaded.resource.materials = null;
+                Loaded.resource.textures = null;
+                Loaded.resource.textures_global = null;
+                Loaded.resource.env_animations = null;
+                Loaded.resource.collision_maps = null;
+                Loaded.resource.sound_bankdata = null;
+                Loaded.resource.sound_dialoguelookups = null;
+                Loaded.resource.sound_eventdata = null;
+                Loaded.resource.sound_environmentdata = null;
             }
 #endif
         }
@@ -377,15 +386,15 @@ namespace CommandsEditor
             try
             {
 #endif
-                string baseLevelPath = Editor.commands.Filepath.Substring(0, Editor.commands.Filepath.Length - ("WORLD/COMMANDS.PAK").Length);
-                Editor.mvr = new Movers(baseLevelPath + "WORLD/MODELS.MVR");
+                string baseLevelPath = Loaded.commands.Filepath.Substring(0, Loaded.commands.Filepath.Length - ("WORLD/COMMANDS.PAK").Length);
+                Loaded.mvr = new Movers(baseLevelPath + "WORLD/MODELS.MVR");
 #if !CATHODE_FAIL_HARD
             }
             catch
             {
                 //Can fail if we're loading a MVR outside the game structure
                 MessageBox.Show("Failed to load mover descriptor database!\nAre you opening a Commands PAK outside of a map directory?\nMVR editing disabled.", "MVR editing disabled.", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                Editor.mvr = null;
+                Loaded.mvr = null;
             }
 #endif
         }
@@ -393,16 +402,16 @@ namespace CommandsEditor
         /* Save the current edits */
         private void save_commands_pak_Click(object sender, EventArgs e)
         {
-            if (Editor.commands == null) return;
+            if (Loaded.commands == null) return;
             Cursor.Current = Cursors.WaitCursor;
 
 #if !CATHODE_FAIL_HARD
             byte[] backup = null;
             try
             {
-                backup = File.ReadAllBytes(Editor.commands.Filepath);
+                backup = File.ReadAllBytes(Loaded.commands.Filepath);
 #endif
-                Editor.commands.Save();
+                Loaded.commands.Save();
 #if !CATHODE_FAIL_HARD
             }
             catch (Exception ex)
@@ -410,7 +419,7 @@ namespace CommandsEditor
                 try
                 {
                     if (backup != null)
-                        File.WriteAllBytes(Editor.commands.Filepath, backup);
+                        File.WriteAllBytes(Loaded.commands.Filepath, backup);
                 }
                 catch { }
             
@@ -420,11 +429,11 @@ namespace CommandsEditor
             }
 #endif
 
-            if (Editor.resource.reds != null && Editor.resource.reds.Entries != null)
-                Editor.resource.reds.Save();
+            if (Loaded.resource.reds != null && Loaded.resource.reds.Entries != null)
+                Loaded.resource.reds.Save();
 
-            if (Editor.mvr != null && Editor.mvr.Entries != null)
-                Editor.mvr.Save();
+            if (Loaded.mvr != null && Loaded.mvr.Entries != null)
+                Loaded.mvr.Save();
 
             Cursor.Current = Cursors.Default;
             MessageBox.Show("Saved changes!", "Saved.", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -433,8 +442,8 @@ namespace CommandsEditor
         /* Edit the loaded COMMANDS.PAK's root composite */
         private void editEntryPoint_Click(object sender, EventArgs e)
         {
-            if (Editor.commands == null || Editor.commands.EntryPoints == null) return;
-            EditRootComposite edit_entrypoint = new EditRootComposite();
+            if (Loaded.commands == null || Loaded.commands.EntryPoints == null) return;
+            EditRootComposite edit_entrypoint = new EditRootComposite(this);
             edit_entrypoint.Show();
             edit_entrypoint.FormClosed += new FormClosedEventHandler(edit_entrypoint_closed);
         }
@@ -457,11 +466,11 @@ namespace CommandsEditor
         private void jumpToComposite_Click(object sender, EventArgs e)
         {
             Composite flow;
-            switch (Editor.selected.entity.variant)
+            switch (Loaded.selected.entity.variant)
             {
                 case EntityVariant.OVERRIDE:
                 {
-                    Entity entity = CommandsUtils.ResolveHierarchy(Editor.commands, Editor.selected.composite, ((OverrideEntity)Editor.selected.entity).connectedEntity.hierarchy, out flow, out string hierarchy);
+                    Entity entity = CommandsUtils.ResolveHierarchy(Loaded.commands, Loaded.selected.composite, ((OverrideEntity)Loaded.selected.entity).connectedEntity.hierarchy, out flow, out string hierarchy);
                     if (entity != null)
                     {
                         LoadComposite(flow.name);
@@ -471,7 +480,7 @@ namespace CommandsEditor
                 }
                 case EntityVariant.PROXY:
                 {
-                    Entity entity = CommandsUtils.ResolveHierarchy(Editor.commands, Editor.selected.composite, ((ProxyEntity)Editor.selected.entity).connectedEntity.hierarchy, out flow, out string hierarchy);
+                    Entity entity = CommandsUtils.ResolveHierarchy(Loaded.commands, Loaded.selected.composite, ((ProxyEntity)Loaded.selected.entity).connectedEntity.hierarchy, out flow, out string hierarchy);
                     if (entity != null)
                     {
                         LoadComposite(flow.name);
@@ -490,21 +499,21 @@ namespace CommandsEditor
         /* Select root composite from top of UI */
         private void SelectEntryPointUI(object sender, System.EventArgs e)
         {
-            if (Editor.commands == null || Editor.commands.EntryPoints == null) return;
-            LoadComposite(Editor.commands.EntryPoints[0].name);
+            if (Loaded.commands == null || Loaded.commands.EntryPoints == null) return;
+            LoadComposite(Loaded.commands.EntryPoints[0].name);
         }
 
         /* Add new composite (really we should be able to do this OFF OF entities, like making a prefab) */
         private void addNewComposite_Click(object sender, EventArgs e)
         {
-            if (Editor.commands == null) return;
-            AddComposite add_flow = new AddComposite();
+            if (Loaded.commands == null) return;
+            AddComposite add_flow = new AddComposite(this);
             add_flow.Show();
             add_flow.FormClosed += new FormClosedEventHandler(add_flow_closed);
         }
         private void add_flow_closed(Object sender, FormClosedEventArgs e)
         {
-            _treeHelper.UpdateFileTree(Editor.commands.GetCompositeNames().ToList());
+            _treeHelper.UpdateFileTree(Loaded.commands.GetCompositeNames().ToList());
             RefreshStatsUI();
             this.BringToFront();
             this.Focus();
@@ -513,10 +522,10 @@ namespace CommandsEditor
         /* Remove selected composite */
         private void removeSelectedComposite_Click(object sender, EventArgs e)
         {
-            if (Editor.selected.composite == null) return;
-            for (int i = 0; i < Editor.commands.EntryPoints.Count(); i++)
+            if (Loaded.selected.composite == null) return;
+            for (int i = 0; i < Loaded.commands.EntryPoints.Count(); i++)
             {
-                if (Editor.selected.composite.shortGUID == Editor.commands.EntryPoints[i].shortGUID)
+                if (Loaded.selected.composite.shortGUID == Loaded.commands.EntryPoints[i].shortGUID)
                 {
                     MessageBox.Show("Cannot delete a composite which is the root, global, or pause menu!", "Cannot delete.", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
@@ -525,45 +534,45 @@ namespace CommandsEditor
             if (!ConfirmAction("Are you sure you want to remove this composite?")) return;
 
             //Remove any entities or links that reference this composite
-            for (int i = 0; i < Editor.commands.Entries.Count; i++)
+            for (int i = 0; i < Loaded.commands.Entries.Count; i++)
             {
                 List<FunctionEntity> prunedFunctionEntities = new List<FunctionEntity>();
-                for (int x = 0; x < Editor.commands.Entries[i].functions.Count; x++)
+                for (int x = 0; x < Loaded.commands.Entries[i].functions.Count; x++)
                 {
-                    if (Editor.commands.Entries[i].functions[x].function == Editor.selected.composite.shortGUID) continue;
+                    if (Loaded.commands.Entries[i].functions[x].function == Loaded.selected.composite.shortGUID) continue;
                     List<EntityLink> prunedEntityLinks = new List<EntityLink>();
-                    for (int l = 0; l < Editor.commands.Entries[i].functions[x].childLinks.Count; l++)
+                    for (int l = 0; l < Loaded.commands.Entries[i].functions[x].childLinks.Count; l++)
                     {
-                        Entity linkedEntity = Editor.commands.Entries[i].GetEntityByID(Editor.commands.Entries[i].functions[x].childLinks[l].childID);
-                        if (linkedEntity != null && linkedEntity.variant == EntityVariant.FUNCTION) if (((FunctionEntity)linkedEntity).function == Editor.selected.composite.shortGUID) continue;
-                        prunedEntityLinks.Add(Editor.commands.Entries[i].functions[x].childLinks[l]);
+                        Entity linkedEntity = Loaded.commands.Entries[i].GetEntityByID(Loaded.commands.Entries[i].functions[x].childLinks[l].childID);
+                        if (linkedEntity != null && linkedEntity.variant == EntityVariant.FUNCTION) if (((FunctionEntity)linkedEntity).function == Loaded.selected.composite.shortGUID) continue;
+                        prunedEntityLinks.Add(Loaded.commands.Entries[i].functions[x].childLinks[l]);
                     }
-                    Editor.commands.Entries[i].functions[x].childLinks = prunedEntityLinks;
-                    prunedFunctionEntities.Add(Editor.commands.Entries[i].functions[x]);
+                    Loaded.commands.Entries[i].functions[x].childLinks = prunedEntityLinks;
+                    prunedFunctionEntities.Add(Loaded.commands.Entries[i].functions[x]);
                 }
-                Editor.commands.Entries[i].functions = prunedFunctionEntities;
+                Loaded.commands.Entries[i].functions = prunedFunctionEntities;
             }
             //TODO: remove proxies etc that also reference any of the removed entities
 
             //Remove the composite
-            Editor.commands.Entries.Remove(Editor.selected.composite);
+            Loaded.commands.Entries.Remove(Loaded.selected.composite);
 
             //Refresh UI
             ClearUI(false, true, true);
             RefreshStatsUI();
-            _treeHelper.UpdateFileTree(Editor.commands.GetCompositeNames().ToList());
+            _treeHelper.UpdateFileTree(Loaded.commands.GetCompositeNames().ToList());
         }
 
         /* Select entity from loaded composite */
         private void composite_content_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (composite_content.SelectedIndex == -1 || Editor.selected.composite == null) return;
+            if (composite_content.SelectedIndex == -1 || Loaded.selected.composite == null) return;
 #if !CATHODE_FAIL_HARD
             try
             {
 #endif
                 ShortGuid entityID = new ShortGuid(composite_content.SelectedItem.ToString().Substring(1, 11));
-                Entity thisEntity = Editor.selected.composite.GetEntityByID(entityID);
+                Entity thisEntity = Loaded.selected.composite.GetEntityByID(entityID);
                 if (thisEntity != null) LoadEntity(thisEntity);
 #if !CATHODE_FAIL_HARD
             }
@@ -596,23 +605,23 @@ namespace CommandsEditor
         List<string> composite_content_RAW = new List<string>();
         private void LoadComposite(string filename)
         {
-            LoadComposite(Editor.commands.GetComposite(filename));
+            LoadComposite(Loaded.commands.GetComposite(filename));
         }
         private void LoadComposite(Composite comp, Entity ent = null)
         {
-            _previousComposite = Editor.selected.composite;
+            _previousComposite = Loaded.selected.composite;
             ClearUI(false, true, true);
-            Editor.selected.composite = comp;
-            Editor.OnCompositeSelected?.Invoke(Editor.selected.composite);
+            Loaded.selected.composite = comp;
+            Loaded.OnCompositeSelected?.Invoke(Loaded.selected.composite);
 
             Cursor.Current = Cursors.WaitCursor;
-            CommandsUtils.PurgeDeadLinks(Editor.commands, comp);
+            CommandsUtils.PurgeDeadLinks(Loaded.commands, comp);
 
             composite_content.BeginUpdate();
             List<Entity> entities = comp.GetEntities();
             for (int i = 0; i < entities.Count; i++)
             {
-                string desc = EditorUtils.GenerateEntityName(entities[i], Editor.selected.composite);
+                string desc = EditorUtils.GenerateEntityName(entities[i], Loaded.selected.composite);
                 composite_content.Items.Add(desc);
                 composite_content_RAW.Add(desc);
             }
@@ -627,8 +636,8 @@ namespace CommandsEditor
         /* Add new entity */
         private void addNewEntity_Click(object sender, EventArgs e)
         {
-            if (Editor.selected.composite == null) return;
-            AddEntity add_parameter = new AddEntity(Editor.selected.composite, Editor.commands.Entries);
+            if (Loaded.selected.composite == null) return;
+            AddEntity add_parameter = new AddEntity(this, Loaded.selected.composite, Loaded.commands.Entries);
             add_parameter.Show();
             add_parameter.OnNewEntity += OnAddNewEntity;
         }
@@ -642,34 +651,34 @@ namespace CommandsEditor
         /* Remove selected entity */
         private void removeSelectedEntity_Click(object sender, EventArgs e)
         {
-            if (Editor.selected.entity == null) return;
+            if (Loaded.selected.entity == null) return;
             if (!ConfirmAction("Are you sure you want to remove this entity?")) return;
 
-            string removedID = Editor.selected.entity.shortGUID.ToByteString();
+            string removedID = Loaded.selected.entity.shortGUID.ToByteString();
 
-            switch (Editor.selected.entity.variant)
+            switch (Loaded.selected.entity.variant)
             {
                 case EntityVariant.VARIABLE:
-                    Editor.selected.composite.variables.Remove((VariableEntity)Editor.selected.entity);
+                    Loaded.selected.composite.variables.Remove((VariableEntity)Loaded.selected.entity);
                     break;
                 case EntityVariant.FUNCTION:
-                    Editor.selected.composite.functions.Remove((FunctionEntity)Editor.selected.entity);
+                    Loaded.selected.composite.functions.Remove((FunctionEntity)Loaded.selected.entity);
                     break;
                 case EntityVariant.OVERRIDE:
-                    Editor.selected.composite.overrides.Remove((OverrideEntity)Editor.selected.entity);
+                    Loaded.selected.composite.overrides.Remove((OverrideEntity)Loaded.selected.entity);
                     break;
                 case EntityVariant.PROXY:
-                    Editor.selected.composite.proxies.Remove((ProxyEntity)Editor.selected.entity);
+                    Loaded.selected.composite.proxies.Remove((ProxyEntity)Loaded.selected.entity);
                     break;
             }
 
-            List<Entity> entities = Editor.selected.composite.GetEntities();
+            List<Entity> entities = Loaded.selected.composite.GetEntities();
             for (int i = 0; i < entities.Count; i++) //We should actually query every entity in the PAK, since we might be ref'd by a proxy or override
             {
                 List<EntityLink> entLinks = new List<EntityLink>();
                 for (int x = 0; x < entities[i].childLinks.Count; x++)
                 {
-                    if (entities[i].childLinks[x].childID != Editor.selected.entity.shortGUID) entLinks.Add(entities[i].childLinks[x]);
+                    if (entities[i].childLinks[x].childID != Loaded.selected.entity.shortGUID) entLinks.Add(entities[i].childLinks[x]);
                 }
                 entities[i].childLinks = entLinks;
 
@@ -684,7 +693,7 @@ namespace CommandsEditor
                             for (int x = 0; x < triggerSequence.entities.Count; x++)
                             {
                                 if (triggerSequence.entities[x].connectedEntity.hierarchy.Count < 2 ||
-                                    triggerSequence.entities[x].connectedEntity.hierarchy[triggerSequence.entities[x].connectedEntity.hierarchy.Count - 2] != Editor.selected.entity.shortGUID)
+                                    triggerSequence.entities[x].connectedEntity.hierarchy[triggerSequence.entities[x].connectedEntity.hierarchy.Count - 2] != Loaded.selected.entity.shortGUID)
                                 {
                                     triggers.Add(triggerSequence.entities[x]);
                                 }
@@ -697,7 +706,7 @@ namespace CommandsEditor
                             for (int x = 0; x < cageAnim.connections.Count; x++)
                             {
                                 if (cageAnim.connections[x].connectedEntity.hierarchy.Count < 2 ||
-                                    cageAnim.connections[x].connectedEntity.hierarchy[cageAnim.connections[x].connectedEntity.hierarchy.Count - 2] != Editor.selected.entity.shortGUID)
+                                    cageAnim.connections[x].connectedEntity.hierarchy[cageAnim.connections[x].connectedEntity.hierarchy.Count - 2] != Loaded.selected.entity.shortGUID)
                                 {
                                     headers.Add(cageAnim.connections[x]);
                                 }
@@ -708,7 +717,7 @@ namespace CommandsEditor
                 }
             }
 
-            LoadComposite(Editor.selected.composite.name);
+            LoadComposite(Loaded.selected.composite.name);
 
             ClearUI(false, false, true);
         }
@@ -725,20 +734,20 @@ namespace CommandsEditor
         /* Duplicate selected entity */
         private void duplicateSelectedEntity_Click(object sender, EventArgs e)
         {
-            if (Editor.selected.entity == null) return;
+            if (Loaded.selected.entity == null) return;
             if (!ConfirmAction("Are you sure you want to duplicate this entity?")) return;
 
             //Generate new entity ID and name
-            Entity newEnt = Editor.selected.entity.Copy();
+            Entity newEnt = Loaded.selected.entity.Copy();
             newEnt.shortGUID = ShortGuidUtils.GenerateRandom();
             if (newEnt.variant != EntityVariant.VARIABLE)
                 EntityUtils.SetName(
-                    Editor.selected.composite.shortGUID,
+                    Loaded.selected.composite.shortGUID,
                     newEnt.shortGUID,
-                    EntityUtils.GetName(Editor.selected.composite.shortGUID, Editor.selected.entity.shortGUID) + "_clone");
+                    EntityUtils.GetName(Loaded.selected.composite.shortGUID, Loaded.selected.entity.shortGUID) + "_clone");
 
             //Add parent links in to this entity that linked in to the other entity
-            List<Entity> ents = Editor.selected.composite.GetEntities();
+            List<Entity> ents = Loaded.selected.composite.GetEntities();
             List<EntityLink> newLinks = new List<EntityLink>();
             int num_of_new_things = 1;
             foreach (Entity entity in ents)
@@ -746,7 +755,7 @@ namespace CommandsEditor
                 newLinks.Clear();
                 foreach (EntityLink link in entity.childLinks)
                 {
-                    if (link.childID == Editor.selected.entity.shortGUID)
+                    if (link.childID == Loaded.selected.entity.shortGUID)
                     {
                         EntityLink newLink = new EntityLink();
                         newLink.connectionID = ShortGuidUtils.Generate(DateTime.Now.ToString("G") + num_of_new_things.ToString()); num_of_new_things++;
@@ -763,16 +772,16 @@ namespace CommandsEditor
             switch (newEnt.variant)
             {
                 case EntityVariant.FUNCTION:
-                    Editor.selected.composite.functions.Add((FunctionEntity)newEnt);
+                    Loaded.selected.composite.functions.Add((FunctionEntity)newEnt);
                     break;
                 case EntityVariant.VARIABLE:
-                    Editor.selected.composite.variables.Add((VariableEntity)newEnt);
+                    Loaded.selected.composite.variables.Add((VariableEntity)newEnt);
                     break;
                 case EntityVariant.PROXY:
-                    Editor.selected.composite.proxies.Add((ProxyEntity)newEnt);
+                    Loaded.selected.composite.proxies.Add((ProxyEntity)newEnt);
                     break;
                 case EntityVariant.OVERRIDE:
-                    Editor.selected.composite.overrides.Add((OverrideEntity)newEnt);
+                    Loaded.selected.composite.overrides.Add((OverrideEntity)newEnt);
                     break;
             }
 
@@ -783,8 +792,8 @@ namespace CommandsEditor
         /* Rename selected entity */
         private void renameSelectedEntity_Click(object sender, EventArgs e)
         {
-            if (Editor.selected.entity == null) return;
-            RenameEntity rename_entity = new RenameEntity(Editor.selected.composite, Editor.selected.entity);
+            if (Loaded.selected.entity == null) return;
+            RenameEntity rename_entity = new RenameEntity(this, Loaded.selected.composite, Loaded.selected.entity);
             rename_entity.Show();
             rename_entity.OnSaved += OnEntityRenamed;
         }
@@ -793,7 +802,7 @@ namespace CommandsEditor
             string entityID = entity.shortGUID.ToByteString();
             string newEntityName = EditorUtils.GenerateEntityName(entity, composite, true);
 
-            if (composite == Editor.selected.composite)
+            if (composite == Loaded.selected.composite)
             {
                 for (int i = 0; i < composite_content.Items.Count; i++)
                 {
@@ -821,16 +830,16 @@ namespace CommandsEditor
         /* Perform a partial UI reload for a newly added entity */
         private void ReloadUIForNewEntity(Entity newEnt)
         {
-            if (Editor.selected.composite == null || newEnt == null) return;
+            if (Loaded.selected.composite == null || newEnt == null) return;
             if (currentSearch == "")
             {
-                string newEntityName = EditorUtils.GenerateEntityName(newEnt, Editor.selected.composite);
+                string newEntityName = EditorUtils.GenerateEntityName(newEnt, Loaded.selected.composite);
                 composite_content.Items.Add(newEntityName);
                 composite_content_RAW.Add(newEntityName);
             }
             else
             {
-                LoadComposite(Editor.selected.composite.name);
+                LoadComposite(Loaded.selected.composite.name);
             }
             LoadEntity(newEnt);
         }
@@ -839,16 +848,16 @@ namespace CommandsEditor
         private void LoadEntity(Entity entity)
         {
             ClearUI(false, false, true);
-            Editor.selected.entity = entity;
-            Editor.OnEntitySelected?.Invoke(Editor.selected.entity);
+            Loaded.selected.entity = entity;
+            Loaded.OnEntitySelected?.Invoke(Loaded.selected.entity);
 
             //Correct the UI, and return early if we have to change index, so we don't trigger twice
-            int correctSelectedIndex = composite_content.Items.IndexOf(EditorUtils.GenerateEntityName(entity, Editor.selected.composite));
+            int correctSelectedIndex = composite_content.Items.IndexOf(EditorUtils.GenerateEntityName(entity, Loaded.selected.composite));
             if (correctSelectedIndex == -1 && entity_search_box.Text != "")
             {
                 entity_search_box.Text = "";
                 DoSearch();
-                correctSelectedIndex = composite_content.Items.IndexOf(EditorUtils.GenerateEntityName(entity, Editor.selected.composite));
+                correctSelectedIndex = composite_content.Items.IndexOf(EditorUtils.GenerateEntityName(entity, Loaded.selected.composite));
             }
             if (composite_content.SelectedIndex != correctSelectedIndex)
             {
@@ -870,19 +879,19 @@ namespace CommandsEditor
             {
                 case EntityVariant.FUNCTION:
                     ShortGuid thisFunction = ((FunctionEntity)entity).function;
-                    Composite funcComposite = Editor.commands.GetComposite(thisFunction);
+                    Composite funcComposite = Loaded.commands.GetComposite(thisFunction);
                     jumpToComposite.Visible = funcComposite != null;
                     if (funcComposite != null)
                         description = funcComposite.name;
                     else
                         description = ShortGuidUtils.FindString(thisFunction);
-                    selected_entity_name.Text = EntityUtils.GetName(Editor.selected.composite.shortGUID, entity.shortGUID);
+                    selected_entity_name.Text = EntityUtils.GetName(Loaded.selected.composite.shortGUID, entity.shortGUID);
                     if (funcComposite == null)
                     {
                         FunctionType function = CommandsUtils.GetFunctionType(thisFunction);
                         editFunction.Enabled = function == FunctionType.CAGEAnimation || function == FunctionType.TriggerSequence;
                     }
-                    editEntityResources.Enabled = (Editor.resource.models != null);
+                    editEntityResources.Enabled = (Loaded.resource.models != null);
                     break;
                 case EntityVariant.VARIABLE:
                     description = "DataType " + ((VariableEntity)entity).type.ToString();
@@ -893,31 +902,31 @@ namespace CommandsEditor
                 case EntityVariant.OVERRIDE:
                     hierarchyDisplay.Visible = true;
                     string hierarchy = "";
-                    if (entity.variant == EntityVariant.PROXY) CommandsUtils.ResolveHierarchy(Editor.commands, Editor.selected.composite, ((ProxyEntity)entity).connectedEntity.hierarchy, out Composite comp, out hierarchy);
-                    else CommandsUtils.ResolveHierarchy(Editor.commands, Editor.selected.composite, ((OverrideEntity)entity).connectedEntity.hierarchy, out Composite comp, out hierarchy);
+                    if (entity.variant == EntityVariant.PROXY) CommandsUtils.ResolveHierarchy(Loaded.commands, Loaded.selected.composite, ((ProxyEntity)entity).connectedEntity.hierarchy, out Composite comp, out hierarchy);
+                    else CommandsUtils.ResolveHierarchy(Loaded.commands, Loaded.selected.composite, ((OverrideEntity)entity).connectedEntity.hierarchy, out Composite comp, out hierarchy);
                     hierarchyDisplay.Text = hierarchy;
                     jumpToComposite.Visible = true;
-                    selected_entity_name.Text = EntityUtils.GetName(Editor.selected.composite.shortGUID, entity.shortGUID);
+                    selected_entity_name.Text = EntityUtils.GetName(Loaded.selected.composite.shortGUID, entity.shortGUID);
                     break;
                 default:
-                    selected_entity_name.Text = EntityUtils.GetName(Editor.selected.composite.shortGUID, entity.shortGUID);
+                    selected_entity_name.Text = EntityUtils.GetName(Loaded.selected.composite.shortGUID, entity.shortGUID);
                     break;
             }
             selected_entity_type_description.Text = description;
 
             //show mvr editor button if this entity has a mvr link
-            if (Editor.mvr != null && Editor.mvr.Entries.FindAll(o => o.commandsNodeID == Editor.selected.entity.shortGUID).Count != 0)
+            if (Loaded.mvr != null && Loaded.mvr.Entries.FindAll(o => o.commandsNodeID == Loaded.selected.entity.shortGUID).Count != 0)
                 editEntityMovers.Enabled = true;
 
             //populate linked params IN
             int current_ui_offset = 7;
-            List<Entity> ents = Editor.selected.composite.GetEntities();
+            List<Entity> ents = Loaded.selected.composite.GetEntities();
             foreach (Entity ent in ents)
             {
                 foreach (EntityLink link in ent.childLinks)
                 {
                     if (link.childID != entity.shortGUID) continue;
-                    GUI_Link parameterGUI = new GUI_Link();
+                    GUI_Link parameterGUI = new GUI_Link(this);
                     parameterGUI.PopulateUI(link, false, ent.shortGUID);
                     parameterGUI.GoToEntity += LoadEntity;
                     parameterGUI.Location = new Point(15, current_ui_offset);
@@ -1006,7 +1015,7 @@ namespace CommandsEditor
                         }
                         if (asset != AssetList.Type.NONE)
                         {
-                            parameterGUI = new GUI_StringVariant_AssetDropdown();
+                            parameterGUI = new GUI_StringVariant_AssetDropdown(this);
                             ((GUI_StringVariant_AssetDropdown)parameterGUI).PopulateUI((cString)this_param, paramName, asset, asset_arg);
                         }
                         else
@@ -1061,11 +1070,11 @@ namespace CommandsEditor
                         ((GUI_EnumDataType)parameterGUI).PopulateUI((cEnum)this_param, paramName);
                         break;
                     case DataType.RESOURCE:
-                        parameterGUI = new GUI_ResourceDataType();
+                        parameterGUI = new GUI_ResourceDataType(this);
                         ((GUI_ResourceDataType)parameterGUI).PopulateUI((cResource)this_param, paramName);
                         break;
                     case DataType.SPLINE:
-                        parameterGUI = new GUI_SplineDataType();
+                        parameterGUI = new GUI_SplineDataType(this);
                         ((GUI_SplineDataType)parameterGUI).PopulateUI((cSpline)this_param, paramName);
                         break;
                 }
@@ -1077,7 +1086,7 @@ namespace CommandsEditor
             //populate linked params OUT
             for (int i = 0; i < entity.childLinks.Count; i++)
             {
-                GUI_Link parameterGUI = new GUI_Link();
+                GUI_Link parameterGUI = new GUI_Link(this);
                 parameterGUI.PopulateUI(entity.childLinks[i], true);
                 parameterGUI.GoToEntity += LoadEntity;
                 parameterGUI.Location = new Point(15, current_ui_offset);
@@ -1097,7 +1106,7 @@ namespace CommandsEditor
         private FunctionEntity zoneForSelectedEntity = null;
         public void ThreadedEntityUIUpdate(Entity ent, bool isPointedTo, FunctionEntity zone)
         {
-            if (ent != Editor.selected.entity) return;
+            if (ent != Loaded.selected.entity) return;
             showOverridesAndProxies.Invoke(new Action(() => { showOverridesAndProxies.Enabled = isPointedTo; }));
             zoneForSelectedEntity = zone;
             string zoneText = "Zone";
@@ -1112,14 +1121,14 @@ namespace CommandsEditor
         /* Add a new parameter */
         private void addNewParameter_Click(object sender, EventArgs e)
         {
-            if (Editor.selected.entity == null) return;
-            AddParameter add_parameter = new AddParameter(Editor.selected.entity);
+            if (Loaded.selected.entity == null) return;
+            AddParameter add_parameter = new AddParameter(this, Loaded.selected.entity);
             add_parameter.Show();
             add_parameter.FormClosed += new FormClosedEventHandler(refresh_entity_event);
         }
         private void refresh_entity_event(Object sender, FormClosedEventArgs e)
         {
-            LoadEntity(Editor.selected.entity);
+            LoadEntity(Loaded.selected.entity);
             this.BringToFront();
             this.Focus();
         }
@@ -1127,8 +1136,8 @@ namespace CommandsEditor
         /* Add a new link out */
         private void addLinkOut_Click(object sender, EventArgs e)
         {
-            if (Editor.selected.entity == null) return;
-            AddOrEditLink add_link = new AddOrEditLink(Editor.selected.composite, Editor.selected.entity);
+            if (Loaded.selected.entity == null) return;
+            AddOrEditLink add_link = new AddOrEditLink(this, Loaded.selected.composite, Loaded.selected.entity);
             add_link.Show();
             add_link.FormClosed += new FormClosedEventHandler(refresh_entity_event);
         }
@@ -1136,10 +1145,10 @@ namespace CommandsEditor
         /* Remove a parameter */
         private void removeParameter_Click(object sender, EventArgs e)
         {
-            if (Editor.selected.entity == null) return;
+            if (Loaded.selected.entity == null) return;
             if (entity_params.Controls.Count == 0) return;
-            if (Editor.selected.entity.childLinks.Count + Editor.selected.entity.parameters.Count == 0) return;
-            RemoveParameter remove_parameter = new RemoveParameter(Editor.selected.entity);
+            if (Loaded.selected.entity.childLinks.Count + Loaded.selected.entity.parameters.Count == 0) return;
+            RemoveParameter remove_parameter = new RemoveParameter(this, Loaded.selected.entity);
             remove_parameter.Show();
             remove_parameter.FormClosed += new FormClosedEventHandler(refresh_entity_event);
         }
@@ -1147,18 +1156,18 @@ namespace CommandsEditor
         /* Edit function entity (CAGEAnimation/TriggerSequence) */
         private void editFunction_Click(object sender, EventArgs e)
         {
-            if (Editor.selected.entity.variant != EntityVariant.FUNCTION) return;
-            string function = ShortGuidUtils.FindString(((FunctionEntity)Editor.selected.entity).function);
+            if (Loaded.selected.entity.variant != EntityVariant.FUNCTION) return;
+            string function = ShortGuidUtils.FindString(((FunctionEntity)Loaded.selected.entity).function);
             switch (function.ToUpper())
             {
                 case "CAGEANIMATION":
-                    Editor.OnCAGEAnimationEditorOpened?.Invoke();
-                    CAGEAnimationEditor cageAnimationEditor = new CAGEAnimationEditor((CAGEAnimation)Editor.selected.entity);
+                    Loaded.OnCAGEAnimationEditorOpened?.Invoke();
+                    CAGEAnimationEditor cageAnimationEditor = new CAGEAnimationEditor(this, (CAGEAnimation)Loaded.selected.entity);
                     cageAnimationEditor.Show();
                     cageAnimationEditor.OnSaved += CAGEAnimationEditor_OnSaved;
                     break;
                 case "TRIGGERSEQUENCE":
-                    TriggerSequenceEditor triggerSequenceEditor = new TriggerSequenceEditor((TriggerSequence)Editor.selected.entity);
+                    TriggerSequenceEditor triggerSequenceEditor = new TriggerSequenceEditor(this, (TriggerSequence)Loaded.selected.entity);
                     triggerSequenceEditor.Show();
                     triggerSequenceEditor.FormClosed += FunctionEditor_FormClosed;
                     break;
@@ -1166,12 +1175,12 @@ namespace CommandsEditor
         }
         private void CAGEAnimationEditor_OnSaved(CAGEAnimation newEntity)
         {
-            CAGEAnimation entity = (CAGEAnimation)Editor.selected.entity;
+            CAGEAnimation entity = (CAGEAnimation)Loaded.selected.entity;
             entity.connections = newEntity.connections;
             entity.events = newEntity.events;
             entity.animations = newEntity.animations;
             entity.parameters = newEntity.parameters;
-            LoadEntity(Editor.selected.entity);
+            LoadEntity(Loaded.selected.entity);
             this.BringToFront();
             this.Focus();
         }
@@ -1185,9 +1194,9 @@ namespace CommandsEditor
         private FunctionEntity resourceFunctionToEdit = null;
         private void editEntityResources_Click(object sender, EventArgs e)
         {
-            resourceFunctionToEdit = ((FunctionEntity)Editor.selected.entity);
+            resourceFunctionToEdit = ((FunctionEntity)Loaded.selected.entity);
 
-            AddOrEditResource resourceEditor = new AddOrEditResource(((FunctionEntity)Editor.selected.entity).resources, Editor.selected.entity.shortGUID, EditorUtils.GenerateEntityName(Editor.selected.entity, Editor.selected.composite));
+            AddOrEditResource resourceEditor = new AddOrEditResource(this, ((FunctionEntity)Loaded.selected.entity).resources, Loaded.selected.entity.shortGUID, EditorUtils.GenerateEntityName(Loaded.selected.entity, Loaded.selected.composite));
             resourceEditor.Show();
             resourceEditor.OnSaved += OnResourceEditorSaved;
             resourceEditor.FormClosed += ResourceEditor_FormClosed;
@@ -1206,7 +1215,7 @@ namespace CommandsEditor
         /* Edit mover instances of this entity */
         private void editEntityMovers_Click(object sender, EventArgs e)
         {
-            EditMVR moverEditor = new EditMVR(Editor.selected.entity.shortGUID);
+            EditMVR moverEditor = new EditMVR(this, Loaded.selected.entity.shortGUID);
             moverEditor.Show();
             moverEditor.FormClosed += MoverEditor_FormClosed;
         }
@@ -1219,7 +1228,7 @@ namespace CommandsEditor
         /* Show overrides and proxies that point to this entity */
         private void showOverridesAndProxies_Click(object sender, EventArgs e)
         {
-            ShowCrossRefs crossRefs = new ShowCrossRefs();
+            ShowCrossRefs crossRefs = new ShowCrossRefs(this);
             crossRefs.Show();
             crossRefs.OnEntitySelected += OnCrossRefsEntitySelected;
         }
@@ -1265,10 +1274,10 @@ namespace CommandsEditor
                     i += 500;
                 }
 
-                if (Editor.commands == null) continue;
+                if (Loaded.commands == null) continue;
 
                 mainInst.EnableLoadingOfPaks(false, "Backup...");
-                Editor.commands.Save(Editor.commands.Filepath + ".bak", false);
+                Loaded.commands.Save(Loaded.commands.Filepath + ".bak", false);
                 mainInst.EnableLoadingOfPaks(true);
             }
         }
@@ -1276,7 +1285,7 @@ namespace CommandsEditor
         /* Go back to the previous composite */
         private void goBackToPrevComp_Click(object sender, EventArgs e)
         {
-            Editor.selected.composite = null;
+            Loaded.selected.composite = null;
             LoadComposite(_previousComposite);
         }
 

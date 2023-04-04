@@ -18,7 +18,7 @@ namespace CommandsEditor.Popups
 
         List<ListedMaterial> _materials = new List<ListedMaterial>();
 
-        public SelectMaterial(int materialIndexToEdit, int defaultMaterialIndex = -1) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
+        public SelectMaterial(CommandsEditor editor, int materialIndexToEdit, int defaultMaterialIndex = -1) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
         {
             InitializeComponent();
 

@@ -20,7 +20,7 @@ namespace CommandsEditor
         private int loadedMvrIndex = -1;
         private ShortGuid filteredNodeID;
 
-        public EditMVR(ShortGuid nodeID = new ShortGuid()) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
+        public EditMVR(CommandsEditor editor, ShortGuid nodeID = new ShortGuid()) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
         {
             InitializeComponent();
 

@@ -1,4 +1,5 @@
 ﻿using CATHODE.Scripting;
+using CommandsEditor.UserControls;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,11 +12,11 @@ using System.Windows.Forms;
 
 namespace CommandsEditor.Popups.UserControls
 {
-    public partial class ResourceUserControl : UserControl
+    public partial class ResourceUserControl : BaseUserControl
     {
         public ResourceReference ResourceReference;
 
-        public ResourceUserControl()
+        public ResourceUserControl(CommandsEditor editor) : base(editor)
         {
             InitializeComponent();
         }

@@ -15,6 +15,9 @@ namespace CommandsEditor.Popups.Base
 {
     public partial class BaseWindow : Form
     {
+        protected CommandsEditor _editor;
+        protected Editor Editor { get { return _editor.Loaded; } } //hotfix for old Editor. static
+
         private WindowClosesOn _closesOn;
 
         private Commands _startCommands;
@@ -27,11 +30,12 @@ namespace CommandsEditor.Popups.Base
             InitializeComponent();
         }
 
-        public BaseWindow(WindowClosesOn config)
+        public BaseWindow(WindowClosesOn config, CommandsEditor editor)
         {
             InitializeComponent();
 
             _closesOn = config;
+            _editor = editor;
 
             _startCommands = Editor.commands;
             _startEntity = Editor.selected.entity;

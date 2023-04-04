@@ -19,7 +19,7 @@ namespace CommandsEditor
 
         private List<EntityRef> entities = new List<EntityRef>();
 
-        public ShowCrossRefs() : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
+        public ShowCrossRefs(CommandsEditor editor) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
         {
             InitializeComponent();
             UpdateUI(CurrentDisplay.PROXIES);

@@ -24,7 +24,7 @@ namespace CommandsEditor
 
         List<EntityHierarchy> entityListToHierarchies;
 
-        public CAGEAnimationEditor(CAGEAnimation entity) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_CAGEANIM_EDITOR_OPENED | WindowClosesOn.NEW_COMPOSITE_SELECTION)
+        public CAGEAnimationEditor(CommandsEditor editor, CAGEAnimation entity) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_CAGEANIM_EDITOR_OPENED | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
         {
             animEntity = entity.Copy();
             File.WriteAllText("out.json", JsonConvert.SerializeObject(animEntity, Formatting.Indented));
@@ -238,7 +238,7 @@ namespace CommandsEditor
 
         private void addNewEntityRef_Click(object sender, EventArgs e)
         {
-            EditHierarchy hierarchyEditor = new EditHierarchy(Editor.selected.composite, false);
+            EditHierarchy hierarchyEditor = new EditHierarchy(_editor, Editor.selected.composite, false);
             hierarchyEditor.Show();
             hierarchyEditor.OnHierarchyGenerated += HierarchyEditor_HierarchyGenerated;
         }
@@ -273,7 +273,7 @@ namespace CommandsEditor
         private void addAnimationTrack_Click(object sender, EventArgs e)
         {
             if (entityList.SelectedIndex == -1) return;
-            CAGEAnimation_SelectParameter paramSelector = new CAGEAnimation_SelectParameter(entityListToHierarchies[entityList.SelectedIndex].GetPointedEntity(Editor.commands, Editor.selected.composite));
+            CAGEAnimation_SelectParameter paramSelector = new CAGEAnimation_SelectParameter(_editor, entityListToHierarchies[entityList.SelectedIndex].GetPointedEntity(Editor.commands, Editor.selected.composite));
             paramSelector.OnParamSelected += OnParameterSelected;
             paramSelector.Show();
         }

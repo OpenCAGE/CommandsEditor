@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 namespace CommandsEditor.UserControls
 {
-    public partial class GUI_Link : UserControl
+    public partial class GUI_Link : BaseUserControl
     {
         public Action<Entity> GoToEntity;
         private Entity _linkedEntity;
@@ -13,7 +13,7 @@ namespace CommandsEditor.UserControls
         private EntityLink _link;
         private bool _isLinkOut;
 
-        public GUI_Link()
+        public GUI_Link(CommandsEditor editor) : base(editor)
         {
             InitializeComponent();
         }
@@ -48,9 +48,9 @@ namespace CommandsEditor.UserControls
         {
             AddOrEditLink editor;
             if (_isLinkOut)
-                editor = new AddOrEditLink(Editor.selected.composite, Editor.selected.entity, _linkedEntity, ShortGuidUtils.FindString(_link.parentParamID), ShortGuidUtils.FindString(_link.childParamID), true, _link.connectionID);
+                editor = new AddOrEditLink(_editor, Editor.selected.composite, Editor.selected.entity, _linkedEntity, ShortGuidUtils.FindString(_link.parentParamID), ShortGuidUtils.FindString(_link.childParamID), true, _link.connectionID);
             else
-                editor = new AddOrEditLink(Editor.selected.composite, _linkedEntity, Editor.selected.entity, ShortGuidUtils.FindString(_link.parentParamID), ShortGuidUtils.FindString(_link.childParamID), false, _link.connectionID);
+                editor = new AddOrEditLink(_editor, Editor.selected.composite, _linkedEntity, Editor.selected.entity, ShortGuidUtils.FindString(_link.parentParamID), ShortGuidUtils.FindString(_link.childParamID), false, _link.connectionID);
 
             editor.Show();
             editor.OnSaved += link_editor_OnSaved;

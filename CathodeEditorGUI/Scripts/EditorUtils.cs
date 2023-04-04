@@ -11,6 +11,13 @@ namespace CommandsEditor
     //Wrappers around CathodeLib utils, and some utils for formatting strings
     static class EditorUtils
     {
+        //New hotfix for link to Editor loaded data
+        private static Editor Editor;
+        public static void SetEditor(CommandsEditor editor)
+        {
+            Editor = editor.Loaded;
+        }
+
         /* Utility: generate nice entity name to display in UI */
         public static string GenerateEntityName(Entity entity, Composite composite, bool regenCache = false)
         {

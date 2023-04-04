@@ -6,14 +6,14 @@ using System.Collections.Generic;
 
 namespace CommandsEditor
 {
-    public static class Editor
+    public class Editor
     {
         //Level descriptors & scripting
-        public static Commands commands;
-        public static Movers mvr;
+        public Commands commands;
+        public Movers mvr;
 
         //Scripting state info
-        public static Selected selected;
+        public Selected selected;
         public struct Selected
         {
             public Composite composite;
@@ -21,7 +21,7 @@ namespace CommandsEditor
         }
 
         //Level-specific assets and various DBs
-        public static Resource resource;
+        public Resource resource;
         public struct Resource
         {
             public Models models;
@@ -41,16 +41,16 @@ namespace CommandsEditor
         }
 
         //Global animation strings
-        public static AnimationStrings animstrings;
-        public static AnimationStrings animstrings_debug;
+        public AnimationStrings animstrings;
+        public AnimationStrings animstrings_debug;
 
         //Global localised string DBs for English
-        public static Dictionary<string, Strings> strings = new Dictionary<string, Strings>();
+        public Dictionary<string, Strings> strings = new Dictionary<string, Strings>();
 
         //Events for new commands/entity/composite being selected
-        public static Action<Commands> OnCommandsSelected;
-        public static Action<Entity> OnEntitySelected;
-        public static Action<Composite> OnCompositeSelected;
-        public static Action OnCAGEAnimationEditorOpened;
+        public Action<Commands> OnCommandsSelected;
+        public Action<Entity> OnEntitySelected;
+        public Action<Composite> OnCompositeSelected;
+        public Action OnCAGEAnimationEditorOpened;
     }
 }

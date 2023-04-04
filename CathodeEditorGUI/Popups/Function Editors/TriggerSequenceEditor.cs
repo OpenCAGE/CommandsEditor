@@ -16,7 +16,7 @@ namespace CommandsEditor
     public partial class TriggerSequenceEditor : BaseWindow
     {
         TriggerSequence node = null;
-        public TriggerSequenceEditor(TriggerSequence _node) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
+        public TriggerSequenceEditor(CommandsEditor editor, TriggerSequence _node) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
         {
             InitializeComponent();
             node = _node;
@@ -107,7 +107,7 @@ namespace CommandsEditor
 
         private void selectEntToPointTo_Click(object sender, EventArgs e)
         {
-            EditHierarchy hierarchyEditor = new EditHierarchy(Editor.selected.composite, true);
+            EditHierarchy hierarchyEditor = new EditHierarchy(_editor, Editor.selected.composite, true);
             hierarchyEditor.Show();
             hierarchyEditor.OnHierarchyGenerated += HierarchyEditor_HierarchyGenerated;
         }

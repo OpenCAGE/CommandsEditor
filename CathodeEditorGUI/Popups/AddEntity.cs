@@ -25,7 +25,7 @@ namespace CommandsEditor
         List<CathodeEntityDatabase.EntityDefinition> availableEntities = null;
         List<ShortGuid> hierarchy = null;
 
-        public AddEntity(Composite _comp, List<Composite> _comps) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_COMPOSITE_SELECTION)
+        public AddEntity(CommandsEditor editor, Composite _comp, List<Composite> _comps) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
         {
             composite = _comp;
             composites = _comps.OrderBy(o => o.name).ToList();
@@ -125,11 +125,11 @@ namespace CommandsEditor
             EditHierarchy hierarchyEditor = null;
             if (createProxyEntity.Checked)
             {
-                hierarchyEditor = new EditHierarchy(Editor.commands.EntryPoints[0], true);
+                hierarchyEditor = new EditHierarchy(_editor, Editor.commands.EntryPoints[0], true);
             }
             else if (createOverrideEntity.Checked)
             {
-                hierarchyEditor = new EditHierarchy(Editor.selected.composite, false);
+                hierarchyEditor = new EditHierarchy(_editor, Editor.selected.composite, false);
             }
             hierarchyEditor.Show();
             hierarchyEditor.OnHierarchyGenerated += HierarchyEditor_HierarchyGenerated;

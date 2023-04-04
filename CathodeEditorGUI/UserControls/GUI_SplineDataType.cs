@@ -13,9 +13,9 @@ using CathodeLib;
 
 namespace CommandsEditor.UserControls
 {
-    public partial class GUI_SplineDataType : UserControl
+    public partial class GUI_SplineDataType : BaseUserControl
     {
-        public GUI_SplineDataType()
+        public GUI_SplineDataType(CommandsEditor editor) : base(editor)
         {
             InitializeComponent();
         }
@@ -29,7 +29,7 @@ namespace CommandsEditor.UserControls
 
         private void openSplineEditor_Click(object sender, EventArgs e)
         {
-            EditSpline splineEditor = new EditSpline(spline, Editor.selected.entity.GetParameter("loop"));
+            EditSpline splineEditor = new EditSpline(_editor, spline, Editor.selected.entity.GetParameter("loop"));
             splineEditor.Show();
             splineEditor.OnSaved += OnSplineEditorSaved;
             splineEditor.FormClosed += SplineEditor_FormClosed;

@@ -23,7 +23,7 @@ namespace CommandsEditor
         private ShortGuid guid_parent;
         private int current_ui_offset = 7;
 
-        public AddOrEditResource(List<ResourceReference> resRefs, ShortGuid parent, string windowTitle) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
+        public AddOrEditResource(CommandsEditor editor, List<ResourceReference> resRefs, ShortGuid parent, string windowTitle) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
         {
             ResourceReference[] copy = new ResourceReference[resRefs.Count];
             resRefs.CopyTo(copy);
@@ -50,25 +50,25 @@ namespace CommandsEditor
                 {
                     case ResourceType.ANIMATED_MODEL:
                         {
-                            resourceGroup = new GUI_Resource_AnimatedModel();
+                            resourceGroup = new GUI_Resource_AnimatedModel(_editor);
                             ((GUI_Resource_AnimatedModel)resourceGroup).PopulateUI(resources[i].startIndex);
                             break;
                         }
                     case ResourceType.COLLISION_MAPPING:
                         {
-                            resourceGroup = new GUI_Resource_CollisionMapping();
+                            resourceGroup = new GUI_Resource_CollisionMapping(_editor);
                             ((GUI_Resource_CollisionMapping)resourceGroup).PopulateUI(resources[i].position, resources[i].rotation, resources[i].collisionID);
                             break;
                         }
                     case ResourceType.NAV_MESH_BARRIER_RESOURCE:
                         {
-                            resourceGroup = new GUI_Resource_NavMeshBarrierResource();
+                            resourceGroup = new GUI_Resource_NavMeshBarrierResource(_editor);
                             ((GUI_Resource_NavMeshBarrierResource)resourceGroup).PopulateUI(resources[i].position, resources[i].rotation);
                             break;
                         }
                     case ResourceType.RENDERABLE_INSTANCE:
                         {
-                            resourceGroup = new GUI_Resource_RenderableInstance();
+                            resourceGroup = new GUI_Resource_RenderableInstance(_editor);
                             ((GUI_Resource_RenderableInstance)resourceGroup).PopulateUI(resources[i].position, resources[i].rotation, resources[i].startIndex, resources[i].count);
                             break;
                         }
