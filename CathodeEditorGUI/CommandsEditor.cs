@@ -855,9 +855,9 @@ namespace CommandsEditor
         private void LoadEntity(Entity entity)
         {
             ClearUI(false, false, true);
-            RefreshWebsocket();
             Loaded.selected.entity = entity;
             Loaded.OnEntitySelected?.Invoke(Loaded.selected.entity);
+            RefreshWebsocket();
 
             //Correct the UI, and return early if we have to change index, so we don't trigger twice
             int correctSelectedIndex = composite_content.Items.IndexOf(EditorUtils.GenerateEntityName(entity, Loaded.selected.composite));
