@@ -24,6 +24,13 @@ namespace CommandsEditor
         {
             InitializeComponent();
 
+            //hotfix for CommandsEditor passing
+            Controls.Remove(renderable);
+            renderable = new GUI_Resource_RenderableInstance(editor);
+            renderable.Location = new Point(223, 12);
+            renderable.Size = new Size(838, 186);
+            Controls.Add(renderable);
+
             PopulateUI(nodeID);
 
             renderable.OnMaterialSelected += OnMaterialSelected;
