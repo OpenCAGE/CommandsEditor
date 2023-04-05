@@ -34,6 +34,7 @@ namespace CommandsEditor
 
 #if DEBUG
         private WebSocketServer _server;
+        private WebsocketServer _serverLogic;
 #endif
 
         public CommandsEditor()
@@ -87,7 +88,11 @@ namespace CommandsEditor
 
 #if DEBUG
             _server = new WebSocketServer("ws://localhost:1702");
-            _server.AddWebSocketService<WebsocketServer>("/commands_editor");
+            _server.AddWebSocketService<WebsocketServer>("/commands_editor", (server) =>
+            {
+                _serverLogic = server;
+                _serverLogic.OnClientConnect += RefreshWebsocket;
+            });
             _server.Start();
 #endif
 
@@ -161,7 +166,7 @@ namespace CommandsEditor
             env_list.SelectedItem = "DLC\\BSPNOSTROMO_TWOTEAMS_PATCH";
             LoadCommandsPAK(env_list.SelectedItem.ToString());
             LoadComposite("DLC\\PREORDER\\PODLC_TWOTEAMS");
-            LoadEntity(Editor.selected.composite.functions.FirstOrDefault(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.CAGEAnimation)));
+            LoadEntity(Loaded.selected.composite.functions.FirstOrDefault(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.CAGEAnimation)));
             editFunction.PerformClick();
 #endif
         }
@@ -286,6 +291,7 @@ namespace CommandsEditor
         private void LoadCommands(string level)
         {
             if (Loaded.commands != null) Loaded.commands.Entries.Clear();
+            Loaded.level = level;
 
             string path_to_ENV = SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + level;
 #if !CATHODE_FAIL_HARD
@@ -303,6 +309,7 @@ namespace CommandsEditor
                 return;
             }
 #endif
+            RefreshWebsocket();
 
             if (Loaded.commands.EntryPoints == null)
             {
@@ -581,6 +588,7 @@ namespace CommandsEditor
                 MessageBox.Show("Encountered an issue while looking up entity!\nPlease report this on GitHub!\n" + ex.Message, "Failed lookup!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 #endif
+            RefreshWebsocket();
         }
 
         /* Search entity list */
@@ -1306,31 +1314,65 @@ namespace CommandsEditor
             editor.Show();
         }
 
-        private string levelLoaded = "";
+        private List<string> activeIDsOnLoad = new List<string>();
         private void button1_Click(object sender, EventArgs e)
         {
 #if DEBUG
-            if (levelLoaded != env_list.SelectedItem.ToString())
+            bool newClient = false;
+            foreach (string id in _server.WebSocketServices["/commands_editor"].Sessions.ActiveIDs)
             {
-                levelLoaded = env_list.SelectedItem.ToString();
-                _server.WebSocketServices["/commands_editor"].Sessions.Broadcast("1" + levelLoaded);
-                return;
+                if (!activeIDsOnLoad.Contains(id))
+                {
+                    newClient = true;
+                    break;
+                }
             }
+            if (newClient)
+            {
+                activeIDsOnLoad.Clear();
+                foreach (string id in _server.WebSocketServices["/commands_editor"].Sessions.ActiveIDs) activeIDsOnLoad.Add(id);
+            }
+
+            RefreshWebsocket();
 
             try
             {
-                //Vector3 vec = ((cTransform)Editor.selected.entity.GetParameter("position").content).position;
-                //server.WebSocketServices["/commands_editor"].Sessions.Broadcast(((int)MessageType.GO_TO_POSITION).ToString() + vec.X + ">" + vec.Y + ">" + vec.Z);
-
+                /*
                 string str = "";
-                for (int i = 0; i < Editor.mvr.Entries.Count; i++)
+                for (int i = 0; i < Loaded.mvr.Entries.Count; i++)
                 {
-                    if (Editor.mvr.Entries[i].commandsNodeID != Editor.selected.entity.shortGUID) continue;
+                    if (Loaded.mvr.Entries[i].commandsNodeID != Loaded.selected.entity.shortGUID) continue;
                     str += i + ">";
                 }
                 _server.WebSocketServices["/commands_editor"].Sessions.Broadcast(((int)MessageType.GO_TO_REDS).ToString() + str);
+                */
             }
             catch { }
+#endif
+        }
+
+        /* When new client connects, request the correct level (if loaded) */
+        private void RefreshWebsocket()
+        {
+#if DEBUG
+            //Request the correct level
+            if (Loaded.commands != null && Loaded.commands.Loaded)
+            {
+                _server.WebSocketServices["/commands_editor"].Sessions.Broadcast(((int)MessageType.LOAD_LEVEL) + Loaded.level);
+            }
+
+            //Point to position of selected entity
+            if (Loaded.selected.entity != null && Loaded.selected.entity.GetParameter("position") != null)
+            {
+                System.Numerics.Vector3 vec = ((cTransform)Loaded.selected.entity.GetParameter("position").content).position;
+                _server.WebSocketServices["/commands_editor"].Sessions.Broadcast(((int)MessageType.GO_TO_POSITION).ToString() + vec.X + ">" + vec.Y + ">" + vec.Z);
+            }
+
+            //Show name of entity
+            if (Loaded.selected.entity != null && Loaded.selected.composite != null)
+            {
+                _server.WebSocketServices["/commands_editor"].Sessions.Broadcast(((int)MessageType.SHOW_ENTITY_NAME).ToString() + EntityUtils.GetName(Loaded.selected.composite, Loaded.selected.entity));
+            }
 #endif
         }
     }

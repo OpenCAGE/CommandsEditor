@@ -9,6 +9,7 @@ namespace CommandsEditor
     public class Editor
     {
         //Level descriptors & scripting
+        public string level;
         public Commands commands;
         public Movers mvr;
 
