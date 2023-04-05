@@ -586,7 +586,6 @@ namespace CommandsEditor
                 MessageBox.Show("Encountered an issue while looking up entity!\nPlease report this on GitHub!\n" + ex.Message, "Failed lookup!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 #endif
-            RefreshWebsocket();
         }
 
         /* Search entity list */
@@ -851,9 +850,12 @@ namespace CommandsEditor
         }
 
         /* Load a entity into the UI */
+        private List<Entity> parentEntities = new List<Entity>();
+        private List<Entity> childEntities = new List<Entity>();
         private void LoadEntity(Entity entity)
         {
             ClearUI(false, false, true);
+            RefreshWebsocket();
             Loaded.selected.entity = entity;
             Loaded.OnEntitySelected?.Invoke(Loaded.selected.entity);
 
@@ -925,6 +927,7 @@ namespace CommandsEditor
                 editEntityMovers.Enabled = true;
 
             //populate linked params IN
+            parentEntities.Clear();
             int current_ui_offset = 7;
             List<Entity> ents = Loaded.selected.composite.GetEntities();
             foreach (Entity ent in ents)
@@ -938,6 +941,7 @@ namespace CommandsEditor
                     parameterGUI.Location = new Point(15, current_ui_offset);
                     current_ui_offset += parameterGUI.Height + 6;
                     entity_params.Controls.Add(parameterGUI);
+                    parentEntities.Add(ent);
                 }
             }
 
@@ -1090,6 +1094,7 @@ namespace CommandsEditor
             }
 
             //populate linked params OUT
+            childEntities.Clear();
             for (int i = 0; i < entity.childLinks.Count; i++)
             {
                 GUI_Link parameterGUI = new GUI_Link(this);
@@ -1098,6 +1103,7 @@ namespace CommandsEditor
                 parameterGUI.Location = new Point(15, current_ui_offset);
                 current_ui_offset += parameterGUI.Height + 6;
                 entity_params.Controls.Add(parameterGUI);
+                childEntities.Add(Loaded.selected.composite.GetEntityByID(entity.childLinks[i].childID));
             }
 
             entity_params.ResumeLayout();
@@ -1308,7 +1314,7 @@ namespace CommandsEditor
             Composite3D viewer = new Composite3D(Editor.selected.composite);
             viewer.Show();
             */
-            NodeEditor editor = new NodeEditor();
+            NodeEditor editor = new NodeEditor(parentEntities, Loaded.selected.entity, childEntities);
             editor.Show();
         }
 

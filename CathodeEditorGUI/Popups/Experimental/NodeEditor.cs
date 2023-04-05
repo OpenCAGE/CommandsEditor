@@ -8,15 +8,26 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using ST.Library.UI.NodeEditor;
+using CATHODE.Scripting.Internal;
+#if DEBUG
 using CommandsEditor.Nodes;
+#endif
 
 namespace CommandsEditor
 {
     public partial class NodeEditor : Form
     {
-        public NodeEditor() {
+        private List<Entity> _parentEntities;
+        private Entity _entity;
+        private List<Entity> _childEntities;
+
+        public NodeEditor(List<Entity> parentEntities, Entity entity, List<Entity> childEntities) {
             InitializeComponent();
             this.StartPosition = FormStartPosition.CenterScreen;
+
+            _parentEntities = parentEntities;
+            _entity = entity;
+            _childEntities = childEntities;
         }
 
         protected override void OnLoad(EventArgs e) {
@@ -58,6 +69,10 @@ namespace CommandsEditor
             //    stNodeTreeView1.Height = stNodeEditor1.Height;
             //}));
 
+
+//TODO: loop child & parent entities, and spawn with links
+
+#if DEBUG
             stNodeEditor1.Nodes.Add(new TerminalContent());
             stNodeEditor1.Nodes.Add(new AchievementMonitor());
 
@@ -72,6 +87,7 @@ namespace CommandsEditor
             STNodeOption node2Option = node2Options.FirstOrDefault(o => o.Text == "apply_start");
 
             node1Option.ConnectOption(node2Option);
+#endif
         }
 
         private void btn_open_Click(object sender, EventArgs e) {
