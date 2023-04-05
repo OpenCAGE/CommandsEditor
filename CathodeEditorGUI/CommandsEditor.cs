@@ -152,10 +152,8 @@ namespace CommandsEditor
             ClearUI(true, true, true);
 
             show3D.Visible = false;
-            DBG_WebsocketTest.Visible = false;
 #if DEBUG
             show3D.Visible = true;
-            DBG_WebsocketTest.Visible = true;
 #endif
         }
 
@@ -1314,43 +1312,6 @@ namespace CommandsEditor
             editor.Show();
         }
 
-        private List<string> activeIDsOnLoad = new List<string>();
-        private void button1_Click(object sender, EventArgs e)
-        {
-#if DEBUG
-            bool newClient = false;
-            foreach (string id in _server.WebSocketServices["/commands_editor"].Sessions.ActiveIDs)
-            {
-                if (!activeIDsOnLoad.Contains(id))
-                {
-                    newClient = true;
-                    break;
-                }
-            }
-            if (newClient)
-            {
-                activeIDsOnLoad.Clear();
-                foreach (string id in _server.WebSocketServices["/commands_editor"].Sessions.ActiveIDs) activeIDsOnLoad.Add(id);
-            }
-
-            RefreshWebsocket();
-
-            try
-            {
-                /*
-                string str = "";
-                for (int i = 0; i < Loaded.mvr.Entries.Count; i++)
-                {
-                    if (Loaded.mvr.Entries[i].commandsNodeID != Loaded.selected.entity.shortGUID) continue;
-                    str += i + ">";
-                }
-                _server.WebSocketServices["/commands_editor"].Sessions.Broadcast(((int)MessageType.GO_TO_REDS).ToString() + str);
-                */
-            }
-            catch { }
-#endif
-        }
-
         /* When new client connects, request the correct level (if loaded) */
         private void RefreshWebsocket()
         {
@@ -1373,6 +1334,16 @@ namespace CommandsEditor
             {
                 _server.WebSocketServices["/commands_editor"].Sessions.Broadcast(((int)MessageType.SHOW_ENTITY_NAME).ToString() + EntityUtils.GetName(Loaded.selected.composite, Loaded.selected.entity));
             }
+
+            /*
+            string str = "";
+            for (int i = 0; i < Loaded.mvr.Entries.Count; i++)
+            {
+                if (Loaded.mvr.Entries[i].commandsNodeID != Loaded.selected.entity.shortGUID) continue;
+                str += i + ">";
+            }
+            _server.WebSocketServices["/commands_editor"].Sessions.Broadcast(((int)MessageType.GO_TO_REDS).ToString() + str);
+            */
 #endif
         }
     }

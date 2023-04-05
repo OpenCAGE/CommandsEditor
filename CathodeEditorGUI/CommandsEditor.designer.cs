@@ -51,8 +51,6 @@
             this.label6 = new System.Windows.Forms.Label();
             this.editFunction = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.DBG_WebsocketTest = new System.Windows.Forms.Button();
-            this.show3D = new System.Windows.Forms.Button();
             this.renameSelectedNode = new System.Windows.Forms.Button();
             this.duplicateSelectedNode = new System.Windows.Forms.Button();
             this.removeSelectedEntity = new System.Windows.Forms.Button();
@@ -65,6 +63,7 @@
             this.removeParameter = new System.Windows.Forms.Button();
             this.addNewParameter = new System.Windows.Forms.Button();
             this.entity_params = new System.Windows.Forms.Panel();
+            this.show3D = new System.Windows.Forms.Button();
             this.load_commands_pak = new System.Windows.Forms.Button();
             this.env_list = new System.Windows.Forms.ComboBox();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
@@ -312,28 +311,6 @@
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Entities";
             // 
-            // DBG_WebsocketTest
-            // 
-            this.DBG_WebsocketTest.ForeColor = System.Drawing.Color.IndianRed;
-            this.DBG_WebsocketTest.Location = new System.Drawing.Point(541, 14);
-            this.DBG_WebsocketTest.Name = "DBG_WebsocketTest";
-            this.DBG_WebsocketTest.Size = new System.Drawing.Size(90, 23);
-            this.DBG_WebsocketTest.TabIndex = 152;
-            this.DBG_WebsocketTest.Text = "Websocket";
-            this.DBG_WebsocketTest.UseVisualStyleBackColor = true;
-            this.DBG_WebsocketTest.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // show3D
-            // 
-            this.show3D.ForeColor = System.Drawing.Color.IndianRed;
-            this.show3D.Location = new System.Drawing.Point(445, 14);
-            this.show3D.Name = "show3D";
-            this.show3D.Size = new System.Drawing.Size(90, 23);
-            this.show3D.TabIndex = 151;
-            this.show3D.Text = "Node Test";
-            this.show3D.UseVisualStyleBackColor = true;
-            this.show3D.Click += new System.EventHandler(this.show3D_Click);
-            // 
             // renameSelectedNode
             // 
             this.renameSelectedNode.Location = new System.Drawing.Point(339, 690);
@@ -453,6 +430,17 @@
             this.entity_params.Size = new System.Drawing.Size(375, 559);
             this.entity_params.TabIndex = 0;
             // 
+            // show3D
+            // 
+            this.show3D.ForeColor = System.Drawing.Color.IndianRed;
+            this.show3D.Location = new System.Drawing.Point(445, 14);
+            this.show3D.Name = "show3D";
+            this.show3D.Size = new System.Drawing.Size(90, 23);
+            this.show3D.TabIndex = 151;
+            this.show3D.Text = "Node Test";
+            this.show3D.UseVisualStyleBackColor = true;
+            this.show3D.Click += new System.EventHandler(this.show3D_Click);
+            // 
             // load_commands_pak
             // 
             this.load_commands_pak.Location = new System.Drawing.Point(299, 16);
@@ -474,7 +462,6 @@
             // 
             // groupBox8
             // 
-            this.groupBox8.Controls.Add(this.DBG_WebsocketTest);
             this.groupBox8.Controls.Add(this.enableBackups);
             this.groupBox8.Controls.Add(this.show3D);
             this.groupBox8.Controls.Add(this.editEntryPoint);
@@ -588,7 +575,6 @@
         private System.Windows.Forms.Button addLinkOut;
         private System.Windows.Forms.CheckBox enableBackups;
         private System.Windows.Forms.Button show3D;
-        private System.Windows.Forms.Button DBG_WebsocketTest;
         private System.Windows.Forms.Button showOverridesAndProxies;
         private System.Windows.Forms.Button goBackToPrevComp;
         private System.Windows.Forms.Button goToZone;

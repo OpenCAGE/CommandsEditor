@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using ST.Library.UI.NodeEditor;
+using CommandsEditor.Nodes;
 
 namespace CommandsEditor
 {
@@ -56,6 +57,21 @@ namespace CommandsEditor
             //    stNodePropertyGrid1.Height = stNodeEditor1.Height;
             //    stNodeTreeView1.Height = stNodeEditor1.Height;
             //}));
+
+            stNodeEditor1.Nodes.Add(new TerminalContent());
+            stNodeEditor1.Nodes.Add(new AchievementMonitor());
+
+            STNodeCollection nodes = stNodeEditor1.Nodes;
+
+            STNode node1 = nodes[0];
+            STNodeOption[] node1Options = node1.GetOutputOptions();
+            STNodeOption node1Option = node1Options.FirstOrDefault(o => o.Text == "selected");
+
+            STNode node2 = nodes[1];
+            STNodeOption[] node2Options = node2.GetInputOptions();
+            STNodeOption node2Option = node2Options.FirstOrDefault(o => o.Text == "apply_start");
+
+            node1Option.ConnectOption(node2Option);
         }
 
         private void btn_open_Click(object sender, EventArgs e) {
