@@ -51,12 +51,22 @@ namespace CommandsEditor.Nodes
                     AddOutputOption(outputOptions[i]);
         }
 
-        public STNodeOption AddInputOption(string option)
+        public STNodeOption AddInputOption(string option, bool unique = false)
         {
+            if (!unique)
+                for (int i = 0; i < this.InputOptions.Count; i++)
+                    if (this.InputOptions[i].Text == option)
+                        return this.InputOptions[i];
+
             return this.InputOptions.Add(option, typeof(void), false);
         }
-        public STNodeOption AddOutputOption(string option)
+        public STNodeOption AddOutputOption(string option, bool unique = false)
         {
+            if (!unique)
+                for (int i = 0; i < this.OutputOptions.Count; i++)
+                    if (this.OutputOptions[i].Text == option)
+                        return this.OutputOptions[i];
+
             return this.OutputOptions.Add(option, typeof(void), false);
         }
     }

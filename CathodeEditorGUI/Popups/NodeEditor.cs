@@ -125,6 +125,10 @@ namespace CommandsEditor
                 height += node.Height + 10;
             }
             mainNode.SetPosition(new Point((this.Size.Width / 2) - (mainNode.Width / 2) - 10, (this.Size.Height / 2) - (((outputStackedHeight > inputStackedHeight) ? outputStackedHeight : inputStackedHeight) / 2) - 20));
+       
+            //Lock options for now
+            foreach (STNode node in stNodeEditor1.Nodes)
+                node.LockOption = true;
         }
 
         private CustomNode EntityToNode(Entity entity, Composite composite)
