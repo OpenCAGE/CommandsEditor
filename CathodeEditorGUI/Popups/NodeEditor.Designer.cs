@@ -91,7 +91,7 @@
             this.Controls.Add(this.stNodeEditor1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "NodeEditor";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.ShowIcon = false;
             this.Text = "Node Viewer";
             this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);

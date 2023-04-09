@@ -155,6 +155,11 @@ namespace CommandsEditor
 
         private void CommandsEditor_Load(object sender, EventArgs e)
         {
+            if (nodeViewer != null)
+            {
+                nodeViewer.BringToFront();
+                nodeViewer.Focus();
+            }
             return;
 #if DEBUG
             env_list.SelectedItem = "DLC\\BSPNOSTROMO_TWOTEAMS_PATCH";
@@ -1392,12 +1397,15 @@ namespace CommandsEditor
                 nodeViewer = new NodeEditor(this);
                 nodeViewer.Show();
                 nodeViewer.FormClosed += NodeViewer_FormClosed;
+                nodeViewer.BringToFront();
+                nodeViewer.Focus();
             }
             else
             {
                 if (nodeViewer != null)
                 {
                     nodeViewer.FormClosed -= NodeViewer_FormClosed;
+                    nodeViewer.Close();
                     nodeViewer = null;
                 }
             }

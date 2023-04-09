@@ -24,9 +24,10 @@ namespace CommandsEditor.Nodes
             this.Invalidate();
         }
 
-		public void SetName(string name)
+		public void SetName(string name, int titleHeight = 20)
 		{
             Title = name;
+            TitleHeight = titleHeight;
         }
 
         public void SetColour(Color colourBG, Color colourFG)

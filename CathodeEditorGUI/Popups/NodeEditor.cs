@@ -48,6 +48,7 @@ namespace CommandsEditor
             CustomNode mainNode = EntityToNode(entity, composite);
             stNodeEditor1.Nodes.Add(mainNode);
             
+            //Generate input nodes
             List<Entity> ents = composite.GetEntities();
             List<CustomNode> inputNodes = new List<CustomNode>();
             foreach (Entity ent in ents)
@@ -76,6 +77,7 @@ namespace CommandsEditor
                 }
             }
 
+            //Generate output nodes
             List<CustomNode> outputNodes = new List<CustomNode>();
             foreach (EntityLink link in entity.childLinks)
             {
@@ -99,27 +101,30 @@ namespace CommandsEditor
                 opt1.ConnectOption(opt2);
             }
 
+            //Compute node sizes
             foreach (STNode node in stNodeEditor1.Nodes)
-            {
                 ((CustomNode)node).Recompute();
-            }
+            int inputStackedHeight = 0;
+            foreach (STNode node in inputNodes)
+                inputStackedHeight += node.Height + 10;
+            int outputStackedHeight = 0;
+            foreach (STNode node in outputNodes)
+                outputStackedHeight += node.Height + 10;
 
-            int height = 10;
+            //Set node positions
+            int height = (this.Size.Height / 2) - (inputStackedHeight / 2) - 20;
             foreach (STNode node in inputNodes)
             {
                 ((CustomNode)node).SetPosition(new Point(10, height));
                 height += node.Height + 10;
             }
-            int maxHeight = height;
-            height = 10;
+            height = (this.Size.Height / 2) - (outputStackedHeight / 2) - 20;
             foreach (STNode node in outputNodes)
             {
                 ((CustomNode)node).SetPosition(new Point(this.Size.Width - node.Width - 50, height));
                 height += node.Height + 10;
             }
-            if (height > maxHeight) maxHeight = height;
-
-            mainNode.SetPosition(new Point((this.Size.Width / 2) - (mainNode.Width / 2) - 10, (maxHeight / 2) - (mainNode.Height / 2)));
+            mainNode.SetPosition(new Point((this.Size.Width / 2) - (mainNode.Width / 2) - 10, (this.Size.Height / 2) - (((outputStackedHeight > inputStackedHeight) ? outputStackedHeight : inputStackedHeight) / 2) - 20));
         }
 
         private CustomNode EntityToNode(Entity entity, Composite composite)
@@ -130,19 +135,21 @@ namespace CommandsEditor
             {
                 case EntityVariant.PROXY:
                 case EntityVariant.OVERRIDE:
-                    Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, composite, ((OverrideEntity)entity).connectedEntity.hierarchy, out Composite c, out string s);
-                    node.SetColour(entity.variant == EntityVariant.PROXY ? Color.Green : Color.Orange, Color.Black);
+                    Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, composite, (entity.variant == EntityVariant.PROXY) ? ((ProxyEntity)entity).connectedEntity.hierarchy : ((OverrideEntity)entity).connectedEntity.hierarchy, out Composite c, out string s);
+                    node.SetColour(entity.variant == EntityVariant.PROXY ? Color.LightGreen : Color.Orange, Color.Black);
                     switch (ent.variant)
                     {
                         case EntityVariant.FUNCTION:
                             FunctionEntity function = (FunctionEntity)ent;
                             if (CommandsUtils.FunctionTypeExists(function.function))
-                                node.SetName(entity.variant + " TO: " + function.function.ToString());
+                            {
+                                node.SetName(entity.variant + " TO: " + function.function.ToString() + "\n" + EntityUtils.GetName(c, ent), 35);
+                            }
                             else
-                                node.SetName(entity.variant + " TO: " + Editor.commands.GetComposite(function.function).name);
+                                node.SetName(entity.variant + " TO: " + Editor.commands.GetComposite(function.function).name + "\n" + EntityUtils.GetName(c, ent), 35);
                             break;
                         case EntityVariant.VARIABLE:
-                            node.SetName(((VariableEntity)ent).name.ToString());
+                            node.SetName(entity.variant + " TO: " + ((VariableEntity)ent).name.ToString());
                             break;
                     }
                     break;
@@ -150,12 +157,12 @@ namespace CommandsEditor
                     FunctionEntity funcEnt = (FunctionEntity)entity;
                     if (CommandsUtils.FunctionTypeExists(funcEnt.function))
                     {
-                        node.SetName(funcEnt.function.ToString());
+                        node.SetName(funcEnt.function.ToString() + "\n" + EntityUtils.GetName(composite, entity), 35);
                     }
                     else
                     {
                         node.SetColour(Color.Blue, Color.White);
-                        node.SetName(Editor.commands.GetComposite(funcEnt.function).name);
+                        node.SetName(Editor.commands.GetComposite(funcEnt.function).name + "\n" + EntityUtils.GetName(composite, entity), 35);
                     }
                     break;
                 case EntityVariant.VARIABLE:
@@ -163,14 +170,6 @@ namespace CommandsEditor
                     node.SetName(((VariableEntity)entity).name.ToString());
                     break;
             }
-            /*
-            List<string> outputOptions = new List<string>();
-            for (int i = 0; i < entity.childLinks.Count; i++)
-            {
-                outputOptions.Add(entity.childLinks[i].parentParamID.ToString());
-            }
-            node.AddOptions(null, outputOptions.ToArray());
-            */
             node.Recompute();
             return node;
         }
