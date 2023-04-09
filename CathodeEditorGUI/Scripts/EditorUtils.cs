@@ -188,7 +188,7 @@ namespace CommandsEditor
         }
 
         /* Utility: try figure out what zone this entity is in (if any) */
-        public static FunctionEntity TryFindZoneForSelectedEntity()
+        public static void TryFindZoneForSelectedEntity(out Composite composite, out FunctionEntity zone)
         {
             Func<Composite, FunctionEntity> findZone = comp => {
                 if (comp == null) return null;
@@ -213,14 +213,16 @@ namespace CommandsEditor
                 return null;
             };
 
-            FunctionEntity zone = findZone(Editor.selected.composite);
-            if (zone != null) return zone;
+            composite = Editor.selected.composite;
+            zone = findZone(composite);
+            if (zone != null) return;
+
             foreach (Composite comp in Editor.commands.Entries)
             {
-                zone = findZone(comp);
-                if (zone != null) return zone;
+                composite = comp;
+                zone = findZone(composite);
+                if (zone != null) return;
             }
-            return null;
         }
     }
 }

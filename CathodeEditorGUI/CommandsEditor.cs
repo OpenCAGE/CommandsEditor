@@ -1106,22 +1106,24 @@ namespace CommandsEditor
         private void BackgroundEntityLoader(Entity ent, CommandsEditor mainInst)
         {
             bool isPointedTo = EditorUtils.IsSelectedEntityReferencedExternally();
-            FunctionEntity zone = EditorUtils.TryFindZoneForSelectedEntity();
-            mainInst.ThreadedEntityUIUpdate(ent, isPointedTo, zone);
+            EditorUtils.TryFindZoneForSelectedEntity(out Composite zoneComp, out FunctionEntity zoneEnt);
+            mainInst.ThreadedEntityUIUpdate(ent, isPointedTo, zoneComp, zoneEnt);
         }
-        private FunctionEntity zoneForSelectedEntity = null;
-        public void ThreadedEntityUIUpdate(Entity ent, bool isPointedTo, FunctionEntity zone)
+        private Composite zoneCompositeForSelectedEntity = null;
+        private FunctionEntity zoneEntityForSelectedEntity = null;
+        public void ThreadedEntityUIUpdate(Entity ent, bool isPointedTo, Composite zoneComp, FunctionEntity zoneEnt)
         {
             if (ent != Loaded.selected.entity) return;
             showOverridesAndProxies.Invoke(new Action(() => { showOverridesAndProxies.Enabled = isPointedTo; }));
-            zoneForSelectedEntity = zone;
+            zoneCompositeForSelectedEntity = zoneComp;
+            zoneEntityForSelectedEntity = zoneEnt;
             string zoneText = "Zone";
-            if (zone != null)
+            if (zoneEnt != null)
             {
-                Parameter name = zone.GetParameter("name");
+                Parameter name = zoneEnt.GetParameter("name");
                 if (name != null) zoneText += " (" + ((cString)name.content).value + ")";
             }
-            goToZone.Invoke(new Action(() => { goToZone.Enabled = zone != null; goToZone.Text = zoneText; }));
+            goToZone.Invoke(new Action(() => { goToZone.Enabled = zoneEnt != null; goToZone.Text = zoneText; }));
         }
 
         /* Add a new parameter */
@@ -1243,11 +1245,12 @@ namespace CommandsEditor
             LoadComposite(composite, composite.GetEntityByID(entity));
         }
 
+        /* Jump to the zone that this entity is in */
         private void goToZone_Click(object sender, EventArgs e)
         {
-            //TODO! TODO!
-            //LoadComposite(flow.name);
-            LoadEntity(zoneForSelectedEntity);
+            if (Loaded.selected.composite != zoneCompositeForSelectedEntity)
+                LoadComposite(zoneCompositeForSelectedEntity);
+            LoadEntity(zoneEntityForSelectedEntity);
         }
 
         /* Enable/disable backups */
