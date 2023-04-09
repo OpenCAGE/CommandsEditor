@@ -1,4 +1,5 @@
 ﻿using CATHODE.Scripting;
+using CommandsEditor.Popups.Base;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,11 +12,11 @@ using System.Windows.Forms;
 
 namespace CommandsEditor
 {
-    public partial class EditRootComposite : Form
+    public partial class EditRootComposite : BaseWindow
     {
         List<Composite> composites = null;
 
-        public EditRootComposite()
+        public EditRootComposite(CommandsEditor editor) : base(WindowClosesOn.COMMANDS_RELOAD, editor)
         {
             InitializeComponent();
             rootComposite.BeginUpdate();

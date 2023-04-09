@@ -29,15 +29,17 @@
         private void InitializeComponent()
         {
             this.group = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.EditLink = new System.Windows.Forms.Button();
             this.GoTo = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
+            this.DeleteLink = new System.Windows.Forms.Button();
             this.group.SuspendLayout();
             this.SuspendLayout();
             // 
             // group
             // 
+            this.group.Controls.Add(this.DeleteLink);
             this.group.Controls.Add(this.label1);
             this.group.Controls.Add(this.textBox1);
             this.group.Controls.Add(this.EditLink);
@@ -49,6 +51,15 @@
             this.group.TabStop = false;
             this.group.Text = "Parameter Name (00-00-00-00)";
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(6, 19);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(35, 13);
+            this.label1.TabIndex = 4;
+            this.label1.Text = "label1";
+            // 
             // textBox1
             // 
             this.textBox1.Location = new System.Drawing.Point(6, 35);
@@ -59,9 +70,9 @@
             // 
             // EditLink
             // 
-            this.EditLink.Location = new System.Drawing.Point(169, 59);
+            this.EditLink.Location = new System.Drawing.Point(114, 59);
             this.EditLink.Name = "EditLink";
-            this.EditLink.Size = new System.Drawing.Size(160, 23);
+            this.EditLink.Size = new System.Drawing.Size(106, 23);
             this.EditLink.TabIndex = 2;
             this.EditLink.Text = "Edit Link";
             this.EditLink.UseVisualStyleBackColor = true;
@@ -71,20 +82,21 @@
             // 
             this.GoTo.Location = new System.Drawing.Point(6, 59);
             this.GoTo.Name = "GoTo";
-            this.GoTo.Size = new System.Drawing.Size(160, 23);
+            this.GoTo.Size = new System.Drawing.Size(106, 23);
             this.GoTo.TabIndex = 1;
             this.GoTo.Text = "Go To Link";
             this.GoTo.UseVisualStyleBackColor = true;
             this.GoTo.Click += new System.EventHandler(this.GoTo_Click);
             // 
-            // label1
+            // DeleteLink
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 19);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(35, 13);
-            this.label1.TabIndex = 4;
-            this.label1.Text = "label1";
+            this.DeleteLink.Location = new System.Drawing.Point(222, 59);
+            this.DeleteLink.Name = "DeleteLink";
+            this.DeleteLink.Size = new System.Drawing.Size(106, 23);
+            this.DeleteLink.TabIndex = 5;
+            this.DeleteLink.Text = "Delete Link";
+            this.DeleteLink.UseVisualStyleBackColor = true;
+            this.DeleteLink.Click += new System.EventHandler(this.DeleteLink_Click);
             // 
             // GUI_Link
             // 
@@ -106,5 +118,6 @@
         private System.Windows.Forms.Button EditLink;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button DeleteLink;
     }
 }

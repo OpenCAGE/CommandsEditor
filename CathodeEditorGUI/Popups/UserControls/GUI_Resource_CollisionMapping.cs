@@ -19,7 +19,7 @@ namespace CommandsEditor.Popups.UserControls
 
         public ShortGuid CollisionID { get { return new ShortGuid(collisionID.Text); } }
 
-        public GUI_Resource_CollisionMapping()
+        public GUI_Resource_CollisionMapping(CommandsEditor editor) : base(editor)
         {
             InitializeComponent();
 

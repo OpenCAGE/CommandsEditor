@@ -1,5 +1,6 @@
 ﻿using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
+using CommandsEditor.Popups.Base;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,18 +13,15 @@ using System.Windows.Forms;
 
 namespace CommandsEditor
 {
-    public partial class ShowCrossRefs : Form
+    public partial class ShowCrossRefs : BaseWindow
     {
         public Action<ShortGuid, Composite> OnEntitySelected;
 
         private List<EntityRef> entities = new List<EntityRef>();
 
-        public ShowCrossRefs()
+        public ShowCrossRefs(CommandsEditor editor) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
         {
             InitializeComponent();
-#if !DEBUG
-            showLinkedCageAnimations.Visible = false;
-#endif
             UpdateUI(CurrentDisplay.PROXIES);
         }
 
@@ -88,7 +86,7 @@ namespace CommandsEditor
                     case CurrentDisplay.PROXIES:
                         foreach (ProxyEntity prox in comp.proxies)
                         {
-                            Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, comp, prox.hierarchy, out Composite compRef, out string str);
+                            Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, comp, prox.connectedEntity.hierarchy, out Composite compRef, out string str);
                             if (ent != Editor.selected.entity) continue;
                             entities.Add(new EntityRef() { composite = comp, entity = prox.shortGUID });
                             referenceList.Items.Add(EditorUtils.GenerateEntityName(prox, comp));
@@ -97,7 +95,7 @@ namespace CommandsEditor
                     case CurrentDisplay.OVERRIDES:
                         foreach (OverrideEntity ovr in comp.overrides)
                         {
-                            Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, comp, ovr.hierarchy, out Composite compRef, out string str);
+                            Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, comp, ovr.connectedEntity.hierarchy, out Composite compRef, out string str);
                             if (ent != Editor.selected.entity) continue;
                             entities.Add(new EntityRef() { composite = comp, entity = ovr.shortGUID });
                             referenceList.Items.Add(EditorUtils.GenerateEntityName(ovr, comp));
@@ -108,7 +106,7 @@ namespace CommandsEditor
                         {
                             foreach (TriggerSequence.Entity trigger in trig.entities)
                             {
-                                Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, comp, trigger.hierarchy, out Composite compRef, out string str);
+                                Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, comp, trigger.connectedEntity.hierarchy, out Composite compRef, out string str);
                                 if (ent != Editor.selected.entity) continue;
                                 entities.Add(new EntityRef() { composite = comp, entity = trig.shortGUID });
                                 referenceList.Items.Add(EditorUtils.GenerateEntityName(trig, comp));
@@ -118,7 +116,13 @@ namespace CommandsEditor
                     case CurrentDisplay.CAGEANIMATIONS:
                         foreach (CAGEAnimation anim in comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.CAGEAnimation)))
                         {
-                            //TODO!
+                            foreach (CAGEAnimation.Connection connection in anim.connections)
+                            {
+                                Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, comp, connection.connectedEntity.hierarchy, out Composite compRef, out string str);
+                                if (ent != Editor.selected.entity) continue;
+                                entities.Add(new EntityRef() { composite = comp, entity = anim.shortGUID });
+                                referenceList.Items.Add(EditorUtils.GenerateEntityName(anim, comp));
+                            }
                         }
                         break;
                 }

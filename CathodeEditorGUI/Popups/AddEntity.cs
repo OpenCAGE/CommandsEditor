@@ -2,6 +2,7 @@
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CathodeLib;
+using CommandsEditor.Popups.Base;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +16,7 @@ using System.Windows.Forms;
 
 namespace CommandsEditor
 {
-    public partial class AddEntity : Form
+    public partial class AddEntity : BaseWindow
     {
         public Action<Entity> OnNewEntity;
 
@@ -24,7 +25,7 @@ namespace CommandsEditor
         List<CathodeEntityDatabase.EntityDefinition> availableEntities = null;
         List<ShortGuid> hierarchy = null;
 
-        public AddEntity(Composite _comp, List<Composite> _comps)
+        public AddEntity(CommandsEditor editor, Composite _comp, List<Composite> _comps) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
         {
             composite = _comp;
             composites = _comps.OrderBy(o => o.name).ToList();
@@ -101,7 +102,7 @@ namespace CommandsEditor
             generateHierarchy.Visible = true;
             createNewEntity.Enabled = false;
             hierarchy = null;
-            addDefaultParams.Visible = false;
+            addDefaultParams.Visible = true;
         }
         private void selectedOverrideEntity(object sender, EventArgs e)
         {
@@ -124,11 +125,11 @@ namespace CommandsEditor
             EditHierarchy hierarchyEditor = null;
             if (createProxyEntity.Checked)
             {
-                hierarchyEditor = new EditHierarchy(Editor.commands.EntryPoints[0], true);
+                hierarchyEditor = new EditHierarchy(_editor, Editor.commands.EntryPoints[0], true);
             }
             else if (createOverrideEntity.Checked)
             {
-                hierarchyEditor = new EditHierarchy(Editor.selected.composite, false);
+                hierarchyEditor = new EditHierarchy(_editor, Editor.selected.composite, false);
             }
             hierarchyEditor.Show();
             hierarchyEditor.OnHierarchyGenerated += HierarchyEditor_HierarchyGenerated;
@@ -188,7 +189,7 @@ namespace CommandsEditor
             else if (createDatatypeEntity.Checked)
                 newEntity = composite.AddVariable(textBox1.Text, (DataType)entityVariant.SelectedIndex, true);
             else if (createProxyEntity.Checked)
-                newEntity = composite.AddProxy(Editor.commands, hierarchy, true);
+                newEntity = composite.AddProxy(Editor.commands, hierarchy, addDefaultParams.Checked);
             else if (createOverrideEntity.Checked)
                 newEntity = composite.AddOverride(hierarchy);
             else

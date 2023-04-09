@@ -26,7 +26,13 @@ namespace CommandsEditor.Popups.UserControls
         public Action<int, int> OnMaterialSelected; //int = submesh index, int = level material index
         public Action<int> OnModelSelected; //int = model pak index
 
-        public GUI_Resource_RenderableInstance()
+        [Obsolete("Designer only", true)]
+        public GUI_Resource_RenderableInstance() : base(null)
+        {
+            InitializeComponent();
+        }
+
+        public GUI_Resource_RenderableInstance(CommandsEditor editor) : base(editor)
         {
             InitializeComponent();
         }
@@ -78,7 +84,7 @@ namespace CommandsEditor.Popups.UserControls
 
         private void editModel_Click(object sender, EventArgs e)
         {
-            SelectModel selectModel = new SelectModel(SelectedModelIndex);
+            SelectModel selectModel = new SelectModel(_editor, SelectedModelIndex);
             selectModel.Show();
             selectModel.FormClosed += SelectModel_FormClosed;
         }
@@ -98,7 +104,7 @@ namespace CommandsEditor.Popups.UserControls
         {
             if (materials.SelectedIndex == -1) return;
 
-            SelectMaterial selectMaterial = new SelectMaterial(materials.SelectedIndex, SelectedMaterialIndexes[materials.SelectedIndex]);
+            SelectMaterial selectMaterial = new SelectMaterial(_editor, materials.SelectedIndex, SelectedMaterialIndexes[materials.SelectedIndex]);
             selectMaterial.Show();
             selectMaterial.FormClosed += SelectMaterial_FormClosed;
         }

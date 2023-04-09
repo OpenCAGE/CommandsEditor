@@ -12,6 +12,8 @@ namespace CommandsEditor
 {
     /* TODO: DEPRECATE THIS IN FAVOUR OF A SOLUTION IN THE LIBRARY */
 
+    //NOTE TO SELF: this db is dumped by the cathode_vartype tool in isolation_testground
+
     public static class CathodeEntityDatabase
     {
         public struct EntityDefinition
@@ -19,6 +21,7 @@ namespace CommandsEditor
             public string guidName;
             public ShortGuid guid;
             public string className;
+            public bool isEntity; //if false, this is a template
             public List<ParameterDefinition> parameters;
         }
         public struct ParameterDefinition
@@ -36,6 +39,12 @@ namespace CommandsEditor
             OUTPUT,
             PARAMETER,
             INTERNAL,
+
+            REFERENCE, // <- this isn't actually a usage, but EntityMethodInterface seems to give this functionality to all entities
+
+            METHOD,
+            FINISHED,
+            RELAY,
         }
         public enum ParameterDatatype
         {
@@ -60,6 +69,7 @@ namespace CommandsEditor
                 entityDefinition.guidName = reader.ReadString().Replace(@"\\", @"\");
                 entityDefinition.guid = ShortGuidUtils.Generate(entityDefinition.guidName);
                 entityDefinition.className = reader.ReadString();
+                entityDefinition.isEntity = reader.ReadBoolean();
                 entityDefinition.parameters = new List<ParameterDefinition>();
                 int param_count = reader.ReadInt32();
                 for (int x = 0; x < param_count; x++)
@@ -69,6 +79,10 @@ namespace CommandsEditor
                     parameterDefinition.variable = reader.ReadString();
                     parameterDefinition.usage = (ParameterUsage)Enum.Parse(typeof(ParameterUsage), reader.ReadString().ToUpper());
                     parameterDefinition.datatype = reader.ReadString();
+
+                    //TODO: this is a hotfix to hide the "name" param on all entities except zones, as i think this is the value that compiles to the string we handle via EntityUtils
+                    if (entityDefinition.className != "Zone" && parameterDefinition.name == "name") continue;
+
                     entityDefinition.parameters.Add(parameterDefinition);
                 }
                 entities.Add(entityDefinition);
@@ -76,8 +90,10 @@ namespace CommandsEditor
             entities = entities.OrderBy(o => o.className).ToList();
         }
 
-        public static List<EntityDefinition> GetEntities()
+        public static List<EntityDefinition> GetEntities(bool includeInterfaces = false)
         {
+            if (!includeInterfaces)
+                return entities.FindAll(o => o.isEntity);
             return entities;
         }
 

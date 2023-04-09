@@ -10,10 +10,11 @@ using System.Windows.Forms;
 using CATHODE;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
+using CommandsEditor.Popups.Base;
 
 namespace CommandsEditor
 {
-    public partial class EditHierarchy : Form
+    public partial class EditHierarchy : BaseWindow
     {
         public Action<List<ShortGuid>> OnHierarchyGenerated;
         private List<ShortGuid> hierarchy = new List<ShortGuid>();
@@ -26,7 +27,7 @@ namespace CommandsEditor
         private bool onlyShowFunctions = false;
 
         //PROXIES can only point to FunctionEntities - OVERRIDES can point to FunctionEntities, ProxyEntities, VariableEntities
-        public EditHierarchy(Composite startingComposite, bool onlyFunctions)
+        public EditHierarchy(CommandsEditor editor, Composite startingComposite, bool onlyFunctions) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
         {
             onlyShowFunctions = onlyFunctions;
 

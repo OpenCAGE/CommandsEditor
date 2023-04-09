@@ -24,18 +24,18 @@ namespace CommandsEditor.UserControls
             InitializeComponent();
         }
 
-        public void PopulateUI_Float(cFloat cFloat, ShortGuid paramID)
+        public void PopulateUI_Float(cFloat cFloat, string paramID)
         {
             floatVal = cFloat;
-            label1.Text = ShortGuidUtils.FindString(paramID);
+            label1.Text = paramID;
             textBox1.Text = cFloat.value.ToString();
         }
 
-        public void PopulateUI_Int(cInteger cInt, ShortGuid paramID)
+        public void PopulateUI_Int(cInteger cInt, string paramID)
         {
             isIntInput = true;
             intVal = cInt;
-            label1.Text = ShortGuidUtils.FindString(paramID);
+            label1.Text = paramID;
             textBox1.Text = cInt.value.ToString();
         }
 

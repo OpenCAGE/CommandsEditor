@@ -1,5 +1,6 @@
 ﻿using CATHODE;
 using CATHODE.LEGACY;
+using CommandsEditor.Popups.Base;
 using CommandsEditor.Popups.UserControls;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ using System.Windows.Forms;
 
 namespace CommandsEditor
 {
-    public partial class SelectModel : Form
+    public partial class SelectModel : BaseWindow
     {
         GUI_ModelViewer modelViewer = null;
         TreeUtility treeHelper;
@@ -21,7 +22,7 @@ namespace CommandsEditor
         public int SelectedModelIndex = -1;
         public List<int> SelectedModelMaterialIndexes = new List<int>();
 
-        public SelectModel(int defaultModelIndex = -1)
+        public SelectModel(CommandsEditor editor, int defaultModelIndex = -1) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
         {
             InitializeComponent();
 
@@ -38,7 +39,7 @@ namespace CommandsEditor
             }
             treeHelper.UpdateFileTree(allModelFileNames, null, allModelTagsNames);
 
-            modelViewer = new GUI_ModelViewer();
+            modelViewer = new GUI_ModelViewer(_editor);
             modelRendererHost.Child = modelViewer;
 
             if (defaultModelIndex != -1)

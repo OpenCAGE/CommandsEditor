@@ -14,9 +14,9 @@ namespace CommandsEditor.Popups.UserControls
 {
     public class CS2Reader : IModelReader
     {
-        public Model3DGroup Read(int ModelIndex)
+        public Model3DGroup Read(CommandsEditor editor, int ModelIndex)
         {
-            return Editor.resource.models.GetMesh(Editor.resource.models.GetAtWriteIndex(ModelIndex));
+            return editor.Loaded.resource.models.GetMesh(editor.Loaded.resource.models.GetAtWriteIndex(ModelIndex));
         }
 
         /* Convert a DDS file to System Bitmap */

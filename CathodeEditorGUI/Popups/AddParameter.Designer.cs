@@ -54,7 +54,6 @@
             // 
             // param_name
             // 
-            this.param_name.FormattingEnabled = true;
             this.param_name.Location = new System.Drawing.Point(104, 27);
             this.param_name.Name = "param_name";
             this.param_name.Size = new System.Drawing.Size(641, 21);
@@ -109,7 +108,7 @@
             this.param_datatype.Size = new System.Drawing.Size(641, 21);
             this.param_datatype.TabIndex = 0;
             // 
-            // CathodeEditorGUI_AddParameter
+            // AddParameter
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -118,7 +117,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.Name = "CathodeEditorGUI_AddParameter";
+            this.Name = "AddParameter";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "New Parameter";
             this.groupBox1.ResumeLayout(false);

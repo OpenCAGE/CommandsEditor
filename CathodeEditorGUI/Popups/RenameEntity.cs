@@ -1,6 +1,7 @@
 ﻿using CATHODE;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
+using CommandsEditor.Popups.Base;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,13 +14,13 @@ using System.Windows.Forms;
 
 namespace CommandsEditor
 {
-    public partial class RenameEntity : Form
+    public partial class RenameEntity : BaseWindow
     {
         public Action<Composite, Entity> OnSaved;
         private Entity _ent;
         private Composite _comp;
 
-        public RenameEntity(Composite comp, Entity entity)
+        public RenameEntity(CommandsEditor editor, Composite comp, Entity entity) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
         {
             InitializeComponent();
 

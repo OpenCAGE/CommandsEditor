@@ -22,10 +22,10 @@ namespace CommandsEditor.UserControls
             InitializeComponent();
         }
 
-        public void PopulateUI(cBool cBool, ShortGuid paramID)
+        public void PopulateUI(cBool cBool, string paramID)
         {
             boolVal = cBool;
-            checkBox1.Text = ShortGuidUtils.FindString(paramID);
+            checkBox1.Text = paramID;
             checkBox1.Checked = cBool.value;
         }
 

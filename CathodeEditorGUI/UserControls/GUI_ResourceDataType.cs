@@ -13,24 +13,24 @@ using CathodeLib;
 
 namespace CommandsEditor.UserControls
 {
-    public partial class GUI_ResourceDataType : UserControl
+    public partial class GUI_ResourceDataType : BaseUserControl
     {
-        public GUI_ResourceDataType()
+        public GUI_ResourceDataType(CommandsEditor editor) : base(editor)
         {
             InitializeComponent();
         }
 
         private cResource resRef = null;
-        public void PopulateUI(cResource cResource, ShortGuid paramID)
+        public void PopulateUI(cResource cResource, string paramID)
         {
-            GUID_VARIABLE_DUMMY.Text = ShortGuidUtils.FindString(paramID);
+            GUID_VARIABLE_DUMMY.Text = paramID;
             resRef = cResource;
         }
 
         /* Edit resources referenced by the resource param */
         private void openResourceEditor_Click(object sender, EventArgs e)
         {
-            AddOrEditResource resourceEditor = new AddOrEditResource(resRef.value, resRef.shortGUID, GUID_VARIABLE_DUMMY.Text);
+            AddOrEditResource resourceEditor = new AddOrEditResource(_editor, resRef.value, resRef.shortGUID, GUID_VARIABLE_DUMMY.Text);
             resourceEditor.Show();
             resourceEditor.OnSaved += OnResourceEditorSaved;
             resourceEditor.FormClosed += ResourceEditor_FormClosed;

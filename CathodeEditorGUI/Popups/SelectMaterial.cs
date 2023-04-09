@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommandsEditor.Popups.Base;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -10,14 +11,14 @@ using System.Windows.Forms;
 
 namespace CommandsEditor.Popups
 {
-    public partial class SelectMaterial : Form
+    public partial class SelectMaterial : BaseWindow
     {
         public int SelectedMaterialIndex = -1;
         public int MaterialIndexToEdit = -1;
 
         List<ListedMaterial> _materials = new List<ListedMaterial>();
 
-        public SelectMaterial(int materialIndexToEdit, int defaultMaterialIndex = -1)
+        public SelectMaterial(CommandsEditor editor, int materialIndexToEdit, int defaultMaterialIndex = -1) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
         {
             InitializeComponent();
 

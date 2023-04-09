@@ -11,10 +11,11 @@ using CATHODE;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CathodeLib;
+using CommandsEditor.Popups.Base;
 
 namespace CommandsEditor
 {
-    public partial class AddOrEditLink : Form
+    public partial class AddOrEditLink : BaseWindow
     {
         public Action OnSaved;
 
@@ -23,7 +24,7 @@ namespace CommandsEditor
         private ShortGuid _initialLinkID;
 
         //FOR CREATING A NEW LINK
-        public AddOrEditLink(Composite flowgraph, Entity parentEntity)
+        public AddOrEditLink(CommandsEditor editor, Composite flowgraph, Entity parentEntity) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
         {
             InitializeComponent();
 
@@ -33,10 +34,13 @@ namespace CommandsEditor
 
             parentEntityList.SelectedIndex = _entityList.IndexOf(parentEntity);
             parentEntityList.Enabled = false;
+
+            parentParameterList.AutoSelectOff();
+            childParameterList.AutoSelectOff();
         }
 
         //FOR EDITING AN EXISTING LINK
-        public AddOrEditLink(Composite flowgraph, Entity parentEntity, Entity childEntity, string parentParameter, string childParameter, bool isLinkingToChild, ShortGuid initialLinkID)
+        public AddOrEditLink(CommandsEditor editor, Composite flowgraph, Entity parentEntity, Entity childEntity, string parentParameter, string childParameter, bool isLinkingToChild, ShortGuid initialLinkID) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
         {
             InitializeComponent();
 
@@ -55,6 +59,9 @@ namespace CommandsEditor
 
             _initialParentEntity = parentEntity;
             _initialLinkID = initialLinkID;
+
+            parentParameterList.AutoSelectOff();
+            childParameterList.AutoSelectOff();
         }
 
         private void RefreshEntityLists(Composite comp)

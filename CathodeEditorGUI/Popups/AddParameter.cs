@@ -12,13 +12,14 @@ using CATHODE;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CathodeLib;
+using CommandsEditor.Popups.Base;
 
 namespace CommandsEditor
 {
-    public partial class AddParameter : Form
+    public partial class AddParameter : BaseWindow
     {
         Entity node = null;
-        public AddParameter(Entity _node)
+        public AddParameter(CommandsEditor editor, Entity _node) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
         {
             node = _node;
             InitializeComponent();
@@ -28,6 +29,8 @@ namespace CommandsEditor
             param_name.BeginUpdate();
             for (int i = 0; i < options.Count; i++) param_name.Items.Add(options[i]);
             param_name.EndUpdate();
+
+            param_name.AutoSelectOff();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -51,28 +54,35 @@ namespace CommandsEditor
             switch (node.variant)
             {
                 case EntityVariant.FUNCTION:
-                    FunctionEntity ent = ((FunctionEntity)node);
-                    if (CommandsUtils.FunctionTypeExists(ent.function))
+                    FunctionEntity ent = (FunctionEntity)node;
+                    bool isComposite = !CommandsUtils.FunctionTypeExists(ent.function);
+                    ShortGuid function = (isComposite) ? CommandsUtils.GetFunctionTypeGUID(FunctionType.CompositeInterface) : ent.function;
+
+                    CathodeEntityDatabase.ParameterDefinition def = CathodeEntityDatabase.GetParameterFromEntity(function, param_name.Text);
+                    if (def.name != null)
                     {
-                        //Function entity
-                        CathodeEntityDatabase.ParameterDefinition def = CathodeEntityDatabase.GetParameterFromEntity(ent.function, param_name.Text);
-                        if (def.name == null) return;
-                        if (def.usage == CathodeEntityDatabase.ParameterUsage.TARGET)
+                        switch (def.usage)
                         {
-                            //"TARGET" usage type does not have a datatype since it is not data, it's an event trigger.
-                            //The FLOAT datatype is a placeholder for this.
-                            param_datatype.Text = "FLOAT";
+                            case CathodeEntityDatabase.ParameterUsage.REFERENCE:
+                            case CathodeEntityDatabase.ParameterUsage.TARGET:
+                            case CathodeEntityDatabase.ParameterUsage.METHOD:
+                            case CathodeEntityDatabase.ParameterUsage.FINISHED:
+                            case CathodeEntityDatabase.ParameterUsage.RELAY:
+                                param_datatype.Text = "FLOAT"; //The FLOAT datatype is used a placeholder for this.
+                                break;
+                            default:
+                                ParameterData param = CathodeEntityDatabase.ParameterDefinitionToParameter(def);
+                                if (param == null) return;
+                                param_datatype.Text = param.dataType.ToString();
+                                break;
                         }
-                        else
-                        {
-                            ParameterData param = CathodeEntityDatabase.ParameterDefinitionToParameter(def);
-                            if (param == null) return;
-                            param_datatype.Text = param.dataType.ToString();
-                        }
+                        param_datatype.Enabled = false;
+                        return;
                     }
-                    else
+                    
+                    //if we're a composite & didn't find the param from CompositeInterface, try check the actual composite
+                    if (isComposite)
                     {
-                        //Composite link
                         ShortGuid param = ShortGuidUtils.Generate(param_name.Text);
                         VariableEntity var = Editor.commands.GetComposite(ent.function).variables.FirstOrDefault(o => o.name == param);
                         if (var == null) return;
@@ -84,8 +94,8 @@ namespace CommandsEditor
                         {
                             param_datatype.Text = var.type.ToString();
                         }
+                        param_datatype.Enabled = false;
                     }
-                    param_datatype.Enabled = false;
                     break;
                 default:
                     return;
