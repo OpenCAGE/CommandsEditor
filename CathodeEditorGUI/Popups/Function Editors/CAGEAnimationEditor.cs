@@ -197,6 +197,8 @@ namespace CommandsEditor
             CAGEAnimation.Event e = tracksEvent[key.Track];
             CAGEAnimation.Event.Keyframe keyData = new CAGEAnimation.Event.Keyframe();
             keyData.secondsSinceStart = key.Seconds;
+            keyData.start = ShortGuidUtils.Generate("");
+            keyData.unk3 = ShortGuidUtils.Generate("");
             e.keyframes.Add(keyData);
             keyframeHandlesEvent.Add(key, keyData);
             key.OnMoved += OnHandleMoved;
@@ -432,7 +434,7 @@ namespace CommandsEditor
                 CAGEAnimation.Connection connection = new CAGEAnimation.Connection();
                 connection.shortGUID = ShortGuidUtils.GenerateRandom();
                 connection.keyframeID = ShortGuidUtils.GenerateRandom();
-                connection.objectType = ObjectType.CHARACTER;
+                connection.objectType = ObjectType.CHARACTER; //TODO: not only do we need to calculate this, we also need the pairs for CHARACTER/MARKER
                 connection.connectedEntity = hierarchy;
                 animEntity.connections.Add(connection);
                 connectionID = connection.keyframeID;
@@ -441,7 +443,7 @@ namespace CommandsEditor
             //Add new event trigger
             CAGEAnimation.Event eventTrigger = new CAGEAnimation.Event();
             eventTrigger.shortGUID = connectionID;
-            eventTrigger.keyframes.Add(new CAGEAnimation.Event.Keyframe() { secondsSinceStart = CalculateAnimLength(), start = ShortGuidUtils.Generate("temp"), unk3 = ShortGuidUtils.Generate("temp") }); 
+            eventTrigger.keyframes.Add(new CAGEAnimation.Event.Keyframe() { secondsSinceStart = CalculateAnimLength(), start = ShortGuidUtils.Generate(""), unk3 = ShortGuidUtils.Generate("") }); 
             animEntity.events.Add(eventTrigger);
 
             SetupEventTimeline();
