@@ -1337,7 +1337,7 @@ namespace CommandsEditor
                     _serverLogic.OnClientConnect += RefreshWebsocket;
                 });
                 _server.Start();
-                return false;
+                return true;
             }
             catch
             {

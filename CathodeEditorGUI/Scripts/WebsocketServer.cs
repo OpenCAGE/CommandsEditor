@@ -28,6 +28,7 @@ public class WebsocketServer : WebSocketBehavior
 
     protected override void OnOpen()
     {
+        SendMessage(MessageType.SYNC_VERSION, VERSION.ToString());
         OnClientConnect?.Invoke();
         base.OnOpen();
     }
@@ -36,21 +37,22 @@ public class WebsocketServer : WebSocketBehavior
     {
         Send(((int)type).ToString() + content);
     }
-}
 
-//TODO: Keep this in sync with clients
-public enum MessageType
-{
-    TEST,
+    //TODO: Keep this in sync with clients
+    public const int VERSION = 1;
+    public enum MessageType
+    {
+        SYNC_VERSION,
 
-    LOAD_LEVEL,
-    LOAD_LEVEL_AT_POSITION,
+        LOAD_LEVEL,
+        LOAD_LEVEL_AT_POSITION,
 
-    GO_TO_POSITION,
-    GO_TO_REDS,
+        GO_TO_POSITION,
+        GO_TO_REDS,
 
-    SHOW_ENTITY_NAME,
+        SHOW_ENTITY_NAME,
 
-    REPORT_LOADED_LEVEL,
-    REPORTING_LOADED_LEVEL,
+        REPORT_LOADED_LEVEL,
+        REPORTING_LOADED_LEVEL,
+    }
 }
