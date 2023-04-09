@@ -1,6 +1,6 @@
 ﻿namespace CommandsEditor
 {
-    partial class NodeEditor
+    partial class NodeEditorTest
     {
         /// <summary>
         /// Required designer variable.

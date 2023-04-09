@@ -241,10 +241,16 @@
     <Compile Include="Popups\EditSpline.Designer.cs">
       <DependentUpon>EditSpline.cs</DependentUpon>
     </Compile>
-    <Compile Include="Popups\Experimental\NodeEditor.cs">
+    <Compile Include="Popups\Experimental\NodeEditorTest.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Popups\Experimental\NodeEditor.Designer.cs">
+    <Compile Include="Popups\Experimental\NodeEditorTest.Designer.cs">
+      <DependentUpon>NodeEditorTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\NodeEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\NodeEditor.Designer.cs">
       <DependentUpon>NodeEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\Function Editors\CAGEAnimation\CAGEAnimation_SelectParameter.cs">
@@ -928,6 +934,8 @@
     <Compile Include="Scripts\Nodes\SpaceSuitVisor.cs" />
     <Compile Include="Scripts\Nodes\SpaceTransform.cs" />
     <Compile Include="Scripts\Nodes\SpawnGroup.cs" />
+    <Compile Include="Scripts\Nodes\Special\CustomNode.cs" />
+    <Compile Include="Scripts\Nodes\Special\CompositeInterface.cs" />
     <Compile Include="Scripts\Nodes\Speech.cs" />
     <Compile Include="Scripts\Nodes\SpeechScript.cs" />
     <Compile Include="Scripts\Nodes\Sphere.cs" />
@@ -1303,7 +1311,10 @@
     <EmbeddedResource Include="Popups\EditSpline.resx">
       <DependentUpon>EditSpline.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Popups\Experimental\NodeEditor.resx">
+    <EmbeddedResource Include="Popups\Experimental\NodeEditorTest.resx">
+      <DependentUpon>NodeEditorTest.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\NodeEditor.resx">
       <DependentUpon>NodeEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\Function Editors\CAGEAnimationEditor.resx">

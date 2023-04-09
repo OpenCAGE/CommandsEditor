@@ -1313,7 +1313,7 @@ namespace CommandsEditor
             Composite3D viewer = new Composite3D(Editor.selected.composite);
             viewer.Show();
             */
-            NodeEditor editor = new NodeEditor(parentEntities, Loaded.selected.entity, childEntities);
+            NodeEditor editor = new NodeEditor(this);
             editor.Show();
         }
 

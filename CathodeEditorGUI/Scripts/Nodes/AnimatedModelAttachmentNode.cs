@@ -1,4 +1,3 @@
-#if DEBUG
 using CATHODE.Scripting;
 using ST.Library.UI.NodeEditor;
 
@@ -71,4 +70,3 @@ namespace CommandsEditor.Nodes
 		}
 	}
 }
-#endif

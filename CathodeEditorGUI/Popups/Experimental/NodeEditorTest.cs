@@ -9,25 +9,23 @@ using System.Windows.Forms;
 using System.IO;
 using ST.Library.UI.NodeEditor;
 using CATHODE.Scripting.Internal;
+using CATHODE.Scripting;
+using CommandsEditor.UserControls;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
+using CommandsEditor.Popups.Base;
+using WebSocketSharp;
 #if DEBUG
 using CommandsEditor.Nodes;
 #endif
 
 namespace CommandsEditor
 {
-    public partial class NodeEditor : Form
+    public partial class NodeEditorTest : BaseWindow
     {
-        private List<Entity> _parentEntities;
-        private Entity _entity;
-        private List<Entity> _childEntities;
-
-        public NodeEditor(List<Entity> parentEntities, Entity entity, List<Entity> childEntities) {
+        public NodeEditorTest(CommandsEditor editor) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION, editor)
+        {
             InitializeComponent();
             this.StartPosition = FormStartPosition.CenterScreen;
-
-            _parentEntities = parentEntities;
-            _entity = entity;
-            _childEntities = childEntities;
         }
 
         protected override void OnLoad(EventArgs e) {
@@ -75,6 +73,10 @@ namespace CommandsEditor
 #if DEBUG
             stNodeEditor1.Nodes.Add(new TerminalContent());
             stNodeEditor1.Nodes.Add(new AchievementMonitor());
+
+            CompositeInterface compNode = new CompositeInterface();
+            compNode.AddOptions(new string[] { "test1", "test2" }, new string[] { "test1o", "test2o" });
+            stNodeEditor1.Nodes.Add(compNode);
 
             STNodeCollection nodes = stNodeEditor1.Nodes;
 
