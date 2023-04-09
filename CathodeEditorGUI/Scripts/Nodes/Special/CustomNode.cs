@@ -1,5 +1,6 @@
 using CATHODE.Scripting;
 using ST.Library.UI.NodeEditor;
+using System;
 using System.Drawing;
 using System.Linq;
 
@@ -15,14 +16,27 @@ namespace CommandsEditor.Nodes
 			base.OnCreate();
 		}
 
+        public void Recompute()
+        {
+            this.SetOptionsLocation();
+            this.BuildSize(false, true, false);
+            this.OnResize(EventArgs.Empty);
+            this.Invalidate();
+        }
+
 		public void SetName(string name)
 		{
-			Title = name;
-		}
+            Title = name;
+        }
 
         public void SetColour(Color colour)
         {
             TitleColor = colour;
+        }
+
+        public void SetPosition(Point location)
+        {
+            Location = location;
         }
 
 		public void AddOptions(string[] inputOptions, string[] outputOptions)

@@ -22,7 +22,7 @@ namespace CommandsEditor
 {
     public partial class NodeEditor : BaseWindow
     {
-        public NodeEditor(CommandsEditor editor) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION, editor)
+        public NodeEditor(CommandsEditor editor) : base(WindowClosesOn.NONE, editor)
         {
             InitializeComponent();
             this.StartPosition = FormStartPosition.CenterScreen;
@@ -45,9 +45,15 @@ namespace CommandsEditor
 
         public void AddEntities(Composite composite, Entity entity)
         {
+            stNodeEditor1.Nodes.Clear();
+            if (composite == null || entity == null) return;
+
             CustomNode mainNode = EntityToNode(entity);
+            mainNode.SetPosition(new Point((this.Size.Width / 2) - (mainNode.Width / 2), (this.Size.Height / 2) - (mainNode.Height / 2)));
             stNodeEditor1.Nodes.Add(mainNode);
+            
             List<Entity> ents = composite.GetEntities();
+            int heightOffset = 10;
             foreach (Entity ent in ents)
             {
                 foreach (EntityLink link in ent.childLinks)
@@ -65,6 +71,8 @@ namespace CommandsEditor
                     if (node == null)
                     {
                         node = EntityToNode(ent);
+                        node.SetPosition(new Point(10, heightOffset));
+                        heightOffset += this.Size.Height / 15;
                         stNodeEditor1.Nodes.Add(node);
                     }
                     STNodeOption opt1 = node.AddOutputOption(link.parentParamID.ToString());
@@ -73,6 +81,7 @@ namespace CommandsEditor
                 }
             }
 
+            heightOffset = 10;
             foreach (EntityLink link in entity.childLinks)
             {
                 CustomNode node = null;
@@ -87,6 +96,8 @@ namespace CommandsEditor
                 if (node == null)
                 {
                     node = EntityToNode(composite.GetEntityByID(link.childID));
+                    node.SetPosition(new Point(this.Size.Width - node.Width - 10, heightOffset));
+                    heightOffset += this.Size.Height / 15;
                     stNodeEditor1.Nodes.Add(node);
                 }
                 STNodeOption opt1 = node.AddInputOption(link.parentParamID.ToString());
@@ -134,6 +145,7 @@ namespace CommandsEditor
             }
             node.AddOptions(null, outputOptions.ToArray());
             */
+            node.Recompute();
             return node;
         }
 

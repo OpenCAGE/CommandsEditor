@@ -67,11 +67,12 @@
             this.load_commands_pak = new System.Windows.Forms.Button();
             this.env_list = new System.Windows.Forms.ComboBox();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.UnityConnection = new System.Windows.Forms.CheckBox();
             this.enableBackups = new System.Windows.Forms.CheckBox();
             this.editEntryPoint = new System.Windows.Forms.Button();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.UnityConnection = new System.Windows.Forms.CheckBox();
+            this.showNodeViewer = new System.Windows.Forms.CheckBox();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.entityInfoGroup.SuspendLayout();
@@ -463,6 +464,7 @@
             // 
             // groupBox8
             // 
+            this.groupBox8.Controls.Add(this.showNodeViewer);
             this.groupBox8.Controls.Add(this.UnityConnection);
             this.groupBox8.Controls.Add(this.enableBackups);
             this.groupBox8.Controls.Add(this.show3D);
@@ -473,6 +475,19 @@
             this.groupBox8.Size = new System.Drawing.Size(748, 49);
             this.groupBox8.TabIndex = 174;
             this.groupBox8.TabStop = false;
+            // 
+            // UnityConnection
+            // 
+            this.UnityConnection.AutoSize = true;
+            this.UnityConnection.Location = new System.Drawing.Point(119, 26);
+            this.UnityConnection.Name = "UnityConnection";
+            this.UnityConnection.Size = new System.Drawing.Size(105, 17);
+            this.UnityConnection.TabIndex = 180;
+            this.UnityConnection.Text = "Connect to Unity";
+            this.toolTip1.SetToolTip(this.UnityConnection, "If checked, a local connection will be established to the Unity composite viewer." +
+        "");
+            this.UnityConnection.UseVisualStyleBackColor = true;
+            this.UnityConnection.CheckedChanged += new System.EventHandler(this.UnityConnection_CheckedChanged);
             // 
             // enableBackups
             // 
@@ -508,18 +523,18 @@
             this.groupBox10.TabIndex = 175;
             this.groupBox10.TabStop = false;
             // 
-            // UnityConnection
+            // showNodeViewer
             // 
-            this.UnityConnection.AutoSize = true;
-            this.UnityConnection.Location = new System.Drawing.Point(119, 26);
-            this.UnityConnection.Name = "UnityConnection";
-            this.UnityConnection.Size = new System.Drawing.Size(105, 17);
-            this.UnityConnection.TabIndex = 180;
-            this.UnityConnection.Text = "Connect to Unity";
-            this.toolTip1.SetToolTip(this.UnityConnection, "If checked, a local connection will be established to the Unity composite viewer." +
+            this.showNodeViewer.AutoSize = true;
+            this.showNodeViewer.Location = new System.Drawing.Point(230, 26);
+            this.showNodeViewer.Name = "showNodeViewer";
+            this.showNodeViewer.Size = new System.Drawing.Size(108, 17);
+            this.showNodeViewer.TabIndex = 181;
+            this.showNodeViewer.Text = "Show Node View";
+            this.toolTip1.SetToolTip(this.showNodeViewer, "If checked, a local connection will be established to the Unity composite viewer." +
         "");
-            this.UnityConnection.UseVisualStyleBackColor = true;
-            this.UnityConnection.CheckedChanged += new System.EventHandler(this.UnityConnection_CheckedChanged);
+            this.showNodeViewer.UseVisualStyleBackColor = true;
+            this.showNodeViewer.CheckedChanged += new System.EventHandler(this.showNodeViewer_CheckedChanged);
             // 
             // CommandsEditor
             // 
@@ -594,5 +609,6 @@
         private System.Windows.Forms.Button goBackToPrevComp;
         private System.Windows.Forms.Button goToZone;
         private System.Windows.Forms.CheckBox UnityConnection;
+        private System.Windows.Forms.CheckBox showNodeViewer;
     }
 }

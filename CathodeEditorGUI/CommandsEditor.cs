@@ -37,6 +37,7 @@ namespace CommandsEditor
         private WebsocketServer _serverLogic;
         private readonly string _serverOpt = "CE_ConnectToUnity";
         private readonly string _backupsOpt = "CS_EnableBackups";
+        private readonly string _nodeOpt = "CS_NodeView";
 
         public CommandsEditor()
         {
@@ -89,6 +90,7 @@ namespace CommandsEditor
 
             enableBackups.Checked = SettingsManager.GetBool(_backupsOpt);
             UnityConnection.Checked = SettingsManager.GetBool(_serverOpt);
+            showNodeViewer.Checked = SettingsManager.GetBool(_nodeOpt);
 
             //Populate available maps
             env_list.Items.Clear();
@@ -209,6 +211,7 @@ namespace CommandsEditor
             }
             goBackToPrevComp.Enabled = _previousComposite != null;
             toolTip1.SetToolTip(goBackToPrevComp, "Go back to: " + ((_previousComposite != null) ? _previousComposite.name : ""));
+            if (nodeViewer != null) nodeViewer.AddEntities(null, null);
         }
 
         /* Enable the option to load COMMANDS */
@@ -1100,6 +1103,12 @@ namespace CommandsEditor
                 childEntities.Add(Loaded.selected.composite.GetEntityByID(entity.childLinks[i].childID));
             }
 
+            //Update node viewer if it's open
+            if (nodeViewer != null)
+            {
+                nodeViewer.AddEntities(Loaded.selected.composite, Loaded.selected.entity);
+            }
+
             entity_params.ResumeLayout();
             Cursor.Current = Cursors.Default;
         }
@@ -1306,15 +1315,10 @@ namespace CommandsEditor
             return (MessageBox.Show(msg, "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes);
         }
 
-        GUI_ModelViewer modelViewer = null;
         private void show3D_Click(object sender, EventArgs e)
         {
-            /*
-            Composite3D viewer = new Composite3D(Editor.selected.composite);
+            Composite3D viewer = new Composite3D(this, Loaded.selected.composite);
             viewer.Show();
-            */
-            NodeEditor editor = new NodeEditor(this);
-            editor.Show();
         }
 
         private void StartWebsocket()
@@ -1377,6 +1381,30 @@ namespace CommandsEditor
         {
             SettingsManager.SetBool(_serverOpt, UnityConnection.Checked);
             RefreshWebsocket();
+        }
+
+        NodeEditor nodeViewer = null;
+        private void showNodeViewer_CheckedChanged(object sender, EventArgs e)
+        {
+            SettingsManager.SetBool(_nodeOpt, showNodeViewer.Checked);
+            if (showNodeViewer.Checked)
+            {
+                nodeViewer = new NodeEditor(this);
+                nodeViewer.Show();
+                nodeViewer.FormClosed += NodeViewer_FormClosed;
+            }
+            else
+            {
+                if (nodeViewer != null)
+                {
+                    nodeViewer.FormClosed -= NodeViewer_FormClosed;
+                    nodeViewer = null;
+                }
+            }
+        }
+        private void NodeViewer_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            nodeViewer = null;
         }
     }
 }
