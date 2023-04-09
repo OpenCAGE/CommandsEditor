@@ -1326,15 +1326,25 @@ namespace CommandsEditor
             viewer.Show();
         }
 
-        private void StartWebsocket()
+        private bool StartWebsocket()
         {
-            _server = new WebSocketServer("ws://localhost:1702");
-            _server.AddWebSocketService<WebsocketServer>("/commands_editor", (server) =>
+            try
             {
-                _serverLogic = server;
-                _serverLogic.OnClientConnect += RefreshWebsocket;
-            });
-            _server.Start();
+                _server = new WebSocketServer("ws://localhost:1702");
+                _server.AddWebSocketService<WebsocketServer>("/commands_editor", (server) =>
+                {
+                    _serverLogic = server;
+                    _serverLogic.OnClientConnect += RefreshWebsocket;
+                });
+                _server.Start();
+                return false;
+            }
+            catch
+            {
+                UnityConnection.Checked = false;
+                MessageBox.Show("Failed to initialise Unity connection.\nIs another instance of the script editor running?", "Connection failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
         }
 
         private void RefreshWebsocket()
