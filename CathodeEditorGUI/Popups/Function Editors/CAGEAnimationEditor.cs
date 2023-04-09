@@ -27,7 +27,7 @@ namespace CommandsEditor
         public CAGEAnimationEditor(CommandsEditor editor, CAGEAnimation entity) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_CAGEANIM_EDITOR_OPENED | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
         {
             animEntity = entity.Copy();
-            File.WriteAllText("out.json", JsonConvert.SerializeObject(animEntity, Formatting.Indented));
+            //File.WriteAllText("out.json", JsonConvert.SerializeObject(animEntity, Formatting.Indented));
             InitializeComponent();
 
             anim_length = CalculateAnimLength();
@@ -91,6 +91,7 @@ namespace CommandsEditor
             return animLength;
         }
 
+        List<string> animTracks = new List<string>();
         private void SetupAnimTimeline()
         {
             keyframeHandlesAnim = new Dictionary<Keyframe, CAGEAnimation.Animation.Keyframe>();
@@ -100,6 +101,7 @@ namespace CommandsEditor
             activeAnimHandle = null;
             animHost.Child = null;
             animKeyframeData.Visible = false;
+            animTracks.Clear();
 
             //Filter down anims to the selected entity in the dropdown
             if (entityList.SelectedIndex == -1) return;
@@ -122,16 +124,19 @@ namespace CommandsEditor
                 for (int x = 0; x < filteredAnims[i].keyframes.Count; x++)
                 {
                     CAGEAnimation.Animation.Keyframe keyframeData = filteredAnims[i].keyframes[x];
-                    Keyframe keyframeUI = animTimeline.AddKeyframe(keyframeData.secondsSinceStart, connection.parameterSubID.val == null || connection.parameterSubID.ToString() == "" ? connection.parameterID.ToString() : connection.parameterID.ToString() + " [" + connection.parameterSubID.ToString() + "]");
+                    string keyframeText = connection.parameterSubID.val == null || connection.parameterSubID.ToString() == "" ? connection.parameterID.ToString() : connection.parameterID.ToString() + " [" + connection.parameterSubID.ToString() + "]";
+                    Keyframe keyframeUI = animTimeline.AddKeyframe(keyframeData.secondsSinceStart, keyframeText);
                     keyframeUI.OnMoved += OnHandleMoved;
                     keyframeUI.HandleText = keyframeData.paramValue.ToString("0.00");
                     keyframeHandlesAnim.Add(keyframeUI, keyframeData);
+                    animTracks.Add(keyframeText);
                     if (!tracksAnim.ContainsKey(keyframeUI.Track)) tracksAnim.Add(keyframeUI.Track, filteredAnims[i]);
                 }
             }
             animHost.Child = animTimeline;
         }
 
+        List<string> eventTracks = new List<string>();
         private void SetupEventTimeline()
         {
             keyframeHandlesEvent = new Dictionary<Keyframe, CAGEAnimation.Event.Keyframe>();
@@ -141,6 +146,7 @@ namespace CommandsEditor
             activeEventHandle = null;
             eventHost.Child = null;
             eventKeyframeData.Visible = false;
+            eventTracks.Clear();
 
             float anim_step = anim_length < 10.0f ? 1.0f : anim_length / 10.0f;
 
@@ -154,9 +160,11 @@ namespace CommandsEditor
                 for (int x = 0; x < animEntity.events[i].keyframes.Count; x++)
                 {
                     CAGEAnimation.Event.Keyframe keyframeData = animEntity.events[i].keyframes[x];
-                    Keyframe keyframeUI = eventTimeline.AddKeyframe(keyframeData.secondsSinceStart, (connection == null) ? EntityUtils.GetName(Editor.selected.composite, animEntity) : connection.connectedEntity.GetHierarchyAsString(Editor.commands, Editor.selected.composite, false));
+                    string keyframeText = (connection == null) ? EntityUtils.GetName(Editor.selected.composite, animEntity) : connection.connectedEntity.GetHierarchyAsString(Editor.commands, Editor.selected.composite, false);
+                    Keyframe keyframeUI = eventTimeline.AddKeyframe(keyframeData.secondsSinceStart, keyframeText);
                     keyframeUI.OnMoved += OnHandleMoved;
                     keyframeHandlesEvent.Add(keyframeUI, keyframeData);
+                    eventTracks.Add(keyframeText);
                     if (!tracksEvent.ContainsKey(keyframeUI.Track)) tracksEvent.Add(keyframeUI.Track, animEntity.events[i]);
                 }
             }
@@ -273,9 +281,13 @@ namespace CommandsEditor
         private void addAnimationTrack_Click(object sender, EventArgs e)
         {
             if (entityList.SelectedIndex == -1) return;
-            CAGEAnimation_SelectParameter paramSelector = new CAGEAnimation_SelectParameter(_editor, entityListToHierarchies[entityList.SelectedIndex].GetPointedEntity(Editor.commands, Editor.selected.composite));
-            paramSelector.OnParamSelected += OnParameterSelected;
-            paramSelector.Show();
+            try
+            {
+                CAGEAnimation_SelectParameter paramSelector = new CAGEAnimation_SelectParameter(_editor, entityListToHierarchies[entityList.SelectedIndex].GetPointedEntity(Editor.commands, Editor.selected.composite));
+                paramSelector.OnParamSelected += OnParameterSelected;
+                paramSelector.Show();
+            }
+            catch { }
         }
         private void OnParameterSelected(Parameter param)
         {
@@ -359,16 +371,52 @@ namespace CommandsEditor
 
         private void deleteAnimationTrack_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("This is coming VERY soon!");
+            try
+            {
+                CAGEAnimation_DeleteParam deleteParamWindow = new CAGEAnimation_DeleteParam(_editor, animTracks);
+                deleteParamWindow.OnParamSelected += OnDeleteParamSelected;
+                deleteParamWindow.Show();
+            }
+            catch { }
+        }
+        private void OnDeleteParamSelected(int index)
+        {
+            animEntity.animations.RemoveAt(index);
+            SetupAnimTimeline();
         }
 
         private void addEventTrack_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("This is coming VERY soon!");
+            EditHierarchy hierarchyEditor = new EditHierarchy(_editor, Editor.selected.composite, false);
+            hierarchyEditor.Show();
+            hierarchyEditor.OnHierarchyGenerated += HierarchyEditor2_HierarchyGenerated;
+            SetupEventTimeline();
         }
+        private void HierarchyEditor2_HierarchyGenerated(List<ShortGuid> generatedHierarchy)
+        {
+            EntityHierarchy hierarchy = new EntityHierarchy(generatedHierarchy);
+
+            //TODO
+
+            SetupEventTimeline();
+            this.BringToFront();
+            this.Focus();
+        }
+
         private void deleteEventTrack_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("This is coming VERY soon!");
+            try
+            {
+                CAGEAnimation_DeleteEvent deleteEventWindow = new CAGEAnimation_DeleteEvent(_editor, eventTracks);
+                deleteEventWindow.OnTrackSelected += OnDeleteEventSelected;
+                deleteEventWindow.Show();
+            }
+            catch { }
+        }
+        private void OnDeleteEventSelected(int index)
+        {
+            animEntity.events.RemoveAt(index);
+            SetupEventTimeline();
         }
 
         private void SaveEntity_Click(object sender, EventArgs e)

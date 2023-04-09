@@ -1,6 +1,6 @@
 ﻿namespace CommandsEditor
 {
-    partial class CAGEAnimation_SelectParameter
+    partial class CAGEAnimation_DeleteEvent
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CAGEAnimation_SelectParameter));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.select_param = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
@@ -46,7 +45,7 @@
             this.groupBox1.Size = new System.Drawing.Size(776, 92);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Select Entity Parameter To Animate";
+            this.groupBox1.Text = "Select Animated Event Track To Delete";
             // 
             // select_param
             // 
@@ -54,18 +53,18 @@
             this.select_param.Name = "select_param";
             this.select_param.Size = new System.Drawing.Size(101, 23);
             this.select_param.TabIndex = 4;
-            this.select_param.Text = "Select";
+            this.select_param.Text = "Delete";
             this.select_param.UseVisualStyleBackColor = true;
             this.select_param.Click += new System.EventHandler(this.select_param_Click);
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(41, 27);
+            this.label2.Location = new System.Drawing.Point(35, 27);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(55, 13);
+            this.label2.Size = new System.Drawing.Size(66, 13);
             this.label2.TabIndex = 3;
-            this.label2.Text = "Parameter";
+            this.label2.Text = "Event Track";
             // 
             // parameters
             // 
@@ -87,17 +86,16 @@
             this.parameters.Size = new System.Drawing.Size(641, 21);
             this.parameters.TabIndex = 0;
             // 
-            // CAGEAnimation_SelectParameter
+            // CAGEAnimation_DeleteEvent
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 117);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "CAGEAnimation_SelectParameter";
+            this.Name = "CAGEAnimation_DeleteEvent";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Select Entity Parameter To Animate";
+            this.Text = "Select Animated Event Track To Delete";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);

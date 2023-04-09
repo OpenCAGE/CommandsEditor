@@ -247,6 +247,18 @@
     <Compile Include="Popups\Experimental\NodeEditorTest.Designer.cs">
       <DependentUpon>NodeEditorTest.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\Function Editors\CAGEAnimation\CAGEAnimation_DeleteParam.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\Function Editors\CAGEAnimation\CAGEAnimation_DeleteParam.Designer.cs">
+      <DependentUpon>CAGEAnimation_DeleteParam.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\Function Editors\CAGEAnimation\CAGEAnimation_DeleteEvent.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\Function Editors\CAGEAnimation\CAGEAnimation_DeleteEvent.Designer.cs">
+      <DependentUpon>CAGEAnimation_DeleteEvent.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popups\NodeEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1313,6 +1325,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\Experimental\NodeEditorTest.resx">
       <DependentUpon>NodeEditorTest.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Function Editors\CAGEAnimation\CAGEAnimation_DeleteParam.resx">
+      <DependentUpon>CAGEAnimation_DeleteParam.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Function Editors\CAGEAnimation\CAGEAnimation_DeleteEvent.resx">
+      <DependentUpon>CAGEAnimation_DeleteEvent.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\NodeEditor.resx">
       <DependentUpon>NodeEditor.cs</DependentUpon>

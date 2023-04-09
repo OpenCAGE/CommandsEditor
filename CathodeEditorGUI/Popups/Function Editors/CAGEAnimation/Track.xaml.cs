@@ -21,7 +21,7 @@ namespace CommandsEditor
             _trackName = name;
 
             rectOuter.Width = width;
-            tracknameui.Content = name;
+            tracknameui.Text = name;
             addkeyframebutton.Click += Addkeyframebutton_Click;
         }
 

@@ -1423,6 +1423,7 @@ namespace CommandsEditor
         private void NodeViewer_FormClosed(object sender, FormClosedEventArgs e)
         {
             nodeViewer = null;
+            showNodeViewer.Checked = false;
         }
     }
 }

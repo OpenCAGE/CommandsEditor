@@ -13,7 +13,8 @@
                 </TransformGroup>
             </Button.RenderTransform>
         </Button>
-        <Label x:Name="tracknameui" Content="Track name" FontFamily="Consolas" FontSize="10" IsHitTestVisible="False" >
+        <Label FontFamily="Consolas" FontSize="10" IsHitTestVisible="False" >
+            <TextBlock x:Name="tracknameui" Text="Name"/>
             <Label.RenderTransform>
                 <TransformGroup>
                     <TranslateTransform X="0" Y="-12"/>
