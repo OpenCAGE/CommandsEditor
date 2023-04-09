@@ -1365,20 +1365,20 @@ namespace CommandsEditor
             //Request the correct level
             if (Loaded.commands != null && Loaded.commands.Loaded)
             {
-                _server.WebSocketServices["/commands_editor"].Sessions.Broadcast(((int)MessageType.LOAD_LEVEL) + Loaded.level);
+                _server.WebSocketServices["/commands_editor"].Sessions.Broadcast(((int)WebsocketServer.MessageType.LOAD_LEVEL) + Loaded.level);
             }
 
             //Point to position of selected entity
             if (Loaded.selected.entity != null && Loaded.selected.entity.GetParameter("position") != null)
             {
                 System.Numerics.Vector3 vec = ((cTransform)Loaded.selected.entity.GetParameter("position").content).position;
-                _server.WebSocketServices["/commands_editor"].Sessions.Broadcast(((int)MessageType.GO_TO_POSITION).ToString() + vec.X + ">" + vec.Y + ">" + vec.Z);
+                _server.WebSocketServices["/commands_editor"].Sessions.Broadcast(((int)WebsocketServer.MessageType.GO_TO_POSITION).ToString() + vec.X + ">" + vec.Y + ">" + vec.Z);
             }
 
             //Show name of entity
             if (Loaded.selected.entity != null && Loaded.selected.composite != null)
             {
-                _server.WebSocketServices["/commands_editor"].Sessions.Broadcast(((int)MessageType.SHOW_ENTITY_NAME).ToString() + EntityUtils.GetName(Loaded.selected.composite, Loaded.selected.entity));
+                _server.WebSocketServices["/commands_editor"].Sessions.Broadcast(((int)WebsocketServer.MessageType.SHOW_ENTITY_NAME).ToString() + EntityUtils.GetName(Loaded.selected.composite, Loaded.selected.entity));
             }
 
             /*
