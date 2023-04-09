@@ -29,9 +29,10 @@ namespace CommandsEditor.Nodes
             Title = name;
         }
 
-        public void SetColour(Color colour)
+        public void SetColour(Color colourBG, Color colourFG)
         {
-            TitleColor = colour;
+            TitleColor = colourBG;
+            ForeColor = colourFG;
         }
 
         public void SetPosition(Point location)

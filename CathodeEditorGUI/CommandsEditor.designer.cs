@@ -67,12 +67,12 @@
             this.load_commands_pak = new System.Windows.Forms.Button();
             this.env_list = new System.Windows.Forms.ComboBox();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.showNodeViewer = new System.Windows.Forms.CheckBox();
             this.UnityConnection = new System.Windows.Forms.CheckBox();
             this.enableBackups = new System.Windows.Forms.CheckBox();
             this.editEntryPoint = new System.Windows.Forms.Button();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.showNodeViewer = new System.Windows.Forms.CheckBox();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.entityInfoGroup.SuspendLayout();
@@ -476,6 +476,18 @@
             this.groupBox8.TabIndex = 174;
             this.groupBox8.TabStop = false;
             // 
+            // showNodeViewer
+            // 
+            this.showNodeViewer.AutoSize = true;
+            this.showNodeViewer.Location = new System.Drawing.Point(230, 26);
+            this.showNodeViewer.Name = "showNodeViewer";
+            this.showNodeViewer.Size = new System.Drawing.Size(109, 17);
+            this.showNodeViewer.TabIndex = 181;
+            this.showNodeViewer.Text = "Show Nodegraph";
+            this.toolTip1.SetToolTip(this.showNodeViewer, "If checked, a new nodegraph window will display the selected entity connections.");
+            this.showNodeViewer.UseVisualStyleBackColor = true;
+            this.showNodeViewer.CheckedChanged += new System.EventHandler(this.showNodeViewer_CheckedChanged);
+            // 
             // UnityConnection
             // 
             this.UnityConnection.AutoSize = true;
@@ -522,19 +534,6 @@
             this.groupBox10.Size = new System.Drawing.Size(487, 49);
             this.groupBox10.TabIndex = 175;
             this.groupBox10.TabStop = false;
-            // 
-            // showNodeViewer
-            // 
-            this.showNodeViewer.AutoSize = true;
-            this.showNodeViewer.Location = new System.Drawing.Point(230, 26);
-            this.showNodeViewer.Name = "showNodeViewer";
-            this.showNodeViewer.Size = new System.Drawing.Size(108, 17);
-            this.showNodeViewer.TabIndex = 181;
-            this.showNodeViewer.Text = "Show Node View";
-            this.toolTip1.SetToolTip(this.showNodeViewer, "If checked, a local connection will be established to the Unity composite viewer." +
-        "");
-            this.showNodeViewer.UseVisualStyleBackColor = true;
-            this.showNodeViewer.CheckedChanged += new System.EventHandler(this.showNodeViewer_CheckedChanged);
             // 
             // CommandsEditor
             // 

@@ -14,9 +14,8 @@ using CommandsEditor.UserControls;
 using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using CommandsEditor.Popups.Base;
 using WebSocketSharp;
-#if DEBUG
+using System.Security.Cryptography;
 using CommandsEditor.Nodes;
-#endif
 
 namespace CommandsEditor
 {
@@ -25,8 +24,6 @@ namespace CommandsEditor
         public NodeEditor(CommandsEditor editor) : base(WindowClosesOn.NONE, editor)
         {
             InitializeComponent();
-            this.StartPosition = FormStartPosition.CenterScreen;
-
             AddEntities(Editor.selected.composite, Editor.selected.entity);
         }
 
@@ -34,13 +31,13 @@ namespace CommandsEditor
             base.OnLoad(e);
             stNodeEditor1.LoadAssembly(Application.ExecutablePath);
 
-            stNodeEditor1.OptionConnected += (s, ea) => stNodeEditor1.ShowAlert(ea.Status.ToString(), Color.White, ea.Status == ConnectionStatus.Connected ? Color.FromArgb(125, Color.Green) : Color.FromArgb(125, Color.Red));
-            stNodeEditor1.CanvasScaled += (s, ea) => stNodeEditor1.ShowAlert(stNodeEditor1.CanvasScale.ToString("F2"), Color.White, Color.FromArgb(125, Color.Yellow));
-            stNodeEditor1.NodeAdded += (s, ea) => ea.Node.ContextMenuStrip = contextMenuStrip1;
+            //stNodeEditor1.OptionConnected += (s, ea) => stNodeEditor1.ShowAlert(ea.Status.ToString(), Color.White, ea.Status == ConnectionStatus.Connected ? Color.FromArgb(125, Color.Green) : Color.FromArgb(125, Color.Red));
+            //stNodeEditor1.CanvasScaled += (s, ea) => stNodeEditor1.ShowAlert(stNodeEditor1.CanvasScale.ToString("F2"), Color.White, Color.FromArgb(125, Color.Yellow));
+            //stNodeEditor1.NodeAdded += (s, ea) => ea.Node.ContextMenuStrip = contextMenuStrip1;
             stNodeEditor1.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom;
 
-            contextMenuStrip1.ShowImageMargin = false;
-            contextMenuStrip1.Renderer = new ToolStripRendererEx();
+            //contextMenuStrip1.ShowImageMargin = false;
+            //contextMenuStrip1.Renderer = new ToolStripRendererEx();
         }
 
         public void AddEntities(Composite composite, Entity entity)
@@ -48,12 +45,11 @@ namespace CommandsEditor
             stNodeEditor1.Nodes.Clear();
             if (composite == null || entity == null) return;
 
-            CustomNode mainNode = EntityToNode(entity);
-            mainNode.SetPosition(new Point((this.Size.Width / 2) - (mainNode.Width / 2), (this.Size.Height / 2) - (mainNode.Height / 2)));
+            CustomNode mainNode = EntityToNode(entity, composite);
             stNodeEditor1.Nodes.Add(mainNode);
             
             List<Entity> ents = composite.GetEntities();
-            int heightOffset = 10;
+            List<CustomNode> inputNodes = new List<CustomNode>();
             foreach (Entity ent in ents)
             {
                 foreach (EntityLink link in ent.childLinks)
@@ -70,9 +66,8 @@ namespace CommandsEditor
                     }
                     if (node == null)
                     {
-                        node = EntityToNode(ent);
-                        node.SetPosition(new Point(10, heightOffset));
-                        heightOffset += this.Size.Height / 15;
+                        node = EntityToNode(ent, composite);
+                        inputNodes.Add(node);
                         stNodeEditor1.Nodes.Add(node);
                     }
                     STNodeOption opt1 = node.AddOutputOption(link.parentParamID.ToString());
@@ -81,7 +76,7 @@ namespace CommandsEditor
                 }
             }
 
-            heightOffset = 10;
+            List<CustomNode> outputNodes = new List<CustomNode>();
             foreach (EntityLink link in entity.childLinks)
             {
                 CustomNode node = null;
@@ -95,30 +90,61 @@ namespace CommandsEditor
                 }
                 if (node == null)
                 {
-                    node = EntityToNode(composite.GetEntityByID(link.childID));
-                    node.SetPosition(new Point(this.Size.Width - node.Width - 10, heightOffset));
-                    heightOffset += this.Size.Height / 15;
+                    node = EntityToNode(composite.GetEntityByID(link.childID), composite);
+                    outputNodes.Add(node);
                     stNodeEditor1.Nodes.Add(node);
                 }
-                STNodeOption opt1 = node.AddInputOption(link.parentParamID.ToString());
-                STNodeOption opt2 = mainNode.AddOutputOption(link.childParamID.ToString());
+                STNodeOption opt1 = node.AddInputOption(link.childParamID.ToString());
+                STNodeOption opt2 = mainNode.AddOutputOption(link.parentParamID.ToString());
                 opt1.ConnectOption(opt2);
             }
+
+            foreach (STNode node in stNodeEditor1.Nodes)
+            {
+                ((CustomNode)node).Recompute();
+            }
+
+            int height = 10;
+            foreach (STNode node in inputNodes)
+            {
+                ((CustomNode)node).SetPosition(new Point(10, height));
+                height += node.Height + 10;
+            }
+            int maxHeight = height;
+            height = 10;
+            foreach (STNode node in outputNodes)
+            {
+                ((CustomNode)node).SetPosition(new Point(this.Size.Width - node.Width - 50, height));
+                height += node.Height + 10;
+            }
+            if (height > maxHeight) maxHeight = height;
+
+            mainNode.SetPosition(new Point((this.Size.Width / 2) - (mainNode.Width / 2) - 10, (maxHeight / 2) - (mainNode.Height / 2)));
         }
 
-        private CustomNode EntityToNode(Entity entity)
+        private CustomNode EntityToNode(Entity entity, Composite composite)
         {
             CustomNode node = new CustomNode();
             node.ID = entity.shortGUID;
             switch (entity.variant)
             {
                 case EntityVariant.PROXY:
-                    node.SetColour(Color.Orange);
-                    //TODO!
-                    break;
                 case EntityVariant.OVERRIDE:
-                    node.SetColour(Color.Green);
-                    //TODO!
+                    Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, composite, ((OverrideEntity)entity).connectedEntity.hierarchy, out Composite c, out string s);
+                    node.SetColour(entity.variant == EntityVariant.PROXY ? Color.Green : Color.Orange, Color.Black);
+                    switch (ent.variant)
+                    {
+                        case EntityVariant.FUNCTION:
+                            FunctionEntity function = (FunctionEntity)ent;
+                            if (CommandsUtils.FunctionTypeExists(function.function))
+                                node.SetName(entity.variant + " TO: " + function.function.ToString());
+                            else
+                                node.SetName(entity.variant + " TO: " + Editor.commands.GetComposite(function.function).name);
+                            break;
+                        case EntityVariant.VARIABLE:
+                            node.SetName(((VariableEntity)ent).name.ToString());
+                            break;
+                    }
                     break;
                 case EntityVariant.FUNCTION:
                     FunctionEntity funcEnt = (FunctionEntity)entity;
@@ -128,12 +154,12 @@ namespace CommandsEditor
                     }
                     else
                     {
-                        node.SetColour(Color.Blue);
+                        node.SetColour(Color.Blue, Color.White);
                         node.SetName(Editor.commands.GetComposite(funcEnt.function).name);
                     }
                     break;
                 case EntityVariant.VARIABLE:
-                    node.SetColour(Color.Red);
+                    node.SetColour(Color.Red, Color.White);
                     node.SetName(((VariableEntity)entity).name.ToString());
                     break;
             }
