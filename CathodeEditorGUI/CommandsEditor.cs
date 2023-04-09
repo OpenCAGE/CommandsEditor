@@ -36,6 +36,7 @@ namespace CommandsEditor
         private WebSocketServer _server;
         private WebsocketServer _serverLogic;
         private readonly string _serverOpt = "CE_ConnectToUnity";
+        private readonly string _backupsOpt = "CS_EnableBackups";
 
         public CommandsEditor()
         {
@@ -86,6 +87,7 @@ namespace CommandsEditor
             InitializeComponent();
             _treeHelper = new TreeUtility(FileTree);
 
+            enableBackups.Checked = SettingsManager.GetBool(_backupsOpt);
             UnityConnection.Checked = SettingsManager.GetBool(_serverOpt);
 
             //Populate available maps
@@ -1253,6 +1255,8 @@ namespace CommandsEditor
         CancellationToken backupCancellationToken;
         private void enableBackups_CheckedChanged(object sender, EventArgs e)
         {
+            SettingsManager.SetBool(_backupsOpt, enableBackups.Checked);
+
             CancellationTokenSource tokenSource = new CancellationTokenSource();
             backupCancellationToken = tokenSource.Token;
             if (backgroundBackups != null) tokenSource.Cancel();
