@@ -22,6 +22,7 @@ using System.Windows.Media.Animation;
 using System.Diagnostics;
 using System.Security.Policy;
 using Newtonsoft.Json;
+using OpenCAGE;
 
 namespace CommandsEditor
 {
@@ -32,10 +33,9 @@ namespace CommandsEditor
         private TreeUtility _treeHelper;
         private Composite _previousComposite = null;
 
-#if DEBUG
         private WebSocketServer _server;
         private WebsocketServer _serverLogic;
-#endif
+        private readonly string _serverOpt = "CE_ConnectToUnity";
 
         public CommandsEditor()
         {
@@ -86,15 +86,7 @@ namespace CommandsEditor
             InitializeComponent();
             _treeHelper = new TreeUtility(FileTree);
 
-#if DEBUG
-            _server = new WebSocketServer("ws://localhost:1702");
-            _server.AddWebSocketService<WebsocketServer>("/commands_editor", (server) =>
-            {
-                _serverLogic = server;
-                _serverLogic.OnClientConnect += RefreshWebsocket;
-            });
-            _server.Start();
-#endif
+            UnityConnection.Checked = SettingsManager.GetBool(_serverOpt);
 
             //Populate available maps
             env_list.Items.Clear();
@@ -1318,10 +1310,32 @@ namespace CommandsEditor
             editor.Show();
         }
 
-        /* When new client connects, request the correct level (if loaded) */
+        private void StartWebsocket()
+        {
+            _server = new WebSocketServer("ws://localhost:1702");
+            _server.AddWebSocketService<WebsocketServer>("/commands_editor", (server) =>
+            {
+                _serverLogic = server;
+                _serverLogic.OnClientConnect += RefreshWebsocket;
+            });
+            _server.Start();
+        }
+
         private void RefreshWebsocket()
         {
-#if DEBUG
+            if (!SettingsManager.GetBool(_serverOpt))
+            {
+                if (_server != null)
+                    _server.Stop();
+                _server = null;
+                return;
+            }
+            else
+            {
+                if (_server == null)
+                    StartWebsocket();
+            }
+
             //Request the correct level
             if (Loaded.commands != null && Loaded.commands.Loaded)
             {
@@ -1350,7 +1364,12 @@ namespace CommandsEditor
             }
             _server.WebSocketServices["/commands_editor"].Sessions.Broadcast(((int)MessageType.GO_TO_REDS).ToString() + str);
             */
-#endif
+        }
+
+        private void UnityConnection_CheckedChanged(object sender, EventArgs e)
+        {
+            SettingsManager.SetBool(_serverOpt, UnityConnection.Checked);
+            RefreshWebsocket();
         }
     }
 }

@@ -71,6 +71,7 @@
             this.editEntryPoint = new System.Windows.Forms.Button();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.UnityConnection = new System.Windows.Forms.CheckBox();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.entityInfoGroup.SuspendLayout();
@@ -462,6 +463,7 @@
             // 
             // groupBox8
             // 
+            this.groupBox8.Controls.Add(this.UnityConnection);
             this.groupBox8.Controls.Add(this.enableBackups);
             this.groupBox8.Controls.Add(this.show3D);
             this.groupBox8.Controls.Add(this.editEntryPoint);
@@ -505,6 +507,19 @@
             this.groupBox10.Size = new System.Drawing.Size(487, 49);
             this.groupBox10.TabIndex = 175;
             this.groupBox10.TabStop = false;
+            // 
+            // UnityConnection
+            // 
+            this.UnityConnection.AutoSize = true;
+            this.UnityConnection.Location = new System.Drawing.Point(119, 26);
+            this.UnityConnection.Name = "UnityConnection";
+            this.UnityConnection.Size = new System.Drawing.Size(105, 17);
+            this.UnityConnection.TabIndex = 180;
+            this.UnityConnection.Text = "Connect to Unity";
+            this.toolTip1.SetToolTip(this.UnityConnection, "If checked, a local connection will be established to the Unity composite viewer." +
+        "");
+            this.UnityConnection.UseVisualStyleBackColor = true;
+            this.UnityConnection.CheckedChanged += new System.EventHandler(this.UnityConnection_CheckedChanged);
             // 
             // CommandsEditor
             // 
@@ -578,5 +593,6 @@
         private System.Windows.Forms.Button showOverridesAndProxies;
         private System.Windows.Forms.Button goBackToPrevComp;
         private System.Windows.Forms.Button goToZone;
+        private System.Windows.Forms.CheckBox UnityConnection;
     }
 }
