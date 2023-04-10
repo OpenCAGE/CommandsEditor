@@ -39,13 +39,13 @@ namespace CommandsEditor
             FileTree.SuspendLayout();
             FileTree.BeginUpdate();
             FileTree.Nodes.Clear();
+            FilesToList.Sort();
             for (int i = 0; i < FilesToList.Count; i++)
             {
                 string[] FileNameParts = FilesToList[i].Split('/');
                 if (FileNameParts.Length == 1) { FileNameParts = FilesToList[i].Split('\\'); }
                 AddFileToTree(FileNameParts, 0, FileTree.Nodes, contextMenu, (tags == null) ? "" : tags[i]);
             }
-            FileTree.Sort();
             FileTree.EndUpdate();
             FileTree.ResumeLayout();
         }
