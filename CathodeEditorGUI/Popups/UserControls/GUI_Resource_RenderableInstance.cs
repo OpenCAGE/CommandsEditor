@@ -66,8 +66,9 @@ namespace CommandsEditor.Popups.UserControls
             SelectedModelIndex = modelIndex;
             SelectedMaterialIndexes = materialIndexes;
 
-            Models.CS2.LOD.Submesh submesh = Editor.resource.models.GetAtWriteIndex(SelectedModelIndex);
-            Models.CS2.LOD lod = Editor.resource.models.FindModelLODForSubmesh(submesh);
+            Models.CS2.Component.LOD.Submesh submesh = Editor.resource.models.GetAtWriteIndex(SelectedModelIndex);
+            Models.CS2.Component.LOD lod = Editor.resource.models.FindModelLODForSubmesh(submesh); 
+            //Models.CS2.Component component = Editor.resource.models.FindModelComponentForSubmesh(submesh);
             Models.CS2 mesh = Editor.resource.models.FindModelForSubmesh(submesh);
 
             modelInfoTextbox.Text = mesh?.Name;
