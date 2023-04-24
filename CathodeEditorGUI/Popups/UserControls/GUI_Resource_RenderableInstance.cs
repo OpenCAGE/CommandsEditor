@@ -54,20 +54,29 @@ namespace CommandsEditor.Popups.UserControls
         }
         public void PopulateUI(int redsIndex, int redsCount)
         {
-            //Get all remapped materials from REDs
-            List<int> materialIndexes = new List<int>();
-            for (int y = 0; y < redsCount; y++)
-                materialIndexes.Add(Editor.resource.reds.Entries[redsIndex + y].MaterialIndex);
-
-            PopulateUI(Editor.resource.reds.Entries[redsIndex].ModelIndex, materialIndexes);
+            try
+            {
+                //Get all remapped materials from REDs
+                List<int> materialIndexes = new List<int>();
+                for (int y = 0; y < redsCount; y++)
+                    materialIndexes.Add(Editor.resource.reds.Entries[redsIndex + y].MaterialIndex);
+                PopulateUI(Editor.resource.reds.Entries[redsIndex].ModelIndex, materialIndexes);
+            }
+            catch 
+            {
+                PopulateUI(-1, new List<int>());
+            }
         }
         public void PopulateUI(int modelIndex, List<int> materialIndexes)
         {
             SelectedModelIndex = modelIndex;
             SelectedMaterialIndexes = materialIndexes;
 
-            Models.CS2.LOD.Submesh submesh = Editor.resource.models.GetAtWriteIndex(SelectedModelIndex);
-            Models.CS2.LOD lod = Editor.resource.models.FindModelLODForSubmesh(submesh);
+            if (SelectedModelIndex == -1) SelectedModelIndex = 0;
+
+            Models.CS2.Component.LOD.Submesh submesh = Editor.resource.models.GetAtWriteIndex(SelectedModelIndex);
+            Models.CS2.Component.LOD lod = Editor.resource.models.FindModelLODForSubmesh(submesh); 
+            //Models.CS2.Component component = Editor.resource.models.FindModelComponentForSubmesh(submesh);
             Models.CS2 mesh = Editor.resource.models.FindModelForSubmesh(submesh);
 
             modelInfoTextbox.Text = mesh?.Name;

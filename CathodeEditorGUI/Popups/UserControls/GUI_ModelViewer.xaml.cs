@@ -16,12 +16,9 @@ namespace CommandsEditor.Popups.UserControls
         protected CommandsEditor _editor;
         protected Editor Editor { get { return _editor.Loaded; } } //hotfix for old Editor. static
 
-        CS2Reader reader = null;
-
         public GUI_ModelViewer(CommandsEditor editor)
         {
             InitializeComponent();
-            reader = new CS2Reader();
             _editor = editor;
         }
 
@@ -36,7 +33,7 @@ namespace CommandsEditor.Popups.UserControls
         
         private Model3DGroup OffsetModel(int modelIndex, Vector3D position, Vector3D rotation)
         {
-            Models.CS2.LOD.Submesh submesh = Editor.resource.models.GetAtWriteIndex(modelIndex);
+            Models.CS2.Component.LOD.Submesh submesh = Editor.resource.models.GetAtWriteIndex(modelIndex);
             Model3DGroup model = Editor.resource.models.GetMesh(submesh);
             Transform3DGroup transform = new Transform3DGroup();
             transform.Children.Add(new ScaleTransform3D(submesh.ScaleFactor, submesh.ScaleFactor, submesh.ScaleFactor));

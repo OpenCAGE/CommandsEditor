@@ -120,6 +120,12 @@ namespace CommandsEditor
                 RenderableElements.Element newRed = new RenderableElements.Element();
                 newRed.ModelIndex = renderable.SelectedModelIndex + y; //assumes sequential write
                 newRed.MaterialIndex = renderable.SelectedMaterialIndexes[y];
+                if (y == 0)
+                {
+                    newRed.LODIndex = Editor.resource.reds.Entries.Count;
+                    //newRed.LODCount = (byte)renderable.SelectedMaterialIndexes.Count;
+                    newRed.LODCount = 0; //TODO!!
+                }
                 Editor.resource.reds.Entries.Add(newRed);
             }
 

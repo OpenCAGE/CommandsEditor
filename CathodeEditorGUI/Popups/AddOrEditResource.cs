@@ -175,11 +175,18 @@ namespace CommandsEditor
                             resourceRef.rotation = ui.Rotation;
                             resourceRef.count = ui.SelectedMaterialIndexes.Count;
                             resourceRef.startIndex = Editor.resource.reds.Entries.Count;
+
                             for (int y = 0; y < ui.SelectedMaterialIndexes.Count; y++)
                             {
                                 RenderableElements.Element newRed = new RenderableElements.Element();
                                 newRed.ModelIndex = ui.SelectedModelIndex + y; //assumes sequential write
                                 newRed.MaterialIndex = ui.SelectedMaterialIndexes[y];
+                                if (y == 0)
+                                {
+                                    newRed.LODIndex = Editor.resource.reds.Entries.Count;
+                                    //newRed.LODCount = (byte)ui.SelectedMaterialIndexes.Count;
+                                    newRed.LODCount = 0; //TODO!!
+                                }
                                 Editor.resource.reds.Entries.Add(newRed);
                             }
                             break;
