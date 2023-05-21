@@ -294,6 +294,7 @@
     </Compile>
     <Compile Include="Scripts\CathodeEntityDatabase.cs" />
     <Compile Include="Scripts\CathodeEnums.cs" />
+    <Compile Include="Scripts\CathodeLibExtensions.cs" />
     <Compile Include="Scripts\ComboBoxExtensions.cs" />
     <Compile Include="Scripts\LocalDebug.cs" />
     <Compile Include="Scripts\Nodes\AccessTerminal.cs" />

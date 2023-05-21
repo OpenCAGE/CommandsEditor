@@ -5,6 +5,7 @@ using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Numerics;
 using CATHODE;
+using AlienPAK;
 
 namespace CommandsEditor.Popups.UserControls
 {
@@ -34,7 +35,8 @@ namespace CommandsEditor.Popups.UserControls
         private Model3DGroup OffsetModel(int modelIndex, Vector3D position, Vector3D rotation)
         {
             Models.CS2.Component.LOD.Submesh submesh = Editor.resource.models.GetAtWriteIndex(modelIndex);
-            Model3DGroup model = Editor.resource.models.GetMesh(submesh);
+            Model3DGroup model = new Model3DGroup();
+            model.Children.Add(submesh.ToGeometryModel3D());
             Transform3DGroup transform = new Transform3DGroup();
             transform.Children.Add(new ScaleTransform3D(submesh.ScaleFactor, submesh.ScaleFactor, submesh.ScaleFactor));
             //transform.Children.Add(new RotateTransform3D(new (rotation.X, rotation.Y, rotation.Z, 0.0f));
