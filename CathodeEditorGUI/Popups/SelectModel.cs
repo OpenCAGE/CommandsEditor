@@ -1,4 +1,5 @@
-﻿using CATHODE;
+﻿using AlienPAK;
+using CATHODE;
 using CATHODE.LEGACY;
 using CommandsEditor.Popups.Base;
 using CommandsEditor.Popups.UserControls;
@@ -14,6 +15,9 @@ using System.Windows.Forms;
 
 namespace CommandsEditor
 {
+    //TODO: The logic here is really crap. Need to bring over the new improvements made for AlienPAK.
+
+
     public partial class SelectModel : BaseWindow
     {
         GUI_ModelViewer modelViewer = null;
@@ -78,7 +82,10 @@ namespace CommandsEditor
         private void ShowModel(int i)
         {
             List<GUI_ModelViewer.Model> models = new List<GUI_ModelViewer.Model>();
-            models.Add(new GUI_ModelViewer.Model(i));
+            Models.CS2.Component component = Editor.resource.models.FindModelComponentForSubmesh(Editor.resource.models.GetAtWriteIndex(i));
+            for (int x = 0; x < component.LODs.Count; x++)
+                for (int y = 0; y < component.LODs[x].Submeshes.Count; y++)
+                    models.Add(new GUI_ModelViewer.Model(Editor.resource.models.GetWriteIndex(component.LODs[x].Submeshes[y])));
             modelViewer.ShowModel(models);
             modelPreviewArea.Text = GenerateNodeTag(i);
         }
