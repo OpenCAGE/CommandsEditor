@@ -41,6 +41,7 @@ namespace CommandsEditor
 
         public CommandsEditor()
         {
+
             //LocalDebug.SyncEnumValuesAndDump();
             //return;
 
