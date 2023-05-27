@@ -39,6 +39,8 @@ namespace CommandsEditor
             public SoundDialogueLookups sound_dialoguelookups;
             public SoundEventData sound_eventdata;
             public SoundEnvironmentData sound_environmentdata;
+
+            public CharacterAccessorySets character_accessories;
         }
 
         //Global animation strings

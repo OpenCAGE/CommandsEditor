@@ -41,50 +41,6 @@ namespace CommandsEditor
 
         public CommandsEditor()
         {
-
-            //LocalDebug.SyncEnumValuesAndDump();
-            //return;
-
-            //LocalDebug.SyncEnumValuesAndDump();
-            //return;
-
-            //ShortGuid guid = ShortGuidUtils.Generate("gravity_force");
-            //Console.WriteLine(guid.ToByteString());
-            //return;
-            //
-            //LocalDebug.CommandsTest();
-            //string sdfd = "";
-
-            //LocalDebug.CommandsTest();
-            //return;
-
-            /*
-            LocalDebug.TestAllCmds();
-            return;
-
-
-            Commands commands = new Commands("G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\DLC\\BSPNOSTROMO_TWOTEAMS_PATCH\\WORLD\\COMMANDS.PAK");
-            CAGEAnimation animNode = (CAGEAnimation)commands.GetComposite("DLC\\PREORDER\\PODLC_TWOTEAMS").functions.FirstOrDefault(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.CAGEAnimation));
-            File.WriteAllText("out.json", JsonConvert.SerializeObject(animNode, Formatting.Indented));
-            /*
-            foreach (CAGEAnimation.Animation key in animNode.animations)
-            {
-                foreach (CAGEAnimation.Animation.Keyframe keyD in key.keyframes)
-                {
-                    keyD.unk2 = 10;
-                    keyD.unk3 = 0;
-                    keyD.unk4 = -5;
-                    keyD.unk5 = 0;
-                }
-            }
-            *//*
-            commands.Save();
-
-            Environment.Exit(0);
-            return;
-
-            */
-
             EditorUtils.SetEditor(this);
             InitializeComponent();
             _treeHelper = new TreeUtility(FileTree);
@@ -338,12 +294,13 @@ namespace CommandsEditor
             if (Loaded.resource.sound_dialoguelookups != null) Loaded.resource.sound_dialoguelookups.Entries.Clear();
             if (Loaded.resource.sound_eventdata != null) Loaded.resource.sound_eventdata.Entries.Clear();
             if (Loaded.resource.sound_environmentdata != null) Loaded.resource.sound_environmentdata.Entries.Clear();
+            if (Loaded.resource.character_accessories != null) Loaded.resource.character_accessories.Entries.Clear();
 
 #if !CATHODE_FAIL_HARD
             try
             {
 #endif
-                string baseLevelPath = Loaded.commands.Filepath.Substring(0, Loaded.commands.Filepath.Length - ("WORLD/COMMANDS.PAK").Length);
+            string baseLevelPath = Loaded.commands.Filepath.Substring(0, Loaded.commands.Filepath.Length - ("WORLD/COMMANDS.PAK").Length);
 
                 //The game has two hard-coded _PATCH overrides which change the CommandsPAK but not the assets
                 string levelName = env_list.Items[env_list.SelectedIndex].ToString();
@@ -366,6 +323,7 @@ namespace CommandsEditor
                 Loaded.resource.sound_dialoguelookups = new SoundDialogueLookups(baseLevelPath + "WORLD/SOUNDDIALOGUELOOKUPS.DAT");
                 Loaded.resource.sound_eventdata = new SoundEventData(baseLevelPath + "WORLD/SOUNDEVENTDATA.DAT");
                 Loaded.resource.sound_environmentdata = new SoundEnvironmentData(baseLevelPath + "WORLD/SOUNDENVIRONMENTDATA.DAT");
+                Loaded.resource.character_accessories = new CharacterAccessorySets(baseLevelPath + "WORLD/CHARACTERACCESSORYSETS.BIN");
 #if !CATHODE_FAIL_HARD
             }
             catch
@@ -383,6 +341,7 @@ namespace CommandsEditor
                 Loaded.resource.sound_dialoguelookups = null;
                 Loaded.resource.sound_eventdata = null;
                 Loaded.resource.sound_environmentdata = null;
+                Loaded.resource.character_accessories = null;
             }
 #endif
         }
@@ -619,6 +578,7 @@ namespace CommandsEditor
         {
             _previousComposite = Loaded.selected.composite;
             ClearUI(false, true, true);
+
             Loaded.selected.composite = comp;
             Loaded.OnCompositeSelected?.Invoke(Loaded.selected.composite);
 
@@ -900,7 +860,7 @@ namespace CommandsEditor
                     if (funcComposite == null)
                     {
                         FunctionType function = CommandsUtils.GetFunctionType(thisFunction);
-                        editFunction.Enabled = function == FunctionType.CAGEAnimation || function == FunctionType.TriggerSequence;
+                        editFunction.Enabled = function == FunctionType.CAGEAnimation || function == FunctionType.TriggerSequence || function == FunctionType.Character;
                     }
                     editEntityResources.Enabled = (Loaded.resource.models != null);
                     break;
@@ -926,7 +886,7 @@ namespace CommandsEditor
             selected_entity_type_description.Text = description;
 
             //show mvr editor button if this entity has a mvr link
-            if (Loaded.mvr != null && Loaded.mvr.Entries.FindAll(o => o.commandsNodeID == Loaded.selected.entity.shortGUID).Count != 0)
+            if (Loaded.mvr != null && Loaded.mvr.Entries.FindAll(o => o.entity.entity_id == Loaded.selected.entity.shortGUID).Count != 0)
                 editEntityMovers.Enabled = true;
 
             //populate linked params IN
@@ -1193,6 +1153,11 @@ namespace CommandsEditor
                     TriggerSequenceEditor triggerSequenceEditor = new TriggerSequenceEditor(this, (TriggerSequence)Loaded.selected.entity);
                     triggerSequenceEditor.Show();
                     triggerSequenceEditor.FormClosed += FunctionEditor_FormClosed;
+                    break;
+                case "CHARACTER":
+                    CharacterEditor characterEditor = new CharacterEditor(this);
+                    characterEditor.Show();
+                    characterEditor.FormClosed += FunctionEditor_FormClosed;
                     break;
             }
         }
