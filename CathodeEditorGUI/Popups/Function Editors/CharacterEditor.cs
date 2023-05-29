@@ -16,7 +16,7 @@ namespace CommandsEditor
         {
             InitializeComponent();
 
-            _hierarchies = CommandsUtils.GenerateHierarchies(Editor.commands, Editor.selected.composite, Editor.selected.entity);
+            _hierarchies = EditorUtils.GetHierarchiesForEntity(Editor.selected.composite, Editor.selected.entity);
             characterInstances.Items.Clear();
             for (int i = 0; i < _hierarchies.Count; i++)
             {

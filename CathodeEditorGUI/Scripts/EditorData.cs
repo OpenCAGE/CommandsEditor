@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace CommandsEditor
 {
-    public class Editor
+    public class EditorData
     {
         //Level descriptors & scripting
         public string level;

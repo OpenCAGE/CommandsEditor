@@ -1380,8 +1380,8 @@ namespace CommandsEditor
             {
                 //if (env_list.Items[mm].ToString() != "BSP_TORRENS") continue;
 
-                editor.Loaded.commands = new Commands(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + mapList[mm].ToString() + "/WORLD/COMMANDS.PAK");
-                Console.WriteLine("Loading: " + editor.Loaded.commands.Filepath + "...");
+                editor.Editor.commands = new Commands(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + mapList[mm].ToString() + "/WORLD/COMMANDS.PAK");
+                Console.WriteLine("Loading: " + editor.Editor.commands.Filepath + "...");
                 //CurrentInstance.compositeLookup = new EntityNameLookup(CurrentInstance.commandsPAK);
 
                 //EnvironmentAnimationDatabase db = new EnvironmentAnimationDatabase(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + env_list.Items[mm].ToString() + "/WORLD/ENVIRONMENT_ANIMATION.DAT");
@@ -1394,12 +1394,12 @@ namespace CommandsEditor
                 //Console.WriteLine(db.Header.Unknown1_);
 
                 string[] towrite = new string[200];
-                for (int i = 0; i < editor.Loaded.commands.Entries.Count; i++)
+                for (int i = 0; i < editor.Editor.commands.Entries.Count; i++)
                 {
-                    for (int x = 0; x < editor.Loaded.commands.Entries[i].functions.Count; x++)
+                    for (int x = 0; x < editor.Editor.commands.Entries[i].functions.Count; x++)
                     {
-                        if (!CommandsUtils.FunctionTypeExists(editor.Loaded.commands.Entries[i].functions[x].function)) continue;
-                        FunctionType type = CommandsUtils.GetFunctionType(editor.Loaded.commands.Entries[i].functions[x].function);
+                        if (!CommandsUtils.FunctionTypeExists(editor.Editor.commands.Entries[i].functions[x].function)) continue;
+                        FunctionType type = CommandsUtils.GetFunctionType(editor.Editor.commands.Entries[i].functions[x].function);
                         switch (type)
                         {
                             case FunctionType.CameraShake:
@@ -1447,7 +1447,7 @@ namespace CommandsEditor
                                 //Console.WriteLine(rr.Count);
 
 
-                                Console.WriteLine(editor.Loaded.commands.Entries[i].name + " -> " + editor.Loaded.commands.Entries[i].functions[x].shortGUID + " -> " + type);
+                                Console.WriteLine(editor.Editor.commands.Entries[i].name + " -> " + editor.Editor.commands.Entries[i].functions[x].shortGUID + " -> " + type);
 
                                 //for (int y = 0; y < CurrentInstance.commandsPAK.Composites[i].functions[x].resources.Count; y++)
                                 //{

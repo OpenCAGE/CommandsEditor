@@ -181,6 +181,7 @@ namespace CommandsEditor
                     return;
                 }
                 newEntity = composite.AddFunction(compRef, addDefaultParams.Checked);
+                EditorUtils.GenerateCompositeInstances(Editor.commands);
             }
             else if (createDatatypeEntity.Checked)
                 newEntity = composite.AddVariable(textBox1.Text, (DataType)entityVariant.SelectedIndex, true);

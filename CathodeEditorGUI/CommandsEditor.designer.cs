@@ -522,6 +522,7 @@
             this.editEntryPoint.TabIndex = 177;
             this.editEntryPoint.Text = "Edit Root";
             this.editEntryPoint.UseVisualStyleBackColor = true;
+            this.editEntryPoint.Visible = false;
             this.editEntryPoint.Click += new System.EventHandler(this.editEntryPoint_Click);
             // 
             // groupBox10

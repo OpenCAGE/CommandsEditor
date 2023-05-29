@@ -15,7 +15,7 @@ namespace CommandsEditor.Popups.UserControls
     public partial class GUI_ModelViewer : UserControl
     {
         protected CommandsEditor _editor;
-        protected Editor Editor { get { return _editor.Loaded; } } //hotfix for old Editor. static
+        protected EditorData Editor { get { return _editor.Editor; } } //hotfix for old Editor. static
 
         public GUI_ModelViewer(CommandsEditor editor)
         {

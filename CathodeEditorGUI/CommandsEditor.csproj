@@ -1124,7 +1124,7 @@
     <Compile Include="CommandsEditor.designer.cs">
       <DependentUpon>CommandsEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="Scripts\Editor.cs" />
+    <Compile Include="Scripts\EditorData.cs" />
     <Compile Include="Scripts\EditorUtils.cs" />
     <Compile Include="Popups\AddEntity.cs">
       <SubType>Form</SubType>
