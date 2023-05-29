@@ -402,6 +402,9 @@ namespace CommandsEditor
             }
 #endif
 
+            if (Editor.resource.character_accessories != null && Editor.resource.character_accessories.Entries != null)
+                Editor.resource.character_accessories.Save();
+
             if (Editor.resource.reds != null && Editor.resource.reds.Entries != null)
                 Editor.resource.reds.Save();
 
