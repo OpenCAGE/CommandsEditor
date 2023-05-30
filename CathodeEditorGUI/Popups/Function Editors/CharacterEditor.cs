@@ -27,6 +27,10 @@ namespace CommandsEditor
             for (int i = 0; i < skeletons.Count; i++)
                 bodyTypes.Items.Add(skeletons[i]);
 
+            shirtDecal.Items.Clear();
+            foreach (CharacterAccessorySets.Entry.Decal decal in Enum.GetValues(typeof(CharacterAccessorySets.Entry.Decal)))
+                shirtDecal.Items.Add(decal);
+
             RefreshUI(ShortGuid.Invalid);
         }
 
@@ -55,6 +59,7 @@ namespace CommandsEditor
             selectNewShoes.Enabled = characterInstances.Items.Count != 0;
             selectNewCollision.Enabled = characterInstances.Items.Count != 0;
             bodyTypes.Enabled = characterInstances.Items.Count != 0;
+            shirtDecal.Enabled = characterInstances.Items.Count != 0;
 
             if (characterInstances.Items.Count != 0)
                 characterInstances.SelectedIndex = toSelect;
@@ -73,6 +78,7 @@ namespace CommandsEditor
             collisionComposite.Text = Editor.commands.GetComposite(_accessories.collision_composite)?.name;
 
             bodyTypes.Text = _accessories.face_skeleton;
+            shirtDecal.SelectedIndex = (int)_accessories.decal;
         }
 
         private void addNewCharacter_Click(object sender, EventArgs e)
@@ -167,6 +173,11 @@ namespace CommandsEditor
                 _accessories.body_skeleton = "MALE";
             if (Editor.female_skeletons.Contains(bodyTypes.Text))
                 _accessories.body_skeleton = "FEMALENPC";
+        }
+
+        private void shirtDecal_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _accessories.decal = (CharacterAccessorySets.Entry.Decal)shirtDecal.SelectedIndex;
         }
     }
 }

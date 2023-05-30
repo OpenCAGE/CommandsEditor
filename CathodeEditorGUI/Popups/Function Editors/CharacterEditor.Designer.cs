@@ -54,6 +54,9 @@
             this.characterInstances = new System.Windows.Forms.ComboBox();
             this.addNewCharacter = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.label7 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.shirtDecal = new System.Windows.Forms.ComboBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -81,18 +84,18 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(19, 66);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(28, 13);
+            this.label1.Size = new System.Drawing.Size(34, 13);
             this.label1.TabIndex = 2;
-            this.label1.Text = "Shirt";
+            this.label1.Text = "Torso";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(19, 144);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(48, 13);
+            this.label2.Size = new System.Drawing.Size(30, 13);
             this.label2.TabIndex = 5;
-            this.label2.Text = "Trousers";
+            this.label2.Text = "Legs";
             // 
             // selectNewTrousers
             // 
@@ -240,7 +243,7 @@
             this.groupBox1.Controls.Add(this.selectNewShoes);
             this.groupBox1.Controls.Add(this.headComposite);
             this.groupBox1.Controls.Add(this.label3);
-            this.groupBox1.Location = new System.Drawing.Point(12, 117);
+            this.groupBox1.Location = new System.Drawing.Point(12, 39);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(654, 280);
             this.groupBox1.TabIndex = 18;
@@ -249,21 +252,24 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.label8);
+            this.groupBox2.Controls.Add(this.shirtDecal);
+            this.groupBox2.Controls.Add(this.label7);
             this.groupBox2.Controls.Add(this.bodyTypes);
-            this.groupBox2.Location = new System.Drawing.Point(12, 39);
+            this.groupBox2.Location = new System.Drawing.Point(12, 325);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(654, 72);
+            this.groupBox2.Size = new System.Drawing.Size(654, 128);
             this.groupBox2.TabIndex = 19;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Skeleton";
+            this.groupBox2.Text = "Metadata";
             // 
             // bodyTypes
             // 
             this.bodyTypes.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.bodyTypes.FormattingEnabled = true;
-            this.bodyTypes.Location = new System.Drawing.Point(22, 28);
+            this.bodyTypes.Location = new System.Drawing.Point(19, 45);
             this.bodyTypes.Name = "bodyTypes";
-            this.bodyTypes.Size = new System.Drawing.Size(611, 21);
+            this.bodyTypes.Size = new System.Drawing.Size(614, 21);
             this.bodyTypes.TabIndex = 12;
             this.bodyTypes.SelectedIndexChanged += new System.EventHandler(this.bodyTypes_SelectedIndexChanged);
             // 
@@ -290,11 +296,39 @@
             this.addNewCharacter.UseVisualStyleBackColor = true;
             this.addNewCharacter.Click += new System.EventHandler(this.addNewCharacter_Click);
             // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(19, 29);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(49, 13);
+            this.label7.TabIndex = 18;
+            this.label7.Text = "Skeleton";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(19, 69);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(64, 13);
+            this.label8.TabIndex = 20;
+            this.label8.Text = "Shirt Decals";
+            // 
+            // shirtDecal
+            // 
+            this.shirtDecal.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.shirtDecal.FormattingEnabled = true;
+            this.shirtDecal.Location = new System.Drawing.Point(19, 85);
+            this.shirtDecal.Name = "shirtDecal";
+            this.shirtDecal.Size = new System.Drawing.Size(614, 21);
+            this.shirtDecal.TabIndex = 19;
+            this.shirtDecal.SelectedIndexChanged += new System.EventHandler(this.shirtDecal_SelectedIndexChanged);
+            // 
             // CharacterEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(678, 407);
+            this.ClientSize = new System.Drawing.Size(678, 463);
             this.Controls.Add(this.addNewCharacter);
             this.Controls.Add(this.characterInstances);
             this.Controls.Add(this.groupBox2);
@@ -308,6 +342,7 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -338,5 +373,8 @@
         private System.Windows.Forms.ComboBox characterInstances;
         private System.Windows.Forms.Button addNewCharacter;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.ComboBox shirtDecal;
+        private System.Windows.Forms.Label label7;
     }
 }

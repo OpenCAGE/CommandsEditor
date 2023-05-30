@@ -45,9 +45,6 @@ namespace CommandsEditor
 
         public CommandsEditor()
         {
-            //CustomCharacterInfo bruh = new CustomCharacterInfo("G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\CHR_INFO\\CUSTOMCHARACTERINFO.BIN");
-            //return;
-
             EditorUtils.SetEditor(this);
             InitializeComponent();
             _treeHelper = new TreeUtility(FileTree);
@@ -307,7 +304,7 @@ namespace CommandsEditor
             catch (Exception e)
             {
                 MessageBox.Show("Failed to load COMMANDS.PAK!\n" + e.Message, "Failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Loaded.commands = null;
+                Editor.commands = null;
                 return;
             }
 #endif
@@ -375,18 +372,18 @@ namespace CommandsEditor
             {
                 //Can fail if we're loading a PAK outside the game structure
                 MessageBox.Show("Failed to load asset PAKs!\nAre you opening a Commands PAK outside of a map directory?\nIf not, please try and load again.", "Resource editing disabled.", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                Loaded.resource.models = null;
-                Loaded.resource.reds = null;
-                Loaded.resource.materials = null;
-                Loaded.resource.textures = null;
-                Loaded.resource.textures_global = null;
-                Loaded.resource.env_animations = null;
-                Loaded.resource.collision_maps = null;
-                Loaded.resource.sound_bankdata = null;
-                Loaded.resource.sound_dialoguelookups = null;
-                Loaded.resource.sound_eventdata = null;
-                Loaded.resource.sound_environmentdata = null;
-                Loaded.resource.character_accessories = null;
+                Editor.resource.models = null;
+                Editor.resource.reds = null;
+                Editor.resource.materials = null;
+                Editor.resource.textures = null;
+                Editor.resource.textures_global = null;
+                Editor.resource.env_animations = null;
+                Editor.resource.collision_maps = null;
+                Editor.resource.sound_bankdata = null;
+                Editor.resource.sound_dialoguelookups = null;
+                Editor.resource.sound_eventdata = null;
+                Editor.resource.sound_environmentdata = null;
+                Editor.resource.character_accessories = null;
             }
 #endif
         }
@@ -406,7 +403,7 @@ namespace CommandsEditor
             {
                 //Can fail if we're loading a MVR outside the game structure
                 MessageBox.Show("Failed to load mover descriptor database!\nAre you opening a Commands PAK outside of a map directory?\nMVR editing disabled.", "MVR editing disabled.", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                Loaded.mvr = null;
+                Editor.mvr = null;
             }
 #endif
         }
@@ -421,7 +418,7 @@ namespace CommandsEditor
             byte[] backup = null;
             try
             {
-                backup = File.ReadAllBytes(Loaded.commands.Filepath);
+                backup = File.ReadAllBytes(Editor.commands.Filepath);
 #endif
                 Editor.commands.Save();
 #if !CATHODE_FAIL_HARD
@@ -431,7 +428,7 @@ namespace CommandsEditor
                 try
                 {
                     if (backup != null)
-                        File.WriteAllBytes(Loaded.commands.Filepath, backup);
+                        File.WriteAllBytes(Editor.commands.Filepath, backup);
                 }
                 catch { }
             
