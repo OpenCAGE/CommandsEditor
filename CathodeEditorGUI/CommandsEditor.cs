@@ -23,6 +23,7 @@ using System.Diagnostics;
 using System.Security.Policy;
 using Newtonsoft.Json;
 using OpenCAGE;
+using System.Xml;
 
 namespace CommandsEditor
 {
@@ -38,6 +39,9 @@ namespace CommandsEditor
         private readonly string _serverOpt = "CE_ConnectToUnity";
         private readonly string _backupsOpt = "CS_EnableBackups";
         private readonly string _nodeOpt = "CS_NodeView";
+
+        Task currentEntityNameCacher = null;
+        Task currentHierarchyCacher = null;
 
         public CommandsEditor()
         {
@@ -92,7 +96,7 @@ namespace CommandsEditor
             }
 
             //Load animation data - this should be quick enough to not worry about waiting for the thread
-            Task.Factory.StartNew(() => EditorUtils.LoadAnimData(this));
+            Task.Factory.StartNew(() => LoadAnimData(this));
 
             ClearUI(true, true, true);
 
@@ -100,6 +104,48 @@ namespace CommandsEditor
 #if DEBUG
             show3D.Visible = true;
 #endif
+        }
+
+        /* Load anim data */
+        public static void LoadAnimData(CommandsEditor editor)
+        {
+            //Load animation data
+            PAK2 animPAK = new PAK2(SharedData.pathToAI + "/DATA/GLOBAL/ANIMATION.PAK");
+
+            //Load all male/female skeletons
+            List<PAK2.File> skeletons = animPAK.Entries.FindAll(o => o.Filename.Length > 17 && o.Filename.Substring(0, 17) == "DATA\\SKELETONDEFS");
+            for (int i = 0; i < skeletons.Count; i++)
+            {
+                string skeleton = Path.GetFileNameWithoutExtension(skeletons[i].Filename);
+                File.WriteAllBytes(skeleton, skeletons[i].Content);
+                XmlNode skeletonType = new BML(skeleton).Content.SelectSingleNode("//SkeletonDef/LoResReferenceSkeleton");
+                switch (skeletonType?.InnerText)
+                {
+                    case "MALE":
+                        editor.Editor.male_skeletons.Add(skeleton);
+                        break;
+                    case "FEMALENPC":
+                        editor.Editor.female_skeletons.Add(skeleton);
+                        break;
+                }
+                File.Delete(skeleton);
+            }
+
+            //Anim string db
+            File.WriteAllBytes("ANIM_STRING_DB.BIN", animPAK.Entries.FirstOrDefault(o => o.Filename.Contains("ANIM_STRING_DB.BIN")).Content);
+            editor.Editor.animstrings = new AnimationStrings("ANIM_STRING_DB.BIN");
+            File.Delete("ANIM_STRING_DB.BIN");
+
+            //Debug anim string db
+            File.WriteAllBytes("ANIM_STRING_DB_DEBUG.BIN", animPAK.Entries.FirstOrDefault(o => o.Filename.Contains("ANIM_STRING_DB_DEBUG.BIN")).Content);
+            editor.Editor.animstrings_debug = new AnimationStrings("ANIM_STRING_DB_DEBUG.BIN");
+            File.Delete("ANIM_STRING_DB_DEBUG.BIN");
+
+            animPAK = null;
+
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
         }
 
         private void CommandsEditor_Load(object sender, EventArgs e)
@@ -178,8 +224,6 @@ namespace CommandsEditor
         }
 
         /* Load a COMMANDS.PAK into the editor with additional stuff */
-        Task currentEntityNameCacher = null;
-        Task currentHierarchyCacher = null;
         public void LoadCommandsPAK(string level)
         {
             //Reset UI
@@ -195,8 +239,7 @@ namespace CommandsEditor
             ShortGuidUtils.LinkCommands(Editor.commands);
             if (currentEntityNameCacher != null) currentEntityNameCacher.Dispose();
             currentEntityNameCacher = Task.Factory.StartNew(() => EditorUtils.GenerateEntityNameCache(this));
-            if (currentHierarchyCacher != null) currentHierarchyCacher.Dispose();
-            currentHierarchyCacher = Task.Factory.StartNew(() => EditorUtils.GenerateCompositeInstances(Editor.commands));
+            CacheHierarchies();
 
             //Populate file tree
             _treeHelper.UpdateFileTree(Editor.commands.GetCompositeNames().ToList());
@@ -237,6 +280,13 @@ namespace CommandsEditor
         private void RefreshStatsUI()
         {
             root_composite_display.Text = "Root composite: " + Editor.commands.EntryPoints[0].name;
+        }
+
+        /* Cache entity hierarchies */
+        private void CacheHierarchies()
+        {
+            if (currentHierarchyCacher != null) currentHierarchyCacher.Dispose();
+            currentHierarchyCacher = Task.Factory.StartNew(() => EditorUtils.GenerateCompositeInstances(Editor.commands));
         }
 
         /* Load commands */
@@ -524,9 +574,10 @@ namespace CommandsEditor
 
             //Refresh UI
             ClearUI(false, true, true);
-            EditorUtils.GenerateCompositeInstances(Editor.commands);
             RefreshStatsUI();
             _treeHelper.UpdateFileTree(Editor.commands.GetCompositeNames().ToList());
+
+            CacheHierarchies();
         }
 
         /* Select entity from loaded composite */
@@ -685,8 +736,9 @@ namespace CommandsEditor
             }
 
             LoadComposite(Editor.selected.composite.name);
-            EditorUtils.GenerateCompositeInstances(Editor.commands);
             ClearUI(false, false, true);
+
+            CacheHierarchies();
         }
 
         /* Remove selected entity when DELETE key is pressed in composite */
@@ -754,6 +806,8 @@ namespace CommandsEditor
 
             //Load in to UI
             ReloadUIForNewEntity(newEnt);
+
+            CacheHierarchies();
         }
 
         /* Rename selected entity */

@@ -55,7 +55,6 @@ namespace CommandsEditor
             selectNewShoes.Enabled = characterInstances.Items.Count != 0;
             selectNewCollision.Enabled = characterInstances.Items.Count != 0;
             bodyTypes.Enabled = characterInstances.Items.Count != 0;
-            skeletons.Enabled = characterInstances.Items.Count != 0;
 
             if (characterInstances.Items.Count != 0)
                 characterInstances.SelectedIndex = toSelect;
@@ -74,7 +73,6 @@ namespace CommandsEditor
             collisionComposite.Text = Editor.commands.GetComposite(_accessories.collision_composite)?.name;
 
             bodyTypes.Text = _accessories.face_skeleton;
-            skeletons.Text = _accessories.body_skeleton;
         }
 
         private void addNewCharacter_Click(object sender, EventArgs e)

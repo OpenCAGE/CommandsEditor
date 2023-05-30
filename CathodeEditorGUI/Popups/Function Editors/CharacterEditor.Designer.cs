@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CharacterEditor));
             this.shirtComposite = new System.Windows.Forms.TextBox();
             this.selectNewShirt = new System.Windows.Forms.Button();
@@ -49,13 +50,10 @@
             this.collisionComposite = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.skeletons = new System.Windows.Forms.ComboBox();
-            this.label8 = new System.Windows.Forms.Label();
             this.bodyTypes = new System.Windows.Forms.ComboBox();
-            this.label7 = new System.Windows.Forms.Label();
             this.characterInstances = new System.Windows.Forms.ComboBox();
-            this.modelRendererHost = new System.Windows.Forms.Integration.ElementHost();
             this.addNewCharacter = new System.Windows.Forms.Button();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -65,12 +63,12 @@
             this.shirtComposite.Location = new System.Drawing.Point(19, 82);
             this.shirtComposite.Name = "shirtComposite";
             this.shirtComposite.ReadOnly = true;
-            this.shirtComposite.Size = new System.Drawing.Size(378, 20);
+            this.shirtComposite.Size = new System.Drawing.Size(514, 20);
             this.shirtComposite.TabIndex = 0;
             // 
             // selectNewShirt
             // 
-            this.selectNewShirt.Location = new System.Drawing.Point(403, 80);
+            this.selectNewShirt.Location = new System.Drawing.Point(539, 80);
             this.selectNewShirt.Name = "selectNewShirt";
             this.selectNewShirt.Size = new System.Drawing.Size(94, 23);
             this.selectNewShirt.TabIndex = 1;
@@ -98,7 +96,7 @@
             // 
             // selectNewTrousers
             // 
-            this.selectNewTrousers.Location = new System.Drawing.Point(403, 158);
+            this.selectNewTrousers.Location = new System.Drawing.Point(539, 158);
             this.selectNewTrousers.Name = "selectNewTrousers";
             this.selectNewTrousers.Size = new System.Drawing.Size(94, 23);
             this.selectNewTrousers.TabIndex = 4;
@@ -111,7 +109,7 @@
             this.trousersComposite.Location = new System.Drawing.Point(19, 160);
             this.trousersComposite.Name = "trousersComposite";
             this.trousersComposite.ReadOnly = true;
-            this.trousersComposite.Size = new System.Drawing.Size(378, 20);
+            this.trousersComposite.Size = new System.Drawing.Size(514, 20);
             this.trousersComposite.TabIndex = 3;
             // 
             // label3
@@ -125,7 +123,7 @@
             // 
             // selectNewShoes
             // 
-            this.selectNewShoes.Location = new System.Drawing.Point(403, 197);
+            this.selectNewShoes.Location = new System.Drawing.Point(539, 197);
             this.selectNewShoes.Name = "selectNewShoes";
             this.selectNewShoes.Size = new System.Drawing.Size(94, 23);
             this.selectNewShoes.TabIndex = 7;
@@ -138,7 +136,7 @@
             this.shoesComposite.Location = new System.Drawing.Point(19, 199);
             this.shoesComposite.Name = "shoesComposite";
             this.shoesComposite.ReadOnly = true;
-            this.shoesComposite.Size = new System.Drawing.Size(378, 20);
+            this.shoesComposite.Size = new System.Drawing.Size(514, 20);
             this.shoesComposite.TabIndex = 6;
             // 
             // label4
@@ -152,7 +150,7 @@
             // 
             // selectNewHead
             // 
-            this.selectNewHead.Location = new System.Drawing.Point(403, 41);
+            this.selectNewHead.Location = new System.Drawing.Point(539, 41);
             this.selectNewHead.Name = "selectNewHead";
             this.selectNewHead.Size = new System.Drawing.Size(94, 23);
             this.selectNewHead.TabIndex = 10;
@@ -165,7 +163,7 @@
             this.headComposite.Location = new System.Drawing.Point(19, 43);
             this.headComposite.Name = "headComposite";
             this.headComposite.ReadOnly = true;
-            this.headComposite.Size = new System.Drawing.Size(378, 20);
+            this.headComposite.Size = new System.Drawing.Size(514, 20);
             this.headComposite.TabIndex = 9;
             // 
             // label5
@@ -179,7 +177,7 @@
             // 
             // selectNewArms
             // 
-            this.selectNewArms.Location = new System.Drawing.Point(403, 119);
+            this.selectNewArms.Location = new System.Drawing.Point(539, 119);
             this.selectNewArms.Name = "selectNewArms";
             this.selectNewArms.Size = new System.Drawing.Size(94, 23);
             this.selectNewArms.TabIndex = 13;
@@ -192,7 +190,7 @@
             this.armsComposite.Location = new System.Drawing.Point(19, 121);
             this.armsComposite.Name = "armsComposite";
             this.armsComposite.ReadOnly = true;
-            this.armsComposite.Size = new System.Drawing.Size(378, 20);
+            this.armsComposite.Size = new System.Drawing.Size(514, 20);
             this.armsComposite.TabIndex = 12;
             // 
             // label6
@@ -206,7 +204,7 @@
             // 
             // selectNewCollision
             // 
-            this.selectNewCollision.Location = new System.Drawing.Point(403, 236);
+            this.selectNewCollision.Location = new System.Drawing.Point(539, 236);
             this.selectNewCollision.Name = "selectNewCollision";
             this.selectNewCollision.Size = new System.Drawing.Size(94, 23);
             this.selectNewCollision.TabIndex = 16;
@@ -219,7 +217,7 @@
             this.collisionComposite.Location = new System.Drawing.Point(19, 238);
             this.collisionComposite.Name = "collisionComposite";
             this.collisionComposite.ReadOnly = true;
-            this.collisionComposite.Size = new System.Drawing.Size(378, 20);
+            this.collisionComposite.Size = new System.Drawing.Size(514, 20);
             this.collisionComposite.TabIndex = 15;
             // 
             // groupBox1
@@ -242,62 +240,32 @@
             this.groupBox1.Controls.Add(this.selectNewShoes);
             this.groupBox1.Controls.Add(this.headComposite);
             this.groupBox1.Controls.Add(this.label3);
-            this.groupBox1.Location = new System.Drawing.Point(12, 171);
+            this.groupBox1.Location = new System.Drawing.Point(12, 117);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(521, 280);
+            this.groupBox1.Size = new System.Drawing.Size(654, 280);
             this.groupBox1.TabIndex = 18;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Composites";
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.skeletons);
-            this.groupBox2.Controls.Add(this.label8);
             this.groupBox2.Controls.Add(this.bodyTypes);
-            this.groupBox2.Controls.Add(this.label7);
             this.groupBox2.Location = new System.Drawing.Point(12, 39);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(521, 126);
+            this.groupBox2.Size = new System.Drawing.Size(654, 72);
             this.groupBox2.TabIndex = 19;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Skeletons";
-            // 
-            // skeletons
-            // 
-            this.skeletons.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.skeletons.FormattingEnabled = true;
-            this.skeletons.Location = new System.Drawing.Point(22, 83);
-            this.skeletons.Name = "skeletons";
-            this.skeletons.Size = new System.Drawing.Size(475, 21);
-            this.skeletons.TabIndex = 14;
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(19, 67);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(31, 13);
-            this.label8.TabIndex = 13;
-            this.label8.Text = "Body";
+            this.groupBox2.Text = "Skeleton";
             // 
             // bodyTypes
             // 
             this.bodyTypes.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.bodyTypes.FormattingEnabled = true;
-            this.bodyTypes.Location = new System.Drawing.Point(22, 43);
+            this.bodyTypes.Location = new System.Drawing.Point(22, 28);
             this.bodyTypes.Name = "bodyTypes";
-            this.bodyTypes.Size = new System.Drawing.Size(475, 21);
+            this.bodyTypes.Size = new System.Drawing.Size(611, 21);
             this.bodyTypes.TabIndex = 12;
             this.bodyTypes.SelectedIndexChanged += new System.EventHandler(this.bodyTypes_SelectedIndexChanged);
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(19, 27);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(31, 13);
-            this.label7.TabIndex = 11;
-            this.label7.Text = "Face";
             // 
             // characterInstances
             // 
@@ -305,26 +273,20 @@
             this.characterInstances.FormattingEnabled = true;
             this.characterInstances.Location = new System.Drawing.Point(12, 12);
             this.characterInstances.Name = "characterInstances";
-            this.characterInstances.Size = new System.Drawing.Size(801, 21);
+            this.characterInstances.Size = new System.Drawing.Size(521, 21);
             this.characterInstances.TabIndex = 15;
             this.characterInstances.SelectedIndexChanged += new System.EventHandler(this.characterInstances_SelectedIndexChanged);
             // 
-            // modelRendererHost
-            // 
-            this.modelRendererHost.Location = new System.Drawing.Point(539, 40);
-            this.modelRendererHost.Name = "modelRendererHost";
-            this.modelRendererHost.Size = new System.Drawing.Size(407, 411);
-            this.modelRendererHost.TabIndex = 22;
-            this.modelRendererHost.Text = "elementHost1";
-            this.modelRendererHost.Child = null;
-            // 
             // addNewCharacter
             // 
-            this.addNewCharacter.Location = new System.Drawing.Point(819, 11);
+            this.addNewCharacter.Location = new System.Drawing.Point(539, 10);
             this.addNewCharacter.Name = "addNewCharacter";
             this.addNewCharacter.Size = new System.Drawing.Size(127, 23);
             this.addNewCharacter.TabIndex = 23;
             this.addNewCharacter.Text = "Add New";
+            this.toolTip1.SetToolTip(this.addNewCharacter, "Add a new Character instance to define NPC components for. Please note: this only" +
+        " applies to human NPCs, not story characters or the Alien, which are configured " +
+        "differently.");
             this.addNewCharacter.UseVisualStyleBackColor = true;
             this.addNewCharacter.Click += new System.EventHandler(this.addNewCharacter_Click);
             // 
@@ -332,9 +294,8 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(958, 462);
+            this.ClientSize = new System.Drawing.Size(678, 407);
             this.Controls.Add(this.addNewCharacter);
-            this.Controls.Add(this.modelRendererHost);
             this.Controls.Add(this.characterInstances);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -347,7 +308,6 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -374,12 +334,9 @@
         private System.Windows.Forms.TextBox collisionComposite;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.ComboBox skeletons;
-        private System.Windows.Forms.Label label8;
         private System.Windows.Forms.ComboBox bodyTypes;
-        private System.Windows.Forms.Label label7;
         private System.Windows.Forms.ComboBox characterInstances;
-        private System.Windows.Forms.Integration.ElementHost modelRendererHost;
         private System.Windows.Forms.Button addNewCharacter;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }
