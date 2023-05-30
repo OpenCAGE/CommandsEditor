@@ -1,12 +1,12 @@
 using CATHODE;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
-using CathodeLib;
-using CommandsEditor.UserControls;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Drawing.Drawing2D;
+using System.IO;
+using System.Linq;
+using System.Xml;
 
 namespace CommandsEditor
 {
@@ -18,6 +18,44 @@ namespace CommandsEditor
         public static void SetEditor(CommandsEditor editor)
         {
             Editor = editor.Editor;
+        }
+
+        /* Load anim data */
+        public static void LoadAnimData(CommandsEditor editor)
+        {
+            //Load animation data
+            PAK2 animPAK = new PAK2(SharedData.pathToAI + "/DATA/GLOBAL/ANIMATION.PAK");
+
+            //Load all male/female skeletons
+            List<PAK2.File> skeletons = animPAK.Entries.FindAll(o => o.Filename.Length > 17 && o.Filename.Substring(0, 17) == "DATA\\SKELETONDEFS");
+            for (int i = 0; i < skeletons.Count; i++)
+            {
+                string skeleton = Path.GetFileNameWithoutExtension(skeletons[i].Filename);
+                File.WriteAllBytes(skeleton, skeletons[i].Content);
+                XmlNode skeletonType = new BML(skeleton).Content.SelectSingleNode("//SkeletonDef/LoResReferenceSkeleton");
+                switch (skeletonType?.InnerText)
+                {
+                    case "MALE":
+                        editor.Editor.male_skeletons.Add(skeleton);
+                        break;
+                    case "FEMALENPC":
+                        editor.Editor.female_skeletons.Add(skeleton);
+                        break;
+                }
+                File.Delete(skeleton);
+            }
+
+            //Anim string db
+            File.WriteAllBytes("ANIM_STRING_DB.BIN", animPAK.Entries.FirstOrDefault(o => o.Filename.Contains("ANIM_STRING_DB.BIN")).Content);
+            editor.Editor.animstrings = new AnimationStrings("ANIM_STRING_DB.BIN");
+            File.Delete("ANIM_STRING_DB.BIN");
+
+            //Debug anim string db
+            File.WriteAllBytes("ANIM_STRING_DB_DEBUG.BIN", animPAK.Entries.FirstOrDefault(o => o.Filename.Contains("ANIM_STRING_DB_DEBUG.BIN")).Content);
+            editor.Editor.animstrings_debug = new AnimationStrings("ANIM_STRING_DB_DEBUG.BIN");
+            File.Delete("ANIM_STRING_DB_DEBUG.BIN");
+
+            animPAK = null;
         }
 
         /* Generate all composite instance information for Commands */

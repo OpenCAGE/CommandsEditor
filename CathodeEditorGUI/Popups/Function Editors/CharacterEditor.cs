@@ -17,6 +17,16 @@ namespace CommandsEditor
         public CharacterEditor(CommandsEditor editor) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
         {
             InitializeComponent();
+
+            List<string> skeletons = new List<string>();
+            skeletons.AddRange(Editor.male_skeletons);
+            skeletons.AddRange(Editor.female_skeletons);
+            skeletons.Sort();
+
+            bodyTypes.Items.Clear();
+            for (int i = 0; i < skeletons.Count; i++)
+                bodyTypes.Items.Add(skeletons[i]);
+
             RefreshUI(ShortGuid.Invalid);
         }
 
@@ -63,9 +73,8 @@ namespace CommandsEditor
             armsComposite.Text = Editor.commands.GetComposite(_accessories.arms_composite)?.name;
             collisionComposite.Text = Editor.commands.GetComposite(_accessories.collision_composite)?.name;
 
-            //TODO: need to populate this dropdown from CUSTOMCHARACTERINFO.BIN
-            bodyTypes.Text = _accessories.body_type;
-            skeletons.Text = _accessories.skeleton;
+            bodyTypes.Text = _accessories.face_skeleton;
+            skeletons.Text = _accessories.body_skeleton;
         }
 
         private void addNewCharacter_Click(object sender, EventArgs e)
@@ -153,11 +162,13 @@ namespace CommandsEditor
 
         private void bodyTypes_SelectedIndexChanged(object sender, EventArgs e)
         {
+            _accessories.face_skeleton = bodyTypes.Text;
 
-        }
-        private void skeletons_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
+            //These skeletons here should match the LoRes types.
+            if (Editor.male_skeletons.Contains(bodyTypes.Text))
+                _accessories.body_skeleton = "MALE";
+            if (Editor.female_skeletons.Contains(bodyTypes.Text))
+                _accessories.body_skeleton = "FEMALENPC";
         }
     }
 }

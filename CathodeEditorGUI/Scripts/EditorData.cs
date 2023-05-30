@@ -43,6 +43,10 @@ namespace CommandsEditor
             public CharacterAccessorySets character_accessories;
         }
 
+        //Skeletons (MALE & FEMALENPC from ANIMATIONS.PAK)
+        public List<string> male_skeletons = new List<string>();
+        public List<string> female_skeletons = new List<string>();
+
         //Global animation strings
         public AnimationStrings animstrings;
         public AnimationStrings animstrings_debug;

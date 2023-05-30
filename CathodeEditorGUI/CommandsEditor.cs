@@ -91,19 +91,8 @@ namespace CommandsEditor
                 Editor.strings.Add(Path.GetFileNameWithoutExtension(text), new Strings(text));
             }
 
-            //Populate animation strings
-            string pathToStringDB = SharedData.pathToAI + "/DATA/GLOBAL/ANIM_STRING_DB.BIN";
-            string pathToStringDB_Debug = SharedData.pathToAI + "/DATA/GLOBAL/ANIM_STRING_DB_DEBUG.BIN";
-            if (!File.Exists(pathToStringDB) || !File.Exists(pathToStringDB_Debug))
-            {
-                PAK2 animPAK = new PAK2(SharedData.pathToAI + "/DATA/GLOBAL/ANIMATION.PAK");
-                byte[] content = animPAK.Entries.FirstOrDefault(o => o.Filename.Contains("ANIM_STRING_DB.BIN")).Content;
-                File.WriteAllBytes(pathToStringDB, content);
-                content = animPAK.Entries.FirstOrDefault(o => o.Filename.Contains("ANIM_STRING_DB_DEBUG.BIN")).Content;
-                File.WriteAllBytes(pathToStringDB_Debug, content);
-            }
-            Editor.animstrings = new AnimationStrings(pathToStringDB);
-            Editor.animstrings_debug = new AnimationStrings(pathToStringDB_Debug);
+            //Load animation data - this should be quick enough to not worry about waiting for the thread
+            Task.Factory.StartNew(() => EditorUtils.LoadAnimData(this));
 
             ClearUI(true, true, true);
 
