@@ -751,7 +751,22 @@ namespace CommandsEditor
             if (!ConfirmAction("Are you sure you want to duplicate this entity?")) return;
 
             //Generate new entity ID and name
-            Entity newEnt = Editor.selected.entity.Copy();
+            Entity newEnt = null;
+            switch (Editor.selected.entity.variant)
+            {
+                case EntityVariant.FUNCTION:
+                    newEnt = ((FunctionEntity)Editor.selected.entity).Copy();
+                    break;
+                case EntityVariant.VARIABLE:
+                    newEnt = ((VariableEntity)Editor.selected.entity).Copy();
+                    break;
+                case EntityVariant.OVERRIDE:
+                    newEnt = ((OverrideEntity)Editor.selected.entity).Copy();
+                    break;
+                case EntityVariant.PROXY:
+                    newEnt = ((ProxyEntity)Editor.selected.entity).Copy();
+                    break;
+            }
             newEnt.shortGUID = ShortGuidUtils.GenerateRandom();
             if (newEnt.variant != EntityVariant.VARIABLE)
                 EntityUtils.SetName(
