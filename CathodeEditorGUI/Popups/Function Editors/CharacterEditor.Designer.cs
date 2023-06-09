@@ -50,13 +50,14 @@
             this.collisionComposite = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.shirtDecal = new System.Windows.Forms.ComboBox();
+            this.label7 = new System.Windows.Forms.Label();
             this.bodyTypes = new System.Windows.Forms.ComboBox();
             this.characterInstances = new System.Windows.Forms.ComboBox();
             this.addNewCharacter = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.label7 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.shirtDecal = new System.Windows.Forms.ComboBox();
+            this.gender = new System.Windows.Forms.ComboBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -252,6 +253,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.gender);
             this.groupBox2.Controls.Add(this.label8);
             this.groupBox2.Controls.Add(this.shirtDecal);
             this.groupBox2.Controls.Add(this.label7);
@@ -263,13 +265,41 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Metadata";
             // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(19, 69);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(64, 13);
+            this.label8.TabIndex = 20;
+            this.label8.Text = "Shirt Decals";
+            // 
+            // shirtDecal
+            // 
+            this.shirtDecal.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.shirtDecal.FormattingEnabled = true;
+            this.shirtDecal.Location = new System.Drawing.Point(19, 85);
+            this.shirtDecal.Name = "shirtDecal";
+            this.shirtDecal.Size = new System.Drawing.Size(614, 21);
+            this.shirtDecal.TabIndex = 19;
+            this.shirtDecal.SelectedIndexChanged += new System.EventHandler(this.shirtDecal_SelectedIndexChanged);
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(19, 29);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(49, 13);
+            this.label7.TabIndex = 18;
+            this.label7.Text = "Skeleton";
+            // 
             // bodyTypes
             // 
             this.bodyTypes.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.bodyTypes.FormattingEnabled = true;
             this.bodyTypes.Location = new System.Drawing.Point(19, 45);
             this.bodyTypes.Name = "bodyTypes";
-            this.bodyTypes.Size = new System.Drawing.Size(614, 21);
+            this.bodyTypes.Size = new System.Drawing.Size(456, 21);
             this.bodyTypes.TabIndex = 12;
             this.bodyTypes.SelectedIndexChanged += new System.EventHandler(this.bodyTypes_SelectedIndexChanged);
             // 
@@ -296,33 +326,15 @@
             this.addNewCharacter.UseVisualStyleBackColor = true;
             this.addNewCharacter.Click += new System.EventHandler(this.addNewCharacter_Click);
             // 
-            // label7
+            // gender
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(19, 29);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(49, 13);
-            this.label7.TabIndex = 18;
-            this.label7.Text = "Skeleton";
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(19, 69);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(64, 13);
-            this.label8.TabIndex = 20;
-            this.label8.Text = "Shirt Decals";
-            // 
-            // shirtDecal
-            // 
-            this.shirtDecal.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.shirtDecal.FormattingEnabled = true;
-            this.shirtDecal.Location = new System.Drawing.Point(19, 85);
-            this.shirtDecal.Name = "shirtDecal";
-            this.shirtDecal.Size = new System.Drawing.Size(614, 21);
-            this.shirtDecal.TabIndex = 19;
-            this.shirtDecal.SelectedIndexChanged += new System.EventHandler(this.shirtDecal_SelectedIndexChanged);
+            this.gender.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.gender.FormattingEnabled = true;
+            this.gender.Location = new System.Drawing.Point(481, 45);
+            this.gender.Name = "gender";
+            this.gender.Size = new System.Drawing.Size(152, 21);
+            this.gender.TabIndex = 21;
+            this.gender.SelectedIndexChanged += new System.EventHandler(this.gender_SelectedIndexChanged);
             // 
             // CharacterEditor
             // 
@@ -376,5 +388,6 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.ComboBox shirtDecal;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.ComboBox gender;
     }
 }

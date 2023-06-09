@@ -116,14 +116,11 @@ namespace CommandsEditor
                 string skeleton = Path.GetFileNameWithoutExtension(skeletons[i].Filename);
                 File.WriteAllBytes(skeleton, skeletons[i].Content);
                 XmlNode skeletonType = new BML(skeleton).Content.SelectSingleNode("//SkeletonDef/LoResReferenceSkeleton");
-                switch (skeletonType?.InnerText)
+                if (skeletonType?.InnerText == "MALE" || skeletonType?.InnerText == "FEMALENPC")
                 {
-                    case "MALE":
-                        editor.Editor.male_skeletons.Add(skeleton);
-                        break;
-                    case "FEMALENPC":
-                        editor.Editor.female_skeletons.Add(skeleton);
-                        break;
+                    if (!editor.Editor.skeletons.ContainsKey(skeletonType?.InnerText))
+                        editor.Editor.skeletons.Add(skeletonType?.InnerText, new List<string>());
+                    editor.Editor.skeletons[skeletonType?.InnerText].Add(skeleton);
                 }
                 File.Delete(skeleton);
             }

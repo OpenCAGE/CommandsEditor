@@ -18,14 +18,8 @@ namespace CommandsEditor
         {
             InitializeComponent();
 
-            List<string> skeletons = new List<string>();
-            skeletons.AddRange(Editor.male_skeletons);
-            skeletons.AddRange(Editor.female_skeletons);
-            skeletons.Sort();
-
-            bodyTypes.Items.Clear();
-            for (int i = 0; i < skeletons.Count; i++)
-                bodyTypes.Items.Add(skeletons[i]);
+            foreach (KeyValuePair<string, List<string>> skeletons in Editor.skeletons)
+                gender.Items.Add(skeletons.Key);
 
             shirtDecal.Items.Clear();
             foreach (CharacterAccessorySets.Entry.Decal decal in Enum.GetValues(typeof(CharacterAccessorySets.Entry.Decal)))
@@ -59,10 +53,18 @@ namespace CommandsEditor
             selectNewShoes.Enabled = characterInstances.Items.Count != 0;
             selectNewCollision.Enabled = characterInstances.Items.Count != 0;
             bodyTypes.Enabled = characterInstances.Items.Count != 0;
+            gender.Enabled = characterInstances.Items.Count != 0;
             shirtDecal.Enabled = characterInstances.Items.Count != 0;
 
             if (characterInstances.Items.Count != 0)
                 characterInstances.SelectedIndex = toSelect;
+        }
+
+        private void RefreshSkeletonsForGender()
+        {
+            bodyTypes.Items.Clear();
+            for (int i = 0; i < Editor.skeletons[gender.Text].Count; i++)
+                bodyTypes.Items.Add(Editor.skeletons[gender.Text][i]);
         }
 
         private void characterInstances_SelectedIndexChanged(object sender, EventArgs e)
@@ -77,6 +79,8 @@ namespace CommandsEditor
             armsComposite.Text = Editor.commands.GetComposite(_accessories.arms_composite)?.name;
             collisionComposite.Text = Editor.commands.GetComposite(_accessories.collision_composite)?.name;
 
+            gender.Text = _accessories.body_skeleton;
+            RefreshSkeletonsForGender();
             bodyTypes.Text = _accessories.face_skeleton;
             shirtDecal.SelectedIndex = (int)_accessories.decal;
         }
@@ -164,15 +168,15 @@ namespace CommandsEditor
             _accessories.collision_composite = comp.shortGUID;
         }
 
+        private void gender_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _accessories.body_skeleton = gender.Text;
+            RefreshSkeletonsForGender();
+        }
+
         private void bodyTypes_SelectedIndexChanged(object sender, EventArgs e)
         {
             _accessories.face_skeleton = bodyTypes.Text;
-
-            //These skeletons here should match the LoRes types.
-            if (Editor.male_skeletons.Contains(bodyTypes.Text))
-                _accessories.body_skeleton = "MALE";
-            if (Editor.female_skeletons.Contains(bodyTypes.Text))
-                _accessories.body_skeleton = "FEMALENPC";
         }
 
         private void shirtDecal_SelectedIndexChanged(object sender, EventArgs e)
