@@ -73,7 +73,11 @@ namespace CommandsEditor
                             break;
                         }
                     default:
-                        continue;
+                        {
+                            resourceGroup = new GUI_Resource_Default(_editor);
+                            ((GUI_Resource_Default)resourceGroup).PopulateUI(resources[i].entryType);
+                            break;
+                        }
                 }
                 resourceGroup.ResourceReference = resources[i];
                 resourceGroup.Location = new Point(15, current_ui_offset);

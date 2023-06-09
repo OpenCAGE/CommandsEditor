@@ -19,6 +19,8 @@ namespace CommandsEditor
     public partial class AddParameter : BaseWindow
     {
         Entity node = null;
+        ParameterData param = null;
+
         public AddParameter(CommandsEditor editor, Entity _node) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
         {
             node = _node;
@@ -36,7 +38,8 @@ namespace CommandsEditor
         private void button1_Click(object sender, EventArgs e)
         {
             if (param_name.Text == "") return;
-            node.AddParameter(param_name.Text, (DataType)param_datatype.SelectedIndex);
+            if (param != null) node.AddParameter(param_name.Text, param);
+            else node.AddParameter(param_name.Text, (DataType)param_datatype.SelectedIndex);
             this.Close();
         }
 
@@ -50,6 +53,7 @@ namespace CommandsEditor
         }
         private void AutoSelectDataType()
         {
+            param = null;
             param_datatype.Enabled = true;
             switch (node.variant)
             {
@@ -71,12 +75,12 @@ namespace CommandsEditor
                                 param_datatype.Text = "FLOAT"; //The FLOAT datatype is used a placeholder for this.
                                 break;
                             default:
-                                ParameterData param = CathodeEntityDatabase.ParameterDefinitionToParameter(def);
+                                param = CathodeEntityDatabase.ParameterDefinitionToParameter(def);
                                 if (param == null) return;
                                 param_datatype.Text = param.dataType.ToString();
                                 break;
                         }
-                        param_datatype.Enabled = false;
+                        //param_datatype.Enabled = false;
                         return;
                     }
                     
@@ -94,12 +98,18 @@ namespace CommandsEditor
                         {
                             param_datatype.Text = var.type.ToString();
                         }
-                        param_datatype.Enabled = false;
+                        //param_datatype.Enabled = false;
                     }
                     break;
                 default:
                     return;
             }
+        }
+
+        private void param_datatype_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (param != null && param.dataType.ToString() != param_datatype.Text)
+                param = null;
         }
     }
 }

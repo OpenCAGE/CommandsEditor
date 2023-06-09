@@ -307,6 +307,12 @@
     <Compile Include="Popups\Function Editors\CAGEAnimationEditor.Designer.cs">
       <DependentUpon>CAGEAnimationEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\UserControls\GUI_Resource_Default.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Popups\UserControls\GUI_Resource_Default.Designer.cs">
+      <DependentUpon>GUI_Resource_Default.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popups\UserControls\GUI_SplineViewer.xaml.cs">
       <DependentUpon>GUI_SplineViewer.xaml</DependentUpon>
     </Compile>
@@ -1424,6 +1430,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\UserControls\GUI_Resource_NavMeshBarrierResource.resx">
       <DependentUpon>GUI_Resource_NavMeshBarrierResource.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\UserControls\GUI_Resource_Default.resx">
+      <DependentUpon>GUI_Resource_Default.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\UserControls\GUI_Resource_RenderableInstance.resx">
       <DependentUpon>GUI_Resource_RenderableInstance.cs</DependentUpon>
