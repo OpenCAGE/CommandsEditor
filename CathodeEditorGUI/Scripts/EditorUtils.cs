@@ -148,6 +148,7 @@ namespace CommandsEditor
                     ShortGuid function = ((FunctionEntity)entity).function;
                     bool isComposite = !CommandsUtils.FunctionTypeExists(function);
                     if (isComposite) function = CommandsUtils.GetFunctionTypeGUID(FunctionType.CompositeInterface);
+                    items.Add("reference");
 
                     List<CathodeEntityDatabase.ParameterDefinition> parameters = CathodeEntityDatabase.GetParametersFromEntity(function);
                     if (parameters != null)
