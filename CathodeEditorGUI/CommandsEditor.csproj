@@ -1344,6 +1344,9 @@
     <Compile Include="UserControls\GUI_VectorDataType.Designer.cs">
       <DependentUpon>GUI_VectorDataType.cs</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\Variants\WPF_Dropdown.xaml.cs">
+      <DependentUpon>WPF_Dropdown.xaml</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Popups\Function Editors\CharacterEditor\Character_InstanceSelection.resx">
       <DependentUpon>Character_InstanceSelection.cs</DependentUpon>
     </EmbeddedResource>
@@ -1522,6 +1525,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Popups\UserControls\GUI_ModelViewer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\Variants\WPF_Dropdown.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

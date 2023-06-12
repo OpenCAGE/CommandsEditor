@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using CATHODE;
 using CATHODE.Scripting;
+using CommandsEditor.UserControls.Variants;
 
 namespace CommandsEditor.UserControls
 {
@@ -17,9 +18,14 @@ namespace CommandsEditor.UserControls
         static List<AssetList> assetlist_cache = new List<AssetList>(); //TODO: cache controls, not just the contents of the controls
         AssetList content = null;
 
+        WPF_Dropdown _dropdown;
+
         public GUI_StringVariant_AssetDropdown(CommandsEditor editor) : base(editor)
         {
             InitializeComponent();
+
+            _dropdown = (WPF_Dropdown)dropdown.Child;
+            _dropdown.OnValueChanged += DropdownChanged;
         }
 
         public void PopulateUI(cString cString, string paramID, AssetList.Type assets, string args = "")
@@ -143,40 +149,16 @@ namespace CommandsEditor.UserControls
                         break;
                 }
                 strings.OrderBy(o => o.value);
-                content.strings = strings.ToArray();
+                content.strings = strings;
                 assetlist_cache.Add(content);
             }
 
-            comboBox1.BeginUpdate();
-            comboBox1.Items.Clear();
-            for (int i = 0; i < content.strings.Count(); i++)
-                comboBox1.Items.Add(content.strings[i].value);
-            comboBox1.Text = cString.value;
-            comboBox1.SelectedItem = cString.value;
-            comboBox1.EndUpdate();
-
-            comboBox1.AutoSelectOff();
+            _dropdown.SetValues(content.strings, cString.value);
         }
 
-        private void comboBox1_Changed(object sender, EventArgs e)
+        private void DropdownChanged(string value)
         {
-            stringVal.value = comboBox1.Text;
-
-            if (content != null && content.strings != null && comboBox1.SelectedIndex != -1 && content.strings.Length > comboBox1.SelectedIndex)
-                toolTip1.SetToolTip(comboBox1, content.strings[comboBox1.SelectedIndex].tooltip);
-            
-            if (type == AssetList.Type.LOCALISED_STRING)
-            {
-                foreach (KeyValuePair<string, Strings> entry in Editor.strings)
-                {
-                    if (typeArgs != "" && typeArgs != entry.Key) continue;
-                    if (entry.Value.Entries.ContainsKey(comboBox1.Text))
-                    {
-                        toolTip1.SetToolTip(comboBox1, entry.Value.Entries[comboBox1.Text]);
-                        return;
-                    }
-                }
-            }
+            stringVal.value = _dropdown.Value;
         }
     }
 
@@ -187,7 +169,7 @@ namespace CommandsEditor.UserControls
         public Type assets = Type.NONE;
         public string args = "";
 
-        public Value[] strings = null;
+        public List<Value> strings = null;
 
         public class Value
         {
