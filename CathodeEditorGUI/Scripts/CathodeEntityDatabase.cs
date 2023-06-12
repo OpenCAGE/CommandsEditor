@@ -29,7 +29,7 @@ namespace CommandsEditor
             public string name;
             public string variable;
             public ParameterUsage usage;
-            public string datatype; //todo:turn in to enum
+            public string datatype;
         }
         public enum ParameterUsage
         {
@@ -45,16 +45,6 @@ namespace CommandsEditor
             METHOD,
             FINISHED,
             RELAY,
-        }
-        public enum ParameterDatatype
-        {
-            //wip
-            INT,
-            FLOAT,
-            BOOL,
-            STRING, //CATHODE:String
-            DIRECTION, //CA::Vector
-
         }
 
         private static List<EntityDefinition> entities = new List<EntityDefinition>();

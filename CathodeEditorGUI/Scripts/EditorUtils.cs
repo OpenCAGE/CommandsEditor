@@ -128,10 +128,12 @@ namespace CommandsEditor
             for (int i = 0; i < Editor.commands.Entries.Count; i++)
             {
                 Composite comp = Editor.commands.Entries[i];
-                cachedEntityName.Add(comp.shortGUID, new Dictionary<ShortGuid, string>());
+                if (!cachedEntityName.ContainsKey(comp.shortGUID)) 
+                    cachedEntityName.Add(comp.shortGUID, new Dictionary<ShortGuid, string>());
                 List<Entity> ents = comp.GetEntities();
                 for (int x = 0; x < ents.Count; x++)
-                    cachedEntityName[comp.shortGUID].Add(ents[x].shortGUID, GenerateEntityNameInternal(ents[x], comp));
+                    if (!cachedEntityName[comp.shortGUID].ContainsKey(ents[x].shortGUID))
+                        cachedEntityName[comp.shortGUID].Add(ents[x].shortGUID, GenerateEntityNameInternal(ents[x], comp));
             }
             mainInst.EnableLoadingOfPaks(true);
             hasFinishedCachingEntityNames = true;

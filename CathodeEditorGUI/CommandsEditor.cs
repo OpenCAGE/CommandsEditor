@@ -614,11 +614,11 @@ namespace CommandsEditor
 
         /* Load a composite into the UI */
         List<string> composite_content_RAW = new List<string>();
-        private void LoadComposite(string filename)
+        public void LoadComposite(string filename)
         {
             LoadComposite(Editor.commands.GetComposite(filename));
         }
-        private void LoadComposite(Composite comp, Entity ent = null)
+        public void LoadComposite(Composite comp, Entity ent = null)
         {
             _previousComposite = Editor.selected.composite;
             ClearUI(false, true, true);
@@ -877,7 +877,11 @@ namespace CommandsEditor
         /* Load a entity into the UI */
         private List<Entity> parentEntities = new List<Entity>();
         private List<Entity> childEntities = new List<Entity>();
-        private void LoadEntity(Entity entity)
+        public void LoadEntity(ShortGuid guid)
+        {
+            LoadEntity(Editor.selected.composite.GetEntityByID(guid));
+        }
+        public void LoadEntity(Entity entity)
         {
             ClearUI(false, false, true);
             Editor.selected.entity = entity;
