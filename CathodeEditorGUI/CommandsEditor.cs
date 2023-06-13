@@ -101,7 +101,7 @@ namespace CommandsEditor
 
         public CommandsEditor()
         {
-            UTIL_GenerateRecastHeader("G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\frontend\\WORLD\\STATE_0\\NAV_MESH");
+            //UTIL_GenerateRecastHeader("G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\frontend\\WORLD\\STATE_0\\NAV_MESH");
 
 
 
