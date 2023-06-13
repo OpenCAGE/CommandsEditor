@@ -16,7 +16,7 @@ namespace CommandsEditor.Popups.Base
     public partial class BaseWindow : Form
     {
         protected CommandsEditor _editor;
-        protected Editor Editor { get { return _editor.Loaded; } } //hotfix for old Editor. static
+        protected EditorData Editor { get { return _editor.Editor; } }
 
         private WindowClosesOn _closesOn;
 

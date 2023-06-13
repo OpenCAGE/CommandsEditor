@@ -13,7 +13,7 @@ namespace CommandsEditor.UserControls
     public partial class BaseUserControl : UserControl
     {
         protected CommandsEditor _editor;
-        protected Editor Editor { get { return _editor.Loaded; } } //hotfix for old Editor. static
+        protected EditorData Editor { get { return _editor.Editor; } } //hotfix for old Editor. static
 
         [Obsolete("Designer only", true)]
         public BaseUserControl()

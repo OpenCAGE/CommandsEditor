@@ -107,6 +107,7 @@
             this.param_datatype.Name = "param_datatype";
             this.param_datatype.Size = new System.Drawing.Size(641, 21);
             this.param_datatype.TabIndex = 0;
+            this.param_datatype.SelectedIndexChanged += new System.EventHandler(this.param_datatype_SelectedIndexChanged);
             // 
             // AddParameter
             // 

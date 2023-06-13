@@ -113,10 +113,6 @@ namespace CommandsEditor
             createNewEntity.Enabled = false;
             hierarchy = null;
             addDefaultParams.Visible = false;
-
-            //TODO: Remove this warning when the checksum is figured out :)
-            if (createOverrideEntity.Checked)
-                MessageBox.Show("Please be aware that overrides are currently non-functional in-game due to an extra checksum used by Cathode to verify their existence, which has not yet been reverse engineered.\n\nIf you think you can help, feel free to submit a PR to CathodeLib on GitHub with the fix!", "Wait a minute!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
         /* Generate hierarchy for proxy/override */
@@ -185,6 +181,7 @@ namespace CommandsEditor
                     return;
                 }
                 newEntity = composite.AddFunction(compRef, addDefaultParams.Checked);
+                EditorUtils.GenerateCompositeInstances(Editor.commands);
             }
             else if (createDatatypeEntity.Checked)
                 newEntity = composite.AddVariable(textBox1.Text, (DataType)entityVariant.SelectedIndex, true);

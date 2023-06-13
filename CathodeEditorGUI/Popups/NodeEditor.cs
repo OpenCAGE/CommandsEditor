@@ -129,6 +129,16 @@ namespace CommandsEditor
             //Lock options for now
             foreach (STNode node in stNodeEditor1.Nodes)
                 node.LockOption = true;
+
+            stNodeEditor1.SelectedChanged += Owner_SelectedChanged;
+        }
+
+        private void Owner_SelectedChanged(object sender, EventArgs e)
+        {
+            //when a node is selected, load it in the commands editor
+            STNode[] nodes = stNodeEditor1.GetSelectedNode();
+            if (nodes.Length == 0) return;
+            _editor.LoadEntity(((CustomNode)nodes[0]).ID);
         }
 
         private CustomNode EntityToNode(Entity entity, Composite composite)

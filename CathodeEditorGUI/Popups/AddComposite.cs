@@ -24,16 +24,16 @@ namespace CommandsEditor
         private void button1_Click(object sender, EventArgs e)
         {
             if (textBox1.Text == "") return;
-            for (int i = 0; i < _editor.Loaded.commands.Entries.Count; i++)
+            for (int i = 0; i < _editor.Editor.commands.Entries.Count; i++)
             {
-                if (_editor.Loaded.commands.Entries[i].name == textBox1.Text)
+                if (_editor.Editor.commands.Entries[i].name == textBox1.Text)
                 {
                     MessageBox.Show("Failed to create composite.\nA composite with this name already exists.", "Composite already exists.", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
             }
 
-            _editor.Loaded.commands.AddComposite(textBox1.Text);
+            _editor.Editor.commands.AddComposite(textBox1.Text);
             this.Close();
         }
     }

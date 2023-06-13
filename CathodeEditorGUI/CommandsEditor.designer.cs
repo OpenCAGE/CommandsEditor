@@ -293,7 +293,7 @@
             this.editFunction.Size = new System.Drawing.Size(73, 23);
             this.editFunction.TabIndex = 178;
             this.editFunction.Text = "Function";
-            this.toolTip1.SetToolTip(this.editFunction, "Available on TriggerSequence and CAGEAnimation nodes");
+            this.toolTip1.SetToolTip(this.editFunction, "Available on nodes with additional functionality to edit");
             this.editFunction.UseVisualStyleBackColor = true;
             this.editFunction.Click += new System.EventHandler(this.editFunction_Click);
             // 
@@ -522,6 +522,7 @@
             this.editEntryPoint.TabIndex = 177;
             this.editEntryPoint.Text = "Edit Root";
             this.editEntryPoint.UseVisualStyleBackColor = true;
+            this.editEntryPoint.Visible = false;
             this.editEntryPoint.Click += new System.EventHandler(this.editEntryPoint_Click);
             // 
             // groupBox10

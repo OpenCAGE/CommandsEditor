@@ -45,7 +45,7 @@ namespace CommandsEditor
             listBox1.Items.Clear();
             for (int i = 0; i < Editor.mvr.Entries.Count; i++)
             {
-                if (nodeID.val != null && Editor.mvr.Entries[i].commandsNodeID != nodeID) continue;
+                if (nodeID.val != null && Editor.mvr.Entries[i].entity.entity_id != nodeID) continue;
                 listBox1.Items.Add(i.ToString());
             }
             listBox1.EndUpdate();

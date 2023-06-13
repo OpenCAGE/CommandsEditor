@@ -127,8 +127,9 @@ namespace CommandsEditor
         /* Generate the hierarchy */
         private void SelectEntity_Click(object sender, EventArgs e)
         {
+            //TODO: should use the proper hierarchy class here
             hierarchy.Add(selectedEntity.shortGUID);
-            hierarchy.Add(new ShortGuid("00-00-00-00"));
+            hierarchy.Add(ShortGuid.Invalid);
             OnHierarchyGenerated?.Invoke(hierarchy);
             this.Close();
         }

@@ -1,10 +1,12 @@
 using CATHODE;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
-using CathodeLib;
-using CommandsEditor.UserControls;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Drawing2D;
+using System.IO;
+using System.Linq;
+using System.Xml;
 
 namespace CommandsEditor
 {
@@ -12,10 +14,53 @@ namespace CommandsEditor
     static class EditorUtils
     {
         //New hotfix for link to Editor loaded data
-        private static Editor Editor;
+        private static EditorData Editor;
         public static void SetEditor(CommandsEditor editor)
         {
-            Editor = editor.Loaded;
+            Editor = editor.Editor;
+        }
+
+        /* Generate all composite instance information for Commands */
+        private static Dictionary<Composite, List<List<ShortGuid>>> _hierarchies = new Dictionary<Composite, List<List<ShortGuid>>>();
+        public static void GenerateCompositeInstances(Commands commands)
+        {
+            _hierarchies.Clear();
+            GenerateCompositeInstancesRecursive(commands, commands.EntryPoints[0], new List<ShortGuid>());
+        }
+        private static void GenerateCompositeInstancesRecursive(Commands commands, Composite composite, List<ShortGuid> hierarchy)
+        {
+            if (!_hierarchies.ContainsKey(composite))
+                _hierarchies.Add(composite, new List<List<ShortGuid>>());
+
+            _hierarchies[composite].Add(hierarchy);
+
+            for (int i = 0; i < composite.functions.Count; i++)
+            {
+                if (CommandsUtils.FunctionTypeExists(composite.functions[i].function)) continue;
+
+                List<ShortGuid> newHierarchy = new List<ShortGuid>(hierarchy.ConvertAll(x => x));
+                newHierarchy.Add(composite.functions[i].shortGUID);
+
+                Composite newComposite = commands.GetComposite(composite.functions[i].function);
+                if (newComposite != null) GenerateCompositeInstancesRecursive(commands, newComposite, newHierarchy);
+            }
+        }
+
+        /* Get all possible hierarchies for a given entity */
+        public static List<EntityHierarchy> GetHierarchiesForEntity(Composite composite, Entity entity)
+        {
+            List<EntityHierarchy> formattedHierarchies = new List<EntityHierarchy>();
+            if (_hierarchies.ContainsKey(composite))
+            {
+                List<List<ShortGuid>> hierarchies = _hierarchies[composite];
+                for (int i = 0; i < hierarchies.Count; i++)
+                {
+                    List<ShortGuid> hierarchy = new List<ShortGuid>(hierarchies[i].ConvertAll(x => x));
+                    hierarchy.Add(entity.shortGUID);
+                    formattedHierarchies.Add(new EntityHierarchy(hierarchy));
+                }
+            }
+            return formattedHierarchies;
         }
 
         /* Utility: generate nice entity name to display in UI */
@@ -31,6 +76,9 @@ namespace CommandsEditor
                 if (cachedEntityName[composite.shortGUID].ContainsKey(entity.shortGUID)) cachedEntityName[composite.shortGUID].Remove(entity.shortGUID);
                 cachedEntityName[composite.shortGUID].Add(entity.shortGUID, GenerateEntityNameInternal(entity, composite));
             }
+
+            if (!cachedEntityName.ContainsKey(composite.shortGUID))
+                cachedEntityName.Add(composite.shortGUID, new Dictionary<ShortGuid, string>());
 
             if (hasFinishedCachingEntityNames && cachedEntityName[composite.shortGUID].ContainsKey(entity.shortGUID)) 
                 return cachedEntityName[composite.shortGUID][entity.shortGUID];
@@ -68,7 +116,7 @@ namespace CommandsEditor
             return "[" + entity.shortGUID.ToByteString() + "] " + desc;
         }
 
-        /* Generate a cache of entity names to save re-generating them every time */
+        /* Generate a cache of entity names */
         private static bool hasFinishedCachingEntityNames = false;
         private static Dictionary<ShortGuid, Dictionary<ShortGuid, string>> cachedEntityName = new Dictionary<ShortGuid, Dictionary<ShortGuid, string>>();
         public static void GenerateEntityNameCache(CommandsEditor mainInst)
@@ -80,10 +128,12 @@ namespace CommandsEditor
             for (int i = 0; i < Editor.commands.Entries.Count; i++)
             {
                 Composite comp = Editor.commands.Entries[i];
-                cachedEntityName.Add(comp.shortGUID, new Dictionary<ShortGuid, string>());
+                if (!cachedEntityName.ContainsKey(comp.shortGUID)) 
+                    cachedEntityName.Add(comp.shortGUID, new Dictionary<ShortGuid, string>());
                 List<Entity> ents = comp.GetEntities();
                 for (int x = 0; x < ents.Count; x++)
-                    cachedEntityName[comp.shortGUID].Add(ents[x].shortGUID, GenerateEntityNameInternal(ents[x], comp));
+                    if (!cachedEntityName[comp.shortGUID].ContainsKey(ents[x].shortGUID))
+                        cachedEntityName[comp.shortGUID].Add(ents[x].shortGUID, GenerateEntityNameInternal(ents[x], comp));
             }
             mainInst.EnableLoadingOfPaks(true);
             hasFinishedCachingEntityNames = true;
@@ -100,6 +150,7 @@ namespace CommandsEditor
                     ShortGuid function = ((FunctionEntity)entity).function;
                     bool isComposite = !CommandsUtils.FunctionTypeExists(function);
                     if (isComposite) function = CommandsUtils.GetFunctionTypeGUID(FunctionType.CompositeInterface);
+                    items.Add("reference");
 
                     List<CathodeEntityDatabase.ParameterDefinition> parameters = CathodeEntityDatabase.GetParametersFromEntity(function);
                     if (parameters != null)

@@ -1,4 +1,4 @@
-﻿using CATHODE;
+using CATHODE;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using System;
@@ -29,7 +29,7 @@ namespace CommandsEditor
             public string name;
             public string variable;
             public ParameterUsage usage;
-            public string datatype; //todo:turn in to enum
+            public string datatype;
         }
         public enum ParameterUsage
         {
@@ -45,16 +45,6 @@ namespace CommandsEditor
             METHOD,
             FINISHED,
             RELAY,
-        }
-        public enum ParameterDatatype
-        {
-            //wip
-            INT,
-            FLOAT,
-            BOOL,
-            STRING, //CATHODE:String
-            DIRECTION, //CA::Vector
-
         }
 
         private static List<EntityDefinition> entities = new List<EntityDefinition>();
@@ -144,6 +134,7 @@ namespace CommandsEditor
                 case "POSITION":
                     this_param = new cTransform();
                     break;
+                case "OBJECT":
                 case "FLOAT":
                     this_param = new cFloat();
                     break;
@@ -163,16 +154,17 @@ namespace CommandsEditor
                 case "INT":
                     this_param = new cInteger();
                     break;
-                    /*
-                case "ENUM":
-                    thisParam = new CathodeEnum();
-                    ((CathodeEnum)thisParam).enumID = new cGUID("4C-B9-82-48"); //ALERTNESS_STATE is the first alphabetically
+                default:
+                    if (Enum.TryParse<EnumType>(def.datatype, out EnumType e))
+                    {
+                        this_param = new cEnum(e);
+                    }
+                    if (Enum.TryParse<ResourceType>(def.datatype, out ResourceType r))
+                    {
+                        this_param = new cResource();
+                        ((cResource)this_param).AddResource(r);
+                    }
                     break;
-                case CathodeDataType.SHORT_GUID:
-                    thisParam = new CathodeResource();
-                    ((CathodeResource)thisParam).resourceID = new cGUID("00-00-00-00");
-                    break;
-                    */
             }
             return this_param;
         }
