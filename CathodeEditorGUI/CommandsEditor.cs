@@ -24,6 +24,41 @@ using System.Security.Policy;
 using Newtonsoft.Json;
 using OpenCAGE;
 using System.Xml;
+using System.Runtime.InteropServices;
+using System.Numerics;
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+struct dtMeshHeader
+{
+    public int magic;				///< Tile magic number. (Used to identify the data format.)
+	public int version;			///< Tile data format version number.
+	public int x;					///< The x-position of the tile within the dtNavMesh tile grid. (x, y, layer)
+	public int y;					///< The y-position of the tile within the dtNavMesh tile grid. (x, y, layer)
+	public int layer;				///< The layer of the tile within the dtNavMesh tile grid. (x, y, layer)
+	public uint userId;	        ///< The user defined id of the tile.
+	public int polyCount;			///< The number of polygons in the tile.
+	public int vertCount;			///< The number of vertices in the tile.
+	public int maxLinkCount;		///< The number of allocated links.
+	public int detailMeshCount;    ///< The number of sub-meshes in the detail mesh.
+
+                                   /// The number of unique vertices in the detail mesh. (In addition to the polygon vertices.)
+    public int detailVertCount;
+
+    public int detailTriCount;			///< The number of triangles in the detail mesh.
+	public int bvNodeCount;			///< The number of bounding volume nodes. (Zero if bounding volumes are disabled.)
+	public int offMeshConCount;		///< The number of off-mesh connections.
+	public int offMeshBase;			///< The index of the first polygon which is an off-mesh connection.
+	public float walkableHeight;		///< The height of the agents using the tile.
+	public float walkableRadius;		///< The radius of the agents using the tile.
+	public float walkableClimb;		///< The maximum climb height of the agents using the tile.
+    [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
+    public float[] bmin;				///< The minimum bounds of the tile's AABB. [(x, y, z)]
+    [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
+    public float[] bmax;              ///< The maximum bounds of the tile's AABB. [(x, y, z)]
+
+                                      /// The bounding volume quantization factor. 
+    public float bvQuantFactor;
+};
 
 namespace CommandsEditor
 {
@@ -43,8 +78,34 @@ namespace CommandsEditor
         Task currentEntityNameCacher = null;
         Task currentHierarchyCacher = null;
 
+        private void UTIL_GenerateRecastHeader(string navmeshPath)
+        {
+            BinaryReader navmesh = new BinaryReader(File.OpenRead(navmeshPath));
+            navmesh.BaseStream.Position += 8;
+            dtMeshHeader header = Utilities.Consume<dtMeshHeader>(navmesh);
+            navmesh.Close();
+
+            BinaryWriter newNavmesh = new BinaryWriter(File.OpenWrite("D:\\Repositories\\recastnavigation\\RecastDemo\\Bin\\solo_navmesh.bin"));
+            newNavmesh.BaseStream.SetLength(0);
+            newNavmesh.Write(1297302868); //Magic
+            newNavmesh.Write(1); //Version
+            newNavmesh.Write(1); //Tile Count
+            Utilities.Write<Vector3>(newNavmesh, new Vector3(0, 0, 0)); //Origin;
+            newNavmesh.Write(header.bmax[0] - header.bmin[0]); //Width
+            newNavmesh.Write(header.bmax[2] - header.bmin[2]); //Height
+            newNavmesh.Write(1); //Max Tiles
+            newNavmesh.Write(header.polyCount); //Max Polys
+            newNavmesh.Write(File.ReadAllBytes(navmeshPath)); //Navmesh data, including Tile Ref and Data Size defined by NAV_MESH file
+            newNavmesh.Close();
+        }
+
         public CommandsEditor()
         {
+            UTIL_GenerateRecastHeader("G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\frontend\\WORLD\\STATE_0\\NAV_MESH");
+
+
+
+
             EditorUtils.SetEditor(this);
             InitializeComponent();
             _treeHelper = new TreeUtility(FileTree);
