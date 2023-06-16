@@ -87,6 +87,11 @@ namespace CommandsEditor
             return entities;
         }
 
+        public static EntityDefinition GetEntity(ShortGuid id)
+        {
+            return entities.FirstOrDefault(o => o.guid == id);
+        }
+
         public static EntityDefinition GetEntityAtIndex(int index)
         {
             return entities[index];
