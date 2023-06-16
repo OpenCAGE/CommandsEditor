@@ -164,10 +164,14 @@ namespace CommandsEditor
                     {
                         this_param = new cEnum(e);
                     }
-                    if (Enum.TryParse<ResourceType>(def.datatype, out ResourceType r))
+                    else if (Enum.TryParse<ResourceType>(def.datatype, out ResourceType r))
                     {
                         this_param = new cResource();
                         ((cResource)this_param).AddResource(r);
+                    }
+                    else
+                    {
+                        this_param = new cString();
                     }
                     break;
             }

@@ -1007,6 +1007,7 @@ namespace CommandsEditor
                                 asset = AssetList.Type.MATERIAL;
                                 break;
                             case "title":
+                            case "presence_id":
                             case "map_description":
                             case "content_title":
                             case "folder_title":
