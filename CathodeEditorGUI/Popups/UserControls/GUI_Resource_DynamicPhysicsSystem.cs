@@ -14,9 +14,6 @@ namespace CommandsEditor.Popups.UserControls
 {
     public partial class GUI_Resource_DynamicPhysicsSystem : ResourceUserControl
     {
-        public Vector3 Position { get { return new Vector3((float)POS_X.Value, (float)POS_Y.Value, (float)POS_Z.Value); } }
-        public Vector3 Rotation { get { return new Vector3((float)ROT_X.Value, (float)ROT_Y.Value, (float)ROT_Z.Value); } }
-
         public GUI_Resource_DynamicPhysicsSystem(CommandsEditor editor) : base(editor)
         {
             InitializeComponent();
@@ -24,15 +21,8 @@ namespace CommandsEditor.Popups.UserControls
             //TODO: populate from PHYSICS.MAP
         }
 
-        public void PopulateUI(Vector3 position, Vector3 rotation)
+        public void PopulateUI()
         {
-            POS_X.Value = (decimal)position.X;
-            POS_Y.Value = (decimal)position.Y;
-            POS_Z.Value = (decimal)position.Z;
-
-            ROT_X.Value = (decimal)rotation.X;
-            ROT_Y.Value = (decimal)rotation.Y;
-            ROT_Z.Value = (decimal)rotation.Z;
         }
     }
 }

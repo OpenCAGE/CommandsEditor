@@ -913,6 +913,18 @@ namespace CommandsEditor
             CacheHierarchies();
         }
 
+        private bool DoesCompositeContain(Composite composite, FunctionType type)
+        {
+            foreach (FunctionEntity func in composite.functions)
+            {
+                if (CommandsUtils.FunctionTypeExists(func.function)) continue;
+                Composite comp2 = Editor.commands.GetComposite(func.function);
+                if (comp2 == null) continue;
+                if (DoesCompositeContain(comp2, type)) return true;
+            }
+            return false;        
+        }
+
         /* Rename selected entity */
         private void renameSelectedEntity_Click(object sender, EventArgs e)
         {
@@ -1086,6 +1098,19 @@ namespace CommandsEditor
                         ((GUI_NumericDataType)parameterGUI).PopulateUI_Int((cInteger)this_param, paramName);
                         break;
                     case DataType.STRING:
+                        //TODO: handle this for proxies/overrides too...
+                        CathodeEntityDatabase.ParameterDefinition? info = CathodeEntityDatabase.GetParametersFromEntity(((FunctionEntity)entity).shortGUID).FirstOrDefault(o => o.name == paramName);
+                        if (info != null)
+                        {
+                            switch (info.Value.datatype) //TODO: can we cast this to resource type enum?
+                            {
+                                //TODO: use this instead of the hardcoded definitions below...
+                                case "SOUND_REVERB":
+
+                                    break;
+                            }
+                        }
+
                         AssetList.Type asset = AssetList.Type.NONE;
                         string asset_arg = "";
                         //TODO: We can figure out a lot of these from the iOS dump.
