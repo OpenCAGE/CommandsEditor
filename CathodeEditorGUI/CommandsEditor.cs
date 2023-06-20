@@ -331,6 +331,7 @@ namespace CommandsEditor
             if (Editor.resource.textures_global != null) Editor.resource.textures_global.Entries.Clear();
             if (Editor.resource.env_animations != null) Editor.resource.env_animations.Entries.Clear();
             if (Editor.resource.collision_maps != null) Editor.resource.collision_maps.Entries.Clear();
+            if (Editor.resource.physics_maps != null) Editor.resource.physics_maps.Entries.Clear();
             if (Editor.resource.sound_bankdata != null) Editor.resource.sound_bankdata.Entries.Clear();
             if (Editor.resource.sound_dialoguelookups != null) Editor.resource.sound_dialoguelookups.Entries.Clear();
             if (Editor.resource.sound_eventdata != null) Editor.resource.sound_eventdata.Entries.Clear();
@@ -360,6 +361,7 @@ namespace CommandsEditor
                 //Editor.resource.textures_Global = new Textures(SharedData.pathToAI + "/DATA/ENV/GLOBAL/WORLD/GLOBAL_TEXTURES.ALL.PAK");
                 Editor.resource.env_animations = new EnvironmentAnimations(baseLevelPath + "WORLD/ENVIRONMENT_ANIMATION.DAT");
                 Editor.resource.collision_maps = new CollisionMaps(baseLevelPath + "WORLD/COLLISION.MAP");
+                Editor.resource.physics_maps = new PhysicsMaps(baseLevelPath + "WORLD/PHYSICS.MAP");
                 Editor.resource.sound_bankdata = new SoundBankData(baseLevelPath + "WORLD/SOUNDBANKDATA.DAT");
                 Editor.resource.sound_dialoguelookups = new SoundDialogueLookups(baseLevelPath + "WORLD/SOUNDDIALOGUELOOKUPS.DAT");
                 Editor.resource.sound_eventdata = new SoundEventData(baseLevelPath + "WORLD/SOUNDEVENTDATA.DAT");
@@ -378,6 +380,7 @@ namespace CommandsEditor
                 Editor.resource.textures_global = null;
                 Editor.resource.env_animations = null;
                 Editor.resource.collision_maps = null;
+                Editor.resource.physics_maps = null;
                 Editor.resource.sound_bankdata = null;
                 Editor.resource.sound_dialoguelookups = null;
                 Editor.resource.sound_eventdata = null;
@@ -436,13 +439,57 @@ namespace CommandsEditor
                 return;
             }
 #endif
+            //Recalculate physics maps
+            if (Editor.resource.physics_maps != null && Editor.resource.physics_maps.Entries != null)
+            {
+                Editor.resource.physics_maps.Entries.Clear();
 
+                foreach (Composite composite in Editor.commands.Entries)
+                {
+                    foreach (FunctionEntity func in composite.functions)
+                    {
+                        if (func.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.PhysicsSystem))
+                        {
+                            List<EntityHierarchy> hierarchies = EditorUtils.GetHierarchiesForEntity(composite, func);
+                            foreach (EntityHierarchy hierarchy in hierarchies)
+                            {
+                                PhysicsMaps.Entry newPhysMap = new PhysicsMaps.Entry();
+                                newPhysMap.physics_system_index = ((cInteger)func.GetParameter("system_index").content).value; //TODO: this implies we will always have this param of type - should probs force this elsewhere...
+                                newPhysMap.resource_type = ShortGuidUtils.Generate("DYNAMIC_PHYSICS_SYSTEM");
+
+                                EntityHierarchy hierarchyCopy = hierarchy.Copy();
+                                hierarchyCopy.hierarchy.RemoveAt(hierarchyCopy.hierarchy.Count - 2);
+                                newPhysMap.composite_instance_id = hierarchyCopy.GenerateInstance();
+
+                                newPhysMap.entity = new CommandsEntityReference() { entity_id = func.shortGUID, composite_instance_id = hierarchy.GenerateInstance() };
+
+                                //TODO: calculate matrix (if we need it)
+
+                                Editor.resource.physics_maps.Entries.Add(newPhysMap);
+                            }
+                        }
+                    }
+                }
+
+                //Editor.resource.physics_maps.Save();
+            }
+
+            //Recalculate collision maps
+            if (Editor.resource.collision_maps != null && Editor.resource.collision_maps.Entries != null)
+            {
+                //TODO: calculate entity instances with collision info
+
+                //Editor.resource.collision_maps.Save();
+            }
+
+            //TODO: What happens if we update character hierarchies & then don't re-save the editor!! Should warn or handle.
             if (Editor.resource.character_accessories != null && Editor.resource.character_accessories.Entries != null)
                 Editor.resource.character_accessories.Save();
 
             if (Editor.resource.reds != null && Editor.resource.reds.Entries != null)
                 Editor.resource.reds.Save();
 
+            //TODO: We save this but really it's handled wrong. Need to calculate instances before saving & allow instance data to be edited properly.
             if (Editor.mvr != null && Editor.mvr.Entries != null)
                 Editor.mvr.Save();
 
@@ -796,6 +843,51 @@ namespace CommandsEditor
                     }
                 }
                 if (newLinks.Count != 0) entity.childLinks.AddRange(newLinks);
+            }
+
+            //If we are duplicating resource references, duplicate the actual referenced resources
+            //TODO TODO TODO: This is a terrible solution that won't work in most cases. Need to actually handle this properly before it is usable.
+            if (newEnt.variant == EntityVariant.FUNCTION)
+            {
+                Action<List<ResourceReference>> copyResources = resourceRefs =>
+                {
+                    foreach (ResourceReference resourceRef in resourceRefs)
+                    {
+                        switch (resourceRef.entryType)
+                        {
+                            case ResourceType.RENDERABLE_INSTANCE:
+                                //We don't care about copying REDs entries
+                                break;
+                            case ResourceType.DYNAMIC_PHYSICS_SYSTEM:
+                                //Copy all physics map entries that match our GUID as this should 
+                                foreach (PhysicsMaps.Entry physicsMap in Editor.resource.physics_maps.Entries)
+                                {
+                                    if (physicsMap.entity.entity_id != Editor.selected.entity.shortGUID) continue;
+                                    PhysicsMaps.Entry physicsMapNew = physicsMap.Copy();
+                                    physicsMapNew.entity.entity_id = newEnt.shortGUID;
+                                    Editor.resource.physics_maps.Entries.Add(physicsMapNew);
+                                }
+                                break;
+                            case ResourceType.COLLISION_MAPPING:
+                                //Copy all physics map entries that match our GUID as this should 
+                                foreach (CollisionMaps.Entry colMap in Editor.resource.collision_maps.Entries)
+                                {
+                                    if (colMap.entity.entity_id != Editor.selected.entity.shortGUID) continue;
+                                    CollisionMaps.Entry colMapNew = colMap.Copy();
+                                    colMapNew.entity.entity_id = newEnt.shortGUID;
+                                    Editor.resource.collision_maps.Entries.Add(colMapNew);
+                                }
+                                break;
+                        }
+                    }
+                };
+
+                FunctionEntity func = (FunctionEntity)newEnt;
+                copyResources(func.resources);
+
+                Parameter resourceParam = func.GetParameter("resource");
+                if (resourceParam != null && resourceParam.content.dataType == DataType.RESOURCE)
+                    copyResources(((cResource)resourceParam.content).value);
             }
 
             //Save back to composite

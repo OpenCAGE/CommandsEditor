@@ -162,6 +162,14 @@ namespace CommandsEditor
                     MessageBox.Show("Please make sure you have typed or selected a valid entity class to create.", "Invalid entity class", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
+
+                //A composite can only have one PhysicsSystem
+                if (function == FunctionType.PhysicsSystem && composite.functions.FirstOrDefault(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.PhysicsSystem)) != null)
+                {
+                    MessageBox.Show("You are trying to add a PhysicsSystem entity to a composite that already has one applied.", "PhysicsSystem error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
                 newEntity = composite.AddFunction(function, addDefaultParams.Checked);
 
                 //TODO: currently we don't support these properly

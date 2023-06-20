@@ -21,6 +21,10 @@ namespace CommandsEditor.Popups.UserControls
 
         public GUI_Resource_CollisionMapping(CommandsEditor editor) : base(editor)
         {
+
+            //TODO: Fetch this data correctly from COLLISION.MAP, and then re-write it too!
+
+
             InitializeComponent();
 
             collisionID.BeginUpdate();
@@ -28,7 +32,7 @@ namespace CommandsEditor.Popups.UserControls
             collisionID.Items.Add("FF-FF-FF-FF");
             for (int i = 0; i < Editor.resource.collision_maps.Entries.Count; i++)
             {
-                string id = Editor.resource.collision_maps.Entries[i].NodeResourceID.ToByteString();
+                string id = Editor.resource.collision_maps.Entries[i].entity.entity_id.ToByteString();
                 if (collisionID.Items.Contains(id)) continue;
                 collisionID.Items.Add(id);
             }

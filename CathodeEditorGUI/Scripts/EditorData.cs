@@ -34,6 +34,7 @@ namespace CommandsEditor
 
             public EnvironmentAnimations env_animations;
             public CollisionMaps collision_maps;
+            public PhysicsMaps physics_maps;
 
             public SoundBankData sound_bankdata;
             public SoundDialogueLookups sound_dialoguelookups;

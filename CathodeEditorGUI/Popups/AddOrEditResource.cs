@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using CommandsEditor.Popups.UserControls;
 using System.Windows.Interop;
 using CommandsEditor.Popups.Base;
+using CATHODE.EXPERIMENTAL;
 
 namespace CommandsEditor
 {
@@ -51,11 +52,14 @@ namespace CommandsEditor
                     case ResourceType.ANIMATED_MODEL:
                         {
                             resourceGroup = new GUI_Resource_AnimatedModel(_editor);
-                            ((GUI_Resource_AnimatedModel)resourceGroup).PopulateUI(resources[i].startIndex);
+                            ((GUI_Resource_AnimatedModel)resourceGroup).PopulateUI(resources[i].index);
                             break;
                         }
                     case ResourceType.COLLISION_MAPPING:
                         {
+                            //TODO: Pass this info through, and handle making new instances...
+                            Editor.resource.collision_maps.Entries.FindAll(o => o.entity.entity_id == resources[i].collisionID);
+
                             resourceGroup = new GUI_Resource_CollisionMapping(_editor);
                             ((GUI_Resource_CollisionMapping)resourceGroup).PopulateUI(resources[i].position, resources[i].rotation, resources[i].collisionID);
                             break;
@@ -69,7 +73,16 @@ namespace CommandsEditor
                     case ResourceType.RENDERABLE_INSTANCE:
                         {
                             resourceGroup = new GUI_Resource_RenderableInstance(_editor);
-                            ((GUI_Resource_RenderableInstance)resourceGroup).PopulateUI(resources[i].position, resources[i].rotation, resources[i].startIndex, resources[i].count);
+                            ((GUI_Resource_RenderableInstance)resourceGroup).PopulateUI(resources[i].position, resources[i].rotation, resources[i].index, resources[i].count);
+                            break;
+                        }
+                    case ResourceType.DYNAMIC_PHYSICS_SYSTEM:
+                        {
+                            //TODO: Pass this info through, and handle making new instances...
+                            Editor.resource.physics_maps.Entries.FindAll(o => o.entity.entity_id == resources[i].collisionID);
+
+                            resourceGroup = new GUI_Resource_DynamicPhysicsSystem(_editor);
+                            ((GUI_Resource_DynamicPhysicsSystem)resourceGroup).PopulateUI(); 
                             break;
                         }
                     default:
@@ -109,7 +122,7 @@ namespace CommandsEditor
                 case ResourceType.DYNAMIC_PHYSICS_SYSTEM:
                 case ResourceType.RENDERABLE_INSTANCE:
                 case ResourceType.ANIMATED_MODEL: 
-                    newReference.startIndex = 0;
+                    newReference.index = 0;
                     break;            
                 case ResourceType.EXCLUSIVE_MASTER_STATE_RESOURCE:
                 case ResourceType.NAV_MESH_BARRIER_RESOURCE:      
@@ -154,7 +167,7 @@ namespace CommandsEditor
                     case ResourceType.ANIMATED_MODEL:
                         {
                             GUI_Resource_AnimatedModel ui = (GUI_Resource_AnimatedModel)resource_panel.Controls[i];
-                            resourceRef.startIndex = ui.EnvironmentAnimIndex;
+                            resourceRef.index = ui.EnvironmentAnimIndex;
                             break;
                         }
                     case ResourceType.COLLISION_MAPPING:
@@ -178,7 +191,7 @@ namespace CommandsEditor
                             resourceRef.position = ui.Position;
                             resourceRef.rotation = ui.Rotation;
                             resourceRef.count = ui.SelectedMaterialIndexes.Count;
-                            resourceRef.startIndex = Editor.resource.reds.Entries.Count;
+                            resourceRef.index = Editor.resource.reds.Entries.Count;
 
                             for (int y = 0; y < ui.SelectedMaterialIndexes.Count; y++)
                             {

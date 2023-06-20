@@ -70,7 +70,7 @@ namespace CommandsEditor
                     Vector3 rotationOffset = (offset == null) ? new Vector3() : new Vector3(offset.rotation.X, offset.rotation.Y, offset.rotation.Z);
                     if (positionParameter != null) rotationOffset += ((cTransform)positionParameter.content).rotation;
 
-                    models.Add(new GUI_ModelViewer.Model(Editor.resource.reds.Entries[resource.startIndex].ModelIndex, positionOffset, rotationOffset));
+                    models.Add(new GUI_ModelViewer.Model(Editor.resource.reds.Entries[resource.index].ModelIndex, positionOffset, rotationOffset));
                 }
             }
             return models;

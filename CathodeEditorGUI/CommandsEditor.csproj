@@ -313,6 +313,12 @@
     <Compile Include="Popups\UserControls\GUI_Resource_Default.Designer.cs">
       <DependentUpon>GUI_Resource_Default.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\UserControls\GUI_Resource_DynamicPhysicsSystem.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Popups\UserControls\GUI_Resource_DynamicPhysicsSystem.Designer.cs">
+      <DependentUpon>GUI_Resource_DynamicPhysicsSystem.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popups\UserControls\GUI_SplineViewer.xaml.cs">
       <DependentUpon>GUI_SplineViewer.xaml</DependentUpon>
     </Compile>
@@ -1427,6 +1433,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\UserControls\GUI_Resource_CollisionMapping.resx">
       <DependentUpon>GUI_Resource_CollisionMapping.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\UserControls\GUI_Resource_DynamicPhysicsSystem.resx">
+      <DependentUpon>GUI_Resource_DynamicPhysicsSystem.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\UserControls\GUI_Resource_NavMeshBarrierResource.resx">
       <DependentUpon>GUI_Resource_NavMeshBarrierResource.cs</DependentUpon>
