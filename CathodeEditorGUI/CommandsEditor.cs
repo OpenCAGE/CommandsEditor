@@ -1352,7 +1352,7 @@ namespace CommandsEditor
         /* Edit mover instances of this entity */
         private void editEntityMovers_Click(object sender, EventArgs e)
         {
-            EditMVR moverEditor = new EditMVR(this, Editor.selected.entity.shortGUID);
+            EditMVR moverEditor = new EditMVR(this, Editor.selected.composite, Editor.selected.entity.shortGUID);
             moverEditor.Show();
             moverEditor.FormClosed += MoverEditor_FormClosed;
         }
