@@ -57,29 +57,7 @@ namespace CommandsEditor
 
             //Populate available maps
             env_list.Items.Clear();
-            string[] galaxyBins = Directory.GetFiles(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/", "GALAXY.DEFINITION_BIN", SearchOption.AllDirectories);
-            List<string> mapList = new List<string>();
-            for (int i = 0; i < galaxyBins.Length; i++)
-            {
-                int extraLength = ("/RENDERABLE/GALAXY/GALAXY.DEFINITION_BIN").Length;
-                string mapPath = galaxyBins[i].Substring(0, galaxyBins[i].Length - extraLength);
-
-                //Try match a few files outside of the GALAXY definition, to ensure we are actually a map.
-                if (!File.Exists(mapPath + "/WORLD/COMMANDS.PAK")) continue;
-                if (!File.Exists(mapPath + "/WORLD/MODELS.MVR")) continue;
-                if (!File.Exists(mapPath + "/RENDERABLE/LEVEL_MODELS.PAK")) continue;
-                if (!File.Exists(mapPath + "/RENDERABLE/MODELS_LEVEL.BIN")) continue;
-
-                string[] split = galaxyBins[i].Replace("\\", "/").Split(new[] { "/DATA/ENV/PRODUCTION/" }, StringSplitOptions.None);
-                string file = split[split.Length - 1];
-                int length = file.Length - extraLength;
-                if (length <= 0) continue;
-
-                string mapName = file.Substring(0, length);
-                if (mapName == "DLC/BSPNOSTROMO_RIPLEY" || mapName == "DLC/BSPNOSTROMO_TWOTEAMS") mapName += "_PATCH";
-                mapList.Add(mapName);
-            }
-            env_list.Items.AddRange(mapList.ToArray());
+            env_list.Items.AddRange(Level.GetLevels(SharedData.pathToAI, true).ToArray());
             if (env_list.Items.Contains("FRONTEND")) env_list.SelectedItem = "FRONTEND";
             else env_list.SelectedIndex = 0;
 
