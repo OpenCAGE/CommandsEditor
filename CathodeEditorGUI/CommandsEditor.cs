@@ -442,6 +442,7 @@ namespace CommandsEditor
             //Recalculate physics maps
             if (Editor.resource.physics_maps != null && Editor.resource.physics_maps.Entries != null)
             {
+                /*
                 Editor.resource.physics_maps.Entries.Clear();
 
                 foreach (Composite composite in Editor.commands.Entries)
@@ -470,8 +471,9 @@ namespace CommandsEditor
                         }
                     }
                 }
+                */
 
-                //Editor.resource.physics_maps.Save();
+                Editor.resource.physics_maps.Save();
             }
 
             //Recalculate collision maps
@@ -845,51 +847,6 @@ namespace CommandsEditor
                 if (newLinks.Count != 0) entity.childLinks.AddRange(newLinks);
             }
 
-            //If we are duplicating resource references, duplicate the actual referenced resources
-            //TODO TODO TODO: This is a terrible solution that won't work in most cases. Need to actually handle this properly before it is usable.
-            if (newEnt.variant == EntityVariant.FUNCTION)
-            {
-                Action<List<ResourceReference>> copyResources = resourceRefs =>
-                {
-                    foreach (ResourceReference resourceRef in resourceRefs)
-                    {
-                        switch (resourceRef.entryType)
-                        {
-                            case ResourceType.RENDERABLE_INSTANCE:
-                                //We don't care about copying REDs entries
-                                break;
-                            case ResourceType.DYNAMIC_PHYSICS_SYSTEM:
-                                //Copy all physics map entries that match our GUID as this should 
-                                foreach (PhysicsMaps.Entry physicsMap in Editor.resource.physics_maps.Entries)
-                                {
-                                    if (physicsMap.entity.entity_id != Editor.selected.entity.shortGUID) continue;
-                                    PhysicsMaps.Entry physicsMapNew = physicsMap.Copy();
-                                    physicsMapNew.entity.entity_id = newEnt.shortGUID;
-                                    Editor.resource.physics_maps.Entries.Add(physicsMapNew);
-                                }
-                                break;
-                            case ResourceType.COLLISION_MAPPING:
-                                //Copy all physics map entries that match our GUID as this should 
-                                foreach (CollisionMaps.Entry colMap in Editor.resource.collision_maps.Entries)
-                                {
-                                    if (colMap.entity.entity_id != Editor.selected.entity.shortGUID) continue;
-                                    CollisionMaps.Entry colMapNew = colMap.Copy();
-                                    colMapNew.entity.entity_id = newEnt.shortGUID;
-                                    Editor.resource.collision_maps.Entries.Add(colMapNew);
-                                }
-                                break;
-                        }
-                    }
-                };
-
-                FunctionEntity func = (FunctionEntity)newEnt;
-                copyResources(func.resources);
-
-                Parameter resourceParam = func.GetParameter("resource");
-                if (resourceParam != null && resourceParam.content.dataType == DataType.RESOURCE)
-                    copyResources(((cResource)resourceParam.content).value);
-            }
-
             //Save back to composite
             switch (newEnt.variant)
             {
@@ -1098,18 +1055,23 @@ namespace CommandsEditor
                         ((GUI_NumericDataType)parameterGUI).PopulateUI_Int((cInteger)this_param, paramName);
                         break;
                     case DataType.STRING:
+                        /*
                         //TODO: handle this for proxies/overrides too...
-                        CathodeEntityDatabase.ParameterDefinition? info = CathodeEntityDatabase.GetParametersFromEntity(((FunctionEntity)entity).shortGUID).FirstOrDefault(o => o.name == paramName);
-                        if (info != null)
+                        if (entity.variant == EntityVariant.FUNCTION)
                         {
-                            switch (info.Value.datatype) //TODO: can we cast this to resource type enum?
+                            CathodeEntityDatabase.ParameterDefinition? info = CathodeEntityDatabase.GetParametersFromEntity(((FunctionEntity)entity).function).FirstOrDefault(o => o.name == paramName);
+                            if (info != null)
                             {
-                                //TODO: use this instead of the hardcoded definitions below...
-                                case "SOUND_REVERB":
+                                switch (info.Value.datatype) //TODO: can we cast this to resource type enum?
+                                {
+                                    //TODO: use this instead of the hardcoded definitions below...
+                                    case "SOUND_REVERB":
 
-                                    break;
+                                        break;
+                                }
                             }
                         }
+                        */
 
                         AssetList.Type asset = AssetList.Type.NONE;
                         string asset_arg = "";
