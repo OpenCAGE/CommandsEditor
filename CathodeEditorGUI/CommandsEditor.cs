@@ -57,14 +57,18 @@ namespace CommandsEditor
 
             //Populate available maps
             env_list.Items.Clear();
-            List<string> mapList = Directory.GetFiles(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            List<string> mapList = Directory.GetFiles(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/", "GALAXY.DEFINITION_BIN", SearchOption.AllDirectories).ToList<string>();
             for (int i = 0; i < mapList.Count; i++)
             {
-                string[] fileSplit = mapList[i].Split(new[] { "PRODUCTION" }, StringSplitOptions.None);
-                string mapName = fileSplit[fileSplit.Length - 1].Substring(1, fileSplit[fileSplit.Length - 1].Length - 20);
-                mapList[i] = (mapName);
+                string[] fileSplit = mapList[i].Replace("\\", "/").Split(new[] { "/DATA/ENV/PRODUCTION/" }, StringSplitOptions.None);
+                string file = fileSplit[fileSplit.Length - 1];
+                int length = file.Length - ("/RENDERABLE/GALAXY/GALAXY.DEFINITION_BIN").Length;
+                if (length <= 0) continue;
+                mapList[i] = file.Substring(0, length);
+
+                if (mapList[i] == "DLC/BSPNOSTROMO_RIPLEY" || mapList[i] == "DLC/BSPNOSTROMO_TWOTEAMS")
+                    mapList[i] += "_PATCH";
             }
-            mapList.Remove("DLC\\BSPNOSTROMO_RIPLEY"); mapList.Remove("DLC\\BSPNOSTROMO_TWOTEAMS");
             env_list.Items.AddRange(mapList.ToArray());
             if (env_list.Items.Contains("FRONTEND")) env_list.SelectedItem = "FRONTEND";
             else env_list.SelectedIndex = 0;
@@ -153,7 +157,7 @@ namespace CommandsEditor
             }
             return;
 #if DEBUG
-            env_list.SelectedItem = "DLC\\BSPNOSTROMO_TWOTEAMS_PATCH";
+            env_list.SelectedItem = "DLC/BSPNOSTROMO_TWOTEAMS_PATCH";
             LoadCommandsPAK(env_list.SelectedItem.ToString());
             LoadComposite("DLC\\PREORDER\\PODLC_TWOTEAMS");
             LoadEntity(Editor.selected.composite.functions.FirstOrDefault(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.CAGEAnimation)));
@@ -342,23 +346,10 @@ namespace CommandsEditor
             try
             {
 #endif
-            string baseLevelPath = Editor.commands.Filepath.Substring(0, Editor.commands.Filepath.Length - ("WORLD/COMMANDS.PAK").Length);
-
-                //The game has two hard-coded _PATCH overrides which change the CommandsPAK but not the assets
+                string baseLevelPath = Editor.commands.Filepath.Substring(0, Editor.commands.Filepath.Length - ("WORLD/COMMANDS.PAK").Length);
                 string levelName = env_list.Items[env_list.SelectedIndex].ToString();
-                switch (levelName)
-                {
-                    case @"DLC\BSPNOSTROMO_RIPLEY_PATCH":
-                    case @"DLC\BSPNOSTROMO_TWOTEAMS_PATCH":
-                        baseLevelPath = baseLevelPath.Replace(levelName, levelName.Substring(0, levelName.Length - ("_PATCH").Length));
-                        break;
-                }
 
-                Editor.resource.models = new Models(baseLevelPath + "RENDERABLE/LEVEL_MODELS.PAK");
                 Editor.resource.reds = new RenderableElements(baseLevelPath + "WORLD/REDS.BIN");
-                Editor.resource.materials = new Materials(baseLevelPath + "RENDERABLE/LEVEL_MODELS.MTL");
-                //Editor.resource.textures = new Textures(baseLevelPath + "RENDERABLE/LEVEL_TEXTURES.ALL.PAK");
-                //Editor.resource.textures_Global = new Textures(SharedData.pathToAI + "/DATA/ENV/GLOBAL/WORLD/GLOBAL_TEXTURES.ALL.PAK");
                 Editor.resource.env_animations = new EnvironmentAnimations(baseLevelPath + "WORLD/ENVIRONMENT_ANIMATION.DAT");
                 Editor.resource.collision_maps = new CollisionMaps(baseLevelPath + "WORLD/COLLISION.MAP");
                 Editor.resource.physics_maps = new PhysicsMaps(baseLevelPath + "WORLD/PHYSICS.MAP");
@@ -367,6 +358,20 @@ namespace CommandsEditor
                 Editor.resource.sound_eventdata = new SoundEventData(baseLevelPath + "WORLD/SOUNDEVENTDATA.DAT");
                 Editor.resource.sound_environmentdata = new SoundEnvironmentData(baseLevelPath + "WORLD/SOUNDENVIRONMENTDATA.DAT");
                 Editor.resource.character_accessories = new CharacterAccessorySets(baseLevelPath + "WORLD/CHARACTERACCESSORYSETS.BIN");
+                //Editor.resource.textures_Global = new Textures(SharedData.pathToAI + "/DATA/ENV/GLOBAL/WORLD/GLOBAL_TEXTURES.ALL.PAK");
+
+                //The game has two hard-coded _PATCH overrides. We should use RENDERABLE from the non-patched folder.
+                switch (levelName)
+                {
+                    case "DLC/BSPNOSTROMO_RIPLEY_PATCH":
+                    case "DLC/BSPNOSTROMO_TWOTEAMS_PATCH":
+                        baseLevelPath = baseLevelPath.Replace(levelName, levelName.Substring(0, levelName.Length - ("_PATCH").Length));
+                        break;
+                }
+
+                Editor.resource.models = new Models(baseLevelPath + "RENDERABLE/LEVEL_MODELS.PAK");
+                Editor.resource.materials = new Materials(baseLevelPath + "RENDERABLE/LEVEL_MODELS.MTL");
+                //Editor.resource.textures = new Textures(baseLevelPath + "RENDERABLE/LEVEL_TEXTURES.ALL.PAK");
 #if !CATHODE_FAIL_HARD
             }
             catch
