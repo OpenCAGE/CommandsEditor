@@ -39,23 +39,31 @@ namespace CommandsEditor
         private void PopulateUI(ShortGuid nodeID)
         {
             filteredNodeID = nodeID;
-            _mvrListIndexes.Clear();
 
-            listBox1.BeginUpdate();
-            listBox1.Items.Clear();
+            //Get all MVR entries that match this entity
+            _mvrListIndexes.Clear();
             for (int i = 0; i < Editor.mvr.Entries.Count; i++)
             {
                 if (nodeID.val != null && Editor.mvr.Entries[i].entity.entity_id != nodeID) continue;
-
-                EntityHierarchy hierarchy = EditorUtils.GetHierarchyFromReference(Editor.mvr.Entries[i].entity);
-
                 _mvrListIndexes.Add(i);
-                listBox1.Items.Add(hierarchy == null ? i.ToString() + " [unresolvable]" : hierarchy.GetHierarchyAsString(Editor.commands, _composite, false));
+            }
+
+            //Fetch the hierarchies for the MVR entries that point to this entity
+            EntityHierarchy[] hierarchies = new EntityHierarchy[_mvrListIndexes.Count];
+            Parallel.For(0, _mvrListIndexes.Count, i =>
+            {
+                hierarchies[i] = EditorUtils.GetHierarchyFromReference(Editor.mvr.Entries[_mvrListIndexes[i]].entity);
+            });
+
+            //Write the hierarchies to the list
+            listBox1.BeginUpdate();
+            listBox1.Items.Clear();
+            for (int i = 0; i < hierarchies.Length; i++)
+            {
+                listBox1.Items.Add(hierarchies[i] == null ? _mvrListIndexes[i].ToString() + " [unresolvable]" : hierarchies[i].GetHierarchyAsString(Editor.commands, _composite, false));
             }
             listBox1.EndUpdate();
-
-            if (listBox1.Items.Count != 0)
-                listBox1.SelectedIndex = 0;
+            if (listBox1.Items.Count != 0) listBox1.SelectedIndex = 0;
         }
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
