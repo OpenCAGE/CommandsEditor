@@ -29,51 +29,29 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AddEntity));
-            this.createDatatypeEntity = new System.Windows.Forms.RadioButton();
-            this.createFunctionEntity = new System.Windows.Forms.RadioButton();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.select_composite = new System.Windows.Forms.Button();
+            this.addDefaultParams = new System.Windows.Forms.CheckBox();
             this.label3 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.createOverrideEntity = new System.Windows.Forms.RadioButton();
             this.createProxyEntity = new System.Windows.Forms.RadioButton();
+            this.createDatatypeEntity = new System.Windows.Forms.RadioButton();
             this.createCompositeEntity = new System.Windows.Forms.RadioButton();
+            this.createFunctionEntity = new System.Windows.Forms.RadioButton();
             this.createNewEntity = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.entityVariant = new System.Windows.Forms.ComboBox();
             this.generateHierarchy = new System.Windows.Forms.Button();
-            this.addDefaultParams = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
-            // createDatatypeEntity
-            // 
-            this.createDatatypeEntity.AutoSize = true;
-            this.createDatatypeEntity.Location = new System.Drawing.Point(18, 19);
-            this.createDatatypeEntity.Name = "createDatatypeEntity";
-            this.createDatatypeEntity.Size = new System.Drawing.Size(92, 17);
-            this.createDatatypeEntity.TabIndex = 0;
-            this.createDatatypeEntity.Text = "Variable Entity";
-            this.createDatatypeEntity.UseVisualStyleBackColor = true;
-            this.createDatatypeEntity.CheckedChanged += new System.EventHandler(this.selectedDatatypeEntity);
-            // 
-            // createFunctionEntity
-            // 
-            this.createFunctionEntity.AutoSize = true;
-            this.createFunctionEntity.Checked = true;
-            this.createFunctionEntity.Location = new System.Drawing.Point(116, 19);
-            this.createFunctionEntity.Name = "createFunctionEntity";
-            this.createFunctionEntity.Size = new System.Drawing.Size(95, 17);
-            this.createFunctionEntity.TabIndex = 1;
-            this.createFunctionEntity.TabStop = true;
-            this.createFunctionEntity.Text = "Function Entity";
-            this.createFunctionEntity.UseVisualStyleBackColor = true;
-            this.createFunctionEntity.CheckedChanged += new System.EventHandler(this.selectedFunctionEntity);
-            // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.select_composite);
             this.groupBox1.Controls.Add(this.addDefaultParams);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.groupBox2);
@@ -89,6 +67,26 @@
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "New Entity";
+            // 
+            // select_composite
+            // 
+            this.select_composite.Location = new System.Drawing.Point(590, 110);
+            this.select_composite.Name = "select_composite";
+            this.select_composite.Size = new System.Drawing.Size(155, 23);
+            this.select_composite.TabIndex = 8;
+            this.select_composite.Text = "Select Composite";
+            this.select_composite.UseVisualStyleBackColor = true;
+            this.select_composite.Click += new System.EventHandler(this.select_composite_Click);
+            // 
+            // addDefaultParams
+            // 
+            this.addDefaultParams.AutoSize = true;
+            this.addDefaultParams.Location = new System.Drawing.Point(44, 143);
+            this.addDefaultParams.Name = "addDefaultParams";
+            this.addDefaultParams.Size = new System.Drawing.Size(138, 17);
+            this.addDefaultParams.TabIndex = 7;
+            this.addDefaultParams.Text = "Add Default Parameters";
+            this.addDefaultParams.UseVisualStyleBackColor = true;
             // 
             // label3
             // 
@@ -134,6 +132,17 @@
             this.createProxyEntity.UseVisualStyleBackColor = true;
             this.createProxyEntity.CheckedChanged += new System.EventHandler(this.selectedProxyEntity);
             // 
+            // createDatatypeEntity
+            // 
+            this.createDatatypeEntity.AutoSize = true;
+            this.createDatatypeEntity.Location = new System.Drawing.Point(18, 19);
+            this.createDatatypeEntity.Name = "createDatatypeEntity";
+            this.createDatatypeEntity.Size = new System.Drawing.Size(92, 17);
+            this.createDatatypeEntity.TabIndex = 0;
+            this.createDatatypeEntity.Text = "Variable Entity";
+            this.createDatatypeEntity.UseVisualStyleBackColor = true;
+            this.createDatatypeEntity.CheckedChanged += new System.EventHandler(this.selectedDatatypeEntity);
+            // 
             // createCompositeEntity
             // 
             this.createCompositeEntity.AutoSize = true;
@@ -144,6 +153,19 @@
             this.createCompositeEntity.Text = "Composite Entity";
             this.createCompositeEntity.UseVisualStyleBackColor = true;
             this.createCompositeEntity.CheckedChanged += new System.EventHandler(this.selectedCompositeEntity);
+            // 
+            // createFunctionEntity
+            // 
+            this.createFunctionEntity.AutoSize = true;
+            this.createFunctionEntity.Checked = true;
+            this.createFunctionEntity.Location = new System.Drawing.Point(116, 19);
+            this.createFunctionEntity.Name = "createFunctionEntity";
+            this.createFunctionEntity.Size = new System.Drawing.Size(95, 17);
+            this.createFunctionEntity.TabIndex = 1;
+            this.createFunctionEntity.TabStop = true;
+            this.createFunctionEntity.Text = "Function Entity";
+            this.createFunctionEntity.UseVisualStyleBackColor = true;
+            this.createFunctionEntity.CheckedChanged += new System.EventHandler(this.selectedFunctionEntity);
             // 
             // createNewEntity
             // 
@@ -209,17 +231,7 @@
             this.generateHierarchy.UseVisualStyleBackColor = true;
             this.generateHierarchy.Click += new System.EventHandler(this.generateHierarchy_Click);
             // 
-            // addDefaultParams
-            // 
-            this.addDefaultParams.AutoSize = true;
-            this.addDefaultParams.Location = new System.Drawing.Point(44, 143);
-            this.addDefaultParams.Name = "addDefaultParams";
-            this.addDefaultParams.Size = new System.Drawing.Size(138, 17);
-            this.addDefaultParams.TabIndex = 7;
-            this.addDefaultParams.Text = "Add Default Parameters";
-            this.addDefaultParams.UseVisualStyleBackColor = true;
-            // 
-            // CathodeEditorGUI_AddEntity
+            // AddEntity
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -228,7 +240,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.Name = "CathodeEditorGUI_AddEntity";
+            this.Name = "AddEntity";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "New Entity";
             this.groupBox1.ResumeLayout(false);
@@ -256,5 +268,6 @@
         private System.Windows.Forms.Button generateHierarchy;
         private System.Windows.Forms.RadioButton createOverrideEntity;
         private System.Windows.Forms.CheckBox addDefaultParams;
+        private System.Windows.Forms.Button select_composite;
     }
 }
