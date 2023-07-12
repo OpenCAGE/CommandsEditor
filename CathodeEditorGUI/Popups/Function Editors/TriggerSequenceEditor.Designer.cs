@@ -42,6 +42,7 @@
             this.selectEntToPointTo = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.selectedTriggerDetails = new System.Windows.Forms.GroupBox();
+            this.saveTrigger = new System.Windows.Forms.Button();
             this.triggerEndParam = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.triggerStartParam = new System.Windows.Forms.TextBox();
@@ -50,7 +51,8 @@
             this.deleteParamTrigger = new System.Windows.Forms.Button();
             this.addNewParamTrigger = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
-            this.saveTrigger = new System.Windows.Forms.Button();
+            this.moveUp = new System.Windows.Forms.Button();
+            this.moveDown = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.selectedEntityDetails.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -77,6 +79,8 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.moveDown);
+            this.groupBox1.Controls.Add(this.moveUp);
             this.groupBox1.Controls.Add(this.deleteSelectedTrigger);
             this.groupBox1.Controls.Add(this.addNewTrigger);
             this.groupBox1.Controls.Add(this.selectedEntityDetails);
@@ -194,6 +198,16 @@
             this.selectedTriggerDetails.TabStop = false;
             this.selectedTriggerDetails.Text = "Selected Trigger Details";
             // 
+            // saveTrigger
+            // 
+            this.saveTrigger.Location = new System.Drawing.Point(369, 108);
+            this.saveTrigger.Name = "saveTrigger";
+            this.saveTrigger.Size = new System.Drawing.Size(92, 23);
+            this.saveTrigger.TabIndex = 7;
+            this.saveTrigger.Text = "Save";
+            this.saveTrigger.UseVisualStyleBackColor = true;
+            this.saveTrigger.Click += new System.EventHandler(this.saveTrigger_Click);
+            // 
             // triggerEndParam
             // 
             this.triggerEndParam.Location = new System.Drawing.Point(17, 82);
@@ -266,15 +280,25 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // saveTrigger
+            // moveUp
             // 
-            this.saveTrigger.Location = new System.Drawing.Point(369, 108);
-            this.saveTrigger.Name = "saveTrigger";
-            this.saveTrigger.Size = new System.Drawing.Size(92, 23);
-            this.saveTrigger.TabIndex = 7;
-            this.saveTrigger.Text = "Save";
-            this.saveTrigger.UseVisualStyleBackColor = true;
-            this.saveTrigger.Click += new System.EventHandler(this.saveTrigger_Click);
+            this.moveUp.Location = new System.Drawing.Point(707, 171);
+            this.moveUp.Name = "moveUp";
+            this.moveUp.Size = new System.Drawing.Size(170, 26);
+            this.moveUp.TabIndex = 4;
+            this.moveUp.Text = "Move Selected Entity Up";
+            this.moveUp.UseVisualStyleBackColor = true;
+            this.moveUp.Click += new System.EventHandler(this.moveUp_Click);
+            // 
+            // moveDown
+            // 
+            this.moveDown.Location = new System.Drawing.Point(707, 203);
+            this.moveDown.Name = "moveDown";
+            this.moveDown.Size = new System.Drawing.Size(170, 26);
+            this.moveDown.TabIndex = 5;
+            this.moveDown.Text = "Move Selected Entity Down";
+            this.moveDown.UseVisualStyleBackColor = true;
+            this.moveDown.Click += new System.EventHandler(this.moveDown_Click);
             // 
             // TriggerSequenceEditor
             // 
@@ -325,5 +349,7 @@
         private System.Windows.Forms.Button deleteParamTrigger;
         private System.Windows.Forms.Button addNewParamTrigger;
         private System.Windows.Forms.Button saveTrigger;
+        private System.Windows.Forms.Button moveDown;
+        private System.Windows.Forms.Button moveUp;
     }
 }

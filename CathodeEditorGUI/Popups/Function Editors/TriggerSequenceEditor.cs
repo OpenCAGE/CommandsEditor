@@ -30,7 +30,7 @@ namespace CommandsEditor
             ReloadTriggerList();
         }
 
-        private void ReloadEntityList()
+        private void ReloadEntityList(int indexToSelect = -1)
         {
             entity_list.BeginUpdate();
             entity_list.Items.Clear();
@@ -43,6 +43,7 @@ namespace CommandsEditor
                 entity_list.Items.Add(toAdd);
             }
             entity_list.EndUpdate();
+            entity_list.SelectedIndex = indexToSelect;
         }
         private void ReloadTriggerList()
         {
@@ -189,5 +190,32 @@ namespace CommandsEditor
             LoadSelectedTriggers();
         }
 
+        private void moveUp_Click(object sender, EventArgs e)
+        {
+            if (entity_list.SelectedIndex == -1) return;
+            if (entity_list.SelectedIndex == 0) return;
+
+            TriggerSequence.Entity toMoveDown = node.entities[entity_list.SelectedIndex - 1];
+            TriggerSequence.Entity toMoveUp = node.entities[entity_list.SelectedIndex];
+
+            node.entities[entity_list.SelectedIndex - 1] = toMoveUp;
+            node.entities[entity_list.SelectedIndex] = toMoveDown;
+
+            ReloadEntityList(entity_list.SelectedIndex - 1);
+        }
+
+        private void moveDown_Click(object sender, EventArgs e)
+        {
+            if (entity_list.SelectedIndex == -1) return;
+            if (entity_list.SelectedIndex == node.entities.Count - 1) return;
+
+            TriggerSequence.Entity toMoveUp = node.entities[entity_list.SelectedIndex + 1];
+            TriggerSequence.Entity toMoveDown = node.entities[entity_list.SelectedIndex];
+
+            node.entities[entity_list.SelectedIndex + 1] = toMoveDown;
+            node.entities[entity_list.SelectedIndex] = toMoveUp;
+
+            ReloadEntityList(entity_list.SelectedIndex + 1);
+        }
     }
 }
