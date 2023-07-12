@@ -1,5 +1,6 @@
 ﻿using CATHODE;
 using CATHODE.Scripting;
+using CATHODE.Scripting.Internal;
 using CommandsEditor.Popups.Base;
 using System;
 using System.Collections.Generic;
@@ -216,6 +217,21 @@ namespace CommandsEditor
             node.entities[entity_list.SelectedIndex] = toMoveUp;
 
             ReloadEntityList(entity_list.SelectedIndex + 1);
+        }
+
+        private void open_entity_Click(object sender, EventArgs e)
+        {
+            if (entity_list.SelectedIndex == -1) return;
+
+            Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, Editor.selected.composite, node.entities[entity_list.SelectedIndex].connectedEntity.hierarchy, out Composite comp, out string h);
+            if (comp == null || ent == null)
+            {
+                MessageBox.Show("Failed to resolve entity! Can not load to it.", "Entity pointer corrupted!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            _editor.LoadComposite(comp);
+            _editor.LoadEntity(ent);
         }
     }
 }
