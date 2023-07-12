@@ -217,6 +217,12 @@ namespace CommandsEditor
                     MessageBox.Show("Failed to look up composite!\nPlease report this issue on GitHub.\n\n" + entityVariant.Text, "Could not find composite!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
+                //Check logic errors (we can't have cyclical references)
+                if (compRef == composite)
+                {
+                    MessageBox.Show("You cannot create an entity which instances the composite it is contained with - this will result in an infinite loop at runtime! Please check your logic!.", "Logic error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
                 newEntity = composite.AddFunction(compRef, addDefaultParams.Checked);
                 EditorUtils.GenerateCompositeInstances(Editor.commands);
             }
