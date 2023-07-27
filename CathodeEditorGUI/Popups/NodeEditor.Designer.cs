@@ -32,6 +32,7 @@
             this.lockLocationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lockConnectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stNodeEditor1 = new ST.Library.UI.NodeEditor.STNodeEditor();
+            this.clickToSelect = new System.Windows.Forms.CheckBox();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -83,11 +84,23 @@
             this.stNodeEditor1.TabIndex = 1;
             this.stNodeEditor1.Text = "stNodeEditor1";
             // 
+            // clickToSelect
+            // 
+            this.clickToSelect.AutoSize = true;
+            this.clickToSelect.Location = new System.Drawing.Point(0, 0);
+            this.clickToSelect.Name = "clickToSelect";
+            this.clickToSelect.Size = new System.Drawing.Size(175, 17);
+            this.clickToSelect.TabIndex = 2;
+            this.clickToSelect.Text = "Clicking entity selects it in editor";
+            this.clickToSelect.UseVisualStyleBackColor = true;
+            this.clickToSelect.CheckedChanged += new System.EventHandler(this.clickToSelect_CheckedChanged);
+            // 
             // NodeEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1017, 634);
+            this.Controls.Add(this.clickToSelect);
             this.Controls.Add(this.stNodeEditor1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "NodeEditor";
@@ -95,6 +108,7 @@
             this.Text = "Node Viewer";
             this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -104,7 +118,7 @@
         private System.Windows.Forms.ToolStripMenuItem removeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem lockLocationToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem lockConnectionToolStripMenuItem;
-
+        private System.Windows.Forms.CheckBox clickToSelect;
     }
 }
 
