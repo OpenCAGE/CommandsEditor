@@ -1408,9 +1408,16 @@ namespace CommandsEditor
                 }
 
                 if (Editor.commands == null) continue;
-
                 mainInst.EnableLoadingOfPaks(false, "Backup...");
-                Editor.commands.Save(Editor.commands.Filepath + ".bak", false);
+
+                string backupDirectory = Editor.commands.Filepath.Substring(0, Editor.commands.Filepath.Length - Path.GetFileName(Editor.commands.Filepath).Length) + "/COMMANDS_BACKUPS/";
+                Directory.CreateDirectory(backupDirectory);
+
+                //Make sure there are only 15 max backed up PAKs
+                var files = new DirectoryInfo(backupDirectory).EnumerateFiles().OrderByDescending(f => f.CreationTime).Skip(15).ToList();
+                files.ForEach(f => f.Delete());
+
+                Editor.commands.Save(backupDirectory + "COMMANDS_" + DateTimeOffset.UtcNow.ToUnixTimeSeconds() + ".PAK", false);
                 mainInst.EnableLoadingOfPaks(true);
             }
         }
