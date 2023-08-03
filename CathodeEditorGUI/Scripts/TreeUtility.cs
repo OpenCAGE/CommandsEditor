@@ -131,6 +131,8 @@ namespace CommandsEditor
                     }
                 }
             }
+            FileTree.Focus();
+            FileTree.Select();
         }
     }
 }

@@ -32,16 +32,20 @@
             this.entity_list = new System.Windows.Forms.ListBox();
             this.trigger_list = new System.Windows.Forms.ListBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.deleteSelectedTrigger = new System.Windows.Forms.Button();
             this.addNewTrigger = new System.Windows.Forms.Button();
             this.selectedEntityDetails = new System.Windows.Forms.GroupBox();
+            this.open_entity = new System.Windows.Forms.Button();
+            this.deleteSelectedTrigger = new System.Windows.Forms.Button();
+            this.moveDown = new System.Windows.Forms.Button();
             this.entityTriggerDelay = new System.Windows.Forms.TextBox();
+            this.moveUp = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.entityHierarchy = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.selectEntToPointTo = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.selectedTriggerDetails = new System.Windows.Forms.GroupBox();
+            this.saveTrigger = new System.Windows.Forms.Button();
             this.triggerEndParam = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.triggerStartParam = new System.Windows.Forms.TextBox();
@@ -50,7 +54,6 @@
             this.deleteParamTrigger = new System.Windows.Forms.Button();
             this.addNewParamTrigger = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
-            this.saveTrigger = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.selectedEntityDetails.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -60,6 +63,7 @@
             // entity_list
             // 
             this.entity_list.FormattingEnabled = true;
+            this.entity_list.HorizontalScrollbar = true;
             this.entity_list.Location = new System.Drawing.Point(6, 19);
             this.entity_list.Name = "entity_list";
             this.entity_list.Size = new System.Drawing.Size(695, 290);
@@ -69,6 +73,7 @@
             // trigger_list
             // 
             this.trigger_list.FormattingEnabled = true;
+            this.trigger_list.HorizontalScrollbar = true;
             this.trigger_list.Location = new System.Drawing.Point(6, 19);
             this.trigger_list.Name = "trigger_list";
             this.trigger_list.Size = new System.Drawing.Size(695, 290);
@@ -77,7 +82,6 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.deleteSelectedTrigger);
             this.groupBox1.Controls.Add(this.addNewTrigger);
             this.groupBox1.Controls.Add(this.selectedEntityDetails);
             this.groupBox1.Controls.Add(this.entity_list);
@@ -88,52 +92,86 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Entities";
             // 
-            // deleteSelectedTrigger
-            // 
-            this.deleteSelectedTrigger.Location = new System.Drawing.Point(707, 283);
-            this.deleteSelectedTrigger.Name = "deleteSelectedTrigger";
-            this.deleteSelectedTrigger.Size = new System.Drawing.Size(170, 26);
-            this.deleteSelectedTrigger.TabIndex = 3;
-            this.deleteSelectedTrigger.Text = "Delete Selected Entity";
-            this.deleteSelectedTrigger.UseVisualStyleBackColor = true;
-            this.deleteSelectedTrigger.Click += new System.EventHandler(this.deleteSelectedEntity_Click);
-            // 
             // addNewTrigger
             // 
-            this.addNewTrigger.Location = new System.Drawing.Point(707, 251);
+            this.addNewTrigger.Location = new System.Drawing.Point(707, 283);
             this.addNewTrigger.Name = "addNewTrigger";
-            this.addNewTrigger.Size = new System.Drawing.Size(170, 26);
+            this.addNewTrigger.Size = new System.Drawing.Size(211, 26);
             this.addNewTrigger.TabIndex = 2;
-            this.addNewTrigger.Text = "Add New Entity";
+            this.addNewTrigger.Text = "Add New Entity Reference";
             this.addNewTrigger.UseVisualStyleBackColor = true;
             this.addNewTrigger.Click += new System.EventHandler(this.addNewEntity_Click);
             // 
             // selectedEntityDetails
             // 
+            this.selectedEntityDetails.Controls.Add(this.open_entity);
+            this.selectedEntityDetails.Controls.Add(this.deleteSelectedTrigger);
+            this.selectedEntityDetails.Controls.Add(this.moveDown);
             this.selectedEntityDetails.Controls.Add(this.entityTriggerDelay);
+            this.selectedEntityDetails.Controls.Add(this.moveUp);
             this.selectedEntityDetails.Controls.Add(this.label2);
             this.selectedEntityDetails.Controls.Add(this.entityHierarchy);
             this.selectedEntityDetails.Controls.Add(this.label1);
             this.selectedEntityDetails.Controls.Add(this.selectEntToPointTo);
             this.selectedEntityDetails.Location = new System.Drawing.Point(707, 13);
             this.selectedEntityDetails.Name = "selectedEntityDetails";
-            this.selectedEntityDetails.Size = new System.Drawing.Size(481, 136);
+            this.selectedEntityDetails.Size = new System.Drawing.Size(481, 166);
             this.selectedEntityDetails.TabIndex = 1;
             this.selectedEntityDetails.TabStop = false;
             this.selectedEntityDetails.Text = "Selected Entity Details";
             // 
+            // open_entity
+            // 
+            this.open_entity.Location = new System.Drawing.Point(255, 16);
+            this.open_entity.Name = "open_entity";
+            this.open_entity.Size = new System.Drawing.Size(206, 23);
+            this.open_entity.TabIndex = 7;
+            this.open_entity.Text = "Open Entity (will close this window)";
+            this.open_entity.UseVisualStyleBackColor = true;
+            this.open_entity.Click += new System.EventHandler(this.open_entity_Click);
+            // 
+            // deleteSelectedTrigger
+            // 
+            this.deleteSelectedTrigger.Location = new System.Drawing.Point(317, 121);
+            this.deleteSelectedTrigger.Name = "deleteSelectedTrigger";
+            this.deleteSelectedTrigger.Size = new System.Drawing.Size(144, 26);
+            this.deleteSelectedTrigger.TabIndex = 3;
+            this.deleteSelectedTrigger.Text = "Remove From List";
+            this.deleteSelectedTrigger.UseVisualStyleBackColor = true;
+            this.deleteSelectedTrigger.Click += new System.EventHandler(this.deleteSelectedEntity_Click);
+            // 
+            // moveDown
+            // 
+            this.moveDown.Location = new System.Drawing.Point(167, 121);
+            this.moveDown.Name = "moveDown";
+            this.moveDown.Size = new System.Drawing.Size(146, 26);
+            this.moveDown.TabIndex = 5;
+            this.moveDown.Text = "Move Down In List";
+            this.moveDown.UseVisualStyleBackColor = true;
+            this.moveDown.Click += new System.EventHandler(this.moveDown_Click);
+            // 
             // entityTriggerDelay
             // 
-            this.entityTriggerDelay.Location = new System.Drawing.Point(17, 96);
+            this.entityTriggerDelay.Location = new System.Drawing.Point(17, 87);
             this.entityTriggerDelay.Name = "entityTriggerDelay";
             this.entityTriggerDelay.Size = new System.Drawing.Size(444, 20);
             this.entityTriggerDelay.TabIndex = 6;
             this.entityTriggerDelay.TextChanged += new System.EventHandler(this.triggerDelay_TextChanged);
             // 
+            // moveUp
+            // 
+            this.moveUp.Location = new System.Drawing.Point(17, 121);
+            this.moveUp.Name = "moveUp";
+            this.moveUp.Size = new System.Drawing.Size(146, 26);
+            this.moveUp.TabIndex = 4;
+            this.moveUp.Text = "Move Up In List";
+            this.moveUp.UseVisualStyleBackColor = true;
+            this.moveUp.Click += new System.EventHandler(this.moveUp_Click);
+            // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(16, 80);
+            this.label2.Location = new System.Drawing.Point(16, 71);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(218, 13);
             this.label2.TabIndex = 5;
@@ -144,7 +182,7 @@
             this.entityHierarchy.Location = new System.Drawing.Point(17, 42);
             this.entityHierarchy.Name = "entityHierarchy";
             this.entityHierarchy.ReadOnly = true;
-            this.entityHierarchy.Size = new System.Drawing.Size(444, 20);
+            this.entityHierarchy.Size = new System.Drawing.Size(338, 20);
             this.entityHierarchy.TabIndex = 3;
             // 
             // label1
@@ -158,11 +196,11 @@
             // 
             // selectEntToPointTo
             // 
-            this.selectEntToPointTo.Location = new System.Drawing.Point(334, 68);
+            this.selectEntToPointTo.Location = new System.Drawing.Point(361, 41);
             this.selectEntToPointTo.Name = "selectEntToPointTo";
-            this.selectEntToPointTo.Size = new System.Drawing.Size(127, 23);
+            this.selectEntToPointTo.Size = new System.Drawing.Size(100, 23);
             this.selectEntToPointTo.TabIndex = 1;
-            this.selectEntToPointTo.Text = "Select Entity";
+            this.selectEntToPointTo.Text = "Select New";
             this.selectEntToPointTo.UseVisualStyleBackColor = true;
             this.selectEntToPointTo.Click += new System.EventHandler(this.selectEntToPointTo_Click);
             // 
@@ -193,6 +231,16 @@
             this.selectedTriggerDetails.TabIndex = 7;
             this.selectedTriggerDetails.TabStop = false;
             this.selectedTriggerDetails.Text = "Selected Trigger Details";
+            // 
+            // saveTrigger
+            // 
+            this.saveTrigger.Location = new System.Drawing.Point(369, 108);
+            this.saveTrigger.Name = "saveTrigger";
+            this.saveTrigger.Size = new System.Drawing.Size(92, 23);
+            this.saveTrigger.TabIndex = 7;
+            this.saveTrigger.Text = "Save";
+            this.saveTrigger.UseVisualStyleBackColor = true;
+            this.saveTrigger.Click += new System.EventHandler(this.saveTrigger_Click);
             // 
             // triggerEndParam
             // 
@@ -266,16 +314,6 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // saveTrigger
-            // 
-            this.saveTrigger.Location = new System.Drawing.Point(369, 108);
-            this.saveTrigger.Name = "saveTrigger";
-            this.saveTrigger.Size = new System.Drawing.Size(92, 23);
-            this.saveTrigger.TabIndex = 7;
-            this.saveTrigger.Text = "Save";
-            this.saveTrigger.UseVisualStyleBackColor = true;
-            this.saveTrigger.Click += new System.EventHandler(this.saveTrigger_Click);
-            // 
             // TriggerSequenceEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -325,5 +363,8 @@
         private System.Windows.Forms.Button deleteParamTrigger;
         private System.Windows.Forms.Button addNewParamTrigger;
         private System.Windows.Forms.Button saveTrigger;
+        private System.Windows.Forms.Button moveDown;
+        private System.Windows.Forms.Button moveUp;
+        private System.Windows.Forms.Button open_entity;
     }
 }

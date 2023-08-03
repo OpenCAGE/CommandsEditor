@@ -1,6 +1,7 @@
 using CATHODE;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
+using CathodeLib;
 using System;
 using System.Collections.Generic;
 using System.Drawing.Drawing2D;
@@ -63,6 +64,26 @@ namespace CommandsEditor
             return formattedHierarchies;
         }
 
+        /* Get the hierarchy for a commands entity reference (used to link legacy resource/mvr stuff) */
+        public static EntityHierarchy GetHierarchyFromReference(CommandsEntityReference reference)
+        {
+            foreach (KeyValuePair<Composite, List<List<ShortGuid>>> pair in _hierarchies)
+            {
+                for (int i = 0; i < pair.Value.Count; i++)
+                {
+                    List<ShortGuid> hierarchy = new List<ShortGuid>(pair.Value[i].ConvertAll(x => x));
+                    hierarchy.Add(reference.entity_id);
+
+                    EntityHierarchy h = new EntityHierarchy(hierarchy);
+                    ShortGuid instance = h.GenerateInstance();
+
+                    if (instance == reference.composite_instance_id)
+                        return h;
+                }
+            }
+            return null;
+        }
+
         /* Utility: generate nice entity name to display in UI */
         public static string GenerateEntityName(Entity entity, Composite composite, bool regenCache = false)
         {
@@ -102,7 +123,7 @@ namespace CommandsEditor
                     if (funcComposite != null)
                         desc = EntityUtils.GetName(composite.shortGUID, entity.shortGUID) + " (" + funcComposite.name + ")";
                     else
-                        desc = EntityUtils.GetName(composite.shortGUID, entity.shortGUID) + " (" + ShortGuidUtils.FindString(((FunctionEntity)entity).function) + ")";
+                        desc = EntityUtils.GetName(composite.shortGUID, entity.shortGUID) + " (" + CathodeEntityDatabase.GetEntity(((FunctionEntity)entity).function).className + ")";
                     break;
                 case EntityVariant.OVERRIDE:
                     CommandsUtils.ResolveHierarchy(Editor.commands, composite, ((OverrideEntity)entity).connectedEntity.hierarchy, out Composite c, out string s, false);

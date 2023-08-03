@@ -135,6 +135,8 @@ namespace CommandsEditor
 
         private void Owner_SelectedChanged(object sender, EventArgs e)
         {
+            if (!clickToSelect.Checked) return;
+
             //when a node is selected, load it in the commands editor
             STNode[] nodes = stNodeEditor1.GetSelectedNode();
             if (nodes.Length == 0) return;
@@ -1825,6 +1827,11 @@ namespace CommandsEditor
         private void removeToolStripMenuItem_Click(object sender, EventArgs e) {
             if (stNodeEditor1.ActiveNode == null) return;
             stNodeEditor1.Nodes.Remove(stNodeEditor1.ActiveNode);
+        }
+
+        private void clickToSelect_CheckedChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

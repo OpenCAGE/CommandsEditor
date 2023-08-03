@@ -27,39 +27,6 @@ using System.Xml;
 using System.Runtime.InteropServices;
 using System.Numerics;
 
-[StructLayout(LayoutKind.Sequential, Pack = 1)]
-struct dtMeshHeader
-{
-    public int magic;				///< Tile magic number. (Used to identify the data format.)
-	public int version;			///< Tile data format version number.
-	public int x;					///< The x-position of the tile within the dtNavMesh tile grid. (x, y, layer)
-	public int y;					///< The y-position of the tile within the dtNavMesh tile grid. (x, y, layer)
-	public int layer;				///< The layer of the tile within the dtNavMesh tile grid. (x, y, layer)
-	public uint userId;	        ///< The user defined id of the tile.
-	public int polyCount;			///< The number of polygons in the tile.
-	public int vertCount;			///< The number of vertices in the tile.
-	public int maxLinkCount;		///< The number of allocated links.
-	public int detailMeshCount;    ///< The number of sub-meshes in the detail mesh.
-
-                                   /// The number of unique vertices in the detail mesh. (In addition to the polygon vertices.)
-    public int detailVertCount;
-
-    public int detailTriCount;			///< The number of triangles in the detail mesh.
-	public int bvNodeCount;			///< The number of bounding volume nodes. (Zero if bounding volumes are disabled.)
-	public int offMeshConCount;		///< The number of off-mesh connections.
-	public int offMeshBase;			///< The index of the first polygon which is an off-mesh connection.
-	public float walkableHeight;		///< The height of the agents using the tile.
-	public float walkableRadius;		///< The radius of the agents using the tile.
-	public float walkableClimb;		///< The maximum climb height of the agents using the tile.
-    [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
-    public float[] bmin;				///< The minimum bounds of the tile's AABB. [(x, y, z)]
-    [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
-    public float[] bmax;              ///< The maximum bounds of the tile's AABB. [(x, y, z)]
-
-                                      /// The bounding volume quantization factor. 
-    public float bvQuantFactor;
-};
-
 namespace CommandsEditor
 {
     public partial class CommandsEditor : Form
@@ -78,34 +45,8 @@ namespace CommandsEditor
         Task currentEntityNameCacher = null;
         Task currentHierarchyCacher = null;
 
-        private void UTIL_GenerateRecastHeader(string navmeshPath)
-        {
-            BinaryReader navmesh = new BinaryReader(File.OpenRead(navmeshPath));
-            navmesh.BaseStream.Position += 8;
-            dtMeshHeader header = Utilities.Consume<dtMeshHeader>(navmesh);
-            navmesh.Close();
-
-            BinaryWriter newNavmesh = new BinaryWriter(File.OpenWrite("D:\\Repositories\\recastnavigation\\RecastDemo\\Bin\\solo_navmesh.bin"));
-            newNavmesh.BaseStream.SetLength(0);
-            newNavmesh.Write(1297302868); //Magic
-            newNavmesh.Write(1); //Version
-            newNavmesh.Write(1); //Tile Count
-            Utilities.Write<Vector3>(newNavmesh, new Vector3(0, 0, 0)); //Origin;
-            newNavmesh.Write(header.bmax[0] - header.bmin[0]); //Width
-            newNavmesh.Write(header.bmax[2] - header.bmin[2]); //Height
-            newNavmesh.Write(1); //Max Tiles
-            newNavmesh.Write(header.polyCount); //Max Polys
-            newNavmesh.Write(File.ReadAllBytes(navmeshPath)); //Navmesh data, including Tile Ref and Data Size defined by NAV_MESH file
-            newNavmesh.Close();
-        }
-
         public CommandsEditor()
         {
-            //UTIL_GenerateRecastHeader("G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\frontend\\WORLD\\STATE_0\\NAV_MESH");
-
-
-
-
             EditorUtils.SetEditor(this);
             InitializeComponent();
             _treeHelper = new TreeUtility(FileTree);
@@ -116,15 +57,7 @@ namespace CommandsEditor
 
             //Populate available maps
             env_list.Items.Clear();
-            List<string> mapList = Directory.GetFiles(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
-            for (int i = 0; i < mapList.Count; i++)
-            {
-                string[] fileSplit = mapList[i].Split(new[] { "PRODUCTION" }, StringSplitOptions.None);
-                string mapName = fileSplit[fileSplit.Length - 1].Substring(1, fileSplit[fileSplit.Length - 1].Length - 20);
-                mapList[i] = (mapName);
-            }
-            mapList.Remove("DLC\\BSPNOSTROMO_RIPLEY"); mapList.Remove("DLC\\BSPNOSTROMO_TWOTEAMS");
-            env_list.Items.AddRange(mapList.ToArray());
+            env_list.Items.AddRange(Level.GetLevels(SharedData.pathToAI, true).ToArray());
             if (env_list.Items.Contains("FRONTEND")) env_list.SelectedItem = "FRONTEND";
             else env_list.SelectedIndex = 0;
 
@@ -212,7 +145,7 @@ namespace CommandsEditor
             }
             return;
 #if DEBUG
-            env_list.SelectedItem = "DLC\\BSPNOSTROMO_TWOTEAMS_PATCH";
+            env_list.SelectedItem = "DLC/BSPNOSTROMO_TWOTEAMS_PATCH";
             LoadCommandsPAK(env_list.SelectedItem.ToString());
             LoadComposite("DLC\\PREORDER\\PODLC_TWOTEAMS");
             LoadEntity(Editor.selected.composite.functions.FirstOrDefault(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.CAGEAnimation)));
@@ -390,6 +323,7 @@ namespace CommandsEditor
             if (Editor.resource.textures_global != null) Editor.resource.textures_global.Entries.Clear();
             if (Editor.resource.env_animations != null) Editor.resource.env_animations.Entries.Clear();
             if (Editor.resource.collision_maps != null) Editor.resource.collision_maps.Entries.Clear();
+            if (Editor.resource.physics_maps != null) Editor.resource.physics_maps.Entries.Clear();
             if (Editor.resource.sound_bankdata != null) Editor.resource.sound_bankdata.Entries.Clear();
             if (Editor.resource.sound_dialoguelookups != null) Editor.resource.sound_dialoguelookups.Entries.Clear();
             if (Editor.resource.sound_eventdata != null) Editor.resource.sound_eventdata.Entries.Clear();
@@ -400,30 +334,32 @@ namespace CommandsEditor
             try
             {
 #endif
-            string baseLevelPath = Editor.commands.Filepath.Substring(0, Editor.commands.Filepath.Length - ("WORLD/COMMANDS.PAK").Length);
-
-                //The game has two hard-coded _PATCH overrides which change the CommandsPAK but not the assets
+                string baseLevelPath = Editor.commands.Filepath.Substring(0, Editor.commands.Filepath.Length - ("WORLD/COMMANDS.PAK").Length);
                 string levelName = env_list.Items[env_list.SelectedIndex].ToString();
-                switch (levelName)
-                {
-                    case @"DLC\BSPNOSTROMO_RIPLEY_PATCH":
-                    case @"DLC\BSPNOSTROMO_TWOTEAMS_PATCH":
-                        baseLevelPath = baseLevelPath.Replace(levelName, levelName.Substring(0, levelName.Length - ("_PATCH").Length));
-                        break;
-                }
 
-                Editor.resource.models = new Models(baseLevelPath + "RENDERABLE/LEVEL_MODELS.PAK");
                 Editor.resource.reds = new RenderableElements(baseLevelPath + "WORLD/REDS.BIN");
-                Editor.resource.materials = new Materials(baseLevelPath + "RENDERABLE/LEVEL_MODELS.MTL");
-                //Editor.resource.textures = new Textures(baseLevelPath + "RENDERABLE/LEVEL_TEXTURES.ALL.PAK");
-                //Editor.resource.textures_Global = new Textures(SharedData.pathToAI + "/DATA/ENV/GLOBAL/WORLD/GLOBAL_TEXTURES.ALL.PAK");
                 Editor.resource.env_animations = new EnvironmentAnimations(baseLevelPath + "WORLD/ENVIRONMENT_ANIMATION.DAT");
                 Editor.resource.collision_maps = new CollisionMaps(baseLevelPath + "WORLD/COLLISION.MAP");
+                Editor.resource.physics_maps = new PhysicsMaps(baseLevelPath + "WORLD/PHYSICS.MAP");
                 Editor.resource.sound_bankdata = new SoundBankData(baseLevelPath + "WORLD/SOUNDBANKDATA.DAT");
                 Editor.resource.sound_dialoguelookups = new SoundDialogueLookups(baseLevelPath + "WORLD/SOUNDDIALOGUELOOKUPS.DAT");
                 Editor.resource.sound_eventdata = new SoundEventData(baseLevelPath + "WORLD/SOUNDEVENTDATA.DAT");
                 Editor.resource.sound_environmentdata = new SoundEnvironmentData(baseLevelPath + "WORLD/SOUNDENVIRONMENTDATA.DAT");
                 Editor.resource.character_accessories = new CharacterAccessorySets(baseLevelPath + "WORLD/CHARACTERACCESSORYSETS.BIN");
+                //Editor.resource.textures_Global = new Textures(SharedData.pathToAI + "/DATA/ENV/GLOBAL/WORLD/GLOBAL_TEXTURES.ALL.PAK");
+
+                //The game has two hard-coded _PATCH overrides. We should use RENDERABLE from the non-patched folder.
+                switch (levelName)
+                {
+                    case "DLC/BSPNOSTROMO_RIPLEY_PATCH":
+                    case "DLC/BSPNOSTROMO_TWOTEAMS_PATCH":
+                        baseLevelPath = baseLevelPath.Replace(levelName, levelName.Substring(0, levelName.Length - ("_PATCH").Length));
+                        break;
+                }
+
+                Editor.resource.models = new Models(baseLevelPath + "RENDERABLE/LEVEL_MODELS.PAK");
+                Editor.resource.materials = new Materials(baseLevelPath + "RENDERABLE/LEVEL_MODELS.MTL");
+                //Editor.resource.textures = new Textures(baseLevelPath + "RENDERABLE/LEVEL_TEXTURES.ALL.PAK");
 #if !CATHODE_FAIL_HARD
             }
             catch
@@ -437,6 +373,7 @@ namespace CommandsEditor
                 Editor.resource.textures_global = null;
                 Editor.resource.env_animations = null;
                 Editor.resource.collision_maps = null;
+                Editor.resource.physics_maps = null;
                 Editor.resource.sound_bankdata = null;
                 Editor.resource.sound_dialoguelookups = null;
                 Editor.resource.sound_eventdata = null;
@@ -495,13 +432,59 @@ namespace CommandsEditor
                 return;
             }
 #endif
+            //Recalculate physics maps
+            if (Editor.resource.physics_maps != null && Editor.resource.physics_maps.Entries != null)
+            {
+                /*
+                Editor.resource.physics_maps.Entries.Clear();
 
+                foreach (Composite composite in Editor.commands.Entries)
+                {
+                    foreach (FunctionEntity func in composite.functions)
+                    {
+                        if (func.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.PhysicsSystem))
+                        {
+                            List<EntityHierarchy> hierarchies = EditorUtils.GetHierarchiesForEntity(composite, func);
+                            foreach (EntityHierarchy hierarchy in hierarchies)
+                            {
+                                PhysicsMaps.Entry newPhysMap = new PhysicsMaps.Entry();
+                                newPhysMap.physics_system_index = ((cInteger)func.GetParameter("system_index").content).value; //TODO: this implies we will always have this param of type - should probs force this elsewhere...
+                                newPhysMap.resource_type = ShortGuidUtils.Generate("DYNAMIC_PHYSICS_SYSTEM");
+
+                                EntityHierarchy hierarchyCopy = hierarchy.Copy();
+                                hierarchyCopy.hierarchy.RemoveAt(hierarchyCopy.hierarchy.Count - 2);
+                                newPhysMap.composite_instance_id = hierarchyCopy.GenerateInstance();
+
+                                newPhysMap.entity = new CommandsEntityReference() { entity_id = func.shortGUID, composite_instance_id = hierarchy.GenerateInstance() };
+
+                                //TODO: calculate matrix (if we need it)
+
+                                Editor.resource.physics_maps.Entries.Add(newPhysMap);
+                            }
+                        }
+                    }
+                }
+                */
+
+                Editor.resource.physics_maps.Save();
+            }
+
+            //Recalculate collision maps
+            if (Editor.resource.collision_maps != null && Editor.resource.collision_maps.Entries != null)
+            {
+                //TODO: calculate entity instances with collision info
+
+                //Editor.resource.collision_maps.Save();
+            }
+
+            //TODO: What happens if we update character hierarchies & then don't re-save the editor!! Should warn or handle.
             if (Editor.resource.character_accessories != null && Editor.resource.character_accessories.Entries != null)
                 Editor.resource.character_accessories.Save();
 
             if (Editor.resource.reds != null && Editor.resource.reds.Entries != null)
                 Editor.resource.reds.Save();
 
+            //TODO: We save this but really it's handled wrong. Need to calculate instances before saving & allow instance data to be edited properly.
             if (Editor.mvr != null && Editor.mvr.Entries != null)
                 Editor.mvr.Save();
 
@@ -880,6 +863,18 @@ namespace CommandsEditor
             CacheHierarchies();
         }
 
+        private bool DoesCompositeContain(Composite composite, FunctionType type)
+        {
+            foreach (FunctionEntity func in composite.functions)
+            {
+                if (CommandsUtils.FunctionTypeExists(func.function)) continue;
+                Composite comp2 = Editor.commands.GetComposite(func.function);
+                if (comp2 == null) continue;
+                if (DoesCompositeContain(comp2, type)) return true;
+            }
+            return false;        
+        }
+
         /* Rename selected entity */
         private void renameSelectedEntity_Click(object sender, EventArgs e)
         {
@@ -982,7 +977,7 @@ namespace CommandsEditor
                     if (funcComposite != null)
                         description = funcComposite.name;
                     else
-                        description = ShortGuidUtils.FindString(thisFunction);
+                        description = CathodeEntityDatabase.GetEntity(thisFunction).className;
                     selected_entity_name.Text = EntityUtils.GetName(Editor.selected.composite.shortGUID, entity.shortGUID);
                     if (funcComposite == null)
                     {
@@ -1053,6 +1048,24 @@ namespace CommandsEditor
                         ((GUI_NumericDataType)parameterGUI).PopulateUI_Int((cInteger)this_param, paramName);
                         break;
                     case DataType.STRING:
+                        /*
+                        //TODO: handle this for proxies/overrides too...
+                        if (entity.variant == EntityVariant.FUNCTION)
+                        {
+                            CathodeEntityDatabase.ParameterDefinition? info = CathodeEntityDatabase.GetParametersFromEntity(((FunctionEntity)entity).function).FirstOrDefault(o => o.name == paramName);
+                            if (info != null)
+                            {
+                                switch (info.Value.datatype) //TODO: can we cast this to resource type enum?
+                                {
+                                    //TODO: use this instead of the hardcoded definitions below...
+                                    case "SOUND_REVERB":
+
+                                        break;
+                                }
+                            }
+                        }
+                        */
+
                         AssetList.Type asset = AssetList.Type.NONE;
                         string asset_arg = "";
                         //TODO: We can figure out a lot of these from the iOS dump.
@@ -1066,6 +1079,7 @@ namespace CommandsEditor
                                 asset = AssetList.Type.MATERIAL;
                                 break;
                             case "title":
+                            case "presence_id":
                             case "map_description":
                             case "content_title":
                             case "folder_title":
@@ -1331,7 +1345,7 @@ namespace CommandsEditor
         /* Edit mover instances of this entity */
         private void editEntityMovers_Click(object sender, EventArgs e)
         {
-            EditMVR moverEditor = new EditMVR(this, Editor.selected.entity.shortGUID);
+            EditMVR moverEditor = new EditMVR(this, Editor.selected.composite, Editor.selected.entity.shortGUID);
             moverEditor.Show();
             moverEditor.FormClosed += MoverEditor_FormClosed;
         }
@@ -1394,9 +1408,16 @@ namespace CommandsEditor
                 }
 
                 if (Editor.commands == null) continue;
-
                 mainInst.EnableLoadingOfPaks(false, "Backup...");
-                Editor.commands.Save(Editor.commands.Filepath + ".bak", false);
+
+                string backupDirectory = Editor.commands.Filepath.Substring(0, Editor.commands.Filepath.Length - Path.GetFileName(Editor.commands.Filepath).Length) + "/COMMANDS_BACKUPS/";
+                Directory.CreateDirectory(backupDirectory);
+
+                //Make sure there are only 15 max backed up PAKs
+                var files = new DirectoryInfo(backupDirectory).EnumerateFiles().OrderByDescending(f => f.CreationTime).Skip(15).ToList();
+                files.ForEach(f => f.Delete());
+
+                Editor.commands.Save(backupDirectory + "COMMANDS_" + DateTimeOffset.UtcNow.ToUnixTimeSeconds() + ".PAK", false);
                 mainInst.EnableLoadingOfPaks(true);
             }
         }

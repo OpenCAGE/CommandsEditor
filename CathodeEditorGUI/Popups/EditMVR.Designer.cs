@@ -1,4 +1,4 @@
-﻿namespace CommandsEditor
+namespace CommandsEditor
 {
     partial class EditMVR
     {
@@ -57,6 +57,8 @@
             this.ROT_W = new System.Windows.Forms.NumericUpDown();
             this.type_dropdown = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
             ((System.ComponentModel.ISupportInitialize)(this.SCALE_Z)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SCALE_Y)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SCALE_X)).BeginInit();
@@ -67,20 +69,23 @@
             ((System.ComponentModel.ISupportInitialize)(this.POS_Y)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.POS_X)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ROT_W)).BeginInit();
+            this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // listBox1
             // 
             this.listBox1.FormattingEnabled = true;
-            this.listBox1.Location = new System.Drawing.Point(12, 12);
+            this.listBox1.HorizontalScrollbar = true;
+            this.listBox1.Location = new System.Drawing.Point(6, 19);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(205, 303);
+            this.listBox1.Size = new System.Drawing.Size(837, 303);
             this.listBox1.TabIndex = 0;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
             // 
             // renderable
             // 
-            this.renderable.Location = new System.Drawing.Point(223, 12);
+            this.renderable.Location = new System.Drawing.Point(5, 19);
             this.renderable.Name = "renderable";
             this.renderable.Size = new System.Drawing.Size(838, 186);
             this.renderable.TabIndex = 2;
@@ -88,7 +93,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(773, 201);
+            this.label1.Location = new System.Drawing.Point(555, 208);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(31, 13);
             this.label1.TabIndex = 5;
@@ -97,7 +102,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(228, 278);
+            this.label8.Location = new System.Drawing.Point(10, 285);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(34, 13);
             this.label8.TabIndex = 28;
@@ -106,7 +111,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(434, 297);
+            this.label10.Location = new System.Drawing.Point(216, 304);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(17, 13);
             this.label10.TabIndex = 27;
@@ -120,7 +125,7 @@
             0,
             0,
             851968});
-            this.SCALE_Z.Location = new System.Drawing.Point(454, 294);
+            this.SCALE_Z.Location = new System.Drawing.Point(236, 301);
             this.SCALE_Z.Maximum = new decimal(new int[] {
             1874919423,
             2328306,
@@ -144,7 +149,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(331, 297);
+            this.label11.Location = new System.Drawing.Point(113, 304);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(17, 13);
             this.label11.TabIndex = 25;
@@ -158,7 +163,7 @@
             0,
             0,
             851968});
-            this.SCALE_Y.Location = new System.Drawing.Point(350, 294);
+            this.SCALE_Y.Location = new System.Drawing.Point(132, 301);
             this.SCALE_Y.Maximum = new decimal(new int[] {
             1874919423,
             2328306,
@@ -182,7 +187,7 @@
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(228, 297);
+            this.label12.Location = new System.Drawing.Point(10, 304);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(17, 13);
             this.label12.TabIndex = 23;
@@ -196,7 +201,7 @@
             0,
             0,
             851968});
-            this.SCALE_X.Location = new System.Drawing.Point(247, 294);
+            this.SCALE_X.Location = new System.Drawing.Point(29, 301);
             this.SCALE_X.Maximum = new decimal(new int[] {
             1874919423,
             2328306,
@@ -220,7 +225,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(228, 240);
+            this.label3.Location = new System.Drawing.Point(10, 247);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(47, 13);
             this.label3.TabIndex = 42;
@@ -229,7 +234,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(434, 259);
+            this.label4.Location = new System.Drawing.Point(216, 266);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(17, 13);
             this.label4.TabIndex = 41;
@@ -243,7 +248,7 @@
             0,
             0,
             851968});
-            this.ROT_Z.Location = new System.Drawing.Point(454, 256);
+            this.ROT_Z.Location = new System.Drawing.Point(236, 263);
             this.ROT_Z.Maximum = new decimal(new int[] {
             1874919423,
             2328306,
@@ -267,7 +272,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(331, 259);
+            this.label5.Location = new System.Drawing.Point(113, 266);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(17, 13);
             this.label5.TabIndex = 39;
@@ -281,7 +286,7 @@
             0,
             0,
             851968});
-            this.ROT_Y.Location = new System.Drawing.Point(350, 256);
+            this.ROT_Y.Location = new System.Drawing.Point(132, 263);
             this.ROT_Y.Maximum = new decimal(new int[] {
             1874919423,
             2328306,
@@ -305,7 +310,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(228, 259);
+            this.label6.Location = new System.Drawing.Point(10, 266);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(17, 13);
             this.label6.TabIndex = 37;
@@ -319,7 +324,7 @@
             0,
             0,
             851968});
-            this.ROT_X.Location = new System.Drawing.Point(247, 256);
+            this.ROT_X.Location = new System.Drawing.Point(29, 263);
             this.ROT_X.Maximum = new decimal(new int[] {
             1874919423,
             2328306,
@@ -343,7 +348,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(228, 201);
+            this.label7.Location = new System.Drawing.Point(10, 208);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(44, 13);
             this.label7.TabIndex = 35;
@@ -352,7 +357,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(434, 220);
+            this.label9.Location = new System.Drawing.Point(216, 227);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(17, 13);
             this.label9.TabIndex = 34;
@@ -366,7 +371,7 @@
             0,
             0,
             851968});
-            this.POS_Z.Location = new System.Drawing.Point(454, 217);
+            this.POS_Z.Location = new System.Drawing.Point(236, 224);
             this.POS_Z.Maximum = new decimal(new int[] {
             1874919423,
             2328306,
@@ -390,7 +395,7 @@
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(331, 220);
+            this.label13.Location = new System.Drawing.Point(113, 227);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(17, 13);
             this.label13.TabIndex = 32;
@@ -404,7 +409,7 @@
             0,
             0,
             851968});
-            this.POS_Y.Location = new System.Drawing.Point(350, 217);
+            this.POS_Y.Location = new System.Drawing.Point(132, 224);
             this.POS_Y.Maximum = new decimal(new int[] {
             1874919423,
             2328306,
@@ -428,7 +433,7 @@
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(228, 220);
+            this.label14.Location = new System.Drawing.Point(10, 227);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(17, 13);
             this.label14.TabIndex = 30;
@@ -442,7 +447,7 @@
             0,
             0,
             851968});
-            this.POS_X.Location = new System.Drawing.Point(247, 217);
+            this.POS_X.Location = new System.Drawing.Point(29, 224);
             this.POS_X.Maximum = new decimal(new int[] {
             1874919423,
             2328306,
@@ -466,7 +471,7 @@
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(537, 259);
+            this.label15.Location = new System.Drawing.Point(319, 266);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(21, 13);
             this.label15.TabIndex = 44;
@@ -480,7 +485,7 @@
             0,
             0,
             851968});
-            this.ROT_W.Location = new System.Drawing.Point(558, 256);
+            this.ROT_W.Location = new System.Drawing.Point(340, 263);
             this.ROT_W.Maximum = new decimal(new int[] {
             1874919423,
             2328306,
@@ -514,7 +519,7 @@
             "5",
             "6",
             "7"});
-            this.type_dropdown.Location = new System.Drawing.Point(776, 217);
+            this.type_dropdown.Location = new System.Drawing.Point(558, 224);
             this.type_dropdown.Name = "type_dropdown";
             this.type_dropdown.Size = new System.Drawing.Size(284, 21);
             this.type_dropdown.TabIndex = 174;
@@ -523,49 +528,69 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(773, 252);
+            this.label2.Location = new System.Drawing.Point(555, 259);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(284, 52);
             this.label2.TabIndex = 175;
             this.label2.Text = resources.GetString("label2.Text");
             // 
-            // CathodeEditorGUI_EditMVR
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.listBox1);
+            this.groupBox1.Location = new System.Drawing.Point(12, 12);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(849, 329);
+            this.groupBox1.TabIndex = 176;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Movers";
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.renderable);
+            this.groupBox2.Controls.Add(this.label1);
+            this.groupBox2.Controls.Add(this.label2);
+            this.groupBox2.Controls.Add(this.SCALE_X);
+            this.groupBox2.Controls.Add(this.type_dropdown);
+            this.groupBox2.Controls.Add(this.label12);
+            this.groupBox2.Controls.Add(this.label15);
+            this.groupBox2.Controls.Add(this.SCALE_Y);
+            this.groupBox2.Controls.Add(this.ROT_W);
+            this.groupBox2.Controls.Add(this.label11);
+            this.groupBox2.Controls.Add(this.label3);
+            this.groupBox2.Controls.Add(this.SCALE_Z);
+            this.groupBox2.Controls.Add(this.label4);
+            this.groupBox2.Controls.Add(this.label10);
+            this.groupBox2.Controls.Add(this.ROT_Z);
+            this.groupBox2.Controls.Add(this.label8);
+            this.groupBox2.Controls.Add(this.label5);
+            this.groupBox2.Controls.Add(this.POS_X);
+            this.groupBox2.Controls.Add(this.ROT_Y);
+            this.groupBox2.Controls.Add(this.label14);
+            this.groupBox2.Controls.Add(this.label6);
+            this.groupBox2.Controls.Add(this.POS_Y);
+            this.groupBox2.Controls.Add(this.ROT_X);
+            this.groupBox2.Controls.Add(this.label13);
+            this.groupBox2.Controls.Add(this.label7);
+            this.groupBox2.Controls.Add(this.POS_Z);
+            this.groupBox2.Controls.Add(this.label9);
+            this.groupBox2.Location = new System.Drawing.Point(12, 347);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(849, 337);
+            this.groupBox2.TabIndex = 177;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Selected Mover Descriptor";
+            // 
+            // EditMVR
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1072, 328);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.type_dropdown);
-            this.Controls.Add(this.label15);
-            this.Controls.Add(this.ROT_W);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.ROT_Z);
-            this.Controls.Add(this.label5);
-            this.Controls.Add(this.ROT_Y);
-            this.Controls.Add(this.label6);
-            this.Controls.Add(this.ROT_X);
-            this.Controls.Add(this.label7);
-            this.Controls.Add(this.label9);
-            this.Controls.Add(this.POS_Z);
-            this.Controls.Add(this.label13);
-            this.Controls.Add(this.POS_Y);
-            this.Controls.Add(this.label14);
-            this.Controls.Add(this.POS_X);
-            this.Controls.Add(this.label8);
-            this.Controls.Add(this.label10);
-            this.Controls.Add(this.SCALE_Z);
-            this.Controls.Add(this.label11);
-            this.Controls.Add(this.SCALE_Y);
-            this.Controls.Add(this.label12);
-            this.Controls.Add(this.SCALE_X);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.renderable);
-            this.Controls.Add(this.listBox1);
+            this.ClientSize = new System.Drawing.Size(871, 693);
+            this.Controls.Add(this.groupBox2);
+            this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.Name = "CathodeEditorGUI_EditMVR";
+            this.Name = "EditMVR";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Edit Mover Descriptors";
             ((System.ComponentModel.ISupportInitialize)(this.SCALE_Z)).EndInit();
@@ -578,8 +603,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.POS_Y)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.POS_X)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ROT_W)).EndInit();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -613,5 +640,7 @@
         private System.Windows.Forms.NumericUpDown ROT_W;
         private System.Windows.Forms.ComboBox type_dropdown;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox groupBox2;
     }
 }

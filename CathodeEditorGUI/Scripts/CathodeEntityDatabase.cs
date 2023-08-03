@@ -87,6 +87,11 @@ namespace CommandsEditor
             return entities;
         }
 
+        public static EntityDefinition GetEntity(ShortGuid id)
+        {
+            return entities.FirstOrDefault(o => o.guid == id);
+        }
+
         public static EntityDefinition GetEntityAtIndex(int index)
         {
             return entities[index];
@@ -159,10 +164,34 @@ namespace CommandsEditor
                     {
                         this_param = new cEnum(e);
                     }
-                    if (Enum.TryParse<ResourceType>(def.datatype, out ResourceType r))
+                    else if (Enum.TryParse<ResourceType>(def.datatype, out ResourceType r))
                     {
-                        this_param = new cResource();
-                        ((cResource)this_param).AddResource(r);
+                        switch (r)
+                        {
+                            case ResourceType.COLLISION_MAPPING:
+                            case ResourceType.DYNAMIC_PHYSICS_SYSTEM:
+                            case ResourceType.EXCLUSIVE_MASTER_STATE_RESOURCE:
+                            case ResourceType.NAV_MESH_BARRIER_RESOURCE:
+                            case ResourceType.RENDERABLE_INSTANCE:
+                            case ResourceType.TRAVERSAL_SEGMENT:
+                            case ResourceType.ANIMATED_MODEL:
+                            case ResourceType.CATHODE_COVER_SEGMENT:
+                            case ResourceType.CHOKE_POINT_RESOURCE:
+                            case ResourceType.ANIMATION_MASK_RESOURCE:
+                            case ResourceType.PLAY_ANIMATION_DATA_RESOURCE:
+                                this_param = new cResource();
+                                ((cResource)this_param).AddResource(r);
+                                break;
+
+                            //I think the above types are the only ones we actually want to treat as cResource types. The others are just pre-defined strings?
+                            default:
+                                this_param = new cString();
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        this_param = new cString();
                     }
                     break;
             }

@@ -27,5 +27,10 @@ namespace CommandsEditor.UserControls
 
             _editor = editor;
         }
+
+        public void SetEditor(CommandsEditor editor)
+        {
+            _editor = editor;
+        }
     }
 }

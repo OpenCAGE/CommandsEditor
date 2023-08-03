@@ -1564,7 +1564,7 @@ namespace CommandsEditor
                                 script.Add(resourceName + ".position = new Vector3(" + pos.X + "f, " + pos.Y + "f, " + pos.Z + "f);");
                                 Vector3 rot = cmd.Entries[i].functions[x].resources[y].rotation;
                                 script.Add(resourceName + ".rotation = new Vector3(" + rot.X + "f, " + rot.Y + "f, " + rot.Z + "f);");
-                                script.Add(resourceName + ".startIndex = " + cmd.Entries[i].functions[x].resources[y].startIndex + ";");
+                                script.Add(resourceName + ".index = " + cmd.Entries[i].functions[x].resources[y].index + ";");
                                 script.Add(resourceName + ".count = " + cmd.Entries[i].functions[x].resources[y].count + ";");
                                 break;
                             default:

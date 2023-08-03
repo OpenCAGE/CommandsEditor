@@ -12,25 +12,24 @@ using System.Windows.Forms;
 using System.Numerics;
 using CATHODE;
 using CommandsEditor.Popups.Base;
+using System.Windows.Forms.Design;
 
 namespace CommandsEditor
 {
     public partial class EditMVR : BaseWindow
     {
+        private Composite _composite;
         private int loadedMvrIndex = -1;
         private ShortGuid filteredNodeID;
 
-        public EditMVR(CommandsEditor editor, ShortGuid nodeID = new ShortGuid()) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
+        List<int> _mvrListIndexes = new List<int>();
+
+        public EditMVR(CommandsEditor editor, Composite composite, ShortGuid nodeID = new ShortGuid()) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
         {
             InitializeComponent();
-
-            //hotfix for CommandsEditor passing
-            Controls.Remove(renderable);
-            renderable = new GUI_Resource_RenderableInstance(editor);
-            renderable.Location = new Point(223, 12);
-            renderable.Size = new Size(838, 186);
-            Controls.Add(renderable);
-
+            _composite = composite;
+            
+            renderable.SetEditor(editor);
             PopulateUI(nodeID);
 
             renderable.OnMaterialSelected += OnMaterialSelected;
@@ -41,24 +40,37 @@ namespace CommandsEditor
         {
             filteredNodeID = nodeID;
 
-            listBox1.BeginUpdate();
-            listBox1.Items.Clear();
+            //Get all MVR entries that match this entity
+            _mvrListIndexes.Clear();
             for (int i = 0; i < Editor.mvr.Entries.Count; i++)
             {
                 if (nodeID.val != null && Editor.mvr.Entries[i].entity.entity_id != nodeID) continue;
-                listBox1.Items.Add(i.ToString());
+                _mvrListIndexes.Add(i);
+            }
+
+            //Fetch the hierarchies for the MVR entries that point to this entity
+            EntityHierarchy[] hierarchies = new EntityHierarchy[_mvrListIndexes.Count];
+            Parallel.For(0, _mvrListIndexes.Count, i =>
+            {
+                hierarchies[i] = EditorUtils.GetHierarchyFromReference(Editor.mvr.Entries[_mvrListIndexes[i]].entity);
+            });
+
+            //Write the hierarchies to the list
+            listBox1.BeginUpdate();
+            listBox1.Items.Clear();
+            for (int i = 0; i < hierarchies.Length; i++)
+            {
+                listBox1.Items.Add(hierarchies[i] == null ? _mvrListIndexes[i].ToString() + " [unresolvable]" : hierarchies[i].GetHierarchyAsString(Editor.commands, _composite, false));
             }
             listBox1.EndUpdate();
-
-            if (listBox1.Items.Count != 0)
-                listBox1.SelectedIndex = 0;
+            if (listBox1.Items.Count != 0) listBox1.SelectedIndex = 0;
         }
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             loadedMvrIndex = -1;
             if (listBox1.SelectedIndex == -1) return;
-            LoadMVR(Convert.ToInt32(listBox1.SelectedItem.ToString()));
+            LoadMVR(_mvrListIndexes[listBox1.SelectedIndex]);
         }
 
         cTransform transformData = null;

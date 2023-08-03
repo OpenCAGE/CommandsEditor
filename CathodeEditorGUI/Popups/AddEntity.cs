@@ -44,7 +44,9 @@ namespace CommandsEditor
             entityVariant.Visible = true;
             label2.Visible = true;
             generateHierarchy.Visible = false;
+            select_composite.Visible = false;
             createNewEntity.Enabled = true;
+            entityVariant.Enabled = true;
             entityVariant.BeginUpdate();
             entityVariant.Items.Clear();
             entityVariant.Items.AddRange(new object[] {
@@ -70,7 +72,9 @@ namespace CommandsEditor
             entityVariant.Visible = true;
             label2.Visible = true;
             generateHierarchy.Visible = false;
+            select_composite.Visible = false;
             createNewEntity.Enabled = true;
+            entityVariant.Enabled = true;
             entityVariant.BeginUpdate();
             entityVariant.Items.Clear();
             for (int i = 0; i < availableEntities.Count; i++) entityVariant.Items.Add(availableEntities[i].className);
@@ -85,13 +89,16 @@ namespace CommandsEditor
             entityVariant.Visible = true;
             label2.Visible = true;
             generateHierarchy.Visible = false;
+            select_composite.Visible = true;
             createNewEntity.Enabled = true;
+            entityVariant.Enabled = true;
             entityVariant.BeginUpdate();
             entityVariant.Items.Clear();
             for (int i = 0; i < composites.Count; i++) entityVariant.Items.Add(composites[i].name);
             entityVariant.EndUpdate();
             entityVariant.SelectedIndex = 0;
             entityVariant.DropDownStyle = ComboBoxStyle.DropDownList;
+            entityVariant.Enabled = false;
             addDefaultParams.Visible = true;
         }
         private void selectedProxyEntity(object sender, EventArgs e)
@@ -100,6 +107,7 @@ namespace CommandsEditor
             entityVariant.Visible = false;
             label2.Visible = false;
             generateHierarchy.Visible = true;
+            select_composite.Visible = false;
             createNewEntity.Enabled = false;
             hierarchy = null;
             addDefaultParams.Visible = true;
@@ -110,6 +118,7 @@ namespace CommandsEditor
             entityVariant.Visible = false;
             label2.Visible = false;
             generateHierarchy.Visible = true;
+            select_composite.Visible = false;
             createNewEntity.Enabled = false;
             hierarchy = null;
             addDefaultParams.Visible = false;
@@ -144,6 +153,26 @@ namespace CommandsEditor
                 hierarchy = generatedHierarchy;
                 createNewEntity.Enabled = true;
             }
+            this.Focus();
+            this.BringToFront();
+        }
+
+        /* Select composite for composite entities (this populates the dropdown) */
+        SelectComposite compositeSelector;
+        private void select_composite_Click(object sender, EventArgs e)
+        {
+            if (compositeSelector != null)
+                compositeSelector.Close();
+
+            compositeSelector = new SelectComposite(_editor, entityVariant.Text);
+            compositeSelector.OnCompositeGenerated += OnCompositeGenerated;
+            compositeSelector.Show();
+        }
+        private void OnCompositeGenerated(Composite composite)
+        {
+            entityVariant.Text = composite.name;
+            this.Focus();
+            this.BringToFront();
         }
 
         private void createEntity(object sender, EventArgs e)
@@ -162,6 +191,14 @@ namespace CommandsEditor
                     MessageBox.Show("Please make sure you have typed or selected a valid entity class to create.", "Invalid entity class", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
+
+                //A composite can only have one PhysicsSystem
+                if (function == FunctionType.PhysicsSystem && composite.functions.FirstOrDefault(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.PhysicsSystem)) != null)
+                {
+                    MessageBox.Show("You are trying to add a PhysicsSystem entity to a composite that already has one applied.", "PhysicsSystem error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
                 newEntity = composite.AddFunction(function, addDefaultParams.Checked);
 
                 //TODO: currently we don't support these properly
@@ -178,6 +215,12 @@ namespace CommandsEditor
                 if (compRef == null)
                 { 
                     MessageBox.Show("Failed to look up composite!\nPlease report this issue on GitHub.\n\n" + entityVariant.Text, "Could not find composite!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                //Check logic errors (we can't have cyclical references)
+                if (compRef == composite)
+                {
+                    MessageBox.Show("You cannot create an entity which instances the composite it is contained with - this will result in an infinite loop at runtime! Please check your logic!.", "Logic error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
                 newEntity = composite.AddFunction(compRef, addDefaultParams.Checked);
