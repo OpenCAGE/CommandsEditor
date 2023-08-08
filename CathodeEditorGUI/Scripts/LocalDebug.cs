@@ -27,6 +27,88 @@ namespace CommandsEditor
 {
     public static class LocalDebug
     {
+        public static void DumpAllEnts(string alien_path, string output_append)
+        {
+#if DEBUG
+
+            List<string> files = Directory.GetFiles(alien_path + "/DATA/ENV/PRODUCTION/", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            Dictionary<string, List<string>> usesOfFunction = new Dictionary<string, List<string>>();
+            Dictionary<string, List<string>> usesOfComposite = new Dictionary<string, List<string>>();
+
+            foreach (FunctionType func in (FunctionType[])Enum.GetValues(typeof(FunctionType)))
+            {
+                usesOfFunction.Add(func.ToString(), new List<string>());
+            }
+
+            foreach (string file in files)
+            {
+                string[] split = file.Replace("\\", "/").Split(new[] { "/DATA/ENV/PRODUCTION/" }, StringSplitOptions.None);
+                string mapName = split[split.Length - 1].Substring(0, split[split.Length - 1].Length - ("/WORLD/COMMANDS.PAK").Length);
+
+                Commands commands = new Commands(file);
+                foreach (Composite comp in commands.Entries)
+                {
+                    if (!usesOfComposite.ContainsKey(comp.name))
+                    {
+                        usesOfComposite.Add(comp.name, new List<string>());
+                    }
+                    usesOfComposite[comp.name].Add(mapName);
+
+                    foreach (FunctionEntity ent in comp.functions)
+                    {
+                        if (commands.GetComposite(ent.function) != null) continue;
+                        //if (!CommandsUtils.FunctionTypeExists(ent.function)) continue; //NOT USING THIS ANYMORE AS DELETED FUNCTIONS COULD WILL NOT BE COUNTED FOR...
+
+                        string type = !CommandsUtils.FunctionTypeExists(ent.function) ? "DELETED FUNCTION OR COMPOSITE: " + ent.function.ToByteString() : CommandsUtils.GetFunctionType(ent.function).ToString();
+                        if (!usesOfFunction.ContainsKey(type))
+                        {
+                            usesOfFunction.Add(type, new List<string>());
+                        }
+                        if (!usesOfFunction[type].Contains(comp.name))
+                        {
+                            usesOfFunction[type].Add(comp.name);
+                        }
+                    }
+                }
+            }
+
+            List<string> functionFile = new List<string>();
+            foreach (KeyValuePair<string, List<string>> val in usesOfFunction)
+            {
+                val.Value.Sort();
+
+                functionFile.Add("<h3>" + val.Key.ToString() + "</h3>");
+                functionFile.Add("<h6>Seen in " + val.Value.Count + " composites:<h6><ul>");
+                foreach (string val2 in val.Value)
+                {
+                    functionFile.Add("<li>" + val2 + "</li>");
+                }
+                functionFile.Add("</ul><hr>");
+            }
+            File.WriteAllLines("AlienFunctionUses" + output_append + ".html", functionFile);
+
+            List<string> compFile = new List<string>();
+            List<string> allComps = new List<string>();
+            foreach (KeyValuePair<string, List<string>> val in usesOfComposite)
+            {
+                val.Value.Sort();
+                allComps.Add(val.Key);
+
+                compFile.Add("<h3>" + val.Key + "</h3>");
+                compFile.Add("<h6>Seen in " + val.Value.Count + " levels:<h6><ul>");
+                foreach (string val2 in val.Value)
+                {
+                    compFile.Add("<li>" + val2 + "</li>");
+                }
+                compFile.Add("</ul><hr>");
+            }
+            File.WriteAllLines("AlienCompositeUses" + output_append + ".html", compFile);
+            allComps.Sort();
+            File.WriteAllLines("AllComposites" + output_append + ".txt", allComps);
+
+#endif
+            }
+
         public static void TestOrders()
         {
 #if DEBUG
@@ -126,6 +208,7 @@ namespace CommandsEditor
 
         public static void SyncEnumValuesAndDump()
         {
+#if DEBUG
             List<EnumDescriptor> lookup_enum = new List<EnumDescriptor>();
 
             EnumDescriptor _AGGRESSION_GAIN = GetEnum("AGGRESSION_GAIN");
@@ -515,6 +598,7 @@ namespace CommandsEditor
                 }
             }
             writer.Close();
+#endif
         }
 
         public static void CommandsTest()
@@ -724,7 +808,7 @@ namespace CommandsEditor
         private static List<string> unnamed_params = new List<string>();
         public static void DumpAllUnnamedParams()
         {
-//#if DEBUG
+#if DEBUG
             List<string> files = Directory.GetFiles(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
             foreach (string file in files)
             {
@@ -766,7 +850,7 @@ namespace CommandsEditor
                 }
             }
             File.WriteAllLines("unnamed.txt", unnamed_params);
-//#endif
+#endif
         }
         private static void AddToListIfUnnamed(ShortGuid id)
         {
@@ -1538,6 +1622,7 @@ namespace CommandsEditor
 
         public static List<string> CommandsToScript(Commands cmd)
         {
+#if DEBUG
             List<string> script = new List<string>();
             script.Add("Commands cmd = new Commands(\"COMMANDS.PAK\");");
             script.Add("cmd.Composites.Clear();");
@@ -1636,6 +1721,9 @@ namespace CommandsEditor
             }
             script.Add("cmd.Save();");
             return script;
+#else
+            return null;
+#endif
         }
     }
 }
