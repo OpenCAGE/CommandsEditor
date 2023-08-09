@@ -47,6 +47,9 @@ namespace CommandsEditor
 
         public CommandsEditor()
         {
+           // LocalDebug.MAPTEST("G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\ENG_REACTORCORE");
+           // return;
+
             EditorUtils.SetEditor(this);
             InitializeComponent();
             _treeHelper = new TreeUtility(FileTree);
@@ -146,7 +149,7 @@ namespace CommandsEditor
             return;
 #if DEBUG
             env_list.SelectedItem = "DLC/BSPNOSTROMO_TWOTEAMS_PATCH";
-            LoadCommandsPAK(env_list.SelectedItem.ToString());
+            LoadLevel(env_list.SelectedItem.ToString());
             LoadComposite("DLC\\PREORDER\\PODLC_TWOTEAMS");
             LoadEntity(Editor.selected.composite.functions.FirstOrDefault(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.CAGEAnimation)));
             editFunction.PerformClick();
@@ -212,15 +215,28 @@ namespace CommandsEditor
         }
 
         /* Load a COMMANDS.PAK into the editor with additional stuff */
-        public void LoadCommandsPAK(string level)
+        public void LoadLevel(string level)
         {
             //Reset UI
             ClearUI(true, true, true);
+            Editor.level = level;
 
             //Load everything
-            LoadCommands(level);
-            /*Task.Factory.StartNew(() => */LoadAssets()/*)*/;
-            /*Task.Factory.StartNew(() => */LoadMovers()/*)*/;
+            string levelPath = SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + level + "/";
+            Parallel.For(0, 3, (i) => {
+                switch (i)
+                {
+                    case 0:
+                        LoadCommands(levelPath);
+                        break;
+                    case 1:
+                        LoadAssets(levelPath);
+                        break;
+                    case 2:
+                        LoadMovers(levelPath);
+                        break;
+                }
+            });
 
             //Link up commands to utils and cache some things
             EntityUtils.LinkCommands(Editor.commands);
@@ -263,7 +279,7 @@ namespace CommandsEditor
         }
         private void load_commands_pak_Click(object sender, EventArgs e)
         {
-            LoadCommandsPAK(env_list.SelectedItem.ToString());
+            LoadLevel(env_list.SelectedItem.ToString());
         }
         private void RefreshStatsUI()
         {
@@ -278,17 +294,15 @@ namespace CommandsEditor
         }
 
         /* Load commands */
-        private void LoadCommands(string level)
+        private void LoadCommands(string path)
         {
             if (Editor.commands != null) Editor.commands.Entries.Clear();
-            Editor.level = level;
 
-            string path_to_ENV = SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + level;
 #if !CATHODE_FAIL_HARD
             try
             {
 #endif
-                Editor.commands = new Commands(path_to_ENV + "/WORLD/COMMANDS.PAK");
+                Editor.commands = new Commands(path + "/WORLD/COMMANDS.PAK");
                 Editor.OnCommandsSelected?.Invoke(Editor.commands);
 #if !CATHODE_FAIL_HARD
             }
@@ -314,7 +328,7 @@ namespace CommandsEditor
         }
 
         /* Load assets */
-        private void LoadAssets()
+        private void LoadAssets(string path)
         {
             if (Editor.resource.models != null) Editor.resource.models.Entries.Clear();
             if (Editor.resource.reds != null) Editor.resource.reds.Entries.Clear();
@@ -334,32 +348,65 @@ namespace CommandsEditor
             try
             {
 #endif
-                string baseLevelPath = Editor.commands.Filepath.Substring(0, Editor.commands.Filepath.Length - ("WORLD/COMMANDS.PAK").Length);
-                string levelName = env_list.Items[env_list.SelectedIndex].ToString();
-
-                Editor.resource.reds = new RenderableElements(baseLevelPath + "WORLD/REDS.BIN");
-                Editor.resource.env_animations = new EnvironmentAnimations(baseLevelPath + "WORLD/ENVIRONMENT_ANIMATION.DAT");
-                Editor.resource.collision_maps = new CollisionMaps(baseLevelPath + "WORLD/COLLISION.MAP");
-                Editor.resource.physics_maps = new PhysicsMaps(baseLevelPath + "WORLD/PHYSICS.MAP");
-                Editor.resource.sound_bankdata = new SoundBankData(baseLevelPath + "WORLD/SOUNDBANKDATA.DAT");
-                Editor.resource.sound_dialoguelookups = new SoundDialogueLookups(baseLevelPath + "WORLD/SOUNDDIALOGUELOOKUPS.DAT");
-                Editor.resource.sound_eventdata = new SoundEventData(baseLevelPath + "WORLD/SOUNDEVENTDATA.DAT");
-                Editor.resource.sound_environmentdata = new SoundEnvironmentData(baseLevelPath + "WORLD/SOUNDENVIRONMENTDATA.DAT");
-                Editor.resource.character_accessories = new CharacterAccessorySets(baseLevelPath + "WORLD/CHARACTERACCESSORYSETS.BIN");
-                //Editor.resource.textures_Global = new Textures(SharedData.pathToAI + "/DATA/ENV/GLOBAL/WORLD/GLOBAL_TEXTURES.ALL.PAK");
+                string worldPath = path + "WORLD/";
+                string renderablePath = path + "RENDERABLE/";
 
                 //The game has two hard-coded _PATCH overrides. We should use RENDERABLE from the non-patched folder.
-                switch (levelName)
+                switch (Editor.level)
                 {
                     case "DLC/BSPNOSTROMO_RIPLEY_PATCH":
                     case "DLC/BSPNOSTROMO_TWOTEAMS_PATCH":
-                        baseLevelPath = baseLevelPath.Replace(levelName, levelName.Substring(0, levelName.Length - ("_PATCH").Length));
+                        renderablePath = renderablePath.Replace(Editor.level, Editor.level.Substring(0, Editor.level.Length - ("_PATCH").Length)) + "RENDERABLE/";
                         break;
                 }
+                
+                //Somewhat hacky way of loading everything at once (TODO: we could probs do the same with commands as well)
+                Parallel.For(0, 13, (i) =>
+                {
+                    switch (i)
+                    {
+                        case 0:
+                            Editor.resource.models = new Models(renderablePath + "LEVEL_MODELS.PAK");
+                            break;
+                        case 1:
+                            Editor.resource.materials = new Materials(renderablePath + "LEVEL_MODELS.MTL");
+                            break;
+                        case 2:
+                            //Editor.resource.textures = new Textures(renderablePath + "LEVEL_TEXTURES.ALL.PAK");
+                            break;
+                        case 3:
+                            //Editor.resource.textures_Global = new Textures(SharedData.pathToAI + "/DATA/ENV/GLOBAL/WORLD/GLOBAL_TEXTURES.ALL.PAK");
+                            break;
+                        case 4:
+                            Editor.resource.reds = new RenderableElements(worldPath + "REDS.BIN");
+                            break;
+                        case 5:
+                            Editor.resource.env_animations = new EnvironmentAnimations(worldPath + "ENVIRONMENT_ANIMATION.DAT");
+                            break;
+                        case 6:
+                            Editor.resource.collision_maps = new CollisionMaps(worldPath + "COLLISION.MAP");
+                            break;
+                        case 7:
+                            Editor.resource.physics_maps = new PhysicsMaps(worldPath + "PHYSICS.MAP");
+                            break;
+                        case 8:
+                            Editor.resource.sound_bankdata = new SoundBankData(worldPath + "SOUNDBANKDATA.DAT");
+                            break;
+                        case 9:
+                            Editor.resource.sound_dialoguelookups = new SoundDialogueLookups(worldPath + "SOUNDDIALOGUELOOKUPS.DAT");
+                            break;
+                        case 10:
+                            Editor.resource.sound_eventdata = new SoundEventData(worldPath + "SOUNDEVENTDATA.DAT");
+                            break;
+                        case 11:
+                            Editor.resource.sound_environmentdata = new SoundEnvironmentData(worldPath + "SOUNDENVIRONMENTDATA.DAT");
+                            break;
+                        case 12:
+                            Editor.resource.character_accessories = new CharacterAccessorySets(worldPath + "CHARACTERACCESSORYSETS.BIN");
+                            break;
+                    }
+                });
 
-                Editor.resource.models = new Models(baseLevelPath + "RENDERABLE/LEVEL_MODELS.PAK");
-                Editor.resource.materials = new Materials(baseLevelPath + "RENDERABLE/LEVEL_MODELS.MTL");
-                //Editor.resource.textures = new Textures(baseLevelPath + "RENDERABLE/LEVEL_TEXTURES.ALL.PAK");
 #if !CATHODE_FAIL_HARD
             }
             catch
@@ -384,14 +431,13 @@ namespace CommandsEditor
         }
 
         /* Load mover descriptors */
-        private void LoadMovers()
+        private void LoadMovers(string path)
         {
 #if !CATHODE_FAIL_HARD
             try
             {
 #endif
-                string baseLevelPath = Editor.commands.Filepath.Substring(0, Editor.commands.Filepath.Length - ("WORLD/COMMANDS.PAK").Length);
-                Editor.mvr = new Movers(baseLevelPath + "WORLD/MODELS.MVR");
+                Editor.mvr = new Movers(path + "WORLD/MODELS.MVR");
 #if !CATHODE_FAIL_HARD
             }
             catch
