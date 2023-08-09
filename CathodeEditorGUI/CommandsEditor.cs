@@ -223,20 +223,29 @@ namespace CommandsEditor
 
             //Load everything
             string levelPath = SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + level + "/";
+            bool[] success = new bool[] { false, false, false };
             Parallel.For(0, 3, (i) => {
                 switch (i)
                 {
                     case 0:
-                        LoadCommands(levelPath);
+                        success[i] = LoadCommands(levelPath);
                         break;
                     case 1:
-                        LoadAssets(levelPath);
+                        success[i] = LoadAssets(levelPath);
                         break;
                     case 2:
-                        LoadMovers(levelPath);
+                        success[i] = LoadMovers(levelPath);
                         break;
                 }
             });
+            if (!success[0] || !success[1] || !success[2])
+            {
+                ClearUI(true, true, true);
+                if (!success[0]) MessageBox.Show("Failed to load Commands data.\nPlease reset your game files.", "Commands failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (!success[1]) MessageBox.Show("Failed to load assets.\nPlease ensure you are have not deleted any files from the level.", "Asset load failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (!success[2]) MessageBox.Show("Failed to load Mover data.\nPlease reset your game files.", "Movers failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
             //Link up commands to utils and cache some things
             EntityUtils.LinkCommands(Editor.commands);
@@ -294,9 +303,9 @@ namespace CommandsEditor
         }
 
         /* Load commands */
-        private void LoadCommands(string path)
+        private bool LoadCommands(string path)
         {
-            if (Editor.commands != null) Editor.commands.Entries.Clear();
+            if (Editor.commands?.Entries != null) Editor.commands.Entries.Clear();
 
 #if !CATHODE_FAIL_HARD
             try
@@ -308,41 +317,36 @@ namespace CommandsEditor
             }
             catch (Exception e)
             {
-                MessageBox.Show("Failed to load COMMANDS.PAK!\n" + e.Message, "Failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Editor.commands = null;
-                return;
+                return false;
             }
 #endif
             RefreshWebsocket();
 
-            if (Editor.commands.EntryPoints == null)
+            if (!Editor.commands.Loaded || Editor.commands.EntryPoints == null || Editor.commands.EntryPoints[0] == null)
             {
-                MessageBox.Show("Failed to load COMMANDS.PAK!\nPlease place this executable in your Alien: Isolation folder.", "Environment error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                Editor.commands = null; 
+                return false;
             }
-            else if (Editor.commands.EntryPoints[0] == null)
-            {
-                MessageBox.Show("Failed to load COMMANDS.PAK!\nPlease reset your game files.", "COMMANDS.PAK corrupted!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
+            return true;
         }
 
         /* Load assets */
-        private void LoadAssets(string path)
+        private bool LoadAssets(string path)
         {
-            if (Editor.resource.models != null) Editor.resource.models.Entries.Clear();
-            if (Editor.resource.reds != null) Editor.resource.reds.Entries.Clear();
-            if (Editor.resource.materials != null) Editor.resource.materials.Entries.Clear();
-            if (Editor.resource.textures != null) Editor.resource.textures.Entries.Clear();
-            if (Editor.resource.textures_global != null) Editor.resource.textures_global.Entries.Clear();
-            if (Editor.resource.env_animations != null) Editor.resource.env_animations.Entries.Clear();
-            if (Editor.resource.collision_maps != null) Editor.resource.collision_maps.Entries.Clear();
-            if (Editor.resource.physics_maps != null) Editor.resource.physics_maps.Entries.Clear();
-            if (Editor.resource.sound_bankdata != null) Editor.resource.sound_bankdata.Entries.Clear();
-            if (Editor.resource.sound_dialoguelookups != null) Editor.resource.sound_dialoguelookups.Entries.Clear();
-            if (Editor.resource.sound_eventdata != null) Editor.resource.sound_eventdata.Entries.Clear();
-            if (Editor.resource.sound_environmentdata != null) Editor.resource.sound_environmentdata.Entries.Clear();
-            if (Editor.resource.character_accessories != null) Editor.resource.character_accessories.Entries.Clear();
+            if (Editor.resource.models?.Entries != null) Editor.resource.models.Entries.Clear();
+            if (Editor.resource.reds?.Entries != null) Editor.resource.reds.Entries.Clear();
+            if (Editor.resource.materials?.Entries != null) Editor.resource.materials.Entries.Clear();
+            if (Editor.resource.textures?.Entries != null) Editor.resource.textures.Entries.Clear();
+            if (Editor.resource.textures_global?.Entries != null) Editor.resource.textures_global.Entries.Clear();
+            if (Editor.resource.env_animations?.Entries != null) Editor.resource.env_animations.Entries.Clear();
+            if (Editor.resource.collision_maps?.Entries != null) Editor.resource.collision_maps.Entries.Clear();
+            if (Editor.resource.physics_maps?.Entries != null) Editor.resource.physics_maps.Entries.Clear();
+            if (Editor.resource.sound_bankdata?.Entries != null) Editor.resource.sound_bankdata.Entries.Clear();
+            if (Editor.resource.sound_dialoguelookups?.Entries != null) Editor.resource.sound_dialoguelookups.Entries.Clear();
+            if (Editor.resource.sound_eventdata?.Entries != null) Editor.resource.sound_eventdata.Entries.Clear();
+            if (Editor.resource.sound_environmentdata?.Entries != null) Editor.resource.sound_environmentdata.Entries.Clear();
+            if (Editor.resource.character_accessories?.Entries != null) Editor.resource.character_accessories.Entries.Clear();
 
 #if !CATHODE_FAIL_HARD
             try
@@ -406,33 +410,22 @@ namespace CommandsEditor
                             break;
                     }
                 });
+                return true;
 
 #if !CATHODE_FAIL_HARD
             }
             catch
             {
-                //Can fail if we're loading a PAK outside the game structure
-                MessageBox.Show("Failed to load asset PAKs!\nAre you opening a Commands PAK outside of a map directory?\nIf not, please try and load again.", "Resource editing disabled.", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                Editor.resource.models = null;
-                Editor.resource.reds = null;
-                Editor.resource.materials = null;
-                Editor.resource.textures = null;
-                Editor.resource.textures_global = null;
-                Editor.resource.env_animations = null;
-                Editor.resource.collision_maps = null;
-                Editor.resource.physics_maps = null;
-                Editor.resource.sound_bankdata = null;
-                Editor.resource.sound_dialoguelookups = null;
-                Editor.resource.sound_eventdata = null;
-                Editor.resource.sound_environmentdata = null;
-                Editor.resource.character_accessories = null;
+                return false;
             }
 #endif
         }
 
         /* Load mover descriptors */
-        private void LoadMovers(string path)
+        private bool LoadMovers(string path)
         {
+            if (Editor.mvr?.Entries != null) Editor.mvr.Entries.Clear();
+
 #if !CATHODE_FAIL_HARD
             try
             {
@@ -445,8 +438,10 @@ namespace CommandsEditor
                 //Can fail if we're loading a MVR outside the game structure
                 MessageBox.Show("Failed to load mover descriptor database!\nAre you opening a Commands PAK outside of a map directory?\nMVR editing disabled.", "MVR editing disabled.", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 Editor.mvr = null;
+                return false;
             }
 #endif
+            return true;
         }
 
         /* Save the current edits */
@@ -478,64 +473,58 @@ namespace CommandsEditor
                 return;
             }
 #endif
-            //Recalculate physics maps
-            if (Editor.resource.physics_maps != null && Editor.resource.physics_maps.Entries != null)
-            {
-                /*
-                Editor.resource.physics_maps.Entries.Clear();
 
-                foreach (Composite composite in Editor.commands.Entries)
-                {
-                    foreach (FunctionEntity func in composite.functions)
-                    {
-                        if (func.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.PhysicsSystem))
-                        {
-                            List<EntityHierarchy> hierarchies = EditorUtils.GetHierarchiesForEntity(composite, func);
-                            foreach (EntityHierarchy hierarchy in hierarchies)
-                            {
-                                PhysicsMaps.Entry newPhysMap = new PhysicsMaps.Entry();
-                                newPhysMap.physics_system_index = ((cInteger)func.GetParameter("system_index").content).value; //TODO: this implies we will always have this param of type - should probs force this elsewhere...
-                                newPhysMap.resource_type = ShortGuidUtils.Generate("DYNAMIC_PHYSICS_SYSTEM");
-
-                                EntityHierarchy hierarchyCopy = hierarchy.Copy();
-                                hierarchyCopy.hierarchy.RemoveAt(hierarchyCopy.hierarchy.Count - 2);
-                                newPhysMap.composite_instance_id = hierarchyCopy.GenerateInstance();
-
-                                newPhysMap.entity = new CommandsEntityReference() { entity_id = func.shortGUID, composite_instance_id = hierarchy.GenerateInstance() };
-
-                                //TODO: calculate matrix (if we need it)
-
-                                Editor.resource.physics_maps.Entries.Add(newPhysMap);
-                            }
-                        }
-                    }
-                }
-                */
-
-                Editor.resource.physics_maps.Save();
-            }
-
-            //Recalculate collision maps
-            if (Editor.resource.collision_maps != null && Editor.resource.collision_maps.Entries != null)
-            {
-                //TODO: calculate entity instances with collision info
-
-                //Editor.resource.collision_maps.Save();
-            }
-
-            //TODO: What happens if we update character hierarchies & then don't re-save the editor!! Should warn or handle.
-            if (Editor.resource.character_accessories != null && Editor.resource.character_accessories.Entries != null)
-                Editor.resource.character_accessories.Save();
-
-            if (Editor.resource.reds != null && Editor.resource.reds.Entries != null)
-                Editor.resource.reds.Save();
-
-            //TODO: We save this but really it's handled wrong. Need to calculate instances before saving & allow instance data to be edited properly.
-            if (Editor.mvr != null && Editor.mvr.Entries != null)
-                Editor.mvr.Save();
+            //Calculate instance specific stuff
+            EditorUtils.GenerateCompositeInstances(Editor.commands); //TODO: Do we need to do this? I don't think we should.
+            CreateDataForInstance(Editor.commands.EntryPoints[0]);
 
             Cursor.Current = Cursors.Default;
             MessageBox.Show("Saved changes!", "Saved.", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+        private void CreateDataForInstance(Composite composite)
+        {
+            for (int i = 0; i < composite.functions.Count; i++) //todo: can we do this in parallel?
+            {
+                if (CommandsUtils.FunctionTypeExists(composite.functions[i].function))
+                {
+                    //This is a FunctionEntity which we may need to create data for the instance of
+
+                    //Writing this code, I'm now realising that we would need to write these extra files to know the indexes to then write in Commands.
+                    //It must all be done at the same time...
+                    //Hmm...
+                    for (int x = 0; x < composite.functions[i].resources.Count; x++)
+                    {
+                        ResourceReference resource = composite.functions[i].resources[x];
+                        switch (resource.entryType)
+                        {
+                            case ResourceType.DYNAMIC_PHYSICS_SYSTEM:
+                                //Write to PHYSICS.MAP
+                                break;
+                            case ResourceType.COLLISION_MAPPING:
+                                //Write to COLLISION.MAP
+                                break;
+                            case ResourceType.RENDERABLE_INSTANCE:
+                                //Write to MODELS.MVR
+                                break;
+                            case ResourceType.ANIMATED_MODEL:
+                                //Write to ENVIRONMENT_ANIMATION.DAT
+                                break;
+                        }
+                    }
+                }
+                else
+                {
+                    //This is a FunctionEntity which instances a child composite, so we should follow it through
+                    Composite child = Editor.commands.GetComposite(composite.functions[i].function);
+                    if (child != null) CreateDataForInstance(child);
+                }
+            }
+
+            Editor.resource.physics_maps.Save();
+            Editor.resource.collision_maps.Save();
+            Editor.resource.character_accessories.Save();
+            Editor.resource.reds.Save();
+            Editor.mvr.Save();
         }
 
         /* Edit the loaded COMMANDS.PAK's root composite */
