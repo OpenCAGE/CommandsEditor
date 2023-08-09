@@ -27,6 +27,70 @@ namespace CommandsEditor
 {
     public static class LocalDebug
     {
+        public static void MAPTEST(string path)
+        {
+            Console.WriteLine("Loading Commands");
+            Commands commands = new Commands(path + "/WORLD/COMMANDS.PAK");
+            Console.WriteLine("Generating Instances");
+            EditorUtils.GenerateCompositeInstances(commands);
+
+            int resolved = 0;
+            Console.WriteLine("Loading Collision Maps");
+            CollisionMaps collisionMaps = new CollisionMaps(path + "/WORLD/COLLISION.MAP");
+            string json = JsonConvert.SerializeObject(collisionMaps.Entries, Formatting.Indented);
+            File.WriteAllText("CollisionMaps.json", json);
+            foreach (CollisionMaps.Entry entry in collisionMaps.Entries)
+            {
+                if (entry.entity.composite_instance_id == ShortGuid.Invalid || entry.entity.entity_id == ShortGuid.Invalid)
+                {
+                    Console.WriteLine("Skipping invalid");
+                    continue;
+                }
+
+                EntityHierarchy hierarchy = EditorUtils.GetHierarchyFromReference(entry.entity);
+                if (hierarchy == null)
+                {
+                    Console.WriteLine("FAILED TO RESOLVE");
+                    continue;
+                }
+                Entity ent = hierarchy.GetPointedEntity(commands, out Composite comp);
+                Console.WriteLine(hierarchy.GetHierarchyAsString(commands, comp, true));
+                resolved++;
+            }
+            Console.WriteLine("Resolved: " + resolved);
+            Console.WriteLine("Not Resolved: " + (collisionMaps.Entries.Count - resolved));
+
+            /*
+            resolved = 0;
+            Console.WriteLine("Loading Physics Maps");
+            PhysicsMaps physicsMaps = new PhysicsMaps(path + "/WORLD/PHYSICS.MAP");
+            string json2 = JsonConvert.SerializeObject(physicsMaps.Entries, Formatting.Indented);
+            File.WriteAllText("PhysicsMaps.json", json2);
+            foreach (PhysicsMaps.Entry entry in physicsMaps.Entries)
+            {
+                if (entry.entity.composite_instance_id == ShortGuid.Invalid || entry.entity.entity_id == ShortGuid.Invalid)
+                {
+                    Console.WriteLine("Skipping invalid");
+                    continue;
+                }
+
+                EntityHierarchy hierarchy = EditorUtils.GetHierarchyFromReference(entry.entity);
+                if (hierarchy == null)
+                {
+                    Console.WriteLine("FAILED TO RESOLVE");
+                    continue;
+                }
+                Entity ent = hierarchy.GetPointedEntity(commands, out Composite comp);
+                Console.WriteLine(hierarchy.GetHierarchyAsString(commands, comp, true));
+                resolved++;
+            }
+            Console.WriteLine("Resolved: " + resolved);
+            Console.WriteLine("Not Resolved: " + (physicsMaps.Entries.Count - resolved));
+            */
+
+            string breakhere = ""; 
+        }
+
         public static void DumpAllEnts(string alien_path, string output_append)
         {
 #if DEBUG

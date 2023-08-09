@@ -67,21 +67,30 @@ namespace CommandsEditor
         /* Get the hierarchy for a commands entity reference (used to link legacy resource/mvr stuff) */
         public static EntityHierarchy GetHierarchyFromReference(CommandsEntityReference reference)
         {
-            foreach (KeyValuePair<Composite, List<List<ShortGuid>>> pair in _hierarchies)
+            EntityHierarchy toReturn = null;
+            Parallel.ForEach(_hierarchies, (pair, state) =>
             {
-                for (int i = 0; i < pair.Value.Count; i++)
+                if (toReturn != null) state.Stop();
+                else
                 {
-                    List<ShortGuid> hierarchy = new List<ShortGuid>(pair.Value[i].ConvertAll(x => x));
-                    hierarchy.Add(reference.entity_id);
+                    Parallel.For(0, pair.Value.Count, (i, state2) =>
+                    {
+                        if (toReturn != null) state2.Stop();
+                        else
+                        {
+                            List<ShortGuid> hierarchy = new List<ShortGuid>(pair.Value[i].ConvertAll(x => x));
+                            hierarchy.Add(reference.entity_id);
 
-                    EntityHierarchy h = new EntityHierarchy(hierarchy);
-                    ShortGuid instance = h.GenerateInstance();
+                            EntityHierarchy h = new EntityHierarchy(hierarchy);
+                            ShortGuid instance = h.GenerateInstance();
 
-                    if (instance == reference.composite_instance_id)
-                        return h;
+                            if (instance == reference.composite_instance_id)
+                                toReturn = h;
+                        }
+                    });
                 }
-            }
-            return null;
+            });
+            return toReturn;
         }
 
         /* Utility: generate nice entity name to display in UI */
