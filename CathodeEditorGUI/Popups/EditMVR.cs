@@ -1,4 +1,4 @@
-﻿using CATHODE.Scripting;
+using CATHODE.Scripting;
 using CommandsEditor.Popups.UserControls;
 using System;
 using System.Collections.Generic;
@@ -83,10 +83,7 @@ namespace CommandsEditor
             renderable.PopulateUI((int)mvr.renderableElementIndex, (int)mvr.renderableElementCount);
 
             //Load transform from matrix
-            Vector3 scale;
-            Quaternion rotation;
-            Vector3 position;
-            Matrix4x4.Decompose(mvr.transform, out scale, out rotation, out position);
+            Matrix4x4.Decompose(mvr.transform, out Vector3 scale, out Quaternion rotation, out Vector3 position);
             POS_X.Value = (decimal)position.X; POS_Y.Value = (decimal)position.Y; POS_Z.Value = (decimal)position.Z;
             ROT_X.Value = (decimal)rotation.X; ROT_Y.Value = (decimal)rotation.Y; ROT_Z.Value = (decimal)rotation.Z; ROT_W.Value = (decimal)rotation.W;
             SCALE_X.Value = (decimal)scale.X; SCALE_Y.Value = (decimal)scale.Y; SCALE_Z.Value = (decimal)scale.Z;
@@ -119,9 +116,13 @@ namespace CommandsEditor
             mvr.renderableElementCount = (uint)renderable.SelectedMaterialIndexes.Count;
             mvr.renderableElementIndex = (uint)Editor.resource.reds.Entries.Count;
 
-            mvr.transform = Matrix4x4.CreateScale(new Vector3((float)SCALE_X.Value, (float)SCALE_Y.Value, (float)SCALE_Z.Value)) *
-                            Matrix4x4.CreateFromQuaternion(new Quaternion((float)ROT_W.Value, (float)ROT_X.Value, (float)ROT_Y.Value, (float)ROT_Z.Value)) *
-                            Matrix4x4.CreateTranslation(new Vector3((float)POS_X.Value, (float)POS_Y.Value, (float)POS_Z.Value));
+            Vector3 scale = new Vector3((float)SCALE_X.Value, (float)SCALE_Y.Value, (float)SCALE_Z.Value);
+            Quaternion rotation = Quaternion.Normalize(new Quaternion((float)ROT_X.Value, (float)ROT_Y.Value, (float)ROT_Z.Value, (float)ROT_W.Value));
+            Vector3 position = new Vector3((float)POS_X.Value, (float)POS_Y.Value, (float)POS_Z.Value);
+
+            mvr.transform = Matrix4x4.CreateScale(scale) *
+                            Matrix4x4.CreateFromQuaternion(rotation) *
+                            Matrix4x4.CreateTranslation(position);
 
             mvr.instanceTypeFlags = (ushort)Convert.ToInt32(type_dropdown.SelectedItem.ToString());
 

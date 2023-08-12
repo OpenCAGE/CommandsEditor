@@ -119,12 +119,12 @@ namespace CommandsEditor
             // 
             // SCALE_Z
             // 
-            this.SCALE_Z.DecimalPlaces = 8;
+            this.SCALE_Z.DecimalPlaces = 7;
             this.SCALE_Z.Increment = new decimal(new int[] {
             1,
             0,
             0,
-            851968});
+            65536});
             this.SCALE_Z.Location = new System.Drawing.Point(236, 301);
             this.SCALE_Z.Maximum = new decimal(new int[] {
             1874919423,
@@ -157,12 +157,12 @@ namespace CommandsEditor
             // 
             // SCALE_Y
             // 
-            this.SCALE_Y.DecimalPlaces = 8;
+            this.SCALE_Y.DecimalPlaces = 7;
             this.SCALE_Y.Increment = new decimal(new int[] {
             1,
             0,
             0,
-            851968});
+            65536});
             this.SCALE_Y.Location = new System.Drawing.Point(132, 301);
             this.SCALE_Y.Maximum = new decimal(new int[] {
             1874919423,
@@ -195,12 +195,12 @@ namespace CommandsEditor
             // 
             // SCALE_X
             // 
-            this.SCALE_X.DecimalPlaces = 8;
+            this.SCALE_X.DecimalPlaces = 7;
             this.SCALE_X.Increment = new decimal(new int[] {
             1,
             0,
             0,
-            851968});
+            65536});
             this.SCALE_X.Location = new System.Drawing.Point(29, 301);
             this.SCALE_X.Maximum = new decimal(new int[] {
             1874919423,
@@ -242,29 +242,29 @@ namespace CommandsEditor
             // 
             // ROT_Z
             // 
-            this.ROT_Z.DecimalPlaces = 8;
+            this.ROT_Z.DecimalPlaces = 7;
             this.ROT_Z.Increment = new decimal(new int[] {
             1,
             0,
             0,
-            851968});
+            65536});
             this.ROT_Z.Location = new System.Drawing.Point(236, 263);
             this.ROT_Z.Maximum = new decimal(new int[] {
-            1874919423,
-            2328306,
+            1,
+            0,
             0,
             0});
             this.ROT_Z.Minimum = new decimal(new int[] {
-            1874919423,
-            2328306,
+            1,
+            0,
             0,
             -2147483648});
             this.ROT_Z.Name = "ROT_Z";
             this.ROT_Z.Size = new System.Drawing.Size(80, 20);
             this.ROT_Z.TabIndex = 40;
             this.ROT_Z.Value = new decimal(new int[] {
-            1874919423,
-            2328306,
+            1,
+            0,
             0,
             -2147483648});
             this.ROT_Z.ValueChanged += new System.EventHandler(this.ROT_Z_ValueChanged);
@@ -280,29 +280,29 @@ namespace CommandsEditor
             // 
             // ROT_Y
             // 
-            this.ROT_Y.DecimalPlaces = 8;
+            this.ROT_Y.DecimalPlaces = 7;
             this.ROT_Y.Increment = new decimal(new int[] {
             1,
             0,
             0,
-            851968});
+            65536});
             this.ROT_Y.Location = new System.Drawing.Point(132, 263);
             this.ROT_Y.Maximum = new decimal(new int[] {
-            1874919423,
-            2328306,
+            1,
+            0,
             0,
             0});
             this.ROT_Y.Minimum = new decimal(new int[] {
-            1874919423,
-            2328306,
+            1,
+            0,
             0,
             -2147483648});
             this.ROT_Y.Name = "ROT_Y";
             this.ROT_Y.Size = new System.Drawing.Size(80, 20);
             this.ROT_Y.TabIndex = 38;
             this.ROT_Y.Value = new decimal(new int[] {
-            1874919423,
-            2328306,
+            1,
+            0,
             0,
             -2147483648});
             this.ROT_Y.ValueChanged += new System.EventHandler(this.ROT_Y_ValueChanged);
@@ -318,29 +318,29 @@ namespace CommandsEditor
             // 
             // ROT_X
             // 
-            this.ROT_X.DecimalPlaces = 8;
+            this.ROT_X.DecimalPlaces = 7;
             this.ROT_X.Increment = new decimal(new int[] {
             1,
             0,
             0,
-            851968});
+            65536});
             this.ROT_X.Location = new System.Drawing.Point(29, 263);
             this.ROT_X.Maximum = new decimal(new int[] {
-            1874919423,
-            2328306,
+            1,
+            0,
             0,
             0});
             this.ROT_X.Minimum = new decimal(new int[] {
-            1874919423,
-            2328306,
+            1,
+            0,
             0,
             -2147483648});
             this.ROT_X.Name = "ROT_X";
             this.ROT_X.Size = new System.Drawing.Size(80, 20);
             this.ROT_X.TabIndex = 36;
             this.ROT_X.Value = new decimal(new int[] {
-            1874919423,
-            2328306,
+            1,
+            0,
             0,
             -2147483648});
             this.ROT_X.ValueChanged += new System.EventHandler(this.ROT_X_ValueChanged);
@@ -365,12 +365,12 @@ namespace CommandsEditor
             // 
             // POS_Z
             // 
-            this.POS_Z.DecimalPlaces = 8;
+            this.POS_Z.DecimalPlaces = 7;
             this.POS_Z.Increment = new decimal(new int[] {
             1,
             0,
             0,
-            851968});
+            65536});
             this.POS_Z.Location = new System.Drawing.Point(236, 224);
             this.POS_Z.Maximum = new decimal(new int[] {
             1874919423,
@@ -403,12 +403,12 @@ namespace CommandsEditor
             // 
             // POS_Y
             // 
-            this.POS_Y.DecimalPlaces = 8;
+            this.POS_Y.DecimalPlaces = 7;
             this.POS_Y.Increment = new decimal(new int[] {
             1,
             0,
             0,
-            851968});
+            65536});
             this.POS_Y.Location = new System.Drawing.Point(132, 224);
             this.POS_Y.Maximum = new decimal(new int[] {
             1874919423,
@@ -441,12 +441,12 @@ namespace CommandsEditor
             // 
             // POS_X
             // 
-            this.POS_X.DecimalPlaces = 8;
+            this.POS_X.DecimalPlaces = 7;
             this.POS_X.Increment = new decimal(new int[] {
             1,
             0,
             0,
-            851968});
+            65536});
             this.POS_X.Location = new System.Drawing.Point(29, 224);
             this.POS_X.Maximum = new decimal(new int[] {
             1874919423,
@@ -479,29 +479,29 @@ namespace CommandsEditor
             // 
             // ROT_W
             // 
-            this.ROT_W.DecimalPlaces = 8;
+            this.ROT_W.DecimalPlaces = 7;
             this.ROT_W.Increment = new decimal(new int[] {
             1,
             0,
             0,
-            851968});
+            65536});
             this.ROT_W.Location = new System.Drawing.Point(340, 263);
             this.ROT_W.Maximum = new decimal(new int[] {
-            1874919423,
-            2328306,
+            1,
+            0,
             0,
             0});
             this.ROT_W.Minimum = new decimal(new int[] {
-            1874919423,
-            2328306,
+            1,
+            0,
             0,
             -2147483648});
             this.ROT_W.Name = "ROT_W";
             this.ROT_W.Size = new System.Drawing.Size(80, 20);
             this.ROT_W.TabIndex = 43;
             this.ROT_W.Value = new decimal(new int[] {
-            1874919423,
-            2328306,
+            1,
+            0,
             0,
             -2147483648});
             this.ROT_W.ValueChanged += new System.EventHandler(this.ROT_W_ValueChanged);
