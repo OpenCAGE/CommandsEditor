@@ -57,6 +57,8 @@
             this.editFunction = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.composite_content = new System.Windows.Forms.ListView();
+            this.EntityName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.EntityType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.renameSelectedNode = new System.Windows.Forms.Button();
             this.duplicateSelectedNode = new System.Windows.Forms.Button();
             this.removeSelectedEntity = new System.Windows.Forms.Button();
@@ -78,8 +80,7 @@
             this.editEntryPoint = new System.Windows.Forms.Button();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.EntityName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.EntityType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.listView1 = new System.Windows.Forms.ListView();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.entityInfoGroup.SuspendLayout();
@@ -364,6 +365,16 @@
             this.composite_content.View = System.Windows.Forms.View.Details;
             this.composite_content.SelectedIndexChanged += new System.EventHandler(this.composite_content_SelectedIndexChanged);
             // 
+            // EntityName
+            // 
+            this.EntityName.Text = "Name";
+            this.EntityName.Width = 279;
+            // 
+            // EntityType
+            // 
+            this.EntityType.Text = "Type";
+            this.EntityType.Width = 163;
+            // 
             // renameSelectedNode
             // 
             this.renameSelectedNode.Location = new System.Drawing.Point(339, 690);
@@ -576,21 +587,21 @@
             this.groupBox10.TabIndex = 175;
             this.groupBox10.TabStop = false;
             // 
-            // EntityName
+            // listView1
             // 
-            this.EntityName.Text = "Entity Name";
-            this.EntityName.Width = 279;
+            this.listView1.HideSelection = false;
+            this.listView1.Location = new System.Drawing.Point(1283, 525);
+            this.listView1.Name = "listView1";
+            this.listView1.Size = new System.Drawing.Size(786, 269);
+            this.listView1.TabIndex = 176;
+            this.listView1.UseCompatibleStateImageBehavior = false;
             // 
-            // EntityType
-            // 
-            this.EntityType.Text = "Entity Type";
-            this.EntityType.Width = 163;
-            // 
-            // CommandsEditor
+            // CommandsEditor_OLD
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1972, 804);
+            this.ClientSize = new System.Drawing.Size(2097, 804);
+            this.Controls.Add(this.listView1);
             this.Controls.Add(this.groupBox10);
             this.Controls.Add(this.groupBox8);
             this.Controls.Add(this.groupBox3);
@@ -598,7 +609,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.Name = "CommandsEditor";
+            this.Name = "CommandsEditor_OLD";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "OpenCAGE Commands Editor";
             this.Load += new System.EventHandler(this.CommandsEditor_Load);
@@ -663,5 +674,6 @@
         private System.Windows.Forms.ListView composite_content;
         private System.Windows.Forms.ColumnHeader EntityName;
         private System.Windows.Forms.ColumnHeader EntityType;
+        private System.Windows.Forms.ListView listView1;
     }
 }

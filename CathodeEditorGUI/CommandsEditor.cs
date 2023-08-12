@@ -995,9 +995,10 @@ namespace CommandsEditor
         }
         private void OnEntityRenamed(Composite composite, Entity entity)
         {
-            string entityID = entity.shortGUID.ToByteString();
-            string newEntityName = EditorUtils.GenerateEntityName(entity, composite, true);
+            EditorUtils.GenerateEntityName(entity, composite, true);
+            string newEntityName = GenerateListViewItem(entity, composite, false).Text;
 
+            composite_content_cache[composite][entity].Text = newEntityName;
             if (composite == Editor.selected.composite)
             {
                 composite_content_RAW.FirstOrDefault(o => o.Tag == entity).Text = newEntityName;
