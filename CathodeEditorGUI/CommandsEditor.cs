@@ -618,6 +618,15 @@ namespace CommandsEditor
             CacheHierarchies();
         }
 
+        /* Find uses of composite */
+        private void findReferencesOfComposite_Click(object sender, EventArgs e)
+        {
+            if (Editor.selected.composite == null) return;
+            ShowCompositeUses uses = new ShowCompositeUses(this);
+            uses.Show();
+            uses.OnEntitySelected += OnCrossRefsEntitySelected;
+        }
+
         /* Select entity from loaded composite */
         private void composite_content_SelectedIndexChanged(object sender, EventArgs e)
         {

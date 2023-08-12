@@ -307,6 +307,12 @@
     <Compile Include="Popups\Function Editors\CAGEAnimationEditor.Designer.cs">
       <DependentUpon>CAGEAnimationEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\ShowCompositeUses.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\ShowCompositeUses.Designer.cs">
+      <DependentUpon>ShowCompositeUses.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popups\UserControls\GUI_Resource_Default.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -1424,6 +1430,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\SelectModel.resx">
       <DependentUpon>SelectModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\ShowCompositeUses.resx">
+      <DependentUpon>ShowCompositeUses.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\ShowCrossRefs.resx">
       <DependentUpon>ShowCrossRefs.cs</DependentUpon>
