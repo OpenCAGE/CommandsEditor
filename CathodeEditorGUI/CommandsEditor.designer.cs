@@ -33,6 +33,7 @@
             this.root_composite_display = new System.Windows.Forms.Label();
             this.save_commands_pak = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.findReferencesOfComposite = new System.Windows.Forms.Button();
             this.goBackToPrevComp = new System.Windows.Forms.Button();
             this.removeSelectedFlowgraph = new System.Windows.Forms.Button();
             this.addNewFlowgraph = new System.Windows.Forms.Button();
@@ -103,6 +104,7 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.findReferencesOfComposite);
             this.groupBox3.Controls.Add(this.goBackToPrevComp);
             this.groupBox3.Controls.Add(this.removeSelectedFlowgraph);
             this.groupBox3.Controls.Add(this.addNewFlowgraph);
@@ -113,6 +115,17 @@
             this.groupBox3.TabIndex = 163;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Composites";
+            // 
+            // findReferencesOfComposite
+            // 
+            this.findReferencesOfComposite.Location = new System.Drawing.Point(250, 710);
+            this.findReferencesOfComposite.Name = "findReferencesOfComposite";
+            this.findReferencesOfComposite.Size = new System.Drawing.Size(123, 23);
+            this.findReferencesOfComposite.TabIndex = 152;
+            this.findReferencesOfComposite.Text = "Find Uses of Selected";
+            this.toolTip1.SetToolTip(this.findReferencesOfComposite, "Shows all entities that instance the currently loaded composite");
+            this.findReferencesOfComposite.UseVisualStyleBackColor = true;
+            this.findReferencesOfComposite.Click += new System.EventHandler(this.findReferencesOfComposite_Click);
             // 
             // goBackToPrevComp
             // 
@@ -127,11 +140,12 @@
             // 
             // removeSelectedFlowgraph
             // 
-            this.removeSelectedFlowgraph.Location = new System.Drawing.Point(191, 710);
+            this.removeSelectedFlowgraph.Location = new System.Drawing.Point(128, 710);
             this.removeSelectedFlowgraph.Name = "removeSelectedFlowgraph";
-            this.removeSelectedFlowgraph.Size = new System.Drawing.Size(181, 23);
+            this.removeSelectedFlowgraph.Size = new System.Drawing.Size(123, 23);
             this.removeSelectedFlowgraph.TabIndex = 150;
             this.removeSelectedFlowgraph.Text = "Remove Selected";
+            this.toolTip1.SetToolTip(this.removeSelectedFlowgraph, "Remove the composite currently loaded");
             this.removeSelectedFlowgraph.UseVisualStyleBackColor = true;
             this.removeSelectedFlowgraph.Click += new System.EventHandler(this.removeSelectedComposite_Click);
             // 
@@ -139,9 +153,10 @@
             // 
             this.addNewFlowgraph.Location = new System.Drawing.Point(6, 710);
             this.addNewFlowgraph.Name = "addNewFlowgraph";
-            this.addNewFlowgraph.Size = new System.Drawing.Size(181, 23);
+            this.addNewFlowgraph.Size = new System.Drawing.Size(123, 23);
             this.addNewFlowgraph.TabIndex = 149;
-            this.addNewFlowgraph.Text = "Add Composite";
+            this.addNewFlowgraph.Text = "Create Composite";
+            this.toolTip1.SetToolTip(this.addNewFlowgraph, "Create a new composite");
             this.addNewFlowgraph.UseVisualStyleBackColor = true;
             this.addNewFlowgraph.Click += new System.EventHandler(this.addNewComposite_Click);
             // 
@@ -349,7 +364,7 @@
             this.addNewNode.Name = "addNewNode";
             this.addNewNode.Size = new System.Drawing.Size(111, 23);
             this.addNewNode.TabIndex = 147;
-            this.addNewNode.Text = "Add Entity";
+            this.addNewNode.Text = "Create Entity";
             this.addNewNode.UseVisualStyleBackColor = true;
             this.addNewNode.Click += new System.EventHandler(this.addNewEntity_Click);
             // 
@@ -610,5 +625,6 @@
         private System.Windows.Forms.Button goToZone;
         private System.Windows.Forms.CheckBox UnityConnection;
         private System.Windows.Forms.CheckBox showNodeViewer;
+        private System.Windows.Forms.Button findReferencesOfComposite;
     }
 }
