@@ -1,4 +1,4 @@
-using CATHODE.Scripting;
+﻿using CATHODE.Scripting;
 using CommandsEditor.Popups.UserControls;
 using System;
 using System.Collections.Generic;
@@ -12,7 +12,6 @@ using System.Windows.Forms;
 using System.Numerics;
 using CATHODE;
 using CommandsEditor.Popups.Base;
-using System.Windows.Forms.Design;
 
 namespace CommandsEditor
 {
@@ -82,43 +81,47 @@ namespace CommandsEditor
             Movers.MOVER_DESCRIPTOR mvr = Editor.mvr.Entries[loadedMvrIndex];
             renderable.PopulateUI((int)mvr.renderableElementIndex, (int)mvr.renderableElementCount);
 
-            //Load transform from matrix
             Matrix4x4.Decompose(mvr.transform, out Vector3 scale, out Quaternion rotation, out Vector3 position);
+
             POS_X.Value = (decimal)position.X; POS_Y.Value = (decimal)position.Y; POS_Z.Value = (decimal)position.Z;
-            ROT_X.Value = (decimal)rotation.X; ROT_Y.Value = (decimal)rotation.Y; ROT_Z.Value = (decimal)rotation.Z; ROT_W.Value = (decimal)rotation.W;
             SCALE_X.Value = (decimal)scale.X; SCALE_Y.Value = (decimal)scale.Y; SCALE_Z.Value = (decimal)scale.Z;
+
+            decimal yaw = Convert.ToDecimal(Math.Atan2(2 * (rotation.Y * rotation.W + rotation.X * rotation.Z), 1 - 2 * (rotation.Y * rotation.Y + rotation.X * rotation.X)) * (180 / Math.PI));
+            decimal pitch = Convert.ToDecimal(Math.Asin(2 * (rotation.X * rotation.W - rotation.Z * rotation.Y)) * (180 / Math.PI));
+            decimal roll = Convert.ToDecimal(Math.Atan2(2 * (rotation.Z * rotation.W + rotation.X * rotation.Y), 1 - 2 * (rotation.X * rotation.X + rotation.Z * rotation.Z)) * (180 / Math.PI));
+            
+            ROT_X.Value = pitch; ROT_Y.Value = yaw; ROT_Z.Value = roll;
 
             type_dropdown.SelectedItem = mvr.instanceTypeFlags.ToString();
             hasLoaded = true;
         }
-
         private void saveMover_Click(object sender, EventArgs e)
         {
             SaveMVR();
         }
-
         private void OnMaterialSelected(int submeshIndex, int materialIndex)
         {
             SaveMVR();
         }
-
         private void OnModelSelected(int modelPakIndex)
         {
             SaveMVR();
         }
-
         private void SaveMVR()
         {
             if (!hasLoaded || loadedMvrIndex == -1) return;
-
             Movers.MOVER_DESCRIPTOR mvr = Editor.mvr.Entries[loadedMvrIndex];
-
             mvr.renderableElementCount = (uint)renderable.SelectedMaterialIndexes.Count;
             mvr.renderableElementIndex = (uint)Editor.resource.reds.Entries.Count;
 
             Vector3 scale = new Vector3((float)SCALE_X.Value, (float)SCALE_Y.Value, (float)SCALE_Z.Value);
-            Quaternion rotation = Quaternion.Normalize(new Quaternion((float)ROT_X.Value, (float)ROT_Y.Value, (float)ROT_Z.Value, (float)ROT_W.Value));
+            //Quaternion rotation = Quaternion.Normalize(new Quaternion((float)ROT_X.Value, (float)ROT_Y.Value, (float)ROT_Z.Value, (float)ROT_W.Value));
             Vector3 position = new Vector3((float)POS_X.Value, (float)POS_Y.Value, (float)POS_Z.Value);
+
+            Quaternion rotation = Quaternion.CreateFromYawPitchRoll(
+                (float)Convert.ToDouble(ROT_Y.Value) * (float)Math.PI / 180.0f, 
+                (float)Convert.ToDouble(ROT_X.Value) * (float)Math.PI / 180.0f, 
+                (float)Convert.ToDouble(ROT_Z.Value) * (float)Math.PI / 180.0f);
 
             mvr.transform = Matrix4x4.CreateScale(scale) *
                             Matrix4x4.CreateFromQuaternion(rotation) *

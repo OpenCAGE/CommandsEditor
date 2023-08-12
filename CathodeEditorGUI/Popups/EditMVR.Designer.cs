@@ -53,8 +53,6 @@ namespace CommandsEditor
             this.POS_Y = new System.Windows.Forms.NumericUpDown();
             this.label14 = new System.Windows.Forms.Label();
             this.POS_X = new System.Windows.Forms.NumericUpDown();
-            this.label15 = new System.Windows.Forms.Label();
-            this.ROT_W = new System.Windows.Forms.NumericUpDown();
             this.type_dropdown = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -68,7 +66,6 @@ namespace CommandsEditor
             ((System.ComponentModel.ISupportInitialize)(this.POS_Z)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.POS_Y)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.POS_X)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ROT_W)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -250,12 +247,12 @@ namespace CommandsEditor
             65536});
             this.ROT_Z.Location = new System.Drawing.Point(236, 263);
             this.ROT_Z.Maximum = new decimal(new int[] {
-            1,
+            360,
             0,
             0,
             0});
             this.ROT_Z.Minimum = new decimal(new int[] {
-            1,
+            360,
             0,
             0,
             -2147483648});
@@ -288,12 +285,12 @@ namespace CommandsEditor
             65536});
             this.ROT_Y.Location = new System.Drawing.Point(132, 263);
             this.ROT_Y.Maximum = new decimal(new int[] {
-            1,
+            360,
             0,
             0,
             0});
             this.ROT_Y.Minimum = new decimal(new int[] {
-            1,
+            360,
             0,
             0,
             -2147483648});
@@ -326,12 +323,12 @@ namespace CommandsEditor
             65536});
             this.ROT_X.Location = new System.Drawing.Point(29, 263);
             this.ROT_X.Maximum = new decimal(new int[] {
-            1,
+            360,
             0,
             0,
             0});
             this.ROT_X.Minimum = new decimal(new int[] {
-            1,
+            360,
             0,
             0,
             -2147483648});
@@ -468,44 +465,6 @@ namespace CommandsEditor
             -2147483648});
             this.POS_X.ValueChanged += new System.EventHandler(this.POS_X_ValueChanged);
             // 
-            // label15
-            // 
-            this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(319, 266);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(21, 13);
-            this.label15.TabIndex = 44;
-            this.label15.Text = "W:";
-            // 
-            // ROT_W
-            // 
-            this.ROT_W.DecimalPlaces = 7;
-            this.ROT_W.Increment = new decimal(new int[] {
-            1,
-            0,
-            0,
-            65536});
-            this.ROT_W.Location = new System.Drawing.Point(340, 263);
-            this.ROT_W.Maximum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.ROT_W.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            -2147483648});
-            this.ROT_W.Name = "ROT_W";
-            this.ROT_W.Size = new System.Drawing.Size(80, 20);
-            this.ROT_W.TabIndex = 43;
-            this.ROT_W.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            -2147483648});
-            this.ROT_W.ValueChanged += new System.EventHandler(this.ROT_W_ValueChanged);
-            // 
             // type_dropdown
             // 
             this.type_dropdown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -552,9 +511,7 @@ namespace CommandsEditor
             this.groupBox2.Controls.Add(this.SCALE_X);
             this.groupBox2.Controls.Add(this.type_dropdown);
             this.groupBox2.Controls.Add(this.label12);
-            this.groupBox2.Controls.Add(this.label15);
             this.groupBox2.Controls.Add(this.SCALE_Y);
-            this.groupBox2.Controls.Add(this.ROT_W);
             this.groupBox2.Controls.Add(this.label11);
             this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Controls.Add(this.SCALE_Z);
@@ -602,7 +559,6 @@ namespace CommandsEditor
             ((System.ComponentModel.ISupportInitialize)(this.POS_Z)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.POS_Y)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.POS_X)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ROT_W)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
@@ -636,8 +592,6 @@ namespace CommandsEditor
         private System.Windows.Forms.NumericUpDown POS_Y;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.NumericUpDown POS_X;
-        private System.Windows.Forms.Label label15;
-        private System.Windows.Forms.NumericUpDown ROT_W;
         private System.Windows.Forms.ComboBox type_dropdown;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.GroupBox groupBox1;
