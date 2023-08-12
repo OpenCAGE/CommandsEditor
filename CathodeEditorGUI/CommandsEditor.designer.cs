@@ -29,6 +29,10 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Variables", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("Functions", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("Proxies", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("Overrides", System.Windows.Forms.HorizontalAlignment.Left);
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CommandsEditor));
             this.root_composite_display = new System.Windows.Forms.Label();
             this.save_commands_pak = new System.Windows.Forms.Button();
@@ -52,11 +56,11 @@
             this.label6 = new System.Windows.Forms.Label();
             this.editFunction = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.composite_content = new System.Windows.Forms.ListView();
             this.renameSelectedNode = new System.Windows.Forms.Button();
             this.duplicateSelectedNode = new System.Windows.Forms.Button();
             this.removeSelectedEntity = new System.Windows.Forms.Button();
             this.addNewNode = new System.Windows.Forms.Button();
-            this.composite_content = new System.Windows.Forms.ListBox();
             this.entity_search_box = new System.Windows.Forms.TextBox();
             this.entity_search_btn = new System.Windows.Forms.Button();
             this.entityParamGroup = new System.Windows.Forms.GroupBox();
@@ -74,6 +78,8 @@
             this.editEntryPoint = new System.Windows.Forms.Button();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.EntityName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.EntityType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.entityInfoGroup.SuspendLayout();
@@ -314,11 +320,11 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.composite_content);
             this.groupBox4.Controls.Add(this.renameSelectedNode);
             this.groupBox4.Controls.Add(this.duplicateSelectedNode);
             this.groupBox4.Controls.Add(this.removeSelectedEntity);
             this.groupBox4.Controls.Add(this.addNewNode);
-            this.groupBox4.Controls.Add(this.composite_content);
             this.groupBox4.Controls.Add(this.entity_search_box);
             this.groupBox4.Controls.Add(this.entity_search_btn);
             this.groupBox4.Location = new System.Drawing.Point(6, 19);
@@ -327,6 +333,36 @@
             this.groupBox4.TabIndex = 148;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Entities";
+            // 
+            // composite_content
+            // 
+            this.composite_content.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.EntityName,
+            this.EntityType});
+            this.composite_content.FullRowSelect = true;
+            listViewGroup1.Header = "Variables";
+            listViewGroup1.Name = "Variables";
+            listViewGroup2.Header = "Functions";
+            listViewGroup2.Name = "Functions";
+            listViewGroup3.Header = "Proxies";
+            listViewGroup3.Name = "Proxies";
+            listViewGroup4.Header = "Overrides";
+            listViewGroup4.Name = "Overrides";
+            this.composite_content.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
+            listViewGroup1,
+            listViewGroup2,
+            listViewGroup3,
+            listViewGroup4});
+            this.composite_content.HideSelection = false;
+            this.composite_content.LabelWrap = false;
+            this.composite_content.Location = new System.Drawing.Point(6, 44);
+            this.composite_content.MultiSelect = false;
+            this.composite_content.Name = "composite_content";
+            this.composite_content.Size = new System.Drawing.Size(444, 640);
+            this.composite_content.TabIndex = 176;
+            this.composite_content.UseCompatibleStateImageBehavior = false;
+            this.composite_content.View = System.Windows.Forms.View.Details;
+            this.composite_content.SelectedIndexChanged += new System.EventHandler(this.composite_content_SelectedIndexChanged);
             // 
             // renameSelectedNode
             // 
@@ -367,17 +403,6 @@
             this.addNewNode.Text = "Create Entity";
             this.addNewNode.UseVisualStyleBackColor = true;
             this.addNewNode.Click += new System.EventHandler(this.addNewEntity_Click);
-            // 
-            // composite_content
-            // 
-            this.composite_content.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.composite_content.FormattingEnabled = true;
-            this.composite_content.HorizontalScrollbar = true;
-            this.composite_content.Location = new System.Drawing.Point(6, 43);
-            this.composite_content.Name = "composite_content";
-            this.composite_content.Size = new System.Drawing.Size(444, 641);
-            this.composite_content.TabIndex = 144;
-            this.composite_content.SelectedIndexChanged += new System.EventHandler(this.composite_content_SelectedIndexChanged);
             // 
             // entity_search_box
             // 
@@ -551,11 +576,21 @@
             this.groupBox10.TabIndex = 175;
             this.groupBox10.TabStop = false;
             // 
+            // EntityName
+            // 
+            this.EntityName.Text = "Entity Name";
+            this.EntityName.Width = 279;
+            // 
+            // EntityType
+            // 
+            this.EntityType.Text = "Entity Type";
+            this.EntityType.Width = 163;
+            // 
             // CommandsEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1254, 804);
+            this.ClientSize = new System.Drawing.Size(1972, 804);
             this.Controls.Add(this.groupBox10);
             this.Controls.Add(this.groupBox8);
             this.Controls.Add(this.groupBox3);
@@ -594,7 +629,6 @@
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.TextBox entity_search_box;
         private System.Windows.Forms.Button entity_search_btn;
-        private System.Windows.Forms.ListBox composite_content;
         private System.Windows.Forms.GroupBox entityParamGroup;
         private System.Windows.Forms.Panel entity_params;
         private System.Windows.Forms.Button load_commands_pak;
@@ -626,5 +660,8 @@
         private System.Windows.Forms.CheckBox UnityConnection;
         private System.Windows.Forms.CheckBox showNodeViewer;
         private System.Windows.Forms.Button findReferencesOfComposite;
+        private System.Windows.Forms.ListView composite_content;
+        private System.Windows.Forms.ColumnHeader EntityName;
+        private System.Windows.Forms.ColumnHeader EntityType;
     }
 }

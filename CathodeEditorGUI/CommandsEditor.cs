@@ -26,6 +26,7 @@ using OpenCAGE;
 using System.Xml;
 using System.Runtime.InteropServices;
 using System.Numerics;
+using System.Security.Cryptography;
 
 namespace CommandsEditor
 {
@@ -665,21 +666,8 @@ namespace CommandsEditor
         /* Select entity from loaded composite */
         private void composite_content_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (composite_content.SelectedIndex == -1 || Editor.selected.composite == null) return;
-#if !CATHODE_FAIL_HARD
-            try
-            {
-#endif
-                ShortGuid entityID = new ShortGuid(composite_content.SelectedItem.ToString().Substring(1, 11));
-                Entity thisEntity = Editor.selected.composite.GetEntityByID(entityID);
-                if (thisEntity != null) LoadEntity(thisEntity);
-#if !CATHODE_FAIL_HARD
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Encountered an issue while looking up entity!\nPlease report this on GitHub!\n" + ex.Message, "Failed lookup!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-#endif
+            if (composite_content.SelectedItems.Count == 0 || Editor.selected.composite == null) return;
+            LoadEntity((Entity)composite_content.SelectedItems[0].Tag);
         }
 
         /* Search entity list */
@@ -691,8 +679,8 @@ namespace CommandsEditor
         private void DoSearch()
         {
             if (entity_search_box.Text == currentSearch) return;
-            List<string> matched = new List<string>();
-            foreach (string item in composite_content_RAW) if (item.ToUpper().Contains(entity_search_box.Text.ToUpper())) matched.Add(item);
+            List<ListViewItem> matched = new List<ListViewItem>();
+            foreach (ListViewItem item in composite_content_RAW) if (item.Text.ToUpper().Contains(entity_search_box.Text.ToUpper())) matched.Add(item);
             composite_content.BeginUpdate();
             composite_content.Items.Clear();
             for (int i = 0; i < matched.Count; i++) composite_content.Items.Add(matched[i]);
@@ -701,7 +689,7 @@ namespace CommandsEditor
         }
 
         /* Load a composite into the UI */
-        List<string> composite_content_RAW = new List<string>();
+        List<ListViewItem> composite_content_RAW = new List<ListViewItem>();
         public void LoadComposite(string filename)
         {
             LoadComposite(Editor.commands.GetComposite(filename));
@@ -720,17 +708,44 @@ namespace CommandsEditor
             composite_content.BeginUpdate();
             List<Entity> entities = comp.GetEntities();
             for (int i = 0; i < entities.Count; i++)
-            {
-                string desc = EditorUtils.GenerateEntityName(entities[i], Editor.selected.composite);
-                composite_content.Items.Add(desc);
-                composite_content_RAW.Add(desc);
-            }
+                AddEntityToListView(entities[i]);
             composite_content.EndUpdate();
 
             groupBox1.Text = comp.name;
             Cursor.Current = Cursors.Default;
 
             if (ent != null) LoadEntity(ent);
+        }
+        private void AddEntityToListView(Entity entity)
+        {
+            //TODO: we should cache these items to prevent generating them every time.
+            ListViewItem item = new ListViewItem() 
+            { 
+                Text = entity.variant == EntityVariant.VARIABLE ? ShortGuidUtils.FindString(((VariableEntity)entity).name) : EntityUtils.GetName(Editor.selected.composite.shortGUID, entity.shortGUID), 
+                Tag = entity,
+                Group = composite_content.Groups[(int)entity.variant]
+            };
+            switch (entity.variant)
+            {
+                case EntityVariant.VARIABLE:
+                    item.SubItems.Add(((VariableEntity)entity).type.ToString() + " VARIABLE");
+                    break;
+                case EntityVariant.FUNCTION:
+                    Composite funcComposite = Editor.commands.GetComposite(((FunctionEntity)entity).function);
+                    if (funcComposite != null)
+                        item.SubItems.Add(funcComposite.name);
+                    else
+                        item.SubItems.Add(CathodeEntityDatabase.GetEntity(((FunctionEntity)entity).function).className);
+                    break;
+                case EntityVariant.OVERRIDE:
+
+                    break;
+                case EntityVariant.PROXY:
+
+                    break;
+            }
+            composite_content.Items.Add(item);
+            composite_content_RAW.Add(item);
         }
 
         /* Add new entity */
@@ -934,22 +949,7 @@ namespace CommandsEditor
 
             if (composite == Editor.selected.composite)
             {
-                for (int i = 0; i < composite_content.Items.Count; i++)
-                {
-                    if (composite_content.Items[i].ToString().Substring(1, 11) == entityID)
-                    {
-                        composite_content.Items[i] = newEntityName;
-                        break;
-                    }
-                }
-                for (int i = 0; i < composite_content_RAW.Count; i++)
-                {
-                    if (composite_content_RAW[i].Substring(1, 11) == entityID)
-                    {
-                        composite_content_RAW[i] = newEntityName;
-                        break;
-                    }
-                }
+                composite_content_RAW.FirstOrDefault(o => o.Tag == entity).Text = newEntityName;
                 LoadEntity(entity);
             }
 
@@ -963,9 +963,7 @@ namespace CommandsEditor
             if (Editor.selected.composite == null || newEnt == null) return;
             if (currentSearch == "")
             {
-                string newEntityName = EditorUtils.GenerateEntityName(newEnt, Editor.selected.composite);
-                composite_content.Items.Add(newEntityName);
-                composite_content_RAW.Add(newEntityName);
+                AddEntityToListView(newEnt);
             }
             else
             {
@@ -989,17 +987,23 @@ namespace CommandsEditor
             RefreshWebsocket();
 
             //Correct the UI, and return early if we have to change index, so we don't trigger twice
-            int correctSelectedIndex = composite_content.Items.IndexOf(EditorUtils.GenerateEntityName(entity, Editor.selected.composite));
-            if (correctSelectedIndex == -1 && entity_search_box.Text != "")
             {
-                entity_search_box.Text = "";
-                DoSearch();
-                correctSelectedIndex = composite_content.Items.IndexOf(EditorUtils.GenerateEntityName(entity, Editor.selected.composite));
-            }
-            if (composite_content.SelectedIndex != correctSelectedIndex)
-            {
-                composite_content.SelectedIndex = correctSelectedIndex;
-                return;
+                ListViewItem item = composite_content_RAW.FirstOrDefault(o => o.Tag == entity);
+                int correctSelectedIndex = composite_content.Items.IndexOf(item);
+                if (correctSelectedIndex == -1 && entity_search_box.Text != "")
+                {
+                    entity_search_box.Text = "";
+                    DoSearch();
+                    correctSelectedIndex = composite_content.Items.IndexOf(item);
+                }
+                if (composite_content.SelectedItems[0].Index != correctSelectedIndex)
+                {
+                    composite_content.Items[correctSelectedIndex].Selected = true;
+                    composite_content.Items[correctSelectedIndex].Focused = true;
+                    composite_content.Items[correctSelectedIndex].EnsureVisible();
+                    composite_content.Select();
+                    return;
+                }
             }
 
             if (entity == null) return;
