@@ -221,6 +221,7 @@ namespace CommandsEditor
             //Reset UI
             ClearUI(true, true, true);
             Editor.level = level;
+            composite_content_cache.Clear();
 
             //Load everything
             string levelPath = SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + level + "/";
@@ -254,6 +255,28 @@ namespace CommandsEditor
             if (currentEntityNameCacher != null) currentEntityNameCacher.Dispose();
             currentEntityNameCacher = Task.Factory.StartNew(() => EditorUtils.GenerateEntityNameCache(this));
             CacheHierarchies();
+
+            //Cache entity list view items
+            ListViewItem[][] compositeItems = new ListViewItem[Editor.commands.Entries.Count][];
+            Parallel.For(0, Editor.commands.Entries.Count, (i) =>
+            {
+                List<Entity> entities = Editor.commands.Entries[i].GetEntities();
+                compositeItems[i] = new ListViewItem[entities.Count];
+                Parallel.For(0, entities.Count, (x) =>
+                {
+                    compositeItems[i][x] = GenerateListViewItem(entities[x], Editor.commands.Entries[i], false);
+                });
+            });
+            for (int i = 0; i < Editor.commands.Entries.Count; i++)
+            {
+                List<Entity> entities = Editor.commands.Entries[i].GetEntities();
+                Dictionary<Entity, ListViewItem> listViewItems = new Dictionary<Entity, ListViewItem>();
+                for (int x = 0; x < compositeItems[i].Length; x++)
+                {
+                    listViewItems.Add(entities[x], compositeItems[i][x]);
+                }
+                composite_content_cache.Add(Editor.commands.Entries[i], listViewItems);
+            }
 
             //Populate file tree
             _treeHelper.UpdateFileTree(Editor.commands.GetCompositeNames().ToList());
@@ -689,6 +712,7 @@ namespace CommandsEditor
         }
 
         /* Load a composite into the UI */
+        Dictionary<Composite, Dictionary<Entity, ListViewItem>> composite_content_cache = new Dictionary<Composite, Dictionary<Entity, ListViewItem>>();
         List<ListViewItem> composite_content_RAW = new List<ListViewItem>();
         public void LoadComposite(string filename)
         {
@@ -716,34 +740,61 @@ namespace CommandsEditor
 
             if (ent != null) LoadEntity(ent);
         }
-        private void AddEntityToListView(Entity entity)
+        private ListViewItem GenerateListViewItem(Entity entity, Composite composite, bool checkCache = true)
         {
-            //TODO: we should cache these items to prevent generating them every time.
-            ListViewItem item = new ListViewItem() 
-            { 
-                Text = entity.variant == EntityVariant.VARIABLE ? ShortGuidUtils.FindString(((VariableEntity)entity).name) : EntityUtils.GetName(Editor.selected.composite.shortGUID, entity.shortGUID), 
+            if (checkCache)
+            {
+                if (composite_content_cache.ContainsKey(composite))
+                    if (composite_content_cache[composite].ContainsKey(entity))
+                        return composite_content_cache[composite][entity];
+            }
+
+            ListViewItem item = new ListViewItem()
+            {
                 Tag = entity,
                 Group = composite_content.Groups[(int)entity.variant]
             };
             switch (entity.variant)
             {
                 case EntityVariant.VARIABLE:
-                    item.SubItems.Add(((VariableEntity)entity).type.ToString() + " VARIABLE");
+                    item.Text = ShortGuidUtils.FindString(((VariableEntity)entity).name);
+                    item.SubItems.Add(((VariableEntity)entity).type.ToString());
                     break;
                 case EntityVariant.FUNCTION:
+                    item.Text = EntityUtils.GetName(composite.shortGUID, entity.shortGUID);
                     Composite funcComposite = Editor.commands.GetComposite(((FunctionEntity)entity).function);
-                    if (funcComposite != null)
-                        item.SubItems.Add(funcComposite.name);
-                    else
-                        item.SubItems.Add(CathodeEntityDatabase.GetEntity(((FunctionEntity)entity).function).className);
+                    if (funcComposite != null) item.SubItems.Add(funcComposite.name);
+                    else item.SubItems.Add(CathodeEntityDatabase.GetEntity(((FunctionEntity)entity).function).className);
                     break;
                 case EntityVariant.OVERRIDE:
-
+                    CommandsUtils.ResolveHierarchy(Editor.commands, composite, ((OverrideEntity)entity).connectedEntity.hierarchy, out Composite c, out string s, false);
+                    item.Text = s;
                     break;
                 case EntityVariant.PROXY:
-
+                    CommandsUtils.ResolveHierarchy(Editor.commands, composite, ((ProxyEntity)entity).connectedEntity.hierarchy, out Composite c2, out string s2, false);
+                    item.Text = EntityUtils.GetName(composite.shortGUID, entity.shortGUID);
+                    item.SubItems.Add(s2);
                     break;
             }
+
+            //we wanted to check the cache and it wasn't there, so lets add it
+            if (checkCache)
+            {
+                if (!composite_content_cache.ContainsKey(composite))
+                {
+                    composite_content_cache.Add(composite, new Dictionary<Entity, ListViewItem>());
+                }
+                if (!composite_content_cache[composite].ContainsKey(entity))
+                {
+                    composite_content_cache[composite].Add(entity, item);
+                }
+            }
+
+            return item;
+        }
+        private void AddEntityToListView(Entity entity)
+        {
+            ListViewItem item = GenerateListViewItem(entity, Editor.selected.composite);
             composite_content.Items.Add(item);
             composite_content_RAW.Add(item);
         }
