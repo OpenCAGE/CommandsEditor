@@ -19,6 +19,8 @@ namespace CommandsEditor.Popups.UserControls
             InitializeComponent();
 
             //TODO: populate from PHYSICS.MAP
+
+            //NOTE: when we save commands we populate this resource index from the system_index param, so we don't need to display anything in the gui
         }
 
         public void PopulateUI()
