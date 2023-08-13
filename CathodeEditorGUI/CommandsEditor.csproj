@@ -1181,7 +1181,6 @@
     <Compile Include="Popups\AddOrEditResource.Designer.cs">
       <DependentUpon>AddOrEditResource.cs</DependentUpon>
     </Compile>
-    <Compile Include="Scripts\EditorData.cs" />
     <Compile Include="Scripts\EditorUtils.cs" />
     <Compile Include="Popups\AddEntity.cs">
       <SubType>Form</SubType>

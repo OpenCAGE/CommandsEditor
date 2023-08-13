@@ -21,19 +21,17 @@ namespace CommandsEditor
     {
         public Action<Entity> OnNewEntity;
 
-        Composite composite = null;
         List<Composite> composites = null;
         List<CathodeEntityDatabase.EntityDefinition> availableEntities = null;
         List<ShortGuid> hierarchy = null;
 
         private CompositeDisplay _compositeDisplay;
 
-        public AddEntity(CompositeDisplay compositeDisplay, Composite _comp, List<Composite> _comps) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_COMPOSITE_SELECTION, compositeDisplay.Content)
+        public AddEntity(CompositeDisplay compositeDisplay) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_COMPOSITE_SELECTION, compositeDisplay.Content)
         {
             _compositeDisplay = compositeDisplay;
 
-            composite = _comp;
-            composites = _comps.OrderBy(o => o.name).ToList();
+            composites = compositeDisplay.Content.commands.Entries.OrderBy(o => o.name).ToList();
             availableEntities = CathodeEntityDatabase.GetEntities();
             InitializeComponent();
 
@@ -198,13 +196,13 @@ namespace CommandsEditor
                 }
 
                 //A composite can only have one PhysicsSystem
-                if (function == FunctionType.PhysicsSystem && composite.functions.FirstOrDefault(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.PhysicsSystem)) != null)
+                if (function == FunctionType.PhysicsSystem && _compositeDisplay.Composite.functions.FirstOrDefault(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.PhysicsSystem)) != null)
                 {
                     MessageBox.Show("You are trying to add a PhysicsSystem entity to a composite that already has one applied.", "PhysicsSystem error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
-                newEntity = composite.AddFunction(function, addDefaultParams.Checked);
+                newEntity = _compositeDisplay.Composite.AddFunction(function, addDefaultParams.Checked);
 
                 //TODO: currently we don't support these properly
                 if (addDefaultParams.Checked)
@@ -223,25 +221,25 @@ namespace CommandsEditor
                     return;
                 }
                 //Check logic errors (we can't have cyclical references)
-                if (compRef == composite)
+                if (compRef == _compositeDisplay.Composite)
                 {
                     MessageBox.Show("You cannot create an entity which instances the composite it is contained with - this will result in an infinite loop at runtime! Please check your logic!.", "Logic error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-                newEntity = composite.AddFunction(compRef, addDefaultParams.Checked);
+                newEntity = _compositeDisplay.Composite.AddFunction(compRef, addDefaultParams.Checked);
                 Editor.editor_utils.GenerateCompositeInstances(Editor.commands);
             }
             else if (createDatatypeEntity.Checked)
-                newEntity = composite.AddVariable(textBox1.Text, (DataType)entityVariant.SelectedIndex, true);
+                newEntity = _compositeDisplay.Composite.AddVariable(textBox1.Text, (DataType)entityVariant.SelectedIndex, true);
             else if (createProxyEntity.Checked)
-                newEntity = composite.AddProxy(Editor.commands, hierarchy, addDefaultParams.Checked);
+                newEntity = _compositeDisplay.Composite.AddProxy(Editor.commands, hierarchy, addDefaultParams.Checked);
             else if (createOverrideEntity.Checked)
-                newEntity = composite.AddOverride(hierarchy);
+                newEntity = _compositeDisplay.Composite.AddOverride(hierarchy);
             else
                 return;
 
             if (!createDatatypeEntity.Checked) 
-                EntityUtils.SetName(composite, newEntity, textBox1.Text);
+                EntityUtils.SetName(_compositeDisplay.Composite, newEntity, textBox1.Text);
 
             OnNewEntity?.Invoke(newEntity);
             this.Close();

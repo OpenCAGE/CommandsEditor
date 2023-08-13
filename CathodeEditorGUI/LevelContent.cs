@@ -207,7 +207,7 @@ namespace CommandsEditor
 #endif
         }
 
-        private ListViewItem GenerateListViewItem(Entity entity, Composite composite, bool checkCache = true)
+        public ListViewItem GenerateListViewItem(Entity entity, Composite composite, bool checkCache = true)
         {
             if (checkCache)
             {

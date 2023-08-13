@@ -48,6 +48,7 @@
             this.FileTree.Name = "FileTree";
             this.FileTree.Size = new System.Drawing.Size(833, 706);
             this.FileTree.TabIndex = 153;
+            this.FileTree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.FileTree_AfterSelect);
             // 
             // toolStrip1
             // 
@@ -93,14 +94,14 @@
             this.removeSelected.Text = "Remove Selected";
             this.removeSelected.Click += new System.EventHandler(this.removeSelected_Click);
             // 
-            // CompositeDisplay
+            // CommandsDisplay
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(833, 734);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.FileTree);
-            this.Name = "CompositeDisplay";
+            this.Name = "CommandsDisplay";
             this.Text = "Composites";
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();

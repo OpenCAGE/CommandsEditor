@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 using CATHODE.Scripting.Internal;
+using System.Windows.Controls;
 
 namespace CommandsEditor.DockPanels
 {
@@ -20,6 +21,8 @@ namespace CommandsEditor.DockPanels
         public LevelContent Content => _content;
 
         private TreeUtility _treeHelper;
+
+        private Dictionary<Composite, CompositeDisplay> _compositeDisplays = new Dictionary<Composite, CompositeDisplay>();
 
         public CommandsDisplay(string levelName)
         {
@@ -60,6 +63,36 @@ namespace CommandsEditor.DockPanels
         private void findUsesOfSelected_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void FileTree_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            if (FileTree.SelectedNode == null) return;
+            if (((TreeItem)FileTree.SelectedNode.Tag).Item_Type != TreeItemType.EXPORTABLE_FILE) return;
+
+            Composite composite = _content.commands.GetComposite(((TreeItem)FileTree.SelectedNode.Tag).String_Value);
+
+            if (_compositeDisplays.ContainsKey(composite))
+            {
+                _compositeDisplays[composite].Activate();
+            }
+            else
+            {
+                CompositeDisplay panel = new CompositeDisplay(this, composite);
+                panel.Show(Singleton.Editor.DockPanel, DockState.DockRight);
+                panel.FormClosed += OnCompositePanelClosed;
+                _compositeDisplays.Add(composite, panel);
+            }
+
+            //Close all entity tabs when opening a new composite tab (TODO: should probs make this an option)
+            foreach (KeyValuePair<Composite, CompositeDisplay> display in _compositeDisplays)
+            {
+                display.Value.CloseAllEntityTabs();
+            }
+        }
+        private void OnCompositePanelClosed(object sender, FormClosedEventArgs e)
+        {
+            _compositeDisplays.Remove(((CompositeDisplay)sender).Composite);
         }
     }
 }

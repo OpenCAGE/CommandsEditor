@@ -16,6 +16,8 @@ namespace CommandsEditor.Popups
 {
     public partial class SelectLevel : Form
     {
+        public Action<string> OnLevelSelected;
+
         public SelectLevel()
         {
             InitializeComponent();
@@ -32,9 +34,7 @@ namespace CommandsEditor.Popups
 
         private void load_commands_pak_Click(object sender, EventArgs e)
         {
-            CommandsDisplay panel = new CommandsDisplay(env_list.SelectedItem.ToString());
-            panel.Show(Singleton.Editor.DockPanel, DockState.DockLeft);
-
+            OnLevelSelected?.Invoke(env_list.SelectedItem.ToString());
             this.Close();
         }
     }
