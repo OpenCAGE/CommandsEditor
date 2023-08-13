@@ -19,7 +19,6 @@ namespace CommandsEditor
 {
     public partial class AddParameter : BaseWindow
     {
-        Entity node = null;
         ParameterData param = null;
 
         EntityDisplay _entityDisplay;
@@ -41,8 +40,8 @@ namespace CommandsEditor
         private void button1_Click(object sender, EventArgs e)
         {
             if (param_name.Text == "") return;
-            if (param != null) node.AddParameter(param_name.Text, param);
-            else node.AddParameter(param_name.Text, (DataType)param_datatype.SelectedIndex);
+            if (param != null) _entityDisplay.Entity.AddParameter(param_name.Text, param);
+            else _entityDisplay.Entity.AddParameter(param_name.Text, (DataType)param_datatype.SelectedIndex);
             this.Close();
         }
 
@@ -58,10 +57,10 @@ namespace CommandsEditor
         {
             param = null;
             param_datatype.Enabled = true;
-            switch (node.variant)
+            switch (_entityDisplay.Entity.variant)
             {
                 case EntityVariant.FUNCTION:
-                    FunctionEntity ent = (FunctionEntity)node;
+                    FunctionEntity ent = (FunctionEntity)_entityDisplay.Entity;
                     bool isComposite = !CommandsUtils.FunctionTypeExists(ent.function);
                     ShortGuid function = (isComposite) ? CommandsUtils.GetFunctionTypeGUID(FunctionType.CompositeInterface) : ent.function;
 

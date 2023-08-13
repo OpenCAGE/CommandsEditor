@@ -63,6 +63,7 @@
             this.goToZone.TabIndex = 188;
             this.goToZone.Text = "Zone";
             this.goToZone.UseVisualStyleBackColor = true;
+            this.goToZone.Click += new System.EventHandler(this.goToZone_Click);
             // 
             // showOverridesAndProxies
             // 
@@ -73,6 +74,7 @@
             this.showOverridesAndProxies.TabIndex = 187;
             this.showOverridesAndProxies.Text = "References";
             this.showOverridesAndProxies.UseVisualStyleBackColor = true;
+            this.showOverridesAndProxies.Click += new System.EventHandler(this.showOverridesAndProxies_Click);
             // 
             // editEntityMovers
             // 
@@ -83,6 +85,7 @@
             this.editEntityMovers.TabIndex = 186;
             this.editEntityMovers.Text = "Movers";
             this.editEntityMovers.UseVisualStyleBackColor = true;
+            this.editEntityMovers.Click += new System.EventHandler(this.editEntityMovers_Click);
             // 
             // editEntityResources
             // 
@@ -93,6 +96,7 @@
             this.editEntityResources.TabIndex = 184;
             this.editEntityResources.Text = "Resources";
             this.editEntityResources.UseVisualStyleBackColor = true;
+            this.editEntityResources.Click += new System.EventHandler(this.editEntityResources_Click);
             // 
             // entityInfoGroup
             // 
@@ -131,6 +135,7 @@
             this.jumpToComposite.Text = "Go To";
             this.jumpToComposite.UseVisualStyleBackColor = true;
             this.jumpToComposite.Visible = false;
+            this.jumpToComposite.Click += new System.EventHandler(this.jumpToComposite_Click);
             // 
             // selected_entity_name
             // 
@@ -179,6 +184,7 @@
             this.editFunction.TabIndex = 185;
             this.editFunction.Text = "Function";
             this.editFunction.UseVisualStyleBackColor = true;
+            this.editFunction.Click += new System.EventHandler(this.editFunction_Click);
             // 
             // entityParamGroup
             // 

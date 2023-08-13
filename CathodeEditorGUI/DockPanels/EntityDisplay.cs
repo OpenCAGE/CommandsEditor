@@ -337,6 +337,8 @@ namespace CommandsEditor.DockPanels
         private FunctionEntity zoneEntityForSelectedEntity = null;
         public void ThreadedEntityUIUpdate(Entity ent, bool isPointedTo, Composite zoneComp, FunctionEntity zoneEnt)
         {
+            //TODO: we have an issue here where this can be called after the entitydisplay object has been disposed
+
             showOverridesAndProxies.Invoke(new Action(() => { showOverridesAndProxies.Enabled = isPointedTo; }));
             zoneCompositeForSelectedEntity = zoneComp;
             zoneEntityForSelectedEntity = zoneEnt;
@@ -349,39 +351,122 @@ namespace CommandsEditor.DockPanels
             goToZone.Invoke(new Action(() => { goToZone.Enabled = zoneEnt != null; goToZone.Text = zoneText; }));
         }
 
+        private void ReloadEntity(Object sender = null, FormClosedEventArgs e = null)
+        {
+            _compositeDisplay.LoadEntity(Entity, true);
+        }
+
         /* Add a new parameter */
         private void addNewParameter_Click(object sender, EventArgs e)
-        {/*
-            AddParameter add_parameter = new AddParameter(this, _entity);
-            add_parameter.Show();
-            add_parameter.FormClosed += new FormClosedEventHandler(refresh_entity_event);
-        }
-        private void refresh_entity_event(Object sender, FormClosedEventArgs e)
         {
-            LoadEntity(Editor.selected.entity);
-            this.BringToFront();
-            this.Focus();*/
+            AddParameter add_parameter = new AddParameter(this);
+            add_parameter.Show();
+            add_parameter.FormClosed += new FormClosedEventHandler(ReloadEntity);
         }
 
         /* Add a new link out */
         private void addLinkOut_Click(object sender, EventArgs e)
         {
-            /*
-            if (Editor.selected.entity == null) return;
-            AddOrEditLink add_link = new AddOrEditLink(this, Editor.selected.composite, Editor.selected.entity);
+            AddOrEditLink add_link = new AddOrEditLink(this);
             add_link.Show();
-            add_link.FormClosed += new FormClosedEventHandler(refresh_entity_event);*/
+            add_link.FormClosed += new FormClosedEventHandler(ReloadEntity);
         }
 
         /* Remove a parameter */
         private void removeParameter_Click(object sender, EventArgs e)
-        {/*
-            if (Editor.selected.entity == null) return;
+        {
             if (entity_params.Controls.Count == 0) return;
-            if (Editor.selected.entity.childLinks.Count + Editor.selected.entity.parameters.Count == 0) return;
-            RemoveParameter remove_parameter = new RemoveParameter(this, Editor.selected.entity);
+            if (Entity.childLinks.Count + Entity.parameters.Count == 0) return;
+
+            RemoveParameter remove_parameter = new RemoveParameter(this);
             remove_parameter.Show();
-            remove_parameter.FormClosed += new FormClosedEventHandler(refresh_entity_event);*/
+            remove_parameter.FormClosed += new FormClosedEventHandler(ReloadEntity);
+        }
+
+        private void editEntityMovers_Click(object sender, EventArgs e)
+        {
+            EditMVR moverEditor = new EditMVR(this);
+            moverEditor.Show();
+        }
+
+        private void showOverridesAndProxies_Click(object sender, EventArgs e)
+        {
+            ShowCrossRefs crossRefs = new ShowCrossRefs(this);
+            crossRefs.Show();
+            crossRefs.OnEntitySelected += _compositeDisplay.CommandsDisplay.LoadCompositeAndEntity;
+        }
+
+        private void editEntityResources_Click(object sender, EventArgs e)
+        {
+            AddOrEditResource resourceEditor = new AddOrEditResource(Content, ((FunctionEntity)Entity).resources, Entity.shortGUID, Content.editor_utils.GenerateEntityName(Entity, Composite));
+            resourceEditor.Show();
+            resourceEditor.OnSaved += OnResourceEditorSaved;
+        }
+        private void OnResourceEditorSaved(List<ResourceReference> resources)
+        {
+            ((FunctionEntity)Entity).resources = resources;
+        }
+
+        private void goToZone_Click(object sender, EventArgs e)
+        {
+            CompositeDisplay display = _compositeDisplay;
+            if (Composite != zoneCompositeForSelectedEntity)
+                display = _compositeDisplay.CommandsDisplay.LoadComposite(zoneCompositeForSelectedEntity);
+
+            display.LoadEntity(zoneEntityForSelectedEntity);
+        }
+
+        private void editFunction_Click(object sender, EventArgs e)
+        {
+            if (Entity.variant != EntityVariant.FUNCTION) return;
+            string function = ShortGuidUtils.FindString(((FunctionEntity)Entity).function);
+            switch (function.ToUpper())
+            {
+                case "CAGEANIMATION":
+                    Content.OnCAGEAnimationEditorOpened?.Invoke();
+                    CAGEAnimationEditor cageAnimationEditor = new CAGEAnimationEditor(this);
+                    cageAnimationEditor.Show();
+                    cageAnimationEditor.OnSaved += CAGEAnimationEditor_OnSaved;
+                    break;
+                case "TRIGGERSEQUENCE":
+                    TriggerSequenceEditor triggerSequenceEditor = new TriggerSequenceEditor(this);
+                    triggerSequenceEditor.Show();
+                    break;
+                case "CHARACTER":
+                    //TODO: I think this is only valid for entities with "custom_character_type" set - but working that out requires a complex parse of connected entities. So ignoring for now.
+                    CharacterEditor characterEditor = new CharacterEditor(this);
+                    characterEditor.Show();
+                    break;
+            }
+        }
+        private void CAGEAnimationEditor_OnSaved(CAGEAnimation newEntity)
+        {
+            CAGEAnimation entity = (CAGEAnimation)Entity;
+            entity.connections = newEntity.connections;
+            entity.events = newEntity.events;
+            entity.animations = newEntity.animations;
+            entity.parameters = newEntity.parameters;
+            ReloadEntity();
+        }
+
+        private void jumpToComposite_Click(object sender, EventArgs e)
+        {
+            Composite flow = null;
+            Entity entity = null;
+            string hierarchy = "";
+            switch (Entity.variant)
+            {
+                case EntityVariant.OVERRIDE:
+                    entity = CommandsUtils.ResolveHierarchy(Content.commands, Composite, ((OverrideEntity)Entity).connectedEntity.hierarchy, out flow, out hierarchy);
+                    break;
+                case EntityVariant.PROXY:
+                    entity = CommandsUtils.ResolveHierarchy(Content.commands, Composite, ((ProxyEntity)Entity).connectedEntity.hierarchy, out flow, out hierarchy);
+                    break;
+                case EntityVariant.FUNCTION:
+                    _compositeDisplay.CommandsDisplay.LoadComposite(selected_entity_type_description.Text);
+                    return;
+            }
+            _compositeDisplay.CommandsDisplay.LoadCompositeAndEntity(flow, entity);
         }
     }
 }

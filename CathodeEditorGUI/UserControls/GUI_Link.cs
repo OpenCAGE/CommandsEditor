@@ -52,9 +52,9 @@ namespace CommandsEditor.UserControls
         {
             AddOrEditLink editor;
             if (_isLinkOut)
-                editor = new AddOrEditLink(_entityDisplay, _entityDisplay.Composite, _entityDisplay.Entity, _linkedEntity, ShortGuidUtils.FindString(_link.parentParamID), ShortGuidUtils.FindString(_link.childParamID), true, _link.connectionID);
+                editor = new AddOrEditLink(_entityDisplay, _entityDisplay.Entity, _linkedEntity, ShortGuidUtils.FindString(_link.parentParamID), ShortGuidUtils.FindString(_link.childParamID), true, _link.connectionID);
             else
-                editor = new AddOrEditLink(_entityDisplay, _entityDisplay.Composite, _linkedEntity, _entityDisplay.Entity, ShortGuidUtils.FindString(_link.parentParamID), ShortGuidUtils.FindString(_link.childParamID), false, _link.connectionID);
+                editor = new AddOrEditLink(_entityDisplay, _linkedEntity, _entityDisplay.Entity, ShortGuidUtils.FindString(_link.parentParamID), ShortGuidUtils.FindString(_link.childParamID), false, _link.connectionID);
 
             editor.Show();
             editor.OnSaved += link_editor_OnSaved;

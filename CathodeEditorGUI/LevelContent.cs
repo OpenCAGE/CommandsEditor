@@ -72,7 +72,7 @@ namespace CommandsEditor
                 return;
             }
 
-            //Link up commands to utils and cache some things
+            //Link up commands to utils and cache some things (TODO: this is the only thing holding us back from being able to have multiple levels open at once)
             EntityUtils.LinkCommands(commands);
             ShortGuidUtils.LinkCommands(commands);
 
@@ -218,8 +218,7 @@ namespace CommandsEditor
 
             ListViewItem item = new ListViewItem()
             {
-                Tag = entity,
-                //Group = composite_content.Groups[(int)entity.variant]   <- to do this we need to pass through the ui element, which is elsewhere
+                Tag = entity
             };
             switch (entity.variant)
             {

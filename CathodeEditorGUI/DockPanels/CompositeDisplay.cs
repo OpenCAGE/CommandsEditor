@@ -58,6 +58,7 @@ namespace CommandsEditor.DockPanels
         private void AddEntityToListView(Entity entity)
         {
             ListViewItem item = Content.GenerateListViewItem(entity, _composite);
+            item.Group = composite_content.Groups[(int)entity.variant];
             composite_content.Items.Add(item);
             composite_content_RAW.Add(item);
         }
@@ -99,8 +100,19 @@ namespace CommandsEditor.DockPanels
 
         public void LoadEntity(Entity entity)
         {
+            LoadEntity(entity, false);
+        }
+        public void LoadEntity(Entity entity, bool forceReload)
+        {
             if (_entityDisplays.ContainsKey(entity))
             {
+                if (forceReload)
+                {
+                    _entityDisplays[entity].Close();
+                    LoadEntity(entity);
+                    return;
+                }
+
                 _entityDisplays[entity].Activate();
             }
             else

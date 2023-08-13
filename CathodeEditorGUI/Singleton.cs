@@ -1,4 +1,4 @@
-﻿using CATHODE;
+using CATHODE;
 using System;
 using System.Collections.Generic;
 using System.Linq;

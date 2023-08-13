@@ -16,7 +16,7 @@ namespace CommandsEditor
 {
     public partial class ShowCrossRefs : BaseWindow
     {
-        public Action<ShortGuid, Composite> OnEntitySelected;
+        public Action<Composite, Entity> OnEntitySelected;
 
         private List<EntityRef> entities = new List<EntityRef>();
 
@@ -32,7 +32,7 @@ namespace CommandsEditor
         private void jumpToEntity_Click(object sender, EventArgs e)
         {
             if (referenceList.SelectedIndex == -1) return;
-            OnEntitySelected?.Invoke(entities[referenceList.SelectedIndex].entity, entities[referenceList.SelectedIndex].composite);
+            OnEntitySelected?.Invoke(entities[referenceList.SelectedIndex].composite, entities[referenceList.SelectedIndex].entity);
             this.Close();
         }
 
@@ -92,7 +92,7 @@ namespace CommandsEditor
                         {
                             Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, comp, prox.connectedEntity.hierarchy, out Composite compRef, out string str);
                             if (ent != _entityDisplay.Entity) continue;
-                            entities.Add(new EntityRef() { composite = comp, entity = prox.shortGUID });
+                            entities.Add(new EntityRef() { composite = comp, entity = prox });
                             referenceList.Items.Add(_entityDisplay.Content.editor_utils.GenerateEntityName(prox, comp));
                         }
                         break;
@@ -101,7 +101,7 @@ namespace CommandsEditor
                         {
                             Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, comp, ovr.connectedEntity.hierarchy, out Composite compRef, out string str);
                             if (ent != _entityDisplay.Entity) continue;
-                            entities.Add(new EntityRef() { composite = comp, entity = ovr.shortGUID });
+                            entities.Add(new EntityRef() { composite = comp, entity = ovr });
                             referenceList.Items.Add(_entityDisplay.Content.editor_utils.GenerateEntityName(ovr, comp));
                         }
                         break;
@@ -112,7 +112,7 @@ namespace CommandsEditor
                             {
                                 Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, comp, trigger.connectedEntity.hierarchy, out Composite compRef, out string str);
                                 if (ent != _entityDisplay.Entity) continue;
-                                entities.Add(new EntityRef() { composite = comp, entity = trig.shortGUID });
+                                entities.Add(new EntityRef() { composite = comp, entity = trig });
                                 referenceList.Items.Add(_entityDisplay.Content.editor_utils.GenerateEntityName(trig, comp));
                             }
                         }
@@ -124,7 +124,7 @@ namespace CommandsEditor
                             {
                                 Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, comp, connection.connectedEntity.hierarchy, out Composite compRef, out string str);
                                 if (ent != _entityDisplay.Entity) continue;
-                                entities.Add(new EntityRef() { composite = comp, entity = anim.shortGUID });
+                                entities.Add(new EntityRef() { composite = comp, entity = anim });
                                 referenceList.Items.Add(_entityDisplay.Content.editor_utils.GenerateEntityName(anim, comp));
                             }
                         }
@@ -146,7 +146,7 @@ namespace CommandsEditor
 
         private struct EntityRef
         {
-            public ShortGuid entity;
+            public Entity entity;
             public Composite composite;
         }
     }

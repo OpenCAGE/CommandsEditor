@@ -27,17 +27,17 @@ namespace CommandsEditor
         private EntityDisplay _entityDisplay;
 
         //FOR CREATING A NEW LINK
-        public AddOrEditLink(EntityDisplay entityDisplay, Composite flowgraph, Entity parentEntity) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, entityDisplay.Content)
+        public AddOrEditLink(EntityDisplay entityDisplay) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, entityDisplay.Content)
         {
             _entityDisplay = entityDisplay;
 
             InitializeComponent();
 
-            RefreshEntityLists(flowgraph);
+            RefreshEntityLists(entityDisplay.Composite);
             RefreshChildParamList();
             RefreshParentParamList();
 
-            parentEntityList.SelectedIndex = _entityList.IndexOf(parentEntity);
+            parentEntityList.SelectedIndex = _entityList.IndexOf(entityDisplay.Entity);
             parentEntityList.Enabled = false;
 
             parentParameterList.AutoSelectOff();
@@ -45,11 +45,11 @@ namespace CommandsEditor
         }
 
         //FOR EDITING AN EXISTING LINK
-        public AddOrEditLink(EntityDisplay editor, Composite flowgraph, Entity parentEntity, Entity childEntity, string parentParameter, string childParameter, bool isLinkingToChild, ShortGuid initialLinkID) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor.Content)
+        public AddOrEditLink(EntityDisplay entityDisplay, Entity parentEntity, Entity childEntity, string parentParameter, string childParameter, bool isLinkingToChild, ShortGuid initialLinkID) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, entityDisplay.Content)
         {
             InitializeComponent();
 
-            RefreshEntityLists(flowgraph);
+            RefreshEntityLists(entityDisplay.Composite);
             RefreshChildParamList();
             RefreshParentParamList();
 

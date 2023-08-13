@@ -1,4 +1,4 @@
-﻿namespace CommandsEditor.DockPanels
+namespace CommandsEditor.DockPanels
 {
     partial class CompositeDisplay
     {
