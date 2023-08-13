@@ -26,7 +26,7 @@ namespace CommandsEditor
         public int SelectedModelIndex = -1;
         public List<int> SelectedModelMaterialIndexes = new List<int>();
 
-        public SelectModel(CommandsEditor editor, int defaultModelIndex = -1) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
+        public SelectModel(LevelContent content, int defaultModelIndex = -1) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, content)
         {
             InitializeComponent();
 
@@ -43,7 +43,7 @@ namespace CommandsEditor
             }
             treeHelper.UpdateFileTree(allModelFileNames, null, allModelTagsNames);
 
-            modelViewer = new GUI_ModelViewer(_editor);
+            modelViewer = new GUI_ModelViewer(_content);
             modelRendererHost.Child = modelViewer;
 
             if (defaultModelIndex != -1)

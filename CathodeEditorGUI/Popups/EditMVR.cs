@@ -12,23 +12,25 @@ using System.Windows.Forms;
 using System.Numerics;
 using CATHODE;
 using CommandsEditor.Popups.Base;
+using CommandsEditor.DockPanels;
 
 namespace CommandsEditor
 {
     public partial class EditMVR : BaseWindow
     {
-        private Composite _composite;
         private int loadedMvrIndex = -1;
         private ShortGuid filteredNodeID;
 
         List<int> _mvrListIndexes = new List<int>();
 
-        public EditMVR(CommandsEditor editor, Composite composite, ShortGuid nodeID = new ShortGuid()) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
+        private EntityDisplay _entityDisplay;
+
+        public EditMVR(EntityDisplay editor, ShortGuid nodeID = new ShortGuid()) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor.Content)
         {
             InitializeComponent();
-            _composite = composite;
+            _entityDisplay = editor;
             
-            renderable.SetEditor(editor);
+            renderable.SetEditor(editor.Content);
             PopulateUI(nodeID);
 
             renderable.OnMaterialSelected += OnMaterialSelected;
@@ -51,7 +53,7 @@ namespace CommandsEditor
             EntityHierarchy[] hierarchies = new EntityHierarchy[_mvrListIndexes.Count];
             Parallel.For(0, _mvrListIndexes.Count, i =>
             {
-                hierarchies[i] = EditorUtils.GetHierarchyFromReference(Editor.mvr.Entries[_mvrListIndexes[i]].entity);
+                hierarchies[i] = _entityDisplay.Content.editor_utils.GetHierarchyFromReference(Editor.mvr.Entries[_mvrListIndexes[i]].entity);
             });
 
             //Write the hierarchies to the list
@@ -59,7 +61,7 @@ namespace CommandsEditor
             listBox1.Items.Clear();
             for (int i = 0; i < hierarchies.Length; i++)
             {
-                listBox1.Items.Add(hierarchies[i] == null ? _mvrListIndexes[i].ToString() + " [unresolvable]" : hierarchies[i].GetHierarchyAsString(Editor.commands, _composite, false));
+                listBox1.Items.Add(hierarchies[i] == null ? _mvrListIndexes[i].ToString() + " [unresolvable]" : hierarchies[i].GetHierarchyAsString(Editor.commands, _entityDisplay.Composite, false));
             }
             listBox1.EndUpdate();
             if (listBox1.Items.Count != 0) listBox1.SelectedIndex = 0;

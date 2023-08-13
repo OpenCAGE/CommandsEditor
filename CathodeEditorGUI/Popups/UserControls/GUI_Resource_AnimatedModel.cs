@@ -14,7 +14,7 @@ namespace CommandsEditor.Popups.UserControls
     {
         public int EnvironmentAnimIndex = -1;
 
-        public GUI_Resource_AnimatedModel(CommandsEditor editor) : base(editor)
+        public GUI_Resource_AnimatedModel(LevelContent editor) : base(editor)
         {
             InitializeComponent();
 

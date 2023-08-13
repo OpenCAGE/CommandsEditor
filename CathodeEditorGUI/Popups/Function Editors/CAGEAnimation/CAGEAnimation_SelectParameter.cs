@@ -19,7 +19,7 @@ namespace CommandsEditor
 
         private Entity _entity;
 
-        public CAGEAnimation_SelectParameter(CommandsEditor editor, Entity entity) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_CAGEANIM_EDITOR_OPENED | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
+        public CAGEAnimation_SelectParameter(LevelContent editor, Entity entity) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_CAGEANIM_EDITOR_OPENED | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
         {
             InitializeComponent();
 

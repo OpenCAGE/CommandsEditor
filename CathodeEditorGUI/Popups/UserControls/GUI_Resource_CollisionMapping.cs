@@ -19,7 +19,7 @@ namespace CommandsEditor.Popups.UserControls
 
         public ShortGuid CollisionID { get { return new ShortGuid(collisionID.Text == "" ? "FF-FF-FF-FF" : collisionID.Text); } } //todo: this is a temp hack for unresolved collision ids
 
-        public GUI_Resource_CollisionMapping(CommandsEditor editor) : base(editor)
+        public GUI_Resource_CollisionMapping(LevelContent editor) : base(editor)
         {
 
             //TODO: Fetch this data correctly from COLLISION.MAP, and then re-write it too!

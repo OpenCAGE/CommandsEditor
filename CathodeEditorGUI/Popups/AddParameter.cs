@@ -12,6 +12,7 @@ using CATHODE;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CathodeLib;
+using CommandsEditor.DockPanels;
 using CommandsEditor.Popups.Base;
 
 namespace CommandsEditor
@@ -21,13 +22,15 @@ namespace CommandsEditor
         Entity node = null;
         ParameterData param = null;
 
-        public AddParameter(CommandsEditor editor, Entity _node) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
+        EntityDisplay _entityDisplay;
+
+        public AddParameter(EntityDisplay entityDisplay) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, entityDisplay.Content)
         {
-            node = _node;
+            _entityDisplay = entityDisplay;
             InitializeComponent();
             param_datatype.SelectedIndex = 0;
 
-            List<string> options = EditorUtils.GenerateParameterList(_node);
+            List<string> options = entityDisplay.Content.editor_utils.GenerateParameterList(entityDisplay.Entity, entityDisplay.Composite);
             param_name.BeginUpdate();
             for (int i = 0; i < options.Count; i++) param_name.Items.Add(options[i]);
             param_name.EndUpdate();

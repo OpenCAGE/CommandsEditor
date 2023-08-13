@@ -16,15 +16,20 @@ using CommandsEditor.Popups.Base;
 using WebSocketSharp;
 using System.Security.Cryptography;
 using CommandsEditor.Nodes;
+using CommandsEditor.DockPanels;
 
 namespace CommandsEditor
 {
     public partial class NodeEditor : BaseWindow
     {
-        public NodeEditor(CommandsEditor editor) : base(WindowClosesOn.NONE, editor)
+        EntityDisplay _entityDisplay;
+
+        public NodeEditor(EntityDisplay entityDisplay) : base(WindowClosesOn.NONE, entityDisplay.Content)
         {
+            _entityDisplay = entityDisplay;
+
             InitializeComponent();
-            AddEntities(Editor.selected.composite, Editor.selected.entity);
+            AddEntities(entityDisplay.Composite, entityDisplay.Entity);
         }
 
         protected override void OnLoad(EventArgs e) {
@@ -140,7 +145,9 @@ namespace CommandsEditor
             //when a node is selected, load it in the commands editor
             STNode[] nodes = stNodeEditor1.GetSelectedNode();
             if (nodes.Length == 0) return;
-            _editor.LoadEntity(((CustomNode)nodes[0]).ID);
+
+            //TODO: IMPLEMENT THIS
+            //_editor.LoadEntity(((CustomNode)nodes[0]).ID);
         }
 
         private CustomNode EntityToNode(Entity entity, Composite composite)

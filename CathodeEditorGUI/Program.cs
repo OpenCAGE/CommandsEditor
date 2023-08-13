@@ -38,7 +38,7 @@ namespace CommandsEditor
             //Run app
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new CommandsEditorNew());
+            Application.Run(new CommandsEditor());
         }
     }
 }

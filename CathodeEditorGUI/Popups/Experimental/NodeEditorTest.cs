@@ -22,7 +22,7 @@ namespace CommandsEditor
 {
     public partial class NodeEditorTest : BaseWindow
     {
-        public NodeEditorTest(CommandsEditor editor) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION, editor)
+        public NodeEditorTest(LevelContent editor) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION, editor)
         {
             InitializeComponent();
             this.StartPosition = FormStartPosition.CenterScreen;

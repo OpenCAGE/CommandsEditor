@@ -15,7 +15,7 @@ namespace CommandsEditor.UserControls
 {
     public partial class GUI_ResourceDataType : BaseUserControl
     {
-        public GUI_ResourceDataType(CommandsEditor editor) : base(editor)
+        public GUI_ResourceDataType(LevelContent content) : base(content)
         {
             InitializeComponent();
         }

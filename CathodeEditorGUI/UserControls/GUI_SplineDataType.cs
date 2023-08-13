@@ -10,13 +10,17 @@ using System.Windows.Forms;
 using CATHODE.Scripting;
 using CATHODE;
 using CathodeLib;
+using CommandsEditor.DockPanels;
 
 namespace CommandsEditor.UserControls
 {
     public partial class GUI_SplineDataType : BaseUserControl
     {
-        public GUI_SplineDataType(CommandsEditor editor) : base(editor)
+        private EntityDisplay _entityDisplay;
+
+        public GUI_SplineDataType(EntityDisplay entityDisplay) : base(entityDisplay.Content)
         {
+            _entityDisplay = entityDisplay;
             InitializeComponent();
         }
 
@@ -29,7 +33,7 @@ namespace CommandsEditor.UserControls
 
         private void openSplineEditor_Click(object sender, EventArgs e)
         {
-            EditSpline splineEditor = new EditSpline(_editor, spline, Editor.selected.entity.GetParameter("loop"));
+            EditSpline splineEditor = new EditSpline(_editor, spline, _entityDisplay.Entity.GetParameter("loop"));
             splineEditor.Show();
             splineEditor.OnSaved += OnSplineEditorSaved;
             splineEditor.FormClosed += SplineEditor_FormClosed;

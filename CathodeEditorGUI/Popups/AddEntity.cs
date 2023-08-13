@@ -2,6 +2,7 @@
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CathodeLib;
+using CommandsEditor.DockPanels;
 using CommandsEditor.Popups.Base;
 using System;
 using System.Collections.Generic;
@@ -25,8 +26,12 @@ namespace CommandsEditor
         List<CathodeEntityDatabase.EntityDefinition> availableEntities = null;
         List<ShortGuid> hierarchy = null;
 
-        public AddEntity(CommandsEditor editor, Composite _comp, List<Composite> _comps) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
+        private CompositeDisplay _compositeDisplay;
+
+        public AddEntity(CompositeDisplay compositeDisplay, Composite _comp, List<Composite> _comps) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_COMPOSITE_SELECTION, compositeDisplay.Content)
         {
+            _compositeDisplay = compositeDisplay;
+
             composite = _comp;
             composites = _comps.OrderBy(o => o.name).ToList();
             availableEntities = CathodeEntityDatabase.GetEntities();
@@ -130,11 +135,11 @@ namespace CommandsEditor
             EditHierarchy hierarchyEditor = null;
             if (createProxyEntity.Checked)
             {
-                hierarchyEditor = new EditHierarchy(_editor, Editor.commands.EntryPoints[0], true);
+                hierarchyEditor = new EditHierarchy(_content, Editor.commands.EntryPoints[0], true);
             }
             else if (createOverrideEntity.Checked)
             {
-                hierarchyEditor = new EditHierarchy(_editor, Editor.selected.composite, false);
+                hierarchyEditor = new EditHierarchy(_content, _compositeDisplay.Composite, false);
             }
             hierarchyEditor.Show();
             hierarchyEditor.OnHierarchyGenerated += HierarchyEditor_HierarchyGenerated;
@@ -164,7 +169,7 @@ namespace CommandsEditor
             if (compositeSelector != null)
                 compositeSelector.Close();
 
-            compositeSelector = new SelectComposite(_editor, entityVariant.Text);
+            compositeSelector = new SelectComposite(_content, entityVariant.Text);
             compositeSelector.OnCompositeGenerated += OnCompositeGenerated;
             compositeSelector.Show();
         }
@@ -224,7 +229,7 @@ namespace CommandsEditor
                     return;
                 }
                 newEntity = composite.AddFunction(compRef, addDefaultParams.Checked);
-                EditorUtils.GenerateCompositeInstances(Editor.commands);
+                Editor.editor_utils.GenerateCompositeInstances(Editor.commands);
             }
             else if (createDatatypeEntity.Checked)
                 newEntity = composite.AddVariable(textBox1.Text, (DataType)entityVariant.SelectedIndex, true);

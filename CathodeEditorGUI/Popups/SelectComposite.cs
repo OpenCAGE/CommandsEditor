@@ -21,7 +21,7 @@ namespace CommandsEditor
 
         private TreeUtility _treeHelper;
 
-        public SelectComposite(CommandsEditor editor, string starting = null) : base(WindowClosesOn.NEW_COMPOSITE_SELECTION | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.COMMANDS_RELOAD, editor)
+        public SelectComposite(LevelContent content, string starting = null) : base(WindowClosesOn.NEW_COMPOSITE_SELECTION | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.COMMANDS_RELOAD, content)
         {
             InitializeComponent();
 

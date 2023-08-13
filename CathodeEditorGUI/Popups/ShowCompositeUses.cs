@@ -1,5 +1,6 @@
 ﻿using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
+using CommandsEditor.DockPanels;
 using CommandsEditor.Popups.Base;
 using System;
 using System.Collections.Generic;
@@ -20,16 +21,19 @@ namespace CommandsEditor
 
         private List<EntityRef> entities = new List<EntityRef>();
 
-        public ShowCompositeUses(CommandsEditor editor) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
+        private CompositeDisplay _compositeDisplay;
+
+        public ShowCompositeUses(CompositeDisplay editor) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor.Content)
         {
+            _compositeDisplay = editor;
             InitializeComponent();
 
-            label.Text = "Entities that instance the composite '" + Editor.selected.composite.name + "':";
+            label.Text = "Entities that instance the composite '" + _compositeDisplay.Composite.name + "':";
 
             referenceList.BeginUpdate();
             foreach (Composite comp in Editor.commands.Entries)
             {
-                foreach (FunctionEntity ent in comp.functions.FindAll(o => o.function == Editor.selected.composite.shortGUID))
+                foreach (FunctionEntity ent in comp.functions.FindAll(o => o.function == _compositeDisplay.Composite.shortGUID))
                 {
                     entities.Add(new EntityRef() { composite = comp, entity = ent.shortGUID });
                     referenceList.Items.Add(comp.name + ": " + EntityUtils.GetName(comp.shortGUID, ent.shortGUID));

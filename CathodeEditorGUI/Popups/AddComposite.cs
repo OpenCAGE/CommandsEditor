@@ -7,17 +7,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Input;
 using CATHODE;
 using CATHODE.Scripting;
 using CathodeLib;
+using CommandsEditor.DockPanels;
 using CommandsEditor.Popups.Base;
 
 namespace CommandsEditor
 {
     public partial class AddComposite : BaseWindow
     {
-        public AddComposite(CommandsEditor editor) : base(WindowClosesOn.COMMANDS_RELOAD, editor)
+        CommandsDisplay _commands;
+
+        public AddComposite(CommandsDisplay editor) : base(WindowClosesOn.COMMANDS_RELOAD, editor.Content)
         {
+            _commands = editor;
             InitializeComponent();
         }
 
@@ -35,16 +40,16 @@ namespace CommandsEditor
                 }
             }
 
-            for (int i = 0; i < _editor.Editor.commands.Entries.Count; i++)
+            for (int i = 0; i < _commands.Content.commands.Entries.Count; i++)
             {
-                if (_editor.Editor.commands.Entries[i].name == textBox1.Text)
+                if (_commands.Content.commands.Entries[i].name == textBox1.Text)
                 {
                     MessageBox.Show("Failed to create composite.\nA composite with this name already exists.", "Composite already exists", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
             }
 
-            _editor.Editor.commands.AddComposite(textBox1.Text);
+            _commands.Content.commands.AddComposite(textBox1.Text);
             this.Close();
         }
     }

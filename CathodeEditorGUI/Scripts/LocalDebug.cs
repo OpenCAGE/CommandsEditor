@@ -29,6 +29,7 @@ namespace CommandsEditor
     {
         public static void MAPTEST(string path)
         {
+            /*
             Console.WriteLine("Loading Commands");
             Commands commands = new Commands(path + "/WORLD/COMMANDS.PAK");
             Console.WriteLine("Generating Instances");
@@ -1515,6 +1516,7 @@ namespace CommandsEditor
         public static void FindAllNodesInCommands(CommandsEditor editor)
         {
 #if DEBUG
+            /*
             List<string> mapList = Directory.GetFiles(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
             for (int i = 0; i < mapList.Count; i++)
             {
@@ -1624,6 +1626,7 @@ namespace CommandsEditor
 
                 //CurrentInstance.commandsPAK.Save();
             }
+            */
 #endif
         }
 

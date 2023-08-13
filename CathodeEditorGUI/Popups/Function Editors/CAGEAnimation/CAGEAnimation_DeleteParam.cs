@@ -17,7 +17,7 @@ namespace CommandsEditor
     {
         public Action<int> OnParamSelected;
 
-        public CAGEAnimation_DeleteParam(CommandsEditor editor, List<string> parameter_tracks) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_CAGEANIM_EDITOR_OPENED | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
+        public CAGEAnimation_DeleteParam(LevelContent editor, List<string> parameter_tracks) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_CAGEANIM_EDITOR_OPENED | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
         {
             InitializeComponent();
 

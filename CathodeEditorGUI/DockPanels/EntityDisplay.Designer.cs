@@ -185,6 +185,7 @@
             this.addLinkOut.TabIndex = 151;
             this.addLinkOut.Text = "Add Link Out";
             this.addLinkOut.UseVisualStyleBackColor = true;
+            this.addLinkOut.Click += new System.EventHandler(this.addLinkOut_Click);
             // 
             // removeParameter
             // 
@@ -194,6 +195,7 @@
             this.removeParameter.TabIndex = 150;
             this.removeParameter.Text = "Remove Param/Link";
             this.removeParameter.UseVisualStyleBackColor = true;
+            this.removeParameter.Click += new System.EventHandler(this.removeParameter_Click);
             // 
             // addNewParameter
             // 
@@ -203,6 +205,7 @@
             this.addNewParameter.TabIndex = 149;
             this.addNewParameter.Text = "Add Parameter";
             this.addNewParameter.UseVisualStyleBackColor = true;
+            this.addNewParameter.Click += new System.EventHandler(this.addNewParameter_Click);
             // 
             // entity_params
             // 
@@ -225,7 +228,7 @@
             this.Controls.Add(this.editFunction);
             this.Controls.Add(this.entityParamGroup);
             this.Name = "EntityDisplay";
-            this.Text = "EntityDisplay";
+            this.Text = "Selected Entity";
             this.entityInfoGroup.ResumeLayout(false);
             this.entityInfoGroup.PerformLayout();
             this.entityParamGroup.ResumeLayout(false);

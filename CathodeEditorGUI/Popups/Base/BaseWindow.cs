@@ -15,14 +15,12 @@ namespace CommandsEditor.Popups.Base
 {
     public partial class BaseWindow : Form
     {
-        protected CommandsEditor _editor;
-        protected EditorData Editor { get { return _editor.Editor; } }
+        protected LevelContent _content;
+        protected LevelContent Editor { get { return _content; } }
 
         private WindowClosesOn _closesOn;
 
         private Commands _startCommands;
-        private Entity _startEntity;
-        private Composite _startComposite;
 
         [Obsolete("Designer only", true)]
         public BaseWindow()
@@ -30,16 +28,14 @@ namespace CommandsEditor.Popups.Base
             InitializeComponent();
         }
 
-        public BaseWindow(WindowClosesOn config, CommandsEditor editor)
+        public BaseWindow(WindowClosesOn config, LevelContent content)
         {
             InitializeComponent();
 
             _closesOn = config;
-            _editor = editor;
+            _content = content;
 
             _startCommands = Editor.commands;
-            _startEntity = Editor.selected.entity;
-            _startComposite = Editor.selected.composite;
 
             if (_closesOn.HasFlag(WindowClosesOn.COMMANDS_RELOAD))
                 Editor.OnCommandsSelected += OnCommandsSelected;
@@ -76,18 +72,24 @@ namespace CommandsEditor.Popups.Base
 
         private void OnEntitySelected(Entity entity)
         {
+            //TODO
+            /*
             if ((_startEntity == null && entity != null) ||
                 (_startEntity != null && entity == null) ||
                 (_startEntity.shortGUID != entity.shortGUID))
                 this.Close();
+            */
         }
 
         private void OnCompositeSelected(Composite composite)
         {
+            //TODO
+            /*
             if ((_startComposite == null && composite != null) ||
                 (_startComposite != null && composite == null) ||
                 (_startComposite.shortGUID != composite.shortGUID))
                 this.Close();
+            */
         }
 
         private void OnCAGEAnimationEditorOpened()

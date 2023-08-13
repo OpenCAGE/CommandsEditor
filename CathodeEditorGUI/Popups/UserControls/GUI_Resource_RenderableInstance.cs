@@ -32,7 +32,7 @@ namespace CommandsEditor.Popups.UserControls
             InitializeComponent();
         }
 
-        public GUI_Resource_RenderableInstance(CommandsEditor editor) : base(editor)
+        public GUI_Resource_RenderableInstance(LevelContent editor) : base(editor)
         {
             InitializeComponent();
         }

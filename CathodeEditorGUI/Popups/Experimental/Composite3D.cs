@@ -14,22 +14,24 @@ using System.Windows.Media.Media3D;
 using CathodeLib;
 using System.Numerics;
 using CommandsEditor.Popups.Base;
+using CommandsEditor.DockPanels;
 
 namespace CommandsEditor
 {
     public partial class Composite3D : BaseWindow
     {
         GUI_ModelViewer modelViewer;
+        CompositeDisplay _compositeDisplay;
 
-        public Composite3D(CommandsEditor editor, Composite comp) : base(WindowClosesOn.NONE, editor)
+        public Composite3D(CompositeDisplay compositeDisplay) : base(WindowClosesOn.NONE, compositeDisplay.Content)
         {
             InitializeComponent();
-            this.Text += ": " + comp.name;
+            this.Text += ": " + _compositeDisplay.Composite.name;
 
             List<GUI_ModelViewer.Model> models = new List<GUI_ModelViewer.Model>();
-            models.AddRange(LoadComposite(comp));
+            models.AddRange(LoadComposite(_compositeDisplay.Composite));
 
-            modelViewer = new GUI_ModelViewer(_editor);
+            modelViewer = new GUI_ModelViewer(_content);
             modelRendererHost.Child = modelViewer;
             modelViewer.ShowModel(models);
         }

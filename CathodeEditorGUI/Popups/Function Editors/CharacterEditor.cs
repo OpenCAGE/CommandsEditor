@@ -1,6 +1,7 @@
 ﻿using CATHODE;
 using CATHODE.Scripting;
 using CathodeLib;
+using CommandsEditor.DockPanels;
 using CommandsEditor.Popups.Base;
 using CommandsEditor.Popups.Function_Editors.CharacterEditor;
 using System;
@@ -14,8 +15,11 @@ namespace CommandsEditor
         private List<EntityHierarchy> _hierarchies = new List<EntityHierarchy>();
         private CharacterAccessorySets.Entry _accessories;
 
-        public CharacterEditor(CommandsEditor editor) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
+        private EntityDisplay _entityDisplay;
+
+        public CharacterEditor(EntityDisplay editor) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor.Content)
         {
+            _entityDisplay = editor;
             InitializeComponent();
 
             foreach (KeyValuePair<string, List<string>> skeletons in Editor.skeletons)
@@ -33,7 +37,7 @@ namespace CommandsEditor
             int toSelect = 0;
 
             _hierarchies.Clear();
-            List<EntityHierarchy> hierarchies = EditorUtils.GetHierarchiesForEntity(Editor.selected.composite, Editor.selected.entity);
+            List<EntityHierarchy> hierarchies = _entityDisplay.Content.editor_utils.GetHierarchiesForEntity(_entityDisplay.Composite, _entityDisplay.Entity);
             for (int i = 0; i < hierarchies.Count; i++)
             {
                 ShortGuid instance = hierarchies[i].GenerateInstance();
@@ -44,7 +48,7 @@ namespace CommandsEditor
 
             characterInstances.Items.Clear();
             for (int i = 0; i < _hierarchies.Count; i++)
-                characterInstances.Items.Add(_hierarchies[i].GetHierarchyAsString(Editor.commands, Editor.selected.composite, false));
+                characterInstances.Items.Add(_hierarchies[i].GetHierarchyAsString(Editor.commands, _entityDisplay.Composite, false));
 
             selectNewHead.Enabled = characterInstances.Items.Count != 0;
             selectNewShirt.Enabled = characterInstances.Items.Count != 0;
@@ -93,7 +97,7 @@ namespace CommandsEditor
                 existingCharacters.Add(_hierarchies[i].GenerateInstance());
             }
 
-            Character_InstanceSelection instanceSelector = new Character_InstanceSelection(_editor, existingCharacters);
+            Character_InstanceSelection instanceSelector = new Character_InstanceSelection(_entityDisplay, existingCharacters);
             instanceSelector.Show();
             instanceSelector.OnInstanceSelected += OnCharacterInstanceSelected;
         }
@@ -101,7 +105,7 @@ namespace CommandsEditor
         {
             Editor.resource.character_accessories.Entries.Add(new CharacterAccessorySets.Entry()
             {
-                character = new CommandsEntityReference() { entity_id = Editor.selected.entity.shortGUID, composite_instance_id = instance }
+                character = new CommandsEntityReference() { entity_id = _entityDisplay.Entity.shortGUID, composite_instance_id = instance }
             });
 
             RefreshUI(instance);
@@ -109,7 +113,7 @@ namespace CommandsEditor
 
         private SelectComposite CompositeSelector(string composite)
         {
-            SelectComposite selectComposite = new SelectComposite(_editor, composite);
+            SelectComposite selectComposite = new SelectComposite(_content, composite);
             selectComposite.Show();
             return selectComposite;
         }

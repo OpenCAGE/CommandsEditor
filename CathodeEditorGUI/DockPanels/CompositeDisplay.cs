@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CATHODE.Scripting;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -13,22 +14,37 @@ namespace CommandsEditor.DockPanels
 {
     public partial class CompositeDisplay : DockContent
     {
-        public CompositeDisplay()
+        private CommandsDisplay _commandsDisplay;
+        public CommandsDisplay CommandsDisplay => _commandsDisplay;
+        public LevelContent Content => _commandsDisplay.Content;
+
+        private Composite _composite;
+        public Composite Composite => _composite;
+
+        public CompositeDisplay(CommandsDisplay commandsDisplay, Composite composite)
         {
+            _commandsDisplay = commandsDisplay;
+            _composite = composite;
+
             InitializeComponent();
         }
 
-        private void createComposite_Click(object sender, EventArgs e)
+        private void createEntity_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void renameSelected_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void duplicateSelected_Click(object sender, EventArgs e)
         {
 
         }
 
         private void removeSelected_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void findUsesOfSelected_Click(object sender, EventArgs e)
         {
 
         }

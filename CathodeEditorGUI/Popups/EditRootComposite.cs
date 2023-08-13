@@ -1,4 +1,5 @@
 ﻿using CATHODE.Scripting;
+using CommandsEditor.DockPanels;
 using CommandsEditor.Popups.Base;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ namespace CommandsEditor
     {
         List<Composite> composites = null;
 
-        public EditRootComposite(CommandsEditor editor) : base(WindowClosesOn.COMMANDS_RELOAD, editor)
+        public EditRootComposite(CommandsDisplay editor) : base(WindowClosesOn.COMMANDS_RELOAD, editor.Content)
         {
             InitializeComponent();
             rootComposite.BeginUpdate();

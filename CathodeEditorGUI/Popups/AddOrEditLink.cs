@@ -11,6 +11,7 @@ using CATHODE;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CathodeLib;
+using CommandsEditor.DockPanels;
 using CommandsEditor.Popups.Base;
 
 namespace CommandsEditor
@@ -23,9 +24,13 @@ namespace CommandsEditor
         private Entity _initialParentEntity = null;
         private ShortGuid _initialLinkID;
 
+        private EntityDisplay _entityDisplay;
+
         //FOR CREATING A NEW LINK
-        public AddOrEditLink(CommandsEditor editor, Composite flowgraph, Entity parentEntity) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
+        public AddOrEditLink(EntityDisplay entityDisplay, Composite flowgraph, Entity parentEntity) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, entityDisplay.Content)
         {
+            _entityDisplay = entityDisplay;
+
             InitializeComponent();
 
             RefreshEntityLists(flowgraph);
@@ -40,7 +45,7 @@ namespace CommandsEditor
         }
 
         //FOR EDITING AN EXISTING LINK
-        public AddOrEditLink(CommandsEditor editor, Composite flowgraph, Entity parentEntity, Entity childEntity, string parentParameter, string childParameter, bool isLinkingToChild, ShortGuid initialLinkID) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
+        public AddOrEditLink(EntityDisplay editor, Composite flowgraph, Entity parentEntity, Entity childEntity, string parentParameter, string childParameter, bool isLinkingToChild, ShortGuid initialLinkID) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor.Content)
         {
             InitializeComponent();
 
@@ -67,7 +72,7 @@ namespace CommandsEditor
         private void RefreshEntityLists(Composite comp)
         {
             _entityList = comp.GetEntities();
-            _entityList = _entityList.OrderBy(o => EditorUtils.GenerateEntityName(o, comp).Substring(13)).ToList<Entity>();
+            _entityList = _entityList.OrderBy(o => _entityDisplay.Content.editor_utils.GenerateEntityName(o, comp).Substring(13)).ToList<Entity>();
 
             childEntityList.Enabled = true;
             parentEntityList.Enabled = true;
@@ -76,8 +81,8 @@ namespace CommandsEditor
             parentEntityList.BeginUpdate();
             for (int i = 0; i < _entityList.Count; i++)
             {
-                childEntityList.Items.Add(EditorUtils.GenerateEntityName(_entityList[i], comp));
-                parentEntityList.Items.Add(EditorUtils.GenerateEntityName(_entityList[i], comp));
+                childEntityList.Items.Add(_entityDisplay.Content.editor_utils.GenerateEntityName(_entityList[i], comp));
+                parentEntityList.Items.Add(_entityDisplay.Content.editor_utils.GenerateEntityName(_entityList[i], comp));
             }
             childEntityList.EndUpdate();
             parentEntityList.EndUpdate();
@@ -107,7 +112,7 @@ namespace CommandsEditor
             parentParameterList.BeginUpdate();
             parentParameterList.Items.Clear();
             if (parentEntityList.SelectedIndex == -1) return;
-            List<string> items = EditorUtils.GenerateParameterList(_entityList[parentEntityList.SelectedIndex]);
+            List<string> items = _entityDisplay.Content.editor_utils.GenerateParameterList(_entityList[parentEntityList.SelectedIndex], _entityDisplay.Composite);
             for (int i = 0; i < items.Count; i++) parentParameterList.Items.Add(items[i]);
             parentParameterList.EndUpdate();
         }
@@ -121,7 +126,7 @@ namespace CommandsEditor
             childParameterList.BeginUpdate();
             childParameterList.Items.Clear();
             if (childEntityList.SelectedIndex == -1) return;
-            List<string> items = EditorUtils.GenerateParameterList(_entityList[childEntityList.SelectedIndex]);
+            List<string> items = _entityDisplay.Content.editor_utils.GenerateParameterList(_entityList[childEntityList.SelectedIndex], _entityDisplay.Composite);
             for (int i = 0; i < items.Count; i++) childParameterList.Items.Add(items[i]);
             childParameterList.EndUpdate();
         }

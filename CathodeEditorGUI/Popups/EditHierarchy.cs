@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using CATHODE;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
+using CommandsEditor.DockPanels;
 using CommandsEditor.Popups.Base;
 
 namespace CommandsEditor
@@ -27,7 +28,7 @@ namespace CommandsEditor
         private bool onlyShowFunctions = false;
 
         //PROXIES can only point to FunctionEntities - OVERRIDES can point to FunctionEntities, ProxyEntities, VariableEntities
-        public EditHierarchy(CommandsEditor editor, Composite startingComposite, bool onlyFunctions) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
+        public EditHierarchy(LevelContent content, Composite startingComposite, bool onlyFunctions) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, content)
         {
             onlyShowFunctions = onlyFunctions;
 
@@ -89,7 +90,7 @@ namespace CommandsEditor
 
             for (int i = 0; i < selectedComposite.functions.Count; i++)
             {
-                string desc = EditorUtils.GenerateEntityName(selectedComposite.functions[i], selectedComposite);
+                string desc = Editor.editor_utils.GenerateEntityName(selectedComposite.functions[i], selectedComposite);
                 composite_content.Items.Add(desc);
                 composite_content_RAW.Add(desc);
             }
@@ -97,13 +98,13 @@ namespace CommandsEditor
             {
                 for (int i = 0; i < selectedComposite.proxies.Count; i++)
                 {
-                    string desc = EditorUtils.GenerateEntityName(selectedComposite.proxies[i], selectedComposite);
+                    string desc = Editor.editor_utils.GenerateEntityName(selectedComposite.proxies[i], selectedComposite);
                     composite_content.Items.Add(desc);
                     composite_content_RAW.Add(desc);
                 }
                 for (int i = 0; i < selectedComposite.variables.Count; i++)
                 {
-                    string desc = EditorUtils.GenerateEntityName(selectedComposite.variables[i], selectedComposite);
+                    string desc = Editor.editor_utils.GenerateEntityName(selectedComposite.variables[i], selectedComposite);
                     composite_content.Items.Add(desc);
                     composite_content_RAW.Add(desc);
                 }

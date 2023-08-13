@@ -6,6 +6,7 @@ using System.Windows.Media.Media3D;
 using System.Numerics;
 using CATHODE;
 using AlienPAK;
+using CommandsEditor.DockPanels;
 
 namespace CommandsEditor.Popups.UserControls
 {
@@ -14,13 +15,13 @@ namespace CommandsEditor.Popups.UserControls
     /// </summary>
     public partial class GUI_ModelViewer : UserControl
     {
-        protected CommandsEditor _editor;
-        protected EditorData Editor { get { return _editor.Editor; } } //hotfix for old Editor. static
+        protected LevelContent _content;
 
-        public GUI_ModelViewer(CommandsEditor editor)
+        public GUI_ModelViewer(LevelContent content)
         {
+            _content = content;
+
             InitializeComponent();
-            _editor = editor;
         }
 
         public void ShowModel(List<Model> models)
@@ -34,7 +35,7 @@ namespace CommandsEditor.Popups.UserControls
         
         private Model3DGroup OffsetModel(int modelIndex, Vector3D position, Vector3D rotation)
         {
-            Models.CS2.Component.LOD.Submesh submesh = Editor.resource.models.GetAtWriteIndex(modelIndex);
+            Models.CS2.Component.LOD.Submesh submesh = _content.resource.models.GetAtWriteIndex(modelIndex);
             Model3DGroup model = new Model3DGroup();
             model.Children.Add(submesh.ToGeometryModel3D());
             Transform3DGroup transform = new Transform3DGroup();

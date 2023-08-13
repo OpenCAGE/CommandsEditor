@@ -24,7 +24,7 @@ namespace CommandsEditor.Popups.UserControls
             InitializeComponent();
         }
 
-        public GUI_Resource_Default(CommandsEditor editor) : base(editor)
+        public GUI_Resource_Default(LevelContent editor) : base(editor)
         {
             InitializeComponent();
         }
