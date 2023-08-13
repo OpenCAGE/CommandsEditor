@@ -42,6 +42,8 @@ namespace CommandsEditor.DockPanels
             this.Text = composite.name;
             dockPanel.ActiveContentChanged += DockPanel_ActiveContentChanged;
 
+            this.Activate();
+
             Cursor.Current = Cursors.WaitCursor;
             CommandsUtils.PurgeDeadLinks(commandsDisplay.Content.commands, composite);
             PopulateListView();
@@ -69,7 +71,11 @@ namespace CommandsEditor.DockPanels
         }
         private void OnActiveContentClosing(object sender, FormClosingEventArgs e)
         {
+            EntityDisplay prevActiveEntityDisplay = _activeEntityDisplay;
             _activeEntityDisplay = null;
+
+            if (prevActiveEntityDisplay == _activeEntityDisplay) return;
+
             Singleton.OnEntitySelected?.Invoke(null);
         }
 

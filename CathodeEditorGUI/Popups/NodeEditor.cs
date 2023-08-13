@@ -160,7 +160,9 @@ namespace CommandsEditor
             STNode[] nodes = stNodeEditor1.GetSelectedNode();
             if (nodes.Length == 0) return;
 
-            Singleton.Editor.ActiveCompositeDisplay.LoadEntity(((CustomNode)nodes[0]).ID);
+            Entity ent = Singleton.Editor.ActiveCompositeDisplay?.Composite?.GetEntityByID(((CustomNode)nodes[0]).ID);
+            Singleton.Editor.ActiveCompositeDisplay?.LoadEntity(ent);
+            Singleton.OnEntitySelected?.Invoke(ent); //need to call this again b/c the activation event doesn't fire here
         }
 
         private CustomNode EntityToNode(Entity entity, Composite composite)

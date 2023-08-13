@@ -19,6 +19,8 @@ namespace CommandsEditor.DockPanels
     public partial class EntityDisplay : DockContent
     {
         private CompositeDisplay _compositeDisplay;
+        public CompositeDisplay CompositeDisplay => _compositeDisplay;
+
         private Entity _entity;
 
         public LevelContent Content => _compositeDisplay.Content;
@@ -41,6 +43,8 @@ namespace CommandsEditor.DockPanels
             _compositeDisplay = compositeDisplay;
 
             InitializeComponent();
+
+            this.Activate();
 
             //UI defaults - TODO: just set this in the designer.
             entityInfoGroup.Text = "Selected Entity Info";
@@ -313,13 +317,6 @@ namespace CommandsEditor.DockPanels
                 entity_params.Controls.Add(parameterGUI);
                 childEntities.Add(Composite.GetEntityByID(entity.childLinks[i].childID));
             }
-
-            //TODO: REIMPLEMENT THIS
-            //Update node viewer if it's open
-            //if (nodeViewer != null)
-            //{
-            //    nodeViewer.AddEntities(Editor.selected.composite, Editor.selected.entity);
-            //}
 
             entity_params.ResumeLayout();
             Cursor.Current = Cursors.Default;

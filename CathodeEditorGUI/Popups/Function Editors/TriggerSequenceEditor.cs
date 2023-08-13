@@ -234,9 +234,7 @@ namespace CommandsEditor
                 return;
             }
 
-            //TODO NEED TO REIMPLEMENT
-            //_content.LoadComposite(comp);
-            //_content.LoadEntity(ent);
+            _entityDisplay.CompositeDisplay.CommandsDisplay.LoadCompositeAndEntity(comp, ent);
         }
     }
 }

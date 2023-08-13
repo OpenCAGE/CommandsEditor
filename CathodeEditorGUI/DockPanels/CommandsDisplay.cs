@@ -14,6 +14,7 @@ using CATHODE.Scripting.Internal;
 using System.Windows.Controls;
 using System.Xml.Linq;
 using System.Windows.Interop;
+using WebSocketSharp;
 
 namespace CommandsEditor.DockPanels
 {
@@ -42,6 +43,8 @@ namespace CommandsEditor.DockPanels
 
             _treeHelper.UpdateFileTree(_content.commands.GetCompositeNames().ToList());
             _treeHelper.SelectNode(_content.commands.EntryPoints[0].name);
+
+            Singleton.OnCompositeSelected?.Invoke(_content.commands.EntryPoints[0]); //need to call this again b/c the activation event doesn't fire here
         }
 
         private void createComposite_Click(object sender, EventArgs e)

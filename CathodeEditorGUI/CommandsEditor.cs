@@ -125,7 +125,7 @@ namespace CommandsEditor
         /* Monitor the currently active composite tab */
         private void DockPanel_ActiveContentChanged(object sender, EventArgs e)
         {
-            CompositeDisplay prevActiveEntityDisplay = _activeCompositeDisplay;
+            CompositeDisplay prevActiveCompositeDisplay = _activeCompositeDisplay;
             object content = ((DockPanel)sender).ActiveContent;
 
             if (content is CompositeDisplay)
@@ -133,17 +133,21 @@ namespace CommandsEditor
             else
                 return;
 
-            if (prevActiveEntityDisplay == _activeCompositeDisplay) return;
+            if (prevActiveCompositeDisplay == _activeCompositeDisplay) return;
 
-            if (prevActiveEntityDisplay != null)
-                prevActiveEntityDisplay.FormClosing -= OnActiveContentClosing;
+            if (prevActiveCompositeDisplay != null)
+                prevActiveCompositeDisplay.FormClosing -= OnActiveContentClosing;
             _activeCompositeDisplay.FormClosing += OnActiveContentClosing;
 
             Singleton.OnCompositeSelected?.Invoke(_activeCompositeDisplay.Composite);
         }
         private void OnActiveContentClosing(object sender, FormClosingEventArgs e)
         {
+            CompositeDisplay prevActiveCompositeDisplay = _activeCompositeDisplay;
             _activeCompositeDisplay = null;
+
+            if (prevActiveCompositeDisplay == _activeCompositeDisplay) return;
+
             Singleton.OnCompositeSelected?.Invoke(null);
         }
 
