@@ -34,29 +34,30 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.EditLink = new System.Windows.Forms.Button();
             this.GoTo = new System.Windows.Forms.Button();
+            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.group.SuspendLayout();
+            this.tableLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // group
             // 
             this.group.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.group.Controls.Add(this.DeleteLink);
+            this.group.Controls.Add(this.tableLayoutPanel2);
             this.group.Controls.Add(this.label1);
             this.group.Controls.Add(this.textBox1);
-            this.group.Controls.Add(this.EditLink);
-            this.group.Controls.Add(this.GoTo);
             this.group.Location = new System.Drawing.Point(3, 2);
             this.group.Name = "group";
             this.group.Size = new System.Drawing.Size(334, 91);
             this.group.TabIndex = 19;
             this.group.TabStop = false;
-            this.group.Text = "Parameter Name (00-00-00-00)";
+            this.group.Text = " ";
             // 
             // DeleteLink
             // 
-            this.DeleteLink.Location = new System.Drawing.Point(222, 59);
+            this.DeleteLink.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.DeleteLink.Location = new System.Drawing.Point(221, 3);
             this.DeleteLink.Name = "DeleteLink";
-            this.DeleteLink.Size = new System.Drawing.Size(106, 23);
+            this.DeleteLink.Size = new System.Drawing.Size(104, 22);
             this.DeleteLink.TabIndex = 5;
             this.DeleteLink.Text = "Delete Link";
             this.DeleteLink.UseVisualStyleBackColor = true;
@@ -82,9 +83,10 @@
             // 
             // EditLink
             // 
-            this.EditLink.Location = new System.Drawing.Point(114, 59);
+            this.EditLink.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.EditLink.Location = new System.Drawing.Point(112, 3);
             this.EditLink.Name = "EditLink";
-            this.EditLink.Size = new System.Drawing.Size(106, 23);
+            this.EditLink.Size = new System.Drawing.Size(103, 22);
             this.EditLink.TabIndex = 2;
             this.EditLink.Text = "Edit Link";
             this.EditLink.UseVisualStyleBackColor = true;
@@ -92,13 +94,32 @@
             // 
             // GoTo
             // 
-            this.GoTo.Location = new System.Drawing.Point(6, 59);
+            this.GoTo.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.GoTo.Location = new System.Drawing.Point(3, 3);
             this.GoTo.Name = "GoTo";
-            this.GoTo.Size = new System.Drawing.Size(106, 23);
+            this.GoTo.Size = new System.Drawing.Size(103, 22);
             this.GoTo.TabIndex = 1;
             this.GoTo.Text = "Go To Link";
             this.GoTo.UseVisualStyleBackColor = true;
             this.GoTo.Click += new System.EventHandler(this.GoTo_Click);
+            // 
+            // tableLayoutPanel2
+            // 
+            this.tableLayoutPanel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel2.ColumnCount = 3;
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel2.Controls.Add(this.DeleteLink, 2, 0);
+            this.tableLayoutPanel2.Controls.Add(this.EditLink, 1, 0);
+            this.tableLayoutPanel2.Controls.Add(this.GoTo, 0, 0);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 58);
+            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
+            this.tableLayoutPanel2.RowCount = 1;
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(328, 28);
+            this.tableLayoutPanel2.TabIndex = 20;
             // 
             // GUI_Link
             // 
@@ -109,6 +130,7 @@
             this.Size = new System.Drawing.Size(340, 94);
             this.group.ResumeLayout(false);
             this.group.PerformLayout();
+            this.tableLayoutPanel2.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -121,5 +143,6 @@
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button DeleteLink;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
     }
 }

@@ -46,46 +46,50 @@
             this.addNewParameter = new System.Windows.Forms.Button();
             this.entity_params = new System.Windows.Forms.Panel();
             this.vS2015DarkTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.entityInfoGroup.SuspendLayout();
             this.entityParamGroup.SuspendLayout();
+            this.tableLayoutPanel1.SuspendLayout();
+            this.tableLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // goToZone
             // 
-            this.goToZone.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.goToZone.Location = new System.Drawing.Point(245, 87);
+            this.goToZone.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.goToZone.Location = new System.Drawing.Point(231, 3);
             this.goToZone.Name = "goToZone";
-            this.goToZone.Size = new System.Drawing.Size(73, 23);
+            this.goToZone.Size = new System.Drawing.Size(70, 23);
             this.goToZone.TabIndex = 188;
             this.goToZone.Text = "Zone";
             this.goToZone.UseVisualStyleBackColor = true;
             // 
             // showOverridesAndProxies
             // 
-            this.showOverridesAndProxies.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.showOverridesAndProxies.Location = new System.Drawing.Point(89, 87);
+            this.showOverridesAndProxies.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.showOverridesAndProxies.Location = new System.Drawing.Point(79, 3);
             this.showOverridesAndProxies.Name = "showOverridesAndProxies";
-            this.showOverridesAndProxies.Size = new System.Drawing.Size(73, 23);
+            this.showOverridesAndProxies.Size = new System.Drawing.Size(70, 23);
             this.showOverridesAndProxies.TabIndex = 187;
             this.showOverridesAndProxies.Text = "References";
             this.showOverridesAndProxies.UseVisualStyleBackColor = true;
             // 
             // editEntityMovers
             // 
-            this.editEntityMovers.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.editEntityMovers.Location = new System.Drawing.Point(11, 87);
+            this.editEntityMovers.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.editEntityMovers.Location = new System.Drawing.Point(3, 3);
             this.editEntityMovers.Name = "editEntityMovers";
-            this.editEntityMovers.Size = new System.Drawing.Size(73, 23);
+            this.editEntityMovers.Size = new System.Drawing.Size(70, 23);
             this.editEntityMovers.TabIndex = 186;
             this.editEntityMovers.Text = "Movers";
             this.editEntityMovers.UseVisualStyleBackColor = true;
             // 
             // editEntityResources
             // 
-            this.editEntityResources.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.editEntityResources.Location = new System.Drawing.Point(167, 87);
+            this.editEntityResources.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.editEntityResources.Location = new System.Drawing.Point(155, 3);
             this.editEntityResources.Name = "editEntityResources";
-            this.editEntityResources.Size = new System.Drawing.Size(73, 23);
+            this.editEntityResources.Size = new System.Drawing.Size(70, 23);
             this.editEntityResources.TabIndex = 184;
             this.editEntityResources.Text = "Resources";
             this.editEntityResources.UseVisualStyleBackColor = true;
@@ -168,10 +172,10 @@
             // 
             // editFunction
             // 
-            this.editFunction.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.editFunction.Location = new System.Drawing.Point(323, 87);
+            this.editFunction.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.editFunction.Location = new System.Drawing.Point(307, 3);
             this.editFunction.Name = "editFunction";
-            this.editFunction.Size = new System.Drawing.Size(73, 23);
+            this.editFunction.Size = new System.Drawing.Size(74, 23);
             this.editFunction.TabIndex = 185;
             this.editFunction.Text = "Function";
             this.editFunction.UseVisualStyleBackColor = true;
@@ -181,9 +185,7 @@
             this.entityParamGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.entityParamGroup.Controls.Add(this.addLinkOut);
-            this.entityParamGroup.Controls.Add(this.removeParameter);
-            this.entityParamGroup.Controls.Add(this.addNewParameter);
+            this.entityParamGroup.Controls.Add(this.tableLayoutPanel2);
             this.entityParamGroup.Controls.Add(this.entity_params);
             this.entityParamGroup.Location = new System.Drawing.Point(12, 116);
             this.entityParamGroup.Name = "entityParamGroup";
@@ -194,10 +196,10 @@
             // 
             // addLinkOut
             // 
-            this.addLinkOut.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.addLinkOut.Location = new System.Drawing.Point(131, 585);
+            this.addLinkOut.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.addLinkOut.Location = new System.Drawing.Point(128, 3);
             this.addLinkOut.Name = "addLinkOut";
-            this.addLinkOut.Size = new System.Drawing.Size(125, 23);
+            this.addLinkOut.Size = new System.Drawing.Size(119, 22);
             this.addLinkOut.TabIndex = 151;
             this.addLinkOut.Text = "Add Link Out";
             this.addLinkOut.UseVisualStyleBackColor = true;
@@ -205,10 +207,10 @@
             // 
             // removeParameter
             // 
-            this.removeParameter.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.removeParameter.Location = new System.Drawing.Point(256, 585);
+            this.removeParameter.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.removeParameter.Location = new System.Drawing.Point(253, 3);
             this.removeParameter.Name = "removeParameter";
-            this.removeParameter.Size = new System.Drawing.Size(125, 23);
+            this.removeParameter.Size = new System.Drawing.Size(119, 22);
             this.removeParameter.TabIndex = 150;
             this.removeParameter.Text = "Remove Param/Link";
             this.removeParameter.UseVisualStyleBackColor = true;
@@ -216,10 +218,10 @@
             // 
             // addNewParameter
             // 
-            this.addNewParameter.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.addNewParameter.Location = new System.Drawing.Point(6, 585);
+            this.addNewParameter.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.addNewParameter.Location = new System.Drawing.Point(3, 3);
             this.addNewParameter.Name = "addNewParameter";
-            this.addNewParameter.Size = new System.Drawing.Size(125, 23);
+            this.addNewParameter.Size = new System.Drawing.Size(119, 22);
             this.addNewParameter.TabIndex = 149;
             this.addNewParameter.Text = "Add Parameter";
             this.addNewParameter.UseVisualStyleBackColor = true;
@@ -236,23 +238,61 @@
             this.entity_params.Size = new System.Drawing.Size(375, 559);
             this.entity_params.TabIndex = 0;
             // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel1.ColumnCount = 5;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tableLayoutPanel1.Controls.Add(this.editEntityMovers, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.goToZone, 3, 0);
+            this.tableLayoutPanel1.Controls.Add(this.editFunction, 4, 0);
+            this.tableLayoutPanel1.Controls.Add(this.showOverridesAndProxies, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.editEntityResources, 2, 0);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(12, 84);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 1;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(384, 29);
+            this.tableLayoutPanel1.TabIndex = 189;
+            // 
+            // tableLayoutPanel2
+            // 
+            this.tableLayoutPanel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel2.ColumnCount = 3;
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel2.Controls.Add(this.removeParameter, 2, 0);
+            this.tableLayoutPanel2.Controls.Add(this.addLinkOut, 1, 0);
+            this.tableLayoutPanel2.Controls.Add(this.addNewParameter, 0, 0);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(6, 581);
+            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
+            this.tableLayoutPanel2.RowCount = 1;
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(375, 28);
+            this.tableLayoutPanel2.TabIndex = 0;
+            // 
             // EntityDisplay
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(406, 742);
-            this.Controls.Add(this.goToZone);
-            this.Controls.Add(this.showOverridesAndProxies);
-            this.Controls.Add(this.editEntityMovers);
-            this.Controls.Add(this.editEntityResources);
+            this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.entityInfoGroup);
-            this.Controls.Add(this.editFunction);
             this.Controls.Add(this.entityParamGroup);
             this.Name = "EntityDisplay";
             this.Text = "Selected Entity";
             this.entityInfoGroup.ResumeLayout(false);
             this.entityInfoGroup.PerformLayout();
             this.entityParamGroup.ResumeLayout(false);
+            this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableLayoutPanel2.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -277,5 +317,7 @@
         private System.Windows.Forms.Button addNewParameter;
         private System.Windows.Forms.Panel entity_params;
         private WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme vS2015DarkTheme1;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
     }
 }
