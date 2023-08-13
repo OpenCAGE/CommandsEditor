@@ -95,7 +95,7 @@
             // 
             this.dockPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dockPanel.DockBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(57)))), ((int)(((byte)(85)))));
-            this.dockPanel.DockLeftPortion = 0.32D;
+            this.dockPanel.DockLeftPortion = 0.3D;
             this.dockPanel.DockRightPortion = 0.35D;
             this.dockPanel.Location = new System.Drawing.Point(0, 25);
             this.dockPanel.Name = "dockPanel";

@@ -28,10 +28,10 @@ namespace CommandsEditor.DockPanels
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.ListViewGroup listViewGroup13 = new System.Windows.Forms.ListViewGroup("Variables", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup14 = new System.Windows.Forms.ListViewGroup("Functions", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup15 = new System.Windows.Forms.ListViewGroup("Proxies", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup16 = new System.Windows.Forms.ListViewGroup("Overrides", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Variables", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("Functions", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("Proxies", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("Overrides", System.Windows.Forms.HorizontalAlignment.Left);
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CompositeDisplay));
             this.composite_content = new System.Windows.Forms.ListView();
             this.EntityName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -44,13 +44,16 @@ namespace CommandsEditor.DockPanels
             this.deleteComposite = new System.Windows.Forms.ToolStripButton();
             this.vS2015DarkTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.vS2015LightTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
-            this.tableLayoutPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+            this.splitContainer1.Panel1.SuspendLayout();
+            this.splitContainer1.Panel2.SuspendLayout();
+            this.splitContainer1.SuspendLayout();
             this.SuspendLayout();
             // 
             // composite_content
@@ -62,25 +65,25 @@ namespace CommandsEditor.DockPanels
             this.EntityName,
             this.EntityType});
             this.composite_content.FullRowSelect = true;
-            listViewGroup13.Header = "Variables";
-            listViewGroup13.Name = "Variables";
-            listViewGroup14.Header = "Functions";
-            listViewGroup14.Name = "Functions";
-            listViewGroup15.Header = "Proxies";
-            listViewGroup15.Name = "Proxies";
-            listViewGroup16.Header = "Overrides";
-            listViewGroup16.Name = "Overrides";
+            listViewGroup1.Header = "Variables";
+            listViewGroup1.Name = "Variables";
+            listViewGroup2.Header = "Functions";
+            listViewGroup2.Name = "Functions";
+            listViewGroup3.Header = "Proxies";
+            listViewGroup3.Name = "Proxies";
+            listViewGroup4.Header = "Overrides";
+            listViewGroup4.Name = "Overrides";
             this.composite_content.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup13,
-            listViewGroup14,
-            listViewGroup15,
-            listViewGroup16});
+            listViewGroup1,
+            listViewGroup2,
+            listViewGroup3,
+            listViewGroup4});
             this.composite_content.HideSelection = false;
             this.composite_content.LabelWrap = false;
-            this.composite_content.Location = new System.Drawing.Point(0, 30);
+            this.composite_content.Location = new System.Drawing.Point(3, 30);
             this.composite_content.MultiSelect = false;
             this.composite_content.Name = "composite_content";
-            this.composite_content.Size = new System.Drawing.Size(640, 760);
+            this.composite_content.Size = new System.Drawing.Size(827, 766);
             this.composite_content.TabIndex = 176;
             this.composite_content.UseCompatibleStateImageBehavior = false;
             this.composite_content.View = System.Windows.Forms.View.Details;
@@ -101,16 +104,16 @@ namespace CommandsEditor.DockPanels
             this.entity_search_box.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.entity_search_box.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.entity_search_box.Location = new System.Drawing.Point(0, 4);
+            this.entity_search_box.Location = new System.Drawing.Point(3, 4);
             this.entity_search_box.Name = "entity_search_box";
-            this.entity_search_box.Size = new System.Drawing.Size(579, 20);
+            this.entity_search_box.Size = new System.Drawing.Size(766, 20);
             this.entity_search_box.TabIndex = 146;
             // 
             // entity_search_btn
             // 
             this.entity_search_btn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.entity_search_btn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.entity_search_btn.Location = new System.Drawing.Point(577, 4);
+            this.entity_search_btn.Location = new System.Drawing.Point(767, 4);
             this.entity_search_btn.Name = "entity_search_btn";
             this.entity_search_btn.Size = new System.Drawing.Size(63, 20);
             this.entity_search_btn.TabIndex = 145;
@@ -166,11 +169,11 @@ namespace CommandsEditor.DockPanels
             // 
             this.dockPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dockPanel.DockBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(57)))), ((int)(((byte)(85)))));
-            this.dockPanel.Location = new System.Drawing.Point(649, 3);
+            this.dockPanel.Location = new System.Drawing.Point(0, 0);
             this.dockPanel.Name = "dockPanel";
             this.dockPanel.Padding = new System.Windows.Forms.Padding(6);
             this.dockPanel.ShowAutoHideContentOnHover = false;
-            this.dockPanel.Size = new System.Drawing.Size(963, 790);
+            this.dockPanel.Size = new System.Drawing.Size(781, 796);
             this.dockPanel.TabIndex = 178;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
             // 
@@ -180,32 +183,34 @@ namespace CommandsEditor.DockPanels
             this.panel1.Controls.Add(this.entity_search_box);
             this.panel1.Controls.Add(this.entity_search_btn);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(3, 3);
+            this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(640, 790);
+            this.panel1.Size = new System.Drawing.Size(830, 796);
             this.panel1.TabIndex = 180;
             // 
-            // tableLayoutPanel1
+            // splitContainer1
             // 
-            this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 60F));
-            this.tableLayoutPanel1.Controls.Add(this.panel1, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.dockPanel, 1, 0);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 25);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 1;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1615, 796);
-            this.tableLayoutPanel1.TabIndex = 181;
+            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer1.Location = new System.Drawing.Point(0, 25);
+            this.splitContainer1.Name = "splitContainer1";
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.Controls.Add(this.panel1);
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add(this.dockPanel);
+            this.splitContainer1.Size = new System.Drawing.Size(1615, 796);
+            this.splitContainer1.SplitterDistance = 830;
+            this.splitContainer1.TabIndex = 182;
             // 
             // CompositeDisplay
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1615, 821);
-            this.Controls.Add(this.tableLayoutPanel1);
+            this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.toolStrip1);
             this.Name = "CompositeDisplay";
             this.Text = "Selected Composite";
@@ -213,7 +218,10 @@ namespace CommandsEditor.DockPanels
             this.toolStrip1.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            this.tableLayoutPanel1.ResumeLayout(false);
+            this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+            this.splitContainer1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -233,8 +241,8 @@ namespace CommandsEditor.DockPanels
         private System.Windows.Forms.ToolStripButton deleteComposite;
         private WeifenLuo.WinFormsUI.Docking.DockPanel dockPanel;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme vS2015BlueTheme1;
         private WeifenLuo.WinFormsUI.Docking.VS2015LightTheme vS2015LightTheme1;
+        private System.Windows.Forms.SplitContainer splitContainer1;
     }
 }
