@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -30,7 +30,6 @@ namespace CommandsEditor
         public AddOrEditLink(EntityDisplay entityDisplay) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, entityDisplay.Content)
         {
             _entityDisplay = entityDisplay;
-
             InitializeComponent();
 
             RefreshEntityLists(entityDisplay.Composite);
@@ -47,6 +46,7 @@ namespace CommandsEditor
         //FOR EDITING AN EXISTING LINK
         public AddOrEditLink(EntityDisplay entityDisplay, Entity parentEntity, Entity childEntity, string parentParameter, string childParameter, bool isLinkingToChild, ShortGuid initialLinkID) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, entityDisplay.Content)
         {
+            _entityDisplay = entityDisplay;
             InitializeComponent();
 
             RefreshEntityLists(entityDisplay.Composite);

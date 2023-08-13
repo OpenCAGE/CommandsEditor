@@ -144,6 +144,11 @@ namespace CommandsEditor.DockPanels
         {
             LoadEntity(entity, false);
         }
+        public void LoadEntityForce(Entity entity)
+        {
+            //TODO: this is a impl for link refreshing when edited. we should also check to see if the LINKED entity is loaded & refresh that too.
+            LoadEntity(entity, true);
+        }
         public void LoadEntity(Entity entity, bool forceReload)
         {
             if (_entityDisplays.ContainsKey(entity))

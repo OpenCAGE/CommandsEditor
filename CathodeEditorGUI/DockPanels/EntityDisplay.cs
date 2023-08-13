@@ -127,7 +127,7 @@ namespace CommandsEditor.DockPanels
                     if (link.childID != entity.shortGUID) continue;
                     GUI_Link parameterGUI = new GUI_Link(this);
                     parameterGUI.PopulateUI(link, false, ent.shortGUID);
-                    parameterGUI.GoToEntity += compositeDisplay.LoadEntity;
+                    parameterGUI.GoToEntity += compositeDisplay.LoadEntityForce;
                     parameterGUI.Location = new Point(15, current_ui_offset);
                     parameterGUI.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
                     current_ui_offset += parameterGUI.Height + 6;
@@ -310,7 +310,7 @@ namespace CommandsEditor.DockPanels
             {
                 GUI_Link parameterGUI = new GUI_Link(this);
                 parameterGUI.PopulateUI(entity.childLinks[i], true);
-                parameterGUI.GoToEntity += compositeDisplay.LoadEntity;
+                parameterGUI.GoToEntity += compositeDisplay.LoadEntityForce;
                 parameterGUI.Location = new Point(15, current_ui_offset);
                 parameterGUI.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
                 current_ui_offset += parameterGUI.Height + 6;

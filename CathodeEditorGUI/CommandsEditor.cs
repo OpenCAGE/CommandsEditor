@@ -29,6 +29,7 @@ namespace CommandsEditor
         public CommandsDisplay CommandsDisplay => _commandsDisplay;
 
         private NodeEditor _nodeViewer = null;
+        private SelectLevel _levelSelect = null;
 
         private CompositeDisplay _activeCompositeDisplay = null;
         public CompositeDisplay ActiveCompositeDisplay => _activeCompositeDisplay;
@@ -153,19 +154,32 @@ namespace CommandsEditor
 
         private void loadLevel_Click(object sender, EventArgs e)
         {
-            SelectLevel dialog = new SelectLevel();
-            dialog.Show();
-            dialog.OnLevelSelected += OnLevelSelected;
+            if (_levelSelect == null)
+            {
+                _levelSelect = new SelectLevel();
+                _levelSelect.Show();
+                _levelSelect.FormClosed += OnLevelSelectClosed;
+                _levelSelect.OnLevelSelected += OnLevelSelected;
+            }
+
+            _levelSelect.BringToFront();
+            _levelSelect.Focus();
+        }
+        private void OnLevelSelectClosed(object sender, FormClosedEventArgs e)
+        {
+            _levelSelect = null;
         }
         private void OnLevelSelected(string level)
         {
+            _activeCompositeDisplay = null;
+            _levelSelect = null;
+
             //Close all existing
             if (_commandsDisplay != null)
             {
                 _commandsDisplay.CloseAllChildTabs();
                 _commandsDisplay.Close();
             }
-            _activeCompositeDisplay = null;
 
             //Load new
             _commandsDisplay = new CommandsDisplay(level);

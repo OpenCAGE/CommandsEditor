@@ -28,10 +28,10 @@ namespace CommandsEditor.DockPanels
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Variables", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("Functions", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("Proxies", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("Overrides", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup9 = new System.Windows.Forms.ListViewGroup("Variables", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup10 = new System.Windows.Forms.ListViewGroup("Functions", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup11 = new System.Windows.Forms.ListViewGroup("Proxies", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup12 = new System.Windows.Forms.ListViewGroup("Overrides", System.Windows.Forms.HorizontalAlignment.Left);
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CompositeDisplay));
             this.composite_content = new System.Windows.Forms.ListView();
             this.EntityName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -65,19 +65,19 @@ namespace CommandsEditor.DockPanels
             this.EntityName,
             this.EntityType});
             this.composite_content.FullRowSelect = true;
-            listViewGroup1.Header = "Variables";
-            listViewGroup1.Name = "Variables";
-            listViewGroup2.Header = "Functions";
-            listViewGroup2.Name = "Functions";
-            listViewGroup3.Header = "Proxies";
-            listViewGroup3.Name = "Proxies";
-            listViewGroup4.Header = "Overrides";
-            listViewGroup4.Name = "Overrides";
+            listViewGroup9.Header = "Variables";
+            listViewGroup9.Name = "Variables";
+            listViewGroup10.Header = "Functions";
+            listViewGroup10.Name = "Functions";
+            listViewGroup11.Header = "Proxies";
+            listViewGroup11.Name = "Proxies";
+            listViewGroup12.Header = "Overrides";
+            listViewGroup12.Name = "Overrides";
             this.composite_content.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup1,
-            listViewGroup2,
-            listViewGroup3,
-            listViewGroup4});
+            listViewGroup9,
+            listViewGroup10,
+            listViewGroup11,
+            listViewGroup12});
             this.composite_content.HideSelection = false;
             this.composite_content.LabelWrap = false;
             this.composite_content.Location = new System.Drawing.Point(3, 30);
