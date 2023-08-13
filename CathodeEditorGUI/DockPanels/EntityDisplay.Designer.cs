@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EntityDisplay));
             this.goToZone = new System.Windows.Forms.Button();
             this.showOverridesAndProxies = new System.Windows.Forms.Button();
             this.editEntityMovers = new System.Windows.Forms.Button();
@@ -48,10 +49,14 @@
             this.vS2015DarkTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.deleteEntity = new System.Windows.Forms.ToolStripButton();
+            this.duplicateEntity = new System.Windows.Forms.ToolStripButton();
             this.entityInfoGroup.SuspendLayout();
             this.entityParamGroup.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
+            this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // goToZone
@@ -108,7 +113,7 @@
             this.entityInfoGroup.Controls.Add(this.label9);
             this.entityInfoGroup.Controls.Add(this.selected_entity_type_description);
             this.entityInfoGroup.Controls.Add(this.label6);
-            this.entityInfoGroup.Location = new System.Drawing.Point(12, 12);
+            this.entityInfoGroup.Location = new System.Drawing.Point(12, 25);
             this.entityInfoGroup.Name = "entityInfoGroup";
             this.entityInfoGroup.Size = new System.Drawing.Size(382, 69);
             this.entityInfoGroup.TabIndex = 183;
@@ -193,9 +198,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.entityParamGroup.Controls.Add(this.tableLayoutPanel2);
             this.entityParamGroup.Controls.Add(this.entity_params);
-            this.entityParamGroup.Location = new System.Drawing.Point(12, 116);
+            this.entityParamGroup.Location = new System.Drawing.Point(12, 132);
             this.entityParamGroup.Name = "entityParamGroup";
-            this.entityParamGroup.Size = new System.Drawing.Size(382, 616);
+            this.entityParamGroup.Size = new System.Drawing.Size(382, 638);
             this.entityParamGroup.TabIndex = 182;
             this.entityParamGroup.TabStop = false;
             this.entityParamGroup.Text = "Selected Entity Parameters";
@@ -241,7 +246,7 @@
             this.entity_params.AutoScroll = true;
             this.entity_params.Location = new System.Drawing.Point(6, 20);
             this.entity_params.Name = "entity_params";
-            this.entity_params.Size = new System.Drawing.Size(375, 559);
+            this.entity_params.Size = new System.Drawing.Size(375, 581);
             this.entity_params.TabIndex = 0;
             // 
             // tableLayoutPanel1
@@ -259,7 +264,7 @@
             this.tableLayoutPanel1.Controls.Add(this.editFunction, 4, 0);
             this.tableLayoutPanel1.Controls.Add(this.showOverridesAndProxies, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.editEntityResources, 2, 0);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(12, 84);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(12, 97);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -277,18 +282,52 @@
             this.tableLayoutPanel2.Controls.Add(this.removeParameter, 2, 0);
             this.tableLayoutPanel2.Controls.Add(this.addLinkOut, 1, 0);
             this.tableLayoutPanel2.Controls.Add(this.addNewParameter, 0, 0);
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(6, 581);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(6, 603);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 1;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel2.Size = new System.Drawing.Size(375, 28);
             this.tableLayoutPanel2.TabIndex = 0;
             // 
+            // toolStrip1
+            // 
+            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.duplicateEntity,
+            this.deleteEntity});
+            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
+            this.toolStrip1.Name = "toolStrip1";
+            this.toolStrip1.Size = new System.Drawing.Size(406, 25);
+            this.toolStrip1.TabIndex = 190;
+            this.toolStrip1.Text = "toolStrip1";
+            // 
+            // deleteEntity
+            // 
+            this.deleteEntity.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.deleteEntity.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.deleteEntity.Image = ((System.Drawing.Image)(resources.GetObject("deleteEntity.Image")));
+            this.deleteEntity.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.deleteEntity.Name = "deleteEntity";
+            this.deleteEntity.Size = new System.Drawing.Size(77, 22);
+            this.deleteEntity.Text = "Delete Entity";
+            this.deleteEntity.Click += new System.EventHandler(this.deleteEntity_Click);
+            // 
+            // duplicateEntity
+            // 
+            this.duplicateEntity.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.duplicateEntity.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.duplicateEntity.Image = ((System.Drawing.Image)(resources.GetObject("duplicateEntity.Image")));
+            this.duplicateEntity.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.duplicateEntity.Name = "duplicateEntity";
+            this.duplicateEntity.Size = new System.Drawing.Size(94, 22);
+            this.duplicateEntity.Text = "Duplicate Entity";
+            this.duplicateEntity.Click += new System.EventHandler(this.duplicateEntity_Click);
+            // 
             // EntityDisplay
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(406, 742);
+            this.ClientSize = new System.Drawing.Size(406, 780);
+            this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.entityInfoGroup);
             this.Controls.Add(this.entityParamGroup);
@@ -299,7 +338,10 @@
             this.entityParamGroup.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
+            this.toolStrip1.ResumeLayout(false);
+            this.toolStrip1.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -325,5 +367,8 @@
         private WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme vS2015DarkTheme1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.ToolStrip toolStrip1;
+        private System.Windows.Forms.ToolStripButton deleteEntity;
+        private System.Windows.Forms.ToolStripButton duplicateEntity;
     }
 }

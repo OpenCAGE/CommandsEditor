@@ -468,5 +468,15 @@ namespace CommandsEditor.DockPanels
             }
             _compositeDisplay.CommandsDisplay.LoadCompositeAndEntity(flow, entity);
         }
+
+        private void deleteEntity_Click(object sender, EventArgs e)
+        {
+            _compositeDisplay.DeleteEntity(Entity);
+        }
+
+        private void duplicateEntity_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

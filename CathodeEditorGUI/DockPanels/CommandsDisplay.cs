@@ -166,7 +166,7 @@ namespace CommandsEditor.DockPanels
         }
 
         /* Cache entity hierarchies */
-        private void CacheHierarchies()
+        public void CacheHierarchies()
         {
             if (_currentHierarchyCacher != null) _currentHierarchyCacher.Dispose();
             _currentHierarchyCacher = Task.Factory.StartNew(() => Content.editor_utils.GenerateCompositeInstances(Content.commands));
