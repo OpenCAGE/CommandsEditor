@@ -23,32 +23,30 @@ namespace CommandsEditor
 
         CommandsDisplay _commandsDisplay = null;
 
-        private string layoutConfigFile;
-
         public CommandsEditor()
         {
             Singleton.Editor = this;
 
-            layoutConfigFile = SharedData.pathToAI + "/DATA/MODTOOLS/CommandsEditor.config";
             InitializeComponent();
 
-            /*
-            if (File.Exists(layoutConfigFile))
+            //Set title
+            this.Text = "OpenCAGE Commands Editor";
+            if (OpenCAGE.SettingsManager.GetBool("CONFIG_ShowPlatform") &&
+                OpenCAGE.SettingsManager.GetString("META_GameVersion") != "")
             {
-                dockPanel.LoadFromXml(layoutConfigFile, new DeserializeDockContent(DockContent));
+                switch (OpenCAGE.SettingsManager.GetString("META_GameVersion"))
+                {
+                    case "STEAM":
+                        this.Text += " - Steam";
+                        break;
+                    case "EPIC_GAMES_STORE":
+                        this.Text += " - Epic Games Store";
+                        break;
+                    case "GOG":
+                        this.Text += " - GoG";
+                        break;
+                }
             }
-            else
-            {
-                CommandsDisplay f2 = new CommandsDisplay();
-                f2.Show(dockPanel, DockState.DockLeft);
-                EntityDisplay f4 = new EntityDisplay();
-                f4.Show(dockPanel, DockState.Document);
-                EntityDisplay f5 = new EntityDisplay();
-                f5.Show(dockPanel, DockState.Document);
-                CompositeDisplay f3 = new CompositeDisplay();
-                f3.Show(dockPanel, DockState.DockRight);
-            }
-            */
 
             //Populate localised text string databases (in English)
             List<string> textList = Directory.GetFiles(SharedData.pathToAI + "/DATA/TEXT/ENGLISH/", "*.TXT", SearchOption.AllDirectories).ToList<string>();
@@ -56,11 +54,11 @@ namespace CommandsEditor
                 Singleton.Strings.Add(Path.GetFileNameWithoutExtension(text), new Strings(text));
 
             //Load animation data - this should be quick enough to not worry about waiting for the thread
-            Task.Factory.StartNew(() => LoadAnimData(this));
+            Task.Factory.StartNew(() => LoadAnimData());
         }
 
         /* Load anim data */
-        public static void LoadAnimData(CommandsEditor editor)
+        public static void LoadAnimData()
         {
             //Load animation data
             PAK2 animPAK = new PAK2(SharedData.pathToAI + "/DATA/GLOBAL/ANIMATION.PAK");
@@ -98,22 +96,9 @@ namespace CommandsEditor
             GC.Collect();
         }
 
-        private IDockContent DockContent(string persistString)
-        {
-            /*
-            if (persistString == typeof(CompositeDisplay).ToString())
-                return new CompositeDisplay();
-            else if (persistString == typeof(CommandsDisplay).ToString())
-                return new CommandsDisplay();
-            else if (persistString == typeof(EntityDisplay).ToString())
-                return new EntityDisplay();
-            else*/
-                return null;
-        }
-
         private void OnFormClose(object sender, CancelEventArgs e)
         {
-            dockPanel.SaveAsXml(layoutConfigFile);
+
         }
 
         private void loadLevel_Click(object sender, EventArgs e)
@@ -124,13 +109,11 @@ namespace CommandsEditor
         }
         private void OnLevelSelected(string level)
         {
-            //Close all existing (TODO: this isn't working)
-            foreach (Form form in MdiChildren)
-                form.Close();
-            foreach (IDockContent document in dockPanel.DocumentsToArray())
+            //Close all existing
+            if (_commandsDisplay != null)
             {
-                document.DockHandler.DockPanel = null;
-                document.DockHandler.Close();
+                _commandsDisplay.CloseAllChildTabs();
+                _commandsDisplay.Close();
             }
 
             //Load new

@@ -28,10 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Variables", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("Functions", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("Proxies", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("Overrides", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup("Variables", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup6 = new System.Windows.Forms.ListViewGroup("Functions", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup7 = new System.Windows.Forms.ListViewGroup("Proxies", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup8 = new System.Windows.Forms.ListViewGroup("Overrides", System.Windows.Forms.HorizontalAlignment.Left);
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CompositeDisplay));
             this.composite_content = new System.Windows.Forms.ListView();
             this.EntityName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -40,10 +40,9 @@
             this.entity_search_btn = new System.Windows.Forms.Button();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.createEntity = new System.Windows.Forms.ToolStripButton();
-            this.removeSelected = new System.Windows.Forms.ToolStripButton();
-            this.duplicateSelected = new System.Windows.Forms.ToolStripButton();
-            this.renameSelected = new System.Windows.Forms.ToolStripButton();
             this.vS2015DarkTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme();
+            this.deleteComposite = new System.Windows.Forms.ToolStripButton();
+            this.findUses = new System.Windows.Forms.ToolStripButton();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -56,19 +55,19 @@
             this.EntityName,
             this.EntityType});
             this.composite_content.FullRowSelect = true;
-            listViewGroup1.Header = "Variables";
-            listViewGroup1.Name = "Variables";
-            listViewGroup2.Header = "Functions";
-            listViewGroup2.Name = "Functions";
-            listViewGroup3.Header = "Proxies";
-            listViewGroup3.Name = "Proxies";
-            listViewGroup4.Header = "Overrides";
-            listViewGroup4.Name = "Overrides";
+            listViewGroup5.Header = "Variables";
+            listViewGroup5.Name = "Variables";
+            listViewGroup6.Header = "Functions";
+            listViewGroup6.Name = "Functions";
+            listViewGroup7.Header = "Proxies";
+            listViewGroup7.Name = "Proxies";
+            listViewGroup8.Header = "Overrides";
+            listViewGroup8.Name = "Overrides";
             this.composite_content.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup1,
-            listViewGroup2,
-            listViewGroup3,
-            listViewGroup4});
+            listViewGroup5,
+            listViewGroup6,
+            listViewGroup7,
+            listViewGroup8});
             this.composite_content.HideSelection = false;
             this.composite_content.LabelWrap = false;
             this.composite_content.Location = new System.Drawing.Point(0, 54);
@@ -116,9 +115,8 @@
             // 
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.createEntity,
-            this.removeSelected,
-            this.duplicateSelected,
-            this.renameSelected});
+            this.findUses,
+            this.deleteComposite});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(630, 25);
@@ -135,38 +133,27 @@
             this.createEntity.Text = "Create Entity";
             this.createEntity.Click += new System.EventHandler(this.createEntity_Click);
             // 
-            // removeSelected
+            // deleteComposite
             // 
-            this.removeSelected.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.removeSelected.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.removeSelected.Image = ((System.Drawing.Image)(resources.GetObject("removeSelected.Image")));
-            this.removeSelected.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.removeSelected.Name = "removeSelected";
-            this.removeSelected.Size = new System.Drawing.Size(101, 22);
-            this.removeSelected.Text = "Remove Selected";
-            this.removeSelected.Click += new System.EventHandler(this.removeSelected_Click);
+            this.deleteComposite.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.deleteComposite.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.deleteComposite.Image = ((System.Drawing.Image)(resources.GetObject("deleteComposite.Image")));
+            this.deleteComposite.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.deleteComposite.Name = "deleteComposite";
+            this.deleteComposite.Size = new System.Drawing.Size(105, 22);
+            this.deleteComposite.Text = "Delete Composite";
+            this.deleteComposite.Click += new System.EventHandler(this.deleteComposite_Click);
             // 
-            // duplicateSelected
+            // findUses
             // 
-            this.duplicateSelected.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.duplicateSelected.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.duplicateSelected.Image = ((System.Drawing.Image)(resources.GetObject("duplicateSelected.Image")));
-            this.duplicateSelected.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.duplicateSelected.Name = "duplicateSelected";
-            this.duplicateSelected.Size = new System.Drawing.Size(108, 22);
-            this.duplicateSelected.Text = "Duplicate Selected";
-            this.duplicateSelected.Click += new System.EventHandler(this.duplicateSelected_Click);
-            // 
-            // renameSelected
-            // 
-            this.renameSelected.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.renameSelected.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.renameSelected.Image = ((System.Drawing.Image)(resources.GetObject("renameSelected.Image")));
-            this.renameSelected.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.renameSelected.Name = "renameSelected";
-            this.renameSelected.Size = new System.Drawing.Size(101, 22);
-            this.renameSelected.Text = "Rename Selected";
-            this.renameSelected.Click += new System.EventHandler(this.renameSelected_Click);
+            this.findUses.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.findUses.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.findUses.Image = ((System.Drawing.Image)(resources.GetObject("findUses.Image")));
+            this.findUses.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.findUses.Name = "findUses";
+            this.findUses.Size = new System.Drawing.Size(136, 22);
+            this.findUses.Text = "Find Uses of Composite";
+            this.findUses.Click += new System.EventHandler(this.findUses_Click);
             // 
             // CompositeDisplay
             // 
@@ -195,9 +182,8 @@
         private System.Windows.Forms.Button entity_search_btn;
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ToolStripButton createEntity;
-        private System.Windows.Forms.ToolStripButton removeSelected;
-        private System.Windows.Forms.ToolStripButton duplicateSelected;
-        private System.Windows.Forms.ToolStripButton renameSelected;
         private WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme vS2015DarkTheme1;
+        private System.Windows.Forms.ToolStripButton findUses;
+        private System.Windows.Forms.ToolStripButton deleteComposite;
     }
 }

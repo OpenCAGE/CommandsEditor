@@ -4,20 +4,12 @@ using CommandsEditor.DockPanels;
 using CommandsEditor.Popups.Base;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using static CATHODE.Scripting.TriggerSequence;
 
 namespace CommandsEditor
 {
     public partial class ShowCompositeUses : BaseWindow
     {
-        public Action<ShortGuid, Composite> OnEntitySelected;
+        public Action<Composite, Entity> OnEntitySelected;
 
         private List<EntityRef> entities = new List<EntityRef>();
 
@@ -35,7 +27,7 @@ namespace CommandsEditor
             {
                 foreach (FunctionEntity ent in comp.functions.FindAll(o => o.function == _compositeDisplay.Composite.shortGUID))
                 {
-                    entities.Add(new EntityRef() { composite = comp, entity = ent.shortGUID });
+                    entities.Add(new EntityRef() { composite = comp, entity = ent });
                     referenceList.Items.Add(comp.name + ": " + EntityUtils.GetName(comp.shortGUID, ent.shortGUID));
                 }
             }
@@ -45,13 +37,13 @@ namespace CommandsEditor
         private void jumpToEntity_Click(object sender, EventArgs e)
         {
             if (referenceList.SelectedIndex == -1) return;
-            OnEntitySelected?.Invoke(entities[referenceList.SelectedIndex].entity, entities[referenceList.SelectedIndex].composite);
+            OnEntitySelected?.Invoke(entities[referenceList.SelectedIndex].composite, entities[referenceList.SelectedIndex].entity);
             this.Close();
         }
 
         private struct EntityRef
         {
-            public ShortGuid entity;
+            public Entity entity;
             public Composite composite;
         }
     }

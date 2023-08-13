@@ -37,6 +37,7 @@
             // 
             // openColourPicker
             // 
+            this.openColourPicker.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.openColourPicker.Location = new System.Drawing.Point(17, 21);
             this.openColourPicker.Name = "openColourPicker";
             this.openColourPicker.Size = new System.Drawing.Size(259, 23);
@@ -47,6 +48,7 @@
             // 
             // GUID_VARIABLE_DUMMY
             // 
+            this.GUID_VARIABLE_DUMMY.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.GUID_VARIABLE_DUMMY.Controls.Add(this.pictureBox1);
             this.GUID_VARIABLE_DUMMY.Controls.Add(this.openColourPicker);
             this.GUID_VARIABLE_DUMMY.Location = new System.Drawing.Point(3, 3);
@@ -58,18 +60,19 @@
             // 
             // pictureBox1
             // 
+            this.pictureBox1.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.pictureBox1.Location = new System.Drawing.Point(293, 13);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(35, 35);
             this.pictureBox1.TabIndex = 1;
             this.pictureBox1.TabStop = false;
             // 
-            // GUI_CE_Colour
+            // GUI_VectorVariant_Colour
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.GUID_VARIABLE_DUMMY);
-            this.Name = "GUI_CE_Colour";
+            this.Name = "GUI_VectorVariant_Colour";
             this.Size = new System.Drawing.Size(340, 61);
             this.GUID_VARIABLE_DUMMY.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();

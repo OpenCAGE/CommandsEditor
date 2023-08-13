@@ -12,6 +12,8 @@ using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 using CATHODE.Scripting.Internal;
 using System.Windows.Controls;
+using System.Xml.Linq;
+using System.Windows.Interop;
 
 namespace CommandsEditor.DockPanels
 {
@@ -21,6 +23,7 @@ namespace CommandsEditor.DockPanels
         public LevelContent Content => _content;
 
         private TreeUtility _treeHelper;
+        private Task _currentHierarchyCacher = null;
 
         private Dictionary<Composite, CompositeDisplay> _compositeDisplays = new Dictionary<Composite, CompositeDisplay>();
 
@@ -34,7 +37,7 @@ namespace CommandsEditor.DockPanels
             //TODO: these utils should be moved into LevelContent and made less generic. makes no sense anymore.
             _content.editor_utils = new EditorUtils(_content);
             Task.Factory.StartNew(() => _content.editor_utils.GenerateEntityNameCache());
-            Task.Factory.StartNew(() => _content.editor_utils.GenerateCompositeInstances(_content.commands));
+            CacheHierarchies();
 
             _treeHelper.UpdateFileTree(_content.commands.GetCompositeNames().ToList());
             _treeHelper.SelectNode(_content.commands.EntryPoints[0].name);
@@ -55,22 +58,41 @@ namespace CommandsEditor.DockPanels
             this.Focus();
         }
 
-        private void removeSelected_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void findUsesOfSelected_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void FileTree_AfterSelect(object sender, TreeViewEventArgs e)
         {
             if (FileTree.SelectedNode == null) return;
             if (((TreeItem)FileTree.SelectedNode.Tag).Item_Type != TreeItemType.EXPORTABLE_FILE) return;
 
-            Composite composite = _content.commands.GetComposite(((TreeItem)FileTree.SelectedNode.Tag).String_Value);
+            LoadComposite(((TreeItem)FileTree.SelectedNode.Tag).String_Value);
+        }
+        private void OnCompositePanelClosed(object sender, FormClosedEventArgs e)
+        {
+            _compositeDisplays.Remove(((CompositeDisplay)sender).Composite);
+        }
+
+        public void CloseAllChildTabs()
+        {
+            List<CompositeDisplay> displays = new List<CompositeDisplay>();
+            foreach (KeyValuePair<Composite, CompositeDisplay> display in _compositeDisplays)
+                displays.Add(display.Value);
+            foreach (CompositeDisplay display in displays)
+            {
+                display.CloseAllChildTabs();
+                display.Close();
+            }
+        }
+
+        public CompositeDisplay LoadComposite(string name)
+        {
+            return LoadComposite(_content.commands.GetComposite(name));
+        }
+        public CompositeDisplay LoadComposite(ShortGuid guid)
+        {
+            return LoadComposite(_content.commands.GetComposite(guid));
+        }
+        public CompositeDisplay LoadComposite(Composite composite)
+        {
+            if (composite == null) return null;
 
             if (_compositeDisplays.ContainsKey(composite))
             {
@@ -87,12 +109,72 @@ namespace CommandsEditor.DockPanels
             //Close all entity tabs when opening a new composite tab (TODO: should probs make this an option) (TODO: should move this to activate when a composite tab is focussed)
             foreach (KeyValuePair<Composite, CompositeDisplay> display in _compositeDisplays)
             {
-                display.Value.CloseAllEntityTabs();
+                display.Value.CloseAllChildTabs();
             }
+
+            return _compositeDisplays[composite];
         }
-        private void OnCompositePanelClosed(object sender, FormClosedEventArgs e)
+
+        public void LoadCompositeAndEntity(ShortGuid compositeGUID, ShortGuid entityGUID)
         {
-            _compositeDisplays.Remove(((CompositeDisplay)sender).Composite);
+            Composite composite = _content.commands.GetComposite(compositeGUID);
+            LoadCompositeAndEntity(composite, composite?.GetEntityByID(entityGUID));
+        }
+        public void LoadCompositeAndEntity(Composite composite, Entity entity)
+        {
+            CompositeDisplay panel = LoadComposite(composite);
+            panel?.LoadEntity(entity);
+        }
+
+        public void DeleteComposite(Composite composite)
+        {
+            for (int i = 0; i < Content.commands.EntryPoints.Count(); i++)
+            {
+                if (composite.shortGUID == Content.commands.EntryPoints[i].shortGUID)
+                {
+                    MessageBox.Show("Cannot delete a composite which is the root, global, or pause menu!", "Cannot delete.", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+            }
+            if (MessageBox.Show("Are you sure you want to remove this composite?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+
+            if (_compositeDisplays.ContainsKey(composite))
+                _compositeDisplays[composite].Close();
+
+            //Remove any entities or links that reference this composite
+            for (int i = 0; i < Content.commands.Entries.Count; i++)
+            {
+                List<FunctionEntity> prunedFunctionEntities = new List<FunctionEntity>();
+                for (int x = 0; x < Content.commands.Entries[i].functions.Count; x++)
+                {
+                    if (Content.commands.Entries[i].functions[x].function == composite.shortGUID) continue;
+                    List<EntityLink> prunedEntityLinks = new List<EntityLink>();
+                    for (int l = 0; l < Content.commands.Entries[i].functions[x].childLinks.Count; l++)
+                    {
+                        Entity linkedEntity = Content.commands.Entries[i].GetEntityByID(Content.commands.Entries[i].functions[x].childLinks[l].childID);
+                        if (linkedEntity != null && linkedEntity.variant == EntityVariant.FUNCTION) if (((FunctionEntity)linkedEntity).function == composite.shortGUID) continue;
+                        prunedEntityLinks.Add(Content.commands.Entries[i].functions[x].childLinks[l]);
+                    }
+                    Content.commands.Entries[i].functions[x].childLinks = prunedEntityLinks;
+                    prunedFunctionEntities.Add(Content.commands.Entries[i].functions[x]);
+                }
+                Content.commands.Entries[i].functions = prunedFunctionEntities;
+            }
+            //TODO: remove proxies etc that also reference any of the removed entities
+
+            //Remove the composite
+            Content.commands.Entries.Remove(composite);
+
+            //Refresh UI
+            _treeHelper.UpdateFileTree(Content.commands.GetCompositeNames().ToList());
+            CacheHierarchies();
+        }
+
+        /* Cache entity hierarchies */
+        private void CacheHierarchies()
+        {
+            if (_currentHierarchyCacher != null) _currentHierarchyCacher.Dispose();
+            _currentHierarchyCacher = Task.Factory.StartNew(() => Content.editor_utils.GenerateCompositeInstances(Content.commands));
         }
     }
 }

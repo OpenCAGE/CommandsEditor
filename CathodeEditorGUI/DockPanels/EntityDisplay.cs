@@ -42,6 +42,25 @@ namespace CommandsEditor.DockPanels
 
             InitializeComponent();
 
+            //UI defaults - TODO: just set this in the designer.
+            entityInfoGroup.Text = "Selected Entity Info";
+            entityParamGroup.Text = "Selected Entity Parameters";
+            selected_entity_type_description.Text = "";
+            selected_entity_name.Text = "";
+            for (int i = 0; i < entity_params.Controls.Count; i++)
+                entity_params.Controls[i].Dispose();
+            entity_params.Controls.Clear();
+            jumpToComposite.Visible = false;
+            editFunction.Enabled = false;
+            editEntityResources.Enabled = false;
+            editEntityMovers.Enabled = false;
+            showOverridesAndProxies.Enabled = false;
+            goToZone.Enabled = false;
+            hierarchyDisplay.Visible = false;
+            addNewParameter.Enabled = true;
+            removeParameter.Enabled = true;
+            //--
+
             Content.OnEntitySelected?.Invoke(entity);
 
             Cursor.Current = Cursors.WaitCursor;

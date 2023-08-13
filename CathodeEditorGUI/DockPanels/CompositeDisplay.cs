@@ -89,21 +89,6 @@ namespace CommandsEditor.DockPanels
             LoadEntity(newEnt);
         }
 
-        private void renameSelected_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void duplicateSelected_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void removeSelected_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void composite_content_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (composite_content.SelectedItems.Count == 0) return;
@@ -132,7 +117,7 @@ namespace CommandsEditor.DockPanels
             _entityDisplays.Remove(((EntityDisplay)sender).Entity);
         }
 
-        public void CloseAllEntityTabs()
+        public void CloseAllChildTabs()
         {
             List<EntityDisplay> displays = new List<EntityDisplay>();
             foreach (KeyValuePair<Entity, EntityDisplay> display in _entityDisplays)
@@ -155,6 +140,18 @@ namespace CommandsEditor.DockPanels
             for (int i = 0; i < matched.Count; i++) composite_content.Items.Add(matched[i]);
             composite_content.EndUpdate();
             currentSearch = entity_search_box.Text;
+        }
+
+        private void findUses_Click(object sender, EventArgs e)
+        {
+            ShowCompositeUses uses = new ShowCompositeUses(this);
+            uses.Show();
+            uses.OnEntitySelected += _commandsDisplay.LoadCompositeAndEntity;
+        }
+
+        private void deleteComposite_Click(object sender, EventArgs e)
+        {
+            _commandsDisplay.DeleteComposite(_composite);
         }
     }
 }
