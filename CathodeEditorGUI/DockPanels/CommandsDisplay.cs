@@ -37,7 +37,7 @@ namespace CommandsEditor.DockPanels
 
             //TODO: these utils should be moved into LevelContent and made less generic. makes no sense anymore.
             _content.editor_utils = new EditorUtils(_content);
-            Task.Factory.StartNew(() => _content.editor_utils.GenerateEntityNameCache());
+            Task.Factory.StartNew(() => _content.editor_utils.GenerateEntityNameCache(Singleton.Editor));
             CacheHierarchies();
 
             _treeHelper.UpdateFileTree(_content.commands.GetCompositeNames().ToList());

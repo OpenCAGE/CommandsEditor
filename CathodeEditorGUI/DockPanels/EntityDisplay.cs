@@ -95,12 +95,11 @@ namespace CommandsEditor.DockPanels
                 case EntityVariant.PROXY:
                 case EntityVariant.OVERRIDE:
                     hierarchyDisplay.Visible = true;
-                    string hierarchy = "";
-                    if (entity.variant == EntityVariant.PROXY) CommandsUtils.ResolveHierarchy(Content.commands, Composite, ((ProxyEntity)entity).connectedEntity.hierarchy, out Composite comp, out hierarchy);
-                    else CommandsUtils.ResolveHierarchy(Content.commands, Composite, ((OverrideEntity)entity).connectedEntity.hierarchy, out Composite comp, out hierarchy);
+                    List<ShortGuid> entityHierarchy = entity.variant == EntityVariant.PROXY ? ((ProxyEntity)entity).connectedEntity.hierarchy : ((OverrideEntity)entity).connectedEntity.hierarchy;
+                    Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, Composite, entityHierarchy, out Composite comp, out string hierarchy);
                     hierarchyDisplay.Text = hierarchy;
                     jumpToComposite.Visible = true;
-                    selected_entity_name.Text = EntityUtils.GetName(Composite.shortGUID, entity.shortGUID);
+                    selected_entity_name.Text = (entity.variant == EntityVariant.PROXY ? "Proxy" : "Override") + " to " + EntityUtils.GetName(comp, ent);
                     break;
                 default:
                     selected_entity_name.Text = EntityUtils.GetName(Composite.shortGUID, entity.shortGUID);

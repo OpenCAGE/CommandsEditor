@@ -22,14 +22,28 @@ namespace CommandsEditor
 {
     public partial class NodeEditor : BaseWindow
     {
-        EntityDisplay _entityDisplay;
-
-        public NodeEditor(EntityDisplay entityDisplay) : base(WindowClosesOn.NONE, entityDisplay.Content)
+        public NodeEditor(LevelContent content) : base(WindowClosesOn.NONE, content)
         {
-            _entityDisplay = entityDisplay;
-
             InitializeComponent();
-            AddEntities(entityDisplay.Composite, entityDisplay.Entity);
+
+            this.FormClosed += NodeEditor_FormClosed;
+            Singleton.OnEntitySelected += OnEntitySelected;
+
+            OnEntitySelected();
+        }
+
+        private void NodeEditor_FormClosed(object sender, System.Windows.Forms.FormClosedEventArgs e)
+        {
+            Singleton.OnEntitySelected -= OnEntitySelected;
+        }
+
+        private void OnEntitySelected(Entity ent = null)
+        {
+            if (Editor == null)
+                _content = Singleton.Editor.CommandsDisplay?.Content;
+
+            stNodeEditor1.Nodes.Clear();
+            AddEntities(Singleton.Editor.ActiveCompositeDisplay?.ActiveEntityDisplay?.Composite, Singleton.Editor.ActiveCompositeDisplay?.ActiveEntityDisplay?.Entity);
         }
 
         protected override void OnLoad(EventArgs e) {
@@ -146,8 +160,7 @@ namespace CommandsEditor
             STNode[] nodes = stNodeEditor1.GetSelectedNode();
             if (nodes.Length == 0) return;
 
-            //TODO: IMPLEMENT THIS
-            //_editor.LoadEntity(((CustomNode)nodes[0]).ID);
+            Singleton.Editor.ActiveCompositeDisplay.LoadEntity(((CustomNode)nodes[0]).ID);
         }
 
         private CustomNode EntityToNode(Entity entity, Composite composite)

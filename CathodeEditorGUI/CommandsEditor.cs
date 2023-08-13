@@ -1,7 +1,9 @@
 ﻿using CATHODE;
 using CATHODE.Scripting;
+using CATHODE.Scripting.Internal;
 using CommandsEditor.DockPanels;
 using CommandsEditor.Popups;
+using OpenCAGE;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,9 +12,11 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using WebSocketSharp.Server;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace CommandsEditor
@@ -22,7 +26,19 @@ namespace CommandsEditor
         public DockPanel DockPanel => dockPanel;
 
         private CommandsDisplay _commandsDisplay = null;
+        public CommandsDisplay CommandsDisplay => _commandsDisplay;
+
+        private NodeEditor _nodeViewer = null;
+
         private CompositeDisplay _activeCompositeDisplay = null;
+        public CompositeDisplay ActiveCompositeDisplay => _activeCompositeDisplay;
+
+        private WebSocketServer _server;
+        private WebsocketServer _serverLogic;
+
+        private readonly string _serverOpt = "CE_ConnectToUnity";
+        private readonly string _backupsOpt = "CS_EnableBackups";
+        private readonly string _nodeOpt = "CS_NodeView";
 
         public CommandsEditor()
         {
@@ -30,6 +46,14 @@ namespace CommandsEditor
 
             InitializeComponent();
             dockPanel.ActiveContentChanged += DockPanel_ActiveContentChanged;
+
+            Singleton.OnEntitySelected += RefreshWebsocket;
+            Singleton.OnCompositeSelected += RefreshWebsocket;
+            Singleton.OnLevelLoaded += RefreshWebsocket;
+
+            enableBackups.Checked = !SettingsManager.GetBool(_backupsOpt); enableBackups.PerformClick();
+            connectToUnity.Checked = !SettingsManager.GetBool(_serverOpt); connectToUnity.PerformClick();
+            showNodegraph.Checked = !SettingsManager.GetBool(_nodeOpt); showNodegraph.PerformClick();
 
             //Set title
             this.Text = "OpenCAGE Commands Editor";
@@ -295,6 +319,158 @@ namespace CommandsEditor
                 _commandsDisplay.Content.mvr.Save();
 
             return true;
+        }
+
+        /* Enable the option to load */
+        public void EnableLoadingOfPaks(bool shouldEnable, string text)
+        {
+            toolStrip.Invoke(new Action(() => { toolStrip.Enabled = shouldEnable; }));
+            statusStrip.Invoke(new Action(() => { statusText.Text = text; }));
+        }
+
+        /* Enable/disable backups */
+        Task backgroundBackups = null;
+        CancellationToken backupCancellationToken;
+        private void enableBackups_Click(object sender, EventArgs e)
+        {
+            enableBackups.Checked = !enableBackups.Checked;
+            SettingsManager.SetBool(_backupsOpt, enableBackups.Checked);
+
+            CancellationTokenSource tokenSource = new CancellationTokenSource();
+            backupCancellationToken = tokenSource.Token;
+            if (backgroundBackups != null) tokenSource.Cancel();
+            while (backgroundBackups != null) Thread.Sleep(100);
+
+            if (enableBackups.Checked)
+                backgroundBackups = Task.Factory.StartNew(() => BackupCommands(this));
+        }
+        private void BackupCommands(CommandsEditor mainInst)
+        {
+            int i = 0;
+            while (true)
+            {
+                i = 0;
+                while (i < 300000)
+                {
+                    if (backupCancellationToken.IsCancellationRequested)
+                    {
+                        backgroundBackups = null;
+                        return;
+                    }
+                    Thread.Sleep(500);
+                    i += 500;
+                }
+
+                if (_commandsDisplay.Content.commands == null) continue;
+                mainInst.EnableLoadingOfPaks(false, "Performing automated backup...");
+
+                string backupDirectory = _commandsDisplay.Content.commands.Filepath.Substring(0, _commandsDisplay.Content.commands.Filepath.Length - Path.GetFileName(_commandsDisplay.Content.commands.Filepath).Length) + "/COMMANDS_BACKUPS/";
+                Directory.CreateDirectory(backupDirectory);
+
+                //Make sure there are only 15 max backed up PAKs
+                var files = new DirectoryInfo(backupDirectory).EnumerateFiles().OrderByDescending(f => f.CreationTime).Skip(15).ToList();
+                files.ForEach(f => f.Delete());
+
+                _commandsDisplay.Content.commands.Save(backupDirectory + "COMMANDS_" + DateTimeOffset.UtcNow.ToUnixTimeSeconds() + ".PAK", false);
+                mainInst.EnableLoadingOfPaks(true, "");
+            }
+        }
+
+        /* Websocket to Unity */
+        private void connectToUnity_Click(object sender, EventArgs e)
+        {
+            connectToUnity.Checked = !connectToUnity.Checked;
+            SettingsManager.SetBool(_serverOpt, connectToUnity.Checked);
+            RefreshWebsocket();
+        }
+        private bool StartWebsocket()
+        {
+            try
+            {
+                _server = new WebSocketServer("ws://localhost:1702");
+                _server.AddWebSocketService<WebsocketServer>("/commands_editor", (server) =>
+                {
+                    _serverLogic = server;
+                    _serverLogic.OnClientConnect += RefreshWebsocket;
+                });
+                _server.Start();
+                return true;
+            }
+            catch
+            {
+                if (connectToUnity.Checked)
+                    connectToUnity.PerformClick();
+
+                MessageBox.Show("Failed to initialise Unity connection.\nIs another instance of the script editor running?", "Connection failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
+        private void RefreshWebsocket() => RefreshWebsocket(null);
+        private void RefreshWebsocket(object o)
+        {
+            if (!SettingsManager.GetBool(_serverOpt))
+            {
+                if (_server != null)
+                    _server.Stop();
+                _server = null;
+                return;
+            }
+            else
+            {
+                if (_server == null)
+                    StartWebsocket();
+            }
+
+            //Request the correct level
+            if (_commandsDisplay?.Content?.commands != null && _commandsDisplay.Content.commands.Loaded)
+            {
+                _server.WebSocketServices["/commands_editor"].Sessions.Broadcast(((int)WebsocketServer.MessageType.LOAD_LEVEL) + _commandsDisplay.Content.level);
+            }
+
+            //Get active stuff
+            Entity entity = ActiveCompositeDisplay?.ActiveEntityDisplay?.Entity;
+            Composite composite = ActiveCompositeDisplay?.ActiveEntityDisplay?.Composite;
+            Parameter position = entity?.GetParameter("position");
+
+            //Point to position of selected entity
+            if (position != null)
+            {
+                System.Numerics.Vector3 vec = ((cTransform)position.content).position;
+                _server.WebSocketServices["/commands_editor"].Sessions.Broadcast(((int)WebsocketServer.MessageType.GO_TO_POSITION).ToString() + vec.X + ">" + vec.Y + ">" + vec.Z);
+            }
+
+            //Show name of entity
+            if (entity != null && composite != null)
+                _server.WebSocketServices["/commands_editor"].Sessions.Broadcast(((int)WebsocketServer.MessageType.SHOW_ENTITY_NAME).ToString() + EntityUtils.GetName(composite, entity));
+        }
+
+        private void showNodegraph_Click(object sender, EventArgs e)
+        {
+            showNodegraph.Checked = !showNodegraph.Checked;
+            SettingsManager.SetBool(_nodeOpt, showNodegraph.Checked);
+
+            if (showNodegraph.Checked)
+            {
+                _nodeViewer = new NodeEditor(null);
+                _nodeViewer.Show();
+                _nodeViewer.FormClosed += NodeViewer_FormClosed;
+                _nodeViewer.BringToFront();
+                _nodeViewer.Focus();
+            }
+            else
+            {
+                if (_nodeViewer != null)
+                {
+                    _nodeViewer.FormClosed -= NodeViewer_FormClosed;
+                    _nodeViewer.Close();
+                    _nodeViewer = null;
+                }
+            }
+        }
+        private void NodeViewer_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _nodeViewer = null;
+            showNodegraph.Checked = false;
         }
     }
 }

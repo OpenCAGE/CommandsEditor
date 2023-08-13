@@ -29,7 +29,9 @@ namespace CommandsEditor.DockPanels
         private string currentSearch = "";
 
         private Dictionary<Entity, EntityDisplay> _entityDisplays = new Dictionary<Entity, EntityDisplay>();
+
         private EntityDisplay _activeEntityDisplay = null;
+        public EntityDisplay ActiveEntityDisplay => _activeEntityDisplay;
 
         public CompositeDisplay(CommandsDisplay commandsDisplay, Composite composite)
         {
@@ -124,6 +126,14 @@ namespace CommandsEditor.DockPanels
             LoadEntity(entity);
         }
 
+        public void LoadEntity(ShortGuid guid)
+        {
+            LoadEntity(Composite.GetEntityByID(guid));
+        }
+        public void LoadEntity(ShortGuid guid, bool forceReload)
+        {
+            LoadEntity(Composite.GetEntityByID(guid), forceReload);
+        }
         public void LoadEntity(Entity entity)
         {
             LoadEntity(entity, false);

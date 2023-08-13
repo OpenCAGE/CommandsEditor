@@ -149,10 +149,11 @@ namespace CommandsEditor
         /* Generate a cache of entity names */
         private bool hasFinishedCachingEntityNames = false;
         private Dictionary<ShortGuid, Dictionary<ShortGuid, string>> cachedEntityName = new Dictionary<ShortGuid, Dictionary<ShortGuid, string>>();
-        public void GenerateEntityNameCache()
+        public void GenerateEntityNameCache(CommandsEditor mainInst)
         {
             if (_content.commands == null) return;
             hasFinishedCachingEntityNames = false;
+            mainInst.EnableLoadingOfPaks(false, "Generating caches...");
             cachedEntityName.Clear();
             for (int i = 0; i < _content.commands.Entries.Count; i++)
             {
@@ -164,6 +165,7 @@ namespace CommandsEditor
                     if (!cachedEntityName[comp.shortGUID].ContainsKey(ents[x].shortGUID))
                         cachedEntityName[comp.shortGUID].Add(ents[x].shortGUID, GenerateEntityNameInternal(ents[x], comp));
             }
+            mainInst.EnableLoadingOfPaks(true, "");
             hasFinishedCachingEntityNames = true;
         }
 
