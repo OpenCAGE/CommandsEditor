@@ -25,10 +25,11 @@ namespace CommandsEditor.DockPanels
         private Composite _composite;
         public Composite Composite => _composite;
 
-        List<ListViewItem> composite_content_RAW = new List<ListViewItem>();
+        private List<ListViewItem> composite_content_RAW = new List<ListViewItem>();
         private string currentSearch = "";
 
         private Dictionary<Entity, EntityDisplay> _entityDisplays = new Dictionary<Entity, EntityDisplay>();
+        private EntityDisplay _activeEntityDisplay = null;
 
         public CompositeDisplay(CommandsDisplay commandsDisplay, Composite composite)
         {
@@ -37,13 +38,37 @@ namespace CommandsEditor.DockPanels
 
             InitializeComponent();
             this.Text = composite.name;
-
-            commandsDisplay.Content.OnCompositeSelected?.Invoke(composite);
+            dockPanel.ActiveContentChanged += DockPanel_ActiveContentChanged;
 
             Cursor.Current = Cursors.WaitCursor;
             CommandsUtils.PurgeDeadLinks(commandsDisplay.Content.commands, composite);
             PopulateListView();
             Cursor.Current = Cursors.Default;
+        }
+
+        /* Monitor the currently active entity tab */
+        private void DockPanel_ActiveContentChanged(object sender, EventArgs e)
+        {
+            EntityDisplay prevActiveEntityDisplay = _activeEntityDisplay;
+            object content = ((DockPanel)sender).ActiveContent;
+
+            if (content is EntityDisplay) 
+                _activeEntityDisplay = (EntityDisplay)content;
+            else 
+                return;
+
+            if (prevActiveEntityDisplay == _activeEntityDisplay) return;
+
+            if (prevActiveEntityDisplay != null)
+                prevActiveEntityDisplay.FormClosing -= OnActiveContentClosing;
+            _activeEntityDisplay.FormClosing += OnActiveContentClosing;
+
+            Singleton.OnEntitySelected?.Invoke(_activeEntityDisplay.Entity);
+        }
+        private void OnActiveContentClosing(object sender, FormClosingEventArgs e)
+        {
+            _activeEntityDisplay = null;
+            Singleton.OnEntitySelected?.Invoke(null);
         }
 
         private void PopulateListView()

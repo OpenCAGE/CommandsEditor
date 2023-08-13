@@ -21,13 +21,15 @@ namespace CommandsEditor
     {
         public DockPanel DockPanel => dockPanel;
 
-        CommandsDisplay _commandsDisplay = null;
+        private CommandsDisplay _commandsDisplay = null;
+        private CompositeDisplay _activeCompositeDisplay = null;
 
         public CommandsEditor()
         {
             Singleton.Editor = this;
 
             InitializeComponent();
+            dockPanel.ActiveContentChanged += DockPanel_ActiveContentChanged;
 
             //Set title
             this.Text = "OpenCAGE Commands Editor";
@@ -96,9 +98,29 @@ namespace CommandsEditor
             GC.Collect();
         }
 
-        private void OnFormClose(object sender, CancelEventArgs e)
+        /* Monitor the currently active composite tab */
+        private void DockPanel_ActiveContentChanged(object sender, EventArgs e)
         {
+            CompositeDisplay prevActiveEntityDisplay = _activeCompositeDisplay;
+            object content = ((DockPanel)sender).ActiveContent;
 
+            if (content is CompositeDisplay)
+                _activeCompositeDisplay = (CompositeDisplay)content;
+            else
+                return;
+
+            if (prevActiveEntityDisplay == _activeCompositeDisplay) return;
+
+            if (prevActiveEntityDisplay != null)
+                prevActiveEntityDisplay.FormClosing -= OnActiveContentClosing;
+            _activeCompositeDisplay.FormClosing += OnActiveContentClosing;
+
+            Singleton.OnCompositeSelected?.Invoke(_activeCompositeDisplay.Composite);
+        }
+        private void OnActiveContentClosing(object sender, FormClosingEventArgs e)
+        {
+            _activeCompositeDisplay = null;
+            Singleton.OnCompositeSelected?.Invoke(null);
         }
 
         private void loadLevel_Click(object sender, EventArgs e)
@@ -115,6 +137,7 @@ namespace CommandsEditor
                 _commandsDisplay.CloseAllChildTabs();
                 _commandsDisplay.Close();
             }
+            _activeCompositeDisplay = null;
 
             //Load new
             _commandsDisplay = new CommandsDisplay(level);
@@ -126,14 +149,25 @@ namespace CommandsEditor
         {
             if (_commandsDisplay == null) return;
             Cursor.Current = Cursors.WaitCursor;
+            bool saved = LegacySave();
+            Cursor.Current = Cursors.Default;
 
+            if (saved)
+                MessageBox.Show("Saved changes!", "Saved.", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            else
+                MessageBox.Show("Failed to save changes!", "Failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        private bool SaveNew()
+        {
+            bool saved = false;
 #if !CATHODE_FAIL_HARD
             byte[] backup = null;
             try
             {
-                backup = File.ReadAllBytes(Editor.commands.Filepath);
+                backup = File.ReadAllBytes(_commandsDisplay.Content.commands.Filepath);
 #endif
-                _commandsDisplay.Content.commands.Save();
+                saved = _commandsDisplay.Content.commands.Save();
 #if !CATHODE_FAIL_HARD
             }
             catch (Exception ex)
@@ -141,13 +175,23 @@ namespace CommandsEditor
                 try
                 {
                     if (backup != null)
-                        File.WriteAllBytes(Editor.commands.Filepath, backup);
+                        File.WriteAllBytes(_commandsDisplay.Content.commands.Filepath, backup);
                 }
                 catch { }
-            
-                Cursor.Current = Cursors.Default;
-                MessageBox.Show("Failed to save changes!\n" + ex.Message, "Failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+
+                return false;
+            }
+
+            if (!saved)
+            {
+                try
+                {
+                    if (backup != null)
+                        File.WriteAllBytes(_commandsDisplay.Content.commands.Filepath, backup);
+                }
+                catch { }
+
+                return false;
             }
 #endif
 
@@ -155,8 +199,7 @@ namespace CommandsEditor
             _commandsDisplay.Content.editor_utils.GenerateCompositeInstances(_commandsDisplay.Content.commands); //TODO: Do we need to do this? I don't think we should.
             CreateDataForInstance(_commandsDisplay.Content.commands.EntryPoints[0]);
 
-            Cursor.Current = Cursors.Default;
-            MessageBox.Show("Saved changes!", "Saved.", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            return saved;
         }
         private void CreateDataForInstance(Composite composite)
         {
@@ -202,6 +245,56 @@ namespace CommandsEditor
             _commandsDisplay.Content.resource.character_accessories.Save();
             _commandsDisplay.Content.resource.reds.Save();
             _commandsDisplay.Content.mvr.Save();
+        }
+
+        //To be deprecated: this does not work nicely for resources and other hierarchical things.
+        private bool LegacySave()
+        {
+            bool saved = false;
+#if !CATHODE_FAIL_HARD
+            byte[] backup = null;
+            try
+            {
+                backup = File.ReadAllBytes(_commandsDisplay.Content.commands.Filepath);
+#endif
+                saved = _commandsDisplay.Content.commands.Save();
+#if !CATHODE_FAIL_HARD
+            }
+            catch (Exception ex)
+            {
+                try
+                {
+                    if (backup != null)
+                        File.WriteAllBytes(_commandsDisplay.Content.commands.Filepath, backup);
+                }
+                catch { }
+
+                return false;
+            }
+
+            if (!saved)
+            {
+                try
+                {
+                    if (backup != null)
+                        File.WriteAllBytes(_commandsDisplay.Content.commands.Filepath, backup);
+                }
+                catch { }
+
+                return false;
+            }
+#endif
+
+            if (_commandsDisplay.Content.resource.physics_maps != null && _commandsDisplay.Content.resource.physics_maps.Entries != null)
+                _commandsDisplay.Content.resource.physics_maps.Save();
+            if (_commandsDisplay.Content.resource.character_accessories != null && _commandsDisplay.Content.resource.character_accessories.Entries != null)
+                _commandsDisplay.Content.resource.character_accessories.Save();
+            if (_commandsDisplay.Content.resource.reds != null && _commandsDisplay.Content.resource.reds.Entries != null)
+                _commandsDisplay.Content.resource.reds.Save();
+            if (_commandsDisplay.Content.mvr != null && _commandsDisplay.Content.mvr.Entries != null)
+                _commandsDisplay.Content.mvr.Save();
+
+            return true;
         }
     }
 }

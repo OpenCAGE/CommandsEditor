@@ -261,7 +261,7 @@
     <Compile Include="DockPanels\EntityDisplay.Designer.cs">
       <DependentUpon>EntityDisplay.cs</DependentUpon>
     </Compile>
-    <Compile Include="LevelContent.cs" />
+    <Compile Include="Scripts\LevelContent.cs" />
     <Compile Include="Popups\Base\BaseWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1310,7 +1310,7 @@
     <Compile Include="Scripts\TreeUtility.cs" />
     <Compile Include="Scripts\SettingsManager.cs" />
     <Compile Include="Scripts\WebsocketServer.cs" />
-    <Compile Include="Singleton.cs" />
+    <Compile Include="Scripts\Singleton.cs" />
     <Compile Include="UserControls\Base\BaseUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

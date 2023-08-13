@@ -113,7 +113,6 @@
             this.Name = "CommandsEditor";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "OpenCAGE Commands Editor";
-            this.Closing += new System.ComponentModel.CancelEventHandler(this.OnFormClose);
             this.toolStrip.ResumeLayout(false);
             this.toolStrip.PerformLayout();
             this.ResumeLayout(false);

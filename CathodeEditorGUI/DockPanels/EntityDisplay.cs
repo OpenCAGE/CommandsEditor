@@ -61,8 +61,6 @@ namespace CommandsEditor.DockPanels
             removeParameter.Enabled = true;
             //--
 
-            Content.OnEntitySelected?.Invoke(entity);
-
             Cursor.Current = Cursors.WaitCursor;
             entity_params.SuspendLayout();
             Task.Factory.StartNew(() => BackgroundEntityLoader(entity, this));
@@ -327,6 +325,7 @@ namespace CommandsEditor.DockPanels
             entity_params.ResumeLayout();
             Cursor.Current = Cursors.Default;
         }
+
         private void BackgroundEntityLoader(Entity ent, EntityDisplay mainInst)
         {
             bool isPointedTo = mainInst.Content.editor_utils.IsEntityReferencedExternally(ent);
@@ -427,7 +426,7 @@ namespace CommandsEditor.DockPanels
             switch (function.ToUpper())
             {
                 case "CAGEANIMATION":
-                    Content.OnCAGEAnimationEditorOpened?.Invoke();
+                    Singleton.OnCAGEAnimationEditorOpened?.Invoke();
                     CAGEAnimationEditor cageAnimationEditor = new CAGEAnimationEditor(this);
                     cageAnimationEditor.Show();
                     cageAnimationEditor.OnSaved += CAGEAnimationEditor_OnSaved;

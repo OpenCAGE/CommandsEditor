@@ -20,8 +20,6 @@ namespace CommandsEditor.Popups.Base
 
         private WindowClosesOn _closesOn;
 
-        private Commands _startCommands;
-
         [Obsolete("Designer only", true)]
         public BaseWindow()
         {
@@ -35,16 +33,14 @@ namespace CommandsEditor.Popups.Base
             _closesOn = config;
             _content = content;
 
-            _startCommands = Editor.commands;
-
             if (_closesOn.HasFlag(WindowClosesOn.COMMANDS_RELOAD))
-                Editor.OnCommandsSelected += OnCommandsSelected;
+                Singleton.OnLevelLoaded += OnCommandsSelected;
             if (_closesOn.HasFlag(WindowClosesOn.NEW_ENTITY_SELECTION))
-                Editor.OnEntitySelected += OnEntitySelected;
+                Singleton.OnEntitySelected += OnEntitySelected;
             if (_closesOn.HasFlag(WindowClosesOn.NEW_COMPOSITE_SELECTION))
-                Editor.OnCompositeSelected += OnCompositeSelected;
+                Singleton.OnCompositeSelected += OnCompositeSelected;
             if (_closesOn.HasFlag(WindowClosesOn.NEW_CAGEANIM_EDITOR_OPENED))
-                Editor.OnCAGEAnimationEditorOpened += OnCAGEAnimationEditorOpened;
+                Singleton.OnCAGEAnimationEditorOpened += OnCAGEAnimationEditorOpened;
 
             this.BringToFront();
             this.Focus();
@@ -53,43 +49,28 @@ namespace CommandsEditor.Popups.Base
         private void OnFormClosed(Object sender, FormClosedEventArgs e)
         {
             if (_closesOn.HasFlag(WindowClosesOn.COMMANDS_RELOAD))
-                Editor.OnCommandsSelected -= OnCommandsSelected;
+                Singleton.OnLevelLoaded -= OnCommandsSelected;
             if (_closesOn.HasFlag(WindowClosesOn.NEW_ENTITY_SELECTION))
-                Editor.OnEntitySelected -= OnEntitySelected;
+                Singleton.OnEntitySelected -= OnEntitySelected;
             if (_closesOn.HasFlag(WindowClosesOn.NEW_COMPOSITE_SELECTION))
-                Editor.OnCompositeSelected -= OnCompositeSelected;
+                Singleton.OnCompositeSelected -= OnCompositeSelected;
             if (_closesOn.HasFlag(WindowClosesOn.NEW_CAGEANIM_EDITOR_OPENED))
-                Editor.OnCAGEAnimationEditorOpened -= OnCAGEAnimationEditorOpened;
+                Singleton.OnCAGEAnimationEditorOpened -= OnCAGEAnimationEditorOpened;
         }
 
-        private void OnCommandsSelected(Commands commands)
+        private void OnCommandsSelected(LevelContent content)
         {
-            if ((_startCommands == null && commands != null) ||
-                (_startCommands != null && commands == null) ||
-                (_startCommands.Filepath != commands.Filepath))
-                this.Close();
+            this.Close();
         }
 
         private void OnEntitySelected(Entity entity)
         {
-            //TODO
-            /*
-            if ((_startEntity == null && entity != null) ||
-                (_startEntity != null && entity == null) ||
-                (_startEntity.shortGUID != entity.shortGUID))
-                this.Close();
-            */
+            this.Close();
         }
 
         private void OnCompositeSelected(Composite composite)
         {
-            //TODO
-            /*
-            if ((_startComposite == null && composite != null) ||
-                (_startComposite != null && composite == null) ||
-                (_startComposite.shortGUID != composite.shortGUID))
-                this.Close();
-            */
+            this.Close();
         }
 
         private void OnCAGEAnimationEditorOpened()

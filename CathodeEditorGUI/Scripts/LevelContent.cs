@@ -50,15 +50,10 @@ namespace CommandsEditor
         //Global localised string DBs for English
         public Dictionary<string, Strings> strings = new Dictionary<string, Strings>();
 
-        //Events for new commands/entity/composite being selected
-        public Action<Commands> OnCommandsSelected;
-        public Action<Entity> OnEntitySelected;
-        public Action<Composite> OnCompositeSelected;
-        public Action OnCAGEAnimationEditorOpened;
-
         //UI stuff
         public Dictionary<Composite, Dictionary<Entity, ListViewItem>> composite_content_cache = new Dictionary<Composite, Dictionary<Entity, ListViewItem>>();
 
+        //TODO: this should really be refactored. hacked in legacy stuff.
         public EditorUtils editor_utils;
 
         public LevelContent(string levelName)
@@ -125,85 +120,85 @@ namespace CommandsEditor
         private bool Load(string path)
         {
 #if !CATHODE_FAIL_HARD
-                try
-                {
+            try
+            {
 #endif
-            string worldPath = path + "WORLD/";
-            string renderablePath = path + "RENDERABLE/";
+                string worldPath = path + "WORLD/";
+                string renderablePath = path + "RENDERABLE/";
 
-            //The game has two hard-coded _PATCH overrides. We should use RENDERABLE from the non-patched folder.
-            switch (level)
-            {
-                case "DLC/BSPNOSTROMO_RIPLEY_PATCH":
-                case "DLC/BSPNOSTROMO_TWOTEAMS_PATCH":
-                    renderablePath = renderablePath.Replace(level, level.Substring(0, level.Length - ("_PATCH").Length)) + "RENDERABLE/";
-                    break;
-            }
-
-            //Somewhat hacky way of loading everything at once
-            Parallel.For(0, 15, (i) =>
-            {
-                switch (i)
+                //The game has two hard-coded _PATCH overrides. We should use RENDERABLE from the non-patched folder.
+                switch (level)
                 {
-                    case 0:
-                        resource.models = new Models(renderablePath + "LEVEL_MODELS.PAK");
-                        break;
-                    case 1:
-                        resource.materials = new Materials(renderablePath + "LEVEL_MODELS.MTL");
-                        break;
-                    case 2:
-                        //resource.textures = new Textures(renderablePath + "LEVEL_TEXTURES.ALL.PAK");
-                        break;
-                    case 3:
-                        //resource.textures_Global = new Textures(SharedData.pathToAI + "/DATA/ENV/GLOBAL/WORLD/GLOBAL_TEXTURES.ALL.PAK");
-                        break;
-                    case 4:
-                        resource.reds = new RenderableElements(worldPath + "REDS.BIN");
-                        break;
-                    case 5:
-                        resource.env_animations = new EnvironmentAnimations(worldPath + "ENVIRONMENT_ANIMATION.DAT");
-                        break;
-                    case 6:
-                        resource.collision_maps = new CollisionMaps(worldPath + "COLLISION.MAP");
-                        break;
-                    case 7:
-                        resource.physics_maps = new PhysicsMaps(worldPath + "PHYSICS.MAP");
-                        break;
-                    case 8:
-                        resource.sound_bankdata = new SoundBankData(worldPath + "SOUNDBANKDATA.DAT");
-                        break;
-                    case 9:
-                        resource.sound_dialoguelookups = new SoundDialogueLookups(worldPath + "SOUNDDIALOGUELOOKUPS.DAT");
-                        break;
-                    case 10:
-                        resource.sound_eventdata = new SoundEventData(worldPath + "SOUNDEVENTDATA.DAT");
-                        break;
-                    case 11:
-                        resource.sound_environmentdata = new SoundEnvironmentData(worldPath + "SOUNDENVIRONMENTDATA.DAT");
-                        break;
-                    case 12:
-                        resource.character_accessories = new CharacterAccessorySets(worldPath + "CHARACTERACCESSORYSETS.BIN");
-                        break;
-                    case 13:
-                        mvr = new Movers(worldPath + "MODELS.MVR");
-                        break;
-                    case 14:
-                        commands = new Commands(worldPath + "COMMANDS.PAK");
+                    case "DLC/BSPNOSTROMO_RIPLEY_PATCH":
+                    case "DLC/BSPNOSTROMO_TWOTEAMS_PATCH":
+                        renderablePath = renderablePath.Replace(level, level.Substring(0, level.Length - ("_PATCH").Length)) + "RENDERABLE/";
                         break;
                 }
-            });
 
-            if (!commands.Loaded || commands.EntryPoints == null || commands.EntryPoints[0] == null)
-                return false;
-
-            OnCommandsSelected?.Invoke(commands);
-            return true;
-#if !CATHODE_FAIL_HARD
-                }
-                catch
+                //Somewhat hacky way of loading everything at once
+                Parallel.For(0, 15, (i) =>
                 {
+                    switch (i)
+                    {
+                        case 0:
+                            resource.models = new Models(renderablePath + "LEVEL_MODELS.PAK");
+                            break;
+                        case 1:
+                            resource.materials = new Materials(renderablePath + "LEVEL_MODELS.MTL");
+                            break;
+                        case 2:
+                            //resource.textures = new Textures(renderablePath + "LEVEL_TEXTURES.ALL.PAK");
+                            break;
+                        case 3:
+                            //resource.textures_Global = new Textures(SharedData.pathToAI + "/DATA/ENV/GLOBAL/WORLD/GLOBAL_TEXTURES.ALL.PAK");
+                            break;
+                        case 4:
+                            resource.reds = new RenderableElements(worldPath + "REDS.BIN");
+                            break;
+                        case 5:
+                            resource.env_animations = new EnvironmentAnimations(worldPath + "ENVIRONMENT_ANIMATION.DAT");
+                            break;
+                        case 6:
+                            resource.collision_maps = new CollisionMaps(worldPath + "COLLISION.MAP");
+                            break;
+                        case 7:
+                            resource.physics_maps = new PhysicsMaps(worldPath + "PHYSICS.MAP");
+                            break;
+                        case 8:
+                            resource.sound_bankdata = new SoundBankData(worldPath + "SOUNDBANKDATA.DAT");
+                            break;
+                        case 9:
+                            resource.sound_dialoguelookups = new SoundDialogueLookups(worldPath + "SOUNDDIALOGUELOOKUPS.DAT");
+                            break;
+                        case 10:
+                            resource.sound_eventdata = new SoundEventData(worldPath + "SOUNDEVENTDATA.DAT");
+                            break;
+                        case 11:
+                            resource.sound_environmentdata = new SoundEnvironmentData(worldPath + "SOUNDENVIRONMENTDATA.DAT");
+                            break;
+                        case 12:
+                            resource.character_accessories = new CharacterAccessorySets(worldPath + "CHARACTERACCESSORYSETS.BIN");
+                            break;
+                        case 13:
+                            mvr = new Movers(worldPath + "MODELS.MVR");
+                            break;
+                        case 14:
+                            commands = new Commands(worldPath + "COMMANDS.PAK");
+                            break;
+                    }
+                });
+
+                if (!commands.Loaded || commands.EntryPoints == null || commands.EntryPoints[0] == null)
                     return false;
-                }
+
+                Singleton.OnLevelLoaded?.Invoke(this);
+                return true;
+#if !CATHODE_FAIL_HARD
+            }
+            catch
+            {
+                return false;
+            }
 #endif
         }
 
