@@ -339,16 +339,20 @@ namespace CommandsEditor.DockPanels
         {
             //TODO: we have an issue here where this can be called after the entitydisplay object has been disposed
 
-            showOverridesAndProxies.Invoke(new Action(() => { showOverridesAndProxies.Enabled = isPointedTo; }));
-            zoneCompositeForSelectedEntity = zoneComp;
-            zoneEntityForSelectedEntity = zoneEnt;
-            string zoneText = "Zone";
-            if (zoneEnt != null)
+            try
             {
-                Parameter name = zoneEnt.GetParameter("name");
-                if (name != null) zoneText += " (" + ((cString)name.content).value + ")";
+                showOverridesAndProxies.Invoke(new Action(() => { showOverridesAndProxies.Enabled = isPointedTo; }));
+                zoneCompositeForSelectedEntity = zoneComp;
+                zoneEntityForSelectedEntity = zoneEnt;
+                string zoneText = "Zone";
+                if (zoneEnt != null)
+                {
+                    Parameter name = zoneEnt.GetParameter("name");
+                    if (name != null) zoneText += " (" + ((cString)name.content).value + ")";
+                }
+                goToZone.Invoke(new Action(() => { goToZone.Enabled = zoneEnt != null; goToZone.Text = zoneText; }));
             }
-            goToZone.Invoke(new Action(() => { goToZone.Enabled = zoneEnt != null; goToZone.Text = zoneText; }));
+            catch { }
         }
 
         private void ReloadEntity(Object sender = null, FormClosedEventArgs e = null)

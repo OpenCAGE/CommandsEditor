@@ -25,13 +25,13 @@ namespace CommandsEditor
 
         private EntityDisplay _entityDisplay;
 
-        public EditMVR(EntityDisplay editor, ShortGuid nodeID = new ShortGuid()) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor.Content)
+        public EditMVR(EntityDisplay editor) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor.Content)
         {
             InitializeComponent();
             _entityDisplay = editor;
             
             renderable.SetEditor(editor.Content);
-            PopulateUI(nodeID);
+            PopulateUI(editor.Entity.shortGUID);
 
             renderable.OnMaterialSelected += OnMaterialSelected;
             renderable.OnModelSelected += OnModelSelected;

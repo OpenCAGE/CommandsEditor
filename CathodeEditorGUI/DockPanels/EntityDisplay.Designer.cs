@@ -122,7 +122,7 @@
             // 
             // hierarchyDisplay
             // 
-            this.hierarchyDisplay.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.hierarchyDisplay.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.hierarchyDisplay.Location = new System.Drawing.Point(6, 37);
             this.hierarchyDisplay.Name = "hierarchyDisplay";
             this.hierarchyDisplay.ReadOnly = true;
