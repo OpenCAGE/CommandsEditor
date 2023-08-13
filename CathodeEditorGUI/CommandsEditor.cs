@@ -119,6 +119,7 @@ namespace CommandsEditor
             //Load new
             _commandsDisplay = new CommandsDisplay(level);
             _commandsDisplay.Show(Singleton.Editor.DockPanel, DockState.DockLeft);
+            _commandsDisplay.CloseButtonVisible = false;
         }
 
         private void saveLevel_Click(object sender, EventArgs e)

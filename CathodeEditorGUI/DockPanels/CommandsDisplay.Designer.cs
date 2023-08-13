@@ -44,7 +44,7 @@
             this.FileTree.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.FileTree.Location = new System.Drawing.Point(0, 28);
             this.FileTree.Name = "FileTree";
-            this.FileTree.Size = new System.Drawing.Size(833, 706);
+            this.FileTree.Size = new System.Drawing.Size(457, 706);
             this.FileTree.TabIndex = 153;
             this.FileTree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.FileTree_AfterSelect);
             // 
@@ -54,7 +54,7 @@
             this.createComposite});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(833, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(457, 25);
             this.toolStrip1.TabIndex = 157;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -72,7 +72,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(833, 734);
+            this.ClientSize = new System.Drawing.Size(457, 734);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.FileTree);
             this.Name = "CommandsDisplay";

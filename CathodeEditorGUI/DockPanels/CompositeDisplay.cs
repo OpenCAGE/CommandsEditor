@@ -118,7 +118,7 @@ namespace CommandsEditor.DockPanels
             else
             {
                 EntityDisplay panel = new EntityDisplay(this, entity);
-                panel.Show(Singleton.Editor.DockPanel, DockState.Document);
+                panel.Show(dockPanel, DockState.Document);
                 panel.FormClosed += OnCompositePanelClosed;
                 _entityDisplays.Add(entity, panel);
             }

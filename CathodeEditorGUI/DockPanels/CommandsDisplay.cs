@@ -102,15 +102,9 @@ namespace CommandsEditor.DockPanels
             else
             {
                 CompositeDisplay panel = new CompositeDisplay(this, composite);
-                panel.Show(Singleton.Editor.DockPanel, DockState.DockRight);
+                panel.Show(Singleton.Editor.DockPanel, DockState.Document);
                 panel.FormClosed += OnCompositePanelClosed;
                 _compositeDisplays.Add(composite, panel);
-            }
-
-            //Close all entity tabs when opening a new composite tab (TODO: should probs make this an option) (TODO: should move this to activate when a composite tab is focussed)
-            foreach (KeyValuePair<Composite, CompositeDisplay> display in _compositeDisplays)
-            {
-                display.Value.CloseAllChildTabs();
             }
 
             return _compositeDisplays[composite];
