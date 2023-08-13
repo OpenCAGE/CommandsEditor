@@ -109,6 +109,7 @@ namespace CommandsEditor.DockPanels
                     parameterGUI.PopulateUI(link, false, ent.shortGUID);
                     parameterGUI.GoToEntity += compositeDisplay.LoadEntity;
                     parameterGUI.Location = new Point(15, current_ui_offset);
+                    parameterGUI.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
                     current_ui_offset += parameterGUI.Height + 6;
                     entity_params.Controls.Add(parameterGUI);
                     parentEntities.Add(ent);
@@ -278,6 +279,7 @@ namespace CommandsEditor.DockPanels
                         break;
                 }
                 parameterGUI.Location = new Point(15, current_ui_offset);
+                parameterGUI.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
                 current_ui_offset += parameterGUI.Height + 6;
                 entity_params.Controls.Add(parameterGUI);
             }
@@ -290,6 +292,7 @@ namespace CommandsEditor.DockPanels
                 parameterGUI.PopulateUI(entity.childLinks[i], true);
                 parameterGUI.GoToEntity += compositeDisplay.LoadEntity;
                 parameterGUI.Location = new Point(15, current_ui_offset);
+                parameterGUI.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
                 current_ui_offset += parameterGUI.Height + 6;
                 entity_params.Controls.Add(parameterGUI);
                 childEntities.Add(Composite.GetEntityByID(entity.childLinks[i].childID));

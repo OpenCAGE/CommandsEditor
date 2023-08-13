@@ -33,11 +33,11 @@
             this.SPLINE_CONTAINER.SuspendLayout();
             this.SuspendLayout();
             // 
-            // UNIMPLEMENTED_VARIABLE_TYPE
+            // SPLINE_CONTAINER
             // 
             this.SPLINE_CONTAINER.Controls.Add(this.openSplineEditor);
             this.SPLINE_CONTAINER.Location = new System.Drawing.Point(3, 3);
-            this.SPLINE_CONTAINER.Name = "UNIMPLEMENTED_VARIABLE_TYPE";
+            this.SPLINE_CONTAINER.Name = "SPLINE_CONTAINER";
             this.SPLINE_CONTAINER.Size = new System.Drawing.Size(334, 56);
             this.SPLINE_CONTAINER.TabIndex = 18;
             this.SPLINE_CONTAINER.TabStop = false;
@@ -45,6 +45,7 @@
             // 
             // openSplineEditor
             // 
+            this.openSplineEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.openSplineEditor.Location = new System.Drawing.Point(17, 21);
             this.openSplineEditor.Name = "openSplineEditor";
             this.openSplineEditor.Size = new System.Drawing.Size(304, 23);

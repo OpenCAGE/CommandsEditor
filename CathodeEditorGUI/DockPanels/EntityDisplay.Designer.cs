@@ -52,6 +52,7 @@
             // 
             // goToZone
             // 
+            this.goToZone.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.goToZone.Location = new System.Drawing.Point(245, 87);
             this.goToZone.Name = "goToZone";
             this.goToZone.Size = new System.Drawing.Size(73, 23);
@@ -61,6 +62,7 @@
             // 
             // showOverridesAndProxies
             // 
+            this.showOverridesAndProxies.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.showOverridesAndProxies.Location = new System.Drawing.Point(89, 87);
             this.showOverridesAndProxies.Name = "showOverridesAndProxies";
             this.showOverridesAndProxies.Size = new System.Drawing.Size(73, 23);
@@ -70,6 +72,7 @@
             // 
             // editEntityMovers
             // 
+            this.editEntityMovers.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.editEntityMovers.Location = new System.Drawing.Point(11, 87);
             this.editEntityMovers.Name = "editEntityMovers";
             this.editEntityMovers.Size = new System.Drawing.Size(73, 23);
@@ -79,6 +82,7 @@
             // 
             // editEntityResources
             // 
+            this.editEntityResources.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.editEntityResources.Location = new System.Drawing.Point(167, 87);
             this.editEntityResources.Name = "editEntityResources";
             this.editEntityResources.Size = new System.Drawing.Size(73, 23);
@@ -88,6 +92,8 @@
             // 
             // entityInfoGroup
             // 
+            this.entityInfoGroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.entityInfoGroup.Controls.Add(this.hierarchyDisplay);
             this.entityInfoGroup.Controls.Add(this.jumpToComposite);
             this.entityInfoGroup.Controls.Add(this.selected_entity_name);
@@ -103,6 +109,7 @@
             // 
             // hierarchyDisplay
             // 
+            this.hierarchyDisplay.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.hierarchyDisplay.Location = new System.Drawing.Point(6, 37);
             this.hierarchyDisplay.Name = "hierarchyDisplay";
             this.hierarchyDisplay.ReadOnly = true;
@@ -111,6 +118,8 @@
             // 
             // jumpToComposite
             // 
+            this.jumpToComposite.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.jumpToComposite.Location = new System.Drawing.Point(335, 15);
             this.jumpToComposite.Name = "jumpToComposite";
             this.jumpToComposite.Size = new System.Drawing.Size(39, 45);
@@ -121,6 +130,7 @@
             // 
             // selected_entity_name
             // 
+            this.selected_entity_name.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.selected_entity_name.AutoSize = true;
             this.selected_entity_name.Location = new System.Drawing.Point(54, 22);
             this.selected_entity_name.Name = "selected_entity_name";
@@ -129,6 +139,7 @@
             // 
             // label9
             // 
+            this.label9.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label9.AutoSize = true;
             this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label9.Location = new System.Drawing.Point(9, 22);
@@ -157,6 +168,7 @@
             // 
             // editFunction
             // 
+            this.editFunction.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.editFunction.Location = new System.Drawing.Point(323, 87);
             this.editFunction.Name = "editFunction";
             this.editFunction.Size = new System.Drawing.Size(73, 23);
@@ -166,6 +178,9 @@
             // 
             // entityParamGroup
             // 
+            this.entityParamGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.entityParamGroup.Controls.Add(this.addLinkOut);
             this.entityParamGroup.Controls.Add(this.removeParameter);
             this.entityParamGroup.Controls.Add(this.addNewParameter);
@@ -179,6 +194,7 @@
             // 
             // addLinkOut
             // 
+            this.addLinkOut.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.addLinkOut.Location = new System.Drawing.Point(131, 585);
             this.addLinkOut.Name = "addLinkOut";
             this.addLinkOut.Size = new System.Drawing.Size(125, 23);
@@ -189,6 +205,7 @@
             // 
             // removeParameter
             // 
+            this.removeParameter.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.removeParameter.Location = new System.Drawing.Point(256, 585);
             this.removeParameter.Name = "removeParameter";
             this.removeParameter.Size = new System.Drawing.Size(125, 23);
@@ -199,6 +216,7 @@
             // 
             // addNewParameter
             // 
+            this.addNewParameter.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.addNewParameter.Location = new System.Drawing.Point(6, 585);
             this.addNewParameter.Name = "addNewParameter";
             this.addNewParameter.Size = new System.Drawing.Size(125, 23);
@@ -209,6 +227,9 @@
             // 
             // entity_params
             // 
+            this.entity_params.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.entity_params.AutoScroll = true;
             this.entity_params.Location = new System.Drawing.Point(6, 20);
             this.entity_params.Name = "entity_params";

@@ -54,6 +54,7 @@
             // 
             // POSITION_VARIABLE_DUMMY
             // 
+            this.POSITION_VARIABLE_DUMMY.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.POSITION_VARIABLE_DUMMY.Controls.Add(this.label8);
             this.POSITION_VARIABLE_DUMMY.Controls.Add(this.label10);
             this.POSITION_VARIABLE_DUMMY.Controls.Add(this.ROT_Z);

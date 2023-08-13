@@ -29,16 +29,17 @@
         private void InitializeComponent()
         {
             this.group = new System.Windows.Forms.GroupBox();
+            this.DeleteLink = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.EditLink = new System.Windows.Forms.Button();
             this.GoTo = new System.Windows.Forms.Button();
-            this.DeleteLink = new System.Windows.Forms.Button();
             this.group.SuspendLayout();
             this.SuspendLayout();
             // 
             // group
             // 
+            this.group.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.group.Controls.Add(this.DeleteLink);
             this.group.Controls.Add(this.label1);
             this.group.Controls.Add(this.textBox1);
@@ -51,6 +52,16 @@
             this.group.TabStop = false;
             this.group.Text = "Parameter Name (00-00-00-00)";
             // 
+            // DeleteLink
+            // 
+            this.DeleteLink.Location = new System.Drawing.Point(222, 59);
+            this.DeleteLink.Name = "DeleteLink";
+            this.DeleteLink.Size = new System.Drawing.Size(106, 23);
+            this.DeleteLink.TabIndex = 5;
+            this.DeleteLink.Text = "Delete Link";
+            this.DeleteLink.UseVisualStyleBackColor = true;
+            this.DeleteLink.Click += new System.EventHandler(this.DeleteLink_Click);
+            // 
             // label1
             // 
             this.label1.AutoSize = true;
@@ -62,6 +73,7 @@
             // 
             // textBox1
             // 
+            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.textBox1.Location = new System.Drawing.Point(6, 35);
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
@@ -87,16 +99,6 @@
             this.GoTo.Text = "Go To Link";
             this.GoTo.UseVisualStyleBackColor = true;
             this.GoTo.Click += new System.EventHandler(this.GoTo_Click);
-            // 
-            // DeleteLink
-            // 
-            this.DeleteLink.Location = new System.Drawing.Point(222, 59);
-            this.DeleteLink.Name = "DeleteLink";
-            this.DeleteLink.Size = new System.Drawing.Size(106, 23);
-            this.DeleteLink.TabIndex = 5;
-            this.DeleteLink.Text = "Delete Link";
-            this.DeleteLink.UseVisualStyleBackColor = true;
-            this.DeleteLink.Click += new System.EventHandler(this.DeleteLink_Click);
             // 
             // GUI_Link
             // 
