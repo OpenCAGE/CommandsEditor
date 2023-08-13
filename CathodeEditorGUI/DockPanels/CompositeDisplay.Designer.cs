@@ -40,9 +40,9 @@ namespace CommandsEditor.DockPanels
             this.entity_search_btn = new System.Windows.Forms.Button();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.createEntity = new System.Windows.Forms.ToolStripButton();
-            this.vS2015DarkTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme();
-            this.deleteComposite = new System.Windows.Forms.ToolStripButton();
             this.findUses = new System.Windows.Forms.ToolStripButton();
+            this.deleteComposite = new System.Windows.Forms.ToolStripButton();
+            this.vS2015DarkTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -133,17 +133,6 @@ namespace CommandsEditor.DockPanels
             this.createEntity.Text = "Create Entity";
             this.createEntity.Click += new System.EventHandler(this.createEntity_Click);
             // 
-            // deleteComposite
-            // 
-            this.deleteComposite.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.deleteComposite.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.deleteComposite.Image = ((System.Drawing.Image)(resources.GetObject("deleteComposite.Image")));
-            this.deleteComposite.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.deleteComposite.Name = "deleteComposite";
-            this.deleteComposite.Size = new System.Drawing.Size(105, 22);
-            this.deleteComposite.Text = "Delete Composite";
-            this.deleteComposite.Click += new System.EventHandler(this.deleteComposite_Click);
-            // 
             // findUses
             // 
             this.findUses.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
@@ -154,6 +143,17 @@ namespace CommandsEditor.DockPanels
             this.findUses.Size = new System.Drawing.Size(136, 22);
             this.findUses.Text = "Find Uses of Composite";
             this.findUses.Click += new System.EventHandler(this.findUses_Click);
+            // 
+            // deleteComposite
+            // 
+            this.deleteComposite.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.deleteComposite.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.deleteComposite.Image = ((System.Drawing.Image)(resources.GetObject("deleteComposite.Image")));
+            this.deleteComposite.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.deleteComposite.Name = "deleteComposite";
+            this.deleteComposite.Size = new System.Drawing.Size(105, 22);
+            this.deleteComposite.Text = "Delete Composite";
+            this.deleteComposite.Click += new System.EventHandler(this.deleteComposite_Click);
             // 
             // CompositeDisplay
             // 

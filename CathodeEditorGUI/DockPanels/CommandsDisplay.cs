@@ -30,6 +30,7 @@ namespace CommandsEditor.DockPanels
         public CommandsDisplay(string levelName)
         {
             InitializeComponent();
+            this.Text = levelName;
 
             _treeHelper = new TreeUtility(FileTree);
             _content = new LevelContent(levelName);
