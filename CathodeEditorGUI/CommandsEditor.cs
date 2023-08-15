@@ -41,7 +41,7 @@ namespace CommandsEditor
         private readonly string _backupsOpt = "CS_EnableBackups";
         private readonly string _nodeOpt = "CS_NodeView";
 
-        public CommandsEditor()
+        public CommandsEditor(string level = null)
         {
             Singleton.Editor = this;
 
@@ -82,6 +82,10 @@ namespace CommandsEditor
 
             //Load animation data - this should be quick enough to not worry about waiting for the thread
             Task.Factory.StartNew(() => LoadAnimData());
+
+            //If we have been launched to a level, load that
+            if (level != null)
+                OnLevelSelected(level);
         }
 
         /* Load anim data */

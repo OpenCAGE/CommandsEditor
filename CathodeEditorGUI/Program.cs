@@ -22,13 +22,15 @@ namespace CommandsEditor
         [STAThread]
         static void Main(string[] args)
         {
-            //Set paths
-            if (args.Length > 0 && args[0] == "-opencage") for (int i = 1; i < args.Length; i++) SharedData.pathToAI += args[i] + " ";
-            else SharedData.pathToAI = Environment.CurrentDirectory + " ";
-            SharedData.pathToAI = SharedData.pathToAI.Substring(0, SharedData.pathToAI.Length - 1);
+            //Set path to AI
+            if (GetArgument("pathToAI") != null)
+                SharedData.pathToAI = GetArgument("pathToAI");
+            else
+                SharedData.pathToAI = Environment.CurrentDirectory;
 
             //Verify location
-            if (!File.Exists(SharedData.pathToAI + "/AI.exe")) throw new Exception("This tool was launched incorrectly, or was not placed within the Alien: Isolation directory.");
+            if (!File.Exists(SharedData.pathToAI + "/AI.exe")) 
+                throw new Exception("This tool was launched incorrectly, or was not placed within the Alien: Isolation directory.");
             
             //Make sure we're using the UK culture to format our numbers correctly
             CultureInfo newCulture = CultureInfo.CreateSpecificCulture("en-GB");
@@ -38,7 +40,20 @@ namespace CommandsEditor
             //Run app
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new CommandsEditor());
+            Application.Run(new CommandsEditor(GetArgument("level")));
+        }
+
+        static string GetArgument(string name)
+        {
+            string[] args = Environment.GetCommandLineArgs();
+            for (int i = 0; i < args.Length; i++)
+            {
+                if (args[i].Contains(name))
+                {
+                    return args[i + 1];
+                }
+            }
+            return null;
         }
     }
 }
