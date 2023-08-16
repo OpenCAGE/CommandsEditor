@@ -183,6 +183,8 @@ namespace CommandsEditor.DockPanels
                 panel.FormClosed += OnCompositePanelClosed;
                 _entityDisplays.Add(entity, panel);
             }
+
+            composite_content.Focus();
         }
 
         private void OnCompositePanelClosed(object sender, FormClosedEventArgs e)
