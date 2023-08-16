@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using WebSocketSharp;
 using WeifenLuo.WinFormsUI.Docking;
+using static System.Windows.Forms.ListViewItem;
 
 namespace CommandsEditor.DockPanels
 {
@@ -202,11 +203,29 @@ namespace CommandsEditor.DockPanels
         private void DoSearch()
         {
             if (entity_search_box.Text == currentSearch) return;
+
             List<ListViewItem> matched = new List<ListViewItem>();
-            foreach (ListViewItem item in composite_content_RAW) if (item.Text.ToUpper().Contains(entity_search_box.Text.ToUpper())) matched.Add(item);
+            foreach (ListViewItem item in composite_content_RAW)
+            {
+                if (item.Text.ToUpper().Contains(entity_search_box.Text.ToUpper()))
+                {
+                    matched.Add(item);
+                    break;
+                }
+                foreach (ListViewSubItem subitem in item.SubItems)
+                {
+                    if (subitem.Text.ToUpper().Contains(entity_search_box.Text.ToUpper()))
+                    {
+                        matched.Add(item);
+                        break;
+                    }
+                }
+            }
+
             composite_content.BeginUpdate();
             composite_content.Items.Clear();
-            for (int i = 0; i < matched.Count; i++) composite_content.Items.Add(matched[i]);
+            for (int i = 0; i < matched.Count; i++) 
+                composite_content.Items.Add(matched[i]);
             composite_content.EndUpdate();
             currentSearch = entity_search_box.Text;
         }
