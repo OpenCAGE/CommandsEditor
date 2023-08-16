@@ -51,6 +51,27 @@ namespace CommandsEditor.DockPanels
             Cursor.Current = Cursors.Default;
         }
 
+        /* Reload this display */
+        public void Reload(bool alsoReloadEntities = true)
+        {
+            PopulateListView(_composite.GetEntities());
+
+            if (alsoReloadEntities)
+            {
+                foreach (KeyValuePair<Entity, EntityDisplay> display in _entityDisplays)
+                {
+                    display.Value.Reload();
+                }
+            }
+        }
+
+        /* Reload a specific entity's UI (if it is loaded) */
+        public void ReloadEntity(Entity entity)
+        {
+            if (!_entityDisplays.ContainsKey(entity)) return;
+            _entityDisplays[entity].Reload();
+        }
+
         /* Monitor the currently active entity tab */
         private void DockPanel_ActiveContentChanged(object sender, EventArgs e)
         {
@@ -141,34 +162,16 @@ namespace CommandsEditor.DockPanels
             LoadEntity(entity);
         }
 
+        /* Load an entity into the composite tabs UI */
         public void LoadEntity(ShortGuid guid)
         {
             LoadEntity(Composite.GetEntityByID(guid));
         }
-        public void LoadEntity(ShortGuid guid, bool forceReload)
-        {
-            LoadEntity(Composite.GetEntityByID(guid), forceReload);
-        }
         public void LoadEntity(Entity entity)
-        {
-            LoadEntity(entity, false);
-        }
-        public void LoadEntityForce(Entity entity)
-        {
-            //TODO: this is a impl for link refreshing when edited. we should also check to see if the LINKED entity is loaded & refresh that too.
-            LoadEntity(entity, true);
-        }
-        public void LoadEntity(Entity entity, bool forceReload)
         {
             if (_entityDisplays.ContainsKey(entity))
             {
-                if (forceReload)
-                {
-                    _entityDisplays[entity].Close();
-                    LoadEntity(entity);
-                    return;
-                }
-
+                _entityDisplays[entity].Reload();
                 _entityDisplays[entity].Activate();
             }
             else
@@ -300,6 +303,8 @@ namespace CommandsEditor.DockPanels
             PopulateListView(_composite.GetEntities());
             if (_entityDisplays.ContainsKey(entity))
                 _entityDisplays[entity].Close();
+
+            Reload();
         }
 
         public void DuplicateEntity(Entity entity)

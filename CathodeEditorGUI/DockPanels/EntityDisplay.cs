@@ -1,4 +1,4 @@
-﻿using CATHODE.Scripting;
+using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CommandsEditor.UserControls;
 using OpenCAGE;
@@ -44,9 +44,14 @@ namespace CommandsEditor.DockPanels
             _compositeDisplay = compositeDisplay;
 
             InitializeComponent();
-
             this.Activate();
 
+            Reload();
+        }
+
+        /* Reload this display */
+        public void Reload()
+        {
             //UI defaults - TODO: just set this in the designer.
             entityInfoGroup.Text = "Selected Entity Info";
             entityParamGroup.Text = "Selected Entity Parameters";
@@ -68,23 +73,23 @@ namespace CommandsEditor.DockPanels
 
             Cursor.Current = Cursors.WaitCursor;
             entity_params.SuspendLayout();
-            Task.Factory.StartNew(() => BackgroundEntityLoader(entity, this));
+            Task.Factory.StartNew(() => BackgroundEntityLoader(_entity, this));
 
             //populate info labels
-            entityInfoGroup.Text = "Selected " + CultureInfo.CurrentCulture.TextInfo.ToTitleCase(entity.variant.ToString().ToLower().Replace('_', ' ')) + " Entity Info";
-            entityParamGroup.Text = "Selected " + CultureInfo.CurrentCulture.TextInfo.ToTitleCase(entity.variant.ToString().ToLower().Replace('_', ' ')) + " Entity Parameters";
+            entityInfoGroup.Text = "Selected " + CultureInfo.CurrentCulture.TextInfo.ToTitleCase(_entity.variant.ToString().ToLower().Replace('_', ' ')) + " Entity Info";
+            entityParamGroup.Text = "Selected " + CultureInfo.CurrentCulture.TextInfo.ToTitleCase(_entity.variant.ToString().ToLower().Replace('_', ' ')) + " Entity Parameters";
             string description = "";
-            switch (entity.variant)
+            switch (_entity.variant)
             {
                 case EntityVariant.FUNCTION:
-                    ShortGuid thisFunction = ((FunctionEntity)entity).function;
+                    ShortGuid thisFunction = ((FunctionEntity)_entity).function;
                     Composite funcComposite = Content.commands.GetComposite(thisFunction);
                     jumpToComposite.Visible = funcComposite != null;
                     if (funcComposite != null)
                         description = funcComposite.name;
                     else
                         description = CathodeEntityDatabase.GetEntity(thisFunction).className;
-                    selected_entity_name.Text = EntityUtils.GetName(Composite.shortGUID, entity.shortGUID);
+                    selected_entity_name.Text = EntityUtils.GetName(Composite.shortGUID, _entity.shortGUID);
                     if (funcComposite == null)
                     {
                         FunctionType function = CommandsUtils.GetFunctionType(thisFunction);
@@ -93,28 +98,28 @@ namespace CommandsEditor.DockPanels
                     editEntityResources.Enabled = (Content.resource.models != null);
                     break;
                 case EntityVariant.VARIABLE:
-                    description = "DataType " + ((VariableEntity)entity).type.ToString();
-                    selected_entity_name.Text = ShortGuidUtils.FindString(((VariableEntity)entity).name);
+                    description = "DataType " + ((VariableEntity)_entity).type.ToString();
+                    selected_entity_name.Text = ShortGuidUtils.FindString(((VariableEntity)_entity).name);
                     //renameSelectedNode.Enabled = false;
                     break;
                 case EntityVariant.PROXY:
                 case EntityVariant.OVERRIDE:
                     hierarchyDisplay.Visible = true;
-                    List<ShortGuid> entityHierarchy = entity.variant == EntityVariant.PROXY ? ((ProxyEntity)entity).connectedEntity.hierarchy : ((OverrideEntity)entity).connectedEntity.hierarchy;
+                    List<ShortGuid> entityHierarchy = _entity.variant == EntityVariant.PROXY ? ((ProxyEntity)_entity).connectedEntity.hierarchy : ((OverrideEntity)_entity).connectedEntity.hierarchy;
                     Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, Composite, entityHierarchy, out Composite comp, out string hierarchy, SettingsManager.GetBool("CS_ShowEntityIDs"));
                     hierarchyDisplay.Text = hierarchy;
                     jumpToComposite.Visible = true;
-                    selected_entity_name.Text = (entity.variant == EntityVariant.PROXY ? "Proxy" : "Override") + " to " + EntityUtils.GetName(comp, ent);
+                    selected_entity_name.Text = (_entity.variant == EntityVariant.PROXY ? "Proxy" : "Override") + " to " + EntityUtils.GetName(comp, ent);
                     break;
                 default:
-                    selected_entity_name.Text = EntityUtils.GetName(Composite.shortGUID, entity.shortGUID);
+                    selected_entity_name.Text = EntityUtils.GetName(Composite.shortGUID, _entity.shortGUID);
                     break;
             }
             selected_entity_type_description.Text = description;
             this.Text = selected_entity_name.Text;
 
             //show mvr editor button if this entity has a mvr link
-            if (Content.mvr != null && Content.mvr.Entries.FindAll(o => o.entity.entity_id == _entity.shortGUID).Count != 0)
+            if (Content.mvr != null && Content.mvr.Entries.FindAll(o => o.entity.entity_id == this._entity.shortGUID).Count != 0)
                 editEntityMovers.Enabled = true;
 
             //populate linked params IN
@@ -125,10 +130,11 @@ namespace CommandsEditor.DockPanels
             {
                 foreach (EntityLink link in ent.childLinks)
                 {
-                    if (link.childID != entity.shortGUID) continue;
+                    if (link.childID != _entity.shortGUID) continue;
                     GUI_Link parameterGUI = new GUI_Link(this);
                     parameterGUI.PopulateUI(link, false, ent.shortGUID);
-                    parameterGUI.GoToEntity += compositeDisplay.LoadEntityForce;
+                    parameterGUI.GoToEntity += _compositeDisplay.LoadEntity;
+                    parameterGUI.OnLinkEdited += OnLinkEdited;
                     parameterGUI.Location = new Point(15, current_ui_offset);
                     parameterGUI.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
                     current_ui_offset += parameterGUI.Height + 6;
@@ -138,12 +144,12 @@ namespace CommandsEditor.DockPanels
             }
 
             //populate parameter inputs
-            entity.parameters = entity.parameters.OrderBy(o => o.name.ToString()).ToList();
-            for (int i = 0; i < entity.parameters.Count; i++)
+            _entity.parameters = _entity.parameters.OrderBy(o => o.name.ToString()).ToList();
+            for (int i = 0; i < _entity.parameters.Count; i++)
             {
-                ParameterData this_param = entity.parameters[i].content;
+                ParameterData this_param = _entity.parameters[i].content;
                 UserControl parameterGUI = null;
-                string paramName = entity.parameters[i].name.ToString();
+                string paramName = _entity.parameters[i].name.ToString();
                 switch (this_param.dataType)
                 {
                     case DataType.TRANSFORM:
@@ -192,9 +198,9 @@ namespace CommandsEditor.DockPanels
                             case "folder_title":
                             case "additional_info": //TODO: this is a good example of why we should handle this per-entity
                                 asset = AssetList.Type.LOCALISED_STRING;
-                                if (entity.variant == EntityVariant.FUNCTION && CommandsUtils.GetFunctionType(((FunctionEntity)entity).function).ToString().Contains("Objective"))
+                                if (_entity.variant == EntityVariant.FUNCTION && CommandsUtils.GetFunctionType(((FunctionEntity)_entity).function).ToString().Contains("Objective"))
                                     asset_arg = "OBJECTIVES";
-                                else if (entity.variant == EntityVariant.FUNCTION && CommandsUtils.GetFunctionType(((FunctionEntity)entity).function).ToString().Contains("Terminal"))
+                                else if (_entity.variant == EntityVariant.FUNCTION && CommandsUtils.GetFunctionType(((FunctionEntity)_entity).function).ToString().Contains("Terminal"))
                                     asset_arg = "T0001/UI"; //TODO: we should also support TEXT dbs in the level folder for DLC stuff
                                 else
                                     asset_arg = "UI";
@@ -307,20 +313,27 @@ namespace CommandsEditor.DockPanels
 
             //populate linked params OUT
             childEntities.Clear();
-            for (int i = 0; i < entity.childLinks.Count; i++)
+            for (int i = 0; i < _entity.childLinks.Count; i++)
             {
                 GUI_Link parameterGUI = new GUI_Link(this);
-                parameterGUI.PopulateUI(entity.childLinks[i], true);
-                parameterGUI.GoToEntity += compositeDisplay.LoadEntityForce;
+                parameterGUI.PopulateUI(_entity.childLinks[i], true);
+                parameterGUI.GoToEntity += _compositeDisplay.LoadEntity;
+                parameterGUI.OnLinkEdited += OnLinkEdited;
                 parameterGUI.Location = new Point(15, current_ui_offset);
                 parameterGUI.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
                 current_ui_offset += parameterGUI.Height + 6;
                 entity_params.Controls.Add(parameterGUI);
-                childEntities.Add(Composite.GetEntityByID(entity.childLinks[i].childID));
+                childEntities.Add(Composite.GetEntityByID(_entity.childLinks[i].childID));
             }
 
             entity_params.ResumeLayout();
             Cursor.Current = Cursors.Default;
+        }
+
+        private void OnLinkEdited(Entity orig, Entity linked)
+        {
+            _compositeDisplay.ReloadEntity(orig);
+            _compositeDisplay.ReloadEntity(linked);
         }
 
         private void BackgroundEntityLoader(Entity ent, EntityDisplay mainInst)
@@ -351,17 +364,12 @@ namespace CommandsEditor.DockPanels
             catch { }
         }
 
-        private void ReloadEntity(Object sender = null, FormClosedEventArgs e = null)
-        {
-            _compositeDisplay.LoadEntity(Entity, true);
-        }
-
         /* Add a new parameter */
         private void addNewParameter_Click(object sender, EventArgs e)
         {
             AddParameter add_parameter = new AddParameter(this);
             add_parameter.Show();
-            add_parameter.FormClosed += new FormClosedEventHandler(ReloadEntity);
+            add_parameter.OnSaved += Reload;
         }
 
         /* Add a new link out */
@@ -369,7 +377,7 @@ namespace CommandsEditor.DockPanels
         {
             AddOrEditLink add_link = new AddOrEditLink(this);
             add_link.Show();
-            add_link.FormClosed += new FormClosedEventHandler(ReloadEntity);
+            add_link.OnSaved += Reload;
         }
 
         /* Remove a parameter */
@@ -380,7 +388,7 @@ namespace CommandsEditor.DockPanels
 
             RemoveParameter remove_parameter = new RemoveParameter(this);
             remove_parameter.Show();
-            remove_parameter.FormClosed += new FormClosedEventHandler(ReloadEntity);
+            remove_parameter.OnSaved += Reload;
         }
 
         private void editEntityMovers_Click(object sender, EventArgs e)
@@ -446,7 +454,7 @@ namespace CommandsEditor.DockPanels
             entity.events = newEntity.events;
             entity.animations = newEntity.animations;
             entity.parameters = newEntity.parameters;
-            ReloadEntity();
+            Reload();
         }
 
         private void jumpToComposite_Click(object sender, EventArgs e)

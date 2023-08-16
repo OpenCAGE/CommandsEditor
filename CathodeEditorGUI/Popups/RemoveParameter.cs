@@ -16,6 +16,8 @@ namespace CommandsEditor
 {
     public partial class RemoveParameter : BaseWindow
     {
+        public Action OnSaved;
+
         private EntityDisplay _entityDisplay;
 
         public RemoveParameter(EntityDisplay entityDisplay) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, entityDisplay.Content)
@@ -59,6 +61,8 @@ namespace CommandsEditor
             {
                 _entityDisplay.Entity.parameters.RemoveAt(parameterToDelete.SelectedIndex);
             }
+
+            OnSaved?.Invoke();
             this.Close();
         }
     }

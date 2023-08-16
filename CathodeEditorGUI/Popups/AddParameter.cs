@@ -19,6 +19,8 @@ namespace CommandsEditor
 {
     public partial class AddParameter : BaseWindow
     {
+        public Action OnSaved;
+
         ParameterData param = null;
 
         EntityDisplay _entityDisplay;
@@ -42,6 +44,8 @@ namespace CommandsEditor
             if (param_name.Text == "") return;
             if (param != null) _entityDisplay.Entity.AddParameter(param_name.Text, param);
             else _entityDisplay.Entity.AddParameter(param_name.Text, (DataType)param_datatype.SelectedIndex);
+
+            OnSaved?.Invoke();
             this.Close();
         }
 

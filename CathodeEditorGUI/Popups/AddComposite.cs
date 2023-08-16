@@ -18,6 +18,8 @@ namespace CommandsEditor
 {
     public partial class AddComposite : BaseWindow
     {
+        public Action<Composite> OnCompositeAdded;
+
         CommandsDisplay _commands;
 
         public AddComposite(CommandsDisplay editor) : base(WindowClosesOn.COMMANDS_RELOAD, editor.Content)
@@ -49,7 +51,8 @@ namespace CommandsEditor
                 }
             }
 
-            _commands.Content.commands.AddComposite(textBox1.Text);
+            Composite comp = _commands.Content.commands.AddComposite(textBox1.Text);
+            OnCompositeAdded?.Invoke(comp);
             this.Close();
         }
     }

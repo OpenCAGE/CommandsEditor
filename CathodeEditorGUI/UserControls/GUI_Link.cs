@@ -9,6 +9,8 @@ namespace CommandsEditor.UserControls
     public partial class GUI_Link : BaseUserControl
     {
         public Action<Entity> GoToEntity;
+        public Action<Entity, Entity> OnLinkEdited;
+
         private Entity _linkedEntity;
 
         private EntityLink _link;
@@ -61,7 +63,7 @@ namespace CommandsEditor.UserControls
         }
         private void link_editor_OnSaved()
         {
-            GoToEntity?.Invoke(_entityDisplay.Entity);
+            OnLinkEdited?.Invoke(_entityDisplay.Entity, _linkedEntity);
         }
 
         private void DeleteLink_Click(object sender, EventArgs e)
@@ -71,7 +73,7 @@ namespace CommandsEditor.UserControls
             else
                 _linkedEntity.childLinks.RemoveAll(o => o.connectionID == _link.connectionID);
 
-            GoToEntity?.Invoke(_entityDisplay.Entity);
+            OnLinkEdited?.Invoke(_entityDisplay.Entity, _linkedEntity);
         }
     }
 }

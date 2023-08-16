@@ -41,22 +41,45 @@ namespace CommandsEditor.DockPanels
             Task.Factory.StartNew(() => _content.editor_utils.GenerateEntityNameCache(Singleton.Editor));
             CacheHierarchies();
 
-            _treeHelper.UpdateFileTree(_content.commands.GetCompositeNames().ToList());
-            _treeHelper.SelectNode(_content.commands.EntryPoints[0].name);
-
+            SelectCompositeAndReloadList(_content.commands.EntryPoints[0]);
             Singleton.OnCompositeSelected?.Invoke(_content.commands.EntryPoints[0]); //need to call this again b/c the activation event doesn't fire here
+        }
+
+        public void Reload(bool reloadAllComposites = true, bool reloadAllEntities = true)
+        {
+            //TODO: do we want to select this composite?
+            SelectCompositeAndReloadList(_content.commands.EntryPoints[0]);
+
+            if (reloadAllComposites)
+            {
+                foreach (KeyValuePair<Composite, CompositeDisplay> display in _compositeDisplays)
+                {
+                    display.Value.Reload(reloadAllEntities);
+                }
+            }
         }
 
         private void createComposite_Click(object sender, EventArgs e)
         {
             AddComposite dialog = new AddComposite(this);
             dialog.Show();
-            dialog.FormClosed += new FormClosedEventHandler(add_flow_closed);
+            dialog.OnCompositeAdded += SelectCompositeAndReloadList;
         }
-        private void add_flow_closed(Object sender, FormClosedEventArgs e)
+
+        private void SelectCompositeAndReloadList(Composite composite)
+        {
+            ReloadList();
+            SelectComposite(composite);
+        }
+
+        private void ReloadList()
         {
             _treeHelper.UpdateFileTree(_content.commands.GetCompositeNames().ToList());
-            _treeHelper.SelectNode(_content.commands.EntryPoints[0].name);
+        }
+
+        private void SelectComposite(Composite composite)
+        {
+            _treeHelper.SelectNode(composite.name);
 
             this.BringToFront();
             this.Focus();
