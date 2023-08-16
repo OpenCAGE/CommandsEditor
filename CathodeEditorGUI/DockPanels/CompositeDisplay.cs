@@ -237,9 +237,9 @@ namespace CommandsEditor.DockPanels
             _commandsDisplay.DeleteComposite(_composite);
         }
 
-        public void DeleteEntity(Entity entity)
+        public void DeleteEntity(Entity entity, bool ask = true, bool reloadUI = true)
         {
-            if (MessageBox.Show("Are you sure you want to remove this entity?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+            if (ask && MessageBox.Show("Are you sure you want to remove this entity?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
 
             switch (entity.variant)
             {
@@ -302,11 +302,14 @@ namespace CommandsEditor.DockPanels
                 }
             }
 
-            PopulateListView(_composite.GetEntities());
             if (_entityDisplays.ContainsKey(entity))
                 _entityDisplays[entity].Close();
 
-            ReloadAllEntities();
+            if (reloadUI)
+            {
+                PopulateListView(_composite.GetEntities());
+                ReloadAllEntities();
+            }
         }
 
         public void DuplicateEntity(Entity entity)
@@ -379,6 +382,19 @@ namespace CommandsEditor.DockPanels
             //Load in to UI
             ReloadUIForNewEntity(newEnt);
             _commandsDisplay.CacheHierarchies();
+        }
+
+        private void deleteCheckedEntities_Click(object sender, EventArgs e)
+        {
+            if (composite_content.CheckedItems.Count == 0) return;
+
+            if (MessageBox.Show("Are you sure you want to remove the selected entities?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+
+            foreach (ListViewItem item in composite_content.CheckedItems)
+                DeleteEntity((Entity)item.Tag, false, false);
+
+            PopulateListView(_composite.GetEntities());
+            ReloadAllEntities();
         }
     }
 }

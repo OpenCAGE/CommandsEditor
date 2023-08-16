@@ -48,6 +48,7 @@ namespace CommandsEditor.DockPanels
             this.panel1 = new System.Windows.Forms.Panel();
             this.vS2015LightTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.deleteCheckedEntities = new System.Windows.Forms.ToolStripButton();
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -61,6 +62,7 @@ namespace CommandsEditor.DockPanels
             this.composite_content.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.composite_content.CheckBoxes = true;
             this.composite_content.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.EntityName,
             this.EntityType});
@@ -126,6 +128,7 @@ namespace CommandsEditor.DockPanels
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.createEntity,
             this.findUses,
+            this.deleteCheckedEntities,
             this.deleteComposite});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
@@ -205,6 +208,17 @@ namespace CommandsEditor.DockPanels
             this.splitContainer1.SplitterDistance = 830;
             this.splitContainer1.TabIndex = 182;
             // 
+            // deleteCheckedEntities
+            // 
+            this.deleteCheckedEntities.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.deleteCheckedEntities.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.deleteCheckedEntities.Image = ((System.Drawing.Image)(resources.GetObject("deleteCheckedEntities.Image")));
+            this.deleteCheckedEntities.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.deleteCheckedEntities.Name = "deleteCheckedEntities";
+            this.deleteCheckedEntities.Size = new System.Drawing.Size(134, 22);
+            this.deleteCheckedEntities.Text = "Delete Checked Entities";
+            this.deleteCheckedEntities.Click += new System.EventHandler(this.deleteCheckedEntities_Click);
+            // 
             // CompositeDisplay
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -244,5 +258,6 @@ namespace CommandsEditor.DockPanels
         private WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme vS2015BlueTheme1;
         private WeifenLuo.WinFormsUI.Docking.VS2015LightTheme vS2015LightTheme1;
         private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.ToolStripButton deleteCheckedEntities;
     }
 }
