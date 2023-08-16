@@ -39,7 +39,7 @@ namespace CommandsEditor
 
         private void OnEntitySelected(Entity ent = null)
         {
-            if (Editor == null)
+            if (Content == null)
                 _content = Singleton.Editor.CommandsDisplay?.Content;
 
             stNodeEditor1.Nodes.Clear();
@@ -173,7 +173,7 @@ namespace CommandsEditor
             {
                 case EntityVariant.PROXY:
                 case EntityVariant.OVERRIDE:
-                    Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, composite, (entity.variant == EntityVariant.PROXY) ? ((ProxyEntity)entity).connectedEntity.hierarchy : ((OverrideEntity)entity).connectedEntity.hierarchy, out Composite c, out string s);
+                    Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, composite, (entity.variant == EntityVariant.PROXY) ? ((ProxyEntity)entity).connectedEntity.hierarchy : ((OverrideEntity)entity).connectedEntity.hierarchy, out Composite c, out string s);
                     node.SetColour(entity.variant == EntityVariant.PROXY ? Color.LightGreen : Color.Orange, Color.Black);
                     switch (ent.variant)
                     {
@@ -184,7 +184,7 @@ namespace CommandsEditor
                                 node.SetName(entity.variant + " TO: " + function.function.ToString() + "\n" + EntityUtils.GetName(c, ent), 35);
                             }
                             else
-                                node.SetName(entity.variant + " TO: " + Editor.commands.GetComposite(function.function).name + "\n" + EntityUtils.GetName(c, ent), 35);
+                                node.SetName(entity.variant + " TO: " + Content.commands.GetComposite(function.function).name + "\n" + EntityUtils.GetName(c, ent), 35);
                             break;
                         case EntityVariant.VARIABLE:
                             node.SetName(entity.variant + " TO: " + ((VariableEntity)ent).name.ToString());
@@ -200,7 +200,7 @@ namespace CommandsEditor
                     else
                     {
                         node.SetColour(Color.Blue, Color.White);
-                        node.SetName(Editor.commands.GetComposite(funcEnt.function).name + "\n" + EntityUtils.GetName(composite, entity), 35);
+                        node.SetName(Content.commands.GetComposite(funcEnt.function).name + "\n" + EntityUtils.GetName(composite, entity), 35);
                     }
                     break;
                 case EntityVariant.VARIABLE:

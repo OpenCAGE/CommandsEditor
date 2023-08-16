@@ -23,8 +23,8 @@ namespace CommandsEditor.Popups
             InitializeComponent();
 
             MaterialIndexToEdit = materialIndexToEdit;
-            for (int i = 0; i < Editor.resource.materials.Entries.Count; i++)
-                _materials.Add(new ListedMaterial(Editor.resource.materials.Entries[i].Name, i));
+            for (int i = 0; i < Content.resource.materials.Entries.Count; i++)
+                _materials.Add(new ListedMaterial(Content.resource.materials.Entries[i].Name, i));
             _materials.Sort();
             _materials.Reverse();
 

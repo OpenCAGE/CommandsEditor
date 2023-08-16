@@ -23,7 +23,7 @@ namespace CommandsEditor
             label.Text = "Entities that instance the composite '" + _compositeDisplay.Composite.name + "':";
 
             referenceList.BeginUpdate();
-            foreach (Composite comp in Editor.commands.Entries)
+            foreach (Composite comp in Content.commands.Entries)
             {
                 foreach (FunctionEntity ent in comp.functions.FindAll(o => o.function == _compositeDisplay.Composite.shortGUID))
                 {

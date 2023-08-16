@@ -27,7 +27,7 @@ namespace CommandsEditor.Popups.Function_Editors.CharacterEditor
             for (int i = 0; i < hierarchies.Count; i++)
             {
                 if (existing.Contains(hierarchies[i].GenerateInstance())) continue;
-                characterInstances.Items.Add(hierarchies[i].GetHierarchyAsString(Editor.commands, editor.Composite, false));
+                characterInstances.Items.Add(hierarchies[i].GetHierarchyAsString(Content.commands, editor.Composite, false));
                 _hierarchies.Add(hierarchies[i]);
             }
 

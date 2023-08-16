@@ -62,7 +62,7 @@ namespace CommandsEditor
                 FollowEntityThrough.Enabled = false;
 
                 if (selectedEntity.variant != EntityVariant.FUNCTION) return;
-                FollowEntityThrough.Enabled = Editor.commands.GetComposite(((FunctionEntity)selectedEntity).function) != null;
+                FollowEntityThrough.Enabled = Content.commands.GetComposite(((FunctionEntity)selectedEntity).function) != null;
             }
             catch (Exception ex)
             {
@@ -82,7 +82,7 @@ namespace CommandsEditor
             SelectEntity.Enabled = false;
             FollowEntityThrough.Enabled = false;
 
-            selectedComposite = Editor.commands.GetComposite(FileName);
+            selectedComposite = Content.commands.GetComposite(FileName);
             compositeName.Text = selectedComposite.name;
             composite_content.BeginUpdate();
             composite_content_RAW.Clear();
@@ -90,7 +90,7 @@ namespace CommandsEditor
 
             for (int i = 0; i < selectedComposite.functions.Count; i++)
             {
-                string desc = Editor.editor_utils.GenerateEntityName(selectedComposite.functions[i], selectedComposite);
+                string desc = Content.editor_utils.GenerateEntityName(selectedComposite.functions[i], selectedComposite);
                 composite_content.Items.Add(desc);
                 composite_content_RAW.Add(desc);
             }
@@ -98,13 +98,13 @@ namespace CommandsEditor
             {
                 for (int i = 0; i < selectedComposite.proxies.Count; i++)
                 {
-                    string desc = Editor.editor_utils.GenerateEntityName(selectedComposite.proxies[i], selectedComposite);
+                    string desc = Content.editor_utils.GenerateEntityName(selectedComposite.proxies[i], selectedComposite);
                     composite_content.Items.Add(desc);
                     composite_content_RAW.Add(desc);
                 }
                 for (int i = 0; i < selectedComposite.variables.Count; i++)
                 {
-                    string desc = Editor.editor_utils.GenerateEntityName(selectedComposite.variables[i], selectedComposite);
+                    string desc = Content.editor_utils.GenerateEntityName(selectedComposite.variables[i], selectedComposite);
                     composite_content.Items.Add(desc);
                     composite_content_RAW.Add(desc);
                 }
@@ -119,7 +119,7 @@ namespace CommandsEditor
             if (selectedEntity == null) return;
             if (selectedEntity.variant != EntityVariant.FUNCTION) return;
 
-            Composite composite = Editor.commands.GetComposite(((FunctionEntity)selectedEntity).function);
+            Composite composite = Content.commands.GetComposite(((FunctionEntity)selectedEntity).function);
             if (composite == null) return;
 
             LoadComposite(composite.name);

@@ -43,7 +43,7 @@ namespace CommandsEditor
             for (int i = 0; i < _triggerSequence.entities.Count; i++)
             {
                 string thisHierarchy;
-                CommandsUtils.ResolveHierarchy(Editor.commands, _entityDisplay.Composite, _triggerSequence.entities[i].connectedEntity.hierarchy, out Composite comp, out thisHierarchy, SettingsManager.GetBool("CS_ShowEntityIDs"));
+                CommandsUtils.ResolveHierarchy(Content.commands, _entityDisplay.Composite, _triggerSequence.entities[i].connectedEntity.hierarchy, out Composite comp, out thisHierarchy, SettingsManager.GetBool("CS_ShowEntityIDs"));
 
                 string toAdd = "[" + _triggerSequence.entities[i].timing + "s] " + thisHierarchy;
                 entity_list.Items.Add(toAdd);
@@ -89,7 +89,7 @@ namespace CommandsEditor
                 return;
             }
 
-            CommandsUtils.ResolveHierarchy(Editor.commands, _entityDisplay.Composite, _triggerSequence.entities[entity_list.SelectedIndex].connectedEntity.hierarchy, out Composite comp, out string thisHierarchy, SettingsManager.GetBool("CS_ShowEntityIDs"));
+            CommandsUtils.ResolveHierarchy(Content.commands, _entityDisplay.Composite, _triggerSequence.entities[entity_list.SelectedIndex].connectedEntity.hierarchy, out Composite comp, out string thisHierarchy, SettingsManager.GetBool("CS_ShowEntityIDs"));
 
             entityHierarchy.Text = thisHierarchy;
             entityTriggerDelay.Text = _triggerSequence.entities[entity_list.SelectedIndex].timing.ToString();
@@ -227,7 +227,7 @@ namespace CommandsEditor
         {
             if (entity_list.SelectedIndex == -1) return;
 
-            Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, _entityDisplay.Composite, _triggerSequence.entities[entity_list.SelectedIndex].connectedEntity.hierarchy, out Composite comp, out string h);
+            Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, _entityDisplay.Composite, _triggerSequence.entities[entity_list.SelectedIndex].connectedEntity.hierarchy, out Composite comp, out string h);
             if (comp == null || ent == null)
             {
                 MessageBox.Show("Failed to resolve entity! Can not load to it.", "Entity pointer corrupted!", MessageBoxButtons.OK, MessageBoxIcon.Error);

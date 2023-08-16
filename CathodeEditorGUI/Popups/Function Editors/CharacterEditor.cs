@@ -22,7 +22,7 @@ namespace CommandsEditor
             _entityDisplay = editor;
             InitializeComponent();
 
-            foreach (KeyValuePair<string, List<string>> skeletons in Editor.skeletons)
+            foreach (KeyValuePair<string, List<string>> skeletons in Content.skeletons)
                 gender.Items.Add(skeletons.Key);
 
             shirtDecal.Items.Clear();
@@ -41,14 +41,14 @@ namespace CommandsEditor
             for (int i = 0; i < hierarchies.Count; i++)
             {
                 ShortGuid instance = hierarchies[i].GenerateInstance();
-                if (Editor.resource.character_accessories.Entries.FirstOrDefault(o => o.character.composite_instance_id == instance) == null) continue;
+                if (Content.resource.character_accessories.Entries.FirstOrDefault(o => o.character.composite_instance_id == instance) == null) continue;
                 if (toSelect == 0 && instance == selected) toSelect = _hierarchies.Count;
                 _hierarchies.Add(hierarchies[i]);
             }
 
             characterInstances.Items.Clear();
             for (int i = 0; i < _hierarchies.Count; i++)
-                characterInstances.Items.Add(_hierarchies[i].GetHierarchyAsString(Editor.commands, _entityDisplay.Composite, false));
+                characterInstances.Items.Add(_hierarchies[i].GetHierarchyAsString(Content.commands, _entityDisplay.Composite, false));
 
             selectNewHead.Enabled = characterInstances.Items.Count != 0;
             selectNewShirt.Enabled = characterInstances.Items.Count != 0;
@@ -67,21 +67,21 @@ namespace CommandsEditor
         private void RefreshSkeletonsForGender()
         {
             bodyTypes.Items.Clear();
-            for (int i = 0; i < Editor.skeletons[gender.Text].Count; i++)
-                bodyTypes.Items.Add(Editor.skeletons[gender.Text][i]);
+            for (int i = 0; i < Content.skeletons[gender.Text].Count; i++)
+                bodyTypes.Items.Add(Content.skeletons[gender.Text][i]);
         }
 
         private void characterInstances_SelectedIndexChanged(object sender, EventArgs e)
         {
             ShortGuid hierarchyID = _hierarchies[characterInstances.SelectedIndex].GenerateInstance();
-            _accessories = Editor.resource.character_accessories.Entries.FirstOrDefault(o => o.character.composite_instance_id == hierarchyID);
+            _accessories = Content.resource.character_accessories.Entries.FirstOrDefault(o => o.character.composite_instance_id == hierarchyID);
 
-            shirtComposite.Text = Editor.commands.GetComposite(_accessories.shirt_composite)?.name;
-            trousersComposite.Text = Editor.commands.GetComposite(_accessories.trousers_composite)?.name;
-            shoesComposite.Text = Editor.commands.GetComposite(_accessories.shoes_composite)?.name;
-            headComposite.Text = Editor.commands.GetComposite(_accessories.head_composite)?.name;
-            armsComposite.Text = Editor.commands.GetComposite(_accessories.arms_composite)?.name;
-            collisionComposite.Text = Editor.commands.GetComposite(_accessories.collision_composite)?.name;
+            shirtComposite.Text = Content.commands.GetComposite(_accessories.shirt_composite)?.name;
+            trousersComposite.Text = Content.commands.GetComposite(_accessories.trousers_composite)?.name;
+            shoesComposite.Text = Content.commands.GetComposite(_accessories.shoes_composite)?.name;
+            headComposite.Text = Content.commands.GetComposite(_accessories.head_composite)?.name;
+            armsComposite.Text = Content.commands.GetComposite(_accessories.arms_composite)?.name;
+            collisionComposite.Text = Content.commands.GetComposite(_accessories.collision_composite)?.name;
 
             gender.Text = _accessories.body_skeleton;
             RefreshSkeletonsForGender();
@@ -103,7 +103,7 @@ namespace CommandsEditor
         }
         private void OnCharacterInstanceSelected(ShortGuid instance)
         {
-            Editor.resource.character_accessories.Entries.Add(new CharacterAccessorySets.Entry()
+            Content.resource.character_accessories.Entries.Add(new CharacterAccessorySets.Entry()
             {
                 character = new CommandsEntityReference() { entity_id = _entityDisplay.Entity.shortGUID, composite_instance_id = instance }
             });

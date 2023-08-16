@@ -58,7 +58,7 @@ namespace CommandsEditor
                     case ResourceType.COLLISION_MAPPING:
                         {
                             //TODO: Pass this info through, and handle making new instances...
-                            Editor.resource.collision_maps.Entries.FindAll(o => o.entity.entity_id == resources[i].collisionID);
+                            Content.resource.collision_maps.Entries.FindAll(o => o.entity.entity_id == resources[i].collisionID);
 
                             resourceGroup = new GUI_Resource_CollisionMapping(_content);
                             ((GUI_Resource_CollisionMapping)resourceGroup).PopulateUI(resources[i].position, resources[i].rotation, resources[i].collisionID);
@@ -79,7 +79,7 @@ namespace CommandsEditor
                     case ResourceType.DYNAMIC_PHYSICS_SYSTEM:
                         {
                             //TODO: Pass this info through, and handle making new instances...
-                            Editor.resource.physics_maps.Entries.FindAll(o => o.entity.entity_id == resources[i].collisionID);
+                            Content.resource.physics_maps.Entries.FindAll(o => o.entity.entity_id == resources[i].collisionID);
 
                             resourceGroup = new GUI_Resource_DynamicPhysicsSystem(_content);
                             ((GUI_Resource_DynamicPhysicsSystem)resourceGroup).PopulateUI(); 
@@ -191,7 +191,7 @@ namespace CommandsEditor
                             resourceRef.position = ui.Position;
                             resourceRef.rotation = ui.Rotation;
                             resourceRef.count = ui.SelectedMaterialIndexes.Count;
-                            resourceRef.index = Editor.resource.reds.Entries.Count;
+                            resourceRef.index = Content.resource.reds.Entries.Count;
 
                             for (int y = 0; y < ui.SelectedMaterialIndexes.Count; y++)
                             {
@@ -200,11 +200,11 @@ namespace CommandsEditor
                                 newRed.MaterialIndex = ui.SelectedMaterialIndexes[y];
                                 if (y == 0)
                                 {
-                                    newRed.LODIndex = Editor.resource.reds.Entries.Count;
+                                    newRed.LODIndex = Content.resource.reds.Entries.Count;
                                     //newRed.LODCount = (byte)ui.SelectedMaterialIndexes.Count;
                                     newRed.LODCount = 0; //TODO!!
                                 }
-                                Editor.resource.reds.Entries.Add(newRed);
+                                Content.resource.reds.Entries.Add(newRed);
                             }
                             break;
                         }

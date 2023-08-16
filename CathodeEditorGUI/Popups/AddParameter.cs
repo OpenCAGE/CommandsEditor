@@ -94,7 +94,7 @@ namespace CommandsEditor
                     if (isComposite)
                     {
                         ShortGuid param = ShortGuidUtils.Generate(param_name.Text);
-                        VariableEntity var = Editor.commands.GetComposite(ent.function).variables.FirstOrDefault(o => o.name == param);
+                        VariableEntity var = Content.commands.GetComposite(ent.function).variables.FirstOrDefault(o => o.name == param);
                         if (var == null) return;
                         if (var.type == DataType.NONE)
                         {

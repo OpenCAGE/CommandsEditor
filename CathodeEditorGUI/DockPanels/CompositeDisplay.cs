@@ -47,7 +47,7 @@ namespace CommandsEditor.DockPanels
 
             Cursor.Current = Cursors.WaitCursor;
             CommandsUtils.PurgeDeadLinks(commandsDisplay.Content.commands, composite);
-            PopulateListView(_composite.GetEntities());
+            Reload(false);
             Cursor.Current = Cursors.Default;
         }
 
@@ -56,8 +56,33 @@ namespace CommandsEditor.DockPanels
         {
             PopulateListView(_composite.GetEntities());
             if (alsoReloadEntities) ReloadAllEntities();
+
+            //Work out if we can export this composite: for now, we can't export composites that contain any resources, as the resource pointers would be wrong. (TODO: thread this)
+            exportComposite.Visible = !DoesCompositeContainResource(_composite);
         }
         
+        private bool DoesCompositeContainResource(Composite comp)
+        {
+            foreach (FunctionEntity ent in comp.functions)
+            {
+                if (!CommandsUtils.FunctionTypeExists(ent.function))
+                {
+                    Composite nestedComp = Content.commands.GetComposite(ent.function);
+                    if (nestedComp != null)
+                        if (DoesCompositeContainResource(nestedComp))
+                            return true;
+                }
+
+                if (ent.resources.Count != 0)
+                    return true;
+
+                Parameter resources = ent.GetParameter("resource");
+                if (resources != null && ((cResource)resources.content).value.Count != 0)
+                    return true;
+            }
+            return false;
+        }
+
         /* Reload all entities loaded in this display */
         public void ReloadAllEntities()
         {
@@ -397,6 +422,12 @@ namespace CommandsEditor.DockPanels
 
             PopulateListView(_composite.GetEntities());
             ReloadAllEntities();
+        }
+
+        private void exportComposite_Click(object sender, EventArgs e)
+        {
+            ExportComposite dialog = new ExportComposite(this);
+            dialog.Show();
         }
     }
 }

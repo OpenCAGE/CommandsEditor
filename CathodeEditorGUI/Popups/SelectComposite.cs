@@ -26,15 +26,15 @@ namespace CommandsEditor
             InitializeComponent();
 
             _treeHelper = new TreeUtility(FileTree);
-            _treeHelper.UpdateFileTree(Editor.commands.GetCompositeNames().ToList());
-            _treeHelper.SelectNode(starting == null || starting == "" ? Editor.commands.EntryPoints[0].name : starting);
+            _treeHelper.UpdateFileTree(Content.commands.GetCompositeNames().ToList());
+            _treeHelper.SelectNode(starting == null || starting == "" ? Content.commands.EntryPoints[0].name : starting);
         }
 
         private void SelectEntity_Click(object sender, EventArgs e)
         {
             if (FileTree.SelectedNode == null) return;
             if (((TreeItem)FileTree.SelectedNode.Tag).Item_Type != TreeItemType.EXPORTABLE_FILE) return;
-            OnCompositeGenerated?.Invoke(Editor.commands.GetComposite(((TreeItem)FileTree.SelectedNode.Tag).String_Value));
+            OnCompositeGenerated?.Invoke(Content.commands.GetComposite(((TreeItem)FileTree.SelectedNode.Tag).String_Value));
             this.Close();
         }
     }

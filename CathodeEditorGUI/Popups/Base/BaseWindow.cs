@@ -16,7 +16,7 @@ namespace CommandsEditor.Popups.Base
     public partial class BaseWindow : Form
     {
         protected LevelContent _content;
-        protected LevelContent Editor { get { return _content; } }
+        protected LevelContent Content { get { return _content; } }
 
         private WindowClosesOn _closesOn;
 

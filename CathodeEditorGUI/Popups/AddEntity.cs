@@ -133,7 +133,7 @@ namespace CommandsEditor
             EditHierarchy hierarchyEditor = null;
             if (createProxyEntity.Checked)
             {
-                hierarchyEditor = new EditHierarchy(_content, Editor.commands.EntryPoints[0], true);
+                hierarchyEditor = new EditHierarchy(_content, Content.commands.EntryPoints[0], true);
             }
             else if (createOverrideEntity.Checked)
             {
@@ -147,7 +147,7 @@ namespace CommandsEditor
             if (createProxyEntity.Checked)
             {
                 hierarchy = new List<ShortGuid>();
-                hierarchy.Add(Editor.commands.EntryPoints[0].shortGUID);
+                hierarchy.Add(Content.commands.EntryPoints[0].shortGUID);
                 hierarchy.AddRange(generatedHierarchy);
                 createNewEntity.Enabled = true;
             }
@@ -227,12 +227,12 @@ namespace CommandsEditor
                     return;
                 }
                 newEntity = _compositeDisplay.Composite.AddFunction(compRef, addDefaultParams.Checked);
-                Editor.editor_utils.GenerateCompositeInstances(Editor.commands);
+                Content.editor_utils.GenerateCompositeInstances(Content.commands);
             }
             else if (createDatatypeEntity.Checked)
                 newEntity = _compositeDisplay.Composite.AddVariable(textBox1.Text, (DataType)entityVariant.SelectedIndex, true);
             else if (createProxyEntity.Checked)
-                newEntity = _compositeDisplay.Composite.AddProxy(Editor.commands, hierarchy, addDefaultParams.Checked);
+                newEntity = _compositeDisplay.Composite.AddProxy(Content.commands, hierarchy, addDefaultParams.Checked);
             else if (createOverrideEntity.Checked)
                 newEntity = _compositeDisplay.Composite.AddOverride(hierarchy);
             else

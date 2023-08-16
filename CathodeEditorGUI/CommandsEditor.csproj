@@ -261,6 +261,12 @@
     <Compile Include="DockPanels\EntityDisplay.Designer.cs">
       <DependentUpon>EntityDisplay.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\ExportComposite.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\ExportComposite.Designer.cs">
+      <DependentUpon>ExportComposite.cs</DependentUpon>
+    </Compile>
     <Compile Include="Scripts\LevelContent.cs" />
     <Compile Include="Popups\Base\BaseWindow.cs">
       <SubType>Form</SubType>
@@ -1400,6 +1406,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DockPanels\EntityDisplay.resx">
       <DependentUpon>EntityDisplay.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\ExportComposite.resx">
+      <DependentUpon>ExportComposite.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\Function Editors\CharacterEditor\Character_InstanceSelection.resx">
       <DependentUpon>Character_InstanceSelection.cs</DependentUpon>

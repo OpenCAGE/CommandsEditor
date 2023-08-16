@@ -43,9 +43,9 @@ namespace CommandsEditor
 
             //Get all MVR entries that match this entity
             _mvrListIndexes.Clear();
-            for (int i = 0; i < Editor.mvr.Entries.Count; i++)
+            for (int i = 0; i < Content.mvr.Entries.Count; i++)
             {
-                if (nodeID.val != null && Editor.mvr.Entries[i].entity.entity_id != nodeID) continue;
+                if (nodeID.val != null && Content.mvr.Entries[i].entity.entity_id != nodeID) continue;
                 _mvrListIndexes.Add(i);
             }
 
@@ -53,7 +53,7 @@ namespace CommandsEditor
             EntityHierarchy[] hierarchies = new EntityHierarchy[_mvrListIndexes.Count];
             Parallel.For(0, _mvrListIndexes.Count, i =>
             {
-                hierarchies[i] = _entityDisplay.Content.editor_utils.GetHierarchyFromReference(Editor.mvr.Entries[_mvrListIndexes[i]].entity);
+                hierarchies[i] = _entityDisplay.Content.editor_utils.GetHierarchyFromReference(Content.mvr.Entries[_mvrListIndexes[i]].entity);
             });
 
             //Write the hierarchies to the list
@@ -61,7 +61,7 @@ namespace CommandsEditor
             listBox1.Items.Clear();
             for (int i = 0; i < hierarchies.Length; i++)
             {
-                listBox1.Items.Add(hierarchies[i] == null ? _mvrListIndexes[i].ToString() + " [unresolvable]" : hierarchies[i].GetHierarchyAsString(Editor.commands, _entityDisplay.Composite, false));
+                listBox1.Items.Add(hierarchies[i] == null ? _mvrListIndexes[i].ToString() + " [unresolvable]" : hierarchies[i].GetHierarchyAsString(Content.commands, _entityDisplay.Composite, false));
             }
             listBox1.EndUpdate();
             if (listBox1.Items.Count != 0) listBox1.SelectedIndex = 0;
@@ -80,7 +80,7 @@ namespace CommandsEditor
         {
             hasLoaded = false;
             loadedMvrIndex = mvrIndex;
-            Movers.MOVER_DESCRIPTOR mvr = Editor.mvr.Entries[loadedMvrIndex];
+            Movers.MOVER_DESCRIPTOR mvr = Content.mvr.Entries[loadedMvrIndex];
             renderable.PopulateUI((int)mvr.renderableElementIndex, (int)mvr.renderableElementCount);
 
             Matrix4x4.Decompose(mvr.transform, out Vector3 scale, out Quaternion rotation, out Vector3 position);
@@ -112,9 +112,9 @@ namespace CommandsEditor
         private void SaveMVR()
         {
             if (!hasLoaded || loadedMvrIndex == -1) return;
-            Movers.MOVER_DESCRIPTOR mvr = Editor.mvr.Entries[loadedMvrIndex];
+            Movers.MOVER_DESCRIPTOR mvr = Content.mvr.Entries[loadedMvrIndex];
             mvr.renderableElementCount = (uint)renderable.SelectedMaterialIndexes.Count;
-            mvr.renderableElementIndex = (uint)Editor.resource.reds.Entries.Count;
+            mvr.renderableElementIndex = (uint)Content.resource.reds.Entries.Count;
 
             Vector3 scale = new Vector3((float)SCALE_X.Value, (float)SCALE_Y.Value, (float)SCALE_Z.Value);
             //Quaternion rotation = Quaternion.Normalize(new Quaternion((float)ROT_X.Value, (float)ROT_Y.Value, (float)ROT_Z.Value, (float)ROT_W.Value));
@@ -131,7 +131,7 @@ namespace CommandsEditor
 
             mvr.instanceTypeFlags = (ushort)Convert.ToInt32(type_dropdown.SelectedItem.ToString());
 
-            Editor.mvr.Entries[loadedMvrIndex] = mvr;
+            Content.mvr.Entries[loadedMvrIndex] = mvr;
 
             for (int y = 0; y < renderable.SelectedMaterialIndexes.Count; y++)
             {
@@ -140,11 +140,11 @@ namespace CommandsEditor
                 newRed.MaterialIndex = renderable.SelectedMaterialIndexes[y];
                 if (y == 0)
                 {
-                    newRed.LODIndex = Editor.resource.reds.Entries.Count;
+                    newRed.LODIndex = Content.resource.reds.Entries.Count;
                     //newRed.LODCount = (byte)renderable.SelectedMaterialIndexes.Count;
                     newRed.LODCount = 0; //TODO!!
                 }
-                Editor.resource.reds.Entries.Add(newRed);
+                Content.resource.reds.Entries.Add(newRed);
             }
 
             Console.WriteLine("SAVED");
@@ -156,7 +156,7 @@ namespace CommandsEditor
             if (loadedMvrIndex == -1) return;
             //CurrentInstance.moverDB.Movers.RemoveAt(loadedMvrIndex);
 
-            Editor.mvr.Entries[loadedMvrIndex] = Editor.mvr.Entries[0];
+            Content.mvr.Entries[loadedMvrIndex] = Content.mvr.Entries[0];
 
             PopulateUI(filteredNodeID);
         }
