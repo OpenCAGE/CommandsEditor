@@ -55,13 +55,15 @@ namespace CommandsEditor.DockPanels
         public void Reload(bool alsoReloadEntities = true)
         {
             PopulateListView(_composite.GetEntities());
-
-            if (alsoReloadEntities)
+            if (alsoReloadEntities) ReloadAllEntities();
+        }
+        
+        /* Reload all entities loaded in this display */
+        public void ReloadAllEntities()
+        {
+            foreach (KeyValuePair<Entity, EntityDisplay> display in _entityDisplays)
             {
-                foreach (KeyValuePair<Entity, EntityDisplay> display in _entityDisplays)
-                {
-                    display.Value.Reload();
-                }
+                display.Value.Reload();
             }
         }
 
@@ -304,7 +306,7 @@ namespace CommandsEditor.DockPanels
             if (_entityDisplays.ContainsKey(entity))
                 _entityDisplays[entity].Close();
 
-            Reload();
+            ReloadAllEntities();
         }
 
         public void DuplicateEntity(Entity entity)
