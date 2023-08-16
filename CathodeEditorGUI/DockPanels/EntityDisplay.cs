@@ -475,7 +475,7 @@ namespace CommandsEditor.DockPanels
 
         private void duplicateEntity_Click(object sender, EventArgs e)
         {
-
+            _compositeDisplay.DuplicateEntity(Entity);
         }
     }
 }
