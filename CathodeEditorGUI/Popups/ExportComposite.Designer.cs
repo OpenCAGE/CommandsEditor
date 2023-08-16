@@ -28,12 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ExportComposite));
             this.export = new System.Windows.Forms.Button();
             this.levelList = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.overwrite = new System.Windows.Forms.CheckBox();
             this.recurse = new System.Windows.Forms.CheckBox();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.SuspendLayout();
             // 
             // export
@@ -43,6 +45,7 @@
             this.export.Size = new System.Drawing.Size(113, 23);
             this.export.TabIndex = 5;
             this.export.Text = "Export";
+            this.toolTip1.SetToolTip(this.export, "Export composite to selected level.");
             this.export.UseVisualStyleBackColor = true;
             this.export.Click += new System.EventHandler(this.export_Click);
             // 
@@ -74,6 +77,8 @@
             this.overwrite.Size = new System.Drawing.Size(219, 17);
             this.overwrite.TabIndex = 8;
             this.overwrite.Text = "Overwrite existing destination composites";
+            this.toolTip1.SetToolTip(this.overwrite, "If checked: when composites are copied they will overwrite any by the same ID in " +
+        "the destination level.");
             this.overwrite.UseVisualStyleBackColor = true;
             // 
             // recurse
@@ -86,6 +91,8 @@
             this.recurse.Size = new System.Drawing.Size(257, 17);
             this.recurse.TabIndex = 9;
             this.recurse.Text = "Copy all composites referenced by this composite";
+            this.toolTip1.SetToolTip(this.recurse, "If checked: composites that are instanced within the exported composite will also" +
+        " be copied.");
             this.recurse.UseVisualStyleBackColor = true;
             // 
             // ExportComposite
@@ -103,7 +110,7 @@
             this.MaximizeBox = false;
             this.Name = "ExportComposite";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Resource Reference Editor";
+            this.Text = "Composite Exporter";
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -116,5 +123,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.CheckBox overwrite;
         private System.Windows.Forms.CheckBox recurse;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }

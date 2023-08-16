@@ -10,6 +10,7 @@ using System.Drawing;
 using System.Linq;
 using System.Runtime.Remoting.Contexts;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WebSocketSharp;
@@ -34,6 +35,11 @@ namespace CommandsEditor.DockPanels
         private EntityDisplay _activeEntityDisplay = null;
         public EntityDisplay ActiveEntityDisplay => _activeEntityDisplay;
 
+        private Task _exportCheck = null;
+        private CancellationToken _exportCheckToken;
+        private static Mutex _mut = new Mutex();
+        private bool _canExportChildren = true;
+
         public CompositeDisplay(CommandsDisplay commandsDisplay, Composite composite)
         {
             _commandsDisplay = commandsDisplay;
@@ -57,20 +63,60 @@ namespace CommandsEditor.DockPanels
             PopulateListView(_composite.GetEntities());
             if (alsoReloadEntities) ReloadAllEntities();
 
-            //Work out if we can export this composite: for now, we can't export composites that contain any resources, as the resource pointers would be wrong. (TODO: thread this)
-            exportComposite.Visible = !DoesCompositeContainResource(_composite);
+            CancellationTokenSource tokenSource = new CancellationTokenSource();
+            _exportCheckToken = tokenSource.Token;
+            if (_exportCheck != null) tokenSource.Cancel();
+            while (_exportCheck != null) Thread.Sleep(100);
+
+            exportComposite.Enabled = false;
+            _exportCheck = Task.Factory.StartNew(() => UpdateExportCompositeVisibility());
         }
-        
+
+        /* Work out if we can export this composite: for now, we can't export composites that contain any resources, as the resource pointers would be wrong */
+        private void UpdateExportCompositeVisibility()
+        {
+            try
+            {
+                _canExportChildren = true;
+                bool visible = !DoesCompositeContainResource(_composite);
+                if (_exportCheckToken.IsCancellationRequested)
+                {
+                    _exportCheck = null;
+                    return;
+                }
+                EnableDisableButtonRun(visible);
+            }
+            catch { }
+        }
+        delegate void EnableDisableButtonRunDeleg(bool value);
+        private void EnableDisableButtonRun(bool value)
+        {
+            if (toolStrip1.InvokeRequired)
+            {
+                this.toolStrip1.Invoke(new EnableDisableButtonRunDeleg
+                 (EnableDisableButtonRun), value);
+            }
+            else
+            {
+                exportComposite.Enabled = value;
+            }
+        }
         private bool DoesCompositeContainResource(Composite comp)
         {
             foreach (FunctionEntity ent in comp.functions)
             {
-                if (!CommandsUtils.FunctionTypeExists(ent.function))
+                if (_canExportChildren && !CommandsUtils.FunctionTypeExists(ent.function))
                 {
                     Composite nestedComp = Content.commands.GetComposite(ent.function);
                     if (nestedComp != null)
+                    {
                         if (DoesCompositeContainResource(nestedComp))
-                            return true;
+                        {
+                            _mut.WaitOne();
+                            _canExportChildren = false;
+                            _mut.ReleaseMutex();
+                        }
+                    }
                 }
 
                 if (ent.resources.Count != 0)
@@ -426,7 +472,7 @@ namespace CommandsEditor.DockPanels
 
         private void exportComposite_Click(object sender, EventArgs e)
         {
-            ExportComposite dialog = new ExportComposite(this);
+            ExportComposite dialog = new ExportComposite(this, _canExportChildren);
             dialog.Show();
         }
     }

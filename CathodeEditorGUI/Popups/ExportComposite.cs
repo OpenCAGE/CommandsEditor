@@ -13,7 +13,7 @@ namespace CommandsEditor
     {
         CompositeDisplay _display;
 
-        public ExportComposite(CompositeDisplay display) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, display.Content)
+        public ExportComposite(CompositeDisplay display, bool canExportChildren) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, display.Content)
         {
             _display = display;
 
@@ -25,6 +25,14 @@ namespace CommandsEditor
             levelList.EndUpdate();
 
             levelList.SelectedIndex = 0;
+
+            this.Text = "Export '" + _display.Composite.name + "'";
+            
+            if (!canExportChildren)
+            {
+                recurse.Checked = false;
+                recurse.Enabled = false;
+            }
         }
 
         private void export_Click(object sender, System.EventArgs e)
