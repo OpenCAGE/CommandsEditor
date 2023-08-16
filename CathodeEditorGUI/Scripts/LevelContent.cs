@@ -231,6 +231,7 @@ namespace CommandsEditor
                 case EntityVariant.OVERRIDE:
                     CommandsUtils.ResolveHierarchy(commands, composite, ((OverrideEntity)entity).connectedEntity.hierarchy, out Composite c, out string s, false);
                     item.Text = s;
+                    item.SubItems.Add("");
                     break;
                 case EntityVariant.PROXY:
                     CommandsUtils.ResolveHierarchy(commands, composite, ((ProxyEntity)entity).connectedEntity.hierarchy, out Composite c2, out string s2, false);
