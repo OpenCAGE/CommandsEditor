@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CATHODE.Scripting.Internal;
+using OpenCAGE;
 
 namespace CommandsEditor
 {
@@ -237,6 +238,7 @@ namespace CommandsEditor
                     item.SubItems.Add(s2);
                     break;
             }
+            item.SubItems.Add(entity.shortGUID.ToByteString());
 
             //we wanted to check the cache and it wasn't there, so lets add it
             if (checkCache)

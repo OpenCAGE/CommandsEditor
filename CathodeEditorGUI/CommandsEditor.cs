@@ -40,6 +40,7 @@ namespace CommandsEditor
         private readonly string _serverOpt = "CE_ConnectToUnity";
         private readonly string _backupsOpt = "CS_EnableBackups";
         private readonly string _nodeOpt = "CS_NodeView";
+        private readonly string _entIdOpt = "CS_ShowEntityIDs";
 
         public CommandsEditor(string level = null)
         {
@@ -55,6 +56,7 @@ namespace CommandsEditor
             enableBackups.Checked = !SettingsManager.GetBool(_backupsOpt); enableBackups.PerformClick();
             connectToUnity.Checked = !SettingsManager.GetBool(_serverOpt); connectToUnity.PerformClick();
             showNodegraph.Checked = !SettingsManager.GetBool(_nodeOpt); showNodegraph.PerformClick();
+            showEntityIDs.Checked = !SettingsManager.GetBool(_entIdOpt); showEntityIDs.PerformClick();
 
             //Set title
             this.Text = "OpenCAGE Commands Editor";
@@ -346,8 +348,12 @@ namespace CommandsEditor
         /* Enable the option to load */
         public void EnableLoadingOfPaks(bool shouldEnable, string text)
         {
-            toolStrip.Invoke(new Action(() => { toolStrip.Enabled = shouldEnable; }));
-            statusStrip.Invoke(new Action(() => { statusText.Text = text; }));
+            try
+            {
+                toolStrip.Invoke(new Action(() => { toolStrip.Enabled = shouldEnable; }));
+                statusStrip.Invoke(new Action(() => { statusText.Text = text; }));
+            }
+            catch { }
         }
 
         /* Enable/disable backups */
@@ -493,6 +499,14 @@ namespace CommandsEditor
         {
             _nodeViewer = null;
             showNodegraph.Checked = false;
+        }
+
+        private void showEntityIDs_Click(object sender, EventArgs e)
+        {
+            showEntityIDs.Checked = !showEntityIDs.Checked;
+            SettingsManager.SetBool(_entIdOpt, showEntityIDs.Checked);
+
+            //TODO: reload all composite UIs
         }
     }
 }

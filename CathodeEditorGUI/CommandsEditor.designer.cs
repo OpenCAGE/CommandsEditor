@@ -34,15 +34,16 @@
             this.toolStripButton1 = new System.Windows.Forms.ToolStripDropDownButton();
             this.loadLevel = new System.Windows.Forms.ToolStripMenuItem();
             this.saveLevel = new System.Windows.Forms.ToolStripMenuItem();
-            this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
-            this.vS2015LightTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
-            this.statusStrip = new System.Windows.Forms.StatusStrip();
-            this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripDropDownButton();
             this.enableBackups = new System.Windows.Forms.ToolStripMenuItem();
             this.connectToUnity = new System.Windows.Forms.ToolStripMenuItem();
             this.showNodegraph = new System.Windows.Forms.ToolStripMenuItem();
+            this.showEntityIDs = new System.Windows.Forms.ToolStripMenuItem();
+            this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
+            this.vS2015LightTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
+            this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.statusText = new System.Windows.Forms.ToolStripStatusLabel();
+            this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -73,41 +74,16 @@
             // loadLevel
             // 
             this.loadLevel.Name = "loadLevel";
-            this.loadLevel.Size = new System.Drawing.Size(180, 22);
+            this.loadLevel.Size = new System.Drawing.Size(130, 22);
             this.loadLevel.Text = "Load Level";
             this.loadLevel.Click += new System.EventHandler(this.loadLevel_Click);
             // 
             // saveLevel
             // 
             this.saveLevel.Name = "saveLevel";
-            this.saveLevel.Size = new System.Drawing.Size(180, 22);
+            this.saveLevel.Size = new System.Drawing.Size(130, 22);
             this.saveLevel.Text = "Save Level";
             this.saveLevel.Click += new System.EventHandler(this.saveLevel_Click);
-            // 
-            // statusStrip
-            // 
-            this.statusStrip.BackColor = System.Drawing.Color.Black;
-            this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.statusText});
-            this.statusStrip.Location = new System.Drawing.Point(0, 782);
-            this.statusStrip.Name = "statusStrip";
-            this.statusStrip.Size = new System.Drawing.Size(1257, 22);
-            this.statusStrip.TabIndex = 4;
-            this.statusStrip.Text = "statusStrip1";
-            // 
-            // dockPanel
-            // 
-            this.dockPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dockPanel.DockBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(57)))), ((int)(((byte)(85)))));
-            this.dockPanel.DockLeftPortion = 0.3D;
-            this.dockPanel.DockRightPortion = 0.35D;
-            this.dockPanel.Location = new System.Drawing.Point(0, 25);
-            this.dockPanel.Name = "dockPanel";
-            this.dockPanel.Padding = new System.Windows.Forms.Padding(6);
-            this.dockPanel.ShowAutoHideContentOnHover = false;
-            this.dockPanel.Size = new System.Drawing.Size(1257, 757);
-            this.dockPanel.TabIndex = 5;
-            this.dockPanel.Theme = this.vS2015BlueTheme1;
             // 
             // toolStripButton2
             // 
@@ -115,7 +91,8 @@
             this.toolStripButton2.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.enableBackups,
             this.connectToUnity,
-            this.showNodegraph});
+            this.showNodegraph,
+            this.showEntityIDs});
             this.toolStripButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton2.Image")));
             this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton2.Name = "toolStripButton2";
@@ -149,11 +126,43 @@
             this.showNodegraph.Text = "Show Nodegraph";
             this.showNodegraph.Click += new System.EventHandler(this.showNodegraph_Click);
             // 
+            // showEntityIDs
+            // 
+            this.showEntityIDs.Name = "showEntityIDs";
+            this.showEntityIDs.Size = new System.Drawing.Size(180, 22);
+            this.showEntityIDs.Text = "Show Entity IDs";
+            this.showEntityIDs.Click += new System.EventHandler(this.showEntityIDs_Click);
+            // 
+            // statusStrip
+            // 
+            this.statusStrip.BackColor = System.Drawing.Color.Black;
+            this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.statusText});
+            this.statusStrip.Location = new System.Drawing.Point(0, 782);
+            this.statusStrip.Name = "statusStrip";
+            this.statusStrip.Size = new System.Drawing.Size(1257, 22);
+            this.statusStrip.TabIndex = 4;
+            this.statusStrip.Text = "statusStrip1";
+            // 
             // statusText
             // 
             this.statusText.ForeColor = System.Drawing.SystemColors.Control;
             this.statusText.Name = "statusText";
             this.statusText.Size = new System.Drawing.Size(0, 17);
+            // 
+            // dockPanel
+            // 
+            this.dockPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dockPanel.DockBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(57)))), ((int)(((byte)(85)))));
+            this.dockPanel.DockLeftPortion = 0.3D;
+            this.dockPanel.DockRightPortion = 0.35D;
+            this.dockPanel.Location = new System.Drawing.Point(0, 25);
+            this.dockPanel.Name = "dockPanel";
+            this.dockPanel.Padding = new System.Windows.Forms.Padding(6);
+            this.dockPanel.ShowAutoHideContentOnHover = false;
+            this.dockPanel.Size = new System.Drawing.Size(1257, 757);
+            this.dockPanel.TabIndex = 5;
+            this.dockPanel.Theme = this.vS2015BlueTheme1;
             // 
             // CommandsEditor
             // 
@@ -192,5 +201,6 @@
         private System.Windows.Forms.ToolStripMenuItem connectToUnity;
         private System.Windows.Forms.ToolStripMenuItem showNodegraph;
         private System.Windows.Forms.ToolStripStatusLabel statusText;
+        private System.Windows.Forms.ToolStripMenuItem showEntityIDs;
     }
 }

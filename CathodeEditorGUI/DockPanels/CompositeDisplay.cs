@@ -1,6 +1,7 @@
 ﻿using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CathodeLib;
+using OpenCAGE;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -83,9 +84,18 @@ namespace CommandsEditor.DockPanels
         {
             composite_content.BeginUpdate();
             composite_content.Items.Clear();
+
+            bool hasID = composite_content.Columns.ContainsKey("ID");
+            bool showID = SettingsManager.GetBool("CS_ShowEntityIDs");
+            if (showID && !hasID)
+                composite_content.Columns.Add(new ColumnHeader() { Name = "ID", Text = "ID", Width = 100 });
+            else if (!showID && hasID)
+                composite_content.Columns.RemoveByKey("ID");
+
             List<Entity> entities = _composite.GetEntities();
             for (int i = 0; i < entities.Count; i++)
                 AddEntityToListView(entities[i]);
+
             composite_content.EndUpdate();
         }
 
