@@ -14,7 +14,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using WebSocketSharp;
 using WeifenLuo.WinFormsUI.Docking;
-using static System.Windows.Forms.ListViewItem;
 
 namespace CommandsEditor.DockPanels
 {
@@ -48,7 +47,7 @@ namespace CommandsEditor.DockPanels
 
             Cursor.Current = Cursors.WaitCursor;
             CommandsUtils.PurgeDeadLinks(commandsDisplay.Content.commands, composite);
-            PopulateListView();
+            PopulateListView(_composite.GetEntities());
             Cursor.Current = Cursors.Default;
         }
 
@@ -81,7 +80,7 @@ namespace CommandsEditor.DockPanels
             Singleton.OnEntitySelected?.Invoke(null);
         }
 
-        private void PopulateListView()
+        private void PopulateListView(List<Entity> entities)
         {
             composite_content.BeginUpdate();
             composite_content.Items.Clear();
@@ -93,7 +92,6 @@ namespace CommandsEditor.DockPanels
             else if (!showID && hasID)
                 composite_content.Columns.RemoveByKey("ID");
 
-            List<Entity> entities = _composite.GetEntities();
             for (int i = 0; i < entities.Count; i++)
                 AddEntityToListView(entities[i]);
 
@@ -130,7 +128,7 @@ namespace CommandsEditor.DockPanels
             }
             else
             {
-                PopulateListView();
+                PopulateListView(_composite.GetEntities());
             }
             LoadEntity(newEnt);
         }
@@ -204,24 +202,21 @@ namespace CommandsEditor.DockPanels
         {
             if (entity_search_box.Text == currentSearch) return;
 
-            List<ListViewItem> matched = new List<ListViewItem>();
-            foreach (ListViewItem item in composite_content_RAW)
+            List<Entity> allEntities = _composite.GetEntities();
+            List<Entity> filteredEntities = new List<Entity>();
+
+            foreach (Entity entity in allEntities)
             {
-                foreach (ListViewSubItem subitem in item.SubItems)
+                foreach (ListViewItem.ListViewSubItem subitem in Content.composite_content_cache[Composite][entity].SubItems)
                 {
-                    if (subitem.Text.ToUpper().Contains(entity_search_box.Text.ToUpper()))
-                    {
-                        matched.Add(item);
-                        break;
-                    }
+                    if (!subitem.Text.ToUpper().Contains(entity_search_box.Text.ToUpper())) continue;
+
+                    filteredEntities.Add(entity);
+                    break;
                 }
             }
 
-            composite_content.BeginUpdate();
-            composite_content.Items.Clear();
-            for (int i = 0; i < matched.Count; i++) 
-                composite_content.Items.Add(matched[i]);
-            composite_content.EndUpdate();
+            PopulateListView(filteredEntities);
             currentSearch = entity_search_box.Text;
         }
 
@@ -302,7 +297,7 @@ namespace CommandsEditor.DockPanels
                 }
             }
 
-            PopulateListView();
+            PopulateListView(_composite.GetEntities());
             if (_entityDisplays.ContainsKey(entity))
                 _entityDisplays[entity].Close();
         }
