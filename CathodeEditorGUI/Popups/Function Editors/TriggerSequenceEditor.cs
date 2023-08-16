@@ -3,6 +3,7 @@ using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CommandsEditor.DockPanels;
 using CommandsEditor.Popups.Base;
+using OpenCAGE;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -42,7 +43,7 @@ namespace CommandsEditor
             for (int i = 0; i < _triggerSequence.entities.Count; i++)
             {
                 string thisHierarchy;
-                CommandsUtils.ResolveHierarchy(Editor.commands, _entityDisplay.Composite, _triggerSequence.entities[i].connectedEntity.hierarchy, out Composite comp, out thisHierarchy);
+                CommandsUtils.ResolveHierarchy(Editor.commands, _entityDisplay.Composite, _triggerSequence.entities[i].connectedEntity.hierarchy, out Composite comp, out thisHierarchy, SettingsManager.GetBool("CS_ShowEntityIDs"));
 
                 string toAdd = "[" + _triggerSequence.entities[i].timing + "s] " + thisHierarchy;
                 entity_list.Items.Add(toAdd);
@@ -88,8 +89,7 @@ namespace CommandsEditor
                 return;
             }
 
-            string thisHierarchy;
-            CommandsUtils.ResolveHierarchy(Editor.commands, _entityDisplay.Composite, _triggerSequence.entities[entity_list.SelectedIndex].connectedEntity.hierarchy, out Composite comp, out thisHierarchy);
+            CommandsUtils.ResolveHierarchy(Editor.commands, _entityDisplay.Composite, _triggerSequence.entities[entity_list.SelectedIndex].connectedEntity.hierarchy, out Composite comp, out string thisHierarchy, SettingsManager.GetBool("CS_ShowEntityIDs"));
 
             entityHierarchy.Text = thisHierarchy;
             entityTriggerDelay.Text = _triggerSequence.entities[entity_list.SelectedIndex].timing.ToString();

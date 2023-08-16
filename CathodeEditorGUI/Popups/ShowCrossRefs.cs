@@ -2,6 +2,7 @@
 using CATHODE.Scripting.Internal;
 using CommandsEditor.DockPanels;
 using CommandsEditor.Popups.Base;
+using OpenCAGE;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -83,6 +84,8 @@ namespace CommandsEditor
             referenceList.Items.Clear();
             entities.Clear();
 
+            bool showIDs = SettingsManager.GetBool("CS_ShowEntityIDs");
+
             foreach (Composite comp in Editor.commands.Entries)
             {
                 switch (display)
@@ -90,7 +93,7 @@ namespace CommandsEditor
                     case CurrentDisplay.PROXIES:
                         foreach (ProxyEntity prox in comp.proxies)
                         {
-                            Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, comp, prox.connectedEntity.hierarchy, out Composite compRef, out string str);
+                            Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, comp, prox.connectedEntity.hierarchy, out Composite compRef, out string str, showIDs);
                             if (ent != _entityDisplay.Entity) continue;
                             entities.Add(new EntityRef() { composite = comp, entity = prox });
                             referenceList.Items.Add(_entityDisplay.Content.editor_utils.GenerateEntityName(prox, comp));
@@ -99,7 +102,7 @@ namespace CommandsEditor
                     case CurrentDisplay.OVERRIDES:
                         foreach (OverrideEntity ovr in comp.overrides)
                         {
-                            Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, comp, ovr.connectedEntity.hierarchy, out Composite compRef, out string str);
+                            Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, comp, ovr.connectedEntity.hierarchy, out Composite compRef, out string str, showIDs);
                             if (ent != _entityDisplay.Entity) continue;
                             entities.Add(new EntityRef() { composite = comp, entity = ovr });
                             referenceList.Items.Add(_entityDisplay.Content.editor_utils.GenerateEntityName(ovr, comp));
@@ -110,7 +113,7 @@ namespace CommandsEditor
                         {
                             foreach (TriggerSequence.Entity trigger in trig.entities)
                             {
-                                Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, comp, trigger.connectedEntity.hierarchy, out Composite compRef, out string str);
+                                Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, comp, trigger.connectedEntity.hierarchy, out Composite compRef, out string str, showIDs);
                                 if (ent != _entityDisplay.Entity) continue;
                                 entities.Add(new EntityRef() { composite = comp, entity = trig });
                                 referenceList.Items.Add(_entityDisplay.Content.editor_utils.GenerateEntityName(trig, comp));
@@ -122,7 +125,7 @@ namespace CommandsEditor
                         {
                             foreach (CAGEAnimation.Connection connection in anim.connections)
                             {
-                                Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, comp, connection.connectedEntity.hierarchy, out Composite compRef, out string str);
+                                Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, comp, connection.connectedEntity.hierarchy, out Composite compRef, out string str, showIDs);
                                 if (ent != _entityDisplay.Entity) continue;
                                 entities.Add(new EntityRef() { composite = comp, entity = anim });
                                 referenceList.Items.Add(_entityDisplay.Content.editor_utils.GenerateEntityName(anim, comp));

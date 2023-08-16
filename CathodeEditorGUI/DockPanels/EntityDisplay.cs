@@ -1,6 +1,7 @@
 ﻿using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CommandsEditor.UserControls;
+using OpenCAGE;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -100,7 +101,7 @@ namespace CommandsEditor.DockPanels
                 case EntityVariant.OVERRIDE:
                     hierarchyDisplay.Visible = true;
                     List<ShortGuid> entityHierarchy = entity.variant == EntityVariant.PROXY ? ((ProxyEntity)entity).connectedEntity.hierarchy : ((OverrideEntity)entity).connectedEntity.hierarchy;
-                    Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, Composite, entityHierarchy, out Composite comp, out string hierarchy);
+                    Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, Composite, entityHierarchy, out Composite comp, out string hierarchy, SettingsManager.GetBool("CS_ShowEntityIDs"));
                     hierarchyDisplay.Text = hierarchy;
                     jumpToComposite.Visible = true;
                     selected_entity_name.Text = (entity.variant == EntityVariant.PROXY ? "Proxy" : "Override") + " to " + EntityUtils.GetName(comp, ent);
