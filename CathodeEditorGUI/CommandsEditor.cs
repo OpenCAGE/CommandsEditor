@@ -1,4 +1,4 @@
-﻿using CATHODE;
+using CATHODE;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CommandsEditor.DockPanels;
@@ -177,6 +177,7 @@ namespace CommandsEditor
         }
         private void OnLevelSelected(string level)
         {
+            statusText.Text = "Loading " + level + "...";
             _activeCompositeDisplay = null;
             _levelSelect = null;
 
@@ -196,9 +197,12 @@ namespace CommandsEditor
         private void saveLevel_Click(object sender, EventArgs e)
         {
             if (_commandsDisplay == null) return;
+
+            statusText.Text = "Saving...";
             Cursor.Current = Cursors.WaitCursor;
             bool saved = LegacySave();
-            Cursor.Current = Cursors.Default;
+            Cursor.Current = Cursors.Default; 
+            statusText.Text = "";
 
             if (saved)
                 MessageBox.Show("Saved changes!", "Saved.", MessageBoxButtons.OK, MessageBoxIcon.Information);

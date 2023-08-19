@@ -41,16 +41,6 @@ namespace CommandsEditor
             public CharacterAccessorySets character_accessories;
         }
 
-        //Skeletons from ANIMATIONS.PAK
-        public Dictionary<string, List<string>> skeletons = new Dictionary<string, List<string>>();
-
-        //Global animation strings
-        public AnimationStrings animstrings;
-        public AnimationStrings animstrings_debug;
-
-        //Global localised string DBs for English
-        public Dictionary<string, Strings> strings = new Dictionary<string, Strings>();
-
         //UI stuff
         public Dictionary<Composite, Dictionary<Entity, ListViewItem>> composite_content_cache = new Dictionary<Composite, Dictionary<Entity, ListViewItem>>();
 

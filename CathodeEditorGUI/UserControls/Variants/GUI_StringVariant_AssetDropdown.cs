@@ -51,7 +51,7 @@ namespace CommandsEditor.UserControls
                             if (strings.FirstOrDefault(o => o.value == entry.ToString()) == null)
                             {
                                 string englishTranslation = "";
-                                foreach (KeyValuePair<string, Strings> stringdb in Editor.strings)
+                                foreach (KeyValuePair<string, Strings> stringdb in Singleton.Strings)
                                 {
                                     foreach (KeyValuePair<string, string> stringdb_val in stringdb.Value.Entries)
                                     {
@@ -81,7 +81,7 @@ namespace CommandsEditor.UserControls
                                 if (strings.FirstOrDefault(o => o.value == e.name) == null)
                                 {
                                     string englishTranslation = "";
-                                    foreach (KeyValuePair<string, Strings> stringdb in Editor.strings)
+                                    foreach (KeyValuePair<string, Strings> stringdb in Singleton.Strings)
                                     {
                                         foreach (KeyValuePair<string, string> stringdb_val in stringdb.Value.Entries)
                                         {
@@ -100,7 +100,7 @@ namespace CommandsEditor.UserControls
                         string[] argsSplit = args.Split('/');
                         foreach (string arg in argsSplit)
                         {
-                            foreach (KeyValuePair<string, Strings> entry in Editor.strings)
+                            foreach (KeyValuePair<string, Strings> entry in Singleton.Strings)
                             {
                                 if (arg != "" && arg != entry.Key) continue;
                                 foreach (KeyValuePair<string, string> e in entry.Value.Entries)
@@ -135,7 +135,7 @@ namespace CommandsEditor.UserControls
                     case AssetList.Type.ANIMATION:
                         //TODO: This is NOT the correct way to populate this field, as it'll give us ALL anim strings, not just animations.
                         //      We should populate it by parsing the contents of ANIMATIONS.PAK, loading skeletons relative to animations, and then populating animations relative to the selected skeleton.
-                        foreach (KeyValuePair<uint, string> entry in Editor.animstrings.Entries)
+                        foreach (KeyValuePair<uint, string> entry in Singleton.AnimationStrings.Entries)
                         {
                             if (strings.FirstOrDefault(o => o.value == entry.Value) == null)
                                 strings.Add(new AssetList.Value() { value = entry.Value });
@@ -167,7 +167,7 @@ namespace CommandsEditor.UserControls
             
             if (type == AssetList.Type.LOCALISED_STRING)
             {
-                foreach (KeyValuePair<string, Strings> entry in Editor.strings)
+                foreach (KeyValuePair<string, Strings> entry in Singleton.Strings)
                 {
                     if (typeArgs != "" && typeArgs != entry.Key) continue;
                     if (entry.Value.Entries.ContainsKey(comboBox1.Text))

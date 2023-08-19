@@ -22,7 +22,7 @@ namespace CommandsEditor
             _entityDisplay = editor;
             InitializeComponent();
 
-            foreach (KeyValuePair<string, List<string>> skeletons in Content.skeletons)
+            foreach (KeyValuePair<string, List<string>> skeletons in Singleton.Skeletons)
                 gender.Items.Add(skeletons.Key);
 
             shirtDecal.Items.Clear();
@@ -67,8 +67,8 @@ namespace CommandsEditor
         private void RefreshSkeletonsForGender()
         {
             bodyTypes.Items.Clear();
-            for (int i = 0; i < Content.skeletons[gender.Text].Count; i++)
-                bodyTypes.Items.Add(Content.skeletons[gender.Text][i]);
+            for (int i = 0; i < Singleton.Skeletons[gender.Text].Count; i++)
+                bodyTypes.Items.Add(Singleton.Skeletons[gender.Text][i]);
         }
 
         private void characterInstances_SelectedIndexChanged(object sender, EventArgs e)
