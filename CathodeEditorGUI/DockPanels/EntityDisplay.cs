@@ -136,6 +136,7 @@ namespace CommandsEditor.DockPanels
                     parameterGUI.GoToEntity += _compositeDisplay.LoadEntity;
                     parameterGUI.OnLinkEdited += OnLinkEdited;
                     parameterGUI.Location = new Point(15, current_ui_offset);
+                    parameterGUI.Width = entity_params.Width - 30;
                     parameterGUI.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
                     current_ui_offset += parameterGUI.Height + 6;
                     entity_params.Controls.Add(parameterGUI);
@@ -306,6 +307,7 @@ namespace CommandsEditor.DockPanels
                         break;
                 }
                 parameterGUI.Location = new Point(15, current_ui_offset);
+                parameterGUI.Width = entity_params.Width - 30;
                 parameterGUI.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
                 current_ui_offset += parameterGUI.Height + 6;
                 entity_params.Controls.Add(parameterGUI);
@@ -320,6 +322,7 @@ namespace CommandsEditor.DockPanels
                 parameterGUI.GoToEntity += _compositeDisplay.LoadEntity;
                 parameterGUI.OnLinkEdited += OnLinkEdited;
                 parameterGUI.Location = new Point(15, current_ui_offset);
+                parameterGUI.Width = entity_params.Width - 30;
                 parameterGUI.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
                 current_ui_offset += parameterGUI.Height + 6;
                 entity_params.Controls.Add(parameterGUI);
