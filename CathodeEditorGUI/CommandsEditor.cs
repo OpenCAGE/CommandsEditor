@@ -178,6 +178,8 @@ namespace CommandsEditor
         private void OnLevelSelected(string level)
         {
             statusText.Text = "Loading " + level + "...";
+            statusStrip.Update();
+
             _activeCompositeDisplay = null;
             _levelSelect = null;
 
@@ -198,11 +200,12 @@ namespace CommandsEditor
         {
             if (_commandsDisplay == null) return;
 
-            statusText.Text = "Saving...";
             Cursor.Current = Cursors.WaitCursor;
+            statusText.Text = "Saving...";
+            statusStrip.Update();
             bool saved = LegacySave();
-            Cursor.Current = Cursors.Default; 
             statusText.Text = "";
+            Cursor.Current = Cursors.Default;
 
             if (saved)
                 MessageBox.Show("Saved changes!", "Saved.", MessageBoxButtons.OK, MessageBoxIcon.Information);
