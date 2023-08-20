@@ -28,10 +28,10 @@ namespace CommandsEditor.DockPanels
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup("Variables", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup6 = new System.Windows.Forms.ListViewGroup("Functions", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup7 = new System.Windows.Forms.ListViewGroup("Proxies", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup8 = new System.Windows.Forms.ListViewGroup("Overrides", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Variables", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("Functions", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("Proxies", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("Overrides", System.Windows.Forms.HorizontalAlignment.Left);
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CompositeDisplay));
             this.composite_content = new System.Windows.Forms.ListView();
             this.EntityName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -40,7 +40,9 @@ namespace CommandsEditor.DockPanels
             this.entity_search_btn = new System.Windows.Forms.Button();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.createEntity = new System.Windows.Forms.ToolStripButton();
+            this.exportComposite = new System.Windows.Forms.ToolStripButton();
             this.findUses = new System.Windows.Forms.ToolStripButton();
+            this.deleteCheckedEntities = new System.Windows.Forms.ToolStripButton();
             this.deleteComposite = new System.Windows.Forms.ToolStripButton();
             this.vS2015DarkTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
@@ -48,8 +50,6 @@ namespace CommandsEditor.DockPanels
             this.panel1 = new System.Windows.Forms.Panel();
             this.vS2015LightTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.deleteCheckedEntities = new System.Windows.Forms.ToolStripButton();
-            this.exportComposite = new System.Windows.Forms.ToolStripButton();
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -68,19 +68,19 @@ namespace CommandsEditor.DockPanels
             this.EntityName,
             this.EntityType});
             this.composite_content.FullRowSelect = true;
-            listViewGroup5.Header = "Variables";
-            listViewGroup5.Name = "Variables";
-            listViewGroup6.Header = "Functions";
-            listViewGroup6.Name = "Functions";
-            listViewGroup7.Header = "Proxies";
-            listViewGroup7.Name = "Proxies";
-            listViewGroup8.Header = "Overrides";
-            listViewGroup8.Name = "Overrides";
+            listViewGroup1.Header = "Variables";
+            listViewGroup1.Name = "Variables";
+            listViewGroup2.Header = "Functions";
+            listViewGroup2.Name = "Functions";
+            listViewGroup3.Header = "Proxies";
+            listViewGroup3.Name = "Proxies";
+            listViewGroup4.Header = "Overrides";
+            listViewGroup4.Name = "Overrides";
             this.composite_content.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup5,
-            listViewGroup6,
-            listViewGroup7,
-            listViewGroup8});
+            listViewGroup1,
+            listViewGroup2,
+            listViewGroup3,
+            listViewGroup4});
             this.composite_content.HideSelection = false;
             this.composite_content.LabelWrap = false;
             this.composite_content.Location = new System.Drawing.Point(3, 30);
@@ -148,6 +148,17 @@ namespace CommandsEditor.DockPanels
             this.createEntity.Text = "Create Entity";
             this.createEntity.Click += new System.EventHandler(this.createEntity_Click);
             // 
+            // exportComposite
+            // 
+            this.exportComposite.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.exportComposite.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.exportComposite.Image = ((System.Drawing.Image)(resources.GetObject("exportComposite.Image")));
+            this.exportComposite.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.exportComposite.Name = "exportComposite";
+            this.exportComposite.Size = new System.Drawing.Size(94, 22);
+            this.exportComposite.Text = "Port Composite";
+            this.exportComposite.Click += new System.EventHandler(this.exportComposite_Click);
+            // 
             // findUses
             // 
             this.findUses.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
@@ -158,6 +169,17 @@ namespace CommandsEditor.DockPanels
             this.findUses.Size = new System.Drawing.Size(136, 22);
             this.findUses.Text = "Find Uses of Composite";
             this.findUses.Click += new System.EventHandler(this.findUses_Click);
+            // 
+            // deleteCheckedEntities
+            // 
+            this.deleteCheckedEntities.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.deleteCheckedEntities.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.deleteCheckedEntities.Image = ((System.Drawing.Image)(resources.GetObject("deleteCheckedEntities.Image")));
+            this.deleteCheckedEntities.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.deleteCheckedEntities.Name = "deleteCheckedEntities";
+            this.deleteCheckedEntities.Size = new System.Drawing.Size(134, 22);
+            this.deleteCheckedEntities.Text = "Delete Checked Entities";
+            this.deleteCheckedEntities.Click += new System.EventHandler(this.deleteCheckedEntities_Click);
             // 
             // deleteComposite
             // 
@@ -209,28 +231,6 @@ namespace CommandsEditor.DockPanels
             this.splitContainer1.Size = new System.Drawing.Size(1615, 796);
             this.splitContainer1.SplitterDistance = 830;
             this.splitContainer1.TabIndex = 182;
-            // 
-            // deleteCheckedEntities
-            // 
-            this.deleteCheckedEntities.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.deleteCheckedEntities.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.deleteCheckedEntities.Image = ((System.Drawing.Image)(resources.GetObject("deleteCheckedEntities.Image")));
-            this.deleteCheckedEntities.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.deleteCheckedEntities.Name = "deleteCheckedEntities";
-            this.deleteCheckedEntities.Size = new System.Drawing.Size(134, 22);
-            this.deleteCheckedEntities.Text = "Delete Checked Entities";
-            this.deleteCheckedEntities.Click += new System.EventHandler(this.deleteCheckedEntities_Click);
-            // 
-            // exportComposite
-            // 
-            this.exportComposite.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.exportComposite.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.exportComposite.Image = ((System.Drawing.Image)(resources.GetObject("exportComposite.Image")));
-            this.exportComposite.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.exportComposite.Name = "exportComposite";
-            this.exportComposite.Size = new System.Drawing.Size(106, 22);
-            this.exportComposite.Text = "Export Composite";
-            this.exportComposite.Click += new System.EventHandler(this.exportComposite_Click);
             // 
             // CompositeDisplay
             // 

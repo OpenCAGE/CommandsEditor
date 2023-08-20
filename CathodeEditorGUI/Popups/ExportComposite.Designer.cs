@@ -63,9 +63,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(12, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(128, 13);
+            this.label1.Size = new System.Drawing.Size(117, 13);
             this.label1.TabIndex = 7;
-            this.label1.Text = "Export composite to level:";
+            this.label1.Text = "Port composite to level:";
             // 
             // overwrite
             // 
@@ -110,7 +110,7 @@
             this.MaximizeBox = false;
             this.Name = "ExportComposite";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Composite Exporter";
+            this.Text = "Port Composite";
             this.ResumeLayout(false);
             this.PerformLayout();
 

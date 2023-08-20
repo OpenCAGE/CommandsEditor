@@ -26,7 +26,7 @@ namespace CommandsEditor
 
             levelList.SelectedIndex = 0;
 
-            this.Text = "Export '" + _display.Composite.name + "'";
+            this.Text = "Port '" + _display.Composite.name + "'";
             
             if (!canExportChildren)
             {
