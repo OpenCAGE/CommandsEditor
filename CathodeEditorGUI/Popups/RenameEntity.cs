@@ -1,6 +1,7 @@
 ﻿using CATHODE;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
+using CommandsEditor.DockPanels;
 using CommandsEditor.Popups.Base;
 using System;
 using System.Collections.Generic;
@@ -16,24 +17,23 @@ namespace CommandsEditor
 {
     public partial class RenameEntity : BaseWindow
     {
-        public Action<Composite, Entity> OnSaved;
-        private Entity _ent;
-        private Composite _comp;
+        public Action<string> OnRenamed;
 
-        public RenameEntity(LevelContent editor, Composite comp, Entity entity) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
+        private EntityDisplay _display;
+
+        public RenameEntity(EntityDisplay editor) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor.Content)
         {
             InitializeComponent();
 
-            _comp = comp;
-            _ent = entity;
+            _display = editor;
 
-            switch (_ent.variant)
+            switch (_display.Entity.variant)
             {
                 case EntityVariant.VARIABLE:
-                    entity_name.Text = ShortGuidUtils.FindString(((VariableEntity)_ent).name);
+                    entity_name.Text = ShortGuidUtils.FindString(((VariableEntity)_display.Entity).name);
                     break;
                 default:
-                    entity_name.Text = EntityUtils.GetName(comp, _ent);
+                    entity_name.Text = EntityUtils.GetName(_display.Composite, _display.Entity);
                     break;
             }
         }
@@ -42,17 +42,17 @@ namespace CommandsEditor
         {
             if (entity_name.Text == "") return;
 
-            switch (_ent.variant)
+            switch (_display.Entity.variant)
             {
                 case EntityVariant.VARIABLE:
-                    ((VariableEntity)_ent).name = ShortGuidUtils.Generate(entity_name.Text);
+                    ((VariableEntity)_display.Entity).name = ShortGuidUtils.Generate(entity_name.Text);
                     break;
                 default:
-                    EntityUtils.SetName(_comp, _ent, entity_name.Text);
+                    EntityUtils.SetName(_display.Composite, _display.Entity, entity_name.Text);
                     break;
             }
 
-            OnSaved?.Invoke(_comp, _ent);
+            OnRenamed?.Invoke(entity_name.Text);
             this.Close();
         }
     }

@@ -42,20 +42,21 @@
             this.label6 = new System.Windows.Forms.Label();
             this.editFunction = new System.Windows.Forms.Button();
             this.entityParamGroup = new System.Windows.Forms.GroupBox();
-            this.addLinkOut = new System.Windows.Forms.Button();
+            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.removeParameter = new System.Windows.Forms.Button();
+            this.addLinkOut = new System.Windows.Forms.Button();
             this.addNewParameter = new System.Windows.Forms.Button();
             this.entity_params = new System.Windows.Forms.Panel();
             this.vS2015DarkTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.deleteEntity = new System.Windows.Forms.ToolStripButton();
             this.duplicateEntity = new System.Windows.Forms.ToolStripButton();
+            this.deleteEntity = new System.Windows.Forms.ToolStripButton();
+            this.renameEntity = new System.Windows.Forms.ToolStripButton();
             this.entityInfoGroup.SuspendLayout();
             this.entityParamGroup.SuspendLayout();
-            this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
+            this.tableLayoutPanel1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -205,16 +206,23 @@
             this.entityParamGroup.TabStop = false;
             this.entityParamGroup.Text = "Selected Entity Parameters";
             // 
-            // addLinkOut
+            // tableLayoutPanel2
             // 
-            this.addLinkOut.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.addLinkOut.Location = new System.Drawing.Point(128, 3);
-            this.addLinkOut.Name = "addLinkOut";
-            this.addLinkOut.Size = new System.Drawing.Size(119, 22);
-            this.addLinkOut.TabIndex = 151;
-            this.addLinkOut.Text = "Add Link Out";
-            this.addLinkOut.UseVisualStyleBackColor = true;
-            this.addLinkOut.Click += new System.EventHandler(this.addLinkOut_Click);
+            this.tableLayoutPanel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel2.ColumnCount = 3;
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel2.Controls.Add(this.removeParameter, 2, 0);
+            this.tableLayoutPanel2.Controls.Add(this.addLinkOut, 1, 0);
+            this.tableLayoutPanel2.Controls.Add(this.addNewParameter, 0, 0);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(6, 603);
+            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
+            this.tableLayoutPanel2.RowCount = 1;
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(375, 28);
+            this.tableLayoutPanel2.TabIndex = 0;
             // 
             // removeParameter
             // 
@@ -226,6 +234,17 @@
             this.removeParameter.Text = "Remove Param/Link";
             this.removeParameter.UseVisualStyleBackColor = true;
             this.removeParameter.Click += new System.EventHandler(this.removeParameter_Click);
+            // 
+            // addLinkOut
+            // 
+            this.addLinkOut.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.addLinkOut.Location = new System.Drawing.Point(128, 3);
+            this.addLinkOut.Name = "addLinkOut";
+            this.addLinkOut.Size = new System.Drawing.Size(119, 22);
+            this.addLinkOut.TabIndex = 151;
+            this.addLinkOut.Text = "Add Link Out";
+            this.addLinkOut.UseVisualStyleBackColor = true;
+            this.addLinkOut.Click += new System.EventHandler(this.addLinkOut_Click);
             // 
             // addNewParameter
             // 
@@ -271,27 +290,10 @@
             this.tableLayoutPanel1.Size = new System.Drawing.Size(384, 29);
             this.tableLayoutPanel1.TabIndex = 189;
             // 
-            // tableLayoutPanel2
-            // 
-            this.tableLayoutPanel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tableLayoutPanel2.ColumnCount = 3;
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel2.Controls.Add(this.removeParameter, 2, 0);
-            this.tableLayoutPanel2.Controls.Add(this.addLinkOut, 1, 0);
-            this.tableLayoutPanel2.Controls.Add(this.addNewParameter, 0, 0);
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(6, 603);
-            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            this.tableLayoutPanel2.RowCount = 1;
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(375, 28);
-            this.tableLayoutPanel2.TabIndex = 0;
-            // 
             // toolStrip1
             // 
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.renameEntity,
             this.duplicateEntity,
             this.deleteEntity});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
@@ -299,6 +301,17 @@
             this.toolStrip1.Size = new System.Drawing.Size(406, 25);
             this.toolStrip1.TabIndex = 190;
             this.toolStrip1.Text = "toolStrip1";
+            // 
+            // duplicateEntity
+            // 
+            this.duplicateEntity.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.duplicateEntity.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.duplicateEntity.Image = ((System.Drawing.Image)(resources.GetObject("duplicateEntity.Image")));
+            this.duplicateEntity.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.duplicateEntity.Name = "duplicateEntity";
+            this.duplicateEntity.Size = new System.Drawing.Size(94, 22);
+            this.duplicateEntity.Text = "Duplicate Entity";
+            this.duplicateEntity.Click += new System.EventHandler(this.duplicateEntity_Click);
             // 
             // deleteEntity
             // 
@@ -311,16 +324,16 @@
             this.deleteEntity.Text = "Delete Entity";
             this.deleteEntity.Click += new System.EventHandler(this.deleteEntity_Click);
             // 
-            // duplicateEntity
+            // renameEntity
             // 
-            this.duplicateEntity.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.duplicateEntity.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.duplicateEntity.Image = ((System.Drawing.Image)(resources.GetObject("duplicateEntity.Image")));
-            this.duplicateEntity.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.duplicateEntity.Name = "duplicateEntity";
-            this.duplicateEntity.Size = new System.Drawing.Size(94, 22);
-            this.duplicateEntity.Text = "Duplicate Entity";
-            this.duplicateEntity.Click += new System.EventHandler(this.duplicateEntity_Click);
+            this.renameEntity.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.renameEntity.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.renameEntity.Image = ((System.Drawing.Image)(resources.GetObject("renameEntity.Image")));
+            this.renameEntity.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.renameEntity.Name = "renameEntity";
+            this.renameEntity.Size = new System.Drawing.Size(87, 22);
+            this.renameEntity.Text = "Rename Entity";
+            this.renameEntity.Click += new System.EventHandler(this.renameEntity_Click);
             // 
             // EntityDisplay
             // 
@@ -336,8 +349,8 @@
             this.entityInfoGroup.ResumeLayout(false);
             this.entityInfoGroup.PerformLayout();
             this.entityParamGroup.ResumeLayout(false);
-            this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
+            this.tableLayoutPanel1.ResumeLayout(false);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -370,5 +383,6 @@
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ToolStripButton deleteEntity;
         private System.Windows.Forms.ToolStripButton duplicateEntity;
+        private System.Windows.Forms.ToolStripButton renameEntity;
     }
 }

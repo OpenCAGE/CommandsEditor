@@ -489,5 +489,17 @@ namespace CommandsEditor.DockPanels
         {
             _compositeDisplay.DuplicateEntity(Entity);
         }
+
+        private void renameEntity_Click(object sender, EventArgs e)
+        {
+            RenameEntity rename_entity = new RenameEntity(this);
+            rename_entity.Show();
+            rename_entity.OnRenamed += OnEntityRenamed;
+        }
+        private void OnEntityRenamed(string name)
+        {
+            Content.composite_content_cache[Composite][Entity].Text = name;
+            _compositeDisplay.ReloadAllEntities();
+        }
     }
 }
