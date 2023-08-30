@@ -501,5 +501,19 @@ namespace CommandsEditor.DockPanels
             Content.composite_content_cache[Composite][Entity].Text = name;
             _compositeDisplay.ReloadAllEntities();
         }
+
+        /* Context menu close entity */
+        private void closeAll_Click(object sender, EventArgs e)
+        {
+            _compositeDisplay.CloseAllChildTabs();
+        }
+        private void closeSelected_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+        private void closeAllBut_Click(object sender, EventArgs e)
+        {
+            _compositeDisplay.CloseAllChildTabsExcept(Entity);
+        }
     }
 }

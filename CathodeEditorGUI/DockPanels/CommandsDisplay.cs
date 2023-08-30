@@ -97,16 +97,23 @@ namespace CommandsEditor.DockPanels
             _compositeDisplays.Remove(((CompositeDisplay)sender).Composite);
         }
 
-        public void CloseAllChildTabs()
+        public void CloseAllChildTabsExcept(Composite composite)
         {
             List<CompositeDisplay> displays = new List<CompositeDisplay>();
             foreach (KeyValuePair<Composite, CompositeDisplay> display in _compositeDisplays)
+            {
+                if (display.Key == composite) continue;
                 displays.Add(display.Value);
+            }
             foreach (CompositeDisplay display in displays)
             {
                 display.CloseAllChildTabs();
                 display.Close();
             }
+        }
+        public void CloseAllChildTabs()
+        {
+            CloseAllChildTabsExcept(null);
         }
 
         public CompositeDisplay LoadComposite(string name)

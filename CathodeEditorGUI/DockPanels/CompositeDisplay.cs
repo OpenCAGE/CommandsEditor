@@ -263,13 +263,20 @@ namespace CommandsEditor.DockPanels
             _entityDisplays.Remove(((EntityDisplay)sender).Entity);
         }
 
-        public void CloseAllChildTabs()
+        public void CloseAllChildTabsExcept(Entity entity)
         {
             List<EntityDisplay> displays = new List<EntityDisplay>();
             foreach (KeyValuePair<Entity, EntityDisplay> display in _entityDisplays)
+            {
+                if (display.Key == entity) continue;
                 displays.Add(display.Value);
+            }
             foreach (EntityDisplay display in displays)
                 display.Close();
+        }
+        public void CloseAllChildTabs()
+        {
+            CloseAllChildTabsExcept(null);
         }
 
         private void entity_search_btn_Click(object sender, EventArgs e)
@@ -474,6 +481,21 @@ namespace CommandsEditor.DockPanels
         {
             ExportComposite dialog = new ExportComposite(this, _canExportChildren);
             dialog.Show();
+        }
+
+        /* Context menu composite close options */
+        private void closeAll_Click(object sender, EventArgs e)
+        {
+            _commandsDisplay.CloseAllChildTabs();
+        }
+        private void closeSelected_Click(object sender, EventArgs e)
+        {
+            CloseAllChildTabs();
+            Close();
+        }
+        private void closeAllBut_Click(object sender, EventArgs e)
+        {
+            _commandsDisplay.CloseAllChildTabsExcept(Composite);
         }
     }
 }

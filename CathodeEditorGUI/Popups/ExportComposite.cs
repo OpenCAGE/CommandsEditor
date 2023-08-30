@@ -41,7 +41,7 @@ namespace CommandsEditor
             AddCompositesRecursively(_display.Composite, commands);
             commands.Save();
 
-            MessageBox.Show("Finished exporting '" + _display.Composite.name + "' to ' " + levelList.SelectedItem.ToString() + "!", "Complete", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show("Finished porting '" + _display.Composite.name + "' to ' " + levelList.SelectedItem.ToString() + "!", "Complete", MessageBoxButton.OK, MessageBoxImage.Information);
 
             this.Close();
         }

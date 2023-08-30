@@ -28,11 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CommandsDisplay));
             this.FileTree = new System.Windows.Forms.TreeView();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.createComposite = new System.Windows.Forms.ToolStripButton();
             this.vS2015DarkTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme();
+            this.imageList = new System.Windows.Forms.ImageList(this.components);
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -42,8 +44,11 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.FileTree.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.FileTree.ImageIndex = 0;
+            this.FileTree.ImageList = this.imageList;
             this.FileTree.Location = new System.Drawing.Point(0, 28);
             this.FileTree.Name = "FileTree";
+            this.FileTree.SelectedImageIndex = 0;
             this.FileTree.Size = new System.Drawing.Size(457, 706);
             this.FileTree.TabIndex = 153;
             this.FileTree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.FileTree_AfterSelect);
@@ -60,13 +65,19 @@
             // 
             // createComposite
             // 
-            this.createComposite.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.createComposite.Image = ((System.Drawing.Image)(resources.GetObject("createComposite.Image")));
             this.createComposite.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.createComposite.Name = "createComposite";
-            this.createComposite.Size = new System.Drawing.Size(106, 22);
+            this.createComposite.Size = new System.Drawing.Size(122, 22);
             this.createComposite.Text = "Create Composite";
             this.createComposite.Click += new System.EventHandler(this.createComposite_Click);
+            // 
+            // imageList
+            // 
+            this.imageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList.ImageStream")));
+            this.imageList.TransparentColor = System.Drawing.Color.Magenta;
+            this.imageList.Images.SetKeyName(0, "folder");
+            this.imageList.Images.SetKeyName(1, "composite");
             // 
             // CommandsDisplay
             // 
@@ -75,6 +86,7 @@
             this.ClientSize = new System.Drawing.Size(457, 734);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.FileTree);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "CommandsDisplay";
             this.Text = "Composites";
             this.toolStrip1.ResumeLayout(false);
@@ -89,5 +101,6 @@
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ToolStripButton createComposite;
         private WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme vS2015DarkTheme1;
+        private System.Windows.Forms.ImageList imageList;
     }
 }

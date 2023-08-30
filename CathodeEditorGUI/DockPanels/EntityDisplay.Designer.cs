@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EntityDisplay));
             this.goToZone = new System.Windows.Forms.Button();
             this.showOverridesAndProxies = new System.Windows.Forms.Button();
@@ -50,14 +51,20 @@
             this.vS2015DarkTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.renameEntity = new System.Windows.Forms.ToolStripButton();
             this.duplicateEntity = new System.Windows.Forms.ToolStripButton();
             this.deleteEntity = new System.Windows.Forms.ToolStripButton();
-            this.renameEntity = new System.Windows.Forms.ToolStripButton();
+            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.closeAll = new System.Windows.Forms.ToolStripMenuItem();
+            this.closeSelected = new System.Windows.Forms.ToolStripMenuItem();
+            this.closeAllBut = new System.Windows.Forms.ToolStripMenuItem();
             this.entityInfoGroup.SuspendLayout();
             this.entityParamGroup.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // goToZone
@@ -302,38 +309,74 @@
             this.toolStrip1.TabIndex = 190;
             this.toolStrip1.Text = "toolStrip1";
             // 
+            // renameEntity
+            // 
+            this.renameEntity.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.renameEntity.Image = ((System.Drawing.Image)(resources.GetObject("renameEntity.Image")));
+            this.renameEntity.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.renameEntity.Name = "renameEntity";
+            this.renameEntity.Size = new System.Drawing.Size(103, 22);
+            this.renameEntity.Text = "Rename Entity";
+            this.renameEntity.Click += new System.EventHandler(this.renameEntity_Click);
+            // 
             // duplicateEntity
             // 
             this.duplicateEntity.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.duplicateEntity.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.duplicateEntity.Image = ((System.Drawing.Image)(resources.GetObject("duplicateEntity.Image")));
             this.duplicateEntity.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.duplicateEntity.Name = "duplicateEntity";
-            this.duplicateEntity.Size = new System.Drawing.Size(94, 22);
+            this.duplicateEntity.Size = new System.Drawing.Size(110, 22);
             this.duplicateEntity.Text = "Duplicate Entity";
             this.duplicateEntity.Click += new System.EventHandler(this.duplicateEntity_Click);
             // 
             // deleteEntity
             // 
             this.deleteEntity.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.deleteEntity.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.deleteEntity.Image = ((System.Drawing.Image)(resources.GetObject("deleteEntity.Image")));
             this.deleteEntity.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.deleteEntity.Name = "deleteEntity";
-            this.deleteEntity.Size = new System.Drawing.Size(77, 22);
+            this.deleteEntity.Size = new System.Drawing.Size(93, 22);
             this.deleteEntity.Text = "Delete Entity";
             this.deleteEntity.Click += new System.EventHandler(this.deleteEntity_Click);
             // 
-            // renameEntity
+            // imageList1
             // 
-            this.renameEntity.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.renameEntity.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.renameEntity.Image = ((System.Drawing.Image)(resources.GetObject("renameEntity.Image")));
-            this.renameEntity.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.renameEntity.Name = "renameEntity";
-            this.renameEntity.Size = new System.Drawing.Size(87, 22);
-            this.renameEntity.Text = "Rename Entity";
-            this.renameEntity.Click += new System.EventHandler(this.renameEntity_Click);
+            this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
+            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageList1.Images.SetKeyName(0, "GenericEditor.ico");
+            // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.closeAll,
+            this.closeSelected,
+            this.closeAllBut});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(222, 92);
+            // 
+            // closeAll
+            // 
+            this.closeAll.Image = ((System.Drawing.Image)(resources.GetObject("closeAll.Image")));
+            this.closeAll.Name = "closeAll";
+            this.closeAll.Size = new System.Drawing.Size(221, 22);
+            this.closeAll.Text = "Close All Entities";
+            this.closeAll.Click += new System.EventHandler(this.closeAll_Click);
+            // 
+            // closeSelected
+            // 
+            this.closeSelected.Image = ((System.Drawing.Image)(resources.GetObject("closeSelected.Image")));
+            this.closeSelected.Name = "closeSelected";
+            this.closeSelected.Size = new System.Drawing.Size(221, 22);
+            this.closeSelected.Text = "Close Selected Entity";
+            this.closeSelected.Click += new System.EventHandler(this.closeSelected_Click);
+            // 
+            // closeAllBut
+            // 
+            this.closeAllBut.Image = ((System.Drawing.Image)(resources.GetObject("closeAllBut.Image")));
+            this.closeAllBut.Name = "closeAllBut";
+            this.closeAllBut.Size = new System.Drawing.Size(221, 22);
+            this.closeAllBut.Text = "Close All But Selected Entity";
+            this.closeAllBut.Click += new System.EventHandler(this.closeAllBut_Click);
             // 
             // EntityDisplay
             // 
@@ -344,8 +387,10 @@
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.entityInfoGroup);
             this.Controls.Add(this.entityParamGroup);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "EntityDisplay";
             this.Text = "Selected Entity";
+            this.TabPageContextMenuStrip = this.contextMenuStrip1;
             this.entityInfoGroup.ResumeLayout(false);
             this.entityInfoGroup.PerformLayout();
             this.entityParamGroup.ResumeLayout(false);
@@ -353,6 +398,7 @@
             this.tableLayoutPanel1.ResumeLayout(false);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -384,5 +430,10 @@
         private System.Windows.Forms.ToolStripButton deleteEntity;
         private System.Windows.Forms.ToolStripButton duplicateEntity;
         private System.Windows.Forms.ToolStripButton renameEntity;
+        private System.Windows.Forms.ImageList imageList1;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem closeAll;
+        private System.Windows.Forms.ToolStripMenuItem closeSelected;
+        private System.Windows.Forms.ToolStripMenuItem closeAllBut;
     }
 }
