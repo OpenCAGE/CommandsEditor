@@ -28,9 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SelectComposite));
             this.selectComp = new System.Windows.Forms.Button();
             this.FileTree = new System.Windows.Forms.TreeView();
+            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.SuspendLayout();
             // 
             // selectComp
@@ -46,10 +48,20 @@
             // FileTree
             // 
             this.FileTree.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.FileTree.ImageIndex = 0;
+            this.FileTree.ImageList = this.imageList1;
             this.FileTree.Location = new System.Drawing.Point(12, 12);
             this.FileTree.Name = "FileTree";
+            this.FileTree.SelectedImageIndex = 0;
             this.FileTree.Size = new System.Drawing.Size(444, 615);
             this.FileTree.TabIndex = 148;
+            // 
+            // imageList1
+            // 
+            this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
+            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageList1.Images.SetKeyName(0, "folder");
+            this.imageList1.Images.SetKeyName(1, "composite");
             // 
             // SelectComposite
             // 
@@ -71,5 +83,6 @@
         #endregion
         private System.Windows.Forms.Button selectComp;
         private System.Windows.Forms.TreeView FileTree;
+        private System.Windows.Forms.ImageList imageList1;
     }
 }

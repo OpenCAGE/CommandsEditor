@@ -499,7 +499,8 @@ namespace CommandsEditor.DockPanels
         private void OnEntityRenamed(string name)
         {
             Content.composite_content_cache[Composite][Entity].Text = name;
-            _compositeDisplay.ReloadAllEntities();
+            _compositeDisplay.CommandsDisplay.ReloadAllEntities();
+            //TODO-URGENT: Also need to update Proxy/Override hierarchies.
         }
 
         /* Context menu close entity */

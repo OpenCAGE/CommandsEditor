@@ -200,18 +200,6 @@ namespace CommandsEditor.DockPanels
             composite_content_RAW.Add(item);
         }
 
-        private void createEntity_Click(object sender, EventArgs e)
-        {
-            AddEntity add_parameter = new AddEntity(this);
-            add_parameter.Show();
-            add_parameter.OnNewEntity += OnAddNewEntity;
-        }
-        private void OnAddNewEntity(Entity entity)
-        {
-            ReloadUIForNewEntity(entity);
-            LoadEntity(entity);
-        }
-
         /* Perform a partial UI reload for a newly added entity */
         private void ReloadUIForNewEntity(Entity newEnt)
         {
@@ -496,6 +484,54 @@ namespace CommandsEditor.DockPanels
         private void closeAllBut_Click(object sender, EventArgs e)
         {
             _commandsDisplay.CloseAllChildTabsExcept(Composite);
+        }
+
+        private void createEntity_Click(object sender, EventArgs e)
+        {
+
+        }
+        private void createVariableEntityToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CreateEntity(EntityVariant.VARIABLE);
+        }
+        private void createFunctionEntityToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CreateEntity(EntityVariant.FUNCTION);
+        }
+        private void createCompositeEntityToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CreateEntity(EntityVariant.FUNCTION, true);
+        }
+        private void createProxyEntityToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CreateEntity(EntityVariant.PROXY);
+        }
+        private void createOverrideEntityToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CreateEntity(EntityVariant.OVERRIDE);
+        }
+
+        AddEntity dialog = null;
+        private void CreateEntity(EntityVariant variant = EntityVariant.FUNCTION, bool composite = false)
+        {
+            if (dialog != null && (dialog.Variant != variant || dialog.Composite != composite))
+                dialog.Close();
+
+            if (dialog == null) 
+                dialog = new AddEntity(this, variant, composite);
+
+            dialog.Show();
+            dialog.OnNewEntity += OnAddNewEntity;
+            dialog.FormClosed += Dialog_FormClosed;
+        }
+        private void OnAddNewEntity(Entity entity)
+        {
+            ReloadUIForNewEntity(entity);
+            LoadEntity(entity);
+        }
+        private void Dialog_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            dialog = null;
         }
     }
 }

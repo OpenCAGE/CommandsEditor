@@ -33,11 +33,13 @@
             this.label1 = new System.Windows.Forms.Label();
             this.selectMaterialBtn = new System.Windows.Forms.Button();
             this.materialList = new System.Windows.Forms.ListBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.modelPreviewArea.SuspendLayout();
             this.SuspendLayout();
             // 
             // modelPreviewArea
             // 
+            this.modelPreviewArea.Controls.Add(this.label2);
             this.modelPreviewArea.Controls.Add(this.label1);
             this.modelPreviewArea.Controls.Add(this.selectMaterialBtn);
             this.modelPreviewArea.Location = new System.Drawing.Point(384, 6);
@@ -50,16 +52,16 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(112, 134);
+            this.label1.Location = new System.Drawing.Point(42, 184);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(73, 13);
+            this.label1.Size = new System.Drawing.Size(221, 13);
             this.label1.TabIndex = 2;
-            this.label1.Text = "Coming Soon!";
+            this.label1.Text = "Previews are coming to the script editor soon.";
             // 
             // selectMaterialBtn
             // 
             this.selectMaterialBtn.Location = new System.Drawing.Point(158, 593);
-            this.selectMaterialBtn.Name = "selectMaterial";
+            this.selectMaterialBtn.Name = "selectMaterialBtn";
             this.selectMaterialBtn.Size = new System.Drawing.Size(134, 35);
             this.selectMaterialBtn.TabIndex = 1;
             this.selectMaterialBtn.Text = "Select This Material";
@@ -74,7 +76,16 @@
             this.materialList.Size = new System.Drawing.Size(366, 628);
             this.materialList.TabIndex = 106;
             // 
-            // CathodeEditorGUI_SelectMaterial
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(10, 158);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(282, 13);
+            this.label2.TabIndex = 3;
+            this.label2.Text = "You can preview and edit materials within the Asset Editor.";
+            // 
+            // SelectMaterial
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -84,7 +95,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.Name = "CathodeEditorGUI_SelectMaterial";
+            this.Name = "SelectMaterial";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Select Material";
             this.modelPreviewArea.ResumeLayout(false);
@@ -99,5 +110,6 @@
         private System.Windows.Forms.Button selectMaterialBtn;
         private System.Windows.Forms.ListBox materialList;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
     }
 }

@@ -59,11 +59,19 @@ namespace CommandsEditor.DockPanels
             }
         }
 
+        AddComposite dialog = null;
         private void createComposite_Click(object sender, EventArgs e)
         {
-            AddComposite dialog = new AddComposite(this);
+            if (dialog == null)
+                dialog = new AddComposite(this);
+
             dialog.Show();
             dialog.OnCompositeAdded += SelectCompositeAndReloadList;
+            dialog.FormClosed += Dialog_FormClosed;
+        }
+        private void Dialog_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            dialog = null;
         }
 
         private void SelectCompositeAndReloadList(Composite composite)
@@ -114,6 +122,12 @@ namespace CommandsEditor.DockPanels
         public void CloseAllChildTabs()
         {
             CloseAllChildTabsExcept(null);
+        }
+
+        public void ReloadAllEntities()
+        {
+            foreach (KeyValuePair<Composite, CompositeDisplay> display in _compositeDisplays)
+                display.Value.ReloadAllEntities();
         }
 
         public CompositeDisplay LoadComposite(string name)
