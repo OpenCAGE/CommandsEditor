@@ -89,7 +89,39 @@ namespace CommandsEditor
             Console.WriteLine("Not Resolved: " + (physicsMaps.Entries.Count - resolved));
             */
 
-            string breakhere = ""; 
+            string breakhere = "";
+        }
+
+        public static void checkanims()
+        {
+#if DEBUG
+
+            List<string> files = Directory.GetFiles("D:\\Alien Isolation Modding\\Isolation Mod Tools\\Alien Isolation PC Final/DATA/ENV/PRODUCTION/", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            Parallel.ForEach(files, file =>
+            {
+                Commands commands = new Commands(file);
+                Parallel.ForEach(commands.Entries, comp =>
+                {
+                    Parallel.ForEach(comp.functions, func =>
+                    {
+                        Parameter Animation = func.GetParameter("Animation");
+                        Parameter AnimationSet = func.GetParameter("AnimationSet");
+                        if (AnimationSet == null && Animation != null)
+                        {
+                            Console.WriteLine(comp.name + " -> " + EntityUtils.GetName(comp, func) + " (" + func.function.ToString() + ")" + "\n\tWARNING: Found Animation without AnimationSet\n\n");
+                        }
+                        if (AnimationSet != null && Animation == null)
+                        {
+                            Console.WriteLine(comp.name + " -> " + EntityUtils.GetName(comp, func) + " (" + func.function.ToString() + ")" + "\n\tWARNING: Found AnimationSet without Animation\n\n");
+                        }
+                        if (AnimationSet != null && Animation != null)
+                        {
+                            //Console.WriteLine("Animation matched with AnimationSet");
+                        }
+                    });
+                });
+            });
+#endif
         }
 
         public static void DumpAllEnts(string alien_path, string output_append)
