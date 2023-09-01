@@ -11,6 +11,7 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -92,8 +93,15 @@ namespace CommandsEditor
 
             //Disable backups - we should now force people to use the extra backup tool
             //TODO: backup tool should backup the level at intervals like this tool did
-            enableBackups.Checked = false;
-            enableBackups.Visible = false;
+            //enableBackups.Checked = false;
+            //enableBackups.Visible = false;
+
+            //TEMP FOR NOW
+#if RELEASE
+            enableInstanceMode.Checked = false;
+            enableInstanceMode.Visible = false;
+            toolStripSeparator1.Visible = false;
+#endif
         }
 
         /* Load anim data */
@@ -525,7 +533,21 @@ namespace CommandsEditor
 
         private void enableInstanceMode_Click(object sender, EventArgs e)
         {
+            enableInstanceMode.Checked = !enableInstanceMode.Checked;
             SettingsManager.SetBool(_instOpt, enableInstanceMode.Checked);
+
+            if (_commandsDisplay == null) return;
+
+            //TODO: should just move all this to a func in commands display, can call on start with mode
+
+            _commandsDisplay.CloseAllChildTabs();
+
+            _commandsDisplay.SelectCompositeAndReloadList(_commandsDisplay.Content.commands.EntryPoints[0]);
+            Singleton.OnCompositeSelected?.Invoke(_commandsDisplay.Content.commands.EntryPoints[0]); //need to call this again b/c the activation event doesn't fire here
+
+            //TODO: disable commands display list selection
+
+
         }
     }
 }

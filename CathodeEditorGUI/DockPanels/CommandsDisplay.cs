@@ -74,7 +74,7 @@ namespace CommandsEditor.DockPanels
             dialog = null;
         }
 
-        private void SelectCompositeAndReloadList(Composite composite)
+        public void SelectCompositeAndReloadList(Composite composite)
         {
             ReloadList();
             SelectComposite(composite);
