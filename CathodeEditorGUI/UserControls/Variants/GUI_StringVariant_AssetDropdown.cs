@@ -17,7 +17,7 @@ namespace CommandsEditor.UserControls
         static List<AssetList> assetlist_cache = new List<AssetList>(); //TODO: cache controls, not just the contents of the controls
         AssetList content = null;
 
-        public GUI_StringVariant_AssetDropdown(CommandsEditor editor) : base(editor)
+        public GUI_StringVariant_AssetDropdown(LevelContent editor) : base(editor)
         {
             InitializeComponent();
         }
@@ -31,27 +31,27 @@ namespace CommandsEditor.UserControls
 
             //TODO: we never clear up these lists for old levels, which could lead to a slow memory leak!
 
-            content = assetlist_cache.FirstOrDefault(o => o.level == Editor.commands.Filepath && o.assets == assets && o.args == args);
+            content = assetlist_cache.FirstOrDefault(o => o.level == Content.commands.Filepath && o.assets == assets && o.args == args);
             if (content == null)
             {
-                content = new AssetList() { level = Editor.commands.Filepath, args = args, assets = assets };
+                content = new AssetList() { level = Content.commands.Filepath, args = args, assets = assets };
                 List<AssetList.Value> strings = new List<AssetList.Value>();
                 switch (assets)
                 {
                     case AssetList.Type.SOUND_BANK:
-                        foreach (string entry in Editor.resource.sound_bankdata.Entries)
+                        foreach (string entry in Content.resource.sound_bankdata.Entries)
                         {
                             if (strings.FirstOrDefault(o => o.value == entry) == null)
                                 strings.Add(new AssetList.Value() { value = entry });
                         }
                         break;
                     case AssetList.Type.SOUND_DIALOGUE:
-                        foreach (SoundDialogueLookups.Sound entry in Editor.resource.sound_dialoguelookups.Entries)
+                        foreach (SoundDialogueLookups.Sound entry in Content.resource.sound_dialoguelookups.Entries)
                         {
                             if (strings.FirstOrDefault(o => o.value == entry.ToString()) == null)
                             {
                                 string englishTranslation = "";
-                                foreach (KeyValuePair<string, Strings> stringdb in Editor.strings)
+                                foreach (KeyValuePair<string, Strings> stringdb in Singleton.Strings)
                                 {
                                     foreach (KeyValuePair<string, string> stringdb_val in stringdb.Value.Entries)
                                     {
@@ -66,7 +66,7 @@ namespace CommandsEditor.UserControls
                         }
                         break;
                     case AssetList.Type.SOUND_REVERB:
-                        foreach (string entry in Editor.resource.sound_environmentdata.Entries)
+                        foreach (string entry in Content.resource.sound_environmentdata.Entries)
                         {
                             if (strings.FirstOrDefault(o => o.value == entry) == null)
                                 strings.Add(new AssetList.Value() { value = entry });
@@ -74,14 +74,14 @@ namespace CommandsEditor.UserControls
                         break;
                     case AssetList.Type.SOUND_EVENT:
                         //TODO: perhaps show these by soundbank - need to load in soundbank name IDs
-                        foreach (SoundEventData.Soundbank entry in Editor.resource.sound_eventdata.Entries)
+                        foreach (SoundEventData.Soundbank entry in Content.resource.sound_eventdata.Entries)
                         {
                             foreach (SoundEventData.Soundbank.Event e in entry.events)
                             {
                                 if (strings.FirstOrDefault(o => o.value == e.name) == null)
                                 {
                                     string englishTranslation = "";
-                                    foreach (KeyValuePair<string, Strings> stringdb in Editor.strings)
+                                    foreach (KeyValuePair<string, Strings> stringdb in Singleton.Strings)
                                     {
                                         foreach (KeyValuePair<string, string> stringdb_val in stringdb.Value.Entries)
                                         {
@@ -100,7 +100,7 @@ namespace CommandsEditor.UserControls
                         string[] argsSplit = args.Split('/');
                         foreach (string arg in argsSplit)
                         {
-                            foreach (KeyValuePair<string, Strings> entry in Editor.strings)
+                            foreach (KeyValuePair<string, Strings> entry in Singleton.Strings)
                             {
                                 if (arg != "" && arg != entry.Key) continue;
                                 foreach (KeyValuePair<string, string> e in entry.Value.Entries)
@@ -114,19 +114,19 @@ namespace CommandsEditor.UserControls
                         }
                         break;
                     case AssetList.Type.MATERIAL:
-                        foreach (Materials.Material entry in Editor.resource.materials.Entries)
+                        foreach (Materials.Material entry in Content.resource.materials.Entries)
                         {
                             if (strings.FirstOrDefault(o => o.value == entry.Name) == null)
                                 strings.Add(new AssetList.Value() { value = entry.Name });
                         }
                         break;
                     case AssetList.Type.TEXTURE:
-                        foreach (Textures.TEX4 entry in Editor.resource.textures.Entries)
+                        foreach (Textures.TEX4 entry in Content.resource.textures.Entries)
                         {
                             if (strings.FirstOrDefault(o => o.value == entry.Name) == null)
                                 strings.Add(new AssetList.Value() { value = entry.Name });
                         }
-                        foreach (Textures.TEX4 entry in Editor.resource.textures_global.Entries)
+                        foreach (Textures.TEX4 entry in Content.resource.textures_global.Entries)
                         {
                             if (strings.FirstOrDefault(o => o.value == entry.Name) == null)
                                 strings.Add(new AssetList.Value() { value = entry.Name });
@@ -135,7 +135,7 @@ namespace CommandsEditor.UserControls
                     case AssetList.Type.ANIMATION:
                         //TODO: This is NOT the correct way to populate this field, as it'll give us ALL anim strings, not just animations.
                         //      We should populate it by parsing the contents of ANIMATIONS.PAK, loading skeletons relative to animations, and then populating animations relative to the selected skeleton.
-                        foreach (KeyValuePair<uint, string> entry in Editor.animstrings.Entries)
+                        foreach (KeyValuePair<uint, string> entry in Singleton.AnimationStrings.Entries)
                         {
                             if (strings.FirstOrDefault(o => o.value == entry.Value) == null)
                                 strings.Add(new AssetList.Value() { value = entry.Value });
@@ -167,7 +167,7 @@ namespace CommandsEditor.UserControls
             
             if (type == AssetList.Type.LOCALISED_STRING)
             {
-                foreach (KeyValuePair<string, Strings> entry in Editor.strings)
+                foreach (KeyValuePair<string, Strings> entry in Singleton.Strings)
                 {
                     if (typeArgs != "" && typeArgs != entry.Key) continue;
                     if (entry.Value.Entries.ContainsKey(comboBox1.Text))

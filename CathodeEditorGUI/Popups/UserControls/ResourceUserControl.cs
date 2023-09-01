@@ -22,7 +22,7 @@ namespace CommandsEditor.Popups.UserControls
             InitializeComponent();
         }
 
-        public ResourceUserControl(CommandsEditor editor) : base(editor)
+        public ResourceUserControl(LevelContent editor) : base(editor)
         {
             InitializeComponent();
         }

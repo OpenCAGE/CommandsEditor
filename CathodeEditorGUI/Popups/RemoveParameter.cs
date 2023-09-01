@@ -1,5 +1,6 @@
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
+using CommandsEditor.DockPanels;
 using CommandsEditor.Popups.Base;
 using System;
 using System.Collections.Generic;
@@ -15,25 +16,27 @@ namespace CommandsEditor
 {
     public partial class RemoveParameter : BaseWindow
     {
-        private Entity _entity;
+        public Action OnSaved;
 
-        public RemoveParameter(CommandsEditor editor, Entity entity) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
+        private EntityDisplay _entityDisplay;
+
+        public RemoveParameter(EntityDisplay entityDisplay) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, entityDisplay.Content)
         {
             InitializeComponent();
 
-            _entity = entity;
+            _entityDisplay = entityDisplay;
 
             parameterToDelete.BeginUpdate();
             parameterToDelete.Items.Clear();
-            for (int i = 0; i < _entity.parameters.Count; i++)
+            for (int i = 0; i < _entityDisplay.Entity.parameters.Count; i++)
             {
-                parameterToDelete.Items.Add(ShortGuidUtils.FindString(_entity.parameters[i].name));
+                parameterToDelete.Items.Add(ShortGuidUtils.FindString(_entityDisplay.Entity.parameters[i].name));
             }
-            for (int i = 0; i < _entity.childLinks.Count; i++)
+            for (int i = 0; i < _entityDisplay.Entity.childLinks.Count; i++)
             {
-                parameterToDelete.Items.Add("Link out: [" + ShortGuidUtils.FindString(_entity.childLinks[i].parentParamID) + "] -> " + 
-                    EditorUtils.GenerateEntityName(Editor.selected.composite.GetEntityByID(_entity.childLinks[i].childID), Editor.selected.composite) + 
-                    " [" + ShortGuidUtils.FindString(_entity.childLinks[i].childParamID) + "]");
+                parameterToDelete.Items.Add("Link out: [" + ShortGuidUtils.FindString(_entityDisplay.Entity.childLinks[i].parentParamID) + "] -> " + 
+                    _entityDisplay.Content.editor_utils.GenerateEntityName(_entityDisplay.Composite.GetEntityByID(_entityDisplay.Entity.childLinks[i].childID), _entityDisplay.Composite) + 
+                    " [" + ShortGuidUtils.FindString(_entityDisplay.Entity.childLinks[i].childParamID) + "]");
             }
 
             if (parameterToDelete.Items.Count == 0)
@@ -49,15 +52,17 @@ namespace CommandsEditor
         private void delete_param_Click(object sender, EventArgs e)
         {
             if (parameterToDelete.SelectedIndex == -1) return;
-            int link_index = parameterToDelete.SelectedIndex - _entity.parameters.Count;
+            int link_index = parameterToDelete.SelectedIndex - _entityDisplay.Entity.parameters.Count;
             if (link_index >= 0) 
             {
-                _entity.childLinks.RemoveAt(link_index);
+                _entityDisplay.Entity.childLinks.RemoveAt(link_index);
             }
             else
             {
-                _entity.parameters.RemoveAt(parameterToDelete.SelectedIndex);
+                _entityDisplay.Entity.parameters.RemoveAt(parameterToDelete.SelectedIndex);
             }
+
+            OnSaved?.Invoke();
             this.Close();
         }
     }

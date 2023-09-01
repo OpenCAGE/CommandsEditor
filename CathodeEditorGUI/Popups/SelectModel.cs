@@ -26,7 +26,7 @@ namespace CommandsEditor
         public int SelectedModelIndex = -1;
         public List<int> SelectedModelMaterialIndexes = new List<int>();
 
-        public SelectModel(CommandsEditor editor, int defaultModelIndex = -1) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
+        public SelectModel(LevelContent content, int defaultModelIndex = -1) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, content)
         {
             InitializeComponent();
 
@@ -35,7 +35,7 @@ namespace CommandsEditor
             List<string> allModelTagsNames = new List<string>();
 
             int i = 0;
-            while (Editor.resource.models.GetAtWriteIndex(i) != null)
+            while (Content.resource.models.GetAtWriteIndex(i) != null)
             {
                 allModelFileNames.Add(GenerateNodeTag(i));
                 allModelTagsNames.Add(i.ToString());
@@ -43,7 +43,7 @@ namespace CommandsEditor
             }
             treeHelper.UpdateFileTree(allModelFileNames, null, allModelTagsNames);
 
-            modelViewer = new GUI_ModelViewer(_editor);
+            modelViewer = new GUI_ModelViewer(_content);
             modelRendererHost.Child = modelViewer;
 
             if (defaultModelIndex != -1)
@@ -52,10 +52,10 @@ namespace CommandsEditor
 
         private string GenerateNodeTag(int i)
         {
-            Models.CS2.Component.LOD.Submesh submesh = Editor.resource.models.GetAtWriteIndex(i);
-            Models.CS2.Component.LOD lod = Editor.resource.models.FindModelLODForSubmesh(submesh);
+            Models.CS2.Component.LOD.Submesh submesh = Content.resource.models.GetAtWriteIndex(i);
+            Models.CS2.Component.LOD lod = Content.resource.models.FindModelLODForSubmesh(submesh);
             //Models.CS2.Component component = Editor.resource.models.FindModelComponentForSubmesh(submesh);
-            Models.CS2 mesh = Editor.resource.models.FindModelForSubmesh(submesh);
+            Models.CS2 mesh = Content.resource.models.FindModelForSubmesh(submesh);
 
             if (mesh == null || submesh == null) return ""; //we currently skip empty submeshes, e.g. ballistics
 
@@ -82,10 +82,10 @@ namespace CommandsEditor
         private void ShowModel(int i)
         {
             List<GUI_ModelViewer.Model> models = new List<GUI_ModelViewer.Model>();
-            Models.CS2.Component component = Editor.resource.models.FindModelComponentForSubmesh(Editor.resource.models.GetAtWriteIndex(i));
+            Models.CS2.Component component = Content.resource.models.FindModelComponentForSubmesh(Content.resource.models.GetAtWriteIndex(i));
             for (int x = 0; x < component.LODs.Count; x++)
                 for (int y = 0; y < component.LODs[x].Submeshes.Count; y++)
-                    models.Add(new GUI_ModelViewer.Model(Editor.resource.models.GetWriteIndex(component.LODs[x].Submeshes[y])));
+                    models.Add(new GUI_ModelViewer.Model(Content.resource.models.GetWriteIndex(component.LODs[x].Submeshes[y])));
             modelViewer.ShowModel(models);
             modelPreviewArea.Text = GenerateNodeTag(i);
         }
@@ -95,7 +95,7 @@ namespace CommandsEditor
             SelectedModelIndex = Convert.ToInt32(((TreeItem)FileTree.SelectedNode.Tag).String_Value);
             SelectedModelMaterialIndexes.Clear();
 
-            Models.CS2.Component component = Editor.resource.models.FindModelComponentForSubmesh(Editor.resource.models.GetAtWriteIndex(SelectedModelIndex));
+            Models.CS2.Component component = Content.resource.models.FindModelComponentForSubmesh(Content.resource.models.GetAtWriteIndex(SelectedModelIndex));
             for (int x = 0; x < component.LODs.Count; x++)
                 for (int i = 0; i < component.LODs[x].Submeshes.Count; i++)
                     SelectedModelMaterialIndexes.Add(component.LODs[x].Submeshes[i].MaterialLibraryIndex);

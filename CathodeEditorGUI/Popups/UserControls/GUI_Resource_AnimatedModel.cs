@@ -14,14 +14,14 @@ namespace CommandsEditor.Popups.UserControls
     {
         public int EnvironmentAnimIndex = -1;
 
-        public GUI_Resource_AnimatedModel(CommandsEditor editor) : base(editor)
+        public GUI_Resource_AnimatedModel(LevelContent editor) : base(editor)
         {
             InitializeComponent();
 
             animatedModelIndex.BeginUpdate();
             animatedModelIndex.Items.Clear();
             List<int> indexes = new List<int>();
-            foreach (var anim in Editor.resource.env_animations.Entries)
+            foreach (var anim in Content.resource.env_animations.Entries)
             {
                 if (indexes.Contains(anim.ResourceIndex)) continue;
                 indexes.Add(anim.ResourceIndex);

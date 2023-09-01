@@ -29,10 +29,8 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AddEntity));
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.select_composite = new System.Windows.Forms.Button();
             this.addDefaultParams = new System.Windows.Forms.CheckBox();
-            this.label3 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.createOverrideEntity = new System.Windows.Forms.RadioButton();
             this.createProxyEntity = new System.Windows.Forms.RadioButton();
@@ -45,32 +43,12 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.entityVariant = new System.Windows.Forms.ComboBox();
             this.generateHierarchy = new System.Windows.Forms.Button();
-            this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.select_composite);
-            this.groupBox1.Controls.Add(this.addDefaultParams);
-            this.groupBox1.Controls.Add(this.label3);
-            this.groupBox1.Controls.Add(this.groupBox2);
-            this.groupBox1.Controls.Add(this.createNewEntity);
-            this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Controls.Add(this.textBox1);
-            this.groupBox1.Controls.Add(this.entityVariant);
-            this.groupBox1.Controls.Add(this.generateHierarchy);
-            this.groupBox1.Location = new System.Drawing.Point(12, 12);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(776, 179);
-            this.groupBox1.TabIndex = 2;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "New Entity";
-            // 
             // select_composite
             // 
-            this.select_composite.Location = new System.Drawing.Point(590, 110);
+            this.select_composite.Location = new System.Drawing.Point(565, 38);
             this.select_composite.Name = "select_composite";
             this.select_composite.Size = new System.Drawing.Size(155, 23);
             this.select_composite.TabIndex = 8;
@@ -81,21 +59,12 @@
             // addDefaultParams
             // 
             this.addDefaultParams.AutoSize = true;
-            this.addDefaultParams.Location = new System.Drawing.Point(44, 143);
+            this.addDefaultParams.Location = new System.Drawing.Point(19, 71);
             this.addDefaultParams.Name = "addDefaultParams";
             this.addDefaultParams.Size = new System.Drawing.Size(138, 17);
             this.addDefaultParams.TabIndex = 7;
             this.addDefaultParams.Text = "Add Default Parameters";
             this.addDefaultParams.UseVisualStyleBackColor = true;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(41, 75);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(60, 13);
-            this.label3.TabIndex = 5;
-            this.label3.Text = "Entity Type";
             // 
             // groupBox2
             // 
@@ -104,7 +73,7 @@
             this.groupBox2.Controls.Add(this.createDatatypeEntity);
             this.groupBox2.Controls.Add(this.createCompositeEntity);
             this.groupBox2.Controls.Add(this.createFunctionEntity);
-            this.groupBox2.Location = new System.Drawing.Point(104, 54);
+            this.groupBox2.Location = new System.Drawing.Point(12, 231);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(641, 50);
             this.groupBox2.TabIndex = 4;
@@ -169,7 +138,7 @@
             // 
             // createNewEntity
             // 
-            this.createNewEntity.Location = new System.Drawing.Point(644, 137);
+            this.createNewEntity.Location = new System.Drawing.Point(619, 65);
             this.createNewEntity.Name = "createNewEntity";
             this.createNewEntity.Size = new System.Drawing.Size(101, 23);
             this.createNewEntity.TabIndex = 4;
@@ -180,7 +149,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(40, 113);
+            this.label2.Location = new System.Drawing.Point(15, 40);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(61, 13);
             this.label2.TabIndex = 3;
@@ -189,7 +158,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(37, 31);
+            this.label1.Location = new System.Drawing.Point(12, 15);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(64, 13);
             this.label1.TabIndex = 2;
@@ -197,7 +166,7 @@
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(104, 28);
+            this.textBox1.Location = new System.Drawing.Point(79, 12);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(641, 20);
             this.textBox1.TabIndex = 1;
@@ -205,27 +174,16 @@
             // entityVariant
             // 
             this.entityVariant.FormattingEnabled = true;
-            this.entityVariant.Items.AddRange(new object[] {
-            "POSITION",
-            "FLOAT",
-            "STRING",
-            "SPLINE_DATA",
-            "ENUM",
-            "SHORT_GUID",
-            "FILEPATH",
-            "BOOL",
-            "DIRECTION",
-            "INTEGER"});
-            this.entityVariant.Location = new System.Drawing.Point(104, 110);
+            this.entityVariant.Location = new System.Drawing.Point(79, 38);
             this.entityVariant.Name = "entityVariant";
             this.entityVariant.Size = new System.Drawing.Size(641, 21);
             this.entityVariant.TabIndex = 0;
             // 
             // generateHierarchy
             // 
-            this.generateHierarchy.Location = new System.Drawing.Point(104, 110);
+            this.generateHierarchy.Location = new System.Drawing.Point(565, 38);
             this.generateHierarchy.Name = "generateHierarchy";
-            this.generateHierarchy.Size = new System.Drawing.Size(641, 23);
+            this.generateHierarchy.Size = new System.Drawing.Size(155, 23);
             this.generateHierarchy.TabIndex = 6;
             this.generateHierarchy.Text = "Select Entity To Point To";
             this.generateHierarchy.UseVisualStyleBackColor = true;
@@ -235,19 +193,26 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 200);
-            this.Controls.Add(this.groupBox1);
+            this.ClientSize = new System.Drawing.Size(733, 100);
+            this.Controls.Add(this.addDefaultParams);
+            this.Controls.Add(this.groupBox2);
+            this.Controls.Add(this.createNewEntity);
+            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.generateHierarchy);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.entityVariant);
+            this.Controls.Add(this.select_composite);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "AddEntity";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "New Entity";
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -255,14 +220,12 @@
 
         private System.Windows.Forms.RadioButton createDatatypeEntity;
         private System.Windows.Forms.RadioButton createFunctionEntity;
-        private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.ComboBox entityVariant;
         private System.Windows.Forms.RadioButton createCompositeEntity;
         private System.Windows.Forms.Button createNewEntity;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Label label3;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.RadioButton createProxyEntity;
         private System.Windows.Forms.Button generateHierarchy;

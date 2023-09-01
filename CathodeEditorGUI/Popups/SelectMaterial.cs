@@ -18,13 +18,13 @@ namespace CommandsEditor.Popups
 
         List<ListedMaterial> _materials = new List<ListedMaterial>();
 
-        public SelectMaterial(CommandsEditor editor, int materialIndexToEdit, int defaultMaterialIndex = -1) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
+        public SelectMaterial(LevelContent content, int materialIndexToEdit, int defaultMaterialIndex = -1) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, content)
         {
             InitializeComponent();
 
             MaterialIndexToEdit = materialIndexToEdit;
-            for (int i = 0; i < Editor.resource.materials.Entries.Count; i++)
-                _materials.Add(new ListedMaterial(Editor.resource.materials.Entries[i].Name, i));
+            for (int i = 0; i < Content.resource.materials.Entries.Count; i++)
+                _materials.Add(new ListedMaterial(Content.resource.materials.Entries[i].Name, i));
             _materials.Sort();
             _materials.Reverse();
 

@@ -1,4 +1,5 @@
 ﻿using CATHODE.Scripting;
+using CommandsEditor.DockPanels;
 using CommandsEditor.Popups.Base;
 using System;
 using System.Collections.Generic;
@@ -18,15 +19,15 @@ namespace CommandsEditor.Popups.Function_Editors.CharacterEditor
 
         private List<EntityHierarchy> _hierarchies = new List<EntityHierarchy>();
 
-        public Character_InstanceSelection(CommandsEditor editor, List<ShortGuid> existing) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
+        public Character_InstanceSelection(EntityDisplay editor, List<ShortGuid> existing) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor.Content)
         {
             InitializeComponent(); 
             
-            List<EntityHierarchy> hierarchies = EditorUtils.GetHierarchiesForEntity(Editor.selected.composite, Editor.selected.entity);
+            List<EntityHierarchy> hierarchies = editor.Content.editor_utils.GetHierarchiesForEntity(editor.Composite, editor.Entity);
             for (int i = 0; i < hierarchies.Count; i++)
             {
                 if (existing.Contains(hierarchies[i].GenerateInstance())) continue;
-                characterInstances.Items.Add(hierarchies[i].GetHierarchyAsString(Editor.commands, Editor.selected.composite, false));
+                characterInstances.Items.Add(hierarchies[i].GetHierarchyAsString(Content.commands, editor.Composite, false));
                 _hierarchies.Add(hierarchies[i]);
             }
 

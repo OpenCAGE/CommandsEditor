@@ -32,7 +32,7 @@ namespace CommandsEditor.Popups.UserControls
             InitializeComponent();
         }
 
-        public GUI_Resource_RenderableInstance(CommandsEditor editor) : base(editor)
+        public GUI_Resource_RenderableInstance(LevelContent editor) : base(editor)
         {
             InitializeComponent();
         }
@@ -59,8 +59,8 @@ namespace CommandsEditor.Popups.UserControls
                 //Get all remapped materials from REDs
                 List<int> materialIndexes = new List<int>();
                 for (int y = 0; y < redsCount; y++)
-                    materialIndexes.Add(Editor.resource.reds.Entries[redsIndex + y].MaterialIndex);
-                PopulateUI(Editor.resource.reds.Entries[redsIndex].ModelIndex, materialIndexes);
+                    materialIndexes.Add(Content.resource.reds.Entries[redsIndex + y].MaterialIndex);
+                PopulateUI(Content.resource.reds.Entries[redsIndex].ModelIndex, materialIndexes);
             }
             catch 
             {
@@ -74,10 +74,10 @@ namespace CommandsEditor.Popups.UserControls
 
             if (SelectedModelIndex == -1) SelectedModelIndex = 0;
 
-            Models.CS2.Component.LOD.Submesh submesh = Editor.resource.models.GetAtWriteIndex(SelectedModelIndex);
-            Models.CS2.Component.LOD lod = Editor.resource.models.FindModelLODForSubmesh(submesh); 
+            Models.CS2.Component.LOD.Submesh submesh = Content.resource.models.GetAtWriteIndex(SelectedModelIndex);
+            Models.CS2.Component.LOD lod = Content.resource.models.FindModelLODForSubmesh(submesh); 
             //Models.CS2.Component component = Editor.resource.models.FindModelComponentForSubmesh(submesh);
-            Models.CS2 mesh = Editor.resource.models.FindModelForSubmesh(submesh);
+            Models.CS2 mesh = Content.resource.models.FindModelForSubmesh(submesh);
 
             modelInfoTextbox.Text = mesh?.Name;
             if (lod.Name != "")
@@ -85,7 +85,7 @@ namespace CommandsEditor.Popups.UserControls
 
             materials.Items.Clear();
             for (int i = 0; i < materialIndexes.Count; i++)
-                materials.Items.Add(/*"[" + mesh.Submeshes[i].Name + "] " + */Editor.resource.materials.Entries[materialIndexes[i]].Name);
+                materials.Items.Add(/*"[" + mesh.Submeshes[i].Name + "] " + */Content.resource.materials.Entries[materialIndexes[i]].Name);
 
             groupBox1.Size = new Size(832, 180);
             this.Size = new Size(838, 186);
@@ -93,7 +93,7 @@ namespace CommandsEditor.Popups.UserControls
 
         private void editModel_Click(object sender, EventArgs e)
         {
-            SelectModel selectModel = new SelectModel(_editor, SelectedModelIndex);
+            SelectModel selectModel = new SelectModel(_content, SelectedModelIndex);
             selectModel.Show();
             selectModel.FormClosed += SelectModel_FormClosed;
         }
@@ -113,7 +113,7 @@ namespace CommandsEditor.Popups.UserControls
         {
             if (materials.SelectedIndex == -1) return;
 
-            SelectMaterial selectMaterial = new SelectMaterial(_editor, materials.SelectedIndex, SelectedMaterialIndexes[materials.SelectedIndex]);
+            SelectMaterial selectMaterial = new SelectMaterial(_content, materials.SelectedIndex, SelectedMaterialIndexes[materials.SelectedIndex]);
             selectMaterial.Show();
             selectMaterial.FormClosed += SelectMaterial_FormClosed;
         }

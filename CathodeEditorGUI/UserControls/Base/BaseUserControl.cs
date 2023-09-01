@@ -12,8 +12,8 @@ namespace CommandsEditor.UserControls
 {
     public partial class BaseUserControl : UserControl
     {
-        protected CommandsEditor _editor;
-        protected EditorData Editor { get { return _editor.Editor; } } //hotfix for old Editor. static
+        protected LevelContent _content;
+        protected LevelContent Content => _content;
 
         [Obsolete("Designer only", true)]
         public BaseUserControl()
@@ -21,16 +21,16 @@ namespace CommandsEditor.UserControls
             InitializeComponent();
         }
 
-        public BaseUserControl(CommandsEditor editor)
+        public BaseUserControl(LevelContent editor)
         {
             InitializeComponent();
 
-            _editor = editor;
+            _content = editor;
         }
 
-        public void SetEditor(CommandsEditor editor)
+        public void SetEditor(LevelContent editor)
         {
-            _editor = editor;
+            _content = editor;
         }
     }
 }

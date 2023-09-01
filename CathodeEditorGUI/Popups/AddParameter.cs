@@ -12,22 +12,26 @@ using CATHODE;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CathodeLib;
+using CommandsEditor.DockPanels;
 using CommandsEditor.Popups.Base;
 
 namespace CommandsEditor
 {
     public partial class AddParameter : BaseWindow
     {
-        Entity node = null;
+        public Action OnSaved;
+
         ParameterData param = null;
 
-        public AddParameter(CommandsEditor editor, Entity _node) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
+        EntityDisplay _entityDisplay;
+
+        public AddParameter(EntityDisplay entityDisplay) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, entityDisplay.Content)
         {
-            node = _node;
+            _entityDisplay = entityDisplay;
             InitializeComponent();
             param_datatype.SelectedIndex = 0;
 
-            List<string> options = EditorUtils.GenerateParameterList(_node);
+            List<string> options = entityDisplay.Content.editor_utils.GenerateParameterList(entityDisplay.Entity, entityDisplay.Composite);
             param_name.BeginUpdate();
             for (int i = 0; i < options.Count; i++) param_name.Items.Add(options[i]);
             param_name.EndUpdate();
@@ -38,8 +42,10 @@ namespace CommandsEditor
         private void button1_Click(object sender, EventArgs e)
         {
             if (param_name.Text == "") return;
-            if (param != null) node.AddParameter(param_name.Text, param);
-            else node.AddParameter(param_name.Text, (DataType)param_datatype.SelectedIndex);
+            if (param != null) _entityDisplay.Entity.AddParameter(param_name.Text, param);
+            else _entityDisplay.Entity.AddParameter(param_name.Text, (DataType)param_datatype.SelectedIndex);
+
+            OnSaved?.Invoke();
             this.Close();
         }
 
@@ -55,10 +61,10 @@ namespace CommandsEditor
         {
             param = null;
             param_datatype.Enabled = true;
-            switch (node.variant)
+            switch (_entityDisplay.Entity.variant)
             {
                 case EntityVariant.FUNCTION:
-                    FunctionEntity ent = (FunctionEntity)node;
+                    FunctionEntity ent = (FunctionEntity)_entityDisplay.Entity;
                     bool isComposite = !CommandsUtils.FunctionTypeExists(ent.function);
                     ShortGuid function = (isComposite) ? CommandsUtils.GetFunctionTypeGUID(FunctionType.CompositeInterface) : ent.function;
 
@@ -88,7 +94,7 @@ namespace CommandsEditor
                     if (isComposite)
                     {
                         ShortGuid param = ShortGuidUtils.Generate(param_name.Text);
-                        VariableEntity var = Editor.commands.GetComposite(ent.function).variables.FirstOrDefault(o => o.name == param);
+                        VariableEntity var = Content.commands.GetComposite(ent.function).variables.FirstOrDefault(o => o.name == param);
                         if (var == null) return;
                         if (var.type == DataType.NONE)
                         {

@@ -24,7 +24,7 @@ namespace CommandsEditor
         private ShortGuid guid_parent;
         private int current_ui_offset = 7;
 
-        public AddOrEditResource(CommandsEditor editor, List<ResourceReference> resRefs, ShortGuid parent, string windowTitle) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
+        public AddOrEditResource(LevelContent content, List<ResourceReference> resRefs, ShortGuid parent, string windowTitle) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, content)
         {
             ResourceReference[] copy = new ResourceReference[resRefs.Count];
             resRefs.CopyTo(copy);
@@ -51,43 +51,43 @@ namespace CommandsEditor
                 {
                     case ResourceType.ANIMATED_MODEL:
                         {
-                            resourceGroup = new GUI_Resource_AnimatedModel(_editor);
+                            resourceGroup = new GUI_Resource_AnimatedModel(_content);
                             ((GUI_Resource_AnimatedModel)resourceGroup).PopulateUI(resources[i].index);
                             break;
                         }
                     case ResourceType.COLLISION_MAPPING:
                         {
                             //TODO: Pass this info through, and handle making new instances...
-                            Editor.resource.collision_maps.Entries.FindAll(o => o.entity.entity_id == resources[i].collisionID);
+                            Content.resource.collision_maps.Entries.FindAll(o => o.entity.entity_id == resources[i].collisionID);
 
-                            resourceGroup = new GUI_Resource_CollisionMapping(_editor);
+                            resourceGroup = new GUI_Resource_CollisionMapping(_content);
                             ((GUI_Resource_CollisionMapping)resourceGroup).PopulateUI(resources[i].position, resources[i].rotation, resources[i].collisionID);
                             break;
                         }
                     case ResourceType.NAV_MESH_BARRIER_RESOURCE:
                         {
-                            resourceGroup = new GUI_Resource_NavMeshBarrierResource(_editor);
+                            resourceGroup = new GUI_Resource_NavMeshBarrierResource(_content);
                             ((GUI_Resource_NavMeshBarrierResource)resourceGroup).PopulateUI(resources[i].position, resources[i].rotation);
                             break;
                         }
                     case ResourceType.RENDERABLE_INSTANCE:
                         {
-                            resourceGroup = new GUI_Resource_RenderableInstance(_editor);
+                            resourceGroup = new GUI_Resource_RenderableInstance(_content);
                             ((GUI_Resource_RenderableInstance)resourceGroup).PopulateUI(resources[i].position, resources[i].rotation, resources[i].index, resources[i].count);
                             break;
                         }
                     case ResourceType.DYNAMIC_PHYSICS_SYSTEM:
                         {
                             //TODO: Pass this info through, and handle making new instances...
-                            Editor.resource.physics_maps.Entries.FindAll(o => o.entity.entity_id == resources[i].collisionID);
+                            Content.resource.physics_maps.Entries.FindAll(o => o.entity.entity_id == resources[i].collisionID);
 
-                            resourceGroup = new GUI_Resource_DynamicPhysicsSystem(_editor);
+                            resourceGroup = new GUI_Resource_DynamicPhysicsSystem(_content);
                             ((GUI_Resource_DynamicPhysicsSystem)resourceGroup).PopulateUI(); 
                             break;
                         }
                     default:
                         {
-                            resourceGroup = new GUI_Resource_Default(_editor);
+                            resourceGroup = new GUI_Resource_Default(_content);
                             ((GUI_Resource_Default)resourceGroup).PopulateUI(resources[i].entryType);
                             break;
                         }
@@ -191,7 +191,7 @@ namespace CommandsEditor
                             resourceRef.position = ui.Position;
                             resourceRef.rotation = ui.Rotation;
                             resourceRef.count = ui.SelectedMaterialIndexes.Count;
-                            resourceRef.index = Editor.resource.reds.Entries.Count;
+                            resourceRef.index = Content.resource.reds.Entries.Count;
 
                             for (int y = 0; y < ui.SelectedMaterialIndexes.Count; y++)
                             {
@@ -200,11 +200,11 @@ namespace CommandsEditor
                                 newRed.MaterialIndex = ui.SelectedMaterialIndexes[y];
                                 if (y == 0)
                                 {
-                                    newRed.LODIndex = Editor.resource.reds.Entries.Count;
+                                    newRed.LODIndex = Content.resource.reds.Entries.Count;
                                     //newRed.LODCount = (byte)ui.SelectedMaterialIndexes.Count;
                                     newRed.LODCount = 0; //TODO!!
                                 }
-                                Editor.resource.reds.Entries.Add(newRed);
+                                Content.resource.reds.Entries.Add(newRed);
                             }
                             break;
                         }

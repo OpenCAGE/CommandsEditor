@@ -14,22 +14,24 @@ using System.Windows.Media.Media3D;
 using CathodeLib;
 using System.Numerics;
 using CommandsEditor.Popups.Base;
+using CommandsEditor.DockPanels;
 
 namespace CommandsEditor
 {
     public partial class Composite3D : BaseWindow
     {
         GUI_ModelViewer modelViewer;
+        CompositeDisplay _compositeDisplay;
 
-        public Composite3D(CommandsEditor editor, Composite comp) : base(WindowClosesOn.NONE, editor)
+        public Composite3D(CompositeDisplay compositeDisplay) : base(WindowClosesOn.NONE, compositeDisplay.Content)
         {
             InitializeComponent();
-            this.Text += ": " + comp.name;
+            this.Text += ": " + _compositeDisplay.Composite.name;
 
             List<GUI_ModelViewer.Model> models = new List<GUI_ModelViewer.Model>();
-            models.AddRange(LoadComposite(comp));
+            models.AddRange(LoadComposite(_compositeDisplay.Composite));
 
-            modelViewer = new GUI_ModelViewer(_editor);
+            modelViewer = new GUI_ModelViewer(_content);
             modelRendererHost.Child = modelViewer;
             modelViewer.ShowModel(models);
         }
@@ -54,7 +56,7 @@ namespace CommandsEditor
                         if (positionParameter != null) rotationOffset += ((cTransform)positionParameter.content).rotation;
 
                         cTransform newOffset = new cTransform(positionOffset, rotationOffset);
-                        models.AddRange(LoadComposite(Editor.commands.GetComposite(function.function), newOffset));
+                        models.AddRange(LoadComposite(Content.commands.GetComposite(function.function), newOffset));
                     }
                 }
 
@@ -70,7 +72,7 @@ namespace CommandsEditor
                     Vector3 rotationOffset = (offset == null) ? new Vector3() : new Vector3(offset.rotation.X, offset.rotation.Y, offset.rotation.Z);
                     if (positionParameter != null) rotationOffset += ((cTransform)positionParameter.content).rotation;
 
-                    models.Add(new GUI_ModelViewer.Model(Editor.resource.reds.Entries[resource.index].ModelIndex, positionOffset, rotationOffset));
+                    models.Add(new GUI_ModelViewer.Model(Content.resource.reds.Entries[resource.index].ModelIndex, positionOffset, rotationOffset));
                 }
             }
             return models;

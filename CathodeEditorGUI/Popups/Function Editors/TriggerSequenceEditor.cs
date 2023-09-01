@@ -1,7 +1,9 @@
 ﻿using CATHODE;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
+using CommandsEditor.DockPanels;
 using CommandsEditor.Popups.Base;
+using OpenCAGE;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,14 +18,17 @@ namespace CommandsEditor
 {
     public partial class TriggerSequenceEditor : BaseWindow
     {
-        TriggerSequence node = null;
-        public TriggerSequenceEditor(CommandsEditor editor, TriggerSequence _node) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
+        TriggerSequence _triggerSequence = null;
+        EntityDisplay _entityDisplay;
+
+        public TriggerSequenceEditor(EntityDisplay entityDisplay) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, entityDisplay.Content)
         {
             InitializeComponent();
-            node = _node;
+            _entityDisplay = entityDisplay; 
+            _triggerSequence = (TriggerSequence)_entityDisplay.Entity;
 
             entityTriggerDelay.Text = "0.0";
-            this.Text = "TriggerSequence Editor: " + EntityUtils.GetName(Editor.selected.composite.shortGUID, _node.shortGUID);
+            this.Text = "TriggerSequence Editor: " + EntityUtils.GetName(_entityDisplay.Composite.shortGUID, _triggerSequence.shortGUID);
             selectedEntityDetails.Visible = false;
             selectedTriggerDetails.Visible = false;
 
@@ -35,12 +40,12 @@ namespace CommandsEditor
         {
             entity_list.BeginUpdate();
             entity_list.Items.Clear();
-            for (int i = 0; i < node.entities.Count; i++)
+            for (int i = 0; i < _triggerSequence.entities.Count; i++)
             {
                 string thisHierarchy;
-                CommandsUtils.ResolveHierarchy(Editor.commands, Editor.selected.composite, node.entities[i].connectedEntity.hierarchy, out Composite comp, out thisHierarchy);
+                CommandsUtils.ResolveHierarchy(Content.commands, _entityDisplay.Composite, _triggerSequence.entities[i].connectedEntity.hierarchy, out Composite comp, out thisHierarchy, SettingsManager.GetBool("CS_ShowEntityIDs"));
 
-                string toAdd = "[" + node.entities[i].timing + "s] " + thisHierarchy;
+                string toAdd = "[" + _triggerSequence.entities[i].timing + "s] " + thisHierarchy;
                 entity_list.Items.Add(toAdd);
             }
             entity_list.EndUpdate();
@@ -50,9 +55,9 @@ namespace CommandsEditor
         {
             trigger_list.BeginUpdate();
             trigger_list.Items.Clear();
-            for (int i = 0; i < node.events.Count; i++)
+            for (int i = 0; i < _triggerSequence.events.Count; i++)
             {
-                trigger_list.Items.Add(ShortGuidUtils.FindString(node.events[i].start) + " -> " + ShortGuidUtils.FindString(node.events[i].end));
+                trigger_list.Items.Add(ShortGuidUtils.FindString(_triggerSequence.events[i].start) + " -> " + ShortGuidUtils.FindString(_triggerSequence.events[i].end));
             }
             trigger_list.EndUpdate();
         }
@@ -63,7 +68,7 @@ namespace CommandsEditor
 
             if (entity_list.SelectedIndex == -1) return;
             int index = entity_list.SelectedIndex;
-            node.entities[index].timing = Convert.ToSingle(entityTriggerDelay.Text);
+            _triggerSequence.entities[index].timing = Convert.ToSingle(entityTriggerDelay.Text);
             LoadSelectedEntity();
             ReloadEntityList();
             entity_list.SelectedIndex = index;
@@ -84,11 +89,10 @@ namespace CommandsEditor
                 return;
             }
 
-            string thisHierarchy;
-            CommandsUtils.ResolveHierarchy(Editor.commands, Editor.selected.composite, node.entities[entity_list.SelectedIndex].connectedEntity.hierarchy, out Composite comp, out thisHierarchy);
+            CommandsUtils.ResolveHierarchy(Content.commands, _entityDisplay.Composite, _triggerSequence.entities[entity_list.SelectedIndex].connectedEntity.hierarchy, out Composite comp, out string thisHierarchy, SettingsManager.GetBool("CS_ShowEntityIDs"));
 
             entityHierarchy.Text = thisHierarchy;
-            entityTriggerDelay.Text = node.entities[entity_list.SelectedIndex].timing.ToString();
+            entityTriggerDelay.Text = _triggerSequence.entities[entity_list.SelectedIndex].timing.ToString();
             selectedEntityDetails.Visible = true;
         }
 
@@ -102,14 +106,14 @@ namespace CommandsEditor
                 return;
             }
 
-            triggerStartParam.Text = ShortGuidUtils.FindString(node.events[trigger_list.SelectedIndex].start);
-            triggerEndParam.Text = ShortGuidUtils.FindString(node.events[trigger_list.SelectedIndex].end);
+            triggerStartParam.Text = ShortGuidUtils.FindString(_triggerSequence.events[trigger_list.SelectedIndex].start);
+            triggerEndParam.Text = ShortGuidUtils.FindString(_triggerSequence.events[trigger_list.SelectedIndex].end);
             selectedTriggerDetails.Visible = true;
         }
 
         private void selectEntToPointTo_Click(object sender, EventArgs e)
         {
-            EditHierarchy hierarchyEditor = new EditHierarchy(_editor, Editor.selected.composite, true);
+            EditHierarchy hierarchyEditor = new EditHierarchy(_content, _entityDisplay.Composite, true);
             hierarchyEditor.Show();
             hierarchyEditor.OnHierarchyGenerated += HierarchyEditor_HierarchyGenerated;
         }
@@ -117,7 +121,7 @@ namespace CommandsEditor
         {
             if (entity_list.SelectedIndex == -1) return;
             int index = entity_list.SelectedIndex;
-            node.entities[index].connectedEntity.hierarchy = generatedHierarchy;
+            _triggerSequence.entities[index].connectedEntity.hierarchy = generatedHierarchy;
             LoadSelectedEntity();
             ReloadEntityList();
             entity_list.SelectedIndex = index;
@@ -125,9 +129,9 @@ namespace CommandsEditor
 
         private void button1_Click(object sender, EventArgs e)
         {
-            for (int i = 0; i < node.entities.Count; i++)
+            for (int i = 0; i < _triggerSequence.entities.Count; i++)
             {
-                if (node.entities[i].connectedEntity.hierarchy.Count == 0 || node.entities[i].connectedEntity.hierarchy.Count == 1)
+                if (_triggerSequence.entities[i].connectedEntity.hierarchy.Count == 0 || _triggerSequence.entities[i].connectedEntity.hierarchy.Count == 1)
                 {
                     MessageBox.Show("One or more triggers does not point to a node!", "Trigger setup incorrectly!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
@@ -141,8 +145,8 @@ namespace CommandsEditor
         {
             TriggerSequence.Entity trigger = new TriggerSequence.Entity();
 
-            int insertIndex = (entity_list.SelectedIndex == -1) ? node.entities.Count : entity_list.SelectedIndex + 1;
-            node.entities.Insert(insertIndex, trigger);
+            int insertIndex = (entity_list.SelectedIndex == -1) ? _triggerSequence.entities.Count : entity_list.SelectedIndex + 1;
+            _triggerSequence.entities.Insert(insertIndex, trigger);
 
             ReloadEntityList();
             entity_list.SelectedIndex = insertIndex;
@@ -151,7 +155,7 @@ namespace CommandsEditor
         private void deleteSelectedEntity_Click(object sender, EventArgs e)
         {
             if (entity_list.SelectedIndex == -1) return;
-            node.entities.RemoveAt(entity_list.SelectedIndex);
+            _triggerSequence.entities.RemoveAt(entity_list.SelectedIndex);
             ReloadEntityList();
             LoadSelectedEntity();
         }
@@ -160,8 +164,8 @@ namespace CommandsEditor
         {
             TriggerSequence.Event trigger = new TriggerSequence.Event(ShortGuidUtils.Generate(triggerStartParam.Text), ShortGuidUtils.Generate(triggerEndParam.Text));
 
-            int insertIndex = (trigger_list.SelectedIndex == -1) ? node.events.Count : trigger_list.SelectedIndex + 1;
-            node.events.Insert(insertIndex, trigger);
+            int insertIndex = (trigger_list.SelectedIndex == -1) ? _triggerSequence.events.Count : trigger_list.SelectedIndex + 1;
+            _triggerSequence.events.Insert(insertIndex, trigger);
 
             ReloadTriggerList();
             trigger_list.SelectedIndex = insertIndex;
@@ -170,7 +174,7 @@ namespace CommandsEditor
         private void deleteParamTrigger_Click(object sender, EventArgs e)
         {
             if (trigger_list.SelectedIndex == -1) return;
-            node.events.RemoveAt(trigger_list.SelectedIndex);
+            _triggerSequence.events.RemoveAt(trigger_list.SelectedIndex);
             ReloadTriggerList();
             LoadSelectedTriggers();
         }
@@ -179,8 +183,8 @@ namespace CommandsEditor
         {
             if (trigger_list.SelectedIndex == -1) return;
             int index = trigger_list.SelectedIndex;
-            node.events[index].start = ShortGuidUtils.Generate(triggerStartParam.Text);
-            node.events[index].end = ShortGuidUtils.Generate(triggerEndParam.Text);
+            _triggerSequence.events[index].start = ShortGuidUtils.Generate(triggerStartParam.Text);
+            _triggerSequence.events[index].end = ShortGuidUtils.Generate(triggerEndParam.Text);
             LoadSelectedTriggers();
             ReloadTriggerList();
             trigger_list.SelectedIndex = index;
@@ -196,11 +200,11 @@ namespace CommandsEditor
             if (entity_list.SelectedIndex == -1) return;
             if (entity_list.SelectedIndex == 0) return;
 
-            TriggerSequence.Entity toMoveDown = node.entities[entity_list.SelectedIndex - 1];
-            TriggerSequence.Entity toMoveUp = node.entities[entity_list.SelectedIndex];
+            TriggerSequence.Entity toMoveDown = _triggerSequence.entities[entity_list.SelectedIndex - 1];
+            TriggerSequence.Entity toMoveUp = _triggerSequence.entities[entity_list.SelectedIndex];
 
-            node.entities[entity_list.SelectedIndex - 1] = toMoveUp;
-            node.entities[entity_list.SelectedIndex] = toMoveDown;
+            _triggerSequence.entities[entity_list.SelectedIndex - 1] = toMoveUp;
+            _triggerSequence.entities[entity_list.SelectedIndex] = toMoveDown;
 
             ReloadEntityList(entity_list.SelectedIndex - 1);
         }
@@ -208,13 +212,13 @@ namespace CommandsEditor
         private void moveDown_Click(object sender, EventArgs e)
         {
             if (entity_list.SelectedIndex == -1) return;
-            if (entity_list.SelectedIndex == node.entities.Count - 1) return;
+            if (entity_list.SelectedIndex == _triggerSequence.entities.Count - 1) return;
 
-            TriggerSequence.Entity toMoveUp = node.entities[entity_list.SelectedIndex + 1];
-            TriggerSequence.Entity toMoveDown = node.entities[entity_list.SelectedIndex];
+            TriggerSequence.Entity toMoveUp = _triggerSequence.entities[entity_list.SelectedIndex + 1];
+            TriggerSequence.Entity toMoveDown = _triggerSequence.entities[entity_list.SelectedIndex];
 
-            node.entities[entity_list.SelectedIndex + 1] = toMoveDown;
-            node.entities[entity_list.SelectedIndex] = toMoveUp;
+            _triggerSequence.entities[entity_list.SelectedIndex + 1] = toMoveDown;
+            _triggerSequence.entities[entity_list.SelectedIndex] = toMoveUp;
 
             ReloadEntityList(entity_list.SelectedIndex + 1);
         }
@@ -223,15 +227,14 @@ namespace CommandsEditor
         {
             if (entity_list.SelectedIndex == -1) return;
 
-            Entity ent = CommandsUtils.ResolveHierarchy(Editor.commands, Editor.selected.composite, node.entities[entity_list.SelectedIndex].connectedEntity.hierarchy, out Composite comp, out string h);
+            Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, _entityDisplay.Composite, _triggerSequence.entities[entity_list.SelectedIndex].connectedEntity.hierarchy, out Composite comp, out string h);
             if (comp == null || ent == null)
             {
                 MessageBox.Show("Failed to resolve entity! Can not load to it.", "Entity pointer corrupted!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            _editor.LoadComposite(comp);
-            _editor.LoadEntity(ent);
+            _entityDisplay.CompositeDisplay.CommandsDisplay.LoadCompositeAndEntity(comp, ent);
         }
     }
 }

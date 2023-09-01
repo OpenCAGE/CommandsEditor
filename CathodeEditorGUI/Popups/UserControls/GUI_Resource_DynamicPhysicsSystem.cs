@@ -14,11 +14,13 @@ namespace CommandsEditor.Popups.UserControls
 {
     public partial class GUI_Resource_DynamicPhysicsSystem : ResourceUserControl
     {
-        public GUI_Resource_DynamicPhysicsSystem(CommandsEditor editor) : base(editor)
+        public GUI_Resource_DynamicPhysicsSystem(LevelContent editor) : base(editor)
         {
             InitializeComponent();
 
             //TODO: populate from PHYSICS.MAP
+
+            //NOTE: when we save commands we populate this resource index from the system_index param, so we don't need to display anything in the gui
         }
 
         public void PopulateUI()

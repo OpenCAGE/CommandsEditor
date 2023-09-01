@@ -100,6 +100,7 @@
       <HintPath>packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
     </Reference>
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Console, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>packages\System.Console.4.3.0\lib\net46\System.Console.dll</HintPath>
       <Private>True</Private>
@@ -114,6 +115,7 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Globalization.Calendars, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>packages\System.Globalization.Calendars.4.3.0\lib\net46\System.Globalization.Calendars.dll</HintPath>
       <Private>True</Private>
@@ -225,10 +227,53 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="UIAutomationProvider" />
+    <Reference Include="WeifenLuo.WinFormsUI.Docking, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5cded1a1a0a7b481, processorArchitecture=MSIL">
+      <HintPath>packages\DockPanelSuite.3.1.0\lib\net40\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
+    </Reference>
+    <Reference Include="WeifenLuo.WinFormsUI.Docking.ThemeVS2015, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5cded1a1a0a7b481, processorArchitecture=MSIL">
+      <HintPath>packages\DockPanelSuite.ThemeVS2015.3.1.0\lib\net40\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandsEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CommandsEditor.Designer.cs">
+      <DependentUpon>CommandsEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DockPanels\CompositeDisplay.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DockPanels\CompositeDisplay.Designer.cs">
+      <DependentUpon>CompositeDisplay.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DockPanels\CommandsDisplay.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DockPanels\CommandsDisplay.Designer.cs">
+      <DependentUpon>CommandsDisplay.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DockPanels\EntityDisplay.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DockPanels\EntityDisplay.Designer.cs">
+      <DependentUpon>EntityDisplay.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\ExportComposite.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\ExportComposite.Designer.cs">
+      <DependentUpon>ExportComposite.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\ResourceDatatypeAutocomplete.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\ResourceDatatypeAutocomplete.Designer.cs">
+      <DependentUpon>ResourceDatatypeAutocomplete.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Scripts\LevelContent.cs" />
     <Compile Include="Popups\Base\BaseWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -306,6 +351,18 @@
     </Compile>
     <Compile Include="Popups\Function Editors\CAGEAnimationEditor.Designer.cs">
       <DependentUpon>CAGEAnimationEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\SelectLevel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\SelectLevel.Designer.cs">
+      <DependentUpon>SelectLevel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\ShowCompositeUses.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\ShowCompositeUses.Designer.cs">
+      <DependentUpon>ShowCompositeUses.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\UserControls\GUI_Resource_Default.cs">
       <SubType>UserControl</SubType>
@@ -1136,13 +1193,6 @@
     <Compile Include="Popups\AddOrEditResource.Designer.cs">
       <DependentUpon>AddOrEditResource.cs</DependentUpon>
     </Compile>
-    <Compile Include="CommandsEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CommandsEditor.designer.cs">
-      <DependentUpon>CommandsEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Scripts\EditorData.cs" />
     <Compile Include="Scripts\EditorUtils.cs" />
     <Compile Include="Popups\AddEntity.cs">
       <SubType>Form</SubType>
@@ -1272,6 +1322,7 @@
     <Compile Include="Scripts\TreeUtility.cs" />
     <Compile Include="Scripts\SettingsManager.cs" />
     <Compile Include="Scripts\WebsocketServer.cs" />
+    <Compile Include="Scripts\Singleton.cs" />
     <Compile Include="UserControls\Base\BaseUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -1350,8 +1401,26 @@
     <Compile Include="UserControls\GUI_VectorDataType.Designer.cs">
       <DependentUpon>GUI_VectorDataType.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="CommandsEditor.resx">
+      <DependentUpon>CommandsEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DockPanels\CompositeDisplay.resx">
+      <DependentUpon>CompositeDisplay.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DockPanels\CommandsDisplay.resx">
+      <DependentUpon>CommandsDisplay.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DockPanels\EntityDisplay.resx">
+      <DependentUpon>EntityDisplay.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\ExportComposite.resx">
+      <DependentUpon>ExportComposite.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Popups\Function Editors\CharacterEditor\Character_InstanceSelection.resx">
       <DependentUpon>Character_InstanceSelection.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\ResourceDatatypeAutocomplete.resx">
+      <DependentUpon>ResourceDatatypeAutocomplete.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\SelectComposite.resx">
       <DependentUpon>SelectComposite.cs</DependentUpon>
@@ -1376,9 +1445,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\Function Editors\CAGEAnimationEditor.resx">
       <DependentUpon>CAGEAnimationEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CommandsEditor.resx">
-      <DependentUpon>CommandsEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\AddEntity.resx">
       <DependentUpon>AddEntity.cs</DependentUpon>
@@ -1419,11 +1485,17 @@
     <EmbeddedResource Include="Popups\RenameEntity.resx">
       <DependentUpon>RenameEntity.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Popups\SelectLevel.resx">
+      <DependentUpon>SelectLevel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Popups\SelectMaterial.resx">
       <DependentUpon>SelectMaterial.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\SelectModel.resx">
       <DependentUpon>SelectModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\ShowCompositeUses.resx">
+      <DependentUpon>ShowCompositeUses.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\ShowCrossRefs.resx">
       <DependentUpon>ShowCrossRefs.cs</DependentUpon>

@@ -2,7 +2,9 @@
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CathodeLib;
+using CommandsEditor.DockPanels;
 using CommandsEditor.Popups.Base;
+using OpenCAGE;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,23 +20,52 @@ namespace CommandsEditor
 {
     public partial class AddEntity : BaseWindow
     {
+        public EntityVariant Variant;
+        public bool Composite;
+
         public Action<Entity> OnNewEntity;
 
-        Composite composite = null;
         List<Composite> composites = null;
         List<CathodeEntityDatabase.EntityDefinition> availableEntities = null;
         List<ShortGuid> hierarchy = null;
 
-        public AddEntity(CommandsEditor editor, Composite _comp, List<Composite> _comps) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
+        private CompositeDisplay _compositeDisplay;
+
+        public AddEntity(CompositeDisplay compositeDisplay, EntityVariant variant = EntityVariant.FUNCTION, bool composite = false) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_COMPOSITE_SELECTION, compositeDisplay.Content)
         {
-            composite = _comp;
-            composites = _comps.OrderBy(o => o.name).ToList();
+            _compositeDisplay = compositeDisplay;
+
+            composites = compositeDisplay.Content.commands.Entries.OrderBy(o => o.name).ToList();
             availableEntities = CathodeEntityDatabase.GetEntities();
             InitializeComponent();
 
             //quick hack to reload dropdown
             createDatatypeEntity.Checked = true;
             createFunctionEntity.Checked = true;
+
+            Variant = variant;
+            Composite = composite;
+
+            switch (variant)
+            {
+                case EntityVariant.OVERRIDE:
+                    Text = "Create Override Entity";
+                    createOverrideEntity.Checked = true;
+                    break;
+                case EntityVariant.PROXY:
+                    Text = "Create Proxy Entity";
+                    createProxyEntity.Checked = true;
+                    break;
+                case EntityVariant.FUNCTION:
+                    Text = "Create " + (composite ? "Composite" : "Function") + " Entity";
+                    createFunctionEntity.Checked = !composite;
+                    createCompositeEntity.Checked = composite;
+                    break;
+                case EntityVariant.VARIABLE:
+                    Text = "Create Variable Entity";
+                    createDatatypeEntity.Checked = true;
+                    break;
+            }
         }
 
         //Repopulate UI
@@ -69,15 +100,14 @@ namespace CommandsEditor
         private void selectedFunctionEntity(object sender, EventArgs e)
         {
             //Function
-            entityVariant.Visible = true;
             label2.Visible = true;
             generateHierarchy.Visible = false;
             select_composite.Visible = false;
             createNewEntity.Enabled = true;
-            entityVariant.Enabled = true;
             entityVariant.BeginUpdate();
             entityVariant.Items.Clear();
-            for (int i = 0; i < availableEntities.Count; i++) entityVariant.Items.Add(availableEntities[i].className);
+            for (int i = 0; i < availableEntities.Count; i++) 
+                entityVariant.Items.Add(availableEntities[i].className);
             entityVariant.EndUpdate();
             entityVariant.SelectedIndex = 0;
             entityVariant.DropDownStyle = ComboBoxStyle.DropDown;
@@ -86,15 +116,14 @@ namespace CommandsEditor
         private void selectedCompositeEntity(object sender, EventArgs e)
         {
             //Composite
-            entityVariant.Visible = true;
             label2.Visible = true;
             generateHierarchy.Visible = false;
             select_composite.Visible = true;
             createNewEntity.Enabled = true;
-            entityVariant.Enabled = true;
             entityVariant.BeginUpdate();
             entityVariant.Items.Clear();
-            for (int i = 0; i < composites.Count; i++) entityVariant.Items.Add(composites[i].name);
+            for (int i = 0; i < composites.Count; i++) 
+                entityVariant.Items.Add(composites[i].name);
             entityVariant.EndUpdate();
             entityVariant.SelectedIndex = 0;
             entityVariant.DropDownStyle = ComboBoxStyle.DropDownList;
@@ -104,7 +133,8 @@ namespace CommandsEditor
         private void selectedProxyEntity(object sender, EventArgs e)
         {
             //Proxy
-            entityVariant.Visible = false;
+            entityVariant.SelectedIndex = -1;
+            entityVariant.Enabled = false;
             label2.Visible = false;
             generateHierarchy.Visible = true;
             select_composite.Visible = false;
@@ -115,7 +145,8 @@ namespace CommandsEditor
         private void selectedOverrideEntity(object sender, EventArgs e)
         {
             //Override
-            entityVariant.Visible = false;
+            entityVariant.SelectedIndex = -1;
+            entityVariant.Enabled = false;
             label2.Visible = false;
             generateHierarchy.Visible = true;
             select_composite.Visible = false;
@@ -130,11 +161,11 @@ namespace CommandsEditor
             EditHierarchy hierarchyEditor = null;
             if (createProxyEntity.Checked)
             {
-                hierarchyEditor = new EditHierarchy(_editor, Editor.commands.EntryPoints[0], true);
+                hierarchyEditor = new EditHierarchy(_content, Content.commands.EntryPoints[0], true);
             }
             else if (createOverrideEntity.Checked)
             {
-                hierarchyEditor = new EditHierarchy(_editor, Editor.selected.composite, false);
+                hierarchyEditor = new EditHierarchy(_content, _compositeDisplay.Composite, false);
             }
             hierarchyEditor.Show();
             hierarchyEditor.OnHierarchyGenerated += HierarchyEditor_HierarchyGenerated;
@@ -144,7 +175,7 @@ namespace CommandsEditor
             if (createProxyEntity.Checked)
             {
                 hierarchy = new List<ShortGuid>();
-                hierarchy.Add(Editor.commands.EntryPoints[0].shortGUID);
+                hierarchy.Add(Content.commands.EntryPoints[0].shortGUID);
                 hierarchy.AddRange(generatedHierarchy);
                 createNewEntity.Enabled = true;
             }
@@ -153,6 +184,12 @@ namespace CommandsEditor
                 hierarchy = generatedHierarchy;
                 createNewEntity.Enabled = true;
             }
+
+            CommandsUtils.ResolveHierarchy(Content.commands, _compositeDisplay.Composite, generatedHierarchy, out Composite containedComp, out string hierarchyString, SettingsManager.GetBool("CS_ShowEntityIDs"));
+            entityVariant.Enabled = true; 
+            entityVariant.Text = hierarchyString;
+            entityVariant.Enabled = false;
+
             this.Focus();
             this.BringToFront();
         }
@@ -164,7 +201,7 @@ namespace CommandsEditor
             if (compositeSelector != null)
                 compositeSelector.Close();
 
-            compositeSelector = new SelectComposite(_editor, entityVariant.Text);
+            compositeSelector = new SelectComposite(_content, entityVariant.Text);
             compositeSelector.OnCompositeGenerated += OnCompositeGenerated;
             compositeSelector.Show();
         }
@@ -193,13 +230,13 @@ namespace CommandsEditor
                 }
 
                 //A composite can only have one PhysicsSystem
-                if (function == FunctionType.PhysicsSystem && composite.functions.FirstOrDefault(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.PhysicsSystem)) != null)
+                if (function == FunctionType.PhysicsSystem && _compositeDisplay.Composite.functions.FirstOrDefault(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.PhysicsSystem)) != null)
                 {
                     MessageBox.Show("You are trying to add a PhysicsSystem entity to a composite that already has one applied.", "PhysicsSystem error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
-                newEntity = composite.AddFunction(function, addDefaultParams.Checked);
+                newEntity = _compositeDisplay.Composite.AddFunction(function, addDefaultParams.Checked);
 
                 //TODO: currently we don't support these properly
                 if (addDefaultParams.Checked)
@@ -218,25 +255,25 @@ namespace CommandsEditor
                     return;
                 }
                 //Check logic errors (we can't have cyclical references)
-                if (compRef == composite)
+                if (compRef == _compositeDisplay.Composite)
                 {
                     MessageBox.Show("You cannot create an entity which instances the composite it is contained with - this will result in an infinite loop at runtime! Please check your logic!.", "Logic error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-                newEntity = composite.AddFunction(compRef, addDefaultParams.Checked);
-                EditorUtils.GenerateCompositeInstances(Editor.commands);
+                newEntity = _compositeDisplay.Composite.AddFunction(compRef, addDefaultParams.Checked);
+                Content.editor_utils.GenerateCompositeInstances(Content.commands);
             }
             else if (createDatatypeEntity.Checked)
-                newEntity = composite.AddVariable(textBox1.Text, (DataType)entityVariant.SelectedIndex, true);
+                newEntity = _compositeDisplay.Composite.AddVariable(textBox1.Text, (DataType)entityVariant.SelectedIndex, true);
             else if (createProxyEntity.Checked)
-                newEntity = composite.AddProxy(Editor.commands, hierarchy, addDefaultParams.Checked);
+                newEntity = _compositeDisplay.Composite.AddProxy(Content.commands, hierarchy, addDefaultParams.Checked);
             else if (createOverrideEntity.Checked)
-                newEntity = composite.AddOverride(hierarchy);
+                newEntity = _compositeDisplay.Composite.AddOverride(hierarchy);
             else
                 return;
 
             if (!createDatatypeEntity.Checked) 
-                EntityUtils.SetName(composite, newEntity, textBox1.Text);
+                EntityUtils.SetName(_compositeDisplay.Composite, newEntity, textBox1.Text);
 
             OnNewEntity?.Invoke(newEntity);
             this.Close();

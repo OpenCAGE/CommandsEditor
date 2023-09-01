@@ -35,6 +35,7 @@
             // 
             // GUID_VARIABLE_DUMMY
             // 
+            this.GUID_VARIABLE_DUMMY.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.GUID_VARIABLE_DUMMY.Controls.Add(this.openResourceEditor);
             this.GUID_VARIABLE_DUMMY.Location = new System.Drawing.Point(3, 3);
             this.GUID_VARIABLE_DUMMY.Name = "GUID_VARIABLE_DUMMY";
@@ -45,6 +46,7 @@
             // 
             // openResourceEditor
             // 
+            this.openResourceEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.openResourceEditor.Location = new System.Drawing.Point(17, 21);
             this.openResourceEditor.Name = "openResourceEditor";
             this.openResourceEditor.Size = new System.Drawing.Size(304, 23);
