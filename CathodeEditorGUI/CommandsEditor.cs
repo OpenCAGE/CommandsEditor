@@ -97,7 +97,7 @@ namespace CommandsEditor
             //enableBackups.Visible = false;
 
             //TEMP FOR NOW
-#if RELEASE
+#if !DEBUG
             enableInstanceMode.Checked = false;
             enableInstanceMode.Visible = false;
             toolStripSeparator1.Visible = false;
