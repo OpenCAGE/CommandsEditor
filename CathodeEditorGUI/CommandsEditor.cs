@@ -41,6 +41,7 @@ namespace CommandsEditor
         private readonly string _backupsOpt = "CS_EnableBackups";
         private readonly string _nodeOpt = "CS_NodeView";
         private readonly string _entIdOpt = "CS_ShowEntityIDs";
+        private readonly string _instOpt = "CS_InstanceMode";
 
         public CommandsEditor(string level = null)
         {
@@ -88,6 +89,11 @@ namespace CommandsEditor
             //If we have been launched to a level, load that
             if (level != null)
                 OnLevelSelected(level);
+
+            //Disable backups - we should now force people to use the extra backup tool
+            //TODO: backup tool should backup the level at intervals like this tool did
+            enableBackups.Checked = false;
+            enableBackups.Visible = false;
         }
 
         /* Load anim data */
@@ -505,7 +511,7 @@ namespace CommandsEditor
         private void NodeViewer_FormClosed(object sender, FormClosedEventArgs e)
         {
             _nodeViewer = null;
-            showNodegraph.Checked = false;
+            showNodegraph.PerformClick();
         }
 
         private void showEntityIDs_Click(object sender, EventArgs e)
@@ -513,7 +519,13 @@ namespace CommandsEditor
             showEntityIDs.Checked = !showEntityIDs.Checked;
             SettingsManager.SetBool(_entIdOpt, showEntityIDs.Checked);
 
-            //TODO: reload all composite UIs
+            _commandsDisplay?.Reload(true);
+            //TODO: also reload hierarchy cache
+        }
+
+        private void enableInstanceMode_Click(object sender, EventArgs e)
+        {
+            SettingsManager.SetBool(_instOpt, enableInstanceMode.Checked);
         }
     }
 }

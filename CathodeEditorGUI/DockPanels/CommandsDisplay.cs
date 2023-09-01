@@ -130,6 +130,12 @@ namespace CommandsEditor.DockPanels
                 display.Value.ReloadAllEntities();
         }
 
+        public void Reload(bool alsoReloadEntities = true)
+        {
+            foreach (KeyValuePair<Composite, CompositeDisplay> display in _compositeDisplays)
+                display.Value.Reload(alsoReloadEntities);
+        }
+
         public CompositeDisplay LoadComposite(string name)
         {
             return LoadComposite(_content.commands.GetComposite(name));
