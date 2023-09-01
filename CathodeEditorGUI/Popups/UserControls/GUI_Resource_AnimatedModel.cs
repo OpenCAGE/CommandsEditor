@@ -21,7 +21,7 @@ namespace CommandsEditor.Popups.UserControls
             animatedModelIndex.BeginUpdate();
             animatedModelIndex.Items.Clear();
             List<int> indexes = new List<int>();
-            foreach (var anim in Editor.resource.env_animations.Entries)
+            foreach (var anim in Content.resource.env_animations.Entries)
             {
                 if (indexes.Contains(anim.ResourceIndex)) continue;
                 indexes.Add(anim.ResourceIndex);

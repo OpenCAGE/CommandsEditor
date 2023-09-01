@@ -1,15 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
+﻿using CATHODE.Scripting;
 using CATHODE;
-using CATHODE.Scripting;
+using CommandsEditor.UserControls;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
-namespace CommandsEditor.UserControls
+namespace CommandsEditor.Popups
 {
-    public partial class GUI_StringVariant_AssetDropdown : BaseUserControl
+    public partial class ResourceDatatypeAutocomplete : Form
     {
-        cString stringVal = null;
+        public cString stringVal = null;
 
         AssetList.Type type = AssetList.Type.NONE;
         string typeArgs = "";
@@ -17,36 +23,36 @@ namespace CommandsEditor.UserControls
         static List<AssetList> assetlist_cache = new List<AssetList>(); //TODO: cache controls, not just the contents of the controls
         AssetList content = null;
 
-        public GUI_StringVariant_AssetDropdown(LevelContent editor) : base(editor)
+        public ResourceDatatypeAutocomplete()
         {
             InitializeComponent();
         }
 
-        public void PopulateUI(cString cString, string paramID, AssetList.Type assets, string args = "")
+        public void PopulateUI(LevelContent Editor, cString cString, string paramID, AssetList.Type assets, string args = "")
         {
             stringVal = cString;
-            label1.Text = paramID;
+            Text = paramID;
             type = assets;
             typeArgs = args;
 
             //TODO: we never clear up these lists for old levels, which could lead to a slow memory leak!
 
-            content = assetlist_cache.FirstOrDefault(o => o.level == Content.commands.Filepath && o.assets == assets && o.args == args);
+            content = assetlist_cache.FirstOrDefault(o => o.level == Editor.commands.Filepath && o.assets == assets && o.args == args);
             if (content == null)
             {
-                content = new AssetList() { level = Content.commands.Filepath, args = args, assets = assets };
+                content = new AssetList() { level = Editor.commands.Filepath, args = args, assets = assets };
                 List<AssetList.Value> strings = new List<AssetList.Value>();
                 switch (assets)
                 {
                     case AssetList.Type.SOUND_BANK:
-                        foreach (string entry in Content.resource.sound_bankdata.Entries)
+                        foreach (string entry in Editor.resource.sound_bankdata.Entries)
                         {
                             if (strings.FirstOrDefault(o => o.value == entry) == null)
                                 strings.Add(new AssetList.Value() { value = entry });
                         }
                         break;
                     case AssetList.Type.SOUND_DIALOGUE:
-                        foreach (SoundDialogueLookups.Sound entry in Content.resource.sound_dialoguelookups.Entries)
+                        foreach (SoundDialogueLookups.Sound entry in Editor.resource.sound_dialoguelookups.Entries)
                         {
                             if (strings.FirstOrDefault(o => o.value == entry.ToString()) == null)
                             {
@@ -66,7 +72,7 @@ namespace CommandsEditor.UserControls
                         }
                         break;
                     case AssetList.Type.SOUND_REVERB:
-                        foreach (string entry in Content.resource.sound_environmentdata.Entries)
+                        foreach (string entry in Editor.resource.sound_environmentdata.Entries)
                         {
                             if (strings.FirstOrDefault(o => o.value == entry) == null)
                                 strings.Add(new AssetList.Value() { value = entry });
@@ -74,7 +80,7 @@ namespace CommandsEditor.UserControls
                         break;
                     case AssetList.Type.SOUND_EVENT:
                         //TODO: perhaps show these by soundbank - need to load in soundbank name IDs
-                        foreach (SoundEventData.Soundbank entry in Content.resource.sound_eventdata.Entries)
+                        foreach (SoundEventData.Soundbank entry in Editor.resource.sound_eventdata.Entries)
                         {
                             foreach (SoundEventData.Soundbank.Event e in entry.events)
                             {
@@ -114,19 +120,19 @@ namespace CommandsEditor.UserControls
                         }
                         break;
                     case AssetList.Type.MATERIAL:
-                        foreach (Materials.Material entry in Content.resource.materials.Entries)
+                        foreach (Materials.Material entry in Editor.resource.materials.Entries)
                         {
                             if (strings.FirstOrDefault(o => o.value == entry.Name) == null)
                                 strings.Add(new AssetList.Value() { value = entry.Name });
                         }
                         break;
                     case AssetList.Type.TEXTURE:
-                        foreach (Textures.TEX4 entry in Content.resource.textures.Entries)
+                        foreach (Textures.TEX4 entry in Editor.resource.textures.Entries)
                         {
                             if (strings.FirstOrDefault(o => o.value == entry.Name) == null)
                                 strings.Add(new AssetList.Value() { value = entry.Name });
                         }
-                        foreach (Textures.TEX4 entry in Content.resource.textures_global.Entries)
+                        foreach (Textures.TEX4 entry in Editor.resource.textures_global.Entries)
                         {
                             if (strings.FirstOrDefault(o => o.value == entry.Name) == null)
                                 strings.Add(new AssetList.Value() { value = entry.Name });
@@ -158,13 +164,13 @@ namespace CommandsEditor.UserControls
             comboBox1.AutoSelectOff();
         }
 
-        private void comboBox1_Changed(object sender, EventArgs e)
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             stringVal.value = comboBox1.Text;
 
             if (content != null && content.strings != null && comboBox1.SelectedIndex != -1 && content.strings.Length > comboBox1.SelectedIndex)
                 toolTip1.SetToolTip(comboBox1, content.strings[comboBox1.SelectedIndex].tooltip);
-            
+
             if (type == AssetList.Type.LOCALISED_STRING)
             {
                 foreach (KeyValuePair<string, Strings> entry in Singleton.Strings)
@@ -179,38 +185,4 @@ namespace CommandsEditor.UserControls
             }
         }
     }
-
-    public class AssetList
-    {
-        public string level = "";
-
-        public Type assets = Type.NONE;
-        public string args = "";
-
-        public Value[] strings = null;
-
-        public class Value
-        {
-            public string value;
-            public string tooltip;
-        }
-
-        public enum Type
-        {
-            NONE,
-
-            TEXTURE,
-            MATERIAL,
-
-            SOUND_DIALOGUE,
-            SOUND_BANK,
-            SOUND_EVENT,
-            SOUND_REVERB,
-
-            ANIMATION,
-
-            LOCALISED_STRING,
-        }
-    }
-
 }

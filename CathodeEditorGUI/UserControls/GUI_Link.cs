@@ -42,7 +42,7 @@ namespace CommandsEditor.UserControls
                 label1.Text = "Connects IN from \"" + ShortGuidUtils.FindString(link.parentParamID) + "\" on: ";
             }
 
-            textBox1.Text = Editor.editor_utils.GenerateEntityName(_linkedEntity, _entityDisplay.Composite);
+            textBox1.Text = Content.editor_utils.GenerateEntityName(_linkedEntity, _entityDisplay.Composite);
         }
 
         private void GoTo_Click(object sender, EventArgs e)

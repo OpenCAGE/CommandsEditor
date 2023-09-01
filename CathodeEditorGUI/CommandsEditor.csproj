@@ -267,6 +267,12 @@
     <Compile Include="Popups\ExportComposite.Designer.cs">
       <DependentUpon>ExportComposite.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\ResourceDatatypeAutocomplete.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\ResourceDatatypeAutocomplete.Designer.cs">
+      <DependentUpon>ResourceDatatypeAutocomplete.cs</DependentUpon>
+    </Compile>
     <Compile Include="Scripts\LevelContent.cs" />
     <Compile Include="Popups\Base\BaseWindow.cs">
       <SubType>Form</SubType>
@@ -1412,6 +1418,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\Function Editors\CharacterEditor\Character_InstanceSelection.resx">
       <DependentUpon>Character_InstanceSelection.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\ResourceDatatypeAutocomplete.resx">
+      <DependentUpon>ResourceDatatypeAutocomplete.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\SelectComposite.resx">
       <DependentUpon>SelectComposite.cs</DependentUpon>
