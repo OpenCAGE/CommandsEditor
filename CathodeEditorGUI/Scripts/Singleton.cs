@@ -24,10 +24,14 @@ namespace CommandsEditor
         public static AnimationStrings AnimationStrings;
         public static AnimationStrings AnimationStrings_Debug;
 
-        //Events for new commands/entity/composite being selected
+
+
         public static Action<LevelContent> OnLevelLoaded;
+        public static Action<LevelContent> OnAssetsLoaded;
+
         public static Action<Entity> OnEntitySelected;
         public static Action<Composite> OnCompositeSelected;
+
         public static Action OnCAGEAnimationEditorOpened;
     }
 }

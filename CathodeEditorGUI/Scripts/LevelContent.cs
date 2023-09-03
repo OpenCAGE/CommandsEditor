@@ -47,14 +47,31 @@ namespace CommandsEditor
         //TODO: this should really be refactored. hacked in legacy stuff.
         public EditorUtils editor_utils;
 
+        private string worldPath;
+        private string renderablePath;
+
         public LevelContent(string levelName)
         {
             level = levelName;
 
-            //Load everything
-            if (!Load(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + level + "/"))
+            string path = SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + level + "/";
+            worldPath = path + "WORLD/";
+            renderablePath = path + "RENDERABLE/";
+
+            //The game has two hard-coded _PATCH overrides. We should use RENDERABLE from the non-patched folder.
+            switch (level)
             {
-                MessageBox.Show("Failed to load level data.\nPlease reset your game files.", "Load failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                case "DLC/BSPNOSTROMO_RIPLEY_PATCH":
+                case "DLC/BSPNOSTROMO_TWOTEAMS_PATCH":
+                    renderablePath = renderablePath.Replace(level, level.Substring(0, level.Length - ("_PATCH").Length)) + "RENDERABLE/";
+                    break;
+            }
+
+            //Load
+            Task.Factory.StartNew(() => LoadAssets());
+            if (!LoadCommands())
+            {
+                MessageBox.Show("Failed to load Commands data.\nPlease reset your game files.", "Load failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -62,7 +79,8 @@ namespace CommandsEditor
             EntityUtils.LinkCommands(commands);
             ShortGuidUtils.LinkCommands(commands);
 
-            //Cache entity list view items
+            //Cache entity list view items (TODO: do this on a thread and handle conflicts nicely)
+            /*
             Dictionary<Entity, ListViewItem>[] listViewItems = new Dictionary<Entity, ListViewItem>[commands.Entries.Count];
             Parallel.For(0, commands.Entries.Count, (i) =>
             {
@@ -80,6 +98,7 @@ namespace CommandsEditor
             });
             for (int i = 0; i < commands.Entries.Count; i++)
                 composite_content_cache.Add(commands.Entries[i], listViewItems[i]);
+            */
 
             //Force collect
             GC.Collect();
@@ -105,26 +124,46 @@ namespace CommandsEditor
             //ShortGuidUtils.Generate("cam");
         }
 
-        private bool Load(string path)
+        private bool LoadCommands()
         {
 #if !CATHODE_FAIL_HARD
             try
             {
 #endif
-                string worldPath = path + "WORLD/";
-                string renderablePath = path + "RENDERABLE/";
-
-                //The game has two hard-coded _PATCH overrides. We should use RENDERABLE from the non-patched folder.
-                switch (level)
+                Parallel.For(0, 3, (i) =>
                 {
-                    case "DLC/BSPNOSTROMO_RIPLEY_PATCH":
-                    case "DLC/BSPNOSTROMO_TWOTEAMS_PATCH":
-                        renderablePath = renderablePath.Replace(level, level.Substring(0, level.Length - ("_PATCH").Length)) + "RENDERABLE/";
-                        break;
-                }
+                    switch (i)
+                    {
+                        case 1:
+                            mvr = new Movers(worldPath + "MODELS.MVR");
+                            break;
+                        case 2:
+                            commands = new Commands(worldPath + "COMMANDS.PAK");
+                            break;
+                    }
+                });
 
-                //Somewhat hacky way of loading everything at once
-                Parallel.For(0, 15, (i) =>
+                if (!commands.Loaded || commands.EntryPoints == null || commands.EntryPoints[0] == null)
+                    return false;
+
+                Singleton.OnLevelLoaded?.Invoke(this);
+                return true;
+#if !CATHODE_FAIL_HARD
+            }
+            catch
+            {
+                return false;
+            }
+#endif
+        }
+
+        private void LoadAssets()
+        {
+#if !CATHODE_FAIL_HARD
+            try
+            {
+#endif
+                Parallel.For(0, 13, (i) =>
                 {
                     switch (i)
                     {
@@ -167,26 +206,12 @@ namespace CommandsEditor
                         case 12:
                             resource.character_accessories = new CharacterAccessorySets(worldPath + "CHARACTERACCESSORYSETS.BIN");
                             break;
-                        case 13:
-                            mvr = new Movers(worldPath + "MODELS.MVR");
-                            break;
-                        case 14:
-                            commands = new Commands(worldPath + "COMMANDS.PAK");
-                            break;
                     }
                 });
-
-                if (!commands.Loaded || commands.EntryPoints == null || commands.EntryPoints[0] == null)
-                    return false;
-
-                Singleton.OnLevelLoaded?.Invoke(this);
-                return true;
+                Singleton.OnAssetsLoaded?.Invoke(this);
 #if !CATHODE_FAIL_HARD
             }
-            catch
-            {
-                return false;
-            }
+            catch { }
 #endif
         }
 
