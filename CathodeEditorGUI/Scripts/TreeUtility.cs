@@ -14,7 +14,7 @@ namespace CommandsEditor
     {
         FOLDER,
         FILE,
-        STRING
+        FOLDER_OPEN
     };
 
     public struct TreeItem
@@ -31,6 +31,9 @@ namespace CommandsEditor
         {
             FileTree = tree;
             IsModelTree = isModelTree;
+
+            FileTree.AfterExpand += FileTree_AfterExpand;
+            FileTree.AfterCollapse += FileTree_AfterCollapse;
         }
 
         /* Update the file tree GUI */
@@ -133,6 +136,19 @@ namespace CommandsEditor
             }
             FileTree.Focus();
             FileTree.Select();
+        }
+
+        private void FileTree_AfterCollapse(object sender, TreeViewEventArgs e)
+        {
+            if (((TreeItem)e.Node.Tag).Item_Type != TreeItemType.DIRECTORY) return;
+            e.Node.ImageIndex = (int)TreeItemIcon.FOLDER;
+            e.Node.SelectedImageIndex = (int)TreeItemIcon.FOLDER;
+        }
+        private void FileTree_AfterExpand(object sender, TreeViewEventArgs e)
+        {
+            if (((TreeItem)e.Node.Tag).Item_Type != TreeItemType.DIRECTORY) return;
+            e.Node.ImageIndex = (int)TreeItemIcon.FOLDER_OPEN;
+            e.Node.SelectedImageIndex = (int)TreeItemIcon.FOLDER_OPEN;
         }
     }
 }
