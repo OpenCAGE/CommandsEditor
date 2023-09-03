@@ -201,8 +201,8 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.generateHierarchy);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.entityVariant);
             this.Controls.Add(this.select_composite);
+            this.Controls.Add(this.entityVariant);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;

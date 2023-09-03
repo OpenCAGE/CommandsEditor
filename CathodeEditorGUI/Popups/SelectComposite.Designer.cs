@@ -62,6 +62,7 @@
             this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
             this.imageList1.Images.SetKeyName(0, "folder");
             this.imageList1.Images.SetKeyName(1, "composite");
+            this.imageList1.Images.SetKeyName(2, "folder_open");
             // 
             // SelectComposite
             // 
