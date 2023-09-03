@@ -81,8 +81,15 @@ namespace CommandsEditor
 
             //Populate localised text string databases (in English)
             List<string> textList = Directory.GetFiles(SharedData.pathToAI + "/DATA/TEXT/ENGLISH/", "*.TXT", SearchOption.AllDirectories).ToList<string>();
-            foreach (string text in textList)
-                Singleton.Strings.Add(Path.GetFileNameWithoutExtension(text), new Strings(text));
+            {
+                Strings[] strings = new Strings[textList.Count];
+                Parallel.For(0, textList.Count, (i) =>
+                {
+                    strings[i] = new Strings(textList[i]);
+                });
+                for (int i = 0; i < textList.Count; i++)
+                    Singleton.Strings.Add(Path.GetFileNameWithoutExtension(textList[i]), strings[i]);
+            }
 
             //Load animation data - this should be quick enough to not worry about waiting for the thread
             Task.Factory.StartNew(() => LoadAnimData());

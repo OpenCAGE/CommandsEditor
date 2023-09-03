@@ -63,26 +63,23 @@ namespace CommandsEditor
             ShortGuidUtils.LinkCommands(commands);
 
             //Cache entity list view items
-            ListViewItem[][] compositeItems = new ListViewItem[commands.Entries.Count][];
+            Dictionary<Entity, ListViewItem>[] listViewItems = new Dictionary<Entity, ListViewItem>[commands.Entries.Count];
             Parallel.For(0, commands.Entries.Count, (i) =>
             {
                 List<Entity> entities = commands.Entries[i].GetEntities();
-                compositeItems[i] = new ListViewItem[entities.Count];
+                ListViewItem[] compositeItems = new ListViewItem[entities.Count];
                 Parallel.For(0, entities.Count, (x) =>
                 {
-                    compositeItems[i][x] = GenerateListViewItem(entities[x], commands.Entries[i], false);
+                    compositeItems[x] = GenerateListViewItem(entities[x], commands.Entries[i], false);
                 });
+                listViewItems[i] = new Dictionary<Entity, ListViewItem>();
+                for (int x = 0; x < compositeItems.Length; x++)
+                {
+                    listViewItems[i].Add(entities[x], compositeItems[x]);
+                }
             });
             for (int i = 0; i < commands.Entries.Count; i++)
-            {
-                List<Entity> entities = commands.Entries[i].GetEntities();
-                Dictionary<Entity, ListViewItem> listViewItems = new Dictionary<Entity, ListViewItem>();
-                for (int x = 0; x < compositeItems[i].Length; x++)
-                {
-                    listViewItems.Add(entities[x], compositeItems[i][x]);
-                }
-                composite_content_cache.Add(commands.Entries[i], listViewItems);
-            }
+                composite_content_cache.Add(commands.Entries[i], listViewItems[i]);
 
             //Force collect
             GC.Collect();
