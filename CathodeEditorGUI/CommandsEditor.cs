@@ -60,6 +60,7 @@ namespace CommandsEditor
             connectToUnity.Checked = !SettingsManager.GetBool(_serverOpt); connectToUnity.PerformClick();
             showNodegraph.Checked = !SettingsManager.GetBool(_nodeOpt); showNodegraph.PerformClick();
             showEntityIDs.Checked = !SettingsManager.GetBool(_entIdOpt); showEntityIDs.PerformClick();
+            searchOnlyCompositeNames.Checked = !SettingsManager.GetBool(_compNameOnlyOpt); searchOnlyCompositeNames.PerformClick();
 
             //Set title
             this.Text = "OpenCAGE Commands Editor";
