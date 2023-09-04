@@ -15,6 +15,7 @@ using System.Windows.Controls;
 using System.Xml.Linq;
 using System.Windows.Interop;
 using WebSocketSharp;
+using CommandsEditor.Popups;
 
 namespace CommandsEditor.DockPanels
 {
@@ -59,19 +60,34 @@ namespace CommandsEditor.DockPanels
             }
         }
 
-        AddComposite dialog = null;
+        AddComposite _addCompositeDialog = null;
         private void createComposite_Click(object sender, EventArgs e)
         {
-            if (dialog == null)
-                dialog = new AddComposite(this);
+            if (_addCompositeDialog == null)
+                _addCompositeDialog = new AddComposite(this, GetSelectedFolder());
 
-            dialog.Show();
-            dialog.OnCompositeAdded += SelectCompositeAndReloadList;
-            dialog.FormClosed += Dialog_FormClosed;
+            _addCompositeDialog.Show();
+            _addCompositeDialog.OnCompositeAdded += SelectCompositeAndReloadList;
+            _addCompositeDialog.FormClosed += addCompositeDialogClosed;
         }
-        private void Dialog_FormClosed(object sender, FormClosedEventArgs e)
+        private void addCompositeDialogClosed(object sender, FormClosedEventArgs e)
         {
-            dialog = null;
+            _addCompositeDialog = null;
+        }
+
+        AddFolder _addFolderDialog = null;
+        private void createFolder_Click(object sender, EventArgs e)
+        {
+            if (_addFolderDialog == null)
+                _addFolderDialog = new AddFolder(this, GetSelectedFolder());
+
+            _addFolderDialog.Show();
+            _addFolderDialog.OnFolderAdded += SelectCompositeAndReloadList;
+            _addFolderDialog.FormClosed += addFolderDialogClosed;
+        }
+        private void addFolderDialogClosed(object sender, FormClosedEventArgs e)
+        {
+            _addFolderDialog = null;
         }
 
         public void SelectCompositeAndReloadList(Composite composite)
@@ -223,6 +239,25 @@ namespace CommandsEditor.DockPanels
         {
             if (_currentHierarchyCacher != null) _currentHierarchyCacher.Dispose();
             _currentHierarchyCacher = Task.Factory.StartNew(() => Content.editor_utils.GenerateCompositeInstances(Content.commands));
+        }
+
+        /* Work out the base path for the selected composite/directory */
+        private string GetSelectedFolder()
+        {
+            string baseFolderPath = "";
+            if (FileTree.SelectedNode != null)
+            {
+                TreeItem selectedItem = (TreeItem)FileTree.SelectedNode.Tag;
+                baseFolderPath = selectedItem.String_Value.Replace('\\', '/');
+                if (selectedItem.Item_Type != TreeItemType.DIRECTORY)
+                {
+                    string[] pathSplit = baseFolderPath.Split('/');
+                    baseFolderPath = baseFolderPath.Substring(0, baseFolderPath.Length - pathSplit[pathSplit.Length - 1].Length);
+                    if (baseFolderPath.Length > 0 && baseFolderPath[baseFolderPath.Length - 1] == '/')
+                        baseFolderPath = baseFolderPath.Substring(0, baseFolderPath.Length - 1);
+                }
+            }
+            return baseFolderPath;
         }
     }
 }

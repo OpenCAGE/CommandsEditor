@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
@@ -71,23 +72,15 @@ namespace CommandsEditor
                     break;
                 }
             }
-            if (should)
+            if (should && FileNameParts[index] != "")
             {
                 TreeNode FileNode = new TreeNode(FileNameParts[index]);
                 TreeItem ThisTag = new TreeItem();
                 if (FileNameParts.Length - 1 == index)
                 {
                     //Node is a file
-                    if (tag == "")
-                    {
-                        for (int i = 0; i < FileNameParts.Length; i++)
-                        {
-                            ThisTag.String_Value += FileNameParts[i] + "/";
-                        }
-                        ThisTag.String_Value = ThisTag.String_Value.ToString().Substring(0, ThisTag.String_Value.ToString().Length - 1);
-                    }
-                    else 
-                        ThisTag.String_Value = tag;
+                    for (int i = 0; i < FileNameParts.Length; i++) ThisTag.String_Value += FileNameParts[i] + "/";
+                    ThisTag.String_Value = ThisTag.String_Value.ToString().Substring(0, ThisTag.String_Value.ToString().Length - 1);
 
                     ThisTag.Item_Type = TreeItemType.EXPORTABLE_FILE;
                     FileNode.ImageIndex = (int)TreeItemIcon.FILE;
@@ -97,6 +90,9 @@ namespace CommandsEditor
                 else
                 {
                     //Node is a directory
+                    for (int i = 0; i < index + 1; i++) ThisTag.String_Value += FileNameParts[i] + "/";
+                    ThisTag.String_Value = ThisTag.String_Value.ToString().Substring(0, ThisTag.String_Value.ToString().Length - 1);
+
                     ThisTag.Item_Type = TreeItemType.DIRECTORY;
                     FileNode.ImageIndex = (int)TreeItemIcon.FOLDER;
                     FileNode.SelectedImageIndex = (int)TreeItemIcon.FOLDER;
@@ -111,8 +107,11 @@ namespace CommandsEditor
         /* Select a node in the tree based on the path */
         public void SelectNode(string path)
         {
-            string[] FileNameParts = path.Split('/');
-            if (FileNameParts.Length == 1) { FileNameParts = path.Split('\\'); }
+            string[] FileNameParts = path.Replace('\\', '/').Split('/');
+
+            if (FileNameParts[FileNameParts.Length - 1] == "")
+                Array.Resize(ref FileNameParts, FileNameParts.Length - 1);
+
             FileTree.SelectedNode = null;
 
             TreeNodeCollection nodeCollection = FileTree.Nodes;
