@@ -295,7 +295,7 @@ namespace CommandsEditor.DockPanels
 
         private void findUses_Click(object sender, EventArgs e)
         {
-            ShowCompositeUses uses = new ShowCompositeUses(this);
+            ShowCompositeUses uses = new ShowCompositeUses(Content, Composite);
             uses.Show();
             uses.OnEntitySelected += _commandsDisplay.LoadCompositeAndEntity;
         }

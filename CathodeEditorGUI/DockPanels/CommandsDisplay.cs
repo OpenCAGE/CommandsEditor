@@ -286,5 +286,12 @@ namespace CommandsEditor.DockPanels
             if (entity_search_box.Text != "")
                 FileTree.ExpandAll();
         }
+
+        private void findFuncs_Click(object sender, EventArgs e)
+        {
+            ShowCompositeUses uses = new ShowCompositeUses(Content);
+            uses.Show();
+            uses.OnEntitySelected += LoadCompositeAndEntity;
+        }
     }
 }

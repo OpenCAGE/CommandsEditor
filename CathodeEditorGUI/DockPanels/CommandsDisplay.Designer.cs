@@ -38,6 +38,7 @@
             this.vS2015DarkTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme();
             this.entity_search_box = new System.Windows.Forms.TextBox();
             this.entity_search_btn = new System.Windows.Forms.Button();
+            this.findFuncs = new System.Windows.Forms.ToolStripButton();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -68,7 +69,8 @@
             // 
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.createComposite,
-            this.createFolder});
+            this.createFolder,
+            this.findFuncs});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(457, 25);
@@ -115,6 +117,16 @@
             this.entity_search_btn.UseVisualStyleBackColor = true;
             this.entity_search_btn.Click += new System.EventHandler(this.entity_search_btn_Click);
             // 
+            // findFuncs
+            // 
+            this.findFuncs.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.findFuncs.Image = ((System.Drawing.Image)(resources.GetObject("findFuncs.Image")));
+            this.findFuncs.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.findFuncs.Name = "findFuncs";
+            this.findFuncs.Size = new System.Drawing.Size(141, 22);
+            this.findFuncs.Text = "Find Function Entities";
+            this.findFuncs.Click += new System.EventHandler(this.findFuncs_Click);
+            // 
             // CommandsDisplay
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -143,5 +155,6 @@
         private System.Windows.Forms.TextBox entity_search_box;
         private System.Windows.Forms.Button entity_search_btn;
         private System.Windows.Forms.ToolStripButton createFolder;
+        private System.Windows.Forms.ToolStripButton findFuncs;
     }
 }
