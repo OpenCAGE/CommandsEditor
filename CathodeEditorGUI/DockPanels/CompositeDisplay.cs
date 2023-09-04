@@ -230,6 +230,11 @@ namespace CommandsEditor.DockPanels
         }
         public void LoadEntity(Entity entity)
         {
+            if (entity == null) return;
+
+            if (SettingsManager.GetBool("CS_UseEntityTabs") == false)
+                CloseAllChildTabs();
+
             if (_entityDisplays.ContainsKey(entity))
             {
                 _entityDisplays[entity].Reload();

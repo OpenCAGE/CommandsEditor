@@ -51,6 +51,8 @@
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.searchOnlyCompositeNames = new System.Windows.Forms.ToolStripMenuItem();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.compositesOpenTabs = new System.Windows.Forms.ToolStripMenuItem();
+            this.entitiesOpenTabs = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -104,7 +106,9 @@
             this.showNodegraph,
             this.showEntityIDs,
             this.toolStripSeparator3,
-            this.searchOnlyCompositeNames});
+            this.searchOnlyCompositeNames,
+            this.compositesOpenTabs,
+            this.entitiesOpenTabs});
             this.toolStripButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton2.Image")));
             this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton2.Name = "toolStripButton2";
@@ -211,6 +215,20 @@
             this.searchOnlyCompositeNames.ToolTipText = "Enable this option to exclude folder names from the composite search.";
             this.searchOnlyCompositeNames.Click += new System.EventHandler(this.searchOnlyCompositeNames_Click);
             // 
+            // compositesOpenTabs
+            // 
+            this.compositesOpenTabs.Name = "compositesOpenTabs";
+            this.compositesOpenTabs.Size = new System.Drawing.Size(238, 22);
+            this.compositesOpenTabs.Text = "Open Composites In New Tabs";
+            this.compositesOpenTabs.Click += new System.EventHandler(this.compositesOpenTabs_Click);
+            // 
+            // entitiesOpenTabs
+            // 
+            this.entitiesOpenTabs.Name = "entitiesOpenTabs";
+            this.entitiesOpenTabs.Size = new System.Drawing.Size(238, 22);
+            this.entitiesOpenTabs.Text = "Open Entities In New Tabs";
+            this.entitiesOpenTabs.Click += new System.EventHandler(this.entitiesOpenTabs_Click);
+            // 
             // CommandsEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -255,5 +273,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem searchOnlyCompositeNames;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.ToolStripMenuItem compositesOpenTabs;
+        private System.Windows.Forms.ToolStripMenuItem entitiesOpenTabs;
     }
 }

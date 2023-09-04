@@ -165,6 +165,9 @@ namespace CommandsEditor.DockPanels
         {
             if (composite == null) return null;
 
+            if (SettingsManager.GetBool("CS_UseCompositeTabs") == false)
+                CloseAllChildTabs();
+
             if (_compositeDisplays.ContainsKey(composite))
             {
                 _compositeDisplays[composite].Activate();

@@ -20,6 +20,12 @@ namespace OpenCAGE
             else _jsonConfig = JObject.Parse(File.ReadAllText(_configPath));
         }
 
+        /* Work out if a setting value has been previously set */
+        static public bool IsSet(string name)
+        {
+            return _jsonConfig[name] != null;
+        }
+
         /* Get a config variable */
         static public bool GetBool(string name)
         {

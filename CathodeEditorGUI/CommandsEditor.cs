@@ -38,12 +38,15 @@ namespace CommandsEditor
         private WebSocketServer _server;
         private WebsocketServer _serverLogic;
 
+        //TODO: make thse globally available
         private readonly string _serverOpt = "CE_ConnectToUnity";
         private readonly string _backupsOpt = "CS_EnableBackups";
         private readonly string _nodeOpt = "CS_NodeView";
         private readonly string _entIdOpt = "CS_ShowEntityIDs";
         private readonly string _instOpt = "CS_InstanceMode";
         private readonly string _compNameOnlyOpt = "CS_SearchOnlyCompName";
+        private readonly string _useCompTabsOpt = "CS_UseCompositeTabs";
+        private readonly string _useEntTabsOpt = "CS_UseEntityTabs";
 
         public CommandsEditor(string level = null)
         {
@@ -61,6 +64,12 @@ namespace CommandsEditor
             showNodegraph.Checked = !SettingsManager.GetBool(_nodeOpt); showNodegraph.PerformClick();
             showEntityIDs.Checked = !SettingsManager.GetBool(_entIdOpt); showEntityIDs.PerformClick();
             searchOnlyCompositeNames.Checked = !SettingsManager.GetBool(_compNameOnlyOpt); searchOnlyCompositeNames.PerformClick();
+
+            if (!SettingsManager.IsSet(_useCompTabsOpt)) SettingsManager.SetBool(_useCompTabsOpt, true);
+            compositesOpenTabs.Checked = !SettingsManager.GetBool(_useCompTabsOpt); compositesOpenTabs.PerformClick();
+
+            if (!SettingsManager.IsSet(_useEntTabsOpt)) SettingsManager.SetBool(_useEntTabsOpt, true);
+            entitiesOpenTabs.Checked = !SettingsManager.GetBool(_useEntTabsOpt); entitiesOpenTabs.PerformClick();
 
             //Set title
             this.Text = "OpenCAGE Commands Editor";
@@ -563,6 +572,18 @@ namespace CommandsEditor
         {
             searchOnlyCompositeNames.Checked = !searchOnlyCompositeNames.Checked;
             SettingsManager.SetBool(_compNameOnlyOpt, searchOnlyCompositeNames.Checked);
+        }
+
+        private void compositesOpenTabs_Click(object sender, EventArgs e)
+        {
+            compositesOpenTabs.Checked = !compositesOpenTabs.Checked;
+            SettingsManager.SetBool(_useCompTabsOpt, compositesOpenTabs.Checked);
+        }
+
+        private void entitiesOpenTabs_Click(object sender, EventArgs e)
+        {
+            entitiesOpenTabs.Checked = !entitiesOpenTabs.Checked;
+            SettingsManager.SetBool(_useEntTabsOpt, entitiesOpenTabs.Checked);
         }
     }
 }
