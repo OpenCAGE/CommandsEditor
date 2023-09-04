@@ -16,6 +16,7 @@ using System.Xml.Linq;
 using System.Windows.Interop;
 using WebSocketSharp;
 using CommandsEditor.Popups;
+using OpenCAGE;
 
 namespace CommandsEditor.DockPanels
 {
@@ -258,6 +259,32 @@ namespace CommandsEditor.DockPanels
                 }
             }
             return baseFolderPath;
+        }
+
+        private string _currentSearch = "";
+        private void entity_search_btn_Click(object sender, EventArgs e)
+        {
+            if (entity_search_box.Text == _currentSearch) return;
+
+            List<string> filteredComposites = new List<string>();
+            _currentSearch = entity_search_box.Text.Replace('\\', '/').ToUpper();
+            for (int i = 0; i < _content.commands.Entries.Count; i++)
+            {
+                string name = _content.commands.Entries[i].name.Replace('\\', '/');
+
+                if (SettingsManager.GetBool("CS_SearchOnlyCompName") == true)
+                {
+                    string[] nameSplit = name.Split('/');
+                    name = nameSplit[nameSplit.Length - 1];
+                }
+
+                if (!name.ToUpper().Contains(_currentSearch)) continue;
+                filteredComposites.Add(_content.commands.Entries[i].name.Replace('\\', '/'));
+            }
+            _treeHelper.UpdateFileTree(filteredComposites);
+
+            if (entity_search_box.Text != "")
+                FileTree.ExpandAll();
         }
     }
 }

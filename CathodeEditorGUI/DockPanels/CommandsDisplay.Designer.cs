@@ -34,10 +34,10 @@
             this.imageList = new System.Windows.Forms.ImageList(this.components);
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.createComposite = new System.Windows.Forms.ToolStripButton();
+            this.createFolder = new System.Windows.Forms.ToolStripButton();
             this.vS2015DarkTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme();
             this.entity_search_box = new System.Windows.Forms.TextBox();
             this.entity_search_btn = new System.Windows.Forms.Button();
-            this.createFolder = new System.Windows.Forms.ToolStripButton();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -84,6 +84,15 @@
             this.createComposite.Text = "Create Composite";
             this.createComposite.Click += new System.EventHandler(this.createComposite_Click);
             // 
+            // createFolder
+            // 
+            this.createFolder.Image = ((System.Drawing.Image)(resources.GetObject("createFolder.Image")));
+            this.createFolder.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.createFolder.Name = "createFolder";
+            this.createFolder.Size = new System.Drawing.Size(97, 22);
+            this.createFolder.Text = "Create Folder";
+            this.createFolder.Click += new System.EventHandler(this.createFolder_Click);
+            // 
             // entity_search_box
             // 
             this.entity_search_box.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -104,15 +113,7 @@
             this.entity_search_btn.TabIndex = 158;
             this.entity_search_btn.Text = "Search";
             this.entity_search_btn.UseVisualStyleBackColor = true;
-            // 
-            // createFolder
-            // 
-            this.createFolder.Image = ((System.Drawing.Image)(resources.GetObject("createFolder.Image")));
-            this.createFolder.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.createFolder.Name = "createFolder";
-            this.createFolder.Size = new System.Drawing.Size(97, 22);
-            this.createFolder.Text = "Create Folder";
-            this.createFolder.Click += new System.EventHandler(this.createFolder_Click);
+            this.entity_search_btn.Click += new System.EventHandler(this.entity_search_btn_Click);
             // 
             // CommandsDisplay
             // 

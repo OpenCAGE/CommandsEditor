@@ -43,6 +43,7 @@ namespace CommandsEditor
         private readonly string _nodeOpt = "CS_NodeView";
         private readonly string _entIdOpt = "CS_ShowEntityIDs";
         private readonly string _instOpt = "CS_InstanceMode";
+        private readonly string _compNameOnlyOpt = "CS_SearchOnlyCompName";
 
         public CommandsEditor(string level = null)
         {
@@ -555,6 +556,12 @@ namespace CommandsEditor
             //TODO: disable commands display list selection
 
 
+        }
+
+        private void searchOnlyCompositeNames_Click(object sender, EventArgs e)
+        {
+            searchOnlyCompositeNames.Checked = !searchOnlyCompositeNames.Checked;
+            SettingsManager.SetBool(_compNameOnlyOpt, searchOnlyCompositeNames.Checked);
         }
     }
 }
