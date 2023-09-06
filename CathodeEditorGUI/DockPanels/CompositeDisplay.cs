@@ -103,6 +103,9 @@ namespace CommandsEditor.DockPanels
         }
         private bool DoesCompositeContainResource(Composite comp)
         {
+#if DEBUG
+            return false;
+#else
             foreach (FunctionEntity ent in comp.functions)
             {
                 if (_canExportChildren && !CommandsUtils.FunctionTypeExists(ent.function))
@@ -127,6 +130,7 @@ namespace CommandsEditor.DockPanels
                     return true;
             }
             return false;
+#endif
         }
 
         /* Reload all entities loaded in this display */
