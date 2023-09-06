@@ -53,9 +53,10 @@
             this.eventParam1 = new System.Windows.Forms.TextBox();
             this.eventHost = new System.Windows.Forms.Integration.ElementHost();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.addNewEntityRef = new System.Windows.Forms.Button();
+            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.addAnimationTrack = new System.Windows.Forms.Button();
             this.deleteAnimationTrack = new System.Windows.Forms.Button();
+            this.addNewEntityRef = new System.Windows.Forms.Button();
             this.entityList = new System.Windows.Forms.ComboBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.addEventTrack = new System.Windows.Forms.Button();
@@ -63,10 +64,21 @@
             this.animLength = new System.Windows.Forms.TextBox();
             this.editAnimLength = new System.Windows.Forms.Button();
             this.label10 = new System.Windows.Forms.Label();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.animKeyframeData.SuspendLayout();
             this.eventKeyframeData.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
+            this.splitContainer2.Panel1.SuspendLayout();
+            this.splitContainer2.Panel2.SuspendLayout();
+            this.splitContainer2.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+            this.splitContainer1.Panel1.SuspendLayout();
+            this.splitContainer1.Panel2.SuspendLayout();
+            this.splitContainer1.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // animKeyframeValue
@@ -92,7 +104,7 @@
             this.animKeyframeData.Controls.Add(this.startVelY);
             this.animKeyframeData.Controls.Add(this.startVelX);
             this.animKeyframeData.Controls.Add(this.animKeyframeValue);
-            this.animKeyframeData.Location = new System.Drawing.Point(863, 47);
+            this.animKeyframeData.Location = new System.Drawing.Point(3, 3);
             this.animKeyframeData.Name = "animKeyframeData";
             this.animKeyframeData.Size = new System.Drawing.Size(198, 164);
             this.animKeyframeData.TabIndex = 12;
@@ -206,18 +218,20 @@
             // 
             // animHost
             // 
-            this.animHost.Location = new System.Drawing.Point(6, 46);
+            this.animHost.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.animHost.Location = new System.Drawing.Point(0, 0);
             this.animHost.Name = "animHost";
-            this.animHost.Size = new System.Drawing.Size(851, 262);
+            this.animHost.Size = new System.Drawing.Size(850, 278);
             this.animHost.TabIndex = 13;
             this.animHost.Text = "elementHost1";
             this.animHost.Child = null;
             // 
             // SaveEntity
             // 
-            this.SaveEntity.Location = new System.Drawing.Point(911, 578);
+            this.SaveEntity.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.SaveEntity.Location = new System.Drawing.Point(920, 614);
             this.SaveEntity.Name = "SaveEntity";
-            this.SaveEntity.Size = new System.Drawing.Size(167, 36);
+            this.SaveEntity.Size = new System.Drawing.Size(167, 48);
             this.SaveEntity.TabIndex = 12;
             this.SaveEntity.Text = "Save";
             this.SaveEntity.UseVisualStyleBackColor = true;
@@ -294,32 +308,41 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.splitContainer2);
             this.groupBox1.Controls.Add(this.addNewEntityRef);
-            this.groupBox1.Controls.Add(this.addAnimationTrack);
-            this.groupBox1.Controls.Add(this.deleteAnimationTrack);
             this.groupBox1.Controls.Add(this.entityList);
-            this.groupBox1.Controls.Add(this.animHost);
-            this.groupBox1.Controls.Add(this.animKeyframeData);
-            this.groupBox1.Location = new System.Drawing.Point(7, 6);
+            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(1071, 318);
+            this.groupBox1.Size = new System.Drawing.Size(1077, 329);
             this.groupBox1.TabIndex = 16;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Animation Sequences";
             // 
-            // addNewEntityRef
+            // splitContainer2
             // 
-            this.addNewEntityRef.Location = new System.Drawing.Point(863, 17);
-            this.addNewEntityRef.Name = "addNewEntityRef";
-            this.addNewEntityRef.Size = new System.Drawing.Size(198, 23);
-            this.addNewEntityRef.TabIndex = 18;
-            this.addNewEntityRef.Text = "Add New Entity Link";
-            this.addNewEntityRef.UseVisualStyleBackColor = true;
-            this.addNewEntityRef.Click += new System.EventHandler(this.addNewEntityRef_Click);
+            this.splitContainer2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.splitContainer2.Location = new System.Drawing.Point(6, 45);
+            this.splitContainer2.Name = "splitContainer2";
+            // 
+            // splitContainer2.Panel1
+            // 
+            this.splitContainer2.Panel1.Controls.Add(this.animHost);
+            // 
+            // splitContainer2.Panel2
+            // 
+            this.splitContainer2.Panel2.Controls.Add(this.animKeyframeData);
+            this.splitContainer2.Panel2.Controls.Add(this.addAnimationTrack);
+            this.splitContainer2.Panel2.Controls.Add(this.deleteAnimationTrack);
+            this.splitContainer2.Size = new System.Drawing.Size(1065, 278);
+            this.splitContainer2.SplitterDistance = 850;
+            this.splitContainer2.TabIndex = 19;
             // 
             // addAnimationTrack
             // 
-            this.addAnimationTrack.Location = new System.Drawing.Point(863, 260);
+            this.addAnimationTrack.Location = new System.Drawing.Point(3, 173);
             this.addAnimationTrack.Name = "addAnimationTrack";
             this.addAnimationTrack.Size = new System.Drawing.Size(198, 23);
             this.addAnimationTrack.TabIndex = 17;
@@ -329,7 +352,7 @@
             // 
             // deleteAnimationTrack
             // 
-            this.deleteAnimationTrack.Location = new System.Drawing.Point(863, 285);
+            this.deleteAnimationTrack.Location = new System.Drawing.Point(3, 198);
             this.deleteAnimationTrack.Name = "deleteAnimationTrack";
             this.deleteAnimationTrack.Size = new System.Drawing.Size(198, 23);
             this.deleteAnimationTrack.TabIndex = 16;
@@ -337,11 +360,22 @@
             this.deleteAnimationTrack.UseVisualStyleBackColor = true;
             this.deleteAnimationTrack.Click += new System.EventHandler(this.deleteAnimationTrack_Click);
             // 
+            // addNewEntityRef
+            // 
+            this.addNewEntityRef.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.addNewEntityRef.Location = new System.Drawing.Point(863, 17);
+            this.addNewEntityRef.Name = "addNewEntityRef";
+            this.addNewEntityRef.Size = new System.Drawing.Size(208, 23);
+            this.addNewEntityRef.TabIndex = 18;
+            this.addNewEntityRef.Text = "Add New Entity Link";
+            this.addNewEntityRef.UseVisualStyleBackColor = true;
+            this.addNewEntityRef.Click += new System.EventHandler(this.addNewEntityRef_Click);
+            // 
             // entityList
             // 
             this.entityList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.entityList.FormattingEnabled = true;
-            this.entityList.Location = new System.Drawing.Point(6, 19);
+            this.entityList.Location = new System.Drawing.Point(6, 18);
             this.entityList.Name = "entityList";
             this.entityList.Size = new System.Drawing.Size(851, 21);
             this.entityList.TabIndex = 14;
@@ -353,9 +387,10 @@
             this.groupBox2.Controls.Add(this.deleteEventTrack);
             this.groupBox2.Controls.Add(this.eventHost);
             this.groupBox2.Controls.Add(this.eventKeyframeData);
-            this.groupBox2.Location = new System.Drawing.Point(7, 330);
+            this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox2.Location = new System.Drawing.Point(0, 0);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(1071, 242);
+            this.groupBox2.Size = new System.Drawing.Size(1077, 263);
             this.groupBox2.TabIndex = 17;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Event Sequences";
@@ -382,7 +417,7 @@
             // 
             // animLength
             // 
-            this.animLength.Location = new System.Drawing.Point(7, 591);
+            this.animLength.Location = new System.Drawing.Point(3, 14);
             this.animLength.Name = "animLength";
             this.animLength.Size = new System.Drawing.Size(184, 20);
             this.animLength.TabIndex = 25;
@@ -390,7 +425,7 @@
             // 
             // editAnimLength
             // 
-            this.editAnimLength.Location = new System.Drawing.Point(197, 590);
+            this.editAnimLength.Location = new System.Drawing.Point(193, 13);
             this.editAnimLength.Name = "editAnimLength";
             this.editAnimLength.Size = new System.Drawing.Size(94, 23);
             this.editAnimLength.TabIndex = 26;
@@ -401,26 +436,55 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(4, 577);
+            this.label10.Location = new System.Drawing.Point(0, 0);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(105, 13);
             this.label10.TabIndex = 25;
             this.label10.Text = "Total time (seconds):";
             // 
+            // splitContainer1
+            // 
+            this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.splitContainer1.Location = new System.Drawing.Point(10, 12);
+            this.splitContainer1.Name = "splitContainer1";
+            this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.Controls.Add(this.groupBox1);
+            this.splitContainer1.Panel1.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add(this.groupBox2);
+            this.splitContainer1.Panel2.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.splitContainer1.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.splitContainer1.Size = new System.Drawing.Size(1077, 596);
+            this.splitContainer1.SplitterDistance = 329;
+            this.splitContainer1.TabIndex = 27;
+            // 
+            // panel1
+            // 
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.panel1.Controls.Add(this.animLength);
+            this.panel1.Controls.Add(this.editAnimLength);
+            this.panel1.Controls.Add(this.label10);
+            this.panel1.Location = new System.Drawing.Point(10, 623);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(288, 39);
+            this.panel1.TabIndex = 28;
+            // 
             // CAGEAnimationEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1083, 620);
-            this.Controls.Add(this.label10);
-            this.Controls.Add(this.editAnimLength);
-            this.Controls.Add(this.animLength);
-            this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.groupBox1);
+            this.ClientSize = new System.Drawing.Size(1096, 672);
+            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.SaveEntity);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MaximizeBox = false;
             this.Name = "CAGEAnimationEditor";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "CAGEAnimation Editor";
@@ -429,9 +493,18 @@
             this.eventKeyframeData.ResumeLayout(false);
             this.eventKeyframeData.PerformLayout();
             this.groupBox1.ResumeLayout(false);
+            this.splitContainer2.Panel1.ResumeLayout(false);
+            this.splitContainer2.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
+            this.splitContainer2.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
+            this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+            this.splitContainer1.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -470,5 +543,8 @@
         private System.Windows.Forms.TextBox animLength;
         private System.Windows.Forms.Button editAnimLength;
         private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.SplitContainer splitContainer2;
     }
 }
