@@ -341,8 +341,21 @@ namespace CommandsEditor.DockPanels
 
         private void BackgroundEntityLoader(Entity ent, EntityDisplay mainInst)
         {
-            bool isPointedTo = mainInst.Content.editor_utils.IsEntityReferencedExternally(ent);
-            mainInst.Content.editor_utils.TryFindZoneForEntity(ent, mainInst.Composite, out Composite zoneComp, out FunctionEntity zoneEnt);
+            bool isPointedTo = false;
+            Composite zoneComp = null;
+            FunctionEntity zoneEnt = null;
+            Parallel.For(0, 2, (i) =>
+            {
+                switch (i)
+                {
+                    case 0:
+                        isPointedTo = mainInst.Content.editor_utils.IsEntityReferencedExternally(ent);
+                        break;
+                    case 1:
+                        mainInst.Content.editor_utils.TryFindZoneForEntity(ent, mainInst.Composite, out zoneComp, out zoneEnt);
+                        break;
+                }
+            });
             mainInst.ThreadedEntityUIUpdate(ent, isPointedTo, zoneComp, zoneEnt);
         }
         private Composite zoneCompositeForSelectedEntity = null;
