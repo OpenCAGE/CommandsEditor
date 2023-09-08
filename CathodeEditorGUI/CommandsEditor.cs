@@ -1,6 +1,7 @@
 using CATHODE;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
+using CathodeLib;
 using CommandsEditor.DockPanels;
 using CommandsEditor.Popups;
 using OpenCAGE;
@@ -38,6 +39,8 @@ namespace CommandsEditor
         private WebSocketServer _server;
         private WebsocketServer _serverLogic;
 
+        private Dictionary<string, ToolStripMenuItem> _levelMenuItems = new Dictionary<string, ToolStripMenuItem>();
+
         //TODO: make thse globally available
         private readonly string _serverOpt = "CE_ConnectToUnity";
         private readonly string _backupsOpt = "CS_EnableBackups";
@@ -47,6 +50,7 @@ namespace CommandsEditor
         private readonly string _compNameOnlyOpt = "CS_SearchOnlyCompName";
         private readonly string _useCompTabsOpt = "CS_UseCompositeTabs";
         private readonly string _useEntTabsOpt = "CS_UseEntityTabs";
+        private readonly string _showSavedMsgOpt = "CS_ShowSavedNotif";
 
         public CommandsEditor(string level = null)
         {
@@ -70,6 +74,9 @@ namespace CommandsEditor
 
             if (!SettingsManager.IsSet(_useEntTabsOpt)) SettingsManager.SetBool(_useEntTabsOpt, true);
             entitiesOpenTabs.Checked = !SettingsManager.GetBool(_useEntTabsOpt); entitiesOpenTabs.PerformClick();
+
+            if (!SettingsManager.IsSet(_showSavedMsgOpt)) SettingsManager.SetBool(_showSavedMsgOpt, true);
+            showConfirmationWhenSavingToolStripMenuItem.Checked = !SettingsManager.GetBool(_showSavedMsgOpt); showConfirmationWhenSavingToolStripMenuItem.PerformClick();
 
             //Set title
             this.Text = "OpenCAGE Commands Editor";
@@ -104,6 +111,16 @@ namespace CommandsEditor
 
             //Load animation data - this should be quick enough to not worry about waiting for the thread
             Task.Factory.StartNew(() => LoadAnimData());
+
+            //Populate level list
+            List<string> levels = Level.GetLevels(SharedData.pathToAI, true);
+            for (int i = 0; i < levels.Count; i++)
+            {
+                ToolStripMenuItem levelItem = new ToolStripMenuItem(levels[i]);
+                levelItem.Click += OnLevelSelected;
+                loadLevel.DropDownItems.Add(levelItem);
+                _levelMenuItems.Add(levels[i], levelItem);
+            }
 
             //If we have been launched to a level, load that
             if (level != null)
@@ -207,6 +224,10 @@ namespace CommandsEditor
         {
             _levelSelect = null;
         }
+        private void OnLevelSelected(object sender, EventArgs e)
+        {
+            OnLevelSelected(((ToolStripMenuItem)sender).Text);
+        }
         private void OnLevelSelected(string level)
         {
             statusText.Text = "Loading " + level + "...";
@@ -218,6 +239,8 @@ namespace CommandsEditor
             //Close all existing
             if (_commandsDisplay != null)
             {
+                _levelMenuItems[_commandsDisplay.Content.level].Checked = false;
+
                 _commandsDisplay.CloseAllChildTabs();
                 _commandsDisplay.Close();
             }
@@ -226,6 +249,8 @@ namespace CommandsEditor
             _commandsDisplay = new CommandsDisplay(level);
             _commandsDisplay.Show(Singleton.Editor.DockPanel, DockState.DockLeft);
             _commandsDisplay.CloseButtonVisible = false;
+
+            _levelMenuItems[_commandsDisplay.Content.level].Checked = true;
         }
 
         private void saveLevel_Click(object sender, EventArgs e)
@@ -240,7 +265,8 @@ namespace CommandsEditor
             Cursor.Current = Cursors.Default;
 
             if (saved)
-                MessageBox.Show("Saved changes!", "Saved.", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                if (SettingsManager.GetBool(_showSavedMsgOpt))
+                    MessageBox.Show("Saved changes!", "Saved.", MessageBoxButtons.OK, MessageBoxIcon.Information);
             else
                 MessageBox.Show("Failed to save changes!", "Failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
@@ -584,6 +610,12 @@ namespace CommandsEditor
         {
             entitiesOpenTabs.Checked = !entitiesOpenTabs.Checked;
             SettingsManager.SetBool(_useEntTabsOpt, entitiesOpenTabs.Checked);
+        }
+
+        private void showConfirmationWhenSavingToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            showConfirmationWhenSavingToolStripMenuItem.Checked = !showConfirmationWhenSavingToolStripMenuItem.Checked;
+            SettingsManager.SetBool(_showSavedMsgOpt, showConfirmationWhenSavingToolStripMenuItem.Checked);
         }
     }
 }

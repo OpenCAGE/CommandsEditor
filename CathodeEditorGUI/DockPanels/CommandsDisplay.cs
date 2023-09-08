@@ -216,7 +216,7 @@ namespace CommandsEditor.DockPanels
                 for (int x = 0; x < Content.commands.Entries[i].functions.Count; x++)
                 {
                     if (Content.commands.Entries[i].functions[x].function == composite.shortGUID) continue;
-                    List<EntityLink> prunedEntityLinks = new List<EntityLink>();
+                    List<EntityConnector> prunedEntityLinks = new List<EntityConnector>();
                     for (int l = 0; l < Content.commands.Entries[i].functions[x].childLinks.Count; l++)
                     {
                         Entity linkedEntity = Content.commands.Entries[i].GetEntityByID(Content.commands.Entries[i].functions[x].childLinks[l].childID);

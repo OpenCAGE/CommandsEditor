@@ -48,8 +48,8 @@ namespace CommandsEditor
 
             switch (variant)
             {
-                case EntityVariant.OVERRIDE:
-                    Text = "Create Override Entity";
+                case EntityVariant.ALIAS:
+                    Text = "Create Alias Entity";
                     createOverrideEntity.Checked = true;
                     break;
                 case EntityVariant.PROXY:
@@ -155,7 +155,7 @@ namespace CommandsEditor
             addDefaultParams.Visible = false;
         }
 
-        /* Generate hierarchy for proxy/override */
+        /* Generate path for proxy/alias */
         private void generateHierarchy_Click(object sender, EventArgs e)
         {
             EditHierarchy hierarchyEditor = null;
@@ -268,7 +268,7 @@ namespace CommandsEditor
             else if (createProxyEntity.Checked)
                 newEntity = _compositeDisplay.Composite.AddProxy(Content.commands, hierarchy, addDefaultParams.Checked);
             else if (createOverrideEntity.Checked)
-                newEntity = _compositeDisplay.Composite.AddOverride(hierarchy);
+                newEntity = _compositeDisplay.Composite.AddAlias(hierarchy);
             else
                 return;
 

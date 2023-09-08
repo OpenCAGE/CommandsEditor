@@ -231,8 +231,8 @@ namespace CommandsEditor
                         //Console.WriteLine(ent.shortGUID.ToByteString() + " = " + ent.shortGUID.ToUInt32());
                     }*/
                     //Console.WriteLine("----");
-                    //Console.WriteLine("\t OVERRIDES");
-                    foreach (OverrideEntity ent in comp.overrides)
+                    //Console.WriteLine("\t ALIASES");
+                    foreach (AliasEntity ent in comp.aliases)
                     {
                         UInt32 currVal = ent.shortGUID.ToUInt32();
                         if (prevVal > currVal)
@@ -1765,9 +1765,9 @@ namespace CommandsEditor
                 {
                     throw new Exception("Unhandled proxy");
                 }
-                for (int x = 0; x < cmd.Entries[i].overrides.Count; x++)
+                for (int x = 0; x < cmd.Entries[i].aliases.Count; x++)
                 {
-                    throw new Exception("Unhandled override");
+                    throw new Exception("Unhandled alias");
                 }
 
                 List<Entity> entities = cmd.Entries[i].GetEntities();

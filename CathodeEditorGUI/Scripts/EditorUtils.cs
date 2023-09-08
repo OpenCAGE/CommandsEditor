@@ -48,9 +48,9 @@ namespace CommandsEditor
         }
 
         /* Get all possible hierarchies for a given entity */
-        public List<EntityHierarchy> GetHierarchiesForEntity(Composite composite, Entity entity)
+        public List<EntityPath> GetHierarchiesForEntity(Composite composite, Entity entity)
         {
-            List<EntityHierarchy> formattedHierarchies = new List<EntityHierarchy>();
+            List<EntityPath> formattedHierarchies = new List<EntityPath>();
             if (_hierarchies.ContainsKey(composite))
             {
                 List<List<ShortGuid>> hierarchies = _hierarchies[composite];
@@ -58,16 +58,16 @@ namespace CommandsEditor
                 {
                     List<ShortGuid> hierarchy = new List<ShortGuid>(hierarchies[i].ConvertAll(x => x));
                     hierarchy.Add(entity.shortGUID);
-                    formattedHierarchies.Add(new EntityHierarchy(hierarchy));
+                    formattedHierarchies.Add(new EntityPath(hierarchy));
                 }
             }
             return formattedHierarchies;
         }
 
         /* Get the hierarchy for a commands entity reference (used to link legacy resource/mvr stuff) */
-        public EntityHierarchy GetHierarchyFromReference(CommandsEntityReference reference)
+        public EntityPath GetHierarchyFromReference(CommandsEntityReference reference)
         {
-            EntityHierarchy toReturn = null;
+            EntityPath toReturn = null;
             Parallel.ForEach(_hierarchies, (pair, state) =>
             {
                 if (toReturn != null) state.Stop();
@@ -81,7 +81,7 @@ namespace CommandsEditor
                             List<ShortGuid> hierarchy = new List<ShortGuid>(pair.Value[i].ConvertAll(x => x));
                             hierarchy.Add(reference.entity_id);
 
-                            EntityHierarchy h = new EntityHierarchy(hierarchy);
+                            EntityPath h = new EntityPath(hierarchy);
                             ShortGuid instance = h.GenerateInstance();
 
                             if (instance == reference.composite_instance_id)
@@ -134,12 +134,12 @@ namespace CommandsEditor
                     else
                         desc = EntityUtils.GetName(composite.shortGUID, entity.shortGUID) + " (" + CathodeEntityDatabase.GetEntity(((FunctionEntity)entity).function).className + ")";
                     break;
-                case EntityVariant.OVERRIDE:
-                    CommandsUtils.ResolveHierarchy(_content.commands, composite, ((OverrideEntity)entity).connectedEntity.hierarchy, out Composite c, out string s, false);
-                    desc = "[OVERRIDE] " + s;
+                case EntityVariant.ALIAS:
+                    CommandsUtils.ResolveHierarchy(_content.commands, composite, ((AliasEntity)entity).connectedEntity.path, out Composite c, out string s, false);
+                    desc = "[ALIAS] " + s;
                     break;
                 case EntityVariant.PROXY:
-                    CommandsUtils.ResolveHierarchy(_content.commands, composite, ((ProxyEntity)entity).connectedEntity.hierarchy, out Composite c2, out string s2, false);
+                    CommandsUtils.ResolveHierarchy(_content.commands, composite, ((ProxyEntity)entity).connectedEntity.path, out Composite c2, out string s2, false);
                     desc = "[PROXY] " + EntityUtils.GetName(composite.shortGUID, entity.shortGUID) + " (" + s2 + ")";
                     break;
             }
@@ -196,10 +196,10 @@ namespace CommandsEditor
                 case EntityVariant.VARIABLE:
                     items.Add(ShortGuidUtils.FindString(((VariableEntity)entity).name));
                     break;
-                case EntityVariant.OVERRIDE:
-                    return GenerateParameterList(CommandsUtils.ResolveHierarchy(_content.commands, composite, ((OverrideEntity)entity).connectedEntity.hierarchy, out Composite comp1, out string hierarchy1), comp1);
+                case EntityVariant.ALIAS:
+                    return GenerateParameterList(CommandsUtils.ResolveHierarchy(_content.commands, composite, ((AliasEntity)entity).connectedEntity.path, out Composite comp1, out string hierarchy1), comp1);
                 case EntityVariant.PROXY:
-                    return GenerateParameterList(CommandsUtils.ResolveHierarchy(_content.commands, composite, ((ProxyEntity)entity).connectedEntity.hierarchy, out Composite comp2, out string hierarchy2), comp2);
+                    return GenerateParameterList(CommandsUtils.ResolveHierarchy(_content.commands, composite, ((ProxyEntity)entity).connectedEntity.path, out Composite comp2, out string hierarchy2), comp2);
             }
             items.Sort();
             return items;
@@ -234,15 +234,15 @@ namespace CommandsEditor
         {
             foreach (Composite comp in _content.commands.Entries)
             {
-                foreach (OverrideEntity ovr in comp.overrides)
+                foreach (AliasEntity ovr in comp.aliases)
                 {
-                    Entity ent = CommandsUtils.ResolveHierarchy(_content.commands, comp, ovr.connectedEntity.hierarchy, out Composite compRef, out string str);
+                    Entity ent = CommandsUtils.ResolveHierarchy(_content.commands, comp, ovr.connectedEntity.path, out Composite compRef, out string str);
                     if (ent != entity) continue;
                     return true;
                 }
                 foreach (ProxyEntity prox in comp.proxies)
                 {
-                    Entity ent = CommandsUtils.ResolveHierarchy(_content.commands, comp, prox.connectedEntity.hierarchy, out Composite compRef, out string str);
+                    Entity ent = CommandsUtils.ResolveHierarchy(_content.commands, comp, prox.connectedEntity.path, out Composite compRef, out string str);
                     if (ent != entity) continue;
                     return true;
                 }
@@ -250,7 +250,7 @@ namespace CommandsEditor
                 {
                     foreach (TriggerSequence.Entity trigger in trig.entities)
                     {
-                        Entity ent = CommandsUtils.ResolveHierarchy(_content.commands, comp, trigger.connectedEntity.hierarchy, out Composite compRef, out string str);
+                        Entity ent = CommandsUtils.ResolveHierarchy(_content.commands, comp, trigger.connectedEntity.path, out Composite compRef, out string str);
                         if (ent != entity) continue;
                         return true;
                     }
@@ -259,7 +259,7 @@ namespace CommandsEditor
                 {
                     foreach (CAGEAnimation.Connection connection in anim.connections)
                     {
-                        Entity ent = CommandsUtils.ResolveHierarchy(_content.commands, comp, connection.connectedEntity.hierarchy, out Composite compRef, out string str);
+                        Entity ent = CommandsUtils.ResolveHierarchy(_content.commands, comp, connection.connectedEntity.path, out Composite compRef, out string str);
                         if (ent != entity) continue;
                         return true;
                     }
@@ -277,12 +277,12 @@ namespace CommandsEditor
                 {
                     foreach (TriggerSequence.Entity trigger in trig.entities)
                     {
-                        if (CommandsUtils.ResolveHierarchy(_content.commands, comp, trigger.connectedEntity.hierarchy, out Composite compRef, out string str) != entity) continue;
+                        if (CommandsUtils.ResolveHierarchy(_content.commands, comp, trigger.connectedEntity.path, out Composite compRef, out string str) != entity) continue;
 
                         List<FunctionEntity> zones = comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.Zone));
                         foreach (FunctionEntity z in zones)
                         {
-                            foreach (EntityLink link in z.childLinks)
+                            foreach (EntityConnector link in z.childLinks)
                             {
                                 if (link.parentParamID != ShortGuidUtils.Generate("composites")) continue;
                                 if (link.childID != trig.shortGUID) continue;

@@ -72,7 +72,7 @@ namespace CommandsEditor
             List<CustomNode> inputNodes = new List<CustomNode>();
             foreach (Entity ent in ents)
             {
-                foreach (EntityLink link in ent.childLinks)
+                foreach (EntityConnector link in ent.childLinks)
                 {
                     if (link.childID != entity.shortGUID) continue;
                     CustomNode node = null;
@@ -98,7 +98,7 @@ namespace CommandsEditor
 
             //Generate output nodes
             List<CustomNode> outputNodes = new List<CustomNode>();
-            foreach (EntityLink link in entity.childLinks)
+            foreach (EntityConnector link in entity.childLinks)
             {
                 CustomNode node = null;
                 for (int i = 0; i < stNodeEditor1.Nodes.Count; i++)
@@ -172,8 +172,8 @@ namespace CommandsEditor
             switch (entity.variant)
             {
                 case EntityVariant.PROXY:
-                case EntityVariant.OVERRIDE:
-                    Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, composite, (entity.variant == EntityVariant.PROXY) ? ((ProxyEntity)entity).connectedEntity.hierarchy : ((OverrideEntity)entity).connectedEntity.hierarchy, out Composite c, out string s);
+                case EntityVariant.ALIAS:
+                    Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, composite, (entity.variant == EntityVariant.PROXY) ? ((ProxyEntity)entity).connectedEntity.path : ((AliasEntity)entity).connectedEntity.path, out Composite c, out string s);
                     node.SetColour(entity.variant == EntityVariant.PROXY ? Color.LightGreen : Color.Orange, Color.Black);
                     switch (ent.variant)
                     {

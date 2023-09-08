@@ -103,13 +103,13 @@ namespace CommandsEditor.DockPanels
                     //renameSelectedNode.Enabled = false;
                     break;
                 case EntityVariant.PROXY:
-                case EntityVariant.OVERRIDE:
+                case EntityVariant.ALIAS:
                     hierarchyDisplay.Visible = true;
-                    List<ShortGuid> entityHierarchy = _entity.variant == EntityVariant.PROXY ? ((ProxyEntity)_entity).connectedEntity.hierarchy : ((OverrideEntity)_entity).connectedEntity.hierarchy;
+                    List<ShortGuid> entityHierarchy = _entity.variant == EntityVariant.PROXY ? ((ProxyEntity)_entity).connectedEntity.path : ((AliasEntity)_entity).connectedEntity.path;
                     Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, Composite, entityHierarchy, out Composite comp, out string hierarchy, SettingsManager.GetBool("CS_ShowEntityIDs"));
                     hierarchyDisplay.Text = hierarchy;
                     jumpToComposite.Visible = true;
-                    selected_entity_name.Text = (_entity.variant == EntityVariant.PROXY ? "Proxy" : "Override") + " to " + EntityUtils.GetName(comp, ent);
+                    selected_entity_name.Text = (_entity.variant == EntityVariant.PROXY ? "Proxy to " : "Alias of ") + EntityUtils.GetName(comp, ent);
                     break;
                 default:
                     selected_entity_name.Text = EntityUtils.GetName(Composite.shortGUID, _entity.shortGUID);
@@ -128,7 +128,7 @@ namespace CommandsEditor.DockPanels
             List<Entity> ents = Composite.GetEntities();
             foreach (Entity ent in ents)
             {
-                foreach (EntityLink link in ent.childLinks)
+                foreach (EntityConnector link in ent.childLinks)
                 {
                     if (link.childID != _entity.shortGUID) continue;
                     GUI_Link parameterGUI = new GUI_Link(this);
@@ -163,7 +163,7 @@ namespace CommandsEditor.DockPanels
                         break;
                     case DataType.STRING:
                         /*
-                        //TODO: handle this for proxies/overrides too...
+                        //TODO: handle this for proxies/aliases too...
                         if (entity.variant == EntityVariant.FUNCTION)
                         {
                             CathodeEntityDatabase.ParameterDefinition? info = CathodeEntityDatabase.GetParametersFromEntity(((FunctionEntity)entity).function).FirstOrDefault(o => o.name == paramName);
@@ -467,11 +467,11 @@ namespace CommandsEditor.DockPanels
             string hierarchy = "";
             switch (Entity.variant)
             {
-                case EntityVariant.OVERRIDE:
-                    entity = CommandsUtils.ResolveHierarchy(Content.commands, Composite, ((OverrideEntity)Entity).connectedEntity.hierarchy, out flow, out hierarchy);
+                case EntityVariant.ALIAS:
+                    entity = CommandsUtils.ResolveHierarchy(Content.commands, Composite, ((AliasEntity)Entity).connectedEntity.path, out flow, out hierarchy);
                     break;
                 case EntityVariant.PROXY:
-                    entity = CommandsUtils.ResolveHierarchy(Content.commands, Composite, ((ProxyEntity)Entity).connectedEntity.hierarchy, out flow, out hierarchy);
+                    entity = CommandsUtils.ResolveHierarchy(Content.commands, Composite, ((ProxyEntity)Entity).connectedEntity.path, out flow, out hierarchy);
                     break;
                 case EntityVariant.FUNCTION:
                     _compositeDisplay.CommandsDisplay.LoadComposite(selected_entity_type_description.Text);
@@ -500,7 +500,7 @@ namespace CommandsEditor.DockPanels
         {
             Content.composite_content_cache[Composite][Entity].Text = name;
             _compositeDisplay.CommandsDisplay.ReloadAllEntities();
-            //TODO-URGENT: Also need to update Proxy/Override hierarchies.
+            //TODO-URGENT: Also need to update Proxy/Alias hierarchies.
         }
 
         /* Context menu close entity */

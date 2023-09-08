@@ -13,7 +13,7 @@ namespace CommandsEditor.UserControls
 
         private Entity _linkedEntity;
 
-        private EntityLink _link;
+        private EntityConnector _link;
         private bool _isLinkOut;
 
         private EntityDisplay _entityDisplay;
@@ -24,7 +24,7 @@ namespace CommandsEditor.UserControls
             InitializeComponent();
         }
 
-        public void PopulateUI(EntityLink link, bool isLinkOut, ShortGuid linkInGuid = new ShortGuid()) // linkInGuid only needs to be given if linkInGuid is false
+        public void PopulateUI(EntityConnector link, bool isLinkOut, ShortGuid linkInGuid = new ShortGuid()) // linkInGuid only needs to be given if linkInGuid is false
         {
             _link = link;
             _isLinkOut = isLinkOut;

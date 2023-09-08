@@ -322,8 +322,8 @@ namespace CommandsEditor.DockPanels
                 case EntityVariant.FUNCTION:
                     Composite.functions.Remove((FunctionEntity)entity);
                     break;
-                case EntityVariant.OVERRIDE:
-                    Composite.overrides.Remove((OverrideEntity)entity);
+                case EntityVariant.ALIAS:
+                    Composite.aliases.Remove((AliasEntity)entity);
                     break;
                 case EntityVariant.PROXY:
                     Composite.proxies.Remove((ProxyEntity)entity);
@@ -331,9 +331,9 @@ namespace CommandsEditor.DockPanels
             }
 
             List<Entity> entities = Composite.GetEntities();
-            for (int i = 0; i < entities.Count; i++) //We should actually query every entity in the PAK, since we might be ref'd by a proxy or override
+            for (int i = 0; i < entities.Count; i++) //We should actually query every entity in the PAK, since we might be ref'd by a proxy or alias
             {
-                List<EntityLink> entLinks = new List<EntityLink>();
+                List<EntityConnector> entLinks = new List<EntityConnector>();
                 for (int x = 0; x < entities[i].childLinks.Count; x++)
                 {
                     if (entities[i].childLinks[x].childID != entity.shortGUID) entLinks.Add(entities[i].childLinks[x]);
@@ -350,8 +350,8 @@ namespace CommandsEditor.DockPanels
                             List<TriggerSequence.Entity> triggers = new List<TriggerSequence.Entity>();
                             for (int x = 0; x < triggerSequence.entities.Count; x++)
                             {
-                                if (triggerSequence.entities[x].connectedEntity.hierarchy.Count < 2 ||
-                                    triggerSequence.entities[x].connectedEntity.hierarchy[triggerSequence.entities[x].connectedEntity.hierarchy.Count - 2] != entity.shortGUID)
+                                if (triggerSequence.entities[x].connectedEntity.path.Count < 2 ||
+                                    triggerSequence.entities[x].connectedEntity.path[triggerSequence.entities[x].connectedEntity.path.Count - 2] != entity.shortGUID)
                                 {
                                     triggers.Add(triggerSequence.entities[x]);
                                 }
@@ -363,8 +363,8 @@ namespace CommandsEditor.DockPanels
                             List<CAGEAnimation.Connection> headers = new List<CAGEAnimation.Connection>();
                             for (int x = 0; x < cageAnim.connections.Count; x++)
                             {
-                                if (cageAnim.connections[x].connectedEntity.hierarchy.Count < 2 ||
-                                    cageAnim.connections[x].connectedEntity.hierarchy[cageAnim.connections[x].connectedEntity.hierarchy.Count - 2] != entity.shortGUID)
+                                if (cageAnim.connections[x].connectedEntity.path.Count < 2 ||
+                                    cageAnim.connections[x].connectedEntity.path[cageAnim.connections[x].connectedEntity.path.Count - 2] != entity.shortGUID)
                                 {
                                     headers.Add(cageAnim.connections[x]);
                                 }
@@ -399,8 +399,8 @@ namespace CommandsEditor.DockPanels
                 case EntityVariant.VARIABLE:
                     newEnt = ((VariableEntity)entity).Copy();
                     break;
-                case EntityVariant.OVERRIDE:
-                    newEnt = ((OverrideEntity)entity).Copy();
+                case EntityVariant.ALIAS:
+                    newEnt = ((AliasEntity)entity).Copy();
                     break;
                 case EntityVariant.PROXY:
                     newEnt = ((ProxyEntity)entity).Copy();
@@ -415,16 +415,16 @@ namespace CommandsEditor.DockPanels
 
             //Add parent links in to this entity that linked in to the other entity
             List<Entity> ents = Composite.GetEntities();
-            List<EntityLink> newLinks = new List<EntityLink>();
+            List<EntityConnector> newLinks = new List<EntityConnector>();
             int num_of_new_things = 1;
             foreach (Entity ent in ents)
             {
                 newLinks.Clear();
-                foreach (EntityLink link in ent.childLinks)
+                foreach (EntityConnector link in ent.childLinks)
                 {
                     if (link.childID == entity.shortGUID)
                     {
-                        EntityLink newLink = new EntityLink();
+                        EntityConnector newLink = new EntityConnector();
                         newLink.connectionID = ShortGuidUtils.Generate(DateTime.Now.ToString("G") + num_of_new_things.ToString()); num_of_new_things++;
                         newLink.childID = newEnt.shortGUID;
                         newLink.childParamID = link.childParamID;
@@ -447,8 +447,8 @@ namespace CommandsEditor.DockPanels
                 case EntityVariant.PROXY:
                     Composite.proxies.Add((ProxyEntity)newEnt);
                     break;
-                case EntityVariant.OVERRIDE:
-                    Composite.overrides.Add((OverrideEntity)newEnt);
+                case EntityVariant.ALIAS:
+                    Composite.aliases.Add((AliasEntity)newEnt);
                     break;
             }
 
@@ -513,7 +513,7 @@ namespace CommandsEditor.DockPanels
         }
         private void createOverrideEntityToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            CreateEntity(EntityVariant.OVERRIDE);
+            CreateEntity(EntityVariant.ALIAS);
         }
 
         AddEntity dialog = null;

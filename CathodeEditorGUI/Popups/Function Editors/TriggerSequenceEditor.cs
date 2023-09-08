@@ -43,7 +43,7 @@ namespace CommandsEditor
             for (int i = 0; i < _triggerSequence.entities.Count; i++)
             {
                 string thisHierarchy;
-                CommandsUtils.ResolveHierarchy(Content.commands, _entityDisplay.Composite, _triggerSequence.entities[i].connectedEntity.hierarchy, out Composite comp, out thisHierarchy, SettingsManager.GetBool("CS_ShowEntityIDs"));
+                CommandsUtils.ResolveHierarchy(Content.commands, _entityDisplay.Composite, _triggerSequence.entities[i].connectedEntity.path, out Composite comp, out thisHierarchy, SettingsManager.GetBool("CS_ShowEntityIDs"));
 
                 string toAdd = "[" + _triggerSequence.entities[i].timing + "s] " + thisHierarchy;
                 entity_list.Items.Add(toAdd);
@@ -89,7 +89,7 @@ namespace CommandsEditor
                 return;
             }
 
-            CommandsUtils.ResolveHierarchy(Content.commands, _entityDisplay.Composite, _triggerSequence.entities[entity_list.SelectedIndex].connectedEntity.hierarchy, out Composite comp, out string thisHierarchy, SettingsManager.GetBool("CS_ShowEntityIDs"));
+            CommandsUtils.ResolveHierarchy(Content.commands, _entityDisplay.Composite, _triggerSequence.entities[entity_list.SelectedIndex].connectedEntity.path, out Composite comp, out string thisHierarchy, SettingsManager.GetBool("CS_ShowEntityIDs"));
 
             entityHierarchy.Text = thisHierarchy;
             entityTriggerDelay.Text = _triggerSequence.entities[entity_list.SelectedIndex].timing.ToString();
@@ -121,7 +121,7 @@ namespace CommandsEditor
         {
             if (entity_list.SelectedIndex == -1) return;
             int index = entity_list.SelectedIndex;
-            _triggerSequence.entities[index].connectedEntity.hierarchy = generatedHierarchy;
+            _triggerSequence.entities[index].connectedEntity.path = generatedHierarchy;
             LoadSelectedEntity();
             ReloadEntityList();
             entity_list.SelectedIndex = index;
@@ -131,7 +131,7 @@ namespace CommandsEditor
         {
             for (int i = 0; i < _triggerSequence.entities.Count; i++)
             {
-                if (_triggerSequence.entities[i].connectedEntity.hierarchy.Count == 0 || _triggerSequence.entities[i].connectedEntity.hierarchy.Count == 1)
+                if (_triggerSequence.entities[i].connectedEntity.path.Count == 0 || _triggerSequence.entities[i].connectedEntity.path.Count == 1)
                 {
                     MessageBox.Show("One or more triggers does not point to a node!", "Trigger setup incorrectly!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
@@ -227,7 +227,7 @@ namespace CommandsEditor
         {
             if (entity_list.SelectedIndex == -1) return;
 
-            Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, _entityDisplay.Composite, _triggerSequence.entities[entity_list.SelectedIndex].connectedEntity.hierarchy, out Composite comp, out string h);
+            Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, _entityDisplay.Composite, _triggerSequence.entities[entity_list.SelectedIndex].connectedEntity.path, out Composite comp, out string h);
             if (comp == null || ent == null)
             {
                 MessageBox.Show("Failed to resolve entity! Can not load to it.", "Entity pointer corrupted!", MessageBoxButtons.OK, MessageBoxIcon.Error);

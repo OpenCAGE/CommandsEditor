@@ -27,7 +27,7 @@ namespace CommandsEditor
 
         private bool onlyShowFunctions = false;
 
-        //PROXIES can only point to FunctionEntities - OVERRIDES can point to FunctionEntities, ProxyEntities, VariableEntities
+        //PROXIES can only point to FunctionEntities - ALIASES can point to FunctionEntities, ProxyEntities, VariableEntities
         public EditHierarchy(LevelContent content, Composite startingComposite, bool onlyFunctions) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, content)
         {
             onlyShowFunctions = onlyFunctions;

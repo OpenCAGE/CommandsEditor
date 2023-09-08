@@ -43,16 +43,16 @@
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.showNodegraph = new System.Windows.Forms.ToolStripMenuItem();
             this.showEntityIDs = new System.Windows.Forms.ToolStripMenuItem();
+            this.searchOnlyCompositeNames = new System.Windows.Forms.ToolStripMenuItem();
+            this.compositesOpenTabs = new System.Windows.Forms.ToolStripMenuItem();
+            this.entitiesOpenTabs = new System.Windows.Forms.ToolStripMenuItem();
             this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
             this.vS2015LightTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.statusText = new System.Windows.Forms.ToolStripStatusLabel();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.searchOnlyCompositeNames = new System.Windows.Forms.ToolStripMenuItem();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.compositesOpenTabs = new System.Windows.Forms.ToolStripMenuItem();
-            this.entitiesOpenTabs = new System.Windows.Forms.ToolStripMenuItem();
+            this.showConfirmationWhenSavingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -83,14 +83,15 @@
             // loadLevel
             // 
             this.loadLevel.Name = "loadLevel";
-            this.loadLevel.Size = new System.Drawing.Size(130, 22);
+            this.loadLevel.Size = new System.Drawing.Size(180, 22);
             this.loadLevel.Text = "Load Level";
-            this.loadLevel.Click += new System.EventHandler(this.loadLevel_Click);
             // 
             // saveLevel
             // 
             this.saveLevel.Name = "saveLevel";
-            this.saveLevel.Size = new System.Drawing.Size(130, 22);
+            this.saveLevel.ShortcutKeyDisplayString = "Ctrl+S";
+            this.saveLevel.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+            this.saveLevel.Size = new System.Drawing.Size(180, 22);
             this.saveLevel.Text = "Save Level";
             this.saveLevel.Click += new System.EventHandler(this.saveLevel_Click);
             // 
@@ -105,7 +106,7 @@
             this.toolStripSeparator2,
             this.showNodegraph,
             this.showEntityIDs,
-            this.toolStripSeparator3,
+            this.showConfirmationWhenSavingToolStripMenuItem,
             this.searchOnlyCompositeNames,
             this.compositesOpenTabs,
             this.entitiesOpenTabs});
@@ -171,6 +172,28 @@
             this.showEntityIDs.ToolTipText = "Show entity IDs within the editor UI.";
             this.showEntityIDs.Click += new System.EventHandler(this.showEntityIDs_Click);
             // 
+            // searchOnlyCompositeNames
+            // 
+            this.searchOnlyCompositeNames.Name = "searchOnlyCompositeNames";
+            this.searchOnlyCompositeNames.Size = new System.Drawing.Size(238, 22);
+            this.searchOnlyCompositeNames.Text = "Search Only Composite Names";
+            this.searchOnlyCompositeNames.ToolTipText = "Enable this option to exclude folder names from the composite search.";
+            this.searchOnlyCompositeNames.Click += new System.EventHandler(this.searchOnlyCompositeNames_Click);
+            // 
+            // compositesOpenTabs
+            // 
+            this.compositesOpenTabs.Name = "compositesOpenTabs";
+            this.compositesOpenTabs.Size = new System.Drawing.Size(238, 22);
+            this.compositesOpenTabs.Text = "Open Composites In New Tabs";
+            this.compositesOpenTabs.Click += new System.EventHandler(this.compositesOpenTabs_Click);
+            // 
+            // entitiesOpenTabs
+            // 
+            this.entitiesOpenTabs.Name = "entitiesOpenTabs";
+            this.entitiesOpenTabs.Size = new System.Drawing.Size(238, 22);
+            this.entitiesOpenTabs.Text = "Open Entities In New Tabs";
+            this.entitiesOpenTabs.Click += new System.EventHandler(this.entitiesOpenTabs_Click);
+            // 
             // statusStrip
             // 
             this.statusStrip.BackColor = System.Drawing.Color.Black;
@@ -202,32 +225,13 @@
             this.dockPanel.TabIndex = 5;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
             // 
-            // toolStripSeparator3
+            // showConfirmationWhenSavingToolStripMenuItem
             // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(235, 6);
-            // 
-            // searchOnlyCompositeNames
-            // 
-            this.searchOnlyCompositeNames.Name = "searchOnlyCompositeNames";
-            this.searchOnlyCompositeNames.Size = new System.Drawing.Size(238, 22);
-            this.searchOnlyCompositeNames.Text = "Search Only Composite Names";
-            this.searchOnlyCompositeNames.ToolTipText = "Enable this option to exclude folder names from the composite search.";
-            this.searchOnlyCompositeNames.Click += new System.EventHandler(this.searchOnlyCompositeNames_Click);
-            // 
-            // compositesOpenTabs
-            // 
-            this.compositesOpenTabs.Name = "compositesOpenTabs";
-            this.compositesOpenTabs.Size = new System.Drawing.Size(238, 22);
-            this.compositesOpenTabs.Text = "Open Composites In New Tabs";
-            this.compositesOpenTabs.Click += new System.EventHandler(this.compositesOpenTabs_Click);
-            // 
-            // entitiesOpenTabs
-            // 
-            this.entitiesOpenTabs.Name = "entitiesOpenTabs";
-            this.entitiesOpenTabs.Size = new System.Drawing.Size(238, 22);
-            this.entitiesOpenTabs.Text = "Open Entities In New Tabs";
-            this.entitiesOpenTabs.Click += new System.EventHandler(this.entitiesOpenTabs_Click);
+            this.showConfirmationWhenSavingToolStripMenuItem.Name = "showConfirmationWhenSavingToolStripMenuItem";
+            this.showConfirmationWhenSavingToolStripMenuItem.Size = new System.Drawing.Size(249, 22);
+            this.showConfirmationWhenSavingToolStripMenuItem.Text = "Show Confirmation When Saving";
+            this.showConfirmationWhenSavingToolStripMenuItem.ToolTipText = "If enabled, a confirmation will show after a successful save.";
+            this.showConfirmationWhenSavingToolStripMenuItem.Click += new System.EventHandler(this.showConfirmationWhenSavingToolStripMenuItem_Click);
             // 
             // CommandsEditor
             // 
@@ -270,10 +274,10 @@
         private System.Windows.Forms.ToolStripMenuItem enableInstanceMode;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem searchOnlyCompositeNames;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.ToolStripMenuItem compositesOpenTabs;
         private System.Windows.Forms.ToolStripMenuItem entitiesOpenTabs;
+        private System.Windows.Forms.ToolStripMenuItem showConfirmationWhenSavingToolStripMenuItem;
     }
 }

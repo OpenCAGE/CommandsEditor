@@ -17,17 +17,17 @@ namespace CommandsEditor.Popups.Function_Editors.CharacterEditor
     {
         public Action<ShortGuid> OnInstanceSelected;
 
-        private List<EntityHierarchy> _hierarchies = new List<EntityHierarchy>();
+        private List<EntityPath> _hierarchies = new List<EntityPath>();
 
         public Character_InstanceSelection(EntityDisplay editor, List<ShortGuid> existing) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor.Content)
         {
             InitializeComponent(); 
             
-            List<EntityHierarchy> hierarchies = editor.Content.editor_utils.GetHierarchiesForEntity(editor.Composite, editor.Entity);
+            List<EntityPath> hierarchies = editor.Content.editor_utils.GetHierarchiesForEntity(editor.Composite, editor.Entity);
             for (int i = 0; i < hierarchies.Count; i++)
             {
                 if (existing.Contains(hierarchies[i].GenerateInstance())) continue;
-                characterInstances.Items.Add(hierarchies[i].GetHierarchyAsString(Content.commands, editor.Composite, false));
+                characterInstances.Items.Add(hierarchies[i].GetAsString(Content.commands, editor.Composite, false));
                 _hierarchies.Add(hierarchies[i]);
             }
 

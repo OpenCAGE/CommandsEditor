@@ -240,13 +240,13 @@ namespace CommandsEditor
                     if (funcComposite != null) item.SubItems.Add(funcComposite.name);
                     else item.SubItems.Add(CathodeEntityDatabase.GetEntity(((FunctionEntity)entity).function).className);
                     break;
-                case EntityVariant.OVERRIDE:
-                    CommandsUtils.ResolveHierarchy(commands, composite, ((OverrideEntity)entity).connectedEntity.hierarchy, out Composite c, out string s, false);
+                case EntityVariant.ALIAS:
+                    CommandsUtils.ResolveHierarchy(commands, composite, ((AliasEntity)entity).connectedEntity.path, out Composite c, out string s, false);
                     item.Text = s;
                     item.SubItems.Add("");
                     break;
                 case EntityVariant.PROXY:
-                    CommandsUtils.ResolveHierarchy(commands, composite, ((ProxyEntity)entity).connectedEntity.hierarchy, out Composite c2, out string s2, false);
+                    CommandsUtils.ResolveHierarchy(commands, composite, ((ProxyEntity)entity).connectedEntity.path, out Composite c2, out string s2, false);
                     item.Text = EntityUtils.GetName(composite.shortGUID, entity.shortGUID);
                     item.SubItems.Add(s2);
                     break;

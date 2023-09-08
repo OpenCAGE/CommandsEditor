@@ -43,7 +43,7 @@ namespace CommandsEditor
         }
         private void showLinkedOverrides_Click(object sender, EventArgs e)
         {
-            UpdateUI(CurrentDisplay.OVERRIDES);
+            UpdateUI(CurrentDisplay.ALIASES);
         }
         private void showLinkedTriggerSequences_Click(object sender, EventArgs e)
         {
@@ -60,7 +60,7 @@ namespace CommandsEditor
             Cursor.Current = Cursors.WaitCursor;
 
             showLinkedProxies.Enabled = display != CurrentDisplay.PROXIES;
-            showLinkedOverrides.Enabled = display != CurrentDisplay.OVERRIDES;
+            showLinkedOverrides.Enabled = display != CurrentDisplay.ALIASES;
             showLinkedTriggerSequences.Enabled = display != CurrentDisplay.TRIGGERSEQUENCES;
             showLinkedCageAnimations.Enabled = display != CurrentDisplay.CAGEANIMATIONS;
 
@@ -69,8 +69,8 @@ namespace CommandsEditor
                 case CurrentDisplay.PROXIES:
                     label.Text = "Proxies";
                     break;
-                case CurrentDisplay.OVERRIDES:
-                    label.Text = "Overrides";
+                case CurrentDisplay.ALIASES:
+                    label.Text = "Aliases";
                     break;
                 case CurrentDisplay.TRIGGERSEQUENCES:
                     label.Text = "TriggerSequences";
@@ -93,16 +93,16 @@ namespace CommandsEditor
                     case CurrentDisplay.PROXIES:
                         foreach (ProxyEntity prox in comp.proxies)
                         {
-                            Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, comp, prox.connectedEntity.hierarchy, out Composite compRef, out string str, showIDs);
+                            Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, comp, prox.connectedEntity.path, out Composite compRef, out string str, showIDs);
                             if (ent != _entityDisplay.Entity) continue;
                             entities.Add(new EntityRef() { composite = comp, entity = prox });
                             referenceList.Items.Add(_entityDisplay.Content.editor_utils.GenerateEntityName(prox, comp));
                         }
                         break;
-                    case CurrentDisplay.OVERRIDES:
-                        foreach (OverrideEntity ovr in comp.overrides)
+                    case CurrentDisplay.ALIASES:
+                        foreach (AliasEntity ovr in comp.aliases)
                         {
-                            Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, comp, ovr.connectedEntity.hierarchy, out Composite compRef, out string str, showIDs);
+                            Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, comp, ovr.connectedEntity.path, out Composite compRef, out string str, showIDs);
                             if (ent != _entityDisplay.Entity) continue;
                             entities.Add(new EntityRef() { composite = comp, entity = ovr });
                             referenceList.Items.Add(_entityDisplay.Content.editor_utils.GenerateEntityName(ovr, comp));
@@ -113,7 +113,7 @@ namespace CommandsEditor
                         {
                             foreach (TriggerSequence.Entity trigger in trig.entities)
                             {
-                                Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, comp, trigger.connectedEntity.hierarchy, out Composite compRef, out string str, showIDs);
+                                Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, comp, trigger.connectedEntity.path, out Composite compRef, out string str, showIDs);
                                 if (ent != _entityDisplay.Entity) continue;
                                 entities.Add(new EntityRef() { composite = comp, entity = trig });
                                 referenceList.Items.Add(_entityDisplay.Content.editor_utils.GenerateEntityName(trig, comp));
@@ -125,7 +125,7 @@ namespace CommandsEditor
                         {
                             foreach (CAGEAnimation.Connection connection in anim.connections)
                             {
-                                Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, comp, connection.connectedEntity.hierarchy, out Composite compRef, out string str, showIDs);
+                                Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, comp, connection.connectedEntity.path, out Composite compRef, out string str, showIDs);
                                 if (ent != _entityDisplay.Entity) continue;
                                 entities.Add(new EntityRef() { composite = comp, entity = anim });
                                 referenceList.Items.Add(_entityDisplay.Content.editor_utils.GenerateEntityName(anim, comp));
@@ -142,7 +142,7 @@ namespace CommandsEditor
         private enum CurrentDisplay
         {
             PROXIES,
-            OVERRIDES,
+            ALIASES,
             TRIGGERSEQUENCES,
             CAGEANIMATIONS,
         }
