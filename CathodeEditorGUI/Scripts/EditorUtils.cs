@@ -135,11 +135,11 @@ namespace CommandsEditor
                         desc = EntityUtils.GetName(composite.shortGUID, entity.shortGUID) + " (" + CathodeEntityDatabase.GetEntity(((FunctionEntity)entity).function).className + ")";
                     break;
                 case EntityVariant.ALIAS:
-                    CommandsUtils.ResolveHierarchy(_content.commands, composite, ((AliasEntity)entity).connectedEntity.path, out Composite c, out string s, false);
+                    CommandsUtils.ResolveHierarchy(_content.commands, composite, ((AliasEntity)entity).alias.path, out Composite c, out string s, false);
                     desc = "[ALIAS] " + s;
                     break;
                 case EntityVariant.PROXY:
-                    CommandsUtils.ResolveHierarchy(_content.commands, composite, ((ProxyEntity)entity).connectedEntity.path, out Composite c2, out string s2, false);
+                    CommandsUtils.ResolveHierarchy(_content.commands, composite, ((ProxyEntity)entity).proxy.path, out Composite c2, out string s2, false);
                     desc = "[PROXY] " + EntityUtils.GetName(composite.shortGUID, entity.shortGUID) + " (" + s2 + ")";
                     break;
             }
@@ -197,9 +197,9 @@ namespace CommandsEditor
                     items.Add(ShortGuidUtils.FindString(((VariableEntity)entity).name));
                     break;
                 case EntityVariant.ALIAS:
-                    return GenerateParameterList(CommandsUtils.ResolveHierarchy(_content.commands, composite, ((AliasEntity)entity).connectedEntity.path, out Composite comp1, out string hierarchy1), comp1);
+                    return GenerateParameterList(CommandsUtils.ResolveHierarchy(_content.commands, composite, ((AliasEntity)entity).alias.path, out Composite comp1, out string hierarchy1), comp1);
                 case EntityVariant.PROXY:
-                    return GenerateParameterList(CommandsUtils.ResolveHierarchy(_content.commands, composite, ((ProxyEntity)entity).connectedEntity.path, out Composite comp2, out string hierarchy2), comp2);
+                    return GenerateParameterList(CommandsUtils.ResolveHierarchy(_content.commands, composite, ((ProxyEntity)entity).proxy.path, out Composite comp2, out string hierarchy2), comp2);
             }
             items.Sort();
             return items;
@@ -236,13 +236,13 @@ namespace CommandsEditor
             {
                 foreach (AliasEntity ovr in comp.aliases)
                 {
-                    Entity ent = CommandsUtils.ResolveHierarchy(_content.commands, comp, ovr.connectedEntity.path, out Composite compRef, out string str);
+                    Entity ent = CommandsUtils.ResolveHierarchy(_content.commands, comp, ovr.alias.path, out Composite compRef, out string str);
                     if (ent != entity) continue;
                     return true;
                 }
                 foreach (ProxyEntity prox in comp.proxies)
                 {
-                    Entity ent = CommandsUtils.ResolveHierarchy(_content.commands, comp, prox.connectedEntity.path, out Composite compRef, out string str);
+                    Entity ent = CommandsUtils.ResolveHierarchy(_content.commands, comp, prox.proxy.path, out Composite compRef, out string str);
                     if (ent != entity) continue;
                     return true;
                 }

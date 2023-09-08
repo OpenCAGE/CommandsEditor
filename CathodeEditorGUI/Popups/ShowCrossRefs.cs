@@ -93,7 +93,7 @@ namespace CommandsEditor
                     case CurrentDisplay.PROXIES:
                         foreach (ProxyEntity prox in comp.proxies)
                         {
-                            Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, comp, prox.connectedEntity.path, out Composite compRef, out string str, showIDs);
+                            Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, comp, prox.proxy.path, out Composite compRef, out string str, showIDs);
                             if (ent != _entityDisplay.Entity) continue;
                             entities.Add(new EntityRef() { composite = comp, entity = prox });
                             referenceList.Items.Add(_entityDisplay.Content.editor_utils.GenerateEntityName(prox, comp));
@@ -102,7 +102,7 @@ namespace CommandsEditor
                     case CurrentDisplay.ALIASES:
                         foreach (AliasEntity ovr in comp.aliases)
                         {
-                            Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, comp, ovr.connectedEntity.path, out Composite compRef, out string str, showIDs);
+                            Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, comp, ovr.alias.path, out Composite compRef, out string str, showIDs);
                             if (ent != _entityDisplay.Entity) continue;
                             entities.Add(new EntityRef() { composite = comp, entity = ovr });
                             referenceList.Items.Add(_entityDisplay.Content.editor_utils.GenerateEntityName(ovr, comp));

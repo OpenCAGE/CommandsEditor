@@ -241,12 +241,12 @@ namespace CommandsEditor
                     else item.SubItems.Add(CathodeEntityDatabase.GetEntity(((FunctionEntity)entity).function).className);
                     break;
                 case EntityVariant.ALIAS:
-                    CommandsUtils.ResolveHierarchy(commands, composite, ((AliasEntity)entity).connectedEntity.path, out Composite c, out string s, false);
+                    CommandsUtils.ResolveHierarchy(commands, composite, ((AliasEntity)entity).alias.path, out Composite c, out string s, false);
                     item.Text = s;
                     item.SubItems.Add("");
                     break;
                 case EntityVariant.PROXY:
-                    CommandsUtils.ResolveHierarchy(commands, composite, ((ProxyEntity)entity).connectedEntity.path, out Composite c2, out string s2, false);
+                    CommandsUtils.ResolveHierarchy(commands, composite, ((ProxyEntity)entity).proxy.path, out Composite c2, out string s2, false);
                     item.Text = EntityUtils.GetName(composite.shortGUID, entity.shortGUID);
                     item.SubItems.Add(s2);
                     break;

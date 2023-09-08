@@ -105,7 +105,7 @@ namespace CommandsEditor.DockPanels
                 case EntityVariant.PROXY:
                 case EntityVariant.ALIAS:
                     hierarchyDisplay.Visible = true;
-                    List<ShortGuid> entityHierarchy = _entity.variant == EntityVariant.PROXY ? ((ProxyEntity)_entity).connectedEntity.path : ((AliasEntity)_entity).connectedEntity.path;
+                    List<ShortGuid> entityHierarchy = _entity.variant == EntityVariant.PROXY ? ((ProxyEntity)_entity).proxy.path : ((AliasEntity)_entity).alias.path;
                     Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, Composite, entityHierarchy, out Composite comp, out string hierarchy, SettingsManager.GetBool("CS_ShowEntityIDs"));
                     hierarchyDisplay.Text = hierarchy;
                     jumpToComposite.Visible = true;
@@ -468,10 +468,10 @@ namespace CommandsEditor.DockPanels
             switch (Entity.variant)
             {
                 case EntityVariant.ALIAS:
-                    entity = CommandsUtils.ResolveHierarchy(Content.commands, Composite, ((AliasEntity)Entity).connectedEntity.path, out flow, out hierarchy);
+                    entity = CommandsUtils.ResolveHierarchy(Content.commands, Composite, ((AliasEntity)Entity).alias.path, out flow, out hierarchy);
                     break;
                 case EntityVariant.PROXY:
-                    entity = CommandsUtils.ResolveHierarchy(Content.commands, Composite, ((ProxyEntity)Entity).connectedEntity.path, out flow, out hierarchy);
+                    entity = CommandsUtils.ResolveHierarchy(Content.commands, Composite, ((ProxyEntity)Entity).proxy.path, out flow, out hierarchy);
                     break;
                 case EntityVariant.FUNCTION:
                     _compositeDisplay.CommandsDisplay.LoadComposite(selected_entity_type_description.Text);

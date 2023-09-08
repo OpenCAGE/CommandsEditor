@@ -173,7 +173,7 @@ namespace CommandsEditor
             {
                 case EntityVariant.PROXY:
                 case EntityVariant.ALIAS:
-                    Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, composite, (entity.variant == EntityVariant.PROXY) ? ((ProxyEntity)entity).connectedEntity.path : ((AliasEntity)entity).connectedEntity.path, out Composite c, out string s);
+                    Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, composite, (entity.variant == EntityVariant.PROXY) ? ((ProxyEntity)entity).proxy.path : ((AliasEntity)entity).alias.path, out Composite c, out string s);
                     node.SetColour(entity.variant == EntityVariant.PROXY ? Color.LightGreen : Color.Orange, Color.Black);
                     switch (ent.variant)
                     {
