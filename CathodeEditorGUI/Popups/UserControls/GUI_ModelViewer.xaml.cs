@@ -7,6 +7,7 @@ using System.Numerics;
 using CATHODE;
 using AlienPAK;
 using CommandsEditor.DockPanels;
+using CATHODE.Scripting;
 
 namespace CommandsEditor.Popups.UserControls
 {
@@ -65,6 +66,12 @@ namespace CommandsEditor.Popups.UserControls
                 this.modelIndex = modelIndex;
                 this.position = new Vector3D(position.X, position.Y, position.Z);
                 this.rotation = new Vector3D(rotation.X, rotation.Y, rotation.Z);
+            }
+            public Model(int modelIndex, cTransform transform)
+            {
+                this.modelIndex = modelIndex;
+                this.position = new Vector3D(transform.position.X, transform.position.Y, transform.position.Z);
+                this.rotation = new Vector3D(transform.rotation.X, transform.rotation.Y, transform.rotation.Z);
             }
 
             public int modelIndex;
