@@ -43,7 +43,7 @@ namespace CommandsEditor
             }
             treeHelper.UpdateFileTree(allModelFileNames, null, allModelTagsNames);
 
-            modelViewer = new GUI_ModelViewer(_content);
+            modelViewer = new GUI_ModelViewer(_content, null);
             modelRendererHost.Child = modelViewer;
 
             if (defaultModelIndex != -1)

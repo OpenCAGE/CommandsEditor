@@ -1,12 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Numerics;
-using System.Windows.Media;
-using System.Windows.Media.Media3D;
+using HelixToolkit.Wpf.SharpDX;
 using static CATHODE.Models;
-using Vector3D = System.Windows.Media.Media3D.Vector3D;
-using Color = System.Windows.Media.Color;
 using CathodeLib;
 using CATHODE;
 using DirectXTex;
@@ -14,6 +10,7 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Interop;
 using System.Windows;
+using SharpDX;
 
 namespace AlienPAK
 {
@@ -116,7 +113,7 @@ namespace AlienPAK
         }
 
         /* Convert a Bitmap to ImageSource */
-        public static ImageSource ToImageSource(this Bitmap bmp)
+        public static System.Windows.Media.ImageSource ToImageSource(this Bitmap bmp)
         {
             var handle = bmp.GetHbitmap();
             try
@@ -126,25 +123,25 @@ namespace AlienPAK
             finally { DeleteObject(handle); }
         }
 
-        /* Convert a CS2 submesh to GeometryModel3D */
-        public static GeometryModel3D ToGeometryModel3D(this CS2.Component.LOD.Submesh submesh)
+        /* Convert a CS2 submesh to MeshGeometry3D */
+        public static MeshGeometry3D ToMeshGeometry3D(this CS2.Component.LOD.Submesh submesh)
         {
-            Int32Collection indices = new Int32Collection();
-            Point3DCollection vertices = new Point3DCollection();
-            Vector3DCollection normals = new Vector3DCollection();
+            IntCollection indices = new IntCollection();
+            Vector3Collection vertices = new Vector3Collection();
+            Vector3Collection normals = new Vector3Collection();
             List<Vector4> tangents = new List<Vector4>();
-            PointCollection uv0 = new PointCollection();
-            PointCollection uv1 = new PointCollection();
-            PointCollection uv2 = new PointCollection();
-            PointCollection uv3 = new PointCollection();
-            PointCollection uv7 = new PointCollection();
+            Vector2Collection uv0 = new Vector2Collection();
+            Vector2Collection uv1 = new Vector2Collection();
+            Vector2Collection uv2 = new Vector2Collection();
+            Vector2Collection uv3 = new Vector2Collection();
+            Vector2Collection uv7 = new Vector2Collection();
 
             //TODO: implement skeleton lookup for the indexes
             List<Vector4> boneIndex = new List<Vector4>(); //The indexes of 4 bones that affect each vertex
             List<Vector4> boneWeight = new List<Vector4>(); //The weights for each bone
 
             if (submesh.content.Length == 0)
-                return new GeometryModel3D();
+                return new MeshGeometry3D();
 
             using (BinaryReader reader = new BinaryReader(new MemoryStream(submesh.content)))
             {
@@ -171,7 +168,7 @@ namespace AlienPAK
                             {
                                 case VBFE_InputType.VECTOR3:
                                     { 
-                                        Vector3D v = new Vector3D(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
+                                        Vector3 v = new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
                                         switch (format.ShaderSlot)
                                         {
                                             case VBFE_InputSlot.NORMAL:
@@ -218,15 +215,15 @@ namespace AlienPAK
                                                 boneWeight.Add(v / (v.X + v.Y + v.Z + v.W));
                                                 break;
                                             case VBFE_InputSlot.UV:
-                                                uv2.Add(new System.Windows.Point(v.X, v.Y));
-                                                uv3.Add(new System.Windows.Point(v.Z, v.W));
+                                                uv2.Add(new Vector2(v.X, v.Y));
+                                                uv3.Add(new Vector2(v.Z, v.W));
                                                 break;
                                         }
                                         break;
                                     }
                                 case VBFE_InputType.VECTOR2_INT16_DIV2048:
                                     {
-                                        System.Windows.Point v = new System.Windows.Point(reader.ReadInt16() / 2048.0f, reader.ReadInt16() / 2048.0f);
+                                        Vector2 v = new Vector2(reader.ReadInt16() / 2048.0f, reader.ReadInt16() / 2048.0f);
                                         switch (format.ShaderSlot)
                                         {
                                             case VBFE_InputSlot.UV:
@@ -253,7 +250,7 @@ namespace AlienPAK
                                         switch (format.ShaderSlot)
                                         {
                                             case VBFE_InputSlot.VERTEX:
-                                                vertices.Add(new Point3D(v.X, v.Y, v.Z));
+                                                vertices.Add(new Vector3(v.X, v.Y, v.Z));
                                                 break;
                                         }
                                         break;
@@ -266,7 +263,7 @@ namespace AlienPAK
                                         switch (format.ShaderSlot)
                                         {
                                             case VBFE_InputSlot.NORMAL:
-                                                normals.Add(new Vector3D(v.X, v.Y, v.Z));
+                                                normals.Add(new Vector3(v.X, v.Y, v.Z));
                                                 break;
                                             case VBFE_InputSlot.TANGENT:
                                                 break;
@@ -278,23 +275,18 @@ namespace AlienPAK
                             }
                         }
                     }
-                    Utilities.Align(reader, 16);
+                    CathodeLib.Utilities.Align(reader, 16);
                 }
             }
 
-            if (vertices.Count == 0) return new GeometryModel3D();
+            if (vertices.Count == 0) return new MeshGeometry3D();
 
-            return new GeometryModel3D
+            return new MeshGeometry3D
             {
-                Geometry = new MeshGeometry3D
-                {
-                    Positions = vertices,
-                    TriangleIndices = indices,
-                    Normals = normals,
-                    TextureCoordinates = uv0,
-                },
-                Material = new DiffuseMaterial(new SolidColorBrush(Color.FromRgb(255, 255, 0))),
-                BackMaterial = new DiffuseMaterial(new SolidColorBrush(Color.FromRgb(255, 255, 0)))
+                Positions = vertices,
+                TriangleIndices = indices,
+                Normals = normals,
+                TextureCoordinates = uv0,
             };
         }
     }

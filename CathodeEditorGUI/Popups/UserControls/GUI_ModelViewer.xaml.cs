@@ -1,8 +1,6 @@
 ﻿using CathodeLib;
 using System.Collections.Generic;
 using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Media.Media3D;
 using System.Numerics;
 using CATHODE;
 using AlienPAK;
@@ -16,6 +14,11 @@ using System.Security.Cryptography;
 using System.Linq;
 using System.Drawing.Drawing2D;
 using System.Resources;
+using HelixToolkit.Wpf.SharpDX;
+using Media3D = System.Windows.Media.Media3D;
+using Vector3D = System.Windows.Media.Media3D.Vector3D;
+using System.IO;
+using HelixToolkit.Wpf.SharpDX.Model.Scene;
 
 namespace CommandsEditor.Popups.UserControls
 {
@@ -26,60 +29,80 @@ namespace CommandsEditor.Popups.UserControls
     {
         protected LevelContent _content;
 
-        public GUI_ModelViewer(LevelContent content)
+        public SceneNodeGroupModel3D GroupModel { get; } = new SceneNodeGroupModel3D();
+        public EffectsManager EffectsManager { get; }
+        public Camera Camera { get; }
+
+        public GUI_ModelViewer(LevelContent content, List<Model> models)
         {
+            EffectsManager = new DefaultEffectsManager();
+            Camera = new OrthographicCamera()
+            {
+                LookDirection = new Vector3D(0, -10, -10),
+                Position = new Media3D.Point3D(0, 10, 10),
+                UpDirection = new Vector3D(0, 1, 0),
+                FarPlaneDistance = 5000,
+                NearPlaneDistance = 0.1f
+            };
+
             _content = content;
+
+            if (models != null)
+                ShowModel(models);
 
             InitializeComponent();
         }
 
         public void ShowModel(List<Model> models)
         {
-            Model3DGroup group = new Model3DGroup();
             for (int i = 0; i < models.Count; i++)
-                group.Children.Add(OffsetModel(models[i].modelIndex, models[i].position, models[i].rotation));
-            modelPreview.Content = group;
-            myView.ZoomExtents();
+                GroupModel.AddNode(OffsetModel(models[i].modelIndex, models[i].position, models[i].rotation));
+            view.ZoomExtents();
         }
-        
-        private Model3DGroup OffsetModel(int modelIndex, Vector3D position, Vector3D rotation, int materialIndex = -1)
+
+        //https://github.com/MontagueM/Charm/blob/f64df305aff330eca5dee895b33a7192c05715c9/Charm/MainViewModel.cs#L234
+        private MeshNode OffsetModel(int modelIndex, Vector3D position, Vector3D rotation, int materialIndex = -1)
         {
+            MeshNode object3D = new MeshNode();
+
             //Get mesh data
             Models.CS2.Component.LOD.Submesh submesh = _content.resource.models.GetAtWriteIndex(modelIndex);
-            GeometryModel3D submeshGeo = submesh.ToGeometryModel3D();
+            object3D.Geometry = submesh.ToMeshGeometry3D();
 
             //Get material & texture data
+            PBRMaterial pbrMat = new PBRMaterial();
             try
             {
                 ShadersPAK.ShaderMaterialMetadata mdlMeta = _content.resource.shaders.GetMaterialMetadataFromShader(_content.resource.materials.GetAtWriteIndex(materialIndex == -1 ? submesh.MaterialLibraryIndex : materialIndex), _content.resource.shadersIDX);
-                ShadersPAK.MaterialTextureContext mdlMetaDiff = mdlMeta.textures.FirstOrDefault(o => o.Type == ShadersPAK.ShaderSlot.DIFFUSE_MAP);
-                if (mdlMetaDiff != null)
-                {
-                    Textures tex = mdlMetaDiff.TextureInfo.Source == Texture.TextureSource.GLOBAL ? _content.resource.textures_global : _content.resource.textures;
-                    Textures.TEX4 diff = tex.GetAtWriteIndex(mdlMetaDiff.TextureInfo.BinIndex);
-                    byte[] diffDDS = diff?.ToDDS();
-                    DiffuseMaterial mat = new DiffuseMaterial(new ImageBrush(diffDDS?.ToBitmap()?.ToImageSource()));
-                    submeshGeo.Material = mat;
-                    //TODO: normals?
-                }
+
+                ShadersPAK.MaterialTextureContext diffuseMap = mdlMeta.textures.FirstOrDefault(o => o.Type == ShadersPAK.ShaderSlot.DIFFUSE_MAP);
+                if (diffuseMap != null)
+                    pbrMat.AlbedoMap = new TextureModel(new MemoryStream(GetTexDB(diffuseMap.TextureInfo.Source).GetAtWriteIndex(diffuseMap.TextureInfo.BinIndex)?.ToDDS()));
+
+                ShadersPAK.MaterialTextureContext normalMap = mdlMeta.textures.FirstOrDefault(o => o.Type == ShadersPAK.ShaderSlot.NORMAL_MAP);
+                if (normalMap != null)
+                    pbrMat.NormalMap = new TextureModel(new MemoryStream(GetTexDB(normalMap.TextureInfo.Source).GetAtWriteIndex(normalMap.TextureInfo.BinIndex)?.ToDDS()));
             }
             catch (Exception ex2)
             {
-                Console.WriteLine(ex2.ToString());
+                Console.WriteLine("ERROR: " + ex2.ToString());
             }
+            object3D.Material = pbrMat;
 
             //Get transform data
-            Transform3DGroup transform = new Transform3DGroup();
-            transform.Children.Add(new ScaleTransform3D(submesh.ScaleFactor, submesh.ScaleFactor, submesh.ScaleFactor));
+            Media3D.Transform3DGroup transform = new Media3D.Transform3DGroup();
+            transform.Children.Add(new Media3D.ScaleTransform3D(submesh.ScaleFactor, submesh.ScaleFactor, submesh.ScaleFactor));
             System.Numerics.Quaternion q = System.Numerics.Quaternion.CreateFromYawPitchRoll((float)(rotation.Y * Math.PI / 180.0f), (float)(rotation.X * Math.PI / 180.0f), (float)(rotation.Z * Math.PI / 180.0f));
-            transform.Children.Add(new RotateTransform3D(new QuaternionRotation3D(new System.Windows.Media.Media3D.Quaternion(q.X, q.Y, q.Z, q.W))));
-            transform.Children.Add(new TranslateTransform3D(position.X, position.Y, position.Z));
+            transform.Children.Add(new Media3D.RotateTransform3D(new Media3D.QuaternionRotation3D(new System.Windows.Media.Media3D.Quaternion(q.X, q.Y, q.Z, q.W))));
+            transform.Children.Add(new Media3D.TranslateTransform3D(position.X, position.Y, position.Z));
 
-            //Submit
-            Model3DGroup model = new Model3DGroup();
-            model.Transform = transform;
-            model.Children.Add(submeshGeo);
-            return model;
+            //todo use transform
+            return object3D;
+        }
+
+        private Textures GetTexDB(Texture.TextureSource source)
+        {
+            return source == Texture.TextureSource.GLOBAL ? _content.resource.textures_global : _content.resource.textures;
         }
 
         public class Model
