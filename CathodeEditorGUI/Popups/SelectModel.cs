@@ -75,7 +75,8 @@ namespace CommandsEditor
         {
             if (((TreeItem)FileTree.SelectedNode.Tag).Item_Type != TreeItemType.EXPORTABLE_FILE) return;
 
-            int index = Convert.ToInt32(((TreeItem)FileTree.SelectedNode.Tag).String_Value);
+            string test = ((TreeItem)FileTree.SelectedNode.Tag).String_Value;
+            int index = Convert.ToInt32(test);
             ShowModel(index);
         }
 

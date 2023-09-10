@@ -28,7 +28,7 @@ namespace CommandsEditor.Popups
             InitializeComponent();
         }
 
-        public void PopulateUI(LevelContent Editor, cString cString, string paramID, AssetList.Type assets, string args = "")
+        public void PopulateUI(LevelContent Content, cString cString, string paramID, AssetList.Type assets, string args = "")
         {
             stringVal = cString;
             Text = paramID;
@@ -37,22 +37,22 @@ namespace CommandsEditor.Popups
 
             //TODO: we never clear up these lists for old levels, which could lead to a slow memory leak!
 
-            content = assetlist_cache.FirstOrDefault(o => o.level == Editor.commands.Filepath && o.assets == assets && o.args == args);
+            content = assetlist_cache.FirstOrDefault(o => o.level == Content.commands.Filepath && o.assets == assets && o.args == args);
             if (content == null)
             {
-                content = new AssetList() { level = Editor.commands.Filepath, args = args, assets = assets };
+                content = new AssetList() { level = Content.commands.Filepath, args = args, assets = assets };
                 List<AssetList.Value> strings = new List<AssetList.Value>();
                 switch (assets)
                 {
                     case AssetList.Type.SOUND_BANK:
-                        foreach (string entry in Editor.resource.sound_bankdata.Entries)
+                        foreach (string entry in Content.resource.sound_bankdata.Entries)
                         {
                             if (strings.FirstOrDefault(o => o.value == entry) == null)
                                 strings.Add(new AssetList.Value() { value = entry });
                         }
                         break;
                     case AssetList.Type.SOUND_DIALOGUE:
-                        foreach (SoundDialogueLookups.Sound entry in Editor.resource.sound_dialoguelookups.Entries)
+                        foreach (SoundDialogueLookups.Sound entry in Content.resource.sound_dialoguelookups.Entries)
                         {
                             if (strings.FirstOrDefault(o => o.value == entry.ToString()) == null)
                             {
@@ -72,7 +72,7 @@ namespace CommandsEditor.Popups
                         }
                         break;
                     case AssetList.Type.SOUND_REVERB:
-                        foreach (string entry in Editor.resource.sound_environmentdata.Entries)
+                        foreach (string entry in Content.resource.sound_environmentdata.Entries)
                         {
                             if (strings.FirstOrDefault(o => o.value == entry) == null)
                                 strings.Add(new AssetList.Value() { value = entry });
@@ -80,7 +80,7 @@ namespace CommandsEditor.Popups
                         break;
                     case AssetList.Type.SOUND_EVENT:
                         //TODO: perhaps show these by soundbank - need to load in soundbank name IDs
-                        foreach (SoundEventData.Soundbank entry in Editor.resource.sound_eventdata.Entries)
+                        foreach (SoundEventData.Soundbank entry in Content.resource.sound_eventdata.Entries)
                         {
                             foreach (SoundEventData.Soundbank.Event e in entry.events)
                             {
@@ -120,19 +120,19 @@ namespace CommandsEditor.Popups
                         }
                         break;
                     case AssetList.Type.MATERIAL:
-                        foreach (Materials.Material entry in Editor.resource.materials.Entries)
+                        foreach (Materials.Material entry in Content.resource.materials.Entries)
                         {
                             if (strings.FirstOrDefault(o => o.value == entry.Name) == null)
                                 strings.Add(new AssetList.Value() { value = entry.Name });
                         }
                         break;
                     case AssetList.Type.TEXTURE:
-                        foreach (Textures.TEX4 entry in Editor.resource.textures.Entries)
+                        foreach (Textures.TEX4 entry in Content.resource.textures.Entries)
                         {
                             if (strings.FirstOrDefault(o => o.value == entry.Name) == null)
                                 strings.Add(new AssetList.Value() { value = entry.Name });
                         }
-                        foreach (Textures.TEX4 entry in Editor.resource.textures_global.Entries)
+                        foreach (Textures.TEX4 entry in Content.resource.textures_global.Entries)
                         {
                             if (strings.FirstOrDefault(o => o.value == entry.Name) == null)
                                 strings.Add(new AssetList.Value() { value = entry.Name });

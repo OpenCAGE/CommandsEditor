@@ -112,6 +112,9 @@ namespace CommandsEditor
             //Load animation data - this should be quick enough to not worry about waiting for the thread
             Task.Factory.StartNew(() => LoadAnimData());
 
+            //Load global textures - same note as above
+            Task.Factory.StartNew(() => LoadGlobalTex());
+
             //Populate level list
             List<string> levels = Level.GetLevels(SharedData.pathToAI, true);
             for (int i = 0; i < levels.Count; i++)
@@ -178,6 +181,12 @@ namespace CommandsEditor
             GC.Collect();
         }
 
+        /* Load global textures */
+        private void LoadGlobalTex()
+        {
+            Singleton.GlobalTextures = new Textures(SharedData.pathToAI + "/DATA/ENV/GLOBAL/WORLD/GLOBAL_TEXTURES.ALL.PAK");
+        }
+        
         /* Monitor the currently active composite tab */
         private void DockPanel_ActiveContentChanged(object sender, EventArgs e)
         {

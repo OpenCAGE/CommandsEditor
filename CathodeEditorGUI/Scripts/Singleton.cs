@@ -24,6 +24,9 @@ namespace CommandsEditor
         public static AnimationStrings AnimationStrings;
         public static AnimationStrings AnimationStrings_Debug;
 
+        //Global textures
+        public static Textures GlobalTextures;
+
 
 
         public static Action<LevelContent> OnLevelLoaded;

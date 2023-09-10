@@ -80,7 +80,7 @@ namespace CommandsEditor
                 {
                     //Node is a file
                     for (int i = 0; i < FileNameParts.Length; i++) ThisTag.String_Value += FileNameParts[i] + "/";
-                    ThisTag.String_Value = ThisTag.String_Value.ToString().Substring(0, ThisTag.String_Value.ToString().Length - 1);
+                    ThisTag.String_Value = tag != "" ? tag : ThisTag.String_Value.ToString().Substring(0, ThisTag.String_Value.ToString().Length - 1);
 
                     ThisTag.Item_Type = TreeItemType.EXPORTABLE_FILE;
                     FileNode.ImageIndex = (int)TreeItemIcon.FILE;
@@ -91,7 +91,7 @@ namespace CommandsEditor
                 {
                     //Node is a directory
                     for (int i = 0; i < index + 1; i++) ThisTag.String_Value += FileNameParts[i] + "/";
-                    ThisTag.String_Value = ThisTag.String_Value.ToString().Substring(0, ThisTag.String_Value.ToString().Length - 1);
+                    ThisTag.String_Value = tag != "" ? tag : ThisTag.String_Value.ToString().Substring(0, ThisTag.String_Value.ToString().Length - 1);
 
                     ThisTag.Item_Type = TreeItemType.DIRECTORY;
                     FileNode.ImageIndex = (int)TreeItemIcon.FOLDER;

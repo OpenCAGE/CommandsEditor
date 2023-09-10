@@ -8,47 +8,51 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using CATHODE.Scripting.Internal;
 using OpenCAGE;
+using CATHODE.LEGACY;
 
 namespace CommandsEditor
 {
     public class LevelContent
     {
         //Level descriptors & scripting
-        public string level;
-        public Commands commands;
-        public Movers mvr;
+        public string level = "";
+        public Commands commands = null;
+        public Movers mvr = null;
 
         //Level-specific assets and various DBs
-        public Resource resource;
-        public struct Resource
+        public Resource resource = new Resource();
+        public class Resource
         {
-            public Models models;
-            public Materials materials;
-            public Textures textures;
-            public Textures textures_global;
+            public Models models = null;
+            public Materials materials = null;
+            public Textures textures = null;
+            public Textures textures_global = Singleton.GlobalTextures;
 
-            public RenderableElements reds;
+            public ShadersPAK shaders = null; //LEGACY
+            public IDXRemap shadersIDX = null; //LEGACY
 
-            public EnvironmentAnimations env_animations;
-            public CollisionMaps collision_maps;
-            public PhysicsMaps physics_maps;
+            public RenderableElements reds = null;
 
-            public SoundBankData sound_bankdata;
-            public SoundDialogueLookups sound_dialoguelookups;
-            public SoundEventData sound_eventdata;
-            public SoundEnvironmentData sound_environmentdata;
+            public EnvironmentAnimations env_animations = null;
+            public CollisionMaps collision_maps = null;
+            public PhysicsMaps physics_maps = null;
 
-            public CharacterAccessorySets character_accessories;
+            public SoundBankData sound_bankdata = null;
+            public SoundDialogueLookups sound_dialoguelookups = null;
+            public SoundEventData sound_eventdata = null;
+            public SoundEnvironmentData sound_environmentdata = null;
+
+            public CharacterAccessorySets character_accessories = null;
         }
 
         //UI stuff
         public Dictionary<Composite, Dictionary<Entity, ListViewItem>> composite_content_cache = new Dictionary<Composite, Dictionary<Entity, ListViewItem>>();
 
         //TODO: this should really be refactored. hacked in legacy stuff.
-        public EditorUtils editor_utils;
+        public EditorUtils editor_utils = null;
 
-        private string worldPath;
-        private string renderablePath;
+        private string worldPath = "";
+        private string renderablePath = "";
 
         public LevelContent(string levelName)
         {
@@ -174,10 +178,12 @@ namespace CommandsEditor
                             resource.materials = new Materials(renderablePath + "LEVEL_MODELS.MTL");
                             break;
                         case 2:
-                            //resource.textures = new Textures(renderablePath + "LEVEL_TEXTURES.ALL.PAK");
+                            resource.textures = new Textures(renderablePath + "LEVEL_TEXTURES.ALL.PAK");
                             break;
                         case 3:
-                            //resource.textures_Global = new Textures(SharedData.pathToAI + "/DATA/ENV/GLOBAL/WORLD/GLOBAL_TEXTURES.ALL.PAK");
+                            //TODO: Both of these shader parsers are considered legacy, and should be swapped to new ones when they are ready.
+                            resource.shaders = new ShadersPAK(renderablePath + "LEVEL_SHADERS_DX11.PAK"); 
+                            resource.shadersIDX = new IDXRemap(renderablePath + "LEVEL_SHADERS_DX11_IDX_REMAP.PAK"); 
                             break;
                         case 4:
                             resource.reds = new RenderableElements(worldPath + "REDS.BIN");

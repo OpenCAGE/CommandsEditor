@@ -8,11 +8,125 @@ using static CATHODE.Models;
 using Vector3D = System.Windows.Media.Media3D.Vector3D;
 using Color = System.Windows.Media.Color;
 using CathodeLib;
+using CATHODE;
+using DirectXTex;
+using System.Drawing;
+using System.Runtime.InteropServices;
+using System.Windows.Interop;
+using System.Windows;
 
 namespace AlienPAK
 {
     public static class CathodeLibExtensions
     {
+        [DllImport("gdi32.dll", EntryPoint = "DeleteObject")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool DeleteObject([In] IntPtr hObject);
+
+        /* Convert a TEX4 to DDS */
+        public static byte[] ToDDS(this Textures.TEX4 texture, bool forceLowRes = false)
+        {
+            Textures.TEX4.Part part = texture?.tex_HighRes?.Content != null && !forceLowRes ? texture.tex_HighRes : texture?.tex_LowRes?.Content != null ? texture.tex_LowRes : null;
+            if (part == null) return null;
+            DirectXTexUtility.DXGIFormat format;
+            switch (texture.Format)
+            {
+                case Textures.TextureFormat.DXGI_FORMAT_BC5_UNORM:
+                    format = DirectXTexUtility.DXGIFormat.BC5UNORM;
+                    break;
+                case Textures.TextureFormat.DXGI_FORMAT_BC1_UNORM:
+                    format = DirectXTexUtility.DXGIFormat.BC1UNORM;
+                    break;
+                case Textures.TextureFormat.DXGI_FORMAT_BC3_UNORM:
+                    format = DirectXTexUtility.DXGIFormat.BC3UNORM;
+                    break;
+                case Textures.TextureFormat.DXGI_FORMAT_B8G8R8A8_UNORM:
+                    format = DirectXTexUtility.DXGIFormat.B8G8R8A8UNORM;
+                    break;
+                case Textures.TextureFormat.SIGNED_DISTANCE_FIELD:
+                    format = DirectXTexUtility.DXGIFormat.R8UNORM;
+                    break;
+                default:
+                    format = DirectXTexUtility.DXGIFormat.BC7UNORM;
+                    break;
+            }
+            DirectXTexUtility.GenerateDDSHeader(
+                DirectXTexUtility.GenerateMataData(part.Width, part.Height, part.MipLevels, format, texture.Type == Textures.AlienTextureType.ENVIRONMENT_MAP),
+                DirectXTexUtility.DDSFlags.FORCEDX10EXT, out DirectXTexUtility.DDSHeader ddsHeader, out DirectXTexUtility.DX10Header dx10Header);
+            MemoryStream ms = new MemoryStream();
+            using (BinaryWriter bw = new BinaryWriter(ms))
+            {
+                bw.Write(DirectXTexUtility.EncodeDDSHeader(ddsHeader, dx10Header));
+                bw.Write(part.Content);
+            }
+            return ms.ToArray();
+        }
+
+        /* Convert a TEX4 to Bitmap */
+        public static Bitmap ToBitmap(this Textures.TEX4 texture, bool forceLowRes = false)
+        {
+            byte[] content = texture?.ToDDS(forceLowRes);
+            return content?.ToBitmap();
+        }
+        public static Bitmap ToBitmap(this byte[] content, bool forceLowRes = false)
+        {
+            Bitmap toReturn = null;
+            if (content == null) return null;
+            try
+            {
+                MemoryStream imageStream = new MemoryStream(content);
+                using (var image = Pfim.Pfim.FromStream(imageStream))
+                {
+                    System.Drawing.Imaging.PixelFormat format = System.Drawing.Imaging.PixelFormat.DontCare;
+                    switch (image.Format)
+                    {
+                        case Pfim.ImageFormat.Rgba32:
+                            format = System.Drawing.Imaging.PixelFormat.Format32bppArgb;
+                            break;
+                        case Pfim.ImageFormat.Rgb24:
+                            format = System.Drawing.Imaging.PixelFormat.Format24bppRgb;
+                            break;
+                        case Pfim.ImageFormat.Rgb8:
+                            format = System.Drawing.Imaging.PixelFormat.Format8bppIndexed;
+                            break;
+                        default:
+                            Console.WriteLine("Unsupported DDS: " + image.Format);
+                            break;
+                    }
+                    if (format != System.Drawing.Imaging.PixelFormat.DontCare)
+                    {
+                        var handle = GCHandle.Alloc(image.Data, GCHandleType.Pinned);
+                        try
+                        {
+                            var data = Marshal.UnsafeAddrOfPinnedArrayElement(image.Data, 0);
+                            toReturn = new Bitmap(image.Width, image.Height, image.Stride, format, data);
+                        }
+                        finally
+                        {
+                            handle.Free();
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                return null;
+            }
+            return toReturn;
+        }
+
+        /* Convert a Bitmap to ImageSource */
+        public static ImageSource ToImageSource(this Bitmap bmp)
+        {
+            var handle = bmp.GetHbitmap();
+            try
+            {
+                return Imaging.CreateBitmapSourceFromHBitmap(handle, IntPtr.Zero, Int32Rect.Empty, System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
+            }
+            finally { DeleteObject(handle); }
+        }
+
+        /* Convert a CS2 submesh to GeometryModel3D */
         public static GeometryModel3D ToGeometryModel3D(this CS2.Component.LOD.Submesh submesh)
         {
             Int32Collection indices = new Int32Collection();

@@ -280,6 +280,7 @@
     <Compile Include="Popups\ResourceDatatypeAutocomplete.Designer.cs">
       <DependentUpon>ResourceDatatypeAutocomplete.cs</DependentUpon>
     </Compile>
+    <Compile Include="Scripts\DirectXTexUtility.cs" />
     <Compile Include="Scripts\LevelContent.cs" />
     <Compile Include="Popups\Base\BaseWindow.cs">
       <SubType>Form</SubType>
