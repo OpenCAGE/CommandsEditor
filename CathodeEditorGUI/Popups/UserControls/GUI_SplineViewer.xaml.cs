@@ -8,7 +8,6 @@ using CATHODE;
 using CATHODE.Scripting;
 using System.Net.NetworkInformation;
 using System.ComponentModel;
-using static HelixToolkit.Wpf.PlyReader;
 using System.Runtime.CompilerServices;
 using System.Threading;
 
@@ -25,6 +24,7 @@ namespace CommandsEditor.Popups.UserControls
             DataContext = this;
         }
 
+        /*
         public void ShowSpline(cSpline spline, bool zoomExtents, bool isClosedLoop)
         {
             Point3DCollection data = new Point3DCollection(spline.splinePoints.Count);
@@ -46,5 +46,6 @@ namespace CommandsEditor.Popups.UserControls
         {
             billboardText.Text = "";
         }
+        */
     }
 }

@@ -31,12 +31,13 @@ namespace CommandsEditor
             splineViewer = new GUI_SplineViewer();
             modelRendererHost.Child = splineViewer;
 
-            UpdateSplineVisual();
-            pointTransform.OnValueChanged += UpdateSplineVisual;
-
-            RefreshPointList();
+            //UpdateSplineVisual();
+            //pointTransform.OnValueChanged += UpdateSplineVisual;
+            //
+            //RefreshPointList();
         }
 
+        /*
         private void UpdateSplineVisual()
         {
             splineViewer.ShowSpline(spline, firstUpdate, isClosedLoop);
@@ -57,33 +58,33 @@ namespace CommandsEditor
             else
                 splineViewer.ClearHighlight();
         }
-
+        */
         private void splinePoints_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (splinePoints.SelectedIndex == -1)
-            {
-                splineViewer.ClearHighlight();
-                pointTransform.Visible = false;
-                return;
-            }
-            pointTransform.Visible = true;
-            splineViewer.HighlightPoint(splinePoints.SelectedIndex);
-            pointTransform.PopulateUI(spline.splinePoints[splinePoints.SelectedIndex], "Spline Point " + splinePoints.SelectedIndex);
+            //if (splinePoints.SelectedIndex == -1)
+            //{
+            //    splineViewer.ClearHighlight();
+            //    pointTransform.Visible = false;
+            //    return;
+            //}
+            //pointTransform.Visible = true;
+            //splineViewer.HighlightPoint(splinePoints.SelectedIndex);
+            //pointTransform.PopulateUI(spline.splinePoints[splinePoints.SelectedIndex], "Spline Point " + splinePoints.SelectedIndex);
         }
 
         private void addPoint_Click(object sender, EventArgs e)
         {
-            spline.splinePoints.Add(new cTransform());
-            UpdateSplineVisual();
-            RefreshPointList();
+            //spline.splinePoints.Add(new cTransform());
+            //UpdateSplineVisual();
+            //RefreshPointList();
         }
 
         private void removePoint_Click(object sender, EventArgs e)
         {
-            if (splinePoints.SelectedIndex == -1) return;
-            spline.splinePoints.RemoveAt(splinePoints.SelectedIndex);
-            UpdateSplineVisual();
-            RefreshPointList();
+            //if (splinePoints.SelectedIndex == -1) return;
+            //spline.splinePoints.RemoveAt(splinePoints.SelectedIndex);
+            //UpdateSplineVisual();
+            //RefreshPointList();
         }
 
         private void saveSpline_Click(object sender, EventArgs e)
