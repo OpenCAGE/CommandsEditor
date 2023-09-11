@@ -29,7 +29,7 @@ namespace CommandsEditor.DockPanels
         private Task _currentHierarchyCacher = null;
 
         private Dictionary<Composite, CompositeDisplay> _compositeDisplays = new Dictionary<Composite, CompositeDisplay>();
-        private Composite3D renderer = null;
+        private Composite3D _renderer = null;
 
         public CommandsDisplay(string levelName)
         {
@@ -182,9 +182,9 @@ namespace CommandsEditor.DockPanels
             }
 
 #if DEBUG
-            if (renderer != null) renderer.Close();
-            renderer = new Composite3D(_compositeDisplays[composite]);
-            renderer.Show(Singleton.Editor.DockPanel, DockState.DockRight);
+            //if (_renderer != null) _renderer.Close();
+            //_renderer = new Composite3D(_compositeDisplays[composite]);
+            //_renderer.Show(Singleton.Editor.DockPanel, DockState.DockRight);
 #endif
 
             return _compositeDisplays[composite];

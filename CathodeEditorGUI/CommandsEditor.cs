@@ -4,6 +4,7 @@ using CATHODE.Scripting.Internal;
 using CathodeLib;
 using CommandsEditor.DockPanels;
 using CommandsEditor.Popups;
+using Newtonsoft.Json;
 using OpenCAGE;
 using System;
 using System.Collections.Generic;
@@ -528,7 +529,11 @@ namespace CommandsEditor
             //Request the correct level
             if (_commandsDisplay?.Content?.commands != null && _commandsDisplay.Content.commands.Loaded)
             {
-                _server.WebSocketServices["/commands_editor"].Sessions.Broadcast(((int)WebsocketServer.MessageType.LOAD_LEVEL) + _commandsDisplay.Content.level);
+                SendWebsocketData(new WebsocketServer.WSPacket { 
+                    type = WebsocketServer.MessageType.LOAD_LEVEL, 
+                    alien_path = SharedData.pathToAI, 
+                    level_name = _commandsDisplay.Content.level 
+                });
             }
 
             //Get active stuff
@@ -539,13 +544,27 @@ namespace CommandsEditor
             //Point to position of selected entity
             if (position != null)
             {
-                System.Numerics.Vector3 vec = ((cTransform)position.content).position;
-                _server.WebSocketServices["/commands_editor"].Sessions.Broadcast(((int)WebsocketServer.MessageType.GO_TO_POSITION).ToString() + vec.X + ">" + vec.Y + ">" + vec.Z);
+                SendWebsocketData(new WebsocketServer.WSPacket
+                {
+                    type = WebsocketServer.MessageType.GO_TO_POSITION,
+                    position = ((cTransform)position.content).position
+                });
             }
 
             //Show name of entity
             if (entity != null && composite != null)
-                _server.WebSocketServices["/commands_editor"].Sessions.Broadcast(((int)WebsocketServer.MessageType.SHOW_ENTITY_NAME).ToString() + EntityUtils.GetName(composite, entity));
+            {
+                SendWebsocketData(new WebsocketServer.WSPacket
+                {
+                    type = WebsocketServer.MessageType.SHOW_ENTITY_NAME,
+                    entity_name = EntityUtils.GetName(composite, entity)
+                });
+            }
+        }
+
+        private void SendWebsocketData(WebsocketServer.WSPacket content)
+        {
+            _server.WebSocketServices["/commands_editor"].Sessions.Broadcast(JsonConvert.SerializeObject(content));
         }
 
         private void showNodegraph_Click(object sender, EventArgs e)

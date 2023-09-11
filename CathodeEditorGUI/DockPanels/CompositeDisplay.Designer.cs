@@ -32,7 +32,7 @@ namespace CommandsEditor.DockPanels
             System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Variables", System.Windows.Forms.HorizontalAlignment.Left);
             System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("Functions", System.Windows.Forms.HorizontalAlignment.Left);
             System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("Proxies", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("Alias", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("Aliases", System.Windows.Forms.HorizontalAlignment.Left);
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CompositeDisplay));
             this.composite_content = new System.Windows.Forms.ListView();
             this.EntityName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -86,7 +86,7 @@ namespace CommandsEditor.DockPanels
             listViewGroup2.Name = "Functions";
             listViewGroup3.Header = "Proxies";
             listViewGroup3.Name = "Proxies";
-            listViewGroup4.Header = "Alias";
+            listViewGroup4.Header = "Aliases";
             listViewGroup4.Name = "Alias";
             this.composite_content.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
             listViewGroup1,
