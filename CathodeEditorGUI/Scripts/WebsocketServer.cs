@@ -43,10 +43,12 @@ public class WebsocketServer : WebSocketBehavior
         SYNC_VERSION,
 
         LOAD_LEVEL,
+        LOAD_COMPOSITE,
+
         GO_TO_POSITION,
         SHOW_ENTITY_NAME,
     }
-    public class WSPacket 
+    public class WSPacket
     {
         public MessageType type;
 
@@ -55,9 +57,11 @@ public class WebsocketServer : WebSocketBehavior
         public string level_name;
         public string alien_path;
 
-        public Vector3 position;
-        public Vector3 rotation;
+        public System.Numerics.Vector3 position;
+        public System.Numerics.Vector3 rotation;
 
         public string entity_name;
+
+        public string composite_name;
     }
 }

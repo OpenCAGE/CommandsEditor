@@ -537,9 +537,19 @@ namespace CommandsEditor
             }
 
             //Get active stuff
+            Composite composite = ActiveCompositeDisplay?.Composite;
             Entity entity = ActiveCompositeDisplay?.ActiveEntityDisplay?.Entity;
-            Composite composite = ActiveCompositeDisplay?.ActiveEntityDisplay?.Composite;
             Parameter position = entity?.GetParameter("position");
+
+            //Load composite
+            if (composite != null)
+            {
+                SendWebsocketData(new WebsocketServer.WSPacket
+                {
+                    type = WebsocketServer.MessageType.LOAD_COMPOSITE,
+                    composite_name = composite.name
+                });
+            }
 
             //Point to position of selected entity
             if (position != null)
