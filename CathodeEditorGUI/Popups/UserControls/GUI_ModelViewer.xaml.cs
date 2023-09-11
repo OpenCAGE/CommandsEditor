@@ -16,6 +16,7 @@ using System.Security.Cryptography;
 using System.Linq;
 using System.Drawing.Drawing2D;
 using System.Resources;
+using OpenCAGE;
 
 namespace CommandsEditor.Popups.UserControls
 {
@@ -49,23 +50,26 @@ namespace CommandsEditor.Popups.UserControls
             GeometryModel3D submeshGeo = submesh.ToGeometryModel3D();
 
             //Get material & texture data
-            try
+            if (SettingsManager.GetBool("CS_ShowTextures"))
             {
-                ShadersPAK.ShaderMaterialMetadata mdlMeta = _content.resource.shaders.GetMaterialMetadataFromShader(_content.resource.materials.GetAtWriteIndex(materialIndex == -1 ? submesh.MaterialLibraryIndex : materialIndex), _content.resource.shadersIDX);
-                ShadersPAK.MaterialTextureContext mdlMetaDiff = mdlMeta.textures.FirstOrDefault(o => o.Type == ShadersPAK.ShaderSlot.DIFFUSE_MAP);
-                if (mdlMetaDiff != null)
+                try
                 {
-                    Textures tex = mdlMetaDiff.TextureInfo.Source == Texture.TextureSource.GLOBAL ? _content.resource.textures_global : _content.resource.textures;
-                    Textures.TEX4 diff = tex.GetAtWriteIndex(mdlMetaDiff.TextureInfo.BinIndex);
-                    byte[] diffDDS = diff?.ToDDS();
-                    DiffuseMaterial mat = new DiffuseMaterial(new ImageBrush(diffDDS?.ToBitmap()?.ToImageSource()));
-                    submeshGeo.Material = mat;
-                    //TODO: normals?
+                    ShadersPAK.ShaderMaterialMetadata mdlMeta = _content.resource.shaders.GetMaterialMetadataFromShader(_content.resource.materials.GetAtWriteIndex(materialIndex == -1 ? submesh.MaterialLibraryIndex : materialIndex), _content.resource.shadersIDX);
+                    ShadersPAK.MaterialTextureContext mdlMetaDiff = mdlMeta.textures.FirstOrDefault(o => o.Type == ShadersPAK.ShaderSlot.DIFFUSE_MAP);
+                    if (mdlMetaDiff != null)
+                    {
+                        Textures tex = mdlMetaDiff.TextureInfo.Source == Texture.TextureSource.GLOBAL ? _content.resource.textures_global : _content.resource.textures;
+                        Textures.TEX4 diff = tex.GetAtWriteIndex(mdlMetaDiff.TextureInfo.BinIndex);
+                        byte[] diffDDS = diff?.ToDDS();
+                        DiffuseMaterial mat = new DiffuseMaterial(new ImageBrush(diffDDS?.ToBitmap()?.ToImageSource()));
+                        submeshGeo.Material = mat;
+                        //TODO: normals?
+                    }
                 }
-            }
-            catch (Exception ex2)
-            {
-                Console.WriteLine(ex2.ToString());
+                catch (Exception ex2)
+                {
+                    Console.WriteLine(ex2.ToString());
+                }
             }
 
             //Get transform data

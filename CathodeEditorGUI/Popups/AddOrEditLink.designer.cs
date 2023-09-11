@@ -41,6 +41,8 @@ namespace CommandsEditor
             this.label6 = new System.Windows.Forms.Label();
             this.save_pin = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.selectEntityOut = new System.Windows.Forms.Button();
+            this.selectEntityIn = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -57,6 +59,7 @@ namespace CommandsEditor
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.selectEntityOut);
             this.groupBox1.Controls.Add(this.parentParameterList);
             this.groupBox1.Controls.Add(this.parentEntityList);
             this.groupBox1.Controls.Add(this.label2);
@@ -68,20 +71,20 @@ namespace CommandsEditor
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Pin Out";
             // 
-            // pin_out_param
+            // parentParameterList
             // 
             this.parentParameterList.FormattingEnabled = true;
             this.parentParameterList.Location = new System.Drawing.Point(16, 79);
-            this.parentParameterList.Name = "pin_out_param";
+            this.parentParameterList.Name = "parentParameterList";
             this.parentParameterList.Size = new System.Drawing.Size(844, 21);
             this.parentParameterList.TabIndex = 8;
             // 
-            // pin_out_node
+            // parentEntityList
             // 
             this.parentEntityList.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.parentEntityList.FormattingEnabled = true;
             this.parentEntityList.Location = new System.Drawing.Point(16, 40);
-            this.parentEntityList.Name = "pin_out_node";
+            this.parentEntityList.Name = "parentEntityList";
             this.parentEntityList.Size = new System.Drawing.Size(844, 21);
             this.parentEntityList.TabIndex = 6;
             this.parentEntityList.SelectedIndexChanged += new System.EventHandler(this.pin_out_node_SelectedIndexChanged);
@@ -97,6 +100,7 @@ namespace CommandsEditor
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.selectEntityIn);
             this.groupBox2.Controls.Add(this.childParameterList);
             this.groupBox2.Controls.Add(this.label1);
             this.groupBox2.Controls.Add(this.childEntityList);
@@ -108,11 +112,11 @@ namespace CommandsEditor
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Pin In";
             // 
-            // pin_in_param
+            // childParameterList
             // 
             this.childParameterList.FormattingEnabled = true;
             this.childParameterList.Location = new System.Drawing.Point(16, 80);
-            this.childParameterList.Name = "pin_in_param";
+            this.childParameterList.Name = "childParameterList";
             this.childParameterList.Size = new System.Drawing.Size(844, 21);
             this.childParameterList.TabIndex = 9;
             // 
@@ -125,12 +129,12 @@ namespace CommandsEditor
             this.label1.TabIndex = 6;
             this.label1.Text = "Parameter on this entity";
             // 
-            // pin_in_node
+            // childEntityList
             // 
             this.childEntityList.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.childEntityList.FormattingEnabled = true;
             this.childEntityList.Location = new System.Drawing.Point(16, 40);
-            this.childEntityList.Name = "pin_in_node";
+            this.childEntityList.Name = "childEntityList";
             this.childEntityList.Size = new System.Drawing.Size(844, 21);
             this.childEntityList.TabIndex = 1;
             this.childEntityList.SelectedIndexChanged += new System.EventHandler(this.pin_in_node_SelectedIndexChanged);
@@ -165,7 +169,27 @@ namespace CommandsEditor
             this.pictureBox1.TabIndex = 12;
             this.pictureBox1.TabStop = false;
             // 
-            // CathodeEditorGUI_AddPin
+            // selectEntityOut
+            // 
+            this.selectEntityOut.Location = new System.Drawing.Point(718, 39);
+            this.selectEntityOut.Name = "selectEntityOut";
+            this.selectEntityOut.Size = new System.Drawing.Size(142, 23);
+            this.selectEntityOut.TabIndex = 13;
+            this.selectEntityOut.Text = "Select Entity";
+            this.selectEntityOut.UseVisualStyleBackColor = true;
+            this.selectEntityOut.Click += new System.EventHandler(this.selectEntityOut_Click);
+            // 
+            // selectEntityIn
+            // 
+            this.selectEntityIn.Location = new System.Drawing.Point(718, 39);
+            this.selectEntityIn.Name = "selectEntityIn";
+            this.selectEntityIn.Size = new System.Drawing.Size(142, 23);
+            this.selectEntityIn.TabIndex = 14;
+            this.selectEntityIn.Text = "Select Entity";
+            this.selectEntityIn.UseVisualStyleBackColor = true;
+            this.selectEntityIn.Click += new System.EventHandler(this.selectEntityIn_Click);
+            // 
+            // AddOrEditLink
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -177,7 +201,7 @@ namespace CommandsEditor
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.Name = "CathodeEditorGUI_AddPin";
+            this.Name = "AddOrEditLink";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Edit Entity Pin Link";
             this.groupBox1.ResumeLayout(false);
@@ -202,5 +226,7 @@ namespace CommandsEditor
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.ComboBox parentParameterList;
         private System.Windows.Forms.ComboBox childParameterList;
+        private System.Windows.Forms.Button selectEntityOut;
+        private System.Windows.Forms.Button selectEntityIn;
     }
 }

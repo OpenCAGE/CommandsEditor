@@ -43,6 +43,7 @@
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.showNodegraph = new System.Windows.Forms.ToolStripMenuItem();
             this.showEntityIDs = new System.Windows.Forms.ToolStripMenuItem();
+            this.showConfirmationWhenSavingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.searchOnlyCompositeNames = new System.Windows.Forms.ToolStripMenuItem();
             this.compositesOpenTabs = new System.Windows.Forms.ToolStripMenuItem();
             this.entitiesOpenTabs = new System.Windows.Forms.ToolStripMenuItem();
@@ -52,7 +53,7 @@
             this.statusText = new System.Windows.Forms.ToolStripStatusLabel();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.showConfirmationWhenSavingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.useTexturedModelViewExperimentalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -83,7 +84,7 @@
             // loadLevel
             // 
             this.loadLevel.Name = "loadLevel";
-            this.loadLevel.Size = new System.Drawing.Size(180, 22);
+            this.loadLevel.Size = new System.Drawing.Size(168, 22);
             this.loadLevel.Text = "Load Level";
             // 
             // saveLevel
@@ -91,7 +92,7 @@
             this.saveLevel.Name = "saveLevel";
             this.saveLevel.ShortcutKeyDisplayString = "Ctrl+S";
             this.saveLevel.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveLevel.Size = new System.Drawing.Size(180, 22);
+            this.saveLevel.Size = new System.Drawing.Size(168, 22);
             this.saveLevel.Text = "Save Level";
             this.saveLevel.Click += new System.EventHandler(this.saveLevel_Click);
             // 
@@ -109,7 +110,8 @@
             this.showConfirmationWhenSavingToolStripMenuItem,
             this.searchOnlyCompositeNames,
             this.compositesOpenTabs,
-            this.entitiesOpenTabs});
+            this.entitiesOpenTabs,
+            this.useTexturedModelViewExperimentalToolStripMenuItem});
             this.toolStripButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton2.Image")));
             this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton2.Name = "toolStripButton2";
@@ -119,7 +121,7 @@
             // enableInstanceMode
             // 
             this.enableInstanceMode.Name = "enableInstanceMode";
-            this.enableInstanceMode.Size = new System.Drawing.Size(238, 22);
+            this.enableInstanceMode.Size = new System.Drawing.Size(286, 22);
             this.enableInstanceMode.Text = "Instance Mode";
             this.enableInstanceMode.ToolTipText = "Enable instance mode to modify entity instances.";
             this.enableInstanceMode.Click += new System.EventHandler(this.enableInstanceMode_Click);
@@ -127,14 +129,14 @@
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(235, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(283, 6);
             // 
             // enableBackups
             // 
             this.enableBackups.Checked = true;
             this.enableBackups.CheckState = System.Windows.Forms.CheckState.Checked;
             this.enableBackups.Name = "enableBackups";
-            this.enableBackups.Size = new System.Drawing.Size(238, 22);
+            this.enableBackups.Size = new System.Drawing.Size(286, 22);
             this.enableBackups.Text = "Enable Backups";
             this.enableBackups.ToolTipText = "Enable automated backups every 5 minutes.";
             this.enableBackups.Click += new System.EventHandler(this.enableBackups_Click);
@@ -144,7 +146,7 @@
             this.connectToUnity.Checked = true;
             this.connectToUnity.CheckState = System.Windows.Forms.CheckState.Checked;
             this.connectToUnity.Name = "connectToUnity";
-            this.connectToUnity.Size = new System.Drawing.Size(238, 22);
+            this.connectToUnity.Size = new System.Drawing.Size(286, 22);
             this.connectToUnity.Text = "Connect to Unity";
             this.connectToUnity.ToolTipText = "Enable a websocket connection to the Unity Level Viewer.";
             this.connectToUnity.Click += new System.EventHandler(this.connectToUnity_Click);
@@ -152,14 +154,14 @@
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(235, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(283, 6);
             // 
             // showNodegraph
             // 
             this.showNodegraph.Checked = true;
             this.showNodegraph.CheckState = System.Windows.Forms.CheckState.Checked;
             this.showNodegraph.Name = "showNodegraph";
-            this.showNodegraph.Size = new System.Drawing.Size(238, 22);
+            this.showNodegraph.Size = new System.Drawing.Size(286, 22);
             this.showNodegraph.Text = "Show Nodegraph";
             this.showNodegraph.ToolTipText = "Show the nodegraph view for the currently selected entity.";
             this.showNodegraph.Click += new System.EventHandler(this.showNodegraph_Click);
@@ -167,15 +169,23 @@
             // showEntityIDs
             // 
             this.showEntityIDs.Name = "showEntityIDs";
-            this.showEntityIDs.Size = new System.Drawing.Size(238, 22);
+            this.showEntityIDs.Size = new System.Drawing.Size(286, 22);
             this.showEntityIDs.Text = "Show Entity IDs";
             this.showEntityIDs.ToolTipText = "Show entity IDs within the editor UI.";
             this.showEntityIDs.Click += new System.EventHandler(this.showEntityIDs_Click);
             // 
+            // showConfirmationWhenSavingToolStripMenuItem
+            // 
+            this.showConfirmationWhenSavingToolStripMenuItem.Name = "showConfirmationWhenSavingToolStripMenuItem";
+            this.showConfirmationWhenSavingToolStripMenuItem.Size = new System.Drawing.Size(286, 22);
+            this.showConfirmationWhenSavingToolStripMenuItem.Text = "Show Confirmation When Saving";
+            this.showConfirmationWhenSavingToolStripMenuItem.ToolTipText = "If enabled, a confirmation will show after a successful save.";
+            this.showConfirmationWhenSavingToolStripMenuItem.Click += new System.EventHandler(this.showConfirmationWhenSavingToolStripMenuItem_Click);
+            // 
             // searchOnlyCompositeNames
             // 
             this.searchOnlyCompositeNames.Name = "searchOnlyCompositeNames";
-            this.searchOnlyCompositeNames.Size = new System.Drawing.Size(238, 22);
+            this.searchOnlyCompositeNames.Size = new System.Drawing.Size(286, 22);
             this.searchOnlyCompositeNames.Text = "Search Only Composite Names";
             this.searchOnlyCompositeNames.ToolTipText = "Enable this option to exclude folder names from the composite search.";
             this.searchOnlyCompositeNames.Click += new System.EventHandler(this.searchOnlyCompositeNames_Click);
@@ -183,14 +193,14 @@
             // compositesOpenTabs
             // 
             this.compositesOpenTabs.Name = "compositesOpenTabs";
-            this.compositesOpenTabs.Size = new System.Drawing.Size(238, 22);
+            this.compositesOpenTabs.Size = new System.Drawing.Size(286, 22);
             this.compositesOpenTabs.Text = "Open Composites In New Tabs";
             this.compositesOpenTabs.Click += new System.EventHandler(this.compositesOpenTabs_Click);
             // 
             // entitiesOpenTabs
             // 
             this.entitiesOpenTabs.Name = "entitiesOpenTabs";
-            this.entitiesOpenTabs.Size = new System.Drawing.Size(238, 22);
+            this.entitiesOpenTabs.Size = new System.Drawing.Size(286, 22);
             this.entitiesOpenTabs.Text = "Open Entities In New Tabs";
             this.entitiesOpenTabs.Click += new System.EventHandler(this.entitiesOpenTabs_Click);
             // 
@@ -225,13 +235,12 @@
             this.dockPanel.TabIndex = 5;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
             // 
-            // showConfirmationWhenSavingToolStripMenuItem
+            // useTexturedModelViewExperimentalToolStripMenuItem
             // 
-            this.showConfirmationWhenSavingToolStripMenuItem.Name = "showConfirmationWhenSavingToolStripMenuItem";
-            this.showConfirmationWhenSavingToolStripMenuItem.Size = new System.Drawing.Size(249, 22);
-            this.showConfirmationWhenSavingToolStripMenuItem.Text = "Show Confirmation When Saving";
-            this.showConfirmationWhenSavingToolStripMenuItem.ToolTipText = "If enabled, a confirmation will show after a successful save.";
-            this.showConfirmationWhenSavingToolStripMenuItem.Click += new System.EventHandler(this.showConfirmationWhenSavingToolStripMenuItem_Click);
+            this.useTexturedModelViewExperimentalToolStripMenuItem.Name = "useTexturedModelViewExperimentalToolStripMenuItem";
+            this.useTexturedModelViewExperimentalToolStripMenuItem.Size = new System.Drawing.Size(286, 22);
+            this.useTexturedModelViewExperimentalToolStripMenuItem.Text = "Use Textured Model View (Experimental)";
+            this.useTexturedModelViewExperimentalToolStripMenuItem.Click += new System.EventHandler(this.useTexturedModelViewExperimentalToolStripMenuItem_Click);
             // 
             // CommandsEditor
             // 
@@ -279,5 +288,6 @@
         private System.Windows.Forms.ToolStripMenuItem compositesOpenTabs;
         private System.Windows.Forms.ToolStripMenuItem entitiesOpenTabs;
         private System.Windows.Forms.ToolStripMenuItem showConfirmationWhenSavingToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem useTexturedModelViewExperimentalToolStripMenuItem;
     }
 }

@@ -51,6 +51,7 @@ namespace CommandsEditor
         private readonly string _useCompTabsOpt = "CS_UseCompositeTabs";
         private readonly string _useEntTabsOpt = "CS_UseEntityTabs";
         private readonly string _showSavedMsgOpt = "CS_ShowSavedNotif";
+        private readonly string _showTexOpt = "CS_ShowTextures";
 
         public CommandsEditor(string level = null)
         {
@@ -68,6 +69,7 @@ namespace CommandsEditor
             showNodegraph.Checked = !SettingsManager.GetBool(_nodeOpt); showNodegraph.PerformClick();
             showEntityIDs.Checked = !SettingsManager.GetBool(_entIdOpt); showEntityIDs.PerformClick();
             searchOnlyCompositeNames.Checked = !SettingsManager.GetBool(_compNameOnlyOpt); searchOnlyCompositeNames.PerformClick();
+            useTexturedModelViewExperimentalToolStripMenuItem.Checked = !SettingsManager.GetBool(_showTexOpt); useTexturedModelViewExperimentalToolStripMenuItem.PerformClick();
 
             if (!SettingsManager.IsSet(_useCompTabsOpt)) SettingsManager.SetBool(_useCompTabsOpt, true);
             compositesOpenTabs.Checked = !SettingsManager.GetBool(_useCompTabsOpt); compositesOpenTabs.PerformClick();
@@ -625,6 +627,12 @@ namespace CommandsEditor
         {
             showConfirmationWhenSavingToolStripMenuItem.Checked = !showConfirmationWhenSavingToolStripMenuItem.Checked;
             SettingsManager.SetBool(_showSavedMsgOpt, showConfirmationWhenSavingToolStripMenuItem.Checked);
+        }
+
+        private void useTexturedModelViewExperimentalToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            useTexturedModelViewExperimentalToolStripMenuItem.Checked = !useTexturedModelViewExperimentalToolStripMenuItem.Checked;
+            SettingsManager.SetBool(_showTexOpt, useTexturedModelViewExperimentalToolStripMenuItem.Checked);
         }
     }
 }

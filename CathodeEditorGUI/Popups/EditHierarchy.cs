@@ -28,12 +28,13 @@ namespace CommandsEditor
         private bool onlyShowFunctions = false;
 
         //PROXIES can only point to FunctionEntities - ALIASES can point to FunctionEntities, ProxyEntities, VariableEntities
-        public EditHierarchy(LevelContent content, Composite startingComposite, bool onlyFunctions) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, content)
+        public EditHierarchy(LevelContent content, Composite startingComposite, bool onlyFunctions, bool allowFollowThrough = true) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, content)
         {
             onlyShowFunctions = onlyFunctions;
 
             InitializeComponent();
             LoadComposite(startingComposite.name);
+            FollowEntityThrough.Visible = allowFollowThrough;
         }
 
         /* Search the list */
