@@ -26,11 +26,13 @@ namespace CommandsEditor
         private Composite selectedComposite = null;
 
         private bool onlyShowFunctions = false;
+        private bool showAliases = false;
 
         //PROXIES can only point to FunctionEntities - ALIASES can point to FunctionEntities, ProxyEntities, VariableEntities
-        public EditHierarchy(LevelContent content, Composite startingComposite, bool onlyFunctions, bool allowFollowThrough = true) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, content)
+        public EditHierarchy(LevelContent content, Composite startingComposite, bool onlyFunctions, bool allowFollowThrough = true, bool showAliases = false) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, content)
         {
             onlyShowFunctions = onlyFunctions;
+            this.showAliases = showAliases;
 
             InitializeComponent();
             LoadComposite(startingComposite.name);
@@ -106,6 +108,15 @@ namespace CommandsEditor
                 for (int i = 0; i < selectedComposite.variables.Count; i++)
                 {
                     string desc = Content.editor_utils.GenerateEntityName(selectedComposite.variables[i], selectedComposite);
+                    composite_content.Items.Add(desc);
+                    composite_content_RAW.Add(desc);
+                }
+            }
+            if (showAliases)
+            {
+                for (int i = 0; i < selectedComposite.aliases.Count; i++)
+                {
+                    string desc = Content.editor_utils.GenerateEntityName(selectedComposite.aliases[i], selectedComposite);
                     composite_content.Items.Add(desc);
                     composite_content_RAW.Add(desc);
                 }
