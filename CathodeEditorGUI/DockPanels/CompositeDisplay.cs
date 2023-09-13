@@ -35,8 +35,6 @@ namespace CommandsEditor.DockPanels
         private EntityDisplay _activeEntityDisplay = null;
         public EntityDisplay ActiveEntityDisplay => _activeEntityDisplay;
 
-        private Task _exportCheck = null;
-        private CancellationToken _exportCheckToken;
         private static Mutex _mut = new Mutex();
         private bool _canExportChildren = true;
 
@@ -63,13 +61,8 @@ namespace CommandsEditor.DockPanels
             PopulateListView(_composite.GetEntities());
             if (alsoReloadEntities) ReloadAllEntities();
 
-            CancellationTokenSource tokenSource = new CancellationTokenSource();
-            _exportCheckToken = tokenSource.Token;
-            if (_exportCheck != null) tokenSource.Cancel();
-            while (_exportCheck != null) Thread.Sleep(100);
-
             exportComposite.Enabled = false;
-            _exportCheck = Task.Factory.StartNew(() => UpdateExportCompositeVisibility());
+            Task.Factory.StartNew(() => UpdateExportCompositeVisibility());
         }
 
         /* Work out if we can export this composite: for now, we can't export composites that contain any resources, as the resource pointers would be wrong */
@@ -79,11 +72,6 @@ namespace CommandsEditor.DockPanels
             {
                 _canExportChildren = true;
                 bool visible = !DoesCompositeContainResource(_composite);
-                if (_exportCheckToken.IsCancellationRequested)
-                {
-                    _exportCheck = null;
-                    return;
-                }
                 EnableDisableButtonRun(visible);
             }
             catch { }
@@ -103,7 +91,8 @@ namespace CommandsEditor.DockPanels
         }
         private bool DoesCompositeContainResource(Composite comp)
         {
-            foreach (FunctionEntity ent in comp.functions)
+            bool found = false;
+            Parallel.ForEach(comp.functions, (ent, state) =>
             {
                 if (_canExportChildren && !CommandsUtils.FunctionTypeExists(ent.function))
                 {
@@ -120,13 +109,19 @@ namespace CommandsEditor.DockPanels
                 }
 
                 if (ent.resources.Count != 0)
-                    return true;
+                {
+                    found = true;
+                    state.Stop();
+                }
 
                 Parameter resources = ent.GetParameter("resource");
                 if (resources != null && ((cResource)resources.content).value.Count != 0)
-                    return true;
-            }
-            return false;
+                {
+                    found = true;
+                    state.Stop();
+                }
+            });
+            return found;
         }
 
         /* Reload all entities loaded in this display */
