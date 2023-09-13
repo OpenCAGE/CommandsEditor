@@ -47,13 +47,13 @@
             this.searchOnlyCompositeNames = new System.Windows.Forms.ToolStripMenuItem();
             this.compositesOpenTabs = new System.Windows.Forms.ToolStripMenuItem();
             this.entitiesOpenTabs = new System.Windows.Forms.ToolStripMenuItem();
+            this.useTexturedModelViewExperimentalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
             this.vS2015LightTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.statusText = new System.Windows.Forms.ToolStripStatusLabel();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.useTexturedModelViewExperimentalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -137,8 +137,9 @@
             this.enableBackups.CheckState = System.Windows.Forms.CheckState.Checked;
             this.enableBackups.Name = "enableBackups";
             this.enableBackups.Size = new System.Drawing.Size(286, 22);
-            this.enableBackups.Text = "Enable Backups";
-            this.enableBackups.ToolTipText = "Enable automated backups every 5 minutes.";
+            this.enableBackups.Text = "Autosave (every 5 mins)";
+            this.enableBackups.ToolTipText = "If checked, the editor will automatically save the level every 5 minutes.";
+            this.enableBackups.Visible = false;
             this.enableBackups.Click += new System.EventHandler(this.enableBackups_Click);
             // 
             // connectToUnity
@@ -204,6 +205,13 @@
             this.entitiesOpenTabs.Text = "Open Entities In New Tabs";
             this.entitiesOpenTabs.Click += new System.EventHandler(this.entitiesOpenTabs_Click);
             // 
+            // useTexturedModelViewExperimentalToolStripMenuItem
+            // 
+            this.useTexturedModelViewExperimentalToolStripMenuItem.Name = "useTexturedModelViewExperimentalToolStripMenuItem";
+            this.useTexturedModelViewExperimentalToolStripMenuItem.Size = new System.Drawing.Size(286, 22);
+            this.useTexturedModelViewExperimentalToolStripMenuItem.Text = "Use Textured Model View (Experimental)";
+            this.useTexturedModelViewExperimentalToolStripMenuItem.Click += new System.EventHandler(this.useTexturedModelViewExperimentalToolStripMenuItem_Click);
+            // 
             // statusStrip
             // 
             this.statusStrip.BackColor = System.Drawing.Color.Black;
@@ -234,13 +242,6 @@
             this.dockPanel.Size = new System.Drawing.Size(1257, 757);
             this.dockPanel.TabIndex = 5;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
-            // 
-            // useTexturedModelViewExperimentalToolStripMenuItem
-            // 
-            this.useTexturedModelViewExperimentalToolStripMenuItem.Name = "useTexturedModelViewExperimentalToolStripMenuItem";
-            this.useTexturedModelViewExperimentalToolStripMenuItem.Size = new System.Drawing.Size(286, 22);
-            this.useTexturedModelViewExperimentalToolStripMenuItem.Text = "Use Textured Model View (Experimental)";
-            this.useTexturedModelViewExperimentalToolStripMenuItem.Click += new System.EventHandler(this.useTexturedModelViewExperimentalToolStripMenuItem_Click);
             // 
             // CommandsEditor
             // 

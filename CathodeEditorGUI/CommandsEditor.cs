@@ -44,7 +44,7 @@ namespace CommandsEditor
 
         //TODO: make thse globally available
         private readonly string _serverOpt = "CE_ConnectToUnity";
-        private readonly string _backupsOpt = "CS_EnableBackups";
+        private readonly string _backupsOpt = "CS_Autosave";
         private readonly string _nodeOpt = "CS_NodeView";
         private readonly string _entIdOpt = "CS_ShowEntityIDs";
         private readonly string _instOpt = "CS_InstanceMode";
@@ -65,7 +65,9 @@ namespace CommandsEditor
             Singleton.OnCompositeSelected += RefreshWebsocket;
             Singleton.OnLevelLoaded += RefreshWebsocket;
 
+            if (!SettingsManager.IsSet(_backupsOpt)) SettingsManager.SetBool(_backupsOpt, true);
             enableBackups.Checked = !SettingsManager.GetBool(_backupsOpt); enableBackups.PerformClick();
+
             connectToUnity.Checked = !SettingsManager.GetBool(_serverOpt); connectToUnity.PerformClick();
             showNodegraph.Checked = !SettingsManager.GetBool(_nodeOpt); showNodegraph.PerformClick();
             showEntityIDs.Checked = !SettingsManager.GetBool(_entIdOpt); showEntityIDs.PerformClick();
@@ -276,9 +278,15 @@ namespace CommandsEditor
             statusText.Text = "";
             Cursor.Current = Cursors.Default;
 
+            ShowSaveMsg(saved);
+        }
+        private void ShowSaveMsg(bool saved)
+        {
             if (saved)
+            {
                 if (SettingsManager.GetBool(_showSavedMsgOpt))
                     MessageBox.Show("Saved changes!", "Saved.", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
             else
                 MessageBox.Show("Failed to save changes!", "Failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
@@ -467,8 +475,12 @@ namespace CommandsEditor
                 }
 
                 if (_commandsDisplay.Content.commands == null) continue;
-                mainInst.EnableLoadingOfPaks(false, "Performing automated backup...");
+                mainInst.EnableLoadingOfPaks(false, "Autosaving...");
 
+                bool saved = LegacySave();
+                ShowSaveMsg(saved);
+
+                /*
                 string backupDirectory = _commandsDisplay.Content.commands.Filepath.Substring(0, _commandsDisplay.Content.commands.Filepath.Length - Path.GetFileName(_commandsDisplay.Content.commands.Filepath).Length) + "/COMMANDS_BACKUPS/";
                 Directory.CreateDirectory(backupDirectory);
 
@@ -477,6 +489,8 @@ namespace CommandsEditor
                 files.ForEach(f => f.Delete());
 
                 _commandsDisplay.Content.commands.Save(backupDirectory + "COMMANDS_" + DateTimeOffset.UtcNow.ToUnixTimeSeconds() + ".PAK", false);
+                */
+
                 mainInst.EnableLoadingOfPaks(true, "");
             }
         }
