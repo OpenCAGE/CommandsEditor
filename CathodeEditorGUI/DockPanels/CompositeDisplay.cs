@@ -175,7 +175,7 @@ namespace CommandsEditor.DockPanels
             composite_content.Items.Clear();
 
             bool hasID = composite_content.Columns.ContainsKey("ID");
-            bool showID = SettingsManager.GetBool("CS_ShowEntityIDs");
+            bool showID = SettingsManager.GetBool(Singleton.Settings.EntIdOpt);
             if (showID && !hasID)
                 composite_content.Columns.Add(new ColumnHeader() { Name = "ID", Text = "ID", Width = 100 });
             else if (!showID && hasID)
@@ -227,7 +227,7 @@ namespace CommandsEditor.DockPanels
         {
             if (entity == null) return;
 
-            if (SettingsManager.GetBool("CS_UseEntityTabs") == false)
+            if (SettingsManager.GetBool(Singleton.Settings.UseEntTabsOpt) == false)
                 CloseAllChildTabs();
 
             if (_entityDisplays.ContainsKey(entity))

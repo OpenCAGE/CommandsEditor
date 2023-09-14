@@ -107,7 +107,7 @@ namespace CommandsEditor
 
         private SynchronizedCollection<EntityRef> GetEntityRefs(CurrentDisplay display)
         {
-            bool showIDs = SettingsManager.GetBool("CS_ShowEntityIDs");
+            bool showIDs = SettingsManager.GetBool(Singleton.Settings.EntIdOpt);
             SynchronizedCollection<EntityRef> entityRefs = new SynchronizedCollection<EntityRef>();
             Parallel.ForEach(Content.commands.Entries, (comp) =>
             {

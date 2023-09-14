@@ -42,18 +42,6 @@ namespace CommandsEditor
 
         private Dictionary<string, ToolStripMenuItem> _levelMenuItems = new Dictionary<string, ToolStripMenuItem>();
 
-        //TODO: make thse globally available
-        private readonly string _serverOpt = "CE_ConnectToUnity";
-        private readonly string _backupsOpt = "CS_Autosave";
-        private readonly string _nodeOpt = "CS_NodeView";
-        private readonly string _entIdOpt = "CS_ShowEntityIDs";
-        private readonly string _instOpt = "CS_InstanceMode";
-        private readonly string _compNameOnlyOpt = "CS_SearchOnlyCompName";
-        private readonly string _useCompTabsOpt = "CS_UseCompositeTabs";
-        private readonly string _useEntTabsOpt = "CS_UseEntityTabs";
-        private readonly string _showSavedMsgOpt = "CS_ShowSavedNotif";
-        private readonly string _showTexOpt = "CS_ShowTextures";
-
         public CommandsEditor(string level = null)
         {
             Singleton.Editor = this;
@@ -65,23 +53,23 @@ namespace CommandsEditor
             Singleton.OnCompositeSelected += RefreshWebsocket;
             Singleton.OnLevelLoaded += RefreshWebsocket;
 
-            if (!SettingsManager.IsSet(_backupsOpt)) SettingsManager.SetBool(_backupsOpt, true);
-            enableBackups.Checked = !SettingsManager.GetBool(_backupsOpt); enableBackups.PerformClick();
+            if (!SettingsManager.IsSet(Singleton.Settings.BackupsOpt)) SettingsManager.SetBool(Singleton.Settings.BackupsOpt, true);
+            enableBackups.Checked = !SettingsManager.GetBool(Singleton.Settings.BackupsOpt); enableBackups.PerformClick();
 
-            connectToUnity.Checked = !SettingsManager.GetBool(_serverOpt); connectToUnity.PerformClick();
-            showNodegraph.Checked = !SettingsManager.GetBool(_nodeOpt); showNodegraph.PerformClick();
-            showEntityIDs.Checked = !SettingsManager.GetBool(_entIdOpt); showEntityIDs.PerformClick();
-            searchOnlyCompositeNames.Checked = !SettingsManager.GetBool(_compNameOnlyOpt); searchOnlyCompositeNames.PerformClick();
-            useTexturedModelViewExperimentalToolStripMenuItem.Checked = !SettingsManager.GetBool(_showTexOpt); useTexturedModelViewExperimentalToolStripMenuItem.PerformClick();
+            connectToUnity.Checked = !SettingsManager.GetBool(Singleton.Settings.ServerOpt); connectToUnity.PerformClick();
+            showNodegraph.Checked = !SettingsManager.GetBool(Singleton.Settings.NodeOpt); showNodegraph.PerformClick();
+            showEntityIDs.Checked = !SettingsManager.GetBool(Singleton.Settings.EntIdOpt); showEntityIDs.PerformClick();
+            searchOnlyCompositeNames.Checked = !SettingsManager.GetBool(Singleton.Settings.CompNameOnlyOpt); searchOnlyCompositeNames.PerformClick();
+            useTexturedModelViewExperimentalToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.ShowTexOpt); useTexturedModelViewExperimentalToolStripMenuItem.PerformClick();
 
-            if (!SettingsManager.IsSet(_useCompTabsOpt)) SettingsManager.SetBool(_useCompTabsOpt, true);
-            compositesOpenTabs.Checked = !SettingsManager.GetBool(_useCompTabsOpt); compositesOpenTabs.PerformClick();
+            if (!SettingsManager.IsSet(Singleton.Settings.UseCompTabsOpt)) SettingsManager.SetBool(Singleton.Settings.UseCompTabsOpt, true);
+            compositesOpenTabs.Checked = !SettingsManager.GetBool(Singleton.Settings.UseCompTabsOpt); compositesOpenTabs.PerformClick();
 
-            if (!SettingsManager.IsSet(_useEntTabsOpt)) SettingsManager.SetBool(_useEntTabsOpt, true);
-            entitiesOpenTabs.Checked = !SettingsManager.GetBool(_useEntTabsOpt); entitiesOpenTabs.PerformClick();
+            if (!SettingsManager.IsSet(Singleton.Settings.UseEntTabsOpt)) SettingsManager.SetBool(Singleton.Settings.UseEntTabsOpt, true);
+            entitiesOpenTabs.Checked = !SettingsManager.GetBool(Singleton.Settings.UseEntTabsOpt); entitiesOpenTabs.PerformClick();
 
-            if (!SettingsManager.IsSet(_showSavedMsgOpt)) SettingsManager.SetBool(_showSavedMsgOpt, true);
-            showConfirmationWhenSavingToolStripMenuItem.Checked = !SettingsManager.GetBool(_showSavedMsgOpt); showConfirmationWhenSavingToolStripMenuItem.PerformClick();
+            if (!SettingsManager.IsSet(Singleton.Settings.ShowSavedMsgOpt)) SettingsManager.SetBool(Singleton.Settings.ShowSavedMsgOpt, true);
+            showConfirmationWhenSavingToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.ShowSavedMsgOpt); showConfirmationWhenSavingToolStripMenuItem.PerformClick();
 
             //Set title
             this.Text = "OpenCAGE Commands Editor";
@@ -284,7 +272,7 @@ namespace CommandsEditor
         {
             if (saved)
             {
-                if (SettingsManager.GetBool(_showSavedMsgOpt))
+                if (SettingsManager.GetBool(Singleton.Settings.ShowSavedMsgOpt))
                     MessageBox.Show("Saved changes!", "Saved.", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
@@ -447,7 +435,7 @@ namespace CommandsEditor
         private void enableBackups_Click(object sender, EventArgs e)
         {
             enableBackups.Checked = !enableBackups.Checked;
-            SettingsManager.SetBool(_backupsOpt, enableBackups.Checked);
+            SettingsManager.SetBool(Singleton.Settings.BackupsOpt, enableBackups.Checked);
 
             CancellationTokenSource tokenSource = new CancellationTokenSource();
             backupCancellationToken = tokenSource.Token;
@@ -499,7 +487,7 @@ namespace CommandsEditor
         private void connectToUnity_Click(object sender, EventArgs e)
         {
             connectToUnity.Checked = !connectToUnity.Checked;
-            SettingsManager.SetBool(_serverOpt, connectToUnity.Checked);
+            SettingsManager.SetBool(Singleton.Settings.ServerOpt, connectToUnity.Checked);
             RefreshWebsocket();
         }
         private bool StartWebsocket()
@@ -527,7 +515,7 @@ namespace CommandsEditor
         private void RefreshWebsocket() => RefreshWebsocket(null);
         private void RefreshWebsocket(object o)
         {
-            if (!SettingsManager.GetBool(_serverOpt))
+            if (!SettingsManager.GetBool(Singleton.Settings.ServerOpt))
             {
                 if (_server != null)
                     _server.Stop();
@@ -594,7 +582,7 @@ namespace CommandsEditor
         private void showNodegraph_Click(object sender, EventArgs e)
         {
             showNodegraph.Checked = !showNodegraph.Checked;
-            SettingsManager.SetBool(_nodeOpt, showNodegraph.Checked);
+            SettingsManager.SetBool(Singleton.Settings.NodeOpt, showNodegraph.Checked);
 
             if (showNodegraph.Checked)
             {
@@ -623,7 +611,7 @@ namespace CommandsEditor
         private void showEntityIDs_Click(object sender, EventArgs e)
         {
             showEntityIDs.Checked = !showEntityIDs.Checked;
-            SettingsManager.SetBool(_entIdOpt, showEntityIDs.Checked);
+            SettingsManager.SetBool(Singleton.Settings.EntIdOpt, showEntityIDs.Checked);
 
             _commandsDisplay?.Reload(true);
             //TODO: also reload hierarchy cache
@@ -632,18 +620,17 @@ namespace CommandsEditor
         private void enableInstanceMode_Click(object sender, EventArgs e)
         {
             enableInstanceMode.Checked = !enableInstanceMode.Checked;
-            SettingsManager.SetBool(_instOpt, enableInstanceMode.Checked);
+            SettingsManager.SetBool(Singleton.Settings.InstOpt, enableInstanceMode.Checked);
 
             if (_commandsDisplay == null) return;
 
             //TODO: should just move all this to a func in commands display, can call on start with mode
 
             _commandsDisplay.CloseAllChildTabs();
+            _commandsDisplay.Hide();
 
             _commandsDisplay.SelectCompositeAndReloadList(_commandsDisplay.Content.commands.EntryPoints[0]);
             Singleton.OnCompositeSelected?.Invoke(_commandsDisplay.Content.commands.EntryPoints[0]); //need to call this again b/c the activation event doesn't fire here
-
-            //TODO: disable commands display list selection
 
 
         }
@@ -651,31 +638,31 @@ namespace CommandsEditor
         private void searchOnlyCompositeNames_Click(object sender, EventArgs e)
         {
             searchOnlyCompositeNames.Checked = !searchOnlyCompositeNames.Checked;
-            SettingsManager.SetBool(_compNameOnlyOpt, searchOnlyCompositeNames.Checked);
+            SettingsManager.SetBool(Singleton.Settings.CompNameOnlyOpt, searchOnlyCompositeNames.Checked);
         }
 
         private void compositesOpenTabs_Click(object sender, EventArgs e)
         {
             compositesOpenTabs.Checked = !compositesOpenTabs.Checked;
-            SettingsManager.SetBool(_useCompTabsOpt, compositesOpenTabs.Checked);
+            SettingsManager.SetBool(Singleton.Settings.UseCompTabsOpt, compositesOpenTabs.Checked);
         }
 
         private void entitiesOpenTabs_Click(object sender, EventArgs e)
         {
             entitiesOpenTabs.Checked = !entitiesOpenTabs.Checked;
-            SettingsManager.SetBool(_useEntTabsOpt, entitiesOpenTabs.Checked);
+            SettingsManager.SetBool(Singleton.Settings.UseEntTabsOpt, entitiesOpenTabs.Checked);
         }
 
         private void showConfirmationWhenSavingToolStripMenuItem_Click(object sender, EventArgs e)
         {
             showConfirmationWhenSavingToolStripMenuItem.Checked = !showConfirmationWhenSavingToolStripMenuItem.Checked;
-            SettingsManager.SetBool(_showSavedMsgOpt, showConfirmationWhenSavingToolStripMenuItem.Checked);
+            SettingsManager.SetBool(Singleton.Settings.ShowSavedMsgOpt, showConfirmationWhenSavingToolStripMenuItem.Checked);
         }
 
         private void useTexturedModelViewExperimentalToolStripMenuItem_Click(object sender, EventArgs e)
         {
             useTexturedModelViewExperimentalToolStripMenuItem.Checked = !useTexturedModelViewExperimentalToolStripMenuItem.Checked;
-            SettingsManager.SetBool(_showTexOpt, useTexturedModelViewExperimentalToolStripMenuItem.Checked);
+            SettingsManager.SetBool(Singleton.Settings.ShowTexOpt, useTexturedModelViewExperimentalToolStripMenuItem.Checked);
         }
     }
 }

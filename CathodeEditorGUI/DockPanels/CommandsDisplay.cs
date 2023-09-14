@@ -166,7 +166,7 @@ namespace CommandsEditor.DockPanels
         {
             if (composite == null) return null;
 
-            if (SettingsManager.GetBool("CS_UseCompositeTabs") == false)
+            if (SettingsManager.GetBool(Singleton.Settings.UseCompTabsOpt) == false)
                 CloseAllChildTabs();
 
             if (_compositeDisplays.ContainsKey(composite))
@@ -282,7 +282,7 @@ namespace CommandsEditor.DockPanels
             {
                 string name = _content.commands.Entries[i].name.Replace('\\', '/');
 
-                if (SettingsManager.GetBool("CS_SearchOnlyCompName") == true)
+                if (SettingsManager.GetBool(Singleton.Settings.CompNameOnlyOpt) == true)
                 {
                     string[] nameSplit = name.Split('/');
                     name = nameSplit[nameSplit.Length - 1];

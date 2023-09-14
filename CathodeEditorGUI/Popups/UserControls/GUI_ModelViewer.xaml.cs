@@ -50,7 +50,7 @@ namespace CommandsEditor.Popups.UserControls
             GeometryModel3D submeshGeo = submesh.ToGeometryModel3D();
 
             //Get material & texture data
-            if (SettingsManager.GetBool("CS_ShowTextures"))
+            if (SettingsManager.GetBool(Singleton.Settings.ShowTexOpt))
             {
                 try
                 {
