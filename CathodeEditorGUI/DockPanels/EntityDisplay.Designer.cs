@@ -131,21 +131,21 @@
             // hierarchyDisplay
             // 
             this.hierarchyDisplay.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.hierarchyDisplay.Location = new System.Drawing.Point(6, 37);
+            this.hierarchyDisplay.Location = new System.Drawing.Point(7, 39);
             this.hierarchyDisplay.Name = "hierarchyDisplay";
             this.hierarchyDisplay.ReadOnly = true;
-            this.hierarchyDisplay.Size = new System.Drawing.Size(323, 20);
+            this.hierarchyDisplay.Size = new System.Drawing.Size(306, 20);
             this.hierarchyDisplay.TabIndex = 9;
             // 
             // jumpToComposite
             // 
             this.jumpToComposite.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.jumpToComposite.Location = new System.Drawing.Point(335, 15);
+            this.jumpToComposite.Location = new System.Drawing.Point(318, 9);
             this.jumpToComposite.Name = "jumpToComposite";
-            this.jumpToComposite.Size = new System.Drawing.Size(39, 45);
+            this.jumpToComposite.Size = new System.Drawing.Size(60, 57);
             this.jumpToComposite.TabIndex = 8;
-            this.jumpToComposite.Text = "Go To";
+            this.jumpToComposite.Text = "Follow Through";
             this.jumpToComposite.UseVisualStyleBackColor = true;
             this.jumpToComposite.Visible = false;
             this.jumpToComposite.Click += new System.EventHandler(this.jumpToComposite_Click);
@@ -352,7 +352,7 @@
             this.closeSelected,
             this.closeAllBut});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(222, 92);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(222, 70);
             // 
             // closeAll
             // 
@@ -389,8 +389,8 @@
             this.Controls.Add(this.entityParamGroup);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "EntityDisplay";
-            this.Text = "Selected Entity";
             this.TabPageContextMenuStrip = this.contextMenuStrip1;
+            this.Text = "Selected Entity";
             this.entityInfoGroup.ResumeLayout(false);
             this.entityInfoGroup.PerformLayout();
             this.entityParamGroup.ResumeLayout(false);

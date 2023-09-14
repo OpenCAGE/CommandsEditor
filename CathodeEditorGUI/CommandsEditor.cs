@@ -632,7 +632,7 @@ namespace CommandsEditor
             _commandsDisplay.SelectCompositeAndReloadList(_commandsDisplay.Content.commands.EntryPoints[0]);
             Singleton.OnCompositeSelected?.Invoke(_commandsDisplay.Content.commands.EntryPoints[0]); //need to call this again b/c the activation event doesn't fire here
 
-
+            //todo: you don't actually NEEED this. we should just always handle stuff this way.
         }
 
         private void searchOnlyCompositeNames_Click(object sender, EventArgs e)

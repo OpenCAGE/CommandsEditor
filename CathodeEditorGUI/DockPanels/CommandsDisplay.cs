@@ -303,5 +303,18 @@ namespace CommandsEditor.DockPanels
             uses.Show();
             uses.OnEntitySelected += LoadCompositeAndEntity;
         }
+
+        private void loadRootComposite_Click(object sender, EventArgs e)
+        {
+            LoadComposite(Content.commands.EntryPoints[0]);
+        }
+        private void loadPauseMenuComposite_Click(object sender, EventArgs e)
+        {
+            LoadComposite(Content.commands.EntryPoints[2]);
+        }
+        private void loadGlobalComposite_Click(object sender, EventArgs e)
+        {
+            LoadComposite(Content.commands.EntryPoints[1]);
+        }
     }
 }
