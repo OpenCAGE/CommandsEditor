@@ -26,7 +26,49 @@ namespace CommandsEditor
 
         //Global textures
         public static Textures GlobalTextures;
+        
+        //State tracking for paths from root composite
+        public static CompositeInstance InstanceInfo = new CompositeInstance();
+        public class CompositeInstance
+        {
+            public Composite InitialComposite;
+            public List<CompEnt> PathFromInitial;
 
+            //Get the currently loaded thing in the path
+            public Composite CurrentComposite
+            {
+                get
+                {
+                    if (PathFromInitial.Count == 0)
+                        return InitialComposite;
+                    return PathFromInitial[PathFromInitial.Count - 1].Composite;
+                }
+            }
+
+            //Get the previously loaded composite in the path
+            public Composite PreviousComposite
+            {
+                get
+                {
+                    if (PathFromInitial.Count == 1)
+                        return InitialComposite;
+                    if (PathFromInitial.Count == 0)
+                        return null; // Can't go back from the initial composite lol - maybe we should handle this differently?
+
+                    return PathFromInitial[PathFromInitial.Count - 2].Composite;
+                }
+            }
+
+
+
+            public List<string> PathAsString;
+
+            public class CompEnt 
+            {
+                public Entity Entity;
+                public Composite Composite;
+            }
+        }
 
 
         public static Action<LevelContent> OnLevelLoaded;
@@ -36,6 +78,8 @@ namespace CommandsEditor
         public static Action<Composite> OnCompositeSelected;
 
         public static Action OnCAGEAnimationEditorOpened;
+
+
 
         public static SettingsStrings Settings = new SettingsStrings();
         public class SettingsStrings
@@ -51,5 +95,8 @@ namespace CommandsEditor
             public readonly string ShowSavedMsgOpt = "CS_ShowSavedNotif";
             public readonly string ShowTexOpt = "CS_ShowTextures";
         }
+
+
+
     }
 }

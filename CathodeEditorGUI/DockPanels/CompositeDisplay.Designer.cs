@@ -61,6 +61,8 @@ namespace CommandsEditor.DockPanels
             this.closeAll = new System.Windows.Forms.ToolStripMenuItem();
             this.closeSelected = new System.Windows.Forms.ToolStripMenuItem();
             this.closeAllBut = new System.Windows.Forms.ToolStripMenuItem();
+            this.goBackOnPath = new System.Windows.Forms.Button();
+            this.pathDisplay = new System.Windows.Forms.TextBox();
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -98,7 +100,7 @@ namespace CommandsEditor.DockPanels
             this.composite_content.Location = new System.Drawing.Point(3, 30);
             this.composite_content.MultiSelect = false;
             this.composite_content.Name = "composite_content";
-            this.composite_content.Size = new System.Drawing.Size(827, 766);
+            this.composite_content.Size = new System.Drawing.Size(827, 747);
             this.composite_content.TabIndex = 176;
             this.composite_content.UseCompatibleStateImageBehavior = false;
             this.composite_content.View = System.Windows.Forms.View.Details;
@@ -252,7 +254,7 @@ namespace CommandsEditor.DockPanels
             this.dockPanel.Name = "dockPanel";
             this.dockPanel.Padding = new System.Windows.Forms.Padding(6);
             this.dockPanel.ShowAutoHideContentOnHover = false;
-            this.dockPanel.Size = new System.Drawing.Size(781, 796);
+            this.dockPanel.Size = new System.Drawing.Size(781, 777);
             this.dockPanel.TabIndex = 178;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
             // 
@@ -264,12 +266,14 @@ namespace CommandsEditor.DockPanels
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(830, 796);
+            this.panel1.Size = new System.Drawing.Size(830, 777);
             this.panel1.TabIndex = 180;
             // 
             // splitContainer1
             // 
-            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.splitContainer1.Location = new System.Drawing.Point(0, 25);
             this.splitContainer1.Name = "splitContainer1";
             // 
@@ -280,7 +284,7 @@ namespace CommandsEditor.DockPanels
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.dockPanel);
-            this.splitContainer1.Size = new System.Drawing.Size(1615, 796);
+            this.splitContainer1.Size = new System.Drawing.Size(1615, 777);
             this.splitContainer1.SplitterDistance = 830;
             this.splitContainer1.TabIndex = 182;
             // 
@@ -338,11 +342,36 @@ namespace CommandsEditor.DockPanels
             this.closeAllBut.Text = "Close All But Selected Composite";
             this.closeAllBut.Click += new System.EventHandler(this.closeAllBut_Click);
             // 
+            // goBackOnPath
+            // 
+            this.goBackOnPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.goBackOnPath.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.goBackOnPath.Location = new System.Drawing.Point(1553, 801);
+            this.goBackOnPath.Name = "goBackOnPath";
+            this.goBackOnPath.Size = new System.Drawing.Size(62, 20);
+            this.goBackOnPath.TabIndex = 177;
+            this.goBackOnPath.Text = "Back";
+            this.goBackOnPath.UseVisualStyleBackColor = true;
+            this.goBackOnPath.Click += new System.EventHandler(this.goBackOnPath_Click);
+            // 
+            // pathDisplay
+            // 
+            this.pathDisplay.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pathDisplay.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pathDisplay.Location = new System.Drawing.Point(0, 801);
+            this.pathDisplay.Name = "pathDisplay";
+            this.pathDisplay.ReadOnly = true;
+            this.pathDisplay.Size = new System.Drawing.Size(1554, 20);
+            this.pathDisplay.TabIndex = 177;
+            // 
             // CompositeDisplay
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1615, 821);
+            this.Controls.Add(this.pathDisplay);
+            this.Controls.Add(this.goBackOnPath);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.toolStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -392,5 +421,7 @@ namespace CommandsEditor.DockPanels
         private System.Windows.Forms.ToolStripMenuItem createCompositeEntityToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem createProxyEntityToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem createOverrideEntityToolStripMenuItem;
+        private System.Windows.Forms.Button goBackOnPath;
+        private System.Windows.Forms.TextBox pathDisplay;
     }
 }

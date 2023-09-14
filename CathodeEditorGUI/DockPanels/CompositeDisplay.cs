@@ -533,5 +533,10 @@ namespace CommandsEditor.DockPanels
         {
             dialog = null;
         }
+
+        private void goBackOnPath_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
