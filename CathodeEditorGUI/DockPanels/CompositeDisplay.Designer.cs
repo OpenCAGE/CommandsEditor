@@ -340,6 +340,7 @@ namespace CommandsEditor.DockPanels
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pathDisplay.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pathDisplay.Enabled = false;
+            this.pathDisplay.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.pathDisplay.Location = new System.Drawing.Point(3, 801);
             this.pathDisplay.Name = "pathDisplay";
             this.pathDisplay.ReadOnly = true;

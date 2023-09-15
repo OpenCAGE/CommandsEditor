@@ -1,4 +1,6 @@
-﻿namespace CommandsEditor.DockPanels
+﻿using System.Drawing;
+
+namespace CommandsEditor.DockPanels
 {
     partial class CommandsDisplay
     {
@@ -30,7 +32,6 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CommandsDisplay));
-            this.FileTree = new System.Windows.Forms.TreeView();
             this.imageList = new System.Windows.Forms.ImageList(this.components);
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.createComposite = new System.Windows.Forms.ToolStripButton();
@@ -39,29 +40,14 @@
             this.vS2015DarkTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme();
             this.entity_search_box = new System.Windows.Forms.TextBox();
             this.entity_search_btn = new System.Windows.Forms.Button();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.loadRootComposite = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.loadGlobalComposite = new System.Windows.Forms.Button();
-            this.loadPauseMenuComposite = new System.Windows.Forms.Button();
+            this.listView1 = new System.Windows.Forms.ListView();
+            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
+            this.treeView1 = new System.Windows.Forms.TreeView();
+            this.pathDisplay = new System.Windows.Forms.TextBox();
+            this.goBackOnPath = new System.Windows.Forms.Button();
             this.toolStrip1.SuspendLayout();
-            this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // FileTree
-            // 
-            this.FileTree.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.FileTree.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.FileTree.ImageIndex = 0;
-            this.FileTree.ImageList = this.imageList;
-            this.FileTree.Location = new System.Drawing.Point(0, 54);
-            this.FileTree.Name = "FileTree";
-            this.FileTree.SelectedImageIndex = 0;
-            this.FileTree.Size = new System.Drawing.Size(457, 654);
-            this.FileTree.TabIndex = 153;
-            this.FileTree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.FileTree_AfterSelect);
             // 
             // imageList
             // 
@@ -79,7 +65,7 @@
             this.findFuncs});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(457, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(1513, 25);
             this.toolStrip1.TabIndex = 157;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -118,14 +104,14 @@
             this.entity_search_box.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.entity_search_box.Location = new System.Drawing.Point(4, 28);
             this.entity_search_box.Name = "entity_search_box";
-            this.entity_search_box.Size = new System.Drawing.Size(386, 20);
+            this.entity_search_box.Size = new System.Drawing.Size(1442, 20);
             this.entity_search_box.TabIndex = 159;
             // 
             // entity_search_btn
             // 
             this.entity_search_btn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.entity_search_btn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.entity_search_btn.Location = new System.Drawing.Point(389, 28);
+            this.entity_search_btn.Location = new System.Drawing.Point(1445, 28);
             this.entity_search_btn.Name = "entity_search_btn";
             this.entity_search_btn.Size = new System.Drawing.Size(63, 20);
             this.entity_search_btn.TabIndex = 158;
@@ -133,85 +119,85 @@
             this.entity_search_btn.UseVisualStyleBackColor = true;
             this.entity_search_btn.Click += new System.EventHandler(this.entity_search_btn_Click);
             // 
-            // tableLayoutPanel1
+            // listView1
             // 
-            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.listView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tableLayoutPanel1.ColumnCount = 3;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel1.Controls.Add(this.loadPauseMenuComposite, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.loadGlobalComposite, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.loadRootComposite, 0, 0);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 708);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 1;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(457, 27);
-            this.tableLayoutPanel1.TabIndex = 178;
+            this.listView1.HideSelection = false;
+            this.listView1.LargeImageList = this.imageList1;
+            this.listView1.Location = new System.Drawing.Point(4, 69);
+            this.listView1.MultiSelect = false;
+            this.listView1.Name = "listView1";
+            this.listView1.Size = new System.Drawing.Size(1504, 665);
+            this.listView1.TabIndex = 179;
+            this.listView1.UseCompatibleStateImageBehavior = false;
+            this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
             // 
-            // loadRootComposite
+            // imageList1
             // 
-            this.loadRootComposite.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.loadRootComposite.Location = new System.Drawing.Point(3, 3);
-            this.loadRootComposite.Name = "loadRootComposite";
-            this.loadRootComposite.Size = new System.Drawing.Size(146, 21);
-            this.loadRootComposite.TabIndex = 0;
-            this.loadRootComposite.Text = "Load Root Composite";
-            this.toolTip1.SetToolTip(this.loadRootComposite, "Load the root composite template, which will be loaded on the start of the level." +
-        "");
-            this.loadRootComposite.UseVisualStyleBackColor = true;
-            this.loadRootComposite.Click += new System.EventHandler(this.loadRootComposite_Click);
+            this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
+            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageList1.Images.SetKeyName(0, "temp_prefab.png");
+            this.imageList1.Images.SetKeyName(1, "temp_folder.png");
+            this.imageList1.Images.SetKeyName(2, "temp_scene.png");
+            this.imageList1.Images.SetKeyName(3, "temp_gamemanager.png");
             // 
-            // loadGlobalComposite
+            // treeView1
             // 
-            this.loadGlobalComposite.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.loadGlobalComposite.Location = new System.Drawing.Point(307, 3);
-            this.loadGlobalComposite.Name = "loadGlobalComposite";
-            this.loadGlobalComposite.Size = new System.Drawing.Size(147, 21);
-            this.loadGlobalComposite.TabIndex = 2;
-            this.loadGlobalComposite.Text = "Load Global Composite";
-            this.toolTip1.SetToolTip(this.loadGlobalComposite, "Load the global composite template, which is used as a game state manager");
-            this.loadGlobalComposite.UseVisualStyleBackColor = true;
-            this.loadGlobalComposite.Click += new System.EventHandler(this.loadGlobalComposite_Click);
+            this.treeView1.Location = new System.Drawing.Point(1362, 594);
+            this.treeView1.Name = "treeView1";
+            this.treeView1.Size = new System.Drawing.Size(121, 97);
+            this.treeView1.TabIndex = 180;
             // 
-            // loadPauseMenuComposite
+            // pathDisplay
             // 
-            this.loadPauseMenuComposite.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.loadPauseMenuComposite.Location = new System.Drawing.Point(155, 3);
-            this.loadPauseMenuComposite.Name = "loadPauseMenuComposite";
-            this.loadPauseMenuComposite.Size = new System.Drawing.Size(146, 21);
-            this.loadPauseMenuComposite.TabIndex = 3;
-            this.loadPauseMenuComposite.Text = "Load Pause Menu Composite";
-            this.toolTip1.SetToolTip(this.loadPauseMenuComposite, "Load the pause menu composite template which is used for scripting things in the " +
-        "pause menu");
-            this.loadPauseMenuComposite.UseVisualStyleBackColor = true;
-            this.loadPauseMenuComposite.Click += new System.EventHandler(this.loadPauseMenuComposite_Click);
+            this.pathDisplay.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pathDisplay.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pathDisplay.Enabled = false;
+            this.pathDisplay.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.pathDisplay.Location = new System.Drawing.Point(4, 51);
+            this.pathDisplay.Name = "pathDisplay";
+            this.pathDisplay.ReadOnly = true;
+            this.pathDisplay.Size = new System.Drawing.Size(1442, 20);
+            this.pathDisplay.TabIndex = 181;
+            // 
+            // goBackOnPath
+            // 
+            this.goBackOnPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.goBackOnPath.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.goBackOnPath.Location = new System.Drawing.Point(1445, 51);
+            this.goBackOnPath.Name = "goBackOnPath";
+            this.goBackOnPath.Size = new System.Drawing.Size(63, 20);
+            this.goBackOnPath.TabIndex = 182;
+            this.goBackOnPath.Text = "Back";
+            this.goBackOnPath.UseVisualStyleBackColor = true;
+            this.goBackOnPath.Click += new System.EventHandler(this.goBackOnPath_Click);
             // 
             // CommandsDisplay
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(457, 734);
-            this.Controls.Add(this.tableLayoutPanel1);
+            this.ClientSize = new System.Drawing.Size(1513, 734);
+            this.Controls.Add(this.goBackOnPath);
+            this.Controls.Add(this.pathDisplay);
+            this.Controls.Add(this.listView1);
             this.Controls.Add(this.entity_search_box);
             this.Controls.Add(this.entity_search_btn);
             this.Controls.Add(this.toolStrip1);
-            this.Controls.Add(this.FileTree);
+            this.Controls.Add(this.treeView1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "CommandsDisplay";
             this.Text = "Composites";
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
-            this.tableLayoutPanel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-        private System.Windows.Forms.TreeView FileTree;
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ToolStripButton createComposite;
         private WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme vS2015DarkTheme1;
@@ -220,10 +206,11 @@
         private System.Windows.Forms.Button entity_search_btn;
         private System.Windows.Forms.ToolStripButton createFolder;
         private System.Windows.Forms.ToolStripButton findFuncs;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.Button loadRootComposite;
         private System.Windows.Forms.ToolTip toolTip1;
-        private System.Windows.Forms.Button loadPauseMenuComposite;
-        private System.Windows.Forms.Button loadGlobalComposite;
+        private System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.TreeView treeView1;
+        private System.Windows.Forms.ImageList imageList1;
+        private System.Windows.Forms.TextBox pathDisplay;
+        private System.Windows.Forms.Button goBackOnPath;
     }
 }

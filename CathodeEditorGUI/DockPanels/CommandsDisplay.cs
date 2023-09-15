@@ -17,6 +17,10 @@ using System.Windows.Interop;
 using WebSocketSharp;
 using CommandsEditor.Popups;
 using OpenCAGE;
+using System.IO;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Runtime.Remoting.Messaging;
+using ListViewItem = System.Windows.Forms.ListViewItem;
 
 namespace CommandsEditor.DockPanels
 {
@@ -25,8 +29,9 @@ namespace CommandsEditor.DockPanels
         private LevelContent _content;
         public LevelContent Content => _content;
 
-        private TreeUtility _treeHelper;
         private Task _currentHierarchyCacher = null;
+
+        private string _currentDisplayFolderPath = "";
 
         private CompositeDisplay _compositeDisplay = null;
         private Composite3D _renderer = null;
@@ -36,7 +41,6 @@ namespace CommandsEditor.DockPanels
             InitializeComponent();
             this.Text = levelName;
 
-            _treeHelper = new TreeUtility(FileTree);
             _content = new LevelContent(levelName);
 
             //TODO: these utils should be moved into LevelContent and made less generic. makes no sense anymore.
@@ -84,25 +88,90 @@ namespace CommandsEditor.DockPanels
             SelectComposite(composite);
         }
 
+        /* Reload the folder/composite display */
         private void ReloadList()
         {
-            _treeHelper.UpdateFileTree(_content.commands.GetCompositeNames().ToList());
+            listView1.Items.Clear();
+            pathDisplay.Text = _currentDisplayFolderPath.Replace("/", " > ");
+
+            List<string> items = new List<string>();
+            foreach (Composite composite in _content.commands.Entries)
+            {
+                //Make sure this folder/composite should be visible at the current folder path
+                string name = composite.name.Replace('\\', '/');
+                bool isRoot = _content.commands.EntryPoints[0] == composite;
+                if (isRoot) name = Path.GetFileName(composite.name);
+                if (name.Length < _currentDisplayFolderPath.Length) continue;
+                if (name.Substring(0, _currentDisplayFolderPath.Length) != _currentDisplayFolderPath) continue;
+
+                //Get formatting
+                string nameExt = name.Substring(_currentDisplayFolderPath.Length != 0 ? _currentDisplayFolderPath.Length + 1 : 0);
+                bool isFolder = nameExt.Contains('/');
+                string text = isFolder ? nameExt.Split('/')[0] : nameExt;
+
+                //Make sure this folder/composite hasn't already been added
+                string identifier = text + isFolder;
+                if (items.Contains(identifier)) continue;
+                items.Add(identifier);
+
+                //Add it to the view
+                ListViewItemContent content = new ListViewItemContent() { IsFolder = isFolder };
+                if (isFolder) content.FolderName = text;
+                else content.Composite = composite;
+                listView1.Items.Add(new ListViewItem()
+                {
+                    Text = text,
+                    ImageIndex = isFolder ? 1 : isRoot ? 2 : 0,
+                    Tag = content
+                });
+            }
+        }
+
+        /* File browser: select folder/composite */
+        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (listView1.SelectedItems.Count != 1) return;
+
+            ListViewItem item = listView1.SelectedItems[0];
+            ListViewItemContent content = (ListViewItemContent)item.Tag;
+            if (content.IsFolder)
+            {
+                if (_currentDisplayFolderPath == "") _currentDisplayFolderPath = content.FolderName;
+                else _currentDisplayFolderPath = _currentDisplayFolderPath + "/" + content.FolderName;
+
+                ReloadList();
+            }
+            else
+            {
+                LoadComposite(content.Composite);
+            }
+        }
+
+        /* File path: go back */
+        private void goBackOnPath_Click(object sender, EventArgs e)
+        {
+            if (_currentDisplayFolderPath == "") return;
+
+            string[] pathSplit = (_currentDisplayFolderPath + "/").Split('/');
+            _currentDisplayFolderPath = _currentDisplayFolderPath.Substring(0, _currentDisplayFolderPath.Length - pathSplit[pathSplit.Length - 2].Length);
+            if (pathSplit.Length != 2) _currentDisplayFolderPath = _currentDisplayFolderPath.Substring(0, _currentDisplayFolderPath.Length - 1);
+
+            ReloadList();
+        }
+
+        private class ListViewItemContent
+        {
+            public bool IsFolder;
+            public Composite Composite;
+            public string FolderName;
         }
 
         private void SelectComposite(Composite composite)
         {
-            _treeHelper.SelectNode(composite.name);
+            //_treeHelper.SelectNode(composite.name);
 
             this.BringToFront();
             this.Focus();
-        }
-
-        private void FileTree_AfterSelect(object sender, TreeViewEventArgs e)
-        {
-            if (FileTree.SelectedNode == null) return;
-            if (((TreeItem)FileTree.SelectedNode.Tag).Item_Type != TreeItemType.EXPORTABLE_FILE) return;
-
-            LoadComposite(((TreeItem)FileTree.SelectedNode.Tag).String_Value);
         }
 
         public void CloseAllChildTabs()
@@ -205,7 +274,7 @@ namespace CommandsEditor.DockPanels
             Content.commands.Entries.Remove(composite);
 
             //Refresh UI
-            _treeHelper.UpdateFileTree(Content.commands.GetCompositeNames().ToList());
+            ReloadList();
             CacheHierarchies();
         }
 
@@ -220,6 +289,7 @@ namespace CommandsEditor.DockPanels
         private string GetSelectedFolder()
         {
             string baseFolderPath = "";
+            /*
             if (FileTree.SelectedNode != null)
             {
                 TreeItem selectedItem = (TreeItem)FileTree.SelectedNode.Tag;
@@ -232,6 +302,7 @@ namespace CommandsEditor.DockPanels
                         baseFolderPath = baseFolderPath.Substring(0, baseFolderPath.Length - 1);
                 }
             }
+            */
             return baseFolderPath;
         }
 
@@ -255,10 +326,13 @@ namespace CommandsEditor.DockPanels
                 if (!name.ToUpper().Contains(_currentSearch)) continue;
                 filteredComposites.Add(_content.commands.Entries[i].name.Replace('\\', '/'));
             }
-            _treeHelper.UpdateFileTree(filteredComposites);
 
-            if (entity_search_box.Text != "")
-                FileTree.ExpandAll();
+            //TODO!!!!
+
+            //_treeHelper.UpdateFileTree(filteredComposites);
+
+            //if (entity_search_box.Text != "")
+            //    FileTree.ExpandAll();
         }
 
         private void findFuncs_Click(object sender, EventArgs e)
