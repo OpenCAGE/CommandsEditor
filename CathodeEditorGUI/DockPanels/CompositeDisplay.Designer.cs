@@ -339,6 +339,7 @@ namespace CommandsEditor.DockPanels
             this.pathDisplay.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pathDisplay.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pathDisplay.Enabled = false;
             this.pathDisplay.Location = new System.Drawing.Point(3, 801);
             this.pathDisplay.Name = "pathDisplay";
             this.pathDisplay.ReadOnly = true;

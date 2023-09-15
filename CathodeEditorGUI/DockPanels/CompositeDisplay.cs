@@ -14,8 +14,10 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Shapes;
 using WebSocketSharp;
 using WeifenLuo.WinFormsUI.Docking;
+using Path = System.IO.Path;
 
 namespace CommandsEditor.DockPanels
 {
@@ -614,10 +616,27 @@ namespace CommandsEditor.DockPanels
             string path = "";
             for (int i = 0; i < _composites.Count; i++)
             {
-                path += "[" + Path.GetFileName(_composites[i].name) + "] -> ";
+                path += Path.GetFileName(_composites[i].name) + " > ";
             }
-            path += "[" + Path.GetFileName(currentComp.name) + "]";
+            path += Path.GetFileName(currentComp.name);
             return path;
+        }
+
+        public List<CompAndEnt> GetPathRich(Composite currentComp)
+        {
+            List<CompAndEnt> rich = new List<CompAndEnt>();
+            for (int i = 0; i < _composites.Count; i++)
+            {
+                rich.Add(new CompAndEnt() { Composite = _composites[i], Entity = _entities[i] });
+            }
+            rich.Add(new CompAndEnt() { Composite = currentComp, Entity = null });
+            return rich;
+        }
+
+        public struct CompAndEnt
+        {
+            public Composite Composite;
+            public Entity Entity;
         }
     }
 }
