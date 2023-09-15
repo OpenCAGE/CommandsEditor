@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Runtime.Remoting.Contexts;
 using System.Text;
@@ -35,24 +36,53 @@ namespace CommandsEditor.DockPanels
         private EntityDisplay _activeEntityDisplay = null;
         public EntityDisplay ActiveEntityDisplay => _activeEntityDisplay;
 
+        private CompositePath _path = new CompositePath();
+        public CompositePath Path => _path;
+
         private static Mutex _mut = new Mutex();
         private bool _canExportChildren = true;
 
         public CompositeDisplay(CommandsDisplay commandsDisplay, Composite composite)
         {
             _commandsDisplay = commandsDisplay;
-            _composite = composite;
 
             InitializeComponent();
-            this.Text = composite.name;
             dockPanel.ActiveContentChanged += DockPanel_ActiveContentChanged;
 
+            Load(composite);
+        }
+
+        private void Load(Composite composite)
+        {
+            Cursor.Current = Cursors.WaitCursor;
+
+            this.Text = composite.name;
+            pathDisplay.Text = _path.GetPath(composite);
+            _composite = composite;
+
+            CommandsUtils.PurgeDeadLinks(Content.commands, composite);
+            CloseAllChildTabs();
+            Reload(false);
             this.Activate();
 
-            Cursor.Current = Cursors.WaitCursor;
-            CommandsUtils.PurgeDeadLinks(commandsDisplay.Content.commands, composite);
-            Reload(false);
             Cursor.Current = Cursors.Default;
+        }
+
+        /* Load a child composite within this composite */
+        public void LoadChild(Composite composite, Entity entity)
+        {
+            _path.StepForwards(_composite, entity);
+            Load(composite);
+        }
+
+        /* Load the parent composite, one back from this composite */
+        public void LoadParent()
+        {
+            if (_path.StepBackwards(out Composite composite, out Entity entity))
+            {
+                Load(composite);
+                LoadEntity(entity);
+            }
         }
 
         /* Reload this display */
@@ -472,18 +502,10 @@ namespace CommandsEditor.DockPanels
         }
 
         /* Context menu composite close options */
-        private void closeAll_Click(object sender, EventArgs e)
-        {
-            _commandsDisplay.CloseAllChildTabs();
-        }
         private void closeSelected_Click(object sender, EventArgs e)
         {
             CloseAllChildTabs();
             Close();
-        }
-        private void closeAllBut_Click(object sender, EventArgs e)
-        {
-            _commandsDisplay.CloseAllChildTabsExcept(Composite);
         }
 
         private void createEntity_Click(object sender, EventArgs e)
@@ -536,7 +558,66 @@ namespace CommandsEditor.DockPanels
 
         private void goBackOnPath_Click(object sender, EventArgs e)
         {
+            LoadParent();
+        }
+    }
 
+    public class CompositePath
+    {
+        private List<Composite> _composites = new List<Composite>();
+        private List<Entity> _entities = new List<Entity>();
+
+        public void StepForwards(Composite prevComp, Entity entityFollowed)
+        {
+            _composites.Add(prevComp);
+            _entities.Add(entityFollowed);
+        }
+
+        public bool StepBackwards(out Composite prevComp, out Entity entityFollowed)
+        {
+            if (_composites.Count == 0 || _entities.Count == 0)
+            {
+                prevComp = null;
+                entityFollowed = null;
+                return false;
+            }
+
+            prevComp = _composites[_composites.Count - 1];
+            entityFollowed = _entities[_entities.Count - 1];
+
+            _composites.RemoveAt(_composites.Count - 1);
+            _entities.RemoveAt(_entities.Count - 1);
+
+            return true;
+        }
+
+        public Composite PreviousComposite
+        {
+            get 
+            {
+                if (_composites.Count == 0) return null;
+                return _composites[_composites.Count - 1];
+            }
+        }
+
+        public Entity PreviousEntity
+        {
+            get
+            {
+                if (_entities.Count == 0) return null;
+                return _entities[_entities.Count - 1];
+            }
+        }
+
+        public string GetPath(Composite currentComp)
+        {
+            string path = "";
+            for (int i = 0; i < _composites.Count; i++)
+            {
+                path += "[" + Path.GetFileName(_composites[i].name) + "] -> ";
+            }
+            path += "[" + Path.GetFileName(currentComp.name) + "]";
+            return path;
         }
     }
 }

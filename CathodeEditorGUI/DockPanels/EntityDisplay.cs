@@ -480,6 +480,7 @@ namespace CommandsEditor.DockPanels
             string hierarchy = "";
             switch (Entity.variant)
             {
+                //TODO: soon removing aliases from display. they would keep the hierarchy if you selected them tho. We might still want this in the new alias UI (TODO-IMPORTANT)
                 case EntityVariant.ALIAS:
                     entity = CommandsUtils.ResolveHierarchy(Content.commands, Composite, ((AliasEntity)Entity).alias.path, out flow, out hierarchy);
                     break;
@@ -487,10 +488,12 @@ namespace CommandsEditor.DockPanels
                     entity = CommandsUtils.ResolveHierarchy(Content.commands, Composite, ((ProxyEntity)Entity).proxy.path, out flow, out hierarchy);
                     break;
                 case EntityVariant.FUNCTION:
-                    _compositeDisplay.CommandsDisplay.LoadComposite(selected_entity_type_description.Text);
+                    _compositeDisplay.LoadChild(Content.commands.GetComposite(selected_entity_type_description.Text), Entity);
                     return;
             }
-            _compositeDisplay.CommandsDisplay.LoadCompositeAndEntity(flow, entity);
+
+            if (MessageBox.Show("Jumping to a proxy will break you out of your composite path.\nAre you sure?", "About to follow proxy...", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+                _compositeDisplay.CommandsDisplay.LoadCompositeAndEntity(flow, entity);
         }
 
         private void deleteEntity_Click(object sender, EventArgs e)

@@ -62,9 +62,6 @@ namespace CommandsEditor
             searchOnlyCompositeNames.Checked = !SettingsManager.GetBool(Singleton.Settings.CompNameOnlyOpt); searchOnlyCompositeNames.PerformClick();
             useTexturedModelViewExperimentalToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.ShowTexOpt); useTexturedModelViewExperimentalToolStripMenuItem.PerformClick();
 
-            if (!SettingsManager.IsSet(Singleton.Settings.UseCompTabsOpt)) SettingsManager.SetBool(Singleton.Settings.UseCompTabsOpt, true);
-            compositesOpenTabs.Checked = !SettingsManager.GetBool(Singleton.Settings.UseCompTabsOpt); compositesOpenTabs.PerformClick();
-
             if (!SettingsManager.IsSet(Singleton.Settings.UseEntTabsOpt)) SettingsManager.SetBool(Singleton.Settings.UseEntTabsOpt, true);
             entitiesOpenTabs.Checked = !SettingsManager.GetBool(Singleton.Settings.UseEntTabsOpt); entitiesOpenTabs.PerformClick();
 
@@ -639,12 +636,6 @@ namespace CommandsEditor
         {
             searchOnlyCompositeNames.Checked = !searchOnlyCompositeNames.Checked;
             SettingsManager.SetBool(Singleton.Settings.CompNameOnlyOpt, searchOnlyCompositeNames.Checked);
-        }
-
-        private void compositesOpenTabs_Click(object sender, EventArgs e)
-        {
-            compositesOpenTabs.Checked = !compositesOpenTabs.Checked;
-            SettingsManager.SetBool(Singleton.Settings.UseCompTabsOpt, compositesOpenTabs.Checked);
         }
 
         private void entitiesOpenTabs_Click(object sender, EventArgs e)

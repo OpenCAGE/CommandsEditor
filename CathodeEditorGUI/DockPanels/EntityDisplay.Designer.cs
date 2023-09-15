@@ -134,18 +134,19 @@
             this.hierarchyDisplay.Location = new System.Drawing.Point(7, 39);
             this.hierarchyDisplay.Name = "hierarchyDisplay";
             this.hierarchyDisplay.ReadOnly = true;
-            this.hierarchyDisplay.Size = new System.Drawing.Size(306, 20);
+            this.hierarchyDisplay.Size = new System.Drawing.Size(321, 20);
             this.hierarchyDisplay.TabIndex = 9;
             // 
             // jumpToComposite
             // 
             this.jumpToComposite.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.jumpToComposite.Location = new System.Drawing.Point(318, 9);
+            this.jumpToComposite.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.jumpToComposite.Location = new System.Drawing.Point(334, 6);
             this.jumpToComposite.Name = "jumpToComposite";
-            this.jumpToComposite.Size = new System.Drawing.Size(60, 57);
+            this.jumpToComposite.Size = new System.Drawing.Size(48, 62);
             this.jumpToComposite.TabIndex = 8;
-            this.jumpToComposite.Text = "Follow Through";
+            this.jumpToComposite.Text = "Go";
             this.jumpToComposite.UseVisualStyleBackColor = true;
             this.jumpToComposite.Visible = false;
             this.jumpToComposite.Click += new System.EventHandler(this.jumpToComposite_Click);

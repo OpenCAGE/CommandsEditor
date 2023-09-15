@@ -45,7 +45,6 @@
             this.showEntityIDs = new System.Windows.Forms.ToolStripMenuItem();
             this.showConfirmationWhenSavingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.searchOnlyCompositeNames = new System.Windows.Forms.ToolStripMenuItem();
-            this.compositesOpenTabs = new System.Windows.Forms.ToolStripMenuItem();
             this.entitiesOpenTabs = new System.Windows.Forms.ToolStripMenuItem();
             this.useTexturedModelViewExperimentalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
@@ -109,7 +108,6 @@
             this.showEntityIDs,
             this.showConfirmationWhenSavingToolStripMenuItem,
             this.searchOnlyCompositeNames,
-            this.compositesOpenTabs,
             this.entitiesOpenTabs,
             this.useTexturedModelViewExperimentalToolStripMenuItem});
             this.toolStripButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton2.Image")));
@@ -190,13 +188,6 @@
             this.searchOnlyCompositeNames.Text = "Search Only Composite Names";
             this.searchOnlyCompositeNames.ToolTipText = "Enable this option to exclude folder names from the composite search.";
             this.searchOnlyCompositeNames.Click += new System.EventHandler(this.searchOnlyCompositeNames_Click);
-            // 
-            // compositesOpenTabs
-            // 
-            this.compositesOpenTabs.Name = "compositesOpenTabs";
-            this.compositesOpenTabs.Size = new System.Drawing.Size(286, 22);
-            this.compositesOpenTabs.Text = "Open Composites In New Tabs";
-            this.compositesOpenTabs.Click += new System.EventHandler(this.compositesOpenTabs_Click);
             // 
             // entitiesOpenTabs
             // 
@@ -286,7 +277,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem searchOnlyCompositeNames;
         private System.Windows.Forms.ToolTip toolTip1;
-        private System.Windows.Forms.ToolStripMenuItem compositesOpenTabs;
         private System.Windows.Forms.ToolStripMenuItem entitiesOpenTabs;
         private System.Windows.Forms.ToolStripMenuItem showConfirmationWhenSavingToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem useTexturedModelViewExperimentalToolStripMenuItem;

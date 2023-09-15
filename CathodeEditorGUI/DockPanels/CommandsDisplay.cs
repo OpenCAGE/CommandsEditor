@@ -28,7 +28,7 @@ namespace CommandsEditor.DockPanels
         private TreeUtility _treeHelper;
         private Task _currentHierarchyCacher = null;
 
-        private Dictionary<Composite, CompositeDisplay> _compositeDisplays = new Dictionary<Composite, CompositeDisplay>();
+        private CompositeDisplay _compositeDisplay = null;
         private Composite3D _renderer = null;
 
         public CommandsDisplay(string levelName)
@@ -46,20 +46,6 @@ namespace CommandsEditor.DockPanels
 
             SelectCompositeAndReloadList(_content.commands.EntryPoints[0]);
             Singleton.OnCompositeSelected?.Invoke(_content.commands.EntryPoints[0]); //need to call this again b/c the activation event doesn't fire here
-        }
-
-        public void Reload(bool reloadAllComposites = true, bool reloadAllEntities = true)
-        {
-            //TODO: do we want to select this composite?
-            SelectCompositeAndReloadList(_content.commands.EntryPoints[0]);
-
-            if (reloadAllComposites)
-            {
-                foreach (KeyValuePair<Composite, CompositeDisplay> display in _compositeDisplays)
-                {
-                    display.Value.Reload(reloadAllEntities);
-                }
-            }
         }
 
         AddComposite _addCompositeDialog = null;
@@ -118,40 +104,21 @@ namespace CommandsEditor.DockPanels
 
             LoadComposite(((TreeItem)FileTree.SelectedNode.Tag).String_Value);
         }
-        private void OnCompositePanelClosed(object sender, FormClosedEventArgs e)
-        {
-            _compositeDisplays.Remove(((CompositeDisplay)sender).Composite);
-        }
 
-        public void CloseAllChildTabsExcept(Composite composite)
-        {
-            List<CompositeDisplay> displays = new List<CompositeDisplay>();
-            foreach (KeyValuePair<Composite, CompositeDisplay> display in _compositeDisplays)
-            {
-                if (display.Key == composite) continue;
-                displays.Add(display.Value);
-            }
-            foreach (CompositeDisplay display in displays)
-            {
-                display.CloseAllChildTabs();
-                display.Close();
-            }
-        }
         public void CloseAllChildTabs()
         {
-            CloseAllChildTabsExcept(null);
+            _compositeDisplay?.CloseAllChildTabs();
+            _compositeDisplay?.Close();
         }
 
         public void ReloadAllEntities()
         {
-            foreach (KeyValuePair<Composite, CompositeDisplay> display in _compositeDisplays)
-                display.Value.ReloadAllEntities();
+            _compositeDisplay?.ReloadAllEntities();
         }
 
         public void Reload(bool alsoReloadEntities = true)
         {
-            foreach (KeyValuePair<Composite, CompositeDisplay> display in _compositeDisplays)
-                display.Value.Reload(alsoReloadEntities);
+            _compositeDisplay?.Reload(alsoReloadEntities);
         }
 
         public CompositeDisplay LoadComposite(string name)
@@ -166,20 +133,13 @@ namespace CommandsEditor.DockPanels
         {
             if (composite == null) return null;
 
-            if (SettingsManager.GetBool(Singleton.Settings.UseCompTabsOpt) == false)
+            if (_compositeDisplay != null)
                 CloseAllChildTabs();
 
-            if (_compositeDisplays.ContainsKey(composite))
-            {
-                _compositeDisplays[composite].Activate();
-            }
-            else
-            {
-                CompositeDisplay panel = new CompositeDisplay(this, composite);
-                panel.Show(Singleton.Editor.DockPanel, DockState.Document);
-                panel.FormClosed += OnCompositePanelClosed;
-                _compositeDisplays.Add(composite, panel);
-            }
+            CompositeDisplay panel = new CompositeDisplay(this, composite);
+            panel.Show(Singleton.Editor.DockPanel, DockState.Document);
+            panel.FormClosed += OnCompositePanelClosed;
+            _compositeDisplay = panel;
 
 #if DEBUG
             //if (_renderer != null) _renderer.Close();
@@ -187,7 +147,12 @@ namespace CommandsEditor.DockPanels
             //_renderer.Show(Singleton.Editor.DockPanel, DockState.DockRight);
 #endif
 
-            return _compositeDisplays[composite];
+            return _compositeDisplay;
+        }
+
+        private void OnCompositePanelClosed(object sender, FormClosedEventArgs e)
+        {
+            _compositeDisplay = null;
         }
 
         public void LoadCompositeAndEntity(ShortGuid compositeGUID, ShortGuid entityGUID)
@@ -213,8 +178,7 @@ namespace CommandsEditor.DockPanels
             }
             if (MessageBox.Show("Are you sure you want to remove this composite?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
 
-            if (_compositeDisplays.ContainsKey(composite))
-                _compositeDisplays[composite].Close();
+            CloseAllChildTabs();
 
             //Remove any entities or links that reference this composite
             for (int i = 0; i < Content.commands.Entries.Count; i++)

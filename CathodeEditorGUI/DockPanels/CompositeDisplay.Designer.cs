@@ -58,9 +58,7 @@ namespace CommandsEditor.DockPanels
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.imageList = new System.Windows.Forms.ImageList(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.closeAll = new System.Windows.Forms.ToolStripMenuItem();
             this.closeSelected = new System.Windows.Forms.ToolStripMenuItem();
-            this.closeAllBut = new System.Windows.Forms.ToolStripMenuItem();
             this.goBackOnPath = new System.Windows.Forms.Button();
             this.pathDisplay = new System.Windows.Forms.TextBox();
             this.toolStrip1.SuspendLayout();
@@ -312,35 +310,17 @@ namespace CommandsEditor.DockPanels
             // contextMenuStrip1
             // 
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.closeAll,
-            this.closeSelected,
-            this.closeAllBut});
+            this.closeSelected});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(250, 70);
-            // 
-            // closeAll
-            // 
-            this.closeAll.Image = ((System.Drawing.Image)(resources.GetObject("closeAll.Image")));
-            this.closeAll.Name = "closeAll";
-            this.closeAll.Size = new System.Drawing.Size(249, 22);
-            this.closeAll.Text = "Close All Composites";
-            this.closeAll.Click += new System.EventHandler(this.closeAll_Click);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(165, 26);
             // 
             // closeSelected
             // 
             this.closeSelected.Image = ((System.Drawing.Image)(resources.GetObject("closeSelected.Image")));
             this.closeSelected.Name = "closeSelected";
-            this.closeSelected.Size = new System.Drawing.Size(249, 22);
-            this.closeSelected.Text = "Close Selected Composite";
+            this.closeSelected.Size = new System.Drawing.Size(164, 22);
+            this.closeSelected.Text = "Close Composite";
             this.closeSelected.Click += new System.EventHandler(this.closeSelected_Click);
-            // 
-            // closeAllBut
-            // 
-            this.closeAllBut.Image = ((System.Drawing.Image)(resources.GetObject("closeAllBut.Image")));
-            this.closeAllBut.Name = "closeAllBut";
-            this.closeAllBut.Size = new System.Drawing.Size(249, 22);
-            this.closeAllBut.Text = "Close All But Selected Composite";
-            this.closeAllBut.Click += new System.EventHandler(this.closeAllBut_Click);
             // 
             // goBackOnPath
             // 
@@ -359,10 +339,10 @@ namespace CommandsEditor.DockPanels
             this.pathDisplay.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pathDisplay.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pathDisplay.Location = new System.Drawing.Point(0, 801);
+            this.pathDisplay.Location = new System.Drawing.Point(3, 801);
             this.pathDisplay.Name = "pathDisplay";
             this.pathDisplay.ReadOnly = true;
-            this.pathDisplay.Size = new System.Drawing.Size(1554, 20);
+            this.pathDisplay.Size = new System.Drawing.Size(1551, 20);
             this.pathDisplay.TabIndex = 177;
             // 
             // CompositeDisplay
@@ -412,9 +392,6 @@ namespace CommandsEditor.DockPanels
         private System.Windows.Forms.ToolStripButton exportComposite;
         private System.Windows.Forms.ImageList imageList;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem closeSelected;
-        private System.Windows.Forms.ToolStripMenuItem closeAll;
-        private System.Windows.Forms.ToolStripMenuItem closeAllBut;
         private System.Windows.Forms.ToolStripDropDownButton createEntity;
         private System.Windows.Forms.ToolStripMenuItem createVariableEntityToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem createFunctionEntityToolStripMenuItem;
@@ -423,5 +400,6 @@ namespace CommandsEditor.DockPanels
         private System.Windows.Forms.ToolStripMenuItem createOverrideEntityToolStripMenuItem;
         private System.Windows.Forms.Button goBackOnPath;
         private System.Windows.Forms.TextBox pathDisplay;
+        private System.Windows.Forms.ToolStripMenuItem closeSelected;
     }
 }
