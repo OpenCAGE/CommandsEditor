@@ -36,9 +36,6 @@
             this.loadLevel = new System.Windows.Forms.ToolStripMenuItem();
             this.saveLevel = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripDropDownButton();
-            this.enableInstanceMode = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.enableBackups = new System.Windows.Forms.ToolStripMenuItem();
             this.connectToUnity = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.showNodegraph = new System.Windows.Forms.ToolStripMenuItem();
@@ -99,9 +96,6 @@
             // 
             this.toolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripButton2.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.enableInstanceMode,
-            this.toolStripSeparator1,
-            this.enableBackups,
             this.connectToUnity,
             this.toolStripSeparator2,
             this.showNodegraph,
@@ -115,30 +109,6 @@
             this.toolStripButton2.Name = "toolStripButton2";
             this.toolStripButton2.Size = new System.Drawing.Size(62, 22);
             this.toolStripButton2.Text = "Options";
-            // 
-            // enableInstanceMode
-            // 
-            this.enableInstanceMode.Name = "enableInstanceMode";
-            this.enableInstanceMode.Size = new System.Drawing.Size(286, 22);
-            this.enableInstanceMode.Text = "Instance Mode";
-            this.enableInstanceMode.ToolTipText = "Enable instance mode to modify entity instances.";
-            this.enableInstanceMode.Click += new System.EventHandler(this.enableInstanceMode_Click);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(283, 6);
-            // 
-            // enableBackups
-            // 
-            this.enableBackups.Checked = true;
-            this.enableBackups.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.enableBackups.Name = "enableBackups";
-            this.enableBackups.Size = new System.Drawing.Size(286, 22);
-            this.enableBackups.Text = "Autosave (every 5 mins)";
-            this.enableBackups.ToolTipText = "If checked, the editor will automatically save the level every 5 minutes.";
-            this.enableBackups.Visible = false;
-            this.enableBackups.Click += new System.EventHandler(this.enableBackups_Click);
             // 
             // connectToUnity
             // 
@@ -266,13 +236,10 @@
         private System.Windows.Forms.ToolStripMenuItem loadLevel;
         private System.Windows.Forms.ToolStripMenuItem saveLevel;
         private System.Windows.Forms.ToolStripDropDownButton toolStripButton2;
-        private System.Windows.Forms.ToolStripMenuItem enableBackups;
         private System.Windows.Forms.ToolStripMenuItem connectToUnity;
         private System.Windows.Forms.ToolStripMenuItem showNodegraph;
         private System.Windows.Forms.ToolStripStatusLabel statusText;
         private System.Windows.Forms.ToolStripMenuItem showEntityIDs;
-        private System.Windows.Forms.ToolStripMenuItem enableInstanceMode;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem searchOnlyCompositeNames;
         private System.Windows.Forms.ToolTip toolTip1;

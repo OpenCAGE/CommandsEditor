@@ -53,9 +53,6 @@ namespace CommandsEditor
             Singleton.OnCompositeSelected += RefreshWebsocket;
             Singleton.OnLevelLoaded += RefreshWebsocket;
 
-            if (!SettingsManager.IsSet(Singleton.Settings.BackupsOpt)) SettingsManager.SetBool(Singleton.Settings.BackupsOpt, true);
-            enableBackups.Checked = !SettingsManager.GetBool(Singleton.Settings.BackupsOpt); enableBackups.PerformClick();
-
             connectToUnity.Checked = !SettingsManager.GetBool(Singleton.Settings.ServerOpt); connectToUnity.PerformClick();
             showNodegraph.Checked = !SettingsManager.GetBool(Singleton.Settings.NodeOpt); showNodegraph.PerformClick();
             showEntityIDs.Checked = !SettingsManager.GetBool(Singleton.Settings.EntIdOpt); showEntityIDs.PerformClick();
@@ -426,60 +423,6 @@ namespace CommandsEditor
             catch { }
         }
 
-        /* Enable/disable backups */
-        Task backgroundBackups = null;
-        CancellationToken backupCancellationToken;
-        private void enableBackups_Click(object sender, EventArgs e)
-        {
-            enableBackups.Checked = !enableBackups.Checked;
-            SettingsManager.SetBool(Singleton.Settings.BackupsOpt, enableBackups.Checked);
-
-            CancellationTokenSource tokenSource = new CancellationTokenSource();
-            backupCancellationToken = tokenSource.Token;
-            if (backgroundBackups != null) tokenSource.Cancel();
-            while (backgroundBackups != null) Thread.Sleep(100);
-
-            if (enableBackups.Checked)
-                backgroundBackups = Task.Factory.StartNew(() => BackupCommands(this));
-        }
-        private void BackupCommands(CommandsEditor mainInst)
-        {
-            int i = 0;
-            while (true)
-            {
-                i = 0;
-                while (i < 300000)
-                {
-                    if (backupCancellationToken.IsCancellationRequested)
-                    {
-                        backgroundBackups = null;
-                        return;
-                    }
-                    Thread.Sleep(500);
-                    i += 500;
-                }
-
-                if (_commandsDisplay.Content.commands == null) continue;
-                mainInst.EnableLoadingOfPaks(false, "Autosaving...");
-
-                bool saved = LegacySave();
-                ShowSaveMsg(saved);
-
-                /*
-                string backupDirectory = _commandsDisplay.Content.commands.Filepath.Substring(0, _commandsDisplay.Content.commands.Filepath.Length - Path.GetFileName(_commandsDisplay.Content.commands.Filepath).Length) + "/COMMANDS_BACKUPS/";
-                Directory.CreateDirectory(backupDirectory);
-
-                //Make sure there are only 15 max backed up PAKs
-                var files = new DirectoryInfo(backupDirectory).EnumerateFiles().OrderByDescending(f => f.CreationTime).Skip(15).ToList();
-                files.ForEach(f => f.Delete());
-
-                _commandsDisplay.Content.commands.Save(backupDirectory + "COMMANDS_" + DateTimeOffset.UtcNow.ToUnixTimeSeconds() + ".PAK", false);
-                */
-
-                mainInst.EnableLoadingOfPaks(true, "");
-            }
-        }
-
         /* Websocket to Unity */
         private void connectToUnity_Click(object sender, EventArgs e)
         {
@@ -612,24 +555,6 @@ namespace CommandsEditor
 
             _commandsDisplay?.Reload(true);
             //TODO: also reload hierarchy cache
-        }
-
-        private void enableInstanceMode_Click(object sender, EventArgs e)
-        {
-            enableInstanceMode.Checked = !enableInstanceMode.Checked;
-            SettingsManager.SetBool(Singleton.Settings.InstOpt, enableInstanceMode.Checked);
-
-            if (_commandsDisplay == null) return;
-
-            //TODO: should just move all this to a func in commands display, can call on start with mode
-
-            _commandsDisplay.CloseAllChildTabs();
-            _commandsDisplay.Hide();
-
-            _commandsDisplay.SelectCompositeAndReloadList(_commandsDisplay.Content.commands.EntryPoints[0]);
-            Singleton.OnCompositeSelected?.Invoke(_commandsDisplay.Content.commands.EntryPoints[0]); //need to call this again b/c the activation event doesn't fire here
-
-            //todo: you don't actually NEEED this. we should just always handle stuff this way.
         }
 
         private void searchOnlyCompositeNames_Click(object sender, EventArgs e)

@@ -9,6 +9,8 @@ using System.Windows.Forms;
 using CATHODE.Scripting.Internal;
 using OpenCAGE;
 using CATHODE.LEGACY;
+using System.Xml.Linq;
+using System.IO;
 
 namespace CommandsEditor
 {
@@ -143,6 +145,8 @@ namespace CommandsEditor
                             break;
                         case 2:
                             commands = new Commands(worldPath + "COMMANDS.PAK");
+                            commands.Entries = commands.Entries.OrderBy(o => o.name).ToList();
+                            commands.EntryPoints[0].name = Path.GetFileName(commands.EntryPoints[0].name);
                             break;
                     }
                 });

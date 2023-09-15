@@ -86,6 +86,7 @@ namespace CommandsEditor.DockPanels
 
         public void SelectCompositeAndReloadList(Composite composite)
         {
+            Content.commands.Entries = Content.commands.Entries.OrderBy(o => o.name).ToList();
             ReloadList();
             SelectComposite(composite);
         }
@@ -107,7 +108,6 @@ namespace CommandsEditor.DockPanels
                 //Make sure this folder/composite should be visible at the current folder path
                 string name = composite.name.Replace('\\', '/');
                 bool isRoot = _content.commands.EntryPoints[0] == composite;
-                if (isRoot) name = Path.GetFileName(composite.name);
                 if (name.Length < _currentDisplayFolderPath.Length) continue;
                 if (name.Substring(0, _currentDisplayFolderPath.Length) != _currentDisplayFolderPath) continue;
 

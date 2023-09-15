@@ -43,7 +43,6 @@ namespace CommandsEditor
         public class SettingsStrings
         {
             public readonly string ServerOpt = "CE_ConnectToUnity";
-            public readonly string BackupsOpt = "CS_Autosave";
             public readonly string NodeOpt = "CS_NodeView";
             public readonly string EntIdOpt = "CS_ShowEntityIDs";
             public readonly string InstOpt = "CS_InstanceMode";
