@@ -15,23 +15,26 @@ using CathodeLib;
 using System.Numerics;
 using CommandsEditor.Popups.Base;
 using CommandsEditor.DockPanels;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace CommandsEditor
 {
-    public partial class Composite3D : BaseWindow
+    public partial class Composite3D : DockContent
     {
         GUI_ModelViewer modelViewer;
         CompositeDisplay _compositeDisplay;
 
-        public Composite3D(CompositeDisplay compositeDisplay) : base(WindowClosesOn.NONE, compositeDisplay.Content)
+        public Composite3D(CompositeDisplay compositeDisplay)
         {
+            _compositeDisplay = compositeDisplay;
+
             InitializeComponent();
             this.Text += ": " + _compositeDisplay.Composite.name;
 
             List<GUI_ModelViewer.Model> models = new List<GUI_ModelViewer.Model>();
             models.AddRange(LoadComposite(_compositeDisplay.Composite));
 
-            modelViewer = new GUI_ModelViewer(_content);
+            modelViewer = new GUI_ModelViewer(_compositeDisplay.Content);
             modelRendererHost.Child = modelViewer;
             modelViewer.ShowModel(models);
         }
@@ -41,39 +44,21 @@ namespace CommandsEditor
             List<GUI_ModelViewer.Model> models = new List<GUI_ModelViewer.Model>();
             if (comp == null) return models;
 
-            List<Entity> entities = comp.GetEntities();
-            foreach (Entity entity in entities)
+            List<FunctionEntity> entities = comp.functions;
+            foreach (FunctionEntity entity in entities)
             {
-                Parameter positionParameter = entity.GetParameter("position");
-                if (entity.variant == EntityVariant.FUNCTION)
-                {
-                    FunctionEntity function = (FunctionEntity)entity;
-                    if (!CommandsUtils.FunctionTypeExists(function.function))
-                    {
-                        Vector3 positionOffset = (offset == null) ? new Vector3() : new Vector3(offset.position.X, offset.position.Y, offset.position.Z);
-                        if (positionParameter != null) positionOffset += ((cTransform)positionParameter.content).position;
-                        Vector3 rotationOffset = (offset == null) ? new Vector3() : new Vector3(offset.rotation.X, offset.rotation.Y, offset.rotation.Z);
-                        if (positionParameter != null) rotationOffset += ((cTransform)positionParameter.content).rotation;
+                Parameter position = entity.GetParameter("position");
+                cTransform globalPosition = ((cTransform)position?.content) + offset;
 
-                        cTransform newOffset = new cTransform(positionOffset, rotationOffset);
-                        models.AddRange(LoadComposite(Content.commands.GetComposite(function.function), newOffset));
-                    }
-                }
+                if (!CommandsUtils.FunctionTypeExists(entity.function))
+                    models.AddRange(LoadComposite(_compositeDisplay.Content.commands.GetComposite(entity.function), globalPosition));
 
-                Parameter resourceParameter = entity.GetParameter("resource");
-                if (resourceParameter == null) continue;
-                List<ResourceReference> resourceRefs = ((cResource)(resourceParameter.content)).value;
-                foreach (ResourceReference resource in resourceRefs)
-                {
-                    if (resource.entryType != ResourceType.RENDERABLE_INSTANCE) continue;
-
-                    Vector3 positionOffset = (offset == null) ? new Vector3() : new Vector3(offset.position.X, offset.position.Y, offset.position.Z);
-                    if (positionParameter != null) positionOffset += ((cTransform)positionParameter.content).position;
-                    Vector3 rotationOffset = (offset == null) ? new Vector3() : new Vector3(offset.rotation.X, offset.rotation.Y, offset.rotation.Z);
-                    if (positionParameter != null) rotationOffset += ((cTransform)positionParameter.content).rotation;
-
-                    models.Add(new GUI_ModelViewer.Model(Content.resource.reds.Entries[resource.index].ModelIndex, positionOffset, rotationOffset));
-                }
+                Parameter resource = entity.GetParameter("resource");
+                if (resource == null) continue;
+                List<ResourceReference> resourceRefs = ((cResource)(resource.content)).value;
+                foreach (ResourceReference resourceRef in resourceRefs.Where(o => o.entryType == ResourceType.RENDERABLE_INSTANCE))
+                    for (int i = 0; i < resourceRef.count; i++)
+                        models.Add(new GUI_ModelViewer.Model(_compositeDisplay.Content.resource.reds.Entries[resourceRef.index + i].ModelIndex, globalPosition));
             }
             return models;
         }

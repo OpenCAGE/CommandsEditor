@@ -83,7 +83,7 @@
             this.showLinkedOverrides.Name = "showLinkedOverrides";
             this.showLinkedOverrides.Size = new System.Drawing.Size(114, 41);
             this.showLinkedOverrides.TabIndex = 152;
-            this.showLinkedOverrides.Text = "Overrides";
+            this.showLinkedOverrides.Text = "Aliases";
             this.showLinkedOverrides.UseVisualStyleBackColor = true;
             this.showLinkedOverrides.Click += new System.EventHandler(this.showLinkedOverrides_Click);
             // 

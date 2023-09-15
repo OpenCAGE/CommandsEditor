@@ -12,7 +12,7 @@ namespace CommandsEditor
 {
     public partial class CharacterEditor : BaseWindow
     {
-        private List<EntityHierarchy> _hierarchies = new List<EntityHierarchy>();
+        private List<EntityPath> _hierarchies = new List<EntityPath>();
         private CharacterAccessorySets.Entry _accessories;
 
         private EntityDisplay _entityDisplay;
@@ -37,7 +37,7 @@ namespace CommandsEditor
             int toSelect = 0;
 
             _hierarchies.Clear();
-            List<EntityHierarchy> hierarchies = _entityDisplay.Content.editor_utils.GetHierarchiesForEntity(_entityDisplay.Composite, _entityDisplay.Entity);
+            List<EntityPath> hierarchies = _entityDisplay.Content.editor_utils.GetHierarchiesForEntity(_entityDisplay.Composite, _entityDisplay.Entity);
             for (int i = 0; i < hierarchies.Count; i++)
             {
                 ShortGuid instance = hierarchies[i].GenerateInstance();
@@ -48,7 +48,7 @@ namespace CommandsEditor
 
             characterInstances.Items.Clear();
             for (int i = 0; i < _hierarchies.Count; i++)
-                characterInstances.Items.Add(_hierarchies[i].GetHierarchyAsString(Content.commands, _entityDisplay.Composite, false));
+                characterInstances.Items.Add(_hierarchies[i].GetAsString(Content.commands, _entityDisplay.Composite, false));
 
             selectNewHead.Enabled = characterInstances.Items.Count != 0;
             selectNewShirt.Enabled = characterInstances.Items.Count != 0;

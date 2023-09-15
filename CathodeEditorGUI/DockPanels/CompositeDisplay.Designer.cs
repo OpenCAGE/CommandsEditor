@@ -32,7 +32,7 @@ namespace CommandsEditor.DockPanels
             System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Variables", System.Windows.Forms.HorizontalAlignment.Left);
             System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("Functions", System.Windows.Forms.HorizontalAlignment.Left);
             System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("Proxies", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("Overrides", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("Aliases", System.Windows.Forms.HorizontalAlignment.Left);
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CompositeDisplay));
             this.composite_content = new System.Windows.Forms.ListView();
             this.EntityName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -40,6 +40,12 @@ namespace CommandsEditor.DockPanels
             this.entity_search_box = new System.Windows.Forms.TextBox();
             this.entity_search_btn = new System.Windows.Forms.Button();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.createEntity = new System.Windows.Forms.ToolStripDropDownButton();
+            this.createVariableEntityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.createFunctionEntityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.createCompositeEntityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.createProxyEntityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.createOverrideEntityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportComposite = new System.Windows.Forms.ToolStripButton();
             this.findUses = new System.Windows.Forms.ToolStripButton();
             this.deleteCheckedEntities = new System.Windows.Forms.ToolStripButton();
@@ -52,15 +58,9 @@ namespace CommandsEditor.DockPanels
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.imageList = new System.Windows.Forms.ImageList(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.closeSelected = new System.Windows.Forms.ToolStripMenuItem();
             this.closeAll = new System.Windows.Forms.ToolStripMenuItem();
+            this.closeSelected = new System.Windows.Forms.ToolStripMenuItem();
             this.closeAllBut = new System.Windows.Forms.ToolStripMenuItem();
-            this.createEntity = new System.Windows.Forms.ToolStripDropDownButton();
-            this.createVariableEntityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.createFunctionEntityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.createCompositeEntityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.createProxyEntityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.createOverrideEntityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -86,8 +86,8 @@ namespace CommandsEditor.DockPanels
             listViewGroup2.Name = "Functions";
             listViewGroup3.Header = "Proxies";
             listViewGroup3.Name = "Proxies";
-            listViewGroup4.Header = "Overrides";
-            listViewGroup4.Name = "Overrides";
+            listViewGroup4.Header = "Aliases";
+            listViewGroup4.Name = "Alias";
             this.composite_content.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
             listViewGroup1,
             listViewGroup2,
@@ -150,6 +150,61 @@ namespace CommandsEditor.DockPanels
             this.toolStrip1.TabIndex = 177;
             this.toolStrip1.Text = "toolStrip1";
             // 
+            // createEntity
+            // 
+            this.createEntity.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.createVariableEntityToolStripMenuItem,
+            this.createFunctionEntityToolStripMenuItem,
+            this.createCompositeEntityToolStripMenuItem,
+            this.createProxyEntityToolStripMenuItem,
+            this.createOverrideEntityToolStripMenuItem});
+            this.createEntity.Image = ((System.Drawing.Image)(resources.GetObject("createEntity.Image")));
+            this.createEntity.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.createEntity.Name = "createEntity";
+            this.createEntity.Size = new System.Drawing.Size(103, 22);
+            this.createEntity.Text = "Create Entity";
+            this.createEntity.Click += new System.EventHandler(this.createEntity_Click);
+            // 
+            // createVariableEntityToolStripMenuItem
+            // 
+            this.createVariableEntityToolStripMenuItem.Name = "createVariableEntityToolStripMenuItem";
+            this.createVariableEntityToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.createVariableEntityToolStripMenuItem.Text = "Create Variable Entity";
+            this.createVariableEntityToolStripMenuItem.ToolTipText = "Create an entity which can contain a variable";
+            this.createVariableEntityToolStripMenuItem.Click += new System.EventHandler(this.createVariableEntityToolStripMenuItem_Click);
+            // 
+            // createFunctionEntityToolStripMenuItem
+            // 
+            this.createFunctionEntityToolStripMenuItem.Name = "createFunctionEntityToolStripMenuItem";
+            this.createFunctionEntityToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.createFunctionEntityToolStripMenuItem.Text = "Create Function Entity";
+            this.createFunctionEntityToolStripMenuItem.ToolTipText = "Create an entity that can perform a function";
+            this.createFunctionEntityToolStripMenuItem.Click += new System.EventHandler(this.createFunctionEntityToolStripMenuItem_Click);
+            // 
+            // createCompositeEntityToolStripMenuItem
+            // 
+            this.createCompositeEntityToolStripMenuItem.Name = "createCompositeEntityToolStripMenuItem";
+            this.createCompositeEntityToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.createCompositeEntityToolStripMenuItem.Text = "Create Composite Entity";
+            this.createCompositeEntityToolStripMenuItem.ToolTipText = "Create an entity that instances a composite";
+            this.createCompositeEntityToolStripMenuItem.Click += new System.EventHandler(this.createCompositeEntityToolStripMenuItem_Click);
+            // 
+            // createProxyEntityToolStripMenuItem
+            // 
+            this.createProxyEntityToolStripMenuItem.Name = "createProxyEntityToolStripMenuItem";
+            this.createProxyEntityToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.createProxyEntityToolStripMenuItem.Text = "Create Proxy";
+            this.createProxyEntityToolStripMenuItem.ToolTipText = "Create an entity that acts as a proxy to an entity in another composite";
+            this.createProxyEntityToolStripMenuItem.Click += new System.EventHandler(this.createProxyEntityToolStripMenuItem_Click);
+            // 
+            // createOverrideEntityToolStripMenuItem
+            // 
+            this.createOverrideEntityToolStripMenuItem.Name = "createOverrideEntityToolStripMenuItem";
+            this.createOverrideEntityToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.createOverrideEntityToolStripMenuItem.Text = "Create Alias";
+            this.createOverrideEntityToolStripMenuItem.ToolTipText = "Create an alias that points to an entity in a child composite";
+            this.createOverrideEntityToolStripMenuItem.Click += new System.EventHandler(this.createOverrideEntityToolStripMenuItem_Click);
+            // 
             // exportComposite
             // 
             this.exportComposite.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
@@ -166,8 +221,8 @@ namespace CommandsEditor.DockPanels
             this.findUses.Image = ((System.Drawing.Image)(resources.GetObject("findUses.Image")));
             this.findUses.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.findUses.Name = "findUses";
-            this.findUses.Size = new System.Drawing.Size(152, 22);
-            this.findUses.Text = "Find Uses of Composite";
+            this.findUses.Size = new System.Drawing.Size(177, 22);
+            this.findUses.Text = "Find Instances of Composite";
             this.findUses.Click += new System.EventHandler(this.findUses_Click);
             // 
             // deleteCheckedEntities
@@ -259,14 +314,6 @@ namespace CommandsEditor.DockPanels
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(250, 70);
             // 
-            // closeSelected
-            // 
-            this.closeSelected.Image = ((System.Drawing.Image)(resources.GetObject("closeSelected.Image")));
-            this.closeSelected.Name = "closeSelected";
-            this.closeSelected.Size = new System.Drawing.Size(249, 22);
-            this.closeSelected.Text = "Close Selected Composite";
-            this.closeSelected.Click += new System.EventHandler(this.closeSelected_Click);
-            // 
             // closeAll
             // 
             this.closeAll.Image = ((System.Drawing.Image)(resources.GetObject("closeAll.Image")));
@@ -275,6 +322,14 @@ namespace CommandsEditor.DockPanels
             this.closeAll.Text = "Close All Composites";
             this.closeAll.Click += new System.EventHandler(this.closeAll_Click);
             // 
+            // closeSelected
+            // 
+            this.closeSelected.Image = ((System.Drawing.Image)(resources.GetObject("closeSelected.Image")));
+            this.closeSelected.Name = "closeSelected";
+            this.closeSelected.Size = new System.Drawing.Size(249, 22);
+            this.closeSelected.Text = "Close Selected Composite";
+            this.closeSelected.Click += new System.EventHandler(this.closeSelected_Click);
+            // 
             // closeAllBut
             // 
             this.closeAllBut.Image = ((System.Drawing.Image)(resources.GetObject("closeAllBut.Image")));
@@ -282,56 +337,6 @@ namespace CommandsEditor.DockPanels
             this.closeAllBut.Size = new System.Drawing.Size(249, 22);
             this.closeAllBut.Text = "Close All But Selected Composite";
             this.closeAllBut.Click += new System.EventHandler(this.closeAllBut_Click);
-            // 
-            // createEntity
-            // 
-            this.createEntity.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.createVariableEntityToolStripMenuItem,
-            this.createFunctionEntityToolStripMenuItem,
-            this.createCompositeEntityToolStripMenuItem,
-            this.createProxyEntityToolStripMenuItem,
-            this.createOverrideEntityToolStripMenuItem});
-            this.createEntity.Image = ((System.Drawing.Image)(resources.GetObject("createEntity.Image")));
-            this.createEntity.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.createEntity.Name = "createEntity";
-            this.createEntity.Size = new System.Drawing.Size(103, 22);
-            this.createEntity.Text = "Create Entity";
-            this.createEntity.Click += new System.EventHandler(this.createEntity_Click);
-            // 
-            // createVariableEntityToolStripMenuItem
-            // 
-            this.createVariableEntityToolStripMenuItem.Name = "createVariableEntityToolStripMenuItem";
-            this.createVariableEntityToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
-            this.createVariableEntityToolStripMenuItem.Text = "Create Variable Entity";
-            this.createVariableEntityToolStripMenuItem.Click += new System.EventHandler(this.createVariableEntityToolStripMenuItem_Click);
-            // 
-            // createFunctionEntityToolStripMenuItem
-            // 
-            this.createFunctionEntityToolStripMenuItem.Name = "createFunctionEntityToolStripMenuItem";
-            this.createFunctionEntityToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
-            this.createFunctionEntityToolStripMenuItem.Text = "Create Function Entity";
-            this.createFunctionEntityToolStripMenuItem.Click += new System.EventHandler(this.createFunctionEntityToolStripMenuItem_Click);
-            // 
-            // createCompositeEntityToolStripMenuItem
-            // 
-            this.createCompositeEntityToolStripMenuItem.Name = "createCompositeEntityToolStripMenuItem";
-            this.createCompositeEntityToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
-            this.createCompositeEntityToolStripMenuItem.Text = "Create Composite Entity";
-            this.createCompositeEntityToolStripMenuItem.Click += new System.EventHandler(this.createCompositeEntityToolStripMenuItem_Click);
-            // 
-            // createProxyEntityToolStripMenuItem
-            // 
-            this.createProxyEntityToolStripMenuItem.Name = "createProxyEntityToolStripMenuItem";
-            this.createProxyEntityToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
-            this.createProxyEntityToolStripMenuItem.Text = "Create Proxy Entity";
-            this.createProxyEntityToolStripMenuItem.Click += new System.EventHandler(this.createProxyEntityToolStripMenuItem_Click);
-            // 
-            // createOverrideEntityToolStripMenuItem
-            // 
-            this.createOverrideEntityToolStripMenuItem.Name = "createOverrideEntityToolStripMenuItem";
-            this.createOverrideEntityToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
-            this.createOverrideEntityToolStripMenuItem.Text = "Create Override Entity";
-            this.createOverrideEntityToolStripMenuItem.Click += new System.EventHandler(this.createOverrideEntityToolStripMenuItem_Click);
             // 
             // CompositeDisplay
             // 

@@ -38,6 +38,7 @@ namespace CommandsEditor
 
             parentEntityList.SelectedIndex = _entityList.IndexOf(entityDisplay.Entity);
             parentEntityList.Enabled = false;
+            selectEntityOut.Enabled = false;
 
             parentParameterList.AutoSelectOff();
             childParameterList.AutoSelectOff();
@@ -61,6 +62,9 @@ namespace CommandsEditor
 
             parentEntityList.Enabled = !isLinkingToChild;
             childEntityList.Enabled = isLinkingToChild;
+
+            selectEntityOut.Enabled = !isLinkingToChild;
+            selectEntityIn.Enabled = isLinkingToChild;
 
             _initialParentEntity = parentEntity;
             _initialLinkID = initialLinkID;
@@ -129,6 +133,42 @@ namespace CommandsEditor
             List<string> items = _entityDisplay.Content.editor_utils.GenerateParameterList(_entityList[childEntityList.SelectedIndex], _entityDisplay.Composite);
             for (int i = 0; i < items.Count; i++) childParameterList.Items.Add(items[i]);
             childParameterList.EndUpdate();
+        }
+
+        EditHierarchy _selectEntOut = null;
+        private void selectEntityOut_Click(object sender, EventArgs e)
+        {
+            if (_selectEntOut != null)
+            {
+                _selectEntOut.Close();
+                _selectEntOut = null;
+            }
+
+            _selectEntOut = new EditHierarchy(Content, _entityDisplay.Composite, false, false, true);
+            _selectEntOut.Show();
+            _selectEntOut.OnHierarchyGenerated += OnSelectedEntityOut;
+        }
+        private void OnSelectedEntityOut(List<ShortGuid> hierarchy)
+        {
+            parentEntityList.SelectedIndex = _entityList.IndexOf(_entityDisplay.Composite.GetEntityByID(hierarchy[0]));
+        }
+
+        EditHierarchy _selectEntIn = null;
+        private void selectEntityIn_Click(object sender, EventArgs e)
+        {
+            if (_selectEntIn != null)
+            {
+                _selectEntIn.Close();
+                _selectEntIn = null;
+            }
+
+            _selectEntIn = new EditHierarchy(Content, _entityDisplay.Composite, false, false, true);
+            _selectEntIn.Show();
+            _selectEntIn.OnHierarchyGenerated += OnSelectedEntityIn;
+        }
+        private void OnSelectedEntityIn(List<ShortGuid> hierarchy)
+        {
+            childEntityList.SelectedIndex = _entityList.IndexOf(_entityDisplay.Composite.GetEntityByID(hierarchy[0]));
         }
     }
 }

@@ -212,6 +212,7 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -261,6 +262,12 @@
     <Compile Include="DockPanels\EntityDisplay.Designer.cs">
       <DependentUpon>EntityDisplay.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\AddFolder.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\AddFolder.Designer.cs">
+      <DependentUpon>AddFolder.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popups\ExportComposite.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -273,6 +280,7 @@
     <Compile Include="Popups\ResourceDatatypeAutocomplete.Designer.cs">
       <DependentUpon>ResourceDatatypeAutocomplete.cs</DependentUpon>
     </Compile>
+    <Compile Include="Scripts\DirectXTexUtility.cs" />
     <Compile Include="Scripts\LevelContent.cs" />
     <Compile Include="Popups\Base\BaseWindow.cs">
       <SubType>Form</SubType>
@@ -1412,6 +1420,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DockPanels\EntityDisplay.resx">
       <DependentUpon>EntityDisplay.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\AddFolder.resx">
+      <DependentUpon>AddFolder.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\ExportComposite.resx">
       <DependentUpon>ExportComposite.cs</DependentUpon>

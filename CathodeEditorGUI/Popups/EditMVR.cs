@@ -50,7 +50,7 @@ namespace CommandsEditor
             }
 
             //Fetch the hierarchies for the MVR entries that point to this entity
-            EntityHierarchy[] hierarchies = new EntityHierarchy[_mvrListIndexes.Count];
+            EntityPath[] hierarchies = new EntityPath[_mvrListIndexes.Count];
             Parallel.For(0, _mvrListIndexes.Count, i =>
             {
                 hierarchies[i] = _entityDisplay.Content.editor_utils.GetHierarchyFromReference(Content.mvr.Entries[_mvrListIndexes[i]].entity);
@@ -61,7 +61,7 @@ namespace CommandsEditor
             listBox1.Items.Clear();
             for (int i = 0; i < hierarchies.Length; i++)
             {
-                listBox1.Items.Add(hierarchies[i] == null ? _mvrListIndexes[i].ToString() + " [unresolvable]" : hierarchies[i].GetHierarchyAsString(Content.commands, _entityDisplay.Composite, false));
+                listBox1.Items.Add(hierarchies[i] == null ? _mvrListIndexes[i].ToString() + " [unresolvable]" : hierarchies[i].GetAsString(Content.commands, _entityDisplay.Composite, false));
             }
             listBox1.EndUpdate();
             if (listBox1.Items.Count != 0) listBox1.SelectedIndex = 0;

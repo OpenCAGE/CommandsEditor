@@ -24,7 +24,7 @@ namespace CommandsEditor
         Dictionary<Track, CAGEAnimation.Animation> tracksAnim;
         Dictionary<Track, CAGEAnimation.Event> tracksEvent;
 
-        List<EntityHierarchy> entityListToHierarchies;
+        List<EntityPath> entityListToHierarchies;
 
         EntityDisplay _entityDisplay;
 
@@ -58,13 +58,13 @@ namespace CommandsEditor
 
         private void UpdateEntityList()
         {
-            entityListToHierarchies = new List<EntityHierarchy>();
+            entityListToHierarchies = new List<EntityPath>();
             entityList.BeginUpdate();
             entityList.Items.Clear();
             List<CAGEAnimation.Connection> connections = animEntity.connections.FindAll(o => o.objectType == ObjectType.ENTITY);
             foreach (CAGEAnimation.Connection connection in connections)
             {
-                string connectionLink = connection.connectedEntity.GetHierarchyAsString(Content.commands, _entityDisplay.Composite);
+                string connectionLink = connection.connectedEntity.GetAsString(Content.commands, _entityDisplay.Composite);
                 if (!entityList.Items.Contains(connectionLink))
                 {
                     entityList.Items.Add(connectionLink);
@@ -171,7 +171,7 @@ namespace CommandsEditor
                 for (int x = 0; x < animEntity.events[i].keyframes.Count; x++)
                 {
                     CAGEAnimation.Event.Keyframe keyframeData = animEntity.events[i].keyframes[x];
-                    string keyframeText = (connection == null) ? EntityUtils.GetName(_entityDisplay.Composite, animEntity) : connection.connectedEntity.GetHierarchyAsString(Content.commands, _entityDisplay.Composite, false);
+                    string keyframeText = (connection == null) ? EntityUtils.GetName(_entityDisplay.Composite, animEntity) : connection.connectedEntity.GetAsString(Content.commands, _entityDisplay.Composite, false);
                     Keyframe keyframeUI = eventTimeline.AddKeyframe(keyframeData.secondsSinceStart, keyframeText);
                     keyframeUI.OnMoved += OnHandleMoved;
                     keyframeHandlesEvent.Add(keyframeUI, keyframeData);
@@ -269,7 +269,7 @@ namespace CommandsEditor
         }
         private void HierarchyEditor_HierarchyGenerated(List<ShortGuid> generatedHierarchy)
         {
-            EntityHierarchy hierarchy = new EntityHierarchy(generatedHierarchy);
+            EntityPath hierarchy = new EntityPath(generatedHierarchy);
 
             //Prevent the same entity being added again (doesn't make sense as the list is unique)
             for (int i = 0; i < entityListToHierarchies.Count; i++)
@@ -285,7 +285,7 @@ namespace CommandsEditor
 
             //Creating a placeholder here that points to nothing so that the dropdown will pick it up - not ideal, but shouldn't affect anything
             CAGEAnimation.Connection newConnection = new CAGEAnimation.Connection();
-            newConnection.connectedEntity.hierarchy = generatedHierarchy;
+            newConnection.connectedEntity.path = generatedHierarchy;
             newConnection.objectType = ObjectType.ENTITY;
             animEntity.connections.Add(newConnection);
 
@@ -318,7 +318,7 @@ namespace CommandsEditor
             }
 
             CAGEAnimation.Connection connection = new CAGEAnimation.Connection();
-            connection.connectedEntity.hierarchy = entityListToHierarchies[entityList.SelectedIndex].hierarchy;
+            connection.connectedEntity.path = entityListToHierarchies[entityList.SelectedIndex].path;
             connection.objectType = ObjectType.ENTITY;
             connection.parameterDataType = param.content.dataType;
 
@@ -418,7 +418,7 @@ namespace CommandsEditor
         }
         private void HierarchyEditor2_HierarchyGenerated(List<ShortGuid> generatedHierarchy)
         {
-            EntityHierarchy hierarchy = new EntityHierarchy(generatedHierarchy);
+            EntityPath hierarchy = new EntityPath(generatedHierarchy);
 
             if (eventEntityIDs.Contains(hierarchy.GetPointedEntity(Content.commands, _entityDisplay.Composite)))
             {

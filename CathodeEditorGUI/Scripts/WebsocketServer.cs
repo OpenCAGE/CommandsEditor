@@ -1,15 +1,16 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Numerics;
 using System.Runtime.InteropServices;
 using WebSocketSharp;
 using WebSocketSharp.Server;
 
 public class WebsocketServer : WebSocketBehavior
 {
-    public Action OnLevelLoaded;
     public Action OnClientConnect;
 
     protected override void OnMessage(MessageEventArgs e)
@@ -17,9 +18,6 @@ public class WebsocketServer : WebSocketBehavior
         MessageType type = (MessageType)Convert.ToInt32(e.Data.Substring(0, 1));
         switch (type)
         {
-            case MessageType.REPORT_LOADED_LEVEL:
-                OnLevelLoaded?.Invoke();
-                break;
             default:
                 Console.WriteLine(e.Data.Substring(1));
                 break;
@@ -28,31 +26,42 @@ public class WebsocketServer : WebSocketBehavior
 
     protected override void OnOpen()
     {
-        SendMessage(MessageType.SYNC_VERSION, VERSION.ToString());
+        SendMessage(new WSPacket { type = MessageType.SYNC_VERSION, version = VERSION });
         OnClientConnect?.Invoke();
         base.OnOpen();
     }
 
-    public void SendMessage(MessageType type, string content)
+    public void SendMessage(WSPacket content)
     {
-        Send(((int)type).ToString() + content);
+        base.Send(JsonConvert.SerializeObject(content));
     }
 
     //TODO: Keep this in sync with clients
-    public const int VERSION = 1;
+    public const int VERSION = 2;
     public enum MessageType
     {
         SYNC_VERSION,
 
         LOAD_LEVEL,
-        LOAD_LEVEL_AT_POSITION,
+        LOAD_COMPOSITE,
 
         GO_TO_POSITION,
-        GO_TO_REDS,
-
         SHOW_ENTITY_NAME,
+    }
+    public class WSPacket
+    {
+        public MessageType type;
 
-        REPORT_LOADED_LEVEL,
-        REPORTING_LOADED_LEVEL,
+        public int version;
+
+        public string level_name;
+        public string alien_path;
+
+        public System.Numerics.Vector3 position;
+        public System.Numerics.Vector3 rotation;
+
+        public string entity_name;
+
+        public string composite_name;
     }
 }

@@ -36,9 +36,9 @@
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(52, 12);
+            this.textBox1.Location = new System.Drawing.Point(104, 12);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(641, 20);
+            this.textBox1.Size = new System.Drawing.Size(589, 20);
             this.textBox1.TabIndex = 6;
             // 
             // create_param
@@ -56,9 +56,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(11, 16);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(35, 13);
+            this.label1.Size = new System.Drawing.Size(87, 13);
             this.label1.TabIndex = 2;
-            this.label1.Text = "Name";
+            this.label1.Text = "Composite Name";
             // 
             // AddComposite
             // 
@@ -73,7 +73,7 @@
             this.MaximizeBox = false;
             this.Name = "AddComposite";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "New Composite";
+            this.Text = "Create Composite In Folder";
             this.ResumeLayout(false);
             this.PerformLayout();
 

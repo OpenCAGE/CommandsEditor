@@ -21,18 +21,24 @@ namespace CommandsEditor
         public Action<Composite> OnCompositeAdded;
 
         CommandsDisplay _commands;
+        string _folder;
 
-        public AddComposite(CommandsDisplay editor) : base(WindowClosesOn.COMMANDS_RELOAD, editor.Content)
+        public AddComposite(CommandsDisplay editor, string folderPath) : base(WindowClosesOn.COMMANDS_RELOAD, editor.Content)
         {
             _commands = editor;
             InitializeComponent();
+
+            this.Text = "Create Composite In Folder '" + folderPath + "'";
+            _folder = folderPath;
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             if (textBox1.Text == "") return;
 
-            string[] pathParts = textBox1.Text.Replace("\\", "/").Split('/');
+            string path = _folder + "/" + textBox1.Text.Replace("\\", "/");
+
+            string[] pathParts = path.Split('/');
             for (int i = 0; i < pathParts.Length; i++)
             {
                 if (pathParts[i] == "")
@@ -44,14 +50,14 @@ namespace CommandsEditor
 
             for (int i = 0; i < _commands.Content.commands.Entries.Count; i++)
             {
-                if (_commands.Content.commands.Entries[i].name == textBox1.Text)
+                if (_commands.Content.commands.Entries[i].name.Replace("\\", "/") == path)
                 {
                     MessageBox.Show("Failed to create composite.\nA composite with this name already exists.", "Composite already exists", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
             }
 
-            Composite comp = _commands.Content.commands.AddComposite(textBox1.Text);
+            Composite comp = _commands.Content.commands.AddComposite(path);
             OnCompositeAdded?.Invoke(comp);
             this.Close();
         }

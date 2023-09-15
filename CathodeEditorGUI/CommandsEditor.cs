@@ -1,8 +1,10 @@
 using CATHODE;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
+using CathodeLib;
 using CommandsEditor.DockPanels;
 using CommandsEditor.Popups;
+using Newtonsoft.Json;
 using OpenCAGE;
 using System;
 using System.Collections.Generic;
@@ -38,11 +40,7 @@ namespace CommandsEditor
         private WebSocketServer _server;
         private WebsocketServer _serverLogic;
 
-        private readonly string _serverOpt = "CE_ConnectToUnity";
-        private readonly string _backupsOpt = "CS_EnableBackups";
-        private readonly string _nodeOpt = "CS_NodeView";
-        private readonly string _entIdOpt = "CS_ShowEntityIDs";
-        private readonly string _instOpt = "CS_InstanceMode";
+        private Dictionary<string, ToolStripMenuItem> _levelMenuItems = new Dictionary<string, ToolStripMenuItem>();
 
         public CommandsEditor(string level = null)
         {
@@ -55,10 +53,23 @@ namespace CommandsEditor
             Singleton.OnCompositeSelected += RefreshWebsocket;
             Singleton.OnLevelLoaded += RefreshWebsocket;
 
-            enableBackups.Checked = !SettingsManager.GetBool(_backupsOpt); enableBackups.PerformClick();
-            connectToUnity.Checked = !SettingsManager.GetBool(_serverOpt); connectToUnity.PerformClick();
-            showNodegraph.Checked = !SettingsManager.GetBool(_nodeOpt); showNodegraph.PerformClick();
-            showEntityIDs.Checked = !SettingsManager.GetBool(_entIdOpt); showEntityIDs.PerformClick();
+            if (!SettingsManager.IsSet(Singleton.Settings.BackupsOpt)) SettingsManager.SetBool(Singleton.Settings.BackupsOpt, true);
+            enableBackups.Checked = !SettingsManager.GetBool(Singleton.Settings.BackupsOpt); enableBackups.PerformClick();
+
+            connectToUnity.Checked = !SettingsManager.GetBool(Singleton.Settings.ServerOpt); connectToUnity.PerformClick();
+            showNodegraph.Checked = !SettingsManager.GetBool(Singleton.Settings.NodeOpt); showNodegraph.PerformClick();
+            showEntityIDs.Checked = !SettingsManager.GetBool(Singleton.Settings.EntIdOpt); showEntityIDs.PerformClick();
+            searchOnlyCompositeNames.Checked = !SettingsManager.GetBool(Singleton.Settings.CompNameOnlyOpt); searchOnlyCompositeNames.PerformClick();
+            useTexturedModelViewExperimentalToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.ShowTexOpt); useTexturedModelViewExperimentalToolStripMenuItem.PerformClick();
+
+            if (!SettingsManager.IsSet(Singleton.Settings.UseCompTabsOpt)) SettingsManager.SetBool(Singleton.Settings.UseCompTabsOpt, true);
+            compositesOpenTabs.Checked = !SettingsManager.GetBool(Singleton.Settings.UseCompTabsOpt); compositesOpenTabs.PerformClick();
+
+            if (!SettingsManager.IsSet(Singleton.Settings.UseEntTabsOpt)) SettingsManager.SetBool(Singleton.Settings.UseEntTabsOpt, true);
+            entitiesOpenTabs.Checked = !SettingsManager.GetBool(Singleton.Settings.UseEntTabsOpt); entitiesOpenTabs.PerformClick();
+
+            if (!SettingsManager.IsSet(Singleton.Settings.ShowSavedMsgOpt)) SettingsManager.SetBool(Singleton.Settings.ShowSavedMsgOpt, true);
+            showConfirmationWhenSavingToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.ShowSavedMsgOpt); showConfirmationWhenSavingToolStripMenuItem.PerformClick();
 
             //Set title
             this.Text = "OpenCAGE Commands Editor";
@@ -81,11 +92,31 @@ namespace CommandsEditor
 
             //Populate localised text string databases (in English)
             List<string> textList = Directory.GetFiles(SharedData.pathToAI + "/DATA/TEXT/ENGLISH/", "*.TXT", SearchOption.AllDirectories).ToList<string>();
-            foreach (string text in textList)
-                Singleton.Strings.Add(Path.GetFileNameWithoutExtension(text), new Strings(text));
+            {
+                Strings[] strings = new Strings[textList.Count];
+                Parallel.For(0, textList.Count, (i) =>
+                {
+                    strings[i] = new Strings(textList[i]);
+                });
+                for (int i = 0; i < textList.Count; i++)
+                    Singleton.Strings.Add(Path.GetFileNameWithoutExtension(textList[i]), strings[i]);
+            }
 
             //Load animation data - this should be quick enough to not worry about waiting for the thread
             Task.Factory.StartNew(() => LoadAnimData());
+
+            //Load global textures - same note as above
+            Task.Factory.StartNew(() => LoadGlobalTex());
+
+            //Populate level list
+            List<string> levels = Level.GetLevels(SharedData.pathToAI, true);
+            for (int i = 0; i < levels.Count; i++)
+            {
+                ToolStripMenuItem levelItem = new ToolStripMenuItem(levels[i]);
+                levelItem.Click += OnLevelSelected;
+                loadLevel.DropDownItems.Add(levelItem);
+                _levelMenuItems.Add(levels[i], levelItem);
+            }
 
             //If we have been launched to a level, load that
             if (level != null)
@@ -143,6 +174,12 @@ namespace CommandsEditor
             GC.Collect();
         }
 
+        /* Load global textures */
+        private void LoadGlobalTex()
+        {
+            Singleton.GlobalTextures = new Textures(SharedData.pathToAI + "/DATA/ENV/GLOBAL/WORLD/GLOBAL_TEXTURES.ALL.PAK");
+        }
+        
         /* Monitor the currently active composite tab */
         private void DockPanel_ActiveContentChanged(object sender, EventArgs e)
         {
@@ -189,6 +226,10 @@ namespace CommandsEditor
         {
             _levelSelect = null;
         }
+        private void OnLevelSelected(object sender, EventArgs e)
+        {
+            OnLevelSelected(((ToolStripMenuItem)sender).Text);
+        }
         private void OnLevelSelected(string level)
         {
             statusText.Text = "Loading " + level + "...";
@@ -200,6 +241,8 @@ namespace CommandsEditor
             //Close all existing
             if (_commandsDisplay != null)
             {
+                _levelMenuItems[_commandsDisplay.Content.level].Checked = false;
+
                 _commandsDisplay.CloseAllChildTabs();
                 _commandsDisplay.Close();
             }
@@ -208,6 +251,8 @@ namespace CommandsEditor
             _commandsDisplay = new CommandsDisplay(level);
             _commandsDisplay.Show(Singleton.Editor.DockPanel, DockState.DockLeft);
             _commandsDisplay.CloseButtonVisible = false;
+
+            _levelMenuItems[_commandsDisplay.Content.level].Checked = true;
         }
 
         private void saveLevel_Click(object sender, EventArgs e)
@@ -221,8 +266,15 @@ namespace CommandsEditor
             statusText.Text = "";
             Cursor.Current = Cursors.Default;
 
+            ShowSaveMsg(saved);
+        }
+        private void ShowSaveMsg(bool saved)
+        {
             if (saved)
-                MessageBox.Show("Saved changes!", "Saved.", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            {
+                if (SettingsManager.GetBool(Singleton.Settings.ShowSavedMsgOpt))
+                    MessageBox.Show("Saved changes!", "Saved.", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
             else
                 MessageBox.Show("Failed to save changes!", "Failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
@@ -383,7 +435,7 @@ namespace CommandsEditor
         private void enableBackups_Click(object sender, EventArgs e)
         {
             enableBackups.Checked = !enableBackups.Checked;
-            SettingsManager.SetBool(_backupsOpt, enableBackups.Checked);
+            SettingsManager.SetBool(Singleton.Settings.BackupsOpt, enableBackups.Checked);
 
             CancellationTokenSource tokenSource = new CancellationTokenSource();
             backupCancellationToken = tokenSource.Token;
@@ -411,8 +463,12 @@ namespace CommandsEditor
                 }
 
                 if (_commandsDisplay.Content.commands == null) continue;
-                mainInst.EnableLoadingOfPaks(false, "Performing automated backup...");
+                mainInst.EnableLoadingOfPaks(false, "Autosaving...");
 
+                bool saved = LegacySave();
+                ShowSaveMsg(saved);
+
+                /*
                 string backupDirectory = _commandsDisplay.Content.commands.Filepath.Substring(0, _commandsDisplay.Content.commands.Filepath.Length - Path.GetFileName(_commandsDisplay.Content.commands.Filepath).Length) + "/COMMANDS_BACKUPS/";
                 Directory.CreateDirectory(backupDirectory);
 
@@ -421,6 +477,8 @@ namespace CommandsEditor
                 files.ForEach(f => f.Delete());
 
                 _commandsDisplay.Content.commands.Save(backupDirectory + "COMMANDS_" + DateTimeOffset.UtcNow.ToUnixTimeSeconds() + ".PAK", false);
+                */
+
                 mainInst.EnableLoadingOfPaks(true, "");
             }
         }
@@ -429,7 +487,7 @@ namespace CommandsEditor
         private void connectToUnity_Click(object sender, EventArgs e)
         {
             connectToUnity.Checked = !connectToUnity.Checked;
-            SettingsManager.SetBool(_serverOpt, connectToUnity.Checked);
+            SettingsManager.SetBool(Singleton.Settings.ServerOpt, connectToUnity.Checked);
             RefreshWebsocket();
         }
         private bool StartWebsocket()
@@ -457,7 +515,7 @@ namespace CommandsEditor
         private void RefreshWebsocket() => RefreshWebsocket(null);
         private void RefreshWebsocket(object o)
         {
-            if (!SettingsManager.GetBool(_serverOpt))
+            if (!SettingsManager.GetBool(Singleton.Settings.ServerOpt))
             {
                 if (_server != null)
                     _server.Stop();
@@ -473,30 +531,58 @@ namespace CommandsEditor
             //Request the correct level
             if (_commandsDisplay?.Content?.commands != null && _commandsDisplay.Content.commands.Loaded)
             {
-                _server.WebSocketServices["/commands_editor"].Sessions.Broadcast(((int)WebsocketServer.MessageType.LOAD_LEVEL) + _commandsDisplay.Content.level);
+                SendWebsocketData(new WebsocketServer.WSPacket { 
+                    type = WebsocketServer.MessageType.LOAD_LEVEL, 
+                    alien_path = SharedData.pathToAI, 
+                    level_name = _commandsDisplay.Content.level 
+                });
             }
 
             //Get active stuff
+            Composite composite = ActiveCompositeDisplay?.Composite;
             Entity entity = ActiveCompositeDisplay?.ActiveEntityDisplay?.Entity;
-            Composite composite = ActiveCompositeDisplay?.ActiveEntityDisplay?.Composite;
             Parameter position = entity?.GetParameter("position");
+
+            //Load composite
+            if (composite != null)
+            {
+                SendWebsocketData(new WebsocketServer.WSPacket
+                {
+                    type = WebsocketServer.MessageType.LOAD_COMPOSITE,
+                    composite_name = composite.name
+                });
+            }
 
             //Point to position of selected entity
             if (position != null)
             {
-                System.Numerics.Vector3 vec = ((cTransform)position.content).position;
-                _server.WebSocketServices["/commands_editor"].Sessions.Broadcast(((int)WebsocketServer.MessageType.GO_TO_POSITION).ToString() + vec.X + ">" + vec.Y + ">" + vec.Z);
+                SendWebsocketData(new WebsocketServer.WSPacket
+                {
+                    type = WebsocketServer.MessageType.GO_TO_POSITION,
+                    position = ((cTransform)position.content).position
+                });
             }
 
             //Show name of entity
             if (entity != null && composite != null)
-                _server.WebSocketServices["/commands_editor"].Sessions.Broadcast(((int)WebsocketServer.MessageType.SHOW_ENTITY_NAME).ToString() + EntityUtils.GetName(composite, entity));
+            {
+                SendWebsocketData(new WebsocketServer.WSPacket
+                {
+                    type = WebsocketServer.MessageType.SHOW_ENTITY_NAME,
+                    entity_name = EntityUtils.GetName(composite, entity)
+                });
+            }
+        }
+
+        private void SendWebsocketData(WebsocketServer.WSPacket content)
+        {
+            _server.WebSocketServices["/commands_editor"].Sessions.Broadcast(JsonConvert.SerializeObject(content));
         }
 
         private void showNodegraph_Click(object sender, EventArgs e)
         {
             showNodegraph.Checked = !showNodegraph.Checked;
-            SettingsManager.SetBool(_nodeOpt, showNodegraph.Checked);
+            SettingsManager.SetBool(Singleton.Settings.NodeOpt, showNodegraph.Checked);
 
             if (showNodegraph.Checked)
             {
@@ -525,7 +611,7 @@ namespace CommandsEditor
         private void showEntityIDs_Click(object sender, EventArgs e)
         {
             showEntityIDs.Checked = !showEntityIDs.Checked;
-            SettingsManager.SetBool(_entIdOpt, showEntityIDs.Checked);
+            SettingsManager.SetBool(Singleton.Settings.EntIdOpt, showEntityIDs.Checked);
 
             _commandsDisplay?.Reload(true);
             //TODO: also reload hierarchy cache
@@ -534,20 +620,49 @@ namespace CommandsEditor
         private void enableInstanceMode_Click(object sender, EventArgs e)
         {
             enableInstanceMode.Checked = !enableInstanceMode.Checked;
-            SettingsManager.SetBool(_instOpt, enableInstanceMode.Checked);
+            SettingsManager.SetBool(Singleton.Settings.InstOpt, enableInstanceMode.Checked);
 
             if (_commandsDisplay == null) return;
 
             //TODO: should just move all this to a func in commands display, can call on start with mode
 
             _commandsDisplay.CloseAllChildTabs();
+            _commandsDisplay.Hide();
 
             _commandsDisplay.SelectCompositeAndReloadList(_commandsDisplay.Content.commands.EntryPoints[0]);
             Singleton.OnCompositeSelected?.Invoke(_commandsDisplay.Content.commands.EntryPoints[0]); //need to call this again b/c the activation event doesn't fire here
 
-            //TODO: disable commands display list selection
 
+        }
 
+        private void searchOnlyCompositeNames_Click(object sender, EventArgs e)
+        {
+            searchOnlyCompositeNames.Checked = !searchOnlyCompositeNames.Checked;
+            SettingsManager.SetBool(Singleton.Settings.CompNameOnlyOpt, searchOnlyCompositeNames.Checked);
+        }
+
+        private void compositesOpenTabs_Click(object sender, EventArgs e)
+        {
+            compositesOpenTabs.Checked = !compositesOpenTabs.Checked;
+            SettingsManager.SetBool(Singleton.Settings.UseCompTabsOpt, compositesOpenTabs.Checked);
+        }
+
+        private void entitiesOpenTabs_Click(object sender, EventArgs e)
+        {
+            entitiesOpenTabs.Checked = !entitiesOpenTabs.Checked;
+            SettingsManager.SetBool(Singleton.Settings.UseEntTabsOpt, entitiesOpenTabs.Checked);
+        }
+
+        private void showConfirmationWhenSavingToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            showConfirmationWhenSavingToolStripMenuItem.Checked = !showConfirmationWhenSavingToolStripMenuItem.Checked;
+            SettingsManager.SetBool(Singleton.Settings.ShowSavedMsgOpt, showConfirmationWhenSavingToolStripMenuItem.Checked);
+        }
+
+        private void useTexturedModelViewExperimentalToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            useTexturedModelViewExperimentalToolStripMenuItem.Checked = !useTexturedModelViewExperimentalToolStripMenuItem.Checked;
+            SettingsManager.SetBool(Singleton.Settings.ShowTexOpt, useTexturedModelViewExperimentalToolStripMenuItem.Checked);
         }
     }
 }
