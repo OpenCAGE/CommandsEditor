@@ -29,10 +29,10 @@ namespace CommandsEditor.DockPanels
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Variables", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("Functions", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("Proxies", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("Aliases", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup17 = new System.Windows.Forms.ListViewGroup("Variables", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup18 = new System.Windows.Forms.ListViewGroup("Functions", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup19 = new System.Windows.Forms.ListViewGroup("Proxies", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup20 = new System.Windows.Forms.ListViewGroup("Aliases", System.Windows.Forms.HorizontalAlignment.Left);
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CompositeDisplay));
             this.composite_content = new System.Windows.Forms.ListView();
             this.EntityName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -80,19 +80,19 @@ namespace CommandsEditor.DockPanels
             this.EntityName,
             this.EntityType});
             this.composite_content.FullRowSelect = true;
-            listViewGroup1.Header = "Variables";
-            listViewGroup1.Name = "Variables";
-            listViewGroup2.Header = "Functions";
-            listViewGroup2.Name = "Functions";
-            listViewGroup3.Header = "Proxies";
-            listViewGroup3.Name = "Proxies";
-            listViewGroup4.Header = "Aliases";
-            listViewGroup4.Name = "Alias";
+            listViewGroup17.Header = "Variables";
+            listViewGroup17.Name = "Variables";
+            listViewGroup18.Header = "Functions";
+            listViewGroup18.Name = "Functions";
+            listViewGroup19.Header = "Proxies";
+            listViewGroup19.Name = "Proxies";
+            listViewGroup20.Header = "Aliases";
+            listViewGroup20.Name = "Alias";
             this.composite_content.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup1,
-            listViewGroup2,
-            listViewGroup3,
-            listViewGroup4});
+            listViewGroup17,
+            listViewGroup18,
+            listViewGroup19,
+            listViewGroup20});
             this.composite_content.HideSelection = false;
             this.composite_content.LabelWrap = false;
             this.composite_content.Location = new System.Drawing.Point(3, 30);
@@ -349,6 +349,7 @@ namespace CommandsEditor.DockPanels
             // 
             // CompositeDisplay
             // 
+            this.AllowEndUserDocking = false;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1615, 821);
@@ -356,6 +357,7 @@ namespace CommandsEditor.DockPanels
             this.Controls.Add(this.goBackOnPath);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.toolStrip1);
+            this.DockAreas = ((WeifenLuo.WinFormsUI.Docking.DockAreas)((WeifenLuo.WinFormsUI.Docking.DockAreas.Float | WeifenLuo.WinFormsUI.Docking.DockAreas.Document)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "CompositeDisplay";
             this.TabPageContextMenuStrip = this.contextMenuStrip1;

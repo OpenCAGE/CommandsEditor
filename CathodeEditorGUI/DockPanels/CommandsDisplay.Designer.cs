@@ -205,13 +205,16 @@ namespace CommandsEditor.DockPanels
             // 
             // CommandsDisplay
             // 
+            this.AllowEndUserDocking = false;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1513, 734);
+            this.CloseButtonVisible = false;
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.entity_search_box);
             this.Controls.Add(this.entity_search_btn);
             this.Controls.Add(this.toolStrip1);
+            this.DockAreas = ((WeifenLuo.WinFormsUI.Docking.DockAreas)((WeifenLuo.WinFormsUI.Docking.DockAreas.Float | WeifenLuo.WinFormsUI.Docking.DockAreas.DockBottom)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "CommandsDisplay";
             this.Text = "Composites";

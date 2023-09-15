@@ -246,8 +246,8 @@ namespace CommandsEditor
 
             //Load new
             _commandsDisplay = new CommandsDisplay(level);
-            _commandsDisplay.Show(Singleton.Editor.DockPanel, DockState.DockBottom);
-            _commandsDisplay.CloseButtonVisible = false;
+            _commandsDisplay.Show(Singleton.Editor.DockPanel, DockState.DockBottomAutoHide);
+            Singleton.Editor.DockPanel.ActiveAutoHideContent = _commandsDisplay;
 
             _levelMenuItems[_commandsDisplay.Content.level].Checked = true;
         }
