@@ -29,10 +29,10 @@ namespace CommandsEditor.DockPanels
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.ListViewGroup listViewGroup17 = new System.Windows.Forms.ListViewGroup("Variables", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup18 = new System.Windows.Forms.ListViewGroup("Functions", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup19 = new System.Windows.Forms.ListViewGroup("Proxies", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup20 = new System.Windows.Forms.ListViewGroup("Aliases", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup("Variables", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup6 = new System.Windows.Forms.ListViewGroup("Functions", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup7 = new System.Windows.Forms.ListViewGroup("Proxies", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup8 = new System.Windows.Forms.ListViewGroup("Aliases", System.Windows.Forms.HorizontalAlignment.Left);
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CompositeDisplay));
             this.composite_content = new System.Windows.Forms.ListView();
             this.EntityName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -80,19 +80,19 @@ namespace CommandsEditor.DockPanels
             this.EntityName,
             this.EntityType});
             this.composite_content.FullRowSelect = true;
-            listViewGroup17.Header = "Variables";
-            listViewGroup17.Name = "Variables";
-            listViewGroup18.Header = "Functions";
-            listViewGroup18.Name = "Functions";
-            listViewGroup19.Header = "Proxies";
-            listViewGroup19.Name = "Proxies";
-            listViewGroup20.Header = "Aliases";
-            listViewGroup20.Name = "Alias";
+            listViewGroup5.Header = "Variables";
+            listViewGroup5.Name = "Variables";
+            listViewGroup6.Header = "Functions";
+            listViewGroup6.Name = "Functions";
+            listViewGroup7.Header = "Proxies";
+            listViewGroup7.Name = "Proxies";
+            listViewGroup8.Header = "Aliases";
+            listViewGroup8.Name = "Alias";
             this.composite_content.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup17,
-            listViewGroup18,
-            listViewGroup19,
-            listViewGroup20});
+            listViewGroup5,
+            listViewGroup6,
+            listViewGroup7,
+            listViewGroup8});
             this.composite_content.HideSelection = false;
             this.composite_content.LabelWrap = false;
             this.composite_content.Location = new System.Drawing.Point(3, 30);
@@ -211,8 +211,8 @@ namespace CommandsEditor.DockPanels
             this.exportComposite.Image = ((System.Drawing.Image)(resources.GetObject("exportComposite.Image")));
             this.exportComposite.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.exportComposite.Name = "exportComposite";
-            this.exportComposite.Size = new System.Drawing.Size(110, 22);
-            this.exportComposite.Text = "Port Composite";
+            this.exportComposite.Size = new System.Drawing.Size(86, 22);
+            this.exportComposite.Text = "Port Prefab";
             this.exportComposite.Click += new System.EventHandler(this.exportComposite_Click);
             // 
             // findUses
@@ -221,8 +221,8 @@ namespace CommandsEditor.DockPanels
             this.findUses.Image = ((System.Drawing.Image)(resources.GetObject("findUses.Image")));
             this.findUses.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.findUses.Name = "findUses";
-            this.findUses.Size = new System.Drawing.Size(177, 22);
-            this.findUses.Text = "Find Instances of Composite";
+            this.findUses.Size = new System.Drawing.Size(153, 22);
+            this.findUses.Text = "Find Instances of Prefab";
             this.findUses.Click += new System.EventHandler(this.findUses_Click);
             // 
             // deleteCheckedEntities
@@ -240,8 +240,8 @@ namespace CommandsEditor.DockPanels
             this.deleteComposite.Image = ((System.Drawing.Image)(resources.GetObject("deleteComposite.Image")));
             this.deleteComposite.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.deleteComposite.Name = "deleteComposite";
-            this.deleteComposite.Size = new System.Drawing.Size(121, 22);
-            this.deleteComposite.Text = "Delete Composite";
+            this.deleteComposite.Size = new System.Drawing.Size(97, 22);
+            this.deleteComposite.Text = "Delete Prefab";
             this.deleteComposite.Click += new System.EventHandler(this.deleteComposite_Click);
             // 
             // dockPanel
@@ -361,7 +361,7 @@ namespace CommandsEditor.DockPanels
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "CompositeDisplay";
             this.TabPageContextMenuStrip = this.contextMenuStrip1;
-            this.Text = "Selected Composite";
+            this.Text = "Selected Prefab";
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.panel1.ResumeLayout(false);

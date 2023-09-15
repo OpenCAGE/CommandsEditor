@@ -19,8 +19,8 @@ namespace CommandsEditor
 
             if (composite != null)
             {
-                Text = "Composite Uses";
-                label.Text = "Entities that instance the composite '" + composite.name + "':";
+                Text = "Prefab Uses";
+                label.Text = "Entities that instance the prefab '" + composite.name + "':";
                 entityVariant.Visible = false;
                 Search(composite.shortGUID);
             }

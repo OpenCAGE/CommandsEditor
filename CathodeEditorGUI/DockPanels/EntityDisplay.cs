@@ -492,7 +492,7 @@ namespace CommandsEditor.DockPanels
                     return;
             }
 
-            if (MessageBox.Show("Jumping to a proxy will break you out of your composite path.\nAre you sure?", "About to follow proxy...", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+            if (MessageBox.Show("Jumping to a proxy will break you out of your prefab.\nAre you sure?", "About to follow proxy...", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                 _compositeDisplay.CommandsDisplay.LoadCompositeAndEntity(flow, entity);
         }
 

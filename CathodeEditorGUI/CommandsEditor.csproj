@@ -1244,12 +1244,6 @@
     <Compile Include="Popups\EditMVR.Designer.cs">
       <DependentUpon>EditMVR.cs</DependentUpon>
     </Compile>
-    <Compile Include="Popups\EditRootComposite.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Popups\EditRootComposite.Designer.cs">
-      <DependentUpon>EditRootComposite.cs</DependentUpon>
-    </Compile>
     <Compile Include="Popups\Function Editors\TriggerSequenceEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1480,9 +1474,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\EditMVR.resx">
       <DependentUpon>EditMVR.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Popups\EditRootComposite.resx">
-      <DependentUpon>EditRootComposite.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\Function Editors\CAGEAnimation\CAGEAnimation_SelectParameter.resx">
       <DependentUpon>CAGEAnimation_SelectParameter.cs</DependentUpon>

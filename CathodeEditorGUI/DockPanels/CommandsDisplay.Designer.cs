@@ -79,8 +79,8 @@ namespace CommandsEditor.DockPanels
             this.createComposite.Image = ((System.Drawing.Image)(resources.GetObject("createComposite.Image")));
             this.createComposite.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.createComposite.Name = "createComposite";
-            this.createComposite.Size = new System.Drawing.Size(122, 22);
-            this.createComposite.Text = "Create Composite";
+            this.createComposite.Size = new System.Drawing.Size(125, 22);
+            this.createComposite.Text = "Create New Prefab";
             this.createComposite.Click += new System.EventHandler(this.createComposite_Click);
             // 
             // createFolder
@@ -88,8 +88,8 @@ namespace CommandsEditor.DockPanels
             this.createFolder.Image = ((System.Drawing.Image)(resources.GetObject("createFolder.Image")));
             this.createFolder.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.createFolder.Name = "createFolder";
-            this.createFolder.Size = new System.Drawing.Size(97, 22);
-            this.createFolder.Text = "Create Folder";
+            this.createFolder.Size = new System.Drawing.Size(124, 22);
+            this.createFolder.Text = "Create New Folder";
             this.createFolder.Click += new System.EventHandler(this.createFolder_Click);
             // 
             // findFuncs
@@ -220,7 +220,7 @@ namespace CommandsEditor.DockPanels
             this.DockAreas = ((WeifenLuo.WinFormsUI.Docking.DockAreas)((WeifenLuo.WinFormsUI.Docking.DockAreas.Float | WeifenLuo.WinFormsUI.Docking.DockAreas.DockBottom)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "CommandsDisplay";
-            this.Text = "Composites";
+            this.Text = "Prefabs";
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);

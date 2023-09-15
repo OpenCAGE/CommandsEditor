@@ -58,6 +58,9 @@ namespace CommandsEditor.DockPanels
         {
             Cursor.Current = Cursors.WaitCursor;
 
+            findUses.Visible = Content.commands.EntryPoints[0] != composite;
+            deleteComposite.Visible = Content.commands.EntryPoints[0] != composite;
+
             this.Text = composite.name;
             pathDisplay.Text = _path.GetPath(composite);
             _composite = composite;

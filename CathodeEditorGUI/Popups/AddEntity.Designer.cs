@@ -52,7 +52,7 @@
             this.select_composite.Name = "select_composite";
             this.select_composite.Size = new System.Drawing.Size(155, 23);
             this.select_composite.TabIndex = 8;
-            this.select_composite.Text = "Select Composite";
+            this.select_composite.Text = "Select Prefab";
             this.select_composite.UseVisualStyleBackColor = true;
             this.select_composite.Click += new System.EventHandler(this.select_composite_Click);
             // 
@@ -84,7 +84,7 @@
             this.createOverrideEntity.AutoSize = true;
             this.createOverrideEntity.Location = new System.Drawing.Point(412, 19);
             this.createOverrideEntity.Name = "createOverrideEntity";
-            this.createOverrideEntity.Size = new System.Drawing.Size(94, 17);
+            this.createOverrideEntity.Size = new System.Drawing.Size(76, 17);
             this.createOverrideEntity.TabIndex = 5;
             this.createOverrideEntity.Text = "Alias Entity";
             this.createOverrideEntity.UseVisualStyleBackColor = true;
@@ -199,10 +199,10 @@
             this.Controls.Add(this.createNewEntity);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.generateHierarchy);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.select_composite);
             this.Controls.Add(this.entityVariant);
+            this.Controls.Add(this.generateHierarchy);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
