@@ -313,7 +313,8 @@ namespace CommandsEditor.DockPanels
         {
             if (entity_search_box.Text == _currentSearch) return;
 
-            List<string> filteredComposites = new List<string>();
+            List<string> filteredCompositeNames = new List<string>();
+            List<Composite> filteredComposites = new List<Composite>();
             _currentSearch = entity_search_box.Text.Replace('\\', '/').ToUpper();
             for (int i = 0; i < _content.commands.Entries.Count; i++)
             {
@@ -326,15 +327,34 @@ namespace CommandsEditor.DockPanels
                 }
 
                 if (!name.ToUpper().Contains(_currentSearch)) continue;
-                filteredComposites.Add(_content.commands.Entries[i].name.Replace('\\', '/'));
+
+                filteredCompositeNames.Add(_content.commands.Entries[i].name.Replace('\\', '/'));
+                filteredComposites.Add(_content.commands.Entries[i]);
             }
 
-            //TODO!!!!
+            _treeUtility.UpdateFileTree(filteredCompositeNames);
 
-            //_treeHelper.UpdateFileTree(filteredComposites);
+            if (entity_search_box.Text != "")
+            {
+                treeView1.ExpandAll();
 
-            //if (entity_search_box.Text != "")
-            //    FileTree.ExpandAll();
+                listView1.Items.Clear();
+                pathDisplay.Text = "";
+                foreach (Composite composite in filteredComposites)
+                {
+                    bool isRoot = _content.commands.EntryPoints[0] == composite;
+                    listView1.Items.Add(new ListViewItem()
+                    {
+                        Text = Path.GetFileName(composite.name),
+                        ImageIndex = isRoot ? 2 : 0,
+                        Tag = new ListViewItemContent() { IsFolder = false, Composite = composite }
+                    });
+                }
+            }
+            else
+            {
+                ReloadList();
+            }
         }
 
         private void findFuncs_Click(object sender, EventArgs e)
