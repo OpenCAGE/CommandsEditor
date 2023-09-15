@@ -46,7 +46,12 @@ namespace CommandsEditor.DockPanels
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.pathDisplay = new System.Windows.Forms.TextBox();
             this.goBackOnPath = new System.Windows.Forms.Button();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.toolStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+            this.splitContainer1.Panel1.SuspendLayout();
+            this.splitContainer1.Panel2.SuspendLayout();
+            this.splitContainer1.SuspendLayout();
             this.SuspendLayout();
             // 
             // imageList
@@ -126,10 +131,10 @@ namespace CommandsEditor.DockPanels
             | System.Windows.Forms.AnchorStyles.Right)));
             this.listView1.HideSelection = false;
             this.listView1.LargeImageList = this.imageList1;
-            this.listView1.Location = new System.Drawing.Point(4, 69);
+            this.listView1.Location = new System.Drawing.Point(0, 19);
             this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(1504, 665);
+            this.listView1.Size = new System.Drawing.Size(1156, 661);
             this.listView1.TabIndex = 179;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
@@ -145,10 +150,12 @@ namespace CommandsEditor.DockPanels
             // 
             // treeView1
             // 
-            this.treeView1.Location = new System.Drawing.Point(1362, 594);
+            this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(121, 97);
+            this.treeView1.Size = new System.Drawing.Size(344, 680);
             this.treeView1.TabIndex = 180;
+            this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
             // pathDisplay
             // 
@@ -157,17 +164,17 @@ namespace CommandsEditor.DockPanels
             this.pathDisplay.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pathDisplay.Enabled = false;
             this.pathDisplay.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.pathDisplay.Location = new System.Drawing.Point(4, 51);
+            this.pathDisplay.Location = new System.Drawing.Point(0, 0);
             this.pathDisplay.Name = "pathDisplay";
             this.pathDisplay.ReadOnly = true;
-            this.pathDisplay.Size = new System.Drawing.Size(1442, 20);
+            this.pathDisplay.Size = new System.Drawing.Size(1094, 20);
             this.pathDisplay.TabIndex = 181;
             // 
             // goBackOnPath
             // 
             this.goBackOnPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.goBackOnPath.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.goBackOnPath.Location = new System.Drawing.Point(1445, 51);
+            this.goBackOnPath.Location = new System.Drawing.Point(1093, 0);
             this.goBackOnPath.Name = "goBackOnPath";
             this.goBackOnPath.Size = new System.Drawing.Size(63, 20);
             this.goBackOnPath.TabIndex = 182;
@@ -175,23 +182,46 @@ namespace CommandsEditor.DockPanels
             this.goBackOnPath.UseVisualStyleBackColor = true;
             this.goBackOnPath.Click += new System.EventHandler(this.goBackOnPath_Click);
             // 
+            // splitContainer1
+            // 
+            this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.splitContainer1.Location = new System.Drawing.Point(4, 54);
+            this.splitContainer1.Name = "splitContainer1";
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.Controls.Add(this.treeView1);
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add(this.goBackOnPath);
+            this.splitContainer1.Panel2.Controls.Add(this.pathDisplay);
+            this.splitContainer1.Panel2.Controls.Add(this.listView1);
+            this.splitContainer1.Size = new System.Drawing.Size(1504, 680);
+            this.splitContainer1.SplitterDistance = 344;
+            this.splitContainer1.TabIndex = 183;
+            // 
             // CommandsDisplay
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1513, 734);
-            this.Controls.Add(this.goBackOnPath);
-            this.Controls.Add(this.pathDisplay);
-            this.Controls.Add(this.listView1);
+            this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.entity_search_box);
             this.Controls.Add(this.entity_search_btn);
             this.Controls.Add(this.toolStrip1);
-            this.Controls.Add(this.treeView1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "CommandsDisplay";
             this.Text = "Composites";
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
+            this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel2.ResumeLayout(false);
+            this.splitContainer1.Panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+            this.splitContainer1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -212,5 +242,6 @@ namespace CommandsEditor.DockPanels
         private System.Windows.Forms.ImageList imageList1;
         private System.Windows.Forms.TextBox pathDisplay;
         private System.Windows.Forms.Button goBackOnPath;
+        private System.Windows.Forms.SplitContainer splitContainer1;
     }
 }
