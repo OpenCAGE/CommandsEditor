@@ -224,8 +224,30 @@ namespace CommandsEditor.DockPanels
 
         private void AddEntityToListView(Entity entity)
         {
+            //Aliases are no longer shown as entities, but extra info on composite instances
+            if (entity.variant == EntityVariant.ALIAS) return;
+
             ListViewItem item = Content.GenerateListViewItem(entity, _composite);
-            item.Group = composite_content.Groups[(int)entity.variant];
+
+            //Keep these indexes in sync with ListViewGroup 
+            switch (entity.variant)
+            {
+                case EntityVariant.VARIABLE:
+                    item.Group = composite_content.Groups[0];
+                    break;
+                case EntityVariant.FUNCTION:
+                    if (Content.commands.GetComposite(((FunctionEntity)entity).function) != null)
+                        item.Group = composite_content.Groups[2];
+                    else
+                        item.Group = composite_content.Groups[1];
+                    break;
+                case EntityVariant.PROXY:
+                    item.Group = composite_content.Groups[3];
+                    break;
+                case EntityVariant.ALIAS:
+                    return;
+            }
+
             composite_content.Items.Add(item);
             composite_content_RAW.Add(item);
         }
