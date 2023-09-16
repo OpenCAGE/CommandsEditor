@@ -48,6 +48,7 @@ namespace CommandsEditor
 
             InitializeComponent();
             dockPanel.ActiveContentChanged += DockPanel_ActiveContentChanged;
+            dockPanel.ShowDocumentIcon = true;
 
             Singleton.OnEntitySelected += RefreshWebsocket;
             Singleton.OnCompositeSelected += RefreshWebsocket;

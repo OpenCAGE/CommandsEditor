@@ -50,6 +50,7 @@ namespace CommandsEditor.DockPanels
 
             InitializeComponent();
             dockPanel.ActiveContentChanged += DockPanel_ActiveContentChanged;
+            dockPanel.ShowDocumentIcon = true;
 
             Load(composite);
         }

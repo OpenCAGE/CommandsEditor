@@ -318,14 +318,14 @@ namespace CommandsEditor.DockPanels
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.closeSelected});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(165, 26);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(141, 26);
             // 
             // closeSelected
             // 
             this.closeSelected.Image = ((System.Drawing.Image)(resources.GetObject("closeSelected.Image")));
             this.closeSelected.Name = "closeSelected";
-            this.closeSelected.Size = new System.Drawing.Size(164, 22);
-            this.closeSelected.Text = "Close Composite";
+            this.closeSelected.Size = new System.Drawing.Size(140, 22);
+            this.closeSelected.Text = "Close Prefab";
             this.closeSelected.Click += new System.EventHandler(this.closeSelected_Click);
             // 
             // goBackOnPath
