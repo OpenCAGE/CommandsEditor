@@ -1,4 +1,5 @@
-﻿using CATHODE.Scripting;
+﻿using CATHODE;
+using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CathodeLib;
 using OpenCAGE;
@@ -51,6 +52,9 @@ namespace CommandsEditor.DockPanels
             InitializeComponent();
             dockPanel.ActiveContentChanged += DockPanel_ActiveContentChanged;
             dockPanel.ShowDocumentIcon = true;
+
+            if (composite == Content.commands.EntryPoints[0])
+                this.Icon = Properties.Resources.root_composite;
 
             Load(composite);
         }

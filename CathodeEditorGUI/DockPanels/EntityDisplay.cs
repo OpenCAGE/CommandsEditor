@@ -92,22 +92,40 @@ namespace CommandsEditor.DockPanels
             entity_params.SuspendLayout();
             Task.Factory.StartNew(() => BackgroundEntityLoader(_entity, this));
 
+            Composite linkedComposite = _entity.variant == EntityVariant.FUNCTION ? Content.commands.GetComposite(((FunctionEntity)_entity).function) : null;
+
             //populate info labels
-            entityInfoGroup.Text = "Selected " + CultureInfo.CurrentCulture.TextInfo.ToTitleCase(_entity.variant.ToString().ToLower().Replace('_', ' ')) + " Entity Info";
-            entityParamGroup.Text = "Selected " + CultureInfo.CurrentCulture.TextInfo.ToTitleCase(_entity.variant.ToString().ToLower().Replace('_', ' ')) + " Entity Parameters";
+            string entityVariantStr = "";
+            switch (_entity.variant)
+            {
+                case EntityVariant.FUNCTION:
+                    entityVariantStr = linkedComposite != null ? "Prefab Instance" : "Function";
+                    break;
+                case EntityVariant.VARIABLE:
+                    //TODO: we should have a custom display for these. it's kinda weird to have parameters of parameters in this UI
+                    entityVariantStr = "Prefab Parameter";
+                    break;
+                case EntityVariant.PROXY:
+                    entityVariantStr = "Proxy";
+                    break;
+                //Aliases are no longer shown in this UI.
+            }
+            entityInfoGroup.Text = "Selected " + entityVariantStr + " Info";
+            entityParamGroup.Text = "Selected " + entityVariantStr + " Parameters";
+
             string description = "";
             switch (_entity.variant)
             {
                 case EntityVariant.FUNCTION:
                     ShortGuid thisFunction = ((FunctionEntity)_entity).function;
-                    Composite funcComposite = Content.commands.GetComposite(thisFunction);
-                    jumpToComposite.Visible = funcComposite != null;
-                    if (funcComposite != null)
-                        description = funcComposite.name;
+                    
+                    jumpToComposite.Visible = linkedComposite != null;
+                    if (linkedComposite != null)
+                        description = linkedComposite.name;
                     else
                         description = CathodeEntityDatabase.GetEntity(thisFunction).className;
                     selected_entity_name.Text = EntityUtils.GetName(Composite.shortGUID, _entity.shortGUID);
-                    if (funcComposite == null)
+                    if (linkedComposite == null)
                     {
                         FunctionType function = CommandsUtils.GetFunctionType(thisFunction);
                         editFunction.Enabled = function == FunctionType.CAGEAnimation || function == FunctionType.TriggerSequence || function == FunctionType.Character;

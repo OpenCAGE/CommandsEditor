@@ -139,5 +139,15 @@ namespace CommandsEditor.Properties {
                 return ((System.Drawing.Icon)(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon root_composite {
+            get {
+                object obj = ResourceManager.GetObject("root_composite", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
     }
 }

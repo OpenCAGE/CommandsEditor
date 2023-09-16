@@ -1578,6 +1578,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <None Include="Images\Entity Icons\root composite.ico" />
     <None Include="Images\Entity Icons\d_ScriptableObject Icon.ico" />
     <None Include="Images\Entity Icons\d_ScriptableObject Icon braces only.ico" />
     <None Include="Images\Entity Icons\d_PrefabVariant Icon.ico" />

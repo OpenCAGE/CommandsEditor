@@ -29,9 +29,9 @@ namespace CommandsEditor.DockPanels
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Variables", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Parameters", System.Windows.Forms.HorizontalAlignment.Left);
             System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("Functions", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("Prefabs", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("Prefab Instances", System.Windows.Forms.HorizontalAlignment.Left);
             System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("Proxies", System.Windows.Forms.HorizontalAlignment.Left);
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CompositeDisplay));
             this.composite_content = new System.Windows.Forms.ListView();
@@ -80,11 +80,11 @@ namespace CommandsEditor.DockPanels
             this.EntityName,
             this.EntityType});
             this.composite_content.FullRowSelect = true;
-            listViewGroup1.Header = "Variables";
+            listViewGroup1.Header = "Parameters";
             listViewGroup1.Name = "Variables";
             listViewGroup2.Header = "Functions";
             listViewGroup2.Name = "Functions";
-            listViewGroup3.Header = "Prefabs";
+            listViewGroup3.Header = "Prefab Instances";
             listViewGroup3.Name = "Prefabs";
             listViewGroup4.Header = "Proxies";
             listViewGroup4.Name = "Proxies";
@@ -179,9 +179,9 @@ namespace CommandsEditor.DockPanels
             this.createVariableEntityToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("createVariableEntityToolStripMenuItem.Image")));
             this.createVariableEntityToolStripMenuItem.Name = "createVariableEntityToolStripMenuItem";
             this.createVariableEntityToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
-            this.createVariableEntityToolStripMenuItem.Text = "Create Variable";
-            this.createVariableEntityToolStripMenuItem.ToolTipText = "Creates an entity which acts as a variable that can be accessed when instancing t" +
-    "his prefab.";
+            this.createVariableEntityToolStripMenuItem.Text = "Create Parameter";
+            this.createVariableEntityToolStripMenuItem.ToolTipText = "Creates an entity which acts as a parameter that can be accessed when instancing " +
+    "this prefab.";
             this.createVariableEntityToolStripMenuItem.Click += new System.EventHandler(this.createVariableEntityToolStripMenuItem_Click);
             // 
             // createFunctionEntityToolStripMenuItem

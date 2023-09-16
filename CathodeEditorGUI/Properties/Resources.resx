@@ -142,4 +142,7 @@
   <data name="LightProbeProxyVolume_Gizmo_inv" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Images\Entity Icons\LightProbeProxyVolume Gizmo inv.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="root_composite" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\Entity Icons\root composite.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>
