@@ -92,6 +92,73 @@ namespace CommandsEditor
             string breakhere = "";
         }
 
+        public static void checkprefabinstances()
+        {
+#if DEBUG
+
+            List<string> files = Directory.GetFiles("D:\\Alien Isolation Modding\\Isolation Mod Tools\\Alien Isolation PC Final/DATA/ENV/PRODUCTION/", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            Parallel.ForEach(files, file =>
+            {
+                Commands commands = new Commands(file);
+                Parallel.ForEach(commands.Entries, comp =>
+                {
+                    Parallel.ForEach(comp.functions, func =>
+                    {
+                        Composite compPointer = commands.GetComposite(func.function);
+                        if (compPointer != null)
+                        {
+                            if (func.resources.Count != 0)
+                            {
+                                Console.WriteLine("Resources found!!!!! Count: " + func.resources.Count);
+                            }
+                        }
+                    });
+                });
+            });
+#endif
+        }
+
+        public static void checkaliases()
+        {
+#if DEBUG
+
+            List<string> files = Directory.GetFiles("D:\\Alien Isolation Modding\\Isolation Mod Tools\\Alien Isolation PC Final/DATA/ENV/PRODUCTION/", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            Parallel.ForEach(files, file =>
+            {
+                Commands commands = new Commands(file);
+                Parallel.ForEach(commands.Entries, comp =>
+                {
+                    Parallel.ForEach(comp.aliases, func =>
+                    {
+                        for (int i = 0; i < func.childLinks.Count; i++)
+                        {
+                            Entity childEnt = comp.GetEntityByID(func.childLinks[i].childID);
+                            switch (childEnt.variant)
+                            {
+                                case EntityVariant.FUNCTION:
+                                    Console.WriteLine("FUNCTION: " + ((FunctionEntity)childEnt).function.ToString());
+                                    break;
+                                case EntityVariant.VARIABLE:
+                                    Console.WriteLine("VARIABLE: " + ((VariableEntity)childEnt).name.ToString());
+                                    break;
+                                case EntityVariant.PROXY:
+                                    string sadfsfd = "";
+                                    break;
+                                case EntityVariant.ALIAS:
+                                    Console.WriteLine("ALIAS! " );
+                                    break;
+                            }
+                        }
+                        //if (func.childLinks.Count != 0)
+                        //{
+                        //    Console.WriteLine(file + "\n\t" + comp.name + "\n\t" + func.shortGUID.ToByteString());
+                        //}
+                    });;
+                });
+            });
+#endif
+        }
+
         public static void checkvariables()
         {
 #if DEBUG
