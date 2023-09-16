@@ -48,23 +48,20 @@ namespace CommandsEditor
 
             switch (variant)
             {
-                case EntityVariant.ALIAS:
-                    Text = "Create Alias Entity";
-                    createOverrideEntity.Checked = true;
-                    break;
                 case EntityVariant.PROXY:
-                    Text = "Create Proxy Entity";
+                    Text = "Create Proxy";
                     createProxyEntity.Checked = true;
                     break;
                 case EntityVariant.FUNCTION:
-                    Text = "Create " + (composite ? "Prefab Instance" : "Function") + " Entity";
+                    Text = "Create " + (composite ? "Prefab Instance" : "Function");
                     createFunctionEntity.Checked = !composite;
                     createCompositeEntity.Checked = composite;
                     break;
                 case EntityVariant.VARIABLE:
-                    Text = "Create Variable Entity";
+                    Text = "Create Prefab Parameter";
                     createDatatypeEntity.Checked = true;
                     break;
+                //Aliases are now automatically created and cannot be added manually
             }
         }
 

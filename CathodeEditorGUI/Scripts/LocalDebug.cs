@@ -92,6 +92,42 @@ namespace CommandsEditor
             string breakhere = "";
         }
 
+        public static void checkvariables()
+        {
+#if DEBUG
+
+            List<string> files = Directory.GetFiles("D:\\Alien Isolation Modding\\Isolation Mod Tools\\Alien Isolation PC Final/DATA/ENV/PRODUCTION/", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            Parallel.ForEach(files, file =>
+            {
+                Commands commands = new Commands(file);
+                Parallel.ForEach(commands.Entries, comp =>
+                {
+                    Parallel.ForEach(comp.variables, func =>
+                    {
+                        if (func.childLinks.Count == 0 && func.parameters.Count == 0)
+                        {
+                            //Console.WriteLine("NO PARAMS OR LINKS");
+                        }
+                        if (func.parameters.Count > 1) 
+                        {
+                            Console.WriteLine("PARAMS: " + func.parameters.Count);
+                        }
+                        List<string> paramStrs = new List<string>();
+                        foreach (EntityConnector connector in func.childLinks)
+                        {
+                            if (!paramStrs.Contains(connector.parentParamID.ToString()))
+                                paramStrs.Add(connector.parentParamID.ToString());
+                        }
+                        if (paramStrs.Count > 1)
+                        {
+                            Console.WriteLine("UNIQUE LINKS: " + paramStrs.Count);
+                        }
+                    });
+                });
+            });
+#endif
+        }
+
         public static void checkanims()
         {
 #if DEBUG
