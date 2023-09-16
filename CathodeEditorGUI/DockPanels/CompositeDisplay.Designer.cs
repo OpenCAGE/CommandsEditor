@@ -63,6 +63,7 @@ namespace CommandsEditor.DockPanels
             this.closeSelected = new System.Windows.Forms.ToolStripMenuItem();
             this.goBackOnPath = new System.Windows.Forms.Button();
             this.pathDisplay = new System.Windows.Forms.TextBox();
+            this.instanceInfo = new System.Windows.Forms.Button();
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -364,8 +365,20 @@ namespace CommandsEditor.DockPanels
             this.pathDisplay.Location = new System.Drawing.Point(64, 801);
             this.pathDisplay.Name = "pathDisplay";
             this.pathDisplay.ReadOnly = true;
-            this.pathDisplay.Size = new System.Drawing.Size(1551, 20);
+            this.pathDisplay.Size = new System.Drawing.Size(1454, 20);
             this.pathDisplay.TabIndex = 177;
+            // 
+            // instanceInfo
+            // 
+            this.instanceInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.instanceInfo.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.instanceInfo.Location = new System.Drawing.Point(1517, 801);
+            this.instanceInfo.Name = "instanceInfo";
+            this.instanceInfo.Size = new System.Drawing.Size(98, 20);
+            this.instanceInfo.TabIndex = 183;
+            this.instanceInfo.Text = "Instance Info";
+            this.instanceInfo.UseVisualStyleBackColor = true;
+            this.instanceInfo.Click += new System.EventHandler(this.instanceInfo_Click);
             // 
             // CompositeDisplay
             // 
@@ -373,6 +386,7 @@ namespace CommandsEditor.DockPanels
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1615, 821);
+            this.Controls.Add(this.instanceInfo);
             this.Controls.Add(this.pathDisplay);
             this.Controls.Add(this.goBackOnPath);
             this.Controls.Add(this.splitContainer1);
@@ -427,5 +441,6 @@ namespace CommandsEditor.DockPanels
         private System.Windows.Forms.ToolStripMenuItem closeSelected;
         private System.Windows.Forms.ImageList entityListIcons;
         private System.Windows.Forms.ToolStripMenuItem createAliasToolStripMenuItem;
+        private System.Windows.Forms.Button instanceInfo;
     }
 }

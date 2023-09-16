@@ -286,6 +286,12 @@
     <Compile Include="Popups\ResourceDatatypeAutocomplete.Designer.cs">
       <DependentUpon>ResourceDatatypeAutocomplete.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\ShowInstanceInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\ShowInstanceInfo.Designer.cs">
+      <DependentUpon>ShowInstanceInfo.cs</DependentUpon>
+    </Compile>
     <Compile Include="Scripts\DirectXTexUtility.cs" />
     <Compile Include="Scripts\LevelContent.cs" />
     <Compile Include="Popups\Base\BaseWindow.cs">
@@ -1433,6 +1439,9 @@
     <EmbeddedResource Include="Popups\Function Editors\CharacterEditor\Character_InstanceSelection.resx">
       <DependentUpon>Character_InstanceSelection.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Function Editors\ShowCompositeInstanceOverrides.resx">
+      <DependentUpon>ShowCompositeInstanceOverrides.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Popups\ResourceDatatypeAutocomplete.resx">
       <DependentUpon>ResourceDatatypeAutocomplete.cs</DependentUpon>
     </EmbeddedResource>
@@ -1510,6 +1519,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\ShowCrossRefs.resx">
       <DependentUpon>ShowCrossRefs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\ShowInstanceInfo.resx">
+      <DependentUpon>ShowInstanceInfo.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\UserControls\GUI_Resource_AnimatedModel.resx">
       <DependentUpon>GUI_Resource_AnimatedModel.cs</DependentUpon>

@@ -28,16 +28,27 @@ namespace CommandsEditor.UserControls
         {
             PopulateUI(cTrans, (paramID.val == null) ? "" : ShortGuidUtils.FindString(paramID));
         }
-        public void PopulateUI(cTransform cTrans, string title)
+        public void PopulateUI(cTransform cTrans, string title, bool disableInput = false)
         {
             POSITION_VARIABLE_DUMMY.Text = title;
             transformVal = cTrans;
+
             POS_X.Value = (decimal)cTrans.position.X;
             POS_Y.Value = (decimal)cTrans.position.Y;
             POS_Z.Value = (decimal)cTrans.position.Z;
             ROT_X.Value = (decimal)cTrans.rotation.X;
             ROT_Y.Value = (decimal)cTrans.rotation.Y;
             ROT_Z.Value = (decimal)cTrans.rotation.Z;
+
+            if (disableInput)
+            {
+                POS_X.Enabled = false;
+                POS_Y.Enabled = false;
+                POS_Z.Enabled = false;
+                ROT_X.Enabled = false;
+                ROT_Y.Enabled = false;
+                ROT_Z.Enabled = false;
+            }
         }
 
         private void POS_X_ValueChanged(object sender, EventArgs e)

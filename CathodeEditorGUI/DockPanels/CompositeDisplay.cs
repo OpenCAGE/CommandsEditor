@@ -76,6 +76,8 @@ namespace CommandsEditor.DockPanels
             Reload(false);
             this.Activate();
 
+            _instanceInfoPopup?.Close();
+
             Cursor.Current = Cursors.Default;
         }
 
@@ -597,6 +599,25 @@ namespace CommandsEditor.DockPanels
         {
             LoadParent();
         }
+
+        ShowInstanceInfo _instanceInfoPopup = null;
+        private void instanceInfo_Click(object sender, EventArgs e)
+        {
+            if (_instanceInfoPopup != null)
+            {
+                _instanceInfoPopup.BringToFront();
+                _instanceInfoPopup.Focus();
+                return;
+            }
+
+            _instanceInfoPopup = new ShowInstanceInfo(this);
+            _instanceInfoPopup.Show();
+            _instanceInfoPopup.FormClosed += _instanceInfoPopup_FormClosed;
+        }
+        private void _instanceInfoPopup_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _instanceInfoPopup = null;
+        }
     }
 
     public class CompositePath
@@ -643,6 +664,22 @@ namespace CommandsEditor.DockPanels
             {
                 if (_entities.Count == 0) return null;
                 return _entities[_entities.Count - 1];
+            }
+        }
+
+        public List<Composite> AllComposites
+        {
+            get
+            {
+                return _composites;
+            }
+        }
+
+        public List<Entity> AllEntities
+        {
+            get
+            {
+                return _entities;
             }
         }
 

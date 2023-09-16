@@ -1,6 +1,6 @@
 ﻿namespace CommandsEditor
 {
-    partial class ShowCompositeInstanceOverrides
+    partial class ShowInstanceInfo
     {
         /// <summary>
         /// Required designer variable.
@@ -28,38 +28,34 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ShowCompositeInstanceOverrides));
-            this.label1 = new System.Windows.Forms.Label();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ShowInstanceInfo));
+            this.guI_TransformDataType1 = new UserControls.GUI_TransformDataType();
             this.SuspendLayout();
             // 
-            // label1
+            // guI_TransformDataType1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(234, 181);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(186, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "info should show here about overrides";
+            this.guI_TransformDataType1.Location = new System.Drawing.Point(12, 12);
+            this.guI_TransformDataType1.Name = "guI_TransformDataType1";
+            this.guI_TransformDataType1.Size = new System.Drawing.Size(340, 114);
+            this.guI_TransformDataType1.TabIndex = 2;
             // 
-            // ShowCompositeInstanceOverrides
+            // ShowInstanceInfo
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.label1);
+            this.ClientSize = new System.Drawing.Size(364, 142);
+            this.Controls.Add(this.guI_TransformDataType1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.Name = "ShowCompositeInstanceOverrides";
+            this.Name = "ShowInstanceInfo";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "ShowCompositeInstanceOverrides_";
+            this.Text = "Instance Info";
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.Label label1;
+        private UserControls.GUI_TransformDataType guI_TransformDataType1;
     }
 }
