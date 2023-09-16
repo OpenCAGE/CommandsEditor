@@ -29,10 +29,10 @@ namespace CommandsEditor.DockPanels
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup("Variables", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup6 = new System.Windows.Forms.ListViewGroup("Functions", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup7 = new System.Windows.Forms.ListViewGroup("Proxies", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup8 = new System.Windows.Forms.ListViewGroup("Aliases", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup9 = new System.Windows.Forms.ListViewGroup("Variables", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup10 = new System.Windows.Forms.ListViewGroup("Functions", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup11 = new System.Windows.Forms.ListViewGroup("Proxies", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup12 = new System.Windows.Forms.ListViewGroup("Aliases", System.Windows.Forms.HorizontalAlignment.Left);
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CompositeDisplay));
             this.composite_content = new System.Windows.Forms.ListView();
             this.EntityName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -80,19 +80,19 @@ namespace CommandsEditor.DockPanels
             this.EntityName,
             this.EntityType});
             this.composite_content.FullRowSelect = true;
-            listViewGroup5.Header = "Variables";
-            listViewGroup5.Name = "Variables";
-            listViewGroup6.Header = "Functions";
-            listViewGroup6.Name = "Functions";
-            listViewGroup7.Header = "Proxies";
-            listViewGroup7.Name = "Proxies";
-            listViewGroup8.Header = "Aliases";
-            listViewGroup8.Name = "Alias";
+            listViewGroup9.Header = "Variables";
+            listViewGroup9.Name = "Variables";
+            listViewGroup10.Header = "Functions";
+            listViewGroup10.Name = "Functions";
+            listViewGroup11.Header = "Proxies";
+            listViewGroup11.Name = "Proxies";
+            listViewGroup12.Header = "Aliases";
+            listViewGroup12.Name = "Alias";
             this.composite_content.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup5,
-            listViewGroup6,
-            listViewGroup7,
-            listViewGroup8});
+            listViewGroup9,
+            listViewGroup10,
+            listViewGroup11,
+            listViewGroup12});
             this.composite_content.HideSelection = false;
             this.composite_content.LabelWrap = false;
             this.composite_content.Location = new System.Drawing.Point(3, 30);
@@ -324,13 +324,13 @@ namespace CommandsEditor.DockPanels
             // 
             // goBackOnPath
             // 
-            this.goBackOnPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.goBackOnPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.goBackOnPath.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.goBackOnPath.Location = new System.Drawing.Point(1553, 801);
+            this.goBackOnPath.Location = new System.Drawing.Point(3, 801);
             this.goBackOnPath.Name = "goBackOnPath";
             this.goBackOnPath.Size = new System.Drawing.Size(62, 20);
             this.goBackOnPath.TabIndex = 177;
-            this.goBackOnPath.Text = "Back";
+            this.goBackOnPath.Text = "< Back";
             this.goBackOnPath.UseVisualStyleBackColor = true;
             this.goBackOnPath.Click += new System.EventHandler(this.goBackOnPath_Click);
             // 
@@ -341,7 +341,7 @@ namespace CommandsEditor.DockPanels
             this.pathDisplay.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pathDisplay.Enabled = false;
             this.pathDisplay.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.pathDisplay.Location = new System.Drawing.Point(3, 801);
+            this.pathDisplay.Location = new System.Drawing.Point(64, 801);
             this.pathDisplay.Name = "pathDisplay";
             this.pathDisplay.ReadOnly = true;
             this.pathDisplay.Size = new System.Drawing.Size(1551, 20);
@@ -360,6 +360,7 @@ namespace CommandsEditor.DockPanels
             this.DockAreas = ((WeifenLuo.WinFormsUI.Docking.DockAreas)((WeifenLuo.WinFormsUI.Docking.DockAreas.Float | WeifenLuo.WinFormsUI.Docking.DockAreas.Document)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "CompositeDisplay";
+            this.ShowHint = WeifenLuo.WinFormsUI.Docking.DockState.Document;
             this.TabPageContextMenuStrip = this.contextMenuStrip1;
             this.Text = "Selected Prefab";
             this.toolStrip1.ResumeLayout(false);

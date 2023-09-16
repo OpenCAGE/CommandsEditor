@@ -167,7 +167,7 @@ namespace CommandsEditor.DockPanels
             this.pathDisplay.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pathDisplay.Enabled = false;
             this.pathDisplay.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.pathDisplay.Location = new System.Drawing.Point(0, 0);
+            this.pathDisplay.Location = new System.Drawing.Point(62, 0);
             this.pathDisplay.Name = "pathDisplay";
             this.pathDisplay.ReadOnly = true;
             this.pathDisplay.Size = new System.Drawing.Size(1094, 20);
@@ -175,13 +175,12 @@ namespace CommandsEditor.DockPanels
             // 
             // goBackOnPath
             // 
-            this.goBackOnPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.goBackOnPath.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.goBackOnPath.Location = new System.Drawing.Point(1093, 0);
+            this.goBackOnPath.Location = new System.Drawing.Point(0, 0);
             this.goBackOnPath.Name = "goBackOnPath";
             this.goBackOnPath.Size = new System.Drawing.Size(63, 20);
             this.goBackOnPath.TabIndex = 182;
-            this.goBackOnPath.Text = "Back";
+            this.goBackOnPath.Text = "< Back";
             this.goBackOnPath.UseVisualStyleBackColor = true;
             this.goBackOnPath.Click += new System.EventHandler(this.goBackOnPath_Click);
             // 
@@ -220,6 +219,7 @@ namespace CommandsEditor.DockPanels
             this.DockAreas = ((WeifenLuo.WinFormsUI.Docking.DockAreas)((WeifenLuo.WinFormsUI.Docking.DockAreas.Float | WeifenLuo.WinFormsUI.Docking.DockAreas.DockBottom)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "CommandsDisplay";
+            this.ShowHint = WeifenLuo.WinFormsUI.Docking.DockState.DockBottomAutoHide;
             this.Text = "Prefabs";
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
