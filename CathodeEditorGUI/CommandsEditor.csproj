@@ -397,6 +397,9 @@
     <Compile Include="Scripts\CathodeEnums.cs" />
     <Compile Include="Scripts\CathodeLibExtensions.cs" />
     <Compile Include="Scripts\ComboBoxExtensions.cs" />
+    <Compile Include="Scripts\ListViewExtended.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Scripts\LocalDebug.cs" />
     <Compile Include="Scripts\Nodes\AccessTerminal.cs" />
     <Compile Include="Scripts\Nodes\AchievementMonitor.cs" />

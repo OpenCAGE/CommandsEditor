@@ -112,7 +112,9 @@ namespace CommandsEditor.DockPanels
                 case EntityVariant.PROXY:
                     entityVariantStr = "Proxy";
                     break;
-                //Aliases are no longer shown in this UI.
+                case EntityVariant.ALIAS:
+                    entityVariantStr = "Alias";
+                    break;
             }
             entityInfoGroup.Text = "Selected " + entityVariantStr + " Info";
             entityParamGroup.Text = "Selected " + entityVariantStr + " Parameters";
@@ -133,7 +135,7 @@ namespace CommandsEditor.DockPanels
                         editEntityResources.Enabled = false;
                         description = _entityCompositePtr.name;
                         editFunction.Enabled = true;
-                        editFunction.Text = "Overrides"; //TODO: show count?
+                        editFunction.Text = "Alias Overrides"; //TODO: show count?
                     }
 
                     //Function Entity
@@ -537,25 +539,27 @@ namespace CommandsEditor.DockPanels
 
         private void jumpToComposite_Click(object sender, EventArgs e)
         {
-            Composite flow = null;
-            Entity entity = null;
-            string hierarchy = "";
             switch (Entity.variant)
             {
-                //TODO: soon removing aliases from display. they would keep the hierarchy if you selected them tho. We might still want this in the new alias UI (TODO-IMPORTANT)
-                case EntityVariant.ALIAS:
-                    entity = CommandsUtils.ResolveHierarchy(Content.commands, Composite, ((AliasEntity)Entity).alias.path, out flow, out hierarchy);
-                    break;
                 case EntityVariant.PROXY:
-                    entity = CommandsUtils.ResolveHierarchy(Content.commands, Composite, ((ProxyEntity)Entity).proxy.path, out flow, out hierarchy);
+                    //Proxies forward directly to the entity they point to, breaking us out of the hierarchy.
+                    Entity entity = CommandsUtils.ResolveHierarchy(Content.commands, Composite, ((ProxyEntity)Entity).proxy.path, out Composite flow, out string hierarchy);
+                    if (MessageBox.Show("Jumping to a proxy will break you out of your prefab.\nAre you sure?", "About to follow proxy...", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+                        _compositeDisplay.CommandsDisplay.LoadCompositeAndEntity(flow, entity);
                     break;
                 case EntityVariant.FUNCTION:
+                    //Composite instances take us a step down the hierarchy.
                     _compositeDisplay.LoadChild(Content.commands.GetComposite(selected_entity_type_description.Text), Entity);
+                    return;
+                case EntityVariant.ALIAS:
+                    //Aliases take us (potentially) multiple steps down the hierarchy.
+                    List<ShortGuid> aliasPath = ((AliasEntity)Entity).alias.path;
+                    for (int i = 0; i < aliasPath.Count - 2; i++)
+                        _compositeDisplay.LoadChild(Content.commands.GetComposite(((FunctionEntity)Composite.GetEntityByID(aliasPath[i])).function), Composite.GetEntityByID(aliasPath[i]));
+                    _compositeDisplay.LoadEntity(Composite.GetEntityByID(aliasPath[aliasPath.Count - 2]));
                     return;
             }
 
-            if (MessageBox.Show("Jumping to a proxy will break you out of your prefab.\nAre you sure?", "About to follow proxy...", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
-                _compositeDisplay.CommandsDisplay.LoadCompositeAndEntity(flow, entity);
         }
 
         private void deleteEntity_Click(object sender, EventArgs e)

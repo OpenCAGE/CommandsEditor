@@ -2,6 +2,7 @@
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CathodeLib;
+using ListViewGroupCollapse;
 using OpenCAGE;
 using System;
 using System.Collections.Generic;
@@ -224,6 +225,7 @@ namespace CommandsEditor.DockPanels
             for (int i = 0; i < entities.Count; i++)
                 AddEntityToListView(entities[i]);
 
+            composite_content.SetGroupState(ListViewGroupState.Collapsible);
             composite_content.EndUpdate();
         }
 
@@ -257,7 +259,7 @@ namespace CommandsEditor.DockPanels
                 case EntityVariant.ALIAS:
                     item.Group = composite_content.Groups[4];
                     item.ImageIndex = 4;
-                    return;
+                    break;
             }
 
             composite_content.Items.Add(item);
