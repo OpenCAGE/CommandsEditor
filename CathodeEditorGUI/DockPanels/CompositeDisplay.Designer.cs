@@ -33,6 +33,7 @@ namespace CommandsEditor.DockPanels
             System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("Functions", System.Windows.Forms.HorizontalAlignment.Left);
             System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("Prefab Instances", System.Windows.Forms.HorizontalAlignment.Left);
             System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("Proxies", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup("Aliases", System.Windows.Forms.HorizontalAlignment.Left);
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CompositeDisplay));
             this.composite_content = new System.Windows.Forms.ListView();
             this.EntityName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -46,6 +47,7 @@ namespace CommandsEditor.DockPanels
             this.createFunctionEntityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createCompositeEntityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createProxyEntityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.createAliasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportComposite = new System.Windows.Forms.ToolStripButton();
             this.findUses = new System.Windows.Forms.ToolStripButton();
             this.deleteCheckedEntities = new System.Windows.Forms.ToolStripButton();
@@ -88,11 +90,14 @@ namespace CommandsEditor.DockPanels
             listViewGroup3.Name = "Prefabs";
             listViewGroup4.Header = "Proxies";
             listViewGroup4.Name = "Proxies";
+            listViewGroup5.Header = "Aliases";
+            listViewGroup5.Name = "Aliases";
             this.composite_content.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
             listViewGroup1,
             listViewGroup2,
             listViewGroup3,
-            listViewGroup4});
+            listViewGroup4,
+            listViewGroup5});
             this.composite_content.HideSelection = false;
             this.composite_content.LabelWrap = false;
             this.composite_content.Location = new System.Drawing.Point(3, 30);
@@ -123,6 +128,7 @@ namespace CommandsEditor.DockPanels
             this.entityListIcons.Images.SetKeyName(1, "d_ScriptableObject Icon braces only.png");
             this.entityListIcons.Images.SetKeyName(2, "d_PrefabVariant Icon.png");
             this.entityListIcons.Images.SetKeyName(3, "d_ScriptableObject Icon.png");
+            this.entityListIcons.Images.SetKeyName(4, "AreaEffector2D Icon.ico");
             // 
             // entity_search_box
             // 
@@ -166,13 +172,13 @@ namespace CommandsEditor.DockPanels
             this.createVariableEntityToolStripMenuItem,
             this.createFunctionEntityToolStripMenuItem,
             this.createCompositeEntityToolStripMenuItem,
-            this.createProxyEntityToolStripMenuItem});
+            this.createProxyEntityToolStripMenuItem,
+            this.createAliasToolStripMenuItem});
             this.createEntity.Image = ((System.Drawing.Image)(resources.GetObject("createEntity.Image")));
             this.createEntity.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.createEntity.Name = "createEntity";
             this.createEntity.Size = new System.Drawing.Size(103, 22);
             this.createEntity.Text = "Create Entity";
-            this.createEntity.Click += new System.EventHandler(this.createEntity_Click);
             // 
             // createVariableEntityToolStripMenuItem
             // 
@@ -210,6 +216,14 @@ namespace CommandsEditor.DockPanels
             this.createProxyEntityToolStripMenuItem.Text = "Create Proxy";
             this.createProxyEntityToolStripMenuItem.ToolTipText = "Create an entity that acts as a proxy to an entity in another prefab.";
             this.createProxyEntityToolStripMenuItem.Click += new System.EventHandler(this.createProxyEntityToolStripMenuItem_Click);
+            // 
+            // createAliasToolStripMenuItem
+            // 
+            this.createAliasToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("createAliasToolStripMenuItem.Image")));
+            this.createAliasToolStripMenuItem.Name = "createAliasToolStripMenuItem";
+            this.createAliasToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+            this.createAliasToolStripMenuItem.Text = "Create Alias";
+            this.createAliasToolStripMenuItem.Click += new System.EventHandler(this.createAliasToolStripMenuItem_Click);
             // 
             // exportComposite
             // 
@@ -412,5 +426,6 @@ namespace CommandsEditor.DockPanels
         private System.Windows.Forms.TextBox pathDisplay;
         private System.Windows.Forms.ToolStripMenuItem closeSelected;
         private System.Windows.Forms.ImageList entityListIcons;
+        private System.Windows.Forms.ToolStripMenuItem createAliasToolStripMenuItem;
     }
 }

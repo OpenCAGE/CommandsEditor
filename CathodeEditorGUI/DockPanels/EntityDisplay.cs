@@ -63,6 +63,9 @@ namespace CommandsEditor.DockPanels
                 case EntityVariant.PROXY:
                     this.Icon = Resources.d_ScriptableObject_Icon;
                     break;
+                case EntityVariant.ALIAS:
+                    this.Icon = Resources.AreaEffector2D_Icon;
+                    break;
             }
 
             Reload();
@@ -152,12 +155,13 @@ namespace CommandsEditor.DockPanels
                     //renameSelectedNode.Enabled = false;
                     break;
                 case EntityVariant.PROXY:
+                case EntityVariant.ALIAS:
                     hierarchyDisplay.Visible = true;
-                    List<ShortGuid> entityHierarchy = ((ProxyEntity)_entity).proxy.path;
+                    List<ShortGuid> entityHierarchy = _entity.variant == EntityVariant.PROXY ? ((ProxyEntity)_entity).proxy.path : ((AliasEntity)_entity).alias.path;
                     Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, Composite, entityHierarchy, out Composite comp, out string hierarchy, SettingsManager.GetBool("CS_ShowEntityIDs"));
                     hierarchyDisplay.Text = hierarchy;
                     jumpToComposite.Visible = true;
-                    selected_entity_name.Text = "Proxy to " + EntityUtils.GetName(comp, ent);
+                    selected_entity_name.Text = (_entity.variant == EntityVariant.PROXY ? "Proxy to " : "Alias of ") + EntityUtils.GetName(comp, ent);
                     break;
                 default:
                     selected_entity_name.Text = EntityUtils.GetName(Composite.shortGUID, _entity.shortGUID);

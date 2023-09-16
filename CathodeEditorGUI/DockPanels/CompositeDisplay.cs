@@ -229,9 +229,6 @@ namespace CommandsEditor.DockPanels
 
         private void AddEntityToListView(Entity entity)
         {
-            //Aliases are no longer shown as entities, but extra info on composite instances
-            if (entity.variant == EntityVariant.ALIAS) return;
-
             ListViewItem item = Content.GenerateListViewItem(entity, _composite);
 
             //Keep these indexes in sync with ListViewGroup 
@@ -258,6 +255,8 @@ namespace CommandsEditor.DockPanels
                     item.ImageIndex = 3;
                     break;
                 case EntityVariant.ALIAS:
+                    item.Group = composite_content.Groups[4];
+                    item.ImageIndex = 4;
                     return;
             }
 
@@ -548,10 +547,6 @@ namespace CommandsEditor.DockPanels
             Close();
         }
 
-        private void createEntity_Click(object sender, EventArgs e)
-        {
-
-        }
         private void createVariableEntityToolStripMenuItem_Click(object sender, EventArgs e)
         {
             CreateEntity(EntityVariant.VARIABLE);
@@ -568,7 +563,7 @@ namespace CommandsEditor.DockPanels
         {
             CreateEntity(EntityVariant.PROXY);
         }
-        private void createOverrideEntityToolStripMenuItem_Click(object sender, EventArgs e)
+        private void createAliasToolStripMenuItem_Click(object sender, EventArgs e)
         {
             CreateEntity(EntityVariant.ALIAS);
         }

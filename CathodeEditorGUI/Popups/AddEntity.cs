@@ -61,7 +61,10 @@ namespace CommandsEditor
                     Text = "Create Prefab Parameter";
                     createDatatypeEntity.Checked = true;
                     break;
-                //Aliases are now automatically created and cannot be added manually
+                case EntityVariant.ALIAS:
+                    Text = "Create Alias";
+                    createOverrideEntity.Checked = true;
+                    break;
             }
         }
 
