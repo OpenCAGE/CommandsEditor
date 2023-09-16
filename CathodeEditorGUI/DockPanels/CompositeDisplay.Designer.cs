@@ -37,6 +37,7 @@ namespace CommandsEditor.DockPanels
             this.composite_content = new System.Windows.Forms.ListView();
             this.EntityName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.EntityType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.entityListIcons = new System.Windows.Forms.ImageList(this.components);
             this.entity_search_box = new System.Windows.Forms.TextBox();
             this.entity_search_btn = new System.Windows.Forms.Button();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
@@ -98,6 +99,7 @@ namespace CommandsEditor.DockPanels
             this.composite_content.MultiSelect = false;
             this.composite_content.Name = "composite_content";
             this.composite_content.Size = new System.Drawing.Size(827, 747);
+            this.composite_content.SmallImageList = this.entityListIcons;
             this.composite_content.TabIndex = 176;
             this.composite_content.UseCompatibleStateImageBehavior = false;
             this.composite_content.View = System.Windows.Forms.View.Details;
@@ -112,6 +114,15 @@ namespace CommandsEditor.DockPanels
             // 
             this.EntityType.Text = "Type";
             this.EntityType.Width = 163;
+            // 
+            // entityListIcons
+            // 
+            this.entityListIcons.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("entityListIcons.ImageStream")));
+            this.entityListIcons.TransparentColor = System.Drawing.Color.Transparent;
+            this.entityListIcons.Images.SetKeyName(0, "AnimatorController Icon.png");
+            this.entityListIcons.Images.SetKeyName(1, "d_ScriptableObject Icon braces only.png");
+            this.entityListIcons.Images.SetKeyName(2, "d_PrefabVariant Icon.png");
+            this.entityListIcons.Images.SetKeyName(3, "d_ScriptableObject Icon.png");
             // 
             // entity_search_box
             // 
@@ -165,6 +176,7 @@ namespace CommandsEditor.DockPanels
             // 
             // createVariableEntityToolStripMenuItem
             // 
+            this.createVariableEntityToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("createVariableEntityToolStripMenuItem.Image")));
             this.createVariableEntityToolStripMenuItem.Name = "createVariableEntityToolStripMenuItem";
             this.createVariableEntityToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.createVariableEntityToolStripMenuItem.Text = "Create Variable";
@@ -174,6 +186,7 @@ namespace CommandsEditor.DockPanels
             // 
             // createFunctionEntityToolStripMenuItem
             // 
+            this.createFunctionEntityToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("createFunctionEntityToolStripMenuItem.Image")));
             this.createFunctionEntityToolStripMenuItem.Name = "createFunctionEntityToolStripMenuItem";
             this.createFunctionEntityToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.createFunctionEntityToolStripMenuItem.Text = "Create Function";
@@ -182,6 +195,7 @@ namespace CommandsEditor.DockPanels
             // 
             // createCompositeEntityToolStripMenuItem
             // 
+            this.createCompositeEntityToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("createCompositeEntityToolStripMenuItem.Image")));
             this.createCompositeEntityToolStripMenuItem.Name = "createCompositeEntityToolStripMenuItem";
             this.createCompositeEntityToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.createCompositeEntityToolStripMenuItem.Text = "Create Instance of Prefab";
@@ -190,6 +204,7 @@ namespace CommandsEditor.DockPanels
             // 
             // createProxyEntityToolStripMenuItem
             // 
+            this.createProxyEntityToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("createProxyEntityToolStripMenuItem.Image")));
             this.createProxyEntityToolStripMenuItem.Name = "createProxyEntityToolStripMenuItem";
             this.createProxyEntityToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.createProxyEntityToolStripMenuItem.Text = "Create Proxy";
@@ -396,5 +411,6 @@ namespace CommandsEditor.DockPanels
         private System.Windows.Forms.Button goBackOnPath;
         private System.Windows.Forms.TextBox pathDisplay;
         private System.Windows.Forms.ToolStripMenuItem closeSelected;
+        private System.Windows.Forms.ImageList entityListIcons;
     }
 }

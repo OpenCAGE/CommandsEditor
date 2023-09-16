@@ -61,6 +61,16 @@ namespace CommandsEditor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon AnimatorController_Icon {
+            get {
+                object obj = ResourceManager.GetObject("AnimatorController_Icon", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap arrow {
@@ -77,6 +87,56 @@ namespace CommandsEditor.Properties {
             get {
                 object obj = ResourceManager.GetObject("cathode_entities", resourceCulture);
                 return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon d_Prefab_Icon {
+            get {
+                object obj = ResourceManager.GetObject("d_Prefab_Icon", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon d_PrefabVariant_Icon {
+            get {
+                object obj = ResourceManager.GetObject("d_PrefabVariant_Icon", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon d_ScriptableObject_Icon {
+            get {
+                object obj = ResourceManager.GetObject("d_ScriptableObject_Icon", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon d_ScriptableObject_Icon_braces_only {
+            get {
+                object obj = ResourceManager.GetObject("d_ScriptableObject_Icon_braces_only", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon LightProbeProxyVolume_Gizmo_inv {
+            get {
+                object obj = ResourceManager.GetObject("LightProbeProxyVolume_Gizmo_inv", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
             }
         }
     }

@@ -1578,6 +1578,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <None Include="Images\Entity Icons\d_ScriptableObject Icon.ico" />
+    <None Include="Images\Entity Icons\d_ScriptableObject Icon braces only.ico" />
+    <None Include="Images\Entity Icons\d_PrefabVariant Icon.ico" />
+    <None Include="Images\Entity Icons\d_Prefab Icon.ico" />
+    <None Include="Images\Entity Icons\AnimatorController Icon.ico" />
+    <None Include="Images\Entity Icons\LightProbeProxyVolume Gizmo inv.ico" />
     <None Include="Resources\_2560px_Arrow_east_svg.png" />
   </ItemGroup>
   <ItemGroup>

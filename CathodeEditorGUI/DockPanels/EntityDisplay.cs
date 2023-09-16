@@ -1,5 +1,6 @@
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
+using CommandsEditor.Properties;
 using CommandsEditor.UserControls;
 using OpenCAGE;
 using System;
@@ -45,6 +46,22 @@ namespace CommandsEditor.DockPanels
 
             InitializeComponent();
             this.Activate();
+
+            switch (entity.variant)
+            {
+                case EntityVariant.VARIABLE:
+                    this.Icon = Resources.AnimatorController_Icon;
+                    break;
+                case EntityVariant.FUNCTION:
+                    if (Content.commands.GetComposite(((FunctionEntity)entity).function) == null)
+                        this.Icon = Resources.d_ScriptableObject_Icon_braces_only;
+                    else
+                        this.Icon = Resources.d_PrefabVariant_Icon;
+                    break;
+                case EntityVariant.PROXY:
+                    this.Icon = Resources.d_ScriptableObject_Icon;
+                    break;
+            }
 
             Reload();
         }

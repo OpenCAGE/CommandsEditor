@@ -234,15 +234,23 @@ namespace CommandsEditor.DockPanels
             {
                 case EntityVariant.VARIABLE:
                     item.Group = composite_content.Groups[0];
+                    item.ImageIndex = 0;
                     break;
                 case EntityVariant.FUNCTION:
                     if (Content.commands.GetComposite(((FunctionEntity)entity).function) != null)
+                    {
                         item.Group = composite_content.Groups[2];
+                        item.ImageIndex = 2;
+                    }
                     else
+                    {
                         item.Group = composite_content.Groups[1];
+                        item.ImageIndex = 1;
+                    }
                     break;
                 case EntityVariant.PROXY:
                     item.Group = composite_content.Groups[3];
+                    item.ImageIndex = 3;
                     break;
                 case EntityVariant.ALIAS:
                     return;
