@@ -78,19 +78,33 @@ namespace CommandsEditor.DockPanels
 
             listView1.Items.Clear();
             pathDisplay.Text = _currentDisplayFolderPath.Replace("/", " > ");
+            string[] currentPathSplit = _currentDisplayFolderPath.Split('/');
+            bool currentPathIsRoot = currentPathSplit.Length == 1 && currentPathSplit[0] == "";
 
             List<string> items = new List<string>();
             foreach (Composite composite in _content.commands.Entries)
             {
                 //Make sure this folder/composite should be visible at the current folder path
                 string name = composite.name.Replace('\\', '/');
-                if (name.Length < _currentDisplayFolderPath.Length) continue;
-                if (name.Substring(0, _currentDisplayFolderPath.Length) != _currentDisplayFolderPath) continue;
+                string[] nameSplit = name.Split('/');
+                bool shouldAdd = true;
+                if (!currentPathIsRoot)
+                {
+                    for (int i = 0; i < currentPathSplit.Length; i++)
+                    {
+                        if (i >= nameSplit.Length) break;
+                        if (currentPathSplit[i] != nameSplit[i])
+                        {
+                            shouldAdd = false;
+                            break;
+                        }
+                    }
+                }
+                if (!shouldAdd) continue;
 
                 //Get formatting
-                string nameExt = name.Substring(_currentDisplayFolderPath.Length != 0 ? _currentDisplayFolderPath.Length + 1 : 0);
-                bool isFolder = nameExt.Contains('/');
-                string text = isFolder ? nameExt.Split('/')[0] : nameExt;
+                bool isFolder = nameSplit.Length - 1 > currentPathSplit.Length;
+                string text = nameSplit[currentPathIsRoot ? 0 : currentPathSplit.Length];
                 if (text == "") continue;
 
                 EditorUtils.CompositeType type = Content.editor_utils.GetCompositeType(composite);

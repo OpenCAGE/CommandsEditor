@@ -75,7 +75,7 @@ namespace CommandsEditor
                     break;
                 }
             }
-            if (should && (!_isModelTree && FileNameParts[index] != ""))
+            if (should && FileNameParts[index] != "")
             {
                 TreeNode FileNode = new TreeNode(FileNameParts[index]);
                 TreeItem ThisTag = new TreeItem();
