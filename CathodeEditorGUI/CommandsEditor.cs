@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -124,18 +125,6 @@ namespace CommandsEditor
             //If we have been launched to a level, load that
             if (level != null)
                 OnLevelSelected(level);
-
-            //Disable backups - we should now force people to use the extra backup tool
-            //TODO: backup tool should backup the level at intervals like this tool did
-            //enableBackups.Checked = false;
-            //enableBackups.Visible = false;
-
-            //TEMP FOR NOW
-#if !DEBUG
-            enableInstanceMode.Checked = false;
-            enableInstanceMode.Visible = false;
-            toolStripSeparator1.Visible = false;
-#endif
         }
 
         /* Load anim data */
@@ -630,6 +619,11 @@ namespace CommandsEditor
                 State = text,
                 Assets = new Assets() { LargeImageKey = "icon" }
             });
+        }
+
+        private void helpBtn_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://opencage.co.uk/docs/");
         }
     }
 }
