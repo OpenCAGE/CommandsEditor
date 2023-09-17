@@ -103,11 +103,11 @@ namespace CommandsEditor.DockPanels
             switch (_entity.variant)
             {
                 case EntityVariant.FUNCTION:
-                    entityVariantStr = _entityCompositePtr != null ? "Prefab Instance" : "Function";
+                    entityVariantStr = _entityCompositePtr != null ? "Composite Instance" : "Function";
                     break;
                 case EntityVariant.VARIABLE:
                     //TODO: we should have a custom display for these. it's kinda weird to have parameters of parameters in this UI
-                    entityVariantStr = "Prefab Parameter";
+                    entityVariantStr = "Composite Parameter";
                     break;
                 case EntityVariant.PROXY:
                     entityVariantStr = "Proxy";
@@ -544,7 +544,7 @@ namespace CommandsEditor.DockPanels
                 case EntityVariant.PROXY:
                     //Proxies forward directly to the entity they point to, breaking us out of the hierarchy.
                     Entity entity = CommandsUtils.ResolveHierarchy(Content.commands, Composite, ((ProxyEntity)Entity).proxy.path, out Composite flow, out string hierarchy);
-                    if (MessageBox.Show("Jumping to a proxy will break you out of your prefab.\nAre you sure?", "About to follow proxy...", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+                    if (MessageBox.Show("Jumping to a proxy will break you out of your composite.\nAre you sure?", "About to follow proxy...", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                         _compositeDisplay.CommandsDisplay.LoadCompositeAndEntity(flow, entity);
                     break;
                 case EntityVariant.FUNCTION:

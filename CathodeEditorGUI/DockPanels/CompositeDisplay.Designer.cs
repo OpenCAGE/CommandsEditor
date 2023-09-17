@@ -31,7 +31,7 @@ namespace CommandsEditor.DockPanels
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Parameters", System.Windows.Forms.HorizontalAlignment.Left);
             System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("Functions", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("Prefab Instances", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("Composite Instances", System.Windows.Forms.HorizontalAlignment.Left);
             System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("Proxies", System.Windows.Forms.HorizontalAlignment.Left);
             System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup("Aliases", System.Windows.Forms.HorizontalAlignment.Left);
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CompositeDisplay));
@@ -87,8 +87,8 @@ namespace CommandsEditor.DockPanels
             listViewGroup1.Name = "Variables";
             listViewGroup2.Header = "Functions";
             listViewGroup2.Name = "Functions";
-            listViewGroup3.Header = "Prefab Instances";
-            listViewGroup3.Name = "Prefabs";
+            listViewGroup3.Header = "Composite Instances";
+            listViewGroup3.Name = "Composites";
             listViewGroup4.Header = "Proxies";
             listViewGroup4.Name = "Proxies";
             listViewGroup5.Header = "Aliases";
@@ -188,7 +188,7 @@ namespace CommandsEditor.DockPanels
             this.createVariableEntityToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.createVariableEntityToolStripMenuItem.Text = "Create Parameter";
             this.createVariableEntityToolStripMenuItem.ToolTipText = "Creates an entity which acts as a parameter that can be accessed when instancing " +
-    "this prefab.";
+    "this composite.";
             this.createVariableEntityToolStripMenuItem.Click += new System.EventHandler(this.createVariableEntityToolStripMenuItem_Click);
             // 
             // createFunctionEntityToolStripMenuItem
@@ -205,8 +205,8 @@ namespace CommandsEditor.DockPanels
             this.createCompositeEntityToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("createCompositeEntityToolStripMenuItem.Image")));
             this.createCompositeEntityToolStripMenuItem.Name = "createCompositeEntityToolStripMenuItem";
             this.createCompositeEntityToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
-            this.createCompositeEntityToolStripMenuItem.Text = "Create Instance of Prefab";
-            this.createCompositeEntityToolStripMenuItem.ToolTipText = "Create an entity that instances another prefab.";
+            this.createCompositeEntityToolStripMenuItem.Text = "Create Instance of Composite";
+            this.createCompositeEntityToolStripMenuItem.ToolTipText = "Create an entity that instances another composite.";
             this.createCompositeEntityToolStripMenuItem.Click += new System.EventHandler(this.createCompositeEntityToolStripMenuItem_Click);
             // 
             // createProxyEntityToolStripMenuItem
@@ -215,7 +215,7 @@ namespace CommandsEditor.DockPanels
             this.createProxyEntityToolStripMenuItem.Name = "createProxyEntityToolStripMenuItem";
             this.createProxyEntityToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.createProxyEntityToolStripMenuItem.Text = "Create Proxy";
-            this.createProxyEntityToolStripMenuItem.ToolTipText = "Create an entity that acts as a proxy to an entity in another prefab.";
+            this.createProxyEntityToolStripMenuItem.ToolTipText = "Create an entity that acts as a proxy to an entity in another composite.";
             this.createProxyEntityToolStripMenuItem.Click += new System.EventHandler(this.createProxyEntityToolStripMenuItem_Click);
             // 
             // createAliasToolStripMenuItem
@@ -233,7 +233,7 @@ namespace CommandsEditor.DockPanels
             this.exportComposite.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.exportComposite.Name = "exportComposite";
             this.exportComposite.Size = new System.Drawing.Size(86, 22);
-            this.exportComposite.Text = "Port Prefab";
+            this.exportComposite.Text = "Port Composite";
             this.exportComposite.Click += new System.EventHandler(this.exportComposite_Click);
             // 
             // findUses
@@ -243,7 +243,7 @@ namespace CommandsEditor.DockPanels
             this.findUses.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.findUses.Name = "findUses";
             this.findUses.Size = new System.Drawing.Size(153, 22);
-            this.findUses.Text = "Find Instances of Prefab";
+            this.findUses.Text = "Find Instances of Composite";
             this.findUses.Click += new System.EventHandler(this.findUses_Click);
             // 
             // deleteCheckedEntities
@@ -262,7 +262,7 @@ namespace CommandsEditor.DockPanels
             this.deleteComposite.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.deleteComposite.Name = "deleteComposite";
             this.deleteComposite.Size = new System.Drawing.Size(97, 22);
-            this.deleteComposite.Text = "Delete Prefab";
+            this.deleteComposite.Text = "Delete Composite";
             this.deleteComposite.Click += new System.EventHandler(this.deleteComposite_Click);
             // 
             // dockPanel
@@ -340,7 +340,7 @@ namespace CommandsEditor.DockPanels
             this.closeSelected.Image = ((System.Drawing.Image)(resources.GetObject("closeSelected.Image")));
             this.closeSelected.Name = "closeSelected";
             this.closeSelected.Size = new System.Drawing.Size(140, 22);
-            this.closeSelected.Text = "Close Prefab";
+            this.closeSelected.Text = "Close Composite";
             this.closeSelected.Click += new System.EventHandler(this.closeSelected_Click);
             // 
             // goBackOnPath
@@ -396,7 +396,7 @@ namespace CommandsEditor.DockPanels
             this.Name = "CompositeDisplay";
             this.ShowHint = WeifenLuo.WinFormsUI.Docking.DockState.Document;
             this.TabPageContextMenuStrip = this.contextMenuStrip1;
-            this.Text = "Selected Prefab";
+            this.Text = "Selected Composite";
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.panel1.ResumeLayout(false);

@@ -53,12 +53,12 @@ namespace CommandsEditor
                     createProxyEntity.Checked = true;
                     break;
                 case EntityVariant.FUNCTION:
-                    Text = "Create " + (composite ? "Prefab Instance" : "Function");
+                    Text = "Create " + (composite ? "Composite Instance" : "Function");
                     createFunctionEntity.Checked = !composite;
                     createCompositeEntity.Checked = composite;
                     break;
                 case EntityVariant.VARIABLE:
-                    Text = "Create Prefab Parameter";
+                    Text = "Create Composite Parameter";
                     createDatatypeEntity.Checked = true;
                     break;
                 case EntityVariant.ALIAS:
@@ -232,7 +232,7 @@ namespace CommandsEditor
                 //A composite can only have one PhysicsSystem
                 if (function == FunctionType.PhysicsSystem && _compositeDisplay.Composite.functions.FirstOrDefault(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.PhysicsSystem)) != null)
                 {
-                    MessageBox.Show("You are trying to add a PhysicsSystem entity to a prefab that already has one applied.", "PhysicsSystem error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("You are trying to add a PhysicsSystem entity to a composite that already has one applied.", "PhysicsSystem error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
@@ -251,13 +251,13 @@ namespace CommandsEditor
                 Composite compRef = composites.FirstOrDefault(o => o.name == entityVariant.Text);
                 if (compRef == null)
                 { 
-                    MessageBox.Show("Failed to look up prefab!\nPlease report this issue on GitHub.\n\n" + entityVariant.Text, "Could not find prefab!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Failed to look up composite!\nPlease report this issue on GitHub.\n\n" + entityVariant.Text, "Could not find composite!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
                 //Check logic errors (we can't have cyclical references)
                 if (compRef == _compositeDisplay.Composite)
                 {
-                    MessageBox.Show("You cannot create an entity which instances the prefab it is contained with - this will result in an infinite loop at runtime! Please check your logic!.", "Logic error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("You cannot create an entity which instances the composite it is contained with - this will result in an infinite loop at runtime! Please check your logic!.", "Logic error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
                 newEntity = _compositeDisplay.Composite.AddFunction(compRef, addDefaultParams.Checked);

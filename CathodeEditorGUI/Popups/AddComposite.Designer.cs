@@ -58,7 +58,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(69, 13);
             this.label1.TabIndex = 2;
-            this.label1.Text = "Prefab Name";
+            this.label1.Text = "Composite Name";
             // 
             // AddComposite
             // 
@@ -73,7 +73,7 @@
             this.MaximizeBox = false;
             this.Name = "AddComposite";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Create New Prefab In Folder";
+            this.Text = "Create New Composite In Folder";
             this.ResumeLayout(false);
             this.PerformLayout();
 

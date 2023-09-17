@@ -65,7 +65,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(99, 13);
             this.label1.TabIndex = 7;
-            this.label1.Text = "Port prefab to level:";
+            this.label1.Text = "Port composite to level:";
             // 
             // overwrite
             // 
@@ -76,7 +76,7 @@
             this.overwrite.Name = "overwrite";
             this.overwrite.Size = new System.Drawing.Size(201, 17);
             this.overwrite.TabIndex = 8;
-            this.overwrite.Text = "Overwrite existing destination prefabs";
+            this.overwrite.Text = "Overwrite existing destination composites";
             this.toolTip1.SetToolTip(this.overwrite, "If checked: when composites are copied they will overwrite any by the same ID in " +
         "the destination level.");
             this.overwrite.UseVisualStyleBackColor = true;
@@ -90,7 +90,7 @@
             this.recurse.Name = "recurse";
             this.recurse.Size = new System.Drawing.Size(221, 17);
             this.recurse.TabIndex = 9;
-            this.recurse.Text = "Copy all prefabs referenced by this prefab";
+            this.recurse.Text = "Copy all composites referenced by this composite";
             this.toolTip1.SetToolTip(this.recurse, "If checked: composites that are instanced within the exported composite will also" +
         " be copied.");
             this.recurse.UseVisualStyleBackColor = true;
@@ -110,7 +110,7 @@
             this.MaximizeBox = false;
             this.Name = "ExportComposite";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Port Prefab";
+            this.Text = "Port Composite";
             this.ResumeLayout(false);
             this.PerformLayout();
 

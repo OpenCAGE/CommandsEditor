@@ -252,11 +252,11 @@ namespace CommandsEditor.DockPanels
             {
                 if (composite.shortGUID == Content.commands.EntryPoints[i].shortGUID)
                 {
-                    MessageBox.Show("Cannot delete a prefab which is the root, global, or pause menu!", "Cannot delete.", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Cannot delete a composite which is the root, global, or pause menu!", "Cannot delete.", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
             }
-            if (MessageBox.Show("Are you sure you want to remove this prefab?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+            if (MessageBox.Show("Are you sure you want to remove this composite?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
 
             CloseAllChildTabs();
 

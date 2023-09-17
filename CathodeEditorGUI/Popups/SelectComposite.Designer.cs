@@ -41,7 +41,7 @@
             this.selectComp.Name = "selectComp";
             this.selectComp.Size = new System.Drawing.Size(171, 23);
             this.selectComp.TabIndex = 147;
-            this.selectComp.Text = "Select Prefab";
+            this.selectComp.Text = "Select Composite";
             this.selectComp.UseVisualStyleBackColor = true;
             this.selectComp.Click += new System.EventHandler(this.SelectEntity_Click);
             // 
@@ -79,7 +79,7 @@
             this.MaximizeBox = false;
             this.Name = "SelectComposite";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Select Prefab";
+            this.Text = "Select Composite";
             this.ResumeLayout(false);
 
         }

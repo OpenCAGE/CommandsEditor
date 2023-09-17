@@ -52,7 +52,7 @@
             this.select_composite.Name = "select_composite";
             this.select_composite.Size = new System.Drawing.Size(155, 23);
             this.select_composite.TabIndex = 8;
-            this.select_composite.Text = "Select Prefab";
+            this.select_composite.Text = "Select Composite";
             this.select_composite.UseVisualStyleBackColor = true;
             this.select_composite.Click += new System.EventHandler(this.select_composite_Click);
             // 

@@ -29,7 +29,7 @@ namespace CommandsEditor
             InitializeComponent();
 
             _folder = folderPath;
-            this.Text = _folder == "" ? "Create New Prefab" : "Create New Prefab In Folder '" + _folder + "'";
+            this.Text = _folder == "" ? "Create New Composite" : "Create New Composite In Folder '" + _folder + "'";
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -43,7 +43,7 @@ namespace CommandsEditor
             {
                 if (pathParts[i] == "")
                 {
-                    MessageBox.Show("Failed to create prefab: a part of the path is blank.\nRemove trailing slashes and use complete folder names, e.g.:\nSOME/FILE/PATH/TO/PREFAB", "Prefab path/name invalid", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Failed to create composite: a part of the path is blank.\nRemove trailing slashes and use complete folder names, e.g.:\nSOME/FILE/PATH/TO/COMPOSITE", "Composite path/name invalid", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
             }
@@ -52,7 +52,7 @@ namespace CommandsEditor
             {
                 if (_commands.Content.commands.Entries[i].name.Replace("\\", "/") == path)
                 {
-                    MessageBox.Show("Failed to create prefab.\nA prefab with this name already exists.", "Prefab already exists", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Failed to create composite.\nA composite with this name already exists.", "Composite already exists", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
             }
