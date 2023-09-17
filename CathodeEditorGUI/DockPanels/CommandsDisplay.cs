@@ -327,11 +327,11 @@ namespace CommandsEditor.DockPanels
 
             _treeUtility.UpdateFileTree(filteredCompositeNames);
 
-            /*
             if (entity_search_box.Text != "")
             {
                 treeView1.ExpandAll();
 
+                /*
                 listView1.Items.Clear();
                 pathDisplay.Text = "";
                 foreach (Composite composite in filteredComposites)
@@ -344,12 +344,12 @@ namespace CommandsEditor.DockPanels
                         Tag = new ListViewItemContent() { IsFolder = false, Composite = composite }
                     });
                 }
+                */
             }
             else
             {
-                ReloadList();
+                //ReloadList();
             }
-            */
         }
 
         /* File Browser Context Menu */
@@ -487,6 +487,35 @@ namespace CommandsEditor.DockPanels
             smallIconsToolStripMenuItem.Checked = view == View.SmallIcon;
             listToolStripMenuItem.Checked = view == View.List;
             tileToolStripMenuItem.Checked = view == View.Tile;
+        }
+
+        private void createComposite_Click(object sender, EventArgs e)
+        {
+            compositeToolStripMenuItem_Click(null, null);
+        }
+        private void createFolder_Click(object sender, EventArgs e)
+        {
+            folderToolStripMenuItem_Click(null, null);
+        }
+
+        ShowCompositeUses _functionUsesDialog = null;
+        private void findFunctionUses_Click(object sender, EventArgs e)
+        {
+            if (_functionUsesDialog != null)
+            {
+                _functionUsesDialog.Focus();
+                _functionUsesDialog.BringToFront();
+                return;
+            }
+
+            _functionUsesDialog = new ShowCompositeUses(Content);
+            _functionUsesDialog.Show();
+            _functionUsesDialog.OnEntitySelected += LoadCompositeAndEntity;
+            _functionUsesDialog.FormClosed += _functionUsesDialog_FormClosed;
+        }
+        private void _functionUsesDialog_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _functionUsesDialog = null;
         }
     }
 }

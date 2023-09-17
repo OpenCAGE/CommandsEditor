@@ -44,8 +44,6 @@
             this.searchOnlyCompositeNames = new System.Windows.Forms.ToolStripMenuItem();
             this.entitiesOpenTabs = new System.Windows.Forms.ToolStripMenuItem();
             this.useTexturedModelViewExperimentalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripButton3 = new System.Windows.Forms.ToolStripDropDownButton();
-            this.findFunctionUsesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpBtn = new System.Windows.Forms.ToolStripButton();
             this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
             this.vS2015LightTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
@@ -62,7 +60,6 @@
             this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripButton1,
             this.toolStripButton2,
-            this.toolStripButton3,
             this.helpBtn});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
@@ -178,24 +175,6 @@
             this.useTexturedModelViewExperimentalToolStripMenuItem.Text = "Use Textured Model View (Experimental)";
             this.useTexturedModelViewExperimentalToolStripMenuItem.Click += new System.EventHandler(this.useTexturedModelViewExperimentalToolStripMenuItem_Click);
             // 
-            // toolStripButton3
-            // 
-            this.toolStripButton3.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.toolStripButton3.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.findFunctionUsesToolStripMenuItem});
-            this.toolStripButton3.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton3.Image")));
-            this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton3.Name = "toolStripButton3";
-            this.toolStripButton3.Size = new System.Drawing.Size(59, 22);
-            this.toolStripButton3.Text = "Utilities";
-            // 
-            // findFunctionUsesToolStripMenuItem
-            // 
-            this.findFunctionUsesToolStripMenuItem.Name = "findFunctionUsesToolStripMenuItem";
-            this.findFunctionUsesToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
-            this.findFunctionUsesToolStripMenuItem.Text = "Find Function Uses";
-            this.findFunctionUsesToolStripMenuItem.Click += new System.EventHandler(this.findFunctionUsesToolStripMenuItem_Click);
-            // 
             // helpBtn
             // 
             this.helpBtn.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
@@ -280,8 +259,6 @@
         private System.Windows.Forms.ToolStripMenuItem entitiesOpenTabs;
         private System.Windows.Forms.ToolStripMenuItem showConfirmationWhenSavingToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem useTexturedModelViewExperimentalToolStripMenuItem;
-        private System.Windows.Forms.ToolStripDropDownButton toolStripButton3;
-        private System.Windows.Forms.ToolStripMenuItem findFunctionUsesToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton helpBtn;
     }
 }
