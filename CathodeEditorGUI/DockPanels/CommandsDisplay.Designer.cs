@@ -47,6 +47,8 @@ namespace CommandsEditor.DockPanels
             this.pathDisplay = new System.Windows.Forms.TextBox();
             this.goBackOnPath = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.FileBrowserContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.FileTreeContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -132,6 +134,7 @@ namespace CommandsEditor.DockPanels
             this.listView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.listView1.ContextMenuStrip = this.FileBrowserContextMenu;
             this.listView1.HideSelection = false;
             this.listView1.LargeImageList = this.imageList1;
             this.listView1.Location = new System.Drawing.Point(0, 19);
@@ -154,6 +157,7 @@ namespace CommandsEditor.DockPanels
             // 
             // treeView1
             // 
+            this.treeView1.ContextMenuStrip = this.FileTreeContextMenu;
             this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeView1.ImageIndex = 0;
             this.treeView1.ImageList = this.imageList;
@@ -209,6 +213,16 @@ namespace CommandsEditor.DockPanels
             this.splitContainer1.SplitterDistance = 344;
             this.splitContainer1.TabIndex = 183;
             // 
+            // FileBrowserContextMenu
+            // 
+            this.FileBrowserContextMenu.Name = "FileBrowserContextMenu";
+            this.FileBrowserContextMenu.Size = new System.Drawing.Size(61, 4);
+            // 
+            // FileTreeContextMenu
+            // 
+            this.FileTreeContextMenu.Name = "FileTreeContextMenu";
+            this.FileTreeContextMenu.Size = new System.Drawing.Size(61, 4);
+            // 
             // CommandsDisplay
             // 
             this.AllowEndUserDocking = false;
@@ -253,5 +267,7 @@ namespace CommandsEditor.DockPanels
         private System.Windows.Forms.TextBox pathDisplay;
         private System.Windows.Forms.Button goBackOnPath;
         private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.ContextMenuStrip FileBrowserContextMenu;
+        private System.Windows.Forms.ContextMenuStrip FileTreeContextMenu;
     }
 }

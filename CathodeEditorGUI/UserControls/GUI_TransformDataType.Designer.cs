@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GUI_TransformDataType));
             this.POSITION_VARIABLE_DUMMY = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel9 = new System.Windows.Forms.TableLayoutPanel();
             this.POS_X = new System.Windows.Forms.NumericUpDown();
@@ -39,6 +41,9 @@
             this.ROT_Y = new System.Windows.Forms.NumericUpDown();
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.copyTransformToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pasteTransformToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.POSITION_VARIABLE_DUMMY.SuspendLayout();
             this.tableLayoutPanel9.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.POS_X)).BeginInit();
@@ -48,11 +53,13 @@
             ((System.ComponentModel.ISupportInitialize)(this.ROT_X)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ROT_Z)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ROT_Y)).BeginInit();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // POSITION_VARIABLE_DUMMY
             // 
             this.POSITION_VARIABLE_DUMMY.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.POSITION_VARIABLE_DUMMY.ContextMenuStrip = this.contextMenuStrip1;
             this.POSITION_VARIABLE_DUMMY.Controls.Add(this.tableLayoutPanel9);
             this.POSITION_VARIABLE_DUMMY.Controls.Add(this.tableLayoutPanel10);
             this.POSITION_VARIABLE_DUMMY.Controls.Add(this.label8);
@@ -267,6 +274,30 @@
             this.label7.TabIndex = 7;
             this.label7.Text = "Position";
             // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.copyTransformToolStripMenuItem,
+            this.pasteTransformToolStripMenuItem});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(181, 70);
+            // 
+            // copyTransformToolStripMenuItem
+            // 
+            this.copyTransformToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("copyTransformToolStripMenuItem.Image")));
+            this.copyTransformToolStripMenuItem.Name = "copyTransformToolStripMenuItem";
+            this.copyTransformToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.copyTransformToolStripMenuItem.Text = "Copy Transform";
+            this.copyTransformToolStripMenuItem.Click += new System.EventHandler(this.copyTransformToolStripMenuItem_Click);
+            // 
+            // pasteTransformToolStripMenuItem
+            // 
+            this.pasteTransformToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("pasteTransformToolStripMenuItem.Image")));
+            this.pasteTransformToolStripMenuItem.Name = "pasteTransformToolStripMenuItem";
+            this.pasteTransformToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.pasteTransformToolStripMenuItem.Text = "Paste Transform";
+            this.pasteTransformToolStripMenuItem.Click += new System.EventHandler(this.pasteTransformToolStripMenuItem_Click);
+            // 
             // GUI_TransformDataType
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -284,6 +315,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.ROT_X)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ROT_Z)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ROT_Y)).EndInit();
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -301,5 +333,8 @@
         private System.Windows.Forms.NumericUpDown POS_X;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel9;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel10;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem copyTransformToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem pasteTransformToolStripMenuItem;
     }
 }

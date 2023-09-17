@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using CATHODE.Scripting;
 using CATHODE;
 using CathodeLib;
+using Newtonsoft.Json;
 
 namespace CommandsEditor.UserControls
 {
@@ -33,12 +34,7 @@ namespace CommandsEditor.UserControls
             POSITION_VARIABLE_DUMMY.Text = title;
             transformVal = cTrans;
 
-            POS_X.Value = (decimal)cTrans.position.X;
-            POS_Y.Value = (decimal)cTrans.position.Y;
-            POS_Z.Value = (decimal)cTrans.position.Z;
-            ROT_X.Value = (decimal)cTrans.rotation.X;
-            ROT_Y.Value = (decimal)cTrans.rotation.Y;
-            ROT_Z.Value = (decimal)cTrans.rotation.Z;
+            UpdateUI();
 
             if (disableInput)
             {
@@ -49,6 +45,16 @@ namespace CommandsEditor.UserControls
                 ROT_Y.Enabled = false;
                 ROT_Z.Enabled = false;
             }
+        }
+
+        private void UpdateUI()
+        {
+            POS_X.Value = (decimal)transformVal.position.X;
+            POS_Y.Value = (decimal)transformVal.position.Y;
+            POS_Z.Value = (decimal)transformVal.position.Z;
+            ROT_X.Value = (decimal)transformVal.rotation.X;
+            ROT_Y.Value = (decimal)transformVal.rotation.Y;
+            ROT_Z.Value = (decimal)transformVal.rotation.Z;
         }
 
         private void POS_X_ValueChanged(object sender, EventArgs e)
@@ -85,6 +91,32 @@ namespace CommandsEditor.UserControls
         {
             transformVal.rotation.Z = (float)ROT_Z.Value;
             OnValueChanged?.Invoke();
+        }
+
+        private void copyTransformToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Clipboard.SetText(JsonConvert.SerializeObject(transformVal));
+        }
+
+        private void pasteTransformToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!POS_X.Enabled) return;
+
+            cTransform transform = JsonConvert.DeserializeObject<cTransform>(Clipboard.GetText()?.ToString());
+            if (transform == null)
+            {
+                MessageBox.Show("Failed to paste transform.", "Invalid clipboard", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            transformVal.position.X = transform.position.X;
+            transformVal.position.Y = transform.position.Y;
+            transformVal.position.Z = transform.position.Z;
+            transformVal.rotation.X = transform.rotation.X;
+            transformVal.rotation.Y = transform.rotation.Y;
+            transformVal.rotation.Z = transform.rotation.Z;
+
+            UpdateUI();
         }
     }
 }
