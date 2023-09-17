@@ -247,7 +247,7 @@ namespace CommandsEditor
                 case EntityVariant.FUNCTION:
                     item.Text = EntityUtils.GetName(composite.shortGUID, entity.shortGUID);
                     Composite funcComposite = commands.GetComposite(((FunctionEntity)entity).function);
-                    if (funcComposite != null) item.SubItems.Add(funcComposite.name);
+                    if (funcComposite != null) item.SubItems.Add(Path.GetFileName(funcComposite.name));
                     else item.SubItems.Add(CathodeEntityDatabase.GetEntity(((FunctionEntity)entity).function).className);
                     break;
                 case EntityVariant.ALIAS:

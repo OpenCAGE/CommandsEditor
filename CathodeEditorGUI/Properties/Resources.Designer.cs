@@ -91,12 +91,32 @@ namespace CommandsEditor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon Avatar_Icon {
+            get {
+                object obj = ResourceManager.GetObject("Avatar_Icon", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
         internal static byte[] cathode_entities {
             get {
                 object obj = ResourceManager.GetObject("cathode_entities", resourceCulture);
                 return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon cog {
+            get {
+                object obj = ResourceManager.GetObject("cog", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
             }
         }
         
@@ -136,6 +156,16 @@ namespace CommandsEditor.Properties {
         internal static System.Drawing.Icon d_ScriptableObject_Icon_braces_only {
             get {
                 object obj = ResourceManager.GetObject("d_ScriptableObject_Icon_braces_only", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon globe {
+            get {
+                object obj = ResourceManager.GetObject("globe", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
             }
         }

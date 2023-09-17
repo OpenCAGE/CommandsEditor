@@ -54,8 +54,14 @@ namespace CommandsEditor.DockPanels
             dockPanel.ActiveContentChanged += DockPanel_ActiveContentChanged;
             dockPanel.ShowDocumentIcon = true;
 
-            if (composite == Content.commands.EntryPoints[0])
-                this.Icon = Properties.Resources.root_composite;
+            EditorUtils.CompositeType type = Content.editor_utils.GetCompositeType(composite);
+
+            if (type == EditorUtils.CompositeType.IS_ROOT)
+                this.Icon = Properties.Resources.globe;
+            else if (type == EditorUtils.CompositeType.IS_GLOBAL || type == EditorUtils.CompositeType.IS_PAUSE_MENU)
+                this.Icon = Properties.Resources.cog;
+            else if (type == EditorUtils.CompositeType.IS_DISPLAY_MODEL)
+                this.Icon = Properties.Resources.Avatar_Icon;
 
             Load(composite);
         }
@@ -64,10 +70,11 @@ namespace CommandsEditor.DockPanels
         {
             Cursor.Current = Cursors.WaitCursor;
 
-            findUses.Visible = Content.commands.EntryPoints[0] != composite;
-            deleteComposite.Visible = Content.commands.EntryPoints[0] != composite;
+            bool isCoreComposite = !Content.commands.EntryPoints.Contains(composite);
+            findUses.Visible = isCoreComposite;
+            deleteComposite.Visible = isCoreComposite;
 
-            this.Text = composite.name;
+            this.Text = System.IO.Path.GetFileName(composite.name);
             pathDisplay.Text = _path.GetPath(composite);
             _composite = composite;
 
@@ -321,7 +328,12 @@ namespace CommandsEditor.DockPanels
 
         private void OnCompositePanelClosed(object sender, FormClosedEventArgs e)
         {
-            _entityDisplays.Remove(((EntityDisplay)sender).Entity);
+            Entity ent = ((EntityDisplay)sender).Entity;
+            if (_entityDisplays.ContainsKey(ent))
+            {
+                _entityDisplays[ent]?.Dispose();
+                _entityDisplays.Remove(ent);
+            }
         }
 
         public void CloseAllChildTabsExcept(Entity entity)

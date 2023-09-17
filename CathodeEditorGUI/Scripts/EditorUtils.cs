@@ -24,6 +24,24 @@ namespace CommandsEditor
             _content = content;
         }
 
+        /* Some additional composite info for rich display in editor */
+        public enum CompositeType
+        {
+            IS_GENERIC_COMPOSITE,
+            IS_ROOT,
+            IS_PAUSE_MENU,
+            IS_GLOBAL,
+            IS_DISPLAY_MODEL,
+        }
+        public CompositeType GetCompositeType(Composite composite)
+        {
+            if (_content.commands.EntryPoints[0] == composite) return CompositeType.IS_ROOT;
+            if (_content.commands.EntryPoints[1] == composite) return CompositeType.IS_PAUSE_MENU;
+            if (_content.commands.EntryPoints[2] == composite) return CompositeType.IS_GLOBAL;
+            if (composite.name.Length > ("DisplayModel:").Length && composite.name.Substring(0, ("DisplayModel:").Length) == "DisplayModel:") return CompositeType.IS_DISPLAY_MODEL;
+            return CompositeType.IS_GENERIC_COMPOSITE;
+        }
+
         /* Generate all composite instance information for Commands */
         private Dictionary<Composite, List<List<ShortGuid>>> _hierarchies = new Dictionary<Composite, List<List<ShortGuid>>>();
         public void GenerateCompositeInstances(Commands commands)

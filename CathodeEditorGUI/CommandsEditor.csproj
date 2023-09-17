@@ -1599,6 +1599,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <None Include="Images\Entity Icons\globe.ico" />
+    <None Include="Images\Entity Icons\Avatar Icon.ico" />
+    <None Include="Images\Entity Icons\cog.ico" />
     <None Include="Images\Entity Icons\AreaEffector2D Icon.ico" />
     <None Include="Images\Entity Icons\root composite.ico" />
     <None Include="Images\Entity Icons\d_ScriptableObject Icon.ico" />

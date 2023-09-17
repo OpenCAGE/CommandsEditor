@@ -134,8 +134,8 @@ namespace CommandsEditor.DockPanels
                         jumpToComposite.Visible = true;
                         editEntityResources.Enabled = false;
                         description = _entityCompositePtr.name;
-                        editFunction.Enabled = true;
-                        editFunction.Text = "Alias Overrides"; //TODO: show count?
+                        //editFunction.Enabled = true;
+                        //editFunction.Text = "Alias Overrides"; //TODO: show count?
                     }
 
                     //Function Entity

@@ -107,7 +107,6 @@ namespace CommandsEditor.DockPanels
             {
                 //Make sure this folder/composite should be visible at the current folder path
                 string name = composite.name.Replace('\\', '/');
-                bool isRoot = _content.commands.EntryPoints[0] == composite;
                 if (name.Length < _currentDisplayFolderPath.Length) continue;
                 if (name.Substring(0, _currentDisplayFolderPath.Length) != _currentDisplayFolderPath) continue;
 
@@ -115,6 +114,7 @@ namespace CommandsEditor.DockPanels
                 string nameExt = name.Substring(_currentDisplayFolderPath.Length != 0 ? _currentDisplayFolderPath.Length + 1 : 0);
                 bool isFolder = nameExt.Contains('/');
                 string text = isFolder ? nameExt.Split('/')[0] : nameExt;
+                EditorUtils.CompositeType type = Content.editor_utils.GetCompositeType(composite);
 
                 //Make sure this folder/composite hasn't already been added
                 string identifier = text + isFolder;
@@ -128,7 +128,7 @@ namespace CommandsEditor.DockPanels
                 listView1.Items.Add(new ListViewItem()
                 {
                     Text = text,
-                    ImageIndex = isFolder ? 1 : isRoot ? 2 : 0,
+                    ImageIndex = isFolder ? 1 : type == EditorUtils.CompositeType.IS_ROOT ? 2 : type == EditorUtils.CompositeType.IS_PAUSE_MENU || type == EditorUtils.CompositeType.IS_GLOBAL ? 3 : type == EditorUtils.CompositeType.IS_DISPLAY_MODEL ? 4 : 0,
                     Tag = content
                 });
             }
@@ -244,6 +244,8 @@ namespace CommandsEditor.DockPanels
 
         private void OnCompositePanelClosed(object sender, FormClosedEventArgs e)
         {
+            _compositeDisplay?.CloseAllChildTabs();
+            _compositeDisplay?.Dispose();
             _compositeDisplay = null;
         }
 

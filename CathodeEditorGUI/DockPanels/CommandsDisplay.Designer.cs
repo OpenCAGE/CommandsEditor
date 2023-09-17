@@ -145,8 +145,9 @@ namespace CommandsEditor.DockPanels
             this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
             this.imageList1.Images.SetKeyName(0, "temp_prefab.png");
             this.imageList1.Images.SetKeyName(1, "temp_folder.png");
-            this.imageList1.Images.SetKeyName(2, "temp_scene.png");
+            this.imageList1.Images.SetKeyName(2, "temp_globe.png");
             this.imageList1.Images.SetKeyName(3, "temp_gamemanager.png");
+            this.imageList1.Images.SetKeyName(4, "temp_displaymodel.png");
             // 
             // treeView1
             // 
