@@ -4,6 +4,7 @@ using CATHODE.Scripting.Internal;
 using CathodeLib;
 using CommandsEditor.DockPanels;
 using CommandsEditor.Popups;
+using DiscordRPC;
 using Newtonsoft.Json;
 using OpenCAGE;
 using System;
@@ -39,11 +40,16 @@ namespace CommandsEditor
 
         private WebSocketServer _server;
         private WebsocketServer _serverLogic;
+        private DiscordRpcClient _discord;
 
         private Dictionary<string, ToolStripMenuItem> _levelMenuItems = new Dictionary<string, ToolStripMenuItem>();
 
         public CommandsEditor(string level = null)
         {
+            _discord = new DiscordRpcClient("1152999067207606392");
+            _discord.Initialize();
+            UpdateDiscordPresence("");
+
             Singleton.Editor = this;
 
             InitializeComponent();
@@ -229,6 +235,7 @@ namespace CommandsEditor
         }
         private void OnLevelSelected(string level)
         {
+            UpdateDiscordPresence("Editing " + level);
             statusText.Text = "Loading " + level + "...";
             statusStrip.Update();
 
@@ -255,6 +262,7 @@ namespace CommandsEditor
         }
         private void _commandsDisplay_FormClosed(object sender, FormClosedEventArgs e)
         {
+            UpdateDiscordPresence("");
             _commandsDisplay?.Dispose();
             _commandsDisplay = null;
             findFunctionUsesToolStripMenuItem.Enabled = false;
@@ -612,6 +620,16 @@ namespace CommandsEditor
         private void _functionUsesDialog_FormClosed(object sender, FormClosedEventArgs e)
         {
             _functionUsesDialog = null;
+        }
+
+        private void UpdateDiscordPresence(string text)
+        {
+            _discord.SetPresence(new RichPresence()
+            {
+                Details = "Commands Editor",
+                State = text,
+                Assets = new Assets() { LargeImageKey = "icon" }
+            });
         }
     }
 }
