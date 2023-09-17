@@ -62,14 +62,16 @@ namespace CommandsEditor
 
             string path = SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + level + "/";
             worldPath = path + "WORLD/";
-            renderablePath = path + "RENDERABLE/";
 
             //The game has two hard-coded _PATCH overrides. We should use RENDERABLE from the non-patched folder.
             switch (level)
             {
                 case "DLC/BSPNOSTROMO_RIPLEY_PATCH":
                 case "DLC/BSPNOSTROMO_TWOTEAMS_PATCH":
-                    renderablePath = renderablePath.Replace(level, level.Substring(0, level.Length - ("_PATCH").Length)) + "RENDERABLE/";
+                    renderablePath = path.Replace(level, level.Substring(0, level.Length - ("_PATCH").Length)) + "RENDERABLE/";
+                    break;
+                default:
+                    renderablePath = path + "RENDERABLE/";
                     break;
             }
 

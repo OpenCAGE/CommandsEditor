@@ -235,7 +235,6 @@ namespace CommandsEditor
         }
         private void OnLevelSelected(string level)
         {
-            UpdateDiscordPresence("Editing " + level);
             statusText.Text = "Loading " + level + "...";
             statusStrip.Update();
 
@@ -259,6 +258,7 @@ namespace CommandsEditor
 
             _levelMenuItems[_commandsDisplay.Content.level].Checked = true;
             findFunctionUsesToolStripMenuItem.Enabled = true;
+            UpdateDiscordPresence("Editing " + level);
         }
         private void _commandsDisplay_FormClosed(object sender, FormClosedEventArgs e)
         {
