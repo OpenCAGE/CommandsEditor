@@ -49,6 +49,9 @@ namespace CommandsEditor.DockPanels
             _content = new LevelContent(levelName);
             _treeUtility = new TreeUtility(treeView1, _content);
 
+            if (Enum.TryParse<View>(SettingsManager.GetString(Singleton.Settings.FileBrowserViewOpt), out View view))
+                SetViewMode(view);
+
             //TODO: these utils should be moved into LevelContent and made less generic. makes no sense anymore.
             _content.editor_utils = new EditorUtils(_content);
             Task.Factory.StartNew(() => _content.editor_utils.GenerateEntityNameCache(Singleton.Editor));
@@ -456,6 +459,34 @@ namespace CommandsEditor.DockPanels
         private void addFolderDialogClosed(object sender, FormClosedEventArgs e)
         {
             _addFolderDialog = null;
+        }
+
+        private void largeIconsToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            SetViewMode(View.LargeIcon);
+        }
+        private void smallIconsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetViewMode(View.SmallIcon);
+        }
+        private void listToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetViewMode(View.List);
+        }
+        private void tileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetViewMode(View.Tile);
+        }
+        private void SetViewMode(View view)
+        {
+            listView1.View = view;
+
+            SettingsManager.SetString(Singleton.Settings.FileBrowserViewOpt, view.ToString());
+
+            largeIconsToolStripMenuItem.Checked = view == View.LargeIcon;
+            smallIconsToolStripMenuItem.Checked = view == View.SmallIcon;
+            listToolStripMenuItem.Checked = view == View.List;
+            tileToolStripMenuItem.Checked = view == View.Tile;
         }
     }
 }

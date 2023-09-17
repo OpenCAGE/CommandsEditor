@@ -50,6 +50,7 @@ namespace CommandsEditor
             public readonly string UseEntTabsOpt = "CS_UseEntityTabs";
             public readonly string ShowSavedMsgOpt = "CS_ShowSavedNotif";
             public readonly string ShowTexOpt = "CS_ShowTextures";
+            public readonly string FileBrowserViewOpt = "CS_FileBrowserView";
         }
     }
 }

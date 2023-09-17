@@ -39,7 +39,7 @@ namespace CommandsEditor.DockPanels
             this.entity_search_btn = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.listView1 = new System.Windows.Forms.ListView();
-            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
+            this.FileBrowserImageListLarge = new System.Windows.Forms.ImageList(this.components);
             this.FileBrowserContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.createToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.compositeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -52,6 +52,13 @@ namespace CommandsEditor.DockPanels
             this.pathDisplay = new System.Windows.Forms.TextBox();
             this.goBackOnPath = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.viewModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.FileBrowserImageListSmall = new System.Windows.Forms.ImageList(this.components);
+            this.largeIconsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.smallIconsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.listToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.FileBrowserContextMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -99,25 +106,26 @@ namespace CommandsEditor.DockPanels
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.listView1.HideSelection = false;
-            this.listView1.LargeImageList = this.imageList1;
+            this.listView1.LargeImageList = this.FileBrowserImageListLarge;
             this.listView1.Location = new System.Drawing.Point(0, 19);
             this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
             this.listView1.Size = new System.Drawing.Size(1156, 715);
+            this.listView1.SmallImageList = this.FileBrowserImageListSmall;
             this.listView1.TabIndex = 179;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.ItemActivate += new System.EventHandler(this.listView1_SelectedIndexChanged);
             this.listView1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FooListView_MouseDown);
             // 
-            // imageList1
+            // FileBrowserImageListLarge
             // 
-            this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
-            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
-            this.imageList1.Images.SetKeyName(0, "temp_prefab.png");
-            this.imageList1.Images.SetKeyName(1, "temp_folder.png");
-            this.imageList1.Images.SetKeyName(2, "temp_globe.png");
-            this.imageList1.Images.SetKeyName(3, "temp_gamemanager.png");
-            this.imageList1.Images.SetKeyName(4, "temp_displaymodel.png");
+            this.FileBrowserImageListLarge.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("FileBrowserImageListLarge.ImageStream")));
+            this.FileBrowserImageListLarge.TransparentColor = System.Drawing.Color.Transparent;
+            this.FileBrowserImageListLarge.Images.SetKeyName(0, "temp_prefab.png");
+            this.FileBrowserImageListLarge.Images.SetKeyName(1, "temp_folder.png");
+            this.FileBrowserImageListLarge.Images.SetKeyName(2, "temp_globe.png");
+            this.FileBrowserImageListLarge.Images.SetKeyName(3, "temp_gamemanager.png");
+            this.FileBrowserImageListLarge.Images.SetKeyName(4, "temp_displaymodel.png");
             // 
             // FileBrowserContextMenu
             // 
@@ -125,9 +133,11 @@ namespace CommandsEditor.DockPanels
             this.createToolStripMenuItem,
             this.toolStripSeparator1,
             this.deleteFolderToolStripMenuItem,
-            this.renameToolStripMenuItem});
+            this.renameToolStripMenuItem,
+            this.toolStripSeparator2,
+            this.viewModeToolStripMenuItem});
             this.FileBrowserContextMenu.Name = "FileBrowserContextMenu";
-            this.FileBrowserContextMenu.Size = new System.Drawing.Size(118, 76);
+            this.FileBrowserContextMenu.Size = new System.Drawing.Size(129, 104);
             // 
             // createToolStripMenuItem
             // 
@@ -135,14 +145,14 @@ namespace CommandsEditor.DockPanels
             this.compositeToolStripMenuItem,
             this.folderToolStripMenuItem});
             this.createToolStripMenuItem.Name = "createToolStripMenuItem";
-            this.createToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.createToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
             this.createToolStripMenuItem.Text = "Create";
             // 
             // compositeToolStripMenuItem
             // 
             this.compositeToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("compositeToolStripMenuItem.Image")));
             this.compositeToolStripMenuItem.Name = "compositeToolStripMenuItem";
-            this.compositeToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
+            this.compositeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.compositeToolStripMenuItem.Text = "Composite";
             this.compositeToolStripMenuItem.Click += new System.EventHandler(this.compositeToolStripMenuItem_Click);
             // 
@@ -150,20 +160,20 @@ namespace CommandsEditor.DockPanels
             // 
             this.folderToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("folderToolStripMenuItem.Image")));
             this.folderToolStripMenuItem.Name = "folderToolStripMenuItem";
-            this.folderToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
+            this.folderToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.folderToolStripMenuItem.Text = "Folder";
             this.folderToolStripMenuItem.Click += new System.EventHandler(this.folderToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(114, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(125, 6);
             // 
             // deleteFolderToolStripMenuItem
             // 
             this.deleteFolderToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("deleteFolderToolStripMenuItem.Image")));
             this.deleteFolderToolStripMenuItem.Name = "deleteFolderToolStripMenuItem";
-            this.deleteFolderToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.deleteFolderToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
             this.deleteFolderToolStripMenuItem.Text = "Delete";
             this.deleteFolderToolStripMenuItem.Click += new System.EventHandler(this.deleteFolderToolStripMenuItem_Click);
             // 
@@ -171,7 +181,7 @@ namespace CommandsEditor.DockPanels
             // 
             this.renameToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("renameToolStripMenuItem.Image")));
             this.renameToolStripMenuItem.Name = "renameToolStripMenuItem";
-            this.renameToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.renameToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
             this.renameToolStripMenuItem.Text = "Rename";
             this.renameToolStripMenuItem.Click += new System.EventHandler(this.renameToolStripMenuItem_Click);
             // 
@@ -242,6 +252,64 @@ namespace CommandsEditor.DockPanels
             this.splitContainer1.SplitterDistance = 344;
             this.splitContainer1.TabIndex = 183;
             // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(125, 6);
+            // 
+            // viewModeToolStripMenuItem
+            // 
+            this.viewModeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.largeIconsToolStripMenuItem,
+            this.smallIconsToolStripMenuItem,
+            this.listToolStripMenuItem,
+            this.tileToolStripMenuItem});
+            this.viewModeToolStripMenuItem.Name = "viewModeToolStripMenuItem";
+            this.viewModeToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
+            this.viewModeToolStripMenuItem.Text = "Display As";
+            // 
+            // FileBrowserImageListSmall
+            // 
+            this.FileBrowserImageListSmall.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("FileBrowserImageListSmall.ImageStream")));
+            this.FileBrowserImageListSmall.TransparentColor = System.Drawing.Color.Transparent;
+            this.FileBrowserImageListSmall.Images.SetKeyName(0, "temp_prefab.png");
+            this.FileBrowserImageListSmall.Images.SetKeyName(1, "temp_folder.png");
+            this.FileBrowserImageListSmall.Images.SetKeyName(2, "temp_globe.png");
+            this.FileBrowserImageListSmall.Images.SetKeyName(3, "temp_gamemanager.png");
+            this.FileBrowserImageListSmall.Images.SetKeyName(4, "temp_displaymodel.png");
+            // 
+            // largeIconsToolStripMenuItem
+            // 
+            this.largeIconsToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("largeIconsToolStripMenuItem.Image")));
+            this.largeIconsToolStripMenuItem.Name = "largeIconsToolStripMenuItem";
+            this.largeIconsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.largeIconsToolStripMenuItem.Text = "Large Icons";
+            this.largeIconsToolStripMenuItem.Click += new System.EventHandler(this.largeIconsToolStripMenuItem_Click_1);
+            // 
+            // smallIconsToolStripMenuItem
+            // 
+            this.smallIconsToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("smallIconsToolStripMenuItem.Image")));
+            this.smallIconsToolStripMenuItem.Name = "smallIconsToolStripMenuItem";
+            this.smallIconsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.smallIconsToolStripMenuItem.Text = "Small Icons";
+            this.smallIconsToolStripMenuItem.Click += new System.EventHandler(this.smallIconsToolStripMenuItem_Click);
+            // 
+            // listToolStripMenuItem
+            // 
+            this.listToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("listToolStripMenuItem.Image")));
+            this.listToolStripMenuItem.Name = "listToolStripMenuItem";
+            this.listToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.listToolStripMenuItem.Text = "List";
+            this.listToolStripMenuItem.Click += new System.EventHandler(this.listToolStripMenuItem_Click);
+            // 
+            // tileToolStripMenuItem
+            // 
+            this.tileToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("tileToolStripMenuItem.Image")));
+            this.tileToolStripMenuItem.Name = "tileToolStripMenuItem";
+            this.tileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.tileToolStripMenuItem.Text = "Tile";
+            this.tileToolStripMenuItem.Click += new System.EventHandler(this.tileToolStripMenuItem_Click);
+            // 
             // CommandsDisplay
             // 
             this.AllowEndUserDocking = false;
@@ -274,7 +342,7 @@ namespace CommandsEditor.DockPanels
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.TreeView treeView1;
-        private System.Windows.Forms.ImageList imageList1;
+        private System.Windows.Forms.ImageList FileBrowserImageListLarge;
         private System.Windows.Forms.TextBox pathDisplay;
         private System.Windows.Forms.Button goBackOnPath;
         private System.Windows.Forms.SplitContainer splitContainer1;
@@ -286,5 +354,12 @@ namespace CommandsEditor.DockPanels
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem deleteFolderToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem renameToolStripMenuItem;
+        private ToolStripSeparator toolStripSeparator2;
+        private ToolStripMenuItem viewModeToolStripMenuItem;
+        private ImageList FileBrowserImageListSmall;
+        private ToolStripMenuItem largeIconsToolStripMenuItem;
+        private ToolStripMenuItem smallIconsToolStripMenuItem;
+        private ToolStripMenuItem listToolStripMenuItem;
+        private ToolStripMenuItem tileToolStripMenuItem;
     }
 }
