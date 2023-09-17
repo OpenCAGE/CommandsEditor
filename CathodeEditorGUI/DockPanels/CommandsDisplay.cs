@@ -412,11 +412,7 @@ namespace CommandsEditor.DockPanels
             else
             {
                 if (_renameComposite != null)
-                {
-                    _renameComposite.BringToFront();
-                    _renameComposite.Focus();
-                    return;
-                }
+                    _renameComposite.Close();
 
                 _renameComposite = new RenameComposite(this.Content, content.Composite, _currentDisplayFolderPath);
                 _renameComposite.Show();

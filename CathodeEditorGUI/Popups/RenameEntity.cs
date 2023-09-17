@@ -17,7 +17,7 @@ namespace CommandsEditor
 {
     public partial class RenameEntity : BaseWindow
     {
-        public Action<string> OnRenamed;
+        public Action<string, Entity> OnRenamed;
 
         private Entity _entity;
         private Composite _composite;
@@ -54,7 +54,7 @@ namespace CommandsEditor
                     break;
             }
 
-            OnRenamed?.Invoke(entity_name.Text);
+            OnRenamed?.Invoke(entity_name.Text, _entity);
             this.Close();
         }
     }

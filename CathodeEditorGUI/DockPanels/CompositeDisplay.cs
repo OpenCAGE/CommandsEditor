@@ -630,6 +630,71 @@ namespace CommandsEditor.DockPanels
         {
             _instanceInfoPopup = null;
         }
+
+        /* Entity List Context Menu */
+        private void FooListView_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                var lv = sender as ListViewExtended;
+                var item = lv.HitTest(e.Location).Item;
+
+                deleteToolStripMenuItem.Enabled = item != null;
+                renameToolStripMenuItem.Enabled = item != null;
+
+                if (item != null)
+                    lv.FocusedItem = item;
+
+                EntityListContextMenu.Show(lv, e.Location);
+            }
+        }
+        private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Entity entity = (Entity)composite_content.SelectedItems[0].Tag;
+            DeleteEntity(entity);
+        }
+        RenameEntity _entityRenameDialog = null;
+        private void renameToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_entityRenameDialog != null)
+                _entityRenameDialog.Close();
+
+            Entity entity = (Entity)composite_content.SelectedItems[0].Tag;
+            _entityRenameDialog = new RenameEntity(this.Content, entity, this.Composite);
+            _entityRenameDialog.Show();
+            _entityRenameDialog.OnRenamed += OnEntityRenamed;
+            _entityRenameDialog.FormClosed += Rename_entity_FormClosed;
+        }
+        private void OnEntityRenamed(string name, Entity entity)
+        {
+            Content.composite_content_cache[Composite][entity].Text = name;
+            CommandsDisplay.ReloadAllEntities();
+            //TODO-URGENT: Also need to update Proxy/Alias hierarchies.
+        }
+        private void Rename_entity_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _entityRenameDialog = null;
+        }
+        private void createParameterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CreateEntity(EntityVariant.VARIABLE);
+        }
+        private void createInstanceOfCompositeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CreateEntity(EntityVariant.FUNCTION, true);
+        }
+        private void createFunctionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CreateEntity(EntityVariant.FUNCTION);
+        }
+        private void createProxyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CreateEntity(EntityVariant.PROXY);
+        }
+        private void createAliasToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            CreateEntity(EntityVariant.ALIAS);
+        }
     }
 
     public class CompositePath

@@ -578,7 +578,7 @@ namespace CommandsEditor.DockPanels
             rename_entity.Show();
             rename_entity.OnRenamed += OnEntityRenamed;
         }
-        private void OnEntityRenamed(string name)
+        private void OnEntityRenamed(string name, Entity entity)
         {
             Content.composite_content_cache[Composite][Entity].Text = name;
             _compositeDisplay.CommandsDisplay.ReloadAllEntities();
