@@ -75,7 +75,7 @@ namespace CommandsEditor
                     break;
                 }
             }
-            if (should && FileNameParts[index] != "")
+            if (should && (!_isModelTree && FileNameParts[index] != ""))
             {
                 TreeNode FileNode = new TreeNode(FileNameParts[index]);
                 TreeItem ThisTag = new TreeItem();
@@ -145,8 +145,8 @@ namespace CommandsEditor
                     }
                 }
             }
-            _fileTree.Focus();
-            _fileTree.Select();
+            //_fileTree.Focus();
+            //_fileTree.Select();
         }
 
         private void FileTree_AfterCollapse(object sender, TreeViewEventArgs e)

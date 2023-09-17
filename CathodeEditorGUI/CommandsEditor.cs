@@ -50,6 +50,8 @@ namespace CommandsEditor
             dockPanel.ActiveContentChanged += DockPanel_ActiveContentChanged;
             dockPanel.ShowDocumentIcon = true;
 
+            findFunctionUsesToolStripMenuItem.Enabled = false;
+
             Singleton.OnEntitySelected += RefreshWebsocket;
             Singleton.OnCompositeSelected += RefreshWebsocket;
             Singleton.OnLevelLoaded += RefreshWebsocket;
@@ -245,9 +247,17 @@ namespace CommandsEditor
             //Load new
             _commandsDisplay = new CommandsDisplay(level);
             _commandsDisplay.Show(Singleton.Editor.DockPanel, DockState.DockBottomAutoHide);
+            _commandsDisplay.FormClosed += _commandsDisplay_FormClosed;
             Singleton.Editor.DockPanel.ActiveAutoHideContent = _commandsDisplay;
 
             _levelMenuItems[_commandsDisplay.Content.level].Checked = true;
+            findFunctionUsesToolStripMenuItem.Enabled = true;
+        }
+        private void _commandsDisplay_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _commandsDisplay?.Dispose();
+            _commandsDisplay = null;
+            findFunctionUsesToolStripMenuItem.Enabled = false;
         }
 
         private void saveLevel_Click(object sender, EventArgs e)
@@ -580,6 +590,28 @@ namespace CommandsEditor
         {
             useTexturedModelViewExperimentalToolStripMenuItem.Checked = !useTexturedModelViewExperimentalToolStripMenuItem.Checked;
             SettingsManager.SetBool(Singleton.Settings.ShowTexOpt, useTexturedModelViewExperimentalToolStripMenuItem.Checked);
+        }
+
+        ShowCompositeUses _functionUsesDialog = null;
+        private void findFunctionUsesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_commandsDisplay == null) return;
+
+            if (_functionUsesDialog != null)
+            {
+                _functionUsesDialog.Focus();
+                _functionUsesDialog.BringToFront();
+                return;
+            }
+
+            _functionUsesDialog = new ShowCompositeUses(_commandsDisplay.Content);
+            _functionUsesDialog.Show();
+            _functionUsesDialog.OnEntitySelected += _commandsDisplay.LoadCompositeAndEntity;
+            _functionUsesDialog.FormClosed += _functionUsesDialog_FormClosed;
+        }
+        private void _functionUsesDialog_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _functionUsesDialog = null;
         }
     }
 }

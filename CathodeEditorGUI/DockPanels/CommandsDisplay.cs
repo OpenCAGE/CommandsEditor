@@ -37,6 +37,9 @@ namespace CommandsEditor.DockPanels
         private CompositeDisplay _compositeDisplay = null;
         private Composite3D _renderer = null;
 
+        AddComposite _addCompositeDialog = null;
+        AddFolder _addFolderDialog = null;
+
         public CommandsDisplay(string levelName)
         {
             InitializeComponent();
@@ -52,36 +55,6 @@ namespace CommandsEditor.DockPanels
 
             SelectCompositeAndReloadList(_content.commands.EntryPoints[0]);
             Singleton.OnCompositeSelected?.Invoke(_content.commands.EntryPoints[0]); //need to call this again b/c the activation event doesn't fire here
-        }
-
-        AddComposite _addCompositeDialog = null;
-        private void createComposite_Click(object sender, EventArgs e)
-        {
-            if (_addCompositeDialog == null)
-                _addCompositeDialog = new AddComposite(this, _currentDisplayFolderPath);
-
-            _addCompositeDialog.Show();
-            _addCompositeDialog.OnCompositeAdded += SelectCompositeAndReloadList;
-            _addCompositeDialog.FormClosed += addCompositeDialogClosed;
-        }
-        private void addCompositeDialogClosed(object sender, FormClosedEventArgs e)
-        {
-            _addCompositeDialog = null;
-        }
-
-        AddFolder _addFolderDialog = null;
-        private void createFolder_Click(object sender, EventArgs e)
-        {
-            if (_addFolderDialog == null)
-                _addFolderDialog = new AddFolder(this, _currentDisplayFolderPath);
-
-            _addFolderDialog.Show();
-            _addFolderDialog.OnFolderAdded += SelectCompositeAndReloadList;
-            _addFolderDialog.FormClosed += addFolderDialogClosed;
-        }
-        private void addFolderDialogClosed(object sender, FormClosedEventArgs e)
-        {
-            _addFolderDialog = null;
         }
 
         public void SelectCompositeAndReloadList(Composite composite)
@@ -114,6 +87,8 @@ namespace CommandsEditor.DockPanels
                 string nameExt = name.Substring(_currentDisplayFolderPath.Length != 0 ? _currentDisplayFolderPath.Length + 1 : 0);
                 bool isFolder = nameExt.Contains('/');
                 string text = isFolder ? nameExt.Split('/')[0] : nameExt;
+                if (text == "") continue;
+
                 EditorUtils.CompositeType type = Content.editor_utils.GetCompositeType(composite);
 
                 //Make sure this folder/composite hasn't already been added
@@ -152,15 +127,26 @@ namespace CommandsEditor.DockPanels
             {
                 LoadComposite(content.Composite);
             }
+
+            _treeUtility.SelectNode(_currentDisplayFolderPath);
         }
 
         /* File list: select folder/composite */
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
             if (treeView1.SelectedNode == null) return;
-            if (((TreeItem)treeView1.SelectedNode.Tag).Item_Type != TreeItemType.EXPORTABLE_FILE) return;
 
-            LoadComposite(((TreeItem)treeView1.SelectedNode.Tag).String_Value);
+            TreeItem item = (TreeItem)treeView1.SelectedNode.Tag;
+            switch (item.Item_Type)
+            {
+                case TreeItemType.EXPORTABLE_FILE:
+                    LoadComposite(item.String_Value);
+                    break;
+                case TreeItemType.DIRECTORY:
+                    _currentDisplayFolderPath = item.String_Value;
+                    ReloadList(false);
+                    break;
+            }
         }
 
         /* File path: go back */
@@ -336,6 +322,7 @@ namespace CommandsEditor.DockPanels
 
             _treeUtility.UpdateFileTree(filteredCompositeNames);
 
+            /*
             if (entity_search_box.Text != "")
             {
                 treeView1.ExpandAll();
@@ -357,13 +344,47 @@ namespace CommandsEditor.DockPanels
             {
                 ReloadList();
             }
+            */
         }
 
-        private void findFuncs_Click(object sender, EventArgs e)
+        /* File Browser Context Menu */
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ShowCompositeUses uses = new ShowCompositeUses(Content);
-            uses.Show();
-            uses.OnEntitySelected += LoadCompositeAndEntity;
+
+        }
+        private void deleteFolderToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+        private void renameToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+        private void compositeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_addCompositeDialog == null)
+                _addCompositeDialog = new AddComposite(this, _currentDisplayFolderPath);
+
+            _addCompositeDialog.Show();
+            _addCompositeDialog.OnCompositeAdded += SelectCompositeAndReloadList;
+            _addCompositeDialog.FormClosed += addCompositeDialogClosed;
+        }
+        private void addCompositeDialogClosed(object sender, FormClosedEventArgs e)
+        {
+            _addCompositeDialog = null;
+        }
+        private void folderToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_addFolderDialog == null)
+                _addFolderDialog = new AddFolder(this, _currentDisplayFolderPath);
+
+            _addFolderDialog.Show();
+            _addFolderDialog.OnFolderAdded += SelectCompositeAndReloadList;
+            _addFolderDialog.FormClosed += addFolderDialogClosed;
+        }
+        private void addFolderDialogClosed(object sender, FormClosedEventArgs e)
+        {
+            _addFolderDialog = null;
         }
     }
 }

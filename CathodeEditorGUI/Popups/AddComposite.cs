@@ -28,15 +28,15 @@ namespace CommandsEditor
             _commands = editor;
             InitializeComponent();
 
-            this.Text = "Create New Prefab In Folder '" + folderPath + "'";
             _folder = folderPath;
+            this.Text = _folder == "" ? "Create New Prefab" : "Create New Prefab In Folder '" + _folder + "'";
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             if (textBox1.Text == "") return;
 
-            string path = _folder + "/" + textBox1.Text.Replace("\\", "/");
+            string path = (_folder == "" ? _folder : _folder + "/") + textBox1.Text.Replace("\\", "/");
 
             string[] pathParts = path.Split('/');
             for (int i = 0; i < pathParts.Length; i++)
