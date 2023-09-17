@@ -46,13 +46,13 @@
             this.useTexturedModelViewExperimentalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripButton3 = new System.Windows.Forms.ToolStripDropDownButton();
             this.findFunctionUsesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.helpBtn = new System.Windows.Forms.ToolStripButton();
             this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
             this.vS2015LightTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.statusText = new System.Windows.Forms.ToolStripStatusLabel();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.helpBtn = new System.Windows.Forms.ToolStripButton();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -196,6 +196,17 @@
             this.findFunctionUsesToolStripMenuItem.Text = "Find Function Uses";
             this.findFunctionUsesToolStripMenuItem.Click += new System.EventHandler(this.findFunctionUsesToolStripMenuItem_Click);
             // 
+            // helpBtn
+            // 
+            this.helpBtn.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.helpBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.helpBtn.Image = ((System.Drawing.Image)(resources.GetObject("helpBtn.Image")));
+            this.helpBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.helpBtn.Name = "helpBtn";
+            this.helpBtn.Size = new System.Drawing.Size(23, 22);
+            this.helpBtn.Text = "Help";
+            this.helpBtn.Click += new System.EventHandler(this.helpBtn_Click);
+            // 
             // statusStrip
             // 
             this.statusStrip.BackColor = System.Drawing.Color.Black;
@@ -225,17 +236,6 @@
             this.dockPanel.Size = new System.Drawing.Size(1257, 757);
             this.dockPanel.TabIndex = 5;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
-            // 
-            // helpBtn
-            // 
-            this.helpBtn.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.helpBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.helpBtn.Image = ((System.Drawing.Image)(resources.GetObject("helpBtn.Image")));
-            this.helpBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.helpBtn.Name = "helpBtn";
-            this.helpBtn.Size = new System.Drawing.Size(23, 22);
-            this.helpBtn.Text = "toolStripButton4";
-            this.helpBtn.Click += new System.EventHandler(this.helpBtn_Click);
             // 
             // CommandsEditor
             // 
