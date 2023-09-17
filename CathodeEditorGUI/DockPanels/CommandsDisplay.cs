@@ -348,10 +348,6 @@ namespace CommandsEditor.DockPanels
         }
 
         /* File Browser Context Menu */
-        private void openToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
         private void deleteFolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
