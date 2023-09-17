@@ -221,7 +221,7 @@ namespace CommandsEditor.DockPanels
 
 #if DEBUG
             //if (_renderer != null) _renderer.Close();
-            //_renderer = new Composite3D(_compositeDisplays[composite]);
+            //_renderer = new Composite3D(_compositeDisplay);
             //_renderer.Show(Singleton.Editor.DockPanel, DockState.DockRight);
 #endif
 

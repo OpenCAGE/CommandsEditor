@@ -497,7 +497,9 @@ namespace CommandsEditor
                 SendWebsocketData(new WebsocketServer.WSPacket
                 {
                     type = WebsocketServer.MessageType.LOAD_COMPOSITE,
-                    composite_name = composite.name
+                    composite_name = composite.shortGUID.ToByteString(),
+                    alien_path = SharedData.pathToAI,
+                    level_name = _commandsDisplay.Content.level
                 });
             }
 
