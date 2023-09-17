@@ -30,7 +30,7 @@ namespace CommandsEditor
         {
             InitializeComponent();
 
-            treeHelper = new TreeUtility(FileTree, true);
+            treeHelper = new TreeUtility(FileTree, content, true);
             List<string> allModelFileNames = new List<string>();
             List<string> allModelTagsNames = new List<string>();
 

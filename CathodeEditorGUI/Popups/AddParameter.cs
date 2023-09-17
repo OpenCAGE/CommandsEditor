@@ -37,6 +37,7 @@ namespace CommandsEditor
             param_name.EndUpdate();
 
             param_name.AutoSelectOff();
+            param_name.Select();
         }
 
         private void button1_Click(object sender, EventArgs e)

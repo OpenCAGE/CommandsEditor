@@ -1,5 +1,6 @@
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
+using CommandsEditor.Properties;
 using CommandsEditor.UserControls;
 using OpenCAGE;
 using System;
@@ -23,6 +24,7 @@ namespace CommandsEditor.DockPanels
         public CompositeDisplay CompositeDisplay => _compositeDisplay;
 
         private Entity _entity;
+        private Composite _entityCompositePtr; //The composite that this entity points to, if it does.
 
         public LevelContent Content => _compositeDisplay.Content;
 
@@ -42,9 +44,29 @@ namespace CommandsEditor.DockPanels
 
             _entity = entity;
             _compositeDisplay = compositeDisplay;
+            _entityCompositePtr = _entity.variant == EntityVariant.FUNCTION ? Content.commands.GetComposite(((FunctionEntity)_entity).function) : null;
 
             InitializeComponent();
             this.Activate();
+
+            switch (entity.variant)
+            {
+                case EntityVariant.VARIABLE:
+                    this.Icon = Resources.AnimatorController_Icon;
+                    break;
+                case EntityVariant.FUNCTION:
+                    if (Content.commands.GetComposite(((FunctionEntity)entity).function) == null)
+                        this.Icon = Resources.d_ScriptableObject_Icon_braces_only;
+                    else
+                        this.Icon = Resources.d_PrefabVariant_Icon;
+                    break;
+                case EntityVariant.PROXY:
+                    this.Icon = Resources.d_ScriptableObject_Icon;
+                    break;
+                case EntityVariant.ALIAS:
+                    this.Icon = Resources.AreaEffector2D_Icon;
+                    break;
+            }
 
             Reload();
         }
@@ -75,27 +97,59 @@ namespace CommandsEditor.DockPanels
             entity_params.SuspendLayout();
             Task.Factory.StartNew(() => BackgroundEntityLoader(_entity, this));
 
+
             //populate info labels
-            entityInfoGroup.Text = "Selected " + CultureInfo.CurrentCulture.TextInfo.ToTitleCase(_entity.variant.ToString().ToLower().Replace('_', ' ')) + " Entity Info";
-            entityParamGroup.Text = "Selected " + CultureInfo.CurrentCulture.TextInfo.ToTitleCase(_entity.variant.ToString().ToLower().Replace('_', ' ')) + " Entity Parameters";
+            string entityVariantStr = "";
+            switch (_entity.variant)
+            {
+                case EntityVariant.FUNCTION:
+                    entityVariantStr = _entityCompositePtr != null ? "Composite Instance" : "Function";
+                    break;
+                case EntityVariant.VARIABLE:
+                    //TODO: we should have a custom display for these. it's kinda weird to have parameters of parameters in this UI
+                    entityVariantStr = "Composite Parameter";
+                    break;
+                case EntityVariant.PROXY:
+                    entityVariantStr = "Proxy";
+                    break;
+                case EntityVariant.ALIAS:
+                    entityVariantStr = "Alias";
+                    break;
+            }
+            entityInfoGroup.Text = "Selected " + entityVariantStr + " Info";
+            entityParamGroup.Text = "Selected " + entityVariantStr + " Parameters";
+
+            //TODO: change this text contextually based on the linked editor - and hide the button when one isn't available.
+            editFunction.Text = "Function"; 
+
             string description = "";
             switch (_entity.variant)
             {
                 case EntityVariant.FUNCTION:
-                    ShortGuid thisFunction = ((FunctionEntity)_entity).function;
-                    Composite funcComposite = Content.commands.GetComposite(thisFunction);
-                    jumpToComposite.Visible = funcComposite != null;
-                    if (funcComposite != null)
-                        description = funcComposite.name;
-                    else
-                        description = CathodeEntityDatabase.GetEntity(thisFunction).className;
                     selected_entity_name.Text = EntityUtils.GetName(Composite.shortGUID, _entity.shortGUID);
-                    if (funcComposite == null)
+
+                    //Composite Instance
+                    if (_entityCompositePtr != null)
                     {
+                        jumpToComposite.Visible = true;
+                        editEntityResources.Enabled = false;
+                        description = _entityCompositePtr.name;
+                        //editFunction.Enabled = true;
+                        //editFunction.Text = "Alias Overrides"; //TODO: show count?
+                    }
+
+                    //Function Entity
+                    else
+                    {
+                        jumpToComposite.Visible = false;
+                        editEntityResources.Enabled = (Content.resource.models != null); //TODO: we can hide this button completely outside of this state
+
+                        ShortGuid thisFunction = ((FunctionEntity)_entity).function;
+                        description = CathodeEntityDatabase.GetEntity(thisFunction).className;
+
                         FunctionType function = CommandsUtils.GetFunctionType(thisFunction);
                         editFunction.Enabled = function == FunctionType.CAGEAnimation || function == FunctionType.TriggerSequence || function == FunctionType.Character;
                     }
-                    editEntityResources.Enabled = (Content.resource.models != null);
                     break;
                 case EntityVariant.VARIABLE:
                     description = "DataType " + ((VariableEntity)_entity).type.ToString();
@@ -443,24 +497,34 @@ namespace CommandsEditor.DockPanels
         private void editFunction_Click(object sender, EventArgs e)
         {
             if (Entity.variant != EntityVariant.FUNCTION) return;
-            string function = ShortGuidUtils.FindString(((FunctionEntity)Entity).function);
-            switch (function.ToUpper())
+            if (_entityCompositePtr != null)
             {
-                case "CAGEANIMATION":
-                    Singleton.OnCAGEAnimationEditorOpened?.Invoke();
-                    CAGEAnimationEditor cageAnimationEditor = new CAGEAnimationEditor(this);
-                    cageAnimationEditor.Show();
-                    cageAnimationEditor.OnSaved += CAGEAnimationEditor_OnSaved;
-                    break;
-                case "TRIGGERSEQUENCE":
-                    TriggerSequenceEditor triggerSequenceEditor = new TriggerSequenceEditor(this);
-                    triggerSequenceEditor.Show();
-                    break;
-                case "CHARACTER":
-                    //TODO: I think this is only valid for entities with "custom_character_type" set - but working that out requires a complex parse of connected entities. So ignoring for now.
-                    CharacterEditor characterEditor = new CharacterEditor(this);
-                    characterEditor.Show();
-                    break;
+                //Composite Instance
+                ShowCompositeInstanceOverrides overrideDisplay = new ShowCompositeInstanceOverrides(this);
+                overrideDisplay.Show();
+            }
+            else
+            {
+                //Function Entity
+                string function = ShortGuidUtils.FindString(((FunctionEntity)Entity).function);
+                switch (function.ToUpper())
+                {
+                    case "CAGEANIMATION":
+                        Singleton.OnCAGEAnimationEditorOpened?.Invoke();
+                        CAGEAnimationEditor cageAnimationEditor = new CAGEAnimationEditor(this);
+                        cageAnimationEditor.Show();
+                        cageAnimationEditor.OnSaved += CAGEAnimationEditor_OnSaved;
+                        break;
+                    case "TRIGGERSEQUENCE":
+                        TriggerSequenceEditor triggerSequenceEditor = new TriggerSequenceEditor(this);
+                        triggerSequenceEditor.Show();
+                        break;
+                    case "CHARACTER":
+                        //TODO: I think this is only valid for entities with "custom_character_type" set - but working that out requires a complex parse of connected entities. So ignoring for now.
+                        CharacterEditor characterEditor = new CharacterEditor(this);
+                        characterEditor.Show();
+                        break;
+                }
             }
         }
         private void CAGEAnimationEditor_OnSaved(CAGEAnimation newEntity)
@@ -475,22 +539,27 @@ namespace CommandsEditor.DockPanels
 
         private void jumpToComposite_Click(object sender, EventArgs e)
         {
-            Composite flow = null;
-            Entity entity = null;
-            string hierarchy = "";
             switch (Entity.variant)
             {
-                case EntityVariant.ALIAS:
-                    entity = CommandsUtils.ResolveHierarchy(Content.commands, Composite, ((AliasEntity)Entity).alias.path, out flow, out hierarchy);
-                    break;
                 case EntityVariant.PROXY:
-                    entity = CommandsUtils.ResolveHierarchy(Content.commands, Composite, ((ProxyEntity)Entity).proxy.path, out flow, out hierarchy);
+                    //Proxies forward directly to the entity they point to, breaking us out of the hierarchy.
+                    Entity entity = CommandsUtils.ResolveHierarchy(Content.commands, Composite, ((ProxyEntity)Entity).proxy.path, out Composite flow, out string hierarchy);
+                    if (MessageBox.Show("Jumping to a proxy will break you out of your composite.\nAre you sure?", "About to follow proxy...", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+                        _compositeDisplay.CommandsDisplay.LoadCompositeAndEntity(flow, entity);
                     break;
                 case EntityVariant.FUNCTION:
-                    _compositeDisplay.CommandsDisplay.LoadComposite(selected_entity_type_description.Text);
+                    //Composite instances take us a step down the hierarchy.
+                    _compositeDisplay.LoadChild(Content.commands.GetComposite(selected_entity_type_description.Text), Entity);
+                    return;
+                case EntityVariant.ALIAS:
+                    //Aliases take us (potentially) multiple steps down the hierarchy.
+                    List<ShortGuid> aliasPath = ((AliasEntity)Entity).alias.path;
+                    for (int i = 0; i < aliasPath.Count - 2; i++)
+                        _compositeDisplay.LoadChild(Content.commands.GetComposite(((FunctionEntity)Composite.GetEntityByID(aliasPath[i])).function), Composite.GetEntityByID(aliasPath[i]));
+                    _compositeDisplay.LoadEntity(Composite.GetEntityByID(aliasPath[aliasPath.Count - 2]));
                     return;
             }
-            _compositeDisplay.CommandsDisplay.LoadCompositeAndEntity(flow, entity);
+
         }
 
         private void deleteEntity_Click(object sender, EventArgs e)
@@ -505,11 +574,11 @@ namespace CommandsEditor.DockPanels
 
         private void renameEntity_Click(object sender, EventArgs e)
         {
-            RenameEntity rename_entity = new RenameEntity(this);
+            RenameEntity rename_entity = new RenameEntity(this.Content, this.Entity, this.Composite);
             rename_entity.Show();
             rename_entity.OnRenamed += OnEntityRenamed;
         }
-        private void OnEntityRenamed(string name)
+        private void OnEntityRenamed(string name, Entity entity)
         {
             Content.composite_content_cache[Composite][Entity].Text = name;
             _compositeDisplay.CommandsDisplay.ReloadAllEntities();
