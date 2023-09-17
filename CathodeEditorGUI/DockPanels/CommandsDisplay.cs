@@ -42,8 +42,8 @@ namespace CommandsEditor.DockPanels
             InitializeComponent();
             this.Text = levelName;
 
-            _treeUtility = new TreeUtility(treeView1);
             _content = new LevelContent(levelName);
+            _treeUtility = new TreeUtility(treeView1, _content);
 
             //TODO: these utils should be moved into LevelContent and made less generic. makes no sense anymore.
             _content.editor_utils = new EditorUtils(_content);

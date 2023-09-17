@@ -60,9 +60,12 @@
             // 
             this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
             this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
-            this.imageList1.Images.SetKeyName(0, "folder");
-            this.imageList1.Images.SetKeyName(1, "composite");
-            this.imageList1.Images.SetKeyName(2, "folder_open");
+            this.imageList1.Images.SetKeyName(0, "Folder Icon.png");
+            this.imageList1.Images.SetKeyName(1, "d_Prefab Icon.png");
+            this.imageList1.Images.SetKeyName(2, "FolderOpened Icon.png");
+            this.imageList1.Images.SetKeyName(3, "globe.png");
+            this.imageList1.Images.SetKeyName(4, "cog.png");
+            this.imageList1.Images.SetKeyName(5, "Avatar Icon.png");
             // 
             // SelectComposite
             // 

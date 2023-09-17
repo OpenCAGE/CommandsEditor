@@ -35,10 +35,15 @@ namespace CommandsEditor
         }
         public CompositeType GetCompositeType(Composite composite)
         {
-            if (_content.commands.EntryPoints[0] == composite) return CompositeType.IS_ROOT;
-            if (_content.commands.EntryPoints[1] == composite) return CompositeType.IS_PAUSE_MENU;
-            if (_content.commands.EntryPoints[2] == composite) return CompositeType.IS_GLOBAL;
-            if (composite.name.Length > ("DisplayModel:").Length && composite.name.Substring(0, ("DisplayModel:").Length) == "DisplayModel:") return CompositeType.IS_DISPLAY_MODEL;
+            return GetCompositeType(composite.name);
+        }
+        public CompositeType GetCompositeType(string composite)
+        {
+            string c = composite.Replace('/', '\\');
+            if (_content.commands.EntryPoints[0].name.Replace('/', '\\') == c) return CompositeType.IS_ROOT;
+            if (_content.commands.EntryPoints[1].name.Replace('/', '\\') == c) return CompositeType.IS_PAUSE_MENU;
+            if (_content.commands.EntryPoints[2].name.Replace('/', '\\') == c) return CompositeType.IS_GLOBAL;
+            if (c.Length > ("DisplayModel:").Length && c.Substring(0, ("DisplayModel:").Length) == "DisplayModel:") return CompositeType.IS_DISPLAY_MODEL;
             return CompositeType.IS_GENERIC_COMPOSITE;
         }
 

@@ -58,9 +58,12 @@ namespace CommandsEditor.DockPanels
             // 
             this.imageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList.ImageStream")));
             this.imageList.TransparentColor = System.Drawing.Color.Magenta;
-            this.imageList.Images.SetKeyName(0, "folder");
-            this.imageList.Images.SetKeyName(1, "composite");
-            this.imageList.Images.SetKeyName(2, "folder_open");
+            this.imageList.Images.SetKeyName(0, "Folder Icon.png");
+            this.imageList.Images.SetKeyName(1, "d_Prefab Icon.png");
+            this.imageList.Images.SetKeyName(2, "FolderOpened Icon.png");
+            this.imageList.Images.SetKeyName(3, "globe.png");
+            this.imageList.Images.SetKeyName(4, "cog.png");
+            this.imageList.Images.SetKeyName(5, "Avatar Icon.png");
             // 
             // toolStrip1
             // 
