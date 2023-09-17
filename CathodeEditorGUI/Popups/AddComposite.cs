@@ -30,6 +30,7 @@ namespace CommandsEditor
 
             _folder = folderPath;
             this.Text = _folder == "" ? "Create New Composite" : "Create New Composite In Folder '" + _folder + "'";
+            textBox1.Select();
         }
 
         private void button1_Click(object sender, EventArgs e)

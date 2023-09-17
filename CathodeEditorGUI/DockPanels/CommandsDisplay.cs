@@ -21,6 +21,7 @@ using System.IO;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Runtime.Remoting.Messaging;
 using ListViewItem = System.Windows.Forms.ListViewItem;
+using ListViewGroupCollapse;
 
 namespace CommandsEditor.DockPanels
 {
@@ -246,7 +247,7 @@ namespace CommandsEditor.DockPanels
             panel?.LoadEntity(entity);
         }
 
-        public void DeleteComposite(Composite composite)
+        public void DeleteComposite(Composite composite, bool prompt = true)
         {
             for (int i = 0; i < Content.commands.EntryPoints.Count(); i++)
             {
@@ -256,9 +257,10 @@ namespace CommandsEditor.DockPanels
                     return;
                 }
             }
-            if (MessageBox.Show("Are you sure you want to remove this composite?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+            if (prompt && MessageBox.Show("Are you sure you want to remove this composite?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
 
-            CloseAllChildTabs();
+            if (_compositeDisplay != null && _compositeDisplay.Composite == composite)
+                CloseAllChildTabs();
 
             //Remove any entities or links that reference this composite
             for (int i = 0; i < Content.commands.Entries.Count; i++)
@@ -348,13 +350,90 @@ namespace CommandsEditor.DockPanels
         }
 
         /* File Browser Context Menu */
+        private void FooListView_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                var lv = sender as System.Windows.Forms.ListView; 
+                var item = lv.HitTest(e.Location).Item;
+
+                deleteFolderToolStripMenuItem.Enabled = item != null;
+                renameToolStripMenuItem.Enabled = item != null;
+
+                if (item != null)
+                    lv.FocusedItem = item;
+
+                FileBrowserContextMenu.Show(lv, e.Location);
+            }
+        }
         private void deleteFolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (listView1.SelectedItems.Count != 1) return;
 
+            ListViewItem item = listView1.SelectedItems[0];
+            ListViewItemContent content = (ListViewItemContent)item.Tag;
+            if (content.IsFolder)
+            {
+                string folderFullPath = "";
+                if (_currentDisplayFolderPath == "") folderFullPath = content.FolderName;
+                else folderFullPath = _currentDisplayFolderPath + "/" + content.FolderName;
+
+                List<Composite> toDelete = new List<Composite>();
+                for (int i = 0; i < _content.commands.Entries.Count; i++)
+                    if (_content.commands.Entries[i].name.Length >= folderFullPath.Length && _content.commands.Entries[i].name.Substring(0, folderFullPath.Length) == folderFullPath)
+                        toDelete.Add(_content.commands.Entries[i]);
+
+                if (MessageBox.Show("Are you sure you want to delete this folder, including the " + toDelete.Count + " composites it contains?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) 
+                    return;
+
+                for (int i = 0; i < toDelete.Count; i++)
+                    DeleteComposite(toDelete[i], false);
+            }
+            else
+            {
+                DeleteComposite(content.Composite);
+            }
+
+            _compositeDisplay?.Reload();
+            ReloadList();
         }
+        RenameComposite _renameComposite;
         private void renameToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (listView1.SelectedItems.Count != 1) return;
 
+            ListViewItem item = listView1.SelectedItems[0];
+            ListViewItemContent content = (ListViewItemContent)item.Tag;
+            if (content.IsFolder)
+            {
+                //TODO
+                MessageBox.Show("Support for renaming folders is coming soon.");
+            }
+            else
+            {
+                if (_renameComposite != null)
+                {
+                    _renameComposite.BringToFront();
+                    _renameComposite.Focus();
+                    return;
+                }
+
+                _renameComposite = new RenameComposite(this.Content, content.Composite, _currentDisplayFolderPath);
+                _renameComposite.Show();
+                _renameComposite.OnRenamed += OnCompositeRenamed;
+                _renameComposite.FormClosed += _renameComposite_FormClosed;
+            }
+        }
+        private void OnCompositeRenamed(string name)
+        {
+            _compositeDisplay?.Reload();
+            ReloadList();
+
+            //TODO-URGENT: Also need to update cached entity names that use this composite.
+        }
+        private void _renameComposite_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _renameComposite = null;
         }
         private void compositeToolStripMenuItem_Click(object sender, EventArgs e)
         {

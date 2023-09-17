@@ -74,7 +74,7 @@ namespace CommandsEditor.DockPanels
             findUses.Visible = isCoreComposite;
             deleteComposite.Visible = isCoreComposite;
 
-            this.Text = System.IO.Path.GetFileName(composite.name);
+            this.Text = EditorUtils.GetCompositeName(composite);
             pathDisplay.Text = _path.GetPath(composite);
             _composite = composite;
 
@@ -700,9 +700,9 @@ namespace CommandsEditor.DockPanels
             string path = "";
             for (int i = 0; i < _composites.Count; i++)
             {
-                path += Path.GetFileName(_composites[i].name) + " > ";
+                path += EditorUtils.GetCompositeName(_composites[i]) + " > ";
             }
-            path += Path.GetFileName(currentComp.name);
+            path += EditorUtils.GetCompositeName(currentComp);
             return path;
         }
 

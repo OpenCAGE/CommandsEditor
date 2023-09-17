@@ -66,6 +66,8 @@ namespace CommandsEditor
                     createOverrideEntity.Checked = true;
                     break;
             }
+
+            textBox1.Select();
         }
 
         //Repopulate UI

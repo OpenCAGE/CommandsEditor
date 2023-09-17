@@ -148,7 +148,7 @@ namespace CommandsEditor
                         case 2:
                             commands = new Commands(worldPath + "COMMANDS.PAK");
                             commands.Entries = commands.Entries.OrderBy(o => o.name).ToList();
-                            commands.EntryPoints[0].name = Path.GetFileName(commands.EntryPoints[0].name);
+                            commands.EntryPoints[0].name = EditorUtils.GetCompositeName(commands.EntryPoints[0]);
                             break;
                     }
                 });
@@ -249,7 +249,7 @@ namespace CommandsEditor
                 case EntityVariant.FUNCTION:
                     item.Text = EntityUtils.GetName(composite.shortGUID, entity.shortGUID);
                     Composite funcComposite = commands.GetComposite(((FunctionEntity)entity).function);
-                    if (funcComposite != null) item.SubItems.Add(Path.GetFileName(funcComposite.name));
+                    if (funcComposite != null) item.SubItems.Add(EditorUtils.GetCompositeName(funcComposite));
                     else item.SubItems.Add(CathodeEntityDatabase.GetEntity(((FunctionEntity)entity).function).className);
                     break;
                 case EntityVariant.ALIAS:

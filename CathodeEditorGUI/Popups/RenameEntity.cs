@@ -19,21 +19,23 @@ namespace CommandsEditor
     {
         public Action<string> OnRenamed;
 
-        private EntityDisplay _display;
+        private Entity _entity;
+        private Composite _composite;
 
-        public RenameEntity(EntityDisplay editor) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor.Content)
+        public RenameEntity(LevelContent editor, Entity entity, Composite composite) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
         {
             InitializeComponent();
 
-            _display = editor;
+            _entity = entity;
+            _composite = composite;
 
-            switch (_display.Entity.variant)
+            switch (_entity.variant)
             {
                 case EntityVariant.VARIABLE:
-                    entity_name.Text = ShortGuidUtils.FindString(((VariableEntity)_display.Entity).name);
+                    entity_name.Text = ShortGuidUtils.FindString(((VariableEntity)_entity).name);
                     break;
                 default:
-                    entity_name.Text = EntityUtils.GetName(_display.Composite, _display.Entity);
+                    entity_name.Text = EntityUtils.GetName(_composite, _entity);
                     break;
             }
         }
@@ -42,13 +44,13 @@ namespace CommandsEditor
         {
             if (entity_name.Text == "") return;
 
-            switch (_display.Entity.variant)
+            switch (_entity.variant)
             {
                 case EntityVariant.VARIABLE:
-                    ((VariableEntity)_display.Entity).name = ShortGuidUtils.Generate(entity_name.Text);
+                    ((VariableEntity)_entity).name = ShortGuidUtils.Generate(entity_name.Text);
                     break;
                 default:
-                    EntityUtils.SetName(_display.Composite, _display.Entity, entity_name.Text);
+                    EntityUtils.SetName(_composite, _entity, entity_name.Text);
                     break;
             }
 

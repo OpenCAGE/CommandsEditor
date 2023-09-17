@@ -255,6 +255,13 @@ namespace CommandsEditor
             return editedText;
         }
 
+        /* Utility: get composite name */
+        public static string GetCompositeName(Composite comp)
+        {
+            string[] cont = comp.name.Replace('\\', '/').Split('/');
+            return cont[cont.Length - 1];
+        }
+
         /* Utility: work out if any proxies/overrides reference the currently selected entity */
         public bool IsEntityReferencedExternally(Entity entity)
         {

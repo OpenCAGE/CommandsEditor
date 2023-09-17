@@ -574,7 +574,7 @@ namespace CommandsEditor.DockPanels
 
         private void renameEntity_Click(object sender, EventArgs e)
         {
-            RenameEntity rename_entity = new RenameEntity(this);
+            RenameEntity rename_entity = new RenameEntity(this.Content, this.Entity, this.Composite);
             rename_entity.Show();
             rename_entity.OnRenamed += OnEntityRenamed;
         }

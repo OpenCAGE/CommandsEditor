@@ -27,6 +27,7 @@ namespace CommandsEditor
 
             _folder = folderPath;
             this.Text = _folder == "" ? "Create Folder" : "Create Folder Within '" + _folder + "'";
+            textBox1.Select();
         }
 
         private void create_param_Click(object sender, EventArgs e)
