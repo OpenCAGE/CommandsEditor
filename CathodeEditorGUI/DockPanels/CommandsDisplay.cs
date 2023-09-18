@@ -103,16 +103,15 @@ namespace CommandsEditor.DockPanels
                 if (!shouldAdd) continue;
 
                 //Get formatting
-                bool isFolder = nameSplit.Length - 1 > currentPathSplit.Length;
+                bool isFolder = nameSplit.Length > (currentPathIsRoot ? currentPathSplit.Length : currentPathSplit.Length + 1);
                 string text = nameSplit[currentPathIsRoot ? 0 : currentPathSplit.Length];
                 if (text == "") continue;
 
                 EditorUtils.CompositeType type = Content.editor_utils.GetCompositeType(composite);
 
-                //Make sure this folder/composite hasn't already been added
-                string identifier = text + isFolder;
-                if (items.Contains(identifier)) continue;
-                items.Add(identifier);
+                //Make sure this hasn't already been added
+                if (items.Contains(text)) continue;
+                items.Add(text);
 
                 //Add it to the view
                 ListViewItemContent content = new ListViewItemContent() { IsFolder = isFolder };
@@ -147,6 +146,7 @@ namespace CommandsEditor.DockPanels
             }
 
             _treeUtility.SelectNode(_currentDisplayFolderPath);
+            treeView1.SelectedNode?.Expand();
         }
 
         /* File list: select folder/composite */

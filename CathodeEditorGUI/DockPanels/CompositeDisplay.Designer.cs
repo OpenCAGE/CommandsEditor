@@ -29,11 +29,11 @@ namespace CommandsEditor.DockPanels
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Parameters", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("Functions", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("Composite Instances", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("Proxies", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup("Aliases", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup6 = new System.Windows.Forms.ListViewGroup("Parameters", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup7 = new System.Windows.Forms.ListViewGroup("Functions", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup8 = new System.Windows.Forms.ListViewGroup("Composite Instances", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup9 = new System.Windows.Forms.ListViewGroup("Proxies", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup10 = new System.Windows.Forms.ListViewGroup("Aliases", System.Windows.Forms.HorizontalAlignment.Left);
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CompositeDisplay));
             this.composite_content = new ListViewGroupCollapse.ListViewExtended();
             this.EntityName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -65,15 +65,15 @@ namespace CommandsEditor.DockPanels
             this.pathDisplay = new System.Windows.Forms.TextBox();
             this.instanceInfo = new System.Windows.Forms.Button();
             this.EntityListContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.renameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.createParameterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createFunctionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createInstanceOfCompositeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createProxyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createAliasToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.renameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -94,34 +94,34 @@ namespace CommandsEditor.DockPanels
             this.EntityName,
             this.EntityType});
             this.composite_content.FullRowSelect = true;
-            listViewGroup1.Header = "Parameters";
-            listViewGroup1.Name = "Variables";
-            listViewGroup2.Header = "Functions";
-            listViewGroup2.Name = "Functions";
-            listViewGroup3.Header = "Composite Instances";
-            listViewGroup3.Name = "Composites";
-            listViewGroup4.Header = "Proxies";
-            listViewGroup4.Name = "Proxies";
-            listViewGroup5.Header = "Aliases";
-            listViewGroup5.Name = "Aliases";
+            listViewGroup6.Header = "Parameters";
+            listViewGroup6.Name = "Variables";
+            listViewGroup7.Header = "Functions";
+            listViewGroup7.Name = "Functions";
+            listViewGroup8.Header = "Composite Instances";
+            listViewGroup8.Name = "Composites";
+            listViewGroup9.Header = "Proxies";
+            listViewGroup9.Name = "Proxies";
+            listViewGroup10.Header = "Aliases";
+            listViewGroup10.Name = "Aliases";
             this.composite_content.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup1,
-            listViewGroup2,
-            listViewGroup3,
-            listViewGroup4,
-            listViewGroup5});
+            listViewGroup6,
+            listViewGroup7,
+            listViewGroup8,
+            listViewGroup9,
+            listViewGroup10});
             this.composite_content.HideSelection = false;
             this.composite_content.LabelWrap = false;
             this.composite_content.Location = new System.Drawing.Point(3, 30);
             this.composite_content.MultiSelect = false;
             this.composite_content.Name = "composite_content";
-            this.composite_content.Size = new System.Drawing.Size(827, 747);
+            this.composite_content.Size = new System.Drawing.Size(827, 743);
             this.composite_content.SmallImageList = this.entityListIcons;
             this.composite_content.TabIndex = 176;
             this.composite_content.UseCompatibleStateImageBehavior = false;
             this.composite_content.View = System.Windows.Forms.View.Details;
-            this.composite_content.MouseDown += new System.Windows.Forms.MouseEventHandler(FooListView_MouseDown);
             this.composite_content.SelectedIndexChanged += new System.EventHandler(this.composite_content_SelectedIndexChanged);
+            this.composite_content.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FooListView_MouseDown);
             // 
             // EntityName
             // 
@@ -285,7 +285,7 @@ namespace CommandsEditor.DockPanels
             this.dockPanel.Name = "dockPanel";
             this.dockPanel.Padding = new System.Windows.Forms.Padding(6);
             this.dockPanel.ShowAutoHideContentOnHover = false;
-            this.dockPanel.Size = new System.Drawing.Size(781, 777);
+            this.dockPanel.Size = new System.Drawing.Size(781, 773);
             this.dockPanel.TabIndex = 178;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
             // 
@@ -297,7 +297,7 @@ namespace CommandsEditor.DockPanels
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(830, 777);
+            this.panel1.Size = new System.Drawing.Size(830, 773);
             this.panel1.TabIndex = 180;
             // 
             // splitContainer1
@@ -315,7 +315,7 @@ namespace CommandsEditor.DockPanels
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.dockPanel);
-            this.splitContainer1.Size = new System.Drawing.Size(1615, 777);
+            this.splitContainer1.Size = new System.Drawing.Size(1615, 773);
             this.splitContainer1.SplitterDistance = 830;
             this.splitContainer1.TabIndex = 182;
             // 
@@ -377,18 +377,18 @@ namespace CommandsEditor.DockPanels
             this.pathDisplay.Location = new System.Drawing.Point(64, 801);
             this.pathDisplay.Name = "pathDisplay";
             this.pathDisplay.ReadOnly = true;
-            this.pathDisplay.Size = new System.Drawing.Size(1454, 20);
+            this.pathDisplay.Size = new System.Drawing.Size(1406, 20);
             this.pathDisplay.TabIndex = 177;
             // 
             // instanceInfo
             // 
             this.instanceInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.instanceInfo.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.instanceInfo.Location = new System.Drawing.Point(1517, 801);
+            this.instanceInfo.Location = new System.Drawing.Point(1469, 801);
             this.instanceInfo.Name = "instanceInfo";
-            this.instanceInfo.Size = new System.Drawing.Size(98, 20);
+            this.instanceInfo.Size = new System.Drawing.Size(146, 20);
             this.instanceInfo.TabIndex = 183;
-            this.instanceInfo.Text = "Instance Info";
+            this.instanceInfo.Text = "Composite Instance Info";
             this.instanceInfo.UseVisualStyleBackColor = true;
             this.instanceInfo.Click += new System.EventHandler(this.instanceInfo_Click);
             // 
@@ -400,23 +400,7 @@ namespace CommandsEditor.DockPanels
             this.deleteToolStripMenuItem,
             this.renameToolStripMenuItem});
             this.EntityListContextMenu.Name = "EntityListContextMenu";
-            this.EntityListContextMenu.Size = new System.Drawing.Size(181, 98);
-            // 
-            // deleteToolStripMenuItem
-            // 
-            this.deleteToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("deleteToolStripMenuItem.Image")));
-            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.deleteToolStripMenuItem.Text = "Delete";
-            this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
-            // 
-            // renameToolStripMenuItem
-            // 
-            this.renameToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("renameToolStripMenuItem.Image")));
-            this.renameToolStripMenuItem.Name = "renameToolStripMenuItem";
-            this.renameToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.renameToolStripMenuItem.Text = "Rename";
-            this.renameToolStripMenuItem.Click += new System.EventHandler(this.renameToolStripMenuItem_Click);
+            this.EntityListContextMenu.Size = new System.Drawing.Size(118, 76);
             // 
             // createToolStripMenuItem
             // 
@@ -427,13 +411,8 @@ namespace CommandsEditor.DockPanels
             this.createProxyToolStripMenuItem,
             this.createAliasToolStripMenuItem1});
             this.createToolStripMenuItem.Name = "createToolStripMenuItem";
-            this.createToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.createToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
             this.createToolStripMenuItem.Text = "Create";
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
             // 
             // createParameterToolStripMenuItem
             // 
@@ -474,6 +453,27 @@ namespace CommandsEditor.DockPanels
             this.createAliasToolStripMenuItem1.Size = new System.Drawing.Size(230, 22);
             this.createAliasToolStripMenuItem1.Text = "Create Alias";
             this.createAliasToolStripMenuItem1.Click += new System.EventHandler(this.createAliasToolStripMenuItem1_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(114, 6);
+            // 
+            // deleteToolStripMenuItem
+            // 
+            this.deleteToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("deleteToolStripMenuItem.Image")));
+            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.deleteToolStripMenuItem.Text = "Delete";
+            this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
+            // 
+            // renameToolStripMenuItem
+            // 
+            this.renameToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("renameToolStripMenuItem.Image")));
+            this.renameToolStripMenuItem.Name = "renameToolStripMenuItem";
+            this.renameToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.renameToolStripMenuItem.Text = "Rename";
+            this.renameToolStripMenuItem.Click += new System.EventHandler(this.renameToolStripMenuItem_Click);
             // 
             // CompositeDisplay
             // 
