@@ -121,6 +121,7 @@ namespace CommandsEditor
             label2.Visible = true;
             generateHierarchy.Visible = false;
             select_composite.Visible = true;
+            select_composite.BringToFront();
             createNewEntity.Enabled = true;
             entityVariant.BeginUpdate();
             entityVariant.Items.Clear();
@@ -139,6 +140,7 @@ namespace CommandsEditor
             entityVariant.Enabled = false;
             label2.Visible = false;
             generateHierarchy.Visible = true;
+            generateHierarchy.BringToFront();
             select_composite.Visible = false;
             createNewEntity.Enabled = false;
             hierarchy = null;
@@ -151,6 +153,7 @@ namespace CommandsEditor
             entityVariant.Enabled = false;
             label2.Visible = false;
             generateHierarchy.Visible = true;
+            generateHierarchy.BringToFront();
             select_composite.Visible = false;
             createNewEntity.Enabled = false;
             hierarchy = null;
