@@ -498,9 +498,7 @@ namespace CommandsEditor.DockPanels
             SettingsManager.SetString(Singleton.Settings.FileBrowserViewOpt, view.ToString());
 
             largeIconsToolStripMenuItem.Checked = view == View.LargeIcon;
-            smallIconsToolStripMenuItem.Checked = view == View.SmallIcon;
             listToolStripMenuItem.Checked = view == View.List;
-            tileToolStripMenuItem.Checked = view == View.Tile;
         }
 
         private void createComposite_Click(object sender, EventArgs e)

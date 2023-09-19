@@ -641,6 +641,7 @@ namespace CommandsEditor.DockPanels
 
                 deleteToolStripMenuItem.Enabled = item != null;
                 renameToolStripMenuItem.Enabled = item != null;
+                duplicateToolStripMenuItem.Enabled = item != null;
 
                 if (item != null)
                     lv.FocusedItem = item;
@@ -674,6 +675,11 @@ namespace CommandsEditor.DockPanels
         private void Rename_entity_FormClosed(object sender, FormClosedEventArgs e)
         {
             _entityRenameDialog = null;
+        }
+        private void duplicateToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Entity entity = (Entity)composite_content.SelectedItems[0].Tag;
+            DuplicateEntity(entity);
         }
         private void createParameterToolStripMenuItem_Click(object sender, EventArgs e)
         {
