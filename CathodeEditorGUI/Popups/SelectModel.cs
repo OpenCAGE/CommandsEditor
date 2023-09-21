@@ -34,12 +34,21 @@ namespace CommandsEditor
             List<string> allModelFileNames = new List<string>();
             List<string> allModelTagsNames = new List<string>();
 
-            int i = 0;
-            while (Content.resource.models.GetAtWriteIndex(i) != null)
+            foreach (Models.CS2 mesh in Content.resource.models.Entries)
             {
-                allModelFileNames.Add(GenerateNodeTag(i));
-                allModelTagsNames.Add(i.ToString());
-                i++;
+                foreach (Models.CS2.Component component in mesh.Components)
+                {
+                    foreach (Models.CS2.Component.LOD lod in component.LODs)
+                    {
+                        foreach (Models.CS2.Component.LOD.Submesh submesh in lod.Submeshes)
+                        {
+                            if (lod.Name == "") allModelFileNames.Add(mesh.Name.Replace('\\', '/'));
+                            else allModelFileNames.Add(mesh.Name.Replace('\\', '/') + "/" + lod.Name.Replace('\\', '/'));
+
+                            allModelTagsNames.Add(Content.resource.models.GetWriteIndex(submesh).ToString());
+                        }
+                    }
+                }
             }
             treeHelper.UpdateFileTree(allModelFileNames, null, allModelTagsNames);
 
