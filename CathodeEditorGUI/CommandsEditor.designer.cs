@@ -36,18 +36,15 @@
             this.loadLevel = new System.Windows.Forms.ToolStripMenuItem();
             this.saveLevel = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripDropDownButton();
-            this.enableInstanceMode = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.enableBackups = new System.Windows.Forms.ToolStripMenuItem();
             this.connectToUnity = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.showNodegraph = new System.Windows.Forms.ToolStripMenuItem();
             this.showEntityIDs = new System.Windows.Forms.ToolStripMenuItem();
             this.showConfirmationWhenSavingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.searchOnlyCompositeNames = new System.Windows.Forms.ToolStripMenuItem();
-            this.compositesOpenTabs = new System.Windows.Forms.ToolStripMenuItem();
             this.entitiesOpenTabs = new System.Windows.Forms.ToolStripMenuItem();
             this.useTexturedModelViewExperimentalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.helpBtn = new System.Windows.Forms.ToolStripButton();
             this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
             this.vS2015LightTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
@@ -62,7 +59,8 @@
             // 
             this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripButton1,
-            this.toolStripButton2});
+            this.toolStripButton2,
+            this.helpBtn});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Size = new System.Drawing.Size(1257, 25);
@@ -100,16 +98,12 @@
             // 
             this.toolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripButton2.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.enableInstanceMode,
-            this.toolStripSeparator1,
-            this.enableBackups,
             this.connectToUnity,
             this.toolStripSeparator2,
             this.showNodegraph,
             this.showEntityIDs,
             this.showConfirmationWhenSavingToolStripMenuItem,
             this.searchOnlyCompositeNames,
-            this.compositesOpenTabs,
             this.entitiesOpenTabs,
             this.useTexturedModelViewExperimentalToolStripMenuItem});
             this.toolStripButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton2.Image")));
@@ -117,30 +111,6 @@
             this.toolStripButton2.Name = "toolStripButton2";
             this.toolStripButton2.Size = new System.Drawing.Size(62, 22);
             this.toolStripButton2.Text = "Options";
-            // 
-            // enableInstanceMode
-            // 
-            this.enableInstanceMode.Name = "enableInstanceMode";
-            this.enableInstanceMode.Size = new System.Drawing.Size(286, 22);
-            this.enableInstanceMode.Text = "Instance Mode";
-            this.enableInstanceMode.ToolTipText = "Enable instance mode to modify entity instances.";
-            this.enableInstanceMode.Click += new System.EventHandler(this.enableInstanceMode_Click);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(283, 6);
-            // 
-            // enableBackups
-            // 
-            this.enableBackups.Checked = true;
-            this.enableBackups.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.enableBackups.Name = "enableBackups";
-            this.enableBackups.Size = new System.Drawing.Size(286, 22);
-            this.enableBackups.Text = "Autosave (every 5 mins)";
-            this.enableBackups.ToolTipText = "If checked, the editor will automatically save the level every 5 minutes.";
-            this.enableBackups.Visible = false;
-            this.enableBackups.Click += new System.EventHandler(this.enableBackups_Click);
             // 
             // connectToUnity
             // 
@@ -191,13 +161,6 @@
             this.searchOnlyCompositeNames.ToolTipText = "Enable this option to exclude folder names from the composite search.";
             this.searchOnlyCompositeNames.Click += new System.EventHandler(this.searchOnlyCompositeNames_Click);
             // 
-            // compositesOpenTabs
-            // 
-            this.compositesOpenTabs.Name = "compositesOpenTabs";
-            this.compositesOpenTabs.Size = new System.Drawing.Size(286, 22);
-            this.compositesOpenTabs.Text = "Open Composites In New Tabs";
-            this.compositesOpenTabs.Click += new System.EventHandler(this.compositesOpenTabs_Click);
-            // 
             // entitiesOpenTabs
             // 
             this.entitiesOpenTabs.Name = "entitiesOpenTabs";
@@ -211,6 +174,17 @@
             this.useTexturedModelViewExperimentalToolStripMenuItem.Size = new System.Drawing.Size(286, 22);
             this.useTexturedModelViewExperimentalToolStripMenuItem.Text = "Use Textured Model View (Experimental)";
             this.useTexturedModelViewExperimentalToolStripMenuItem.Click += new System.EventHandler(this.useTexturedModelViewExperimentalToolStripMenuItem_Click);
+            // 
+            // helpBtn
+            // 
+            this.helpBtn.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.helpBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.helpBtn.Image = ((System.Drawing.Image)(resources.GetObject("helpBtn.Image")));
+            this.helpBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.helpBtn.Name = "helpBtn";
+            this.helpBtn.Size = new System.Drawing.Size(23, 22);
+            this.helpBtn.Text = "Help";
+            this.helpBtn.Click += new System.EventHandler(this.helpBtn_Click);
             // 
             // statusStrip
             // 
@@ -233,8 +207,7 @@
             // 
             this.dockPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dockPanel.DockBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(57)))), ((int)(((byte)(85)))));
-            this.dockPanel.DockLeftPortion = 0.3D;
-            this.dockPanel.DockRightPortion = 0.35D;
+            this.dockPanel.DockBottomPortion = 0.35D;
             this.dockPanel.Location = new System.Drawing.Point(0, 25);
             this.dockPanel.Name = "dockPanel";
             this.dockPanel.Padding = new System.Windows.Forms.Padding(6);
@@ -276,19 +249,16 @@
         private System.Windows.Forms.ToolStripMenuItem loadLevel;
         private System.Windows.Forms.ToolStripMenuItem saveLevel;
         private System.Windows.Forms.ToolStripDropDownButton toolStripButton2;
-        private System.Windows.Forms.ToolStripMenuItem enableBackups;
         private System.Windows.Forms.ToolStripMenuItem connectToUnity;
         private System.Windows.Forms.ToolStripMenuItem showNodegraph;
         private System.Windows.Forms.ToolStripStatusLabel statusText;
         private System.Windows.Forms.ToolStripMenuItem showEntityIDs;
-        private System.Windows.Forms.ToolStripMenuItem enableInstanceMode;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem searchOnlyCompositeNames;
         private System.Windows.Forms.ToolTip toolTip1;
-        private System.Windows.Forms.ToolStripMenuItem compositesOpenTabs;
         private System.Windows.Forms.ToolStripMenuItem entitiesOpenTabs;
         private System.Windows.Forms.ToolStripMenuItem showConfirmationWhenSavingToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem useTexturedModelViewExperimentalToolStripMenuItem;
+        private System.Windows.Forms.ToolStripButton helpBtn;
     }
 }

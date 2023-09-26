@@ -48,24 +48,26 @@ namespace CommandsEditor
 
             switch (variant)
             {
-                case EntityVariant.ALIAS:
-                    Text = "Create Alias Entity";
-                    createOverrideEntity.Checked = true;
-                    break;
                 case EntityVariant.PROXY:
-                    Text = "Create Proxy Entity";
+                    Text = "Create Proxy";
                     createProxyEntity.Checked = true;
                     break;
                 case EntityVariant.FUNCTION:
-                    Text = "Create " + (composite ? "Composite" : "Function") + " Entity";
+                    Text = "Create " + (composite ? "Composite Instance" : "Function");
                     createFunctionEntity.Checked = !composite;
                     createCompositeEntity.Checked = composite;
                     break;
                 case EntityVariant.VARIABLE:
-                    Text = "Create Variable Entity";
+                    Text = "Create Composite Parameter";
                     createDatatypeEntity.Checked = true;
                     break;
+                case EntityVariant.ALIAS:
+                    Text = "Create Alias";
+                    createOverrideEntity.Checked = true;
+                    break;
             }
+
+            textBox1.Select();
         }
 
         //Repopulate UI
@@ -119,6 +121,7 @@ namespace CommandsEditor
             label2.Visible = true;
             generateHierarchy.Visible = false;
             select_composite.Visible = true;
+            select_composite.BringToFront();
             createNewEntity.Enabled = true;
             entityVariant.BeginUpdate();
             entityVariant.Items.Clear();
@@ -137,6 +140,7 @@ namespace CommandsEditor
             entityVariant.Enabled = false;
             label2.Visible = false;
             generateHierarchy.Visible = true;
+            generateHierarchy.BringToFront();
             select_composite.Visible = false;
             createNewEntity.Enabled = false;
             hierarchy = null;
@@ -149,6 +153,7 @@ namespace CommandsEditor
             entityVariant.Enabled = false;
             label2.Visible = false;
             generateHierarchy.Visible = true;
+            generateHierarchy.BringToFront();
             select_composite.Visible = false;
             createNewEntity.Enabled = false;
             hierarchy = null;

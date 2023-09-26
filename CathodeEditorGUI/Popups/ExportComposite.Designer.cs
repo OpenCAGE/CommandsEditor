@@ -63,7 +63,7 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(12, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(117, 13);
+            this.label1.Size = new System.Drawing.Size(99, 13);
             this.label1.TabIndex = 7;
             this.label1.Text = "Port composite to level:";
             // 
@@ -74,7 +74,7 @@
             this.overwrite.CheckState = System.Windows.Forms.CheckState.Checked;
             this.overwrite.Location = new System.Drawing.Point(15, 54);
             this.overwrite.Name = "overwrite";
-            this.overwrite.Size = new System.Drawing.Size(219, 17);
+            this.overwrite.Size = new System.Drawing.Size(201, 17);
             this.overwrite.TabIndex = 8;
             this.overwrite.Text = "Overwrite existing destination composites";
             this.toolTip1.SetToolTip(this.overwrite, "If checked: when composites are copied they will overwrite any by the same ID in " +
@@ -88,7 +88,7 @@
             this.recurse.CheckState = System.Windows.Forms.CheckState.Checked;
             this.recurse.Location = new System.Drawing.Point(15, 77);
             this.recurse.Name = "recurse";
-            this.recurse.Size = new System.Drawing.Size(257, 17);
+            this.recurse.Size = new System.Drawing.Size(221, 17);
             this.recurse.TabIndex = 9;
             this.recurse.Text = "Copy all composites referenced by this composite";
             this.toolTip1.SetToolTip(this.recurse, "If checked: composites that are instanced within the exported composite will also" +

@@ -37,6 +37,9 @@
             // 
             // referenceList
             // 
+            this.referenceList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.referenceList.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.referenceList.FormattingEnabled = true;
             this.referenceList.HorizontalScrollbar = true;
@@ -56,6 +59,7 @@
             // 
             // jumpToEntity
             // 
+            this.jumpToEntity.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.jumpToEntity.Location = new System.Drawing.Point(606, 455);
             this.jumpToEntity.Name = "jumpToEntity";
             this.jumpToEntity.Size = new System.Drawing.Size(147, 23);
@@ -66,6 +70,8 @@
             // 
             // entityVariant
             // 
+            this.entityVariant.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.entityVariant.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.entityVariant.FormattingEnabled = true;
             this.entityVariant.Location = new System.Drawing.Point(129, 12);
@@ -83,9 +89,8 @@
             this.Controls.Add(this.jumpToEntity);
             this.Controls.Add(this.label);
             this.Controls.Add(this.referenceList);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MaximizeBox = false;
             this.Name = "ShowCompositeUses";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Function Uses";

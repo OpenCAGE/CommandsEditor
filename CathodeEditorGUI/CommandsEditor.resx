@@ -154,6 +154,16 @@
         TgDQASA1MVpwzwAAAABJRU5ErkJggg==
 </value>
   </data>
+  <data name="helpBtn.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADRSURBVDhPnZI9CgIxFIRzD69l7wksrD2Dh/AYgiCCWO8V
+        tPIHi21CLCTyhbyQZF/WxYGB5c2bYZKN0eCc89bagsyi3AaLh0vvF/ubn22vBZmhsRPXSyAsj4+Bseb6
+        /ByGMECQpdXp5fv3J9SGfDNrhlBNRCjGmvkOnmBGqM8shvnuHqgF4GEW6ueCRi0AhmOMBWy6Ppn/CsjN
+        hNX65ABNgyGABe3h/GK6RFD/RuFYg/QbAVW0V9gKmPQaW1TNAgSqaXfCDK1pzkFtFnMyi3IGY77epIOl
+        XZ9qbAAAAABJRU5ErkJggg==
+</value>
+  </data>
   <metadata name="vS2015BlueTheme1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>282, 17</value>
   </metadata>

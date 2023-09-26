@@ -75,6 +75,9 @@
     <Reference Include="Costura, Version=5.7.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\Costura.Fody.5.7.0\lib\netstandard1.0\Costura.dll</HintPath>
     </Reference>
+    <Reference Include="DiscordRPC, Version=1.2.1.24, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\DiscordRichPresence.1.2.1.24\lib\net45\DiscordRPC.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Win32.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.Win32.Primitives.4.3.0\lib\net46\Microsoft.Win32.Primitives.dll</HintPath>
       <Private>True</Private>
@@ -274,11 +277,29 @@
     <Compile Include="Popups\ExportComposite.Designer.cs">
       <DependentUpon>ExportComposite.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\Function Editors\ShowCompositeInstanceOverrides.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\Function Editors\ShowCompositeInstanceOverrides.Designer.cs">
+      <DependentUpon>ShowCompositeInstanceOverrides.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\RenameComposite.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\RenameComposite.Designer.cs">
+      <DependentUpon>RenameComposite.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popups\ResourceDatatypeAutocomplete.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Popups\ResourceDatatypeAutocomplete.Designer.cs">
       <DependentUpon>ResourceDatatypeAutocomplete.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\ShowInstanceInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\ShowInstanceInfo.Designer.cs">
+      <DependentUpon>ShowInstanceInfo.cs</DependentUpon>
     </Compile>
     <Compile Include="Scripts\DirectXTexUtility.cs" />
     <Compile Include="Scripts\LevelContent.cs" />
@@ -391,6 +412,9 @@
     <Compile Include="Scripts\CathodeEnums.cs" />
     <Compile Include="Scripts\CathodeLibExtensions.cs" />
     <Compile Include="Scripts\ComboBoxExtensions.cs" />
+    <Compile Include="Scripts\ListViewExtended.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Scripts\LocalDebug.cs" />
     <Compile Include="Scripts\Nodes\AccessTerminal.cs" />
     <Compile Include="Scripts\Nodes\AchievementMonitor.cs" />
@@ -1244,12 +1268,6 @@
     <Compile Include="Popups\EditMVR.Designer.cs">
       <DependentUpon>EditMVR.cs</DependentUpon>
     </Compile>
-    <Compile Include="Popups\EditRootComposite.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Popups\EditRootComposite.Designer.cs">
-      <DependentUpon>EditRootComposite.cs</DependentUpon>
-    </Compile>
     <Compile Include="Popups\Function Editors\TriggerSequenceEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1430,6 +1448,12 @@
     <EmbeddedResource Include="Popups\Function Editors\CharacterEditor\Character_InstanceSelection.resx">
       <DependentUpon>Character_InstanceSelection.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Function Editors\ShowCompositeInstanceOverrides.resx">
+      <DependentUpon>ShowCompositeInstanceOverrides.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\RenameComposite.resx">
+      <DependentUpon>RenameComposite.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Popups\ResourceDatatypeAutocomplete.resx">
       <DependentUpon>ResourceDatatypeAutocomplete.cs</DependentUpon>
     </EmbeddedResource>
@@ -1481,9 +1505,6 @@
     <EmbeddedResource Include="Popups\EditMVR.resx">
       <DependentUpon>EditMVR.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Popups\EditRootComposite.resx">
-      <DependentUpon>EditRootComposite.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Popups\Function Editors\CAGEAnimation\CAGEAnimation_SelectParameter.resx">
       <DependentUpon>CAGEAnimation_SelectParameter.cs</DependentUpon>
     </EmbeddedResource>
@@ -1510,6 +1531,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\ShowCrossRefs.resx">
       <DependentUpon>ShowCrossRefs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\ShowInstanceInfo.resx">
+      <DependentUpon>ShowInstanceInfo.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\UserControls\GUI_Resource_AnimatedModel.resx">
       <DependentUpon>GUI_Resource_AnimatedModel.cs</DependentUpon>
@@ -1587,6 +1611,17 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <None Include="Images\Entity Icons\globe.ico" />
+    <None Include="Images\Entity Icons\Avatar Icon.ico" />
+    <None Include="Images\Entity Icons\cog.ico" />
+    <None Include="Images\Entity Icons\AreaEffector2D Icon.ico" />
+    <None Include="Images\Entity Icons\root composite.ico" />
+    <None Include="Images\Entity Icons\d_ScriptableObject Icon.ico" />
+    <None Include="Images\Entity Icons\d_ScriptableObject Icon braces only.ico" />
+    <None Include="Images\Entity Icons\d_PrefabVariant Icon.ico" />
+    <None Include="Images\Entity Icons\d_Prefab Icon.ico" />
+    <None Include="Images\Entity Icons\AnimatorController Icon.ico" />
+    <None Include="Images\Entity Icons\LightProbeProxyVolume Gizmo inv.ico" />
     <None Include="Resources\_2560px_Arrow_east_svg.png" />
   </ItemGroup>
   <ItemGroup>

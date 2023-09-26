@@ -26,32 +26,35 @@ namespace CommandsEditor
 
     class TreeUtility
     {
-        private TreeView FileTree;
-        private bool IsModelTree;
-        public TreeUtility(TreeView tree, bool isModelTree = false)
-        {
-            FileTree = tree;
-            IsModelTree = isModelTree;
+        private LevelContent _content;
+        private TreeView _fileTree;
+        private bool _isModelTree;
 
-            FileTree.AfterExpand += FileTree_AfterExpand;
-            FileTree.AfterCollapse += FileTree_AfterCollapse;
+        public TreeUtility(TreeView tree, LevelContent content, bool isModelTree = false)
+        {
+            _fileTree = tree;
+            _isModelTree = isModelTree;
+            _content = content;
+
+            _fileTree.AfterExpand += FileTree_AfterExpand;
+            _fileTree.AfterCollapse += FileTree_AfterCollapse;
         }
 
         /* Update the file tree GUI */
         public void UpdateFileTree(List<string> FilesToList, ContextMenuStrip contextMenu = null, List<string> tags = null)
         {
-            FileTree.SuspendLayout();
-            FileTree.BeginUpdate();
-            FileTree.Nodes.Clear();
+            _fileTree.SuspendLayout();
+            _fileTree.BeginUpdate();
+            _fileTree.Nodes.Clear();
             for (int i = 0; i < FilesToList.Count; i++)
             {
                 string[] FileNameParts = FilesToList[i].Split('/');
                 if (FileNameParts.Length == 1) { FileNameParts = FilesToList[i].Split('\\'); }
-                AddFileToTree(FileNameParts, 0, FileTree.Nodes, contextMenu, (tags == null) ? "" : tags[i]);
+                AddFileToTree(FileNameParts, 0, _fileTree.Nodes, contextMenu, (tags == null) ? "" : tags[i]);
             }
-            FileTree.Sort();
-            FileTree.EndUpdate();
-            FileTree.ResumeLayout();
+            _fileTree.Sort();
+            _fileTree.EndUpdate();
+            _fileTree.ResumeLayout();
         }
 
         /* Add a file to the GUI tree structure */
@@ -82,9 +85,18 @@ namespace CommandsEditor
                     for (int i = 0; i < FileNameParts.Length; i++) ThisTag.String_Value += FileNameParts[i] + "/";
                     ThisTag.String_Value = tag != "" ? tag : ThisTag.String_Value.ToString().Substring(0, ThisTag.String_Value.ToString().Length - 1);
 
+                    if (!_isModelTree)
+                    {
+                        EditorUtils.CompositeType type = _content.editor_utils.GetCompositeType(ThisTag.String_Value);
+                        FileNode.ImageIndex = type == EditorUtils.CompositeType.IS_GENERIC_COMPOSITE ? 1 : type == EditorUtils.CompositeType.IS_ROOT ? 3 : type == EditorUtils.CompositeType.IS_DISPLAY_MODEL ? 5 : 4;
+                    }
+                    else
+                    {
+                        FileNode.ImageIndex = (int)TreeItemIcon.FILE;
+                    }
+                    FileNode.SelectedImageIndex = FileNode.ImageIndex;
+
                     ThisTag.Item_Type = TreeItemType.EXPORTABLE_FILE;
-                    FileNode.ImageIndex = (int)TreeItemIcon.FILE;
-                    FileNode.SelectedImageIndex = (int)TreeItemIcon.FILE;
                     if (contextMenu != null) FileNode.ContextMenuStrip = contextMenu;
                 }
                 else
@@ -112,9 +124,9 @@ namespace CommandsEditor
             if (FileNameParts[FileNameParts.Length - 1] == "")
                 Array.Resize(ref FileNameParts, FileNameParts.Length - 1);
 
-            FileTree.SelectedNode = null;
+            _fileTree.SelectedNode = null;
 
-            TreeNodeCollection nodeCollection = FileTree.Nodes;
+            TreeNodeCollection nodeCollection = _fileTree.Nodes;
             for (int x = 0; x < FileNameParts.Length; x++)
             {
                 for (int i = 0; i < nodeCollection.Count; i++)
@@ -123,7 +135,7 @@ namespace CommandsEditor
                     {
                         if (x == FileNameParts.Length - 1)
                         {
-                            FileTree.SelectedNode = nodeCollection[i];
+                            _fileTree.SelectedNode = nodeCollection[i];
                         }
                         else
                         {
@@ -133,8 +145,8 @@ namespace CommandsEditor
                     }
                 }
             }
-            FileTree.Focus();
-            FileTree.Select();
+            //_fileTree.Focus();
+            //_fileTree.Select();
         }
 
         private void FileTree_AfterCollapse(object sender, TreeViewEventArgs e)

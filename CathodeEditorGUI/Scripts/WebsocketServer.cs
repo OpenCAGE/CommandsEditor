@@ -37,7 +37,7 @@ public class WebsocketServer : WebSocketBehavior
     }
 
     //TODO: Keep this in sync with clients
-    public const int VERSION = 2;
+    public const int VERSION = 3;
     public enum MessageType
     {
         SYNC_VERSION,

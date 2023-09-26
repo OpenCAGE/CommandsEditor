@@ -4,12 +4,14 @@ using CATHODE.Scripting.Internal;
 using CathodeLib;
 using CommandsEditor.DockPanels;
 using CommandsEditor.Popups;
+using DiscordRPC;
 using Newtonsoft.Json;
 using OpenCAGE;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -39,31 +41,31 @@ namespace CommandsEditor
 
         private WebSocketServer _server;
         private WebsocketServer _serverLogic;
+        private DiscordRpcClient _discord;
 
         private Dictionary<string, ToolStripMenuItem> _levelMenuItems = new Dictionary<string, ToolStripMenuItem>();
 
         public CommandsEditor(string level = null)
         {
+            _discord = new DiscordRpcClient("1152999067207606392");
+            _discord.Initialize();
+            UpdateDiscordPresence("");
+
             Singleton.Editor = this;
 
             InitializeComponent();
             dockPanel.ActiveContentChanged += DockPanel_ActiveContentChanged;
+            dockPanel.ShowDocumentIcon = true;
 
             Singleton.OnEntitySelected += RefreshWebsocket;
             Singleton.OnCompositeSelected += RefreshWebsocket;
             Singleton.OnLevelLoaded += RefreshWebsocket;
-
-            if (!SettingsManager.IsSet(Singleton.Settings.BackupsOpt)) SettingsManager.SetBool(Singleton.Settings.BackupsOpt, true);
-            enableBackups.Checked = !SettingsManager.GetBool(Singleton.Settings.BackupsOpt); enableBackups.PerformClick();
 
             connectToUnity.Checked = !SettingsManager.GetBool(Singleton.Settings.ServerOpt); connectToUnity.PerformClick();
             showNodegraph.Checked = !SettingsManager.GetBool(Singleton.Settings.NodeOpt); showNodegraph.PerformClick();
             showEntityIDs.Checked = !SettingsManager.GetBool(Singleton.Settings.EntIdOpt); showEntityIDs.PerformClick();
             searchOnlyCompositeNames.Checked = !SettingsManager.GetBool(Singleton.Settings.CompNameOnlyOpt); searchOnlyCompositeNames.PerformClick();
             useTexturedModelViewExperimentalToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.ShowTexOpt); useTexturedModelViewExperimentalToolStripMenuItem.PerformClick();
-
-            if (!SettingsManager.IsSet(Singleton.Settings.UseCompTabsOpt)) SettingsManager.SetBool(Singleton.Settings.UseCompTabsOpt, true);
-            compositesOpenTabs.Checked = !SettingsManager.GetBool(Singleton.Settings.UseCompTabsOpt); compositesOpenTabs.PerformClick();
 
             if (!SettingsManager.IsSet(Singleton.Settings.UseEntTabsOpt)) SettingsManager.SetBool(Singleton.Settings.UseEntTabsOpt, true);
             entitiesOpenTabs.Checked = !SettingsManager.GetBool(Singleton.Settings.UseEntTabsOpt); entitiesOpenTabs.PerformClick();
@@ -121,18 +123,6 @@ namespace CommandsEditor
             //If we have been launched to a level, load that
             if (level != null)
                 OnLevelSelected(level);
-
-            //Disable backups - we should now force people to use the extra backup tool
-            //TODO: backup tool should backup the level at intervals like this tool did
-            //enableBackups.Checked = false;
-            //enableBackups.Visible = false;
-
-            //TEMP FOR NOW
-#if !DEBUG
-            enableInstanceMode.Checked = false;
-            enableInstanceMode.Visible = false;
-            toolStripSeparator1.Visible = false;
-#endif
         }
 
         /* Load anim data */
@@ -249,10 +239,18 @@ namespace CommandsEditor
 
             //Load new
             _commandsDisplay = new CommandsDisplay(level);
-            _commandsDisplay.Show(Singleton.Editor.DockPanel, DockState.DockLeft);
-            _commandsDisplay.CloseButtonVisible = false;
+            _commandsDisplay.Show(Singleton.Editor.DockPanel, DockState.DockBottomAutoHide);
+            _commandsDisplay.FormClosed += _commandsDisplay_FormClosed;
+            Singleton.Editor.DockPanel.ActiveAutoHideContent = _commandsDisplay;
 
             _levelMenuItems[_commandsDisplay.Content.level].Checked = true;
+            UpdateDiscordPresence("Editing " + level);
+        }
+        private void _commandsDisplay_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            UpdateDiscordPresence("");
+            _commandsDisplay?.Dispose();
+            _commandsDisplay = null;
         }
 
         private void saveLevel_Click(object sender, EventArgs e)
@@ -429,60 +427,6 @@ namespace CommandsEditor
             catch { }
         }
 
-        /* Enable/disable backups */
-        Task backgroundBackups = null;
-        CancellationToken backupCancellationToken;
-        private void enableBackups_Click(object sender, EventArgs e)
-        {
-            enableBackups.Checked = !enableBackups.Checked;
-            SettingsManager.SetBool(Singleton.Settings.BackupsOpt, enableBackups.Checked);
-
-            CancellationTokenSource tokenSource = new CancellationTokenSource();
-            backupCancellationToken = tokenSource.Token;
-            if (backgroundBackups != null) tokenSource.Cancel();
-            while (backgroundBackups != null) Thread.Sleep(100);
-
-            if (enableBackups.Checked)
-                backgroundBackups = Task.Factory.StartNew(() => BackupCommands(this));
-        }
-        private void BackupCommands(CommandsEditor mainInst)
-        {
-            int i = 0;
-            while (true)
-            {
-                i = 0;
-                while (i < 300000)
-                {
-                    if (backupCancellationToken.IsCancellationRequested)
-                    {
-                        backgroundBackups = null;
-                        return;
-                    }
-                    Thread.Sleep(500);
-                    i += 500;
-                }
-
-                if (_commandsDisplay.Content.commands == null) continue;
-                mainInst.EnableLoadingOfPaks(false, "Autosaving...");
-
-                bool saved = LegacySave();
-                ShowSaveMsg(saved);
-
-                /*
-                string backupDirectory = _commandsDisplay.Content.commands.Filepath.Substring(0, _commandsDisplay.Content.commands.Filepath.Length - Path.GetFileName(_commandsDisplay.Content.commands.Filepath).Length) + "/COMMANDS_BACKUPS/";
-                Directory.CreateDirectory(backupDirectory);
-
-                //Make sure there are only 15 max backed up PAKs
-                var files = new DirectoryInfo(backupDirectory).EnumerateFiles().OrderByDescending(f => f.CreationTime).Skip(15).ToList();
-                files.ForEach(f => f.Delete());
-
-                _commandsDisplay.Content.commands.Save(backupDirectory + "COMMANDS_" + DateTimeOffset.UtcNow.ToUnixTimeSeconds() + ".PAK", false);
-                */
-
-                mainInst.EnableLoadingOfPaks(true, "");
-            }
-        }
-
         /* Websocket to Unity */
         private void connectToUnity_Click(object sender, EventArgs e)
         {
@@ -549,7 +493,9 @@ namespace CommandsEditor
                 SendWebsocketData(new WebsocketServer.WSPacket
                 {
                     type = WebsocketServer.MessageType.LOAD_COMPOSITE,
-                    composite_name = composite.name
+                    composite_name = composite.shortGUID.ToByteString(),
+                    alien_path = SharedData.pathToAI,
+                    level_name = _commandsDisplay.Content.level
                 });
             }
 
@@ -617,34 +563,10 @@ namespace CommandsEditor
             //TODO: also reload hierarchy cache
         }
 
-        private void enableInstanceMode_Click(object sender, EventArgs e)
-        {
-            enableInstanceMode.Checked = !enableInstanceMode.Checked;
-            SettingsManager.SetBool(Singleton.Settings.InstOpt, enableInstanceMode.Checked);
-
-            if (_commandsDisplay == null) return;
-
-            //TODO: should just move all this to a func in commands display, can call on start with mode
-
-            _commandsDisplay.CloseAllChildTabs();
-            _commandsDisplay.Hide();
-
-            _commandsDisplay.SelectCompositeAndReloadList(_commandsDisplay.Content.commands.EntryPoints[0]);
-            Singleton.OnCompositeSelected?.Invoke(_commandsDisplay.Content.commands.EntryPoints[0]); //need to call this again b/c the activation event doesn't fire here
-
-
-        }
-
         private void searchOnlyCompositeNames_Click(object sender, EventArgs e)
         {
             searchOnlyCompositeNames.Checked = !searchOnlyCompositeNames.Checked;
             SettingsManager.SetBool(Singleton.Settings.CompNameOnlyOpt, searchOnlyCompositeNames.Checked);
-        }
-
-        private void compositesOpenTabs_Click(object sender, EventArgs e)
-        {
-            compositesOpenTabs.Checked = !compositesOpenTabs.Checked;
-            SettingsManager.SetBool(Singleton.Settings.UseCompTabsOpt, compositesOpenTabs.Checked);
         }
 
         private void entitiesOpenTabs_Click(object sender, EventArgs e)
@@ -663,6 +585,21 @@ namespace CommandsEditor
         {
             useTexturedModelViewExperimentalToolStripMenuItem.Checked = !useTexturedModelViewExperimentalToolStripMenuItem.Checked;
             SettingsManager.SetBool(Singleton.Settings.ShowTexOpt, useTexturedModelViewExperimentalToolStripMenuItem.Checked);
+        }
+
+        private void UpdateDiscordPresence(string text)
+        {
+            _discord.SetPresence(new RichPresence()
+            {
+                Details = "Commands Editor",
+                State = text,
+                Assets = new Assets() { LargeImageKey = "icon" }
+            });
+        }
+
+        private void helpBtn_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://opencage.co.uk/docs/");
         }
     }
 }

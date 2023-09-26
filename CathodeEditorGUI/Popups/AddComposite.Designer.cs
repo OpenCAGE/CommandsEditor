@@ -73,7 +73,7 @@
             this.MaximizeBox = false;
             this.Name = "AddComposite";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Create Composite In Folder";
+            this.Text = "Create New Composite In Folder";
             this.ResumeLayout(false);
             this.PerformLayout();
 
