@@ -522,7 +522,7 @@ namespace CommandsEditor
 
         private void SendWebsocketData(WebsocketServer.WSPacket content)
         {
-            _server.WebSocketServices["/commands_editor"].Sessions.Broadcast(JsonConvert.SerializeObject(content));
+            _server?.WebSocketServices["/commands_editor"].Sessions.Broadcast(JsonConvert.SerializeObject(content));
         }
 
         private void showNodegraph_Click(object sender, EventArgs e)
