@@ -102,7 +102,13 @@ namespace CommandsEditor.UserControls
         {
             if (!POS_X.Enabled) return;
 
-            cTransform transform = JsonConvert.DeserializeObject<cTransform>(Clipboard.GetText()?.ToString());
+            string val = Clipboard.GetText()?.ToString();
+            cTransform transform = null;
+            try
+            {
+                transform = JsonConvert.DeserializeObject<cTransform>(val);
+            }
+            catch { }
             if (transform == null)
             {
                 MessageBox.Show("Failed to paste transform.", "Invalid clipboard", MessageBoxButtons.OK, MessageBoxIcon.Error);
