@@ -49,6 +49,7 @@ namespace CommandsEditor
         {
             referenceList.BeginUpdate();
             referenceList.Items.Clear();
+            entities.Clear();
             foreach (Composite comp in Content.commands.Entries)
             {
                 foreach (FunctionEntity ent in comp.functions.FindAll(o => o.function == guid))
