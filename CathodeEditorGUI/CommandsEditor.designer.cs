@@ -39,6 +39,7 @@
             this.connectToUnity = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.showNodegraph = new System.Windows.Forms.ToolStripMenuItem();
+            this.showExplorerViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showEntityIDs = new System.Windows.Forms.ToolStripMenuItem();
             this.showConfirmationWhenSavingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.searchOnlyCompositeNames = new System.Windows.Forms.ToolStripMenuItem();
@@ -51,6 +52,7 @@
             this.statusText = new System.Windows.Forms.ToolStripStatusLabel();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.autoHideExplorerViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -105,7 +107,9 @@
             this.showConfirmationWhenSavingToolStripMenuItem,
             this.searchOnlyCompositeNames,
             this.entitiesOpenTabs,
-            this.useTexturedModelViewExperimentalToolStripMenuItem});
+            this.useTexturedModelViewExperimentalToolStripMenuItem,
+            this.autoHideExplorerViewToolStripMenuItem,
+            this.showExplorerViewToolStripMenuItem});
             this.toolStripButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton2.Image")));
             this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton2.Name = "toolStripButton2";
@@ -136,6 +140,13 @@
             this.showNodegraph.Text = "Show Nodegraph";
             this.showNodegraph.ToolTipText = "Show the nodegraph view for the currently selected entity.";
             this.showNodegraph.Click += new System.EventHandler(this.showNodegraph_Click);
+            // 
+            // showExplorerViewToolStripMenuItem
+            // 
+            this.showExplorerViewToolStripMenuItem.Name = "showExplorerViewToolStripMenuItem";
+            this.showExplorerViewToolStripMenuItem.Size = new System.Drawing.Size(286, 22);
+            this.showExplorerViewToolStripMenuItem.Text = "Use File Browser Composite Viewer";
+            this.showExplorerViewToolStripMenuItem.Click += new System.EventHandler(this.showExplorerViewToolStripMenuItem_Click);
             // 
             // showEntityIDs
             // 
@@ -216,6 +227,13 @@
             this.dockPanel.TabIndex = 5;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
             // 
+            // autoHideExplorerViewToolStripMenuItem
+            // 
+            this.autoHideExplorerViewToolStripMenuItem.Name = "autoHideExplorerViewToolStripMenuItem";
+            this.autoHideExplorerViewToolStripMenuItem.Size = new System.Drawing.Size(286, 22);
+            this.autoHideExplorerViewToolStripMenuItem.Text = "Auto Hide Composite Viewer";
+            this.autoHideExplorerViewToolStripMenuItem.Click += new System.EventHandler(this.autoHideExplorerViewToolStripMenuItem_Click);
+            // 
             // CommandsEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -260,5 +278,7 @@
         private System.Windows.Forms.ToolStripMenuItem showConfirmationWhenSavingToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem useTexturedModelViewExperimentalToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton helpBtn;
+        private System.Windows.Forms.ToolStripMenuItem showExplorerViewToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem autoHideExplorerViewToolStripMenuItem;
     }
 }

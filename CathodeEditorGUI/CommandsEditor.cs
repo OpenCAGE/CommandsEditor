@@ -73,6 +73,12 @@ namespace CommandsEditor
             if (!SettingsManager.IsSet(Singleton.Settings.ShowSavedMsgOpt)) SettingsManager.SetBool(Singleton.Settings.ShowSavedMsgOpt, true);
             showConfirmationWhenSavingToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.ShowSavedMsgOpt); showConfirmationWhenSavingToolStripMenuItem.PerformClick();
 
+            if (!SettingsManager.IsSet(Singleton.Settings.EnableFileBrowser)) SettingsManager.SetBool(Singleton.Settings.EnableFileBrowser, true);
+            showExplorerViewToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.EnableFileBrowser); showExplorerViewToolStripMenuItem.PerformClick();
+
+            if (!SettingsManager.IsSet(Singleton.Settings.AutoHideCompositeDisplay)) SettingsManager.SetBool(Singleton.Settings.AutoHideCompositeDisplay, true);
+            autoHideExplorerViewToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.AutoHideCompositeDisplay); autoHideExplorerViewToolStripMenuItem.PerformClick();
+
             //Set title
             this.Text = "OpenCAGE Commands Editor";
             if (OpenCAGE.SettingsManager.GetBool("CONFIG_ShowPlatform") &&
@@ -239,9 +245,8 @@ namespace CommandsEditor
 
             //Load new
             _commandsDisplay = new CommandsDisplay(level);
-            _commandsDisplay.Show(Singleton.Editor.DockPanel, DockState.DockBottomAutoHide);
             _commandsDisplay.FormClosed += _commandsDisplay_FormClosed;
-            Singleton.Editor.DockPanel.ActiveAutoHideContent = _commandsDisplay;
+            UpdateCommandsDisplayDockState();
 
             _levelMenuItems[_commandsDisplay.Content.level].Checked = true;
             UpdateDiscordPresence("Editing " + level);
@@ -585,6 +590,30 @@ namespace CommandsEditor
         {
             useTexturedModelViewExperimentalToolStripMenuItem.Checked = !useTexturedModelViewExperimentalToolStripMenuItem.Checked;
             SettingsManager.SetBool(Singleton.Settings.ShowTexOpt, useTexturedModelViewExperimentalToolStripMenuItem.Checked);
+        }
+
+        private void showExplorerViewToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            showExplorerViewToolStripMenuItem.Checked = !showExplorerViewToolStripMenuItem.Checked;
+            SettingsManager.SetBool(Singleton.Settings.EnableFileBrowser, showExplorerViewToolStripMenuItem.Checked);
+            UpdateCommandsDisplayDockState();
+        }
+
+        private void autoHideExplorerViewToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            autoHideExplorerViewToolStripMenuItem.Checked = !autoHideExplorerViewToolStripMenuItem.Checked;
+            SettingsManager.SetBool(Singleton.Settings.AutoHideCompositeDisplay, autoHideExplorerViewToolStripMenuItem.Checked);
+            UpdateCommandsDisplayDockState();
+        }
+
+        private void UpdateCommandsDisplayDockState()
+        {
+            if (_commandsDisplay == null)
+            {
+                Singleton.Editor.DockPanel.ActiveAutoHideContent = null;
+                return;
+            }
+            _commandsDisplay.UpdateDockState();
         }
 
         private void UpdateDiscordPresence(string text)
