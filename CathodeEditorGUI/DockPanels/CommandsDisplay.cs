@@ -126,6 +126,24 @@ namespace CommandsEditor.DockPanels
             }
         }
 
+        /* Enable/disable the file browser UI */
+        public void UpdateDockState()
+        {
+            DockAreas = DockAreas.DockBottom | DockAreas.DockLeft;
+            if (SettingsManager.GetBool(Singleton.Settings.AutoHideCompositeDisplay))
+                Show(Singleton.Editor.DockPanel, SettingsManager.GetBool(Singleton.Settings.EnableFileBrowser) ? DockState.DockBottomAutoHide : DockState.DockLeftAutoHide);
+            else
+                Show(Singleton.Editor.DockPanel, SettingsManager.GetBool(Singleton.Settings.EnableFileBrowser) ? DockState.DockBottom : DockState.DockLeft);
+            DockAreas = SettingsManager.GetBool(Singleton.Settings.EnableFileBrowser) ? DockAreas.DockBottom : DockAreas.DockLeft;
+
+            splitContainer1.Panel2Collapsed = !SettingsManager.GetBool(Singleton.Settings.EnableFileBrowser);
+
+            if (SettingsManager.GetBool(Singleton.Settings.AutoHideCompositeDisplay))
+                Singleton.Editor.DockPanel.ActiveAutoHideContent = this;
+            else
+                Singleton.Editor.DockPanel.ActiveAutoHideContent = null;
+        }
+
         /* File browser: select folder/composite */
         private void listView1_SelectedIndexChanged(object sender, EventArgs e)
         {

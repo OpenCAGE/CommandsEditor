@@ -1,4 +1,4 @@
-﻿using CATHODE;
+using CATHODE;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CathodeLib;
@@ -22,6 +22,7 @@ using System.Collections.Specialized;
 using System.Runtime.InteropServices;
 using static CATHODE.Scripting.EnumUtils;
 using CommandsEditor.UserControls;
+using CATHODE.EXPERIMENTAL;
 
 namespace CommandsEditor
 {
@@ -90,6 +91,30 @@ namespace CommandsEditor
             */
 
             string breakhere = "";
+        }
+
+        public static void mvr_test()
+        {
+#if DEBUG
+            string level = "tech_rnd";
+
+            Movers mvr = new Movers("G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\data\\ENV\\PRODUCTION\\" + level + "\\WORLD\\MODELS.MVR");
+            Lights lights = new Lights("G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\data\\ENV\\PRODUCTION\\" + level + "\\WORLD\\LIGHTS.BIN");
+            AlphaLightLevel lightsAlpha = new AlphaLightLevel("G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\data\\ENV\\PRODUCTION\\" + level + "\\WORLD\\ALPHALIGHT_LEVEL.BIN");
+            EnvironmentMaps env = new EnvironmentMaps("G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\data\\ENV\\PRODUCTION\\" + level + "\\WORLD\\ENVIRONMENTMAP.BIN");
+            //Resources res = new Resources("G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\data\\ENV\\PRODUCTION\\" + level + "\\WORLD\\RESOURCES.BIN");
+
+            mvr.Entries.Clear();
+            env.Entries.Clear();
+            //res.Entries.Clear();
+
+            mvr.Save();
+            env.Save();
+            //res.Save();
+
+            File.Delete(lights.Filepath);
+            File.Delete(lightsAlpha.Filepath); //deleting this one causes significant visual changes (anything with alpha doesn't render, or render properly)
+#endif
         }
 
         public static void checkprefabinstances()

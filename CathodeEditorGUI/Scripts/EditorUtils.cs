@@ -203,21 +203,23 @@ namespace CommandsEditor
             switch (entity.variant)
             {
                 case EntityVariant.FUNCTION:
-                    ShortGuid function = ((FunctionEntity)entity).function;
-                    bool isComposite = !CommandsUtils.FunctionTypeExists(function);
-                    if (isComposite) function = CommandsUtils.GetFunctionTypeGUID(FunctionType.CompositeInterface);
-                    items.Add("reference");
+                    {
+                        ShortGuid function = ((FunctionEntity)entity).function;
+                        bool isComposite = !CommandsUtils.FunctionTypeExists(function);
+                        if (isComposite) function = CommandsUtils.GetFunctionTypeGUID(FunctionType.CompositeInterface);
+                        items.Add("reference");
 
-                    List<CathodeEntityDatabase.ParameterDefinition> parameters = CathodeEntityDatabase.GetParametersFromEntity(function);
-                    if (parameters != null)
-                        for (int i = 0; i < parameters.Count; i++)
-                            items.Add(parameters[i].name);
+                        List<CathodeEntityDatabase.ParameterDefinition> parameters = CathodeEntityDatabase.GetParametersFromEntity(function);
+                        if (parameters != null)
+                            for (int i = 0; i < parameters.Count; i++)
+                                items.Add(parameters[i].name);
 
-                    if (!isComposite) break;
+                        if (!isComposite) break;
 
-                    foreach (VariableEntity ent in _content.commands.GetComposite(((FunctionEntity)entity).function).variables)
-                        if (!items.Contains(ent.name.ToString()))
-                            items.Add(ent.name.ToString());
+                        foreach (VariableEntity ent in _content.commands.GetComposite(((FunctionEntity)entity).function).variables)
+                            if (!items.Contains(ent.name.ToString()))
+                                items.Add(ent.name.ToString());
+                    }
                     break;
                 case EntityVariant.VARIABLE:
                     items.Add(ShortGuidUtils.FindString(((VariableEntity)entity).name));
@@ -225,7 +227,15 @@ namespace CommandsEditor
                 case EntityVariant.ALIAS:
                     return GenerateParameterList(CommandsUtils.ResolveHierarchy(_content.commands, composite, ((AliasEntity)entity).alias.path, out Composite comp1, out string hierarchy1), comp1);
                 case EntityVariant.PROXY:
-                    return GenerateParameterList(CommandsUtils.ResolveHierarchy(_content.commands, composite, ((ProxyEntity)entity).proxy.path, out Composite comp2, out string hierarchy2), comp2);
+                    {
+                        items.AddRange(GenerateParameterList(CommandsUtils.ResolveHierarchy(_content.commands, composite, ((ProxyEntity)entity).proxy.path, out Composite comp2, out string hierarchy2), comp2));
+
+                        List<CathodeEntityDatabase.ParameterDefinition> parameters = CathodeEntityDatabase.GetParametersFromEntity(ShortGuidUtils.Generate("ProxyInterface"));
+                        if (parameters != null)
+                            for (int i = 0; i < parameters.Count; i++)
+                                items.Add(parameters[i].name);
+                    }
+                    break;
             }
             items.Sort();
             return items;

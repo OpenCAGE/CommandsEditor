@@ -38,12 +38,6 @@
             this.toolStripButton2 = new System.Windows.Forms.ToolStripDropDownButton();
             this.connectToUnity = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.showNodegraph = new System.Windows.Forms.ToolStripMenuItem();
-            this.showEntityIDs = new System.Windows.Forms.ToolStripMenuItem();
-            this.showConfirmationWhenSavingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.searchOnlyCompositeNames = new System.Windows.Forms.ToolStripMenuItem();
-            this.entitiesOpenTabs = new System.Windows.Forms.ToolStripMenuItem();
-            this.useTexturedModelViewExperimentalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpBtn = new System.Windows.Forms.ToolStripButton();
             this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
             this.vS2015LightTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
@@ -51,6 +45,17 @@
             this.statusText = new System.Windows.Forms.ToolStripStatusLabel();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.compositeViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.autoHideExplorerViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showExplorerViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.entityDisplayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showNodegraph = new System.Windows.Forms.ToolStripMenuItem();
+            this.showEntityIDs = new System.Windows.Forms.ToolStripMenuItem();
+            this.entitiesOpenTabs = new System.Windows.Forms.ToolStripMenuItem();
+            this.miscToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showConfirmationWhenSavingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.searchOnlyCompositeNames = new System.Windows.Forms.ToolStripMenuItem();
+            this.useTexturedModelViewExperimentalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -100,12 +105,9 @@
             this.toolStripButton2.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.connectToUnity,
             this.toolStripSeparator2,
-            this.showNodegraph,
-            this.showEntityIDs,
-            this.showConfirmationWhenSavingToolStripMenuItem,
-            this.searchOnlyCompositeNames,
-            this.entitiesOpenTabs,
-            this.useTexturedModelViewExperimentalToolStripMenuItem});
+            this.compositeViewerToolStripMenuItem,
+            this.entityDisplayToolStripMenuItem,
+            this.miscToolStripMenuItem});
             this.toolStripButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton2.Image")));
             this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton2.Name = "toolStripButton2";
@@ -126,54 +128,6 @@
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(283, 6);
-            // 
-            // showNodegraph
-            // 
-            this.showNodegraph.Checked = true;
-            this.showNodegraph.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.showNodegraph.Name = "showNodegraph";
-            this.showNodegraph.Size = new System.Drawing.Size(286, 22);
-            this.showNodegraph.Text = "Show Nodegraph";
-            this.showNodegraph.ToolTipText = "Show the nodegraph view for the currently selected entity.";
-            this.showNodegraph.Click += new System.EventHandler(this.showNodegraph_Click);
-            // 
-            // showEntityIDs
-            // 
-            this.showEntityIDs.Name = "showEntityIDs";
-            this.showEntityIDs.Size = new System.Drawing.Size(286, 22);
-            this.showEntityIDs.Text = "Show Entity IDs";
-            this.showEntityIDs.ToolTipText = "Show entity IDs within the editor UI.";
-            this.showEntityIDs.Click += new System.EventHandler(this.showEntityIDs_Click);
-            // 
-            // showConfirmationWhenSavingToolStripMenuItem
-            // 
-            this.showConfirmationWhenSavingToolStripMenuItem.Name = "showConfirmationWhenSavingToolStripMenuItem";
-            this.showConfirmationWhenSavingToolStripMenuItem.Size = new System.Drawing.Size(286, 22);
-            this.showConfirmationWhenSavingToolStripMenuItem.Text = "Show Confirmation When Saving";
-            this.showConfirmationWhenSavingToolStripMenuItem.ToolTipText = "If enabled, a confirmation will show after a successful save.";
-            this.showConfirmationWhenSavingToolStripMenuItem.Click += new System.EventHandler(this.showConfirmationWhenSavingToolStripMenuItem_Click);
-            // 
-            // searchOnlyCompositeNames
-            // 
-            this.searchOnlyCompositeNames.Name = "searchOnlyCompositeNames";
-            this.searchOnlyCompositeNames.Size = new System.Drawing.Size(286, 22);
-            this.searchOnlyCompositeNames.Text = "Search Only Composite Names";
-            this.searchOnlyCompositeNames.ToolTipText = "Enable this option to exclude folder names from the composite search.";
-            this.searchOnlyCompositeNames.Click += new System.EventHandler(this.searchOnlyCompositeNames_Click);
-            // 
-            // entitiesOpenTabs
-            // 
-            this.entitiesOpenTabs.Name = "entitiesOpenTabs";
-            this.entitiesOpenTabs.Size = new System.Drawing.Size(286, 22);
-            this.entitiesOpenTabs.Text = "Open Entities In New Tabs";
-            this.entitiesOpenTabs.Click += new System.EventHandler(this.entitiesOpenTabs_Click);
-            // 
-            // useTexturedModelViewExperimentalToolStripMenuItem
-            // 
-            this.useTexturedModelViewExperimentalToolStripMenuItem.Name = "useTexturedModelViewExperimentalToolStripMenuItem";
-            this.useTexturedModelViewExperimentalToolStripMenuItem.Size = new System.Drawing.Size(286, 22);
-            this.useTexturedModelViewExperimentalToolStripMenuItem.Text = "Use Textured Model View (Experimental)";
-            this.useTexturedModelViewExperimentalToolStripMenuItem.Click += new System.EventHandler(this.useTexturedModelViewExperimentalToolStripMenuItem_Click);
             // 
             // helpBtn
             // 
@@ -216,6 +170,104 @@
             this.dockPanel.TabIndex = 5;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
             // 
+            // compositeViewerToolStripMenuItem
+            // 
+            this.compositeViewerToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.showExplorerViewToolStripMenuItem,
+            this.autoHideExplorerViewToolStripMenuItem,
+            this.searchOnlyCompositeNames});
+            this.compositeViewerToolStripMenuItem.Name = "compositeViewerToolStripMenuItem";
+            this.compositeViewerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.compositeViewerToolStripMenuItem.Text = "Composite Display";
+            // 
+            // autoHideExplorerViewToolStripMenuItem
+            // 
+            this.autoHideExplorerViewToolStripMenuItem.Name = "autoHideExplorerViewToolStripMenuItem";
+            this.autoHideExplorerViewToolStripMenuItem.Size = new System.Drawing.Size(258, 22);
+            this.autoHideExplorerViewToolStripMenuItem.Text = "Auto Hide Composite Viewer";
+            this.autoHideExplorerViewToolStripMenuItem.ToolTipText = "If enabled, the composite viewer will automatically hide when not interacted with" +
+    ".";
+            this.autoHideExplorerViewToolStripMenuItem.Click += new System.EventHandler(this.autoHideExplorerViewToolStripMenuItem_Click);
+            // 
+            // showExplorerViewToolStripMenuItem
+            // 
+            this.showExplorerViewToolStripMenuItem.Name = "showExplorerViewToolStripMenuItem";
+            this.showExplorerViewToolStripMenuItem.Size = new System.Drawing.Size(258, 22);
+            this.showExplorerViewToolStripMenuItem.Text = "Use File Browser Composite Viewer";
+            this.showExplorerViewToolStripMenuItem.ToolTipText = "If enabled, the composite viewer will display a file browser style UI and dock to" +
+    " the bottom of the window.";
+            this.showExplorerViewToolStripMenuItem.Click += new System.EventHandler(this.showExplorerViewToolStripMenuItem_Click);
+            // 
+            // entityDisplayToolStripMenuItem
+            // 
+            this.entityDisplayToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.showNodegraph,
+            this.showEntityIDs,
+            this.entitiesOpenTabs});
+            this.entityDisplayToolStripMenuItem.Name = "entityDisplayToolStripMenuItem";
+            this.entityDisplayToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.entityDisplayToolStripMenuItem.Text = "Entity Display";
+            // 
+            // showNodegraph
+            // 
+            this.showNodegraph.Checked = true;
+            this.showNodegraph.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.showNodegraph.Name = "showNodegraph";
+            this.showNodegraph.Size = new System.Drawing.Size(210, 22);
+            this.showNodegraph.Text = "Show Nodegraph";
+            this.showNodegraph.ToolTipText = "Show the nodegraph view for the currently selected entity.";
+            this.showNodegraph.Click += new System.EventHandler(this.showNodegraph_Click);
+            // 
+            // showEntityIDs
+            // 
+            this.showEntityIDs.Name = "showEntityIDs";
+            this.showEntityIDs.Size = new System.Drawing.Size(210, 22);
+            this.showEntityIDs.Text = "Show Entity IDs";
+            this.showEntityIDs.ToolTipText = "Show entity IDs within the editor UI.";
+            this.showEntityIDs.Click += new System.EventHandler(this.showEntityIDs_Click);
+            // 
+            // entitiesOpenTabs
+            // 
+            this.entitiesOpenTabs.Name = "entitiesOpenTabs";
+            this.entitiesOpenTabs.Size = new System.Drawing.Size(210, 22);
+            this.entitiesOpenTabs.Text = "Open Entities In New Tabs";
+            this.entitiesOpenTabs.ToolTipText = "If enabled, entities will open in new tabs when selected, allowing multiple to be" +
+    " visible at once.";
+            this.entitiesOpenTabs.Click += new System.EventHandler(this.entitiesOpenTabs_Click);
+            // 
+            // miscToolStripMenuItem
+            // 
+            this.miscToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.showConfirmationWhenSavingToolStripMenuItem,
+            this.useTexturedModelViewExperimentalToolStripMenuItem});
+            this.miscToolStripMenuItem.Name = "miscToolStripMenuItem";
+            this.miscToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.miscToolStripMenuItem.Text = "Misc";
+            // 
+            // showConfirmationWhenSavingToolStripMenuItem
+            // 
+            this.showConfirmationWhenSavingToolStripMenuItem.Name = "showConfirmationWhenSavingToolStripMenuItem";
+            this.showConfirmationWhenSavingToolStripMenuItem.Size = new System.Drawing.Size(286, 22);
+            this.showConfirmationWhenSavingToolStripMenuItem.Text = "Show Confirmation When Saving";
+            this.showConfirmationWhenSavingToolStripMenuItem.ToolTipText = "If enabled, a confirmation will show after a successful save.";
+            this.showConfirmationWhenSavingToolStripMenuItem.Click += new System.EventHandler(this.showConfirmationWhenSavingToolStripMenuItem_Click);
+            // 
+            // searchOnlyCompositeNames
+            // 
+            this.searchOnlyCompositeNames.Name = "searchOnlyCompositeNames";
+            this.searchOnlyCompositeNames.Size = new System.Drawing.Size(258, 22);
+            this.searchOnlyCompositeNames.Text = "Search Only Composite Names";
+            this.searchOnlyCompositeNames.ToolTipText = "Enable this option to exclude folder names from the composite search.";
+            this.searchOnlyCompositeNames.Click += new System.EventHandler(this.searchOnlyCompositeNames_Click);
+            // 
+            // useTexturedModelViewExperimentalToolStripMenuItem
+            // 
+            this.useTexturedModelViewExperimentalToolStripMenuItem.Name = "useTexturedModelViewExperimentalToolStripMenuItem";
+            this.useTexturedModelViewExperimentalToolStripMenuItem.Size = new System.Drawing.Size(286, 22);
+            this.useTexturedModelViewExperimentalToolStripMenuItem.Text = "Use Textured Model View (Experimental)";
+            this.useTexturedModelViewExperimentalToolStripMenuItem.ToolTipText = "If enabled, the model previewer will try and find textures to render.";
+            this.useTexturedModelViewExperimentalToolStripMenuItem.Click += new System.EventHandler(this.useTexturedModelViewExperimentalToolStripMenuItem_Click);
+            // 
             // CommandsEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -250,15 +302,20 @@
         private System.Windows.Forms.ToolStripMenuItem saveLevel;
         private System.Windows.Forms.ToolStripDropDownButton toolStripButton2;
         private System.Windows.Forms.ToolStripMenuItem connectToUnity;
-        private System.Windows.Forms.ToolStripMenuItem showNodegraph;
         private System.Windows.Forms.ToolStripStatusLabel statusText;
-        private System.Windows.Forms.ToolStripMenuItem showEntityIDs;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private System.Windows.Forms.ToolStripMenuItem searchOnlyCompositeNames;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.ToolStripButton helpBtn;
+        private System.Windows.Forms.ToolStripMenuItem compositeViewerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem showExplorerViewToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem autoHideExplorerViewToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem searchOnlyCompositeNames;
+        private System.Windows.Forms.ToolStripMenuItem entityDisplayToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem showNodegraph;
+        private System.Windows.Forms.ToolStripMenuItem showEntityIDs;
         private System.Windows.Forms.ToolStripMenuItem entitiesOpenTabs;
+        private System.Windows.Forms.ToolStripMenuItem miscToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem showConfirmationWhenSavingToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem useTexturedModelViewExperimentalToolStripMenuItem;
-        private System.Windows.Forms.ToolStripButton helpBtn;
     }
 }

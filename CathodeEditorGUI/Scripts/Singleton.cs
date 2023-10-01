@@ -51,6 +51,8 @@ namespace CommandsEditor
             public readonly string ShowSavedMsgOpt = "CS_ShowSavedNotif";
             public readonly string ShowTexOpt = "CS_ShowTextures";
             public readonly string FileBrowserViewOpt = "CS_FileBrowserView";
+            public readonly string EnableFileBrowser = "CS_FileBrowserEnabled";
+            public readonly string AutoHideCompositeDisplay = "CS_FileBrowserAutoHide";
         }
     }
 }

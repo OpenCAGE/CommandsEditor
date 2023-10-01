@@ -60,6 +60,8 @@ namespace CommandsEditor
         }
         private void AutoSelectDataType()
         {
+            //TODO: need to handle auto select for other types than just function.
+
             param = null;
             param_datatype.Enabled = true;
             switch (_entityDisplay.Entity.variant)
