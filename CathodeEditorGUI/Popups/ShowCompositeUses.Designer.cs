@@ -89,7 +89,6 @@
             this.Controls.Add(this.jumpToEntity);
             this.Controls.Add(this.label);
             this.Controls.Add(this.referenceList);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ShowCompositeUses";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
