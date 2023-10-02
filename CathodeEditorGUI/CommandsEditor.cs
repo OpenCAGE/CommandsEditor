@@ -45,8 +45,104 @@ namespace CommandsEditor
 
         private Dictionary<string, ToolStripMenuItem> _levelMenuItems = new Dictionary<string, ToolStripMenuItem>();
 
+        private void TestThing(string levelname)
+        {
+            EnvironmentAnimations cool = new EnvironmentAnimations("Z:\\AI Version Backup\\Alien Isolation PC Final\\DATA\\ENV\\PRODUCTION\\" + levelname + "\\WORLD\\ENVIRONMENT_ANIMATION.DAT");
+            Commands cmds = new Commands("Z:\\AI Version Backup\\Alien Isolation PC Final\\DATA\\ENV\\PRODUCTION\\" + levelname + "\\WORLD\\COMMANDS.PAK");
+            EntityUtils.LinkCommands(cmds);
+            ShortGuidUtils.LinkCommands(cmds);
+
+            Models mdls = new Models("Z:\\AI Version Backup\\Alien Isolation PC Final\\DATA\\ENV\\PRODUCTION\\" + levelname + "\\RENDERABLE\\LEVEL_MODELS.PAK");
+            foreach (var mdl in mdls.Entries)
+            {
+                foreach (var mdl2 in mdl.Components)
+                {
+                    foreach (var mdl3 in mdl2.LODs)
+                    {
+                        ShortGuidUtils.Generate(mdl3.Name);
+                    }
+                }
+            }
+
+            foreach (var val in EntityUtils._custom.names)
+            {
+                foreach (var val2 in val.Value.Values)
+                {
+                    ShortGuidUtils.Generate(val2);
+                }
+            }
+            foreach (var val in EntityUtils._vanilla.names)
+            {
+                foreach (var val2 in val.Value.Values)
+                {
+                    ShortGuidUtils.Generate(val2);
+                }
+            }
+
+            foreach (Composite comp in cmds.Entries)
+            {
+                List<FunctionEntity> EnvironmentModelReferences = comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.EnvironmentModelReference));
+                List<FunctionEntity> ModelReferences = comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.ModelReference));
+                List<FunctionEntity> PhysicsSystems = comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.PhysicsSystem));
+
+                if (EnvironmentModelReferences.Count == 0) continue;
+                if (EnvironmentModelReferences.Count != 1) throw new Exception();
+
+                cResource resP = (cResource)EnvironmentModelReferences[0].GetParameter("resource").content;
+                if (resP.value.Count != 1) throw new Exception();
+                if (resP.value[0].entryType != ResourceType.ANIMATED_MODEL) throw new Exception();
+
+                EnvironmentAnimations.EnvironmentAnimation anim = cool.Entries.FirstOrDefault(o => o.ResourceIndex == resP.value[0].index);
+
+                bool displaymodel = comp.name.Length > ("DisplayModel").Length && comp.name.Substring(0, ("DisplayModel").Length) == "DisplayModel";
+                int count = PhysicsSystems.Count;
+
+                if (displaymodel)
+                {
+                    if (anim.Indexes0.Count == 0) throw new Exception();
+                    if (anim.Indexes1.Count == 0) throw new Exception();
+                }
+                else
+                {
+                    if (anim.Indexes0.Count == 0) throw new Exception();
+                    if (anim.Indexes1.Count != 0) throw new Exception();
+                }
+
+                string sdfdfd = "";
+            }
+
+            string sdff = "";
+        }
+
         public CommandsEditor(string level = null)
         {
+            string [] allCMDs = Directory.GetFiles("Z:\\AI Version Backup\\Alien Isolation PC Final\\DATA\\ENV\\PRODUCTION", "ENVIRONMENT_ANIMATION.DAT", SearchOption.AllDirectories);
+            foreach (string allCMD in allCMDs)
+            {
+                EnvironmentAnimations cmdz = new EnvironmentAnimations(allCMD);
+                Console.WriteLine(allCMD + " -> " + cmdz.Entries.Count);
+                foreach (var c in cmdz.Entries)
+                {
+                    if (!c.Matrix.IsIdentity)
+                    {
+                        throw new Exception();
+                    }
+                    if (c.unk1 != 0)
+                    {
+                        Console.WriteLine(c.ResourceIndex + " -> unk1:" + c.unk1);
+                    }
+                }
+
+                string lvlName = allCMD.Substring("Z:\\AI Version Backup\\Alien Isolation PC Final\\DATA\\ENV\\PRODUCTION".Length).Split('\\')[0];
+
+                TestThing(lvlName);
+            }
+
+            
+
+            string asdd = "";
+            //return;
+
             _discord = new DiscordRpcClient("1152999067207606392");
             _discord.Initialize();
             UpdateDiscordPresence("");
