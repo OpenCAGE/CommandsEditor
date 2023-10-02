@@ -66,6 +66,7 @@ namespace CommandsEditor
             showEntityIDs.Checked = !SettingsManager.GetBool(Singleton.Settings.EntIdOpt); showEntityIDs.PerformClick();
             searchOnlyCompositeNames.Checked = !SettingsManager.GetBool(Singleton.Settings.CompNameOnlyOpt); searchOnlyCompositeNames.PerformClick();
             useTexturedModelViewExperimentalToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.ShowTexOpt); useTexturedModelViewExperimentalToolStripMenuItem.PerformClick();
+            keepFunctionUsesWindowOpenToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.KeepUsesWindowOpen); keepFunctionUsesWindowOpenToolStripMenuItem.PerformClick();
 
             if (!SettingsManager.IsSet(Singleton.Settings.UseEntTabsOpt)) SettingsManager.SetBool(Singleton.Settings.UseEntTabsOpt, true);
             entitiesOpenTabs.Checked = !SettingsManager.GetBool(Singleton.Settings.UseEntTabsOpt); entitiesOpenTabs.PerformClick();
@@ -604,6 +605,12 @@ namespace CommandsEditor
             autoHideExplorerViewToolStripMenuItem.Checked = !autoHideExplorerViewToolStripMenuItem.Checked;
             SettingsManager.SetBool(Singleton.Settings.AutoHideCompositeDisplay, autoHideExplorerViewToolStripMenuItem.Checked);
             UpdateCommandsDisplayDockState();
+        }
+
+        private void keepFunctionUsesWindowOpenToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            keepFunctionUsesWindowOpenToolStripMenuItem.Checked = !keepFunctionUsesWindowOpenToolStripMenuItem.Checked;
+            SettingsManager.SetBool(Singleton.Settings.KeepUsesWindowOpen, keepFunctionUsesWindowOpenToolStripMenuItem.Checked);
         }
 
         private void UpdateCommandsDisplayDockState()

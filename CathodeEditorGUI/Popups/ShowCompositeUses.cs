@@ -2,6 +2,7 @@
 using CATHODE.Scripting.Internal;
 using CommandsEditor.DockPanels;
 using CommandsEditor.Popups.Base;
+using OpenCAGE;
 using System;
 using System.Collections.Generic;
 
@@ -38,7 +39,9 @@ namespace CommandsEditor
         {
             if (referenceList.SelectedIndex == -1) return;
             OnEntitySelected?.Invoke(entities[referenceList.SelectedIndex].composite, entities[referenceList.SelectedIndex].entity);
-            this.Close();
+
+            if (!SettingsManager.GetBool(Singleton.Settings.KeepUsesWindowOpen))
+                this.Close();
         }
 
         private void entityVariant_SelectedIndexChanged(object sender, EventArgs e)
