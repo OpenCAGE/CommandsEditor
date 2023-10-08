@@ -195,7 +195,7 @@ namespace CommandsEditor
                             resource.reds = new RenderableElements(worldPath + "REDS.BIN");
                             break;
                         case 5:
-                            resource.env_animations = new EnvironmentAnimations(worldPath + "ENVIRONMENT_ANIMATION.DAT");
+                            resource.env_animations = new EnvironmentAnimations(worldPath + "ENVIRONMENT_ANIMATION.DAT", Singleton.AnimationStrings_Debug);
                             break;
                         case 6:
                             resource.collision_maps = new CollisionMaps(worldPath + "COLLISION.MAP");

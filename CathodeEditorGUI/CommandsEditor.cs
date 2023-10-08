@@ -15,6 +15,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Threading;
@@ -47,7 +48,7 @@ namespace CommandsEditor
 
         private void TestThing(string levelname)
         {
-            EnvironmentAnimations cool = new EnvironmentAnimations("Z:\\AI Version Backup\\Alien Isolation PC Final\\DATA\\ENV\\PRODUCTION\\" + levelname + "\\WORLD\\ENVIRONMENT_ANIMATION.DAT");
+            EnvironmentAnimations cool = new EnvironmentAnimations("Z:\\AI Version Backup\\Alien Isolation PC Final\\DATA\\ENV\\PRODUCTION\\" + levelname + "\\WORLD\\ENVIRONMENT_ANIMATION.DAT", Singleton.AnimationStrings);
             Commands cmds = new Commands("Z:\\AI Version Backup\\Alien Isolation PC Final\\DATA\\ENV\\PRODUCTION\\" + levelname + "\\WORLD\\COMMANDS.PAK");
             EntityUtils.LinkCommands(cmds);
             ShortGuidUtils.LinkCommands(cmds);
@@ -94,18 +95,105 @@ namespace CommandsEditor
 
                 EnvironmentAnimations.EnvironmentAnimation anim = cool.Entries.FirstOrDefault(o => o.ResourceIndex == resP.value[0].index);
 
-                bool displaymodel = comp.name.Length > ("DisplayModel").Length && comp.name.Substring(0, ("DisplayModel").Length) == "DisplayModel";
-                int count = PhysicsSystems.Count;
-
-                if (displaymodel)
+                if (anim.Indexes0.Count != anim.Matrices0.Count)
                 {
-                    if (anim.Indexes0.Count == 0) throw new Exception();
-                    if (anim.Indexes1.Count == 0) throw new Exception();
+                    string sdfsdf = "";
+                }
+
+                /*
+                PAK2.File skeletonDefinitions = animPAK.Entries.FirstOrDefault(o => o.Filename == "DATA\\SKELETONDEFS\\" + anim.Name + ".BML");
+                //File.WriteAllBytes(anim.Name, skeletonDefinitions.Content);
+                //XmlNode skeletonType = new BML(anim.Name).Content.SelectSingleNode("//SkeletonDef/LoResReferenceSkeleton");
+                //File.Delete(anim.Name);
+
+                //These can be null - perhaps we should be using the fallbacks?
+                PAK2.File refSkeleBoneGroups = animPAK.Entries.FirstOrDefault(o => o.Filename == "DATA\\REFERENCESKELETONS\\" + anim.Name + "_BONE_GROUPS.TXT");
+                PAK2.File refSkeleMirror = animPAK.Entries.FirstOrDefault(o => o.Filename == "DATA\\REFERENCESKELETONS\\" + anim.Name + "_MIRROR.TXT");
+
+                if (refSkeleBoneGroups == null)
+                {
+                    string dffsdff = "";
+                }
+
+                //HAVOK stuff
+                uint nameHash = Utilities.AnimationHashedString(anim.Name);
+                PAK2.File animSysSkeleDef = animPAK.Entries.FirstOrDefault(o => o.Filename == "DATA\\ANIM_SYS\\SKELE\\DEFS\\" + nameHash + ".BIN");
+                PAK2.File animSysSkeleSk = animPAK.Entries.FirstOrDefault(o => o.Filename == "DATA\\ANIM_SYS\\SKELE\\SK\\" + nameHash);
+                PAK2.File animSysClipDb = animPAK.Entries.FirstOrDefault(o => o.Filename == "DATA\\ANIM_SYS\\" + nameHash + "_ANIM_CLIP_DB.BIN");
+
+                if (refSkeleBoneGroups == null)
+                {
+                    if (anim.Indexes1.Count != 0)
+                    {
+                        //dont expect to hit this
+                        string sdffsdf = "";
+                    }
                 }
                 else
                 {
-                    if (anim.Indexes0.Count == 0) throw new Exception();
-                    if (anim.Indexes1.Count != 0) throw new Exception();
+                    File.WriteAllBytes(anim.Name, refSkeleBoneGroups.Content);
+                    string[] boneGroupsContent = File.ReadAllLines(anim.Name);
+
+                    int count = 0;
+                    bool inGroup = false;
+                    foreach (string boneGroupsContentLine in boneGroupsContent)
+                    {
+                        if (boneGroupsContentLine.Length > "BEGIN_GROUP".Length && boneGroupsContentLine.Substring(0, "BEGIN_GROUP".Length) == "BEGIN_GROUP")
+                        {
+                            inGroup = true;
+                        }
+                        else if (boneGroupsContentLine == "END_GROUP")
+                        {
+                            inGroup = false;
+                        }
+                        else if (inGroup)
+                        {
+                            count++;
+                        }
+                    }
+
+                    if (anim.Indexes1.Count == 0)
+                    {
+                        //dont expect to hit this
+                        string sdffsdf = "";
+                    }
+                    else
+                    {
+                        string gsdfdf = "";
+                    }
+                }
+                */
+
+                if (anim.SkeletonName == "SPACESUIT_MEEKS")
+                {
+                    List<uint> testss = new List<uint>();
+                    for (int i = 0; i < anim.Indexes0.Count; i++)
+                    {
+                        testss.Add(anim.Indexes0[i].ToUInt32());
+                        if (Singleton.AnimationStrings_Debug.Entries.ContainsKey(testss[i]))
+                        {
+                            string sdfsdf = "";
+                        }
+                        if (Singleton.AnimationStrings.Entries.ContainsKey(testss[i]))
+                        {
+                            string sdfsdf = "";
+                        }
+                    }
+
+                    uint test = Utilities.AnimationHashedString("BONE:Hips");
+                    uint tes2t = Utilities.AnimationHashedString("LeftUpLeg");
+                    uint tes23t = Utilities.AnimationHashedString("SpaceSuit_Meeks:LeftUpLeg");
+
+                    string fsdfsdf = "";
+                }
+
+                if (anim.Indexes1.Count == 0)
+                {
+                    Console.WriteLine("NON_SKINNED: " + comp.name);
+                }
+                else
+                {
+                    Console.WriteLine("SKINNED: " + comp.name);
                 }
 
                 string sdfdfd = "";
@@ -116,31 +204,55 @@ namespace CommandsEditor
 
         public CommandsEditor(string level = null)
         {
-            string [] allCMDs = Directory.GetFiles("Z:\\AI Version Backup\\Alien Isolation PC Final\\DATA\\ENV\\PRODUCTION", "ENVIRONMENT_ANIMATION.DAT", SearchOption.AllDirectories);
-            foreach (string allCMD in allCMDs)
+            /*
+            Utilities.AnimationHashedString("713960141");
+
+            LoadAnimData();
+
+            string test = Singleton.AnimationStrings_Debug.Entries[921712976];
+
+            EnvironmentAnimations bruh = new EnvironmentAnimations("G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\data\\ENV\\PRODUCTION\\TECH_COMMS\\WORLD\\ENVIRONMENT_ANIMATION.DAT", Singleton.AnimationStrings);
+
+            foreach (var b in bruh.Entries)
             {
-                EnvironmentAnimations cmdz = new EnvironmentAnimations(allCMD);
-                Console.WriteLine(allCMD + " -> " + cmdz.Entries.Count);
-                foreach (var c in cmdz.Entries)
+                //if (b.Indexes1.Count != 0)
                 {
-                    if (!c.Matrix.IsIdentity)
+                    for (int i = 0; i <  b.Matrices0.Count; i++)
                     {
-                        throw new Exception();
-                    }
-                    if (c.unk1 != 0)
-                    {
-                        Console.WriteLine(c.ResourceIndex + " -> unk1:" + c.unk1);
+                        b.Matrices0[i] = Matrix4x4.Identity;
+                        b.Matrices1[i] = Matrix4x4.Identity;
+                        //b.Indexes0[i] = new ShortGuid("00-00-00-00");
+
                     }
                 }
 
-                string lvlName = allCMD.Substring("Z:\\AI Version Backup\\Alien Isolation PC Final\\DATA\\ENV\\PRODUCTION".Length).Split('\\')[0];
+                //b.Indexes0.Reverse();
+                //b.Indexes1.Reverse();
+                //b.Indexes1.Sort();
+                //b.Data0.Clear();
 
+                //b.Indexes0.Clear();
+                //b.Indexes1.Clear();
+                //b.Matrices0.Clear();
+                //b.Matrices1.Clear(); 
+            }
+
+            bruh.Save();
+
+            
+            //return;
+
+
+            string [] allCMDs = Directory.GetFiles("Z:\\AI Version Backup\\Alien Isolation PC Final\\DATA\\ENV\\PRODUCTION", "ENVIRONMENT_ANIMATION.DAT", SearchOption.AllDirectories);
+            foreach (string allCMD in allCMDs)
+            {
+                string lvlName = allCMD.Substring("Z:\\AI Version Backup\\Alien Isolation PC Final\\DATA\\ENV\\PRODUCTION\\".Length).Split(new[] { "\\WORLD" }, StringSplitOptions.None)[0];
                 TestThing(lvlName);
             }
 
             
 
-            string asdd = "";
+            string asdd = "";*/
             //return;
 
             _discord = new DiscordRpcClient("1152999067207606392");
@@ -235,17 +347,17 @@ namespace CommandsEditor
             PAK2 animPAK = new PAK2(SharedData.pathToAI + "/DATA/GLOBAL/ANIMATION.PAK");
 
             //Load all male/female skeletons
-            List<PAK2.File> skeletons = animPAK.Entries.FindAll(o => o.Filename.Length > 17 && o.Filename.Substring(0, 17) == "DATA\\SKELETONDEFS");
-            for (int i = 0; i < skeletons.Count; i++)
+            List<PAK2.File> skeletonDefs = animPAK.Entries.FindAll(o => o.Filename.Length > 17 && o.Filename.Substring(0, 17) == "DATA\\SKELETONDEFS");
+            for (int i = 0; i < skeletonDefs.Count; i++)
             {
-                string skeleton = Path.GetFileNameWithoutExtension(skeletons[i].Filename);
-                File.WriteAllBytes(skeleton, skeletons[i].Content);
+                string skeleton = Path.GetFileNameWithoutExtension(skeletonDefs[i].Filename);
+                File.WriteAllBytes(skeleton, skeletonDefs[i].Content);
                 XmlNode skeletonType = new BML(skeleton).Content.SelectSingleNode("//SkeletonDef/LoResReferenceSkeleton");
                 if (skeletonType?.InnerText == "MALE" || skeletonType?.InnerText == "FEMALENPC")
                 {
-                    if (!Singleton.Skeletons.ContainsKey(skeletonType?.InnerText))
-                        Singleton.Skeletons.Add(skeletonType?.InnerText, new List<string>());
-                    Singleton.Skeletons[skeletonType?.InnerText].Add(skeleton);
+                    if (!Singleton.GenderedSkeletons.ContainsKey(skeletonType?.InnerText))
+                        Singleton.GenderedSkeletons.Add(skeletonType?.InnerText, new List<string>());
+                    Singleton.GenderedSkeletons[skeletonType?.InnerText].Add(skeleton);
                 }
                 File.Delete(skeleton);
             }
@@ -260,7 +372,23 @@ namespace CommandsEditor
             Singleton.AnimationStrings_Debug = new AnimationStrings("ANIM_STRING_DB_DEBUG.BIN");
             File.Delete("ANIM_STRING_DB_DEBUG.BIN");
 
-            animPAK = null;
+            //Anim clip db
+            //File.WriteAllBytes("ANIM_CLIP_DB.BIN", animPAK.Entries.FirstOrDefault(o => o.Filename.Contains("ANIM_CLIP_DB.BIN")).Content);
+            //Singleton.AnimClipDB = new AnimClipDB("ANIM_CLIP_DB.BIN");
+            //File.Delete("ANIM_CLIP_DB.BIN");
+
+            //Skeleton db
+            File.WriteAllBytes("DB.BIN", animPAK.Entries.FirstOrDefault(o => o.Filename.Contains("SKELE\\DB.BIN")).Content);
+            Singleton.SkeletonDB = new SkeleDB("DB.BIN", Singleton.AnimationStrings_Debug);
+            File.Delete("DB.BIN");
+
+            //Load all skeleton names
+            List<PAK2.File> skeletons = animPAK.Entries.FindAll(o => o.Filename.Length > 24 && o.Filename.Substring(0, 24) == "DATA\\ANIM_SYS\\SKELE\\DEFS");
+            for (int i = 0; i < skeletons.Count; i++)
+            {
+                Singleton.AllSkeletons.Add(Singleton.AnimationStrings_Debug.Entries[Convert.ToUInt32(Path.GetFileNameWithoutExtension(skeletons[i].Filename))]);
+            }
+            Singleton.AllSkeletons.Sort();
 
             GC.Collect();
             GC.WaitForPendingFinalizers();
@@ -465,6 +593,7 @@ namespace CommandsEditor
             _commandsDisplay.Content.resource.collision_maps.Save();
             _commandsDisplay.Content.resource.character_accessories.Save();
             _commandsDisplay.Content.resource.reds.Save();
+            _commandsDisplay.Content.resource.env_animations.Save();
             _commandsDisplay.Content.mvr.Save();
         }
 

@@ -16,6 +16,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.Design;
 using System.Windows.Shapes;
 using WebSocketSharp;
 using WeifenLuo.WinFormsUI.Docking;
@@ -141,6 +142,9 @@ namespace CommandsEditor.DockPanels
         }
         private bool DoesCompositeContainResource(Composite comp)
         {
+            List<ResourceType> allowedTypes = new List<ResourceType>();
+            allowedTypes.Add(ResourceType.ANIMATED_MODEL);
+
             bool found = false;
             Parallel.ForEach(comp.functions, (ent, state) =>
             {
@@ -158,17 +162,27 @@ namespace CommandsEditor.DockPanels
                     }
                 }
 
-                if (ent.resources.Count != 0)
+                for (int i = 0; i < ent.resources.Count; i++)
                 {
-                    found = true;
-                    state.Stop();
+                    if (!allowedTypes.Contains(ent.resources[i].entryType))
+                    {
+                        found = true;
+                        state.Stop();
+                    }
                 }
 
                 Parameter resources = ent.GetParameter("resource");
-                if (resources != null && ((cResource)resources.content).value.Count != 0)
+                if (resources != null)
                 {
-                    found = true;
-                    state.Stop();
+                    List<ResourceReference> resourceRefs = ((cResource)resources.content).value;
+                    for (int i = 0; i < resourceRefs.Count; i++)
+                    {
+                        if (!allowedTypes.Contains(resourceRefs[i].entryType))
+                        {
+                            found = true;
+                            state.Stop();
+                        }
+                    }
                 }
             });
             return found;

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CATHODE;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,36 +13,36 @@ namespace CommandsEditor.Popups.UserControls
 {
     public partial class GUI_Resource_AnimatedModel : ResourceUserControl
     {
-        public int EnvironmentAnimIndex = -1;
+        private EnvironmentAnimations.EnvironmentAnimation _envAnimInfo = null;
 
         public GUI_Resource_AnimatedModel(LevelContent editor) : base(editor)
         {
             InitializeComponent();
 
-            animatedModelIndex.BeginUpdate();
-            animatedModelIndex.Items.Clear();
-            List<int> indexes = new List<int>();
-            foreach (var anim in Content.resource.env_animations.Entries)
+            skeletonList.BeginUpdate();
+            skeletonList.Items.Clear();
+            foreach (var skeleton in Singleton.AllSkeletons)
             {
-                if (indexes.Contains(anim.ResourceIndex)) continue;
-                indexes.Add(anim.ResourceIndex);
+                skeletonList.Items.Add(skeleton);
             }
-            for (int i = 0; i < indexes.Count; i++)
-            {
-                animatedModelIndex.Items.Add(i.ToString());
-            }
-            animatedModelIndex.EndUpdate();
+            skeletonList.EndUpdate();
         }
 
-        public void PopulateUI(int index)
+        //NOTE TO SELF: This writes to the original env anim obj, which goes against the thing of having a save button in the UI.
+
+        public void PopulateUI(EnvironmentAnimations.EnvironmentAnimation animInfo)
         {
-            animatedModelIndex.SelectedItem = index.ToString();
-            EnvironmentAnimIndex = index;
+            _envAnimInfo = animInfo;
+
+            if (animInfo.SkeletonName == "")
+                skeletonList.SelectedIndex = 0;
+            else
+                skeletonList.SelectedItem = animInfo.SkeletonName;
         }
 
         private void animatedModelIndex_SelectedIndexChanged(object sender, EventArgs e)
         {
-            EnvironmentAnimIndex = Convert.ToInt32(animatedModelIndex.SelectedItem.ToString());
+            _envAnimInfo.SkeletonName = skeletonList.SelectedItem.ToString();
         }
     }
 }

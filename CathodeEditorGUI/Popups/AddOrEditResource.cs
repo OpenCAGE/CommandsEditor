@@ -52,7 +52,7 @@ namespace CommandsEditor
                     case ResourceType.ANIMATED_MODEL:
                         {
                             resourceGroup = new GUI_Resource_AnimatedModel(_content);
-                            ((GUI_Resource_AnimatedModel)resourceGroup).PopulateUI(resources[i].index);
+                            ((GUI_Resource_AnimatedModel)resourceGroup).PopulateUI(Content.resource.env_animations.Entries.FirstOrDefault(o => o.ResourceIndex == resources[i].index));
                             break;
                         }
                     case ResourceType.COLLISION_MAPPING:
@@ -131,6 +131,17 @@ namespace CommandsEditor
                     //This type just uses the default values
                     break;
             }
+
+            //We now auto create ANIMATED_MODEL entries. We should probs do the same for others too.
+            if (newReference.entryType == ResourceType.ANIMATED_MODEL)
+            {
+                EnvironmentAnimations.EnvironmentAnimation anim = new EnvironmentAnimations.EnvironmentAnimation();
+                anim.ResourceIndex = Content.resource.env_animations.Entries[Content.resource.env_animations.Entries.Count].ResourceIndex + 1;
+                Content.resource.env_animations.Entries.Add(anim);
+
+                newReference.index = anim.ResourceIndex;
+            }
+
             resources.Add(newReference);
 
             RefreshUI();
@@ -167,7 +178,7 @@ namespace CommandsEditor
                     case ResourceType.ANIMATED_MODEL:
                         {
                             GUI_Resource_AnimatedModel ui = (GUI_Resource_AnimatedModel)resource_panel.Controls[i];
-                            resourceRef.index = ui.EnvironmentAnimIndex;
+                            //resourceRef.index = ui.EnvironmentAnimIndex; <- we now just use direct objects rather than index
                             break;
                         }
                     case ResourceType.COLLISION_MAPPING:

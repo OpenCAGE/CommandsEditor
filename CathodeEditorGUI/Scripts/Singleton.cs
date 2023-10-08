@@ -18,7 +18,9 @@ namespace CommandsEditor
         public static Dictionary<string, Strings> Strings = new Dictionary<string, Strings>();
 
         //Skeletons from ANIMATIONS.PAK
-        public static Dictionary<string, List<string>> Skeletons = new Dictionary<string, List<string>>();
+        public static List<string> AllSkeletons = new List<string>();
+        public static Dictionary<string, List<string>> GenderedSkeletons = new Dictionary<string, List<string>>();
+        public static SkeleDB SkeletonDB;
 
         //Global animation strings
         public static AnimationStrings AnimationStrings;
