@@ -80,65 +80,10 @@ namespace CommandsEditor
                         switch (ent.resources[i].entryType)
                         {
                             case ResourceType.ANIMATED_MODEL:
-                                //Get EnvironmentAnimation from base level and copy it
-                                EnvironmentAnimations.EnvironmentAnimation anim = Content.resource.env_animations.Entries.FirstOrDefault(o => o.ResourceIndex == ent.resources[i].index).Copy();
-
-                                //Update the ResourceIndex to suit the destination EnvironmentAnimation count
-                                anim.ResourceIndex = lvl.EnvironmentAnimations.Entries[lvl.EnvironmentAnimations.Entries.Count - 1].ResourceIndex + 1;
-                                ent.resources[i].index = anim.ResourceIndex;
-
-                                //Add to dest level
-                                lvl.EnvironmentAnimations.Entries.Add(anim);
-                                break;
+                                throw new Exception("Unhandled");
 
                             case ResourceType.RENDERABLE_INSTANCE:
-                                //Get CS2 from base level and copy it (this assumes the REDs entry is always pointing to one CS2, which I don't think is the case
-                                Models.CS2 model = Content.resource.models.FindModelForSubmesh(Content.resource.models.GetAtWriteIndex(Content.resource.reds.Entries[ent.resources[i].index].ModelIndex)).Copy();
-                                if (model.GetSubmeshCount() != ent.resources[i].count) MessageBox.Show("FAILED! I WAS EXPECTING THESE TO BE THE SAME");
-                                lvl.Models.Entries.Add(model);
-
-                                //Save to update our write indexes
-                                lvl.Save();
-
-                                //Add REDs entries in dest level pointing to write indexes in dest level
-                                for (int x = 0; x < model.Components.Count; x++)
-                                {
-                                    for (int z = 0; z < model.Components[x].LODs.Count; z++)
-                                    {
-                                        for (int y = 0; y < model.Components[x].LODs[z].Submeshes.Count; y++)
-                                        {
-                                            RenderableElements.Element renderable = new RenderableElements.Element();
-                                            lvl.RenderableElements.Entries.Add(renderable);
-
-                                            renderable.ModelIndex = lvl.Models.GetWriteIndex(model.Components[x].LODs[z].Submeshes[y]);
-                                            renderable.MaterialIndex = 0; //TODO
-                                        }
-                                    }
-                                }
-
-                                /*
-                                List<Models.CS2.Component.LOD.Submesh> submeshes = new List<Models.CS2.Component.LOD.Submesh>();
-                                List<Materials.Material> materials = new List<Materials.Material>();
-
-                                for (int x = ent.resources[i].index; x < ent.resources[i].index + ent.resources[i].count; x++)
-                                {
-                                    Models.CS2.Component.LOD.Submesh submesh = Content.resource.models.GetAtWriteIndex(Content.resource.reds.Entries[x].ModelIndex).Copy();
-                                    submesh.MaterialLibraryIndex = 0; //TODO
-                                    submeshes.Add(submesh);
-
-                                    Materials.Material material = Content.resource.materials.GetAtWriteIndex(Content.resource.reds.Entries[x].MaterialIndex).Copy();
-                                    for (int z = 0; z < material.TextureReferences.Length; z++)
-                                    {
-                                        if (material.TextureReferences[z].Source == Materials.Material.Texture.TextureSource.LEVEL)
-                                        {
-                                            //TODO: we should copy across level textures
-                                        }
-                                    }
-                                    materials.Add(material);
-                                }
-                                */
-
-                                break;
+                                throw new Exception("Unhandled");
                         }
                     }
 
@@ -166,58 +111,68 @@ namespace CommandsEditor
                                     break;
 
                                 case ResourceType.RENDERABLE_INSTANCE:
-                                    //for (int x = resourceRefs[i].index; x < resourceRefs[i].index + resourceRefs[i].count; x++)
-                                    //{
-                                    //
-                                    //}
-
-
-                                    //Get CS2 from base level and copy it (this assumes the REDs entry is always pointing to one CS2, which I don't think is the case
-                                    Models.CS2 model = Content.resource.models.FindModelForSubmesh(Content.resource.models.GetAtWriteIndex(Content.resource.reds.Entries[resourceRefs[i].index].ModelIndex)).Copy();
-                                    if (model.GetSubmeshCount() != resourceRefs[i].count) MessageBox.Show("FAILED! I WAS EXPECTING THESE TO BE THE SAME");
-                                    lvl.Models.Entries.Add(model);
-
-                                    //Save to update our write indexes
-                                    lvl.Save();
-
-                                    //Add REDs entries in dest level pointing to write indexes in dest level
-                                    for (int x = 0; x < model.Components.Count; x++)
-                                    {
-                                        for (int z = 0; z < model.Components[x].LODs.Count; z++)
-                                        {
-                                            for (int y = 0; y < model.Components[x].LODs[z].Submeshes.Count; y++)
-                                            {
-                                                RenderableElements.Element renderable = new RenderableElements.Element();
-                                                lvl.RenderableElements.Entries.Add(renderable);
-
-                                                renderable.ModelIndex = lvl.Models.GetWriteIndex(model.Components[x].LODs[z].Submeshes[y]);
-                                                renderable.MaterialIndex = 0; //TODO
-                                            }
-                                        }
-                                    }
-
-                                    /*
-                                    List<Models.CS2.Component.LOD.Submesh> submeshes = new List<Models.CS2.Component.LOD.Submesh>();
-                                    List<Materials.Material> materials = new List<Materials.Material>();
-
+                                    int newIndex = lvl.RenderableElements.Entries.Count;
                                     for (int x = resourceRefs[i].index; x < resourceRefs[i].index + resourceRefs[i].count; x++)
                                     {
-                                        Models.CS2.Component.LOD.Submesh submesh = Content.resource.models.GetAtWriteIndex(Content.resource.reds.Entries[x].ModelIndex).Copy();
-                                        submesh.MaterialLibraryIndex = 0; //TODO
-                                        submeshes.Add(submesh);
+                                        //Find the submesh and associated LOD/CS2 that this REDs points to
+                                        Models.CS2.Component.LOD.Submesh origSubmesh = Content.resource.models.GetAtWriteIndex(Content.resource.reds.Entries[x].ModelIndex);
+                                        Models.CS2.Component.LOD origLOD = Content.resource.models.FindModelLODForSubmesh(origSubmesh);
+                                        Models.CS2.Component origComponent = Content.resource.models.FindModelComponentForSubmesh(origSubmesh);
+                                        Models.CS2 origModel = Content.resource.models.FindModelForSubmesh(origSubmesh);
 
-                                        Materials.Material material = Content.resource.materials.GetAtWriteIndex(Content.resource.reds.Entries[x].MaterialIndex).Copy();
-                                        for (int z = 0; z < material.TextureReferences.Length; z++)
+                                        //Check to see if the LOD exists in the destination level
+                                        Models.CS2 destModel = null;
+                                        List<Models.CS2> matchingDuplicates = lvl.Models.Entries.FindAll(o => o.Name == origModel.Name);
+                                        for (int m = 0 ; m < matchingDuplicates.Count; m++)
                                         {
-                                            if (material.TextureReferences[z].Source == Materials.Material.Texture.TextureSource.LEVEL)
+                                            for (int z = 0; z < matchingDuplicates[m].Components.Count; z++)
                                             {
-                                                //TODO: we should copy across level textures
+                                                for (int p = 0; p < matchingDuplicates[m].Components[z].LODs.Count; p++)
+                                                {
+                                                    if (matchingDuplicates[m].Components[z].LODs[p].Name == origLOD.Name)
+                                                    {
+                                                        destModel = matchingDuplicates[m];
+                                                        break;
+                                                    }
+                                                }
+                                                if (destModel != null) break;
                                             }
+                                            if (destModel != null) break;
                                         }
-                                        materials.Add(material);
-                                    }
-                                    */
 
+                                        //If it doesn't exist, copy the entire CS2 across & save so our write indexes are updated
+                                        if (destModel == null)
+                                        {
+                                            destModel = origModel.Copy();
+                                            for (int z = 0; z < destModel.Components.Count; z++)
+                                            {
+                                                for (int m = 0; m < destModel.Components[z].LODs.Count; m++)
+                                                {
+                                                    for (int p = 0; p < destModel.Components[z].LODs[m].Submeshes.Count; p++)
+                                                    {
+                                                        //TODO: setting mtl index to zero until we copy materials.
+                                                        destModel.Components[z].LODs[m].Submeshes[p].MaterialLibraryIndex = 0;
+                                                    }
+                                                }
+                                            }
+                                            lvl.Models.Entries.Add(destModel);
+                                            lvl.Save();
+                                        }
+
+                                        //Now re-create the REDs entry over at the destination
+                                        RenderableElements.Element renderable = new RenderableElements.Element();
+                                        lvl.RenderableElements.Entries.Add(renderable);
+
+                                        //Make sure to point to the same submesh
+                                        int origComponentIndex = origModel.Components.IndexOf(origComponent);
+                                        int origLODIndex = origModel.Components[origComponentIndex].LODs.IndexOf(origLOD);
+                                        int origSubmeshIndex = origModel.Components[origComponentIndex].LODs[origLODIndex].Submeshes.IndexOf(origSubmesh);
+
+                                        //Get its index in the destination and write to renderable
+                                        renderable.ModelIndex = lvl.Models.GetWriteIndex(destModel.Components[origComponentIndex].LODs[origLODIndex].Submeshes[origSubmeshIndex]);
+                                        renderable.MaterialIndex = 0; //TODO
+                                    }
+                                    resourceRefs[i].index = newIndex;
                                     break;
                             }
                         }
