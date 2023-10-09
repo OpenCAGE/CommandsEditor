@@ -144,6 +144,8 @@ namespace CommandsEditor.DockPanels
         {
             List<ResourceType> allowedTypes = new List<ResourceType>();
             allowedTypes.Add(ResourceType.ANIMATED_MODEL);
+            allowedTypes.Add(ResourceType.RENDERABLE_INSTANCE);
+            allowedTypes.Add(ResourceType.COLLISION_MAPPING);
 
             bool found = false;
             Parallel.ForEach(comp.functions, (ent, state) =>
