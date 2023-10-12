@@ -65,20 +65,20 @@ namespace CommandsEditor
                 }
             }
 
-            foreach (var val in EntityUtils._custom.names)
-            {
-                foreach (var val2 in val.Value.Values)
-                {
-                    ShortGuidUtils.Generate(val2);
-                }
-            }
-            foreach (var val in EntityUtils._vanilla.names)
-            {
-                foreach (var val2 in val.Value.Values)
-                {
-                    ShortGuidUtils.Generate(val2);
-                }
-            }
+            //foreach (var val in EntityUtils._custom.names)
+            //{
+            //    foreach (var val2 in val.Value.Values)
+            //    {
+            //        ShortGuidUtils.Generate(val2);
+            //    }
+            //}
+            //foreach (var val in EntityUtils._vanilla.names)
+            //{
+            //    foreach (var val2 in val.Value.Values)
+            //    {
+            //        ShortGuidUtils.Generate(val2);
+            //    }
+            //}
 
             foreach (Composite comp in cmds.Entries)
             {

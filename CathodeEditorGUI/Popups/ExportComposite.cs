@@ -7,6 +7,8 @@ using CATHODE;
 using System.Windows;
 using System.Linq;
 using System;
+using System.Windows.Forms.Design;
+using System.IO;
 
 namespace CommandsEditor
 {
@@ -114,7 +116,12 @@ namespace CommandsEditor
                                     int newIndex = lvl.RenderableElements.Entries.Count;
                                     for (int x = resourceRefs[i].index; x < resourceRefs[i].index + resourceRefs[i].count; x++)
                                     {
-                                        //Find the submesh and associated LOD/CS2 that this REDs points to
+                                        //Create the REDs entry in the destination level
+                                        RenderableElements.Element renderable = new RenderableElements.Element();
+                                        lvl.RenderableElements.Entries.Add(renderable);
+
+                                        #region Copy Model
+                                        //Find the submesh and associated LOD/CS2 that the original REDs points to
                                         Models.CS2.Component.LOD.Submesh origSubmesh = Content.resource.models.GetAtWriteIndex(Content.resource.reds.Entries[x].ModelIndex);
                                         Models.CS2.Component.LOD origLOD = Content.resource.models.FindModelLODForSubmesh(origSubmesh);
                                         Models.CS2.Component origComponent = Content.resource.models.FindModelComponentForSubmesh(origSubmesh);
@@ -164,10 +171,6 @@ namespace CommandsEditor
                                             lvl.Save();
                                         }
 
-                                        //Now re-create the REDs entry over at the destination
-                                        RenderableElements.Element renderable = new RenderableElements.Element();
-                                        lvl.RenderableElements.Entries.Add(renderable);
-
                                         //Make sure to point to the same submesh
                                         int origComponentIndex = origModel.Components.IndexOf(origComponent);
                                         int origLODIndex = origModel.Components[origComponentIndex].LODs.IndexOf(origLOD);
@@ -175,7 +178,63 @@ namespace CommandsEditor
 
                                         //Get its index in the destination and write to renderable
                                         renderable.ModelIndex = lvl.Models.GetWriteIndex(destModel.Components[origComponentIndex].LODs[origLODIndex].Submeshes[origSubmeshIndex]);
-                                        renderable.MaterialIndex = 0; //TODO
+                                        #endregion
+
+                                        #region Find Material & Associated Textures/Shaders
+                                        //Find the material that the original REDs points to & take a copy
+                                        Materials.Material material = Content.resource.materials.GetAtWriteIndex(Content.resource.reds.Entries[x].MaterialIndex).Copy();
+
+                                        //Copy textures if they don't exist in the destination level & save so our indexes are updated
+                                        for (int z = 0; z < material.TextureReferences.Length; z++)
+                                        {
+                                            if (material.TextureReferences[z] == null) continue;
+                                            if (material.TextureReferences[z].Source == Materials.Material.Texture.TextureSource.GLOBAL) continue;
+
+                                            Textures.TEX4 origTex = Content.resource.textures.GetAtWriteIndex(material.TextureReferences[z].BinIndex);
+                                            Textures.TEX4 destTex = lvl.Textures.Entries.FirstOrDefault(o => o.Name == origTex.Name);
+                                            if (destTex == null)
+                                            {
+                                                destTex = origTex.Copy();
+                                                lvl.Textures.Entries.Add(destTex);
+                                            }
+                                        }
+                                        lvl.Save();
+
+                                        //Get all destination level texture indexes & set to material
+                                        for (int z = 0; z < material.TextureReferences.Length; z++)
+                                        {
+                                            if (material.TextureReferences[z] == null) continue;
+                                            if (material.TextureReferences[z].Source == Materials.Material.Texture.TextureSource.GLOBAL) continue;
+
+                                            Textures.TEX4 origTex = Content.resource.textures.GetAtWriteIndex(material.TextureReferences[z].BinIndex);
+                                            Textures.TEX4 destTex = lvl.Textures.Entries.FirstOrDefault(o => o.Name == origTex.Name);
+                                            material.TextureReferences[z].BinIndex = lvl.Textures.GetWriteIndex(destTex);
+                                        }
+
+                                        //TODO: copy shader
+                                        material.UberShaderIndex = 0;
+
+                                        //Copy over CST data to the destination level and update the pointer
+                                        for (int z = 0; z < material.ConstantBuffers.Length; z++)
+                                        {
+                                            byte[] cstData = Content.resource.materials.CSTData[z];
+                                            using (BinaryReader reader = new BinaryReader(new MemoryStream(cstData)))
+                                            {
+                                                reader.BaseStream.Position = material.ConstantBuffers[z].Offset;
+                                                using (BinaryWriter writer = new BinaryWriter(new MemoryStream()))
+                                                {
+                                                    writer.Write(lvl.Materials.CSTData[z]);
+                                                    material.ConstantBuffers[z].Offset = (int)writer.BaseStream.Position;
+                                                    writer.Write(reader.ReadBytes(material.ConstantBuffers[z].Length));
+                                                }
+                                            }
+                                        }
+
+                                        //Write material & update indexes
+                                        lvl.Materials.Entries.Add(material);
+                                        lvl.Save();
+                                        renderable.MaterialIndex = lvl.Materials.GetWriteIndex(material);
+                                        #endregion
                                     }
                                     resourceRefs[i].index = newIndex;
                                     break;
