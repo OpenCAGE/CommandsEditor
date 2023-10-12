@@ -152,6 +152,11 @@ namespace CommandsEditor
                                                     {
                                                         //TODO: setting mtl index to zero until we copy materials.
                                                         destModel.Components[z].LODs[m].Submeshes[p].MaterialLibraryIndex = 0;
+
+                                                        //TODO: these are unknown
+                                                        destModel.Components[z].LODs[m].Submeshes[p].UnknownIndex = -1;
+                                                        destModel.Components[z].LODs[m].Submeshes[p].CollisionIndex_ = -1;
+                                                        destModel.Components[z].LODs[m].Submeshes[p].HeadRelated_ = -1;
                                                     }
                                                 }
                                             }
