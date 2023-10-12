@@ -2,6 +2,7 @@
 using CATHODE.Scripting.Internal;
 using CommandsEditor.DockPanels;
 using CommandsEditor.Popups.Base;
+using OpenCAGE;
 using System;
 using System.Collections.Generic;
 
@@ -12,6 +13,7 @@ namespace CommandsEditor
         public Action<Composite, Entity> OnEntitySelected;
 
         private List<EntityRef> entities = new List<EntityRef>();
+        private string _baseText = "Function Uses";
 
         public ShowCompositeUses(LevelContent editor, Composite composite = null) : base(composite == null ? WindowClosesOn.COMMANDS_RELOAD : WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
         {
@@ -19,7 +21,7 @@ namespace CommandsEditor
 
             if (composite != null)
             {
-                Text = "Composite Uses";
+                _baseText = "Composite Uses";
                 label.Text = "Entities that instance the composite '" + composite.name + "':";
                 entityVariant.Visible = false;
                 Search(composite.shortGUID);
@@ -37,7 +39,9 @@ namespace CommandsEditor
         {
             if (referenceList.SelectedIndex == -1) return;
             OnEntitySelected?.Invoke(entities[referenceList.SelectedIndex].composite, entities[referenceList.SelectedIndex].entity);
-            this.Close();
+
+            if (!SettingsManager.GetBool(Singleton.Settings.KeepUsesWindowOpen))
+                this.Close();
         }
 
         private void entityVariant_SelectedIndexChanged(object sender, EventArgs e)
@@ -58,6 +62,7 @@ namespace CommandsEditor
                     referenceList.Items.Add(comp.name + ": " + EntityUtils.GetName(comp.shortGUID, ent.shortGUID));
                 }
             }
+            Text = _baseText + " - " + (entityVariant.Text != "" ? entityVariant.Text + " " : "") + "(" + entities.Count + ")";
             referenceList.EndUpdate();
         }
 

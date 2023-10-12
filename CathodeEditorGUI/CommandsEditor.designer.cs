@@ -38,6 +38,17 @@
             this.toolStripButton2 = new System.Windows.Forms.ToolStripDropDownButton();
             this.connectToUnity = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.compositeViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showExplorerViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.autoHideExplorerViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.searchOnlyCompositeNames = new System.Windows.Forms.ToolStripMenuItem();
+            this.entityDisplayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showNodegraph = new System.Windows.Forms.ToolStripMenuItem();
+            this.showEntityIDs = new System.Windows.Forms.ToolStripMenuItem();
+            this.entitiesOpenTabs = new System.Windows.Forms.ToolStripMenuItem();
+            this.miscToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showConfirmationWhenSavingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.useTexturedModelViewExperimentalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpBtn = new System.Windows.Forms.ToolStripButton();
             this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
             this.vS2015LightTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
@@ -45,17 +56,7 @@
             this.statusText = new System.Windows.Forms.ToolStripStatusLabel();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.compositeViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.autoHideExplorerViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.showExplorerViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.entityDisplayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.showNodegraph = new System.Windows.Forms.ToolStripMenuItem();
-            this.showEntityIDs = new System.Windows.Forms.ToolStripMenuItem();
-            this.entitiesOpenTabs = new System.Windows.Forms.ToolStripMenuItem();
-            this.miscToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.showConfirmationWhenSavingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.searchOnlyCompositeNames = new System.Windows.Forms.ToolStripMenuItem();
-            this.useTexturedModelViewExperimentalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.keepFunctionUsesWindowOpenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -119,7 +120,7 @@
             this.connectToUnity.Checked = true;
             this.connectToUnity.CheckState = System.Windows.Forms.CheckState.Checked;
             this.connectToUnity.Name = "connectToUnity";
-            this.connectToUnity.Size = new System.Drawing.Size(286, 22);
+            this.connectToUnity.Size = new System.Drawing.Size(180, 22);
             this.connectToUnity.Text = "Connect to Unity";
             this.connectToUnity.ToolTipText = "Enable a websocket connection to the Unity Level Viewer.";
             this.connectToUnity.Click += new System.EventHandler(this.connectToUnity_Click);
@@ -127,48 +128,7 @@
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(283, 6);
-            // 
-            // helpBtn
-            // 
-            this.helpBtn.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.helpBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.helpBtn.Image = ((System.Drawing.Image)(resources.GetObject("helpBtn.Image")));
-            this.helpBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.helpBtn.Name = "helpBtn";
-            this.helpBtn.Size = new System.Drawing.Size(23, 22);
-            this.helpBtn.Text = "Help";
-            this.helpBtn.Click += new System.EventHandler(this.helpBtn_Click);
-            // 
-            // statusStrip
-            // 
-            this.statusStrip.BackColor = System.Drawing.Color.Black;
-            this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.statusText});
-            this.statusStrip.Location = new System.Drawing.Point(0, 782);
-            this.statusStrip.Name = "statusStrip";
-            this.statusStrip.Size = new System.Drawing.Size(1257, 22);
-            this.statusStrip.TabIndex = 4;
-            this.statusStrip.Text = "statusStrip1";
-            // 
-            // statusText
-            // 
-            this.statusText.ForeColor = System.Drawing.SystemColors.Control;
-            this.statusText.Name = "statusText";
-            this.statusText.Size = new System.Drawing.Size(0, 17);
-            // 
-            // dockPanel
-            // 
-            this.dockPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dockPanel.DockBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(57)))), ((int)(((byte)(85)))));
-            this.dockPanel.DockBottomPortion = 0.35D;
-            this.dockPanel.Location = new System.Drawing.Point(0, 25);
-            this.dockPanel.Name = "dockPanel";
-            this.dockPanel.Padding = new System.Windows.Forms.Padding(6);
-            this.dockPanel.ShowAutoHideContentOnHover = false;
-            this.dockPanel.Size = new System.Drawing.Size(1257, 757);
-            this.dockPanel.TabIndex = 5;
-            this.dockPanel.Theme = this.vS2015BlueTheme1;
+            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
             // 
             // compositeViewerToolStripMenuItem
             // 
@@ -180,6 +140,15 @@
             this.compositeViewerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.compositeViewerToolStripMenuItem.Text = "Composite Display";
             // 
+            // showExplorerViewToolStripMenuItem
+            // 
+            this.showExplorerViewToolStripMenuItem.Name = "showExplorerViewToolStripMenuItem";
+            this.showExplorerViewToolStripMenuItem.Size = new System.Drawing.Size(258, 22);
+            this.showExplorerViewToolStripMenuItem.Text = "Use File Browser Composite Viewer";
+            this.showExplorerViewToolStripMenuItem.ToolTipText = "If enabled, the composite viewer will display a file browser style UI and dock to" +
+    " the bottom of the window.";
+            this.showExplorerViewToolStripMenuItem.Click += new System.EventHandler(this.showExplorerViewToolStripMenuItem_Click);
+            // 
             // autoHideExplorerViewToolStripMenuItem
             // 
             this.autoHideExplorerViewToolStripMenuItem.Name = "autoHideExplorerViewToolStripMenuItem";
@@ -189,14 +158,13 @@
     ".";
             this.autoHideExplorerViewToolStripMenuItem.Click += new System.EventHandler(this.autoHideExplorerViewToolStripMenuItem_Click);
             // 
-            // showExplorerViewToolStripMenuItem
+            // searchOnlyCompositeNames
             // 
-            this.showExplorerViewToolStripMenuItem.Name = "showExplorerViewToolStripMenuItem";
-            this.showExplorerViewToolStripMenuItem.Size = new System.Drawing.Size(258, 22);
-            this.showExplorerViewToolStripMenuItem.Text = "Use File Browser Composite Viewer";
-            this.showExplorerViewToolStripMenuItem.ToolTipText = "If enabled, the composite viewer will display a file browser style UI and dock to" +
-    " the bottom of the window.";
-            this.showExplorerViewToolStripMenuItem.Click += new System.EventHandler(this.showExplorerViewToolStripMenuItem_Click);
+            this.searchOnlyCompositeNames.Name = "searchOnlyCompositeNames";
+            this.searchOnlyCompositeNames.Size = new System.Drawing.Size(258, 22);
+            this.searchOnlyCompositeNames.Text = "Search Only Composite Names";
+            this.searchOnlyCompositeNames.ToolTipText = "Enable this option to exclude folder names from the composite search.";
+            this.searchOnlyCompositeNames.Click += new System.EventHandler(this.searchOnlyCompositeNames_Click);
             // 
             // entityDisplayToolStripMenuItem
             // 
@@ -239,7 +207,8 @@
             // 
             this.miscToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.showConfirmationWhenSavingToolStripMenuItem,
-            this.useTexturedModelViewExperimentalToolStripMenuItem});
+            this.useTexturedModelViewExperimentalToolStripMenuItem,
+            this.keepFunctionUsesWindowOpenToolStripMenuItem});
             this.miscToolStripMenuItem.Name = "miscToolStripMenuItem";
             this.miscToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.miscToolStripMenuItem.Text = "Misc";
@@ -252,14 +221,6 @@
             this.showConfirmationWhenSavingToolStripMenuItem.ToolTipText = "If enabled, a confirmation will show after a successful save.";
             this.showConfirmationWhenSavingToolStripMenuItem.Click += new System.EventHandler(this.showConfirmationWhenSavingToolStripMenuItem_Click);
             // 
-            // searchOnlyCompositeNames
-            // 
-            this.searchOnlyCompositeNames.Name = "searchOnlyCompositeNames";
-            this.searchOnlyCompositeNames.Size = new System.Drawing.Size(258, 22);
-            this.searchOnlyCompositeNames.Text = "Search Only Composite Names";
-            this.searchOnlyCompositeNames.ToolTipText = "Enable this option to exclude folder names from the composite search.";
-            this.searchOnlyCompositeNames.Click += new System.EventHandler(this.searchOnlyCompositeNames_Click);
-            // 
             // useTexturedModelViewExperimentalToolStripMenuItem
             // 
             this.useTexturedModelViewExperimentalToolStripMenuItem.Name = "useTexturedModelViewExperimentalToolStripMenuItem";
@@ -267,6 +228,54 @@
             this.useTexturedModelViewExperimentalToolStripMenuItem.Text = "Use Textured Model View (Experimental)";
             this.useTexturedModelViewExperimentalToolStripMenuItem.ToolTipText = "If enabled, the model previewer will try and find textures to render.";
             this.useTexturedModelViewExperimentalToolStripMenuItem.Click += new System.EventHandler(this.useTexturedModelViewExperimentalToolStripMenuItem_Click);
+            // 
+            // helpBtn
+            // 
+            this.helpBtn.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.helpBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.helpBtn.Image = ((System.Drawing.Image)(resources.GetObject("helpBtn.Image")));
+            this.helpBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.helpBtn.Name = "helpBtn";
+            this.helpBtn.Size = new System.Drawing.Size(23, 22);
+            this.helpBtn.Text = "Help";
+            this.helpBtn.Click += new System.EventHandler(this.helpBtn_Click);
+            // 
+            // statusStrip
+            // 
+            this.statusStrip.BackColor = System.Drawing.Color.Black;
+            this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.statusText});
+            this.statusStrip.Location = new System.Drawing.Point(0, 782);
+            this.statusStrip.Name = "statusStrip";
+            this.statusStrip.Size = new System.Drawing.Size(1257, 22);
+            this.statusStrip.TabIndex = 4;
+            this.statusStrip.Text = "statusStrip1";
+            // 
+            // statusText
+            // 
+            this.statusText.ForeColor = System.Drawing.SystemColors.Control;
+            this.statusText.Name = "statusText";
+            this.statusText.Size = new System.Drawing.Size(0, 17);
+            // 
+            // dockPanel
+            // 
+            this.dockPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dockPanel.DockBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(57)))), ((int)(((byte)(85)))));
+            this.dockPanel.DockBottomPortion = 0.35D;
+            this.dockPanel.Location = new System.Drawing.Point(0, 25);
+            this.dockPanel.Name = "dockPanel";
+            this.dockPanel.Padding = new System.Windows.Forms.Padding(6);
+            this.dockPanel.ShowAutoHideContentOnHover = false;
+            this.dockPanel.Size = new System.Drawing.Size(1257, 757);
+            this.dockPanel.TabIndex = 5;
+            this.dockPanel.Theme = this.vS2015BlueTheme1;
+            // 
+            // keepFunctionUsesWindowOpenToolStripMenuItem
+            // 
+            this.keepFunctionUsesWindowOpenToolStripMenuItem.Name = "keepFunctionUsesWindowOpenToolStripMenuItem";
+            this.keepFunctionUsesWindowOpenToolStripMenuItem.Size = new System.Drawing.Size(286, 22);
+            this.keepFunctionUsesWindowOpenToolStripMenuItem.Text = "Keep Function Uses Window Open";
+            this.keepFunctionUsesWindowOpenToolStripMenuItem.Click += new System.EventHandler(this.keepFunctionUsesWindowOpenToolStripMenuItem_Click);
             // 
             // CommandsEditor
             // 
@@ -317,5 +326,6 @@
         private System.Windows.Forms.ToolStripMenuItem miscToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem showConfirmationWhenSavingToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem useTexturedModelViewExperimentalToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem keepFunctionUsesWindowOpenToolStripMenuItem;
     }
 }

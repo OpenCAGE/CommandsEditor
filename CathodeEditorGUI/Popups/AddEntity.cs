@@ -241,6 +241,13 @@ namespace CommandsEditor
                     return;
                 }
 
+                //A composite can only have one EnvironmentModelReference
+                if (function == FunctionType.EnvironmentModelReference && _compositeDisplay.Composite.functions.FirstOrDefault(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.EnvironmentModelReference)) != null)
+                {
+                    MessageBox.Show("You are trying to add a EnvironmentModelReference entity to a composite that already has one applied.", "EnvironmentModelReference error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
                 newEntity = _compositeDisplay.Composite.AddFunction(function, addDefaultParams.Checked);
 
                 //TODO: currently we don't support these properly

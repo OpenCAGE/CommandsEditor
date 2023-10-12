@@ -53,6 +53,7 @@ namespace CommandsEditor
             public readonly string FileBrowserViewOpt = "CS_FileBrowserView";
             public readonly string EnableFileBrowser = "CS_FileBrowserEnabled";
             public readonly string AutoHideCompositeDisplay = "CS_FileBrowserAutoHide";
+            public readonly string KeepUsesWindowOpen = "CS_KeepUsesWindowOpen";
         }
     }
 }

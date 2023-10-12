@@ -35,6 +35,7 @@
             // 
             // SPLINE_CONTAINER
             // 
+            this.SPLINE_CONTAINER.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.SPLINE_CONTAINER.Controls.Add(this.openSplineEditor);
             this.SPLINE_CONTAINER.Location = new System.Drawing.Point(3, 3);
             this.SPLINE_CONTAINER.Name = "SPLINE_CONTAINER";
