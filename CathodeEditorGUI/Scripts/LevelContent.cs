@@ -30,8 +30,8 @@ namespace CommandsEditor
             public Textures textures = null;
             public Textures textures_global = Singleton.GlobalTextures;
 
-            public ShadersPAK shaders = null; //LEGACY
-            public IDXRemap shadersIDX = null; //LEGACY
+            public ShadersPAK shaders_legacy = null; //LEGACY
+            public Shaders shaders_new = null; 
 
             public RenderableElements reds = null;
 
@@ -187,9 +187,8 @@ namespace CommandsEditor
                             resource.textures = new Textures(renderablePath + "LEVEL_TEXTURES.ALL.PAK");
                             break;
                         case 3:
-                            //TODO: Both of these shader parsers are considered legacy, and should be swapped to new ones when they are ready.
-                            resource.shaders = new ShadersPAK(renderablePath + "LEVEL_SHADERS_DX11.PAK"); 
-                            resource.shadersIDX = new IDXRemap(renderablePath + "LEVEL_SHADERS_DX11_IDX_REMAP.PAK"); 
+                            resource.shaders_legacy = new ShadersPAK(renderablePath + "LEVEL_SHADERS_DX11.PAK"); 
+                            resource.shaders_new = new Shaders(renderablePath + "LEVEL_SHADERS_DX11.PAK"); 
                             break;
                         case 4:
                             resource.reds = new RenderableElements(worldPath + "REDS.BIN");

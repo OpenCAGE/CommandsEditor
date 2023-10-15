@@ -54,7 +54,7 @@ namespace CommandsEditor.Popups.UserControls
             {
                 try
                 {
-                    ShadersPAK.ShaderMaterialMetadata mdlMeta = _content.resource.shaders.GetMaterialMetadataFromShader(_content.resource.materials.GetAtWriteIndex(materialIndex == -1 ? submesh.MaterialLibraryIndex : materialIndex), _content.resource.shadersIDX);
+                    ShadersPAK.ShaderMaterialMetadata mdlMeta = _content.resource.shaders_legacy.GetMaterialMetadataFromShader(_content.resource.materials.GetAtWriteIndex(materialIndex == -1 ? submesh.MaterialLibraryIndex : materialIndex));
                     ShadersPAK.MaterialTextureContext mdlMetaDiff = mdlMeta.textures.FirstOrDefault(o => o.Type == ShadersPAK.ShaderSlot.DIFFUSE_MAP);
                     if (mdlMetaDiff != null)
                     {

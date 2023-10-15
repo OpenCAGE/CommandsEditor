@@ -74,9 +74,7 @@ namespace CommandsEditor
                 //Check to see if we should copy resources to the destination, and point to them if we do
                 foreach (FunctionEntity ent in copiedComp.functions)
                 {
-                    //TEMP: remove all collision mappings for now
-                    ent.resources.RemoveAll(o => o.entryType == ResourceType.COLLISION_MAPPING);
-
+                    ent.resources.RemoveAll(o => o.entryType == ResourceType.COLLISION_MAPPING); //TEMP: remove all collision mappings for now
                     for (int i = 0; i < ent.resources.Count; i++)
                     {
                         switch (ent.resources[i].entryType)
@@ -93,11 +91,9 @@ namespace CommandsEditor
                     if (resources != null)
                     {
                         List<ResourceReference> resourceRefs = ((cResource)resources.content).value;
+                        resourceRefs.RemoveAll(o => o.entryType == ResourceType.COLLISION_MAPPING); //TEMP: remove all collision mappings for now
                         for (int i = 0; i < resourceRefs.Count; i++)
                         {
-                            //TEMP: remove all collision mappings for now
-                            resourceRefs.RemoveAll(o => o.entryType == ResourceType.COLLISION_MAPPING);
-
                             switch (resourceRefs[i].entryType)
                             {
                                 case ResourceType.ANIMATED_MODEL:
@@ -211,8 +207,10 @@ namespace CommandsEditor
                                             material.TextureReferences[z].BinIndex = lvl.Textures.GetWriteIndex(destTex);
                                         }
 
-                                        //TODO: copy shader
-                                        material.UberShaderIndex = 0;
+                                        //Copy shader (TODO: we should probs update CST stuff too...)
+                                        Shaders.Shader shader = Content.resource.shaders_new.Entries[material.ShaderIndex].Copy();
+                                        lvl.Shaders.Entries.Add(shader);
+                                        material.ShaderIndex = lvl.Shaders.Entries.Count - 1;
 
                                         //Copy over CST data to the destination level and update the pointer
                                         for (int z = 0; z < material.ConstantBuffers.Length; z++)
