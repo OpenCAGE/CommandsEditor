@@ -45,7 +45,7 @@ namespace CommandsEditor
             AddCompositesRecursively(_display.Composite, lvl);
             lvl.Save();
 
-            MessageBox.Show("Finished porting '" + _display.Composite.name + "' to ' " + levelList.SelectedItem.ToString() + "!", "Complete", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show("Finished porting '" + _display.Composite.name + "' to '" + levelList.SelectedItem.ToString() + "'!", "Complete", MessageBoxButton.OK, MessageBoxImage.Information);
 
             this.Close();
         }
@@ -218,13 +218,15 @@ namespace CommandsEditor
                                             byte[] cstData = Content.resource.materials.CSTData[z];
                                             using (BinaryReader reader = new BinaryReader(new MemoryStream(cstData)))
                                             {
-                                                reader.BaseStream.Position = material.ConstantBuffers[z].Offset;
-                                                using (BinaryWriter writer = new BinaryWriter(new MemoryStream()))
+                                                reader.BaseStream.Position = material.ConstantBuffers[z].Offset * 4;
+                                                MemoryStream stream = new MemoryStream();
+                                                using (BinaryWriter writer = new BinaryWriter(stream))
                                                 {
                                                     writer.Write(lvl.Materials.CSTData[z]);
-                                                    material.ConstantBuffers[z].Offset = (int)writer.BaseStream.Position;
-                                                    writer.Write(reader.ReadBytes(material.ConstantBuffers[z].Length));
+                                                    material.ConstantBuffers[z].Offset = (int)writer.BaseStream.Position / 4;
+                                                    writer.Write(reader.ReadBytes(material.ConstantBuffers[z].Length * 4));
                                                 }
+                                                lvl.Materials.CSTData[z] = stream.ToArray();
                                             }
                                         }
 
@@ -232,6 +234,7 @@ namespace CommandsEditor
                                         lvl.Materials.Entries.Add(material);
                                         lvl.Save();
                                         renderable.MaterialIndex = lvl.Materials.GetWriteIndex(material);
+                                        //destModel.Components[origComponentIndex].LODs[origLODIndex].Submeshes[origSubmeshIndex].MaterialLibraryIndex = renderable.MaterialIndex;
                                         #endregion
                                     }
                                     resourceRefs[i].index = newIndex;
