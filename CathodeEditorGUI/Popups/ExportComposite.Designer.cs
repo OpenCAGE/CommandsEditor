@@ -36,6 +36,7 @@
             this.overwrite = new System.Windows.Forms.CheckBox();
             this.recurse = new System.Windows.Forms.CheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.SuspendLayout();
             // 
             // export
@@ -63,7 +64,7 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(12, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(99, 13);
+            this.label1.Size = new System.Drawing.Size(117, 13);
             this.label1.TabIndex = 7;
             this.label1.Text = "Port composite to level:";
             // 
@@ -74,7 +75,7 @@
             this.overwrite.CheckState = System.Windows.Forms.CheckState.Checked;
             this.overwrite.Location = new System.Drawing.Point(15, 54);
             this.overwrite.Name = "overwrite";
-            this.overwrite.Size = new System.Drawing.Size(201, 17);
+            this.overwrite.Size = new System.Drawing.Size(219, 17);
             this.overwrite.TabIndex = 8;
             this.overwrite.Text = "Overwrite existing destination composites";
             this.toolTip1.SetToolTip(this.overwrite, "If checked: when composites are copied they will overwrite any by the same ID in " +
@@ -88,18 +89,28 @@
             this.recurse.CheckState = System.Windows.Forms.CheckState.Checked;
             this.recurse.Location = new System.Drawing.Point(15, 77);
             this.recurse.Name = "recurse";
-            this.recurse.Size = new System.Drawing.Size(221, 17);
+            this.recurse.Size = new System.Drawing.Size(257, 17);
             this.recurse.TabIndex = 9;
             this.recurse.Text = "Copy all composites referenced by this composite";
             this.toolTip1.SetToolTip(this.recurse, "If checked: composites that are instanced within the exported composite will also" +
         " be copied.");
             this.recurse.UseVisualStyleBackColor = true;
             // 
+            // richTextBox1
+            // 
+            this.richTextBox1.Location = new System.Drawing.Point(15, 104);
+            this.richTextBox1.Name = "richTextBox1";
+            this.richTextBox1.ReadOnly = true;
+            this.richTextBox1.Size = new System.Drawing.Size(422, 56);
+            this.richTextBox1.TabIndex = 10;
+            this.richTextBox1.Text = "";
+            // 
             // ExportComposite
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(449, 103);
+            this.ClientSize = new System.Drawing.Size(449, 172);
+            this.Controls.Add(this.richTextBox1);
             this.Controls.Add(this.recurse);
             this.Controls.Add(this.overwrite);
             this.Controls.Add(this.label1);
@@ -124,5 +135,6 @@
         private System.Windows.Forms.CheckBox overwrite;
         private System.Windows.Forms.CheckBox recurse;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.RichTextBox richTextBox1;
     }
 }
