@@ -4,11 +4,11 @@ using CommandsEditor.Popups.Base;
 using CommandsEditor.DockPanels;
 using CathodeLib;
 using CATHODE;
-using System.Windows;
 using System.Linq;
 using System;
 using System.Windows.Forms.Design;
 using System.IO;
+using System.Windows.Forms;
 
 namespace CommandsEditor
 {
@@ -36,6 +36,8 @@ namespace CommandsEditor
                 recurse.Checked = false;
                 recurse.Enabled = false;
             }
+
+            MessageBox.Show("Warning! This is a highly experimental feature which is not yet complete. Please use with caution! Take backups of any levels you plan to copy content to.", "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void export_Click(object sender, System.EventArgs e)
@@ -50,7 +52,7 @@ namespace CommandsEditor
             Log("Performing final save for " + levelList.SelectedItem.ToString() + "...");
             lvl.Save();
 
-            MessageBox.Show("Finished porting '" + _display.Composite.name + "' to '" + levelList.SelectedItem.ToString() + "'!", "Complete", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show("Finished porting '" + _display.Composite.name + "' to '" + levelList.SelectedItem.ToString() + "'!", "Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             this.Close();
         }
