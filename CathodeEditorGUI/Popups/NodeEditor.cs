@@ -55,6 +55,8 @@ namespace CommandsEditor
             //stNodeEditor1.NodeAdded += (s, ea) => ea.Node.ContextMenuStrip = contextMenuStrip1;
             stNodeEditor1.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom;
 
+            stNodeEditor1.RoundedCornerRadius = 10;
+
             //contextMenuStrip1.ShowImageMargin = false;
             //contextMenuStrip1.Renderer = new ToolStripRendererEx();
         }

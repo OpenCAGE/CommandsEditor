@@ -13,6 +13,7 @@ namespace CommandsEditor.Nodes
 
 		protected override void OnCreate()
 		{
+            LetGetOptions = true;
 			base.OnCreate();
 		}
 
