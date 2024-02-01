@@ -49,6 +49,7 @@
             this.miscToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showConfirmationWhenSavingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.useTexturedModelViewExperimentalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.keepFunctionUsesWindowOpenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpBtn = new System.Windows.Forms.ToolStripButton();
             this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
             this.vS2015LightTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
@@ -56,7 +57,6 @@
             this.statusText = new System.Windows.Forms.ToolStripStatusLabel();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.keepFunctionUsesWindowOpenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -120,7 +120,7 @@
             this.connectToUnity.Checked = true;
             this.connectToUnity.CheckState = System.Windows.Forms.CheckState.Checked;
             this.connectToUnity.Name = "connectToUnity";
-            this.connectToUnity.Size = new System.Drawing.Size(180, 22);
+            this.connectToUnity.Size = new System.Drawing.Size(173, 22);
             this.connectToUnity.Text = "Connect to Unity";
             this.connectToUnity.ToolTipText = "Enable a websocket connection to the Unity Level Viewer.";
             this.connectToUnity.Click += new System.EventHandler(this.connectToUnity_Click);
@@ -128,7 +128,7 @@
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(170, 6);
             // 
             // compositeViewerToolStripMenuItem
             // 
@@ -137,7 +137,7 @@
             this.autoHideExplorerViewToolStripMenuItem,
             this.searchOnlyCompositeNames});
             this.compositeViewerToolStripMenuItem.Name = "compositeViewerToolStripMenuItem";
-            this.compositeViewerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.compositeViewerToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.compositeViewerToolStripMenuItem.Text = "Composite Display";
             // 
             // showExplorerViewToolStripMenuItem
@@ -173,7 +173,7 @@
             this.showEntityIDs,
             this.entitiesOpenTabs});
             this.entityDisplayToolStripMenuItem.Name = "entityDisplayToolStripMenuItem";
-            this.entityDisplayToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.entityDisplayToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.entityDisplayToolStripMenuItem.Text = "Entity Display";
             // 
             // showNodegraph
@@ -210,7 +210,7 @@
             this.useTexturedModelViewExperimentalToolStripMenuItem,
             this.keepFunctionUsesWindowOpenToolStripMenuItem});
             this.miscToolStripMenuItem.Name = "miscToolStripMenuItem";
-            this.miscToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.miscToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.miscToolStripMenuItem.Text = "Misc";
             // 
             // showConfirmationWhenSavingToolStripMenuItem
@@ -228,6 +228,13 @@
             this.useTexturedModelViewExperimentalToolStripMenuItem.Text = "Use Textured Model View (Experimental)";
             this.useTexturedModelViewExperimentalToolStripMenuItem.ToolTipText = "If enabled, the model previewer will try and find textures to render.";
             this.useTexturedModelViewExperimentalToolStripMenuItem.Click += new System.EventHandler(this.useTexturedModelViewExperimentalToolStripMenuItem_Click);
+            // 
+            // keepFunctionUsesWindowOpenToolStripMenuItem
+            // 
+            this.keepFunctionUsesWindowOpenToolStripMenuItem.Name = "keepFunctionUsesWindowOpenToolStripMenuItem";
+            this.keepFunctionUsesWindowOpenToolStripMenuItem.Size = new System.Drawing.Size(286, 22);
+            this.keepFunctionUsesWindowOpenToolStripMenuItem.Text = "Keep Function Uses Window Open";
+            this.keepFunctionUsesWindowOpenToolStripMenuItem.Click += new System.EventHandler(this.keepFunctionUsesWindowOpenToolStripMenuItem_Click);
             // 
             // helpBtn
             // 
@@ -270,13 +277,6 @@
             this.dockPanel.TabIndex = 5;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
             // 
-            // keepFunctionUsesWindowOpenToolStripMenuItem
-            // 
-            this.keepFunctionUsesWindowOpenToolStripMenuItem.Name = "keepFunctionUsesWindowOpenToolStripMenuItem";
-            this.keepFunctionUsesWindowOpenToolStripMenuItem.Size = new System.Drawing.Size(286, 22);
-            this.keepFunctionUsesWindowOpenToolStripMenuItem.Text = "Keep Function Uses Window Open";
-            this.keepFunctionUsesWindowOpenToolStripMenuItem.Click += new System.EventHandler(this.keepFunctionUsesWindowOpenToolStripMenuItem_Click);
-            // 
             // CommandsEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -285,9 +285,11 @@
             this.Controls.Add(this.dockPanel);
             this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.toolStrip);
+            this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.IsMdiContainer = true;
             this.Name = "CommandsEditor";
+            this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "OpenCAGE Commands Editor";
             this.toolStrip.ResumeLayout(false);

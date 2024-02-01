@@ -74,5 +74,11 @@ namespace CommandsEditor
             OnFolderAdded?.Invoke(comp);
             this.Close();
         }
+
+        private void OnKeyDownHandler(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+                create_param.PerformClick();
+        }
     }
 }

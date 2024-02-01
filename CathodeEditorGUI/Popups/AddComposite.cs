@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows.Input;
 using CATHODE;
 using CATHODE.Scripting;
 using CathodeLib;
@@ -30,14 +29,14 @@ namespace CommandsEditor
 
             _folder = folderPath;
             this.Text = _folder == "" ? "Create New Composite" : "Create New Composite In Folder '" + _folder + "'";
-            textBox1.Select();
+            textInput.Select();
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (textBox1.Text == "") return;
+            if (textInput.Text == "") return;
 
-            string path = (_folder == "" ? _folder : _folder + "/") + textBox1.Text.Replace("\\", "/");
+            string path = (_folder == "" ? _folder : _folder + "/") + textInput.Text.Replace("\\", "/");
 
             string[] pathParts = path.Split('/');
             for (int i = 0; i < pathParts.Length; i++)
@@ -61,6 +60,12 @@ namespace CommandsEditor
             Composite comp = _commands.Content.commands.AddComposite(path);
             OnCompositeAdded?.Invoke(comp);
             this.Close();
+        }
+
+        private void OnKeyDownHandler(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+                submitBtn.PerformClick();
         }
     }
 }

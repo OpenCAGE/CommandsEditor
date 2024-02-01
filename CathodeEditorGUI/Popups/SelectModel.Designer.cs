@@ -124,8 +124,10 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1069, 647);
             this.Controls.Add(this.splitContainer1);
+            this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "SelectModel";
+            this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Select Model";
             this.modelPreviewArea.ResumeLayout(false);

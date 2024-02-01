@@ -69,6 +69,7 @@
             // stNodeEditor1
             // 
             this.stNodeEditor1.AllowDrop = true;
+            this.stNodeEditor1.AllowNodeGraphLoops = true;
             this.stNodeEditor1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -80,6 +81,8 @@
             this.stNodeEditor1.MarkForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.stNodeEditor1.MinimumSize = new System.Drawing.Size(100, 100);
             this.stNodeEditor1.Name = "stNodeEditor1";
+            this.stNodeEditor1.RequireCtrlForZooming = true;
+            this.stNodeEditor1.RoundedCornerRadius = -1;
             this.stNodeEditor1.Size = new System.Drawing.Size(1019, 634);
             this.stNodeEditor1.TabIndex = 1;
             this.stNodeEditor1.Text = "stNodeEditor1";
@@ -102,6 +105,7 @@
             this.ClientSize = new System.Drawing.Size(1017, 634);
             this.Controls.Add(this.clickToSelect);
             this.Controls.Add(this.stNodeEditor1);
+            this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "NodeEditor";
             this.ShowIcon = false;

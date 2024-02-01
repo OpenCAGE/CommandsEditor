@@ -91,6 +91,7 @@
             this.Controls.Add(this.referenceList);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ShowCompositeUses";
+            this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Function Uses";
             this.ResumeLayout(false);

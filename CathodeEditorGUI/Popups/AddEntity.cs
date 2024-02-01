@@ -290,5 +290,11 @@ namespace CommandsEditor
             OnNewEntity?.Invoke(newEntity);
             this.Close();
         }
+
+        private void OnKeyDownHandler(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+                createNewEntity.PerformClick();
+        }
     }
 }

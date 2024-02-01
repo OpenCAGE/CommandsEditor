@@ -39,6 +39,7 @@
             this.textBox1.Location = new System.Drawing.Point(85, 12);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(609, 20);
+            this.textBox1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnKeyDownHandler);
             this.textBox1.TabIndex = 9;
             // 
             // create_param
