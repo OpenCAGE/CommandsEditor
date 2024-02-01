@@ -17,6 +17,7 @@ using WebSocketSharp;
 using System.Security.Cryptography;
 using CommandsEditor.Nodes;
 using CommandsEditor.DockPanels;
+using OpenCAGE;
 
 namespace CommandsEditor
 {
@@ -53,9 +54,6 @@ namespace CommandsEditor
             //stNodeEditor1.OptionConnected += (s, ea) => stNodeEditor1.ShowAlert(ea.Status.ToString(), Color.White, ea.Status == ConnectionStatus.Connected ? Color.FromArgb(125, Color.Green) : Color.FromArgb(125, Color.Red));
             //stNodeEditor1.CanvasScaled += (s, ea) => stNodeEditor1.ShowAlert(stNodeEditor1.CanvasScale.ToString("F2"), Color.White, Color.FromArgb(125, Color.Yellow));
             //stNodeEditor1.NodeAdded += (s, ea) => ea.Node.ContextMenuStrip = contextMenuStrip1;
-            stNodeEditor1.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom;
-
-            stNodeEditor1.RoundedCornerRadius = 10;
 
             //contextMenuStrip1.ShowImageMargin = false;
             //contextMenuStrip1.Renderer = new ToolStripRendererEx();
@@ -156,7 +154,8 @@ namespace CommandsEditor
 
         private void Owner_SelectedChanged(object sender, EventArgs e)
         {
-            if (!clickToSelect.Checked) return;
+            if (!SettingsManager.GetBool(Singleton.Settings.OpenEntityFromNode)) 
+                return;
 
             //when a node is selected, load it in the commands editor
             STNode[] nodes = stNodeEditor1.GetSelectedNode();
@@ -1851,11 +1850,6 @@ namespace CommandsEditor
         private void removeToolStripMenuItem_Click(object sender, EventArgs e) {
             if (stNodeEditor1.ActiveNode == null) return;
             stNodeEditor1.Nodes.Remove(stNodeEditor1.ActiveNode);
-        }
-
-        private void clickToSelect_CheckedChanged(object sender, EventArgs e)
-        {
-
         }
     }
 }

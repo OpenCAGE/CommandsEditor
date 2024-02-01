@@ -56,6 +56,7 @@ namespace CommandsEditor
             public readonly string EnableFileBrowser = "CS_FileBrowserEnabled";
             public readonly string AutoHideCompositeDisplay = "CS_FileBrowserAutoHide";
             public readonly string KeepUsesWindowOpen = "CS_KeepUsesWindowOpen";
+            public readonly string OpenEntityFromNode = "CS_OpenEntityFromNode";
         }
     }
 }

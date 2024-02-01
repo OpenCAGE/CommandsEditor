@@ -46,6 +46,7 @@
             this.showNodegraph = new System.Windows.Forms.ToolStripMenuItem();
             this.showEntityIDs = new System.Windows.Forms.ToolStripMenuItem();
             this.entitiesOpenTabs = new System.Windows.Forms.ToolStripMenuItem();
+            this.nodeOpensEntity = new System.Windows.Forms.ToolStripMenuItem();
             this.miscToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showConfirmationWhenSavingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.useTexturedModelViewExperimentalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -120,7 +121,7 @@
             this.connectToUnity.Checked = true;
             this.connectToUnity.CheckState = System.Windows.Forms.CheckState.Checked;
             this.connectToUnity.Name = "connectToUnity";
-            this.connectToUnity.Size = new System.Drawing.Size(173, 22);
+            this.connectToUnity.Size = new System.Drawing.Size(180, 22);
             this.connectToUnity.Text = "Connect to Unity";
             this.connectToUnity.ToolTipText = "Enable a websocket connection to the Unity Level Viewer.";
             this.connectToUnity.Click += new System.EventHandler(this.connectToUnity_Click);
@@ -128,7 +129,7 @@
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(170, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
             // 
             // compositeViewerToolStripMenuItem
             // 
@@ -137,7 +138,7 @@
             this.autoHideExplorerViewToolStripMenuItem,
             this.searchOnlyCompositeNames});
             this.compositeViewerToolStripMenuItem.Name = "compositeViewerToolStripMenuItem";
-            this.compositeViewerToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.compositeViewerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.compositeViewerToolStripMenuItem.Text = "Composite Display";
             // 
             // showExplorerViewToolStripMenuItem
@@ -171,9 +172,10 @@
             this.entityDisplayToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.showNodegraph,
             this.showEntityIDs,
-            this.entitiesOpenTabs});
+            this.entitiesOpenTabs,
+            this.nodeOpensEntity});
             this.entityDisplayToolStripMenuItem.Name = "entityDisplayToolStripMenuItem";
-            this.entityDisplayToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.entityDisplayToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.entityDisplayToolStripMenuItem.Text = "Entity Display";
             // 
             // showNodegraph
@@ -181,7 +183,7 @@
             this.showNodegraph.Checked = true;
             this.showNodegraph.CheckState = System.Windows.Forms.CheckState.Checked;
             this.showNodegraph.Name = "showNodegraph";
-            this.showNodegraph.Size = new System.Drawing.Size(210, 22);
+            this.showNodegraph.Size = new System.Drawing.Size(312, 22);
             this.showNodegraph.Text = "Show Nodegraph";
             this.showNodegraph.ToolTipText = "Show the nodegraph view for the currently selected entity.";
             this.showNodegraph.Click += new System.EventHandler(this.showNodegraph_Click);
@@ -189,7 +191,7 @@
             // showEntityIDs
             // 
             this.showEntityIDs.Name = "showEntityIDs";
-            this.showEntityIDs.Size = new System.Drawing.Size(210, 22);
+            this.showEntityIDs.Size = new System.Drawing.Size(312, 22);
             this.showEntityIDs.Text = "Show Entity IDs";
             this.showEntityIDs.ToolTipText = "Show entity IDs within the editor UI.";
             this.showEntityIDs.Click += new System.EventHandler(this.showEntityIDs_Click);
@@ -197,11 +199,18 @@
             // entitiesOpenTabs
             // 
             this.entitiesOpenTabs.Name = "entitiesOpenTabs";
-            this.entitiesOpenTabs.Size = new System.Drawing.Size(210, 22);
+            this.entitiesOpenTabs.Size = new System.Drawing.Size(312, 22);
             this.entitiesOpenTabs.Text = "Open Entities In New Tabs";
             this.entitiesOpenTabs.ToolTipText = "If enabled, entities will open in new tabs when selected, allowing multiple to be" +
     " visible at once.";
             this.entitiesOpenTabs.Click += new System.EventHandler(this.entitiesOpenTabs_Click);
+            // 
+            // nodeOpensEntity
+            // 
+            this.nodeOpensEntity.Name = "nodeOpensEntity";
+            this.nodeOpensEntity.Size = new System.Drawing.Size(312, 22);
+            this.nodeOpensEntity.Text = "Open Entity When Nodegraph Node Selected";
+            this.nodeOpensEntity.Click += new System.EventHandler(this.nodeOpensEntity_Click);
             // 
             // miscToolStripMenuItem
             // 
@@ -210,7 +219,7 @@
             this.useTexturedModelViewExperimentalToolStripMenuItem,
             this.keepFunctionUsesWindowOpenToolStripMenuItem});
             this.miscToolStripMenuItem.Name = "miscToolStripMenuItem";
-            this.miscToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.miscToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.miscToolStripMenuItem.Text = "Misc";
             // 
             // showConfirmationWhenSavingToolStripMenuItem
@@ -289,7 +298,6 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.IsMdiContainer = true;
             this.Name = "CommandsEditor";
-            this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "OpenCAGE Commands Editor";
             this.toolStrip.ResumeLayout(false);
@@ -329,5 +337,6 @@
         private System.Windows.Forms.ToolStripMenuItem showConfirmationWhenSavingToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem useTexturedModelViewExperimentalToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem keepFunctionUsesWindowOpenToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem nodeOpensEntity;
     }
 }
