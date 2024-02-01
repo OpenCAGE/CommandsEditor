@@ -3,6 +3,7 @@ using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CathodeLib;
 using CommandsEditor.DockPanels;
+using OpenCAGE;
 using System;
 using System.Collections.Generic;
 using System.Drawing.Drawing2D;
@@ -169,7 +170,8 @@ namespace CommandsEditor
                     desc = "[PROXY] " + EntityUtils.GetName(composite.shortGUID, entity.shortGUID) + " (" + s2 + ")";
                     break;
             }
-            return "[" + entity.shortGUID.ToByteString() + "] " + desc;
+            bool showID = SettingsManager.GetBool(Singleton.Settings.EntIdOpt);
+            return (showID ? "[" + entity.shortGUID.ToByteString() + "] " : "") + desc;
         }
 
         /* Generate a cache of entity names */
