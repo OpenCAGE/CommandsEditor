@@ -40,6 +40,7 @@ namespace CommandsEditor.UserControls
                 _linkedEntity = _entityDisplay.Composite.GetEntityByID(linkInGuid);
                 group.Text = ShortGuidUtils.FindString(link.childParamID);
                 label1.Text = "Connects IN from \"" + ShortGuidUtils.FindString(link.parentParamID) + "\" on: ";
+                GoTo.Image = invIconResource.Image;
             }
 
             textBox1.Text = Content.editor_utils.GenerateEntityName(_linkedEntity, _entityDisplay.Composite);
