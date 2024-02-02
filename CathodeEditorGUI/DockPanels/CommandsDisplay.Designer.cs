@@ -242,6 +242,7 @@ namespace CommandsEditor.DockPanels
             this.treeView1.Size = new System.Drawing.Size(344, 687);
             this.treeView1.TabIndex = 180;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
+            this.treeView1.Resize += new System.EventHandler(this.treeView1_Resize);
             // 
             // FileTreeContextMenu
             // 

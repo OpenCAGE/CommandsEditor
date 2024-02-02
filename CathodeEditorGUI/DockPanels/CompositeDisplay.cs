@@ -1,4 +1,4 @@
-﻿using CATHODE;
+using CATHODE;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CathodeLib;
@@ -54,6 +54,9 @@ namespace CommandsEditor.DockPanels
             InitializeComponent();
             dockPanel.ActiveContentChanged += DockPanel_ActiveContentChanged;
             dockPanel.ShowDocumentIcon = true;
+
+            splitContainer1.FixedPanel = FixedPanel.Panel1;
+            splitContainer1.SplitterDistance = SettingsManager.GetInteger(Singleton.Settings.EntitySplitWidth, 500);
 
             EditorUtils.CompositeType type = Content.editor_utils.GetCompositeType(composite);
 
@@ -716,6 +719,12 @@ namespace CommandsEditor.DockPanels
         private void createAliasToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             CreateEntity(EntityVariant.ALIAS);
+        }
+
+        //UI: handle saving split container width between composites/runs 
+        private void dockPanel_Resize(object sender, EventArgs e)
+        {
+            SettingsManager.SetInteger(Singleton.Settings.EntitySplitWidth, splitContainer1.SplitterDistance);
         }
     }
 

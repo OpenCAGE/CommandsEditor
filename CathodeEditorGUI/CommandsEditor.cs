@@ -56,9 +56,15 @@ namespace CommandsEditor
             Singleton.Editor = this;
 
             InitializeComponent();
+            dockPanel.DockLeftPortion = SettingsManager.GetFloat(Singleton.Settings.CommandsSplitWidth, 0.25f);
             dockPanel.ActiveContentChanged += DockPanel_ActiveContentChanged;
             dockPanel.ShowDocumentIcon = true;
 
+            WindowState = SettingsManager.GetString(Singleton.Settings.WindowState, "Normal") == "Maximized" ? FormWindowState.Maximized : FormWindowState.Normal;
+            Width = SettingsManager.GetInteger(Singleton.Settings.WindowWidth, Width);
+            Height = SettingsManager.GetInteger(Singleton.Settings.WindowHeight, Height);
+            Resize += CommandsEditor_Resize;
+            
             Singleton.OnEntitySelected += RefreshWebsocket;
             Singleton.OnCompositeSelected += RefreshWebsocket;
             Singleton.OnLevelLoaded += RefreshWebsocket;
@@ -133,6 +139,22 @@ namespace CommandsEditor
             //If we have been launched to a level, load that
             if (level != null)
                 OnLevelSelected(level);
+        }
+
+        //UI: remember width/height of editor
+        private void CommandsEditor_Resize(object sender, EventArgs e)
+        {
+            switch (WindowState)
+            {
+                case FormWindowState.Normal:
+                    SettingsManager.SetInteger(Singleton.Settings.WindowWidth, Width);
+                    SettingsManager.SetInteger(Singleton.Settings.WindowHeight, Height);
+                    break;
+                case FormWindowState.Maximized:
+
+                    break;
+            }
+            SettingsManager.SetString(Singleton.Settings.WindowState, WindowState.ToString());
         }
 
         /* Load anim data */
@@ -265,12 +287,19 @@ namespace CommandsEditor
 
             //Load new
             _commandsDisplay = new CommandsDisplay(level);
+            _commandsDisplay.Resize += _commandsDisplay_Resize;
             _commandsDisplay.FormClosed += _commandsDisplay_FormClosed;
             UpdateCommandsDisplayDockState();
 
             _levelMenuItems[_commandsDisplay.Content.level].Checked = true;
             UpdateDiscordPresence("Editing " + level);
         }
+
+        private void _commandsDisplay_Resize(object sender, EventArgs e)
+        {
+            SettingsManager.SetFloat(Singleton.Settings.CommandsSplitWidth, (float)dockPanel.DockLeftPortion);
+        }
+
         private void _commandsDisplay_FormClosed(object sender, FormClosedEventArgs e)
         {
             UpdateDiscordPresence("");

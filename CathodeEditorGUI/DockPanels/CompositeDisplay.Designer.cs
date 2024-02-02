@@ -289,6 +289,7 @@ namespace CommandsEditor.DockPanels
             this.dockPanel.Size = new System.Drawing.Size(781, 773);
             this.dockPanel.TabIndex = 178;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
+            this.dockPanel.Resize += new System.EventHandler(this.dockPanel_Resize);
             // 
             // panel1
             // 

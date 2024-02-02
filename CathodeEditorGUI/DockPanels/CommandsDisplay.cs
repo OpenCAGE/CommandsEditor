@@ -137,11 +137,19 @@ namespace CommandsEditor.DockPanels
             DockAreas = SettingsManager.GetBool(Singleton.Settings.EnableFileBrowser) ? DockAreas.DockBottom : DockAreas.DockLeft;
 
             splitContainer1.Panel2Collapsed = !SettingsManager.GetBool(Singleton.Settings.EnableFileBrowser);
+            splitContainer1.FixedPanel = FixedPanel.Panel1;
+            splitContainer1.SplitterDistance = SettingsManager.GetInteger(Singleton.Settings.CompositeSplitWidth, 330);
 
             if (SettingsManager.GetBool(Singleton.Settings.AutoHideCompositeDisplay))
                 Singleton.Editor.DockPanel.ActiveAutoHideContent = this;
             else
                 Singleton.Editor.DockPanel.ActiveAutoHideContent = null;
+        }
+
+        //UI: handle saving split container width between commands/runs 
+        private void treeView1_Resize(object sender, EventArgs e)
+        {
+            SettingsManager.SetInteger(Singleton.Settings.CompositeSplitWidth, splitContainer1.SplitterDistance);
         }
 
         /* File browser: select folder/composite */
