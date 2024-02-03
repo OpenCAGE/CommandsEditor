@@ -11,6 +11,7 @@ using CATHODE.Scripting;
 using CathodeLib;
 using CATHODE;
 using System.Numerics;
+using Newtonsoft.Json;
 
 namespace CommandsEditor.UserControls
 {
@@ -21,15 +22,22 @@ namespace CommandsEditor.UserControls
         public GUI_VectorDataType()
         {
             InitializeComponent();
+            this.ContextMenuStrip = contextMenuStrip1;
         }
 
         public void PopulateUI(cVector3 cVec, string paramID)
         {
             vectorVal = cVec;
             label1.Text = paramID;
-            POS_X_1.Value = (decimal)cVec.value.X;
-            POS_Y_1.Value = (decimal)cVec.value.Y;
-            POS_Z_1.Value = (decimal)cVec.value.Z;
+
+            UpdateUI();
+        }
+
+        private void UpdateUI()
+        {
+            POS_X_1.Value = (decimal)vectorVal.value.X;
+            POS_Y_1.Value = (decimal)vectorVal.value.Y;
+            POS_Z_1.Value = (decimal)vectorVal.value.Z;
         }
 
         private void POS_X_1_ValueChanged(object sender, EventArgs e)
@@ -45,6 +53,35 @@ namespace CommandsEditor.UserControls
         private void POS_Z_1_ValueChanged(object sender, EventArgs e)
         {
             vectorVal.value.Z = (float)POS_Z_1.Value;
+        }
+
+        private void copyTransformToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Clipboard.SetText(JsonConvert.SerializeObject(vectorVal));
+        }
+
+        private void pasteTransformToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!POS_X_1.Enabled) return;
+
+            string val = Clipboard.GetText()?.ToString();
+            cVector3 vector = null;
+            try
+            {
+                vector = JsonConvert.DeserializeObject<cVector3>(val);
+            }
+            catch { }
+            if (vector == null)
+            {
+                MessageBox.Show("Failed to paste vector.", "Invalid clipboard", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            vectorVal.value.X = vector.value.X;
+            vectorVal.value.Y = vector.value.Y;
+            vectorVal.value.Z = vector.value.Z;
+
+            UpdateUI();
         }
     }
 }
