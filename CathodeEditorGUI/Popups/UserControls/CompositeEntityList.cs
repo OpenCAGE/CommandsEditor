@@ -12,7 +12,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static CommandsEditor.Popups.UserControls.CompositeEntityList;
 
 namespace CommandsEditor.Popups.UserControls
 {
@@ -52,6 +51,9 @@ namespace CommandsEditor.Popups.UserControls
         public CompositeEntityList()
         {
             InitializeComponent();
+            ClearSearch();
+
+            clearSearchBtn.BringToFront();
         }
 
         /* This UserControl differs from BaseUserControl because we don't instantiate at runtime - so make sure to call setup in code to pass this construction info before you use it. */
@@ -89,54 +91,22 @@ namespace CommandsEditor.Popups.UserControls
             if (clearSearch) 
                 ClearSearch();
 
-            PopulateEntities(GetDisplayableEntities());
+            //By calling a search again, we won't necessarily show ALL entities when loading, but we'll respect the user's search, which is better
+            DoSearch();
         }
 
-        /* Add a new entity to the list after initial population */
-        public void AddNewEntity(Entity newEnt)
+        /* Add a new entity to the list */
+        public void AddNewEntity(Entity entity)
         {
-            if (newEnt.variant == EntityVariant.ALIAS && !_displayOptions.DisplayAliases)
+            if (entity.variant == EntityVariant.ALIAS && !_displayOptions.DisplayAliases)
                 return;
-            if (newEnt.variant == EntityVariant.PROXY && !_displayOptions.DisplayProxies)
+            if (entity.variant == EntityVariant.PROXY && !_displayOptions.DisplayProxies)
                 return;
-            if (newEnt.variant == EntityVariant.FUNCTION && !_displayOptions.DisplayFunctions)
+            if (entity.variant == EntityVariant.FUNCTION && !_displayOptions.DisplayFunctions)
                 return;
-            if (newEnt.variant == EntityVariant.VARIABLE && !_displayOptions.DisplayVariables)
+            if (entity.variant == EntityVariant.VARIABLE && !_displayOptions.DisplayVariables)
                 return;
 
-            if (_currentSearch == "")
-                AddEntityToListView(newEnt);
-            else
-                ReloadComposite();
-        }
-
-        /* Focus the entity list */
-        public void FocusOnList()
-        {
-            composite_content.Focus();
-        }
-
-        private void PopulateEntities(List<Entity> entities)
-        {
-            composite_content.BeginUpdate();
-            composite_content.Items.Clear();
-
-            bool hasID = composite_content.Columns.ContainsKey("ID");
-            bool showID = SettingsManager.GetBool(Singleton.Settings.EntIdOpt);
-            if (showID && !hasID)
-                composite_content.Columns.Add(new ColumnHeader() { Name = "ID", Text = "ID", Width = 100 });
-            else if (!showID && hasID)
-                composite_content.Columns.RemoveByKey("ID");
-
-            for (int i = 0; i < entities.Count; i++)
-                AddNewEntity(entities[i]);
-
-            composite_content.SetGroupState(ListViewGroupState.Collapsible);
-            composite_content.EndUpdate();
-        }
-
-        private void AddEntityToListView(Entity entity)
-        {
             ListViewItem item = (ListViewItem)_content.GenerateListViewItem(entity, _composite).Clone();
 
             //Keep these indexes in sync with ListViewGroup 
@@ -171,6 +141,31 @@ namespace CommandsEditor.Popups.UserControls
             composite_content.Items.Add(item);
         }
 
+        /* Focus the entity list */
+        public void FocusOnList()
+        {
+            composite_content.Focus();
+        }
+
+        private void PopulateEntities(List<Entity> entities)
+        {
+            composite_content.BeginUpdate();
+            composite_content.Items.Clear();
+
+            bool hasID = composite_content.Columns.ContainsKey("ID");
+            bool showID = SettingsManager.GetBool(Singleton.Settings.EntIdOpt);
+            if (showID && !hasID)
+                composite_content.Columns.Add(new ColumnHeader() { Name = "ID", Text = "ID", Width = 100 });
+            else if (!showID && hasID)
+                composite_content.Columns.RemoveByKey("ID");
+
+            for (int i = 0; i < entities.Count; i++)
+                AddNewEntity(entities[i]);
+
+            composite_content.SetGroupState(ListViewGroupState.Collapsible);
+            composite_content.EndUpdate();
+        }
+
         private void composite_content_SelectedIndexChanged(object sender, EventArgs e)
         {
             SelectedEntityChanged?.Invoke(SelectedEntity);
@@ -179,29 +174,56 @@ namespace CommandsEditor.Popups.UserControls
         private void entity_search_btn_Click(object sender, EventArgs e)
         {
             if (entity_search_box.Text == _currentSearch) return;
+            _currentSearch = entity_search_box.Text;
 
+            clearSearchBtn.Visible = _currentSearch != "";
+
+            DoSearch();
+        }
+
+        private void clearSearchBtn_Click(object sender, EventArgs e)
+        {
+            if (entity_search_box.Text == "" && _currentSearch == "")
+                return;
+
+            ClearSearch();
+            DoSearch();
+        }
+
+        private void DoSearch()
+        {
             List<Entity> allEntities = GetDisplayableEntities();
             List<Entity> filteredEntities = new List<Entity>();
 
-            foreach (Entity entity in allEntities)
+            //NOTE: we look at current search, NOT the text in the textbox - we want to respect the user's button click when reloading
+            if (_currentSearch == "")
             {
-                foreach (ListViewItem.ListViewSubItem subitem in _content.composite_content_cache[_composite][entity].SubItems)
+                filteredEntities = allEntities;
+            }
+            else
+            {
+                for (int i = 0; i < allEntities.Count; i++)
                 {
-                    if (!subitem.Text.ToUpper().Contains(entity_search_box.Text.ToUpper())) continue;
+                    ListViewItem item = _content.GenerateListViewItem(allEntities[i], _composite);
+                    for (int x = 0; x < item.SubItems.Count; x++)
+                    {
+                        if (!item.SubItems[x].Text.ToUpper().Contains(_currentSearch.ToUpper()))
+                            continue;
 
-                    filteredEntities.Add(entity);
-                    break;
+                        filteredEntities.Add(allEntities[i]);
+                        break;
+                    }
                 }
             }
 
             PopulateEntities(filteredEntities);
-            _currentSearch = entity_search_box.Text;
         }
 
         private void ClearSearch()
         {
             _currentSearch = "";
             entity_search_box.Text = "";
+            clearSearchBtn.Visible = false;
         }
 
         private List<Entity> GetDisplayableEntities()
