@@ -523,12 +523,15 @@ namespace CommandsEditor.DockPanels
             if (dialog != null && (dialog.Variant != variant || dialog.Composite != composite))
                 dialog.Close();
 
-            if (dialog == null) 
+            if (dialog == null)
+            {
                 dialog = new AddEntity(this, variant, composite);
+                dialog.OnNewEntity += OnAddNewEntity;
+                dialog.FormClosed += Dialog_FormClosed;
+            }
 
             dialog.Show();
-            dialog.OnNewEntity += OnAddNewEntity;
-            dialog.FormClosed += Dialog_FormClosed;
+            dialog.Focus();
         }
         private void OnAddNewEntity(Entity entity)
         {
