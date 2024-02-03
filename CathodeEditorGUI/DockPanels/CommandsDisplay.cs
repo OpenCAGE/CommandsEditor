@@ -41,6 +41,8 @@ namespace CommandsEditor.DockPanels
         AddComposite _addCompositeDialog = null;
         AddFolder _addFolderDialog = null;
 
+        private int _defaultSplitterDistance = 330;
+
         public CommandsDisplay(string levelName)
         {
             InitializeComponent();
@@ -138,12 +140,17 @@ namespace CommandsEditor.DockPanels
 
             splitContainer1.Panel2Collapsed = !SettingsManager.GetBool(Singleton.Settings.EnableFileBrowser);
             splitContainer1.FixedPanel = FixedPanel.Panel1;
-            splitContainer1.SplitterDistance = SettingsManager.GetInteger(Singleton.Settings.CompositeSplitWidth, 330);
+            splitContainer1.SplitterDistance = SettingsManager.GetInteger(Singleton.Settings.CompositeSplitWidth, _defaultSplitterDistance);
 
             if (SettingsManager.GetBool(Singleton.Settings.AutoHideCompositeDisplay))
                 Singleton.Editor.DockPanel.ActiveAutoHideContent = this;
             else
                 Singleton.Editor.DockPanel.ActiveAutoHideContent = null;
+        }
+
+        public void ResetSplitter()
+        {
+            splitContainer1.SplitterDistance = _defaultSplitterDistance;
         }
 
         //UI: handle saving split container width between commands/runs 

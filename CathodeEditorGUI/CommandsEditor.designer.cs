@@ -58,6 +58,7 @@
             this.statusText = new System.Windows.Forms.ToolStripStatusLabel();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.resetUILayoutsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -217,7 +218,8 @@
             this.miscToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.showConfirmationWhenSavingToolStripMenuItem,
             this.useTexturedModelViewExperimentalToolStripMenuItem,
-            this.keepFunctionUsesWindowOpenToolStripMenuItem});
+            this.keepFunctionUsesWindowOpenToolStripMenuItem,
+            this.resetUILayoutsToolStripMenuItem});
             this.miscToolStripMenuItem.Name = "miscToolStripMenuItem";
             this.miscToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.miscToolStripMenuItem.Text = "Misc";
@@ -286,6 +288,13 @@
             this.dockPanel.TabIndex = 5;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
             // 
+            // resetUILayoutsToolStripMenuItem
+            // 
+            this.resetUILayoutsToolStripMenuItem.Name = "resetUILayoutsToolStripMenuItem";
+            this.resetUILayoutsToolStripMenuItem.Size = new System.Drawing.Size(286, 22);
+            this.resetUILayoutsToolStripMenuItem.Text = "Reset UI Layouts";
+            this.resetUILayoutsToolStripMenuItem.Click += new System.EventHandler(this.resetUILayoutsToolStripMenuItem_Click);
+            // 
             // CommandsEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -338,5 +347,6 @@
         private System.Windows.Forms.ToolStripMenuItem useTexturedModelViewExperimentalToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem keepFunctionUsesWindowOpenToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem nodeOpensEntity;
+        private System.Windows.Forms.ToolStripMenuItem resetUILayoutsToolStripMenuItem;
     }
 }

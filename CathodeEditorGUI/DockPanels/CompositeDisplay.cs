@@ -47,6 +47,8 @@ namespace CommandsEditor.DockPanels
         private static Mutex _mut = new Mutex();
         private bool _canExportChildren = true;
 
+        private int _defaultSplitterDistance = 500;
+
         public CompositeDisplay(CommandsDisplay commandsDisplay, Composite composite)
         {
             _commandsDisplay = commandsDisplay;
@@ -56,7 +58,7 @@ namespace CommandsEditor.DockPanels
             dockPanel.ShowDocumentIcon = true;
 
             splitContainer1.FixedPanel = FixedPanel.Panel1;
-            splitContainer1.SplitterDistance = SettingsManager.GetInteger(Singleton.Settings.EntitySplitWidth, 500);
+            splitContainer1.SplitterDistance = SettingsManager.GetInteger(Singleton.Settings.EntitySplitWidth, _defaultSplitterDistance);
 
             EditorUtils.CompositeType type = Content.editor_utils.GetCompositeType(composite);
 
@@ -68,6 +70,11 @@ namespace CommandsEditor.DockPanels
                 this.Icon = Properties.Resources.Avatar_Icon;
 
             Load(composite);
+        }
+
+        public void ResetSplitter()
+        {
+            splitContainer1.SplitterDistance = _defaultSplitterDistance;
         }
 
         private void Load(Composite composite)

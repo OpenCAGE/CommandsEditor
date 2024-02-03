@@ -47,6 +47,10 @@ namespace CommandsEditor
 
         private Dictionary<string, ToolStripMenuItem> _levelMenuItems = new Dictionary<string, ToolStripMenuItem>();
 
+        private float _defaultSplitterDistance = 0.25f;
+        private int _defaultWidth;
+        private int _defaultHeight;
+
         public CommandsEditor(string level = null)
         {
             _discord = new DiscordRpcClient("1152999067207606392");
@@ -56,13 +60,16 @@ namespace CommandsEditor
             Singleton.Editor = this;
 
             InitializeComponent();
-            dockPanel.DockLeftPortion = SettingsManager.GetFloat(Singleton.Settings.CommandsSplitWidth, 0.25f);
+            dockPanel.DockLeftPortion = SettingsManager.GetFloat(Singleton.Settings.CommandsSplitWidth, _defaultSplitterDistance);
             dockPanel.ActiveContentChanged += DockPanel_ActiveContentChanged;
             dockPanel.ShowDocumentIcon = true;
 
+            _defaultWidth = Width;
+            _defaultHeight = Height;
+
             WindowState = SettingsManager.GetString(Singleton.Settings.WindowState, "Normal") == "Maximized" ? FormWindowState.Maximized : FormWindowState.Normal;
-            Width = SettingsManager.GetInteger(Singleton.Settings.WindowWidth, Width);
-            Height = SettingsManager.GetInteger(Singleton.Settings.WindowHeight, Height);
+            Width = SettingsManager.GetInteger(Singleton.Settings.WindowWidth, _defaultWidth);
+            Height = SettingsManager.GetInteger(Singleton.Settings.WindowHeight, _defaultHeight);
             Resize += CommandsEditor_Resize;
             
             Singleton.OnEntitySelected += RefreshWebsocket;
@@ -666,6 +673,17 @@ namespace CommandsEditor
         {
             nodeOpensEntity.Checked = !nodeOpensEntity.Checked;
             SettingsManager.SetBool(Singleton.Settings.OpenEntityFromNode, nodeOpensEntity.Checked);
+        }
+
+        private void resetUILayoutsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            dockPanel.DockLeftPortion = _defaultSplitterDistance;
+            _commandsDisplay?.ResetSplitter();
+            _activeCompositeDisplay?.ResetSplitter();
+
+            WindowState = FormWindowState.Normal;
+            Width = _defaultWidth;
+            Height = _defaultHeight;
         }
 
         private void UpdateCommandsDisplayDockState()
