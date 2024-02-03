@@ -4,6 +4,7 @@ using CATHODE.Scripting.Internal;
 using CathodeLib;
 using CommandsEditor.DockPanels;
 using CommandsEditor.Popups.Base;
+using CommandsEditor.Popups.UserControls;
 using OpenCAGE;
 using System;
 using System.Collections.Generic;
@@ -166,11 +167,23 @@ namespace CommandsEditor
             EditHierarchy hierarchyEditor = null;
             if (createProxyEntity.Checked)
             {
-                hierarchyEditor = new EditHierarchy(_content, Content.commands.EntryPoints[0], true);
+                hierarchyEditor = new EditHierarchy(_content, Content.commands.EntryPoints[0], new CompositeEntityList.DisplayOptions()
+                {
+                    DisplayAliases = false,
+                    DisplayFunctions = true,
+                    DisplayProxies = false,
+                    DisplayVariables = false,
+                });
             }
             else if (createOverrideEntity.Checked)
             {
-                hierarchyEditor = new EditHierarchy(_content, _compositeDisplay.Composite, false);
+                hierarchyEditor = new EditHierarchy(_content, _compositeDisplay.Composite, new CompositeEntityList.DisplayOptions()
+                {
+                    DisplayAliases = false,
+                    DisplayFunctions = true,
+                    DisplayProxies = true,
+                    DisplayVariables = true,
+                });
             }
             hierarchyEditor.Show();
             hierarchyEditor.OnHierarchyGenerated += HierarchyEditor_HierarchyGenerated;

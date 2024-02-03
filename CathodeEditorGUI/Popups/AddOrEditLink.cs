@@ -13,6 +13,7 @@ using CATHODE.Scripting.Internal;
 using CathodeLib;
 using CommandsEditor.DockPanels;
 using CommandsEditor.Popups.Base;
+using CommandsEditor.Popups.UserControls;
 
 namespace CommandsEditor
 {
@@ -144,7 +145,7 @@ namespace CommandsEditor
                 _selectEntOut = null;
             }
 
-            _selectEntOut = new EditHierarchy(Content, _entityDisplay.Composite, false, false, true);
+            _selectEntOut = new EditHierarchy(Content, _entityDisplay.Composite, new CompositeEntityList.DisplayOptions() { ShowCheckboxes = false }, false);
             _selectEntOut.Show();
             _selectEntOut.OnHierarchyGenerated += OnSelectedEntityOut;
         }
@@ -162,7 +163,7 @@ namespace CommandsEditor
                 _selectEntIn = null;
             }
 
-            _selectEntIn = new EditHierarchy(Content, _entityDisplay.Composite, false, false, true);
+            _selectEntIn = new EditHierarchy(Content, _entityDisplay.Composite, new CompositeEntityList.DisplayOptions() { ShowCheckboxes = false }, false);
             _selectEntIn.Show();
             _selectEntIn.OnHierarchyGenerated += OnSelectedEntityIn;
         }

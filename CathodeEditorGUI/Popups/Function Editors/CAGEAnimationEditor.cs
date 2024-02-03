@@ -2,6 +2,7 @@
 using CATHODE.Scripting.Internal;
 using CommandsEditor.DockPanels;
 using CommandsEditor.Popups.Base;
+using CommandsEditor.Popups.UserControls;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -263,7 +264,13 @@ namespace CommandsEditor
 
         private void addNewEntityRef_Click(object sender, EventArgs e)
         {
-            EditHierarchy hierarchyEditor = new EditHierarchy(_content, _entityDisplay.Composite, false);
+            EditHierarchy hierarchyEditor = new EditHierarchy(_content, _entityDisplay.Composite, new CompositeEntityList.DisplayOptions()
+            {
+                DisplayAliases = false,
+                DisplayFunctions = true,
+                DisplayProxies = true,
+                DisplayVariables = true,
+            });
             hierarchyEditor.Show();
             hierarchyEditor.OnHierarchyGenerated += HierarchyEditor_HierarchyGenerated;
         }
@@ -411,7 +418,13 @@ namespace CommandsEditor
 
         private void addEventTrack_Click(object sender, EventArgs e)
         {
-            EditHierarchy hierarchyEditor = new EditHierarchy(_content, _entityDisplay.Composite, false);
+            EditHierarchy hierarchyEditor = new EditHierarchy(_content, _entityDisplay.Composite, new CompositeEntityList.DisplayOptions()
+            {
+                DisplayAliases = false,
+                DisplayFunctions = true,
+                DisplayProxies = true,
+                DisplayVariables = true,
+            });
             hierarchyEditor.Show();
             hierarchyEditor.OnHierarchyGenerated += HierarchyEditor2_HierarchyGenerated;
             SetupEventTimeline();
