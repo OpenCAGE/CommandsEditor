@@ -21,6 +21,7 @@ using OpenCAGE;
 using WeifenLuo.WinFormsUI.Docking;
 using System.Reflection;
 using System.Windows.Media.Animation;
+using System.Windows.Controls;
 
 namespace CommandsEditor
 {
@@ -71,8 +72,13 @@ namespace CommandsEditor
 
         private void OnDockStateChanged(object sender, EventArgs e)
         {
+            if (DockState == DockState.Unknown || DockState == DockState.Hidden)
+                return;
+
             if (DockState == _previousDockState) return;
             _previousDockState = DockState;
+
+            SettingsManager.SetString(Singleton.Settings.NodegraphState, DockState.ToString());
 
             UpdateEntities();
         }

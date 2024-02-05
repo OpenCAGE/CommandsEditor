@@ -61,6 +61,9 @@ namespace CommandsEditor
 
             InitializeComponent();
             dockPanel.DockLeftPortion = SettingsManager.GetFloat(Singleton.Settings.CommandsSplitWidth, _defaultSplitterDistance);
+            dockPanel.DockBottomPortion = SettingsManager.GetFloat(Singleton.Settings.SplitWidthMainBottom, _defaultSplitterDistance);
+            dockPanel.DockRightPortion = SettingsManager.GetFloat(Singleton.Settings.SplitWidthMainRight, _defaultSplitterDistance);
+
             dockPanel.ActiveContentChanged += DockPanel_ActiveContentChanged;
             dockPanel.ShowDocumentIcon = true;
 
@@ -71,6 +74,7 @@ namespace CommandsEditor
             Width = SettingsManager.GetInteger(Singleton.Settings.WindowWidth, _defaultWidth);
             Height = SettingsManager.GetInteger(Singleton.Settings.WindowHeight, _defaultHeight);
             Resize += CommandsEditor_Resize;
+            FormClosing += CommandsEditor_FormClosing;
             
             Singleton.OnEntitySelected += RefreshWebsocket;
             Singleton.OnCompositeSelected += RefreshWebsocket;
@@ -146,6 +150,12 @@ namespace CommandsEditor
             //If we have been launched to a level, load that
             if (level != null)
                 OnLevelSelected(level);
+        }
+
+        private void CommandsEditor_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            SettingsManager.SetFloat(Singleton.Settings.SplitWidthMainBottom, (float)dockPanel.DockBottomPortion);
+            SettingsManager.SetFloat(Singleton.Settings.SplitWidthMainRight, (float)dockPanel.DockRightPortion);
         }
 
         //UI: remember width/height of editor
@@ -595,7 +605,7 @@ namespace CommandsEditor
             if (showNodegraph.Checked)
             {
                 _nodeViewer = new NodeEditor();
-                _nodeViewer.Show(dockPanel, DockState.DockRightAutoHide);
+                _nodeViewer.Show(dockPanel, (DockState)Enum.Parse(typeof(DockState), SettingsManager.GetString(Singleton.Settings.NodegraphState, "DockRightAutoHide")));
                 _nodeViewer.FormClosed += NodeViewer_FormClosed;
             }
             else
@@ -676,12 +686,18 @@ namespace CommandsEditor
         private void resetUILayoutsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             dockPanel.DockLeftPortion = _defaultSplitterDistance;
+            dockPanel.DockRightPortion = _defaultSplitterDistance;
+            dockPanel.DockBottomPortion = _defaultSplitterDistance;
+
             _commandsDisplay?.ResetSplitter();
             _activeCompositeDisplay?.ResetSplitter();
 
             WindowState = FormWindowState.Normal;
             Width = _defaultWidth;
             Height = _defaultHeight;
+
+            if (_nodeViewer != null)
+                _nodeViewer.DockState = DockState.DockRightAutoHide;
         }
 
         private void UpdateCommandsDisplayDockState()
