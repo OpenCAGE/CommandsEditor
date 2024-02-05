@@ -384,6 +384,7 @@ namespace CommandsEditor.DockPanels
             }
 
             entity_params.ResumeLayout();
+            Singleton.OnEntityReloaded?.Invoke(_entity);
             Cursor.Current = Cursors.Default;
         }
 

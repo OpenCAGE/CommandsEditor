@@ -33,6 +33,10 @@ namespace CommandsEditor
         public static Action<LevelContent> OnLevelLoaded;
         public static Action<LevelContent> OnAssetsLoaded;
 
+        //Reload events
+        public static Action<Entity> OnEntityReloaded;
+        public static Action<Composite> OnCompositeReloaded;
+
         //Selection events
         public static Action<Entity> OnEntitySelected;
         public static Action<Composite> OnCompositeSelected;

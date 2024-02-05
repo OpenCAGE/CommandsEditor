@@ -126,6 +126,8 @@ namespace CommandsEditor.DockPanels
 
             exportComposite.Enabled = false;
             Task.Factory.StartNew(() => UpdateExportCompositeVisibility());
+
+            Singleton.OnCompositeReloaded?.Invoke(_composite);
         }
 
         /* Work out if we can export this composite: for now, we can't export composites that contain any resources, as the resource pointers would be wrong */
