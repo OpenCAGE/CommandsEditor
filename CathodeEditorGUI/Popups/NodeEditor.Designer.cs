@@ -80,7 +80,7 @@
             this.stNodeEditor1.Name = "stNodeEditor1";
             this.stNodeEditor1.RequireCtrlForZooming = false;
             this.stNodeEditor1.RoundedCornerRadius = 10;
-            this.stNodeEditor1.Size = new System.Drawing.Size(1017, 634);
+            this.stNodeEditor1.Size = new System.Drawing.Size(741, 524);
             this.stNodeEditor1.TabIndex = 1;
             this.stNodeEditor1.Text = "stNodeEditor1";
             // 
@@ -88,12 +88,11 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1017, 634);
+            this.ClientSize = new System.Drawing.Size(741, 524);
             this.Controls.Add(this.stNodeEditor1);
             this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "NodeEditor";
-            this.ShowIcon = true;
             this.Text = "Nodegraph";
             this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);

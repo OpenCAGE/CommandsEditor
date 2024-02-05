@@ -37,6 +37,9 @@ namespace CommandsEditor
         private bool _wasVisibleLastTime = false;
         private DockState _previousDockState = DockState.Unknown;
 
+        private const int _defaultWidth = 600;
+        private const int _defaultHeight = 500;
+
         public NodeEditor()
         {
             InitializeComponent();
@@ -52,11 +55,23 @@ namespace CommandsEditor
             Singleton.OnLevelLoaded += OnLevelLoaded;
         }
 
+        public void ResetLayout()
+        {
+            Width = _defaultWidth;
+            Height = _defaultHeight;
+        }
+
         private void NodeEditor_Shown(object sender, EventArgs e)
         {
             DockPanel.ActiveAutoHideContentChanged += OnDockActivenessChanged;
             DockPanel.ActiveContentChanged += OnDockActivenessChanged;
-            
+
+            if (DockState == DockState.Float)
+            {
+                Width = SettingsManager.GetInteger(Singleton.Settings.NodegraphWidth, _defaultWidth);
+                Height = SettingsManager.GetInteger(Singleton.Settings.NodegraphHeight, _defaultHeight);
+            }
+
             UpdateEntities();
         }
 
@@ -68,6 +83,12 @@ namespace CommandsEditor
             Singleton.OnEntitySelected -= UpdateEntities;
             Singleton.OnEntityReloaded -= UpdateEntities;
             Singleton.OnLevelLoaded -= OnLevelLoaded;
+
+            if (DockState == DockState.Float)
+            {
+                SettingsManager.SetInteger(Singleton.Settings.NodegraphWidth, Width);
+                SettingsManager.SetInteger(Singleton.Settings.NodegraphHeight, Height);
+            }
         }
 
         private void OnDockStateChanged(object sender, EventArgs e)

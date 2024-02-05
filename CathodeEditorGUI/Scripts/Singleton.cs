@@ -68,6 +68,8 @@ namespace CommandsEditor
             public readonly string WindowHeight = "CS_WindowHeight";
             public readonly string WindowState = "CS_WindowState";
             public readonly string NodegraphState = "CS_NodegraphState";
+            public readonly string NodegraphWidth = "CS_NodegraphWidth";
+            public readonly string NodegraphHeight = "CS_NodegraphHeight";
             public readonly string SplitWidthMainRight = "CS_SplitWidthMainRight";
             public readonly string SplitWidthMainBottom = "CS_SplitWidthMainBottom";
         }

@@ -697,7 +697,10 @@ namespace CommandsEditor
             Height = _defaultHeight;
 
             if (_nodeViewer != null)
+            {
                 _nodeViewer.DockState = DockState.DockRightAutoHide;
+                _nodeViewer.ResetLayout();
+            }
         }
 
         private void UpdateCommandsDisplayDockState()
