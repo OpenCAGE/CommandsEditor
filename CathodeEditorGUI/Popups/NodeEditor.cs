@@ -135,6 +135,7 @@ namespace CommandsEditor
                 return;
 
             Console.WriteLine("NODEGRAPH: Loading entities...");
+            _previouslySelectedEntity = ActiveEntity;
 
             CustomNode mainNode = EntityToNode(ActiveEntity, ActiveComposite);
             stNodeEditor1.Nodes.Add(mainNode);
@@ -241,6 +242,7 @@ namespace CommandsEditor
             //contextMenuStrip1.Renderer = new ToolStripRendererEx();
         }
 
+        private Entity _previouslySelectedEntity = null;
         private void Owner_SelectedChanged(object sender, EventArgs e)
         {
             if (!SettingsManager.GetBool(Singleton.Settings.OpenEntityFromNode)) 
@@ -248,9 +250,12 @@ namespace CommandsEditor
 
             //when a node is selected, load it in the commands editor
             STNode[] nodes = stNodeEditor1.GetSelectedNode();
-            if (nodes.Length == 0) return;
+            if (nodes.Length != 1) return;
 
             Entity ent = Singleton.Editor.ActiveCompositeDisplay?.Composite?.GetEntityByID(((CustomNode)nodes[0]).ID);
+            if (ent == _previouslySelectedEntity) return;
+            _previouslySelectedEntity = ent;
+
             Singleton.Editor.ActiveCompositeDisplay?.LoadEntity(ent);
             Singleton.OnEntitySelected?.Invoke(ent); //need to call this again b/c the activation event doesn't fire here
         }
