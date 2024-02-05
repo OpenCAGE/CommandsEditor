@@ -69,6 +69,8 @@ namespace CommandsEditor.UserControls
 
         private void DeleteLink_Click(object sender, EventArgs e)
         {
+            if (MessageBox.Show("Are you sure you want to remove this link?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+
             if (_isLinkOut)
                 _entityDisplay.Entity.childLinks.RemoveAll(o => o.connectionID == _link.connectionID);
             else
