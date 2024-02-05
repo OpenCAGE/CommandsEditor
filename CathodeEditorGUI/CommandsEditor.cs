@@ -594,11 +594,9 @@ namespace CommandsEditor
 
             if (showNodegraph.Checked)
             {
-                _nodeViewer = new NodeEditor(null);
-                _nodeViewer.Show();
+                _nodeViewer = new NodeEditor();
+                _nodeViewer.Show(dockPanel, DockState.DockRightAutoHide);
                 _nodeViewer.FormClosed += NodeViewer_FormClosed;
-                _nodeViewer.BringToFront();
-                _nodeViewer.Focus();
             }
             else
             {

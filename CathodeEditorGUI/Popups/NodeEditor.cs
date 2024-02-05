@@ -18,17 +18,22 @@ using System.Security.Cryptography;
 using CommandsEditor.Nodes;
 using CommandsEditor.DockPanels;
 using OpenCAGE;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace CommandsEditor
 {
-    public partial class NodeEditor : BaseWindow
+    public partial class NodeEditor : DockContent
     {
-        public NodeEditor(LevelContent content) : base(WindowClosesOn.NONE, content)
+        private LevelContent _content;
+
+        public NodeEditor()
         {
             InitializeComponent();
+            this.Activate();
 
             this.FormClosed += NodeEditor_FormClosed;
             Singleton.OnEntitySelected += OnEntitySelected;
+            Singleton.OnLevelLoaded += OnLevelLoaded;
 
             OnEntitySelected();
         }
@@ -40,11 +45,16 @@ namespace CommandsEditor
 
         private void OnEntitySelected(Entity ent = null)
         {
-            if (Content == null)
+            if (_content == null)
                 _content = Singleton.Editor.CommandsDisplay?.Content;
 
             stNodeEditor1.Nodes.Clear();
             AddEntities(Singleton.Editor.ActiveCompositeDisplay?.ActiveEntityDisplay?.Composite, Singleton.Editor.ActiveCompositeDisplay?.ActiveEntityDisplay?.Entity);
+        }
+
+        private void OnLevelLoaded(LevelContent content)
+        {
+            _content = content;
         }
 
         protected override void OnLoad(EventArgs e) {
@@ -174,7 +184,7 @@ namespace CommandsEditor
             {
                 case EntityVariant.PROXY:
                 case EntityVariant.ALIAS:
-                    Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, composite, (entity.variant == EntityVariant.PROXY) ? ((ProxyEntity)entity).proxy.path : ((AliasEntity)entity).alias.path, out Composite c, out string s);
+                    Entity ent = CommandsUtils.ResolveHierarchy(_content.commands, composite, (entity.variant == EntityVariant.PROXY) ? ((ProxyEntity)entity).proxy.path : ((AliasEntity)entity).alias.path, out Composite c, out string s);
                     node.SetColour(entity.variant == EntityVariant.PROXY ? Color.LightGreen : Color.Orange, Color.Black);
                     switch (ent.variant)
                     {
@@ -185,7 +195,7 @@ namespace CommandsEditor
                                 node.SetName(entity.variant + " TO: " + function.function.ToString() + "\n" + EntityUtils.GetName(c, ent), 35);
                             }
                             else
-                                node.SetName(entity.variant + " TO: " + Content.commands.GetComposite(function.function).name + "\n" + EntityUtils.GetName(c, ent), 35);
+                                node.SetName(entity.variant + " TO: " + _content.commands.GetComposite(function.function).name + "\n" + EntityUtils.GetName(c, ent), 35);
                             break;
                         case EntityVariant.VARIABLE:
                             node.SetName(entity.variant + " TO: " + ((VariableEntity)ent).name.ToString());
@@ -201,7 +211,7 @@ namespace CommandsEditor
                     else
                     {
                         node.SetColour(Color.Blue, Color.White);
-                        node.SetName(Content.commands.GetComposite(funcEnt.function).name + "\n" + EntityUtils.GetName(composite, entity), 35);
+                        node.SetName(_content.commands.GetComposite(funcEnt.function).name + "\n" + EntityUtils.GetName(composite, entity), 35);
                     }
                     break;
                 case EntityVariant.VARIABLE:
