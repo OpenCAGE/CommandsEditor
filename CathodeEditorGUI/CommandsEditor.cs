@@ -685,16 +685,16 @@ namespace CommandsEditor
 
         private void resetUILayoutsToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            WindowState = FormWindowState.Normal;
+            Width = _defaultWidth;
+            Height = _defaultHeight;
+
             dockPanel.DockLeftPortion = _defaultSplitterDistance;
             dockPanel.DockRightPortion = _defaultSplitterDistance;
             dockPanel.DockBottomPortion = _defaultSplitterDistance;
 
             _commandsDisplay?.ResetSplitter();
             _activeCompositeDisplay?.ResetSplitter();
-
-            WindowState = FormWindowState.Normal;
-            Width = _defaultWidth;
-            Height = _defaultHeight;
 
             if (_nodeViewer != null)
             {
