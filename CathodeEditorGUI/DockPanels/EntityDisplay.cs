@@ -36,14 +36,15 @@ namespace CommandsEditor.DockPanels
 
         public EntityDisplay(CompositeDisplay compositeDisplay, Entity entity)
         {
+            _entity = entity;
+            _compositeDisplay = compositeDisplay;
+
             if (entity == null)
             {
                 this.Close();
                 return;
             }
 
-            _entity = entity;
-            _compositeDisplay = compositeDisplay;
             _entityCompositePtr = _entity.variant == EntityVariant.FUNCTION ? Content.commands.GetComposite(((FunctionEntity)_entity).function) : null;
 
             InitializeComponent();

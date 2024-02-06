@@ -82,6 +82,7 @@ namespace CommandsEditor.DockPanels
             _commandsDisplay = null;
             _activeEntityDisplay = null;
             CloseAllChildTabs();
+            _entityDisplays.Clear();
         }
 
         public void ResetSplitter()
@@ -288,25 +289,18 @@ namespace CommandsEditor.DockPanels
             {
                 EntityDisplay panel = new EntityDisplay(this, entity);
                 panel.Show(dockPanel, DockState.Document);
-                panel.FormClosed += OnCompositePanelClosed;
+                panel.FormClosing += Panel_FormClosing;
                 _entityDisplays.Add(entity, panel);
             }
             
             compositeEntityList1.FocusOnList();
         }
 
-        private void OnCompositePanelClosed(object sender, FormClosedEventArgs e)
+        private void Panel_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Entity ent = ((EntityDisplay)sender).Entity;
-            try
-            {
-                if (_entityDisplays.ContainsKey(ent))
-                {
-                    _entityDisplays[ent]?.Dispose();
-                    _entityDisplays.Remove(ent);
-                }
-            }
-            catch { }
+            EntityDisplay display = (EntityDisplay)sender;
+            Entity ent = display.Entity;
+            _entityDisplays.Remove(ent);
         }
 
         public void CloseAllChildTabsExcept(Entity entity)
