@@ -8,7 +8,6 @@ using CATHODE;
 using CATHODE.Scripting;
 using System.Net.NetworkInformation;
 using System.ComponentModel;
-using static HelixToolkit.Wpf.PlyReader;
 using System.Runtime.CompilerServices;
 using System.Threading;
 

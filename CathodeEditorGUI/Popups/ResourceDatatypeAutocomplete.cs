@@ -20,7 +20,7 @@ namespace CommandsEditor.Popups
         AssetList.Type type = AssetList.Type.NONE;
         string typeArgs = "";
 
-        static List<AssetList> assetlist_cache = new List<AssetList>(); //TODO: cache controls, not just the contents of the controls
+        public static List<AssetList> assetlist_cache = new List<AssetList>(); //TODO: cache controls, not just the contents of the controls
         AssetList content = null;
 
         public ResourceDatatypeAutocomplete()
@@ -34,8 +34,6 @@ namespace CommandsEditor.Popups
             Text = paramID;
             type = assets;
             typeArgs = args;
-
-            //TODO: we never clear up these lists for old levels, which could lead to a slow memory leak!
 
             content = assetlist_cache.FirstOrDefault(o => o.level == Content.commands.Filepath && o.assets == assets && o.args == args);
             if (content == null)

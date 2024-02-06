@@ -18,7 +18,6 @@ using WebSocketSharp;
 using CommandsEditor.Popups;
 using OpenCAGE;
 using System.IO;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Runtime.Remoting.Messaging;
 using ListViewItem = System.Windows.Forms.ListViewItem;
 using ListViewGroupCollapse;
@@ -46,7 +45,9 @@ namespace CommandsEditor.DockPanels
         public CommandsDisplay(string levelName)
         {
             InitializeComponent();
+
             this.Text = levelName;
+            this.FormClosed += CommandsDisplay_FormClosed;
 
             _content = new LevelContent(levelName);
             _treeUtility = new TreeUtility(treeView1, _content);
@@ -61,6 +62,17 @@ namespace CommandsEditor.DockPanels
 
             SelectCompositeAndReloadList(_content.commands.EntryPoints[0]);
             Singleton.OnCompositeSelected?.Invoke(_content.commands.EntryPoints[0]); //need to call this again b/c the activation event doesn't fire here
+        }
+
+        private void CommandsDisplay_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _content = null;
+
+            if (ResourceDatatypeAutocomplete.assetlist_cache != null)
+            {
+                ResourceDatatypeAutocomplete.assetlist_cache.Clear();
+                ResourceDatatypeAutocomplete.assetlist_cache = null;
+            }
         }
 
         public void SelectCompositeAndReloadList(Composite composite)

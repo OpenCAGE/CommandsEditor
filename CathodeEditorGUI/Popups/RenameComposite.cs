@@ -14,7 +14,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
-using static CATHODE.Scripting.TriggerSequence;
 
 namespace CommandsEditor
 {

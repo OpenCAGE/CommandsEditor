@@ -19,6 +19,13 @@ namespace CommandsEditor.UserControls
         public BaseUserControl()
         {
             InitializeComponent();
+
+            this.Disposed += BaseUserControl_Disposed;
+        }
+
+        private void BaseUserControl_Disposed(object sender, EventArgs e)
+        {
+            _content = null;
         }
 
         public BaseUserControl(LevelContent editor)

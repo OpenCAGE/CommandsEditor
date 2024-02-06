@@ -77,6 +77,8 @@ namespace CommandsEditor
 
         private void NodeEditor_FormClosed(object sender, FormClosedEventArgs e)
         {
+            _content = null;
+
             DockPanel.ActiveAutoHideContentChanged -= OnDockActivenessChanged;
             DockPanel.ActiveContentChanged -= OnDockActivenessChanged;
 

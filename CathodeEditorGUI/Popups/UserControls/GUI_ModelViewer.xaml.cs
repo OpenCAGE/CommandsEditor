@@ -11,7 +11,6 @@ using CATHODE.Scripting;
 using System;
 using CATHODE.LEGACY;
 using HelixToolkit.Wpf;
-using static CATHODE.Materials.Material;
 using System.Security.Cryptography;
 using System.Linq;
 using System.Drawing.Drawing2D;
@@ -58,7 +57,7 @@ namespace CommandsEditor.Popups.UserControls
                     ShadersPAK.MaterialTextureContext mdlMetaDiff = mdlMeta.textures.FirstOrDefault(o => o.Type == ShadersPAK.ShaderSlot.DIFFUSE_MAP);
                     if (mdlMetaDiff != null)
                     {
-                        Textures tex = mdlMetaDiff.TextureInfo.Source == Texture.TextureSource.GLOBAL ? _content.resource.textures_global : _content.resource.textures;
+                        Textures tex = mdlMetaDiff.TextureInfo.Source == CATHODE.Materials.Material.Texture.TextureSource.GLOBAL ? _content.resource.textures_global : _content.resource.textures;
                         Textures.TEX4 diff = tex.GetAtWriteIndex(mdlMetaDiff.TextureInfo.BinIndex);
                         byte[] diffDDS = diff?.ToDDS();
                         DiffuseMaterial mat = new DiffuseMaterial(new ImageBrush(diffDDS?.ToBitmap()?.ToImageSource()));

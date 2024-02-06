@@ -24,6 +24,13 @@ namespace CommandsEditor.Popups.Base
         public BaseWindow()
         {
             InitializeComponent();
+
+            this.Disposed += BaseWindow_Disposed;
+        }
+
+        private void BaseWindow_Disposed(object sender, EventArgs e)
+        {
+            _content = null;
         }
 
         public BaseWindow(WindowClosesOn config, LevelContent content)

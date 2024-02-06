@@ -12,7 +12,6 @@ using CathodeLib;
 using CATHODE;
 using CATHODE.LEGACY;
 using System.Numerics;
-using static CATHODE.Models.CS2.Component;
 
 namespace CommandsEditor.Popups.UserControls
 {
