@@ -183,10 +183,13 @@ namespace CommandsEditor
                 if (node == null)
                 {
                     node = EntityToNode(ActiveComposite.GetEntityByID(link.childID), ActiveComposite);
-                    outputNodes.Add(node);
-                    stNodeEditor1.Nodes.Add(node);
+                    if (node != null)
+                    {
+                        outputNodes.Add(node);
+                        stNodeEditor1.Nodes.Add(node);
+                    }
                 }
-                STNodeOption opt1 = node.AddInputOption(link.childParamID.ToString());
+                STNodeOption opt1 = node?.AddInputOption(link.childParamID.ToString());
                 STNodeOption opt2 = mainNode.AddOutputOption(link.parentParamID.ToString());
                 opt1.ConnectOption(opt2);
             }
@@ -255,6 +258,9 @@ namespace CommandsEditor
 
         private CustomNode EntityToNode(Entity entity, Composite composite)
         {
+            if (entity == null)
+                return null;
+
             CustomNode node = new CustomNode();
             node.ID = entity.shortGUID;
             switch (entity.variant)

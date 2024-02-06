@@ -282,10 +282,9 @@ namespace CommandsEditor.DockPanels
                 CloseAllChildTabs();
             }
 
-            CompositeDisplay panel = new CompositeDisplay(this, composite);
-            panel.Show(Singleton.Editor.DockPanel, DockState.Document);
-            panel.FormClosed += OnCompositePanelClosed;
-            _compositeDisplay = panel;
+            _compositeDisplay = new CompositeDisplay(this, composite);
+            _compositeDisplay.Show(Singleton.Editor.DockPanel, DockState.Document);
+            _compositeDisplay.FormClosing += Panel_FormClosing;
 
 #if DEBUG
             //if (_renderer != null) _renderer.Close();
@@ -297,10 +296,8 @@ namespace CommandsEditor.DockPanels
             return _compositeDisplay;
         }
 
-        private void OnCompositePanelClosed(object sender, FormClosedEventArgs e)
+        private void Panel_FormClosing(object sender, FormClosingEventArgs e)
         {
-            _compositeDisplay?.CloseAllChildTabs();
-            _compositeDisplay?.Dispose();
             _compositeDisplay = null;
         }
 

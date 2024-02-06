@@ -78,6 +78,13 @@ namespace CommandsEditor.DockPanels
             for (int i = 0; i < entity_params.Controls.Count; i++)
                 entity_params.Controls[i].Dispose();
             entity_params.Controls.Clear();
+
+            _compositeDisplay = null;
+            _entity = null;
+            _entityCompositePtr = null;
+
+            parentEntities.Clear();
+            childEntities.Clear();
         }
 
         /* Reload this display */

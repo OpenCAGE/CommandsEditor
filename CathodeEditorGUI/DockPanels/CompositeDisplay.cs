@@ -78,6 +78,9 @@ namespace CommandsEditor.DockPanels
 
         private void CompositeDisplay_FormClosed(object sender, FormClosedEventArgs e)
         {
+            _composite = null;
+            _commandsDisplay = null;
+            _activeEntityDisplay = null;
             CloseAllChildTabs();
         }
 
@@ -295,11 +298,15 @@ namespace CommandsEditor.DockPanels
         private void OnCompositePanelClosed(object sender, FormClosedEventArgs e)
         {
             Entity ent = ((EntityDisplay)sender).Entity;
-            if (_entityDisplays.ContainsKey(ent))
+            try
             {
-                _entityDisplays[ent]?.Dispose();
-                _entityDisplays.Remove(ent);
+                if (_entityDisplays.ContainsKey(ent))
+                {
+                    _entityDisplays[ent]?.Dispose();
+                    _entityDisplays.Remove(ent);
+                }
             }
+            catch { }
         }
 
         public void CloseAllChildTabsExcept(Entity entity)
