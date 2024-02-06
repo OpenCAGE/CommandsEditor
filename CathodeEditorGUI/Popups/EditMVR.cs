@@ -45,7 +45,7 @@ namespace CommandsEditor
             _mvrListIndexes.Clear();
             for (int i = 0; i < Content.mvr.Entries.Count; i++)
             {
-                if (nodeID.val != null && Content.mvr.Entries[i].entity.entity_id != nodeID) continue;
+                if (Content.mvr.Entries[i].entity.entity_id != nodeID) continue;
                 _mvrListIndexes.Add(i);
             }
 

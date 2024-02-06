@@ -45,7 +45,7 @@ namespace CommandsEditor.DockPanels
         private static Mutex _mut = new Mutex();
         private bool _canExportChildren = true;
 
-        private int _defaultSplitterDistance = 500;
+        private const int _defaultSplitterDistance = 500;
 
         public CompositeDisplay(CommandsDisplay commandsDisplay, Composite composite)
         {

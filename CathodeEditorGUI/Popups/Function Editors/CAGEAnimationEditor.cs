@@ -131,7 +131,7 @@ namespace CommandsEditor
                 for (int x = 0; x < filteredAnims[i].keyframes.Count; x++)
                 {
                     CAGEAnimation.Animation.Keyframe keyframeData = filteredAnims[i].keyframes[x];
-                    string keyframeText = connection.parameterSubID.val == null || connection.parameterSubID.ToString() == "" ? connection.parameterID.ToString() : connection.parameterID.ToString() + " [" + connection.parameterSubID.ToString() + "]";
+                    string keyframeText = connection.parameterSubID.ToString() == "" ? connection.parameterID.ToString() : connection.parameterID.ToString() + " [" + connection.parameterSubID.ToString() + "]";
                     Keyframe keyframeUI = animTimeline.AddKeyframe(keyframeData.secondsSinceStart, keyframeText);
                     keyframeUI.OnMoved += OnHandleMoved;
                     keyframeUI.HandleText = keyframeData.paramValue.ToString("0.00");
