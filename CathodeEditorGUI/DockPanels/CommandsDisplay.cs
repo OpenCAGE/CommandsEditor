@@ -21,6 +21,7 @@ using System.IO;
 using System.Runtime.Remoting.Messaging;
 using ListViewItem = System.Windows.Forms.ListViewItem;
 using ListViewGroupCollapse;
+using System.Threading;
 
 namespace CommandsEditor.DockPanels
 {
@@ -48,15 +49,19 @@ namespace CommandsEditor.DockPanels
 
             this.Text = levelName;
             this.FormClosed += CommandsDisplay_FormClosed;
+            this.Load += CommandsDisplay_Load;
 
             _content = new LevelContent(levelName);
-            _treeUtility = new TreeUtility(treeView1, _content);
+            _treeUtility = new TreeUtility(treeView1);
+        }
 
+        private void CommandsDisplay_Load(object sender, EventArgs e)
+        {
             if (Enum.TryParse<View>(SettingsManager.GetString(Singleton.Settings.FileBrowserViewOpt), out View view))
                 SetViewMode(view);
 
             //TODO: these utils should be moved into LevelContent and made less generic. makes no sense anymore.
-            _content.editor_utils = new EditorUtils(_content);
+            _content.editor_utils = new EditorUtils();
             Task.Factory.StartNew(() => _content.editor_utils.GenerateEntityNameCache(Singleton.Editor));
             CacheHierarchies();
 
@@ -67,6 +72,7 @@ namespace CommandsEditor.DockPanels
         private void CommandsDisplay_FormClosed(object sender, FormClosedEventArgs e)
         {
             _content = null;
+            _treeUtility = null;
 
             if (ResourceDatatypeAutocomplete.assetlist_cache != null)
             {
@@ -476,7 +482,7 @@ namespace CommandsEditor.DockPanels
                 if (_renameComposite != null)
                     _renameComposite.Close();
 
-                _renameComposite = new RenameComposite(this.Content, content.Composite, _currentDisplayFolderPath);
+                _renameComposite = new RenameComposite(content.Composite, _currentDisplayFolderPath);
                 _renameComposite.Show();
                 _renameComposite.OnRenamed += OnCompositeRenamed;
                 _renameComposite.FormClosed += _renameComposite_FormClosed;
@@ -565,7 +571,7 @@ namespace CommandsEditor.DockPanels
                 return;
             }
 
-            _functionUsesDialog = new ShowCompositeUses(Content);
+            _functionUsesDialog = new ShowCompositeUses();
             _functionUsesDialog.Show();
             _functionUsesDialog.OnEntitySelected += LoadCompositeAndEntity;
             _functionUsesDialog.FormClosed += _functionUsesDialog_FormClosed;

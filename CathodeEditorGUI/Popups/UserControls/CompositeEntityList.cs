@@ -43,10 +43,10 @@ namespace CommandsEditor.Popups.UserControls
         public Composite Composite => _composite;
         private Composite _composite;
 
+        protected LevelContent Content => Singleton.Editor?.CommandsDisplay?.Content;
+
         private string _currentSearch = "";
         private DisplayOptions _displayOptions;
-
-        private LevelContent _content;
 
         public CompositeEntityList()
         {
@@ -54,12 +54,18 @@ namespace CommandsEditor.Popups.UserControls
             ClearSearch();
 
             clearSearchBtn.BringToFront();
+
+            this.Disposed += CompositeEntityList_Disposed;
+        }
+
+        private void CompositeEntityList_Disposed(object sender, EventArgs e)
+        {
+            composite_content.Items.Clear();
         }
 
         /* This UserControl differs from BaseUserControl because we don't instantiate at runtime - so make sure to call setup in code to pass this construction info before you use it. */
-        public void Setup(Composite composite, LevelContent editor, DisplayOptions displayOptions = null)
+        public void Setup(Composite composite, DisplayOptions displayOptions = null)
         {
-            _content = editor;
             _composite = composite;
 
             SetDisplayOptions(displayOptions);
@@ -107,7 +113,7 @@ namespace CommandsEditor.Popups.UserControls
             if (entity.variant == EntityVariant.VARIABLE && !_displayOptions.DisplayVariables)
                 return;
 
-            ListViewItem item = (ListViewItem)_content.GenerateListViewItem(entity, _composite).Clone();
+            ListViewItem item = (ListViewItem)Content.GenerateListViewItem(entity, _composite).Clone();
 
             //Keep these indexes in sync with ListViewGroup 
             switch (entity.variant)
@@ -117,7 +123,7 @@ namespace CommandsEditor.Popups.UserControls
                     item.ImageIndex = 0;
                     break;
                 case EntityVariant.FUNCTION:
-                    if (_content.commands.GetComposite(((FunctionEntity)entity).function) != null)
+                    if (Content.commands.GetComposite(((FunctionEntity)entity).function) != null)
                     {
                         item.Group = composite_content.Groups[2];
                         item.ImageIndex = 2;
@@ -204,7 +210,7 @@ namespace CommandsEditor.Popups.UserControls
             {
                 for (int i = 0; i < allEntities.Count; i++)
                 {
-                    ListViewItem item = _content.GenerateListViewItem(allEntities[i], _composite);
+                    ListViewItem item = Content.GenerateListViewItem(allEntities[i], _composite);
                     for (int x = 0; x < item.SubItems.Count; x++)
                     {
                         if (!item.SubItems[x].Text.ToUpper().Contains(_currentSearch.ToUpper()))

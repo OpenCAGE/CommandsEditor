@@ -29,7 +29,7 @@ namespace CommandsEditor
 
         EntityDisplay _entityDisplay;
 
-        public CAGEAnimationEditor(EntityDisplay entityDisplay) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_CAGEANIM_EDITOR_OPENED | WindowClosesOn.NEW_COMPOSITE_SELECTION, entityDisplay.Content)
+        public CAGEAnimationEditor(EntityDisplay entityDisplay) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_CAGEANIM_EDITOR_OPENED | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             _entityDisplay = entityDisplay;
 
@@ -264,7 +264,7 @@ namespace CommandsEditor
 
         private void addNewEntityRef_Click(object sender, EventArgs e)
         {
-            EditHierarchy hierarchyEditor = new EditHierarchy(_content, _entityDisplay.Composite, new CompositeEntityList.DisplayOptions()
+            EditHierarchy hierarchyEditor = new EditHierarchy(_entityDisplay.Composite, new CompositeEntityList.DisplayOptions()
             {
                 DisplayAliases = false,
                 DisplayFunctions = true,
@@ -307,7 +307,7 @@ namespace CommandsEditor
             if (entityList.SelectedIndex == -1) return;
             try
             {
-                CAGEAnimation_SelectParameter paramSelector = new CAGEAnimation_SelectParameter(_content, entityListToHierarchies[entityList.SelectedIndex].GetPointedEntity(Content.commands, _entityDisplay.Composite));
+                CAGEAnimation_SelectParameter paramSelector = new CAGEAnimation_SelectParameter(entityListToHierarchies[entityList.SelectedIndex].GetPointedEntity(Content.commands, _entityDisplay.Composite));
                 paramSelector.OnParamSelected += OnParameterSelected;
                 paramSelector.Show();
             }
@@ -397,7 +397,7 @@ namespace CommandsEditor
         {
             try
             {
-                CAGEAnimation_DeleteParam deleteParamWindow = new CAGEAnimation_DeleteParam(_content, animTracks);
+                CAGEAnimation_DeleteParam deleteParamWindow = new CAGEAnimation_DeleteParam(animTracks);
                 deleteParamWindow.OnParamSelected += OnDeleteParamSelected;
                 deleteParamWindow.Show();
             }
@@ -418,7 +418,7 @@ namespace CommandsEditor
 
         private void addEventTrack_Click(object sender, EventArgs e)
         {
-            EditHierarchy hierarchyEditor = new EditHierarchy(_content, _entityDisplay.Composite, new CompositeEntityList.DisplayOptions()
+            EditHierarchy hierarchyEditor = new EditHierarchy(_entityDisplay.Composite, new CompositeEntityList.DisplayOptions()
             {
                 DisplayAliases = false,
                 DisplayFunctions = true,
@@ -471,7 +471,7 @@ namespace CommandsEditor
         {
             try
             {
-                CAGEAnimation_DeleteEvent deleteEventWindow = new CAGEAnimation_DeleteEvent(_content, eventTracks);
+                CAGEAnimation_DeleteEvent deleteEventWindow = new CAGEAnimation_DeleteEvent(eventTracks);
                 deleteEventWindow.OnTrackSelected += OnDeleteEventSelected;
                 deleteEventWindow.Show();
             }

@@ -17,7 +17,7 @@ namespace CommandsEditor
     {
         public Action<int> OnTrackSelected;
 
-        public CAGEAnimation_DeleteEvent(LevelContent editor, List<string> event_tracks) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_CAGEANIM_EDITOR_OPENED | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
+        public CAGEAnimation_DeleteEvent(List<string> event_tracks) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_CAGEANIM_EDITOR_OPENED | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             InitializeComponent();
 

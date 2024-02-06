@@ -24,7 +24,7 @@ namespace CommandsEditor
         private ShortGuid guid_parent;
         private int current_ui_offset = 7;
 
-        public AddOrEditResource(LevelContent content, List<ResourceReference> resRefs, ShortGuid parent, string windowTitle) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, content)
+        public AddOrEditResource(List<ResourceReference> resRefs, ShortGuid parent, string windowTitle) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             ResourceReference[] copy = new ResourceReference[resRefs.Count];
             resRefs.CopyTo(copy);
@@ -51,7 +51,7 @@ namespace CommandsEditor
                 {
                     case ResourceType.ANIMATED_MODEL:
                         {
-                            resourceGroup = new GUI_Resource_AnimatedModel(_content);
+                            resourceGroup = new GUI_Resource_AnimatedModel();
                             ((GUI_Resource_AnimatedModel)resourceGroup).PopulateUI(Content.resource.env_animations.Entries.FirstOrDefault(o => o.ResourceIndex == resources[i].index));
                             break;
                         }
@@ -60,19 +60,19 @@ namespace CommandsEditor
                             //TODO: Pass this info through, and handle making new instances...
                             Content.resource.collision_maps.Entries.FindAll(o => o.entity.entity_id == resources[i].collisionID);
 
-                            resourceGroup = new GUI_Resource_CollisionMapping(_content);
+                            resourceGroup = new GUI_Resource_CollisionMapping();
                             ((GUI_Resource_CollisionMapping)resourceGroup).PopulateUI(resources[i].position, resources[i].rotation, resources[i].collisionID);
                             break;
                         }
                     case ResourceType.NAV_MESH_BARRIER_RESOURCE:
                         {
-                            resourceGroup = new GUI_Resource_NavMeshBarrierResource(_content);
+                            resourceGroup = new GUI_Resource_NavMeshBarrierResource();
                             ((GUI_Resource_NavMeshBarrierResource)resourceGroup).PopulateUI(resources[i].position, resources[i].rotation);
                             break;
                         }
                     case ResourceType.RENDERABLE_INSTANCE:
                         {
-                            resourceGroup = new GUI_Resource_RenderableInstance(_content);
+                            resourceGroup = new GUI_Resource_RenderableInstance();
                             ((GUI_Resource_RenderableInstance)resourceGroup).PopulateUI(resources[i].position, resources[i].rotation, resources[i].index, resources[i].count);
                             break;
                         }
@@ -81,13 +81,13 @@ namespace CommandsEditor
                             //TODO: Pass this info through, and handle making new instances...
                             Content.resource.physics_maps.Entries.FindAll(o => o.entity.entity_id == resources[i].collisionID);
 
-                            resourceGroup = new GUI_Resource_DynamicPhysicsSystem(_content);
+                            resourceGroup = new GUI_Resource_DynamicPhysicsSystem();
                             ((GUI_Resource_DynamicPhysicsSystem)resourceGroup).PopulateUI(); 
                             break;
                         }
                     default:
                         {
-                            resourceGroup = new GUI_Resource_Default(_content);
+                            resourceGroup = new GUI_Resource_Default();
                             ((GUI_Resource_Default)resourceGroup).PopulateUI(resources[i].entryType);
                             break;
                         }

@@ -25,12 +25,11 @@ namespace CommandsEditor
 
         private EntityDisplay _entityDisplay;
 
-        public EditMVR(EntityDisplay editor) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor.Content)
+        public EditMVR(EntityDisplay editor) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             InitializeComponent();
             _entityDisplay = editor;
             
-            renderable.SetEditor(editor.Content);
             PopulateUI(editor.Entity.shortGUID);
 
             renderable.OnMaterialSelected += OnMaterialSelected;

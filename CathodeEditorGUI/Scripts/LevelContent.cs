@@ -83,7 +83,7 @@ namespace CommandsEditor
                 return;
             }
 
-            //Link up commands to utils and cache some things (TODO: this is the only thing holding us back from being able to have multiple levels open at once)
+            //Link up commands to utils and cache some things
             EntityUtils.LinkCommands(commands);
             ShortGuidUtils.LinkCommands(commands);
 
@@ -130,6 +130,29 @@ namespace CommandsEditor
             //ShortGuidUtils.Generate("back");
             //ShortGuidUtils.Generate("bind");
             //ShortGuidUtils.Generate("cam");
+        }
+
+        ~LevelContent()
+        {
+            if (EntityUtils.LinkedCommands == commands)
+            {
+                EntityUtils.LinkCommands(null);
+            }
+            if (ShortGuidUtils.LinkedCommands == commands)
+            {
+                ShortGuidUtils.LinkCommands(null);
+            }
+
+            resource = null;
+            commands = null;
+            mvr = null;
+            editor_utils = null;
+
+            composite_content_cache.Clear();
+
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
         }
 
         private bool LoadCommands()

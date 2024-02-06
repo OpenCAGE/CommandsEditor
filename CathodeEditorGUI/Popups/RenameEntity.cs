@@ -22,7 +22,7 @@ namespace CommandsEditor
         private Entity _entity;
         private Composite _composite;
 
-        public RenameEntity(LevelContent editor, Entity entity, Composite composite) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
+        public RenameEntity(Entity entity, Composite composite) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             InitializeComponent();
 

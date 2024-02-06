@@ -17,7 +17,7 @@ namespace CommandsEditor
 
         private EntityDisplay _entityDisplay;
 
-        public CharacterEditor(EntityDisplay editor) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor.Content)
+        public CharacterEditor(EntityDisplay editor) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             _entityDisplay = editor;
             InitializeComponent();
@@ -113,7 +113,7 @@ namespace CommandsEditor
 
         private SelectComposite CompositeSelector(string composite)
         {
-            SelectComposite selectComposite = new SelectComposite(_content, composite);
+            SelectComposite selectComposite = new SelectComposite(composite);
             selectComposite.Show();
             return selectComposite;
         }

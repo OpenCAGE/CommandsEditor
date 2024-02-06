@@ -26,11 +26,11 @@ namespace CommandsEditor
         public int SelectedModelIndex = -1;
         public List<int> SelectedModelMaterialIndexes = new List<int>();
 
-        public SelectModel(LevelContent content, int defaultModelIndex = -1) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, content)
+        public SelectModel(int defaultModelIndex = -1) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             InitializeComponent();
 
-            treeHelper = new TreeUtility(FileTree, content, true);
+            treeHelper = new TreeUtility(FileTree, true);
             List<string> allModelFileNames = new List<string>();
             List<string> allModelTagsNames = new List<string>();
 
@@ -52,11 +52,22 @@ namespace CommandsEditor
             }
             treeHelper.UpdateFileTree(allModelFileNames, null, allModelTagsNames);
 
-            modelViewer = new GUI_ModelViewer(_content);
+            modelViewer = new GUI_ModelViewer();
             modelRendererHost.Child = modelViewer;
 
             if (defaultModelIndex != -1)
                 SelectModelNode(defaultModelIndex);
+
+            this.Disposed += SelectModel_Disposed;
+        }
+
+        private void SelectModel_Disposed(object sender, EventArgs e)
+        {
+            treeHelper = null;
+            modelViewer = null;
+
+            if (modelRendererHost != null)
+                modelRendererHost.Dispose();
         }
 
         private string GenerateNodeTag(int i)

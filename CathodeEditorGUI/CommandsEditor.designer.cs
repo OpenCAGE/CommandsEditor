@@ -51,6 +51,7 @@
             this.showConfirmationWhenSavingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.useTexturedModelViewExperimentalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.keepFunctionUsesWindowOpenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.resetUILayoutsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpBtn = new System.Windows.Forms.ToolStripButton();
             this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
             this.vS2015LightTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
@@ -58,7 +59,6 @@
             this.statusText = new System.Windows.Forms.ToolStripStatusLabel();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.resetUILayoutsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -247,6 +247,13 @@
             this.keepFunctionUsesWindowOpenToolStripMenuItem.Text = "Keep Function Uses Window Open";
             this.keepFunctionUsesWindowOpenToolStripMenuItem.Click += new System.EventHandler(this.keepFunctionUsesWindowOpenToolStripMenuItem_Click);
             // 
+            // resetUILayoutsToolStripMenuItem
+            // 
+            this.resetUILayoutsToolStripMenuItem.Name = "resetUILayoutsToolStripMenuItem";
+            this.resetUILayoutsToolStripMenuItem.Size = new System.Drawing.Size(286, 22);
+            this.resetUILayoutsToolStripMenuItem.Text = "Reset UI Layouts";
+            this.resetUILayoutsToolStripMenuItem.Click += new System.EventHandler(this.resetUILayoutsToolStripMenuItem_Click);
+            // 
             // helpBtn
             // 
             this.helpBtn.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
@@ -287,13 +294,6 @@
             this.dockPanel.Size = new System.Drawing.Size(1257, 757);
             this.dockPanel.TabIndex = 5;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
-            // 
-            // resetUILayoutsToolStripMenuItem
-            // 
-            this.resetUILayoutsToolStripMenuItem.Name = "resetUILayoutsToolStripMenuItem";
-            this.resetUILayoutsToolStripMenuItem.Size = new System.Drawing.Size(286, 22);
-            this.resetUILayoutsToolStripMenuItem.Text = "Reset UI Layouts";
-            this.resetUILayoutsToolStripMenuItem.Click += new System.EventHandler(this.resetUILayoutsToolStripMenuItem_Click);
             // 
             // CommandsEditor
             // 

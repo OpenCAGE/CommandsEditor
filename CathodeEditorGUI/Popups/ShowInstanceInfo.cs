@@ -18,7 +18,7 @@ namespace CommandsEditor
     {
         private CompositeDisplay _display;
 
-        public ShowInstanceInfo(CompositeDisplay display) : base(WindowClosesOn.NEW_COMPOSITE_SELECTION | WindowClosesOn.COMMANDS_RELOAD, display.Content)
+        public ShowInstanceInfo(CompositeDisplay display) : base(WindowClosesOn.NEW_COMPOSITE_SELECTION | WindowClosesOn.COMMANDS_RELOAD)
         {
             _display = display;
             InitializeComponent();

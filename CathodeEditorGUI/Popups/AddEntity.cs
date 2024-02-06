@@ -32,7 +32,7 @@ namespace CommandsEditor
 
         private CompositeDisplay _compositeDisplay;
 
-        public AddEntity(CompositeDisplay compositeDisplay, EntityVariant variant = EntityVariant.FUNCTION, bool composite = false) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_COMPOSITE_SELECTION, compositeDisplay.Content)
+        public AddEntity(CompositeDisplay compositeDisplay, EntityVariant variant = EntityVariant.FUNCTION, bool composite = false) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             _compositeDisplay = compositeDisplay;
 
@@ -167,7 +167,7 @@ namespace CommandsEditor
             EditHierarchy hierarchyEditor = null;
             if (createProxyEntity.Checked)
             {
-                hierarchyEditor = new EditHierarchy(_content, Content.commands.EntryPoints[0], new CompositeEntityList.DisplayOptions()
+                hierarchyEditor = new EditHierarchy(Content.commands.EntryPoints[0], new CompositeEntityList.DisplayOptions()
                 {
                     DisplayAliases = false,
                     DisplayFunctions = true,
@@ -177,7 +177,7 @@ namespace CommandsEditor
             }
             else if (createOverrideEntity.Checked)
             {
-                hierarchyEditor = new EditHierarchy(_content, _compositeDisplay.Composite, new CompositeEntityList.DisplayOptions()
+                hierarchyEditor = new EditHierarchy(_compositeDisplay.Composite, new CompositeEntityList.DisplayOptions()
                 {
                     DisplayAliases = false,
                     DisplayFunctions = true,
@@ -219,7 +219,7 @@ namespace CommandsEditor
             if (compositeSelector != null)
                 compositeSelector.Close();
 
-            compositeSelector = new SelectComposite(_content, entityVariant.Text);
+            compositeSelector = new SelectComposite(entityVariant.Text);
             compositeSelector.OnCompositeGenerated += OnCompositeGenerated;
             compositeSelector.Show();
         }

@@ -46,6 +46,7 @@ namespace CommandsEditor.DockPanels
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.compositeEntityList1 = new Popups.UserControls.CompositeEntityList();
             this.vS2015LightTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.imageList = new System.Windows.Forms.ImageList(this.components);
@@ -65,7 +66,6 @@ namespace CommandsEditor.DockPanels
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.renameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.duplicateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.compositeEntityList1 = new Popups.UserControls.CompositeEntityList();
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -219,6 +219,14 @@ namespace CommandsEditor.DockPanels
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(830, 773);
             this.panel1.TabIndex = 180;
+            // 
+            // compositeEntityList1
+            // 
+            this.compositeEntityList1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.compositeEntityList1.Location = new System.Drawing.Point(0, 0);
+            this.compositeEntityList1.Name = "compositeEntityList1";
+            this.compositeEntityList1.Size = new System.Drawing.Size(830, 773);
+            this.compositeEntityList1.TabIndex = 0;
             // 
             // splitContainer1
             // 
@@ -404,14 +412,6 @@ namespace CommandsEditor.DockPanels
             this.duplicateToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.duplicateToolStripMenuItem.Text = "Duplicate";
             this.duplicateToolStripMenuItem.Click += new System.EventHandler(this.duplicateToolStripMenuItem_Click);
-            // 
-            // compositeEntityList1
-            // 
-            this.compositeEntityList1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.compositeEntityList1.Location = new System.Drawing.Point(0, 0);
-            this.compositeEntityList1.Name = "compositeEntityList1";
-            this.compositeEntityList1.Size = new System.Drawing.Size(830, 773);
-            this.compositeEntityList1.TabIndex = 0;
             // 
             // CompositeDisplay
             // 

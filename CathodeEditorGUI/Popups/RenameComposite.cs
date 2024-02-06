@@ -24,7 +24,7 @@ namespace CommandsEditor
         private Composite _composite;
         private string _folder;
 
-        public RenameComposite(LevelContent editor, Composite composite, string path) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
+        public RenameComposite(Composite composite, string path) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             InitializeComponent();
             

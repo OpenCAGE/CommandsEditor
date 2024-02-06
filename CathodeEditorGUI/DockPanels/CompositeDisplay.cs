@@ -67,11 +67,18 @@ namespace CommandsEditor.DockPanels
             else if (type == EditorUtils.CompositeType.IS_DISPLAY_MODEL)
                 this.Icon = Properties.Resources.Avatar_Icon;
 
-            compositeEntityList1.Setup(composite, Content);
+            compositeEntityList1.Setup(composite);
             compositeEntityList1.SelectedEntityChanged += LoadEntity;
             compositeEntityList1.ContextMenuStrip = EntityListContextMenu;
 
+            this.FormClosed += CompositeDisplay_FormClosed;
+
             Load(composite);
+        }
+
+        private void CompositeDisplay_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            CloseAllChildTabs();
         }
 
         public void ResetSplitter()
@@ -297,14 +304,9 @@ namespace CommandsEditor.DockPanels
 
         public void CloseAllChildTabsExcept(Entity entity)
         {
-            List<EntityDisplay> displays = new List<EntityDisplay>();
-            foreach (KeyValuePair<Entity, EntityDisplay> display in _entityDisplays)
-            {
-                if (display.Key == entity) continue;
-                displays.Add(display.Value);
-            }
-            foreach (EntityDisplay display in displays)
-                display.Close();
+            List<EntityDisplay> toClose = _entityDisplays.Where(o => o.Key != entity).Select(o => o.Value).ToList();
+            for (int i = 0; i < toClose.Count; i++)
+                toClose[i].Close();
         }
         public void CloseAllChildTabs()
         {
@@ -313,7 +315,7 @@ namespace CommandsEditor.DockPanels
 
         private void findUses_Click(object sender, EventArgs e)
         {
-            ShowCompositeUses uses = new ShowCompositeUses(Content, Composite);
+            ShowCompositeUses uses = new ShowCompositeUses(Composite);
             uses.Show();
             uses.OnEntitySelected += _commandsDisplay.LoadCompositeAndEntity;
         }
@@ -597,7 +599,7 @@ namespace CommandsEditor.DockPanels
             if (_entityRenameDialog != null)
                 _entityRenameDialog.Close();
 
-            _entityRenameDialog = new RenameEntity(this.Content, compositeEntityList1.SelectedEntity, this.Composite);
+            _entityRenameDialog = new RenameEntity(compositeEntityList1.SelectedEntity, this.Composite);
             _entityRenameDialog.Show();
             _entityRenameDialog.OnRenamed += OnEntityRenamed;
             _entityRenameDialog.FormClosed += Rename_entity_FormClosed;

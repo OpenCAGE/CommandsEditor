@@ -20,7 +20,7 @@ namespace CommandsEditor
         CommandsDisplay _commands;
         string _folder;
 
-        public AddFolder(CommandsDisplay editor, string folderPath) : base(WindowClosesOn.COMMANDS_RELOAD, editor.Content)
+        public AddFolder(CommandsDisplay editor, string folderPath) : base(WindowClosesOn.COMMANDS_RELOAD)
         {
             _commands = editor;
             InitializeComponent();

@@ -18,7 +18,7 @@ namespace CommandsEditor.UserControls
 
         private EntityDisplay _entityDisplay;
 
-        public GUI_Link(EntityDisplay editor) : base(editor.Content)
+        public GUI_Link(EntityDisplay editor) : base()
         {
             _entityDisplay = editor;
             InitializeComponent();

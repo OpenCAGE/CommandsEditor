@@ -15,8 +15,7 @@ namespace CommandsEditor.Popups.Base
 {
     public partial class BaseWindow : Form
     {
-        protected LevelContent _content;
-        protected LevelContent Content { get { return _content; } }
+        protected LevelContent Content => Singleton.Editor?.CommandsDisplay?.Content;
 
         private WindowClosesOn _closesOn;
 
@@ -24,21 +23,13 @@ namespace CommandsEditor.Popups.Base
         public BaseWindow()
         {
             InitializeComponent();
-
-            this.Disposed += BaseWindow_Disposed;
         }
 
-        private void BaseWindow_Disposed(object sender, EventArgs e)
-        {
-            _content = null;
-        }
-
-        public BaseWindow(WindowClosesOn config, LevelContent content)
+        public BaseWindow(WindowClosesOn config)
         {
             InitializeComponent();
 
             _closesOn = config;
-            _content = content;
 
             if (_closesOn.HasFlag(WindowClosesOn.COMMANDS_RELOAD))
                 Singleton.OnLevelLoaded += OnCommandsSelected;

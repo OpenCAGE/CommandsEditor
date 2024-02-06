@@ -14,7 +14,7 @@ namespace CommandsEditor.Popups.UserControls
 {
     public partial class GUI_Resource_DynamicPhysicsSystem : ResourceUserControl
     {
-        public GUI_Resource_DynamicPhysicsSystem(LevelContent editor) : base(editor)
+        public GUI_Resource_DynamicPhysicsSystem() : base()
         {
             InitializeComponent();
 

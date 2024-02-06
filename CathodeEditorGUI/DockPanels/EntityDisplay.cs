@@ -49,6 +49,8 @@ namespace CommandsEditor.DockPanels
             InitializeComponent();
             this.Activate();
 
+            this.FormClosed += EntityDisplay_FormClosed;
+
             switch (entity.variant)
             {
                 case EntityVariant.VARIABLE:
@@ -69,6 +71,13 @@ namespace CommandsEditor.DockPanels
             }
 
             Reload();
+        }
+
+        private void EntityDisplay_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            for (int i = 0; i < entity_params.Controls.Count; i++)
+                entity_params.Controls[i].Dispose();
+            entity_params.Controls.Clear();
         }
 
         /* Reload this display */
@@ -297,7 +306,7 @@ namespace CommandsEditor.DockPanels
                         }
                         if (asset != AssetList.Type.NONE)
                         {
-                            parameterGUI = new GUI_StringVariant_AssetDropdown(Content);
+                            parameterGUI = new GUI_StringVariant_AssetDropdown();
                             ((GUI_StringVariant_AssetDropdown)parameterGUI).PopulateUI((cString)this_param, paramName, asset, asset_arg);
                         }
                         else
@@ -352,7 +361,7 @@ namespace CommandsEditor.DockPanels
                         ((GUI_EnumDataType)parameterGUI).PopulateUI((cEnum)this_param, paramName);
                         break;
                     case DataType.RESOURCE:
-                        parameterGUI = new GUI_ResourceDataType(Content);
+                        parameterGUI = new GUI_ResourceDataType();
                         ((GUI_ResourceDataType)parameterGUI).PopulateUI((cResource)this_param, paramName);
                         break;
                     case DataType.SPLINE:
@@ -477,7 +486,7 @@ namespace CommandsEditor.DockPanels
 
         private void editEntityResources_Click(object sender, EventArgs e)
         {
-            AddOrEditResource resourceEditor = new AddOrEditResource(Content, ((FunctionEntity)Entity).resources, Entity.shortGUID, Content.editor_utils.GenerateEntityName(Entity, Composite));
+            AddOrEditResource resourceEditor = new AddOrEditResource(((FunctionEntity)Entity).resources, Entity.shortGUID, Content.editor_utils.GenerateEntityName(Entity, Composite));
             resourceEditor.Show();
             resourceEditor.OnSaved += OnResourceEditorSaved;
         }
@@ -575,7 +584,7 @@ namespace CommandsEditor.DockPanels
 
         private void renameEntity_Click(object sender, EventArgs e)
         {
-            RenameEntity rename_entity = new RenameEntity(this.Content, this.Entity, this.Composite);
+            RenameEntity rename_entity = new RenameEntity(this.Entity, this.Composite);
             rename_entity.Show();
             rename_entity.OnRenamed += OnEntityRenamed;
         }

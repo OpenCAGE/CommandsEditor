@@ -53,11 +53,11 @@ namespace CommandsEditor
 
         public CommandsEditor(string level = null)
         {
+            Singleton.Editor = this;
+
             _discord = new DiscordRpcClient("1152999067207606392");
             _discord.Initialize();
             UpdateDiscordPresence("");
-
-            Singleton.Editor = this;
 
             InitializeComponent();
             dockPanel.DockLeftPortion = SettingsManager.GetFloat(Singleton.Settings.CommandsSplitWidth, _defaultSplitterDistance);

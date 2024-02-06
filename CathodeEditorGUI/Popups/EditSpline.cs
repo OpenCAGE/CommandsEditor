@@ -22,7 +22,7 @@ namespace CommandsEditor
         private bool firstUpdate = true;
         private bool isClosedLoop = false; //Default loop val is false
 
-        public EditSpline(LevelContent content, cSpline _spline, Parameter _closed) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, content)
+        public EditSpline(cSpline _spline, Parameter _closed) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             InitializeComponent();
             spline = _spline.Copy();

@@ -15,7 +15,7 @@ namespace CommandsEditor.Popups.UserControls
     {
         private EnvironmentAnimations.EnvironmentAnimation _envAnimInfo = null;
 
-        public GUI_Resource_AnimatedModel(LevelContent editor) : base(editor)
+        public GUI_Resource_AnimatedModel() : base()
         {
             InitializeComponent();
 

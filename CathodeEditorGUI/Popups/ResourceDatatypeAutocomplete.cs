@@ -17,6 +17,8 @@ namespace CommandsEditor.Popups
     {
         public cString stringVal = null;
 
+        protected LevelContent Content => Singleton.Editor?.CommandsDisplay?.Content;
+
         AssetList.Type type = AssetList.Type.NONE;
         string typeArgs = "";
 
@@ -28,7 +30,7 @@ namespace CommandsEditor.Popups
             InitializeComponent();
         }
 
-        public void PopulateUI(LevelContent Content, cString cString, string paramID, AssetList.Type assets, string args = "")
+        public void PopulateUI(cString cString, string paramID, AssetList.Type assets, string args = "")
         {
             stringVal = cString;
             Text = paramID;

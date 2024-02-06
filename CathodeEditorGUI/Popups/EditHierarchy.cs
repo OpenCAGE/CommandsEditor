@@ -25,12 +25,12 @@ namespace CommandsEditor
         private Composite selectedComposite = null;
 
         //PROXIES can only point to FunctionEntities - ALIASES can point to FunctionEntities, ProxyEntities, VariableEntities
-        public EditHierarchy(LevelContent content, Composite startingComposite, CompositeEntityList.DisplayOptions displayOptions, bool allowFollowThrough = true) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, content)
+        public EditHierarchy(Composite startingComposite, CompositeEntityList.DisplayOptions displayOptions, bool allowFollowThrough = true) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             InitializeComponent();
 
             displayOptions.ShowCheckboxes = false;
-            compositeEntityList1.Setup(startingComposite, Content, displayOptions);
+            compositeEntityList1.Setup(startingComposite, displayOptions);
             compositeEntityList1.SelectedEntityChanged += OnSelectedEntityChanged;
 
             LoadComposite(startingComposite);
