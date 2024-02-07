@@ -150,7 +150,7 @@ namespace CommandsEditor.DockPanels
             this.toolStripSeparator2,
             this.viewModeToolStripMenuItem});
             this.FileBrowserContextMenu.Name = "FileBrowserContextMenu";
-            this.FileBrowserContextMenu.Size = new System.Drawing.Size(181, 126);
+            this.FileBrowserContextMenu.Size = new System.Drawing.Size(129, 104);
             // 
             // createToolStripMenuItem
             // 
@@ -158,7 +158,7 @@ namespace CommandsEditor.DockPanels
             this.compositeToolStripMenuItem,
             this.folderToolStripMenuItem});
             this.createToolStripMenuItem.Name = "createToolStripMenuItem";
-            this.createToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.createToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
             this.createToolStripMenuItem.Text = "Create";
             // 
             // compositeToolStripMenuItem
@@ -180,13 +180,13 @@ namespace CommandsEditor.DockPanels
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(125, 6);
             // 
             // deleteFolderToolStripMenuItem
             // 
             this.deleteFolderToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("deleteFolderToolStripMenuItem.Image")));
             this.deleteFolderToolStripMenuItem.Name = "deleteFolderToolStripMenuItem";
-            this.deleteFolderToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.deleteFolderToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
             this.deleteFolderToolStripMenuItem.Text = "Delete";
             this.deleteFolderToolStripMenuItem.Click += new System.EventHandler(this.deleteFolderToolStripMenuItem_Click);
             // 
@@ -194,14 +194,14 @@ namespace CommandsEditor.DockPanels
             // 
             this.renameToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("renameToolStripMenuItem.Image")));
             this.renameToolStripMenuItem.Name = "renameToolStripMenuItem";
-            this.renameToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.renameToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
             this.renameToolStripMenuItem.Text = "Rename";
             this.renameToolStripMenuItem.Click += new System.EventHandler(this.renameToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(125, 6);
             // 
             // viewModeToolStripMenuItem
             // 
@@ -209,14 +209,14 @@ namespace CommandsEditor.DockPanels
             this.largeIconsToolStripMenuItem,
             this.listToolStripMenuItem});
             this.viewModeToolStripMenuItem.Name = "viewModeToolStripMenuItem";
-            this.viewModeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.viewModeToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
             this.viewModeToolStripMenuItem.Text = "Display As";
             // 
             // largeIconsToolStripMenuItem
             // 
             this.largeIconsToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("largeIconsToolStripMenuItem.Image")));
             this.largeIconsToolStripMenuItem.Name = "largeIconsToolStripMenuItem";
-            this.largeIconsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.largeIconsToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.largeIconsToolStripMenuItem.Text = "Large Icons";
             this.largeIconsToolStripMenuItem.Click += new System.EventHandler(this.largeIconsToolStripMenuItem_Click_1);
             // 
@@ -224,7 +224,7 @@ namespace CommandsEditor.DockPanels
             // 
             this.listToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("listToolStripMenuItem.Image")));
             this.listToolStripMenuItem.Name = "listToolStripMenuItem";
-            this.listToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.listToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.listToolStripMenuItem.Text = "List";
             this.listToolStripMenuItem.Click += new System.EventHandler(this.listToolStripMenuItem_Click);
             // 
@@ -346,6 +346,7 @@ namespace CommandsEditor.DockPanels
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.splitContainer1);
             this.DockAreas = ((WeifenLuo.WinFormsUI.Docking.DockAreas)((WeifenLuo.WinFormsUI.Docking.DockAreas.Float | WeifenLuo.WinFormsUI.Docking.DockAreas.DockBottom)));
+            this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "CommandsDisplay";
             this.ShowHint = WeifenLuo.WinFormsUI.Docking.DockState.DockBottomAutoHide;

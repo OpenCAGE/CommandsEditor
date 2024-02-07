@@ -31,6 +31,7 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GUI_Link));
             this.group = new System.Windows.Forms.GroupBox();
+            this.invIconResource = new System.Windows.Forms.Button();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.DeleteLink = new System.Windows.Forms.Button();
             this.EditLink = new System.Windows.Forms.Button();
@@ -38,7 +39,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.invIconResource = new System.Windows.Forms.Button();
             this.group.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
@@ -57,6 +57,17 @@
             this.group.TabStop = false;
             this.group.Text = " dfgdfgdfdfgdfg";
             // 
+            // invIconResource
+            // 
+            this.invIconResource.Enabled = false;
+            this.invIconResource.Image = ((System.Drawing.Image)(resources.GetObject("invIconResource.Image")));
+            this.invIconResource.Location = new System.Drawing.Point(201, 10);
+            this.invIconResource.Name = "invIconResource";
+            this.invIconResource.Size = new System.Drawing.Size(27, 22);
+            this.invIconResource.TabIndex = 21;
+            this.invIconResource.UseVisualStyleBackColor = true;
+            this.invIconResource.Visible = false;
+            // 
             // tableLayoutPanel2
             // 
             this.tableLayoutPanel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -71,7 +82,7 @@
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 1;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 28F));
             this.tableLayoutPanel2.Size = new System.Drawing.Size(99, 28);
             this.tableLayoutPanel2.TabIndex = 20;
             // 
@@ -129,22 +140,12 @@
             this.textBox1.Size = new System.Drawing.Size(322, 20);
             this.textBox1.TabIndex = 3;
             // 
-            // invIconResource
-            // 
-            this.invIconResource.Enabled = false;
-            this.invIconResource.Image = ((System.Drawing.Image)(resources.GetObject("invIconResource.Image")));
-            this.invIconResource.Location = new System.Drawing.Point(201, 10);
-            this.invIconResource.Name = "invIconResource";
-            this.invIconResource.Size = new System.Drawing.Size(27, 22);
-            this.invIconResource.TabIndex = 21;
-            this.invIconResource.UseVisualStyleBackColor = true;
-            this.invIconResource.Visible = false;
-            // 
             // GUI_Link
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.group);
+            this.DoubleBuffered = true;
             this.Name = "GUI_Link";
             this.Size = new System.Drawing.Size(340, 66);
             this.group.ResumeLayout(false);

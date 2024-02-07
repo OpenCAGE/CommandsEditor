@@ -58,6 +58,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.groupBox1);
+            this.DoubleBuffered = true;
             this.Name = "GUI_Resource_AnimatedModel";
             this.Size = new System.Drawing.Size(838, 463);
             this.groupBox1.ResumeLayout(false);

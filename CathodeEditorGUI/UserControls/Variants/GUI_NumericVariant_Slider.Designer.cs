@@ -57,6 +57,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.trackBar1);
             this.Controls.Add(this.label1);
+            this.DoubleBuffered = true;
             this.Name = "GUI_NumericVariant_Slider";
             this.Size = new System.Drawing.Size(340, 56);
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();

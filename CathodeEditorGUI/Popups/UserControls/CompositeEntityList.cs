@@ -46,7 +46,7 @@ namespace CommandsEditor.Popups.UserControls
         protected LevelContent Content => Singleton.Editor?.CommandsDisplay?.Content;
 
         private string _currentSearch = "";
-        private DisplayOptions _displayOptions;
+        private DisplayOptions _displayOptions = new DisplayOptions();
 
         public CompositeEntityList()
         {

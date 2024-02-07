@@ -1564,6 +1564,9 @@
     <EmbeddedResource Include="Popups\UserControls\GUI_Resource_RenderableInstance.resx">
       <DependentUpon>GUI_Resource_RenderableInstance.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Popups\UserControls\ResourceUserControl.resx">
+      <DependentUpon>ResourceUserControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>

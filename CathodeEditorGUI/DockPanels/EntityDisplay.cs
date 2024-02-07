@@ -34,23 +34,35 @@ namespace CommandsEditor.DockPanels
         private List<Entity> parentEntities = new List<Entity>();
         private List<Entity> childEntities = new List<Entity>();
 
-        public EntityDisplay(CompositeDisplay compositeDisplay, Entity entity)
+        public EntityDisplay(CompositeDisplay compositeDisplay)
         {
-            _entity = entity;
             _compositeDisplay = compositeDisplay;
-
-            if (entity == null)
-            {
-                this.Close();
-                return;
-            }
-
-            _entityCompositePtr = _entity.variant == EntityVariant.FUNCTION ? Content.commands.GetComposite(((FunctionEntity)_entity).function) : null;
 
             InitializeComponent();
             this.Activate();
 
             this.FormClosed += EntityDisplay_FormClosed;
+        }
+
+        private void EntityDisplay_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            for (int i = 0; i < entity_params.Controls.Count; i++)
+                entity_params.Controls[i].Dispose();
+            entity_params.Controls.Clear();
+
+            _compositeDisplay = null;
+            _entity = null;
+            _entityCompositePtr = null;
+
+            parentEntities.Clear();
+            childEntities.Clear();
+        }
+
+        /* Load entity */
+        public void LoadEntity(Entity entity)
+        {
+            _entity = entity;
+            _entityCompositePtr = _entity.variant == EntityVariant.FUNCTION ? Content.commands.GetComposite(((FunctionEntity)_entity).function) : null;
 
             switch (entity.variant)
             {
@@ -72,20 +84,6 @@ namespace CommandsEditor.DockPanels
             }
 
             Reload();
-        }
-
-        private void EntityDisplay_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            for (int i = 0; i < entity_params.Controls.Count; i++)
-                entity_params.Controls[i].Dispose();
-            entity_params.Controls.Clear();
-
-            _compositeDisplay = null;
-            _entity = null;
-            _entityCompositePtr = null;
-
-            parentEntities.Clear();
-            childEntities.Clear();
         }
 
         /* Reload this display */
@@ -111,9 +109,8 @@ namespace CommandsEditor.DockPanels
             //--
 
             Cursor.Current = Cursors.WaitCursor;
-            entity_params.SuspendLayout();
             Task.Factory.StartNew(() => BackgroundEntityLoader(_entity, this));
-
+            List<Control> controls = new List<Control>();
 
             //populate info labels
             string entityVariantStr = "";
@@ -210,7 +207,7 @@ namespace CommandsEditor.DockPanels
                     parameterGUI.Width = entity_params.Width - 30;
                     parameterGUI.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
                     current_ui_offset += parameterGUI.Height + 6;
-                    entity_params.Controls.Add(parameterGUI);
+                    controls.Add(parameterGUI);
                     parentEntities.Add(ent);
                 }
             }
@@ -381,7 +378,7 @@ namespace CommandsEditor.DockPanels
                 parameterGUI.Width = entity_params.Width - 30;
                 parameterGUI.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
                 current_ui_offset += parameterGUI.Height + 6;
-                entity_params.Controls.Add(parameterGUI);
+                controls.Add(parameterGUI);
             }
 
             //populate linked params OUT
@@ -396,11 +393,14 @@ namespace CommandsEditor.DockPanels
                 parameterGUI.Width = entity_params.Width - 30;
                 parameterGUI.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
                 current_ui_offset += parameterGUI.Height + 6;
-                entity_params.Controls.Add(parameterGUI);
+                controls.Add(parameterGUI);
                 childEntities.Add(Composite.GetEntityByID(_entity.childLinks[i].childID));
             }
 
+            entity_params.SuspendLayout();
+            entity_params.Controls.AddRange(controls.ToArray());
             entity_params.ResumeLayout();
+
             Singleton.OnEntityReloaded?.Invoke(_entity);
             Cursor.Current = Cursors.Default;
         }

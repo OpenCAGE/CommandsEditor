@@ -192,6 +192,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.tableLayoutPanel9);
             this.Controls.Add(this.label1);
+            this.DoubleBuffered = true;
             this.Name = "GUI_VectorDataType";
             this.Size = new System.Drawing.Size(340, 51);
             ((System.ComponentModel.ISupportInitialize)(this.POS_Z_1)).EndInit();

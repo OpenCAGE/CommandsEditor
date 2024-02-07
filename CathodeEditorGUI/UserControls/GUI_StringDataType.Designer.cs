@@ -56,6 +56,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.label1);
             this.Controls.Add(this.textBox1);
+            this.DoubleBuffered = true;
             this.Name = "GUI_StringDataType";
             this.Size = new System.Drawing.Size(340, 45);
             this.ResumeLayout(false);

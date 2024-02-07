@@ -60,6 +60,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.SPLINE_CONTAINER);
+            this.DoubleBuffered = true;
             this.Name = "GUI_SplineDataType";
             this.Size = new System.Drawing.Size(340, 61);
             this.SPLINE_CONTAINER.ResumeLayout(false);

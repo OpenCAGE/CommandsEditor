@@ -34,7 +34,8 @@ namespace CommandsEditor.DockPanels
         private Composite _composite;
         public Composite Composite => _composite;
 
-        private Dictionary<Entity, EntityDisplay> _entityDisplays = new Dictionary<Entity, EntityDisplay>();
+        private Dictionary<Entity, EntityDisplay> _entityDisplays = new Dictionary<Entity, EntityDisplay>(); //used when entity tabs are enabled - less performant
+        private EntityDisplay _entityDisplay = null; //used when entity tabs are disabled
 
         private EntityDisplay _activeEntityDisplay = null;
         public EntityDisplay ActiveEntityDisplay => _activeEntityDisplay;
@@ -47,33 +48,22 @@ namespace CommandsEditor.DockPanels
 
         private const int _defaultSplitterDistance = 500;
 
-        public CompositeDisplay(CommandsDisplay commandsDisplay, Composite composite)
+        public CompositeDisplay(CommandsDisplay commandsDisplay)
         {
             _commandsDisplay = commandsDisplay;
 
             InitializeComponent();
+
             dockPanel.ActiveContentChanged += DockPanel_ActiveContentChanged;
             dockPanel.ShowDocumentIcon = true;
 
             splitContainer1.FixedPanel = FixedPanel.Panel1;
             splitContainer1.SplitterDistance = SettingsManager.GetInteger(Singleton.Settings.EntitySplitWidth, _defaultSplitterDistance);
 
-            EditorUtils.CompositeType type = Content.editor_utils.GetCompositeType(composite);
-
-            if (type == EditorUtils.CompositeType.IS_ROOT)
-                this.Icon = Properties.Resources.globe;
-            else if (type == EditorUtils.CompositeType.IS_GLOBAL || type == EditorUtils.CompositeType.IS_PAUSE_MENU)
-                this.Icon = Properties.Resources.cog;
-            else if (type == EditorUtils.CompositeType.IS_DISPLAY_MODEL)
-                this.Icon = Properties.Resources.Avatar_Icon;
-
-            compositeEntityList1.Setup(composite);
             compositeEntityList1.SelectedEntityChanged += LoadEntity;
             compositeEntityList1.ContextMenuStrip = EntityListContextMenu;
 
             this.FormClosed += CompositeDisplay_FormClosed;
-
-            Load(composite);
         }
 
         private void CompositeDisplay_FormClosed(object sender, FormClosedEventArgs e)
@@ -82,7 +72,6 @@ namespace CommandsEditor.DockPanels
             _commandsDisplay = null;
             _activeEntityDisplay = null;
             CloseAllChildTabs();
-            _entityDisplays.Clear();
         }
 
         public void ResetSplitter()
@@ -90,25 +79,41 @@ namespace CommandsEditor.DockPanels
             splitContainer1.SplitterDistance = _defaultSplitterDistance;
         }
 
-        private void Load(Composite composite)
+        public void LoadComposite(Composite composite, bool resetPath = true)
         {
             Cursor.Current = Cursors.WaitCursor;
+            _composite = composite;
 
+            //If we're not loading a composite on a relative path, we should reset the path
+            if (resetPath)
+                _path = new CompositePath();
+
+            //Show info
+            this.Text = EditorUtils.GetCompositeName(composite);
+            pathDisplay.Text = _path.GetPath(composite);
+
+            //Set icon
+            EditorUtils.CompositeType type = Content.editor_utils.GetCompositeType(composite);
+            if (type == EditorUtils.CompositeType.IS_ROOT)
+                this.Icon = Properties.Resources.globe;
+            else if (type == EditorUtils.CompositeType.IS_GLOBAL || type == EditorUtils.CompositeType.IS_PAUSE_MENU)
+                this.Icon = Properties.Resources.cog;
+            else if (type == EditorUtils.CompositeType.IS_DISPLAY_MODEL)
+                this.Icon = Properties.Resources.Avatar_Icon;
+
+            //If the composite is an entry point, we shouldn't let people remove it
             bool isCoreComposite = !Content.commands.EntryPoints.Contains(composite);
             findUses.Visible = isCoreComposite;
             deleteComposite.Visible = isCoreComposite;
 
-            this.Text = EditorUtils.GetCompositeName(composite);
-            pathDisplay.Text = _path.GetPath(composite);
-            _composite = composite;
-
             CommandsUtils.PurgeDeadLinks(Content.commands, composite);
+
+            //Populate UI
             CloseAllChildTabs();
             Reload(false);
             this.Activate();
 
             _instanceInfoPopup?.Close();
-
             Cursor.Current = Cursors.Default;
         }
 
@@ -116,7 +121,7 @@ namespace CommandsEditor.DockPanels
         public void LoadChild(Composite composite, Entity entity)
         {
             _path.StepForwards(_composite, entity);
-            Load(composite);
+            LoadComposite(composite, true);
         }
 
         /* Load the parent composite, one back from this composite */
@@ -124,7 +129,7 @@ namespace CommandsEditor.DockPanels
         {
             if (_path.StepBackwards(out Composite composite, out Entity entity))
             {
-                Load(composite);
+                LoadComposite(composite);
                 LoadEntity(entity);
             }
         }
@@ -219,16 +224,23 @@ namespace CommandsEditor.DockPanels
         public void ReloadAllEntities()
         {
             foreach (KeyValuePair<Entity, EntityDisplay> display in _entityDisplays)
-            {
                 display.Value.Reload();
-            }
+            _entityDisplay?.Reload();
         }
 
         /* Reload a specific entity's UI (if it is loaded) */
         public void ReloadEntity(Entity entity)
         {
-            if (!_entityDisplays.ContainsKey(entity)) return;
-            _entityDisplays[entity].Reload();
+            if (SettingsManager.GetBool(Singleton.Settings.UseEntTabsOpt))
+            {
+                if (_entityDisplays.ContainsKey(entity)) 
+                    _entityDisplays[entity].Reload();
+            }
+            else
+            {
+                if (_entityDisplay?.Entity == entity)
+                    _entityDisplay.Reload();
+            }
         }
 
         /* Monitor the currently active entity tab */
@@ -277,22 +289,34 @@ namespace CommandsEditor.DockPanels
         {
             if (entity == null) return;
 
-            if (SettingsManager.GetBool(Singleton.Settings.UseEntTabsOpt) == false)
-                CloseAllChildTabs();
-
-            if (_entityDisplays.ContainsKey(entity))
+            if (SettingsManager.GetBool(Singleton.Settings.UseEntTabsOpt))
             {
-                _entityDisplays[entity].Reload();
-                _entityDisplays[entity].Activate();
+                if (_entityDisplays.ContainsKey(entity))
+                {
+                    _entityDisplays[entity].Reload();
+                    _entityDisplays[entity].Activate();
+                }
+                else
+                {
+                    EntityDisplay panel = new EntityDisplay(this);
+                    panel.Show(dockPanel, DockState.Document);
+                    panel.FormClosing += Panel_FormClosing;
+                    panel.LoadEntity(entity);
+                    _entityDisplays.Add(entity, panel);
+                }
             }
             else
             {
-                EntityDisplay panel = new EntityDisplay(this, entity);
-                panel.Show(dockPanel, DockState.Document);
-                panel.FormClosing += Panel_FormClosing;
-                _entityDisplays.Add(entity, panel);
+                if (_entityDisplay == null)
+                {
+                    _entityDisplay = new EntityDisplay(this);
+                    _entityDisplay.Show(dockPanel, DockState.Document);
+                    _entityDisplay.FormClosing += Panel_FormClosing;
+                }
+                _entityDisplay.Visible = true;
+                _entityDisplay.LoadEntity(entity);
             }
-            
+
             compositeEntityList1.FocusOnList();
         }
 
@@ -301,6 +325,7 @@ namespace CommandsEditor.DockPanels
             EntityDisplay display = (EntityDisplay)sender;
             Entity ent = display.Entity;
             _entityDisplays.Remove(ent);
+            _entityDisplay = null;
         }
 
         public void CloseAllChildTabsExcept(Entity entity)
@@ -308,6 +333,9 @@ namespace CommandsEditor.DockPanels
             List<EntityDisplay> toClose = _entityDisplays.Where(o => o.Key != entity).Select(o => o.Value).ToList();
             for (int i = 0; i < toClose.Count; i++)
                 toClose[i].Close();
+
+            if (_entityDisplay != null && _entityDisplay.Entity != entity)
+                _entityDisplay.Visible = false;
         }
         public void CloseAllChildTabs()
         {
@@ -393,6 +421,8 @@ namespace CommandsEditor.DockPanels
 
             if (_entityDisplays.ContainsKey(entity))
                 _entityDisplays[entity].Close();
+            if (_entityDisplay?.Entity == entity)
+                _entityDisplay.Visible = false;
 
             if (reloadUI)
             {

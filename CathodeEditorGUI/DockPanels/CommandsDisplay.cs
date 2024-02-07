@@ -250,8 +250,11 @@ namespace CommandsEditor.DockPanels
 
         public void CloseAllChildTabs()
         {
-            _compositeDisplay?.CloseAllChildTabs();
-            _compositeDisplay?.Close();
+            if (_compositeDisplay == null)
+                return;
+
+            _compositeDisplay.CloseAllChildTabs();
+            _compositeDisplay.Visible = false;
         }
 
         public void ReloadAllEntities()
@@ -276,15 +279,18 @@ namespace CommandsEditor.DockPanels
         {
             if (composite == null) return null;
 
-            if (_compositeDisplay != null)
+            if (_compositeDisplay != null && _compositeDisplay.Composite == composite) 
+                return _compositeDisplay;
+
+            if (_compositeDisplay == null)
             {
-                if (_compositeDisplay?.Composite == composite) return _compositeDisplay;
-                CloseAllChildTabs();
+                _compositeDisplay = new CompositeDisplay(this);
+                _compositeDisplay.Show(Singleton.Editor.DockPanel, DockState.Document);
+                _compositeDisplay.FormClosing += Panel_FormClosing;
             }
 
-            _compositeDisplay = new CompositeDisplay(this, composite);
-            _compositeDisplay.Show(Singleton.Editor.DockPanel, DockState.Document);
-            _compositeDisplay.FormClosing += Panel_FormClosing;
+            _compositeDisplay.Visible = true;
+            _compositeDisplay.LoadComposite(composite);
 
 #if DEBUG
             //if (_renderer != null) _renderer.Close();

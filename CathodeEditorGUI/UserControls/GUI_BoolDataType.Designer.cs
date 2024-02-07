@@ -48,6 +48,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.checkBox1);
+            this.DoubleBuffered = true;
             this.Name = "GUI_BoolDataType";
             this.Size = new System.Drawing.Size(340, 23);
             this.ResumeLayout(false);

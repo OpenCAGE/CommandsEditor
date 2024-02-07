@@ -303,6 +303,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.POSITION_VARIABLE_DUMMY);
+            this.DoubleBuffered = true;
             this.Name = "GUI_TransformDataType";
             this.Size = new System.Drawing.Size(340, 114);
             this.POSITION_VARIABLE_DUMMY.ResumeLayout(false);

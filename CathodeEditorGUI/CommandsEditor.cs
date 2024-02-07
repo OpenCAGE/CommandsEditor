@@ -643,6 +643,9 @@ namespace CommandsEditor
         {
             entitiesOpenTabs.Checked = !entitiesOpenTabs.Checked;
             SettingsManager.SetBool(Singleton.Settings.UseEntTabsOpt, entitiesOpenTabs.Checked);
+
+            if (!entitiesOpenTabs.Checked)
+                _commandsDisplay?.CloseAllChildTabs();
         }
 
         private void showConfirmationWhenSavingToolStripMenuItem_Click(object sender, EventArgs e)

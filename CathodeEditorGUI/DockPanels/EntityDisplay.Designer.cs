@@ -388,6 +388,7 @@
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.entityInfoGroup);
             this.Controls.Add(this.entityParamGroup);
+            this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "EntityDisplay";
             this.ShowHint = WeifenLuo.WinFormsUI.Docking.DockState.Document;
