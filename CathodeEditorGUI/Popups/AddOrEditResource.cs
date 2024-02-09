@@ -135,6 +135,12 @@ namespace CommandsEditor
             //We now auto create ANIMATED_MODEL entries. We should probs do the same for others too.
             if (newReference.entryType == ResourceType.ANIMATED_MODEL)
             {
+                if (Content.resource.env_animations.Entries.Count == 0)
+                {
+                    MessageBox.Show("Cannot add ANIMATED_MODEL for a level with no Environment Animations!");
+                    return;
+                }
+
                 EnvironmentAnimations.EnvironmentAnimation anim = new EnvironmentAnimations.EnvironmentAnimation();
                 anim.ResourceIndex = Content.resource.env_animations.Entries[Content.resource.env_animations.Entries.Count].ResourceIndex + 1;
                 Content.resource.env_animations.Entries.Add(anim);
