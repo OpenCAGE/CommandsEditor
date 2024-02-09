@@ -92,8 +92,11 @@ namespace CommandsEditor.Popups.UserControls
             for (int i = 0; i < materialIndexes.Count; i++)
                 materials.Items.Add(/*"[" + mesh.Submeshes[i].Name + "] " + */Content.resource.materials.Entries[materialIndexes[i]].Name);
 
-            groupBox1.Size = new Size(832, 180);
-            this.Size = new Size(838, 186);
+            if (!_launchedWithPosAndRot)
+            {
+                groupBox1.Size = new Size(832, 180);
+                this.Size = new Size(838, 186);
+            }
         }
 
         private void editModel_Click(object sender, EventArgs e)
@@ -145,16 +148,7 @@ namespace CommandsEditor.Popups.UserControls
             if (index == -1) return;
 
             SelectedMaterialIndexes[_selectedIndex] = index;
-
-            if (_launchedWithPosAndRot)
-            {
-                PopulateUI(Position, Rotation, SelectedModelIndex, SelectedMaterialIndexes);
-            }
-            else
-            {
-                PopulateUI(SelectedModelIndex, SelectedMaterialIndexes);
-            }
-
+            PopulateUI(SelectedModelIndex, SelectedMaterialIndexes);
             materials.SelectedIndex = _selectedIndex;
 
             OnMaterialSelected?.Invoke(_selectedIndex, index);
