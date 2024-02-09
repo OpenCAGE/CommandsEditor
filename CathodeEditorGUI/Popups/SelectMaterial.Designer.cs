@@ -1,4 +1,4 @@
-﻿namespace CommandsEditor.Popups
+﻿namespace AlienPAK
 {
     partial class SelectMaterial
     {
@@ -29,87 +29,76 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SelectMaterial));
-            this.modelPreviewArea = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.selectMaterialBtn = new System.Windows.Forms.Button();
             this.materialList = new System.Windows.Forms.ListBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.modelPreviewArea.SuspendLayout();
+            this.selectMaterial = new System.Windows.Forms.Button();
+            this.duplicateMaterial = new System.Windows.Forms.Button();
+            this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
+            this.materialEditorControlsWPF1 = new AlienPAK.MaterialEditorControlsWPF();
             this.SuspendLayout();
-            // 
-            // modelPreviewArea
-            // 
-            this.modelPreviewArea.Controls.Add(this.label2);
-            this.modelPreviewArea.Controls.Add(this.label1);
-            this.modelPreviewArea.Controls.Add(this.selectMaterialBtn);
-            this.modelPreviewArea.Location = new System.Drawing.Point(384, 6);
-            this.modelPreviewArea.Name = "modelPreviewArea";
-            this.modelPreviewArea.Size = new System.Drawing.Size(298, 634);
-            this.modelPreviewArea.TabIndex = 105;
-            this.modelPreviewArea.TabStop = false;
-            this.modelPreviewArea.Text = "Preview";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(42, 184);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(221, 13);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "Previews are coming to the script editor soon.";
-            // 
-            // selectMaterialBtn
-            // 
-            this.selectMaterialBtn.Location = new System.Drawing.Point(158, 593);
-            this.selectMaterialBtn.Name = "selectMaterialBtn";
-            this.selectMaterialBtn.Size = new System.Drawing.Size(134, 35);
-            this.selectMaterialBtn.TabIndex = 1;
-            this.selectMaterialBtn.Text = "Select This Material";
-            this.selectMaterialBtn.UseVisualStyleBackColor = true;
-            this.selectMaterialBtn.Click += new System.EventHandler(this.selectMaterial_Click);
             // 
             // materialList
             // 
             this.materialList.FormattingEnabled = true;
-            this.materialList.Location = new System.Drawing.Point(12, 12);
+            this.materialList.Location = new System.Drawing.Point(1, 6);
             this.materialList.Name = "materialList";
-            this.materialList.Size = new System.Drawing.Size(366, 628);
-            this.materialList.TabIndex = 106;
+            this.materialList.Size = new System.Drawing.Size(384, 641);
+            this.materialList.TabIndex = 21;
+            this.materialList.SelectedIndexChanged += new System.EventHandler(this.materialList_SelectedIndexChanged);
             // 
-            // label2
+            // selectMaterial
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(10, 158);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(282, 13);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "You can preview and edit materials within the Asset Editor.";
+            this.selectMaterial.Location = new System.Drawing.Point(693, 639);
+            this.selectMaterial.Name = "selectMaterial";
+            this.selectMaterial.Size = new System.Drawing.Size(140, 30);
+            this.selectMaterial.TabIndex = 22;
+            this.selectMaterial.Text = "Use This Material";
+            this.selectMaterial.UseVisualStyleBackColor = true;
+            this.selectMaterial.Click += new System.EventHandler(this.selectMaterial_Click);
             // 
-            // SelectMaterial
+            // duplicateMaterial
+            // 
+            this.duplicateMaterial.Location = new System.Drawing.Point(1, 652);
+            this.duplicateMaterial.Name = "duplicateMaterial";
+            this.duplicateMaterial.Size = new System.Drawing.Size(384, 24);
+            this.duplicateMaterial.TabIndex = 23;
+            this.duplicateMaterial.Text = "Duplicate Selected  Material";
+            this.duplicateMaterial.UseVisualStyleBackColor = true;
+            this.duplicateMaterial.Click += new System.EventHandler(this.duplicateMaterial_Click);
+            // 
+            // elementHost1
+            // 
+            this.elementHost1.Location = new System.Drawing.Point(391, 2);
+            this.elementHost1.Name = "elementHost1";
+            this.elementHost1.Size = new System.Drawing.Size(450, 676);
+            this.elementHost1.TabIndex = 20;
+            this.elementHost1.Text = "elementHost1";
+            this.elementHost1.Child = this.materialEditorControlsWPF1;
+            // 
+            // MaterialEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(693, 652);
+            this.ClientSize = new System.Drawing.Size(845, 681);
+            this.Controls.Add(this.duplicateMaterial);
+            this.Controls.Add(this.selectMaterial);
             this.Controls.Add(this.materialList);
-            this.Controls.Add(this.modelPreviewArea);
+            this.Controls.Add(this.elementHost1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.Name = "SelectMaterial";
+            this.Name = "MaterialEditor";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Select Material";
-            this.modelPreviewArea.ResumeLayout(false);
-            this.modelPreviewArea.PerformLayout();
+            this.Text = "Material Editor";
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.GroupBox modelPreviewArea;
-        private System.Windows.Forms.Button selectMaterialBtn;
+        private System.Windows.Forms.Integration.ElementHost elementHost1;
+        private MaterialEditorControlsWPF materialEditorControlsWPF1;
         private System.Windows.Forms.ListBox materialList;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button selectMaterial;
+        private System.Windows.Forms.Button duplicateMaterial;
     }
 }
