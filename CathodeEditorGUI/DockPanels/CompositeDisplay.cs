@@ -34,7 +34,7 @@ namespace CommandsEditor.DockPanels
         private Composite _composite;
         public Composite Composite => _composite;
 
-        private Dictionary<Entity, EntityDisplay> _entityDisplays = new Dictionary<Entity, EntityDisplay>();
+        private List<EntityDisplay> _entityDisplays = new List<EntityDisplay>();
 
         private EntityDisplay _activeEntityDisplay = null;
         public EntityDisplay ActiveEntityDisplay => _activeEntityDisplay;
@@ -218,17 +218,17 @@ namespace CommandsEditor.DockPanels
         /* Reload all entities loaded in this display */
         public void ReloadAllEntities()
         {
-            foreach (KeyValuePair<Entity, EntityDisplay> display in _entityDisplays)
+            for (int i = 0; i < _entityDisplays.Count; i++)
             {
-                display.Value.Reload();
+                if (!_entityDisplays[i].Visible) continue;
+                _entityDisplays[i].Reload();
             }
         }
 
         /* Reload a specific entity's UI (if it is loaded) */
         public void ReloadEntity(Entity entity)
         {
-            if (!_entityDisplays.ContainsKey(entity)) return;
-            _entityDisplays[entity].Reload();
+            _entityDisplays.FirstOrDefault(o => o.Entity == entity && o.Visible)?.Reload();
         }
 
         /* Monitor the currently active entity tab */
@@ -277,37 +277,58 @@ namespace CommandsEditor.DockPanels
         {
             if (entity == null) return;
 
-            if (SettingsManager.GetBool(Singleton.Settings.UseEntTabsOpt) == false)
-                CloseAllChildTabs();
-
-            if (_entityDisplays.ContainsKey(entity))
+            EntityDisplay display = null;
+            if (SettingsManager.GetBool(Singleton.Settings.UseEntityTabs))
             {
-                _entityDisplays[entity].Reload();
-                _entityDisplays[entity].Activate();
+                //If tabbing is enabled, try & find an unused background tab for us to repurpose
+                for (int i = 0; i < _entityDisplays.Count; i++)
+                {
+                    if (_entityDisplays[i].Visible) continue;
+                    display = _entityDisplays[i];
+                    break;
+                }
+                //Otherwise, spawn a new tab
+                if (display == null)
+                {
+                    display = new EntityDisplay(this);
+                    display.Show(dockPanel, DockState.Document);
+                    display.FormClosing += OnEntityDisplayClosing;
+                    _entityDisplays.Add(display);
+                }
             }
             else
             {
-                EntityDisplay panel = new EntityDisplay(this, entity);
-                panel.Show(dockPanel, DockState.Document);
-                panel.FormClosing += Panel_FormClosing;
-                _entityDisplays.Add(entity, panel);
+                //If tabbing is disabled, make the tab if it hasn't been made already
+                if (_entityDisplays.Count == 0)
+                {
+                    display = new EntityDisplay(this);
+                    display.Show(dockPanel, DockState.Document);
+                    display.FormClosing += OnEntityDisplayClosing;
+                    _entityDisplays.Add(display);
+                }
+                //Otherwise just repurpose the one that was already made
+                else
+                {
+                    display = _entityDisplays[0];
+                }
             }
-            
+            display.PopulateUI(entity);
+
             compositeEntityList1.FocusOnList();
         }
-
-        private void Panel_FormClosing(object sender, FormClosingEventArgs e)
+        private void OnEntityDisplayClosing(object sender, FormClosingEventArgs e)
         {
+            e.Cancel = true;
             EntityDisplay display = (EntityDisplay)sender;
-            Entity ent = display.Entity;
-            _entityDisplays.Remove(ent);
+            display.DepopulateUI();
         }
 
         public void CloseAllChildTabsExcept(Entity entity)
         {
-            List<EntityDisplay> toClose = _entityDisplays.Where(o => o.Key != entity).Select(o => o.Value).ToList();
+            //Note: we don't actually close tabs here, we just hide them - they can be repurposed then instead of spawning new ones
+            List<EntityDisplay> toClose = _entityDisplays.FindAll(o => o.Entity == entity);
             for (int i = 0; i < toClose.Count; i++)
-                toClose[i].Close();
+                toClose[i].DepopulateUI();
         }
         public void CloseAllChildTabs()
         {
@@ -391,8 +412,7 @@ namespace CommandsEditor.DockPanels
                 }
             }
 
-            if (_entityDisplays.ContainsKey(entity))
-                _entityDisplays[entity].Close();
+            _entityDisplays.FirstOrDefault(o => o.Entity == entity && o.Visible)?.Close();
 
             if (reloadUI)
             {

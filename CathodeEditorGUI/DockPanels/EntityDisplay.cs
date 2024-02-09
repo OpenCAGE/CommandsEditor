@@ -34,23 +34,23 @@ namespace CommandsEditor.DockPanels
         private List<Entity> parentEntities = new List<Entity>();
         private List<Entity> childEntities = new List<Entity>();
 
-        public EntityDisplay(CompositeDisplay compositeDisplay, Entity entity)
+        public EntityDisplay(CompositeDisplay compositeDisplay)
         {
-            _entity = entity;
             _compositeDisplay = compositeDisplay;
 
-            if (entity == null)
-            {
-                this.Close();
-                return;
-            }
-
-            _entityCompositePtr = _entity.variant == EntityVariant.FUNCTION ? Content.commands.GetComposite(((FunctionEntity)_entity).function) : null;
+            this.FormClosing += (s, e) => { DepopulateUI(); };
+            this.FormClosed += EntityDisplay_FormClosed;
 
             InitializeComponent();
-            this.Activate();
+        }
 
-            this.FormClosed += EntityDisplay_FormClosed;
+        public void PopulateUI(Entity entity)
+        {
+            if (!this.Visible)
+                this.Show();
+            
+            _entity = entity;
+            _entityCompositePtr = _entity.variant == EntityVariant.FUNCTION ? Content.commands.GetComposite(((FunctionEntity)_entity).function) : null;
 
             switch (entity.variant)
             {
@@ -72,6 +72,14 @@ namespace CommandsEditor.DockPanels
             }
 
             Reload();
+
+            this.Activate();
+        }
+
+        public void DepopulateUI()
+        {
+            this.Hide();
+            EntityDisplay_FormClosed(null, null);
         }
 
         private void EntityDisplay_FormClosed(object sender, FormClosedEventArgs e)
@@ -80,7 +88,6 @@ namespace CommandsEditor.DockPanels
                 entity_params.Controls[i].Dispose();
             entity_params.Controls.Clear();
 
-            _compositeDisplay = null;
             _entity = null;
             _entityCompositePtr = null;
 

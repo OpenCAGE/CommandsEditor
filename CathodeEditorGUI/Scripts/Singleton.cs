@@ -53,7 +53,7 @@ namespace CommandsEditor
             public readonly string EntIdOpt = "CS_ShowEntityIDs";
             public readonly string InstOpt = "CS_InstanceMode";
             public readonly string CompNameOnlyOpt = "CS_SearchOnlyCompName";
-            public readonly string UseEntTabsOpt = "CS_UseEntityTabs";
+            public readonly string UseEntityTabs = "CS_UseEntityTabs";
             public readonly string ShowSavedMsgOpt = "CS_ShowSavedNotif";
             public readonly string ShowTexOpt = "CS_ShowTextures";
             public readonly string FileBrowserViewOpt = "CS_FileBrowserView";

@@ -88,8 +88,8 @@ namespace CommandsEditor
             keepFunctionUsesWindowOpenToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.KeepUsesWindowOpen); keepFunctionUsesWindowOpenToolStripMenuItem.PerformClick();
             nodeOpensEntity.Checked = !SettingsManager.GetBool(Singleton.Settings.OpenEntityFromNode); nodeOpensEntity.PerformClick();
 
-            if (!SettingsManager.IsSet(Singleton.Settings.UseEntTabsOpt)) SettingsManager.SetBool(Singleton.Settings.UseEntTabsOpt, true);
-            entitiesOpenTabs.Checked = !SettingsManager.GetBool(Singleton.Settings.UseEntTabsOpt); entitiesOpenTabs.PerformClick();
+            if (!SettingsManager.IsSet(Singleton.Settings.UseEntityTabs)) SettingsManager.SetBool(Singleton.Settings.UseEntityTabs, true);
+            entitiesOpenTabs.Checked = !SettingsManager.GetBool(Singleton.Settings.UseEntityTabs); entitiesOpenTabs.PerformClick();
 
             if (!SettingsManager.IsSet(Singleton.Settings.ShowSavedMsgOpt)) SettingsManager.SetBool(Singleton.Settings.ShowSavedMsgOpt, true);
             showConfirmationWhenSavingToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.ShowSavedMsgOpt); showConfirmationWhenSavingToolStripMenuItem.PerformClick();
@@ -642,7 +642,9 @@ namespace CommandsEditor
         private void entitiesOpenTabs_Click(object sender, EventArgs e)
         {
             entitiesOpenTabs.Checked = !entitiesOpenTabs.Checked;
-            SettingsManager.SetBool(Singleton.Settings.UseEntTabsOpt, entitiesOpenTabs.Checked);
+            SettingsManager.SetBool(Singleton.Settings.UseEntityTabs, entitiesOpenTabs.Checked);
+
+            _commandsDisplay.CloseAllChildTabs();
         }
 
         private void showConfirmationWhenSavingToolStripMenuItem_Click(object sender, EventArgs e)
