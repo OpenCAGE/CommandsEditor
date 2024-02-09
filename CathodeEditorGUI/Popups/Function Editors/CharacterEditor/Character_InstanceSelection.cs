@@ -23,11 +23,11 @@ namespace CommandsEditor.Popups.Function_Editors.CharacterEditor
         {
             InitializeComponent(); 
             
-            List<EntityPath> hierarchies = editor.Content.editor_utils.GetHierarchiesForEntity(editor.Composite, editor.Entity);
+            List<EntityPath> hierarchies = editor.Content.editor_utils.GetHierarchiesForEntity(Singleton.Displays.Composite.Composite, editor.Entity);
             for (int i = 0; i < hierarchies.Count; i++)
             {
                 if (existing.Contains(hierarchies[i].GenerateInstance())) continue;
-                characterInstances.Items.Add(hierarchies[i].GetAsString(Content.commands, editor.Composite, false));
+                characterInstances.Items.Add(hierarchies[i].GetAsString(Content.commands, Singleton.Displays.Composite.Composite, false));
                 _hierarchies.Add(hierarchies[i]);
             }
 

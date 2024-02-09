@@ -1,6 +1,7 @@
 using CATHODE;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
+using CommandsEditor.DockPanels;
 using CommandsEditor.Popups;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,17 @@ namespace CommandsEditor
 {
     public static class Singleton
     {
+        //The main editor instance
         public static CommandsEditor Editor;
+
+        //The displays to draw inside the main editor
+        public static DisplayObjects Displays;
+        public class DisplayObjects
+        {
+            public CommandsDisplay Commands;
+            public CompositeDisplay Composite;
+            public List<EntityDisplay> Entity = new List<EntityDisplay>();
+        }
 
         //Global localised string DBs for English
         public static Dictionary<string, Strings> Strings = new Dictionary<string, Strings>();

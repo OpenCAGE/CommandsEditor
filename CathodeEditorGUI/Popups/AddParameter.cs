@@ -32,7 +32,7 @@ namespace CommandsEditor
             InitializeComponent();
             param_datatype.SelectedIndex = 0;
 
-            List<string> options = entityDisplay.Content.editor_utils.GenerateParameterList(entityDisplay.Entity, entityDisplay.Composite);
+            List<string> options = entityDisplay.Content.editor_utils.GenerateParameterList(entityDisplay.Entity, Singleton.Displays.Composite.Composite);
             param_name.BeginUpdate();
             for (int i = 0; i < options.Count; i++) param_name.Items.Add(options[i]);
             param_name.EndUpdate();
@@ -43,12 +43,12 @@ namespace CommandsEditor
             switch (_entityDisplay.Entity.variant)
             {
                 case EntityVariant.PROXY:
-                    Entity proxiedEntity = CommandsUtils.ResolveHierarchy(Content.commands, entityDisplay.Composite, ((ProxyEntity)entityDisplay.Entity).proxy.path, out Composite c, out string h);
+                    Entity proxiedEntity = CommandsUtils.ResolveHierarchy(Content.commands, Singleton.Displays.Composite.Composite, ((ProxyEntity)entityDisplay.Entity).proxy.path, out Composite c, out string h);
                     if (proxiedEntity.variant == EntityVariant.FUNCTION)
                         _funcEnt = (FunctionEntity)proxiedEntity;
                     break;
                 case EntityVariant.ALIAS:
-                    Entity aliasedEntity = CommandsUtils.ResolveHierarchy(Content.commands, entityDisplay.Composite, ((AliasEntity)entityDisplay.Entity).alias.path, out Composite c2, out string h2);
+                    Entity aliasedEntity = CommandsUtils.ResolveHierarchy(Content.commands, Singleton.Displays.Composite.Composite, ((AliasEntity)entityDisplay.Entity).alias.path, out Composite c2, out string h2);
                     if (aliasedEntity.variant == EntityVariant.FUNCTION)
                         _funcEnt = (FunctionEntity)aliasedEntity;
                     break;

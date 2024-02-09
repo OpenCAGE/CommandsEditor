@@ -33,7 +33,7 @@ namespace CommandsEditor
             _entityDisplay = entityDisplay;
             InitializeComponent();
 
-            RefreshEntityLists(entityDisplay.Composite);
+            RefreshEntityLists(Singleton.Displays.Composite.Composite);
             RefreshChildParamList();
             RefreshParentParamList();
 
@@ -51,7 +51,7 @@ namespace CommandsEditor
             _entityDisplay = entityDisplay;
             InitializeComponent();
 
-            RefreshEntityLists(entityDisplay.Composite);
+            RefreshEntityLists(Singleton.Displays.Composite.Composite);
             RefreshChildParamList();
             RefreshParentParamList();
 
@@ -117,7 +117,7 @@ namespace CommandsEditor
             parentParameterList.BeginUpdate();
             parentParameterList.Items.Clear();
             if (parentEntityList.SelectedIndex == -1) return;
-            List<string> items = _entityDisplay.Content.editor_utils.GenerateParameterList(_entityList[parentEntityList.SelectedIndex], _entityDisplay.Composite);
+            List<string> items = _entityDisplay.Content.editor_utils.GenerateParameterList(_entityList[parentEntityList.SelectedIndex], Singleton.Displays.Composite.Composite);
             for (int i = 0; i < items.Count; i++) parentParameterList.Items.Add(items[i]);
             parentParameterList.EndUpdate();
         }
@@ -131,7 +131,7 @@ namespace CommandsEditor
             childParameterList.BeginUpdate();
             childParameterList.Items.Clear();
             if (childEntityList.SelectedIndex == -1) return;
-            List<string> items = _entityDisplay.Content.editor_utils.GenerateParameterList(_entityList[childEntityList.SelectedIndex], _entityDisplay.Composite);
+            List<string> items = _entityDisplay.Content.editor_utils.GenerateParameterList(_entityList[childEntityList.SelectedIndex], Singleton.Displays.Composite.Composite);
             for (int i = 0; i < items.Count; i++) childParameterList.Items.Add(items[i]);
             childParameterList.EndUpdate();
         }
@@ -145,13 +145,13 @@ namespace CommandsEditor
                 _selectEntOut = null;
             }
 
-            _selectEntOut = new EditHierarchy(_entityDisplay.Composite, new CompositeEntityList.DisplayOptions() { ShowCheckboxes = false }, false);
+            _selectEntOut = new EditHierarchy(Singleton.Displays.Composite.Composite, new CompositeEntityList.DisplayOptions() { ShowCheckboxes = false }, false);
             _selectEntOut.Show();
             _selectEntOut.OnHierarchyGenerated += OnSelectedEntityOut;
         }
         private void OnSelectedEntityOut(List<ShortGuid> hierarchy)
         {
-            parentEntityList.SelectedIndex = _entityList.IndexOf(_entityDisplay.Composite.GetEntityByID(hierarchy[0]));
+            parentEntityList.SelectedIndex = _entityList.IndexOf(Singleton.Displays.Composite.Composite.GetEntityByID(hierarchy[0]));
         }
 
         EditHierarchy _selectEntIn = null;
@@ -163,13 +163,13 @@ namespace CommandsEditor
                 _selectEntIn = null;
             }
 
-            _selectEntIn = new EditHierarchy(_entityDisplay.Composite, new CompositeEntityList.DisplayOptions() { ShowCheckboxes = false }, false);
+            _selectEntIn = new EditHierarchy(Singleton.Displays.Composite.Composite, new CompositeEntityList.DisplayOptions() { ShowCheckboxes = false }, false);
             _selectEntIn.Show();
             _selectEntIn.OnHierarchyGenerated += OnSelectedEntityIn;
         }
         private void OnSelectedEntityIn(List<ShortGuid> hierarchy)
         {
-            childEntityList.SelectedIndex = _entityList.IndexOf(_entityDisplay.Composite.GetEntityByID(hierarchy[0]));
+            childEntityList.SelectedIndex = _entityList.IndexOf(Singleton.Displays.Composite.Composite.GetEntityByID(hierarchy[0]));
         }
     }
 }

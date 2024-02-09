@@ -32,9 +32,6 @@ namespace CommandsEditor
     {
         public DockPanel DockPanel => dockPanel;
 
-        private CommandsDisplay _commandsDisplay = null;
-        public CommandsDisplay CommandsDisplay => _commandsDisplay;
-
         private NodeEditor _nodeViewer = null;
         private SelectLevel _levelSelect = null;
 

@@ -27,15 +27,8 @@ namespace CommandsEditor.DockPanels
 {
     public partial class CompositeDisplay : DockContent
     {
-        private CommandsDisplay _commandsDisplay;
-        public CommandsDisplay CommandsDisplay => _commandsDisplay;
-        public LevelContent Content => _commandsDisplay.Content;
-
         private Composite _composite;
         public Composite Composite => _composite;
-
-        private Dictionary<Entity, EntityDisplay> _entityDisplays = new Dictionary<Entity, EntityDisplay>(); //used when entity tabs are enabled - less performant
-        private EntityDisplay _entityDisplay = null; //used when entity tabs are disabled
 
         private EntityDisplay _activeEntityDisplay = null;
         public EntityDisplay ActiveEntityDisplay => _activeEntityDisplay;
@@ -48,10 +41,8 @@ namespace CommandsEditor.DockPanels
 
         private const int _defaultSplitterDistance = 500;
 
-        public CompositeDisplay(CommandsDisplay commandsDisplay)
+        public CompositeDisplay()
         {
-            _commandsDisplay = commandsDisplay;
-
             InitializeComponent();
 
             dockPanel.ActiveContentChanged += DockPanel_ActiveContentChanged;
@@ -69,7 +60,6 @@ namespace CommandsEditor.DockPanels
         private void CompositeDisplay_FormClosed(object sender, FormClosedEventArgs e)
         {
             _composite = null;
-            _commandsDisplay = null;
             _activeEntityDisplay = null;
             CloseAllChildTabs();
         }
@@ -93,7 +83,7 @@ namespace CommandsEditor.DockPanels
             pathDisplay.Text = _path.GetPath(composite);
 
             //Set icon
-            EditorUtils.CompositeType type = Content.editor_utils.GetCompositeType(composite);
+            EditorUtils.CompositeType type = Singleton.Displays.Commands.Content.editor_utils.GetCompositeType(composite);
             if (type == EditorUtils.CompositeType.IS_ROOT)
                 this.Icon = Properties.Resources.globe;
             else if (type == EditorUtils.CompositeType.IS_GLOBAL || type == EditorUtils.CompositeType.IS_PAUSE_MENU)
@@ -102,11 +92,11 @@ namespace CommandsEditor.DockPanels
                 this.Icon = Properties.Resources.Avatar_Icon;
 
             //If the composite is an entry point, we shouldn't let people remove it
-            bool isCoreComposite = !Content.commands.EntryPoints.Contains(composite);
+            bool isCoreComposite = !Singleton.Displays.Commands.Content.commands.EntryPoints.Contains(composite);
             findUses.Visible = isCoreComposite;
             deleteComposite.Visible = isCoreComposite;
 
-            CommandsUtils.PurgeDeadLinks(Content.commands, composite);
+            CommandsUtils.PurgeDeadLinks(Singleton.Displays.Commands.Content.commands, composite);
 
             //Populate UI
             CloseAllChildTabs();
@@ -182,7 +172,7 @@ namespace CommandsEditor.DockPanels
             {
                 if (_canExportChildren && !CommandsUtils.FunctionTypeExists(ent.function))
                 {
-                    Composite nestedComp = Content.commands.GetComposite(ent.function);
+                    Composite nestedComp = Singleton.Displays.Commands.Content.commands.GetComposite(ent.function);
                     if (nestedComp != null)
                     {
                         if (DoesCompositeContainResource(nestedComp))
@@ -637,7 +627,7 @@ namespace CommandsEditor.DockPanels
         }
         private void OnEntityRenamed(string name, Entity entity)
         {
-            Content.composite_content_cache[Composite][entity].Text = name;
+            Singleton.Displays.Commands.Content.composite_content_cache[Composite][entity].Text = name;
             CommandsDisplay.ReloadAllEntities();
             //TODO-URGENT: Also need to update Proxy/Alias hierarchies.
         }

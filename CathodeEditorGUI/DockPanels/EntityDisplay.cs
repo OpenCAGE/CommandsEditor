@@ -20,24 +20,16 @@ namespace CommandsEditor.DockPanels
 {
     public partial class EntityDisplay : DockContent
     {
-        private CompositeDisplay _compositeDisplay;
-        public CompositeDisplay CompositeDisplay => _compositeDisplay;
-
         private Entity _entity;
         private Composite _entityCompositePtr; //The composite that this entity points to, if it does.
 
-        public LevelContent Content => _compositeDisplay.Content;
-
         public Entity Entity => _entity;
-        public Composite Composite => _compositeDisplay.Composite;
 
         private List<Entity> parentEntities = new List<Entity>();
         private List<Entity> childEntities = new List<Entity>();
 
-        public EntityDisplay(CompositeDisplay compositeDisplay)
+        public EntityDisplay()
         {
-            _compositeDisplay = compositeDisplay;
-
             InitializeComponent();
             this.Activate();
 
@@ -50,7 +42,6 @@ namespace CommandsEditor.DockPanels
                 entity_params.Controls[i].Dispose();
             entity_params.Controls.Clear();
 
-            _compositeDisplay = null;
             _entity = null;
             _entityCompositePtr = null;
 
@@ -62,7 +53,7 @@ namespace CommandsEditor.DockPanels
         public void LoadEntity(Entity entity)
         {
             _entity = entity;
-            _entityCompositePtr = _entity.variant == EntityVariant.FUNCTION ? Content.commands.GetComposite(((FunctionEntity)_entity).function) : null;
+            _entityCompositePtr = _entity.variant == EntityVariant.FUNCTION ? Singleton.Displays.Commands.Content.commands.GetComposite(((FunctionEntity)_entity).function) : null;
 
             switch (entity.variant)
             {
@@ -70,7 +61,7 @@ namespace CommandsEditor.DockPanels
                     this.Icon = Resources.AnimatorController_Icon;
                     break;
                 case EntityVariant.FUNCTION:
-                    if (Content.commands.GetComposite(((FunctionEntity)entity).function) == null)
+                    if (Singleton.Displays.Commands.Content.commands.GetComposite(((FunctionEntity)entity).function) == null)
                         this.Icon = Resources.d_ScriptableObject_Icon_braces_only;
                     else
                         this.Icon = Resources.d_PrefabVariant_Icon;
@@ -140,7 +131,7 @@ namespace CommandsEditor.DockPanels
             switch (_entity.variant)
             {
                 case EntityVariant.FUNCTION:
-                    selected_entity_name.Text = EntityUtils.GetName(Composite.shortGUID, _entity.shortGUID);
+                    selected_entity_name.Text = EntityUtils.GetName(Singleton.Displays.Composite.Composite.shortGUID, _entity.shortGUID);
 
                     //Composite Instance
                     if (_entityCompositePtr != null)
@@ -156,7 +147,7 @@ namespace CommandsEditor.DockPanels
                     else
                     {
                         jumpToComposite.Visible = false;
-                        editEntityResources.Enabled = (Content.resource.models != null); //TODO: we can hide this button completely outside of this state
+                        editEntityResources.Enabled = (Singleton.Displays.Commands.Content.resource.models != null); //TODO: we can hide this button completely outside of this state
 
                         ShortGuid thisFunction = ((FunctionEntity)_entity).function;
                         description = CathodeEntityDatabase.GetEntity(thisFunction).className;
@@ -174,26 +165,26 @@ namespace CommandsEditor.DockPanels
                 case EntityVariant.ALIAS:
                     hierarchyDisplay.Visible = true;
                     List<ShortGuid> entityHierarchy = _entity.variant == EntityVariant.PROXY ? ((ProxyEntity)_entity).proxy.path : ((AliasEntity)_entity).alias.path;
-                    Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, Composite, entityHierarchy, out Composite comp, out string hierarchy, SettingsManager.GetBool("CS_ShowEntityIDs"));
+                    Entity ent = CommandsUtils.ResolveHierarchy(Singleton.Displays.Commands.Content.commands, Singleton.Displays.Composite.Composite, entityHierarchy, out Composite comp, out string hierarchy, SettingsManager.GetBool("CS_ShowEntityIDs"));
                     hierarchyDisplay.Text = hierarchy;
                     jumpToComposite.Visible = true;
                     selected_entity_name.Text = (_entity.variant == EntityVariant.PROXY ? "Proxy to " : "Alias of ") + EntityUtils.GetName(comp, ent);
                     break;
                 default:
-                    selected_entity_name.Text = EntityUtils.GetName(Composite.shortGUID, _entity.shortGUID);
+                    selected_entity_name.Text = EntityUtils.GetName(Singleton.Displays.Composite.Composite.shortGUID, _entity.shortGUID);
                     break;
             }
             selected_entity_type_description.Text = description;
             this.Text = selected_entity_name.Text;
 
             //show mvr editor button if this entity has a mvr link
-            if (Content.mvr != null && Content.mvr.Entries.FindAll(o => o.entity.entity_id == this._entity.shortGUID).Count != 0)
+            if (Singleton.Displays.Commands.Content.mvr != null && Singleton.Displays.Commands.Content.mvr.Entries.FindAll(o => o.entity.entity_id == this._entity.shortGUID).Count != 0)
                 editEntityMovers.Enabled = true;
 
             //populate linked params IN
             parentEntities.Clear();
             int current_ui_offset = 7;
-            List<Entity> ents = Composite.GetEntities();
+            List<Entity> ents = Singleton.Displays.Composite.Composite.GetEntities();
             foreach (Entity ent in ents)
             {
                 foreach (EntityConnector link in ent.childLinks)
@@ -201,7 +192,7 @@ namespace CommandsEditor.DockPanels
                     if (link.childID != _entity.shortGUID) continue;
                     GUI_Link parameterGUI = new GUI_Link(this);
                     parameterGUI.PopulateUI(link, false, ent.shortGUID);
-                    parameterGUI.GoToEntity += _compositeDisplay.LoadEntity;
+                    parameterGUI.GoToEntity += Singleton.Displays.Composite.LoadEntity;
                     parameterGUI.OnLinkEdited += OnLinkEdited;
                     parameterGUI.Location = new Point(15, current_ui_offset);
                     parameterGUI.Width = entity_params.Width - 30;
@@ -387,14 +378,14 @@ namespace CommandsEditor.DockPanels
             {
                 GUI_Link parameterGUI = new GUI_Link(this);
                 parameterGUI.PopulateUI(_entity.childLinks[i], true);
-                parameterGUI.GoToEntity += _compositeDisplay.LoadEntity;
+                parameterGUI.GoToEntity += Singleton.Displays.Composite.LoadEntity;
                 parameterGUI.OnLinkEdited += OnLinkEdited;
                 parameterGUI.Location = new Point(15, current_ui_offset);
                 parameterGUI.Width = entity_params.Width - 30;
                 parameterGUI.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
                 current_ui_offset += parameterGUI.Height + 6;
                 controls.Add(parameterGUI);
-                childEntities.Add(Composite.GetEntityByID(_entity.childLinks[i].childID));
+                childEntities.Add(Singleton.Displays.Composite.Composite.GetEntityByID(_entity.childLinks[i].childID));
             }
 
             entity_params.SuspendLayout();
@@ -407,8 +398,8 @@ namespace CommandsEditor.DockPanels
 
         private void OnLinkEdited(Entity orig, Entity linked)
         {
-            _compositeDisplay.ReloadEntity(orig);
-            _compositeDisplay.ReloadEntity(linked);
+            Singleton.Displays.Composite.ReloadEntity(orig);
+            Singleton.Displays.Composite.ReloadEntity(linked);
         }
 
         private void BackgroundEntityLoader(Entity ent, EntityDisplay mainInst)
@@ -421,10 +412,10 @@ namespace CommandsEditor.DockPanels
                 switch (i)
                 {
                     case 0:
-                        isPointedTo = mainInst.Content.editor_utils.IsEntityReferencedExternally(ent);
+                        isPointedTo = Singleton.Displays.Commands.Content.editor_utils.IsEntityReferencedExternally(ent);
                         break;
                     case 1:
-                        mainInst.Content.editor_utils.TryFindZoneForEntity(ent, mainInst.Composite, out zoneComp, out zoneEnt);
+                        Singleton.Displays.Commands.Content.editor_utils.TryFindZoneForEntity(ent, Singleton.Displays.Composite.Composite, out zoneComp, out zoneEnt);
                         break;
                 }
             });
@@ -489,12 +480,12 @@ namespace CommandsEditor.DockPanels
         {
             ShowCrossRefs crossRefs = new ShowCrossRefs(this);
             crossRefs.Show();
-            crossRefs.OnEntitySelected += _compositeDisplay.CommandsDisplay.LoadCompositeAndEntity;
+            crossRefs.OnEntitySelected += Singleton.Displays.Commands.LoadCompositeAndEntity;
         }
 
         private void editEntityResources_Click(object sender, EventArgs e)
         {
-            AddOrEditResource resourceEditor = new AddOrEditResource(((FunctionEntity)Entity).resources, Entity.shortGUID, Content.editor_utils.GenerateEntityName(Entity, Composite));
+            AddOrEditResource resourceEditor = new AddOrEditResource(((FunctionEntity)Entity).resources, Entity.shortGUID, Singleton.Displays.Commands.Content.editor_utils.GenerateEntityName(Entity, Singleton.Displays.Composite.Composite));
             resourceEditor.Show();
             resourceEditor.OnSaved += OnResourceEditorSaved;
         }
@@ -505,9 +496,9 @@ namespace CommandsEditor.DockPanels
 
         private void goToZone_Click(object sender, EventArgs e)
         {
-            CompositeDisplay display = _compositeDisplay;
-            if (Composite != zoneCompositeForSelectedEntity)
-                display = _compositeDisplay.CommandsDisplay.LoadComposite(zoneCompositeForSelectedEntity);
+            CompositeDisplay display = Singleton.Displays.Composite;
+            if (Singleton.Displays.Composite.Composite != zoneCompositeForSelectedEntity)
+                display = Singleton.Displays.Commands.LoadComposite(zoneCompositeForSelectedEntity);
 
             display.LoadEntity(zoneEntityForSelectedEntity);
         }
@@ -561,20 +552,20 @@ namespace CommandsEditor.DockPanels
             {
                 case EntityVariant.PROXY:
                     //Proxies forward directly to the entity they point to, breaking us out of the hierarchy.
-                    Entity entity = CommandsUtils.ResolveHierarchy(Content.commands, Composite, ((ProxyEntity)Entity).proxy.path, out Composite flow, out string hierarchy);
+                    Entity entity = CommandsUtils.ResolveHierarchy(Singleton.Displays.Commands.Content.commands, Singleton.Displays.Composite.Composite, ((ProxyEntity)Entity).proxy.path, out Composite flow, out string hierarchy);
                     if (MessageBox.Show("Jumping to a proxy will break you out of your composite.\nAre you sure?", "About to follow proxy...", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
-                        _compositeDisplay.CommandsDisplay.LoadCompositeAndEntity(flow, entity);
+                        Singleton.Displays.Commands.LoadCompositeAndEntity(flow, entity);
                     break;
                 case EntityVariant.FUNCTION:
                     //Composite instances take us a step down the hierarchy.
-                    _compositeDisplay.LoadChild(Content.commands.GetComposite(selected_entity_type_description.Text), Entity);
+                    Singleton.Displays.Composite.LoadChild(Singleton.Displays.Commands.Content.commands.GetComposite(selected_entity_type_description.Text), Entity);
                     return;
                 case EntityVariant.ALIAS:
                     //Aliases take us (potentially) multiple steps down the hierarchy.
                     List<ShortGuid> aliasPath = ((AliasEntity)Entity).alias.path;
                     for (int i = 0; i < aliasPath.Count - 2; i++)
-                        _compositeDisplay.LoadChild(Content.commands.GetComposite(((FunctionEntity)Composite.GetEntityByID(aliasPath[i])).function), Composite.GetEntityByID(aliasPath[i]));
-                    _compositeDisplay.LoadEntity(Composite.GetEntityByID(aliasPath[aliasPath.Count - 2]));
+                        Singleton.Displays.Composite.LoadChild(Singleton.Displays.Commands.Content.commands.GetComposite(((FunctionEntity)Singleton.Displays.Composite.Composite.GetEntityByID(aliasPath[i])).function), Singleton.Displays.Composite.Composite.GetEntityByID(aliasPath[i]));
+                    Singleton.Displays.Composite.LoadEntity(Singleton.Displays.Composite.Composite.GetEntityByID(aliasPath[aliasPath.Count - 2]));
                     return;
             }
 
@@ -582,31 +573,31 @@ namespace CommandsEditor.DockPanels
 
         private void deleteEntity_Click(object sender, EventArgs e)
         {
-            _compositeDisplay.DeleteEntity(Entity);
+            Singleton.Displays.Composite.DeleteEntity(Entity);
         }
 
         private void duplicateEntity_Click(object sender, EventArgs e)
         {
-            _compositeDisplay.DuplicateEntity(Entity);
+            Singleton.Displays.Composite.DuplicateEntity(Entity);
         }
 
         private void renameEntity_Click(object sender, EventArgs e)
         {
-            RenameEntity rename_entity = new RenameEntity(this.Entity, this.Composite);
+            RenameEntity rename_entity = new RenameEntity(this.Entity, Singleton.Displays.Composite.Composite);
             rename_entity.Show();
             rename_entity.OnRenamed += OnEntityRenamed;
         }
         private void OnEntityRenamed(string name, Entity entity)
         {
-            Content.composite_content_cache[Composite][Entity].Text = name;
-            _compositeDisplay.CommandsDisplay.ReloadAllEntities();
+            Singleton.Displays.Commands.Content.composite_content_cache[Singleton.Displays.Composite.Composite][Entity].Text = name;
+            Singleton.Displays.Commands.ReloadAllEntities();
             //TODO-URGENT: Also need to update Proxy/Alias hierarchies.
         }
 
         /* Context menu close entity */
         private void closeAll_Click(object sender, EventArgs e)
         {
-            _compositeDisplay.CloseAllChildTabs();
+            Singleton.Displays.Composite.CloseAllChildTabs();
         }
         private void closeSelected_Click(object sender, EventArgs e)
         {
@@ -614,7 +605,7 @@ namespace CommandsEditor.DockPanels
         }
         private void closeAllBut_Click(object sender, EventArgs e)
         {
-            _compositeDisplay.CloseAllChildTabsExcept(Entity);
+            Singleton.Displays.Composite.CloseAllChildTabsExcept(Entity);
         }
     }
 }
