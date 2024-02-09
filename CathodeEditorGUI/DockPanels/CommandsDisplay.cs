@@ -250,8 +250,7 @@ namespace CommandsEditor.DockPanels
 
         public void CloseAllChildTabs()
         {
-            _compositeDisplay?.CloseAllChildTabs();
-            _compositeDisplay?.Close();
+            _compositeDisplay?.DepopulateUI();
         }
 
         public void ReloadAllEntities()
@@ -274,17 +273,19 @@ namespace CommandsEditor.DockPanels
         }
         public CompositeDisplay LoadComposite(Composite composite)
         {
-            if (composite == null) return null;
+            if (composite == null) 
+                return null;
 
-            if (_compositeDisplay != null)
+            if (_compositeDisplay?.Composite == composite)
+                return _compositeDisplay;
+
+            if (_compositeDisplay == null)
             {
-                if (_compositeDisplay?.Composite == composite) return _compositeDisplay;
-                CloseAllChildTabs();
+                _compositeDisplay = new CompositeDisplay(this);
+                _compositeDisplay.Show(Singleton.Editor.DockPanel, DockState.Document);
+                _compositeDisplay.FormClosing += CompositeDisplay_FormClosing;
             }
-
-            _compositeDisplay = new CompositeDisplay(this, composite);
-            _compositeDisplay.Show(Singleton.Editor.DockPanel, DockState.Document);
-            _compositeDisplay.FormClosing += Panel_FormClosing;
+            _compositeDisplay.PopulateUI(composite);
 
 #if DEBUG
             //if (_renderer != null) _renderer.Close();
@@ -295,10 +296,11 @@ namespace CommandsEditor.DockPanels
             SelectComposite(composite);
             return _compositeDisplay;
         }
-
-        private void Panel_FormClosing(object sender, FormClosingEventArgs e)
+        private void CompositeDisplay_FormClosing(object sender, FormClosingEventArgs e)
         {
-            _compositeDisplay = null;
+            e.Cancel = true;
+            CompositeDisplay display = (CompositeDisplay)sender;
+            display.DepopulateUI();
         }
 
         public void LoadCompositeAndEntity(ShortGuid compositeGUID, ShortGuid entityGUID)

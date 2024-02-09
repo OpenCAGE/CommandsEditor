@@ -47,17 +47,27 @@ namespace CommandsEditor.DockPanels
 
         private const int _defaultSplitterDistance = 500;
 
-        public CompositeDisplay(CommandsDisplay commandsDisplay, Composite composite)
+        public CompositeDisplay(CommandsDisplay commandsDisplay)
         {
             _commandsDisplay = commandsDisplay;
 
             InitializeComponent();
+
             dockPanel.ActiveContentChanged += DockPanel_ActiveContentChanged;
             dockPanel.ShowDocumentIcon = true;
 
             splitContainer1.FixedPanel = FixedPanel.Panel1;
             splitContainer1.SplitterDistance = SettingsManager.GetInteger(Singleton.Settings.EntitySplitWidth, _defaultSplitterDistance);
 
+            compositeEntityList1.SelectedEntityChanged += LoadEntity;
+            compositeEntityList1.ContextMenuStrip = EntityListContextMenu;
+
+            this.FormClosed += CompositeDisplay_FormClosed;
+        }
+
+        /* Call this to show the CompositeDisplay with the requested Composite content */
+        public void PopulateUI(Composite composite)
+        {
             EditorUtils.CompositeType type = Content.editor_utils.GetCompositeType(composite);
 
             if (type == EditorUtils.CompositeType.IS_ROOT)
@@ -68,29 +78,29 @@ namespace CommandsEditor.DockPanels
                 this.Icon = Properties.Resources.Avatar_Icon;
 
             compositeEntityList1.Setup(composite);
-            compositeEntityList1.SelectedEntityChanged += LoadEntity;
-            compositeEntityList1.ContextMenuStrip = EntityListContextMenu;
 
-            this.FormClosed += CompositeDisplay_FormClosed;
+            Reload(composite);
+        }
 
-            Load(composite);
+        /* Call this to hide the CompositeDisplay */
+        public void DepopulateUI()
+        {
+            this.Hide();
+            CompositeDisplay_FormClosed(null, null);
         }
 
         private void CompositeDisplay_FormClosed(object sender, FormClosedEventArgs e)
         {
             _composite = null;
-            _commandsDisplay = null;
             _activeEntityDisplay = null;
+
             CloseAllChildTabs();
-            _entityDisplays.Clear();
+
+            if (sender != null && e != null)
+                _entityDisplays.Clear();
         }
 
-        public void ResetSplitter()
-        {
-            splitContainer1.SplitterDistance = _defaultSplitterDistance;
-        }
-
-        private void Load(Composite composite)
+        private void Reload(Composite composite)
         {
             Cursor.Current = Cursors.WaitCursor;
 
@@ -112,11 +122,16 @@ namespace CommandsEditor.DockPanels
             Cursor.Current = Cursors.Default;
         }
 
+        public void ResetSplitter()
+        {
+            splitContainer1.SplitterDistance = _defaultSplitterDistance;
+        }
+
         /* Load a child composite within this composite */
         public void LoadChild(Composite composite, Entity entity)
         {
             _path.StepForwards(_composite, entity);
-            Load(composite);
+            Reload(composite);
         }
 
         /* Load the parent composite, one back from this composite */
@@ -124,7 +139,7 @@ namespace CommandsEditor.DockPanels
         {
             if (_path.StepBackwards(out Composite composite, out Entity entity))
             {
-                Load(composite);
+                Reload(composite);
                 LoadEntity(entity);
             }
         }
@@ -326,7 +341,7 @@ namespace CommandsEditor.DockPanels
         public void CloseAllChildTabsExcept(Entity entity)
         {
             //Note: we don't actually close tabs here, we just hide them - they can be repurposed then instead of spawning new ones
-            List<EntityDisplay> toClose = _entityDisplays.FindAll(o => o.Entity == entity);
+            List<EntityDisplay> toClose = _entityDisplays.FindAll(o => o.Entity != entity);
             for (int i = 0; i < toClose.Count; i++)
                 toClose[i].DepopulateUI();
         }

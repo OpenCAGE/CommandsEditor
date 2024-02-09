@@ -31,9 +31,6 @@ namespace CommandsEditor.DockPanels
         public Entity Entity => _entity;
         public Composite Composite => _compositeDisplay.Composite;
 
-        private List<Entity> parentEntities = new List<Entity>();
-        private List<Entity> childEntities = new List<Entity>();
-
         public EntityDisplay(CompositeDisplay compositeDisplay)
         {
             _compositeDisplay = compositeDisplay;
@@ -90,9 +87,6 @@ namespace CommandsEditor.DockPanels
 
             _entity = null;
             _entityCompositePtr = null;
-
-            parentEntities.Clear();
-            childEntities.Clear();
         }
 
         /* Reload this display */
@@ -118,9 +112,8 @@ namespace CommandsEditor.DockPanels
             //--
 
             Cursor.Current = Cursors.WaitCursor;
-            entity_params.SuspendLayout();
             Task.Factory.StartNew(() => BackgroundEntityLoader(_entity, this));
-
+            List<Control> controls = new List<Control>();
 
             //populate info labels
             string entityVariantStr = "";
@@ -201,7 +194,6 @@ namespace CommandsEditor.DockPanels
                 editEntityMovers.Enabled = true;
 
             //populate linked params IN
-            parentEntities.Clear();
             int current_ui_offset = 7;
             List<Entity> ents = Composite.GetEntities();
             foreach (Entity ent in ents)
@@ -217,8 +209,7 @@ namespace CommandsEditor.DockPanels
                     parameterGUI.Width = entity_params.Width - 30;
                     parameterGUI.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
                     current_ui_offset += parameterGUI.Height + 6;
-                    entity_params.Controls.Add(parameterGUI);
-                    parentEntities.Add(ent);
+                    controls.Add(parameterGUI);
                 }
             }
 
@@ -388,11 +379,10 @@ namespace CommandsEditor.DockPanels
                 parameterGUI.Width = entity_params.Width - 30;
                 parameterGUI.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
                 current_ui_offset += parameterGUI.Height + 6;
-                entity_params.Controls.Add(parameterGUI);
+                controls.Add(parameterGUI);
             }
 
             //populate linked params OUT
-            childEntities.Clear();
             for (int i = 0; i < _entity.childLinks.Count; i++)
             {
                 GUI_Link parameterGUI = new GUI_Link(this);
@@ -403,11 +393,13 @@ namespace CommandsEditor.DockPanels
                 parameterGUI.Width = entity_params.Width - 30;
                 parameterGUI.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
                 current_ui_offset += parameterGUI.Height + 6;
-                entity_params.Controls.Add(parameterGUI);
-                childEntities.Add(Composite.GetEntityByID(_entity.childLinks[i].childID));
+                controls.Add(parameterGUI);
             }
 
+            entity_params.SuspendLayout();
+            entity_params.Controls.AddRange(controls.ToArray());
             entity_params.ResumeLayout();
+
             Singleton.OnEntityReloaded?.Invoke(_entity);
             Cursor.Current = Cursors.Default;
         }
