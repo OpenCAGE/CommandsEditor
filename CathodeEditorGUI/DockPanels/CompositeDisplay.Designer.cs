@@ -66,6 +66,7 @@ namespace CommandsEditor.DockPanels
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.renameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.duplicateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.renameComposite = new System.Windows.Forms.ToolStripButton();
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -93,6 +94,7 @@ namespace CommandsEditor.DockPanels
             this.exportComposite,
             this.findUses,
             this.deleteCheckedEntities,
+            this.renameComposite,
             this.deleteComposite});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
@@ -413,6 +415,16 @@ namespace CommandsEditor.DockPanels
             this.duplicateToolStripMenuItem.Text = "Duplicate";
             this.duplicateToolStripMenuItem.Click += new System.EventHandler(this.duplicateToolStripMenuItem_Click);
             // 
+            // renameComposite
+            // 
+            this.renameComposite.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.renameComposite.Image = ((System.Drawing.Image)(resources.GetObject("renameComposite.Image")));
+            this.renameComposite.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.renameComposite.Name = "renameComposite";
+            this.renameComposite.Size = new System.Drawing.Size(131, 22);
+            this.renameComposite.Text = "Rename Composite";
+            this.renameComposite.Click += new System.EventHandler(this.renameComposite_Click);
+            // 
             // CompositeDisplay
             // 
             this.AllowEndUserDocking = false;
@@ -481,5 +493,6 @@ namespace CommandsEditor.DockPanels
         private System.Windows.Forms.ToolStripMenuItem renameToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem duplicateToolStripMenuItem;
         private Popups.UserControls.CompositeEntityList compositeEntityList1;
+        private System.Windows.Forms.ToolStripButton renameComposite;
     }
 }
