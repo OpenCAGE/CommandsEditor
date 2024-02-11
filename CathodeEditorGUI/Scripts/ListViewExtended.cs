@@ -64,29 +64,36 @@ namespace ListViewGroupCollapse
                 return;
             if (lstvwgrp == null || lstvwgrp.ListView == null)
                 return;
-            if (lstvwgrp.ListView.InvokeRequired)
-                lstvwgrp.ListView.Invoke(new CallBackSetGroupState(setGrpState), lstvwgrp, state);
-            else
+            try
             {
-                int? GrpId = GetGroupID(lstvwgrp);
-                int gIndex = lstvwgrp.ListView.Groups.IndexOf(lstvwgrp);
-                LVGROUP group = new LVGROUP();
-                group.CbSize = Marshal.SizeOf(group);
-                group.State = state;
-                group.Mask = ListViewGroupMask.State;
-                if (GrpId != null)
-                {
-                    group.IGroupId = GrpId.Value;
-                    SendMessage(lstvwgrp.ListView.Handle, LVM_SETGROUPINFO, GrpId.Value, group);
-                    SendMessage(lstvwgrp.ListView.Handle, LVM_SETGROUPINFO, GrpId.Value, group);
-                }
+                if (lstvwgrp.ListView.InvokeRequired)
+                    lstvwgrp.ListView.Invoke(new CallBackSetGroupState(setGrpState), lstvwgrp, state);
                 else
                 {
-                    group.IGroupId = gIndex;
-                    SendMessage(lstvwgrp.ListView.Handle, LVM_SETGROUPINFO, gIndex, group);
-                    SendMessage(lstvwgrp.ListView.Handle, LVM_SETGROUPINFO, gIndex, group);
+                    int? GrpId = GetGroupID(lstvwgrp);
+                    int gIndex = lstvwgrp.ListView.Groups.IndexOf(lstvwgrp);
+                    LVGROUP group = new LVGROUP();
+                    group.CbSize = Marshal.SizeOf(group);
+                    group.State = state;
+                    group.Mask = ListViewGroupMask.State;
+                    if (GrpId != null)
+                    {
+                        group.IGroupId = GrpId.Value;
+                        SendMessage(lstvwgrp.ListView.Handle, LVM_SETGROUPINFO, GrpId.Value, group);
+                        SendMessage(lstvwgrp.ListView.Handle, LVM_SETGROUPINFO, GrpId.Value, group);
+                    }
+                    else
+                    {
+                        group.IGroupId = gIndex;
+                        SendMessage(lstvwgrp.ListView.Handle, LVM_SETGROUPINFO, gIndex, group);
+                        SendMessage(lstvwgrp.ListView.Handle, LVM_SETGROUPINFO, gIndex, group);
+                    }
+                    lstvwgrp.ListView.Refresh();
                 }
-                lstvwgrp.ListView.Refresh();
+            }
+            catch
+            {
+
             }
         }
 
@@ -96,26 +103,34 @@ namespace ListViewGroupCollapse
                 return;
             if (lstvwgrp == null || lstvwgrp.ListView == null)
                 return;
-            if (lstvwgrp.ListView.InvokeRequired)
-                lstvwgrp.ListView.Invoke(new CallbackSetGroupString(setGrpFooter), lstvwgrp, footer);
-            else
+
+            try
             {
-                int? GrpId = GetGroupID(lstvwgrp);
-                int gIndex = lstvwgrp.ListView.Groups.IndexOf(lstvwgrp);
-                LVGROUP group = new LVGROUP();
-                group.CbSize = Marshal.SizeOf(group);
-                group.PszFooter = footer;
-                group.Mask = ListViewGroupMask.Footer;
-                if (GrpId != null)
-                {
-                    group.IGroupId = GrpId.Value;
-                    SendMessage(lstvwgrp.ListView.Handle, LVM_SETGROUPINFO, GrpId.Value, group);
-                }
+                if (lstvwgrp.ListView.InvokeRequired)
+                    lstvwgrp.ListView.Invoke(new CallbackSetGroupString(setGrpFooter), lstvwgrp, footer);
                 else
                 {
-                    group.IGroupId = gIndex;
-                    SendMessage(lstvwgrp.ListView.Handle, LVM_SETGROUPINFO, gIndex, group);
+                    int? GrpId = GetGroupID(lstvwgrp);
+                    int gIndex = lstvwgrp.ListView.Groups.IndexOf(lstvwgrp);
+                    LVGROUP group = new LVGROUP();
+                    group.CbSize = Marshal.SizeOf(group);
+                    group.PszFooter = footer;
+                    group.Mask = ListViewGroupMask.Footer;
+                    if (GrpId != null)
+                    {
+                        group.IGroupId = GrpId.Value;
+                        SendMessage(lstvwgrp.ListView.Handle, LVM_SETGROUPINFO, GrpId.Value, group);
+                    }
+                    else
+                    {
+                        group.IGroupId = gIndex;
+                        SendMessage(lstvwgrp.ListView.Handle, LVM_SETGROUPINFO, gIndex, group);
+                    }
                 }
+            }
+            catch
+            {
+
             }
         }
 
