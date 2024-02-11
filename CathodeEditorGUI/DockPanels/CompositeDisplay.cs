@@ -31,6 +31,8 @@ namespace CommandsEditor.DockPanels
         public CommandsDisplay CommandsDisplay => _commandsDisplay;
         public LevelContent Content => _commandsDisplay.Content;
 
+        public bool Populated => _composite != null;
+
         private Composite _composite;
         public Composite Composite => _composite;
 
@@ -235,7 +237,7 @@ namespace CommandsEditor.DockPanels
         {
             for (int i = 0; i < _entityDisplays.Count; i++)
             {
-                if (!_entityDisplays[i].Visible) continue;
+                if (!_entityDisplays[i].Populated) continue;
                 _entityDisplays[i].Reload();
             }
         }
@@ -243,7 +245,7 @@ namespace CommandsEditor.DockPanels
         /* Reload a specific entity's UI (if it is loaded) */
         public void ReloadEntity(Entity entity)
         {
-            _entityDisplays.FirstOrDefault(o => o.Entity == entity && o.Visible)?.Reload();
+            _entityDisplays.FirstOrDefault(o => o.Entity == entity && o.Populated)?.Reload();
         }
 
         /* Monitor the currently active entity tab */
@@ -295,12 +297,17 @@ namespace CommandsEditor.DockPanels
             EntityDisplay display = null;
             if (SettingsManager.GetBool(Singleton.Settings.UseEntityTabs))
             {
-                //If tabbing is enabled, try & find an unused background tab for us to repurpose
-                for (int i = 0; i < _entityDisplays.Count; i++)
+                //If tabbing is enabled, first see if this entity is already open
+                display = _entityDisplays.FirstOrDefault(o => o.Entity == entity);
+                //If not, try & find an unused background tab for us to repurpose
+                if (display == null)
                 {
-                    if (_entityDisplays[i].Visible) continue;
-                    display = _entityDisplays[i];
-                    break;
+                    for (int i = 0; i < _entityDisplays.Count; i++)
+                    {
+                        if (_entityDisplays[i].Populated) continue;
+                        display = _entityDisplays[i];
+                        break;
+                    }
                 }
                 //Otherwise, spawn a new tab
                 if (display == null)
@@ -427,7 +434,7 @@ namespace CommandsEditor.DockPanels
                 }
             }
 
-            _entityDisplays.FirstOrDefault(o => o.Entity == entity && o.Visible)?.Close();
+            _entityDisplays.FirstOrDefault(o => o.Entity == entity && o.Populated)?.Close();
 
             if (reloadUI)
             {

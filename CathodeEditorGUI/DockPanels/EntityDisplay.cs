@@ -23,8 +23,10 @@ namespace CommandsEditor.DockPanels
         private CompositeDisplay _compositeDisplay;
         public CompositeDisplay CompositeDisplay => _compositeDisplay;
 
-        private Entity _entity;
-        private Composite _entityCompositePtr; //The composite that this entity points to, if it does.
+        private Entity _entity = null;
+        private Composite _entityCompositePtr = null; //The composite that this entity points to, if it does.
+
+        public bool Populated => _entity != null;
 
         public LevelContent Content => _compositeDisplay.Content;
 
