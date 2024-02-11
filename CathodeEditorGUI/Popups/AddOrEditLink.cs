@@ -77,7 +77,7 @@ namespace CommandsEditor
         private void RefreshEntityLists(Composite comp)
         {
             _entityList = comp.GetEntities();
-            _entityList = _entityList.OrderBy(o => _entityDisplay.Content.editor_utils.GenerateEntityName(o, comp).Substring(13)).ToList<Entity>();
+            _entityList = _entityList.OrderBy(o => _entityDisplay.Content.editor_utils.GenerateEntityName(o, comp)).ToList<Entity>();
 
             childEntityList.Enabled = true;
             parentEntityList.Enabled = true;

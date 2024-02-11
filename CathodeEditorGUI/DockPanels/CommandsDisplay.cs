@@ -53,6 +53,13 @@ namespace CommandsEditor.DockPanels
 
             _content = new LevelContent(levelName);
             _treeUtility = new TreeUtility(treeView1);
+
+            Singleton.OnCompositeRenamed += OnCompositeRenamed;
+        }
+
+        private void OnCompositeRenamed(Composite composite, string name)
+        {
+            ReloadList();
         }
 
         private void CommandsDisplay_Load(object sender, EventArgs e)
@@ -483,16 +490,8 @@ namespace CommandsEditor.DockPanels
 
                 _renameComposite = new RenameComposite(content.Composite, _currentDisplayFolderPath);
                 _renameComposite.Show();
-                _renameComposite.OnRenamed += OnCompositeRenamed;
                 _renameComposite.FormClosed += _renameComposite_FormClosed;
             }
-        }
-        private void OnCompositeRenamed(string name)
-        {
-            _compositeDisplay?.Reload();
-            ReloadList();
-
-            //TODO-URGENT: Also need to update cached entity names that use this composite.
         }
         private void _renameComposite_FormClosed(object sender, FormClosedEventArgs e)
         {

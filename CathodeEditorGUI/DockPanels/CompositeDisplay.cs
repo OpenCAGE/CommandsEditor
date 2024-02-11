@@ -65,6 +65,15 @@ namespace CommandsEditor.DockPanels
             compositeEntityList1.ContextMenuStrip = EntityListContextMenu;
 
             this.FormClosed += CompositeDisplay_FormClosed;
+
+            Singleton.OnCompositeRenamed += OnCompositeRenamed;
+        }
+
+        private void OnCompositeRenamed(Composite composite, string name)
+        {
+            if (!Populated || (!Path.AllComposites.Contains(composite) && composite != _composite)) return;
+            this.Text = EditorUtils.GetCompositeName(_composite);
+            pathDisplay.Text = _path.GetPath(_composite);
         }
 
         /* Call this to show the CompositeDisplay with the requested Composite content */
@@ -644,14 +653,7 @@ namespace CommandsEditor.DockPanels
 
             _entityRenameDialog = new RenameEntity(compositeEntityList1.SelectedEntity, this.Composite);
             _entityRenameDialog.Show();
-            _entityRenameDialog.OnRenamed += OnEntityRenamed;
             _entityRenameDialog.FormClosed += Rename_entity_FormClosed;
-        }
-        private void OnEntityRenamed(string name, Entity entity)
-        {
-            Content.composite_content_cache[Composite][entity].Text = name;
-            CommandsDisplay.ReloadAllEntities();
-            //TODO-URGENT: Also need to update Proxy/Alias hierarchies.
         }
         private void Rename_entity_FormClosed(object sender, FormClosedEventArgs e)
         {

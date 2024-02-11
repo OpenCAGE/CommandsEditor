@@ -249,9 +249,16 @@ namespace CommandsEditor
 #endif
         }
 
-        public ListViewItem GenerateListViewItem(Entity entity, Composite composite, bool checkCache = true)
+        public enum CacheMethod
         {
-            if (checkCache)
+            CHECK_OR_POPULATE_CACHE,
+            IGNORE_AND_OVERWRITE_CACHE,
+            IGNORE_CACHE,
+        }
+
+        public ListViewItem GenerateListViewItem(Entity entity, Composite composite, CacheMethod cacheMethod = CacheMethod.CHECK_OR_POPULATE_CACHE)
+        {
+            if (cacheMethod == CacheMethod.CHECK_OR_POPULATE_CACHE)
             {
                 if (composite_content_cache.ContainsKey(composite))
                     if (composite_content_cache[composite].ContainsKey(entity))
@@ -287,17 +294,39 @@ namespace CommandsEditor
             }
             item.SubItems.Add(entity.shortGUID.ToByteString());
 
-            //we wanted to check the cache and it wasn't there, so lets add it
-            if (checkCache)
+            switch (cacheMethod)
             {
-                if (!composite_content_cache.ContainsKey(composite))
-                {
-                    composite_content_cache.Add(composite, new Dictionary<Entity, ListViewItem>());
-                }
-                if (!composite_content_cache[composite].ContainsKey(entity))
-                {
-                    composite_content_cache[composite].Add(entity, item);
-                }
+                case CacheMethod.CHECK_OR_POPULATE_CACHE:
+                    //we wanted to check the cache and it wasn't there, so lets add it
+                    if (!composite_content_cache.ContainsKey(composite))
+                    {
+                        composite_content_cache.Add(composite, new Dictionary<Entity, ListViewItem>());
+                    }
+                    if (!composite_content_cache[composite].ContainsKey(entity))
+                    {
+                        composite_content_cache[composite].Add(entity, item);
+                    }
+                    break;
+
+                case CacheMethod.IGNORE_AND_OVERWRITE_CACHE:
+                    //we want to write (or overwrite) the cache, so lets do that
+                    if (composite_content_cache.ContainsKey(composite))
+                    {
+                        if (composite_content_cache[composite].ContainsKey(entity))
+                        {
+                            composite_content_cache[composite][entity] = item;
+                        }
+                        else
+                        {
+                            composite_content_cache[composite].Add(entity, item);
+                        }
+                    }
+                    else
+                    {
+                        composite_content_cache.Add(composite, new Dictionary<Entity, ListViewItem>());
+                        composite_content_cache[composite].Add(entity, item);
+                    }
+                    break;
             }
 
             return item;

@@ -41,6 +41,21 @@ namespace CommandsEditor.DockPanels
             this.FormClosed += EntityDisplay_FormClosed;
 
             InitializeComponent();
+
+            Singleton.OnEntityRenamed += OnEntityRenamed;
+            Singleton.OnCompositeRenamed += OnCompositeRenamed;
+        }
+
+        //TODO: this is not as efficient as it could be: really we should only reload if we know we're affected by the rename
+        private void OnEntityRenamed(Entity entity, string name)
+        {
+            if (!Populated) return;
+            Reload();
+        }
+        private void OnCompositeRenamed(Composite composite, string name)
+        {
+            if (!Populated) return;
+            Reload();
         }
 
         public void PopulateUI(Entity entity)
@@ -595,13 +610,6 @@ namespace CommandsEditor.DockPanels
         {
             RenameEntity rename_entity = new RenameEntity(this.Entity, this.Composite);
             rename_entity.Show();
-            rename_entity.OnRenamed += OnEntityRenamed;
-        }
-        private void OnEntityRenamed(string name, Entity entity)
-        {
-            Content.composite_content_cache[Composite][Entity].Text = name;
-            _compositeDisplay.CommandsDisplay.ReloadAllEntities();
-            //TODO-URGENT: Also need to update Proxy/Alias hierarchies.
         }
 
         /* Context menu close entity */

@@ -56,11 +56,24 @@ namespace CommandsEditor.Popups.UserControls
             clearSearchBtn.BringToFront();
 
             this.Disposed += CompositeEntityList_Disposed;
+
+            Singleton.OnEntityRenamed += OnEntityRenamed;
+            Singleton.OnCompositeRenamed += OnCompositeRenamed;
         }
 
         private void CompositeEntityList_Disposed(object sender, EventArgs e)
         {
             composite_content.Items.Clear();
+        }
+
+        //TODO: this is not as efficient as it could be: really we should only modify the ListViewItems that have been affected
+        private void OnEntityRenamed(Entity entity, string name)
+        {
+            ReloadComposite();
+        }
+        private void OnCompositeRenamed(Composite composite, string name)
+        {
+            ReloadComposite();
         }
 
         /* This UserControl differs from BaseUserControl because we don't instantiate at runtime - so make sure to call setup in code to pass this construction info before you use it. */
