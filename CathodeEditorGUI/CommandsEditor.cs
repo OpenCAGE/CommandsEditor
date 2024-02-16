@@ -100,6 +100,15 @@ namespace CommandsEditor
             if (!SettingsManager.IsSet(Singleton.Settings.AutoHideCompositeDisplay)) SettingsManager.SetBool(Singleton.Settings.AutoHideCompositeDisplay, true);
             autoHideExplorerViewToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.AutoHideCompositeDisplay); autoHideExplorerViewToolStripMenuItem.PerformClick();
 
+            //Fixes for dodgy top dropdowns
+            compositeViewerToolStripMenuItem.MouseHover += (sender, e) => { ((ToolStripMenuItem)sender).PerformClick(); };
+            compositeViewerToolStripMenuItem.DropDown.Closing += DropDown_Closing;
+            entityDisplayToolStripMenuItem.MouseHover += (sender, e) => { ((ToolStripMenuItem)sender).PerformClick(); };
+            entityDisplayToolStripMenuItem.DropDown.Closing += DropDown_Closing;
+            miscToolStripMenuItem.MouseHover += (sender, e) => { ((ToolStripMenuItem)sender).PerformClick(); };
+            miscToolStripMenuItem.DropDown.Closing += DropDown_Closing;
+            toolStripButton2.DropDown.Closing += DropDown_Closing;
+
             //Set title
             this.Text = "OpenCAGE Commands Editor";
             if (OpenCAGE.SettingsManager.GetBool("CONFIG_ShowPlatform") &&
@@ -150,6 +159,20 @@ namespace CommandsEditor
             //If we have been launched to a level, load that
             if (level != null)
                 OnLevelSelected(level);
+        }
+
+        //keep dropdown open if cursor is inside it 
+        private void DropDown_Closing(object sender, ToolStripDropDownClosingEventArgs e)
+        {
+            var dropdown = sender as ToolStripDropDown;
+            if (dropdown != null)
+            {
+                Point cursorPosition = dropdown.PointToClient(Cursor.Position);
+                if (dropdown.DisplayRectangle.Contains(cursorPosition))
+                {
+                    e.Cancel = true;
+                }
+            }
         }
 
         private void CommandsEditor_FormClosing(object sender, FormClosingEventArgs e)
