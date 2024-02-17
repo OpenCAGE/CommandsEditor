@@ -89,6 +89,7 @@ namespace CommandsEditor.DockPanels
                 this.Icon = Properties.Resources.Avatar_Icon;
 
             compositeEntityList1.Setup(composite);
+            _path = new CompositePath();
 
             Reload(composite);
         }
