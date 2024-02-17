@@ -142,7 +142,7 @@ namespace CommandsEditor
                 }
 
                 EnvironmentAnimations.EnvironmentAnimation anim = new EnvironmentAnimations.EnvironmentAnimation();
-                anim.ResourceIndex = Content.resource.env_animations.Entries[Content.resource.env_animations.Entries.Count].ResourceIndex + 1;
+                anim.ResourceIndex = Content.resource.env_animations.Entries[Content.resource.env_animations.Entries.Count - 1].ResourceIndex + 1;
                 Content.resource.env_animations.Entries.Add(anim);
 
                 newReference.index = anim.ResourceIndex;

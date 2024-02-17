@@ -38,7 +38,7 @@
             this.groupBox1.Controls.Add(this.skeletonList);
             this.groupBox1.Location = new System.Drawing.Point(3, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(832, 457);
+            this.groupBox1.Size = new System.Drawing.Size(832, 56);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Animated Model";
@@ -59,7 +59,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.groupBox1);
             this.Name = "GUI_Resource_AnimatedModel";
-            this.Size = new System.Drawing.Size(838, 463);
+            this.Size = new System.Drawing.Size(838, 63);
             this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
 
