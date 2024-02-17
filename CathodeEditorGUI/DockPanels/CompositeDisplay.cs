@@ -456,6 +456,7 @@ namespace CommandsEditor.DockPanels
         public void DuplicateEntity(Entity entity)
         {
             if (MessageBox.Show("Are you sure you want to duplicate this entity?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+            Singleton.OnEntityAddPending?.Invoke();
 
             //Generate new entity ID and name
             Entity newEnt = null;
@@ -519,10 +520,11 @@ namespace CommandsEditor.DockPanels
                     Composite.aliases.Add((AliasEntity)newEnt);
                     break;
             }
+            Singleton.OnEntityAdded?.Invoke(newEnt);
 
             //Load in to UI
             ReloadUIForNewEntity(newEnt);
-            _commandsDisplay.CacheHierarchies();
+            Content.editor_utils.GenerateCompositeInstances(Content.commands);
         }
 
         private void deleteCheckedEntities_Click(object sender, EventArgs e)

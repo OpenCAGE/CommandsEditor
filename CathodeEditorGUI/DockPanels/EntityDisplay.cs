@@ -12,6 +12,7 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
@@ -42,6 +43,20 @@ namespace CommandsEditor.DockPanels
 
             InitializeComponent();
 
+            Singleton.OnEntityAddPending += delegate ()
+            {
+                if (_prevTask != null && !_prevTask.IsCompleted && _prevTaskToken != null)
+                {
+                    _prevTaskToken.Cancel();
+                }
+            };
+            Singleton.OnEntityAdded += delegate (Entity e)
+            {
+                if (_prevTask != null && !_prevTask.IsCompleted)
+                {
+                    StartBackgroundEntityLoader();
+                }
+            };
             Singleton.OnEntityRenamed += OnEntityRenamed;
             Singleton.OnCompositeRenamed += OnCompositeRenamed;
         }
@@ -129,7 +144,7 @@ namespace CommandsEditor.DockPanels
             //--
 
             Cursor.Current = Cursors.WaitCursor;
-            Task.Factory.StartNew(() => BackgroundEntityLoader(_entity, this));
+            StartBackgroundEntityLoader();
             List<Control> controls = new List<Control>();
 
             //populate info labels
@@ -427,7 +442,17 @@ namespace CommandsEditor.DockPanels
             _compositeDisplay.ReloadEntity(linked);
         }
 
-        private void BackgroundEntityLoader(Entity ent, EntityDisplay mainInst)
+        private CancellationTokenSource _prevTaskToken = null;
+        private Task _prevTask = null;
+        private void StartBackgroundEntityLoader()
+        {
+            if (_prevTaskToken != null)
+                _prevTaskToken.Cancel();
+
+            _prevTaskToken = new CancellationTokenSource();
+            _prevTask = Task.Run(() => BackgroundEntityLoader(_entity, this, _prevTaskToken.Token), _prevTaskToken.Token);
+        }
+        private void BackgroundEntityLoader(Entity ent, EntityDisplay mainInst, CancellationToken ct)
         {
             bool isPointedTo = false;
             Composite zoneComp = null;
@@ -437,10 +462,10 @@ namespace CommandsEditor.DockPanels
                 switch (i)
                 {
                     case 0:
-                        isPointedTo = mainInst.Content.editor_utils.IsEntityReferencedExternally(ent);
+                        isPointedTo = mainInst.Content.editor_utils.IsEntityReferencedExternally(ent, ct);
                         break;
                     case 1:
-                        mainInst.Content.editor_utils.TryFindZoneForEntity(ent, mainInst.Composite, out zoneComp, out zoneEnt);
+                        mainInst.Content.editor_utils.TryFindZoneForEntity(ent, mainInst.Composite, out zoneComp, out zoneEnt, ct);
                         break;
                 }
             });

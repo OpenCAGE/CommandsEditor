@@ -261,6 +261,7 @@ namespace CommandsEditor
                     return;
                 }
 
+                Singleton.OnEntityAddPending?.Invoke();
                 newEntity = _compositeDisplay.Composite.AddFunction(function, addDefaultParams.Checked);
 
                 //TODO: currently we don't support these properly
@@ -285,21 +286,33 @@ namespace CommandsEditor
                     MessageBox.Show("You cannot create an entity which instances the composite it is contained with - this will result in an infinite loop at runtime! Please check your logic!.", "Logic error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
+
+                Singleton.OnEntityAddPending?.Invoke();
                 newEntity = _compositeDisplay.Composite.AddFunction(compRef, addDefaultParams.Checked);
                 Content.editor_utils.GenerateCompositeInstances(Content.commands);
             }
             else if (createDatatypeEntity.Checked)
+            {
+                Singleton.OnEntityAddPending?.Invoke();
                 newEntity = _compositeDisplay.Composite.AddVariable(textBox1.Text, (DataType)entityVariant.SelectedIndex, true);
+            }
             else if (createProxyEntity.Checked)
+            {
+                Singleton.OnEntityAddPending?.Invoke();
                 newEntity = _compositeDisplay.Composite.AddProxy(Content.commands, hierarchy, addDefaultParams.Checked);
+            }
             else if (createOverrideEntity.Checked)
+            {
+                Singleton.OnEntityAddPending?.Invoke();
                 newEntity = _compositeDisplay.Composite.AddAlias(hierarchy);
+            }
             else
                 return;
 
             if (!createDatatypeEntity.Checked) 
                 EntityUtils.SetName(_compositeDisplay.Composite, newEntity, textBox1.Text);
 
+            Singleton.OnEntityAdded?.Invoke(newEntity);
             OnNewEntity?.Invoke(newEntity);
             this.Close();
         }

@@ -31,7 +31,7 @@ namespace CommandsEditor.DockPanels
         public LevelContent Content => _content;
 
         private TreeUtility _treeUtility = null;
-        private Task _currentHierarchyCacher = null;
+        private CancellationTokenSource _prevTaskToken = null;
 
         private string _currentDisplayFolderPath = "";
 
@@ -70,7 +70,7 @@ namespace CommandsEditor.DockPanels
             //TODO: these utils should be moved into LevelContent and made less generic. makes no sense anymore.
             _content.editor_utils = new EditorUtils();
             Task.Factory.StartNew(() => _content.editor_utils.GenerateEntityNameCache(Singleton.Editor));
-            CacheHierarchies();
+            Content.editor_utils.GenerateCompositeInstances(Content.commands);
 
             SelectCompositeAndReloadList(_content.commands.EntryPoints[0]);
             Singleton.OnCompositeSelected?.Invoke(_content.commands.EntryPoints[0]); //need to call this again b/c the activation event doesn't fire here
@@ -362,14 +362,7 @@ namespace CommandsEditor.DockPanels
 
             //Refresh UI
             ReloadList();
-            CacheHierarchies();
-        }
-
-        /* Cache entity hierarchies */
-        public void CacheHierarchies()
-        {
-            if (_currentHierarchyCacher != null) _currentHierarchyCacher.Dispose();
-            _currentHierarchyCacher = Task.Factory.StartNew(() => Content.editor_utils.GenerateCompositeInstances(Content.commands));
+            Content.editor_utils.GenerateCompositeInstances(Content.commands);
         }
 
         private string _currentSearch = "";

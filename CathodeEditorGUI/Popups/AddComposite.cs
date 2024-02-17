@@ -57,7 +57,11 @@ namespace CommandsEditor
                 }
             }
 
+            Singleton.OnCompositeAddPending?.Invoke();
+
             Composite comp = _commands.Content.commands.AddComposite(path);
+
+            Singleton.OnCompositeAdded?.Invoke(comp);
             OnCompositeAdded?.Invoke(comp);
             this.Close();
         }
