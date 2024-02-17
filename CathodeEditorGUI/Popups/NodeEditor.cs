@@ -52,6 +52,7 @@ namespace CommandsEditor
 
             Singleton.OnEntitySelected += UpdateEntities;
             Singleton.OnEntityReloaded += UpdateEntities;
+            Singleton.OnLevelLoaded += delegate (LevelContent c) { UpdateEntities(); };
         }
 
         public void ResetLayout()
