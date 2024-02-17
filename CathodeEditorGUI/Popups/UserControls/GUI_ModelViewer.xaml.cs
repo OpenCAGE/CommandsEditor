@@ -37,6 +37,11 @@ namespace CommandsEditor.Popups.UserControls
             for (int i = 0; i < models.Count; i++)
                 group.Children.Add(OffsetModel(models[i].modelIndex, models[i].position, models[i].rotation));
             modelPreview.Content = group;
+
+            myView.ModelUpDirection = new Vector3D(0, 1, 0);
+            myView.Camera.UpDirection = new Vector3D(0, 1, 0);
+            myView.Camera.LookDirection = new Vector3D(-0.5, -0.5, 1);
+
             myView.ZoomExtents();
         }
         
