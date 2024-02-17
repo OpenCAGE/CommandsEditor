@@ -42,6 +42,11 @@ namespace CommandsEditor
 
         ~TreeUtility()
         {
+            ForceClearTree();
+        }
+
+        public void ForceClearTree()
+        {
             if (_fileTree != null)
             {
                 _fileTree.Nodes.Clear();

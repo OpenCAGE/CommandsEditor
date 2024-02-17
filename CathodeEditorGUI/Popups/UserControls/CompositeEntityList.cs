@@ -63,6 +63,11 @@ namespace CommandsEditor.Popups.UserControls
 
         private void CompositeEntityList_Disposed(object sender, EventArgs e)
         {
+            this.Disposed -= CompositeEntityList_Disposed;
+
+            Singleton.OnEntityRenamed -= OnEntityRenamed;
+            Singleton.OnCompositeRenamed -= OnCompositeRenamed;
+
             composite_content.Items.Clear();
         }
 

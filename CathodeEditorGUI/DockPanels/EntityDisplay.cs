@@ -43,22 +43,25 @@ namespace CommandsEditor.DockPanels
 
             InitializeComponent();
 
-            Singleton.OnEntityAddPending += delegate ()
-            {
-                if (_prevTask != null && !_prevTask.IsCompleted && _prevTaskToken != null)
-                {
-                    _prevTaskToken.Cancel();
-                }
-            };
-            Singleton.OnEntityAdded += delegate (Entity e)
-            {
-                if (_prevTask != null && !_prevTask.IsCompleted)
-                {
-                    StartBackgroundEntityLoader();
-                }
-            };
+            Singleton.OnEntityAddPending += OnEntityAddPending;
+            Singleton.OnEntityAdded += OnEntityAdded;
             Singleton.OnEntityRenamed += OnEntityRenamed;
             Singleton.OnCompositeRenamed += OnCompositeRenamed;
+        }
+
+        private void OnEntityAddPending()
+        {
+            if (_prevTask != null && !_prevTask.IsCompleted && _prevTaskToken != null)
+            {
+                _prevTaskToken.Cancel();
+            }
+        }
+        private void OnEntityAdded(Entity e)
+        {
+            if (_prevTask != null && !_prevTask.IsCompleted)
+            {
+                StartBackgroundEntityLoader();
+            }
         }
 
         //TODO: this is not as efficient as it could be: really we should only reload if we know we're affected by the rename
@@ -113,12 +116,29 @@ namespace CommandsEditor.DockPanels
 
         private void EntityDisplay_FormClosed(object sender, FormClosedEventArgs e)
         {
+            this.FormClosed -= EntityDisplay_FormClosed;
+            Singleton.OnEntityAddPending -= OnEntityAddPending;
+            Singleton.OnEntityAdded -= OnEntityAdded;
+            Singleton.OnEntityRenamed -= OnEntityRenamed;
+            Singleton.OnCompositeRenamed -= OnCompositeRenamed;
+
             for (int i = 0; i < entity_params.Controls.Count; i++)
+            {
+                if (entity_params.Controls[i] is GUI_Link)
+                {
+                    GUI_Link link = (GUI_Link)entity_params.Controls[i];
+                    link.GoToEntity -= _compositeDisplay.LoadEntity;
+                    link.OnLinkEdited -= OnLinkEdited;
+                }
                 entity_params.Controls[i].Dispose();
+            }
             entity_params.Controls.Clear();
 
             _entity = null;
             _entityCompositePtr = null;
+
+            imageList1.Images.Clear();
+            imageList1.Dispose();
         }
 
         /* Reload this display */

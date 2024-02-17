@@ -37,6 +37,9 @@ namespace CommandsEditor.Popups
             type = assets;
             typeArgs = args;
 
+            if (assetlist_cache == null)
+                assetlist_cache = new List<AssetList>();
+
             content = assetlist_cache.FirstOrDefault(o => o.level == Content.commands.Filepath && o.assets == assets && o.args == args);
             if (content == null)
             {

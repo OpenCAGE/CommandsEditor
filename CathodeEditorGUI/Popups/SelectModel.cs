@@ -63,7 +63,9 @@ namespace CommandsEditor
 
         private void SelectModel_Disposed(object sender, EventArgs e)
         {
+            treeHelper?.ForceClearTree();
             treeHelper = null;
+
             modelViewer = null;
 
             if (modelRendererHost != null)

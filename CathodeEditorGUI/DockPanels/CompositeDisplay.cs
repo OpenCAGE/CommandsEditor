@@ -103,6 +103,26 @@ namespace CommandsEditor.DockPanels
 
         private void CompositeDisplay_FormClosed(object sender, FormClosedEventArgs e)
         {
+            dockPanel.ActiveContentChanged -= DockPanel_ActiveContentChanged;
+            compositeEntityList1.SelectedEntityChanged -= LoadEntity;
+            this.FormClosed -= CompositeDisplay_FormClosed;
+            Singleton.OnCompositeRenamed -= OnCompositeRenamed;
+
+            if (dialog != null)
+            {
+                dialog.Dispose();
+                dialog.OnNewEntity -= OnAddNewEntity;
+                dialog.FormClosed -= Dialog_FormClosed;
+            }
+            if (_activeEntityDisplay != null)
+                _activeEntityDisplay.FormClosing -= OnActiveContentClosing;
+            if (_renameComposite != null)
+                _renameComposite.FormClosed -= _renameComposite_FormClosed;
+            if (_instanceInfoPopup != null)
+                _instanceInfoPopup.FormClosed -= _instanceInfoPopup_FormClosed;
+            if (_entityRenameDialog != null)
+                _entityRenameDialog.FormClosed -= Rename_entity_FormClosed;
+
             _composite = null;
             _activeEntityDisplay = null;
 
@@ -110,6 +130,13 @@ namespace CommandsEditor.DockPanels
 
             if (sender != null && e != null)
                 _entityDisplays.Clear();
+
+            imageList.Images.Clear();
+            imageList.Dispose();
+            entityListIcons.Images.Clear();
+            entityListIcons.Dispose();
+
+            vS2015BlueTheme1.Dispose();
         }
 
         private void Reload(Composite composite)

@@ -182,6 +182,11 @@ namespace CommandsEditor.UserControls
 
     public class AssetList
     {
+        ~AssetList()
+        {
+            strings = null;
+        }
+
         public string level = "";
 
         public Type assets = Type.NONE;

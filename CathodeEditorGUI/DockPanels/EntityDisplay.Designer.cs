@@ -48,7 +48,6 @@
             this.addLinkOut = new System.Windows.Forms.Button();
             this.addNewParameter = new System.Windows.Forms.Button();
             this.entity_params = new System.Windows.Forms.Panel();
-            this.vS2015DarkTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.renameEntity = new System.Windows.Forms.ToolStripButton();
@@ -425,7 +424,6 @@
         private System.Windows.Forms.Button removeParameter;
         private System.Windows.Forms.Button addNewParameter;
         private System.Windows.Forms.Panel entity_params;
-        private WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme vS2015DarkTheme1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.ToolStrip toolStrip1;

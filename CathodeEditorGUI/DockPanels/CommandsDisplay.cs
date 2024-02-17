@@ -22,6 +22,7 @@ using System.Runtime.Remoting.Messaging;
 using ListViewItem = System.Windows.Forms.ListViewItem;
 using ListViewGroupCollapse;
 using System.Threading;
+using System.Windows.Media.Animation;
 
 namespace CommandsEditor.DockPanels
 {
@@ -78,14 +79,52 @@ namespace CommandsEditor.DockPanels
 
         private void CommandsDisplay_FormClosed(object sender, FormClosedEventArgs e)
         {
+            this.FormClosed -= CommandsDisplay_FormClosed;
+            this.Load -= CommandsDisplay_Load;
+            Singleton.OnCompositeRenamed -= OnCompositeRenamed;
+
+            if (_compositeDisplay != null)
+                _compositeDisplay.FormClosing -= CompositeDisplay_FormClosing;
+            if (_renameComposite != null)
+                _renameComposite.FormClosed -= _renameComposite_FormClosed;
+            if (_addCompositeDialog != null)
+            {
+                _addCompositeDialog.FormClosed -= addCompositeDialogClosed;
+                _addCompositeDialog.OnCompositeAdded -= SelectCompositeAndReloadList;
+            }
+            if (_addFolderDialog != null)
+            {
+                _addFolderDialog.FormClosed -= addFolderDialogClosed;
+                _addFolderDialog.OnFolderAdded -= SelectCompositeAndReloadList;
+            }
+            if (_functionUsesDialog != null)
+            {
+                _functionUsesDialog.OnEntitySelected -= LoadCompositeAndEntity;
+                _functionUsesDialog.FormClosed -= _functionUsesDialog_FormClosed;
+            }
+
             _content = null;
+
+            _treeUtility?.ForceClearTree();
             _treeUtility = null;
 
-            if (ResourceDatatypeAutocomplete.assetlist_cache != null)
-            {
-                ResourceDatatypeAutocomplete.assetlist_cache.Clear();
-                ResourceDatatypeAutocomplete.assetlist_cache = null;
-            }
+            _prevTaskToken?.Cancel();
+
+            _compositeDisplay?.Close();
+            _renderer?.Close();
+
+            _addCompositeDialog?.Close();
+            _addFolderDialog?.Close();
+
+            ResourceDatatypeAutocomplete.assetlist_cache?.Clear();
+            ResourceDatatypeAutocomplete.assetlist_cache = null;
+
+            imageList.Images.Clear();
+            imageList.Dispose();
+            FileBrowserImageListLarge.Images.Clear();
+            FileBrowserImageListLarge.Dispose();
+            FileBrowserImageListSmall.Images.Clear();
+            FileBrowserImageListSmall.Dispose();
         }
 
         public void SelectCompositeAndReloadList(Composite composite)
