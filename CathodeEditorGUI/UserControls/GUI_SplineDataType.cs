@@ -18,7 +18,7 @@ namespace CommandsEditor.UserControls
     {
         private EntityDisplay _entityDisplay;
 
-        public GUI_SplineDataType(EntityDisplay entityDisplay) : base(entityDisplay.Content)
+        public GUI_SplineDataType(EntityDisplay entityDisplay) : base()
         {
             _entityDisplay = entityDisplay;
             InitializeComponent();
@@ -33,7 +33,7 @@ namespace CommandsEditor.UserControls
 
         private void openSplineEditor_Click(object sender, EventArgs e)
         {
-            EditSpline splineEditor = new EditSpline(_content, spline, _entityDisplay.Entity.GetParameter("loop"));
+            EditSpline splineEditor = new EditSpline(spline, _entityDisplay.Entity.GetParameter("loop"));
             splineEditor.Show();
             splineEditor.OnSaved += OnSplineEditorSaved;
             splineEditor.FormClosed += SplineEditor_FormClosed;

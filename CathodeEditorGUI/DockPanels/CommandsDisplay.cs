@@ -18,10 +18,10 @@ using WebSocketSharp;
 using CommandsEditor.Popups;
 using OpenCAGE;
 using System.IO;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Runtime.Remoting.Messaging;
 using ListViewItem = System.Windows.Forms.ListViewItem;
 using ListViewGroupCollapse;
+using System.Threading;
 
 namespace CommandsEditor.DockPanels
 {
@@ -41,24 +41,51 @@ namespace CommandsEditor.DockPanels
         AddComposite _addCompositeDialog = null;
         AddFolder _addFolderDialog = null;
 
+        private int _defaultSplitterDistance = 330;
+
         public CommandsDisplay(string levelName)
         {
             InitializeComponent();
+
             this.Text = levelName;
+            this.FormClosed += CommandsDisplay_FormClosed;
+            this.Load += CommandsDisplay_Load;
 
             _content = new LevelContent(levelName);
-            _treeUtility = new TreeUtility(treeView1, _content);
+            _treeUtility = new TreeUtility(treeView1);
 
+            Singleton.OnCompositeRenamed += OnCompositeRenamed;
+        }
+
+        private void OnCompositeRenamed(Composite composite, string name)
+        {
+            ReloadList();
+        }
+
+        private void CommandsDisplay_Load(object sender, EventArgs e)
+        {
             if (Enum.TryParse<View>(SettingsManager.GetString(Singleton.Settings.FileBrowserViewOpt), out View view))
                 SetViewMode(view);
 
             //TODO: these utils should be moved into LevelContent and made less generic. makes no sense anymore.
-            _content.editor_utils = new EditorUtils(_content);
+            _content.editor_utils = new EditorUtils();
             Task.Factory.StartNew(() => _content.editor_utils.GenerateEntityNameCache(Singleton.Editor));
             CacheHierarchies();
 
             SelectCompositeAndReloadList(_content.commands.EntryPoints[0]);
             Singleton.OnCompositeSelected?.Invoke(_content.commands.EntryPoints[0]); //need to call this again b/c the activation event doesn't fire here
+        }
+
+        private void CommandsDisplay_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _content = null;
+            _treeUtility = null;
+
+            if (ResourceDatatypeAutocomplete.assetlist_cache != null)
+            {
+                ResourceDatatypeAutocomplete.assetlist_cache.Clear();
+                ResourceDatatypeAutocomplete.assetlist_cache = null;
+            }
         }
 
         public void SelectCompositeAndReloadList(Composite composite)
@@ -137,11 +164,24 @@ namespace CommandsEditor.DockPanels
             DockAreas = SettingsManager.GetBool(Singleton.Settings.EnableFileBrowser) ? DockAreas.DockBottom : DockAreas.DockLeft;
 
             splitContainer1.Panel2Collapsed = !SettingsManager.GetBool(Singleton.Settings.EnableFileBrowser);
+            splitContainer1.FixedPanel = FixedPanel.Panel1;
+            splitContainer1.SplitterDistance = SettingsManager.GetInteger(Singleton.Settings.CompositeSplitWidth, _defaultSplitterDistance);
 
             if (SettingsManager.GetBool(Singleton.Settings.AutoHideCompositeDisplay))
                 Singleton.Editor.DockPanel.ActiveAutoHideContent = this;
             else
                 Singleton.Editor.DockPanel.ActiveAutoHideContent = null;
+        }
+
+        public void ResetSplitter()
+        {
+            splitContainer1.SplitterDistance = _defaultSplitterDistance;
+        }
+
+        //UI: handle saving split container width between commands/runs 
+        private void treeView1_Resize(object sender, EventArgs e)
+        {
+            SettingsManager.SetInteger(Singleton.Settings.CompositeSplitWidth, splitContainer1.SplitterDistance);
         }
 
         /* File browser: select folder/composite */
@@ -217,8 +257,7 @@ namespace CommandsEditor.DockPanels
 
         public void CloseAllChildTabs()
         {
-            _compositeDisplay?.CloseAllChildTabs();
-            _compositeDisplay?.Close();
+            _compositeDisplay?.DepopulateUI();
         }
 
         public void ReloadAllEntities()
@@ -241,18 +280,19 @@ namespace CommandsEditor.DockPanels
         }
         public CompositeDisplay LoadComposite(Composite composite)
         {
-            if (composite == null) return null;
+            if (composite == null) 
+                return null;
 
-            if (_compositeDisplay != null)
+            if (_compositeDisplay?.Composite == composite)
+                return _compositeDisplay;
+
+            if (_compositeDisplay == null)
             {
-                if (_compositeDisplay?.Composite == composite) return _compositeDisplay;
-                CloseAllChildTabs();
+                _compositeDisplay = new CompositeDisplay(this);
+                _compositeDisplay.Show(Singleton.Editor.DockPanel, DockState.Document);
+                _compositeDisplay.FormClosing += CompositeDisplay_FormClosing;
             }
-
-            CompositeDisplay panel = new CompositeDisplay(this, composite);
-            panel.Show(Singleton.Editor.DockPanel, DockState.Document);
-            panel.FormClosed += OnCompositePanelClosed;
-            _compositeDisplay = panel;
+            _compositeDisplay.PopulateUI(composite);
 
 #if DEBUG
             //if (_renderer != null) _renderer.Close();
@@ -263,12 +303,11 @@ namespace CommandsEditor.DockPanels
             SelectComposite(composite);
             return _compositeDisplay;
         }
-
-        private void OnCompositePanelClosed(object sender, FormClosedEventArgs e)
+        private void CompositeDisplay_FormClosing(object sender, FormClosingEventArgs e)
         {
-            _compositeDisplay?.CloseAllChildTabs();
-            _compositeDisplay?.Dispose();
-            _compositeDisplay = null;
+            e.Cancel = true;
+            CompositeDisplay display = (CompositeDisplay)sender;
+            display.DepopulateUI();
         }
 
         public void LoadCompositeAndEntity(ShortGuid compositeGUID, ShortGuid entityGUID)
@@ -449,18 +488,10 @@ namespace CommandsEditor.DockPanels
                 if (_renameComposite != null)
                     _renameComposite.Close();
 
-                _renameComposite = new RenameComposite(this.Content, content.Composite, _currentDisplayFolderPath);
+                _renameComposite = new RenameComposite(content.Composite, _currentDisplayFolderPath);
                 _renameComposite.Show();
-                _renameComposite.OnRenamed += OnCompositeRenamed;
                 _renameComposite.FormClosed += _renameComposite_FormClosed;
             }
-        }
-        private void OnCompositeRenamed(string name)
-        {
-            _compositeDisplay?.Reload();
-            ReloadList();
-
-            //TODO-URGENT: Also need to update cached entity names that use this composite.
         }
         private void _renameComposite_FormClosed(object sender, FormClosedEventArgs e)
         {
@@ -538,7 +569,7 @@ namespace CommandsEditor.DockPanels
                 return;
             }
 
-            _functionUsesDialog = new ShowCompositeUses(Content);
+            _functionUsesDialog = new ShowCompositeUses();
             _functionUsesDialog.Show();
             _functionUsesDialog.OnEntitySelected += LoadCompositeAndEntity;
             _functionUsesDialog.FormClosed += _functionUsesDialog_FormClosed;

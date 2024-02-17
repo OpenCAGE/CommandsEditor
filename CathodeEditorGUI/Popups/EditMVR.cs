@@ -25,12 +25,11 @@ namespace CommandsEditor
 
         private EntityDisplay _entityDisplay;
 
-        public EditMVR(EntityDisplay editor) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor.Content)
+        public EditMVR(EntityDisplay editor) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             InitializeComponent();
             _entityDisplay = editor;
             
-            renderable.SetEditor(editor.Content);
             PopulateUI(editor.Entity.shortGUID);
 
             renderable.OnMaterialSelected += OnMaterialSelected;
@@ -45,7 +44,7 @@ namespace CommandsEditor
             _mvrListIndexes.Clear();
             for (int i = 0; i < Content.mvr.Entries.Count; i++)
             {
-                if (nodeID.val != null && Content.mvr.Entries[i].entity.entity_id != nodeID) continue;
+                if (Content.mvr.Entries[i].entity.entity_id != nodeID) continue;
                 _mvrListIndexes.Add(i);
             }
 

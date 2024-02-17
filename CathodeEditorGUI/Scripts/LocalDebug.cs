@@ -1425,7 +1425,7 @@ namespace CommandsEditor
             write.BaseStream.SetLength(0);
             foreach (var str in outputtt)
             {
-                write.Write(ShortGuidUtils.Generate(str.Key).val);
+                write.Write(ShortGuidUtils.Generate(str.Key).ToUInt32());
                 write.Write(str.Key);
                 write.Write(str.Value.Count);
                 foreach (string str_ in str.Value)

@@ -1,4 +1,5 @@
 using CATHODE;
+using CATHODE.LEGACY;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CathodeLib;
@@ -15,6 +16,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Threading;
@@ -45,18 +47,35 @@ namespace CommandsEditor
 
         private Dictionary<string, ToolStripMenuItem> _levelMenuItems = new Dictionary<string, ToolStripMenuItem>();
 
+        private float _defaultSplitterDistance = 0.25f;
+        private int _defaultWidth;
+        private int _defaultHeight;
+
         public CommandsEditor(string level = null)
         {
+            Singleton.Editor = this;
+
             _discord = new DiscordRpcClient("1152999067207606392");
             _discord.Initialize();
             UpdateDiscordPresence("");
 
-            Singleton.Editor = this;
-
             InitializeComponent();
+            dockPanel.DockLeftPortion = SettingsManager.GetFloat(Singleton.Settings.CommandsSplitWidth, _defaultSplitterDistance);
+            dockPanel.DockBottomPortion = SettingsManager.GetFloat(Singleton.Settings.SplitWidthMainBottom, _defaultSplitterDistance);
+            dockPanel.DockRightPortion = SettingsManager.GetFloat(Singleton.Settings.SplitWidthMainRight, _defaultSplitterDistance);
+
             dockPanel.ActiveContentChanged += DockPanel_ActiveContentChanged;
             dockPanel.ShowDocumentIcon = true;
 
+            _defaultWidth = Width;
+            _defaultHeight = Height;
+
+            WindowState = SettingsManager.GetString(Singleton.Settings.WindowState, "Normal") == "Maximized" ? FormWindowState.Maximized : FormWindowState.Normal;
+            Width = SettingsManager.GetInteger(Singleton.Settings.WindowWidth, _defaultWidth);
+            Height = SettingsManager.GetInteger(Singleton.Settings.WindowHeight, _defaultHeight);
+            Resize += CommandsEditor_Resize;
+            FormClosing += CommandsEditor_FormClosing;
+            
             Singleton.OnEntitySelected += RefreshWebsocket;
             Singleton.OnCompositeSelected += RefreshWebsocket;
             Singleton.OnLevelLoaded += RefreshWebsocket;
@@ -67,9 +86,10 @@ namespace CommandsEditor
             searchOnlyCompositeNames.Checked = !SettingsManager.GetBool(Singleton.Settings.CompNameOnlyOpt); searchOnlyCompositeNames.PerformClick();
             useTexturedModelViewExperimentalToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.ShowTexOpt); useTexturedModelViewExperimentalToolStripMenuItem.PerformClick();
             keepFunctionUsesWindowOpenToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.KeepUsesWindowOpen); keepFunctionUsesWindowOpenToolStripMenuItem.PerformClick();
+            nodeOpensEntity.Checked = !SettingsManager.GetBool(Singleton.Settings.OpenEntityFromNode); nodeOpensEntity.PerformClick();
 
-            if (!SettingsManager.IsSet(Singleton.Settings.UseEntTabsOpt)) SettingsManager.SetBool(Singleton.Settings.UseEntTabsOpt, true);
-            entitiesOpenTabs.Checked = !SettingsManager.GetBool(Singleton.Settings.UseEntTabsOpt); entitiesOpenTabs.PerformClick();
+            if (!SettingsManager.IsSet(Singleton.Settings.UseEntityTabs)) SettingsManager.SetBool(Singleton.Settings.UseEntityTabs, true);
+            entitiesOpenTabs.Checked = !SettingsManager.GetBool(Singleton.Settings.UseEntityTabs); entitiesOpenTabs.PerformClick();
 
             if (!SettingsManager.IsSet(Singleton.Settings.ShowSavedMsgOpt)) SettingsManager.SetBool(Singleton.Settings.ShowSavedMsgOpt, true);
             showConfirmationWhenSavingToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.ShowSavedMsgOpt); showConfirmationWhenSavingToolStripMenuItem.PerformClick();
@@ -79,6 +99,15 @@ namespace CommandsEditor
 
             if (!SettingsManager.IsSet(Singleton.Settings.AutoHideCompositeDisplay)) SettingsManager.SetBool(Singleton.Settings.AutoHideCompositeDisplay, true);
             autoHideExplorerViewToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.AutoHideCompositeDisplay); autoHideExplorerViewToolStripMenuItem.PerformClick();
+
+            //Fixes for dodgy top dropdowns
+            compositeViewerToolStripMenuItem.MouseHover += (sender, e) => { ((ToolStripMenuItem)sender).PerformClick(); };
+            compositeViewerToolStripMenuItem.DropDown.Closing += DropDown_Closing;
+            entityDisplayToolStripMenuItem.MouseHover += (sender, e) => { ((ToolStripMenuItem)sender).PerformClick(); };
+            entityDisplayToolStripMenuItem.DropDown.Closing += DropDown_Closing;
+            miscToolStripMenuItem.MouseHover += (sender, e) => { ((ToolStripMenuItem)sender).PerformClick(); };
+            miscToolStripMenuItem.DropDown.Closing += DropDown_Closing;
+            toolStripButton2.DropDown.Closing += DropDown_Closing;
 
             //Set title
             this.Text = "OpenCAGE Commands Editor";
@@ -132,6 +161,42 @@ namespace CommandsEditor
                 OnLevelSelected(level);
         }
 
+        //keep dropdown open if cursor is inside it 
+        private void DropDown_Closing(object sender, ToolStripDropDownClosingEventArgs e)
+        {
+            var dropdown = sender as ToolStripDropDown;
+            if (dropdown != null)
+            {
+                Point cursorPosition = dropdown.PointToClient(Cursor.Position);
+                if (dropdown.DisplayRectangle.Contains(cursorPosition))
+                {
+                    e.Cancel = true;
+                }
+            }
+        }
+
+        private void CommandsEditor_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            SettingsManager.SetFloat(Singleton.Settings.SplitWidthMainBottom, (float)dockPanel.DockBottomPortion);
+            SettingsManager.SetFloat(Singleton.Settings.SplitWidthMainRight, (float)dockPanel.DockRightPortion);
+        }
+
+        //UI: remember width/height of editor
+        private void CommandsEditor_Resize(object sender, EventArgs e)
+        {
+            switch (WindowState)
+            {
+                case FormWindowState.Normal:
+                    SettingsManager.SetInteger(Singleton.Settings.WindowWidth, Width);
+                    SettingsManager.SetInteger(Singleton.Settings.WindowHeight, Height);
+                    break;
+                case FormWindowState.Maximized:
+
+                    break;
+            }
+            SettingsManager.SetString(Singleton.Settings.WindowState, WindowState.ToString());
+        }
+
         /* Load anim data */
         public static void LoadAnimData()
         {
@@ -139,17 +204,17 @@ namespace CommandsEditor
             PAK2 animPAK = new PAK2(SharedData.pathToAI + "/DATA/GLOBAL/ANIMATION.PAK");
 
             //Load all male/female skeletons
-            List<PAK2.File> skeletons = animPAK.Entries.FindAll(o => o.Filename.Length > 17 && o.Filename.Substring(0, 17) == "DATA\\SKELETONDEFS");
-            for (int i = 0; i < skeletons.Count; i++)
+            List<PAK2.File> skeletonDefs = animPAK.Entries.FindAll(o => o.Filename.Length > 17 && o.Filename.Substring(0, 17) == "DATA\\SKELETONDEFS");
+            for (int i = 0; i < skeletonDefs.Count; i++)
             {
-                string skeleton = Path.GetFileNameWithoutExtension(skeletons[i].Filename);
-                File.WriteAllBytes(skeleton, skeletons[i].Content);
+                string skeleton = Path.GetFileNameWithoutExtension(skeletonDefs[i].Filename);
+                File.WriteAllBytes(skeleton, skeletonDefs[i].Content);
                 XmlNode skeletonType = new BML(skeleton).Content.SelectSingleNode("//SkeletonDef/LoResReferenceSkeleton");
                 if (skeletonType?.InnerText == "MALE" || skeletonType?.InnerText == "FEMALENPC")
                 {
-                    if (!Singleton.Skeletons.ContainsKey(skeletonType?.InnerText))
-                        Singleton.Skeletons.Add(skeletonType?.InnerText, new List<string>());
-                    Singleton.Skeletons[skeletonType?.InnerText].Add(skeleton);
+                    if (!Singleton.GenderedSkeletons.ContainsKey(skeletonType?.InnerText))
+                        Singleton.GenderedSkeletons.Add(skeletonType?.InnerText, new List<string>());
+                    Singleton.GenderedSkeletons[skeletonType?.InnerText].Add(skeleton);
                 }
                 File.Delete(skeleton);
             }
@@ -164,7 +229,23 @@ namespace CommandsEditor
             Singleton.AnimationStrings_Debug = new AnimationStrings("ANIM_STRING_DB_DEBUG.BIN");
             File.Delete("ANIM_STRING_DB_DEBUG.BIN");
 
-            animPAK = null;
+            //Anim clip db
+            //File.WriteAllBytes("ANIM_CLIP_DB.BIN", animPAK.Entries.FirstOrDefault(o => o.Filename.Contains("ANIM_CLIP_DB.BIN")).Content);
+            //Singleton.AnimClipDB = new AnimClipDB("ANIM_CLIP_DB.BIN");
+            //File.Delete("ANIM_CLIP_DB.BIN");
+
+            //Skeleton db
+            File.WriteAllBytes("DB.BIN", animPAK.Entries.FirstOrDefault(o => o.Filename.Contains("SKELE\\DB.BIN")).Content);
+            Singleton.SkeletonDB = new SkeleDB("DB.BIN", Singleton.AnimationStrings_Debug);
+            File.Delete("DB.BIN");
+
+            //Load all skeleton names
+            List<PAK2.File> skeletons = animPAK.Entries.FindAll(o => o.Filename.Length > 24 && o.Filename.Substring(0, 24) == "DATA\\ANIM_SYS\\SKELE\\DEFS");
+            for (int i = 0; i < skeletons.Count; i++)
+            {
+                Singleton.AllSkeletons.Add(Singleton.AnimationStrings_Debug.Entries[Convert.ToUInt32(Path.GetFileNameWithoutExtension(skeletons[i].Filename))]);
+            }
+            Singleton.AllSkeletons.Sort();
 
             GC.Collect();
             GC.WaitForPendingFinalizers();
@@ -246,12 +327,19 @@ namespace CommandsEditor
 
             //Load new
             _commandsDisplay = new CommandsDisplay(level);
+            _commandsDisplay.Resize += _commandsDisplay_Resize;
             _commandsDisplay.FormClosed += _commandsDisplay_FormClosed;
             UpdateCommandsDisplayDockState();
 
             _levelMenuItems[_commandsDisplay.Content.level].Checked = true;
             UpdateDiscordPresence("Editing " + level);
         }
+
+        private void _commandsDisplay_Resize(object sender, EventArgs e)
+        {
+            SettingsManager.SetFloat(Singleton.Settings.CommandsSplitWidth, (float)dockPanel.DockLeftPortion);
+        }
+
         private void _commandsDisplay_FormClosed(object sender, FormClosedEventArgs e)
         {
             UpdateDiscordPresence("");
@@ -369,6 +457,7 @@ namespace CommandsEditor
             _commandsDisplay.Content.resource.collision_maps.Save();
             _commandsDisplay.Content.resource.character_accessories.Save();
             _commandsDisplay.Content.resource.reds.Save();
+            _commandsDisplay.Content.resource.env_animations.Save();
             _commandsDisplay.Content.mvr.Save();
         }
 
@@ -538,11 +627,9 @@ namespace CommandsEditor
 
             if (showNodegraph.Checked)
             {
-                _nodeViewer = new NodeEditor(null);
-                _nodeViewer.Show();
+                _nodeViewer = new NodeEditor();
+                _nodeViewer.Show(dockPanel, (DockState)Enum.Parse(typeof(DockState), SettingsManager.GetString(Singleton.Settings.NodegraphState, "DockRightAutoHide")));
                 _nodeViewer.FormClosed += NodeViewer_FormClosed;
-                _nodeViewer.BringToFront();
-                _nodeViewer.Focus();
             }
             else
             {
@@ -578,7 +665,9 @@ namespace CommandsEditor
         private void entitiesOpenTabs_Click(object sender, EventArgs e)
         {
             entitiesOpenTabs.Checked = !entitiesOpenTabs.Checked;
-            SettingsManager.SetBool(Singleton.Settings.UseEntTabsOpt, entitiesOpenTabs.Checked);
+            SettingsManager.SetBool(Singleton.Settings.UseEntityTabs, entitiesOpenTabs.Checked);
+
+            _commandsDisplay?.CloseAllChildTabs();
         }
 
         private void showConfirmationWhenSavingToolStripMenuItem_Click(object sender, EventArgs e)
@@ -611,6 +700,32 @@ namespace CommandsEditor
         {
             keepFunctionUsesWindowOpenToolStripMenuItem.Checked = !keepFunctionUsesWindowOpenToolStripMenuItem.Checked;
             SettingsManager.SetBool(Singleton.Settings.KeepUsesWindowOpen, keepFunctionUsesWindowOpenToolStripMenuItem.Checked);
+        }
+
+        private void nodeOpensEntity_Click(object sender, EventArgs e)
+        {
+            nodeOpensEntity.Checked = !nodeOpensEntity.Checked;
+            SettingsManager.SetBool(Singleton.Settings.OpenEntityFromNode, nodeOpensEntity.Checked);
+        }
+
+        private void resetUILayoutsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            WindowState = FormWindowState.Normal;
+            Width = _defaultWidth;
+            Height = _defaultHeight;
+
+            dockPanel.DockLeftPortion = _defaultSplitterDistance;
+            dockPanel.DockRightPortion = _defaultSplitterDistance;
+            dockPanel.DockBottomPortion = _defaultSplitterDistance;
+
+            _commandsDisplay?.ResetSplitter();
+            _activeCompositeDisplay?.ResetSplitter();
+
+            if (_nodeViewer != null)
+            {
+                _nodeViewer.DockState = DockState.DockRightAutoHide;
+                _nodeViewer.ResetLayout();
+            }
         }
 
         private void UpdateCommandsDisplayDockState()

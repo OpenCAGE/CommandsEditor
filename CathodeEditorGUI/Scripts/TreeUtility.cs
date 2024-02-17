@@ -26,18 +26,27 @@ namespace CommandsEditor
 
     class TreeUtility
     {
-        private LevelContent _content;
+        protected LevelContent Content => Singleton.Editor?.CommandsDisplay?.Content;
+
         private TreeView _fileTree;
         private bool _isModelTree;
 
-        public TreeUtility(TreeView tree, LevelContent content, bool isModelTree = false)
+        public TreeUtility(TreeView tree, bool isModelTree = false)
         {
             _fileTree = tree;
             _isModelTree = isModelTree;
-            _content = content;
 
             _fileTree.AfterExpand += FileTree_AfterExpand;
             _fileTree.AfterCollapse += FileTree_AfterCollapse;
+        }
+
+        ~TreeUtility()
+        {
+            if (_fileTree != null)
+            {
+                _fileTree.Nodes.Clear();
+                _fileTree.Dispose();
+            }
         }
 
         /* Update the file tree GUI */
@@ -87,7 +96,7 @@ namespace CommandsEditor
 
                     if (!_isModelTree)
                     {
-                        EditorUtils.CompositeType type = _content.editor_utils.GetCompositeType(ThisTag.String_Value);
+                        EditorUtils.CompositeType type = Content.editor_utils.GetCompositeType(ThisTag.String_Value);
                         FileNode.ImageIndex = type == EditorUtils.CompositeType.IS_GENERIC_COMPOSITE ? 1 : type == EditorUtils.CompositeType.IS_ROOT ? 3 : type == EditorUtils.CompositeType.IS_DISPLAY_MODEL ? 5 : 4;
                     }
                     else

@@ -21,13 +21,20 @@ namespace CommandsEditor
 
         private TreeUtility _treeHelper;
 
-        public SelectComposite(LevelContent content, string starting = null) : base(WindowClosesOn.NEW_COMPOSITE_SELECTION | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.COMMANDS_RELOAD, content)
+        public SelectComposite(string starting = null) : base(WindowClosesOn.NEW_COMPOSITE_SELECTION | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.COMMANDS_RELOAD)
         {
             InitializeComponent();
 
-            _treeHelper = new TreeUtility(FileTree, content);
+            _treeHelper = new TreeUtility(FileTree);
             _treeHelper.UpdateFileTree(Content.commands.GetCompositeNames().ToList());
             _treeHelper.SelectNode(starting == null || starting == "" ? Content.commands.EntryPoints[0].name : starting);
+
+            this.Disposed += SelectComposite_Disposed;
+        }
+
+        private void SelectComposite_Disposed(object sender, EventArgs e)
+        {
+            _treeHelper = null;
         }
 
         private void SelectEntity_Click(object sender, EventArgs e)

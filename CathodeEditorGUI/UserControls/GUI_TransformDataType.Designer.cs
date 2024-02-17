@@ -31,6 +31,9 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GUI_TransformDataType));
             this.POSITION_VARIABLE_DUMMY = new System.Windows.Forms.GroupBox();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.copyTransformToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pasteTransformToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tableLayoutPanel9 = new System.Windows.Forms.TableLayoutPanel();
             this.POS_X = new System.Windows.Forms.NumericUpDown();
             this.POS_Z = new System.Windows.Forms.NumericUpDown();
@@ -41,10 +44,8 @@
             this.ROT_Y = new System.Windows.Forms.NumericUpDown();
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
-            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.copyTransformToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.pasteTransformToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.POSITION_VARIABLE_DUMMY.SuspendLayout();
+            this.contextMenuStrip1.SuspendLayout();
             this.tableLayoutPanel9.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.POS_X)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.POS_Z)).BeginInit();
@@ -53,7 +54,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.ROT_X)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ROT_Z)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ROT_Y)).BeginInit();
-            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // POSITION_VARIABLE_DUMMY
@@ -70,6 +70,30 @@
             this.POSITION_VARIABLE_DUMMY.TabIndex = 1;
             this.POSITION_VARIABLE_DUMMY.TabStop = false;
             this.POSITION_VARIABLE_DUMMY.Text = "Parameter Name (00-00-00-00)";
+            // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.copyTransformToolStripMenuItem,
+            this.pasteTransformToolStripMenuItem});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(159, 48);
+            // 
+            // copyTransformToolStripMenuItem
+            // 
+            this.copyTransformToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("copyTransformToolStripMenuItem.Image")));
+            this.copyTransformToolStripMenuItem.Name = "copyTransformToolStripMenuItem";
+            this.copyTransformToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+            this.copyTransformToolStripMenuItem.Text = "Copy Transform";
+            this.copyTransformToolStripMenuItem.Click += new System.EventHandler(this.copyTransformToolStripMenuItem_Click);
+            // 
+            // pasteTransformToolStripMenuItem
+            // 
+            this.pasteTransformToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("pasteTransformToolStripMenuItem.Image")));
+            this.pasteTransformToolStripMenuItem.Name = "pasteTransformToolStripMenuItem";
+            this.pasteTransformToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+            this.pasteTransformToolStripMenuItem.Text = "Paste Transform";
+            this.pasteTransformToolStripMenuItem.Click += new System.EventHandler(this.pasteTransformToolStripMenuItem_Click);
             // 
             // tableLayoutPanel9
             // 
@@ -274,30 +298,6 @@
             this.label7.TabIndex = 7;
             this.label7.Text = "Position";
             // 
-            // contextMenuStrip1
-            // 
-            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.copyTransformToolStripMenuItem,
-            this.pasteTransformToolStripMenuItem});
-            this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(181, 70);
-            // 
-            // copyTransformToolStripMenuItem
-            // 
-            this.copyTransformToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("copyTransformToolStripMenuItem.Image")));
-            this.copyTransformToolStripMenuItem.Name = "copyTransformToolStripMenuItem";
-            this.copyTransformToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.copyTransformToolStripMenuItem.Text = "Copy Transform";
-            this.copyTransformToolStripMenuItem.Click += new System.EventHandler(this.copyTransformToolStripMenuItem_Click);
-            // 
-            // pasteTransformToolStripMenuItem
-            // 
-            this.pasteTransformToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("pasteTransformToolStripMenuItem.Image")));
-            this.pasteTransformToolStripMenuItem.Name = "pasteTransformToolStripMenuItem";
-            this.pasteTransformToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.pasteTransformToolStripMenuItem.Text = "Paste Transform";
-            this.pasteTransformToolStripMenuItem.Click += new System.EventHandler(this.pasteTransformToolStripMenuItem_Click);
-            // 
             // GUI_TransformDataType
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -307,6 +307,7 @@
             this.Size = new System.Drawing.Size(340, 114);
             this.POSITION_VARIABLE_DUMMY.ResumeLayout(false);
             this.POSITION_VARIABLE_DUMMY.PerformLayout();
+            this.contextMenuStrip1.ResumeLayout(false);
             this.tableLayoutPanel9.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.POS_X)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.POS_Z)).EndInit();
@@ -315,7 +316,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.ROT_X)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ROT_Z)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ROT_Y)).EndInit();
-            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }

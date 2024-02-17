@@ -16,13 +16,7 @@ namespace CommandsEditor.Popups.UserControls
     {
         public ResourceReference ResourceReference;
 
-        [Obsolete("Designer only", true)]
         public ResourceUserControl()
-        {
-            InitializeComponent();
-        }
-
-        public ResourceUserControl(LevelContent editor) : base(editor)
         {
             InitializeComponent();
         }

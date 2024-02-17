@@ -27,7 +27,7 @@ namespace CommandsEditor.UserControls
 
         public void PopulateUI(cTransform cTrans, ShortGuid paramID)
         {
-            PopulateUI(cTrans, (paramID.val == null) ? "" : ShortGuidUtils.FindString(paramID));
+            PopulateUI(cTrans, ShortGuidUtils.FindString(paramID));
         }
         public void PopulateUI(cTransform cTrans, string title, bool disableInput = false)
         {

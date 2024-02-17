@@ -31,18 +31,18 @@ namespace CommandsEditor
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AddOrEditLink));
             this.label3 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.selectEntityOut = new System.Windows.Forms.Button();
             this.parentParameterList = new System.Windows.Forms.ComboBox();
             this.parentEntityList = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.selectEntityIn = new System.Windows.Forms.Button();
             this.childParameterList = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.childEntityList = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
             this.save_pin = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.selectEntityOut = new System.Windows.Forms.Button();
-            this.selectEntityIn = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -71,6 +71,16 @@ namespace CommandsEditor
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Pin Out";
             // 
+            // selectEntityOut
+            // 
+            this.selectEntityOut.Location = new System.Drawing.Point(718, 39);
+            this.selectEntityOut.Name = "selectEntityOut";
+            this.selectEntityOut.Size = new System.Drawing.Size(142, 23);
+            this.selectEntityOut.TabIndex = 13;
+            this.selectEntityOut.Text = "Browse Entity";
+            this.selectEntityOut.UseVisualStyleBackColor = true;
+            this.selectEntityOut.Click += new System.EventHandler(this.selectEntityOut_Click);
+            // 
             // parentParameterList
             // 
             this.parentParameterList.FormattingEnabled = true;
@@ -81,11 +91,12 @@ namespace CommandsEditor
             // 
             // parentEntityList
             // 
+            this.parentEntityList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.parentEntityList.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.parentEntityList.FormattingEnabled = true;
             this.parentEntityList.Location = new System.Drawing.Point(16, 40);
             this.parentEntityList.Name = "parentEntityList";
-            this.parentEntityList.Size = new System.Drawing.Size(844, 21);
+            this.parentEntityList.Size = new System.Drawing.Size(696, 21);
             this.parentEntityList.TabIndex = 6;
             this.parentEntityList.SelectedIndexChanged += new System.EventHandler(this.pin_out_node_SelectedIndexChanged);
             // 
@@ -112,6 +123,16 @@ namespace CommandsEditor
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Pin In";
             // 
+            // selectEntityIn
+            // 
+            this.selectEntityIn.Location = new System.Drawing.Point(718, 39);
+            this.selectEntityIn.Name = "selectEntityIn";
+            this.selectEntityIn.Size = new System.Drawing.Size(142, 23);
+            this.selectEntityIn.TabIndex = 14;
+            this.selectEntityIn.Text = "Browse Entity";
+            this.selectEntityIn.UseVisualStyleBackColor = true;
+            this.selectEntityIn.Click += new System.EventHandler(this.selectEntityIn_Click);
+            // 
             // childParameterList
             // 
             this.childParameterList.FormattingEnabled = true;
@@ -131,11 +152,12 @@ namespace CommandsEditor
             // 
             // childEntityList
             // 
+            this.childEntityList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.childEntityList.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.childEntityList.FormattingEnabled = true;
             this.childEntityList.Location = new System.Drawing.Point(16, 40);
             this.childEntityList.Name = "childEntityList";
-            this.childEntityList.Size = new System.Drawing.Size(844, 21);
+            this.childEntityList.Size = new System.Drawing.Size(696, 21);
             this.childEntityList.TabIndex = 1;
             this.childEntityList.SelectedIndexChanged += new System.EventHandler(this.pin_in_node_SelectedIndexChanged);
             // 
@@ -169,26 +191,6 @@ namespace CommandsEditor
             this.pictureBox1.TabIndex = 12;
             this.pictureBox1.TabStop = false;
             // 
-            // selectEntityOut
-            // 
-            this.selectEntityOut.Location = new System.Drawing.Point(718, 39);
-            this.selectEntityOut.Name = "selectEntityOut";
-            this.selectEntityOut.Size = new System.Drawing.Size(142, 23);
-            this.selectEntityOut.TabIndex = 13;
-            this.selectEntityOut.Text = "Select Entity";
-            this.selectEntityOut.UseVisualStyleBackColor = true;
-            this.selectEntityOut.Click += new System.EventHandler(this.selectEntityOut_Click);
-            // 
-            // selectEntityIn
-            // 
-            this.selectEntityIn.Location = new System.Drawing.Point(718, 39);
-            this.selectEntityIn.Name = "selectEntityIn";
-            this.selectEntityIn.Size = new System.Drawing.Size(142, 23);
-            this.selectEntityIn.TabIndex = 14;
-            this.selectEntityIn.Text = "Select Entity";
-            this.selectEntityIn.UseVisualStyleBackColor = true;
-            this.selectEntityIn.Click += new System.EventHandler(this.selectEntityIn_Click);
-            // 
             // AddOrEditLink
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -203,7 +205,7 @@ namespace CommandsEditor
             this.MaximizeBox = false;
             this.Name = "AddOrEditLink";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Edit Entity Pin Link";
+            this.Text = "Edit Entity Link";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);

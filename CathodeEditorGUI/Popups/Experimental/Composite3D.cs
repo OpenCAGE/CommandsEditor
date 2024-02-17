@@ -34,7 +34,7 @@ namespace CommandsEditor
             List<GUI_ModelViewer.Model> models = new List<GUI_ModelViewer.Model>();
             models.AddRange(LoadComposite(_compositeDisplay.Composite));
 
-            modelViewer = new GUI_ModelViewer(_compositeDisplay.Content);
+            modelViewer = new GUI_ModelViewer();
             modelRendererHost.Child = modelViewer;
             modelViewer.ShowModel(models);
         }

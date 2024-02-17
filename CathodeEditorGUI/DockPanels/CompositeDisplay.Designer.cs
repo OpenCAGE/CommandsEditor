@@ -29,18 +29,8 @@ namespace CommandsEditor.DockPanels
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.ListViewGroup listViewGroup6 = new System.Windows.Forms.ListViewGroup("Parameters", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup7 = new System.Windows.Forms.ListViewGroup("Functions", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup8 = new System.Windows.Forms.ListViewGroup("Composite Instances", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup9 = new System.Windows.Forms.ListViewGroup("Proxies", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup10 = new System.Windows.Forms.ListViewGroup("Aliases", System.Windows.Forms.HorizontalAlignment.Left);
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CompositeDisplay));
-            this.composite_content = new ListViewGroupCollapse.ListViewExtended();
-            this.EntityName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.EntityType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.entityListIcons = new System.Windows.Forms.ImageList(this.components);
-            this.entity_search_box = new System.Windows.Forms.TextBox();
-            this.entity_search_btn = new System.Windows.Forms.Button();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.createEntity = new System.Windows.Forms.ToolStripDropDownButton();
             this.createVariableEntityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -56,6 +46,7 @@ namespace CommandsEditor.DockPanels
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.compositeEntityList1 = new Popups.UserControls.CompositeEntityList();
             this.vS2015LightTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.imageList = new System.Windows.Forms.ImageList(this.components);
@@ -75,6 +66,7 @@ namespace CommandsEditor.DockPanels
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.renameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.duplicateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.renameComposite = new System.Windows.Forms.ToolStripButton();
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -84,55 +76,6 @@ namespace CommandsEditor.DockPanels
             this.contextMenuStrip1.SuspendLayout();
             this.EntityListContextMenu.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // composite_content
-            // 
-            this.composite_content.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.composite_content.CheckBoxes = true;
-            this.composite_content.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.EntityName,
-            this.EntityType});
-            this.composite_content.FullRowSelect = true;
-            listViewGroup6.Header = "Parameters";
-            listViewGroup6.Name = "Variables";
-            listViewGroup7.Header = "Functions";
-            listViewGroup7.Name = "Functions";
-            listViewGroup8.Header = "Composite Instances";
-            listViewGroup8.Name = "Composites";
-            listViewGroup9.Header = "Proxies";
-            listViewGroup9.Name = "Proxies";
-            listViewGroup10.Header = "Aliases";
-            listViewGroup10.Name = "Aliases";
-            this.composite_content.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup6,
-            listViewGroup7,
-            listViewGroup8,
-            listViewGroup9,
-            listViewGroup10});
-            this.composite_content.HideSelection = false;
-            this.composite_content.LabelWrap = false;
-            this.composite_content.Location = new System.Drawing.Point(3, 30);
-            this.composite_content.MultiSelect = false;
-            this.composite_content.Name = "composite_content";
-            this.composite_content.Size = new System.Drawing.Size(827, 743);
-            this.composite_content.SmallImageList = this.entityListIcons;
-            this.composite_content.TabIndex = 176;
-            this.composite_content.UseCompatibleStateImageBehavior = false;
-            this.composite_content.View = System.Windows.Forms.View.Details;
-            this.composite_content.SelectedIndexChanged += new System.EventHandler(this.composite_content_SelectedIndexChanged);
-            this.composite_content.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FooListView_MouseDown);
-            // 
-            // EntityName
-            // 
-            this.EntityName.Text = "Name";
-            this.EntityName.Width = 279;
-            // 
-            // EntityType
-            // 
-            this.EntityType.Text = "Type";
-            this.EntityType.Width = 163;
             // 
             // entityListIcons
             // 
@@ -144,28 +87,6 @@ namespace CommandsEditor.DockPanels
             this.entityListIcons.Images.SetKeyName(3, "d_ScriptableObject Icon.png");
             this.entityListIcons.Images.SetKeyName(4, "AreaEffector2D Icon.ico");
             // 
-            // entity_search_box
-            // 
-            this.entity_search_box.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.entity_search_box.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.entity_search_box.Location = new System.Drawing.Point(3, 4);
-            this.entity_search_box.Name = "entity_search_box";
-            this.entity_search_box.Size = new System.Drawing.Size(766, 20);
-            this.entity_search_box.TabIndex = 146;
-            // 
-            // entity_search_btn
-            // 
-            this.entity_search_btn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.entity_search_btn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.entity_search_btn.Location = new System.Drawing.Point(767, 4);
-            this.entity_search_btn.Name = "entity_search_btn";
-            this.entity_search_btn.Size = new System.Drawing.Size(63, 20);
-            this.entity_search_btn.TabIndex = 145;
-            this.entity_search_btn.Text = "Search";
-            this.entity_search_btn.UseVisualStyleBackColor = true;
-            this.entity_search_btn.Click += new System.EventHandler(this.entity_search_btn_Click);
-            // 
             // toolStrip1
             // 
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -173,6 +94,7 @@ namespace CommandsEditor.DockPanels
             this.exportComposite,
             this.findUses,
             this.deleteCheckedEntities,
+            this.renameComposite,
             this.deleteComposite});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
@@ -289,17 +211,24 @@ namespace CommandsEditor.DockPanels
             this.dockPanel.Size = new System.Drawing.Size(781, 773);
             this.dockPanel.TabIndex = 178;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
+            this.dockPanel.Resize += new System.EventHandler(this.dockPanel_Resize);
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.composite_content);
-            this.panel1.Controls.Add(this.entity_search_box);
-            this.panel1.Controls.Add(this.entity_search_btn);
+            this.panel1.Controls.Add(this.compositeEntityList1);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(830, 773);
             this.panel1.TabIndex = 180;
+            // 
+            // compositeEntityList1
+            // 
+            this.compositeEntityList1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.compositeEntityList1.Location = new System.Drawing.Point(0, 0);
+            this.compositeEntityList1.Name = "compositeEntityList1";
+            this.compositeEntityList1.Size = new System.Drawing.Size(830, 773);
+            this.compositeEntityList1.TabIndex = 0;
             // 
             // splitContainer1
             // 
@@ -402,7 +331,8 @@ namespace CommandsEditor.DockPanels
             this.renameToolStripMenuItem,
             this.duplicateToolStripMenuItem});
             this.EntityListContextMenu.Name = "EntityListContextMenu";
-            this.EntityListContextMenu.Size = new System.Drawing.Size(181, 120);
+            this.EntityListContextMenu.Size = new System.Drawing.Size(125, 98);
+            this.EntityListContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.EntityListContextMenu_Opening);
             // 
             // createToolStripMenuItem
             // 
@@ -413,7 +343,7 @@ namespace CommandsEditor.DockPanels
             this.createProxyToolStripMenuItem,
             this.createAliasToolStripMenuItem1});
             this.createToolStripMenuItem.Name = "createToolStripMenuItem";
-            this.createToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.createToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.createToolStripMenuItem.Text = "Create";
             // 
             // createParameterToolStripMenuItem
@@ -459,13 +389,13 @@ namespace CommandsEditor.DockPanels
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(121, 6);
             // 
             // deleteToolStripMenuItem
             // 
             this.deleteToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("deleteToolStripMenuItem.Image")));
             this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.deleteToolStripMenuItem.Text = "Delete";
             this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
             // 
@@ -473,7 +403,7 @@ namespace CommandsEditor.DockPanels
             // 
             this.renameToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("renameToolStripMenuItem.Image")));
             this.renameToolStripMenuItem.Name = "renameToolStripMenuItem";
-            this.renameToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.renameToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.renameToolStripMenuItem.Text = "Rename";
             this.renameToolStripMenuItem.Click += new System.EventHandler(this.renameToolStripMenuItem_Click);
             // 
@@ -481,9 +411,19 @@ namespace CommandsEditor.DockPanels
             // 
             this.duplicateToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("duplicateToolStripMenuItem.Image")));
             this.duplicateToolStripMenuItem.Name = "duplicateToolStripMenuItem";
-            this.duplicateToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.duplicateToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.duplicateToolStripMenuItem.Text = "Duplicate";
             this.duplicateToolStripMenuItem.Click += new System.EventHandler(this.duplicateToolStripMenuItem_Click);
+            // 
+            // renameComposite
+            // 
+            this.renameComposite.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.renameComposite.Image = ((System.Drawing.Image)(resources.GetObject("renameComposite.Image")));
+            this.renameComposite.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.renameComposite.Name = "renameComposite";
+            this.renameComposite.Size = new System.Drawing.Size(131, 22);
+            this.renameComposite.Text = "Rename Composite";
+            this.renameComposite.Click += new System.EventHandler(this.renameComposite_Click);
             // 
             // CompositeDisplay
             // 
@@ -505,7 +445,6 @@ namespace CommandsEditor.DockPanels
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
@@ -518,12 +457,6 @@ namespace CommandsEditor.DockPanels
         }
 
         #endregion
-
-        private ListViewGroupCollapse.ListViewExtended composite_content;
-        private System.Windows.Forms.ColumnHeader EntityName;
-        private System.Windows.Forms.ColumnHeader EntityType;
-        private System.Windows.Forms.TextBox entity_search_box;
-        private System.Windows.Forms.Button entity_search_btn;
         private System.Windows.Forms.ToolStrip toolStrip1;
         private WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme vS2015DarkTheme1;
         private System.Windows.Forms.ToolStripButton findUses;
@@ -559,5 +492,7 @@ namespace CommandsEditor.DockPanels
         private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem renameToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem duplicateToolStripMenuItem;
+        private Popups.UserControls.CompositeEntityList compositeEntityList1;
+        private System.Windows.Forms.ToolStripButton renameComposite;
     }
 }

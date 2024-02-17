@@ -32,7 +32,6 @@
             this.lockLocationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lockConnectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stNodeEditor1 = new ST.Library.UI.NodeEditor.STNodeEditor();
-            this.clickToSelect = new System.Windows.Forms.CheckBox();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -69,46 +68,34 @@
             // stNodeEditor1
             // 
             this.stNodeEditor1.AllowDrop = true;
-            this.stNodeEditor1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.stNodeEditor1.AllowNodeGraphLoops = true;
             this.stNodeEditor1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(34)))), ((int)(((byte)(34)))));
             this.stNodeEditor1.Curvature = 0.3F;
+            this.stNodeEditor1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.stNodeEditor1.Location = new System.Drawing.Point(0, 0);
             this.stNodeEditor1.LocationBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(120)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.stNodeEditor1.MarkBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.stNodeEditor1.MarkForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.stNodeEditor1.MinimumSize = new System.Drawing.Size(100, 100);
             this.stNodeEditor1.Name = "stNodeEditor1";
-            this.stNodeEditor1.Size = new System.Drawing.Size(1019, 634);
+            this.stNodeEditor1.RequireCtrlForZooming = false;
+            this.stNodeEditor1.RoundedCornerRadius = 10;
+            this.stNodeEditor1.Size = new System.Drawing.Size(741, 524);
             this.stNodeEditor1.TabIndex = 1;
             this.stNodeEditor1.Text = "stNodeEditor1";
-            // 
-            // clickToSelect
-            // 
-            this.clickToSelect.AutoSize = true;
-            this.clickToSelect.Location = new System.Drawing.Point(0, 0);
-            this.clickToSelect.Name = "clickToSelect";
-            this.clickToSelect.Size = new System.Drawing.Size(175, 17);
-            this.clickToSelect.TabIndex = 2;
-            this.clickToSelect.Text = "Clicking entity selects it in editor";
-            this.clickToSelect.UseVisualStyleBackColor = true;
-            this.clickToSelect.CheckedChanged += new System.EventHandler(this.clickToSelect_CheckedChanged);
             // 
             // NodeEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1017, 634);
-            this.Controls.Add(this.clickToSelect);
+            this.ClientSize = new System.Drawing.Size(741, 524);
             this.Controls.Add(this.stNodeEditor1);
+            this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "NodeEditor";
-            this.ShowIcon = false;
-            this.Text = "Node Viewer";
+            this.Text = "Nodegraph";
             this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -118,7 +105,6 @@
         private System.Windows.Forms.ToolStripMenuItem removeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem lockLocationToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem lockConnectionToolStripMenuItem;
-        private System.Windows.Forms.CheckBox clickToSelect;
     }
 }
 

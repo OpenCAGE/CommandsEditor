@@ -28,15 +28,21 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GUI_VectorDataType));
             this.POS_Z_1 = new System.Windows.Forms.NumericUpDown();
             this.POS_Y_1 = new System.Windows.Forms.NumericUpDown();
             this.POS_X_1 = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
             this.tableLayoutPanel9 = new System.Windows.Forms.TableLayoutPanel();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.copyTransformToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pasteTransformToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.POS_Z_1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.POS_Y_1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.POS_X_1)).BeginInit();
             this.tableLayoutPanel9.SuspendLayout();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // POS_Z_1
@@ -156,6 +162,30 @@
             this.tableLayoutPanel9.Size = new System.Drawing.Size(334, 27);
             this.tableLayoutPanel9.TabIndex = 22;
             // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.copyTransformToolStripMenuItem,
+            this.pasteTransformToolStripMenuItem});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(139, 48);
+            // 
+            // copyTransformToolStripMenuItem
+            // 
+            this.copyTransformToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("copyTransformToolStripMenuItem.Image")));
+            this.copyTransformToolStripMenuItem.Name = "copyTransformToolStripMenuItem";
+            this.copyTransformToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.copyTransformToolStripMenuItem.Text = "Copy Vector";
+            this.copyTransformToolStripMenuItem.Click += new System.EventHandler(this.copyTransformToolStripMenuItem_Click);
+            // 
+            // pasteTransformToolStripMenuItem
+            // 
+            this.pasteTransformToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("pasteTransformToolStripMenuItem.Image")));
+            this.pasteTransformToolStripMenuItem.Name = "pasteTransformToolStripMenuItem";
+            this.pasteTransformToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.pasteTransformToolStripMenuItem.Text = "Paste Vector";
+            this.pasteTransformToolStripMenuItem.Click += new System.EventHandler(this.pasteTransformToolStripMenuItem_Click);
+            // 
             // GUI_VectorDataType
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -168,6 +198,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.POS_Y_1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.POS_X_1)).EndInit();
             this.tableLayoutPanel9.ResumeLayout(false);
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -179,5 +210,8 @@
         private System.Windows.Forms.NumericUpDown POS_X_1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel9;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem copyTransformToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem pasteTransformToolStripMenuItem;
     }
 }

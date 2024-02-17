@@ -23,31 +23,48 @@ namespace CommandsEditor.DockPanels
         private CompositeDisplay _compositeDisplay;
         public CompositeDisplay CompositeDisplay => _compositeDisplay;
 
-        private Entity _entity;
-        private Composite _entityCompositePtr; //The composite that this entity points to, if it does.
+        private Entity _entity = null;
+        private Composite _entityCompositePtr = null; //The composite that this entity points to, if it does.
+
+        public bool Populated => _entity != null;
 
         public LevelContent Content => _compositeDisplay.Content;
 
         public Entity Entity => _entity;
         public Composite Composite => _compositeDisplay.Composite;
 
-        private List<Entity> parentEntities = new List<Entity>();
-        private List<Entity> childEntities = new List<Entity>();
-
-        public EntityDisplay(CompositeDisplay compositeDisplay, Entity entity)
+        public EntityDisplay(CompositeDisplay compositeDisplay)
         {
-            if (entity == null)
-            {
-                this.Close();
-                return;
-            }
-
-            _entity = entity;
             _compositeDisplay = compositeDisplay;
-            _entityCompositePtr = _entity.variant == EntityVariant.FUNCTION ? Content.commands.GetComposite(((FunctionEntity)_entity).function) : null;
+
+            this.FormClosing += (s, e) => { DepopulateUI(); };
+            this.FormClosed += EntityDisplay_FormClosed;
 
             InitializeComponent();
-            this.Activate();
+
+            Singleton.OnEntityRenamed += OnEntityRenamed;
+            Singleton.OnCompositeRenamed += OnCompositeRenamed;
+        }
+
+        //TODO: this is not as efficient as it could be: really we should only reload if we know we're affected by the rename
+        private void OnEntityRenamed(Entity entity, string name)
+        {
+            if (!Populated) return;
+            Reload();
+        }
+        private void OnCompositeRenamed(Composite composite, string name)
+        {
+            if (!Populated) return;
+            Reload();
+        }
+
+        public void PopulateUI(Entity entity)
+        {
+            if (!this.Visible)
+                this.Show();
+            
+            _entity = entity;
+            _entityCompositePtr = _entity.variant == EntityVariant.FUNCTION ? Content.commands.GetComposite(((FunctionEntity)_entity).function) : null;
 
             switch (entity.variant)
             {
@@ -69,6 +86,24 @@ namespace CommandsEditor.DockPanels
             }
 
             Reload();
+
+            this.Activate();
+        }
+
+        public void DepopulateUI()
+        {
+            this.Hide();
+            EntityDisplay_FormClosed(null, null);
+        }
+
+        private void EntityDisplay_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            for (int i = 0; i < entity_params.Controls.Count; i++)
+                entity_params.Controls[i].Dispose();
+            entity_params.Controls.Clear();
+
+            _entity = null;
+            _entityCompositePtr = null;
         }
 
         /* Reload this display */
@@ -94,9 +129,8 @@ namespace CommandsEditor.DockPanels
             //--
 
             Cursor.Current = Cursors.WaitCursor;
-            entity_params.SuspendLayout();
             Task.Factory.StartNew(() => BackgroundEntityLoader(_entity, this));
-
+            List<Control> controls = new List<Control>();
 
             //populate info labels
             string entityVariantStr = "";
@@ -177,7 +211,6 @@ namespace CommandsEditor.DockPanels
                 editEntityMovers.Enabled = true;
 
             //populate linked params IN
-            parentEntities.Clear();
             int current_ui_offset = 7;
             List<Entity> ents = Composite.GetEntities();
             foreach (Entity ent in ents)
@@ -193,8 +226,7 @@ namespace CommandsEditor.DockPanels
                     parameterGUI.Width = entity_params.Width - 30;
                     parameterGUI.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
                     current_ui_offset += parameterGUI.Height + 6;
-                    entity_params.Controls.Add(parameterGUI);
-                    parentEntities.Add(ent);
+                    controls.Add(parameterGUI);
                 }
             }
 
@@ -297,7 +329,7 @@ namespace CommandsEditor.DockPanels
                         }
                         if (asset != AssetList.Type.NONE)
                         {
-                            parameterGUI = new GUI_StringVariant_AssetDropdown(Content);
+                            parameterGUI = new GUI_StringVariant_AssetDropdown();
                             ((GUI_StringVariant_AssetDropdown)parameterGUI).PopulateUI((cString)this_param, paramName, asset, asset_arg);
                         }
                         else
@@ -352,7 +384,7 @@ namespace CommandsEditor.DockPanels
                         ((GUI_EnumDataType)parameterGUI).PopulateUI((cEnum)this_param, paramName);
                         break;
                     case DataType.RESOURCE:
-                        parameterGUI = new GUI_ResourceDataType(Content);
+                        parameterGUI = new GUI_ResourceDataType();
                         ((GUI_ResourceDataType)parameterGUI).PopulateUI((cResource)this_param, paramName);
                         break;
                     case DataType.SPLINE:
@@ -364,11 +396,10 @@ namespace CommandsEditor.DockPanels
                 parameterGUI.Width = entity_params.Width - 30;
                 parameterGUI.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
                 current_ui_offset += parameterGUI.Height + 6;
-                entity_params.Controls.Add(parameterGUI);
+                controls.Add(parameterGUI);
             }
 
             //populate linked params OUT
-            childEntities.Clear();
             for (int i = 0; i < _entity.childLinks.Count; i++)
             {
                 GUI_Link parameterGUI = new GUI_Link(this);
@@ -379,11 +410,14 @@ namespace CommandsEditor.DockPanels
                 parameterGUI.Width = entity_params.Width - 30;
                 parameterGUI.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
                 current_ui_offset += parameterGUI.Height + 6;
-                entity_params.Controls.Add(parameterGUI);
-                childEntities.Add(Composite.GetEntityByID(_entity.childLinks[i].childID));
+                controls.Add(parameterGUI);
             }
 
+            entity_params.SuspendLayout();
+            entity_params.Controls.AddRange(controls.ToArray());
             entity_params.ResumeLayout();
+
+            Singleton.OnEntityReloaded?.Invoke(_entity);
             Cursor.Current = Cursors.Default;
         }
 
@@ -476,7 +510,7 @@ namespace CommandsEditor.DockPanels
 
         private void editEntityResources_Click(object sender, EventArgs e)
         {
-            AddOrEditResource resourceEditor = new AddOrEditResource(Content, ((FunctionEntity)Entity).resources, Entity.shortGUID, Content.editor_utils.GenerateEntityName(Entity, Composite));
+            AddOrEditResource resourceEditor = new AddOrEditResource(((FunctionEntity)Entity).resources, Entity.shortGUID, Content.editor_utils.GenerateEntityName(Entity, Composite));
             resourceEditor.Show();
             resourceEditor.OnSaved += OnResourceEditorSaved;
         }
@@ -574,15 +608,8 @@ namespace CommandsEditor.DockPanels
 
         private void renameEntity_Click(object sender, EventArgs e)
         {
-            RenameEntity rename_entity = new RenameEntity(this.Content, this.Entity, this.Composite);
+            RenameEntity rename_entity = new RenameEntity(this.Entity, this.Composite);
             rename_entity.Show();
-            rename_entity.OnRenamed += OnEntityRenamed;
-        }
-        private void OnEntityRenamed(string name, Entity entity)
-        {
-            Content.composite_content_cache[Composite][Entity].Text = name;
-            _compositeDisplay.CommandsDisplay.ReloadAllEntities();
-            //TODO-URGENT: Also need to update Proxy/Alias hierarchies.
         }
 
         /* Context menu close entity */

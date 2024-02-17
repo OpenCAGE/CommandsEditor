@@ -12,6 +12,7 @@ using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CommandsEditor.DockPanels;
 using CommandsEditor.Popups.Base;
+using CommandsEditor.Popups.UserControls;
 
 namespace CommandsEditor
 {
@@ -20,62 +21,37 @@ namespace CommandsEditor
         public Action<List<ShortGuid>> OnHierarchyGenerated;
         private List<ShortGuid> hierarchy = new List<ShortGuid>();
 
-        private List<string> composite_content_RAW = new List<string>();
-
         private Entity selectedEntity = null;
         private Composite selectedComposite = null;
 
-        private bool onlyShowFunctions = false;
-        private bool showAliases = false;
-
         //PROXIES can only point to FunctionEntities - ALIASES can point to FunctionEntities, ProxyEntities, VariableEntities
-        public EditHierarchy(LevelContent content, Composite startingComposite, bool onlyFunctions, bool allowFollowThrough = true, bool showAliases = false) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, content)
+        public EditHierarchy(Composite startingComposite, CompositeEntityList.DisplayOptions displayOptions, bool allowFollowThrough = true) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
-            onlyShowFunctions = onlyFunctions;
-            this.showAliases = showAliases;
-
             InitializeComponent();
-            LoadComposite(startingComposite.name);
+
+            displayOptions.ShowCheckboxes = false;
+            compositeEntityList1.Setup(startingComposite, displayOptions);
+            compositeEntityList1.SelectedEntityChanged += OnSelectedEntityChanged;
+
+            LoadComposite(startingComposite);
             FollowEntityThrough.Visible = allowFollowThrough;
         }
 
-        /* Search the list */
-        private string currentSearch = "";
-        private void searchList_Click(object sender, EventArgs e)
-        {
-            if (searchQuery.Text == currentSearch) return;
-            List<string> matched = new List<string>();
-            foreach (string item in composite_content_RAW) if (item.ToUpper().Contains(searchQuery.Text.ToUpper())) matched.Add(item);
-            composite_content.BeginUpdate();
-            composite_content.Items.Clear();
-            for (int i = 0; i < matched.Count; i++) composite_content.Items.Add(matched[i]);
-            composite_content.EndUpdate();
-            currentSearch = searchQuery.Text;
-        }
-
         /* Select a new entity from the composite, show fall through option if available */
-        private void composite_content_SelectedIndexChanged(object sender, EventArgs e)
+        private void OnSelectedEntityChanged(Entity entity)
         {
-            if (composite_content.SelectedIndex == -1 || selectedComposite == null) return;
-            try
-            {
-                ShortGuid entityID = new ShortGuid(composite_content.SelectedItem.ToString().Substring(1, 11));
-                selectedEntity = selectedComposite.GetEntityByID(entityID);
-                SelectEntity.Enabled = true;
-                FollowEntityThrough.Enabled = false;
+            if (entity == null) return;
 
-                if (selectedEntity.variant != EntityVariant.FUNCTION) return;
-                FollowEntityThrough.Enabled = Content.commands.GetComposite(((FunctionEntity)selectedEntity).function) != null;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Encountered an issue while looking up entity!\nPlease report this on GitHub!\n" + ex.Message, "Failed lookup!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            selectedEntity = entity;
+            SelectEntity.Enabled = true;
+            FollowEntityThrough.Enabled = false;
 
+            if (selectedEntity.variant != EntityVariant.FUNCTION) return;
+            FollowEntityThrough.Enabled = Content.commands.GetComposite(((FunctionEntity)selectedEntity).function) != null;
         }
 
         /* Load a composite into the UI */
-        private void LoadComposite(string FileName)
+        private void LoadComposite(Composite composite)
         {
             if (selectedEntity != null)
             {
@@ -85,44 +61,10 @@ namespace CommandsEditor
             SelectEntity.Enabled = false;
             FollowEntityThrough.Enabled = false;
 
-            selectedComposite = Content.commands.GetComposite(FileName);
+            selectedComposite = composite;
             compositeName.Text = selectedComposite.name;
-            composite_content.BeginUpdate();
-            composite_content_RAW.Clear();
-            composite_content.Items.Clear();
 
-            for (int i = 0; i < selectedComposite.functions.Count; i++)
-            {
-                string desc = Content.editor_utils.GenerateEntityName(selectedComposite.functions[i], selectedComposite);
-                composite_content.Items.Add(desc);
-                composite_content_RAW.Add(desc);
-            }
-            if (!onlyShowFunctions)
-            {
-                for (int i = 0; i < selectedComposite.proxies.Count; i++)
-                {
-                    string desc = Content.editor_utils.GenerateEntityName(selectedComposite.proxies[i], selectedComposite);
-                    composite_content.Items.Add(desc);
-                    composite_content_RAW.Add(desc);
-                }
-                for (int i = 0; i < selectedComposite.variables.Count; i++)
-                {
-                    string desc = Content.editor_utils.GenerateEntityName(selectedComposite.variables[i], selectedComposite);
-                    composite_content.Items.Add(desc);
-                    composite_content_RAW.Add(desc);
-                }
-            }
-            if (showAliases)
-            {
-                for (int i = 0; i < selectedComposite.aliases.Count; i++)
-                {
-                    string desc = Content.editor_utils.GenerateEntityName(selectedComposite.aliases[i], selectedComposite);
-                    composite_content.Items.Add(desc);
-                    composite_content_RAW.Add(desc);
-                }
-            }
-
-            composite_content.EndUpdate();
+            compositeEntityList1.LoadComposite(selectedComposite);
         }
 
         /* If selected entity is a composite instance, allow jump to it */
@@ -134,7 +76,7 @@ namespace CommandsEditor
             Composite composite = Content.commands.GetComposite(((FunctionEntity)selectedEntity).function);
             if (composite == null) return;
 
-            LoadComposite(composite.name);
+            LoadComposite(composite);
         }
 
         /* Generate the hierarchy */

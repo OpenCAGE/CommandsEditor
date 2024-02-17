@@ -14,18 +14,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
-using static CATHODE.Scripting.TriggerSequence;
 
 namespace CommandsEditor
 {
     public partial class RenameComposite : BaseWindow
     {
-        public Action<string> OnRenamed;
-
         private Composite _composite;
         private string _folder;
 
-        public RenameComposite(LevelContent editor, Composite composite, string path) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
+        public RenameComposite(Composite composite, string path) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             InitializeComponent();
             
@@ -61,10 +58,21 @@ namespace CommandsEditor
             }
             //--
 
-
+            //Update composite name
             _composite.name = path;
 
-            OnRenamed?.Invoke(path);
+            //Update cached ListViewItems that instance this composite
+            Content.commands.Entries.ForEach(composite =>
+            {
+                composite.functions.FindAll(o => o.function == _composite.shortGUID).ForEach(function => 
+                {
+                    Content.GenerateListViewItem(function, composite, LevelContent.CacheMethod.IGNORE_AND_OVERWRITE_CACHE);
+                });
+            });
+
+            //Fire off an event so any UI that references the name can update
+            Singleton.OnCompositeRenamed?.Invoke(_composite, path);
+
             this.Close();
         }
     }

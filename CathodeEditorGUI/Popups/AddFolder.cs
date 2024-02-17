@@ -20,7 +20,7 @@ namespace CommandsEditor
         CommandsDisplay _commands;
         string _folder;
 
-        public AddFolder(CommandsDisplay editor, string folderPath) : base(WindowClosesOn.COMMANDS_RELOAD, editor.Content)
+        public AddFolder(CommandsDisplay editor, string folderPath) : base(WindowClosesOn.COMMANDS_RELOAD)
         {
             _commands = editor;
             InitializeComponent();
@@ -73,6 +73,12 @@ namespace CommandsEditor
             Composite comp = _commands.Content.commands.AddComposite(path);
             OnFolderAdded?.Invoke(comp);
             this.Close();
+        }
+
+        private void OnKeyDownHandler(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+                create_param.PerformClick();
         }
     }
 }

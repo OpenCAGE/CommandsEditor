@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="packages\Costura.Fody.5.7.0\build\Costura.Fody.props" Condition="Exists('packages\Costura.Fody.5.7.0\build\Costura.Fody.props')" />
+  <Import Project="packages\Costura.Fody.5.8.0-alpha0098\build\Costura.Fody.props" Condition="Exists('packages\Costura.Fody.5.8.0-alpha0098\build\Costura.Fody.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -25,11 +25,13 @@
     <OutputPath>..\Build\</OutputPath>
     <DefineConstants>DEBUG;CATHODE_FAIL_HARD</DefineConstants>
     <Prefer32Bit>false</Prefer32Bit>
+    <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <OutputPath>..\Build\</OutputPath>
     <Prefer32Bit>false</Prefer32Bit>
+    <Optimize>true</Optimize>
   </PropertyGroup>
   <ItemGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <Reference Include="CathodeLib">
@@ -72,8 +74,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Costura, Version=5.7.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\Costura.Fody.5.7.0\lib\netstandard1.0\Costura.dll</HintPath>
+    <Reference Include="Costura, Version=5.8.0.0, Culture=neutral, PublicKeyToken=9919ef960d84173d, processorArchitecture=MSIL">
+      <HintPath>packages\Costura.Fody.5.8.0-alpha0098\lib\netstandard1.0\Costura.dll</HintPath>
     </Reference>
     <Reference Include="DiscordRPC, Version=1.2.1.24, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\DiscordRichPresence.1.2.1.24\lib\net45\DiscordRPC.dll</HintPath>
@@ -283,6 +285,15 @@
     <Compile Include="Popups\Function Editors\ShowCompositeInstanceOverrides.Designer.cs">
       <DependentUpon>ShowCompositeInstanceOverrides.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\SelectMaterial.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\SelectMaterial.Designer.cs">
+      <DependentUpon>SelectMaterial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\SelectMaterialControlWPF.xaml.cs">
+      <DependentUpon>SelectMaterialControlWPF.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Popups\RenameComposite.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -300,6 +311,12 @@
     </Compile>
     <Compile Include="Popups\ShowInstanceInfo.Designer.cs">
       <DependentUpon>ShowInstanceInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\UserControls\CompositeEntityList.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Popups\UserControls\CompositeEntityList.Designer.cs">
+      <DependentUpon>CompositeEntityList.cs</DependentUpon>
     </Compile>
     <Compile Include="Scripts\DirectXTexUtility.cs" />
     <Compile Include="Scripts\LevelContent.cs" />
@@ -1286,12 +1303,6 @@
     <Compile Include="Popups\RenameEntity.Designer.cs">
       <DependentUpon>RenameEntity.cs</DependentUpon>
     </Compile>
-    <Compile Include="Popups\SelectMaterial.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Popups\SelectMaterial.Designer.cs">
-      <DependentUpon>SelectMaterial.cs</DependentUpon>
-    </Compile>
     <Compile Include="Popups\SelectModel.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1451,6 +1462,9 @@
     <EmbeddedResource Include="Popups\Function Editors\ShowCompositeInstanceOverrides.resx">
       <DependentUpon>ShowCompositeInstanceOverrides.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Popups\SelectMaterial.resx">
+      <DependentUpon>SelectMaterial.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Popups\RenameComposite.resx">
       <DependentUpon>RenameComposite.cs</DependentUpon>
     </EmbeddedResource>
@@ -1520,9 +1534,6 @@
     <EmbeddedResource Include="Popups\SelectLevel.resx">
       <DependentUpon>SelectLevel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Popups\SelectMaterial.resx">
-      <DependentUpon>SelectMaterial.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Popups\SelectModel.resx">
       <DependentUpon>SelectModel.cs</DependentUpon>
     </EmbeddedResource>
@@ -1534,6 +1545,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\ShowInstanceInfo.resx">
       <DependentUpon>ShowInstanceInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\UserControls\CompositeEntityList.resx">
+      <DependentUpon>CompositeEntityList.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\UserControls\GUI_Resource_AnimatedModel.resx">
       <DependentUpon>GUI_Resource_AnimatedModel.cs</DependentUpon>
@@ -1644,6 +1658,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Popups\SelectMaterialControlWPF.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Popups\UserControls\GUI_SplineViewer.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1655,14 +1673,14 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="packages\Fody.6.5.5\build\Fody.targets" Condition="Exists('packages\Fody.6.5.5\build\Fody.targets')" />
+  <Import Project="packages\Fody.6.6.0\build\Fody.targets" Condition="Exists('packages\Fody.6.6.0\build\Fody.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('packages\Fody.6.5.5\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Fody.6.5.5\build\Fody.targets'))" />
-    <Error Condition="!Exists('packages\Costura.Fody.5.7.0\build\Costura.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Costura.Fody.5.7.0\build\Costura.Fody.props'))" />
-    <Error Condition="!Exists('packages\Costura.Fody.5.7.0\build\Costura.Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Costura.Fody.5.7.0\build\Costura.Fody.targets'))" />
+    <Error Condition="!Exists('packages\Fody.6.6.0\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Fody.6.6.0\build\Fody.targets'))" />
+    <Error Condition="!Exists('packages\Costura.Fody.5.8.0-alpha0098\build\Costura.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Costura.Fody.5.8.0-alpha0098\build\Costura.Fody.props'))" />
+    <Error Condition="!Exists('packages\Costura.Fody.5.8.0-alpha0098\build\Costura.Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Costura.Fody.5.8.0-alpha0098\build\Costura.Fody.targets'))" />
   </Target>
-  <Import Project="packages\Costura.Fody.5.7.0\build\Costura.Fody.targets" Condition="Exists('packages\Costura.Fody.5.7.0\build\Costura.Fody.targets')" />
+  <Import Project="packages\Costura.Fody.5.8.0-alpha0098\build\Costura.Fody.targets" Condition="Exists('packages\Costura.Fody.5.8.0-alpha0098\build\Costura.Fody.targets')" />
 </Project>

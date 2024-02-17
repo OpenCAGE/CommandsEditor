@@ -29,15 +29,13 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.animatedModelIndex = new System.Windows.Forms.ComboBox();
+            this.skeletonList = new System.Windows.Forms.ComboBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Controls.Add(this.animatedModelIndex);
+            this.groupBox1.Controls.Add(this.skeletonList);
             this.groupBox1.Location = new System.Drawing.Point(3, 3);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(832, 56);
@@ -45,24 +43,15 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Animated Model";
             // 
-            // label1
+            // skeletonList
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(18, 24);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(118, 13);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "Environment Animation:";
-            // 
-            // animatedModelIndex
-            // 
-            this.animatedModelIndex.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.animatedModelIndex.FormattingEnabled = true;
-            this.animatedModelIndex.Location = new System.Drawing.Point(142, 21);
-            this.animatedModelIndex.Name = "animatedModelIndex";
-            this.animatedModelIndex.Size = new System.Drawing.Size(253, 21);
-            this.animatedModelIndex.TabIndex = 0;
-            this.animatedModelIndex.SelectedIndexChanged += new System.EventHandler(this.animatedModelIndex_SelectedIndexChanged);
+            this.skeletonList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.skeletonList.FormattingEnabled = true;
+            this.skeletonList.Location = new System.Drawing.Point(6, 21);
+            this.skeletonList.Name = "skeletonList";
+            this.skeletonList.Size = new System.Drawing.Size(820, 21);
+            this.skeletonList.TabIndex = 0;
+            this.skeletonList.SelectedIndexChanged += new System.EventHandler(this.animatedModelIndex_SelectedIndexChanged);
             // 
             // GUI_Resource_AnimatedModel
             // 
@@ -70,9 +59,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.groupBox1);
             this.Name = "GUI_Resource_AnimatedModel";
-            this.Size = new System.Drawing.Size(838, 62);
+            this.Size = new System.Drawing.Size(838, 63);
             this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -80,7 +68,6 @@
         #endregion
 
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.ComboBox animatedModelIndex;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ComboBox skeletonList;
     }
 }

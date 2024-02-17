@@ -22,7 +22,7 @@ namespace CommandsEditor
 {
     public partial class NodeEditorTest : BaseWindow
     {
-        public NodeEditorTest(LevelContent editor) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION, editor)
+        public NodeEditorTest() : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION)
         {
             InitializeComponent();
             this.StartPosition = FormStartPosition.CenterScreen;
@@ -37,7 +37,7 @@ namespace CommandsEditor
             stNodeEditor1.ActiveChanged += (s, ea) => stNodePropertyGrid1.SetNode(stNodeEditor1.ActiveNode);
             //stNodeEditor1.SelectedChanged += (s, ea) => stNodePropertyGrid1.SetSTNode(stNodeEditor1.ActiveNode);
             stNodeEditor1.OptionConnected += (s, ea) => stNodeEditor1.ShowAlert(ea.Status.ToString(), Color.White, ea.Status == ConnectionStatus.Connected ? Color.FromArgb(125, Color.Green) : Color.FromArgb(125, Color.Red));
-            stNodeEditor1.CanvasScaled += (s, ea) => stNodeEditor1.ShowAlert(stNodeEditor1.CanvasScale.ToString("F2"), Color.White, Color.FromArgb(125, Color.Yellow));
+            stNodeEditor1.CanvasZoomed += (s, ea) => stNodeEditor1.ShowAlert(stNodeEditor1.CanvasScale.ToString("F2"), Color.White, Color.FromArgb(125, Color.Yellow));
             stNodeEditor1.NodeAdded += (s, ea) => ea.Node.ContextMenuStrip = contextMenuStrip1;
 
             stNodePropertyGrid1.SetInfoKey("Author", "Mail", "Link", "Show Help");

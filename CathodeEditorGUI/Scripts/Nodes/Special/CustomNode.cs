@@ -13,7 +13,9 @@ namespace CommandsEditor.Nodes
 
 		protected override void OnCreate()
 		{
-			base.OnCreate();
+            LetGetOptions = true;
+            Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular, GraphicsUnit.Point, (byte)0); 
+            base.OnCreate();
 		}
 
         public void Recompute()

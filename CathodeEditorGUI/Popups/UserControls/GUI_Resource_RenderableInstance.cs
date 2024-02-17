@@ -12,6 +12,7 @@ using CathodeLib;
 using CATHODE;
 using CATHODE.LEGACY;
 using System.Numerics;
+using AlienPAK;
 
 namespace CommandsEditor.Popups.UserControls
 {
@@ -26,15 +27,17 @@ namespace CommandsEditor.Popups.UserControls
         public Action<int, int> OnMaterialSelected; //int = submesh index, int = level material index
         public Action<int> OnModelSelected; //int = model pak index
 
-        [Obsolete("Designer only", true)]
-        public GUI_Resource_RenderableInstance() : base(null)
-        {
-            InitializeComponent();
-        }
+        private bool _launchedWithPosAndRot = false;
 
-        public GUI_Resource_RenderableInstance(LevelContent editor) : base(editor)
+        public GUI_Resource_RenderableInstance() : base()
         {
             InitializeComponent();
+
+            this.Disposed += GUI_Resource_RenderableInstance_Disposed;
+        }
+        private void GUI_Resource_RenderableInstance_Disposed(object sender, EventArgs e)
+        {
+            _matEditor?.Close();
         }
 
         public void PopulateUI(Vector3 position, Vector3 rotation, int redsIndex, int redsCount)
@@ -51,6 +54,8 @@ namespace CommandsEditor.Popups.UserControls
 
             groupBox1.Size = new Size(832, 227);
             this.Size = new Size(838, 232);
+
+            _launchedWithPosAndRot = true;
         }
         public void PopulateUI(int redsIndex, int redsCount)
         {
@@ -87,13 +92,16 @@ namespace CommandsEditor.Popups.UserControls
             for (int i = 0; i < materialIndexes.Count; i++)
                 materials.Items.Add(/*"[" + mesh.Submeshes[i].Name + "] " + */Content.resource.materials.Entries[materialIndexes[i]].Name);
 
-            groupBox1.Size = new Size(832, 180);
-            this.Size = new Size(838, 186);
+            if (!_launchedWithPosAndRot)
+            {
+                groupBox1.Size = new Size(832, 180);
+                this.Size = new Size(838, 186);
+            }
         }
 
         private void editModel_Click(object sender, EventArgs e)
         {
-            SelectModel selectModel = new SelectModel(_content, SelectedModelIndex);
+            SelectModel selectModel = new SelectModel(SelectedModelIndex);
             selectModel.Show();
             selectModel.FormClosed += SelectModel_FormClosed;
         }
@@ -109,26 +117,41 @@ namespace CommandsEditor.Popups.UserControls
             OnModelSelected?.Invoke(selectModel.SelectedModelIndex);
         }
 
+        private int _selectedIndex = -1;
+        private SelectMaterial _matEditor = null;
+
         private void editMaterial_Click(object sender, EventArgs e)
         {
             if (materials.SelectedIndex == -1) return;
 
-            SelectMaterial selectMaterial = new SelectMaterial(_content, materials.SelectedIndex, SelectedMaterialIndexes[materials.SelectedIndex]);
-            selectMaterial.Show();
-            selectMaterial.FormClosed += SelectMaterial_FormClosed;
+            _selectedIndex = materials.SelectedIndex;
+
+            if (_matEditor != null)
+                _matEditor.Close();
+
+            _matEditor = new SelectMaterial(Content.resource.materials.Entries[SelectedMaterialIndexes[materials.SelectedIndex]]);
+            _matEditor.FormClosed += Editor_FormClosed;
+            _matEditor.OnMaterialSelected += MaterialSelected;
+            _matEditor.Show();
         }
-        private void SelectMaterial_FormClosed(object sender, FormClosedEventArgs e)
+
+        private void Editor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _matEditor = null;
+        }
+
+        private void MaterialSelected(int index)
         {
             this.BringToFront();
             this.Focus();
 
-            SelectMaterial selectMaterial = (SelectMaterial)sender;
-            if (selectMaterial.SelectedMaterialIndex == -1) return;
-            SelectedMaterialIndexes[selectMaterial.MaterialIndexToEdit] = selectMaterial.SelectedMaterialIndex;
-            PopulateUI(SelectedModelIndex, SelectedMaterialIndexes);
-            materials.SelectedIndex = selectMaterial.MaterialIndexToEdit;
+            if (index == -1) return;
 
-            OnMaterialSelected?.Invoke(selectMaterial.MaterialIndexToEdit, selectMaterial.SelectedMaterialIndex);
+            SelectedMaterialIndexes[_selectedIndex] = index;
+            PopulateUI(SelectedModelIndex, SelectedMaterialIndexes);
+            materials.SelectedIndex = _selectedIndex;
+
+            OnMaterialSelected?.Invoke(_selectedIndex, index);
         }
     }
 }

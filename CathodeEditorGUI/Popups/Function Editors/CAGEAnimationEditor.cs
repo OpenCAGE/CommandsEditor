@@ -2,6 +2,7 @@
 using CATHODE.Scripting.Internal;
 using CommandsEditor.DockPanels;
 using CommandsEditor.Popups.Base;
+using CommandsEditor.Popups.UserControls;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -28,7 +29,7 @@ namespace CommandsEditor
 
         EntityDisplay _entityDisplay;
 
-        public CAGEAnimationEditor(EntityDisplay entityDisplay) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_CAGEANIM_EDITOR_OPENED | WindowClosesOn.NEW_COMPOSITE_SELECTION, entityDisplay.Content)
+        public CAGEAnimationEditor(EntityDisplay entityDisplay) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_CAGEANIM_EDITOR_OPENED | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             _entityDisplay = entityDisplay;
 
@@ -130,7 +131,7 @@ namespace CommandsEditor
                 for (int x = 0; x < filteredAnims[i].keyframes.Count; x++)
                 {
                     CAGEAnimation.Animation.Keyframe keyframeData = filteredAnims[i].keyframes[x];
-                    string keyframeText = connection.parameterSubID.val == null || connection.parameterSubID.ToString() == "" ? connection.parameterID.ToString() : connection.parameterID.ToString() + " [" + connection.parameterSubID.ToString() + "]";
+                    string keyframeText = connection.parameterSubID.ToString() == "" ? connection.parameterID.ToString() : connection.parameterID.ToString() + " [" + connection.parameterSubID.ToString() + "]";
                     Keyframe keyframeUI = animTimeline.AddKeyframe(keyframeData.secondsSinceStart, keyframeText);
                     keyframeUI.OnMoved += OnHandleMoved;
                     keyframeUI.HandleText = keyframeData.paramValue.ToString("0.00");
@@ -263,7 +264,13 @@ namespace CommandsEditor
 
         private void addNewEntityRef_Click(object sender, EventArgs e)
         {
-            EditHierarchy hierarchyEditor = new EditHierarchy(_content, _entityDisplay.Composite, false);
+            EditHierarchy hierarchyEditor = new EditHierarchy(_entityDisplay.Composite, new CompositeEntityList.DisplayOptions()
+            {
+                DisplayAliases = false,
+                DisplayFunctions = true,
+                DisplayProxies = true,
+                DisplayVariables = true,
+            });
             hierarchyEditor.Show();
             hierarchyEditor.OnHierarchyGenerated += HierarchyEditor_HierarchyGenerated;
         }
@@ -300,7 +307,7 @@ namespace CommandsEditor
             if (entityList.SelectedIndex == -1) return;
             try
             {
-                CAGEAnimation_SelectParameter paramSelector = new CAGEAnimation_SelectParameter(_content, entityListToHierarchies[entityList.SelectedIndex].GetPointedEntity(Content.commands, _entityDisplay.Composite));
+                CAGEAnimation_SelectParameter paramSelector = new CAGEAnimation_SelectParameter(entityListToHierarchies[entityList.SelectedIndex].GetPointedEntity(Content.commands, _entityDisplay.Composite));
                 paramSelector.OnParamSelected += OnParameterSelected;
                 paramSelector.Show();
             }
@@ -390,7 +397,7 @@ namespace CommandsEditor
         {
             try
             {
-                CAGEAnimation_DeleteParam deleteParamWindow = new CAGEAnimation_DeleteParam(_content, animTracks);
+                CAGEAnimation_DeleteParam deleteParamWindow = new CAGEAnimation_DeleteParam(animTracks);
                 deleteParamWindow.OnParamSelected += OnDeleteParamSelected;
                 deleteParamWindow.Show();
             }
@@ -411,7 +418,13 @@ namespace CommandsEditor
 
         private void addEventTrack_Click(object sender, EventArgs e)
         {
-            EditHierarchy hierarchyEditor = new EditHierarchy(_content, _entityDisplay.Composite, false);
+            EditHierarchy hierarchyEditor = new EditHierarchy(_entityDisplay.Composite, new CompositeEntityList.DisplayOptions()
+            {
+                DisplayAliases = false,
+                DisplayFunctions = true,
+                DisplayProxies = true,
+                DisplayVariables = true,
+            });
             hierarchyEditor.Show();
             hierarchyEditor.OnHierarchyGenerated += HierarchyEditor2_HierarchyGenerated;
             SetupEventTimeline();
@@ -458,7 +471,7 @@ namespace CommandsEditor
         {
             try
             {
-                CAGEAnimation_DeleteEvent deleteEventWindow = new CAGEAnimation_DeleteEvent(_content, eventTracks);
+                CAGEAnimation_DeleteEvent deleteEventWindow = new CAGEAnimation_DeleteEvent(eventTracks);
                 deleteEventWindow.OnTrackSelected += OnDeleteEventSelected;
                 deleteEventWindow.Show();
             }

@@ -12,17 +12,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace CommandsEditor
 {
     public partial class RenameEntity : BaseWindow
     {
-        public Action<string, Entity> OnRenamed;
-
         private Entity _entity;
         private Composite _composite;
 
-        public RenameEntity(LevelContent editor, Entity entity, Composite composite) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, editor)
+        public RenameEntity(Entity entity, Composite composite) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             InitializeComponent();
 
@@ -44,6 +43,7 @@ namespace CommandsEditor
         {
             if (entity_name.Text == "") return;
 
+            //Update entity name
             switch (_entity.variant)
             {
                 case EntityVariant.VARIABLE:
@@ -54,7 +54,25 @@ namespace CommandsEditor
                     break;
             }
 
-            OnRenamed?.Invoke(entity_name.Text, _entity);
+            //Update cached entity ListViewItem
+            Content.GenerateListViewItem(_entity, _composite, LevelContent.CacheMethod.IGNORE_AND_OVERWRITE_CACHE);
+
+            //Update cached proxy/alias ListViewItems that contain this entity
+            Content.commands.Entries.ForEach(composite =>
+            {
+                composite.proxies.FindAll(o => o.proxy.path.Contains(_entity.shortGUID)).ForEach(proxy => 
+                {
+                    Content.GenerateListViewItem(proxy, composite, LevelContent.CacheMethod.IGNORE_AND_OVERWRITE_CACHE);
+                });
+                composite.aliases.FindAll(o => o.alias.path.Contains(_entity.shortGUID)).ForEach(alias =>
+                {
+                    Content.GenerateListViewItem(alias, composite, LevelContent.CacheMethod.IGNORE_AND_OVERWRITE_CACHE);
+                });
+            });
+
+            //Fire off an event so any UI that references the name can update
+            Singleton.OnEntityRenamed?.Invoke(_entity, entity_name.Text);
+
             this.Close();
         }
     }

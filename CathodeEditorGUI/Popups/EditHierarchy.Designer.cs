@@ -29,29 +29,16 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditHierarchy));
-            this.composite_content = new System.Windows.Forms.ListBox();
             this.compositeName = new System.Windows.Forms.Label();
             this.SelectEntity = new System.Windows.Forms.Button();
             this.FollowEntityThrough = new System.Windows.Forms.Button();
-            this.searchList = new System.Windows.Forms.Button();
-            this.searchQuery = new System.Windows.Forms.TextBox();
+            this.compositeEntityList1 = new Popups.UserControls.CompositeEntityList();
             this.SuspendLayout();
-            // 
-            // composite_content
-            // 
-            this.composite_content.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.composite_content.FormattingEnabled = true;
-            this.composite_content.HorizontalScrollbar = true;
-            this.composite_content.Location = new System.Drawing.Point(12, 61);
-            this.composite_content.Name = "composite_content";
-            this.composite_content.Size = new System.Drawing.Size(444, 615);
-            this.composite_content.TabIndex = 145;
-            this.composite_content.SelectedIndexChanged += new System.EventHandler(this.composite_content_SelectedIndexChanged);
             // 
             // compositeName
             // 
             this.compositeName.AutoSize = true;
-            this.compositeName.Location = new System.Drawing.Point(12, 13);
+            this.compositeName.Location = new System.Drawing.Point(9, 11);
             this.compositeName.Name = "compositeName";
             this.compositeName.Size = new System.Drawing.Size(104, 13);
             this.compositeName.TabIndex = 146;
@@ -59,7 +46,8 @@
             // 
             // SelectEntity
             // 
-            this.SelectEntity.Location = new System.Drawing.Point(285, 682);
+            this.SelectEntity.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.SelectEntity.Location = new System.Drawing.Point(580, 679);
             this.SelectEntity.Name = "SelectEntity";
             this.SelectEntity.Size = new System.Drawing.Size(171, 23);
             this.SelectEntity.TabIndex = 147;
@@ -69,7 +57,8 @@
             // 
             // FollowEntityThrough
             // 
-            this.FollowEntityThrough.Location = new System.Drawing.Point(12, 682);
+            this.FollowEntityThrough.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.FollowEntityThrough.Location = new System.Drawing.Point(12, 679);
             this.FollowEntityThrough.Name = "FollowEntityThrough";
             this.FollowEntityThrough.Size = new System.Drawing.Size(171, 23);
             this.FollowEntityThrough.TabIndex = 148;
@@ -77,37 +66,26 @@
             this.FollowEntityThrough.UseVisualStyleBackColor = true;
             this.FollowEntityThrough.Click += new System.EventHandler(this.FollowEntityThrough_Click);
             // 
-            // searchList
+            // compositeEntityList1
             // 
-            this.searchList.Location = new System.Drawing.Point(381, 32);
-            this.searchList.Name = "searchList";
-            this.searchList.Size = new System.Drawing.Size(75, 23);
-            this.searchList.TabIndex = 149;
-            this.searchList.Text = "Search";
-            this.searchList.UseVisualStyleBackColor = true;
-            this.searchList.Click += new System.EventHandler(this.searchList_Click);
-            // 
-            // searchQuery
-            // 
-            this.searchQuery.Location = new System.Drawing.Point(12, 33);
-            this.searchQuery.Name = "searchQuery";
-            this.searchQuery.Size = new System.Drawing.Size(363, 20);
-            this.searchQuery.TabIndex = 150;
+            this.compositeEntityList1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.compositeEntityList1.Location = new System.Drawing.Point(9, 27);
+            this.compositeEntityList1.Name = "compositeEntityList1";
+            this.compositeEntityList1.Size = new System.Drawing.Size(741, 646);
+            this.compositeEntityList1.TabIndex = 149;
             // 
             // EditHierarchy
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(468, 717);
-            this.Controls.Add(this.searchQuery);
-            this.Controls.Add(this.searchList);
+            this.ClientSize = new System.Drawing.Size(763, 714);
+            this.Controls.Add(this.compositeEntityList1);
             this.Controls.Add(this.FollowEntityThrough);
             this.Controls.Add(this.SelectEntity);
             this.Controls.Add(this.compositeName);
-            this.Controls.Add(this.composite_content);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MaximizeBox = false;
             this.Name = "EditHierarchy";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Select Entity";
@@ -117,12 +95,9 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.ListBox composite_content;
         private System.Windows.Forms.Label compositeName;
         private System.Windows.Forms.Button SelectEntity;
         private System.Windows.Forms.Button FollowEntityThrough;
-        private System.Windows.Forms.Button searchList;
-        private System.Windows.Forms.TextBox searchQuery;
+        private Popups.UserControls.CompositeEntityList compositeEntityList1;
     }
 }

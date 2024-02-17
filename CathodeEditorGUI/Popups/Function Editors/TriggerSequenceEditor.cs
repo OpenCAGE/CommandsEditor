@@ -3,6 +3,7 @@ using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CommandsEditor.DockPanels;
 using CommandsEditor.Popups.Base;
+using CommandsEditor.Popups.UserControls;
 using OpenCAGE;
 using System;
 using System.Collections.Generic;
@@ -21,7 +22,7 @@ namespace CommandsEditor
         TriggerSequence _triggerSequence = null;
         EntityDisplay _entityDisplay;
 
-        public TriggerSequenceEditor(EntityDisplay entityDisplay) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION, entityDisplay.Content)
+        public TriggerSequenceEditor(EntityDisplay entityDisplay) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             InitializeComponent();
             _entityDisplay = entityDisplay; 
@@ -113,7 +114,13 @@ namespace CommandsEditor
 
         private void selectEntToPointTo_Click(object sender, EventArgs e)
         {
-            EditHierarchy hierarchyEditor = new EditHierarchy(_content, _entityDisplay.Composite, true);
+            EditHierarchy hierarchyEditor = new EditHierarchy(_entityDisplay.Composite, new CompositeEntityList.DisplayOptions()
+            {
+                DisplayAliases = false,
+                DisplayFunctions = true,
+                DisplayProxies = false,
+                DisplayVariables = false,
+            });
             hierarchyEditor.Show();
             hierarchyEditor.OnHierarchyGenerated += HierarchyEditor_HierarchyGenerated;
         }

@@ -17,7 +17,7 @@ namespace CommandsEditor.Popups.UserControls
         public Vector3 Position { get { return new Vector3((float)POS_X.Value, (float)POS_Y.Value, (float)POS_Z.Value); } }
         public Vector3 Rotation { get { return new Vector3((float)ROT_X.Value, (float)ROT_Y.Value, (float)ROT_Z.Value); } }
 
-        public GUI_Resource_NavMeshBarrierResource(LevelContent editor) : base(editor)
+        public GUI_Resource_NavMeshBarrierResource() : base()
         {
             InitializeComponent();
         }

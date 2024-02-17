@@ -18,7 +18,7 @@ namespace CommandsEditor.UserControls
 
         private EntityDisplay _entityDisplay;
 
-        public GUI_Link(EntityDisplay editor) : base(editor.Content)
+        public GUI_Link(EntityDisplay editor) : base()
         {
             _entityDisplay = editor;
             InitializeComponent();
@@ -40,6 +40,7 @@ namespace CommandsEditor.UserControls
                 _linkedEntity = _entityDisplay.Composite.GetEntityByID(linkInGuid);
                 group.Text = ShortGuidUtils.FindString(link.childParamID);
                 label1.Text = "Connects IN from \"" + ShortGuidUtils.FindString(link.parentParamID) + "\" on: ";
+                GoTo.Image = invIconResource.Image;
             }
 
             textBox1.Text = Content.editor_utils.GenerateEntityName(_linkedEntity, _entityDisplay.Composite);
@@ -68,6 +69,8 @@ namespace CommandsEditor.UserControls
 
         private void DeleteLink_Click(object sender, EventArgs e)
         {
+            if (MessageBox.Show("Are you sure you want to remove this link?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+
             if (_isLinkOut)
                 _entityDisplay.Entity.childLinks.RemoveAll(o => o.connectionID == _link.connectionID);
             else

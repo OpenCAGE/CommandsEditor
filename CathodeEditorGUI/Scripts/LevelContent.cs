@@ -30,8 +30,8 @@ namespace CommandsEditor
             public Textures textures = null;
             public Textures textures_global = Singleton.GlobalTextures;
 
-            public ShadersPAK shaders = null; //LEGACY
-            public IDXRemap shadersIDX = null; //LEGACY
+            public ShadersPAK shaders_legacy = null; //LEGACY
+            public Shaders shaders_new = null; 
 
             public RenderableElements reds = null;
 
@@ -83,7 +83,7 @@ namespace CommandsEditor
                 return;
             }
 
-            //Link up commands to utils and cache some things (TODO: this is the only thing holding us back from being able to have multiple levels open at once)
+            //Link up commands to utils and cache some things
             EntityUtils.LinkCommands(commands);
             ShortGuidUtils.LinkCommands(commands);
 
@@ -130,6 +130,29 @@ namespace CommandsEditor
             //ShortGuidUtils.Generate("back");
             //ShortGuidUtils.Generate("bind");
             //ShortGuidUtils.Generate("cam");
+        }
+
+        ~LevelContent()
+        {
+            if (EntityUtils.LinkedCommands == commands)
+            {
+                EntityUtils.LinkCommands(null);
+            }
+            if (ShortGuidUtils.LinkedCommands == commands)
+            {
+                ShortGuidUtils.LinkCommands(null);
+            }
+
+            resource = null;
+            commands = null;
+            mvr = null;
+            editor_utils = null;
+
+            composite_content_cache.Clear();
+
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
         }
 
         private bool LoadCommands()
@@ -187,15 +210,14 @@ namespace CommandsEditor
                             resource.textures = new Textures(renderablePath + "LEVEL_TEXTURES.ALL.PAK");
                             break;
                         case 3:
-                            //TODO: Both of these shader parsers are considered legacy, and should be swapped to new ones when they are ready.
-                            resource.shaders = new ShadersPAK(renderablePath + "LEVEL_SHADERS_DX11.PAK"); 
-                            resource.shadersIDX = new IDXRemap(renderablePath + "LEVEL_SHADERS_DX11_IDX_REMAP.PAK"); 
+                            resource.shaders_legacy = new ShadersPAK(renderablePath + "LEVEL_SHADERS_DX11.PAK"); 
+                            resource.shaders_new = new Shaders(renderablePath + "LEVEL_SHADERS_DX11.PAK"); 
                             break;
                         case 4:
                             resource.reds = new RenderableElements(worldPath + "REDS.BIN");
                             break;
                         case 5:
-                            resource.env_animations = new EnvironmentAnimations(worldPath + "ENVIRONMENT_ANIMATION.DAT");
+                            resource.env_animations = new EnvironmentAnimations(worldPath + "ENVIRONMENT_ANIMATION.DAT", Singleton.AnimationStrings_Debug);
                             break;
                         case 6:
                             resource.collision_maps = new CollisionMaps(worldPath + "COLLISION.MAP");
@@ -227,9 +249,16 @@ namespace CommandsEditor
 #endif
         }
 
-        public ListViewItem GenerateListViewItem(Entity entity, Composite composite, bool checkCache = true)
+        public enum CacheMethod
         {
-            if (checkCache)
+            CHECK_OR_POPULATE_CACHE,
+            IGNORE_AND_OVERWRITE_CACHE,
+            IGNORE_CACHE,
+        }
+
+        public ListViewItem GenerateListViewItem(Entity entity, Composite composite, CacheMethod cacheMethod = CacheMethod.CHECK_OR_POPULATE_CACHE)
+        {
+            if (cacheMethod == CacheMethod.CHECK_OR_POPULATE_CACHE)
             {
                 if (composite_content_cache.ContainsKey(composite))
                     if (composite_content_cache[composite].ContainsKey(entity))
@@ -265,17 +294,39 @@ namespace CommandsEditor
             }
             item.SubItems.Add(entity.shortGUID.ToByteString());
 
-            //we wanted to check the cache and it wasn't there, so lets add it
-            if (checkCache)
+            switch (cacheMethod)
             {
-                if (!composite_content_cache.ContainsKey(composite))
-                {
-                    composite_content_cache.Add(composite, new Dictionary<Entity, ListViewItem>());
-                }
-                if (!composite_content_cache[composite].ContainsKey(entity))
-                {
-                    composite_content_cache[composite].Add(entity, item);
-                }
+                case CacheMethod.CHECK_OR_POPULATE_CACHE:
+                    //we wanted to check the cache and it wasn't there, so lets add it
+                    if (!composite_content_cache.ContainsKey(composite))
+                    {
+                        composite_content_cache.Add(composite, new Dictionary<Entity, ListViewItem>());
+                    }
+                    if (!composite_content_cache[composite].ContainsKey(entity))
+                    {
+                        composite_content_cache[composite].Add(entity, item);
+                    }
+                    break;
+
+                case CacheMethod.IGNORE_AND_OVERWRITE_CACHE:
+                    //we want to write (or overwrite) the cache, so lets do that
+                    if (composite_content_cache.ContainsKey(composite))
+                    {
+                        if (composite_content_cache[composite].ContainsKey(entity))
+                        {
+                            composite_content_cache[composite][entity] = item;
+                        }
+                        else
+                        {
+                            composite_content_cache[composite].Add(entity, item);
+                        }
+                    }
+                    else
+                    {
+                        composite_content_cache.Add(composite, new Dictionary<Entity, ListViewItem>());
+                        composite_content_cache[composite].Add(entity, item);
+                    }
+                    break;
             }
 
             return item;

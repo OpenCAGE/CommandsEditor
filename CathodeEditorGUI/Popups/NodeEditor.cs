@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -17,64 +17,136 @@ using WebSocketSharp;
 using System.Security.Cryptography;
 using CommandsEditor.Nodes;
 using CommandsEditor.DockPanels;
+using OpenCAGE;
+using WeifenLuo.WinFormsUI.Docking;
+using System.Reflection;
+using System.Windows.Media.Animation;
+using System.Windows.Controls;
 
 namespace CommandsEditor
 {
-    public partial class NodeEditor : BaseWindow
+    public partial class NodeEditor : DockContent
     {
-        public NodeEditor(LevelContent content) : base(WindowClosesOn.NONE, content)
+        protected LevelContent Content => Singleton.Editor?.CommandsDisplay?.Content;
+
+        private Entity ActiveEntity => Singleton.Editor.ActiveCompositeDisplay?.ActiveEntityDisplay?.Entity;
+        private Composite ActiveComposite => Singleton.Editor.ActiveCompositeDisplay?.ActiveEntityDisplay?.Composite;
+
+        private bool IsAutoHide => DockState == DockState.DockBottomAutoHide || DockState == DockState.DockLeftAutoHide || DockState == DockState.DockRightAutoHide || DockState == DockState.DockTopAutoHide;
+
+        private bool _wasVisibleLastTime = false;
+        private DockState _previousDockState = DockState.Unknown;
+
+        private const int _defaultWidth = 600;
+        private const int _defaultHeight = 500;
+
+        public NodeEditor()
         {
             InitializeComponent();
 
             this.FormClosed += NodeEditor_FormClosed;
-            Singleton.OnEntitySelected += OnEntitySelected;
 
-            OnEntitySelected();
+            this.Shown += NodeEditor_Shown;
+            this.DockStateChanged += OnDockStateChanged;
+            this.ResizeEnd += OnResized;
+
+            Singleton.OnEntitySelected += UpdateEntities;
+            Singleton.OnEntityReloaded += UpdateEntities;
+            Singleton.OnLevelLoaded += delegate (LevelContent c) { UpdateEntities(); };
         }
 
-        private void NodeEditor_FormClosed(object sender, System.Windows.Forms.FormClosedEventArgs e)
+        public void ResetLayout()
         {
-            Singleton.OnEntitySelected -= OnEntitySelected;
+            Width = _defaultWidth;
+            Height = _defaultHeight;
         }
 
-        private void OnEntitySelected(Entity ent = null)
+        private void NodeEditor_Shown(object sender, EventArgs e)
         {
-            if (Content == null)
-                _content = Singleton.Editor.CommandsDisplay?.Content;
+            DockPanel.ActiveAutoHideContentChanged += OnDockActivenessChanged;
+            DockPanel.ActiveContentChanged += OnDockActivenessChanged;
 
+            if (DockState == DockState.Float)
+            {
+                Width = SettingsManager.GetInteger(Singleton.Settings.NodegraphWidth, _defaultWidth);
+                Height = SettingsManager.GetInteger(Singleton.Settings.NodegraphHeight, _defaultHeight);
+            }
+
+            UpdateEntities();
+        }
+
+        private void NodeEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            DockPanel.ActiveAutoHideContentChanged -= OnDockActivenessChanged;
+            DockPanel.ActiveContentChanged -= OnDockActivenessChanged;
+
+            Singleton.OnEntitySelected -= UpdateEntities;
+            Singleton.OnEntityReloaded -= UpdateEntities;
+
+            if (DockState == DockState.Float)
+            {
+                SettingsManager.SetInteger(Singleton.Settings.NodegraphWidth, Width);
+                SettingsManager.SetInteger(Singleton.Settings.NodegraphHeight, Height);
+            }
+        }
+
+        private void OnDockStateChanged(object sender, EventArgs e)
+        {
+            if (DockState == DockState.Unknown || DockState == DockState.Hidden)
+                return;
+
+            if (DockState == _previousDockState) return;
+            _previousDockState = DockState;
+
+            SettingsManager.SetString(Singleton.Settings.NodegraphState, DockState.ToString());
+
+            UpdateEntities();
+        }
+
+        private void OnResized(object sender, EventArgs e)
+        {
+            UpdateEntities();
+        }
+
+        private void OnDockActivenessChanged(object sender, EventArgs e)
+        {
+            //If we're invisible - log that & exit early
+            if (IsAutoHide && !this.IsActivated)
+            {
+                _wasVisibleLastTime = false;
+                return;
+            }
+
+            //If we're visible & were visible last time, also exit early
+            if (_wasVisibleLastTime)
+                return;
+
+            //In this case, we should update our entities
+            _wasVisibleLastTime = true;
+            UpdateEntities();
+        }
+
+        private void UpdateEntities(Entity e = null)
+        {
             stNodeEditor1.Nodes.Clear();
-            AddEntities(Singleton.Editor.ActiveCompositeDisplay?.ActiveEntityDisplay?.Composite, Singleton.Editor.ActiveCompositeDisplay?.ActiveEntityDisplay?.Entity);
-        }
 
-        protected override void OnLoad(EventArgs e) {
-            base.OnLoad(e);
-            stNodeEditor1.LoadAssembly(Application.ExecutablePath);
+            if (ActiveComposite == null || ActiveEntity == null)
+                return;
 
-            //stNodeEditor1.OptionConnected += (s, ea) => stNodeEditor1.ShowAlert(ea.Status.ToString(), Color.White, ea.Status == ConnectionStatus.Connected ? Color.FromArgb(125, Color.Green) : Color.FromArgb(125, Color.Red));
-            //stNodeEditor1.CanvasScaled += (s, ea) => stNodeEditor1.ShowAlert(stNodeEditor1.CanvasScale.ToString("F2"), Color.White, Color.FromArgb(125, Color.Yellow));
-            //stNodeEditor1.NodeAdded += (s, ea) => ea.Node.ContextMenuStrip = contextMenuStrip1;
-            stNodeEditor1.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom;
+            Console.WriteLine("NODEGRAPH: Loading entities...");
+            _previouslySelectedEntity = ActiveEntity;
 
-            //contextMenuStrip1.ShowImageMargin = false;
-            //contextMenuStrip1.Renderer = new ToolStripRendererEx();
-        }
-
-        public void AddEntities(Composite composite, Entity entity)
-        {
-            stNodeEditor1.Nodes.Clear();
-            if (composite == null || entity == null) return;
-
-            CustomNode mainNode = EntityToNode(entity, composite);
+            CustomNode mainNode = EntityToNode(ActiveEntity, ActiveComposite);
             stNodeEditor1.Nodes.Add(mainNode);
-            
+
             //Generate input nodes
-            List<Entity> ents = composite.GetEntities();
+            List<Entity> ents = ActiveComposite.GetEntities();
             List<CustomNode> inputNodes = new List<CustomNode>();
             foreach (Entity ent in ents)
             {
                 foreach (EntityConnector link in ent.childLinks)
                 {
-                    if (link.childID != entity.shortGUID) continue;
+                    if (link.childID != ActiveEntity.shortGUID) continue;
                     CustomNode node = null;
                     for (int i = 0; i < stNodeEditor1.Nodes.Count; i++)
                     {
@@ -86,7 +158,7 @@ namespace CommandsEditor
                     }
                     if (node == null)
                     {
-                        node = EntityToNode(ent, composite);
+                        node = EntityToNode(ent, ActiveComposite);
                         inputNodes.Add(node);
                         stNodeEditor1.Nodes.Add(node);
                     }
@@ -98,7 +170,7 @@ namespace CommandsEditor
 
             //Generate output nodes
             List<CustomNode> outputNodes = new List<CustomNode>();
-            foreach (EntityConnector link in entity.childLinks)
+            foreach (EntityConnector link in ActiveEntity.childLinks)
             {
                 CustomNode node = null;
                 for (int i = 0; i < stNodeEditor1.Nodes.Count; i++)
@@ -111,11 +183,14 @@ namespace CommandsEditor
                 }
                 if (node == null)
                 {
-                    node = EntityToNode(composite.GetEntityByID(link.childID), composite);
-                    outputNodes.Add(node);
-                    stNodeEditor1.Nodes.Add(node);
+                    node = EntityToNode(ActiveComposite.GetEntityByID(link.childID), ActiveComposite);
+                    if (node != null)
+                    {
+                        outputNodes.Add(node);
+                        stNodeEditor1.Nodes.Add(node);
+                    }
                 }
-                STNodeOption opt1 = node.AddInputOption(link.childParamID.ToString());
+                STNodeOption opt1 = node?.AddInputOption(link.childParamID.ToString());
                 STNodeOption opt2 = mainNode.AddOutputOption(link.parentParamID.ToString());
                 opt1.ConnectOption(opt2);
             }
@@ -144,29 +219,49 @@ namespace CommandsEditor
                 height += node.Height + 10;
             }
             mainNode.SetPosition(new Point((this.Size.Width / 2) - (mainNode.Width / 2) - 10, (this.Size.Height / 2) - (((outputStackedHeight > inputStackedHeight) ? outputStackedHeight : inputStackedHeight) / 2) - 20));
-       
+
             //Lock options for now
             foreach (STNode node in stNodeEditor1.Nodes)
                 node.LockOption = true;
-
-            stNodeEditor1.SelectedChanged += Owner_SelectedChanged;
         }
 
+        protected override void OnLoad(EventArgs e) {
+            base.OnLoad(e);
+
+            stNodeEditor1.LoadAssembly(Application.ExecutablePath);
+            stNodeEditor1.SelectedChanged += Owner_SelectedChanged;
+
+            //stNodeEditor1.OptionConnected += (s, ea) => stNodeEditor1.ShowAlert(ea.Status.ToString(), Color.White, ea.Status == ConnectionStatus.Connected ? Color.FromArgb(125, Color.Green) : Color.FromArgb(125, Color.Red));
+            //stNodeEditor1.CanvasScaled += (s, ea) => stNodeEditor1.ShowAlert(stNodeEditor1.CanvasScale.ToString("F2"), Color.White, Color.FromArgb(125, Color.Yellow));
+            //stNodeEditor1.NodeAdded += (s, ea) => ea.Node.ContextMenuStrip = contextMenuStrip1;
+
+            //contextMenuStrip1.ShowImageMargin = false;
+            //contextMenuStrip1.Renderer = new ToolStripRendererEx();
+        }
+
+        private Entity _previouslySelectedEntity = null;
         private void Owner_SelectedChanged(object sender, EventArgs e)
         {
-            if (!clickToSelect.Checked) return;
+            if (!SettingsManager.GetBool(Singleton.Settings.OpenEntityFromNode)) 
+                return;
 
             //when a node is selected, load it in the commands editor
             STNode[] nodes = stNodeEditor1.GetSelectedNode();
-            if (nodes.Length == 0) return;
+            if (nodes.Length != 1) return;
 
             Entity ent = Singleton.Editor.ActiveCompositeDisplay?.Composite?.GetEntityByID(((CustomNode)nodes[0]).ID);
+            if (ent == _previouslySelectedEntity) return;
+            _previouslySelectedEntity = ent;
+
             Singleton.Editor.ActiveCompositeDisplay?.LoadEntity(ent);
             Singleton.OnEntitySelected?.Invoke(ent); //need to call this again b/c the activation event doesn't fire here
         }
 
         private CustomNode EntityToNode(Entity entity, Composite composite)
         {
+            if (entity == null)
+                return null;
+
             CustomNode node = new CustomNode();
             node.ID = entity.shortGUID;
             switch (entity.variant)
@@ -1849,11 +1944,6 @@ namespace CommandsEditor
         private void removeToolStripMenuItem_Click(object sender, EventArgs e) {
             if (stNodeEditor1.ActiveNode == null) return;
             stNodeEditor1.Nodes.Remove(stNodeEditor1.ActiveNode);
-        }
-
-        private void clickToSelect_CheckedChanged(object sender, EventArgs e)
-        {
-
         }
     }
 }

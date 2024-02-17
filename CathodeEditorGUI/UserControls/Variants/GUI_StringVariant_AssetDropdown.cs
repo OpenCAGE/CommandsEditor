@@ -17,7 +17,7 @@ namespace CommandsEditor.UserControls
         static List<AssetList> assetlist_cache = new List<AssetList>(); //TODO: cache controls, not just the contents of the controls
         AssetList content = null;
 
-        public GUI_StringVariant_AssetDropdown(LevelContent editor) : base(editor)
+        public GUI_StringVariant_AssetDropdown() : base()
         {
             InitializeComponent();
         }

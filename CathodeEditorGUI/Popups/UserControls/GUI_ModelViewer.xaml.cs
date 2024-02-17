@@ -11,7 +11,6 @@ using CATHODE.Scripting;
 using System;
 using CATHODE.LEGACY;
 using HelixToolkit.Wpf;
-using static CATHODE.Materials.Material;
 using System.Security.Cryptography;
 using System.Linq;
 using System.Drawing.Drawing2D;
@@ -25,12 +24,10 @@ namespace CommandsEditor.Popups.UserControls
     /// </summary>
     public partial class GUI_ModelViewer : UserControl
     {
-        protected LevelContent _content;
+        protected LevelContent Content => Singleton.Editor?.CommandsDisplay?.Content;
 
-        public GUI_ModelViewer(LevelContent content)
+        public GUI_ModelViewer()
         {
-            _content = content;
-
             InitializeComponent();
         }
 
@@ -40,13 +37,18 @@ namespace CommandsEditor.Popups.UserControls
             for (int i = 0; i < models.Count; i++)
                 group.Children.Add(OffsetModel(models[i].modelIndex, models[i].position, models[i].rotation));
             modelPreview.Content = group;
+
+            myView.ModelUpDirection = new Vector3D(0, 1, 0);
+            myView.Camera.UpDirection = new Vector3D(0, 1, 0);
+            myView.Camera.LookDirection = new Vector3D(-0.5, -0.5, 1);
+
             myView.ZoomExtents();
         }
         
         private Model3DGroup OffsetModel(int modelIndex, Vector3D position, Vector3D rotation, int materialIndex = -1)
         {
             //Get mesh data
-            Models.CS2.Component.LOD.Submesh submesh = _content.resource.models.GetAtWriteIndex(modelIndex);
+            Models.CS2.Component.LOD.Submesh submesh = Content.resource.models.GetAtWriteIndex(modelIndex);
             GeometryModel3D submeshGeo = submesh.ToGeometryModel3D();
 
             //Get material & texture data
@@ -54,11 +56,11 @@ namespace CommandsEditor.Popups.UserControls
             {
                 try
                 {
-                    ShadersPAK.ShaderMaterialMetadata mdlMeta = _content.resource.shaders.GetMaterialMetadataFromShader(_content.resource.materials.GetAtWriteIndex(materialIndex == -1 ? submesh.MaterialLibraryIndex : materialIndex), _content.resource.shadersIDX);
+                    ShadersPAK.ShaderMaterialMetadata mdlMeta = Content.resource.shaders_legacy.GetMaterialMetadataFromShader(Content.resource.materials.GetAtWriteIndex(materialIndex == -1 ? submesh.MaterialLibraryIndex : materialIndex));
                     ShadersPAK.MaterialTextureContext mdlMetaDiff = mdlMeta.textures.FirstOrDefault(o => o.Type == ShadersPAK.ShaderSlot.DIFFUSE_MAP);
                     if (mdlMetaDiff != null)
                     {
-                        Textures tex = mdlMetaDiff.TextureInfo.Source == Texture.TextureSource.GLOBAL ? _content.resource.textures_global : _content.resource.textures;
+                        Textures tex = mdlMetaDiff.TextureInfo.Source == CATHODE.Materials.Material.Texture.TextureSource.GLOBAL ? Content.resource.textures_global : Content.resource.textures;
                         Textures.TEX4 diff = tex.GetAtWriteIndex(mdlMetaDiff.TextureInfo.BinIndex);
                         byte[] diffDDS = diff?.ToDDS();
                         DiffuseMaterial mat = new DiffuseMaterial(new ImageBrush(diffDDS?.ToBitmap()?.ToImageSource()));

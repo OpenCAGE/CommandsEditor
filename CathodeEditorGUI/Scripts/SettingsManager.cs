@@ -27,21 +27,21 @@ namespace OpenCAGE
         }
 
         /* Get a config variable */
-        static public bool GetBool(string name)
+        static public bool GetBool(string name, bool defaultVal = false)
         {
-            return (_jsonConfig[name] != null) ? _jsonConfig[name].Value<bool>() : false;
+            return (_jsonConfig[name] != null) ? _jsonConfig[name].Value<bool>() : defaultVal;
         }
-        static public string GetString(string name)
+        static public string GetString(string name, string defaultVal = "")
         {
-            return (_jsonConfig[name] != null) ? _jsonConfig[name].Value<string>() : "";
+            return (_jsonConfig[name] != null) ? _jsonConfig[name].Value<string>() : defaultVal;
         }
-        static public int GetInteger(string name)
+        static public int GetInteger(string name, int defaultVal = 0)
         {
-            return (_jsonConfig[name] != null) ? _jsonConfig[name].Value<int>() : 0;
+            return (_jsonConfig[name] != null) ? _jsonConfig[name].Value<int>() : defaultVal;
         }
-        static public float GetFloat(string name)
+        static public float GetFloat(string name, float defaultVal = 0.0f)
         {
-            return (_jsonConfig[name] != null) ? _jsonConfig[name].Value<float>() : 0.0f;
+            return (_jsonConfig[name] != null) ? _jsonConfig[name].Value<float>() : defaultVal;
         }
 
         /* Set a config variable */

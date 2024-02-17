@@ -12,19 +12,12 @@ using CathodeLib;
 using CATHODE;
 using CATHODE.LEGACY;
 using System.Numerics;
-using static CATHODE.Models.CS2.Component;
 
 namespace CommandsEditor.Popups.UserControls
 {
     public partial class GUI_Resource_Default : ResourceUserControl
     {
-        [Obsolete("Designer only", true)]
-        public GUI_Resource_Default() : base(null)
-        {
-            InitializeComponent();
-        }
-
-        public GUI_Resource_Default(LevelContent editor) : base(editor)
+        public GUI_Resource_Default() : base()
         {
             InitializeComponent();
         }
