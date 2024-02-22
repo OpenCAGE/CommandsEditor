@@ -1,6 +1,6 @@
-# Alien: Isolation Commands Editor
+<img src="https://i.imgur.com/GMAuKmG.png" align="right" width="40%">
 
-<img src="https://i.imgur.com/exGYCrv.png" align="right" width="40%">
+# Alien: Isolation Commands Editor
 
 A tool to browse and modify scripts within Alien: Isolation's Commands files.
 
