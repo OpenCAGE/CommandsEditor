@@ -80,13 +80,23 @@ namespace CommandsEditor.DockPanels
         public void PopulateUI(Composite composite)
         {
             EditorUtils.CompositeType type = Content.editor_utils.GetCompositeType(composite);
-
-            if (type == EditorUtils.CompositeType.IS_ROOT)
-                this.Icon = Properties.Resources.globe;
-            else if (type == EditorUtils.CompositeType.IS_GLOBAL || type == EditorUtils.CompositeType.IS_PAUSE_MENU)
-                this.Icon = Properties.Resources.cog;
-            else if (type == EditorUtils.CompositeType.IS_DISPLAY_MODEL)
-                this.Icon = Properties.Resources.Avatar_Icon;
+            
+            switch (type)
+            {
+                case EditorUtils.CompositeType.IS_ROOT:
+                    this.Icon = Properties.Resources.globe;
+                    break;
+                case EditorUtils.CompositeType.IS_GLOBAL:
+                case EditorUtils.CompositeType.IS_PAUSE_MENU:
+                    this.Icon = Properties.Resources.cog;
+                    break;
+                case EditorUtils.CompositeType.IS_DISPLAY_MODEL:
+                    this.Icon = Properties.Resources.Avatar_Icon;
+                    break;
+                case EditorUtils.CompositeType.IS_GENERIC_COMPOSITE:
+                    this.Icon = Properties.Resources.d_Prefab_Icon;
+                    break;
+            }
 
             compositeEntityList1.Setup(composite);
             _path = new CompositePath();
