@@ -186,7 +186,7 @@ namespace CommandsEditor.Popups.UserControls
             for (int i = 0; i < entities.Count; i++)
                 AddNewEntity(entities[i]);
 
-            composite_content.SetGroupState(ListViewGroupState.Collapsible);
+            //composite_content.SetGroupState(ListViewGroupState.Collapsible);
             composite_content.EndUpdate();
         }
 

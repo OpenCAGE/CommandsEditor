@@ -40,7 +40,7 @@
             this.entity_search_box = new System.Windows.Forms.TextBox();
             this.entity_search_btn = new System.Windows.Forms.Button();
             this.clearSearchBtn = new System.Windows.Forms.Button();
-            this.composite_content = new ListViewGroupCollapse.ListViewExtended();
+            this.composite_content = new System.Windows.Forms.ListView();
             this.EntityName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.EntityType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.panel1.SuspendLayout();
@@ -166,7 +166,7 @@
         #endregion
 
         private System.Windows.Forms.Panel panel1;
-        private ListViewGroupCollapse.ListViewExtended composite_content;
+        private System.Windows.Forms.ListView composite_content;
         private System.Windows.Forms.ColumnHeader EntityName;
         private System.Windows.Forms.ColumnHeader EntityType;
         private System.Windows.Forms.TextBox entity_search_box;
