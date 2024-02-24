@@ -34,6 +34,7 @@ namespace CommandsEditor
 
         private void SelectComposite_Disposed(object sender, EventArgs e)
         {
+            _treeHelper?.ForceClearTree();
             _treeHelper = null;
         }
 

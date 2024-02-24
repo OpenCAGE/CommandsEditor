@@ -80,13 +80,23 @@ namespace CommandsEditor.DockPanels
         public void PopulateUI(Composite composite)
         {
             EditorUtils.CompositeType type = Content.editor_utils.GetCompositeType(composite);
-
-            if (type == EditorUtils.CompositeType.IS_ROOT)
-                this.Icon = Properties.Resources.globe;
-            else if (type == EditorUtils.CompositeType.IS_GLOBAL || type == EditorUtils.CompositeType.IS_PAUSE_MENU)
-                this.Icon = Properties.Resources.cog;
-            else if (type == EditorUtils.CompositeType.IS_DISPLAY_MODEL)
-                this.Icon = Properties.Resources.Avatar_Icon;
+            
+            switch (type)
+            {
+                case EditorUtils.CompositeType.IS_ROOT:
+                    this.Icon = Properties.Resources.globe;
+                    break;
+                case EditorUtils.CompositeType.IS_GLOBAL:
+                case EditorUtils.CompositeType.IS_PAUSE_MENU:
+                    this.Icon = Properties.Resources.cog;
+                    break;
+                case EditorUtils.CompositeType.IS_DISPLAY_MODEL:
+                    this.Icon = Properties.Resources.Avatar_Icon;
+                    break;
+                case EditorUtils.CompositeType.IS_GENERIC_COMPOSITE:
+                    this.Icon = Properties.Resources.d_Prefab_Icon;
+                    break;
+            }
 
             compositeEntityList1.Setup(composite);
             _path = new CompositePath();
@@ -103,6 +113,26 @@ namespace CommandsEditor.DockPanels
 
         private void CompositeDisplay_FormClosed(object sender, FormClosedEventArgs e)
         {
+            dockPanel.ActiveContentChanged -= DockPanel_ActiveContentChanged;
+            compositeEntityList1.SelectedEntityChanged -= LoadEntity;
+            this.FormClosed -= CompositeDisplay_FormClosed;
+            Singleton.OnCompositeRenamed -= OnCompositeRenamed;
+
+            if (dialog != null)
+            {
+                dialog.Dispose();
+                dialog.OnNewEntity -= OnAddNewEntity;
+                dialog.FormClosed -= Dialog_FormClosed;
+            }
+            if (_activeEntityDisplay != null)
+                _activeEntityDisplay.FormClosing -= OnActiveContentClosing;
+            if (_renameComposite != null)
+                _renameComposite.FormClosed -= _renameComposite_FormClosed;
+            if (_instanceInfoPopup != null)
+                _instanceInfoPopup.FormClosed -= _instanceInfoPopup_FormClosed;
+            if (_entityRenameDialog != null)
+                _entityRenameDialog.FormClosed -= Rename_entity_FormClosed;
+
             _composite = null;
             _activeEntityDisplay = null;
 
@@ -110,6 +140,13 @@ namespace CommandsEditor.DockPanels
 
             if (sender != null && e != null)
                 _entityDisplays.Clear();
+
+            imageList.Images.Clear();
+            imageList.Dispose();
+            entityListIcons.Images.Clear();
+            entityListIcons.Dispose();
+
+            vS2015BlueTheme1.Dispose();
         }
 
         private void Reload(Composite composite)
@@ -456,6 +493,7 @@ namespace CommandsEditor.DockPanels
         public void DuplicateEntity(Entity entity)
         {
             if (MessageBox.Show("Are you sure you want to duplicate this entity?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+            Singleton.OnEntityAddPending?.Invoke();
 
             //Generate new entity ID and name
             Entity newEnt = null;
@@ -519,10 +557,11 @@ namespace CommandsEditor.DockPanels
                     Composite.aliases.Add((AliasEntity)newEnt);
                     break;
             }
+            Singleton.OnEntityAdded?.Invoke(newEnt);
 
             //Load in to UI
             ReloadUIForNewEntity(newEnt);
-            _commandsDisplay.CacheHierarchies();
+            Content.editor_utils.GenerateCompositeInstances(Content.commands);
         }
 
         private void deleteCheckedEntities_Click(object sender, EventArgs e)

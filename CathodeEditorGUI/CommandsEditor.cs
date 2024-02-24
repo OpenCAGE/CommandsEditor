@@ -198,7 +198,7 @@ namespace CommandsEditor
         }
 
         /* Load anim data */
-        public static void LoadAnimData()
+        public void LoadAnimData()
         {
             //Load animation data
             PAK2 animPAK = new PAK2(SharedData.pathToAI + "/DATA/GLOBAL/ANIMATION.PAK");
@@ -246,10 +246,6 @@ namespace CommandsEditor
                 Singleton.AllSkeletons.Add(Singleton.AnimationStrings_Debug.Entries[Convert.ToUInt32(Path.GetFileNameWithoutExtension(skeletons[i].Filename))]);
             }
             Singleton.AllSkeletons.Sort();
-
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
         }
 
         /* Load global textures */

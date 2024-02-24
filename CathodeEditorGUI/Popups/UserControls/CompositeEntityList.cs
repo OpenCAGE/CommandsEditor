@@ -63,6 +63,11 @@ namespace CommandsEditor.Popups.UserControls
 
         private void CompositeEntityList_Disposed(object sender, EventArgs e)
         {
+            this.Disposed -= CompositeEntityList_Disposed;
+
+            Singleton.OnEntityRenamed -= OnEntityRenamed;
+            Singleton.OnCompositeRenamed -= OnCompositeRenamed;
+
             composite_content.Items.Clear();
         }
 
@@ -181,7 +186,7 @@ namespace CommandsEditor.Popups.UserControls
             for (int i = 0; i < entities.Count; i++)
                 AddNewEntity(entities[i]);
 
-            composite_content.SetGroupState(ListViewGroupState.Collapsible);
+            //composite_content.SetGroupState(ListViewGroupState.Collapsible);
             composite_content.EndUpdate();
         }
 

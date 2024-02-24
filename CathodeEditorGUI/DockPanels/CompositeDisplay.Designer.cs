@@ -41,13 +41,12 @@ namespace CommandsEditor.DockPanels
             this.exportComposite = new System.Windows.Forms.ToolStripButton();
             this.findUses = new System.Windows.Forms.ToolStripButton();
             this.deleteCheckedEntities = new System.Windows.Forms.ToolStripButton();
+            this.renameComposite = new System.Windows.Forms.ToolStripButton();
             this.deleteComposite = new System.Windows.Forms.ToolStripButton();
-            this.vS2015DarkTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
             this.panel1 = new System.Windows.Forms.Panel();
             this.compositeEntityList1 = new Popups.UserControls.CompositeEntityList();
-            this.vS2015LightTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.imageList = new System.Windows.Forms.ImageList(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -66,7 +65,6 @@ namespace CommandsEditor.DockPanels
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.renameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.duplicateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.renameComposite = new System.Windows.Forms.ToolStripButton();
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -189,6 +187,16 @@ namespace CommandsEditor.DockPanels
             this.deleteCheckedEntities.Size = new System.Drawing.Size(150, 22);
             this.deleteCheckedEntities.Text = "Delete Checked Entities";
             this.deleteCheckedEntities.Click += new System.EventHandler(this.deleteCheckedEntities_Click);
+            // 
+            // renameComposite
+            // 
+            this.renameComposite.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.renameComposite.Image = ((System.Drawing.Image)(resources.GetObject("renameComposite.Image")));
+            this.renameComposite.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.renameComposite.Name = "renameComposite";
+            this.renameComposite.Size = new System.Drawing.Size(131, 22);
+            this.renameComposite.Text = "Rename Composite";
+            this.renameComposite.Click += new System.EventHandler(this.renameComposite_Click);
             // 
             // deleteComposite
             // 
@@ -415,16 +423,6 @@ namespace CommandsEditor.DockPanels
             this.duplicateToolStripMenuItem.Text = "Duplicate";
             this.duplicateToolStripMenuItem.Click += new System.EventHandler(this.duplicateToolStripMenuItem_Click);
             // 
-            // renameComposite
-            // 
-            this.renameComposite.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.renameComposite.Image = ((System.Drawing.Image)(resources.GetObject("renameComposite.Image")));
-            this.renameComposite.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.renameComposite.Name = "renameComposite";
-            this.renameComposite.Size = new System.Drawing.Size(131, 22);
-            this.renameComposite.Text = "Rename Composite";
-            this.renameComposite.Click += new System.EventHandler(this.renameComposite_Click);
-            // 
             // CompositeDisplay
             // 
             this.AllowEndUserDocking = false;
@@ -458,13 +456,11 @@ namespace CommandsEditor.DockPanels
 
         #endregion
         private System.Windows.Forms.ToolStrip toolStrip1;
-        private WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme vS2015DarkTheme1;
         private System.Windows.Forms.ToolStripButton findUses;
         private System.Windows.Forms.ToolStripButton deleteComposite;
         private WeifenLuo.WinFormsUI.Docking.DockPanel dockPanel;
         private System.Windows.Forms.Panel panel1;
         private WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme vS2015BlueTheme1;
-        private WeifenLuo.WinFormsUI.Docking.VS2015LightTheme vS2015LightTheme1;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.ToolStripButton deleteCheckedEntities;
         private System.Windows.Forms.ToolStripButton exportComposite;

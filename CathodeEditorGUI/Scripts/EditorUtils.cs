@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Xml;
@@ -46,15 +47,23 @@ namespace CommandsEditor
 
         /* Generate all composite instance information for Commands */
         private Dictionary<Composite, List<List<ShortGuid>>> _hierarchies = new Dictionary<Composite, List<List<ShortGuid>>>();
+        private CancellationTokenSource _prevTaskToken = null;
         public void GenerateCompositeInstances(Commands commands)
         {
+            if (_prevTaskToken != null)
+                _prevTaskToken.Cancel();
+
             _hierarchies.Clear();
-            GenerateCompositeInstancesRecursive(commands, commands.EntryPoints[0], new List<ShortGuid>());
+
+            _prevTaskToken = new CancellationTokenSource();
+            Task.Run(() => Content.editor_utils.GenerateCompositeInstancesRecursive(commands, commands.EntryPoints[0], new List<ShortGuid>(), _prevTaskToken.Token), _prevTaskToken.Token);
         }
-        private void GenerateCompositeInstancesRecursive(Commands commands, Composite composite, List<ShortGuid> hierarchy)
+        private void GenerateCompositeInstancesRecursive(Commands commands, Composite composite, List<ShortGuid> hierarchy, CancellationToken ct)
         {
+            if (ct.IsCancellationRequested) return;
+
             if (!_hierarchies.ContainsKey(composite))
-                _hierarchies.Add(composite, new List<List<ShortGuid>>());
+            _hierarchies.Add(composite, new List<List<ShortGuid>>());
 
             _hierarchies[composite].Add(hierarchy);
 
@@ -62,11 +71,13 @@ namespace CommandsEditor
             {
                 if (CommandsUtils.FunctionTypeExists(composite.functions[i].function)) continue;
 
+                if (ct.IsCancellationRequested) break;
+
                 List<ShortGuid> newHierarchy = new List<ShortGuid>(hierarchy.ConvertAll(x => x));
                 newHierarchy.Add(composite.functions[i].shortGUID);
 
                 Composite newComposite = commands.GetComposite(composite.functions[i].function);
-                if (newComposite != null) GenerateCompositeInstancesRecursive(commands, newComposite, newHierarchy);
+                if (newComposite != null) GenerateCompositeInstancesRecursive(commands, newComposite, newHierarchy, ct);
             }
         }
 
@@ -271,74 +282,68 @@ namespace CommandsEditor
         }
 
         /* Utility: work out if any proxies/overrides reference the currently selected entity */
-        public bool IsEntityReferencedExternally(Entity entity)
+        public bool IsEntityReferencedExternally(Entity entity, CancellationToken ct)
         {
             bool found = false;
             Parallel.ForEach(Content.commands.Entries, (comp, status) =>
             {
                 Parallel.ForEach(comp.proxies, (prox, status2) =>
                 {
+                    if (found || ct.IsCancellationRequested)
+                        status2.Stop();
+
                     Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, comp, prox.proxy.path, out Composite compRef, out string str);
                     if (ent == entity) found = true;
-
-                    if (found)
-                    {
-                        status.Stop();
-                        status2.Stop();
-                    }
                 });
                 Parallel.ForEach(comp.aliases, (alias, status2) =>
                 {
+                    if (found || ct.IsCancellationRequested)
+                        status2.Stop();
+
                     Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, comp, alias.alias.path, out Composite compRef, out string str);
                     if (ent == entity) found = true;
-
-                    if (found)
-                    {
-                        status.Stop();
-                        status2.Stop();
-                    }
                 });
                 List<FunctionEntity> triggerSequences = comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.TriggerSequence));
                 Parallel.ForEach(triggerSequences, (trigEnt, status2) =>
                 {
+                    if (found || ct.IsCancellationRequested)
+                        status2.Stop();
+
                     TriggerSequence trig = (TriggerSequence)trigEnt;
-                    Parallel.ForEach(trig.entities, (trigger) =>
+                    Parallel.ForEach(trig.entities, (trigger, status3) =>
                     {
+                        if (found || ct.IsCancellationRequested)
+                            status3.Stop();
+
                         Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, comp, trigger.connectedEntity.path, out Composite compRef, out string str);
                         if (ent == entity) found = true;
                     });
-
-                    if (found)
-                    {
-                        status.Stop();
-                        status2.Stop();
-                    }
                 });
                 List<FunctionEntity> cageAnims = comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.CAGEAnimation));
                 Parallel.ForEach(cageAnims, (animEnt, status2) =>
                 {
+                    if (found || ct.IsCancellationRequested)
+                        status2.Stop();
+
                     CAGEAnimation anim = (CAGEAnimation)animEnt;
-                    Parallel.ForEach(anim.connections, (connection) =>
+                    Parallel.ForEach(anim.connections, (connection, status3) =>
                     {
+                        if (found || ct.IsCancellationRequested)
+                            status3.Stop();
+
                         Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, comp, connection.connectedEntity.path, out Composite compRef, out string str);
                         if (ent == entity) found = true;
                     });
-
-                    if (found)
-                    {
-                        status.Stop();
-                        status2.Stop();
-                    }
                 });
 
-                if (found)
+                if (found || ct.IsCancellationRequested)
                     status.Stop();
             });
             return found;
         }
 
         /* Utility: try figure out what zone this entity is in (if any) */
-        public void TryFindZoneForEntity(Entity entity, Composite startComposite, out Composite composite, out FunctionEntity zone)
+        public void TryFindZoneForEntity(Entity entity, Composite startComposite, out Composite composite, out FunctionEntity zone, CancellationToken ct)
         {
             Func<Composite, FunctionEntity> findZone = comp => {
                 if (comp == null) return null;
@@ -368,10 +373,22 @@ namespace CommandsEditor
                                         status3.Stop();
                                         status4.Stop();
                                     }
+
+                                    if (ct.IsCancellationRequested)
+                                        status4.Stop();
                                 });
+
+                                if (ct.IsCancellationRequested)
+                                    status3.Stop();
                             });
                         }
+
+                        if (ct.IsCancellationRequested)
+                            status2.Stop();
                     });
+
+                    if (ct.IsCancellationRequested)
+                        status.Stop();
                 });
 
                 return toReturn;

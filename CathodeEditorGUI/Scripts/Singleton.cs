@@ -46,6 +46,12 @@ namespace CommandsEditor
         public static Action<Entity, string> OnEntityRenamed;
         public static Action<Composite, string> OnCompositeRenamed;
 
+        //Entity about to be / being added
+        public static Action OnEntityAddPending;
+        public static Action<Entity> OnEntityAdded;
+        public static Action OnCompositeAddPending;
+        public static Action<Composite> OnCompositeAdded;
+
         //Settings keys
         public static SettingsStrings Settings = new SettingsStrings();
         public class SettingsStrings

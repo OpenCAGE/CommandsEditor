@@ -12,6 +12,7 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
@@ -42,8 +43,25 @@ namespace CommandsEditor.DockPanels
 
             InitializeComponent();
 
+            Singleton.OnEntityAddPending += OnEntityAddPending;
+            Singleton.OnEntityAdded += OnEntityAdded;
             Singleton.OnEntityRenamed += OnEntityRenamed;
             Singleton.OnCompositeRenamed += OnCompositeRenamed;
+        }
+
+        private void OnEntityAddPending()
+        {
+            if (_prevTask != null && !_prevTask.IsCompleted && _prevTaskToken != null)
+            {
+                _prevTaskToken.Cancel();
+            }
+        }
+        private void OnEntityAdded(Entity e)
+        {
+            if (_prevTask != null && !_prevTask.IsCompleted)
+            {
+                StartBackgroundEntityLoader();
+            }
         }
 
         //TODO: this is not as efficient as it could be: really we should only reload if we know we're affected by the rename
@@ -98,12 +116,29 @@ namespace CommandsEditor.DockPanels
 
         private void EntityDisplay_FormClosed(object sender, FormClosedEventArgs e)
         {
+            this.FormClosed -= EntityDisplay_FormClosed;
+            Singleton.OnEntityAddPending -= OnEntityAddPending;
+            Singleton.OnEntityAdded -= OnEntityAdded;
+            Singleton.OnEntityRenamed -= OnEntityRenamed;
+            Singleton.OnCompositeRenamed -= OnCompositeRenamed;
+
             for (int i = 0; i < entity_params.Controls.Count; i++)
+            {
+                if (entity_params.Controls[i] is GUI_Link)
+                {
+                    GUI_Link link = (GUI_Link)entity_params.Controls[i];
+                    link.GoToEntity -= _compositeDisplay.LoadEntity;
+                    link.OnLinkEdited -= OnLinkEdited;
+                }
                 entity_params.Controls[i].Dispose();
+            }
             entity_params.Controls.Clear();
 
             _entity = null;
             _entityCompositePtr = null;
+
+            imageList1.Images.Clear();
+            imageList1.Dispose();
         }
 
         /* Reload this display */
@@ -129,7 +164,7 @@ namespace CommandsEditor.DockPanels
             //--
 
             Cursor.Current = Cursors.WaitCursor;
-            Task.Factory.StartNew(() => BackgroundEntityLoader(_entity, this));
+            StartBackgroundEntityLoader();
             List<Control> controls = new List<Control>();
 
             //populate info labels
@@ -427,7 +462,17 @@ namespace CommandsEditor.DockPanels
             _compositeDisplay.ReloadEntity(linked);
         }
 
-        private void BackgroundEntityLoader(Entity ent, EntityDisplay mainInst)
+        private CancellationTokenSource _prevTaskToken = null;
+        private Task _prevTask = null;
+        private void StartBackgroundEntityLoader()
+        {
+            if (_prevTaskToken != null)
+                _prevTaskToken.Cancel();
+
+            _prevTaskToken = new CancellationTokenSource();
+            _prevTask = Task.Run(() => BackgroundEntityLoader(_entity, this, _prevTaskToken.Token), _prevTaskToken.Token);
+        }
+        private void BackgroundEntityLoader(Entity ent, EntityDisplay mainInst, CancellationToken ct)
         {
             bool isPointedTo = false;
             Composite zoneComp = null;
@@ -437,10 +482,10 @@ namespace CommandsEditor.DockPanels
                 switch (i)
                 {
                     case 0:
-                        isPointedTo = mainInst.Content.editor_utils.IsEntityReferencedExternally(ent);
+                        isPointedTo = mainInst.Content.editor_utils.IsEntityReferencedExternally(ent, ct);
                         break;
                     case 1:
-                        mainInst.Content.editor_utils.TryFindZoneForEntity(ent, mainInst.Composite, out zoneComp, out zoneEnt);
+                        mainInst.Content.editor_utils.TryFindZoneForEntity(ent, mainInst.Composite, out zoneComp, out zoneEnt, ct);
                         break;
                 }
             });
