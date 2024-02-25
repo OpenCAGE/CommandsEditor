@@ -23,6 +23,7 @@ using ListViewItem = System.Windows.Forms.ListViewItem;
 using ListViewGroupCollapse;
 using System.Threading;
 using System.Windows.Media.Animation;
+using System.Windows.Markup;
 
 namespace CommandsEditor.DockPanels
 {
@@ -70,8 +71,198 @@ namespace CommandsEditor.DockPanels
 
             //TODO: these utils should be moved into LevelContent and made less generic. makes no sense anymore.
             _content.editor_utils = new EditorUtils();
-            Task.Factory.StartNew(() => _content.editor_utils.GenerateEntityNameCache(Singleton.Editor));
+            _content.editor_utils.GenerateEntityNameCache(Singleton.Editor);
             Content.editor_utils.GenerateCompositeInstances(Content.commands);
+
+
+            foreach (Composite comp in Content.commands.Entries)
+            {
+                foreach (FunctionEntity ent in comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.Zone)))
+                {
+                    List<EntityPath> paths = Content.editor_utils.GetHierarchiesForEntity(comp, ent);
+                    foreach (EntityPath path in paths)
+                    {
+                        Console.WriteLine(path.GeneratePathHash());
+                    }
+                }
+            }
+
+
+            int success_count = 0;
+            int fail_count = 0;
+
+            List<Movers.MOVER_DESCRIPTOR> copy = Content.mvr.Entries.Copy();
+
+            foreach (Resources.Resource res in Content.resource.resources.Entries)
+            {
+                List<Movers.MOVER_DESCRIPTOR> mvr = copy.FindAll(o => o.resource_index == res.index);
+                if (mvr.Count == 1)
+                {
+                    Movers.MOVER_DESCRIPTOR m = mvr[0];
+                    if (m.entity.composite_instance_id != res.composite_instance_id)
+                    {
+                        string sfddf = "";
+                    }
+                    else
+                    {
+                        Content.mvr.Entries.FirstOrDefault(o => o.transform == m.transform).resource_index = 0;
+                    }
+                    success_count++;
+
+                    string sdfsdf = "";
+                }
+                else
+                {
+                    Console.WriteLine("failed -> " + mvr.Count);
+                    fail_count++;
+                }
+            }
+            Content.mvr.Save();
+
+            int rescount = Content.resource.resources.Entries.Count;
+
+            foreach (Movers.MOVER_DESCRIPTOR mvr in Content.mvr.Entries)
+            {
+                Console.WriteLine(mvr.resource_index);
+            }
+
+            string sdffgdsdf = "";
+
+            /*
+            foreach (Composite comp in Content.commands.Entries)
+            {
+                foreach (FunctionEntity zone in comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.Zone)))
+                {
+                    List<EntityPath> paths = Content.editor_utils.GetHierarchiesForEntity(comp, zone);
+                    foreach (EntityPath path in paths)
+                    {
+                        ShortGuid instance = path.GenerateInstance();
+                        ShortGuid pathhash = path.GeneratePathHash();
+
+                        foreach (CollisionMaps.Entry map in Content.resource.collision_maps.Entries)
+                        {
+                            if (map.zone_id == instance)
+                            {
+                                string dfdsf = "";
+                            }
+                            if (map.zone_id == pathhash)
+                            {
+                                string dfdsf = "";
+                            }
+                            if (map.zone_id == zone.shortGUID)
+                            {
+                                string dfdsf = "";
+                            }
+                        }
+                    }
+                }
+            }
+
+            foreach (Movers.MOVER_DESCRIPTOR mvr in Content.mvr.Entries)
+            {
+                if (mvr.primary_zone_id == ShortGuid.Invalid) continue;
+
+                foreach (CollisionMaps.Entry map in Content.resource.collision_maps.Entries)
+                {
+                    if (map.zone_id == ShortGuid.Invalid) continue;
+                    if (map.zone_id == new ShortGuid("01-00-00-00")) continue;
+
+                    string bruh = map.zone_id.ToByteString();
+
+                    if (map.zone_id == mvr.primary_zone_id)
+                    {
+                        string dfdsf = "";
+                        if (mvr.secondary_zone_id != ShortGuid.Invalid)
+                        {
+                            string fsdfsd = "";
+                        }
+                    }
+                    if (map.zone_id == mvr.secondary_zone_id)
+                    {
+                        string dfdsf = "";
+                    }
+                }
+            }
+            */
+
+
+
+            /*
+            foreach (Composite comp in Content.commands.Entries)
+            {
+                foreach (FunctionEntity ent in comp.functions)
+                {
+                    foreach (EntityPath path in Content.editor_utils.GetHierarchiesForEntity(comp, ent))
+                    {
+                        ShortGuid val = path.GenerateInstance();
+                        foreach (Resources.Resource res in Content.resource.resources.Entries)
+                        {
+                            if (res.composite_instance_id == val)
+                            {
+                                string sdfsdf = "";
+                            }
+                        }
+                    }
+                }
+            }
+
+            int lightcount = 0;
+            foreach (Resources.Resource res in Content.resource.resources.Entries)
+            {
+                Console.WriteLine(res.composite_instance_id);
+                continue;
+
+                string unkid2 = res.resource_id.ToString();
+
+                if (unkid2.ToUpper() == "LIGHT")
+                {
+                    lightcount++;
+                }
+
+                continue;
+
+                foreach (Composite comp in Content.commands.Entries)
+                {
+                    string resid = res.composite_instance_id.ToString();
+
+
+                    string unkid = res.resource_id.ToString();
+
+                    if (unkid.ToUpper() == "LIGHT")
+                    {
+                        lightcount++;
+                    }
+
+                    /*
+                    List<Entity> entities = comp.GetEntities().FindAll(o => o.shortGUID == res.unk);
+                    if (entities.Count != 0)
+                    {
+                        string sdfsdf = "";
+                    }
+                    entities = comp.GetEntities().FindAll(o => o.shortGUID == res.resource_id);
+                    if (entities.Count != 0)
+                    {
+                        string sdfsdf = "";
+                    }
+                    */
+            //}
+
+            //Console.WriteLine(res.entity.composite_instance_id.ToString());
+
+            /*
+            EntityPath path = Content.editor_utils.GetHierarchyFromReference(res.entity);
+
+            if (path != null)
+            {
+                Entity entity = path.GetPointedEntity(Content.commands, out Composite composite);
+                string sdffdfgsdfd = "";
+            }
+
+            Console.WriteLine(res.entity.composite_instance_id + " -> " + res.entity.entity_id);
+
+            string sdfgsdfd = "";
+            *//*
+        }*/
 
             SelectCompositeAndReloadList(_content.commands.EntryPoints[0]);
             Singleton.OnCompositeSelected?.Invoke(_content.commands.EntryPoints[0]); //need to call this again b/c the activation event doesn't fire here
