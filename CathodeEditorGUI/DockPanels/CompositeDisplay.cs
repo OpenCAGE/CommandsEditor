@@ -255,7 +255,7 @@ namespace CommandsEditor.DockPanels
 
                 for (int i = 0; i < ent.resources.Count; i++)
                 {
-                    if (!allowedTypes.Contains(ent.resources[i].entryType))
+                    if (!allowedTypes.Contains(ent.resources[i].resource_type))
                     {
                         found = true;
                         state.Stop();
@@ -268,7 +268,7 @@ namespace CommandsEditor.DockPanels
                     List<ResourceReference> resourceRefs = ((cResource)resources.content).value;
                     for (int i = 0; i < resourceRefs.Count; i++)
                     {
-                        if (!allowedTypes.Contains(resourceRefs[i].entryType))
+                        if (!allowedTypes.Contains(resourceRefs[i].resource_type))
                         {
                             found = true;
                             state.Stop();

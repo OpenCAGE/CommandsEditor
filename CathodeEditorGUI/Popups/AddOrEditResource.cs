@@ -47,7 +47,7 @@ namespace CommandsEditor
             for (int i = 0; i < resources.Count; i++)
             {
                 ResourceUserControl resourceGroup = null;
-                switch (resources[i].entryType)
+                switch (resources[i].resource_type)
                 {
                     case ResourceType.ANIMATED_MODEL:
                         {
@@ -88,7 +88,7 @@ namespace CommandsEditor
                     default:
                         {
                             resourceGroup = new GUI_Resource_Default();
-                            ((GUI_Resource_Default)resourceGroup).PopulateUI(resources[i].entryType);
+                            ((GUI_Resource_Default)resourceGroup).PopulateUI(resources[i].resource_type);
                             break;
                         }
                 }
@@ -107,7 +107,7 @@ namespace CommandsEditor
             //A resource reference list can only ever point to one of a type
             for (int i = 0; i < resources.Count; i++)
             {
-                if (resources[i].entryType == type)
+                if (resources[i].resource_type == type)
                 {
                     MessageBox.Show("This resource type is already referenced!\nOnly one reference to " + type + " can be added.", "Can't add duplicate type.", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
@@ -115,9 +115,9 @@ namespace CommandsEditor
             }
 
             ResourceReference newReference = new ResourceReference();
-            newReference.resourceID = guid_parent;
-            newReference.entryType = type;
-            switch (newReference.entryType)
+            newReference.resource_id = guid_parent;
+            newReference.resource_type = type;
+            switch (newReference.resource_type)
             {
                 case ResourceType.DYNAMIC_PHYSICS_SYSTEM:
                 case ResourceType.RENDERABLE_INSTANCE:
@@ -133,7 +133,7 @@ namespace CommandsEditor
             }
 
             //We now auto create ANIMATED_MODEL entries. We should probs do the same for others too.
-            if (newReference.entryType == ResourceType.ANIMATED_MODEL)
+            if (newReference.resource_type == ResourceType.ANIMATED_MODEL)
             {
                 if (Content.resource.env_animations.Entries.Count == 0)
                 {
@@ -157,7 +157,7 @@ namespace CommandsEditor
         private void deleteResource_Click(object sender, EventArgs e)
         {
             ResourceType type = (ResourceType)Enum.Parse(typeof(ResourceType), resourceType.Items[resourceType.SelectedIndex].ToString());
-            ResourceReference reference = resources.FirstOrDefault(o => o.entryType == type);
+            ResourceReference reference = resources.FirstOrDefault(o => o.resource_type == type);
             if (reference == null)
             {
                 MessageBox.Show("Resource type " + type + " is not referenced!\nThere is nothing to delete.", "Type not referenced!", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -179,7 +179,7 @@ namespace CommandsEditor
             for (int i = 0; i < resource_panel.Controls.Count; i++)
             {
                 ResourceReference resourceRef = ((ResourceUserControl)resource_panel.Controls[i]).ResourceReference;
-                switch (resourceRef.entryType)
+                switch (resourceRef.resource_type)
                 {
                     case ResourceType.ANIMATED_MODEL:
                         {

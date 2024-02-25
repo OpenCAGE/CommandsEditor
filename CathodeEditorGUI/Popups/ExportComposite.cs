@@ -82,10 +82,10 @@ namespace CommandsEditor
                 //Check to see if we should copy resources to the destination, and point to them if we do
                 foreach (FunctionEntity ent in copiedComp.functions)
                 {
-                    ent.resources.RemoveAll(o => o.entryType == ResourceType.COLLISION_MAPPING); //TEMP: remove all collision mappings for now
+                    ent.resources.RemoveAll(o => o.resource_type == ResourceType.COLLISION_MAPPING); //TEMP: remove all collision mappings for now
                     for (int i = 0; i < ent.resources.Count; i++)
                     {
-                        switch (ent.resources[i].entryType)
+                        switch (ent.resources[i].resource_type)
                         {
                             case ResourceType.ANIMATED_MODEL:
                                 CopyAnimatedModel(lvl, ent.resources[i]);
@@ -100,10 +100,10 @@ namespace CommandsEditor
                     if (resources != null)
                     {
                         List<ResourceReference> resourceRefs = ((cResource)resources.content).value;
-                        resourceRefs.RemoveAll(o => o.entryType == ResourceType.COLLISION_MAPPING); //TEMP: remove all collision mappings for now
+                        resourceRefs.RemoveAll(o => o.resource_type == ResourceType.COLLISION_MAPPING); //TEMP: remove all collision mappings for now
                         for (int i = 0; i < resourceRefs.Count; i++)
                         {
-                            switch (resourceRefs[i].entryType)
+                            switch (resourceRefs[i].resource_type)
                             {
                                 case ResourceType.ANIMATED_MODEL:
                                     CopyAnimatedModel(lvl, resourceRefs[i]);

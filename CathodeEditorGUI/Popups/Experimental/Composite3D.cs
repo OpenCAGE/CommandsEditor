@@ -56,7 +56,7 @@ namespace CommandsEditor
                 Parameter resource = entity.GetParameter("resource");
                 if (resource == null) continue;
                 List<ResourceReference> resourceRefs = ((cResource)(resource.content)).value;
-                foreach (ResourceReference resourceRef in resourceRefs.Where(o => o.entryType == ResourceType.RENDERABLE_INSTANCE))
+                foreach (ResourceReference resourceRef in resourceRefs.Where(o => o.resource_type == ResourceType.RENDERABLE_INSTANCE))
                     for (int i = 0; i < resourceRef.count; i++)
                         models.Add(new GUI_ModelViewer.Model(_compositeDisplay.Content.resource.reds.Entries[resourceRef.index + i].ModelIndex, globalPosition));
             }

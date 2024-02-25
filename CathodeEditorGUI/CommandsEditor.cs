@@ -424,7 +424,7 @@ namespace CommandsEditor
                     for (int x = 0; x < composite.functions[i].resources.Count; x++)
                     {
                         ResourceReference resource = composite.functions[i].resources[x];
-                        switch (resource.entryType)
+                        switch (resource.resource_type)
                         {
                             case ResourceType.DYNAMIC_PHYSICS_SYSTEM:
                                 //Write to PHYSICS.MAP

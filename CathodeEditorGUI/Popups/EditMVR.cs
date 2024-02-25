@@ -80,7 +80,7 @@ namespace CommandsEditor
             hasLoaded = false;
             loadedMvrIndex = mvrIndex;
             Movers.MOVER_DESCRIPTOR mvr = Content.mvr.Entries[loadedMvrIndex];
-            renderable.PopulateUI((int)mvr.renderableElementIndex, (int)mvr.renderableElementCount);
+            renderable.PopulateUI((int)mvr.renderable_element_index, (int)mvr.renderable_element_count);
 
             Matrix4x4.Decompose(mvr.transform, out Vector3 scale, out Quaternion rotation, out Vector3 position);
 
@@ -112,8 +112,8 @@ namespace CommandsEditor
         {
             if (!hasLoaded || loadedMvrIndex == -1) return;
             Movers.MOVER_DESCRIPTOR mvr = Content.mvr.Entries[loadedMvrIndex];
-            mvr.renderableElementCount = (uint)renderable.SelectedMaterialIndexes.Count;
-            mvr.renderableElementIndex = (uint)Content.resource.reds.Entries.Count;
+            mvr.renderable_element_count = (uint)renderable.SelectedMaterialIndexes.Count;
+            mvr.renderable_element_index = (uint)Content.resource.reds.Entries.Count;
 
             Vector3 scale = new Vector3((float)SCALE_X.Value, (float)SCALE_Y.Value, (float)SCALE_Z.Value);
             //Quaternion rotation = Quaternion.Normalize(new Quaternion((float)ROT_X.Value, (float)ROT_Y.Value, (float)ROT_Z.Value, (float)ROT_W.Value));
