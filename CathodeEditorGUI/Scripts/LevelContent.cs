@@ -87,6 +87,7 @@ namespace CommandsEditor
             //Link up commands to utils and cache some things
             EntityUtils.LinkCommands(commands);
             ShortGuidUtils.LinkCommands(commands);
+            CommandsUtils.LinkCommands(commands);
 
             //Cache entity list view items (TODO: do this on a thread and handle conflicts nicely)
             /*
@@ -137,6 +138,10 @@ namespace CommandsEditor
             if (ShortGuidUtils.LinkedCommands == commands)
             {
                 ShortGuidUtils.LinkCommands(null);
+            }
+            if (CommandsUtils.LinkedCommands == commands)
+            {
+                CommandsUtils.LinkCommands(null);
             }
 
             resource = null;
