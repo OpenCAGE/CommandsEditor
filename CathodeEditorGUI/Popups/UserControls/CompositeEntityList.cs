@@ -120,16 +120,19 @@ namespace CommandsEditor.Popups.UserControls
         }
 
         /* Add a new entity to the list */
-        public ListViewItem AddNewEntity(Entity entity, bool useCache = true)
+        public ListViewItem AddNewEntity(Entity entity, bool useCache = true, bool skipSanityChecks = false)
         {
-            if (entity.variant == EntityVariant.ALIAS && !_displayOptions.DisplayAliases)
-                return null;
-            if (entity.variant == EntityVariant.PROXY && !_displayOptions.DisplayProxies)
-                return null;
-            if (entity.variant == EntityVariant.FUNCTION && !_displayOptions.DisplayFunctions)
-                return null;
-            if (entity.variant == EntityVariant.VARIABLE && !_displayOptions.DisplayVariables)
-                return null;
+            if (!skipSanityChecks)
+            {
+                if (entity.variant == EntityVariant.ALIAS && !_displayOptions.DisplayAliases)
+                    return null;
+                if (entity.variant == EntityVariant.PROXY && !_displayOptions.DisplayProxies)
+                    return null;
+                if (entity.variant == EntityVariant.FUNCTION && !_displayOptions.DisplayFunctions)
+                    return null;
+                if (entity.variant == EntityVariant.VARIABLE && !_displayOptions.DisplayVariables)
+                    return null;
+            }
 
             ListViewItem item = Content.GenerateListViewItem(entity, _composite, useCache ? LevelContent.CacheMethod.CHECK_OR_POPULATE_CACHE : LevelContent.CacheMethod.IGNORE_CACHE);
 
@@ -141,7 +144,7 @@ namespace CommandsEditor.Popups.UserControls
                     item.ImageIndex = 0;
                     break;
                 case EntityVariant.FUNCTION:
-                    if (Content.commands.GetComposite(((FunctionEntity)entity).function) != null)
+                    if (!CommandsUtils.FunctionTypeExists(((FunctionEntity)entity).function))
                     {
                         item.Group = composite_content.Groups[2];
                         item.ImageIndex = 2;
@@ -173,9 +176,6 @@ namespace CommandsEditor.Popups.UserControls
 
         private void PopulateEntities(List<Entity> entities)
         {
-            composite_content.BeginUpdate();
-            composite_content.Items.Clear();
-
             bool hasID = composite_content.Columns.ContainsKey("ID");
             bool showID = SettingsManager.GetBool(Singleton.Settings.EntIdOpt);
             if (showID && !hasID)
@@ -193,12 +193,16 @@ namespace CommandsEditor.Popups.UserControls
             ListViewItem[] items = new ListViewItem[ents.Count];
             Parallel.For(0, ents.Count, (i) =>
             {
-                items[i] = AddNewEntity(entities[i], false);
+                items[i] = AddNewEntity(entities[i], false, true);
             });
-            composite_content.Items.AddRange(items);
 
+            composite_content.BeginUpdate();
+            composite_content.SuspendLayout();
+            composite_content.Items.Clear();
+            composite_content.Items.AddRange(items);
             //composite_content.SetGroupState(ListViewGroupState.Collapsible);
             composite_content.EndUpdate();
+            composite_content.ResumeLayout();
         }
 
         private void composite_content_SelectedIndexChanged(object sender, EventArgs e)
