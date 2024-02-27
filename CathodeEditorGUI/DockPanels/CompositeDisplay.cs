@@ -162,6 +162,8 @@ namespace CommandsEditor.DockPanels
             _composite = composite;
 
             CommandsUtils.PurgeDeadLinks(Content.commands, composite);
+            CommandsUtils.PurgedComposites.purged.Add(composite.shortGUID);
+
             CloseAllChildTabs();
             Reload(false);
             this.Activate();
