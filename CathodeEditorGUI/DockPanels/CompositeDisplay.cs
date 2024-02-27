@@ -98,7 +98,7 @@ namespace CommandsEditor.DockPanels
                     break;
             }
 
-            compositeEntityList1.Setup(composite);
+            compositeEntityList1.Setup(composite, null, false);
             _path = new CompositePath();
 
             Reload(composite);

@@ -82,20 +82,20 @@ namespace CommandsEditor.Popups.UserControls
         }
 
         /* This UserControl differs from BaseUserControl because we don't instantiate at runtime - so make sure to call setup in code to pass this construction info before you use it. */
-        public void Setup(Composite composite, DisplayOptions displayOptions = null)
+        public void Setup(Composite composite, DisplayOptions displayOptions = null, bool doReload = true)
         {
             _composite = composite;
-
-            SetDisplayOptions(displayOptions);
-            ReloadComposite();
+            SetDisplayOptions(displayOptions, doReload);
         }
 
         /* Update the display options to handle filtering out certain entity types */
-        public void SetDisplayOptions(DisplayOptions displayOptions)
+        public void SetDisplayOptions(DisplayOptions displayOptions, bool doReload = true)
         {
             _displayOptions = displayOptions == null ? new DisplayOptions() : displayOptions;
             composite_content.CheckBoxes = _displayOptions.ShowCheckboxes;
-            ReloadComposite();
+
+            if (doReload)
+                ReloadComposite();
         }
 
         /* Reload the active composite's entities */
