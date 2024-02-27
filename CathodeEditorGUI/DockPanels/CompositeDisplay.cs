@@ -481,6 +481,8 @@ namespace CommandsEditor.DockPanels
                 }
             }
 
+            CommandsUtils.PurgedComposites.purged.Clear(); //TODO: we should smartly remove from this list, rather than removing all
+
             _entityDisplays.FirstOrDefault(o => o.Entity == entity && o.Populated)?.Close();
 
             if (reloadUI)

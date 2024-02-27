@@ -398,6 +398,7 @@ namespace CommandsEditor.DockPanels
 
             //Remove the composite
             Content.commands.Entries.Remove(composite);
+            CommandsUtils.PurgedComposites.purged.Clear(); //TODO: we should smartly remove from this list, rather than removing all
 
             //Refresh UI
             ReloadList();
