@@ -120,21 +120,21 @@ namespace CommandsEditor.Popups.UserControls
         }
 
         /* Add a new entity to the list */
-        public ListViewItem AddNewEntity(Entity entity, bool useCache = true, bool skipSanityChecks = false)
+        public void AddNewEntity(Entity entity, bool skipSanityChecks = false)
         {
             if (!skipSanityChecks)
             {
                 if (entity.variant == EntityVariant.ALIAS && !_displayOptions.DisplayAliases)
-                    return null;
+                    return;
                 if (entity.variant == EntityVariant.PROXY && !_displayOptions.DisplayProxies)
-                    return null;
+                    return;
                 if (entity.variant == EntityVariant.FUNCTION && !_displayOptions.DisplayFunctions)
-                    return null;
+                    return;
                 if (entity.variant == EntityVariant.VARIABLE && !_displayOptions.DisplayVariables)
-                    return null;
+                    return;
             }
 
-            ListViewItem item = Content.GenerateListViewItem(entity, _composite, useCache ? LevelContent.CacheMethod.CHECK_OR_POPULATE_CACHE : LevelContent.CacheMethod.IGNORE_CACHE);
+            ListViewItem item = (ListViewItem)Content.GenerateListViewItem(entity, _composite).Clone();
 
             //Keep these indexes in sync with ListViewGroup 
             switch (entity.variant)
@@ -165,7 +165,7 @@ namespace CommandsEditor.Popups.UserControls
                     break;
             }
 
-            return item;
+            composite_content.Items.Add(item);
         }
 
         /* Focus the entity list */
@@ -183,23 +183,19 @@ namespace CommandsEditor.Popups.UserControls
             else if (!showID && hasID)
                 composite_content.Columns.RemoveByKey("ID");
 
+            composite_content.BeginUpdate();
+            composite_content.SuspendLayout();
+            composite_content.Items.Clear();
+
             List<Entity> ents = entities.FindAll(entity =>
                 (entity.variant == EntityVariant.ALIAS && _displayOptions.DisplayAliases) ||
                 (entity.variant == EntityVariant.PROXY && _displayOptions.DisplayProxies) ||
                 (entity.variant == EntityVariant.FUNCTION && _displayOptions.DisplayFunctions) ||
                 (entity.variant == EntityVariant.VARIABLE && _displayOptions.DisplayVariables)
             );
+            for (int i = 0; i < ents.Count; i++)
+                AddNewEntity(ents[i], true);
 
-            ListViewItem[] items = new ListViewItem[ents.Count];
-            Parallel.For(0, ents.Count, (i) =>
-            {
-                items[i] = AddNewEntity(entities[i], false, true);
-            });
-
-            composite_content.BeginUpdate();
-            composite_content.SuspendLayout();
-            composite_content.Items.Clear();
-            composite_content.Items.AddRange(items);
             //composite_content.SetGroupState(ListViewGroupState.Collapsible);
             composite_content.EndUpdate();
             composite_content.ResumeLayout();
