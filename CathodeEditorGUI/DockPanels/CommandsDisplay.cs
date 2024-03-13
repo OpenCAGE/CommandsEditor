@@ -204,7 +204,12 @@ namespace CommandsEditor.DockPanels
 
             splitContainer1.Panel2Collapsed = !SettingsManager.GetBool(Singleton.Settings.EnableFileBrowser);
             splitContainer1.FixedPanel = FixedPanel.Panel1;
-            splitContainer1.SplitterDistance = SettingsManager.GetInteger(Singleton.Settings.CompositeSplitWidth, _defaultSplitterDistance);
+
+            try
+            {
+                splitContainer1.SplitterDistance = SettingsManager.GetInteger(Singleton.Settings.CompositeSplitWidth, _defaultSplitterDistance);
+            }
+            catch { }
 
             if (SettingsManager.GetBool(Singleton.Settings.AutoHideCompositeDisplay))
                 Singleton.Editor.DockPanel.ActiveAutoHideContent = this;
