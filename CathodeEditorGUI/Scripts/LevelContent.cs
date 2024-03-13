@@ -214,7 +214,10 @@ namespace CommandsEditor
                             resource.reds = new RenderableElements(worldPath + "REDS.BIN");
                             break;
                         case 5:
-                            resource.env_animations = new EnvironmentAnimations(worldPath + "ENVIRONMENT_ANIMATION.DAT", Singleton.AnimationStrings_Debug);
+                            if (Singleton.AnimationStrings_Debug == null)
+                                Singleton.OnFinishedLazyLoadingStrings += LoadThingsWithStrings;
+                            else
+                                LoadThingsWithStrings();
                             break;
                         case 6:
                             resource.collision_maps = new CollisionMaps(worldPath + "COLLISION.MAP");
@@ -247,6 +250,12 @@ namespace CommandsEditor
             }
             catch { }
 #endif
+        }
+        private void LoadThingsWithStrings()
+        {
+            resource.env_animations = new EnvironmentAnimations(worldPath + "ENVIRONMENT_ANIMATION.DAT", Singleton.AnimationStrings_Debug);
+
+            Singleton.OnFinishedLazyLoadingStrings -= LoadThingsWithStrings;
         }
 
         public enum CacheMethod

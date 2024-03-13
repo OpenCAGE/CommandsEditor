@@ -43,6 +43,7 @@ namespace CommandsEditor
 
         //Misc events
         public static Action OnCAGEAnimationEditorOpened;
+        public static Action OnFinishedLazyLoadingStrings;
         public static Action<Entity, string> OnEntityRenamed;
         public static Action<Composite, string> OnCompositeRenamed;
 

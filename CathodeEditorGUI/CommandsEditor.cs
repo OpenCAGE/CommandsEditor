@@ -246,6 +246,8 @@ namespace CommandsEditor
                 Singleton.AllSkeletons.Add(Singleton.AnimationStrings_Debug.Entries[Convert.ToUInt32(Path.GetFileNameWithoutExtension(skeletons[i].Filename))]);
             }
             Singleton.AllSkeletons.Sort();
+
+            Singleton.OnFinishedLazyLoadingStrings?.Invoke();
         }
 
         /* Load global textures */
