@@ -18,6 +18,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
+using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using WebSocketSharp;
 using WeifenLuo.WinFormsUI.Docking;
@@ -544,6 +545,64 @@ namespace CommandsEditor.DockPanels
                 }
                 if (newLinks.Count != 0) ent.childLinks.AddRange(newLinks);
             }
+
+            //If entity is a composite instance, check to see if it should make a new PHYSICS.MAP entry
+            if (entity.variant == EntityVariant.FUNCTION)
+            {
+                Composite comp = Content.commands.GetComposite(((FunctionEntity)entity).function);
+
+                //TODO: need to recurse to find all contained PhysicsSystem functions
+                FunctionEntity phys = comp?.functions.FirstOrDefault(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.PhysicsSystem));
+                if (phys != null)
+                {
+                    List<ShortGuid> instancesEnt = new List<ShortGuid>();
+                    List<EntityPath> pathsEnt = Content.editor_utils.GetHierarchiesForEntity(Composite, entity);
+                    List<ShortGuid> instancesPhys = new List<ShortGuid>();
+                    List<EntityPath> pathsPhys = new List<EntityPath>();
+                    pathsEnt.ForEach(path => {
+                        instancesEnt.Add(path.GenerateInstance());
+
+                        EntityPath pathPhys = path.Copy();
+                        pathPhys.path.Insert(path.path.Count - 1, phys.shortGUID);
+                        pathsPhys.Add(pathPhys);
+
+                        instancesPhys.Add(pathPhys.GenerateInstance());
+                    });
+
+                    List<PhysicsMaps.Entry> physMaps = Content.resource.physics_maps.Entries.FindAll(physMap => 
+                        instancesPhys.Contains(physMap.composite_instance_id) && 
+                        physMap.entity.entity_id == entity.shortGUID && 
+                        instancesEnt.Contains(physMap.entity.composite_instance_id)
+                    );
+                    physMaps.ForEach(physMap =>
+                    {
+                        PhysicsMaps.Entry newPhysMap = physMap.Copy();
+                        newPhysMap.entity.entity_id = newEnt.shortGUID;
+
+                        EntityPath pathPhys = pathsPhys.FirstOrDefault(x => x.GenerateInstance() == physMap.composite_instance_id);
+                        EntityPath newPathPhys = pathPhys.Copy();
+                        newPathPhys.path[newPathPhys.path.Count - 3] = newEnt.shortGUID;
+                        newPhysMap.composite_instance_id = newPathPhys.GenerateInstance();
+                        Content.resource.physics_maps.Entries.Add(newPhysMap);
+                        //Content.resource.physics_maps.Entries[Content.resource.physics_maps.Entries.IndexOf(physMap)] = newPhysMap;
+
+                        newPhysMap.Row0.X = 0;
+                        newPhysMap.Row1.X = 0;
+                        newPhysMap.Row2.X = 0;
+
+                        //physMap.Row0.X = 0;
+                        //physMap.Row1.X = 0;
+                        //physMap.Row2.X = 0;
+
+                        Resources.Resource physRes = Content.resource.resources.Entries.FirstOrDefault(res => res.composite_instance_id == physMap.composite_instance_id);
+                        Resources.Resource newPhysRes = physRes.Copy();
+                        newPhysRes.composite_instance_id = newPhysMap.composite_instance_id;
+                        newPhysRes.index = Content.resource.resources.Entries.Count;
+                        Content.resource.resources.Entries.Add(newPhysRes);
+                        //Content.resource.resources.Entries[Content.resource.resources.Entries.IndexOf(p)] = resPhys;
+                    });
+                }
+            } 
 
             //Save back to composite
             switch (newEnt.variant)
