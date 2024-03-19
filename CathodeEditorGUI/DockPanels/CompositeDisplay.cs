@@ -567,7 +567,7 @@ namespace CommandsEditor.DockPanels
                 EntityUtils.SetName(
                         Composite.shortGUID,
                         newEnt.shortGUID,
-                        EntityUtils.GetName(Composite.shortGUID, entity.shortGUID));
+                        EntityUtils.GetName(Composite.shortGUID, entity.shortGUID) + "_clone");
 
                 //TODO: not using the below, because really we should check every entity's name to get the index to append.
                 /*
@@ -607,6 +607,7 @@ namespace CommandsEditor.DockPanels
                 if (newLinks.Count != 0) ent.childLinks.AddRange(newLinks);
             }
 
+#if DEBUG
             //If entity is a composite instance, check to see if it should make a new PHYSICS.MAP entry
             if (entity.variant == EntityVariant.FUNCTION)
             {
@@ -664,6 +665,7 @@ namespace CommandsEditor.DockPanels
                     });
                 }
             }
+#endif
 
             return newEnt;
         }
