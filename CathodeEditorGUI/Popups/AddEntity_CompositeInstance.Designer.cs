@@ -1,6 +1,6 @@
 ﻿namespace CommandsEditor
 {
-    partial class AddEntity_Function
+    partial class AddEntity_CompositeInstance
     {
         /// <summary>
         /// Required designer variable.
@@ -28,17 +28,18 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AddEntity_Function));
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AddEntity_CompositeInstance));
             this.addDefaultParams = new System.Windows.Forms.CheckBox();
             this.createEntity = new System.Windows.Forms.Button();
             this.entityName = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.functionTypeList = new System.Windows.Forms.ListBox();
             this.searchText = new System.Windows.Forms.TextBox();
             this.searchBtn = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.clearSearchBtn = new System.Windows.Forms.Button();
-            this.typesCount = new System.Windows.Forms.Label();
+            this.compositeTree = new System.Windows.Forms.TreeView();
+            this.imageList = new System.Windows.Forms.ImageList(this.components);
             this.SuspendLayout();
             // 
             // addDefaultParams
@@ -80,21 +81,9 @@
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.Location = new System.Drawing.Point(12, 67);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(114, 18);
+            this.label2.Size = new System.Drawing.Size(178, 18);
             this.label2.TabIndex = 12;
-            this.label2.Text = "Function Type";
-            // 
-            // functionTypeList
-            // 
-            this.functionTypeList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.functionTypeList.FormattingEnabled = true;
-            this.functionTypeList.Location = new System.Drawing.Point(15, 107);
-            this.functionTypeList.Name = "functionTypeList";
-            this.functionTypeList.Size = new System.Drawing.Size(626, 238);
-            this.functionTypeList.TabIndex = 5;
-            this.functionTypeList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.CreateEntityOnEnterKey);
+            this.label2.Text = "Composite to Instance";
             // 
             // searchText
             // 
@@ -141,34 +130,48 @@
             this.clearSearchBtn.UseVisualStyleBackColor = true;
             this.clearSearchBtn.Click += new System.EventHandler(this.clearSearchBtn_Click);
             // 
-            // typesCount
+            // compositeTree
             // 
-            this.typesCount.AutoSize = true;
-            this.typesCount.Location = new System.Drawing.Point(546, 72);
-            this.typesCount.Name = "typesCount";
-            this.typesCount.Size = new System.Drawing.Size(89, 13);
-            this.typesCount.TabIndex = 179;
-            this.typesCount.Text = "Showing 0 Types";
+            this.compositeTree.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.compositeTree.ImageIndex = 0;
+            this.compositeTree.ImageList = this.imageList;
+            this.compositeTree.Location = new System.Drawing.Point(15, 107);
+            this.compositeTree.Name = "compositeTree";
+            this.compositeTree.SelectedImageIndex = 0;
+            this.compositeTree.Size = new System.Drawing.Size(626, 238);
+            this.compositeTree.TabIndex = 5;
             // 
-            // AddEntity_Function
+            // imageList
+            // 
+            this.imageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList.ImageStream")));
+            this.imageList.TransparentColor = System.Drawing.Color.Magenta;
+            this.imageList.Images.SetKeyName(0, "Folder Icon.png");
+            this.imageList.Images.SetKeyName(1, "d_Prefab Icon.png");
+            this.imageList.Images.SetKeyName(2, "FolderOpened Icon.png");
+            this.imageList.Images.SetKeyName(3, "globe.png");
+            this.imageList.Images.SetKeyName(4, "cog.png");
+            this.imageList.Images.SetKeyName(5, "Avatar Icon.png");
+            // 
+            // AddEntity_CompositeInstance
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(653, 400);
-            this.Controls.Add(this.typesCount);
             this.Controls.Add(this.clearSearchBtn);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.searchBtn);
             this.Controls.Add(this.searchText);
-            this.Controls.Add(this.functionTypeList);
             this.Controls.Add(this.addDefaultParams);
             this.Controls.Add(this.createEntity);
             this.Controls.Add(this.entityName);
             this.Controls.Add(this.label2);
+            this.Controls.Add(this.compositeTree);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "AddEntity_Function";
+            this.Name = "AddEntity_CompositeInstance";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Create Function Entity";
+            this.Text = "Create Composite Instance Entity";
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -180,11 +183,11 @@
         private System.Windows.Forms.Button createEntity;
         private System.Windows.Forms.TextBox entityName;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ListBox functionTypeList;
         private System.Windows.Forms.TextBox searchText;
         private System.Windows.Forms.Button searchBtn;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button clearSearchBtn;
-        private System.Windows.Forms.Label typesCount;
+        private System.Windows.Forms.TreeView compositeTree;
+        private System.Windows.Forms.ImageList imageList;
     }
 }

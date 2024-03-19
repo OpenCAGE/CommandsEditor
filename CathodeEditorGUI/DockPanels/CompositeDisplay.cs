@@ -131,6 +131,8 @@ namespace CommandsEditor.DockPanels
                 dialog.Close();
             if (dialog_func != null)
                 dialog_func.Close();
+            if (dialog_compinst != null)
+                dialog_compinst.Close();
 
             if (_activeEntityDisplay != null)
                 _activeEntityDisplay.FormClosing -= OnActiveContentClosing;
@@ -710,6 +712,7 @@ namespace CommandsEditor.DockPanels
 
         AddEntity dialog = null;
         AddEntity_Function dialog_func = null;
+        AddEntity_CompositeInstance dialog_compinst = null;
         private void CreateEntity(EntityVariant variant = EntityVariant.FUNCTION, bool composite = false)
         {
             if (variant == EntityVariant.FUNCTION && !composite)
@@ -720,6 +723,15 @@ namespace CommandsEditor.DockPanels
                 dialog_func = new AddEntity_Function(this);
                 dialog_func.Show();
                 dialog_func.Focus();
+            }
+            else if (variant == EntityVariant.FUNCTION && composite)
+            {
+                if (dialog_compinst != null)
+                    dialog_compinst.Close();
+
+                dialog_compinst = new AddEntity_CompositeInstance(this);
+                dialog_compinst.Show();
+                dialog_compinst.Focus();
             }
             else
             {

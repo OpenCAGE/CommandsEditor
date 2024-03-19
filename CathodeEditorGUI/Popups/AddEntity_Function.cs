@@ -1,6 +1,7 @@
 ﻿using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CommandsEditor.DockPanels;
+using CommandsEditor.Popups.Base;
 using OpenCAGE;
 using System;
 using System.Collections.Generic;
@@ -14,12 +15,12 @@ using System.Windows.Forms;
 
 namespace CommandsEditor
 {
-    public partial class AddEntity_Function : Form
+    public partial class AddEntity_Function : BaseWindow
     {
         private List<CathodeEntityDatabase.EntityDefinition> _entDefs;
         private CompositeDisplay _compositeDisplay;
 
-        public AddEntity_Function(CompositeDisplay compositeDisplay)
+        public AddEntity_Function(CompositeDisplay compositeDisplay) : base (WindowClosesOn.NEW_COMPOSITE_SELECTION | WindowClosesOn.COMMANDS_RELOAD)
         {
             InitializeComponent();
 
@@ -39,16 +40,18 @@ namespace CommandsEditor
         private void searchBtn_Click(object sender, EventArgs e)
         {
             string selected = functionTypeList.SelectedItem?.ToString();
-
             List<CathodeEntityDatabase.EntityDefinition> filteredEntDefs = _entDefs.Where(o => o.className.ToUpper().Contains(searchText.Text.ToUpper())).ToList();
+
+            functionTypeList.BeginUpdate();
             functionTypeList.Items.Clear();
             for (int i = 0; i < filteredEntDefs.Count; i++)
                 functionTypeList.Items.Add(filteredEntDefs[i].className);
-            typesCount.Text = "Showing " + functionTypeList.Items.Count + " Types";
+            functionTypeList.EndUpdate();
 
             if (selected != "")
                 functionTypeList.SelectedItem = selected;
 
+            typesCount.Text = "Showing " + functionTypeList.Items.Count + " Types";
             SettingsManager.SetString(Singleton.Settings.PreviouslySearchedFunctionType, searchText.Text);
         }
 
