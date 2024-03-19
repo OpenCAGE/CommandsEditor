@@ -98,6 +98,19 @@ namespace CommandsEditor.Popups.UserControls
                 ReloadComposite();
         }
 
+        /* Select an entity in the list, if it's there */
+        public void SelectEntity(Entity entity)
+        {
+            for (int i = 0; i < composite_content.Items.Count; i++)
+            {
+                if (composite_content.Items[i].Tag == entity)
+                {
+                    composite_content.Items[i].Selected = true;
+                    break;
+                }
+            }
+        }
+
         /* Reload the active composite's entities */
         public void ReloadComposite(bool clearSearch = false)
         {

@@ -353,6 +353,13 @@ namespace CommandsEditor.DockPanels
         {
             if (entity == null) return;
 
+            //First, make sure the list has the right entity selected, then exit early to avoid loading twice.
+            if (compositeEntityList1.SelectedEntity != entity)
+            {
+                compositeEntityList1.SelectEntity(entity);
+                return;
+            }
+
             EntityDisplay display = null;
             if (SettingsManager.GetBool(Singleton.Settings.UseEntityTabs))
             {
