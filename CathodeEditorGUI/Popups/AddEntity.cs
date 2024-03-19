@@ -24,8 +24,6 @@ namespace CommandsEditor
         public EntityVariant Variant;
         public bool Composite;
 
-        public Action<Entity> OnNewEntity;
-
         List<Composite> composites = null;
         List<CathodeEntityDatabase.EntityDefinition> availableEntities = null;
         List<ShortGuid> hierarchy = null;
@@ -313,7 +311,6 @@ namespace CommandsEditor
                 EntityUtils.SetName(_compositeDisplay.Composite, newEntity, textBox1.Text);
 
             Singleton.OnEntityAdded?.Invoke(newEntity);
-            OnNewEntity?.Invoke(newEntity);
             this.Close();
         }
 
