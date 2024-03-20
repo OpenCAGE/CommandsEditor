@@ -74,7 +74,7 @@ namespace CommandsEditor.DockPanels
             Content.editor_utils.GenerateCompositeInstances(Content.commands);
 
             SelectCompositeAndReloadList(_content.commands.EntryPoints[0]);
-            Singleton.OnCompositeSelected?.Invoke(_content.commands.EntryPoints[0]); //need to call this again b/c the activation event doesn't fire here
+            //Singleton.OnCompositeSelected?.Invoke(_content.commands.EntryPoints[0]); //need to call this again b/c the activation event doesn't fire here
         }
 
         private void CommandsDisplay_FormClosed(object sender, FormClosedEventArgs e)

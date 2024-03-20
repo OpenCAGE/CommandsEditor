@@ -110,6 +110,7 @@ namespace CommandsEditor.DockPanels
             _path = new CompositePath();
 
             Reload(composite);
+            Singleton.OnCompositeSelected?.Invoke(_composite);
         }
 
         /* Call this to hide the CompositeDisplay */

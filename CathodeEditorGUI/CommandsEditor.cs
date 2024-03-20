@@ -25,6 +25,7 @@ using System.Windows.Forms;
 using System.Xml;
 using WebSocketSharp.Server;
 using WeifenLuo.WinFormsUI.Docking;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace CommandsEditor
 {
@@ -57,7 +58,16 @@ namespace CommandsEditor
 
             _discord = new DiscordRpcClient("1152999067207606392");
             _discord.Initialize();
-            UpdateDiscordPresence("");
+            _discord.SetPresence(new RichPresence() { Assets = new Assets() { LargeImageKey = "icon" } });
+
+            Singleton.OnCompositeSelected += delegate (Composite composite)
+            {
+                RichPresence newPresence = _discord.CurrentPresence.Copy();
+                newPresence.Details = "Level: " + _commandsDisplay?.Content?.level;
+                newPresence.State = "Composite: " + EditorUtils.GetCompositeName(composite);
+                _discord.SetPresence(newPresence);
+                _discord.UpdateStartTime();
+            };
 
             InitializeComponent();
             dockPanel.DockLeftPortion = SettingsManager.GetFloat(Singleton.Settings.CommandsSplitWidth, _defaultSplitterDistance);
@@ -273,7 +283,7 @@ namespace CommandsEditor
                 prevActiveCompositeDisplay.FormClosing -= OnActiveContentClosing;
             _activeCompositeDisplay.FormClosing += OnActiveContentClosing;
 
-            Singleton.OnCompositeSelected?.Invoke(_activeCompositeDisplay.Composite);
+            //Singleton.OnCompositeSelected?.Invoke(_activeCompositeDisplay.Composite);
         }
         private void OnActiveContentClosing(object sender, FormClosingEventArgs e)
         {
@@ -330,7 +340,6 @@ namespace CommandsEditor
             UpdateCommandsDisplayDockState();
 
             _levelMenuItems[_commandsDisplay.Content.level].Checked = true;
-            UpdateDiscordPresence("Editing " + level);
         }
 
         private void _commandsDisplay_Resize(object sender, EventArgs e)
@@ -340,7 +349,6 @@ namespace CommandsEditor
 
         private void _commandsDisplay_FormClosed(object sender, FormClosedEventArgs e)
         {
-            UpdateDiscordPresence("");
             _commandsDisplay?.Dispose();
             _commandsDisplay = null;
         }
@@ -736,16 +744,6 @@ namespace CommandsEditor
                 return;
             }
             _commandsDisplay.UpdateDockState();
-        }
-
-        private void UpdateDiscordPresence(string text)
-        {
-            _discord.SetPresence(new RichPresence()
-            {
-                Details = "Commands Editor",
-                State = text,
-                Assets = new Assets() { LargeImageKey = "icon" }
-            });
         }
 
         private void helpBtn_Click(object sender, EventArgs e)
