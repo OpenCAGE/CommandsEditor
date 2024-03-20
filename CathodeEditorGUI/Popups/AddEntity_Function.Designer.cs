@@ -28,17 +28,22 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AddEntity_Function));
             this.addDefaultParams = new System.Windows.Forms.CheckBox();
             this.createEntity = new System.Windows.Forms.Button();
             this.entityName = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.functionTypeList = new System.Windows.Forms.ListBox();
             this.searchText = new System.Windows.Forms.TextBox();
             this.searchBtn = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.clearSearchBtn = new System.Windows.Forms.Button();
             this.typesCount = new System.Windows.Forms.Label();
+            this.functionTypeList = new System.Windows.Forms.ListView();
+            this.funcHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.inheritHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.entityListIcons = new System.Windows.Forms.ImageList(this.components);
+            this.helpBtn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // addDefaultParams
@@ -83,18 +88,6 @@
             this.label2.Size = new System.Drawing.Size(114, 18);
             this.label2.TabIndex = 12;
             this.label2.Text = "Function Type";
-            // 
-            // functionTypeList
-            // 
-            this.functionTypeList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.functionTypeList.FormattingEnabled = true;
-            this.functionTypeList.Location = new System.Drawing.Point(15, 107);
-            this.functionTypeList.Name = "functionTypeList";
-            this.functionTypeList.Size = new System.Drawing.Size(626, 238);
-            this.functionTypeList.TabIndex = 5;
-            this.functionTypeList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.CreateEntityOnEnterKey);
             // 
             // searchText
             // 
@@ -143,24 +136,76 @@
             // 
             // typesCount
             // 
+            this.typesCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.typesCount.AutoSize = true;
-            this.typesCount.Location = new System.Drawing.Point(546, 72);
+            this.typesCount.Location = new System.Drawing.Point(537, 72);
             this.typesCount.Name = "typesCount";
             this.typesCount.Size = new System.Drawing.Size(89, 13);
             this.typesCount.TabIndex = 179;
             this.typesCount.Text = "Showing 0 Types";
+            this.typesCount.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // functionTypeList
+            // 
+            this.functionTypeList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.functionTypeList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.funcHeader,
+            this.inheritHeader});
+            this.functionTypeList.FullRowSelect = true;
+            this.functionTypeList.HideSelection = false;
+            this.functionTypeList.LargeImageList = this.entityListIcons;
+            this.functionTypeList.Location = new System.Drawing.Point(15, 107);
+            this.functionTypeList.MultiSelect = false;
+            this.functionTypeList.Name = "functionTypeList";
+            this.functionTypeList.Size = new System.Drawing.Size(626, 238);
+            this.functionTypeList.SmallImageList = this.entityListIcons;
+            this.functionTypeList.TabIndex = 180;
+            this.functionTypeList.UseCompatibleStateImageBehavior = false;
+            this.functionTypeList.View = System.Windows.Forms.View.Details;
+            this.functionTypeList.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.FunctionTypeList_ColumnClick);
+            // 
+            // funcHeader
+            // 
+            this.funcHeader.Text = "Function";
+            this.funcHeader.Width = 364;
+            // 
+            // inheritHeader
+            // 
+            this.inheritHeader.Text = "Inherits From";
+            this.inheritHeader.Width = 232;
+            // 
+            // entityListIcons
+            // 
+            this.entityListIcons.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("entityListIcons.ImageStream")));
+            this.entityListIcons.TransparentColor = System.Drawing.Color.Transparent;
+            this.entityListIcons.Images.SetKeyName(0, "d_ScriptableObject Icon braces only.png");
+            // 
+            // helpBtn
+            // 
+            this.helpBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.helpBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.helpBtn.Image = ((System.Drawing.Image)(resources.GetObject("helpBtn.Image")));
+            this.helpBtn.Location = new System.Drawing.Point(633, 0);
+            this.helpBtn.Name = "helpBtn";
+            this.helpBtn.Size = new System.Drawing.Size(20, 20);
+            this.helpBtn.TabIndex = 181;
+            this.helpBtn.UseVisualStyleBackColor = true;
+            this.helpBtn.Click += new System.EventHandler(this.helpBtn_Click);
             // 
             // AddEntity_Function
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(653, 400);
+            this.Controls.Add(this.helpBtn);
+            this.Controls.Add(this.functionTypeList);
             this.Controls.Add(this.typesCount);
             this.Controls.Add(this.clearSearchBtn);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.searchBtn);
             this.Controls.Add(this.searchText);
-            this.Controls.Add(this.functionTypeList);
             this.Controls.Add(this.addDefaultParams);
             this.Controls.Add(this.createEntity);
             this.Controls.Add(this.entityName);
@@ -180,11 +225,15 @@
         private System.Windows.Forms.Button createEntity;
         private System.Windows.Forms.TextBox entityName;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ListBox functionTypeList;
         private System.Windows.Forms.TextBox searchText;
         private System.Windows.Forms.Button searchBtn;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button clearSearchBtn;
         private System.Windows.Forms.Label typesCount;
+        private System.Windows.Forms.ListView functionTypeList;
+        private System.Windows.Forms.ColumnHeader funcHeader;
+        private System.Windows.Forms.ColumnHeader inheritHeader;
+        private System.Windows.Forms.ImageList entityListIcons;
+        private System.Windows.Forms.Button helpBtn;
     }
 }
