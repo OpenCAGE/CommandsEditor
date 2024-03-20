@@ -246,6 +246,8 @@ namespace CommandsEditor
                 Singleton.AllSkeletons.Add(Singleton.AnimationStrings_Debug.Entries[Convert.ToUInt32(Path.GetFileNameWithoutExtension(skeletons[i].Filename))]);
             }
             Singleton.AllSkeletons.Sort();
+
+            Singleton.OnFinishedLazyLoadingStrings?.Invoke();
         }
 
         /* Load global textures */
@@ -424,7 +426,7 @@ namespace CommandsEditor
                     for (int x = 0; x < composite.functions[i].resources.Count; x++)
                     {
                         ResourceReference resource = composite.functions[i].resources[x];
-                        switch (resource.entryType)
+                        switch (resource.resource_type)
                         {
                             case ResourceType.DYNAMIC_PHYSICS_SYSTEM:
                                 //Write to PHYSICS.MAP
@@ -497,6 +499,8 @@ namespace CommandsEditor
 
             if (_commandsDisplay.Content.resource.physics_maps != null && _commandsDisplay.Content.resource.physics_maps.Entries != null)
                 _commandsDisplay.Content.resource.physics_maps.Save();
+            if (_commandsDisplay.Content.resource.resources != null && _commandsDisplay.Content.resource.resources.Entries != null)
+                _commandsDisplay.Content.resource.resources.Save();
             if (_commandsDisplay.Content.resource.character_accessories != null && _commandsDisplay.Content.resource.character_accessories.Entries != null)
                 _commandsDisplay.Content.resource.character_accessories.Save();
             if (_commandsDisplay.Content.resource.reds != null && _commandsDisplay.Content.resource.reds.Entries != null)

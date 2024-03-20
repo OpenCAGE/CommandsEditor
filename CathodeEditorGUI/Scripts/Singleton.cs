@@ -43,6 +43,7 @@ namespace CommandsEditor
 
         //Misc events
         public static Action OnCAGEAnimationEditorOpened;
+        public static Action OnFinishedLazyLoadingStrings;
         public static Action<Entity, string> OnEntityRenamed;
         public static Action<Composite, string> OnCompositeRenamed;
 
@@ -80,6 +81,17 @@ namespace CommandsEditor
             public readonly string NodegraphHeight = "CS_NodegraphHeight";
             public readonly string SplitWidthMainRight = "CS_SplitWidthMainRight";
             public readonly string SplitWidthMainBottom = "CS_SplitWidthMainBottom";
+            public readonly string PreviouslySelectedFunctionType = "CS_PreviouslySelectedFunctionType";
+            public readonly string PreviouslySearchedFunctionType = "CS_PreviouslySearchedFunctionType";
+            public readonly string PreviouslySearchedParamPopulation = "CS_PreviouslySearchedParamPopulation";
+            public readonly string PreviouslySelectedCompInstType = "CS_PreviouslySelectedCompInstType";
+            public readonly string PreviouslySearchedCompInstType = "CS_PreviouslySearchedCompInstType";
+            public readonly string PreviouslySearchedParamPopulationComp = "CS_PreviouslySearchedParamPopulationComp";
         }
+    }
+
+    public static class EditorClipboard
+    {
+        public static Entity Entity = null;
     }
 }

@@ -18,6 +18,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
+using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using WebSocketSharp;
 using WeifenLuo.WinFormsUI.Docking;
@@ -67,6 +68,7 @@ namespace CommandsEditor.DockPanels
             this.FormClosed += CompositeDisplay_FormClosed;
 
             Singleton.OnCompositeRenamed += OnCompositeRenamed;
+            Singleton.OnEntityAdded += OnAddNewEntity;
         }
 
         private void OnCompositeRenamed(Composite composite, string name)
@@ -74,6 +76,12 @@ namespace CommandsEditor.DockPanels
             if (!Populated || (!Path.AllComposites.Contains(composite) && composite != _composite)) return;
             this.Text = EditorUtils.GetCompositeName(_composite);
             pathDisplay.Text = _path.GetPath(_composite);
+        }
+
+        private void OnAddNewEntity(Entity entity)
+        {
+            ReloadUIForNewEntity(entity);
+            LoadEntity(entity);
         }
 
         /* Call this to show the CompositeDisplay with the requested Composite content */
@@ -98,7 +106,7 @@ namespace CommandsEditor.DockPanels
                     break;
             }
 
-            compositeEntityList1.Setup(composite);
+            compositeEntityList1.Setup(composite, null, false);
             _path = new CompositePath();
 
             Reload(composite);
@@ -117,13 +125,15 @@ namespace CommandsEditor.DockPanels
             compositeEntityList1.SelectedEntityChanged -= LoadEntity;
             this.FormClosed -= CompositeDisplay_FormClosed;
             Singleton.OnCompositeRenamed -= OnCompositeRenamed;
+            Singleton.OnEntityAdded -= OnAddNewEntity;
 
             if (dialog != null)
-            {
-                dialog.Dispose();
-                dialog.OnNewEntity -= OnAddNewEntity;
-                dialog.FormClosed -= Dialog_FormClosed;
-            }
+                dialog.Close();
+            if (dialog_func != null)
+                dialog_func.Close();
+            if (dialog_compinst != null)
+                dialog_compinst.Close();
+
             if (_activeEntityDisplay != null)
                 _activeEntityDisplay.FormClosing -= OnActiveContentClosing;
             if (_renameComposite != null)
@@ -162,6 +172,8 @@ namespace CommandsEditor.DockPanels
             _composite = composite;
 
             CommandsUtils.PurgeDeadLinks(Content.commands, composite);
+            CommandsUtils.PurgedComposites.purged.Add(composite.shortGUID);
+
             CloseAllChildTabs();
             Reload(false);
             this.Activate();
@@ -255,7 +267,7 @@ namespace CommandsEditor.DockPanels
 
                 for (int i = 0; i < ent.resources.Count; i++)
                 {
-                    if (!allowedTypes.Contains(ent.resources[i].entryType))
+                    if (!allowedTypes.Contains(ent.resources[i].resource_type))
                     {
                         found = true;
                         state.Stop();
@@ -268,7 +280,7 @@ namespace CommandsEditor.DockPanels
                     List<ResourceReference> resourceRefs = ((cResource)resources.content).value;
                     for (int i = 0; i < resourceRefs.Count; i++)
                     {
-                        if (!allowedTypes.Contains(resourceRefs[i].entryType))
+                        if (!allowedTypes.Contains(resourceRefs[i].resource_type))
                         {
                             found = true;
                             state.Stop();
@@ -340,6 +352,13 @@ namespace CommandsEditor.DockPanels
         public void LoadEntity(Entity entity)
         {
             if (entity == null) return;
+
+            //First, make sure the list has the right entity selected, then exit early to avoid loading twice.
+            if (compositeEntityList1.SelectedEntity != entity)
+            {
+                compositeEntityList1.SelectEntity(entity);
+                return;
+            }
 
             EntityDisplay display = null;
             if (SettingsManager.GetBool(Singleton.Settings.UseEntityTabs))
@@ -481,6 +500,8 @@ namespace CommandsEditor.DockPanels
                 }
             }
 
+            CommandsUtils.PurgedComposites.purged.Clear(); //TODO: we should smartly remove from this list, rather than removing all
+
             _entityDisplays.FirstOrDefault(o => o.Entity == entity && o.Populated)?.Close();
 
             if (reloadUI)
@@ -493,8 +514,36 @@ namespace CommandsEditor.DockPanels
         public void DuplicateEntity(Entity entity)
         {
             if (MessageBox.Show("Are you sure you want to duplicate this entity?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
-            Singleton.OnEntityAddPending?.Invoke();
+            AddCopyOfEntity(entity);
+        }
 
+        public void AddCopyOfEntity(Entity entity)
+        {
+            Singleton.OnEntityAddPending?.Invoke();
+            Entity newEnt = MakeCopyOfEntity(entity);
+            switch (newEnt.variant)
+            {
+                case EntityVariant.FUNCTION:
+                    Composite.functions.Add((FunctionEntity)newEnt);
+                    break;
+                case EntityVariant.VARIABLE:
+                    Composite.variables.Add((VariableEntity)newEnt);
+                    break;
+                case EntityVariant.PROXY:
+                    Composite.proxies.Add((ProxyEntity)newEnt);
+                    break;
+                case EntityVariant.ALIAS:
+                    Composite.aliases.Add((AliasEntity)newEnt);
+                    break;
+            }
+            Singleton.OnEntityAdded?.Invoke(newEnt);
+
+            ReloadUIForNewEntity(newEnt);
+            Content.editor_utils.GenerateCompositeInstances(Content.commands);
+        }
+
+        private Entity MakeCopyOfEntity(Entity entity)
+        {
             //Generate new entity ID and name
             Entity newEnt = null;
             switch (entity.variant)
@@ -514,10 +563,27 @@ namespace CommandsEditor.DockPanels
             }
             newEnt.shortGUID = ShortGuidUtils.GenerateRandom();
             if (newEnt.variant != EntityVariant.VARIABLE)
+            {
+                EntityUtils.SetName(
+                        Composite.shortGUID,
+                        newEnt.shortGUID,
+                        EntityUtils.GetName(Composite.shortGUID, entity.shortGUID) + "_clone");
+
+                //TODO: not using the below, because really we should check every entity's name to get the index to append.
+                /*
+                string name = EntityUtils.GetName(Composite.shortGUID, entity.shortGUID);
+                string[] vals = name.Split('_');
+                if (vals.Length > 1 && int.TryParse(vals[vals.Length - 1], out int index))
+                {
+                    index += 1;
+                    name = name.Substring(0, name.Length - vals[vals.Length - 1].Length) + index;
+                }
                 EntityUtils.SetName(
                     Composite.shortGUID,
                     newEnt.shortGUID,
-                    EntityUtils.GetName(Composite.shortGUID, entity.shortGUID) + "_clone");
+                    name);
+                */
+            }
 
             //Add parent links in to this entity that linked in to the other entity
             List<Entity> ents = Composite.GetEntities();
@@ -541,27 +607,67 @@ namespace CommandsEditor.DockPanels
                 if (newLinks.Count != 0) ent.childLinks.AddRange(newLinks);
             }
 
-            //Save back to composite
-            switch (newEnt.variant)
+#if DEBUG
+            //If entity is a composite instance, check to see if it should make a new PHYSICS.MAP entry
+            if (entity.variant == EntityVariant.FUNCTION)
             {
-                case EntityVariant.FUNCTION:
-                    Composite.functions.Add((FunctionEntity)newEnt);
-                    break;
-                case EntityVariant.VARIABLE:
-                    Composite.variables.Add((VariableEntity)newEnt);
-                    break;
-                case EntityVariant.PROXY:
-                    Composite.proxies.Add((ProxyEntity)newEnt);
-                    break;
-                case EntityVariant.ALIAS:
-                    Composite.aliases.Add((AliasEntity)newEnt);
-                    break;
-            }
-            Singleton.OnEntityAdded?.Invoke(newEnt);
+                Composite comp = Content.commands.GetComposite(((FunctionEntity)entity).function);
 
-            //Load in to UI
-            ReloadUIForNewEntity(newEnt);
-            Content.editor_utils.GenerateCompositeInstances(Content.commands);
+                //TODO: need to recurse to find all contained PhysicsSystem functions
+                FunctionEntity phys = comp?.functions.FirstOrDefault(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.PhysicsSystem));
+                if (phys != null)
+                {
+                    List<ShortGuid> instancesEnt = new List<ShortGuid>();
+                    List<EntityPath> pathsEnt = Content.editor_utils.GetHierarchiesForEntity(Composite, entity);
+                    List<ShortGuid> instancesPhys = new List<ShortGuid>();
+                    List<EntityPath> pathsPhys = new List<EntityPath>();
+                    pathsEnt.ForEach(path => {
+                        instancesEnt.Add(path.GenerateInstance());
+
+                        EntityPath pathPhys = path.Copy();
+                        pathPhys.path.Insert(path.path.Count - 1, phys.shortGUID);
+                        pathsPhys.Add(pathPhys);
+
+                        instancesPhys.Add(pathPhys.GenerateInstance());
+                    });
+
+                    List<PhysicsMaps.Entry> physMaps = Content.resource.physics_maps.Entries.FindAll(physMap =>
+                        instancesPhys.Contains(physMap.composite_instance_id) &&
+                        physMap.entity.entity_id == entity.shortGUID &&
+                        instancesEnt.Contains(physMap.entity.composite_instance_id)
+                    );
+                    physMaps.ForEach(physMap =>
+                    {
+                        PhysicsMaps.Entry newPhysMap = physMap.Copy();
+                        newPhysMap.entity.entity_id = newEnt.shortGUID;
+
+                        EntityPath pathPhys = pathsPhys.FirstOrDefault(x => x.GenerateInstance() == physMap.composite_instance_id);
+                        EntityPath newPathPhys = pathPhys.Copy();
+                        newPathPhys.path[newPathPhys.path.Count - 3] = newEnt.shortGUID;
+                        newPhysMap.composite_instance_id = newPathPhys.GenerateInstance();
+                        Content.resource.physics_maps.Entries.Add(newPhysMap);
+                        //Content.resource.physics_maps.Entries[Content.resource.physics_maps.Entries.IndexOf(physMap)] = newPhysMap;
+
+                        newPhysMap.Row0.X = 0;
+                        newPhysMap.Row1.X = 0;
+                        newPhysMap.Row2.X = 0;
+
+                        //physMap.Row0.X = 0;
+                        //physMap.Row1.X = 0;
+                        //physMap.Row2.X = 0;
+
+                        Resources.Resource physRes = Content.resource.resources.Entries.FirstOrDefault(res => res.composite_instance_id == physMap.composite_instance_id);
+                        Resources.Resource newPhysRes = physRes.Copy();
+                        newPhysRes.composite_instance_id = newPhysMap.composite_instance_id;
+                        newPhysRes.index = Content.resource.resources.Entries.Count;
+                        Content.resource.resources.Entries.Add(newPhysRes);
+                        //Content.resource.resources.Entries[Content.resource.resources.Entries.IndexOf(p)] = resPhys;
+                    });
+                }
+            }
+#endif
+
+            return newEnt;
         }
 
         private void deleteCheckedEntities_Click(object sender, EventArgs e)
@@ -614,29 +720,37 @@ namespace CommandsEditor.DockPanels
         }
 
         AddEntity dialog = null;
+        AddEntity_Function dialog_func = null;
+        AddEntity_CompositeInstance dialog_compinst = null;
         private void CreateEntity(EntityVariant variant = EntityVariant.FUNCTION, bool composite = false)
         {
-            if (dialog != null && (dialog.Variant != variant || dialog.Composite != composite))
-                dialog.Close();
-
-            if (dialog == null)
+            if (variant == EntityVariant.FUNCTION && !composite)
             {
-                dialog = new AddEntity(this, variant, composite);
-                dialog.OnNewEntity += OnAddNewEntity;
-                dialog.FormClosed += Dialog_FormClosed;
-            }
+                if (dialog_func != null)
+                    dialog_func.Close();
 
-            dialog.Show();
-            dialog.Focus();
-        }
-        private void OnAddNewEntity(Entity entity)
-        {
-            ReloadUIForNewEntity(entity);
-            LoadEntity(entity);
-        }
-        private void Dialog_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            dialog = null;
+                dialog_func = new AddEntity_Function(this);
+                dialog_func.Show();
+                dialog_func.Focus();
+            }
+            else if (variant == EntityVariant.FUNCTION && composite)
+            {
+                if (dialog_compinst != null)
+                    dialog_compinst.Close();
+
+                dialog_compinst = new AddEntity_CompositeInstance(this);
+                dialog_compinst.Show();
+                dialog_compinst.Focus();
+            }
+            else
+            {
+                if (dialog != null && (dialog.Variant != variant || dialog.Composite != composite))
+                    dialog.Close();
+
+                dialog = new AddEntity(this, variant, composite);
+                dialog.Show();
+                dialog.Focus();
+            }
         }
 
         private void goBackOnPath_Click(object sender, EventArgs e)
@@ -674,6 +788,8 @@ namespace CommandsEditor.DockPanels
                 deleteToolStripMenuItem.Enabled = item != null;
                 renameToolStripMenuItem.Enabled = item != null;
                 duplicateToolStripMenuItem.Enabled = item != null;
+                copyToolStripMenuItem.Enabled = item != null;
+                pasteToolStripMenuItem.Enabled = EditorClipboard.Entity != null;
 
                 if (item != null)
                     lv.FocusedItem = item;
@@ -756,6 +872,16 @@ namespace CommandsEditor.DockPanels
         private void _renameComposite_FormClosed(object sender, FormClosedEventArgs e)
         {
             _renameComposite = null;
+        }
+
+        private void copyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            EditorClipboard.Entity = compositeEntityList1.SelectedEntity;
+        }
+
+        private void pasteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AddCopyOfEntity(EditorClipboard.Entity);
         }
     }
 

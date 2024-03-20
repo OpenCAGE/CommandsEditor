@@ -82,20 +82,33 @@ namespace CommandsEditor.Popups.UserControls
         }
 
         /* This UserControl differs from BaseUserControl because we don't instantiate at runtime - so make sure to call setup in code to pass this construction info before you use it. */
-        public void Setup(Composite composite, DisplayOptions displayOptions = null)
+        public void Setup(Composite composite, DisplayOptions displayOptions = null, bool doReload = true)
         {
             _composite = composite;
-
-            SetDisplayOptions(displayOptions);
-            ReloadComposite();
+            SetDisplayOptions(displayOptions, doReload);
         }
 
         /* Update the display options to handle filtering out certain entity types */
-        public void SetDisplayOptions(DisplayOptions displayOptions)
+        public void SetDisplayOptions(DisplayOptions displayOptions, bool doReload = true)
         {
             _displayOptions = displayOptions == null ? new DisplayOptions() : displayOptions;
             composite_content.CheckBoxes = _displayOptions.ShowCheckboxes;
-            ReloadComposite();
+
+            if (doReload)
+                ReloadComposite();
+        }
+
+        /* Select an entity in the list, if it's there */
+        public void SelectEntity(Entity entity)
+        {
+            for (int i = 0; i < composite_content.Items.Count; i++)
+            {
+                if (composite_content.Items[i].Tag == entity)
+                {
+                    composite_content.Items[i].Selected = true;
+                    break;
+                }
+            }
         }
 
         /* Reload the active composite's entities */
@@ -120,16 +133,19 @@ namespace CommandsEditor.Popups.UserControls
         }
 
         /* Add a new entity to the list */
-        public void AddNewEntity(Entity entity)
+        public void AddNewEntity(Entity entity, bool skipSanityChecks = false)
         {
-            if (entity.variant == EntityVariant.ALIAS && !_displayOptions.DisplayAliases)
-                return;
-            if (entity.variant == EntityVariant.PROXY && !_displayOptions.DisplayProxies)
-                return;
-            if (entity.variant == EntityVariant.FUNCTION && !_displayOptions.DisplayFunctions)
-                return;
-            if (entity.variant == EntityVariant.VARIABLE && !_displayOptions.DisplayVariables)
-                return;
+            if (!skipSanityChecks)
+            {
+                if (entity.variant == EntityVariant.ALIAS && !_displayOptions.DisplayAliases)
+                    return;
+                if (entity.variant == EntityVariant.PROXY && !_displayOptions.DisplayProxies)
+                    return;
+                if (entity.variant == EntityVariant.FUNCTION && !_displayOptions.DisplayFunctions)
+                    return;
+                if (entity.variant == EntityVariant.VARIABLE && !_displayOptions.DisplayVariables)
+                    return;
+            }
 
             ListViewItem item = (ListViewItem)Content.GenerateListViewItem(entity, _composite).Clone();
 
@@ -141,7 +157,7 @@ namespace CommandsEditor.Popups.UserControls
                     item.ImageIndex = 0;
                     break;
                 case EntityVariant.FUNCTION:
-                    if (Content.commands.GetComposite(((FunctionEntity)entity).function) != null)
+                    if (!CommandsUtils.FunctionTypeExists(((FunctionEntity)entity).function))
                     {
                         item.Group = composite_content.Groups[2];
                         item.ImageIndex = 2;
@@ -173,9 +189,6 @@ namespace CommandsEditor.Popups.UserControls
 
         private void PopulateEntities(List<Entity> entities)
         {
-            composite_content.BeginUpdate();
-            composite_content.Items.Clear();
-
             bool hasID = composite_content.Columns.ContainsKey("ID");
             bool showID = SettingsManager.GetBool(Singleton.Settings.EntIdOpt);
             if (showID && !hasID)
@@ -183,11 +196,22 @@ namespace CommandsEditor.Popups.UserControls
             else if (!showID && hasID)
                 composite_content.Columns.RemoveByKey("ID");
 
-            for (int i = 0; i < entities.Count; i++)
-                AddNewEntity(entities[i]);
+            composite_content.BeginUpdate();
+            composite_content.SuspendLayout();
+            composite_content.Items.Clear();
+
+            List<Entity> ents = entities.FindAll(entity =>
+                (entity.variant == EntityVariant.ALIAS && _displayOptions.DisplayAliases) ||
+                (entity.variant == EntityVariant.PROXY && _displayOptions.DisplayProxies) ||
+                (entity.variant == EntityVariant.FUNCTION && _displayOptions.DisplayFunctions) ||
+                (entity.variant == EntityVariant.VARIABLE && _displayOptions.DisplayVariables)
+            );
+            for (int i = 0; i < ents.Count; i++)
+                AddNewEntity(ents[i], true);
 
             //composite_content.SetGroupState(ListViewGroupState.Collapsible);
             composite_content.EndUpdate();
+            composite_content.ResumeLayout();
         }
 
         private void composite_content_SelectedIndexChanged(object sender, EventArgs e)

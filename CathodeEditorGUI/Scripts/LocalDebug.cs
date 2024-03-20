@@ -1868,10 +1868,10 @@ namespace CommandsEditor
                     for (int y = 0; y < cmd.Entries[i].functions[x].resources.Count; y++)
                     {
                         string resourceName = "RES_" + cmd.Entries[i].functions[x].resources[y].GetHashCode().ToString().Replace('-', '_');
-                        switch (cmd.Entries[i].functions[x].resources[y].entryType)
+                        switch (cmd.Entries[i].functions[x].resources[y].resource_type)
                         {
                             case ResourceType.RENDERABLE_INSTANCE:
-                                script.Add("ResourceReference " + resourceName + " = " + entityName + ".AddResource(ResourceType." + cmd.Entries[i].functions[x].resources[y].entryType + ");");
+                                script.Add("ResourceReference " + resourceName + " = " + entityName + ".AddResource(ResourceType." + cmd.Entries[i].functions[x].resources[y].resource_type + ");");
                                 Vector3 pos = cmd.Entries[i].functions[x].resources[y].position;
                                 script.Add(resourceName + ".position = new Vector3(" + pos.X + "f, " + pos.Y + "f, " + pos.Z + "f);");
                                 Vector3 rot = cmd.Entries[i].functions[x].resources[y].rotation;

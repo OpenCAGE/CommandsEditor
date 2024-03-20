@@ -204,7 +204,12 @@ namespace CommandsEditor.DockPanels
 
             splitContainer1.Panel2Collapsed = !SettingsManager.GetBool(Singleton.Settings.EnableFileBrowser);
             splitContainer1.FixedPanel = FixedPanel.Panel1;
-            splitContainer1.SplitterDistance = SettingsManager.GetInteger(Singleton.Settings.CompositeSplitWidth, _defaultSplitterDistance);
+
+            try
+            {
+                splitContainer1.SplitterDistance = SettingsManager.GetInteger(Singleton.Settings.CompositeSplitWidth, _defaultSplitterDistance);
+            }
+            catch { }
 
             if (SettingsManager.GetBool(Singleton.Settings.AutoHideCompositeDisplay))
                 Singleton.Editor.DockPanel.ActiveAutoHideContent = this;
@@ -398,6 +403,7 @@ namespace CommandsEditor.DockPanels
 
             //Remove the composite
             Content.commands.Entries.Remove(composite);
+            CommandsUtils.PurgedComposites.purged.Clear(); //TODO: we should smartly remove from this list, rather than removing all
 
             //Refresh UI
             ReloadList();

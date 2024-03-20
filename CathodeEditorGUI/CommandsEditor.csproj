@@ -267,6 +267,18 @@
     <Compile Include="DockPanels\EntityDisplay.Designer.cs">
       <DependentUpon>EntityDisplay.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\AddEntity_CompositeInstance.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\AddEntity_CompositeInstance.Designer.cs">
+      <DependentUpon>AddEntity_CompositeInstance.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\AddEntity_Function.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\AddEntity_Function.Designer.cs">
+      <DependentUpon>AddEntity_Function.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popups\AddFolder.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1449,6 +1461,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DockPanels\EntityDisplay.resx">
       <DependentUpon>EntityDisplay.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\AddEntity_CompositeInstance.resx">
+      <DependentUpon>AddEntity_CompositeInstance.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\AddEntity_Function.resx">
+      <DependentUpon>AddEntity_Function.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\AddFolder.resx">
       <DependentUpon>AddFolder.cs</DependentUpon>

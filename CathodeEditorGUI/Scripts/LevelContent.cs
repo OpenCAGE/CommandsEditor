@@ -35,6 +35,7 @@ namespace CommandsEditor
 
             public RenderableElements reds = null;
 
+            public Resources resources = null;
             public EnvironmentAnimations env_animations = null;
             public CollisionMaps collision_maps = null;
             public PhysicsMaps physics_maps = null;
@@ -86,17 +87,18 @@ namespace CommandsEditor
             //Link up commands to utils and cache some things
             EntityUtils.LinkCommands(commands);
             ShortGuidUtils.LinkCommands(commands);
+            CommandsUtils.LinkCommands(commands);
 
             //Cache entity list view items (TODO: do this on a thread and handle conflicts nicely)
             /*
             Dictionary<Entity, ListViewItem>[] listViewItems = new Dictionary<Entity, ListViewItem>[commands.Entries.Count];
             Parallel.For(0, commands.Entries.Count, (i) =>
             {
-                List<Entity> entities = commands.Entries[i].GetEntities();
+                List<Entity> entities = commands.Entries[(int)i].GetEntities();
                 ListViewItem[] compositeItems = new ListViewItem[entities.Count];
                 Parallel.For(0, entities.Count, (x) =>
                 {
-                    compositeItems[x] = GenerateListViewItem(entities[x], commands.Entries[i], false);
+                    compositeItems[x] = GenerateListViewItem(entities[(int)x], commands.Entries[(int)i], CacheMethod.IGNORE_CACHE);
                 });
                 listViewItems[i] = new Dictionary<Entity, ListViewItem>();
                 for (int x = 0; x < compositeItems.Length; x++)
@@ -107,11 +109,6 @@ namespace CommandsEditor
             for (int i = 0; i < commands.Entries.Count; i++)
                 composite_content_cache.Add(commands.Entries[i], listViewItems[i]);
             */
-
-            //Force collect
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
 
             //TEMP: Testing out new brute-forced ShortGuids
             ShortGuidUtils.Generate("Win");
@@ -142,6 +139,10 @@ namespace CommandsEditor
             {
                 ShortGuidUtils.LinkCommands(null);
             }
+            if (CommandsUtils.LinkedCommands == commands)
+            {
+                CommandsUtils.LinkCommands(null);
+            }
 
             resource = null;
             commands = null;
@@ -149,10 +150,6 @@ namespace CommandsEditor
             editor_utils = null;
 
             composite_content_cache.Clear();
-
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
         }
 
         private bool LoadCommands()
@@ -196,7 +193,7 @@ namespace CommandsEditor
             try
             {
 #endif
-                Parallel.For(0, 13, (i) =>
+                Parallel.For(0, 14, (i) =>
                 {
                     switch (i)
                     {
@@ -217,7 +214,10 @@ namespace CommandsEditor
                             resource.reds = new RenderableElements(worldPath + "REDS.BIN");
                             break;
                         case 5:
-                            resource.env_animations = new EnvironmentAnimations(worldPath + "ENVIRONMENT_ANIMATION.DAT", Singleton.AnimationStrings_Debug);
+                            if (Singleton.AnimationStrings_Debug == null)
+                                Singleton.OnFinishedLazyLoadingStrings += LoadThingsWithStrings;
+                            else
+                                LoadThingsWithStrings();
                             break;
                         case 6:
                             resource.collision_maps = new CollisionMaps(worldPath + "COLLISION.MAP");
@@ -240,6 +240,9 @@ namespace CommandsEditor
                         case 12:
                             resource.character_accessories = new CharacterAccessorySets(worldPath + "CHARACTERACCESSORYSETS.BIN");
                             break;
+                        case 13:
+                            resource.resources = new Resources(worldPath + "RESOURCES.BIN");
+                            break;
                     }
                 });
                 Singleton.OnAssetsLoaded?.Invoke(this);
@@ -247,6 +250,12 @@ namespace CommandsEditor
             }
             catch { }
 #endif
+        }
+        private void LoadThingsWithStrings()
+        {
+            resource.env_animations = new EnvironmentAnimations(worldPath + "ENVIRONMENT_ANIMATION.DAT", Singleton.AnimationStrings_Debug);
+
+            Singleton.OnFinishedLazyLoadingStrings -= LoadThingsWithStrings;
         }
 
         public enum CacheMethod
