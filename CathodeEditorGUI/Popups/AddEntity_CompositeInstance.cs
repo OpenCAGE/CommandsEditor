@@ -74,6 +74,16 @@ namespace CommandsEditor
             searchBtn_Click(null, null);
         }
 
+        private void compositeTree_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            if (compositeTree.SelectedNode == null || compositeTree.SelectedNode.Tag == null)
+            {
+                compositeNameDisplay.Text = "";
+                return;
+            }
+            compositeNameDisplay.Text = ((TreeItem)compositeTree.SelectedNode.Tag).String_Value;
+        }
+
         private void createEntity_Click(object sender, EventArgs e)
         {
             if (entityName.Text == "")

@@ -40,6 +40,7 @@
             this.clearSearchBtn = new System.Windows.Forms.Button();
             this.compositeTree = new System.Windows.Forms.TreeView();
             this.imageList = new System.Windows.Forms.ImageList(this.components);
+            this.compositeNameDisplay = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // addDefaultParams
@@ -47,7 +48,7 @@
             this.addDefaultParams.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.addDefaultParams.AutoSize = true;
-            this.addDefaultParams.Location = new System.Drawing.Point(15, 364);
+            this.addDefaultParams.Location = new System.Drawing.Point(15, 370);
             this.addDefaultParams.Name = "addDefaultParams";
             this.addDefaultParams.Size = new System.Drawing.Size(138, 17);
             this.addDefaultParams.TabIndex = 15;
@@ -57,7 +58,7 @@
             // createEntity
             // 
             this.createEntity.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.createEntity.Location = new System.Drawing.Point(540, 360);
+            this.createEntity.Location = new System.Drawing.Point(540, 366);
             this.createEntity.Name = "createEntity";
             this.createEntity.Size = new System.Drawing.Size(101, 23);
             this.createEntity.TabIndex = 6;
@@ -140,8 +141,9 @@
             this.compositeTree.Location = new System.Drawing.Point(15, 107);
             this.compositeTree.Name = "compositeTree";
             this.compositeTree.SelectedImageIndex = 0;
-            this.compositeTree.Size = new System.Drawing.Size(626, 238);
+            this.compositeTree.Size = new System.Drawing.Size(626, 225);
             this.compositeTree.TabIndex = 5;
+            this.compositeTree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.compositeTree_AfterSelect);
             // 
             // imageList
             // 
@@ -154,11 +156,23 @@
             this.imageList.Images.SetKeyName(4, "cog.png");
             this.imageList.Images.SetKeyName(5, "Avatar Icon.png");
             // 
+            // compositeNameDisplay
+            // 
+            this.compositeNameDisplay.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.compositeNameDisplay.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.compositeNameDisplay.Location = new System.Drawing.Point(15, 331);
+            this.compositeNameDisplay.Name = "compositeNameDisplay";
+            this.compositeNameDisplay.ReadOnly = true;
+            this.compositeNameDisplay.Size = new System.Drawing.Size(626, 20);
+            this.compositeNameDisplay.TabIndex = 148;
+            // 
             // AddEntity_CompositeInstance
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(653, 400);
+            this.ClientSize = new System.Drawing.Size(653, 406);
+            this.Controls.Add(this.compositeNameDisplay);
             this.Controls.Add(this.clearSearchBtn);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.searchBtn);
@@ -189,5 +203,6 @@
         private System.Windows.Forms.Button clearSearchBtn;
         private System.Windows.Forms.TreeView compositeTree;
         private System.Windows.Forms.ImageList imageList;
+        private System.Windows.Forms.TextBox compositeNameDisplay;
     }
 }
