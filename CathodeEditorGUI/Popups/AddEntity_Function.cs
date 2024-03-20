@@ -21,23 +21,25 @@ namespace CommandsEditor
         private List<ListViewItem> _items = new List<ListViewItem>();
         private CompositeDisplay _compositeDisplay;
 
-        private ListViewColumnSorter lvwColumnSorter = new ListViewColumnSorter();
+        private ListViewColumnSorter _sorter = new ListViewColumnSorter();
 
         public AddEntity_Function(CompositeDisplay compositeDisplay) : base (WindowClosesOn.NEW_COMPOSITE_SELECTION | WindowClosesOn.COMMANDS_RELOAD)
         {
             InitializeComponent();
             _compositeDisplay = compositeDisplay;
-            functionTypeList.ListViewItemSorter = lvwColumnSorter;
+            functionTypeList.ListViewItemSorter = _sorter;
 
             List<CathodeEntityDatabase.EntityDefinition> entDefs = CathodeEntityDatabase.GetEntities();
             for (int i = 0; i < entDefs.Count;i++)
             {
-                FunctionType type = (FunctionType)Enum.Parse(typeof(FunctionType), entDefs[i].className);
-                FunctionType? inherited = EntityUtils.GetBaseFunction(type);
+                if (!Enum.TryParse(entDefs[i].className, out FunctionType type))
+                    continue;
+
+                FunctionType inherited = EntityUtils.GetBaseFunction(type);
 
                 ListViewItem item = new ListViewItem(entDefs[i].className);
                 item.ImageIndex = 0;
-                item.SubItems.Add(inherited != null ? inherited.Value.ToString() : "");
+                item.SubItems.Add(inherited.ToString());
                 item.Tag = entDefs[i];
 
                 _items.Add(item);
@@ -75,23 +77,23 @@ namespace CommandsEditor
         private void FunctionTypeList_ColumnClick(object sender, System.Windows.Forms.ColumnClickEventArgs e)
         {
             // Determine if the clicked column is already the column that is being sorted.
-            if (e.Column == lvwColumnSorter.SortColumn)
+            if (e.Column == _sorter.SortColumn)
             {
                 // Reverse the current sort direction for this column.
-                if (lvwColumnSorter.Order == SortOrder.Ascending)
+                if (_sorter.Order == SortOrder.Ascending)
                 {
-                    lvwColumnSorter.Order = SortOrder.Descending;
+                    _sorter.Order = SortOrder.Descending;
                 }
                 else
                 {
-                    lvwColumnSorter.Order = SortOrder.Ascending;
+                    _sorter.Order = SortOrder.Ascending;
                 }
             }
             else
             {
                 // Set the column number that is to be sorted; default to ascending.
-                lvwColumnSorter.SortColumn = e.Column;
-                lvwColumnSorter.Order = SortOrder.Ascending;
+                _sorter.SortColumn = e.Column;
+                _sorter.Order = SortOrder.Ascending;
             }
 
             // Perform the sort with these new sort options.
@@ -181,7 +183,7 @@ namespace CommandsEditor
 
         private void helpBtn_Click(object sender, EventArgs e)
         {
-            Process.Start("https://opencage.co.uk/docs/cathode-entities/");
+            Process.Start("https://opencage.co.uk/docs/cathode-entities/#entities");
         }
     }
 
