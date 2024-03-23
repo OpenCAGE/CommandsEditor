@@ -101,12 +101,29 @@ namespace CommandsEditor.Popups.UserControls
         /* Select an entity in the list, if it's there */
         public void SelectEntity(Entity entity)
         {
+            bool didSelect = false;
             for (int i = 0; i < composite_content.Items.Count; i++)
             {
                 if (composite_content.Items[i].Tag == entity)
                 {
                     composite_content.Items[i].Selected = true;
+                    didSelect = true;
                     break;
+                }
+            }
+
+            if (!didSelect)
+            {
+                clearSearchBtn_Click(null, null);
+
+                for (int i = 0; i < composite_content.Items.Count; i++)
+                {
+                    if (composite_content.Items[i].Tag == entity)
+                    {
+                        composite_content.Items[i].Selected = true;
+                        didSelect = true;
+                        break;
+                    }
                 }
             }
         }

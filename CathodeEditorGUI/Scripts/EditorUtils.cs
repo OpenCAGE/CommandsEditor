@@ -277,6 +277,9 @@ namespace CommandsEditor
         /* Utility: get composite name */
         public static string GetCompositeName(Composite comp)
         {
+            if (comp == null)
+                return "";
+
             string[] cont = comp.name.Replace('\\', '/').Split('/');
             return cont[cont.Length - 1];
         }

@@ -59,6 +59,9 @@ namespace CommandsEditor
             // 
             // groupBox1
             // 
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.selectEntityOut);
             this.groupBox1.Controls.Add(this.parentParameterList);
             this.groupBox1.Controls.Add(this.parentEntityList);
@@ -73,6 +76,7 @@ namespace CommandsEditor
             // 
             // selectEntityOut
             // 
+            this.selectEntityOut.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.selectEntityOut.Location = new System.Drawing.Point(718, 39);
             this.selectEntityOut.Name = "selectEntityOut";
             this.selectEntityOut.Size = new System.Drawing.Size(142, 23);
@@ -83,6 +87,7 @@ namespace CommandsEditor
             // 
             // parentParameterList
             // 
+            this.parentParameterList.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.parentParameterList.FormattingEnabled = true;
             this.parentParameterList.Location = new System.Drawing.Point(16, 79);
             this.parentParameterList.Name = "parentParameterList";
@@ -91,6 +96,7 @@ namespace CommandsEditor
             // 
             // parentEntityList
             // 
+            this.parentEntityList.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.parentEntityList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.parentEntityList.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.parentEntityList.FormattingEnabled = true;
@@ -111,6 +117,8 @@ namespace CommandsEditor
             // 
             // groupBox2
             // 
+            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.Controls.Add(this.selectEntityIn);
             this.groupBox2.Controls.Add(this.childParameterList);
             this.groupBox2.Controls.Add(this.label1);
@@ -125,6 +133,7 @@ namespace CommandsEditor
             // 
             // selectEntityIn
             // 
+            this.selectEntityIn.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.selectEntityIn.Location = new System.Drawing.Point(718, 39);
             this.selectEntityIn.Name = "selectEntityIn";
             this.selectEntityIn.Size = new System.Drawing.Size(142, 23);
@@ -135,6 +144,7 @@ namespace CommandsEditor
             // 
             // childParameterList
             // 
+            this.childParameterList.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.childParameterList.FormattingEnabled = true;
             this.childParameterList.Location = new System.Drawing.Point(16, 80);
             this.childParameterList.Name = "childParameterList";
@@ -152,6 +162,7 @@ namespace CommandsEditor
             // 
             // childEntityList
             // 
+            this.childEntityList.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.childEntityList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.childEntityList.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.childEntityList.FormattingEnabled = true;
@@ -172,6 +183,7 @@ namespace CommandsEditor
             // 
             // save_pin
             // 
+            this.save_pin.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.save_pin.Location = new System.Drawing.Point(783, 344);
             this.save_pin.Name = "save_pin";
             this.save_pin.Size = new System.Drawing.Size(105, 23);
@@ -182,6 +194,7 @@ namespace CommandsEditor
             // 
             // pictureBox1
             // 
+            this.pictureBox1.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.pictureBox1.BackgroundImage = global::CommandsEditor.Properties.Resources.arrow;
             this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.pictureBox1.InitialImage = global::CommandsEditor.Properties.Resources.arrow;
@@ -200,9 +213,10 @@ namespace CommandsEditor
             this.Controls.Add(this.save_pin);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
+            this.MaximumSize = new System.Drawing.Size(1500, 416);
+            this.MinimumSize = new System.Drawing.Size(500, 416);
             this.Name = "AddOrEditLink";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Edit Entity Link";
