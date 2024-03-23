@@ -49,6 +49,7 @@ namespace CommandsEditor.DockPanels
         private bool _canExportChildren = true;
 
         private const int _defaultSplitterDistance = 500;
+        private bool _isSubbed = false;
 
         public CompositeDisplay(CommandsDisplay commandsDisplay)
         {
@@ -56,19 +57,14 @@ namespace CommandsEditor.DockPanels
 
             InitializeComponent();
 
-            dockPanel.ActiveContentChanged += DockPanel_ActiveContentChanged;
             dockPanel.ShowDocumentIcon = true;
 
             splitContainer1.FixedPanel = FixedPanel.Panel1;
             splitContainer1.SplitterDistance = SettingsManager.GetInteger(Singleton.Settings.EntitySplitWidth, _defaultSplitterDistance);
 
-            compositeEntityList1.SelectedEntityChanged += LoadEntity;
             compositeEntityList1.ContextMenuStrip = EntityListContextMenu;
 
             this.FormClosed += CompositeDisplay_FormClosed;
-
-            Singleton.OnCompositeRenamed += OnCompositeRenamed;
-            Singleton.OnEntityAdded += OnAddNewEntity;
         }
 
         private void OnCompositeRenamed(Composite composite, string name)
@@ -87,6 +83,15 @@ namespace CommandsEditor.DockPanels
         /* Call this to show the CompositeDisplay with the requested Composite content */
         public void PopulateUI(Composite composite)
         {
+            if (!_isSubbed)
+            {
+                dockPanel.ActiveContentChanged += DockPanel_ActiveContentChanged;
+                compositeEntityList1.SelectedEntityChanged += LoadEntity;
+                Singleton.OnCompositeRenamed += OnCompositeRenamed;
+                Singleton.OnEntityAdded += OnAddNewEntity;
+                _isSubbed = true;
+            }
+
             EditorUtils.CompositeType type = Content.editor_utils.GetCompositeType(composite);
             
             switch (type)
@@ -124,9 +129,10 @@ namespace CommandsEditor.DockPanels
         {
             dockPanel.ActiveContentChanged -= DockPanel_ActiveContentChanged;
             compositeEntityList1.SelectedEntityChanged -= LoadEntity;
-            this.FormClosed -= CompositeDisplay_FormClosed;
+            //this.FormClosed -= CompositeDisplay_FormClosed;
             Singleton.OnCompositeRenamed -= OnCompositeRenamed;
             Singleton.OnEntityAdded -= OnAddNewEntity;
+            _isSubbed = false;
 
             if (dialog != null)
                 dialog.Close();
