@@ -34,6 +34,8 @@
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.copyTransformToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pasteTransformToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tableLayoutPanel9 = new System.Windows.Forms.TableLayoutPanel();
             this.POS_X = new System.Windows.Forms.NumericUpDown();
             this.POS_Z = new System.Windows.Forms.NumericUpDown();
@@ -45,8 +47,6 @@
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.POSITION_VARIABLE_DUMMY.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             this.tableLayoutPanel9.SuspendLayout();
@@ -82,13 +82,13 @@
             this.toolStripSeparator1,
             this.deleteToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(181, 98);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(159, 76);
             // 
             // copyTransformToolStripMenuItem
             // 
             this.copyTransformToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("copyTransformToolStripMenuItem.Image")));
             this.copyTransformToolStripMenuItem.Name = "copyTransformToolStripMenuItem";
-            this.copyTransformToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.copyTransformToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
             this.copyTransformToolStripMenuItem.Text = "Copy Transform";
             this.copyTransformToolStripMenuItem.Click += new System.EventHandler(this.copyTransformToolStripMenuItem_Click);
             // 
@@ -96,9 +96,21 @@
             // 
             this.pasteTransformToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("pasteTransformToolStripMenuItem.Image")));
             this.pasteTransformToolStripMenuItem.Name = "pasteTransformToolStripMenuItem";
-            this.pasteTransformToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.pasteTransformToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
             this.pasteTransformToolStripMenuItem.Text = "Paste Transform";
             this.pasteTransformToolStripMenuItem.Click += new System.EventHandler(this.pasteTransformToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(155, 6);
+            // 
+            // deleteToolStripMenuItem
+            // 
+            this.deleteToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("deleteToolStripMenuItem.Image")));
+            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+            this.deleteToolStripMenuItem.Text = "Delete";
             // 
             // tableLayoutPanel9
             // 
@@ -308,18 +320,6 @@
             this.label7.Size = new System.Drawing.Size(44, 13);
             this.label7.TabIndex = 7;
             this.label7.Text = "Position";
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
-            // 
-            // deleteToolStripMenuItem
-            // 
-            this.deleteToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("deleteToolStripMenuItem.Image")));
-            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.deleteToolStripMenuItem.Text = "Delete";
             // 
             // GUI_TransformDataType
             // 
