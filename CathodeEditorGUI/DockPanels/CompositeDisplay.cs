@@ -785,25 +785,6 @@ namespace CommandsEditor.DockPanels
         }
 
         /* Entity List Context Menu */
-        private void FooListView_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Right)
-            {
-                var lv = sender as ListViewExtended;
-                var item = lv.HitTest(e.Location).Item;
-
-                deleteToolStripMenuItem.Enabled = item != null;
-                renameToolStripMenuItem.Enabled = item != null;
-                duplicateToolStripMenuItem.Enabled = item != null;
-                copyToolStripMenuItem.Enabled = item != null;
-                pasteToolStripMenuItem.Enabled = EditorClipboard.Entity != null;
-
-                if (item != null)
-                    lv.FocusedItem = item;
-
-                EntityListContextMenu.Show(lv, e.Location);
-            }
-        }
         private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
         {
             DeleteEntity(compositeEntityList1.SelectedEntity);
@@ -853,7 +834,7 @@ namespace CommandsEditor.DockPanels
             bool hasSelectedEntity = compositeEntityList1.SelectedEntity != null;
 
             deleteToolStripMenuItem.Enabled = hasSelectedEntity;
-            renameToolStripMenuItem.Enabled = hasSelectedEntity;
+            renameToolStripMenuItem.Enabled = hasSelectedEntity && compositeEntityList1.SelectedEntity.variant != EntityVariant.ALIAS;
             duplicateToolStripMenuItem.Enabled = hasSelectedEntity;
         }
 
