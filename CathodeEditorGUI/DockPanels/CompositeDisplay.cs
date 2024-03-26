@@ -141,6 +141,8 @@ namespace CommandsEditor.DockPanels
                 dialog_func.Close();
             if (dialog_compinst != null)
                 dialog_compinst.Close();
+            if (dialog_hierarchy != null)
+                dialog_hierarchy.Close();
 
             if (_activeEntityDisplay != null)
                 _activeEntityDisplay.FormClosing -= OnActiveContentClosing;
@@ -729,6 +731,7 @@ namespace CommandsEditor.DockPanels
         AddEntity dialog = null;
         AddEntity_Function dialog_func = null;
         AddEntity_CompositeInstance dialog_compinst = null;
+        SelectHierarchy dialog_hierarchy = null; EntityVariant dialog_hierarchy_entvar;
         private void CreateEntity(EntityVariant variant = EntityVariant.FUNCTION, bool composite = false)
         {
             if (variant == EntityVariant.FUNCTION && !composite)
@@ -749,6 +752,39 @@ namespace CommandsEditor.DockPanels
                 dialog_compinst.Show();
                 dialog_compinst.Focus();
             }
+            else if (variant == EntityVariant.PROXY || variant == EntityVariant.ALIAS)
+            {
+                if (dialog_hierarchy != null)
+                    dialog_hierarchy.Close();
+
+                dialog_hierarchy_entvar = variant;
+                switch (dialog_hierarchy_entvar)
+                {
+                    case EntityVariant.PROXY:
+                        dialog_hierarchy = new SelectHierarchy(Content.commands.EntryPoints[0], new CompositeEntityList.DisplayOptions()
+                        {
+                            DisplayAliases = false,
+                            DisplayFunctions = true,
+                            DisplayProxies = false,
+                            DisplayVariables = false,
+                        });
+                        dialog_hierarchy.Text = "Create Proxy";
+                        break;
+                    case EntityVariant.ALIAS:
+                        dialog_hierarchy = new SelectHierarchy(_composite, new CompositeEntityList.DisplayOptions()
+                        {
+                            DisplayAliases = false,
+                            DisplayFunctions = true,
+                            DisplayProxies = true,
+                            DisplayVariables = true,
+                        });
+                        dialog_hierarchy.Text = "Create Alias";
+                        break;
+                }
+                dialog_hierarchy.OnHierarchyGenerated += OnNewEntityHierarchyGenerated;
+                dialog_hierarchy.Show();
+                dialog_hierarchy.Focus();
+            }
             else
             {
                 if (dialog != null && (dialog.Variant != variant || dialog.Composite != composite))
@@ -758,6 +794,29 @@ namespace CommandsEditor.DockPanels
                 dialog.Show();
                 dialog.Focus();
             }
+        }
+        private void OnNewEntityHierarchyGenerated(List<ShortGuid> generatedHierarchy)
+        {
+            Singleton.OnEntityAddPending?.Invoke();
+
+            Entity ent = null;
+            switch (dialog_hierarchy_entvar)
+            {
+                case EntityVariant.PROXY:
+                    List<ShortGuid> hierarchy = new List<ShortGuid>();
+                    hierarchy.Add(Content.commands.EntryPoints[0].shortGUID);
+                    hierarchy.AddRange(generatedHierarchy);
+                    ent = _composite.AddProxy(Content.commands, hierarchy); //TODO: re-add "add default params"
+                    Entity pointedEnt = ((ProxyEntity)ent).proxy.GetPointedEntity(Content.commands, out Composite pointedComp);
+                    EntityUtils.SetName(_composite, ent, EntityUtils.GetName(pointedComp, pointedEnt) + " Proxy");
+                    break;
+                case EntityVariant.ALIAS:
+                    hierarchy = generatedHierarchy;
+                    ent = _composite.AddAlias(hierarchy); //TODO: re-add "add default params"?
+                    break;
+            }
+
+            Singleton.OnEntityAdded?.Invoke(ent);
         }
 
         private void goBackOnPath_Click(object sender, EventArgs e)

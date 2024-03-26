@@ -114,7 +114,7 @@ namespace CommandsEditor
 
         private void selectEntToPointTo_Click(object sender, EventArgs e)
         {
-            EditHierarchy hierarchyEditor = new EditHierarchy(_entityDisplay.Composite, new CompositeEntityList.DisplayOptions()
+            SelectHierarchy hierarchyEditor = new SelectHierarchy(_entityDisplay.Composite, new CompositeEntityList.DisplayOptions()
             {
                 DisplayAliases = false,
                 DisplayFunctions = true,

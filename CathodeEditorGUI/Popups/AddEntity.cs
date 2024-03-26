@@ -19,6 +19,9 @@ using System.Windows.Forms;
 
 namespace CommandsEditor
 {
+    //THIS IS LEGACY, AND SHOULD SOON BE DEPRECATED.
+    //CURRENTLY ONLY USED FOR DATATYPE ENTITIES.
+
     public partial class AddEntity : BaseWindow
     {
         public EntityVariant Variant;
@@ -162,10 +165,10 @@ namespace CommandsEditor
         /* Generate path for proxy/alias */
         private void generateHierarchy_Click(object sender, EventArgs e)
         {
-            EditHierarchy hierarchyEditor = null;
+            SelectHierarchy hierarchyEditor = null;
             if (createProxyEntity.Checked)
             {
-                hierarchyEditor = new EditHierarchy(Content.commands.EntryPoints[0], new CompositeEntityList.DisplayOptions()
+                hierarchyEditor = new SelectHierarchy(Content.commands.EntryPoints[0], new CompositeEntityList.DisplayOptions()
                 {
                     DisplayAliases = false,
                     DisplayFunctions = true,
@@ -175,7 +178,7 @@ namespace CommandsEditor
             }
             else if (createOverrideEntity.Checked)
             {
-                hierarchyEditor = new EditHierarchy(_compositeDisplay.Composite, new CompositeEntityList.DisplayOptions()
+                hierarchyEditor = new SelectHierarchy(_compositeDisplay.Composite, new CompositeEntityList.DisplayOptions()
                 {
                     DisplayAliases = false,
                     DisplayFunctions = true,

@@ -136,7 +136,7 @@ namespace CommandsEditor
             childParameterList.EndUpdate();
         }
 
-        EditHierarchy _selectEntOut = null;
+        SelectHierarchy _selectEntOut = null;
         private void selectEntityOut_Click(object sender, EventArgs e)
         {
             if (_selectEntOut != null)
@@ -145,7 +145,7 @@ namespace CommandsEditor
                 _selectEntOut = null;
             }
 
-            _selectEntOut = new EditHierarchy(_entityDisplay.Composite, new CompositeEntityList.DisplayOptions() { ShowCheckboxes = false }, false);
+            _selectEntOut = new SelectHierarchy(_entityDisplay.Composite, new CompositeEntityList.DisplayOptions() { ShowCheckboxes = false }, false);
             _selectEntOut.Show();
             _selectEntOut.OnHierarchyGenerated += OnSelectedEntityOut;
         }
@@ -154,7 +154,7 @@ namespace CommandsEditor
             parentEntityList.SelectedIndex = _entityList.IndexOf(_entityDisplay.Composite.GetEntityByID(hierarchy[0]));
         }
 
-        EditHierarchy _selectEntIn = null;
+        SelectHierarchy _selectEntIn = null;
         private void selectEntityIn_Click(object sender, EventArgs e)
         {
             if (_selectEntIn != null)
@@ -163,7 +163,7 @@ namespace CommandsEditor
                 _selectEntIn = null;
             }
 
-            _selectEntIn = new EditHierarchy(_entityDisplay.Composite, new CompositeEntityList.DisplayOptions() { ShowCheckboxes = false }, false);
+            _selectEntIn = new SelectHierarchy(_entityDisplay.Composite, new CompositeEntityList.DisplayOptions() { ShowCheckboxes = false }, false);
             _selectEntIn.Show();
             _selectEntIn.OnHierarchyGenerated += OnSelectedEntityIn;
         }

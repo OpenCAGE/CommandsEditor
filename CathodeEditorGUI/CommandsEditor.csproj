@@ -1285,11 +1285,11 @@
     <Compile Include="Popups\Experimental\Composite3D.Designer.cs">
       <DependentUpon>Composite3D.cs</DependentUpon>
     </Compile>
-    <Compile Include="Popups\EditHierarchy.cs">
+    <Compile Include="Popups\SelectHierarchy.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Popups\EditHierarchy.Designer.cs">
-      <DependentUpon>EditHierarchy.cs</DependentUpon>
+    <Compile Include="Popups\SelectHierarchy.Designer.cs">
+      <DependentUpon>SelectHierarchy.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\EditMVR.cs">
       <SubType>Form</SubType>
@@ -1531,8 +1531,8 @@
     <EmbeddedResource Include="Popups\Experimental\Composite3D.resx">
       <DependentUpon>Composite3D.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Popups\EditHierarchy.resx">
-      <DependentUpon>EditHierarchy.cs</DependentUpon>
+    <EmbeddedResource Include="Popups\SelectHierarchy.resx">
+      <DependentUpon>SelectHierarchy.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\EditMVR.resx">
       <DependentUpon>EditMVR.cs</DependentUpon>

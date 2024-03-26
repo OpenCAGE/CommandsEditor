@@ -16,7 +16,7 @@ using CommandsEditor.Popups.UserControls;
 
 namespace CommandsEditor
 {
-    public partial class EditHierarchy : BaseWindow
+    public partial class SelectHierarchy : BaseWindow
     {
         public Action<List<ShortGuid>> OnHierarchyGenerated;
         private List<ShortGuid> hierarchy = new List<ShortGuid>();
@@ -24,8 +24,10 @@ namespace CommandsEditor
         private Entity selectedEntity = null;
         private Composite selectedComposite = null;
 
+        private CompositePath _path = new CompositePath();
+
         //PROXIES can only point to FunctionEntities - ALIASES can point to FunctionEntities, ProxyEntities, VariableEntities
-        public EditHierarchy(Composite startingComposite, CompositeEntityList.DisplayOptions displayOptions, bool allowFollowThrough = true) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
+        public SelectHierarchy(Composite startingComposite, CompositeEntityList.DisplayOptions displayOptions, bool allowFollowThrough = true) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             InitializeComponent();
 
@@ -62,7 +64,7 @@ namespace CommandsEditor
             FollowEntityThrough.Enabled = false;
 
             selectedComposite = composite;
-            compositeName.Text = selectedComposite.name;
+            pathDisplay.Text = _path.GetPath(composite);
 
             compositeEntityList1.LoadComposite(selectedComposite);
         }
@@ -76,6 +78,7 @@ namespace CommandsEditor
             Composite composite = Content.commands.GetComposite(((FunctionEntity)selectedEntity).function);
             if (composite == null) return;
 
+            _path.StepForwards(selectedComposite, selectedEntity);
             LoadComposite(composite);
         }
 
@@ -87,6 +90,14 @@ namespace CommandsEditor
             hierarchy.Add(ShortGuid.Invalid);
             OnHierarchyGenerated?.Invoke(hierarchy);
             this.Close();
+        }
+
+        private void goBackOnPath_Click(object sender, EventArgs e)
+        {
+            if (_path.StepBackwards(out Composite composite, out Entity entity))
+            {
+                LoadComposite(composite);
+            }
         }
     }
 }
