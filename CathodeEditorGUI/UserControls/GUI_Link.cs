@@ -1,4 +1,4 @@
-﻿using CATHODE.Scripting;
+using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CommandsEditor.DockPanels;
 using System;
@@ -72,7 +72,8 @@ namespace CommandsEditor.UserControls
 
         private void DeleteLink_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show("Are you sure you want to remove this link?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+            if (MessageBox.Show("Are you sure you want to remove this link?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                return;
 
             if (_isLinkOut)
                 _entityDisplay.Entity.childLinks.RemoveAll(o => o.connectionID == _link.connectionID);
@@ -80,11 +81,6 @@ namespace CommandsEditor.UserControls
                 _linkedEntity.childLinks.RemoveAll(o => o.connectionID == _link.connectionID);
 
             OnLinkEdited?.Invoke(_entityDisplay.Entity, _linkedEntity);
-        }
-
-        protected new void deleteToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            DeleteLink_Click(null, null);
         }
     }
 }

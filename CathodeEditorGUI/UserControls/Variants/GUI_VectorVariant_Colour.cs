@@ -23,6 +23,7 @@ namespace CommandsEditor.UserControls
         {
             InitializeComponent();
             this.ContextMenuStrip = contextMenuStrip1;
+            this.deleteToolStripMenuItem.Click += new EventHandler(deleteToolStripMenuItem_Click);
         }
 
         public void PopulateUI(cVector3 cVec, string paramID)

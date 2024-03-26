@@ -15,6 +15,7 @@ namespace CommandsEditor.UserControls
         {
             InitializeComponent();
             this.ContextMenuStrip = contextMenuStrip1;
+            this.deleteToolStripMenuItem.Click += new EventHandler(deleteToolStripMenuItem_Click);
         }
 
         public void PopulateUI_Float(cFloat cFloat, ShortGuid paramID, float min = 0, float max = 1, int precision = 5)

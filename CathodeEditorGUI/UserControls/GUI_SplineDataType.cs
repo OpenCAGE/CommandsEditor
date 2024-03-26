@@ -23,6 +23,7 @@ namespace CommandsEditor.UserControls
             _entityDisplay = entityDisplay;
             InitializeComponent();
             this.ContextMenuStrip = contextMenuStrip1;
+            this.deleteToolStripMenuItem.Click += new EventHandler(deleteToolStripMenuItem_Click);
         }
 
         private cSpline spline = null;

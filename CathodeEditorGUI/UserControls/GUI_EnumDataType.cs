@@ -21,6 +21,7 @@ namespace CommandsEditor.UserControls
             comboBox1.EndUpdate();
 
             this.ContextMenuStrip = contextMenuStrip1;
+            this.deleteToolStripMenuItem.Click += new EventHandler(deleteToolStripMenuItem_Click);
         }
 
         //Temp fix for legacy enums that I'm not 100% on the indexes for -> show the old manual number input
