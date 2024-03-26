@@ -113,6 +113,7 @@ namespace CommandsEditor.DockPanels
 
             compositeEntityList1.Setup(composite, null, false);
             _path = new CompositePath();
+            this.Text = EditorUtils.GetCompositeName(composite);
 
             Reload(composite);
             Singleton.OnCompositeSelected?.Invoke(_composite);
@@ -174,7 +175,6 @@ namespace CommandsEditor.DockPanels
             findUses.Visible = isCoreComposite;
             deleteComposite.Visible = isCoreComposite;
 
-            this.Text = EditorUtils.GetCompositeName(composite);
             pathDisplay.Text = _path.GetPath(composite);
             _composite = composite;
 

@@ -48,7 +48,7 @@ namespace CommandsEditor.DockPanels
         {
             InitializeComponent();
 
-            this.Text = levelName;
+            //this.Text = levelName;
             this.FormClosed += CommandsDisplay_FormClosed;
             this.Load += CommandsDisplay_Load;
 

@@ -91,12 +91,14 @@ namespace CommandsEditor
             Singleton.OnLevelLoaded += RefreshWebsocket;
 
             connectToUnity.Checked = !SettingsManager.GetBool(Singleton.Settings.ServerOpt); connectToUnity.PerformClick();
-            showNodegraph.Checked = !SettingsManager.GetBool(Singleton.Settings.NodeOpt); showNodegraph.PerformClick();
             showEntityIDs.Checked = !SettingsManager.GetBool(Singleton.Settings.EntIdOpt); showEntityIDs.PerformClick();
             searchOnlyCompositeNames.Checked = !SettingsManager.GetBool(Singleton.Settings.CompNameOnlyOpt); searchOnlyCompositeNames.PerformClick();
             useTexturedModelViewExperimentalToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.ShowTexOpt); useTexturedModelViewExperimentalToolStripMenuItem.PerformClick();
             keepFunctionUsesWindowOpenToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.KeepUsesWindowOpen); keepFunctionUsesWindowOpenToolStripMenuItem.PerformClick();
             nodeOpensEntity.Checked = !SettingsManager.GetBool(Singleton.Settings.OpenEntityFromNode); nodeOpensEntity.PerformClick();
+
+            if (!SettingsManager.IsSet(Singleton.Settings.NodeOpt)) SettingsManager.SetBool(Singleton.Settings.NodeOpt, true);
+            showNodegraph.Checked = !SettingsManager.GetBool(Singleton.Settings.NodeOpt); showNodegraph.PerformClick();
 
             if (!SettingsManager.IsSet(Singleton.Settings.UseEntityTabs)) SettingsManager.SetBool(Singleton.Settings.UseEntityTabs, true);
             entitiesOpenTabs.Checked = !SettingsManager.GetBool(Singleton.Settings.UseEntityTabs); entitiesOpenTabs.PerformClick();
