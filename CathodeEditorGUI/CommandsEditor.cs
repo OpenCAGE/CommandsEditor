@@ -52,6 +52,8 @@ namespace CommandsEditor
         private int _defaultWidth;
         private int _defaultHeight;
 
+        private string _baseTitle = "";
+
         public CommandsEditor(string level = null)
         {
             Singleton.Editor = this;
@@ -139,6 +141,7 @@ namespace CommandsEditor
                         break;
                 }
             }
+            _baseTitle = this.Text;
 
             //Populate localised text string databases (in English)
             List<string> textList = Directory.GetFiles(SharedData.pathToAI + "/DATA/TEXT/ENGLISH/", "*.TXT", SearchOption.AllDirectories).ToList<string>();
@@ -320,6 +323,8 @@ namespace CommandsEditor
         }
         private void OnLevelSelected(string level)
         {
+            this.Text = _baseTitle + " - " + level;
+
             statusText.Text = "Loading " + level + "...";
             statusStrip.Update();
 
