@@ -1255,11 +1255,11 @@
       <DependentUpon>AddOrEditResource.cs</DependentUpon>
     </Compile>
     <Compile Include="Scripts\EditorUtils.cs" />
-    <Compile Include="Popups\AddEntity.cs">
+    <Compile Include="Popups\AddEntity_Variable.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Popups\AddEntity.Designer.cs">
-      <DependentUpon>AddEntity.cs</DependentUpon>
+    <Compile Include="Popups\AddEntity_Variable.Designer.cs">
+      <DependentUpon>AddEntity_Variable.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\AddComposite.cs">
       <SubType>Form</SubType>
@@ -1513,8 +1513,8 @@
     <EmbeddedResource Include="Popups\Function Editors\CAGEAnimationEditor.resx">
       <DependentUpon>CAGEAnimationEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Popups\AddEntity.resx">
-      <DependentUpon>AddEntity.cs</DependentUpon>
+    <EmbeddedResource Include="Popups\AddEntity_Variable.resx">
+      <DependentUpon>AddEntity_Variable.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\AddComposite.resx">
       <DependentUpon>AddComposite.cs</DependentUpon>

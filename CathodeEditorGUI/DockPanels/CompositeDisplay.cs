@@ -135,8 +135,8 @@ namespace CommandsEditor.DockPanels
             Singleton.OnEntityAdded -= OnAddNewEntity;
             _isSubbed = false;
 
-            if (dialog != null)
-                dialog.Close();
+            if (dialog_var != null)
+                dialog_var.Close();
             if (dialog_func != null)
                 dialog_func.Close();
             if (dialog_compinst != null)
@@ -728,7 +728,7 @@ namespace CommandsEditor.DockPanels
             CreateEntity(EntityVariant.ALIAS);
         }
 
-        AddEntity dialog = null;
+        AddEntity_Variable dialog_var = null;
         AddEntity_Function dialog_func = null;
         AddEntity_CompositeInstance dialog_compinst = null;
         SelectHierarchy dialog_hierarchy = null; EntityVariant dialog_hierarchy_entvar;
@@ -785,14 +785,14 @@ namespace CommandsEditor.DockPanels
                 dialog_hierarchy.Show();
                 dialog_hierarchy.Focus();
             }
-            else
+            else if (variant == EntityVariant.VARIABLE)
             {
-                if (dialog != null && (dialog.Variant != variant || dialog.Composite != composite))
-                    dialog.Close();
+                if (dialog_var != null)
+                    dialog_var.Close();
 
-                dialog = new AddEntity(this, variant, composite);
-                dialog.Show();
-                dialog.Focus();
+                dialog_var = new AddEntity_Variable(this);
+                dialog_var.Show();
+                dialog_var.Focus();
             }
         }
         private void OnNewEntityHierarchyGenerated(List<ShortGuid> generatedHierarchy)
