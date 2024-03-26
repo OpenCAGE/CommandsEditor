@@ -7,7 +7,7 @@ using CATHODE.Scripting;
 
 namespace CommandsEditor.UserControls
 {
-    public partial class GUI_StringVariant_AssetDropdown : BaseUserControl
+    public partial class GUI_StringVariant_AssetDropdown : ParameterUserControl
     {
         cString stringVal = null;
 
@@ -20,6 +20,7 @@ namespace CommandsEditor.UserControls
         public GUI_StringVariant_AssetDropdown() : base()
         {
             InitializeComponent();
+            this.ContextMenuStrip = contextMenuStrip1;
         }
 
         public void PopulateUI(cString cString, string paramID, AssetList.Type assets, string args = "")
@@ -28,6 +29,7 @@ namespace CommandsEditor.UserControls
             label1.Text = paramID;
             type = assets;
             typeArgs = args;
+            this.deleteToolStripMenuItem.Text = "Delete '" + paramID + "'";
 
             //TODO: we never clear up these lists for old levels, which could lead to a slow memory leak!
 

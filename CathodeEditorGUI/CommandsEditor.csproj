@@ -1372,11 +1372,11 @@
     <Compile Include="Scripts\SettingsManager.cs" />
     <Compile Include="Scripts\WebsocketServer.cs" />
     <Compile Include="Scripts\Singleton.cs" />
-    <Compile Include="UserControls\Base\BaseUserControl.cs">
+    <Compile Include="UserControls\Base\ParameterUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UserControls\Base\BaseUserControl.Designer.cs">
-      <DependentUpon>BaseUserControl.cs</DependentUpon>
+    <Compile Include="UserControls\Base\ParameterUserControl.Designer.cs">
+      <DependentUpon>ParameterUserControl.cs</DependentUpon>
     </Compile>
     <Compile Include="UserControls\Variants\GUI_StringVariant_AssetDropdown.cs">
       <SubType>UserControl</SubType>

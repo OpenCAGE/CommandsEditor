@@ -13,13 +13,14 @@ using CATHODE;
 
 namespace CommandsEditor.UserControls
 {
-    public partial class GUI_BoolDataType : UserControl
+    public partial class GUI_BoolDataType : ParameterUserControl
     {
         cBool boolVal = null;
 
         public GUI_BoolDataType()
         {
             InitializeComponent();
+            this.ContextMenuStrip = contextMenuStrip1;
         }
 
         public void PopulateUI(cBool cBool, string paramID)
@@ -27,6 +28,7 @@ namespace CommandsEditor.UserControls
             boolVal = cBool;
             checkBox1.Text = paramID;
             checkBox1.Checked = cBool.value;
+            this.deleteToolStripMenuItem.Text = "Delete '" + paramID + "'";
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)

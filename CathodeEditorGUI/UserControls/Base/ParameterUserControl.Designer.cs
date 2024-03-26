@@ -1,6 +1,6 @@
 ﻿namespace CommandsEditor.UserControls
 {
-    partial class BaseUserControl
+    partial class ParameterUserControl
     {
         /// <summary> 
         /// Required designer variable.

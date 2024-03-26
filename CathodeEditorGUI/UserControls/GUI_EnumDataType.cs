@@ -6,7 +6,7 @@ using CathodeLib;
 
 namespace CommandsEditor.UserControls
 {
-    public partial class GUI_EnumDataType : UserControl
+    public partial class GUI_EnumDataType : ParameterUserControl
     {
         cEnum enumVal = null;
         EnumUtils.EnumDescriptor enumDesc = null;
@@ -19,6 +19,8 @@ namespace CommandsEditor.UserControls
             comboBox1.Items.Clear();
             comboBox1.Items.AddRange(Enum.GetNames(typeof(EnumType)));
             comboBox1.EndUpdate();
+
+            this.ContextMenuStrip = contextMenuStrip1;
         }
 
         //Temp fix for legacy enums that I'm not 100% on the indexes for -> show the old manual number input
@@ -75,6 +77,7 @@ namespace CommandsEditor.UserControls
 
             enumVal = cEnum;
             enumDesc = EnumUtils.GetEnum(cEnum.enumID);
+            this.deleteToolStripMenuItem.Text = "Delete '" + paramID + "'";
 
             comboBox1.Text = enumDesc.Name;
             comboBox1.SelectedIndexChanged += comboBox1_SelectedIndexChanged;

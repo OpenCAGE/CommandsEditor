@@ -12,9 +12,11 @@ using System.Windows.Forms;
 
 namespace CommandsEditor.Popups.UserControls
 {
-    public partial class ResourceUserControl : BaseUserControl
+    public partial class ResourceUserControl : UserControl
     {
         public ResourceReference ResourceReference;
+
+        protected LevelContent Content => Singleton.Editor?.CommandsDisplay?.Content;
 
         public ResourceUserControl()
         {

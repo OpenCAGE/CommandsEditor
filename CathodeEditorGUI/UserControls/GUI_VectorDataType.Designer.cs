@@ -38,6 +38,9 @@
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.copyTransformToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pasteTransformToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.POS_Z_1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.POS_Y_1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.POS_X_1)).BeginInit();
@@ -68,6 +71,7 @@
             this.POS_Z_1.Name = "POS_Z_1";
             this.POS_Z_1.Size = new System.Drawing.Size(106, 20);
             this.POS_Z_1.TabIndex = 5;
+            this.toolTip1.SetToolTip(this.POS_Z_1, "Z");
             this.POS_Z_1.Value = new decimal(new int[] {
             1874919423,
             2328306,
@@ -98,6 +102,7 @@
             this.POS_Y_1.Name = "POS_Y_1";
             this.POS_Y_1.Size = new System.Drawing.Size(105, 20);
             this.POS_Y_1.TabIndex = 3;
+            this.toolTip1.SetToolTip(this.POS_Y_1, "Y");
             this.POS_Y_1.Value = new decimal(new int[] {
             1874919423,
             2328306,
@@ -128,6 +133,7 @@
             this.POS_X_1.Name = "POS_X_1";
             this.POS_X_1.Size = new System.Drawing.Size(105, 20);
             this.POS_X_1.TabIndex = 1;
+            this.toolTip1.SetToolTip(this.POS_X_1, "X");
             this.POS_X_1.Value = new decimal(new int[] {
             1874919423,
             2328306,
@@ -166,9 +172,11 @@
             // 
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.copyTransformToolStripMenuItem,
-            this.pasteTransformToolStripMenuItem});
+            this.pasteTransformToolStripMenuItem,
+            this.toolStripSeparator1,
+            this.deleteToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(139, 48);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(139, 76);
             // 
             // copyTransformToolStripMenuItem
             // 
@@ -185,6 +193,19 @@
             this.pasteTransformToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.pasteTransformToolStripMenuItem.Text = "Paste Vector";
             this.pasteTransformToolStripMenuItem.Click += new System.EventHandler(this.pasteTransformToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(135, 6);
+            // 
+            // deleteToolStripMenuItem
+            // 
+            this.deleteToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("deleteToolStripMenuItem.Image")));
+            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.deleteToolStripMenuItem.Text = "Delete";
+            this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
             // 
             // GUI_VectorDataType
             // 
@@ -213,5 +234,8 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem copyTransformToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pasteTransformToolStripMenuItem;
+        private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
     }
 }

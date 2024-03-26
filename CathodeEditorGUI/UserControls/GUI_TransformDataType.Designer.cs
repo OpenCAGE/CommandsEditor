@@ -44,6 +44,9 @@
             this.ROT_Y = new System.Windows.Forms.NumericUpDown();
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.POSITION_VARIABLE_DUMMY.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             this.tableLayoutPanel9.SuspendLayout();
@@ -75,15 +78,17 @@
             // 
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.copyTransformToolStripMenuItem,
-            this.pasteTransformToolStripMenuItem});
+            this.pasteTransformToolStripMenuItem,
+            this.toolStripSeparator1,
+            this.deleteToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(159, 48);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(181, 98);
             // 
             // copyTransformToolStripMenuItem
             // 
             this.copyTransformToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("copyTransformToolStripMenuItem.Image")));
             this.copyTransformToolStripMenuItem.Name = "copyTransformToolStripMenuItem";
-            this.copyTransformToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+            this.copyTransformToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.copyTransformToolStripMenuItem.Text = "Copy Transform";
             this.copyTransformToolStripMenuItem.Click += new System.EventHandler(this.copyTransformToolStripMenuItem_Click);
             // 
@@ -91,7 +96,7 @@
             // 
             this.pasteTransformToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("pasteTransformToolStripMenuItem.Image")));
             this.pasteTransformToolStripMenuItem.Name = "pasteTransformToolStripMenuItem";
-            this.pasteTransformToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+            this.pasteTransformToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.pasteTransformToolStripMenuItem.Text = "Paste Transform";
             this.pasteTransformToolStripMenuItem.Click += new System.EventHandler(this.pasteTransformToolStripMenuItem_Click);
             // 
@@ -136,6 +141,7 @@
             this.POS_X.Name = "POS_X";
             this.POS_X.Size = new System.Drawing.Size(101, 20);
             this.POS_X.TabIndex = 1;
+            this.toolTip1.SetToolTip(this.POS_X, "X");
             this.POS_X.ValueChanged += new System.EventHandler(this.POS_X_ValueChanged);
             // 
             // POS_Z
@@ -161,6 +167,7 @@
             this.POS_Z.Name = "POS_Z";
             this.POS_Z.Size = new System.Drawing.Size(102, 20);
             this.POS_Z.TabIndex = 5;
+            this.toolTip1.SetToolTip(this.POS_Z, "Z");
             this.POS_Z.ValueChanged += new System.EventHandler(this.POS_Z_ValueChanged);
             // 
             // POS_Y
@@ -186,6 +193,7 @@
             this.POS_Y.Name = "POS_Y";
             this.POS_Y.Size = new System.Drawing.Size(101, 20);
             this.POS_Y.TabIndex = 3;
+            this.toolTip1.SetToolTip(this.POS_Y, "Y");
             this.POS_Y.ValueChanged += new System.EventHandler(this.POS_Y_ValueChanged);
             // 
             // tableLayoutPanel10
@@ -228,6 +236,7 @@
             this.ROT_X.Name = "ROT_X";
             this.ROT_X.Size = new System.Drawing.Size(101, 20);
             this.ROT_X.TabIndex = 8;
+            this.toolTip1.SetToolTip(this.ROT_X, "Pitch (X)");
             this.ROT_X.ValueChanged += new System.EventHandler(this.ROT_X_ValueChanged);
             // 
             // ROT_Z
@@ -253,6 +262,7 @@
             this.ROT_Z.Name = "ROT_Z";
             this.ROT_Z.Size = new System.Drawing.Size(102, 20);
             this.ROT_Z.TabIndex = 12;
+            this.toolTip1.SetToolTip(this.ROT_Z, "Roll (Z)");
             this.ROT_Z.ValueChanged += new System.EventHandler(this.ROT_Z_ValueChanged);
             // 
             // ROT_Y
@@ -278,6 +288,7 @@
             this.ROT_Y.Name = "ROT_Y";
             this.ROT_Y.Size = new System.Drawing.Size(101, 20);
             this.ROT_Y.TabIndex = 10;
+            this.toolTip1.SetToolTip(this.ROT_Y, "Yaw (Y)");
             this.ROT_Y.ValueChanged += new System.EventHandler(this.ROT_Y_ValueChanged);
             // 
             // label8
@@ -297,6 +308,19 @@
             this.label7.Size = new System.Drawing.Size(44, 13);
             this.label7.TabIndex = 7;
             this.label7.Text = "Position";
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
+            // 
+            // deleteToolStripMenuItem
+            // 
+            this.deleteToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("deleteToolStripMenuItem.Image")));
+            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.deleteToolStripMenuItem.Text = "Delete";
+            this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
             // 
             // GUI_TransformDataType
             // 
@@ -336,5 +360,8 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem copyTransformToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pasteTransformToolStripMenuItem;
+        private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
     }
 }

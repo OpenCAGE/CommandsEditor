@@ -620,7 +620,7 @@ namespace CommandsEditor.DockPanels
             {
                 Composite comp = Content.commands.GetComposite(((FunctionEntity)entity).function);
 
-                //TODO: need to recurse to find all contained PhysicsSystem functions
+                //TODO: need to recurse into all child composite instances to find ALL contained PhysicsSystem functions, rather than just the layer below
                 FunctionEntity phys = comp?.functions.FirstOrDefault(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.PhysicsSystem));
                 if (phys != null)
                 {

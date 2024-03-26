@@ -14,7 +14,7 @@ using Newtonsoft.Json;
 
 namespace CommandsEditor.UserControls
 {
-    public partial class GUI_TransformDataType : UserControl
+    public partial class GUI_TransformDataType : ParameterUserControl
     {
         public Action OnValueChanged;
 
@@ -23,6 +23,7 @@ namespace CommandsEditor.UserControls
         public GUI_TransformDataType()
         {
             InitializeComponent();
+            this.ContextMenuStrip = contextMenuStrip1;
         }
 
         public void PopulateUI(cTransform cTrans, ShortGuid paramID)
@@ -33,6 +34,7 @@ namespace CommandsEditor.UserControls
         {
             POSITION_VARIABLE_DUMMY.Text = title;
             transformVal = cTrans;
+            this.deleteToolStripMenuItem.Text = "Delete '" + title + "'";
 
             UpdateUI();
 

@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 namespace CommandsEditor.UserControls
 {
-    public partial class GUI_Link : BaseUserControl
+    public partial class GUI_Link : ParameterUserControl
     {
         public Action<Entity> GoToEntity;
         public Action<Entity, Entity> OnLinkEdited;
@@ -22,6 +22,7 @@ namespace CommandsEditor.UserControls
         {
             _entityDisplay = editor;
             InitializeComponent();
+            this.ContextMenuStrip = contextMenuStrip1;
         }
 
         public void PopulateUI(EntityConnector link, bool isLinkOut, ShortGuid linkInGuid = new ShortGuid()) // linkInGuid only needs to be given if linkInGuid is false
@@ -34,6 +35,7 @@ namespace CommandsEditor.UserControls
                 _linkedEntity = _entityDisplay.Composite.GetEntityByID(link.childID);
                 group.Text = ShortGuidUtils.FindString(link.parentParamID);
                 label1.Text = "Connects OUT to \"" + ShortGuidUtils.FindString(link.childParamID) + "\" on: ";
+                this.deleteToolStripMenuItem.Text = "Delete '" + ShortGuidUtils.FindString(link.parentParamID) + "'";
             }
             else
             {
@@ -41,6 +43,7 @@ namespace CommandsEditor.UserControls
                 group.Text = ShortGuidUtils.FindString(link.childParamID);
                 label1.Text = "Connects IN from \"" + ShortGuidUtils.FindString(link.parentParamID) + "\" on: ";
                 GoTo.Image = invIconResource.Image;
+                this.deleteToolStripMenuItem.Text = "Delete '" + ShortGuidUtils.FindString(link.childParamID) + "'";
             }
 
             textBox1.Text = Content.editor_utils.GenerateEntityName(_linkedEntity, _entityDisplay.Composite);
@@ -77,6 +80,11 @@ namespace CommandsEditor.UserControls
                 _linkedEntity.childLinks.RemoveAll(o => o.connectionID == _link.connectionID);
 
             OnLinkEdited?.Invoke(_entityDisplay.Entity, _linkedEntity);
+        }
+
+        protected new void deleteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DeleteLink_Click(null, null);
         }
     }
 }
