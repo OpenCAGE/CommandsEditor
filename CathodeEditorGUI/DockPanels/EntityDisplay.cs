@@ -166,6 +166,7 @@ namespace CommandsEditor.DockPanels
             hierarchyDisplay.Visible = false;
             addNewParameter.Enabled = true;
             removeParameter.Enabled = true;
+            renameEntity.Visible = _entity.variant != EntityVariant.ALIAS;
             //--
 
             Cursor.Current = Cursors.WaitCursor;
