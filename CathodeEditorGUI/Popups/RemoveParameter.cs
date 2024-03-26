@@ -48,7 +48,7 @@ namespace CommandsEditor
                     item.Group = parameterToDelete.Groups[0];
                     item.SubItems.Add("[" + ShortGuidUtils.FindString(link.parentParamID) + "] " + _entityDisplay.Content.editor_utils.GenerateEntityName(ent, _entityDisplay.Composite));
                     item.Tag = linkRef;
-                    item.ImageIndex = 0;
+                    item.ImageIndex = 1;
                     parameterToDelete.Items.Add(item);
                 }
             }
@@ -75,7 +75,7 @@ namespace CommandsEditor
                 item.Group = parameterToDelete.Groups[2];
                 item.SubItems.Add("[" + ShortGuidUtils.FindString(link.childParamID) + "] " + _entityDisplay.Content.editor_utils.GenerateEntityName(_entityDisplay.Composite.GetEntityByID(link.childID), _entityDisplay.Composite));
                 item.Tag = link;
-                item.ImageIndex = 1;
+                item.ImageIndex = 0;
                 parameterToDelete.Items.Add(item);
             }
 
