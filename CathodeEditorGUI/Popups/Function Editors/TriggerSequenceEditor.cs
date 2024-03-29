@@ -159,13 +159,27 @@ namespace CommandsEditor
 
         private void addNewEntity_Click(object sender, EventArgs e)
         {
+            SelectHierarchy hierarchyEditor = new SelectHierarchy(_entityDisplay.Composite, new CompositeEntityList.DisplayOptions()
+            {
+                DisplayAliases = false,
+                DisplayFunctions = true,
+                DisplayProxies = false,
+                DisplayVariables = false,
+            });
+            hierarchyEditor.Show();
+            hierarchyEditor.OnHierarchyGenerated += addNewEntity_HierarchyGenerated;
+        }
+        private void addNewEntity_HierarchyGenerated(List<ShortGuid> generatedHierarchy)
+        {
             TriggerSequence.Entity trigger = new TriggerSequence.Entity();
+            trigger.connectedEntity.path = generatedHierarchy;
 
             int insertIndex = (entity_list.SelectedItems.Count == 0) ? _triggerSequence.entities.Count : entity_list.SelectedItems[0].Index + 1;
             _triggerSequence.entities.Insert(insertIndex, trigger);
 
             ReloadEntityList();
             entity_list.Items[insertIndex].Selected = true;
+            entity_list.EnsureVisible(insertIndex);
             LoadSelectedEntity();
         }
 
