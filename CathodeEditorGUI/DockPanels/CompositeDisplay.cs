@@ -49,6 +49,7 @@ namespace CommandsEditor.DockPanels
         private bool _canExportChildren = true;
 
         private const int _defaultSplitterDistance = 500;
+        private bool _isSubbed = false;
 
         public CompositeDisplay(CommandsDisplay commandsDisplay)
         {
@@ -56,19 +57,14 @@ namespace CommandsEditor.DockPanels
 
             InitializeComponent();
 
-            dockPanel.ActiveContentChanged += DockPanel_ActiveContentChanged;
             dockPanel.ShowDocumentIcon = true;
 
             splitContainer1.FixedPanel = FixedPanel.Panel1;
             splitContainer1.SplitterDistance = SettingsManager.GetInteger(Singleton.Settings.EntitySplitWidth, _defaultSplitterDistance);
 
-            compositeEntityList1.SelectedEntityChanged += LoadEntity;
             compositeEntityList1.ContextMenuStrip = EntityListContextMenu;
 
             this.FormClosed += CompositeDisplay_FormClosed;
-
-            Singleton.OnCompositeRenamed += OnCompositeRenamed;
-            Singleton.OnEntityAdded += OnAddNewEntity;
         }
 
         private void OnCompositeRenamed(Composite composite, string name)
@@ -87,6 +83,15 @@ namespace CommandsEditor.DockPanels
         /* Call this to show the CompositeDisplay with the requested Composite content */
         public void PopulateUI(Composite composite)
         {
+            if (!_isSubbed)
+            {
+                dockPanel.ActiveContentChanged += DockPanel_ActiveContentChanged;
+                compositeEntityList1.SelectedEntityChanged += LoadEntity;
+                Singleton.OnCompositeRenamed += OnCompositeRenamed;
+                Singleton.OnEntityAdded += OnAddNewEntity;
+                _isSubbed = true;
+            }
+
             EditorUtils.CompositeType type = Content.editor_utils.GetCompositeType(composite);
             
             switch (type)
@@ -108,6 +113,7 @@ namespace CommandsEditor.DockPanels
 
             compositeEntityList1.Setup(composite, null, false);
             _path = new CompositePath();
+            this.Text = EditorUtils.GetCompositeName(composite);
 
             Reload(composite);
             Singleton.OnCompositeSelected?.Invoke(_composite);
@@ -124,16 +130,19 @@ namespace CommandsEditor.DockPanels
         {
             dockPanel.ActiveContentChanged -= DockPanel_ActiveContentChanged;
             compositeEntityList1.SelectedEntityChanged -= LoadEntity;
-            this.FormClosed -= CompositeDisplay_FormClosed;
+            //this.FormClosed -= CompositeDisplay_FormClosed;
             Singleton.OnCompositeRenamed -= OnCompositeRenamed;
             Singleton.OnEntityAdded -= OnAddNewEntity;
+            _isSubbed = false;
 
-            if (dialog != null)
-                dialog.Close();
+            if (dialog_var != null)
+                dialog_var.Close();
             if (dialog_func != null)
                 dialog_func.Close();
             if (dialog_compinst != null)
                 dialog_compinst.Close();
+            if (dialog_hierarchy != null)
+                dialog_hierarchy.Close();
 
             if (_activeEntityDisplay != null)
                 _activeEntityDisplay.FormClosing -= OnActiveContentClosing;
@@ -168,7 +177,6 @@ namespace CommandsEditor.DockPanels
             findUses.Visible = isCoreComposite;
             deleteComposite.Visible = isCoreComposite;
 
-            this.Text = EditorUtils.GetCompositeName(composite);
             pathDisplay.Text = _path.GetPath(composite);
             _composite = composite;
 
@@ -614,7 +622,7 @@ namespace CommandsEditor.DockPanels
             {
                 Composite comp = Content.commands.GetComposite(((FunctionEntity)entity).function);
 
-                //TODO: need to recurse to find all contained PhysicsSystem functions
+                //TODO: need to recurse into all child composite instances to find ALL contained PhysicsSystem functions, rather than just the layer below
                 FunctionEntity phys = comp?.functions.FirstOrDefault(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.PhysicsSystem));
                 if (phys != null)
                 {
@@ -720,9 +728,10 @@ namespace CommandsEditor.DockPanels
             CreateEntity(EntityVariant.ALIAS);
         }
 
-        AddEntity dialog = null;
+        AddEntity_Variable dialog_var = null;
         AddEntity_Function dialog_func = null;
         AddEntity_CompositeInstance dialog_compinst = null;
+        SelectHierarchy dialog_hierarchy = null; EntityVariant dialog_hierarchy_entvar;
         private void CreateEntity(EntityVariant variant = EntityVariant.FUNCTION, bool composite = false)
         {
             if (variant == EntityVariant.FUNCTION && !composite)
@@ -743,15 +752,71 @@ namespace CommandsEditor.DockPanels
                 dialog_compinst.Show();
                 dialog_compinst.Focus();
             }
-            else
+            else if (variant == EntityVariant.PROXY || variant == EntityVariant.ALIAS)
             {
-                if (dialog != null && (dialog.Variant != variant || dialog.Composite != composite))
-                    dialog.Close();
+                if (dialog_hierarchy != null)
+                    dialog_hierarchy.Close();
 
-                dialog = new AddEntity(this, variant, composite);
-                dialog.Show();
-                dialog.Focus();
+                dialog_hierarchy_entvar = variant;
+                switch (dialog_hierarchy_entvar)
+                {
+                    case EntityVariant.PROXY:
+                        dialog_hierarchy = new SelectHierarchy(Content.commands.EntryPoints[0], new CompositeEntityList.DisplayOptions()
+                        {
+                            DisplayAliases = false,
+                            DisplayFunctions = true,
+                            DisplayProxies = false,
+                            DisplayVariables = false,
+                        });
+                        dialog_hierarchy.Text = "Create Proxy";
+                        break;
+                    case EntityVariant.ALIAS:
+                        dialog_hierarchy = new SelectHierarchy(_composite, new CompositeEntityList.DisplayOptions()
+                        {
+                            DisplayAliases = false,
+                            DisplayFunctions = true,
+                            DisplayProxies = true,
+                            DisplayVariables = true,
+                        });
+                        dialog_hierarchy.Text = "Create Alias";
+                        break;
+                }
+                dialog_hierarchy.OnHierarchyGenerated += OnNewEntityHierarchyGenerated;
+                dialog_hierarchy.Show();
+                dialog_hierarchy.Focus();
             }
+            else if (variant == EntityVariant.VARIABLE)
+            {
+                if (dialog_var != null)
+                    dialog_var.Close();
+
+                dialog_var = new AddEntity_Variable(this);
+                dialog_var.Show();
+                dialog_var.Focus();
+            }
+        }
+        private void OnNewEntityHierarchyGenerated(List<ShortGuid> generatedHierarchy)
+        {
+            Singleton.OnEntityAddPending?.Invoke();
+
+            Entity ent = null;
+            switch (dialog_hierarchy_entvar)
+            {
+                case EntityVariant.PROXY:
+                    List<ShortGuid> hierarchy = new List<ShortGuid>();
+                    hierarchy.Add(Content.commands.EntryPoints[0].shortGUID);
+                    hierarchy.AddRange(generatedHierarchy);
+                    ent = _composite.AddProxy(Content.commands, hierarchy); //TODO: re-add "add default params"
+                    Entity pointedEnt = ((ProxyEntity)ent).proxy.GetPointedEntity(Content.commands, out Composite pointedComp);
+                    EntityUtils.SetName(_composite, ent, EntityUtils.GetName(pointedComp, pointedEnt) + " Proxy");
+                    break;
+                case EntityVariant.ALIAS:
+                    hierarchy = generatedHierarchy;
+                    ent = _composite.AddAlias(hierarchy); //TODO: re-add "add default params"?
+                    break;
+            }
+
+            Singleton.OnEntityAdded?.Invoke(ent);
         }
 
         private void goBackOnPath_Click(object sender, EventArgs e)
@@ -779,25 +844,6 @@ namespace CommandsEditor.DockPanels
         }
 
         /* Entity List Context Menu */
-        private void FooListView_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Right)
-            {
-                var lv = sender as ListViewExtended;
-                var item = lv.HitTest(e.Location).Item;
-
-                deleteToolStripMenuItem.Enabled = item != null;
-                renameToolStripMenuItem.Enabled = item != null;
-                duplicateToolStripMenuItem.Enabled = item != null;
-                copyToolStripMenuItem.Enabled = item != null;
-                pasteToolStripMenuItem.Enabled = EditorClipboard.Entity != null;
-
-                if (item != null)
-                    lv.FocusedItem = item;
-
-                EntityListContextMenu.Show(lv, e.Location);
-            }
-        }
         private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
         {
             DeleteEntity(compositeEntityList1.SelectedEntity);
@@ -847,7 +893,7 @@ namespace CommandsEditor.DockPanels
             bool hasSelectedEntity = compositeEntityList1.SelectedEntity != null;
 
             deleteToolStripMenuItem.Enabled = hasSelectedEntity;
-            renameToolStripMenuItem.Enabled = hasSelectedEntity;
+            renameToolStripMenuItem.Enabled = hasSelectedEntity && compositeEntityList1.SelectedEntity.variant != EntityVariant.ALIAS;
             duplicateToolStripMenuItem.Enabled = hasSelectedEntity;
         }
 

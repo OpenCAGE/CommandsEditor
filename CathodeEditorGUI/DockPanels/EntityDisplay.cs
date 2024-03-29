@@ -139,6 +139,12 @@ namespace CommandsEditor.DockPanels
 
             imageList1.Images.Clear();
             imageList1.Dispose();
+
+            if (add_parameter != null)
+            {
+                add_parameter.OnSaved -= Reload;
+                add_parameter.Close();
+            }
         }
 
         /* Reload this display */
@@ -150,7 +156,12 @@ namespace CommandsEditor.DockPanels
             selected_entity_type_description.Text = "";
             selected_entity_name.Text = "";
             for (int i = 0; i < entity_params.Controls.Count; i++)
+            {
+                if (entity_params.Controls[i] is ParameterUserControl)
+                    ((ParameterUserControl)entity_params.Controls[i]).OnDeleted -= OnDeleteParam;
+
                 entity_params.Controls[i].Dispose();
+            }
             entity_params.Controls.Clear();
             jumpToComposite.Visible = false;
             editFunction.Enabled = false;
@@ -161,6 +172,7 @@ namespace CommandsEditor.DockPanels
             hierarchyDisplay.Visible = false;
             addNewParameter.Enabled = true;
             removeParameter.Enabled = true;
+            renameEntity.Visible = _entity.variant != EntityVariant.ALIAS;
             //--
 
             Cursor.Current = Cursors.WaitCursor;
@@ -270,7 +282,7 @@ namespace CommandsEditor.DockPanels
             for (int i = 0; i < _entity.parameters.Count; i++)
             {
                 ParameterData this_param = _entity.parameters[i].content;
-                UserControl parameterGUI = null;
+                ParameterUserControl parameterGUI = null;
                 string paramName = _entity.parameters[i].name.ToString();
                 switch (this_param.dataType)
                 {
@@ -427,6 +439,8 @@ namespace CommandsEditor.DockPanels
                         ((GUI_SplineDataType)parameterGUI).PopulateUI((cSpline)this_param, paramName);
                         break;
                 }
+                parameterGUI.Parameter = _entity.parameters[i];
+                parameterGUI.OnDeleted += OnDeleteParam;
                 parameterGUI.Location = new Point(15, current_ui_offset);
                 parameterGUI.Width = entity_params.Width - 30;
                 parameterGUI.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
@@ -454,6 +468,12 @@ namespace CommandsEditor.DockPanels
 
             Singleton.OnEntityReloaded?.Invoke(_entity);
             Cursor.Current = Cursors.Default;
+        }
+
+        private void OnDeleteParam(Parameter param)
+        {
+            _entity.parameters.Remove(param);
+            _compositeDisplay.ReloadEntity(_entity);
         }
 
         private void OnLinkEdited(Entity orig, Entity linked)
@@ -514,9 +534,19 @@ namespace CommandsEditor.DockPanels
         }
 
         /* Add a new parameter */
+        AddParameter add_parameter;
         private void addNewParameter_Click(object sender, EventArgs e)
         {
-            AddParameter add_parameter = new AddParameter(this);
+            if (add_parameter != null)
+            {
+                add_parameter.OnSaved -= Reload;
+                add_parameter.Close();
+            }
+
+            if (SettingsManager.GetBool(Singleton.Settings.UseLegacyParamCreator))
+                add_parameter = new AddParameter_Custom(this);
+            else
+                add_parameter = new AddParameter_PreDefined(this);
             add_parameter.Show();
             add_parameter.OnSaved += Reload;
         }

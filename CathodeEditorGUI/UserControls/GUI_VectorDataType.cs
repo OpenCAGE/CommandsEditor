@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 
 namespace CommandsEditor.UserControls
 {
-    public partial class GUI_VectorDataType : UserControl
+    public partial class GUI_VectorDataType : ParameterUserControl
     {
         cVector3 vectorVal = null;
 
@@ -23,12 +23,14 @@ namespace CommandsEditor.UserControls
         {
             InitializeComponent();
             this.ContextMenuStrip = contextMenuStrip1;
+            this.deleteToolStripMenuItem.Click += new EventHandler(deleteToolStripMenuItem_Click);
         }
 
         public void PopulateUI(cVector3 cVec, string paramID)
         {
             vectorVal = cVec;
             label1.Text = paramID;
+            this.deleteToolStripMenuItem.Text = "Delete '" + paramID + "'";
 
             UpdateUI();
         }

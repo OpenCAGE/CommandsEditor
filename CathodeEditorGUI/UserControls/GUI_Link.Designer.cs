@@ -31,6 +31,7 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GUI_Link));
             this.group = new System.Windows.Forms.GroupBox();
+            this.invIconResource = new System.Windows.Forms.Button();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.DeleteLink = new System.Windows.Forms.Button();
             this.EditLink = new System.Windows.Forms.Button();
@@ -38,9 +39,11 @@
             this.label1 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.invIconResource = new System.Windows.Forms.Button();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.group.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // group
@@ -57,6 +60,17 @@
             this.group.TabStop = false;
             this.group.Text = " dfgdfgdfdfgdfg";
             // 
+            // invIconResource
+            // 
+            this.invIconResource.Enabled = false;
+            this.invIconResource.Image = ((System.Drawing.Image)(resources.GetObject("invIconResource.Image")));
+            this.invIconResource.Location = new System.Drawing.Point(201, 10);
+            this.invIconResource.Name = "invIconResource";
+            this.invIconResource.Size = new System.Drawing.Size(27, 22);
+            this.invIconResource.TabIndex = 21;
+            this.invIconResource.UseVisualStyleBackColor = true;
+            this.invIconResource.Visible = false;
+            // 
             // tableLayoutPanel2
             // 
             this.tableLayoutPanel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -71,7 +85,7 @@
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 1;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 28F));
             this.tableLayoutPanel2.Size = new System.Drawing.Size(99, 28);
             this.tableLayoutPanel2.TabIndex = 20;
             // 
@@ -129,16 +143,20 @@
             this.textBox1.Size = new System.Drawing.Size(322, 20);
             this.textBox1.TabIndex = 3;
             // 
-            // invIconResource
+            // contextMenuStrip1
             // 
-            this.invIconResource.Enabled = false;
-            this.invIconResource.Image = ((System.Drawing.Image)(resources.GetObject("invIconResource.Image")));
-            this.invIconResource.Location = new System.Drawing.Point(201, 10);
-            this.invIconResource.Name = "invIconResource";
-            this.invIconResource.Size = new System.Drawing.Size(27, 22);
-            this.invIconResource.TabIndex = 21;
-            this.invIconResource.UseVisualStyleBackColor = true;
-            this.invIconResource.Visible = false;
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.deleteToolStripMenuItem});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(181, 48);
+            // 
+            // deleteToolStripMenuItem
+            // 
+            this.deleteToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("deleteToolStripMenuItem.Image")));
+            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.deleteToolStripMenuItem.Text = "Delete";
+            this.deleteToolStripMenuItem.Click += new System.EventHandler(this.DeleteLink_Click);
             // 
             // GUI_Link
             // 
@@ -150,6 +168,7 @@
             this.group.ResumeLayout(false);
             this.group.PerformLayout();
             this.tableLayoutPanel2.ResumeLayout(false);
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -165,5 +184,7 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Button invIconResource;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
     }
 }

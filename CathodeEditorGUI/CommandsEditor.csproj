@@ -273,6 +273,12 @@
     <Compile Include="Popups\AddEntity_CompositeInstance.Designer.cs">
       <DependentUpon>AddEntity_CompositeInstance.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\AddParameter_PreDefined.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\AddParameter_PreDefined.Designer.cs">
+      <DependentUpon>AddParameter_PreDefined.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popups\AddEntity_Function.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -323,6 +329,12 @@
     </Compile>
     <Compile Include="Popups\ShowInstanceInfo.Designer.cs">
       <DependentUpon>ShowInstanceInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\UserControls\AddParameter.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\UserControls\AddParameter.Designer.cs">
+      <DependentUpon>AddParameter.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\UserControls\CompositeEntityList.cs">
       <SubType>UserControl</SubType>
@@ -441,6 +453,7 @@
     <Compile Include="Scripts\CathodeEnums.cs" />
     <Compile Include="Scripts\CathodeLibExtensions.cs" />
     <Compile Include="Scripts\ComboBoxExtensions.cs" />
+    <Compile Include="Scripts\ListViewColumnSorter.cs" />
     <Compile Include="Scripts\ListViewExtended.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -1255,11 +1268,11 @@
       <DependentUpon>AddOrEditResource.cs</DependentUpon>
     </Compile>
     <Compile Include="Scripts\EditorUtils.cs" />
-    <Compile Include="Popups\AddEntity.cs">
+    <Compile Include="Popups\AddEntity_Variable.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Popups\AddEntity.Designer.cs">
-      <DependentUpon>AddEntity.cs</DependentUpon>
+    <Compile Include="Popups\AddEntity_Variable.Designer.cs">
+      <DependentUpon>AddEntity_Variable.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\AddComposite.cs">
       <SubType>Form</SubType>
@@ -1267,11 +1280,11 @@
     <Compile Include="Popups\AddComposite.Designer.cs">
       <DependentUpon>AddComposite.cs</DependentUpon>
     </Compile>
-    <Compile Include="Popups\AddParameter.cs">
+    <Compile Include="Popups\AddParameter_Custom.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Popups\AddParameter.Designer.cs">
-      <DependentUpon>AddParameter.cs</DependentUpon>
+    <Compile Include="Popups\AddParameter_Custom.Designer.cs">
+      <DependentUpon>AddParameter_Custom.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\AddOrEditLink.cs">
       <SubType>Form</SubType>
@@ -1285,11 +1298,11 @@
     <Compile Include="Popups\Experimental\Composite3D.Designer.cs">
       <DependentUpon>Composite3D.cs</DependentUpon>
     </Compile>
-    <Compile Include="Popups\EditHierarchy.cs">
+    <Compile Include="Popups\SelectHierarchy.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Popups\EditHierarchy.Designer.cs">
-      <DependentUpon>EditHierarchy.cs</DependentUpon>
+    <Compile Include="Popups\SelectHierarchy.Designer.cs">
+      <DependentUpon>SelectHierarchy.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\EditMVR.cs">
       <SubType>Form</SubType>
@@ -1367,16 +1380,17 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Scripts\ParameterCreator.cs" />
     <Compile Include="Scripts\ToolstripRendererExcs.cs" />
     <Compile Include="Scripts\TreeUtility.cs" />
     <Compile Include="Scripts\SettingsManager.cs" />
     <Compile Include="Scripts\WebsocketServer.cs" />
     <Compile Include="Scripts\Singleton.cs" />
-    <Compile Include="UserControls\Base\BaseUserControl.cs">
+    <Compile Include="UserControls\Base\ParameterUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UserControls\Base\BaseUserControl.Designer.cs">
-      <DependentUpon>BaseUserControl.cs</DependentUpon>
+    <Compile Include="UserControls\Base\ParameterUserControl.Designer.cs">
+      <DependentUpon>ParameterUserControl.cs</DependentUpon>
     </Compile>
     <Compile Include="UserControls\Variants\GUI_StringVariant_AssetDropdown.cs">
       <SubType>UserControl</SubType>
@@ -1465,6 +1479,9 @@
     <EmbeddedResource Include="Popups\AddEntity_CompositeInstance.resx">
       <DependentUpon>AddEntity_CompositeInstance.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Popups\AddParameter_PreDefined.resx">
+      <DependentUpon>AddParameter_PreDefined.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Popups\AddEntity_Function.resx">
       <DependentUpon>AddEntity_Function.cs</DependentUpon>
     </EmbeddedResource>
@@ -1513,8 +1530,8 @@
     <EmbeddedResource Include="Popups\Function Editors\CAGEAnimationEditor.resx">
       <DependentUpon>CAGEAnimationEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Popups\AddEntity.resx">
-      <DependentUpon>AddEntity.cs</DependentUpon>
+    <EmbeddedResource Include="Popups\AddEntity_Variable.resx">
+      <DependentUpon>AddEntity_Variable.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\AddComposite.resx">
       <DependentUpon>AddComposite.cs</DependentUpon>
@@ -1522,8 +1539,8 @@
     <EmbeddedResource Include="Popups\AddOrEditResource.resx">
       <DependentUpon>AddOrEditResource.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Popups\AddParameter.resx">
-      <DependentUpon>AddParameter.cs</DependentUpon>
+    <EmbeddedResource Include="Popups\AddParameter_Custom.resx">
+      <DependentUpon>AddParameter_Custom.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\AddOrEditLink.resx">
       <DependentUpon>AddOrEditLink.cs</DependentUpon>
@@ -1531,8 +1548,8 @@
     <EmbeddedResource Include="Popups\Experimental\Composite3D.resx">
       <DependentUpon>Composite3D.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Popups\EditHierarchy.resx">
-      <DependentUpon>EditHierarchy.cs</DependentUpon>
+    <EmbeddedResource Include="Popups\SelectHierarchy.resx">
+      <DependentUpon>SelectHierarchy.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\EditMVR.resx">
       <DependentUpon>EditMVR.cs</DependentUpon>

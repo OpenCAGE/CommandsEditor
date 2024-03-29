@@ -13,7 +13,7 @@ using CathodeLib;
 
 namespace CommandsEditor.UserControls
 {
-    public partial class GUI_NumericDataType : UserControl
+    public partial class GUI_NumericDataType : ParameterUserControl
     {
         cFloat floatVal = null;
         cInteger intVal = null;
@@ -22,6 +22,8 @@ namespace CommandsEditor.UserControls
         public GUI_NumericDataType()
         {
             InitializeComponent();
+            this.ContextMenuStrip = contextMenuStrip1;
+            this.deleteToolStripMenuItem.Click += new EventHandler(deleteToolStripMenuItem_Click);
         }
 
         public void PopulateUI_Float(cFloat cFloat, string paramID)
@@ -29,6 +31,7 @@ namespace CommandsEditor.UserControls
             floatVal = cFloat;
             label1.Text = paramID;
             textBox1.Text = cFloat.value.ToString();
+            this.deleteToolStripMenuItem.Text = "Delete '" + paramID + "'";
         }
 
         public void PopulateUI_Int(cInteger cInt, string paramID)
@@ -37,6 +40,7 @@ namespace CommandsEditor.UserControls
             intVal = cInt;
             label1.Text = paramID;
             textBox1.Text = cInt.value.ToString();
+            this.deleteToolStripMenuItem.Text = "Delete '" + paramID + "'";
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)

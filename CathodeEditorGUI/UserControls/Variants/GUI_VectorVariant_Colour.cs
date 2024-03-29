@@ -15,19 +15,22 @@ using Newtonsoft.Json;
 
 namespace CommandsEditor.UserControls
 {
-    public partial class GUI_VectorVariant_Colour : UserControl
+    public partial class GUI_VectorVariant_Colour : ParameterUserControl
     {
         cVector3 vector = null;
 
         public GUI_VectorVariant_Colour()
         {
             InitializeComponent();
+            this.ContextMenuStrip = contextMenuStrip1;
+            this.deleteToolStripMenuItem.Click += new EventHandler(deleteToolStripMenuItem_Click);
         }
 
         public void PopulateUI(cVector3 cVec, string paramID)
         {
             vector = cVec;
             GUID_VARIABLE_DUMMY.Text = paramID;
+            this.deleteToolStripMenuItem.Text = "Delete '" + paramID + "'";
 
             UpdateUI();
         }

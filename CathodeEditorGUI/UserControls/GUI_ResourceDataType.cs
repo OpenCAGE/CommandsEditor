@@ -13,11 +13,13 @@ using CathodeLib;
 
 namespace CommandsEditor.UserControls
 {
-    public partial class GUI_ResourceDataType : BaseUserControl
+    public partial class GUI_ResourceDataType : ParameterUserControl
     {
         public GUI_ResourceDataType() : base()
         {
             InitializeComponent();
+            this.ContextMenuStrip = contextMenuStrip1;
+            this.deleteToolStripMenuItem.Click += new EventHandler(deleteToolStripMenuItem_Click);
         }
 
         private cResource resRef = null;
@@ -25,6 +27,7 @@ namespace CommandsEditor.UserControls
         {
             GUID_VARIABLE_DUMMY.Text = paramID;
             resRef = cResource;
+            this.deleteToolStripMenuItem.Text = "Delete '" + paramID + "'";
         }
 
         /* Edit resources referenced by the resource param */

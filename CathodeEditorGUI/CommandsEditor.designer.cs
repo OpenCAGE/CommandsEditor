@@ -59,6 +59,7 @@
             this.statusText = new System.Windows.Forms.ToolStripStatusLabel();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.useLegacyParameterCreatorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -174,7 +175,8 @@
             this.showNodegraph,
             this.showEntityIDs,
             this.entitiesOpenTabs,
-            this.nodeOpensEntity});
+            this.nodeOpensEntity,
+            this.useLegacyParameterCreatorToolStripMenuItem});
             this.entityDisplayToolStripMenuItem.Name = "entityDisplayToolStripMenuItem";
             this.entityDisplayToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.entityDisplayToolStripMenuItem.Text = "Entity Display";
@@ -295,6 +297,13 @@
             this.dockPanel.TabIndex = 5;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
             // 
+            // useLegacyParameterCreatorToolStripMenuItem
+            // 
+            this.useLegacyParameterCreatorToolStripMenuItem.Name = "useLegacyParameterCreatorToolStripMenuItem";
+            this.useLegacyParameterCreatorToolStripMenuItem.Size = new System.Drawing.Size(312, 22);
+            this.useLegacyParameterCreatorToolStripMenuItem.Text = "Use Legacy Parameter Creator";
+            this.useLegacyParameterCreatorToolStripMenuItem.Click += new System.EventHandler(this.useLegacyParameterCreatorToolStripMenuItem_Click);
+            // 
             // CommandsEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -348,5 +357,6 @@
         private System.Windows.Forms.ToolStripMenuItem keepFunctionUsesWindowOpenToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem nodeOpensEntity;
         private System.Windows.Forms.ToolStripMenuItem resetUILayoutsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem useLegacyParameterCreatorToolStripMenuItem;
     }
 }

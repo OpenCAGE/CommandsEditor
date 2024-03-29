@@ -14,7 +14,7 @@ using CommandsEditor.DockPanels;
 
 namespace CommandsEditor.UserControls
 {
-    public partial class GUI_SplineDataType : BaseUserControl
+    public partial class GUI_SplineDataType : ParameterUserControl
     {
         private EntityDisplay _entityDisplay;
 
@@ -22,6 +22,8 @@ namespace CommandsEditor.UserControls
         {
             _entityDisplay = entityDisplay;
             InitializeComponent();
+            this.ContextMenuStrip = contextMenuStrip1;
+            this.deleteToolStripMenuItem.Click += new EventHandler(deleteToolStripMenuItem_Click);
         }
 
         private cSpline spline = null;
@@ -29,6 +31,7 @@ namespace CommandsEditor.UserControls
         {
             SPLINE_CONTAINER.Text = paramID;
             spline = cSpline;
+            this.deleteToolStripMenuItem.Text = "Delete '" + paramID + "'";
         }
 
         private void openSplineEditor_Click(object sender, EventArgs e)

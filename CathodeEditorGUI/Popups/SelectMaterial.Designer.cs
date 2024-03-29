@@ -30,7 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SelectMaterial));
             this.materialList = new System.Windows.Forms.ListBox();
-            this.selectMaterial = new System.Windows.Forms.Button();
+            this.selectMaterialBtn = new System.Windows.Forms.Button();
             this.duplicateMaterial = new System.Windows.Forms.Button();
             this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
             this.materialEditorControlsWPF1 = new AlienPAK.MaterialEditorControlsWPF();
@@ -47,13 +47,13 @@
             // 
             // selectMaterial
             // 
-            this.selectMaterial.Location = new System.Drawing.Point(693, 639);
-            this.selectMaterial.Name = "selectMaterial";
-            this.selectMaterial.Size = new System.Drawing.Size(140, 30);
-            this.selectMaterial.TabIndex = 22;
-            this.selectMaterial.Text = "Use This Material";
-            this.selectMaterial.UseVisualStyleBackColor = true;
-            this.selectMaterial.Click += new System.EventHandler(this.selectMaterial_Click);
+            this.selectMaterialBtn.Location = new System.Drawing.Point(693, 639);
+            this.selectMaterialBtn.Name = "selectMaterial";
+            this.selectMaterialBtn.Size = new System.Drawing.Size(140, 30);
+            this.selectMaterialBtn.TabIndex = 22;
+            this.selectMaterialBtn.Text = "Use This Material";
+            this.selectMaterialBtn.UseVisualStyleBackColor = true;
+            this.selectMaterialBtn.Click += new System.EventHandler(this.selectMaterial_Click);
             // 
             // duplicateMaterial
             // 
@@ -80,7 +80,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(845, 681);
             this.Controls.Add(this.duplicateMaterial);
-            this.Controls.Add(this.selectMaterial);
+            this.Controls.Add(this.selectMaterialBtn);
             this.Controls.Add(this.materialList);
             this.Controls.Add(this.elementHost1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
@@ -98,7 +98,7 @@
         private System.Windows.Forms.Integration.ElementHost elementHost1;
         private MaterialEditorControlsWPF materialEditorControlsWPF1;
         private System.Windows.Forms.ListBox materialList;
-        private System.Windows.Forms.Button selectMaterial;
+        private System.Windows.Forms.Button selectMaterialBtn;
         private System.Windows.Forms.Button duplicateMaterial;
     }
 }
