@@ -75,6 +75,9 @@
             // 
             // trigger_list
             // 
+            this.trigger_list.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.trigger_list.FormattingEnabled = true;
             this.trigger_list.HorizontalScrollbar = true;
             this.trigger_list.Location = new System.Drawing.Point(6, 19);
@@ -85,6 +88,9 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.button2);
             this.groupBox1.Controls.Add(this.moveDown);
             this.groupBox1.Controls.Add(this.entity_list);
@@ -100,6 +106,7 @@
             // 
             // button2
             // 
+            this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.button2.Location = new System.Drawing.Point(924, 283);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(144, 26);
@@ -171,6 +178,7 @@
             // 
             // addNewTrigger
             // 
+            this.addNewTrigger.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.addNewTrigger.Location = new System.Drawing.Point(707, 283);
             this.addNewTrigger.Name = "addNewTrigger";
             this.addNewTrigger.Size = new System.Drawing.Size(211, 26);
@@ -181,6 +189,7 @@
             // 
             // selectedEntityDetails
             // 
+            this.selectedEntityDetails.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.selectedEntityDetails.Controls.Add(this.entityTriggerDelay);
             this.selectedEntityDetails.Controls.Add(this.label2);
             this.selectedEntityDetails.Controls.Add(this.entityHierarchy);
@@ -195,6 +204,7 @@
             // 
             // moveDown
             // 
+            this.moveDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.moveDown.Enabled = false;
             this.moveDown.Image = ((System.Drawing.Image)(resources.GetObject("moveDown.Image")));
             this.moveDown.Location = new System.Drawing.Point(707, 219);
@@ -207,6 +217,7 @@
             // 
             // entityTriggerDelay
             // 
+            this.entityTriggerDelay.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.entityTriggerDelay.Location = new System.Drawing.Point(17, 87);
             this.entityTriggerDelay.Name = "entityTriggerDelay";
             this.entityTriggerDelay.Size = new System.Drawing.Size(444, 20);
@@ -215,6 +226,7 @@
             // 
             // moveUp
             // 
+            this.moveUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.moveUp.Enabled = false;
             this.moveUp.Image = ((System.Drawing.Image)(resources.GetObject("moveUp.Image")));
             this.moveUp.Location = new System.Drawing.Point(707, 189);
@@ -236,6 +248,7 @@
             // 
             // entityHierarchy
             // 
+            this.entityHierarchy.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.entityHierarchy.Location = new System.Drawing.Point(17, 42);
             this.entityHierarchy.Name = "entityHierarchy";
             this.entityHierarchy.ReadOnly = true;
@@ -253,6 +266,7 @@
             // 
             // selectEntToPointTo
             // 
+            this.selectEntToPointTo.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.selectEntToPointTo.Location = new System.Drawing.Point(361, 41);
             this.selectEntToPointTo.Name = "selectEntToPointTo";
             this.selectEntToPointTo.Size = new System.Drawing.Size(100, 23);
@@ -263,6 +277,8 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.Controls.Add(this.selectedTriggerDetails);
             this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Controls.Add(this.deleteParamTrigger);
@@ -277,6 +293,7 @@
             // 
             // selectedTriggerDetails
             // 
+            this.selectedTriggerDetails.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.selectedTriggerDetails.Controls.Add(this.saveTrigger);
             this.selectedTriggerDetails.Controls.Add(this.triggerEndParam);
             this.selectedTriggerDetails.Controls.Add(this.label4);
@@ -333,6 +350,7 @@
             // 
             // label3
             // 
+            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(883, 251);
             this.label3.Name = "label3";
@@ -343,6 +361,7 @@
             // 
             // deleteParamTrigger
             // 
+            this.deleteParamTrigger.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.deleteParamTrigger.Location = new System.Drawing.Point(707, 283);
             this.deleteParamTrigger.Name = "deleteParamTrigger";
             this.deleteParamTrigger.Size = new System.Drawing.Size(170, 26);
@@ -353,6 +372,7 @@
             // 
             // addNewParamTrigger
             // 
+            this.addNewParamTrigger.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.addNewParamTrigger.Location = new System.Drawing.Point(707, 251);
             this.addNewParamTrigger.Name = "addNewParamTrigger";
             this.addNewParamTrigger.Size = new System.Drawing.Size(170, 26);
@@ -363,6 +383,7 @@
             // 
             // button1
             // 
+            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.button1.Location = new System.Drawing.Point(1063, 654);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(143, 32);
@@ -382,6 +403,8 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
+            this.MaximumSize = new System.Drawing.Size(2000, 2000);
+            this.MinimumSize = new System.Drawing.Size(700, 690);
             this.Name = "TriggerSequenceEditor";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "TriggerSequence Editor";
