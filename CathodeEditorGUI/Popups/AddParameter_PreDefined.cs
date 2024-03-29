@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Security.Cryptography;
@@ -123,6 +124,20 @@ namespace CommandsEditor
 
             // Perform the sort with these new sort options.
             this.param_name.Sort();
+        }
+
+        private void helpBtn_Click(object sender, EventArgs e)
+        {
+            if (_creator.RootFunc != null)
+            {
+                string func = _creator.RootFunc.function.ToString();
+                if (func == _creator.RootFunc.function.ToByteString())
+                    Process.Start("https://opencage.co.uk/docs/cathode-entities/#CompositeInterface");
+                else
+                    Process.Start("https://opencage.co.uk/docs/cathode-entities/#" + _creator.RootFunc.function.ToString());
+            }
+            else
+                Process.Start("https://opencage.co.uk/docs/cathode-entities/#entities");
         }
     }
 }

@@ -17,6 +17,8 @@ namespace CommandsEditor
 
         string _name = "";
 
+        public FunctionEntity RootFunc => _funcEnt;
+
         public ParameterCreator(Entity ent, Composite comp)
         {
             _ent = ent;

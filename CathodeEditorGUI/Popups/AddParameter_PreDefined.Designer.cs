@@ -130,7 +130,6 @@
             this.param_name.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.funcHeader,
             this.inheritHeader});
-            this.param_name.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.ColumnClick);
             this.param_name.FullRowSelect = true;
             listViewGroup1.Header = "Target";
             listViewGroup1.Name = "Target";
@@ -173,6 +172,7 @@
             this.param_name.TabIndex = 180;
             this.param_name.UseCompatibleStateImageBehavior = false;
             this.param_name.View = System.Windows.Forms.View.Details;
+            this.param_name.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.ColumnClick);
             // 
             // funcHeader
             // 
@@ -200,6 +200,7 @@
             this.helpBtn.Size = new System.Drawing.Size(20, 20);
             this.helpBtn.TabIndex = 181;
             this.helpBtn.UseVisualStyleBackColor = true;
+            this.helpBtn.Click += new System.EventHandler(this.helpBtn_Click);
             // 
             // selectAll
             // 
