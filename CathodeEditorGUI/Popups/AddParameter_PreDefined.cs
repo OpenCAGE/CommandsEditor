@@ -22,6 +22,7 @@ namespace CommandsEditor
     {
         private ParameterCreator _creator;
         private List<ListViewItem> _items = new List<ListViewItem>();
+        private ListViewColumnSorter _sorter = new ListViewColumnSorter();
 
         private EntityDisplay _entDisplay;
 
@@ -31,6 +32,7 @@ namespace CommandsEditor
             _creator = new ParameterCreator(_entDisplay.Entity, _entDisplay.Composite);
 
             InitializeComponent();
+            param_name.ListViewItemSorter = _sorter;
 
             List<ListViewItem> options = _entDisplay.Content.editor_utils.GenerateParameterListAsListViewItem(_entDisplay.Entity, _entDisplay.Composite);
             for (int i = 0; i < options.Count; i++)
@@ -95,6 +97,32 @@ namespace CommandsEditor
                 item.Selected = false;
                 item.Checked = false;
             }
+        }
+
+        private void ColumnClick(object sender, System.Windows.Forms.ColumnClickEventArgs e)
+        {
+            // Determine if the clicked column is already the column that is being sorted.
+            if (e.Column == _sorter.SortColumn)
+            {
+                // Reverse the current sort direction for this column.
+                if (_sorter.Order == SortOrder.Ascending)
+                {
+                    _sorter.Order = SortOrder.Descending;
+                }
+                else
+                {
+                    _sorter.Order = SortOrder.Ascending;
+                }
+            }
+            else
+            {
+                // Set the column number that is to be sorted; default to ascending.
+                _sorter.SortColumn = e.Column;
+                _sorter.Order = SortOrder.Ascending;
+            }
+
+            // Perform the sort with these new sort options.
+            this.param_name.Sort();
         }
     }
 }

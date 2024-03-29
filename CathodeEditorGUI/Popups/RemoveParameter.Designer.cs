@@ -60,6 +60,7 @@
             this.parameterToDelete.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.funcHeader,
             this.inheritHeader});
+            this.parameterToDelete.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.ColumnClick);
             this.parameterToDelete.FullRowSelect = true;
             listViewGroup1.Header = "Links In";
             listViewGroup1.Name = "Links In";

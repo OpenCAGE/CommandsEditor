@@ -20,12 +20,14 @@ namespace CommandsEditor
         public Action OnSaved;
 
         private EntityDisplay _entityDisplay;
+        private ListViewColumnSorter _sorter = new ListViewColumnSorter();
 
         public RemoveParameter(EntityDisplay entityDisplay) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             InitializeComponent();
 
             _entityDisplay = entityDisplay;
+            parameterToDelete.ListViewItemSorter = _sorter;
 
             parameterToDelete.BeginUpdate();
 
@@ -86,6 +88,32 @@ namespace CommandsEditor
             }
 
             parameterToDelete.EndUpdate();
+        }
+
+        private void ColumnClick(object sender, System.Windows.Forms.ColumnClickEventArgs e)
+        {
+            // Determine if the clicked column is already the column that is being sorted.
+            if (e.Column == _sorter.SortColumn)
+            {
+                // Reverse the current sort direction for this column.
+                if (_sorter.Order == SortOrder.Ascending)
+                {
+                    _sorter.Order = SortOrder.Descending;
+                }
+                else
+                {
+                    _sorter.Order = SortOrder.Ascending;
+                }
+            }
+            else
+            {
+                // Set the column number that is to be sorted; default to ascending.
+                _sorter.SortColumn = e.Column;
+                _sorter.Order = SortOrder.Ascending;
+            }
+
+            // Perform the sort with these new sort options.
+            this.parameterToDelete.Sort();
         }
 
         private void delete_param_Click(object sender, EventArgs e)
