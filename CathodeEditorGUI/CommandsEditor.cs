@@ -98,6 +98,7 @@ namespace CommandsEditor
             useTexturedModelViewExperimentalToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.ShowTexOpt); useTexturedModelViewExperimentalToolStripMenuItem.PerformClick();
             keepFunctionUsesWindowOpenToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.KeepUsesWindowOpen); keepFunctionUsesWindowOpenToolStripMenuItem.PerformClick();
             nodeOpensEntity.Checked = !SettingsManager.GetBool(Singleton.Settings.OpenEntityFromNode); nodeOpensEntity.PerformClick();
+            useLegacyParameterCreatorToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.UseLegacyParamCreator); useLegacyParameterCreatorToolStripMenuItem.PerformClick();
 
             if (!SettingsManager.IsSet(Singleton.Settings.NodeOpt)) SettingsManager.SetBool(Singleton.Settings.NodeOpt, true);
             showNodegraph.Checked = !SettingsManager.GetBool(Singleton.Settings.NodeOpt); showNodegraph.PerformClick();
@@ -721,6 +722,12 @@ namespace CommandsEditor
         {
             nodeOpensEntity.Checked = !nodeOpensEntity.Checked;
             SettingsManager.SetBool(Singleton.Settings.OpenEntityFromNode, nodeOpensEntity.Checked);
+        }
+
+        private void useLegacyParameterCreatorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            useLegacyParameterCreatorToolStripMenuItem.Checked = !useLegacyParameterCreatorToolStripMenuItem.Checked;
+            SettingsManager.SetBool(Singleton.Settings.UseLegacyParamCreator, useLegacyParameterCreatorToolStripMenuItem.Checked);
         }
 
         private void resetUILayoutsToolStripMenuItem_Click(object sender, EventArgs e)

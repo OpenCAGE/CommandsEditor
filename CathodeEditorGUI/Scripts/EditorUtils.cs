@@ -12,8 +12,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
 using System.Xml;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace CommandsEditor
 {
@@ -205,7 +205,7 @@ namespace CommandsEditor
         }
 
         /* Utility: generate a list of suggested parameters for an entity */
-        public List<string> GenerateParameterList(Entity entity, Composite composite)
+        public List<string> GenerateParameterListAsString(Entity entity, Composite composite)
         {
             List<string> items = new List<string>();
             if (entity == null) return items;
@@ -234,10 +234,10 @@ namespace CommandsEditor
                     items.Add(ShortGuidUtils.FindString(((VariableEntity)entity).name));
                     break;
                 case EntityVariant.ALIAS:
-                    return GenerateParameterList(CommandsUtils.ResolveHierarchy(Content.commands, composite, ((AliasEntity)entity).alias.path, out Composite comp1, out string hierarchy1), comp1);
+                    return GenerateParameterListAsString(CommandsUtils.ResolveHierarchy(Content.commands, composite, ((AliasEntity)entity).alias.path, out Composite comp1, out string hierarchy1), comp1);
                 case EntityVariant.PROXY:
                     {
-                        items.AddRange(GenerateParameterList(CommandsUtils.ResolveHierarchy(Content.commands, composite, ((ProxyEntity)entity).proxy.path, out Composite comp2, out string hierarchy2), comp2));
+                        items.AddRange(GenerateParameterListAsString(CommandsUtils.ResolveHierarchy(Content.commands, composite, ((ProxyEntity)entity).proxy.path, out Composite comp2, out string hierarchy2), comp2));
 
                         List<CathodeEntityDatabase.ParameterDefinition> parameters = CathodeEntityDatabase.GetParametersFromEntity(ShortGuidUtils.Generate("ProxyInterface"));
                         if (parameters != null)
@@ -248,6 +248,70 @@ namespace CommandsEditor
             }
             items.Sort();
             return items;
+        }
+        public List<ListViewItem> GenerateParameterListAsListViewItem(Entity entity, Composite composite)
+        {
+            List<ListViewItem> items = new List<ListViewItem>();
+            if (entity == null) return items;
+            switch (entity.variant)
+            {
+                case EntityVariant.FUNCTION:
+                    {
+                        ShortGuid function = ((FunctionEntity)entity).function;
+                        bool isComposite = !CommandsUtils.FunctionTypeExists(function);
+                        if (isComposite) function = CommandsUtils.GetFunctionTypeGUID(FunctionType.CompositeInterface);
+                        items.Add(ParameterDefinitionToListViewItem("reference"));
+
+                        List<CathodeEntityDatabase.ParameterDefinition> parameters = CathodeEntityDatabase.GetParametersFromEntity(function);
+                        if (parameters != null)
+                        {
+                            for (int i = 0; i < parameters.Count; i++)
+                            {
+                                items.Add(ParameterDefinitionToListViewItem(parameters[i].name, parameters[i].datatype, parameters[i].usage));
+                            }
+                        }
+
+                        if (!isComposite) 
+                            break;
+
+                        foreach (VariableEntity ent in Content.commands.GetComposite(((FunctionEntity)entity).function).variables)
+                        {
+                            if (items.FirstOrDefault(o => o.Text == ent.name.ToString()) == null)
+                            {
+                                items.Add(ParameterDefinitionToListViewItem(ent.name.ToString(), ent.type.ToString()));
+                            }
+                        }
+                    }
+                    break;
+                case EntityVariant.VARIABLE:
+                    VariableEntity varEnt = (VariableEntity)entity;
+                    items.Add(ParameterDefinitionToListViewItem(ShortGuidUtils.FindString(varEnt.name), varEnt.type.ToString()));
+                    break;
+                case EntityVariant.ALIAS:
+                    return GenerateParameterListAsListViewItem(CommandsUtils.ResolveHierarchy(Content.commands, composite, ((AliasEntity)entity).alias.path, out Composite comp1, out string hierarchy1), comp1);
+                case EntityVariant.PROXY:
+                    {
+                        items.AddRange(GenerateParameterListAsListViewItem(CommandsUtils.ResolveHierarchy(Content.commands, composite, ((ProxyEntity)entity).proxy.path, out Composite comp2, out string hierarchy2), comp2));
+
+                        List<CathodeEntityDatabase.ParameterDefinition> parameters = CathodeEntityDatabase.GetParametersFromEntity(ShortGuidUtils.Generate("ProxyInterface"));
+                        if (parameters != null)
+                        {
+                            for (int i = 0; i < parameters.Count; i++)
+                            {
+                                items.Add(ParameterDefinitionToListViewItem(parameters[i].name, parameters[i].datatype, parameters[i].usage));
+                            }
+                        }
+                    }
+                    break;
+            }
+            return items;
+        }
+        private ListViewItem ParameterDefinitionToListViewItem(string name, string datatype = "FLOAT", CathodeEntityDatabase.ParameterUsage usage = CathodeEntityDatabase.ParameterUsage.PARAMETER)
+        {
+            ListViewItem item = new ListViewItem(name);
+            item.SubItems.Add(datatype);
+            item.Tag = usage;
+            return item;
         }
 
         /* Utility: force a string to be numeric */

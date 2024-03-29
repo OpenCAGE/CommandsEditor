@@ -90,16 +90,13 @@ namespace CommandsEditor
 
         private void delete_param_Click(object sender, EventArgs e)
         {
-            foreach (ListViewItem item in parameterToDelete.CheckedItems)
-                item.Selected = true;
-
-            if (parameterToDelete.SelectedItems.Count == 0) 
+            if (parameterToDelete.CheckedItems.Count == 0) 
                 return;
 
-            if (MessageBox.Show("You are about to remove " + parameterToDelete.SelectedItems.Count + " parameter(s)/link(s). Are you sure? ", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) 
+            if (MessageBox.Show("You are about to remove " + parameterToDelete.CheckedItems.Count + " parameter(s)/link(s). Are you sure? ", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) 
                 return;
 
-            foreach (ListViewItem item in  parameterToDelete.SelectedItems)
+            foreach (ListViewItem item in  parameterToDelete.CheckedItems)
             {
                 switch (item.Group.Name)
                 {

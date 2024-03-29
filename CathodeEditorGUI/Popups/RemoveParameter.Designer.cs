@@ -74,6 +74,7 @@
             this.parameterToDelete.HideSelection = false;
             this.parameterToDelete.LargeImageList = this.imageList;
             this.parameterToDelete.Location = new System.Drawing.Point(12, 12);
+            this.parameterToDelete.MultiSelect = false;
             this.parameterToDelete.Name = "parameterToDelete";
             this.parameterToDelete.Size = new System.Drawing.Size(629, 353);
             this.parameterToDelete.SmallImageList = this.imageList;

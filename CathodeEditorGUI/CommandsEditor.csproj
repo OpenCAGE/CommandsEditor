@@ -273,6 +273,12 @@
     <Compile Include="Popups\AddEntity_CompositeInstance.Designer.cs">
       <DependentUpon>AddEntity_CompositeInstance.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\AddParameter_PreDefined.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\AddParameter_PreDefined.Designer.cs">
+      <DependentUpon>AddParameter_PreDefined.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popups\AddEntity_Function.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -323,6 +329,12 @@
     </Compile>
     <Compile Include="Popups\ShowInstanceInfo.Designer.cs">
       <DependentUpon>ShowInstanceInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\UserControls\AddParameter.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\UserControls\AddParameter.Designer.cs">
+      <DependentUpon>AddParameter.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\UserControls\CompositeEntityList.cs">
       <SubType>UserControl</SubType>
@@ -441,6 +453,7 @@
     <Compile Include="Scripts\CathodeEnums.cs" />
     <Compile Include="Scripts\CathodeLibExtensions.cs" />
     <Compile Include="Scripts\ComboBoxExtensions.cs" />
+    <Compile Include="Scripts\ListViewColumnSorter.cs" />
     <Compile Include="Scripts\ListViewExtended.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -1267,11 +1280,11 @@
     <Compile Include="Popups\AddComposite.Designer.cs">
       <DependentUpon>AddComposite.cs</DependentUpon>
     </Compile>
-    <Compile Include="Popups\AddParameter.cs">
+    <Compile Include="Popups\AddParameter_Custom.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Popups\AddParameter.Designer.cs">
-      <DependentUpon>AddParameter.cs</DependentUpon>
+    <Compile Include="Popups\AddParameter_Custom.Designer.cs">
+      <DependentUpon>AddParameter_Custom.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\AddOrEditLink.cs">
       <SubType>Form</SubType>
@@ -1367,6 +1380,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Scripts\ParameterCreator.cs" />
     <Compile Include="Scripts\ToolstripRendererExcs.cs" />
     <Compile Include="Scripts\TreeUtility.cs" />
     <Compile Include="Scripts\SettingsManager.cs" />
@@ -1465,6 +1479,9 @@
     <EmbeddedResource Include="Popups\AddEntity_CompositeInstance.resx">
       <DependentUpon>AddEntity_CompositeInstance.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Popups\AddParameter_PreDefined.resx">
+      <DependentUpon>AddParameter_PreDefined.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Popups\AddEntity_Function.resx">
       <DependentUpon>AddEntity_Function.cs</DependentUpon>
     </EmbeddedResource>
@@ -1522,8 +1539,8 @@
     <EmbeddedResource Include="Popups\AddOrEditResource.resx">
       <DependentUpon>AddOrEditResource.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Popups\AddParameter.resx">
-      <DependentUpon>AddParameter.cs</DependentUpon>
+    <EmbeddedResource Include="Popups\AddParameter_Custom.resx">
+      <DependentUpon>AddParameter_Custom.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\AddOrEditLink.resx">
       <DependentUpon>AddOrEditLink.cs</DependentUpon>

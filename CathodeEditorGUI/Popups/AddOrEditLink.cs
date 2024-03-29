@@ -117,7 +117,7 @@ namespace CommandsEditor
             parentParameterList.BeginUpdate();
             parentParameterList.Items.Clear();
             if (parentEntityList.SelectedIndex == -1) return;
-            List<string> items = _entityDisplay.Content.editor_utils.GenerateParameterList(_entityList[parentEntityList.SelectedIndex], _entityDisplay.Composite);
+            List<string> items = _entityDisplay.Content.editor_utils.GenerateParameterListAsString(_entityList[parentEntityList.SelectedIndex], _entityDisplay.Composite);
             for (int i = 0; i < items.Count; i++) parentParameterList.Items.Add(items[i]);
             parentParameterList.EndUpdate();
         }
@@ -131,7 +131,7 @@ namespace CommandsEditor
             childParameterList.BeginUpdate();
             childParameterList.Items.Clear();
             if (childEntityList.SelectedIndex == -1) return;
-            List<string> items = _entityDisplay.Content.editor_utils.GenerateParameterList(_entityList[childEntityList.SelectedIndex], _entityDisplay.Composite);
+            List<string> items = _entityDisplay.Content.editor_utils.GenerateParameterListAsString(_entityList[childEntityList.SelectedIndex], _entityDisplay.Composite);
             for (int i = 0; i < items.Count; i++) childParameterList.Items.Add(items[i]);
             childParameterList.EndUpdate();
         }

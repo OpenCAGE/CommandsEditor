@@ -139,6 +139,12 @@ namespace CommandsEditor.DockPanels
 
             imageList1.Images.Clear();
             imageList1.Dispose();
+
+            if (add_parameter != null)
+            {
+                add_parameter.OnSaved -= Reload;
+                add_parameter.Close();
+            }
         }
 
         /* Reload this display */
@@ -528,9 +534,19 @@ namespace CommandsEditor.DockPanels
         }
 
         /* Add a new parameter */
+        AddParameter add_parameter;
         private void addNewParameter_Click(object sender, EventArgs e)
         {
-            AddParameter add_parameter = new AddParameter(this);
+            if (add_parameter != null)
+            {
+                add_parameter.OnSaved -= Reload;
+                add_parameter.Close();
+            }
+
+            if (SettingsManager.GetBool(Singleton.Settings.UseLegacyParamCreator))
+                add_parameter = new AddParameter_Custom(this);
+            else
+                add_parameter = new AddParameter_PreDefined(this);
             add_parameter.Show();
             add_parameter.OnSaved += Reload;
         }
