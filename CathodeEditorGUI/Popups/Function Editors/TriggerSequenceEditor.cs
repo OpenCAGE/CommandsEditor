@@ -257,20 +257,6 @@ namespace CommandsEditor
             ReloadEntityList(index + 1);
         }
 
-        private void open_entity_Click(object sender, EventArgs e)
-        {
-            if (entity_list.SelectedItems.Count == 0) return;
-
-            Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, _entityDisplay.Composite, _triggerSequence.entities[entity_list.SelectedItems[0].Index].connectedEntity.path, out Composite comp, out string h);
-            if (comp == null || ent == null)
-            {
-                MessageBox.Show("Failed to resolve entity! Can not load to it.", "Entity pointer corrupted!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            _entityDisplay.CompositeDisplay.CommandsDisplay.LoadCompositeAndEntity(comp, ent);
-        }
-
         private void button2_Click(object sender, EventArgs e)
         {
             if (entity_list.CheckedItems.Count == 0)
@@ -294,6 +280,24 @@ namespace CommandsEditor
 
             ReloadEntityList();
             LoadSelectedEntity();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            if (entity_list.SelectedItems.Count == 0) 
+                return;
+
+            if (MessageBox.Show("Going to this entity will close the TriggerSequence editor.\nAre you sure you want to continue?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                return;
+
+            Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, _entityDisplay.Composite, _triggerSequence.entities[entity_list.SelectedItems[0].Index].connectedEntity.path, out Composite comp, out string h);
+            if (comp == null || ent == null)
+            {
+                MessageBox.Show("Failed to resolve entity! Can not load to it.", "Entity pointer corrupted!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            _entityDisplay.CompositeDisplay.CommandsDisplay.LoadCompositeAndEntity(comp, ent);
         }
     }
 }

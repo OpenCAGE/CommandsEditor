@@ -29,28 +29,28 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.ListViewGroup listViewGroup21 = new System.Windows.Forms.ListViewGroup("Target", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup22 = new System.Windows.Forms.ListViewGroup("State", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup23 = new System.Windows.Forms.ListViewGroup("Input", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup24 = new System.Windows.Forms.ListViewGroup("Output", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup25 = new System.Windows.Forms.ListViewGroup("Parameter", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup26 = new System.Windows.Forms.ListViewGroup("Internal", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup27 = new System.Windows.Forms.ListViewGroup("Reference", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup28 = new System.Windows.Forms.ListViewGroup("Method", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup29 = new System.Windows.Forms.ListViewGroup("Finished", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup30 = new System.Windows.Forms.ListViewGroup("Relay", System.Windows.Forms.HorizontalAlignment.Left);
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TriggerSequenceEditor));
+            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Target", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("State", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("Input", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("Output", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup("Parameter", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup6 = new System.Windows.Forms.ListViewGroup("Internal", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup7 = new System.Windows.Forms.ListViewGroup("Reference", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup8 = new System.Windows.Forms.ListViewGroup("Method", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup9 = new System.Windows.Forms.ListViewGroup("Finished", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup10 = new System.Windows.Forms.ListViewGroup("Relay", System.Windows.Forms.HorizontalAlignment.Left);
             this.trigger_list = new System.Windows.Forms.ListBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.button2 = new System.Windows.Forms.Button();
+            this.moveDown = new System.Windows.Forms.Button();
             this.entity_list = new System.Windows.Forms.ListView();
             this.funcHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.inheritHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.addNewTrigger = new System.Windows.Forms.Button();
-            this.selectedEntityDetails = new System.Windows.Forms.GroupBox();
-            this.moveDown = new System.Windows.Forms.Button();
-            this.entityTriggerDelay = new System.Windows.Forms.TextBox();
             this.moveUp = new System.Windows.Forms.Button();
+            this.selectedEntityDetails = new System.Windows.Forms.GroupBox();
+            this.entityTriggerDelay = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.entityHierarchy = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -68,6 +68,7 @@
             this.button1 = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.button3 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.selectedEntityDetails.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -118,6 +119,19 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
+            // moveDown
+            // 
+            this.moveDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.moveDown.Enabled = false;
+            this.moveDown.Image = ((System.Drawing.Image)(resources.GetObject("moveDown.Image")));
+            this.moveDown.Location = new System.Drawing.Point(707, 222);
+            this.moveDown.Name = "moveDown";
+            this.moveDown.Size = new System.Drawing.Size(27, 27);
+            this.moveDown.TabIndex = 5;
+            this.toolTip1.SetToolTip(this.moveDown, "Move selected down in the list");
+            this.moveDown.UseVisualStyleBackColor = true;
+            this.moveDown.Click += new System.EventHandler(this.moveDown_Click);
+            // 
             // entity_list
             // 
             this.entity_list.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -128,37 +142,37 @@
             this.funcHeader,
             this.inheritHeader});
             this.entity_list.FullRowSelect = true;
-            listViewGroup21.Header = "Target";
-            listViewGroup21.Name = "Target";
-            listViewGroup22.Header = "State";
-            listViewGroup22.Name = "State";
-            listViewGroup23.Header = "Input";
-            listViewGroup23.Name = "Input";
-            listViewGroup24.Header = "Output";
-            listViewGroup24.Name = "Output";
-            listViewGroup25.Header = "Parameter";
-            listViewGroup25.Name = "Parameter";
-            listViewGroup26.Header = "Internal";
-            listViewGroup26.Name = "Internal";
-            listViewGroup27.Header = "Reference";
-            listViewGroup27.Name = "Reference";
-            listViewGroup28.Header = "Method";
-            listViewGroup28.Name = "Method";
-            listViewGroup29.Header = "Finished";
-            listViewGroup29.Name = "Finished";
-            listViewGroup30.Header = "Relay";
-            listViewGroup30.Name = "Relay";
+            listViewGroup1.Header = "Target";
+            listViewGroup1.Name = "Target";
+            listViewGroup2.Header = "State";
+            listViewGroup2.Name = "State";
+            listViewGroup3.Header = "Input";
+            listViewGroup3.Name = "Input";
+            listViewGroup4.Header = "Output";
+            listViewGroup4.Name = "Output";
+            listViewGroup5.Header = "Parameter";
+            listViewGroup5.Name = "Parameter";
+            listViewGroup6.Header = "Internal";
+            listViewGroup6.Name = "Internal";
+            listViewGroup7.Header = "Reference";
+            listViewGroup7.Name = "Reference";
+            listViewGroup8.Header = "Method";
+            listViewGroup8.Name = "Method";
+            listViewGroup9.Header = "Finished";
+            listViewGroup9.Name = "Finished";
+            listViewGroup10.Header = "Relay";
+            listViewGroup10.Name = "Relay";
             this.entity_list.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup21,
-            listViewGroup22,
-            listViewGroup23,
-            listViewGroup24,
-            listViewGroup25,
-            listViewGroup26,
-            listViewGroup27,
-            listViewGroup28,
-            listViewGroup29,
-            listViewGroup30});
+            listViewGroup1,
+            listViewGroup2,
+            listViewGroup3,
+            listViewGroup4,
+            listViewGroup5,
+            listViewGroup6,
+            listViewGroup7,
+            listViewGroup8,
+            listViewGroup9,
+            listViewGroup10});
             this.entity_list.HideSelection = false;
             this.entity_list.Location = new System.Drawing.Point(6, 19);
             this.entity_list.MultiSelect = false;
@@ -190,43 +204,6 @@
             this.addNewTrigger.UseVisualStyleBackColor = true;
             this.addNewTrigger.Click += new System.EventHandler(this.addNewEntity_Click);
             // 
-            // selectedEntityDetails
-            // 
-            this.selectedEntityDetails.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.selectedEntityDetails.Controls.Add(this.entityTriggerDelay);
-            this.selectedEntityDetails.Controls.Add(this.label2);
-            this.selectedEntityDetails.Controls.Add(this.entityHierarchy);
-            this.selectedEntityDetails.Controls.Add(this.label1);
-            this.selectedEntityDetails.Controls.Add(this.selectEntToPointTo);
-            this.selectedEntityDetails.Location = new System.Drawing.Point(707, 13);
-            this.selectedEntityDetails.Name = "selectedEntityDetails";
-            this.selectedEntityDetails.Size = new System.Drawing.Size(481, 129);
-            this.selectedEntityDetails.TabIndex = 1;
-            this.selectedEntityDetails.TabStop = false;
-            this.selectedEntityDetails.Text = "Selected Entity Details";
-            // 
-            // moveDown
-            // 
-            this.moveDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.moveDown.Enabled = false;
-            this.moveDown.Image = ((System.Drawing.Image)(resources.GetObject("moveDown.Image")));
-            this.moveDown.Location = new System.Drawing.Point(707, 222);
-            this.moveDown.Name = "moveDown";
-            this.moveDown.Size = new System.Drawing.Size(27, 27);
-            this.moveDown.TabIndex = 5;
-            this.toolTip1.SetToolTip(this.moveDown, "Move selected down in the list");
-            this.moveDown.UseVisualStyleBackColor = true;
-            this.moveDown.Click += new System.EventHandler(this.moveDown_Click);
-            // 
-            // entityTriggerDelay
-            // 
-            this.entityTriggerDelay.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.entityTriggerDelay.Location = new System.Drawing.Point(17, 87);
-            this.entityTriggerDelay.Name = "entityTriggerDelay";
-            this.entityTriggerDelay.Size = new System.Drawing.Size(444, 20);
-            this.entityTriggerDelay.TabIndex = 6;
-            this.entityTriggerDelay.TextChanged += new System.EventHandler(this.triggerDelay_TextChanged);
-            // 
             // moveUp
             // 
             this.moveUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -239,6 +216,31 @@
             this.toolTip1.SetToolTip(this.moveUp, "Move selected up in the list");
             this.moveUp.UseVisualStyleBackColor = true;
             this.moveUp.Click += new System.EventHandler(this.moveUp_Click);
+            // 
+            // selectedEntityDetails
+            // 
+            this.selectedEntityDetails.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.selectedEntityDetails.Controls.Add(this.button3);
+            this.selectedEntityDetails.Controls.Add(this.entityTriggerDelay);
+            this.selectedEntityDetails.Controls.Add(this.label2);
+            this.selectedEntityDetails.Controls.Add(this.entityHierarchy);
+            this.selectedEntityDetails.Controls.Add(this.label1);
+            this.selectedEntityDetails.Controls.Add(this.selectEntToPointTo);
+            this.selectedEntityDetails.Location = new System.Drawing.Point(707, 13);
+            this.selectedEntityDetails.Name = "selectedEntityDetails";
+            this.selectedEntityDetails.Size = new System.Drawing.Size(481, 129);
+            this.selectedEntityDetails.TabIndex = 1;
+            this.selectedEntityDetails.TabStop = false;
+            this.selectedEntityDetails.Text = "Selected Entity Details";
+            // 
+            // entityTriggerDelay
+            // 
+            this.entityTriggerDelay.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.entityTriggerDelay.Location = new System.Drawing.Point(17, 87);
+            this.entityTriggerDelay.Name = "entityTriggerDelay";
+            this.entityTriggerDelay.Size = new System.Drawing.Size(444, 20);
+            this.entityTriggerDelay.TabIndex = 6;
+            this.entityTriggerDelay.TextChanged += new System.EventHandler(this.triggerDelay_TextChanged);
             // 
             // label2
             // 
@@ -255,7 +257,7 @@
             this.entityHierarchy.Location = new System.Drawing.Point(17, 42);
             this.entityHierarchy.Name = "entityHierarchy";
             this.entityHierarchy.ReadOnly = true;
-            this.entityHierarchy.Size = new System.Drawing.Size(338, 20);
+            this.entityHierarchy.Size = new System.Drawing.Size(264, 20);
             this.entityHierarchy.TabIndex = 3;
             // 
             // label1
@@ -414,6 +416,17 @@
             this.splitContainer1.SplitterDistance = 318;
             this.splitContainer1.TabIndex = 7;
             // 
+            // button3
+            // 
+            this.button3.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.button3.Location = new System.Drawing.Point(287, 41);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(68, 23);
+            this.button3.TabIndex = 7;
+            this.button3.Text = "Go To";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
             // TriggerSequenceEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -472,5 +485,6 @@
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.Button button3;
     }
 }
