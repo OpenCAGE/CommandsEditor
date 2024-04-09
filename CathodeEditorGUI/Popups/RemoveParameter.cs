@@ -37,7 +37,7 @@ namespace CommandsEditor
             {
                 foreach (EntityConnector link in ent.childLinks)
                 {
-                    if (link.childID != _entityDisplay.Entity.shortGUID) 
+                    if (link.linkedEntityID != _entityDisplay.Entity.shortGUID) 
                         continue;
 
                     EntLinkRef linkRef = new EntLinkRef()
@@ -46,9 +46,9 @@ namespace CommandsEditor
                         Connector = link
                     };
 
-                    ListViewItem item = new ListViewItem(ShortGuidUtils.FindString(link.childParamID));
+                    ListViewItem item = new ListViewItem(ShortGuidUtils.FindString(link.linkedParamID));
                     item.Group = parameterToDelete.Groups[0];
-                    item.SubItems.Add("[" + ShortGuidUtils.FindString(link.parentParamID) + "] " + _entityDisplay.Content.editor_utils.GenerateEntityName(ent, _entityDisplay.Composite));
+                    item.SubItems.Add("[" + ShortGuidUtils.FindString(link.thisParamID) + "] " + _entityDisplay.Content.editor_utils.GenerateEntityName(ent, _entityDisplay.Composite));
                     item.Tag = linkRef;
                     item.ImageIndex = 1;
                     parameterToDelete.Items.Add(item);
@@ -73,9 +73,9 @@ namespace CommandsEditor
             {
                 EntityConnector link = _entityDisplay.Entity.childLinks[i];
 
-                ListViewItem item = new ListViewItem(ShortGuidUtils.FindString(link.parentParamID));
+                ListViewItem item = new ListViewItem(ShortGuidUtils.FindString(link.thisParamID));
                 item.Group = parameterToDelete.Groups[2];
-                item.SubItems.Add("[" + ShortGuidUtils.FindString(link.childParamID) + "] " + _entityDisplay.Content.editor_utils.GenerateEntityName(_entityDisplay.Composite.GetEntityByID(link.childID), _entityDisplay.Composite));
+                item.SubItems.Add("[" + ShortGuidUtils.FindString(link.linkedParamID) + "] " + _entityDisplay.Content.editor_utils.GenerateEntityName(_entityDisplay.Composite.GetEntityByID(link.linkedEntityID), _entityDisplay.Composite));
                 item.Tag = link;
                 item.ImageIndex = 0;
                 parameterToDelete.Items.Add(item);

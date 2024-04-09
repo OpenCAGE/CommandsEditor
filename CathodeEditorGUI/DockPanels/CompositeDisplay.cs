@@ -469,7 +469,7 @@ namespace CommandsEditor.DockPanels
                 List<EntityConnector> entLinks = new List<EntityConnector>();
                 for (int x = 0; x < entities[i].childLinks.Count; x++)
                 {
-                    if (entities[i].childLinks[x].childID != entity.shortGUID) entLinks.Add(entities[i].childLinks[x]);
+                    if (entities[i].childLinks[x].linkedEntityID != entity.shortGUID) entLinks.Add(entities[i].childLinks[x]);
                 }
                 entities[i].childLinks = entLinks;
 
@@ -602,13 +602,13 @@ namespace CommandsEditor.DockPanels
                 newLinks.Clear();
                 foreach (EntityConnector link in ent.childLinks)
                 {
-                    if (link.childID == entity.shortGUID)
+                    if (link.linkedEntityID == entity.shortGUID)
                     {
                         EntityConnector newLink = new EntityConnector();
-                        newLink.connectionID = ShortGuidUtils.Generate(DateTime.Now.ToString("G") + num_of_new_things.ToString()); num_of_new_things++;
-                        newLink.childID = newEnt.shortGUID;
-                        newLink.childParamID = link.childParamID;
-                        newLink.parentParamID = link.parentParamID;
+                        newLink.ID = ShortGuidUtils.Generate(DateTime.Now.ToString("G") + num_of_new_things.ToString()); num_of_new_things++;
+                        newLink.linkedEntityID = newEnt.shortGUID;
+                        newLink.linkedParamID = link.linkedParamID;
+                        newLink.thisParamID = link.thisParamID;
                         newLinks.Add(newLink);
                     }
                 }

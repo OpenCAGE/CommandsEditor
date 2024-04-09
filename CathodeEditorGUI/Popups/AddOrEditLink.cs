@@ -101,7 +101,7 @@ namespace CommandsEditor
                 return;
             }
 
-            if (_initialParentEntity != null) _initialParentEntity.childLinks.RemoveAll(o => o.connectionID == _initialLinkID);
+            if (_initialParentEntity != null) _initialParentEntity.childLinks.RemoveAll(o => o.ID == _initialLinkID);
             _entityList[parentEntityList.SelectedIndex].AddParameterLink(parentParameterList.Text, _entityList[childEntityList.SelectedIndex], childParameterList.Text);
 
             OnSaved?.Invoke();

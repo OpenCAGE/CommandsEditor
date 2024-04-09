@@ -431,7 +431,7 @@ namespace CommandsEditor
                             {
                                 Parallel.ForEach(z.childLinks, (link, status4) =>
                                 {
-                                    if (link.parentParamID == compositesGUID && link.childID == trig.shortGUID)
+                                    if (link.thisParamID == compositesGUID && link.linkedEntityID == trig.shortGUID)
                                     {
                                         toReturn = z;
 

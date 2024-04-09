@@ -390,7 +390,7 @@ namespace CommandsEditor.DockPanels
                     List<EntityConnector> prunedEntityLinks = new List<EntityConnector>();
                     for (int l = 0; l < Content.commands.Entries[i].functions[x].childLinks.Count; l++)
                     {
-                        Entity linkedEntity = Content.commands.Entries[i].GetEntityByID(Content.commands.Entries[i].functions[x].childLinks[l].childID);
+                        Entity linkedEntity = Content.commands.Entries[i].GetEntityByID(Content.commands.Entries[i].functions[x].childLinks[l].linkedEntityID);
                         if (linkedEntity != null && linkedEntity.variant == EntityVariant.FUNCTION) if (((FunctionEntity)linkedEntity).function == composite.shortGUID) continue;
                         prunedEntityLinks.Add(Content.commands.Entries[i].functions[x].childLinks[l]);
                     }

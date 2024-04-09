@@ -157,7 +157,7 @@ namespace CommandsEditor
                     {
                         for (int i = 0; i < func.childLinks.Count; i++)
                         {
-                            Entity childEnt = comp.GetEntityByID(func.childLinks[i].childID);
+                            Entity childEnt = comp.GetEntityByID(func.childLinks[i].linkedEntityID);
                             switch (childEnt.variant)
                             {
                                 case EntityVariant.FUNCTION:
@@ -207,8 +207,8 @@ namespace CommandsEditor
                         List<string> paramStrs = new List<string>();
                         foreach (EntityConnector connector in func.childLinks)
                         {
-                            if (!paramStrs.Contains(connector.parentParamID.ToString()))
-                                paramStrs.Add(connector.parentParamID.ToString());
+                            if (!paramStrs.Contains(connector.thisParamID.ToString()))
+                                paramStrs.Add(connector.thisParamID.ToString());
                         }
                         if (paramStrs.Count > 1)
                         {
@@ -1941,8 +1941,8 @@ namespace CommandsEditor
                     }
                     for (int y = 0; y < entities[x].childLinks.Count; y++)
                     {
-                        string connectedEntityName = "ENT_" + entities[x].childLinks[y].childID.ToByteString().Replace('-', '_');
-                        script.Add(entityName + ".AddParameterLink(\"" + ShortGuidUtils.FindString(entities[x].childLinks[y].parentParamID) + "\", " + connectedEntityName + ", \"" + ShortGuidUtils.FindString(entities[x].childLinks[y].childParamID) + "\");");
+                        string connectedEntityName = "ENT_" + entities[x].childLinks[y].linkedEntityID.ToByteString().Replace('-', '_');
+                        script.Add(entityName + ".AddParameterLink(\"" + ShortGuidUtils.FindString(entities[x].childLinks[y].thisParamID) + "\", " + connectedEntityName + ", \"" + ShortGuidUtils.FindString(entities[x].childLinks[y].linkedParamID) + "\");");
                     }
                 }
             }

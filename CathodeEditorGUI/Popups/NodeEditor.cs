@@ -146,7 +146,7 @@ namespace CommandsEditor
             {
                 foreach (EntityConnector link in ent.childLinks)
                 {
-                    if (link.childID != ActiveEntity.shortGUID) continue;
+                    if (link.linkedEntityID != ActiveEntity.shortGUID) continue;
                     CustomNode node = null;
                     for (int i = 0; i < stNodeEditor1.Nodes.Count; i++)
                     {
@@ -162,8 +162,8 @@ namespace CommandsEditor
                         inputNodes.Add(node);
                         stNodeEditor1.Nodes.Add(node);
                     }
-                    STNodeOption opt1 = node.AddOutputOption(link.parentParamID.ToString());
-                    STNodeOption opt2 = mainNode.AddInputOption(link.childParamID.ToString());
+                    STNodeOption opt1 = node.AddOutputOption(link.thisParamID.ToString());
+                    STNodeOption opt2 = mainNode.AddInputOption(link.linkedParamID.ToString());
                     opt1.ConnectOption(opt2);
                 }
             }
@@ -175,7 +175,7 @@ namespace CommandsEditor
                 CustomNode node = null;
                 for (int i = 0; i < stNodeEditor1.Nodes.Count; i++)
                 {
-                    if (((CustomNode)stNodeEditor1.Nodes[i]).ID == link.childID)
+                    if (((CustomNode)stNodeEditor1.Nodes[i]).ID == link.linkedEntityID)
                     {
                         node = (CustomNode)stNodeEditor1.Nodes[i];
                         break;
@@ -183,15 +183,15 @@ namespace CommandsEditor
                 }
                 if (node == null)
                 {
-                    node = EntityToNode(ActiveComposite.GetEntityByID(link.childID), ActiveComposite);
+                    node = EntityToNode(ActiveComposite.GetEntityByID(link.linkedEntityID), ActiveComposite);
                     if (node != null)
                     {
                         outputNodes.Add(node);
                         stNodeEditor1.Nodes.Add(node);
                     }
                 }
-                STNodeOption opt1 = node?.AddInputOption(link.childParamID.ToString());
-                STNodeOption opt2 = mainNode.AddOutputOption(link.parentParamID.ToString());
+                STNodeOption opt1 = node?.AddInputOption(link.linkedParamID.ToString());
+                STNodeOption opt2 = mainNode.AddOutputOption(link.thisParamID.ToString());
                 opt1.ConnectOption(opt2);
             }
 

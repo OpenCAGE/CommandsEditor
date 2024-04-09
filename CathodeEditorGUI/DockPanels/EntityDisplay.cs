@@ -264,7 +264,7 @@ namespace CommandsEditor.DockPanels
             {
                 foreach (EntityConnector link in ent.childLinks)
                 {
-                    if (link.childID != _entity.shortGUID) continue;
+                    if (link.linkedEntityID != _entity.shortGUID) continue;
                     GUI_Link parameterGUI = new GUI_Link(this);
                     parameterGUI.PopulateUI(link, false, ent.shortGUID);
                     parameterGUI.GoToEntity += _compositeDisplay.LoadEntity;
