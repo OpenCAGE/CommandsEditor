@@ -56,6 +56,123 @@ namespace CommandsEditor
 
         public CommandsEditor(string level = null)
         {
+            /*
+            string[] cmds = Directory.GetFiles("E:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\", "COMMANDS.PAK", SearchOption.AllDirectories);
+            foreach (string cmd in cmds)
+            {
+                Commands cmd_o = new Commands(cmd);
+                /*
+                foreach (Composite comp in cmd_o.Entries)
+                {
+                    foreach (FunctionEntity func in comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.Character)))
+                    {
+                        Parameter param = func.GetParameter("is_player");
+                        if (param == null) continue;
+                        if (((cBool)param.content).value != true) continue;
+
+                        func.AddParameter("display_model", new cString("E_RIPLEY"));
+                        func.AddParameter("reference_skeleton", new cString("E_RIPLEY"));
+
+                        foreach (EntityConnector conn in func.GetParentLinks(comp))
+                        {
+                            if (conn.linkedParamID == ShortGuidUtils.Generate("display_model"))
+                            {
+                                Entity ent = comp.GetEntityByID(conn.linkedEntityID);
+                                if (ent != null)
+                                    ent.childLinks.RemoveAll(o => o.ID == conn.ID);
+                            }
+                            if (conn.linkedParamID == ShortGuidUtils.Generate("reference_skeleton"))
+                            {
+                                Entity ent = comp.GetEntityByID(conn.linkedEntityID);
+                                if (ent != null)
+                                    ent.childLinks.RemoveAll(o => o.ID == conn.ID);
+                            }
+                        }
+
+                        func.childLinks.RemoveAll(o => o.thisParamID == ShortGuidUtils.Generate("display_model"));
+                        func.childLinks.RemoveAll(o => o.thisParamID == ShortGuidUtils.Generate("reference_skeleton"));
+                    }
+                }
+                */
+            /*
+                foreach (Composite comp in cmd_o.Entries)
+                {
+                    if (comp.GetFunctionEntitiesOfType(FunctionType.Zone).Count == 0)
+                        continue;
+
+                    FunctionEntity checkpoint = comp.AddFunction(FunctionType.DebugCheckpoint);
+                    checkpoint.AddParameter("section", new cString("Load Zones: " + comp.name));
+
+                    FunctionEntity popup = comp.AddFunction(FunctionType.PopupMessage);
+                    popup.AddParameter("main_text", new cString("Loading Zone"));
+                    checkpoint.AddParameterLink("on_checkpoint", popup, "start");
+
+                    foreach (FunctionEntity zone in comp.GetFunctionEntitiesOfType(FunctionType.Zone))
+                    {
+                        zone.AddParameter("suspend_on_unload", new cBool(true));
+                        zone.AddParameter("force_visible_on_load", new cBool(true));
+
+                        checkpoint.AddParameterLink("on_checkpoint", zone, "request_load");
+                    }
+                }
+                cmd_o.Save();
+            }
+            return;
+
+            */
+
+            /*
+            Commands cmd = new Commands("E:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\DLC/BSPNOSTROMO_TWOTEAMS_PATCH\\WORLD\\COMMANDS.PAK");
+
+            foreach (Composite comp in cmd.Entries)
+            {
+                List<FunctionEntity> zonesToBin = new List<FunctionEntity>();
+                List<FunctionEntity> zones = comp.functions.FindAll(o => o.function == ShortGuidUtils.Generate("Zone"));
+                foreach (FunctionEntity zone in zones)
+                {
+                    EntityConnector composites = zone.childLinks.FirstOrDefault(o => o.thisParamID == ShortGuidUtils.Generate("composites"));
+                    if (composites.ID.IsInvalid) continue;
+
+                    Entity triggersequence_ent = comp.GetEntityByID(composites.linkedEntityID);
+                    if (triggersequence_ent == null || !(triggersequence_ent is TriggerSequence)) continue;
+
+                    zonesToBin.Add(zone);
+                }
+                comp.functions.RemoveAll(o => zonesToBin.Contains(o));
+            }
+
+            /*
+            foreach (Composite comp in cmd.Entries)
+            {
+                TriggerSequence bigtrig = (TriggerSequence)comp.AddFunction(FunctionType.TriggerSequence);
+                bigtrig.AddParameter("no_duplicates", new cBool(true));
+
+                FunctionEntity bigzone = comp.AddFunction(FunctionType.Zone);
+
+                foreach (FunctionEntity zone in comp.functions.FindAll(o => o.function == ShortGuidUtils.Generate("Zone")))
+                {
+                    EntityConnector composites = zone.childLinks.FirstOrDefault(o => o.thisParamID == ShortGuidUtils.Generate("composites"));
+                    if (composites.ID.IsInvalid) continue;
+
+                    Entity triggersequence_ent = comp.GetEntityByID(composites.linkedEntityID);
+                    if (triggersequence_ent == null || !(triggersequence_ent is TriggerSequence)) continue;
+
+                    TriggerSequence triggersequence = (TriggerSequence)triggersequence_ent;
+                    foreach (TriggerSequence.Entity entity in triggersequence.entities)
+                    {
+                        bigtrig.entities.Add(entity);
+                    }
+
+                    zone.AddParameterLink("on_loaded", bigzone, "request_load");
+                    zone.AddParameterLink("on_unloaded", bigzone, "request_load");
+                }
+
+                bigzone.AddParameterLink("composites", bigtrig, "reference");
+            }
+            */
+            //cmd.Save();
+            //return;
+
             Singleton.Editor = this;
 
             _discord = new DiscordRpcClient("1152999067207606392");

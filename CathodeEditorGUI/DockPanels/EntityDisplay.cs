@@ -615,20 +615,20 @@ namespace CommandsEditor.DockPanels
             else
             {
                 //Function Entity
-                string function = ShortGuidUtils.FindString(((FunctionEntity)Entity).function);
-                switch (function.ToUpper())
+                FunctionType function = CommandsUtils.GetFunctionType(((FunctionEntity)Entity).function);
+                switch (function)
                 {
-                    case "CAGEANIMATION":
+                    case FunctionType.CAGEAnimation:
                         Singleton.OnCAGEAnimationEditorOpened?.Invoke();
                         CAGEAnimationEditor cageAnimationEditor = new CAGEAnimationEditor(this);
                         cageAnimationEditor.Show();
                         cageAnimationEditor.OnSaved += CAGEAnimationEditor_OnSaved;
                         break;
-                    case "TRIGGERSEQUENCE":
+                    case FunctionType.TriggerSequence:
                         TriggerSequenceEditor triggerSequenceEditor = new TriggerSequenceEditor(this);
                         triggerSequenceEditor.Show();
                         break;
-                    case "CHARACTER":
+                    case FunctionType.Character:
                         //TODO: I think this is only valid for entities with "custom_character_type" set - but working that out requires a complex parse of connected entities. So ignoring for now.
                         CharacterEditor characterEditor = new CharacterEditor(this);
                         characterEditor.Show();

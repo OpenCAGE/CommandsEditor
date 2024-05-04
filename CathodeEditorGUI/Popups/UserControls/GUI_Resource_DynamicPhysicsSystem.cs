@@ -25,6 +25,7 @@ namespace CommandsEditor.Popups.UserControls
 
         public void PopulateUI()
         {
+            //todo: show instances & instance data. allow adding new instance ref similar to character editor
         }
     }
 }
