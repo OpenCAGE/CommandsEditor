@@ -11,15 +11,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace CommandsEditor.Popups.Function_Editors.CharacterEditor
+namespace CommandsEditor
 {
-    public partial class Character_InstanceSelection : BaseWindow
+    public partial class InstanceSelection : BaseWindow
     {
         public Action<ShortGuid> OnInstanceSelected;
 
         private List<EntityPath> _hierarchies = new List<EntityPath>();
 
-        public Character_InstanceSelection(EntityDisplay editor, List<ShortGuid> existing) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
+        public InstanceSelection(EntityDisplay editor, List<ShortGuid> existing) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             InitializeComponent(); 
             
@@ -27,22 +27,22 @@ namespace CommandsEditor.Popups.Function_Editors.CharacterEditor
             for (int i = 0; i < hierarchies.Count; i++)
             {
                 if (existing.Contains(hierarchies[i].GenerateInstance())) continue;
-                characterInstances.Items.Add(hierarchies[i].GetAsString(Content.commands, editor.Composite, false));
+                instances.Items.Add(hierarchies[i].GetAsString(Content.commands, editor.Composite, false));
                 _hierarchies.Add(hierarchies[i]);
             }
 
-            if (characterInstances.Items.Count == 0)
+            if (instances.Items.Count == 0)
             {
-                MessageBox.Show("There are no other Character instances to be populated!", "Characters populated.", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("There are no instances to be populated!", "Instances populated.", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 this.Close();
             }
-            else characterInstances.SelectedIndex = 0;
+            else instances.SelectedIndex = 0;
         }
 
         private void addCharacter_Click(object sender, EventArgs e)
         {
-            if (characterInstances.SelectedIndex == -1) return;
-            OnInstanceSelected?.Invoke(_hierarchies[characterInstances.SelectedIndex].GenerateInstance());
+            if (instances.SelectedIndex == -1) return;
+            OnInstanceSelected?.Invoke(_hierarchies[instances.SelectedIndex].GenerateInstance());
             this.Close();
         }
     }

@@ -1,6 +1,6 @@
-﻿namespace CommandsEditor.Popups.Function_Editors.CharacterEditor
+﻿namespace CommandsEditor
 {
-    partial class Character_InstanceSelection
+    partial class InstanceSelection
     {
         /// <summary>
         /// Required designer variable.
@@ -28,50 +28,50 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Character_InstanceSelection));
-            this.addCharacter = new System.Windows.Forms.Button();
-            this.characterInstances = new System.Windows.Forms.ComboBox();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(InstanceSelection));
+            this.addInstance = new System.Windows.Forms.Button();
+            this.instances = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
-            // addCharacter
+            // addInstance
             // 
-            this.addCharacter.Location = new System.Drawing.Point(764, 11);
-            this.addCharacter.Name = "addCharacter";
-            this.addCharacter.Size = new System.Drawing.Size(88, 23);
-            this.addCharacter.TabIndex = 22;
-            this.addCharacter.Text = "Add";
-            this.addCharacter.UseVisualStyleBackColor = true;
-            this.addCharacter.Click += new System.EventHandler(this.addCharacter_Click);
+            this.addInstance.Location = new System.Drawing.Point(764, 11);
+            this.addInstance.Name = "addInstance";
+            this.addInstance.Size = new System.Drawing.Size(88, 23);
+            this.addInstance.TabIndex = 22;
+            this.addInstance.Text = "Add";
+            this.addInstance.UseVisualStyleBackColor = true;
+            this.addInstance.Click += new System.EventHandler(this.addCharacter_Click);
             // 
-            // characterInstances
+            // instances
             // 
-            this.characterInstances.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.characterInstances.FormattingEnabled = true;
-            this.characterInstances.Location = new System.Drawing.Point(12, 12);
-            this.characterInstances.Name = "characterInstances";
-            this.characterInstances.Size = new System.Drawing.Size(746, 21);
-            this.characterInstances.TabIndex = 21;
+            this.instances.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.instances.FormattingEnabled = true;
+            this.instances.Location = new System.Drawing.Point(12, 12);
+            this.instances.Name = "instances";
+            this.instances.Size = new System.Drawing.Size(746, 21);
+            this.instances.TabIndex = 21;
             // 
             // Character_InstanceSelection
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(864, 45);
-            this.Controls.Add(this.addCharacter);
-            this.Controls.Add(this.characterInstances);
+            this.Controls.Add(this.addInstance);
+            this.Controls.Add(this.instances);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "Character_InstanceSelection";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Add New Character Definition";
+            this.Text = "Add New Instance Reference";
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.Button addCharacter;
-        private System.Windows.Forms.ComboBox characterInstances;
+        private System.Windows.Forms.Button addInstance;
+        private System.Windows.Forms.ComboBox instances;
     }
 }

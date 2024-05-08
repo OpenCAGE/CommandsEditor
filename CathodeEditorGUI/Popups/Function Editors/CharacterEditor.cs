@@ -97,7 +97,7 @@ namespace CommandsEditor
                 existingCharacters.Add(_hierarchies[i].GenerateInstance());
             }
 
-            Character_InstanceSelection instanceSelector = new Character_InstanceSelection(_entityDisplay, existingCharacters);
+            InstanceSelection instanceSelector = new InstanceSelection(_entityDisplay, existingCharacters);
             instanceSelector.Show();
             instanceSelector.OnInstanceSelected += OnCharacterInstanceSelected;
         }

@@ -350,11 +350,11 @@
     <Compile Include="Popups\Base\BaseWindow.Designer.cs">
       <DependentUpon>BaseWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Popups\Function Editors\CharacterEditor\Character_InstanceSelection.cs">
+    <Compile Include="Popups\InstanceSelection.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Popups\Function Editors\CharacterEditor\Character_InstanceSelection.Designer.cs">
-      <DependentUpon>Character_InstanceSelection.cs</DependentUpon>
+    <Compile Include="Popups\InstanceSelection.Designer.cs">
+      <DependentUpon>InstanceSelection.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\SelectComposite.cs">
       <SubType>Form</SubType>
@@ -1491,8 +1491,8 @@
     <EmbeddedResource Include="Popups\ExportComposite.resx">
       <DependentUpon>ExportComposite.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Popups\Function Editors\CharacterEditor\Character_InstanceSelection.resx">
-      <DependentUpon>Character_InstanceSelection.cs</DependentUpon>
+    <EmbeddedResource Include="Popups\InstanceSelection.resx">
+      <DependentUpon>InstanceSelection.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\Function Editors\ShowCompositeInstanceOverrides.resx">
       <DependentUpon>ShowCompositeInstanceOverrides.cs</DependentUpon>
