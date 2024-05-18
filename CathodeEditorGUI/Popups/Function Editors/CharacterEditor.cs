@@ -3,7 +3,6 @@ using CATHODE.Scripting;
 using CathodeLib;
 using CommandsEditor.DockPanels;
 using CommandsEditor.Popups.Base;
-using CommandsEditor.Popups.Function_Editors.CharacterEditor;
 using System;
 using System.Collections.Generic;
 using System.Linq;

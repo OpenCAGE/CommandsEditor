@@ -656,13 +656,7 @@ namespace CommandsEditor.DockPanels
                         Content.resource.physics_maps.Entries.Add(newPhysMap);
                         //Content.resource.physics_maps.Entries[Content.resource.physics_maps.Entries.IndexOf(physMap)] = newPhysMap;
 
-                        newPhysMap.Row0.X = 0;
-                        newPhysMap.Row1.X = 0;
-                        newPhysMap.Row2.X = 0;
-
-                        //physMap.Row0.X = 0;
-                        //physMap.Row1.X = 0;
-                        //physMap.Row2.X = 0;
+                        //TODO: need to set pos/rot properly
 
                         Resources.Resource physRes = Content.resource.resources.Entries.FirstOrDefault(res => res.composite_instance_id == physMap.composite_instance_id);
                         Resources.Resource newPhysRes = physRes.Copy();

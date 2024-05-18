@@ -9,10 +9,12 @@ using System.Collections.Generic;
 using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Media.Imaging;
 using System.Xml;
 
 namespace CommandsEditor
@@ -343,7 +345,6 @@ namespace CommandsEditor
         {
             if (comp == null)
                 return "";
-
             string[] cont = comp.name.Replace('\\', '/').Split('/');
             return cont[cont.Length - 1];
         }
@@ -358,7 +359,6 @@ namespace CommandsEditor
                 {
                     if (found || ct.IsCancellationRequested)
                         status2.Stop();
-
                     Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, comp, prox.proxy.path, out Composite compRef, out string str);
                     if (ent == entity) found = true;
                 });

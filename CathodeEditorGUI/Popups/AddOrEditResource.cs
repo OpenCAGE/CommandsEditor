@@ -13,9 +13,12 @@ using CommandsEditor.Popups.UserControls;
 using System.Windows.Interop;
 using CommandsEditor.Popups.Base;
 using CATHODE.EXPERIMENTAL;
+using CommandsEditor.DockPanels;
 
 namespace CommandsEditor
 {
+    //TODO: this whole resource editor needs a bit of a rework & improvement as it's not good enough.
+
     public partial class AddOrEditResource : BaseWindow
     {
         public Action<List<ResourceReference>> OnSaved;
@@ -24,8 +27,30 @@ namespace CommandsEditor
         private ShortGuid guid_parent;
         private int current_ui_offset = 7;
 
+        private EntityDisplay _entDisplay = null;
+
+        public AddOrEditResource(EntityDisplay entDisplay) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
+        {
+            _entDisplay = entDisplay;
+
+            List<ResourceReference> resRefs = ((FunctionEntity)entDisplay.Entity).resources;
+            ResourceReference[] copy = new ResourceReference[resRefs.Count];
+            resRefs.CopyTo(copy);
+            resources = copy.ToList<ResourceReference>();
+            guid_parent = entDisplay.Entity.shortGUID;
+
+            InitializeComponent();
+
+            this.Text += " - " + Content.editor_utils.GenerateEntityName(entDisplay.Entity, entDisplay.Composite);
+            resourceType.SelectedIndex = 0;
+
+            RefreshUI();
+        }
+
         public AddOrEditResource(List<ResourceReference> resRefs, ShortGuid parent, string windowTitle) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
+            _entDisplay = null;
+
             ResourceReference[] copy = new ResourceReference[resRefs.Count];
             resRefs.CopyTo(copy);
             resources = copy.ToList<ResourceReference>();
@@ -82,7 +107,7 @@ namespace CommandsEditor
                             Content.resource.physics_maps.Entries.FindAll(o => o.entity.entity_id == resources[i].collisionID);
 
                             resourceGroup = new GUI_Resource_DynamicPhysicsSystem();
-                            ((GUI_Resource_DynamicPhysicsSystem)resourceGroup).PopulateUI(); 
+                            ((GUI_Resource_DynamicPhysicsSystem)resourceGroup).PopulateUI(_entDisplay, resources[i].index); 
                             break;
                         }
                     default:
@@ -103,6 +128,13 @@ namespace CommandsEditor
         private void addResource_Click(object sender, EventArgs e)
         {
             ResourceType type = (ResourceType)Enum.Parse(typeof(ResourceType), resourceType.Items[resourceType.SelectedIndex].ToString());
+
+            //If we don't have EntityDisplay, we can't make DynamicPhysicsSystem: this is the result of this editor being made in a crap way. really we should probs implicitly handle the resource parameter
+            if (type == ResourceType.DYNAMIC_PHYSICS_SYSTEM && _entDisplay == null)
+            {
+                MessageBox.Show("Dynamic Physics Systems cannot currently be added as Resource parameters.", "Currently unsupported.", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
             //A resource reference list can only ever point to one of a type
             for (int i = 0; i < resources.Count; i++)

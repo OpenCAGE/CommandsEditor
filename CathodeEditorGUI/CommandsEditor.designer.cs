@@ -47,6 +47,7 @@
             this.showEntityIDs = new System.Windows.Forms.ToolStripMenuItem();
             this.entitiesOpenTabs = new System.Windows.Forms.ToolStripMenuItem();
             this.nodeOpensEntity = new System.Windows.Forms.ToolStripMenuItem();
+            this.useLegacyParameterCreatorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.miscToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showConfirmationWhenSavingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.useTexturedModelViewExperimentalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -59,7 +60,7 @@
             this.statusText = new System.Windows.Forms.ToolStripStatusLabel();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.useLegacyParameterCreatorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.DEBUG_DoorPhysEnt = new System.Windows.Forms.ToolStripButton();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -69,7 +70,8 @@
             this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripButton1,
             this.toolStripButton2,
-            this.helpBtn});
+            this.helpBtn,
+            this.DEBUG_DoorPhysEnt});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Size = new System.Drawing.Size(1257, 25);
@@ -123,7 +125,7 @@
             this.connectToUnity.Checked = true;
             this.connectToUnity.CheckState = System.Windows.Forms.CheckState.Checked;
             this.connectToUnity.Name = "connectToUnity";
-            this.connectToUnity.Size = new System.Drawing.Size(180, 22);
+            this.connectToUnity.Size = new System.Drawing.Size(173, 22);
             this.connectToUnity.Text = "Connect to Unity";
             this.connectToUnity.ToolTipText = "Enable a websocket connection to the Unity Level Viewer.";
             this.connectToUnity.Click += new System.EventHandler(this.connectToUnity_Click);
@@ -131,7 +133,7 @@
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(170, 6);
             // 
             // compositeViewerToolStripMenuItem
             // 
@@ -140,7 +142,7 @@
             this.autoHideExplorerViewToolStripMenuItem,
             this.searchOnlyCompositeNames});
             this.compositeViewerToolStripMenuItem.Name = "compositeViewerToolStripMenuItem";
-            this.compositeViewerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.compositeViewerToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.compositeViewerToolStripMenuItem.Text = "Composite Display";
             // 
             // showExplorerViewToolStripMenuItem
@@ -178,7 +180,7 @@
             this.nodeOpensEntity,
             this.useLegacyParameterCreatorToolStripMenuItem});
             this.entityDisplayToolStripMenuItem.Name = "entityDisplayToolStripMenuItem";
-            this.entityDisplayToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.entityDisplayToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.entityDisplayToolStripMenuItem.Text = "Entity Display";
             // 
             // showNodegraph
@@ -215,6 +217,13 @@
             this.nodeOpensEntity.Text = "Open Entity When Nodegraph Node Selected";
             this.nodeOpensEntity.Click += new System.EventHandler(this.nodeOpensEntity_Click);
             // 
+            // useLegacyParameterCreatorToolStripMenuItem
+            // 
+            this.useLegacyParameterCreatorToolStripMenuItem.Name = "useLegacyParameterCreatorToolStripMenuItem";
+            this.useLegacyParameterCreatorToolStripMenuItem.Size = new System.Drawing.Size(312, 22);
+            this.useLegacyParameterCreatorToolStripMenuItem.Text = "Use Legacy Parameter Creator";
+            this.useLegacyParameterCreatorToolStripMenuItem.Click += new System.EventHandler(this.useLegacyParameterCreatorToolStripMenuItem_Click);
+            // 
             // miscToolStripMenuItem
             // 
             this.miscToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -223,7 +232,7 @@
             this.keepFunctionUsesWindowOpenToolStripMenuItem,
             this.resetUILayoutsToolStripMenuItem});
             this.miscToolStripMenuItem.Name = "miscToolStripMenuItem";
-            this.miscToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.miscToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.miscToolStripMenuItem.Text = "Misc";
             // 
             // showConfirmationWhenSavingToolStripMenuItem
@@ -297,12 +306,15 @@
             this.dockPanel.TabIndex = 5;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
             // 
-            // useLegacyParameterCreatorToolStripMenuItem
+            // DEBUG_DoorPhysEnt
             // 
-            this.useLegacyParameterCreatorToolStripMenuItem.Name = "useLegacyParameterCreatorToolStripMenuItem";
-            this.useLegacyParameterCreatorToolStripMenuItem.Size = new System.Drawing.Size(312, 22);
-            this.useLegacyParameterCreatorToolStripMenuItem.Text = "Use Legacy Parameter Creator";
-            this.useLegacyParameterCreatorToolStripMenuItem.Click += new System.EventHandler(this.useLegacyParameterCreatorToolStripMenuItem_Click);
+            this.DEBUG_DoorPhysEnt.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.DEBUG_DoorPhysEnt.Image = ((System.Drawing.Image)(resources.GetObject("DEBUG_DoorPhysEnt.Image")));
+            this.DEBUG_DoorPhysEnt.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.DEBUG_DoorPhysEnt.Name = "DEBUG_DoorPhysEnt";
+            this.DEBUG_DoorPhysEnt.Size = new System.Drawing.Size(157, 22);
+            this.DEBUG_DoorPhysEnt.Text = "DEBUG: Load Door Phys Ent";
+            this.DEBUG_DoorPhysEnt.Click += new System.EventHandler(this.DEBUG_DoorPhysEnt_Click);
             // 
             // CommandsEditor
             // 
@@ -358,5 +370,6 @@
         private System.Windows.Forms.ToolStripMenuItem nodeOpensEntity;
         private System.Windows.Forms.ToolStripMenuItem resetUILayoutsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem useLegacyParameterCreatorToolStripMenuItem;
+        private System.Windows.Forms.ToolStripButton DEBUG_DoorPhysEnt;
     }
 }

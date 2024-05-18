@@ -87,10 +87,7 @@ namespace CommandsEditor
             POS_X.Value = (decimal)position.X; POS_Y.Value = (decimal)position.Y; POS_Z.Value = (decimal)position.Z;
             SCALE_X.Value = (decimal)scale.X; SCALE_Y.Value = (decimal)scale.Y; SCALE_Z.Value = (decimal)scale.Z;
 
-            decimal yaw = Convert.ToDecimal(Math.Atan2(2 * (rotation.Y * rotation.W + rotation.X * rotation.Z), 1 - 2 * (rotation.Y * rotation.Y + rotation.X * rotation.X)) * (180 / Math.PI));
-            decimal pitch = Convert.ToDecimal(Math.Asin(2 * (rotation.X * rotation.W - rotation.Z * rotation.Y)) * (180 / Math.PI));
-            decimal roll = Convert.ToDecimal(Math.Atan2(2 * (rotation.Z * rotation.W + rotation.X * rotation.Y), 1 - 2 * (rotation.X * rotation.X + rotation.Z * rotation.Z)) * (180 / Math.PI));
-            
+            (decimal yaw, decimal pitch, decimal roll) = rotation.ToYawPitchRoll();
             ROT_X.Value = pitch; ROT_Y.Value = yaw; ROT_Z.Value = roll;
 
             type_dropdown.SelectedItem = mvr.instanceTypeFlags.ToString();

@@ -56,6 +56,10 @@ namespace CommandsEditor
 
         public CommandsEditor(string level = null)
         {
+#if !DEBUG
+            DEBUG_DoorPhysEnt.Visible = false;
+#endif
+
             /*
             string[] cmds = Directory.GetFiles("E:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\", "COMMANDS.PAK", SearchOption.AllDirectories);
             foreach (string cmd in cmds)
@@ -880,6 +884,11 @@ namespace CommandsEditor
         private void helpBtn_Click(object sender, EventArgs e)
         {
             Process.Start("https://opencage.co.uk/docs/");
+        }
+
+        private void DEBUG_DoorPhysEnt_Click(object sender, EventArgs e)
+        {
+            _commandsDisplay.LoadCompositeAndEntity(new ShortGuid("05-2C-95-DF"), new ShortGuid("BB-3E-91-2E"));
         }
     }
 }

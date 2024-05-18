@@ -585,7 +585,7 @@ namespace CommandsEditor.DockPanels
 
         private void editEntityResources_Click(object sender, EventArgs e)
         {
-            AddOrEditResource resourceEditor = new AddOrEditResource(((FunctionEntity)Entity).resources, Entity.shortGUID, Content.editor_utils.GenerateEntityName(Entity, Composite));
+            AddOrEditResource resourceEditor = new AddOrEditResource(this); 
             resourceEditor.Show();
             resourceEditor.OnSaved += OnResourceEditorSaved;
         }
