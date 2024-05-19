@@ -101,6 +101,7 @@ namespace CommandsEditor
                             ((GUI_Resource_RenderableInstance)resourceGroup).PopulateUI(resources[i].position, resources[i].rotation, resources[i].index, resources[i].count);
                             break;
                         }
+                        /*
                     case ResourceType.DYNAMIC_PHYSICS_SYSTEM:
                         {
                             //TODO: Pass this info through, and handle making new instances...
@@ -110,6 +111,7 @@ namespace CommandsEditor
                             ((GUI_Resource_DynamicPhysicsSystem)resourceGroup).PopulateUI(_entDisplay, resources[i].index); 
                             break;
                         }
+                        */
                     default:
                         {
                             resourceGroup = new GUI_Resource_Default();
