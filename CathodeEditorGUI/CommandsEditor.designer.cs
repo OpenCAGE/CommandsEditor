@@ -54,13 +54,14 @@
             this.keepFunctionUsesWindowOpenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.resetUILayoutsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpBtn = new System.Windows.Forms.ToolStripButton();
+            this.DEBUG_DoorPhysEnt = new System.Windows.Forms.ToolStripButton();
             this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
             this.vS2015LightTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.statusText = new System.Windows.Forms.ToolStripStatusLabel();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.DEBUG_DoorPhysEnt = new System.Windows.Forms.ToolStripButton();
+            this.DEBUG_RunChecks = new System.Windows.Forms.ToolStripButton();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -71,6 +72,7 @@
             this.toolStripButton1,
             this.toolStripButton2,
             this.helpBtn,
+            this.DEBUG_RunChecks,
             this.DEBUG_DoorPhysEnt});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
@@ -276,6 +278,16 @@
             this.helpBtn.Text = "Help";
             this.helpBtn.Click += new System.EventHandler(this.helpBtn_Click);
             // 
+            // DEBUG_DoorPhysEnt
+            // 
+            this.DEBUG_DoorPhysEnt.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.DEBUG_DoorPhysEnt.Image = ((System.Drawing.Image)(resources.GetObject("DEBUG_DoorPhysEnt.Image")));
+            this.DEBUG_DoorPhysEnt.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.DEBUG_DoorPhysEnt.Name = "DEBUG_DoorPhysEnt";
+            this.DEBUG_DoorPhysEnt.Size = new System.Drawing.Size(157, 22);
+            this.DEBUG_DoorPhysEnt.Text = "DEBUG: Load Door Phys Ent";
+            this.DEBUG_DoorPhysEnt.Click += new System.EventHandler(this.DEBUG_DoorPhysEnt_Click);
+            // 
             // statusStrip
             // 
             this.statusStrip.BackColor = System.Drawing.Color.Black;
@@ -306,15 +318,15 @@
             this.dockPanel.TabIndex = 5;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
             // 
-            // DEBUG_DoorPhysEnt
+            // DEBUG_RunChecks
             // 
-            this.DEBUG_DoorPhysEnt.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.DEBUG_DoorPhysEnt.Image = ((System.Drawing.Image)(resources.GetObject("DEBUG_DoorPhysEnt.Image")));
-            this.DEBUG_DoorPhysEnt.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.DEBUG_DoorPhysEnt.Name = "DEBUG_DoorPhysEnt";
-            this.DEBUG_DoorPhysEnt.Size = new System.Drawing.Size(157, 22);
-            this.DEBUG_DoorPhysEnt.Text = "DEBUG: Load Door Phys Ent";
-            this.DEBUG_DoorPhysEnt.Click += new System.EventHandler(this.DEBUG_DoorPhysEnt_Click);
+            this.DEBUG_RunChecks.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.DEBUG_RunChecks.Image = ((System.Drawing.Image)(resources.GetObject("DEBUG_RunChecks.Image")));
+            this.DEBUG_RunChecks.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.DEBUG_RunChecks.Name = "DEBUG_RunChecks";
+            this.DEBUG_RunChecks.Size = new System.Drawing.Size(116, 22);
+            this.DEBUG_RunChecks.Text = "DEBUG: Run Checks";
+            this.DEBUG_RunChecks.Click += new System.EventHandler(this.DEBUG_RunChecks_Click);
             // 
             // CommandsEditor
             // 
@@ -371,5 +383,6 @@
         private System.Windows.Forms.ToolStripMenuItem resetUILayoutsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem useLegacyParameterCreatorToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton DEBUG_DoorPhysEnt;
+        private System.Windows.Forms.ToolStripButton DEBUG_RunChecks;
     }
 }

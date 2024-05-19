@@ -458,7 +458,6 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Scripts\LocalDebug.cs" />
-    <Compile Include="Scripts\MathsUtils.cs" />
     <Compile Include="Scripts\Nodes\AccessTerminal.cs" />
     <Compile Include="Scripts\Nodes\AchievementMonitor.cs" />
     <Compile Include="Scripts\Nodes\AchievementStat.cs" />

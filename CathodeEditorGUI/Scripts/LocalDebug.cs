@@ -117,6 +117,32 @@ namespace CommandsEditor
 #endif
         }
 
+        public static void checkphysicssystempositions()
+        {
+#if DEBUG
+
+            List<string> files = Directory.GetFiles("F:\\Alien Isolation Versions\\Alien Isolation PC Final\\DATA\\ENV", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            Parallel.ForEach(files, file =>
+            {
+                Commands commands = new Commands(file);
+                Parallel.ForEach(commands.Entries, comp =>
+                {
+                    Parallel.ForEach(comp.functions, func =>
+                    {
+                        if (func.function == ShortGuidUtils.Generate("PhysicsSystem"))
+                        {
+                            Parameter pos = func.GetParameter("position");
+                            if (pos != null)
+                            {
+                                string sdfsdf = "";
+                            }
+                        }
+                    });
+                });
+            });
+#endif
+        }
+
         public static void checkprefabinstances()
         {
 #if DEBUG

@@ -5,6 +5,7 @@ using CATHODE.Scripting.Internal;
 using CathodeLib;
 using CommandsEditor.DockPanels;
 using CommandsEditor.Popups;
+using CommandsEditor.UserControls;
 using DiscordRPC;
 using Newtonsoft.Json;
 using OpenCAGE;
@@ -22,6 +23,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Media.Imaging;
 using System.Xml;
 using WebSocketSharp.Server;
 using WeifenLuo.WinFormsUI.Docking;
@@ -58,6 +60,7 @@ namespace CommandsEditor
         {
 #if !DEBUG
             DEBUG_DoorPhysEnt.Visible = false;
+            DEBUG_RunChecks.Visible = false;
 #endif
 
             /*
@@ -634,6 +637,84 @@ namespace CommandsEditor
             }
 #endif
 
+            //Populate PHYSICS.MAP
+            ShortGuid DYNAMIC_PHYSICS_SYSTEM = ShortGuidUtils.Generate("DYNAMIC_PHYSICS_SYSTEM");
+            foreach (Composite composite in _commandsDisplay.Content.commands.Entries)
+            {
+                List<FunctionEntity> physEnts = composite.GetFunctionEntitiesOfType(FunctionType.PhysicsSystem);
+                if (physEnts.Count == 0)
+                    continue;
+                if (physEnts.Count > 1)
+                    Console.WriteLine("WARNING: More than one PhysicsSystem entity in this composite - editor UI should've prevented this!");
+
+                FunctionEntity physEnt = physEnts[0];
+                ResourceReference physEntRes = physEnt.GetResource(ResourceType.DYNAMIC_PHYSICS_SYSTEM);
+
+                if (physEntRes == null)
+                {
+                    Console.WriteLine("WARNING: PhysicsSystem entity does not have a DYNAMIC_PHYSICS_SYSTEM resource - CathodeLib should've added this.");
+                    continue;
+                }
+
+                List<EntityPath> hierarchies = _commandsDisplay.Content.editor_utils.GetHierarchiesForEntity(composite, physEnt);
+                if (hierarchies.Count == 0)
+                    continue;
+
+                for (int i = 0; i < hierarchies.Count; i++)
+                {
+                    //Calculate global transform from path (TODO: this logic should totally exist elsewhere to be reusable)
+                    Vector3 position; Quaternion rotation;
+                    {
+                        cTransform globalTransform = new cTransform();
+                        Composite comp = _commandsDisplay.Content.commands.EntryPoints[0];
+                        for (int x = 0; x < hierarchies[i].path.Count; x++)
+                        {
+                            FunctionEntity compInst = comp.functions.FirstOrDefault(o => o.shortGUID == hierarchies[i].path[x]);
+                            if (compInst == null)
+                                break;
+
+                            Parameter positionParam = compInst.GetParameter("position");
+                            if (positionParam != null && positionParam.content != null && positionParam.content.dataType == DataType.TRANSFORM)
+                                globalTransform += (cTransform)positionParam.content;
+
+                            comp = _commandsDisplay.Content.commands.GetComposite(compInst.function);
+                            if (comp == null)
+                                break;
+                        }
+                        position = globalTransform.position;
+                        rotation = Quaternion.CreateFromYawPitchRoll(globalTransform.rotation.Y * (float)Math.PI / 180.0f, globalTransform.rotation.X * (float)Math.PI / 180.0f, globalTransform.rotation.Z * (float)Math.PI / 180.0f);
+                    }
+                    
+                    //Get instance info
+                    ShortGuid compositeInstanceID = hierarchies[i].GenerateInstance();
+                    hierarchies[i].path.RemoveAt(hierarchies[i].path.Count - 2);
+                    CommandsEntityReference compositeInstanceReference = new CommandsEntityReference()
+                    {
+                        entity_id = hierarchies[i].path[hierarchies[i].path.Count - 2],
+                        composite_instance_id = hierarchies[i].GenerateInstance()
+                    };
+                    
+                    //TODO: why do some entries require PHYSICS.MAP and others not?
+                    var test = _commandsDisplay.Content.resource.physics_maps.Entries.FindAll(o => o.composite_instance_id == compositeInstanceID && o.entity == compositeInstanceReference);
+                    if (test.Count == 0)
+                        continue;
+
+                    //Remove all entries that already exist for this instance
+                    _commandsDisplay.Content.resource.physics_maps.Entries.RemoveAll(o => o.composite_instance_id == compositeInstanceID && o.entity == compositeInstanceReference);
+
+                    //Make a new entry for the instance
+                    _commandsDisplay.Content.resource.physics_maps.Entries.Add(new PhysicsMaps.Entry()
+                    {
+                        physics_system_index = physEntRes.index,
+                        resource_type = DYNAMIC_PHYSICS_SYSTEM,
+                        composite_instance_id = compositeInstanceID,
+                        entity = compositeInstanceReference,
+                        Position = position,
+                        Rotation = rotation
+                    });
+                }
+            }
+
             if (_commandsDisplay.Content.resource.physics_maps != null && _commandsDisplay.Content.resource.physics_maps.Entries != null)
                 _commandsDisplay.Content.resource.physics_maps.Save();
             if (_commandsDisplay.Content.resource.resources != null && _commandsDisplay.Content.resource.resources.Entries != null)
@@ -889,6 +970,11 @@ namespace CommandsEditor
         private void DEBUG_DoorPhysEnt_Click(object sender, EventArgs e)
         {
             _commandsDisplay.LoadCompositeAndEntity(new ShortGuid("05-2C-95-DF"), new ShortGuid("BB-3E-91-2E"));
+        }
+
+        private void DEBUG_RunChecks_Click(object sender, EventArgs e)
+        {
+            LocalDebug.checkphysicssystempositions();
         }
     }
 }

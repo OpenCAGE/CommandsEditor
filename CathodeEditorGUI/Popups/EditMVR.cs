@@ -13,6 +13,7 @@ using System.Numerics;
 using CATHODE;
 using CommandsEditor.Popups.Base;
 using CommandsEditor.DockPanels;
+using CathodeLib;
 
 namespace CommandsEditor
 {
@@ -73,7 +74,6 @@ namespace CommandsEditor
             LoadMVR(_mvrListIndexes[listBox1.SelectedIndex]);
         }
 
-        cTransform transformData = null;
         private bool hasLoaded = false;
         private void LoadMVR(int mvrIndex)
         {
@@ -113,7 +113,6 @@ namespace CommandsEditor
             mvr.renderable_element_index = (uint)Content.resource.reds.Entries.Count;
 
             Vector3 scale = new Vector3((float)SCALE_X.Value, (float)SCALE_Y.Value, (float)SCALE_Z.Value);
-            //Quaternion rotation = Quaternion.Normalize(new Quaternion((float)ROT_X.Value, (float)ROT_Y.Value, (float)ROT_Z.Value, (float)ROT_W.Value));
             Vector3 position = new Vector3((float)POS_X.Value, (float)POS_Y.Value, (float)POS_Z.Value);
 
             Quaternion rotation = Quaternion.CreateFromYawPitchRoll(
