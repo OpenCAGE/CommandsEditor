@@ -23,6 +23,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Xml;
 using WebSocketSharp.Server;
@@ -58,11 +59,6 @@ namespace CommandsEditor
 
         public CommandsEditor(string level = null)
         {
-#if !DEBUG
-            DEBUG_DoorPhysEnt.Visible = false;
-            DEBUG_RunChecks.Visible = false;
-#endif
-
             /*
             string[] cmds = Directory.GetFiles("E:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\", "COMMANDS.PAK", SearchOption.AllDirectories);
             foreach (string cmd in cmds)
@@ -205,6 +201,11 @@ namespace CommandsEditor
 
             _defaultWidth = Width;
             _defaultHeight = Height;
+
+#if !DEBUG
+            DEBUG_DoorPhysEnt.Visible = false;
+            DEBUG_RunChecks.Visible = false;
+#endif
 
             WindowState = SettingsManager.GetString(Singleton.Settings.WindowState, "Normal") == "Maximized" ? FormWindowState.Maximized : FormWindowState.Normal;
             Width = SettingsManager.GetInteger(Singleton.Settings.WindowWidth, _defaultWidth);
@@ -492,7 +493,7 @@ namespace CommandsEditor
             Cursor.Current = Cursors.WaitCursor;
             statusText.Text = "Saving...";
             statusStrip.Update();
-            bool saved = LegacySave();
+            bool saved = Save();
             statusText.Text = "";
             Cursor.Current = Cursors.Default;
 
@@ -509,98 +510,7 @@ namespace CommandsEditor
                 MessageBox.Show("Failed to save changes!", "Failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
-        private bool SaveNew()
-        {
-            bool saved = false;
-#if !CATHODE_FAIL_HARD
-            byte[] backup = null;
-            try
-            {
-                backup = File.ReadAllBytes(_commandsDisplay.Content.commands.Filepath);
-#endif
-                saved = _commandsDisplay.Content.commands.Save();
-#if !CATHODE_FAIL_HARD
-            }
-            catch (Exception ex)
-            {
-                try
-                {
-                    if (backup != null)
-                        File.WriteAllBytes(_commandsDisplay.Content.commands.Filepath, backup);
-                }
-                catch { }
-
-                return false;
-            }
-
-            if (!saved)
-            {
-                try
-                {
-                    if (backup != null)
-                        File.WriteAllBytes(_commandsDisplay.Content.commands.Filepath, backup);
-                }
-                catch { }
-
-                return false;
-            }
-#endif
-
-            //Calculate instance specific stuff
-            _commandsDisplay.Content.editor_utils.GenerateCompositeInstances(_commandsDisplay.Content.commands); //TODO: Do we need to do this? I don't think we should.
-            CreateDataForInstance(_commandsDisplay.Content.commands.EntryPoints[0]);
-
-            return saved;
-        }
-        private void CreateDataForInstance(Composite composite)
-        {
-            for (int i = 0; i < composite.functions.Count; i++) //todo: can we do this in parallel?
-            {
-                if (CommandsUtils.FunctionTypeExists(composite.functions[i].function))
-                {
-                    //This is a FunctionEntity which we may need to create data for the instance of
-
-                    //Writing this code, I'm now realising that we would need to write these extra files to know the indexes to then write in Commands.
-                    //It must all be done at the same time...
-                    //Hmm...
-                    for (int x = 0; x < composite.functions[i].resources.Count; x++)
-                    {
-                        ResourceReference resource = composite.functions[i].resources[x];
-                        switch (resource.resource_type)
-                        {
-                            case ResourceType.DYNAMIC_PHYSICS_SYSTEM:
-                                //Write to PHYSICS.MAP
-                                break;
-                            case ResourceType.COLLISION_MAPPING:
-                                //Write to COLLISION.MAP
-                                break;
-                            case ResourceType.RENDERABLE_INSTANCE:
-                                //Write to MODELS.MVR
-                                break;
-                            case ResourceType.ANIMATED_MODEL:
-                                //Write to ENVIRONMENT_ANIMATION.DAT
-                                break;
-                        }
-                    }
-                }
-                else
-                {
-                    //This is a FunctionEntity which instances a child composite, so we should follow it through
-                    Composite child = _commandsDisplay.Content.commands.GetComposite(composite.functions[i].function);
-                    if (child != null) CreateDataForInstance(child);
-                }
-            }
-
-            _commandsDisplay.Content.resource.physics_maps.Save();
-            _commandsDisplay.Content.resource.collision_maps.Save();
-            _commandsDisplay.Content.resource.character_accessories.Save();
-            _commandsDisplay.Content.resource.reds.Save();
-            _commandsDisplay.Content.resource.env_animations.Save();
-            _commandsDisplay.Content.mvr.Save();
-        }
-
-        //To be deprecated: this does not work nicely for resources and other hierarchical things.
-        private bool LegacySave()
+        private bool Save()
         {
             bool saved = false;
 #if !CATHODE_FAIL_HARD
@@ -723,6 +633,60 @@ namespace CommandsEditor
                 }
             }
 
+            //Add to RESOURCES.BIN
+            ShortGuid ANIMATED_MODEL = ShortGuidUtils.Generate("AnimatedModel");
+            foreach (Composite composite in _commandsDisplay.Content.commands.Entries)
+            {
+                List<FunctionEntity> funcsWithResources = composite.functions.FindAll(o => o.resources.Count != 0);
+                if (funcsWithResources.Count == 0)
+                    continue;
+
+                List<EntityPath> hierarchies = _commandsDisplay.Content.editor_utils.GetHierarchiesForEntity(composite, funcsWithResources[0]);
+                if (hierarchies.Count == 0)
+                    continue;
+
+                List<ShortGuid> instanceIDs = new List<ShortGuid>();
+                for (int i = 0; i < hierarchies.Count; i++)
+                    instanceIDs.Add(hierarchies[i].GenerateInstance());
+
+                foreach (FunctionEntity func in funcsWithResources)
+                {
+                    foreach (ResourceReference resRef in func.resources)
+                    {
+                        ShortGuid id;
+                        switch (resRef.resource_type)
+                        {
+                            case ResourceType.RENDERABLE_INSTANCE:
+                                continue;
+                                id = ShortGuidUtils.Generate(EntityUtils.GetName(composite, func));
+                                break;
+                            case ResourceType.ANIMATED_MODEL:
+                                id = ANIMATED_MODEL;
+                                break;
+                            case ResourceType.DYNAMIC_PHYSICS_SYSTEM:
+                                id = DYNAMIC_PHYSICS_SYSTEM;
+                                break;
+                            default:
+                                continue;
+                        }
+
+                        foreach (ShortGuid instanceID in instanceIDs)
+                        {
+                            if (_commandsDisplay.Content.resource.resources.Entries.FindAll(res => res.composite_instance_id == instanceID && res.resource_id == id).Count != 0)
+                                continue;
+
+                            //NOTE: we never clear up deleted entries in this database.
+                            _commandsDisplay.Content.resource.resources.Entries.Add(new Resources.Resource()
+                            {
+                                composite_instance_id = instanceID,
+                                resource_id = id,
+                                index = _commandsDisplay.Content.resource.resources.Entries.Count
+                            });
+                        }
+                    }
+                }
+            }
+
             if (_commandsDisplay.Content.resource.physics_maps != null && _commandsDisplay.Content.resource.physics_maps.Entries != null)
                 _commandsDisplay.Content.resource.physics_maps.Save();
             if (_commandsDisplay.Content.resource.resources != null && _commandsDisplay.Content.resource.resources.Entries != null)
@@ -731,6 +695,10 @@ namespace CommandsEditor
                 _commandsDisplay.Content.resource.character_accessories.Save();
             if (_commandsDisplay.Content.resource.reds != null && _commandsDisplay.Content.resource.reds.Entries != null)
                 _commandsDisplay.Content.resource.reds.Save();
+            if (_commandsDisplay.Content.resource.env_animations != null && _commandsDisplay.Content.resource.env_animations.Entries != null)
+                _commandsDisplay.Content.resource.env_animations.Save();
+            if (_commandsDisplay.Content.resource.collision_maps != null && _commandsDisplay.Content.resource.collision_maps.Entries != null)
+                _commandsDisplay.Content.resource.collision_maps.Save();
             if (_commandsDisplay.Content.mvr != null && _commandsDisplay.Content.mvr.Entries != null)
                 _commandsDisplay.Content.mvr.Save();
 
