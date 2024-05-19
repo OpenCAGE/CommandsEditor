@@ -662,6 +662,8 @@ namespace CommandsEditor
 
                 for (int i = 0; i < hierarchies.Count; i++)
                 {
+                    bool shouldWrite = true;
+
                     //Calculate global transform from path (TODO: this logic should totally exist elsewhere to be reusable)
                     Vector3 position; Quaternion rotation;
                     {
@@ -669,6 +671,13 @@ namespace CommandsEditor
                         Composite comp = _commandsDisplay.Content.commands.EntryPoints[0];
                         for (int x = 0; x < hierarchies[i].path.Count; x++)
                         {
+                            //If a composite further up in the path contains a PhysicsSystem too we shouldn't write this one out
+                            if (x < hierarchies[i].path.Count - 2 && comp.GetFunctionEntitiesOfType(FunctionType.PhysicsSystem).Count != 0)
+                            {
+                                shouldWrite = false;
+                                break;
+                            }
+
                             FunctionEntity compInst = comp.functions.FirstOrDefault(o => o.shortGUID == hierarchies[i].path[x]);
                             if (compInst == null)
                                 break;
@@ -684,7 +693,11 @@ namespace CommandsEditor
                         position = globalTransform.position;
                         rotation = Quaternion.CreateFromYawPitchRoll(globalTransform.rotation.Y * (float)Math.PI / 180.0f, globalTransform.rotation.X * (float)Math.PI / 180.0f, globalTransform.rotation.Z * (float)Math.PI / 180.0f);
                     }
-                    
+
+                    //NOTE: We also shouldn't write static stuff out by the looks of it, but doing it anyway seems to be fine?
+                    if (!shouldWrite)
+                        continue;
+
                     //Get instance info
                     ShortGuid compositeInstanceID = hierarchies[i].GenerateInstance();
                     hierarchies[i].path.RemoveAt(hierarchies[i].path.Count - 2);
@@ -693,11 +706,6 @@ namespace CommandsEditor
                         entity_id = hierarchies[i].path[hierarchies[i].path.Count - 2],
                         composite_instance_id = hierarchies[i].GenerateInstance()
                     };
-                    
-                    //TODO: why do some entries require PHYSICS.MAP and others not?
-                    var test = _commandsDisplay.Content.resource.physics_maps.Entries.FindAll(o => o.composite_instance_id == compositeInstanceID && o.entity == compositeInstanceReference);
-                    if (test.Count == 0)
-                        continue;
 
                     //Remove all entries that already exist for this instance
                     _commandsDisplay.Content.resource.physics_maps.Entries.RemoveAll(o => o.composite_instance_id == compositeInstanceID && o.entity == compositeInstanceReference);
