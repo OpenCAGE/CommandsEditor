@@ -47,9 +47,9 @@ namespace CommandsEditor
             RefreshUI();
         }
 
-        public AddOrEditResource(List<ResourceReference> resRefs, ShortGuid parent, string windowTitle) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
+        public AddOrEditResource(EntityDisplay entDisplay, List<ResourceReference> resRefs, ShortGuid parent, string windowTitle) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
-            _entDisplay = null;
+            _entDisplay = entDisplay;
 
             ResourceReference[] copy = new ResourceReference[resRefs.Count];
             resRefs.CopyTo(copy);
@@ -83,10 +83,10 @@ namespace CommandsEditor
                     case ResourceType.COLLISION_MAPPING:
                         {
                             //TODO: Pass this info through, and handle making new instances...
-                            Content.resource.collision_maps.Entries.FindAll(o => o.entity.entity_id == resources[i].collisionID);
+                            Content.resource.collision_maps.Entries.FindAll(o => o.entity.entity_id == resources[i].entityID);
 
                             resourceGroup = new GUI_Resource_CollisionMapping();
-                            ((GUI_Resource_CollisionMapping)resourceGroup).PopulateUI(resources[i].position, resources[i].rotation, resources[i].collisionID);
+                            ((GUI_Resource_CollisionMapping)resourceGroup).PopulateUI(resources[i].position, resources[i].rotation, resources[i].entityID);
                             break;
                         }
                     case ResourceType.NAV_MESH_BARRIER_RESOURCE:
@@ -226,7 +226,7 @@ namespace CommandsEditor
                             GUI_Resource_CollisionMapping ui = (GUI_Resource_CollisionMapping)resource_panel.Controls[i];
                             resourceRef.position = ui.Position;
                             resourceRef.rotation = ui.Rotation;
-                            resourceRef.collisionID = ui.CollisionID;
+                            resourceRef.entityID = ui.CollisionEnabled ? _entDisplay.Entity.shortGUID : new ShortGuid("FF-FF-FF-FF");
                             break;
                         }
                     case ResourceType.NAV_MESH_BARRIER_RESOURCE:

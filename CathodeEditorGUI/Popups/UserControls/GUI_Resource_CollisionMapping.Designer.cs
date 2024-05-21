@@ -29,8 +29,7 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.collisionID = new System.Windows.Forms.ComboBox();
+            this.enabledCheckbox = new System.Windows.Forms.CheckBox();
             this.label8 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.ROT_Z = new System.Windows.Forms.NumericUpDown();
@@ -56,8 +55,7 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Controls.Add(this.collisionID);
+            this.groupBox1.Controls.Add(this.enabledCheckbox);
             this.groupBox1.Controls.Add(this.label8);
             this.groupBox1.Controls.Add(this.label10);
             this.groupBox1.Controls.Add(this.ROT_Z);
@@ -79,23 +77,16 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Collision Mapping";
             // 
-            // label1
+            // enabledCheckbox
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(10, 20);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(59, 13);
-            this.label1.TabIndex = 44;
-            this.label1.Text = "Collision ID";
-            // 
-            // collisionID
-            // 
-            this.collisionID.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.collisionID.FormattingEnabled = true;
-            this.collisionID.Location = new System.Drawing.Point(13, 35);
-            this.collisionID.Name = "collisionID";
-            this.collisionID.Size = new System.Drawing.Size(159, 21);
-            this.collisionID.TabIndex = 43;
+            this.enabledCheckbox.AutoSize = true;
+            this.enabledCheckbox.Location = new System.Drawing.Point(22, 34);
+            this.enabledCheckbox.Name = "enabledCheckbox";
+            this.enabledCheckbox.Size = new System.Drawing.Size(65, 17);
+            this.enabledCheckbox.TabIndex = 44;
+            this.enabledCheckbox.Text = "Enabled";
+            this.enabledCheckbox.UseVisualStyleBackColor = true;
+            this.enabledCheckbox.CheckedChanged += new System.EventHandler(this.enabledCheckbox_CheckedChanged);
             // 
             // label8
             // 
@@ -373,7 +364,6 @@
         private System.Windows.Forms.NumericUpDown POS_Y;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.NumericUpDown POS_X;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ComboBox collisionID;
+        private System.Windows.Forms.CheckBox enabledCheckbox;
     }
 }

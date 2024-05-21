@@ -17,26 +17,11 @@ namespace CommandsEditor.Popups.UserControls
         public Vector3 Position { get { return new Vector3((float)POS_X.Value, (float)POS_Y.Value, (float)POS_Z.Value); } }
         public Vector3 Rotation { get { return new Vector3((float)ROT_X.Value, (float)ROT_Y.Value, (float)ROT_Z.Value); } }
 
-        public ShortGuid CollisionID { get { return new ShortGuid(collisionID.Text == "" ? "FF-FF-FF-FF" : collisionID.Text); } } //todo: this is a temp hack for unresolved collision ids
+        public bool CollisionEnabled => enabledCheckbox.Checked;
 
         public GUI_Resource_CollisionMapping() : base()
         {
-
-            //TODO: Fetch this data correctly from COLLISION.MAP, and then re-write it too!
-
-
             InitializeComponent();
-
-            collisionID.BeginUpdate();
-            collisionID.Items.Clear();
-            collisionID.Items.Add("FF-FF-FF-FF");
-            for (int i = 0; i < Content.resource.collision_maps.Entries.Count; i++)
-            {
-                string id = Content.resource.collision_maps.Entries[i].entity.entity_id.ToByteString();
-                if (collisionID.Items.Contains(id)) continue;
-                collisionID.Items.Add(id);
-            }
-            collisionID.EndUpdate();
         }
 
         public void PopulateUI(Vector3 position, Vector3 rotation, ShortGuid collisionID)
@@ -49,7 +34,12 @@ namespace CommandsEditor.Popups.UserControls
             ROT_Y.Value = (decimal)rotation.Y;
             ROT_Z.Value = (decimal)rotation.Z;
 
-            this.collisionID.SelectedItem = collisionID.ToByteString();
+            enabledCheckbox.Checked = collisionID != new ShortGuid("FF-FF-FF-FF");
+        }
+
+        private void enabledCheckbox_CheckedChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

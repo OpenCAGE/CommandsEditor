@@ -26,6 +26,7 @@ using System.Windows.Forms;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Xml;
+using WebSocketSharp;
 using WebSocketSharp.Server;
 using WeifenLuo.WinFormsUI.Docking;
 using static System.Net.Mime.MediaTypeNames;
@@ -633,6 +634,56 @@ namespace CommandsEditor
                 }
             }
 
+            //Populate COLLISION.MAP
+            foreach (Composite composite in _commandsDisplay.Content.commands.Entries)
+            {
+                foreach (FunctionEntity func in composite.functions)
+                {
+                    ResourceReference collisionMapRef = func.GetResource(ResourceType.COLLISION_MAPPING);
+                    if (collisionMapRef == null)
+                    {
+                        Parameter resourceParam = func.GetParameter("resource");
+                        if (resourceParam == null || resourceParam.content == null)
+                            continue;
+                        if (resourceParam.content.dataType != DataType.RESOURCE)
+                            continue;
+                        cResource resourceParamVal = (cResource)resourceParam.content;
+                        collisionMapRef = resourceParamVal.GetResource(ResourceType.COLLISION_MAPPING);
+                        if (collisionMapRef == null)
+                            continue;
+                    }
+
+                    //Ensure the entity ID is pointing correctly
+                    if (collisionMapRef.entityID != new ShortGuid("FF-FF-FF-FF"))
+                        collisionMapRef.entityID = func.shortGUID;
+
+                    List<EntityPath> hierarchies = _commandsDisplay.Content.editor_utils.GetHierarchiesForEntity(composite, func);
+                    if (hierarchies.Count == 0)
+                        continue;
+
+                    for (int i = 0; i < hierarchies.Count; i++)
+                    {
+                        //Get instance info
+                        CommandsEntityReference compositeInstanceReference = new CommandsEntityReference()
+                        {
+                            entity_id = func.shortGUID,
+                            composite_instance_id = hierarchies[i].GenerateInstance()
+                        };
+
+                        //Remove all entries that already exist for this instance
+                        _commandsDisplay.Content.resource.collision_maps.Entries.RemoveAll(o => o.entity == compositeInstanceReference);
+
+                        //Make a new entry for the instance
+                        _commandsDisplay.Content.resource.collision_maps.Entries.Add(new CollisionMaps.Entry()
+                        {
+                            id = ShortGuidUtils.Generate(EntityUtils.GetName(composite, func)),
+                            entity = compositeInstanceReference,
+                            zone_id = new ShortGuid("AF-C6-66-A9") //TODO: calculate zone ID from zone info in commands
+                        });
+                    }
+                }
+            }
+
             //Add to RESOURCES.BIN
             ShortGuid ANIMATED_MODEL = ShortGuidUtils.Generate("AnimatedModel");
             foreach (Composite composite in _commandsDisplay.Content.commands.Entries)
@@ -656,8 +707,7 @@ namespace CommandsEditor
                         ShortGuid id;
                         switch (resRef.resource_type)
                         {
-                            case ResourceType.RENDERABLE_INSTANCE:
-                                continue;
+                            case ResourceType.COLLISION_MAPPING:
                                 id = ShortGuidUtils.Generate(EntityUtils.GetName(composite, func));
                                 break;
                             case ResourceType.ANIMATED_MODEL:
@@ -945,7 +995,7 @@ namespace CommandsEditor
 
         private void DEBUG_DoorPhysEnt_Click(object sender, EventArgs e)
         {
-            _commandsDisplay.LoadCompositeAndEntity(new ShortGuid("05-2C-95-DF"), new ShortGuid("BB-3E-91-2E"));
+            _commandsDisplay.LoadCompositeAndEntity(_commandsDisplay.Content.commands.Entries.FirstOrDefault(o => o.name.Contains("DOOR_SML_SCI_WINDOW")).shortGUID, new ShortGuid("EA-B4-D6-BA"));
         }
 
         private void DEBUG_RunChecks_Click(object sender, EventArgs e)

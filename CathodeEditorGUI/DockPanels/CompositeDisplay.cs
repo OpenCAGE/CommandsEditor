@@ -615,6 +615,8 @@ namespace CommandsEditor.DockPanels
                 if (newLinks.Count != 0) ent.childLinks.AddRange(newLinks);
             }
 
+            //TODO should update entity ID on collision_map resource
+
 #if DEBUG
             //If entity is a composite instance, check to see if it should make a new PHYSICS.MAP entry
             if (entity.variant == EntityVariant.FUNCTION)

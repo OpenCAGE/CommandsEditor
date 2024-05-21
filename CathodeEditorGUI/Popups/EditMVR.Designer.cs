@@ -57,6 +57,7 @@ namespace CommandsEditor
             this.label2 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.DEBUG_clear = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.SCALE_Z)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SCALE_Y)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SCALE_X)).BeginInit();
@@ -505,6 +506,7 @@ namespace CommandsEditor
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.DEBUG_clear);
             this.groupBox2.Controls.Add(this.renderable);
             this.groupBox2.Controls.Add(this.label1);
             this.groupBox2.Controls.Add(this.label2);
@@ -536,6 +538,16 @@ namespace CommandsEditor
             this.groupBox2.TabIndex = 177;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Selected Mover Descriptor";
+            // 
+            // DEBUG_clear
+            // 
+            this.DEBUG_clear.Location = new System.Drawing.Point(409, 254);
+            this.DEBUG_clear.Name = "DEBUG_clear";
+            this.DEBUG_clear.Size = new System.Drawing.Size(75, 23);
+            this.DEBUG_clear.TabIndex = 177;
+            this.DEBUG_clear.Text = "clear";
+            this.DEBUG_clear.UseVisualStyleBackColor = true;
+            this.DEBUG_clear.Click += new System.EventHandler(this.DEBUG_clear_Click);
             // 
             // EditMVR
             // 
@@ -596,5 +608,6 @@ namespace CommandsEditor
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Button DEBUG_clear;
     }
 }

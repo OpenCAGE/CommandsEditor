@@ -1,4 +1,4 @@
-﻿using CATHODE.Scripting;
+using CATHODE.Scripting;
 using CommandsEditor.Popups.UserControls;
 using System;
 using System.Collections.Generic;
@@ -35,6 +35,10 @@ namespace CommandsEditor
 
             renderable.OnMaterialSelected += OnMaterialSelected;
             renderable.OnModelSelected += OnModelSelected;
+
+#if !DEBUG
+            DEBUG_clear.Visible = false;
+#endif
         }
 
         private void PopulateUI(ShortGuid nodeID)
@@ -209,6 +213,28 @@ namespace CommandsEditor
         private void type_dropdown_SelectedIndexChanged(object sender, EventArgs e)
         {
             SaveMVR();
+        }
+
+        private void DEBUG_clear_Click(object sender, EventArgs e)
+        {
+            Movers.MOVER_DESCRIPTOR mvr = Content.mvr.Entries[loadedMvrIndex];
+
+            var resource = Content.resource.resources.Entries.FirstOrDefault(o => o.index == mvr.resource_index);
+            var renderable_element = Content.resource.reds.Entries[(int)mvr.renderable_element_index];
+
+            for (int i = 0; i < Content.resource.collision_maps.Entries.Count; i++)
+            {
+                Console.WriteLine(Content.resource.collision_maps.Entries[i].zone_id);
+            }
+
+            Content.resource.collision_maps.Entries.FirstOrDefault(o => o.entity == mvr.entity).entity = new CommandsEntityReference();
+
+            mvr.entity = new CommandsEntityReference();
+
+           // mvr.entity = new CommandsEntityReference();
+            //mvr.resource_index = -1;
+
+            Content.mvr.Entries[loadedMvrIndex] = mvr;
         }
     }
 }
