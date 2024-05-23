@@ -544,10 +544,8 @@ namespace CommandsEditor.DockPanels
                     Composite.aliases.Add((AliasEntity)newEnt);
                     break;
             }
-            Singleton.OnEntityAdded?.Invoke(newEnt);
-
-            ReloadUIForNewEntity(newEnt);
             Content.editor_utils.GenerateCompositeInstances(Content.commands);
+            Singleton.OnEntityAdded?.Invoke(newEnt);
         }
 
         private Entity MakeCopyOfEntity(Entity entity)
