@@ -219,7 +219,7 @@ namespace CommandsEditor
         {
             Movers.MOVER_DESCRIPTOR mvr = Content.mvr.Entries[loadedMvrIndex];
 
-            var resource = Content.resource.resources.Entries.FirstOrDefault(o => o.index == mvr.resource_index);
+            var resource = Content.resource.resources.Entries[mvr.resource_index];
             var renderable_element = Content.resource.reds.Entries[(int)mvr.renderable_element_index];
 
             for (int i = 0; i < Content.resource.collision_maps.Entries.Count; i++)

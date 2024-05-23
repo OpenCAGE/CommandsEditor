@@ -37,6 +37,8 @@ namespace CommandsEditor.DockPanels
         private string _currentDisplayFolderPath = "";
 
         private CompositeDisplay _compositeDisplay = null;
+        public CompositeDisplay CompositeDisplay => _compositeDisplay;
+
         private Composite3D _renderer = null;
 
         AddComposite _addCompositeDialog = null;

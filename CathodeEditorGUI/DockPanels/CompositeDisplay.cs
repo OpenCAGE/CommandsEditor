@@ -661,7 +661,7 @@ namespace CommandsEditor.DockPanels
                         Resources.Resource physRes = Content.resource.resources.Entries.FirstOrDefault(res => res.composite_instance_id == physMap.composite_instance_id);
                         Resources.Resource newPhysRes = physRes.Copy();
                         newPhysRes.composite_instance_id = newPhysMap.composite_instance_id;
-                        newPhysRes.index = Content.resource.resources.Entries.Count;
+                        //newPhysRes.index = Content.resource.resources.Entries.Count;
                         Content.resource.resources.Entries.Add(newPhysRes);
                         //Content.resource.resources.Entries[Content.resource.resources.Entries.IndexOf(p)] = resPhys;
                     });
