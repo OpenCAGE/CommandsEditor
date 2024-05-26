@@ -29,7 +29,6 @@ using System.Xml;
 using WebSocketSharp;
 using WebSocketSharp.Server;
 using WeifenLuo.WinFormsUI.Docking;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace CommandsEditor
 {
@@ -64,8 +63,10 @@ namespace CommandsEditor
             //col.Save();
             //return;
 
+#if DEBUG
             Directory.Delete("E:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\SOLACE", true);
             CopyFilesRecursively("F:\\Alien Isolation Versions\\Alien Isolation PC Final\\DATA\\ENV\\PRODUCTION\\SOLACE", "E:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\SOLACE");
+#endif
 
             /*
             string[] cmds = Directory.GetFiles("E:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\", "COMMANDS.PAK", SearchOption.AllDirectories);
@@ -574,7 +575,7 @@ namespace CommandsEditor
                     continue;
                 }
 
-                List<EntityPath> hierarchies = _commandsDisplay.Content.editor_utils.GetHierarchiesForEntity(composite, physEnt);
+                List<EntityHandle> hierarchies = _commandsDisplay.Content.editor_utils.GetHierarchiesForEntity(composite, physEnt);
                 if (hierarchies.Count == 0)
                     continue;
 
@@ -612,7 +613,7 @@ namespace CommandsEditor
                         rotation = Quaternion.CreateFromYawPitchRoll(globalTransform.rotation.Y * (float)Math.PI / 180.0f, globalTransform.rotation.X * (float)Math.PI / 180.0f, globalTransform.rotation.Z * (float)Math.PI / 180.0f);
                     }
 
-                    //NOTE: We also shouldn't write static stuff out by the looks of it, but doing it anyway seems to be fine?
+                    //NOTE: We also shouldn't write static stuff out by the looks of it
                     if (!shouldWrite)
                         continue;
 
@@ -638,49 +639,30 @@ namespace CommandsEditor
                         Position = position,
                         Rotation = rotation
                     });
+                    Console.WriteLine("Adding new physics map entry");
                 }
             }
 
+            List<ShortGuid> bruhm = new List<ShortGuid>();
+            foreach (CollisionMaps.Entry e in _commandsDisplay.Content.resource.collision_maps.Entries)
+            {
+                if (!bruhm.Contains(e.zone_id))
+                {
+                    bruhm.Add(e.zone_id);
+                }
+            }
+            bruhm.Sort();
+            foreach (var e in bruhm)
+            {
+                Console.WriteLine(e);
+            }
+
             //Populate COLLISION.MAP
-            //_commandsDisplay.Content.resource.collision_maps.Entries.Clear();
-            //for (int i = 0; i < 18; i++) _commandsDisplay.Content.resource.collision_maps.Entries.Add(new CollisionMaps.Entry());
+            bool lookatthis = false;
             foreach (Composite composite in _commandsDisplay.Content.commands.Entries)
             {
                 foreach (FunctionEntity func in composite.functions)
                 {
-                    /*
-                    Composite t = _commandsDisplay.Content.commands.GetComposite(func.function);
-                    if (t!= null && t.name.Contains("DOOR_SML_SCI_WINDOW"))
-                    {
-                        CancellationToken ct = new CancellationToken();
-                        _commandsDisplay.Content.editor_utils.TryFindZoneForEntity(func, composite, out Composite zoneComp, out FunctionEntity zoneEnt, ct);
-
-                        ShortGuid zone_id = new ShortGuid("AF-C6-66-A9");
-
-                        List<EntityPath> hierarchies2 = _commandsDisplay.Content.editor_utils.GetHierarchiesForEntity(zoneComp, zoneEnt);
-                        ShortGuid test0 = hierarchies2[0].GenerateInstance();
-                        ShortGuid test1 = test0.Combine(zoneComp.shortGUID);
-                        ShortGuid test2 = hierarchies2[0].GeneratePathHash();
-                        ShortGuid test3 = test2.Combine(zoneComp.shortGUID);
-                        ShortGuid test4 = ShortGuidUtils.Generate(EntityUtils.GetName(zoneComp, zoneEnt));
-
-                        //TODO: how do we calculate the zone IDs? changing the "name" parameter on the Zone entity doesn't break zones, so it's not that. duplicating the zone though and deleting the original (therefore changing the entityID) does break the zone though, so the zoneID must be included somewhere
-                        //... this also means it's being calculated at runtime so worth looking into the decomp again.
-
-                        string dsfd = "";
-                    }
-                    */
-
-                    //TODO: validate that the position/rotation of ResourceReferences are ever not just the local position/rotation of the entity. we should write this info automatically.
-
-
-                    //note: in vanilla u can find the Door entity shortguid twice in collision.map - why?
-                    if (func.shortGUID == new ShortGuid("EA-B4-D6-BA"))
-                    {
-                        string sdf = "";
-                    }
-
-
                     ResourceReference collisionMapRef = func.GetResource(ResourceType.COLLISION_MAPPING);
                     if (collisionMapRef == null)
                     {
@@ -696,11 +678,12 @@ namespace CommandsEditor
                     }
 
                     //Ensure the entity ID is pointing correctly
-                    if (collisionMapRef.entityID != new ShortGuid("FF-FF-FF-FF"))
-                        collisionMapRef.entityID = func.shortGUID;
+                    if (collisionMapRef.entityID == new ShortGuid("FF-FF-FF-FF"))
+                        continue;
+                    collisionMapRef.entityID = func.shortGUID;
 
-                    List<EntityPath> hierarchies = _commandsDisplay.Content.editor_utils.GetHierarchiesForEntity(composite, func);
-                    ShortGuid resourceID = ShortGuidUtils.Generate(EntityUtils.GetName(composite, func));
+                    List<EntityHandle> hierarchies = _commandsDisplay.Content.editor_utils.GetHierarchiesForEntity(composite, func);
+                    ShortGuid id = ShortGuidUtils.Generate(EntityUtils.GetName(composite, func));
                     for (int i = -1; i < hierarchies.Count; i++)
                     {
                         //Get instance info
@@ -710,23 +693,29 @@ namespace CommandsEditor
                             composite_instance_id = i == -1 ? ShortGuid.Invalid : hierarchies[i].GenerateInstance()
                         };
 
-                        //Remove all entries that already exist for this instance
-                        _commandsDisplay.Content.resource.collision_maps.Entries.RemoveAll(o => o.entity == compositeInstanceReference);
+                        if (_commandsDisplay.Content.resource.collision_maps.Entries.FindAll(o => o.entity == compositeInstanceReference && o.id == id).Count != 0)
+                            continue;
 
-                        var t = _commandsDisplay.Content.mvr.Entries.FindAll(o => o.entity == compositeInstanceReference);
-                        for (int x = 0; x < t.Count; x++)
+                        //Get zone ID
+                        ShortGuid zoneID = i == -1 ? ShortGuid.Invalid : new ShortGuid("01-00-00-00");
+                        if (i != -1)
                         {
-                            //t[x].entity = new CommandsEntityReference();
-                            t[x].primary_zone_id = new ShortGuid("01-00-00-00");
-                            t[x].secondary_zone_id = new ShortGuid("00-00-00-00");
+                            CancellationToken ct = new CancellationToken();
+                            _commandsDisplay.Content.editor_utils.TryFindZoneForEntity(func, composite, out Composite zoneComp, out FunctionEntity zoneEnt, ct);
+                            if (zoneComp != null && zoneEnt != null)
+                            {
+                                //TODO: need to figure out how we know which zone instance to point at!
+                                List<EntityHandle> zoneHandles = _commandsDisplay.Content.editor_utils.GetHierarchiesForEntity(zoneComp, zoneEnt);
+                                if (zoneHandles.Count > 0)
+                                    zoneID = zoneHandles[0].GenerateZoneID();
+                            }
                         }
 
-                        //Make a new entry for the instance
                         _commandsDisplay.Content.resource.collision_maps.Entries.Add(new CollisionMaps.Entry()
                         {
-                            id = resourceID,
+                            id = id,
                             entity = compositeInstanceReference,
-                            zone_id = i == -1 ? ShortGuid.Invalid : new ShortGuid("01-00-00-00") //TODO: calculate zone ID from zone info in commands AF-C6-66-A9
+                            zone_id = zoneID
                         });
                     }
                 }
@@ -741,7 +730,7 @@ namespace CommandsEditor
 
                 List<ShortGuid> instanceIDs = new List<ShortGuid>();
                 {
-                    List<EntityPath> hierarchies = _commandsDisplay.Content.editor_utils.GetHierarchiesForEntity(composite, composite.functions[0]);
+                    List<EntityHandle> hierarchies = _commandsDisplay.Content.editor_utils.GetHierarchiesForEntity(composite, composite.functions[0]);
                     for (int i = 0; i < hierarchies.Count; i++)
                         instanceIDs.Add(hierarchies[i].GenerateInstance());
                 }
@@ -756,7 +745,7 @@ namespace CommandsEditor
                         resources.AddRange(((cResource)resourceParam.content).value);
 
                     ShortGuid nameHash = default;
-                    if (func.resources.FindAll(o => /*o.resource_type == ResourceType.RENDERABLE_INSTANCE || */o.resource_type == ResourceType.COLLISION_MAPPING).Count != 0)
+                    if (func.resources.FindAll(o => o.resource_type == ResourceType.COLLISION_MAPPING).Count != 0)
                         nameHash = ShortGuidUtils.Generate(EntityUtils.GetName(composite, func));
 
                     foreach (ResourceReference resRef in resources)
@@ -764,8 +753,9 @@ namespace CommandsEditor
                         ShortGuid id;
                         switch (resRef.resource_type)
                         {
-                            //case ResourceType.RENDERABLE_INSTANCE: 
-                            case ResourceType.COLLISION_MAPPING: //TODO: see which of these two it actually is - for now just doing both
+                            case ResourceType.COLLISION_MAPPING:
+                                if (resRef.entityID == new ShortGuid("FF-FF-FF-FF"))
+                                    continue;
                                 id = nameHash;
                                 break;
                             case ResourceType.ANIMATED_MODEL:
@@ -780,17 +770,15 @@ namespace CommandsEditor
 
                         foreach (ShortGuid instanceID in instanceIDs)
                         {
-                            //note: shouldn't need to check this
                             if (_commandsDisplay.Content.resource.resources.Entries.FindAll(res => res.composite_instance_id == instanceID && res.resource_id == id).Count != 0)
                                 continue;
 
-                            //NOTE: we never clear up deleted entries in this database.
                             _commandsDisplay.Content.resource.resources.Entries.Add(new Resources.Resource()
                             {
                                 composite_instance_id = instanceID,
                                 resource_id = id
                             });
-                            Console.WriteLine("Adding new resource entry: " + id);
+                            Console.WriteLine("Adding new resources bin entry: " + id);
                         }
                     }
                 }
@@ -1054,13 +1042,13 @@ namespace CommandsEditor
 
         private void DEBUG_DoorPhysEnt_Click(object sender, EventArgs e)
         {
-            _commandsDisplay.LoadComposite(new ShortGuid("30-2E-B7-25"));
-            _commandsDisplay.CompositeDisplay.Composite.GetEntityByID(new ShortGuid("88-2E-34-D5")).AddParameter("position", new cTransform(new Vector3(-0.4999240f, 0.0003948f, -45.0000000f), new Vector3(0,0,0)));
+            //_commandsDisplay.LoadComposite(new ShortGuid("30-2E-B7-25"));
+            //_commandsDisplay.CompositeDisplay.Composite.GetEntityByID(new ShortGuid("88-2E-34-D5")).AddParameter("position", new cTransform(new Vector3(-0.4999240f, 0.0003948f, -45.0000000f), new Vector3(0,0,0)));
 
-            _commandsDisplay.LoadComposite(new ShortGuid("7A-40-D8-07"));
-            _commandsDisplay.CompositeDisplay.Composite.GetEntityByID(new ShortGuid("A4-94-3A-1F")).AddParameter("Animation", new cString(""));
-            _commandsDisplay.CompositeDisplay.DeleteEntity(_commandsDisplay.CompositeDisplay.Composite.GetEntityByID(new ShortGuid("62-05-5E-F3")), false);
-            _commandsDisplay.CompositeDisplay.Composite.RemoveAllFunctionEntitiesOfType(FunctionType.Zone);
+            //_commandsDisplay.LoadComposite(new ShortGuid("7A-40-D8-07"));
+            //_commandsDisplay.CompositeDisplay.Composite.GetEntityByID(new ShortGuid("A4-94-3A-1F")).AddParameter("Animation", new cString(""));
+            //_commandsDisplay.CompositeDisplay.DeleteEntity(_commandsDisplay.CompositeDisplay.Composite.GetEntityByID(new ShortGuid("62-05-5E-F3")), false);
+            //_commandsDisplay.CompositeDisplay.Composite.RemoveAllFunctionEntitiesOfType(FunctionType.Zone);
 
             _commandsDisplay.LoadComposite(new ShortGuid("83-AD-A3-18"));
             Singleton.OnEntityAdded += DEBUG_EntAdded;

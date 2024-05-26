@@ -54,7 +54,7 @@ namespace CommandsEditor
             }
 
             //Fetch the hierarchies for the MVR entries that point to this entity
-            EntityPath[] hierarchies = new EntityPath[_mvrListIndexes.Count];
+            EntityHandle[] hierarchies = new EntityHandle[_mvrListIndexes.Count];
             Parallel.For(0, _mvrListIndexes.Count, i =>
             {
                 hierarchies[i] = _entityDisplay.Content.editor_utils.GetHierarchyFromReference(Content.mvr.Entries[_mvrListIndexes[i]].entity);

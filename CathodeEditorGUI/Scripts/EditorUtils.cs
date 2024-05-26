@@ -84,9 +84,9 @@ namespace CommandsEditor
         }
 
         /* Get all possible hierarchies for a given entity */
-        public List<EntityPath> GetHierarchiesForEntity(Composite composite, Entity entity)
+        public List<EntityHandle> GetHierarchiesForEntity(Composite composite, Entity entity)
         {
-            List<EntityPath> formattedHierarchies = new List<EntityPath>();
+            List<EntityHandle> formattedHierarchies = new List<EntityHandle>();
             if (_hierarchies.ContainsKey(composite))
             {
                 List<List<ShortGuid>> hierarchies = _hierarchies[composite];
@@ -94,16 +94,16 @@ namespace CommandsEditor
                 {
                     List<ShortGuid> hierarchy = new List<ShortGuid>(hierarchies[i].ConvertAll(x => x));
                     hierarchy.Add(entity.shortGUID);
-                    formattedHierarchies.Add(new EntityPath(hierarchy));
+                    formattedHierarchies.Add(new EntityHandle(hierarchy));
                 }
             }
             return formattedHierarchies;
         }
 
         /* Get the hierarchy for a commands entity reference (used to link legacy resource/mvr stuff) */
-        public EntityPath GetHierarchyFromReference(CommandsEntityReference reference)
+        public EntityHandle GetHierarchyFromReference(CommandsEntityReference reference)
         {
-            EntityPath toReturn = null;
+            EntityHandle toReturn = null;
             Parallel.ForEach(_hierarchies, (pair, state) =>
             {
                 if (toReturn != null) state.Stop();
@@ -117,7 +117,7 @@ namespace CommandsEditor
                             List<ShortGuid> hierarchy = new List<ShortGuid>(pair.Value[i].ConvertAll(x => x));
                             hierarchy.Add(reference.entity_id);
 
-                            EntityPath h = new EntityPath(hierarchy);
+                            EntityHandle h = new EntityHandle(hierarchy);
                             ShortGuid instance = h.GenerateInstance();
 
                             if (instance == reference.composite_instance_id)
