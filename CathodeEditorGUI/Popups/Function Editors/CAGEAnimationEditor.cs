@@ -25,7 +25,7 @@ namespace CommandsEditor
         Dictionary<Track, CAGEAnimation.Animation> tracksAnim;
         Dictionary<Track, CAGEAnimation.Event> tracksEvent;
 
-        List<EntityHandle> entityListToHierarchies;
+        List<EntityPath> entityListToHierarchies;
 
         EntityDisplay _entityDisplay;
 
@@ -59,7 +59,7 @@ namespace CommandsEditor
 
         private void UpdateEntityList()
         {
-            entityListToHierarchies = new List<EntityHandle>();
+            entityListToHierarchies = new List<EntityPath>();
             entityList.BeginUpdate();
             entityList.Items.Clear();
             List<CAGEAnimation.Connection> connections = animEntity.connections.FindAll(o => o.objectType == ObjectType.ENTITY);
@@ -276,7 +276,7 @@ namespace CommandsEditor
         }
         private void HierarchyEditor_HierarchyGenerated(List<ShortGuid> generatedHierarchy)
         {
-            EntityHandle hierarchy = new EntityHandle(generatedHierarchy);
+            EntityPath hierarchy = new EntityPath(generatedHierarchy);
 
             //Prevent the same entity being added again (doesn't make sense as the list is unique)
             for (int i = 0; i < entityListToHierarchies.Count; i++)
@@ -431,7 +431,7 @@ namespace CommandsEditor
         }
         private void HierarchyEditor2_HierarchyGenerated(List<ShortGuid> generatedHierarchy)
         {
-            EntityHandle hierarchy = new EntityHandle(generatedHierarchy);
+            EntityPath hierarchy = new EntityPath(generatedHierarchy);
 
             if (eventEntityIDs.Contains(hierarchy.GetPointedEntity(Content.commands, _entityDisplay.Composite)))
             {

@@ -626,13 +626,13 @@ namespace CommandsEditor.DockPanels
                 if (phys != null)
                 {
                     List<ShortGuid> instancesEnt = new List<ShortGuid>();
-                    List<EntityHandle> pathsEnt = Content.editor_utils.GetHierarchiesForEntity(Composite, entity);
+                    List<EntityPath> pathsEnt = Content.editor_utils.GetHierarchiesForEntity(Composite, entity);
                     List<ShortGuid> instancesPhys = new List<ShortGuid>();
-                    List<EntityHandle> pathsPhys = new List<EntityHandle>();
+                    List<EntityPath> pathsPhys = new List<EntityPath>();
                     pathsEnt.ForEach(path => {
                         instancesEnt.Add(path.GenerateInstance());
 
-                        EntityHandle pathPhys = path.Copy();
+                        EntityPath pathPhys = path.Copy();
                         pathPhys.path.Insert(path.path.Count - 1, phys.shortGUID);
                         pathsPhys.Add(pathPhys);
 
@@ -649,8 +649,8 @@ namespace CommandsEditor.DockPanels
                         PhysicsMaps.Entry newPhysMap = physMap.Copy();
                         newPhysMap.entity.entity_id = newEnt.shortGUID;
 
-                        EntityHandle pathPhys = pathsPhys.FirstOrDefault(x => x.GenerateInstance() == physMap.composite_instance_id);
-                        EntityHandle newPathPhys = pathPhys.Copy();
+                        EntityPath pathPhys = pathsPhys.FirstOrDefault(x => x.GenerateInstance() == physMap.composite_instance_id);
+                        EntityPath newPathPhys = pathPhys.Copy();
                         newPathPhys.path[newPathPhys.path.Count - 3] = newEnt.shortGUID;
                         newPhysMap.composite_instance_id = newPathPhys.GenerateInstance();
                         Content.resource.physics_maps.Entries.Add(newPhysMap);

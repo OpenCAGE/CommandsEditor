@@ -575,7 +575,7 @@ namespace CommandsEditor
                     continue;
                 }
 
-                List<EntityHandle> hierarchies = _commandsDisplay.Content.editor_utils.GetHierarchiesForEntity(composite, physEnt);
+                List<EntityPath> hierarchies = _commandsDisplay.Content.editor_utils.GetHierarchiesForEntity(composite, physEnt);
                 if (hierarchies.Count == 0)
                     continue;
 
@@ -620,7 +620,7 @@ namespace CommandsEditor
                     //Get instance info
                     ShortGuid compositeInstanceID = hierarchies[i].GenerateInstance();
                     hierarchies[i].path.RemoveAt(hierarchies[i].path.Count - 2);
-                    CommandsEntityReference compositeInstanceReference = new CommandsEntityReference()
+                    EntityHandle compositeInstanceReference = new EntityHandle()
                     {
                         entity_id = hierarchies[i].path[hierarchies[i].path.Count - 2],
                         composite_instance_id = hierarchies[i].GenerateInstance()
@@ -641,20 +641,6 @@ namespace CommandsEditor
                     });
                     Console.WriteLine("Adding new physics map entry");
                 }
-            }
-
-            List<ShortGuid> bruhm = new List<ShortGuid>();
-            foreach (CollisionMaps.Entry e in _commandsDisplay.Content.resource.collision_maps.Entries)
-            {
-                if (!bruhm.Contains(e.zone_id))
-                {
-                    bruhm.Add(e.zone_id);
-                }
-            }
-            bruhm.Sort();
-            foreach (var e in bruhm)
-            {
-                Console.WriteLine(e);
             }
 
             //Populate COLLISION.MAP
@@ -682,12 +668,12 @@ namespace CommandsEditor
                         continue;
                     collisionMapRef.entityID = func.shortGUID;
 
-                    List<EntityHandle> hierarchies = _commandsDisplay.Content.editor_utils.GetHierarchiesForEntity(composite, func);
+                    List<EntityPath> hierarchies = _commandsDisplay.Content.editor_utils.GetHierarchiesForEntity(composite, func);
                     ShortGuid id = ShortGuidUtils.Generate(EntityUtils.GetName(composite, func));
                     for (int i = -1; i < hierarchies.Count; i++)
                     {
                         //Get instance info
-                        CommandsEntityReference compositeInstanceReference = new CommandsEntityReference()
+                        EntityHandle compositeInstanceReference = new EntityHandle()
                         {
                             entity_id = func.shortGUID,
                             composite_instance_id = i == -1 ? ShortGuid.Invalid : hierarchies[i].GenerateInstance()
@@ -705,7 +691,7 @@ namespace CommandsEditor
                             if (zoneComp != null && zoneEnt != null)
                             {
                                 //TODO: need to figure out how we know which zone instance to point at!
-                                List<EntityHandle> zoneHandles = _commandsDisplay.Content.editor_utils.GetHierarchiesForEntity(zoneComp, zoneEnt);
+                                List<EntityPath> zoneHandles = _commandsDisplay.Content.editor_utils.GetHierarchiesForEntity(zoneComp, zoneEnt);
                                 if (zoneHandles.Count > 0)
                                     zoneID = zoneHandles[0].GenerateZoneID();
                             }
@@ -730,7 +716,7 @@ namespace CommandsEditor
 
                 List<ShortGuid> instanceIDs = new List<ShortGuid>();
                 {
-                    List<EntityHandle> hierarchies = _commandsDisplay.Content.editor_utils.GetHierarchiesForEntity(composite, composite.functions[0]);
+                    List<EntityPath> hierarchies = _commandsDisplay.Content.editor_utils.GetHierarchiesForEntity(composite, composite.functions[0]);
                     for (int i = 0; i < hierarchies.Count; i++)
                         instanceIDs.Add(hierarchies[i].GenerateInstance());
                 }
@@ -1066,7 +1052,17 @@ namespace CommandsEditor
 
         private void DEBUG_RunChecks_Click(object sender, EventArgs e)
         {
-            LocalDebug.checkphysicssystempositions();
+            List<EntityPath> zoneHandles = _commandsDisplay.Content.editor_utils.GetHierarchiesForEntity(_commandsDisplay.CompositeDisplay.Composite, _commandsDisplay.CompositeDisplay.ActiveEntityDisplay.Entity);
+            for (int i = 0; i < zoneHandles.Count; i++)
+            {
+                ShortGuid zoneID = zoneHandles[i].GenerateZoneID();
+                ShortGuid instanceID = zoneHandles[i].GenerateInstance();
+
+                string sdfsdf = "";
+            }
+
+
+            //LocalDebug.checkphysicssystempositions();
         }
 
         private void CopyFilesRecursively(string sourcePath, string targetPath)

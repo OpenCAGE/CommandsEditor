@@ -18,7 +18,7 @@ namespace CommandsEditor.Popups.UserControls
 {
     public partial class GUI_Resource_DynamicPhysicsSystem : ResourceUserControl
     {
-        private Dictionary<EntityHandle, CATHODE.PhysicsMaps.Entry> _hierarchies = new Dictionary<EntityHandle, CATHODE.PhysicsMaps.Entry>();
+        private Dictionary<EntityPath, CATHODE.PhysicsMaps.Entry> _hierarchies = new Dictionary<EntityPath, CATHODE.PhysicsMaps.Entry>();
 
         public GUI_Resource_DynamicPhysicsSystem() : base()
         {
@@ -32,7 +32,7 @@ namespace CommandsEditor.Popups.UserControls
         public void PopulateUI(EntityDisplay entDisplay, int physIndex)
         {
             _hierarchies.Clear();
-            List<EntityHandle> hierarchies = entDisplay.Content.editor_utils.GetHierarchiesForEntity(entDisplay.Composite, entDisplay.Entity);
+            List<EntityPath> hierarchies = entDisplay.Content.editor_utils.GetHierarchiesForEntity(entDisplay.Composite, entDisplay.Entity);
             for (int i = 0; i < hierarchies.Count; i++)
             {
                 ShortGuid instance = hierarchies[i].GenerateInstance();
@@ -56,9 +56,9 @@ namespace CommandsEditor.Popups.UserControls
             }
 
             instances.Items.Clear();
-            foreach (KeyValuePair<EntityHandle, CATHODE.PhysicsMaps.Entry> hierarchyMap in _hierarchies)
+            foreach (KeyValuePair<EntityPath, CATHODE.PhysicsMaps.Entry> hierarchyMap in _hierarchies)
             {
-                EntityHandle pathShort = hierarchyMap.Key.Copy();
+                EntityPath pathShort = hierarchyMap.Key.Copy();
                 pathShort.path.RemoveAt(pathShort.path.Count - 1);
                 instances.Items.Add(pathShort.GetAsString(Content.commands, entDisplay.Composite, false));
             }
@@ -74,7 +74,7 @@ namespace CommandsEditor.Popups.UserControls
             if (instances.SelectedIndex == -1)
                 return;
 
-            KeyValuePair<EntityHandle, CATHODE.PhysicsMaps.Entry> hierarchyMap = _hierarchies.ElementAt(instances.SelectedIndex);
+            KeyValuePair<EntityPath, CATHODE.PhysicsMaps.Entry> hierarchyMap = _hierarchies.ElementAt(instances.SelectedIndex);
 
             POS_X.Value = (decimal)hierarchyMap.Value.Position.X; POS_Y.Value = (decimal)hierarchyMap.Value.Position.Y; POS_Z.Value = (decimal)hierarchyMap.Value.Position.Z;
 

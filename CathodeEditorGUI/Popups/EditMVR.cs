@@ -54,10 +54,10 @@ namespace CommandsEditor
             }
 
             //Fetch the hierarchies for the MVR entries that point to this entity
-            EntityHandle[] hierarchies = new EntityHandle[_mvrListIndexes.Count];
+            EntityPath[] hierarchies = new EntityPath[_mvrListIndexes.Count];
             Parallel.For(0, _mvrListIndexes.Count, i =>
             {
-                hierarchies[i] = _entityDisplay.Content.editor_utils.GetHierarchyFromReference(Content.mvr.Entries[_mvrListIndexes[i]].entity);
+                hierarchies[i] = _entityDisplay.Content.editor_utils.GetHierarchyFromHandle(Content.mvr.Entries[_mvrListIndexes[i]].entity);
             });
 
             //Write the hierarchies to the list
@@ -227,9 +227,9 @@ namespace CommandsEditor
                 Console.WriteLine(Content.resource.collision_maps.Entries[i].zone_id);
             }
 
-            Content.resource.collision_maps.Entries.FirstOrDefault(o => o.entity == mvr.entity).entity = new CommandsEntityReference();
+            Content.resource.collision_maps.Entries.FirstOrDefault(o => o.entity == mvr.entity).entity = new EntityHandle();
 
-            mvr.entity = new CommandsEntityReference();
+            mvr.entity = new EntityHandle();
 
            // mvr.entity = new CommandsEntityReference();
             //mvr.resource_index = -1;

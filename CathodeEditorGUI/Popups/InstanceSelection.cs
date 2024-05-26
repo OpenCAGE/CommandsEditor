@@ -17,13 +17,13 @@ namespace CommandsEditor
     {
         public Action<ShortGuid> OnInstanceSelected;
 
-        private List<EntityHandle> _hierarchies = new List<EntityHandle>();
+        private List<EntityPath> _hierarchies = new List<EntityPath>();
 
         public InstanceSelection(EntityDisplay editor, List<ShortGuid> existing) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             InitializeComponent(); 
             
-            List<EntityHandle> hierarchies = editor.Content.editor_utils.GetHierarchiesForEntity(editor.Composite, editor.Entity);
+            List<EntityPath> hierarchies = editor.Content.editor_utils.GetHierarchiesForEntity(editor.Composite, editor.Entity);
             for (int i = 0; i < hierarchies.Count; i++)
             {
                 if (existing.Contains(hierarchies[i].GenerateInstance())) continue;
