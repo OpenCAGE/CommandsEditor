@@ -88,6 +88,7 @@ namespace CommandsEditor
             public readonly string PreviouslySelectedCompInstType = "CS_PreviouslySelectedCompInstType";
             public readonly string PreviouslySearchedCompInstType = "CS_PreviouslySearchedCompInstType";
             public readonly string PreviouslySearchedParamPopulationComp = "CS_PreviouslySearchedParamPopulationComp";
+            public readonly string ExperimentalResourceStuff = "CS_EnableExperimentalResourceSaving";
         }
     }
 

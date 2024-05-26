@@ -519,9 +519,10 @@ namespace CommandsEditor
                 MessageBox.Show("Failed to save changes!", "Failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
-        ShortGuid ANIMATED_MODEL = ShortGuidUtils.Generate("AnimatedModel");
-        ShortGuid DYNAMIC_PHYSICS_SYSTEM = ShortGuidUtils.Generate("DYNAMIC_PHYSICS_SYSTEM");
-        
+        ShortGuid GUID_ANIMATED_MODEL = ShortGuidUtils.Generate("AnimatedModel");
+        ShortGuid GUID_DYNAMIC_PHYSICS_SYSTEM = ShortGuidUtils.Generate("DYNAMIC_PHYSICS_SYSTEM");
+        ShortGuid GUID_resource = ShortGuidUtils.Generate("resource");
+
         private bool Save()
         {
             bool saved = false;
@@ -559,67 +560,75 @@ namespace CommandsEditor
             }
 #endif
 
-            //Update additional resource stuff
-            foreach (Composite composite in _commandsDisplay.Content.commands.Entries)
+            if (SettingsManager.GetBool(Singleton.Settings.ExperimentalResourceStuff))
             {
-                if (composite.functions.Count == 0)
-                    continue;
-
-                foreach (FunctionEntity func in composite.functions)
+                //Update additional resource stuff
+                foreach (Composite composite in _commandsDisplay.Content.commands.Entries)
                 {
-                    List<EntityPath> hierarchies = _commandsDisplay.Content.editor_utils.GetHierarchiesForEntity(composite, func);
-
-                    List<ResourceReference> resources = func.resources;
-                    Parameter resourceParam = func.GetParameter("resource");
-                    if (resourceParam != null && resourceParam.content != null && resourceParam.content.dataType == DataType.RESOURCE)
-                        resources.AddRange(((cResource)resourceParam.content).value);
-
-                    ShortGuid nameHash = default;
-                    if (func.resources.FindAll(o => o.resource_type == ResourceType.COLLISION_MAPPING).Count != 0)
-                        nameHash = ShortGuidUtils.Generate(EntityUtils.GetName(composite, func));
-
-                    foreach (ResourceReference resRef in resources)
+                    foreach (FunctionEntity func in composite.functions)
                     {
-                        ShortGuid id;
-                        switch (resRef.resource_type)
+                        List<ResourceReference> resources = func.resources;
+                        Parameter resourceParam = func.GetParameter(GUID_resource);
+                        if (resourceParam != null && resourceParam.content != null && resourceParam.content.dataType == DataType.RESOURCE)
+                            resources.AddRange(((cResource)resourceParam.content).value);
+
+                        int collisionMapCount = resources.FindAll(o => o.resource_type == ResourceType.COLLISION_MAPPING).Count;
+                        int animatedModelCount = resources.FindAll(o => o.resource_type == ResourceType.ANIMATED_MODEL).Count;
+                        int physSystemCount = resources.FindAll(o => o.resource_type == ResourceType.DYNAMIC_PHYSICS_SYSTEM).Count;
+
+                        if (collisionMapCount + animatedModelCount + physSystemCount == 0)
+                            continue;
+
+                        ShortGuid nameHash = default;
+                        if (collisionMapCount != 0)
+                            nameHash = ShortGuidUtils.Generate(EntityUtils.GetName(composite, func));
+
+                        List<EntityPath> hierarchies = _commandsDisplay.Content.editor_utils.GetHierarchiesForEntity(composite, func);
+                        List<ShortGuid> instanceIDs = new List<ShortGuid>();
+                        for (int i = 0; i < hierarchies.Count; i++)
+                            instanceIDs.Add(hierarchies[i].GenerateInstance());
+
+                        foreach (ResourceReference resRef in resources)
                         {
-                            case ResourceType.COLLISION_MAPPING:
-                                if (resRef.entityID == new ShortGuid("FF-FF-FF-FF"))
-                                    continue;
-                                id = nameHash;
-                                resRef.entityID = func.shortGUID;
-                                WriteCollisionMap(id, null, composite, func);
-                                break;
-                            case ResourceType.ANIMATED_MODEL:
-                                id = ANIMATED_MODEL;
-                                break;
-                            case ResourceType.DYNAMIC_PHYSICS_SYSTEM:
-                                id = DYNAMIC_PHYSICS_SYSTEM;
-                                break;
-                            default:
-                                continue;
-                        }
-
-                        //TODO: also validate the positional values are correct on resource
-
-                        foreach (EntityPath hierarchy in hierarchies)
-                        {
-                            ShortGuid instanceID = hierarchy.GenerateInstance();
-
+                            ShortGuid id;
                             switch (resRef.resource_type)
                             {
                                 case ResourceType.COLLISION_MAPPING:
-                                    WriteCollisionMap(id, hierarchy, composite, func);
-                                    break;
-                                case ResourceType.DYNAMIC_PHYSICS_SYSTEM:
-                                    WritePhysicsMap(hierarchy, resRef.index);
+                                    if (resRef.entityID == ShortGuid.Max)
+                                        continue;
+                                    id = nameHash;
+                                    resRef.entityID = func.shortGUID;
+                                    WriteCollisionMap(id, null, composite, func);
                                     break;
                                 case ResourceType.ANIMATED_MODEL:
+                                    id = GUID_ANIMATED_MODEL;
+                                    break;
+                                case ResourceType.DYNAMIC_PHYSICS_SYSTEM:
+                                    id = GUID_DYNAMIC_PHYSICS_SYSTEM;
                                     break;
                                 default:
                                     continue;
                             }
-                            WriteResourceBin(instanceID, id);
+
+                            //TODO: also validate the positional values are correct on resource
+
+                            for (int i = 0; i < hierarchies.Count; i++)
+                            {
+                                switch (resRef.resource_type)
+                                {
+                                    case ResourceType.COLLISION_MAPPING:
+                                        WriteCollisionMap(id, hierarchies[i], composite, func);
+                                        break;
+                                    case ResourceType.DYNAMIC_PHYSICS_SYSTEM:
+                                        WritePhysicsMap(hierarchies[i], resRef.index);
+                                        break;
+                                    case ResourceType.ANIMATED_MODEL:
+                                        break;
+                                    default:
+                                        continue;
+                                }
+                                WriteResourceBin(instanceIDs[i], id);
+                            }
                         }
                     }
                 }
@@ -645,43 +654,23 @@ namespace CommandsEditor
 
         private void WritePhysicsMap(EntityPath hierarchy, int physics_system_index)
         {
-            bool shouldWrite = true;
-
-            //Calculate global transform from path (TODO: this logic should totally exist elsewhere to be reusable)
-            Vector3 position; Quaternion rotation;
+            //If a composite further up in the path contains a PhysicsSystem too we shouldn't write this one out (NOTE: We also shouldn't write static stuff out by the looks of it)
+            Composite comp = _commandsDisplay.Content.commands.EntryPoints[0];
+            for (int x = 0; x < hierarchy.path.Count; x++)
             {
-                cTransform globalTransform = new cTransform();
-                Composite comp = _commandsDisplay.Content.commands.EntryPoints[0];
-                for (int x = 0; x < hierarchy.path.Count; x++)
+                FunctionEntity compInst = comp.functions.FirstOrDefault(o => o.shortGUID == hierarchy.path[x]);
+                if (compInst == null)
+                    break;
+
+                comp = _commandsDisplay.Content.commands.GetComposite(compInst.function);
+                if (x < hierarchy.path.Count - 2 && comp.GetFunctionEntitiesOfType(FunctionType.PhysicsSystem).Count != 0)
                 {
-                    //If a composite further up in the path contains a PhysicsSystem too we shouldn't write this one out
-                    if (x < hierarchy.path.Count - 2 && comp.GetFunctionEntitiesOfType(FunctionType.PhysicsSystem).Count != 0)
-                    {
-                        shouldWrite = false;
-                        break;
-                    }
-
-                    FunctionEntity compInst = comp.functions.FirstOrDefault(o => o.shortGUID == hierarchy.path[x]);
-                    if (compInst == null)
-                        break;
-
-                    Parameter positionParam = compInst.GetParameter("position");
-                    if (positionParam != null && positionParam.content != null && positionParam.content.dataType == DataType.TRANSFORM)
-                        globalTransform += (cTransform)positionParam.content;
-
-                    comp = _commandsDisplay.Content.commands.GetComposite(compInst.function);
-                    if (comp == null)
-                        break;
+                    return;
                 }
-                position = globalTransform.position;
-                rotation = Quaternion.CreateFromYawPitchRoll(globalTransform.rotation.Y * (float)Math.PI / 180.0f, globalTransform.rotation.X * (float)Math.PI / 180.0f, globalTransform.rotation.Z * (float)Math.PI / 180.0f);
             }
 
-            //NOTE: We also shouldn't write static stuff out by the looks of it
-            if (!shouldWrite)
-                return;
-
             //Get instance info
+            (Vector3 position, Quaternion rotation) = CommandsUtils.CalculateInstancedPosition(hierarchy);
             ShortGuid compositeInstanceID = hierarchy.GenerateInstance();
             hierarchy.path.RemoveAt(hierarchy.path.Count - 2);
             EntityHandle compositeInstanceReference = new EntityHandle()
@@ -697,7 +686,7 @@ namespace CommandsEditor
             _commandsDisplay.Content.resource.physics_maps.Entries.Add(new PhysicsMaps.Entry()
             {
                 physics_system_index = physics_system_index,
-                resource_type = DYNAMIC_PHYSICS_SYSTEM,
+                resource_type = GUID_DYNAMIC_PHYSICS_SYSTEM,
                 composite_instance_id = compositeInstanceID,
                 entity = compositeInstanceReference,
                 Position = position,
@@ -718,7 +707,7 @@ namespace CommandsEditor
                 return;
 
             //Get zone ID
-            ShortGuid zoneID = hierarchy == null ? ShortGuid.Invalid : new ShortGuid("01-00-00-00");
+            ShortGuid zoneID = hierarchy == null ? ShortGuid.Invalid : new ShortGuid(1);
             if (hierarchy != null)
             {
                 CancellationToken ct = new CancellationToken();
@@ -726,9 +715,9 @@ namespace CommandsEditor
                 if (zoneComp != null && zoneEnt != null)
                 {
                     //TODO: need to figure out how we know which zone instance to point at!
-                    List<EntityPath> zoneHandles = _commandsDisplay.Content.editor_utils.GetHierarchiesForEntity(zoneComp, zoneEnt);
-                    if (zoneHandles.Count > 0)
-                        zoneID = zoneHandles[0].GenerateZoneID();
+                    List<EntityPath> zoneInstances = _commandsDisplay.Content.editor_utils.GetHierarchiesForEntity(zoneComp, zoneEnt);
+                    if (zoneInstances.Count > 0)
+                        zoneID = zoneInstances[0].GenerateZoneID();
                 }
             }
 
