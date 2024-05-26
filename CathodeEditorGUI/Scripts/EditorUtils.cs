@@ -48,7 +48,7 @@ namespace CommandsEditor
         }
 
         /* Generate all composite instance information for Commands */
-        private Dictionary<Composite, List<List<ShortGuid>>> _hierarchies = new Dictionary<Composite, List<List<ShortGuid>>>();
+        private Dictionary<ShortGuid, List<List<ShortGuid>>> _hierarchies = new Dictionary<ShortGuid, List<List<ShortGuid>>>();
         private CancellationTokenSource _prevTaskToken = null;
         public void GenerateCompositeInstances(Commands commands)
         {
@@ -64,10 +64,10 @@ namespace CommandsEditor
         {
             if (ct.IsCancellationRequested) return;
 
-            if (!_hierarchies.ContainsKey(composite))
-            _hierarchies.Add(composite, new List<List<ShortGuid>>());
+            if (!_hierarchies.ContainsKey(composite.shortGUID))
+            _hierarchies.Add(composite.shortGUID, new List<List<ShortGuid>>());
 
-            _hierarchies[composite].Add(hierarchy);
+            _hierarchies[composite.shortGUID].Add(hierarchy);
 
             for (int i = 0; i < composite.functions.Count; i++)
             {
@@ -87,9 +87,9 @@ namespace CommandsEditor
         public List<EntityPath> GetHierarchiesForEntity(Composite composite, Entity entity)
         {
             List<EntityPath> formattedHierarchies = new List<EntityPath>();
-            if (_hierarchies.ContainsKey(composite))
+            if (_hierarchies.ContainsKey(composite.shortGUID))
             {
-                List<List<ShortGuid>> hierarchies = _hierarchies[composite];
+                List<List<ShortGuid>> hierarchies = _hierarchies[composite.shortGUID];
                 for (int i = 0; i < hierarchies.Count; i++)
                 {
                     List<ShortGuid> hierarchy = new List<ShortGuid>(hierarchies[i].ConvertAll(x => x));

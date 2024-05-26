@@ -169,6 +169,34 @@ namespace CommandsEditor
 #endif
         }
 
+        public static void checkresources()
+        {
+#if DEBUG
+
+            List<string> files = Directory.GetFiles("F:\\Alien Isolation Versions\\Alien Isolation PC Final\\DATA\\ENV\\PRODUCTION", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            Parallel.ForEach(files, file =>
+            {
+                Commands commands = new Commands(file);
+                Parallel.ForEach(commands.Entries, comp =>
+                {
+                    Parallel.ForEach(comp.functions, func =>
+                    {
+                        ResourceReference resource = func.GetResource(ResourceType.COLLISION_MAPPING);
+                        if (resource != null)
+                        {
+                            Console.WriteLine("COLLISION_MAPPING: " + func.function.ToString());
+                        }
+                        ResourceReference resource2 = func.GetResource(ResourceType.RENDERABLE_INSTANCE);
+                        if (resource2 != null)
+                        {
+                            Console.WriteLine("RENDERABLE_INSTANCE: " + func.function.ToString());
+                        }
+                    });
+                });
+            });
+#endif
+        }
+
         public static void checkaliases()
         {
 #if DEBUG
