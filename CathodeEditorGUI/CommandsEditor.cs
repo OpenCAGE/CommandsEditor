@@ -5,6 +5,7 @@ using CATHODE.Scripting.Internal;
 using CathodeLib;
 using CommandsEditor.DockPanels;
 using CommandsEditor.Popups;
+using CommandsEditor.Scripts;
 using CommandsEditor.UserControls;
 using DiscordRPC;
 using Newtonsoft.Json;
@@ -609,6 +610,7 @@ namespace CommandsEditor
                                 default:
                                     continue;
                             }
+                            WriteResourceBin(ShortGuid.Invalid, id);
 
                             //TODO: also validate the positional values are correct on resource
 
@@ -620,7 +622,8 @@ namespace CommandsEditor
                                         WriteCollisionMap(id, hierarchies[i], composite, func);
                                         break;
                                     case ResourceType.DYNAMIC_PHYSICS_SYSTEM:
-                                        WritePhysicsMap(hierarchies[i], resRef.index);
+                                        if (!WritePhysicsMap(hierarchies[i], resRef.index))
+                                            continue;
                                         break;
                                     case ResourceType.ANIMATED_MODEL:
                                         break;
@@ -652,7 +655,7 @@ namespace CommandsEditor
             return true;
         }
 
-        private void WritePhysicsMap(EntityPath hierarchy, int physics_system_index)
+        private bool WritePhysicsMap(EntityPath hierarchy, int physics_system_index)
         {
             //If a composite further up in the path contains a PhysicsSystem too we shouldn't write this one out (NOTE: We also shouldn't write static stuff out by the looks of it)
             Composite comp = _commandsDisplay.Content.commands.EntryPoints[0];
@@ -665,7 +668,7 @@ namespace CommandsEditor
                 comp = _commandsDisplay.Content.commands.GetComposite(compInst.function);
                 if (x < hierarchy.path.Count - 2 && comp.GetFunctionEntitiesOfType(FunctionType.PhysicsSystem).Count != 0)
                 {
-                    return;
+                    return false;
                 }
             }
 
@@ -692,6 +695,7 @@ namespace CommandsEditor
                 Position = position,
                 Rotation = rotation
             });
+            return true;
         }
 
         private void WriteCollisionMap(ShortGuid resourceID, EntityPath hierarchy, Composite composite, FunctionEntity func)
@@ -710,6 +714,7 @@ namespace CommandsEditor
 
             //Get zone ID
             ShortGuid zoneID = hierarchy == null ? ShortGuid.Invalid : new ShortGuid(1);
+            /*
             if (hierarchy != null)
             {
                 //TODO: this needs speeding up
@@ -723,6 +728,7 @@ namespace CommandsEditor
                         zoneID = zoneInstances[0].GenerateZoneID();
                 }
             }
+            */
 
             //Make a new entry for the instance
             _commandsDisplay.Content.resource.collision_maps.Entries.Add(new CollisionMaps.Entry()
