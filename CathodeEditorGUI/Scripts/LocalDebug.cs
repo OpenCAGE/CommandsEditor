@@ -147,7 +147,7 @@ namespace CommandsEditor
         {
 #if DEBUG
 
-            List<string> files = Directory.GetFiles("D:\\Alien Isolation Modding\\Isolation Mod Tools\\Alien Isolation PC Final/DATA/ENV/PRODUCTION/", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            List<string> files = Directory.GetFiles("F:\\Alien Isolation Versions\\Alien Isolation PC Final\\DATA\\ENV\\PRODUCTION", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
             Parallel.ForEach(files, file =>
             {
                 Commands commands = new Commands(file);
@@ -155,12 +155,16 @@ namespace CommandsEditor
                 {
                     Parallel.ForEach(comp.functions, func =>
                     {
-                        Composite compPointer = commands.GetComposite(func.function);
-                        if (compPointer != null)
+                        if (func.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.Zone))
                         {
-                            if (func.resources.Count != 0)
+                            List<EntityConnector> parentLinks = func.GetParentLinks(comp);
+                            if (parentLinks.FindAll(o => o.thisParamID == ShortGuidUtils.Generate("composites")).Count != 0)
                             {
-                                Console.WriteLine("Resources found!!!!! Count: " + func.resources.Count);
+                                string sdfsdf = "";
+                            }
+                            if (func.childLinks.FindAll(o => o.thisParamID == ShortGuidUtils.Generate("composites")).Count != 0)
+                            {
+                                string sdfsdf = "";
                             }
                         }
                     });

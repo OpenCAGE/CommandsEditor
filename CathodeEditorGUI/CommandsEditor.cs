@@ -706,10 +706,13 @@ namespace CommandsEditor
             if (_commandsDisplay.Content.resource.collision_maps.Entries.FindAll(o => o.entity == compositeInstanceReference && o.id == resourceID).Count != 0)
                 return;
 
+            //TODO: similar to PHYSICS.MAP, do we only write out if there's not another collision further up the chain?
+
             //Get zone ID
             ShortGuid zoneID = hierarchy == null ? ShortGuid.Invalid : new ShortGuid(1);
             if (hierarchy != null)
             {
+                //TODO: this needs speeding up
                 CancellationToken ct = new CancellationToken();
                 _commandsDisplay.Content.editor_utils.TryFindZoneForEntity(func, composite, out Composite zoneComp, out FunctionEntity zoneEnt, ct);
                 if (zoneComp != null && zoneEnt != null)
