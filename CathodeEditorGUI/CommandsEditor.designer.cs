@@ -54,6 +54,7 @@
             this.keepFunctionUsesWindowOpenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.resetUILayoutsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpBtn = new System.Windows.Forms.ToolStripButton();
+            this.DEBUG_RunChecks = new System.Windows.Forms.ToolStripButton();
             this.DEBUG_DoorPhysEnt = new System.Windows.Forms.ToolStripButton();
             this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
             this.vS2015LightTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
@@ -61,7 +62,7 @@
             this.statusText = new System.Windows.Forms.ToolStripStatusLabel();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.DEBUG_RunChecks = new System.Windows.Forms.ToolStripButton();
+            this.writeInstancedResourcesExperimentalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -127,7 +128,7 @@
             this.connectToUnity.Checked = true;
             this.connectToUnity.CheckState = System.Windows.Forms.CheckState.Checked;
             this.connectToUnity.Name = "connectToUnity";
-            this.connectToUnity.Size = new System.Drawing.Size(173, 22);
+            this.connectToUnity.Size = new System.Drawing.Size(180, 22);
             this.connectToUnity.Text = "Connect to Unity";
             this.connectToUnity.ToolTipText = "Enable a websocket connection to the Unity Level Viewer.";
             this.connectToUnity.Click += new System.EventHandler(this.connectToUnity_Click);
@@ -135,7 +136,7 @@
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(170, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
             // 
             // compositeViewerToolStripMenuItem
             // 
@@ -144,7 +145,7 @@
             this.autoHideExplorerViewToolStripMenuItem,
             this.searchOnlyCompositeNames});
             this.compositeViewerToolStripMenuItem.Name = "compositeViewerToolStripMenuItem";
-            this.compositeViewerToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.compositeViewerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.compositeViewerToolStripMenuItem.Text = "Composite Display";
             // 
             // showExplorerViewToolStripMenuItem
@@ -182,7 +183,7 @@
             this.nodeOpensEntity,
             this.useLegacyParameterCreatorToolStripMenuItem});
             this.entityDisplayToolStripMenuItem.Name = "entityDisplayToolStripMenuItem";
-            this.entityDisplayToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.entityDisplayToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.entityDisplayToolStripMenuItem.Text = "Entity Display";
             // 
             // showNodegraph
@@ -232,15 +233,16 @@
             this.showConfirmationWhenSavingToolStripMenuItem,
             this.useTexturedModelViewExperimentalToolStripMenuItem,
             this.keepFunctionUsesWindowOpenToolStripMenuItem,
-            this.resetUILayoutsToolStripMenuItem});
+            this.resetUILayoutsToolStripMenuItem,
+            this.writeInstancedResourcesExperimentalToolStripMenuItem});
             this.miscToolStripMenuItem.Name = "miscToolStripMenuItem";
-            this.miscToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.miscToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.miscToolStripMenuItem.Text = "Misc";
             // 
             // showConfirmationWhenSavingToolStripMenuItem
             // 
             this.showConfirmationWhenSavingToolStripMenuItem.Name = "showConfirmationWhenSavingToolStripMenuItem";
-            this.showConfirmationWhenSavingToolStripMenuItem.Size = new System.Drawing.Size(286, 22);
+            this.showConfirmationWhenSavingToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
             this.showConfirmationWhenSavingToolStripMenuItem.Text = "Show Confirmation When Saving";
             this.showConfirmationWhenSavingToolStripMenuItem.ToolTipText = "If enabled, a confirmation will show after a successful save.";
             this.showConfirmationWhenSavingToolStripMenuItem.Click += new System.EventHandler(this.showConfirmationWhenSavingToolStripMenuItem_Click);
@@ -248,7 +250,7 @@
             // useTexturedModelViewExperimentalToolStripMenuItem
             // 
             this.useTexturedModelViewExperimentalToolStripMenuItem.Name = "useTexturedModelViewExperimentalToolStripMenuItem";
-            this.useTexturedModelViewExperimentalToolStripMenuItem.Size = new System.Drawing.Size(286, 22);
+            this.useTexturedModelViewExperimentalToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
             this.useTexturedModelViewExperimentalToolStripMenuItem.Text = "Use Textured Model View (Experimental)";
             this.useTexturedModelViewExperimentalToolStripMenuItem.ToolTipText = "If enabled, the model previewer will try and find textures to render.";
             this.useTexturedModelViewExperimentalToolStripMenuItem.Click += new System.EventHandler(this.useTexturedModelViewExperimentalToolStripMenuItem_Click);
@@ -256,14 +258,14 @@
             // keepFunctionUsesWindowOpenToolStripMenuItem
             // 
             this.keepFunctionUsesWindowOpenToolStripMenuItem.Name = "keepFunctionUsesWindowOpenToolStripMenuItem";
-            this.keepFunctionUsesWindowOpenToolStripMenuItem.Size = new System.Drawing.Size(286, 22);
+            this.keepFunctionUsesWindowOpenToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
             this.keepFunctionUsesWindowOpenToolStripMenuItem.Text = "Keep Function Uses Window Open";
             this.keepFunctionUsesWindowOpenToolStripMenuItem.Click += new System.EventHandler(this.keepFunctionUsesWindowOpenToolStripMenuItem_Click);
             // 
             // resetUILayoutsToolStripMenuItem
             // 
             this.resetUILayoutsToolStripMenuItem.Name = "resetUILayoutsToolStripMenuItem";
-            this.resetUILayoutsToolStripMenuItem.Size = new System.Drawing.Size(286, 22);
+            this.resetUILayoutsToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
             this.resetUILayoutsToolStripMenuItem.Text = "Reset UI Layouts";
             this.resetUILayoutsToolStripMenuItem.Click += new System.EventHandler(this.resetUILayoutsToolStripMenuItem_Click);
             // 
@@ -277,6 +279,16 @@
             this.helpBtn.Size = new System.Drawing.Size(23, 22);
             this.helpBtn.Text = "Help";
             this.helpBtn.Click += new System.EventHandler(this.helpBtn_Click);
+            // 
+            // DEBUG_RunChecks
+            // 
+            this.DEBUG_RunChecks.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.DEBUG_RunChecks.Image = ((System.Drawing.Image)(resources.GetObject("DEBUG_RunChecks.Image")));
+            this.DEBUG_RunChecks.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.DEBUG_RunChecks.Name = "DEBUG_RunChecks";
+            this.DEBUG_RunChecks.Size = new System.Drawing.Size(116, 22);
+            this.DEBUG_RunChecks.Text = "DEBUG: Run Checks";
+            this.DEBUG_RunChecks.Click += new System.EventHandler(this.DEBUG_RunChecks_Click);
             // 
             // DEBUG_DoorPhysEnt
             // 
@@ -318,15 +330,12 @@
             this.dockPanel.TabIndex = 5;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
             // 
-            // DEBUG_RunChecks
+            // writeInstancedResourcesExperimentalToolStripMenuItem
             // 
-            this.DEBUG_RunChecks.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.DEBUG_RunChecks.Image = ((System.Drawing.Image)(resources.GetObject("DEBUG_RunChecks.Image")));
-            this.DEBUG_RunChecks.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.DEBUG_RunChecks.Name = "DEBUG_RunChecks";
-            this.DEBUG_RunChecks.Size = new System.Drawing.Size(116, 22);
-            this.DEBUG_RunChecks.Text = "DEBUG: Run Checks";
-            this.DEBUG_RunChecks.Click += new System.EventHandler(this.DEBUG_RunChecks_Click);
+            this.writeInstancedResourcesExperimentalToolStripMenuItem.Name = "writeInstancedResourcesExperimentalToolStripMenuItem";
+            this.writeInstancedResourcesExperimentalToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
+            this.writeInstancedResourcesExperimentalToolStripMenuItem.Text = "Write Instanced Resources (Experimental)";
+            this.writeInstancedResourcesExperimentalToolStripMenuItem.Click += new System.EventHandler(this.writeInstancedResourcesExperimentalToolStripMenuItem_Click);
             // 
             // CommandsEditor
             // 
@@ -384,5 +393,6 @@
         private System.Windows.Forms.ToolStripMenuItem useLegacyParameterCreatorToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton DEBUG_DoorPhysEnt;
         private System.Windows.Forms.ToolStripButton DEBUG_RunChecks;
+        private System.Windows.Forms.ToolStripMenuItem writeInstancedResourcesExperimentalToolStripMenuItem;
     }
 }

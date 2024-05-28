@@ -234,6 +234,7 @@ namespace CommandsEditor
             keepFunctionUsesWindowOpenToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.KeepUsesWindowOpen); keepFunctionUsesWindowOpenToolStripMenuItem.PerformClick();
             nodeOpensEntity.Checked = !SettingsManager.GetBool(Singleton.Settings.OpenEntityFromNode); nodeOpensEntity.PerformClick();
             useLegacyParameterCreatorToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.UseLegacyParamCreator); useLegacyParameterCreatorToolStripMenuItem.PerformClick();
+            writeInstancedResourcesExperimentalToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.ExperimentalResourceStuff); writeInstancedResourcesExperimentalToolStripMenuItem.PerformClick();
 
             if (!SettingsManager.IsSet(Singleton.Settings.NodeOpt)) SettingsManager.SetBool(Singleton.Settings.NodeOpt, true);
             showNodegraph.Checked = !SettingsManager.GetBool(Singleton.Settings.NodeOpt); showNodegraph.PerformClick();
@@ -974,6 +975,12 @@ namespace CommandsEditor
             }
         }
 
+        private void writeInstancedResourcesExperimentalToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            writeInstancedResourcesExperimentalToolStripMenuItem.Checked = !writeInstancedResourcesExperimentalToolStripMenuItem.Checked;
+            SettingsManager.SetBool(Singleton.Settings.ExperimentalResourceStuff, writeInstancedResourcesExperimentalToolStripMenuItem.Checked);
+        }
+
         private void UpdateCommandsDisplayDockState()
         {
             if (_commandsDisplay == null)
@@ -1015,7 +1022,10 @@ namespace CommandsEditor
 
         private void DEBUG_RunChecks_Click(object sender, EventArgs e)
         {
-            LocalDebug.checkresources();
+            InstanceWriter test = new InstanceWriter();
+            test.WriteInstances(_commandsDisplay.Content);
+
+            //LocalDebug.checkprefabinstances();
             return;
 
             List<EntityPath> zoneHandles = _commandsDisplay.Content.editor_utils.GetHierarchiesForEntity(_commandsDisplay.CompositeDisplay.Composite, _commandsDisplay.CompositeDisplay.ActiveEntityDisplay.Entity);
