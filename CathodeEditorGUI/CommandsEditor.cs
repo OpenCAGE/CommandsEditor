@@ -31,6 +31,7 @@ using System.Xml;
 using WebSocketSharp;
 using WebSocketSharp.Server;
 using WeifenLuo.WinFormsUI.Docking;
+using Task = System.Threading.Tasks.Task;
 
 namespace CommandsEditor
 {
@@ -1109,6 +1110,19 @@ namespace CommandsEditor
                 foreach (Entity entity in composite.GetEntities())
                     ShortGuidUtils.Generate(EntityUtils.GetName(composite, entity));
 
+            foreach (Models.CS2 cs2 in _commandsDisplay.Content.resource.models.Entries)
+            {
+                ShortGuidUtils.Generate(cs2.Name);
+                foreach (Models.CS2.Component component in cs2.Components)
+                    foreach (Models.CS2.Component.LOD lod in component.LODs)
+                        ShortGuidUtils.Generate(lod.Name);
+            }
+
+            foreach (Materials.Material material in _commandsDisplay.Content.resource.materials.Entries)
+                ShortGuidUtils.Generate(material.Name);
+
+            //tex names?
+
             foreach (var entry in _commandsDisplay.Content.resource.resources.Entries)
             {
                 (Composite comp, EntityPath path) = _commandsDisplay.Content.editor_utils.GetCompositeFromInstanceID(_commandsDisplay.Content.commands, entry.composite_instance_id);
@@ -1143,6 +1157,8 @@ namespace CommandsEditor
                     convertedResoureName += " [COULDN'T RESOLVE]";
                 }
 
+                convertedResoureName += " -> " + entry.composite_instance_id.ToByteString();
+
                 //TODO: i'm still missing stuff here. an example of one that comes out "COULDN'T RESOLVE" is DE-99-73-4A oN SOLACE, which is found in MODELS.MVR and COMMANDS.PAK
 
                 //NOTE: this goes for a lot of stuff. anotheR: \x47\xBA\x38\x17
@@ -1165,19 +1181,56 @@ namespace CommandsEditor
 
                 if (comp == null && path != null)
                 {
-                    Console.WriteLine(convertedResoureName + "\n\tNULL COMPOSITE NAME!! (" + path.GetAsString() + ")");
+                    Console.WriteLine(convertedResoureName + "\n\tINSTANCE: NULL COMPOSITE NAME!! (" + path.GetAsString() + ")");
                 }
                 else if (comp != null && path == null)
                 {
-                    Console.WriteLine(convertedResoureName + "\n\t" + comp.name + " (NULL PATH !!!!)");
+                    Console.WriteLine(convertedResoureName + "\n\tINSTANCE: " + comp.name + " (NULL PATH !!!!)");
                 }
                 else if (comp == null && path == null)
                 {
-                    Console.WriteLine(convertedResoureName + "\n\tNULL COMPOSITE NAME!! (NULL PATH !!!!)");
+                    if (entry.resource_id.ToString() != "Bolt_Gun_Structural_Metal_Decal" && entry.resource_id.ToString() != "AnimatedModel")
+                    {
+                        foreach (Composite comp2 in _commandsDisplay.Content.commands.Entries)
+                        {
+                            Entity ent2 = comp2.GetEntityByID(entry.resource_id);
+                            if (ent2 == null) continue;
+                            convertedResoureName += "\n\t[ENTITY ID FOUND IN " + comp2.name + ": " + ShortGuidUtils.Generate(EntityUtils.GetName(comp2, ent2)) + "]";
+                            break;
+                        }
+
+                        foreach (Composite comp2 in _commandsDisplay.Content.commands.Entries)
+                        {
+                            foreach (FunctionEntity funcEnt in comp2.functions)
+                            {
+                                List<ResourceReference> resRefs = funcEnt.resources;
+                                Parameter resParam = funcEnt.GetParameter("resource");
+                                if (resParam != null && resParam.content != null && resParam.content.dataType == DataType.RESOURCE)
+                                {
+                                    resRefs.AddRange(((cResource)resParam.content).value);
+                                }
+
+                                foreach (ResourceReference resRef in resRefs)
+                                {
+                                    if (resRef.resource_id == entry.resource_id)
+                                    {
+                                        convertedResoureName += "\n\t[RESOURCE ID FOUND IN " + comp2.name + ": " + ShortGuidUtils.Generate(EntityUtils.GetName(comp2, funcEnt)) + "] (" + resRef.resource_type + ")";
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        convertedResoureName += "\n\tNOTE: skipping " + entry.resource_id.ToString();
+                    }
+
+
+                    Console.WriteLine(convertedResoureName + "\n\tINSTANCE: NULL COMPOSITE NAME!! (NULL PATH !!!!)");
                 }
                 else
                 {
-                    Console.WriteLine(convertedResoureName + "\n\t" + comp.name + " (" + path.GetAsString() + ")");
+                    Console.WriteLine(convertedResoureName + "\n\tINSTANCE: " + comp.name + " (" + path.GetAsString() + ")");
                 }
             }
 
