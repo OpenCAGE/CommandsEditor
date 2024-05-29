@@ -4,6 +4,7 @@ using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CathodeLib;
 using CommandsEditor.DockPanels;
+using CommandsEditor.Nodes;
 using CommandsEditor.Popups;
 using CommandsEditor.Scripts;
 using CommandsEditor.UserControls;
@@ -564,9 +565,17 @@ namespace CommandsEditor
 
             if (SettingsManager.GetBool(Singleton.Settings.ExperimentalResourceStuff))
             {
+                _commandsDisplay.Content.resource.physics_maps.Entries.Clear();
+                _commandsDisplay.Content.resource.resources.Entries.RemoveAll(o => o.resource_id == GUID_DYNAMIC_PHYSICS_SYSTEM);
+                //_commandsDisplay.Content.resource.resources.Entries.Clear();
+
                 //Update additional resource stuff
                 foreach (Composite composite in _commandsDisplay.Content.commands.Entries)
                 {
+                    List<Entity> ents = composite.GetEntities();
+                    foreach (var ent in ents)
+                        ShortGuidUtils.Generate(EntityUtils.GetName(composite, ent));
+
                     foreach (FunctionEntity func in composite.functions)
                     {
                         List<ResourceReference> resources = func.resources;
@@ -577,8 +586,11 @@ namespace CommandsEditor
                         int collisionMapCount = resources.FindAll(o => o.resource_type == ResourceType.COLLISION_MAPPING).Count;
                         int animatedModelCount = resources.FindAll(o => o.resource_type == ResourceType.ANIMATED_MODEL).Count;
                         int physSystemCount = resources.FindAll(o => o.resource_type == ResourceType.DYNAMIC_PHYSICS_SYSTEM).Count;
+                        int renderableCount = resources.FindAll(o => o.resource_type == ResourceType.RENDERABLE_INSTANCE).Count;
 
-                        if (collisionMapCount + animatedModelCount + physSystemCount == 0)
+                        //TODO: i'm noticing RadiosityProxy entities in the RESOURCES.BIN -> they have a `resource` parameter but no resources listed.
+
+                        if (collisionMapCount + animatedModelCount + physSystemCount + renderableCount == 0)
                             continue;
 
                         ShortGuid nameHash = default;
@@ -595,9 +607,10 @@ namespace CommandsEditor
                             ShortGuid id;
                             switch (resRef.resource_type)
                             {
+                                case ResourceType.RENDERABLE_INSTANCE:
                                 case ResourceType.COLLISION_MAPPING:
-                                    if (resRef.entityID == ShortGuid.Max)
-                                        continue;
+                                    //if (resRef.entityID == ShortGuid.Max)
+                                    //    continue;
                                     id = nameHash;
                                     resRef.entityID = func.shortGUID;
                                     WriteCollisionMap(id, null, composite, func);
@@ -608,6 +621,9 @@ namespace CommandsEditor
                                 case ResourceType.DYNAMIC_PHYSICS_SYSTEM:
                                     id = GUID_DYNAMIC_PHYSICS_SYSTEM;
                                     break;
+                                //case ResourceType.NAV_MESH_BARRIER_RESOURCE:
+                                    //TODO
+                                //    break;
                                 default:
                                     continue;
                             }
@@ -626,6 +642,8 @@ namespace CommandsEditor
                                         if (!WritePhysicsMap(hierarchies[i], resRef.index))
                                             continue;
                                         break;
+                                    case ResourceType.RENDERABLE_INSTANCE:
+                                        //Write REDS
                                     case ResourceType.ANIMATED_MODEL:
                                         break;
                                     default:
@@ -637,6 +655,63 @@ namespace CommandsEditor
                     }
                 }
             }
+
+            Composite comp = _commandsDisplay.Content.commands.Entries.FirstOrDefault(o => o.name.Contains("ACID_DECAL"));
+            Entity func2 = comp.GetEntityByID(new ShortGuid("B4-69-C7-31"));
+            ShortGuidUtils.Generate(EntityUtils.GetName(comp, func2));
+            ShortGuidUtils.Generate("FLAP");
+
+            List<EntityPath> v = _commandsDisplay.Content.editor_utils.GetHierarchiesForEntity(comp, func2);
+            //TODO: do i also need to consider instnaces not from root? i think so
+
+            foreach (var entry in _commandsDisplay.Content.commands.Entries)
+            {
+                foreach (var ent in entry.GetEntities())
+                {
+                    if (EntityUtils.GetName(entry, ent) == "COL_CORRIDOR_CEILING_EASE_COL")
+                    {
+                        Console.WriteLine(entry.name);
+                        string sdsdf = ";";
+                    }
+                    ShortGuidUtils.Generate(EntityUtils.GetName(entry, ent));
+                }
+            }
+
+            foreach (var entry in _commandsDisplay.Content.resource.resources.Entries)
+            {
+                /*
+                for (int i = 0; i < _commandsDisplay.Content.commands.Entries.Count; i++)
+                {
+                    EntityPath pat1h = v.FirstOrDefault(o => o.GenerateInstance(_commandsDisplay.Content.commands.Entries[i]) == entry.composite_instance_id);
+                    if (pat1h != null)
+                    {
+                        string sdfsdfdf = "";
+                    }
+                }
+                */
+
+                //if (entry.resource_id.ToString() == "FLAP")
+                //{
+                //    string sdfwsd = ";";
+                //}
+
+                //if (entry.resource_id.ToString() == "Acid_decal")
+                //{
+                    EntityPath path = v.FirstOrDefault(o => o.GenerateInstance() == entry.composite_instance_id);
+
+                    if (path == null)
+                    {
+                    Console.WriteLine(entry.resource_id.ToString());
+                        string sdfd = "";
+                    }
+                    else
+                    {
+                        string gfsdgdfgf = "";
+                    }
+                //}
+            }
+
+
 
             if (_commandsDisplay.Content.resource.physics_maps != null && _commandsDisplay.Content.resource.physics_maps.Entries != null)
                 _commandsDisplay.Content.resource.physics_maps.Save();
@@ -660,15 +735,16 @@ namespace CommandsEditor
         {
             //If a composite further up in the path contains a PhysicsSystem too we shouldn't write this one out (NOTE: We also shouldn't write static stuff out by the looks of it)
             Composite comp = _commandsDisplay.Content.commands.EntryPoints[0];
-            for (int x = 0; x < hierarchy.path.Count; x++)
+            for (int x = 0; x < hierarchy.path.Count - 1; x++)
             {
                 FunctionEntity compInst = comp.functions.FirstOrDefault(o => o.shortGUID == hierarchy.path[x]);
                 if (compInst == null)
                     break;
-
+            
                 comp = _commandsDisplay.Content.commands.GetComposite(compInst.function);
-                if (x < hierarchy.path.Count - 2 && comp.GetFunctionEntitiesOfType(FunctionType.PhysicsSystem).Count != 0)
+                if (x < hierarchy.path.Count - 3 && comp.GetFunctionEntitiesOfType(FunctionType.PhysicsSystem).Count != 0)
                 {
+                    Console.WriteLine(comp.name);
                     return false;
                 }
             }
@@ -742,6 +818,9 @@ namespace CommandsEditor
 
         private void WriteResourceBin(ShortGuid compositeInstanceID, ShortGuid resourceID)
         {
+            _commandsDisplay.Content.resource.resources.Entries.RemoveAll(res => res.composite_instance_id == compositeInstanceID && res.resource_id == resourceID);
+            return;
+
             if (_commandsDisplay.Content.resource.resources.Entries.FindAll(res => res.composite_instance_id == compositeInstanceID && res.resource_id == resourceID).Count != 0)
                 return;
 
@@ -998,12 +1077,12 @@ namespace CommandsEditor
 
         private void DEBUG_DoorPhysEnt_Click(object sender, EventArgs e)
         {
-            //_commandsDisplay.LoadComposite(new ShortGuid("30-2E-B7-25"));
-            //_commandsDisplay.CompositeDisplay.Composite.GetEntityByID(new ShortGuid("88-2E-34-D5")).AddParameter("position", new cTransform(new Vector3(-0.4999240f, 0.0003948f, -45.0000000f), new Vector3(0,0,0)));
+            _commandsDisplay.LoadComposite(new ShortGuid("30-2E-B7-25"));
+            _commandsDisplay.CompositeDisplay.Composite.GetEntityByID(new ShortGuid("88-2E-34-D5")).AddParameter("position", new cTransform(new Vector3(-0.4999240f, 0.0003948f, -40.0000000f), new Vector3(0,0,0)));
 
-            //_commandsDisplay.LoadComposite(new ShortGuid("7A-40-D8-07"));
-            //_commandsDisplay.CompositeDisplay.Composite.GetEntityByID(new ShortGuid("A4-94-3A-1F")).AddParameter("Animation", new cString(""));
-            //_commandsDisplay.CompositeDisplay.DeleteEntity(_commandsDisplay.CompositeDisplay.Composite.GetEntityByID(new ShortGuid("62-05-5E-F3")), false);
+            _commandsDisplay.LoadComposite(new ShortGuid("7A-40-D8-07"));
+            _commandsDisplay.CompositeDisplay.Composite.GetEntityByID(new ShortGuid("A4-94-3A-1F")).AddParameter("Animation", new cString(""));
+            _commandsDisplay.CompositeDisplay.DeleteEntity(_commandsDisplay.CompositeDisplay.Composite.GetEntityByID(new ShortGuid("62-05-5E-F3")), false);
             //_commandsDisplay.CompositeDisplay.Composite.RemoveAllFunctionEntitiesOfType(FunctionType.Zone);
 
             _commandsDisplay.LoadComposite(new ShortGuid("83-AD-A3-18"));
@@ -1022,6 +1101,89 @@ namespace CommandsEditor
 
         private void DEBUG_RunChecks_Click(object sender, EventArgs e)
         {
+            ShortGuid aa = ShortGuidUtils.Generate("AnimatedModel");
+            ShortGuid bb = ShortGuidUtils.Generate("DYNAMIC_PHYSICS_SYSTEM");
+            ShortGuid cc = ShortGuidUtils.Generate("resource");
+
+            foreach (Composite composite in _commandsDisplay.Content.commands.Entries)
+                foreach (Entity entity in composite.GetEntities())
+                    ShortGuidUtils.Generate(EntityUtils.GetName(composite, entity));
+
+            foreach (var entry in _commandsDisplay.Content.resource.resources.Entries)
+            {
+                (Composite comp, EntityPath path) = _commandsDisplay.Content.editor_utils.GetCompositeFromInstanceID(_commandsDisplay.Content.commands, entry.composite_instance_id);
+
+                string convertedResoureName = entry.resource_id.ToString();
+                if (convertedResoureName != entry.resource_id.ToByteString())
+                {
+                    convertedResoureName += " [CONVERTED FROM SHORTGUID]";
+                }
+                else if (comp != null)
+                {
+                    Entity ent = comp.GetEntityByID(entry.resource_id);
+                    if (ent != null)
+                    {
+                        convertedResoureName = EntityUtils.GetName(comp, ent);
+                        if (convertedResoureName != entry.resource_id.ToByteString())
+                        {
+                            convertedResoureName += " [CONVERTED FROM ENTITY - " + ent.variant + "]";
+                        }
+                        else
+                        {
+                            convertedResoureName += " [COULDN'T RESOLVE, BUT HAS COMP & ENT]";
+                        }
+                    }
+                    else
+                    {
+                        convertedResoureName += " [COULDN'T RESOLVE, BUT HAS COMP, AND NO ENTITY]";
+                    }
+                }
+                else
+                {
+                    convertedResoureName += " [COULDN'T RESOLVE]";
+                }
+
+                //TODO: i'm still missing stuff here. an example of one that comes out "COULDN'T RESOLVE" is DE-99-73-4A oN SOLACE, which is found in MODELS.MVR and COMMANDS.PAK
+
+                //NOTE: this goes for a lot of stuff. anotheR: \x47\xBA\x38\x17
+                //      47-BA-38-17 [COULDN'T RESOLVE, BUT HAS COMP, AND NO ENTITY]
+                //      AYZ\FX_LIBRARY\WATER\FX_WATER_CONDENSATION_PIPES_DRIPS(B5 - 05 - E5 - 85-> 6B - DD - A1 - C0-> 58 - 5A - CE - B5-> 5E-65 - FF - FF-> 23 - AC - DD - 6E-> 00 - 00 - 00 - 00)
+
+                //NOTE: this lists not only the RENDERABLE_INSTANCE entity, but EVERY reds index. for example, see: AYZ\CONTROLS\HIDING_CUPBOARD_COATRACK
+                //      RAD_NODE01 [CONVERTED FROM SHORTGUID]
+                //      	AYZ\CONTROLS\HIDING_CUPBOARD_COATRACK (B5-05-E5-85 -> 6B-DD-A1-C0 -> 92-EF-8E-BA -> E5-2C-F3-72 -> 00-00-00-00)
+                //      HidingCupboard [CONVERTED FROM SHORTGUID]
+                //      	AYZ\CONTROLS\HIDING_CUPBOARD_COATRACK (B5-05-E5-85 -> 6B-DD-A1-C0 -> 92-EF-8E-BA -> E5-2C-F3-72 -> 00-00-00-00)
+                //      GubbinsDecals [CONVERTED FROM SHORTGUID]
+                //      	AYZ\CONTROLS\HIDING_CUPBOARD_COATRACK (B5-05-E5-85 -> 6B-DD-A1-C0 -> 92-EF-8E-BA -> E5-2C-F3-72 -> 00-00-00-00)
+                //      occlusionculling [CONVERTED FROM SHORTGUID]
+                //      	AYZ\CONTROLS\HIDING_CUPBOARD_COATRACK (B5-05-E5-85 -> 6B-DD-A1-C0 -> 92-EF-8E-BA -> E5-2C-F3-72 -> 00-00-00-00)
+                //      Collision01_COL [CONVERTED FROM SHORTGUID]
+                //      	AYZ\CONTROLS\HIDING_CUPBOARD_COATRACK (B5-05-E5-85 -> 6B-DD-A1-C0 -> 92-EF-8E-BA -> E5-2C-F3-72 -> 00-00-00-00)
+
+                // Look at AYZ\CONTROLS\LOCKERDRESSING_A - some very odd stuff there. all the Postit composites are listed with NULL COMPOSITE NAMES, plus a load of resources that aren't there (maybe it's the sub-composite entities? -> i think it is)
+
+                if (comp == null && path != null)
+                {
+                    Console.WriteLine(convertedResoureName + "\n\tNULL COMPOSITE NAME!! (" + path.GetAsString() + ")");
+                }
+                else if (comp != null && path == null)
+                {
+                    Console.WriteLine(convertedResoureName + "\n\t" + comp.name + " (NULL PATH !!!!)");
+                }
+                else if (comp == null && path == null)
+                {
+                    Console.WriteLine(convertedResoureName + "\n\tNULL COMPOSITE NAME!! (NULL PATH !!!!)");
+                }
+                else
+                {
+                    Console.WriteLine(convertedResoureName + "\n\t" + comp.name + " (" + path.GetAsString() + ")");
+                }
+            }
+
+            return;
+
+
             InstanceWriter test = new InstanceWriter();
             test.WriteInstances(_commandsDisplay.Content);
 

@@ -58,6 +58,13 @@ namespace CommandsEditor
             _hierarchies.Clear();
 
             _prevTaskToken = new CancellationTokenSource();
+
+            //for (int i = 0; i < commands.Entries.Count; i++)
+            //{
+            //    Content.editor_utils.GenerateCompositeInstancesRecursive(commands, commands.Entries[i], new List<ShortGuid>(), _prevTaskToken.Token);
+            //}
+
+            
             Task.Run(() => Content.editor_utils.GenerateCompositeInstancesRecursive(commands, commands.EntryPoints[0], new List<ShortGuid>(), _prevTaskToken.Token), _prevTaskToken.Token);
         }
         private void GenerateCompositeInstancesRecursive(Commands commands, Composite composite, List<ShortGuid> hierarchy, CancellationToken ct)
@@ -98,6 +105,20 @@ namespace CommandsEditor
                 }
             }
             return formattedHierarchies;
+        }
+
+        public (Composite, EntityPath) GetCompositeFromInstanceID(Commands commands, ShortGuid instanceID)
+        {
+            foreach (KeyValuePair<ShortGuid, List<List<ShortGuid>>> compositeInstancePaths in _hierarchies)
+            {
+                foreach (List<ShortGuid> path in compositeInstancePaths.Value)
+                {
+                    EntityPath pathFormatted = new EntityPath(path);
+                    if (pathFormatted.GenerateInstance() == instanceID)
+                        return (commands.GetComposite(compositeInstancePaths.Key), pathFormatted);
+                }
+            }
+            return (null, null);
         }
 
         /* Get the hierarchy for a commands entity reference (used to link legacy resource/mvr stuff) */
