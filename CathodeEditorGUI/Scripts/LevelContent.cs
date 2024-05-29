@@ -11,6 +11,8 @@ using OpenCAGE;
 using CATHODE.LEGACY;
 using System.Xml.Linq;
 using System.IO;
+using CATHODE.EXPERIMENTAL;
+using System.Windows.Shapes;
 
 namespace CommandsEditor
 {
@@ -39,6 +41,7 @@ namespace CommandsEditor
             public EnvironmentAnimations env_animations = null;
             public CollisionMaps collision_maps = null;
             public PhysicsMaps physics_maps = null;
+            public PathBarrierResources path_barrier_resources = null;
 
             public SoundBankData sound_bankdata = null;
             public SoundDialogueLookups sound_dialoguelookups = null;
@@ -46,6 +49,12 @@ namespace CommandsEditor
             public SoundEnvironmentData sound_environmentdata = null;
 
             public CharacterAccessorySets character_accessories = null;
+
+            public List<MasterState> master_states = new List<MasterState>();
+            public class MasterState
+            {
+                public NavigationMesh navmesh;
+            }
         }
 
         //UI stuff
@@ -193,7 +202,7 @@ namespace CommandsEditor
             try
             {
 #endif
-                Parallel.For(0, 14, (i) =>
+                Parallel.For(0, 16, (i) =>
                 {
                     switch (i)
                     {
@@ -242,6 +251,31 @@ namespace CommandsEditor
                             break;
                         case 13:
                             resource.resources = new Resources(worldPath + "RESOURCES.BIN");
+                            break;
+                        case 14:
+                            resource.path_barrier_resources = new PathBarrierResources(worldPath + "PATH_BARRIER_RESOURCES");
+                            break;
+                        case 15:
+                            int stateCount = 1;
+                            using (BinaryReader reader = new BinaryReader(File.OpenRead(worldPath + "EXCLUSIVE_MASTER_RESOURCE_INDICES")))
+                            {
+                                reader.BaseStream.Position = 4;
+                                stateCount += reader.ReadInt32();
+                                //TODO: this file also contains indices for each state which seem to be of some relevence, although EXCLUSIVE_MASTER_RESOURCE doesn't point to indices?
+                            }
+                            for (int x = 0; x < stateCount; x++)
+                            {
+                                resource.master_states.Add(new Resource.MasterState()
+                                {
+                                    navmesh = new NavigationMesh(worldPath + "STATE_" + x + "/NAV_MESH")
+                                });
+                                // WORLD STATE RESOURCES TODO:
+                                //  - ASSAULT_POSITIONS
+                                //  - COVER
+                                //  - CRAWL_SPACE_SPOTTING_POSITIONS
+                                //  - SPOTTING_POSITIONS
+                                //  - TRAVERSAL
+                            }
                             break;
                     }
                 });

@@ -159,6 +159,7 @@ namespace CommandsEditor
                     newReference.index = 0;
                     break;            
                 case ResourceType.EXCLUSIVE_MASTER_STATE_RESOURCE:
+                    //TODO: this defines the MASTER_STATE which flips us between the STATE_x folders for navmeshes, etc -> how do we know the state index?
                 case ResourceType.NAV_MESH_BARRIER_RESOURCE:      
                 case ResourceType.TRAVERSAL_SEGMENT:              //Sure this one doesn't use startIndex?
                 case ResourceType.COLLISION_MAPPING:              //Sure this one doesn't use startIndex?
