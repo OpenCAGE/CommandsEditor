@@ -66,7 +66,7 @@ namespace CommandsEditor
         private string worldPath = "";
         private string renderablePath = "";
 
-        public LevelContent(string levelName)
+        public LevelContent(string levelName, bool loadAssetsOnThread = true)
         {
             level = levelName;
 
@@ -85,8 +85,11 @@ namespace CommandsEditor
                     break;
             }
 
-            //Load
-            Task.Factory.StartNew(() => LoadAssets());
+            if (loadAssetsOnThread)
+                Task.Factory.StartNew(() => LoadAssets());
+            else
+                LoadAssets();
+
             if (!LoadCommands())
             {
                 MessageBox.Show("Failed to load Commands data.\nPlease reset your game files.", "Load failed", MessageBoxButtons.OK, MessageBoxIcon.Error);

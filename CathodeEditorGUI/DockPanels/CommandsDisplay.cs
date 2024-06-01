@@ -71,7 +71,7 @@ namespace CommandsEditor.DockPanels
                 SetViewMode(view);
 
             //TODO: these utils should be moved into LevelContent and made less generic. makes no sense anymore.
-            _content.editor_utils = new EditorUtils();
+            _content.editor_utils = new EditorUtils(_content);
             Task.Factory.StartNew(() => _content.editor_utils.GenerateEntityNameCache(Singleton.Editor));
             Content.editor_utils.GenerateCompositeInstances(Content.commands);
 

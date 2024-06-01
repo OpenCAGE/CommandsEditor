@@ -22,7 +22,11 @@ namespace CommandsEditor
     //Wrappers around CathodeLib utils, and some utils for formatting strings
     public class EditorUtils
     {
-        protected LevelContent Content => Singleton.Editor?.CommandsDisplay?.Content;
+        private LevelContent _content;
+        public EditorUtils(LevelContent content)
+        {
+            _content = content;
+        }
 
         /* Some additional composite info for rich display in editor */
         public enum CompositeType
@@ -40,9 +44,9 @@ namespace CommandsEditor
         public CompositeType GetCompositeType(string composite)
         {
             string c = composite.Replace('/', '\\');
-            if (Content.commands.EntryPoints[0].name.Replace('/', '\\') == c) return CompositeType.IS_ROOT;
-            if (Content.commands.EntryPoints[1].name.Replace('/', '\\') == c) return CompositeType.IS_PAUSE_MENU;
-            if (Content.commands.EntryPoints[2].name.Replace('/', '\\') == c) return CompositeType.IS_GLOBAL;
+            if (_content.commands.EntryPoints[0].name.Replace('/', '\\') == c) return CompositeType.IS_ROOT;
+            if (_content.commands.EntryPoints[1].name.Replace('/', '\\') == c) return CompositeType.IS_PAUSE_MENU;
+            if (_content.commands.EntryPoints[2].name.Replace('/', '\\') == c) return CompositeType.IS_GLOBAL;
             if (c.Length > ("DisplayModel:").Length && c.Substring(0, ("DisplayModel:").Length) == "DisplayModel:") return CompositeType.IS_DISPLAY_MODEL;
             return CompositeType.IS_GENERIC_COMPOSITE;
         }
@@ -50,7 +54,7 @@ namespace CommandsEditor
         /* Generate all composite instance information for Commands */
         private Dictionary<ShortGuid, List<List<ShortGuid>>> _compositeInstancePaths = new Dictionary<ShortGuid, List<List<ShortGuid>>>();
         private CancellationTokenSource _prevTaskToken = null;
-        public void GenerateCompositeInstances(Commands commands)
+        public void GenerateCompositeInstances(Commands commands, bool runOnThread = true)
         {
             if (_prevTaskToken != null)
                 _prevTaskToken.Cancel();
@@ -59,13 +63,10 @@ namespace CommandsEditor
 
             _prevTaskToken = new CancellationTokenSource();
 
-            //for (int i = 0; i < commands.Entries.Count; i++)
-            //{
-            //    Content.editor_utils.GenerateCompositeInstancesRecursive(commands, commands.Entries[i], new List<ShortGuid>(), _prevTaskToken.Token);
-            //}
-
-            
-            Task.Run(() => Content.editor_utils.GenerateCompositeInstancesRecursive(commands, commands.EntryPoints[0], new List<ShortGuid>(), _prevTaskToken.Token), _prevTaskToken.Token);
+            if (runOnThread)
+                Task.Run(() => _content.editor_utils.GenerateCompositeInstancesRecursive(commands, commands.EntryPoints[0], new List<ShortGuid>(), _prevTaskToken.Token), _prevTaskToken.Token);
+            else
+                _content.editor_utils.GenerateCompositeInstancesRecursive(commands, commands.EntryPoints[0], new List<ShortGuid>(), _prevTaskToken.Token);
         }
         private void GenerateCompositeInstancesRecursive(Commands commands, Composite composite, List<ShortGuid> hierarchy, CancellationToken ct)
         {
@@ -145,7 +146,6 @@ namespace CommandsEditor
                         continue;
 
                     List<EntityPath> zonePaths = GetHierarchiesForEntity(commands.Entries[i], commands.Entries[i].functions[x]);
-                    List<ShortGuid> zoneInstanceIDs = new List<ShortGuid>();
                     for (int p = 0; p < zonePaths.Count; p++)
                     {
                         if (zonePaths[p].GenerateZoneID() == instanceID)
@@ -193,7 +193,7 @@ namespace CommandsEditor
         /* Utility: generate nice entity name to display in UI */
         public string GenerateEntityName(Entity entity, Composite composite, bool regenCache = false)
         {
-            if (Content.commands == null)
+            if (_content.commands == null)
                 return entity.shortGUID.ToByteString();
 
             if (hasFinishedCachingEntityNames && regenCache)
@@ -225,18 +225,18 @@ namespace CommandsEditor
                     desc = "[" + ((VariableEntity)entity).type.ToString() + " VARIABLE] " + ShortGuidUtils.FindString(((VariableEntity)entity).name);
                     break;
                 case EntityVariant.FUNCTION:
-                    Composite funcComposite = Content.commands.GetComposite(((FunctionEntity)entity).function);
+                    Composite funcComposite = _content.commands.GetComposite(((FunctionEntity)entity).function);
                     if (funcComposite != null)
                         desc = EntityUtils.GetName(composite.shortGUID, entity.shortGUID) + " (" + funcComposite.name + ")";
                     else
                         desc = EntityUtils.GetName(composite.shortGUID, entity.shortGUID) + " (" + CathodeEntityDatabase.GetEntity(((FunctionEntity)entity).function).className + ")";
                     break;
                 case EntityVariant.ALIAS:
-                    CommandsUtils.ResolveHierarchy(Content.commands, composite, ((AliasEntity)entity).alias.path, out Composite c, out string s, false);
+                    CommandsUtils.ResolveHierarchy(_content.commands, composite, ((AliasEntity)entity).alias.path, out Composite c, out string s, false);
                     desc = "[ALIAS] " + s;
                     break;
                 case EntityVariant.PROXY:
-                    CommandsUtils.ResolveHierarchy(Content.commands, composite, ((ProxyEntity)entity).proxy.path, out Composite c2, out string s2, false);
+                    CommandsUtils.ResolveHierarchy(_content.commands, composite, ((ProxyEntity)entity).proxy.path, out Composite c2, out string s2, false);
                     desc = "[PROXY] " + EntityUtils.GetName(composite.shortGUID, entity.shortGUID) + " (" + s2 + ")";
                     break;
             }
@@ -249,13 +249,13 @@ namespace CommandsEditor
         private Dictionary<ShortGuid, Dictionary<ShortGuid, string>> cachedEntityName = new Dictionary<ShortGuid, Dictionary<ShortGuid, string>>();
         public void GenerateEntityNameCache(CommandsEditor mainInst)
         {
-            if (Content.commands == null) return;
+            if (_content.commands == null) return;
             hasFinishedCachingEntityNames = false;
             mainInst.EnableLoadingOfPaks(false, "Generating caches...");
             cachedEntityName.Clear();
-            for (int i = 0; i < Content.commands.Entries.Count; i++)
+            for (int i = 0; i < _content.commands.Entries.Count; i++)
             {
-                Composite comp = Content.commands.Entries[i];
+                Composite comp = _content.commands.Entries[i];
                 if (!cachedEntityName.ContainsKey(comp.shortGUID))
                     cachedEntityName.Add(comp.shortGUID, new Dictionary<ShortGuid, string>());
                 List<Entity> ents = comp.GetEntities();
@@ -288,7 +288,7 @@ namespace CommandsEditor
 
                         if (!isComposite) break;
 
-                        foreach (VariableEntity ent in Content.commands.GetComposite(((FunctionEntity)entity).function).variables)
+                        foreach (VariableEntity ent in _content.commands.GetComposite(((FunctionEntity)entity).function).variables)
                             if (!items.Contains(ent.name.ToString()))
                                 items.Add(ent.name.ToString());
                     }
@@ -297,10 +297,10 @@ namespace CommandsEditor
                     items.Add(ShortGuidUtils.FindString(((VariableEntity)entity).name));
                     break;
                 case EntityVariant.ALIAS:
-                    return GenerateParameterListAsString(CommandsUtils.ResolveHierarchy(Content.commands, composite, ((AliasEntity)entity).alias.path, out Composite comp1, out string hierarchy1), comp1);
+                    return GenerateParameterListAsString(CommandsUtils.ResolveHierarchy(_content.commands, composite, ((AliasEntity)entity).alias.path, out Composite comp1, out string hierarchy1), comp1);
                 case EntityVariant.PROXY:
                     {
-                        items.AddRange(GenerateParameterListAsString(CommandsUtils.ResolveHierarchy(Content.commands, composite, ((ProxyEntity)entity).proxy.path, out Composite comp2, out string hierarchy2), comp2));
+                        items.AddRange(GenerateParameterListAsString(CommandsUtils.ResolveHierarchy(_content.commands, composite, ((ProxyEntity)entity).proxy.path, out Composite comp2, out string hierarchy2), comp2));
 
                         List<CathodeEntityDatabase.ParameterDefinition> parameters = CathodeEntityDatabase.GetParametersFromEntity(ShortGuidUtils.Generate("ProxyInterface"));
                         if (parameters != null)
@@ -337,7 +337,7 @@ namespace CommandsEditor
                         if (!isComposite) 
                             break;
 
-                        foreach (VariableEntity ent in Content.commands.GetComposite(((FunctionEntity)entity).function).variables)
+                        foreach (VariableEntity ent in _content.commands.GetComposite(((FunctionEntity)entity).function).variables)
                         {
                             if (items.FirstOrDefault(o => o.Text == ent.name.ToString()) == null)
                             {
@@ -351,10 +351,10 @@ namespace CommandsEditor
                     items.Add(ParameterDefinitionToListViewItem(ShortGuidUtils.FindString(varEnt.name), varEnt.type.ToString()));
                     break;
                 case EntityVariant.ALIAS:
-                    return GenerateParameterListAsListViewItem(CommandsUtils.ResolveHierarchy(Content.commands, composite, ((AliasEntity)entity).alias.path, out Composite comp1, out string hierarchy1), comp1);
+                    return GenerateParameterListAsListViewItem(CommandsUtils.ResolveHierarchy(_content.commands, composite, ((AliasEntity)entity).alias.path, out Composite comp1, out string hierarchy1), comp1);
                 case EntityVariant.PROXY:
                     {
-                        items.AddRange(GenerateParameterListAsListViewItem(CommandsUtils.ResolveHierarchy(Content.commands, composite, ((ProxyEntity)entity).proxy.path, out Composite comp2, out string hierarchy2), comp2));
+                        items.AddRange(GenerateParameterListAsListViewItem(CommandsUtils.ResolveHierarchy(_content.commands, composite, ((ProxyEntity)entity).proxy.path, out Composite comp2, out string hierarchy2), comp2));
 
                         List<CathodeEntityDatabase.ParameterDefinition> parameters = CathodeEntityDatabase.GetParametersFromEntity(ShortGuidUtils.Generate("ProxyInterface"));
                         if (parameters != null)
@@ -414,13 +414,13 @@ namespace CommandsEditor
         public bool IsEntityReferencedExternally(Entity entity, CancellationToken ct)
         {
             bool found = false;
-            Parallel.ForEach(Content.commands.Entries, (comp, status) =>
+            Parallel.ForEach(_content.commands.Entries, (comp, status) =>
             {
                 Parallel.ForEach(comp.proxies, (prox, status2) =>
                 {
                     if (found || ct.IsCancellationRequested)
                         status2.Stop();
-                    Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, comp, prox.proxy.path, out Composite compRef, out string str);
+                    Entity ent = CommandsUtils.ResolveHierarchy(_content.commands, comp, prox.proxy.path, out Composite compRef, out string str);
                     if (ent == entity) found = true;
                 });
                 Parallel.ForEach(comp.aliases, (alias, status2) =>
@@ -428,7 +428,7 @@ namespace CommandsEditor
                     if (found || ct.IsCancellationRequested)
                         status2.Stop();
 
-                    Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, comp, alias.alias.path, out Composite compRef, out string str);
+                    Entity ent = CommandsUtils.ResolveHierarchy(_content.commands, comp, alias.alias.path, out Composite compRef, out string str);
                     if (ent == entity) found = true;
                 });
                 List<FunctionEntity> triggerSequences = comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.TriggerSequence));
@@ -443,7 +443,7 @@ namespace CommandsEditor
                         if (found || ct.IsCancellationRequested)
                             status3.Stop();
 
-                        Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, comp, trigger.connectedEntity.path, out Composite compRef, out string str);
+                        Entity ent = CommandsUtils.ResolveHierarchy(_content.commands, comp, trigger.connectedEntity.path, out Composite compRef, out string str);
                         if (ent == entity) found = true;
                     });
                 });
@@ -459,7 +459,7 @@ namespace CommandsEditor
                         if (found || ct.IsCancellationRequested)
                             status3.Stop();
 
-                        Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, comp, connection.connectedEntity.path, out Composite compRef, out string str);
+                        Entity ent = CommandsUtils.ResolveHierarchy(_content.commands, comp, connection.connectedEntity.path, out Composite compRef, out string str);
                         if (ent == entity) found = true;
                     });
                 });
@@ -480,12 +480,12 @@ namespace CommandsEditor
                 ShortGuid compositesGUID = ShortGuidUtils.Generate("composites");
 
                 List<FunctionEntity> triggerSequences = comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.TriggerSequence));
-                Parallel.ForEach(triggerSequences, (trigEnt, status) =>
+                Parallel.ForEach(triggerSequences, (Action<FunctionEntity, ParallelLoopState>)((trigEnt, status) =>
                 {
                     TriggerSequence trig = (TriggerSequence)trigEnt;
-                    Parallel.ForEach(trig.entities, (trigger, status2) =>
+                    Parallel.ForEach(trig.entities, (Action<TriggerSequence.Entity, ParallelLoopState>)((trigger, status2) =>
                     {
-                        if (CommandsUtils.ResolveHierarchy(Content.commands, comp, trigger.connectedEntity.path, out Composite compRef, out string str) == entity)
+                        if (CommandsUtils.ResolveHierarchy((Commands)this._content.commands, comp, trigger.connectedEntity.path, out Composite compRef, out string str) == entity)
                         {
                             List<FunctionEntity> zones = comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.Zone));
                             Parallel.ForEach(zones, (z, status3) =>
@@ -513,11 +513,11 @@ namespace CommandsEditor
 
                         if (ct.IsCancellationRequested)
                             status2.Stop();
-                    });
+                    }));
 
                     if (ct.IsCancellationRequested)
                         status.Stop();
-                });
+                }));
 
                 return toReturn;
             };
@@ -526,7 +526,7 @@ namespace CommandsEditor
             zone = findZone(composite);
             if (zone != null) return;
 
-            foreach (Composite comp in Content.commands.Entries)
+            foreach (Composite comp in _content.commands.Entries)
             {
                 composite = comp;
                 zone = findZone(composite);
