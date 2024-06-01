@@ -43,6 +43,9 @@ namespace CommandsEditor
             public PhysicsMaps physics_maps = null;
             public PathBarrierResources path_barrier_resources = null;
 
+            public EnvironmentMaps env_maps = null;
+            public Lights lights = null;
+
             public SoundBankData sound_bankdata = null;
             public SoundDialogueLookups sound_dialoguelookups = null;
             public SoundEventData sound_eventdata = null;
@@ -205,7 +208,7 @@ namespace CommandsEditor
             try
             {
 #endif
-                Parallel.For(0, 16, (i) =>
+                Parallel.For(0, 18, (i) =>
                 {
                     switch (i)
                     {
@@ -259,6 +262,12 @@ namespace CommandsEditor
                             resource.path_barrier_resources = new PathBarrierResources(worldPath + "PATH_BARRIER_RESOURCES");
                             break;
                         case 15:
+                            resource.env_maps = new EnvironmentMaps(worldPath + "ENVIRONMENTMAP.BIN");
+                            break;
+                        case 16:
+                            resource.lights = new Lights(worldPath + "LIGHTS.BIN");
+                            break;
+                        case 17:
                             int stateCount = 1;
                             using (BinaryReader reader = new BinaryReader(File.OpenRead(worldPath + "EXCLUSIVE_MASTER_RESOURCE_INDICES")))
                             {

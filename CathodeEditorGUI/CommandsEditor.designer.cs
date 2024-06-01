@@ -53,6 +53,7 @@
             this.useTexturedModelViewExperimentalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.keepFunctionUsesWindowOpenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.resetUILayoutsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.writeInstancedResourcesExperimentalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpBtn = new System.Windows.Forms.ToolStripButton();
             this.DEBUG_RunChecks = new System.Windows.Forms.ToolStripButton();
             this.DEBUG_DoorPhysEnt = new System.Windows.Forms.ToolStripButton();
@@ -62,7 +63,7 @@
             this.statusText = new System.Windows.Forms.ToolStripStatusLabel();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.writeInstancedResourcesExperimentalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.DEBUG_LaunchGame = new System.Windows.Forms.ToolStripButton();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -74,7 +75,8 @@
             this.toolStripButton2,
             this.helpBtn,
             this.DEBUG_RunChecks,
-            this.DEBUG_DoorPhysEnt});
+            this.DEBUG_DoorPhysEnt,
+            this.DEBUG_LaunchGame});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Size = new System.Drawing.Size(1257, 25);
@@ -96,7 +98,7 @@
             // loadLevel
             // 
             this.loadLevel.Name = "loadLevel";
-            this.loadLevel.Size = new System.Drawing.Size(168, 22);
+            this.loadLevel.Size = new System.Drawing.Size(180, 22);
             this.loadLevel.Text = "Load Level";
             // 
             // saveLevel
@@ -104,7 +106,7 @@
             this.saveLevel.Name = "saveLevel";
             this.saveLevel.ShortcutKeyDisplayString = "Ctrl+S";
             this.saveLevel.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveLevel.Size = new System.Drawing.Size(168, 22);
+            this.saveLevel.Size = new System.Drawing.Size(180, 22);
             this.saveLevel.Text = "Save Level";
             this.saveLevel.Click += new System.EventHandler(this.saveLevel_Click);
             // 
@@ -128,7 +130,7 @@
             this.connectToUnity.Checked = true;
             this.connectToUnity.CheckState = System.Windows.Forms.CheckState.Checked;
             this.connectToUnity.Name = "connectToUnity";
-            this.connectToUnity.Size = new System.Drawing.Size(180, 22);
+            this.connectToUnity.Size = new System.Drawing.Size(173, 22);
             this.connectToUnity.Text = "Connect to Unity";
             this.connectToUnity.ToolTipText = "Enable a websocket connection to the Unity Level Viewer.";
             this.connectToUnity.Click += new System.EventHandler(this.connectToUnity_Click);
@@ -136,7 +138,7 @@
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(170, 6);
             // 
             // compositeViewerToolStripMenuItem
             // 
@@ -145,7 +147,7 @@
             this.autoHideExplorerViewToolStripMenuItem,
             this.searchOnlyCompositeNames});
             this.compositeViewerToolStripMenuItem.Name = "compositeViewerToolStripMenuItem";
-            this.compositeViewerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.compositeViewerToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.compositeViewerToolStripMenuItem.Text = "Composite Display";
             // 
             // showExplorerViewToolStripMenuItem
@@ -183,7 +185,7 @@
             this.nodeOpensEntity,
             this.useLegacyParameterCreatorToolStripMenuItem});
             this.entityDisplayToolStripMenuItem.Name = "entityDisplayToolStripMenuItem";
-            this.entityDisplayToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.entityDisplayToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.entityDisplayToolStripMenuItem.Text = "Entity Display";
             // 
             // showNodegraph
@@ -236,7 +238,7 @@
             this.resetUILayoutsToolStripMenuItem,
             this.writeInstancedResourcesExperimentalToolStripMenuItem});
             this.miscToolStripMenuItem.Name = "miscToolStripMenuItem";
-            this.miscToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.miscToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.miscToolStripMenuItem.Text = "Misc";
             // 
             // showConfirmationWhenSavingToolStripMenuItem
@@ -268,6 +270,13 @@
             this.resetUILayoutsToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
             this.resetUILayoutsToolStripMenuItem.Text = "Reset UI Layouts";
             this.resetUILayoutsToolStripMenuItem.Click += new System.EventHandler(this.resetUILayoutsToolStripMenuItem_Click);
+            // 
+            // writeInstancedResourcesExperimentalToolStripMenuItem
+            // 
+            this.writeInstancedResourcesExperimentalToolStripMenuItem.Name = "writeInstancedResourcesExperimentalToolStripMenuItem";
+            this.writeInstancedResourcesExperimentalToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
+            this.writeInstancedResourcesExperimentalToolStripMenuItem.Text = "Write Instanced Resources (Experimental)";
+            this.writeInstancedResourcesExperimentalToolStripMenuItem.Click += new System.EventHandler(this.writeInstancedResourcesExperimentalToolStripMenuItem_Click);
             // 
             // helpBtn
             // 
@@ -330,12 +339,15 @@
             this.dockPanel.TabIndex = 5;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
             // 
-            // writeInstancedResourcesExperimentalToolStripMenuItem
+            // DEBUG_LaunchGame
             // 
-            this.writeInstancedResourcesExperimentalToolStripMenuItem.Name = "writeInstancedResourcesExperimentalToolStripMenuItem";
-            this.writeInstancedResourcesExperimentalToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
-            this.writeInstancedResourcesExperimentalToolStripMenuItem.Text = "Write Instanced Resources (Experimental)";
-            this.writeInstancedResourcesExperimentalToolStripMenuItem.Click += new System.EventHandler(this.writeInstancedResourcesExperimentalToolStripMenuItem_Click);
+            this.DEBUG_LaunchGame.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.DEBUG_LaunchGame.Image = ((System.Drawing.Image)(resources.GetObject("DEBUG_LaunchGame.Image")));
+            this.DEBUG_LaunchGame.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.DEBUG_LaunchGame.Name = "DEBUG_LaunchGame";
+            this.DEBUG_LaunchGame.Size = new System.Drawing.Size(127, 22);
+            this.DEBUG_LaunchGame.Text = "DEBUG: Launch Game";
+            this.DEBUG_LaunchGame.Click += new System.EventHandler(this.DEBUG_LaunchGame_Click);
             // 
             // CommandsEditor
             // 
@@ -394,5 +406,6 @@
         private System.Windows.Forms.ToolStripButton DEBUG_DoorPhysEnt;
         private System.Windows.Forms.ToolStripButton DEBUG_RunChecks;
         private System.Windows.Forms.ToolStripMenuItem writeInstancedResourcesExperimentalToolStripMenuItem;
+        private System.Windows.Forms.ToolStripButton DEBUG_LaunchGame;
     }
 }

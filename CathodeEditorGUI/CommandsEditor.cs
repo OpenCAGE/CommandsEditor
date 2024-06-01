@@ -218,6 +218,7 @@ namespace CommandsEditor
 #if !DEBUG
             DEBUG_DoorPhysEnt.Visible = false;
             DEBUG_RunChecks.Visible = false;
+            DEBUG_LaunchGame.Visible = false;
 #endif
 
             WindowState = SettingsManager.GetString(Singleton.Settings.WindowState, "Normal") == "Maximized" ? FormWindowState.Maximized : FormWindowState.Normal;
@@ -658,6 +659,21 @@ namespace CommandsEditor
                 }
             }
 
+            _commandsDisplay.Content.resource.lights.Indexes.Clear();
+            _commandsDisplay.Content.resource.lights.Values.Clear();
+            for (int i = 0; i < _commandsDisplay.Content.mvr.Entries.Count; i++)
+                _commandsDisplay.Content.mvr.Entries[i].environment_map_index = -1;
+            _commandsDisplay.Content.resource.env_maps.Entries.Clear();
+
+            //note - can remove 130 entries from the end before it crashes
+            int removeCount = 130;
+            _commandsDisplay.Content.mvr.Entries.RemoveRange(_commandsDisplay.Content.mvr.Entries.Count - removeCount, removeCount);
+
+
+            if (_commandsDisplay.Content.resource.lights != null)
+                _commandsDisplay.Content.resource.lights.Save();
+            if (_commandsDisplay.Content.resource.env_maps != null && _commandsDisplay.Content.resource.env_maps.Entries != null)
+                _commandsDisplay.Content.resource.env_maps.Save();
             if (_commandsDisplay.Content.resource.physics_maps != null && _commandsDisplay.Content.resource.physics_maps.Entries != null)
                 _commandsDisplay.Content.resource.physics_maps.Save();
             if (_commandsDisplay.Content.resource.resources != null && _commandsDisplay.Content.resource.resources.Entries != null)
@@ -1219,6 +1235,118 @@ namespace CommandsEditor
 
             List<string> resources_dump = new List<string>();
             int resource_index = -1;
+            foreach (var entry in content.mvr.Entries)
+            {
+                resource_index++;
+
+                (Composite entComp, EntityPath entPath) = content.editor_utils.GetCompositeFromInstanceID(content.commands, entry.entity.composite_instance_id);
+                Entity entEnt = entComp?.GetEntityByID(entry.entity.entity_id);
+                (Composite zoneComp1, EntityPath zonePath1, Entity zoneEnt1) = content.editor_utils.GetZoneFromInstanceID(content.commands, entry.primary_zone_id);
+                (Composite zoneComp2, EntityPath zonePath2, Entity zoneEnt2) = content.editor_utils.GetZoneFromInstanceID(content.commands, entry.secondary_zone_id);
+
+                string convertedResoureName = "[" + resource_index + "] ";
+
+
+                for (int x = 0; x < entry.renderable_element_count; x++)
+                {
+                    var reds = content.resource.reds.Entries[(int)entry.renderable_element_index + x];
+
+                    var submesh = _commandsDisplay.Content.resource.models.GetAtWriteIndex(reds.ModelIndex);
+                    var model = _commandsDisplay.Content.resource.models.FindModelForSubmesh(submesh);
+                    var component = _commandsDisplay.Content.resource.models.FindModelComponentForSubmesh(submesh);
+                    var lod = _commandsDisplay.Content.resource.models.FindModelLODForSubmesh(submesh);
+                    var material = _commandsDisplay.Content.resource.materials.GetAtWriteIndex(reds.MaterialIndex);
+
+                    convertedResoureName += "\n\t REDS INFO: " + model.Name + " (" + lod.Name + ") -> " + material.Name;
+                }
+
+
+                bool wroteSomething = false;
+                if (entComp != null)
+                {
+                    convertedResoureName += "\n\t Entity Composite: " + entComp.name;
+                    wroteSomething = true;
+                }
+                if (entPath != null)
+                {
+                    convertedResoureName += "\n\t Entity Instance: " + entPath.GetAsString(content.commands, content.commands.EntryPoints[0], true);
+                    wroteSomething = true;
+                }
+                if (entEnt != null && entComp == null)
+                {
+                    convertedResoureName += "\n\t Entity Entity: " + entEnt.shortGUID + " -> can't resolve name";
+                    wroteSomething = true;
+                }
+                if (entEnt != null && entComp != null)
+                {
+                    convertedResoureName += "\n\t Entity Entity: " + entEnt.shortGUID + " -> " + EntityUtils.GetName(entComp, entEnt);
+                    wroteSomething = true;
+                }
+
+                if (!wroteSomething)
+                {
+                    convertedResoureName += "\n\t COULDNTRESOLVE - Entity EntityPath stuff: " + entry.entity.entity_id.ToByteString() + " -> " + entry.entity.composite_instance_id.ToByteString();
+
+                    foreach (Composite comp2 in content.commands.Entries)
+                    {
+                        Entity ent2 = comp2.GetEntityByID(entry.entity.entity_id);
+                        if (ent2 == null) continue;
+                        convertedResoureName += "\n\t\t[ENTITY ID FOUND IN " + comp2.name + ": " + ShortGuidUtils.Generate(EntityUtils.GetName(comp2, ent2)) + "]";
+                        break;
+                    }
+                }
+
+                if (zonePath1 != null && zonePath1.path.Count == 2 && zonePath1.path[0] == new ShortGuid("01-00-00-00"))
+                {
+                    convertedResoureName += "\n\t Primary Zone: GLOBAL ZONE";
+                }
+                else if (zonePath1 != null && zonePath1.path.Count == 1 && zonePath1.path[0] == new ShortGuid("00-00-00-00"))
+                {
+                    convertedResoureName += "\n\t Primary Zone: ZERO ZONE";
+                }
+                else
+                {
+                    convertedResoureName += "\n\t Primary Zone: " + entry.primary_zone_id.ToByteString();
+                    if (zoneComp1 != null)
+                        convertedResoureName += "\n\t Primary Zone Composite: " + zoneComp1.name;
+                    if (zonePath1 != null)
+                        convertedResoureName += "\n\t Primary Zone Instance: " + zonePath1.GetAsString(content.commands, content.commands.EntryPoints[0], true);
+                    if (zoneEnt1 != null && zoneComp1 == null)
+                        convertedResoureName += "\n\t Primary Zone Entity: " + zoneEnt1.shortGUID + " -> can't resolve name";
+                    if (zoneEnt1 != null && zoneComp1 != null)
+                        convertedResoureName += "\n\t Primary Zone Entity: " + zoneEnt1.shortGUID + " -> " + EntityUtils.GetName(zoneComp1, zoneEnt1);
+                }
+
+                if (zonePath2 != null && zonePath2.path.Count == 2 && zonePath2.path[0] == new ShortGuid("01-00-00-00"))
+                {
+                    convertedResoureName += "\n\t Secondary Zone: GLOBAL ZONE";
+                }
+                else if (zonePath2 != null && zonePath2.path.Count == 1 && zonePath2.path[0] == new ShortGuid("00-00-00-00"))
+                {
+                    convertedResoureName += "\n\t Secondary Zone: ZERO ZONE";
+                }
+                else
+                {
+                    convertedResoureName += "\n\t Secondary Zone: " + entry.secondary_zone_id.ToByteString();
+                    if (zoneComp2 != null)
+                        convertedResoureName += "\n\t Secondary Zone Composite: " + zoneComp2.name;
+                    if (zonePath2 != null)
+                        convertedResoureName += "\n\t Secondary Zone Instance: " + zonePath2.GetAsString(content.commands, content.commands.EntryPoints[0], true);
+                    if (zoneEnt2 != null && zoneComp2 == null)
+                        convertedResoureName += "\n\t Secondary Zone Entity: " + zoneEnt2.shortGUID + " -> can't resolve name";
+                    if (zoneEnt2 != null && zoneComp2 != null)
+                        convertedResoureName += "\n\t Secondary Zone Entity: " + zoneEnt2.shortGUID + " -> " + EntityUtils.GetName(zoneComp2, zoneEnt2);
+                }
+
+                Console.WriteLine(convertedResoureName);
+                resources_dump.Add(convertedResoureName);
+            }
+            File.WriteAllLines("mover_dump_" + level.Replace("\\", "_").Replace("/", "_") + ".txt", resources_dump);
+
+
+
+            resources_dump.Clear();
+            resource_index = -1;
             foreach (var entry in content.resource.resources.Entries)
             {
                 resource_index++;
@@ -1335,118 +1463,6 @@ namespace CommandsEditor
 
             resources_dump.Clear();
             resource_index = -1;
-            foreach (var entry in content.mvr.Entries)
-            {
-                resource_index++;
-
-                (Composite entComp, EntityPath entPath) = content.editor_utils.GetCompositeFromInstanceID(content.commands, entry.entity.composite_instance_id);
-                Entity entEnt = entComp?.GetEntityByID(entry.entity.entity_id);
-                (Composite zoneComp1, EntityPath zonePath1, Entity zoneEnt1) = content.editor_utils.GetZoneFromInstanceID(content.commands, entry.primary_zone_id);
-                (Composite zoneComp2, EntityPath zonePath2, Entity zoneEnt2) = content.editor_utils.GetZoneFromInstanceID(content.commands, entry.secondary_zone_id);
-
-                string convertedResoureName = "[" + resource_index + "] ";
-
-
-                for (int x = 0; x < entry.renderable_element_count; x++)
-                {
-                    var reds = content.resource.reds.Entries[(int)entry.renderable_element_index + x];
-
-                    var submesh = _commandsDisplay.Content.resource.models.GetAtWriteIndex(reds.ModelIndex);
-                    var model = _commandsDisplay.Content.resource.models.FindModelForSubmesh(submesh);
-                    var component = _commandsDisplay.Content.resource.models.FindModelComponentForSubmesh(submesh);
-                    var lod = _commandsDisplay.Content.resource.models.FindModelLODForSubmesh(submesh);
-                    var material = _commandsDisplay.Content.resource.materials.GetAtWriteIndex(reds.MaterialIndex);
-
-                    convertedResoureName += "\n\t REDS INFO: " + model.Name + " (" + lod.Name + ") -> " + material.Name;
-                }
-
-
-                bool wroteSomething = false;
-                if (entComp != null)
-                {
-                    convertedResoureName += "\n\t Entity Composite: " + entComp.name;
-                    wroteSomething = true;
-                }
-                if (entPath != null)
-                {
-                    convertedResoureName += "\n\t Entity Instance: " + entPath.GetAsString(content.commands, content.commands.EntryPoints[0], true);
-                    wroteSomething = true;
-                }
-                if (entEnt != null && entComp == null)
-                {
-                    convertedResoureName += "\n\t Entity Entity: " + entEnt.shortGUID + " -> can't resolve name";
-                    wroteSomething = true;
-                }
-                if (entEnt != null && entComp != null)
-                {
-                    convertedResoureName += "\n\t Entity Entity: " + entEnt.shortGUID + " -> " + EntityUtils.GetName(entComp, entEnt);
-                    wroteSomething = true;
-                }
-
-                if (!wroteSomething)
-                {
-                    convertedResoureName += "\n\t COULDNTRESOLVE - Entity EntityPath stuff: " + entry.entity.entity_id.ToByteString() + " -> " + entry.entity.composite_instance_id.ToByteString();
-
-                    foreach (Composite comp2 in content.commands.Entries)
-                    {
-                        Entity ent2 = comp2.GetEntityByID(entry.entity.entity_id);
-                        if (ent2 == null) continue;
-                        convertedResoureName += "\n\t\t[ENTITY ID FOUND IN " + comp2.name + ": " + ShortGuidUtils.Generate(EntityUtils.GetName(comp2, ent2)) + "]";
-                        break;
-                    }
-                }
-
-                if (zonePath1 != null && zonePath1.path.Count == 2 && zonePath1.path[0] == new ShortGuid("01-00-00-00"))
-                {
-                    convertedResoureName += "\n\t Primary Zone: GLOBAL ZONE";
-                }
-                else if (zonePath1 != null && zonePath1.path.Count == 1 && zonePath1.path[0] == new ShortGuid("00-00-00-00"))
-                {
-                    convertedResoureName += "\n\t Primary Zone: ZERO ZONE";
-                }
-                else
-                {
-                    convertedResoureName += "\n\t Primary Zone: " + entry.primary_zone_id.ToByteString();
-                    if (zoneComp1 != null)
-                        convertedResoureName += "\n\t Primary Zone Composite: " + zoneComp1.name;
-                    if (zonePath1 != null)
-                        convertedResoureName += "\n\t Primary Zone Instance: " + zonePath1.GetAsString(content.commands, content.commands.EntryPoints[0], true);
-                    if (zoneEnt1 != null && zoneComp1 == null)
-                        convertedResoureName += "\n\t Primary Zone Entity: " + zoneEnt1.shortGUID + " -> can't resolve name";
-                    if (zoneEnt1 != null && zoneComp1 != null)
-                        convertedResoureName += "\n\t Primary Zone Entity: " + zoneEnt1.shortGUID + " -> " + EntityUtils.GetName(zoneComp1, zoneEnt1);
-                }
-
-                if (zonePath2 != null && zonePath2.path.Count == 2 && zonePath2.path[0] == new ShortGuid("01-00-00-00"))
-                {
-                    convertedResoureName += "\n\t Secondary Zone: GLOBAL ZONE";
-                }
-                else if (zonePath2 != null && zonePath2.path.Count == 1 && zonePath2.path[0] == new ShortGuid("00-00-00-00"))
-                {
-                    convertedResoureName += "\n\t Secondary Zone: ZERO ZONE";
-                }
-                else
-                {
-                    convertedResoureName += "\n\t Secondary Zone: " + entry.secondary_zone_id.ToByteString();
-                    if (zoneComp2 != null)
-                        convertedResoureName += "\n\t Secondary Zone Composite: " + zoneComp2.name;
-                    if (zonePath2 != null)
-                        convertedResoureName += "\n\t Secondary Zone Instance: " + zonePath2.GetAsString(content.commands, content.commands.EntryPoints[0], true);
-                    if (zoneEnt2 != null && zoneComp2 == null)
-                        convertedResoureName += "\n\t Secondary Zone Entity: " + zoneEnt2.shortGUID + " -> can't resolve name";
-                    if (zoneEnt2 != null && zoneComp2 != null)
-                        convertedResoureName += "\n\t Secondary Zone Entity: " + zoneEnt2.shortGUID + " -> " + EntityUtils.GetName(zoneComp2, zoneEnt2);
-                }
-
-                resources_dump.Add(convertedResoureName);
-            }
-            File.WriteAllLines("mover_dump_" + level.Replace("\\", "_").Replace("/", "_") + ".txt", resources_dump);
-
-
-
-
-            resources_dump.Clear();
-            resource_index = -1;
             foreach (var entry in content.resource.collision_maps.Entries)
             {
                 resource_index++;
@@ -1537,6 +1553,11 @@ namespace CommandsEditor
             {
                 File.Copy(newPath, newPath.Replace(sourcePath, targetPath), true);
             }
+        }
+
+        private void DEBUG_LaunchGame_Click(object sender, EventArgs e)
+        {
+            Process.Start("E:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\AI.exe");
         }
     }
 }
