@@ -101,7 +101,7 @@ namespace CommandsEditor
                 for (int i = 0; i < hierarchies.Count; i++)
                 {
                     List<ShortGuid> hierarchy = new List<ShortGuid>(hierarchies[i].ConvertAll(x => x));
-                    if (hierarchy[hierarchy.Count - 1] == ShortGuid.Invalid)
+                    if (hierarchy.Count != 0 && hierarchy[hierarchy.Count - 1] == ShortGuid.Invalid)
                         hierarchy.RemoveAt(hierarchy.Count - 1);
                     hierarchy.Add(entity.shortGUID);
                     formattedHierarchies.Add(new EntityPath(hierarchy));
@@ -137,6 +137,17 @@ namespace CommandsEditor
         //TEST ONLY
         public (Composite, EntityPath, Entity) GetZoneFromInstanceID(Commands commands, ShortGuid instanceID)
         {
+            if (instanceID == new ShortGuid("01-00-00-00"))
+            {
+                //global zone
+                return (null, new EntityPath(new List<ShortGuid>() { new ShortGuid("01-00-00-00") }), null);
+            }
+            if (instanceID == new ShortGuid("00-00-00-00"))
+            {
+                //global zone
+                return (null, new EntityPath(new List<ShortGuid>() { new ShortGuid("00-00-00-00") }), null);
+            }
+
             ShortGuid GUID_Zone = CommandsUtils.GetFunctionTypeGUID(FunctionType.Zone);
             for (int i = 0; i < commands.Entries.Count; i++)
             {
