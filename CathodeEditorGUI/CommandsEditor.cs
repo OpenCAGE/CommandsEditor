@@ -31,6 +31,7 @@ using System.Xml;
 using WebSocketSharp;
 using WebSocketSharp.Server;
 using WeifenLuo.WinFormsUI.Docking;
+using static System.Net.Mime.MediaTypeNames;
 using Task = System.Threading.Tasks.Task;
 
 namespace CommandsEditor
@@ -1191,6 +1192,26 @@ namespace CommandsEditor
                 ShortGuidUtils.Generate(material.Name);
 
 
+            /*
+            for (int i = 0; i < 12; i++)
+            {
+                for (int x = 0; x < content.mvr.Entries[i].renderable_element_count; x++)
+                {
+                    var reds = content.resource.reds.Entries[(int)content.mvr.Entries[i].renderable_element_index + x];
+
+                    var submesh = _commandsDisplay.Content.resource.models.GetAtWriteIndex(reds.ModelIndex);
+                    var model = _commandsDisplay.Content.resource.models.FindModelForSubmesh(submesh);
+                    var component = _commandsDisplay.Content.resource.models.FindModelComponentForSubmesh(submesh);
+                    var lod = _commandsDisplay.Content.resource.models.FindModelLODForSubmesh(submesh);
+                    var material = _commandsDisplay.Content.resource.materials.GetAtWriteIndex(reds.MaterialIndex);
+
+                    Console.WriteLine(level + " [" + i + "] -> " + model.Name + " (" + lod.Name + ") -> " + material.Name);
+                }
+            }
+
+            return;
+            */
+
             //correct for the 18 entries we remove
             for (int i = 0; i < 18; i++)
                 content.resource.collision_maps.Entries.Insert(0, new CollisionMaps.Entry());
@@ -1235,24 +1256,6 @@ namespace CommandsEditor
                 }
 
                 convertedResoureName += " -> " + entry.composite_instance_id.ToByteString();
-
-                //TODO: i'm still missing stuff here. an example of one that comes out "COULDN'T RESOLVE" is DE-99-73-4A oN SOLACE, which is found in MODELS.MVR and COMMANDS.PAK
-
-                //NOTE: this goes for a lot of stuff. anotheR: \x47\xBA\x38\x17
-                //      47-BA-38-17 [COULDN'T RESOLVE, BUT HAS COMP, AND NO ENTITY]
-                //      AYZ\FX_LIBRARY\WATER\FX_WATER_CONDENSATION_PIPES_DRIPS(B5 - 05 - E5 - 85-> 6B - DD - A1 - C0-> 58 - 5A - CE - B5-> 5E-65 - FF - FF-> 23 - AC - DD - 6E-> 00 - 00 - 00 - 00)
-
-                //NOTE: this lists not only the RENDERABLE_INSTANCE entity, but EVERY reds index. for example, see: AYZ\CONTROLS\HIDING_CUPBOARD_COATRACK
-                //      RAD_NODE01 [CONVERTED FROM SHORTGUID]
-                //      	AYZ\CONTROLS\HIDING_CUPBOARD_COATRACK (B5-05-E5-85 -> 6B-DD-A1-C0 -> 92-EF-8E-BA -> E5-2C-F3-72 -> 00-00-00-00)
-                //      HidingCupboard [CONVERTED FROM SHORTGUID]
-                //      	AYZ\CONTROLS\HIDING_CUPBOARD_COATRACK (B5-05-E5-85 -> 6B-DD-A1-C0 -> 92-EF-8E-BA -> E5-2C-F3-72 -> 00-00-00-00)
-                //      GubbinsDecals [CONVERTED FROM SHORTGUID]
-                //      	AYZ\CONTROLS\HIDING_CUPBOARD_COATRACK (B5-05-E5-85 -> 6B-DD-A1-C0 -> 92-EF-8E-BA -> E5-2C-F3-72 -> 00-00-00-00)
-                //      occlusionculling [CONVERTED FROM SHORTGUID]
-                //      	AYZ\CONTROLS\HIDING_CUPBOARD_COATRACK (B5-05-E5-85 -> 6B-DD-A1-C0 -> 92-EF-8E-BA -> E5-2C-F3-72 -> 00-00-00-00)
-                //      Collision01_COL [CONVERTED FROM SHORTGUID]
-                //      	AYZ\CONTROLS\HIDING_CUPBOARD_COATRACK (B5-05-E5-85 -> 6B-DD-A1-C0 -> 92-EF-8E-BA -> E5-2C-F3-72 -> 00-00-00-00)
 
                 // Look at AYZ\CONTROLS\LOCKERDRESSING_A - some very odd stuff there. all the Postit composites are listed with NULL COMPOSITE NAMES, plus a load of resources that aren't there (maybe it's the sub-composite entities? -> i think it is)
 
@@ -1343,6 +1346,21 @@ namespace CommandsEditor
 
                 string convertedResoureName = "[" + resource_index + "] ";
 
+
+                for (int x = 0; x < entry.renderable_element_count; x++)
+                {
+                    var reds = content.resource.reds.Entries[(int)entry.renderable_element_index + x];
+
+                    var submesh = _commandsDisplay.Content.resource.models.GetAtWriteIndex(reds.ModelIndex);
+                    var model = _commandsDisplay.Content.resource.models.FindModelForSubmesh(submesh);
+                    var component = _commandsDisplay.Content.resource.models.FindModelComponentForSubmesh(submesh);
+                    var lod = _commandsDisplay.Content.resource.models.FindModelLODForSubmesh(submesh);
+                    var material = _commandsDisplay.Content.resource.materials.GetAtWriteIndex(reds.MaterialIndex);
+
+                    convertedResoureName += "\n\t REDS INFO: " + model.Name + " (" + lod.Name + ") -> " + material.Name;
+                }
+
+
                 bool wroteSomething = false;
                 if (entComp != null)
                 {
@@ -1368,6 +1386,14 @@ namespace CommandsEditor
                 if (!wroteSomething)
                 {
                     convertedResoureName += "\n\t COULDNTRESOLVE - Entity EntityPath stuff: " + entry.entity.entity_id.ToByteString() + " -> " + entry.entity.composite_instance_id.ToByteString();
+
+                    foreach (Composite comp2 in content.commands.Entries)
+                    {
+                        Entity ent2 = comp2.GetEntityByID(entry.entity.entity_id);
+                        if (ent2 == null) continue;
+                        convertedResoureName += "\n\t\t[ENTITY ID FOUND IN " + comp2.name + ": " + ShortGuidUtils.Generate(EntityUtils.GetName(comp2, ent2)) + "]";
+                        break;
+                    }
                 }
 
                 if (zonePath1 != null && zonePath1.path.Count == 2 && zonePath1.path[0] == new ShortGuid("01-00-00-00"))
