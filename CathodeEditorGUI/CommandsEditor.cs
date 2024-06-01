@@ -1121,13 +1121,88 @@ namespace CommandsEditor
             foreach (Materials.Material material in _commandsDisplay.Content.resource.materials.Entries)
                 ShortGuidUtils.Generate(material.Name);
 
-            //tex names?
 
             foreach (var entry in _commandsDisplay.Content.resource.resources.Entries)
             {
                 (Composite comp, EntityPath path) = _commandsDisplay.Content.editor_utils.GetCompositeFromInstanceID(_commandsDisplay.Content.commands, entry.composite_instance_id);
 
-                string convertedResoureName = entry.resource_id.ToString();
+                if (comp == null && path == null)
+                {
+                    List<Tuple<Entity, Composite>> foundEntities = new List<Tuple<Entity, Composite>>();
+                    foreach (Composite comp2 in _commandsDisplay.Content.commands.Entries)
+                    {
+                        Entity ent2 = comp2.GetEntityByID(entry.resource_id);
+                        if (ent2 == null) continue;
+                        foundEntities.Add(new Tuple<Entity, Composite>(ent2, comp2));
+                    }
+
+
+                    if (foundEntities.Count == 1)
+                    {
+                        List<EntityPath> paths = _commandsDisplay.Content.editor_utils.GetHierarchiesForEntity(foundEntities[0].Item2, foundEntities[0].Item1);
+                        if (paths.Count == 1)
+                        {
+                            List<Tuple<Entity, Composite, ResourceReference>> foundResources = new List<Tuple<Entity, Composite, ResourceReference>>();
+                            foreach (Composite comp2 in _commandsDisplay.Content.commands.Entries)
+                            {
+                                foreach (FunctionEntity funcEnt in comp2.functions)
+                                {
+                                    List<ResourceReference> resRefs = funcEnt.resources;
+                                    Parameter resParam = funcEnt.GetParameter("resource");
+                                    if (resParam != null && resParam.content != null && resParam.content.dataType == DataType.RESOURCE)
+                                    {
+                                        resRefs.AddRange(((cResource)resParam.content).value);
+                                    }
+
+                                    foreach (ResourceReference resRef in resRefs)
+                                    {
+                                        if (resRef.resource_id == entry.resource_id)
+                                        {
+                                            foundResources.Add(new Tuple<Entity, Composite, ResourceReference>(funcEnt, comp2, resRef));
+                                        }
+                                    }
+                                }
+                            }
+
+                            string breakhere = "";
+                        }
+                    }
+                }
+            }
+
+
+
+            var test1 = _commandsDisplay.Content.mvr.Entries.FirstOrDefault(o => o.entity.composite_instance_id == new ShortGuid("EE-61-70-F2"));
+
+            for (int i = 0; i < test1.renderable_element_count; i++) 
+            {
+                var test5 = _commandsDisplay.Content.resource.reds.Entries[(int)test1.renderable_element_index + i];
+
+                var test6 = _commandsDisplay.Content.resource.models.GetAtWriteIndex(test5.ModelIndex);
+                var test61 = _commandsDisplay.Content.resource.models.FindModelForSubmesh(test6);
+                var test62 = _commandsDisplay.Content.resource.models.FindModelComponentForSubmesh(test6);
+                var test63 = _commandsDisplay.Content.resource.models.FindModelLODForSubmesh(test6);
+                var test7 = _commandsDisplay.Content.resource.materials.GetAtWriteIndex(test5.MaterialIndex);
+
+                string sdfsdf = "";
+            }
+
+            var test2 = _commandsDisplay.Content.resource.collision_maps.Entries.FirstOrDefault(o => o.entity.composite_instance_id == new ShortGuid("EE-61-70-F2"));
+            var test3 = _commandsDisplay.Content.resource.resources.Entries.FirstOrDefault(o => o.composite_instance_id == new ShortGuid("EE-61-70-F2"));
+
+            return;
+
+            //tex names?
+
+            List<string> resources_dump = new List<string>();
+            int resource_index = -1;
+            foreach (var entry in _commandsDisplay.Content.resource.resources.Entries)
+            {
+                resource_index++;
+
+                (Composite comp, EntityPath path) = _commandsDisplay.Content.editor_utils.GetCompositeFromInstanceID(_commandsDisplay.Content.commands, entry.composite_instance_id);
+
+                string convertedResoureName = "[" + resource_index + "] " + entry.resource_id.ToString();
                 if (convertedResoureName != entry.resource_id.ToByteString())
                 {
                     convertedResoureName += " [CONVERTED FROM SHORTGUID]";
@@ -1181,11 +1256,11 @@ namespace CommandsEditor
 
                 if (comp == null && path != null)
                 {
-                    Console.WriteLine(convertedResoureName + "\n\tINSTANCE: NULL COMPOSITE NAME!! (" + path.GetAsString() + ")");
+                    resources_dump.Add(convertedResoureName + "\n\tINSTANCE: NULL COMPOSITE NAME!! (" + path.GetAsString() + ")");
                 }
                 else if (comp != null && path == null)
                 {
-                    Console.WriteLine(convertedResoureName + "\n\tINSTANCE: " + comp.name + " (NULL PATH !!!!)");
+                    resources_dump.Add(convertedResoureName + "\n\tINSTANCE: " + comp.name + " (NULL PATH !!!!)");
                 }
                 else if (comp == null && path == null)
                 {
@@ -1199,6 +1274,7 @@ namespace CommandsEditor
                             break;
                         }
 
+                        int ll = 0;
                         foreach (Composite comp2 in _commandsDisplay.Content.commands.Entries)
                         {
                             foreach (FunctionEntity funcEnt in comp2.functions)
@@ -1215,9 +1291,19 @@ namespace CommandsEditor
                                     if (resRef.resource_id == entry.resource_id)
                                     {
                                         convertedResoureName += "\n\t[RESOURCE ID FOUND IN " + comp2.name + ": " + ShortGuidUtils.Generate(EntityUtils.GetName(comp2, funcEnt)) + "] (" + resRef.resource_type + ")";
+                                        ll++;
+                                        if (ll > 3)
+                                        {
+                                            convertedResoureName += "\n\t... omitting more results";
+                                            break;
+                                        }
                                     }
                                 }
+                                if (ll > 3)
+                                    break;
                             }
+                            if (ll > 3)
+                                break;
                         }
                     }
                     else
@@ -1226,13 +1312,133 @@ namespace CommandsEditor
                     }
 
 
-                    Console.WriteLine(convertedResoureName + "\n\tINSTANCE: NULL COMPOSITE NAME!! (NULL PATH !!!!)");
+                    resources_dump.Add(convertedResoureName + "\n\tINSTANCE: NULL COMPOSITE NAME!! (NULL PATH !!!!)");
                 }
                 else
                 {
-                    Console.WriteLine(convertedResoureName + "\n\tINSTANCE: " + comp.name + " (" + path.GetAsString() + ")");
+                    resources_dump.Add(convertedResoureName + "\n\tINSTANCE: " + comp.name + " (" + path.GetAsString() + ")");
                 }
             }
+            File.WriteAllLines("resources_dump.txt", resources_dump);
+
+
+
+
+            resources_dump.Clear();
+            resource_index = -1;
+            foreach (var entry in _commandsDisplay.Content.mvr.Entries)
+            {
+                resource_index++;
+
+                (Composite entComp, EntityPath entPath) = _commandsDisplay.Content.editor_utils.GetCompositeFromInstanceID(_commandsDisplay.Content.commands, entry.entity.composite_instance_id);
+                Entity entEnt = entComp?.GetEntityByID(entry.entity.entity_id);
+                (Composite zoneComp1, EntityPath zonePath1, Entity zoneEnt1) = _commandsDisplay.Content.editor_utils.GetZoneFromInstanceID(_commandsDisplay.Content.commands, entry.primary_zone_id);
+                (Composite zoneComp2, EntityPath zonePath2, Entity zoneEnt2) = _commandsDisplay.Content.editor_utils.GetZoneFromInstanceID(_commandsDisplay.Content.commands, entry.secondary_zone_id);
+
+                string convertedResoureName = "[" + resource_index + "] ";
+
+                if (entComp != null)
+                    convertedResoureName += "\n\t Entity Composite: " + entComp.name;
+                if (entPath != null)
+                    convertedResoureName += "\n\t Entity Instance: " + entPath.GetAsString();
+                if (entEnt != null && entComp == null)
+                    convertedResoureName += "\n\t Entity Entity: " + entEnt.shortGUID + " -> can't resolve name";
+                if (entEnt != null && entComp != null)
+                    convertedResoureName += "\n\t Entity Entity: " + entEnt.shortGUID + " -> " + EntityUtils.GetName(entComp, entEnt);
+
+                if (zoneComp1 != null)
+                    convertedResoureName += "\n\t Primary Zone Composite: " + zoneComp1.name;
+                if (zonePath1 != null)
+                    convertedResoureName += "\n\t Primary Zone Instance: " + zonePath1.GetAsString();
+                if (zoneEnt1 != null && zoneComp1 == null)
+                    convertedResoureName += "\n\t Primary Zone Entity: " + zoneEnt1.shortGUID + " -> can't resolve name";
+                if (zoneEnt1 != null && zoneComp1 != null)
+                    convertedResoureName += "\n\t Primary Zone Entity: " + zoneEnt1.shortGUID + " -> " + EntityUtils.GetName(zoneComp1, zoneEnt1);
+
+                if (zoneComp2 != null)
+                    convertedResoureName += "\n\t Secondary Zone Composite: " + zoneComp2.name;
+                if (zonePath2 != null)
+                    convertedResoureName += "\n\t Secondary Zone Instance: " + zonePath2.GetAsString();
+                if (zoneEnt2!= null && zoneComp2 == null)
+                    convertedResoureName += "\n\t Secondary Zone Entity: " + zoneEnt2.shortGUID + " -> can't resolve name";
+                if (zoneEnt2 != null && zoneComp2 != null)
+                    convertedResoureName += "\n\t Secondary Zone Entity: " + zoneEnt2.shortGUID + " -> " + EntityUtils.GetName(zoneComp2, zoneEnt2);
+
+                resources_dump.Add(convertedResoureName);
+            }
+            File.WriteAllLines("mover_dump.txt", resources_dump);
+
+
+
+
+            resources_dump.Clear();
+            resource_index = -1;
+            foreach (var entry in _commandsDisplay.Content.resource.collision_maps.Entries)
+            {
+                resource_index++;
+
+                (Composite entComp, EntityPath entPath) = _commandsDisplay.Content.editor_utils.GetCompositeFromInstanceID(_commandsDisplay.Content.commands, entry.entity.composite_instance_id);
+                Entity entEnt = entComp?.GetEntityByID(entry.entity.entity_id);
+                (Composite zoneComp1, EntityPath zonePath1, Entity zoneEnt1) = _commandsDisplay.Content.editor_utils.GetZoneFromInstanceID(_commandsDisplay.Content.commands, entry.zone_id);
+
+                string convertedResoureName = "[" + resource_index + "] " + entry.id;
+
+                if (entComp != null)
+                    convertedResoureName += "\n\t Entity Composite: " + entComp.name;
+                if (entPath != null)
+                    convertedResoureName += "\n\t Entity Instance: " + entPath.GetAsString();
+                if (entEnt != null && entComp == null)
+                    convertedResoureName += "\n\t Entity Entity: " + entEnt.shortGUID + " -> can't resolve name";
+                if (entEnt != null && entComp != null)
+                    convertedResoureName += "\n\t Entity Entity: " + entEnt.shortGUID + " -> " + EntityUtils.GetName(entComp, entEnt);
+
+                if (zoneComp1 != null)
+                    convertedResoureName += "\n\t Primary Zone Composite: " + zoneComp1.name;
+                if (zonePath1 != null)
+                    convertedResoureName += "\n\t Primary Zone Instance: " + zonePath1.GetAsString();
+                if (zoneEnt1 != null && zoneComp1 == null)
+                    convertedResoureName += "\n\t Primary Zone Entity: " + zoneEnt1.shortGUID + " -> can't resolve name";
+                if (zoneEnt1 != null && zoneComp1 != null)
+                    convertedResoureName += "\n\t Primary Zone Entity: " + zoneEnt1.shortGUID + " -> " + EntityUtils.GetName(zoneComp1, zoneEnt1);
+
+                resources_dump.Add(convertedResoureName);
+            }
+            File.WriteAllLines("collision_dump.txt", resources_dump);
+
+
+
+
+            resources_dump.Clear();
+            resource_index = -1;
+            foreach (var entry in _commandsDisplay.Content.resource.physics_maps.Entries)
+            {
+                resource_index++;
+
+                (Composite entComp, EntityPath entPath) = _commandsDisplay.Content.editor_utils.GetCompositeFromInstanceID(_commandsDisplay.Content.commands, entry.entity.composite_instance_id);
+                Entity entEnt = entComp?.GetEntityByID(entry.entity.entity_id);
+
+                (Composite entCompParent, EntityPath entPathParent) = _commandsDisplay.Content.editor_utils.GetCompositeFromInstanceID(_commandsDisplay.Content.commands, entry.composite_instance_id);
+
+                string convertedResoureName = "[" + resource_index + "] " + entry.physics_system_index;
+
+                if (entComp != null)
+                    convertedResoureName += "\n\t Parent Entity Composite: " + entComp.name;
+                if (entPath != null)
+                    convertedResoureName += "\n\t Parent Entity Instance: " + entPath.GetAsString();
+                if (entEnt != null && entComp == null)
+                    convertedResoureName += "\n\t Parent Entity Entity: " + entEnt.shortGUID + " -> can't resolve name";
+                if (entEnt != null && entComp != null)
+                    convertedResoureName += "\n\t Parent Entity Entity: " + entEnt.shortGUID + " -> " + EntityUtils.GetName(entComp, entEnt);
+
+                if (entCompParent != null)
+                    convertedResoureName += "\n\t Composite Composite: " + entCompParent.name;
+                if (entPathParent != null)
+                    convertedResoureName += "\n\t Composite Instance: " + entPathParent.GetAsString();
+
+                resources_dump.Add(convertedResoureName);
+            }
+            File.WriteAllLines("physics_dump.txt", resources_dump);
+
 
             return;
 

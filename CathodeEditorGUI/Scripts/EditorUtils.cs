@@ -100,6 +100,8 @@ namespace CommandsEditor
                 for (int i = 0; i < hierarchies.Count; i++)
                 {
                     List<ShortGuid> hierarchy = new List<ShortGuid>(hierarchies[i].ConvertAll(x => x));
+                    if (hierarchy[hierarchy.Count - 1] == ShortGuid.Invalid)
+                        hierarchy.RemoveAt(hierarchy.Count - 1);
                     hierarchy.Add(entity.shortGUID);
                     formattedHierarchies.Add(new EntityPath(hierarchy));
                 }
@@ -107,6 +109,8 @@ namespace CommandsEditor
             return formattedHierarchies;
         }
 
+#if DEBUG
+        //TEST ONLY
         public (Composite, EntityPath) GetCompositeFromInstanceID(Commands commands, ShortGuid instanceID)
         {
             foreach (KeyValuePair<ShortGuid, List<List<ShortGuid>>> compositeInstancePaths in _hierarchies)
@@ -120,6 +124,32 @@ namespace CommandsEditor
             }
             return (null, null);
         }
+
+        //TEST ONLY
+        public (Composite, EntityPath, Entity) GetZoneFromInstanceID(Commands commands, ShortGuid instanceID)
+        {
+            ShortGuid GUID_Zone = CommandsUtils.GetFunctionTypeGUID(FunctionType.Zone);
+            for (int i = 0; i < commands.Entries.Count; i++)
+            {
+                for (int x = 0; x < commands.Entries[i].functions.Count; x++)
+                {
+                    if (commands.Entries[i].functions[x].function != GUID_Zone)
+                        continue;
+
+                    List<EntityPath> zonePaths = GetHierarchiesForEntity(commands.Entries[i], commands.Entries[i].functions[x]);
+                    List<ShortGuid> zoneInstanceIDs = new List<ShortGuid>();
+                    for (int p = 0; p < zonePaths.Count; p++)
+                    {
+                        if (zonePaths[p].GenerateZoneID() == instanceID)
+                        {
+                            return (commands.Entries[i], zonePaths[p], commands.Entries[i].functions[x]);
+                        }
+                    }
+                }
+            }
+            return (null, null, null);
+        }
+#endif
 
         /* Get the hierarchy for a commands entity reference (used to link legacy resource/mvr stuff) */
         public EntityPath GetHierarchyFromHandle(EntityHandle reference)
