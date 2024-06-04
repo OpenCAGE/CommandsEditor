@@ -226,7 +226,11 @@ namespace CommandsEditor
                             resource.shaders_new = new Shaders(renderablePath + "LEVEL_SHADERS_DX11.PAK"); 
                             break;
                         case 4:
-                            resource.reds = new RenderableElements(worldPath + "REDS.BIN");
+                            //TODO: this is weird... why does it seem to differ?
+                            if (File.Exists(worldPath + "REDS.BIN"))
+                                resource.reds = new RenderableElements(worldPath + "REDS.BIN");
+                            else
+                                resource.reds = new RenderableElements(renderablePath + "REDS.BIN");
                             break;
                         case 5:
                             if (Singleton.AnimationStrings_Debug == null)

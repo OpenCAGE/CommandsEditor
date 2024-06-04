@@ -31,7 +31,6 @@ using System.Xml;
 using WebSocketSharp;
 using WebSocketSharp.Server;
 using WeifenLuo.WinFormsUI.Docking;
-using static System.Net.Mime.MediaTypeNames;
 using Task = System.Threading.Tasks.Task;
 
 namespace CommandsEditor
@@ -66,11 +65,6 @@ namespace CommandsEditor
             //CollisionMaps col = new CollisionMaps("E:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\SOLACE\\WORLD\\COLLISION.MAP");
             //col.Save();
             //return;
-
-#if DEBUG
-            Directory.Delete("E:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\SOLACE", true);
-            CopyFilesRecursively("F:\\Alien Isolation Versions\\Alien Isolation PC Final\\DATA\\ENV\\PRODUCTION\\SOLACE", "E:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\SOLACE");
-#endif
 
             /*
             string[] cmds = Directory.GetFiles("E:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\", "COMMANDS.PAK", SearchOption.AllDirectories);
@@ -464,6 +458,14 @@ namespace CommandsEditor
         }
         private void OnLevelSelected(string level)
         {
+#if DEBUG
+            if (level != null)
+            {
+                Directory.Delete("E:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\" + level, true);
+                CopyFilesRecursively("F:\\Alien Isolation Versions\\Alien Isolation PC Final\\DATA\\ENV\\PRODUCTION\\" + level, "E:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\" + level);
+            }
+#endif
+
             this.Text = _baseTitle + " - " + level;
 
             statusText.Text = "Loading " + level + "...";
@@ -659,15 +661,10 @@ namespace CommandsEditor
                 }
             }
 
-            _commandsDisplay.Content.resource.lights.Indexes.Clear();
-            _commandsDisplay.Content.resource.lights.Values.Clear();
-            for (int i = 0; i < _commandsDisplay.Content.mvr.Entries.Count; i++)
-                _commandsDisplay.Content.mvr.Entries[i].environment_map_index = -1;
-            _commandsDisplay.Content.resource.env_maps.Entries.Clear();
 
-            //note - can remove 130 entries from the end before it crashes
-            int removeCount = 130;
-            _commandsDisplay.Content.mvr.Entries.RemoveRange(_commandsDisplay.Content.mvr.Entries.Count - removeCount, removeCount);
+#if DEBUG
+            DebugSaveFunc();
+#endif
 
 
             if (_commandsDisplay.Content.resource.lights != null)
@@ -1060,8 +1057,56 @@ namespace CommandsEditor
             Process.Start("E:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\AI.exe");
         }
 
+        List<CollisionMaps.Entry> entries = new List<CollisionMaps.Entry>();
+        private void SaveCollisionMaps(Composite composite)
+        {
+            if (composite == null)
+                return;
+
+            for (int i = 0; i < composite.functions.Count; i++)
+            {
+                if (CommandsUtils.FunctionTypeExists(composite.functions[i].function))
+                {
+                    //TODO: this assumes that entities don't have collision mappings in the resoure parameter and entity resources
+                    ResourceReference collision = composite.functions[i].GetResource(ResourceType.COLLISION_MAPPING, true);
+                    if (collision == null)
+                        continue;
+
+                    //TODO: need to make sure "collision_index" is the same for every entry with the same entity, then we can show it
+
+                    CollisionMaps.Entry collisionMap = new CollisionMaps.Entry()
+                    {
+                        id = collision.resource_id,
+                        collision_index = collision.index,
+                        entity = new EntityHandle()
+                        {
+                            entity_id = composite.functions[i].shortGUID
+                            //TODO: generate composite guid
+                        }
+                    };
+
+                    //collision.resource_id
+
+                    //switch (CommandsUtils.GetFunctionType(composite.functions[i].function))
+                    //{
+                    //    case FunctionType.
+                    //}
+                }
+                else
+                {
+                    SaveCollisionMaps(_commandsDisplay.Content.commands.GetComposite(composite.functions[i].function));
+                }
+            }
+        }
+
         private void DEBUG_RunChecks_Click(object sender, EventArgs e)
         {
+            SaveCollisionMaps(_commandsDisplay.Content.commands.EntryPoints[0]);
+
+
+
+            return;
+
             ShortGuid aa = ShortGuidUtils.Generate("AnimatedModel");
             ShortGuid bb = ShortGuidUtils.Generate("DYNAMIC_PHYSICS_SYSTEM");
             ShortGuid cc = ShortGuidUtils.Generate("resource");
@@ -1154,16 +1199,127 @@ namespace CommandsEditor
             //DEBUG_DumpAllInstancedStuff("BSP_LV426_PT01");
             //return;
 
+            //DEBUG_DumpAllInstancedStuff("SOLACE");
+            //return;
 
-            List<string> levels = Level.GetLevels(SharedData.pathToAI, true);
+            //try
+            //{
+            //    SharedData.pathToAI = "F:\\Alien Isolation Versions\\Alien Isolation PC DVD\\Converted\\214491";
+            //    List<string> levels = Level.GetLevels(SharedData.pathToAI, true);
+            //    foreach (string level in levels)
+            //    {
+            //        try
+            //        {
+            //            DEBUG_DumpAllInstancedStuff(level, "PRELOAD");
+            //        }
+            //        catch { }
+            //    }
+            //}
+            //catch { }
 
-            foreach (string level in levels)
+
+            SharedData.pathToAI = "F:\\Alien Isolation Versions\\Alien Isolation PC Final";
+            Parallel.For(0, 2, i =>
             {
-                Directory.Delete("E:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\" + level, true);
-                CopyFilesRecursively("F:\\Alien Isolation Versions\\Alien Isolation PC Final\\DATA\\ENV\\PRODUCTION\\" + level, "E:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\" + level);
+                switch (i)
+                {
+                    case 0:
+                        try
+                        {
+                            DEBUG_DumpAllInstancedStuff("DLC/CHALLENGEMAP11", "FINAL");
+                        }
+                        catch { }
+                        break;
+                    case 1:
+                        try
+                        {
+                            DEBUG_DumpAllInstancedStuff("DLC/CHALLENGEMAP14", "FINAL");
+                        }
+                        catch { }
+                        break;
+                }
+            });
+            Parallel.For(0, 2, i =>
+            {
+                switch (i)
+                {
+                    case 0:
+                        try
+                        {
+                            DEBUG_DumpAllInstancedStuff("DLC/SALVAGEMODE2", "FINAL");
+                        }
+                        catch { }
+                        break;
+                    case 1:
+                        try
+                        {
+                            DEBUG_DumpAllInstancedStuff("TECH_COMMS", "FINAL");
+                        }
+                        catch { }
+                        break;
+                }
+            });
+            Parallel.For(0, 2, i =>
+            {
+                switch (i)
+                {
+                    case 0:
+                        try
+                        {
+                            DEBUG_DumpAllInstancedStuff("TECH_HUB", "FINAL");
+                        }
+                        catch { }
+                        break;
+                    case 1:
+                        try
+                        {
+                            DEBUG_DumpAllInstancedStuff("TECH_MUTHRCORE", "FINAL");
+                        }
+                        catch { }
+                        break;
+                }
+            });
+            Parallel.For(0, 2, i =>
+            {
+                switch (i)
+                {
+                    case 0:
+                        try
+                        {
+                            DEBUG_DumpAllInstancedStuff("TECH_RND", "FINAL");
+                        }
+                        catch { }
+                        break;
+                    case 1:
+                        try
+                        {
+                            DEBUG_DumpAllInstancedStuff("TECH_RND_HZDLAB", "FINAL");
+                        }
+                        catch { }
+                        break;
+                }
+            });
 
-                DEBUG_DumpAllInstancedStuff(level);
+
+            return;
+
+            try
+            {
+                //SharedData.pathToAI = "F:\\Alien Isolation Versions\\Alien Isolation PC Final";
+                List<string> levels = Level.GetLevels(SharedData.pathToAI, true);
+                foreach (string level in levels)
+                {
+                    Directory.Delete("E:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\" + level, true);
+                    CopyFilesRecursively("F:\\Alien Isolation Versions\\Alien Isolation PC Final\\DATA\\ENV\\PRODUCTION\\" + level, "E:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\" + level);
+            
+                    try
+                    {
+                        DEBUG_DumpAllInstancedStuff(level, "FINAL");
+                    }
+                    catch { }
+                }
             }
+            catch { }
             return;
 
 
@@ -1185,8 +1341,11 @@ namespace CommandsEditor
 
             //LocalDebug.checkphysicssystempositions();
         }
-        private void DEBUG_DumpAllInstancedStuff(string level)
+        private void DEBUG_DumpAllInstancedStuff(string level, string outputdir)
         {
+            Console.WriteLine("Starting " + level);
+            Directory.CreateDirectory(outputdir);
+
             LevelContent content = new LevelContent(level, false);
             content.editor_utils = new EditorUtils(content);
             content.editor_utils.GenerateEntityNameCache(Singleton.Editor);
@@ -1257,7 +1416,7 @@ namespace CommandsEditor
                     var lod = _commandsDisplay.Content.resource.models.FindModelLODForSubmesh(submesh);
                     var material = _commandsDisplay.Content.resource.materials.GetAtWriteIndex(reds.MaterialIndex);
 
-                    convertedResoureName += "\n\t REDS INFO: " + model.Name + " (" + lod.Name + ") -> " + material.Name;
+                    convertedResoureName += "\n\t REDS INFO: " + model?.Name + " (" + lod?.Name + ") -> " + material?.Name;
                 }
 
 
@@ -1338,10 +1497,9 @@ namespace CommandsEditor
                         convertedResoureName += "\n\t Secondary Zone Entity: " + zoneEnt2.shortGUID + " -> " + EntityUtils.GetName(zoneComp2, zoneEnt2);
                 }
 
-                Console.WriteLine(convertedResoureName);
                 resources_dump.Add(convertedResoureName);
             }
-            File.WriteAllLines("mover_dump_" + level.Replace("\\", "_").Replace("/", "_") + ".txt", resources_dump);
+            File.WriteAllLines(outputdir + "/mover_dump_" + level.Replace("\\", "_").Replace("/", "_") + ".txt", resources_dump);
 
 
 
@@ -1456,7 +1614,7 @@ namespace CommandsEditor
                 }
 
             }
-            File.WriteAllLines("resources_dump_" + level.Replace("\\", "_").Replace("/", "_") + ".txt", resources_dump);
+            File.WriteAllLines(outputdir + "/resources_dump_" + level.Replace("\\", "_").Replace("/", "_") + ".txt", resources_dump);
 
 
 
@@ -1505,7 +1663,7 @@ namespace CommandsEditor
 
                 resources_dump.Add(convertedResoureName);
             }
-            File.WriteAllLines("collision_dump_" + level.Replace("\\", "_").Replace("/", "_") + ".txt", resources_dump);
+            File.WriteAllLines(outputdir + "/collision_dump_" + level.Replace("\\", "_").Replace("/", "_") + ".txt", resources_dump);
 
 
 
@@ -1539,8 +1697,34 @@ namespace CommandsEditor
 
                 resources_dump.Add(convertedResoureName);
             }
-            File.WriteAllLines("physics_dump_" + level.Replace("\\", "_").Replace("/", "_") + ".txt", resources_dump);
+            File.WriteAllLines(outputdir + "/physics_dump_" + level.Replace("\\", "_").Replace("/", "_") + ".txt", resources_dump);
 
+        }
+
+        void DebugSaveFunc()
+        {
+            return;
+
+            _commandsDisplay.Content.resource.lights.Indexes.Clear();
+            _commandsDisplay.Content.resource.lights.Values.Clear();
+            for (int i = 0; i < _commandsDisplay.Content.mvr.Entries.Count; i++)
+            {
+                _commandsDisplay.Content.mvr.Entries[i].environment_map_index = -1;
+                //_commandsDisplay.Content.mvr.Entries[i].resource_index = -1;
+            }
+            _commandsDisplay.Content.resource.env_maps.Entries.Clear();
+
+            //_commandsDisplay.Content.resource.collision_maps.Entries.Clear();
+            //_commandsDisplay.Content.resource.physics_maps.Entries.Clear();
+            //_commandsDisplay.Content.resource.resources.Entries.Clear();
+
+            //note - can remove 130 entries from the end before it crashes on SOLACE
+            //note - can remove 11 entries from the end before it crashes on BSP_TORRENS
+            int removeCount = 11;
+            _commandsDisplay.Content.mvr.Entries.RemoveRange(_commandsDisplay.Content.mvr.Entries.Count - removeCount, removeCount);
+
+            //note - i can do this on BSP_LV426_PT01 - why doesn't it work on solace?
+            //_commandsDisplay.Content.mvr.Entries.Clear();
         }
 
         private void CopyFilesRecursively(string sourcePath, string targetPath)
@@ -1557,7 +1741,103 @@ namespace CommandsEditor
 
         private void DEBUG_LaunchGame_Click(object sender, EventArgs e)
         {
-            Process.Start("E:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\AI.exe");
+            PatchLaunchMode(_commandsDisplay.Content.level);
+            Process.Start(SettingsManager.GetString("PATH_GameRoot") + "AI.exe");
+        }
+
+        bool PatchLaunchMode(string MapName = "Frontend")
+        {
+            //This is the level the benchmark function loads into - we can overwrite it to change
+            byte[] mapStringByteArray = { 0x54, 0x45, 0x43, 0x48, 0x5F, 0x52, 0x4E, 0x44, 0x5F, 0x48, 0x5A, 0x44, 0x4C, 0x41, 0x42, 0x00, 0x00, 0x65, 0x6E, 0x67, 0x69, 0x6E, 0x65, 0x5F, 0x73, 0x65, 0x74, 0x74, 0x69, 0x6E, 0x67, 0x73 };
+
+            //These are the original/edited setters in the benchmark function to enable benchmark mode - if we're just loading a level, we want to change them
+            List<PatchBytes> benchmarkPatches = new List<PatchBytes>();
+            switch (SettingsManager.GetString("META_GameVersion"))
+            {
+                case "STEAM":
+                    benchmarkPatches.Add(new PatchBytes(3842041, new byte[] { 0xe3, 0x48, 0x26 }, new byte[] { 0x13, 0x3c, 0x28 }));
+                    benchmarkPatches.Add(new PatchBytes(3842068, new byte[] { 0xce, 0x0c, 0x6f }, new byte[] { 0x26, 0x0f, 0x64 }));
+                    benchmarkPatches.Add(new PatchBytes(3842146, new byte[] { 0xcb, 0x0c, 0x6f }, new byte[] { 0x26, 0x0f, 0x64 }));
+                    //benchmarkPatches.Add(new PatchBytes(3842846, new byte[] { 0x4e, 0x4c, 0x56 }, new byte[] { 0xce, 0xc1, 0x6f })); //skip_frontend
+                    //benchmarkPatches.Add(new PatchBytes(4047697, new byte[] { 0x1b, 0x2c, 0x53 }, new byte[] { 0x9b, 0xa1, 0x6c })); //skip_frontend
+                    break;
+                case "EPIC_GAMES_STORE":
+                    benchmarkPatches.Add(new PatchBytes(3911321, new byte[] { 0x13, 0x5f, 0x1a }, new byte[] { 0x23, 0x43, 0x1c }));
+                    benchmarkPatches.Add(new PatchBytes(3911348, new byte[] { 0xee, 0xd1, 0x70 }, new byte[] { 0xe6, 0xce, 0x65 }));
+                    benchmarkPatches.Add(new PatchBytes(3911426, new byte[] { 0xeb, 0xd1, 0x70 }, new byte[] { 0xe6, 0xce, 0x65 }));
+                    //benchmarkPatches.Add(new PatchBytes(3912126, new byte[] { 0x7e, 0xbf, 0x5f, 0x00 }, new byte[] { 0x1e, 0x5b, 0xf3, 0xff })); //skip_frontend
+                    //benchmarkPatches.Add(new PatchBytes(4117408, new byte[] { 0x9c, 0x9d, 0x5c, 0x00 }, new byte[] { 0x3c, 0x39, 0xf0, 0xff })); //skip_frontend
+                    break;
+                case "GOG":
+                    benchmarkPatches.Add(new PatchBytes(3842217, new byte[] { 0x33, 0x4b, 0x26 }, new byte[] { 0x13, 0x3c, 0x28 }));
+                    benchmarkPatches.Add(new PatchBytes(3842244, new byte[] { 0x0e, 0xaf, 0x70 }, new byte[] { 0x26, 0xaf, 0x65 }));
+                    benchmarkPatches.Add(new PatchBytes(3842322, new byte[] { 0x0b, 0xaf, 0x70 }, new byte[] { 0x26, 0xaf, 0x65 }));
+                    //benchmarkPatches.Add(new PatchBytes(3843022, new byte[] { 0x0e, 0x43, 0x04 }, new byte[] { 0x8e, 0x29, 0x0b })); //skip_frontend
+                    //benchmarkPatches.Add(new PatchBytes(4047514, new byte[] { 0x42, 0x24, 0x01 }, new byte[] { 0xc2, 0x0a, 0x08 })); //skip_frontend
+                    break;
+            }
+
+            //Frontend acts as a reset
+            bool shouldPatch = true;
+            if (MapName.ToUpper() == "FRONTEND")
+            {
+                MapName = "Tech_RnD_HzdLab";
+                shouldPatch = false;
+            }
+
+            //Update vanilla byte array with selection
+            for (int i = 0; i < MapName.Length; i++)
+            {
+                mapStringByteArray[i] = (byte)MapName[i];
+            }
+            mapStringByteArray[MapName.Length] = 0x00;
+
+            //Edit game EXE with selected option & hack out the benchmark mode
+            try
+            {
+                using (BinaryWriter writer = new BinaryWriter(File.OpenWrite(SettingsManager.GetString("PATH_GameRoot") + "/AI.exe")))
+                {
+                    for (int i = 0; i < benchmarkPatches.Count; i++)
+                    {
+                        writer.BaseStream.Position = benchmarkPatches[i].offset;
+                        if (shouldPatch) writer.Write(benchmarkPatches[i].patched);
+                        else writer.Write(benchmarkPatches[i].original);
+                    }
+                    switch (SettingsManager.GetString("META_GameVersion"))
+                    {
+                        case "STEAM":
+                            writer.BaseStream.Position = 15676275;
+                            break;
+                        case "EPIC_GAMES_STORE":
+                            writer.BaseStream.Position = 15773411;
+                            break;
+                        case "GOG":
+                            writer.BaseStream.Position = 15773451;
+                            break;
+                    }
+                    if (writer.BaseStream.Position != 0)
+                        writer.Write(mapStringByteArray);
+                }
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("PatchManager::PatchLaunchMode - " + e.ToString());
+                return false;
+            }
+        }
+
+        struct PatchBytes
+        {
+            public PatchBytes(int _o, byte[] _orig, byte[] _patch)
+            {
+                offset = _o;
+                original = _orig;
+                patched = _patch;
+            }
+            public int offset;
+            public byte[] original;
+            public byte[] patched;
         }
     }
 }
