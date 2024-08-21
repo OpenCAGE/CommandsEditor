@@ -461,8 +461,8 @@ namespace CommandsEditor
 #if DEBUG
             if (level != null)
             {
-                Directory.Delete("E:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\" + level, true);
-                CopyFilesRecursively("F:\\Alien Isolation Versions\\Alien Isolation PC Final\\DATA\\ENV\\PRODUCTION\\" + level, "E:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\" + level);
+                Directory.Delete(SharedData.pathToAI + "\\DATA\\ENV\\PRODUCTION\\" + level, true);
+                CopyFilesRecursively(SharedData.pathToAI + "\\DATA_orig\\ENV\\PRODUCTION\\" + level, SharedData.pathToAI + "\\DATA\\ENV\\PRODUCTION\\" + level);
             }
 #endif
 
@@ -1059,7 +1059,7 @@ namespace CommandsEditor
             _commandsDisplay.CompositeDisplay.LoadEntity(ent);
 
             Save();
-            Process.Start("E:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\AI.exe");
+            Process.Start(SharedData.pathToAI + "\\AI.exe");
         }
 
         List<CollisionMaps.Entry> entries = new List<CollisionMaps.Entry>();
