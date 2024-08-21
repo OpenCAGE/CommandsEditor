@@ -527,6 +527,11 @@ namespace CommandsEditor
                 MessageBox.Show("Failed to save changes!", "Failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
+        private void buildLevelToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //TODO: save but save with all the instanced stuff
+        }
+
         ShortGuid GUID_ANIMATED_MODEL = ShortGuidUtils.Generate("AnimatedModel");
         ShortGuid GUID_DYNAMIC_PHYSICS_SYSTEM = ShortGuidUtils.Generate("DYNAMIC_PHYSICS_SYSTEM");
         ShortGuid GUID_resource = ShortGuidUtils.Generate("resource");
@@ -1101,6 +1106,129 @@ namespace CommandsEditor
 
         private void DEBUG_RunChecks_Click(object sender, EventArgs e)
         {
+            DEBUG_DumpAllInstancedStuff(_commandsDisplay.Content.level, "FINAL_ORDERED");
+            return;
+
+            DEBUG_DumpAllInstancedStuff("DLC/SALVAGEMODE2", "FINAL");
+            DEBUG_DumpAllInstancedStuff("TECH_COMMS", "FINAL");
+            DEBUG_DumpAllInstancedStuff("TECH_HUB", "FINAL");
+            DEBUG_DumpAllInstancedStuff("TECH_MUTHRCORE", "FINAL");
+            DEBUG_DumpAllInstancedStuff("TECH_RND", "FINAL");
+            DEBUG_DumpAllInstancedStuff("TECH_RND_HZDLAB", "FINAL");
+            return;
+
+            List<string> levels = Level.GetLevels(SharedData.pathToAI, true);
+            //levels.Clear();
+            //levels.Add("DLC/CHALLENGEMAP3");
+            foreach (string level in levels)
+            {
+                Console.WriteLine("LOADING: " + level);
+
+                LevelContent content = new LevelContent(level, false);
+                content.editor_utils = new EditorUtils(content);
+                content.editor_utils.GenerateEntityNameCache(Singleton.Editor);
+                content.editor_utils.GenerateCompositeInstances(content.commands, false);
+
+
+                foreach (Composite composite in content.commands.Entries)
+                    foreach (Entity entity in composite.GetEntities())
+                        ShortGuidUtils.Generate(EntityUtils.GetName(composite, entity));
+
+                foreach (Models.CS2 cs2 in content.resource.models.Entries)
+                {
+                    ShortGuidUtils.Generate(cs2.Name);
+                    foreach (Models.CS2.Component component in cs2.Components)
+                        foreach (Models.CS2.Component.LOD lod in component.LODs)
+                            ShortGuidUtils.Generate(lod.Name);
+                }
+
+                foreach (Materials.Material material in content.resource.materials.Entries)
+                    ShortGuidUtils.Generate(material.Name);
+
+
+                Dictionary<ShortGuid, Tuple<List<int>, List<CollisionMaps.Entry>>> collisionmapindexes = new Dictionary<ShortGuid, Tuple<List<int>, List<CollisionMaps.Entry>>>();
+                foreach (var collisionmap in content.resource.collision_maps.Entries)
+                {
+                    if (!collisionmapindexes.ContainsKey(collisionmap.entity.entity_id))
+                        collisionmapindexes.Add(collisionmap.entity.entity_id, new Tuple<List<int>, List<CollisionMaps.Entry>>(new List<int>(), new List<CollisionMaps.Entry>()));
+
+                    if (!collisionmapindexes[collisionmap.entity.entity_id].Item1.Contains(collisionmap.collision_index))
+                    {
+                        collisionmapindexes[collisionmap.entity.entity_id].Item1.Add(collisionmap.collision_index);
+                        collisionmapindexes[collisionmap.entity.entity_id].Item2.Add(collisionmap);
+                    }
+                }
+
+                foreach (KeyValuePair<ShortGuid, Tuple<List<int>, List<CollisionMaps.Entry>>> indexes in collisionmapindexes)
+                {
+                    if (indexes.Value.Item1.Count != 1)
+                    {
+                        Console.WriteLine("---");
+                        Console.WriteLine(indexes.Value.Item1.Count + " -> " + indexes.Value.Item1.Contains(-1));
+
+                        foreach (var item in indexes.Value.Item2)
+                        {
+                            (Composite entComp, EntityPath entPath) = content.editor_utils.GetCompositeFromInstanceID(content.commands, item.entity.composite_instance_id);
+                            Entity entEnt = entComp?.GetEntityByID(item.entity.entity_id);
+                            (Composite zoneComp1, EntityPath zonePath1, Entity zoneEnt1) = content.editor_utils.GetZoneFromInstanceID(content.commands, item.zone_id);
+
+                            string convertedResoureName = "[" + content.resource.collision_maps.Entries.IndexOf(item) + "] " + item.id.ToString() + " -> " + item.id.ToByteString() + " [" + item.collision_index + "]";
+
+                            foreach (Composite comp in content.commands.Entries)
+                            {
+                                Entity ent = comp.GetEntityByID(item.entity.entity_id);
+                                if (ent != null)
+                                {
+                                    convertedResoureName += "\n\t Entity LOOKUP found in " + comp.name + " [" + comp.shortGUID.ToByteString() + "] -> " + ShortGuidUtils.Generate(EntityUtils.GetName(comp, ent) + " [" + ent.shortGUID.ToByteString() + "]");
+                                }
+                            }
+                            convertedResoureName += "\n\t Entity INSTANCEID: " + item.entity.composite_instance_id.ToByteString();
+
+                            if (entComp != null)
+                                convertedResoureName += "\n\t Entity Composite: " + entComp.name;
+                            if (entPath != null)
+                                convertedResoureName += "\n\t Entity Instance: " + entPath.GetAsString(content.commands, content.commands.EntryPoints[0], true);
+                            if (entEnt != null && entComp == null)
+                                convertedResoureName += "\n\t Entity Entity: " + entEnt.shortGUID + " -> can't resolve name";
+                            if (entEnt != null && entComp != null)
+                                convertedResoureName += "\n\t Entity Entity: " + entEnt.shortGUID + " -> " + EntityUtils.GetName(entComp, entEnt);
+
+                            if (zonePath1 != null && zonePath1.path.Count == 2 && zonePath1.path[0] == new ShortGuid("01-00-00-00"))
+                            {
+                                convertedResoureName += "\n\t Primary Zone: GLOBAL ZONE";
+                            }
+                            else if (zonePath1 != null && zonePath1.path.Count == 1 && zonePath1.path[0] == new ShortGuid("00-00-00-00"))
+                            {
+                                convertedResoureName += "\n\t Primary Zone: ZERO ZONE";
+                            }
+                            else
+                            {
+                                convertedResoureName += "\n\t Primary Zone: " + item.zone_id.ToByteString() + " -> " + item.zone_id.ToString();
+                                if (zoneComp1 != null)
+                                    convertedResoureName += "\n\t Primary Zone Composite: " + zoneComp1.name;
+                                if (zonePath1 != null)
+                                    convertedResoureName += "\n\t Primary Zone Instance: " + zonePath1.GetAsString(content.commands, content.commands.EntryPoints[0], true);
+                                if (zoneEnt1 != null && zoneComp1 == null)
+                                    convertedResoureName += "\n\t Primary Zone Entity: " + zoneEnt1.shortGUID + " -> can't resolve name";
+                                if (zoneEnt1 != null && zoneComp1 != null)
+                                    convertedResoureName += "\n\t Primary Zone Entity: " + zoneEnt1.shortGUID + " -> " + EntityUtils.GetName(zoneComp1, zoneEnt1);
+                            }
+
+
+                            Console.WriteLine(convertedResoureName);
+                            continue;
+                        }
+                        
+                        
+                       // string fscfsdf = "";
+                    }
+                }
+            }
+
+
+
+            return;
+
             SaveCollisionMaps(_commandsDisplay.Content.commands.EntryPoints[0]);
 
 
@@ -1217,7 +1345,6 @@ namespace CommandsEditor
             //}
             //catch { }
 
-
             SharedData.pathToAI = "F:\\Alien Isolation Versions\\Alien Isolation PC Final";
             Parallel.For(0, 2, i =>
             {
@@ -1303,24 +1430,24 @@ namespace CommandsEditor
 
             return;
 
-            try
-            {
-                //SharedData.pathToAI = "F:\\Alien Isolation Versions\\Alien Isolation PC Final";
-                List<string> levels = Level.GetLevels(SharedData.pathToAI, true);
-                foreach (string level in levels)
-                {
-                    Directory.Delete("E:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\" + level, true);
-                    CopyFilesRecursively("F:\\Alien Isolation Versions\\Alien Isolation PC Final\\DATA\\ENV\\PRODUCTION\\" + level, "E:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\" + level);
-            
-                    try
-                    {
-                        DEBUG_DumpAllInstancedStuff(level, "FINAL");
-                    }
-                    catch { }
-                }
-            }
-            catch { }
-            return;
+            //try
+            //{
+            //    //SharedData.pathToAI = "F:\\Alien Isolation Versions\\Alien Isolation PC Final";
+            //    List<string> levels = Level.GetLevels(SharedData.pathToAI, true);
+            //    foreach (string level in levels)
+            //    {
+            //        Directory.Delete("E:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\" + level, true);
+            //        CopyFilesRecursively("F:\\Alien Isolation Versions\\Alien Isolation PC Final\\DATA\\ENV\\PRODUCTION\\" + level, "E:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\" + level);
+            //
+            //        try
+            //        {
+            //            DEBUG_DumpAllInstancedStuff(level, "FINAL");
+            //        }
+            //        catch { }
+            //    }
+            //}
+            //catch { }
+            //return;
 
 
             InstanceWriter test = new InstanceWriter();
@@ -1394,6 +1521,7 @@ namespace CommandsEditor
 
             List<string> resources_dump = new List<string>();
             int resource_index = -1;
+            content.mvr.Entries = content.mvr.Entries.OrderBy(o => o.entity.composite_instance_id).ThenBy(o => o.entity.entity_id).ThenBy(o => o.primary_zone_id).ToList();
             foreach (var entry in content.mvr.Entries)
             {
                 resource_index++;
@@ -1502,7 +1630,7 @@ namespace CommandsEditor
             File.WriteAllLines(outputdir + "/mover_dump_" + level.Replace("\\", "_").Replace("/", "_") + ".txt", resources_dump);
 
 
-
+            /*
             resources_dump.Clear();
             resource_index = -1;
             foreach (var entry in content.resource.resources.Entries)
@@ -1615,12 +1743,13 @@ namespace CommandsEditor
 
             }
             File.WriteAllLines(outputdir + "/resources_dump_" + level.Replace("\\", "_").Replace("/", "_") + ".txt", resources_dump);
-
+            */
 
 
 
             resources_dump.Clear();
             resource_index = -1;
+            content.resource.collision_maps.Entries = content.resource.collision_maps.Entries.OrderBy(o => o.entity.composite_instance_id).ThenBy(o => o.entity.entity_id).ThenBy(o => o.zone_id).ToList();
             foreach (var entry in content.resource.collision_maps.Entries)
             {
                 resource_index++;
@@ -1670,6 +1799,7 @@ namespace CommandsEditor
 
             resources_dump.Clear();
             resource_index = -1;
+            content.resource.physics_maps.Entries = content.resource.physics_maps.Entries.OrderBy(o => o.entity.composite_instance_id).ThenBy(o => o.entity.entity_id).ThenBy(o => o.composite_instance_id).ToList();
             foreach (var entry in content.resource.physics_maps.Entries)
             {
                 resource_index++;

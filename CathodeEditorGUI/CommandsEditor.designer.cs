@@ -57,13 +57,14 @@
             this.helpBtn = new System.Windows.Forms.ToolStripButton();
             this.DEBUG_RunChecks = new System.Windows.Forms.ToolStripButton();
             this.DEBUG_DoorPhysEnt = new System.Windows.Forms.ToolStripButton();
+            this.DEBUG_LaunchGame = new System.Windows.Forms.ToolStripButton();
             this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
             this.vS2015LightTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.statusText = new System.Windows.Forms.ToolStripStatusLabel();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.DEBUG_LaunchGame = new System.Windows.Forms.ToolStripButton();
+            this.buildLevelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -88,7 +89,8 @@
             this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.loadLevel,
-            this.saveLevel});
+            this.saveLevel,
+            this.buildLevelToolStripMenuItem});
             this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
             this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton1.Name = "toolStripButton1";
@@ -309,6 +311,16 @@
             this.DEBUG_DoorPhysEnt.Text = "DEBUG: Load Door Phys Ent";
             this.DEBUG_DoorPhysEnt.Click += new System.EventHandler(this.DEBUG_DoorPhysEnt_Click);
             // 
+            // DEBUG_LaunchGame
+            // 
+            this.DEBUG_LaunchGame.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.DEBUG_LaunchGame.Image = ((System.Drawing.Image)(resources.GetObject("DEBUG_LaunchGame.Image")));
+            this.DEBUG_LaunchGame.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.DEBUG_LaunchGame.Name = "DEBUG_LaunchGame";
+            this.DEBUG_LaunchGame.Size = new System.Drawing.Size(127, 22);
+            this.DEBUG_LaunchGame.Text = "DEBUG: Launch Game";
+            this.DEBUG_LaunchGame.Click += new System.EventHandler(this.DEBUG_LaunchGame_Click);
+            // 
             // statusStrip
             // 
             this.statusStrip.BackColor = System.Drawing.Color.Black;
@@ -339,15 +351,12 @@
             this.dockPanel.TabIndex = 5;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
             // 
-            // DEBUG_LaunchGame
+            // buildLevelToolStripMenuItem
             // 
-            this.DEBUG_LaunchGame.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.DEBUG_LaunchGame.Image = ((System.Drawing.Image)(resources.GetObject("DEBUG_LaunchGame.Image")));
-            this.DEBUG_LaunchGame.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.DEBUG_LaunchGame.Name = "DEBUG_LaunchGame";
-            this.DEBUG_LaunchGame.Size = new System.Drawing.Size(127, 22);
-            this.DEBUG_LaunchGame.Text = "DEBUG: Launch Game";
-            this.DEBUG_LaunchGame.Click += new System.EventHandler(this.DEBUG_LaunchGame_Click);
+            this.buildLevelToolStripMenuItem.Name = "buildLevelToolStripMenuItem";
+            this.buildLevelToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.buildLevelToolStripMenuItem.Text = "Build Level";
+            this.buildLevelToolStripMenuItem.Click += new System.EventHandler(this.buildLevelToolStripMenuItem_Click);
             // 
             // CommandsEditor
             // 
@@ -407,5 +416,6 @@
         private System.Windows.Forms.ToolStripButton DEBUG_RunChecks;
         private System.Windows.Forms.ToolStripMenuItem writeInstancedResourcesExperimentalToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton DEBUG_LaunchGame;
+        private System.Windows.Forms.ToolStripMenuItem buildLevelToolStripMenuItem;
     }
 }
