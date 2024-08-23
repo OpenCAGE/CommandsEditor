@@ -57,6 +57,7 @@ namespace CommandsEditor
             public class MasterState
             {
                 public NavigationMesh navmesh;
+                public Traversals traversals;
             }
         }
 
@@ -208,6 +209,7 @@ namespace CommandsEditor
             try
             {
 #endif
+                resource.resources = new Resources(worldPath + "RESOURCES.BIN");
                 Parallel.For(0, 18, (i) =>
                 {
                     switch (i)
@@ -260,7 +262,7 @@ namespace CommandsEditor
                             resource.character_accessories = new CharacterAccessorySets(worldPath + "CHARACTERACCESSORYSETS.BIN");
                             break;
                         case 13:
-                            resource.resources = new Resources(worldPath + "RESOURCES.BIN");
+                            // --
                             break;
                         case 14:
                             resource.path_barrier_resources = new PathBarrierResources(worldPath + "PATH_BARRIER_RESOURCES");
@@ -272,25 +274,33 @@ namespace CommandsEditor
                             resource.lights = new Lights(worldPath + "LIGHTS.BIN");
                             break;
                         case 17:
-                            int stateCount = 1;
+                            int stateCount = 1; // we always implicitly have one state (the default state: state zero)
                             using (BinaryReader reader = new BinaryReader(File.OpenRead(worldPath + "EXCLUSIVE_MASTER_RESOURCE_INDICES")))
                             {
-                                reader.BaseStream.Position = 4;
-                                stateCount += reader.ReadInt32();
-                                //TODO: this file also contains indices for each state which seem to be of some relevence, although EXCLUSIVE_MASTER_RESOURCE doesn't point to indices?
+                                reader.BaseStream.Position = 4;  // version: 1
+                                int states = reader.ReadInt32(); // number of changeable states
+                                stateCount += states;
+                                for (int x = 0; x < states; x++)
+                                {
+                                    int resourceIndex = reader.ReadInt32();
+                                    Resources.Resource r = resource.resources.Entries[resourceIndex]; //TODO: this gives you the instance of the ExclusiveMaster entity - use the info.
+                                    //get the instance of the entity
+                                    //apply the state index to the resource info in one of the -1s
+                                    //use that in the ui
+                                }
                             }
                             for (int x = 0; x < stateCount; x++)
                             {
                                 resource.master_states.Add(new Resource.MasterState()
                                 {
-                                    navmesh = new NavigationMesh(worldPath + "STATE_" + x + "/NAV_MESH")
+                                    navmesh = new NavigationMesh(worldPath + "STATE_" + x + "/NAV_MESH"),
+                                    traversals = new Traversals(worldPath + "STATE_" + x + "/TRAVERSAL")
                                 });
                                 // WORLD STATE RESOURCES TODO:
                                 //  - ASSAULT_POSITIONS
                                 //  - COVER
                                 //  - CRAWL_SPACE_SPOTTING_POSITIONS
                                 //  - SPOTTING_POSITIONS
-                                //  - TRAVERSAL
                             }
                             break;
                     }

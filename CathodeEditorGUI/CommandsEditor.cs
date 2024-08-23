@@ -799,8 +799,8 @@ namespace CommandsEditor
         {
             try
             {
-                toolStrip.Invoke(new Action(() => { toolStrip.Enabled = shouldEnable; }));
-                statusStrip.Invoke(new Action(() => { statusText.Text = text; }));
+                toolStrip?.Invoke(new Action(() => { toolStrip.Enabled = shouldEnable; }));
+                statusStrip?.Invoke(new Action(() => { statusText.Text = text; }));
             }
             catch { }
         }

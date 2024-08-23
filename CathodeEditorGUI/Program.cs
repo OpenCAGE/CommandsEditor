@@ -59,7 +59,7 @@ namespace CommandsEditor
             //Run app
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new CommandsEditor(GetArgument("level")));
+            Application.Run(new CommandsEditor(GetArgument("level").ToUpper()));
         }
 
         public static string GetArgument(string name)
