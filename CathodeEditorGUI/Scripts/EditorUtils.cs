@@ -110,8 +110,7 @@ namespace CommandsEditor
             return formattedHierarchies;
         }
 
-#if DEBUG
-        //TEST ONLY
+        [Obsolete("This function is safe to use but not performant. It's intended for test code only.")]
         public (Composite, EntityPath) GetCompositeFromInstanceID(Commands commands, ShortGuid instanceID)
         {
             if (instanceID == ShortGuid.InitialiserBase)
@@ -134,7 +133,7 @@ namespace CommandsEditor
             return (null, null);
         }
 
-        //TEST ONLY
+        [Obsolete("This function is safe to use but not performant. It's intended for test code only.")]
         public (Composite, EntityPath, Entity) GetZoneFromInstanceID(Commands commands, ShortGuid instanceID)
         {
             if (instanceID == new ShortGuid("01-00-00-00"))
@@ -168,7 +167,6 @@ namespace CommandsEditor
             }
             return (null, null, null);
         }
-#endif
 
         /* Get the hierarchy for a commands entity reference (used to link legacy resource/mvr stuff) */
         public EntityPath GetHierarchyFromHandle(EntityHandle reference)
@@ -262,7 +260,7 @@ namespace CommandsEditor
         {
             if (_content.commands == null) return;
             hasFinishedCachingEntityNames = false;
-            mainInst.EnableLoadingOfPaks(false, "Generating caches...");
+            mainInst?.EnableLoadingOfPaks(false, "Generating caches...");
             cachedEntityName.Clear();
             for (int i = 0; i < _content.commands.Entries.Count; i++)
             {
@@ -274,7 +272,7 @@ namespace CommandsEditor
                     if (!cachedEntityName[comp.shortGUID].ContainsKey(ents[x].shortGUID))
                         cachedEntityName[comp.shortGUID].Add(ents[x].shortGUID, GenerateEntityNameInternal(ents[x], comp));
             }
-            mainInst.EnableLoadingOfPaks(true, "");
+            mainInst?.EnableLoadingOfPaks(true, "");
             hasFinishedCachingEntityNames = true;
         }
 

@@ -168,6 +168,34 @@ namespace CommandsEditor
             composite_content_cache.Clear();
         }
 
+        //FOR TESTING ONLY!! Loads a LevelContent object for the given level on the current thread, and generates ShortGuids for every string.
+        [Obsolete("This function is safe to use but not performant. It's intended for test code only.")]
+        public static LevelContent DEBUG_LoadUnthreadedAndPopulateShortGuids(string level)
+        {
+            LevelContent content = new LevelContent(level, false);
+
+            content.editor_utils = new EditorUtils(content);
+            content.editor_utils.GenerateEntityNameCache(Singleton.Editor);
+            content.editor_utils.GenerateCompositeInstances(content.commands, false);
+
+            foreach (Composite composite in content.commands.Entries)
+                foreach (Entity entity in composite.GetEntities())
+                    ShortGuidUtils.Generate(EntityUtils.GetName(composite, entity));
+
+            foreach (Models.CS2 cs2 in content.resource.models.Entries)
+            {
+                ShortGuidUtils.Generate(cs2.Name);
+                foreach (Models.CS2.Component component in cs2.Components)
+                    foreach (Models.CS2.Component.LOD lod in component.LODs)
+                        ShortGuidUtils.Generate(lod.Name);
+            }
+
+            foreach (Materials.Material material in content.resource.materials.Entries)
+                ShortGuidUtils.Generate(material.Name);
+
+            return content;
+        }
+
         private bool LoadCommands()
         {
 #if !CATHODE_FAIL_HARD

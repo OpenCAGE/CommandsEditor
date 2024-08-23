@@ -1,4 +1,5 @@
 using CATHODE;
+using CATHODE.EXPERIMENTAL;
 using CATHODE.LEGACY;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
@@ -62,127 +63,6 @@ namespace CommandsEditor
 
         public CommandsEditor(string level = null)
         {
-            //CollisionMaps col = new CollisionMaps("E:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\SOLACE\\WORLD\\COLLISION.MAP");
-            //col.Save();
-            //return;
-
-            /*
-            string[] cmds = Directory.GetFiles("E:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\", "COMMANDS.PAK", SearchOption.AllDirectories);
-            foreach (string cmd in cmds)
-            {
-                Commands cmd_o = new Commands(cmd);
-                /*
-                foreach (Composite comp in cmd_o.Entries)
-                {
-                    foreach (FunctionEntity func in comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.Character)))
-                    {
-                        Parameter param = func.GetParameter("is_player");
-                        if (param == null) continue;
-                        if (((cBool)param.content).value != true) continue;
-
-                        func.AddParameter("display_model", new cString("E_RIPLEY"));
-                        func.AddParameter("reference_skeleton", new cString("E_RIPLEY"));
-
-                        foreach (EntityConnector conn in func.GetParentLinks(comp))
-                        {
-                            if (conn.linkedParamID == ShortGuidUtils.Generate("display_model"))
-                            {
-                                Entity ent = comp.GetEntityByID(conn.linkedEntityID);
-                                if (ent != null)
-                                    ent.childLinks.RemoveAll(o => o.ID == conn.ID);
-                            }
-                            if (conn.linkedParamID == ShortGuidUtils.Generate("reference_skeleton"))
-                            {
-                                Entity ent = comp.GetEntityByID(conn.linkedEntityID);
-                                if (ent != null)
-                                    ent.childLinks.RemoveAll(o => o.ID == conn.ID);
-                            }
-                        }
-
-                        func.childLinks.RemoveAll(o => o.thisParamID == ShortGuidUtils.Generate("display_model"));
-                        func.childLinks.RemoveAll(o => o.thisParamID == ShortGuidUtils.Generate("reference_skeleton"));
-                    }
-                }
-                */
-            /*
-                foreach (Composite comp in cmd_o.Entries)
-                {
-                    if (comp.GetFunctionEntitiesOfType(FunctionType.Zone).Count == 0)
-                        continue;
-
-                    FunctionEntity checkpoint = comp.AddFunction(FunctionType.DebugCheckpoint);
-                    checkpoint.AddParameter("section", new cString("Load Zones: " + comp.name));
-
-                    FunctionEntity popup = comp.AddFunction(FunctionType.PopupMessage);
-                    popup.AddParameter("main_text", new cString("Loading Zone"));
-                    checkpoint.AddParameterLink("on_checkpoint", popup, "start");
-
-                    foreach (FunctionEntity zone in comp.GetFunctionEntitiesOfType(FunctionType.Zone))
-                    {
-                        zone.AddParameter("suspend_on_unload", new cBool(true));
-                        zone.AddParameter("force_visible_on_load", new cBool(true));
-
-                        checkpoint.AddParameterLink("on_checkpoint", zone, "request_load");
-                    }
-                }
-                cmd_o.Save();
-            }
-            return;
-
-            */
-
-            /*
-            Commands cmd = new Commands("E:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\DLC/BSPNOSTROMO_TWOTEAMS_PATCH\\WORLD\\COMMANDS.PAK");
-
-            foreach (Composite comp in cmd.Entries)
-            {
-                List<FunctionEntity> zonesToBin = new List<FunctionEntity>();
-                List<FunctionEntity> zones = comp.functions.FindAll(o => o.function == ShortGuidUtils.Generate("Zone"));
-                foreach (FunctionEntity zone in zones)
-                {
-                    EntityConnector composites = zone.childLinks.FirstOrDefault(o => o.thisParamID == ShortGuidUtils.Generate("composites"));
-                    if (composites.ID.IsInvalid) continue;
-
-                    Entity triggersequence_ent = comp.GetEntityByID(composites.linkedEntityID);
-                    if (triggersequence_ent == null || !(triggersequence_ent is TriggerSequence)) continue;
-
-                    zonesToBin.Add(zone);
-                }
-                comp.functions.RemoveAll(o => zonesToBin.Contains(o));
-            }
-
-            /*
-            foreach (Composite comp in cmd.Entries)
-            {
-                TriggerSequence bigtrig = (TriggerSequence)comp.AddFunction(FunctionType.TriggerSequence);
-                bigtrig.AddParameter("no_duplicates", new cBool(true));
-
-                FunctionEntity bigzone = comp.AddFunction(FunctionType.Zone);
-
-                foreach (FunctionEntity zone in comp.functions.FindAll(o => o.function == ShortGuidUtils.Generate("Zone")))
-                {
-                    EntityConnector composites = zone.childLinks.FirstOrDefault(o => o.thisParamID == ShortGuidUtils.Generate("composites"));
-                    if (composites.ID.IsInvalid) continue;
-
-                    Entity triggersequence_ent = comp.GetEntityByID(composites.linkedEntityID);
-                    if (triggersequence_ent == null || !(triggersequence_ent is TriggerSequence)) continue;
-
-                    TriggerSequence triggersequence = (TriggerSequence)triggersequence_ent;
-                    foreach (TriggerSequence.Entity entity in triggersequence.entities)
-                    {
-                        bigtrig.entities.Add(entity);
-                    }
-
-                    zone.AddParameterLink("on_loaded", bigzone, "request_load");
-                    zone.AddParameterLink("on_unloaded", bigzone, "request_load");
-                }
-
-                bigzone.AddParameterLink("composites", bigtrig, "reference");
-            }
-            */
-            //cmd.Save();
-            //return;
-
             Singleton.Editor = this;
 
             _discord = new DiscordRpcClient("1152999067207606392");
@@ -1124,27 +1004,7 @@ namespace CommandsEditor
             {
                 Console.WriteLine("LOADING: " + level);
 
-                LevelContent content = new LevelContent(level, false);
-                content.editor_utils = new EditorUtils(content);
-                content.editor_utils.GenerateEntityNameCache(Singleton.Editor);
-                content.editor_utils.GenerateCompositeInstances(content.commands, false);
-
-
-                foreach (Composite composite in content.commands.Entries)
-                    foreach (Entity entity in composite.GetEntities())
-                        ShortGuidUtils.Generate(EntityUtils.GetName(composite, entity));
-
-                foreach (Models.CS2 cs2 in content.resource.models.Entries)
-                {
-                    ShortGuidUtils.Generate(cs2.Name);
-                    foreach (Models.CS2.Component component in cs2.Components)
-                        foreach (Models.CS2.Component.LOD lod in component.LODs)
-                            ShortGuidUtils.Generate(lod.Name);
-                }
-
-                foreach (Materials.Material material in content.resource.materials.Entries)
-                    ShortGuidUtils.Generate(material.Name);
-
+                LevelContent content = LevelContent.DEBUG_LoadUnthreadedAndPopulateShortGuids(level);
 
                 Dictionary<ShortGuid, Tuple<List<int>, List<CollisionMaps.Entry>>> collisionmapindexes = new Dictionary<ShortGuid, Tuple<List<int>, List<CollisionMaps.Entry>>>();
                 foreach (var collisionmap in content.resource.collision_maps.Entries)
@@ -1473,26 +1333,7 @@ namespace CommandsEditor
             Console.WriteLine("Starting " + level);
             Directory.CreateDirectory(outputdir);
 
-            LevelContent content = new LevelContent(level, false);
-            content.editor_utils = new EditorUtils(content);
-            content.editor_utils.GenerateEntityNameCache(Singleton.Editor);
-            content.editor_utils.GenerateCompositeInstances(content.commands, false);
-
-            foreach (Composite composite in content.commands.Entries)
-                foreach (Entity entity in composite.GetEntities())
-                    ShortGuidUtils.Generate(EntityUtils.GetName(composite, entity));
-
-            foreach (Models.CS2 cs2 in content.resource.models.Entries)
-            {
-                ShortGuidUtils.Generate(cs2.Name);
-                foreach (Models.CS2.Component component in cs2.Components)
-                    foreach (Models.CS2.Component.LOD lod in component.LODs)
-                        ShortGuidUtils.Generate(lod.Name);
-            }
-
-            foreach (Materials.Material material in content.resource.materials.Entries)
-                ShortGuidUtils.Generate(material.Name);
-
+            LevelContent content = LevelContent.DEBUG_LoadUnthreadedAndPopulateShortGuids(level);
 
             /*
             for (int i = 0; i < 12; i++)
