@@ -306,6 +306,12 @@
     <Compile Include="Popups\AddFolder.Designer.cs">
       <DependentUpon>AddFolder.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\Experimental\WholeCompositeNodes.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\Experimental\WholeCompositeNodes.Designer.cs">
+      <DependentUpon>WholeCompositeNodes.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popups\ExportComposite.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1503,6 +1509,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\AddFolder.resx">
       <DependentUpon>AddFolder.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Experimental\WholeCompositeNodes.resx">
+      <DependentUpon>WholeCompositeNodes.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\ExportComposite.resx">
       <DependentUpon>ExportComposite.cs</DependentUpon>

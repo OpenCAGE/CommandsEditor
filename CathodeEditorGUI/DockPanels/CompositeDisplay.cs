@@ -59,6 +59,10 @@ namespace CommandsEditor.DockPanels
 
             dockPanel.ShowDocumentIcon = true;
 
+#if !DEBUG
+            DEBUG_ShowAllInNodegraph.Visible = false;
+#endif
+
             splitContainer1.FixedPanel = FixedPanel.Panel1;
             splitContainer1.SplitterDistance = SettingsManager.GetInteger(Singleton.Settings.EntitySplitWidth, _defaultSplitterDistance);
 
@@ -922,6 +926,13 @@ namespace CommandsEditor.DockPanels
         private void pasteToolStripMenuItem_Click(object sender, EventArgs e)
         {
             AddCopyOfEntity(EditorClipboard.Entity);
+        }
+
+        private void DEBUG_ShowAllInNodegraph_Click(object sender, EventArgs e)
+        {
+            WholeCompositeNodes form = new WholeCompositeNodes();
+            form.ShowComposite(Composite);
+            form.Show();
         }
     }
 

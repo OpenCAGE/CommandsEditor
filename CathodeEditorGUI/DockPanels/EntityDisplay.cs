@@ -207,6 +207,16 @@ namespace CommandsEditor.DockPanels
             switch (_entity.variant)
             {
                 case EntityVariant.FUNCTION:
+
+#if DEBUG
+                    //TODO: REMOVE TEST CODE
+                    //var hierarchies = Content.editor_utils.GetHierarchiesForEntity(Composite, Entity);
+                    //for (int i = 0; i < hierarchies.Count; i++)
+                    //{
+                    //    Console.WriteLine(hierarchies[i].GenerateInstance());
+                    //}
+#endif
+
                     selected_entity_name.Text = EntityUtils.GetName(Composite.shortGUID, _entity.shortGUID);
 
                     //Composite Instance

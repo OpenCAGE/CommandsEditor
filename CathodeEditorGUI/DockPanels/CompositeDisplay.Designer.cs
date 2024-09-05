@@ -68,6 +68,7 @@ namespace CommandsEditor.DockPanels
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pasteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.DEBUG_ShowAllInNodegraph = new System.Windows.Forms.ToolStripButton();
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -96,7 +97,8 @@ namespace CommandsEditor.DockPanels
             this.findUses,
             this.deleteCheckedEntities,
             this.renameComposite,
-            this.deleteComposite});
+            this.deleteComposite,
+            this.DEBUG_ShowAllInNodegraph});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(1615, 25);
@@ -451,6 +453,15 @@ namespace CommandsEditor.DockPanels
             this.pasteToolStripMenuItem.Visible = false;
             this.pasteToolStripMenuItem.Click += new System.EventHandler(this.pasteToolStripMenuItem_Click);
             // 
+            // DEBUG_ShowAllInNodegraph
+            // 
+            this.DEBUG_ShowAllInNodegraph.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.DEBUG_ShowAllInNodegraph.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.DEBUG_ShowAllInNodegraph.Name = "DEBUG_ShowAllInNodegraph";
+            this.DEBUG_ShowAllInNodegraph.Size = new System.Drawing.Size(176, 22);
+            this.DEBUG_ShowAllInNodegraph.Text = "DEBUG: Show All In Nodegraph";
+            this.DEBUG_ShowAllInNodegraph.Click += new System.EventHandler(this.DEBUG_ShowAllInNodegraph_Click);
+            // 
             // CompositeDisplay
             // 
             this.AllowEndUserDocking = false;
@@ -521,5 +532,6 @@ namespace CommandsEditor.DockPanels
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pasteToolStripMenuItem;
+        private System.Windows.Forms.ToolStripButton DEBUG_ShowAllInNodegraph;
     }
 }
