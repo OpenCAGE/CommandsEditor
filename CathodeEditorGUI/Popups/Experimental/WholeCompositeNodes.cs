@@ -24,6 +24,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Controls;
 using static System.Windows.Forms.LinkLabel;
 using System.Xml.Linq;
+using CathodeLib;
 
 namespace CommandsEditor
 {
@@ -34,14 +35,19 @@ namespace CommandsEditor
         private Composite _composite;
         private List<CustomNode> _nodes = new List<CustomNode>();
 
+        private NodePositionDatabase _positionDB;
+
+        //note something weird on systemic processing composit
+
         public WholeCompositeNodes()
         {
             InitializeComponent();
+            _positionDB = new NodePositionDatabase();
         }
 
         public void ShowComposite(Composite composite)
         {
-            this.Text = composite.name;
+            stNodeEditor1.SuspendLayout();
             stNodeEditor1.Nodes.Clear();
             _nodes.Clear();
 
@@ -64,9 +70,14 @@ namespace CommandsEditor
                 }
             }
 
+            this.Text = _composite.name;
+            _positionDB.TryRestoreFlowgraph(_composite.name, stNodeEditor1);
+
             //Lock options for now
             foreach (STNode node in stNodeEditor1.Nodes)
                 node.LockOption = true;
+
+            stNodeEditor1.ResumeLayout();
         }
 
         protected override void OnLoad(EventArgs e)
@@ -131,6 +142,145 @@ namespace CommandsEditor
             }
 
             return node;
+        }
+
+        private void SaveFlowgraph_Click(object sender, EventArgs e)
+        {
+            _positionDB.SaveFlowgraph(_composite.name, stNodeEditor1);
+        }
+    }
+
+    //todo: if this ever makes it to production, will need to make sure this is done safely to not overwrite stuff. at the mo its fine for testing locally with single instances.
+    public class NodePositionDatabase
+    {
+        private string _filepath = "node_positions.bin";
+        private List<FlowgraphMeta> _flowgraphMetas;
+
+        public NodePositionDatabase()
+        {
+            _flowgraphMetas = new List<FlowgraphMeta>();
+
+            if (File.Exists(_filepath))
+            {
+                using (BinaryReader reader = new BinaryReader(File.OpenRead(_filepath)))
+                {
+                    int count = reader.ReadInt32();
+                    for (int i = 0; i < count; i++)
+                    {
+                        FlowgraphMeta flowgraphMeta = new FlowgraphMeta();
+                        flowgraphMeta.Name = reader.ReadString();
+                        flowgraphMeta.Nodes = new List<FlowgraphMeta.NodeMeta>();
+                        flowgraphMeta.CanvasPosition = new PointF(reader.ReadSingle(), reader.ReadSingle());
+                        flowgraphMeta.CanvasScale = reader.ReadSingle();
+                        int nodeMetaCount = reader.ReadInt32();
+                        for (int x = 0; x < nodeMetaCount; x++)
+                        {
+                            FlowgraphMeta.NodeMeta nodeMeta = new FlowgraphMeta.NodeMeta();
+                            nodeMeta.ID = Utilities.Consume<ShortGuid>(reader);
+                            nodeMeta.Position = new Point(reader.ReadInt32(), reader.ReadInt32());
+                            flowgraphMeta.Nodes.Add(nodeMeta);
+                        }
+                        _flowgraphMetas.Add(flowgraphMeta);
+                    }
+                    Console.WriteLine("NodePositionDatabase LOADED " + _flowgraphMetas.Count + " flowgraphs");
+                }
+            }
+        }
+
+        public bool TryRestoreFlowgraph(string compositeName, STNodeEditor editor)
+        {
+            FlowgraphMeta flowgraphMeta = _flowgraphMetas.FirstOrDefault(o => o.Name == compositeName);
+            if (flowgraphMeta == null)
+                return false;
+
+            for (int i = 0; i < editor.Nodes.Count; i++)
+            {
+                if (!(editor.Nodes[i] is CustomNode))
+                    continue;
+
+                CustomNode node = (CustomNode)editor.Nodes[i];
+                FlowgraphMeta.NodeMeta nodeMeta = flowgraphMeta.Nodes.FirstOrDefault(o => o.ID == node.ID);
+                if (nodeMeta == null)
+                    continue;
+
+                node.SetPosition(nodeMeta.Position);
+            }
+
+            editor.ScaleCanvas(flowgraphMeta.CanvasScale, 0, 0);
+            editor.MoveCanvas(flowgraphMeta.CanvasPosition.X, flowgraphMeta.CanvasPosition.Y, false, CanvasMoveArgs.All);
+
+            //TODO: maybe console.writeline some info about number of nodes missing positions, or not included in the list when expected? implies user has modified the composite
+            return true;
+        }
+
+        public void SaveFlowgraph(string compositeName, STNodeEditor editor)
+        {
+            FlowgraphMeta flowgraphMeta = _flowgraphMetas.FirstOrDefault(o => o.Name == compositeName);
+            if (flowgraphMeta == null)
+            {
+                flowgraphMeta = new FlowgraphMeta();
+                flowgraphMeta.Name = compositeName;
+                _flowgraphMetas.Add(flowgraphMeta);
+            }
+            flowgraphMeta.Nodes = new List<FlowgraphMeta.NodeMeta>();
+            flowgraphMeta.CanvasPosition = editor.CanvasOffset;
+            flowgraphMeta.CanvasScale = editor.CanvasScale;
+
+            for (int i = 0; i < editor.Nodes.Count; i++)
+            {
+                if (!(editor.Nodes[i] is CustomNode))
+                    continue;
+
+                CustomNode node = (CustomNode)editor.Nodes[i];
+                FlowgraphMeta.NodeMeta nodeMeta = new FlowgraphMeta.NodeMeta();
+                nodeMeta.ID = node.ID;
+                nodeMeta.Position = node.Location;
+                flowgraphMeta.Nodes.Add(nodeMeta);
+            }
+
+            SaveFile();
+        }
+
+        private void SaveFile()
+        {
+            if (_flowgraphMetas == null)
+                return;
+
+            using (BinaryWriter writer = new BinaryWriter(File.OpenWrite(_filepath)))
+            {
+                writer.BaseStream.SetLength(0);
+                writer.Write(_flowgraphMetas.Count);
+                for (int i = 0; i < _flowgraphMetas.Count; i++)
+                {
+                    writer.Write(_flowgraphMetas[i].Name);
+                    writer.Write(_flowgraphMetas[i].CanvasPosition.X);
+                    writer.Write(_flowgraphMetas[i].CanvasPosition.Y);
+                    writer.Write(_flowgraphMetas[i].CanvasScale);
+                    writer.Write(_flowgraphMetas[i].Nodes.Count);
+                    for (int x = 0; x < _flowgraphMetas[i].Nodes.Count; x++)
+                    {
+                        Utilities.Write<ShortGuid>(writer, _flowgraphMetas[i].Nodes[x].ID);
+                        writer.Write(_flowgraphMetas[i].Nodes[x].Position.X);
+                        writer.Write(_flowgraphMetas[i].Nodes[x].Position.Y);
+                    }
+                }
+                Console.WriteLine("NodePositionDatabase SAVED " + _flowgraphMetas.Count + " flowgraphs");
+            }
+        }
+
+        private class FlowgraphMeta
+        {
+            public string Name;
+            public List<NodeMeta> Nodes;
+
+            public PointF CanvasPosition;
+            public float CanvasScale;
+
+            public class NodeMeta
+            {
+                public ShortGuid ID;
+                public Point Position;
+            }
         }
     }
 }

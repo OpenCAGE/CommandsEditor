@@ -26,12 +26,13 @@
         /// </summary>
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NodeEditor));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WholeCompositeNodes));
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.removeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lockLocationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lockConnectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stNodeEditor1 = new ST.Library.UI.NodeEditor.STNodeEditor();
+            this.SaveFlowgraph = new System.Windows.Forms.Button();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -77,19 +78,32 @@
             this.stNodeEditor1.Name = "stNodeEditor1";
             this.stNodeEditor1.RequireCtrlForZooming = false;
             this.stNodeEditor1.RoundedCornerRadius = 10;
-            this.stNodeEditor1.Size = new System.Drawing.Size(741, 524);
+            this.stNodeEditor1.Size = new System.Drawing.Size(1512, 699);
             this.stNodeEditor1.TabIndex = 1;
             this.stNodeEditor1.Text = "stNodeEditor1";
             // 
-            // NodeEditor
+            // SaveFlowgraph
+            // 
+            this.SaveFlowgraph.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.SaveFlowgraph.Location = new System.Drawing.Point(1436, 1);
+            this.SaveFlowgraph.Name = "SaveFlowgraph";
+            this.SaveFlowgraph.Size = new System.Drawing.Size(75, 23);
+            this.SaveFlowgraph.TabIndex = 2;
+            this.SaveFlowgraph.Text = "Save Pos";
+            this.SaveFlowgraph.UseVisualStyleBackColor = true;
+            this.SaveFlowgraph.Click += new System.EventHandler(this.SaveFlowgraph_Click);
+            // 
+            // WholeCompositeNodes
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(741, 524);
+            this.ClientSize = new System.Drawing.Size(1512, 699);
+            this.Controls.Add(this.SaveFlowgraph);
             this.Controls.Add(this.stNodeEditor1);
             this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "NodeEditor";
+            this.Name = "WholeCompositeNodes";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Nodegraph";
             this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -102,6 +116,7 @@
         private System.Windows.Forms.ToolStripMenuItem removeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem lockLocationToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem lockConnectionToolStripMenuItem;
+        private System.Windows.Forms.Button SaveFlowgraph;
     }
 }
 

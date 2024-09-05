@@ -128,6 +128,7 @@ namespace CommandsEditor
 
         private void UpdateEntities(Entity e = null)
         {
+            stNodeEditor1.SuspendLayout();
             stNodeEditor1.Nodes.Clear();
 
             if (ActiveComposite == null || ActiveEntity == null)
@@ -223,6 +224,8 @@ namespace CommandsEditor
             //Lock options for now
             foreach (STNode node in stNodeEditor1.Nodes)
                 node.LockOption = true;
+
+            stNodeEditor1.ResumeLayout();
         }
 
         protected override void OnLoad(EventArgs e) {
