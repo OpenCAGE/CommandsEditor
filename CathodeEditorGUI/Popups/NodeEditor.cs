@@ -151,7 +151,7 @@ namespace CommandsEditor
                     CathodeNode node = null;
                     for (int i = 0; i < stNodeEditor1.Nodes.Count; i++)
                     {
-                        if (((CathodeNode)stNodeEditor1.Nodes[i]).ID == ent.shortGUID)
+                        if (((CathodeNode)stNodeEditor1.Nodes[i]).ShortGUID == ent.shortGUID)
                         {
                             node = (CathodeNode)stNodeEditor1.Nodes[i];
                             break;
@@ -163,8 +163,8 @@ namespace CommandsEditor
                         inputNodes.Add(node);
                         stNodeEditor1.Nodes.Add(node);
                     }
-                    STNodeOption opt1 = node.AddOutputOption(link.thisParamID.ToString());
-                    STNodeOption opt2 = mainNode.AddInputOption(link.linkedParamID.ToString());
+                    STNodeOption opt1 = node.AddOutputOption(link.thisParamID);
+                    STNodeOption opt2 = mainNode.AddInputOption(link.linkedParamID);
                     opt1.ConnectOption(opt2);
                 }
             }
@@ -176,7 +176,7 @@ namespace CommandsEditor
                 CathodeNode node = null;
                 for (int i = 0; i < stNodeEditor1.Nodes.Count; i++)
                 {
-                    if (((CathodeNode)stNodeEditor1.Nodes[i]).ID == link.linkedEntityID)
+                    if (((CathodeNode)stNodeEditor1.Nodes[i]).ShortGUID == link.linkedEntityID)
                     {
                         node = (CathodeNode)stNodeEditor1.Nodes[i];
                         break;
@@ -191,8 +191,8 @@ namespace CommandsEditor
                         stNodeEditor1.Nodes.Add(node);
                     }
                 }
-                STNodeOption opt1 = node?.AddInputOption(link.linkedParamID.ToString());
-                STNodeOption opt2 = mainNode.AddOutputOption(link.thisParamID.ToString());
+                STNodeOption opt1 = node?.AddInputOption(link.linkedParamID);
+                STNodeOption opt2 = mainNode.AddOutputOption(link.thisParamID);
                 opt1.ConnectOption(opt2);
             }
 
@@ -252,7 +252,7 @@ namespace CommandsEditor
             STNode[] nodes = stNodeEditor1.GetSelectedNode();
             if (nodes.Length != 1) return;
 
-            Entity ent = Singleton.Editor.ActiveCompositeDisplay?.Composite?.GetEntityByID(((CathodeNode)nodes[0]).ID);
+            Entity ent = Singleton.Editor.ActiveCompositeDisplay?.Composite?.GetEntityByID(((CathodeNode)nodes[0]).ShortGUID);
             if (ent == _previouslySelectedEntity) return;
             _previouslySelectedEntity = ent;
 
@@ -266,7 +266,7 @@ namespace CommandsEditor
                 return null;
 
             CathodeNode node = new CathodeNode();
-            node.ID = entity.shortGUID;
+            node.ShortGUID = entity.shortGUID;
             switch (entity.variant)
             {
                 case EntityVariant.PROXY:

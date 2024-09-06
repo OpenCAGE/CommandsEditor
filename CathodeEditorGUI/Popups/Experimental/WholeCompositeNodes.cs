@@ -34,7 +34,6 @@ namespace CommandsEditor
         protected LevelContent Content => Singleton.Editor?.CommandsDisplay?.Content;
 
         private Composite _composite;
-        private List<CathodeNode> _nodes = new List<CathodeNode>(); 
         private int _spawnOffset = 0;
 
         public WholeCompositeNodes()
@@ -48,7 +47,6 @@ namespace CommandsEditor
 
             stNodeEditor1.SuspendLayout();
             stNodeEditor1.Nodes.Clear();
-            _nodes.Clear();
             _spawnOffset = 0;
 
             _composite = composite;
@@ -64,8 +62,8 @@ namespace CommandsEditor
                         continue;
 
                     CathodeNode childNode = EntityToNode(childEnt, _composite);
-                    STNodeOption linkIn = childNode.AddInputOption(entities[i].childLinks[x].linkedParamID.ToString());
-                    STNodeOption linkOut = mainNode.AddOutputOption(entities[i].childLinks[x].thisParamID.ToString());
+                    STNodeOption linkIn = childNode.AddInputOption(entities[i].childLinks[x].linkedParamID);
+                    STNodeOption linkOut = mainNode.AddOutputOption(entities[i].childLinks[x].thisParamID);
                     linkIn.ConnectOption(linkOut);
                 }
             }
@@ -77,8 +75,8 @@ namespace CommandsEditor
                 ((CathodeNode)node).Recompute();
 
             //Lock options for now
-            foreach (STNode node in stNodeEditor1.Nodes)
-                node.LockOption = true;
+            //foreach (STNode node in stNodeEditor1.Nodes)
+            //    node.LockOption = true;
 
             stNodeEditor1.ResumeLayout();
             stNodeEditor1.Invalidate();
@@ -90,17 +88,32 @@ namespace CommandsEditor
             stNodeEditor1.LoadAssembly(Application.ExecutablePath);
         }
 
-        private CathodeNode EntityToNode(Entity entity, Composite composite)
+        private CathodeNode EntityToNode(Entity entity, Composite composite, bool allowDuplicate = false)
         {
             if (entity == null)
                 return null;
 
-            CathodeNode node = _nodes.FirstOrDefault(o => o.ID == entity.shortGUID);
+            CathodeNode node = null;
+            if (!allowDuplicate)
+            {
+                for (int i = 0; i < stNodeEditor1.Nodes.Count; i++)
+                {
+                    if (!(stNodeEditor1.Nodes[i] is CathodeNode))
+                        continue;
+
+                    CathodeNode thisNode = (CathodeNode)stNodeEditor1.Nodes[i];
+                    if (thisNode.ShortGUID != entity.shortGUID)
+                        continue;
+
+                    node = thisNode;
+                    break;
+                }
+            }
 
             if (node == null)
             {
                 node = new CathodeNode();
-                node.ID = entity.shortGUID;
+                node.ShortGUID = entity.shortGUID;
                 switch (entity.variant)
                 {
                     case EntityVariant.PROXY:
@@ -141,7 +154,6 @@ namespace CommandsEditor
                         break;
                 }
                 node.Recompute();
-                _nodes.Add(node);
                 stNodeEditor1.Nodes.Add(node);
 
                 ((CathodeNode)node).SetPosition(new Point(0, _spawnOffset));
@@ -250,6 +262,29 @@ namespace CommandsEditor
         {
             SaveFlowgraph_Click(null, null);
             DEBUG_NextUnfinished_Click(null, null);
+        }
+
+        private void DEBUG_Duplicate_Click(object sender, EventArgs e)
+        {
+            if (stNodeEditor1.GetSelectedNode().Length != 1)
+            {
+                Console.WriteLine("SELECT ONE NODE");
+                return;
+            }
+            if (!(stNodeEditor1.GetSelectedNode()[0] is CathodeNode))
+            {
+                Console.WriteLine("SELECT CathodeNode");
+                return;
+            }
+
+            CathodeNode node = (CathodeNode)stNodeEditor1.GetSelectedNode()[0];
+            CathodeNode nodeNew = EntityToNode(_composite.GetEntityByID(node.ShortGUID), _composite, true);
+            foreach (STNodeOption input in node.GetInputOptions()) 
+                nodeNew.AddInputOption(input.ShortGUID);
+            foreach (STNodeOption output in node.GetOutputOptions())
+                nodeNew.AddOutputOption(output.ShortGUID);
+
+            nodeNew.SetPosition(new Point(node.Location.X + 10, node.Location.Y + 10));
         }
     }
 }

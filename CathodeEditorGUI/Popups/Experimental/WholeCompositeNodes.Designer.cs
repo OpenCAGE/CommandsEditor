@@ -31,12 +31,13 @@
             this.removeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lockLocationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lockConnectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.stNodeEditor1 = new ST.Library.UI.NodeEditor.STNodeEditor();
             this.SaveFlowgraph = new System.Windows.Forms.Button();
             this.DEBUG_CalcPositions = new System.Windows.Forms.Button();
             this.DEBUG_NextUnfinished = new System.Windows.Forms.Button();
             this.DEBUG_DumpUnfinished = new System.Windows.Forms.Button();
             this.DEBUG_NextAndSave = new System.Windows.Forms.Button();
+            this.stNodeEditor1 = new ST.Library.UI.NodeEditor.STNodeEditor();
+            this.DEBUG_Duplicate = new System.Windows.Forms.Button();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -66,25 +67,6 @@
             this.lockConnectionToolStripMenuItem.Name = "lockConnectionToolStripMenuItem";
             this.lockConnectionToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
             this.lockConnectionToolStripMenuItem.Text = "U/Lock &Connection";
-            // 
-            // stNodeEditor1
-            // 
-            this.stNodeEditor1.AllowDrop = true;
-            this.stNodeEditor1.AllowNodeGraphLoops = true;
-            this.stNodeEditor1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(34)))), ((int)(((byte)(34)))));
-            this.stNodeEditor1.Curvature = 0.3F;
-            this.stNodeEditor1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.stNodeEditor1.Location = new System.Drawing.Point(0, 0);
-            this.stNodeEditor1.LocationBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(120)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.stNodeEditor1.MarkBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.stNodeEditor1.MarkForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.stNodeEditor1.MinimumSize = new System.Drawing.Size(100, 100);
-            this.stNodeEditor1.Name = "stNodeEditor1";
-            this.stNodeEditor1.RequireCtrlForZooming = false;
-            this.stNodeEditor1.RoundedCornerRadius = 10;
-            this.stNodeEditor1.Size = new System.Drawing.Size(1512, 699);
-            this.stNodeEditor1.TabIndex = 1;
-            this.stNodeEditor1.Text = "stNodeEditor1";
             // 
             // SaveFlowgraph
             // 
@@ -146,11 +128,43 @@
             this.DEBUG_NextAndSave.UseVisualStyleBackColor = true;
             this.DEBUG_NextAndSave.Click += new System.EventHandler(this.DEBUG_NextAndSave_Click);
             // 
+            // stNodeEditor1
+            // 
+            this.stNodeEditor1.AllowDrop = true;
+            this.stNodeEditor1.AllowNodeGraphLoops = true;
+            this.stNodeEditor1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(34)))), ((int)(((byte)(34)))));
+            this.stNodeEditor1.Curvature = 0.3F;
+            this.stNodeEditor1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.stNodeEditor1.Location = new System.Drawing.Point(0, 0);
+            this.stNodeEditor1.LocationBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(120)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.stNodeEditor1.MarkBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.stNodeEditor1.MarkForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.stNodeEditor1.MinimumSize = new System.Drawing.Size(100, 100);
+            this.stNodeEditor1.Name = "stNodeEditor1";
+            this.stNodeEditor1.RequireCtrlForZooming = false;
+            this.stNodeEditor1.RoundedCornerRadius = 10;
+            this.stNodeEditor1.Size = new System.Drawing.Size(1512, 699);
+            this.stNodeEditor1.TabIndex = 1;
+            this.stNodeEditor1.Text = "stNodeEditor1";
+            // 
+            // DEBUG_Duplicate
+            // 
+            this.DEBUG_Duplicate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.DEBUG_Duplicate.ForeColor = System.Drawing.Color.IndianRed;
+            this.DEBUG_Duplicate.Location = new System.Drawing.Point(1290, 28);
+            this.DEBUG_Duplicate.Name = "DEBUG_Duplicate";
+            this.DEBUG_Duplicate.Size = new System.Drawing.Size(121, 23);
+            this.DEBUG_Duplicate.TabIndex = 7;
+            this.DEBUG_Duplicate.Text = "Duplicate Selected";
+            this.DEBUG_Duplicate.UseVisualStyleBackColor = true;
+            this.DEBUG_Duplicate.Click += new System.EventHandler(this.DEBUG_Duplicate_Click);
+            // 
             // WholeCompositeNodes
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1512, 699);
+            this.Controls.Add(this.DEBUG_Duplicate);
             this.Controls.Add(this.DEBUG_NextAndSave);
             this.Controls.Add(this.DEBUG_DumpUnfinished);
             this.Controls.Add(this.DEBUG_NextUnfinished);
@@ -178,6 +192,7 @@
         private System.Windows.Forms.Button DEBUG_NextUnfinished;
         private System.Windows.Forms.Button DEBUG_DumpUnfinished;
         private System.Windows.Forms.Button DEBUG_NextAndSave;
+        private System.Windows.Forms.Button DEBUG_Duplicate;
     }
 }
 
