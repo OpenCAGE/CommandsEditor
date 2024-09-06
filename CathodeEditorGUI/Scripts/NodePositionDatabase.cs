@@ -92,6 +92,7 @@ namespace CommandsEditor
             if (flowgraphMeta == null)
                 return false;
 
+            List<CathodeNode> nodesToAdd = new List<CathodeNode>();
             for (int i = 0; i < editor.Nodes.Count; i++)
             {
                 if (!(editor.Nodes[i] is CathodeNode))
@@ -114,8 +115,11 @@ namespace CommandsEditor
                         CathodeNode instanceNode = node;
                         if (x > 0)
                         {
-                            instanceNode = node.Copy();
-                            editor.Nodes.Add(instanceNode);
+                            instanceNode = new CathodeNode();
+                            instanceNode.SetName(node.Title, node.SubTitle);
+                            instanceNode.SetColour(node.BackColor, node.ForeColor);
+                            instanceNode.SetPosition(new Point(node.Location.X + (10 * x), node.Location.Y + (10 * x)));
+                            nodesToAdd.Add(instanceNode);
                         }
                         instanceNode.SetPosition(variableNodeMeta.Instances[x].Position);
 
@@ -162,17 +166,20 @@ namespace CommandsEditor
                             }
                         }
                         connectionsOut -= outCount;
+
+                        instanceNode.Recompute();
                     }
 
-                    if (connectionsIn != 0)
+                    if (connectionsIn > 0)
                     {
                         string sdfsdf = "";
                     }
-                    if (connectionsOut != 0)
+                    if (connectionsOut > 0)
                     {
                         string fsdfdf = "";
                     }
                 }
+                editor.Nodes.AddRange(nodesToAdd.ToArray());
             }
 
             editor.ScaleCanvas(flowgraphMeta.CanvasScale, 0, 0);
