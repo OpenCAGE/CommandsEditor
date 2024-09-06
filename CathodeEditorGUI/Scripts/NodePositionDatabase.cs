@@ -34,6 +34,7 @@ namespace CommandsEditor
                         flowgraphMeta.Nodes = new List<FlowgraphMeta.NodeMeta>();
                         flowgraphMeta.CanvasPosition = new PointF(reader.ReadSingle(), reader.ReadSingle());
                         flowgraphMeta.CanvasScale = reader.ReadSingle();
+                        reader.BaseStream.Position += 10; //reserved
                         int nodeMetaCount = reader.ReadInt32();
                         for (int x = 0; x < nodeMetaCount; x++)
                         {
@@ -123,6 +124,7 @@ namespace CommandsEditor
                     writer.Write(_flowgraphMetas[i].CanvasPosition.X);
                     writer.Write(_flowgraphMetas[i].CanvasPosition.Y);
                     writer.Write(_flowgraphMetas[i].CanvasScale);
+                    writer.Write(new byte[10]); //reserved
                     writer.Write(_flowgraphMetas[i].Nodes.Count);
                     for (int x = 0; x < _flowgraphMetas[i].Nodes.Count; x++)
                     {

@@ -34,6 +34,9 @@
             this.stNodeEditor1 = new ST.Library.UI.NodeEditor.STNodeEditor();
             this.SaveFlowgraph = new System.Windows.Forms.Button();
             this.DEBUG_CalcPositions = new System.Windows.Forms.Button();
+            this.DEBUG_NextUnfinished = new System.Windows.Forms.Button();
+            this.DEBUG_DumpUnfinished = new System.Windows.Forms.Button();
+            this.DEBUG_NextAndSave = new System.Windows.Forms.Button();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -106,11 +109,51 @@
             this.DEBUG_CalcPositions.UseVisualStyleBackColor = true;
             this.DEBUG_CalcPositions.Click += new System.EventHandler(this.DEBUG_CalcPositions_Click);
             // 
+            // DEBUG_NextUnfinished
+            // 
+            this.DEBUG_NextUnfinished.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.DEBUG_NextUnfinished.ForeColor = System.Drawing.Color.IndianRed;
+            this.DEBUG_NextUnfinished.Location = new System.Drawing.Point(1165, 1);
+            this.DEBUG_NextUnfinished.Name = "DEBUG_NextUnfinished";
+            this.DEBUG_NextUnfinished.Size = new System.Drawing.Size(121, 23);
+            this.DEBUG_NextUnfinished.TabIndex = 4;
+            this.DEBUG_NextUnfinished.Text = "Next Incomplete";
+            this.DEBUG_NextUnfinished.UseVisualStyleBackColor = true;
+            this.DEBUG_NextUnfinished.Click += new System.EventHandler(this.DEBUG_NextUnfinished_Click);
+            // 
+            // DEBUG_DumpUnfinished
+            // 
+            this.DEBUG_DumpUnfinished.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.DEBUG_DumpUnfinished.ForeColor = System.Drawing.Color.IndianRed;
+            this.DEBUG_DumpUnfinished.Location = new System.Drawing.Point(1040, 1);
+            this.DEBUG_DumpUnfinished.Name = "DEBUG_DumpUnfinished";
+            this.DEBUG_DumpUnfinished.Size = new System.Drawing.Size(121, 23);
+            this.DEBUG_DumpUnfinished.TabIndex = 5;
+            this.DEBUG_DumpUnfinished.Text = "Dump Incomplete";
+            this.DEBUG_DumpUnfinished.UseVisualStyleBackColor = true;
+            this.DEBUG_DumpUnfinished.Click += new System.EventHandler(this.DEBUG_DumpUnfinished_Click);
+            // 
+            // DEBUG_NextAndSave
+            // 
+            this.DEBUG_NextAndSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.DEBUG_NextAndSave.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.DEBUG_NextAndSave.ForeColor = System.Drawing.Color.IndianRed;
+            this.DEBUG_NextAndSave.Location = new System.Drawing.Point(1165, 28);
+            this.DEBUG_NextAndSave.Name = "DEBUG_NextAndSave";
+            this.DEBUG_NextAndSave.Size = new System.Drawing.Size(121, 23);
+            this.DEBUG_NextAndSave.TabIndex = 6;
+            this.DEBUG_NextAndSave.Text = "Next And Save";
+            this.DEBUG_NextAndSave.UseVisualStyleBackColor = true;
+            this.DEBUG_NextAndSave.Click += new System.EventHandler(this.DEBUG_NextAndSave_Click);
+            // 
             // WholeCompositeNodes
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1512, 699);
+            this.Controls.Add(this.DEBUG_NextAndSave);
+            this.Controls.Add(this.DEBUG_DumpUnfinished);
+            this.Controls.Add(this.DEBUG_NextUnfinished);
             this.Controls.Add(this.DEBUG_CalcPositions);
             this.Controls.Add(this.SaveFlowgraph);
             this.Controls.Add(this.stNodeEditor1);
@@ -132,6 +175,9 @@
         private System.Windows.Forms.ToolStripMenuItem lockConnectionToolStripMenuItem;
         private System.Windows.Forms.Button SaveFlowgraph;
         private System.Windows.Forms.Button DEBUG_CalcPositions;
+        private System.Windows.Forms.Button DEBUG_NextUnfinished;
+        private System.Windows.Forms.Button DEBUG_DumpUnfinished;
+        private System.Windows.Forms.Button DEBUG_NextAndSave;
     }
 }
 

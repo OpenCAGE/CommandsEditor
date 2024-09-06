@@ -34,9 +34,8 @@ namespace CommandsEditor
         protected LevelContent Content => Singleton.Editor?.CommandsDisplay?.Content;
 
         private Composite _composite;
-        private List<CathodeNode> _nodes = new List<CathodeNode>();
-
-        //note: there's a render error until you grab all nodes and move them u get a point in space sometimes. fixed by Recompute?
+        private List<CathodeNode> _nodes = new List<CathodeNode>(); 
+        private int _spawnOffset = 0;
 
         public WholeCompositeNodes()
         {
@@ -45,9 +44,12 @@ namespace CommandsEditor
 
         public void ShowComposite(Composite composite)
         {
+            CommandsUtils.PurgeDeadLinks(Content.commands, composite);
+
             stNodeEditor1.SuspendLayout();
             stNodeEditor1.Nodes.Clear();
             _nodes.Clear();
+            _spawnOffset = 0;
 
             _composite = composite;
             List<Entity> entities = _composite.GetEntities();
@@ -141,6 +143,9 @@ namespace CommandsEditor
                 node.Recompute();
                 _nodes.Add(node);
                 stNodeEditor1.Nodes.Add(node);
+
+                ((CathodeNode)node).SetPosition(new Point(0, _spawnOffset));
+                _spawnOffset += node.Height + 10;
             }
 
             return node;
@@ -210,6 +215,41 @@ namespace CommandsEditor
                 }
             }
             ((CathodeNode)origNode).SetPosition(new Point((this.Size.Width / 2) - (origNode.Width / 2) - 10, (this.Size.Height / 2) - (((outputStackedHeight > inputStackedHeight) ? outputStackedHeight : inputStackedHeight) / 2) - 20));
+        }
+
+        private void DEBUG_NextUnfinished_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < Content.commands.Entries.Count; i++)
+            {
+                if (!NodePositionDatabase.CanRestoreFlowgraph(Content.commands.Entries[i].name))
+                {
+                    ShowComposite(Content.commands.Entries[i]);
+                    return;
+                }    
+            }
+        }
+
+        private void DEBUG_DumpUnfinished_Click(object sender, EventArgs e)
+        {
+            Console.WriteLine("----------------------");
+            Console.WriteLine("Incomplete Flowgraphs:");
+            int count = 0;
+            for (int i = 0; i < Content.commands.Entries.Count; i++)
+            {
+                if (NodePositionDatabase.CanRestoreFlowgraph(Content.commands.Entries[i].name))
+                    continue;
+
+                Console.WriteLine(" - " + Content.commands.Entries[i].name);
+                count++;
+            }
+            Console.WriteLine("(There are " + count + ")");
+            Console.WriteLine("----------------------");
+        }
+
+        private void DEBUG_NextAndSave_Click(object sender, EventArgs e)
+        {
+            SaveFlowgraph_Click(null, null);
+            DEBUG_NextUnfinished_Click(null, null);
         }
     }
 }
