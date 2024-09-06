@@ -25,6 +25,7 @@ using System.Windows.Controls;
 using static System.Windows.Forms.LinkLabel;
 using System.Xml.Linq;
 using CathodeLib;
+using System.Windows.Input;
 
 namespace CommandsEditor
 {
@@ -35,7 +36,7 @@ namespace CommandsEditor
         private Composite _composite;
         private List<CathodeNode> _nodes = new List<CathodeNode>();
 
-        //note: there's a render error until you grab all nodes and move them u get a point in space sometimes. fixed by dumb auto pos?
+        //note: there's a render error until you grab all nodes and move them u get a point in space sometimes. fixed by Recompute?
 
         public WholeCompositeNodes()
         {
@@ -67,10 +68,11 @@ namespace CommandsEditor
                 }
             }
 
-            // TODO: on each entity do dumb attempt at positioning to make it quicker to manualyl position.
-
             this.Text = _composite.name;
             NodePositionDatabase.TryRestoreFlowgraph(_composite.name, stNodeEditor1);
+
+            foreach (STNode node in stNodeEditor1.Nodes)
+                ((CathodeNode)node).Recompute();
 
             //Lock options for now
             foreach (STNode node in stNodeEditor1.Nodes)
@@ -147,6 +149,67 @@ namespace CommandsEditor
         private void SaveFlowgraph_Click(object sender, EventArgs e)
         {
             NodePositionDatabase.SaveFlowgraph(_composite.name, stNodeEditor1);
+        }
+
+        private void DEBUG_CalcPositions_Click(object sender, EventArgs e)
+        {
+            if (stNodeEditor1.GetSelectedNode().Length != 1)
+            {
+                Console.WriteLine("SELECT ONE NODE");
+                return;
+            }
+            if (!(stNodeEditor1.GetSelectedNode()[0] is CathodeNode))
+            {
+                Console.WriteLine("SELECT CathodeNode");
+                return;
+            }
+
+            TestAlignNode(stNodeEditor1.GetSelectedNode()[0]);
+        }
+        private void TestAlignNode(STNode origNode)
+        {
+            //Compute node sizes
+            int inputStackedHeight = 0;
+            foreach (STNodeOption input in origNode.GetInputOptions()) //inputs on this node
+            {
+                foreach (STNodeOption output in input.GetConnectedOption()) //connected to output on other node
+                {
+                    STNode connectedNode = output.Owner;
+                    inputStackedHeight += connectedNode.Height + 10;
+                }
+            }
+            int outputStackedHeight = 0;
+            foreach (STNodeOption output in origNode.GetOutputOptions()) //outputs on this node
+            {
+                foreach (STNodeOption input in output.GetConnectedOption()) //connected to input on other node
+                {
+                    STNode connectedNode = input.Owner;
+                    outputStackedHeight += connectedNode.Height + 10;
+                }
+            }
+
+            //Set node positions
+            int height = (this.Size.Height / 2) - (inputStackedHeight / 2) - 20;
+            foreach (STNodeOption input in origNode.GetInputOptions()) //inputs on this node
+            {
+                foreach (STNodeOption output in input.GetConnectedOption()) //connected to output on other node
+                {
+                    STNode connectedNode = output.Owner;
+                    ((CathodeNode)connectedNode).SetPosition(new Point(10, height));
+                    height += connectedNode.Height + 10;
+                }
+            }
+            height = (this.Size.Height / 2) - (outputStackedHeight / 2) - 20;
+            foreach (STNodeOption output in origNode.GetOutputOptions()) //outputs on this node
+            {
+                foreach (STNodeOption input in output.GetConnectedOption()) //connected to input on other node
+                {
+                    STNode connectedNode = input.Owner;
+                    ((CathodeNode)connectedNode).SetPosition(new Point(this.Size.Width - connectedNode.Width - 50, height));
+                    height += connectedNode.Height + 10;
+                }
+            }
+            ((CathodeNode)origNode).SetPosition(new Point((this.Size.Width / 2) - (origNode.Width / 2) - 10, (this.Size.Height / 2) - (((outputStackedHeight > inputStackedHeight) ? outputStackedHeight : inputStackedHeight) / 2) - 20));
         }
     }
 }

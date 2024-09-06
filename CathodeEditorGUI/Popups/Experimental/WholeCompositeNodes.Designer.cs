@@ -33,6 +33,7 @@
             this.lockConnectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stNodeEditor1 = new ST.Library.UI.NodeEditor.STNodeEditor();
             this.SaveFlowgraph = new System.Windows.Forms.Button();
+            this.DEBUG_CalcPositions = new System.Windows.Forms.Button();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -93,11 +94,24 @@
             this.SaveFlowgraph.UseVisualStyleBackColor = true;
             this.SaveFlowgraph.Click += new System.EventHandler(this.SaveFlowgraph_Click);
             // 
+            // DEBUG_CalcPositions
+            // 
+            this.DEBUG_CalcPositions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.DEBUG_CalcPositions.ForeColor = System.Drawing.Color.IndianRed;
+            this.DEBUG_CalcPositions.Location = new System.Drawing.Point(1290, 1);
+            this.DEBUG_CalcPositions.Name = "DEBUG_CalcPositions";
+            this.DEBUG_CalcPositions.Size = new System.Drawing.Size(121, 23);
+            this.DEBUG_CalcPositions.TabIndex = 3;
+            this.DEBUG_CalcPositions.Text = "Calc Selected Pos";
+            this.DEBUG_CalcPositions.UseVisualStyleBackColor = true;
+            this.DEBUG_CalcPositions.Click += new System.EventHandler(this.DEBUG_CalcPositions_Click);
+            // 
             // WholeCompositeNodes
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1512, 699);
+            this.Controls.Add(this.DEBUG_CalcPositions);
             this.Controls.Add(this.SaveFlowgraph);
             this.Controls.Add(this.stNodeEditor1);
             this.DoubleBuffered = true;
@@ -117,6 +131,7 @@
         private System.Windows.Forms.ToolStripMenuItem lockLocationToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem lockConnectionToolStripMenuItem;
         private System.Windows.Forms.Button SaveFlowgraph;
+        private System.Windows.Forms.Button DEBUG_CalcPositions;
     }
 }
 
