@@ -2,7 +2,6 @@
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CathodeLib;
-using CommandsEditor.Nodes;
 using ST.Library.UI.NodeEditor;
 using System;
 using System.Collections.Generic;
@@ -116,9 +115,11 @@ namespace CommandsEditor
                         if (x > 0)
                         {
                             instanceNode = new CathodeNode();
+                            instanceNode.Entity = node.Entity;
                             instanceNode.SetName(node.Title, node.SubTitle);
-                            instanceNode.SetColour(node.BackColor, node.ForeColor);
-                            instanceNode.SetPosition(new Point(node.Location.X + (10 * x), node.Location.Y + (10 * x)));
+                            instanceNode.SetColour(node.TitleColor, node.ForeColor);
+                            instanceNode.AddInputOption(((VariableEntity)node.Entity).name); //todo: validate that connections in/out of a variable entity are always the variable name
+                            instanceNode.AddOutputOption(((VariableEntity)node.Entity).name);
                             nodesToAdd.Add(instanceNode);
                         }
                         instanceNode.SetPosition(variableNodeMeta.Instances[x].Position);
@@ -170,6 +171,8 @@ namespace CommandsEditor
                         instanceNode.Recompute();
                     }
 
+                    //there is a problem with multi nodes
+
                     if (connectionsIn > 0)
                     {
                         string sdfsdf = "";
@@ -220,6 +223,10 @@ namespace CommandsEditor
                     continue;
 
                 CathodeNode node = (CathodeNode)editor.Nodes[i];
+                if (node.Title == "MissionComposite")
+                {
+                    string sdfsdf = "";
+                }
                 FlowgraphMeta.VariableNodeMeta variableNodeMeta = flowgraphMeta.VariableNodes.FirstOrDefault(o => o.ID == node.ShortGUID);
                 if (variableNodeMeta == null)
                 {

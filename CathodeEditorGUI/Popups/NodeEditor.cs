@@ -15,7 +15,6 @@ using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using CommandsEditor.Popups.Base;
 using WebSocketSharp;
 using System.Security.Cryptography;
-using CommandsEditor.Nodes;
 using CommandsEditor.DockPanels;
 using OpenCAGE;
 using WeifenLuo.WinFormsUI.Docking;
@@ -266,7 +265,7 @@ namespace CommandsEditor
                 return null;
 
             CathodeNode node = new CathodeNode();
-            node.ShortGUID = entity.shortGUID;
+            node.Entity = entity;
             switch (entity.variant)
             {
                 case EntityVariant.PROXY:

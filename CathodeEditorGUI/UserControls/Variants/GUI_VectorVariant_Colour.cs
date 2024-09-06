@@ -10,7 +10,6 @@ using System.Windows.Forms;
 using CATHODE.Scripting;
 using CathodeLib;
 using CATHODE;
-using CommandsEditor.Nodes;
 using Newtonsoft.Json;
 
 namespace CommandsEditor.UserControls

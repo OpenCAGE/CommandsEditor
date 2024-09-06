@@ -5,7 +5,6 @@ using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CathodeLib;
 using CommandsEditor.DockPanels;
-using CommandsEditor.Nodes;
 using CommandsEditor.Popups;
 using CommandsEditor.Scripts;
 using CommandsEditor.UserControls;
