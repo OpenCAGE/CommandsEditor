@@ -49,21 +49,18 @@
             this.removeToolStripMenuItem.Name = "removeToolStripMenuItem";
             this.removeToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
             this.removeToolStripMenuItem.Text = "&Remove";
-            this.removeToolStripMenuItem.Click += new System.EventHandler(this.removeToolStripMenuItem_Click);
             // 
             // lockLocationToolStripMenuItem
             // 
             this.lockLocationToolStripMenuItem.Name = "lockLocationToolStripMenuItem";
             this.lockLocationToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
             this.lockLocationToolStripMenuItem.Text = "U/Lock &Location";
-            this.lockLocationToolStripMenuItem.Click += new System.EventHandler(this.lockLocationToolStripMenuItem_Click);
             // 
             // lockConnectionToolStripMenuItem
             // 
             this.lockConnectionToolStripMenuItem.Name = "lockConnectionToolStripMenuItem";
             this.lockConnectionToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
             this.lockConnectionToolStripMenuItem.Text = "U/Lock &Connection";
-            this.lockConnectionToolStripMenuItem.Click += new System.EventHandler(this.lockConnectionToolStripMenuItem_Click);
             // 
             // stNodeEditor1
             // 
