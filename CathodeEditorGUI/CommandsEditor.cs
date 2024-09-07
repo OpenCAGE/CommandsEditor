@@ -62,6 +62,7 @@ namespace CommandsEditor
 
         public CommandsEditor(string level = null)
         {
+            //LocalDebug.CheckVariablesHaveNoRogueParams();
             NodePositionDatabase.DO_UPDATE();
 
             Singleton.Editor = this;

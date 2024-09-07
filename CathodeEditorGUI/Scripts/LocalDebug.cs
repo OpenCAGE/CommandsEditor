@@ -278,6 +278,46 @@ namespace CommandsEditor
 #endif
         }
 
+        public static void CheckVariablesHaveNoRogueParams()
+        {
+            List<string> files = Directory.GetFiles("F:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\data_orig\\ENV\\Production", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            foreach (string file in files)
+            {
+                Commands commands = new Commands(file);
+                foreach (Composite comp in commands.Entries)
+                {
+                    foreach (VariableEntity var in comp.variables)
+                    {
+                        List<EntityConnector> connectionsIn = var.GetParentLinks(comp);
+                        List<EntityConnector> connectionsOut = var.childLinks;
+
+                        foreach (EntityConnector connection in connectionsIn)
+                        {
+                            if (connection.thisParamID != var.name)
+                            {
+                                string sdff = "";
+                            }
+                        }
+                        foreach (EntityConnector connection in connectionsOut)
+                        {
+                            if (connection.thisParamID != var.name)
+                            {
+                                string sdff = "";
+                            }
+                        }
+
+                        foreach (Parameter param in var.parameters)
+                        {
+                            if (param.name != var.name) 
+                            {
+                                string sdff = "";
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         public static void checkanims()
         {
 #if DEBUG

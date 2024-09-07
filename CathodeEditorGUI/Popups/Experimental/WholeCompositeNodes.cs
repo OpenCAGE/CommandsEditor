@@ -65,6 +65,14 @@ namespace CommandsEditor
                     STNodeOption linkOut = mainNode.AddOutputOption(entities[i].childLinks[x].thisParamID);
                     linkIn.ConnectOption(linkOut);
                 }
+
+                //we should ensure variable entities always have a pin in/out for easier editing
+                if (entities[i].variant == EntityVariant.VARIABLE)
+                {
+                    VariableEntity varEnt = (VariableEntity)entities[i];
+                    mainNode.AddInputOption(varEnt.name);
+                    mainNode.AddOutputOption(varEnt.name);
+                }
             }
 
             this.Text = _composite.name;
@@ -148,8 +156,11 @@ namespace CommandsEditor
                         }
                         break;
                     case EntityVariant.VARIABLE:
+                        VariableEntity varEnt = (VariableEntity)entity;
                         node.SetColour(Color.Red, Color.White);
-                        node.SetName(((VariableEntity)entity).name.ToString());
+                        node.SetName(varEnt.name.ToString());
+                        node.AddInputOption(varEnt.name);
+                        node.AddOutputOption(varEnt.name);
                         break;
                 }
                 node.Recompute();

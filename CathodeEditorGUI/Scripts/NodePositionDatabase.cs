@@ -109,6 +109,13 @@ namespace CommandsEditor
                     int connectionsIn = node.GetInputOptions().Length;
                     int connectionsOut = node.GetOutputOptions().Length;
 
+                    if (variableNodeMeta.Instances.Count > 1)
+                    {
+                        //note to self: there is currently a problem where it all freezes if you spawn two of the same variable entity. need to find out why.
+                        // the whole implementation of it is kinda jank so would be good to re-evaluate. maybe just leave it and revisit after the editing support is working.
+                        string gsdff = ";";
+                    }
+
                     for (int x = 0; x < variableNodeMeta.Instances.Count; x++)
                     {
                         CathodeNode instanceNode = node;
@@ -118,7 +125,7 @@ namespace CommandsEditor
                             instanceNode.Entity = node.Entity;
                             instanceNode.SetName(node.Title, node.SubTitle);
                             instanceNode.SetColour(node.TitleColor, node.ForeColor);
-                            instanceNode.AddInputOption(((VariableEntity)node.Entity).name); //todo: validate that connections in/out of a variable entity are always the variable name
+                            instanceNode.AddInputOption(((VariableEntity)node.Entity).name);
                             instanceNode.AddOutputOption(((VariableEntity)node.Entity).name);
                             nodesToAdd.Add(instanceNode);
                         }
@@ -223,10 +230,6 @@ namespace CommandsEditor
                     continue;
 
                 CathodeNode node = (CathodeNode)editor.Nodes[i];
-                if (node.Title == "MissionComposite")
-                {
-                    string sdfsdf = "";
-                }
                 FlowgraphMeta.VariableNodeMeta variableNodeMeta = flowgraphMeta.VariableNodes.FirstOrDefault(o => o.ID == node.ShortGUID);
                 if (variableNodeMeta == null)
                 {
