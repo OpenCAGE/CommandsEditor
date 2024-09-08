@@ -40,6 +40,12 @@
     <Reference Include="ST.Library.UI">
       <HintPath>..\STNodeEditor\ST.Library.UI\bin\Debug\ST.Library.UI.dll</HintPath>
     </Reference>
+    <Reference Include="WeifenLuo.WinFormsUI.Docking">
+      <HintPath>..\DockPanelSuite\WinFormsUI\bin\Debug\net40\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
+    </Reference>
+    <Reference Include="WeifenLuo.WinFormsUI.Docking.ThemeVS2015">
+      <HintPath>..\DockPanelSuite\WinFormsUI\bin\Debug\net40\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll</HintPath>
+    </Reference>
     <Reference Include="WebsocketSharp">
       <HintPath>lib\WebsocketSharp\websocket-sharp.dll</HintPath>
     </Reference>
@@ -59,6 +65,12 @@
     </Reference>
     <Reference Include="ST.Library.UI">
       <HintPath>..\STNodeEditor\ST.Library.UI\bin\Release\ST.Library.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="WeifenLuo.WinFormsUI.Docking">
+      <HintPath>..\DockPanelSuite\WinFormsUI\bin\Release\net40\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
+    </Reference>
+    <Reference Include="WeifenLuo.WinFormsUI.Docking.ThemeVS2015">
+      <HintPath>..\DockPanelSuite\WinFormsUI\bin\Release\net40\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll</HintPath>
     </Reference>
     <Reference Include="WebsocketSharp">
       <HintPath>lib\WebsocketSharp\websocket-sharp.dll</HintPath>
@@ -248,12 +260,6 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="UIAutomationProvider" />
-    <Reference Include="WeifenLuo.WinFormsUI.Docking, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5cded1a1a0a7b481, processorArchitecture=MSIL">
-      <HintPath>packages\DockPanelSuite.3.1.0\lib\net40\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
-    </Reference>
-    <Reference Include="WeifenLuo.WinFormsUI.Docking.ThemeVS2015, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5cded1a1a0a7b481, processorArchitecture=MSIL">
-      <HintPath>packages\DockPanelSuite.ThemeVS2015.3.1.0\lib\net40\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll</HintPath>
-    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>

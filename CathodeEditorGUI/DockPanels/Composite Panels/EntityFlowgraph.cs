@@ -42,6 +42,14 @@ namespace CommandsEditor
             stNodeEditor1.LoadAssembly(Application.ExecutablePath);
             stNodeEditor1.SelectedChanged += Owner_SelectedChanged;
 
+#if !DEBUG
+            DEBUG_CalcPositions.Visible = false;
+            DEBUG_DumpUnfinished.Visible = false;
+            DEBUG_Duplicate.Visible = false;
+            DEBUG_NextAndSave.Visible = false;
+            DEBUG_NextUnfinished.Visible = false;
+#endif
+
             Singleton.OnEntitySelected += UpdateSelectedEntity;
         }
 

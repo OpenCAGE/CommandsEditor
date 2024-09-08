@@ -78,6 +78,9 @@ namespace CommandsEditor.DockPanels
             _entityDisplay.Show(dockPanel, DockState.DockRightAutoHide);
             _entityDisplay.FormClosing += OnEntityDisplayClosing;
 
+            //dockPanel.DocumentStyle = DocumentStyle.DockingWindow;
+            dockPanel.DocumentTabStripLocation = DocumentTabStripLocation.Bottom;
+
             this.FormClosed += CompositeDisplay_FormClosed;
         }
 
