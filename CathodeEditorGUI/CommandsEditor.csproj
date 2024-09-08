@@ -264,6 +264,12 @@
     <Compile Include="CommandsEditor.Designer.cs">
       <DependentUpon>CommandsEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="DockPanels\Composite Panels\EntityList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DockPanels\Composite Panels\EntityList.Designer.cs">
+      <DependentUpon>EntityList.cs</DependentUpon>
+    </Compile>
     <Compile Include="DockPanels\CompositeDisplay.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -276,10 +282,10 @@
     <Compile Include="DockPanels\CommandsDisplay.Designer.cs">
       <DependentUpon>CommandsDisplay.cs</DependentUpon>
     </Compile>
-    <Compile Include="DockPanels\EntityDisplay.cs">
+    <Compile Include="DockPanels\Composite Panels\EntityDisplay.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DockPanels\EntityDisplay.Designer.cs">
+    <Compile Include="DockPanels\Composite Panels\EntityDisplay.Designer.cs">
       <DependentUpon>EntityDisplay.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\AddEntity_CompositeInstance.cs">
@@ -306,11 +312,11 @@
     <Compile Include="Popups\AddFolder.Designer.cs">
       <DependentUpon>AddFolder.cs</DependentUpon>
     </Compile>
-    <Compile Include="Popups\Experimental\WholeCompositeNodes.cs">
+    <Compile Include="DockPanels\Composite Panels\EntityFlowgraph.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Popups\Experimental\WholeCompositeNodes.Designer.cs">
-      <DependentUpon>WholeCompositeNodes.cs</DependentUpon>
+    <Compile Include="DockPanels\Composite Panels\EntityFlowgraph.Designer.cs">
+      <DependentUpon>EntityFlowgraph.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\ExportComposite.cs">
       <SubType>Form</SubType>
@@ -363,6 +369,7 @@
     <Compile Include="Popups\UserControls\CompositeEntityList.Designer.cs">
       <DependentUpon>CompositeEntityList.cs</DependentUpon>
     </Compile>
+    <Compile Include="Scripts\CompositePath.cs" />
     <Compile Include="Scripts\DirectXTexUtility.cs" />
     <Compile Include="Scripts\InstanceWriter.cs" />
     <Compile Include="Scripts\LevelContent.cs" />
@@ -682,13 +689,16 @@
     <EmbeddedResource Include="CommandsEditor.resx">
       <DependentUpon>CommandsEditor.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="DockPanels\Composite Panels\EntityList.resx">
+      <DependentUpon>EntityList.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="DockPanels\CompositeDisplay.resx">
       <DependentUpon>CompositeDisplay.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DockPanels\CommandsDisplay.resx">
       <DependentUpon>CommandsDisplay.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DockPanels\EntityDisplay.resx">
+    <EmbeddedResource Include="DockPanels\Composite Panels\EntityDisplay.resx">
       <DependentUpon>EntityDisplay.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\AddEntity_CompositeInstance.resx">
@@ -703,8 +713,8 @@
     <EmbeddedResource Include="Popups\AddFolder.resx">
       <DependentUpon>AddFolder.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Popups\Experimental\WholeCompositeNodes.resx">
-      <DependentUpon>WholeCompositeNodes.cs</DependentUpon>
+    <EmbeddedResource Include="DockPanels\Composite Panels\EntityFlowgraph.resx">
+      <DependentUpon>EntityFlowgraph.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\ExportComposite.resx">
       <DependentUpon>ExportComposite.cs</DependentUpon>

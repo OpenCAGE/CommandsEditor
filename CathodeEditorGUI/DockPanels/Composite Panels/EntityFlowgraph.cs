@@ -28,16 +28,56 @@ using System.Windows.Input;
 
 namespace CommandsEditor
 {
-    public partial class WholeCompositeNodes : DockContent
+    public partial class EntityFlowgraph : DockContent
     {
         protected LevelContent Content => Singleton.Editor?.CommandsDisplay?.Content;
 
         private Composite _composite;
         private int _spawnOffset = 0;
 
-        public WholeCompositeNodes()
+        public EntityFlowgraph()
         {
             InitializeComponent();
+
+            stNodeEditor1.LoadAssembly(Application.ExecutablePath);
+            stNodeEditor1.SelectedChanged += Owner_SelectedChanged;
+
+            Singleton.OnEntitySelected += UpdateSelectedEntity;
+        }
+
+        private Entity _previouslySelectedEntity = null;
+        private void Owner_SelectedChanged(object sender, EventArgs e)
+        {
+            STNode[] nodes = stNodeEditor1.GetSelectedNode();
+            if (nodes.Length != 1) return;
+
+            Entity ent = Singleton.Editor.ActiveCompositeDisplay?.Composite?.GetEntityByID(((CathodeNode)nodes[0]).ShortGUID);
+            if (ent == _previouslySelectedEntity) return;
+            _previouslySelectedEntity = ent;
+
+            Singleton.Editor.ActiveCompositeDisplay?.LoadEntity(ent);
+            Singleton.OnEntitySelected?.Invoke(ent); //need to call this again b/c the activation event doesn't fire here
+        }
+
+        private void UpdateSelectedEntity(Entity entity)
+        {
+            if (entity == null)
+            {
+                for (int i = 0; i < stNodeEditor1.Nodes.Count; i++)
+                {
+                    stNodeEditor1.Nodes[i].SetSelected(false, true);
+                }
+                return;
+            }
+
+            for (int i = 0; i < stNodeEditor1.Nodes.Count; i++)
+            {
+                if (stNodeEditor1.Nodes[i].ShortGUID == entity.shortGUID)
+                {
+                    stNodeEditor1.Nodes[i].SetSelected(true, true);
+                    return;
+                }
+            }
         }
 
         public void ShowComposite(Composite composite)

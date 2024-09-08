@@ -890,7 +890,7 @@ namespace CommandsEditor
             dockPanel.DockBottomPortion = _defaultSplitterDistance;
 
             _commandsDisplay?.ResetSplitter();
-            _activeCompositeDisplay?.ResetSplitter();
+            //_activeCompositeDisplay?.ResetSplitter();
 
             if (_nodeViewer != null)
             {

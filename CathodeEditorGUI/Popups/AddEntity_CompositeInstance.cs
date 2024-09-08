@@ -19,14 +19,14 @@ namespace CommandsEditor
     public partial class AddEntity_CompositeInstance : BaseWindow
     {
         private TreeUtility _treeUtility;
-        private CompositeDisplay _compositeDisplay;
+        private Composite _composite;
 
-        public AddEntity_CompositeInstance(CompositeDisplay compositeDisplay) : base(WindowClosesOn.NEW_COMPOSITE_SELECTION | WindowClosesOn.COMMANDS_RELOAD)
+        public AddEntity_CompositeInstance(Composite composite) : base(WindowClosesOn.NEW_COMPOSITE_SELECTION | WindowClosesOn.COMMANDS_RELOAD)
         {
             InitializeComponent();
 
             _treeUtility = new TreeUtility(compositeTree);
-            _compositeDisplay = compositeDisplay;
+            _composite = composite;
 
             _treeUtility.UpdateFileTree(Content.commands.GetCompositeNames().ToList());
 
@@ -106,7 +106,7 @@ namespace CommandsEditor
             }
 
             //Check logic errors (we can't have cyclical references)
-            if (comp == _compositeDisplay.Composite)
+            if (comp == _composite)
             {
                 MessageBox.Show("You cannot create an entity which instances the composite it is contained with - this will result in an infinite loop at runtime! Please check your logic!.", "Logic error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -114,8 +114,8 @@ namespace CommandsEditor
 
             Singleton.OnEntityAddPending?.Invoke();
 
-            Entity newEntity = _compositeDisplay.Composite.AddFunction(comp, addDefaultParams.Checked);
-            EntityUtils.SetName(_compositeDisplay.Composite, newEntity, entityName.Text);
+            Entity newEntity = _composite.AddFunction(comp, addDefaultParams.Checked);
+            EntityUtils.SetName(_composite, newEntity, entityName.Text);
 
             Content.editor_utils.GenerateCompositeInstances(Content.commands);
 

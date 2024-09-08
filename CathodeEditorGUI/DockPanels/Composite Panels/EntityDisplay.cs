@@ -34,9 +34,13 @@ namespace CommandsEditor.DockPanels
         public Entity Entity => _entity;
         public Composite Composite => _compositeDisplay.Composite;
 
-        public EntityDisplay(CompositeDisplay compositeDisplay)
+        private bool _displayLinks = true;
+        public bool DisplayLinks => _displayLinks;
+
+        public EntityDisplay(CompositeDisplay compositeDisplay, bool displayLinks = true)
         {
             _compositeDisplay = compositeDisplay;
+            _displayLinks = displayLinks;
 
             this.FormClosing += (s, e) => { DepopulateUI(); };
             this.FormClosed += EntityDisplay_FormClosed;
@@ -84,13 +88,13 @@ namespace CommandsEditor.DockPanels
             _entity = entity;
             _entityCompositePtr = _entity.variant == EntityVariant.FUNCTION ? Content.commands.GetComposite(((FunctionEntity)_entity).function) : null;
 
-            switch (entity.variant)
+            switch (_entity.variant)
             {
                 case EntityVariant.VARIABLE:
                     this.Icon = Resources.AnimatorController_Icon;
                     break;
                 case EntityVariant.FUNCTION:
-                    if (Content.commands.GetComposite(((FunctionEntity)entity).function) == null)
+                    if (Content.commands.GetComposite(((FunctionEntity)_entity).function) == null)
                         this.Icon = Resources.d_ScriptableObject_Icon_braces_only;
                     else
                         this.Icon = Resources.d_PrefabVariant_Icon;
@@ -207,16 +211,6 @@ namespace CommandsEditor.DockPanels
             switch (_entity.variant)
             {
                 case EntityVariant.FUNCTION:
-
-#if DEBUG
-                    //TODO: REMOVE TEST CODE
-                    //var hierarchies = Content.editor_utils.GetHierarchiesForEntity(Composite, Entity);
-                    //for (int i = 0; i < hierarchies.Count; i++)
-                    //{
-                    //    Console.WriteLine(hierarchies[i].GenerateInstance());
-                    //}
-#endif
-
                     selected_entity_name.Text = EntityUtils.GetName(Composite.shortGUID, _entity.shortGUID);
 
                     //Composite Instance
@@ -267,23 +261,26 @@ namespace CommandsEditor.DockPanels
             if (Content.mvr != null && Content.mvr.Entries.FindAll(o => o.entity.entity_id == this._entity.shortGUID).Count != 0)
                 editEntityMovers.Enabled = true;
 
-            //populate linked params IN
             int current_ui_offset = 7;
-            List<Entity> ents = Composite.GetEntities();
-            foreach (Entity ent in ents)
+            if (_displayLinks)
             {
-                foreach (EntityConnector link in ent.childLinks)
+                //populate linked params IN
+                List<Entity> ents = Composite.GetEntities();
+                foreach (Entity ent in ents)
                 {
-                    if (link.linkedEntityID != _entity.shortGUID) continue;
-                    GUI_Link parameterGUI = new GUI_Link(this);
-                    parameterGUI.PopulateUI(link, false, ent.shortGUID);
-                    parameterGUI.GoToEntity += _compositeDisplay.LoadEntity;
-                    parameterGUI.OnLinkEdited += OnLinkEdited;
-                    parameterGUI.Location = new Point(15, current_ui_offset);
-                    parameterGUI.Width = entity_params.Width - 30;
-                    parameterGUI.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
-                    current_ui_offset += parameterGUI.Height + 6;
-                    controls.Add(parameterGUI);
+                    foreach (EntityConnector link in ent.childLinks)
+                    {
+                        if (link.linkedEntityID != _entity.shortGUID) continue;
+                        GUI_Link parameterGUI = new GUI_Link(this);
+                        parameterGUI.PopulateUI(link, false, ent.shortGUID);
+                        parameterGUI.GoToEntity += _compositeDisplay.LoadEntity;
+                        parameterGUI.OnLinkEdited += OnLinkEdited;
+                        parameterGUI.Location = new Point(15, current_ui_offset);
+                        parameterGUI.Width = entity_params.Width - 30;
+                        parameterGUI.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
+                        current_ui_offset += parameterGUI.Height + 6;
+                        controls.Add(parameterGUI);
+                    }
                 }
             }
 
@@ -458,18 +455,21 @@ namespace CommandsEditor.DockPanels
                 controls.Add(parameterGUI);
             }
 
-            //populate linked params OUT
-            for (int i = 0; i < _entity.childLinks.Count; i++)
+            if (_displayLinks)
             {
-                GUI_Link parameterGUI = new GUI_Link(this);
-                parameterGUI.PopulateUI(_entity.childLinks[i], true);
-                parameterGUI.GoToEntity += _compositeDisplay.LoadEntity;
-                parameterGUI.OnLinkEdited += OnLinkEdited;
-                parameterGUI.Location = new Point(15, current_ui_offset);
-                parameterGUI.Width = entity_params.Width - 30;
-                parameterGUI.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
-                current_ui_offset += parameterGUI.Height + 6;
-                controls.Add(parameterGUI);
+                //populate linked params OUT
+                for (int i = 0; i < _entity.childLinks.Count; i++)
+                {
+                    GUI_Link parameterGUI = new GUI_Link(this);
+                    parameterGUI.PopulateUI(_entity.childLinks[i], true);
+                    parameterGUI.GoToEntity += _compositeDisplay.LoadEntity;
+                    parameterGUI.OnLinkEdited += OnLinkEdited;
+                    parameterGUI.Location = new Point(15, current_ui_offset);
+                    parameterGUI.Width = entity_params.Width - 30;
+                    parameterGUI.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
+                    current_ui_offset += parameterGUI.Height + 6;
+                    controls.Add(parameterGUI);
+                }
             }
 
             entity_params.SuspendLayout();

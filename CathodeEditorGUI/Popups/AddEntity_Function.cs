@@ -19,14 +19,14 @@ namespace CommandsEditor
     public partial class AddEntity_Function : BaseWindow
     {
         private List<ListViewItem> _items = new List<ListViewItem>();
-        private CompositeDisplay _compositeDisplay;
+        private Composite _composite;
 
         private ListViewColumnSorter _sorter = new ListViewColumnSorter();
 
-        public AddEntity_Function(CompositeDisplay compositeDisplay) : base (WindowClosesOn.NEW_COMPOSITE_SELECTION | WindowClosesOn.COMMANDS_RELOAD)
+        public AddEntity_Function(Composite composite) : base (WindowClosesOn.NEW_COMPOSITE_SELECTION | WindowClosesOn.COMMANDS_RELOAD)
         {
             InitializeComponent();
-            _compositeDisplay = compositeDisplay;
+            _composite = composite;
             functionTypeList.ListViewItemSorter = _sorter;
 
             List<CathodeEntityDatabase.EntityDefinition> entDefs = CathodeEntityDatabase.GetEntities();
@@ -121,21 +121,21 @@ namespace CommandsEditor
             }
 
             //A composite can only have one PhysicsSystem
-            if (function == FunctionType.PhysicsSystem && _compositeDisplay.Composite.functions.FirstOrDefault(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.PhysicsSystem)) != null)
+            if (function == FunctionType.PhysicsSystem && _composite.functions.FirstOrDefault(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.PhysicsSystem)) != null)
             {
                 MessageBox.Show("You are trying to add a PhysicsSystem entity to a composite that already has one applied.", "PhysicsSystem error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
             //A composite can only have one EnvironmentModelReference
-            if (function == FunctionType.EnvironmentModelReference && _compositeDisplay.Composite.functions.FirstOrDefault(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.EnvironmentModelReference)) != null)
+            if (function == FunctionType.EnvironmentModelReference && _composite.functions.FirstOrDefault(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.EnvironmentModelReference)) != null)
             {
                 MessageBox.Show("You are trying to add a EnvironmentModelReference entity to a composite that already has one applied.", "EnvironmentModelReference error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
             Singleton.OnEntityAddPending?.Invoke();
-            Entity newEntity = _compositeDisplay.Composite.AddFunction(function, addDefaultParams.Checked);
+            Entity newEntity = _composite.AddFunction(function, addDefaultParams.Checked);
 
             //TODO: currently we don't support these properly
             if (addDefaultParams.Checked)
@@ -144,7 +144,7 @@ namespace CommandsEditor
                 newEntity.parameters.RemoveAll(o => o.content.dataType == DataType.RESOURCE); //TODO
             }
 
-            EntityUtils.SetName(_compositeDisplay.Composite, newEntity, entityName.Text);
+            EntityUtils.SetName(_composite, newEntity, entityName.Text);
             SettingsManager.SetString(Singleton.Settings.PreviouslySelectedFunctionType, entDef.className);
             SettingsManager.SetBool(Singleton.Settings.PreviouslySearchedParamPopulation, addDefaultParams.Checked);
 

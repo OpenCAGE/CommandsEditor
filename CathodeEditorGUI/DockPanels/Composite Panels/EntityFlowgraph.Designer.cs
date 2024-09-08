@@ -1,6 +1,6 @@
 ﻿namespace CommandsEditor
 {
-    partial class WholeCompositeNodes
+    partial class EntityFlowgraph
     {
         /// <summary>
         /// Required designer variable.
@@ -26,7 +26,7 @@
         /// </summary>
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WholeCompositeNodes));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EntityFlowgraph));
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.removeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lockLocationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -159,7 +159,7 @@
             this.DEBUG_Duplicate.UseVisualStyleBackColor = true;
             this.DEBUG_Duplicate.Click += new System.EventHandler(this.DEBUG_Duplicate_Click);
             // 
-            // WholeCompositeNodes
+            // EntityFlowgraph
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -173,9 +173,9 @@
             this.Controls.Add(this.stNodeEditor1);
             this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "WholeCompositeNodes";
+            this.Name = "EntityFlowgraph";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Nodegraph";
+            this.Text = "Flowgraph";
             this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
 
