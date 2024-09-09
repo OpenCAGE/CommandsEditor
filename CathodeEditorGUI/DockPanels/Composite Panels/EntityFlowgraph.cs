@@ -325,14 +325,18 @@ namespace CommandsEditor
 
         private void DEBUG_NextUnfinished_Click(object sender, EventArgs e)
         {
-            for (int i = 0; i < Content.commands.Entries.Count; i++)
+            int index = Content.commands.Entries.IndexOf(_composite) + 1;
+            if (index >= Content.commands.Entries.Count)
+                index = 0;
+            
+            while (NodePositionDatabase.CanRestoreFlowgraph(Content.commands.Entries[index].name))
             {
-                if (!NodePositionDatabase.CanRestoreFlowgraph(Content.commands.Entries[i].name))
-                {
-                    ShowComposite(Content.commands.Entries[i]);
-                    return;
-                }    
+                if (index + 1 >= Content.commands.Entries.Count)
+                    index = 0;
+                else
+                    index += 1;
             }
+            ShowComposite(Content.commands.Entries[index]);
         }
 
         private void DEBUG_DumpUnfinished_Click(object sender, EventArgs e)
