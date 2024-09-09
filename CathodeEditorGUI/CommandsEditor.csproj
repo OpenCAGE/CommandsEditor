@@ -421,12 +421,6 @@
     <Compile Include="Popups\Function Editors\CharacterEditor.Designer.cs">
       <DependentUpon>CharacterEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="Popups\NodeEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Popups\NodeEditor.Designer.cs">
-      <DependentUpon>NodeEditor.cs</DependentUpon>
-    </Compile>
     <Compile Include="Popups\Function Editors\CAGEAnimation\CAGEAnimation_SelectParameter.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -754,9 +748,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\Function Editors\CharacterEditor.resx">
       <DependentUpon>CharacterEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Popups\NodeEditor.resx">
-      <DependentUpon>NodeEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\Function Editors\CAGEAnimationEditor.resx">
       <DependentUpon>CAGEAnimationEditor.cs</DependentUpon>

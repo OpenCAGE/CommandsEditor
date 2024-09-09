@@ -42,11 +42,7 @@ namespace CommandsEditor
         private CommandsDisplay _commandsDisplay = null;
         public CommandsDisplay CommandsDisplay => _commandsDisplay;
 
-        private NodeEditor _nodeViewer = null;
         private SelectLevel _levelSelect = null;
-
-        private CompositeDisplay _activeCompositeDisplay = null;
-        public CompositeDisplay ActiveCompositeDisplay => _activeCompositeDisplay;
 
         private WebSocketServer _server;
         private WebsocketServer _serverLogic;
@@ -84,8 +80,6 @@ namespace CommandsEditor
             dockPanel.DockLeftPortion = SettingsManager.GetFloat(Singleton.Settings.CommandsSplitWidth, _defaultSplitterDistance);
             dockPanel.DockBottomPortion = SettingsManager.GetFloat(Singleton.Settings.SplitWidthMainBottom, _defaultSplitterDistance);
             dockPanel.DockRightPortion = SettingsManager.GetFloat(Singleton.Settings.SplitWidthMainRight, _defaultSplitterDistance);
-
-            dockPanel.ActiveContentChanged += DockPanel_ActiveContentChanged;
             dockPanel.ShowDocumentIcon = true;
 
             _defaultWidth = Width;
@@ -115,12 +109,6 @@ namespace CommandsEditor
             nodeOpensEntity.Checked = !SettingsManager.GetBool(Singleton.Settings.OpenEntityFromNode); nodeOpensEntity.PerformClick();
             useLegacyParameterCreatorToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.UseLegacyParamCreator); useLegacyParameterCreatorToolStripMenuItem.PerformClick();
             writeInstancedResourcesExperimentalToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.ExperimentalResourceStuff); writeInstancedResourcesExperimentalToolStripMenuItem.PerformClick();
-
-            if (!SettingsManager.IsSet(Singleton.Settings.NodeOpt)) SettingsManager.SetBool(Singleton.Settings.NodeOpt, true);
-            showNodegraph.Checked = !SettingsManager.GetBool(Singleton.Settings.NodeOpt); showNodegraph.PerformClick();
-
-            if (!SettingsManager.IsSet(Singleton.Settings.UseEntityTabs)) SettingsManager.SetBool(Singleton.Settings.UseEntityTabs, true);
-            entitiesOpenTabs.Checked = !SettingsManager.GetBool(Singleton.Settings.UseEntityTabs); entitiesOpenTabs.PerformClick();
 
             if (!SettingsManager.IsSet(Singleton.Settings.ShowSavedMsgOpt)) SettingsManager.SetBool(Singleton.Settings.ShowSavedMsgOpt, true);
             showConfirmationWhenSavingToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.ShowSavedMsgOpt); showConfirmationWhenSavingToolStripMenuItem.PerformClick();
@@ -287,35 +275,6 @@ namespace CommandsEditor
         {
             Singleton.GlobalTextures = new Textures(SharedData.pathToAI + "/DATA/ENV/GLOBAL/WORLD/GLOBAL_TEXTURES.ALL.PAK");
         }
-        
-        /* Monitor the currently active composite tab */
-        private void DockPanel_ActiveContentChanged(object sender, EventArgs e)
-        {
-            CompositeDisplay prevActiveCompositeDisplay = _activeCompositeDisplay;
-            object content = ((DockPanel)sender).ActiveContent;
-
-            if (content is CompositeDisplay)
-                _activeCompositeDisplay = (CompositeDisplay)content;
-            else
-                return;
-
-            if (prevActiveCompositeDisplay == _activeCompositeDisplay) return;
-
-            if (prevActiveCompositeDisplay != null)
-                prevActiveCompositeDisplay.FormClosing -= OnActiveContentClosing;
-            _activeCompositeDisplay.FormClosing += OnActiveContentClosing;
-
-            //Singleton.OnCompositeSelected?.Invoke(_activeCompositeDisplay.Composite);
-        }
-        private void OnActiveContentClosing(object sender, FormClosingEventArgs e)
-        {
-            CompositeDisplay prevActiveCompositeDisplay = _activeCompositeDisplay;
-            _activeCompositeDisplay = null;
-
-            if (prevActiveCompositeDisplay == _activeCompositeDisplay) return;
-
-            Singleton.OnCompositeSelected?.Invoke(null);
-        }
 
         private void loadLevel_Click(object sender, EventArgs e)
         {
@@ -353,7 +312,6 @@ namespace CommandsEditor
             statusText.Text = "Loading " + level + "...";
             statusStrip.Update();
 
-            _activeCompositeDisplay = null;
             _levelSelect = null;
 
             //Close all existing
@@ -743,8 +701,8 @@ namespace CommandsEditor
             }
 
             //Get active stuff
-            Composite composite = ActiveCompositeDisplay?.Composite;
-            Entity entity = ActiveCompositeDisplay?.ActiveEntityDisplay?.Entity;
+            Composite composite = _commandsDisplay?.CompositeDisplay?.Composite;
+            Entity entity = _commandsDisplay?.CompositeDisplay?.EntityDisplay?.Entity;
             Parameter position = entity?.GetParameter("position");
 
             //Load composite
@@ -785,33 +743,6 @@ namespace CommandsEditor
             _server?.WebSocketServices["/commands_editor"].Sessions.Broadcast(JsonConvert.SerializeObject(content));
         }
 
-        private void showNodegraph_Click(object sender, EventArgs e)
-        {
-            showNodegraph.Checked = !showNodegraph.Checked;
-            SettingsManager.SetBool(Singleton.Settings.NodeOpt, showNodegraph.Checked);
-
-            if (showNodegraph.Checked)
-            {
-                _nodeViewer = new NodeEditor();
-                _nodeViewer.Show(dockPanel, (DockState)Enum.Parse(typeof(DockState), SettingsManager.GetString(Singleton.Settings.NodegraphState, "DockRightAutoHide")));
-                _nodeViewer.FormClosed += NodeViewer_FormClosed;
-            }
-            else
-            {
-                if (_nodeViewer != null)
-                {
-                    _nodeViewer.FormClosed -= NodeViewer_FormClosed;
-                    _nodeViewer.Close();
-                    _nodeViewer = null;
-                }
-            }
-        }
-        private void NodeViewer_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            _nodeViewer = null;
-            showNodegraph.PerformClick();
-        }
-
         private void showEntityIDs_Click(object sender, EventArgs e)
         {
             showEntityIDs.Checked = !showEntityIDs.Checked;
@@ -825,14 +756,6 @@ namespace CommandsEditor
         {
             searchOnlyCompositeNames.Checked = !searchOnlyCompositeNames.Checked;
             SettingsManager.SetBool(Singleton.Settings.CompNameOnlyOpt, searchOnlyCompositeNames.Checked);
-        }
-
-        private void entitiesOpenTabs_Click(object sender, EventArgs e)
-        {
-            entitiesOpenTabs.Checked = !entitiesOpenTabs.Checked;
-            SettingsManager.SetBool(Singleton.Settings.UseEntityTabs, entitiesOpenTabs.Checked);
-
-            _commandsDisplay?.CloseAllChildTabs();
         }
 
         private void showConfirmationWhenSavingToolStripMenuItem_Click(object sender, EventArgs e)
@@ -891,12 +814,6 @@ namespace CommandsEditor
 
             _commandsDisplay?.ResetSplitter();
             //_activeCompositeDisplay?.ResetSplitter();
-
-            if (_nodeViewer != null)
-            {
-                _nodeViewer.DockState = DockState.DockRightAutoHide;
-                _nodeViewer.ResetLayout();
-            }
         }
 
         private void writeInstancedResourcesExperimentalToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1318,7 +1235,7 @@ namespace CommandsEditor
             //LocalDebug.checkprefabinstances();
             return;
 
-            List<EntityPath> zoneHandles = _commandsDisplay.Content.editor_utils.GetHierarchiesForEntity(_commandsDisplay.CompositeDisplay.Composite, _commandsDisplay.CompositeDisplay.ActiveEntityDisplay.Entity);
+            List<EntityPath> zoneHandles = _commandsDisplay.Content.editor_utils.GetHierarchiesForEntity(_commandsDisplay.CompositeDisplay.Composite, _commandsDisplay.CompositeDisplay.EntityDisplay.Entity);
             for (int i = 0; i < zoneHandles.Count; i++)
             {
                 ShortGuid zoneID = zoneHandles[i].GenerateZoneID();

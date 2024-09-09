@@ -38,6 +38,7 @@ namespace CommandsEditor
         public EntityFlowgraph()
         {
             InitializeComponent();
+            this.FormClosed += EntityFlowgraph_FormClosed; ;
 
             stNodeEditor1.LoadAssembly(Application.ExecutablePath);
             stNodeEditor1.SelectedChanged += Owner_SelectedChanged;
@@ -50,24 +51,38 @@ namespace CommandsEditor
             DEBUG_NextUnfinished.Visible = false;
 #endif
 
-            Singleton.OnEntitySelected += UpdateSelectedEntity;
+            //todo: i feel like these events should come from the compositedisplay?
+            Singleton.OnEntitySelected += OnEntitySelectedGlobally;
+            Singleton.OnEntityAdded += OnEntityAddedGlobally;
+            Singleton.OnEntityDeleted += OnEntityDeletedGlobally;
+        }
+
+        private void EntityFlowgraph_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            stNodeEditor1.SelectedChanged -= Owner_SelectedChanged;
+            Singleton.OnEntitySelected -= OnEntitySelectedGlobally;
+            Singleton.OnEntityAdded -= OnEntityAddedGlobally;
+            Singleton.OnEntityDeleted -= OnEntityDeletedGlobally;
         }
 
         private Entity _previouslySelectedEntity = null;
         private void Owner_SelectedChanged(object sender, EventArgs e)
         {
+            if (!SettingsManager.GetBool(Singleton.Settings.OpenEntityFromNode))
+                return;
+
             STNode[] nodes = stNodeEditor1.GetSelectedNode();
             if (nodes.Length != 1) return;
 
-            Entity ent = Singleton.Editor.ActiveCompositeDisplay?.Composite?.GetEntityByID(((CathodeNode)nodes[0]).ShortGUID);
+            Entity ent = Singleton.Editor.CommandsDisplay?.CompositeDisplay?.Composite?.GetEntityByID(((CathodeNode)nodes[0]).ShortGUID);
             if (ent == _previouslySelectedEntity) return;
             _previouslySelectedEntity = ent;
 
-            Singleton.Editor.ActiveCompositeDisplay?.LoadEntity(ent);
+            Singleton.Editor.CommandsDisplay?.CompositeDisplay?.LoadEntity(ent);
             Singleton.OnEntitySelected?.Invoke(ent); //need to call this again b/c the activation event doesn't fire here
         }
 
-        private void UpdateSelectedEntity(Entity entity)
+        private void OnEntitySelectedGlobally(Entity entity)
         {
             if (entity == null)
             {
@@ -88,9 +103,34 @@ namespace CommandsEditor
             }
         }
 
+        private void OnEntityAddedGlobally(Entity entity)
+        {
+            EntityToNode(entity, _composite);
+        }
+
+        private void OnEntityDeletedGlobally(Entity entity)
+        {
+            List<STNode> nodes = new List<STNode>();
+            for (int i = 0; i < stNodeEditor1.Nodes.Count; i++)
+            {
+                if (stNodeEditor1.Nodes[i].ShortGUID != entity.shortGUID)
+                    continue;
+
+                nodes.Add(stNodeEditor1.Nodes[i]);
+                break;
+            }
+
+            for (int i = 0; i < nodes.Count; i++)
+            {
+                stNodeEditor1.Nodes.Remove(nodes[i]);
+            }
+        }
+
         public void ShowComposite(Composite composite)
         {
-            CommandsUtils.PurgeDeadLinks(Content.commands, composite);
+            List<Entity> purged = CommandsUtils.PurgeDeadLinks(Content.commands, composite);
+            for (int i = 0; i < purged.Count; i++)
+                Singleton.OnEntityDeleted(purged[i]);
 
             stNodeEditor1.SuspendLayout();
             stNodeEditor1.Nodes.Clear();
@@ -153,14 +193,10 @@ namespace CommandsEditor
             {
                 for (int i = 0; i < stNodeEditor1.Nodes.Count; i++)
                 {
-                    if (!(stNodeEditor1.Nodes[i] is CathodeNode))
+                    if (stNodeEditor1.Nodes[i].ShortGUID != entity.shortGUID)
                         continue;
 
-                    CathodeNode thisNode = (CathodeNode)stNodeEditor1.Nodes[i];
-                    if (thisNode.ShortGUID != entity.shortGUID)
-                        continue;
-
-                    node = thisNode;
+                    node = (CathodeNode)stNodeEditor1.Nodes[i]; //todo: should remove need to cast
                     break;
                 }
             }

@@ -35,6 +35,7 @@
             this.toolStripButton1 = new System.Windows.Forms.ToolStripDropDownButton();
             this.loadLevel = new System.Windows.Forms.ToolStripMenuItem();
             this.saveLevel = new System.Windows.Forms.ToolStripMenuItem();
+            this.buildLevelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripDropDownButton();
             this.connectToUnity = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -43,9 +44,7 @@
             this.autoHideExplorerViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.searchOnlyCompositeNames = new System.Windows.Forms.ToolStripMenuItem();
             this.entityDisplayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.showNodegraph = new System.Windows.Forms.ToolStripMenuItem();
             this.showEntityIDs = new System.Windows.Forms.ToolStripMenuItem();
-            this.entitiesOpenTabs = new System.Windows.Forms.ToolStripMenuItem();
             this.nodeOpensEntity = new System.Windows.Forms.ToolStripMenuItem();
             this.useLegacyParameterCreatorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.miscToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -64,7 +63,6 @@
             this.statusText = new System.Windows.Forms.ToolStripStatusLabel();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.buildLevelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -100,7 +98,7 @@
             // loadLevel
             // 
             this.loadLevel.Name = "loadLevel";
-            this.loadLevel.Size = new System.Drawing.Size(180, 22);
+            this.loadLevel.Size = new System.Drawing.Size(168, 22);
             this.loadLevel.Text = "Load Level";
             // 
             // saveLevel
@@ -108,9 +106,16 @@
             this.saveLevel.Name = "saveLevel";
             this.saveLevel.ShortcutKeyDisplayString = "Ctrl+S";
             this.saveLevel.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveLevel.Size = new System.Drawing.Size(180, 22);
+            this.saveLevel.Size = new System.Drawing.Size(168, 22);
             this.saveLevel.Text = "Save Level";
             this.saveLevel.Click += new System.EventHandler(this.saveLevel_Click);
+            // 
+            // buildLevelToolStripMenuItem
+            // 
+            this.buildLevelToolStripMenuItem.Name = "buildLevelToolStripMenuItem";
+            this.buildLevelToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
+            this.buildLevelToolStripMenuItem.Text = "Build Level";
+            this.buildLevelToolStripMenuItem.Click += new System.EventHandler(this.buildLevelToolStripMenuItem_Click);
             // 
             // toolStripButton2
             // 
@@ -132,7 +137,7 @@
             this.connectToUnity.Checked = true;
             this.connectToUnity.CheckState = System.Windows.Forms.CheckState.Checked;
             this.connectToUnity.Name = "connectToUnity";
-            this.connectToUnity.Size = new System.Drawing.Size(173, 22);
+            this.connectToUnity.Size = new System.Drawing.Size(180, 22);
             this.connectToUnity.Text = "Connect to Unity";
             this.connectToUnity.ToolTipText = "Enable a websocket connection to the Unity Level Viewer.";
             this.connectToUnity.Click += new System.EventHandler(this.connectToUnity_Click);
@@ -140,7 +145,7 @@
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(170, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
             // 
             // compositeViewerToolStripMenuItem
             // 
@@ -149,7 +154,7 @@
             this.autoHideExplorerViewToolStripMenuItem,
             this.searchOnlyCompositeNames});
             this.compositeViewerToolStripMenuItem.Name = "compositeViewerToolStripMenuItem";
-            this.compositeViewerToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.compositeViewerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.compositeViewerToolStripMenuItem.Text = "Composite Display";
             // 
             // showExplorerViewToolStripMenuItem
@@ -181,53 +186,32 @@
             // entityDisplayToolStripMenuItem
             // 
             this.entityDisplayToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.showNodegraph,
             this.showEntityIDs,
-            this.entitiesOpenTabs,
             this.nodeOpensEntity,
             this.useLegacyParameterCreatorToolStripMenuItem});
             this.entityDisplayToolStripMenuItem.Name = "entityDisplayToolStripMenuItem";
-            this.entityDisplayToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.entityDisplayToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.entityDisplayToolStripMenuItem.Text = "Entity Display";
-            // 
-            // showNodegraph
-            // 
-            this.showNodegraph.Checked = true;
-            this.showNodegraph.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.showNodegraph.Name = "showNodegraph";
-            this.showNodegraph.Size = new System.Drawing.Size(312, 22);
-            this.showNodegraph.Text = "Show Nodegraph";
-            this.showNodegraph.ToolTipText = "Show the nodegraph view for the currently selected entity.";
-            this.showNodegraph.Click += new System.EventHandler(this.showNodegraph_Click);
             // 
             // showEntityIDs
             // 
             this.showEntityIDs.Name = "showEntityIDs";
-            this.showEntityIDs.Size = new System.Drawing.Size(312, 22);
+            this.showEntityIDs.Size = new System.Drawing.Size(308, 22);
             this.showEntityIDs.Text = "Show Entity IDs";
             this.showEntityIDs.ToolTipText = "Show entity IDs within the editor UI.";
             this.showEntityIDs.Click += new System.EventHandler(this.showEntityIDs_Click);
             // 
-            // entitiesOpenTabs
-            // 
-            this.entitiesOpenTabs.Name = "entitiesOpenTabs";
-            this.entitiesOpenTabs.Size = new System.Drawing.Size(312, 22);
-            this.entitiesOpenTabs.Text = "Open Entities In New Tabs";
-            this.entitiesOpenTabs.ToolTipText = "If enabled, entities will open in new tabs when selected, allowing multiple to be" +
-    " visible at once.";
-            this.entitiesOpenTabs.Click += new System.EventHandler(this.entitiesOpenTabs_Click);
-            // 
             // nodeOpensEntity
             // 
             this.nodeOpensEntity.Name = "nodeOpensEntity";
-            this.nodeOpensEntity.Size = new System.Drawing.Size(312, 22);
-            this.nodeOpensEntity.Text = "Open Entity When Nodegraph Node Selected";
+            this.nodeOpensEntity.Size = new System.Drawing.Size(308, 22);
+            this.nodeOpensEntity.Text = "Open Entity When Flowgraph Node Selected";
             this.nodeOpensEntity.Click += new System.EventHandler(this.nodeOpensEntity_Click);
             // 
             // useLegacyParameterCreatorToolStripMenuItem
             // 
             this.useLegacyParameterCreatorToolStripMenuItem.Name = "useLegacyParameterCreatorToolStripMenuItem";
-            this.useLegacyParameterCreatorToolStripMenuItem.Size = new System.Drawing.Size(312, 22);
+            this.useLegacyParameterCreatorToolStripMenuItem.Size = new System.Drawing.Size(308, 22);
             this.useLegacyParameterCreatorToolStripMenuItem.Text = "Use Legacy Parameter Creator";
             this.useLegacyParameterCreatorToolStripMenuItem.Click += new System.EventHandler(this.useLegacyParameterCreatorToolStripMenuItem_Click);
             // 
@@ -240,7 +224,7 @@
             this.resetUILayoutsToolStripMenuItem,
             this.writeInstancedResourcesExperimentalToolStripMenuItem});
             this.miscToolStripMenuItem.Name = "miscToolStripMenuItem";
-            this.miscToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.miscToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.miscToolStripMenuItem.Text = "Misc";
             // 
             // showConfirmationWhenSavingToolStripMenuItem
@@ -343,6 +327,7 @@
             this.dockPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dockPanel.DockBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(57)))), ((int)(((byte)(85)))));
             this.dockPanel.DockBottomPortion = 0.35D;
+            this.dockPanel.DocumentTabStripLocation = WeifenLuo.WinFormsUI.Docking.DocumentTabStripLocation.Hidden;
             this.dockPanel.Location = new System.Drawing.Point(0, 25);
             this.dockPanel.Name = "dockPanel";
             this.dockPanel.Padding = new System.Windows.Forms.Padding(6);
@@ -350,13 +335,6 @@
             this.dockPanel.Size = new System.Drawing.Size(1257, 757);
             this.dockPanel.TabIndex = 5;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
-            // 
-            // buildLevelToolStripMenuItem
-            // 
-            this.buildLevelToolStripMenuItem.Name = "buildLevelToolStripMenuItem";
-            this.buildLevelToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.buildLevelToolStripMenuItem.Text = "Build Level";
-            this.buildLevelToolStripMenuItem.Click += new System.EventHandler(this.buildLevelToolStripMenuItem_Click);
             // 
             // CommandsEditor
             // 
@@ -402,9 +380,7 @@
         private System.Windows.Forms.ToolStripMenuItem autoHideExplorerViewToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem searchOnlyCompositeNames;
         private System.Windows.Forms.ToolStripMenuItem entityDisplayToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem showNodegraph;
         private System.Windows.Forms.ToolStripMenuItem showEntityIDs;
-        private System.Windows.Forms.ToolStripMenuItem entitiesOpenTabs;
         private System.Windows.Forms.ToolStripMenuItem miscToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem showConfirmationWhenSavingToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem useTexturedModelViewExperimentalToolStripMenuItem;
