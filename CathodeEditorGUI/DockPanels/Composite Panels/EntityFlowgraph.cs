@@ -49,6 +49,8 @@ namespace CommandsEditor
             DEBUG_Duplicate.Visible = false;
             DEBUG_NextAndSave.Visible = false;
             DEBUG_NextUnfinished.Visible = false;
+            DEBUG_SaveAllNoLinks.Visible = false;
+            DEBUG_Next1Link.Visible = false;
 #endif
 
             //todo: i feel like these events should come from the compositedisplay?
@@ -131,6 +133,8 @@ namespace CommandsEditor
 
         public void ShowComposite(Composite composite)
         {
+            Console.WriteLine("EntityFlowgraph::ShowComposite - " + composite.name);
+
             List<Entity> purged = CommandsUtils.PurgeDeadLinks(Content.commands, composite);
             for (int i = 0; i < purged.Count; i++)
                 Singleton.OnEntityDeleted(purged[i]);
@@ -143,6 +147,8 @@ namespace CommandsEditor
             List<Entity> entities = _composite.GetEntities();
             for (int i = 0; i < entities.Count; i++)
             {
+                //TODO: do we want to only draw nodes with child connections? if not, we want to add a UI for adding entity nodes as well as the connections (drag from entity list?)
+
                 CathodeNode mainNode = EntityToNode(entities[i], _composite);
 
                 for (int x = 0;x < entities[i].childLinks.Count; x++)
@@ -386,6 +392,82 @@ namespace CommandsEditor
                 nodeNew.AddOutputOption(output.ShortGUID);
 
             nodeNew.SetPosition(new Point(node.Location.X + 10, node.Location.Y + 10));
+        }
+
+        private void DEBUG_SaveAllNoLinks_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < Content.commands.Entries.Count; i++)
+            {
+                if (NodePositionDatabase.CanRestoreFlowgraph(Content.commands.Entries[i].name))
+                    continue;
+
+                bool noLinks = true;
+                List<Entity> entities = Content.commands.Entries[i].GetEntities();
+                for (int x = 0; x < entities.Count; x++)
+                {
+                    List<EntityConnector> linksIn = entities[x].GetParentLinks(Content.commands.Entries[i]);
+                    List<EntityConnector> linksOut = entities[x].childLinks;
+
+                    if (linksIn.Count != 0 || linksOut.Count != 0)
+                    {
+                        noLinks = false;
+                        break;
+                    }
+                }
+
+                if (!noLinks)
+                    continue;
+
+                ShowComposite(Content.commands.Entries[i]);
+                SaveFlowgraph_Click(null, null);
+            }
+        }
+
+        private void DEBUG_Next1Link_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < Content.commands.Entries.Count; i++)
+            {
+                if (NodePositionDatabase.CanRestoreFlowgraph(Content.commands.Entries[i].name))
+                    continue;
+
+                bool shouldGenerate = false;
+                Entity entWithLinksInAndOut = null;
+                List<Entity> entities = Content.commands.Entries[i].GetEntities();
+                for (int x = 0; x < entities.Count; x++)
+                {
+                    List<EntityConnector> linksIn = entities[x].GetParentLinks(Content.commands.Entries[i]);
+                    List<EntityConnector> linksOut = entities[x].childLinks;
+
+                    if (linksIn.Count != 0 && linksOut.Count != 0)
+                    {
+                        if (entWithLinksInAndOut == null)
+                        {
+                            entWithLinksInAndOut = entities[x];
+                            shouldGenerate = true;
+                        }
+                        else
+                        {
+                            shouldGenerate = false;
+                        }
+                    }
+                }
+
+                if (shouldGenerate)
+                {
+                    ShowComposite(Content.commands.Entries[i]);
+                    STNode node = null;
+                    for (int x = 0; x < stNodeEditor1.Nodes.Count; x++)
+                    {
+                        if (stNodeEditor1.Nodes[x].ShortGUID != entWithLinksInAndOut.shortGUID)
+                            continue;
+
+                        node = stNodeEditor1.Nodes[x]; 
+                        break;
+                    }
+                    TestAlignNode(node);
+                    return;
+                }
+            }
         }
     }
 }

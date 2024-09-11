@@ -38,6 +38,8 @@
             this.DEBUG_NextAndSave = new System.Windows.Forms.Button();
             this.stNodeEditor1 = new ST.Library.UI.NodeEditor.STNodeEditor();
             this.DEBUG_Duplicate = new System.Windows.Forms.Button();
+            this.DEBUG_SaveAllNoLinks = new System.Windows.Forms.Button();
+            this.DEBUG_Next1Link = new System.Windows.Forms.Button();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -120,11 +122,11 @@
             this.DEBUG_NextAndSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.DEBUG_NextAndSave.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.DEBUG_NextAndSave.ForeColor = System.Drawing.Color.IndianRed;
-            this.DEBUG_NextAndSave.Location = new System.Drawing.Point(1165, 28);
+            this.DEBUG_NextAndSave.Location = new System.Drawing.Point(1165, 56);
             this.DEBUG_NextAndSave.Name = "DEBUG_NextAndSave";
-            this.DEBUG_NextAndSave.Size = new System.Drawing.Size(121, 23);
+            this.DEBUG_NextAndSave.Size = new System.Drawing.Size(121, 37);
             this.DEBUG_NextAndSave.TabIndex = 6;
-            this.DEBUG_NextAndSave.Text = "Next And Save";
+            this.DEBUG_NextAndSave.Text = "Next Incomplete And Save";
             this.DEBUG_NextAndSave.UseVisualStyleBackColor = true;
             this.DEBUG_NextAndSave.Click += new System.EventHandler(this.DEBUG_NextAndSave_Click);
             // 
@@ -159,11 +161,37 @@
             this.DEBUG_Duplicate.UseVisualStyleBackColor = true;
             this.DEBUG_Duplicate.Click += new System.EventHandler(this.DEBUG_Duplicate_Click);
             // 
+            // DEBUG_SaveAllNoLinks
+            // 
+            this.DEBUG_SaveAllNoLinks.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.DEBUG_SaveAllNoLinks.ForeColor = System.Drawing.Color.IndianRed;
+            this.DEBUG_SaveAllNoLinks.Location = new System.Drawing.Point(1040, 28);
+            this.DEBUG_SaveAllNoLinks.Name = "DEBUG_SaveAllNoLinks";
+            this.DEBUG_SaveAllNoLinks.Size = new System.Drawing.Size(121, 23);
+            this.DEBUG_SaveAllNoLinks.TabIndex = 8;
+            this.DEBUG_SaveAllNoLinks.Text = "Save All No Links";
+            this.DEBUG_SaveAllNoLinks.UseVisualStyleBackColor = true;
+            this.DEBUG_SaveAllNoLinks.Click += new System.EventHandler(this.DEBUG_SaveAllNoLinks_Click);
+            // 
+            // DEBUG_Next1Link
+            // 
+            this.DEBUG_Next1Link.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.DEBUG_Next1Link.ForeColor = System.Drawing.Color.IndianRed;
+            this.DEBUG_Next1Link.Location = new System.Drawing.Point(1165, 28);
+            this.DEBUG_Next1Link.Name = "DEBUG_Next1Link";
+            this.DEBUG_Next1Link.Size = new System.Drawing.Size(121, 23);
+            this.DEBUG_Next1Link.TabIndex = 9;
+            this.DEBUG_Next1Link.Text = "Next With 1 Link Ent";
+            this.DEBUG_Next1Link.UseVisualStyleBackColor = true;
+            this.DEBUG_Next1Link.Click += new System.EventHandler(this.DEBUG_Next1Link_Click);
+            // 
             // EntityFlowgraph
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1512, 699);
+            this.Controls.Add(this.DEBUG_Next1Link);
+            this.Controls.Add(this.DEBUG_SaveAllNoLinks);
             this.Controls.Add(this.DEBUG_Duplicate);
             this.Controls.Add(this.DEBUG_NextAndSave);
             this.Controls.Add(this.DEBUG_DumpUnfinished);
@@ -193,6 +221,8 @@
         private System.Windows.Forms.Button DEBUG_DumpUnfinished;
         private System.Windows.Forms.Button DEBUG_NextAndSave;
         private System.Windows.Forms.Button DEBUG_Duplicate;
+        private System.Windows.Forms.Button DEBUG_SaveAllNoLinks;
+        private System.Windows.Forms.Button DEBUG_Next1Link;
     }
 }
 
