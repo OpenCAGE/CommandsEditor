@@ -84,20 +84,23 @@ namespace CommandsEditor
 
         private void OnEntitySelectedGlobally(Entity entity)
         {
-            if (entity == null)
+            for (int i = 0; i < stNodeEditor1.Nodes.Count; i++)
             {
-                for (int i = 0; i < stNodeEditor1.Nodes.Count; i++)
-                {
-                    stNodeEditor1.Nodes[i].SetSelected(false, true);
-                }
-                return;
+                stNodeEditor1.Nodes[i].IsSelected = false;
+                stNodeEditor1.Nodes[i].SetSelected(false, true);
             }
+            stNodeEditor1.SetActiveNode(null);
+
+            if (entity == null)
+                return;
 
             for (int i = 0; i < stNodeEditor1.Nodes.Count; i++)
             {
                 if (stNodeEditor1.Nodes[i].ShortGUID == entity.shortGUID)
                 {
+                    stNodeEditor1.Nodes[i].IsSelected = true;
                     stNodeEditor1.Nodes[i].SetSelected(true, true);
+                    stNodeEditor1.SetActiveNode(stNodeEditor1.Nodes[i]);
                     return;
                 }
             }

@@ -152,6 +152,9 @@ namespace CommandsEditor.DockPanels
             if (dialog_hierarchy != null)
                 dialog_hierarchy.Close();
 
+            _entityFlowgraph.Close();
+            _entityList.Close();
+
             if (_renameComposite != null)
                 _renameComposite.FormClosed -= _renameComposite_FormClosed;
             if (_instanceInfoPopup != null)
@@ -160,6 +163,9 @@ namespace CommandsEditor.DockPanels
                 _entityRenameDialog.FormClosed -= Rename_entity_FormClosed;
 
             _composite = null;
+
+            if (_entityDisplay != null)
+                _entityDisplay.DepopulateUI();
             _entityDisplay = null;
 
             CloseAllChildTabs();
