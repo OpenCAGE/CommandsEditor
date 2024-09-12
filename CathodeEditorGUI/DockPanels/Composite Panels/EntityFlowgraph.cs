@@ -41,6 +41,7 @@ namespace CommandsEditor
             this.FormClosed += EntityFlowgraph_FormClosed; ;
 
             stNodeEditor1.LoadAssembly(Application.ExecutablePath);
+            stNodeEditor1.AllowSameOwnerConnections = true;
             stNodeEditor1.SelectedChanged += Owner_SelectedChanged;
 
 #if !DEBUG
@@ -131,6 +132,21 @@ namespace CommandsEditor
             }
         }
 
+        /*
+         
+        The way this should work:
+        - Check the Flowgraph layout database, if there's no match then populate the nodes in a dumb fashion and show a warning. There would be no match because:
+            - The composite isn't found in the database (for development only)
+            - The content in the database mismatches the composite (user has modified the composite using older opencage) - will want to check childLinks and Entities
+        - If there's a layout found - populate it. The layout should include:
+            - Canvas scale/position
+            - Positional data, a "show" bool, and all pins in/out for every entity node
+                - The purpose of the "show" bool is because by default, entities with no connections aren't populated on the flowgraph, and users can add them back without connecting any links (which would render them automatically invisible next time without the bool)
+                - The reason for including all in/out pins is that users can add pins to the nodes without connecting them up to create the links that save to the commands
+            - 
+
+        */
+
         public void ShowComposite(Composite composite)
         {
             Console.WriteLine("EntityFlowgraph::ShowComposite - " + composite.name);
@@ -139,15 +155,18 @@ namespace CommandsEditor
             for (int i = 0; i < purged.Count; i++)
                 Singleton.OnEntityDeleted(purged[i]);
 
+            _composite = composite;
+            this.Text = _composite.name;
+
             stNodeEditor1.SuspendLayout();
             stNodeEditor1.Nodes.Clear();
             _spawnOffset = 0;
 
-            _composite = composite;
             List<Entity> entities = _composite.GetEntities();
             for (int i = 0; i < entities.Count; i++)
             {
-                //TODO: do we want to only draw nodes with child connections? if not, we want to add a UI for adding entity nodes as well as the connections (drag from entity list?)
+                if (!entities[i].HasLinks(_composite))
+                    continue;
 
                 CathodeNode mainNode = EntityToNode(entities[i], _composite);
 
@@ -170,9 +189,9 @@ namespace CommandsEditor
                     mainNode.AddInputOption(varEnt.name);
                     mainNode.AddOutputOption(varEnt.name);
                 }
+                //NOTE: WE should limit link creation on variable entities to JUST the above. 
             }
 
-            this.Text = _composite.name;
             NodePositionDatabase.TryRestoreFlowgraph(_composite.name, stNodeEditor1);
 
             foreach (STNode node in stNodeEditor1.Nodes)
