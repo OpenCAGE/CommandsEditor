@@ -25,12 +25,26 @@ using static System.Windows.Forms.LinkLabel;
 using System.Xml.Linq;
 using CathodeLib;
 using System.Windows.Input;
+using CATHODE;
 
 namespace CommandsEditor
 {
     public partial class EntityFlowgraph : DockContent
     {
-        protected LevelContent Content => Singleton.Editor?.CommandsDisplay?.Content;
+        //protected LevelContent Content => Singleton.Editor?.CommandsDisplay?.Content;
+
+        private Commands _commands; //only for testing
+        private Commands Commands
+        {
+            get
+            {
+                if (_commands == null)
+                    return Singleton.Editor?.CommandsDisplay?.Content.commands;
+                else
+                    return _commands;
+            }
+        }
+
 
         private Composite _composite;
         private int _spawnOffset = 0;
@@ -52,6 +66,7 @@ namespace CommandsEditor
             DEBUG_NextUnfinished.Visible = false;
             DEBUG_SaveAllNoLinks.Visible = false;
             DEBUG_Next1Link.Visible = false;
+            DEBUG_LoadAll.Visible = false;
 #endif
 
             //todo: i feel like these events should come from the compositedisplay?
@@ -77,7 +92,7 @@ namespace CommandsEditor
             STNode[] nodes = stNodeEditor1.GetSelectedNode();
             if (nodes.Length != 1) return;
 
-            Entity ent = Singleton.Editor.CommandsDisplay?.CompositeDisplay?.Composite?.GetEntityByID(((CathodeNode)nodes[0]).ShortGUID);
+            Entity ent = _composite.GetEntityByID(((CathodeNode)nodes[0]).ShortGUID);
             if (ent == _previouslySelectedEntity) return;
             _previouslySelectedEntity = ent;
 
@@ -151,7 +166,7 @@ namespace CommandsEditor
         {
             Console.WriteLine("EntityFlowgraph::ShowComposite - " + composite.name);
 
-            List<Entity> purged = CommandsUtils.PurgeDeadLinks(Content.commands, composite);
+            List<Entity> purged = CommandsUtils.PurgeDeadLinks(Commands, composite);
             for (int i = 0; i < purged.Count; i++)
                 Singleton.OnEntityDeleted(purged[i]);
 
@@ -237,7 +252,7 @@ namespace CommandsEditor
                 {
                     case EntityVariant.PROXY:
                     case EntityVariant.ALIAS:
-                        Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, composite, (entity.variant == EntityVariant.PROXY) ? ((ProxyEntity)entity).proxy.path : ((AliasEntity)entity).alias.path, out Composite c, out string s);
+                        Entity ent = CommandsUtils.ResolveHierarchy(Commands, composite, (entity.variant == EntityVariant.PROXY) ? ((ProxyEntity)entity).proxy.path : ((AliasEntity)entity).alias.path, out Composite c, out string s);
                         node.SetColour(entity.variant == EntityVariant.PROXY ? Color.LightGreen : Color.Orange, Color.Black);
                         switch (ent.variant)
                         {
@@ -248,7 +263,7 @@ namespace CommandsEditor
                                     node.SetName(EntityUtils.GetName(c, ent), entity.variant + " TO: " + function.function.ToString());
                                 }
                                 else
-                                    node.SetName(EntityUtils.GetName(c, ent) , entity.variant + " TO: " + Content.commands.GetComposite(function.function).name);
+                                    node.SetName(EntityUtils.GetName(c, ent) , entity.variant + " TO: " + Commands.GetComposite(function.function).name);
                                 break;
                             case EntityVariant.VARIABLE:
                                 node.SetName(entity.variant + " TO: " + ((VariableEntity)ent).name.ToString());
@@ -264,7 +279,7 @@ namespace CommandsEditor
                         else
                         {
                             node.SetColour(Color.Blue, Color.White);
-                            node.SetName(EntityUtils.GetName(composite, entity), Content.commands.GetComposite(funcEnt.function).name);
+                            node.SetName(EntityUtils.GetName(composite, entity), Commands.GetComposite(funcEnt.function).name);
                         }
                         break;
                     case EntityVariant.VARIABLE:
@@ -353,18 +368,18 @@ namespace CommandsEditor
 
         private void DEBUG_NextUnfinished_Click(object sender, EventArgs e)
         {
-            int index = Content.commands.Entries.IndexOf(_composite) + 1;
-            if (index >= Content.commands.Entries.Count)
+            int index = Commands.Entries.IndexOf(_composite) + 1;
+            if (index >= Commands.Entries.Count)
                 index = 0;
             
-            while (NodePositionDatabase.CanRestoreFlowgraph(Content.commands.Entries[index].name))
+            while (NodePositionDatabase.CanRestoreFlowgraph(Commands.Entries[index].name))
             {
-                if (index + 1 >= Content.commands.Entries.Count)
+                if (index + 1 >= Commands.Entries.Count)
                     index = 0;
                 else
                     index += 1;
             }
-            ShowComposite(Content.commands.Entries[index]);
+            ShowComposite(Commands.Entries[index]);
         }
 
         private void DEBUG_DumpUnfinished_Click(object sender, EventArgs e)
@@ -372,12 +387,12 @@ namespace CommandsEditor
             Console.WriteLine("----------------------");
             Console.WriteLine("Incomplete Flowgraphs:");
             int count = 0;
-            for (int i = 0; i < Content.commands.Entries.Count; i++)
+            for (int i = 0; i < Commands.Entries.Count; i++)
             {
-                if (NodePositionDatabase.CanRestoreFlowgraph(Content.commands.Entries[i].name))
+                if (NodePositionDatabase.CanRestoreFlowgraph(Commands.Entries[i].name))
                     continue;
 
-                Console.WriteLine(" - " + Content.commands.Entries[i].name);
+                Console.WriteLine(" - " + Commands.Entries[i].name);
                 count++;
             }
             Console.WriteLine("(There are " + count + ")");
@@ -415,16 +430,16 @@ namespace CommandsEditor
 
         private void DEBUG_SaveAllNoLinks_Click(object sender, EventArgs e)
         {
-            for (int i = 0; i < Content.commands.Entries.Count; i++)
+            for (int i = 0; i < Commands.Entries.Count; i++)
             {
-                if (NodePositionDatabase.CanRestoreFlowgraph(Content.commands.Entries[i].name))
+                if (NodePositionDatabase.CanRestoreFlowgraph(Commands.Entries[i].name))
                     continue;
 
                 bool noLinks = true;
-                List<Entity> entities = Content.commands.Entries[i].GetEntities();
+                List<Entity> entities = Commands.Entries[i].GetEntities();
                 for (int x = 0; x < entities.Count; x++)
                 {
-                    List<EntityConnector> linksIn = entities[x].GetParentLinks(Content.commands.Entries[i]);
+                    List<EntityConnector> linksIn = entities[x].GetParentLinks(Commands.Entries[i]);
                     List<EntityConnector> linksOut = entities[x].childLinks;
 
                     if (linksIn.Count != 0 || linksOut.Count != 0)
@@ -437,24 +452,24 @@ namespace CommandsEditor
                 if (!noLinks)
                     continue;
 
-                ShowComposite(Content.commands.Entries[i]);
+                ShowComposite(Commands.Entries[i]);
                 SaveFlowgraph_Click(null, null);
             }
         }
 
         private void DEBUG_Next1Link_Click(object sender, EventArgs e)
         {
-            for (int i = 0; i < Content.commands.Entries.Count; i++)
+            for (int i = 0; i < Commands.Entries.Count; i++)
             {
-                if (NodePositionDatabase.CanRestoreFlowgraph(Content.commands.Entries[i].name))
+                if (NodePositionDatabase.CanRestoreFlowgraph(Commands.Entries[i].name))
                     continue;
 
                 bool shouldGenerate = false;
                 Entity entWithLinksInAndOut = null;
-                List<Entity> entities = Content.commands.Entries[i].GetEntities();
+                List<Entity> entities = Commands.Entries[i].GetEntities();
                 for (int x = 0; x < entities.Count; x++)
                 {
-                    List<EntityConnector> linksIn = entities[x].GetParentLinks(Content.commands.Entries[i]);
+                    List<EntityConnector> linksIn = entities[x].GetParentLinks(Commands.Entries[i]);
                     List<EntityConnector> linksOut = entities[x].childLinks;
 
                     if (linksIn.Count != 0 && linksOut.Count != 0)
@@ -473,7 +488,7 @@ namespace CommandsEditor
 
                 if (shouldGenerate)
                 {
-                    ShowComposite(Content.commands.Entries[i]);
+                    ShowComposite(Commands.Entries[i]);
                     STNode node = null;
                     for (int x = 0; x < stNodeEditor1.Nodes.Count; x++)
                     {
@@ -486,6 +501,19 @@ namespace CommandsEditor
                     TestAlignNode(node);
                     return;
                 }
+            }
+        }
+
+        private void DEBUG_LoadAll_Click(object sender, EventArgs e)
+        {
+            DEBUG_LoadAll_Test(_commands);
+        }
+        public void DEBUG_LoadAll_Test(Commands commands)
+        {
+            _commands = commands;
+            for (int i = 0; i < Commands.Entries.Count; i++)
+            {
+                ShowComposite(Commands.Entries[i]);
             }
         }
     }

@@ -117,6 +117,23 @@ namespace CommandsEditor
 #endif
         }
 
+        public static void DoCheckOnNodegraph()
+        {
+#if DEBUG
+
+            List<string> files = Directory.GetFiles("F:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\data_orig\\ENV\\Production", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            foreach (string file in files)
+            {
+                Commands commands = new Commands(file);
+                EntityFlowgraph flowgraph = new EntityFlowgraph();
+                flowgraph.Show();
+                flowgraph.DEBUG_LoadAll_Test(commands);
+                flowgraph.Hide();
+                flowgraph.Dispose();
+            }
+#endif
+        }
+
         public static void checkphysicssystempositions()
         {
 #if DEBUG

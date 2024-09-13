@@ -40,6 +40,7 @@
             this.DEBUG_Duplicate = new System.Windows.Forms.Button();
             this.DEBUG_SaveAllNoLinks = new System.Windows.Forms.Button();
             this.DEBUG_Next1Link = new System.Windows.Forms.Button();
+            this.DEBUG_LoadAll = new System.Windows.Forms.Button();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -134,6 +135,7 @@
             // 
             this.stNodeEditor1.AllowDrop = true;
             this.stNodeEditor1.AllowNodeGraphLoops = true;
+            this.stNodeEditor1.AllowSameOwnerConnections = false;
             this.stNodeEditor1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(34)))), ((int)(((byte)(34)))));
             this.stNodeEditor1.Curvature = 0.3F;
             this.stNodeEditor1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -185,11 +187,24 @@
             this.DEBUG_Next1Link.UseVisualStyleBackColor = true;
             this.DEBUG_Next1Link.Click += new System.EventHandler(this.DEBUG_Next1Link_Click);
             // 
+            // DEBUG_LoadAll
+            // 
+            this.DEBUG_LoadAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.DEBUG_LoadAll.ForeColor = System.Drawing.Color.IndianRed;
+            this.DEBUG_LoadAll.Location = new System.Drawing.Point(1040, 56);
+            this.DEBUG_LoadAll.Name = "DEBUG_LoadAll";
+            this.DEBUG_LoadAll.Size = new System.Drawing.Size(121, 23);
+            this.DEBUG_LoadAll.TabIndex = 10;
+            this.DEBUG_LoadAll.Text = "Load All";
+            this.DEBUG_LoadAll.UseVisualStyleBackColor = true;
+            this.DEBUG_LoadAll.Click += new System.EventHandler(this.DEBUG_LoadAll_Click);
+            // 
             // EntityFlowgraph
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1512, 699);
+            this.Controls.Add(this.DEBUG_LoadAll);
             this.Controls.Add(this.DEBUG_Next1Link);
             this.Controls.Add(this.DEBUG_SaveAllNoLinks);
             this.Controls.Add(this.DEBUG_Duplicate);
@@ -223,6 +238,7 @@
         private System.Windows.Forms.Button DEBUG_Duplicate;
         private System.Windows.Forms.Button DEBUG_SaveAllNoLinks;
         private System.Windows.Forms.Button DEBUG_Next1Link;
+        private System.Windows.Forms.Button DEBUG_LoadAll;
     }
 }
 
