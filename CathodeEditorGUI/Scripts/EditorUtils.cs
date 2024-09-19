@@ -542,5 +542,49 @@ namespace CommandsEditor
                 if (zone != null) return;
             }
         }
+
+        [Obsolete("This function is safe to use but not performant. It's intended for test code only.")]
+        public string GetAllZonesForEntity(Entity entity, Composite startComposite)
+        {
+            ShortGuid compositesGUID = ShortGuidUtils.Generate("composites");
+            string toReturn = "";
+            foreach (Composite comp in _content.commands.Entries)
+            {
+                List<FunctionEntity> triggerSequences = comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.TriggerSequence));
+                foreach (FunctionEntity trigEnt in triggerSequences)
+                {
+                    TriggerSequence trig = (TriggerSequence)trigEnt;
+                    foreach (TriggerSequence.Entity trigger in trig.entities)
+                    {
+                        List<FunctionEntity> zones = comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.Zone));
+                        foreach (FunctionEntity z in zones)
+                        {
+                            foreach (EntityConnector link in z.childLinks)
+                            {
+                                if (link.thisParamID == compositesGUID && link.linkedEntityID == trig.shortGUID)
+                                {
+                                    toReturn += "[Found zone entity '" + z.shortGUID.ToByteString() + "' in composite '" + comp.name + "']\n";
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return toReturn;
+        }
+
+        [Obsolete("This function is safe to use but not performant. It's intended for test code only.")]
+        public string PrettyPrintMVR(Movers.MOVER_DESCRIPTOR mvr)
+        {
+            var reds = _content.resource.reds.Entries[(int)mvr.renderable_element_index];
+
+            var submesh = _content.resource.models.GetAtWriteIndex(reds.ModelIndex);
+            var model = _content.resource.models.FindModelForSubmesh(submesh);
+            var component = _content.resource.models.FindModelComponentForSubmesh(submesh);
+            var lod = _content.resource.models.FindModelLODForSubmesh(submesh);
+            var material = _content.resource.materials.GetAtWriteIndex(reds.MaterialIndex);
+
+            return model.Name + " (" + lod.Name + ") -> " + material.Name;
+        }
     }
 }
