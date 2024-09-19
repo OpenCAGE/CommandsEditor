@@ -544,10 +544,11 @@ namespace CommandsEditor
         }
 
         [Obsolete("This function is safe to use but not performant. It's intended for test code only.")]
-        public string GetAllZonesForEntity(Entity entity, Composite startComposite)
+        public string GetAllZonesForEntity(Entity entity)
         {
             ShortGuid compositesGUID = ShortGuidUtils.Generate("composites");
             string toReturn = "";
+            List<ShortGuid> foundIDs = new List<ShortGuid>();
             foreach (Composite comp in _content.commands.Entries)
             {
                 List<FunctionEntity> triggerSequences = comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.TriggerSequence));
@@ -556,14 +557,26 @@ namespace CommandsEditor
                     TriggerSequence trig = (TriggerSequence)trigEnt;
                     foreach (TriggerSequence.Entity trigger in trig.entities)
                     {
-                        List<FunctionEntity> zones = comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.Zone));
-                        foreach (FunctionEntity z in zones)
+                        if (CommandsUtils.ResolveHierarchy(_content.commands, comp, trigger.connectedEntity.path, out Composite compRef, out string str) == entity)
                         {
-                            foreach (EntityConnector link in z.childLinks)
+                            List<FunctionEntity> zones = comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.Zone));
+                            foreach (FunctionEntity z in zones)
                             {
-                                if (link.thisParamID == compositesGUID && link.linkedEntityID == trig.shortGUID)
+                                foreach (EntityConnector link in z.childLinks)
                                 {
-                                    toReturn += "[Found zone entity '" + z.shortGUID.ToByteString() + "' in composite '" + comp.name + "']\n";
+                                    if (link.thisParamID == compositesGUID && link.linkedEntityID == trig.shortGUID)
+                                    {
+                                        if (foundIDs.Contains(z.shortGUID))
+                                            continue;
+
+                                        Parameter p = z.GetParameter("name");
+                                        string name = "";
+                                        if (p != null && p.content.dataType == DataType.STRING)
+                                            name = ((cString)p.content).value;
+
+                                        foundIDs.Add(z.shortGUID);
+                                        toReturn += "\n[Found zone entity '" + z.shortGUID.ToByteString() + "' (" + name + ") in composite '" + comp.name + "']\n";
+                                    }
                                 }
                             }
                         }

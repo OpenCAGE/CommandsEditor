@@ -1293,19 +1293,8 @@ namespace CommandsEditor
                 if (ORDER)
                     content.mvr.Entries = content.mvr.Entries.OrderBy(o => o.entity.composite_instance_id).ThenBy(o => o.entity.entity_id).ThenBy(o => o.primary_zone_id).ToList();
 
-                int i = -1;
                 foreach (var entry in content.mvr.Entries)
                 {
-                    i++;
-                    if (i < 54)
-                    {
-                        continue;
-                    }
-                    if (i > 65)
-                    {
-                        break;
-                    }
-
                     resource_index++;
 
                     (Composite entComp, EntityPath entPath) = content.editor_utils.GetCompositeFromInstanceID(content.commands, entry.entity.composite_instance_id);
@@ -1314,8 +1303,6 @@ namespace CommandsEditor
                     (Composite zoneComp2, EntityPath zonePath2, Entity zoneEnt2) = content.editor_utils.GetZoneFromInstanceID(content.commands, entry.secondary_zone_id);
 
                     string convertedResoureName = "[" + resource_index + "] ";
-
-                    convertedResoureName += "[" + i + "] ";
 
 
                     for (int x = 0; x < entry.renderable_element_count; x++)
@@ -1364,7 +1351,7 @@ namespace CommandsEditor
                             if (ent2 == null) continue;
                             convertedResoureName += "\n\t\t[ENTITY ID FOUND IN " + comp2.name + ": " + ShortGuidUtils.Generate(EntityUtils.GetName(comp2, ent2)) + "]";
 
-                            convertedResoureName += content.editor_utils.GetAllZonesForEntity(ent2, comp2);
+                            convertedResoureName += content.editor_utils.GetAllZonesForEntity(ent2);
 
                             //?//continue;
                         }
