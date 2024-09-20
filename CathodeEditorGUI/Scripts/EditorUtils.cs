@@ -587,17 +587,118 @@ namespace CommandsEditor
         }
 
         [Obsolete("This function is safe to use but not performant. It's intended for test code only.")]
-        public string PrettyPrintMVR(Movers.MOVER_DESCRIPTOR mvr)
+        public string PrettyPrintMoverRenderable(Movers.MOVER_DESCRIPTOR mvr)
         {
-            var reds = _content.resource.reds.Entries[(int)mvr.renderable_element_index];
+            string output = "";
+            for (int x = 0; x < mvr.renderable_element_count; x++)
+            {
+                var reds = _content.resource.reds.Entries[(int)mvr.renderable_element_index];
 
-            var submesh = _content.resource.models.GetAtWriteIndex(reds.ModelIndex);
-            var model = _content.resource.models.FindModelForSubmesh(submesh);
-            var component = _content.resource.models.FindModelComponentForSubmesh(submesh);
-            var lod = _content.resource.models.FindModelLODForSubmesh(submesh);
-            var material = _content.resource.materials.GetAtWriteIndex(reds.MaterialIndex);
+                var submesh = _content.resource.models.GetAtWriteIndex(reds.ModelIndex);
+                var model = _content.resource.models.FindModelForSubmesh(submesh);
+                var component = _content.resource.models.FindModelComponentForSubmesh(submesh);
+                var lod = _content.resource.models.FindModelLODForSubmesh(submesh);
+                var material = _content.resource.materials.GetAtWriteIndex(reds.MaterialIndex);
 
-            return model.Name + " (" + lod.Name + ") -> " + material.Name;
+                output += model?.Name + " (" + lod?.Name + ") -> " + material?.Name + "\n";
+            }
+            return output;
+        }
+
+        //Util: patch the game exe to launch to the specified map (handy for debugging)
+        public static bool PatchLaunchMode(string MapName = "Frontend")
+        {
+            //This is the level the benchmark function loads into - we can overwrite it to change
+            byte[] mapStringByteArray = { 0x54, 0x45, 0x43, 0x48, 0x5F, 0x52, 0x4E, 0x44, 0x5F, 0x48, 0x5A, 0x44, 0x4C, 0x41, 0x42, 0x00, 0x00, 0x65, 0x6E, 0x67, 0x69, 0x6E, 0x65, 0x5F, 0x73, 0x65, 0x74, 0x74, 0x69, 0x6E, 0x67, 0x73 };
+
+            //These are the original/edited setters in the benchmark function to enable benchmark mode - if we're just loading a level, we want to change them
+            List<PatchBytes> benchmarkPatches = new List<PatchBytes>();
+            switch (SettingsManager.GetString("META_GameVersion"))
+            {
+                case "STEAM":
+                    benchmarkPatches.Add(new PatchBytes(3842041, new byte[] { 0xe3, 0x48, 0x26 }, new byte[] { 0x13, 0x3c, 0x28 }));
+                    benchmarkPatches.Add(new PatchBytes(3842068, new byte[] { 0xce, 0x0c, 0x6f }, new byte[] { 0x26, 0x0f, 0x64 }));
+                    benchmarkPatches.Add(new PatchBytes(3842146, new byte[] { 0xcb, 0x0c, 0x6f }, new byte[] { 0x26, 0x0f, 0x64 }));
+                    //benchmarkPatches.Add(new PatchBytes(3842846, new byte[] { 0x4e, 0x4c, 0x56 }, new byte[] { 0xce, 0xc1, 0x6f })); //skip_frontend
+                    //benchmarkPatches.Add(new PatchBytes(4047697, new byte[] { 0x1b, 0x2c, 0x53 }, new byte[] { 0x9b, 0xa1, 0x6c })); //skip_frontend
+                    break;
+                case "EPIC_GAMES_STORE":
+                    benchmarkPatches.Add(new PatchBytes(3911321, new byte[] { 0x13, 0x5f, 0x1a }, new byte[] { 0x23, 0x43, 0x1c }));
+                    benchmarkPatches.Add(new PatchBytes(3911348, new byte[] { 0xee, 0xd1, 0x70 }, new byte[] { 0xe6, 0xce, 0x65 }));
+                    benchmarkPatches.Add(new PatchBytes(3911426, new byte[] { 0xeb, 0xd1, 0x70 }, new byte[] { 0xe6, 0xce, 0x65 }));
+                    //benchmarkPatches.Add(new PatchBytes(3912126, new byte[] { 0x7e, 0xbf, 0x5f, 0x00 }, new byte[] { 0x1e, 0x5b, 0xf3, 0xff })); //skip_frontend
+                    //benchmarkPatches.Add(new PatchBytes(4117408, new byte[] { 0x9c, 0x9d, 0x5c, 0x00 }, new byte[] { 0x3c, 0x39, 0xf0, 0xff })); //skip_frontend
+                    break;
+                case "GOG":
+                    benchmarkPatches.Add(new PatchBytes(3842217, new byte[] { 0x33, 0x4b, 0x26 }, new byte[] { 0x13, 0x3c, 0x28 }));
+                    benchmarkPatches.Add(new PatchBytes(3842244, new byte[] { 0x0e, 0xaf, 0x70 }, new byte[] { 0x26, 0xaf, 0x65 }));
+                    benchmarkPatches.Add(new PatchBytes(3842322, new byte[] { 0x0b, 0xaf, 0x70 }, new byte[] { 0x26, 0xaf, 0x65 }));
+                    //benchmarkPatches.Add(new PatchBytes(3843022, new byte[] { 0x0e, 0x43, 0x04 }, new byte[] { 0x8e, 0x29, 0x0b })); //skip_frontend
+                    //benchmarkPatches.Add(new PatchBytes(4047514, new byte[] { 0x42, 0x24, 0x01 }, new byte[] { 0xc2, 0x0a, 0x08 })); //skip_frontend
+                    break;
+            }
+
+            //Frontend acts as a reset
+            bool shouldPatch = true;
+            if (MapName.ToUpper() == "FRONTEND")
+            {
+                MapName = "Tech_RnD_HzdLab";
+                shouldPatch = false;
+            }
+
+            //Update vanilla byte array with selection
+            for (int i = 0; i < MapName.Length; i++)
+            {
+                mapStringByteArray[i] = (byte)MapName[i];
+            }
+            mapStringByteArray[MapName.Length] = 0x00;
+
+            //Edit game EXE with selected option & hack out the benchmark mode
+            try
+            {
+                using (BinaryWriter writer = new BinaryWriter(File.OpenWrite(SettingsManager.GetString("PATH_GameRoot") + "/AI.exe")))
+                {
+                    for (int i = 0; i < benchmarkPatches.Count; i++)
+                    {
+                        writer.BaseStream.Position = benchmarkPatches[i].offset;
+                        if (shouldPatch) writer.Write(benchmarkPatches[i].patched);
+                        else writer.Write(benchmarkPatches[i].original);
+                    }
+                    switch (SettingsManager.GetString("META_GameVersion"))
+                    {
+                        case "STEAM":
+                            writer.BaseStream.Position = 15676275;
+                            break;
+                        case "EPIC_GAMES_STORE":
+                            writer.BaseStream.Position = 15773411;
+                            break;
+                        case "GOG":
+                            writer.BaseStream.Position = 15773451;
+                            break;
+                    }
+                    if (writer.BaseStream.Position != 0)
+                        writer.Write(mapStringByteArray);
+                }
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("PatchManager::PatchLaunchMode - " + e.ToString());
+                return false;
+            }
+        }
+
+        struct PatchBytes
+        {
+            public PatchBytes(int _o, byte[] _orig, byte[] _patch)
+            {
+                offset = _o;
+                original = _orig;
+                patched = _patch;
+            }
+            public int offset;
+            public byte[] original;
+            public byte[] patched;
         }
     }
 }
