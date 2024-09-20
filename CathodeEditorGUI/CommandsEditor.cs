@@ -61,7 +61,8 @@ namespace CommandsEditor
             //LocalDebug_NEW.DEBUG_DumpAllInstancedStuff("BSP_TORRENS", "NON_ORDERED");
             //return;
 
-            //LocalDebug.CheckVariablesHaveNoRogueParams();
+            //LocalDebug.CountEntitySequences();
+
             //NodePositionDatabase.DO_UPDATE();
             //LocalDebug.DoCheckOnNodegraph();
 

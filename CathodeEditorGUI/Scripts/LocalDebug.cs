@@ -295,6 +295,102 @@ namespace CommandsEditor
 #endif
         }
 
+        //Go to the top of the connection chain, and follow it down to get the number of nodes in the sequence - keep a track of the longest sequences and where they are
+        public static void CountEntitySequences()
+        {
+            List<string> files = Directory.GetFiles("F:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\data_orig\\ENV\\Production", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            List<string> output = new List<string>();
+            List<int> counts = new List<int>();
+            int max = 0;
+            foreach (string file in files)
+            {
+                output.Add("====== Loading =====");
+                output.Add(file);
+                output.Add("====================");
+
+                Commands commands = new Commands(file);
+                EntityUtils.LinkCommands(commands);
+                ShortGuidUtils.LinkCommands(commands);
+
+                foreach (Composite composite in commands.Entries)
+                {
+                    CommandsUtils.PurgeDeadLinks(commands, composite);
+
+                    List<Entity> entities = composite.GetEntities();
+                    List<Entity> checkedEnts = new List<Entity>();
+                    foreach (Entity entity in entities)
+                    {
+                        if (checkedEnts.Contains(entity))
+                            continue;
+
+                        List<Entity> connectedEntities = new List<Entity>();
+                        RecurseEntityConnections(entity, composite, connectedEntities);
+
+                        //if (connectedEntities.Count == 2329)
+                        //{
+                        //    string str = "if (";
+                        //    foreach (Entity ent in connectedEntities)
+                        //    {
+                        //        str += "entities[i].shortGUID != new ShortGuid(" + ent.shortGUID.ToUInt32() + ") && ";
+                        //    }
+                        //    Console.WriteLine(str);
+                        //}
+
+                        if (connectedEntities.Count != 1)
+                        {
+                            //foreach (Entity ent in connectedEntities)
+                            //{
+                            //    Console.WriteLine(EntityUtils.GetName(composite, ent));
+                            //}
+                            //Console.WriteLine(composite.name + " -> " + connectedEntities.Count);
+
+                            output.Add(composite.name + " -> " + connectedEntities.Count);
+                            counts.Add(connectedEntities.Count);
+                        }
+
+                        if (max < connectedEntities.Count)
+                            max = connectedEntities.Count;
+
+                        checkedEnts.AddRange(connectedEntities);
+                    }
+                }
+            }
+            output.Add("-----------");
+            output.Add("Max: " + max);
+            File.WriteAllLines("output.txt", output);
+
+            counts.Sort();
+            output.Clear();
+            foreach (int count in counts)
+            {
+                output.Add(count.ToString());
+            }
+            File.WriteAllLines("counts.txt", output);
+        }
+        private static void RecurseEntityConnections(Entity entity, Composite comp, List<Entity> checkedEnts)
+        {
+            if (checkedEnts.Contains(entity))
+                return;
+            checkedEnts.Add(entity);
+
+            List<EntityConnector> connectionsIn = entity.GetParentLinks(comp);
+            foreach (EntityConnector connection in connectionsIn)
+            {
+                Entity ent = comp.GetEntityByID(connection.linkedEntityID);
+                if (ent == null) continue;
+                RecurseEntityConnections(ent, comp, checkedEnts);
+            }
+
+            List<EntityConnector> connectionsOut = entity.childLinks;
+            foreach (EntityConnector connection in connectionsOut)
+            {
+                Entity ent = comp.GetEntityByID(connection.linkedEntityID);
+                if (ent == null) continue;
+                RecurseEntityConnections(ent, comp, checkedEnts);
+            }
+        }
+
+        //This checks to make sure that variable entities don't have any links that aren't the variable name (spoiler: they don't)
         public static void CheckVariablesHaveNoRogueParams()
         {
             List<string> files = Directory.GetFiles("F:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\data_orig\\ENV\\Production", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
@@ -312,22 +408,22 @@ namespace CommandsEditor
                         {
                             if (connection.thisParamID != var.name)
                             {
-                                string sdff = "";
+                                throw new Exception("Rogue");
                             }
                         }
                         foreach (EntityConnector connection in connectionsOut)
                         {
                             if (connection.thisParamID != var.name)
                             {
-                                string sdff = "";
+                                throw new Exception("Rogue");
                             }
                         }
 
                         foreach (Parameter param in var.parameters)
                         {
-                            if (param.name != var.name) 
+                            if (param.name != var.name)
                             {
-                                string sdff = "";
+                                throw new Exception("Rogue");
                             }
                         }
                     }
