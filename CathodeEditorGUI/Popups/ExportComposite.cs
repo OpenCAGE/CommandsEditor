@@ -14,11 +14,11 @@ namespace CommandsEditor
 {
     public partial class ExportComposite : BaseWindow
     {
-        CompositeDisplay _display;
+        Composite _composite;
 
-        public ExportComposite(CompositeDisplay display, bool canExportChildren) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
+        public ExportComposite(Composite composite, bool canExportChildren) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
-            _display = display;
+            _composite = composite;
 
             InitializeComponent();
 
@@ -29,7 +29,7 @@ namespace CommandsEditor
 
             levelList.SelectedIndex = 0;
 
-            this.Text = "Port '" + _display.Composite.name + "'";
+            this.Text = "Port '" + _composite.name + "'";
             
             if (!canExportChildren)
             {
@@ -47,12 +47,12 @@ namespace CommandsEditor
             Level lvl = new Level(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + levelList.SelectedItem.ToString(), gbl);
 
             Log("Starting export...");
-            AddCompositesRecursively(_display.Composite, lvl);
+            AddCompositesRecursively(_composite, lvl);
 
             Log("Performing final save for " + levelList.SelectedItem.ToString() + "...");
             lvl.Save();
 
-            MessageBox.Show("Finished porting '" + _display.Composite.name + "' to '" + levelList.SelectedItem.ToString() + "'!", "Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("Finished porting '" + _composite.name + "' to '" + levelList.SelectedItem.ToString() + "'!", "Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             this.Close();
         }

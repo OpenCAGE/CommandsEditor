@@ -53,6 +53,8 @@ namespace CommandsEditor
         public static Action OnCompositeAddPending;
         public static Action<Composite> OnCompositeAdded;
 
+        public static Action<Entity> OnEntityDeleted;
+
         //Settings keys
         public static SettingsStrings Settings = new SettingsStrings();
         public class SettingsStrings

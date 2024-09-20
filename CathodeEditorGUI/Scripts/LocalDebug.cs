@@ -98,11 +98,11 @@ namespace CommandsEditor
 #if DEBUG
             string level = "tech_rnd";
 
-            Movers mvr = new Movers("G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\data\\ENV\\PRODUCTION\\" + level + "\\WORLD\\MODELS.MVR");
-            Lights lights = new Lights("G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\data\\ENV\\PRODUCTION\\" + level + "\\WORLD\\LIGHTS.BIN");
-            AlphaLightLevel lightsAlpha = new AlphaLightLevel("G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\data\\ENV\\PRODUCTION\\" + level + "\\WORLD\\ALPHALIGHT_LEVEL.BIN");
-            EnvironmentMaps env = new EnvironmentMaps("G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\data\\ENV\\PRODUCTION\\" + level + "\\WORLD\\ENVIRONMENTMAP.BIN");
-            //Resources res = new Resources("G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\data\\ENV\\PRODUCTION\\" + level + "\\WORLD\\RESOURCES.BIN");
+            Movers mvr = new Movers(SharedData.pathToAI + "\\data\\ENV\\PRODUCTION\\" + level + "\\WORLD\\MODELS.MVR");
+            Lights lights = new Lights(SharedData.pathToAI + "\\data\\ENV\\PRODUCTION\\" + level + "\\WORLD\\LIGHTS.BIN");
+            AlphaLightLevel lightsAlpha = new AlphaLightLevel(SharedData.pathToAI + "\\data\\ENV\\PRODUCTION\\" + level + "\\WORLD\\ALPHALIGHT_LEVEL.BIN");
+            EnvironmentMaps env = new EnvironmentMaps(SharedData.pathToAI + "\\data\\ENV\\PRODUCTION\\" + level + "\\WORLD\\ENVIRONMENTMAP.BIN");
+            //Resources res = new Resources(SharedData.pathToAI + "\\data\\ENV\\PRODUCTION\\" + level + "\\WORLD\\RESOURCES.BIN");
 
             mvr.Entries.Clear();
             env.Entries.Clear();
@@ -114,6 +114,23 @@ namespace CommandsEditor
 
             File.Delete(lights.Filepath);
             File.Delete(lightsAlpha.Filepath); //deleting this one causes significant visual changes (anything with alpha doesn't render, or render properly)
+#endif
+        }
+
+        public static void DoCheckOnNodegraph()
+        {
+#if DEBUG
+
+            List<string> files = Directory.GetFiles("F:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\data_orig\\ENV\\Production", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            foreach (string file in files)
+            {
+                Commands commands = new Commands(file);
+                EntityFlowgraph flowgraph = new EntityFlowgraph();
+                flowgraph.Show();
+                flowgraph.DEBUG_LoadAll_Test(commands);
+                flowgraph.Hide();
+                flowgraph.Dispose();
+            }
 #endif
         }
 
@@ -276,6 +293,46 @@ namespace CommandsEditor
                 });
             });
 #endif
+        }
+
+        public static void CheckVariablesHaveNoRogueParams()
+        {
+            List<string> files = Directory.GetFiles("F:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\data_orig\\ENV\\Production", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            foreach (string file in files)
+            {
+                Commands commands = new Commands(file);
+                foreach (Composite comp in commands.Entries)
+                {
+                    foreach (VariableEntity var in comp.variables)
+                    {
+                        List<EntityConnector> connectionsIn = var.GetParentLinks(comp);
+                        List<EntityConnector> connectionsOut = var.childLinks;
+
+                        foreach (EntityConnector connection in connectionsIn)
+                        {
+                            if (connection.thisParamID != var.name)
+                            {
+                                string sdff = "";
+                            }
+                        }
+                        foreach (EntityConnector connection in connectionsOut)
+                        {
+                            if (connection.thisParamID != var.name)
+                            {
+                                string sdff = "";
+                            }
+                        }
+
+                        foreach (Parameter param in var.parameters)
+                        {
+                            if (param.name != var.name) 
+                            {
+                                string sdff = "";
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         public static void checkanims()
@@ -1297,12 +1354,12 @@ namespace CommandsEditor
         public static void LoadAllFileTests()
         {
 #if DEBUG
-            //Models mdls = new Models("G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\BSP_TORRENS\\RENDERABLE\\LEVEL_MODELS.PAK");
+            //Models mdls = new Models(SharedData.pathToAI + "\\DATA\\ENV\\PRODUCTION\\BSP_TORRENS\\RENDERABLE\\LEVEL_MODELS.PAK");
             //mdls.Save();
             /*
             CathodeModels mdls_old = new CathodeModels(
-                "G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\BSP_TORRENS\\RENDERABLE\\MODELS_LEVEL.BIN",
-                "G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\BSP_TORRENS\\RENDERABLE\\LEVEL_MODELS.PAK");
+                SharedData.pathToAI + "\\DATA\\ENV\\PRODUCTION\\BSP_TORRENS\\RENDERABLE\\MODELS_LEVEL.BIN",
+                SharedData.pathToAI + "\\DATA\\ENV\\PRODUCTION\\BSP_TORRENS\\RENDERABLE\\LEVEL_MODELS.PAK");
 
             int binIndex = 0;
             for (int i = 0; i < mdls.Entries.Count; i++)
@@ -1338,9 +1395,9 @@ namespace CommandsEditor
 
             //string sdffds = "";
 
-            //Models mdls = new Models("G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\ENG_ALIEN_NEST\\RENDERABLE\\LEVEL_MODELS.PAK");
+            //Models mdls = new Models(SharedData.pathToAI + "\\DATA\\ENV\\PRODUCTION\\ENG_ALIEN_NEST\\RENDERABLE\\LEVEL_MODELS.PAK");
             //mdls.Save();
-            ////Textures tex34 = new Textures("G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\BSP_LV426_PT01\\RENDERABLE\\LEVEL_TEXTURES.ALL.PAK");
+            ////Textures tex34 = new Textures(SharedData.pathToAI + "\\DATA\\ENV\\PRODUCTION\\BSP_LV426_PT01\\RENDERABLE\\LEVEL_TEXTURES.ALL.PAK");
             ////tex34.Save();
             //return;
 

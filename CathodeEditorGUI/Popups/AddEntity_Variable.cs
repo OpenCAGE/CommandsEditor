@@ -21,13 +21,13 @@ namespace CommandsEditor
 {
     public partial class AddEntity_Variable : BaseWindow
     {
-        private CompositeDisplay _compositeDisplay;
+        private Composite _composite;
 
-        public AddEntity_Variable(CompositeDisplay compositeDisplay) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_COMPOSITE_SELECTION)
+        public AddEntity_Variable(Composite composite) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             InitializeComponent();
 
-            _compositeDisplay = compositeDisplay;
+            _composite = composite;
 
             entityVariant.BeginUpdate();
             entityVariant.Items.Clear();
@@ -59,7 +59,7 @@ namespace CommandsEditor
             }
 
             Singleton.OnEntityAddPending?.Invoke();
-            Entity newEntity = _compositeDisplay.Composite.AddVariable(textBox1.Text, (DataType)entityVariant.SelectedIndex, true);
+            Entity newEntity = _composite.AddVariable(textBox1.Text, (DataType)entityVariant.SelectedIndex, true);
             Singleton.OnEntityAdded?.Invoke(newEntity);
 
             this.Close();

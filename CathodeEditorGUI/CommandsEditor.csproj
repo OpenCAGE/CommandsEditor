@@ -40,6 +40,12 @@
     <Reference Include="ST.Library.UI">
       <HintPath>..\STNodeEditor\ST.Library.UI\bin\Debug\ST.Library.UI.dll</HintPath>
     </Reference>
+    <Reference Include="WeifenLuo.WinFormsUI.Docking">
+      <HintPath>..\DockPanelSuite\WinFormsUI\bin\Debug\net40\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
+    </Reference>
+    <Reference Include="WeifenLuo.WinFormsUI.Docking.ThemeVS2015">
+      <HintPath>..\DockPanelSuite\WinFormsUI\bin\Debug\net40\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll</HintPath>
+    </Reference>
     <Reference Include="WebsocketSharp">
       <HintPath>lib\WebsocketSharp\websocket-sharp.dll</HintPath>
     </Reference>
@@ -59,6 +65,12 @@
     </Reference>
     <Reference Include="ST.Library.UI">
       <HintPath>..\STNodeEditor\ST.Library.UI\bin\Release\ST.Library.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="WeifenLuo.WinFormsUI.Docking">
+      <HintPath>..\DockPanelSuite\WinFormsUI\bin\Release\net40\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
+    </Reference>
+    <Reference Include="WeifenLuo.WinFormsUI.Docking.ThemeVS2015">
+      <HintPath>..\DockPanelSuite\WinFormsUI\bin\Release\net40\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll</HintPath>
     </Reference>
     <Reference Include="WebsocketSharp">
       <HintPath>lib\WebsocketSharp\websocket-sharp.dll</HintPath>
@@ -96,8 +108,8 @@
     <Reference Include="System">
       <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.2\System.dll</HintPath>
     </Reference>
-    <Reference Include="System.AppContext, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>packages\System.AppContext.4.3.0\lib\net46\System.AppContext.dll</HintPath>
+    <Reference Include="System.AppContext, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.AppContext.4.3.0\lib\net463\System.AppContext.dll</HintPath>
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
@@ -152,6 +164,16 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Linq, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Linq.4.3.0\lib\net463\System.Linq.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Linq.Expressions, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Linq.Expressions.4.3.0\lib\net463\System.Linq.Expressions.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
     </Reference>
@@ -187,8 +209,8 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Runtime.InteropServices, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>packages\System.Runtime.InteropServices.4.3.0\lib\net462\System.Runtime.InteropServices.dll</HintPath>
+    <Reference Include="System.Runtime.InteropServices, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Runtime.InteropServices.4.3.0\lib\net463\System.Runtime.InteropServices.dll</HintPath>
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
@@ -197,8 +219,8 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Security.Cryptography.Algorithms, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>packages\System.Security.Cryptography.Algorithms.4.3.0\lib\net461\System.Security.Cryptography.Algorithms.dll</HintPath>
+    <Reference Include="System.Security.Cryptography.Algorithms, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Security.Cryptography.Algorithms.4.3.0\lib\net463\System.Security.Cryptography.Algorithms.dll</HintPath>
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
@@ -218,6 +240,11 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Text.RegularExpressions, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Text.RegularExpressions.4.3.0\lib\net463\System.Text.RegularExpressions.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -233,12 +260,6 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="UIAutomationProvider" />
-    <Reference Include="WeifenLuo.WinFormsUI.Docking, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5cded1a1a0a7b481, processorArchitecture=MSIL">
-      <HintPath>packages\DockPanelSuite.3.1.0\lib\net40\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
-    </Reference>
-    <Reference Include="WeifenLuo.WinFormsUI.Docking.ThemeVS2015, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5cded1a1a0a7b481, processorArchitecture=MSIL">
-      <HintPath>packages\DockPanelSuite.ThemeVS2015.3.1.0\lib\net40\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll</HintPath>
-    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
@@ -248,6 +269,12 @@
     </Compile>
     <Compile Include="CommandsEditor.Designer.cs">
       <DependentUpon>CommandsEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DockPanels\Composite Panels\EntityList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DockPanels\Composite Panels\EntityList.Designer.cs">
+      <DependentUpon>EntityList.cs</DependentUpon>
     </Compile>
     <Compile Include="DockPanels\CompositeDisplay.cs">
       <SubType>Form</SubType>
@@ -261,10 +288,10 @@
     <Compile Include="DockPanels\CommandsDisplay.Designer.cs">
       <DependentUpon>CommandsDisplay.cs</DependentUpon>
     </Compile>
-    <Compile Include="DockPanels\EntityDisplay.cs">
+    <Compile Include="DockPanels\Composite Panels\EntityDisplay.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DockPanels\EntityDisplay.Designer.cs">
+    <Compile Include="DockPanels\Composite Panels\EntityDisplay.Designer.cs">
       <DependentUpon>EntityDisplay.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\AddEntity_CompositeInstance.cs">
@@ -290,6 +317,12 @@
     </Compile>
     <Compile Include="Popups\AddFolder.Designer.cs">
       <DependentUpon>AddFolder.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DockPanels\Composite Panels\EntityFlowgraph.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DockPanels\Composite Panels\EntityFlowgraph.Designer.cs">
+      <DependentUpon>EntityFlowgraph.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\ExportComposite.cs">
       <SubType>Form</SubType>
@@ -342,7 +375,9 @@
     <Compile Include="Popups\UserControls\CompositeEntityList.Designer.cs">
       <DependentUpon>CompositeEntityList.cs</DependentUpon>
     </Compile>
+    <Compile Include="Scripts\CompositePath.cs" />
     <Compile Include="Scripts\DirectXTexUtility.cs" />
+    <Compile Include="Scripts\LocalDebug_NEW.cs" />
     <Compile Include="Scripts\InstanceWriter.cs" />
     <Compile Include="Scripts\LevelContent.cs" />
     <Compile Include="Popups\Base\BaseWindow.cs">
@@ -369,12 +404,6 @@
     <Compile Include="Popups\EditSpline.Designer.cs">
       <DependentUpon>EditSpline.cs</DependentUpon>
     </Compile>
-    <Compile Include="Popups\Experimental\NodeEditorTest.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Popups\Experimental\NodeEditorTest.Designer.cs">
-      <DependentUpon>NodeEditorTest.cs</DependentUpon>
-    </Compile>
     <Compile Include="Popups\Function Editors\CAGEAnimation\CAGEAnimation_DeleteParam.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -392,12 +421,6 @@
     </Compile>
     <Compile Include="Popups\Function Editors\CharacterEditor.Designer.cs">
       <DependentUpon>CharacterEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Popups\NodeEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Popups\NodeEditor.Designer.cs">
-      <DependentUpon>NodeEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\Function Editors\CAGEAnimation\CAGEAnimation_SelectParameter.cs">
       <SubType>Form</SubType>
@@ -459,808 +482,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Scripts\LocalDebug.cs" />
-    <Compile Include="Scripts\Nodes\AccessTerminal.cs" />
-    <Compile Include="Scripts\Nodes\AchievementMonitor.cs" />
-    <Compile Include="Scripts\Nodes\AchievementStat.cs" />
-    <Compile Include="Scripts\Nodes\AchievementUniqueCounter.cs" />
-    <Compile Include="Scripts\Nodes\AddExitObjective.cs" />
-    <Compile Include="Scripts\Nodes\AddItemsToGCPool.cs" />
-    <Compile Include="Scripts\Nodes\AddToInventory.cs" />
-    <Compile Include="Scripts\Nodes\AILightCurveSettings.cs" />
-    <Compile Include="Scripts\Nodes\AIMED_ITEM.cs" />
-    <Compile Include="Scripts\Nodes\AIMED_WEAPON.cs" />
-    <Compile Include="Scripts\Nodes\ALLIANCE_ResetAll.cs" />
-    <Compile Include="Scripts\Nodes\ALLIANCE_SetDisposition.cs" />
-    <Compile Include="Scripts\Nodes\AllocateGCItemFromPoolBySubset.cs" />
-    <Compile Include="Scripts\Nodes\AllocateGCItemsFromPool.cs" />
-    <Compile Include="Scripts\Nodes\AllPlayersReady.cs" />
-    <Compile Include="Scripts\Nodes\AnimatedModelAttachmentNode.cs" />
-    <Compile Include="Scripts\Nodes\AnimationMask.cs" />
-    <Compile Include="Scripts\Nodes\ApplyRelativeTransform.cs" />
-    <Compile Include="Scripts\Nodes\AreaHitMonitor.cs" />
-    <Compile Include="Scripts\Nodes\AssetSpawner.cs" />
-    <Compile Include="Scripts\Nodes\Benchmark.cs" />
-    <Compile Include="Scripts\Nodes\BindObjectsMultiplexer.cs" />
-    <Compile Include="Scripts\Nodes\BlendLowResFrame.cs" />
-    <Compile Include="Scripts\Nodes\BloomSettings.cs" />
-    <Compile Include="Scripts\Nodes\BoneAttachedCamera.cs" />
-    <Compile Include="Scripts\Nodes\BooleanLogicOperation.cs" />
-    <Compile Include="Scripts\Nodes\Box.cs" />
-    <Compile Include="Scripts\Nodes\BroadcastTrigger.cs" />
-    <Compile Include="Scripts\Nodes\BulletChamber.cs" />
-    <Compile Include="Scripts\Nodes\ButtonMashPrompt.cs" />
-    <Compile Include="Scripts\Nodes\CAGEAnimation.cs" />
-    <Compile Include="Scripts\Nodes\CameraAimAssistant.cs" />
-    <Compile Include="Scripts\Nodes\CameraCollisionBox.cs" />
-    <Compile Include="Scripts\Nodes\CameraDofController.cs" />
-    <Compile Include="Scripts\Nodes\CameraFinder.cs" />
-    <Compile Include="Scripts\Nodes\CameraPath.cs" />
-    <Compile Include="Scripts\Nodes\CameraPathDriven.cs" />
-    <Compile Include="Scripts\Nodes\CameraPlayAnimation.cs" />
-    <Compile Include="Scripts\Nodes\CameraResource.cs" />
-    <Compile Include="Scripts\Nodes\CameraShake.cs" />
-    <Compile Include="Scripts\Nodes\CamPeek.cs" />
-    <Compile Include="Scripts\Nodes\Character.cs" />
-    <Compile Include="Scripts\Nodes\CharacterAttachmentNode.cs" />
-    <Compile Include="Scripts\Nodes\CharacterCommand.cs" />
-    <Compile Include="Scripts\Nodes\CharacterMonitor.cs" />
-    <Compile Include="Scripts\Nodes\CharacterShivaArms.cs" />
-    <Compile Include="Scripts\Nodes\CharacterTypeMonitor.cs" />
-    <Compile Include="Scripts\Nodes\Checkpoint.cs" />
-    <Compile Include="Scripts\Nodes\CheckpointRestoredNotify.cs" />
-    <Compile Include="Scripts\Nodes\ChokePoint.cs" />
-    <Compile Include="Scripts\Nodes\ChromaticAberrations.cs" />
-    <Compile Include="Scripts\Nodes\CHR_DamageMonitor.cs" />
-    <Compile Include="Scripts\Nodes\CHR_DeathMonitor.cs" />
-    <Compile Include="Scripts\Nodes\CHR_DeepCrouch.cs" />
-    <Compile Include="Scripts\Nodes\CHR_GetAlliance.cs" />
-    <Compile Include="Scripts\Nodes\CHR_GetHealth.cs" />
-    <Compile Include="Scripts\Nodes\CHR_GetTorch.cs" />
-    <Compile Include="Scripts\Nodes\CHR_HasWeaponOfType.cs" />
-    <Compile Include="Scripts\Nodes\CHR_HoldBreath.cs" />
-    <Compile Include="Scripts\Nodes\CHR_IsWithinRange.cs" />
-    <Compile Include="Scripts\Nodes\CHR_KnockedOutMonitor.cs" />
-    <Compile Include="Scripts\Nodes\CHR_LocomotionDuck.cs" />
-    <Compile Include="Scripts\Nodes\CHR_LocomotionEffect.cs" />
-    <Compile Include="Scripts\Nodes\CHR_LocomotionModifier.cs" />
-    <Compile Include="Scripts\Nodes\CHR_ModifyBreathing.cs" />
-    <Compile Include="Scripts\Nodes\Chr_PlayerCrouch.cs" />
-    <Compile Include="Scripts\Nodes\CHR_PlayNPCBark.cs" />
-    <Compile Include="Scripts\Nodes\CHR_PlaySecondaryAnimation.cs" />
-    <Compile Include="Scripts\Nodes\CHR_RetreatMonitor.cs" />
-    <Compile Include="Scripts\Nodes\CHR_SetAlliance.cs" />
-    <Compile Include="Scripts\Nodes\CHR_SetAndroidThrowTarget.cs" />
-    <Compile Include="Scripts\Nodes\CHR_SetDebugDisplayName.cs" />
-    <Compile Include="Scripts\Nodes\CHR_SetFacehuggerAggroRadius.cs" />
-    <Compile Include="Scripts\Nodes\CHR_SetFocalPoint.cs" />
-    <Compile Include="Scripts\Nodes\CHR_SetHeadVisibility.cs" />
-    <Compile Include="Scripts\Nodes\CHR_SetHealth.cs" />
-    <Compile Include="Scripts\Nodes\CHR_SetInvincibility.cs" />
-    <Compile Include="Scripts\Nodes\CHR_SetMood.cs" />
-    <Compile Include="Scripts\Nodes\CHR_SetShowInMotionTracker.cs" />
-    <Compile Include="Scripts\Nodes\CHR_SetSubModelVisibility.cs" />
-    <Compile Include="Scripts\Nodes\CHR_SetTacticalPosition.cs" />
-    <Compile Include="Scripts\Nodes\CHR_SetTacticalPositionToTarget.cs" />
-    <Compile Include="Scripts\Nodes\CHR_SetTorch.cs" />
-    <Compile Include="Scripts\Nodes\CHR_TakeDamage.cs" />
-    <Compile Include="Scripts\Nodes\CHR_TorchMonitor.cs" />
-    <Compile Include="Scripts\Nodes\CHR_VentMonitor.cs" />
-    <Compile Include="Scripts\Nodes\CHR_WeaponFireMonitor.cs" />
-    <Compile Include="Scripts\Nodes\ClearPrimaryObjective.cs" />
-    <Compile Include="Scripts\Nodes\ClearSubObjective.cs" />
-    <Compile Include="Scripts\Nodes\ClipPlanesController.cs" />
-    <Compile Include="Scripts\Nodes\CMD_AimAt.cs" />
-    <Compile Include="Scripts\Nodes\CMD_AimAtCurrentTarget.cs" />
-    <Compile Include="Scripts\Nodes\CMD_Die.cs" />
-    <Compile Include="Scripts\Nodes\CMD_Follow.cs" />
-    <Compile Include="Scripts\Nodes\CMD_FollowUsingJobs.cs" />
-    <Compile Include="Scripts\Nodes\CMD_ForceMeleeAttack.cs" />
-    <Compile Include="Scripts\Nodes\CMD_ForceReloadWeapon.cs" />
-    <Compile Include="Scripts\Nodes\CMD_GoTo.cs" />
-    <Compile Include="Scripts\Nodes\CMD_GoToCover.cs" />
-    <Compile Include="Scripts\Nodes\CMD_HolsterWeapon.cs" />
-    <Compile Include="Scripts\Nodes\CMD_Idle.cs" />
-    <Compile Include="Scripts\Nodes\CMD_LaunchMeleeAttack.cs" />
-    <Compile Include="Scripts\Nodes\CMD_ModifyCombatBehaviour.cs" />
-    <Compile Include="Scripts\Nodes\CMD_MoveTowards.cs" />
-    <Compile Include="Scripts\Nodes\CMD_PlayAnimation.cs" />
-    <Compile Include="Scripts\Nodes\CMD_Ragdoll.cs" />
-    <Compile Include="Scripts\Nodes\CMD_ShootAt.cs" />
-    <Compile Include="Scripts\Nodes\CMD_StopScript.cs" />
-    <Compile Include="Scripts\Nodes\CollectIDTag.cs" />
-    <Compile Include="Scripts\Nodes\CollectNostromoLog.cs" />
-    <Compile Include="Scripts\Nodes\CollectSevastopolLog.cs" />
-    <Compile Include="Scripts\Nodes\CollisionBarrier.cs" />
-    <Compile Include="Scripts\Nodes\ColourCorrectionTransition.cs" />
-    <Compile Include="Scripts\Nodes\ColourSettings.cs" />
-    <Compile Include="Scripts\Nodes\CompoundVolume.cs" />
-    <Compile Include="Scripts\Nodes\ControllableRange.cs" />
-    <Compile Include="Scripts\Nodes\Convo.cs" />
-    <Compile Include="Scripts\Nodes\Counter.cs" />
-    <Compile Include="Scripts\Nodes\CoverExclusionArea.cs" />
-    <Compile Include="Scripts\Nodes\CoverLine.cs" />
-    <Compile Include="Scripts\Nodes\Custom_Hiding_Controller.cs" />
-    <Compile Include="Scripts\Nodes\Custom_Hiding_Vignette_controller.cs" />
-    <Compile Include="Scripts\Nodes\DayToneMappingSettings.cs" />
-    <Compile Include="Scripts\Nodes\DebugCamera.cs" />
-    <Compile Include="Scripts\Nodes\DebugCaptureCorpse.cs" />
-    <Compile Include="Scripts\Nodes\DebugCaptureScreenShot.cs" />
-    <Compile Include="Scripts\Nodes\DebugCheckpoint.cs" />
-    <Compile Include="Scripts\Nodes\DebugEnvironmentMarker.cs" />
-    <Compile Include="Scripts\Nodes\DebugGraph.cs" />
-    <Compile Include="Scripts\Nodes\DebugLoadCheckpoint.cs" />
-    <Compile Include="Scripts\Nodes\DebugMenuToggle.cs" />
-    <Compile Include="Scripts\Nodes\DebugObjectMarker.cs" />
-    <Compile Include="Scripts\Nodes\DebugPositionMarker.cs" />
-    <Compile Include="Scripts\Nodes\DebugText.cs" />
-    <Compile Include="Scripts\Nodes\DebugTextStacking.cs" />
-    <Compile Include="Scripts\Nodes\DEBUG_SenseLevels.cs" />
-    <Compile Include="Scripts\Nodes\DeleteBlankPanel.cs" />
-    <Compile Include="Scripts\Nodes\DeleteButtonDisk.cs" />
-    <Compile Include="Scripts\Nodes\DeleteButtonKeys.cs" />
-    <Compile Include="Scripts\Nodes\DeleteCuttingPanel.cs" />
-    <Compile Include="Scripts\Nodes\DeleteHacking.cs" />
-    <Compile Include="Scripts\Nodes\DeleteHousing.cs" />
-    <Compile Include="Scripts\Nodes\DeleteKeypad.cs" />
-    <Compile Include="Scripts\Nodes\DeletePullLever.cs" />
-    <Compile Include="Scripts\Nodes\DeleteRotateLever.cs" />
-    <Compile Include="Scripts\Nodes\DepthOfFieldSettings.cs" />
-    <Compile Include="Scripts\Nodes\DespawnCharacter.cs" />
-    <Compile Include="Scripts\Nodes\DespawnPlayer.cs" />
-    <Compile Include="Scripts\Nodes\DisplayMessage.cs" />
-    <Compile Include="Scripts\Nodes\DisplayMessageWithCallbacks.cs" />
-    <Compile Include="Scripts\Nodes\Display_Element_On_Map.cs" />
-    <Compile Include="Scripts\Nodes\DistortionOverlay.cs" />
-    <Compile Include="Scripts\Nodes\DistortionSettings.cs" />
-    <Compile Include="Scripts\Nodes\Door.cs" />
-    <Compile Include="Scripts\Nodes\DoorStatus.cs" />
-    <Compile Include="Scripts\Nodes\DurangoVideoCapture.cs" />
-    <Compile Include="Scripts\Nodes\EFFECT_DirectionalPhysics.cs" />
-    <Compile Include="Scripts\Nodes\EFFECT_EntityGenerator.cs" />
-    <Compile Include="Scripts\Nodes\EFFECT_ImpactGenerator.cs" />
-    <Compile Include="Scripts\Nodes\EggSpawner.cs" />
-    <Compile Include="Scripts\Nodes\ElapsedTimer.cs" />
-    <Compile Include="Scripts\Nodes\EnableMotionTrackerPassiveAudio.cs" />
-    <Compile Include="Scripts\Nodes\EndGame.cs" />
-    <Compile Include="Scripts\Nodes\ENT_Debug_Exit_Game.cs" />
-    <Compile Include="Scripts\Nodes\EnvironmentMap.cs" />
-    <Compile Include="Scripts\Nodes\EnvironmentModelReference.cs" />
-    <Compile Include="Scripts\Nodes\EQUIPPABLE_ITEM.cs" />
-    <Compile Include="Scripts\Nodes\ExclusiveMaster.cs" />
-    <Compile Include="Scripts\Nodes\Explosion_AINotifier.cs" />
-    <Compile Include="Scripts\Nodes\ExternalVariableBool.cs" />
-    <Compile Include="Scripts\Nodes\FakeAILightSourceInPlayersHand.cs" />
-    <Compile Include="Scripts\Nodes\FilmGrainSettings.cs" />
-    <Compile Include="Scripts\Nodes\Filter.cs" />
-    <Compile Include="Scripts\Nodes\FilterAbsorber.cs" />
-    <Compile Include="Scripts\Nodes\FilterAnd.cs" />
-    <Compile Include="Scripts\Nodes\FilterBelongsToAlliance.cs" />
-    <Compile Include="Scripts\Nodes\FilterCanSeeTarget.cs" />
-    <Compile Include="Scripts\Nodes\FilterHasBehaviourTreeFlagSet.cs" />
-    <Compile Include="Scripts\Nodes\FilterHasPlayerCollectedIdTag.cs" />
-    <Compile Include="Scripts\Nodes\FilterHasWeaponEquipped.cs" />
-    <Compile Include="Scripts\Nodes\FilterHasWeaponOfType.cs" />
-    <Compile Include="Scripts\Nodes\FilterIsACharacter.cs" />
-    <Compile Include="Scripts\Nodes\FilterIsAgressing.cs" />
-    <Compile Include="Scripts\Nodes\FilterIsAnySaveInProgress.cs" />
-    <Compile Include="Scripts\Nodes\FilterIsAPlayer.cs" />
-    <Compile Include="Scripts\Nodes\FilterIsCharacter.cs" />
-    <Compile Include="Scripts\Nodes\FilterIsCharacterClass.cs" />
-    <Compile Include="Scripts\Nodes\FilterIsCharacterClassCombo.cs" />
-    <Compile Include="Scripts\Nodes\FilterIsDead.cs" />
-    <Compile Include="Scripts\Nodes\FilterIsEnemyOfAllianceGroup.cs" />
-    <Compile Include="Scripts\Nodes\FilterIsEnemyOfCharacter.cs" />
-    <Compile Include="Scripts\Nodes\FilterIsEnemyOfPlayer.cs" />
-    <Compile Include="Scripts\Nodes\FilterIsFacingTarget.cs" />
-    <Compile Include="Scripts\Nodes\FilterIsHumanNPC.cs" />
-    <Compile Include="Scripts\Nodes\FilterIsInAGroup.cs" />
-    <Compile Include="Scripts\Nodes\FilterIsInAlertnessState.cs" />
-    <Compile Include="Scripts\Nodes\FilterIsinInventory.cs" />
-    <Compile Include="Scripts\Nodes\FilterIsInLocomotionState.cs" />
-    <Compile Include="Scripts\Nodes\FilterIsInWeaponRange.cs" />
-    <Compile Include="Scripts\Nodes\FilterIsLocalPlayer.cs" />
-    <Compile Include="Scripts\Nodes\FilterIsNotDeadManWalking.cs" />
-    <Compile Include="Scripts\Nodes\FilterIsObject.cs" />
-    <Compile Include="Scripts\Nodes\FilterIsPhysics.cs" />
-    <Compile Include="Scripts\Nodes\FilterIsPhysicsObject.cs" />
-    <Compile Include="Scripts\Nodes\FilterIsPlatform.cs" />
-    <Compile Include="Scripts\Nodes\FilterIsUsingDevice.cs" />
-    <Compile Include="Scripts\Nodes\FilterIsValidInventoryItem.cs" />
-    <Compile Include="Scripts\Nodes\FilterIsWithdrawnAlien.cs" />
-    <Compile Include="Scripts\Nodes\FilterNot.cs" />
-    <Compile Include="Scripts\Nodes\FilterOr.cs" />
-    <Compile Include="Scripts\Nodes\FilterSmallestUsedDifficulty.cs" />
-    <Compile Include="Scripts\Nodes\FixedCamera.cs" />
-    <Compile Include="Scripts\Nodes\FlareSettings.cs" />
-    <Compile Include="Scripts\Nodes\FlareTask.cs" />
-    <Compile Include="Scripts\Nodes\FlashCallback.cs" />
-    <Compile Include="Scripts\Nodes\FlashInvoke.cs" />
-    <Compile Include="Scripts\Nodes\FlashScript.cs" />
-    <Compile Include="Scripts\Nodes\FloatAbsolute.cs" />
-    <Compile Include="Scripts\Nodes\FloatAdd.cs" />
-    <Compile Include="Scripts\Nodes\FloatAdd_All.cs" />
-    <Compile Include="Scripts\Nodes\FloatClamp.cs" />
-    <Compile Include="Scripts\Nodes\FloatClampMultiply.cs" />
-    <Compile Include="Scripts\Nodes\FloatCompare.cs" />
-    <Compile Include="Scripts\Nodes\FloatDivide.cs" />
-    <Compile Include="Scripts\Nodes\FloatEquals.cs" />
-    <Compile Include="Scripts\Nodes\FloatGetLinearProportion.cs" />
-    <Compile Include="Scripts\Nodes\FloatGreaterThan.cs" />
-    <Compile Include="Scripts\Nodes\FloatGreaterThanOrEqual.cs" />
-    <Compile Include="Scripts\Nodes\FloatLessThan.cs" />
-    <Compile Include="Scripts\Nodes\FloatLessThanOrEqual.cs" />
-    <Compile Include="Scripts\Nodes\FloatLinearInterpolateSpeed.cs" />
-    <Compile Include="Scripts\Nodes\FloatLinearInterpolateSpeedAdvanced.cs" />
-    <Compile Include="Scripts\Nodes\FloatLinearInterpolateTimed.cs" />
-    <Compile Include="Scripts\Nodes\FloatLinearProportion.cs" />
-    <Compile Include="Scripts\Nodes\FloatMath.cs" />
-    <Compile Include="Scripts\Nodes\FloatMath_All.cs" />
-    <Compile Include="Scripts\Nodes\FloatMax.cs" />
-    <Compile Include="Scripts\Nodes\FloatMax_All.cs" />
-    <Compile Include="Scripts\Nodes\FloatMin.cs" />
-    <Compile Include="Scripts\Nodes\FloatMin_All.cs" />
-    <Compile Include="Scripts\Nodes\FloatModulate.cs" />
-    <Compile Include="Scripts\Nodes\FloatModulateRandom.cs" />
-    <Compile Include="Scripts\Nodes\FloatMultiply.cs" />
-    <Compile Include="Scripts\Nodes\FloatMultiplyClamp.cs" />
-    <Compile Include="Scripts\Nodes\FloatMultiply_All.cs" />
-    <Compile Include="Scripts\Nodes\FloatNotEqual.cs" />
-    <Compile Include="Scripts\Nodes\FloatOperation.cs" />
-    <Compile Include="Scripts\Nodes\FloatReciprocal.cs" />
-    <Compile Include="Scripts\Nodes\FloatRemainder.cs" />
-    <Compile Include="Scripts\Nodes\FloatSmoothStep.cs" />
-    <Compile Include="Scripts\Nodes\FloatSqrt.cs" />
-    <Compile Include="Scripts\Nodes\FloatSubtract.cs" />
-    <Compile Include="Scripts\Nodes\FlushZoneCache.cs" />
-    <Compile Include="Scripts\Nodes\FogBox.cs" />
-    <Compile Include="Scripts\Nodes\FogPlane.cs" />
-    <Compile Include="Scripts\Nodes\FogSetting.cs" />
-    <Compile Include="Scripts\Nodes\FogSphere.cs" />
-    <Compile Include="Scripts\Nodes\FollowCameraModifier.cs" />
-    <Compile Include="Scripts\Nodes\FollowTask.cs" />
-    <Compile Include="Scripts\Nodes\Force_UI_Visibility.cs" />
-    <Compile Include="Scripts\Nodes\FullScreenBlurSettings.cs" />
-    <Compile Include="Scripts\Nodes\FullScreenOverlay.cs" />
-    <Compile Include="Scripts\Nodes\GameDVR.cs" />
-    <Compile Include="Scripts\Nodes\GameOver.cs" />
-    <Compile Include="Scripts\Nodes\GameOverCredits.cs" />
-    <Compile Include="Scripts\Nodes\GameplayTip.cs" />
-    <Compile Include="Scripts\Nodes\GameStateChanged.cs" />
-    <Compile Include="Scripts\Nodes\GCIP_WorldPickup.cs" />
-    <Compile Include="Scripts\Nodes\GenericHighlightEntity.cs" />
-    <Compile Include="Scripts\Nodes\GetBlueprintAvailable.cs" />
-    <Compile Include="Scripts\Nodes\GetBlueprintLevel.cs" />
-    <Compile Include="Scripts\Nodes\GetCentrePoint.cs" />
-    <Compile Include="Scripts\Nodes\GetCharacterRotationSpeed.cs" />
-    <Compile Include="Scripts\Nodes\GetClosestPercentOnSpline.cs" />
-    <Compile Include="Scripts\Nodes\GetClosestPoint.cs" />
-    <Compile Include="Scripts\Nodes\GetClosestPointFromSet.cs" />
-    <Compile Include="Scripts\Nodes\GetClosestPointOnSpline.cs" />
-    <Compile Include="Scripts\Nodes\GetCurrentCameraFov.cs" />
-    <Compile Include="Scripts\Nodes\GetCurrentCameraPos.cs" />
-    <Compile Include="Scripts\Nodes\GetCurrentCameraTarget.cs" />
-    <Compile Include="Scripts\Nodes\GetCurrentPlaylistLevelIndex.cs" />
-    <Compile Include="Scripts\Nodes\GetFlashFloatValue.cs" />
-    <Compile Include="Scripts\Nodes\GetFlashIntValue.cs" />
-    <Compile Include="Scripts\Nodes\GetGatingToolLevel.cs" />
-    <Compile Include="Scripts\Nodes\GetInventoryItemName.cs" />
-    <Compile Include="Scripts\Nodes\GetNextPlaylistLevelName.cs" />
-    <Compile Include="Scripts\Nodes\GetPlayerHasGatingTool.cs" />
-    <Compile Include="Scripts\Nodes\GetPlayerHasKeycard.cs" />
-    <Compile Include="Scripts\Nodes\GetPointOnSpline.cs" />
-    <Compile Include="Scripts\Nodes\GetRotation.cs" />
-    <Compile Include="Scripts\Nodes\GetSelectedCharacterId.cs" />
-    <Compile Include="Scripts\Nodes\GetSplineLength.cs" />
-    <Compile Include="Scripts\Nodes\GetTranslation.cs" />
-    <Compile Include="Scripts\Nodes\GetX.cs" />
-    <Compile Include="Scripts\Nodes\GetY.cs" />
-    <Compile Include="Scripts\Nodes\GetZ.cs" />
-    <Compile Include="Scripts\Nodes\GlobalEvent.cs" />
-    <Compile Include="Scripts\Nodes\GlobalEventMonitor.cs" />
-    <Compile Include="Scripts\Nodes\GlobalPosition.cs" />
-    <Compile Include="Scripts\Nodes\GoToFrontend.cs" />
-    <Compile Include="Scripts\Nodes\GPU_PFXEmitterReference.cs" />
-    <Compile Include="Scripts\Nodes\HableToneMappingSettings.cs" />
-    <Compile Include="Scripts\Nodes\HackingGame.cs" />
-    <Compile Include="Scripts\Nodes\HandCamera.cs" />
-    <Compile Include="Scripts\Nodes\HasAccessAtDifficulty.cs" />
-    <Compile Include="Scripts\Nodes\HeldItem_AINotifier.cs" />
-    <Compile Include="Scripts\Nodes\HighSpecMotionBlurSettings.cs" />
-    <Compile Include="Scripts\Nodes\HostOnlyTrigger.cs" />
-    <Compile Include="Scripts\Nodes\IdleTask.cs" />
-    <Compile Include="Scripts\Nodes\ImpactSphere.cs" />
-    <Compile Include="Scripts\Nodes\InhibitActionsUntilRelease.cs" />
-    <Compile Include="Scripts\Nodes\IntegerAbsolute.cs" />
-    <Compile Include="Scripts\Nodes\IntegerAdd.cs" />
-    <Compile Include="Scripts\Nodes\IntegerAdd_All.cs" />
-    <Compile Include="Scripts\Nodes\IntegerAnalyse.cs" />
-    <Compile Include="Scripts\Nodes\IntegerAnd.cs" />
-    <Compile Include="Scripts\Nodes\IntegerCompare.cs" />
-    <Compile Include="Scripts\Nodes\IntegerCompliment.cs" />
-    <Compile Include="Scripts\Nodes\IntegerDivide.cs" />
-    <Compile Include="Scripts\Nodes\IntegerEquals.cs" />
-    <Compile Include="Scripts\Nodes\IntegerGreaterThan.cs" />
-    <Compile Include="Scripts\Nodes\IntegerGreaterThanOrEqual.cs" />
-    <Compile Include="Scripts\Nodes\IntegerLessThan.cs" />
-    <Compile Include="Scripts\Nodes\IntegerLessThanOrEqual.cs" />
-    <Compile Include="Scripts\Nodes\IntegerMath.cs" />
-    <Compile Include="Scripts\Nodes\IntegerMath_All.cs" />
-    <Compile Include="Scripts\Nodes\IntegerMax.cs" />
-    <Compile Include="Scripts\Nodes\IntegerMax_All.cs" />
-    <Compile Include="Scripts\Nodes\IntegerMin.cs" />
-    <Compile Include="Scripts\Nodes\IntegerMin_All.cs" />
-    <Compile Include="Scripts\Nodes\IntegerMultiply.cs" />
-    <Compile Include="Scripts\Nodes\IntegerMultiply_All.cs" />
-    <Compile Include="Scripts\Nodes\IntegerNotEqual.cs" />
-    <Compile Include="Scripts\Nodes\IntegerOperation.cs" />
-    <Compile Include="Scripts\Nodes\IntegerOr.cs" />
-    <Compile Include="Scripts\Nodes\IntegerRemainder.cs" />
-    <Compile Include="Scripts\Nodes\IntegerSubtract.cs" />
-    <Compile Include="Scripts\Nodes\Interaction.cs" />
-    <Compile Include="Scripts\Nodes\InteractiveMovementControl.cs" />
-    <Compile Include="Scripts\Nodes\Internal_JOB_SearchTarget.cs" />
-    <Compile Include="Scripts\Nodes\InventoryItem.cs" />
-    <Compile Include="Scripts\Nodes\IrawanToneMappingSettings.cs" />
-    <Compile Include="Scripts\Nodes\IsActive.cs" />
-    <Compile Include="Scripts\Nodes\IsAttached.cs" />
-    <Compile Include="Scripts\Nodes\IsCurrentLevelAChallengeMap.cs" />
-    <Compile Include="Scripts\Nodes\IsCurrentLevelAPreorderMap.cs" />
-    <Compile Include="Scripts\Nodes\IsEnabled.cs" />
-    <Compile Include="Scripts\Nodes\IsInstallComplete.cs" />
-    <Compile Include="Scripts\Nodes\IsLoaded.cs" />
-    <Compile Include="Scripts\Nodes\IsLoading.cs" />
-    <Compile Include="Scripts\Nodes\IsLocked.cs" />
-    <Compile Include="Scripts\Nodes\IsMultiplayerMode.cs" />
-    <Compile Include="Scripts\Nodes\IsOpen.cs" />
-    <Compile Include="Scripts\Nodes\IsOpening.cs" />
-    <Compile Include="Scripts\Nodes\IsPaused.cs" />
-    <Compile Include="Scripts\Nodes\IsPlaylistTypeAll.cs" />
-    <Compile Include="Scripts\Nodes\IsPlaylistTypeMarathon.cs" />
-    <Compile Include="Scripts\Nodes\IsPlaylistTypeSingle.cs" />
-    <Compile Include="Scripts\Nodes\IsSpawned.cs" />
-    <Compile Include="Scripts\Nodes\IsStarted.cs" />
-    <Compile Include="Scripts\Nodes\IsSuspended.cs" />
-    <Compile Include="Scripts\Nodes\IsVisible.cs" />
-    <Compile Include="Scripts\Nodes\Job.cs" />
-    <Compile Include="Scripts\Nodes\JobWithPosition.cs" />
-    <Compile Include="Scripts\Nodes\JOB_AreaSweep.cs" />
-    <Compile Include="Scripts\Nodes\JOB_AreaSweepFlare.cs" />
-    <Compile Include="Scripts\Nodes\JOB_Assault.cs" />
-    <Compile Include="Scripts\Nodes\JOB_Follow.cs" />
-    <Compile Include="Scripts\Nodes\JOB_Follow_Centre.cs" />
-    <Compile Include="Scripts\Nodes\JOB_Idle.cs" />
-    <Compile Include="Scripts\Nodes\JOB_Panic.cs" />
-    <Compile Include="Scripts\Nodes\JOB_SpottingPosition.cs" />
-    <Compile Include="Scripts\Nodes\JOB_SystematicSearch.cs" />
-    <Compile Include="Scripts\Nodes\JOB_SystematicSearchFlare.cs" />
-    <Compile Include="Scripts\Nodes\LeaderboardWriter.cs" />
-    <Compile Include="Scripts\Nodes\LeaveGame.cs" />
-    <Compile Include="Scripts\Nodes\LensDustSettings.cs" />
-    <Compile Include="Scripts\Nodes\LevelCompletionTargets.cs" />
-    <Compile Include="Scripts\Nodes\LevelInfo.cs" />
-    <Compile Include="Scripts\Nodes\LevelLoaded.cs" />
-    <Compile Include="Scripts\Nodes\LightAdaptationSettings.cs" />
-    <Compile Include="Scripts\Nodes\LightingMaster.cs" />
-    <Compile Include="Scripts\Nodes\LightReference.cs" />
-    <Compile Include="Scripts\Nodes\LimitItemUse.cs" />
-    <Compile Include="Scripts\Nodes\LODControls.cs" />
-    <Compile Include="Scripts\Nodes\LogicAll.cs" />
-    <Compile Include="Scripts\Nodes\LogicCounter.cs" />
-    <Compile Include="Scripts\Nodes\LogicDelay.cs" />
-    <Compile Include="Scripts\Nodes\LogicGate.cs" />
-    <Compile Include="Scripts\Nodes\LogicGateAnd.cs" />
-    <Compile Include="Scripts\Nodes\LogicGateEquals.cs" />
-    <Compile Include="Scripts\Nodes\LogicGateNotEqual.cs" />
-    <Compile Include="Scripts\Nodes\LogicGateOr.cs" />
-    <Compile Include="Scripts\Nodes\LogicNot.cs" />
-    <Compile Include="Scripts\Nodes\LogicOnce.cs" />
-    <Compile Include="Scripts\Nodes\LogicPressurePad.cs" />
-    <Compile Include="Scripts\Nodes\LogicSwitch.cs" />
-    <Compile Include="Scripts\Nodes\Logic_MultiGate.cs" />
-    <Compile Include="Scripts\Nodes\Logic_Vent_Entrance.cs" />
-    <Compile Include="Scripts\Nodes\Logic_Vent_System.cs" />
-    <Compile Include="Scripts\Nodes\LowResFrameCapture.cs" />
-    <Compile Include="Scripts\Nodes\MapAnchor.cs" />
-    <Compile Include="Scripts\Nodes\MapItem.cs" />
-    <Compile Include="Scripts\Nodes\Map_Floor_Change.cs" />
-    <Compile Include="Scripts\Nodes\Master.cs" />
-    <Compile Include="Scripts\Nodes\MELEE_WEAPON.cs" />
-    <Compile Include="Scripts\Nodes\Minigames.cs" />
-    <Compile Include="Scripts\Nodes\MissionNumber.cs" />
-    <Compile Include="Scripts\Nodes\ModelReference.cs" />
-    <Compile Include="Scripts\Nodes\MonitorActionMap.cs" />
-    <Compile Include="Scripts\Nodes\MonitorBase.cs" />
-    <Compile Include="Scripts\Nodes\MonitorPadInput.cs" />
-    <Compile Include="Scripts\Nodes\MotionTrackerMonitor.cs" />
-    <Compile Include="Scripts\Nodes\MotionTrackerPing.cs" />
-    <Compile Include="Scripts\Nodes\MoveAlongSpline.cs" />
-    <Compile Include="Scripts\Nodes\MoveInTime.cs" />
-    <Compile Include="Scripts\Nodes\MoviePlayer.cs" />
-    <Compile Include="Scripts\Nodes\MultipleCharacterAttachmentNode.cs" />
-    <Compile Include="Scripts\Nodes\MultiplePickupSpawner.cs" />
-    <Compile Include="Scripts\Nodes\MultitrackLoop.cs" />
-    <Compile Include="Scripts\Nodes\MusicController.cs" />
-    <Compile Include="Scripts\Nodes\MusicTrigger.cs" />
-    <Compile Include="Scripts\Nodes\NavMeshArea.cs" />
-    <Compile Include="Scripts\Nodes\NavMeshBarrier.cs" />
-    <Compile Include="Scripts\Nodes\NavMeshExclusionArea.cs" />
-    <Compile Include="Scripts\Nodes\NavMeshReachabilitySeedPoint.cs" />
-    <Compile Include="Scripts\Nodes\NavMeshWalkablePlatform.cs" />
-    <Compile Include="Scripts\Nodes\NetPlayerCounter.cs" />
-    <Compile Include="Scripts\Nodes\NetworkedTimer.cs" />
-    <Compile Include="Scripts\Nodes\NetworkProxy.cs" />
-    <Compile Include="Scripts\Nodes\NonInteractiveWater.cs" />
-    <Compile Include="Scripts\Nodes\NonPersistentBool.cs" />
-    <Compile Include="Scripts\Nodes\NonPersistentInt.cs" />
-    <Compile Include="Scripts\Nodes\NPC_Aggression_Monitor.cs" />
-    <Compile Include="Scripts\Nodes\NPC_AlienConfig.cs" />
-    <Compile Include="Scripts\Nodes\NPC_AllSensesLimiter.cs" />
-    <Compile Include="Scripts\Nodes\NPC_ambush_monitor.cs" />
-    <Compile Include="Scripts\Nodes\NPC_AreaBox.cs" />
-    <Compile Include="Scripts\Nodes\NPC_behaviour_monitor.cs" />
-    <Compile Include="Scripts\Nodes\NPC_ClearDefendArea.cs" />
-    <Compile Include="Scripts\Nodes\NPC_ClearPursuitArea.cs" />
-    <Compile Include="Scripts\Nodes\NPC_Coordinator.cs" />
-    <Compile Include="Scripts\Nodes\NPC_Debug_Menu_Item.cs" />
-    <Compile Include="Scripts\Nodes\NPC_DefineBackstageAvoidanceArea.cs" />
-    <Compile Include="Scripts\Nodes\NPC_DynamicDialogue.cs" />
-    <Compile Include="Scripts\Nodes\NPC_DynamicDialogueGlobalRange.cs" />
-    <Compile Include="Scripts\Nodes\NPC_FakeSense.cs" />
-    <Compile Include="Scripts\Nodes\NPC_FollowOffset.cs" />
-    <Compile Include="Scripts\Nodes\NPC_ForceCombatTarget.cs" />
-    <Compile Include="Scripts\Nodes\NPC_ForceNextJob.cs" />
-    <Compile Include="Scripts\Nodes\NPC_ForceRetreat.cs" />
-    <Compile Include="Scripts\Nodes\NPC_Gain_Aggression_In_Radius.cs" />
-    <Compile Include="Scripts\Nodes\NPC_GetCombatTarget.cs" />
-    <Compile Include="Scripts\Nodes\NPC_GetLastSensedPositionOfTarget.cs" />
-    <Compile Include="Scripts\Nodes\NPC_Group_DeathCounter.cs" />
-    <Compile Include="Scripts\Nodes\NPC_Group_Death_Monitor.cs" />
-    <Compile Include="Scripts\Nodes\NPC_Highest_Awareness_Monitor.cs" />
-    <Compile Include="Scripts\Nodes\NPC_MeleeContext.cs" />
-    <Compile Include="Scripts\Nodes\NPC_multi_behaviour_monitor.cs" />
-    <Compile Include="Scripts\Nodes\NPC_navmesh_type_monitor.cs" />
-    <Compile Include="Scripts\Nodes\NPC_NotifyDynamicDialogueEvent.cs" />
-    <Compile Include="Scripts\Nodes\NPC_Once.cs" />
-    <Compile Include="Scripts\Nodes\NPC_ResetFiringStats.cs" />
-    <Compile Include="Scripts\Nodes\NPC_ResetSensesAndMemory.cs" />
-    <Compile Include="Scripts\Nodes\NPC_SenseLimiter.cs" />
-    <Compile Include="Scripts\Nodes\NPC_SetAgressionProgression.cs" />
-    <Compile Include="Scripts\Nodes\NPC_SetAimTarget.cs" />
-    <Compile Include="Scripts\Nodes\NPC_SetAlertness.cs" />
-    <Compile Include="Scripts\Nodes\NPC_SetAlienDevelopmentStage.cs" />
-    <Compile Include="Scripts\Nodes\NPC_SetAutoTorchMode.cs" />
-    <Compile Include="Scripts\Nodes\NPC_SetChokePoint.cs" />
-    <Compile Include="Scripts\Nodes\NPC_SetDefendArea.cs" />
-    <Compile Include="Scripts\Nodes\NPC_SetFiringAccuracy.cs" />
-    <Compile Include="Scripts\Nodes\NPC_SetFiringRhythm.cs" />
-    <Compile Include="Scripts\Nodes\NPC_SetGunAimMode.cs" />
-    <Compile Include="Scripts\Nodes\NPC_SetHidingNearestLocation.cs" />
-    <Compile Include="Scripts\Nodes\NPC_SetHidingSearchRadius.cs" />
-    <Compile Include="Scripts\Nodes\NPC_SetInvisible.cs" />
-    <Compile Include="Scripts\Nodes\NPC_SetLocomotionStyleForJobs.cs" />
-    <Compile Include="Scripts\Nodes\NPC_SetLocomotionTargetSpeed.cs" />
-    <Compile Include="Scripts\Nodes\NPC_SetPursuitArea.cs" />
-    <Compile Include="Scripts\Nodes\NPC_SetRateOfFire.cs" />
-    <Compile Include="Scripts\Nodes\NPC_SetSafePoint.cs" />
-    <Compile Include="Scripts\Nodes\NPC_SetSenseSet.cs" />
-    <Compile Include="Scripts\Nodes\NPC_SetStartPos.cs" />
-    <Compile Include="Scripts\Nodes\NPC_SetTotallyBlindInDark.cs" />
-    <Compile Include="Scripts\Nodes\NPC_SetupMenaceManager.cs" />
-    <Compile Include="Scripts\Nodes\NPC_set_behaviour_tree_flags.cs" />
-    <Compile Include="Scripts\Nodes\NPC_Sleeping_Android_Monitor.cs" />
-    <Compile Include="Scripts\Nodes\NPC_Squad_DialogueMonitor.cs" />
-    <Compile Include="Scripts\Nodes\NPC_Squad_GetAwarenessState.cs" />
-    <Compile Include="Scripts\Nodes\NPC_Squad_GetAwarenessWatermark.cs" />
-    <Compile Include="Scripts\Nodes\NPC_StopAiming.cs" />
-    <Compile Include="Scripts\Nodes\NPC_StopShooting.cs" />
-    <Compile Include="Scripts\Nodes\NPC_SuspiciousItem.cs" />
-    <Compile Include="Scripts\Nodes\NPC_TargetAcquire.cs" />
-    <Compile Include="Scripts\Nodes\NPC_TriggerAimRequest.cs" />
-    <Compile Include="Scripts\Nodes\NPC_TriggerShootRequest.cs" />
-    <Compile Include="Scripts\Nodes\NPC_WithdrawAlien.cs" />
-    <Compile Include="Scripts\Nodes\NumConnectedPlayers.cs" />
-    <Compile Include="Scripts\Nodes\NumDeadPlayers.cs" />
-    <Compile Include="Scripts\Nodes\NumPlayersOnStart.cs" />
-    <Compile Include="Scripts\Nodes\PadLightBar.cs" />
-    <Compile Include="Scripts\Nodes\PadRumbleImpulse.cs" />
-    <Compile Include="Scripts\Nodes\ParticipatingPlayersList.cs" />
-    <Compile Include="Scripts\Nodes\ParticleEmitterReference.cs" />
-    <Compile Include="Scripts\Nodes\PathfindingAlienBackstageNode.cs" />
-    <Compile Include="Scripts\Nodes\PathfindingManualNode.cs" />
-    <Compile Include="Scripts\Nodes\PathfindingTeleportNode.cs" />
-    <Compile Include="Scripts\Nodes\PathfindingWaitNode.cs" />
-    <Compile Include="Scripts\Nodes\Persistent_TriggerRandomSequence.cs" />
-    <Compile Include="Scripts\Nodes\PhysicsApplyBuoyancy.cs" />
-    <Compile Include="Scripts\Nodes\PhysicsApplyImpulse.cs" />
-    <Compile Include="Scripts\Nodes\PhysicsApplyVelocity.cs" />
-    <Compile Include="Scripts\Nodes\PhysicsModifyGravity.cs" />
-    <Compile Include="Scripts\Nodes\PhysicsSystem.cs" />
-    <Compile Include="Scripts\Nodes\PickupSpawner.cs" />
-    <Compile Include="Scripts\Nodes\Planet.cs" />
-    <Compile Include="Scripts\Nodes\PlatformConstantBool.cs" />
-    <Compile Include="Scripts\Nodes\PlatformConstantFloat.cs" />
-    <Compile Include="Scripts\Nodes\PlatformConstantInt.cs" />
-    <Compile Include="Scripts\Nodes\PlayEnvironmentAnimation.cs" />
-    <Compile Include="Scripts\Nodes\PlayerCamera.cs" />
-    <Compile Include="Scripts\Nodes\PlayerCameraMonitor.cs" />
-    <Compile Include="Scripts\Nodes\PlayerCampaignDeaths.cs" />
-    <Compile Include="Scripts\Nodes\PlayerCampaignDeathsInARow.cs" />
-    <Compile Include="Scripts\Nodes\PlayerDeathCounter.cs" />
-    <Compile Include="Scripts\Nodes\PlayerDiscardsItems.cs" />
-    <Compile Include="Scripts\Nodes\PlayerDiscardsTools.cs" />
-    <Compile Include="Scripts\Nodes\PlayerDiscardsWeapons.cs" />
-    <Compile Include="Scripts\Nodes\PlayerHasEnoughItems.cs" />
-    <Compile Include="Scripts\Nodes\PlayerHasItem.cs" />
-    <Compile Include="Scripts\Nodes\PlayerHasItemEntity.cs" />
-    <Compile Include="Scripts\Nodes\PlayerHasItemWithName.cs" />
-    <Compile Include="Scripts\Nodes\PlayerHasSpaceForItem.cs" />
-    <Compile Include="Scripts\Nodes\PlayerKilledAllyMonitor.cs" />
-    <Compile Include="Scripts\Nodes\PlayerLightProbe.cs" />
-    <Compile Include="Scripts\Nodes\PlayerTorch.cs" />
-    <Compile Include="Scripts\Nodes\PlayerTriggerBox.cs" />
-    <Compile Include="Scripts\Nodes\PlayerUseTriggerBox.cs" />
-    <Compile Include="Scripts\Nodes\PlayerWeaponMonitor.cs" />
-    <Compile Include="Scripts\Nodes\Player_ExploitableArea.cs" />
-    <Compile Include="Scripts\Nodes\Player_Sensor.cs" />
-    <Compile Include="Scripts\Nodes\PlayForMinDuration.cs" />
-    <Compile Include="Scripts\Nodes\PointAt.cs" />
-    <Compile Include="Scripts\Nodes\PointTracker.cs" />
-    <Compile Include="Scripts\Nodes\PopupMessage.cs" />
-    <Compile Include="Scripts\Nodes\PositionDistance.cs" />
-    <Compile Include="Scripts\Nodes\PositionMarker.cs" />
-    <Compile Include="Scripts\Nodes\PostprocessingSettings.cs" />
-    <Compile Include="Scripts\Nodes\ProjectileMotion.cs" />
-    <Compile Include="Scripts\Nodes\ProjectileMotionComplex.cs" />
-    <Compile Include="Scripts\Nodes\ProjectiveDecal.cs" />
-    <Compile Include="Scripts\Nodes\ProximityDetector.cs" />
-    <Compile Include="Scripts\Nodes\ProximityTrigger.cs" />
-    <Compile Include="Scripts\Nodes\QueryGCItemPool.cs" />
-    <Compile Include="Scripts\Nodes\RadiosityIsland.cs" />
-    <Compile Include="Scripts\Nodes\RadiosityProxy.cs" />
-    <Compile Include="Scripts\Nodes\RandomBool.cs" />
-    <Compile Include="Scripts\Nodes\RandomFloat.cs" />
-    <Compile Include="Scripts\Nodes\RandomInt.cs" />
-    <Compile Include="Scripts\Nodes\RandomObjectSelector.cs" />
-    <Compile Include="Scripts\Nodes\RandomSelect.cs" />
-    <Compile Include="Scripts\Nodes\RandomVector.cs" />
-    <Compile Include="Scripts\Nodes\Raycast.cs" />
-    <Compile Include="Scripts\Nodes\Refraction.cs" />
-    <Compile Include="Scripts\Nodes\RegisterCharacterModel.cs" />
-    <Compile Include="Scripts\Nodes\RemoveFromGCItemPool.cs" />
-    <Compile Include="Scripts\Nodes\RemoveFromInventory.cs" />
-    <Compile Include="Scripts\Nodes\RemoveWeaponsFromPlayer.cs" />
-    <Compile Include="Scripts\Nodes\RespawnConfig.cs" />
-    <Compile Include="Scripts\Nodes\RespawnExcluder.cs" />
-    <Compile Include="Scripts\Nodes\ReTransformer.cs" />
-    <Compile Include="Scripts\Nodes\Rewire.cs" />
-    <Compile Include="Scripts\Nodes\RewireAccess_Point.cs" />
-    <Compile Include="Scripts\Nodes\RewireLocation.cs" />
-    <Compile Include="Scripts\Nodes\RewireSystem.cs" />
-    <Compile Include="Scripts\Nodes\RewireTotalPowerResource.cs" />
-    <Compile Include="Scripts\Nodes\RibbonEmitterReference.cs" />
-    <Compile Include="Scripts\Nodes\RotateAtSpeed.cs" />
-    <Compile Include="Scripts\Nodes\RotateInTime.cs" />
-    <Compile Include="Scripts\Nodes\RTT_MoviePlayer.cs" />
-    <Compile Include="Scripts\Nodes\SaveGlobalProgression.cs" />
-    <Compile Include="Scripts\Nodes\SaveManagers.cs" />
-    <Compile Include="Scripts\Nodes\ScalarProduct.cs" />
-    <Compile Include="Scripts\Nodes\ScreenEffectEventMonitor.cs" />
-    <Compile Include="Scripts\Nodes\ScreenFadeIn.cs" />
-    <Compile Include="Scripts\Nodes\ScreenFadeInTimed.cs" />
-    <Compile Include="Scripts\Nodes\ScreenFadeOutToBlack.cs" />
-    <Compile Include="Scripts\Nodes\ScreenFadeOutToBlackTimed.cs" />
-    <Compile Include="Scripts\Nodes\ScreenFadeOutToWhite.cs" />
-    <Compile Include="Scripts\Nodes\ScreenFadeOutToWhiteTimed.cs" />
-    <Compile Include="Scripts\Nodes\ScriptVariable.cs" />
-    <Compile Include="Scripts\Nodes\SetAsActiveMissionLevel.cs" />
-    <Compile Include="Scripts\Nodes\SetBlueprintInfo.cs" />
-    <Compile Include="Scripts\Nodes\SetBool.cs" />
-    <Compile Include="Scripts\Nodes\SetColour.cs" />
-    <Compile Include="Scripts\Nodes\SetEnum.cs" />
-    <Compile Include="Scripts\Nodes\SetEnumString.cs" />
-    <Compile Include="Scripts\Nodes\SetFloat.cs" />
-    <Compile Include="Scripts\Nodes\SetGamepadAxes.cs" />
-    <Compile Include="Scripts\Nodes\SetGameplayTips.cs" />
-    <Compile Include="Scripts\Nodes\SetGatingToolLevel.cs" />
-    <Compile Include="Scripts\Nodes\SetHackingToolLevel.cs" />
-    <Compile Include="Scripts\Nodes\SetInteger.cs" />
-    <Compile Include="Scripts\Nodes\SetLocationAndOrientation.cs" />
-    <Compile Include="Scripts\Nodes\SetMotionTrackerRange.cs" />
-    <Compile Include="Scripts\Nodes\SetNextLoadingMovie.cs" />
-    <Compile Include="Scripts\Nodes\SetObject.cs" />
-    <Compile Include="Scripts\Nodes\SetObjectiveCompleted.cs" />
-    <Compile Include="Scripts\Nodes\SetPlayerHasGatingTool.cs" />
-    <Compile Include="Scripts\Nodes\SetPlayerHasKeycard.cs" />
-    <Compile Include="Scripts\Nodes\SetPosition.cs" />
-    <Compile Include="Scripts\Nodes\SetPrimaryObjective.cs" />
-    <Compile Include="Scripts\Nodes\SetRichPresence.cs" />
-    <Compile Include="Scripts\Nodes\SetString.cs" />
-    <Compile Include="Scripts\Nodes\SetSubObjective.cs" />
-    <Compile Include="Scripts\Nodes\SetupGCDistribution.cs" />
-    <Compile Include="Scripts\Nodes\SetVector.cs" />
-    <Compile Include="Scripts\Nodes\SetVector2.cs" />
-    <Compile Include="Scripts\Nodes\SharpnessSettings.cs" />
-    <Compile Include="Scripts\Nodes\Showlevel_Completed.cs" />
-    <Compile Include="Scripts\Nodes\SimpleRefraction.cs" />
-    <Compile Include="Scripts\Nodes\SimpleWater.cs" />
-    <Compile Include="Scripts\Nodes\SmokeCylinder.cs" />
-    <Compile Include="Scripts\Nodes\SmokeCylinderAttachmentInterface.cs" />
-    <Compile Include="Scripts\Nodes\SmoothMove.cs" />
-    <Compile Include="Scripts\Nodes\Sound.cs" />
-    <Compile Include="Scripts\Nodes\SoundBarrier.cs" />
-    <Compile Include="Scripts\Nodes\SoundEnvironmentMarker.cs" />
-    <Compile Include="Scripts\Nodes\SoundEnvironmentZone.cs" />
-    <Compile Include="Scripts\Nodes\SoundImpact.cs" />
-    <Compile Include="Scripts\Nodes\SoundLevelInitialiser.cs" />
-    <Compile Include="Scripts\Nodes\SoundLoadBank.cs" />
-    <Compile Include="Scripts\Nodes\SoundLoadSlot.cs" />
-    <Compile Include="Scripts\Nodes\SoundMissionInitialiser.cs" />
-    <Compile Include="Scripts\Nodes\SoundNetworkNode.cs" />
-    <Compile Include="Scripts\Nodes\SoundObject.cs" />
-    <Compile Include="Scripts\Nodes\SoundPhysicsInitialiser.cs" />
-    <Compile Include="Scripts\Nodes\SoundPlaybackBaseClass.cs" />
-    <Compile Include="Scripts\Nodes\SoundPlayerFootwearOverride.cs" />
-    <Compile Include="Scripts\Nodes\SoundRTPCController.cs" />
-    <Compile Include="Scripts\Nodes\SoundSetRTPC.cs" />
-    <Compile Include="Scripts\Nodes\SoundSetState.cs" />
-    <Compile Include="Scripts\Nodes\SoundSetSwitch.cs" />
-    <Compile Include="Scripts\Nodes\SoundSpline.cs" />
-    <Compile Include="Scripts\Nodes\SoundTimelineTrigger.cs" />
-    <Compile Include="Scripts\Nodes\SpaceSuitVisor.cs" />
-    <Compile Include="Scripts\Nodes\SpaceTransform.cs" />
-    <Compile Include="Scripts\Nodes\SpawnGroup.cs" />
-    <Compile Include="Scripts\Nodes\Special\CustomNode.cs" />
-    <Compile Include="Scripts\Nodes\Special\CompositeInterface.cs" />
-    <Compile Include="Scripts\Nodes\Speech.cs" />
-    <Compile Include="Scripts\Nodes\SpeechScript.cs" />
-    <Compile Include="Scripts\Nodes\Sphere.cs" />
-    <Compile Include="Scripts\Nodes\SplineDistanceLerp.cs" />
-    <Compile Include="Scripts\Nodes\SplinePath.cs" />
-    <Compile Include="Scripts\Nodes\SpottingExclusionArea.cs" />
-    <Compile Include="Scripts\Nodes\Squad_SetMaxEscalationLevel.cs" />
-    <Compile Include="Scripts\Nodes\StartNewChapter.cs" />
-    <Compile Include="Scripts\Nodes\StateQuery.cs" />
-    <Compile Include="Scripts\Nodes\StealCamera.cs" />
-    <Compile Include="Scripts\Nodes\StreamingMonitor.cs" />
-    <Compile Include="Scripts\Nodes\SurfaceEffectBox.cs" />
-    <Compile Include="Scripts\Nodes\SurfaceEffectSphere.cs" />
-    <Compile Include="Scripts\Nodes\SwitchLevel.cs" />
-    <Compile Include="Scripts\Nodes\SyncOnAllPlayers.cs" />
-    <Compile Include="Scripts\Nodes\SyncOnFirstPlayer.cs" />
-    <Compile Include="Scripts\Nodes\Task.cs" />
-    <Compile Include="Scripts\Nodes\TerminalContent.cs" />
-    <Compile Include="Scripts\Nodes\TerminalFolder.cs" />
-    <Compile Include="Scripts\Nodes\Thinker.cs" />
-    <Compile Include="Scripts\Nodes\ThinkOnce.cs" />
-    <Compile Include="Scripts\Nodes\ThrowingPointOfImpact.cs" />
-    <Compile Include="Scripts\Nodes\ToggleFunctionality.cs" />
-    <Compile Include="Scripts\Nodes\TogglePlayerTorch.cs" />
-    <Compile Include="Scripts\Nodes\TorchDynamicMovement.cs" />
-    <Compile Include="Scripts\Nodes\Torch_Control.cs" />
-    <Compile Include="Scripts\Nodes\TRAV_1ShotClimbUnder.cs" />
-    <Compile Include="Scripts\Nodes\TRAV_1ShotFloorVentEntrance.cs" />
-    <Compile Include="Scripts\Nodes\TRAV_1ShotFloorVentExit.cs" />
-    <Compile Include="Scripts\Nodes\TRAV_1ShotLeap.cs" />
-    <Compile Include="Scripts\Nodes\TRAV_1ShotSpline.cs" />
-    <Compile Include="Scripts\Nodes\TRAV_1ShotVentEntrance.cs" />
-    <Compile Include="Scripts\Nodes\TRAV_1ShotVentExit.cs" />
-    <Compile Include="Scripts\Nodes\TRAV_ContinuousBalanceBeam.cs" />
-    <Compile Include="Scripts\Nodes\TRAV_ContinuousCinematicSidle.cs" />
-    <Compile Include="Scripts\Nodes\TRAV_ContinuousClimbingWall.cs" />
-    <Compile Include="Scripts\Nodes\TRAV_ContinuousLadder.cs" />
-    <Compile Include="Scripts\Nodes\TRAV_ContinuousLedge.cs" />
-    <Compile Include="Scripts\Nodes\TRAV_ContinuousPipe.cs" />
-    <Compile Include="Scripts\Nodes\TRAV_ContinuousTightGap.cs" />
-    <Compile Include="Scripts\Nodes\TriggerBindAllCharactersOfType.cs" />
-    <Compile Include="Scripts\Nodes\TriggerBindAllNPCs.cs" />
-    <Compile Include="Scripts\Nodes\TriggerBindCharacter.cs" />
-    <Compile Include="Scripts\Nodes\TriggerBindCharactersInSquad.cs" />
-    <Compile Include="Scripts\Nodes\TriggerCameraViewCone.cs" />
-    <Compile Include="Scripts\Nodes\TriggerCameraViewConeMulti.cs" />
-    <Compile Include="Scripts\Nodes\TriggerCameraVolume.cs" />
-    <Compile Include="Scripts\Nodes\TriggerCheckDifficulty.cs" />
-    <Compile Include="Scripts\Nodes\TriggerContainerObjectsFilterCounter.cs" />
-    <Compile Include="Scripts\Nodes\TriggerDamaged.cs" />
-    <Compile Include="Scripts\Nodes\TriggerDelay.cs" />
-    <Compile Include="Scripts\Nodes\TriggerExtractBoundCharacter.cs" />
-    <Compile Include="Scripts\Nodes\TriggerExtractBoundObject.cs" />
-    <Compile Include="Scripts\Nodes\TriggerFilter.cs" />
-    <Compile Include="Scripts\Nodes\TriggerLooper.cs" />
-    <Compile Include="Scripts\Nodes\TriggerObjectsFilter.cs" />
-    <Compile Include="Scripts\Nodes\TriggerObjectsFilterCounter.cs" />
-    <Compile Include="Scripts\Nodes\TriggerRandom.cs" />
-    <Compile Include="Scripts\Nodes\TriggerRandomSequence.cs" />
-    <Compile Include="Scripts\Nodes\TriggerSelect.cs" />
-    <Compile Include="Scripts\Nodes\TriggerSelect_Direct.cs" />
-    <Compile Include="Scripts\Nodes\TriggerSequence.cs" />
-    <Compile Include="Scripts\Nodes\TriggerSimple.cs" />
-    <Compile Include="Scripts\Nodes\TriggerSwitch.cs" />
-    <Compile Include="Scripts\Nodes\TriggerSync.cs" />
-    <Compile Include="Scripts\Nodes\TriggerTouch.cs" />
-    <Compile Include="Scripts\Nodes\TriggerUnbindCharacter.cs" />
-    <Compile Include="Scripts\Nodes\TriggerViewCone.cs" />
-    <Compile Include="Scripts\Nodes\TriggerVolumeFilter.cs" />
-    <Compile Include="Scripts\Nodes\TriggerVolumeFilter_Monitored.cs" />
-    <Compile Include="Scripts\Nodes\TriggerWeightedRandom.cs" />
-    <Compile Include="Scripts\Nodes\TriggerWhenSeeTarget.cs" />
-    <Compile Include="Scripts\Nodes\Trigger_AudioOccluded.cs" />
-    <Compile Include="Scripts\Nodes\TutorialMessage.cs" />
-    <Compile Include="Scripts\Nodes\UIBreathingGameIcon.cs" />
-    <Compile Include="Scripts\Nodes\UiSelectionBox.cs" />
-    <Compile Include="Scripts\Nodes\UiSelectionSphere.cs" />
-    <Compile Include="Scripts\Nodes\UI_Attached.cs" />
-    <Compile Include="Scripts\Nodes\UI_Container.cs" />
-    <Compile Include="Scripts\Nodes\UI_Icon.cs" />
-    <Compile Include="Scripts\Nodes\UI_KeyGate.cs" />
-    <Compile Include="Scripts\Nodes\UI_Keypad.cs" />
-    <Compile Include="Scripts\Nodes\UI_ReactionGame.cs" />
-    <Compile Include="Scripts\Nodes\UnlockAchievement.cs" />
-    <Compile Include="Scripts\Nodes\UnlockLogEntry.cs" />
-    <Compile Include="Scripts\Nodes\UnlockMapDetail.cs" />
-    <Compile Include="Scripts\Nodes\UpdateGlobalPosition.cs" />
-    <Compile Include="Scripts\Nodes\UpdateLeaderBoardDisplay.cs" />
-    <Compile Include="Scripts\Nodes\UpdatePrimaryObjective.cs" />
-    <Compile Include="Scripts\Nodes\UpdateSubObjective.cs" />
-    <Compile Include="Scripts\Nodes\VariableAnimationInfo.cs" />
-    <Compile Include="Scripts\Nodes\VariableBool.cs" />
-    <Compile Include="Scripts\Nodes\VariableColour.cs" />
-    <Compile Include="Scripts\Nodes\VariableEnum.cs" />
-    <Compile Include="Scripts\Nodes\VariableEnumString.cs" />
-    <Compile Include="Scripts\Nodes\VariableFilterObject.cs" />
-    <Compile Include="Scripts\Nodes\VariableFlashScreenColour.cs" />
-    <Compile Include="Scripts\Nodes\VariableFloat.cs" />
-    <Compile Include="Scripts\Nodes\VariableHackingConfig.cs" />
-    <Compile Include="Scripts\Nodes\VariableInt.cs" />
-    <Compile Include="Scripts\Nodes\VariableObject.cs" />
-    <Compile Include="Scripts\Nodes\VariablePosition.cs" />
-    <Compile Include="Scripts\Nodes\VariableString.cs" />
-    <Compile Include="Scripts\Nodes\VariableThePlayer.cs" />
-    <Compile Include="Scripts\Nodes\VariableTriggerObject.cs" />
-    <Compile Include="Scripts\Nodes\VariableVector.cs" />
-    <Compile Include="Scripts\Nodes\VariableVector2.cs" />
-    <Compile Include="Scripts\Nodes\VectorAdd.cs" />
-    <Compile Include="Scripts\Nodes\VectorDirection.cs" />
-    <Compile Include="Scripts\Nodes\VectorDistance.cs" />
-    <Compile Include="Scripts\Nodes\VectorLinearInterpolateSpeed.cs" />
-    <Compile Include="Scripts\Nodes\VectorLinearInterpolateTimed.cs" />
-    <Compile Include="Scripts\Nodes\VectorLinearProportion.cs" />
-    <Compile Include="Scripts\Nodes\VectorMath.cs" />
-    <Compile Include="Scripts\Nodes\VectorModulus.cs" />
-    <Compile Include="Scripts\Nodes\VectorMultiply.cs" />
-    <Compile Include="Scripts\Nodes\VectorMultiplyByPos.cs" />
-    <Compile Include="Scripts\Nodes\VectorNormalise.cs" />
-    <Compile Include="Scripts\Nodes\VectorProduct.cs" />
-    <Compile Include="Scripts\Nodes\VectorReflect.cs" />
-    <Compile Include="Scripts\Nodes\VectorRotateByPos.cs" />
-    <Compile Include="Scripts\Nodes\VectorRotatePitch.cs" />
-    <Compile Include="Scripts\Nodes\VectorRotateRoll.cs" />
-    <Compile Include="Scripts\Nodes\VectorRotateYaw.cs" />
-    <Compile Include="Scripts\Nodes\VectorScale.cs" />
-    <Compile Include="Scripts\Nodes\VectorSubtract.cs" />
-    <Compile Include="Scripts\Nodes\VectorYaw.cs" />
-    <Compile Include="Scripts\Nodes\VideoCapture.cs" />
-    <Compile Include="Scripts\Nodes\VignetteSettings.cs" />
-    <Compile Include="Scripts\Nodes\VisibilityMaster.cs" />
-    <Compile Include="Scripts\Nodes\Weapon_AINotifier.cs" />
-    <Compile Include="Scripts\Nodes\WEAPON_AmmoTypeFilter.cs" />
-    <Compile Include="Scripts\Nodes\WEAPON_AttackerFilter.cs" />
-    <Compile Include="Scripts\Nodes\WEAPON_DamageFilter.cs" />
-    <Compile Include="Scripts\Nodes\WEAPON_DidHitSomethingFilter.cs" />
-    <Compile Include="Scripts\Nodes\WEAPON_Effect.cs" />
-    <Compile Include="Scripts\Nodes\WEAPON_GiveToCharacter.cs" />
-    <Compile Include="Scripts\Nodes\WEAPON_GiveToPlayer.cs" />
-    <Compile Include="Scripts\Nodes\WEAPON_ImpactAngleFilter.cs" />
-    <Compile Include="Scripts\Nodes\WEAPON_ImpactCharacterFilter.cs" />
-    <Compile Include="Scripts\Nodes\WEAPON_ImpactEffect.cs" />
-    <Compile Include="Scripts\Nodes\WEAPON_ImpactFilter.cs" />
-    <Compile Include="Scripts\Nodes\WEAPON_ImpactInspector.cs" />
-    <Compile Include="Scripts\Nodes\WEAPON_ImpactOrientationFilter.cs" />
-    <Compile Include="Scripts\Nodes\WEAPON_MultiFilter.cs" />
-    <Compile Include="Scripts\Nodes\WEAPON_TargetObjectFilter.cs" />
-    <Compile Include="Scripts\Nodes\Zone.cs" />
-    <Compile Include="Scripts\Nodes\ZoneExclusionLink.cs" />
-    <Compile Include="Scripts\Nodes\ZoneLink.cs" />
-    <Compile Include="Scripts\Nodes\ZoneLoaded.cs" />
+    <Compile Include="Scripts\NodePositionDatabase.cs" />
     <Compile Include="Scripts\ObjectExtensions.cs" />
     <Compile Include="Popups\AddOrEditResource.cs">
       <SubType>Form</SubType>
@@ -1468,13 +690,16 @@
     <EmbeddedResource Include="CommandsEditor.resx">
       <DependentUpon>CommandsEditor.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="DockPanels\Composite Panels\EntityList.resx">
+      <DependentUpon>EntityList.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="DockPanels\CompositeDisplay.resx">
       <DependentUpon>CompositeDisplay.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DockPanels\CommandsDisplay.resx">
       <DependentUpon>CommandsDisplay.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DockPanels\EntityDisplay.resx">
+    <EmbeddedResource Include="DockPanels\Composite Panels\EntityDisplay.resx">
       <DependentUpon>EntityDisplay.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\AddEntity_CompositeInstance.resx">
@@ -1488,6 +713,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\AddFolder.resx">
       <DependentUpon>AddFolder.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DockPanels\Composite Panels\EntityFlowgraph.resx">
+      <DependentUpon>EntityFlowgraph.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\ExportComposite.resx">
       <DependentUpon>ExportComposite.cs</DependentUpon>
@@ -1513,9 +741,6 @@
     <EmbeddedResource Include="Popups\EditSpline.resx">
       <DependentUpon>EditSpline.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Popups\Experimental\NodeEditorTest.resx">
-      <DependentUpon>NodeEditorTest.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Popups\Function Editors\CAGEAnimation\CAGEAnimation_DeleteParam.resx">
       <DependentUpon>CAGEAnimation_DeleteParam.cs</DependentUpon>
     </EmbeddedResource>
@@ -1524,9 +749,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\Function Editors\CharacterEditor.resx">
       <DependentUpon>CharacterEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Popups\NodeEditor.resx">
-      <DependentUpon>NodeEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\Function Editors\CAGEAnimationEditor.resx">
       <DependentUpon>CAGEAnimationEditor.cs</DependentUpon>

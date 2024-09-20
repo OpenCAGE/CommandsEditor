@@ -43,6 +43,9 @@ namespace CommandsEditor
             public PhysicsMaps physics_maps = null;
             public PathBarrierResources path_barrier_resources = null;
 
+            public EnvironmentMaps env_maps = null;
+            public Lights lights = null;
+
             public SoundBankData sound_bankdata = null;
             public SoundDialogueLookups sound_dialoguelookups = null;
             public SoundEventData sound_eventdata = null;
@@ -54,6 +57,7 @@ namespace CommandsEditor
             public class MasterState
             {
                 public NavigationMesh navmesh;
+                public Traversals traversals;
             }
         }
 
@@ -66,7 +70,7 @@ namespace CommandsEditor
         private string worldPath = "";
         private string renderablePath = "";
 
-        public LevelContent(string levelName)
+        public LevelContent(string levelName, bool loadAssetsOnThread = true)
         {
             level = levelName;
 
@@ -85,8 +89,11 @@ namespace CommandsEditor
                     break;
             }
 
-            //Load
-            Task.Factory.StartNew(() => LoadAssets());
+            if (loadAssetsOnThread)
+                Task.Factory.StartNew(() => LoadAssets());
+            else
+                LoadAssets();
+
             if (!LoadCommands())
             {
                 MessageBox.Show("Failed to load Commands data.\nPlease reset your game files.", "Load failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -161,6 +168,34 @@ namespace CommandsEditor
             composite_content_cache.Clear();
         }
 
+        //FOR TESTING ONLY!! Loads a LevelContent object for the given level on the current thread, and generates ShortGuids for every string.
+        [Obsolete("This function is safe to use but not performant. It's intended for test code only.")]
+        public static LevelContent DEBUG_LoadUnthreadedAndPopulateShortGuids(string level)
+        {
+            LevelContent content = new LevelContent(level, false);
+
+            content.editor_utils = new EditorUtils(content);
+            content.editor_utils.GenerateEntityNameCache(Singleton.Editor);
+            content.editor_utils.GenerateCompositeInstances(content.commands, false);
+
+            foreach (Composite composite in content.commands.Entries)
+                foreach (Entity entity in composite.GetEntities())
+                    ShortGuidUtils.Generate(EntityUtils.GetName(composite, entity));
+
+            foreach (Models.CS2 cs2 in content.resource.models.Entries)
+            {
+                ShortGuidUtils.Generate(cs2.Name);
+                foreach (Models.CS2.Component component in cs2.Components)
+                    foreach (Models.CS2.Component.LOD lod in component.LODs)
+                        ShortGuidUtils.Generate(lod.Name);
+            }
+
+            foreach (Materials.Material material in content.resource.materials.Entries)
+                ShortGuidUtils.Generate(material.Name);
+
+            return content;
+        }
+
         private bool LoadCommands()
         {
 #if !CATHODE_FAIL_HARD
@@ -202,7 +237,8 @@ namespace CommandsEditor
             try
             {
 #endif
-                Parallel.For(0, 16, (i) =>
+                resource.resources = new Resources(worldPath + "RESOURCES.BIN");
+                Parallel.For(0, 18, (i) =>
                 {
                     switch (i)
                     {
@@ -220,7 +256,11 @@ namespace CommandsEditor
                             resource.shaders_new = new Shaders(renderablePath + "LEVEL_SHADERS_DX11.PAK"); 
                             break;
                         case 4:
-                            resource.reds = new RenderableElements(worldPath + "REDS.BIN");
+                            //TODO: this is weird... why does it seem to differ?
+                            if (File.Exists(worldPath + "REDS.BIN"))
+                                resource.reds = new RenderableElements(worldPath + "REDS.BIN");
+                            else
+                                resource.reds = new RenderableElements(renderablePath + "REDS.BIN");
                             break;
                         case 5:
                             if (Singleton.AnimationStrings_Debug == null)
@@ -250,31 +290,45 @@ namespace CommandsEditor
                             resource.character_accessories = new CharacterAccessorySets(worldPath + "CHARACTERACCESSORYSETS.BIN");
                             break;
                         case 13:
-                            resource.resources = new Resources(worldPath + "RESOURCES.BIN");
+                            // --
                             break;
                         case 14:
                             resource.path_barrier_resources = new PathBarrierResources(worldPath + "PATH_BARRIER_RESOURCES");
                             break;
                         case 15:
-                            int stateCount = 1;
+                            resource.env_maps = new EnvironmentMaps(worldPath + "ENVIRONMENTMAP.BIN");
+                            break;
+                        case 16:
+                            resource.lights = new Lights(worldPath + "LIGHTS.BIN");
+                            break;
+                        case 17:
+                            int stateCount = 1; // we always implicitly have one state (the default state: state zero)
                             using (BinaryReader reader = new BinaryReader(File.OpenRead(worldPath + "EXCLUSIVE_MASTER_RESOURCE_INDICES")))
                             {
-                                reader.BaseStream.Position = 4;
-                                stateCount += reader.ReadInt32();
-                                //TODO: this file also contains indices for each state which seem to be of some relevence, although EXCLUSIVE_MASTER_RESOURCE doesn't point to indices?
+                                reader.BaseStream.Position = 4;  // version: 1
+                                int states = reader.ReadInt32(); // number of changeable states
+                                stateCount += states;
+                                for (int x = 0; x < states; x++)
+                                {
+                                    int resourceIndex = reader.ReadInt32();
+                                    Resources.Resource r = resource.resources.Entries[resourceIndex]; //TODO: this gives you the instance of the ExclusiveMaster entity - use the info.
+                                    //get the instance of the entity
+                                    //apply the state index to the resource info in one of the -1s
+                                    //use that in the ui
+                                }
                             }
                             for (int x = 0; x < stateCount; x++)
                             {
                                 resource.master_states.Add(new Resource.MasterState()
                                 {
-                                    navmesh = new NavigationMesh(worldPath + "STATE_" + x + "/NAV_MESH")
+                                    navmesh = new NavigationMesh(worldPath + "STATE_" + x + "/NAV_MESH"),
+                                    traversals = new Traversals(worldPath + "STATE_" + x + "/TRAVERSAL")
                                 });
                                 // WORLD STATE RESOURCES TODO:
                                 //  - ASSAULT_POSITIONS
                                 //  - COVER
                                 //  - CRAWL_SPACE_SPOTTING_POSITIONS
                                 //  - SPOTTING_POSITIONS
-                                //  - TRAVERSAL
                             }
                             break;
                     }

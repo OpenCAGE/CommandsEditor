@@ -4,3 +4,6 @@
 [submodule "STNodeEditor"]
 	path = STNodeEditor
 	url = https://github.com/MattFiler/STNodeEditor
+[submodule "DockPanelSuite"]
+	path = DockPanelSuite
+	url = https://github.com/MattFiler/dockpanelsuite

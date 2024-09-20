@@ -37,18 +37,17 @@ namespace CommandsEditor.DockPanels
         private Composite _composite;
         public Composite Composite => _composite;
 
-        private List<EntityDisplay> _entityDisplays = new List<EntityDisplay>();
+        private EntityList _entityList;
+        private EntityFlowgraph _entityFlowgraph;
 
-        private EntityDisplay _activeEntityDisplay = null;
-        public EntityDisplay ActiveEntityDisplay => _activeEntityDisplay;
+        private EntityDisplay _entityDisplay;
+        public EntityDisplay EntityDisplay => _entityDisplay;
 
         private CompositePath _path = new CompositePath();
         public CompositePath Path => _path;
 
         private static Mutex _mut = new Mutex();
         private bool _canExportChildren = true;
-
-        private const int _defaultSplitterDistance = 500;
         private bool _isSubbed = false;
 
         public CompositeDisplay(CommandsDisplay commandsDisplay)
@@ -59,10 +58,20 @@ namespace CommandsEditor.DockPanels
 
             dockPanel.ShowDocumentIcon = true;
 
-            splitContainer1.FixedPanel = FixedPanel.Panel1;
-            splitContainer1.SplitterDistance = SettingsManager.GetInteger(Singleton.Settings.EntitySplitWidth, _defaultSplitterDistance);
+#if !DEBUG
+            DEBUG_ShowAllInNodegraph.Visible = false;
+#endif
 
-            compositeEntityList1.ContextMenuStrip = EntityListContextMenu;
+            _entityList = new EntityList();
+            _entityList.Show(dockPanel, DockState.DockLeft);
+            //_entityList.DockState = DockState.DockLeftAutoHide; //<-- not using auto hide for now to get ui active for events
+
+            _entityFlowgraph = new EntityFlowgraph();
+            _entityFlowgraph.Show(dockPanel, DockState.Document);
+
+            _entityDisplay = new EntityDisplay(this, false);
+            _entityDisplay.Show(dockPanel, DockState.DockRight);
+            _entityDisplay.FormClosing += OnEntityDisplayClosing;
 
             this.FormClosed += CompositeDisplay_FormClosed;
         }
@@ -85,8 +94,7 @@ namespace CommandsEditor.DockPanels
         {
             if (!_isSubbed)
             {
-                dockPanel.ActiveContentChanged += DockPanel_ActiveContentChanged;
-                compositeEntityList1.SelectedEntityChanged += LoadEntity;
+                _entityList.List.SelectedEntityChanged += LoadEntity;
                 Singleton.OnCompositeRenamed += OnCompositeRenamed;
                 Singleton.OnEntityAdded += OnAddNewEntity;
                 _isSubbed = true;
@@ -111,7 +119,8 @@ namespace CommandsEditor.DockPanels
                     break;
             }
 
-            compositeEntityList1.Setup(composite, null, false);
+            _entityFlowgraph.ShowComposite(composite);
+            _entityList.List.Setup(composite, null, false);
             _path = new CompositePath();
             this.Text = EditorUtils.GetCompositeName(composite);
 
@@ -128,8 +137,7 @@ namespace CommandsEditor.DockPanels
 
         private void CompositeDisplay_FormClosed(object sender, FormClosedEventArgs e)
         {
-            dockPanel.ActiveContentChanged -= DockPanel_ActiveContentChanged;
-            compositeEntityList1.SelectedEntityChanged -= LoadEntity;
+            _entityList.List.SelectedEntityChanged -= LoadEntity;
             //this.FormClosed -= CompositeDisplay_FormClosed;
             Singleton.OnCompositeRenamed -= OnCompositeRenamed;
             Singleton.OnEntityAdded -= OnAddNewEntity;
@@ -144,8 +152,9 @@ namespace CommandsEditor.DockPanels
             if (dialog_hierarchy != null)
                 dialog_hierarchy.Close();
 
-            if (_activeEntityDisplay != null)
-                _activeEntityDisplay.FormClosing -= OnActiveContentClosing;
+            _entityFlowgraph.Close();
+            _entityList.Close();
+
             if (_renameComposite != null)
                 _renameComposite.FormClosed -= _renameComposite_FormClosed;
             if (_instanceInfoPopup != null)
@@ -154,12 +163,12 @@ namespace CommandsEditor.DockPanels
                 _entityRenameDialog.FormClosed -= Rename_entity_FormClosed;
 
             _composite = null;
-            _activeEntityDisplay = null;
+
+            if (_entityDisplay != null)
+                _entityDisplay.DepopulateUI();
+            _entityDisplay = null;
 
             CloseAllChildTabs();
-
-            if (sender != null && e != null)
-                _entityDisplays.Clear();
 
             imageList.Images.Clear();
             imageList.Dispose();
@@ -179,7 +188,9 @@ namespace CommandsEditor.DockPanels
             pathDisplay.Text = _path.GetPath(composite);
             _composite = composite;
 
-            CommandsUtils.PurgeDeadLinks(Content.commands, composite);
+            List<Entity> purged = CommandsUtils.PurgeDeadLinks(Content.commands, composite);
+            for (int i = 0; i < purged.Count; i++)
+                Singleton.OnEntityDeleted(purged[i]);
             CommandsUtils.PurgedComposites.purged.Add(composite.shortGUID);
 
             CloseAllChildTabs();
@@ -188,12 +199,11 @@ namespace CommandsEditor.DockPanels
 
             _instanceInfoPopup?.Close();
 
-            Cursor.Current = Cursors.Default;
-        }
+#if DEBUG
+            DEBUG_ShowAllInNodegraph.ForeColor = NodePositionDatabase.CanRestoreFlowgraph(_composite.name) ? Color.Green : Color.Red;
+#endif
 
-        public void ResetSplitter()
-        {
-            splitContainer1.SplitterDistance = _defaultSplitterDistance;
+            Cursor.Current = Cursors.Default;
         }
 
         /* Load a child composite within this composite */
@@ -216,7 +226,7 @@ namespace CommandsEditor.DockPanels
         /* Reload this display */
         public void Reload(bool alsoReloadEntities = true)
         {
-            compositeEntityList1.LoadComposite(Composite);
+            _entityList.List.LoadComposite(Composite);
             if (alsoReloadEntities) ReloadAllEntities();
 
             exportComposite.Enabled = false;
@@ -302,53 +312,22 @@ namespace CommandsEditor.DockPanels
         /* Reload all entities loaded in this display */
         public void ReloadAllEntities()
         {
-            for (int i = 0; i < _entityDisplays.Count; i++)
-            {
-                if (!_entityDisplays[i].Populated) continue;
-                _entityDisplays[i].Reload();
-            }
+            if (_entityDisplay.Populated)
+                _entityDisplay.Reload();
         }
 
         /* Reload a specific entity's UI (if it is loaded) */
         public void ReloadEntity(Entity entity)
         {
-            _entityDisplays.FirstOrDefault(o => o.Entity == entity && o.Populated)?.Reload();
-        }
-
-        /* Monitor the currently active entity tab */
-        private void DockPanel_ActiveContentChanged(object sender, EventArgs e)
-        {
-            EntityDisplay prevActiveEntityDisplay = _activeEntityDisplay;
-            object content = ((DockPanel)sender).ActiveContent;
-
-            if (content is EntityDisplay) 
-                _activeEntityDisplay = (EntityDisplay)content;
-            else 
-                return;
-
-            if (prevActiveEntityDisplay == _activeEntityDisplay) return;
-
-            if (prevActiveEntityDisplay != null)
-                prevActiveEntityDisplay.FormClosing -= OnActiveContentClosing;
-            _activeEntityDisplay.FormClosing += OnActiveContentClosing;
-
-            Singleton.OnEntitySelected?.Invoke(_activeEntityDisplay.Entity);
-        }
-        private void OnActiveContentClosing(object sender, FormClosingEventArgs e)
-        {
-            EntityDisplay prevActiveEntityDisplay = _activeEntityDisplay;
-            _activeEntityDisplay = null;
-
-            if (prevActiveEntityDisplay == _activeEntityDisplay) return;
-
-            Singleton.OnEntitySelected?.Invoke(null);
+            if (_entityDisplay != null && _entityDisplay.Entity == entity)
+                _entityDisplay.Reload();
         }
 
         /* Perform a partial UI reload for a newly added entity */
         private void ReloadUIForNewEntity(Entity newEnt)
         {
             if (newEnt == null) return;
-            compositeEntityList1.AddNewEntity(newEnt);
+            _entityList.List.AddNewEntity(newEnt);
             LoadEntity(newEnt);
         }
 
@@ -362,55 +341,15 @@ namespace CommandsEditor.DockPanels
             if (entity == null) return;
 
             //First, make sure the list has the right entity selected, then exit early to avoid loading twice.
-            if (compositeEntityList1.SelectedEntity != entity)
+            if (_entityList.List.SelectedEntity != entity)
             {
-                compositeEntityList1.SelectEntity(entity);
+                _entityList.List.SelectEntity(entity);
                 return;
             }
 
-            EntityDisplay display = null;
-            if (SettingsManager.GetBool(Singleton.Settings.UseEntityTabs))
-            {
-                //If tabbing is enabled, first see if this entity is already open
-                display = _entityDisplays.FirstOrDefault(o => o.Entity == entity);
-                //If not, try & find an unused background tab for us to repurpose
-                if (display == null)
-                {
-                    for (int i = 0; i < _entityDisplays.Count; i++)
-                    {
-                        if (_entityDisplays[i].Populated) continue;
-                        display = _entityDisplays[i];
-                        break;
-                    }
-                }
-                //Otherwise, spawn a new tab
-                if (display == null)
-                {
-                    display = new EntityDisplay(this);
-                    display.Show(dockPanel, DockState.Document);
-                    display.FormClosing += OnEntityDisplayClosing;
-                    _entityDisplays.Add(display);
-                }
-            }
-            else
-            {
-                //If tabbing is disabled, make the tab if it hasn't been made already
-                if (_entityDisplays.Count == 0)
-                {
-                    display = new EntityDisplay(this);
-                    display.Show(dockPanel, DockState.Document);
-                    display.FormClosing += OnEntityDisplayClosing;
-                    _entityDisplays.Add(display);
-                }
-                //Otherwise just repurpose the one that was already made
-                else
-                {
-                    display = _entityDisplays[0];
-                }
-            }
-            display.PopulateUI(entity);
+            _entityDisplay.PopulateUI(entity);
 
-            compositeEntityList1.FocusOnList();
+            _entityList.List.FocusOnList();
         }
         private void OnEntityDisplayClosing(object sender, FormClosingEventArgs e)
         {
@@ -421,10 +360,11 @@ namespace CommandsEditor.DockPanels
 
         public void CloseAllChildTabsExcept(Entity entity)
         {
+            if (_entityDisplay == null || _entityDisplay.Entity == entity)
+                return;
+
             //Note: we don't actually close tabs here, we just hide them - they can be repurposed then instead of spawning new ones
-            List<EntityDisplay> toClose = _entityDisplays.FindAll(o => o.Entity != entity);
-            for (int i = 0; i < toClose.Count; i++)
-                toClose[i].DepopulateUI();
+            _entityDisplay.DepopulateUI();
         }
         public void CloseAllChildTabs()
         {
@@ -510,13 +450,16 @@ namespace CommandsEditor.DockPanels
 
             CommandsUtils.PurgedComposites.purged.Clear(); //TODO: we should smartly remove from this list, rather than removing all
 
-            _entityDisplays.FirstOrDefault(o => o.Entity == entity && o.Populated)?.Close();
+            if (_entityDisplay.Entity == entity && _entityDisplay.Populated)
+                _entityDisplay.Close();
 
             if (reloadUI)
             {
-                compositeEntityList1.LoadComposite(Composite);
+                _entityList.List.LoadComposite(Composite);
                 ReloadAllEntities();
             }
+
+            Singleton.OnEntityDeleted?.Invoke(entity);
         }
 
         public void DuplicateEntity(Entity entity)
@@ -674,7 +617,7 @@ namespace CommandsEditor.DockPanels
 
         private void deleteCheckedEntities_Click(object sender, EventArgs e)
         {
-            List<Entity> entities = compositeEntityList1.CheckedEntities;
+            List<Entity> entities = _entityList.List.CheckedEntities;
 
             if (entities.Count == 0) return;
 
@@ -683,13 +626,13 @@ namespace CommandsEditor.DockPanels
             foreach (Entity entity in entities)
                 DeleteEntity(entity, false, false);
 
-            compositeEntityList1.LoadComposite(Composite);
+            _entityList.List.LoadComposite(Composite);
             ReloadAllEntities();
         }
 
         private void exportComposite_Click(object sender, EventArgs e)
         {
-            ExportComposite dialog = new ExportComposite(this, _canExportChildren);
+            ExportComposite dialog = new ExportComposite(Composite, _canExportChildren);
             dialog.Show();
         }
 
@@ -732,7 +675,7 @@ namespace CommandsEditor.DockPanels
                 if (dialog_func != null)
                     dialog_func.Close();
 
-                dialog_func = new AddEntity_Function(this);
+                dialog_func = new AddEntity_Function(Composite);
                 dialog_func.Show();
                 dialog_func.Focus();
             }
@@ -741,7 +684,7 @@ namespace CommandsEditor.DockPanels
                 if (dialog_compinst != null)
                     dialog_compinst.Close();
 
-                dialog_compinst = new AddEntity_CompositeInstance(this);
+                dialog_compinst = new AddEntity_CompositeInstance(Composite);
                 dialog_compinst.Show();
                 dialog_compinst.Focus();
             }
@@ -783,7 +726,7 @@ namespace CommandsEditor.DockPanels
                 if (dialog_var != null)
                     dialog_var.Close();
 
-                dialog_var = new AddEntity_Variable(this);
+                dialog_var = new AddEntity_Variable(Composite);
                 dialog_var.Show();
                 dialog_var.Focus();
             }
@@ -839,7 +782,7 @@ namespace CommandsEditor.DockPanels
         /* Entity List Context Menu */
         private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            DeleteEntity(compositeEntityList1.SelectedEntity);
+            DeleteEntity(_entityList.List.SelectedEntity);
         }
         RenameEntity _entityRenameDialog = null;
         private void renameToolStripMenuItem_Click(object sender, EventArgs e)
@@ -847,7 +790,7 @@ namespace CommandsEditor.DockPanels
             if (_entityRenameDialog != null)
                 _entityRenameDialog.Close();
 
-            _entityRenameDialog = new RenameEntity(compositeEntityList1.SelectedEntity, this.Composite);
+            _entityRenameDialog = new RenameEntity(_entityList.List.SelectedEntity, this.Composite);
             _entityRenameDialog.Show();
             _entityRenameDialog.FormClosed += Rename_entity_FormClosed;
         }
@@ -857,7 +800,7 @@ namespace CommandsEditor.DockPanels
         }
         private void duplicateToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            DuplicateEntity(compositeEntityList1.SelectedEntity);
+            DuplicateEntity(_entityList.List.SelectedEntity);
         }
         private void createParameterToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -880,22 +823,6 @@ namespace CommandsEditor.DockPanels
             CreateEntity(EntityVariant.ALIAS);
         }
 
-        //disable entity-related actions on the context menu if no entity is selected
-        private void EntityListContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            bool hasSelectedEntity = compositeEntityList1.SelectedEntity != null;
-
-            deleteToolStripMenuItem.Enabled = hasSelectedEntity;
-            renameToolStripMenuItem.Enabled = hasSelectedEntity && compositeEntityList1.SelectedEntity.variant != EntityVariant.ALIAS;
-            duplicateToolStripMenuItem.Enabled = hasSelectedEntity;
-        }
-
-        //UI: handle saving split container width between composites/runs 
-        private void dockPanel_Resize(object sender, EventArgs e)
-        {
-            SettingsManager.SetInteger(Singleton.Settings.EntitySplitWidth, splitContainer1.SplitterDistance);
-        }
-
         RenameComposite _renameComposite;
         private void renameComposite_Click(object sender, EventArgs e)
         {
@@ -916,104 +843,26 @@ namespace CommandsEditor.DockPanels
 
         private void copyToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditorClipboard.Entity = compositeEntityList1.SelectedEntity;
+            EditorClipboard.Entity = _entityList.List.SelectedEntity;
         }
 
         private void pasteToolStripMenuItem_Click(object sender, EventArgs e)
         {
             AddCopyOfEntity(EditorClipboard.Entity);
         }
-    }
 
-    public class CompositePath
-    {
-        private List<Composite> _composites = new List<Composite>();
-        private List<Entity> _entities = new List<Entity>();
-
-        public void StepForwards(Composite prevComp, Entity entityFollowed)
+        private void DEBUG_ShowAllInNodegraph_Click(object sender, EventArgs e)
         {
-            _composites.Add(prevComp);
-            _entities.Add(entityFollowed);
+            EntityFlowgraph form = new EntityFlowgraph();
+            form.ShowComposite(Composite);
+            form.Show();
+#if DEBUG
+            form.FormClosed += DEBUG_ShowAllInNodegraph_FormClosed;
         }
-
-        public bool StepBackwards(out Composite prevComp, out Entity entityFollowed)
+        private void DEBUG_ShowAllInNodegraph_FormClosed(object sender, FormClosedEventArgs e)
         {
-            if (_composites.Count == 0 || _entities.Count == 0)
-            {
-                prevComp = null;
-                entityFollowed = null;
-                return false;
-            }
-
-            prevComp = _composites[_composites.Count - 1];
-            entityFollowed = _entities[_entities.Count - 1];
-
-            _composites.RemoveAt(_composites.Count - 1);
-            _entities.RemoveAt(_entities.Count - 1);
-
-            return true;
-        }
-
-        public Composite PreviousComposite
-        {
-            get 
-            {
-                if (_composites.Count == 0) return null;
-                return _composites[_composites.Count - 1];
-            }
-        }
-
-        public Entity PreviousEntity
-        {
-            get
-            {
-                if (_entities.Count == 0) return null;
-                return _entities[_entities.Count - 1];
-            }
-        }
-
-        public List<Composite> AllComposites
-        {
-            get
-            {
-                return _composites;
-            }
-        }
-
-        public List<Entity> AllEntities
-        {
-            get
-            {
-                return _entities;
-            }
-        }
-
-        public string GetPath(Composite currentComp)
-        {
-            string path = "";
-            for (int i = 0; i < _composites.Count; i++)
-            {
-                path += EditorUtils.GetCompositeName(_composites[i]) + " > ";
-            }
-            path += EditorUtils.GetCompositeName(currentComp);
-            return path;
-        }
-
-        public List<CompAndEnt> GetPathRich(Composite currentComp)
-        {
-            List<CompAndEnt> rich = new List<CompAndEnt>();
-            for (int i = 0; i < _composites.Count; i++)
-            {
-                rich.Add(new CompAndEnt() { Composite = _composites[i], Entity = _entities[i] });
-            }
-            rich.Add(new CompAndEnt() { Composite = currentComp, Entity = null });
-            return rich;
-        }
-
-        public struct CompAndEnt
-        {
-            public Composite Composite;
-            public Entity Entity;
+            DEBUG_ShowAllInNodegraph.ForeColor = NodePositionDatabase.CanRestoreFlowgraph(_composite.name) ? Color.Green : Color.Red;
+#endif
         }
     }
 }

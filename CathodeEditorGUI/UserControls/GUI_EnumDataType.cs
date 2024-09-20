@@ -29,6 +29,7 @@ namespace CommandsEditor.UserControls
         {
             switch (enumName)
             {
+                //TODO: figure these out
                 case "CHECKPOINT_TYPE":
                 case "LIGHT_ANIM":
                 case "AMMO_TYPE":
