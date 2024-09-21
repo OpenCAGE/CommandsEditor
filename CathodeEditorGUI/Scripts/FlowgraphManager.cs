@@ -35,6 +35,24 @@ namespace CommandsEditor
             }
         }
 
+        //util to see if there is at least one vanilla or custom defined flowgraph layout for the given composite
+        public static bool HasDefinedLayout(Composite composite)
+        {
+            return _vanilla.flowgraphs.FirstOrDefault(o => o.CompositeGUID == composite.shortGUID) != null ||
+                _custom.flowgraphs.FirstOrDefault(o => o.CompositeGUID == composite.shortGUID) != null;
+        }
+
+        //gets the first flowgraph layout metadata for the given composite - todo: eventually we want to support multiple flowgraphs per composite
+        //Prioritises the "custom" table as custom user-defined layouts should always overrule the vanilla ones
+        public static FlowgraphMeta GetLayout(Composite composite)
+        {
+            FlowgraphMeta toReturn = _custom.flowgraphs.FirstOrDefault(o => o.CompositeGUID == composite.shortGUID);
+            if (toReturn != null)
+                return toReturn;
+
+            return _vanilla.flowgraphs.FirstOrDefault(o => o.CompositeGUID == composite.shortGUID);
+        }
+
         //This is for porting NodePositionDatabase over to FlowgraphManager and should be deleted/reworked once that's done
         public static void AddVanillaFlowgraph(STNodeEditor editor, Composite composite)
         {
@@ -97,6 +115,8 @@ namespace CommandsEditor
 
                 flowgraphMeta.Nodes.Add(nodeMeta);
             }
+
+            Console.WriteLine("Added: " + composite.name);
             _vanilla.flowgraphs.Add(flowgraphMeta);
 
             using (BinaryWriter writer = new BinaryWriter(File.OpenWrite("F:\\Repos\\CommandsEditor\\CathodeEditorGUI\\Resources\\flowgraphs.bin")))

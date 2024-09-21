@@ -26,6 +26,7 @@ using System.Xml.Linq;
 using CathodeLib;
 using System.Windows.Input;
 using CATHODE;
+using static CathodeLib.CompositeFlowgraphsTable;
 
 namespace CommandsEditor
 {
@@ -162,44 +163,63 @@ namespace CommandsEditor
             stNodeEditor1.Nodes.Clear();
             _spawnOffset = 0;
 
-            List<Entity> entities = _composite.GetEntities();
-            for (int i = 0; i < entities.Count; i++)
+            if (FlowgraphManager.HasDefinedLayout(composite))
             {
-                if (!entities[i].HasLinks(_composite))
-                    continue;
-
-                CathodeNode mainNode = EntityToNode(entities[i], _composite);
-
-                for (int x = 0;x < entities[i].childLinks.Count; x++)
+                //populate defined layout
+                FlowgraphMeta flowgraphMeta = FlowgraphManager.GetLayout(composite);
+                foreach (FlowgraphMeta.NodeMeta nodeMeta in flowgraphMeta.Nodes)
                 {
-                    Entity childEnt = composite.GetEntityByID(entities[i].childLinks[x].linkedEntityID);
-                    if (childEnt == null)
+                    Entity entity = composite.GetEntityByID(nodeMeta.EntityGUID);
+                    if (entity == null)
+                        throw new Exception("Entity lookup failed. Mismatched data. Should do something nice here.");
+                    CathodeNode node = EntityToNode(entity, composite);
+                    node.SetPosition(nodeMeta.Position);
+                }
+                // loop through and assign all connections
+            
+                stNodeEditor1.ScaleCanvas(flowgraphMeta.CanvasScale, 0, 0);
+                stNodeEditor1.MoveCanvas(flowgraphMeta.CanvasPosition.X, flowgraphMeta.CanvasPosition.Y, false, CanvasMoveArgs.All);
+            }
+            else
+            {
+                //This composite has no defined layouts
+
+                List<Entity> entities = _composite.GetEntities();
+                for (int i = 0; i < entities.Count; i++)
+                {
+                    if (!entities[i].HasLinks(_composite))
                         continue;
 
-                    CathodeNode childNode = EntityToNode(childEnt, _composite);
-                    STNodeOption linkIn = childNode.AddInputOption(entities[i].childLinks[x].linkedParamID);
-                    STNodeOption linkOut = mainNode.AddOutputOption(entities[i].childLinks[x].thisParamID);
-                    linkIn.ConnectOption(linkOut);
+                    CathodeNode mainNode = EntityToNode(entities[i], _composite);
+
+                    for (int x = 0; x < entities[i].childLinks.Count; x++)
+                    {
+                        Entity childEnt = composite.GetEntityByID(entities[i].childLinks[x].linkedEntityID);
+                        if (childEnt == null)
+                            continue;
+
+                        CathodeNode childNode = EntityToNode(childEnt, _composite);
+                        STNodeOption linkIn = childNode.AddInputOption(entities[i].childLinks[x].linkedParamID);
+                        STNodeOption linkOut = mainNode.AddOutputOption(entities[i].childLinks[x].thisParamID);
+                        linkIn.ConnectOption(linkOut);
+                    }
+
+                    //we should ensure variable entities always have a pin in/out for easier editing
+                    if (entities[i].variant == EntityVariant.VARIABLE)
+                    {
+                        VariableEntity varEnt = (VariableEntity)entities[i];
+                        mainNode.AddInputOption(varEnt.name);
+                        mainNode.AddOutputOption(varEnt.name);
+                    }
+                    //NOTE: WE should limit link creation on variable entities to JUST the above. 
                 }
 
-                //we should ensure variable entities always have a pin in/out for easier editing
-                if (entities[i].variant == EntityVariant.VARIABLE)
-                {
-                    VariableEntity varEnt = (VariableEntity)entities[i];
-                    mainNode.AddInputOption(varEnt.name);
-                    mainNode.AddOutputOption(varEnt.name);
-                }
-                //NOTE: WE should limit link creation on variable entities to JUST the above. 
+                //LEGACY
+                //NodePositionDatabase.TryRestoreFlowgraph(_composite.name, stNodeEditor1);
             }
-
-            NodePositionDatabase.TryRestoreFlowgraph(_composite.name, stNodeEditor1);
 
             foreach (STNode node in stNodeEditor1.Nodes)
                 ((CathodeNode)node).Recompute();
-
-            //Lock options for now
-            //foreach (STNode node in stNodeEditor1.Nodes)
-            //    node.LockOption = true;
 
             stNodeEditor1.ResumeLayout();
             stNodeEditor1.Invalidate();

@@ -125,6 +125,7 @@ namespace CommandsEditor
             foreach (string file in files)
             {
                 Commands commands = new Commands(file);
+                commands.EntryPoints[0].name = EditorUtils.GetCompositeName(commands.EntryPoints[0]);
                 EntityFlowgraph flowgraph = new EntityFlowgraph();
                 flowgraph.Show();
                 flowgraph.DEBUG_LoadAll_Test(commands, true);
