@@ -69,7 +69,7 @@ namespace CommandsEditor.DockPanels
             _entityFlowgraph = new EntityFlowgraph();
             _entityFlowgraph.Show(dockPanel, DockState.Document);
 
-            _entityDisplay = new EntityDisplay(this, false);
+            _entityDisplay = new EntityDisplay(this, true); //TODO: pass false to hide links
             _entityDisplay.Show(dockPanel, DockState.DockRight);
             _entityDisplay.FormClosing += OnEntityDisplayClosing;
 

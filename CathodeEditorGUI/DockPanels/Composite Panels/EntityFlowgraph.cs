@@ -147,21 +147,6 @@ namespace CommandsEditor
             }
         }
 
-        /*
-         
-        The way this should work:
-        - Check the Flowgraph layout database, if there's no match then populate the nodes in a dumb fashion and show a warning. There would be no match because:
-            - The composite isn't found in the database (for development only)
-            - The content in the database mismatches the composite (user has modified the composite using older opencage) - will want to check childLinks and Entities
-        - If there's a layout found - populate it. The layout should include:
-            - Canvas scale/position
-            - Positional data, a "show" bool, and all pins in/out for every entity node
-                - The purpose of the "show" bool is because by default, entities with no connections aren't populated on the flowgraph, and users can add them back without connecting any links (which would render them automatically invisible next time without the bool)
-                - The reason for including all in/out pins is that users can add pins to the nodes without connecting them up to create the links that save to the commands
-            - 
-
-        */
-
         public void ShowComposite(Composite composite)
         {
             Console.WriteLine("EntityFlowgraph::ShowComposite - " + composite.name);

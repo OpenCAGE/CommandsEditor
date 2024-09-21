@@ -298,6 +298,8 @@ namespace CommandsEditor
         //Go to the top of the connection chain, and follow it down to get the number of nodes in the sequence - keep a track of the longest sequences and where they are
         public static void CountEntitySequences()
         {
+            string OnlyDoOneComp = "";//"SCRIPT_STORYMISSION\\M04_WELCOME_TO_THE_SEVASTOPOL\\M04_PART_01\\M04_PT01"; //keep this blank to dump all
+
             List<string> files = Directory.GetFiles("F:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\data_orig\\ENV\\Production", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
             List<string> output = new List<string>();
             List<int> counts = new List<int>();
@@ -314,6 +316,9 @@ namespace CommandsEditor
 
                 foreach (Composite composite in commands.Entries)
                 {
+                    if (OnlyDoOneComp != "" && composite.name != OnlyDoOneComp)
+                        continue;
+
                     CommandsUtils.PurgeDeadLinks(commands, composite);
 
                     List<Entity> entities = composite.GetEntities();
@@ -326,26 +331,22 @@ namespace CommandsEditor
                         List<Entity> connectedEntities = new List<Entity>();
                         RecurseEntityConnections(entity, composite, connectedEntities);
 
-                        //if (connectedEntities.Count == 2329)
-                        //{
-                        //    string str = "if (";
-                        //    foreach (Entity ent in connectedEntities)
-                        //    {
-                        //        str += "entities[i].shortGUID != new ShortGuid(" + ent.shortGUID.ToUInt32() + ") && ";
-                        //    }
-                        //    Console.WriteLine(str);
-                        //}
-
                         if (connectedEntities.Count != 1)
                         {
-                            //foreach (Entity ent in connectedEntities)
-                            //{
-                            //    Console.WriteLine(EntityUtils.GetName(composite, ent));
-                            //}
-                            //Console.WriteLine(composite.name + " -> " + connectedEntities.Count);
+                            if (OnlyDoOneComp != "")
+                            {
+                                Console.WriteLine(composite.name + " -> " + connectedEntities.Count);
+                            }
+                            else
+                            {
+                                //foreach (Entity ent in connectedEntities)
+                                //{
+                                //    Console.WriteLine(EntityUtils.GetName(composite, ent));
+                                //}
 
-                            output.Add(composite.name + " -> " + connectedEntities.Count);
-                            counts.Add(connectedEntities.Count);
+                                output.Add(composite.name + " -> " + connectedEntities.Count);
+                                counts.Add(connectedEntities.Count);
+                            }
                         }
 
                         if (max < connectedEntities.Count)
@@ -353,6 +354,9 @@ namespace CommandsEditor
 
                         checkedEnts.AddRange(connectedEntities);
                     }
+
+                    if (OnlyDoOneComp != "")
+                        return;
                 }
             }
             output.Add("-----------");

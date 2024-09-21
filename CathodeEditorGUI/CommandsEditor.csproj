@@ -377,6 +377,7 @@
     </Compile>
     <Compile Include="Scripts\CompositePath.cs" />
     <Compile Include="Scripts\DirectXTexUtility.cs" />
+    <Compile Include="Scripts\FlowgraphManager.cs" />
     <Compile Include="Scripts\LocalDebug_NEW.cs" />
     <Compile Include="Scripts\InstanceWriter.cs" />
     <Compile Include="Scripts\LevelContent.cs" />
@@ -894,6 +895,7 @@
     <None Include="Images\Entity Icons\d_Prefab Icon.ico" />
     <None Include="Images\Entity Icons\AnimatorController Icon.ico" />
     <None Include="Images\Entity Icons\LightProbeProxyVolume Gizmo inv.ico" />
+    <None Include="Resources\flowgraphs.bin" />
     <None Include="Resources\_2560px_Arrow_east_svg.png" />
   </ItemGroup>
   <ItemGroup>
