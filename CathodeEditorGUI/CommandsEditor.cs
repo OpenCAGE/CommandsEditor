@@ -58,6 +58,8 @@ namespace CommandsEditor
 
         public CommandsEditor(string level = null)
         {
+            //LocalDebug.DoCheckOnNodegraph();
+
             //LocalDebug_NEW.DEBUG_DumpAllInstancedStuff("BSP_TORRENS", "NON_ORDERED");
             //return;
 
