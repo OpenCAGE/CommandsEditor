@@ -8,6 +8,8 @@ using CATHODE;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CathodeLib;
+using ST.Library.UI.NodeEditor;
+using static CathodeLib.CompositeFlowgraphsTable;
 
 namespace CommandsEditor
 {
@@ -30,6 +32,76 @@ namespace CommandsEditor
             using (BinaryReader reader = new BinaryReader(new MemoryStream(Properties.Resources.flowgraphs)))
             {
                 _vanilla.Read(reader);
+            }
+        }
+
+        //This is for porting NodePositionDatabase over to FlowgraphManager and should be deleted/reworked once that's done
+        public static void AddVanillaFlowgraph(STNodeEditor editor, Composite composite)
+        {
+            FlowgraphMeta flowgraphMeta = new FlowgraphMeta();
+            flowgraphMeta.CompositeGUID = composite.shortGUID;
+            flowgraphMeta.Name = Path.GetFileName(composite.name);
+
+            if (_vanilla.flowgraphs.FirstOrDefault(o => o.Name == flowgraphMeta.Name && o.CompositeGUID == flowgraphMeta.CompositeGUID) != null)
+                return;
+
+            flowgraphMeta.CanvasPosition = editor.CanvasOffset;
+            flowgraphMeta.CanvasScale = editor.CanvasScale;
+            flowgraphMeta.Nodes = new List<FlowgraphMeta.NodeMeta>();
+            for (int i = 0; i < editor.Nodes.Count; i++)
+            {
+                if (!(editor.Nodes[i] is CathodeNode))
+                    continue;
+
+                CathodeNode node = (CathodeNode)editor.Nodes[i];
+                FlowgraphMeta.NodeMeta nodeMeta = new FlowgraphMeta.NodeMeta();
+                nodeMeta.EntityGUID = node.ShortGUID;
+                nodeMeta.Position = node.Location;
+
+                STNodeOption[] ins = node.GetInputOptions();
+                for (int y = 0; y < ins.Length; y++)
+                {
+                    List<STNodeOption> connections = ins[y].GetConnectedOption();
+                    for (int z = 0; z < connections.Count; z++)
+                    {
+                        if (!(connections[z].Owner is CathodeNode))
+                            continue;
+
+                        CathodeNode connectedNode = (CathodeNode)connections[z].Owner;
+                        nodeMeta.ConnectionsIn.Add(new FlowgraphMeta.NodeMeta.ConnectionMeta()
+                        {
+                            ParameterGUID = ins[y].ShortGUID,
+                            ConnectedEntityGUID = connectedNode.ShortGUID,
+                            ConnectedParameterGUID = connections[z].ShortGUID,
+                        });
+                    }
+                }
+                STNodeOption[] outs = node.GetOutputOptions();
+                for (int y = 0; y < outs.Length; y++)
+                {
+                    List<STNodeOption> connections = outs[y].GetConnectedOption();
+                    for (int z = 0; z < connections.Count; z++)
+                    {
+                        if (!(connections[z].Owner is CathodeNode))
+                            continue;
+
+                        CathodeNode connectedNode = (CathodeNode)connections[z].Owner;
+                        nodeMeta.ConnectionsOut.Add(new FlowgraphMeta.NodeMeta.ConnectionMeta()
+                        {
+                            ParameterGUID = outs[y].ShortGUID,
+                            ConnectedEntityGUID = connectedNode.ShortGUID,
+                            ConnectedParameterGUID = connections[z].ShortGUID, 
+                        });
+                    }
+                }
+
+                flowgraphMeta.Nodes.Add(nodeMeta);
+            }
+            _vanilla.flowgraphs.Add(flowgraphMeta);
+
+            using (BinaryWriter writer = new BinaryWriter(File.OpenWrite("F:\\Repos\\CommandsEditor\\CathodeEditorGUI\\Resources\\flowgraphs.bin")))
+            {
+                _vanilla.Write(writer);
             }
         }
 

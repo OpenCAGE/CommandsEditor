@@ -491,14 +491,17 @@ namespace CommandsEditor
 
         private void DEBUG_LoadAll_Click(object sender, EventArgs e)
         {
-            DEBUG_LoadAll_Test(_commands);
+            DEBUG_LoadAll_Test(_commands, false);
         }
-        public void DEBUG_LoadAll_Test(Commands commands)
+        public void DEBUG_LoadAll_Test(Commands commands, bool doingConversion)
         {
             _commands = commands;
             for (int i = 0; i < Commands.Entries.Count; i++)
             {
                 ShowComposite(Commands.Entries[i]);
+
+                if (doingConversion && NodePositionDatabase.CanRestoreFlowgraph(Commands.Entries[i].name))
+                    FlowgraphManager.AddVanillaFlowgraph(stNodeEditor1, Commands.Entries[i]);
             }
         }
     }

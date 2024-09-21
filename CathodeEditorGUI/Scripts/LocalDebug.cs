@@ -127,7 +127,7 @@ namespace CommandsEditor
                 Commands commands = new Commands(file);
                 EntityFlowgraph flowgraph = new EntityFlowgraph();
                 flowgraph.Show();
-                flowgraph.DEBUG_LoadAll_Test(commands);
+                flowgraph.DEBUG_LoadAll_Test(commands, true);
                 flowgraph.Hide();
                 flowgraph.Dispose();
             }
