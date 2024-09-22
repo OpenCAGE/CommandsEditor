@@ -13,6 +13,7 @@ using System.Xml.Linq;
 using System.IO;
 using CATHODE.EXPERIMENTAL;
 using System.Windows.Shapes;
+using CathodeLib;
 
 namespace CommandsEditor
 {
@@ -105,6 +106,7 @@ namespace CommandsEditor
             ShortGuidUtils.LinkCommands(commands);
             CommandsUtils.LinkCommands(commands);
             FlowgraphManager.LinkCommands(commands);
+            CompositeUtils.LinkCommands(commands);
 
             //Cache entity list view items (TODO: do this on a thread and handle conflicts nicely)
             /*
@@ -163,6 +165,10 @@ namespace CommandsEditor
             if (FlowgraphManager.LinkedCommands == commands)
             {
                 FlowgraphManager.LinkCommands(null);
+            }
+            if (CompositeUtils.LinkedCommands == commands)
+            {
+                CompositeUtils.LinkCommands(null);
             }
 
             resource = null;

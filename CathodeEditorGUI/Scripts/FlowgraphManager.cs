@@ -53,15 +53,64 @@ namespace CommandsEditor
             return _vanilla.flowgraphs.FirstOrDefault(o => o.CompositeGUID == composite.shortGUID);
         }
 
-        //This is for porting NodePositionDatabase over to FlowgraphManager and should be deleted/reworked once that's done
+#if DEBUG
+        //This is for populating the vanilla flowgraph layout table locally - it's for development use only, so should not be included in non-debug builds
         public static void AddVanillaFlowgraph(STNodeEditor editor, Composite composite)
         {
+            FlowgraphMeta flowgraphMeta = editor.AsFlowgraphMeta(composite, Path.GetFileName(composite.name)); //TODO: when we start supporting multiple flowgraphs we should pass new names in here
+            _vanilla.flowgraphs.RemoveAll(o => o.Name == flowgraphMeta.Name && o.CompositeGUID == flowgraphMeta.CompositeGUID);
+            _vanilla.flowgraphs.Add(flowgraphMeta);
+
+            string vanillaFlowgraphDBPath = System.Reflection.Assembly.GetEntryAssembly().Location;
+            vanillaFlowgraphDBPath = vanillaFlowgraphDBPath.Substring(0, vanillaFlowgraphDBPath.Length - Path.GetFileName(vanillaFlowgraphDBPath).Length);
+            vanillaFlowgraphDBPath += "../CathodeEditorGUI/Resources/flowgraphs.bin";
+            using (BinaryWriter writer = new BinaryWriter(File.OpenWrite(vanillaFlowgraphDBPath)))
+                _vanilla.Write(writer);
+        }
+#endif
+
+        public static void LinkCommands(Commands commands)
+        {
+            if (_commands != null)
+            {
+                _commands.OnLoadSuccess -= LoadCustomFlowgraphs;
+                _commands.OnSaveSuccess -= SaveCustomFlowgraphs;
+            }
+
+            _commands = commands;
+            if (_commands == null) return;
+
+            _commands.OnLoadSuccess += LoadCustomFlowgraphs;
+            _commands.OnSaveSuccess += SaveCustomFlowgraphs;
+
+            LoadCustomFlowgraphs(_commands.Filepath);
+        }
+
+        private static void LoadCustomFlowgraphs(string filepath)
+        {
+            _custom = (CompositeFlowgraphsTable)CustomTable.ReadTable(filepath, CustomEndTables.COMPOSITE_FLOWGRAPHS);
+            if (_custom == null) _custom = new CompositeFlowgraphsTable();
+            Console.WriteLine("Loaded " + _custom.flowgraphs.Count + " custom flowgraph layouts!");
+        }
+
+        private static void SaveCustomFlowgraphs(string filepath)
+        {
+            CustomTable.WriteTable(filepath, CustomEndTables.COMPOSITE_FLOWGRAPHS, _custom);
+            Console.WriteLine("Saved " + _custom.flowgraphs.Count + " custom flowgraph layouts!");
+        }
+
+    }
+
+    public static class FlowgraphManagerUtils
+    {
+        /* Convert a STNodeEditor graph to a FlowgraphMeta object for saving */
+        public static FlowgraphMeta AsFlowgraphMeta(this STNodeEditor editor, Composite composite, string name)
+        {
+            // default name = Path.GetFileName(composite.name)
+
             FlowgraphMeta flowgraphMeta = new FlowgraphMeta();
             flowgraphMeta.CompositeGUID = composite.shortGUID;
-            flowgraphMeta.Name = Path.GetFileName(composite.name);
-
-            if (_vanilla.flowgraphs.FirstOrDefault(o => o.Name == flowgraphMeta.Name && o.CompositeGUID == flowgraphMeta.CompositeGUID) != null)
-                return;
+            flowgraphMeta.Name = name;
 
             flowgraphMeta.CanvasPosition = editor.CanvasOffset;
             flowgraphMeta.CanvasScale = editor.CanvasScale;
@@ -108,7 +157,7 @@ namespace CommandsEditor
                         {
                             ParameterGUID = outs[y].ShortGUID,
                             ConnectedEntityGUID = connectedNode.ShortGUID,
-                            ConnectedParameterGUID = connections[z].ShortGUID, 
+                            ConnectedParameterGUID = connections[z].ShortGUID,
                         });
                     }
                 }
@@ -116,43 +165,7 @@ namespace CommandsEditor
                 flowgraphMeta.Nodes.Add(nodeMeta);
             }
 
-            Console.WriteLine("Added: " + composite.name);
-            _vanilla.flowgraphs.Add(flowgraphMeta);
-
-            using (BinaryWriter writer = new BinaryWriter(File.OpenWrite("F:\\Repos\\CommandsEditor\\CathodeEditorGUI\\Resources\\flowgraphs.bin")))
-            {
-                _vanilla.Write(writer);
-            }
-        }
-
-        public static void LinkCommands(Commands commands)
-        {
-            if (_commands != null)
-            {
-                _commands.OnLoadSuccess -= LoadCustomFlowgraphs;
-                _commands.OnSaveSuccess -= SaveCustomFlowgraphs;
-            }
-
-            _commands = commands;
-            if (_commands == null) return;
-
-            _commands.OnLoadSuccess += LoadCustomFlowgraphs;
-            _commands.OnSaveSuccess += SaveCustomFlowgraphs;
-
-            LoadCustomFlowgraphs(_commands.Filepath);
-        }
-
-        private static void LoadCustomFlowgraphs(string filepath)
-        {
-            _custom = (CompositeFlowgraphsTable)CustomTable.ReadTable(filepath, CustomEndTables.COMPOSITE_FLOWGRAPHS);
-            if (_custom == null) _custom = new CompositeFlowgraphsTable();
-            Console.WriteLine("Loaded " + _custom.flowgraphs.Count + " custom flowgraph layouts!");
-        }
-
-        private static void SaveCustomFlowgraphs(string filepath)
-        {
-            CustomTable.WriteTable(filepath, CustomEndTables.COMPOSITE_FLOWGRAPHS, _custom);
-            Console.WriteLine("Saved " + _custom.flowgraphs.Count + " custom flowgraph layouts!");
+            return flowgraphMeta;
         }
     }
 }

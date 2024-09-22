@@ -27,6 +27,7 @@ using CathodeLib;
 using System.Windows.Input;
 using CATHODE;
 using static CathodeLib.CompositeFlowgraphsTable;
+using static CathodeLib.CompositeFlowgraphsTable.FlowgraphMeta;
 
 namespace CommandsEditor
 {
@@ -163,26 +164,105 @@ namespace CommandsEditor
             stNodeEditor1.Nodes.Clear();
             _spawnOffset = 0;
 
-            if (FlowgraphManager.HasDefinedLayout(composite))
+            FlowgraphMeta flowgraphMeta = FlowgraphManager.GetLayout(composite);
+            if (flowgraphMeta != null)
             {
-                //populate defined layout
-                FlowgraphMeta flowgraphMeta = FlowgraphManager.GetLayout(composite);
-                foreach (FlowgraphMeta.NodeMeta nodeMeta in flowgraphMeta.Nodes)
+                //Populate nodes for entities
+                List<Entity> populatedEntities = new List<Entity>();
+                CathodeNode[] nodes = new CathodeNode[flowgraphMeta.Nodes.Count];
+                for (int i = 0; i < flowgraphMeta.Nodes.Count; i++)
                 {
-                    Entity entity = composite.GetEntityByID(nodeMeta.EntityGUID);
+                    Entity entity = composite.GetEntityByID(flowgraphMeta.Nodes[i].EntityGUID);
                     if (entity == null)
-                        throw new Exception("Entity lookup failed. Mismatched data. Should do something nice here.");
-                    CathodeNode node = EntityToNode(entity, composite);
-                    node.SetPosition(nodeMeta.Position);
+                    {
+                        //Our composite mismatches the flowgraph layout, the user must have modified the content with an older version of the script editor.
+                        //TODO: Do something here.
+                        throw new Exception("Mismatch!");
+                    }
+                    populatedEntities.Add(entity);
+
+                    nodes[i] = EntityToNode(entity, composite, true);
+                    nodes[i].SetPosition(flowgraphMeta.Nodes[i].Position);
                 }
-                // loop through and assign all connections
-            
+
+                //Populate connections
+                List<EntityConnector> populatedConnections = new List<EntityConnector>();
+                for (int i = 0; i < flowgraphMeta.Nodes.Count; i++)
+                {
+                    //NOTE: IMPORTANT! this exposes a dumb oversight in that i populate connections twice (facepalm)
+                    foreach (FlowgraphMeta.NodeMeta.ConnectionMeta connectionMeta in flowgraphMeta.Nodes[i].ConnectionsIn)
+                    {
+                        //NOTE: IMPORTANT! i'm now realising that this won't work for "multiple nodes per entity" -> each node needs to have its own unique identifier to be able to connect reliably. this will need adding into the population/saving logic for nodes.
+                        CathodeNode connectedNode = nodes.FirstOrDefault(o => o.ShortGUID == connectionMeta.ConnectedEntityGUID);
+
+                        STNodeOption pinIn = nodes[i].AddInputOption(connectionMeta.ParameterGUID);
+                        STNodeOption pinOut = connectedNode.AddOutputOption(connectionMeta.ConnectedParameterGUID);
+                        pinIn.ConnectOption(pinOut);
+
+                        EntityConnector connector = connectedNode.Entity.childLinks.FirstOrDefault(o => o.thisParamID == connectionMeta.ConnectedParameterGUID && o.linkedParamID == connectionMeta.ParameterGUID);
+                        if (connector.ID.IsInvalid)
+                        {
+                            //Our composite mismatches the flowgraph layout, the user must have modified the content with an older version of the script editor.
+                            //TODO: Do something here.
+                            throw new Exception("Mismatch!");
+                        }
+                        populatedConnections.Add(connector);
+                    }
+                    foreach (FlowgraphMeta.NodeMeta.ConnectionMeta connectionMeta in flowgraphMeta.Nodes[i].ConnectionsOut)
+                    {
+                        CathodeNode connectedNode = nodes.FirstOrDefault(o => o.ShortGUID == connectionMeta.ConnectedEntityGUID);
+
+                        STNodeOption pinOut = nodes[i].AddOutputOption(connectionMeta.ParameterGUID);
+                        STNodeOption pinIn = connectedNode.AddInputOption(connectionMeta.ConnectedParameterGUID);
+                        pinOut.ConnectOption(pinIn);
+
+                        EntityConnector connector = nodes[i].Entity.childLinks.FirstOrDefault(o => o.thisParamID == connectionMeta.ParameterGUID && o.linkedParamID == connectionMeta.ConnectedParameterGUID);
+                        if (connector.ID.IsInvalid)
+                        {
+                            //Our composite mismatches the flowgraph layout, the user must have modified the content with an older version of the script editor.
+                            //TODO: Do something here.
+                            throw new Exception("Mismatch!");
+                        }
+                        populatedConnections.Add(connector);
+                    }
+                }
+
+                //Sanity check that our Composite doesn't contain any additional links/entities that we didn't populate in the flowgraph but should've
+                List<Entity> entities = composite.GetEntities();
+                foreach (Entity entity in entities)
+                {
+                    if (entity.childLinks.Count == 0)
+                        continue;
+
+                    foreach (EntityConnector connection in entity.childLinks)
+                    {
+                        if (!populatedConnections.Contains(connection))
+                        {
+                            //Our composite mismatches the flowgraph layout, the user must have modified the content with an older version of the script editor.
+                            //TODO: Do something here.
+                            throw new Exception("Mismatch!");
+                        }
+                    }
+
+                    if (!populatedEntities.Contains(entity))
+                    {
+                        //Our composite mismatches the flowgraph layout, the user must have modified the content with an older version of the script editor.
+                        //TODO: Do something here.
+                        throw new Exception("Mismatch!");
+                    }
+                }
+
+                //Correctly respect the scale/position of the saved flowgraph
                 stNodeEditor1.ScaleCanvas(flowgraphMeta.CanvasScale, 0, 0);
                 stNodeEditor1.MoveCanvas(flowgraphMeta.CanvasPosition.X, flowgraphMeta.CanvasPosition.Y, false, CanvasMoveArgs.All);
             }
             else
             {
+
+
+
                 //This composite has no defined layouts
+                Console.WriteLine("NO DEFINED FLOWGRAPH LAYOUT FOUND! We should never reach this in production code.");
 
                 List<Entity> entities = _composite.GetEntities();
                 for (int i = 0; i < entities.Count; i++)

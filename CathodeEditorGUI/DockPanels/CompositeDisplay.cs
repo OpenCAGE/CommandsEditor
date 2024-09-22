@@ -50,6 +50,8 @@ namespace CommandsEditor.DockPanels
         private bool _canExportChildren = true;
         private bool _isSubbed = false;
 
+        //TODO: if the composite is modified, store the modification info in CompositeUtils.SetModificationInfo -> need to add the concept of "modifying" the composite first though, which should be done off of events when deleting/adding stuff (can also show this state in the UI)
+
         public CompositeDisplay(CommandsDisplay commandsDisplay)
         {
             _commandsDisplay = commandsDisplay;
