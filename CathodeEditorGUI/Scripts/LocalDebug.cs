@@ -132,6 +132,7 @@ namespace CommandsEditor
                 flowgraph.Hide();
                 flowgraph.Dispose();
             }
+            FlowgraphManager.SaveToVanillaBIN();
 #endif
         }
 

@@ -66,7 +66,6 @@ namespace CommandsEditor
             //LocalDebug.CountEntitySequences();
 
             //NodePositionDatabase.DO_UPDATE();
-            //LocalDebug.DoCheckOnNodegraph();
 
             Singleton.Editor = this;
 

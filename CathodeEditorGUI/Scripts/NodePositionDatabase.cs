@@ -91,13 +91,10 @@ namespace CommandsEditor
             if (flowgraphMeta == null)
                 return false;
 
-            List<CathodeNode> nodesToAdd = new List<CathodeNode>();
+            List<STNode> nodesToAdd = new List<STNode>();
             for (int i = 0; i < editor.Nodes.Count; i++)
             {
-                if (!(editor.Nodes[i] is CathodeNode))
-                    continue;
-
-                CathodeNode node = (CathodeNode)editor.Nodes[i];
+                STNode node = editor.Nodes[i];
                 FlowgraphMeta.NodeMeta nodeMeta = flowgraphMeta.Nodes.FirstOrDefault(o => o.ID == node.ShortGUID);
                 if (nodeMeta != null)
                 {
@@ -118,10 +115,10 @@ namespace CommandsEditor
 
                     for (int x = 0; x < variableNodeMeta.Instances.Count; x++)
                     {
-                        CathodeNode instanceNode = node;
+                        STNode instanceNode = node;
                         if (x > 0)
                         {
-                            instanceNode = new CathodeNode();
+                            instanceNode = new STNode();
                             instanceNode.Entity = node.Entity;
                             instanceNode.SetName(node.Title, node.SubTitle);
                             instanceNode.SetColour(node.TitleColor, node.ForeColor);
@@ -139,10 +136,7 @@ namespace CommandsEditor
                             List<STNodeOption> connections = ins[y].GetConnectedOption();
                             for (int z = 0; z < connections.Count; z++)
                             {
-                                if (!(connections[z].Owner is CathodeNode))
-                                    continue;
-
-                                CathodeNode connectedNode = (CathodeNode)connections[z].Owner;
+                                STNode connectedNode = connections[z].Owner;
                                 var connectionMeta = variableNodeMeta.Instances[x].ConnectionsIn.FirstOrDefault(o => o.ParameterID == connections[z].ShortGUID && o.EntityID == connectedNode.ShortGUID);
                                 if (connectionMeta == null)
                                 {
@@ -160,10 +154,7 @@ namespace CommandsEditor
                             List<STNodeOption> connections = outs[y].GetConnectedOption();
                             for (int z = 0; z < connections.Count; z++)
                             {
-                                if (!(connections[z].Owner is CathodeNode))
-                                    continue;
-
-                                CathodeNode connectedNode = (CathodeNode)connections[z].Owner;
+                                STNode connectedNode = connections[z].Owner;
                                 var connectionMeta = variableNodeMeta.Instances[x].ConnectionsOut.FirstOrDefault(o => o.ParameterID == connections[z].ShortGUID && o.EntityID == connectedNode.ShortGUID);
                                 if (connectionMeta == null)
                                 {
@@ -214,10 +205,7 @@ namespace CommandsEditor
             flowgraphMeta.Nodes.Clear();
             for (int i = 0; i < editor.Nodes.Count; i++)
             {
-                if (!(editor.Nodes[i] is CathodeNode))
-                    continue;
-
-                CathodeNode node = (CathodeNode)editor.Nodes[i];
+                STNode node = editor.Nodes[i];
                 FlowgraphMeta.NodeMeta nodeMeta = new FlowgraphMeta.NodeMeta();
                 nodeMeta.ID = node.ShortGUID;
                 nodeMeta.Position = node.Location;
@@ -226,10 +214,7 @@ namespace CommandsEditor
             flowgraphMeta.VariableNodes.Clear();
             for (int i = 0; i < editor.Nodes.Count; i++)
             {
-                if (!(editor.Nodes[i] is CathodeNode))
-                    continue;
-
-                CathodeNode node = (CathodeNode)editor.Nodes[i];
+                STNode node = editor.Nodes[i];
                 FlowgraphMeta.VariableNodeMeta variableNodeMeta = flowgraphMeta.VariableNodes.FirstOrDefault(o => o.ID == node.ShortGUID);
                 if (variableNodeMeta == null)
                 {
@@ -246,10 +231,7 @@ namespace CommandsEditor
                     List<STNodeOption> connections = ins[y].GetConnectedOption();
                     for (int z = 0; z < connections.Count; z++)
                     {
-                        if (!(connections[z].Owner is CathodeNode))
-                            continue;
-
-                        CathodeNode connectedNode = (CathodeNode)connections[z].Owner;
+                        STNode connectedNode = connections[z].Owner;
                         instance.ConnectionsIn.Add(new FlowgraphMeta.VariableNodeMeta.Instance.Connection()
                         {
                             ParameterID = connections[z].ShortGUID,
@@ -263,10 +245,7 @@ namespace CommandsEditor
                     List<STNodeOption> connections = outs[y].GetConnectedOption();
                     for (int z = 0; z < connections.Count; z++)
                     {
-                        if (!(connections[z].Owner is CathodeNode))
-                            continue;
-
-                        CathodeNode connectedNode = (CathodeNode)connections[z].Owner;
+                        STNode connectedNode = connections[z].Owner;
                         instance.ConnectionsOut.Add(new FlowgraphMeta.VariableNodeMeta.Instance.Connection()
                         {
                             ParameterID = connections[z].ShortGUID,

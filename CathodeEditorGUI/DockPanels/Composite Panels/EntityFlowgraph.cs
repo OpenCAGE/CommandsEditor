@@ -31,6 +31,7 @@ using System.Windows.Input;
 using CATHODE;
 using static CathodeLib.CompositeFlowgraphsTable;
 using static CathodeLib.CompositeFlowgraphsTable.FlowgraphMeta;
+using static CathodeLib.CompositeFlowgraphsTable.FlowgraphMeta.NodeMeta;
 
 namespace CommandsEditor
 {
@@ -97,7 +98,7 @@ namespace CommandsEditor
             STNode[] nodes = stNodeEditor1.GetSelectedNode();
             if (nodes.Length != 1) return;
 
-            Entity ent = _composite.GetEntityByID(((CathodeNode)nodes[0]).ShortGUID);
+            Entity ent = _composite.GetEntityByID(nodes[0].ShortGUID);
             if (ent == _previouslySelectedEntity) return;
             _previouslySelectedEntity = ent;
 
@@ -156,9 +157,7 @@ namespace CommandsEditor
         {
             Console.WriteLine("EntityFlowgraph::ShowComposite - " + composite.name);
 
-            List<Entity> purged = CommandsUtils.PurgeDeadLinks(Commands, composite);
-            for (int i = 0; i < purged.Count; i++)
-                Singleton.OnEntityDeleted(purged[i]);
+            CommandsUtils.PurgeDeadLinks(Commands, composite);
 
             _composite = composite;
             this.Text = _composite.name;
@@ -176,7 +175,7 @@ namespace CommandsEditor
             {
                 //Populate nodes for entities
                 List<Entity> populatedEntities = new List<Entity>();
-                CathodeNode[] nodes = new CathodeNode[flowgraphMeta.Nodes.Count];
+                STNode[] nodes = new STNode[flowgraphMeta.Nodes.Count];
                 for (int i = 0; i < flowgraphMeta.Nodes.Count; i++)
                 {
                     Entity entity = composite.GetEntityByID(flowgraphMeta.Nodes[i].EntityGUID);
@@ -190,35 +189,22 @@ namespace CommandsEditor
 
                     nodes[i] = EntityToNode(entity, composite, true);
                     nodes[i].SetPosition(flowgraphMeta.Nodes[i].Position);
+
+                    foreach (ShortGuid pin in flowgraphMeta.Nodes[i].PinsIn)
+                        nodes[i].AddInputOption(pin);
+                    foreach (ShortGuid pin in flowgraphMeta.Nodes[i].PinsOut)
+                        nodes[i].AddOutputOption(pin);
+
+                    nodes[i].NodeID = flowgraphMeta.Nodes[i].NodeID;
                 }
 
                 //Populate connections
                 List<ShortGuid> populatedConnections = new List<ShortGuid>();
                 for (int i = 0; i < flowgraphMeta.Nodes.Count; i++)
                 {
-                    //NOTE: IMPORTANT! this exposes a dumb oversight in that i populate connections twice (facepalm)
-                    //The way this should be stored: save all pins in/out on 
-                    foreach (FlowgraphMeta.NodeMeta.ConnectionMeta connectionMeta in flowgraphMeta.Nodes[i].ConnectionsIn)
+                    foreach (FlowgraphMeta.NodeMeta.ConnectionMeta connectionMeta in flowgraphMeta.Nodes[i].Connections)
                     {
-                        //NOTE: IMPORTANT! i'm now realising that this won't work for "multiple nodes per entity" -> each node needs to have its own unique identifier to be able to connect reliably. this will need adding into the population/saving logic for nodes.
-                        CathodeNode connectedNode = nodes.FirstOrDefault(o => o.ShortGUID == connectionMeta.ConnectedEntityGUID);
-
-                        STNodeOption pinIn = nodes[i].AddInputOption(connectionMeta.ParameterGUID);
-                        STNodeOption pinOut = connectedNode.AddOutputOption(connectionMeta.ConnectedParameterGUID);
-                        pinIn.ConnectOption(pinOut);
-
-                        EntityConnector connector = connectedNode.Entity.childLinks.FirstOrDefault(o => o.thisParamID == connectionMeta.ConnectedParameterGUID && o.linkedParamID == connectionMeta.ParameterGUID);
-                        if (connector.ID.IsInvalid)
-                        {
-                            //Our composite mismatches the flowgraph layout, the user must have modified the content with an older version of the script editor.
-                            //TODO: Do something here.
-                            throw new Exception("Mismatch!");
-                        }
-                        populatedConnections.Add(connector.ID);
-                    }
-                    foreach (FlowgraphMeta.NodeMeta.ConnectionMeta connectionMeta in flowgraphMeta.Nodes[i].ConnectionsOut)
-                    {
-                        CathodeNode connectedNode = nodes.FirstOrDefault(o => o.ShortGUID == connectionMeta.ConnectedEntityGUID);
+                        STNode connectedNode = nodes.FirstOrDefault(o => o.NodeID == connectionMeta.ConnectedNodeID && o.ShortGUID == connectionMeta.ConnectedEntityGUID);
 
                         STNodeOption pinOut = nodes[i].AddOutputOption(connectionMeta.ParameterGUID);
                         STNodeOption pinIn = connectedNode.AddInputOption(connectionMeta.ConnectedParameterGUID);
@@ -278,7 +264,7 @@ namespace CommandsEditor
                     if (!entities[i].HasLinks(_composite))
                         continue;
 
-                    CathodeNode mainNode = EntityToNode(entities[i], _composite);
+                    STNode mainNode = EntityToNode(entities[i], _composite);
 
                     for (int x = 0; x < entities[i].childLinks.Count; x++)
                     {
@@ -286,7 +272,7 @@ namespace CommandsEditor
                         if (childEnt == null)
                             continue;
 
-                        CathodeNode childNode = EntityToNode(childEnt, _composite);
+                        STNode childNode = EntityToNode(childEnt, _composite);
                         STNodeOption linkIn = childNode.AddInputOption(entities[i].childLinks[x].linkedParamID);
                         STNodeOption linkOut = mainNode.AddOutputOption(entities[i].childLinks[x].thisParamID);
                         linkIn.ConnectOption(linkOut);
@@ -308,7 +294,7 @@ namespace CommandsEditor
             }
 
             foreach (STNode node in stNodeEditor1.Nodes)
-                ((CathodeNode)node).Recompute();
+                node.Recompute();
 
             stNodeEditor1.ResumeLayout();
             stNodeEditor1.Invalidate();
@@ -320,12 +306,12 @@ namespace CommandsEditor
             stNodeEditor1.LoadAssembly(Application.ExecutablePath);
         }
 
-        private CathodeNode EntityToNode(Entity entity, Composite composite, bool allowDuplicate = false)
+        private STNode EntityToNode(Entity entity, Composite composite, bool allowDuplicate = false)
         {
             if (entity == null)
                 return null;
 
-            CathodeNode node = null;
+            STNode node = null;
             if (!allowDuplicate)
             {
                 for (int i = 0; i < stNodeEditor1.Nodes.Count; i++)
@@ -333,14 +319,14 @@ namespace CommandsEditor
                     if (stNodeEditor1.Nodes[i].ShortGUID != entity.shortGUID)
                         continue;
 
-                    node = (CathodeNode)stNodeEditor1.Nodes[i]; //todo: should remove need to cast
+                    node = stNodeEditor1.Nodes[i];
                     break;
                 }
             }
 
             if (node == null)
             {
-                node = new CathodeNode();
+                node = new STNode();
                 node.Entity = entity;
                 switch (entity.variant)
                 {
@@ -387,7 +373,7 @@ namespace CommandsEditor
                 node.Recompute();
                 stNodeEditor1.Nodes.Add(node);
 
-                ((CathodeNode)node).SetPosition(new Point(0, _spawnOffset));
+                node.SetPosition(new Point(0, _spawnOffset));
                 _spawnOffset += node.Height + 10;
             }
 
@@ -404,11 +390,6 @@ namespace CommandsEditor
             if (stNodeEditor1.GetSelectedNode().Length != 1)
             {
                 Console.WriteLine("SELECT ONE NODE");
-                return;
-            }
-            if (!(stNodeEditor1.GetSelectedNode()[0] is CathodeNode))
-            {
-                Console.WriteLine("SELECT CathodeNode");
                 return;
             }
 
@@ -443,7 +424,7 @@ namespace CommandsEditor
                 foreach (STNodeOption output in input.GetConnectedOption()) //connected to output on other node
                 {
                     STNode connectedNode = output.Owner;
-                    ((CathodeNode)connectedNode).SetPosition(new Point(10, height));
+                    connectedNode.SetPosition(new Point(10, height));
                     height += connectedNode.Height + 10;
                 }
             }
@@ -453,11 +434,11 @@ namespace CommandsEditor
                 foreach (STNodeOption input in output.GetConnectedOption()) //connected to input on other node
                 {
                     STNode connectedNode = input.Owner;
-                    ((CathodeNode)connectedNode).SetPosition(new Point(this.Size.Width - connectedNode.Width - 50, height));
+                    connectedNode.SetPosition(new Point(this.Size.Width - connectedNode.Width - 50, height));
                     height += connectedNode.Height + 10;
                 }
             }
-            ((CathodeNode)origNode).SetPosition(new Point((this.Size.Width / 2) - (origNode.Width / 2) - 10, (this.Size.Height / 2) - (((outputStackedHeight > inputStackedHeight) ? outputStackedHeight : inputStackedHeight) / 2) - 20));
+            origNode.SetPosition(new Point((this.Size.Width / 2) - (origNode.Width / 2) - 10, (this.Size.Height / 2) - (((outputStackedHeight > inputStackedHeight) ? outputStackedHeight : inputStackedHeight) / 2) - 20));
         }
 
         private void DEBUG_NextUnfinished_Click(object sender, EventArgs e)
@@ -506,14 +487,9 @@ namespace CommandsEditor
                 Console.WriteLine("SELECT ONE NODE");
                 return;
             }
-            if (!(stNodeEditor1.GetSelectedNode()[0] is CathodeNode))
-            {
-                Console.WriteLine("SELECT CathodeNode");
-                return;
-            }
 
-            CathodeNode node = (CathodeNode)stNodeEditor1.GetSelectedNode()[0];
-            CathodeNode nodeNew = EntityToNode(_composite.GetEntityByID(node.ShortGUID), _composite, true);
+            STNode node = stNodeEditor1.GetSelectedNode()[0];
+            STNode nodeNew = EntityToNode(_composite.GetEntityByID(node.ShortGUID), _composite, true);
             foreach (STNodeOption input in node.GetInputOptions()) 
                 nodeNew.AddInputOption(input.ShortGUID);
             foreach (STNodeOption output in node.GetOutputOptions())
@@ -610,7 +586,9 @@ namespace CommandsEditor
                 ShowComposite(Commands.Entries[i]);
 
                 if (doingConversion && NodePositionDatabase.CanRestoreFlowgraph(Commands.Entries[i].name))
+                {
                     FlowgraphManager.AddVanillaFlowgraph(stNodeEditor1, Commands.Entries[i]);
+                }
             }
         }
     }

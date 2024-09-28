@@ -60,12 +60,33 @@ namespace CommandsEditor
             FlowgraphMeta flowgraphMeta = editor.AsFlowgraphMeta(composite, Path.GetFileName(composite.name)); //TODO: when we start supporting multiple flowgraphs we should pass new names in here
             _vanilla.flowgraphs.RemoveAll(o => o.Name == flowgraphMeta.Name && o.CompositeGUID == flowgraphMeta.CompositeGUID);
             _vanilla.flowgraphs.Add(flowgraphMeta);
-
+            //TODO:Should actually write to custom here in production
+        }
+        public static void SaveToVanillaBIN()
+        {
             string vanillaFlowgraphDBPath = System.Reflection.Assembly.GetEntryAssembly().Location;
             vanillaFlowgraphDBPath = vanillaFlowgraphDBPath.Substring(0, vanillaFlowgraphDBPath.Length - Path.GetFileName(vanillaFlowgraphDBPath).Length);
             vanillaFlowgraphDBPath += "../CathodeEditorGUI/Resources/flowgraphs.bin";
-            using (BinaryWriter writer = new BinaryWriter(File.OpenWrite(vanillaFlowgraphDBPath)))
-                _vanilla.Write(writer);
+            try
+            {
+                using (BinaryWriter writer = new BinaryWriter(File.OpenWrite(vanillaFlowgraphDBPath)))
+                {
+                    writer.BaseStream.SetLength(0);
+                    _vanilla.Write(writer);
+                    writer.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                string breakhere = "";
+
+                using (BinaryWriter writer = new BinaryWriter(File.OpenWrite(vanillaFlowgraphDBPath)))
+                {
+                    writer.BaseStream.SetLength(0);
+                    _vanilla.Write(writer);
+                    writer.Close();
+                }
+            }
         }
 #endif
 
@@ -117,46 +138,32 @@ namespace CommandsEditor
             flowgraphMeta.Nodes = new List<FlowgraphMeta.NodeMeta>();
             for (int i = 0; i < editor.Nodes.Count; i++)
             {
-                if (!(editor.Nodes[i] is CathodeNode))
-                    continue;
-
-                CathodeNode node = (CathodeNode)editor.Nodes[i];
+                STNode node = editor.Nodes[i];
                 FlowgraphMeta.NodeMeta nodeMeta = new FlowgraphMeta.NodeMeta();
                 nodeMeta.EntityGUID = node.ShortGUID;
+                nodeMeta.NodeID = i;
+
                 nodeMeta.Position = node.Location;
 
                 STNodeOption[] ins = node.GetInputOptions();
-                for (int y = 0; y < ins.Length; y++)
-                {
-                    List<STNodeOption> connections = ins[y].GetConnectedOption();
-                    for (int z = 0; z < connections.Count; z++)
-                    {
-                        if (!(connections[z].Owner is CathodeNode))
-                            continue;
-
-                        CathodeNode connectedNode = (CathodeNode)connections[z].Owner;
-                        nodeMeta.ConnectionsIn.Add(new FlowgraphMeta.NodeMeta.ConnectionMeta()
-                        {
-                            ParameterGUID = ins[y].ShortGUID,
-                            ConnectedEntityGUID = connectedNode.ShortGUID,
-                            ConnectedParameterGUID = connections[z].ShortGUID,
-                        });
-                    }
-                }
                 STNodeOption[] outs = node.GetOutputOptions();
+
+                for (int y = 0; y < ins.Length; y++)
+                    nodeMeta.PinsIn.Add(ins[y].ShortGUID);
+                for (int y = 0; y < outs.Length; y++)
+                    nodeMeta.PinsOut.Add(outs[y].ShortGUID);
+
                 for (int y = 0; y < outs.Length; y++)
                 {
                     List<STNodeOption> connections = outs[y].GetConnectedOption();
                     for (int z = 0; z < connections.Count; z++)
                     {
-                        if (!(connections[z].Owner is CathodeNode))
-                            continue;
-
-                        CathodeNode connectedNode = (CathodeNode)connections[z].Owner;
-                        nodeMeta.ConnectionsOut.Add(new FlowgraphMeta.NodeMeta.ConnectionMeta()
+                        STNode connectedNode = connections[z].Owner;
+                        nodeMeta.Connections.Add(new FlowgraphMeta.NodeMeta.ConnectionMeta()
                         {
                             ParameterGUID = outs[y].ShortGUID,
                             ConnectedEntityGUID = connectedNode.ShortGUID,
+                            ConnectedNodeID = editor.Nodes.IndexOf(connectedNode),
                             ConnectedParameterGUID = connections[z].ShortGUID,
                         });
                     }
