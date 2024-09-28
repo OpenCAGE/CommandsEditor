@@ -128,11 +128,10 @@ namespace CommandsEditor
                 commands.EntryPoints[0].name = EditorUtils.GetCompositeName(commands.EntryPoints[0]);
                 EntityFlowgraph flowgraph = new EntityFlowgraph();
                 flowgraph.Show();
-                flowgraph.DEBUG_LoadAll_Test(commands, true);
+                flowgraph.DEBUG_LoadAll_Test(commands);
                 flowgraph.Hide();
                 flowgraph.Dispose();
             }
-            FlowgraphManager.SaveToVanillaBIN();
 #endif
         }
 

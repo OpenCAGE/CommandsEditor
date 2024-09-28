@@ -483,7 +483,6 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Scripts\LocalDebug.cs" />
-    <Compile Include="Scripts\NodePositionDatabase.cs" />
     <Compile Include="Scripts\ObjectExtensions.cs" />
     <Compile Include="Popups\AddOrEditResource.cs">
       <SubType>Form</SubType>

@@ -200,7 +200,7 @@ namespace CommandsEditor.DockPanels
             _instanceInfoPopup?.Close();
 
 #if DEBUG
-            DEBUG_ShowAllInNodegraph.ForeColor = NodePositionDatabase.CanRestoreFlowgraph(_composite.name) ? Color.Green : Color.Red;
+            DEBUG_ShowAllInNodegraph.ForeColor = FlowgraphManager.HasDefinedLayout(_composite) ? Color.Green : Color.Red;
 #endif
 
             Cursor.Current = Cursors.Default;
@@ -861,7 +861,7 @@ namespace CommandsEditor.DockPanels
         }
         private void DEBUG_ShowAllInNodegraph_FormClosed(object sender, FormClosedEventArgs e)
         {
-            DEBUG_ShowAllInNodegraph.ForeColor = NodePositionDatabase.CanRestoreFlowgraph(_composite.name) ? Color.Green : Color.Red;
+            DEBUG_ShowAllInNodegraph.ForeColor = FlowgraphManager.HasDefinedLayout(_composite) ? Color.Green : Color.Red;
 #endif
         }
     }

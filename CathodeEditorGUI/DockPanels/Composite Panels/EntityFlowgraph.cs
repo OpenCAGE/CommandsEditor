@@ -1,6 +1,3 @@
-
-//#define USE_LEGACY_NODEDB
-
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -167,10 +164,6 @@ namespace CommandsEditor
             _spawnOffset = 0;
 
             FlowgraphMeta flowgraphMeta = FlowgraphManager.GetLayout(composite);
-#if USE_LEGACY_NODEDB
-            flowgraphMeta = null;
-            Console.WriteLine("Using Legacy NodePositionDatabase");
-#endif
             if (flowgraphMeta != null)
             {
                 //Populate nodes for entities
@@ -199,7 +192,7 @@ namespace CommandsEditor
                 }
 
                 //Populate connections
-                List<ShortGuid> populatedConnections = new List<ShortGuid>();
+                List<EntityConnector> populatedConnections = new List<EntityConnector>();
                 for (int i = 0; i < flowgraphMeta.Nodes.Count; i++)
                 {
                     foreach (FlowgraphMeta.NodeMeta.ConnectionMeta connectionMeta in flowgraphMeta.Nodes[i].Connections)
@@ -210,14 +203,14 @@ namespace CommandsEditor
                         STNodeOption pinIn = connectedNode.AddInputOption(connectionMeta.ConnectedParameterGUID);
                         pinOut.ConnectOption(pinIn);
 
-                        EntityConnector connector = nodes[i].Entity.childLinks.FirstOrDefault(o => o.thisParamID == connectionMeta.ParameterGUID && o.linkedParamID == connectionMeta.ConnectedParameterGUID);
+                        EntityConnector connector = nodes[i].Entity.childLinks.FirstOrDefault(o => o.thisParamID == connectionMeta.ParameterGUID && o.linkedParamID == connectionMeta.ConnectedParameterGUID && o.linkedEntityID == connectedNode.ShortGUID);
                         if (connector.ID.IsInvalid)
                         {
                             //Our composite mismatches the flowgraph layout, the user must have modified the content with an older version of the script editor.
                             //TODO: Do something here.
                             throw new Exception("Mismatch!");
                         }
-                        populatedConnections.Add(connector.ID);
+                        populatedConnections.Add(connector);
                     }
                 }
 
@@ -230,12 +223,12 @@ namespace CommandsEditor
 
                     foreach (EntityConnector connection in entity.childLinks)
                     {
-                        if (!populatedConnections.Contains(connection.ID))
+                        if (!populatedConnections.Contains(connection))
                         {
+                            Console.WriteLine("Failed to find connection from " + entity.shortGUID + " to " + connection.linkedEntityID.ToByteString() + ": '" + connection.thisParamID + "' [" + connection.thisParamID.ToByteString() + "] -> '" + connection.linkedParamID + "' [" + connection.linkedParamID.ToByteString() + "]");
                             //Our composite mismatches the flowgraph layout, the user must have modified the content with an older version of the script editor.
                             //TODO: Do something here.
-                            Console.WriteLine("Failed to find connection from " + entity.shortGUID + " to " + connection.linkedEntityID.ToByteString() + ": '" + connection.thisParamID + "' [" + connection.thisParamID.ToByteString() + "] -> '" + connection.linkedParamID + "' [" + connection.linkedParamID.ToByteString() + "]");
-                            //throw new Exception("Mismatch!");
+                            throw new Exception("Mismatch!");
                         }
                     }
 
@@ -253,10 +246,8 @@ namespace CommandsEditor
             }
             else
             {
-#if !USE_LEGACY_NODEDB
                 //This composite has no defined layouts
                 Console.WriteLine("NO DEFINED FLOWGRAPH LAYOUT FOUND! We should never reach this in production code.");
-#endif
 
                 List<Entity> entities = _composite.GetEntities();
                 for (int i = 0; i < entities.Count; i++)
@@ -287,10 +278,6 @@ namespace CommandsEditor
                     }
                     //NOTE: WE should limit link creation on variable entities to JUST the above. 
                 }
-
-#if USE_LEGACY_NODEDB
-                NodePositionDatabase.TryRestoreFlowgraph(_composite.name, stNodeEditor1);
-#endif
             }
 
             foreach (STNode node in stNodeEditor1.Nodes)
@@ -382,7 +369,7 @@ namespace CommandsEditor
 
         private void SaveFlowgraph_Click(object sender, EventArgs e)
         {
-            NodePositionDatabase.SaveFlowgraph(_composite.name, stNodeEditor1);
+            FlowgraphManager.SaveLayout(stNodeEditor1, _composite);
         }
 
         private void DEBUG_CalcPositions_Click(object sender, EventArgs e)
@@ -446,8 +433,8 @@ namespace CommandsEditor
             int index = Commands.Entries.IndexOf(_composite) + 1;
             if (index >= Commands.Entries.Count)
                 index = 0;
-            
-            while (NodePositionDatabase.CanRestoreFlowgraph(Commands.Entries[index].name))
+
+            while (FlowgraphManager.HasDefinedLayout(Commands.Entries[index]))
             {
                 if (index + 1 >= Commands.Entries.Count)
                     index = 0;
@@ -464,7 +451,7 @@ namespace CommandsEditor
             int count = 0;
             for (int i = 0; i < Commands.Entries.Count; i++)
             {
-                if (NodePositionDatabase.CanRestoreFlowgraph(Commands.Entries[i].name))
+                if (FlowgraphManager.HasDefinedLayout(Commands.Entries[i]))
                     continue;
 
                 Console.WriteLine(" - " + Commands.Entries[i].name);
@@ -502,7 +489,7 @@ namespace CommandsEditor
         {
             for (int i = 0; i < Commands.Entries.Count; i++)
             {
-                if (NodePositionDatabase.CanRestoreFlowgraph(Commands.Entries[i].name))
+                if (FlowgraphManager.HasDefinedLayout(Commands.Entries[i]))
                     continue;
 
                 bool noLinks = true;
@@ -531,7 +518,7 @@ namespace CommandsEditor
         {
             for (int i = 0; i < Commands.Entries.Count; i++)
             {
-                if (NodePositionDatabase.CanRestoreFlowgraph(Commands.Entries[i].name))
+                if (FlowgraphManager.HasDefinedLayout(Commands.Entries[i]))
                     continue;
 
                 bool shouldGenerate = false;
@@ -576,19 +563,14 @@ namespace CommandsEditor
 
         private void DEBUG_LoadAll_Click(object sender, EventArgs e)
         {
-            DEBUG_LoadAll_Test(_commands, false);
+            DEBUG_LoadAll_Test(_commands);
         }
-        public void DEBUG_LoadAll_Test(Commands commands, bool doingConversion)
+        public void DEBUG_LoadAll_Test(Commands commands)
         {
             _commands = commands;
             for (int i = 0; i < Commands.Entries.Count; i++)
             {
                 ShowComposite(Commands.Entries[i]);
-
-                if (doingConversion && NodePositionDatabase.CanRestoreFlowgraph(Commands.Entries[i].name))
-                {
-                    FlowgraphManager.AddVanillaFlowgraph(stNodeEditor1, Commands.Entries[i]);
-                }
             }
         }
     }

@@ -44,6 +44,7 @@ namespace CommandsEditor
 
         //gets the first flowgraph layout metadata for the given composite - todo: eventually we want to support multiple flowgraphs per composite
         //Prioritises the "custom" table as custom user-defined layouts should always overrule the vanilla ones
+        //TODO: this should really be changed to "LoadLayout" and the population of StNodeEdtior handled here
         public static FlowgraphMeta GetLayout(Composite composite)
         {
             FlowgraphMeta toReturn = _custom.flowgraphs.FirstOrDefault(o => o.CompositeGUID == composite.shortGUID);
@@ -53,39 +54,34 @@ namespace CommandsEditor
             return _vanilla.flowgraphs.FirstOrDefault(o => o.CompositeGUID == composite.shortGUID);
         }
 
+        //add layout to db
+        public static void SaveLayout(STNodeEditor editor, Composite composite)
+        {
+#if DEBUG
+            AddVanillaFlowgraph(editor, composite);
+#else
+            FlowgraphMeta flowgraphMeta = editor.AsFlowgraphMeta(composite, Path.GetFileName(composite.name)); //TODO: when we start supporting multiple flowgraphs we should pass new names in here
+            _custom.flowgraphs.RemoveAll(o => o.Name == flowgraphMeta.Name && o.CompositeGUID == flowgraphMeta.CompositeGUID);
+            _custom.flowgraphs.Add(flowgraphMeta);
+#endif
+        }
+
 #if DEBUG
         //This is for populating the vanilla flowgraph layout table locally - it's for development use only, so should not be included in non-debug builds
-        public static void AddVanillaFlowgraph(STNodeEditor editor, Composite composite)
+        private static void AddVanillaFlowgraph(STNodeEditor editor, Composite composite)
         {
             FlowgraphMeta flowgraphMeta = editor.AsFlowgraphMeta(composite, Path.GetFileName(composite.name)); //TODO: when we start supporting multiple flowgraphs we should pass new names in here
             _vanilla.flowgraphs.RemoveAll(o => o.Name == flowgraphMeta.Name && o.CompositeGUID == flowgraphMeta.CompositeGUID);
             _vanilla.flowgraphs.Add(flowgraphMeta);
-            //TODO:Should actually write to custom here in production
-        }
-        public static void SaveToVanillaBIN()
-        {
+
             string vanillaFlowgraphDBPath = System.Reflection.Assembly.GetEntryAssembly().Location;
             vanillaFlowgraphDBPath = vanillaFlowgraphDBPath.Substring(0, vanillaFlowgraphDBPath.Length - Path.GetFileName(vanillaFlowgraphDBPath).Length);
             vanillaFlowgraphDBPath += "../CathodeEditorGUI/Resources/flowgraphs.bin";
-            try
+            using (BinaryWriter writer = new BinaryWriter(File.OpenWrite(vanillaFlowgraphDBPath)))
             {
-                using (BinaryWriter writer = new BinaryWriter(File.OpenWrite(vanillaFlowgraphDBPath)))
-                {
-                    writer.BaseStream.SetLength(0);
-                    _vanilla.Write(writer);
-                    writer.Close();
-                }
-            }
-            catch (Exception ex)
-            {
-                string breakhere = "";
-
-                using (BinaryWriter writer = new BinaryWriter(File.OpenWrite(vanillaFlowgraphDBPath)))
-                {
-                    writer.BaseStream.SetLength(0);
-                    _vanilla.Write(writer);
-                    writer.Close();
-                }
+                writer.BaseStream.SetLength(0);
+                _vanilla.Write(writer);
+                writer.Close();
             }
         }
 #endif
