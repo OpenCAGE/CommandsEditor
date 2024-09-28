@@ -44,6 +44,7 @@ namespace CommandsEditor
             this.DEBUG_AddPinIn = new System.Windows.Forms.Button();
             this.DEBUG_AddPinOut = new System.Windows.Forms.Button();
             this.DEBUG_AddNode = new System.Windows.Forms.Button();
+            this.DEBUG_Compile = new System.Windows.Forms.Button();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -235,11 +236,24 @@ namespace CommandsEditor
             this.DEBUG_AddNode.UseVisualStyleBackColor = true;
             this.DEBUG_AddNode.Click += new System.EventHandler(this.DEBUG_AddNode_Click);
             // 
+            // DEBUG_Compile
+            // 
+            this.DEBUG_Compile.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.DEBUG_Compile.ForeColor = System.Drawing.Color.IndianRed;
+            this.DEBUG_Compile.Location = new System.Drawing.Point(110, 0);
+            this.DEBUG_Compile.Name = "DEBUG_Compile";
+            this.DEBUG_Compile.Size = new System.Drawing.Size(85, 23);
+            this.DEBUG_Compile.TabIndex = 14;
+            this.DEBUG_Compile.Text = "Compile";
+            this.DEBUG_Compile.UseVisualStyleBackColor = true;
+            this.DEBUG_Compile.Click += new System.EventHandler(this.DEBUG_Compile_Click);
+            // 
             // EntityFlowgraph
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1512, 699);
+            this.Controls.Add(this.DEBUG_Compile);
             this.Controls.Add(this.DEBUG_AddNode);
             this.Controls.Add(this.DEBUG_AddPinOut);
             this.Controls.Add(this.DEBUG_AddPinIn);
@@ -281,6 +295,7 @@ namespace CommandsEditor
         private System.Windows.Forms.Button DEBUG_AddPinIn;
         private System.Windows.Forms.Button DEBUG_AddPinOut;
         private System.Windows.Forms.Button DEBUG_AddNode;
+        private System.Windows.Forms.Button DEBUG_Compile;
     }
 }
 

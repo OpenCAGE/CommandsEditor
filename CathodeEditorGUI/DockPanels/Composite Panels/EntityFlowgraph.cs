@@ -1,34 +1,16 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using System.IO;
 using ST.Library.UI.NodeEditor;
 using CATHODE.Scripting.Internal;
 using CATHODE.Scripting;
-using CommandsEditor.UserControls;
-using System.Runtime.Remoting.Metadata.W3cXsd2001;
-using CommandsEditor.Popups.Base;
-using WebSocketSharp;
-using System.Security.Cryptography;
-using CommandsEditor.DockPanels;
 using OpenCAGE;
 using WeifenLuo.WinFormsUI.Docking;
-using System.Reflection;
-using System.Windows.Media.Animation;
-using System.Windows.Controls;
-using static System.Windows.Forms.LinkLabel;
 using System.Xml.Linq;
-using CathodeLib;
-using System.Windows.Input;
 using CATHODE;
 using static CathodeLib.CompositeFlowgraphsTable;
-using static CathodeLib.CompositeFlowgraphsTable.FlowgraphMeta;
-using static CathodeLib.CompositeFlowgraphsTable.FlowgraphMeta.NodeMeta;
 
 namespace CommandsEditor
 {
@@ -70,6 +52,9 @@ namespace CommandsEditor
             DEBUG_SaveAllNoLinks.Visible = false;
             DEBUG_Next1Link.Visible = false;
             DEBUG_LoadAll.Visible = false;
+            DEBUG_AddPinIn.Visible = false;
+            DEBUG_AddPinOut.Visible = false;
+            DEBUG_Compile.Visible = false;
 #endif
 
             //todo: i feel like these events should come from the compositedisplay?
@@ -161,6 +146,7 @@ namespace CommandsEditor
             Console.WriteLine("EntityFlowgraph::ShowComposite - " + composite.name);
 
             CommandsUtils.PurgeDeadLinks(Commands, composite);
+            CommandsUtils.PurgedComposites.purged.Add(composite.shortGUID);
 
             _composite = composite;
             this.Text = _composite.name;
@@ -626,6 +612,28 @@ namespace CommandsEditor
         {
             STNode node = EntityToNode(ent, _composite, true);
             //todo: set position where right click happened above
+        }
+
+        private void DEBUG_Compile_Click(object sender, EventArgs e)
+        {
+            //Clear all currently saved connections
+            _composite.GetEntities().ForEach(o => o.childLinks.Clear());
+
+            //Re-generate connections using the content in the nodegraph
+            for (int i = 0; i < stNodeEditor1.Nodes.Count; i++)
+            {
+                STNode node = stNodeEditor1.Nodes[i];
+                STNodeOption[] options = node.GetOutputOptions();
+                for (int y = 0; y < options.Length; y++)
+                {
+                    List<STNodeOption> connections = options[y].GetConnectedOption();
+                    for (int z = 0; z < connections.Count; z++)
+                    {
+                        STNode connectedNode = connections[z].Owner;
+                        node.Entity.AddParameterLink(options[y].ShortGUID, connectedNode.ShortGUID, connections[z].ShortGUID);
+                    }
+                }
+            }
         }
     }
 }

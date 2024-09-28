@@ -336,6 +336,7 @@ namespace CommandsEditor
             _commandsDisplay.FormClosed += _commandsDisplay_FormClosed;
             UpdateCommandsDisplayDockState();
 
+            //Sometimes get an error here which appears to be thread related (?) -> investigate next time
             _levelMenuItems[_commandsDisplay.Content.level].Checked = true;
         }
 
