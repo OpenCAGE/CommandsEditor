@@ -1,3 +1,6 @@
+
+//#define USE_LEGACY_NODEDB
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -165,6 +168,10 @@ namespace CommandsEditor
             _spawnOffset = 0;
 
             FlowgraphMeta flowgraphMeta = FlowgraphManager.GetLayout(composite);
+#if USE_LEGACY_NODEDB
+            flowgraphMeta = null;
+            Console.WriteLine("Using Legacy NodePositionDatabase");
+#endif
             if (flowgraphMeta != null)
             {
                 //Populate nodes for entities
@@ -186,10 +193,11 @@ namespace CommandsEditor
                 }
 
                 //Populate connections
-                List<EntityConnector> populatedConnections = new List<EntityConnector>();
+                List<ShortGuid> populatedConnections = new List<ShortGuid>();
                 for (int i = 0; i < flowgraphMeta.Nodes.Count; i++)
                 {
                     //NOTE: IMPORTANT! this exposes a dumb oversight in that i populate connections twice (facepalm)
+                    //The way this should be stored: save all pins in/out on 
                     foreach (FlowgraphMeta.NodeMeta.ConnectionMeta connectionMeta in flowgraphMeta.Nodes[i].ConnectionsIn)
                     {
                         //NOTE: IMPORTANT! i'm now realising that this won't work for "multiple nodes per entity" -> each node needs to have its own unique identifier to be able to connect reliably. this will need adding into the population/saving logic for nodes.
@@ -206,7 +214,7 @@ namespace CommandsEditor
                             //TODO: Do something here.
                             throw new Exception("Mismatch!");
                         }
-                        populatedConnections.Add(connector);
+                        populatedConnections.Add(connector.ID);
                     }
                     foreach (FlowgraphMeta.NodeMeta.ConnectionMeta connectionMeta in flowgraphMeta.Nodes[i].ConnectionsOut)
                     {
@@ -223,7 +231,7 @@ namespace CommandsEditor
                             //TODO: Do something here.
                             throw new Exception("Mismatch!");
                         }
-                        populatedConnections.Add(connector);
+                        populatedConnections.Add(connector.ID);
                     }
                 }
 
@@ -236,11 +244,12 @@ namespace CommandsEditor
 
                     foreach (EntityConnector connection in entity.childLinks)
                     {
-                        if (!populatedConnections.Contains(connection))
+                        if (!populatedConnections.Contains(connection.ID))
                         {
                             //Our composite mismatches the flowgraph layout, the user must have modified the content with an older version of the script editor.
                             //TODO: Do something here.
-                            throw new Exception("Mismatch!");
+                            Console.WriteLine("Failed to find connection from " + entity.shortGUID + " to " + connection.linkedEntityID.ToByteString() + ": '" + connection.thisParamID + "' [" + connection.thisParamID.ToByteString() + "] -> '" + connection.linkedParamID + "' [" + connection.linkedParamID.ToByteString() + "]");
+                            //throw new Exception("Mismatch!");
                         }
                     }
 
@@ -258,11 +267,10 @@ namespace CommandsEditor
             }
             else
             {
-
-
-
+#if !USE_LEGACY_NODEDB
                 //This composite has no defined layouts
                 Console.WriteLine("NO DEFINED FLOWGRAPH LAYOUT FOUND! We should never reach this in production code.");
+#endif
 
                 List<Entity> entities = _composite.GetEntities();
                 for (int i = 0; i < entities.Count; i++)
@@ -294,8 +302,9 @@ namespace CommandsEditor
                     //NOTE: WE should limit link creation on variable entities to JUST the above. 
                 }
 
-                //LEGACY
-                //NodePositionDatabase.TryRestoreFlowgraph(_composite.name, stNodeEditor1);
+#if USE_LEGACY_NODEDB
+                NodePositionDatabase.TryRestoreFlowgraph(_composite.name, stNodeEditor1);
+#endif
             }
 
             foreach (STNode node in stNodeEditor1.Nodes)

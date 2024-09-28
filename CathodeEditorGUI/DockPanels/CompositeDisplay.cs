@@ -190,9 +190,7 @@ namespace CommandsEditor.DockPanels
             pathDisplay.Text = _path.GetPath(composite);
             _composite = composite;
 
-            List<Entity> purged = CommandsUtils.PurgeDeadLinks(Content.commands, composite);
-            for (int i = 0; i < purged.Count; i++)
-                Singleton.OnEntityDeleted(purged[i]);
+            CommandsUtils.PurgeDeadLinks(Content.commands, composite);
             CommandsUtils.PurgedComposites.purged.Add(composite.shortGUID);
 
             CloseAllChildTabs();
