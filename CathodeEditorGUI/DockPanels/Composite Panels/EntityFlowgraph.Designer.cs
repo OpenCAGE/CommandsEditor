@@ -27,16 +27,11 @@ namespace CommandsEditor
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EntityFlowgraph));
-            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.removeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.lockLocationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.lockConnectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SaveFlowgraph = new System.Windows.Forms.Button();
             this.DEBUG_CalcPositions = new System.Windows.Forms.Button();
             this.DEBUG_NextUnfinished = new System.Windows.Forms.Button();
             this.DEBUG_DumpUnfinished = new System.Windows.Forms.Button();
             this.DEBUG_NextAndSave = new System.Windows.Forms.Button();
-            this.stNodeEditor1 = new ST.Library.UI.NodeEditor.STNodeEditor();
             this.DEBUG_Duplicate = new System.Windows.Forms.Button();
             this.DEBUG_SaveAllNoLinks = new System.Windows.Forms.Button();
             this.DEBUG_Next1Link = new System.Windows.Forms.Button();
@@ -45,35 +40,19 @@ namespace CommandsEditor
             this.DEBUG_AddPinOut = new System.Windows.Forms.Button();
             this.DEBUG_AddNode = new System.Windows.Forms.Button();
             this.DEBUG_Compile = new System.Windows.Forms.Button();
-            this.contextMenuStrip1.SuspendLayout();
+            this.nodeContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.addPinInToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addPinOutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.removePinInToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.removePinOutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.duplicateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.stNodeEditor1 = new ST.Library.UI.NodeEditor.STNodeEditor();
+            this.addNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.nodeContextMenu.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // contextMenuStrip1
-            // 
-            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.removeToolStripMenuItem,
-            this.lockLocationToolStripMenuItem,
-            this.lockConnectionToolStripMenuItem});
-            this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(178, 70);
-            // 
-            // removeToolStripMenuItem
-            // 
-            this.removeToolStripMenuItem.Name = "removeToolStripMenuItem";
-            this.removeToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
-            this.removeToolStripMenuItem.Text = "&Remove";
-            // 
-            // lockLocationToolStripMenuItem
-            // 
-            this.lockLocationToolStripMenuItem.Name = "lockLocationToolStripMenuItem";
-            this.lockLocationToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
-            this.lockLocationToolStripMenuItem.Text = "U/Lock &Location";
-            // 
-            // lockConnectionToolStripMenuItem
-            // 
-            this.lockConnectionToolStripMenuItem.Name = "lockConnectionToolStripMenuItem";
-            this.lockConnectionToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
-            this.lockConnectionToolStripMenuItem.Text = "U/Lock &Connection";
             // 
             // SaveFlowgraph
             // 
@@ -135,26 +114,6 @@ namespace CommandsEditor
             this.DEBUG_NextAndSave.UseVisualStyleBackColor = true;
             this.DEBUG_NextAndSave.Click += new System.EventHandler(this.DEBUG_NextAndSave_Click);
             // 
-            // stNodeEditor1
-            // 
-            this.stNodeEditor1.AllowDrop = true;
-            this.stNodeEditor1.AllowNodeGraphLoops = true;
-            this.stNodeEditor1.AllowSameOwnerConnections = false;
-            this.stNodeEditor1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(34)))), ((int)(((byte)(34)))));
-            this.stNodeEditor1.Curvature = 0.3F;
-            this.stNodeEditor1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.stNodeEditor1.Location = new System.Drawing.Point(0, 0);
-            this.stNodeEditor1.LocationBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(120)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.stNodeEditor1.MarkBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.stNodeEditor1.MarkForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.stNodeEditor1.MinimumSize = new System.Drawing.Size(100, 100);
-            this.stNodeEditor1.Name = "stNodeEditor1";
-            this.stNodeEditor1.RequireCtrlForZooming = false;
-            this.stNodeEditor1.RoundedCornerRadius = 10;
-            this.stNodeEditor1.Size = new System.Drawing.Size(1512, 699);
-            this.stNodeEditor1.TabIndex = 1;
-            this.stNodeEditor1.Text = "stNodeEditor1";
-            // 
             // DEBUG_Duplicate
             // 
             this.DEBUG_Duplicate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -212,7 +171,6 @@ namespace CommandsEditor
             this.DEBUG_AddPinIn.TabIndex = 11;
             this.DEBUG_AddPinIn.Text = "Add Pin In";
             this.DEBUG_AddPinIn.UseVisualStyleBackColor = true;
-            this.DEBUG_AddPinIn.Click += new System.EventHandler(this.DEBUG_AddPinIn_Click);
             // 
             // DEBUG_AddPinOut
             // 
@@ -223,7 +181,6 @@ namespace CommandsEditor
             this.DEBUG_AddPinOut.TabIndex = 12;
             this.DEBUG_AddPinOut.Text = "Add Pin Out";
             this.DEBUG_AddPinOut.UseVisualStyleBackColor = true;
-            this.DEBUG_AddPinOut.Click += new System.EventHandler(this.DEBUG_AddPinOut_Click);
             // 
             // DEBUG_AddNode
             // 
@@ -234,7 +191,6 @@ namespace CommandsEditor
             this.DEBUG_AddNode.TabIndex = 13;
             this.DEBUG_AddNode.Text = "Add Node";
             this.DEBUG_AddNode.UseVisualStyleBackColor = true;
-            this.DEBUG_AddNode.Click += new System.EventHandler(this.DEBUG_AddNode_Click);
             // 
             // DEBUG_Compile
             // 
@@ -247,6 +203,110 @@ namespace CommandsEditor
             this.DEBUG_Compile.Text = "Compile";
             this.DEBUG_Compile.UseVisualStyleBackColor = true;
             this.DEBUG_Compile.Click += new System.EventHandler(this.DEBUG_Compile_Click);
+            // 
+            // nodeContextMenu
+            // 
+            this.nodeContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.addPinInToolStripMenuItem,
+            this.addPinOutToolStripMenuItem,
+            this.toolStripSeparator2,
+            this.removePinInToolStripMenuItem,
+            this.removePinOutToolStripMenuItem,
+            this.toolStripSeparator1,
+            this.deleteToolStripMenuItem,
+            this.duplicateToolStripMenuItem,
+            this.addNodeToolStripMenuItem});
+            this.nodeContextMenu.Name = "EntityListContextMenu";
+            this.nodeContextMenu.Size = new System.Drawing.Size(181, 192);
+            this.nodeContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
+            // 
+            // addPinInToolStripMenuItem
+            // 
+            this.addPinInToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("addPinInToolStripMenuItem.Image")));
+            this.addPinInToolStripMenuItem.Name = "addPinInToolStripMenuItem";
+            this.addPinInToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.addPinInToolStripMenuItem.Text = "Add Pin In";
+            this.addPinInToolStripMenuItem.Click += new System.EventHandler(this.addPinInToolStripMenuItem_Click);
+            // 
+            // addPinOutToolStripMenuItem
+            // 
+            this.addPinOutToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("addPinOutToolStripMenuItem.Image")));
+            this.addPinOutToolStripMenuItem.Name = "addPinOutToolStripMenuItem";
+            this.addPinOutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.addPinOutToolStripMenuItem.Text = "Add Pin Out";
+            this.addPinOutToolStripMenuItem.Click += new System.EventHandler(this.addPinOutToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator2.Visible = false;
+            // 
+            // removePinInToolStripMenuItem
+            // 
+            this.removePinInToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("removePinInToolStripMenuItem.Image")));
+            this.removePinInToolStripMenuItem.Name = "removePinInToolStripMenuItem";
+            this.removePinInToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.removePinInToolStripMenuItem.Text = "Remove Pin In";
+            this.removePinInToolStripMenuItem.Click += new System.EventHandler(this.removePinInToolStripMenuItem_Click);
+            // 
+            // removePinOutToolStripMenuItem
+            // 
+            this.removePinOutToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("removePinOutToolStripMenuItem.Image")));
+            this.removePinOutToolStripMenuItem.Name = "removePinOutToolStripMenuItem";
+            this.removePinOutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.removePinOutToolStripMenuItem.Text = "Remove Pin Out";
+            this.removePinOutToolStripMenuItem.Click += new System.EventHandler(this.removePinOutToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
+            // 
+            // deleteToolStripMenuItem
+            // 
+            this.deleteToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("deleteToolStripMenuItem.Image")));
+            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.deleteToolStripMenuItem.Text = "Delete Node";
+            this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
+            // 
+            // duplicateToolStripMenuItem
+            // 
+            this.duplicateToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("duplicateToolStripMenuItem.Image")));
+            this.duplicateToolStripMenuItem.Name = "duplicateToolStripMenuItem";
+            this.duplicateToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.duplicateToolStripMenuItem.Text = "Duplicate Node";
+            this.duplicateToolStripMenuItem.Click += new System.EventHandler(this.duplicateToolStripMenuItem_Click);
+            // 
+            // stNodeEditor1
+            // 
+            this.stNodeEditor1.AllowDrop = true;
+            this.stNodeEditor1.AllowNodeGraphLoops = true;
+            this.stNodeEditor1.AllowSameOwnerConnections = false;
+            this.stNodeEditor1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(34)))), ((int)(((byte)(34)))));
+            this.stNodeEditor1.ContextMenuStrip = this.nodeContextMenu;
+            this.stNodeEditor1.Curvature = 0.3F;
+            this.stNodeEditor1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.stNodeEditor1.Location = new System.Drawing.Point(0, 0);
+            this.stNodeEditor1.LocationBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(120)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.stNodeEditor1.MarkBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.stNodeEditor1.MarkForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.stNodeEditor1.MinimumSize = new System.Drawing.Size(100, 100);
+            this.stNodeEditor1.Name = "stNodeEditor1";
+            this.stNodeEditor1.RequireCtrlForZooming = false;
+            this.stNodeEditor1.RoundedCornerRadius = 10;
+            this.stNodeEditor1.Size = new System.Drawing.Size(1512, 699);
+            this.stNodeEditor1.TabIndex = 1;
+            this.stNodeEditor1.Text = "stNodeEditor1";
+            // 
+            // addNodeToolStripMenuItem
+            // 
+            this.addNodeToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("addNodeToolStripMenuItem.Image")));
+            this.addNodeToolStripMenuItem.Name = "addNodeToolStripMenuItem";
+            this.addNodeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.addNodeToolStripMenuItem.Text = "Add Node";
+            this.addNodeToolStripMenuItem.Click += new System.EventHandler(this.addNodeToolStripMenuItem_Click);
             // 
             // EntityFlowgraph
             // 
@@ -272,17 +332,13 @@ namespace CommandsEditor
             this.Name = "EntityFlowgraph";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Flowgraph";
-            this.contextMenuStrip1.ResumeLayout(false);
+            this.nodeContextMenu.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
 
         #endregion
         private ST.Library.UI.NodeEditor.STNodeEditor stNodeEditor1;
-        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem removeToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem lockLocationToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem lockConnectionToolStripMenuItem;
         private System.Windows.Forms.Button SaveFlowgraph;
         private System.Windows.Forms.Button DEBUG_CalcPositions;
         private System.Windows.Forms.Button DEBUG_NextUnfinished;
@@ -296,6 +352,16 @@ namespace CommandsEditor
         private System.Windows.Forms.Button DEBUG_AddPinOut;
         private System.Windows.Forms.Button DEBUG_AddNode;
         private System.Windows.Forms.Button DEBUG_Compile;
+        private System.Windows.Forms.ContextMenuStrip nodeContextMenu;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem duplicateToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripMenuItem addPinInToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem addPinOutToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem removePinInToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem removePinOutToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem addNodeToolStripMenuItem;
     }
 }
 

@@ -1251,8 +1251,8 @@ namespace CommandsEditor
             //return;
 
 
-            InstanceWriter test = new InstanceWriter();
-            test.WriteInstances(_commandsDisplay.Content);
+            //InstanceWriter test = new InstanceWriter();
+            //test.WriteInstances(_commandsDisplay.Content);
 
             //LocalDebug.checkprefabinstances();
             return;

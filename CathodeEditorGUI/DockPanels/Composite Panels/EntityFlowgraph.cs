@@ -11,6 +11,7 @@ using WeifenLuo.WinFormsUI.Docking;
 using System.Xml.Linq;
 using CATHODE;
 using static CathodeLib.CompositeFlowgraphsTable;
+using CommandsEditor.Popups.UserControls;
 
 namespace CommandsEditor
 {
@@ -565,54 +566,8 @@ namespace CommandsEditor
             for (int i = 0; i < Commands.Entries.Count; i++)
             {
                 ShowComposite(Commands.Entries[i]);
+                DEBUG_Compile_Click(null, null);
             }
-        }
-
-        private void DEBUG_AddPinIn_Click(object sender, EventArgs e)
-        {
-            if (stNodeEditor1.GetSelectedNode().Length != 1)
-            {
-                Console.WriteLine("SELECT ONE NODE");
-                return;
-            }
-
-            STNode node = stNodeEditor1.GetSelectedNode()[0];
-
-            AddPin pin = new AddPin(node, AddPin.LinkType.IN);
-            pin.Show();
-        }
-        private void DEBUG_AddPinOut_Click(object sender, EventArgs e)
-        {
-            if (stNodeEditor1.GetSelectedNode().Length != 1)
-            {
-                Console.WriteLine("SELECT ONE NODE");
-                return;
-            }
-
-            STNode node = stNodeEditor1.GetSelectedNode()[0];
-
-            AddPin pin = new AddPin(node, AddPin.LinkType.OUT);
-            pin.Show();
-        }
-
-        private void DEBUG_AddNode_Click(object sender, EventArgs e)
-        {
-            SelectHierarchy selectEnt = new SelectHierarchy(_composite, new Popups.UserControls.CompositeEntityList.DisplayOptions()
-            {
-                DisplayAliases = true,
-                DisplayFunctions = true,
-                DisplayProxies = true,
-                DisplayVariables = true,
-                ShowCheckboxes = false,
-            }, false);
-            selectEnt.OnFinalEntitySelected += AddNodeCallbackEntitySelected;
-            selectEnt.Show();
-            //this is where the right click would've happened - store the location
-        }
-        private void AddNodeCallbackEntitySelected(Entity ent)
-        {
-            STNode node = EntityToNode(ent, _composite, true);
-            //todo: set position where right click happened above
         }
 
         private void DEBUG_Compile_Click(object sender, EventArgs e)
@@ -635,6 +590,85 @@ namespace CommandsEditor
                     }
                 }
             }
+        }
+
+        //disable entity-related actions on the context menu if no entity is selected
+        private void ContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            STNode node = stNodeEditor1.GetHoveredNode();
+
+            addPinInToolStripMenuItem.Visible = node != null;
+            addPinOutToolStripMenuItem.Visible = node != null;
+            toolStripSeparator1.Visible = node != null;
+            removePinInToolStripMenuItem.Visible = node != null;
+            removePinOutToolStripMenuItem.Visible = node != null;
+            toolStripSeparator2.Visible = node != null;
+            deleteToolStripMenuItem.Visible = node != null;
+            duplicateToolStripMenuItem.Visible = node != null;
+
+            addNodeToolStripMenuItem.Visible = node == null;
+        }
+
+        //Add new node (via context menu strip)
+        private void addNodeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SelectHierarchy selectEnt = new SelectHierarchy(_composite, new Popups.UserControls.CompositeEntityList.DisplayOptions()
+            {
+                DisplayAliases = true,
+                DisplayFunctions = true,
+                DisplayProxies = true,
+                DisplayVariables = true,
+                ShowCheckboxes = false,
+            }, false);
+            selectEnt.OnFinalEntitySelected += AddNodeCallbackEntitySelected;
+            selectEnt.Show();
+            //this is where the right click would've happened - store the location
+        }
+        private void AddNodeCallbackEntitySelected(Entity ent)
+        {
+            STNode node = EntityToNode(ent, _composite, true);
+            //todo: set position where right click happened above
+        }
+
+        //Add pin to right clicked node
+        private void addPinInToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            STNode node = stNodeEditor1.GetHoveredNode();
+            AddPin pin = new AddPin(node, AddPin.LinkType.IN);
+            pin.Show();
+        }
+        private void addPinOutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            STNode node = stNodeEditor1.GetHoveredNode();
+            AddPin pin = new AddPin(node, AddPin.LinkType.OUT);
+            pin.Show();
+        }
+
+        //Remove pin from right clicked node
+        private void removePinInToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            STNode node = stNodeEditor1.GetHoveredNode();
+        }
+        private void removePinOutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            STNode node = stNodeEditor1.GetHoveredNode();
+        }
+
+        //Delete right clicked node
+        private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //TODO: confirmation?
+            STNode node = stNodeEditor1.GetHoveredNode();
+            stNodeEditor1.Nodes.Remove(node);
+        }
+
+        //Duplicate the right clicked node
+        private void duplicateToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            STNode node = stNodeEditor1.GetHoveredNode();
+            STNode duplicated = EntityToNode(node.Entity, _composite, true);
+            duplicated.SetPosition(new Point(node.Location.X + 10, node.Location.Y + 10)); //TODO: set a nice position
+            //TODO: clone parameters too?
         }
     }
 }
