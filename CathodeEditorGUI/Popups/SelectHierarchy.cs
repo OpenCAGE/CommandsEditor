@@ -18,6 +18,7 @@ namespace CommandsEditor
 {
     public partial class SelectHierarchy : BaseWindow
     {
+        public Action<Entity> OnFinalEntitySelected;
         public Action<List<ShortGuid>> OnHierarchyGenerated;
         private List<ShortGuid> hierarchy = new List<ShortGuid>();
 
@@ -89,6 +90,7 @@ namespace CommandsEditor
             hierarchy.Add(selectedEntity.shortGUID);
             hierarchy.Add(ShortGuid.Invalid);
             OnHierarchyGenerated?.Invoke(hierarchy);
+            OnFinalEntitySelected?.Invoke(selectedEntity);
             this.Close();
         }
 

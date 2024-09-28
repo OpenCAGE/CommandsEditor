@@ -132,7 +132,10 @@ namespace CommandsEditor
 
         private void OnEntityAddedGlobally(Entity entity)
         {
-            EntityToNode(entity, _composite);
+            if (SettingsManager.GetBool(Singleton.Settings.MakeNodeWhenMakeEntity))
+            {
+                EntityToNode(entity, _composite); //TODO: should really put it in a nice spot and/or maybe jump to it 
+            }
         }
 
         private void OnEntityDeletedGlobally(Entity entity)
@@ -603,6 +606,26 @@ namespace CommandsEditor
 
             AddPin pin = new AddPin(node, AddPin.LinkType.OUT);
             pin.Show();
+        }
+
+        private void DEBUG_AddNode_Click(object sender, EventArgs e)
+        {
+            SelectHierarchy selectEnt = new SelectHierarchy(_composite, new Popups.UserControls.CompositeEntityList.DisplayOptions()
+            {
+                DisplayAliases = true,
+                DisplayFunctions = true,
+                DisplayProxies = true,
+                DisplayVariables = true,
+                ShowCheckboxes = false,
+            }, false);
+            selectEnt.OnFinalEntitySelected += AddNodeCallbackEntitySelected;
+            selectEnt.Show();
+            //this is where the right click would've happened - store the location
+        }
+        private void AddNodeCallbackEntitySelected(Entity ent)
+        {
+            STNode node = EntityToNode(ent, _composite, true);
+            //todo: set position where right click happened above
         }
     }
 }

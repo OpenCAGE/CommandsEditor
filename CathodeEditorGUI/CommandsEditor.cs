@@ -113,6 +113,7 @@ namespace CommandsEditor
             useTexturedModelViewExperimentalToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.ShowTexOpt); useTexturedModelViewExperimentalToolStripMenuItem.PerformClick();
             keepFunctionUsesWindowOpenToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.KeepUsesWindowOpen); keepFunctionUsesWindowOpenToolStripMenuItem.PerformClick();
             nodeOpensEntity.Checked = !SettingsManager.GetBool(Singleton.Settings.OpenEntityFromNode); nodeOpensEntity.PerformClick();
+            createFlowgraphNodeWhenEntityCreatedToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.MakeNodeWhenMakeEntity); createFlowgraphNodeWhenEntityCreatedToolStripMenuItem.PerformClick();
             useLegacyParameterCreatorToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.UseLegacyParamCreator); useLegacyParameterCreatorToolStripMenuItem.PerformClick();
             writeInstancedResourcesExperimentalToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.ExperimentalResourceStuff); writeInstancedResourcesExperimentalToolStripMenuItem.PerformClick();
 
@@ -800,6 +801,12 @@ namespace CommandsEditor
         {
             nodeOpensEntity.Checked = !nodeOpensEntity.Checked;
             SettingsManager.SetBool(Singleton.Settings.OpenEntityFromNode, nodeOpensEntity.Checked);
+        }
+
+        private void createFlowgraphNodeWhenEntityCreatedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            createFlowgraphNodeWhenEntityCreatedToolStripMenuItem.Checked = !createFlowgraphNodeWhenEntityCreatedToolStripMenuItem.Checked;
+            SettingsManager.SetBool(Singleton.Settings.MakeNodeWhenMakeEntity, createFlowgraphNodeWhenEntityCreatedToolStripMenuItem.Checked);
         }
 
         private void useLegacyParameterCreatorToolStripMenuItem_Click(object sender, EventArgs e)

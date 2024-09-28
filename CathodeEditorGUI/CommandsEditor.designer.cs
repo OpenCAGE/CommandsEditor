@@ -63,6 +63,7 @@
             this.statusText = new System.Windows.Forms.ToolStripStatusLabel();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.createFlowgraphNodeWhenEntityCreatedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -188,6 +189,7 @@
             this.entityDisplayToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.showEntityIDs,
             this.nodeOpensEntity,
+            this.createFlowgraphNodeWhenEntityCreatedToolStripMenuItem,
             this.useLegacyParameterCreatorToolStripMenuItem});
             this.entityDisplayToolStripMenuItem.Name = "entityDisplayToolStripMenuItem";
             this.entityDisplayToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
@@ -196,7 +198,7 @@
             // showEntityIDs
             // 
             this.showEntityIDs.Name = "showEntityIDs";
-            this.showEntityIDs.Size = new System.Drawing.Size(308, 22);
+            this.showEntityIDs.Size = new System.Drawing.Size(310, 22);
             this.showEntityIDs.Text = "Show Entity IDs";
             this.showEntityIDs.ToolTipText = "Show entity IDs within the editor UI.";
             this.showEntityIDs.Click += new System.EventHandler(this.showEntityIDs_Click);
@@ -204,14 +206,14 @@
             // nodeOpensEntity
             // 
             this.nodeOpensEntity.Name = "nodeOpensEntity";
-            this.nodeOpensEntity.Size = new System.Drawing.Size(308, 22);
+            this.nodeOpensEntity.Size = new System.Drawing.Size(310, 22);
             this.nodeOpensEntity.Text = "Open Entity When Flowgraph Node Selected";
             this.nodeOpensEntity.Click += new System.EventHandler(this.nodeOpensEntity_Click);
             // 
             // useLegacyParameterCreatorToolStripMenuItem
             // 
             this.useLegacyParameterCreatorToolStripMenuItem.Name = "useLegacyParameterCreatorToolStripMenuItem";
-            this.useLegacyParameterCreatorToolStripMenuItem.Size = new System.Drawing.Size(308, 22);
+            this.useLegacyParameterCreatorToolStripMenuItem.Size = new System.Drawing.Size(310, 22);
             this.useLegacyParameterCreatorToolStripMenuItem.Text = "Use Legacy Parameter Creator";
             this.useLegacyParameterCreatorToolStripMenuItem.Click += new System.EventHandler(this.useLegacyParameterCreatorToolStripMenuItem_Click);
             // 
@@ -336,6 +338,13 @@
             this.dockPanel.TabIndex = 5;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
             // 
+            // createFlowgraphNodeWhenEntityCreatedToolStripMenuItem
+            // 
+            this.createFlowgraphNodeWhenEntityCreatedToolStripMenuItem.Name = "createFlowgraphNodeWhenEntityCreatedToolStripMenuItem";
+            this.createFlowgraphNodeWhenEntityCreatedToolStripMenuItem.Size = new System.Drawing.Size(310, 22);
+            this.createFlowgraphNodeWhenEntityCreatedToolStripMenuItem.Text = "Create Flowgraph Node When Entity Created";
+            this.createFlowgraphNodeWhenEntityCreatedToolStripMenuItem.Click += new System.EventHandler(this.createFlowgraphNodeWhenEntityCreatedToolStripMenuItem_Click);
+            // 
             // CommandsEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -393,5 +402,6 @@
         private System.Windows.Forms.ToolStripMenuItem writeInstancedResourcesExperimentalToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton DEBUG_LaunchGame;
         private System.Windows.Forms.ToolStripMenuItem buildLevelToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem createFlowgraphNodeWhenEntityCreatedToolStripMenuItem;
     }
 }

@@ -43,13 +43,13 @@ namespace CommandsEditor
             this.label3.TabIndex = 3;
             this.label3.Text = "Parameter on this entity";
             // 
-            // parentParameterList
+            // parameterList
             // 
             this.parameterList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.parameterList.FormattingEnabled = true;
             this.parameterList.Location = new System.Drawing.Point(12, 25);
-            this.parameterList.Name = "parentParameterList";
+            this.parameterList.Name = "parameterList";
             this.parameterList.Size = new System.Drawing.Size(875, 21);
             this.parameterList.TabIndex = 8;
             // 
@@ -74,8 +74,8 @@ namespace CommandsEditor
             this.Controls.Add(this.save_pin);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(1500, 416);
-            this.MinimumSize = new System.Drawing.Size(500, 39);
+            this.MaximumSize = new System.Drawing.Size(1500, 128);
+            this.MinimumSize = new System.Drawing.Size(500, 128);
             this.Name = "AddPin";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Add Pin";

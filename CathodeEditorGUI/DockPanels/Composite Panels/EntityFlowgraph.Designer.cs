@@ -43,6 +43,7 @@ namespace CommandsEditor
             this.DEBUG_LoadAll = new System.Windows.Forms.Button();
             this.DEBUG_AddPinIn = new System.Windows.Forms.Button();
             this.DEBUG_AddPinOut = new System.Windows.Forms.Button();
+            this.DEBUG_AddNode = new System.Windows.Forms.Button();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -223,11 +224,23 @@ namespace CommandsEditor
             this.DEBUG_AddPinOut.UseVisualStyleBackColor = true;
             this.DEBUG_AddPinOut.Click += new System.EventHandler(this.DEBUG_AddPinOut_Click);
             // 
+            // DEBUG_AddNode
+            // 
+            this.DEBUG_AddNode.ForeColor = System.Drawing.Color.IndianRed;
+            this.DEBUG_AddNode.Location = new System.Drawing.Point(0, 46);
+            this.DEBUG_AddNode.Name = "DEBUG_AddNode";
+            this.DEBUG_AddNode.Size = new System.Drawing.Size(85, 23);
+            this.DEBUG_AddNode.TabIndex = 13;
+            this.DEBUG_AddNode.Text = "Add Node";
+            this.DEBUG_AddNode.UseVisualStyleBackColor = true;
+            this.DEBUG_AddNode.Click += new System.EventHandler(this.DEBUG_AddNode_Click);
+            // 
             // EntityFlowgraph
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1512, 699);
+            this.Controls.Add(this.DEBUG_AddNode);
             this.Controls.Add(this.DEBUG_AddPinOut);
             this.Controls.Add(this.DEBUG_AddPinIn);
             this.Controls.Add(this.DEBUG_LoadAll);
@@ -267,6 +280,7 @@ namespace CommandsEditor
         private System.Windows.Forms.Button DEBUG_LoadAll;
         private System.Windows.Forms.Button DEBUG_AddPinIn;
         private System.Windows.Forms.Button DEBUG_AddPinOut;
+        private System.Windows.Forms.Button DEBUG_AddNode;
     }
 }
 
