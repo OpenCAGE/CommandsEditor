@@ -122,6 +122,9 @@ namespace CommandsEditor
                     stNodeEditor1.Nodes[i].IsSelected = true;
                     stNodeEditor1.Nodes[i].SetSelected(true, true);
                     stNodeEditor1.SetActiveNode(stNodeEditor1.Nodes[i]);
+
+                    //TODO: I'd really like to focus the canvas on the selected node, but I can't think how to get it to work. Either that, or the highlight should be more obvious
+                    //stNodeEditor1.MoveCanvas(stNodeEditor1.Nodes[i].Location.X - (stNodeEditor1.Width / 2), stNodeEditor1.Nodes[i].Location.Y - (stNodeEditor1.Height / 2), false, CanvasMoveArgs.All);
                     return;
                 }
             }
@@ -208,7 +211,8 @@ namespace CommandsEditor
                         {
                             //Our composite mismatches the flowgraph layout, the user must have modified the content with an older version of the script editor.
                             //TODO: Do something here.
-                            throw new Exception("Mismatch!");
+                            //throw new Exception("Mismatch!");
+                            Console.WriteLine("Unexpected extra connection that isn't in PAK!!");
                         }
                         populatedConnections.Add(connector);
                     }
@@ -572,6 +576,33 @@ namespace CommandsEditor
             {
                 ShowComposite(Commands.Entries[i]);
             }
+        }
+
+        private void DEBUG_AddPinIn_Click(object sender, EventArgs e)
+        {
+            if (stNodeEditor1.GetSelectedNode().Length != 1)
+            {
+                Console.WriteLine("SELECT ONE NODE");
+                return;
+            }
+
+            STNode node = stNodeEditor1.GetSelectedNode()[0];
+
+            AddPin pin = new AddPin(node, AddPin.LinkType.IN);
+            pin.Show();
+        }
+        private void DEBUG_AddPinOut_Click(object sender, EventArgs e)
+        {
+            if (stNodeEditor1.GetSelectedNode().Length != 1)
+            {
+                Console.WriteLine("SELECT ONE NODE");
+                return;
+            }
+
+            STNode node = stNodeEditor1.GetSelectedNode()[0];
+
+            AddPin pin = new AddPin(node, AddPin.LinkType.OUT);
+            pin.Show();
         }
     }
 }

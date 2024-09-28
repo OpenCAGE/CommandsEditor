@@ -330,6 +330,12 @@
     <Compile Include="Popups\ExportComposite.Designer.cs">
       <DependentUpon>ExportComposite.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\Flowgraph\AddPin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\Flowgraph\AddPin.designer.cs">
+      <DependentUpon>AddPin.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popups\Function Editors\ShowCompositeInstanceOverrides.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -719,6 +725,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\ExportComposite.resx">
       <DependentUpon>ExportComposite.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Flowgraph\AddPin.resx">
+      <DependentUpon>AddPin.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\InstanceSelection.resx">
       <DependentUpon>InstanceSelection.cs</DependentUpon>

@@ -41,6 +41,8 @@ namespace CommandsEditor
             this.DEBUG_SaveAllNoLinks = new System.Windows.Forms.Button();
             this.DEBUG_Next1Link = new System.Windows.Forms.Button();
             this.DEBUG_LoadAll = new System.Windows.Forms.Button();
+            this.DEBUG_AddPinIn = new System.Windows.Forms.Button();
+            this.DEBUG_AddPinOut = new System.Windows.Forms.Button();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -199,11 +201,35 @@ namespace CommandsEditor
             this.DEBUG_LoadAll.UseVisualStyleBackColor = true;
             this.DEBUG_LoadAll.Click += new System.EventHandler(this.DEBUG_LoadAll_Click);
             // 
+            // DEBUG_AddPinIn
+            // 
+            this.DEBUG_AddPinIn.ForeColor = System.Drawing.Color.IndianRed;
+            this.DEBUG_AddPinIn.Location = new System.Drawing.Point(0, 0);
+            this.DEBUG_AddPinIn.Name = "DEBUG_AddPinIn";
+            this.DEBUG_AddPinIn.Size = new System.Drawing.Size(85, 23);
+            this.DEBUG_AddPinIn.TabIndex = 11;
+            this.DEBUG_AddPinIn.Text = "Add Pin In";
+            this.DEBUG_AddPinIn.UseVisualStyleBackColor = true;
+            this.DEBUG_AddPinIn.Click += new System.EventHandler(this.DEBUG_AddPinIn_Click);
+            // 
+            // DEBUG_AddPinOut
+            // 
+            this.DEBUG_AddPinOut.ForeColor = System.Drawing.Color.IndianRed;
+            this.DEBUG_AddPinOut.Location = new System.Drawing.Point(0, 23);
+            this.DEBUG_AddPinOut.Name = "DEBUG_AddPinOut";
+            this.DEBUG_AddPinOut.Size = new System.Drawing.Size(85, 23);
+            this.DEBUG_AddPinOut.TabIndex = 12;
+            this.DEBUG_AddPinOut.Text = "Add Pin Out";
+            this.DEBUG_AddPinOut.UseVisualStyleBackColor = true;
+            this.DEBUG_AddPinOut.Click += new System.EventHandler(this.DEBUG_AddPinOut_Click);
+            // 
             // EntityFlowgraph
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1512, 699);
+            this.Controls.Add(this.DEBUG_AddPinOut);
+            this.Controls.Add(this.DEBUG_AddPinIn);
             this.Controls.Add(this.DEBUG_LoadAll);
             this.Controls.Add(this.DEBUG_Next1Link);
             this.Controls.Add(this.DEBUG_SaveAllNoLinks);
@@ -239,6 +265,8 @@ namespace CommandsEditor
         private System.Windows.Forms.Button DEBUG_SaveAllNoLinks;
         private System.Windows.Forms.Button DEBUG_Next1Link;
         private System.Windows.Forms.Button DEBUG_LoadAll;
+        private System.Windows.Forms.Button DEBUG_AddPinIn;
+        private System.Windows.Forms.Button DEBUG_AddPinOut;
     }
 }
 
