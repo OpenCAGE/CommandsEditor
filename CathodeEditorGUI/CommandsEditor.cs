@@ -919,6 +919,14 @@ namespace CommandsEditor
 
         private void DEBUG_RunChecks_Click(object sender, EventArgs e)
         {
+            EntityFlowgraph window = new EntityFlowgraph();
+            window.Show();
+            window.DEBUG_LoadAll_Test(CommandsDisplay.Content.commands);
+            window.Close();
+
+
+            return;
+
             LocalDebug_NEW.DEBUG_DumpAllInstancedStuff(_commandsDisplay.Content.level, "FINAL_ORDERED");
             return;
 

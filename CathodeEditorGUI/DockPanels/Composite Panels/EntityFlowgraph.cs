@@ -193,7 +193,12 @@ namespace CommandsEditor
 
                         STNodeOption pinOut = nodes[i].AddOutputOption(connectionMeta.ParameterGUID);
                         STNodeOption pinIn = connectedNode.AddInputOption(connectionMeta.ConnectedParameterGUID);
-                        pinOut.ConnectOption(pinIn);
+                        ConnectionStatus status = pinOut.ConnectOption(pinIn);
+
+                        if (status != ConnectionStatus.Connected)
+                        {
+                            Console.WriteLine("WARNING! Could not create connection!");
+                        }
 
                         EntityConnector connector = nodes[i].Entity.childLinks.FirstOrDefault(o => o.thisParamID == connectionMeta.ParameterGUID && o.linkedParamID == connectionMeta.ConnectedParameterGUID && o.linkedEntityID == connectedNode.ShortGUID);
                         if (connector.ID.IsInvalid)
@@ -221,7 +226,7 @@ namespace CommandsEditor
                             Console.WriteLine("Failed to find connection from " + entity.shortGUID + " to " + connection.linkedEntityID.ToByteString() + ": '" + connection.thisParamID + "' [" + connection.thisParamID.ToByteString() + "] -> '" + connection.linkedParamID + "' [" + connection.linkedParamID.ToByteString() + "]");
                             //Our composite mismatches the flowgraph layout, the user must have modified the content with an older version of the script editor.
                             //TODO: Do something here.
-                            throw new Exception("Mismatch!");
+                            //throw new Exception("Mismatch!");
                         }
                     }
 
@@ -229,7 +234,8 @@ namespace CommandsEditor
                     {
                         //Our composite mismatches the flowgraph layout, the user must have modified the content with an older version of the script editor.
                         //TODO: Do something here.
-                        throw new Exception("Mismatch!");
+                        //throw new Exception("Mismatch!");
+                        Console.WriteLine("missing entity with links");
                     }
                 }
 
@@ -259,17 +265,12 @@ namespace CommandsEditor
                         STNode childNode = EntityToNode(childEnt, _composite);
                         STNodeOption linkIn = childNode.AddInputOption(entities[i].childLinks[x].linkedParamID);
                         STNodeOption linkOut = mainNode.AddOutputOption(entities[i].childLinks[x].thisParamID);
-                        linkIn.ConnectOption(linkOut);
+                        ConnectionStatus status = linkIn.ConnectOption(linkOut);
+                        if (status != ConnectionStatus.Connected)
+                        {
+                            Console.WriteLine("WARNING! Could not create connection!");
+                        }
                     }
-
-                    //we should ensure variable entities always have a pin in/out for easier editing
-                    if (entities[i].variant == EntityVariant.VARIABLE)
-                    {
-                        VariableEntity varEnt = (VariableEntity)entities[i];
-                        mainNode.AddInputOption(varEnt.name);
-                        mainNode.AddOutputOption(varEnt.name);
-                    }
-                    //NOTE: WE should limit link creation on variable entities to JUST the above. 
                 }
             }
 
