@@ -14,7 +14,6 @@ using static CathodeLib.CompositeFlowgraphsTable;
 namespace CommandsEditor
 {
     //Handles loading vanilla/custom flowgraph layouts, and saving custom layouts
-    //NOTE: In debug mode, we read/write directly from the pre-defined layouts in order to populate that database. In release mode, the user defined layouts are populated and used.
     public class FlowgraphLayoutManager
     {
         private static CompositeFlowgraphsTable _preDefinedLayouts;
@@ -22,15 +21,21 @@ namespace CommandsEditor
 
         private static CompositeFlowgraphCompatibilityTable _compatibility;
 
+#if !DEBUG
+        FAIL THE BUILD! THIS SHOULD NOT STILL BE HERE!
+#endif
+        public static bool DEBUG_UsePreDefinedTable = false;
         private static CompositeFlowgraphsTable Table
         {
             get
             {
-#if DEBUG
-                return _preDefinedLayouts;
-#else
+                if (DEBUG_UsePreDefinedTable)
+                {
+                    Console.WriteLine("Using Pre-Defined Table");
+                    return _preDefinedLayouts;
+                }
+                Console.WriteLine("Using User-Defined Table");
                 return _userDefinedLayouts;
-#endif
             }
         }
 
@@ -111,8 +116,11 @@ namespace CommandsEditor
         public static FlowgraphMeta SaveLayout(STNodeEditor editor, Composite composite, string name)
         {
             FlowgraphMeta flowgraphMeta = editor.AsFlowgraphMeta(composite, name);
-            Table.flowgraphs.RemoveAll(o => o.Name == flowgraphMeta.Name && o.CompositeGUID == flowgraphMeta.CompositeGUID);
-            Table.flowgraphs.Add(flowgraphMeta);
+            FlowgraphMeta existingFGM = Table.flowgraphs.FirstOrDefault(o => o.Name == flowgraphMeta.Name && o.CompositeGUID == flowgraphMeta.CompositeGUID);
+            if (existingFGM != null)
+                Table.flowgraphs[Table.flowgraphs.IndexOf(existingFGM)] = flowgraphMeta;
+            else
+                Table.flowgraphs.Add(flowgraphMeta);
 
 #if DEBUG
             SaveVanillaDB();
@@ -178,7 +186,10 @@ namespace CommandsEditor
                 }
 
                 //Copy the default layouts over
-                _userDefinedLayouts = _preDefinedLayouts;
+                for (int i = 0; i < _preDefinedLayouts.flowgraphs.Count; i++)
+                {
+                    _userDefinedLayouts.flowgraphs.Add(_preDefinedLayouts.flowgraphs[i].Copy());
+                }
             }
 //#endif
         }

@@ -28,13 +28,6 @@ namespace CommandsEditor
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Flowgraph));
             this.SaveFlowgraph = new System.Windows.Forms.Button();
-            this.DEBUG_CalcPositions = new System.Windows.Forms.Button();
-            this.DEBUG_NextUnfinished = new System.Windows.Forms.Button();
-            this.DEBUG_DumpUnfinished = new System.Windows.Forms.Button();
-            this.DEBUG_NextAndSave = new System.Windows.Forms.Button();
-            this.DEBUG_SaveAllNoLinks = new System.Windows.Forms.Button();
-            this.DEBUG_Next1Link = new System.Windows.Forms.Button();
-            this.DEBUG_LoadAll = new System.Windows.Forms.Button();
             this.nodeContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addPinInToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addPinOutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -52,98 +45,13 @@ namespace CommandsEditor
             // SaveFlowgraph
             // 
             this.SaveFlowgraph.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.SaveFlowgraph.Location = new System.Drawing.Point(1436, 1);
+            this.SaveFlowgraph.Location = new System.Drawing.Point(1372, 1);
             this.SaveFlowgraph.Name = "SaveFlowgraph";
-            this.SaveFlowgraph.Size = new System.Drawing.Size(75, 23);
+            this.SaveFlowgraph.Size = new System.Drawing.Size(139, 23);
             this.SaveFlowgraph.TabIndex = 2;
-            this.SaveFlowgraph.Text = "Save Pos";
+            this.SaveFlowgraph.Text = "Save To Pre-Defined DB";
             this.SaveFlowgraph.UseVisualStyleBackColor = true;
             this.SaveFlowgraph.Click += new System.EventHandler(this.SaveFlowgraph_Click);
-            // 
-            // DEBUG_CalcPositions
-            // 
-            this.DEBUG_CalcPositions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.DEBUG_CalcPositions.ForeColor = System.Drawing.Color.IndianRed;
-            this.DEBUG_CalcPositions.Location = new System.Drawing.Point(1290, 1);
-            this.DEBUG_CalcPositions.Name = "DEBUG_CalcPositions";
-            this.DEBUG_CalcPositions.Size = new System.Drawing.Size(121, 23);
-            this.DEBUG_CalcPositions.TabIndex = 3;
-            this.DEBUG_CalcPositions.Text = "Calc Selected Pos";
-            this.DEBUG_CalcPositions.UseVisualStyleBackColor = true;
-            this.DEBUG_CalcPositions.Click += new System.EventHandler(this.DEBUG_CalcPositions_Click);
-            // 
-            // DEBUG_NextUnfinished
-            // 
-            this.DEBUG_NextUnfinished.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.DEBUG_NextUnfinished.ForeColor = System.Drawing.Color.IndianRed;
-            this.DEBUG_NextUnfinished.Location = new System.Drawing.Point(1165, 1);
-            this.DEBUG_NextUnfinished.Name = "DEBUG_NextUnfinished";
-            this.DEBUG_NextUnfinished.Size = new System.Drawing.Size(121, 23);
-            this.DEBUG_NextUnfinished.TabIndex = 4;
-            this.DEBUG_NextUnfinished.Text = "Next Incomplete";
-            this.DEBUG_NextUnfinished.UseVisualStyleBackColor = true;
-            this.DEBUG_NextUnfinished.Click += new System.EventHandler(this.DEBUG_NextUnfinished_Click);
-            // 
-            // DEBUG_DumpUnfinished
-            // 
-            this.DEBUG_DumpUnfinished.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.DEBUG_DumpUnfinished.ForeColor = System.Drawing.Color.IndianRed;
-            this.DEBUG_DumpUnfinished.Location = new System.Drawing.Point(1040, 1);
-            this.DEBUG_DumpUnfinished.Name = "DEBUG_DumpUnfinished";
-            this.DEBUG_DumpUnfinished.Size = new System.Drawing.Size(121, 23);
-            this.DEBUG_DumpUnfinished.TabIndex = 5;
-            this.DEBUG_DumpUnfinished.Text = "Dump Incomplete";
-            this.DEBUG_DumpUnfinished.UseVisualStyleBackColor = true;
-            this.DEBUG_DumpUnfinished.Click += new System.EventHandler(this.DEBUG_DumpUnfinished_Click);
-            // 
-            // DEBUG_NextAndSave
-            // 
-            this.DEBUG_NextAndSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.DEBUG_NextAndSave.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.DEBUG_NextAndSave.ForeColor = System.Drawing.Color.IndianRed;
-            this.DEBUG_NextAndSave.Location = new System.Drawing.Point(1165, 56);
-            this.DEBUG_NextAndSave.Name = "DEBUG_NextAndSave";
-            this.DEBUG_NextAndSave.Size = new System.Drawing.Size(121, 37);
-            this.DEBUG_NextAndSave.TabIndex = 6;
-            this.DEBUG_NextAndSave.Text = "Next Incomplete And Save";
-            this.DEBUG_NextAndSave.UseVisualStyleBackColor = true;
-            this.DEBUG_NextAndSave.Click += new System.EventHandler(this.DEBUG_NextAndSave_Click);
-            // 
-            // DEBUG_SaveAllNoLinks
-            // 
-            this.DEBUG_SaveAllNoLinks.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.DEBUG_SaveAllNoLinks.ForeColor = System.Drawing.Color.IndianRed;
-            this.DEBUG_SaveAllNoLinks.Location = new System.Drawing.Point(1040, 28);
-            this.DEBUG_SaveAllNoLinks.Name = "DEBUG_SaveAllNoLinks";
-            this.DEBUG_SaveAllNoLinks.Size = new System.Drawing.Size(121, 23);
-            this.DEBUG_SaveAllNoLinks.TabIndex = 8;
-            this.DEBUG_SaveAllNoLinks.Text = "Save All No Links";
-            this.DEBUG_SaveAllNoLinks.UseVisualStyleBackColor = true;
-            this.DEBUG_SaveAllNoLinks.Click += new System.EventHandler(this.DEBUG_SaveAllNoLinks_Click);
-            // 
-            // DEBUG_Next1Link
-            // 
-            this.DEBUG_Next1Link.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.DEBUG_Next1Link.ForeColor = System.Drawing.Color.IndianRed;
-            this.DEBUG_Next1Link.Location = new System.Drawing.Point(1165, 28);
-            this.DEBUG_Next1Link.Name = "DEBUG_Next1Link";
-            this.DEBUG_Next1Link.Size = new System.Drawing.Size(121, 23);
-            this.DEBUG_Next1Link.TabIndex = 9;
-            this.DEBUG_Next1Link.Text = "Next With 1 Link Ent";
-            this.DEBUG_Next1Link.UseVisualStyleBackColor = true;
-            this.DEBUG_Next1Link.Click += new System.EventHandler(this.DEBUG_Next1Link_Click);
-            // 
-            // DEBUG_LoadAll
-            // 
-            this.DEBUG_LoadAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.DEBUG_LoadAll.ForeColor = System.Drawing.Color.IndianRed;
-            this.DEBUG_LoadAll.Location = new System.Drawing.Point(1040, 56);
-            this.DEBUG_LoadAll.Name = "DEBUG_LoadAll";
-            this.DEBUG_LoadAll.Size = new System.Drawing.Size(121, 23);
-            this.DEBUG_LoadAll.TabIndex = 10;
-            this.DEBUG_LoadAll.Text = "Load All";
-            this.DEBUG_LoadAll.UseVisualStyleBackColor = true;
-            this.DEBUG_LoadAll.Click += new System.EventHandler(this.DEBUG_LoadAll_Click);
             // 
             // nodeContextMenu
             // 
@@ -254,13 +162,6 @@ namespace CommandsEditor
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1512, 699);
-            this.Controls.Add(this.DEBUG_LoadAll);
-            this.Controls.Add(this.DEBUG_Next1Link);
-            this.Controls.Add(this.DEBUG_SaveAllNoLinks);
-            this.Controls.Add(this.DEBUG_NextAndSave);
-            this.Controls.Add(this.DEBUG_DumpUnfinished);
-            this.Controls.Add(this.DEBUG_NextUnfinished);
-            this.Controls.Add(this.DEBUG_CalcPositions);
             this.Controls.Add(this.SaveFlowgraph);
             this.Controls.Add(this.stNodeEditor1);
             this.DoubleBuffered = true;
@@ -276,13 +177,6 @@ namespace CommandsEditor
         #endregion
         private ST.Library.UI.NodeEditor.STNodeEditor stNodeEditor1;
         private System.Windows.Forms.Button SaveFlowgraph;
-        private System.Windows.Forms.Button DEBUG_CalcPositions;
-        private System.Windows.Forms.Button DEBUG_NextUnfinished;
-        private System.Windows.Forms.Button DEBUG_DumpUnfinished;
-        private System.Windows.Forms.Button DEBUG_NextAndSave;
-        private System.Windows.Forms.Button DEBUG_SaveAllNoLinks;
-        private System.Windows.Forms.Button DEBUG_Next1Link;
-        private System.Windows.Forms.Button DEBUG_LoadAll;
         private System.Windows.Forms.ContextMenuStrip nodeContextMenu;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;

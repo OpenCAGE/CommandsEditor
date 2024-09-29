@@ -618,5 +618,21 @@ namespace CommandsEditor.DockPanels
         {
             _functionUsesDialog = null;
         }
+
+        private void DEBUG_LoadNextEmpty_Click(object sender, EventArgs e)
+        {
+            List<Composite> ordered = Content.commands.Entries.OrderBy(o => CountNumberOfLinks(o)).Where(o => CountNumberOfLinks(o) != 0 && !FlowgraphLayoutManager.HasLayout(o)).ToList();
+            if (ordered.Count != 0)
+            {
+                LoadComposite(ordered[0]);
+            }
+        }
+        private int CountNumberOfLinks(Composite composite)
+        {
+            int count = 0;
+            foreach (Entity ent in composite.GetEntities())
+                count += ent.childLinks.Count;
+            return count;
+        }
     }
 }

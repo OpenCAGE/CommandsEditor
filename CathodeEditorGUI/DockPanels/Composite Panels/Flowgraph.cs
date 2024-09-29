@@ -47,17 +47,7 @@ namespace CommandsEditor
             stNodeEditor1.SelectedChanged += Owner_SelectedChanged;
 
 #if !DEBUG
-            DEBUG_CalcPositions.Visible = false;
-            DEBUG_DumpUnfinished.Visible = false;
-            DEBUG_Duplicate.Visible = false;
-            DEBUG_NextAndSave.Visible = false;
-            DEBUG_NextUnfinished.Visible = false;
-            DEBUG_SaveAllNoLinks.Visible = false;
-            DEBUG_Next1Link.Visible = false;
-            DEBUG_LoadAll.Visible = false;
-            DEBUG_AddPinIn.Visible = false;
-            DEBUG_AddPinOut.Visible = false;
-            DEBUG_Compile.Visible = false;
+            SaveFlowgraph.Visible = false;
 #endif
 
             //todo: i feel like these events should come from the compositedisplay?
@@ -414,8 +404,10 @@ namespace CommandsEditor
                 string breakhere = "";
             }
 
+            FlowgraphLayoutManager.DEBUG_UsePreDefinedTable = true;
             CompositeUtils.ClearAllLinks(_composite);
             SaveAndCompile();
+            FlowgraphLayoutManager.DEBUG_UsePreDefinedTable = false;
         }
 
         private void DEBUG_CalcPositions_Click(object sender, EventArgs e)

@@ -60,6 +60,7 @@ namespace CommandsEditor.DockPanels
             this.createComposite = new System.Windows.Forms.ToolStripButton();
             this.createFolder = new System.Windows.Forms.ToolStripButton();
             this.findFunctionUses = new System.Windows.Forms.ToolStripButton();
+            this.DEBUG_LoadNextEmpty = new System.Windows.Forms.ToolStripButton();
             this.FileBrowserContextMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -300,7 +301,8 @@ namespace CommandsEditor.DockPanels
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.createComposite,
             this.createFolder,
-            this.findFunctionUses});
+            this.findFunctionUses,
+            this.DEBUG_LoadNextEmpty});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(1513, 25);
@@ -334,6 +336,16 @@ namespace CommandsEditor.DockPanels
             this.findFunctionUses.Size = new System.Drawing.Size(127, 22);
             this.findFunctionUses.Text = "Find Function Uses";
             this.findFunctionUses.Click += new System.EventHandler(this.findFunctionUses_Click);
+            // 
+            // DEBUG_LoadNextEmpty
+            // 
+            this.DEBUG_LoadNextEmpty.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.DEBUG_LoadNextEmpty.Image = ((System.Drawing.Image)(resources.GetObject("DEBUG_LoadNextEmpty.Image")));
+            this.DEBUG_LoadNextEmpty.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.DEBUG_LoadNextEmpty.Name = "DEBUG_LoadNextEmpty";
+            this.DEBUG_LoadNextEmpty.Size = new System.Drawing.Size(237, 22);
+            this.DEBUG_LoadNextEmpty.Text = "DEBUG: Load Next Flowgraph To Construct";
+            this.DEBUG_LoadNextEmpty.Click += new System.EventHandler(this.DEBUG_LoadNextEmpty_Click);
             // 
             // CommandsDisplay
             // 
@@ -391,5 +403,6 @@ namespace CommandsEditor.DockPanels
         private ToolStripButton createFolder;
         private ToolStripButton createComposite;
         private ToolStripButton findFunctionUses;
+        private ToolStripButton DEBUG_LoadNextEmpty;
     }
 }
