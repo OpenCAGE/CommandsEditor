@@ -619,9 +619,18 @@ namespace CommandsEditor.DockPanels
             _functionUsesDialog = null;
         }
 
+#if !DEBUG
+        FAIL BUILD! THIS SHOULD HAVE BEEN REMOVED BY NOW
+#endif
         private void DEBUG_LoadNextEmpty_Click(object sender, EventArgs e)
         {
+            DEBUG_LoadNextToConstruct();
+        }
+        public void DEBUG_LoadNextToConstruct()
+        {
+            FlowgraphLayoutManager.DEBUG_UsePreDefinedTable = true;
             List<Composite> ordered = Content.commands.Entries.OrderBy(o => CountNumberOfLinks(o)).Where(o => CountNumberOfLinks(o) != 0 && !FlowgraphLayoutManager.HasLayout(o)).ToList();
+            FlowgraphLayoutManager.DEBUG_UsePreDefinedTable = false;
             if (ordered.Count != 0)
             {
                 LoadComposite(ordered[0]);

@@ -408,6 +408,8 @@ namespace CommandsEditor
             CompositeUtils.ClearAllLinks(_composite);
             SaveAndCompile();
             FlowgraphLayoutManager.DEBUG_UsePreDefinedTable = false;
+
+            Singleton.Editor.CommandsDisplay.DEBUG_LoadNextToConstruct();
         }
 
         private void DEBUG_CalcPositions_Click(object sender, EventArgs e)

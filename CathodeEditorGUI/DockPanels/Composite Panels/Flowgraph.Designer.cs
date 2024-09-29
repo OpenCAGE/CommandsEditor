@@ -45,11 +45,13 @@ namespace CommandsEditor
             // SaveFlowgraph
             // 
             this.SaveFlowgraph.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.SaveFlowgraph.Location = new System.Drawing.Point(1372, 1);
+            this.SaveFlowgraph.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.SaveFlowgraph.ForeColor = System.Drawing.Color.IndianRed;
+            this.SaveFlowgraph.Location = new System.Drawing.Point(1257, 1);
             this.SaveFlowgraph.Name = "SaveFlowgraph";
-            this.SaveFlowgraph.Size = new System.Drawing.Size(139, 23);
+            this.SaveFlowgraph.Size = new System.Drawing.Size(254, 38);
             this.SaveFlowgraph.TabIndex = 2;
-            this.SaveFlowgraph.Text = "Save To Pre-Defined DB";
+            this.SaveFlowgraph.Text = "Save to pre-defined DB and load next";
             this.SaveFlowgraph.UseVisualStyleBackColor = true;
             this.SaveFlowgraph.Click += new System.EventHandler(this.SaveFlowgraph_Click);
             // 
