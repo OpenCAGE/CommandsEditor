@@ -33,6 +33,7 @@ namespace CommandsEditor
             }
 
 #if DEBUG
+            //For sanity: make sure the vanilla db doesn't contain any empty flowgraphs
             List<FlowgraphMeta> trimmed = new List<FlowgraphMeta>();
             for (int i = 0; i < _vanilla.flowgraphs.Count; i++)
             {
@@ -50,7 +51,9 @@ namespace CommandsEditor
                 if (connections != 0)
                     trimmed2.Add(trimmed[i]);
             }
-            Console.WriteLine("removed " + (_vanilla.flowgraphs.Count - trimmed2.Count));
+            _vanilla.flowgraphs = trimmed2;
+            SaveVanillaDB();
+            Console.WriteLine("FlowgraphLayoutManager found " + (_vanilla.flowgraphs.Count - trimmed2.Count) + " invalid vanilla flowgraph definitions");
 #endif
         }
 
