@@ -14,31 +14,46 @@ using static CathodeLib.CompositeFlowgraphsTable;
 namespace CommandsEditor
 {
     //Handles loading vanilla/custom flowgraph layouts, and saving custom layouts
+    //NOTE: In debug mode, we read/write directly from the pre-defined layouts in order to populate that database. In release mode, the user defined layouts are populated and used.
     public class FlowgraphLayoutManager
     {
-        private static CompositeFlowgraphsTable _vanilla;
-        private static CompositeFlowgraphsTable _custom;
+        private static CompositeFlowgraphsTable _preDefinedLayouts;
+        private static CompositeFlowgraphsTable _userDefinedLayouts;
+
+        private static CompositeFlowgraphCompatibilityTable _compatibility;
+
+        private static CompositeFlowgraphsTable Table
+        {
+            get
+            {
+#if DEBUG
+                return _preDefinedLayouts;
+#else
+                return _userDefinedLayouts;
+#endif
+            }
+        }
 
         public static Commands LinkedCommands => _commands;
         private static Commands _commands;
 
         static FlowgraphLayoutManager()
         {
-            _vanilla = new CompositeFlowgraphsTable();
-            _custom = new CompositeFlowgraphsTable();
+            _preDefinedLayouts = new CompositeFlowgraphsTable();
+            _userDefinedLayouts = new CompositeFlowgraphsTable();
 
             using (BinaryReader reader = new BinaryReader(new MemoryStream(Properties.Resources.flowgraphs)))
             {
-                _vanilla.Read(reader);
+                _preDefinedLayouts.Read(reader);
             }
 
 #if DEBUG
             //For sanity: make sure the vanilla db doesn't contain any empty flowgraphs
             List<FlowgraphMeta> trimmed = new List<FlowgraphMeta>();
-            for (int i = 0; i < _vanilla.flowgraphs.Count; i++)
+            for (int i = 0; i < _preDefinedLayouts.flowgraphs.Count; i++)
             {
-                if (_vanilla.flowgraphs[i].Nodes.Count != 0)
-                    trimmed.Add(_vanilla.flowgraphs[i]);
+                if (_preDefinedLayouts.flowgraphs[i].Nodes.Count != 0)
+                    trimmed.Add(_preDefinedLayouts.flowgraphs[i]);
             }
             List<FlowgraphMeta> trimmed2 = new List<FlowgraphMeta>();
             for (int i = 0; i < trimmed.Count; i++)
@@ -51,53 +66,59 @@ namespace CommandsEditor
                 if (connections != 0)
                     trimmed2.Add(trimmed[i]);
             }
-            _vanilla.flowgraphs = trimmed2;
+            Console.WriteLine("FlowgraphLayoutManager found " + (_preDefinedLayouts.flowgraphs.Count - trimmed2.Count) + " invalid predefined flowgraph definitions");
+            _preDefinedLayouts.flowgraphs = trimmed2;
             SaveVanillaDB();
-            Console.WriteLine("FlowgraphLayoutManager found " + (_vanilla.flowgraphs.Count - trimmed2.Count) + " invalid vanilla flowgraph definitions");
+#endif
+
+            //Always add new composites into the compatibility table
+            Singleton.OnCompositeAdded += AddToCompatibilityTable;
+        }
+        private static void AddToCompatibilityTable(Composite composite)
+        {
+            _compatibility.compatibility_info.Add(new CompositeFlowgraphCompatibilityTable.CompatibilityInfo()
+            {
+                composite_id = composite.shortGUID,
+                flowgraphs_supported = true
+            });
+        }
+
+        //Checks to see if the given flowgraph is compatible with the Flowgraph system: Composites saved with earlier versions of OpenCAGE are unsupported.
+        public static bool IsCompatible(Composite composite)
+        {
+            if (composite == null)
+                return false;
+
+            var info = _compatibility.compatibility_info.FirstOrDefault(o => o.composite_id == composite.shortGUID);
+            if (info == null)
+                return false;
+            return info.flowgraphs_supported;
+        }
+
+        //Checks to see if there is at least one flowgraph for the given composite
+        public static bool HasLayout(Composite composite)
+        {
+            return Table.flowgraphs.FirstOrDefault(o => o.CompositeGUID == composite.shortGUID) != null;
+        }
+
+        //Gets all flowgraph layouts for the given composite
+        public static List<FlowgraphMeta> GetLayouts(Composite composite)
+        {
+            return Table.flowgraphs.FindAll(o => o.CompositeGUID == composite.shortGUID);
+        }
+
+        //Add layout to db
+        public static void SaveLayout(STNodeEditor editor, Composite composite, string name)
+        {
+            FlowgraphMeta flowgraphMeta = editor.AsFlowgraphMeta(composite, name);
+            Table.flowgraphs.RemoveAll(o => o.Name == flowgraphMeta.Name && o.CompositeGUID == flowgraphMeta.CompositeGUID);
+            Table.flowgraphs.Add(flowgraphMeta);
+
+#if DEBUG
+            SaveVanillaDB();
 #endif
         }
-
-        //util to see if there is at least one vanilla or custom defined flowgraph layout for the given composite
-        public static bool HasDefinedLayout(Composite composite)
-        {
-            return _vanilla.flowgraphs.FirstOrDefault(o => o.CompositeGUID == composite.shortGUID) != null ||
-                _custom.flowgraphs.FirstOrDefault(o => o.CompositeGUID == composite.shortGUID) != null;
-        }
-
-        //gets the first flowgraph layout metadata for the given composite - todo: eventually we want to support multiple flowgraphs per composite
-        //Prioritises the "custom" table as custom user-defined layouts should always overrule the vanilla ones
-        //TODO: this should really be changed to "LoadLayout" and the population of StNodeEdtior handled here
-        public static FlowgraphMeta GetLayout(Composite composite)
-        {
-            FlowgraphMeta toReturn = _custom.flowgraphs.FirstOrDefault(o => o.CompositeGUID == composite.shortGUID);
-            if (toReturn != null)
-                return toReturn;
-
-            return _vanilla.flowgraphs.FirstOrDefault(o => o.CompositeGUID == composite.shortGUID);
-        }
-
-        //add layout to db
-        public static void SaveLayout(STNodeEditor editor, Composite composite)
-        {
 #if DEBUG
-            AddVanillaFlowgraph(editor, composite);
-#else
-            FlowgraphMeta flowgraphMeta = editor.AsFlowgraphMeta(composite, Path.GetFileName(composite.name)); //TODO: when we start supporting multiple flowgraphs we should pass new names in here
-            _custom.flowgraphs.RemoveAll(o => o.Name == flowgraphMeta.Name && o.CompositeGUID == flowgraphMeta.CompositeGUID);
-            _custom.flowgraphs.Add(flowgraphMeta);
-#endif
-        }
-
-#if DEBUG
-        //This is for populating the vanilla flowgraph layout table locally - it's for development use only, so should not be included in non-debug builds
-        private static void AddVanillaFlowgraph(STNodeEditor editor, Composite composite)
-        {
-            FlowgraphMeta flowgraphMeta = editor.AsFlowgraphMeta(composite, Path.GetFileName(composite.name)); //TODO: when we start supporting multiple flowgraphs we should pass new names in here
-            _vanilla.flowgraphs.RemoveAll(o => o.Name == flowgraphMeta.Name && o.CompositeGUID == flowgraphMeta.CompositeGUID);
-            _vanilla.flowgraphs.Add(flowgraphMeta);
-
-            SaveVanillaDB();
-        }
         private static void SaveVanillaDB()
         {
             string vanillaFlowgraphDBPath = System.Reflection.Assembly.GetEntryAssembly().Location;
@@ -106,7 +127,7 @@ namespace CommandsEditor
             using (BinaryWriter writer = new BinaryWriter(File.OpenWrite(vanillaFlowgraphDBPath)))
             {
                 writer.BaseStream.SetLength(0);
-                _vanilla.Write(writer);
+                _preDefinedLayouts.Write(writer);
                 writer.Close();
             }
         }
@@ -131,15 +152,42 @@ namespace CommandsEditor
 
         private static void LoadCustomFlowgraphs(string filepath)
         {
-            _custom = (CompositeFlowgraphsTable)CustomTable.ReadTable(filepath, CustomEndTables.COMPOSITE_FLOWGRAPHS);
-            if (_custom == null) _custom = new CompositeFlowgraphsTable();
-            Console.WriteLine("Loaded " + _custom.flowgraphs.Count + " custom flowgraph layouts!");
+            _userDefinedLayouts = (CompositeFlowgraphsTable)CustomTable.ReadTable(filepath, CustomEndTables.COMPOSITE_FLOWGRAPHS);
+            if (_userDefinedLayouts == null) _userDefinedLayouts = new CompositeFlowgraphsTable();
+            Console.WriteLine("Loaded " + _userDefinedLayouts.flowgraphs.Count + " custom flowgraph layouts!");
+            
+            _compatibility = (CompositeFlowgraphCompatibilityTable)CustomTable.ReadTable(filepath, CustomEndTables.COMPOSITE_FLOWGRAPH_COMPATIBILITY_INFO);
+            if (_compatibility == null) _compatibility = new CompositeFlowgraphCompatibilityTable();
+            Console.WriteLine("Loaded " + _compatibility.compatibility_info.Count + " flowgraph compatibility definitions!");
+
+//#if !DEBUG
+            if (_userDefinedLayouts.flowgraphs.Count == 0)
+            {
+                //This Commands is being opened for the first time. We need to check to see if any composites have been modified.
+                for (int i = 0; i < _commands.Entries.Count; i++)
+                {
+                    var compatibilityInfo = _compatibility.compatibility_info.FirstOrDefault(o => o.composite_id == _commands.Entries[i].shortGUID);
+                    if (compatibilityInfo == null)
+                    {
+                        compatibilityInfo = new CompositeFlowgraphCompatibilityTable.CompatibilityInfo() { composite_id = _commands.Entries[i].shortGUID };
+                        _compatibility.compatibility_info.Add(compatibilityInfo);
+                    }
+                    compatibilityInfo.flowgraphs_supported = true; //TODO: need to actually do the logic for this check
+                }
+
+                //Copy the default layouts over
+                _userDefinedLayouts = _preDefinedLayouts;
+            }
+//#endif
         }
 
         private static void SaveCustomFlowgraphs(string filepath)
         {
-            CustomTable.WriteTable(filepath, CustomEndTables.COMPOSITE_FLOWGRAPHS, _custom);
-            Console.WriteLine("Saved " + _custom.flowgraphs.Count + " custom flowgraph layouts!");
+            CustomTable.WriteTable(filepath, CustomEndTables.COMPOSITE_FLOWGRAPHS, _userDefinedLayouts);
+            Console.WriteLine("Saved " + _userDefinedLayouts.flowgraphs.Count + " custom flowgraph layouts!");
+
+            CustomTable.WriteTable(filepath, CustomEndTables.COMPOSITE_FLOWGRAPH_COMPATIBILITY_INFO, _compatibility);
+            Console.WriteLine("Saved " + _compatibility.compatibility_info.Count + " flowgraph compatibility definitions!");
         }
 
     }

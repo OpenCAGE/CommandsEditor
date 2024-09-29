@@ -43,7 +43,6 @@ namespace CommandsEditor.DockPanels
             this.deleteCheckedEntities = new System.Windows.Forms.ToolStripButton();
             this.renameComposite = new System.Windows.Forms.ToolStripButton();
             this.deleteComposite = new System.Windows.Forms.ToolStripButton();
-            this.DEBUG_ShowAllInNodegraph = new System.Windows.Forms.ToolStripButton();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
             this.imageList = new System.Windows.Forms.ImageList(this.components);
@@ -52,6 +51,7 @@ namespace CommandsEditor.DockPanels
             this.goBackOnPath = new System.Windows.Forms.Button();
             this.pathDisplay = new System.Windows.Forms.TextBox();
             this.instanceInfo = new System.Windows.Forms.Button();
+            this.createFlowgraph = new System.Windows.Forms.ToolStripButton();
             this.toolStrip1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -75,7 +75,7 @@ namespace CommandsEditor.DockPanels
             this.deleteCheckedEntities,
             this.renameComposite,
             this.deleteComposite,
-            this.DEBUG_ShowAllInNodegraph});
+            this.createFlowgraph});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(1615, 25);
@@ -190,15 +190,6 @@ namespace CommandsEditor.DockPanels
             this.deleteComposite.Text = "Delete Composite";
             this.deleteComposite.Click += new System.EventHandler(this.deleteComposite_Click);
             // 
-            // DEBUG_ShowAllInNodegraph
-            // 
-            this.DEBUG_ShowAllInNodegraph.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.DEBUG_ShowAllInNodegraph.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.DEBUG_ShowAllInNodegraph.Name = "DEBUG_ShowAllInNodegraph";
-            this.DEBUG_ShowAllInNodegraph.Size = new System.Drawing.Size(176, 22);
-            this.DEBUG_ShowAllInNodegraph.Text = "DEBUG: Show All In Nodegraph";
-            this.DEBUG_ShowAllInNodegraph.Click += new System.EventHandler(this.DEBUG_ShowAllInNodegraph_Click);
-            // 
             // dockPanel
             // 
             this.dockPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -286,6 +277,15 @@ namespace CommandsEditor.DockPanels
             this.instanceInfo.UseVisualStyleBackColor = true;
             this.instanceInfo.Click += new System.EventHandler(this.instanceInfo_Click);
             // 
+            // createFlowgraph
+            // 
+            this.createFlowgraph.Image = ((System.Drawing.Image)(resources.GetObject("createFlowgraph.Image")));
+            this.createFlowgraph.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.createFlowgraph.Name = "createFlowgraph";
+            this.createFlowgraph.Size = new System.Drawing.Size(120, 22);
+            this.createFlowgraph.Text = "Create Flowgraph";
+            this.createFlowgraph.Click += new System.EventHandler(this.createFlowgraph_Click);
+            // 
             // CompositeDisplay
             // 
             this.AllowEndUserDocking = false;
@@ -333,6 +333,6 @@ namespace CommandsEditor.DockPanels
         private System.Windows.Forms.ToolStripMenuItem createAliasToolStripMenuItem;
         private System.Windows.Forms.Button instanceInfo;
         private System.Windows.Forms.ToolStripButton renameComposite;
-        private System.Windows.Forms.ToolStripButton DEBUG_ShowAllInNodegraph;
+        private System.Windows.Forms.ToolStripButton createFlowgraph;
     }
 }

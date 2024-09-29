@@ -358,6 +358,10 @@ namespace CommandsEditor
             Cursor.Current = Cursors.WaitCursor;
             statusText.Text = "Saving...";
             statusStrip.Update();
+
+            if (_commandsDisplay.CompositeDisplay != null)
+                _commandsDisplay.CompositeDisplay.SaveAllFlowgraphs();
+            
             bool saved = Save();
             statusText.Text = "";
             Cursor.Current = Cursors.Default;

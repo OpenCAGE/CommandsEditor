@@ -22,6 +22,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using WebSocketSharp;
 using WeifenLuo.WinFormsUI.Docking;
+using static CathodeLib.CompositeFlowgraphsTable;
 using Path = System.IO.Path;
 
 namespace CommandsEditor.DockPanels
@@ -38,13 +39,15 @@ namespace CommandsEditor.DockPanels
         public Composite Composite => _composite;
 
         private EntityList _entityList;
-        private Flowgraph _entityFlowgraph;
+        private List<Flowgraph> _flowgraphs = new List<Flowgraph>();
 
         private EntityInspector _entityDisplay;
         public EntityInspector EntityDisplay => _entityDisplay;
 
         private CompositePath _path = new CompositePath();
         public CompositePath Path => _path;
+
+        public bool SupportsFlowgraphs => FlowgraphLayoutManager.IsCompatible(Composite);
 
         private static Mutex _mut = new Mutex();
         private bool _canExportChildren = true;
@@ -60,16 +63,9 @@ namespace CommandsEditor.DockPanels
 
             dockPanel.ShowDocumentIcon = true;
 
-#if !DEBUG
-            DEBUG_ShowAllInNodegraph.Visible = false;
-#endif
-
             _entityList = new EntityList();
             _entityList.Show(dockPanel, DockState.DockLeft);
             //_entityList.DockState = DockState.DockLeftAutoHide; //<-- not using auto hide for now to get ui active for events
-
-            _entityFlowgraph = new Flowgraph();
-            _entityFlowgraph.Show(dockPanel, DockState.Document);
 
             _entityDisplay = new EntityInspector(this, true); //TODO: pass false to hide links
             _entityDisplay.Show(dockPanel, DockState.DockRight);
@@ -91,9 +87,23 @@ namespace CommandsEditor.DockPanels
             LoadEntity(entity);
         }
 
+        //Saves and compiles all Flowgraph layouts for this Composite
+        public void SaveAllFlowgraphs()
+        {
+            if (Composite != null && SupportsFlowgraphs)
+            {
+                CompositeUtils.ClearAllLinks(_composite);
+                for (int i = 0; i < _flowgraphs.Count; i++)
+                    _flowgraphs[i].SaveAndCompile();
+            }
+        }
+
         /* Call this to show the CompositeDisplay with the requested Composite content */
         public void PopulateUI(Composite composite)
         {
+            //If we're changing composite, we should store the flowgraph layouts from the previous one
+            SaveAllFlowgraphs();
+
             if (!_isSubbed)
             {
                 _entityList.List.SelectedEntityChanged += LoadEntity;
@@ -121,7 +131,7 @@ namespace CommandsEditor.DockPanels
                     break;
             }
 
-            _entityFlowgraph.ShowComposite(composite);
+            //TODO: maybe the flowgraph stuff should live here??
             _entityList.List.Setup(composite, null, false);
             _path = new CompositePath();
             this.Text = EditorUtils.GetCompositeName(composite);
@@ -154,8 +164,11 @@ namespace CommandsEditor.DockPanels
             if (dialog_hierarchy != null)
                 dialog_hierarchy.Close();
 
-            _entityFlowgraph.Close();
             _entityList.Close();
+
+            for (int i = 0; i < _flowgraphs.Count; i++)
+                _flowgraphs[i].Close();
+            _flowgraphs.Clear();
 
             if (_renameComposite != null)
                 _renameComposite.FormClosed -= _renameComposite_FormClosed;
@@ -190,18 +203,14 @@ namespace CommandsEditor.DockPanels
             pathDisplay.Text = _path.GetPath(composite);
             _composite = composite;
 
-            CommandsUtils.PurgeDeadLinks(Content.commands, composite);
-            CommandsUtils.PurgedComposites.purged.Add(composite.shortGUID);
+            if (CommandsUtils.PurgeDeadLinks(Content.commands, composite))
+                CommandsUtils.PurgedComposites.purged.Add(composite.shortGUID);
 
             CloseAllChildTabs();
             Reload(false);
             this.Activate();
 
             _instanceInfoPopup?.Close();
-
-#if DEBUG
-            DEBUG_ShowAllInNodegraph.ForeColor = FlowgraphLayoutManager.HasDefinedLayout(_composite) ? Color.Green : Color.Red;
-#endif
 
             Cursor.Current = Cursors.Default;
         }
@@ -228,6 +237,34 @@ namespace CommandsEditor.DockPanels
         {
             _entityList.List.LoadComposite(Composite);
             if (alsoReloadEntities) ReloadAllEntities();
+
+            //TODO: I don't know if this flowgraph stuff best lives here. The whole setup of having like 5 reload functions, and a separate load function is really dumb. Needs a refactor.
+            if (SupportsFlowgraphs)
+            {
+                Console.WriteLine("Creating flowgraph windows again");
+                for (int i = 0; i < _flowgraphs.Count; i++)
+                    _flowgraphs[i].Close();
+                _flowgraphs.Clear();
+
+                List<FlowgraphMeta> layouts = FlowgraphLayoutManager.GetLayouts(Composite);
+
+                //TEMP HACK TEMP HACK (we need there to be always ONE entry here while i populate the db. once that's done, this should be reworked)
+                layouts.Clear();
+                layouts.Add(new FlowgraphMeta());
+
+                for (int i = 0; i < layouts.Count; i++)
+                {
+                    Flowgraph flowgraph = new Flowgraph();
+                    _flowgraphs.Add(flowgraph);
+
+                    flowgraph.Show(dockPanel, DockState.Document);
+                    flowgraph.ShowComposite(Composite); //TODO: this should pass layouts[i] - but i haven't finished populating the table yet, so it's a bit of a hack for now.
+                }
+            }
+            else
+            {
+                //TODO: Should enable the old link layout and stuff.
+            }
 
             exportComposite.Enabled = false;
             Task.Factory.StartNew(() => UpdateExportCompositeVisibility());
@@ -851,18 +888,9 @@ namespace CommandsEditor.DockPanels
             AddCopyOfEntity(EditorClipboard.Entity);
         }
 
-        private void DEBUG_ShowAllInNodegraph_Click(object sender, EventArgs e)
+        private void createFlowgraph_Click(object sender, EventArgs e)
         {
-            Flowgraph form = new Flowgraph();
-            form.ShowComposite(Composite);
-            form.Show();
-#if DEBUG
-            form.FormClosed += DEBUG_ShowAllInNodegraph_FormClosed;
-        }
-        private void DEBUG_ShowAllInNodegraph_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            DEBUG_ShowAllInNodegraph.ForeColor = FlowgraphLayoutManager.HasDefinedLayout(_composite) ? Color.Green : Color.Red;
-#endif
+            //TODO: show popup with name entry for new flowgraph.
         }
     }
 }

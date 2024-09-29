@@ -12,6 +12,8 @@ using System.Xml.Linq;
 using CATHODE;
 using static CathodeLib.CompositeFlowgraphsTable;
 using CommandsEditor.Popups.UserControls;
+using System.IO;
+using CathodeLib;
 
 namespace CommandsEditor
 {
@@ -142,12 +144,14 @@ namespace CommandsEditor
             }
         }
 
+        //TODO: NEEDS REWORKING INTO "SHOW FLOWGRAPH" WHEN ALL LAYOUTS ARE DEFINED.
+        //      THIS FUNCTION SHOULD BE PASSED THE FLOWGRAPHMETA OBJECT.
         public void ShowComposite(Composite composite)
         {
             Console.WriteLine("EntityFlowgraph::ShowComposite - " + composite.name);
 
-            CommandsUtils.PurgeDeadLinks(Commands, composite);
-            CommandsUtils.PurgedComposites.purged.Add(composite.shortGUID);
+            if (CommandsUtils.PurgeDeadLinks(Commands, composite))
+                CommandsUtils.PurgedComposites.purged.Add(composite.shortGUID);
 
             _composite = composite;
             this.Text = "Flowgraph: " + _composite.name;
@@ -156,9 +160,18 @@ namespace CommandsEditor
             stNodeEditor1.Nodes.Clear();
             _spawnOffset = 0;
 
-            FlowgraphMeta flowgraphMeta = FlowgraphLayoutManager.GetLayout(composite);
-            if (flowgraphMeta != null)
+            //TODO: When I've fully populated the layout manager, this should be reworked. We should be passed the FlowgraphMeta object instead of the Composite.
+            List<FlowgraphMeta> flowgraphMetas = FlowgraphLayoutManager.GetLayouts(composite);
+            if (flowgraphMetas.Count > 1)
             {
+                string breakhere = "";
+                Console.WriteLine("ERROR! WE SHOULD NOT HAVE MORE THAN ONE LAYOUT DEFINITION YET!");
+            }
+            if (flowgraphMetas.Count > 0)
+            {
+                FlowgraphMeta flowgraphMeta = flowgraphMetas[0];
+                this.Text = "Flowgraph: " + flowgraphMeta.Name;
+
                 //Populate nodes for entities
                 List<Entity> populatedEntities = new List<Entity>();
                 STNode[] nodes = new STNode[flowgraphMeta.Nodes.Count];
@@ -246,7 +259,7 @@ namespace CommandsEditor
             }
             else
             {
-                //This composite has no defined layouts
+                //This composite has no defined layouts. We won't get here in the final build. This function will be refactored after the layout db is populated.
                 Console.WriteLine("NO DEFINED FLOWGRAPH LAYOUT FOUND! We should never reach this in production code.");
 
                 List<Entity> entities = _composite.GetEntities();
@@ -273,6 +286,8 @@ namespace CommandsEditor
                         }
                     }
                 }
+
+                this.Text = "UNSAVED with " + stNodeEditor1.Nodes.Count + " nodes";
             }
 
             foreach (STNode node in stNodeEditor1.Nodes)
@@ -293,6 +308,7 @@ namespace CommandsEditor
             if (entity == null)
                 return null;
 
+            //TODO: once the layout db is fully populated, this "allowDuplicate" thing can be removed as we will never not want duplicates enabled
             STNode node = null;
             if (!allowDuplicate)
             {
@@ -362,9 +378,43 @@ namespace CommandsEditor
             return node;
         }
 
+        //Saves the Flowgraph's layout, and compiles the links back to commands
+        //NOTE: This assumes that you have already cleared all childLinks in the composite already. That can be done by using CompositeUtils.ClearAllLinks
+        public void SaveAndCompile()
+        {
+            //TODO: when the layout db is completely populated, we should change this to reflect the name of the loaded flowgraph from the FlowgraphMeta object that got passed.
+            FlowgraphLayoutManager.SaveLayout(stNodeEditor1, _composite, Path.GetFileName(_composite.name));
+
+            //Re-generate connections using the content in the nodegraph
+            for (int i = 0; i < stNodeEditor1.Nodes.Count; i++)
+            {
+                STNode node = stNodeEditor1.Nodes[i];
+                STNodeOption[] options = node.GetOutputOptions();
+                for (int y = 0; y < options.Length; y++)
+                {
+                    List<STNodeOption> connections = options[y].GetConnectedOption();
+                    for (int z = 0; z < connections.Count; z++)
+                    {
+                        STNode connectedNode = connections[z].Owner;
+                        node.Entity.AddParameterLink(options[y].ShortGUID, connectedNode.ShortGUID, connections[z].ShortGUID);
+                    }
+                }
+            }
+        }
+
+        #region Test Crap That Can Be Deleted Later
+
         private void SaveFlowgraph_Click(object sender, EventArgs e)
         {
-            FlowgraphLayoutManager.SaveLayout(stNodeEditor1, _composite);
+            var layouts = FlowgraphLayoutManager.GetLayouts(_composite);
+            if (layouts.Count > 1)
+            {
+                MessageBox.Show("NO! You cannot use this button here without being destructive. This button assumes there are zero or one flowgraphs, but this composite already has more than that.");
+                string breakhere = "";
+            }
+
+            CompositeUtils.ClearAllLinks(_composite);
+            SaveAndCompile();
         }
 
         private void DEBUG_CalcPositions_Click(object sender, EventArgs e)
@@ -429,7 +479,7 @@ namespace CommandsEditor
             if (index >= Commands.Entries.Count)
                 index = 0;
 
-            while (FlowgraphLayoutManager.HasDefinedLayout(Commands.Entries[index]))
+            while (FlowgraphLayoutManager.HasLayout(Commands.Entries[index]))
             {
                 if (index + 1 >= Commands.Entries.Count)
                     index = 0;
@@ -446,7 +496,7 @@ namespace CommandsEditor
             int count = 0;
             for (int i = 0; i < Commands.Entries.Count; i++)
             {
-                if (FlowgraphLayoutManager.HasDefinedLayout(Commands.Entries[i]))
+                if (FlowgraphLayoutManager.HasLayout(Commands.Entries[i]))
                     continue;
 
                 Console.WriteLine(" - " + Commands.Entries[i].name);
@@ -484,7 +534,7 @@ namespace CommandsEditor
         {
             for (int i = 0; i < Commands.Entries.Count; i++)
             {
-                if (FlowgraphLayoutManager.HasDefinedLayout(Commands.Entries[i]))
+                if (FlowgraphLayoutManager.HasLayout(Commands.Entries[i]))
                     continue;
 
                 bool noLinks = true;
@@ -513,7 +563,7 @@ namespace CommandsEditor
         {
             for (int i = 0; i < Commands.Entries.Count; i++)
             {
-                if (FlowgraphLayoutManager.HasDefinedLayout(Commands.Entries[i]))
+                if (FlowgraphLayoutManager.HasLayout(Commands.Entries[i]))
                     continue;
 
                 bool shouldGenerate = false;
@@ -566,31 +616,9 @@ namespace CommandsEditor
             for (int i = 0; i < Commands.Entries.Count; i++)
             {
                 ShowComposite(Commands.Entries[i]);
-                DEBUG_Compile_Click(null, null);
             }
         }
-
-        private void DEBUG_Compile_Click(object sender, EventArgs e)
-        {
-            //Clear all currently saved connections
-            _composite.GetEntities().ForEach(o => o.childLinks.Clear());
-
-            //Re-generate connections using the content in the nodegraph
-            for (int i = 0; i < stNodeEditor1.Nodes.Count; i++)
-            {
-                STNode node = stNodeEditor1.Nodes[i];
-                STNodeOption[] options = node.GetOutputOptions();
-                for (int y = 0; y < options.Length; y++)
-                {
-                    List<STNodeOption> connections = options[y].GetConnectedOption();
-                    for (int z = 0; z < connections.Count; z++)
-                    {
-                        STNode connectedNode = connections[z].Owner;
-                        node.Entity.AddParameterLink(options[y].ShortGUID, connectedNode.ShortGUID, connections[z].ShortGUID);
-                    }
-                }
-            }
-        }
+        #endregion
 
         //disable entity-related actions on the context menu if no entity is selected
         private void ContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)

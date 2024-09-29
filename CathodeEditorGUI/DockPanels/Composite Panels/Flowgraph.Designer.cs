@@ -35,7 +35,6 @@ namespace CommandsEditor
             this.DEBUG_SaveAllNoLinks = new System.Windows.Forms.Button();
             this.DEBUG_Next1Link = new System.Windows.Forms.Button();
             this.DEBUG_LoadAll = new System.Windows.Forms.Button();
-            this.DEBUG_Compile = new System.Windows.Forms.Button();
             this.nodeContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addPinInToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addPinOutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -146,18 +145,6 @@ namespace CommandsEditor
             this.DEBUG_LoadAll.UseVisualStyleBackColor = true;
             this.DEBUG_LoadAll.Click += new System.EventHandler(this.DEBUG_LoadAll_Click);
             // 
-            // DEBUG_Compile
-            // 
-            this.DEBUG_Compile.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.DEBUG_Compile.ForeColor = System.Drawing.Color.IndianRed;
-            this.DEBUG_Compile.Location = new System.Drawing.Point(110, 0);
-            this.DEBUG_Compile.Name = "DEBUG_Compile";
-            this.DEBUG_Compile.Size = new System.Drawing.Size(85, 23);
-            this.DEBUG_Compile.TabIndex = 14;
-            this.DEBUG_Compile.Text = "Compile";
-            this.DEBUG_Compile.UseVisualStyleBackColor = true;
-            this.DEBUG_Compile.Click += new System.EventHandler(this.DEBUG_Compile_Click);
-            // 
             // nodeContextMenu
             // 
             this.nodeContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -267,7 +254,6 @@ namespace CommandsEditor
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1512, 699);
-            this.Controls.Add(this.DEBUG_Compile);
             this.Controls.Add(this.DEBUG_LoadAll);
             this.Controls.Add(this.DEBUG_Next1Link);
             this.Controls.Add(this.DEBUG_SaveAllNoLinks);
@@ -297,7 +283,6 @@ namespace CommandsEditor
         private System.Windows.Forms.Button DEBUG_SaveAllNoLinks;
         private System.Windows.Forms.Button DEBUG_Next1Link;
         private System.Windows.Forms.Button DEBUG_LoadAll;
-        private System.Windows.Forms.Button DEBUG_Compile;
         private System.Windows.Forms.ContextMenuStrip nodeContextMenu;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
