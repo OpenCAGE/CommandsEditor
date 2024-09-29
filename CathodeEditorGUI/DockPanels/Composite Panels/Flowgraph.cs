@@ -666,13 +666,13 @@ namespace CommandsEditor
         private void addPinInToolStripMenuItem_Click(object sender, EventArgs e)
         {
             STNode node = stNodeEditor1.GetHoveredNode();
-            AddPin pin = new AddPin(node, AddPin.LinkType.IN);
+            AddPin pin = new AddPin(node, AddPin.Mode.ADD_IN);
             pin.Show();
         }
         private void addPinOutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             STNode node = stNodeEditor1.GetHoveredNode();
-            AddPin pin = new AddPin(node, AddPin.LinkType.OUT);
+            AddPin pin = new AddPin(node, AddPin.Mode.ADD_OUT);
             pin.Show();
         }
 
@@ -680,10 +680,14 @@ namespace CommandsEditor
         private void removePinInToolStripMenuItem_Click(object sender, EventArgs e)
         {
             STNode node = stNodeEditor1.GetHoveredNode();
+            AddPin pin = new AddPin(node, AddPin.Mode.REMOVE_IN);
+            pin.Show();
         }
         private void removePinOutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             STNode node = stNodeEditor1.GetHoveredNode();
+            AddPin pin = new AddPin(node, AddPin.Mode.REMOVE_OUT);
+            pin.Show();
         }
 
         //Delete right clicked node

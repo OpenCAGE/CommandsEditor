@@ -12,15 +12,17 @@ namespace CommandsEditor
         public Action OnAdded;
 
         private STNode _node;
-        private LinkType _mode;
+        private Mode _mode;
 
-        public enum LinkType
+        public enum Mode
         {
-            IN,
-            OUT,
+            ADD_IN,
+            REMOVE_IN,
+            ADD_OUT,
+            REMOVE_OUT,
         }
 
-        public AddPin(STNode node, LinkType mode) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
+        public AddPin(STNode node, Mode mode) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             _node = node;
             _mode = mode;
@@ -29,13 +31,23 @@ namespace CommandsEditor
 
             switch (_mode)
             {
-                case LinkType.IN:
+                case Mode.ADD_IN:
                     this.Text = "Add Pin In [" + _node.Title + "]";
                     label3.Text = "Pin In";
                     break;
-                case LinkType.OUT:
+                case Mode.REMOVE_IN:
+                    this.Text = "Remove Pin In [" + _node.Title + "]";
+                    label3.Text = "Pin In";
+                    save_pin.Text = "Remove";
+                    break;
+                case Mode.ADD_OUT:
                     this.Text = "Add Pin Out [" + _node.Title + "]";
                     label3.Text = "Pin Out";
+                    break;
+                case Mode.REMOVE_OUT:
+                    this.Text = "Remove Pin Out [" + _node.Title + "]";
+                    label3.Text = "Pin Out";
+                    save_pin.Text = "Remove";
                     break;
             }
 
@@ -53,18 +65,24 @@ namespace CommandsEditor
         {
             if (parameterList.Text == "")
             {
-                MessageBox.Show("Please add a parameter name!", "Incomplete information.", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Please enter a parameter name!", "Incomplete information.", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             ShortGuid id = ShortGuidUtils.Generate(parameterList.Text);
             switch (_mode)
             {
-                case LinkType.IN:
+                case Mode.ADD_IN:
                     _node.AddInputOption(id);
                     break;
-                case LinkType.OUT:
+                case Mode.REMOVE_IN:
+                    _node.RemoveInputOption(id);
+                    break;
+                case Mode.ADD_OUT:
                     _node.AddOutputOption(id);
+                    break;
+                case Mode.REMOVE_OUT:
+                    _node.RemoveOutputOption(id);
                     break;
             }
             _node.Recompute();
