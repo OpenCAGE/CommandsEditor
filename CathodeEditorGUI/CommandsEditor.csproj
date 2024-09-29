@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="packages\Costura.Fody.5.8.0-alpha0098\build\Costura.Fody.props" Condition="Exists('packages\Costura.Fody.5.8.0-alpha0098\build\Costura.Fody.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
@@ -288,11 +288,11 @@
     <Compile Include="DockPanels\CommandsDisplay.Designer.cs">
       <DependentUpon>CommandsDisplay.cs</DependentUpon>
     </Compile>
-    <Compile Include="DockPanels\Composite Panels\EntityDisplay.cs">
+    <Compile Include="DockPanels\Composite Panels\EntityInspector.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DockPanels\Composite Panels\EntityDisplay.Designer.cs">
-      <DependentUpon>EntityDisplay.cs</DependentUpon>
+    <Compile Include="DockPanels\Composite Panels\EntityInspector.Designer.cs">
+      <DependentUpon>EntityInspector.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\AddEntity_CompositeInstance.cs">
       <SubType>Form</SubType>
@@ -318,11 +318,11 @@
     <Compile Include="Popups\AddFolder.Designer.cs">
       <DependentUpon>AddFolder.cs</DependentUpon>
     </Compile>
-    <Compile Include="DockPanels\Composite Panels\EntityFlowgraph.cs">
+    <Compile Include="DockPanels\Composite Panels\Flowgraph.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DockPanels\Composite Panels\EntityFlowgraph.Designer.cs">
-      <DependentUpon>EntityFlowgraph.cs</DependentUpon>
+    <Compile Include="DockPanels\Composite Panels\Flowgraph.Designer.cs">
+      <DependentUpon>Flowgraph.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\ExportComposite.cs">
       <SubType>Form</SubType>
@@ -335,6 +335,12 @@
     </Compile>
     <Compile Include="Popups\Flowgraph\AddPin.designer.cs">
       <DependentUpon>AddPin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\Flowgraph\NodeEditorTest.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\Flowgraph\NodeEditorTest.Designer.cs">
+      <DependentUpon>NodeEditorTest.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\Function Editors\ShowCompositeInstanceOverrides.cs">
       <SubType>Form</SubType>
@@ -383,7 +389,7 @@
     </Compile>
     <Compile Include="Scripts\CompositePath.cs" />
     <Compile Include="Scripts\DirectXTexUtility.cs" />
-    <Compile Include="Scripts\FlowgraphManager.cs" />
+    <Compile Include="Scripts\FlowgraphLayoutManager.cs" />
     <Compile Include="Scripts\LocalDebug_NEW.cs" />
     <Compile Include="Scripts\InstanceWriter.cs" />
     <Compile Include="Scripts\LevelContent.cs" />
@@ -705,8 +711,8 @@
     <EmbeddedResource Include="DockPanels\CommandsDisplay.resx">
       <DependentUpon>CommandsDisplay.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DockPanels\Composite Panels\EntityDisplay.resx">
-      <DependentUpon>EntityDisplay.cs</DependentUpon>
+    <EmbeddedResource Include="DockPanels\Composite Panels\EntityInspector.resx">
+      <DependentUpon>EntityInspector.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\AddEntity_CompositeInstance.resx">
       <DependentUpon>AddEntity_CompositeInstance.cs</DependentUpon>
@@ -720,14 +726,17 @@
     <EmbeddedResource Include="Popups\AddFolder.resx">
       <DependentUpon>AddFolder.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DockPanels\Composite Panels\EntityFlowgraph.resx">
-      <DependentUpon>EntityFlowgraph.cs</DependentUpon>
+    <EmbeddedResource Include="DockPanels\Composite Panels\Flowgraph.resx">
+      <DependentUpon>Flowgraph.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\ExportComposite.resx">
       <DependentUpon>ExportComposite.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\Flowgraph\AddPin.resx">
       <DependentUpon>AddPin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Flowgraph\NodeEditorTest.resx">
+      <DependentUpon>NodeEditorTest.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\InstanceSelection.resx">
       <DependentUpon>InstanceSelection.cs</DependentUpon>

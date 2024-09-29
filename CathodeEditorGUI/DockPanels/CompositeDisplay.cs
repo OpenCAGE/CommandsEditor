@@ -38,10 +38,10 @@ namespace CommandsEditor.DockPanels
         public Composite Composite => _composite;
 
         private EntityList _entityList;
-        private EntityFlowgraph _entityFlowgraph;
+        private Flowgraph _entityFlowgraph;
 
-        private EntityDisplay _entityDisplay;
-        public EntityDisplay EntityDisplay => _entityDisplay;
+        private EntityInspector _entityDisplay;
+        public EntityInspector EntityDisplay => _entityDisplay;
 
         private CompositePath _path = new CompositePath();
         public CompositePath Path => _path;
@@ -68,10 +68,10 @@ namespace CommandsEditor.DockPanels
             _entityList.Show(dockPanel, DockState.DockLeft);
             //_entityList.DockState = DockState.DockLeftAutoHide; //<-- not using auto hide for now to get ui active for events
 
-            _entityFlowgraph = new EntityFlowgraph();
+            _entityFlowgraph = new Flowgraph();
             _entityFlowgraph.Show(dockPanel, DockState.Document);
 
-            _entityDisplay = new EntityDisplay(this, true); //TODO: pass false to hide links
+            _entityDisplay = new EntityInspector(this, true); //TODO: pass false to hide links
             _entityDisplay.Show(dockPanel, DockState.DockRight);
             _entityDisplay.FormClosing += OnEntityDisplayClosing;
 
@@ -200,7 +200,7 @@ namespace CommandsEditor.DockPanels
             _instanceInfoPopup?.Close();
 
 #if DEBUG
-            DEBUG_ShowAllInNodegraph.ForeColor = FlowgraphManager.HasDefinedLayout(_composite) ? Color.Green : Color.Red;
+            DEBUG_ShowAllInNodegraph.ForeColor = FlowgraphLayoutManager.HasDefinedLayout(_composite) ? Color.Green : Color.Red;
 #endif
 
             Cursor.Current = Cursors.Default;
@@ -354,7 +354,7 @@ namespace CommandsEditor.DockPanels
         private void OnEntityDisplayClosing(object sender, FormClosingEventArgs e)
         {
             e.Cancel = true;
-            EntityDisplay display = (EntityDisplay)sender;
+            EntityInspector display = (EntityInspector)sender;
             display.DepopulateUI();
         }
 
@@ -853,7 +853,7 @@ namespace CommandsEditor.DockPanels
 
         private void DEBUG_ShowAllInNodegraph_Click(object sender, EventArgs e)
         {
-            EntityFlowgraph form = new EntityFlowgraph();
+            Flowgraph form = new Flowgraph();
             form.ShowComposite(Composite);
             form.Show();
 #if DEBUG
@@ -861,7 +861,7 @@ namespace CommandsEditor.DockPanels
         }
         private void DEBUG_ShowAllInNodegraph_FormClosed(object sender, FormClosedEventArgs e)
         {
-            DEBUG_ShowAllInNodegraph.ForeColor = FlowgraphManager.HasDefinedLayout(_composite) ? Color.Green : Color.Red;
+            DEBUG_ShowAllInNodegraph.ForeColor = FlowgraphLayoutManager.HasDefinedLayout(_composite) ? Color.Green : Color.Red;
 #endif
         }
     }

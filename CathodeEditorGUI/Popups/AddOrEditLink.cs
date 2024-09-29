@@ -25,10 +25,10 @@ namespace CommandsEditor
         private Entity _initialParentEntity = null;
         private ShortGuid _initialLinkID;
 
-        private EntityDisplay _entityDisplay;
+        private EntityInspector _entityDisplay;
 
         //FOR CREATING A NEW LINK
-        public AddOrEditLink(EntityDisplay entityDisplay) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
+        public AddOrEditLink(EntityInspector entityDisplay) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             _entityDisplay = entityDisplay;
             InitializeComponent();
@@ -46,7 +46,7 @@ namespace CommandsEditor
         }
 
         //FOR EDITING AN EXISTING LINK
-        public AddOrEditLink(EntityDisplay entityDisplay, Entity parentEntity, Entity childEntity, string parentParameter, string childParameter, bool isLinkingToChild, ShortGuid initialLinkID) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
+        public AddOrEditLink(EntityInspector entityDisplay, Entity parentEntity, Entity childEntity, string parentParameter, string childParameter, bool isLinkingToChild, ShortGuid initialLinkID) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             _entityDisplay = entityDisplay;
             InitializeComponent();

@@ -29,7 +29,7 @@ namespace CommandsEditor.Popups.UserControls
             //NOTE: when we save commands we populate this resource index from the system_index param, so we don't need to display anything in the gui
         }
 
-        public void PopulateUI(EntityDisplay entDisplay, int physIndex)
+        public void PopulateUI(EntityInspector entDisplay, int physIndex)
         {
             _hierarchies.Clear();
             List<EntityPath> hierarchies = entDisplay.Content.editor_utils.GetHierarchiesForEntity(entDisplay.Composite, entDisplay.Entity);

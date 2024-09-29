@@ -14,9 +14,9 @@ namespace CommandsEditor
         private List<EntityPath> _hierarchies = new List<EntityPath>();
         private CharacterAccessorySets.Entry _accessories;
 
-        private EntityDisplay _entityDisplay;
+        private EntityInspector _entityDisplay;
 
-        public CharacterEditor(EntityDisplay editor) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
+        public CharacterEditor(EntityInspector editor) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             _entityDisplay = editor;
             InitializeComponent();

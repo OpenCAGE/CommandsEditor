@@ -126,7 +126,7 @@ namespace CommandsEditor
             {
                 Commands commands = new Commands(file);
                 commands.EntryPoints[0].name = EditorUtils.GetCompositeName(commands.EntryPoints[0]);
-                EntityFlowgraph flowgraph = new EntityFlowgraph();
+                Flowgraph flowgraph = new Flowgraph();
                 flowgraph.Show();
                 flowgraph.DEBUG_LoadAll_Test(commands);
                 flowgraph.Hide();

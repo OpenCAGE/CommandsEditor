@@ -27,9 +27,9 @@ namespace CommandsEditor
 
         List<EntityPath> entityListToHierarchies;
 
-        EntityDisplay _entityDisplay;
+        EntityInspector _entityDisplay;
 
-        public CAGEAnimationEditor(EntityDisplay entityDisplay) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_CAGEANIM_EDITOR_OPENED | WindowClosesOn.NEW_COMPOSITE_SELECTION)
+        public CAGEAnimationEditor(EntityInspector entityDisplay) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_CAGEANIM_EDITOR_OPENED | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             _entityDisplay = entityDisplay;
 

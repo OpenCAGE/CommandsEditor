@@ -19,7 +19,7 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace CommandsEditor.DockPanels
 {
-    public partial class EntityDisplay : DockContent
+    public partial class EntityInspector : DockContent
     {
         private CompositeDisplay _compositeDisplay;
         public CompositeDisplay CompositeDisplay => _compositeDisplay;
@@ -37,7 +37,7 @@ namespace CommandsEditor.DockPanels
         private bool _displayLinks = true;
         public bool DisplayLinks => _displayLinks;
 
-        public EntityDisplay(CompositeDisplay compositeDisplay, bool displayLinks = true)
+        public EntityInspector(CompositeDisplay compositeDisplay, bool displayLinks = true)
         {
             _compositeDisplay = compositeDisplay;
             _displayLinks = displayLinks;
@@ -502,7 +502,7 @@ namespace CommandsEditor.DockPanels
             _prevTaskToken = new CancellationTokenSource();
             _prevTask = Task.Run(() => BackgroundEntityLoader(_entity, this, _prevTaskToken.Token), _prevTaskToken.Token);
         }
-        private void BackgroundEntityLoader(Entity ent, EntityDisplay mainInst, CancellationToken ct)
+        private void BackgroundEntityLoader(Entity ent, EntityInspector mainInst, CancellationToken ct)
         {
             bool isPointedTo = false;
             Composite zoneComp = null;

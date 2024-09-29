@@ -19,10 +19,10 @@ namespace CommandsEditor
     {
         public Action OnSaved;
 
-        private EntityDisplay _entityDisplay;
+        private EntityInspector _entityDisplay;
         private ListViewColumnSorter _sorter = new ListViewColumnSorter();
 
-        public RemoveParameter(EntityDisplay entityDisplay) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
+        public RemoveParameter(EntityInspector entityDisplay) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             InitializeComponent();
 

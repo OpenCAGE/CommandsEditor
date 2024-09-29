@@ -23,10 +23,10 @@ namespace CommandsEditor.UserControls
             this.deleteToolStripMenuItem.Click += new EventHandler(deleteToolStripMenuItem_Click);
         }
 
-        private EntityDisplay _entDisplay = null;
+        private EntityInspector _entDisplay = null;
 
         private cResource resRef = null;
-        public void PopulateUI(EntityDisplay entDisplay, cResource cResource, string paramID)
+        public void PopulateUI(EntityInspector entDisplay, cResource cResource, string paramID)
         {
             _entDisplay = entDisplay;
             GUID_VARIABLE_DUMMY.Text = paramID;

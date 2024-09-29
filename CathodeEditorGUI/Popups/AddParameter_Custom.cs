@@ -19,10 +19,10 @@ namespace CommandsEditor
 {
     public partial class AddParameter_Custom : AddParameter
     {
-        EntityDisplay _entityDisplay;
+        EntityInspector _entityDisplay;
         ParameterCreator _creator;
 
-        public AddParameter_Custom(EntityDisplay entityDisplay)
+        public AddParameter_Custom(EntityInspector entityDisplay)
         {
             _entityDisplay = entityDisplay;
             _creator = new ParameterCreator(entityDisplay.Entity, entityDisplay.Composite);

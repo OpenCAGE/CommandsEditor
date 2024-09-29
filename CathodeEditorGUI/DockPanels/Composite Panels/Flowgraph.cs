@@ -15,7 +15,7 @@ using CommandsEditor.Popups.UserControls;
 
 namespace CommandsEditor
 {
-    public partial class EntityFlowgraph : DockContent
+    public partial class Flowgraph : DockContent
     {
         //protected LevelContent Content => Singleton.Editor?.CommandsDisplay?.Content;
 
@@ -35,7 +35,7 @@ namespace CommandsEditor
         private Composite _composite;
         private int _spawnOffset = 0;
 
-        public EntityFlowgraph()
+        public Flowgraph()
         {
             InitializeComponent();
             this.FormClosed += EntityFlowgraph_FormClosed; ;
@@ -150,13 +150,13 @@ namespace CommandsEditor
             CommandsUtils.PurgedComposites.purged.Add(composite.shortGUID);
 
             _composite = composite;
-            this.Text = _composite.name;
+            this.Text = "Flowgraph: " + _composite.name;
 
             stNodeEditor1.SuspendLayout();
             stNodeEditor1.Nodes.Clear();
             _spawnOffset = 0;
 
-            FlowgraphMeta flowgraphMeta = FlowgraphManager.GetLayout(composite);
+            FlowgraphMeta flowgraphMeta = FlowgraphLayoutManager.GetLayout(composite);
             if (flowgraphMeta != null)
             {
                 //Populate nodes for entities
@@ -364,7 +364,7 @@ namespace CommandsEditor
 
         private void SaveFlowgraph_Click(object sender, EventArgs e)
         {
-            FlowgraphManager.SaveLayout(stNodeEditor1, _composite);
+            FlowgraphLayoutManager.SaveLayout(stNodeEditor1, _composite);
         }
 
         private void DEBUG_CalcPositions_Click(object sender, EventArgs e)
@@ -429,7 +429,7 @@ namespace CommandsEditor
             if (index >= Commands.Entries.Count)
                 index = 0;
 
-            while (FlowgraphManager.HasDefinedLayout(Commands.Entries[index]))
+            while (FlowgraphLayoutManager.HasDefinedLayout(Commands.Entries[index]))
             {
                 if (index + 1 >= Commands.Entries.Count)
                     index = 0;
@@ -446,7 +446,7 @@ namespace CommandsEditor
             int count = 0;
             for (int i = 0; i < Commands.Entries.Count; i++)
             {
-                if (FlowgraphManager.HasDefinedLayout(Commands.Entries[i]))
+                if (FlowgraphLayoutManager.HasDefinedLayout(Commands.Entries[i]))
                     continue;
 
                 Console.WriteLine(" - " + Commands.Entries[i].name);
@@ -484,7 +484,7 @@ namespace CommandsEditor
         {
             for (int i = 0; i < Commands.Entries.Count; i++)
             {
-                if (FlowgraphManager.HasDefinedLayout(Commands.Entries[i]))
+                if (FlowgraphLayoutManager.HasDefinedLayout(Commands.Entries[i]))
                     continue;
 
                 bool noLinks = true;
@@ -513,7 +513,7 @@ namespace CommandsEditor
         {
             for (int i = 0; i < Commands.Entries.Count; i++)
             {
-                if (FlowgraphManager.HasDefinedLayout(Commands.Entries[i]))
+                if (FlowgraphLayoutManager.HasDefinedLayout(Commands.Entries[i]))
                     continue;
 
                 bool shouldGenerate = false;
@@ -606,10 +606,19 @@ namespace CommandsEditor
             deleteToolStripMenuItem.Visible = node != null;
             duplicateToolStripMenuItem.Visible = node != null;
 
+            if (node != null)
+            {
+                addPinInToolStripMenuItem.Enabled = node.Entity.variant != EntityVariant.VARIABLE;
+                addPinOutToolStripMenuItem.Enabled = node.Entity.variant != EntityVariant.VARIABLE;
+                removePinInToolStripMenuItem.Enabled = node.Entity.variant != EntityVariant.VARIABLE;
+                removePinOutToolStripMenuItem.Enabled = node.Entity.variant != EntityVariant.VARIABLE;
+            }
+
             addNodeToolStripMenuItem.Visible = node == null;
         }
 
         //Add new node (via context menu strip)
+        Point _nodeSpawnPosition = new Point();
         private void addNodeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SelectHierarchy selectEnt = new SelectHierarchy(_composite, new Popups.UserControls.CompositeEntityList.DisplayOptions()
@@ -622,12 +631,12 @@ namespace CommandsEditor
             }, false);
             selectEnt.OnFinalEntitySelected += AddNodeCallbackEntitySelected;
             selectEnt.Show();
-            //this is where the right click would've happened - store the location
+            _nodeSpawnPosition = new Point((int)stNodeEditor1.MousePositionInCanvas.X, (int)stNodeEditor1.MousePositionInCanvas.Y);
         }
         private void AddNodeCallbackEntitySelected(Entity ent)
         {
             STNode node = EntityToNode(ent, _composite, true);
-            //todo: set position where right click happened above
+            node.SetPosition(_nodeSpawnPosition);
         }
 
         //Add pin to right clicked node

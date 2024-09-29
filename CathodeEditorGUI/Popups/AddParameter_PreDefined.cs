@@ -25,9 +25,9 @@ namespace CommandsEditor
         private List<ListViewItem> _items = new List<ListViewItem>();
         private ListViewColumnSorter _sorter = new ListViewColumnSorter();
 
-        private EntityDisplay _entDisplay;
+        private EntityInspector _entDisplay;
 
-        public AddParameter_PreDefined(EntityDisplay entityDisplay)
+        public AddParameter_PreDefined(EntityInspector entityDisplay)
         {
             _entDisplay = entityDisplay;
             _creator = new ParameterCreator(_entDisplay.Entity, _entDisplay.Composite);

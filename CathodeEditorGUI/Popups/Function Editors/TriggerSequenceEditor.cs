@@ -20,9 +20,9 @@ namespace CommandsEditor
     public partial class TriggerSequenceEditor : BaseWindow
     {
         TriggerSequence _triggerSequence = null;
-        EntityDisplay _entityDisplay;
+        EntityInspector _entityDisplay;
 
-        public TriggerSequenceEditor(EntityDisplay entityDisplay) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
+        public TriggerSequenceEditor(EntityInspector entityDisplay) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             InitializeComponent();
             _entityDisplay = entityDisplay; 

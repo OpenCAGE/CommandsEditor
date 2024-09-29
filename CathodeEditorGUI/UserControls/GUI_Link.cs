@@ -16,9 +16,9 @@ namespace CommandsEditor.UserControls
         private EntityConnector _link;
         private bool _isLinkOut;
 
-        private EntityDisplay _entityDisplay;
+        private EntityInspector _entityDisplay;
 
-        public GUI_Link(EntityDisplay editor) : base()
+        public GUI_Link(EntityInspector editor) : base()
         {
             _entityDisplay = editor;
             InitializeComponent();

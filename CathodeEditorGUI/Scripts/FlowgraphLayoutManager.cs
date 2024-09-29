@@ -14,7 +14,7 @@ using static CathodeLib.CompositeFlowgraphsTable;
 namespace CommandsEditor
 {
     //Handles loading vanilla/custom flowgraph layouts, and saving custom layouts
-    public class FlowgraphManager
+    public class FlowgraphLayoutManager
     {
         private static CompositeFlowgraphsTable _vanilla;
         private static CompositeFlowgraphsTable _custom;
@@ -22,17 +22,36 @@ namespace CommandsEditor
         public static Commands LinkedCommands => _commands;
         private static Commands _commands;
 
-        static FlowgraphManager()
+        static FlowgraphLayoutManager()
         {
             _vanilla = new CompositeFlowgraphsTable();
             _custom = new CompositeFlowgraphsTable();
-
-            //TODO: need to populate flowgraphs.bin by converting the content in NodePositionDatabase
 
             using (BinaryReader reader = new BinaryReader(new MemoryStream(Properties.Resources.flowgraphs)))
             {
                 _vanilla.Read(reader);
             }
+
+#if DEBUG
+            List<FlowgraphMeta> trimmed = new List<FlowgraphMeta>();
+            for (int i = 0; i < _vanilla.flowgraphs.Count; i++)
+            {
+                if (_vanilla.flowgraphs[i].Nodes.Count != 0)
+                    trimmed.Add(_vanilla.flowgraphs[i]);
+            }
+            List<FlowgraphMeta> trimmed2 = new List<FlowgraphMeta>();
+            for (int i = 0; i < trimmed.Count; i++)
+            {
+                int connections = 0;
+                for (int x = 0; x < trimmed[i].Nodes.Count; x++)
+                {
+                    connections += trimmed[i].Nodes[x].Connections.Count;
+                }
+                if (connections != 0)
+                    trimmed2.Add(trimmed[i]);
+            }
+            Console.WriteLine("removed " + (_vanilla.flowgraphs.Count - trimmed2.Count));
+#endif
         }
 
         //util to see if there is at least one vanilla or custom defined flowgraph layout for the given composite
@@ -74,6 +93,10 @@ namespace CommandsEditor
             _vanilla.flowgraphs.RemoveAll(o => o.Name == flowgraphMeta.Name && o.CompositeGUID == flowgraphMeta.CompositeGUID);
             _vanilla.flowgraphs.Add(flowgraphMeta);
 
+            SaveVanillaDB();
+        }
+        private static void SaveVanillaDB()
+        {
             string vanillaFlowgraphDBPath = System.Reflection.Assembly.GetEntryAssembly().Location;
             vanillaFlowgraphDBPath = vanillaFlowgraphDBPath.Substring(0, vanillaFlowgraphDBPath.Length - Path.GetFileName(vanillaFlowgraphDBPath).Length);
             vanillaFlowgraphDBPath += "../CathodeEditorGUI/Resources/flowgraphs.bin";

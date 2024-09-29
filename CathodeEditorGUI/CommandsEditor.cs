@@ -919,7 +919,11 @@ namespace CommandsEditor
 
         private void DEBUG_RunChecks_Click(object sender, EventArgs e)
         {
-            EntityFlowgraph window = new EntityFlowgraph();
+            NodeEditorTest test = new NodeEditorTest();
+            test.Show();
+
+            return;
+            Flowgraph window = new Flowgraph();
             window.Show();
             window.DEBUG_LoadAll_Test(CommandsDisplay.Content.commands);
             window.Close();
