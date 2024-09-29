@@ -108,7 +108,7 @@ namespace CommandsEditor
         }
 
         //Add layout to db
-        public static void SaveLayout(STNodeEditor editor, Composite composite, string name)
+        public static FlowgraphMeta SaveLayout(STNodeEditor editor, Composite composite, string name)
         {
             FlowgraphMeta flowgraphMeta = editor.AsFlowgraphMeta(composite, name);
             Table.flowgraphs.RemoveAll(o => o.Name == flowgraphMeta.Name && o.CompositeGUID == flowgraphMeta.CompositeGUID);
@@ -117,6 +117,8 @@ namespace CommandsEditor
 #if DEBUG
             SaveVanillaDB();
 #endif
+
+            return flowgraphMeta;
         }
 #if DEBUG
         private static void SaveVanillaDB()

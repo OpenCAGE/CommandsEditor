@@ -383,7 +383,8 @@ namespace CommandsEditor
         public void SaveAndCompile()
         {
             //TODO: when the layout db is completely populated, we should change this to reflect the name of the loaded flowgraph from the FlowgraphMeta object that got passed.
-            FlowgraphLayoutManager.SaveLayout(stNodeEditor1, _composite, Path.GetFileName(_composite.name));
+            FlowgraphMeta layout = FlowgraphLayoutManager.SaveLayout(stNodeEditor1, _composite, Path.GetFileName(_composite.name));
+            Console.WriteLine("Saved flowgraph layout: " + layout.Name);
 
             //Re-generate connections using the content in the nodegraph
             for (int i = 0; i < stNodeEditor1.Nodes.Count; i++)
