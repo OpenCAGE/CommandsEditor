@@ -71,6 +71,7 @@ namespace CommandsEditor
                 if (connections != 0)
                     trimmed2.Add(trimmed[i]);
             }
+            //TODO: should run through all the ones flagged as pre node title shortening and make sure they look ok
             Console.WriteLine("FlowgraphLayoutManager found " + (_preDefinedLayouts.flowgraphs.Count - trimmed2.Count) + " invalid predefined flowgraph definitions");
             _preDefinedLayouts.flowgraphs = trimmed2;
             SaveVanillaDB();
@@ -215,6 +216,8 @@ namespace CommandsEditor
             FlowgraphMeta flowgraphMeta = new FlowgraphMeta();
             flowgraphMeta.CompositeGUID = composite.shortGUID;
             flowgraphMeta.Name = name;
+
+            flowgraphMeta.UsesShortenedNames = true;
 
             flowgraphMeta.CanvasPosition = editor.CanvasOffset;
             flowgraphMeta.CanvasScale = editor.CanvasScale;

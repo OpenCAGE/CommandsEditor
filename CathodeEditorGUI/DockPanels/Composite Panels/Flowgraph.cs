@@ -328,10 +328,10 @@ namespace CommandsEditor
                                 FunctionEntity function = (FunctionEntity)ent;
                                 if (CommandsUtils.FunctionTypeExists(function.function))
                                 {
-                                    node.SetName(EntityUtils.GetName(c, ent), entity.variant + " TO: " + function.function.ToString());
+                                    node.SetName(EntityUtils.GetName(c, ent), entity.variant + " TO: " + CommandsUtils.GetFunctionType(function.function).ToString());
                                 }
                                 else
-                                    node.SetName(EntityUtils.GetName(c, ent) , entity.variant + " TO: " + Commands.GetComposite(function.function).name);
+                                    node.SetName(EntityUtils.GetName(c, ent) , entity.variant + " TO: " + Path.GetFileName(Commands.GetComposite(function.function).name));
                                 break;
                             case EntityVariant.VARIABLE:
                                 node.SetName(entity.variant + " TO: " + ((VariableEntity)ent).name.ToString());
@@ -342,12 +342,12 @@ namespace CommandsEditor
                         FunctionEntity funcEnt = (FunctionEntity)entity;
                         if (CommandsUtils.FunctionTypeExists(funcEnt.function))
                         {
-                            node.SetName(EntityUtils.GetName(composite, entity), funcEnt.function.ToString());
+                            node.SetName(EntityUtils.GetName(composite, entity), CommandsUtils.GetFunctionType(funcEnt.function).ToString());
                         }
                         else
                         {
                             node.SetColour(Color.Blue, Color.White);
-                            node.SetName(EntityUtils.GetName(composite, entity), Commands.GetComposite(funcEnt.function).name);
+                            node.SetName(EntityUtils.GetName(composite, entity), Path.GetFileName(Commands.GetComposite(funcEnt.function).name));
                         }
                         break;
                     case EntityVariant.VARIABLE:
