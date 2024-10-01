@@ -48,6 +48,7 @@ namespace CommandsEditor
 
 #if !DEBUG
             SaveFlowgraph.Visible = false;
+            AutoCalc.Visible = false;
 #endif
 
             //todo: i feel like these events should come from the compositedisplay?
@@ -412,7 +413,7 @@ namespace CommandsEditor
             Singleton.Editor.CommandsDisplay.DEBUG_LoadNextToConstruct();
         }
 
-        private void DEBUG_CalcPositions_Click(object sender, EventArgs e)
+        private void AutoCalc_Click(object sender, EventArgs e)
         {
             if (stNodeEditor1.GetSelectedNode().Length != 1)
             {
@@ -468,143 +469,6 @@ namespace CommandsEditor
             origNode.SetPosition(new Point((this.Size.Width / 2) - (origNode.Width / 2) - 10, (this.Size.Height / 2) - (((outputStackedHeight > inputStackedHeight) ? outputStackedHeight : inputStackedHeight) / 2) - 20));
         }
 
-        private void DEBUG_NextUnfinished_Click(object sender, EventArgs e)
-        {
-            int index = Commands.Entries.IndexOf(_composite) + 1;
-            if (index >= Commands.Entries.Count)
-                index = 0;
-
-            while (FlowgraphLayoutManager.HasLayout(Commands.Entries[index]))
-            {
-                if (index + 1 >= Commands.Entries.Count)
-                    index = 0;
-                else
-                    index += 1;
-            }
-            ShowComposite(Commands.Entries[index]);
-        }
-
-        private void DEBUG_DumpUnfinished_Click(object sender, EventArgs e)
-        {
-            Console.WriteLine("----------------------");
-            Console.WriteLine("Incomplete Flowgraphs:");
-            int count = 0;
-            for (int i = 0; i < Commands.Entries.Count; i++)
-            {
-                if (FlowgraphLayoutManager.HasLayout(Commands.Entries[i]))
-                    continue;
-
-                Console.WriteLine(" - " + Commands.Entries[i].name);
-                count++;
-            }
-            Console.WriteLine("(There are " + count + ")");
-            Console.WriteLine("----------------------");
-        }
-
-        private void DEBUG_NextAndSave_Click(object sender, EventArgs e)
-        {
-            SaveFlowgraph_Click(null, null);
-            DEBUG_NextUnfinished_Click(null, null);
-        }
-
-        private void DEBUG_Duplicate_Click(object sender, EventArgs e)
-        {
-            if (stNodeEditor1.GetSelectedNode().Length != 1)
-            {
-                Console.WriteLine("SELECT ONE NODE");
-                return;
-            }
-
-            STNode node = stNodeEditor1.GetSelectedNode()[0];
-            STNode nodeNew = EntityToNode(_composite.GetEntityByID(node.ShortGUID), _composite, true);
-            foreach (STNodeOption input in node.GetInputOptions()) 
-                nodeNew.AddInputOption(input.ShortGUID);
-            foreach (STNodeOption output in node.GetOutputOptions())
-                nodeNew.AddOutputOption(output.ShortGUID);
-
-            nodeNew.SetPosition(new Point(node.Location.X + 10, node.Location.Y + 10));
-        }
-
-        private void DEBUG_SaveAllNoLinks_Click(object sender, EventArgs e)
-        {
-            for (int i = 0; i < Commands.Entries.Count; i++)
-            {
-                if (FlowgraphLayoutManager.HasLayout(Commands.Entries[i]))
-                    continue;
-
-                bool noLinks = true;
-                List<Entity> entities = Commands.Entries[i].GetEntities();
-                for (int x = 0; x < entities.Count; x++)
-                {
-                    List<EntityConnector> linksIn = entities[x].GetParentLinks(Commands.Entries[i]);
-                    List<EntityConnector> linksOut = entities[x].childLinks;
-
-                    if (linksIn.Count != 0 || linksOut.Count != 0)
-                    {
-                        noLinks = false;
-                        break;
-                    }
-                }
-
-                if (!noLinks)
-                    continue;
-
-                ShowComposite(Commands.Entries[i]);
-                SaveFlowgraph_Click(null, null);
-            }
-        }
-
-        private void DEBUG_Next1Link_Click(object sender, EventArgs e)
-        {
-            for (int i = 0; i < Commands.Entries.Count; i++)
-            {
-                if (FlowgraphLayoutManager.HasLayout(Commands.Entries[i]))
-                    continue;
-
-                bool shouldGenerate = false;
-                Entity entWithLinksInAndOut = null;
-                List<Entity> entities = Commands.Entries[i].GetEntities();
-                for (int x = 0; x < entities.Count; x++)
-                {
-                    List<EntityConnector> linksIn = entities[x].GetParentLinks(Commands.Entries[i]);
-                    List<EntityConnector> linksOut = entities[x].childLinks;
-
-                    if (linksIn.Count != 0 && linksOut.Count != 0)
-                    {
-                        if (entWithLinksInAndOut == null)
-                        {
-                            entWithLinksInAndOut = entities[x];
-                            shouldGenerate = true;
-                        }
-                        else
-                        {
-                            shouldGenerate = false;
-                        }
-                    }
-                }
-
-                if (shouldGenerate)
-                {
-                    ShowComposite(Commands.Entries[i]);
-                    STNode node = null;
-                    for (int x = 0; x < stNodeEditor1.Nodes.Count; x++)
-                    {
-                        if (stNodeEditor1.Nodes[x].ShortGUID != entWithLinksInAndOut.shortGUID)
-                            continue;
-
-                        node = stNodeEditor1.Nodes[x]; 
-                        break;
-                    }
-                    TestAlignNode(node);
-                    return;
-                }
-            }
-        }
-
-        private void DEBUG_LoadAll_Click(object sender, EventArgs e)
-        {
-            DEBUG_LoadAll_Test(_commands);
-        }
         public void DEBUG_LoadAll_Test(Commands commands)
         {
             _commands = commands;
