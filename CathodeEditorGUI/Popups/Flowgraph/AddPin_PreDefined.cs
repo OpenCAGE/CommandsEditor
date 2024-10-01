@@ -56,16 +56,15 @@ namespace CommandsEditor
             List<ListViewItem> options = Singleton.Editor.CommandsDisplay.Content.editor_utils.GenerateParameterListAsListViewItem(ent, comp);
             for (int i = 0; i < options.Count; i++)
             {
-                //TODO: should do this by guid not string
                 switch (_mode)
                 {
                     case Mode.ADD_IN:
                     case Mode.REMOVE_IN:
-                        options[i].Checked = node.GetInputOptions().FirstOrDefault(o => o.Text == options[i].Text) != null;
+                        options[i].Checked = node.GetInputOptions().FirstOrDefault(o => o.ShortGUID == ((ParameterListViewItemTag)options[i].Tag).ShortGUID) != null;
                         break;
                     case Mode.ADD_OUT:
                     case Mode.REMOVE_OUT:
-                        options[i].Checked = node.GetOutputOptions().FirstOrDefault(o => o.Text == options[i].Text) != null;
+                        options[i].Checked = node.GetOutputOptions().FirstOrDefault(o => o.ShortGUID == ((ParameterListViewItemTag)options[i].Tag).ShortGUID) != null;
                         break;
                 }
 
