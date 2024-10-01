@@ -630,6 +630,7 @@ namespace CommandsEditor.DockPanels
         {
             FlowgraphLayoutManager.DEBUG_UsePreDefinedTable = true;
             List<Composite> ordered = Content.commands.Entries.OrderBy(o => CountNumberOfLinks(o)).Where(o => CountNumberOfLinks(o) != 0 && !FlowgraphLayoutManager.HasLayout(o)).ToList();
+            Console.WriteLine("Still " + ordered.Count + " to go in this PAK (count includes those not purged, so may be lower)");
             FlowgraphLayoutManager.DEBUG_UsePreDefinedTable = false;
             if (ordered.Count != 0)
             {
