@@ -221,7 +221,7 @@ namespace CommandsEditor
             // 
             this.useLegacyParameterCreatorToolStripMenuItem.Name = "useLegacyParameterCreatorToolStripMenuItem";
             this.useLegacyParameterCreatorToolStripMenuItem.Size = new System.Drawing.Size(310, 22);
-            this.useLegacyParameterCreatorToolStripMenuItem.Text = "Use Legacy Parameter Creator";
+            this.useLegacyParameterCreatorToolStripMenuItem.Text = "Use Legacy Parameter/Pin Creator";
             this.useLegacyParameterCreatorToolStripMenuItem.Click += new System.EventHandler(this.useLegacyParameterCreatorToolStripMenuItem_Click);
             // 
             // miscToolStripMenuItem

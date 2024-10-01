@@ -9,6 +9,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 using CATHODE;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
@@ -16,39 +17,63 @@ using CathodeLib;
 using CommandsEditor.DockPanels;
 using CommandsEditor.Popups.Base;
 using OpenCAGE;
-using WebSocketSharp;
+using ST.Library.UI.NodeEditor;
+using static CommandsEditor.AddPin;
 using static CommandsEditor.EditorUtils;
 
 namespace CommandsEditor
 {
-    public partial class AddParameter_PreDefined : AddParameter
+    //NOTE: This is a reworked version of AddParameter_PreDefined - the logic of both should be combined/tidied.
+    public partial class AddPin_PreDefined : AddPin
     {
-        private ParameterCreator _creator;
+        private ParameterCreator _creator = null;
         private List<ListViewItem> _items = new List<ListViewItem>();
         private ListViewColumnSorter _sorter = new ListViewColumnSorter();
 
-        private EntityInspector _entDisplay;
-
-        public AddParameter_PreDefined(EntityInspector entityDisplay)
+        public AddPin_PreDefined(STNode node, Mode mode) : base(node, mode)
         {
-            _entDisplay = entityDisplay;
-            _creator = new ParameterCreator(_entDisplay.Entity, _entDisplay.Composite);
+            Composite comp = Singleton.Editor.CommandsDisplay.CompositeDisplay.Composite;
+            Entity ent = comp.GetEntityByID(node.ShortGUID);
+            _creator = new ParameterCreator(ent, comp);
 
             InitializeComponent();
             param_name.ListViewItemSorter = _sorter;
 
-            List<ListViewItem> options = _entDisplay.Content.editor_utils.GenerateParameterListAsListViewItem(_entDisplay.Entity, _entDisplay.Composite);
+            switch (_mode)
+            {
+                case Mode.ADD_IN:
+                case Mode.REMOVE_IN:
+                    this.Text = "Modify Pins In [" + _node.Title + "]";
+                    break;
+                case Mode.ADD_OUT:
+                case Mode.REMOVE_OUT:
+                    this.Text = "Modify Pins Out [" + _node.Title + "]";
+                    label2.Text = "Pins Out";
+                    createParams.Text = "Set Selected As Pins Out";
+                    break;
+            }
+
+            List<ListViewItem> options = Singleton.Editor.CommandsDisplay.Content.editor_utils.GenerateParameterListAsListViewItem(ent, comp);
             for (int i = 0; i < options.Count; i++)
             {
-                if (_entDisplay.Entity.GetParameter(options[i].Text) != null)
-                    continue;
-
-                //TODO: should probably change this to just "check the ones you want added" using options[i].Checked = ent.GetParameter(options[i].Text) != null;
+                //TODO: should do this by guid not string
+                switch (_mode)
+                {
+                    case Mode.ADD_IN:
+                    case Mode.REMOVE_IN:
+                        options[i].Checked = node.GetInputOptions().FirstOrDefault(o => o.Text == options[i].Text) != null;
+                        break;
+                    case Mode.ADD_OUT:
+                    case Mode.REMOVE_OUT:
+                        options[i].Checked = node.GetOutputOptions().FirstOrDefault(o => o.Text == options[i].Text) != null;
+                        break;
+                }
 
                 options[i].SubItems[1].Text = _creator.GetInfo(options[i].Text);
                 options[i].ImageIndex = 0;
                 _items.Add(options[i]);
             }
+            //TODO: need to support removing additional params like cageanim ones
 
             searchBtn_Click(null, null);
         }
@@ -77,11 +102,27 @@ namespace CommandsEditor
 
         private void createParams_Click(object sender, EventArgs e)
         {
-            if (param_name.CheckedItems.Count == 0)
-                return;
-
-            foreach (ListViewItem item in param_name.CheckedItems)
-                _creator.Create(item.Text);
+            foreach (ListViewItem item in param_name.Items)
+            {
+                ParameterListViewItemTag tag = (ParameterListViewItemTag)item.Tag;
+                switch (_mode)
+                {
+                    case Mode.ADD_IN:
+                    case Mode.REMOVE_IN:
+                        if (item.Checked)
+                            _node.AddInputOption(tag.ShortGUID);
+                        else
+                            _node.RemoveInputOption(tag.ShortGUID);
+                        break;
+                    case Mode.ADD_OUT:
+                    case Mode.REMOVE_OUT:
+                        if (item.Checked)
+                            _node.AddOutputOption(tag.ShortGUID);
+                        else
+                            _node.RemoveOutputOption(tag.ShortGUID);
+                        break;
+                }
+            }
 
             OnSaved?.Invoke();
             this.Close();

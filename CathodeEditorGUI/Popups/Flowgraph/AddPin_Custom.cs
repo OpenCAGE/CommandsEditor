@@ -7,22 +7,9 @@ using ST.Library.UI.NodeEditor;
 
 namespace CommandsEditor
 {
-    public partial class AddPin : BaseWindow
+    public partial class AddPin_Custom : AddPin
     {
-        public Action OnAdded;
-
-        private STNode _node;
-        private Mode _mode;
-
-        public enum Mode
-        {
-            ADD_IN,
-            REMOVE_IN,
-            ADD_OUT,
-            REMOVE_OUT,
-        }
-
-        public AddPin(STNode node, Mode mode) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
+        public AddPin_Custom(STNode node, Mode mode) : base(node, mode)
         {
             _node = node;
             _mode = mode;
@@ -87,7 +74,7 @@ namespace CommandsEditor
             }
             _node.Recompute();
 
-            OnAdded?.Invoke();
+            OnSaved?.Invoke();
             this.Close();
         }
     }

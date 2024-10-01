@@ -330,11 +330,17 @@
     <Compile Include="Popups\ExportComposite.Designer.cs">
       <DependentUpon>ExportComposite.cs</DependentUpon>
     </Compile>
-    <Compile Include="Popups\Flowgraph\AddPin.cs">
+    <Compile Include="Popups\Flowgraph\AddPin_PreDefined.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Popups\Flowgraph\AddPin.designer.cs">
-      <DependentUpon>AddPin.cs</DependentUpon>
+    <Compile Include="Popups\Flowgraph\AddPin_PreDefined.Designer.cs">
+      <DependentUpon>AddPin_PreDefined.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\Flowgraph\AddPin_Custom.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\Flowgraph\AddPin_Custom.designer.cs">
+      <DependentUpon>AddPin_Custom.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\Flowgraph\NodeEditorTest.cs">
       <SubType>Form</SubType>
@@ -374,6 +380,12 @@
     </Compile>
     <Compile Include="Popups\ShowInstanceInfo.Designer.cs">
       <DependentUpon>ShowInstanceInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\UserControls\AddPin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\UserControls\AddPin.Designer.cs">
+      <DependentUpon>AddPin.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\UserControls\AddParameter.cs">
       <SubType>Form</SubType>
@@ -732,8 +744,11 @@
     <EmbeddedResource Include="Popups\ExportComposite.resx">
       <DependentUpon>ExportComposite.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Popups\Flowgraph\AddPin.resx">
-      <DependentUpon>AddPin.cs</DependentUpon>
+    <EmbeddedResource Include="Popups\Flowgraph\AddPin_PreDefined.resx">
+      <DependentUpon>AddPin_PreDefined.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Flowgraph\AddPin_Custom.resx">
+      <DependentUpon>AddPin_Custom.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\Flowgraph\NodeEditorTest.resx">
       <DependentUpon>NodeEditorTest.cs</DependentUpon>

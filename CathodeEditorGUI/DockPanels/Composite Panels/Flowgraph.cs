@@ -625,6 +625,8 @@ namespace CommandsEditor
             toolStripSeparator1.Visible = node != null;
             removePinInToolStripMenuItem.Visible = node != null;
             removePinOutToolStripMenuItem.Visible = node != null;
+            modifyPinsIn.Visible = node != null;
+            modifyPinsOut.Visible = node != null;
             toolStripSeparator2.Visible = node != null;
             deleteToolStripMenuItem.Visible = node != null;
             duplicateToolStripMenuItem.Visible = node != null;
@@ -635,6 +637,16 @@ namespace CommandsEditor
                 addPinOutToolStripMenuItem.Enabled = node.Entity.variant != EntityVariant.VARIABLE;
                 removePinInToolStripMenuItem.Enabled = node.Entity.variant != EntityVariant.VARIABLE;
                 removePinOutToolStripMenuItem.Enabled = node.Entity.variant != EntityVariant.VARIABLE;
+                modifyPinsIn.Enabled = node.Entity.variant != EntityVariant.VARIABLE;
+                modifyPinsOut.Enabled = node.Entity.variant != EntityVariant.VARIABLE;
+
+                addPinInToolStripMenuItem.Visible = SettingsManager.GetBool(Singleton.Settings.UseLegacyParamCreator);
+                addPinOutToolStripMenuItem.Visible = SettingsManager.GetBool(Singleton.Settings.UseLegacyParamCreator);
+                toolStripSeparator1.Visible = SettingsManager.GetBool(Singleton.Settings.UseLegacyParamCreator);
+                removePinInToolStripMenuItem.Visible = SettingsManager.GetBool(Singleton.Settings.UseLegacyParamCreator);
+                removePinOutToolStripMenuItem.Visible = SettingsManager.GetBool(Singleton.Settings.UseLegacyParamCreator);
+                modifyPinsIn.Visible = !SettingsManager.GetBool(Singleton.Settings.UseLegacyParamCreator);
+                modifyPinsOut.Visible = !SettingsManager.GetBool(Singleton.Settings.UseLegacyParamCreator);
             }
 
             addNodeToolStripMenuItem.Visible = node == null;
@@ -662,32 +674,54 @@ namespace CommandsEditor
             node.SetPosition(_nodeSpawnPosition);
         }
 
+        AddPin _pinManager = null;
+        private void PinManager(AddPin.Mode mode)
+        {
+            STNode node = stNodeEditor1.GetHoveredNode();
+
+            if (_pinManager != null)
+            {
+                //_pinManager.OnSaved -= Reload;
+                _pinManager.Close();
+            }
+
+            if (SettingsManager.GetBool(Singleton.Settings.UseLegacyParamCreator))
+                _pinManager = new AddPin_Custom(node, mode);
+            else
+                _pinManager = new AddPin_PreDefined(node, mode);
+
+            _pinManager.Show();
+            //_pinManager.OnSaved += Reload;
+        }
+
         //Add pin to right clicked node
         private void addPinInToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            STNode node = stNodeEditor1.GetHoveredNode();
-            AddPin pin = new AddPin(node, AddPin.Mode.ADD_IN);
-            pin.Show();
+            PinManager(AddPin.Mode.ADD_IN);
         }
         private void addPinOutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            STNode node = stNodeEditor1.GetHoveredNode();
-            AddPin pin = new AddPin(node, AddPin.Mode.ADD_OUT);
-            pin.Show();
+            PinManager(AddPin.Mode.ADD_OUT);
         }
 
         //Remove pin from right clicked node
         private void removePinInToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            STNode node = stNodeEditor1.GetHoveredNode();
-            AddPin pin = new AddPin(node, AddPin.Mode.REMOVE_IN);
-            pin.Show();
+            PinManager(AddPin.Mode.REMOVE_IN);
         }
         private void removePinOutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            STNode node = stNodeEditor1.GetHoveredNode();
-            AddPin pin = new AddPin(node, AddPin.Mode.REMOVE_OUT);
-            pin.Show();
+            PinManager(AddPin.Mode.REMOVE_OUT);
+        }
+
+        //Add/remove pins in/out using new method
+        private void modifyPinsIn_Click(object sender, EventArgs e)
+        {
+            PinManager(AddPin.Mode.ADD_IN);
+        }
+        private void modifyPinsOut_Click(object sender, EventArgs e)
+        {
+            PinManager(AddPin.Mode.ADD_OUT);
         }
 
         //Delete right clicked node
@@ -702,9 +736,17 @@ namespace CommandsEditor
         private void duplicateToolStripMenuItem_Click(object sender, EventArgs e)
         {
             STNode node = stNodeEditor1.GetHoveredNode();
+
             STNode duplicated = EntityToNode(node.Entity, _composite, true);
-            duplicated.SetPosition(new Point(node.Location.X + 10, node.Location.Y + 10)); //TODO: set a nice position
-            //TODO: clone parameters too?
+
+            STNodeOption[] ins = node.GetInputOptions();
+            for (int i = 0; i < ins.Length; i++)
+                duplicated.AddInputOption(ins[i].ShortGUID);
+            STNodeOption[] outs = node.GetOutputOptions();
+            for (int i = 0; i < outs.Length; i++)
+                duplicated.AddOutputOption(outs[i].ShortGUID);
+
+            duplicated.SetPosition(new Point(node.Location.X + 15, node.Location.Y + 15));
         }
     }
 }

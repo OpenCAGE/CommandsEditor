@@ -332,14 +332,14 @@ namespace CommandsEditor
                         ShortGuid function = ((FunctionEntity)entity).function;
                         bool isComposite = !CommandsUtils.FunctionTypeExists(function);
                         if (isComposite) function = CommandsUtils.GetFunctionTypeGUID(FunctionType.CompositeInterface);
-                        items.Add(ParameterDefinitionToListViewItem("reference"));
+                        items.Add(ParameterDefinitionToListViewItem(ShortGuidUtils.Generate("reference")));
 
                         List<CathodeEntityDatabase.ParameterDefinition> parameters = CathodeEntityDatabase.GetParametersFromEntity(function);
                         if (parameters != null)
                         {
                             for (int i = 0; i < parameters.Count; i++)
                             {
-                                items.Add(ParameterDefinitionToListViewItem(parameters[i].name, parameters[i].datatype, parameters[i].usage));
+                                items.Add(ParameterDefinitionToListViewItem(ShortGuidUtils.Generate(parameters[i].name), parameters[i].datatype, parameters[i].usage));
                             }
                         }
 
@@ -350,14 +350,14 @@ namespace CommandsEditor
                         {
                             if (items.FirstOrDefault(o => o.Text == ent.name.ToString()) == null)
                             {
-                                items.Add(ParameterDefinitionToListViewItem(ent.name.ToString(), ent.type.ToString()));
+                                items.Add(ParameterDefinitionToListViewItem(ent.name, ent.type.ToString()));
                             }
                         }
                     }
                     break;
                 case EntityVariant.VARIABLE:
                     VariableEntity varEnt = (VariableEntity)entity;
-                    items.Add(ParameterDefinitionToListViewItem(ShortGuidUtils.FindString(varEnt.name), varEnt.type.ToString()));
+                    items.Add(ParameterDefinitionToListViewItem(varEnt.name, varEnt.type.ToString()));
                     break;
                 case EntityVariant.ALIAS:
                     return GenerateParameterListAsListViewItem(CommandsUtils.ResolveHierarchy(_content.commands, composite, ((AliasEntity)entity).alias.path, out Composite comp1, out string hierarchy1), comp1);
@@ -370,7 +370,7 @@ namespace CommandsEditor
                         {
                             for (int i = 0; i < parameters.Count; i++)
                             {
-                                items.Add(ParameterDefinitionToListViewItem(parameters[i].name, parameters[i].datatype, parameters[i].usage));
+                                items.Add(ParameterDefinitionToListViewItem(ShortGuidUtils.Generate(parameters[i].name), parameters[i].datatype, parameters[i].usage));
                             }
                         }
                     }
@@ -378,12 +378,17 @@ namespace CommandsEditor
             }
             return items;
         }
-        private ListViewItem ParameterDefinitionToListViewItem(string name, string datatype = "FLOAT", CathodeEntityDatabase.ParameterUsage usage = CathodeEntityDatabase.ParameterUsage.PARAMETER)
+        private ListViewItem ParameterDefinitionToListViewItem(ShortGuid name, string datatype = "FLOAT", CathodeEntityDatabase.ParameterUsage usage = CathodeEntityDatabase.ParameterUsage.PARAMETER)
         {
-            ListViewItem item = new ListViewItem(name);
+            ListViewItem item = new ListViewItem(name.ToString());
             item.SubItems.Add(datatype);
-            item.Tag = usage;
+            item.Tag = new ParameterListViewItemTag() { ShortGUID = name, Usage = usage };
             return item;
+        }
+        public struct ParameterListViewItemTag
+        {
+            public CathodeEntityDatabase.ParameterUsage Usage;
+            public ShortGuid ShortGUID;
         }
 
         /* Utility: force a string to be numeric */

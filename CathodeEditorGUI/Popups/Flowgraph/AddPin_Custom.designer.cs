@@ -1,6 +1,6 @@
 namespace CommandsEditor
 {
-    partial class AddPin
+    partial class AddPin_Custom
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@ namespace CommandsEditor
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AddPin));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AddPin_Custom));
             this.label3 = new System.Windows.Forms.Label();
             this.parameterList = new System.Windows.Forms.ComboBox();
             this.save_pin = new System.Windows.Forms.Button();
