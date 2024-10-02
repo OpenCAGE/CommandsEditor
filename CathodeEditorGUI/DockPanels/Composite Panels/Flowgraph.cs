@@ -284,6 +284,17 @@ namespace CommandsEditor
             foreach (STNode node in stNodeEditor1.Nodes)
                 node.Recompute();
 
+            //stack nodes nicely when we don't have a layout
+            if (flowgraphMetas.Count == 0)
+            {
+                int height = 10;
+                foreach (STNode node in stNodeEditor1.Nodes)
+                {
+                    node.SetPosition(new Point(0, height));
+                    height += node.Height + 10;
+                }
+            }
+
             stNodeEditor1.ResumeLayout();
             stNodeEditor1.Invalidate();
         }
