@@ -42,6 +42,7 @@ namespace CommandsEditor
             this.addNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stNodeEditor1 = new ST.Library.UI.NodeEditor.STNodeEditor();
             this.AutoCalc = new System.Windows.Forms.Button();
+            this.RemoveEmpties = new System.Windows.Forms.Button();
             this.nodeContextMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -193,11 +194,25 @@ namespace CommandsEditor
             this.AutoCalc.UseVisualStyleBackColor = true;
             this.AutoCalc.Click += new System.EventHandler(this.AutoCalc_Click);
             // 
+            // RemoveEmpties
+            // 
+            this.RemoveEmpties.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.RemoveEmpties.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.RemoveEmpties.ForeColor = System.Drawing.Color.IndianRed;
+            this.RemoveEmpties.Location = new System.Drawing.Point(123, 661);
+            this.RemoveEmpties.Name = "RemoveEmpties";
+            this.RemoveEmpties.Size = new System.Drawing.Size(123, 38);
+            this.RemoveEmpties.TabIndex = 4;
+            this.RemoveEmpties.Text = "Remove Empties";
+            this.RemoveEmpties.UseVisualStyleBackColor = true;
+            this.RemoveEmpties.Click += new System.EventHandler(this.RemoveEmpties_Click);
+            // 
             // Flowgraph
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1512, 699);
+            this.Controls.Add(this.RemoveEmpties);
             this.Controls.Add(this.AutoCalc);
             this.Controls.Add(this.SaveFlowgraph);
             this.Controls.Add(this.stNodeEditor1);
@@ -227,6 +242,7 @@ namespace CommandsEditor
         private System.Windows.Forms.ToolStripMenuItem modifyPinsIn;
         private System.Windows.Forms.ToolStripMenuItem modifyPinsOut;
         private System.Windows.Forms.Button AutoCalc;
+        private System.Windows.Forms.Button RemoveEmpties;
     }
 }
 

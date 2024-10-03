@@ -14,6 +14,7 @@ using static CathodeLib.CompositeFlowgraphsTable;
 using CommandsEditor.Popups.UserControls;
 using System.IO;
 using CathodeLib;
+using System.Windows.Media.Media3D;
 
 namespace CommandsEditor
 {
@@ -478,6 +479,29 @@ namespace CommandsEditor
                 }
             }
             origNode.SetPosition(new Point((this.Size.Width / 2) - (origNode.Width / 2) - 10, (this.Size.Height / 2) - (((outputStackedHeight > inputStackedHeight) ? outputStackedHeight : inputStackedHeight) / 2) - 20));
+        }
+
+        private void RemoveEmpties_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < stNodeEditor1.Nodes.Count; i++)
+            {
+                List<ShortGuid> toRemove = new List<ShortGuid>();
+                foreach (STNodeOption option in stNodeEditor1.Nodes[i].GetInputOptions()) 
+                {
+                    if (option.GetConnectedOption().Count == 0)
+                        toRemove.Add(option.ShortGUID);
+                }
+                for (int x = 0; x < toRemove.Count; x++)
+                    stNodeEditor1.Nodes[i].RemoveInputOption(toRemove[x]);
+                toRemove.Clear();
+                foreach (STNodeOption option in stNodeEditor1.Nodes[i].GetOutputOptions())
+                {
+                    if (option.GetConnectedOption().Count == 0)
+                        toRemove.Add(option.ShortGUID);
+                }
+                for (int x = 0; x < toRemove.Count; x++)
+                    stNodeEditor1.Nodes[i].RemoveOutputOption(toRemove[x]);
+            }
         }
 
         public void DEBUG_LoadAll_Test(Commands commands)
