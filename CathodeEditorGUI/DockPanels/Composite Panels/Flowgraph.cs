@@ -464,7 +464,8 @@ namespace CommandsEditor
                 foreach (STNodeOption output in input.GetConnectedOption()) //connected to output on other node
                 {
                     STNode connectedNode = output.Owner;
-                    connectedNode.SetPosition(new Point(10, height));
+                    //connectedNode.SetPosition(new Point(10, height));
+                    connectedNode.SetPosition(new Point(250 - connectedNode.Width, height));
                     height += connectedNode.Height + 10;
                 }
             }
@@ -474,7 +475,8 @@ namespace CommandsEditor
                 foreach (STNodeOption input in output.GetConnectedOption()) //connected to input on other node
                 {
                     STNode connectedNode = input.Owner;
-                    connectedNode.SetPosition(new Point(this.Size.Width - connectedNode.Width - 50, height));
+                    //connectedNode.SetPosition(new Point(this.Size.Width - connectedNode.Width - 50, height));
+                    connectedNode.SetPosition(new Point(this.Size.Width - 250, height));
                     height += connectedNode.Height + 10;
                 }
             }
