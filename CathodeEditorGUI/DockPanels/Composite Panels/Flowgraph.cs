@@ -425,6 +425,13 @@ namespace CommandsEditor
             Singleton.Editor.CommandsDisplay.DEBUG_LoadNextToConstruct();
         }
 
+        private void SaveFlowgraphUnfinished_Click(object sender, EventArgs e)
+        {
+            FlowgraphLayoutManager.DEBUG_IsUnfinished = true;
+            SaveFlowgraph_Click(null, null);
+            FlowgraphLayoutManager.DEBUG_IsUnfinished = false;
+        }
+
         private void AutoCalc_Click(object sender, EventArgs e)
         {
             if (stNodeEditor1.GetSelectedNode().Length != 1)

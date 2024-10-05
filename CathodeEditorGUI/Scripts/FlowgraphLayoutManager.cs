@@ -24,6 +24,7 @@ namespace CommandsEditor
 #if !DEBUG
         FAIL THE BUILD! THIS SHOULD NOT STILL BE HERE!
 #endif
+        public static bool DEBUG_IsUnfinished = false;
         public static bool DEBUG_UsePreDefinedTable = false;
         private static CompositeFlowgraphsTable Table
         {
@@ -101,10 +102,10 @@ namespace CommandsEditor
             return info.flowgraphs_supported;
         }
 
-        //Checks to see if there is at least one flowgraph for the given composite
+        //Checks to see if there is at least one finished flowgraph for the given composite
         public static bool HasLayout(Composite composite)
         {
-            return Table.flowgraphs.FirstOrDefault(o => o.CompositeGUID == composite.shortGUID) != null;
+            return Table.flowgraphs.FirstOrDefault(o => o.CompositeGUID == composite.shortGUID && !o.IsUnfinished) != null;
         }
 
         //Gets all flowgraph layouts for the given composite
@@ -218,6 +219,7 @@ namespace CommandsEditor
             flowgraphMeta.Name = name;
 
             flowgraphMeta.UsesShortenedNames = true;
+            flowgraphMeta.IsUnfinished = FlowgraphLayoutManager.DEBUG_IsUnfinished;
 
             flowgraphMeta.CanvasPosition = editor.CanvasOffset;
             flowgraphMeta.CanvasScale = editor.CanvasScale;

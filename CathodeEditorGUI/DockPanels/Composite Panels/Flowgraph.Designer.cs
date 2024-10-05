@@ -40,9 +40,10 @@ namespace CommandsEditor
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.duplicateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.stNodeEditor1 = new ST.Library.UI.NodeEditor.STNodeEditor();
             this.AutoCalc = new System.Windows.Forms.Button();
             this.RemoveEmpties = new System.Windows.Forms.Button();
+            this.stNodeEditor1 = new ST.Library.UI.NodeEditor.STNodeEditor();
+            this.SaveFlowgraphUnfinished = new System.Windows.Forms.Button();
             this.nodeContextMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -160,27 +161,6 @@ namespace CommandsEditor
             this.addNodeToolStripMenuItem.Text = "Add Node";
             this.addNodeToolStripMenuItem.Click += new System.EventHandler(this.addNodeToolStripMenuItem_Click);
             // 
-            // stNodeEditor1
-            // 
-            this.stNodeEditor1.AllowDrop = true;
-            this.stNodeEditor1.AllowNodeGraphLoops = true;
-            this.stNodeEditor1.AllowSameOwnerConnections = false;
-            this.stNodeEditor1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(34)))), ((int)(((byte)(34)))));
-            this.stNodeEditor1.ContextMenuStrip = this.nodeContextMenu;
-            this.stNodeEditor1.Curvature = 0.3F;
-            this.stNodeEditor1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.stNodeEditor1.Location = new System.Drawing.Point(0, 0);
-            this.stNodeEditor1.LocationBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(120)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.stNodeEditor1.MarkBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.stNodeEditor1.MarkForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.stNodeEditor1.MinimumSize = new System.Drawing.Size(100, 100);
-            this.stNodeEditor1.Name = "stNodeEditor1";
-            this.stNodeEditor1.RequireCtrlForZooming = false;
-            this.stNodeEditor1.RoundedCornerRadius = 10;
-            this.stNodeEditor1.Size = new System.Drawing.Size(1512, 699);
-            this.stNodeEditor1.TabIndex = 1;
-            this.stNodeEditor1.Text = "stNodeEditor1";
-            // 
             // AutoCalc
             // 
             this.AutoCalc.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -207,11 +187,46 @@ namespace CommandsEditor
             this.RemoveEmpties.UseVisualStyleBackColor = true;
             this.RemoveEmpties.Click += new System.EventHandler(this.RemoveEmpties_Click);
             // 
+            // stNodeEditor1
+            // 
+            this.stNodeEditor1.AllowDrop = true;
+            this.stNodeEditor1.AllowNodeGraphLoops = true;
+            this.stNodeEditor1.AllowSameOwnerConnections = false;
+            this.stNodeEditor1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(34)))), ((int)(((byte)(34)))));
+            this.stNodeEditor1.ContextMenuStrip = this.nodeContextMenu;
+            this.stNodeEditor1.Curvature = 0.3F;
+            this.stNodeEditor1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.stNodeEditor1.Location = new System.Drawing.Point(0, 0);
+            this.stNodeEditor1.LocationBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(120)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.stNodeEditor1.MarkBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.stNodeEditor1.MarkForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.stNodeEditor1.MinimumSize = new System.Drawing.Size(100, 100);
+            this.stNodeEditor1.Name = "stNodeEditor1";
+            this.stNodeEditor1.RequireCtrlForZooming = false;
+            this.stNodeEditor1.RoundedCornerRadius = 10;
+            this.stNodeEditor1.Size = new System.Drawing.Size(1512, 699);
+            this.stNodeEditor1.TabIndex = 1;
+            this.stNodeEditor1.Text = "stNodeEditor1";
+            // 
+            // SaveFlowgraphUnfinished
+            // 
+            this.SaveFlowgraphUnfinished.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.SaveFlowgraphUnfinished.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.SaveFlowgraphUnfinished.ForeColor = System.Drawing.Color.IndianRed;
+            this.SaveFlowgraphUnfinished.Location = new System.Drawing.Point(1097, 1);
+            this.SaveFlowgraphUnfinished.Name = "SaveFlowgraphUnfinished";
+            this.SaveFlowgraphUnfinished.Size = new System.Drawing.Size(158, 38);
+            this.SaveFlowgraphUnfinished.TabIndex = 5;
+            this.SaveFlowgraphUnfinished.Text = "Save as Unfinished";
+            this.SaveFlowgraphUnfinished.UseVisualStyleBackColor = true;
+            this.SaveFlowgraphUnfinished.Click += new System.EventHandler(this.SaveFlowgraphUnfinished_Click);
+            // 
             // Flowgraph
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1512, 699);
+            this.Controls.Add(this.SaveFlowgraphUnfinished);
             this.Controls.Add(this.RemoveEmpties);
             this.Controls.Add(this.AutoCalc);
             this.Controls.Add(this.SaveFlowgraph);
@@ -243,6 +258,7 @@ namespace CommandsEditor
         private System.Windows.Forms.ToolStripMenuItem modifyPinsOut;
         private System.Windows.Forms.Button AutoCalc;
         private System.Windows.Forms.Button RemoveEmpties;
+        private System.Windows.Forms.Button SaveFlowgraphUnfinished;
     }
 }
 
