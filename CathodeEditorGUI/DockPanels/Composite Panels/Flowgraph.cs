@@ -50,6 +50,9 @@ namespace CommandsEditor
 #if !DEBUG
             SaveFlowgraph.Visible = false;
             AutoCalc.Visible = false;
+            RemoveEmpties.Visible = false;
+            ResetFG.Visible = false;
+            SaveFlowgraphUnfinished.Visible = false;
 #endif
 
             //todo: i feel like these events should come from the compositedisplay?
@@ -138,8 +141,13 @@ namespace CommandsEditor
 
         //TODO: NEEDS REWORKING INTO "SHOW FLOWGRAPH" WHEN ALL LAYOUTS ARE DEFINED.
         //      THIS FUNCTION SHOULD BE PASSED THE FLOWGRAPHMETA OBJECT.
-        public void ShowComposite(Composite composite)
+        public void ShowComposite(Composite composite, bool forceReset = false)
         {
+#if !DEBUG
+            if (forceReset)
+                MessageBox.Show("ForceReset called in production code!!!");
+#endif
+
             Console.WriteLine("EntityFlowgraph::ShowComposite - " + composite.name);
 
             if (CommandsUtils.PurgeDeadLinks(Commands, composite))
@@ -154,6 +162,8 @@ namespace CommandsEditor
 
             //TODO: When I've fully populated the layout manager, this should be reworked. We should be passed the FlowgraphMeta object instead of the Composite.
             List<FlowgraphMeta> flowgraphMetas = FlowgraphLayoutManager.GetLayouts(composite);
+            if (forceReset)
+                flowgraphMetas.Clear();
             if (flowgraphMetas.Count > 1)
             {
                 string breakhere = "";
@@ -430,6 +440,11 @@ namespace CommandsEditor
             FlowgraphLayoutManager.DEBUG_IsUnfinished = true;
             SaveFlowgraph_Click(null, null);
             FlowgraphLayoutManager.DEBUG_IsUnfinished = false;
+        }
+
+        private void ResetFG_Click(object sender, EventArgs e)
+        {
+            ShowComposite(_composite, true);
         }
 
         private void AutoCalc_Click(object sender, EventArgs e)

@@ -44,6 +44,7 @@ namespace CommandsEditor
             this.RemoveEmpties = new System.Windows.Forms.Button();
             this.stNodeEditor1 = new ST.Library.UI.NodeEditor.STNodeEditor();
             this.SaveFlowgraphUnfinished = new System.Windows.Forms.Button();
+            this.ResetFG = new System.Windows.Forms.Button();
             this.nodeContextMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -221,11 +222,25 @@ namespace CommandsEditor
             this.SaveFlowgraphUnfinished.UseVisualStyleBackColor = true;
             this.SaveFlowgraphUnfinished.Click += new System.EventHandler(this.SaveFlowgraphUnfinished_Click);
             // 
+            // ResetFG
+            // 
+            this.ResetFG.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.ResetFG.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ResetFG.ForeColor = System.Drawing.Color.IndianRed;
+            this.ResetFG.Location = new System.Drawing.Point(1354, 661);
+            this.ResetFG.Name = "ResetFG";
+            this.ResetFG.Size = new System.Drawing.Size(158, 38);
+            this.ResetFG.TabIndex = 6;
+            this.ResetFG.Text = "Reset";
+            this.ResetFG.UseVisualStyleBackColor = true;
+            this.ResetFG.Click += new System.EventHandler(this.ResetFG_Click);
+            // 
             // Flowgraph
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1512, 699);
+            this.Controls.Add(this.ResetFG);
             this.Controls.Add(this.SaveFlowgraphUnfinished);
             this.Controls.Add(this.RemoveEmpties);
             this.Controls.Add(this.AutoCalc);
@@ -259,6 +274,7 @@ namespace CommandsEditor
         private System.Windows.Forms.Button AutoCalc;
         private System.Windows.Forms.Button RemoveEmpties;
         private System.Windows.Forms.Button SaveFlowgraphUnfinished;
+        private System.Windows.Forms.Button ResetFG;
     }
 }
 
