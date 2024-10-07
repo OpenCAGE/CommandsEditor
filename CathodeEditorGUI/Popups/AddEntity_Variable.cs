@@ -45,7 +45,8 @@ namespace CommandsEditor
             });
             entityVariant.EndUpdate();
 
-            entityVariant.SelectedIndex = 0;
+            entityVariant.SelectedIndex = SettingsManager.GetInteger(Singleton.Settings.PrevVariableType);
+            createNode.Checked = SettingsManager.GetBool(Singleton.Settings.MakeNodeWhenMakeEntity);
 
             textBox1.Select();
         }
@@ -69,6 +70,17 @@ namespace CommandsEditor
         {
             if (e.KeyCode == Keys.Enter)
                 createNewEntity.PerformClick();
+        }
+
+        private void createNode_CheckedChanged(object sender, EventArgs e)
+        {
+            if (createNode.Checked != SettingsManager.GetBool(Singleton.Settings.MakeNodeWhenMakeEntity))
+                Singleton.Editor.ToggleMakeNodeWhenMakeEntity();
+        }
+
+        private void entityVariant_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            SettingsManager.SetInteger(Singleton.Settings.PrevVariableType, entityVariant.SelectedIndex);
         }
     }
 }

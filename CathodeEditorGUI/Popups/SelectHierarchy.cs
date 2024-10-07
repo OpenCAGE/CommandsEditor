@@ -13,18 +13,21 @@ using CATHODE.Scripting.Internal;
 using CommandsEditor.DockPanels;
 using CommandsEditor.Popups.Base;
 using CommandsEditor.Popups.UserControls;
+using OpenCAGE;
 
 namespace CommandsEditor
 {
     public partial class SelectHierarchy : BaseWindow
     {
         public Action<Entity> OnFinalEntitySelected;
+        public Action<List<Entity>> OnFinalEntitiesSelected;
         public Action<List<ShortGuid>> OnHierarchyGenerated;
         private List<ShortGuid> hierarchy = new List<ShortGuid>();
 
         private Entity selectedEntity = null;
         private Composite selectedComposite = null;
 
+        private bool _multiselect = false;
         private CompositePath _path = new CompositePath();
 
         //PROXIES can only point to FunctionEntities - ALIASES can point to FunctionEntities, ProxyEntities, VariableEntities
@@ -32,12 +35,33 @@ namespace CommandsEditor
         {
             InitializeComponent();
 
-            displayOptions.ShowCheckboxes = false;
+            if (allowFollowThrough && displayOptions.ShowCheckboxes)
+            {
+                //TODO: the multiselect functionality has expanded this modal past the point it was designed for - needs refactoring
+                Console.WriteLine("WARNING: Does not support following through and checkboxes! Checkboxes are only intended for multiselect entity selection (aka node creation)");
+                displayOptions.ShowCheckboxes = false;
+            }
+            _multiselect = displayOptions.ShowCheckboxes;
+            if (_multiselect)
+            {
+                this.Text = "Select Entities";
+                SelectEntity.Text = "Select Checked Entities";
+            }
+
             compositeEntityList1.Setup(startingComposite, displayOptions);
             compositeEntityList1.SelectedEntityChanged += OnSelectedEntityChanged;
 
             LoadComposite(startingComposite);
             FollowEntityThrough.Visible = allowFollowThrough;
+
+            if (displayOptions.ShowCreateNode)
+            {
+                createNode.Checked = SettingsManager.GetBool(Singleton.Settings.MakeNodeWhenMakeEntity);
+            }
+            else
+            {
+                createNode.Visible = false;
+            }
         }
 
         /* Select a new entity from the composite, show fall through option if available */
@@ -61,7 +85,8 @@ namespace CommandsEditor
                 hierarchy.Add(selectedEntity.shortGUID);
                 selectedEntity = null;
             }
-            SelectEntity.Enabled = false;
+            if (!_multiselect)
+                SelectEntity.Enabled = false;
             FollowEntityThrough.Enabled = false;
 
             selectedComposite = composite;
@@ -86,11 +111,18 @@ namespace CommandsEditor
         /* Generate the hierarchy */
         private void SelectEntity_Click(object sender, EventArgs e)
         {
-            //TODO: should use the proper hierarchy class here
-            hierarchy.Add(selectedEntity.shortGUID);
-            hierarchy.Add(ShortGuid.Invalid);
-            OnHierarchyGenerated?.Invoke(hierarchy);
-            OnFinalEntitySelected?.Invoke(selectedEntity);
+            if (_multiselect)
+            {
+                OnFinalEntitiesSelected?.Invoke(compositeEntityList1.CheckedEntities);
+            }
+            else
+            {
+                //TODO: should use the proper hierarchy class here
+                hierarchy.Add(selectedEntity.shortGUID);
+                hierarchy.Add(ShortGuid.Invalid);
+                OnHierarchyGenerated?.Invoke(hierarchy);
+                OnFinalEntitySelected?.Invoke(selectedEntity);
+            }
             this.Close();
         }
 
@@ -100,6 +132,12 @@ namespace CommandsEditor
             {
                 LoadComposite(composite);
             }
+        }
+
+        private void createNode_CheckedChanged(object sender, EventArgs e)
+        {
+            if (createNode.Checked != SettingsManager.GetBool(Singleton.Settings.MakeNodeWhenMakeEntity))
+                Singleton.Editor.ToggleMakeNodeWhenMakeEntity();
         }
     }
 }

@@ -50,16 +50,21 @@ namespace CommandsEditor
                 _items.Add(options[i]);
             }
 
-            searchBtn_Click(null, null);
+            Search();
+        }
+
+        private void searchText_TextChanged(object sender, EventArgs e)
+        {
+            Search();
         }
 
         private void clearSearchBtn_Click(object sender, EventArgs e)
         {
             searchText.Text = "";
-            searchBtn_Click(null, null);
+            Search();
         }
 
-        private void searchBtn_Click(object sender, EventArgs e)
+        private void Search()
         {
             param_name.BeginUpdate();
             param_name.Items.Clear();

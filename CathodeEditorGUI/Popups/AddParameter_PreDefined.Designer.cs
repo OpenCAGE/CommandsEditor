@@ -43,7 +43,6 @@
             this.createParams = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.searchText = new System.Windows.Forms.TextBox();
-            this.searchBtn = new System.Windows.Forms.Button();
             this.clearSearchBtn = new System.Windows.Forms.Button();
             this.typesCount = new System.Windows.Forms.Label();
             this.param_name = new System.Windows.Forms.ListView();
@@ -62,7 +61,7 @@
             this.createParams.Name = "createParams";
             this.createParams.Size = new System.Drawing.Size(169, 23);
             this.createParams.TabIndex = 6;
-            this.createParams.Text = "Create Selected";
+            this.createParams.Text = "Create Checked";
             this.createParams.UseVisualStyleBackColor = true;
             this.createParams.Click += new System.EventHandler(this.createParams_Click);
             // 
@@ -83,27 +82,16 @@
             this.searchText.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.searchText.Location = new System.Drawing.Point(15, 35);
             this.searchText.Name = "searchText";
-            this.searchText.Size = new System.Drawing.Size(545, 20);
+            this.searchText.Size = new System.Drawing.Size(606, 20);
             this.searchText.TabIndex = 2;
-            // 
-            // searchBtn
-            // 
-            this.searchBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.searchBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.searchBtn.Location = new System.Drawing.Point(578, 35);
-            this.searchBtn.Name = "searchBtn";
-            this.searchBtn.Size = new System.Drawing.Size(63, 20);
-            this.searchBtn.TabIndex = 4;
-            this.searchBtn.Text = "Search";
-            this.searchBtn.UseVisualStyleBackColor = true;
-            this.searchBtn.Click += new System.EventHandler(this.searchBtn_Click);
+            this.searchText.TextChanged += new System.EventHandler(this.searchText_TextChanged);
             // 
             // clearSearchBtn
             // 
             this.clearSearchBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.clearSearchBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.clearSearchBtn.Image = ((System.Drawing.Image)(resources.GetObject("clearSearchBtn.Image")));
-            this.clearSearchBtn.Location = new System.Drawing.Point(559, 35);
+            this.clearSearchBtn.Location = new System.Drawing.Point(620, 35);
             this.clearSearchBtn.Name = "clearSearchBtn";
             this.clearSearchBtn.Size = new System.Drawing.Size(20, 20);
             this.clearSearchBtn.TabIndex = 3;
@@ -235,7 +223,6 @@
             this.Controls.Add(this.param_name);
             this.Controls.Add(this.typesCount);
             this.Controls.Add(this.clearSearchBtn);
-            this.Controls.Add(this.searchBtn);
             this.Controls.Add(this.searchText);
             this.Controls.Add(this.createParams);
             this.Controls.Add(this.label2);
@@ -252,7 +239,6 @@
         private System.Windows.Forms.Button createParams;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox searchText;
-        private System.Windows.Forms.Button searchBtn;
         private System.Windows.Forms.Button clearSearchBtn;
         private System.Windows.Forms.Label typesCount;
         private System.Windows.Forms.ListView param_name;

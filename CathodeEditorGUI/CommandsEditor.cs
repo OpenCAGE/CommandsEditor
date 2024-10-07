@@ -112,10 +112,14 @@ namespace CommandsEditor
             searchOnlyCompositeNames.Checked = !SettingsManager.GetBool(Singleton.Settings.CompNameOnlyOpt); searchOnlyCompositeNames.PerformClick();
             useTexturedModelViewExperimentalToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.ShowTexOpt); useTexturedModelViewExperimentalToolStripMenuItem.PerformClick();
             keepFunctionUsesWindowOpenToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.KeepUsesWindowOpen); keepFunctionUsesWindowOpenToolStripMenuItem.PerformClick();
-            nodeOpensEntity.Checked = !SettingsManager.GetBool(Singleton.Settings.OpenEntityFromNode); nodeOpensEntity.PerformClick();
-            createFlowgraphNodeWhenEntityCreatedToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.MakeNodeWhenMakeEntity); createFlowgraphNodeWhenEntityCreatedToolStripMenuItem.PerformClick();
             useLegacyParameterCreatorToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.UseLegacyParamCreator); useLegacyParameterCreatorToolStripMenuItem.PerformClick();
             writeInstancedResourcesExperimentalToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.ExperimentalResourceStuff); writeInstancedResourcesExperimentalToolStripMenuItem.PerformClick();
+
+            if (!SettingsManager.IsSet(Singleton.Settings.OpenEntityFromNode)) SettingsManager.SetBool(Singleton.Settings.OpenEntityFromNode, true);
+            nodeOpensEntity.Checked = !SettingsManager.GetBool(Singleton.Settings.OpenEntityFromNode); nodeOpensEntity.PerformClick();
+
+            if (!SettingsManager.IsSet(Singleton.Settings.MakeNodeWhenMakeEntity)) SettingsManager.SetBool(Singleton.Settings.MakeNodeWhenMakeEntity, true);
+            createFlowgraphNodeWhenEntityCreatedToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.MakeNodeWhenMakeEntity); createFlowgraphNodeWhenEntityCreatedToolStripMenuItem.PerformClick();
 
             if (!SettingsManager.IsSet(Singleton.Settings.ShowSavedMsgOpt)) SettingsManager.SetBool(Singleton.Settings.ShowSavedMsgOpt, true);
             showConfirmationWhenSavingToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.ShowSavedMsgOpt); showConfirmationWhenSavingToolStripMenuItem.PerformClick();
@@ -808,6 +812,10 @@ namespace CommandsEditor
             SettingsManager.SetBool(Singleton.Settings.OpenEntityFromNode, nodeOpensEntity.Checked);
         }
 
+        public void ToggleMakeNodeWhenMakeEntity()
+        {
+            createFlowgraphNodeWhenEntityCreatedToolStripMenuItem.PerformClick();
+        }
         private void createFlowgraphNodeWhenEntityCreatedToolStripMenuItem_Click(object sender, EventArgs e)
         {
             createFlowgraphNodeWhenEntityCreatedToolStripMenuItem.Checked = !createFlowgraphNodeWhenEntityCreatedToolStripMenuItem.Checked;
@@ -923,6 +931,20 @@ namespace CommandsEditor
 
         private void DEBUG_RunChecks_Click(object sender, EventArgs e)
         {
+            for (int i = 0; i < Singleton.Editor.CommandsDisplay.Content.commands.Entries.Count; i++)
+            {
+                CommandsUtils.PurgeDeadLinks(Singleton.Editor.CommandsDisplay.Content.commands, Singleton.Editor.CommandsDisplay.Content.commands.Entries[i], true);
+            }
+            for (int i = 0; i < Singleton.Editor.CommandsDisplay.Content.commands.Entries.Count; i++)
+            {
+                CommandsUtils.PurgeDeadLinks(Singleton.Editor.CommandsDisplay.Content.commands, Singleton.Editor.CommandsDisplay.Content.commands.Entries[i], true);
+            }
+            for (int i = 0; i < Singleton.Editor.CommandsDisplay.Content.commands.Entries.Count; i++)
+            {
+                CommandsUtils.PurgeDeadLinks(Singleton.Editor.CommandsDisplay.Content.commands, Singleton.Editor.CommandsDisplay.Content.commands.Entries[i], true);
+            }
+            return;
+
             NodeEditorTest test = new NodeEditorTest();
             test.Show();
 

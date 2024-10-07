@@ -49,5 +49,26 @@ namespace CommandsEditor.DockPanels
             renameToolStripMenuItem.Enabled = hasSelectedEntity && compositeEntityList1.SelectedEntity.variant != EntityVariant.ALIAS;
             duplicateToolStripMenuItem.Enabled = hasSelectedEntity;
         }
+
+        private void createParameterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Singleton.Editor.CommandsDisplay.CompositeDisplay.CreateEntity(EntityVariant.VARIABLE);
+        }
+        private void createFunctionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Singleton.Editor.CommandsDisplay.CompositeDisplay.CreateEntity(EntityVariant.FUNCTION);
+        }
+        private void createInstanceOfCompositeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Singleton.Editor.CommandsDisplay.CompositeDisplay.CreateEntity(EntityVariant.FUNCTION, true);
+        }
+        private void createProxyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Singleton.Editor.CommandsDisplay.CompositeDisplay.CreateEntity(EntityVariant.PROXY);
+        }
+        private void createAliasToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            Singleton.Editor.CommandsDisplay.CompositeDisplay.CreateEntity(EntityVariant.ALIAS);
+        }
     }
 }

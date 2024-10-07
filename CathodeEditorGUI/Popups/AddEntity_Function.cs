@@ -46,14 +46,20 @@ namespace CommandsEditor
             }
 
             searchText.Text = SettingsManager.GetString(Singleton.Settings.PreviouslySearchedFunctionType);
-            searchBtn_Click(null, null);
+            Search();
 
             SelectFuncType(SettingsManager.GetString(Singleton.Settings.PreviouslySelectedFunctionType));
 
             addDefaultParams.Checked = SettingsManager.GetBool(Singleton.Settings.PreviouslySearchedParamPopulation, false);
+            createNode.Checked = SettingsManager.GetBool(Singleton.Settings.MakeNodeWhenMakeEntity);
         }
 
-        private void searchBtn_Click(object sender, EventArgs e)
+        private void searchText_TextChanged(object sender, EventArgs e)
+        {
+            Search();
+        }
+
+        private void Search()
         {
             string selected = functionTypeList.SelectedItems.Count > 0 ? functionTypeList.SelectedItems[0].Text : "";
 
@@ -71,7 +77,7 @@ namespace CommandsEditor
         private void clearSearchBtn_Click(object sender, EventArgs e)
         {
             searchText.Text = "";
-            searchBtn_Click(null, null);
+            Search();
         }
 
         private void FunctionTypeList_ColumnClick(object sender, System.Windows.Forms.ColumnClickEventArgs e)
@@ -157,17 +163,11 @@ namespace CommandsEditor
             if (e.KeyCode == Keys.Enter)
                 createEntity.PerformClick();
         }
-        private void SearchFuncTypeOnEnterKey(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter)
-                searchBtn.PerformClick();
-        }
 
         private void SelectFuncType(string type)
         {
             if (type == "")
             {
-                functionTypeList.Items[0].Selected = true;
                 return;
             }
 
@@ -184,6 +184,12 @@ namespace CommandsEditor
         private void helpBtn_Click(object sender, EventArgs e)
         {
             Process.Start("https://opencage.co.uk/docs/cathode-entities/#entities");
+        }
+
+        private void createNode_CheckedChanged(object sender, EventArgs e)
+        {
+            if (createNode.Checked != SettingsManager.GetBool(Singleton.Settings.MakeNodeWhenMakeEntity))
+                Singleton.Editor.ToggleMakeNodeWhenMakeEntity();
         }
     }
 }

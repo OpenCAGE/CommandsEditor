@@ -21,21 +21,19 @@ namespace CommandsEditor
 
         private static CompositeFlowgraphCompatibilityTable _compatibility;
 
-#if !DEBUG
-        FAIL THE BUILD! THIS SHOULD NOT STILL BE HERE!
-#endif
+        //TODO: remove this once i'm done populating the layout database!!
         public static bool DEBUG_IsUnfinished = false;
         public static bool DEBUG_UsePreDefinedTable = false;
         private static CompositeFlowgraphsTable Table
         {
             get
             {
+#if DEBUG
                 if (DEBUG_UsePreDefinedTable)
                 {
-                    Console.WriteLine("Using Pre-Defined Table");
                     return _preDefinedLayouts;
                 }
-                Console.WriteLine("Using User-Defined Table");
+#endif
                 return _userDefinedLayouts;
             }
         }
@@ -52,7 +50,6 @@ namespace CommandsEditor
             {
                 _preDefinedLayouts.Read(reader);
             }
-
 #if DEBUG
             //For sanity: make sure the vanilla db doesn't contain any empty flowgraphs
             List<FlowgraphMeta> trimmed = new List<FlowgraphMeta>();
@@ -83,6 +80,7 @@ namespace CommandsEditor
         }
         private static void AddToCompatibilityTable(Composite composite)
         {
+            SaveLayout(null, composite, Path.GetFileName(composite.name)); //Add in a default empty flowgraph
             _compatibility.compatibility_info.Add(new CompositeFlowgraphCompatibilityTable.CompatibilityInfo()
             {
                 composite_id = composite.shortGUID,
@@ -114,10 +112,10 @@ namespace CommandsEditor
             return Table.flowgraphs.FindAll(o => o.CompositeGUID == composite.shortGUID);
         }
 
-        //Add layout to db
-        public static FlowgraphMeta SaveLayout(STNodeEditor editor, Composite composite, string name)
+        //Save/add layout to db
+        public static FlowgraphMeta SaveLayout(STNodeEditor editor, Composite composite, string name) //NOTE: passing no editor here will produce an empty layout, which could be destructive!
         {
-            FlowgraphMeta flowgraphMeta = editor.AsFlowgraphMeta(composite, name);
+            FlowgraphMeta flowgraphMeta = editor == null ? new FlowgraphMeta() { Name = name, CompositeGUID = composite.shortGUID } : editor.AsFlowgraphMeta(composite, name);
             FlowgraphMeta existingFGM = Table.flowgraphs.FirstOrDefault(o => o.Name == flowgraphMeta.Name && o.CompositeGUID == flowgraphMeta.CompositeGUID);
             if (existingFGM != null)
                 Table.flowgraphs[Table.flowgraphs.IndexOf(existingFGM)] = flowgraphMeta;
@@ -172,10 +170,15 @@ namespace CommandsEditor
             if (_compatibility == null) _compatibility = new CompositeFlowgraphCompatibilityTable();
             Console.WriteLine("Loaded " + _compatibility.compatibility_info.Count + " flowgraph compatibility definitions!");
 
-//#if !DEBUG
             if (_userDefinedLayouts.flowgraphs.Count == 0)
             {
-                //This Commands is being opened for the first time. We need to check to see if any composites have been modified.
+                //Copy the default layouts over
+                for (int i = 0; i < _preDefinedLayouts.flowgraphs.Count; i++)
+                {
+                    _userDefinedLayouts.flowgraphs.Add(_preDefinedLayouts.flowgraphs[i].Copy());
+                }
+
+                //This Commands is being opened for the first time since the flowgraph update. We need to check to see if the composite is supported.
                 for (int i = 0; i < _commands.Entries.Count; i++)
                 {
                     var compatibilityInfo = _compatibility.compatibility_info.FirstOrDefault(o => o.composite_id == _commands.Entries[i].shortGUID);
@@ -184,16 +187,28 @@ namespace CommandsEditor
                         compatibilityInfo = new CompositeFlowgraphCompatibilityTable.CompatibilityInfo() { composite_id = _commands.Entries[i].shortGUID };
                         _compatibility.compatibility_info.Add(compatibilityInfo);
                     }
-                    compatibilityInfo.flowgraphs_supported = true; //TODO: need to actually do the logic for this check
-                }
+#if DEBUG
+                    compatibilityInfo.flowgraphs_supported = true;
+#else
 
-                //Copy the default layouts over
-                for (int i = 0; i < _preDefinedLayouts.flowgraphs.Count; i++)
-                {
-                    _userDefinedLayouts.flowgraphs.Add(_preDefinedLayouts.flowgraphs[i].Copy());
+                    if (CommandsUtils.PurgeDeadLinks(_commands, _commands.Entries[i]))
+                        CommandsUtils.PurgedComposites.purged.Add(_commands.Entries[i].shortGUID);
+
+                    int links = CompositeUtils.CountLinks(_commands.Entries[i]);
+                    if (links == 0)
+                    {
+                        _userDefinedLayouts.flowgraphs.RemoveAll(o => o.CompositeGUID == _commands.Entries[i].shortGUID);
+                        SaveLayout(null, _commands.Entries[i], Path.GetFileName(_commands.Entries[i].name));
+                        compatibilityInfo.flowgraphs_supported = true;
+                    }
+                    else
+                    {
+                        //TODO: need to validate that the content of the composite hasn't diverged from the layout
+                        compatibilityInfo.flowgraphs_supported = HasLayout(_commands.Entries[i]);
+                    }
+#endif
                 }
             }
-//#endif
         }
 
         private static void SaveCustomFlowgraphs(string filepath)

@@ -145,7 +145,7 @@ namespace CommandsEditor
                 _selectEntOut = null;
             }
 
-            _selectEntOut = new SelectHierarchy(_entityDisplay.Composite, new CompositeEntityList.DisplayOptions() { ShowCheckboxes = false }, false);
+            _selectEntOut = new SelectHierarchy(_entityDisplay.Composite, new CompositeEntityList.DisplayOptions(), false);
             _selectEntOut.Show();
             _selectEntOut.OnHierarchyGenerated += OnSelectedEntityOut;
         }
@@ -163,7 +163,7 @@ namespace CommandsEditor
                 _selectEntIn = null;
             }
 
-            _selectEntIn = new SelectHierarchy(_entityDisplay.Composite, new CompositeEntityList.DisplayOptions() { ShowCheckboxes = false }, false);
+            _selectEntIn = new SelectHierarchy(_entityDisplay.Composite, new CompositeEntityList.DisplayOptions(), false);
             _selectEntIn.Show();
             _selectEntIn.OnHierarchyGenerated += OnSelectedEntityIn;
         }

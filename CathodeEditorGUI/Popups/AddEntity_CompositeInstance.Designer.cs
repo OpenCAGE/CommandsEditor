@@ -35,12 +35,12 @@
             this.entityName = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.searchText = new System.Windows.Forms.TextBox();
-            this.searchBtn = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.clearSearchBtn = new System.Windows.Forms.Button();
             this.compositeTree = new System.Windows.Forms.TreeView();
             this.imageList = new System.Windows.Forms.ImageList(this.components);
             this.compositeNameDisplay = new System.Windows.Forms.TextBox();
+            this.createNode = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // addDefaultParams
@@ -93,21 +93,9 @@
             this.searchText.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.searchText.Location = new System.Drawing.Point(15, 88);
             this.searchText.Name = "searchText";
-            this.searchText.Size = new System.Drawing.Size(545, 20);
+            this.searchText.Size = new System.Drawing.Size(607, 20);
             this.searchText.TabIndex = 2;
-            this.searchText.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SearchFuncTypeOnEnterKey);
-            // 
-            // searchBtn
-            // 
-            this.searchBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.searchBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.searchBtn.Location = new System.Drawing.Point(578, 88);
-            this.searchBtn.Name = "searchBtn";
-            this.searchBtn.Size = new System.Drawing.Size(63, 20);
-            this.searchBtn.TabIndex = 4;
-            this.searchBtn.Text = "Search";
-            this.searchBtn.UseVisualStyleBackColor = true;
-            this.searchBtn.Click += new System.EventHandler(this.searchBtn_Click);
+            this.searchText.TextChanged += new System.EventHandler(this.searchText_TextChanged);
             // 
             // label1
             // 
@@ -124,7 +112,7 @@
             this.clearSearchBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.clearSearchBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.clearSearchBtn.Image = ((System.Drawing.Image)(resources.GetObject("clearSearchBtn.Image")));
-            this.clearSearchBtn.Location = new System.Drawing.Point(559, 88);
+            this.clearSearchBtn.Location = new System.Drawing.Point(621, 88);
             this.clearSearchBtn.Name = "clearSearchBtn";
             this.clearSearchBtn.Size = new System.Drawing.Size(20, 20);
             this.clearSearchBtn.TabIndex = 3;
@@ -167,15 +155,28 @@
             this.compositeNameDisplay.Size = new System.Drawing.Size(626, 20);
             this.compositeNameDisplay.TabIndex = 148;
             // 
+            // createNode
+            // 
+            this.createNode.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.createNode.AutoSize = true;
+            this.createNode.Location = new System.Drawing.Point(159, 370);
+            this.createNode.Name = "createNode";
+            this.createNode.Size = new System.Drawing.Size(86, 17);
+            this.createNode.TabIndex = 149;
+            this.createNode.Text = "Create Node";
+            this.createNode.UseVisualStyleBackColor = true;
+            this.createNode.CheckedChanged += new System.EventHandler(this.createNode_CheckedChanged);
+            // 
             // AddEntity_CompositeInstance
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(653, 406);
+            this.Controls.Add(this.createNode);
             this.Controls.Add(this.compositeNameDisplay);
             this.Controls.Add(this.clearSearchBtn);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.searchBtn);
             this.Controls.Add(this.searchText);
             this.Controls.Add(this.addDefaultParams);
             this.Controls.Add(this.createEntity);
@@ -198,11 +199,11 @@
         private System.Windows.Forms.TextBox entityName;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox searchText;
-        private System.Windows.Forms.Button searchBtn;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button clearSearchBtn;
         private System.Windows.Forms.TreeView compositeTree;
         private System.Windows.Forms.ImageList imageList;
         private System.Windows.Forms.TextBox compositeNameDisplay;
+        private System.Windows.Forms.CheckBox createNode;
     }
 }

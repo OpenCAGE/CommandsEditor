@@ -34,13 +34,12 @@ namespace CommandsEditor.DockPanels
         public Entity Entity => _entity;
         public Composite Composite => _compositeDisplay.Composite;
 
-        private bool _displayLinks = true;
-        public bool DisplayLinks => _displayLinks;
+        private bool _displayingLinks = true;
+        public bool DisplayingLinks => _displayingLinks;
 
-        public EntityInspector(CompositeDisplay compositeDisplay, bool displayLinks = true)
+        public EntityInspector(CompositeDisplay compositeDisplay)
         {
             _compositeDisplay = compositeDisplay;
-            _displayLinks = displayLinks;
 
             this.FormClosing += (s, e) => { DepopulateUI(); };
             this.FormClosed += EntityDisplay_FormClosed;
@@ -80,7 +79,7 @@ namespace CommandsEditor.DockPanels
             Reload();
         }
 
-        public void PopulateUI(Entity entity)
+        public void PopulateUI(Entity entity, bool displayLinks)
         {
             if (!this.Visible)
                 this.Show();
@@ -107,7 +106,7 @@ namespace CommandsEditor.DockPanels
                     break;
             }
 
-            Reload();
+            Reload(displayLinks);
 
             this.Activate();
         }
@@ -152,8 +151,11 @@ namespace CommandsEditor.DockPanels
         }
 
         /* Reload this display */
-        public void Reload()
+        public void Reload() => Reload(_displayingLinks);
+        public void Reload(bool displayLinks)
         {
+            _displayingLinks = displayLinks;
+
             //UI defaults - TODO: just set this in the designer.
             entityInfoGroup.Text = "Selected Entity Info";
             entityParamGroup.Text = "Selected Entity Parameters";
@@ -262,7 +264,7 @@ namespace CommandsEditor.DockPanels
                 editEntityMovers.Enabled = true;
 
             int current_ui_offset = 7;
-            if (_displayLinks)
+            if (_displayingLinks)
             {
                 //populate linked params IN
                 List<Entity> ents = Composite.GetEntities();
@@ -455,7 +457,7 @@ namespace CommandsEditor.DockPanels
                 controls.Add(parameterGUI);
             }
 
-            if (_displayLinks)
+            if (_displayingLinks)
             {
                 //populate linked params OUT
                 for (int i = 0; i < _entity.childLinks.Count; i++)

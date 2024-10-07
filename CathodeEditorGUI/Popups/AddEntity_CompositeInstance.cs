@@ -31,16 +31,22 @@ namespace CommandsEditor
             _treeUtility.UpdateFileTree(Content.commands.GetCompositeNames().ToList());
 
             searchText.Text = SettingsManager.GetString(Singleton.Settings.PreviouslySearchedCompInstType);
-            searchBtn_Click(null, null);
+            Search();
 
             string funcToSelect = SettingsManager.GetString(Singleton.Settings.PreviouslySelectedCompInstType);
             if (funcToSelect != "")
                 _treeUtility.SelectNode(funcToSelect);
 
             addDefaultParams.Checked = SettingsManager.GetBool(Singleton.Settings.PreviouslySearchedParamPopulationComp, false);
+            createNode.Checked = SettingsManager.GetBool(Singleton.Settings.MakeNodeWhenMakeEntity); 
         }
 
-        private void searchBtn_Click(object sender, EventArgs e)
+        private void searchText_TextChanged(object sender, EventArgs e)
+        {
+            Search();
+        }
+
+        private void Search()
         {
             List<string> filteredCompositeNames = new List<string>();
             List<Composite> filteredComposites = new List<Composite>();
@@ -71,7 +77,7 @@ namespace CommandsEditor
         private void clearSearchBtn_Click(object sender, EventArgs e)
         {
             searchText.Text = "";
-            searchBtn_Click(null, null);
+            Search();
         }
 
         private void compositeTree_AfterSelect(object sender, TreeViewEventArgs e)
@@ -131,10 +137,11 @@ namespace CommandsEditor
             if (e.KeyCode == Keys.Enter)
                 createEntity.PerformClick();
         }
-        private void SearchFuncTypeOnEnterKey(object sender, KeyEventArgs e)
+
+        private void createNode_CheckedChanged(object sender, EventArgs e)
         {
-            if (e.KeyCode == Keys.Enter)
-                searchBtn.PerformClick();
+            if (createNode.Checked != SettingsManager.GetBool(Singleton.Settings.MakeNodeWhenMakeEntity))
+                Singleton.Editor.ToggleMakeNodeWhenMakeEntity();
         }
     }
 }

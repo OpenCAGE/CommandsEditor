@@ -23,6 +23,7 @@ using ListViewItem = System.Windows.Forms.ListViewItem;
 using ListViewGroupCollapse;
 using System.Threading;
 using System.Windows.Media.Animation;
+using CathodeLib;
 
 namespace CommandsEditor.DockPanels
 {
@@ -56,6 +57,10 @@ namespace CommandsEditor.DockPanels
 
             _content = new LevelContent(levelName);
             _treeUtility = new TreeUtility(treeView1);
+
+#if !DEBUG 
+            DEBUG_LoadNextEmpty.Visible = false;
+#endif
 
             Singleton.OnCompositeRenamed += OnCompositeRenamed;
         }
@@ -619,30 +624,25 @@ namespace CommandsEditor.DockPanels
             _functionUsesDialog = null;
         }
 
-#if !DEBUG
-        FAIL BUILD! THIS SHOULD HAVE BEEN REMOVED BY NOW
-#endif
         private void DEBUG_LoadNextEmpty_Click(object sender, EventArgs e)
         {
             DEBUG_LoadNextToConstruct();
         }
         public void DEBUG_LoadNextToConstruct()
         {
+#if !DEBUG
+            MessageBox.Show("This should not be reached in production code...");
+            return;
+#endif
+
             FlowgraphLayoutManager.DEBUG_UsePreDefinedTable = true;
-            List<Composite> ordered = Content.commands.Entries.OrderBy(o => CountNumberOfLinks(o)).Where(o => CountNumberOfLinks(o) != 0 && !FlowgraphLayoutManager.HasLayout(o)).ToList();
+            List<Composite> ordered = Content.commands.Entries.OrderBy(o => CompositeUtils.CountLinks(o)).Where(o => CompositeUtils.CountLinks(o) != 0 && !FlowgraphLayoutManager.HasLayout(o)).ToList();
             Console.WriteLine("Still " + ordered.Count + " to go in this PAK (count includes those not purged, so may be lower)");
             FlowgraphLayoutManager.DEBUG_UsePreDefinedTable = false;
             if (ordered.Count != 0)
             {
                 LoadComposite(ordered[0]);
             }
-        }
-        private int CountNumberOfLinks(Composite composite)
-        {
-            int count = 0;
-            foreach (Entity ent in composite.GetEntities())
-                count += ent.childLinks.Count;
-            return count;
         }
     }
 }

@@ -37,6 +37,7 @@ namespace CommandsEditor
 
         private Composite _composite;
         private int _spawnOffset = 0;
+        private string _flowgraphName = "";
 
         public Flowgraph()
         {
@@ -139,13 +140,120 @@ namespace CommandsEditor
             }
         }
 
+        public bool ShowFlowgraph(Composite composite, FlowgraphMeta flowgraphMeta)
+        {
+            Console.WriteLine("EntityFlowgraph::ShowFlowgraph - " + composite.name + " - " + flowgraphMeta.Name);
+
+            if (CommandsUtils.PurgeDeadLinks(Commands, composite))
+                CommandsUtils.PurgedComposites.purged.Add(composite.shortGUID);
+
+            _composite = composite;
+            this.Text = "Flowgraph: " + flowgraphMeta.Name;
+            _flowgraphName = flowgraphMeta.Name;
+
+            stNodeEditor1.SuspendLayout();
+            stNodeEditor1.Nodes.Clear();
+            _spawnOffset = 0;
+
+            //Populate nodes for entities
+            List<Entity> populatedEntities = new List<Entity>();
+            STNode[] nodes = new STNode[flowgraphMeta.Nodes.Count];
+            for (int i = 0; i < flowgraphMeta.Nodes.Count; i++)
+            {
+                Entity entity = composite.GetEntityByID(flowgraphMeta.Nodes[i].EntityGUID);
+                if (entity == null)
+                {
+                    //Our composite mismatches the flowgraph layout, the user must have modified the content with an older version of the script editor.
+                    throw new Exception("Mismatch!");
+                    return false;
+                }
+                populatedEntities.Add(entity);
+
+                nodes[i] = EntityToNode(entity, composite, true);
+                nodes[i].SetPosition(flowgraphMeta.Nodes[i].Position);
+
+                foreach (ShortGuid pin in flowgraphMeta.Nodes[i].PinsIn)
+                    nodes[i].AddInputOption(pin);
+                foreach (ShortGuid pin in flowgraphMeta.Nodes[i].PinsOut)
+                    nodes[i].AddOutputOption(pin);
+
+                nodes[i].NodeID = flowgraphMeta.Nodes[i].NodeID;
+            }
+
+            //Populate connections
+            List<EntityConnector> populatedConnections = new List<EntityConnector>();
+            for (int i = 0; i < flowgraphMeta.Nodes.Count; i++)
+            {
+                foreach (FlowgraphMeta.NodeMeta.ConnectionMeta connectionMeta in flowgraphMeta.Nodes[i].Connections)
+                {
+                    STNode connectedNode = nodes.FirstOrDefault(o => o.NodeID == connectionMeta.ConnectedNodeID && o.ShortGUID == connectionMeta.ConnectedEntityGUID);
+
+                    STNodeOption pinOut = nodes[i].AddOutputOption(connectionMeta.ParameterGUID);
+                    STNodeOption pinIn = connectedNode.AddInputOption(connectionMeta.ConnectedParameterGUID);
+                    ConnectionStatus status = pinOut.ConnectOption(pinIn);
+
+                    if (status != ConnectionStatus.Connected)
+                    {
+                        Console.WriteLine("WARNING! Could not create connection!");
+                        return false;
+                    }
+
+                    EntityConnector connector = nodes[i].Entity.childLinks.FirstOrDefault(o => o.thisParamID == connectionMeta.ParameterGUID && o.linkedParamID == connectionMeta.ConnectedParameterGUID && o.linkedEntityID == connectedNode.ShortGUID);
+                    if (connector.ID.IsInvalid)
+                    {
+                        //Our composite mismatches the flowgraph layout, the user must have modified the content with an older version of the script editor.
+                        Console.WriteLine("Unexpected extra connection that isn't in PAK!!");
+                        return false;
+                    }
+                    populatedConnections.Add(connector);
+                }
+            }
+
+            //Sanity check that our Composite doesn't contain any additional links/entities that we didn't populate in the flowgraph but should've
+            List<Entity> entities = composite.GetEntities();
+            foreach (Entity entity in entities)
+            {
+                if (entity.childLinks.Count == 0)
+                    continue;
+
+                foreach (EntityConnector connection in entity.childLinks)
+                {
+                    if (!populatedConnections.Contains(connection))
+                    {
+                        Console.WriteLine("Failed to find connection from " + entity.shortGUID + " to " + connection.linkedEntityID.ToByteString() + ": '" + connection.thisParamID + "' [" + connection.thisParamID.ToByteString() + "] -> '" + connection.linkedParamID + "' [" + connection.linkedParamID.ToByteString() + "]");
+                        //Our composite mismatches the flowgraph layout, the user must have modified the content with an older version of the script editor.
+                        return false;
+                    }
+                }
+
+                if (!populatedEntities.Contains(entity))
+                {
+                    //Our composite mismatches the flowgraph layout, the user must have modified the content with an older version of the script editor.
+                    Console.WriteLine("missing entity with links");
+                    return false;
+                }
+            }
+
+            //Correctly respect the scale/position of the saved flowgraph
+            stNodeEditor1.ScaleCanvas(flowgraphMeta.CanvasScale, 0, 0);
+            stNodeEditor1.MoveCanvas(flowgraphMeta.CanvasPosition.X, flowgraphMeta.CanvasPosition.Y, false, CanvasMoveArgs.All);
+
+            foreach (STNode node in stNodeEditor1.Nodes)
+                node.Recompute();
+
+            stNodeEditor1.ResumeLayout();
+            stNodeEditor1.Invalidate();
+
+            return true;
+        }
+
         //TODO: NEEDS REWORKING INTO "SHOW FLOWGRAPH" WHEN ALL LAYOUTS ARE DEFINED.
         //      THIS FUNCTION SHOULD BE PASSED THE FLOWGRAPHMETA OBJECT.
         public void ShowComposite(Composite composite, bool forceReset = false)
         {
+            //THIS SHOULD NOT BE CALLED IN PRODUCTION. IT EXISTS TO POPULATE DUMMY NODES TO DEFINE A LAYOUT WITH.
 #if !DEBUG
-            if (forceReset)
-                MessageBox.Show("ForceReset called in production code!!!");
+            MessageBox.Show("ShowComposite called in production code!!!");
 #endif
 
             Console.WriteLine("EntityFlowgraph::ShowComposite - " + composite.name);
@@ -155,10 +263,6 @@ namespace CommandsEditor
 
             _composite = composite;
             this.Text = "Flowgraph: " + _composite.name;
-
-            stNodeEditor1.SuspendLayout();
-            stNodeEditor1.Nodes.Clear();
-            _spawnOffset = 0;
 
             //TODO: When I've fully populated the layout manager, this should be reworked. We should be passed the FlowgraphMeta object instead of the Composite.
             List<FlowgraphMeta> flowgraphMetas = FlowgraphLayoutManager.GetLayouts(composite);
@@ -171,98 +275,16 @@ namespace CommandsEditor
             }
             if (flowgraphMetas.Count > 0)
             {
-                FlowgraphMeta flowgraphMeta = flowgraphMetas[0];
-                this.Text = "Flowgraph: " + flowgraphMeta.Name;
-
-                //Populate nodes for entities
-                List<Entity> populatedEntities = new List<Entity>();
-                STNode[] nodes = new STNode[flowgraphMeta.Nodes.Count];
-                for (int i = 0; i < flowgraphMeta.Nodes.Count; i++)
-                {
-                    Entity entity = composite.GetEntityByID(flowgraphMeta.Nodes[i].EntityGUID);
-                    if (entity == null)
-                    {
-                        //Our composite mismatches the flowgraph layout, the user must have modified the content with an older version of the script editor.
-                        //TODO: Do something here.
-                        throw new Exception("Mismatch!");
-                    }
-                    populatedEntities.Add(entity);
-
-                    nodes[i] = EntityToNode(entity, composite, true);
-                    nodes[i].SetPosition(flowgraphMeta.Nodes[i].Position);
-
-                    foreach (ShortGuid pin in flowgraphMeta.Nodes[i].PinsIn)
-                        nodes[i].AddInputOption(pin);
-                    foreach (ShortGuid pin in flowgraphMeta.Nodes[i].PinsOut)
-                        nodes[i].AddOutputOption(pin);
-
-                    nodes[i].NodeID = flowgraphMeta.Nodes[i].NodeID;
-                }
-
-                //Populate connections
-                List<EntityConnector> populatedConnections = new List<EntityConnector>();
-                for (int i = 0; i < flowgraphMeta.Nodes.Count; i++)
-                {
-                    foreach (FlowgraphMeta.NodeMeta.ConnectionMeta connectionMeta in flowgraphMeta.Nodes[i].Connections)
-                    {
-                        STNode connectedNode = nodes.FirstOrDefault(o => o.NodeID == connectionMeta.ConnectedNodeID && o.ShortGUID == connectionMeta.ConnectedEntityGUID);
-
-                        STNodeOption pinOut = nodes[i].AddOutputOption(connectionMeta.ParameterGUID);
-                        STNodeOption pinIn = connectedNode.AddInputOption(connectionMeta.ConnectedParameterGUID);
-                        ConnectionStatus status = pinOut.ConnectOption(pinIn);
-
-                        if (status != ConnectionStatus.Connected)
-                        {
-                            Console.WriteLine("WARNING! Could not create connection!");
-                        }
-
-                        EntityConnector connector = nodes[i].Entity.childLinks.FirstOrDefault(o => o.thisParamID == connectionMeta.ParameterGUID && o.linkedParamID == connectionMeta.ConnectedParameterGUID && o.linkedEntityID == connectedNode.ShortGUID);
-                        if (connector.ID.IsInvalid)
-                        {
-                            //Our composite mismatches the flowgraph layout, the user must have modified the content with an older version of the script editor.
-                            //TODO: Do something here.
-                            //throw new Exception("Mismatch!");
-                            Console.WriteLine("Unexpected extra connection that isn't in PAK!!");
-                        }
-                        populatedConnections.Add(connector);
-                    }
-                }
-
-                //Sanity check that our Composite doesn't contain any additional links/entities that we didn't populate in the flowgraph but should've
-                List<Entity> entities = composite.GetEntities();
-                foreach (Entity entity in entities)
-                {
-                    if (entity.childLinks.Count == 0)
-                        continue;
-
-                    foreach (EntityConnector connection in entity.childLinks)
-                    {
-                        if (!populatedConnections.Contains(connection))
-                        {
-                            Console.WriteLine("Failed to find connection from " + entity.shortGUID + " to " + connection.linkedEntityID.ToByteString() + ": '" + connection.thisParamID + "' [" + connection.thisParamID.ToByteString() + "] -> '" + connection.linkedParamID + "' [" + connection.linkedParamID.ToByteString() + "]");
-                            //Our composite mismatches the flowgraph layout, the user must have modified the content with an older version of the script editor.
-                            //TODO: Do something here.
-                            //throw new Exception("Mismatch!");
-                        }
-                    }
-
-                    if (!populatedEntities.Contains(entity))
-                    {
-                        //Our composite mismatches the flowgraph layout, the user must have modified the content with an older version of the script editor.
-                        //TODO: Do something here.
-                        //throw new Exception("Mismatch!");
-                        Console.WriteLine("missing entity with links");
-                    }
-                }
-
-                //Correctly respect the scale/position of the saved flowgraph
-                stNodeEditor1.ScaleCanvas(flowgraphMeta.CanvasScale, 0, 0);
-                stNodeEditor1.MoveCanvas(flowgraphMeta.CanvasPosition.X, flowgraphMeta.CanvasPosition.Y, false, CanvasMoveArgs.All);
+                ShowFlowgraph(composite, flowgraphMetas[0]);
             }
             else
             {
                 //This composite has no defined layouts. We won't get here in the final build. This function will be refactored after the layout db is populated.
                 Console.WriteLine("NO DEFINED FLOWGRAPH LAYOUT FOUND! We should never reach this in production code.");
+
+                stNodeEditor1.SuspendLayout();
+                stNodeEditor1.Nodes.Clear();
+                _spawnOffset = 0;
 
                 List<Entity> entities = _composite.GetEntities();
                 for (int i = 0; i < entities.Count; i++)
@@ -289,25 +311,26 @@ namespace CommandsEditor
                     }
                 }
 
-                this.Text = "UNSAVED with " + stNodeEditor1.Nodes.Count + " nodes";
-            }
-
-            foreach (STNode node in stNodeEditor1.Nodes)
-                node.Recompute();
-
-            //stack nodes nicely when we don't have a layout
-            if (flowgraphMetas.Count == 0)
-            {
-                int height = 10;
                 foreach (STNode node in stNodeEditor1.Nodes)
-                {
-                    node.SetPosition(new Point(0, height));
-                    height += node.Height + 10;
-                }
-            }
+                    node.Recompute();
 
-            stNodeEditor1.ResumeLayout();
-            stNodeEditor1.Invalidate();
+                stNodeEditor1.ResumeLayout();
+                stNodeEditor1.Invalidate();
+
+                //stack nodes nicely when we don't have a layout
+                if (flowgraphMetas.Count == 0)
+                {
+                    int height = 10;
+                    foreach (STNode node in stNodeEditor1.Nodes)
+                    {
+                        node.SetPosition(new Point(0, height));
+                        height += node.Height + 10;
+                    }
+                }
+
+                this.Text = "UNSAVED with " + stNodeEditor1.Nodes.Count + " nodes";
+                _flowgraphName = Path.GetFileName(_composite.name);
+            }
         }
 
         protected override void OnLoad(EventArgs e)
@@ -396,7 +419,7 @@ namespace CommandsEditor
         public void SaveAndCompile()
         {
             //TODO: when the layout db is completely populated, we should change this to reflect the name of the loaded flowgraph from the FlowgraphMeta object that got passed.
-            FlowgraphMeta layout = FlowgraphLayoutManager.SaveLayout(stNodeEditor1, _composite, Path.GetFileName(_composite.name));
+            FlowgraphMeta layout = FlowgraphLayoutManager.SaveLayout(stNodeEditor1, _composite, _flowgraphName);
             Console.WriteLine("Saved flowgraph layout: " + layout.Name);
 
             //Re-generate connections using the content in the nodegraph
@@ -585,16 +608,20 @@ namespace CommandsEditor
                 DisplayFunctions = true,
                 DisplayProxies = true,
                 DisplayVariables = true,
-                ShowCheckboxes = false,
+                ShowCheckboxes = true,
             }, false);
-            selectEnt.OnFinalEntitySelected += AddNodeCallbackEntitySelected;
+            selectEnt.OnFinalEntitiesSelected += AddNodeCallbackEntitySelected;
             selectEnt.Show();
             _nodeSpawnPosition = new Point((int)stNodeEditor1.MousePositionInCanvas.X, (int)stNodeEditor1.MousePositionInCanvas.Y);
         }
-        private void AddNodeCallbackEntitySelected(Entity ent)
+        private void AddNodeCallbackEntitySelected(List<Entity> ent)
         {
-            STNode node = EntityToNode(ent, _composite, true);
-            node.SetPosition(_nodeSpawnPosition);
+            for (int i = 0; i < ent.Count; i++)
+            {
+                STNode node = EntityToNode(ent[i], _composite, true);
+                Point offsetSpawnPos = new Point(_nodeSpawnPosition.X + (i * 20), _nodeSpawnPosition.Y + (i * 20));
+                node.SetPosition(offsetSpawnPos);
+            }
         }
 
         AddPin _pinManager = null;

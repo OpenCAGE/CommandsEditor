@@ -96,6 +96,7 @@
             this.createParameterToolStripMenuItem.Name = "createParameterToolStripMenuItem";
             this.createParameterToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
             this.createParameterToolStripMenuItem.Text = "Create Parameter";
+            this.createParameterToolStripMenuItem.Click += new System.EventHandler(this.createParameterToolStripMenuItem_Click);
             // 
             // createFunctionToolStripMenuItem
             // 
@@ -103,6 +104,7 @@
             this.createFunctionToolStripMenuItem.Name = "createFunctionToolStripMenuItem";
             this.createFunctionToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
             this.createFunctionToolStripMenuItem.Text = "Create Function";
+            this.createFunctionToolStripMenuItem.Click += new System.EventHandler(this.createFunctionToolStripMenuItem_Click);
             // 
             // createInstanceOfCompositeToolStripMenuItem
             // 
@@ -110,6 +112,7 @@
             this.createInstanceOfCompositeToolStripMenuItem.Name = "createInstanceOfCompositeToolStripMenuItem";
             this.createInstanceOfCompositeToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
             this.createInstanceOfCompositeToolStripMenuItem.Text = "Create Instance of Composite";
+            this.createInstanceOfCompositeToolStripMenuItem.Click += new System.EventHandler(this.createInstanceOfCompositeToolStripMenuItem_Click);
             // 
             // createProxyToolStripMenuItem
             // 
@@ -117,6 +120,7 @@
             this.createProxyToolStripMenuItem.Name = "createProxyToolStripMenuItem";
             this.createProxyToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
             this.createProxyToolStripMenuItem.Text = "Create Proxy";
+            this.createProxyToolStripMenuItem.Click += new System.EventHandler(this.createProxyToolStripMenuItem_Click);
             // 
             // createAliasToolStripMenuItem1
             // 
@@ -124,6 +128,7 @@
             this.createAliasToolStripMenuItem1.Name = "createAliasToolStripMenuItem1";
             this.createAliasToolStripMenuItem1.Size = new System.Drawing.Size(230, 22);
             this.createAliasToolStripMenuItem1.Text = "Create Alias";
+            this.createAliasToolStripMenuItem1.Click += new System.EventHandler(this.createAliasToolStripMenuItem1_Click);
             // 
             // toolStripSeparator1
             // 

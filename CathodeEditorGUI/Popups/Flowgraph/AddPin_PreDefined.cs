@@ -49,7 +49,7 @@ namespace CommandsEditor
                 case Mode.REMOVE_OUT:
                     this.Text = "Modify Pins Out [" + _node.Title + "]";
                     label2.Text = "Pins Out";
-                    createParams.Text = "Set Selected As Pins Out";
+                    createParams.Text = "Set Checked As Pins Out";
                     break;
             }
 

@@ -65,9 +65,8 @@ namespace CommandsEditor.DockPanels
 
             _entityList = new EntityList();
             _entityList.Show(dockPanel, DockState.DockLeft);
-            //_entityList.DockState = DockState.DockLeftAutoHide; //<-- not using auto hide for now to get ui active for events
 
-            _entityDisplay = new EntityInspector(this, true); //TODO: pass false to hide links
+            _entityDisplay = new EntityInspector(this); 
             _entityDisplay.Show(dockPanel, DockState.DockRight);
             _entityDisplay.FormClosing += OnEntityDisplayClosing;
 
@@ -131,8 +130,8 @@ namespace CommandsEditor.DockPanels
                     break;
             }
 
-            //TODO: maybe the flowgraph stuff should live here??
-            _entityList.List.Setup(composite, null, false);
+            _entityList.List.Setup(composite, new CompositeEntityList.DisplayOptions() { ShowCheckboxes = true }, false);
+            _entityList.Show(dockPanel, DockState.DockLeft);
             _path = new CompositePath();
             this.Text = EditorUtils.GetCompositeName(composite);
 
@@ -239,32 +238,35 @@ namespace CommandsEditor.DockPanels
             if (alsoReloadEntities) ReloadAllEntities();
 
             //TODO: I don't know if this flowgraph stuff best lives here. The whole setup of having like 5 reload functions, and a separate load function is really dumb. Needs a refactor.
+            for (int i = 0; i < _flowgraphs.Count; i++)
+                _flowgraphs[i].Close();
+            _flowgraphs.Clear();
             if (SupportsFlowgraphs)
             {
-                Console.WriteLine("Creating flowgraph windows again");
-                for (int i = 0; i < _flowgraphs.Count; i++)
-                    _flowgraphs[i].Close();
-                _flowgraphs.Clear();
-
                 List<FlowgraphMeta> layouts = FlowgraphLayoutManager.GetLayouts(Composite);
 
+#if DEBUG
                 //TEMP HACK TEMP HACK (we need there to be always ONE entry here while i populate the db. once that's done, this should be reworked)
-                layouts.Clear();
-                layouts.Add(new FlowgraphMeta());
+                if (layouts.Count == 0)
+                {
+                    Flowgraph flowgraph = new Flowgraph();
+                    _flowgraphs.Add(flowgraph);
 
+                    flowgraph.Show(dockPanel, DockState.Document);
+                    flowgraph.ShowComposite(Composite); 
+                }
+#endif
+                Console.WriteLine("CompositeDisplay found " + layouts.Count + " flowgraph layouts");
                 for (int i = 0; i < layouts.Count; i++)
                 {
                     Flowgraph flowgraph = new Flowgraph();
                     _flowgraphs.Add(flowgraph);
 
                     flowgraph.Show(dockPanel, DockState.Document);
-                    flowgraph.ShowComposite(Composite); //TODO: this should pass layouts[i] - but i haven't finished populating the table yet, so it's a bit of a hack for now.
+                    flowgraph.ShowFlowgraph(Composite, layouts[i]); 
                 }
             }
-            else
-            {
-                //TODO: Should enable the old link layout and stuff.
-            }
+            createFlowgraph.Visible = SupportsFlowgraphs;
 
             exportComposite.Enabled = false;
             Task.Factory.StartNew(() => UpdateExportCompositeVisibility());
@@ -384,7 +386,11 @@ namespace CommandsEditor.DockPanels
                 return;
             }
 
-            _entityDisplay.PopulateUI(entity);
+#if DEBUG
+            _entityDisplay.PopulateUI(entity, true); //NOTE: always showing links in debug view to make validating things easier
+#else
+            _entityDisplay.PopulateUI(entity, !SupportsFlowgraphs);
+#endif
 
             _entityList.List.FocusOnList();
         }
@@ -705,7 +711,7 @@ namespace CommandsEditor.DockPanels
         AddEntity_Function dialog_func = null;
         AddEntity_CompositeInstance dialog_compinst = null;
         SelectHierarchy dialog_hierarchy = null; EntityVariant dialog_hierarchy_entvar;
-        private void CreateEntity(EntityVariant variant = EntityVariant.FUNCTION, bool composite = false)
+        public void CreateEntity(EntityVariant variant = EntityVariant.FUNCTION, bool composite = false)
         {
             if (variant == EntityVariant.FUNCTION && !composite)
             {
@@ -740,6 +746,7 @@ namespace CommandsEditor.DockPanels
                             DisplayFunctions = true,
                             DisplayProxies = false,
                             DisplayVariables = false,
+                            ShowCreateNode = true,
                         });
                         dialog_hierarchy.Text = "Create Proxy";
                         break;
@@ -750,6 +757,7 @@ namespace CommandsEditor.DockPanels
                             DisplayFunctions = true,
                             DisplayProxies = true,
                             DisplayVariables = true,
+                            ShowCreateNode = true,
                         });
                         dialog_hierarchy.Text = "Create Alias";
                         break;
@@ -890,7 +898,31 @@ namespace CommandsEditor.DockPanels
 
         private void createFlowgraph_Click(object sender, EventArgs e)
         {
-            //TODO: show popup with name entry for new flowgraph.
+            RenameGeneric createFlowgraphPopup = new RenameGeneric("", new RenameGeneric.RenameGenericContent()
+            {
+                Title = "Create new flowgraph for " + _composite.name,
+                Description = "New Flowgraph Name",
+                ButtonText = "Create Flowgraph"
+            });
+            createFlowgraphPopup.Show();
+            createFlowgraphPopup.RenamedText += OnCreateFlowgraph;
+        }
+        private void OnCreateFlowgraph(string name)
+        {
+            List<FlowgraphMeta> layouts = FlowgraphLayoutManager.GetLayouts(_composite);
+            for (int i = 0; i < layouts.Count; i++)
+            {
+                if (layouts[i].Name ==  name)
+                {
+                    MessageBox.Show("Cannot create new flowgraph named '" + name + "', as there is already a flowgraph with that name in this Composite! Please pick a unique name.", "Name taken!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+            FlowgraphMeta meta = FlowgraphLayoutManager.SaveLayout(null, _composite, name);
+            Flowgraph flowgraph = new Flowgraph();
+            _flowgraphs.Add(flowgraph);
+            flowgraph.Show(dockPanel, DockState.Document);
+            flowgraph.ShowFlowgraph(Composite, meta);
         }
     }
 }
