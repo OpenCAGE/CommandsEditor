@@ -951,7 +951,7 @@ namespace CommandsEditor
             return;
             Flowgraph window = new Flowgraph();
             window.Show();
-            window.DEBUG_LoadAll_Test(CommandsDisplay.Content.commands);
+            //window.DEBUG_LoadAll_Test(CommandsDisplay.Content.commands);
             window.Close();
 
 

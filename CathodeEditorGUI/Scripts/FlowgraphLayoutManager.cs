@@ -1,3 +1,6 @@
+//#define DO_PRE_FLIGHT_CHECKS
+// ^ Enable this define to sanity check the vanilla node DB for any dodgy entries.
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -50,7 +53,7 @@ namespace CommandsEditor
             {
                 _preDefinedLayouts.Read(reader);
             }
-#if DEBUG
+#if DEBUG && DO_PRE_FLIGHT_CHECKS
             //For sanity: make sure the vanilla db doesn't contain any empty flowgraphs
             List<FlowgraphMeta> trimmed = new List<FlowgraphMeta>();
             for (int i = 0; i < _preDefinedLayouts.flowgraphs.Count; i++)

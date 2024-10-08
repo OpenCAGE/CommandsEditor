@@ -253,7 +253,7 @@ namespace CommandsEditor.DockPanels
                     _flowgraphs.Add(flowgraph);
 
                     flowgraph.Show(dockPanel, DockState.Document);
-                    flowgraph.ShowComposite(Composite); 
+                    flowgraph.PopulateDefaultEntities(Composite); 
                 }
 #endif
                 Console.WriteLine("CompositeDisplay found " + layouts.Count + " flowgraph layouts");
