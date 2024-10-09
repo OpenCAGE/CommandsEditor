@@ -16,6 +16,8 @@ using System.IO;
 using CathodeLib;
 using System.Windows.Media.Media3D;
 using System.Windows.Controls;
+using System.ComponentModel.Design;
+using static CommandsEditor.ModifyPinsOrParameters;
 
 namespace CommandsEditor
 {
@@ -52,9 +54,11 @@ namespace CommandsEditor
 #if !DEBUG
             SaveFlowgraph.Visible = false;
             AutoCalc.Visible = false;
+            AutoCalcAdjacents.Visible = false;
             RemoveEmpties.Visible = false;
             ResetFG.Visible = false;
             SaveFlowgraphUnfinished.Visible = false;
+            SplitConnected.Visible = false;
 #endif
 
             //todo: i feel like these events should come from the compositedisplay?
@@ -498,6 +502,63 @@ namespace CommandsEditor
             origNode.SetPosition(new Point((this.Size.Width / 2) - (origNode.Width / 2) - 10, (this.Size.Height / 2) - (((outputStackedHeight > inputStackedHeight) ? outputStackedHeight : inputStackedHeight) / 2) - 20));
         }
 
+        List<STNode> positionedNodes = new List<STNode>();
+        private void AutoCalcAdjacents_Click(object sender, EventArgs e)
+        {
+            if (stNodeEditor1.GetSelectedNode().Length != 1)
+                return;
+
+            positionedNodes.Clear();
+            PositionNode(stNodeEditor1.GetSelectedNode()[0]);
+        }
+        private void PositionNode(STNode node)
+        {
+            STNodeOption[] inputs = node.GetInputOptions();
+            STNodeOption[] outputs = node.GetOutputOptions();
+
+            int stackedHeight = 0;
+
+            for (int i = 0; i < outputs.Length; i++)
+            {
+                foreach (STNodeOption output in outputs[i].GetConnectedOption())
+                {
+                    STNode connectedNode = output.Owner;
+                    if (positionedNodes.Contains(connectedNode))
+                        continue;
+                    positionedNodes.Add(connectedNode);
+
+                    connectedNode.SetPosition(new Point(node.Location.X + node.Width + 60, node.Location.Y + stackedHeight));
+                    stackedHeight += connectedNode.Height + 20;
+
+                    PositionNode(connectedNode);
+                }
+            }
+        }
+
+        private void SplitConnected_Click(object sender, EventArgs e)
+        {
+            if (stNodeEditor1.GetSelectedNode().Length != 1)
+                return;
+
+            STNode node = stNodeEditor1.GetSelectedNode()[0];
+            STNodeOption[] inputs = node.GetInputOptions();
+            STNodeOption[] outputs = node.GetOutputOptions();
+
+            if (outputs.Length != 1)
+                return;
+
+            if (outputs[0].GetConnectedOption().Count != 1)
+                return;
+
+            STNodeOption connectedOption = outputs[0].GetConnectedOption()[0];
+            STNode duplicated = DuplicateNode(connectedOption.Owner);
+
+            connectedOption.DisconnectOption(outputs[0]);
+            duplicated.GetInputOptions().FirstOrDefault(o => o.ShortGUID == connectedOption.ShortGUID).ConnectOption(outputs[0]);
+
+            duplicated.SetPosition(new Point(node.Location.X + node.Width + 60, node.Location.Y));
+        }
+
         private void RemoveEmpties_Click(object sender, EventArgs e)
         {
             for (int i = 0; i < stNodeEditor1.Nodes.Count; i++)
@@ -601,7 +662,10 @@ namespace CommandsEditor
         private void duplicateToolStripMenuItem_Click(object sender, EventArgs e)
         {
             STNode node = stNodeEditor1.GetHoveredNode();
-
+            DuplicateNode(node);
+        }
+        private STNode DuplicateNode(STNode node)
+        {
             STNode duplicated = EntityToNode(node.Entity, _composite, true);
 
             STNodeOption[] ins = node.GetInputOptions();
@@ -612,6 +676,8 @@ namespace CommandsEditor
                 duplicated.AddOutputOption(outs[i].ShortGUID);
 
             duplicated.SetPosition(new Point(node.Location.X + 15, node.Location.Y + 15));
+
+            return duplicated;
         }
 
         private void TabStripContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)

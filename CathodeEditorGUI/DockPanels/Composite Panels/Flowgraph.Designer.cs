@@ -45,6 +45,8 @@ namespace CommandsEditor
             this.renameFGToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.createNewFlowgraphToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.AutoCalcAdjacents = new System.Windows.Forms.Button();
+            this.SplitConnected = new System.Windows.Forms.Button();
             this.nodeContextMenu.SuspendLayout();
             this.TabStripContextMenu.SuspendLayout();
             this.SuspendLayout();
@@ -233,6 +235,32 @@ namespace CommandsEditor
             this.createNewFlowgraphToolStripMenuItem.Text = "Create New Flowgraph";
             this.createNewFlowgraphToolStripMenuItem.Click += new System.EventHandler(this.createNewFlowgraphToolStripMenuItem_Click);
             // 
+            // AutoCalcAdjacents
+            // 
+            this.AutoCalcAdjacents.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.AutoCalcAdjacents.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.AutoCalcAdjacents.ForeColor = System.Drawing.Color.IndianRed;
+            this.AutoCalcAdjacents.Location = new System.Drawing.Point(246, 661);
+            this.AutoCalcAdjacents.Name = "AutoCalcAdjacents";
+            this.AutoCalcAdjacents.Size = new System.Drawing.Size(123, 38);
+            this.AutoCalcAdjacents.TabIndex = 7;
+            this.AutoCalcAdjacents.Text = "Auto Calc Adjacents";
+            this.AutoCalcAdjacents.UseVisualStyleBackColor = true;
+            this.AutoCalcAdjacents.Click += new System.EventHandler(this.AutoCalcAdjacents_Click);
+            // 
+            // SplitConnected
+            // 
+            this.SplitConnected.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.SplitConnected.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.SplitConnected.ForeColor = System.Drawing.Color.IndianRed;
+            this.SplitConnected.Location = new System.Drawing.Point(369, 661);
+            this.SplitConnected.Name = "SplitConnected";
+            this.SplitConnected.Size = new System.Drawing.Size(123, 38);
+            this.SplitConnected.TabIndex = 8;
+            this.SplitConnected.Text = "Turn Child Into New Node";
+            this.SplitConnected.UseVisualStyleBackColor = true;
+            this.SplitConnected.Click += new System.EventHandler(this.SplitConnected_Click);
+            // 
             // Flowgraph
             // 
             this.AllowEndUserDocking = false;
@@ -241,6 +269,8 @@ namespace CommandsEditor
             this.ClientSize = new System.Drawing.Size(1512, 699);
             this.CloseButton = false;
             this.CloseButtonVisible = false;
+            this.Controls.Add(this.SplitConnected);
+            this.Controls.Add(this.AutoCalcAdjacents);
             this.Controls.Add(this.ResetFG);
             this.Controls.Add(this.SaveFlowgraphUnfinished);
             this.Controls.Add(this.RemoveEmpties);
@@ -279,6 +309,8 @@ namespace CommandsEditor
         private System.Windows.Forms.ToolStripMenuItem renameFGToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem createNewFlowgraphToolStripMenuItem;
+        private System.Windows.Forms.Button AutoCalcAdjacents;
+        private System.Windows.Forms.Button SplitConnected;
     }
 }
 

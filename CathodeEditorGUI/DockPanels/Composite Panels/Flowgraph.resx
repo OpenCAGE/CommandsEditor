@@ -281,7 +281,7 @@
   <data name="deleteToolStripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
-        wAAADsABataJCQAAAQpJREFUOE+tkr8OAUEQxr2AN1ArtCqdTuUF1N6AF+ABRK8QjSgoFFQaCoVIRCOR
+        vwAADr8BOAVTJAAAAQpJREFUOE+tkr8OAUEQxr2AN1ArtCqdTuUF1N6AF+ABRK8QjSgoFFQaCoVIRCOR
         XKPxt6HZXLf87nbiltvT+JJJNjPf983szqb+Ct/3tTk6AUfCpELcLye97bSDUErFGsFZt5r6sJjZHNwQ
         9rLpIJaNmtWB83Gz0sNiTo/LBY2RKYX4NCDoQp5Ou0FX9/OZIDAyMhu44i4GkMkxTdTU0OMRZyJnpohe
         y4lPE2Jerzof9gsug5/dIdy8feIVDPUbiHndqAAjpmHvYha7gSQxdVkjef7B43q2TViNCAmMRCygCTxq
@@ -312,7 +312,7 @@
   <data name="deleteFGToolstripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
-        wAAADsABataJCQAAAQpJREFUOE+tkr8OAUEQxr2AN1ArtCqdTuUF1N6AF+ABRK8QjSgoFFQaCoVIRCOR
+        vwAADr8BOAVTJAAAAQpJREFUOE+tkr8OAUEQxr2AN1ArtCqdTuUF1N6AF+ABRK8QjSgoFFQaCoVIRCOR
         XKPxt6HZXLf87nbiltvT+JJJNjPf983szqb+Ct/3tTk6AUfCpELcLye97bSDUErFGsFZt5r6sJjZHNwQ
         9rLpIJaNmtWB83Gz0sNiTo/LBY2RKYX4NCDoQp5Ou0FX9/OZIDAyMhu44i4GkMkxTdTU0OMRZyJnpohe
         y4lPE2Jerzof9gsug5/dIdy8feIVDPUbiHndqAAjpmHvYha7gSQxdVkjef7B43q2TViNCAmMRCygCTxq
@@ -322,7 +322,7 @@
   <data name="renameFGToolStripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
-        wgAADsIBFShKgAAAAIlJREFUOE/FkLENwCAMBJmNni2YhZ5ZmIKeAejpaR09wpITRZGdInnpC8Tf27L7
+        wQAADsEBuJFr7QAAAIlJREFUOE/FkLENwCAMBJmNni2YhZ5ZmIKeAejpaR09wpITRZGdInnpC8Tf27L7
         THNOGmPQftoEOKVEMUZ7CeDeO4UQyHtvK+HJcGvtVIK/HbsXwwBgWVJKeS64wuyc8wJfwfDryWpYXtsE
         QwggKK+thiGEGFBfW4oL5FQ1DCFca13GBib4Rzl3AP33AGDLmJMnAAAAAElFTkSuQmCC
 </value>
@@ -330,7 +330,7 @@
   <data name="createNewFlowgraphToolStripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
-        wgAADsIBFShKgAAAAElJREFUOE9joBr49u3bf0IYqhQ7AClwcnLCidva2vAbAjPgw/uPGJgoQ4gxAK8h
+        wQAADsEBuJFr7QAAAElJREFUOE9joBr49u3bf0IYqhQ7AClwcnLCidva2vAbAjPgw/uPGJgoQ4gxAK8h
         xBoAwiQbgIxHDRgSBhCDcRpACoZqoxQwMAAAO58Q345VgNcAAAAASUVORK5CYII=
 </value>
   </data>

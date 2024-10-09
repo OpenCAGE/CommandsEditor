@@ -637,6 +637,8 @@ namespace CommandsEditor.DockPanels
 
             FlowgraphLayoutManager.DEBUG_UsePreDefinedTable = true;
             List<Composite> ordered = Content.commands.Entries.OrderBy(o => CompositeUtils.CountLinks(o)).Where(o => CompositeUtils.CountLinks(o) != 0 && !FlowgraphLayoutManager.HasLayout(o)).ToList();
+            for (int i = 0; i < ordered.Count; i++)
+                Console.WriteLine(ordered[i].name);
             Console.WriteLine("Still " + ordered.Count + " to go in this PAK (count includes those not purged, so may be lower)");
             FlowgraphLayoutManager.DEBUG_UsePreDefinedTable = false;
             if (ordered.Count != 0)
