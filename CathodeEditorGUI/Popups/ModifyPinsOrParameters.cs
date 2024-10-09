@@ -186,9 +186,7 @@ namespace CommandsEditor
                             Parameter existing = _inspector.Entity.GetParameter(tag.ShortGUID);
                             DataType type = (DataType)Enum.Parse(typeof(DataType), item.SubItems[1].Text);
                             if (existing == null || existing.content.dataType != type)
-                                _inspector.Entity.AddParameter(tag.ShortGUID, type);
-
-                            //_creator.Create(item.Text); //TODO: this won't handle custom ones
+                                _creator.Create(item.Text, item.SubItems[1].Text);
                         }
                         else
                             _inspector.Entity.RemoveParameter(tag.ShortGUID);

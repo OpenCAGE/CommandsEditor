@@ -188,7 +188,8 @@ namespace CommandsEditor
 
                 //Run through every composite and purge CAGE's lingering links (do it twice to be sure)
                 for (int i = 0; i < 2; i++)
-                    CommandsUtils.PurgeDeadLinks(_commands, _commands.Entries[i]);
+                    for (int x = 0; x < _commands.Entries.Count; x++)
+                        CommandsUtils.PurgeDeadLinks(_commands, _commands.Entries[x]);
 
                 for (int i = 0; i < _commands.Entries.Count; i++)
                 {

@@ -41,7 +41,7 @@ namespace CommandsEditor
             }
         }
 
-        public string GetInfo(string param_name)
+        public string GetInfo(string param_name, string fallback_type = "FLOAT")
         {
             _param = null;
             _name = param_name;
@@ -69,7 +69,7 @@ namespace CommandsEditor
                         default:
                             _param = CathodeEntityDatabase.ParameterDefinitionToParameter(def);
                             if (_param == null)
-                                return "FLOAT";
+                                return fallback_type;
                             return _param.dataType.ToString();
                     }
                 }
@@ -80,17 +80,17 @@ namespace CommandsEditor
                     ShortGuid param = ShortGuidUtils.Generate(param_name);
                     VariableEntity var = Singleton.Editor?.CommandsDisplay?.Content?.commands?.GetComposite(_funcEnt.function)?.variables?.FirstOrDefault(o => o.name == param);
                     if (var == null || var.type == DataType.NONE)
-                        return "FLOAT";
+                        return fallback_type;
                     return var.type.ToString();
                 }
             }
 
-            return "FLOAT";
+            return fallback_type;
         }
 
-        public void Create(string param_name)
+        public void Create(string param_name, string fallback_type="FLOAT")
         {
-            string type = GetInfo(param_name);
+            string type = GetInfo(param_name, fallback_type);
 
             if (_param != null)
                 _ent.AddParameter(_name, _param);
