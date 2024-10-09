@@ -43,6 +43,7 @@ namespace CommandsEditor.DockPanels
             this.deleteCheckedEntities = new System.Windows.Forms.ToolStripButton();
             this.renameComposite = new System.Windows.Forms.ToolStripButton();
             this.deleteComposite = new System.Windows.Forms.ToolStripButton();
+            this.createFlowgraph = new System.Windows.Forms.ToolStripButton();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
             this.imageList = new System.Windows.Forms.ImageList(this.components);
@@ -51,7 +52,6 @@ namespace CommandsEditor.DockPanels
             this.goBackOnPath = new System.Windows.Forms.Button();
             this.pathDisplay = new System.Windows.Forms.TextBox();
             this.instanceInfo = new System.Windows.Forms.Button();
-            this.createFlowgraph = new System.Windows.Forms.ToolStripButton();
             this.toolStrip1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -190,6 +190,15 @@ namespace CommandsEditor.DockPanels
             this.deleteComposite.Text = "Delete Composite";
             this.deleteComposite.Click += new System.EventHandler(this.deleteComposite_Click);
             // 
+            // createFlowgraph
+            // 
+            this.createFlowgraph.Image = ((System.Drawing.Image)(resources.GetObject("createFlowgraph.Image")));
+            this.createFlowgraph.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.createFlowgraph.Name = "createFlowgraph";
+            this.createFlowgraph.Size = new System.Drawing.Size(120, 22);
+            this.createFlowgraph.Text = "Create Flowgraph";
+            this.createFlowgraph.Click += new System.EventHandler(this.createFlowgraph_Click);
+            // 
             // dockPanel
             // 
             this.dockPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -230,13 +239,13 @@ namespace CommandsEditor.DockPanels
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.closeSelected});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(165, 26);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(181, 48);
             // 
             // closeSelected
             // 
             this.closeSelected.Image = ((System.Drawing.Image)(resources.GetObject("closeSelected.Image")));
             this.closeSelected.Name = "closeSelected";
-            this.closeSelected.Size = new System.Drawing.Size(164, 22);
+            this.closeSelected.Size = new System.Drawing.Size(180, 22);
             this.closeSelected.Text = "Close Composite";
             this.closeSelected.Click += new System.EventHandler(this.closeSelected_Click);
             // 
@@ -276,15 +285,6 @@ namespace CommandsEditor.DockPanels
             this.instanceInfo.Text = "Composite Instance Info";
             this.instanceInfo.UseVisualStyleBackColor = true;
             this.instanceInfo.Click += new System.EventHandler(this.instanceInfo_Click);
-            // 
-            // createFlowgraph
-            // 
-            this.createFlowgraph.Image = ((System.Drawing.Image)(resources.GetObject("createFlowgraph.Image")));
-            this.createFlowgraph.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.createFlowgraph.Name = "createFlowgraph";
-            this.createFlowgraph.Size = new System.Drawing.Size(120, 22);
-            this.createFlowgraph.Text = "Create Flowgraph";
-            this.createFlowgraph.Click += new System.EventHandler(this.createFlowgraph_Click);
             // 
             // CompositeDisplay
             // 

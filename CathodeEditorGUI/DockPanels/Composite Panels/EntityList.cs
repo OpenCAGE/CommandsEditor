@@ -33,6 +33,13 @@ namespace CommandsEditor.DockPanels
             compositeEntityList1.ContextMenuStrip = EntityListContextMenu;
 
             compositeEntityList1.SelectedEntityChanged += OnEntitySelected;
+            this.FormClosed += EntityList_FormClosed;
+        }
+
+        private void EntityList_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            if (_entityRenameDialog != null)
+                _entityRenameDialog.FormClosed -= _entityRenameDialog_FormClosed;
         }
 
         private void OnEntitySelected(Entity entity)
@@ -50,6 +57,7 @@ namespace CommandsEditor.DockPanels
             duplicateToolStripMenuItem.Enabled = hasSelectedEntity;
         }
 
+        //Temporarily hijacked these options here: they should be handled in CompositeDisplay really...
         private void createParameterToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Singleton.Editor.CommandsDisplay.CompositeDisplay.CreateEntity(EntityVariant.VARIABLE);
@@ -69,6 +77,29 @@ namespace CommandsEditor.DockPanels
         private void createAliasToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             Singleton.Editor.CommandsDisplay.CompositeDisplay.CreateEntity(EntityVariant.ALIAS);
+        }
+
+        private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Singleton.Editor.CommandsDisplay.CompositeDisplay.DeleteEntity(List.SelectedEntity);
+        }
+        RenameEntity _entityRenameDialog = null;
+        private void renameToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_entityRenameDialog != null)
+                _entityRenameDialog.Close();
+
+            _entityRenameDialog = new RenameEntity(List.SelectedEntity, Singleton.Editor.CommandsDisplay.CompositeDisplay.Composite);
+            _entityRenameDialog.Show();
+            _entityRenameDialog.FormClosed += _entityRenameDialog_FormClosed;
+        }
+        private void _entityRenameDialog_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _entityRenameDialog = null;
+        }
+        private void duplicateToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Singleton.Editor.CommandsDisplay.CompositeDisplay.DuplicateEntity(List.SelectedEntity);
         }
     }
 }

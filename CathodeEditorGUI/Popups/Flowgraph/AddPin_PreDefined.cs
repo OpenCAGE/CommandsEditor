@@ -54,6 +54,20 @@ namespace CommandsEditor
             }
 
             List<ListViewItem> options = Singleton.Editor.CommandsDisplay.Content.editor_utils.GenerateParameterListAsListViewItem(ent, comp);
+
+            //We can sometimes have pins in/out that aren't listed in the parameter list (CAGEAnimation markers for example) - we should add those to this list
+            STNodeOption[] nodeOptions = _mode == Mode.ADD_IN || _mode == Mode.REMOVE_IN ? node.GetInputOptions() : node.GetOutputOptions();
+            for (int i = 0; i < nodeOptions.Length; i++)
+            {
+                if (options.FirstOrDefault(o => ((ParameterListViewItemTag)o.Tag).ShortGUID == nodeOptions[i].ShortGUID) == null)
+                {
+                    ListViewItem item = new ListViewItem(nodeOptions[i].ShortGUID.ToString());
+                    item.SubItems.Add("FLOAT");
+                    item.Tag = new ParameterListViewItemTag() { ShortGUID = nodeOptions[i].ShortGUID, Usage = CathodeEntityDatabase.ParameterUsage.PARAMETER };
+                    options.Add(item);
+                }
+            }
+
             for (int i = 0; i < options.Count; i++)
             {
                 switch (_mode)
@@ -72,7 +86,6 @@ namespace CommandsEditor
                 options[i].ImageIndex = 0;
                 _items.Add(options[i]);
             }
-            //TODO: need to support removing additional params like cageanim ones
 
             searchBtn_Click(null, null);
         }

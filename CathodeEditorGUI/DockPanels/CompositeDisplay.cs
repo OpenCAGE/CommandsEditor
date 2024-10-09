@@ -66,7 +66,7 @@ namespace CommandsEditor.DockPanels
             _entityList = new EntityList();
             _entityList.Show(dockPanel, DockState.DockLeft);
 
-            _entityDisplay = new EntityInspector(this); 
+            _entityDisplay = new EntityInspector(this);
             _entityDisplay.Show(dockPanel, DockState.DockRight);
             _entityDisplay.FormClosing += OnEntityDisplayClosing;
 
@@ -93,7 +93,8 @@ namespace CommandsEditor.DockPanels
             {
                 CompositeUtils.ClearAllLinks(_composite);
                 for (int i = 0; i < _flowgraphs.Count; i++)
-                    _flowgraphs[i].SaveAndCompile();
+                    if (_flowgraphs[i] != null)
+                        _flowgraphs[i].SaveAndCompile();
             }
         }
 
@@ -166,15 +167,18 @@ namespace CommandsEditor.DockPanels
             _entityList.Close();
 
             for (int i = 0; i < _flowgraphs.Count; i++)
-                _flowgraphs[i].Close();
+            {
+                if (_flowgraphs[i] != null)
+                    _flowgraphs[i].Close();
+            }
             _flowgraphs.Clear();
 
             if (_renameComposite != null)
                 _renameComposite.FormClosed -= _renameComposite_FormClosed;
+            if (_createFlowgraphPopup != null)
+                _createFlowgraphPopup.FormClosed -= _createFlowgraphPopup_FormClosed;
             if (_instanceInfoPopup != null)
                 _instanceInfoPopup.FormClosed -= _instanceInfoPopup_FormClosed;
-            if (_entityRenameDialog != null)
-                _entityRenameDialog.FormClosed -= Rename_entity_FormClosed;
 
             _composite = null;
 
@@ -239,7 +243,8 @@ namespace CommandsEditor.DockPanels
 
             //TODO: I don't know if this flowgraph stuff best lives here. The whole setup of having like 5 reload functions, and a separate load function is really dumb. Needs a refactor.
             for (int i = 0; i < _flowgraphs.Count; i++)
-                _flowgraphs[i].Close();
+                if (_flowgraphs[i] != null)
+                    _flowgraphs[i].Close();
             _flowgraphs.Clear();
             if (SupportsFlowgraphs)
             {
@@ -259,11 +264,7 @@ namespace CommandsEditor.DockPanels
                 Console.WriteLine("CompositeDisplay found " + layouts.Count + " flowgraph layouts");
                 for (int i = 0; i < layouts.Count; i++)
                 {
-                    Flowgraph flowgraph = new Flowgraph();
-                    _flowgraphs.Add(flowgraph);
-
-                    flowgraph.Show(dockPanel, DockState.Document);
-                    flowgraph.ShowFlowgraph(Composite, layouts[i]); 
+                    CreateFlowgraphWindow(layouts[i]);
                 }
             }
             createFlowgraph.Visible = SupportsFlowgraphs;
@@ -824,50 +825,6 @@ namespace CommandsEditor.DockPanels
             _instanceInfoPopup = null;
         }
 
-        /* Entity List Context Menu */
-        private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            DeleteEntity(_entityList.List.SelectedEntity);
-        }
-        RenameEntity _entityRenameDialog = null;
-        private void renameToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (_entityRenameDialog != null)
-                _entityRenameDialog.Close();
-
-            _entityRenameDialog = new RenameEntity(_entityList.List.SelectedEntity, this.Composite);
-            _entityRenameDialog.Show();
-            _entityRenameDialog.FormClosed += Rename_entity_FormClosed;
-        }
-        private void Rename_entity_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            _entityRenameDialog = null;
-        }
-        private void duplicateToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            DuplicateEntity(_entityList.List.SelectedEntity);
-        }
-        private void createParameterToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            CreateEntity(EntityVariant.VARIABLE);
-        }
-        private void createInstanceOfCompositeToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            CreateEntity(EntityVariant.FUNCTION, true);
-        }
-        private void createFunctionToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            CreateEntity(EntityVariant.FUNCTION);
-        }
-        private void createProxyToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            CreateEntity(EntityVariant.PROXY);
-        }
-        private void createAliasToolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            CreateEntity(EntityVariant.ALIAS);
-        }
-
         RenameComposite _renameComposite;
         private void renameComposite_Click(object sender, EventArgs e)
         {
@@ -898,14 +855,23 @@ namespace CommandsEditor.DockPanels
 
         private void createFlowgraph_Click(object sender, EventArgs e)
         {
-            RenameGeneric createFlowgraphPopup = new RenameGeneric("", new RenameGeneric.RenameGenericContent()
+            CreateFlowgraph();
+        }
+        RenameGeneric _createFlowgraphPopup;
+        public void CreateFlowgraph()
+        {
+            if (_createFlowgraphPopup != null)
+                _createFlowgraphPopup.Close();
+
+            _createFlowgraphPopup = new RenameGeneric("", new RenameGeneric.RenameGenericContent()
             {
                 Title = "Create new flowgraph for " + _composite.name,
                 Description = "New Flowgraph Name",
                 ButtonText = "Create Flowgraph"
             });
-            createFlowgraphPopup.Show();
-            createFlowgraphPopup.RenamedText += OnCreateFlowgraph;
+            _createFlowgraphPopup.Show();
+            _createFlowgraphPopup.RenamedText += OnCreateFlowgraph;
+            _createFlowgraphPopup.FormClosed += _createFlowgraphPopup_FormClosed;
         }
         private void OnCreateFlowgraph(string name)
         {
@@ -919,6 +885,15 @@ namespace CommandsEditor.DockPanels
                 }
             }
             FlowgraphMeta meta = FlowgraphLayoutManager.SaveLayout(null, _composite, name);
+            CreateFlowgraphWindow(meta);
+        }
+        private void _createFlowgraphPopup_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _createFlowgraphPopup = null;
+        }
+
+        private void CreateFlowgraphWindow(FlowgraphMeta meta)
+        {
             Flowgraph flowgraph = new Flowgraph();
             _flowgraphs.Add(flowgraph);
             flowgraph.Show(dockPanel, DockState.Document);

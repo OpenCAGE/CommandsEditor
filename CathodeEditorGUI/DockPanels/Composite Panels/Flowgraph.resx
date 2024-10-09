@@ -627,7 +627,7 @@
   <data name="deleteToolStripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
-        vAAADrwBlbxySQAAAQpJREFUOE+tkr8OAUEQxr2AN1ArtCqdTuUF1N6AF+ABRK8QjSgoFFQaCoVIRCOR
+        wAAADsABataJCQAAAQpJREFUOE+tkr8OAUEQxr2AN1ArtCqdTuUF1N6AF+ABRK8QjSgoFFQaCoVIRCOR
         XKPxt6HZXLf87nbiltvT+JJJNjPf983szqb+Ct/3tTk6AUfCpELcLye97bSDUErFGsFZt5r6sJjZHNwQ
         9rLpIJaNmtWB83Gz0sNiTo/LBY2RKYX4NCDoQp5Ou0FX9/OZIDAyMhu44i4GkMkxTdTU0OMRZyJnpohe
         y4lPE2Jerzof9gsug5/dIdy8feIVDPUbiHndqAAjpmHvYha7gSQxdVkjef7B43q2TViNCAmMRCygCTxq
@@ -650,6 +650,34 @@
         UWzj7XqPz8dLInK8BpxOt0KfYzKfj8hcDQgvJDAZgMjewf3cASdag8UXAH46lpWmqUSIbA5eDJpDI85W
         iJxNq58RFxIQEBSwEXEOarAEaXKHmr8MEC2UY7IECrqukxx/rW1b5cQAW7UiCy7M1/M8/xrAEQXfgDp4
         gC+oqkprshAcFuYwtsz2hBDCGynrvx/IXJuhAAAAAElFTkSuQmCC
+</value>
+  </data>
+  <metadata name="TabStripContextMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>171, 17</value>
+  </metadata>
+  <data name="deleteFGToolstripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
+        wAAADsABataJCQAAAQpJREFUOE+tkr8OAUEQxr2AN1ArtCqdTuUF1N6AF+ABRK8QjSgoFFQaCoVIRCOR
+        XKPxt6HZXLf87nbiltvT+JJJNjPf983szqb+Ct/3tTk6AUfCpELcLye97bSDUErFGsFZt5r6sJjZHNwQ
+        9rLpIJaNmtWB83Gz0sNiTo/LBY2RKYX4NCDoQp5Ou0FX9/OZIDAyMhu44i4GkMkxTdTU0OMRZyJnpohe
+        y4lPE2Jerzof9gsug5/dIdy8feIVDPUbiHndqAAjpmHvYha7gSQxdVkjef7B43q2TViNCAmMRCygCTxq
+        00rJfg8ZUcTOj/ICNaZAY1LhBAh/iQWyJW8yenO5J2GNlgDhK6X0E55SczYMdkHFAAAAAElFTkSuQmCC
+</value>
+  </data>
+  <data name="renameFGToolStripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
+        wgAADsIBFShKgAAAAIlJREFUOE/FkLENwCAMBJmNni2YhZ5ZmIKeAejpaR09wpITRZGdInnpC8Tf27L7
+        THNOGmPQftoEOKVEMUZ7CeDeO4UQyHtvK+HJcGvtVIK/HbsXwwBgWVJKeS64wuyc8wJfwfDryWpYXtsE
+        QwggKK+thiGEGFBfW4oL5FQ1DCFca13GBib4Rzl3AP33AGDLmJMnAAAAAElFTkSuQmCC
+</value>
+  </data>
+  <data name="createNewFlowgraphToolStripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
+        wgAADsIBFShKgAAAAElJREFUOE9joBr49u3bf0IYqhQ7AClwcnLCidva2vAbAjPgw/uPGJgoQ4gxAK8h
+        xBoAwiQbgIxHDRgSBhCDcRpACoZqoxQwMAAAO58Q345VgNcAAAAASUVORK5CYII=
 </value>
   </data>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">

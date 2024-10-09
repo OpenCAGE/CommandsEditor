@@ -746,6 +746,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DockPanels\Composite Panels\Flowgraph.resx">
       <DependentUpon>Flowgraph.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\ExportComposite.resx">
       <DependentUpon>ExportComposite.cs</DependentUpon>

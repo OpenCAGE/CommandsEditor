@@ -146,6 +146,12 @@ namespace CommandsEditor
         }
 #endif
 
+        //Remove a layout from the DB
+        public static void RemoveLayout(Composite composite, string name)
+        {
+            Table.flowgraphs.RemoveAll(o => o.CompositeGUID == composite.shortGUID && o.Name == name);
+        }
+
         public static void LinkCommands(Commands commands)
         {
             if (_commands != null)
@@ -173,43 +179,62 @@ namespace CommandsEditor
             if (_compatibility == null) _compatibility = new CompositeFlowgraphCompatibilityTable();
             Console.WriteLine("Loaded " + _compatibility.compatibility_info.Count + " flowgraph compatibility definitions!");
 
+            //If there are no defined layouts, then this Commands is being opened for the first time since the flowgraph update: handle compatibility checks
             if (_userDefinedLayouts.flowgraphs.Count == 0)
             {
                 //Copy the default layouts over
                 for (int i = 0; i < _preDefinedLayouts.flowgraphs.Count; i++)
-                {
                     _userDefinedLayouts.flowgraphs.Add(_preDefinedLayouts.flowgraphs[i].Copy());
-                }
 
-                //This Commands is being opened for the first time since the flowgraph update. We need to check to see if the composite is supported.
+                //Run through every composite and purge CAGE's lingering links (do it twice to be sure)
+                for (int i = 0; i < 2; i++)
+                    CommandsUtils.PurgeDeadLinks(_commands, _commands.Entries[i]);
+
                 for (int i = 0; i < _commands.Entries.Count; i++)
                 {
+                    CommandsUtils.PurgedComposites.purged.Add(_commands.Entries[i].shortGUID);
+
                     var compatibilityInfo = _compatibility.compatibility_info.FirstOrDefault(o => o.composite_id == _commands.Entries[i].shortGUID);
                     if (compatibilityInfo == null)
                     {
                         compatibilityInfo = new CompositeFlowgraphCompatibilityTable.CompatibilityInfo() { composite_id = _commands.Entries[i].shortGUID };
                         _compatibility.compatibility_info.Add(compatibilityInfo);
                     }
+
+                    //Clear out any aliases with no parameters/links
+                    List<AliasEntity> aliasPurged = new List<AliasEntity>();
+                    for (int x = 0; x < _commands.Entries[i].aliases.Count; x++)
+                    {
+                        if (_commands.Entries[i].aliases[x].childLinks.Count == 0 &&
+                            _commands.Entries[i].aliases[x].parameters.Count == 0 &&
+                            _commands.Entries[i].aliases[x].GetParentLinks(_commands.Entries[i]).Count == 0)
+                            continue;
+                        aliasPurged.Add(_commands.Entries[i].aliases[x]);
+                    }
+                    _commands.Entries[i].aliases = aliasPurged;
+
 #if DEBUG
                     compatibilityInfo.flowgraphs_supported = true;
-#else
-
-                    if (CommandsUtils.PurgeDeadLinks(_commands, _commands.Entries[i]))
-                        CommandsUtils.PurgedComposites.purged.Add(_commands.Entries[i].shortGUID);
+                    continue;
+#endif
 
                     int links = CompositeUtils.CountLinks(_commands.Entries[i]);
                     if (links == 0)
                     {
+                        //If the composite has no links, regardless of its vanilla-ness, allow it
                         _userDefinedLayouts.flowgraphs.RemoveAll(o => o.CompositeGUID == _commands.Entries[i].shortGUID);
                         SaveLayout(null, _commands.Entries[i], Path.GetFileName(_commands.Entries[i].name));
                         compatibilityInfo.flowgraphs_supported = true;
                     }
                     else
                     {
+                        //If there are links, make sure they match up with the stored layout
+
                         //TODO: need to validate that the content of the composite hasn't diverged from the layout
                         compatibilityInfo.flowgraphs_supported = HasLayout(_commands.Entries[i]);
+
+                        //if they don't - do something about it 
                     }
-#endif
                 }
             }
         }

@@ -15,6 +15,7 @@ using CommandsEditor.Popups.UserControls;
 using System.IO;
 using CathodeLib;
 using System.Windows.Media.Media3D;
+using System.Windows.Controls;
 
 namespace CommandsEditor
 {
@@ -42,7 +43,7 @@ namespace CommandsEditor
         public Flowgraph()
         {
             InitializeComponent();
-            this.FormClosed += EntityFlowgraph_FormClosed; ;
+            this.FormClosed += EntityFlowgraph_FormClosed;
 
             stNodeEditor1.LoadAssembly(Application.ExecutablePath);
             stNodeEditor1.AllowSameOwnerConnections = true;
@@ -68,6 +69,9 @@ namespace CommandsEditor
             Singleton.OnEntitySelected -= OnEntitySelectedGlobally;
             Singleton.OnEntityAdded -= OnEntityAddedGlobally;
             Singleton.OnEntityDeleted -= OnEntityDeletedGlobally;
+
+            if (_renameFlowgraphPopup != null)
+                _renameFlowgraphPopup.FormClosed -= _renameFlowgraphPopup_FormClosed;
         }
 
         private Entity _previouslySelectedEntity = null;
@@ -131,7 +135,6 @@ namespace CommandsEditor
                     continue;
 
                 nodes.Add(stNodeEditor1.Nodes[i]);
-                break;
             }
 
             for (int i = 0; i < nodes.Count; i++)
@@ -654,6 +657,58 @@ namespace CommandsEditor
                 duplicated.AddOutputOption(outs[i].ShortGUID);
 
             duplicated.SetPosition(new Point(node.Location.X + 15, node.Location.Y + 15));
+        }
+
+        private void TabStripContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            deleteFGToolstripMenuItem.Text = "Delete flowgraph '" + _flowgraphName + "'";
+            renameFGToolStripMenuItem.Text = "Rename flowgraph '" + _flowgraphName + "'";
+        }
+
+        private void deleteFGToolstripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Are you sure you want to delete the flowgraph '" + _flowgraphName + "'?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+            FlowgraphLayoutManager.RemoveLayout(_composite, _flowgraphName);
+            this.Close();
+        }
+        RenameGeneric _renameFlowgraphPopup;
+        private void renameFGToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_renameFlowgraphPopup != null)
+                _renameFlowgraphPopup.Close();
+
+            _renameFlowgraphPopup = new RenameGeneric(_flowgraphName, new RenameGeneric.RenameGenericContent()
+            {
+                Title = "Rename flowgraph for " + _composite.name,
+                Description = "New Flowgraph Name",
+                ButtonText = "Rename Flowgraph"
+            });
+            _renameFlowgraphPopup.Show();
+            _renameFlowgraphPopup.RenamedText += OnRenameFlowgraph;
+            _renameFlowgraphPopup.FormClosed += _renameFlowgraphPopup_FormClosed;
+        }
+        private void OnRenameFlowgraph(string name)
+        {
+            List<FlowgraphMeta> layouts = FlowgraphLayoutManager.GetLayouts(_composite);
+            for (int i = 0; i < layouts.Count; i++)
+            {
+                if (layouts[i].Name == name)
+                {
+                    MessageBox.Show("There's already a flowgraph named '" + name + "' in this Composite! Please pick a unique name.", "Name taken!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+            layouts.FirstOrDefault(o => o.Name == _flowgraphName).Name = name;
+            this.Text = "Flowgraph: " + name;
+            _flowgraphName = name;
+        }
+        private void _renameFlowgraphPopup_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _renameFlowgraphPopup = null;
+        }
+        private void createNewFlowgraphToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Singleton.Editor.CommandsDisplay.CompositeDisplay.CreateFlowgraph();
         }
     }
 }

@@ -45,7 +45,13 @@ namespace CommandsEditor
             this.stNodeEditor1 = new ST.Library.UI.NodeEditor.STNodeEditor();
             this.SaveFlowgraphUnfinished = new System.Windows.Forms.Button();
             this.ResetFG = new System.Windows.Forms.Button();
+            this.TabStripContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.deleteFGToolstripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.renameFGToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.createNewFlowgraphToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.nodeContextMenu.SuspendLayout();
+            this.TabStripContextMenu.SuspendLayout();
             this.SuspendLayout();
             // 
             // SaveFlowgraph
@@ -235,11 +241,54 @@ namespace CommandsEditor
             this.ResetFG.UseVisualStyleBackColor = true;
             this.ResetFG.Click += new System.EventHandler(this.ResetFG_Click);
             // 
+            // TabStripContextMenu
+            // 
+            this.TabStripContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.deleteFGToolstripMenuItem,
+            this.renameFGToolStripMenuItem,
+            this.toolStripSeparator3,
+            this.createNewFlowgraphToolStripMenuItem});
+            this.TabStripContextMenu.Name = "TabStripContextMenu";
+            this.TabStripContextMenu.Size = new System.Drawing.Size(195, 76);
+            this.TabStripContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.TabStripContextMenu_Opening);
+            // 
+            // deleteFGToolstripMenuItem
+            // 
+            this.deleteFGToolstripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("deleteFGToolstripMenuItem.Image")));
+            this.deleteFGToolstripMenuItem.Name = "deleteFGToolstripMenuItem";
+            this.deleteFGToolstripMenuItem.Size = new System.Drawing.Size(194, 22);
+            this.deleteFGToolstripMenuItem.Text = "Delete";
+            this.deleteFGToolstripMenuItem.Click += new System.EventHandler(this.deleteFGToolstripMenuItem_Click);
+            // 
+            // renameFGToolStripMenuItem
+            // 
+            this.renameFGToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("renameFGToolStripMenuItem.Image")));
+            this.renameFGToolStripMenuItem.Name = "renameFGToolStripMenuItem";
+            this.renameFGToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
+            this.renameFGToolStripMenuItem.Text = "Rename ";
+            this.renameFGToolStripMenuItem.Click += new System.EventHandler(this.renameFGToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(191, 6);
+            // 
+            // createNewFlowgraphToolStripMenuItem
+            // 
+            this.createNewFlowgraphToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("createNewFlowgraphToolStripMenuItem.Image")));
+            this.createNewFlowgraphToolStripMenuItem.Name = "createNewFlowgraphToolStripMenuItem";
+            this.createNewFlowgraphToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
+            this.createNewFlowgraphToolStripMenuItem.Text = "Create New Flowgraph";
+            this.createNewFlowgraphToolStripMenuItem.Click += new System.EventHandler(this.createNewFlowgraphToolStripMenuItem_Click);
+            // 
             // Flowgraph
             // 
+            this.AllowEndUserDocking = false;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1512, 699);
+            this.CloseButton = false;
+            this.CloseButtonVisible = false;
             this.Controls.Add(this.ResetFG);
             this.Controls.Add(this.SaveFlowgraphUnfinished);
             this.Controls.Add(this.RemoveEmpties);
@@ -249,9 +298,12 @@ namespace CommandsEditor
             this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Flowgraph";
+            this.ShowHint = WeifenLuo.WinFormsUI.Docking.DockState.Document;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.TabPageContextMenuStrip = this.TabStripContextMenu;
             this.Text = "Flowgraph";
             this.nodeContextMenu.ResumeLayout(false);
+            this.TabStripContextMenu.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -275,6 +327,11 @@ namespace CommandsEditor
         private System.Windows.Forms.Button RemoveEmpties;
         private System.Windows.Forms.Button SaveFlowgraphUnfinished;
         private System.Windows.Forms.Button ResetFG;
+        private System.Windows.Forms.ContextMenuStrip TabStripContextMenu;
+        private System.Windows.Forms.ToolStripMenuItem deleteFGToolstripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem renameFGToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private System.Windows.Forms.ToolStripMenuItem createNewFlowgraphToolStripMenuItem;
     }
 }
 

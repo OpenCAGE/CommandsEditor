@@ -58,15 +58,6 @@ namespace CommandsEditor
 
         public CommandsEditor(string level = null)
         {
-            //LocalDebug.DoCheckOnNodegraph();
-
-            //LocalDebug_NEW.DEBUG_DumpAllInstancedStuff("BSP_TORRENS", "NON_ORDERED");
-            //return;
-
-            //LocalDebug.CountEntitySequences();
-
-            //NodePositionDatabase.DO_UPDATE();
-
             Singleton.Editor = this;
 
             _discord = new DiscordRpcClient("1152999067207606392");
