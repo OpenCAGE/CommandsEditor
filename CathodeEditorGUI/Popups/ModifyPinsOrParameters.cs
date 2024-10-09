@@ -57,7 +57,6 @@ namespace CommandsEditor
             SetupUI(inspector.Entity, inspector.Composite);
         }
 
-        //TODO: need to rework this so you can pass non STNodes
         public ModifyPinsOrParameters(STNode node, Mode mode) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             _node = node;
@@ -140,7 +139,7 @@ namespace CommandsEditor
             Search();
         }
 
-        private void searchBtn_Click(object sender, EventArgs e)
+        private void searchText_TextChanged(object sender, EventArgs e)
         {
             Search();
         }

@@ -39,7 +39,7 @@
             this.entity_name.Location = new System.Drawing.Point(14, 28);
             this.entity_name.Name = "entity_name";
             this.entity_name.Size = new System.Drawing.Size(731, 20);
-            this.entity_name.TabIndex = 6;
+            this.entity_name.TabIndex = 0;
             // 
             // save_entity_name
             // 

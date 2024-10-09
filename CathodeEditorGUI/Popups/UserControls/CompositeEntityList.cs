@@ -241,7 +241,7 @@ namespace CommandsEditor.Popups.UserControls
             SelectedEntityChanged?.Invoke(SelectedEntity);
         }
 
-        private void entity_search_btn_Click(object sender, EventArgs e)
+        private void entity_search_box_TextChanged(object sender, EventArgs e)
         {
             if (entity_search_box.Text == _currentSearch) return;
             _currentSearch = entity_search_box.Text;

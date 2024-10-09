@@ -30,20 +30,19 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ModifyPinsOrParameters));
-            System.Windows.Forms.ListViewGroup listViewGroup11 = new System.Windows.Forms.ListViewGroup("Target", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup12 = new System.Windows.Forms.ListViewGroup("State", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup13 = new System.Windows.Forms.ListViewGroup("Input", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup14 = new System.Windows.Forms.ListViewGroup("Output", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup15 = new System.Windows.Forms.ListViewGroup("Parameter", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup16 = new System.Windows.Forms.ListViewGroup("Internal", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup17 = new System.Windows.Forms.ListViewGroup("Reference", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup18 = new System.Windows.Forms.ListViewGroup("Method", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup19 = new System.Windows.Forms.ListViewGroup("Finished", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup20 = new System.Windows.Forms.ListViewGroup("Relay", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Target", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("State", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("Input", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("Output", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup("Parameter", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup6 = new System.Windows.Forms.ListViewGroup("Internal", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup7 = new System.Windows.Forms.ListViewGroup("Reference", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup8 = new System.Windows.Forms.ListViewGroup("Method", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup9 = new System.Windows.Forms.ListViewGroup("Finished", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup10 = new System.Windows.Forms.ListViewGroup("Relay", System.Windows.Forms.HorizontalAlignment.Left);
             this.createParams = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.searchText = new System.Windows.Forms.TextBox();
-            this.searchBtn = new System.Windows.Forms.Button();
             this.clearSearchBtn = new System.Windows.Forms.Button();
             this.typesCount = new System.Windows.Forms.Label();
             this.param_name = new System.Windows.Forms.ListView();
@@ -84,27 +83,16 @@
             this.searchText.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.searchText.Location = new System.Drawing.Point(15, 35);
             this.searchText.Name = "searchText";
-            this.searchText.Size = new System.Drawing.Size(545, 20);
+            this.searchText.Size = new System.Drawing.Size(607, 20);
             this.searchText.TabIndex = 2;
-            // 
-            // searchBtn
-            // 
-            this.searchBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.searchBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.searchBtn.Location = new System.Drawing.Point(578, 35);
-            this.searchBtn.Name = "searchBtn";
-            this.searchBtn.Size = new System.Drawing.Size(63, 20);
-            this.searchBtn.TabIndex = 4;
-            this.searchBtn.Text = "Search";
-            this.searchBtn.UseVisualStyleBackColor = true;
-            this.searchBtn.Click += new System.EventHandler(this.searchBtn_Click);
+            this.searchText.TextChanged += new System.EventHandler(this.searchText_TextChanged);
             // 
             // clearSearchBtn
             // 
             this.clearSearchBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.clearSearchBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.clearSearchBtn.Image = ((System.Drawing.Image)(resources.GetObject("clearSearchBtn.Image")));
-            this.clearSearchBtn.Location = new System.Drawing.Point(559, 35);
+            this.clearSearchBtn.Location = new System.Drawing.Point(621, 35);
             this.clearSearchBtn.Name = "clearSearchBtn";
             this.clearSearchBtn.Size = new System.Drawing.Size(20, 20);
             this.clearSearchBtn.TabIndex = 3;
@@ -132,37 +120,37 @@
             this.funcHeader,
             this.inheritHeader});
             this.param_name.FullRowSelect = true;
-            listViewGroup11.Header = "Target";
-            listViewGroup11.Name = "Target";
-            listViewGroup12.Header = "State";
-            listViewGroup12.Name = "State";
-            listViewGroup13.Header = "Input";
-            listViewGroup13.Name = "Input";
-            listViewGroup14.Header = "Output";
-            listViewGroup14.Name = "Output";
-            listViewGroup15.Header = "Parameter";
-            listViewGroup15.Name = "Parameter";
-            listViewGroup16.Header = "Internal";
-            listViewGroup16.Name = "Internal";
-            listViewGroup17.Header = "Reference";
-            listViewGroup17.Name = "Reference";
-            listViewGroup18.Header = "Method";
-            listViewGroup18.Name = "Method";
-            listViewGroup19.Header = "Finished";
-            listViewGroup19.Name = "Finished";
-            listViewGroup20.Header = "Relay";
-            listViewGroup20.Name = "Relay";
+            listViewGroup1.Header = "Target";
+            listViewGroup1.Name = "Target";
+            listViewGroup2.Header = "State";
+            listViewGroup2.Name = "State";
+            listViewGroup3.Header = "Input";
+            listViewGroup3.Name = "Input";
+            listViewGroup4.Header = "Output";
+            listViewGroup4.Name = "Output";
+            listViewGroup5.Header = "Parameter";
+            listViewGroup5.Name = "Parameter";
+            listViewGroup6.Header = "Internal";
+            listViewGroup6.Name = "Internal";
+            listViewGroup7.Header = "Reference";
+            listViewGroup7.Name = "Reference";
+            listViewGroup8.Header = "Method";
+            listViewGroup8.Name = "Method";
+            listViewGroup9.Header = "Finished";
+            listViewGroup9.Name = "Finished";
+            listViewGroup10.Header = "Relay";
+            listViewGroup10.Name = "Relay";
             this.param_name.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup11,
-            listViewGroup12,
-            listViewGroup13,
-            listViewGroup14,
-            listViewGroup15,
-            listViewGroup16,
-            listViewGroup17,
-            listViewGroup18,
-            listViewGroup19,
-            listViewGroup20});
+            listViewGroup1,
+            listViewGroup2,
+            listViewGroup3,
+            listViewGroup4,
+            listViewGroup5,
+            listViewGroup6,
+            listViewGroup7,
+            listViewGroup8,
+            listViewGroup9,
+            listViewGroup10});
             this.param_name.HideSelection = false;
             this.param_name.LargeImageList = this.listIcons;
             this.param_name.Location = new System.Drawing.Point(15, 54);
@@ -236,7 +224,7 @@
             this.AddCustom.UseVisualStyleBackColor = true;
             this.AddCustom.Click += new System.EventHandler(this.AddCustom_Click);
             // 
-            // AddPin_PreDefined
+            // ModifyPinsOrParameters
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -248,12 +236,11 @@
             this.Controls.Add(this.param_name);
             this.Controls.Add(this.typesCount);
             this.Controls.Add(this.clearSearchBtn);
-            this.Controls.Add(this.searchBtn);
             this.Controls.Add(this.searchText);
             this.Controls.Add(this.createParams);
             this.Controls.Add(this.label2);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "AddPin_PreDefined";
+            this.Name = "ModifyPinsOrParameters";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Add Parameter";
             this.ResumeLayout(false);
@@ -265,7 +252,6 @@
         private System.Windows.Forms.Button createParams;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox searchText;
-        private System.Windows.Forms.Button searchBtn;
         private System.Windows.Forms.Button clearSearchBtn;
         private System.Windows.Forms.Label typesCount;
         private System.Windows.Forms.ListView param_name;
