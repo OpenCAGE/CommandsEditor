@@ -31,11 +31,6 @@ namespace CommandsEditor
             this.nodeContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.modifyPinsIn = new System.Windows.Forms.ToolStripMenuItem();
             this.modifyPinsOut = new System.Windows.Forms.ToolStripMenuItem();
-            this.addPinInToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.addPinOutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.removePinInToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.removePinOutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.duplicateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -72,17 +67,12 @@ namespace CommandsEditor
             this.nodeContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.modifyPinsIn,
             this.modifyPinsOut,
-            this.addPinInToolStripMenuItem,
-            this.addPinOutToolStripMenuItem,
-            this.toolStripSeparator2,
-            this.removePinInToolStripMenuItem,
-            this.removePinOutToolStripMenuItem,
             this.toolStripSeparator1,
             this.deleteToolStripMenuItem,
             this.duplicateToolStripMenuItem,
             this.addNodeToolStripMenuItem});
             this.nodeContextMenu.Name = "EntityListContextMenu";
-            this.nodeContextMenu.Size = new System.Drawing.Size(161, 214);
+            this.nodeContextMenu.Size = new System.Drawing.Size(161, 120);
             this.nodeContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // modifyPinsIn
@@ -100,44 +90,6 @@ namespace CommandsEditor
             this.modifyPinsOut.Size = new System.Drawing.Size(160, 22);
             this.modifyPinsOut.Text = "Modify Pins Out";
             this.modifyPinsOut.Click += new System.EventHandler(this.modifyPinsOut_Click);
-            // 
-            // addPinInToolStripMenuItem
-            // 
-            this.addPinInToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("addPinInToolStripMenuItem.Image")));
-            this.addPinInToolStripMenuItem.Name = "addPinInToolStripMenuItem";
-            this.addPinInToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
-            this.addPinInToolStripMenuItem.Text = "Add Pin In";
-            this.addPinInToolStripMenuItem.Click += new System.EventHandler(this.addPinInToolStripMenuItem_Click);
-            // 
-            // addPinOutToolStripMenuItem
-            // 
-            this.addPinOutToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("addPinOutToolStripMenuItem.Image")));
-            this.addPinOutToolStripMenuItem.Name = "addPinOutToolStripMenuItem";
-            this.addPinOutToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
-            this.addPinOutToolStripMenuItem.Text = "Add Pin Out";
-            this.addPinOutToolStripMenuItem.Click += new System.EventHandler(this.addPinOutToolStripMenuItem_Click);
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(157, 6);
-            this.toolStripSeparator2.Visible = false;
-            // 
-            // removePinInToolStripMenuItem
-            // 
-            this.removePinInToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("removePinInToolStripMenuItem.Image")));
-            this.removePinInToolStripMenuItem.Name = "removePinInToolStripMenuItem";
-            this.removePinInToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
-            this.removePinInToolStripMenuItem.Text = "Remove Pin In";
-            this.removePinInToolStripMenuItem.Click += new System.EventHandler(this.removePinInToolStripMenuItem_Click);
-            // 
-            // removePinOutToolStripMenuItem
-            // 
-            this.removePinOutToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("removePinOutToolStripMenuItem.Image")));
-            this.removePinOutToolStripMenuItem.Name = "removePinOutToolStripMenuItem";
-            this.removePinOutToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
-            this.removePinOutToolStripMenuItem.Text = "Remove Pin Out";
-            this.removePinOutToolStripMenuItem.Click += new System.EventHandler(this.removePinOutToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
@@ -315,11 +267,6 @@ namespace CommandsEditor
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem duplicateToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private System.Windows.Forms.ToolStripMenuItem addPinInToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem addPinOutToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem removePinInToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem removePinOutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addNodeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem modifyPinsIn;
         private System.Windows.Forms.ToolStripMenuItem modifyPinsOut;

@@ -50,6 +50,8 @@ namespace CommandsEditor.DockPanels
             Singleton.OnEntityAdded += OnEntityAdded;
             Singleton.OnEntityRenamed += OnEntityRenamed;
             Singleton.OnCompositeRenamed += OnCompositeRenamed;
+
+            Reload();
         }
 
         private void OnEntityAddPending()
@@ -155,6 +157,7 @@ namespace CommandsEditor.DockPanels
         public void Reload(bool displayLinks)
         {
             _displayingLinks = displayLinks;
+            ModifyParameters.Visible = !_displayingLinks;
 
             //UI defaults - TODO: just set this in the designer.
             entityInfoGroup.Text = "Selected Entity Info";
@@ -176,10 +179,17 @@ namespace CommandsEditor.DockPanels
             showOverridesAndProxies.Enabled = false;
             goToZone.Enabled = false;
             hierarchyDisplay.Visible = false;
-            addNewParameter.Enabled = true;
-            removeParameter.Enabled = true;
-            renameEntity.Visible = _entity.variant != EntityVariant.ALIAS;
-            //--
+
+            renameEntity.Visible = _entity != null && _entity.variant != EntityVariant.ALIAS;
+            deleteEntity.Visible = _entity != null;
+            duplicateEntity.Visible = _entity != null;
+
+            ModifyParameters.Enabled = _entity != null;
+            ModifyParameters_Link.Enabled = _entity != null;
+            addLinkOut.Enabled = _entity != null;
+
+            if (_entity == null)
+                return;
 
             Cursor.Current = Cursors.WaitCursor;
             StartBackgroundEntityLoader();
@@ -545,20 +555,16 @@ namespace CommandsEditor.DockPanels
             catch { }
         }
 
-        /* Add a new parameter */
-        AddParameter add_parameter;
-        private void addNewParameter_Click(object sender, EventArgs e)
+        ModifyPinsOrParameters add_parameter;
+        private void ModifyParameters_Click(object sender, EventArgs e)
         {
             if (add_parameter != null)
             {
                 add_parameter.OnSaved -= Reload;
                 add_parameter.Close();
             }
-
-            if (SettingsManager.GetBool(Singleton.Settings.UseLegacyParamCreator))
-                add_parameter = new AddParameter_Custom(this);
-            else
-                add_parameter = new AddParameter_PreDefined(this);
+            
+            add_parameter = new ModifyPinsOrParameters(this);
             add_parameter.Show();
             add_parameter.OnSaved += Reload;
         }
@@ -569,17 +575,6 @@ namespace CommandsEditor.DockPanels
             AddOrEditLink add_link = new AddOrEditLink(this);
             add_link.Show();
             add_link.OnSaved += Reload;
-        }
-
-        /* Remove a parameter */
-        private void removeParameter_Click(object sender, EventArgs e)
-        {
-            if (entity_params.Controls.Count == 0) return;
-            if (Entity.childLinks.Count + Entity.parameters.Count == 0) return;
-
-            RemoveParameter remove_parameter = new RemoveParameter(this);
-            remove_parameter.Show();
-            remove_parameter.OnSaved += Reload;
         }
 
         private void editEntityMovers_Click(object sender, EventArgs e)

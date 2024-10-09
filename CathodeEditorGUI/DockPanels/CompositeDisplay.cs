@@ -870,7 +870,7 @@ namespace CommandsEditor.DockPanels
                 ButtonText = "Create Flowgraph"
             });
             _createFlowgraphPopup.Show();
-            _createFlowgraphPopup.RenamedText += OnCreateFlowgraph;
+            _createFlowgraphPopup.OnRenamed += OnCreateFlowgraph;
             _createFlowgraphPopup.FormClosed += _createFlowgraphPopup_FormClosed;
         }
         private void OnCreateFlowgraph(string name)

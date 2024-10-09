@@ -300,12 +300,6 @@
     <Compile Include="Popups\AddEntity_CompositeInstance.Designer.cs">
       <DependentUpon>AddEntity_CompositeInstance.cs</DependentUpon>
     </Compile>
-    <Compile Include="Popups\AddParameter_PreDefined.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Popups\AddParameter_PreDefined.Designer.cs">
-      <DependentUpon>AddParameter_PreDefined.cs</DependentUpon>
-    </Compile>
     <Compile Include="Popups\AddEntity_Function.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -330,23 +324,11 @@
     <Compile Include="Popups\ExportComposite.Designer.cs">
       <DependentUpon>ExportComposite.cs</DependentUpon>
     </Compile>
-    <Compile Include="Popups\Flowgraph\AddPin_PreDefined.cs">
+    <Compile Include="Popups\ModifyPinsOrParameters.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Popups\Flowgraph\AddPin_PreDefined.Designer.cs">
-      <DependentUpon>AddPin_PreDefined.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Popups\Flowgraph\AddPin_Custom.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Popups\Flowgraph\AddPin_Custom.designer.cs">
-      <DependentUpon>AddPin_Custom.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Popups\Flowgraph\NodeEditorTest.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Popups\Flowgraph\NodeEditorTest.Designer.cs">
-      <DependentUpon>NodeEditorTest.cs</DependentUpon>
+    <Compile Include="Popups\ModifyPinsOrParameters.Designer.cs">
+      <DependentUpon>ModifyPinsOrParameters.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\Function Editors\ShowCompositeInstanceOverrides.cs">
       <SubType>Form</SubType>
@@ -386,18 +368,6 @@
     </Compile>
     <Compile Include="Popups\ShowInstanceInfo.Designer.cs">
       <DependentUpon>ShowInstanceInfo.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Popups\UserControls\AddPin.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Popups\UserControls\AddPin.Designer.cs">
-      <DependentUpon>AddPin.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Popups\UserControls\AddParameter.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Popups\UserControls\AddParameter.Designer.cs">
-      <DependentUpon>AddParameter.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\UserControls\CompositeEntityList.cs">
       <SubType>UserControl</SubType>
@@ -533,11 +503,11 @@
     <Compile Include="Popups\AddComposite.Designer.cs">
       <DependentUpon>AddComposite.cs</DependentUpon>
     </Compile>
-    <Compile Include="Popups\AddParameter_Custom.cs">
+    <Compile Include="Popups\AddCustomParameter.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Popups\AddParameter_Custom.Designer.cs">
-      <DependentUpon>AddParameter_Custom.cs</DependentUpon>
+    <Compile Include="Popups\AddCustomParameter.Designer.cs">
+      <DependentUpon>AddCustomParameter.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\AddOrEditLink.cs">
       <SubType>Form</SubType>
@@ -568,12 +538,6 @@
     </Compile>
     <Compile Include="Popups\Function Editors\TriggerSequenceEditor.Designer.cs">
       <DependentUpon>TriggerSequenceEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Popups\RemoveParameter.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Popups\RemoveParameter.Designer.cs">
-      <DependentUpon>RemoveParameter.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\RenameEntity.cs">
       <SubType>Form</SubType>
@@ -735,9 +699,6 @@
     <EmbeddedResource Include="Popups\AddEntity_CompositeInstance.resx">
       <DependentUpon>AddEntity_CompositeInstance.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Popups\AddParameter_PreDefined.resx">
-      <DependentUpon>AddParameter_PreDefined.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Popups\AddEntity_Function.resx">
       <DependentUpon>AddEntity_Function.cs</DependentUpon>
     </EmbeddedResource>
@@ -751,14 +712,8 @@
     <EmbeddedResource Include="Popups\ExportComposite.resx">
       <DependentUpon>ExportComposite.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Popups\Flowgraph\AddPin_PreDefined.resx">
-      <DependentUpon>AddPin_PreDefined.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Popups\Flowgraph\AddPin_Custom.resx">
-      <DependentUpon>AddPin_Custom.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Popups\Flowgraph\NodeEditorTest.resx">
-      <DependentUpon>NodeEditorTest.cs</DependentUpon>
+    <EmbeddedResource Include="Popups\ModifyPinsOrParameters.resx">
+      <DependentUpon>ModifyPinsOrParameters.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\InstanceSelection.resx">
       <DependentUpon>InstanceSelection.cs</DependentUpon>
@@ -805,8 +760,8 @@
     <EmbeddedResource Include="Popups\AddOrEditResource.resx">
       <DependentUpon>AddOrEditResource.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Popups\AddParameter_Custom.resx">
-      <DependentUpon>AddParameter_Custom.cs</DependentUpon>
+    <EmbeddedResource Include="Popups\AddCustomParameter.resx">
+      <DependentUpon>AddCustomParameter.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\AddOrEditLink.resx">
       <DependentUpon>AddOrEditLink.cs</DependentUpon>
@@ -825,9 +780,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\Function Editors\TriggerSequenceEditor.resx">
       <DependentUpon>TriggerSequenceEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Popups\RemoveParameter.resx">
-      <DependentUpon>RemoveParameter.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\RenameEntity.resx">
       <DependentUpon>RenameEntity.cs</DependentUpon>

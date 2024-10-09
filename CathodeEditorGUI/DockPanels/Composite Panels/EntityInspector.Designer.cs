@@ -44,9 +44,8 @@
             this.editFunction = new System.Windows.Forms.Button();
             this.entityParamGroup = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.removeParameter = new System.Windows.Forms.Button();
             this.addLinkOut = new System.Windows.Forms.Button();
-            this.addNewParameter = new System.Windows.Forms.Button();
+            this.ModifyParameters_Link = new System.Windows.Forms.Button();
             this.entity_params = new System.Windows.Forms.Panel();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
@@ -58,6 +57,7 @@
             this.closeAll = new System.Windows.Forms.ToolStripMenuItem();
             this.closeSelected = new System.Windows.Forms.ToolStripMenuItem();
             this.closeAllBut = new System.Windows.Forms.ToolStripMenuItem();
+            this.ModifyParameters = new System.Windows.Forms.Button();
             this.entityInfoGroup.SuspendLayout();
             this.entityParamGroup.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
@@ -217,13 +217,12 @@
             // 
             this.tableLayoutPanel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tableLayoutPanel2.ColumnCount = 3;
+            this.tableLayoutPanel2.ColumnCount = 2;
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel2.Controls.Add(this.removeParameter, 2, 0);
             this.tableLayoutPanel2.Controls.Add(this.addLinkOut, 1, 0);
-            this.tableLayoutPanel2.Controls.Add(this.addNewParameter, 0, 0);
+            this.tableLayoutPanel2.Controls.Add(this.ModifyParameters_Link, 0, 0);
             this.tableLayoutPanel2.Location = new System.Drawing.Point(6, 603);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 1;
@@ -231,38 +230,27 @@
             this.tableLayoutPanel2.Size = new System.Drawing.Size(375, 28);
             this.tableLayoutPanel2.TabIndex = 0;
             // 
-            // removeParameter
-            // 
-            this.removeParameter.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.removeParameter.Location = new System.Drawing.Point(253, 3);
-            this.removeParameter.Name = "removeParameter";
-            this.removeParameter.Size = new System.Drawing.Size(119, 22);
-            this.removeParameter.TabIndex = 150;
-            this.removeParameter.Text = "Remove Param/Link";
-            this.removeParameter.UseVisualStyleBackColor = true;
-            this.removeParameter.Click += new System.EventHandler(this.removeParameter_Click);
-            // 
             // addLinkOut
             // 
             this.addLinkOut.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.addLinkOut.Location = new System.Drawing.Point(128, 3);
+            this.addLinkOut.Location = new System.Drawing.Point(190, 3);
             this.addLinkOut.Name = "addLinkOut";
-            this.addLinkOut.Size = new System.Drawing.Size(119, 22);
+            this.addLinkOut.Size = new System.Drawing.Size(182, 22);
             this.addLinkOut.TabIndex = 151;
-            this.addLinkOut.Text = "Add Link Out";
+            this.addLinkOut.Text = "Create Link";
             this.addLinkOut.UseVisualStyleBackColor = true;
             this.addLinkOut.Click += new System.EventHandler(this.addLinkOut_Click);
             // 
-            // addNewParameter
+            // ModifyParameters_Link
             // 
-            this.addNewParameter.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.addNewParameter.Location = new System.Drawing.Point(3, 3);
-            this.addNewParameter.Name = "addNewParameter";
-            this.addNewParameter.Size = new System.Drawing.Size(119, 22);
-            this.addNewParameter.TabIndex = 149;
-            this.addNewParameter.Text = "Add Parameter";
-            this.addNewParameter.UseVisualStyleBackColor = true;
-            this.addNewParameter.Click += new System.EventHandler(this.addNewParameter_Click);
+            this.ModifyParameters_Link.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ModifyParameters_Link.Location = new System.Drawing.Point(3, 3);
+            this.ModifyParameters_Link.Name = "ModifyParameters_Link";
+            this.ModifyParameters_Link.Size = new System.Drawing.Size(181, 22);
+            this.ModifyParameters_Link.TabIndex = 149;
+            this.ModifyParameters_Link.Text = "Modify Parameters";
+            this.ModifyParameters_Link.UseVisualStyleBackColor = true;
+            this.ModifyParameters_Link.Click += new System.EventHandler(this.ModifyParameters_Click);
             // 
             // entity_params
             // 
@@ -378,17 +366,28 @@
             this.closeAllBut.Text = "Close All But Selected Entity";
             this.closeAllBut.Click += new System.EventHandler(this.closeAllBut_Click);
             // 
-            // EntityDisplay
+            // ModifyParameters
+            // 
+            this.ModifyParameters.Location = new System.Drawing.Point(22, 738);
+            this.ModifyParameters.Name = "ModifyParameters";
+            this.ModifyParameters.Size = new System.Drawing.Size(368, 22);
+            this.ModifyParameters.TabIndex = 1;
+            this.ModifyParameters.Text = "Modify Parameters";
+            this.ModifyParameters.UseVisualStyleBackColor = true;
+            this.ModifyParameters.Click += new System.EventHandler(this.ModifyParameters_Click);
+            // 
+            // EntityInspector
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(406, 780);
+            this.Controls.Add(this.ModifyParameters);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.entityInfoGroup);
             this.Controls.Add(this.entityParamGroup);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "EntityDisplay";
+            this.Name = "EntityInspector";
             this.ShowHint = WeifenLuo.WinFormsUI.Docking.DockState.Document;
             this.TabPageContextMenuStrip = this.contextMenuStrip1;
             this.Text = "Selected Entity";
@@ -421,8 +420,7 @@
         private System.Windows.Forms.Button editFunction;
         private System.Windows.Forms.GroupBox entityParamGroup;
         private System.Windows.Forms.Button addLinkOut;
-        private System.Windows.Forms.Button removeParameter;
-        private System.Windows.Forms.Button addNewParameter;
+        private System.Windows.Forms.Button ModifyParameters_Link;
         private System.Windows.Forms.Panel entity_params;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
@@ -435,5 +433,6 @@
         private System.Windows.Forms.ToolStripMenuItem closeAll;
         private System.Windows.Forms.ToolStripMenuItem closeSelected;
         private System.Windows.Forms.ToolStripMenuItem closeAllBut;
+        private System.Windows.Forms.Button ModifyParameters;
     }
 }

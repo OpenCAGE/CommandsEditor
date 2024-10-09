@@ -47,7 +47,6 @@ namespace CommandsEditor
             this.showEntityIDs = new System.Windows.Forms.ToolStripMenuItem();
             this.nodeOpensEntity = new System.Windows.Forms.ToolStripMenuItem();
             this.createFlowgraphNodeWhenEntityCreatedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.useLegacyParameterCreatorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.miscToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showConfirmationWhenSavingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.useTexturedModelViewExperimentalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -189,8 +188,7 @@ namespace CommandsEditor
             this.entityDisplayToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.showEntityIDs,
             this.nodeOpensEntity,
-            this.createFlowgraphNodeWhenEntityCreatedToolStripMenuItem,
-            this.useLegacyParameterCreatorToolStripMenuItem});
+            this.createFlowgraphNodeWhenEntityCreatedToolStripMenuItem});
             this.entityDisplayToolStripMenuItem.Name = "entityDisplayToolStripMenuItem";
             this.entityDisplayToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.entityDisplayToolStripMenuItem.Text = "Entity Display";
@@ -216,13 +214,6 @@ namespace CommandsEditor
             this.createFlowgraphNodeWhenEntityCreatedToolStripMenuItem.Size = new System.Drawing.Size(310, 22);
             this.createFlowgraphNodeWhenEntityCreatedToolStripMenuItem.Text = "Create Flowgraph Node When Entity Created";
             this.createFlowgraphNodeWhenEntityCreatedToolStripMenuItem.Click += new System.EventHandler(this.createFlowgraphNodeWhenEntityCreatedToolStripMenuItem_Click);
-            // 
-            // useLegacyParameterCreatorToolStripMenuItem
-            // 
-            this.useLegacyParameterCreatorToolStripMenuItem.Name = "useLegacyParameterCreatorToolStripMenuItem";
-            this.useLegacyParameterCreatorToolStripMenuItem.Size = new System.Drawing.Size(310, 22);
-            this.useLegacyParameterCreatorToolStripMenuItem.Text = "Use Legacy Parameter/Pin Creator";
-            this.useLegacyParameterCreatorToolStripMenuItem.Click += new System.EventHandler(this.useLegacyParameterCreatorToolStripMenuItem_Click);
             // 
             // miscToolStripMenuItem
             // 
@@ -396,7 +387,6 @@ namespace CommandsEditor
         private System.Windows.Forms.ToolStripMenuItem keepFunctionUsesWindowOpenToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem nodeOpensEntity;
         private System.Windows.Forms.ToolStripMenuItem resetUILayoutsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem useLegacyParameterCreatorToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton DEBUG_DoorPhysEnt;
         private System.Windows.Forms.ToolStripButton DEBUG_RunChecks;
         private System.Windows.Forms.ToolStripMenuItem writeInstancedResourcesExperimentalToolStripMenuItem;

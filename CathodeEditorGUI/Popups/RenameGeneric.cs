@@ -19,7 +19,7 @@ namespace CommandsEditor
 {
     public partial class RenameGeneric : BaseWindow
     {
-        public Action<string> RenamedText;
+        public Action<string> OnRenamed;
 
         public RenameGeneric(string initialText, RenameGenericContent content) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
@@ -36,7 +36,7 @@ namespace CommandsEditor
         {
             if (entity_name.Text == "") return;
 
-            RenamedText?.Invoke(entity_name.Text);
+            OnRenamed?.Invoke(entity_name.Text);
             this.Close();
         }
 

@@ -526,33 +526,16 @@ namespace CommandsEditor
         {
             STNode node = stNodeEditor1.GetHoveredNode();
 
-            addPinInToolStripMenuItem.Visible = node != null;
-            addPinOutToolStripMenuItem.Visible = node != null;
-            toolStripSeparator1.Visible = node != null;
-            removePinInToolStripMenuItem.Visible = node != null;
-            removePinOutToolStripMenuItem.Visible = node != null;
             modifyPinsIn.Visible = node != null;
             modifyPinsOut.Visible = node != null;
-            toolStripSeparator2.Visible = node != null;
+            toolStripSeparator1.Visible = node != null;
             deleteToolStripMenuItem.Visible = node != null;
             duplicateToolStripMenuItem.Visible = node != null;
 
             if (node != null)
             {
-                addPinInToolStripMenuItem.Enabled = node.Entity.variant != EntityVariant.VARIABLE;
-                addPinOutToolStripMenuItem.Enabled = node.Entity.variant != EntityVariant.VARIABLE;
-                removePinInToolStripMenuItem.Enabled = node.Entity.variant != EntityVariant.VARIABLE;
-                removePinOutToolStripMenuItem.Enabled = node.Entity.variant != EntityVariant.VARIABLE;
                 modifyPinsIn.Enabled = node.Entity.variant != EntityVariant.VARIABLE;
                 modifyPinsOut.Enabled = node.Entity.variant != EntityVariant.VARIABLE;
-
-                addPinInToolStripMenuItem.Visible = SettingsManager.GetBool(Singleton.Settings.UseLegacyParamCreator);
-                addPinOutToolStripMenuItem.Visible = SettingsManager.GetBool(Singleton.Settings.UseLegacyParamCreator);
-                toolStripSeparator1.Visible = SettingsManager.GetBool(Singleton.Settings.UseLegacyParamCreator);
-                removePinInToolStripMenuItem.Visible = SettingsManager.GetBool(Singleton.Settings.UseLegacyParamCreator);
-                removePinOutToolStripMenuItem.Visible = SettingsManager.GetBool(Singleton.Settings.UseLegacyParamCreator);
-                modifyPinsIn.Visible = !SettingsManager.GetBool(Singleton.Settings.UseLegacyParamCreator);
-                modifyPinsOut.Visible = !SettingsManager.GetBool(Singleton.Settings.UseLegacyParamCreator);
             }
 
             addNodeToolStripMenuItem.Visible = node == null;
@@ -584,54 +567,26 @@ namespace CommandsEditor
             }
         }
 
-        AddPin _pinManager = null;
-        private void PinManager(AddPin.Mode mode)
+        ModifyPinsOrParameters _pinManager = null;
+        private void PinManager(ModifyPinsOrParameters.Mode mode)
         {
             STNode node = stNodeEditor1.GetHoveredNode();
 
             if (_pinManager != null)
-            {
-                //_pinManager.OnSaved -= Reload;
                 _pinManager.Close();
-            }
 
-            if (SettingsManager.GetBool(Singleton.Settings.UseLegacyParamCreator))
-                _pinManager = new AddPin_Custom(node, mode);
-            else
-                _pinManager = new AddPin_PreDefined(node, mode);
-
+            _pinManager = new ModifyPinsOrParameters(node, mode);
             _pinManager.Show();
-            //_pinManager.OnSaved += Reload;
         }
 
-        //Add pin to right clicked node
-        private void addPinInToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            PinManager(AddPin.Mode.ADD_IN);
-        }
-        private void addPinOutToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            PinManager(AddPin.Mode.ADD_OUT);
-        }
-
-        //Remove pin from right clicked node
-        private void removePinInToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            PinManager(AddPin.Mode.REMOVE_IN);
-        }
-        private void removePinOutToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            PinManager(AddPin.Mode.REMOVE_OUT);
-        }
-
-        //Add/remove pins in/out using new method
+        //Add/remove pins in/out 
         private void modifyPinsIn_Click(object sender, EventArgs e)
         {
-            PinManager(AddPin.Mode.ADD_IN);
+            PinManager(ModifyPinsOrParameters.Mode.LINK_IN);
         }
         private void modifyPinsOut_Click(object sender, EventArgs e)
         {
-            PinManager(AddPin.Mode.ADD_OUT);
+            PinManager(ModifyPinsOrParameters.Mode.LINK_OUT);
         }
 
         //Delete right clicked node
@@ -684,7 +639,7 @@ namespace CommandsEditor
                 ButtonText = "Rename Flowgraph"
             });
             _renameFlowgraphPopup.Show();
-            _renameFlowgraphPopup.RenamedText += OnRenameFlowgraph;
+            _renameFlowgraphPopup.OnRenamed += OnRenameFlowgraph;
             _renameFlowgraphPopup.FormClosed += _renameFlowgraphPopup_FormClosed;
         }
         private void OnRenameFlowgraph(string name)

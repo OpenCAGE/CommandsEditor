@@ -103,7 +103,6 @@ namespace CommandsEditor
             searchOnlyCompositeNames.Checked = !SettingsManager.GetBool(Singleton.Settings.CompNameOnlyOpt); searchOnlyCompositeNames.PerformClick();
             useTexturedModelViewExperimentalToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.ShowTexOpt); useTexturedModelViewExperimentalToolStripMenuItem.PerformClick();
             keepFunctionUsesWindowOpenToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.KeepUsesWindowOpen); keepFunctionUsesWindowOpenToolStripMenuItem.PerformClick();
-            useLegacyParameterCreatorToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.UseLegacyParamCreator); useLegacyParameterCreatorToolStripMenuItem.PerformClick();
             writeInstancedResourcesExperimentalToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.ExperimentalResourceStuff); writeInstancedResourcesExperimentalToolStripMenuItem.PerformClick();
 
             if (!SettingsManager.IsSet(Singleton.Settings.OpenEntityFromNode)) SettingsManager.SetBool(Singleton.Settings.OpenEntityFromNode, true);
@@ -813,12 +812,6 @@ namespace CommandsEditor
             SettingsManager.SetBool(Singleton.Settings.MakeNodeWhenMakeEntity, createFlowgraphNodeWhenEntityCreatedToolStripMenuItem.Checked);
         }
 
-        private void useLegacyParameterCreatorToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            useLegacyParameterCreatorToolStripMenuItem.Checked = !useLegacyParameterCreatorToolStripMenuItem.Checked;
-            SettingsManager.SetBool(Singleton.Settings.UseLegacyParamCreator, useLegacyParameterCreatorToolStripMenuItem.Checked);
-        }
-
         private void resetUILayoutsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             WindowState = FormWindowState.Normal;
@@ -934,10 +927,6 @@ namespace CommandsEditor
             {
                 CommandsUtils.PurgeDeadLinks(Singleton.Editor.CommandsDisplay.Content.commands, Singleton.Editor.CommandsDisplay.Content.commands.Entries[i], true);
             }
-            return;
-
-            NodeEditorTest test = new NodeEditorTest();
-            test.Show();
 
             return;
             Flowgraph window = new Flowgraph();

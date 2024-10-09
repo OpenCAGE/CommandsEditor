@@ -17,12 +17,14 @@ using CommandsEditor.Popups.Base;
 
 namespace CommandsEditor
 {
-    public partial class AddParameter_Custom : AddParameter
+    public partial class AddCustomParameter : BaseWindow
     {
+        public Action<string, DataType> OnSelected;
+        
         EntityInspector _entityDisplay;
         ParameterCreator _creator;
 
-        public AddParameter_Custom(EntityInspector entityDisplay)
+        public AddCustomParameter(EntityInspector entityDisplay) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             _entityDisplay = entityDisplay;
             _creator = new ParameterCreator(entityDisplay.Entity, entityDisplay.Composite);
@@ -43,10 +45,8 @@ namespace CommandsEditor
         {
             if (param_name.Text == "") 
                 return;
-            
-            _entityDisplay.Entity.AddParameter(param_name.Text, (DataType)param_datatype.SelectedIndex);
 
-            OnSaved?.Invoke();
+            OnSelected?.Invoke(param_name.Text, (DataType)param_datatype.SelectedIndex);
             this.Close();
         }
 

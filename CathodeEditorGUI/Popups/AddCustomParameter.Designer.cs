@@ -1,6 +1,6 @@
 ﻿namespace CommandsEditor
 {
-    partial class AddParameter_Custom
+    partial class AddCustomParameter
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AddParameter_Custom));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AddCustomParameter));
             this.param_name = new System.Windows.Forms.ComboBox();
             this.create_param = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
