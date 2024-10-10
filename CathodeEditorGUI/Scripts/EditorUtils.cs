@@ -183,7 +183,7 @@ namespace CommandsEditor
                         else
                         {
                             List<ShortGuid> hierarchy = new List<ShortGuid>(pair.Value[i].ConvertAll(x => x));
-                            if (hierarchy[hierarchy.Count - 1] == ShortGuid.Invalid)
+                            if (hierarchy.Count > 0 && hierarchy[hierarchy.Count - 1] == ShortGuid.Invalid)
                                 hierarchy.RemoveAt(hierarchy.Count - 1);
                             hierarchy.Add(reference.entity_id);
 

@@ -19,6 +19,10 @@ using System.Windows.Controls;
 using System.ComponentModel.Design;
 using static CommandsEditor.ModifyPinsOrParameters;
 
+//TODO: 
+// - need to add validation to make sure composite entities/connections haven't changed since layout (for validation on first start, and for validating saved layouts)
+// - way of seeing all nodes for selected entity
+
 namespace CommandsEditor
 {
     public partial class Flowgraph : DockContent
@@ -59,6 +63,7 @@ namespace CommandsEditor
             ResetFG.Visible = false;
             SaveFlowgraphUnfinished.Visible = false;
             SplitConnected.Visible = false;
+            SplitInHalf.Visible = false;
 #endif
 
             //todo: i feel like these events should come from the compositedisplay?
@@ -557,6 +562,29 @@ namespace CommandsEditor
             duplicated.GetInputOptions().FirstOrDefault(o => o.ShortGUID == connectedOption.ShortGUID).ConnectOption(outputs[0]);
 
             duplicated.SetPosition(new Point(node.Location.X + node.Width + 60, node.Location.Y));
+        }
+
+        private void SplitInHalf_Click(object sender, EventArgs e)
+        {
+            if (stNodeEditor1.GetSelectedNode().Length != 1)
+                return;
+
+            STNode node = stNodeEditor1.GetSelectedNode()[0];
+            STNodeOption[] outputs = node.GetOutputOptions();
+
+            STNode duplicated = DuplicateNode(node);
+            duplicated.SetPosition(new Point(node.Location.X + 20, node.Location.Y + 20));
+
+            for (int i = 0; i < outputs.Length; i++)
+            {
+                List<STNodeOption> connections = outputs[i].GetConnectedOption();
+                for (int x = 0; x < connections.Count; x++)
+                {
+                    STNodeOption connectedOption = connections[x];
+                    connectedOption.DisconnectOption(outputs[i]);
+                    duplicated.GetOutputOptions().FirstOrDefault(o => o.ShortGUID == outputs[i].ShortGUID).ConnectOption(connectedOption);
+                }
+            }
         }
 
         private void RemoveEmpties_Click(object sender, EventArgs e)

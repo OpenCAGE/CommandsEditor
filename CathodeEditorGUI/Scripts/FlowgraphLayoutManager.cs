@@ -190,6 +190,7 @@ namespace CommandsEditor
                 for (int i = 0; i < 2; i++)
                     for (int x = 0; x < _commands.Entries.Count; x++)
                         CommandsUtils.PurgeDeadLinks(_commands, _commands.Entries[x]);
+                // ^ TODO: This takes a while. Need to validate if we actually need to run twice, and if we could actually even just calculate compatibility when we first open a composite (would probably be better).
 
                 for (int i = 0; i < _commands.Entries.Count; i++)
                 {

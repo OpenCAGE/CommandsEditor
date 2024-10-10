@@ -47,6 +47,7 @@ namespace CommandsEditor
             this.createNewFlowgraphToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AutoCalcAdjacents = new System.Windows.Forms.Button();
             this.SplitConnected = new System.Windows.Forms.Button();
+            this.SplitInHalf = new System.Windows.Forms.Button();
             this.nodeContextMenu.SuspendLayout();
             this.TabStripContextMenu.SuspendLayout();
             this.SuspendLayout();
@@ -261,6 +262,19 @@ namespace CommandsEditor
             this.SplitConnected.UseVisualStyleBackColor = true;
             this.SplitConnected.Click += new System.EventHandler(this.SplitConnected_Click);
             // 
+            // SplitInHalf
+            // 
+            this.SplitInHalf.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.SplitInHalf.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.SplitInHalf.ForeColor = System.Drawing.Color.IndianRed;
+            this.SplitInHalf.Location = new System.Drawing.Point(492, 661);
+            this.SplitInHalf.Name = "SplitInHalf";
+            this.SplitInHalf.Size = new System.Drawing.Size(123, 38);
+            this.SplitInHalf.TabIndex = 9;
+            this.SplitInHalf.Text = "Split In Half";
+            this.SplitInHalf.UseVisualStyleBackColor = true;
+            this.SplitInHalf.Click += new System.EventHandler(this.SplitInHalf_Click);
+            // 
             // Flowgraph
             // 
             this.AllowEndUserDocking = false;
@@ -269,6 +283,7 @@ namespace CommandsEditor
             this.ClientSize = new System.Drawing.Size(1512, 699);
             this.CloseButton = false;
             this.CloseButtonVisible = false;
+            this.Controls.Add(this.SplitInHalf);
             this.Controls.Add(this.SplitConnected);
             this.Controls.Add(this.AutoCalcAdjacents);
             this.Controls.Add(this.ResetFG);
@@ -311,6 +326,7 @@ namespace CommandsEditor
         private System.Windows.Forms.ToolStripMenuItem createNewFlowgraphToolStripMenuItem;
         private System.Windows.Forms.Button AutoCalcAdjacents;
         private System.Windows.Forms.Button SplitConnected;
+        private System.Windows.Forms.Button SplitInHalf;
     }
 }
 
