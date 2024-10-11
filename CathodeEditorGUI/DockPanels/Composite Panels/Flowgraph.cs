@@ -522,6 +522,7 @@ namespace CommandsEditor
             STNodeOption[] outputs = node.GetOutputOptions();
 
             int stackedHeight = 0;
+            int minY = 0;
 
             for (int i = 0; i < outputs.Length; i++)
             {
@@ -532,7 +533,11 @@ namespace CommandsEditor
                         continue;
                     positionedNodes.Add(connectedNode);
 
-                    connectedNode.SetPosition(new Point(node.Location.X + node.Width + 60, node.Location.Y + stackedHeight));
+                    int targetY = node.Location.Y + stackedHeight;
+                    if (targetY < minY) targetY = minY;
+                    if (targetY > minY) minY = targetY; 
+
+                    connectedNode.SetPosition(new Point(node.Location.X + node.Width + 60, targetY));
                     stackedHeight += connectedNode.Height + 20;
 
                     PositionNode(connectedNode);
