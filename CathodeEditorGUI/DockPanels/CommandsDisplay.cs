@@ -624,6 +624,8 @@ namespace CommandsEditor.DockPanels
             _functionUsesDialog = null;
         }
 
+        private static List<Composite> _toSkip = new List<Composite>();
+
         private void DEBUG_LoadNextEmpty_Click(object sender, EventArgs e)
         {
             DEBUG_LoadNextToConstruct();
@@ -635,16 +637,23 @@ namespace CommandsEditor.DockPanels
             return;
 #endif
 
+            if (FlowgraphLayoutManager.DEBUG_IsUnfinished)
+            {
+                _toSkip.Add(CompositeDisplay.Composite);
+            }
+
             FlowgraphLayoutManager.DEBUG_UsePreDefinedTable = true;
             List<Composite> ordered = Content.commands.Entries.OrderBy(o => CompositeUtils.CountLinks(o)).Where(o => CompositeUtils.CountLinks(o) != 0 && !FlowgraphLayoutManager.HasLayout(o)).ToList();
             for (int i = 0; i < ordered.Count; i++)
                 Console.WriteLine(ordered[i].name);
             Console.WriteLine("Still " + ordered.Count + " to go in this PAK (count includes those not purged, so may be lower)");
             FlowgraphLayoutManager.DEBUG_UsePreDefinedTable = false;
-            if (ordered.Count != 0)
-            {
-                LoadComposite(ordered[0]);
-            }
+
+            int index = 0;
+            while (_toSkip.Contains(ordered[index]))
+                index++;
+                
+            LoadComposite(ordered[index]);
         }
     }
 }
