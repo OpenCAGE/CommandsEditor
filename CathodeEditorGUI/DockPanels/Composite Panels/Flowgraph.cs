@@ -514,35 +514,58 @@ namespace CommandsEditor
                 return;
 
             positionedNodes.Clear();
-            PositionNode(stNodeEditor1.GetSelectedNode()[0]);
+            int currentY = stNodeEditor1.GetSelectedNode()[0].Location.Y; 
+            PositionNode(stNodeEditor1.GetSelectedNode()[0], ref currentY);
         }
-        private void PositionNode(STNode node)
+        private int PositionNode(STNode node, ref int currentY)
         {
-            STNodeOption[] inputs = node.GetInputOptions();
+            if (positionedNodes.Contains(node))
+                return 0;
+
+            positionedNodes.Add(node);
+
             STNodeOption[] outputs = node.GetOutputOptions();
+            STNodeOption[] inputs = node.GetInputOptions();
+            int nodeWidthSpacing = 60;
+            int nodeHeightSpacing = 20;
 
+            int subtreeHeight = 0;
+            int initialY = currentY;
             int stackedHeight = 0;
-            int minY = 0;
 
-            for (int i = 0; i < outputs.Length; i++)
+            for (int x = 0; x < outputs.Length; x++)
             {
-                foreach (STNodeOption output in outputs[i].GetConnectedOption())
+                var connectedOptions = outputs[x].GetConnectedOption();
+                for (int i = 0; i < connectedOptions.Count; i++)
                 {
-                    STNode connectedNode = output.Owner;
+                    STNode connectedNode = connectedOptions[i].Owner;
+
                     if (positionedNodes.Contains(connectedNode))
                         continue;
-                    positionedNodes.Add(connectedNode);
 
-                    int targetY = node.Location.Y + stackedHeight;
-                    if (targetY < minY) targetY = minY;
-                    if (targetY > minY) minY = targetY; 
+                    //if only one input, or if input is reference, and has multiple connections, and no outputs?
+                    //duplicate node and use that as connected
 
-                    connectedNode.SetPosition(new Point(node.Location.X + node.Width + 60, targetY));
-                    stackedHeight += connectedNode.Height + 20;
+                    int targetY = initialY + stackedHeight;
+                    connectedNode.SetPosition(new Point(node.Location.X + node.Width + nodeWidthSpacing, targetY));
 
-                    PositionNode(connectedNode);
+                    int thisHeightSpacing = nodeHeightSpacing;
+                    if (i + 1 < connectedOptions.Count && connectedOptions[i + 1].Owner.Entity.variant == EntityVariant.VARIABLE)
+                        thisHeightSpacing = 5;
+                    if (x + 1 < outputs.Length && outputs[x + 1].GetConnectedOption().Count != 0 && outputs[x + 1].GetConnectedOption()[0].Owner.Entity.variant == EntityVariant.VARIABLE && connectedNode.Entity.variant == EntityVariant.VARIABLE)
+                        thisHeightSpacing = 5;
+
+                    int childSubtreeHeight = PositionNode(connectedNode, ref targetY);
+                    stackedHeight += childSubtreeHeight + thisHeightSpacing;
+
+                    subtreeHeight = Math.Max(subtreeHeight, stackedHeight);
                 }
             }
+
+            if (outputs.Length > 0)
+                node.SetPosition(new Point(node.Location.X, initialY)); 
+
+            return Math.Max(subtreeHeight, node.Height);
         }
 
         private void SplitConnected_Click(object sender, EventArgs e)
