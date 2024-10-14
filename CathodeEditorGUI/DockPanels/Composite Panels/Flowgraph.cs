@@ -64,6 +64,8 @@ namespace CommandsEditor
             SaveFlowgraphUnfinished.Visible = false;
             SplitConnected.Visible = false;
             SplitInHalf.Visible = false;
+            DuplicateForAllConnections.Visible = false;
+            AutoCalcAndSplit.Visible = false;
 #endif
 
             //todo: i feel like these events should come from the compositedisplay?
@@ -431,6 +433,8 @@ namespace CommandsEditor
             Console.WriteLine("Saved predefined flowgraph layout: " + layout.Name);
             FlowgraphLayoutManager.DEBUG_UsePreDefinedTable = false;
 
+            //TODO: should validate that the connections havent changed really before loading another to make sure we're not saving a dodgy layout
+
             Singleton.Editor.CommandsDisplay.DEBUG_LoadNextToConstruct();
 #endif
         }
@@ -515,9 +519,9 @@ namespace CommandsEditor
 
             positionedNodes.Clear();
             int currentY = stNodeEditor1.GetSelectedNode()[0].Location.Y; 
-            PositionNode(stNodeEditor1.GetSelectedNode()[0], ref currentY);
+            PositionNode(stNodeEditor1.GetSelectedNode()[0], ref currentY, false);
         }
-        private int PositionNode(STNode node, ref int currentY)
+        private int PositionNode(STNode node, ref int currentY, bool doSplits)
         {
             if (positionedNodes.Contains(node))
                 return 0;
@@ -540,6 +544,45 @@ namespace CommandsEditor
                 {
                     STNode connectedNode = connectedOptions[i].Owner;
 
+                    if (doSplits)
+                    {
+                        //If the node's connected option is "reference" and it meets criteria, duplicate it
+                        if (connectedOptions[i].ShortGUID == ShortGuidUtils.Generate("reference") && connectedOptions[i].ConnectionCount > 1)
+                        {
+                            //if (connectedNode.GetInputOptions().Length > 1 || connectedNode.GetOutputOptions().Length != 0 || (connectedNode.GetInputOptions().Length == 1 && connectedNode.GetInputOptions()[0].GetConnectedOption().Count != 1 && connectedNode.GetOutputOptions().Length == 0))
+                            {
+                                connectedNode = DuplicateNode(connectedNode);
+                                outputs[x].DisconnectOption(connectedOptions[i]);
+                                outputs[x].ConnectOption(connectedNode.GetInputOptions().FirstOrDefault(o => o.ShortGUID == connectedOptions[i].ShortGUID));
+                            }
+                        }
+
+                        //If the connected node is a variable and the connection has multiple links, duplicate it
+                        if (connectedNode.Entity.variant == EntityVariant.VARIABLE && connectedOptions[i].ConnectionCount > 1)
+                        {
+                            connectedNode = DuplicateNode(connectedNode);
+                            outputs[x].DisconnectOption(connectedOptions[i]);
+                            outputs[x].ConnectOption(connectedNode.GetInputOptions().FirstOrDefault(o => o.ShortGUID == connectedOptions[i].ShortGUID));
+                        }
+
+                        RemoveEmpties_Click(null, null);
+
+                        //This is the end of the chain
+                        /*
+                        if (connectedNode.GetOutputOptions().Length == 0)
+                        {
+                            //If the node's connected option is "reference" and it has more than one other input, 
+                            if (connectedOptions[i].ShortGUID == ShortGuidUtils.Generate("reference"))
+                            {
+                                if (connectedNode.GetInputOptions().Length > 1)
+                                {
+                                    connectedNode = DuplicateNode(connectedNode);
+                                }
+                            }
+                        }
+                        */
+                    }
+
                     if (positionedNodes.Contains(connectedNode))
                         continue;
 
@@ -555,7 +598,7 @@ namespace CommandsEditor
                     if (x + 1 < outputs.Length && outputs[x + 1].GetConnectedOption().Count != 0 && outputs[x + 1].GetConnectedOption()[0].Owner.Entity.variant == EntityVariant.VARIABLE && connectedNode.Entity.variant == EntityVariant.VARIABLE)
                         thisHeightSpacing = 5;
 
-                    int childSubtreeHeight = PositionNode(connectedNode, ref targetY);
+                    int childSubtreeHeight = PositionNode(connectedNode, ref targetY, doSplits);
                     stackedHeight += childSubtreeHeight + thisHeightSpacing;
 
                     subtreeHeight = Math.Max(subtreeHeight, stackedHeight);
@@ -566,6 +609,16 @@ namespace CommandsEditor
                 node.SetPosition(new Point(node.Location.X, initialY)); 
 
             return Math.Max(subtreeHeight, node.Height);
+        }
+
+        private void AutoCalcAndSplit_Click(object sender, EventArgs e)
+        {
+            if (stNodeEditor1.GetSelectedNode().Length != 1)
+                return;
+
+            positionedNodes.Clear();
+            int currentY = stNodeEditor1.GetSelectedNode()[0].Location.Y;
+            PositionNode(stNodeEditor1.GetSelectedNode()[0], ref currentY, true);
         }
 
         private void SplitConnected_Click(object sender, EventArgs e)
@@ -636,6 +689,48 @@ namespace CommandsEditor
                 for (int x = 0; x < toRemove.Count; x++)
                     stNodeEditor1.Nodes[i].RemoveOutputOption(toRemove[x]);
             }
+        }
+
+        private void DuplicateForAllConnections_Click(object sender, EventArgs e)
+        {
+            if (stNodeEditor1.GetSelectedNode().Length != 1)
+                return;
+
+            STNode node = stNodeEditor1.GetSelectedNode()[0];
+
+            int duplicateCount = 0;
+
+            STNodeOption[] inputs = node.GetInputOptions();
+            for (int i = 0; i < inputs.Length; i++)
+            {
+                var connectedOptions = inputs[i].GetConnectedOption();
+                for (int x = 0; x < connectedOptions.Count; x++)
+                {
+                    STNode newNode = DuplicateNode(node);
+                    inputs[i].DisconnectOption(connectedOptions[x]);
+                    newNode.GetInputOptions().FirstOrDefault(o => o.ShortGUID == inputs[i].ShortGUID).ConnectOption(connectedOptions[x]);
+
+                    duplicateCount++;
+                    newNode.SetPosition(new Point(node.Location.X + (duplicateCount * 10), node.Location.Y + (duplicateCount * 10)));
+                }
+            }
+
+            STNodeOption[] outputs = node.GetOutputOptions();
+            for (int i = 0; i < outputs.Length; i++)
+            {
+                var connectedOptions = outputs[i].GetConnectedOption();
+                for (int x = 0; x < connectedOptions.Count; x++)
+                {
+                    STNode newNode = DuplicateNode(node);
+                    outputs[i].DisconnectOption(connectedOptions[x]);
+                    newNode.GetOutputOptions().FirstOrDefault(o => o.ShortGUID == outputs[i].ShortGUID).ConnectOption(connectedOptions[x]);
+
+                    duplicateCount++;
+                    newNode.SetPosition(new Point(node.Location.X + (duplicateCount * 10), node.Location.Y + (duplicateCount * 10)));
+                }
+            }
+
+            stNodeEditor1.Nodes.Remove(node);
         }
 
         //disable entity-related actions on the context menu if no entity is selected
