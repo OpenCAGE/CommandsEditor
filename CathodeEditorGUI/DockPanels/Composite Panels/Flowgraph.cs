@@ -71,6 +71,8 @@ namespace CommandsEditor
             AutoCalcAndSplit.Visible = false;
 #endif
 
+            DEBUG_UnfinishedWarning.Visible = false;
+
             //todo: i feel like these events should come from the compositedisplay?
             Singleton.OnEntitySelected += OnEntitySelectedGlobally;
             Singleton.OnEntityAdded += OnEntityAddedGlobally;
@@ -292,6 +294,10 @@ namespace CommandsEditor
             stNodeEditor1.ResumeLayout();
             stNodeEditor1.Invalidate();
 
+#if DEBUG
+            DEBUG_UnfinishedWarning.Visible = flowgraphMeta.IsUnfinished;
+#endif
+
             return true;
         }
 
@@ -346,6 +352,8 @@ namespace CommandsEditor
                 node.SetPosition(new Point(0, height));
                 height += node.Height + 10;
             }
+            
+            DEBUG_UnfinishedWarning.Visible = false;
 
             this.Text = "UNSAVED with " + stNodeEditor1.Nodes.Count + " nodes";
             _flowgraphName = Path.GetFileName(_composite.name);

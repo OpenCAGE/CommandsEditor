@@ -50,6 +50,7 @@ namespace CommandsEditor
             this.SplitInHalf = new System.Windows.Forms.Button();
             this.DuplicateForAllConnections = new System.Windows.Forms.Button();
             this.AutoCalcAndSplit = new System.Windows.Forms.Button();
+            this.DEBUG_UnfinishedWarning = new System.Windows.Forms.Label();
             this.nodeContextMenu.SuspendLayout();
             this.TabStripContextMenu.SuspendLayout();
             this.SuspendLayout();
@@ -303,6 +304,16 @@ namespace CommandsEditor
             this.AutoCalcAndSplit.UseVisualStyleBackColor = true;
             this.AutoCalcAndSplit.Click += new System.EventHandler(this.AutoCalcAndSplit_Click);
             // 
+            // DEBUG_UnfinishedWarning
+            // 
+            this.DEBUG_UnfinishedWarning.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.DEBUG_UnfinishedWarning.AutoSize = true;
+            this.DEBUG_UnfinishedWarning.Location = new System.Drawing.Point(1437, 40);
+            this.DEBUG_UnfinishedWarning.Name = "DEBUG_UnfinishedWarning";
+            this.DEBUG_UnfinishedWarning.Size = new System.Drawing.Size(73, 13);
+            this.DEBUG_UnfinishedWarning.TabIndex = 12;
+            this.DEBUG_UnfinishedWarning.Text = "UNFINISHED";
+            // 
             // Flowgraph
             // 
             this.AllowEndUserDocking = false;
@@ -311,6 +322,7 @@ namespace CommandsEditor
             this.ClientSize = new System.Drawing.Size(1512, 699);
             this.CloseButton = false;
             this.CloseButtonVisible = false;
+            this.Controls.Add(this.DEBUG_UnfinishedWarning);
             this.Controls.Add(this.AutoCalcAndSplit);
             this.Controls.Add(this.DuplicateForAllConnections);
             this.Controls.Add(this.SplitInHalf);
@@ -332,6 +344,7 @@ namespace CommandsEditor
             this.nodeContextMenu.ResumeLayout(false);
             this.TabStripContextMenu.ResumeLayout(false);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -359,6 +372,7 @@ namespace CommandsEditor
         private System.Windows.Forms.Button SplitInHalf;
         private System.Windows.Forms.Button DuplicateForAllConnections;
         private System.Windows.Forms.Button AutoCalcAndSplit;
+        private System.Windows.Forms.Label DEBUG_UnfinishedWarning;
     }
 }
 
