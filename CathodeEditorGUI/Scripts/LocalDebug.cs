@@ -117,6 +117,27 @@ namespace CommandsEditor
 #endif
         }
 
+        public static void TestPurge()
+        {
+#if DEBUG
+
+            List<string> files = Directory.GetFiles("F:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\data_orig\\ENV\\Production", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            foreach (string file in files)
+            {
+                Commands commands = new Commands(file);
+                for (int x = 0; x < commands.Entries.Count; x++)
+                    CommandsUtils.PurgeDeadLinks(commands, commands.Entries[x]);
+
+                for (int x = 0; x < commands.Entries.Count; x++)
+                {
+                    if (CommandsUtils.PurgeDeadLinks(commands, commands.Entries[x])) {
+                        string sdfsddf = "";
+                    }
+                }
+            }
+#endif
+        }
+
         public static void DoCheckOnNodegraph()
         {
 #if DEBUG

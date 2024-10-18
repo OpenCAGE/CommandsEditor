@@ -91,7 +91,58 @@ namespace CommandsEditor
             });
         }
 
-        //Checks to see if the given flowgraph is compatible with the Flowgraph system: Composites saved with earlier versions of OpenCAGE are unsupported.
+        //Sets if the given composite supports flowgraphs: a composite wouldn't support flowgraphs if it diverges from the saved layout, or has no layout defined
+        private static void SetCompatibilityInfo(Composite composite, bool flowgraphs_supported)
+        {
+            var compatibilityInfo = _compatibility.compatibility_info.FirstOrDefault(o => o.composite_id == composite.shortGUID);
+            if (compatibilityInfo == null)
+            {
+                compatibilityInfo = new CompositeFlowgraphCompatibilityTable.CompatibilityInfo() { composite_id = composite.shortGUID };
+                _compatibility.compatibility_info.Add(compatibilityInfo);
+            }
+            compatibilityInfo.flowgraphs_supported = flowgraphs_supported;
+        }
+
+        //Checks to see if a composite has associated flowgraph compatibility info: a composite wouldn't have this if it is being opened for the first time since script editor v3
+        public static bool HasCompatibilityInfo(Composite composite)
+        {
+            return _compatibility.compatibility_info.FirstOrDefault(o => o.composite_id == composite.shortGUID) != null;
+        }
+
+        //Checks the given composite against the layout DB to see if the links/entities match
+        public static void EvaluateCompatibility(Composite composite)
+        {
+            int links = CompositeUtils.CountLinks(composite);
+            if (links == 0)
+            {
+                //If the composite has no links, regardless of if it diverges from the saved layouts, allow it
+                RemoveAllLayouts(composite);
+                SaveLayout(null, composite, System.IO.Path.GetFileName(composite.name));
+                SetCompatibilityInfo(composite, true);
+            }
+            else
+            {
+                //If there are links, make sure they match up with the stored layout (if there is one)
+                bool hasLayout = HasLayout(composite);
+                if (hasLayout)
+                {
+                    bool diverged = false;
+                    //TODO: calculate if diverged
+                    SetCompatibilityInfo(composite, !diverged);
+                }
+                else
+                {
+                    SetCompatibilityInfo(composite, false);
+                }
+            }
+
+#if DEBUG
+            //In debug mode, we should always allow flowgraphs, so that new layouts can be made
+            SetCompatibilityInfo(composite, true);
+#endif
+        }
+
+        //Checks to see if the given flowgraph is compatible with the Flowgraph system (make sure this has been evaluated first using the method above)
         public static bool IsCompatible(Composite composite)
         {
             if (composite == null)
@@ -151,6 +202,10 @@ namespace CommandsEditor
         {
             Table.flowgraphs.RemoveAll(o => o.CompositeGUID == composite.shortGUID && o.Name == name);
         }
+        public static void RemoveAllLayouts(Composite composite)
+        {
+            Table.flowgraphs.RemoveAll(o => o.CompositeGUID == composite.shortGUID);
+        }
 
         public static void LinkCommands(Commands commands)
         {
@@ -179,66 +234,10 @@ namespace CommandsEditor
             if (_compatibility == null) _compatibility = new CompositeFlowgraphCompatibilityTable();
             Console.WriteLine("Loaded " + _compatibility.compatibility_info.Count + " flowgraph compatibility definitions!");
 
-            //If there are no defined layouts, then this Commands is being opened for the first time since the flowgraph update: handle compatibility checks
+            //Copy the default layouts over if they don't already exist
             if (_userDefinedLayouts.flowgraphs.Count == 0)
-            {
-                //Copy the default layouts over
                 for (int i = 0; i < _preDefinedLayouts.flowgraphs.Count; i++)
                     _userDefinedLayouts.flowgraphs.Add(_preDefinedLayouts.flowgraphs[i].Copy());
-
-                //Run through every composite and purge CAGE's lingering links (do it twice to be sure)
-                for (int i = 0; i < 2; i++)
-                    for (int x = 0; x < _commands.Entries.Count; x++)
-                        CommandsUtils.PurgeDeadLinks(_commands, _commands.Entries[x]);
-                // ^ TODO: This takes a while. Need to validate if we actually need to run twice, and if we could actually even just calculate compatibility when we first open a composite (would probably be better).
-
-                for (int i = 0; i < _commands.Entries.Count; i++)
-                {
-                    CommandsUtils.PurgedComposites.purged.Add(_commands.Entries[i].shortGUID);
-
-                    var compatibilityInfo = _compatibility.compatibility_info.FirstOrDefault(o => o.composite_id == _commands.Entries[i].shortGUID);
-                    if (compatibilityInfo == null)
-                    {
-                        compatibilityInfo = new CompositeFlowgraphCompatibilityTable.CompatibilityInfo() { composite_id = _commands.Entries[i].shortGUID };
-                        _compatibility.compatibility_info.Add(compatibilityInfo);
-                    }
-
-                    //Clear out any aliases with no parameters/links
-                    List<AliasEntity> aliasPurged = new List<AliasEntity>();
-                    for (int x = 0; x < _commands.Entries[i].aliases.Count; x++)
-                    {
-                        if (_commands.Entries[i].aliases[x].childLinks.Count == 0 &&
-                            _commands.Entries[i].aliases[x].parameters.Count == 0 &&
-                            _commands.Entries[i].aliases[x].GetParentLinks(_commands.Entries[i]).Count == 0)
-                            continue;
-                        aliasPurged.Add(_commands.Entries[i].aliases[x]);
-                    }
-                    _commands.Entries[i].aliases = aliasPurged;
-
-#if DEBUG
-                    compatibilityInfo.flowgraphs_supported = true;
-                    continue;
-#endif
-
-                    int links = CompositeUtils.CountLinks(_commands.Entries[i]);
-                    if (links == 0)
-                    {
-                        //If the composite has no links, regardless of its vanilla-ness, allow it
-                        _userDefinedLayouts.flowgraphs.RemoveAll(o => o.CompositeGUID == _commands.Entries[i].shortGUID);
-                        SaveLayout(null, _commands.Entries[i], Path.GetFileName(_commands.Entries[i].name));
-                        compatibilityInfo.flowgraphs_supported = true;
-                    }
-                    else
-                    {
-                        //If there are links, make sure they match up with the stored layout
-
-                        //TODO: need to validate that the content of the composite hasn't diverged from the layout
-                        compatibilityInfo.flowgraphs_supported = HasLayout(_commands.Entries[i]);
-
-                        //if they don't - do something about it 
-                    }
-                }
-            }
         }
 
         private static void SaveCustomFlowgraphs(string filepath)
@@ -249,7 +248,6 @@ namespace CommandsEditor
             CustomTable.WriteTable(filepath, CustomEndTables.COMPOSITE_FLOWGRAPH_COMPATIBILITY_INFO, _compatibility);
             Console.WriteLine("Saved " + _compatibility.compatibility_info.Count + " flowgraph compatibility definitions!");
         }
-
     }
 
     public static class FlowgraphManagerUtils

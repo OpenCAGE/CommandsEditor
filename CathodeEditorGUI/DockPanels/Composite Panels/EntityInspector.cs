@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
@@ -156,6 +157,10 @@ namespace CommandsEditor.DockPanels
         public void Reload() => Reload(_displayingLinks);
         public void Reload(bool displayLinks)
         {
+#if DEBUG
+            Stopwatch timer = Stopwatch.StartNew();
+#endif
+
             _displayingLinks = displayLinks;
             ModifyParameters.Visible = !_displayingLinks;
 
@@ -189,7 +194,12 @@ namespace CommandsEditor.DockPanels
             addLinkOut.Enabled = _entity != null;
 
             if (_entity == null)
+            {
+#if DEBUG
+                timer.Stop();
+#endif
                 return;
+            }
 
             Cursor.Current = Cursors.WaitCursor;
             StartBackgroundEntityLoader();
@@ -487,6 +497,12 @@ namespace CommandsEditor.DockPanels
             entity_params.SuspendLayout();
             entity_params.Controls.AddRange(controls.ToArray());
             entity_params.ResumeLayout();
+
+#if DEBUG
+            timer.Stop();
+            TimeSpan timeTaken = timer.Elapsed;
+            Console.WriteLine($"Entity reload taken: {timeTaken.TotalMilliseconds} ms");
+#endif
 
             Singleton.OnEntityReloaded?.Invoke(_entity);
             Cursor.Current = Cursors.Default;

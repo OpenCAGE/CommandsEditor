@@ -18,10 +18,13 @@ using System.Windows.Media.Media3D;
 using System.Windows.Controls;
 using System.ComponentModel.Design;
 using static CommandsEditor.ModifyPinsOrParameters;
+using System.Diagnostics;
 
 //TODO: 
 // - need to add validation to make sure composite entities/connections haven't changed since layout (for validation on first start, and for validating saved layouts)
 // - way of seeing all nodes for selected entity
+
+//This also needs a bit of a refactor. It works OK but has become quite bloated.
 
 namespace CommandsEditor
 {
@@ -75,13 +78,20 @@ namespace CommandsEditor
             Singleton.OnEntityRenamed += OnEntityRenamedGlobally;
         }
 
+        private void OnEntitySelectedGlobally(Entity entity)
+        {
+            if (entity == _previouslySelectedEntity)
+                return;
+            SelectAllNodesForEntity(entity);
+        }
+
         private void OnEntityRenamedGlobally(Entity entity, string newNew)
         {
-            for (int i = 0; i < stNodeEditor1.Nodes.Count; i++)
+            foreach (STNode node in stNodeEditor1.Nodes)
             {
-                if (stNodeEditor1.Nodes[i].Entity.shortGUID != entity.shortGUID)
+                if (node.Entity.shortGUID != entity.shortGUID)
                     continue;
-                RegenerateNodeStyle(stNodeEditor1.Nodes[i]);
+                RegenerateNodeStyle(node);
             }
         }
 
@@ -114,31 +124,43 @@ namespace CommandsEditor
             Singleton.OnEntitySelected?.Invoke(ent); //need to call this again b/c the activation event doesn't fire here
         }
 
-        private void OnEntitySelectedGlobally(Entity entity)
+        private void SelectAllNodesForEntity(Entity entity)
         {
-            for (int i = 0; i < stNodeEditor1.Nodes.Count; i++)
-            {
-                stNodeEditor1.Nodes[i].IsSelected = false;
-                stNodeEditor1.Nodes[i].SetSelected(false, true);
-            }
-            stNodeEditor1.SetActiveNode(null);
+            DeselectAllNodes();
 
             if (entity == null)
                 return;
 
-            for (int i = 0; i < stNodeEditor1.Nodes.Count; i++)
+            STNode[] nodes = stNodeEditor1.Nodes.ToArray();
+            foreach (STNode node in nodes)
             {
-                if (stNodeEditor1.Nodes[i].ShortGUID == entity.shortGUID)
-                {
-                    stNodeEditor1.Nodes[i].IsSelected = true;
-                    stNodeEditor1.Nodes[i].SetSelected(true, true);
-                    stNodeEditor1.SetActiveNode(stNodeEditor1.Nodes[i]);
-
-                    //TODO: I'd really like to focus the canvas on the selected node, but I can't think how to get it to work. Either that, or the highlight should be more obvious
-                    //stNodeEditor1.MoveCanvas(stNodeEditor1.Nodes[i].Location.X - (stNodeEditor1.Width / 2), stNodeEditor1.Nodes[i].Location.Y - (stNodeEditor1.Height / 2), false, CanvasMoveArgs.All);
-                    return;
-                }
+                if (node.ShortGUID != entity.shortGUID)
+                    continue;
+                SelectNode(node);
             }
+        }
+
+        private void SelectNode(STNode node)
+        {
+            _previouslySelectedEntity = node.Entity;
+            Console.WriteLine("SelectNode: " + node.Title + " - " + node.Guid);
+
+            stNodeEditor1.AddSelectedNode(node);
+            node.SetSelected(true, true);
+            stNodeEditor1.SetActiveNode(node);
+        }
+
+        private void DeselectAllNodes()
+        {
+            STNode[] nodes = stNodeEditor1.Nodes.ToArray();
+            foreach (STNode node in nodes)
+            {
+                if (!node.IsSelected)
+                    continue;
+                node.SetSelected(false, true);
+            }
+            stNodeEditor1.SetActiveNode(null);
+            stNodeEditor1.RemoveAllSelectedNodes();
         }
 
         private void OnEntityAddedGlobally(Entity entity)
@@ -146,19 +168,21 @@ namespace CommandsEditor
             if (SettingsManager.GetBool(Singleton.Settings.MakeNodeWhenMakeEntity))
             {
                 STNode node = EntityToNode(entity); 
-                OnEntitySelectedGlobally(entity);
+                SelectNode(node);
             }
         }
 
         private void OnEntityDeletedGlobally(Entity entity)
         {
             List<STNode> nodes = new List<STNode>();
-            for (int i = 0; i < stNodeEditor1.Nodes.Count; i++)
+
+            STNode[] allNodes = stNodeEditor1.Nodes.ToArray();
+            foreach (STNode node in allNodes)
             {
-                if (stNodeEditor1.Nodes[i].ShortGUID != entity.shortGUID)
+                if (node.ShortGUID != entity.shortGUID)
                     continue;
 
-                nodes.Add(stNodeEditor1.Nodes[i]);
+                nodes.Add(node);
             }
 
             for (int i = 0; i < nodes.Count; i++)
@@ -343,12 +367,12 @@ namespace CommandsEditor
             STNode node = null;
             if (!allowDuplicate)
             {
-                for (int i = 0; i < stNodeEditor1.Nodes.Count; i++)
+                foreach (STNode n in stNodeEditor1.Nodes)
                 {
-                    if (stNodeEditor1.Nodes[i].ShortGUID != entity.shortGUID)
+                    if (n.ShortGUID != entity.shortGUID)
                         continue;
 
-                    node = stNodeEditor1.Nodes[i];
+                    node = n;
                     break;
                 }
             }
@@ -419,14 +443,12 @@ namespace CommandsEditor
         //NOTE: This assumes that you have already cleared all childLinks in the composite already. That can be done by using CompositeUtils.ClearAllLinks
         public void SaveAndCompile()
         {
-            //TODO: when the layout db is completely populated, we should change this to reflect the name of the loaded flowgraph from the FlowgraphMeta object that got passed.
             FlowgraphMeta layout = FlowgraphLayoutManager.SaveLayout(stNodeEditor1, _composite, _flowgraphName);
-            Console.WriteLine("Saved flowgraph layout: " + layout.Name);
+            //Console.WriteLine("Stored flowgraph layout: " + layout.Name);
 
             //Re-generate connections using the content in the nodegraph
-            for (int i = 0; i < stNodeEditor1.Nodes.Count; i++)
+            foreach (STNode node in stNodeEditor1.Nodes)
             {
-                STNode node = stNodeEditor1.Nodes[i];
                 STNodeOption[] options = node.GetOutputOptions();
                 for (int y = 0; y < options.Length; y++)
                 {
@@ -685,24 +707,24 @@ namespace CommandsEditor
 
         private void RemoveEmpties_Click(object sender, EventArgs e)
         {
-            for (int i = 0; i < stNodeEditor1.Nodes.Count; i++)
+            foreach (STNode node in stNodeEditor1.Nodes)
             {
                 List<ShortGuid> toRemove = new List<ShortGuid>();
-                foreach (STNodeOption option in stNodeEditor1.Nodes[i].GetInputOptions()) 
+                foreach (STNodeOption option in node.GetInputOptions()) 
                 {
                     if (option.GetConnectedOption().Count == 0)
                         toRemove.Add(option.ShortGUID);
                 }
                 for (int x = 0; x < toRemove.Count; x++)
-                    stNodeEditor1.Nodes[i].RemoveInputOption(toRemove[x]);
+                    node.RemoveInputOption(toRemove[x]);
                 toRemove.Clear();
-                foreach (STNodeOption option in stNodeEditor1.Nodes[i].GetOutputOptions())
+                foreach (STNodeOption option in node.GetOutputOptions())
                 {
                     if (option.GetConnectedOption().Count == 0)
                         toRemove.Add(option.ShortGUID);
                 }
                 for (int x = 0; x < toRemove.Count; x++)
-                    stNodeEditor1.Nodes[i].RemoveOutputOption(toRemove[x]);
+                    node.RemoveOutputOption(toRemove[x]);
             }
         }
 

@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -22,6 +23,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using WebSocketSharp;
 using WeifenLuo.WinFormsUI.Docking;
+using static CathodeLib.CompositeFlowgraphCompatibilityTable;
 using static CathodeLib.CompositeFlowgraphsTable;
 using Path = System.IO.Path;
 
@@ -206,8 +208,29 @@ namespace CommandsEditor.DockPanels
             pathDisplay.Text = _path.GetPath(composite);
             _composite = composite;
 
-            if (CommandsUtils.PurgeDeadLinks(Content.commands, composite))
+            if (!CommandsUtils.PurgedComposites.purged.Contains(composite.shortGUID))
+            {
                 CommandsUtils.PurgedComposites.purged.Add(composite.shortGUID);
+
+                //Clear out any dead links
+                CommandsUtils.PurgeDeadLinks(Content.commands, composite);
+
+                //Clear out any aliases with no parameters/links
+                List<AliasEntity> aliasPurged = new List<AliasEntity>();
+                for (int x = 0; x < _composite.aliases.Count; x++)
+                {
+                    if (_composite.aliases[x].childLinks.Count == 0 &&
+                        _composite.aliases[x].parameters.Count == 0 &&
+                        _composite.aliases[x].GetParentLinks(_composite).Count == 0)
+                        continue;
+                    aliasPurged.Add(_composite.aliases[x]);
+                }
+                if (_composite.aliases.Count != aliasPurged.Count)
+                {
+                    Console.WriteLine("Purged " + (_composite.aliases.Count - aliasPurged.Count) + " empty aliases");
+                    _composite.aliases = aliasPurged;
+                }
+            }
 
             CloseAllChildTabs();
             Reload(false);
@@ -241,11 +264,21 @@ namespace CommandsEditor.DockPanels
             _entityList.List.LoadComposite(Composite);
             if (alsoReloadEntities) ReloadAllEntities();
 
-            //TODO: I don't know if this flowgraph stuff best lives here. The whole setup of having like 5 reload functions, and a separate load function is really dumb. Needs a refactor.
             for (int i = 0; i < _flowgraphs.Count; i++)
                 if (_flowgraphs[i] != null)
                     _flowgraphs[i].Close();
             _flowgraphs.Clear();
+
+            //Figure out if the composite supports flowgraphs: it won't if there's no layout defined, or if the composite has diverged from vanilla
+            if (!FlowgraphLayoutManager.HasCompatibilityInfo(Composite))
+            {
+                if (CommandsUtils.PurgeDeadLinks(Content.commands, _composite))
+                    CommandsUtils.PurgedComposites.purged.Add(_composite.shortGUID);
+
+                FlowgraphLayoutManager.EvaluateCompatibility(_composite);
+            }
+
+            //If we support flowgraphs, load them
             if (SupportsFlowgraphs)
             {
                 List<FlowgraphMeta> layouts = FlowgraphLayoutManager.GetLayouts(Composite);
@@ -261,7 +294,7 @@ namespace CommandsEditor.DockPanels
                     flowgraph.PopulateDefaultEntities(Composite); 
                 }
 #endif
-                Console.WriteLine("CompositeDisplay found " + layouts.Count + " flowgraph layouts");
+
                 for (int i = 0; i < layouts.Count; i++)
                 {
                     CreateFlowgraphWindow(layouts[i]);
