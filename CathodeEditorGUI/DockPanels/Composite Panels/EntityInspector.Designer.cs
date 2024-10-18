@@ -368,6 +368,8 @@
             // 
             // ModifyParameters
             // 
+            this.ModifyParameters.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.ModifyParameters.Location = new System.Drawing.Point(22, 738);
             this.ModifyParameters.Name = "ModifyParameters";
             this.ModifyParameters.Size = new System.Drawing.Size(368, 22);

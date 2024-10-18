@@ -146,6 +146,14 @@ namespace CommandsEditor
             //ShortGuidUtils.Generate("back");
             //ShortGuidUtils.Generate("bind");
             //ShortGuidUtils.Generate("cam");
+
+            //for (int i = 0; i < resource.sound_eventdata.Entries.Count; i++)
+            //{
+            //    for (int x = 0; x < resource.sound_eventdata.Entries[i].events.Count; x++)
+            //    {
+            //        ShortGuidUtils.Generate(resource.sound_eventdata.Entries[i].events[x].name);
+            //    }
+            //}
         }
 
         ~LevelContent()

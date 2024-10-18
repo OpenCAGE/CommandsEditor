@@ -86,6 +86,7 @@ namespace CommandsEditor
             DEBUG_DoorPhysEnt.Visible = false;
             DEBUG_RunChecks.Visible = false;
             DEBUG_LaunchGame.Visible = false;
+            buildLevelToolStripMenuItem.Visible = false;
 #endif
 
             WindowState = SettingsManager.GetString(Singleton.Settings.WindowState, "Normal") == "Maximized" ? FormWindowState.Maximized : FormWindowState.Normal;
@@ -300,8 +301,12 @@ namespace CommandsEditor
         }
         private void OnLevelSelected(string level)
         {
+            if (level == null)
+                return;
+            level = level.ToUpper();
+
 #if DEBUG
-            if (level != null)
+            if (Directory.Exists(SharedData.pathToAI + "\\DATA_orig"))
             {
                 Directory.Delete(SharedData.pathToAI + "\\DATA\\ENV\\PRODUCTION\\" + level, true);
                 CopyFilesRecursively(SharedData.pathToAI + "\\DATA_orig\\ENV\\PRODUCTION\\" + level, SharedData.pathToAI + "\\DATA\\ENV\\PRODUCTION\\" + level);

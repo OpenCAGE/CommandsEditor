@@ -72,6 +72,17 @@ namespace CommandsEditor
             Singleton.OnEntitySelected += OnEntitySelectedGlobally;
             Singleton.OnEntityAdded += OnEntityAddedGlobally;
             Singleton.OnEntityDeleted += OnEntityDeletedGlobally;
+            Singleton.OnEntityRenamed += OnEntityRenamedGlobally;
+        }
+
+        private void OnEntityRenamedGlobally(Entity entity, string newNew)
+        {
+            for (int i = 0; i < stNodeEditor1.Nodes.Count; i++)
+            {
+                if (stNodeEditor1.Nodes[i].Entity.shortGUID != entity.shortGUID)
+                    continue;
+                RegenerateNodeStyle(stNodeEditor1.Nodes[i]);
+            }
         }
 
         private void EntityFlowgraph_FormClosed(object sender, FormClosedEventArgs e)
@@ -80,6 +91,7 @@ namespace CommandsEditor
             Singleton.OnEntitySelected -= OnEntitySelectedGlobally;
             Singleton.OnEntityAdded -= OnEntityAddedGlobally;
             Singleton.OnEntityDeleted -= OnEntityDeletedGlobally;
+            Singleton.OnEntityRenamed -= OnEntityRenamedGlobally;
 
             if (_renameFlowgraphPopup != null)
                 _renameFlowgraphPopup.FormClosed -= _renameFlowgraphPopup_FormClosed;
@@ -133,7 +145,8 @@ namespace CommandsEditor
         {
             if (SettingsManager.GetBool(Singleton.Settings.MakeNodeWhenMakeEntity))
             {
-                EntityToNode(entity, _composite); //TODO: should really put it in a nice spot and/or maybe jump to it 
+                STNode node = EntityToNode(entity); 
+                OnEntitySelectedGlobally(entity);
             }
         }
 
@@ -156,8 +169,6 @@ namespace CommandsEditor
 
         public bool ShowFlowgraph(Composite composite, FlowgraphMeta flowgraphMeta)
         {
-            Console.WriteLine("EntityFlowgraph::ShowFlowgraph - " + composite.name + " - " + flowgraphMeta.Name);
-
             if (CommandsUtils.PurgeDeadLinks(Commands, composite))
                 CommandsUtils.PurgedComposites.purged.Add(composite.shortGUID);
 
@@ -182,7 +193,7 @@ namespace CommandsEditor
                 }
                 populatedEntities.Add(entity);
 
-                nodes[i] = EntityToNode(entity, composite, true);
+                nodes[i] = EntityToNode(entity, true);
                 nodes[i].SetPosition(flowgraphMeta.Nodes[i].Position);
 
                 foreach (ShortGuid pin in flowgraphMeta.Nodes[i].PinsIn)
@@ -264,8 +275,6 @@ namespace CommandsEditor
         //This is for local use only: populates all nodes from a composite without a layout
         public void PopulateDefaultEntities(Composite composite)
         {
-            Console.WriteLine("EntityFlowgraph::ShowComposite - " + composite.name);
-
             if (CommandsUtils.PurgeDeadLinks(Commands, composite))
                 CommandsUtils.PurgedComposites.purged.Add(composite.shortGUID);
 
@@ -282,7 +291,7 @@ namespace CommandsEditor
                 if (!entities[i].HasLinks(_composite))
                     continue;
 
-                STNode mainNode = EntityToNode(entities[i], _composite);
+                STNode mainNode = EntityToNode(entities[i]);
 
                 for (int x = 0; x < entities[i].childLinks.Count; x++)
                 {
@@ -290,7 +299,7 @@ namespace CommandsEditor
                     if (childEnt == null)
                         continue;
 
-                    STNode childNode = EntityToNode(childEnt, _composite);
+                    STNode childNode = EntityToNode(childEnt);
                     STNodeOption linkIn = childNode.AddInputOption(entities[i].childLinks[x].linkedParamID);
                     STNodeOption linkOut = mainNode.AddOutputOption(entities[i].childLinks[x].thisParamID);
                     ConnectionStatus status = linkIn.ConnectOption(linkOut);
@@ -325,7 +334,7 @@ namespace CommandsEditor
             stNodeEditor1.LoadAssembly(Application.ExecutablePath);
         }
 
-        private STNode EntityToNode(Entity entity, Composite composite, bool allowDuplicate = false)
+        private STNode EntityToNode(Entity entity, bool allowDuplicate = false)
         {
             if (entity == null)
                 return null;
@@ -348,49 +357,7 @@ namespace CommandsEditor
             {
                 node = new STNode();
                 node.Entity = entity;
-                switch (entity.variant)
-                {
-                    case EntityVariant.PROXY:
-                    case EntityVariant.ALIAS:
-                        Entity ent = CommandsUtils.ResolveHierarchy(Commands, composite, (entity.variant == EntityVariant.PROXY) ? ((ProxyEntity)entity).proxy.path : ((AliasEntity)entity).alias.path, out Composite c, out string s);
-                        node.SetColour(entity.variant == EntityVariant.PROXY ? Color.LightGreen : Color.Orange, Color.Black);
-                        switch (ent.variant)
-                        {
-                            case EntityVariant.FUNCTION:
-                                FunctionEntity function = (FunctionEntity)ent;
-                                if (CommandsUtils.FunctionTypeExists(function.function))
-                                {
-                                    node.SetName(EntityUtils.GetName(c, ent), entity.variant + " TO: " + CommandsUtils.GetFunctionType(function.function).ToString());
-                                }
-                                else
-                                    node.SetName(EntityUtils.GetName(c, ent) , entity.variant + " TO: " + Path.GetFileName(Commands.GetComposite(function.function).name));
-                                break;
-                            case EntityVariant.VARIABLE:
-                                node.SetName(entity.variant + " TO: " + ((VariableEntity)ent).name.ToString());
-                                break;
-                        }
-                        break;
-                    case EntityVariant.FUNCTION:
-                        FunctionEntity funcEnt = (FunctionEntity)entity;
-                        if (CommandsUtils.FunctionTypeExists(funcEnt.function))
-                        {
-                            node.SetName(EntityUtils.GetName(composite, entity), CommandsUtils.GetFunctionType(funcEnt.function).ToString());
-                        }
-                        else
-                        {
-                            node.SetColour(Color.Blue, Color.White);
-                            node.SetName(EntityUtils.GetName(composite, entity), Path.GetFileName(Commands.GetComposite(funcEnt.function).name));
-                        }
-                        break;
-                    case EntityVariant.VARIABLE:
-                        VariableEntity varEnt = (VariableEntity)entity;
-                        node.SetColour(Color.Red, Color.White);
-                        node.SetName(varEnt.name.ToString());
-                        node.AddInputOption(varEnt.name);
-                        node.AddOutputOption(varEnt.name);
-                        break;
-                }
-                node.Recompute();
+                RegenerateNodeStyle(node);
                 stNodeEditor1.Nodes.Add(node);
 
                 node.SetPosition(new Point(0, _spawnOffset));
@@ -398,6 +365,54 @@ namespace CommandsEditor
             }
 
             return node;
+        }
+
+        //Regenerate the node's visual for the associated entity (sets name, colour, redraws)
+        private void RegenerateNodeStyle(STNode node)
+        {
+            switch (node.Entity.variant)
+            {
+                case EntityVariant.PROXY:
+                case EntityVariant.ALIAS:
+                    Entity ent = CommandsUtils.ResolveHierarchy(Commands, _composite, (node.Entity.variant == EntityVariant.PROXY) ? ((ProxyEntity)node.Entity).proxy.path : ((AliasEntity)node.Entity).alias.path, out Composite c, out string s);
+                    node.SetColour(node.Entity.variant == EntityVariant.PROXY ? Color.LightGreen : Color.Orange, Color.Black);
+                    switch (ent.variant)
+                    {
+                        case EntityVariant.FUNCTION:
+                            FunctionEntity function = (FunctionEntity)ent;
+                            if (CommandsUtils.FunctionTypeExists(function.function))
+                            {
+                                node.SetName(EntityUtils.GetName(c, ent), node.Entity.variant + " TO: " + CommandsUtils.GetFunctionType(function.function).ToString());
+                            }
+                            else
+                                node.SetName(EntityUtils.GetName(c, ent), node.Entity.variant + " TO: " + Path.GetFileName(Commands.GetComposite(function.function).name));
+                            break;
+                        case EntityVariant.VARIABLE:
+                            node.SetName(node.Entity.variant + " TO: " + ((VariableEntity)ent).name.ToString());
+                            break;
+                    }
+                    break;
+                case EntityVariant.FUNCTION:
+                    FunctionEntity funcEnt = (FunctionEntity)node.Entity;
+                    if (CommandsUtils.FunctionTypeExists(funcEnt.function))
+                    {
+                        node.SetName(EntityUtils.GetName(_composite, node.Entity), CommandsUtils.GetFunctionType(funcEnt.function).ToString());
+                    }
+                    else
+                    {
+                        node.SetColour(Color.Blue, Color.White);
+                        node.SetName(EntityUtils.GetName(_composite, node.Entity), Path.GetFileName(Commands.GetComposite(funcEnt.function).name));
+                    }
+                    break;
+                case EntityVariant.VARIABLE:
+                    VariableEntity varEnt = (VariableEntity)node.Entity;
+                    node.SetColour(Color.Red, Color.White);
+                    node.SetName(varEnt.name.ToString());
+                    node.AddInputOption(varEnt.name);
+                    node.AddOutputOption(varEnt.name);
+                    break;
+            }
+            node.Recompute();
         }
 
         //Saves the Flowgraph's layout, and compiles the links back to commands
@@ -773,7 +788,7 @@ namespace CommandsEditor
         {
             for (int i = 0; i < ent.Count; i++)
             {
-                STNode node = EntityToNode(ent[i], _composite, true);
+                STNode node = EntityToNode(ent[i], true);
                 Point offsetSpawnPos = new Point(_nodeSpawnPosition.X + (i * 20), _nodeSpawnPosition.Y + (i * 20));
                 node.SetPosition(offsetSpawnPos);
             }
@@ -817,7 +832,7 @@ namespace CommandsEditor
         }
         private STNode DuplicateNode(STNode node)
         {
-            STNode duplicated = EntityToNode(node.Entity, _composite, true);
+            STNode duplicated = EntityToNode(node.Entity, true);
 
             STNodeOption[] ins = node.GetInputOptions();
             for (int i = 0; i < ins.Length; i++)
