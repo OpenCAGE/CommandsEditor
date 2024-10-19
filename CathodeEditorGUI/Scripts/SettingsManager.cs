@@ -43,6 +43,10 @@ namespace OpenCAGE
         {
             return (_jsonConfig[name] != null) ? _jsonConfig[name].Value<float>() : defaultVal;
         }
+        static public int[] GetIntegerArray(string name)
+        {
+            return (_jsonConfig[name] != null) ? _jsonConfig[name].Values<int>().ToArray() : new int[0];
+        }
 
         /* Set a config variable */
         static public void SetBool(string name, bool value)
@@ -63,6 +67,11 @@ namespace OpenCAGE
         static public void SetFloat(string name, float value)
         {
             _jsonConfig[name] = value;
+            Save();
+        }
+        static public void SetIntegerArray(string name, int[] value)
+        {
+            _jsonConfig[name] = new JArray(value);
             Save();
         }
         static private void Save()

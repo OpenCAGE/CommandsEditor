@@ -93,6 +93,7 @@ namespace CommandsEditor
             public readonly string MakeNodeWhenMakeEntity = "CS_MakeNodeWhenMakeEntity";
             public readonly string PrevFuncUsesSearch = "CS_PrevFuncUsesSearch";
             public readonly string PrevVariableType = "CS_PrevVariableType";
+            public readonly string CustomColours = "CS_CustomColours";
         }
     }
 
