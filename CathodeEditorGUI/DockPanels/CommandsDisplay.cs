@@ -488,6 +488,9 @@ namespace CommandsEditor.DockPanels
         TreeNode _rightClickedNode = null;
         private void FileTree_MouseDown(object sender, MouseEventArgs e)
         {
+            if (SettingsManager.GetBool(Singleton.Settings.EnableFileBrowser))
+                return;
+
             if (e.Button == MouseButtons.Right)
             {
                 var lv = sender as System.Windows.Forms.TreeView;
@@ -495,6 +498,26 @@ namespace CommandsEditor.DockPanels
 
                 toolStripMenuItem4.Enabled = _rightClickedNode != null;
                 toolStripMenuItem5.Enabled = _rightClickedNode != null;
+
+                if (_rightClickedNode == null)
+                {
+                    _currentDisplayFolderPath = "";
+                }
+                else
+                {
+                    TreeItem item = (TreeItem)_rightClickedNode.Tag;
+                    switch (item.Item_Type)
+                    {
+                        case TreeItemType.EXPORTABLE_FILE:
+                            Composite c = Content.commands.GetComposite(item.String_Value);
+                            int nameLength = EditorUtils.GetCompositeName(c).Length;
+                            _currentDisplayFolderPath = (c.name.Length != nameLength ? c.name.Substring(0, c.name.Length - nameLength - 1) : "");
+                            break;
+                        case TreeItemType.DIRECTORY:
+                            _currentDisplayFolderPath = item.String_Value;
+                            break;
+                    }
+                }
 
                 FileTreeContextMenuNew.Show(lv, e.Location);
             }
@@ -510,6 +533,8 @@ namespace CommandsEditor.DockPanels
                 string folderFullPath = "";
                 if (_currentDisplayFolderPath == "") folderFullPath = content.FolderName;
                 else folderFullPath = _currentDisplayFolderPath + "/" + content.FolderName;
+
+                //TODO: does this work?
 
                 List<Composite> toDelete = new List<Composite>();
                 for (int i = 0; i < _content.commands.Entries.Count; i++)
@@ -539,7 +564,6 @@ namespace CommandsEditor.DockPanels
                     DeleteComposite(Content.commands.GetComposite(item.String_Value));
                     break;
                 case TreeItemType.DIRECTORY:
-                    //_currentDisplayFolderPath = item.String_Value;
                     //TODO
                     MessageBox.Show("Support for deleting folders is coming soon.");
                     break;
@@ -582,7 +606,7 @@ namespace CommandsEditor.DockPanels
             if (_renameComposite != null)
                 _renameComposite.Close();
 
-            _renameComposite = new RenameComposite(composite, _currentDisplayFolderPath);
+            _renameComposite = new RenameComposite(composite);
             _renameComposite.Show();
             _renameComposite.FormClosed += _renameComposite_FormClosed;
         }

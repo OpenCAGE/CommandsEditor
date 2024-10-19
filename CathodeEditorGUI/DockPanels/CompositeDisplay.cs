@@ -862,10 +862,7 @@ namespace CommandsEditor.DockPanels
             if (_renameComposite != null)
                 _renameComposite.Close();
 
-            string name = EditorUtils.GetCompositeName(_composite);
-            string path = (name == _composite.name) ? "" : _composite.name.Substring(0, _composite.name.Length - name.Length - 1);
-
-            _renameComposite = new RenameComposite(_composite, path.Replace('\\', '/'));
+            _renameComposite = new RenameComposite(_composite);
             _renameComposite.Show();
             _renameComposite.FormClosed += _renameComposite_FormClosed;
         }
