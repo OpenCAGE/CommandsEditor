@@ -58,12 +58,16 @@
             this.closeSelected = new System.Windows.Forms.ToolStripMenuItem();
             this.closeAllBut = new System.Windows.Forms.ToolStripMenuItem();
             this.ModifyParameters = new System.Windows.Forms.Button();
+            this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.createLinkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.entityInfoGroup.SuspendLayout();
             this.entityParamGroup.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
+            this.contextMenuStrip2.SuspendLayout();
             this.SuspendLayout();
             // 
             // goToZone
@@ -258,6 +262,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.entity_params.AutoScroll = true;
+            this.entity_params.ContextMenuStrip = this.contextMenuStrip2;
             this.entity_params.Location = new System.Drawing.Point(6, 20);
             this.entity_params.Name = "entity_params";
             this.entity_params.Size = new System.Drawing.Size(375, 581);
@@ -378,6 +383,31 @@
             this.ModifyParameters.UseVisualStyleBackColor = true;
             this.ModifyParameters.Click += new System.EventHandler(this.ModifyParameters_Click);
             // 
+            // contextMenuStrip2
+            // 
+            this.contextMenuStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItem1,
+            this.createLinkToolStripMenuItem});
+            this.contextMenuStrip2.Name = "contextMenuStrip1";
+            this.contextMenuStrip2.Size = new System.Drawing.Size(175, 48);
+            this.contextMenuStrip2.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip2_Opening);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripMenuItem1.Image")));
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(174, 22);
+            this.toolStripMenuItem1.Text = "Modify Parameters";
+            this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
+            // 
+            // createLinkToolStripMenuItem
+            // 
+            this.createLinkToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("createLinkToolStripMenuItem.Image")));
+            this.createLinkToolStripMenuItem.Name = "createLinkToolStripMenuItem";
+            this.createLinkToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.createLinkToolStripMenuItem.Text = "Create Link";
+            this.createLinkToolStripMenuItem.Click += new System.EventHandler(this.createLinkToolStripMenuItem_Click);
+            // 
             // EntityInspector
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -401,6 +431,7 @@
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.contextMenuStrip1.ResumeLayout(false);
+            this.contextMenuStrip2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -436,5 +467,8 @@
         private System.Windows.Forms.ToolStripMenuItem closeSelected;
         private System.Windows.Forms.ToolStripMenuItem closeAllBut;
         private System.Windows.Forms.Button ModifyParameters;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip2;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem createLinkToolStripMenuItem;
     }
 }

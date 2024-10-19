@@ -3,6 +3,7 @@ using CATHODE.Scripting.Internal;
 using CommandsEditor.Properties;
 using CommandsEditor.UserControls;
 using OpenCAGE;
+using ST.Library.UI.NodeEditor;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -571,6 +572,13 @@ namespace CommandsEditor.DockPanels
             catch { }
         }
 
+        private void contextMenuStrip2_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            toolStripMenuItem1.Enabled = _entity != null;
+            createLinkToolStripMenuItem.Enabled = _entity != null;
+            createLinkToolStripMenuItem.Visible = DisplayingLinks;
+        }
+
         ModifyPinsOrParameters add_parameter;
         private void ModifyParameters_Click(object sender, EventArgs e)
         {
@@ -584,6 +592,10 @@ namespace CommandsEditor.DockPanels
             add_parameter.Show();
             add_parameter.OnSaved += Reload;
         }
+        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            ModifyParameters_Click(null, null);
+        }
 
         /* Add a new link out */
         private void addLinkOut_Click(object sender, EventArgs e)
@@ -591,6 +603,10 @@ namespace CommandsEditor.DockPanels
             AddOrEditLink add_link = new AddOrEditLink(this);
             add_link.Show();
             add_link.OnSaved += Reload;
+        }
+        private void createLinkToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            addLinkOut_Click(null, null);
         }
 
         private void editEntityMovers_Click(object sender, EventArgs e)
