@@ -208,12 +208,12 @@ namespace CommandsEditor.DockPanels
             pathDisplay.Text = _path.GetPath(composite);
             _composite = composite;
 
-            if (!CommandsUtils.PurgedComposites.purged.Contains(composite.shortGUID))
+            //Remove dead links and empty aliases on first time
+            if (!CommandsUtils.PurgedComposites.purged.Contains(_composite.shortGUID))
             {
-                CommandsUtils.PurgedComposites.purged.Add(composite.shortGUID);
-
                 //Clear out any dead links
-                CommandsUtils.PurgeDeadLinks(Content.commands, composite);
+                CommandsUtils.PurgeDeadLinks(Content.commands, _composite);
+                CommandsUtils.PurgedComposites.purged.Add(_composite.shortGUID);
 
                 //Clear out any aliases with no parameters/links
                 List<AliasEntity> aliasPurged = new List<AliasEntity>();
@@ -261,6 +261,13 @@ namespace CommandsEditor.DockPanels
         /* Reload this display */
         public void Reload(bool alsoReloadEntities = true)
         {
+            //Figure out if the composite supports flowgraphs: it won't if there's no layout defined, or if the composite has diverged from vanilla
+            if (!FlowgraphLayoutManager.HasCompatibilityInfo(Composite))
+            {
+                Console.WriteLine("Calculating flowgraph compatibility...");
+                FlowgraphLayoutManager.EvaluateCompatibility(_composite);
+            }
+
             _entityList.List.LoadComposite(Composite);
             if (alsoReloadEntities) ReloadAllEntities();
 
@@ -268,15 +275,6 @@ namespace CommandsEditor.DockPanels
                 if (_flowgraphs[i] != null)
                     _flowgraphs[i].Close();
             _flowgraphs.Clear();
-
-            //Figure out if the composite supports flowgraphs: it won't if there's no layout defined, or if the composite has diverged from vanilla
-            if (!FlowgraphLayoutManager.HasCompatibilityInfo(Composite))
-            {
-                if (CommandsUtils.PurgeDeadLinks(Content.commands, _composite))
-                    CommandsUtils.PurgedComposites.purged.Add(_composite.shortGUID);
-
-                FlowgraphLayoutManager.EvaluateCompatibility(_composite);
-            }
 
             //If we support flowgraphs, load them
             if (SupportsFlowgraphs)

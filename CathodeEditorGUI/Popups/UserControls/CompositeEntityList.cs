@@ -280,6 +280,10 @@ namespace CommandsEditor.Popups.UserControls
                         if (!item.SubItems[x].Text.ToUpper().Contains(_currentSearch.ToUpper()))
                             continue;
 
+                        //If entity IDs column is hidden, we should ignore it in the search
+                        if (x == item.SubItems.Count - 1 && !SettingsManager.GetBool(Singleton.Settings.EntIdOpt))
+                            continue;
+
                         filteredEntities.Add(allEntities[i]);
                         break;
                     }
