@@ -61,12 +61,20 @@ namespace CommandsEditor.DockPanels
             this.createFolder = new System.Windows.Forms.ToolStripButton();
             this.findFunctionUses = new System.Windows.Forms.ToolStripButton();
             this.DEBUG_LoadNextEmpty = new System.Windows.Forms.ToolStripButton();
+            this.FileTreeContextMenuNew = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripMenuItem();
             this.FileBrowserContextMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
+            this.FileTreeContextMenuNew.SuspendLayout();
             this.SuspendLayout();
             // 
             // imageList
@@ -243,6 +251,7 @@ namespace CommandsEditor.DockPanels
             this.treeView1.TabIndex = 180;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             this.treeView1.Resize += new System.EventHandler(this.treeView1_Resize);
+            this.treeView1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FileTree_MouseDown);
             // 
             // FileTreeContextMenu
             // 
@@ -347,6 +356,62 @@ namespace CommandsEditor.DockPanels
             this.DEBUG_LoadNextEmpty.Text = "DEBUG: Load Next Flowgraph To Construct";
             this.DEBUG_LoadNextEmpty.Click += new System.EventHandler(this.DEBUG_LoadNextEmpty_Click);
             // 
+            // FileTreeContextMenuNew
+            // 
+            this.FileTreeContextMenuNew.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItem1,
+            this.toolStripSeparator3,
+            this.toolStripMenuItem4,
+            this.toolStripMenuItem5});
+            this.FileTreeContextMenuNew.Name = "FileBrowserContextMenu";
+            this.FileTreeContextMenuNew.Size = new System.Drawing.Size(181, 98);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItem2,
+            this.toolStripMenuItem3});
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItem1.Text = "Create";
+            // 
+            // toolStripMenuItem2
+            // 
+            this.toolStripMenuItem2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripMenuItem2.Image")));
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItem2.Text = "Composite";
+            this.toolStripMenuItem2.Click += new System.EventHandler(this.createCompositeViaTreeView_Click);
+            // 
+            // toolStripMenuItem3
+            // 
+            this.toolStripMenuItem3.Image = ((System.Drawing.Image)(resources.GetObject("toolStripMenuItem3.Image")));
+            this.toolStripMenuItem3.Name = "toolStripMenuItem3";
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItem3.Text = "Folder";
+            this.toolStripMenuItem3.Click += new System.EventHandler(this.createFolderViaTreeView_Click);
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(177, 6);
+            // 
+            // toolStripMenuItem4
+            // 
+            this.toolStripMenuItem4.Image = ((System.Drawing.Image)(resources.GetObject("toolStripMenuItem4.Image")));
+            this.toolStripMenuItem4.Name = "toolStripMenuItem4";
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItem4.Text = "Delete";
+            this.toolStripMenuItem4.Click += new System.EventHandler(this.deleteViaTreeView_Click);
+            // 
+            // toolStripMenuItem5
+            // 
+            this.toolStripMenuItem5.Image = ((System.Drawing.Image)(resources.GetObject("toolStripMenuItem5.Image")));
+            this.toolStripMenuItem5.Name = "toolStripMenuItem5";
+            this.toolStripMenuItem5.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItem5.Text = "Rename";
+            this.toolStripMenuItem5.Click += new System.EventHandler(this.renameViaTreeView_Click);
+            // 
             // CommandsDisplay
             // 
             this.AllowEndUserDocking = false;
@@ -370,6 +435,7 @@ namespace CommandsEditor.DockPanels
             this.splitContainer1.ResumeLayout(false);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
+            this.FileTreeContextMenuNew.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -404,5 +470,12 @@ namespace CommandsEditor.DockPanels
         private ToolStripButton createComposite;
         private ToolStripButton findFunctionUses;
         private ToolStripButton DEBUG_LoadNextEmpty;
+        private ContextMenuStrip FileTreeContextMenuNew;
+        private ToolStripMenuItem toolStripMenuItem1;
+        private ToolStripMenuItem toolStripMenuItem2;
+        private ToolStripMenuItem toolStripMenuItem3;
+        private ToolStripSeparator toolStripSeparator3;
+        private ToolStripMenuItem toolStripMenuItem4;
+        private ToolStripMenuItem toolStripMenuItem5;
     }
 }

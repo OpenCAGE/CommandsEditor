@@ -382,7 +382,7 @@ namespace CommandsEditor.DockPanels
                     return;
                 }
             }
-            if (prompt && MessageBox.Show("Are you sure you want to remove this composite?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+            if (prompt && MessageBox.Show("Are you sure you want to remove " + Path.GetFileName(composite.name) + "?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
 
             if (_compositeDisplay != null && _compositeDisplay.Composite == composite)
                 CloseAllChildTabs();
@@ -485,6 +485,20 @@ namespace CommandsEditor.DockPanels
                 FileBrowserContextMenu.Show(lv, e.Location);
             }
         }
+        TreeNode _rightClickedNode = null;
+        private void FileTree_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                var lv = sender as System.Windows.Forms.TreeView;
+                _rightClickedNode = lv.HitTest(e.Location).Node;
+
+                toolStripMenuItem4.Enabled = _rightClickedNode != null;
+                toolStripMenuItem5.Enabled = _rightClickedNode != null;
+
+                FileTreeContextMenuNew.Show(lv, e.Location);
+            }
+        }
         private void deleteFolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (listView1.SelectedItems.Count != 1) return;
@@ -516,6 +530,21 @@ namespace CommandsEditor.DockPanels
             _compositeDisplay?.Reload();
             ReloadList();
         }
+        private void deleteViaTreeView_Click(object sender, EventArgs e)
+        {
+            TreeItem item = (TreeItem)_rightClickedNode.Tag;
+            switch (item.Item_Type)
+            {
+                case TreeItemType.EXPORTABLE_FILE:
+                    DeleteComposite(Content.commands.GetComposite(item.String_Value));
+                    break;
+                case TreeItemType.DIRECTORY:
+                    //_currentDisplayFolderPath = item.String_Value;
+                    //TODO
+                    MessageBox.Show("Support for deleting folders is coming soon.");
+                    break;
+            }
+        }
         RenameComposite _renameComposite;
         private void renameToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -530,13 +559,32 @@ namespace CommandsEditor.DockPanels
             }
             else
             {
-                if (_renameComposite != null)
-                    _renameComposite.Close();
-
-                _renameComposite = new RenameComposite(content.Composite, _currentDisplayFolderPath);
-                _renameComposite.Show();
-                _renameComposite.FormClosed += _renameComposite_FormClosed;
+                RenameComposite(content.Composite);
             }
+        }
+        private void renameViaTreeView_Click(object sender, EventArgs e)
+        {
+            TreeItem item = (TreeItem)_rightClickedNode.Tag;
+            switch (item.Item_Type)
+            {
+                case TreeItemType.EXPORTABLE_FILE:
+                    RenameComposite(Content.commands.GetComposite(item.String_Value));
+                    break;
+                case TreeItemType.DIRECTORY:
+                    //_currentDisplayFolderPath = item.String_Value;
+                    //TODO
+                    MessageBox.Show("Support for renaming folders is coming soon.");
+                    break;
+            }
+        }
+        private void RenameComposite(Composite composite)
+        {
+            if (_renameComposite != null)
+                _renameComposite.Close();
+
+            _renameComposite = new RenameComposite(composite, _currentDisplayFolderPath);
+            _renameComposite.Show();
+            _renameComposite.FormClosed += _renameComposite_FormClosed;
         }
         private void _renameComposite_FormClosed(object sender, FormClosedEventArgs e)
         {
@@ -599,7 +647,15 @@ namespace CommandsEditor.DockPanels
         {
             compositeToolStripMenuItem_Click(null, null);
         }
+        private void createCompositeViaTreeView_Click(object sender, EventArgs e)
+        {
+            compositeToolStripMenuItem_Click(null, null);
+        }
         private void createFolder_Click(object sender, EventArgs e)
+        {
+            folderToolStripMenuItem_Click(null, null);
+        }
+        private void createFolderViaTreeView_Click(object sender, EventArgs e)
         {
             folderToolStripMenuItem_Click(null, null);
         }

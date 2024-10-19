@@ -117,7 +117,7 @@ namespace CommandsEditor
             {
                 //If the composite has no links, regardless of if it diverges from the saved layouts, allow it
                 RemoveAllLayouts(composite);
-                SaveLayout(null, composite, System.IO.Path.GetFileName(composite.name));
+                SaveLayout(null, composite, Path.GetFileName(composite.name));
                 SetCompatibilityInfo(composite, true);
             }
             else
