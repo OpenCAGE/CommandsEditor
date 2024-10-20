@@ -124,6 +124,7 @@
             this.compositeTree.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.compositeTree.FullRowSelect = true;
             this.compositeTree.HideSelection = false;
             this.compositeTree.ImageIndex = 0;
             this.compositeTree.ImageList = this.imageList;

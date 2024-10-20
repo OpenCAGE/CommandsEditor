@@ -56,6 +56,8 @@
             // 
             this.FileTree.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.FileTree.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.FileTree.FullRowSelect = true;
+            this.FileTree.HideSelection = false;
             this.FileTree.Location = new System.Drawing.Point(0, 0);
             this.FileTree.Name = "FileTree";
             this.FileTree.Size = new System.Drawing.Size(352, 632);
@@ -127,7 +129,6 @@
             this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "SelectModel";
-            this.ShowIcon = true;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Select Model";
             this.modelPreviewArea.ResumeLayout(false);

@@ -240,6 +240,7 @@
             this.Controls.Add(this.createParams);
             this.Controls.Add(this.label2);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MinimumSize = new System.Drawing.Size(514, 192);
             this.Name = "ModifyPinsOrParameters";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Add Parameter";

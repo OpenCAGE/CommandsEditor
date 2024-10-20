@@ -123,6 +123,9 @@ namespace CommandsEditor
             Entity newEntity = _composite.AddFunction(comp, addDefaultParams.Checked);
             EntityUtils.SetName(_composite, newEntity, entityName.Text);
 
+            if (addDefaultParams.Checked)
+                newEntity.RemoveParameter("name");
+
             Content.editor_utils.GenerateCompositeInstances(Content.commands);
 
             SettingsManager.SetString(Singleton.Settings.PreviouslySelectedCompInstType, item.String_Value);

@@ -26,6 +26,7 @@ namespace CommandsEditor
 
         private static List<AssetList> _assetList = new List<AssetList>();
         private AssetList _content = null;
+        private ListViewColumnSorter _sorter = new ListViewColumnSorter();
 
         public SelectSpecialString(string paramName, string defaultVal, AssetList.Type assets, string args = "") : base(WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION | WindowClosesOn.COMMANDS_RELOAD)
         {
@@ -162,14 +163,43 @@ namespace CommandsEditor
             }
 
             Search();
+            clearSearchBtn.Visible = false;
 
             for (int i = 0; i < strings.Items.Count; i++)
                 strings.Items[i].Selected = strings.Items[i].Text == _defaultVal;
+            strings.ListViewItemSorter = _sorter;
+        }
+
+        private void ColumnClick(object sender, System.Windows.Forms.ColumnClickEventArgs e)
+        {
+            // Determine if the clicked column is already the column that is being sorted.
+            if (e.Column == _sorter.SortColumn)
+            {
+                // Reverse the current sort direction for this column.
+                if (_sorter.Order == SortOrder.Ascending)
+                {
+                    _sorter.Order = SortOrder.Descending;
+                }
+                else
+                {
+                    _sorter.Order = SortOrder.Ascending;
+                }
+            }
+            else
+            {
+                // Set the column number that is to be sorted; default to ascending.
+                _sorter.SortColumn = e.Column;
+                _sorter.Order = SortOrder.Ascending;
+            }
+
+            // Perform the sort with these new sort options.
+            this.strings.Sort();
         }
 
         private void search_box_TextChanged(object sender, EventArgs e)
         {
             Search();
+            clearSearchBtn.Visible = search_box.Text != "";
         }
 
         private void clearSearchBtn_Click(object sender, EventArgs e)

@@ -88,6 +88,7 @@
             this.strings.TabIndex = 179;
             this.strings.UseCompatibleStateImageBehavior = false;
             this.strings.View = System.Windows.Forms.View.Details;
+            this.strings.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.ColumnClick);
             // 
             // ID
             // 

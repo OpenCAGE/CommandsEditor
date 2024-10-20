@@ -117,7 +117,7 @@ namespace CommandsEditor
                     for (int i = 0; i < options.Count; i++)
                     {
                         options[i].Checked = ent.GetParameter(options[i].Text) != null;
-                        options[i].SubItems[1].Text = _creator.GetInfo(options[i].Text);
+                        options[i].SubItems[1].Text = (ent.variant == EntityVariant.VARIABLE) ? ((VariableEntity)ent).type.ToString() : _creator.GetInfo(options[i].Text);
                         options[i].ImageIndex = 0;
                         _items.Add(options[i]);
                     }
@@ -129,6 +129,8 @@ namespace CommandsEditor
                     }
                     break;
             }
+
+            AddCustom.Visible = ent.variant != EntityVariant.VARIABLE;
 
             Search();
         }

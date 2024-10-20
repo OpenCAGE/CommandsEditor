@@ -148,6 +148,9 @@ namespace CommandsEditor
             {
                 newEntity.parameters.RemoveAll(o => o.content.dataType == DataType.NONE); //TODO
                 newEntity.parameters.RemoveAll(o => o.content.dataType == DataType.RESOURCE); //TODO
+
+                if (function != FunctionType.Zone)
+                    newEntity.RemoveParameter("name");
             }
 
             EntityUtils.SetName(_composite, newEntity, entityName.Text);
