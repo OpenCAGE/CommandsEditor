@@ -123,9 +123,6 @@ namespace CommandsEditor.DockPanels
             _addCompositeDialog?.Close();
             _addFolderDialog?.Close();
 
-            ResourceDatatypeAutocomplete.assetlist_cache?.Clear();
-            ResourceDatatypeAutocomplete.assetlist_cache = null;
-
             imageList.Images.Clear();
             imageList.Dispose();
             FileBrowserImageListLarge.Images.Clear();

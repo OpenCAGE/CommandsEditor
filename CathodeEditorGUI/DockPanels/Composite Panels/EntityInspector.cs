@@ -18,6 +18,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
+using static CommandsEditor.SelectSpecialString;
 
 namespace CommandsEditor.DockPanels
 {

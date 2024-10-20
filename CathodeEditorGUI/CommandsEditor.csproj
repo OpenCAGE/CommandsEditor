@@ -357,11 +357,11 @@
     <Compile Include="Popups\RenameComposite.Designer.cs">
       <DependentUpon>RenameComposite.cs</DependentUpon>
     </Compile>
-    <Compile Include="Popups\ResourceDatatypeAutocomplete.cs">
+    <Compile Include="Popups\SelectSpecialString.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Popups\ResourceDatatypeAutocomplete.Designer.cs">
-      <DependentUpon>ResourceDatatypeAutocomplete.cs</DependentUpon>
+    <Compile Include="Popups\SelectSpecialString.Designer.cs">
+      <DependentUpon>SelectSpecialString.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\ShowInstanceInfo.cs">
       <SubType>Form</SubType>
@@ -730,9 +730,6 @@
     <EmbeddedResource Include="Popups\RenameComposite.resx">
       <DependentUpon>RenameComposite.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Popups\ResourceDatatypeAutocomplete.resx">
-      <DependentUpon>ResourceDatatypeAutocomplete.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Popups\SelectComposite.resx">
       <DependentUpon>SelectComposite.cs</DependentUpon>
     </EmbeddedResource>
@@ -795,6 +792,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\ShowCrossRefs.resx">
       <DependentUpon>ShowCrossRefs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\SelectSpecialString.resx">
+      <DependentUpon>SelectSpecialString.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\ShowInstanceInfo.resx">
       <DependentUpon>ShowInstanceInfo.cs</DependentUpon>

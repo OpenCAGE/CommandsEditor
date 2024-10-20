@@ -48,6 +48,7 @@
             // FileTree
             // 
             this.FileTree.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.FileTree.HideSelection = false;
             this.FileTree.ImageIndex = 0;
             this.FileTree.ImageList = this.imageList1;
             this.FileTree.Location = new System.Drawing.Point(12, 12);
