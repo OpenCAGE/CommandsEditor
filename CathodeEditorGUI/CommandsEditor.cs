@@ -6,6 +6,7 @@ using CATHODE.Scripting.Internal;
 using CathodeLib;
 using CommandsEditor.DockPanels;
 using CommandsEditor.Popups;
+using CommandsEditor.Properties;
 using CommandsEditor.Scripts;
 using CommandsEditor.UserControls;
 using DiscordRPC;
@@ -58,6 +59,142 @@ namespace CommandsEditor
 
         public CommandsEditor(string level = null)
         {
+            level = "SOLACE";
+
+            if (Directory.Exists(SharedData.pathToAI + "\\DATA_orig"))
+            {
+                Directory.Delete(SharedData.pathToAI + "\\DATA\\ENV\\PRODUCTION\\" + level, true);
+                CopyFilesRecursively(SharedData.pathToAI + "\\DATA_orig\\ENV\\PRODUCTION\\" + level, SharedData.pathToAI + "\\DATA\\ENV\\PRODUCTION\\" + level);
+            }
+
+
+            LevelContent content = LevelContent.DEBUG_LoadUnthreadedAndPopulateShortGuids(level);
+
+            //For some reason, by default the RENDERABLE_INSTANCE on RadiosityProxy entities is removed, but still referenced by RESOURCES.BIN. Need to add it back to be able to look them up.
+            for (int i = 0; i < content.commands.Entries.Count; i++)
+            {
+                for (int x = 0; x < content.commands.Entries[i].functions.Count; x++)
+                {
+                    if (content.commands.Entries[i].functions[x].function != CommandsUtils.GetFunctionTypeGUID(FunctionType.RadiosityProxy))
+                        continue;
+
+                    ((cResource)content.commands.Entries[i].functions[x].AddParameter("resource", DataType.RESOURCE).content).value.Add(
+                        new ResourceReference() { 
+                            resource_type = ResourceType.RENDERABLE_INSTANCE, 
+                            resource_id = ShortGuidUtils.Generate(EntityUtils.GetName(content.commands.Entries[i], content.commands.Entries[i].functions[x])) 
+                        });
+                }
+            }
+            //content.commands.Save();
+
+            content.resource.resources.Entries = content.resource.resources.Entries.OrderBy(o => o.index).ToList();
+
+            //First 77 are unresolvable on TORRENS
+
+            for (int x = 0; x < content.resource.resources.Entries.Count; x++)
+            {
+                var entry = content.resource.resources.Entries[x];
+                //Console.WriteLine(entry.resource_id.ToString() + " [" + entry.resource_id.ToByteString() + "]");
+
+                (Composite comp, EntityPath path) = content.editor_utils.GetCompositeFromInstanceID(content.commands, entry.composite_instance_id);
+                if (comp != null)
+                {
+                    List<FunctionEntity> funcs = comp.functions;
+                    List<FunctionEntity> funcsMappedByResIDParam = new List<FunctionEntity>();
+                    List<FunctionEntity> funcsMappedByResID = new List<FunctionEntity>();
+                    List<FunctionEntity> funcsMappedByEntID = new List<FunctionEntity>();
+                    foreach (FunctionEntity f in funcs)
+                    {
+                        if (f.resources.FindAll(o => o.resource_id == entry.resource_id).Count != 0)
+                            funcsMappedByResID.Add(f);
+
+                        Parameter resourceParam = f.GetParameter("resource");
+                        if (resourceParam != null && resourceParam.content != null && resourceParam.content.dataType == DataType.RESOURCE)
+                        {
+                            cResource resource = (cResource)resourceParam.content;
+                            if (resource.value.FindAll(o => o.resource_id == entry.resource_id).Count != 0)
+                                funcsMappedByResIDParam.Add(f);
+                        }
+
+                        if (f.shortGUID == entry.resource_id)
+                            funcsMappedByEntID.Add(f);
+                    }
+                    //Console.WriteLine("\tFound composite: " + comp.name);
+                    //Console.WriteLine("\tFound " + funcsMappedByResID.Count + " functions by resource ID on entity");
+                    //Console.WriteLine("\tFound " + funcsMappedByResIDParam.Count + " functions by resource ID on resource parameter");
+                    if (funcsMappedByResID.Count + funcsMappedByResIDParam.Count == 0)
+                    {
+                        //if (!entry.resource_id.ToString().ToUpper().Contains("RAD") && !entry.resource_id.ToString().ToLower().Contains("alphalight_proxy") && !entry.resource_id.ToString().ToLower().Contains("box01"))
+                        //{
+                        //    string sdffdsfd = "";
+                        //}
+                        //
+                        //Console.WriteLine("\t\t (Found None)");
+                        //
+                        //if (funcsMappedByEntID.Count != 0)
+                        //{
+                        //    foreach (var f in funcsMappedByEntID)
+                        //    {
+                        //        Console.WriteLine("\t\t\t" + f.function.ToString());
+                        //    }
+                        //}
+
+                        Console.WriteLine("Could not find resource for index " + x + " (" + entry.index + ") -> " + entry.resource_id.ToString() + " [" + entry.resource_id.ToByteString() + "]");
+                        Console.WriteLine("\t" + comp.name + "\n\t\t" + path.GetAsString(content.commands, comp, true));
+
+                        FunctionEntity funcEnt = comp.functions.FirstOrDefault(o => EntityUtils.GetName(comp, o) == entry.resource_id.ToString());
+                        if (funcEnt != null)
+                        {
+                            string sfsdf = "";
+                        }
+
+                        List<Movers.MOVER_DESCRIPTOR> mvrs = content.mvr.Entries.FindAll(o => o.resource_index == entry.index);
+                        foreach (var mvr in mvrs)
+                        {
+                            mvr.transform = Matrix4x4.Identity;
+                        }
+
+                        entry.resource_id = new ShortGuid();
+                        entry.composite_instance_id = new ShortGuid();
+                    }
+                    //Console.WriteLine("\tFound " + funcsMappedByEntID.Count + " functions by entity ID");
+                }
+                else
+                {
+                    Console.WriteLine("Could not resolve composite for index " + x + " (" + entry.index + ") -> " + entry.resource_id.ToString() + " [" + entry.resource_id.ToByteString() + "]");
+                    //entry.resource_id = new ShortGuid();
+                    //entry.composite_instance_id = new ShortGuid();
+
+                    foreach (Composite comp2 in content.commands.Entries)
+                    {
+                        FunctionEntity ent2 = comp2.functions.FirstOrDefault(o => o.shortGUID == entry.resource_id);
+                        if (ent2 == null) continue;
+                        string gsdfgsdf = "";
+                    }
+
+                    List<Movers.MOVER_DESCRIPTOR> mvrs = content.mvr.Entries.FindAll(o => o.resource_index == entry.index);
+                    foreach (var mvr in mvrs)
+                    {
+                        string output = content.editor_utils.PrettyPrintMoverRenderable(mvr);
+                    
+                        string sdffsdf = "";
+                        //mvr.transform = Matrix4x4.Identity;
+                    }
+                }
+
+            }
+
+            //for (int i = 0; i < content.resource.resources.Entries.Count; i++)
+            //{
+            //    content.resource.resources.Entries[i].resource_id = new ShortGuid();
+            //    content.resource.resources.Entries[i].composite_instance_id = new ShortGuid();
+            //}
+
+            //content.resource.resources.Save();
+            //content.mvr.Save();
+            //*/
+            //return;
+
             Singleton.Editor = this;
 
             _discord = new DiscordRpcClient("1152999067207606392");
@@ -638,7 +775,7 @@ namespace CommandsEditor
             if (_commandsDisplay.Content.resource.resources.Entries.FindAll(res => res.composite_instance_id == compositeInstanceID && res.resource_id == resourceID).Count != 0)
                 return;
 
-            _commandsDisplay.Content.resource.resources.Entries.Add(new Resources.Resource()
+            _commandsDisplay.Content.resource.resources.Entries.Add(new CATHODE.Resources.Resource()
             {
                 composite_instance_id = compositeInstanceID,
                 resource_id = resourceID
