@@ -594,6 +594,9 @@ namespace CommandsEditor
         [Obsolete("This function is safe to use but not performant. It's intended for test code only.")]
         public string PrettyPrintMoverRenderable(Movers.MOVER_DESCRIPTOR mvr)
         {
+            if (mvr == null)
+                return "";
+
             string output = "";
             for (int x = 0; x < mvr.renderable_element_count; x++)
             {
