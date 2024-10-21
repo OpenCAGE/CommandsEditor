@@ -1,8 +1,8 @@
 # Alien: Isolation Commands Editor
 
-<img src="https://i.imgur.com/GMAuKmG.png" align="right" width="40%">
+**A tool to browse and modify scripts within Alien: Isolation's Commands files.**
 
-A tool to browse and modify scripts within Alien: Isolation's Commands files.
+![image](https://github.com/user-attachments/assets/dda07e90-4a21-4715-9c47-64a02bd01a45)
 
 The latest stable version can be downloaded [by clicking here](https://github.com/OpenCAGE/CommandsEditor/raw/master/Build/CommandsEditor.exe).
 
