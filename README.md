@@ -2,7 +2,7 @@
 
 **A tool to browse and modify scripts within Alien: Isolation's Commands files.**
 
-![image](https://github.com/user-attachments/assets/dda07e90-4a21-4715-9c47-64a02bd01a45)
+![image](https://github.com/user-attachments/assets/6bede159-ae24-41cd-b8f6-d2496d52b7f9)
 
 The latest stable version can be downloaded [by clicking here](https://github.com/OpenCAGE/CommandsEditor/raw/master/Build/CommandsEditor.exe).
 
