@@ -20,10 +20,6 @@ using System.ComponentModel.Design;
 using static CommandsEditor.ModifyPinsOrParameters;
 using System.Diagnostics;
 
-//TODO: 
-// - need to add validation to make sure composite entities/connections haven't changed since layout (for validation on first start, and for validating saved layouts)
-// - way of seeing all nodes for selected entity
-
 namespace CommandsEditor
 {
     public partial class Flowgraph : DockContent
