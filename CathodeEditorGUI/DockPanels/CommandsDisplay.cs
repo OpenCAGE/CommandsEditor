@@ -527,11 +527,13 @@ namespace CommandsEditor.DockPanels
             ListViewItemContent content = (ListViewItemContent)item.Tag;
             if (content.IsFolder)
             {
+                //TODO
+                MessageBox.Show("Support for deleting folders is coming soon.");
+                return;
+
                 string folderFullPath = "";
                 if (_currentDisplayFolderPath == "") folderFullPath = content.FolderName;
                 else folderFullPath = _currentDisplayFolderPath + "/" + content.FolderName;
-
-                //TODO: does this work?
 
                 List<Composite> toDelete = new List<Composite>();
                 for (int i = 0; i < _content.commands.Entries.Count; i++)

@@ -24,8 +24,6 @@ using System.Diagnostics;
 // - need to add validation to make sure composite entities/connections haven't changed since layout (for validation on first start, and for validating saved layouts)
 // - way of seeing all nodes for selected entity
 
-//This also needs a bit of a refactor. It works OK but has become quite bloated.
-
 namespace CommandsEditor
 {
     public partial class Flowgraph : DockContent

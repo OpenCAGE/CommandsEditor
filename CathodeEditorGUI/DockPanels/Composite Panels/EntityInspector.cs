@@ -187,7 +187,7 @@ namespace CommandsEditor.DockPanels
             goToZone.Enabled = false;
             hierarchyDisplay.Visible = false;
 
-            renameEntity.Visible = _entity != null && _entity.variant != EntityVariant.ALIAS;
+            renameEntity.Visible = _entity != null && _entity.variant != EntityVariant.ALIAS && _entity.variant != EntityVariant.VARIABLE; //TODO: we should support variable renaming, but doing that requires managing renaming all links/params (including node links)
             deleteEntity.Visible = _entity != null;
             duplicateEntity.Visible = _entity != null;
 
