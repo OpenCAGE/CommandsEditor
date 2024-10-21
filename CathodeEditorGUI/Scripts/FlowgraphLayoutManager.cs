@@ -126,13 +126,13 @@ namespace CommandsEditor
                 bool hasLayout = HasLayout(composite);
                 if (hasLayout)
                 {
-                    bool diverged = false;
-                    //TODO: calculate if diverged
-                    SetCompatibilityInfo(composite, !diverged);
+                    SetCompatibilityInfo(composite, GetLayouts(composite).LinksMatch(composite));
                 }
                 else
                 {
-                    SetCompatibilityInfo(composite, false);
+                    //NOTE: No longer writing compatibility info for Composites with no layouts defined, as it means it'll work nicer with future updates.
+                    //Console.WriteLine("Flowgraphs are not supported as no layout has been defined yet!");
+                    //SetCompatibilityInfo(composite, false);
                 }
             }
 
@@ -304,6 +304,126 @@ namespace CommandsEditor
             }
 
             return flowgraphMeta;
+        }
+
+        /* Check a Composite against a set of FlowgraphMetas to see if the links are the same */
+        public static bool LinksMatch(this List<FlowgraphMeta> metas, Composite composite)
+        {
+            List<LinkData> flowgraphLinks = new List<LinkData>();
+            for (int i = 0; i < metas.Count; i++)
+            {
+                for (int x = 0; x < metas[i].Nodes.Count; x++)
+                {
+                    for (int y = 0; y < metas[i].Nodes[x].Connections.Count; y++)
+                    {
+                        flowgraphLinks.Add(new LinkData(
+                            metas[i].Nodes[x].EntityGUID,
+                            metas[i].Nodes[x].Connections[y].ParameterGUID,
+                            metas[i].Nodes[x].Connections[y].ConnectedEntityGUID,
+                            metas[i].Nodes[x].Connections[y].ConnectedParameterGUID)
+                        );
+                    }
+                }
+            }
+
+            List<Entity> entities = composite.GetEntities();
+            List<LinkData> compositeLinks = new List<LinkData>();
+            for (int i = 0; i < entities.Count; i++)
+            {
+                for (int x = 0; x < entities[i].childLinks.Count; x++)
+                {
+                    compositeLinks.Add(new LinkData(
+                        entities[i].shortGUID,
+                        entities[i].childLinks[x].thisParamID,
+                        entities[i].childLinks[x].linkedEntityID,
+                        entities[i].childLinks[x].linkedParamID)
+                    );
+                }
+            }
+
+            if (flowgraphLinks.Count != compositeLinks.Count)
+            {
+                return false;
+            }
+
+            flowgraphLinks = flowgraphLinks.OrderBy(o => o.In.ParameterID.ToString()).ThenBy(o => o.Out.ParameterID.ToString()).ThenBy(o => o.In.EntityID.ToByteString()).ThenBy(o => o.Out.EntityID.ToByteString()).ToList();
+            compositeLinks = compositeLinks.OrderBy(o => o.In.ParameterID.ToString()).ThenBy(o => o.Out.ParameterID.ToString()).ThenBy(o => o.In.EntityID.ToByteString()).ThenBy(o => o.Out.EntityID.ToByteString()).ToList();
+            for (int i = 0; i < flowgraphLinks.Count; i++)
+                if (flowgraphLinks[i] != compositeLinks[i])
+                    return false;
+            return true;
+        }
+
+        struct LinkData
+        {
+            public LinkData(ShortGuid EntityID, ShortGuid ParameterID, ShortGuid LinkedEntityID, ShortGuid LinkedParameterID)
+            {
+                Out = new Parameter() { EntityID = EntityID, ParameterID = ParameterID };
+                In = new Parameter() { EntityID = LinkedEntityID, ParameterID = LinkedParameterID };
+            }
+
+            public Parameter Out;
+            public Parameter In;
+
+            public struct Parameter
+            {
+                public ShortGuid EntityID;
+                public ShortGuid ParameterID;
+
+                public static bool operator ==(Parameter left, Parameter right)
+                {
+                    return left.Equals(right);
+                }
+
+                public static bool operator !=(Parameter left, Parameter right)
+                {
+                    return !(left == right);
+                }
+
+                public override bool Equals(object obj)
+                {
+                    if (obj is Parameter other)
+                    {
+                        return EntityID.Equals(other.EntityID) && ParameterID.Equals(other.ParameterID);
+                    }
+                    return false;
+                }
+
+                public override int GetHashCode()
+                {
+                    int hashCode = -1506387652;
+                    hashCode = hashCode * -1521134295 + EntityID.GetHashCode();
+                    hashCode = hashCode * -1521134295 + ParameterID.GetHashCode();
+                    return hashCode;
+                }
+            }
+
+            public static bool operator ==(LinkData left, LinkData right)
+            {
+                return left.Equals(right);
+            }
+
+            public static bool operator !=(LinkData left, LinkData right)
+            {
+                return !(left == right);
+            }
+
+            public override bool Equals(object obj)
+            {
+                if (obj is LinkData other)
+                {
+                    return Out == other.Out && In == other.In;
+                }
+                return false;
+            }
+
+            public override int GetHashCode()
+            {
+                int hashCode = 1047395477;
+                hashCode = hashCode * -1521134295 + Out.GetHashCode();
+                hashCode = hashCode * -1521134295 + In.GetHashCode();
+                return hashCode;
+            }
         }
     }
 }

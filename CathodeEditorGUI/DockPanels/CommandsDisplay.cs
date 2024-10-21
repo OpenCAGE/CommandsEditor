@@ -594,7 +594,6 @@ namespace CommandsEditor.DockPanels
                     RenameComposite(Content.commands.GetComposite(item.String_Value));
                     break;
                 case TreeItemType.DIRECTORY:
-                    //_currentDisplayFolderPath = item.String_Value;
                     //TODO
                     MessageBox.Show("Support for renaming folders is coming soon.");
                     break;
