@@ -94,6 +94,7 @@ namespace CommandsEditor
             */
 
             //For some reason, by default the RENDERABLE_INSTANCE on RadiosityProxy entities is removed, but still referenced by RESOURCES.BIN. Need to add it back to be able to look them up.
+            //Notably, the RESOURCES.BIN entries that point to these don't have MVR objects, but you do get loads of visual artifacts if you remove them.
             for (int i = 0; i < content.commands.Entries.Count; i++)
             {
                 for (int x = 0; x < content.commands.Entries[i].functions.Count; x++)
@@ -128,10 +129,9 @@ namespace CommandsEditor
             //First 77 are unresolvable on TORRENS
             //First 294 are unresolvable on SOLACE
 
-            var orderedEntries = content.resource.resources.Entries.OrderBy(o => o.index).ToList();
-            for (int x = 0; x < orderedEntries.Count; x++)
+            for (int x = 0; x < content.resource.resources.Entries.Count; x++)
             {
-                var entry = orderedEntries[x];
+                var entry = content.resource.resources.Entries[x];
 
                 (Composite comp, EntityPath path) = content.editor_utils.GetCompositeFromInstanceID(content.commands, entry.composite_instance_id);
                 if (comp != null)
@@ -154,17 +154,19 @@ namespace CommandsEditor
                     }
                     if (funcsMappedByResID.Count + funcsMappedByResIDParam.Count == 0)
                     {
-                        Console.WriteLine("Could not find resource for index " + x + " (" + entry.index + ") -> " + entry.resource_id.ToString() + " [" + entry.resource_id.ToByteString() + "]");
+                        Console.WriteLine("Could not find resource for index " + x + " -> " + entry.resource_id.ToString() + " [" + entry.resource_id.ToByteString() + "]");
                         Console.WriteLine("\t" + comp.name + "\n\t\t" + path.GetAsString(content.commands, comp, true));
                     }
+
+                    break; //exiting as soon as we hit a good one for testing sake to be able to rewrite with cleared
                 }
                 else
                 {
-                    Console.WriteLine("Could not resolve composite for index " + x + " (" + entry.index + ") -> " + entry.resource_id.ToString() + " [" + entry.resource_id.ToByteString() + "]");
+                    Console.WriteLine("Could not resolve composite for index " + x + " -> " + entry.resource_id.ToString() + " [" + entry.resource_id.ToByteString() + "]");
 
-                    //These are unresolvable when using the usual instance lookup, but can be found via the methods below.
-                    //They are typically decals and stuff, but clearing them out produces unusual errors, like dodgy lighting on some models.
-                    //Oddly, replacing the resource_id and composite_instance_id with values other than zero seems to fix some things.
+                    //These unresolvable entries are always first in the RESOURCES.BIN, and are usually at world origin.
+                    //They map to the first few MVR entries, which seem to be instances of all FX related stuff. These aren't placed by the scripting system, but instead seem to just be inherently spawned in the level as some sort of precache.
+                    //Clearing the resource_id and composite_instance_id values here seems to affect nothing. Should also try clearing the MVR entries?
 
                     foreach (Composite comp2 in content.commands.Entries)
                     {
@@ -173,16 +175,20 @@ namespace CommandsEditor
                         Console.WriteLine("\tFound entity in " + comp2.name + " -> " + EntityUtils.GetName(comp2, ent2));
                     }
                     
-                    List<Movers.MOVER_DESCRIPTOR> mvrs = content.mvr.Entries.FindAll(o => o.resource_index == entry.index);
+                    List<Movers.MOVER_DESCRIPTOR> mvrs = content.mvr.Entries.FindAll(o => o.resource_index == x);
                     foreach (var mvr in mvrs)
                     {
                         string output = content.editor_utils.PrettyPrintMoverRenderable(mvr);
-                        Console.WriteLine("\tFound entity in MVR -> " + output);
+                        Matrix4x4.Decompose(mvr.transform, out Vector3 scale, out Quaternion rotation, out Vector3 position);
+                        Console.WriteLine("\tFound entity in MVR " + content.mvr.Entries.IndexOf(mvr) + " -> " + output);
+                        Console.WriteLine("\t\tPosition: " + position + ", Rotation: " + rotation + ", Scale: " + scale);
+
+                        //Can we use this EntityHandle to find MVR entries that resolve without finding a FunctionEntity above?
+                        //mvr.entity
                     }
 
                     entry.resource_id = new ShortGuid();
                     entry.composite_instance_id = new ShortGuid();
-                    content.resource.resources.Save();
                 }
             }
             content.resource.resources.Save();
