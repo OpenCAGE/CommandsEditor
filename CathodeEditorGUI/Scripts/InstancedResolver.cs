@@ -8,14 +8,16 @@ using System.Text;
 using System.Threading.Tasks;
 using CATHODE.Scripting.Internal;
 using CathodeLib;
+using WebSocketSharp;
 
 namespace CommandsEditor.Scripts
 {
     public static class InstancedResolver
     {
         //This assumes that you've already finished doing all the threaded stuff like generating composite instance IDs
-        public static void Resolve(LevelContent content)
+        public static void Read(LevelContent content)
         {
+            /*
             //These should all resolve
             #region Resolve Physics Maps
             bool resolvedAll = true;
@@ -118,7 +120,7 @@ namespace CommandsEditor.Scripts
                 }
             }
             #endregion
-
+            */
 
             //First 77 are unresolvable on TORRENS (they point to 0-83 on MVR)
             //First 294 are unresolvable on SOLACE (they point to 0-300 on MVR)
@@ -183,6 +185,50 @@ namespace CommandsEditor.Scripts
                 }
             }
             #endregion
+        }
+
+        public static void Write(LevelContent content)
+        {
+            //Remove everything except the unresolvable ones as i can't rewrite them...
+            content.resource.resources.Entries.RemoveRange(77, content.resource.resources.Entries.Count - 77);
+
+            //Rewrite all the ones I can
+            ShortGuid resourceShortGUID = ShortGuidUtils.Generate("resource");
+            for (int x = 0; x < content.commands.Entries.Count; x++)
+            {
+                Composite comp = content.commands.Entries[x];
+                ShortGuid[] instanceIDs = content.editor_utils.GetInstanceIDsForComposite(comp);
+                List<Resources.Resource> resources = new List<Resources.Resource>();
+                for (int i = 0; i < comp.functions.Count; i++)
+                {
+                    //This is wrong really, and due to how we handle these resources kinda hackily.
+                    //There are resources that match entity IDs or DYNAMIC_PHYSICS_SYSTEM which I apply directly to entities.
+                    //It's not the best solution and I'm not even sure if I handle it correctly when adding new ones in editor.
+                    //Need to have a think about it.
+                    for (int z = 0; z < comp.functions[i].resources.Count; z++)
+                    {
+                        for (int y = 0; y < instanceIDs.Length; y++)
+                        {
+                            content.resource.resources.AddUniqueResource(instanceIDs[y], comp.functions[i].resources[z].resource_id);
+                        }
+                    }
+
+                    Parameter resourceParam = comp.functions[i].GetParameter(resourceShortGUID);
+                    if (resourceParam != null && resourceParam.content != null && resourceParam.content.dataType == DataType.RESOURCE)
+                    {
+                        cResource resource = (cResource)resourceParam.content;
+                        //So here we can either loop for every resource.value, or we can just have one entry. The confusion is that typically things like models have RENDERABLE_INSTANCE and COLLISION_MAPPING both on the "resource" param
+                        //Need to validate in the resolver above if there are ever multiple hits to the same function entity.
+
+                        for (int y = 0; y < instanceIDs.Length; y++)
+                        {
+                            content.resource.resources.AddUniqueResource(instanceIDs[y], resource.shortGUID);
+                        }
+                    }
+                }
+            }
+
+            content.resource.resources.Save();
         }
     }
 }

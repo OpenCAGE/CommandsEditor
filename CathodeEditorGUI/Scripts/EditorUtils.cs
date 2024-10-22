@@ -91,6 +91,19 @@ namespace CommandsEditor
             }
         }
 
+        /* Get all possible instance IDs for a given composite */
+        public ShortGuid[] GetInstanceIDsForComposite(Composite composite)
+        {
+            if (!_compositeInstancePaths.ContainsKey(composite.shortGUID))
+                return new ShortGuid[0];
+
+            List<Tuple<ShortGuid, List<ShortGuid>>> hierarchies = _compositeInstancePaths[composite.shortGUID];
+            ShortGuid[] instanceIDs = new ShortGuid[hierarchies.Count];
+            for (int i = 0; i < hierarchies.Count; i++)
+                instanceIDs[i] = hierarchies[i].Item1;
+            return instanceIDs;
+        }
+
         /* Get all possible hierarchies for a given entity */
         public List<EntityPath> GetHierarchiesForEntity(Composite composite, Entity entity)
         {
@@ -100,7 +113,7 @@ namespace CommandsEditor
                 List<Tuple<ShortGuid, List<ShortGuid>>> hierarchies = _compositeInstancePaths[composite.shortGUID];
                 for (int i = 0; i < hierarchies.Count; i++)
                 {
-                    List<ShortGuid> hierarchy = new List<ShortGuid>(hierarchies[i].Item2.ConvertAll(x => x));
+                    List<ShortGuid> hierarchy = new List<ShortGuid>(hierarchies[i].Item2);
                     if (hierarchy.Count != 0 && hierarchy[hierarchy.Count - 1] == ShortGuid.Invalid)
                         hierarchy.RemoveAt(hierarchy.Count - 1); 
                     hierarchy.Add(entity.shortGUID);

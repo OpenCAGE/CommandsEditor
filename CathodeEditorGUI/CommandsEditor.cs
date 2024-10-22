@@ -59,20 +59,20 @@ namespace CommandsEditor
 
         public CommandsEditor(string level = null)
         {
-            List<string> lvls = Level.GetLevels(SharedData.pathToAI, true);
-            foreach (string lvl in lvls)
-            {
-                if (Directory.Exists(SharedData.pathToAI + "\\DATA_orig"))
-                {
-                    Directory.Delete(SharedData.pathToAI + "\\DATA\\ENV\\PRODUCTION\\" + lvl, true);
-                    CopyFilesRecursively(SharedData.pathToAI + "\\DATA_orig\\ENV\\PRODUCTION\\" + lvl, SharedData.pathToAI + "\\DATA\\ENV\\PRODUCTION\\" + lvl);
-                }
+            //List<string> lvls = Level.GetLevels(SharedData.pathToAI, true);
+            //foreach (string lvl in lvls)
+            //{
+            //    if (Directory.Exists(SharedData.pathToAI + "\\DATA_orig"))
+            //    {
+            //        Directory.Delete(SharedData.pathToAI + "\\DATA\\ENV\\PRODUCTION\\" + lvl, true);
+            //        CopyFilesRecursively(SharedData.pathToAI + "\\DATA_orig\\ENV\\PRODUCTION\\" + lvl, SharedData.pathToAI + "\\DATA\\ENV\\PRODUCTION\\" + lvl);
+            //    }
+            //
+            //    InstancedResolver.Read(LevelContent.DEBUG_LoadUnthreadedAndPopulateShortGuids(lvl));
+            //}
 
-                InstancedResolver.Resolve(LevelContent.DEBUG_LoadUnthreadedAndPopulateShortGuids(lvl));
-            }
 
-
-            level = "SOLACE";
+            level = "BSP_TORRENS";
 
             if (Directory.Exists(SharedData.pathToAI + "\\DATA_orig"))
             {
@@ -88,7 +88,8 @@ namespace CommandsEditor
 
 
             LevelContent content = LevelContent.DEBUG_LoadUnthreadedAndPopulateShortGuids(level);
-            InstancedResolver.Resolve(content);
+            InstancedResolver.Read(content);
+            InstancedResolver.Write(content);
 
             int min_collision_index = 999999;
             for (int x = 0; x < content.commands.Entries.Count; x++)
