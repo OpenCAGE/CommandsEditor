@@ -59,8 +59,6 @@ namespace CommandsEditor.Scripts
             }
             #endregion
 
-            return;
-
             //First 18 are always empty
             //Next set aren't resolvable as they have no composite_instance_id values - they are non-instanced collisions which are referenced by the PAK
             //Next set aren't resolvable but have composite_instance_ids - need to investigate these: perhaps related to the implicitly created and also unresolvable RESOURCE.BIN entries (does the instance id match?)
