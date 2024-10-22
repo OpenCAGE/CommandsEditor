@@ -378,6 +378,7 @@
     <Compile Include="Scripts\CompositePath.cs" />
     <Compile Include="Scripts\DirectXTexUtility.cs" />
     <Compile Include="Scripts\FlowgraphLayoutManager.cs" />
+    <Compile Include="Scripts\InstancedResolver.cs" />
     <Compile Include="Scripts\LocalDebug_NEW.cs" />
     <Compile Include="Scripts\InstanceWriter.cs" />
     <Compile Include="Scripts\LevelContent.cs" />

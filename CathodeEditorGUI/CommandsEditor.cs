@@ -59,7 +59,20 @@ namespace CommandsEditor
 
         public CommandsEditor(string level = null)
         {
-            level = "BSP_TORRENS";
+            List<string> lvls = Level.GetLevels(SharedData.pathToAI, true);
+            foreach (string lvl in lvls)
+            {
+                if (Directory.Exists(SharedData.pathToAI + "\\DATA_orig"))
+                {
+                    Directory.Delete(SharedData.pathToAI + "\\DATA\\ENV\\PRODUCTION\\" + lvl, true);
+                    CopyFilesRecursively(SharedData.pathToAI + "\\DATA_orig\\ENV\\PRODUCTION\\" + lvl, SharedData.pathToAI + "\\DATA\\ENV\\PRODUCTION\\" + lvl);
+                }
+
+                InstancedResolver.Resolve(LevelContent.DEBUG_LoadUnthreadedAndPopulateShortGuids(lvl));
+            }
+
+
+            level = "SOLACE";
 
             if (Directory.Exists(SharedData.pathToAI + "\\DATA_orig"))
             {
@@ -75,78 +88,40 @@ namespace CommandsEditor
 
 
             LevelContent content = LevelContent.DEBUG_LoadUnthreadedAndPopulateShortGuids(level);
+            InstancedResolver.Resolve(content);
 
-            //First 77 are unresolvable on TORRENS
-            //First 294 are unresolvable on SOLACE
-
-            ShortGuid resourceShortGUID = ShortGuidUtils.Generate("resource");
-            for (int x = 0; x < content.resource.resources.Entries.Count; x++)
+            int min_collision_index = 999999;
+            for (int x = 0; x < content.commands.Entries.Count; x++)
             {
-                var entry = content.resource.resources.Entries[x];
-
-                (Composite comp, EntityPath path) = content.editor_utils.GetCompositeFromInstanceID(content.commands, entry.composite_instance_id);
-                if (comp != null)
+                for (int i = 0; i < content.commands.Entries[x].functions.Count; i++)
                 {
-                    FunctionEntity func = null;
-                    for (int i = 0; i < comp.functions.Count; i++)
+                    for (int z = 0; z < content.commands.Entries[x].functions[i].resources.Count; z++)
                     {
-                        if (comp.functions[i].resources.FindAll(o => o.resource_id == entry.resource_id).Count != 0)
-                        {
-                            func = comp.functions[i];
-                            break;
-                        }
+                        if (content.commands.Entries[x].functions[i].resources[z].resource_type != ResourceType.COLLISION_MAPPING)
+                            continue;
+                        if (content.commands.Entries[x].functions[i].resources[z].index != -1 && min_collision_index > content.commands.Entries[x].functions[i].resources[z].index)
+                            min_collision_index = content.commands.Entries[x].functions[i].resources[z].index;
+                    }
 
-                        Parameter resourceParam = comp.functions[i].GetParameter(resourceShortGUID);
-                        if (resourceParam != null && resourceParam.content != null && resourceParam.content.dataType == DataType.RESOURCE)
+                    Parameter resourceParam = content.commands.Entries[x].functions[i].GetParameter("resource");
+                    if (resourceParam != null && resourceParam.content != null && resourceParam.content.dataType == DataType.RESOURCE)
+                    {
+                        cResource resource = (cResource)resourceParam.content;
+                        for (int z = 0; z < resource.value.Count; z++)
                         {
-                            cResource resource = (cResource)resourceParam.content;
-                            if (resource.shortGUID == entry.resource_id)
-                            {
-                                func = comp.functions[i];
-                                break;
-                            }
+                            if (resource.value[z].resource_type != ResourceType.COLLISION_MAPPING)
+                                continue;
+                            if (resource.value[z].index != -1 && min_collision_index > resource.value[z].index)
+                                min_collision_index = resource.value[z].index;
                         }
                     }
-                    if (func == null)
-                    {
-                        Console.WriteLine("Could not find resource for index " + x + " -> " + entry.resource_id.ToString() + " [" + entry.resource_id.ToByteString() + "]");
-                        Console.WriteLine("\t" + comp.name + "\n\t\t" + path.GetAsString(content.commands, comp, true));
-                    }
-
-                    //break; //exiting as soon as we hit a good one for testing sake to be able to rewrite with cleared
-                }
-                else
-                {
-                    Console.WriteLine("Could not resolve composite for index " + x + " -> " + entry.resource_id.ToString() + " [" + entry.resource_id.ToByteString() + "]");
-
-                    //These unresolvable entries are always first in the RESOURCES.BIN, and are usually at world origin.
-                    //They map to the first few MVR entries, which seem to be instances of all FX related stuff. These aren't placed by the scripting system, but instead seem to just be inherently spawned in the level as some sort of precache.
-                    //Clearing the resource_id and composite_instance_id values here seems to affect nothing. Should also try clearing the MVR entries?
-
-                    foreach (Composite comp2 in content.commands.Entries)
-                    {
-                        FunctionEntity ent2 = comp2.functions.FirstOrDefault(o => o.shortGUID == entry.resource_id);
-                        if (ent2 == null) continue;
-                        Console.WriteLine("\tFound entity in " + comp2.name + " -> " + EntityUtils.GetName(comp2, ent2));
-                    }
-                    
-                    List<Movers.MOVER_DESCRIPTOR> mvrs = content.mvr.Entries.FindAll(o => o.resource_index == x);
-                    foreach (var mvr in mvrs)
-                    {
-                        string output = content.editor_utils.PrettyPrintMoverRenderable(mvr);
-                        Matrix4x4.Decompose(mvr.transform, out Vector3 scale, out Quaternion rotation, out Vector3 position);
-                        Console.WriteLine("\tFound entity in MVR " + content.mvr.Entries.IndexOf(mvr) + " -> " + output);
-                        Console.WriteLine("\t\tPosition: " + position + ", Rotation: " + rotation + ", Scale: " + scale);
-
-                        //Can we use this EntityHandle to find MVR entries that resolve without finding a FunctionEntity above?
-                        //mvr.entity
-                    }
-
-                    entry.resource_id = new ShortGuid();
-                    entry.composite_instance_id = new ShortGuid();
                 }
             }
-            content.resource.resources.Save();
+            if (min_collision_index != 18)
+            {
+                //There are always 18 entries at the start of COLLISION.MAP which are empty for some reason, so we'd expect the min index to be 18
+                Console.WriteLine("Unexpected!");
+            }
 
 
             //*/

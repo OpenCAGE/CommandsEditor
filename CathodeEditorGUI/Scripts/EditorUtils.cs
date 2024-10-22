@@ -190,31 +190,37 @@ namespace CommandsEditor
         public EntityPath GetHierarchyFromHandle(EntityHandle reference)
         {
             EntityPath toReturn = null;
+            object lockObj = new object(); 
+
             Parallel.ForEach(_compositeInstancePaths, (pair, state) =>
             {
-                if (toReturn != null) state.Stop();
-                else
+                foreach (var instance in pair.Value)
                 {
-                    Parallel.For(0, pair.Value.Count, (i, state2) =>
+                    if (instance.Item1 == reference.composite_instance_id)
                     {
-                        if (toReturn != null) state2.Stop();
-                        else
-                        {
-                            if (pair.Value[i].Item1 == reference.composite_instance_id)
-                            {
-                                List<ShortGuid> hierarchy = new List<ShortGuid>(pair.Value[i].Item2.ConvertAll(x => x));
-                                if (hierarchy.Count > 0 && hierarchy[hierarchy.Count - 1] == ShortGuid.Invalid)
-                                    hierarchy.RemoveAt(hierarchy.Count - 1);
-                                hierarchy.Add(reference.entity_id);
+                        List<ShortGuid> hierarchy = new List<ShortGuid>(instance.Item2);
+                        if (hierarchy.Count > 0 && hierarchy[hierarchy.Count - 1] == ShortGuid.Invalid)
+                            hierarchy.RemoveAt(hierarchy.Count - 1);
+                        hierarchy.Add(reference.entity_id);
 
+                        lock (lockObj)
+                        {
+                            if (toReturn == null)
                                 toReturn = new EntityPath(hierarchy);
-                            }
                         }
-                    });
+
+                        state.Stop(); 
+                        break;
+                    }
                 }
+
+                if (toReturn != null)
+                    state.Stop(); 
             });
+
             return toReturn;
         }
+
 
         /* Utility: generate nice entity name to display in UI */
         public string GenerateEntityName(Entity entity, Composite composite, bool regenCache = false)
