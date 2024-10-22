@@ -104,6 +104,19 @@ namespace CommandsEditor
             return instanceIDs;
         }
 
+        /* Get all possible instance IDs for a given composite */
+        public EntityPath[] GetHierarchiesForComposite(Composite composite)
+        {
+            if (!_compositeInstancePaths.ContainsKey(composite.shortGUID))
+                return new EntityPath[0];
+
+            List<Tuple<ShortGuid, List<ShortGuid>>> hierarchies = _compositeInstancePaths[composite.shortGUID];
+            EntityPath[] paths = new EntityPath[hierarchies.Count];
+            for (int i = 0; i < hierarchies.Count; i++)
+                paths[i] = new EntityPath(hierarchies[i].Item2);
+            return paths;
+        }
+
         /* Get all possible hierarchies for a given entity */
         public List<EntityPath> GetHierarchiesForEntity(Composite composite, Entity entity)
         {

@@ -87,7 +87,17 @@ namespace CommandsEditor
             //If no link has been made, both populate
 
 
+            //It gets more complicated: RESOURCES.BIN is populated based on the result of COMMANDS (e.g. if an entity has "deleted" applied, it won't be listed there)
+            //No fucking clue how I'm gonna be able to rewrite the thing without building the entire scripting logic into the compiler -_-
+
+
             LevelContent content = LevelContent.DEBUG_LoadUnthreadedAndPopulateShortGuids(level);
+
+            //File.Copy(content.mvr.Filepath, content.mvr.Filepath + " - Copy.MVR");
+            //content.mvr.Entries = content.mvr.Entries.OrderBy(o => o.resource_index).ToList();
+            //content.mvr.Save();
+
+
             InstancedResolver.Read(content);
             InstancedResolver.Write(content);
             InstancedResolver.Read(content);

@@ -11,6 +11,8 @@ using CathodeLib;
 using WebSocketSharp;
 using System.IO;
 using CommandsEditor.DockPanels;
+using System.Runtime.Remoting.Contexts;
+using CATHODE.EXPERIMENTAL;
 
 namespace CommandsEditor.Scripts
 {
@@ -246,22 +248,30 @@ namespace CommandsEditor.Scripts
             }
 
 
-            _content.resource.physics_maps.Entries.Clear();
-            //_content.resource.resources.Entries.RemoveAll(o => o.resource_id == GUID_DYNAMIC_PHYSICS_SYSTEM);
-            _content.resource.resources.Entries.Clear();
+            Resources.Resource[] oldResourceMVRMappings = new Resources.Resource[_content.mvr.Entries.Count];
+            for (int x = 0; x < _content.mvr.Entries.Count; x++)
+            {
+                oldResourceMVRMappings[x] = _content.mvr.Entries[x].resource_index == -1 ? null : _content.resource.resources.Entries[_content.mvr.Entries[x].resource_index];
+            }
 
 
-            //Recurse(_content.commands.EntryPoints[0]);
+
+            //_content.resource.physics_maps.Entries.Clear();
+            //_content.resource.collision_maps.Entries.Clear();
+            //_content.resource.resources.Entries.Clear();
+
+            _content.resource.resources.Entries.RemoveRange(78, _content.resource.resources.Entries.Count - 78);
 
 
             //Update additional resource stuff
-            List<int> written_indexes = new List<int>();
             foreach (Composite composite in _content.commands.Entries)
             {
                 List<Entity> ents = composite.GetEntities();
                 foreach (var ent in ents)
                     ShortGuidUtils.Generate(EntityUtils.GetName(composite, ent));
 
+                ShortGuid[] instanceIDs = _content.editor_utils.GetInstanceIDsForComposite(composite);
+                EntityPath[] hierarchies = _content.editor_utils.GetHierarchiesForComposite(composite);
                 foreach (FunctionEntity func in composite.functions)
                 {
                     List<ResourceReference> resources = func.resources;
@@ -272,54 +282,29 @@ namespace CommandsEditor.Scripts
                     if (resources.Count == 0)
                         continue;
 
-                    ShortGuid nameHash = ShortGuidUtils.Generate(EntityUtils.GetName(composite, func));
-
-                    List<EntityPath> hierarchies = _content.editor_utils.GetHierarchiesForEntity(composite, func);
-                    List<ShortGuid> instanceIDs = new List<ShortGuid>();
-                    for (int i = 0; i < hierarchies.Count; i++)
-                        instanceIDs.Add(hierarchies[i].GenerateCompositeInstanceID());
-
                     foreach (ResourceReference resRef in resources)
                     {
-                        ShortGuid id;
                         switch (resRef.resource_type)
                         {
                             case ResourceType.RENDERABLE_INSTANCE:
                             case ResourceType.COLLISION_MAPPING:
-                                //if (resRef.entityID == ShortGuid.Max)
-                                //    continue;
-                                id = nameHash;
-                                resRef.entityID = func.shortGUID;
-                                WriteCollisionMap(id, null, composite, func);
+                                //WriteCollisionMap(resRef.resource_id, ShortGuid.Invalid, composite, func);
                                 break;
-                            case ResourceType.ANIMATED_MODEL:
-                                id = GUID_ANIMATED_MODEL;
-                                break;
-                            case ResourceType.DYNAMIC_PHYSICS_SYSTEM:
-                                id = GUID_DYNAMIC_PHYSICS_SYSTEM;
-                                break;
-                            //case ResourceType.NAV_MESH_BARRIER_RESOURCE:
-                            //TODO
-                            //    break;
-                            default:
-                                continue;
                         }
 
-                        //TODO: also validate the positional values are correct on resource
+                        //TODO: also need to validate the positional values are correct on resource (they should match the entity)
 
-                        for (int i = 0; i < hierarchies.Count; i++)
+                        for (int i = 0; i < instanceIDs.Length; i++)
                         {
                             switch (resRef.resource_type)
                             {
                                 case ResourceType.COLLISION_MAPPING:
-                                    WriteCollisionMap(resRef.resource_id, hierarchies[i], composite, func);
+                                    //WriteCollisionMap(resRef.resource_id, instanceIDs[i], composite, func);
                                     break;
                                 case ResourceType.DYNAMIC_PHYSICS_SYSTEM:
-                                    if (written_indexes.Contains(resRef.index))
-                                        continue;
-                                    //written_indexes.Add(resRef.index);
-                                    if (!WritePhysicsMap(hierarchies[i], resRef.index))
-                                        continue;
+                                    //if (!WritePhysicsMap(hierarchies[i], resRef.index))
+                                    //    continue;
+                                    continue;
                                     break;
                                 case ResourceType.RENDERABLE_INSTANCE:
                                 //Write REDS
@@ -334,124 +319,40 @@ namespace CommandsEditor.Scripts
                 }
             }
 
+            for (int x = 0; x < _content.mvr.Entries.Count; x++)
+            {
+                if (oldResourceMVRMappings[x] == null)
+                {
+                    _content.mvr.Entries[x].resource_index = -1;
+                    continue;
+                }
+
+                Resources.Resource newMapping = _content.resource.resources.Entries.FirstOrDefault(o => o.composite_instance_id == oldResourceMVRMappings[x].composite_instance_id && o.resource_id == oldResourceMVRMappings[x].resource_id);
+                _content.mvr.Entries[x].resource_index = _content.resource.resources.Entries.IndexOf(newMapping);
+            }
 
             /*
-            //Remove everything except the unresolvable ones as i can't rewrite them...
-            //content.resource.resources.Entries.RemoveRange(77, content.resource.resources.Entries.Count - 77);
-            _content.resource.resources.Entries.Clear();
-
-            //Rewrite all the ones I can
-            ShortGuid resourceShortGUID = ShortGuidUtils.Generate("resource");
-            for (int x = 0; x < _content.commands.Entries.Count; x++)
+            Movers.MOVER_DESCRIPTOR[] oldEnvMapMVRMappings = new Movers.MOVER_DESCRIPTOR[_content.resource.env_maps.Entries.Count];
+            for (int i = 0; i < _content.resource.env_maps.Entries.Count; i++)
             {
-                Composite comp = _content.commands.Entries[x];
-                ShortGuid[] instanceIDs = _content.editor_utils.GetInstanceIDsForComposite(comp);
-                List<Resources.Resource> resources = new List<Resources.Resource>();
-                for (int i = 0; i < comp.functions.Count; i++)
-                {
-                    //This is wrong really, and due to how we handle these resources kinda hackily.
-                    //There are resources that match entity IDs or DYNAMIC_PHYSICS_SYSTEM which I apply directly to entities.
-                    //It's not the best solution and I'm not even sure if I handle it correctly when adding new ones in editor.
-                    //Need to have a think about it.
-                    for (int z = 0; z < comp.functions[i].resources.Count; z++)
-                    {
-                        for (int y = 0; y < instanceIDs.Length; y++)
-                        {
-                            _content.resource.resources.AddUniqueResource(instanceIDs[y], comp.functions[i].resources[z].resource_id);
-                        }
-                    }
-
-                    Parameter resourceParam = comp.functions[i].GetParameter(resourceShortGUID);
-                    if (resourceParam != null && resourceParam.content != null && resourceParam.content.dataType == DataType.RESOURCE)
-                    {
-                        cResource resource = (cResource)resourceParam.content;
-                        //So here we can either loop for every resource.value, or we can just have one entry. The confusion is that typically things like models have RENDERABLE_INSTANCE and COLLISION_MAPPING both on the "resource" param
-                        //Need to validate in the resolver above if there are ever multiple hits to the same function entity.
-
-                        for (int y = 0; y < instanceIDs.Length; y++)
-                        {
-                            _content.resource.resources.AddUniqueResource(instanceIDs[y], resource.shortGUID);
-                        }
-                    }
-                }
+                oldEnvMapMVRMappings[i] = _content.mvr.Entries[_content.resource.env_maps.Entries[i].MoverIndex];
             }
 
-            //content.resource.resources.Save();
+            _content.mvr.Entries = _content.mvr.Entries.OrderBy(o => o.resource_index).ToList();
+
+            for (int i = 0; i < _content.resource.env_maps.Entries.Count; i++)
+            {
+                _content.resource.env_maps.Entries[i].MoverIndex = _content.mvr.Entries.IndexOf(oldEnvMapMVRMappings[i]);
+            }
+
+
+            File.Copy(_content.resource.env_maps.Filepath, _content.resource.env_maps.Filepath + " - Copy");
+            _content.resource.env_maps.Save();
             */
+            _content.mvr.Save();
+
+            _content.resource.resources.Save();
         }
-
-        /*
-        private static void Recurse(Composite composite)
-        {
-            foreach (FunctionEntity func in composite.functions)
-            {
-                List<ResourceReference> resources = func.resources;
-                Parameter resourceParam = func.GetParameter(GUID_resource);
-                if (resourceParam != null && resourceParam.content != null && resourceParam.content.dataType == DataType.RESOURCE)
-                    resources.AddRange(((cResource)resourceParam.content).value);
-
-                if (resources.Count == 0)
-                    continue;
-
-                ShortGuid nameHash = ShortGuidUtils.Generate(EntityUtils.GetName(composite, func));
-
-                List<EntityPath> hierarchies = _content.editor_utils.GetHierarchiesForEntity(composite, func);
-                List<ShortGuid> instanceIDs = new List<ShortGuid>();
-                for (int i = 0; i < hierarchies.Count; i++)
-                    instanceIDs.Add(hierarchies[i].GenerateCompositeInstanceID());
-
-                foreach (ResourceReference resRef in resources)
-                {
-                    ShortGuid id;
-                    switch (resRef.resource_type)
-                    {
-                        case ResourceType.RENDERABLE_INSTANCE:
-                        case ResourceType.COLLISION_MAPPING:
-                            //if (resRef.entityID == ShortGuid.Max)
-                            //    continue;
-                            id = nameHash;
-                            resRef.entityID = func.shortGUID;
-                            WriteCollisionMap(id, null, composite, func);
-                            break;
-                        case ResourceType.ANIMATED_MODEL:
-                            id = GUID_ANIMATED_MODEL;
-                            break;
-                        case ResourceType.DYNAMIC_PHYSICS_SYSTEM:
-                            id = GUID_DYNAMIC_PHYSICS_SYSTEM;
-                            break;
-                        //case ResourceType.NAV_MESH_BARRIER_RESOURCE:
-                        //TODO
-                        //    break;
-                        default:
-                            continue;
-                    }
-
-                    //TODO: also validate the positional values are correct on resource
-
-                    for (int i = 0; i < hierarchies.Count; i++)
-                    {
-                        switch (resRef.resource_type)
-                        {
-                            case ResourceType.COLLISION_MAPPING:
-                                WriteCollisionMap(resRef.resource_id, hierarchies[i], composite, func);
-                                break;
-                            case ResourceType.DYNAMIC_PHYSICS_SYSTEM:
-                                if (!WritePhysicsMap(hierarchies[i], resRef.index))
-                                    continue;
-                                break;
-                            case ResourceType.RENDERABLE_INSTANCE:
-                            //Write REDS
-                            case ResourceType.ANIMATED_MODEL:
-                                break;
-                            default:
-                                continue;
-                        }
-                        _content.resource.resources.AddUniqueResource(instanceIDs[i], resRef.resource_id);
-                    }
-                }
-            }
-        }
-        */
 
         private static bool WritePhysicsMap(EntityPath hierarchy, int physics_system_index)
         {
@@ -482,7 +383,7 @@ namespace CommandsEditor.Scripts
             };
 
             //Remove all entries that already exist for this instance
-            _content.resource.physics_maps.Entries.RemoveAll(o => o.composite_instance_id == compositeInstanceID && o.entity == compositeInstanceReference);
+            //_content.resource.physics_maps.Entries.RemoveAll(o => o.composite_instance_id == compositeInstanceID && o.entity == compositeInstanceReference);
 
             //Make a new entry for the instance
             _content.resource.physics_maps.Entries.Add(new PhysicsMaps.Entry()
@@ -497,13 +398,13 @@ namespace CommandsEditor.Scripts
             return true;
         }
 
-        private static void WriteCollisionMap(ShortGuid resourceID, EntityPath hierarchy, Composite composite, FunctionEntity func)
+        private static void WriteCollisionMap(ShortGuid resourceID, ShortGuid comp_instance_id, Composite composite, FunctionEntity func)
         {
             //Get instance info
             EntityHandle compositeInstanceReference = new EntityHandle()
             {
                 entity_id = func.shortGUID,
-                composite_instance_id = hierarchy == null ? ShortGuid.Invalid : hierarchy.GenerateCompositeInstanceID()
+                composite_instance_id = comp_instance_id
             };
 
             if (_content.resource.collision_maps.Entries.FindAll(o => o.entity == compositeInstanceReference && o.id == resourceID).Count != 0)
@@ -512,7 +413,7 @@ namespace CommandsEditor.Scripts
             //TODO: similar to PHYSICS.MAP, do we only write out if there's not another collision further up the chain?
 
             //Get zone ID
-            ShortGuid zoneID = hierarchy == null ? ShortGuid.Invalid : new ShortGuid(1);
+            ShortGuid zoneID = comp_instance_id == ShortGuid.Invalid ? ShortGuid.Invalid : new ShortGuid(1);
             /*
             if (hierarchy != null)
             {
