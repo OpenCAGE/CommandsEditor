@@ -35,7 +35,7 @@ namespace CommandsEditor.Popups.UserControls
             List<EntityPath> hierarchies = entDisplay.Content.editor_utils.GetHierarchiesForEntity(entDisplay.Composite, entDisplay.Entity);
             for (int i = 0; i < hierarchies.Count; i++)
             {
-                ShortGuid instance = hierarchies[i].GenerateInstance();
+                ShortGuid instance = hierarchies[i].GenerateCompositeInstanceID();
                 List<CATHODE.PhysicsMaps.Entry> physMaps = Content.resource.physics_maps.Entries.FindAll(o => o.composite_instance_id == instance);
                 if (physMaps.Count != 1)
                 {

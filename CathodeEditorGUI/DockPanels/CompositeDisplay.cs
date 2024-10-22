@@ -648,13 +648,13 @@ namespace CommandsEditor.DockPanels
                     List<ShortGuid> instancesPhys = new List<ShortGuid>();
                     List<EntityPath> pathsPhys = new List<EntityPath>();
                     pathsEnt.ForEach(path => {
-                        instancesEnt.Add(path.GenerateInstance());
+                        instancesEnt.Add(path.GenerateCompositeInstanceID());
 
                         EntityPath pathPhys = path.Copy();
                         pathPhys.path.Insert(path.path.Count - 1, phys.shortGUID);
                         pathsPhys.Add(pathPhys);
 
-                        instancesPhys.Add(pathPhys.GenerateInstance());
+                        instancesPhys.Add(pathPhys.GenerateCompositeInstanceID());
                     });
 
                     List<PhysicsMaps.Entry> physMaps = Content.resource.physics_maps.Entries.FindAll(physMap =>
@@ -667,10 +667,10 @@ namespace CommandsEditor.DockPanels
                         PhysicsMaps.Entry newPhysMap = physMap.Copy();
                         newPhysMap.entity.entity_id = newEnt.shortGUID;
 
-                        EntityPath pathPhys = pathsPhys.FirstOrDefault(x => x.GenerateInstance() == physMap.composite_instance_id);
+                        EntityPath pathPhys = pathsPhys.FirstOrDefault(x => x.GenerateCompositeInstanceID() == physMap.composite_instance_id);
                         EntityPath newPathPhys = pathPhys.Copy();
                         newPathPhys.path[newPathPhys.path.Count - 3] = newEnt.shortGUID;
-                        newPhysMap.composite_instance_id = newPathPhys.GenerateInstance();
+                        newPhysMap.composite_instance_id = newPathPhys.GenerateCompositeInstanceID();
                         Content.resource.physics_maps.Entries.Add(newPhysMap);
                         //Content.resource.physics_maps.Entries[Content.resource.physics_maps.Entries.IndexOf(physMap)] = newPhysMap;
 

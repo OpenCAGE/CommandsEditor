@@ -124,7 +124,7 @@ namespace CommandsEditor.Scripts
                                         EntityHandle instanceInfo = new EntityHandle()
                                         {
                                             entity_id = func.shortGUID,
-                                            composite_instance_id = path.GenerateInstance()
+                                            composite_instance_id = path.GenerateCompositeInstanceID()
                                         };
 
                                         ShortGuid resourceID = ShortGuidUtils.Generate(EntityUtils.GetName(comp, func));

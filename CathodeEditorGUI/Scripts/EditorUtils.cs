@@ -52,7 +52,7 @@ namespace CommandsEditor
         }
 
         /* Generate all composite instance information for Commands */
-        private Dictionary<ShortGuid, List<List<ShortGuid>>> _compositeInstancePaths = new Dictionary<ShortGuid, List<List<ShortGuid>>>();
+        private Dictionary<ShortGuid, List<Tuple<ShortGuid, List<ShortGuid>>>> _compositeInstancePaths = new Dictionary<ShortGuid, List<Tuple<ShortGuid, List<ShortGuid>>>>();
         private CancellationTokenSource _prevTaskToken = null;
         public void GenerateCompositeInstances(Commands commands, bool runOnThread = true)
         {
@@ -73,9 +73,9 @@ namespace CommandsEditor
             if (ct.IsCancellationRequested) return;
 
             if (!_compositeInstancePaths.ContainsKey(composite.shortGUID))
-                _compositeInstancePaths.Add(composite.shortGUID, new List<List<ShortGuid>>());
+                _compositeInstancePaths.Add(composite.shortGUID, new List<Tuple<ShortGuid, List<ShortGuid>>>());
 
-            _compositeInstancePaths[composite.shortGUID].Add(hierarchy);
+            _compositeInstancePaths[composite.shortGUID].Add(new Tuple<ShortGuid, List<ShortGuid>>(hierarchy.GenerateCompositeInstanceID(false), hierarchy));
 
             for (int i = 0; i < composite.functions.Count; i++)
             {
@@ -97,12 +97,12 @@ namespace CommandsEditor
             List<EntityPath> formattedHierarchies = new List<EntityPath>();
             if (_compositeInstancePaths.ContainsKey(composite.shortGUID))
             {
-                List<List<ShortGuid>> hierarchies = _compositeInstancePaths[composite.shortGUID];
+                List<Tuple<ShortGuid, List<ShortGuid>>> hierarchies = _compositeInstancePaths[composite.shortGUID];
                 for (int i = 0; i < hierarchies.Count; i++)
                 {
-                    List<ShortGuid> hierarchy = new List<ShortGuid>(hierarchies[i].ConvertAll(x => x));
+                    List<ShortGuid> hierarchy = new List<ShortGuid>(hierarchies[i].Item2.ConvertAll(x => x));
                     if (hierarchy.Count != 0 && hierarchy[hierarchy.Count - 1] == ShortGuid.Invalid)
-                        hierarchy.RemoveAt(hierarchy.Count - 1);
+                        hierarchy.RemoveAt(hierarchy.Count - 1); 
                     hierarchy.Add(entity.shortGUID);
                     formattedHierarchies.Add(new EntityPath(hierarchy));
                 }
@@ -110,27 +110,45 @@ namespace CommandsEditor
             return formattedHierarchies;
         }
 
-        [Obsolete("This function is safe to use but not performant. It's intended for test code only.")]
+        /* Get a composite (& instance path) from a given composite instance ID */
         public (Composite, EntityPath) GetCompositeFromInstanceID(Commands commands, ShortGuid instanceID)
         {
             if (instanceID == ShortGuid.InitialiserBase)
                 return (commands.EntryPoints[0], new EntityPath());
 
-            foreach (KeyValuePair<ShortGuid, List<List<ShortGuid>>> compositeInstancePaths in _compositeInstancePaths)
-            {
-                foreach (List<ShortGuid> path in compositeInstancePaths.Value)
-                {
-                    if (path.Count == 0) continue;
-                    if (path.Count == 1 && path[0] == ShortGuid.Invalid) continue;
+            (Composite compositeResult, EntityPath entityPathResult) = (null, null);
+            object lockObject = new object();
+            bool found = false;
 
-                    List<ShortGuid> pathFaked = new List<ShortGuid>(path.ConvertAll(x => x));
-                    pathFaked.Add(new ShortGuid("01-00-00-00")); //NOTE: need to add a faked entity ID in here so we can generate the instance
-                    EntityPath pathFormatted = new EntityPath(pathFaked);
-                    if (pathFormatted.GenerateInstance() == instanceID)
-                        return (commands.GetComposite(compositeInstancePaths.Key), new EntityPath(path));
+            ParallelOptions parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount };
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            Parallel.ForEach(_compositeInstancePaths, parallelOptions, (compositeInstancePaths, state) =>
+            {
+                if (found) return;
+
+                foreach (Tuple<ShortGuid, List<ShortGuid>> path in compositeInstancePaths.Value)
+                {
+                    if (path.Item2.Count == 0 || (path.Item2.Count == 1 && path.Item2[0] == ShortGuid.Invalid))
+                        continue;
+
+                    if (path.Item1 == instanceID)
+                    {
+                        lock (lockObject)
+                        {
+                            if (!found)
+                            {
+                                compositeResult = commands.GetComposite(compositeInstancePaths.Key);
+                                entityPathResult = new EntityPath(path.Item2);
+                                found = true;
+
+                                cancellationTokenSource.Cancel();
+                                state.Stop();
+                            }
+                        }
+                    }
                 }
-            }
-            return (null, null);
+            });
+            return (compositeResult, entityPathResult);
         }
 
         [Obsolete("This function is safe to use but not performant. It's intended for test code only.")]
@@ -182,16 +200,15 @@ namespace CommandsEditor
                         if (toReturn != null) state2.Stop();
                         else
                         {
-                            List<ShortGuid> hierarchy = new List<ShortGuid>(pair.Value[i].ConvertAll(x => x));
-                            if (hierarchy.Count > 0 && hierarchy[hierarchy.Count - 1] == ShortGuid.Invalid)
-                                hierarchy.RemoveAt(hierarchy.Count - 1);
-                            hierarchy.Add(reference.entity_id);
+                            if (pair.Value[i].Item1 == reference.composite_instance_id)
+                            {
+                                List<ShortGuid> hierarchy = new List<ShortGuid>(pair.Value[i].Item2.ConvertAll(x => x));
+                                if (hierarchy.Count > 0 && hierarchy[hierarchy.Count - 1] == ShortGuid.Invalid)
+                                    hierarchy.RemoveAt(hierarchy.Count - 1);
+                                hierarchy.Add(reference.entity_id);
 
-                            EntityPath h = new EntityPath(hierarchy);
-                            ShortGuid instance = h.GenerateInstance();
-
-                            if (instance == reference.composite_instance_id)
-                                toReturn = h;
+                                toReturn = new EntityPath(hierarchy);
+                            }
                         }
                     });
                 }

@@ -59,7 +59,7 @@ namespace CommandsEditor
 
         public CommandsEditor(string level = null)
         {
-            level = "SOLACE";
+            level = "BSP_TORRENS";
 
             if (Directory.Exists(SharedData.pathToAI + "\\DATA_orig"))
             {
@@ -68,67 +68,18 @@ namespace CommandsEditor
             }
 
 
+            //Level is populated by MVR
+            //MVR looks up the resource in COMMANDS via RESOURCES
+            //MVR properties are applied to renderables in COMMANDS via this link (applied properties are specified by the type enum, e.g. not all provide position etc)
+            //If no link has been made, both populate
+
+
             LevelContent content = LevelContent.DEBUG_LoadUnthreadedAndPopulateShortGuids(level);
-
-            //There's a weird thing where clearing out RESOURCE.BIN entries that aren't pointed to by MVR produce a range of weird duplicate objects that are pointed to by RadiosityProxy entities.
-            //I wondered if perhaps since the resource_index value is usually incrementing and sometimes skips a few, if there would be a count in the MVR similar to how we get a count for REDS.BIN. It doesn't seem that's the case.
-            /*
-            int prev = 0;
-            Movers.MOVER_DESCRIPTOR prevMvr = null;
-            for (int i = 0; i < content.mvr.Entries.Count; i++)
-            {
-                var mvr = content.mvr.Entries[i];
-                string gsg = content.editor_utils.PrettyPrintMoverRenderable(mvr);
-                string gsg2 = content.editor_utils.PrettyPrintMoverRenderable(prevMvr);
-
-                if (mvr.resource_index != -1 && mvr.resource_index - prev != 1)
-                {
-                    string sdfsfsd = ""; //break here to investivate
-                }
-                prev = mvr.resource_index;
-                prevMvr = mvr;
-
-                //Console.WriteLine(mvr.resource_index);
-                //Console.WriteLine(mvr.Unknowns5_.ToString());
-            }
-            */
-
-            //For some reason, by default the RENDERABLE_INSTANCE on RadiosityProxy entities is removed, but still referenced by RESOURCES.BIN. Need to add it back to be able to look them up.
-            //Notably, the RESOURCES.BIN entries that point to these don't have MVR objects, but you do get loads of visual artifacts if you remove them.
-            for (int i = 0; i < content.commands.Entries.Count; i++)
-            {
-                for (int x = 0; x < content.commands.Entries[i].functions.Count; x++)
-                {
-                    if (content.commands.Entries[i].functions[x].function != CommandsUtils.GetFunctionTypeGUID(FunctionType.RadiosityProxy))
-                        continue;
-
-                    Parameter parameter = content.commands.Entries[i].functions[x].GetParameter("resource");
-                    if (parameter == null || parameter.content.dataType != DataType.RESOURCE)
-                    {
-                        Console.WriteLine("Adding new cResource parameter"); //I'm not expecting to hit this.
-                        parameter = content.commands.Entries[i].functions[x].AddParameter("resource", DataType.RESOURCE);
-                    }
-                    cResource parameterResource = (cResource)parameter.content;
-                    if (parameterResource.GetResource(ResourceType.RENDERABLE_INSTANCE) == null)
-                    {
-                        parameterResource.value.Add(
-                            new ResourceReference()
-                            {
-                                resource_type = ResourceType.RENDERABLE_INSTANCE,
-                                resource_id = ShortGuidUtils.Generate(EntityUtils.GetName(content.commands.Entries[i], content.commands.Entries[i].functions[x]))
-                            });
-                    }
-                    else
-                    {
-                        Console.WriteLine("RadiosityProxy cResource already had RENDERABLE_INSTANCE!"); //I'm not expecting to hit this. It seems like the RENDERABLE_INSTANCE is stripped, even though the RESOURCE parameter isn't.
-                    }
-                }
-            }
-            //content.commands.Save();
 
             //First 77 are unresolvable on TORRENS
             //First 294 are unresolvable on SOLACE
 
+            ShortGuid resourceShortGUID = ShortGuidUtils.Generate("resource");
             for (int x = 0; x < content.resource.resources.Entries.Count; x++)
             {
                 var entry = content.resource.resources.Entries[x];
@@ -136,29 +87,33 @@ namespace CommandsEditor
                 (Composite comp, EntityPath path) = content.editor_utils.GetCompositeFromInstanceID(content.commands, entry.composite_instance_id);
                 if (comp != null)
                 {
-                    List<FunctionEntity> funcs = comp.functions;
-                    List<FunctionEntity> funcsMappedByResIDParam = new List<FunctionEntity>();
-                    List<FunctionEntity> funcsMappedByResID = new List<FunctionEntity>();
-                    foreach (FunctionEntity f in funcs)
+                    FunctionEntity func = null;
+                    for (int i = 0; i < comp.functions.Count; i++)
                     {
-                        if (f.resources.FindAll(o => o.resource_id == entry.resource_id).Count != 0)
-                            funcsMappedByResID.Add(f);
+                        if (comp.functions[i].resources.FindAll(o => o.resource_id == entry.resource_id).Count != 0)
+                        {
+                            func = comp.functions[i];
+                            break;
+                        }
 
-                        Parameter resourceParam = f.GetParameter("resource");
+                        Parameter resourceParam = comp.functions[i].GetParameter(resourceShortGUID);
                         if (resourceParam != null && resourceParam.content != null && resourceParam.content.dataType == DataType.RESOURCE)
                         {
                             cResource resource = (cResource)resourceParam.content;
-                            if (resource.value.FindAll(o => o.resource_id == entry.resource_id).Count != 0)
-                                funcsMappedByResIDParam.Add(f);
+                            if (resource.shortGUID == entry.resource_id)
+                            {
+                                func = comp.functions[i];
+                                break;
+                            }
                         }
                     }
-                    if (funcsMappedByResID.Count + funcsMappedByResIDParam.Count == 0)
+                    if (func == null)
                     {
                         Console.WriteLine("Could not find resource for index " + x + " -> " + entry.resource_id.ToString() + " [" + entry.resource_id.ToByteString() + "]");
                         Console.WriteLine("\t" + comp.name + "\n\t\t" + path.GetAsString(content.commands, comp, true));
                     }
 
-                    break; //exiting as soon as we hit a good one for testing sake to be able to rewrite with cleared
+                    //break; //exiting as soon as we hit a good one for testing sake to be able to rewrite with cleared
                 }
                 else
                 {
@@ -600,7 +555,7 @@ namespace CommandsEditor
                         List<EntityPath> hierarchies = _commandsDisplay.Content.editor_utils.GetHierarchiesForEntity(composite, func);
                         List<ShortGuid> instanceIDs = new List<ShortGuid>();
                         for (int i = 0; i < hierarchies.Count; i++)
-                            instanceIDs.Add(hierarchies[i].GenerateInstance());
+                            instanceIDs.Add(hierarchies[i].GenerateCompositeInstanceID());
 
                         foreach (ResourceReference resRef in resources)
                         {
@@ -704,12 +659,12 @@ namespace CommandsEditor
 
             //Get instance info
             (Vector3 position, Quaternion rotation) = CommandsUtils.CalculateInstancedPosition(hierarchy);
-            ShortGuid compositeInstanceID = hierarchy.GenerateInstance();
+            ShortGuid compositeInstanceID = hierarchy.GenerateCompositeInstanceID();
             hierarchy.path.RemoveAt(hierarchy.path.Count - 2);
             EntityHandle compositeInstanceReference = new EntityHandle()
             {
                 entity_id = hierarchy.path[hierarchy.path.Count - 2],
-                composite_instance_id = hierarchy.GenerateInstance()
+                composite_instance_id = hierarchy.GenerateCompositeInstanceID()
             };
 
             //Remove all entries that already exist for this instance
@@ -734,7 +689,7 @@ namespace CommandsEditor
             EntityHandle compositeInstanceReference = new EntityHandle()
             {
                 entity_id = func.shortGUID,
-                composite_instance_id = hierarchy == null ? ShortGuid.Invalid : hierarchy.GenerateInstance()
+                composite_instance_id = hierarchy == null ? ShortGuid.Invalid : hierarchy.GenerateCompositeInstanceID()
             };
 
             if (_commandsDisplay.Content.resource.collision_maps.Entries.FindAll(o => o.entity == compositeInstanceReference && o.id == resourceID).Count != 0)
@@ -1415,7 +1370,7 @@ namespace CommandsEditor
             for (int i = 0; i < zoneHandles.Count; i++)
             {
                 ShortGuid zoneID = zoneHandles[i].GenerateZoneID();
-                ShortGuid instanceID = zoneHandles[i].GenerateInstance();
+                ShortGuid instanceID = zoneHandles[i].GenerateCompositeInstanceID();
 
                 string sdfsdf = "";
             }
