@@ -97,7 +97,6 @@ namespace CommandsEditor
             //content.mvr.Entries = content.mvr.Entries.OrderBy(o => o.resource_index).ToList();
             //content.mvr.Save();
 
-
             InstancedResolver.Read(content);
             InstancedResolver.Write(content);
             InstancedResolver.Read(content);
