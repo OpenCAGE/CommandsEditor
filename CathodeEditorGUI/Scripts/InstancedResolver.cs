@@ -221,7 +221,7 @@ namespace CommandsEditor.Scripts
                     }
                 }
             }
-            //debug.Sort();
+            debug.Sort();
             if (done_once)
                 File.WriteAllLines("modified_resources.txt", debug);
             else
@@ -282,65 +282,69 @@ namespace CommandsEditor.Scripts
             //_content.resource.collision_maps.Entries.Clear();
             _content.resource.resources.Entries.Clear();
 
-            
+
             //dont remove the padding at the start
             //_content.resource.collision_maps.Entries.RemoveRange(18, _content.resource.collision_maps.Entries.Count - 18);
 
             //trying to see if leaving the first few on torrens helps
             //_content.resource.resources.Entries.RemoveRange(78, _content.resource.resources.Entries.Count - 78);
 
-
-            //Recurse(_content.commands.EntryPoints[0], new List<ShortGuid>());
-            //return;
-
-
-            //Update additional resource stuff
-            foreach (Composite composite in _content.commands.Entries)
+            bool do_logically = true;
+            if (do_logically)
             {
-                ShortGuid[] instanceIDs = _content.editor_utils.GetInstanceIDsForComposite(composite);
-                EntityPath[] hierarchies = _content.editor_utils.GetHierarchiesForComposite(composite);
-                foreach (FunctionEntity func in composite.functions)
+                //Slower, but writes in a more correct order
+                Recurse(_content.commands.EntryPoints[0], new List<ShortGuid>());
+            }
+            else
+            {
+                //Update additional resource stuff
+                foreach (Composite composite in _content.commands.Entries)
                 {
-                    List<ResourceReference> resources = func.resources;
-                    Parameter resourceParam = func.GetParameter(GUID_resource);
-                    if (resourceParam != null && resourceParam.content != null && resourceParam.content.dataType == DataType.RESOURCE)
-                        resources.AddRange(((cResource)resourceParam.content).value);
-            
-                    if (resources.Count == 0)
-                        continue;
-            
-                    foreach (ResourceReference resRef in resources)
+                    ShortGuid[] instanceIDs = _content.editor_utils.GetInstanceIDsForComposite(composite);
+                    EntityPath[] hierarchies = _content.editor_utils.GetHierarchiesForComposite(composite);
+                    foreach (FunctionEntity func in composite.functions)
                     {
-                        switch (resRef.resource_type)
-                        {
-                            case ResourceType.COLLISION_MAPPING:
-                                //WriteCollisionMap(resRef.resource_id, ShortGuid.Invalid, composite, func);
-                                break;
-                        }
-            
-                        //TODO: also need to validate the positional values are correct on resource (they should match the entity)
-            
-            
-                        //There's something wrong with this, i can't resolve a lot of stuff after rewriting - are the instance IDs wrong? Might be why the game's crashing rather than writing too many things. Would make more sense.
-                        for (int i = 0; i < instanceIDs.Length; i++)
+                        List<ResourceReference> resources = func.resources;
+                        Parameter resourceParam = func.GetParameter(GUID_resource);
+                        if (resourceParam != null && resourceParam.content != null && resourceParam.content.dataType == DataType.RESOURCE)
+                            resources.AddRange(((cResource)resourceParam.content).value);
+
+                        if (resources.Count == 0)
+                            continue;
+
+                        foreach (ResourceReference resRef in resources)
                         {
                             switch (resRef.resource_type)
                             {
                                 case ResourceType.COLLISION_MAPPING:
-                                    //WriteCollisionMap(resRef.resource_id, instanceIDs[i], composite, func);
+                                    //WriteCollisionMap(resRef.resource_id, ShortGuid.Invalid, composite, func);
                                     break;
-                                case ResourceType.DYNAMIC_PHYSICS_SYSTEM:
-                                    //if (!WritePhysicsMap(hierarchies[i], resRef.index))
-                                    //    continue;
-                                    break;
-                                case ResourceType.RENDERABLE_INSTANCE:
-                                //Write REDS
-                                case ResourceType.ANIMATED_MODEL:
-                                    break;
-                                default:
-                                    continue;
                             }
-                            _content.resource.resources.AddUniqueResource(instanceIDs[i], resRef.resource_id);
+
+                            //TODO: also need to validate the positional values are correct on resource (they should match the entity)
+
+
+                            //There's something wrong with this, i can't resolve a lot of stuff after rewriting - are the instance IDs wrong? Might be why the game's crashing rather than writing too many things. Would make more sense.
+                            for (int i = 0; i < instanceIDs.Length; i++)
+                            {
+                                switch (resRef.resource_type)
+                                {
+                                    case ResourceType.COLLISION_MAPPING:
+                                        //WriteCollisionMap(resRef.resource_id, instanceIDs[i], composite, func);
+                                        break;
+                                    case ResourceType.DYNAMIC_PHYSICS_SYSTEM:
+                                        //if (!WritePhysicsMap(hierarchies[i], resRef.index))
+                                        //    continue;
+                                        break;
+                                    case ResourceType.RENDERABLE_INSTANCE:
+                                    //Write REDS
+                                    case ResourceType.ANIMATED_MODEL:
+                                        break;
+                                    default:
+                                        continue;
+                                }
+                                _content.resource.resources.AddUniqueResource(instanceIDs[i], resRef.resource_id);
+                            }
                         }
                     }
                 }
@@ -358,26 +362,30 @@ namespace CommandsEditor.Scripts
                 _content.mvr.Entries[x].resource_index = _content.resource.resources.Entries.IndexOf(newMapping);
             }
 
-            //Movers.MOVER_DESCRIPTOR[] oldEnvMapMVRMappings = new Movers.MOVER_DESCRIPTOR[_content.resource.env_maps.Entries.Count];
-            //for (int i = 0; i < _content.resource.env_maps.Entries.Count; i++)
-            //{
-            //    oldEnvMapMVRMappings[i] = _content.mvr.Entries[_content.resource.env_maps.Entries[i].MoverIndex];
-            //}
-            //
-            //_content.mvr.Entries = _content.mvr.Entries.OrderBy(o => o.resource_index).ToList();
-            //
-            //for (int i = 0; i < _content.resource.env_maps.Entries.Count; i++)
-            //{
-            //    _content.resource.env_maps.Entries[i].MoverIndex = _content.mvr.Entries.IndexOf(oldEnvMapMVRMappings[i]);
-            //}
+            bool reorder_mvr = false;
+            if (reorder_mvr)
+            {
+                Movers.MOVER_DESCRIPTOR[] oldEnvMapMVRMappings = new Movers.MOVER_DESCRIPTOR[_content.resource.env_maps.Entries.Count];
+                for (int i = 0; i < _content.resource.env_maps.Entries.Count; i++)
+                {
+                    oldEnvMapMVRMappings[i] = _content.mvr.Entries[_content.resource.env_maps.Entries[i].MoverIndex];
+                }
+                
+                _content.mvr.Entries = _content.mvr.Entries.OrderBy(o => o.resource_index).ToList();
+                
+                for (int i = 0; i < _content.resource.env_maps.Entries.Count; i++)
+                {
+                    _content.resource.env_maps.Entries[i].MoverIndex = _content.mvr.Entries.IndexOf(oldEnvMapMVRMappings[i]);
+                }
+
+                _content.resource.env_maps.Save();
+            }
 
 
-            //File.Copy(_content.resource.env_maps.Filepath, _content.resource.env_maps.Filepath + " - Copy");
-            //_content.resource.env_maps.Save();
             _content.mvr.Save();
 
-            //_content.resource.collision_maps.Save();
-            //_content.resource.physics_maps.Save();
+            _content.resource.collision_maps.Save();
+            _content.resource.physics_maps.Save();
             _content.resource.resources.Save();
         }
 
@@ -387,23 +395,23 @@ namespace CommandsEditor.Scripts
             if (comp == null)
                 return;
 
+            List<FunctionEntity> instances = new List<FunctionEntity>();
             for (int i = 0; i < comp.functions.Count; i++)
             {
-                Parameter deleted = comp.functions[i].GetParameter(GUID_deleted);
-                if (deleted != null && ((cBool)deleted.content).value == true)
-                    continue;
 
-                if (comp.functions[i].childLinks.FindAll(o => o.thisParamID == GUID_deleted).Count != 0)
-                    continue;
-
-                if (comp.functions[i].GetParentLinks(comp).FindAll(o => o.linkedParamID == GUID_deleted).Count != 0)
-                    continue;
+                //Parameter deleted = comp.functions[i].GetParameter(GUID_deleted);
+                //if (deleted != null && ((cBool)deleted.content).value == true)
+                //    continue;
+                //
+                //if (comp.functions[i].childLinks.FindAll(o => o.thisParamID == GUID_deleted).Count != 0)
+                //    continue;
+                //
+                //if (comp.functions[i].GetParentLinks(comp).FindAll(o => o.linkedParamID == GUID_deleted).Count != 0)
+                //    continue;
 
                 if (!CommandsUtils.FunctionTypeExists(comp.functions[i].function))
                 {
-                    List<ShortGuid> continuedHierarchy = new List<ShortGuid>(hierarchy);
-                    continuedHierarchy.Add(comp.functions[i].shortGUID);
-                    Recurse(_content.commands.GetComposite(comp.functions[i].function), continuedHierarchy);
+                    instances.Add(comp.functions[i]);
                     continue;
                 }
 
@@ -415,6 +423,20 @@ namespace CommandsEditor.Scripts
                 ShortGuid instance_id = hierarchy.GenerateCompositeInstanceID(false);
                 foreach (ResourceReference resRef in resources)
                     _content.resource.resources.AddUniqueResource(instance_id, resRef.resource_id);
+            }
+
+            for (int i = 0; i < instances.Count; i++)
+            {
+                Parameter is_template = instances[i].GetParameter("is_template");
+                if (is_template != null && ((cBool)is_template.content).value == true)
+                    continue;
+                Parameter is_shared = instances[i].GetParameter("is_shared");
+                if (is_shared != null && ((cBool)is_shared.content).value == true)
+                    continue;
+
+                List<ShortGuid> continuedHierarchy = new List<ShortGuid>(hierarchy);
+                continuedHierarchy.Add(instances[i].shortGUID);
+                Recurse(_content.commands.GetComposite(instances[i].function), continuedHierarchy);
             }
         }
 
