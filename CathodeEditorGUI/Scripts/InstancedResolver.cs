@@ -13,6 +13,7 @@ using System.IO;
 using CommandsEditor.DockPanels;
 using System.Runtime.Remoting.Contexts;
 using CATHODE.EXPERIMENTAL;
+using System.Diagnostics.Eventing.Reader;
 
 namespace CommandsEditor.Scripts
 {
@@ -24,16 +25,17 @@ namespace CommandsEditor.Scripts
         static ShortGuid GUID_ANIMATED_MODEL = ShortGuidUtils.Generate("AnimatedModel");
         static ShortGuid GUID_DYNAMIC_PHYSICS_SYSTEM = ShortGuidUtils.Generate("DYNAMIC_PHYSICS_SYSTEM");
         static ShortGuid GUID_resource = ShortGuidUtils.Generate("resource");
+        static ShortGuid GUID_deleted = ShortGuidUtils.Generate("deleted");
 
         //This assumes that you've already finished doing all the threaded stuff like generating composite instance IDs
         public static void Read(LevelContent content)
         {
             _content = content;
+            List<string> debug = new List<string>();
 
             /*
             //These should all resolve
             #region Resolve Physics Maps
-            bool resolvedAll = true;
             for (int x = 0; x < _content.resource.physics_maps.Entries.Count; x++)
             {
                 PhysicsMaps.Entry item = _content.resource.physics_maps.Entries[x];
@@ -44,7 +46,10 @@ namespace CommandsEditor.Scripts
                 if (ents == null || ents.Count != 1)
                 {
                     Console.WriteLine("Failed to find PhysicsSystem for entry " + x);
-                    resolvedAll = false;
+                }
+                else
+                {
+                    debug.Add(path.GetAsString(content.commands, comp) + "\n\t" + EntityUtils.GetName(comp, ents[0]));
                 }
 
                 //This gives us the entity that instanced the composite instance above (kinda weird, why do we need to know this?)
@@ -55,64 +60,104 @@ namespace CommandsEditor.Scripts
                     if (parentEnt == null)
                     {
                         Console.WriteLine("Failed to resolve parent entity for path: " + parentPath.GetAsString());
-                        resolvedAll = false;
                     }
                 }
                 else
                 {
                     Console.WriteLine("Failed to resolve parent path for entry " + x);
-                    resolvedAll = false;
                 }
+
+
             }
-            if (resolvedAll)
-            {
-                Console.WriteLine("Resolved all physics maps!");
-            }
+            debug.Sort();
+            if (done_once)
+                File.WriteAllLines("modified_physics.txt", debug);
             else
-            {
-                Console.WriteLine("Did not resolve all physics maps!");
-            }
+                File.WriteAllLines("vanilla_physics.txt", debug);
+            debug.Clear();
             #endregion
+            */
 
             //First 18 are always empty
             //Next set aren't resolvable as they have no composite_instance_id values - they are non-instanced collisions which are referenced by the PAK
             //Next set aren't resolvable but have composite_instance_ids - need to investigate these: perhaps related to the implicitly created and also unresolvable RESOURCE.BIN entries (does the instance id match?)
             //Next set are resolvable instanced
             #region Resolve Collision Maps
+            List<string> debug2 = new List<string>();
             for (int x = 0; x < _content.resource.collision_maps.Entries.Count; x++)
             {
                 CollisionMaps.Entry item = _content.resource.collision_maps.Entries[x];
 
+
                 (Composite comp, EntityPath path) = _content.editor_utils.GetCompositeFromInstanceID(_content.commands, item.entity.composite_instance_id);
+
+                if (item.entity.entity_id == new ShortGuid("91-F4-66-F2") && item.entity.composite_instance_id != ShortGuid.Invalid)
+                {
+                    string strout = item.entity.composite_instance_id + " / " + comp.name + " / ";
+                    for (int z = 0; z < path.path.Length; z++)
+                    {
+                        strout += path.path[z].ToByteString() + "->";
+                    }
+                    strout += item.entity.entity_id;
+                    Console.WriteLine(strout);
+                }
+
                 if (comp != null)
                 {
                     Entity ent = comp?.GetEntityByID(item.entity.entity_id);
+                    if (EntityUtils.GetName(comp, ent) == "Door_Mech_01")
+                    {
+                        string strout = item.entity.composite_instance_id + " / " + comp.name + " / ";
+                        for (int z = 0;z < path.path.Length; z++)
+                        {
+                            strout += path.path[z].ToByteString() + "->";
+                        }
+                        strout += item.entity.entity_id;
+                        debug2.Add(strout);
+                    }
                     if (ent == null)
                     {
-                        Console.WriteLine("Failed to resolve entity for path: " + path.GetAsString());
+                        //Console.WriteLine("Failed to resolve entity for path: " + path.GetAsString());
+                    }
+                    else
+                    {
+                        debug.Add("[" + item.id.ToByteString() + "] " + path.GetAsString(content.commands, comp) + " -> " + EntityUtils.GetName(comp, ent));
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Failed to resolve path for entry " + x);
+                    //Console.WriteLine("COLLISION Failed to resolve path for entry " + x);
                     if (item.entity.composite_instance_id != new ShortGuid(0))
                     {
-                        Console.WriteLine("\tComposite instance was set: " + item.entity.composite_instance_id.ToByteString());
+                        //Console.WriteLine("\tComposite instance was set: " + item.entity.composite_instance_id.ToByteString());
                     }
                     foreach (Composite comp2 in _content.commands.Entries)
                     {
                         FunctionEntity ent2 = comp2.functions.FirstOrDefault(o => o.shortGUID == item.entity.entity_id);
                         if (ent2 == null) continue;
-                        Console.WriteLine("\tFound entity in " + comp2.name + " -> " + EntityUtils.GetName(comp2, ent2));
+                        //Console.WriteLine("\tFound entity in " + comp2.name + " -> " + EntityUtils.GetName(comp2, ent2));
                     }
                 }
 
                 //We can use this to get the zone entity
                 //(Composite compZone, EntityPath pathZone, Entity entZone) = content.editor_utils.GetZoneFromInstanceID(content.commands, item.zone_id);
             }
+            debug.Sort();
+            debug2.Sort();
+            if (done_once)
+            {
+                File.WriteAllLines("modified_collisions.txt", debug);
+                File.WriteAllLines("modified_collisions_door.txt", debug2);
+            }
+            else
+            {
+                File.WriteAllLines("vanilla_collisions.txt", debug);
+                File.WriteAllLines("vanilla_collisions_door.txt", debug2);
+            }
+            debug.Clear();
             #endregion
 
-
+            /*
             //First 83 are unresolvable on TORRENS
             //First 300 are unresolvable on SOLACE
             #region Resolve MVRs
@@ -126,20 +171,28 @@ namespace CommandsEditor.Scripts
                     {
                         Console.WriteLine("Failed to resolve entity for path: " + path.GetAsString());
                     }
+                    else
+                    {
+                        debug.Add(path.GetAsString(content.commands, comp));
+                    }
                 }
                 else
                 {
                     Console.WriteLine("Failed to resolve path for entry " + x);
                 }
             }
+            debug.Sort();
+            if (done_once)
+                File.WriteAllLines("modified_mvrs.txt", debug);
+            else
+                File.WriteAllLines("vanilla_mvrs.txt", debug);
+            debug.Clear();
             #endregion
-            */
 
             //First 77 are unresolvable on TORRENS (they point to 0-83 on MVR)
             //First 294 are unresolvable on SOLACE (they point to 0-300 on MVR)
             #region Resolve Resources
             ShortGuid resourceShortGUID = ShortGuidUtils.Generate("resource");
-            List<string> debug = new List<string>();
             for (int x = 0; x < _content.resource.resources.Entries.Count; x++)
             {
                 var entry = _content.resource.resources.Entries[x];
@@ -204,11 +257,13 @@ namespace CommandsEditor.Scripts
             }
             debug.Sort();
             if (done_once)
-                File.WriteAllLines("modified.txt", debug);
+                File.WriteAllLines("modified_resources.txt", debug);
             else
-                File.WriteAllLines("vanilla.txt", debug);
-            done_once = true;
+                File.WriteAllLines("vanilla_resources.txt", debug);
+            debug.Clear();
             #endregion
+            */
+            done_once = true;
         }
 
         public static void Write(LevelContent content)
@@ -256,24 +311,37 @@ namespace CommandsEditor.Scripts
 
 
 
-            //_content.resource.physics_maps.Entries.Clear();
+
+            _content.resource.physics_maps.Entries.Clear();
             //_content.resource.collision_maps.Entries.Clear();
             //_content.resource.resources.Entries.Clear();
 
+            _content.resource.collision_maps.Entries.RemoveRange(18, _content.resource.collision_maps.Entries.Count - 18);
             _content.resource.resources.Entries.RemoveRange(78, _content.resource.resources.Entries.Count - 78);
+
+
+            //Recurse(_content.commands.EntryPoints[0], new List<ShortGuid>());
+            //return;
 
 
             //Update additional resource stuff
             foreach (Composite composite in _content.commands.Entries)
             {
-                List<Entity> ents = composite.GetEntities();
-                foreach (var ent in ents)
-                    ShortGuidUtils.Generate(EntityUtils.GetName(composite, ent));
+                if (composite.name.Contains("GLASS_SHARDS"))
+                {
+                    string fdsfds = "";
+                }
+
 
                 ShortGuid[] instanceIDs = _content.editor_utils.GetInstanceIDsForComposite(composite);
                 EntityPath[] hierarchies = _content.editor_utils.GetHierarchiesForComposite(composite);
                 foreach (FunctionEntity func in composite.functions)
                 {
+                    if (func.shortGUID == new ShortGuid("49-E2-E3-47"))
+                    {
+                        string fdsfdsf = "";
+                    }
+
                     List<ResourceReference> resources = func.resources;
                     Parameter resourceParam = func.GetParameter(GUID_resource);
                     if (resourceParam != null && resourceParam.content != null && resourceParam.content.dataType == DataType.RESOURCE)
@@ -286,25 +354,25 @@ namespace CommandsEditor.Scripts
                     {
                         switch (resRef.resource_type)
                         {
-                            case ResourceType.RENDERABLE_INSTANCE:
                             case ResourceType.COLLISION_MAPPING:
-                                //WriteCollisionMap(resRef.resource_id, ShortGuid.Invalid, composite, func);
+                                WriteCollisionMap(resRef.resource_id, ShortGuid.Invalid, composite, func);
                                 break;
                         }
 
                         //TODO: also need to validate the positional values are correct on resource (they should match the entity)
 
+
+                        //There's something wrong with this, i can't resolve a lot of stuff after rewriting - are the instance IDs wrong? Might be why the game's crashing rather than writing too many things. Would make more sense.
                         for (int i = 0; i < instanceIDs.Length; i++)
                         {
                             switch (resRef.resource_type)
                             {
                                 case ResourceType.COLLISION_MAPPING:
-                                    //WriteCollisionMap(resRef.resource_id, instanceIDs[i], composite, func);
+                                    WriteCollisionMap(resRef.resource_id, instanceIDs[i], composite, func);
                                     break;
                                 case ResourceType.DYNAMIC_PHYSICS_SYSTEM:
-                                    //if (!WritePhysicsMap(hierarchies[i], resRef.index))
-                                    //    continue;
-                                    continue;
+                                    if (!WritePhysicsMap(hierarchies[i], resRef.index))
+                                        continue;
                                     break;
                                 case ResourceType.RENDERABLE_INSTANCE:
                                 //Write REDS
@@ -319,6 +387,7 @@ namespace CommandsEditor.Scripts
                 }
             }
 
+            /*
             for (int x = 0; x < _content.mvr.Entries.Count; x++)
             {
                 if (oldResourceMVRMappings[x] == null)
@@ -331,7 +400,6 @@ namespace CommandsEditor.Scripts
                 _content.mvr.Entries[x].resource_index = _content.resource.resources.Entries.IndexOf(newMapping);
             }
 
-            /*
             Movers.MOVER_DESCRIPTOR[] oldEnvMapMVRMappings = new Movers.MOVER_DESCRIPTOR[_content.resource.env_maps.Entries.Count];
             for (int i = 0; i < _content.resource.env_maps.Entries.Count; i++)
             {
@@ -349,10 +417,50 @@ namespace CommandsEditor.Scripts
             File.Copy(_content.resource.env_maps.Filepath, _content.resource.env_maps.Filepath + " - Copy");
             _content.resource.env_maps.Save();
             */
-            _content.mvr.Save();
+            //_content.mvr.Save();
 
+            _content.resource.collision_maps.Save();
+            _content.resource.physics_maps.Save();
             _content.resource.resources.Save();
         }
+
+
+        private static void Recurse(Composite comp, List<ShortGuid> hierarchy)
+        {
+            if (comp == null)
+                return;
+
+            for (int i = 0; i < comp.functions.Count; i++)
+            {
+                Parameter deleted = comp.functions[i].GetParameter(GUID_deleted);
+                if (deleted != null && ((cBool)deleted.content).value == true)
+                    continue;
+
+                if (comp.functions[i].childLinks.FindAll(o => o.thisParamID == GUID_deleted).Count != 0)
+                    continue;
+
+                if (comp.functions[i].GetParentLinks(comp).FindAll(o => o.linkedParamID == GUID_deleted).Count != 0)
+                    continue;
+
+                if (!CommandsUtils.FunctionTypeExists(comp.functions[i].function))
+                {
+                    List<ShortGuid> continuedHierarchy = new List<ShortGuid>(hierarchy);
+                    continuedHierarchy.Add(comp.functions[i].shortGUID);
+                    Recurse(_content.commands.GetComposite(comp.functions[i].function), continuedHierarchy);
+                    continue;
+                }
+
+                List<ResourceReference> resources = comp.functions[i].resources;
+                Parameter resourceParam = comp.functions[i].GetParameter(GUID_resource);
+                if (resourceParam != null && resourceParam.content != null && resourceParam.content.dataType == DataType.RESOURCE)
+                    resources.AddRange(((cResource)resourceParam.content).value);
+
+                ShortGuid instance_id = hierarchy.GenerateCompositeInstanceID(false);
+                foreach (ResourceReference resRef in resources)
+                    _content.resource.resources.AddUniqueResource(instance_id, resRef.resource_id);
+            }
+        }
+
 
         private static bool WritePhysicsMap(EntityPath hierarchy, int physics_system_index)
         {
@@ -375,10 +483,10 @@ namespace CommandsEditor.Scripts
             //Get instance info
             (Vector3 position, Quaternion rotation) = CommandsUtils.CalculateInstancedPosition(hierarchy);
             ShortGuid compositeInstanceID = hierarchy.GenerateCompositeInstanceID();
-            hierarchy.path.RemoveAt(hierarchy.path.Count - 2);
+            hierarchy.GoBackOneStep();
             EntityHandle compositeInstanceReference = new EntityHandle()
             {
-                entity_id = hierarchy.path[hierarchy.path.Count - 2],
+                entity_id = hierarchy.path[hierarchy.path.Length - 2],
                 composite_instance_id = hierarchy.GenerateCompositeInstanceID()
             };
 
@@ -407,8 +515,8 @@ namespace CommandsEditor.Scripts
                 composite_instance_id = comp_instance_id
             };
 
-            if (_content.resource.collision_maps.Entries.FindAll(o => o.entity == compositeInstanceReference && o.id == resourceID).Count != 0)
-                return;
+            //if (_content.resource.collision_maps.Entries.FindAll(o => o.entity == compositeInstanceReference && o.id == resourceID).Count != 0)
+            //    return;
 
             //TODO: similar to PHYSICS.MAP, do we only write out if there's not another collision further up the chain?
 

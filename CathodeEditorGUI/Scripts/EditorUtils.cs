@@ -52,7 +52,7 @@ namespace CommandsEditor
         }
 
         /* Generate all composite instance information for Commands */
-        private Dictionary<ShortGuid, List<Tuple<ShortGuid, List<ShortGuid>>>> _compositeInstancePaths = new Dictionary<ShortGuid, List<Tuple<ShortGuid, List<ShortGuid>>>>();
+        private Dictionary<ShortGuid, List<Tuple<ShortGuid, ShortGuid[]>>> _compositeInstancePaths = new Dictionary<ShortGuid, List<Tuple<ShortGuid, ShortGuid[]>>>();
         private CancellationTokenSource _prevTaskToken = null;
         public void GenerateCompositeInstances(Commands commands, bool runOnThread = true)
         {
@@ -73,9 +73,9 @@ namespace CommandsEditor
             if (ct.IsCancellationRequested) return;
 
             if (!_compositeInstancePaths.ContainsKey(composite.shortGUID))
-                _compositeInstancePaths.Add(composite.shortGUID, new List<Tuple<ShortGuid, List<ShortGuid>>>());
+                _compositeInstancePaths.Add(composite.shortGUID, new List<Tuple<ShortGuid, ShortGuid[]>>());
 
-            _compositeInstancePaths[composite.shortGUID].Add(new Tuple<ShortGuid, List<ShortGuid>>(hierarchy.GenerateCompositeInstanceID(false), hierarchy));
+            _compositeInstancePaths[composite.shortGUID].Add(new Tuple<ShortGuid, ShortGuid[]>(hierarchy.GenerateCompositeInstanceID(false), hierarchy.ToArray()));
 
             for (int i = 0; i < composite.functions.Count; i++)
             {
@@ -97,7 +97,7 @@ namespace CommandsEditor
             if (!_compositeInstancePaths.ContainsKey(composite.shortGUID))
                 return new ShortGuid[0];
 
-            List<Tuple<ShortGuid, List<ShortGuid>>> hierarchies = _compositeInstancePaths[composite.shortGUID];
+            List<Tuple<ShortGuid, ShortGuid[]>> hierarchies = _compositeInstancePaths[composite.shortGUID];
             ShortGuid[] instanceIDs = new ShortGuid[hierarchies.Count];
             for (int i = 0; i < hierarchies.Count; i++)
                 instanceIDs[i] = hierarchies[i].Item1;
@@ -110,7 +110,7 @@ namespace CommandsEditor
             if (!_compositeInstancePaths.ContainsKey(composite.shortGUID))
                 return new EntityPath[0];
 
-            List<Tuple<ShortGuid, List<ShortGuid>>> hierarchies = _compositeInstancePaths[composite.shortGUID];
+            List<Tuple<ShortGuid, ShortGuid[]>> hierarchies = _compositeInstancePaths[composite.shortGUID];
             EntityPath[] paths = new EntityPath[hierarchies.Count];
             for (int i = 0; i < hierarchies.Count; i++)
                 paths[i] = new EntityPath(hierarchies[i].Item2);
@@ -123,14 +123,15 @@ namespace CommandsEditor
             List<EntityPath> formattedHierarchies = new List<EntityPath>();
             if (_compositeInstancePaths.ContainsKey(composite.shortGUID))
             {
-                List<Tuple<ShortGuid, List<ShortGuid>>> hierarchies = _compositeInstancePaths[composite.shortGUID];
+                List<Tuple<ShortGuid, ShortGuid[]>> hierarchies = _compositeInstancePaths[composite.shortGUID];
                 for (int i = 0; i < hierarchies.Count; i++)
                 {
-                    List<ShortGuid> hierarchy = new List<ShortGuid>(hierarchies[i].Item2);
+                    //TODO: reduce the need for this fiddling
+                    List<ShortGuid> hierarchy = hierarchies[i].Item2.ToList();
                     if (hierarchy.Count != 0 && hierarchy[hierarchy.Count - 1] == ShortGuid.Invalid)
                         hierarchy.RemoveAt(hierarchy.Count - 1); 
                     hierarchy.Add(entity.shortGUID);
-                    formattedHierarchies.Add(new EntityPath(hierarchy));
+                    formattedHierarchies.Add(new EntityPath(hierarchy.ToArray()));
                 }
             }
             return formattedHierarchies;
@@ -152,9 +153,9 @@ namespace CommandsEditor
             {
                 if (found) return;
 
-                foreach (Tuple<ShortGuid, List<ShortGuid>> path in compositeInstancePaths.Value)
+                foreach (Tuple<ShortGuid, ShortGuid[]> path in compositeInstancePaths.Value)
                 {
-                    if (path.Item2.Count == 0 || (path.Item2.Count == 1 && path.Item2[0] == ShortGuid.Invalid))
+                    if (path.Item2.Length == 0 || (path.Item2.Length == 1 && path.Item2[0] == ShortGuid.Invalid))
                         continue;
 
                     if (path.Item1 == instanceID)
@@ -183,12 +184,12 @@ namespace CommandsEditor
             if (instanceID == new ShortGuid("01-00-00-00"))
             {
                 //global zone
-                return (null, new EntityPath(new List<ShortGuid>() { new ShortGuid("01-00-00-00") }), null);
+                return (null, new EntityPath(new ShortGuid[1] { new ShortGuid("01-00-00-00") }), null);
             }
             if (instanceID == new ShortGuid("00-00-00-00"))
             {
                 //global zone
-                return (null, new EntityPath(new List<ShortGuid>() { new ShortGuid("00-00-00-00") }), null);
+                return (null, new EntityPath(new ShortGuid[1] { new ShortGuid("00-00-00-00") }), null);
             }
 
             ShortGuid GUID_Zone = CommandsUtils.GetFunctionTypeGUID(FunctionType.Zone);
@@ -224,15 +225,13 @@ namespace CommandsEditor
                 {
                     if (instance.Item1 == reference.composite_instance_id)
                     {
-                        List<ShortGuid> hierarchy = new List<ShortGuid>(instance.Item2);
-                        if (hierarchy.Count > 0 && hierarchy[hierarchy.Count - 1] == ShortGuid.Invalid)
-                            hierarchy.RemoveAt(hierarchy.Count - 1);
-                        hierarchy.Add(reference.entity_id);
-
                         lock (lockObj)
                         {
                             if (toReturn == null)
-                                toReturn = new EntityPath(hierarchy);
+                            {
+                                toReturn = new EntityPath(instance.Item2);
+                                toReturn.AddNextStep(reference.entity_id);
+                            }
                         }
 
                         state.Stop(); 

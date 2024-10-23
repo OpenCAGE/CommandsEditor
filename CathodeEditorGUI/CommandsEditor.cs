@@ -898,11 +898,11 @@ namespace CommandsEditor
                             if (entEnt != null && entComp != null)
                                 convertedResoureName += "\n\t Entity Entity: " + entEnt.shortGUID + " -> " + EntityUtils.GetName(entComp, entEnt);
 
-                            if (zonePath1 != null && zonePath1.path.Count == 2 && zonePath1.path[0] == new ShortGuid("01-00-00-00"))
+                            if (zonePath1 != null && zonePath1.path.Length == 2 && zonePath1.path[0] == new ShortGuid("01-00-00-00"))
                             {
                                 convertedResoureName += "\n\t Primary Zone: GLOBAL ZONE";
                             }
-                            else if (zonePath1 != null && zonePath1.path.Count == 1 && zonePath1.path[0] == new ShortGuid("00-00-00-00"))
+                            else if (zonePath1 != null && zonePath1.path.Length == 1 && zonePath1.path[0] == new ShortGuid("00-00-00-00"))
                             {
                                 convertedResoureName += "\n\t Primary Zone: ZERO ZONE";
                             }

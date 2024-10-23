@@ -59,7 +59,8 @@ namespace CommandsEditor.Popups.UserControls
             foreach (KeyValuePair<EntityPath, CATHODE.PhysicsMaps.Entry> hierarchyMap in _hierarchies)
             {
                 EntityPath pathShort = hierarchyMap.Key.Copy();
-                pathShort.path.RemoveAt(pathShort.path.Count - 1);
+                pathShort.GoBackOneStep(); //TODO: is this right? i've converted this to the new path stuff and it needs testing.
+                //Array.Resize(ref pathShort.path, pathShort.path.Length - 1);
                 instances.Items.Add(pathShort.GetAsString(Content.commands, entDisplay.Composite, false));
             }
         }

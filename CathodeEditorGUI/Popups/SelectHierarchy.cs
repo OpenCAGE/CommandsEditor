@@ -21,7 +21,7 @@ namespace CommandsEditor
     {
         public Action<Entity> OnFinalEntitySelected;
         public Action<List<Entity>> OnFinalEntitiesSelected;
-        public Action<List<ShortGuid>> OnHierarchyGenerated;
+        public Action<ShortGuid[]> OnHierarchyGenerated;
         private List<ShortGuid> hierarchy = new List<ShortGuid>();
 
         private Entity selectedEntity = null;
@@ -120,7 +120,7 @@ namespace CommandsEditor
                 //TODO: should use the proper hierarchy class here
                 hierarchy.Add(selectedEntity.shortGUID);
                 hierarchy.Add(ShortGuid.Invalid);
-                OnHierarchyGenerated?.Invoke(hierarchy);
+                OnHierarchyGenerated?.Invoke(hierarchy.ToArray());
                 OnFinalEntitySelected?.Invoke(selectedEntity);
             }
             this.Close();
