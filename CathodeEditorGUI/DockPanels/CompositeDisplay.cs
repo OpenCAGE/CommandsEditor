@@ -65,14 +65,35 @@ namespace CommandsEditor.DockPanels
 
             dockPanel.ShowDocumentIcon = true;
 
+            dockPanel.DockLeftPortion = SettingsManager.GetFloat(Singleton.Settings.EntityListWidth, 0.25f);
+            dockPanel.DockRightPortion = SettingsManager.GetFloat(Singleton.Settings.EntityInspectorWidth, 0.25f);
+
             _entityList = new EntityList();
             _entityList.Show(dockPanel, DockState.DockLeft);
+            _entityList.Resize += _entityList_Resize;
 
             _entityDisplay = new EntityInspector(this);
             _entityDisplay.Show(dockPanel, DockState.DockRight);
             _entityDisplay.FormClosing += OnEntityDisplayClosing;
+            _entityDisplay.Resize += _entityDisplay_Resize;
 
             this.FormClosed += CompositeDisplay_FormClosed;
+        }
+
+        private void _entityDisplay_Resize(object sender, EventArgs e)
+        {
+            SettingsManager.SetFloat(Singleton.Settings.EntityInspectorWidth, (float)dockPanel.DockRightPortion);
+        }
+
+        private void _entityList_Resize(object sender, EventArgs e)
+        {
+            SettingsManager.SetFloat(Singleton.Settings.EntityListWidth, (float)dockPanel.DockLeftPortion);
+        }
+
+        public void ResetPortions()
+        {
+            dockPanel.DockLeftPortion = 0.25f;
+            dockPanel.DockRightPortion = 0.25f;
         }
 
         private void OnCompositeRenamed(Composite composite, string name)

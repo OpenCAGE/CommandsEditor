@@ -1,3 +1,5 @@
+//#define DO_TEST_STUFF
+
 using CATHODE;
 using CATHODE.EXPERIMENTAL;
 using CATHODE.LEGACY;
@@ -59,7 +61,7 @@ namespace CommandsEditor
 
         public CommandsEditor(string level = null)
         {
-#if DEBUG
+#if DEBUG && DO_TEST_STUFF
             //List<string> lvls = Level.GetLevels(SharedData.pathToAI, true);
             //foreach (string lvl in lvls)
             //{
@@ -717,7 +719,7 @@ namespace CommandsEditor
             dockPanel.DockBottomPortion = _defaultSplitterDistance;
 
             _commandsDisplay?.ResetSplitter();
-            //_activeCompositeDisplay?.ResetSplitter();
+            _commandsDisplay?.CompositeDisplay?.ResetPortions();
         }
 
         private void writeInstancedResourcesExperimentalToolStripMenuItem_Click(object sender, EventArgs e)

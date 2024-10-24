@@ -94,6 +94,10 @@ namespace CommandsEditor
             public readonly string PrevFuncUsesSearch = "CS_PrevFuncUsesSearch";
             public readonly string PrevVariableType = "CS_PrevVariableType";
             public readonly string CustomColours = "CS_CustomColours";
+            public readonly string EntityListState = "CS_EntityListState";
+            public readonly string EntityListWidth = "CS_EntityListWidth";
+            public readonly string EntityInspectorState = "CS_EntityInspectorState";
+            public readonly string EntityInspectorWidth = "CS_EntityInspectorWidth";
         }
     }
 

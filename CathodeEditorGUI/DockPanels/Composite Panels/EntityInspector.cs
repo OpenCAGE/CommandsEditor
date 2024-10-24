@@ -55,6 +55,22 @@ namespace CommandsEditor.DockPanels
             Singleton.OnCompositeRenamed += OnCompositeRenamed;
 
             Reload();
+
+            this.DockStateChanged += EntityInspector_DockStateChanged;
+
+            this.CloseButtonVisible = false;
+        }
+
+        private void EntityInspector_DockStateChanged(object sender, EventArgs e)
+        {
+            Console.WriteLine(DockState);
+            if (DockState == DockState.Unknown || DockState == DockState.Hidden)
+                return;
+
+            if (DockState == _previousDockState) return;
+            _previousDockState = DockState;
+
+            SettingsManager.SetString(Singleton.Settings.EntityInspectorState, DockState.ToString());
         }
 
         private void OnEntityAddPending()
