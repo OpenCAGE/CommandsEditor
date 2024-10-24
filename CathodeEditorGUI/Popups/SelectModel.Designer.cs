@@ -32,7 +32,6 @@
             this.modelRendererHost = new System.Windows.Forms.Integration.ElementHost();
             this.FileTree = new System.Windows.Forms.TreeView();
             this.modelPreviewArea = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.selectModelBtn = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.modelPreviewArea.SuspendLayout();
@@ -69,7 +68,6 @@
             this.modelPreviewArea.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.modelPreviewArea.Controls.Add(this.label1);
             this.modelPreviewArea.Controls.Add(this.selectModelBtn);
             this.modelPreviewArea.Controls.Add(this.modelRendererHost);
             this.modelPreviewArea.Location = new System.Drawing.Point(3, 3);
@@ -78,17 +76,6 @@
             this.modelPreviewArea.TabIndex = 103;
             this.modelPreviewArea.TabStop = false;
             this.modelPreviewArea.Text = "groupBox1";
-            // 
-            // label1
-            // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 571);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(117, 52);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "[Zoom] = Scrollwheel\r\n[Rotate] = Right Mouse\r\n[Drag] = Middle Mouse\r\n[Recenter] =" +
-    " Home";
             // 
             // selectModelBtn
             // 
@@ -132,7 +119,6 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Select Model";
             this.modelPreviewArea.ResumeLayout(false);
-            this.modelPreviewArea.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
@@ -147,7 +133,6 @@
         private System.Windows.Forms.TreeView FileTree;
         private System.Windows.Forms.GroupBox modelPreviewArea;
         private System.Windows.Forms.Button selectModelBtn;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.SplitContainer splitContainer1;
     }
 }
