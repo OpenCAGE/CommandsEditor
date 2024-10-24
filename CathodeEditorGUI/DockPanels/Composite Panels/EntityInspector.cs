@@ -55,6 +55,22 @@ namespace CommandsEditor.DockPanels
             Singleton.OnCompositeRenamed += OnCompositeRenamed;
 
             Reload();
+
+            this.DockStateChanged += EntityInspector_DockStateChanged;
+
+            this.CloseButtonVisible = false;
+        }
+
+        private void EntityInspector_DockStateChanged(object sender, EventArgs e)
+        {
+            Console.WriteLine(DockState);
+            if (DockState == DockState.Unknown || DockState == DockState.Hidden)
+                return;
+
+            if (DockState == _previousDockState) return;
+            _previousDockState = DockState;
+
+            SettingsManager.SetString(Singleton.Settings.EntityInspectorState, DockState.ToString());
         }
 
         private void OnEntityAddPending()
@@ -268,7 +284,7 @@ namespace CommandsEditor.DockPanels
                 case EntityVariant.PROXY:
                 case EntityVariant.ALIAS:
                     hierarchyDisplay.Visible = true;
-                    List<ShortGuid> entityHierarchy = _entity.variant == EntityVariant.PROXY ? ((ProxyEntity)_entity).proxy.path : ((AliasEntity)_entity).alias.path;
+                    ShortGuid[] entityHierarchy = _entity.variant == EntityVariant.PROXY ? ((ProxyEntity)_entity).proxy.path : ((AliasEntity)_entity).alias.path;
                     Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, Composite, entityHierarchy, out Composite comp, out string hierarchy, SettingsManager.GetBool("CS_ShowEntityIDs"));
                     hierarchyDisplay.Text = hierarchy;
                     jumpToComposite.Visible = true;
@@ -702,10 +718,10 @@ namespace CommandsEditor.DockPanels
                     return;
                 case EntityVariant.ALIAS:
                     //Aliases take us (potentially) multiple steps down the hierarchy.
-                    List<ShortGuid> aliasPath = ((AliasEntity)Entity).alias.path;
-                    for (int i = 0; i < aliasPath.Count - 2; i++)
+                    ShortGuid[] aliasPath = ((AliasEntity)Entity).alias.path;
+                    for (int i = 0; i < aliasPath.Length - 2; i++)
                         _compositeDisplay.LoadChild(Content.commands.GetComposite(((FunctionEntity)Composite.GetEntityByID(aliasPath[i])).function), Composite.GetEntityByID(aliasPath[i]));
-                    _compositeDisplay.LoadEntity(Composite.GetEntityByID(aliasPath[aliasPath.Count - 2]));
+                    _compositeDisplay.LoadEntity(Composite.GetEntityByID(aliasPath[aliasPath.Length - 2]));
                     return;
             }
 

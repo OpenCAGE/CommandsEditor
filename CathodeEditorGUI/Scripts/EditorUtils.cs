@@ -52,7 +52,7 @@ namespace CommandsEditor
         }
 
         /* Generate all composite instance information for Commands */
-        private Dictionary<ShortGuid, List<List<ShortGuid>>> _compositeInstancePaths = new Dictionary<ShortGuid, List<List<ShortGuid>>>();
+        private Dictionary<ShortGuid, List<Tuple<ShortGuid, ShortGuid[]>>> _compositeInstancePaths = new Dictionary<ShortGuid, List<Tuple<ShortGuid, ShortGuid[]>>>();
         private CancellationTokenSource _prevTaskToken = null;
         public void GenerateCompositeInstances(Commands commands, bool runOnThread = true)
         {
@@ -73,9 +73,9 @@ namespace CommandsEditor
             if (ct.IsCancellationRequested) return;
 
             if (!_compositeInstancePaths.ContainsKey(composite.shortGUID))
-                _compositeInstancePaths.Add(composite.shortGUID, new List<List<ShortGuid>>());
+                _compositeInstancePaths.Add(composite.shortGUID, new List<Tuple<ShortGuid, ShortGuid[]>>());
 
-            _compositeInstancePaths[composite.shortGUID].Add(hierarchy);
+            _compositeInstancePaths[composite.shortGUID].Add(new Tuple<ShortGuid, ShortGuid[]>(hierarchy.GenerateCompositeInstanceID(false), hierarchy.ToArray()));
 
             for (int i = 0; i < composite.functions.Count; i++)
             {
@@ -91,46 +91,91 @@ namespace CommandsEditor
             }
         }
 
+        /* Get all possible instance IDs for a given composite */
+        public ShortGuid[] GetInstanceIDsForComposite(Composite composite)
+        {
+            if (!_compositeInstancePaths.ContainsKey(composite.shortGUID))
+                return new ShortGuid[0];
+
+            List<Tuple<ShortGuid, ShortGuid[]>> hierarchies = _compositeInstancePaths[composite.shortGUID];
+            ShortGuid[] instanceIDs = new ShortGuid[hierarchies.Count];
+            for (int i = 0; i < hierarchies.Count; i++)
+                instanceIDs[i] = hierarchies[i].Item1;
+            return instanceIDs;
+        }
+
+        /* Get all possible instance IDs for a given composite */
+        public EntityPath[] GetHierarchiesForComposite(Composite composite)
+        {
+            if (!_compositeInstancePaths.ContainsKey(composite.shortGUID))
+                return new EntityPath[0];
+
+            List<Tuple<ShortGuid, ShortGuid[]>> hierarchies = _compositeInstancePaths[composite.shortGUID];
+            EntityPath[] paths = new EntityPath[hierarchies.Count];
+            for (int i = 0; i < hierarchies.Count; i++)
+                paths[i] = new EntityPath(hierarchies[i].Item2);
+            return paths;
+        }
+
         /* Get all possible hierarchies for a given entity */
         public List<EntityPath> GetHierarchiesForEntity(Composite composite, Entity entity)
         {
             List<EntityPath> formattedHierarchies = new List<EntityPath>();
             if (_compositeInstancePaths.ContainsKey(composite.shortGUID))
             {
-                List<List<ShortGuid>> hierarchies = _compositeInstancePaths[composite.shortGUID];
+                List<Tuple<ShortGuid, ShortGuid[]>> hierarchies = _compositeInstancePaths[composite.shortGUID];
                 for (int i = 0; i < hierarchies.Count; i++)
                 {
-                    List<ShortGuid> hierarchy = new List<ShortGuid>(hierarchies[i].ConvertAll(x => x));
+                    //TODO: reduce the need for this fiddling
+                    List<ShortGuid> hierarchy = hierarchies[i].Item2.ToList();
                     if (hierarchy.Count != 0 && hierarchy[hierarchy.Count - 1] == ShortGuid.Invalid)
-                        hierarchy.RemoveAt(hierarchy.Count - 1);
+                        hierarchy.RemoveAt(hierarchy.Count - 1); 
                     hierarchy.Add(entity.shortGUID);
-                    formattedHierarchies.Add(new EntityPath(hierarchy));
+                    formattedHierarchies.Add(new EntityPath(hierarchy.ToArray()));
                 }
             }
             return formattedHierarchies;
         }
 
-        [Obsolete("This function is safe to use but not performant. It's intended for test code only.")]
+        /* Get a composite (& instance path) from a given composite instance ID */
         public (Composite, EntityPath) GetCompositeFromInstanceID(Commands commands, ShortGuid instanceID)
         {
             if (instanceID == ShortGuid.InitialiserBase)
                 return (commands.EntryPoints[0], new EntityPath());
 
-            foreach (KeyValuePair<ShortGuid, List<List<ShortGuid>>> compositeInstancePaths in _compositeInstancePaths)
-            {
-                foreach (List<ShortGuid> path in compositeInstancePaths.Value)
-                {
-                    if (path.Count == 0) continue;
-                    if (path.Count == 1 && path[0] == ShortGuid.Invalid) continue;
+            (Composite compositeResult, EntityPath entityPathResult) = (null, null);
+            object lockObject = new object();
+            bool found = false;
 
-                    List<ShortGuid> pathFaked = new List<ShortGuid>(path.ConvertAll(x => x));
-                    pathFaked.Add(new ShortGuid("01-00-00-00")); //NOTE: need to add a faked entity ID in here so we can generate the instance
-                    EntityPath pathFormatted = new EntityPath(pathFaked);
-                    if (pathFormatted.GenerateInstance() == instanceID)
-                        return (commands.GetComposite(compositeInstancePaths.Key), new EntityPath(path));
+            ParallelOptions parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount };
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            Parallel.ForEach(_compositeInstancePaths, parallelOptions, (compositeInstancePaths, state) =>
+            {
+                if (found) return;
+
+                foreach (Tuple<ShortGuid, ShortGuid[]> path in compositeInstancePaths.Value)
+                {
+                    if (path.Item2.Length == 0 || (path.Item2.Length == 1 && path.Item2[0] == ShortGuid.Invalid))
+                        continue;
+
+                    if (path.Item1 == instanceID)
+                    {
+                        lock (lockObject)
+                        {
+                            if (!found)
+                            {
+                                compositeResult = commands.GetComposite(compositeInstancePaths.Key);
+                                entityPathResult = new EntityPath(path.Item2);
+                                found = true;
+
+                                cancellationTokenSource.Cancel();
+                                state.Stop();
+                            }
+                        }
+                    }
                 }
-            }
-            return (null, null);
+            });
+            return (compositeResult, entityPathResult);
         }
 
         [Obsolete("This function is safe to use but not performant. It's intended for test code only.")]
@@ -139,12 +184,12 @@ namespace CommandsEditor
             if (instanceID == new ShortGuid("01-00-00-00"))
             {
                 //global zone
-                return (null, new EntityPath(new List<ShortGuid>() { new ShortGuid("01-00-00-00") }), null);
+                return (null, new EntityPath(new ShortGuid[1] { new ShortGuid("01-00-00-00") }), null);
             }
             if (instanceID == new ShortGuid("00-00-00-00"))
             {
                 //global zone
-                return (null, new EntityPath(new List<ShortGuid>() { new ShortGuid("00-00-00-00") }), null);
+                return (null, new EntityPath(new ShortGuid[1] { new ShortGuid("00-00-00-00") }), null);
             }
 
             ShortGuid GUID_Zone = CommandsUtils.GetFunctionTypeGUID(FunctionType.Zone);
@@ -172,32 +217,35 @@ namespace CommandsEditor
         public EntityPath GetHierarchyFromHandle(EntityHandle reference)
         {
             EntityPath toReturn = null;
+            object lockObj = new object(); 
+
             Parallel.ForEach(_compositeInstancePaths, (pair, state) =>
             {
-                if (toReturn != null) state.Stop();
-                else
+                foreach (var instance in pair.Value)
                 {
-                    Parallel.For(0, pair.Value.Count, (i, state2) =>
+                    if (instance.Item1 == reference.composite_instance_id)
                     {
-                        if (toReturn != null) state2.Stop();
-                        else
+                        lock (lockObj)
                         {
-                            List<ShortGuid> hierarchy = new List<ShortGuid>(pair.Value[i].ConvertAll(x => x));
-                            if (hierarchy.Count > 0 && hierarchy[hierarchy.Count - 1] == ShortGuid.Invalid)
-                                hierarchy.RemoveAt(hierarchy.Count - 1);
-                            hierarchy.Add(reference.entity_id);
-
-                            EntityPath h = new EntityPath(hierarchy);
-                            ShortGuid instance = h.GenerateInstance();
-
-                            if (instance == reference.composite_instance_id)
-                                toReturn = h;
+                            if (toReturn == null)
+                            {
+                                toReturn = new EntityPath(instance.Item2);
+                                toReturn.AddNextStep(reference.entity_id);
+                            }
                         }
-                    });
+
+                        state.Stop(); 
+                        break;
+                    }
                 }
+
+                if (toReturn != null)
+                    state.Stop(); 
             });
+
             return toReturn;
         }
+
 
         /* Utility: generate nice entity name to display in UI */
         public string GenerateEntityName(Entity entity, Composite composite, bool regenCache = false)
@@ -594,6 +642,9 @@ namespace CommandsEditor
         [Obsolete("This function is safe to use but not performant. It's intended for test code only.")]
         public string PrettyPrintMoverRenderable(Movers.MOVER_DESCRIPTOR mvr)
         {
+            if (mvr == null)
+                return "";
+
             string output = "";
             for (int x = 0; x < mvr.renderable_element_count; x++)
             {

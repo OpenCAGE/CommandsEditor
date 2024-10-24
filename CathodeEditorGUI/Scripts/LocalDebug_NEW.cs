@@ -116,11 +116,11 @@ namespace CommandsEditor.Scripts
                         }
                     }
 
-                    if (zonePath1 != null && zonePath1.path.Count == 2 && zonePath1.path[0] == new ShortGuid("01-00-00-00"))
+                    if (zonePath1 != null && zonePath1.path.Length == 2 && zonePath1.path[0] == new ShortGuid("01-00-00-00"))
                     {
                         convertedResoureName += "\n\t Primary Zone: GLOBAL ZONE";
                     }
-                    else if (zonePath1 != null && zonePath1.path.Count == 1 && zonePath1.path[0] == new ShortGuid("00-00-00-00"))
+                    else if (zonePath1 != null && zonePath1.path.Length == 1 && zonePath1.path[0] == new ShortGuid("00-00-00-00"))
                     {
                         convertedResoureName += "\n\t Primary Zone: ZERO ZONE";
                     }
@@ -137,11 +137,11 @@ namespace CommandsEditor.Scripts
                             convertedResoureName += "\n\t Primary Zone Entity: " + zoneEnt1.shortGUID + " -> " + EntityUtils.GetName(zoneComp1, zoneEnt1);
                     }
 
-                    if (zonePath2 != null && zonePath2.path.Count == 2 && zonePath2.path[0] == new ShortGuid("01-00-00-00"))
+                    if (zonePath2 != null && zonePath2.path.Length == 2 && zonePath2.path[0] == new ShortGuid("01-00-00-00"))
                     {
                         convertedResoureName += "\n\t Secondary Zone: GLOBAL ZONE";
                     }
-                    else if (zonePath2 != null && zonePath2.path.Count == 1 && zonePath2.path[0] == new ShortGuid("00-00-00-00"))
+                    else if (zonePath2 != null && zonePath2.path.Length == 1 && zonePath2.path[0] == new ShortGuid("00-00-00-00"))
                     {
                         convertedResoureName += "\n\t Secondary Zone: ZERO ZONE";
                     }
@@ -307,11 +307,11 @@ namespace CommandsEditor.Scripts
                     if (entEnt != null && entComp != null)
                         convertedResoureName += "\n\t Entity Entity: " + entEnt.shortGUID + " -> " + EntityUtils.GetName(entComp, entEnt);
 
-                    if (zonePath1 != null && zonePath1.path.Count == 2 && zonePath1.path[0] == new ShortGuid("01-00-00-00"))
+                    if (zonePath1 != null && zonePath1.path.Length == 2 && zonePath1.path[0] == new ShortGuid("01-00-00-00"))
                     {
                         convertedResoureName += "\n\t Primary Zone: GLOBAL ZONE";
                     }
-                    else if (zonePath1 != null && zonePath1.path.Count == 1 && zonePath1.path[0] == new ShortGuid("00-00-00-00"))
+                    else if (zonePath1 != null && zonePath1.path.Length == 1 && zonePath1.path[0] == new ShortGuid("00-00-00-00"))
                     {
                         convertedResoureName += "\n\t Primary Zone: ZERO ZONE";
                     }

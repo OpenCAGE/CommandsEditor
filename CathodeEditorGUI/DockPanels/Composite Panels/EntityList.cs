@@ -34,10 +34,26 @@ namespace CommandsEditor.DockPanels
 
             compositeEntityList1.SelectedEntityChanged += OnEntitySelected;
             this.FormClosed += EntityList_FormClosed;
+
+            this.DockStateChanged += EntityList_DockStateChanged;
+
+            this.CloseButtonVisible = false;
+        }
+
+        private void EntityList_DockStateChanged(object sender, EventArgs e)
+        {
+            if (DockState == DockState.Unknown || DockState == DockState.Hidden)
+                return;
+
+            if (DockState == _previousDockState) return;
+            _previousDockState = DockState;
+
+            SettingsManager.SetString(Singleton.Settings.EntityListState, DockState.ToString());
         }
 
         private void EntityList_FormClosed(object sender, FormClosedEventArgs e)
         {
+            this.FormClosed -= EntityList_FormClosed;
             if (_entityRenameDialog != null)
                 _entityRenameDialog.FormClosed -= _entityRenameDialog_FormClosed;
         }

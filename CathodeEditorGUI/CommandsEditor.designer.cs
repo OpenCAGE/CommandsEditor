@@ -54,6 +54,7 @@ namespace CommandsEditor
             this.resetUILayoutsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.writeInstancedResourcesExperimentalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpBtn = new System.Windows.Forms.ToolStripButton();
+            this.ShowControls = new System.Windows.Forms.ToolStripButton();
             this.DEBUG_RunChecks = new System.Windows.Forms.ToolStripButton();
             this.DEBUG_DoorPhysEnt = new System.Windows.Forms.ToolStripButton();
             this.DEBUG_LaunchGame = new System.Windows.Forms.ToolStripButton();
@@ -73,12 +74,13 @@ namespace CommandsEditor
             this.toolStripButton1,
             this.toolStripButton2,
             this.helpBtn,
+            this.ShowControls,
             this.DEBUG_RunChecks,
             this.DEBUG_DoorPhysEnt,
             this.DEBUG_LaunchGame});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
-            this.toolStrip.Size = new System.Drawing.Size(1257, 25);
+            this.toolStrip.Size = new System.Drawing.Size(1581, 25);
             this.toolStrip.TabIndex = 2;
             this.toolStrip.Text = "toolStrip1";
             // 
@@ -275,6 +277,16 @@ namespace CommandsEditor
             this.helpBtn.Text = "Help";
             this.helpBtn.Click += new System.EventHandler(this.helpBtn_Click);
             // 
+            // ShowControls
+            // 
+            this.ShowControls.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.ShowControls.Image = ((System.Drawing.Image)(resources.GetObject("ShowControls.Image")));
+            this.ShowControls.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.ShowControls.Name = "ShowControls";
+            this.ShowControls.Size = new System.Drawing.Size(56, 22);
+            this.ShowControls.Text = "Controls";
+            this.ShowControls.Click += new System.EventHandler(this.ShowControls_Click);
+            // 
             // DEBUG_RunChecks
             // 
             this.DEBUG_RunChecks.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
@@ -312,7 +324,7 @@ namespace CommandsEditor
             this.statusText});
             this.statusStrip.Location = new System.Drawing.Point(0, 782);
             this.statusStrip.Name = "statusStrip";
-            this.statusStrip.Size = new System.Drawing.Size(1257, 22);
+            this.statusStrip.Size = new System.Drawing.Size(1581, 22);
             this.statusStrip.TabIndex = 4;
             this.statusStrip.Text = "statusStrip1";
             // 
@@ -332,7 +344,7 @@ namespace CommandsEditor
             this.dockPanel.Name = "dockPanel";
             this.dockPanel.Padding = new System.Windows.Forms.Padding(6);
             this.dockPanel.ShowAutoHideContentOnHover = false;
-            this.dockPanel.Size = new System.Drawing.Size(1257, 757);
+            this.dockPanel.Size = new System.Drawing.Size(1581, 757);
             this.dockPanel.TabIndex = 5;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
             // 
@@ -340,7 +352,7 @@ namespace CommandsEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1257, 804);
+            this.ClientSize = new System.Drawing.Size(1581, 804);
             this.Controls.Add(this.dockPanel);
             this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.toolStrip);
@@ -393,5 +405,6 @@ namespace CommandsEditor
         private System.Windows.Forms.ToolStripButton DEBUG_LaunchGame;
         private System.Windows.Forms.ToolStripMenuItem buildLevelToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem createFlowgraphNodeWhenEntityCreatedToolStripMenuItem;
+        private System.Windows.Forms.ToolStripButton ShowControls;
     }
 }

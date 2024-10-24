@@ -149,7 +149,7 @@ namespace CommandsEditor
             _selectEntOut.Show();
             _selectEntOut.OnHierarchyGenerated += OnSelectedEntityOut;
         }
-        private void OnSelectedEntityOut(List<ShortGuid> hierarchy)
+        private void OnSelectedEntityOut(ShortGuid[] hierarchy)
         {
             parentEntityList.SelectedIndex = _entityList.IndexOf(_entityDisplay.Composite.GetEntityByID(hierarchy[0]));
         }
@@ -167,7 +167,7 @@ namespace CommandsEditor
             _selectEntIn.Show();
             _selectEntIn.OnHierarchyGenerated += OnSelectedEntityIn;
         }
-        private void OnSelectedEntityIn(List<ShortGuid> hierarchy)
+        private void OnSelectedEntityIn(ShortGuid[] hierarchy)
         {
             childEntityList.SelectedIndex = _entityList.IndexOf(_entityDisplay.Composite.GetEntityByID(hierarchy[0]));
         }

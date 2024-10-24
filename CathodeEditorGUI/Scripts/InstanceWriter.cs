@@ -117,14 +117,14 @@ namespace CommandsEditor.Scripts
 
                                     for (int l = 0; l < resourceEnts.Count; l++)
                                     {
-                                        EntityPath path = new EntityPath(new List<ShortGuid>() { func.shortGUID });
-                                        path.PrependPath(linkedTrigSeq.entities[e].connectedEntity);
-                                        path.PrependPath(zonePaths[p]);
+                                        EntityPath path = new EntityPath(new ShortGuid[1] { func.shortGUID });
+                                        //path.PrependPath(linkedTrigSeq.entities[e].connectedEntity);
+                                        //path.PrependPath(zonePaths[p]);
 
                                         EntityHandle instanceInfo = new EntityHandle()
                                         {
                                             entity_id = func.shortGUID,
-                                            composite_instance_id = path.GenerateInstance()
+                                            composite_instance_id = path.GenerateCompositeInstanceID()
                                         };
 
                                         ShortGuid resourceID = ShortGuidUtils.Generate(EntityUtils.GetName(comp, func));
@@ -180,10 +180,10 @@ namespace CommandsEditor.Scripts
                 */
             }
 
-        private FunctionEntity ResolveHierarchyToFunction(List<ShortGuid> hierarchy, Commands commands, Composite start)
+        private FunctionEntity ResolveHierarchyToFunction(ShortGuid[] hierarchy, Commands commands, Composite start)
         {
             Composite c = start;
-            for (int p = 0; p < hierarchy.Count; p++)
+            for (int p = 0; p < hierarchy.Length; p++)
             {
                 FunctionEntity f = c.functions.FirstOrDefault(o => o.shortGUID == hierarchy[p]);
                 c = f != null ? commands.Entries.FirstOrDefault(o => o.shortGUID == f.function) : null;
@@ -191,7 +191,7 @@ namespace CommandsEditor.Scripts
                 if (c == null)
                     break;
 
-                if (p == hierarchy.Count - 1 || hierarchy[p + 1] == ShortGuid.Invalid)
+                if (p == hierarchy.Length - 1 || hierarchy[p + 1] == ShortGuid.Invalid)
                     return f;
             }
             return null;

@@ -138,6 +138,24 @@ namespace CommandsEditor
 #endif
         }
 
+        public static void TestVisibilityMVR()
+        {
+#if DEBUG
+
+            List<string> files = Directory.GetFiles("F:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\data_orig\\ENV\\Production", "MODELS.MVR", SearchOption.AllDirectories).ToList<string>();
+            HashSet<uint> visibility_vars = new HashSet<uint>();
+            foreach (string file in files)
+            {
+                Movers movers = new Movers(file);
+                for (int i = 0; i < movers.Entries.Count; i++)
+                    visibility_vars.Add(movers.Entries[i].visibility);
+            }
+            List<uint> visibility = new List<uint>(visibility_vars);
+            foreach (var number in visibility)
+                Console.WriteLine(number);
+#endif
+        }
+
         public static void DoCheckOnNodegraph()
         {
 #if DEBUG

@@ -65,14 +65,35 @@ namespace CommandsEditor.DockPanels
 
             dockPanel.ShowDocumentIcon = true;
 
+            dockPanel.DockLeftPortion = SettingsManager.GetFloat(Singleton.Settings.EntityListWidth, 0.25f);
+            dockPanel.DockRightPortion = SettingsManager.GetFloat(Singleton.Settings.EntityInspectorWidth, 0.25f);
+
             _entityList = new EntityList();
             _entityList.Show(dockPanel, DockState.DockLeft);
+            _entityList.Resize += _entityList_Resize;
 
             _entityDisplay = new EntityInspector(this);
             _entityDisplay.Show(dockPanel, DockState.DockRight);
             _entityDisplay.FormClosing += OnEntityDisplayClosing;
+            _entityDisplay.Resize += _entityDisplay_Resize;
 
             this.FormClosed += CompositeDisplay_FormClosed;
+        }
+
+        private void _entityDisplay_Resize(object sender, EventArgs e)
+        {
+            SettingsManager.SetFloat(Singleton.Settings.EntityInspectorWidth, (float)dockPanel.DockRightPortion);
+        }
+
+        private void _entityList_Resize(object sender, EventArgs e)
+        {
+            SettingsManager.SetFloat(Singleton.Settings.EntityListWidth, (float)dockPanel.DockLeftPortion);
+        }
+
+        public void ResetPortions()
+        {
+            dockPanel.DockLeftPortion = 0.25f;
+            dockPanel.DockRightPortion = 0.25f;
         }
 
         private void OnCompositeRenamed(Composite composite, string name)
@@ -498,8 +519,8 @@ namespace CommandsEditor.DockPanels
                             List<TriggerSequence.Entity> triggers = new List<TriggerSequence.Entity>();
                             for (int x = 0; x < triggerSequence.entities.Count; x++)
                             {
-                                if (triggerSequence.entities[x].connectedEntity.path.Count < 2 ||
-                                    triggerSequence.entities[x].connectedEntity.path[triggerSequence.entities[x].connectedEntity.path.Count - 2] != entity.shortGUID)
+                                if (triggerSequence.entities[x].connectedEntity.path.Length < 2 ||
+                                    triggerSequence.entities[x].connectedEntity.path[triggerSequence.entities[x].connectedEntity.path.Length - 2] != entity.shortGUID)
                                 {
                                     triggers.Add(triggerSequence.entities[x]);
                                 }
@@ -511,8 +532,8 @@ namespace CommandsEditor.DockPanels
                             List<CAGEAnimation.Connection> headers = new List<CAGEAnimation.Connection>();
                             for (int x = 0; x < cageAnim.connections.Count; x++)
                             {
-                                if (cageAnim.connections[x].connectedEntity.path.Count < 2 ||
-                                    cageAnim.connections[x].connectedEntity.path[cageAnim.connections[x].connectedEntity.path.Count - 2] != entity.shortGUID)
+                                if (cageAnim.connections[x].connectedEntity.path.Length < 2 ||
+                                    cageAnim.connections[x].connectedEntity.path[cageAnim.connections[x].connectedEntity.path.Length - 2] != entity.shortGUID)
                                 {
                                     headers.Add(cageAnim.connections[x]);
                                 }
@@ -648,13 +669,13 @@ namespace CommandsEditor.DockPanels
                     List<ShortGuid> instancesPhys = new List<ShortGuid>();
                     List<EntityPath> pathsPhys = new List<EntityPath>();
                     pathsEnt.ForEach(path => {
-                        instancesEnt.Add(path.GenerateInstance());
+                        instancesEnt.Add(path.GenerateCompositeInstanceID());
 
                         EntityPath pathPhys = path.Copy();
-                        pathPhys.path.Insert(path.path.Count - 1, phys.shortGUID);
+                        path.AddNextStep(phys.shortGUID);
                         pathsPhys.Add(pathPhys);
 
-                        instancesPhys.Add(pathPhys.GenerateInstance());
+                        instancesPhys.Add(pathPhys.GenerateCompositeInstanceID());
                     });
 
                     List<PhysicsMaps.Entry> physMaps = Content.resource.physics_maps.Entries.FindAll(physMap =>
@@ -667,10 +688,10 @@ namespace CommandsEditor.DockPanels
                         PhysicsMaps.Entry newPhysMap = physMap.Copy();
                         newPhysMap.entity.entity_id = newEnt.shortGUID;
 
-                        EntityPath pathPhys = pathsPhys.FirstOrDefault(x => x.GenerateInstance() == physMap.composite_instance_id);
+                        EntityPath pathPhys = pathsPhys.FirstOrDefault(x => x.GenerateCompositeInstanceID() == physMap.composite_instance_id);
                         EntityPath newPathPhys = pathPhys.Copy();
-                        newPathPhys.path[newPathPhys.path.Count - 3] = newEnt.shortGUID;
-                        newPhysMap.composite_instance_id = newPathPhys.GenerateInstance();
+                        newPathPhys.path[newPathPhys.path.Length - 3] = newEnt.shortGUID;
+                        newPhysMap.composite_instance_id = newPathPhys.GenerateCompositeInstanceID();
                         Content.resource.physics_maps.Entries.Add(newPhysMap);
                         //Content.resource.physics_maps.Entries[Content.resource.physics_maps.Entries.IndexOf(physMap)] = newPhysMap;
 
@@ -808,7 +829,7 @@ namespace CommandsEditor.DockPanels
                 dialog_var.Focus();
             }
         }
-        private void OnNewEntityHierarchyGenerated(List<ShortGuid> generatedHierarchy)
+        private void OnNewEntityHierarchyGenerated(ShortGuid[] generatedHierarchy)
         {
             Singleton.OnEntityAddPending?.Invoke();
 
@@ -819,13 +840,12 @@ namespace CommandsEditor.DockPanels
                     List<ShortGuid> hierarchy = new List<ShortGuid>();
                     hierarchy.Add(Content.commands.EntryPoints[0].shortGUID);
                     hierarchy.AddRange(generatedHierarchy);
-                    ent = _composite.AddProxy(Content.commands, hierarchy); //TODO: re-add "add default params"
+                    ent = _composite.AddProxy(Content.commands, hierarchy.ToArray()); //TODO: re-add "add default params"
                     Entity pointedEnt = ((ProxyEntity)ent).proxy.GetPointedEntity(Content.commands, out Composite pointedComp);
                     EntityUtils.SetName(_composite, ent, EntityUtils.GetName(pointedComp, pointedEnt) + " Proxy");
                     break;
                 case EntityVariant.ALIAS:
-                    hierarchy = generatedHierarchy;
-                    ent = _composite.AddAlias(hierarchy); //TODO: re-add "add default params"?
+                    ent = _composite.AddAlias(generatedHierarchy); //TODO: re-add "add default params"?
                     break;
             }
 

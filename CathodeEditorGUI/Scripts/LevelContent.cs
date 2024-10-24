@@ -146,14 +146,6 @@ namespace CommandsEditor
             //ShortGuidUtils.Generate("back");
             //ShortGuidUtils.Generate("bind");
             //ShortGuidUtils.Generate("cam");
-
-            //for (int i = 0; i < resource.sound_eventdata.Entries.Count; i++)
-            //{
-            //    for (int x = 0; x < resource.sound_eventdata.Entries[i].events.Count; x++)
-            //    {
-            //        ShortGuidUtils.Generate(resource.sound_eventdata.Entries[i].events[x].name);
-            //    }
-            //}
         }
 
         ~LevelContent()
@@ -197,6 +189,29 @@ namespace CommandsEditor
             content.editor_utils.GenerateEntityNameCache(Singleton.Editor);
             content.editor_utils.GenerateCompositeInstances(content.commands, false);
 
+            //TODO: maybe we want this to happen normally??
+            for (int i = 0; i < content.resource.sound_eventdata.Entries.Count; i++)
+            {
+                for (int x = 0; x < content.resource.sound_eventdata.Entries[i].events.Count; x++)
+                {
+                    ShortGuidUtils.Generate(content.resource.sound_eventdata.Entries[i].events[x].name);
+                }
+            }
+            foreach (ParameterVariant enumValue in Enum.GetValues(typeof(ParameterVariant)))
+                ShortGuidUtils.Generate(enumValue.ToString());
+            foreach (DataType enumValue in Enum.GetValues(typeof(DataType)))
+                ShortGuidUtils.Generate(enumValue.ToString());
+            foreach (ObjectType enumValue in Enum.GetValues(typeof(ObjectType)))
+                ShortGuidUtils.Generate(enumValue.ToString());
+            foreach (FunctionType enumValue in Enum.GetValues(typeof(FunctionType)))
+                ShortGuidUtils.Generate(enumValue.ToString());
+            foreach (ResourceType enumValue in Enum.GetValues(typeof(ResourceType)))
+                ShortGuidUtils.Generate(enumValue.ToString());
+            foreach (EnumType enumValue in Enum.GetValues(typeof(EnumType)))
+                ShortGuidUtils.Generate(enumValue.ToString());
+
+            ShortGuidUtils.Generate("AnimatedModel");
+
             foreach (Composite composite in content.commands.Entries)
                 foreach (Entity entity in composite.GetEntities())
                     ShortGuidUtils.Generate(EntityUtils.GetName(composite, entity));
@@ -211,6 +226,10 @@ namespace CommandsEditor
 
             foreach (Materials.Material material in content.resource.materials.Entries)
                 ShortGuidUtils.Generate(material.Name);
+
+            List<string> entNames = EntityUtils.GetAllVanillaNames();
+            foreach (string entName in entNames)
+                ShortGuidUtils.Generate(entName);
 
             return content;
         }

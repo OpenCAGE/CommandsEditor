@@ -26,7 +26,7 @@ namespace CommandsEditor
             List<EntityPath> hierarchies = editor.Content.editor_utils.GetHierarchiesForEntity(editor.Composite, editor.Entity);
             for (int i = 0; i < hierarchies.Count; i++)
             {
-                if (existing.Contains(hierarchies[i].GenerateInstance())) continue;
+                if (existing.Contains(hierarchies[i].GenerateCompositeInstanceID())) continue;
                 instances.Items.Add(hierarchies[i].GetAsString(Content.commands, editor.Composite, false));
                 _hierarchies.Add(hierarchies[i]);
             }
@@ -42,7 +42,7 @@ namespace CommandsEditor
         private void addCharacter_Click(object sender, EventArgs e)
         {
             if (instances.SelectedIndex == -1) return;
-            OnInstanceSelected?.Invoke(_hierarchies[instances.SelectedIndex].GenerateInstance());
+            OnInstanceSelected?.Invoke(_hierarchies[instances.SelectedIndex].GenerateCompositeInstanceID());
             this.Close();
         }
     }

@@ -1,3 +1,5 @@
+//#define DO_TEST_STUFF
+
 using CATHODE;
 using CATHODE.EXPERIMENTAL;
 using CATHODE.LEGACY;
@@ -6,6 +8,7 @@ using CATHODE.Scripting.Internal;
 using CathodeLib;
 using CommandsEditor.DockPanels;
 using CommandsEditor.Popups;
+using CommandsEditor.Properties;
 using CommandsEditor.Scripts;
 using CommandsEditor.UserControls;
 using DiscordRPC;
@@ -58,6 +61,86 @@ namespace CommandsEditor
 
         public CommandsEditor(string level = null)
         {
+#if DEBUG && DO_TEST_STUFF
+            //List<string> lvls = Level.GetLevels(SharedData.pathToAI, true);
+            //foreach (string lvl in lvls)
+            //{
+            //    if (Directory.Exists(SharedData.pathToAI + "\\DATA_orig"))
+            //    {
+            //        Directory.Delete(SharedData.pathToAI + "\\DATA\\ENV\\PRODUCTION\\" + lvl, true);
+            //        CopyFilesRecursively(SharedData.pathToAI + "\\DATA_orig\\ENV\\PRODUCTION\\" + lvl, SharedData.pathToAI + "\\DATA\\ENV\\PRODUCTION\\" + lvl);
+            //    }
+            //
+            //    InstancedResolver.Read(LevelContent.DEBUG_LoadUnthreadedAndPopulateShortGuids(lvl));
+            //}
+
+
+            level = "BSP_TORRENS";
+
+            if (Directory.Exists(SharedData.pathToAI + "\\DATA_orig"))
+            {
+                Directory.Delete(SharedData.pathToAI + "\\DATA\\ENV\\PRODUCTION\\" + level, true);
+                CopyFilesRecursively(SharedData.pathToAI + "\\DATA_orig\\ENV\\PRODUCTION\\" + level, SharedData.pathToAI + "\\DATA\\ENV\\PRODUCTION\\" + level);
+            }
+
+
+            //Level is populated by MVR
+            //MVR looks up the resource in COMMANDS via RESOURCES
+            //MVR properties are applied to renderables in COMMANDS via this link (applied properties are specified by the type enum, e.g. not all provide position etc)
+            //If no link has been made, both populate
+
+
+            //It gets more complicated: RESOURCES.BIN is populated based on the result of COMMANDS (e.g. if an entity has "deleted" applied, it won't be listed there)
+            //No fucking clue how I'm gonna be able to rewrite the thing without building the entire scripting logic into the compiler -_-
+
+
+            LevelContent content = LevelContent.DEBUG_LoadUnthreadedAndPopulateShortGuids(level);
+
+            //File.Copy(content.mvr.Filepath, content.mvr.Filepath + " - Copy.MVR");
+            //content.mvr.Entries = content.mvr.Entries.OrderBy(o => o.resource_index).ToList();
+            //content.mvr.Save();
+
+            InstancedResolver.Read(content);
+            InstancedResolver.Write(content);
+            InstancedResolver.Read(content);
+
+            int min_collision_index = 999999;
+            for (int x = 0; x < content.commands.Entries.Count; x++)
+            {
+                for (int i = 0; i < content.commands.Entries[x].functions.Count; i++)
+                {
+                    for (int z = 0; z < content.commands.Entries[x].functions[i].resources.Count; z++)
+                    {
+                        if (content.commands.Entries[x].functions[i].resources[z].resource_type != ResourceType.COLLISION_MAPPING)
+                            continue;
+                        if (content.commands.Entries[x].functions[i].resources[z].index != -1 && min_collision_index > content.commands.Entries[x].functions[i].resources[z].index)
+                            min_collision_index = content.commands.Entries[x].functions[i].resources[z].index;
+                    }
+
+                    Parameter resourceParam = content.commands.Entries[x].functions[i].GetParameter("resource");
+                    if (resourceParam != null && resourceParam.content != null && resourceParam.content.dataType == DataType.RESOURCE)
+                    {
+                        cResource resource = (cResource)resourceParam.content;
+                        for (int z = 0; z < resource.value.Count; z++)
+                        {
+                            if (resource.value[z].resource_type != ResourceType.COLLISION_MAPPING)
+                                continue;
+                            if (resource.value[z].index != -1 && min_collision_index > resource.value[z].index)
+                                min_collision_index = resource.value[z].index;
+                        }
+                    }
+                }
+            }
+            if (min_collision_index != 18)
+            {
+                //There are always 18 entries at the start of COLLISION.MAP which are empty for some reason, so we'd expect the min index to be 18
+                Console.WriteLine("Unexpected!");
+            }
+
+#endif
+            //*/
+            //return;
+
             Singleton.Editor = this;
 
             _discord = new DiscordRpcClient("1152999067207606392");
@@ -383,10 +466,6 @@ namespace CommandsEditor
             //TODO: save but save with all the instanced stuff
         }
 
-        ShortGuid GUID_ANIMATED_MODEL = ShortGuidUtils.Generate("AnimatedModel");
-        ShortGuid GUID_DYNAMIC_PHYSICS_SYSTEM = ShortGuidUtils.Generate("DYNAMIC_PHYSICS_SYSTEM");
-        ShortGuid GUID_resource = ShortGuidUtils.Generate("resource");
-
         private bool Save()
         {
             bool saved = false;
@@ -426,95 +505,7 @@ namespace CommandsEditor
 
             if (SettingsManager.GetBool(Singleton.Settings.ExperimentalResourceStuff))
             {
-                _commandsDisplay.Content.resource.physics_maps.Entries.Clear();
-                _commandsDisplay.Content.resource.resources.Entries.RemoveAll(o => o.resource_id == GUID_DYNAMIC_PHYSICS_SYSTEM);
-                //_commandsDisplay.Content.resource.resources.Entries.Clear();
-
-                //Update additional resource stuff
-                foreach (Composite composite in _commandsDisplay.Content.commands.Entries)
-                {
-                    List<Entity> ents = composite.GetEntities();
-                    foreach (var ent in ents)
-                        ShortGuidUtils.Generate(EntityUtils.GetName(composite, ent));
-
-                    foreach (FunctionEntity func in composite.functions)
-                    {
-                        List<ResourceReference> resources = func.resources;
-                        Parameter resourceParam = func.GetParameter(GUID_resource);
-                        if (resourceParam != null && resourceParam.content != null && resourceParam.content.dataType == DataType.RESOURCE)
-                            resources.AddRange(((cResource)resourceParam.content).value);
-
-                        int collisionMapCount = resources.FindAll(o => o.resource_type == ResourceType.COLLISION_MAPPING).Count;
-                        int animatedModelCount = resources.FindAll(o => o.resource_type == ResourceType.ANIMATED_MODEL).Count;
-                        int physSystemCount = resources.FindAll(o => o.resource_type == ResourceType.DYNAMIC_PHYSICS_SYSTEM).Count;
-                        int renderableCount = resources.FindAll(o => o.resource_type == ResourceType.RENDERABLE_INSTANCE).Count;
-
-                        //TODO: i'm noticing RadiosityProxy entities in the RESOURCES.BIN -> they have a `resource` parameter but no resources listed.
-
-                        if (collisionMapCount + animatedModelCount + physSystemCount + renderableCount == 0)
-                            continue;
-
-                        ShortGuid nameHash = default;
-                        if (collisionMapCount != 0)
-                            nameHash = ShortGuidUtils.Generate(EntityUtils.GetName(composite, func));
-
-                        List<EntityPath> hierarchies = _commandsDisplay.Content.editor_utils.GetHierarchiesForEntity(composite, func);
-                        List<ShortGuid> instanceIDs = new List<ShortGuid>();
-                        for (int i = 0; i < hierarchies.Count; i++)
-                            instanceIDs.Add(hierarchies[i].GenerateInstance());
-
-                        foreach (ResourceReference resRef in resources)
-                        {
-                            ShortGuid id;
-                            switch (resRef.resource_type)
-                            {
-                                case ResourceType.RENDERABLE_INSTANCE:
-                                case ResourceType.COLLISION_MAPPING:
-                                    //if (resRef.entityID == ShortGuid.Max)
-                                    //    continue;
-                                    id = nameHash;
-                                    resRef.entityID = func.shortGUID;
-                                    WriteCollisionMap(id, null, composite, func);
-                                    break;
-                                case ResourceType.ANIMATED_MODEL:
-                                    id = GUID_ANIMATED_MODEL;
-                                    break;
-                                case ResourceType.DYNAMIC_PHYSICS_SYSTEM:
-                                    id = GUID_DYNAMIC_PHYSICS_SYSTEM;
-                                    break;
-                                //case ResourceType.NAV_MESH_BARRIER_RESOURCE:
-                                    //TODO
-                                //    break;
-                                default:
-                                    continue;
-                            }
-                            WriteResourceBin(ShortGuid.Invalid, id);
-
-                            //TODO: also validate the positional values are correct on resource
-
-                            for (int i = 0; i < hierarchies.Count; i++)
-                            {
-                                switch (resRef.resource_type)
-                                {
-                                    case ResourceType.COLLISION_MAPPING:
-                                        WriteCollisionMap(id, hierarchies[i], composite, func);
-                                        break;
-                                    case ResourceType.DYNAMIC_PHYSICS_SYSTEM:
-                                        if (!WritePhysicsMap(hierarchies[i], resRef.index))
-                                            continue;
-                                        break;
-                                    case ResourceType.RENDERABLE_INSTANCE:
-                                        //Write REDS
-                                    case ResourceType.ANIMATED_MODEL:
-                                        break;
-                                    default:
-                                        continue;
-                                }
-                                WriteResourceBin(instanceIDs[i], id);
-                            }
-                        }
-                    }
-                }
+                //...
             }
 
 
@@ -543,106 +534,6 @@ namespace CommandsEditor
                 _commandsDisplay.Content.mvr.Save();
 
             return true;
-        }
-
-        private bool WritePhysicsMap(EntityPath hierarchy, int physics_system_index)
-        {
-            //If a composite further up in the path contains a PhysicsSystem too we shouldn't write this one out (NOTE: We also shouldn't write static stuff out by the looks of it)
-            Composite comp = _commandsDisplay.Content.commands.EntryPoints[0];
-            for (int x = 0; x < hierarchy.path.Count - 1; x++)
-            {
-                FunctionEntity compInst = comp.functions.FirstOrDefault(o => o.shortGUID == hierarchy.path[x]);
-                if (compInst == null)
-                    break;
-            
-                comp = _commandsDisplay.Content.commands.GetComposite(compInst.function);
-                if (x < hierarchy.path.Count - 3 && comp.GetFunctionEntitiesOfType(FunctionType.PhysicsSystem).Count != 0)
-                {
-                    Console.WriteLine(comp.name);
-                    return false;
-                }
-            }
-
-            //Get instance info
-            (Vector3 position, Quaternion rotation) = CommandsUtils.CalculateInstancedPosition(hierarchy);
-            ShortGuid compositeInstanceID = hierarchy.GenerateInstance();
-            hierarchy.path.RemoveAt(hierarchy.path.Count - 2);
-            EntityHandle compositeInstanceReference = new EntityHandle()
-            {
-                entity_id = hierarchy.path[hierarchy.path.Count - 2],
-                composite_instance_id = hierarchy.GenerateInstance()
-            };
-
-            //Remove all entries that already exist for this instance
-            _commandsDisplay.Content.resource.physics_maps.Entries.RemoveAll(o => o.composite_instance_id == compositeInstanceID && o.entity == compositeInstanceReference);
-
-            //Make a new entry for the instance
-            _commandsDisplay.Content.resource.physics_maps.Entries.Add(new PhysicsMaps.Entry()
-            {
-                physics_system_index = physics_system_index,
-                resource_type = GUID_DYNAMIC_PHYSICS_SYSTEM,
-                composite_instance_id = compositeInstanceID,
-                entity = compositeInstanceReference,
-                Position = position,
-                Rotation = rotation
-            });
-            return true;
-        }
-
-        private void WriteCollisionMap(ShortGuid resourceID, EntityPath hierarchy, Composite composite, FunctionEntity func)
-        {
-            //Get instance info
-            EntityHandle compositeInstanceReference = new EntityHandle()
-            {
-                entity_id = func.shortGUID,
-                composite_instance_id = hierarchy == null ? ShortGuid.Invalid : hierarchy.GenerateInstance()
-            };
-
-            if (_commandsDisplay.Content.resource.collision_maps.Entries.FindAll(o => o.entity == compositeInstanceReference && o.id == resourceID).Count != 0)
-                return;
-
-            //TODO: similar to PHYSICS.MAP, do we only write out if there's not another collision further up the chain?
-
-            //Get zone ID
-            ShortGuid zoneID = hierarchy == null ? ShortGuid.Invalid : new ShortGuid(1);
-            /*
-            if (hierarchy != null)
-            {
-                //TODO: this needs speeding up
-                CancellationToken ct = new CancellationToken();
-                _commandsDisplay.Content.editor_utils.TryFindZoneForEntity(func, composite, out Composite zoneComp, out FunctionEntity zoneEnt, ct);
-                if (zoneComp != null && zoneEnt != null)
-                {
-                    //TODO: need to figure out how we know which zone instance to point at!
-                    List<EntityPath> zoneInstances = _commandsDisplay.Content.editor_utils.GetHierarchiesForEntity(zoneComp, zoneEnt);
-                    if (zoneInstances.Count > 0)
-                        zoneID = zoneInstances[0].GenerateZoneID();
-                }
-            }
-            */
-
-            //Make a new entry for the instance
-            _commandsDisplay.Content.resource.collision_maps.Entries.Add(new CollisionMaps.Entry()
-            {
-                id = resourceID,
-                entity = compositeInstanceReference,
-                zone_id = zoneID
-            });
-        }
-
-        private void WriteResourceBin(ShortGuid compositeInstanceID, ShortGuid resourceID)
-        {
-            _commandsDisplay.Content.resource.resources.Entries.RemoveAll(res => res.composite_instance_id == compositeInstanceID && res.resource_id == resourceID);
-            return;
-
-            if (_commandsDisplay.Content.resource.resources.Entries.FindAll(res => res.composite_instance_id == compositeInstanceID && res.resource_id == resourceID).Count != 0)
-                return;
-
-            _commandsDisplay.Content.resource.resources.Entries.Add(new Resources.Resource()
-            {
-                composite_instance_id = compositeInstanceID,
-                resource_id = resourceID
-            });
         }
 
         /* Enable the option to load */
@@ -828,7 +719,7 @@ namespace CommandsEditor
             dockPanel.DockBottomPortion = _defaultSplitterDistance;
 
             _commandsDisplay?.ResetSplitter();
-            //_activeCompositeDisplay?.ResetSplitter();
+            _commandsDisplay?.CompositeDisplay?.ResetPortions();
         }
 
         private void writeInstancedResourcesExperimentalToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1009,11 +900,11 @@ namespace CommandsEditor
                             if (entEnt != null && entComp != null)
                                 convertedResoureName += "\n\t Entity Entity: " + entEnt.shortGUID + " -> " + EntityUtils.GetName(entComp, entEnt);
 
-                            if (zonePath1 != null && zonePath1.path.Count == 2 && zonePath1.path[0] == new ShortGuid("01-00-00-00"))
+                            if (zonePath1 != null && zonePath1.path.Length == 2 && zonePath1.path[0] == new ShortGuid("01-00-00-00"))
                             {
                                 convertedResoureName += "\n\t Primary Zone: GLOBAL ZONE";
                             }
-                            else if (zonePath1 != null && zonePath1.path.Count == 1 && zonePath1.path[0] == new ShortGuid("00-00-00-00"))
+                            else if (zonePath1 != null && zonePath1.path.Length == 1 && zonePath1.path[0] == new ShortGuid("00-00-00-00"))
                             {
                                 convertedResoureName += "\n\t Primary Zone: ZERO ZONE";
                             }
@@ -1276,7 +1167,7 @@ namespace CommandsEditor
             for (int i = 0; i < zoneHandles.Count; i++)
             {
                 ShortGuid zoneID = zoneHandles[i].GenerateZoneID();
-                ShortGuid instanceID = zoneHandles[i].GenerateInstance();
+                ShortGuid instanceID = zoneHandles[i].GenerateCompositeInstanceID();
 
                 string sdfsdf = "";
             }
@@ -1328,6 +1219,24 @@ namespace CommandsEditor
         {
             EditorUtils.PatchLaunchMode(_commandsDisplay.Content.level);
             Process.Start(SettingsManager.GetString("PATH_GameRoot") + "AI.exe");
+        }
+
+        ControlsWindow _controlsWindow = null;
+        private void ShowControls_Click(object sender, EventArgs e)
+        {
+            if (_controlsWindow != null)
+            {
+                _controlsWindow.FormClosed -= _controlsWindow_FormClosed;
+                _controlsWindow.Close();
+            }
+
+            _controlsWindow = new ControlsWindow();
+            _controlsWindow.Show();
+            _controlsWindow.FormClosed += _controlsWindow_FormClosed;
+        }
+        private void _controlsWindow_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _controlsWindow = null;
         }
     }
 }

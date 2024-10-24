@@ -133,7 +133,7 @@ namespace CommandsEditor
             hierarchyEditor.Show();
             hierarchyEditor.OnHierarchyGenerated += HierarchyEditor_HierarchyGenerated;
         }
-        private void HierarchyEditor_HierarchyGenerated(List<ShortGuid> generatedHierarchy)
+        private void HierarchyEditor_HierarchyGenerated(ShortGuid[] generatedHierarchy)
         {
             if (entity_list.SelectedItems.Count == 0) return;
             int index = entity_list.SelectedItems[0].Index;
@@ -147,7 +147,7 @@ namespace CommandsEditor
         {
             for (int i = 0; i < _triggerSequence.entities.Count; i++)
             {
-                if (_triggerSequence.entities[i].connectedEntity.path.Count == 0 || _triggerSequence.entities[i].connectedEntity.path.Count == 1)
+                if (_triggerSequence.entities[i].connectedEntity.path.Length == 0 || _triggerSequence.entities[i].connectedEntity.path.Length == 1)
                 {
                     MessageBox.Show("One or more triggers does not point to a node!", "Trigger setup incorrectly!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
@@ -169,7 +169,7 @@ namespace CommandsEditor
             hierarchyEditor.Show();
             hierarchyEditor.OnHierarchyGenerated += addNewEntity_HierarchyGenerated;
         }
-        private void addNewEntity_HierarchyGenerated(List<ShortGuid> generatedHierarchy)
+        private void addNewEntity_HierarchyGenerated(ShortGuid[] generatedHierarchy)
         {
             TriggerSequence.Entity trigger = new TriggerSequence.Entity();
             trigger.connectedEntity.path = generatedHierarchy;
