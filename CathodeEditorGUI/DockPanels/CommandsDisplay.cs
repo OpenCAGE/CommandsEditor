@@ -702,6 +702,15 @@ namespace CommandsEditor.DockPanels
             _functionUsesDialog = null;
         }
 
+        private void entity_search_box_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            { 
+                entity_search_btn.PerformClick();
+                e.SuppressKeyPress = true;
+            }
+        }
+
         private static List<Composite> _toSkip = new List<Composite>();
 
         private void DEBUG_LoadNextEmpty_Click(object sender, EventArgs e)

@@ -61,6 +61,7 @@
             this.closeSelected = new System.Windows.Forms.ToolStripMenuItem();
             this.closeAllBut = new System.Windows.Forms.ToolStripMenuItem();
             this.ModifyParameters = new System.Windows.Forms.Button();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.entityInfoGroup.SuspendLayout();
             this.entityParamGroup.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
@@ -78,6 +79,7 @@
             this.goToZone.Size = new System.Drawing.Size(70, 23);
             this.goToZone.TabIndex = 188;
             this.goToZone.Text = "Zone";
+            this.toolTip1.SetToolTip(this.goToZone, "Zone");
             this.goToZone.UseVisualStyleBackColor = true;
             this.goToZone.Click += new System.EventHandler(this.goToZone_Click);
             // 
@@ -89,6 +91,7 @@
             this.showOverridesAndProxies.Size = new System.Drawing.Size(70, 23);
             this.showOverridesAndProxies.TabIndex = 187;
             this.showOverridesAndProxies.Text = "References";
+            this.toolTip1.SetToolTip(this.showOverridesAndProxies, "References");
             this.showOverridesAndProxies.UseVisualStyleBackColor = true;
             this.showOverridesAndProxies.Click += new System.EventHandler(this.showOverridesAndProxies_Click);
             // 
@@ -100,6 +103,7 @@
             this.editEntityMovers.Size = new System.Drawing.Size(70, 23);
             this.editEntityMovers.TabIndex = 186;
             this.editEntityMovers.Text = "Movers";
+            this.toolTip1.SetToolTip(this.editEntityMovers, "Movers");
             this.editEntityMovers.UseVisualStyleBackColor = true;
             this.editEntityMovers.Click += new System.EventHandler(this.editEntityMovers_Click);
             // 
@@ -111,6 +115,7 @@
             this.editEntityResources.Size = new System.Drawing.Size(70, 23);
             this.editEntityResources.TabIndex = 184;
             this.editEntityResources.Text = "Resources";
+            this.toolTip1.SetToolTip(this.editEntityResources, "Resources");
             this.editEntityResources.UseVisualStyleBackColor = true;
             this.editEntityResources.Click += new System.EventHandler(this.editEntityResources_Click);
             // 
@@ -200,6 +205,7 @@
             this.editFunction.Size = new System.Drawing.Size(74, 23);
             this.editFunction.TabIndex = 185;
             this.editFunction.Text = "Function";
+            this.toolTip1.SetToolTip(this.editFunction, "Function");
             this.editFunction.UseVisualStyleBackColor = true;
             this.editFunction.Click += new System.EventHandler(this.editFunction_Click);
             // 
@@ -418,6 +424,11 @@
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.entityInfoGroup);
             this.Controls.Add(this.entityParamGroup);
+            this.DockAreas = ((WeifenLuo.WinFormsUI.Docking.DockAreas)((((((WeifenLuo.WinFormsUI.Docking.DockAreas.Float | WeifenLuo.WinFormsUI.Docking.DockAreas.DockLeft) 
+            | WeifenLuo.WinFormsUI.Docking.DockAreas.DockRight) 
+            | WeifenLuo.WinFormsUI.Docking.DockAreas.DockTop) 
+            | WeifenLuo.WinFormsUI.Docking.DockAreas.DockBottom) 
+            | WeifenLuo.WinFormsUI.Docking.DockAreas.Document)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "EntityInspector";
             this.ShowHint = WeifenLuo.WinFormsUI.Docking.DockState.Document;
@@ -470,5 +481,6 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip2;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem createLinkToolStripMenuItem;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }
