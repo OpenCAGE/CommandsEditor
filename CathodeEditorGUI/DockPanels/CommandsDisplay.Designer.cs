@@ -97,6 +97,7 @@ namespace CommandsEditor.DockPanels
             this.entity_search_box.Name = "entity_search_box";
             this.entity_search_box.Size = new System.Drawing.Size(282, 20);
             this.entity_search_box.TabIndex = 159;
+            this.entity_search_box.KeyDown += new KeyEventHandler(entity_search_box_KeyDown);
             // 
             // entity_search_btn
             // 
