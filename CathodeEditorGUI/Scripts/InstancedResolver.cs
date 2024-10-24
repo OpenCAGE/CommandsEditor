@@ -292,7 +292,7 @@ namespace CommandsEditor.Scripts
             bool do_logically = true;
             if (do_logically)
             {
-                //Slower, but writes in a more correct order
+                //Slower, but writes in a more correct order and allows evaluation of script logic
                 Recurse(_content.commands.EntryPoints[0], new List<ShortGuid>());
             }
             else
@@ -427,12 +427,12 @@ namespace CommandsEditor.Scripts
 
             for (int i = 0; i < instances.Count; i++)
             {
-                Parameter is_template = instances[i].GetParameter("is_template");
-                if (is_template != null && ((cBool)is_template.content).value == true)
-                    continue;
-                Parameter is_shared = instances[i].GetParameter("is_shared");
-                if (is_shared != null && ((cBool)is_shared.content).value == true)
-                    continue;
+                //Parameter is_template = instances[i].GetParameter("is_template");
+                //if (is_template != null && ((cBool)is_template.content).value == true)
+                //    continue;
+                //Parameter is_shared = instances[i].GetParameter("is_shared");
+                //if (is_shared != null && ((cBool)is_shared.content).value == true)
+                //    continue;
 
                 List<ShortGuid> continuedHierarchy = new List<ShortGuid>(hierarchy);
                 continuedHierarchy.Add(instances[i].shortGUID);

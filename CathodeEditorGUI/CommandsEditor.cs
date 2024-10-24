@@ -59,6 +59,7 @@ namespace CommandsEditor
 
         public CommandsEditor(string level = null)
         {
+#if DEBUG
             //List<string> lvls = Level.GetLevels(SharedData.pathToAI, true);
             //foreach (string lvl in lvls)
             //{
@@ -134,7 +135,7 @@ namespace CommandsEditor
                 Console.WriteLine("Unexpected!");
             }
 
-
+#endif
             //*/
             //return;
 
@@ -1216,6 +1217,24 @@ namespace CommandsEditor
         {
             EditorUtils.PatchLaunchMode(_commandsDisplay.Content.level);
             Process.Start(SettingsManager.GetString("PATH_GameRoot") + "AI.exe");
+        }
+
+        ControlsWindow _controlsWindow = null;
+        private void ShowControls_Click(object sender, EventArgs e)
+        {
+            if (_controlsWindow != null)
+            {
+                _controlsWindow.FormClosed -= _controlsWindow_FormClosed;
+                _controlsWindow.Close();
+            }
+
+            _controlsWindow = new ControlsWindow();
+            _controlsWindow.Show();
+            _controlsWindow.FormClosed += _controlsWindow_FormClosed;
+        }
+        private void _controlsWindow_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _controlsWindow = null;
         }
     }
 }

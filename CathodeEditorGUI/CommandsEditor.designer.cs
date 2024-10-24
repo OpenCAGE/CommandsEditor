@@ -63,6 +63,7 @@ namespace CommandsEditor
             this.statusText = new System.Windows.Forms.ToolStripStatusLabel();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.ShowControls = new System.Windows.Forms.ToolStripButton();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -73,6 +74,7 @@ namespace CommandsEditor
             this.toolStripButton1,
             this.toolStripButton2,
             this.helpBtn,
+            this.ShowControls,
             this.DEBUG_RunChecks,
             this.DEBUG_DoorPhysEnt,
             this.DEBUG_LaunchGame});
@@ -137,7 +139,7 @@ namespace CommandsEditor
             this.connectToUnity.Checked = true;
             this.connectToUnity.CheckState = System.Windows.Forms.CheckState.Checked;
             this.connectToUnity.Name = "connectToUnity";
-            this.connectToUnity.Size = new System.Drawing.Size(180, 22);
+            this.connectToUnity.Size = new System.Drawing.Size(173, 22);
             this.connectToUnity.Text = "Connect to Unity";
             this.connectToUnity.ToolTipText = "Enable a websocket connection to the Unity Level Viewer.";
             this.connectToUnity.Click += new System.EventHandler(this.connectToUnity_Click);
@@ -145,7 +147,7 @@ namespace CommandsEditor
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(170, 6);
             // 
             // compositeViewerToolStripMenuItem
             // 
@@ -154,7 +156,7 @@ namespace CommandsEditor
             this.autoHideExplorerViewToolStripMenuItem,
             this.searchOnlyCompositeNames});
             this.compositeViewerToolStripMenuItem.Name = "compositeViewerToolStripMenuItem";
-            this.compositeViewerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.compositeViewerToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.compositeViewerToolStripMenuItem.Text = "Composite Display";
             // 
             // showExplorerViewToolStripMenuItem
@@ -190,7 +192,7 @@ namespace CommandsEditor
             this.nodeOpensEntity,
             this.createFlowgraphNodeWhenEntityCreatedToolStripMenuItem});
             this.entityDisplayToolStripMenuItem.Name = "entityDisplayToolStripMenuItem";
-            this.entityDisplayToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.entityDisplayToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.entityDisplayToolStripMenuItem.Text = "Entity Display";
             // 
             // showEntityIDs
@@ -224,7 +226,7 @@ namespace CommandsEditor
             this.resetUILayoutsToolStripMenuItem,
             this.writeInstancedResourcesExperimentalToolStripMenuItem});
             this.miscToolStripMenuItem.Name = "miscToolStripMenuItem";
-            this.miscToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.miscToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.miscToolStripMenuItem.Text = "Misc";
             // 
             // showConfirmationWhenSavingToolStripMenuItem
@@ -336,6 +338,16 @@ namespace CommandsEditor
             this.dockPanel.TabIndex = 5;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
             // 
+            // ShowControls
+            // 
+            this.ShowControls.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.ShowControls.Image = ((System.Drawing.Image)(resources.GetObject("ShowControls.Image")));
+            this.ShowControls.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.ShowControls.Name = "ShowControls";
+            this.ShowControls.Size = new System.Drawing.Size(56, 22);
+            this.ShowControls.Text = "Controls";
+            this.ShowControls.Click += new System.EventHandler(this.ShowControls_Click);
+            // 
             // CommandsEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -393,5 +405,6 @@ namespace CommandsEditor
         private System.Windows.Forms.ToolStripButton DEBUG_LaunchGame;
         private System.Windows.Forms.ToolStripMenuItem buildLevelToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem createFlowgraphNodeWhenEntityCreatedToolStripMenuItem;
+        private System.Windows.Forms.ToolStripButton ShowControls;
     }
 }
