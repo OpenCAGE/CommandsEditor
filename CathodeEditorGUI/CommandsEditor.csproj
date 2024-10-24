@@ -270,27 +270,19 @@
     <Compile Include="CommandsEditor.Designer.cs">
       <DependentUpon>CommandsEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="DockPanels\Composite Panels\EntityList.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="DockPanels\Composite Panels\EntityList.cs" />
     <Compile Include="DockPanels\Composite Panels\EntityList.Designer.cs">
       <DependentUpon>EntityList.cs</DependentUpon>
     </Compile>
-    <Compile Include="DockPanels\CompositeDisplay.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="DockPanels\CompositeDisplay.cs" />
     <Compile Include="DockPanels\CompositeDisplay.Designer.cs">
       <DependentUpon>CompositeDisplay.cs</DependentUpon>
     </Compile>
-    <Compile Include="DockPanels\CommandsDisplay.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="DockPanels\CommandsDisplay.cs" />
     <Compile Include="DockPanels\CommandsDisplay.Designer.cs">
       <DependentUpon>CommandsDisplay.cs</DependentUpon>
     </Compile>
-    <Compile Include="DockPanels\Composite Panels\EntityInspector.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="DockPanels\Composite Panels\EntityInspector.cs" />
     <Compile Include="DockPanels\Composite Panels\EntityInspector.Designer.cs">
       <DependentUpon>EntityInspector.cs</DependentUpon>
     </Compile>
@@ -312,9 +304,7 @@
     <Compile Include="Popups\AddFolder.Designer.cs">
       <DependentUpon>AddFolder.cs</DependentUpon>
     </Compile>
-    <Compile Include="DockPanels\Composite Panels\Flowgraph.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="DockPanels\Composite Panels\Flowgraph.cs" />
     <Compile Include="DockPanels\Composite Panels\Flowgraph.Designer.cs">
       <DependentUpon>Flowgraph.cs</DependentUpon>
     </Compile>
@@ -522,9 +512,7 @@
     <Compile Include="Popups\AddOrEditLink.designer.cs">
       <DependentUpon>AddOrEditLink.cs</DependentUpon>
     </Compile>
-    <Compile Include="Popups\Experimental\Composite3D.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="Popups\Experimental\Composite3D.cs" />
     <Compile Include="Popups\Experimental\Composite3D.Designer.cs">
       <DependentUpon>Composite3D.cs</DependentUpon>
     </Compile>
