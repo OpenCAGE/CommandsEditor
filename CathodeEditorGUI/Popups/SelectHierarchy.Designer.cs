@@ -34,6 +34,7 @@
             this.compositeEntityList1 = new Popups.UserControls.CompositeEntityList();
             this.pathDisplay = new System.Windows.Forms.TextBox();
             this.goBackOnPath = new System.Windows.Forms.Button();
+            this.createNode = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // FollowEntityThrough
@@ -93,18 +94,32 @@
             this.goBackOnPath.UseVisualStyleBackColor = true;
             this.goBackOnPath.Click += new System.EventHandler(this.goBackOnPath_Click);
             // 
-            // EditHierarchy
+            // createNode
+            // 
+            this.createNode.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.createNode.AutoSize = true;
+            this.createNode.Location = new System.Drawing.Point(488, 759);
+            this.createNode.Name = "createNode";
+            this.createNode.Size = new System.Drawing.Size(86, 17);
+            this.createNode.TabIndex = 184;
+            this.createNode.Text = "Create Node";
+            this.createNode.UseVisualStyleBackColor = true;
+            this.createNode.CheckedChanged += new System.EventHandler(this.createNode_CheckedChanged);
+            // 
+            // SelectHierarchy
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(763, 792);
+            this.Controls.Add(this.createNode);
             this.Controls.Add(this.pathDisplay);
             this.Controls.Add(this.goBackOnPath);
             this.Controls.Add(this.compositeEntityList1);
             this.Controls.Add(this.FollowEntityThrough);
             this.Controls.Add(this.SelectEntity);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "EditHierarchy";
+            this.Name = "SelectHierarchy";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Select Entity";
             this.ResumeLayout(false);
@@ -118,5 +133,6 @@
         private Popups.UserControls.CompositeEntityList compositeEntityList1;
         private System.Windows.Forms.TextBox pathDisplay;
         private System.Windows.Forms.Button goBackOnPath;
+        private System.Windows.Forms.CheckBox createNode;
     }
 }

@@ -27,9 +27,9 @@ namespace CommandsEditor
 
         List<EntityPath> entityListToHierarchies;
 
-        EntityDisplay _entityDisplay;
+        EntityInspector _entityDisplay;
 
-        public CAGEAnimationEditor(EntityDisplay entityDisplay) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_CAGEANIM_EDITOR_OPENED | WindowClosesOn.NEW_COMPOSITE_SELECTION)
+        public CAGEAnimationEditor(EntityInspector entityDisplay) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_CAGEANIM_EDITOR_OPENED | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             _entityDisplay = entityDisplay;
 
@@ -274,7 +274,7 @@ namespace CommandsEditor
             hierarchyEditor.Show();
             hierarchyEditor.OnHierarchyGenerated += HierarchyEditor_HierarchyGenerated;
         }
-        private void HierarchyEditor_HierarchyGenerated(List<ShortGuid> generatedHierarchy)
+        private void HierarchyEditor_HierarchyGenerated(ShortGuid[] generatedHierarchy)
         {
             EntityPath hierarchy = new EntityPath(generatedHierarchy);
 
@@ -429,7 +429,7 @@ namespace CommandsEditor
             hierarchyEditor.OnHierarchyGenerated += HierarchyEditor2_HierarchyGenerated;
             SetupEventTimeline();
         }
-        private void HierarchyEditor2_HierarchyGenerated(List<ShortGuid> generatedHierarchy)
+        private void HierarchyEditor2_HierarchyGenerated(ShortGuid[] generatedHierarchy)
         {
             EntityPath hierarchy = new EntityPath(generatedHierarchy);
 

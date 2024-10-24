@@ -53,6 +53,8 @@ namespace CommandsEditor
         public static Action OnCompositeAddPending;
         public static Action<Composite> OnCompositeAdded;
 
+        public static Action<Entity> OnEntityDeleted;
+
         //Settings keys
         public static SettingsStrings Settings = new SettingsStrings();
         public class SettingsStrings
@@ -70,7 +72,6 @@ namespace CommandsEditor
             public readonly string AutoHideCompositeDisplay = "CS_FileBrowserAutoHide";
             public readonly string KeepUsesWindowOpen = "CS_KeepUsesWindowOpen";
             public readonly string OpenEntityFromNode = "CS_OpenEntityFromNode";
-            public readonly string UseLegacyParamCreator = "CS_UseLegacyParamCreator";
             public readonly string EntitySplitWidth = "CS_EntitySplitWidth";
             public readonly string CompositeSplitWidth = "CS_CompositeSplitWidth";
             public readonly string CommandsSplitWidth = "CS_CommandsSplitWidth";
@@ -88,6 +89,15 @@ namespace CommandsEditor
             public readonly string PreviouslySelectedCompInstType = "CS_PreviouslySelectedCompInstType";
             public readonly string PreviouslySearchedCompInstType = "CS_PreviouslySearchedCompInstType";
             public readonly string PreviouslySearchedParamPopulationComp = "CS_PreviouslySearchedParamPopulationComp";
+            public readonly string ExperimentalResourceStuff = "CS_EnableExperimentalResourceSaving";
+            public readonly string MakeNodeWhenMakeEntity = "CS_MakeNodeWhenMakeEntity";
+            public readonly string PrevFuncUsesSearch = "CS_PrevFuncUsesSearch";
+            public readonly string PrevVariableType = "CS_PrevVariableType";
+            public readonly string CustomColours = "CS_CustomColours";
+            public readonly string EntityListState = "CS_EntityListState";
+            public readonly string EntityListWidth = "CS_EntityListWidth";
+            public readonly string EntityInspectorState = "CS_EntityInspectorState";
+            public readonly string EntityInspectorWidth = "CS_EntityInspectorWidth";
         }
     }
 

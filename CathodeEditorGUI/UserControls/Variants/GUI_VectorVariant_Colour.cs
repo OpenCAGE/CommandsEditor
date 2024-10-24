@@ -10,8 +10,8 @@ using System.Windows.Forms;
 using CATHODE.Scripting;
 using CathodeLib;
 using CATHODE;
-using CommandsEditor.Nodes;
 using Newtonsoft.Json;
+using OpenCAGE;
 
 namespace CommandsEditor.UserControls
 {
@@ -55,11 +55,13 @@ namespace CommandsEditor.UserControls
         {
             ColorDialog colourPicker = new ColorDialog();
             colourPicker.Color = VectorToColour();
+            colourPicker.CustomColors = SettingsManager.GetIntegerArray(Singleton.Settings.CustomColours);
 
             if (colourPicker.ShowDialog() == DialogResult.OK)
             {
                 SetVectorFromColour(colourPicker.Color);
                 pictureBox1.BackColor = VectorToColour();
+                SettingsManager.SetIntegerArray(Singleton.Settings.CustomColours, colourPicker.CustomColors);
             }
         }
 

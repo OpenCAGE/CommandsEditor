@@ -98,11 +98,11 @@ namespace CommandsEditor
 #if DEBUG
             string level = "tech_rnd";
 
-            Movers mvr = new Movers("G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\data\\ENV\\PRODUCTION\\" + level + "\\WORLD\\MODELS.MVR");
-            Lights lights = new Lights("G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\data\\ENV\\PRODUCTION\\" + level + "\\WORLD\\LIGHTS.BIN");
-            AlphaLightLevel lightsAlpha = new AlphaLightLevel("G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\data\\ENV\\PRODUCTION\\" + level + "\\WORLD\\ALPHALIGHT_LEVEL.BIN");
-            EnvironmentMaps env = new EnvironmentMaps("G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\data\\ENV\\PRODUCTION\\" + level + "\\WORLD\\ENVIRONMENTMAP.BIN");
-            //Resources res = new Resources("G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\data\\ENV\\PRODUCTION\\" + level + "\\WORLD\\RESOURCES.BIN");
+            Movers mvr = new Movers(SharedData.pathToAI + "\\data\\ENV\\PRODUCTION\\" + level + "\\WORLD\\MODELS.MVR");
+            Lights lights = new Lights(SharedData.pathToAI + "\\data\\ENV\\PRODUCTION\\" + level + "\\WORLD\\LIGHTS.BIN");
+            AlphaLightLevel lightsAlpha = new AlphaLightLevel(SharedData.pathToAI + "\\data\\ENV\\PRODUCTION\\" + level + "\\WORLD\\ALPHALIGHT_LEVEL.BIN");
+            EnvironmentMaps env = new EnvironmentMaps(SharedData.pathToAI + "\\data\\ENV\\PRODUCTION\\" + level + "\\WORLD\\ENVIRONMENTMAP.BIN");
+            //Resources res = new Resources(SharedData.pathToAI + "\\data\\ENV\\PRODUCTION\\" + level + "\\WORLD\\RESOURCES.BIN");
 
             mvr.Entries.Clear();
             env.Entries.Clear();
@@ -117,11 +117,68 @@ namespace CommandsEditor
 #endif
         }
 
-        public static void checkprefabinstances()
+        public static void TestPurge()
         {
 #if DEBUG
 
-            List<string> files = Directory.GetFiles("D:\\Alien Isolation Modding\\Isolation Mod Tools\\Alien Isolation PC Final/DATA/ENV/PRODUCTION/", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            List<string> files = Directory.GetFiles("F:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\data_orig\\ENV\\Production", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            foreach (string file in files)
+            {
+                Commands commands = new Commands(file);
+                for (int x = 0; x < commands.Entries.Count; x++)
+                    CommandsUtils.PurgeDeadLinks(commands, commands.Entries[x]);
+
+                for (int x = 0; x < commands.Entries.Count; x++)
+                {
+                    if (CommandsUtils.PurgeDeadLinks(commands, commands.Entries[x])) {
+                        string sdfsddf = "";
+                    }
+                }
+            }
+#endif
+        }
+
+        public static void TestVisibilityMVR()
+        {
+#if DEBUG
+
+            List<string> files = Directory.GetFiles("F:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\data_orig\\ENV\\Production", "MODELS.MVR", SearchOption.AllDirectories).ToList<string>();
+            HashSet<uint> visibility_vars = new HashSet<uint>();
+            foreach (string file in files)
+            {
+                Movers movers = new Movers(file);
+                for (int i = 0; i < movers.Entries.Count; i++)
+                    visibility_vars.Add(movers.Entries[i].visibility);
+            }
+            List<uint> visibility = new List<uint>(visibility_vars);
+            foreach (var number in visibility)
+                Console.WriteLine(number);
+#endif
+        }
+
+        public static void DoCheckOnNodegraph()
+        {
+#if DEBUG
+
+            List<string> files = Directory.GetFiles("F:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\data_orig\\ENV\\Production", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            foreach (string file in files)
+            {
+                Commands commands = new Commands(file);
+                commands.EntryPoints[0].name = EditorUtils.GetCompositeName(commands.EntryPoints[0]);
+                Flowgraph flowgraph = new Flowgraph();
+                flowgraph.Show();
+                //flowgraph.DEBUG_LoadAll_Test(commands);
+                flowgraph.Hide();
+                flowgraph.Dispose();
+            }
+#endif
+        }
+
+        public static void checkphysicssystempositions()
+        {
+#if DEBUG
+
+            List<string> files = Directory.GetFiles("F:\\Alien Isolation Versions\\Alien Isolation PC Final\\DATA\\ENV", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
             Parallel.ForEach(files, file =>
             {
                 Commands commands = new Commands(file);
@@ -129,13 +186,71 @@ namespace CommandsEditor
                 {
                     Parallel.ForEach(comp.functions, func =>
                     {
-                        Composite compPointer = commands.GetComposite(func.function);
-                        if (compPointer != null)
+                        if (func.function == ShortGuidUtils.Generate("PhysicsSystem"))
                         {
-                            if (func.resources.Count != 0)
+                            Parameter pos = func.GetParameter("position");
+                            if (pos != null)
                             {
-                                Console.WriteLine("Resources found!!!!! Count: " + func.resources.Count);
+                                string sdfsdf = "";
                             }
+                        }
+                    });
+                });
+            });
+#endif
+        }
+
+        public static void checkprefabinstances()
+        {
+#if DEBUG
+
+            List<string> files = Directory.GetFiles("F:\\Alien Isolation Versions\\Alien Isolation PC Final\\DATA\\ENV\\PRODUCTION", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            Parallel.ForEach(files, file =>
+            {
+                Commands commands = new Commands(file);
+                Parallel.ForEach(commands.Entries, comp =>
+                {
+                    Parallel.ForEach(comp.functions, func =>
+                    {
+                        if (func.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.Zone))
+                        {
+                            List<EntityConnector> parentLinks = func.GetParentLinks(comp);
+                            if (parentLinks.FindAll(o => o.thisParamID == ShortGuidUtils.Generate("composites")).Count != 0)
+                            {
+                                string sdfsdf = "";
+                            }
+                            if (func.childLinks.FindAll(o => o.thisParamID == ShortGuidUtils.Generate("composites")).Count != 0)
+                            {
+                                string sdfsdf = "";
+                            }
+                        }
+                    });
+                });
+            });
+#endif
+        }
+
+        public static void checkresources()
+        {
+#if DEBUG
+
+            List<string> files = Directory.GetFiles("F:\\Alien Isolation Versions\\Alien Isolation PC Final\\DATA\\ENV\\PRODUCTION", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            Parallel.ForEach(files, file =>
+            {
+                Commands commands = new Commands(file);
+                Parallel.ForEach(commands.Entries, comp =>
+                {
+                    Parallel.ForEach(comp.functions, func =>
+                    {
+                        ResourceReference resource = func.GetResource(ResourceType.COLLISION_MAPPING);
+                        if (resource != null)
+                        {
+                            Console.WriteLine("COLLISION_MAPPING: " + func.function.ToString());
+                        }
+                        ResourceReference resource2 = func.GetResource(ResourceType.RENDERABLE_INSTANCE);
+                        if (resource2 != null)
+                        {
+                            Console.WriteLine("RENDERABLE_INSTANCE: " + func.function.ToString());
                         }
                     });
                 });
@@ -157,7 +272,7 @@ namespace CommandsEditor
                     {
                         for (int i = 0; i < func.childLinks.Count; i++)
                         {
-                            Entity childEnt = comp.GetEntityByID(func.childLinks[i].childID);
+                            Entity childEnt = comp.GetEntityByID(func.childLinks[i].linkedEntityID);
                             switch (childEnt.variant)
                             {
                                 case EntityVariant.FUNCTION:
@@ -207,8 +322,8 @@ namespace CommandsEditor
                         List<string> paramStrs = new List<string>();
                         foreach (EntityConnector connector in func.childLinks)
                         {
-                            if (!paramStrs.Contains(connector.parentParamID.ToString()))
-                                paramStrs.Add(connector.parentParamID.ToString());
+                            if (!paramStrs.Contains(connector.thisParamID.ToString()))
+                                paramStrs.Add(connector.thisParamID.ToString());
                         }
                         if (paramStrs.Count > 1)
                         {
@@ -218,6 +333,146 @@ namespace CommandsEditor
                 });
             });
 #endif
+        }
+
+        //Go to the top of the connection chain, and follow it down to get the number of nodes in the sequence - keep a track of the longest sequences and where they are
+        public static void CountEntitySequences()
+        {
+            string OnlyDoOneComp = "";//"SCRIPT_STORYMISSION\\M04_WELCOME_TO_THE_SEVASTOPOL\\M04_PART_01\\M04_PT01"; //keep this blank to dump all
+
+            List<string> files = Directory.GetFiles("F:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\data_orig\\ENV\\Production", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            List<string> output = new List<string>();
+            List<int> counts = new List<int>();
+            int max = 0;
+            foreach (string file in files)
+            {
+                output.Add("====== Loading =====");
+                output.Add(file);
+                output.Add("====================");
+
+                Commands commands = new Commands(file);
+                EntityUtils.LinkCommands(commands);
+                ShortGuidUtils.LinkCommands(commands);
+
+                foreach (Composite composite in commands.Entries)
+                {
+                    if (OnlyDoOneComp != "" && composite.name != OnlyDoOneComp)
+                        continue;
+
+                    CommandsUtils.PurgeDeadLinks(commands, composite);
+
+                    List<Entity> entities = composite.GetEntities();
+                    List<Entity> checkedEnts = new List<Entity>();
+                    foreach (Entity entity in entities)
+                    {
+                        if (checkedEnts.Contains(entity))
+                            continue;
+
+                        List<Entity> connectedEntities = new List<Entity>();
+                        RecurseEntityConnections(entity, composite, connectedEntities);
+
+                        if (connectedEntities.Count != 1)
+                        {
+                            if (OnlyDoOneComp != "")
+                            {
+                                Console.WriteLine(composite.name + " -> " + connectedEntities.Count);
+                            }
+                            else
+                            {
+                                //foreach (Entity ent in connectedEntities)
+                                //{
+                                //    Console.WriteLine(EntityUtils.GetName(composite, ent));
+                                //}
+
+                                output.Add(composite.name + " -> " + connectedEntities.Count);
+                                counts.Add(connectedEntities.Count);
+                            }
+                        }
+
+                        if (max < connectedEntities.Count)
+                            max = connectedEntities.Count;
+
+                        checkedEnts.AddRange(connectedEntities);
+                    }
+
+                    if (OnlyDoOneComp != "")
+                        return;
+                }
+            }
+            output.Add("-----------");
+            output.Add("Max: " + max);
+            File.WriteAllLines("output.txt", output);
+
+            counts.Sort();
+            output.Clear();
+            foreach (int count in counts)
+            {
+                output.Add(count.ToString());
+            }
+            File.WriteAllLines("counts.txt", output);
+        }
+        private static void RecurseEntityConnections(Entity entity, Composite comp, List<Entity> checkedEnts)
+        {
+            if (checkedEnts.Contains(entity))
+                return;
+            checkedEnts.Add(entity);
+
+            List<EntityConnector> connectionsIn = entity.GetParentLinks(comp);
+            foreach (EntityConnector connection in connectionsIn)
+            {
+                Entity ent = comp.GetEntityByID(connection.linkedEntityID);
+                if (ent == null) continue;
+                RecurseEntityConnections(ent, comp, checkedEnts);
+            }
+
+            List<EntityConnector> connectionsOut = entity.childLinks;
+            foreach (EntityConnector connection in connectionsOut)
+            {
+                Entity ent = comp.GetEntityByID(connection.linkedEntityID);
+                if (ent == null) continue;
+                RecurseEntityConnections(ent, comp, checkedEnts);
+            }
+        }
+
+        //This checks to make sure that variable entities don't have any links that aren't the variable name (spoiler: they don't)
+        public static void CheckVariablesHaveNoRogueParams()
+        {
+            List<string> files = Directory.GetFiles("F:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\data_orig\\ENV\\Production", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            foreach (string file in files)
+            {
+                Commands commands = new Commands(file);
+                foreach (Composite comp in commands.Entries)
+                {
+                    foreach (VariableEntity var in comp.variables)
+                    {
+                        List<EntityConnector> connectionsIn = var.GetParentLinks(comp);
+                        List<EntityConnector> connectionsOut = var.childLinks;
+
+                        foreach (EntityConnector connection in connectionsIn)
+                        {
+                            if (connection.thisParamID != var.name)
+                            {
+                                throw new Exception("Rogue");
+                            }
+                        }
+                        foreach (EntityConnector connection in connectionsOut)
+                        {
+                            if (connection.thisParamID != var.name)
+                            {
+                                throw new Exception("Rogue");
+                            }
+                        }
+
+                        foreach (Parameter param in var.parameters)
+                        {
+                            if (param.name != var.name)
+                            {
+                                throw new Exception("Rogue");
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         public static void checkanims()
@@ -1239,12 +1494,12 @@ namespace CommandsEditor
         public static void LoadAllFileTests()
         {
 #if DEBUG
-            //Models mdls = new Models("G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\BSP_TORRENS\\RENDERABLE\\LEVEL_MODELS.PAK");
+            //Models mdls = new Models(SharedData.pathToAI + "\\DATA\\ENV\\PRODUCTION\\BSP_TORRENS\\RENDERABLE\\LEVEL_MODELS.PAK");
             //mdls.Save();
             /*
             CathodeModels mdls_old = new CathodeModels(
-                "G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\BSP_TORRENS\\RENDERABLE\\MODELS_LEVEL.BIN",
-                "G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\BSP_TORRENS\\RENDERABLE\\LEVEL_MODELS.PAK");
+                SharedData.pathToAI + "\\DATA\\ENV\\PRODUCTION\\BSP_TORRENS\\RENDERABLE\\MODELS_LEVEL.BIN",
+                SharedData.pathToAI + "\\DATA\\ENV\\PRODUCTION\\BSP_TORRENS\\RENDERABLE\\LEVEL_MODELS.PAK");
 
             int binIndex = 0;
             for (int i = 0; i < mdls.Entries.Count; i++)
@@ -1280,9 +1535,9 @@ namespace CommandsEditor
 
             //string sdffds = "";
 
-            //Models mdls = new Models("G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\ENG_ALIEN_NEST\\RENDERABLE\\LEVEL_MODELS.PAK");
+            //Models mdls = new Models(SharedData.pathToAI + "\\DATA\\ENV\\PRODUCTION\\ENG_ALIEN_NEST\\RENDERABLE\\LEVEL_MODELS.PAK");
             //mdls.Save();
-            ////Textures tex34 = new Textures("G:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\BSP_LV426_PT01\\RENDERABLE\\LEVEL_TEXTURES.ALL.PAK");
+            ////Textures tex34 = new Textures(SharedData.pathToAI + "\\DATA\\ENV\\PRODUCTION\\BSP_LV426_PT01\\RENDERABLE\\LEVEL_TEXTURES.ALL.PAK");
             ////tex34.Save();
             //return;
 
@@ -1941,8 +2196,8 @@ namespace CommandsEditor
                     }
                     for (int y = 0; y < entities[x].childLinks.Count; y++)
                     {
-                        string connectedEntityName = "ENT_" + entities[x].childLinks[y].childID.ToByteString().Replace('-', '_');
-                        script.Add(entityName + ".AddParameterLink(\"" + ShortGuidUtils.FindString(entities[x].childLinks[y].parentParamID) + "\", " + connectedEntityName + ", \"" + ShortGuidUtils.FindString(entities[x].childLinks[y].childParamID) + "\");");
+                        string connectedEntityName = "ENT_" + entities[x].childLinks[y].linkedEntityID.ToByteString().Replace('-', '_');
+                        script.Add(entityName + ".AddParameterLink(\"" + ShortGuidUtils.FindString(entities[x].childLinks[y].thisParamID) + "\", " + connectedEntityName + ", \"" + ShortGuidUtils.FindString(entities[x].childLinks[y].linkedParamID) + "\");");
                     }
                 }
             }

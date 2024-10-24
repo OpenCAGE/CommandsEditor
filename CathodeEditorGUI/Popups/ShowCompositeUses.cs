@@ -31,7 +31,7 @@ namespace CommandsEditor
                 var entities = CathodeEntityDatabase.GetEntities();
                 for (int i = 0; i < entities.Count; i++)
                     entityVariant.Items.Add(entities[i].className);
-                entityVariant.SelectedIndex = 0;
+                entityVariant.SelectedIndex = SettingsManager.GetInteger(Singleton.Settings.PrevFuncUsesSearch);
             }
         }
 
@@ -46,6 +46,7 @@ namespace CommandsEditor
 
         private void entityVariant_SelectedIndexChanged(object sender, EventArgs e)
         {
+            SettingsManager.SetInteger(Singleton.Settings.PrevFuncUsesSearch, entityVariant.SelectedIndex);
             Search(ShortGuidUtils.Generate(entityVariant.Text));
         }
 

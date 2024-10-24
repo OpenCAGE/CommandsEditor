@@ -22,9 +22,9 @@ namespace CommandsEditor
         private CurrentDisplay _currentDisplay = CurrentDisplay.PROXIES;
         private Dictionary<CurrentDisplay, SynchronizedCollection<EntityRef>> _entityRefs = new Dictionary<CurrentDisplay, SynchronizedCollection<EntityRef>>();
 
-        private EntityDisplay _entityDisplay;
+        private EntityInspector _entityDisplay;
 
-        public ShowCrossRefs(EntityDisplay entityDisplay) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
+        public ShowCrossRefs(EntityInspector entityDisplay) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             _entityDisplay = entityDisplay;
             InitializeComponent();

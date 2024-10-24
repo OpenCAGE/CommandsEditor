@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using CATHODE.Scripting;
 using CATHODE;
 using CathodeLib;
+using CommandsEditor.DockPanels;
 
 namespace CommandsEditor.UserControls
 {
@@ -22,9 +23,12 @@ namespace CommandsEditor.UserControls
             this.deleteToolStripMenuItem.Click += new EventHandler(deleteToolStripMenuItem_Click);
         }
 
+        private EntityInspector _entDisplay = null;
+
         private cResource resRef = null;
-        public void PopulateUI(cResource cResource, string paramID)
+        public void PopulateUI(EntityInspector entDisplay, cResource cResource, string paramID)
         {
+            _entDisplay = entDisplay;
             GUID_VARIABLE_DUMMY.Text = paramID;
             resRef = cResource;
             this.deleteToolStripMenuItem.Text = "Delete '" + paramID + "'";
@@ -33,7 +37,7 @@ namespace CommandsEditor.UserControls
         /* Edit resources referenced by the resource param */
         private void openResourceEditor_Click(object sender, EventArgs e)
         {
-            AddOrEditResource resourceEditor = new AddOrEditResource(resRef.value, resRef.shortGUID, GUID_VARIABLE_DUMMY.Text);
+            AddOrEditResource resourceEditor = new AddOrEditResource(_entDisplay, resRef.value, resRef.shortGUID, GUID_VARIABLE_DUMMY.Text);
             resourceEditor.Show();
             resourceEditor.OnSaved += OnResourceEditorSaved;
             resourceEditor.FormClosed += ResourceEditor_FormClosed;

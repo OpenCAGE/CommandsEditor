@@ -16,9 +16,9 @@ namespace CommandsEditor.UserControls
 {
     public partial class GUI_SplineDataType : ParameterUserControl
     {
-        private EntityDisplay _entityDisplay;
+        private EntityInspector _entityDisplay;
 
-        public GUI_SplineDataType(EntityDisplay entityDisplay) : base()
+        public GUI_SplineDataType(EntityInspector entityDisplay) : base()
         {
             _entityDisplay = entityDisplay;
             InitializeComponent();

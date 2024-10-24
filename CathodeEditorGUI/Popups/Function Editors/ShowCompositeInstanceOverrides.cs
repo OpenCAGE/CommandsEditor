@@ -14,7 +14,7 @@ namespace CommandsEditor
 {
     public partial class ShowCompositeInstanceOverrides : BaseWindow
     {
-        public ShowCompositeInstanceOverrides(EntityDisplay entityDisplay) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_CAGEANIM_EDITOR_OPENED | WindowClosesOn.NEW_COMPOSITE_SELECTION)
+        public ShowCompositeInstanceOverrides(EntityInspector entityDisplay) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_CAGEANIM_EDITOR_OPENED | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             InitializeComponent();
         }

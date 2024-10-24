@@ -36,13 +36,12 @@
             System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("Proxies", System.Windows.Forms.HorizontalAlignment.Left);
             System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup("Aliases", System.Windows.Forms.HorizontalAlignment.Left);
             this.panel1 = new System.Windows.Forms.Panel();
-            this.entityListIcons = new System.Windows.Forms.ImageList(this.components);
-            this.entity_search_box = new System.Windows.Forms.TextBox();
-            this.entity_search_btn = new System.Windows.Forms.Button();
             this.clearSearchBtn = new System.Windows.Forms.Button();
             this.composite_content = new System.Windows.Forms.ListView();
             this.EntityName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.EntityType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.entityListIcons = new System.Windows.Forms.ImageList(this.components);
+            this.entity_search_box = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -51,51 +50,18 @@
             this.panel1.Controls.Add(this.clearSearchBtn);
             this.panel1.Controls.Add(this.composite_content);
             this.panel1.Controls.Add(this.entity_search_box);
-            this.panel1.Controls.Add(this.entity_search_btn);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(830, 773);
             this.panel1.TabIndex = 181;
             // 
-            // entityListIcons
-            // 
-            this.entityListIcons.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("entityListIcons.ImageStream")));
-            this.entityListIcons.TransparentColor = System.Drawing.Color.Transparent;
-            this.entityListIcons.Images.SetKeyName(0, "AnimatorController Icon.png");
-            this.entityListIcons.Images.SetKeyName(1, "d_ScriptableObject Icon braces only.png");
-            this.entityListIcons.Images.SetKeyName(2, "d_PrefabVariant Icon.png");
-            this.entityListIcons.Images.SetKeyName(3, "d_ScriptableObject Icon.png");
-            this.entityListIcons.Images.SetKeyName(4, "AreaEffector2D Icon.ico");
-            // 
-            // entity_search_box
-            // 
-            this.entity_search_box.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.entity_search_box.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.entity_search_box.Location = new System.Drawing.Point(3, 4);
-            this.entity_search_box.Name = "entity_search_box";
-            this.entity_search_box.Size = new System.Drawing.Size(766, 20);
-            this.entity_search_box.TabIndex = 146;
-            // 
-            // entity_search_btn
-            // 
-            this.entity_search_btn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.entity_search_btn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.entity_search_btn.Location = new System.Drawing.Point(767, 4);
-            this.entity_search_btn.Name = "entity_search_btn";
-            this.entity_search_btn.Size = new System.Drawing.Size(63, 20);
-            this.entity_search_btn.TabIndex = 145;
-            this.entity_search_btn.Text = "Search";
-            this.entity_search_btn.UseVisualStyleBackColor = true;
-            this.entity_search_btn.Click += new System.EventHandler(this.entity_search_btn_Click);
-            // 
             // clearSearchBtn
             // 
             this.clearSearchBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.clearSearchBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.clearSearchBtn.Image = ((System.Drawing.Image)(resources.GetObject("clearSearchBtn.Image")));
-            this.clearSearchBtn.Location = new System.Drawing.Point(749, 4);
+            this.clearSearchBtn.Location = new System.Drawing.Point(810, 4);
             this.clearSearchBtn.Name = "clearSearchBtn";
             this.clearSearchBtn.Size = new System.Drawing.Size(20, 20);
             this.clearSearchBtn.TabIndex = 177;
@@ -150,6 +116,27 @@
             this.EntityType.Text = "Type";
             this.EntityType.Width = 163;
             // 
+            // entityListIcons
+            // 
+            this.entityListIcons.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("entityListIcons.ImageStream")));
+            this.entityListIcons.TransparentColor = System.Drawing.Color.Transparent;
+            this.entityListIcons.Images.SetKeyName(0, "AnimatorController Icon.png");
+            this.entityListIcons.Images.SetKeyName(1, "d_ScriptableObject Icon braces only.png");
+            this.entityListIcons.Images.SetKeyName(2, "d_PrefabVariant Icon.png");
+            this.entityListIcons.Images.SetKeyName(3, "d_ScriptableObject Icon.png");
+            this.entityListIcons.Images.SetKeyName(4, "AreaEffector2D Icon.ico");
+            // 
+            // entity_search_box
+            // 
+            this.entity_search_box.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.entity_search_box.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.entity_search_box.Location = new System.Drawing.Point(3, 4);
+            this.entity_search_box.Name = "entity_search_box";
+            this.entity_search_box.Size = new System.Drawing.Size(827, 20);
+            this.entity_search_box.TabIndex = 146;
+            this.entity_search_box.TextChanged += new System.EventHandler(this.entity_search_box_TextChanged);
+            // 
             // CompositeEntityList
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -170,7 +157,6 @@
         private System.Windows.Forms.ColumnHeader EntityName;
         private System.Windows.Forms.ColumnHeader EntityType;
         private System.Windows.Forms.TextBox entity_search_box;
-        private System.Windows.Forms.Button entity_search_btn;
         private System.Windows.Forms.ImageList entityListIcons;
         private System.Windows.Forms.Button clearSearchBtn;
     }

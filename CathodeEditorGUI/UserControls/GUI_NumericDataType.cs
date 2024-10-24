@@ -46,8 +46,36 @@ namespace CommandsEditor.UserControls
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
             textBox1.Text = EditorUtils.ForceStringNumeric(textBox1.Text, !isIntInput);
-            if (isIntInput) intVal.value = Convert.ToInt32(textBox1.Text);
-            else floatVal.value = Convert.ToSingle(textBox1.Text);
+            if (isIntInput)
+            {
+                try
+                {
+                    intVal.value = Convert.ToInt32(textBox1.Text);
+                }
+                catch (OverflowException)
+                {
+                    if (textBox1.Text.StartsWith("-"))
+                        intVal.value = Int32.MinValue;
+                    else
+                        intVal.value = Int32.MaxValue;
+                    textBox1.Text = intVal.value.ToString();
+                }
+            }
+            else
+            {
+                try
+                {
+                    floatVal.value = Convert.ToSingle(textBox1.Text);
+                }
+                catch (OverflowException)
+                {
+                    if (textBox1.Text.StartsWith("-"))
+                        floatVal.value = float.MinValue;
+                    else
+                        floatVal.value = float.MaxValue;
+                    textBox1.Text = floatVal.value.ToString();
+                }
+            }
         }
     }
 }

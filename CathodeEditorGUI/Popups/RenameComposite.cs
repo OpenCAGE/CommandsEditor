@@ -20,13 +20,11 @@ namespace CommandsEditor
     public partial class RenameComposite : BaseWindow
     {
         private Composite _composite;
-        private string _folder;
 
-        public RenameComposite(Composite composite, string path) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
+        public RenameComposite(Composite composite) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             InitializeComponent();
             
-            _folder = path;
             _composite = composite;
             entity_name.Text = EditorUtils.GetCompositeName(_composite);
         }
@@ -35,8 +33,8 @@ namespace CommandsEditor
         {
             if (entity_name.Text == "") return;
 
-            //THIS LOGIC IS COPIED FROM AddComposite
-            string path = (_folder == "" ? _folder : _folder + "/") + entity_name.Text.Replace("\\", "/");
+            int nameLength = EditorUtils.GetCompositeName(_composite).Length;
+            string path = (_composite.name.Length != nameLength ? _composite.name.Substring(0, _composite.name.Length - nameLength - 1) + "/" : "") + entity_name.Text.Replace("\\", "/"); 
 
             string[] pathParts = path.Split('/');
             for (int i = 0; i < pathParts.Length; i++)
@@ -59,7 +57,7 @@ namespace CommandsEditor
             //--
 
             //Update composite name
-            _composite.name = path;
+            _composite.name = path.Replace("/", "\\");
 
             //Update cached ListViewItems that instance this composite
             Content.commands.Entries.ForEach(composite =>

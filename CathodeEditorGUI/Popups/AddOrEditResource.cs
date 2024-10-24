@@ -13,9 +13,12 @@ using CommandsEditor.Popups.UserControls;
 using System.Windows.Interop;
 using CommandsEditor.Popups.Base;
 using CATHODE.EXPERIMENTAL;
+using CommandsEditor.DockPanels;
 
 namespace CommandsEditor
 {
+    //TODO: this whole resource editor needs a bit of a rework & improvement as it's not good enough.
+
     public partial class AddOrEditResource : BaseWindow
     {
         public Action<List<ResourceReference>> OnSaved;
@@ -24,8 +27,30 @@ namespace CommandsEditor
         private ShortGuid guid_parent;
         private int current_ui_offset = 7;
 
-        public AddOrEditResource(List<ResourceReference> resRefs, ShortGuid parent, string windowTitle) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
+        private EntityInspector _entDisplay = null;
+
+        public AddOrEditResource(EntityInspector entDisplay) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
+            _entDisplay = entDisplay;
+
+            List<ResourceReference> resRefs = ((FunctionEntity)entDisplay.Entity).resources;
+            ResourceReference[] copy = new ResourceReference[resRefs.Count];
+            resRefs.CopyTo(copy);
+            resources = copy.ToList<ResourceReference>();
+            guid_parent = entDisplay.Entity.shortGUID;
+
+            InitializeComponent();
+
+            this.Text += " - " + Content.editor_utils.GenerateEntityName(entDisplay.Entity, entDisplay.Composite);
+            resourceType.SelectedIndex = 0;
+
+            RefreshUI();
+        }
+
+        public AddOrEditResource(EntityInspector entDisplay, List<ResourceReference> resRefs, ShortGuid parent, string windowTitle) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
+        {
+            _entDisplay = entDisplay;
+
             ResourceReference[] copy = new ResourceReference[resRefs.Count];
             resRefs.CopyTo(copy);
             resources = copy.ToList<ResourceReference>();
@@ -58,10 +83,10 @@ namespace CommandsEditor
                     case ResourceType.COLLISION_MAPPING:
                         {
                             //TODO: Pass this info through, and handle making new instances...
-                            Content.resource.collision_maps.Entries.FindAll(o => o.entity.entity_id == resources[i].collisionID);
+                            Content.resource.collision_maps.Entries.FindAll(o => o.entity.entity_id == resources[i].entityID);
 
                             resourceGroup = new GUI_Resource_CollisionMapping();
-                            ((GUI_Resource_CollisionMapping)resourceGroup).PopulateUI(resources[i].position, resources[i].rotation, resources[i].collisionID);
+                            ((GUI_Resource_CollisionMapping)resourceGroup).PopulateUI(resources[i].position, resources[i].rotation, resources[i].entityID);
                             break;
                         }
                     case ResourceType.NAV_MESH_BARRIER_RESOURCE:
@@ -76,15 +101,17 @@ namespace CommandsEditor
                             ((GUI_Resource_RenderableInstance)resourceGroup).PopulateUI(resources[i].position, resources[i].rotation, resources[i].index, resources[i].count);
                             break;
                         }
+                        /*
                     case ResourceType.DYNAMIC_PHYSICS_SYSTEM:
                         {
                             //TODO: Pass this info through, and handle making new instances...
                             Content.resource.physics_maps.Entries.FindAll(o => o.entity.entity_id == resources[i].collisionID);
 
                             resourceGroup = new GUI_Resource_DynamicPhysicsSystem();
-                            ((GUI_Resource_DynamicPhysicsSystem)resourceGroup).PopulateUI(); 
+                            ((GUI_Resource_DynamicPhysicsSystem)resourceGroup).PopulateUI(_entDisplay, resources[i].index); 
                             break;
                         }
+                        */
                     default:
                         {
                             resourceGroup = new GUI_Resource_Default();
@@ -103,6 +130,13 @@ namespace CommandsEditor
         private void addResource_Click(object sender, EventArgs e)
         {
             ResourceType type = (ResourceType)Enum.Parse(typeof(ResourceType), resourceType.Items[resourceType.SelectedIndex].ToString());
+
+            //If we don't have EntityDisplay, we can't make DynamicPhysicsSystem: this is the result of this editor being made in a crap way. really we should probs implicitly handle the resource parameter
+            if (type == ResourceType.DYNAMIC_PHYSICS_SYSTEM && _entDisplay == null)
+            {
+                MessageBox.Show("Dynamic Physics Systems cannot currently be added as Resource parameters.", "Currently unsupported.", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
             //A resource reference list can only ever point to one of a type
             for (int i = 0; i < resources.Count; i++)
@@ -125,6 +159,7 @@ namespace CommandsEditor
                     newReference.index = 0;
                     break;            
                 case ResourceType.EXCLUSIVE_MASTER_STATE_RESOURCE:
+                    //TODO: this defines the MASTER_STATE which flips us between the STATE_x folders for navmeshes, etc -> how do we know the state index?
                 case ResourceType.NAV_MESH_BARRIER_RESOURCE:      
                 case ResourceType.TRAVERSAL_SEGMENT:              //Sure this one doesn't use startIndex?
                 case ResourceType.COLLISION_MAPPING:              //Sure this one doesn't use startIndex?
@@ -192,7 +227,7 @@ namespace CommandsEditor
                             GUI_Resource_CollisionMapping ui = (GUI_Resource_CollisionMapping)resource_panel.Controls[i];
                             resourceRef.position = ui.Position;
                             resourceRef.rotation = ui.Rotation;
-                            resourceRef.collisionID = ui.CollisionID;
+                            resourceRef.entityID = ui.CollisionEnabled ? _entDisplay.Entity.shortGUID : new ShortGuid("FF-FF-FF-FF");
                             break;
                         }
                     case ResourceType.NAV_MESH_BARRIER_RESOURCE:

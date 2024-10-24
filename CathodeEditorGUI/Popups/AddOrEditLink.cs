@@ -25,10 +25,10 @@ namespace CommandsEditor
         private Entity _initialParentEntity = null;
         private ShortGuid _initialLinkID;
 
-        private EntityDisplay _entityDisplay;
+        private EntityInspector _entityDisplay;
 
         //FOR CREATING A NEW LINK
-        public AddOrEditLink(EntityDisplay entityDisplay) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
+        public AddOrEditLink(EntityInspector entityDisplay) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             _entityDisplay = entityDisplay;
             InitializeComponent();
@@ -46,7 +46,7 @@ namespace CommandsEditor
         }
 
         //FOR EDITING AN EXISTING LINK
-        public AddOrEditLink(EntityDisplay entityDisplay, Entity parentEntity, Entity childEntity, string parentParameter, string childParameter, bool isLinkingToChild, ShortGuid initialLinkID) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
+        public AddOrEditLink(EntityInspector entityDisplay, Entity parentEntity, Entity childEntity, string parentParameter, string childParameter, bool isLinkingToChild, ShortGuid initialLinkID) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             _entityDisplay = entityDisplay;
             InitializeComponent();
@@ -101,7 +101,7 @@ namespace CommandsEditor
                 return;
             }
 
-            if (_initialParentEntity != null) _initialParentEntity.childLinks.RemoveAll(o => o.connectionID == _initialLinkID);
+            if (_initialParentEntity != null) _initialParentEntity.childLinks.RemoveAll(o => o.ID == _initialLinkID);
             _entityList[parentEntityList.SelectedIndex].AddParameterLink(parentParameterList.Text, _entityList[childEntityList.SelectedIndex], childParameterList.Text);
 
             OnSaved?.Invoke();
@@ -145,11 +145,11 @@ namespace CommandsEditor
                 _selectEntOut = null;
             }
 
-            _selectEntOut = new SelectHierarchy(_entityDisplay.Composite, new CompositeEntityList.DisplayOptions() { ShowCheckboxes = false }, false);
+            _selectEntOut = new SelectHierarchy(_entityDisplay.Composite, new CompositeEntityList.DisplayOptions(), false);
             _selectEntOut.Show();
             _selectEntOut.OnHierarchyGenerated += OnSelectedEntityOut;
         }
-        private void OnSelectedEntityOut(List<ShortGuid> hierarchy)
+        private void OnSelectedEntityOut(ShortGuid[] hierarchy)
         {
             parentEntityList.SelectedIndex = _entityList.IndexOf(_entityDisplay.Composite.GetEntityByID(hierarchy[0]));
         }
@@ -163,11 +163,11 @@ namespace CommandsEditor
                 _selectEntIn = null;
             }
 
-            _selectEntIn = new SelectHierarchy(_entityDisplay.Composite, new CompositeEntityList.DisplayOptions() { ShowCheckboxes = false }, false);
+            _selectEntIn = new SelectHierarchy(_entityDisplay.Composite, new CompositeEntityList.DisplayOptions(), false);
             _selectEntIn.Show();
             _selectEntIn.OnHierarchyGenerated += OnSelectedEntityIn;
         }
-        private void OnSelectedEntityIn(List<ShortGuid> hierarchy)
+        private void OnSelectedEntityIn(ShortGuid[] hierarchy)
         {
             childEntityList.SelectedIndex = _entityList.IndexOf(_entityDisplay.Composite.GetEntityByID(hierarchy[0]));
         }

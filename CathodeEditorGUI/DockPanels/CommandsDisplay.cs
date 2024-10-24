@@ -23,6 +23,7 @@ using ListViewItem = System.Windows.Forms.ListViewItem;
 using ListViewGroupCollapse;
 using System.Threading;
 using System.Windows.Media.Animation;
+using CathodeLib;
 
 namespace CommandsEditor.DockPanels
 {
@@ -37,6 +38,8 @@ namespace CommandsEditor.DockPanels
         private string _currentDisplayFolderPath = "";
 
         private CompositeDisplay _compositeDisplay = null;
+        public CompositeDisplay CompositeDisplay => _compositeDisplay;
+
         private Composite3D _renderer = null;
 
         AddComposite _addCompositeDialog = null;
@@ -55,6 +58,10 @@ namespace CommandsEditor.DockPanels
             _content = new LevelContent(levelName);
             _treeUtility = new TreeUtility(treeView1);
 
+#if !DEBUG 
+            DEBUG_LoadNextEmpty.Visible = false;
+#endif
+
             Singleton.OnCompositeRenamed += OnCompositeRenamed;
         }
 
@@ -69,7 +76,7 @@ namespace CommandsEditor.DockPanels
                 SetViewMode(view);
 
             //TODO: these utils should be moved into LevelContent and made less generic. makes no sense anymore.
-            _content.editor_utils = new EditorUtils();
+            _content.editor_utils = new EditorUtils(_content);
             Task.Factory.StartNew(() => _content.editor_utils.GenerateEntityNameCache(Singleton.Editor));
             Content.editor_utils.GenerateCompositeInstances(Content.commands);
 
@@ -115,9 +122,6 @@ namespace CommandsEditor.DockPanels
 
             _addCompositeDialog?.Close();
             _addFolderDialog?.Close();
-
-            ResourceDatatypeAutocomplete.assetlist_cache?.Clear();
-            ResourceDatatypeAutocomplete.assetlist_cache = null;
 
             imageList.Images.Clear();
             imageList.Dispose();
@@ -375,7 +379,7 @@ namespace CommandsEditor.DockPanels
                     return;
                 }
             }
-            if (prompt && MessageBox.Show("Are you sure you want to remove this composite?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+            if (prompt && MessageBox.Show("Are you sure you want to remove " + Path.GetFileName(composite.name) + "?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
 
             if (_compositeDisplay != null && _compositeDisplay.Composite == composite)
                 CloseAllChildTabs();
@@ -390,7 +394,7 @@ namespace CommandsEditor.DockPanels
                     List<EntityConnector> prunedEntityLinks = new List<EntityConnector>();
                     for (int l = 0; l < Content.commands.Entries[i].functions[x].childLinks.Count; l++)
                     {
-                        Entity linkedEntity = Content.commands.Entries[i].GetEntityByID(Content.commands.Entries[i].functions[x].childLinks[l].childID);
+                        Entity linkedEntity = Content.commands.Entries[i].GetEntityByID(Content.commands.Entries[i].functions[x].childLinks[l].linkedEntityID);
                         if (linkedEntity != null && linkedEntity.variant == EntityVariant.FUNCTION) if (((FunctionEntity)linkedEntity).function == composite.shortGUID) continue;
                         prunedEntityLinks.Add(Content.commands.Entries[i].functions[x].childLinks[l]);
                     }
@@ -478,6 +482,43 @@ namespace CommandsEditor.DockPanels
                 FileBrowserContextMenu.Show(lv, e.Location);
             }
         }
+        TreeNode _rightClickedNode = null;
+        private void FileTree_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (SettingsManager.GetBool(Singleton.Settings.EnableFileBrowser))
+                return;
+
+            if (e.Button == MouseButtons.Right)
+            {
+                var lv = sender as System.Windows.Forms.TreeView;
+                _rightClickedNode = lv.HitTest(e.Location).Node;
+
+                toolStripMenuItem4.Enabled = _rightClickedNode != null;
+                toolStripMenuItem5.Enabled = _rightClickedNode != null;
+
+                if (_rightClickedNode == null)
+                {
+                    _currentDisplayFolderPath = "";
+                }
+                else
+                {
+                    TreeItem item = (TreeItem)_rightClickedNode.Tag;
+                    switch (item.Item_Type)
+                    {
+                        case TreeItemType.EXPORTABLE_FILE:
+                            Composite c = Content.commands.GetComposite(item.String_Value);
+                            int nameLength = EditorUtils.GetCompositeName(c).Length;
+                            _currentDisplayFolderPath = (c.name.Length != nameLength ? c.name.Substring(0, c.name.Length - nameLength - 1) : "");
+                            break;
+                        case TreeItemType.DIRECTORY:
+                            _currentDisplayFolderPath = item.String_Value;
+                            break;
+                    }
+                }
+
+                FileTreeContextMenuNew.Show(lv, e.Location);
+            }
+        }
         private void deleteFolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (listView1.SelectedItems.Count != 1) return;
@@ -486,6 +527,10 @@ namespace CommandsEditor.DockPanels
             ListViewItemContent content = (ListViewItemContent)item.Tag;
             if (content.IsFolder)
             {
+                //TODO
+                MessageBox.Show("Support for deleting folders is coming soon.");
+                return;
+
                 string folderFullPath = "";
                 if (_currentDisplayFolderPath == "") folderFullPath = content.FolderName;
                 else folderFullPath = _currentDisplayFolderPath + "/" + content.FolderName;
@@ -509,6 +554,20 @@ namespace CommandsEditor.DockPanels
             _compositeDisplay?.Reload();
             ReloadList();
         }
+        private void deleteViaTreeView_Click(object sender, EventArgs e)
+        {
+            TreeItem item = (TreeItem)_rightClickedNode.Tag;
+            switch (item.Item_Type)
+            {
+                case TreeItemType.EXPORTABLE_FILE:
+                    DeleteComposite(Content.commands.GetComposite(item.String_Value));
+                    break;
+                case TreeItemType.DIRECTORY:
+                    //TODO
+                    MessageBox.Show("Support for deleting folders is coming soon.");
+                    break;
+            }
+        }
         RenameComposite _renameComposite;
         private void renameToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -523,13 +582,31 @@ namespace CommandsEditor.DockPanels
             }
             else
             {
-                if (_renameComposite != null)
-                    _renameComposite.Close();
-
-                _renameComposite = new RenameComposite(content.Composite, _currentDisplayFolderPath);
-                _renameComposite.Show();
-                _renameComposite.FormClosed += _renameComposite_FormClosed;
+                RenameComposite(content.Composite);
             }
+        }
+        private void renameViaTreeView_Click(object sender, EventArgs e)
+        {
+            TreeItem item = (TreeItem)_rightClickedNode.Tag;
+            switch (item.Item_Type)
+            {
+                case TreeItemType.EXPORTABLE_FILE:
+                    RenameComposite(Content.commands.GetComposite(item.String_Value));
+                    break;
+                case TreeItemType.DIRECTORY:
+                    //TODO
+                    MessageBox.Show("Support for renaming folders is coming soon.");
+                    break;
+            }
+        }
+        private void RenameComposite(Composite composite)
+        {
+            if (_renameComposite != null)
+                _renameComposite.Close();
+
+            _renameComposite = new RenameComposite(composite);
+            _renameComposite.Show();
+            _renameComposite.FormClosed += _renameComposite_FormClosed;
         }
         private void _renameComposite_FormClosed(object sender, FormClosedEventArgs e)
         {
@@ -592,7 +669,15 @@ namespace CommandsEditor.DockPanels
         {
             compositeToolStripMenuItem_Click(null, null);
         }
+        private void createCompositeViaTreeView_Click(object sender, EventArgs e)
+        {
+            compositeToolStripMenuItem_Click(null, null);
+        }
         private void createFolder_Click(object sender, EventArgs e)
+        {
+            folderToolStripMenuItem_Click(null, null);
+        }
+        private void createFolderViaTreeView_Click(object sender, EventArgs e)
         {
             folderToolStripMenuItem_Click(null, null);
         }
@@ -615,6 +700,47 @@ namespace CommandsEditor.DockPanels
         private void _functionUsesDialog_FormClosed(object sender, FormClosedEventArgs e)
         {
             _functionUsesDialog = null;
+        }
+
+        private void entity_search_box_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            { 
+                entity_search_btn.PerformClick();
+                e.SuppressKeyPress = true;
+            }
+        }
+
+        private static List<Composite> _toSkip = new List<Composite>();
+
+        private void DEBUG_LoadNextEmpty_Click(object sender, EventArgs e)
+        {
+            DEBUG_LoadNextToConstruct();
+        }
+        public void DEBUG_LoadNextToConstruct()
+        {
+#if !DEBUG
+            MessageBox.Show("This should not be reached in production code...");
+            return;
+#endif
+
+            if (FlowgraphLayoutManager.DEBUG_IsUnfinished)
+            {
+                _toSkip.Add(CompositeDisplay.Composite);
+            }
+
+            FlowgraphLayoutManager.DEBUG_UsePreDefinedTable = true;
+            List<Composite> ordered = Content.commands.Entries.OrderBy(o => CompositeUtils.CountLinks(o)).Where(o => CompositeUtils.CountLinks(o) != 0 && !FlowgraphLayoutManager.HasLayout(o)).ToList();
+            for (int i = 0; i < ordered.Count; i++)
+                Console.WriteLine(ordered[i].name);
+            Console.WriteLine("Still " + ordered.Count + " to go in this PAK (count includes those not purged, so may be lower)");
+            FlowgraphLayoutManager.DEBUG_UsePreDefinedTable = false;
+
+            int index = 0;
+            while (_toSkip.Contains(ordered[index]))
+                index++;
+                
+            LoadComposite(ordered[index]);
         }
     }
 }

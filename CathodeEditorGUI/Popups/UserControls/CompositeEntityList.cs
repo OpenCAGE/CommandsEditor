@@ -241,7 +241,7 @@ namespace CommandsEditor.Popups.UserControls
             SelectedEntityChanged?.Invoke(SelectedEntity);
         }
 
-        private void entity_search_btn_Click(object sender, EventArgs e)
+        private void entity_search_box_TextChanged(object sender, EventArgs e)
         {
             if (entity_search_box.Text == _currentSearch) return;
             _currentSearch = entity_search_box.Text;
@@ -280,6 +280,10 @@ namespace CommandsEditor.Popups.UserControls
                         if (!item.SubItems[x].Text.ToUpper().Contains(_currentSearch.ToUpper()))
                             continue;
 
+                        //If entity IDs column is hidden, we should ignore it in the search
+                        if (x == item.SubItems.Count - 1 && !SettingsManager.GetBool(Singleton.Settings.EntIdOpt))
+                            continue;
+
                         filteredEntities.Add(allEntities[i]);
                         break;
                     }
@@ -312,7 +316,9 @@ namespace CommandsEditor.Popups.UserControls
 
         public class DisplayOptions
         {
-            public bool ShowCheckboxes = true;
+            public bool ShowCheckboxes = false;
+
+            public bool ShowCreateNode = false;
 
             public bool DisplayAliases = true;
             public bool DisplayProxies = true;

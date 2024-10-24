@@ -1,4 +1,4 @@
-﻿using CATHODE.Scripting;
+using CATHODE.Scripting;
 using CommandsEditor.Popups.UserControls;
 using System;
 using System.Collections.Generic;
@@ -13,6 +13,7 @@ using System.Numerics;
 using CATHODE;
 using CommandsEditor.Popups.Base;
 using CommandsEditor.DockPanels;
+using CathodeLib;
 
 namespace CommandsEditor
 {
@@ -23,9 +24,9 @@ namespace CommandsEditor
 
         List<int> _mvrListIndexes = new List<int>();
 
-        private EntityDisplay _entityDisplay;
+        private EntityInspector _entityDisplay;
 
-        public EditMVR(EntityDisplay editor) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
+        public EditMVR(EntityInspector editor) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             InitializeComponent();
             _entityDisplay = editor;
@@ -34,6 +35,10 @@ namespace CommandsEditor
 
             renderable.OnMaterialSelected += OnMaterialSelected;
             renderable.OnModelSelected += OnModelSelected;
+
+#if !DEBUG
+            DEBUG_clear.Visible = false;
+#endif
         }
 
         private void PopulateUI(ShortGuid nodeID)
@@ -52,7 +57,7 @@ namespace CommandsEditor
             EntityPath[] hierarchies = new EntityPath[_mvrListIndexes.Count];
             Parallel.For(0, _mvrListIndexes.Count, i =>
             {
-                hierarchies[i] = _entityDisplay.Content.editor_utils.GetHierarchyFromReference(Content.mvr.Entries[_mvrListIndexes[i]].entity);
+                hierarchies[i] = _entityDisplay.Content.editor_utils.GetHierarchyFromHandle(Content.mvr.Entries[_mvrListIndexes[i]].entity);
             });
 
             //Write the hierarchies to the list
@@ -73,7 +78,6 @@ namespace CommandsEditor
             LoadMVR(_mvrListIndexes[listBox1.SelectedIndex]);
         }
 
-        cTransform transformData = null;
         private bool hasLoaded = false;
         private void LoadMVR(int mvrIndex)
         {
@@ -87,10 +91,7 @@ namespace CommandsEditor
             POS_X.Value = (decimal)position.X; POS_Y.Value = (decimal)position.Y; POS_Z.Value = (decimal)position.Z;
             SCALE_X.Value = (decimal)scale.X; SCALE_Y.Value = (decimal)scale.Y; SCALE_Z.Value = (decimal)scale.Z;
 
-            decimal yaw = Convert.ToDecimal(Math.Atan2(2 * (rotation.Y * rotation.W + rotation.X * rotation.Z), 1 - 2 * (rotation.Y * rotation.Y + rotation.X * rotation.X)) * (180 / Math.PI));
-            decimal pitch = Convert.ToDecimal(Math.Asin(2 * (rotation.X * rotation.W - rotation.Z * rotation.Y)) * (180 / Math.PI));
-            decimal roll = Convert.ToDecimal(Math.Atan2(2 * (rotation.Z * rotation.W + rotation.X * rotation.Y), 1 - 2 * (rotation.X * rotation.X + rotation.Z * rotation.Z)) * (180 / Math.PI));
-            
+            (decimal yaw, decimal pitch, decimal roll) = rotation.ToYawPitchRoll();
             ROT_X.Value = pitch; ROT_Y.Value = yaw; ROT_Z.Value = roll;
 
             type_dropdown.SelectedItem = mvr.instanceTypeFlags.ToString();
@@ -116,7 +117,6 @@ namespace CommandsEditor
             mvr.renderable_element_index = (uint)Content.resource.reds.Entries.Count;
 
             Vector3 scale = new Vector3((float)SCALE_X.Value, (float)SCALE_Y.Value, (float)SCALE_Z.Value);
-            //Quaternion rotation = Quaternion.Normalize(new Quaternion((float)ROT_X.Value, (float)ROT_Y.Value, (float)ROT_Z.Value, (float)ROT_W.Value));
             Vector3 position = new Vector3((float)POS_X.Value, (float)POS_Y.Value, (float)POS_Z.Value);
 
             Quaternion rotation = Quaternion.CreateFromYawPitchRoll(
@@ -213,6 +213,28 @@ namespace CommandsEditor
         private void type_dropdown_SelectedIndexChanged(object sender, EventArgs e)
         {
             SaveMVR();
+        }
+
+        private void DEBUG_clear_Click(object sender, EventArgs e)
+        {
+            Movers.MOVER_DESCRIPTOR mvr = Content.mvr.Entries[loadedMvrIndex];
+
+            var resource = Content.resource.resources.Entries[mvr.resource_index];
+            var renderable_element = Content.resource.reds.Entries[(int)mvr.renderable_element_index];
+
+            for (int i = 0; i < Content.resource.collision_maps.Entries.Count; i++)
+            {
+                Console.WriteLine(Content.resource.collision_maps.Entries[i].zone_id);
+            }
+
+            Content.resource.collision_maps.Entries.FirstOrDefault(o => o.entity == mvr.entity).entity = new EntityHandle();
+
+            mvr.entity = new EntityHandle();
+
+           // mvr.entity = new CommandsEntityReference();
+            //mvr.resource_index = -1;
+
+            Content.mvr.Entries[loadedMvrIndex] = mvr;
         }
     }
 }

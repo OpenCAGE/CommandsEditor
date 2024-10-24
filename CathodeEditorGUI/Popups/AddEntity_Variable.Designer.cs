@@ -34,6 +34,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.entityVariant = new System.Windows.Forms.ComboBox();
+            this.createNode = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // createNewEntity
@@ -83,12 +84,27 @@
             this.entityVariant.Name = "entityVariant";
             this.entityVariant.Size = new System.Drawing.Size(641, 21);
             this.entityVariant.TabIndex = 0;
+            this.entityVariant.SelectedIndexChanged += new System.EventHandler(this.entityVariant_SelectedIndexChanged);
+            // 
+            // createNode
+            // 
+            this.createNode.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.createNode.AutoSize = true;
+            this.createNode.Location = new System.Drawing.Point(79, 71);
+            this.createNode.Name = "createNode";
+            this.createNode.Size = new System.Drawing.Size(86, 17);
+            this.createNode.TabIndex = 183;
+            this.createNode.Text = "Create Node";
+            this.createNode.UseVisualStyleBackColor = true;
+            this.createNode.CheckedChanged += new System.EventHandler(this.createNode_CheckedChanged);
             // 
             // AddEntity_Variable
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(733, 102);
+            this.Controls.Add(this.createNode);
             this.Controls.Add(this.createNewEntity);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.label2);
@@ -112,5 +128,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.CheckBox createNode;
     }
 }
