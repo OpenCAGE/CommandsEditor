@@ -605,6 +605,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Scripts\ParameterCreator.cs" />
+    <Compile Include="Scripts\SoundBankLookup.cs" />
     <Compile Include="Scripts\ToolstripRendererExcs.cs" />
     <Compile Include="Scripts\TreeUtility.cs" />
     <Compile Include="Scripts\SettingsManager.cs" />

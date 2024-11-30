@@ -164,6 +164,7 @@ namespace CommandsEditor
 
             Search();
             clearSearchBtn.Visible = false;
+            ShowMetadata.Visible = _type == AssetList.Type.SOUND_EVENT;
             strings.ListViewItemSorter = _sorter;
         }
 
@@ -183,8 +184,6 @@ namespace CommandsEditor
             if (selectedIndex != -1)
                 strings.EnsureVisible(selectedIndex);
         }
-
-        private int test = -1;
 
         private void ColumnClick(object sender, System.Windows.Forms.ColumnClickEventArgs e)
         {
@@ -273,6 +272,24 @@ namespace CommandsEditor
 
                 LOCALISED_STRING,
             }
+        }
+
+        private void ShowMetadata_Click(object sender, EventArgs e)
+        {
+            if (strings.SelectedItems.Count == 0)
+                return;
+
+            string selectedString = strings.SelectedItems[0].Text;
+
+            string msg = "This event is contained within the following soundbanks:\n";
+            foreach (SoundEventData.Soundbank entry in Content.resource.sound_eventdata.Entries)
+            {
+                if (entry.events.FirstOrDefault(o => o.name == selectedString) == null)
+                    continue;
+
+                msg += " - " + SoundBankLookup.GetSoundbankName(entry.id) + "\n";
+            }
+            MessageBox.Show(msg);
         }
     }
 }
