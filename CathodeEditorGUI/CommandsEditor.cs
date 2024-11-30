@@ -75,7 +75,7 @@ namespace CommandsEditor
             //}
 
 
-            level = "BSP_TORRENS";
+            level = "TECH_RND_HZDLAB";
 
             if (Directory.Exists(SharedData.pathToAI + "\\DATA_orig"))
             {
