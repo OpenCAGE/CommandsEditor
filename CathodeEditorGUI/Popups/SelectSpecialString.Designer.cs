@@ -40,6 +40,7 @@
             this.EntityType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.search_box = new System.Windows.Forms.TextBox();
             this.selectBtn = new System.Windows.Forms.Button();
+            this.ShowMetadata = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // clearSearchBtn
@@ -122,11 +123,23 @@
             this.selectBtn.UseVisualStyleBackColor = true;
             this.selectBtn.Click += new System.EventHandler(this.selectBtn_Click);
             // 
+            // ShowMetadata
+            // 
+            this.ShowMetadata.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.ShowMetadata.Location = new System.Drawing.Point(12, 634);
+            this.ShowMetadata.Name = "ShowMetadata";
+            this.ShowMetadata.Size = new System.Drawing.Size(151, 26);
+            this.ShowMetadata.TabIndex = 182;
+            this.ShowMetadata.Text = "Show Metadata";
+            this.ShowMetadata.UseVisualStyleBackColor = true;
+            this.ShowMetadata.Click += new System.EventHandler(this.ShowMetadata_Click);
+            // 
             // SelectSpecialString
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(761, 670);
+            this.Controls.Add(this.ShowMetadata);
             this.Controls.Add(this.selectBtn);
             this.Controls.Add(this.clearSearchBtn);
             this.Controls.Add(this.strings);
@@ -136,6 +149,7 @@
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "";
+            this.Load += new System.EventHandler(this.SelectSpecialString_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -149,5 +163,6 @@
         private System.Windows.Forms.ColumnHeader EntityType;
         private System.Windows.Forms.TextBox search_box;
         private System.Windows.Forms.Button selectBtn;
+        private System.Windows.Forms.Button ShowMetadata;
     }
 }
