@@ -164,11 +164,27 @@ namespace CommandsEditor
 
             Search();
             clearSearchBtn.Visible = false;
-
-            for (int i = 0; i < strings.Items.Count; i++)
-                strings.Items[i].Selected = strings.Items[i].Text == _defaultVal;
             strings.ListViewItemSorter = _sorter;
         }
+
+        private void SelectSpecialString_Load(object sender, EventArgs e)
+        {
+            int selectedIndex = -1;
+            for (int i = 0; i < strings.Items.Count; i++)
+            {
+                strings.Items[i].Selected = false;
+                if (strings.Items[i].Text == _defaultVal)
+                {
+                    selectedIndex = i;
+                    strings.Items[i].Selected = true;
+                }
+            }
+            strings.Invalidate();
+            if (selectedIndex != -1)
+                strings.EnsureVisible(selectedIndex);
+        }
+
+        private int test = -1;
 
         private void ColumnClick(object sender, System.Windows.Forms.ColumnClickEventArgs e)
         {

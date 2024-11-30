@@ -395,6 +395,7 @@ namespace CommandsEditor.DockPanels
                                 asset_arg = "UI";
                                 break;
                             case "sound_event":
+                            case "stop_sound_event":
                             case "music_event":
                             case "stop_event":
                             case "line_01_event":
