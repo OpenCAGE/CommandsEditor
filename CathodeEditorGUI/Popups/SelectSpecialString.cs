@@ -1,6 +1,7 @@
 ﻿using CATHODE;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
+using CathodeLib;
 using CommandsEditor.DockPanels;
 using CommandsEditor.Popups.Base;
 using CommandsEditor.UserControls;
@@ -287,7 +288,17 @@ namespace CommandsEditor
                 if (entry.events.FirstOrDefault(o => o.name == selectedString) == null)
                     continue;
 
-                msg += " - " + SoundBankLookup.GetSoundbankName(entry.id) + "\n";
+                string soundbankName = entry.id.ToString();
+                for (int i = 0; i < Content.resource.sound_bankdata.Entries.Count; i++)
+                {
+                    if (Utilities.SoundHashedString(Content.resource.sound_bankdata.Entries[i]) != entry.id)
+                        continue;
+
+                    soundbankName = Content.resource.sound_bankdata.Entries[i];
+                    break;
+                }
+
+                msg += " - " + soundbankName + "\n";
             }
             MessageBox.Show(msg);
         }
