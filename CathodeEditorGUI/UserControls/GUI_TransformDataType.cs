@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -111,7 +111,20 @@ namespace CommandsEditor.UserControls
             {
                 transform = JsonConvert.DeserializeObject<cTransform>(val);
             }
-            catch { }
+            catch 
+            {
+                //This code SHOULD allow copying of Unity transforms, but the euler conversion isn't working right, so I've commented it out for now.
+                /*
+                try
+                {
+                    UnityTransform t = JsonConvert.DeserializeObject<UnityTransform>(val.Replace("UnityEditor.TransformWorldPlacementJSON:", ""));
+                    (decimal yaw, decimal pitch, decimal roll) = new Quaternion(t.rotation.x, t.rotation.y, t.rotation.z, t.rotation.w).ToYawPitchRoll();
+                    ROT_X.Value = pitch; ROT_Y.Value = yaw; ROT_Z.Value = roll;
+                    transform = new cTransform(new Vector3(t.position.x, t.position.y, t.position.z), new Vector3((float)pitch, (float)yaw, (float)roll));
+                }
+                catch { }
+                */
+            }
             if (transform == null)
             {
                 MessageBox.Show("Failed to paste transform.", "Invalid clipboard", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -126,6 +139,28 @@ namespace CommandsEditor.UserControls
             transformVal.rotation.Z = transform.rotation.Z;
 
             UpdateUI();
+        }
+
+        [Serializable]
+        private class UnityTransform
+        {
+            public Vector3Unity position;
+            public QuaternionUnity rotation;
+            public Vector3Unity scale;
+            
+            public class Vector3Unity
+            {
+                public float x;
+                public float y;
+                public float z;
+            }
+            public class QuaternionUnity
+            {
+                public float x;
+                public float y;
+                public float z;
+                public float w;
+            }
         }
     }
 }
