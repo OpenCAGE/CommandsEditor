@@ -16,6 +16,8 @@ using static CathodeLib.CompositeFlowgraphsTable;
 
 namespace CommandsEditor
 {
+    //NOTE: There seem to be instances where this is not saving: jumping into child composites, and enabling/disabling GUIDs
+
     //Handles loading vanilla/custom flowgraph layouts, and saving custom layouts
     public class FlowgraphLayoutManager
     {
@@ -49,7 +51,11 @@ namespace CommandsEditor
             _preDefinedLayouts = new CompositeFlowgraphsTable();
             _userDefinedLayouts = new CompositeFlowgraphsTable();
 
-            using (BinaryReader reader = new BinaryReader(new MemoryStream(Properties.Resources.flowgraphs)))
+            byte[] dbContent = Properties.Resources.flowgraphs; //todo: need to fix for unity
+            if (File.Exists("LocalDB/flowgraphs.bin"))
+                dbContent = File.ReadAllBytes("LocalDB/flowgraphs.bin");
+
+            using (BinaryReader reader = new BinaryReader(new MemoryStream(dbContent)))
             {
                 _preDefinedLayouts.Read(reader);
             }
