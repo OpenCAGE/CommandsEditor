@@ -1303,8 +1303,8 @@ namespace CommandsEditor
                         {
                             foreach (CAGEAnimation.Event.Keyframe keyData in key.keyframes)
                             {
-                                AddToListIfUnnamed(keyData.start);
-                                AddToListIfUnnamed(keyData.unk3);
+                                AddToListIfUnnamed(keyData.startEvent);
+                                AddToListIfUnnamed(keyData.reverseEvent);
                             }
                         }
                     }
