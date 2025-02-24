@@ -1,4 +1,4 @@
-﻿using CATHODE.Scripting;
+using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CommandsEditor.DockPanels;
 using CommandsEditor.Popups.Base;
@@ -21,7 +21,7 @@ namespace CommandsEditor
         private TreeUtility _treeUtility;
         private Composite _composite;
 
-        public AddEntity_CompositeInstance(Composite composite) : base(WindowClosesOn.NEW_COMPOSITE_SELECTION | WindowClosesOn.COMMANDS_RELOAD)
+        public AddEntity_CompositeInstance(Composite composite, bool flowgraphMode) : base(WindowClosesOn.NEW_COMPOSITE_SELECTION | WindowClosesOn.COMMANDS_RELOAD)
         {
             InitializeComponent();
 
@@ -39,6 +39,7 @@ namespace CommandsEditor
 
             addDefaultParams.Checked = SettingsManager.GetBool(Singleton.Settings.PreviouslySearchedParamPopulationComp, false);
             createNode.Checked = SettingsManager.GetBool(Singleton.Settings.MakeNodeWhenMakeEntity); 
+            createNode.Visible = flowgraphMode;
         }
 
         private void searchText_TextChanged(object sender, EventArgs e)

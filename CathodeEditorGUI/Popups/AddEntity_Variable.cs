@@ -1,4 +1,4 @@
-﻿using CATHODE;
+using CATHODE;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CathodeLib;
@@ -23,7 +23,7 @@ namespace CommandsEditor
     {
         private Composite _composite;
 
-        public AddEntity_Variable(Composite composite) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_COMPOSITE_SELECTION)
+        public AddEntity_Variable(Composite composite, bool flowgraphMode) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             InitializeComponent();
 
@@ -47,6 +47,7 @@ namespace CommandsEditor
 
             entityVariant.SelectedIndex = SettingsManager.GetInteger(Singleton.Settings.PrevVariableType);
             createNode.Checked = SettingsManager.GetBool(Singleton.Settings.MakeNodeWhenMakeEntity);
+            createNode.Visible = flowgraphMode;
 
             textBox1.Select();
         }

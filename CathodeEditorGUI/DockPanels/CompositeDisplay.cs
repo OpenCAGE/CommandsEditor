@@ -771,7 +771,7 @@ namespace CommandsEditor.DockPanels
                 if (dialog_func != null)
                     dialog_func.Close();
 
-                dialog_func = new AddEntity_Function(Composite);
+                dialog_func = new AddEntity_Function(Composite, SupportsFlowgraphs);
                 dialog_func.Show();
                 dialog_func.Focus();
             }
@@ -780,7 +780,7 @@ namespace CommandsEditor.DockPanels
                 if (dialog_compinst != null)
                     dialog_compinst.Close();
 
-                dialog_compinst = new AddEntity_CompositeInstance(Composite);
+                dialog_compinst = new AddEntity_CompositeInstance(Composite, SupportsFlowgraphs);
                 dialog_compinst.Show();
                 dialog_compinst.Focus();
             }
@@ -799,7 +799,7 @@ namespace CommandsEditor.DockPanels
                             DisplayFunctions = true,
                             DisplayProxies = false,
                             DisplayVariables = false,
-                            ShowCreateNode = true,
+                            ShowCreateNode = SupportsFlowgraphs,
                         });
                         dialog_hierarchy.Text = "Create Proxy";
                         break;
@@ -810,7 +810,7 @@ namespace CommandsEditor.DockPanels
                             DisplayFunctions = true,
                             DisplayProxies = true,
                             DisplayVariables = true,
-                            ShowCreateNode = true,
+                            ShowCreateNode = SupportsFlowgraphs,
                         });
                         dialog_hierarchy.Text = "Create Alias";
                         break;
@@ -824,7 +824,7 @@ namespace CommandsEditor.DockPanels
                 if (dialog_var != null)
                     dialog_var.Close();
 
-                dialog_var = new AddEntity_Variable(Composite);
+                dialog_var = new AddEntity_Variable(Composite, SupportsFlowgraphs);
                 dialog_var.Show();
                 dialog_var.Focus();
             }

@@ -1,4 +1,4 @@
-﻿using CATHODE.Scripting;
+using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CommandsEditor.DockPanels;
 using CommandsEditor.Popups.Base;
@@ -23,7 +23,7 @@ namespace CommandsEditor
 
         private ListViewColumnSorter _sorter = new ListViewColumnSorter();
 
-        public AddEntity_Function(Composite composite) : base (WindowClosesOn.NEW_COMPOSITE_SELECTION | WindowClosesOn.COMMANDS_RELOAD)
+        public AddEntity_Function(Composite composite, bool flowgraphMode) : base (WindowClosesOn.NEW_COMPOSITE_SELECTION | WindowClosesOn.COMMANDS_RELOAD)
         {
             InitializeComponent();
             _composite = composite;
@@ -52,6 +52,7 @@ namespace CommandsEditor
 
             addDefaultParams.Checked = SettingsManager.GetBool(Singleton.Settings.PreviouslySearchedParamPopulation, false);
             createNode.Checked = SettingsManager.GetBool(Singleton.Settings.MakeNodeWhenMakeEntity);
+            createNode.Visible = flowgraphMode;
         }
 
         private void searchText_TextChanged(object sender, EventArgs e)
