@@ -128,24 +128,6 @@ namespace CommandsEditor
             for (int i = 0; i < commands.Entries.Count; i++)
                 composite_content_cache.Add(commands.Entries[i], listViewItems[i]);
             */
-
-            //TEMP: Testing out new brute-forced ShortGuids
-            ShortGuidUtils.Generate("Win");
-            ShortGuidUtils.Generate("End");
-            ShortGuidUtils.Generate("Cut");
-            for (int i = 0; i < 26; i++)
-                ShortGuidUtils.Generate("cut" + i);
-            //ShortGuidUtils.Generate("temp");
-            //ShortGuidUtils.Generate("test");
-            //ShortGuidUtils.Generate("M01");
-            //ShortGuidUtils.Generate("M02");
-            //ShortGuidUtils.Generate("M03");
-            //ShortGuidUtils.Generate("TEST");
-            //ShortGuidUtils.Generate("CORE");
-            //ShortGuidUtils.Generate("left");
-            //ShortGuidUtils.Generate("back");
-            //ShortGuidUtils.Generate("bind");
-            //ShortGuidUtils.Generate("cam");
         }
 
         ~LevelContent()
