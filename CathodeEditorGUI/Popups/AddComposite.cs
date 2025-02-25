@@ -59,7 +59,7 @@ namespace CommandsEditor
 
             Singleton.OnCompositeAddPending?.Invoke();
 
-            Composite comp = _commands.Content.commands.AddComposite(path);
+            Composite comp = _commands.Content.commands.AddComposite(path.Replace("/", "\\"));
 
             Singleton.OnCompositeAdded?.Invoke(comp);
             OnCompositeAdded?.Invoke(comp);

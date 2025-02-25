@@ -70,7 +70,7 @@ namespace CommandsEditor
                 }
             }
 
-            Composite comp = _commands.Content.commands.AddComposite(path);
+            Composite comp = _commands.Content.commands.AddComposite(path.Replace("/", "\\"));
             OnFolderAdded?.Invoke(comp);
             this.Close();
         }
