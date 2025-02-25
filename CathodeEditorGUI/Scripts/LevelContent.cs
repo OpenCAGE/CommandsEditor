@@ -1,4 +1,6 @@
-﻿using CATHODE.Scripting;
+﻿#define USE_PRETTY_COMPOSITE_PATHS
+
+using CATHODE.Scripting;
 using CATHODE;
 using System;
 using System.Collections.Generic;
@@ -230,7 +232,13 @@ namespace CommandsEditor
                             mvr = new Movers(worldPath + "MODELS.MVR");
                             break;
                         case 2:
+#if USE_PRETTY_COMPOSITE_PATHS
+                            Commands.UsePrettyPaths = true;
+#endif
                             commands = new Commands(worldPath + "COMMANDS.PAK");
+#if USE_PRETTY_COMPOSITE_PATHS
+                            Commands.UsePrettyPaths = false;
+#endif
                             commands.Entries = commands.Entries.OrderBy(o => o.name).ToList();
                             commands.EntryPoints[0].name = EditorUtils.GetCompositeName(commands.EntryPoints[0]);
                             break;
