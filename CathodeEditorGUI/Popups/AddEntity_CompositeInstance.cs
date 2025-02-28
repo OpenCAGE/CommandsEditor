@@ -40,6 +40,11 @@ namespace CommandsEditor
             addDefaultParams.Checked = SettingsManager.GetBool(Singleton.Settings.PreviouslySearchedParamPopulationComp, false);
             createNode.Checked = SettingsManager.GetBool(Singleton.Settings.MakeNodeWhenMakeEntity); 
             createNode.Visible = flowgraphMode;
+
+#if AUTO_POPULATE_PARAMS
+            addDefaultParams.Checked = true;
+            addDefaultParams.Visible = false;
+#endif
         }
 
         private void searchText_TextChanged(object sender, EventArgs e)

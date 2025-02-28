@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 using CATHODE.Scripting;
 
@@ -28,6 +29,8 @@ namespace CommandsEditor.UserControls
             trackBar1.Minimum = (int)(min * (10 ^ precision));
             trackBar1.Maximum = (int)(max * (10 ^ precision));
             trackBar1.Value = (int)(cFloat.value * (10 ^ precision));
+
+            _hasDoneSetup = true;
         }
 
         public void PopulateUI_Int(cInteger cInt, ShortGuid paramID, int min = 0, int max = 1)
@@ -40,12 +43,20 @@ namespace CommandsEditor.UserControls
             trackBar1.Minimum = min;
             trackBar1.Maximum = max;
             trackBar1.Value = cInt.value;
+
+            _hasDoneSetup = true;
         }
 
         private void trackBar1_Scroll(object sender, EventArgs e)
         {
             if (isIntInput) intVal.value = trackBar1.Value;
             else floatVal.value = trackBar1.Value / (10 ^ floatPrecision);
+            HighlightAsModified();
+        }
+
+        public override void HighlightAsModified(bool updateDatabase = true, Control fontToUpdate = null)
+        {
+            base.HighlightAsModified(updateDatabase, label1);
         }
     }
 }

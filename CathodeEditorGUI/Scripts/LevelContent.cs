@@ -109,6 +109,7 @@ namespace CommandsEditor
             CommandsUtils.LinkCommands(commands);
             FlowgraphLayoutManager.LinkCommands(commands);
             CompositeUtils.LinkCommands(commands);
+            ParameterModificationTracker.LinkCommands(commands);
 
             //Cache entity list view items (TODO: do this on a thread and handle conflicts nicely)
             /*
@@ -153,6 +154,10 @@ namespace CommandsEditor
             if (CompositeUtils.LinkedCommands == commands)
             {
                 CompositeUtils.LinkCommands(null);
+            }
+            if (ParameterModificationTracker.LinkedCommands == commands)
+            {
+                ParameterModificationTracker.LinkCommands(null);
             }
 
             resource = null;

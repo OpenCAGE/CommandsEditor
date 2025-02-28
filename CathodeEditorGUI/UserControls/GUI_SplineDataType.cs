@@ -32,6 +32,8 @@ namespace CommandsEditor.UserControls
             SPLINE_CONTAINER.Text = paramID;
             spline = cSpline;
             this.deleteToolStripMenuItem.Text = "Delete '" + paramID + "'";
+
+            _hasDoneSetup = true;
         }
 
         private void openSplineEditor_Click(object sender, EventArgs e)
@@ -44,11 +46,17 @@ namespace CommandsEditor.UserControls
         private void OnSplineEditorSaved(cSpline newSpline)
         {
             spline.splinePoints = newSpline.splinePoints;
+            HighlightAsModified();
         }
         private void SplineEditor_FormClosed(object sender, FormClosedEventArgs e)
         {
             this.BringToFront();
             this.Focus();
+        }
+
+        public override void HighlightAsModified(bool updateDatabase = true, Control fontToUpdate = null)
+        {
+            base.HighlightAsModified(updateDatabase, SPLINE_CONTAINER);
         }
     }
 }

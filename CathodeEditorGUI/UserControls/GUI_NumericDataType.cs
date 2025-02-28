@@ -32,6 +32,8 @@ namespace CommandsEditor.UserControls
             label1.Text = paramID;
             textBox1.Text = cFloat.value.ToString();
             this.deleteToolStripMenuItem.Text = "Delete '" + paramID + "'";
+
+            _hasDoneSetup = true;
         }
 
         public void PopulateUI_Int(cInteger cInt, string paramID)
@@ -41,6 +43,8 @@ namespace CommandsEditor.UserControls
             label1.Text = paramID;
             textBox1.Text = cInt.value.ToString();
             this.deleteToolStripMenuItem.Text = "Delete '" + paramID + "'";
+
+            _hasDoneSetup = true;
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -76,6 +80,12 @@ namespace CommandsEditor.UserControls
                     textBox1.Text = floatVal.value.ToString();
                 }
             }
+            HighlightAsModified();
+        }
+
+        public override void HighlightAsModified(bool updateDatabase = true, Control fontToUpdate = null)
+        {
+            base.HighlightAsModified(updateDatabase, label1);
         }
     }
 }

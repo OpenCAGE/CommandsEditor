@@ -48,6 +48,8 @@ namespace CommandsEditor.UserControls
                 ROT_Y.Enabled = false;
                 ROT_Z.Enabled = false;
             }
+
+            _hasDoneSetup = true;
         }
 
         private void UpdateUI()
@@ -64,36 +66,42 @@ namespace CommandsEditor.UserControls
         {
             transformVal.position.X = (float)POS_X.Value;
             OnValueChanged?.Invoke();
+            HighlightAsModified();
         }
 
         private void POS_Y_ValueChanged(object sender, EventArgs e)
         {
             transformVal.position.Y = (float)POS_Y.Value;
             OnValueChanged?.Invoke();
+            HighlightAsModified();
         }
 
         private void POS_Z_ValueChanged(object sender, EventArgs e)
         {
             transformVal.position.Z = (float)POS_Z.Value;
             OnValueChanged?.Invoke();
+            HighlightAsModified();
         }
 
         private void ROT_X_ValueChanged(object sender, EventArgs e)
         {
             transformVal.rotation.X = (float)ROT_X.Value;
             OnValueChanged?.Invoke();
+            HighlightAsModified();
         }
 
         private void ROT_Y_ValueChanged(object sender, EventArgs e)
         {
             transformVal.rotation.Y = (float)ROT_Y.Value;
             OnValueChanged?.Invoke();
+            HighlightAsModified();
         }
 
         private void ROT_Z_ValueChanged(object sender, EventArgs e)
         {
             transformVal.rotation.Z = (float)ROT_Z.Value;
             OnValueChanged?.Invoke();
+            HighlightAsModified();
         }
 
         private void copyTransformToolStripMenuItem_Click(object sender, EventArgs e)
@@ -139,6 +147,12 @@ namespace CommandsEditor.UserControls
             transformVal.rotation.Z = transform.rotation.Z;
 
             UpdateUI();
+            HighlightAsModified();
+        }
+
+        public override void HighlightAsModified(bool updateDatabase = true, Control fontToUpdate = null)
+        {
+            base.HighlightAsModified(updateDatabase, POSITION_VARIABLE_DUMMY);
         }
 
         [Serializable]

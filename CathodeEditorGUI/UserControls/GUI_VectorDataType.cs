@@ -33,6 +33,8 @@ namespace CommandsEditor.UserControls
             this.deleteToolStripMenuItem.Text = "Delete '" + paramID + "'";
 
             UpdateUI();
+
+            _hasDoneSetup = true;
         }
 
         private void UpdateUI()
@@ -45,16 +47,19 @@ namespace CommandsEditor.UserControls
         private void POS_X_1_ValueChanged(object sender, EventArgs e)
         {
             vectorVal.value.X = (float)POS_X_1.Value;
+            HighlightAsModified();
         }
 
         private void POS_Y_1_ValueChanged(object sender, EventArgs e)
         {
             vectorVal.value.Y = (float)POS_Y_1.Value;
+            HighlightAsModified();
         }
 
         private void POS_Z_1_ValueChanged(object sender, EventArgs e)
         {
             vectorVal.value.Z = (float)POS_Z_1.Value;
+            HighlightAsModified();
         }
 
         private void copyTransformToolStripMenuItem_Click(object sender, EventArgs e)
@@ -84,6 +89,12 @@ namespace CommandsEditor.UserControls
             vectorVal.value.Z = vector.value.Z;
 
             UpdateUI();
+            HighlightAsModified();
+        }
+
+        public override void HighlightAsModified(bool updateDatabase = true, Control fontToUpdate = null)
+        {
+            base.HighlightAsModified(updateDatabase, label1);
         }
     }
 }

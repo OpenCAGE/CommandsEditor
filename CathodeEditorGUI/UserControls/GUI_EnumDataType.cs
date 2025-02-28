@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using CATHODE.Scripting;
@@ -40,6 +41,8 @@ namespace CommandsEditor.UserControls
             EnumUtils.EnumDescriptor.Entry enumEntry = enumDesc.Entries.FirstOrDefault(o => o.Index == cEnum.enumIndex);
             if (enumEntry == null) MessageBox.Show("Failed to match enum index for " + comboBox1.Text + "!\nThis behaviour is UNEXPECTED.\nPlease report this on GitHub!", "Error!!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             else comboBox2.SelectedItem = enumEntry.Name;
+
+            _hasDoneSetup = true;
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -49,6 +52,7 @@ namespace CommandsEditor.UserControls
 
             PopulateEnumEntries();
             comboBox2.SelectedIndex = 0;
+            HighlightAsModified();
         }
 
         private void PopulateEnumEntries()
@@ -63,6 +67,12 @@ namespace CommandsEditor.UserControls
         {
             EnumUtils.EnumDescriptor.Entry enumEntry = enumDesc.Entries.FirstOrDefault(o => o.Name == comboBox2.SelectedItem.ToString());
             enumVal.enumIndex = enumEntry.Index;
+            HighlightAsModified();
+        }
+
+        public override void HighlightAsModified(bool updateDatabase = true, Control fontToUpdate = null)
+        {
+            base.HighlightAsModified(updateDatabase, groupBox1);
         }
     }
 }

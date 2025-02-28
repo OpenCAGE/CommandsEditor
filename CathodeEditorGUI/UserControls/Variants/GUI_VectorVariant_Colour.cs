@@ -33,6 +33,8 @@ namespace CommandsEditor.UserControls
             this.deleteToolStripMenuItem.Text = "Delete '" + paramID + "'";
 
             UpdateUI();
+
+            _hasDoneSetup = true;
         }
 
         private void UpdateUI()
@@ -62,6 +64,7 @@ namespace CommandsEditor.UserControls
                 SetVectorFromColour(colourPicker.Color);
                 pictureBox1.BackColor = VectorToColour();
                 SettingsManager.SetIntegerArray(Singleton.Settings.CustomColours, colourPicker.CustomColors);
+                HighlightAsModified();
             }
         }
 
@@ -92,6 +95,12 @@ namespace CommandsEditor.UserControls
             vector.value.Z = newVector.value.Z;
 
             UpdateUI();
+            HighlightAsModified();
+        }
+
+        public override void HighlightAsModified(bool updateDatabase = true, Control fontToUpdate = null)
+        {
+            base.HighlightAsModified(updateDatabase, GUID_VARIABLE_DUMMY);
         }
     }
 }

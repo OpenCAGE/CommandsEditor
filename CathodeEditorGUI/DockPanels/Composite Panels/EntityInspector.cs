@@ -324,6 +324,31 @@ namespace CommandsEditor.DockPanels
                 }
             }
 
+#if AUTO_POPULATE_PARAMS
+            //make sure all defaults are applied to the entity so that we're showing everything
+            //TODO: this overwrites values that come from composite instances... why?
+            //TODO: this should also factor in links in/out - if a link already exists then we shouldn't add it as a param
+            if (!ParameterModificationTracker.IsDefaultsApplied(Composite.shortGUID, Entity.shortGUID))
+            {
+#if DEBUG
+                int count_pre_add = _entity.parameters.Count;
+#endif
+                switch (_entity.variant)
+                {
+                    case EntityVariant.FUNCTION:
+                        EntityUtils.ApplyDefaults((FunctionEntity)_entity, true, false);
+                        break;
+                    case EntityVariant.PROXY:
+                        EntityUtils.ApplyDefaults((ProxyEntity)_entity, true, false);
+                        break;
+                }
+                ParameterModificationTracker.SetDefaultsApplied(Composite.shortGUID, Entity.shortGUID);
+#if DEBUG
+                Console.WriteLine("Applied " + (_entity.parameters.Count - count_pre_add) + " defaults to entity.");
+#endif
+            }
+#endif
+
             //populate parameter inputs
             _entity.parameters = _entity.parameters.OrderBy(o => o.name.ToString()).ToList();
             for (int i = 0; i < _entity.parameters.Count; i++)
@@ -494,6 +519,12 @@ namespace CommandsEditor.DockPanels
                 parameterGUI.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
                 current_ui_offset += parameterGUI.Height + 6;
                 controls.Add(parameterGUI);
+
+#if AUTO_POPULATE_PARAMS
+                parameterGUI.TrackInstanceInfo(Composite.shortGUID, Entity.shortGUID, _entity.parameters[i].name);
+                if (ParameterModificationTracker.IsParameterModified(Composite.shortGUID, Entity.shortGUID, _entity.parameters[i].name))
+                    parameterGUI.HighlightAsModified(false);
+#endif
             }
 
             if (_displayingLinks)
