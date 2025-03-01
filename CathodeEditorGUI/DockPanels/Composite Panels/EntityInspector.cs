@@ -1,5 +1,6 @@
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
+using CathodeLib;
 using CommandsEditor.Properties;
 using CommandsEditor.UserControls;
 using OpenCAGE;
@@ -337,6 +338,15 @@ namespace CommandsEditor.DockPanels
             Console.WriteLine($"[ENTITY RELOAD] LINK IN CONTROLS COMPLETED: {timer.Elapsed.TotalMilliseconds} ms");
 #endif
 
+            //TEMP TEST CODE
+            //TODO: need to run through all vanilla VariablEntity objects and check we don't get nulls for this 
+            if (_entity.variant == EntityVariant.VARIABLE)
+            {
+                var info = CompositeUtils.GetParameterInfo(Composite, (VariableEntity)Entity);
+                Console.WriteLine("VariableEntity direction: " + info.Direction);
+            }
+
+
 #if AUTO_POPULATE_PARAMS
             //make sure all defaults are applied to the entity so that we're showing everything
             //TODO: this should also factor in links in/out - if a link already exists then we shouldn't add it as a param
@@ -402,6 +412,8 @@ namespace CommandsEditor.DockPanels
                             }
                         }
                         */
+
+                        //TODO: doing this manually with hardcoded stuff is dumb. we have the info available to do this automatically.
 
                         AssetList.Type asset = AssetList.Type.NONE;
                         string asset_arg = "";

@@ -34,9 +34,12 @@ namespace CommandsEditor
 
             _composite = composite;
 
-            entityVariant.BeginUpdate();
-            entityVariant.Items.Clear();
-            entityVariant.Items.AddRange(new object[] {
+            //TODO: really we should just add the below from the enum. then filter any we don't want. then cast the string to enum at the end rather using index.
+
+            variableType.BeginUpdate();
+            variableType.Items.Clear();
+            //These should match DataType
+            variableType.Items.AddRange(new object[] {
                                     "STRING",
                                     "FLOAT",
                                     "INTEGER",
@@ -48,25 +51,49 @@ namespace CommandsEditor
                                     "RESOURCE"
                                     // TODO: we should support other types here
             });
-            entityVariant.EndUpdate();
+            variableType.EndUpdate();
+            variableType.SelectedIndex = SettingsManager.GetInteger(Singleton.Settings.PrevVariableType);
 
-            entityVariant.SelectedIndex = SettingsManager.GetInteger(Singleton.Settings.PrevVariableType);
+            variableDirection.BeginUpdate();
+            variableDirection.Items.Clear();
+            //These should match PinDirection
+            variableDirection.Items.AddRange(new object[] {
+                                    "IN",
+                                    "OUT"
+            });
+            variableDirection.EndUpdate();
+            variableDirection.SelectedIndex = 0;
+
             createNode.Checked = SettingsManager.GetBool(Singleton.Settings.MakeNodeWhenMakeEntity);
             createNode.Visible = flowgraphMode;
 
-            textBox1.Select();
+            variableName.Select();
         }
 
         private void createEntity(object sender, EventArgs e)
         {
-            if (textBox1.Text == "")
+            if (variableName.Text == "")
             {
                 MessageBox.Show("Please enter a name!", "No name.", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
+            ShortGuid name_guid = ShortGuidUtils.Generate(variableName.Text);
+            foreach (VariableEntity varEnt in _composite.variables)
+            {
+                if (varEnt.name == name_guid)
+                {
+                    MessageBox.Show("A parameter within this composite already has the same name, please pick another!", "Duplicate name.", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+            }
 
             Singleton.OnEntityAddPending?.Invoke();
-            Entity newEntity = _composite.AddVariable(textBox1.Text, (DataType)entityVariant.SelectedIndex, true);
+            Entity newEntity = _composite.AddVariable(variableName.Text, (DataType)variableType.SelectedIndex, true);
+            CompositeUtils.SetParameterInfo(_composite, new CompositePinInfoTable.PinInfo()
+            {
+                VariableGUID = newEntity.shortGUID,
+                Direction = (PinDirection)variableDirection.SelectedIndex
+            });
             Singleton.OnEntityAdded?.Invoke(newEntity);
 
             this.Close();
@@ -75,7 +102,7 @@ namespace CommandsEditor
         private void OnKeyDownHandler(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
-                createNewEntity.PerformClick();
+                createVariable.PerformClick();
         }
 
         private void createNode_CheckedChanged(object sender, EventArgs e)
@@ -86,7 +113,7 @@ namespace CommandsEditor
 
         private void entityVariant_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SettingsManager.SetInteger(Singleton.Settings.PrevVariableType, entityVariant.SelectedIndex);
+            SettingsManager.SetInteger(Singleton.Settings.PrevVariableType, variableType.SelectedIndex);
         }
     }
 }

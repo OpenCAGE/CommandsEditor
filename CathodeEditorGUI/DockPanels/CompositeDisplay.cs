@@ -103,12 +103,6 @@ namespace CommandsEditor.DockPanels
             pathDisplay.Text = _path.GetPath(_composite);
         }
 
-        private void OnAddNewEntity(Entity entity)
-        {
-            ReloadUIForNewEntity(entity);
-            LoadEntity(entity);
-        }
-
         //Saves and compiles all Flowgraph layouts for this Composite
         public void SaveAllFlowgraphs()
         {
@@ -131,7 +125,7 @@ namespace CommandsEditor.DockPanels
             {
                 _entityList.List.SelectedEntityChanged += LoadEntity;
                 Singleton.OnCompositeRenamed += OnCompositeRenamed;
-                Singleton.OnEntityAdded += OnAddNewEntity;
+                Singleton.OnEntityAdded += ReloadUIForNewEntity;
                 _isSubbed = true;
             }
 
@@ -175,7 +169,7 @@ namespace CommandsEditor.DockPanels
             _entityList.List.SelectedEntityChanged -= LoadEntity;
             //this.FormClosed -= CompositeDisplay_FormClosed;
             Singleton.OnCompositeRenamed -= OnCompositeRenamed;
-            Singleton.OnEntityAdded -= OnAddNewEntity;
+            Singleton.OnEntityAdded -= ReloadUIForNewEntity;
             _isSubbed = false;
 
             if (dialog_var != null)
@@ -433,7 +427,7 @@ namespace CommandsEditor.DockPanels
             if (entity == null) return;
 
             //First, make sure the list has the right entity selected, then exit early to avoid loading twice.
-            if (_entityList.List.SelectedEntity != entity)
+            if (_entityList.List.SelectedEntity == null || _entityList.List.SelectedEntity.shortGUID != entity.shortGUID)
             {
                 _entityList.List.SelectEntity(entity);
                 return;
