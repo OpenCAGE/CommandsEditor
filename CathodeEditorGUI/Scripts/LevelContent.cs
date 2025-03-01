@@ -390,9 +390,9 @@ namespace CommandsEditor
         {
             if (cacheMethod == CacheMethod.CHECK_OR_POPULATE_CACHE)
             {
-                if (composite_content_cache.ContainsKey(composite))
-                    if (composite_content_cache[composite].ContainsKey(entity))
-                        return composite_content_cache[composite][entity];
+                if (composite_content_cache.TryGetValue(composite, out Dictionary<Entity, ListViewItem> items))
+                    if (items.TryGetValue(entity, out ListViewItem cachedItem))
+                        return cachedItem;
             }
 
             ListViewItem item = new ListViewItem()
@@ -440,21 +440,22 @@ namespace CommandsEditor
 
                 case CacheMethod.IGNORE_AND_OVERWRITE_CACHE:
                     //we want to write (or overwrite) the cache, so lets do that
-                    if (composite_content_cache.ContainsKey(composite))
+                    if (composite_content_cache.TryGetValue(composite, out Dictionary<Entity, ListViewItem> items))
                     {
-                        if (composite_content_cache[composite].ContainsKey(entity))
+                        if (items.ContainsKey(entity))
                         {
-                            composite_content_cache[composite][entity] = item;
+                            items[entity] = item;
                         }
                         else
                         {
-                            composite_content_cache[composite].Add(entity, item);
+                            items.Add(entity, item);
                         }
                     }
                     else
                     {
-                        composite_content_cache.Add(composite, new Dictionary<Entity, ListViewItem>());
-                        composite_content_cache[composite].Add(entity, item);
+                        Dictionary<Entity, ListViewItem> dict = new Dictionary<Entity, ListViewItem>();
+                        dict.Add(entity, item);
+                        composite_content_cache.Add(composite, dict);
                     }
                     break;
             }

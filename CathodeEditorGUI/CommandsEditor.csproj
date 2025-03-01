@@ -23,7 +23,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <OutputPath>..\Build\</OutputPath>
-    <DefineConstants>DEBUG;CATHODE_FAIL_HARD;AUTO_POPULATE_PARAMS</DefineConstants>
+    <DefineConstants>DEBUG;CATHODE_FAIL_HARD;AUTO_POPULATE_PARAMS;DO_ENTITY_PERF_CHECK</DefineConstants>
     <Prefer32Bit>false</Prefer32Bit>
     <Optimize>false</Optimize>
   </PropertyGroup>
@@ -32,6 +32,7 @@
     <OutputPath>..\Build\</OutputPath>
     <Prefer32Bit>false</Prefer32Bit>
     <Optimize>true</Optimize>
+    <DefineConstants>AUTO_POPULATE_PARAMS</DefineConstants>
   </PropertyGroup>
   <ItemGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <Reference Include="CathodeLib">

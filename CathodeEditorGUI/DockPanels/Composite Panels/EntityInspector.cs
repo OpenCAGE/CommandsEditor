@@ -175,9 +175,13 @@ namespace CommandsEditor.DockPanels
         public void Reload() => Reload(_displayingLinks);
         public void Reload(bool displayLinks)
         {
-#if DEBUG
+#if DO_ENTITY_PERF_CHECK
+            //TODO: The performance here is pretty poor. I should swap to using the PropertyGrid.
             Stopwatch timer = Stopwatch.StartNew();
+            Console.WriteLine("[ENTITY RELOAD] ** START **");
 #endif
+
+            entity_params.SuspendLayout();
 
             _displayingLinks = displayLinks;
             ModifyParameters.Visible = !_displayingLinks;
@@ -213,9 +217,10 @@ namespace CommandsEditor.DockPanels
 
             if (_entity == null)
             {
-#if DEBUG
+#if DO_ENTITY_PERF_CHECK
                 timer.Stop();
 #endif
+                entity_params.ResumeLayout();
                 return;
             }
 
@@ -301,6 +306,10 @@ namespace CommandsEditor.DockPanels
             if (Content.mvr != null && Content.mvr.Entries.FindAll(o => o.entity.entity_id == this._entity.shortGUID).Count != 0)
                 editEntityMovers.Enabled = true;
 
+#if DO_ENTITY_PERF_CHECK
+            Console.WriteLine($"[ENTITY RELOAD] METADATA UPDATE COMPLETED: {timer.Elapsed.TotalMilliseconds} ms");
+#endif
+
             int current_ui_offset = 7;
             if (_displayingLinks)
             {
@@ -324,10 +333,15 @@ namespace CommandsEditor.DockPanels
                 }
             }
 
+#if DO_ENTITY_PERF_CHECK
+            Console.WriteLine($"[ENTITY RELOAD] LINK IN CONTROLS COMPLETED: {timer.Elapsed.TotalMilliseconds} ms");
+#endif
+
 #if AUTO_POPULATE_PARAMS
             //make sure all defaults are applied to the entity so that we're showing everything
-            //TODO: this overwrites values that come from composite instances... why?
             //TODO: this should also factor in links in/out - if a link already exists then we shouldn't add it as a param
+            //TODO: should add all defaults for a whole level and save (not composites for now, until we have the distinguish between pins or not), and check nothing breaks.
+            //TODO: ^ on that - next step should be to write the db for pins on composites to not apply pins as params. we have this info. i should also allow people to make them with these types.
             if (!ParameterModificationTracker.IsDefaultsApplied(Composite.shortGUID, Entity.shortGUID))
             {
 #if DEBUG
@@ -346,10 +360,14 @@ namespace CommandsEditor.DockPanels
 #if DEBUG
                 Console.WriteLine("Applied " + (_entity.parameters.Count - count_pre_add) + " defaults to entity.");
 #endif
+#if DO_ENTITY_PERF_CHECK
+                Console.WriteLine($"[ENTITY RELOAD] DEFAULTS APPLIED: {timer.Elapsed.TotalMilliseconds} ms");
+#endif
             }
 #endif
 
             //populate parameter inputs
+            //NOTE: some pins are listed as params, because they specify the "delay" for the pin to be activated (both in and out) - i should display this info differently.
             _entity.parameters = _entity.parameters.OrderBy(o => o.name.ToString()).ToList();
             for (int i = 0; i < _entity.parameters.Count; i++)
             {
@@ -527,6 +545,10 @@ namespace CommandsEditor.DockPanels
 #endif
             }
 
+#if DO_ENTITY_PERF_CHECK
+            Console.WriteLine($"[ENTITY RELOAD] PARAMETER CONTROLS COMPLETED: {timer.Elapsed.TotalMilliseconds} ms");
+#endif
+
             if (_displayingLinks)
             {
                 //populate linked params OUT
@@ -544,14 +566,16 @@ namespace CommandsEditor.DockPanels
                 }
             }
 
-            entity_params.SuspendLayout();
+#if DO_ENTITY_PERF_CHECK
+            Console.WriteLine($"[ENTITY RELOAD] LINK OUT CONTROLS COMPLETED: {timer.Elapsed.TotalMilliseconds} ms");
+#endif
+
             entity_params.Controls.AddRange(controls.ToArray());
             entity_params.ResumeLayout();
 
-#if DEBUG
+#if DO_ENTITY_PERF_CHECK
             timer.Stop();
-            TimeSpan timeTaken = timer.Elapsed;
-            Console.WriteLine($"Entity reload taken: {timeTaken.TotalMilliseconds} ms");
+            Console.WriteLine($"[ENTITY RELOAD] ADDED CONTROLS TO WINDOW: {timer.Elapsed.TotalMilliseconds} ms");
 #endif
 
             Singleton.OnEntityReloaded?.Invoke(_entity);

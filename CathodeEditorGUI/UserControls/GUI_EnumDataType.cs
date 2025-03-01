@@ -12,6 +12,8 @@ namespace CommandsEditor.UserControls
         cEnum enumVal = null;
         EnumUtils.EnumDescriptor enumDesc = null;
 
+        //TODO: we should have two types of this. where we are sure on the enum it should not be allowed to have the type change.
+
         public GUI_EnumDataType()
         {
             InitializeComponent();

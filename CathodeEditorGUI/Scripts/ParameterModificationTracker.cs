@@ -99,7 +99,7 @@ namespace CommandsEditor
         private static void LoadModifications(string filepath)
         {
             _parameterTracker = (CompositeParameterModificationTable)CustomTable.ReadTable(filepath, CustomEndTables.COMPOSITE_PARAMETER_MODIFICATION);
-            if (_parameterTracker == null)
+            if (_parameterTracker == null || _parameterTracker.modified_params.Count == 0)
             {
                 _parameterTracker = new CompositeParameterModificationTable();
                 if (_commands != null)

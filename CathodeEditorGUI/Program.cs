@@ -64,8 +64,8 @@ namespace CommandsEditor
 
         public static string GetArgument(string name)
         {
-            if (_args.ContainsKey(name))
-                return _args[name];
+            if (_args.TryGetValue(name, out string arg))
+                return arg;
             return null;
         }
     }

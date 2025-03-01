@@ -264,8 +264,8 @@ namespace CommandsEditor
             if (!cachedEntityName.ContainsKey(composite.shortGUID))
                 cachedEntityName.Add(composite.shortGUID, new Dictionary<ShortGuid, string>());
 
-            if (hasFinishedCachingEntityNames && cachedEntityName[composite.shortGUID].ContainsKey(entity.shortGUID))
-                return cachedEntityName[composite.shortGUID][entity.shortGUID];
+            if (hasFinishedCachingEntityNames && cachedEntityName[composite.shortGUID].TryGetValue(entity.shortGUID, out string name))
+                return name;
 
             return GenerateEntityNameInternal(entity, composite);
         }

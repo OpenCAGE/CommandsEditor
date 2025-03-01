@@ -214,13 +214,13 @@ namespace CommandsEditor
         Keyframe activeEventHandle = null;
         private void OnHandleMoved(Keyframe handle, float time)
         {
-            if (keyframeHandlesAnim.ContainsKey(handle))
+            if (keyframeHandlesAnim.TryGetValue(handle, out CAGEAnimation.Animation.Keyframe animKeyframe))
             {
                 if (activeAnimHandle != null) activeAnimHandle.Highlight(false);
                 handle.Highlight();
                 activeAnimHandle = handle;
 
-                activeAnimKeyframe = keyframeHandlesAnim[handle];
+                activeAnimKeyframe = animKeyframe;
                 activeAnimKeyframe.secondsSinceStart = time;
                 animKeyframeData.Visible = true;
                 animKeyframeValue.Text = activeAnimKeyframe.paramValue.ToString();
@@ -229,13 +229,13 @@ namespace CommandsEditor
                 endVelX.Text = activeAnimKeyframe.endVelocity.X.ToString();
                 endVelY.Text = activeAnimKeyframe.endVelocity.Y.ToString();
             }
-            else if (keyframeHandlesEvent.ContainsKey(handle))
+            else if (keyframeHandlesEvent.TryGetValue(handle, out CAGEAnimation.Event.Keyframe eventKeyframe))
             {
                 if (activeEventHandle != null) activeEventHandle.Highlight(false);
                 handle.Highlight();
                 activeEventHandle = handle;
 
-                activeEventKeyframe = keyframeHandlesEvent[handle];
+                activeEventKeyframe = eventKeyframe;
                 activeEventKeyframe.secondsSinceStart = time;
                 eventKeyframeData.Visible = true;
                 eventParam1.Text = activeEventKeyframe.startEvent.ToString();
