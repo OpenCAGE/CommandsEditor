@@ -21,6 +21,11 @@ namespace CommandsEditor
 {
     public partial class AddEntity_Variable : BaseWindow
     {
+        //TODO: allow people to specify if this should be a pin in or out when the composite is instanced. should also display this alongside the datatype in the UI (e.g. STRING [IN])
+        //TODO: i should also load this information in, and store it in a new table (Which i also add this user-inputted info to)
+        //TODO: when i make the node for this entity, i should auto populate a pin either on the left or right. i should also update the logic for all existing variable pins so that if i know if they're in/out they only show a pin on that side.
+        //TODO ^ and on this, i should validate this doesn't break any existing links.
+
         private Composite _composite;
 
         public AddEntity_Variable(Composite composite, bool flowgraphMode) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_COMPOSITE_SELECTION)
@@ -41,7 +46,7 @@ namespace CommandsEditor
                                     "ENUM",
                                     "SPLINE",
                                     "RESOURCE"
-                                    // TODO: we should support other types here, such as ZONE_LINK_PTR used in doors
+                                    // TODO: we should support other types here
             });
             entityVariant.EndUpdate();
 
