@@ -16,6 +16,8 @@ namespace CommandsEditor
 
     public static class CathodeEntityDatabase
     {
+        //TODO: i either need to re-dump this, or i need to merge it with the stuff in cathodelib
+
         public struct EntityDefinition
         {
             public string guidName;

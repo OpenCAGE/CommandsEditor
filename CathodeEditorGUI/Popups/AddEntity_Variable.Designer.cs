@@ -37,7 +37,7 @@
             this.variableType = new System.Windows.Forms.ComboBox();
             this.createNode = new System.Windows.Forms.CheckBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.variableDirection = new System.Windows.Forms.ComboBox();
+            this.variableEnumType = new System.Windows.Forms.ComboBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.SuspendLayout();
             // 
@@ -106,26 +106,26 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(24, 68);
+            this.label3.Location = new System.Drawing.Point(16, 68);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(49, 13);
+            this.label3.Size = new System.Drawing.Size(57, 13);
             this.label3.TabIndex = 185;
-            this.label3.Text = "Direction";
+            this.label3.Text = "Enum type";
             // 
-            // variableDirection
+            // variableEnumType
             // 
-            this.variableDirection.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.variableDirection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.variableDirection.FormattingEnabled = true;
-            this.variableDirection.Items.AddRange(new object[] {
+            this.variableEnumType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.variableEnumType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.variableEnumType.FormattingEnabled = true;
+            this.variableEnumType.Items.AddRange(new object[] {
             "IN",
             "OUT"});
-            this.variableDirection.Location = new System.Drawing.Point(79, 65);
-            this.variableDirection.Name = "variableDirection";
-            this.variableDirection.Size = new System.Drawing.Size(641, 21);
-            this.variableDirection.TabIndex = 3;
-            this.toolTip1.SetToolTip(this.variableDirection, "Specifies which way the data flows for this parameter. If out, it\'ll appear as a " +
-        "pin on the right of any instances of the composite, and vice versa.");
+            this.variableEnumType.Location = new System.Drawing.Point(79, 65);
+            this.variableEnumType.Name = "variableEnumType";
+            this.variableEnumType.Size = new System.Drawing.Size(641, 21);
+            this.variableEnumType.TabIndex = 3;
+            this.toolTip1.SetToolTip(this.variableEnumType, "If creating an input/output enum type, you\'ll also need to select the type of enu" +
+        "m.");
             // 
             // AddEntity_Variable
             // 
@@ -133,7 +133,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(733, 131);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.variableDirection);
+            this.Controls.Add(this.variableEnumType);
             this.Controls.Add(this.createNode);
             this.Controls.Add(this.createVariable);
             this.Controls.Add(this.variableName);
@@ -160,7 +160,7 @@
         private System.Windows.Forms.TextBox variableName;
         private System.Windows.Forms.CheckBox createNode;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.ComboBox variableDirection;
+        private System.Windows.Forms.ComboBox variableEnumType;
         private System.Windows.Forms.ToolTip toolTip1;
     }
 }

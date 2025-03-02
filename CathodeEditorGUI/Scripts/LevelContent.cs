@@ -403,7 +403,8 @@ namespace CommandsEditor
             {
                 case EntityVariant.VARIABLE:
                     item.Text = ShortGuidUtils.FindString(((VariableEntity)entity).name);
-                    item.SubItems.Add(((VariableEntity)entity).type.ToString());
+                    CompositePinInfoTable.PinInfo variableInfo = CompositeUtils.GetParameterInfo(composite, (VariableEntity)entity);
+                    item.SubItems.Add(variableInfo != null ? variableInfo.PinTypeGUID.ToString() : ((VariableEntity)entity).type.ToString());
                     break;
                 case EntityVariant.FUNCTION:
                     item.Text = EntityUtils.GetName(composite.shortGUID, entity.shortGUID);

@@ -251,8 +251,9 @@ namespace CommandsEditor.DockPanels
             entityParamGroup.Text = "Selected " + entityVariantStr + " Parameters";
 
             //TODO: change this text contextually based on the linked editor - and hide the button when one isn't available.
-            editFunction.Text = "Function"; 
+            editFunction.Text = "Function";
 
+            CompositePinInfoTable.PinInfo variableInfo;
             string description = "";
             switch (_entity.variant)
             {
@@ -283,9 +284,11 @@ namespace CommandsEditor.DockPanels
                     }
                     break;
                 case EntityVariant.VARIABLE:
-                    description = "DataType " + ((VariableEntity)_entity).type.ToString();
+                    variableInfo = CompositeUtils.GetParameterInfo(Composite, (VariableEntity)Entity);
+                    if (variableInfo == null)
+                        Console.WriteLine("Warning: Could not get parameter pin info!");
+                    description = (variableInfo != null ? variableInfo.PinTypeGUID.ToString() : ((VariableEntity)_entity).type.ToString());
                     selected_entity_name.Text = ShortGuidUtils.FindString(((VariableEntity)_entity).name);
-                    //renameSelectedNode.Enabled = false;
                     break;
                 case EntityVariant.PROXY:
                 case EntityVariant.ALIAS:
@@ -338,20 +341,9 @@ namespace CommandsEditor.DockPanels
             Console.WriteLine($"[ENTITY RELOAD] LINK IN CONTROLS COMPLETED: {timer.Elapsed.TotalMilliseconds} ms");
 #endif
 
-            //TEMP TEST CODE
-            //TODO: need to run through all vanilla VariablEntity objects and check we don't get nulls for this 
-            if (_entity.variant == EntityVariant.VARIABLE)
-            {
-                var info = CompositeUtils.GetParameterInfo(Composite, (VariableEntity)Entity);
-                Console.WriteLine("VariableEntity direction: " + info.Direction);
-            }
-
-
 #if AUTO_POPULATE_PARAMS
             //make sure all defaults are applied to the entity so that we're showing everything
-            //TODO: this should also factor in links in/out - if a link already exists then we shouldn't add it as a param
-            //TODO: should add all defaults for a whole level and save (not composites for now, until we have the distinguish between pins or not), and check nothing breaks.
-            //TODO: ^ on that - next step should be to write the db for pins on composites to not apply pins as params. we have this info. i should also allow people to make them with these types.
+            //TODO: this should also factor in links in/out - if a link already exists then we shouldn't add it as a param (or it should add it and highlight it as such)
             if (!ParameterModificationTracker.IsDefaultsApplied(Composite.shortGUID, Entity.shortGUID))
             {
 #if DEBUG

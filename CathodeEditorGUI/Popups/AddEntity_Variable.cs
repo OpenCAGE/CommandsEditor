@@ -21,12 +21,10 @@ namespace CommandsEditor
 {
     public partial class AddEntity_Variable : BaseWindow
     {
-        //TODO: allow people to specify if this should be a pin in or out when the composite is instanced. should also display this alongside the datatype in the UI (e.g. STRING [IN])
-        //TODO: i should also load this information in, and store it in a new table (Which i also add this user-inputted info to)
-        //TODO: when i make the node for this entity, i should auto populate a pin either on the left or right. i should also update the logic for all existing variable pins so that if i know if they're in/out they only show a pin on that side.
-        //TODO ^ and on this, i should validate this doesn't break any existing links.
-
         private Composite _composite;
+
+        //TODO: We should add a compatibility window to add the additional metadata for already added new pins that people have made.
+        //      This should work using the LocalDebug func logic of checking all entries against the DB. We can also know if the composite has been modified by checking the ShortGuid table.
 
         public AddEntity_Variable(Composite composite, bool flowgraphMode) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
@@ -34,35 +32,46 @@ namespace CommandsEditor
 
             _composite = composite;
 
-            //TODO: really we should just add the below from the enum. then filter any we don't want. then cast the string to enum at the end rather using index.
-
             variableType.BeginUpdate();
             variableType.Items.Clear();
-            //These should match DataType
             variableType.Items.AddRange(new object[] {
-                                    "STRING",
-                                    "FLOAT",
-                                    "INTEGER",
-                                    "BOOL",
-                                    "VECTOR",
-                                    "TRANSFORM",
-                                    "ENUM",
-                                    "SPLINE",
-                                    "RESOURCE"
-                                    // TODO: we should support other types here
+                "CompositeReferencePin",
+                "CompositeOutputVariablePin", //todo: is this defo a float?
+                "CompositeOutputAnimationInfoVariablePin",
+                "CompositeOutputBoolVariablePin",
+                "CompositeOutputDirectionVariablePin",
+                "CompositeOutputEnumVariablePin",
+                "CompositeOutputFloatVariablePin",
+                "CompositeOutputIntVariablePin",
+                "CompositeOutputObjectVariablePin",
+                "CompositeOutputPositionVariablePin",
+                "CompositeOutputStringVariablePin",
+                "CompositeOutputZoneLinkPtrVariablePin",
+                "CompositeOutputZonePtrVariablePin",
+                "CompositeTargetPin",
+                "CompositeInputVariablePin", //todo: is this defo a float?
+                "CompositeInputAnimationInfoVariablePin",
+                "CompositeInputBoolVariablePin",
+                "CompositeInputDirectionVariablePin",
+                "CompositeInputEnumVariablePin",
+                "CompositeInputFloatVariablePin",
+                "CompositeInputIntVariablePin",
+                "CompositeInputObjectVariablePin",
+                "CompositeInputPositionVariablePin",
+                "CompositeInputStringVariablePin",
+                "CompositeInputZoneLinkPtrVariablePin",
+                "CompositeInputZonePtrVariablePin",
+                "CompositeMethodPin"
             });
             variableType.EndUpdate();
             variableType.SelectedIndex = SettingsManager.GetInteger(Singleton.Settings.PrevVariableType);
 
-            variableDirection.BeginUpdate();
-            variableDirection.Items.Clear();
-            //These should match PinDirection
-            variableDirection.Items.AddRange(new object[] {
-                                    "IN",
-                                    "OUT"
-            });
-            variableDirection.EndUpdate();
-            variableDirection.SelectedIndex = 0;
+            variableEnumType.BeginUpdate();
+            variableEnumType.Items.Clear();
+            variableEnumType.Items.AddRange(Enum.GetNames(typeof(EnumType)));
+            variableEnumType.EndUpdate();
+            variableEnumType.SelectedIndex = 0;
+            variableEnumType.Enabled = false;
 
             createNode.Checked = SettingsManager.GetBool(Singleton.Settings.MakeNodeWhenMakeEntity);
             createNode.Visible = flowgraphMode;
@@ -87,12 +96,66 @@ namespace CommandsEditor
                 }
             }
 
+            DataType datatype = DataType.FLOAT;
+            switch (variableType.SelectedItem.ToString())
+            {
+                case "CompositeInputAnimationInfoVariablePin":
+                case "CompositeOutputAnimationInfoVariablePin":
+                    datatype = DataType.ANIMATION_INFO; //TODO: need to add a ui for this... not sure what it is, is it the skeleton/anim pair?
+                    break;
+                case "CompositeInputBoolVariablePin":
+                case "CompositeOutputBoolVariablePin":
+                    datatype = DataType.BOOL;
+                    break;
+                case "CompositeInputDirectionVariablePin":
+                case "CompositeOutputDirectionVariablePin":
+                    datatype = DataType.VECTOR;
+                    break;
+                case "CompositeInputEnumVariablePin":
+                case "CompositeOutputEnumVariablePin":
+                    datatype = DataType.ENUM;
+                    break;
+                case "CompositeInputFloatVariablePin":
+                case "CompositeOutputFloatVariablePin":
+                    datatype = DataType.FLOAT;
+                    break;
+                case "CompositeInputIntVariablePin":
+                case "CompositeOutputIntVariablePin":
+                    datatype = DataType.INTEGER;
+                    break;
+                case "CompositeInputObjectVariablePin":
+                case "CompositeOutputObjectVariablePin":
+                    datatype = DataType.OBJECT;
+                    break;
+                case "CompositeInputPositionVariablePin":
+                case "CompositeOutputPositionVariablePin":
+                    datatype = DataType.TRANSFORM;
+                    break;
+                case "CompositeInputStringVariablePin":
+                case "CompositeOutputStringVariablePin":
+                    datatype = DataType.STRING;
+                    break;
+                case "CompositeInputZoneLinkPtrVariablePin":
+                case "CompositeOutputZoneLinkPtrVariablePin":
+                    datatype = DataType.ZONE_LINK_PTR;
+                    break;
+                case "CompositeInputZonePtrVariablePin":
+                case "CompositeOutputZonePtrVariablePin":
+                    datatype = DataType.ZONE_PTR;
+                    break;
+            }
+
             Singleton.OnEntityAddPending?.Invoke();
-            Entity newEntity = _composite.AddVariable(variableName.Text, (DataType)variableType.SelectedIndex, true);
+            VariableEntity newEntity = _composite.AddVariable(variableName.Text, datatype, true);
+            if (newEntity.parameters[0].content.dataType == DataType.ENUM)
+            {
+                cEnum enumParam = (cEnum)newEntity.parameters[0].content;
+                enumParam.enumID = ShortGuidUtils.Generate(variableEnumType.SelectedItem.ToString());
+            }
             CompositeUtils.SetParameterInfo(_composite, new CompositePinInfoTable.PinInfo()
             {
                 VariableGUID = newEntity.shortGUID,
-                Direction = (PinDirection)variableDirection.SelectedIndex
+                PinTypeGUID = ShortGuidUtils.Generate(variableType.SelectedItem.ToString())
             });
             Singleton.OnEntityAdded?.Invoke(newEntity);
 
@@ -113,6 +176,7 @@ namespace CommandsEditor
 
         private void entityVariant_SelectedIndexChanged(object sender, EventArgs e)
         {
+            variableEnumType.Enabled = variableType.SelectedItem.ToString() == "CompositeInputEnumVariablePin" || variableType.SelectedItem.ToString() == "CompositeOutputEnumVariablePin"; 
             SettingsManager.SetInteger(Singleton.Settings.PrevVariableType, variableType.SelectedIndex);
         }
     }

@@ -117,6 +117,64 @@ namespace CommandsEditor
 #endif
         }
 
+        public static void CheckAllParamInfo()
+        {
+#if DEBUG
+
+            List<string> files = Directory.GetFiles("M:\\Modding\\Steam Projects\\steamapps\\common\\Alien Isolation\\data\\ENV", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            List<string> dump = new List<string>();
+            dump.Add("PAK File,Composite Name,VariableEntity ShortGuid,VariableEntity Param Name");
+            foreach (string file in files)
+            {
+                Commands commands = new Commands(file);
+
+                ShortGuidUtils.LinkCommands(commands);
+                CompositeUtils.LinkCommands(commands);
+
+                for (int x = 0; x < commands.Entries.Count; x++)
+                {
+                    for (int i = 0; i < commands.Entries[x].variables.Count; i++)
+                    {
+                        if (CompositeUtils.GetParameterInfo(commands.Entries[x], commands.Entries[x].variables[i]) == null)
+                        {
+                            dump.Add(file + "," + commands.Entries[x].name + "," + commands.Entries[x].variables[i].shortGUID + "," + commands.Entries[x].variables[i].name);
+                        }
+                    }
+                }
+            }
+            File.WriteAllLines("missing_param_info.csv", dump);
+#endif
+        }
+
+        public static void ApplyAllDefaults()
+        {
+#if DEBUG
+
+            List<string> files = Directory.GetFiles("M:\\Modding\\Steam Projects\\steamapps\\common\\Alien Isolation\\data\\ENV\\PRODUCTION\\HAB_AIRPORT", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            foreach (string file in files)
+            {
+                Commands commands = new Commands(file);
+
+                CompositeUtils.LinkCommands(commands);
+                EntityUtils.LinkCommands(commands);
+
+                for (int x = 0; x < commands.Entries.Count; x++)
+                {
+                    for (int i = 0; i < commands.Entries[x].functions.Count; i++)
+                    {
+                        EntityUtils.ApplyDefaults(commands.Entries[x].functions[i], true, false);
+                    }
+                    for (int i = 0; i < commands.Entries[x].proxies.Count; i++)
+                    {
+                        //EntityUtils.ApplyDefaults(commands.Entries[x].proxies[i], true, false);
+                    }
+                }
+
+                commands.Save();
+            }
+#endif
+        }
+
         public static void TestPurge()
         {
 #if DEBUG
