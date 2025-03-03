@@ -35,11 +35,11 @@ namespace CommandsEditor
                 if (!Enum.TryParse(entDefs[i].className, out FunctionType type))
                     continue;
 
-                FunctionType inherited = EntityUtils.GetBaseFunction(type);
+                FunctionType? inherited = EntityUtils.GetBaseFunction(type);
 
                 ListViewItem item = new ListViewItem(entDefs[i].className);
                 item.ImageIndex = 0;
-                item.SubItems.Add(inherited.ToString());
+                item.SubItems.Add(inherited == null ? "" : inherited.Value.ToString());
                 item.Tag = entDefs[i];
 
                 _items.Add(item);

@@ -39,6 +39,7 @@
             this.label3 = new System.Windows.Forms.Label();
             this.variableEnumType = new System.Windows.Forms.ComboBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.variableEnumStringType = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // createVariable
@@ -126,12 +127,30 @@
             this.variableEnumType.TabIndex = 3;
             this.toolTip1.SetToolTip(this.variableEnumType, "If creating an input/output enum type, you\'ll also need to select the type of enu" +
         "m.");
+            this.variableEnumType.SelectedIndexChanged += new System.EventHandler(this.variableEnumType_SelectedIndexChanged);
+            // 
+            // variableEnumStringType
+            // 
+            this.variableEnumStringType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.variableEnumStringType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.variableEnumStringType.FormattingEnabled = true;
+            this.variableEnumStringType.Items.AddRange(new object[] {
+            "IN",
+            "OUT"});
+            this.variableEnumStringType.Location = new System.Drawing.Point(79, 65);
+            this.variableEnumStringType.Name = "variableEnumStringType";
+            this.variableEnumStringType.Size = new System.Drawing.Size(641, 21);
+            this.variableEnumStringType.TabIndex = 186;
+            this.toolTip1.SetToolTip(this.variableEnumStringType, "If creating an input/output enum string type, you\'ll also need to select the type" +
+        ".");
+            this.variableEnumStringType.SelectedIndexChanged += new System.EventHandler(this.variableEnumStringType_SelectedIndexChanged);
             // 
             // AddEntity_Variable
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(733, 131);
+            this.Controls.Add(this.variableEnumStringType);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.variableEnumType);
             this.Controls.Add(this.createNode);
@@ -162,5 +181,6 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ComboBox variableEnumType;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.ComboBox variableEnumStringType;
     }
 }

@@ -253,7 +253,7 @@ namespace CommandsEditor.DockPanels
             //TODO: change this text contextually based on the linked editor - and hide the button when one isn't available.
             editFunction.Text = "Function";
 
-            CompositePinInfoTable.PinInfo variableInfo;
+            CompositePinInfoTable.PinInfo variableInfo = null;
             string description = "";
             switch (_entity.variant)
             {
@@ -407,70 +407,86 @@ namespace CommandsEditor.DockPanels
                         }
                         */
 
-                        //TODO: doing this manually with hardcoded stuff is dumb. we have the info available to do this automatically.
-
-                        AssetList.Type asset = AssetList.Type.NONE;
+                        AssetList.Type asset = AssetList.Type.NONE; //TODO: this should be removed and i should use EnumStringType
                         string asset_arg = "";
-                        //TODO: We can figure out a lot of these from the iOS dump.
-                        //      For example - SoundEnvironmentMarker shows reverb_name as DataType SOUND_REVERB!
-                        switch (paramName)
+                        if (Entity.variant == EntityVariant.VARIABLE)
                         {
-                            //case "Animation":
-                            //    asset = AssetList.Type.ANIMATION;
-                            //    break;
-                            case "material":
-                                asset = AssetList.Type.MATERIAL;
-                                break;
-                            case "title":
-                            case "presence_id":
-                            case "map_description":
-                            case "content_title":
-                            case "folder_title":
-                            case "additional_info": //TODO: this is a good example of why we should handle this per-entity
-                                asset = AssetList.Type.LOCALISED_STRING;
-                                if (_entity.variant == EntityVariant.FUNCTION && CommandsUtils.GetFunctionType(((FunctionEntity)_entity).function).ToString().Contains("Objective"))
-                                    asset_arg = "OBJECTIVES";
-                                else if (_entity.variant == EntityVariant.FUNCTION && CommandsUtils.GetFunctionType(((FunctionEntity)_entity).function).ToString().Contains("Terminal"))
-                                    asset_arg = "T0001/UI"; //TODO: we should also support TEXT dbs in the level folder for DLC stuff
-                                else
-                                    asset_arg = "UI";
-                                break;
-                            case "title_id":
-                            case "message_id":
-                            case "unlocked_text":
-                            case "locked_text":
-                            case "action_text":
-                                asset = AssetList.Type.LOCALISED_STRING;
-                                asset_arg = "UI";
-                                break;
-                            case "sound_event":
-                            case "stop_sound_event":
-                            case "music_event":
-                            case "stop_event":
-                            case "line_01_event":
-                            case "line_02_event":
-                            case "line_03_event":
-                            case "line_04_event":
-                            case "line_05_event":
-                            case "line_06_event":
-                            case "line_07_event":
-                            case "line_08_event":
-                            case "line_09_event":
-                            case "line_10_event":
-                            case "on_enter_event":
-                            case "on_exit_event":
-                            case "music_start_event":
-                            case "music_end_event":
-                            case "music_restart_event":
-                                asset = AssetList.Type.SOUND_EVENT;
-                                break;
-                            case "reverb_name":
-                                asset = AssetList.Type.SOUND_REVERB;
-                                break;
-                            case "sound_bank":
-                                asset = AssetList.Type.SOUND_BANK;
-                                break;
+                            if (variableInfo != null && (
+                                (CompositePinType)variableInfo.PinTypeGUID.ToUInt32() == CompositePinType.CompositeInputEnumStringVariablePin ||
+                                (CompositePinType)variableInfo.PinTypeGUID.ToUInt32() == CompositePinType.CompositeOutputEnumStringVariablePin))
+                            {
+                                switch ((EnumStringType)variableInfo.PinEnumTypeGUID.ToUInt32())
+                                {
+
+                                }
+                            }
                         }
+                        else
+                        {
+                            //TODO: doing this manually with hardcoded stuff is dumb. we have the info available to do this automatically. Use EnumStringType enum
+
+                            //TODO: We can figure out a lot of these from the iOS dump.
+                            //      For example - SoundEnvironmentMarker shows reverb_name as DataType SOUND_REVERB!
+                            switch (paramName)
+                            {
+                                //case "Animation":
+                                //    asset = AssetList.Type.ANIMATION;
+                                //    break;
+                                case "material":
+                                    asset = AssetList.Type.MATERIAL;
+                                    break;
+                                case "title":
+                                case "presence_id":
+                                case "map_description":
+                                case "content_title":
+                                case "folder_title":
+                                case "additional_info": //TODO: this is a good example of why we should handle this per-entity
+                                    asset = AssetList.Type.LOCALISED_STRING;
+                                    if (_entity.variant == EntityVariant.FUNCTION && CommandsUtils.GetFunctionType(((FunctionEntity)_entity).function).ToString().Contains("Objective"))
+                                        asset_arg = "OBJECTIVES";
+                                    else if (_entity.variant == EntityVariant.FUNCTION && CommandsUtils.GetFunctionType(((FunctionEntity)_entity).function).ToString().Contains("Terminal"))
+                                        asset_arg = "T0001/UI"; //TODO: we should also support TEXT dbs in the level folder for DLC stuff
+                                    else
+                                        asset_arg = "UI";
+                                    break;
+                                case "title_id":
+                                case "message_id":
+                                case "unlocked_text":
+                                case "locked_text":
+                                case "action_text":
+                                    asset = AssetList.Type.LOCALISED_STRING;
+                                    asset_arg = "UI";
+                                    break;
+                                case "sound_event":
+                                case "stop_sound_event":
+                                case "music_event":
+                                case "stop_event":
+                                case "line_01_event":
+                                case "line_02_event":
+                                case "line_03_event":
+                                case "line_04_event":
+                                case "line_05_event":
+                                case "line_06_event":
+                                case "line_07_event":
+                                case "line_08_event":
+                                case "line_09_event":
+                                case "line_10_event":
+                                case "on_enter_event":
+                                case "on_exit_event":
+                                case "music_start_event":
+                                case "music_end_event":
+                                case "music_restart_event":
+                                    asset = AssetList.Type.SOUND_EVENT;
+                                    break;
+                                case "reverb_name":
+                                    asset = AssetList.Type.SOUND_REVERB;
+                                    break;
+                                case "sound_bank":
+                                    asset = AssetList.Type.SOUND_BANK;
+                                    break;
+                            }
+                        }
+
                         if (asset != AssetList.Type.NONE)
                         {
                             parameterGUI = new GUI_StringVariant_AssetDropdown();

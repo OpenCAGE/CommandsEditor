@@ -92,7 +92,9 @@ namespace CommandsEditor
             public readonly string ExperimentalResourceStuff = "CS_EnableExperimentalResourceSaving";
             public readonly string MakeNodeWhenMakeEntity = "CS_MakeNodeWhenMakeEntity";
             public readonly string PrevFuncUsesSearch = "CS_PrevFuncUsesSearch";
-            public readonly string PrevVariableType = "CS_PrevVariableType_new";
+            public readonly string PrevVariableType = "CS_PrevVariableTypeNew";
+            public readonly string PrevVariableType_Enum = "CS_PrevVariableTypeEnum";
+            public readonly string PrevVariableType_EnumString = "CS_PrevVariableTypeEnumString";
             public readonly string CustomColours = "CS_CustomColours";
             public readonly string EntityListState = "CS_EntityListState";
             public readonly string EntityListWidth = "CS_EntityListWidth";
