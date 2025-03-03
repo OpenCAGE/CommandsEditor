@@ -240,10 +240,16 @@ namespace CommandsEditor
             if (_compatibility == null) _compatibility = new CompositeFlowgraphCompatibilityTable();
             Console.WriteLine("Loaded " + _compatibility.compatibility_info.Count + " flowgraph compatibility definitions!");
 
-            //Copy the default layouts over if they don't already exist
+            //Copy the default layouts over for composites in this Commands if they don't already exist
             if (_userDefinedLayouts.flowgraphs.Count == 0)
+            {
                 for (int i = 0; i < _preDefinedLayouts.flowgraphs.Count; i++)
+                {
+                    if (_commands.Entries.FirstOrDefault(o => o.shortGUID == _preDefinedLayouts.flowgraphs[i].CompositeGUID) == null)
+                        continue;
                     _userDefinedLayouts.flowgraphs.Add(_preDefinedLayouts.flowgraphs[i].Copy());
+                }
+            }
         }
 
         private static void SaveCustomFlowgraphs(string filepath)
