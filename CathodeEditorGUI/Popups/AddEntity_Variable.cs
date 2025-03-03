@@ -37,7 +37,7 @@ namespace CommandsEditor
             variableType.Items.AddRange(new object[] {
                 "CompositeReferencePin",
                 "CompositeOutputVariablePin", //todo: is this defo a float?
-                "CompositeOutputAnimationInfoVariablePin",
+                "CompositeOutputAnimationInfoVariablePin", 
                 "CompositeOutputBoolVariablePin",
                 "CompositeOutputDirectionVariablePin",
                 "CompositeOutputEnumVariablePin",
@@ -50,7 +50,7 @@ namespace CommandsEditor
                 "CompositeOutputZonePtrVariablePin",
                 "CompositeTargetPin",
                 "CompositeInputVariablePin", //todo: is this defo a float?
-                "CompositeInputAnimationInfoVariablePin",
+                "CompositeInputAnimationInfoVariablePin", 
                 "CompositeInputBoolVariablePin",
                 "CompositeInputDirectionVariablePin",
                 "CompositeInputEnumVariablePin",
@@ -101,7 +101,7 @@ namespace CommandsEditor
             {
                 case "CompositeInputAnimationInfoVariablePin":
                 case "CompositeOutputAnimationInfoVariablePin":
-                    datatype = DataType.ANIMATION_INFO; //TODO: need to add a ui for this... not sure what it is, is it the skeleton/anim pair?
+                    //datatype = DataType.ANIMATION_INFO; TODO: need to add a ui for this (?)
                     break;
                 case "CompositeInputBoolVariablePin":
                 case "CompositeOutputBoolVariablePin":
@@ -125,7 +125,7 @@ namespace CommandsEditor
                     break;
                 case "CompositeInputObjectVariablePin":
                 case "CompositeOutputObjectVariablePin":
-                    datatype = DataType.OBJECT;
+                    //datatype = DataType.OBJECT; TODO: need to add a ui for this (?)
                     break;
                 case "CompositeInputPositionVariablePin":
                 case "CompositeOutputPositionVariablePin":
@@ -137,11 +137,11 @@ namespace CommandsEditor
                     break;
                 case "CompositeInputZoneLinkPtrVariablePin":
                 case "CompositeOutputZoneLinkPtrVariablePin":
-                    datatype = DataType.ZONE_LINK_PTR;
+                    //datatype = DataType.ZONE_LINK_PTR; TODO: need to add a ui for this (?)
                     break;
                 case "CompositeInputZonePtrVariablePin":
                 case "CompositeOutputZonePtrVariablePin":
-                    datatype = DataType.ZONE_PTR;
+                    //datatype = DataType.ZONE_PTR; TODO: need to add a ui for this (?)
                     break;
             }
 

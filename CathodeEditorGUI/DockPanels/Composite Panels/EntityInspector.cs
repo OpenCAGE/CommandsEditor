@@ -326,6 +326,8 @@ namespace CommandsEditor.DockPanels
                         if (link.linkedEntityID != _entity.shortGUID) continue;
                         GUI_Link parameterGUI = new GUI_Link(this);
                         parameterGUI.PopulateUI(link, false, ent.shortGUID);
+                        parameterGUI.TrackInstanceInfo(Composite.shortGUID, Entity.shortGUID, link.linkedParamID);
+                        parameterGUI.HighlightAsModified(false); //For now, marking all links as "modified", given that they likely won't be default vals
                         parameterGUI.GoToEntity += _compositeDisplay.LoadEntity;
                         parameterGUI.OnLinkEdited += OnLinkEdited;
                         parameterGUI.Location = new Point(15, current_ui_offset);
@@ -544,7 +546,8 @@ namespace CommandsEditor.DockPanels
 
 #if AUTO_POPULATE_PARAMS
                 parameterGUI.TrackInstanceInfo(Composite.shortGUID, Entity.shortGUID, _entity.parameters[i].name);
-                if (ParameterModificationTracker.IsParameterModified(Composite.shortGUID, Entity.shortGUID, _entity.parameters[i].name))
+                //Note: we always mark variable entity parameters as "modified", because they have no defaults - they're by definition variable.
+                if (_entity.variant == EntityVariant.VARIABLE || ParameterModificationTracker.IsParameterModified(Composite.shortGUID, Entity.shortGUID, _entity.parameters[i].name))
                     parameterGUI.HighlightAsModified(false);
 #endif
             }
@@ -560,6 +563,8 @@ namespace CommandsEditor.DockPanels
                 {
                     GUI_Link parameterGUI = new GUI_Link(this);
                     parameterGUI.PopulateUI(_entity.childLinks[i], true);
+                    parameterGUI.TrackInstanceInfo(Composite.shortGUID, Entity.shortGUID, _entity.childLinks[i].thisParamID);
+                    parameterGUI.HighlightAsModified(false); //For now, marking all links as "modified", given that they likely won't be default vals
                     parameterGUI.GoToEntity += _compositeDisplay.LoadEntity;
                     parameterGUI.OnLinkEdited += OnLinkEdited;
                     parameterGUI.Location = new Point(15, current_ui_offset);

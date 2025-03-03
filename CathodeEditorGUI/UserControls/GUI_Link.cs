@@ -47,6 +47,8 @@ namespace CommandsEditor.UserControls
             }
 
             textBox1.Text = Content.editor_utils.GenerateEntityName(_linkedEntity, _entityDisplay.Composite);
+
+            _hasDoneSetup = true;
         }
 
         private void GoTo_Click(object sender, EventArgs e)
@@ -81,6 +83,11 @@ namespace CommandsEditor.UserControls
                 _linkedEntity.childLinks.RemoveAll(o => o.ID == _link.ID);
 
             OnLinkEdited?.Invoke(_entityDisplay.Entity, _linkedEntity);
+        }
+
+        public override void HighlightAsModified(bool updateDatabase = true, Control fontToUpdate = null)
+        {
+            base.HighlightAsModified(updateDatabase, group);
         }
     }
 }
