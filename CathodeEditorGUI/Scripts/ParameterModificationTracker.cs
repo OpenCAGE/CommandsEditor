@@ -1,4 +1,4 @@
-﻿using CATHODE;
+using CATHODE;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CathodeLib;
@@ -83,17 +83,21 @@ namespace CommandsEditor
         {
             if (_commands != null)
             {
+#if AUTO_POPULATE_PARAMS
                 _commands.OnLoadSuccess -= LoadModifications;
                 _commands.OnSaveSuccess -= SaveModifications;
+#endif
             }
 
             _commands = commands;
             if (_commands == null) return;
 
+#if AUTO_POPULATE_PARAMS
             _commands.OnLoadSuccess += LoadModifications;
             _commands.OnSaveSuccess += SaveModifications;
 
             LoadModifications(_commands.Filepath);
+#endif
         }
 
         private static void LoadModifications(string filepath)
