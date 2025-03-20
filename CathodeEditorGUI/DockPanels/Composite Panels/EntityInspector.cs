@@ -182,8 +182,6 @@ namespace CommandsEditor.DockPanels
             Console.WriteLine("[ENTITY RELOAD] ** START **");
 #endif
 
-            entity_params.SuspendLayout();
-
             _displayingLinks = displayLinks;
             ModifyParameters.Visible = !_displayingLinks;
 
@@ -221,7 +219,6 @@ namespace CommandsEditor.DockPanels
 #if DO_ENTITY_PERF_CHECK
                 timer.Stop();
 #endif
-                entity_params.ResumeLayout();
                 return;
             }
 
@@ -595,6 +592,7 @@ namespace CommandsEditor.DockPanels
             Console.WriteLine($"[ENTITY RELOAD] LINK OUT CONTROLS COMPLETED: {timer.Elapsed.TotalMilliseconds} ms");
 #endif
 
+            entity_params.SuspendLayout();
             entity_params.Controls.AddRange(controls.ToArray());
             entity_params.ResumeLayout();
 

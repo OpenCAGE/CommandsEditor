@@ -23,9 +23,6 @@ namespace CommandsEditor
     {
         private Composite _composite;
 
-        //TODO: We should add a compatibility window to add the additional metadata for already added new pins that people have made.
-        //      This should work using the LocalDebug func logic of checking all entries against the DB. We can also know if the composite has been modified by checking the ShortGuid table.
-
         public AddEntity_Variable(Composite composite, bool flowgraphMode) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             InitializeComponent();

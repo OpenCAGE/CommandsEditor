@@ -619,51 +619,75 @@
     <Compile Include="UserControls\Base\ParameterUserControl.Designer.cs">
       <DependentUpon>ParameterUserControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\Variants\GUI_StringVariant_AssetDropdown.cs" />
+    <Compile Include="UserControls\Variants\GUI_StringVariant_AssetDropdown.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="UserControls\Variants\GUI_StringVariant_AssetDropdown.Designer.cs">
       <DependentUpon>GUI_StringVariant_AssetDropdown.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\Variants\GUI_NumericVariant_Slider.cs" />
+    <Compile Include="UserControls\Variants\GUI_NumericVariant_Slider.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="UserControls\Variants\GUI_NumericVariant_Slider.Designer.cs">
       <DependentUpon>GUI_NumericVariant_Slider.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\Variants\GUI_VectorVariant_Colour.cs" />
+    <Compile Include="UserControls\Variants\GUI_VectorVariant_Colour.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="UserControls\Variants\GUI_VectorVariant_Colour.Designer.cs">
       <DependentUpon>GUI_VectorVariant_Colour.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\GUI_BoolDataType.cs" />
+    <Compile Include="UserControls\GUI_BoolDataType.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="UserControls\GUI_BoolDataType.Designer.cs">
       <DependentUpon>GUI_BoolDataType.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\GUI_EnumDataType.cs" />
+    <Compile Include="UserControls\GUI_EnumDataType.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="UserControls\GUI_EnumDataType.Designer.cs">
       <DependentUpon>GUI_EnumDataType.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\GUI_Link.cs" />
+    <Compile Include="UserControls\GUI_Link.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="UserControls\GUI_Link.Designer.cs">
       <DependentUpon>GUI_Link.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\GUI_ResourceDataType.cs" />
+    <Compile Include="UserControls\GUI_ResourceDataType.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="UserControls\GUI_ResourceDataType.Designer.cs">
       <DependentUpon>GUI_ResourceDataType.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\GUI_NumericDataType.cs" />
+    <Compile Include="UserControls\GUI_NumericDataType.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="UserControls\GUI_NumericDataType.Designer.cs">
       <DependentUpon>GUI_NumericDataType.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\GUI_SplineDataType.cs" />
+    <Compile Include="UserControls\GUI_SplineDataType.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="UserControls\GUI_SplineDataType.Designer.cs">
       <DependentUpon>GUI_SplineDataType.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\GUI_StringDataType.cs" />
+    <Compile Include="UserControls\GUI_StringDataType.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="UserControls\GUI_StringDataType.Designer.cs">
       <DependentUpon>GUI_StringDataType.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\GUI_TransformDataType.cs" />
+    <Compile Include="UserControls\GUI_TransformDataType.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="UserControls\GUI_TransformDataType.Designer.cs">
       <DependentUpon>GUI_TransformDataType.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\GUI_VectorDataType.cs" />
+    <Compile Include="UserControls\GUI_VectorDataType.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="UserControls\GUI_VectorDataType.Designer.cs">
       <DependentUpon>GUI_VectorDataType.cs</DependentUpon>
     </Compile>
