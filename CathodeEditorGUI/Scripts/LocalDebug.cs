@@ -28,6 +28,140 @@ namespace CommandsEditor
 {
     public static class LocalDebug
     {
+        public static void ParameterCloneUnitTest()
+        {
+            Commands test = new Commands("M:\\Modding\\Steam Projects\\steamapps\\common\\Alien Isolation\\data\\ENV\\PRODUCTION\\BSP_LV426_PT02\\WORLD\\COMMANDS.PAK");
+            {
+                Parameter p = null;
+                for (int i = 0; i < test.Entries.Count; i++)
+                {
+                    p = test.Entries[i].GetEntities().FirstOrDefault(o => o.parameters.FirstOrDefault(x => x.content.dataType == DataType.SPLINE && ((cSpline)x.content).splinePoints.Count != 0) != null)?.parameters.FirstOrDefault(x => x.content.dataType == DataType.SPLINE && ((cSpline)x.content).splinePoints.Count != 0);
+                    if (p != null) break;
+                }
+                cSpline p0 = (cSpline)p.content;
+                cSpline p2 = (cSpline)p.content.Clone();
+                p2.splinePoints.Add(new cTransform());
+                if (p0.splinePoints.Count == p2.splinePoints.Count)
+                    throw new Exception("");
+                p2.splinePoints[0].position.X = 9999;
+                if (p0.splinePoints[0].position.X == p2.splinePoints[0].position.X)
+                    throw new Exception("");
+                p2.splinePoints[0].rotation.X = 9999;
+                if (p0.splinePoints[0].rotation.X == p2.splinePoints[0].rotation.X)
+                    throw new Exception("");
+            }
+            {
+                Parameter p = null;
+                for (int i = 0; i < test.Entries.Count; i++)
+                {
+                    p = test.Entries[i].GetEntities().FirstOrDefault(o => o.parameters.FirstOrDefault(x => x.content.dataType == DataType.BOOL) != null)?.parameters.FirstOrDefault(x => x.content.dataType == DataType.BOOL);
+                    if (p != null) break;
+                }
+                cBool p0 = (cBool)p.content;
+                cBool p2 = (cBool)p.content.Clone();
+                p2.value = !p2.value;
+                if (p0.value == p2.value)
+                    throw new Exception("");
+            }
+            {
+                Parameter p = null;
+                for (int i = 0; i < test.Entries.Count; i++)
+                {
+                    p = test.Entries[i].GetEntities().FirstOrDefault(o => o.parameters.FirstOrDefault(x => x.content.dataType == DataType.ENUM) != null)?.parameters.FirstOrDefault(x => x.content.dataType == DataType.ENUM);
+                    if (p != null) break;
+                }
+                cEnum p0 = (cEnum)p.content;
+                cEnum p2 = (cEnum)p.content.Clone();
+                p0.enumIndex = 999;
+                if (p0.enumIndex == p2.enumIndex)
+                    throw new Exception("");
+                p0.enumID = new ShortGuid(99999);
+                if (p0.enumID.ToUInt32() == p2.enumID.ToUInt32())
+                    throw new Exception("");
+            }
+            {
+                Parameter p = null;
+                for (int i = 0; i < test.Entries.Count; i++)
+                {
+                    p = test.Entries[i].GetEntities().FirstOrDefault(o => o.parameters.FirstOrDefault(x => x.content.dataType == DataType.TRANSFORM) != null)?.parameters.FirstOrDefault(x => x.content.dataType == DataType.TRANSFORM);
+                    if (p != null) break;
+                }
+                cTransform p0 = (cTransform)p.content;
+                cTransform p2 = (cTransform)p.content.Clone();
+                p2.position.X = 99999;
+                if (p0.position.X == p2.position.X)
+                    throw new Exception("");
+                p2.rotation.X = 99999;
+                if (p0.rotation.X == p2.rotation.X)
+                    throw new Exception("");
+            }
+            {
+                Parameter p = null;
+                for (int i = 0; i < test.Entries.Count; i++)
+                {
+                    p = test.Entries[i].GetEntities().FirstOrDefault(o => o.parameters.FirstOrDefault(x => x.content.dataType == DataType.INTEGER) != null)?.parameters.FirstOrDefault(x => x.content.dataType == DataType.INTEGER);
+                    if (p != null) break;
+                }
+                cInteger p0 = (cInteger)p.content;
+                cInteger p2 = (cInteger)p.content.Clone();
+                p2.value = 9999;
+                if (p0.value == p2.value)
+                    throw new Exception("");
+            }
+            {
+                Parameter p = null;
+                for (int i = 0; i < test.Entries.Count; i++)
+                {
+                    p = test.Entries[i].GetEntities().FirstOrDefault(o => o.parameters.FirstOrDefault(x => x.content.dataType == DataType.VECTOR) != null)?.parameters.FirstOrDefault(x => x.content.dataType == DataType.VECTOR);
+                    if (p != null) break;
+                }
+                cVector3 p0 = (cVector3)p.content;
+                cVector3 p2 = (cVector3)p.content.Clone();
+                p2.value.X = 9999;
+                if (p0.value.X == p2.value.X)
+                    throw new Exception("");
+            }
+            {
+                Parameter p = null;
+                for (int i = 0; i < test.Entries.Count; i++)
+                {
+                    p = test.Entries[i].GetEntities().FirstOrDefault(o => o.parameters.FirstOrDefault(x => x.content.dataType == DataType.RESOURCE && ((cResource)x.content).value.Count != 0) != null)?.parameters.FirstOrDefault(x => x.content.dataType == DataType.RESOURCE && ((cResource)x.content).value.Count != 0);
+                    if (p != null) break;
+                }
+                cResource p0 = (cResource)p.content;
+                cResource p2 = (cResource)p.content.Clone();
+                p2.value.Add(new ResourceReference());
+                if (p0.value.Count == p2.value.Count)
+                    throw new Exception("");
+                p2.value[0].entityID = new ShortGuid(99);
+                if (p0.value[0].entityID.ToUInt32() == p2.value[0].entityID.ToUInt32())
+                    throw new Exception("");
+                p2.value[0].index = 9999;
+                if (p0.value[0].index == p2.value[0].index)
+                    throw new Exception("");
+                p2.value[0].position.X = 9999;
+                if (p0.value[0].position.X == p2.value[0].position.X)
+                    throw new Exception("");
+                p2.value[0].rotation.X = 9999;
+                if (p0.value[0].rotation.X == p2.value[0].rotation.X)
+                    throw new Exception("");
+            }
+            {
+                Parameter p = null;
+                for (int i = 0; i < test.Entries.Count; i++)
+                {
+                    p = test.Entries[i].GetEntities().FirstOrDefault(o => o.parameters.FirstOrDefault(x => x.content.dataType == DataType.FLOAT) != null)?.parameters.FirstOrDefault(x => x.content.dataType == DataType.FLOAT);
+                    if (p != null) break;
+                }
+                cFloat p0 = (cFloat)p.content;
+                cFloat p2 = (cFloat)p.content.Clone();
+                p0.value = 1;
+                p2.value = 2;
+                if (p0.value == p2.value)
+                    throw new Exception("");
+            }
+        }
+
         public static void MAPTEST(string path)
         {
             /*
