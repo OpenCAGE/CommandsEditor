@@ -193,7 +193,7 @@ namespace CommandsEditor
                 CommandsUtils.PurgedComposites.purged.Add(composite.shortGUID);
 
             _composite = composite;
-            this.Text = "Flowgraph: " + flowgraphMeta.Name;
+            this.Text = flowgraphMeta.Name;
             _flowgraphName = flowgraphMeta.Name;
 
             stNodeEditor1.SuspendLayout();
@@ -303,7 +303,7 @@ namespace CommandsEditor
                 CommandsUtils.PurgedComposites.purged.Add(composite.shortGUID);
 
             _composite = composite;
-            this.Text = "Flowgraph: " + _composite.name;
+            this.Text = _composite.name;
 
             stNodeEditor1.SuspendLayout();
             stNodeEditor1.Nodes.Clear();
@@ -910,7 +910,7 @@ namespace CommandsEditor
                 }
             }
             layouts.FirstOrDefault(o => o.Name == _flowgraphName).Name = name;
-            this.Text = "Flowgraph: " + name;
+            this.Text = name;
             _flowgraphName = name;
         }
         private void _renameFlowgraphPopup_FormClosed(object sender, FormClosedEventArgs e)

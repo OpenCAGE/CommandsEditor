@@ -147,11 +147,12 @@ namespace CommandsEditor
             }
 
             Singleton.OnEntityAddPending?.Invoke();
-            Entity newEntity = _composite.AddFunction(function, addDefaultParams.Checked);
+            Entity newEntity = _composite.AddFunction(function);
 
-            //TODO: currently we don't support these properly
             if (addDefaultParams.Checked)
             {
+                ParameterUtils.AddAllDefaultParameters(newEntity, _composite); //todo: don't want to apply all variants
+
                 newEntity.parameters.RemoveAll(o => o.content.dataType == DataType.NONE); //TODO
                 newEntity.parameters.RemoveAll(o => o.content.dataType == DataType.RESOURCE); //TODO
 

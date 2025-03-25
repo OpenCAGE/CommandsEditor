@@ -28,6 +28,22 @@ namespace CommandsEditor
 {
     public static class LocalDebug
     {
+        public static void DefaultsUnitTest()
+        {
+            var values = Enum.GetValues(typeof(FunctionType));
+            foreach (var value in values)
+            {
+                var paramz = ParameterUtils.GetAllParameters((FunctionType)value);
+                foreach (var param in paramz)
+                {
+                    if (param.Item1.ToByteString() == param.Item2.ToString())
+                    {
+                        throw new Exception("string missing");
+                    }
+                }
+            }
+        }
+
         public static void ParameterCloneUnitTest()
         {
             Commands test = new Commands("M:\\Modding\\Steam Projects\\steamapps\\common\\Alien Isolation\\data\\ENV\\PRODUCTION\\BSP_LV426_PT02\\WORLD\\COMMANDS.PAK");
@@ -296,7 +312,7 @@ namespace CommandsEditor
                 {
                     for (int i = 0; i < commands.Entries[x].functions.Count; i++)
                     {
-                        EntityUtils.ApplyDefaults(commands.Entries[x].functions[i], true, false);
+                        //EntityUtils.ApplyDefaults(commands.Entries[x].functions[i], true, false);
                     }
                     for (int i = 0; i < commands.Entries[x].proxies.Count; i++)
                     {

@@ -129,19 +129,21 @@ namespace CommandsEditor
             }
 
             Singleton.OnEntityAddPending?.Invoke();
-            VariableEntity newEntity = _composite.AddVariable(variableName.Text, datatype, true);
-            if (newEntity.parameters[0].content.dataType == DataType.ENUM)
-            {
-                cEnum enumParam = (cEnum)newEntity.parameters[0].content;
-                enumParam.enumID = enumType;
-                enumParam.enumIndex = EnumUtils.GetEnum(enumType).Entries[0].Index;
-            }
+            ShortGuid entityID = ShortGuidUtils.GenerateRandom();
+            VariableEntity newEntity = _composite.AddVariable(variableName.Text, datatype);
             CompositeUtils.SetParameterInfo(_composite, new CompositePinInfoTable.PinInfo()
             {
                 VariableGUID = newEntity.shortGUID,
                 PinTypeGUID = ShortGuidUtils.Generate(variableType.SelectedItem.ToString()),
                 PinEnumTypeGUID = enumType
             });
+            ParameterUtils.AddAllDefaultParameters(newEntity, _composite);
+            if (newEntity.parameters[0].content.dataType == DataType.ENUM)
+            {
+                cEnum enumParam = (cEnum)newEntity.parameters[0].content;
+                enumParam.enumID = enumType; //todo: this should be applied above...
+                enumParam.enumIndex = EnumUtils.GetEnum(enumType).Entries[0].Index;
+            }
             Singleton.OnEntityAdded?.Invoke(newEntity);
 
             this.Close();

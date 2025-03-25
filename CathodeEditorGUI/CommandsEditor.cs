@@ -61,6 +61,9 @@ namespace CommandsEditor
 
         public CommandsEditor(string level = null)
         {
+            //LocalDebug.DefaultsUnitTest();
+            //LocalDebug.ApplyAllDefaults();
+
 #if DEBUG && DO_TEST_STUFF
             //List<string> lvls = Level.GetLevels(SharedData.pathToAI, true);
             //foreach (string lvl in lvls)

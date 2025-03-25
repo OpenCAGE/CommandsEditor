@@ -100,6 +100,7 @@ namespace CommandsEditor
             public readonly string EntityListWidth = "CS_EntityListWidth";
             public readonly string EntityInspectorState = "CS_EntityInspectorState";
             public readonly string EntityInspectorWidth = "CS_EntityInspectorWidth";
+            public readonly string PreviouslySearchedParamPopulationProxyOrAlias = "CS_PreviouslySearchedParamPopulationProxyOrAlias";
         }
     }
 

@@ -367,6 +367,9 @@ namespace CommandsEditor.DockPanels
             }
 #endif
 
+            //TODO: this should be grouped by the functiontype they came from if that applies here. e.g. if it came from a base class, show it in another group.
+            //TODO: if the type here is STRING, we should check to see if it's actually ENUM_STRING using ParameterUtils, then display the nice UI.
+
             //populate parameter inputs
             //NOTE: some pins are listed as params, because they specify the "delay" for the pin to be activated (both in and out) - i should display this info differently.
             _entity.parameters = _entity.parameters.OrderBy(o => o.name.ToString()).ToList();
@@ -414,7 +417,7 @@ namespace CommandsEditor.DockPanels
                             {
                                 switch ((EnumStringType)variableInfo.PinEnumTypeGUID.ToUInt32())
                                 {
-
+                                    //todo: before releasing this needs to be finished
                                 }
                             }
                         }

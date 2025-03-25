@@ -18,6 +18,13 @@ namespace CommandsEditor
     {
         //TODO: i either need to re-dump this, or i need to merge it with the stuff in cathodelib
 
+
+        //todo: before releasing this needs to be finished
+
+        //todo: this should use the ApplyDefaults logic  from cathodelib. it also fixes the defaults for enums on composites.
+
+
+
         public struct EntityDefinition
         {
             public string guidName;
@@ -62,6 +69,7 @@ namespace CommandsEditor
                 entityDefinition.guid = ShortGuidUtils.Generate(entityDefinition.guidName);
                 entityDefinition.className = reader.ReadString();
                 entityDefinition.isEntity = reader.ReadBoolean();
+                //Console.WriteLine((entityDefinition.isEntity ? "[ENTITY]" : "[TEMPLATE]") + entityDefinition.guidName);
                 entityDefinition.parameters = new List<ParameterDefinition>();
                 int param_count = reader.ReadInt32();
                 for (int x = 0; x < param_count; x++)

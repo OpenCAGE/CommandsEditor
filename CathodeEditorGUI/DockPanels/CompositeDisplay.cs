@@ -794,6 +794,7 @@ namespace CommandsEditor.DockPanels
                             DisplayProxies = false,
                             DisplayVariables = false,
                             ShowCreateNode = SupportsFlowgraphs,
+                            ShowApplyDefaults = true,
                         });
                         dialog_hierarchy.Text = "Create Proxy";
                         break;
@@ -805,6 +806,7 @@ namespace CommandsEditor.DockPanels
                             DisplayProxies = true,
                             DisplayVariables = true,
                             ShowCreateNode = SupportsFlowgraphs,
+                            ShowApplyDefaults = true,
                         });
                         dialog_hierarchy.Text = "Create Alias";
                         break;
@@ -842,6 +844,9 @@ namespace CommandsEditor.DockPanels
                     ent = _composite.AddAlias(generatedHierarchy); //TODO: re-add "add default params"?
                     break;
             }
+
+            if (dialog_hierarchy.ApplyDefaultParams)
+                ParameterUtils.AddAllDefaultParameters(ent, _composite);
 
             Singleton.OnEntityAdded?.Invoke(ent);
         }

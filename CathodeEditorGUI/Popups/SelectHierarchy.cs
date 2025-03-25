@@ -30,6 +30,8 @@ namespace CommandsEditor
         private bool _multiselect = false;
         private CompositePath _path = new CompositePath();
 
+        public bool ApplyDefaultParams => applyDefaultParams.Visible && applyDefaultParams.Checked;
+
         //PROXIES can only point to FunctionEntities - ALIASES can point to FunctionEntities, ProxyEntities, VariableEntities
         public SelectHierarchy(Composite startingComposite, CompositeEntityList.DisplayOptions displayOptions, bool allowFollowThrough = true) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
@@ -61,6 +63,14 @@ namespace CommandsEditor
             else
             {
                 createNode.Visible = false;
+            }
+            if (displayOptions.ShowApplyDefaults)
+            {
+                applyDefaultParams.Checked = SettingsManager.GetBool(Singleton.Settings.PreviouslySearchedParamPopulationProxyOrAlias);
+            }
+            else
+            {
+                applyDefaultParams.Visible = false;
             }
         }
 
@@ -117,6 +127,9 @@ namespace CommandsEditor
             }
             else
             {
+                if (applyDefaultParams.Visible)
+                    SettingsManager.SetBool(Singleton.Settings.PreviouslySearchedParamPopulationProxyOrAlias, applyDefaultParams.Checked);
+
                 //TODO: should use the proper hierarchy class here
                 hierarchy.Add(selectedEntity.shortGUID);
                 hierarchy.Add(ShortGuid.Invalid);

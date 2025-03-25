@@ -104,6 +104,7 @@ namespace CommandsEditor
             }
 
             //Link up commands to utils and cache some things
+            ParameterUtils.LinkCommands(commands);
             EntityUtils.LinkCommands(commands);
             ShortGuidUtils.LinkCommands(commands);
             CommandsUtils.LinkCommands(commands);
@@ -135,6 +136,10 @@ namespace CommandsEditor
 
         ~LevelContent()
         {
+            if (ParameterUtils.LinkedCommands == commands)
+            {
+                ParameterUtils.LinkCommands(null);
+            }
             if (EntityUtils.LinkedCommands == commands)
             {
                 EntityUtils.LinkCommands(null);

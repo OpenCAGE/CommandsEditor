@@ -6,11 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CommandsEditor.DockPanels;
+using CathodeLib;
 
 namespace CommandsEditor
 {
     public class ParameterCreator
     {
+        Composite _comp = null;
         Entity _ent = null;
         FunctionEntity _funcEnt = null; //NOTE: This is not necessarily the entity we want to apply the parameters to - it's instead the "truth" that we should get the parameter list and datatypes from
         ParameterData _param = null;
@@ -22,6 +24,7 @@ namespace CommandsEditor
         public ParameterCreator(Entity ent, Composite comp)
         {
             _ent = ent;
+            _comp = comp;
 
             switch (_ent.variant)
             {
@@ -79,6 +82,65 @@ namespace CommandsEditor
                 {
                     ShortGuid param = ShortGuidUtils.Generate(param_name);
                     VariableEntity var = Singleton.Editor?.CommandsDisplay?.Content?.commands?.GetComposite(_funcEnt.function)?.variables?.FirstOrDefault(o => o.name == param);
+
+                    //TODODODODODO
+
+                    /*
+                    CompositePinInfoTable.PinInfo info = CompositeUtils.GetParameterInfo(_comp, var);
+                    if (info != null)
+                    {
+                        CompositePinType pinType = (CompositePinType)info.PinTypeGUID.ToUInt32();
+                        //TODO: need to filter these to the ones that should actually be params. i assume it's inputs and methods?
+                        switch (pinType)
+                        {
+                            //case CompositePinType.CompositeReferencePin:
+                            case CompositePinType.CompositeInputVariablePin:
+                            case CompositePinType.CompositeInputAnimationInfoVariablePin:
+                            case CompositePinType.CompositeInputBoolVariablePin:
+                            case CompositePinType.CompositeInputDirectionVariablePin:
+                            case CompositePinType.CompositeInputEnumStringVariablePin:
+                            case CompositePinType.CompositeInputFloatVariablePin:
+                            case CompositePinType.CompositeInputIntVariablePin:
+                            case CompositePinType.CompositeInputObjectVariablePin:
+                            case CompositePinType.CompositeInputPositionVariablePin:
+                            case CompositePinType.CompositeInputStringVariablePin:
+                            case CompositePinType.CompositeInputZoneLinkPtrVariablePin:
+                            case CompositePinType.CompositeInputZonePtrVariablePin:
+                            case CompositePinType.CompositeOutputVariablePin:
+                            case CompositePinType.CompositeOutputAnimationInfoVariablePin:
+                            case CompositePinType.CompositeOutputBoolVariablePin:
+                            case CompositePinType.CompositeOutputDirectionVariablePin:
+                            case CompositePinType.CompositeOutputEnumStringVariablePin:
+                            case CompositePinType.CompositeOutputFloatVariablePin:
+                            case CompositePinType.CompositeOutputIntVariablePin:
+                            case CompositePinType.CompositeOutputObjectVariablePin:
+                            case CompositePinType.CompositeOutputPositionVariablePin:
+                            case CompositePinType.CompositeOutputStringVariablePin:
+                            case CompositePinType.CompositeOutputZoneLinkPtrVariablePin:
+                            case CompositePinType.CompositeOutputZonePtrVariablePin:
+                            case CompositePinType.CompositeTargetPin:
+                            case CompositePinType.CompositeMethodPin:
+                                entity.AddParameter(comp.variables[i].name, comp.variables[i].type, ParameterVariant.INPUT_PIN, overwriteExisting);
+                                break;
+                            case CompositePinType.CompositeInputEnumVariablePin:
+                                //case CompositePinType.CompositeOutputEnumVariablePin:
+                                {
+                                    Parameter param = comp.variables[i].GetParameter(comp.variables[i].name);
+                                    int paramI = 0;
+                                    if (param != null && param.content.dataType == DataType.ENUM)
+                                        paramI = ((cEnum)param.content).enumIndex;
+                                    entity.AddParameter(comp.variables[i].name, new cEnum(info.PinEnumTypeGUID, paramI), pinType == CompositePinType.CompositeInputEnumVariablePin ? ParameterVariant.INPUT_PIN : ParameterVariant.OUTPUT_PIN, overwriteExisting);
+                                }
+                                break;
+                        }
+                    }
+                    else
+                    {
+
+                    }
+                    */
+
+
                     if (var == null || var.type == DataType.NONE)
                         return fallback_type;
                     return var.type.ToString();

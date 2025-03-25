@@ -126,11 +126,14 @@ namespace CommandsEditor
 
             Singleton.OnEntityAddPending?.Invoke();
 
-            Entity newEntity = _composite.AddFunction(comp, addDefaultParams.Checked);
+            Entity newEntity = _composite.AddFunction(comp);
             EntityUtils.SetName(_composite, newEntity, entityName.Text);
 
             if (addDefaultParams.Checked)
+            {
+                ParameterUtils.AddAllDefaultParameters(newEntity, _composite); //todo: don't want to apply all variants
                 newEntity.RemoveParameter("name");
+            }
 
             Content.editor_utils.GenerateCompositeInstances(Content.commands);
 
