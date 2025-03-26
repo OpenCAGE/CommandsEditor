@@ -191,5 +191,14 @@ namespace CommandsEditor
             if (createNode.Checked != SettingsManager.GetBool(Singleton.Settings.MakeNodeWhenMakeEntity))
                 Singleton.Editor.ToggleMakeNodeWhenMakeEntity();
         }
+
+        private void functionTypeList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (functionTypeList.SelectedItems.Count == 0)
+                return;
+
+            if (entityName.Text == "" || Enum.TryParse<FunctionType>(entityName.Text, out FunctionType type))
+                entityName.Text = functionTypeList.SelectedItems[0].Text;
+        }
     }
 }
