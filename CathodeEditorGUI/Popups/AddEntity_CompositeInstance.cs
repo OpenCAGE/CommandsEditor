@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Runtime.Remoting.Contexts;
 using System.Text;
@@ -86,6 +87,7 @@ namespace CommandsEditor
             Search();
         }
 
+        string _prevSelected = "";
         private void compositeTree_AfterSelect(object sender, TreeViewEventArgs e)
         {
             if (compositeTree.SelectedNode == null || compositeTree.SelectedNode.Tag == null)
@@ -94,6 +96,12 @@ namespace CommandsEditor
                 return;
             }
             compositeNameDisplay.Text = ((TreeItem)compositeTree.SelectedNode.Tag).String_Value;
+
+            if (entityName.Text == "" || _prevSelected == entityName.Text)
+            {
+                entityName.Text = Path.GetFileName(((TreeItem)compositeTree.SelectedNode.Tag).String_Value);
+                _prevSelected = entityName.Text;
+            }
         }
 
         private void createEntity_Click(object sender, EventArgs e)
