@@ -118,10 +118,6 @@ namespace CommandsEditor
                     for (int i = 0; i < options.Count; i++)
                     {
                         var metadata = ParameterUtils.GetParameterMetadata(ent, options[i].Text);
-                        if (metadata.Item1 == null)
-                        {
-                            string sdfsdf = "";
-                        }
                         options[i].Checked = ent.GetParameter(options[i].Text) != null;
                         options[i].SubItems[1].Text = metadata.Item2.Value.ToString();
                         options[i].Group = GetGroupFromVariant(metadata.Item1.Value);
@@ -180,7 +176,7 @@ namespace CommandsEditor
 
         private void createParams_Click(object sender, EventArgs e)
         {
-            foreach (ListViewItem item in param_name.Items)
+            foreach (ListViewItem item in _items)
             {
                 ParameterListViewItemTag tag = (ParameterListViewItemTag)item.Tag;
                 switch (_mode)
