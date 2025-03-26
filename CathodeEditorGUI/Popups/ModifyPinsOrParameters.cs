@@ -187,7 +187,16 @@ namespace CommandsEditor
                 {
                     case Mode.LINK_IN:
                         if (item.Checked)
+                        {
+                            //NOTE: Hijacking this to add relays as well. Maybe we should make this optional?
+                            if (item.Group.Name == ParameterVariant.METHOD_PIN.ToString())
+                            {
+                                ShortGuid relay = ParameterUtils.GetRelay(tag.ShortGUID);
+                                if (relay != ShortGuid.Invalid)
+                                    _node.AddOutputOption(relay);
+                            }
                             _node.AddInputOption(tag.ShortGUID);
+                        }
                         else
                             _node.RemoveInputOption(tag.ShortGUID);
                         break;
@@ -271,19 +280,19 @@ namespace CommandsEditor
 
         private void helpBtn_Click(object sender, EventArgs e)
         {
-            //TODO
-            /*
-            if (_creator.RootFunc != null)
+            if (_inspector.Entity.variant == EntityVariant.FUNCTION)
             {
-                string func = _creator.RootFunc.function.ToString();
-                if (func == _creator.RootFunc.function.ToByteString())
-                    Process.Start("https://opencage.co.uk/docs/cathode-entities/#CompositeInterface");
+                FunctionEntity funcEnt = (FunctionEntity)_inspector.Entity;
+                if (CommandsUtils.FunctionTypeExists(funcEnt.function))
+                    Process.Start("https://opencage.co.uk/docs/cathode-entities/#" + ((FunctionType)((FunctionEntity)_inspector.Entity).function.ToUInt32()).ToString());
                 else
-                    Process.Start("https://opencage.co.uk/docs/cathode-entities/#" + _creator.RootFunc.function.ToString());
+                    Process.Start("https://opencage.co.uk/docs/cathode-entities/#" + FunctionType.CompositeInterface.ToString());
+                return;
             }
+            else if (_inspector.Entity.variant == EntityVariant.PROXY)
+                Process.Start("https://opencage.co.uk/docs/cathode-entities/#" + FunctionType.ProxyInterface.ToString());
             else
                 Process.Start("https://opencage.co.uk/docs/cathode-entities/#entities");
-            */
         }
 
         RenameGeneric _customPin = null;

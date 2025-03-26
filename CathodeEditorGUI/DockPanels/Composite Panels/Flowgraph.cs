@@ -854,9 +854,14 @@ namespace CommandsEditor
                     case ParameterVariant.STATE_PARAMETER:
                     case ParameterVariant.INPUT_PIN:
                     case ParameterVariant.PARAMETER:
-                    //case ParameterVariant.METHOD_FUNCTION:
-                    case ParameterVariant.METHOD_PIN: //todo: method_pin should also add relay_pin
+                        //case ParameterVariant.METHOD_FUNCTION:
                         node.AddInputOption(parameter.Item1);
+                        break;
+                    case ParameterVariant.METHOD_PIN:
+                        node.AddInputOption(parameter.Item1);
+                        ShortGuid relay = ParameterUtils.GetRelay(parameter.Item1);
+                        if (relay != ShortGuid.Invalid)
+                            node.AddOutputOption(relay);
                         break;
                     case ParameterVariant.OUTPUT_PIN:
                     case ParameterVariant.TARGET_PIN:
