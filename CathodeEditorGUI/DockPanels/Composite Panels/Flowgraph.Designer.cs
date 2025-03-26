@@ -51,6 +51,9 @@ namespace CommandsEditor
             this.DuplicateForAllConnections = new System.Windows.Forms.Button();
             this.AutoCalcAndSplit = new System.Windows.Forms.Button();
             this.DEBUG_UnfinishedWarning = new System.Windows.Forms.Label();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.addAllPinsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.removeUnusedPinsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.nodeContextMenu.SuspendLayout();
             this.TabStripContextMenu.SuspendLayout();
             this.SuspendLayout();
@@ -73,19 +76,22 @@ namespace CommandsEditor
             this.nodeContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.modifyPinsIn,
             this.modifyPinsOut,
+            this.toolStripSeparator2,
+            this.addAllPinsToolStripMenuItem,
+            this.removeUnusedPinsToolStripMenuItem,
             this.toolStripSeparator1,
             this.deleteToolStripMenuItem,
             this.duplicateToolStripMenuItem,
             this.addNodeToolStripMenuItem});
             this.nodeContextMenu.Name = "EntityListContextMenu";
-            this.nodeContextMenu.Size = new System.Drawing.Size(161, 120);
+            this.nodeContextMenu.Size = new System.Drawing.Size(186, 192);
             this.nodeContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // modifyPinsIn
             // 
             this.modifyPinsIn.Image = ((System.Drawing.Image)(resources.GetObject("modifyPinsIn.Image")));
             this.modifyPinsIn.Name = "modifyPinsIn";
-            this.modifyPinsIn.Size = new System.Drawing.Size(160, 22);
+            this.modifyPinsIn.Size = new System.Drawing.Size(185, 22);
             this.modifyPinsIn.Text = "Modify Pins In";
             this.modifyPinsIn.Click += new System.EventHandler(this.modifyPinsIn_Click);
             // 
@@ -93,20 +99,20 @@ namespace CommandsEditor
             // 
             this.modifyPinsOut.Image = ((System.Drawing.Image)(resources.GetObject("modifyPinsOut.Image")));
             this.modifyPinsOut.Name = "modifyPinsOut";
-            this.modifyPinsOut.Size = new System.Drawing.Size(160, 22);
+            this.modifyPinsOut.Size = new System.Drawing.Size(185, 22);
             this.modifyPinsOut.Text = "Modify Pins Out";
             this.modifyPinsOut.Click += new System.EventHandler(this.modifyPinsOut_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(157, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(182, 6);
             // 
             // deleteToolStripMenuItem
             // 
             this.deleteToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("deleteToolStripMenuItem.Image")));
             this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
             this.deleteToolStripMenuItem.Text = "Delete Node";
             this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
             // 
@@ -114,7 +120,7 @@ namespace CommandsEditor
             // 
             this.duplicateToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("duplicateToolStripMenuItem.Image")));
             this.duplicateToolStripMenuItem.Name = "duplicateToolStripMenuItem";
-            this.duplicateToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.duplicateToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
             this.duplicateToolStripMenuItem.Text = "Duplicate Node";
             this.duplicateToolStripMenuItem.Click += new System.EventHandler(this.duplicateToolStripMenuItem_Click);
             // 
@@ -122,7 +128,7 @@ namespace CommandsEditor
             // 
             this.addNodeToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("addNodeToolStripMenuItem.Image")));
             this.addNodeToolStripMenuItem.Name = "addNodeToolStripMenuItem";
-            this.addNodeToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.addNodeToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
             this.addNodeToolStripMenuItem.Text = "Add Node(s)";
             this.addNodeToolStripMenuItem.Click += new System.EventHandler(this.addNodeToolStripMenuItem_Click);
             // 
@@ -314,6 +320,27 @@ namespace CommandsEditor
             this.DEBUG_UnfinishedWarning.TabIndex = 12;
             this.DEBUG_UnfinishedWarning.Text = "UNFINISHED";
             // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(182, 6);
+            // 
+            // addAllPinsToolStripMenuItem
+            // 
+            this.addAllPinsToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("addAllPinsToolStripMenuItem.Image")));
+            this.addAllPinsToolStripMenuItem.Name = "addAllPinsToolStripMenuItem";
+            this.addAllPinsToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.addAllPinsToolStripMenuItem.Text = "Add All Pins";
+            this.addAllPinsToolStripMenuItem.Click += new System.EventHandler(this.addAllPinsToolStripMenuItem_Click);
+            // 
+            // removeUnusedPinsToolStripMenuItem
+            // 
+            this.removeUnusedPinsToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("removeUnusedPinsToolStripMenuItem.Image")));
+            this.removeUnusedPinsToolStripMenuItem.Name = "removeUnusedPinsToolStripMenuItem";
+            this.removeUnusedPinsToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.removeUnusedPinsToolStripMenuItem.Text = "Remove Unused Pins";
+            this.removeUnusedPinsToolStripMenuItem.Click += new System.EventHandler(this.removeUnusedPinsToolStripMenuItem_Click);
+            // 
             // Flowgraph
             // 
             this.AllowEndUserDocking = false;
@@ -373,6 +400,9 @@ namespace CommandsEditor
         private System.Windows.Forms.Button DuplicateForAllConnections;
         private System.Windows.Forms.Button AutoCalcAndSplit;
         private System.Windows.Forms.Label DEBUG_UnfinishedWarning;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripMenuItem addAllPinsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem removeUnusedPinsToolStripMenuItem;
     }
 }
 

@@ -38,7 +38,6 @@ namespace CommandsEditor
             }
         }
 
-
         private Composite _composite;
         private int _spawnOffset = 0;
         private string _flowgraphName = "";
@@ -782,6 +781,9 @@ namespace CommandsEditor
             toolStripSeparator1.Visible = node != null;
             deleteToolStripMenuItem.Visible = node != null;
             duplicateToolStripMenuItem.Visible = node != null;
+            toolStripSeparator2.Visible = node != null;
+            addAllPinsToolStripMenuItem.Visible = node != null;
+            removeUnusedPinsToolStripMenuItem.Visible = node != null;
 
             if (node != null)
             {
@@ -838,6 +840,43 @@ namespace CommandsEditor
         private void modifyPinsOut_Click(object sender, EventArgs e)
         {
             PinManager(ModifyPinsOrParameters.Mode.LINK_OUT);
+        }
+
+        //Add/remove batch pins in/out
+        private void addAllPinsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            STNode node = stNodeEditor1.GetHoveredNode();
+            List<(ShortGuid, ParameterVariant, DataType)> allParameters = ParameterUtils.GetAllParameters(_composite.GetEntityByID(node.ShortGUID), _composite);
+            foreach ((ShortGuid, ParameterVariant, DataType) parameter in allParameters)
+            {
+                switch (parameter.Item2)
+                {
+                    case ParameterVariant.STATE_PARAMETER:
+                    case ParameterVariant.INPUT_PIN:
+                    case ParameterVariant.PARAMETER:
+                    //case ParameterVariant.METHOD_FUNCTION:
+                    case ParameterVariant.METHOD_PIN: //todo: method_pin should also add relay_pin
+                        node.AddInputOption(parameter.Item1);
+                        break;
+                    case ParameterVariant.OUTPUT_PIN:
+                    case ParameterVariant.TARGET_PIN:
+                    case ParameterVariant.REFERENCE_PIN:
+                        node.AddOutputOption(parameter.Item1);
+                        break;
+                }
+            }
+        }
+        private void removeUnusedPinsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            STNode node = stNodeEditor1.GetHoveredNode();
+            STNodeOption[] ins = node.GetInputOptions();
+            for (int i = 0; i < ins.Length; i++)
+                if (ins[i].ConnectionCount == 0)
+                    node.RemoveInputOption(ins[i].ShortGUID);
+            STNodeOption[] outs = node.GetOutputOptions();
+            for (int i = 0; i < outs.Length; i++)
+                if (outs[i].ConnectionCount == 0)
+                    node.RemoveOutputOption(outs[i].ShortGUID);
         }
 
         //Delete right clicked node
