@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -28,7 +28,6 @@ namespace CommandsEditor
     {
         public Action OnSaved;
 
-        private ParameterCreator _creator = null;
         private List<ListViewItem> _items = new List<ListViewItem>();
         private ListViewColumnSorter _sorter = new ListViewColumnSorter();
 
@@ -69,7 +68,6 @@ namespace CommandsEditor
         { 
             InitializeComponent();
             param_name.ListViewItemSorter = _sorter;
-            _creator = new ParameterCreator(ent, comp);
 
             switch (_mode)
             {
@@ -100,14 +98,17 @@ namespace CommandsEditor
                         {
                             ListViewItem item = new ListViewItem(nodeOptions[i].ShortGUID.ToString());
                             item.SubItems.Add("FLOAT");
-                            item.Tag = new ParameterListViewItemTag() { ShortGUID = nodeOptions[i].ShortGUID, Usage = CathodeEntityDatabase.ParameterUsage.PARAMETER };
+                            item.Tag = new ParameterListViewItemTag() { ShortGUID = nodeOptions[i].ShortGUID, Usage = ParameterVariant.PARAMETER };
                             options.Add(item);
                         }
                     }
                     for (int i = 0; i < options.Count; i++)
                     {
+                        //TODO: This assumes we can always get metadata... can we?
+                        var metadata = ParameterUtils.GetParameterMetadata(ent, options[i].Text);
                         options[i].Checked = nodeOptions.FirstOrDefault(o => o.ShortGUID == ((ParameterListViewItemTag)options[i].Tag).ShortGUID) != null;
-                        options[i].SubItems[1].Text = _creator.GetInfo(options[i].Text);
+                        options[i].SubItems[1].Text = metadata.Item2.Value.ToString();
+                        options[i].Group = GetGroupFromVariant(metadata.Item1.Value);
                         options[i].ImageIndex = 0;
                         _items.Add(options[i]);
                     }
@@ -116,8 +117,14 @@ namespace CommandsEditor
                 case Mode.PARAMETER:
                     for (int i = 0; i < options.Count; i++)
                     {
+                        var metadata = ParameterUtils.GetParameterMetadata(ent, options[i].Text);
+                        if (metadata.Item1 == null)
+                        {
+                            string sdfsdf = "";
+                        }
                         options[i].Checked = ent.GetParameter(options[i].Text) != null;
-                        options[i].SubItems[1].Text = (ent.variant == EntityVariant.VARIABLE) ? ((VariableEntity)ent).type.ToString() : _creator.GetInfo(options[i].Text);
+                        options[i].SubItems[1].Text = metadata.Item2.Value.ToString();
+                        options[i].Group = GetGroupFromVariant(metadata.Item1.Value);
                         options[i].ImageIndex = 0;
                         _items.Add(options[i]);
                     }
@@ -133,6 +140,15 @@ namespace CommandsEditor
             AddCustom.Visible = ent.variant != EntityVariant.VARIABLE;
 
             Search();
+        }
+
+        private ListViewGroup GetGroupFromVariant(ParameterVariant variant)
+        {
+            foreach (ListViewGroup group in param_name.Groups)
+                if (group.Name == variant.ToString())
+                    return group;
+
+            return null;
         }
 
         private void clearSearchBtn_Click(object sender, EventArgs e)
@@ -154,7 +170,7 @@ namespace CommandsEditor
             foreach (ListViewItem item in items)
             {
                 ParameterListViewItemTag tag = (ParameterListViewItemTag)item.Tag;
-                item.Group = param_name.Groups[(int)tag.Usage];
+                item.Group = GetGroupFromVariant(tag.Usage);
                 param_name.Items.Add(item);
             }
             param_name.EndUpdate();
@@ -188,7 +204,13 @@ namespace CommandsEditor
                             Parameter existing = _inspector.Entity.GetParameter(tag.ShortGUID);
                             DataType type = (DataType)Enum.Parse(typeof(DataType), item.SubItems[1].Text);
                             if (existing == null || existing.content.dataType != type)
-                                _creator.Create(item.Text, item.SubItems[1].Text);
+                            {
+                                ParameterData data = ParameterUtils.CreateDefaultParameterData(_inspector.Entity, _inspector.Composite, item.Text);
+                                _inspector.Entity.AddParameter(
+                                    ShortGuidUtils.Generate(item.Text),
+                                    data
+                                );
+                            }
                         }
                         else
                             _inspector.Entity.RemoveParameter(tag.ShortGUID);
@@ -249,6 +271,8 @@ namespace CommandsEditor
 
         private void helpBtn_Click(object sender, EventArgs e)
         {
+            //TODO
+            /*
             if (_creator.RootFunc != null)
             {
                 string func = _creator.RootFunc.function.ToString();
@@ -259,6 +283,7 @@ namespace CommandsEditor
             }
             else
                 Process.Start("https://opencage.co.uk/docs/cathode-entities/#entities");
+            */
         }
 
         RenameGeneric _customPin = null;
@@ -306,7 +331,7 @@ namespace CommandsEditor
         {
             ListViewItem item = new ListViewItem(guid.ToString());
             item.SubItems.Add(datatype.ToString());
-            item.Tag = new ParameterListViewItemTag() { ShortGUID = guid, Usage = CathodeEntityDatabase.ParameterUsage.PARAMETER };
+            item.Tag = new ParameterListViewItemTag() { ShortGUID = guid, Usage = ParameterVariant.PARAMETER };
             item.Checked = true;
             item.SubItems[1].Text = datatype.ToString();
             item.ImageIndex = 0;

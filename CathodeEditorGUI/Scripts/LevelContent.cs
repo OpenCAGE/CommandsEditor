@@ -415,7 +415,7 @@ namespace CommandsEditor
                     item.Text = EntityUtils.GetName(composite.shortGUID, entity.shortGUID);
                     Composite funcComposite = commands.GetComposite(((FunctionEntity)entity).function);
                     if (funcComposite != null) item.SubItems.Add(EditorUtils.GetCompositeName(funcComposite));
-                    else item.SubItems.Add(CathodeEntityDatabase.GetEntity(((FunctionEntity)entity).function).className);
+                    else item.SubItems.Add(((FunctionType)(((FunctionEntity)entity).function.ToUInt32())).ToString());
                     break;
                 case EntityVariant.ALIAS:
                     CommandsUtils.ResolveHierarchy(commands, composite, ((AliasEntity)entity).alias.path, out Composite c, out string s, false);

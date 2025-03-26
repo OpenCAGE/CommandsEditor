@@ -286,7 +286,7 @@ namespace CommandsEditor
                     if (funcComposite != null)
                         desc = EntityUtils.GetName(composite.shortGUID, entity.shortGUID) + " (" + funcComposite.name + ")";
                     else
-                        desc = EntityUtils.GetName(composite.shortGUID, entity.shortGUID) + " (" + CathodeEntityDatabase.GetEntity(((FunctionEntity)entity).function).className + ")";
+                        desc = EntityUtils.GetName(composite.shortGUID, entity.shortGUID) + " (" + ((FunctionType)((FunctionEntity)entity).function.ToUInt32()).ToString() + ")";
                     break;
                 case EntityVariant.ALIAS:
                     CommandsUtils.ResolveHierarchy(_content.commands, composite, ((AliasEntity)entity).alias.path, out Composite c, out string s, false);
@@ -329,42 +329,10 @@ namespace CommandsEditor
         {
             List<string> items = new List<string>();
             if (entity == null) return items;
-            switch (entity.variant)
+            List<(ShortGuid, ParameterVariant, DataType)> parameters = ParameterUtils.GetAllParameters(entity, composite);
+            foreach ((ShortGuid, ParameterVariant, DataType) parameter in parameters)
             {
-                case EntityVariant.FUNCTION:
-                    {
-                        ShortGuid function = ((FunctionEntity)entity).function;
-                        bool isComposite = !CommandsUtils.FunctionTypeExists(function);
-                        if (isComposite) function = CommandsUtils.GetFunctionTypeGUID(FunctionType.CompositeInterface);
-                        items.Add("reference");
-
-                        List<CathodeEntityDatabase.ParameterDefinition> parameters = CathodeEntityDatabase.GetParametersFromEntity(function);
-                        if (parameters != null)
-                            for (int i = 0; i < parameters.Count; i++)
-                                items.Add(parameters[i].name);
-
-                        if (!isComposite) break;
-
-                        foreach (VariableEntity ent in _content.commands.GetComposite(((FunctionEntity)entity).function).variables)
-                            if (!items.Contains(ent.name.ToString()))
-                                items.Add(ent.name.ToString());
-                    }
-                    break;
-                case EntityVariant.VARIABLE:
-                    items.Add(ShortGuidUtils.FindString(((VariableEntity)entity).name));
-                    break;
-                case EntityVariant.ALIAS:
-                    return GenerateParameterListAsString(CommandsUtils.ResolveHierarchy(_content.commands, composite, ((AliasEntity)entity).alias.path, out Composite comp1, out string hierarchy1), comp1);
-                case EntityVariant.PROXY:
-                    {
-                        items.AddRange(GenerateParameterListAsString(CommandsUtils.ResolveHierarchy(_content.commands, composite, ((ProxyEntity)entity).proxy.path, out Composite comp2, out string hierarchy2), comp2));
-
-                        List<CathodeEntityDatabase.ParameterDefinition> parameters = CathodeEntityDatabase.GetParametersFromEntity(ShortGuidUtils.Generate("ProxyInterface"));
-                        if (parameters != null)
-                            for (int i = 0; i < parameters.Count; i++)
-                                items.Add(parameters[i].name);
-                    }
-                    break;
+                items.Add(parameter.Item1.ToString());
             }
             items.Sort();
             return items;
@@ -373,69 +341,24 @@ namespace CommandsEditor
         {
             List<ListViewItem> items = new List<ListViewItem>();
             if (entity == null) return items;
-            switch (entity.variant)
+            List<(ShortGuid, ParameterVariant, DataType)> parameters = ParameterUtils.GetAllParameters(entity, composite);
+            foreach ((ShortGuid, ParameterVariant,DataType) parameter in parameters)
             {
-                case EntityVariant.FUNCTION:
-                    {
-                        ShortGuid function = ((FunctionEntity)entity).function;
-                        bool isComposite = !CommandsUtils.FunctionTypeExists(function);
-                        if (isComposite) function = CommandsUtils.GetFunctionTypeGUID(FunctionType.CompositeInterface);
-                        items.Add(ParameterDefinitionToListViewItem(ShortGuidUtils.Generate("reference")));
-
-                        List<CathodeEntityDatabase.ParameterDefinition> parameters = CathodeEntityDatabase.GetParametersFromEntity(function);
-                        if (parameters != null)
-                        {
-                            for (int i = 0; i < parameters.Count; i++)
-                            {
-                                items.Add(ParameterDefinitionToListViewItem(ShortGuidUtils.Generate(parameters[i].name), parameters[i].datatype, parameters[i].usage));
-                            }
-                        }
-
-                        if (!isComposite) 
-                            break;
-
-                        foreach (VariableEntity ent in _content.commands.GetComposite(((FunctionEntity)entity).function).variables)
-                        {
-                            if (items.FirstOrDefault(o => o.Text == ent.name.ToString()) == null)
-                            {
-                                items.Add(ParameterDefinitionToListViewItem(ent.name, ent.type.ToString()));
-                            }
-                        }
-                    }
-                    break;
-                case EntityVariant.VARIABLE:
-                    VariableEntity varEnt = (VariableEntity)entity;
-                    items.Add(ParameterDefinitionToListViewItem(varEnt.name, varEnt.type.ToString()));
-                    break;
-                case EntityVariant.ALIAS:
-                    return GenerateParameterListAsListViewItem(CommandsUtils.ResolveHierarchy(_content.commands, composite, ((AliasEntity)entity).alias.path, out Composite comp1, out string hierarchy1), comp1);
-                case EntityVariant.PROXY:
-                    {
-                        items.AddRange(GenerateParameterListAsListViewItem(CommandsUtils.ResolveHierarchy(_content.commands, composite, ((ProxyEntity)entity).proxy.path, out Composite comp2, out string hierarchy2), comp2));
-
-                        List<CathodeEntityDatabase.ParameterDefinition> parameters = CathodeEntityDatabase.GetParametersFromEntity(ShortGuidUtils.Generate("ProxyInterface"));
-                        if (parameters != null)
-                        {
-                            for (int i = 0; i < parameters.Count; i++)
-                            {
-                                items.Add(ParameterDefinitionToListViewItem(ShortGuidUtils.Generate(parameters[i].name), parameters[i].datatype, parameters[i].usage));
-                            }
-                        }
-                    }
-                    break;
+                items.Add(ParameterDefinitionToListViewItem(parameter.Item1, parameter.Item3, parameter.Item2));
             }
             return items;
         }
-        private ListViewItem ParameterDefinitionToListViewItem(ShortGuid name, string datatype = "FLOAT", CathodeEntityDatabase.ParameterUsage usage = CathodeEntityDatabase.ParameterUsage.PARAMETER)
+        private ListViewItem ParameterDefinitionToListViewItem(ShortGuid name, DataType datatype = DataType.FLOAT, ParameterVariant usage = ParameterVariant.PARAMETER)
         {
             ListViewItem item = new ListViewItem(name.ToString());
-            item.SubItems.Add(datatype);
+            item.SubItems.Add(datatype.ToString());
+            item.SubItems.Add(usage.ToString());
             item.Tag = new ParameterListViewItemTag() { ShortGUID = name, Usage = usage };
             return item;
         }
         public struct ParameterListViewItemTag
         {
-            public CathodeEntityDatabase.ParameterUsage Usage;
+            public ParameterVariant Usage;
             public ShortGuid ShortGUID;
         }
 

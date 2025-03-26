@@ -29,18 +29,13 @@ namespace CommandsEditor
             _composite = composite;
             functionTypeList.ListViewItemSorter = _sorter;
 
-            List<CathodeEntityDatabase.EntityDefinition> entDefs = CathodeEntityDatabase.GetEntities();
-            for (int i = 0; i < entDefs.Count;i++)
+            foreach (FunctionType function in Enum.GetValues(typeof(FunctionType)))
             {
-                if (!Enum.TryParse(entDefs[i].className, out FunctionType type))
-                    continue;
+                FunctionType? inherited = EntityUtils.GetBaseFunction(function);
 
-                FunctionType? inherited = EntityUtils.GetBaseFunction(type);
-
-                ListViewItem item = new ListViewItem(entDefs[i].className);
+                ListViewItem item = new ListViewItem(function.ToString());
                 item.ImageIndex = 0;
                 item.SubItems.Add(inherited == null ? "" : inherited.Value.ToString());
-                item.Tag = entDefs[i];
 
                 _items.Add(item);
             }
@@ -125,12 +120,7 @@ namespace CommandsEditor
                 return;
             }
 
-            CathodeEntityDatabase.EntityDefinition entDef = (CathodeEntityDatabase.EntityDefinition)functionTypeList.SelectedItems[0].Tag;
-            if (!Enum.TryParse(entDef.className, out FunctionType function))
-            {
-                MessageBox.Show("Failed to lookup function type.", "Invalid function type", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
+            FunctionType function = (FunctionType)Enum.Parse(typeof(FunctionType), functionTypeList.SelectedItems[0].Text);
 
             //A composite can only have one PhysicsSystem
             if (function == FunctionType.PhysicsSystem && _composite.functions.FirstOrDefault(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.PhysicsSystem)) != null)
@@ -161,7 +151,7 @@ namespace CommandsEditor
             }
 
             EntityUtils.SetName(_composite, newEntity, entityName.Text);
-            SettingsManager.SetString(Singleton.Settings.PreviouslySelectedFunctionType, entDef.className);
+            SettingsManager.SetString(Singleton.Settings.PreviouslySelectedFunctionType, function.ToString());
             SettingsManager.SetBool(Singleton.Settings.PreviouslySearchedParamPopulation, addDefaultParams.Checked);
 
             Singleton.OnEntityAdded?.Invoke(newEntity);

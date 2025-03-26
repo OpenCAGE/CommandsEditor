@@ -28,9 +28,8 @@ namespace CommandsEditor
             }
             else
             {
-                var entities = CathodeEntityDatabase.GetEntities();
-                for (int i = 0; i < entities.Count; i++)
-                    entityVariant.Items.Add(entities[i].className);
+                foreach (FunctionType function in Enum.GetValues(typeof(FunctionType)))
+                    entityVariant.Items.Add(function.ToString());
                 entityVariant.SelectedIndex = SettingsManager.GetInteger(Singleton.Settings.PrevFuncUsesSearch);
             }
         }

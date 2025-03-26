@@ -22,12 +22,10 @@ namespace CommandsEditor
         public Action<string, DataType> OnSelected;
         
         EntityInspector _entityDisplay;
-        ParameterCreator _creator;
 
         public AddCustomParameter(EntityInspector entityDisplay) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             _entityDisplay = entityDisplay;
-            _creator = new ParameterCreator(entityDisplay.Entity, entityDisplay.Composite);
 
             InitializeComponent();
             param_datatype.SelectedIndex = 0;
@@ -50,13 +48,15 @@ namespace CommandsEditor
             this.Close();
         }
 
-        private void param_name_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            param_datatype.Text = _creator.GetInfo(param_name.Text);
-        }
         private void param_name_TextChanged(object sender, EventArgs e)
         {
-            param_datatype.Text = _creator.GetInfo(param_name.Text);
+            param_name_SelectedIndexChanged(null, null);
+        }
+        private void param_name_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            (ParameterVariant?, DataType?) metadata = ParameterUtils.GetParameterMetadata(_entityDisplay.Entity, param_name.Text);
+            if (metadata.Item2 != null)
+                param_datatype.Text = metadata.Item2.ToString();
         }
     }
 }

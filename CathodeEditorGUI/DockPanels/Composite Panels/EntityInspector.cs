@@ -273,10 +273,8 @@ namespace CommandsEditor.DockPanels
                         jumpToComposite.Visible = false;
                         editEntityResources.Enabled = (Content.resource.models != null); //TODO: we can hide this button completely outside of this state
 
-                        ShortGuid thisFunction = ((FunctionEntity)_entity).function;
-                        description = CathodeEntityDatabase.GetEntity(thisFunction).className;
-
-                        FunctionType function = CommandsUtils.GetFunctionType(thisFunction);
+                        FunctionType function = CommandsUtils.GetFunctionType(((FunctionEntity)_entity).function);
+                        description = function.ToString();
                         editFunction.Enabled = function == FunctionType.CAGEAnimation || function == FunctionType.TriggerSequence || function == FunctionType.Character;
                     }
                     break;

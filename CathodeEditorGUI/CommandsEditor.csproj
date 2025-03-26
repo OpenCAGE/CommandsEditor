@@ -483,7 +483,6 @@
     <Compile Include="Popups\UserControls\GUI_SplineViewer.xaml.cs">
       <DependentUpon>GUI_SplineViewer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Scripts\CathodeEntityDatabase.cs" />
     <Compile Include="Scripts\CathodeEnums.cs" />
     <Compile Include="Scripts\CathodeLibExtensions.cs" />
     <Compile Include="Scripts\ComboBoxExtensions.cs" />
@@ -606,7 +605,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Scripts\ParameterCreator.cs" />
     <Compile Include="Scripts\ParameterModificationTracker.cs" />
     <Compile Include="Scripts\ToolstripRendererExcs.cs" />
     <Compile Include="Scripts\TreeUtility.cs" />
