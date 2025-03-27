@@ -54,7 +54,7 @@ namespace CommandsEditor
         }
         private void param_name_SelectedIndexChanged(object sender, EventArgs e)
         {
-            (ParameterVariant?, DataType?) metadata = ParameterUtils.GetParameterMetadata(_entityDisplay.Entity, param_name.Text);
+            (ParameterVariant?, DataType?, ShortGuid) metadata = ParameterUtils.GetParameterMetadata(_entityDisplay.Entity, param_name.Text);
             if (metadata.Item2 != null)
                 param_datatype.Text = metadata.Item2.ToString();
         }

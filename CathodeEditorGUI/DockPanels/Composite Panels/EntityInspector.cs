@@ -546,7 +546,7 @@ namespace CommandsEditor.DockPanels
                         ((GUI_ResourceDataType)parameterGUI).PopulateUI(this, (cResource)this_param, paramName);
                         break;
                     case DataType.SPLINE:
-                        parameterGUI = new GUI_SplineDataType(this);
+                        parameterGUI = new GUI_SplineDataType(_entity);
                         ((GUI_SplineDataType)parameterGUI).PopulateUI((cSpline)this_param, paramName);
                         break;
                 }

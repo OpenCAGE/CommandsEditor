@@ -11,16 +11,17 @@ using CATHODE.Scripting;
 using CATHODE;
 using CathodeLib;
 using CommandsEditor.DockPanels;
+using CATHODE.Scripting.Internal;
 
 namespace CommandsEditor.UserControls
 {
     public partial class GUI_SplineDataType : ParameterUserControl
     {
-        private EntityInspector _entityDisplay;
+        private Entity _entity;
 
-        public GUI_SplineDataType(EntityInspector entityDisplay) : base()
+        public GUI_SplineDataType(Entity entity) : base()
         {
-            _entityDisplay = entityDisplay;
+            _entity = entity;
             InitializeComponent();
             this.ContextMenuStrip = contextMenuStrip1;
             this.deleteToolStripMenuItem.Click += new EventHandler(deleteToolStripMenuItem_Click);
@@ -38,7 +39,7 @@ namespace CommandsEditor.UserControls
 
         private void openSplineEditor_Click(object sender, EventArgs e)
         {
-            EditSpline splineEditor = new EditSpline(spline, _entityDisplay.Entity.GetParameter("loop"));
+            EditSpline splineEditor = new EditSpline(spline, _entity.GetParameter("loop"));
             splineEditor.Show();
             splineEditor.OnSaved += OnSplineEditorSaved;
             splineEditor.FormClosed += SplineEditor_FormClosed;
