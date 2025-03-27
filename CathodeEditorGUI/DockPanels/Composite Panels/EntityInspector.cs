@@ -250,6 +250,7 @@ namespace CommandsEditor.DockPanels
             //TODO: change this text contextually based on the linked editor - and hide the button when one isn't available.
             editFunction.Text = "Function";
 
+            //TODO: we can correctly show the resources button now based on parameter info
             CompositePinInfoTable.PinInfo variableInfo = null;
             string description = "";
             switch (_entity.variant)
@@ -370,6 +371,7 @@ namespace CommandsEditor.DockPanels
 
             //populate parameter inputs
             //NOTE: some pins are listed as params, because they specify the "delay" for the pin to be activated (both in and out) - i should display this info differently.
+
             _entity.parameters = _entity.parameters.OrderBy(o => o.name.ToString()).ToList();
             for (int i = 0; i < _entity.parameters.Count; i++)
             {
@@ -565,6 +567,59 @@ namespace CommandsEditor.DockPanels
                     parameterGUI.HighlightAsModified(false);
 #endif
             }
+
+            /*
+            if (_entity.variant == EntityVariant.VARIABLE)
+            {
+                _entity.parameters = _entity.parameters.OrderBy(o => o.name.ToString()).ToList();
+
+                for (int i = 0; i < _entity.parameters.Count; i++)
+                {
+                    ParameterUserControl parameterGUI = ParameterGroup.GenerateUserControl(_entity, _entity.parameters[i]);
+                    parameterGUI.OnDeleted += OnDeleteParam;
+                    parameterGUI.Location = new Point(15, current_ui_offset);
+                    parameterGUI.Width = entity_params.Width - 30;
+                    parameterGUI.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
+                    current_ui_offset += parameterGUI.Height + 6;
+                    controls.Add(parameterGUI);
+                }
+            }
+            else
+            {
+                Dictionary<ShortGuid, List<Parameter>> parametersByImplementer = new Dictionary<ShortGuid, List<Parameter>>();
+                for (int i = 0; i < _entity.parameters.Count; i++)
+                {
+                    (ParameterVariant?, DataType?, ShortGuid) metadata = ParameterUtils.GetParameterMetadata(_entity, _entity.parameters[i].name);
+
+                    if (!parametersByImplementer.TryGetValue(metadata.Item3, out List<Parameter> parameters))
+                    {
+                        parameters = new List<Parameter>();
+                        parametersByImplementer.Add(metadata.Item3, parameters);
+                    }
+                    parameters.Add(_entity.parameters[i]);
+                }
+                foreach (KeyValuePair<ShortGuid, List<Parameter>> implementedParams in parametersByImplementer)
+                {
+                    //NOTE: functiontype can be null if it's a composite instance: need to look up the composite to get name for group
+                    ParameterGroup group = new ParameterGroup();
+                    if (CommandsUtils.FunctionTypeExists(implementedParams.Key))
+                    {
+                        group.SetTitle(((FunctionType)implementedParams.Key.ToUInt32()).ToString());
+                    }
+                    else
+                    {
+                        Composite comp = Content.commands.GetComposite(implementedParams.Key);
+                        if (comp != null)
+                            group.SetTitle(Path.GetFileName(comp.name));
+                    }
+                    foreach (Parameter p in implementedParams.Value)
+                    {
+                        group.AddParameter(ParameterGroup.GenerateUserControl(_entity, p));
+                    }
+                }
+            }
+            */
+
 
 #if DO_ENTITY_PERF_CHECK
             Console.WriteLine($"[ENTITY RELOAD] PARAMETER CONTROLS COMPLETED: {timer.Elapsed.TotalMilliseconds} ms");
