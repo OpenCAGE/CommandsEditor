@@ -541,7 +541,8 @@ namespace CommandsEditor.DockPanels
                         break;
                     case DataType.ENUM:
                         parameterGUI = new GUI_EnumDataType();
-                        ((GUI_EnumDataType)parameterGUI).PopulateUI((cEnum)this_param, paramName);
+                        ParameterData defaultData = ParameterUtils.CreateDefaultParameterData(Entity, Composite, paramName);
+                        ((GUI_EnumDataType)parameterGUI).PopulateUI((cEnum)this_param, paramName, defaultData == null || (defaultData.dataType == DataType.ENUM && ((cEnum)defaultData).enumID == ShortGuid.Invalid));
                         break;
                     case DataType.RESOURCE:
                         parameterGUI = new GUI_ResourceDataType();

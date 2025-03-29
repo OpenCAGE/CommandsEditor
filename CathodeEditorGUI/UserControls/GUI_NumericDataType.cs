@@ -34,8 +34,8 @@ namespace CommandsEditor.UserControls
 
             numericUpDown1.DecimalPlaces = 6;
             numericUpDown1.Increment = 0.000001M;
-            numericUpDown1.Maximum = 9999999999999999;
-            numericUpDown1.Minimum = -9999999999999999;
+            numericUpDown1.Maximum = (decimal)3.4E+28m;
+            numericUpDown1.Minimum = (decimal)-3.4E+28m;
 
             this.deleteToolStripMenuItem.Text = "Delete '" + paramID + "'";
             numericUpDown1.Value = (decimal)cFloat.value;
@@ -51,8 +51,8 @@ namespace CommandsEditor.UserControls
 
             numericUpDown1.DecimalPlaces = 0;
             numericUpDown1.Increment = 1;
-            numericUpDown1.Maximum = 9999999999999999;
-            numericUpDown1.Minimum = -9999999999999999;
+            numericUpDown1.Maximum = int.MaxValue;
+            numericUpDown1.Minimum = int.MinValue;
 
             this.deleteToolStripMenuItem.Text = "Delete '" + paramID + "'";
             numericUpDown1.Value = (decimal)cInt.value;

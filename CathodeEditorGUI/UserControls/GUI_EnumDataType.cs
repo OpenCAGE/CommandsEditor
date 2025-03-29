@@ -11,7 +11,6 @@ namespace CommandsEditor.UserControls
     public partial class GUI_EnumDataType : ParameterUserControl
     {
         cEnum enumVal = null;
-        bool _couldFindEnum = false;
 
         public GUI_EnumDataType()
         {
@@ -21,21 +20,14 @@ namespace CommandsEditor.UserControls
             this.deleteToolStripMenuItem.Click += new EventHandler(deleteToolStripMenuItem_Click);
         }
 
-        //NOTE:LightReference "type" is not being added as enum - but only via parameter window
-        //NOTE: SetEnum adding "delete_me" comes up as enum
-
-        public void PopulateUI(cEnum cEnum, string paramID)
+        public void PopulateUI(cEnum cEnum, string paramID, bool allowTypeSelection)
         {
             groupBox1.Text = paramID;
 
             enumVal = cEnum;
-            EnumUtils.EnumDescriptor enumDesc = EnumUtils.GetEnum(cEnum.enumID);
             this.deleteToolStripMenuItem.Text = "Delete '" + paramID + "'";
 
-            _couldFindEnum = enumDesc != null;
-            //todo: if enumDesc is null, should allow selection of type
-
-            if (!_couldFindEnum)
+            if (allowTypeSelection)
             {
                 comboBox1.BeginUpdate();
                 comboBox1.Items.Clear();
@@ -59,31 +51,30 @@ namespace CommandsEditor.UserControls
                 comboBox1.Location = new Point(6, 19);
                 comboBox2.Location = new Point(6, 48);
                 
-                //todo: this doesn't work after the first go as the value is now applied. need to check parameterutils.
-
                 if (enumVal.enumID == ShortGuid.Invalid)
                 {
                     //if this entity has no default enum applied, apply one
-                    enumDesc = EnumUtils.GetEnum(ShortGuidUtils.Generate(comboBox1.Text));
+                    EnumUtils.EnumDescriptor enumDesc = EnumUtils.GetEnum(ShortGuidUtils.Generate(comboBox1.Text));
                     EnumUtils.EnumDescriptor.Entry enumEntry = enumDesc.Entries.FirstOrDefault(o => o.Index == -1);
                     comboBox2.SelectedItem = enumEntry.Name;
                 }
                 else
                 {
                     comboBox1.SelectedItem = enumVal.enumID.ToString();
-                    enumDesc = EnumUtils.GetEnum(enumVal.enumID);
+                    EnumUtils.EnumDescriptor enumDesc = EnumUtils.GetEnum(enumVal.enumID);
                     EnumUtils.EnumDescriptor.Entry enumEntry = enumDesc.Entries.FirstOrDefault(o => o.Index == enumVal.enumIndex);
                     comboBox2.SelectedItem = enumEntry.Name;
                 }
             }
             else
             {
+                EnumUtils.EnumDescriptor enumDesc = EnumUtils.GetEnum(cEnum.enumID);
                 comboBox1.Items.Add(enumDesc.Name);
                 comboBox1.Text = enumDesc.Name;
 
                 EnumUtils.EnumDescriptor.Entry enumEntry = enumDesc.Entries.FirstOrDefault(o => o.Index == cEnum.enumIndex);
                 if (enumEntry == null)
-                    MessageBox.Show("Failed to match index for " + enumDesc.Name + "!\nThis behaviour is UNEXPECTED.\nPlease report this on GitHub!", "Error!!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Failed to match index " + cEnum.enumIndex + " for " + enumDesc.Name + "!\nThis behaviour is unexpected.\nPlease report this on GitHub!", "Error!!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 else
                     comboBox2.SelectedItem = enumEntry.Name;
             }
@@ -115,9 +106,11 @@ namespace CommandsEditor.UserControls
 
         private void UpdateEnum(EnumUtils.EnumDescriptor enumDesc)
         {
+            if (!_hasDoneSetup)
+                return;
+
             EnumUtils.EnumDescriptor.Entry enumEntry = enumDesc.Entries.FirstOrDefault(o => o.Name == comboBox2.SelectedItem.ToString());
-            if (!_couldFindEnum)
-                enumVal.enumID = enumDesc.ID;
+            enumVal.enumID = enumDesc.ID;
             enumVal.enumIndex = enumEntry.Index;
             HighlightAsModified();
         }
