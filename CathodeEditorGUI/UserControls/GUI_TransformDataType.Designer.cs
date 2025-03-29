@@ -82,13 +82,13 @@
             this.toolStripSeparator1,
             this.deleteToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(159, 76);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(160, 76);
             // 
             // copyTransformToolStripMenuItem
             // 
             this.copyTransformToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("copyTransformToolStripMenuItem.Image")));
             this.copyTransformToolStripMenuItem.Name = "copyTransformToolStripMenuItem";
-            this.copyTransformToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+            this.copyTransformToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
             this.copyTransformToolStripMenuItem.Text = "Copy Transform";
             this.copyTransformToolStripMenuItem.Click += new System.EventHandler(this.copyTransformToolStripMenuItem_Click);
             // 
@@ -96,20 +96,20 @@
             // 
             this.pasteTransformToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("pasteTransformToolStripMenuItem.Image")));
             this.pasteTransformToolStripMenuItem.Name = "pasteTransformToolStripMenuItem";
-            this.pasteTransformToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+            this.pasteTransformToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
             this.pasteTransformToolStripMenuItem.Text = "Paste Transform";
             this.pasteTransformToolStripMenuItem.Click += new System.EventHandler(this.pasteTransformToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(155, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(156, 6);
             // 
             // deleteToolStripMenuItem
             // 
             this.deleteToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("deleteToolStripMenuItem.Image")));
             this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
             this.deleteToolStripMenuItem.Text = "Delete";
             // 
             // tableLayoutPanel9
@@ -132,13 +132,13 @@
             // 
             // POS_X
             // 
-            this.POS_X.DecimalPlaces = 7;
+            this.POS_X.DecimalPlaces = 6;
             this.POS_X.Dock = System.Windows.Forms.DockStyle.Fill;
             this.POS_X.Increment = new decimal(new int[] {
             1,
             0,
             0,
-            458752});
+            393216});
             this.POS_X.Location = new System.Drawing.Point(3, 3);
             this.POS_X.Maximum = new decimal(new int[] {
             1874919423,
@@ -158,13 +158,13 @@
             // 
             // POS_Z
             // 
-            this.POS_Z.DecimalPlaces = 7;
+            this.POS_Z.DecimalPlaces = 6;
             this.POS_Z.Dock = System.Windows.Forms.DockStyle.Fill;
             this.POS_Z.Increment = new decimal(new int[] {
             1,
             0,
             0,
-            458752});
+            393216});
             this.POS_Z.Location = new System.Drawing.Point(217, 3);
             this.POS_Z.Maximum = new decimal(new int[] {
             1874919423,
@@ -184,13 +184,13 @@
             // 
             // POS_Y
             // 
-            this.POS_Y.DecimalPlaces = 7;
+            this.POS_Y.DecimalPlaces = 6;
             this.POS_Y.Dock = System.Windows.Forms.DockStyle.Fill;
             this.POS_Y.Increment = new decimal(new int[] {
             1,
             0,
             0,
-            458752});
+            393216});
             this.POS_Y.Location = new System.Drawing.Point(110, 3);
             this.POS_Y.Maximum = new decimal(new int[] {
             1874919423,
@@ -227,13 +227,13 @@
             // 
             // ROT_X
             // 
-            this.ROT_X.DecimalPlaces = 7;
+            this.ROT_X.DecimalPlaces = 6;
             this.ROT_X.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ROT_X.Increment = new decimal(new int[] {
             1,
             0,
             0,
-            458752});
+            393216});
             this.ROT_X.Location = new System.Drawing.Point(3, 3);
             this.ROT_X.Maximum = new decimal(new int[] {
             1874919423,
@@ -253,13 +253,13 @@
             // 
             // ROT_Z
             // 
-            this.ROT_Z.DecimalPlaces = 7;
+            this.ROT_Z.DecimalPlaces = 6;
             this.ROT_Z.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ROT_Z.Increment = new decimal(new int[] {
             1,
             0,
             0,
-            458752});
+            393216});
             this.ROT_Z.Location = new System.Drawing.Point(217, 3);
             this.ROT_Z.Maximum = new decimal(new int[] {
             1874919423,
@@ -279,13 +279,13 @@
             // 
             // ROT_Y
             // 
-            this.ROT_Y.DecimalPlaces = 7;
+            this.ROT_Y.DecimalPlaces = 6;
             this.ROT_Y.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ROT_Y.Increment = new decimal(new int[] {
             1,
             0,
             0,
-            458752});
+            393216});
             this.ROT_Y.Location = new System.Drawing.Point(110, 3);
             this.ROT_Y.Maximum = new decimal(new int[] {
             1874919423,
