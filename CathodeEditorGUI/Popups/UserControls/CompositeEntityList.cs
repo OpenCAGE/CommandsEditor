@@ -1,5 +1,6 @@
 ﻿using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
+using CathodeLib;
 using CommandsEditor.UserControls;
 using ListViewGroupCollapse;
 using OpenCAGE;
@@ -12,6 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static CathodeLib.CompositePinInfoTable;
 
 namespace CommandsEditor.Popups.UserControls
 {
@@ -175,8 +177,51 @@ namespace CommandsEditor.Popups.UserControls
             switch (entity.variant)
             {
                 case EntityVariant.VARIABLE:
+                    CompositePinInfoTable.PinInfo pinInfo = CompositeUtils.GetParameterInfo(_composite, (VariableEntity)entity);
+                    if (pinInfo != null)
+                    {
+                        switch ((CompositePinType)pinInfo.PinTypeGUID.ToUInt32())
+                        {
+                            case CompositePinType.CompositeInputAnimationInfoVariablePin:
+                            case CompositePinType.CompositeInputBoolVariablePin:
+                            case CompositePinType.CompositeInputDirectionVariablePin:
+                            case CompositePinType.CompositeInputFloatVariablePin:
+                            case CompositePinType.CompositeInputIntVariablePin:
+                            case CompositePinType.CompositeInputObjectVariablePin:
+                            case CompositePinType.CompositeInputPositionVariablePin:
+                            case CompositePinType.CompositeInputStringVariablePin:
+                            case CompositePinType.CompositeInputVariablePin:
+                            case CompositePinType.CompositeInputZoneLinkPtrVariablePin:
+                            case CompositePinType.CompositeInputZonePtrVariablePin:
+                            case CompositePinType.CompositeInputEnumVariablePin:
+                            case CompositePinType.CompositeInputEnumStringVariablePin:
+                            case CompositePinType.CompositeMethodPin:
+                                item.ImageIndex = 6; 
+                                break;
+                            case CompositePinType.CompositeOutputAnimationInfoVariablePin:
+                            case CompositePinType.CompositeOutputBoolVariablePin:
+                            case CompositePinType.CompositeOutputDirectionVariablePin:
+                            case CompositePinType.CompositeOutputFloatVariablePin:
+                            case CompositePinType.CompositeOutputIntVariablePin:
+                            case CompositePinType.CompositeOutputObjectVariablePin:
+                            case CompositePinType.CompositeOutputPositionVariablePin:
+                            case CompositePinType.CompositeOutputStringVariablePin:
+                            case CompositePinType.CompositeOutputVariablePin:
+                            case CompositePinType.CompositeOutputZoneLinkPtrVariablePin:
+                            case CompositePinType.CompositeOutputZonePtrVariablePin:
+                            case CompositePinType.CompositeOutputEnumVariablePin:
+                            case CompositePinType.CompositeOutputEnumStringVariablePin:
+                            case CompositePinType.CompositeTargetPin:
+                            case CompositePinType.CompositeReferencePin:
+                                item.ImageIndex = 5;
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        item.ImageIndex = 0;
+                    }
                     item.Group = composite_content.Groups[0];
-                    item.ImageIndex = 0;
                     break;
                 case EntityVariant.FUNCTION:
                     if (!CommandsUtils.FunctionTypeExists(((FunctionEntity)entity).function))

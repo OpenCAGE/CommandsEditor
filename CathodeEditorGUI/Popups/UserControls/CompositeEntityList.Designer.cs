@@ -125,6 +125,8 @@
             this.entityListIcons.Images.SetKeyName(2, "d_PrefabVariant Icon.png");
             this.entityListIcons.Images.SetKeyName(3, "d_ScriptableObject Icon.png");
             this.entityListIcons.Images.SetKeyName(4, "AreaEffector2D Icon.ico");
+            this.entityListIcons.Images.SetKeyName(5, "variable left.png");
+            this.entityListIcons.Images.SetKeyName(6, "variable right.png");
             // 
             // entity_search_box
             // 

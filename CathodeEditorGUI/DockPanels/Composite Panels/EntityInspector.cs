@@ -388,6 +388,7 @@ namespace CommandsEditor.DockPanels
                         parameterGUI = new GUI_NumericDataType();
                         ((GUI_NumericDataType)parameterGUI).PopulateUI_Int((cInteger)this_param, paramName);
                         break;
+                    case DataType.ENUM_STRING:
                     case DataType.STRING:
                         /*
                         //TODO: handle this for proxies/aliases too...
