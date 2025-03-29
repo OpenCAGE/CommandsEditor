@@ -247,6 +247,7 @@ namespace CommandsEditor
                 for (int i = 0; i < textList.Count; i++)
                     Singleton.Strings.Add(Path.GetFileNameWithoutExtension(textList[i]), strings[i]);
             }
+            //TODO: What about level specific text dbs?
 
             //Load animation data - this should be quick enough to not worry about waiting for the thread
             Task.Factory.StartNew(() => LoadAnimData());
@@ -342,18 +343,17 @@ namespace CommandsEditor
             //Singleton.AnimClipDB = new AnimClipDB("ANIM_CLIP_DB.BIN");
             //File.Delete("ANIM_CLIP_DB.BIN");
 
-            //Skeleton db
-            File.WriteAllBytes("DB.BIN", animPAK.Entries.FirstOrDefault(o => o.Filename.Contains("SKELE\\DB.BIN")).Content);
-            Singleton.SkeletonDB = new SkeleDB("DB.BIN", Singleton.AnimationStrings_Debug);
-            File.Delete("DB.BIN");
-
             //Load all skeleton names
-            List<PAK2.File> skeletons = animPAK.Entries.FindAll(o => o.Filename.Length > 24 && o.Filename.Substring(0, 24) == "DATA\\ANIM_SYS\\SKELE\\DEFS");
-            for (int i = 0; i < skeletons.Count; i++)
-            {
-                Singleton.AllSkeletons.Add(Singleton.AnimationStrings_Debug.Entries[Convert.ToUInt32(Path.GetFileNameWithoutExtension(skeletons[i].Filename))]);
-            }
+            List<PAK2.File> skeletonNames = animPAK.Entries.FindAll(o => o.Filename.Length > 24 && o.Filename.Substring(0, 24) == "DATA\\ANIM_SYS\\SKELE\\DEFS");
+            for (int i = 0; i < skeletonNames.Count; i++)
+                Singleton.AllSkeletons.Add(Singleton.AnimationStrings_Debug.Entries[Convert.ToUInt32(Path.GetFileNameWithoutExtension(skeletonNames[i].Filename))]);
             Singleton.AllSkeletons.Sort();
+
+            //Load all anim sets
+            List<PAK2.File> animClipDbs = animPAK.Entries.FindAll(o => { string path = Path.GetFileName(o.Filename); if (path.Length < ("_ANIM_CLIP_DB.BIN").Length) return false; return path.Substring(path.Length - ("_ANIM_CLIP_DB.BIN").Length) == "_ANIM_CLIP_DB.BIN"; });
+            for (int i = 0; i < animClipDbs.Count; i++)
+                Singleton.AllAnimSets.Add(Singleton.AnimationStrings_Debug.Entries[Convert.ToUInt32(Path.GetFileName(animClipDbs[i].Filename).Split('_')[0])]);
+            Singleton.AllAnimSets.Sort();
 
             Singleton.OnFinishedLazyLoadingStrings?.Invoke();
         }

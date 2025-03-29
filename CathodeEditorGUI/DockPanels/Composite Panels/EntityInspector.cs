@@ -375,6 +375,17 @@ namespace CommandsEditor.DockPanels
             _entity.parameters = _entity.parameters.OrderBy(o => o.name.ToString()).ToList();
             for (int i = 0; i < _entity.parameters.Count; i++)
             {
+                //Use our metadata to update any wrongly typed cEnumStrings to get the nice UI
+                if (_entity.parameters[i].content.dataType == DataType.STRING)
+                {
+                    ParameterData data = ParameterUtils.CreateDefaultParameterData(Entity, Composite, _entity.parameters[i].name);
+                    if (data != null && data.dataType == DataType.ENUM_STRING)
+                    {
+                        ((cEnumString)data).value = ((cString)_entity.parameters[i].content).value;
+                        _entity.parameters[i].content = data;
+                    }
+                }
+
                 ParameterData this_param = _entity.parameters[i].content;
                 ParameterUserControl parameterGUI = null;
                 string paramName = _entity.parameters[i].name.ToString();
@@ -389,115 +400,14 @@ namespace CommandsEditor.DockPanels
                         ((GUI_NumericDataType)parameterGUI).PopulateUI_Int((cInteger)this_param, paramName);
                         break;
                     case DataType.ENUM_STRING:
+                        parameterGUI = new GUI_StringVariant_AssetDropdown();
+                        ((GUI_StringVariant_AssetDropdown)parameterGUI).PopulateUI((cEnumString)this_param, paramName, false); //TODO: allow type selection?
+                        break;
                     case DataType.STRING:
-                        /*
-                        //TODO: handle this for proxies/aliases too...
-                        if (entity.variant == EntityVariant.FUNCTION)
-                        {
-                            CathodeEntityDatabase.ParameterDefinition? info = CathodeEntityDatabase.GetParametersFromEntity(((FunctionEntity)entity).function).FirstOrDefault(o => o.name == paramName);
-                            if (info != null)
-                            {
-                                switch (info.Value.datatype) //TODO: can we cast this to resource type enum?
-                                {
-                                    //TODO: use this instead of the hardcoded definitions below...
-                                    case "SOUND_REVERB":
-
-                                        break;
-                                }
-                            }
-                        }
-                        */
-
-                        AssetList.Type asset = AssetList.Type.NONE; //TODO: this should be removed and i should use EnumStringType
-                        string asset_arg = "";
-                        if (Entity.variant == EntityVariant.VARIABLE)
-                        {
-                            if (variableInfo != null && (
-                                (CompositePinType)variableInfo.PinTypeGUID.ToUInt32() == CompositePinType.CompositeInputEnumStringVariablePin ||
-                                (CompositePinType)variableInfo.PinTypeGUID.ToUInt32() == CompositePinType.CompositeOutputEnumStringVariablePin))
-                            {
-                                switch ((EnumStringType)variableInfo.PinEnumTypeGUID.ToUInt32())
-                                {
-                                    //todo: before releasing this needs to be finished
-                                }
-                            }
-                        }
-                        else
-                        {
-                            //TODO: doing this manually with hardcoded stuff is dumb. we have the info available to do this automatically. Use EnumStringType enum
-
-                            //TODO: We can figure out a lot of these from the iOS dump.
-                            //      For example - SoundEnvironmentMarker shows reverb_name as DataType SOUND_REVERB!
-                            switch (paramName)
-                            {
-                                //case "Animation":
-                                //    asset = AssetList.Type.ANIMATION;
-                                //    break;
-                                case "material":
-                                    asset = AssetList.Type.MATERIAL;
-                                    break;
-                                case "title":
-                                case "presence_id":
-                                case "map_description":
-                                case "content_title":
-                                case "folder_title":
-                                case "additional_info": //TODO: this is a good example of why we should handle this per-entity
-                                    asset = AssetList.Type.LOCALISED_STRING;
-                                    if (_entity.variant == EntityVariant.FUNCTION && CommandsUtils.GetFunctionType(((FunctionEntity)_entity).function).ToString().Contains("Objective"))
-                                        asset_arg = "OBJECTIVES";
-                                    else if (_entity.variant == EntityVariant.FUNCTION && CommandsUtils.GetFunctionType(((FunctionEntity)_entity).function).ToString().Contains("Terminal"))
-                                        asset_arg = "T0001/UI"; //TODO: we should also support TEXT dbs in the level folder for DLC stuff
-                                    else
-                                        asset_arg = "UI";
-                                    break;
-                                case "title_id":
-                                case "message_id":
-                                case "unlocked_text":
-                                case "locked_text":
-                                case "action_text":
-                                    asset = AssetList.Type.LOCALISED_STRING;
-                                    asset_arg = "UI";
-                                    break;
-                                case "sound_event":
-                                case "stop_sound_event":
-                                case "music_event":
-                                case "stop_event":
-                                case "line_01_event":
-                                case "line_02_event":
-                                case "line_03_event":
-                                case "line_04_event":
-                                case "line_05_event":
-                                case "line_06_event":
-                                case "line_07_event":
-                                case "line_08_event":
-                                case "line_09_event":
-                                case "line_10_event":
-                                case "on_enter_event":
-                                case "on_exit_event":
-                                case "music_start_event":
-                                case "music_end_event":
-                                case "music_restart_event":
-                                    asset = AssetList.Type.SOUND_EVENT;
-                                    break;
-                                case "reverb_name":
-                                    asset = AssetList.Type.SOUND_REVERB;
-                                    break;
-                                case "sound_bank":
-                                    asset = AssetList.Type.SOUND_BANK;
-                                    break;
-                            }
-                        }
-
-                        if (asset != AssetList.Type.NONE)
-                        {
-                            parameterGUI = new GUI_StringVariant_AssetDropdown();
-                            ((GUI_StringVariant_AssetDropdown)parameterGUI).PopulateUI((cString)this_param, paramName, asset, asset_arg);
-                        }
-                        else
-                        {
-                            parameterGUI = new GUI_StringDataType();
-                            ((GUI_StringDataType)parameterGUI).PopulateUI((cString)this_param, paramName);
-                        }
+                        //TODO: Need an animation selector for the anim/skele pair
+                        //TODO: There are some string types which should actually be selected via the EnumString UI like map_description on SetSubObjective, or unlocked_text on UI_Icon
+                        parameterGUI = new GUI_StringDataType();
+                        ((GUI_StringDataType)parameterGUI).PopulateUI((cString)this_param, paramName);
                         break;
                     case DataType.BOOL:
                         parameterGUI = new GUI_BoolDataType();
@@ -508,6 +418,7 @@ namespace CommandsEditor.DockPanels
                         ((GUI_NumericDataType)parameterGUI).PopulateUI_Float((cFloat)this_param, paramName);
                         break;
                     case DataType.VECTOR:
+                        //TODO: Should add a "colour" flag to handle this nicer.
                         switch (paramName)
                         {
                             case "AMBIENT_LIGHTING_COLOUR":

@@ -41,6 +41,7 @@
             this.search_box = new System.Windows.Forms.TextBox();
             this.selectBtn = new System.Windows.Forms.Button();
             this.ShowMetadata = new System.Windows.Forms.Button();
+            this.enumStringTypeSelect = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // clearSearchBtn
@@ -48,7 +49,7 @@
             this.clearSearchBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.clearSearchBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.clearSearchBtn.Image = ((System.Drawing.Image)(resources.GetObject("clearSearchBtn.Image")));
-            this.clearSearchBtn.Location = new System.Drawing.Point(739, 3);
+            this.clearSearchBtn.Location = new System.Drawing.Point(737, 3);
             this.clearSearchBtn.Name = "clearSearchBtn";
             this.clearSearchBtn.Size = new System.Drawing.Size(20, 20);
             this.clearSearchBtn.TabIndex = 180;
@@ -85,7 +86,7 @@
             this.strings.Location = new System.Drawing.Point(2, 29);
             this.strings.MultiSelect = false;
             this.strings.Name = "strings";
-            this.strings.Size = new System.Drawing.Size(757, 597);
+            this.strings.Size = new System.Drawing.Size(755, 597);
             this.strings.TabIndex = 179;
             this.strings.UseCompatibleStateImageBehavior = false;
             this.strings.View = System.Windows.Forms.View.Details;
@@ -108,14 +109,14 @@
             this.search_box.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.search_box.Location = new System.Drawing.Point(2, 3);
             this.search_box.Name = "search_box";
-            this.search_box.Size = new System.Drawing.Size(757, 20);
+            this.search_box.Size = new System.Drawing.Size(755, 20);
             this.search_box.TabIndex = 178;
             this.search_box.TextChanged += new System.EventHandler(this.search_box_TextChanged);
             // 
             // selectBtn
             // 
             this.selectBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.selectBtn.Location = new System.Drawing.Point(600, 634);
+            this.selectBtn.Location = new System.Drawing.Point(598, 634);
             this.selectBtn.Name = "selectBtn";
             this.selectBtn.Size = new System.Drawing.Size(151, 26);
             this.selectBtn.TabIndex = 181;
@@ -126,7 +127,7 @@
             // ShowMetadata
             // 
             this.ShowMetadata.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.ShowMetadata.Location = new System.Drawing.Point(12, 634);
+            this.ShowMetadata.Location = new System.Drawing.Point(441, 634);
             this.ShowMetadata.Name = "ShowMetadata";
             this.ShowMetadata.Size = new System.Drawing.Size(151, 26);
             this.ShowMetadata.TabIndex = 182;
@@ -134,11 +135,24 @@
             this.ShowMetadata.UseVisualStyleBackColor = true;
             this.ShowMetadata.Click += new System.EventHandler(this.ShowMetadata_Click);
             // 
+            // enumStringTypeSelect
+            // 
+            this.enumStringTypeSelect.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.enumStringTypeSelect.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.enumStringTypeSelect.FormattingEnabled = true;
+            this.enumStringTypeSelect.Location = new System.Drawing.Point(12, 637);
+            this.enumStringTypeSelect.MaximumSize = new System.Drawing.Size(280, 0);
+            this.enumStringTypeSelect.Name = "enumStringTypeSelect";
+            this.enumStringTypeSelect.Size = new System.Drawing.Size(280, 21);
+            this.enumStringTypeSelect.TabIndex = 183;
+            // 
             // SelectSpecialString
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(761, 670);
+            this.ClientSize = new System.Drawing.Size(759, 670);
+            this.Controls.Add(this.enumStringTypeSelect);
             this.Controls.Add(this.ShowMetadata);
             this.Controls.Add(this.selectBtn);
             this.Controls.Add(this.clearSearchBtn);
@@ -164,5 +178,6 @@
         private System.Windows.Forms.TextBox search_box;
         private System.Windows.Forms.Button selectBtn;
         private System.Windows.Forms.Button ShowMetadata;
+        private System.Windows.Forms.ComboBox enumStringTypeSelect;
     }
 }

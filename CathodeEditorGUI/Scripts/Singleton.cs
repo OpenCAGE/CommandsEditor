@@ -17,10 +17,18 @@ namespace CommandsEditor
         //Global localised string DBs for English
         public static Dictionary<string, Strings> Strings = new Dictionary<string, Strings>();
 
-        //Skeletons from ANIMATIONS.PAK
+        public static string TryLocalise(string str)
+        {
+            foreach (KeyValuePair<string, Strings> entry in Strings)
+                if (entry.Value.Entries.TryGetValue(str, out string localised))
+                    return localised;
+            return str;
+        }
+
+        //Animation content from ANIMATIONS.PAK
         public static List<string> AllSkeletons = new List<string>();
         public static Dictionary<string, List<string>> GenderedSkeletons = new Dictionary<string, List<string>>();
-        public static SkeleDB SkeletonDB;
+        public static List<string> AllAnimSets = new List<string>();
 
         //Global animation strings
         public static AnimationStrings AnimationStrings;

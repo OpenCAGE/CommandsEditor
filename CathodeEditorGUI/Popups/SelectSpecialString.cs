@@ -10,10 +10,16 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Shapes;
+using System.Xml;
+using System.Xml.Linq;
+using System.Xml.XPath;
+using static CATHODE.Scripting.TriggerSequence;
 
 namespace CommandsEditor
 {
@@ -21,142 +27,233 @@ namespace CommandsEditor
     {
         public Action<string> OnSelected;
 
-        private string _defaultVal;
-        private AssetList.Type _type = AssetList.Type.NONE;
-        private string _typeArgs = "";
+        private cEnumString _defaultVal;
 
         private static List<AssetList> _assetList = new List<AssetList>();
         private AssetList _content = null;
         private ListViewColumnSorter _sorter = new ListViewColumnSorter();
 
-        public SelectSpecialString(string paramName, string defaultVal, AssetList.Type assets, string args = "") : base(WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION | WindowClosesOn.COMMANDS_RELOAD)
+        public SelectSpecialString(string paramName, cEnumString enumString, bool allowTypeSelect) : base(WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION | WindowClosesOn.COMMANDS_RELOAD)
         {
             InitializeComponent();
 
-            _type = assets;
-            _typeArgs = args;
-            _defaultVal = defaultVal;
-
+            _defaultVal = enumString;
             this.Text = "Select for '" + paramName + "'";
 
-            //TODO: we never clear up these lists for old levels, which could lead to a slow memory leak!
+            if (allowTypeSelect)
+            {
+                List<string> types = new List<string>();
+                foreach (EnumStringType type in Enum.GetValues(typeof(EnumStringType)))
+                    types.Add(type.ToString());
+                types.Clear();
+                enumStringTypeSelect.BeginUpdate();
+                enumStringTypeSelect.Items.Add(types);
+                enumStringTypeSelect.EndUpdate();
+            }
+            else
+            {
+                enumStringTypeSelect.Visible = false;
+            }
 
-            _content = _assetList.FirstOrDefault(o => o.level == Content.commands.Filepath && o.assets == assets && o.args == args);
+            //TODO: we never clear up these lists for old levels, which could lead to a slow memory leak!
+            _content = _assetList.FirstOrDefault(o => o.level == Content.commands.Filepath && o.type == (EnumStringType)enumString.enumID.ToUInt32());
             if (_content == null)
             {
-                _content = new AssetList() { level = Content.commands.Filepath, args = args, assets = assets };
+                _content = new AssetList() { level = Content.commands.Filepath, type = (EnumStringType)enumString.enumID.ToUInt32() };
                 List<ListViewItem> strings = new List<ListViewItem>();
-                switch (assets)
+                switch (_content.type)
                 {
-                    case AssetList.Type.SOUND_BANK:
-                        foreach (string entry in Content.resource.sound_bankdata.Entries)
-                        {
-                            if (strings.FirstOrDefault(o => o.Text == entry) == null)
-                                strings.Add(new ListViewItem() { Text = entry });
-                        }
+                    case EnumStringType.ACHIEVEMENT_ID:
+                        foreach (string str in ParseXML("AWARDS/MAIN_AWARD_LIST.BML", "awards/award", "game_id"))
+                            strings.Add(new ListViewItem() { Text = str });
                         break;
-                    case AssetList.Type.SOUND_DIALOGUE:
-                        foreach (SoundDialogueLookups.Sound entry in Content.resource.sound_dialoguelookups.Entries)
+                    case EnumStringType.ACHIEVEMENT_STAT_ID:
+                        foreach (string str in ParseXML("AWARDS/MAIN_AWARD_LIST.BML", "awards/stat", "stat_id"))
+                            strings.Add(new ListViewItem() { Text = str });
+                        break;
+                    case EnumStringType.ANIM_SET:
+                        break;
+                    case EnumStringType.ANIM_TREE_SET:
+                        break;
+                    case EnumStringType.ATTRIBUTE_SET:
+                        break;
+                    case EnumStringType.BLUEPRINT_TYPE:
+                        foreach (string str in ParseXML("GBL_ITEM.BML", "item_database/recipes/recipe", "name"))
+                            strings.Add(new ListViewItem() { Text = str });
+                        break;
+                    case EnumStringType.CHR_SKELETON_SET:
+                        foreach (string str in Singleton.AllSkeletons)
+                            strings.Add(new ListViewItem() { Text = str });
+                        break;
+                    case EnumStringType.GAME_VARIABLE:
+                        foreach (string str in ParseXML("SCRIPT_READABLE_VARIABLES.XML", "game_variables/variable", "id"))
+                            strings.Add(new ListViewItem() { Text = str });
+                        break;
+                    case EnumStringType.GAMEPLAY_TIP_STRING_ID:
+                        foreach (string str in ParseXML("GBL_ITEM.BML", "item_database/custom_gameplay_tips/custom_gameplay_tip", "string_id"))
+                            strings.Add(new ListViewItem() { Text = str });
+                        break;
+                    case EnumStringType.IDTAG_ID:
                         {
-                            if (strings.FirstOrDefault(o => o.Text == entry.ToString()) == null)
+                            List<string> uids = ParseXML("GBL_ITEM.BML", "item_database/journal_idtag_entries/idtag_entry", "uid");
+                            List<string> names = ParseXML("GBL_ITEM.BML", "item_database/journal_idtag_entries/idtag_entry", "name");
+                            for (int i = 0; i < uids.Count; i++)
                             {
-                                string englishTranslation = "";
-                                foreach (KeyValuePair<string, Strings> stringdb in Singleton.Strings)
-                                {
-                                    foreach (KeyValuePair<string, string> stringdb_val in stringdb.Value.Entries)
-                                    {
-                                        if (stringdb_val.Key != entry.ToString()) continue;
-                                        englishTranslation = stringdb_val.Value;
-                                        break;
-                                    }
-                                    if (englishTranslation != "") break;
-                                }
-                                strings.Add(new ListViewItem() { Text = entry.ToString() });
-                                strings[strings.Count - 1].SubItems.Add(englishTranslation);
+                                ListViewItem item = new ListViewItem() { Text = uids[i] };
+                                item.SubItems.Add(names[i]);
+                                strings.Add(item);
                             }
+                            _content.use_desc_column = true;
                         }
-                        _content.use_desc_column = true;
                         break;
-                    case AssetList.Type.SOUND_REVERB:
-                        foreach (string entry in Content.resource.sound_environmentdata.Entries)
+                    case EnumStringType.MAP_KEYFRAME_ID:
+                        foreach (string str in ParseXML("GBL_ITEM.BML", "item_database/map_available_keyframes/map_keyframe", "name"))
+                            strings.Add(new ListViewItem() { Text = str });
+                        break;
+                    case EnumStringType.NOSTROMO_LOG_ID:
                         {
-                            if (strings.FirstOrDefault(o => o.Text == entry) == null)
-                                strings.Add(new ListViewItem() { Text = entry });
+                            List<string> uids = ParseXML("GBL_ITEM.BML", "item_database/journal_nostromo_entries/log_entry", "uid");
+                            List<string> headers = ParseXML("GBL_ITEM.BML", "item_database/journal_nostromo_entries/log_entry", "heading_text");
+                            for (int i = 0; i < uids.Count; i++)
+                            {
+                                ListViewItem item = new ListViewItem() { Text = uids[i] };
+                                item.SubItems.Add(Singleton.TryLocalise(headers[i]));
+                                strings.Add(item);
+                            }
+                            _content.use_desc_column = true;
                         }
                         break;
-                    case AssetList.Type.SOUND_EVENT:
-                        //TODO: perhaps show these by soundbank - need to load in soundbank name IDs
+                    case EnumStringType.OBJECTIVE_ENTRY_ID:
+                        foreach (string str in ParseXML("OBJECTIVE_ENTRIES.XML", "localisation_entries/localisation_entry", "id"))
+                            strings.Add(new ListViewItem() { Text = str });
+                        break;
+                    case EnumStringType.PRESENCE_ID:
+                        foreach (string str in ParseXML("AWARDS/MAIN_AWARD_LIST.BML", "awards/presence", "game_id"))
+                            strings.Add(new ListViewItem() { Text = str });
+                        break;
+                    case EnumStringType.SEVASTOPOL_LOG_ID:
+                        {
+                            List<string> uids = ParseXML("GBL_ITEM.BML", "item_database/journal_sevastopol_entries/log_entry", "uid");
+                            List<string> headers = ParseXML("GBL_ITEM.BML", "item_database/journal_sevastopol_entries/log_entry", "heading_text");
+                            for (int i = 0; i < uids.Count; i++)
+                            {
+                                ListViewItem item = new ListViewItem() { Text = uids[i] };
+                                item.SubItems.Add(Singleton.TryLocalise(headers[i]));
+                                strings.Add(item);
+                            }
+                            _content.use_desc_column = true;
+                        }
+                        break;
+                    case EnumStringType.SOUND_ARGUMENT:
+                        break;
+                    case EnumStringType.SOUND_EVENT:
                         foreach (SoundEventData.Soundbank entry in Content.resource.sound_eventdata.Entries)
                         {
                             foreach (SoundEventData.Soundbank.Event e in entry.events)
                             {
                                 if (strings.FirstOrDefault(o => o.Text == e.name) == null)
                                 {
-                                    string englishTranslation = "";
-                                    foreach (KeyValuePair<string, Strings> stringdb in Singleton.Strings)
-                                    {
-                                        foreach (KeyValuePair<string, string> stringdb_val in stringdb.Value.Entries)
-                                        {
-                                            if (stringdb_val.Key != e.name) continue;
-                                            englishTranslation = stringdb_val.Value;
-                                            break;
-                                        }
-                                        if (englishTranslation != "") break;
-                                    }
                                     strings.Add(new ListViewItem() { Text = e.name });
-                                    strings[strings.Count - 1].SubItems.Add(englishTranslation);
+                                    strings[strings.Count - 1].SubItems.Add(Singleton.TryLocalise(e.name));
                                 }
                             }
                         }
                         _content.use_desc_column = true;
                         break;
-                    case AssetList.Type.LOCALISED_STRING:
-                        string[] argsSplit = args.Split('/');
-                        foreach (string arg in argsSplit)
-                        {
-                            foreach (KeyValuePair<string, Strings> entry in Singleton.Strings)
-                            {
-                                if (arg != "" && arg != entry.Key) continue;
-                                foreach (KeyValuePair<string, string> e in entry.Value.Entries)
-                                {
-                                    if (strings.FirstOrDefault(o => o.Text == e.Key) == null)
-                                    {
-                                        strings.Add(new ListViewItem() { Text = e.Key });
-                                        strings[strings.Count - 1].SubItems.Add(e.Value);
-                                    }
-                                }
-                            }
-                        }
-                        _content.use_desc_column = true;
+                    case EnumStringType.SOUND_FOOTWEAR_GROUP:
+                        foreach (string str in ParseXML("FOLEY_MATERIALS.XML", "foley_materials/feet", "id"))
+                            strings.Add(new ListViewItem() { Text = str });
                         break;
-                    case AssetList.Type.MATERIAL:
-                        foreach (Materials.Material entry in Content.resource.materials.Entries)
-                        {
-                            if (strings.FirstOrDefault(o => o.Text == entry.Name) == null)
-                                strings.Add(new ListViewItem() { Text = entry.Name });
-                        }
+                    case EnumStringType.SOUND_LEG_GROUP:
+                        foreach (string str in ParseXML("FOLEY_MATERIALS.XML", "foley_materials/leg", "id"))
+                            strings.Add(new ListViewItem() { Text = str });
                         break;
-                    case AssetList.Type.TEXTURE:
-                        foreach (Textures.TEX4 entry in Content.resource.textures.Entries)
-                        {
-                            if (strings.FirstOrDefault(o => o.Text == entry.Name) == null)
-                                strings.Add(new ListViewItem() { Text = entry.Name });
-                        }
-                        foreach (Textures.TEX4 entry in Content.resource.textures_global.Entries)
-                        {
-                            if (strings.FirstOrDefault(o => o.Text == entry.Name) == null)
-                                strings.Add(new ListViewItem() { Text = entry.Name });
-                        }
+                    case EnumStringType.SOUND_PARAMETER:
                         break;
-                    case AssetList.Type.ANIMATION:
-                        //TODO: This is NOT the correct way to populate this field, as it'll give us ALL anim strings, not just animations.
-                        //      We should populate it by parsing the contents of ANIMATIONS.PAK, loading skeletons relative to animations, and then populating animations relative to the selected skeleton.
-                        foreach (KeyValuePair<uint, string> entry in Singleton.AnimationStrings.Entries)
-                        {
-                            if (strings.FirstOrDefault(o => o.Text == entry.Value) == null)
-                                strings.Add(new ListViewItem() { Text = entry.Value });
-                        }
+                    case EnumStringType.SOUND_REVERB:
+                        foreach (string entry in Content.resource.sound_environmentdata.Entries)
+                            if (strings.FirstOrDefault(o => o.Text == entry) == null)
+                                strings.Add(new ListViewItem() { Text = entry });
                         break;
+                    case EnumStringType.SOUND_RTPC:
+                        break;
+                    case EnumStringType.SOUND_STATE:
+                        break;
+                    case EnumStringType.SOUND_SWITCH:
+                        break;
+                    case EnumStringType.SOUND_TORSO_GROUP:
+                        foreach (string str in ParseXML("FOLEY_MATERIALS.XML", "foley_materials/torso", "id"))
+                            strings.Add(new ListViewItem() { Text = str });
+                        break;
+                    case EnumStringType.TUTORIAL_ENTRY_ID:
+                        foreach (string str in ParseXML("TUTORIAL_ENTRIES.XML", "localisation_entries/localisation_entry", "id"))
+                            strings.Add(new ListViewItem() { Text = str });
+                        break;
+
+
+                    //case EnumStringType.SOUND_BANK:
+                    //    foreach (string entry in Content.resource.sound_bankdata.Entries)
+                    //        if (strings.FirstOrDefault(o => o.Text == entry) == null)
+                    //            strings.Add(new ListViewItem() { Text = entry });
+                    //    break;
+                    //case EnumStringType.SOUND_DIALOGUE:
+                    //    foreach (SoundDialogueLookups.Sound entry in Content.resource.sound_dialoguelookups.Entries)
+                    //    {
+                    //        if (strings.FirstOrDefault(o => o.Text == entry.ToString()) == null)
+                    //        {
+                    //            strings.Add(new ListViewItem() { Text = entry.ToString() });
+                    //            strings[strings.Count - 1].SubItems.Add(Singleton.TryLocalise(entry.ToString()));
+                    //        }
+                    //    }
+                    //    _content.use_desc_column = true;
+                    //    break;
+                    //case AssetList.Type.LOCALISED_STRING:
+                    //    string[] argsSplit = args.Split('/');
+                    //    foreach (string arg in argsSplit)
+                    //    {
+                    //        foreach (KeyValuePair<string, Strings> entry in Singleton.Strings)
+                    //        {
+                    //            if (arg != "" && arg != entry.Key) continue;
+                    //            foreach (KeyValuePair<string, string> e in entry.Value.Entries)
+                    //            {
+                    //                if (strings.FirstOrDefault(o => o.Text == e.Key) == null)
+                    //                {
+                    //                    strings.Add(new ListViewItem() { Text = e.Key });
+                    //                    strings[strings.Count - 1].SubItems.Add(e.Value);
+                    //                }
+                    //            }
+                    //        }
+                    //    }
+                    //    _content.use_desc_column = true;
+                    //    break;
+                    //case AssetList.Type.MATERIAL:
+                    //    foreach (Materials.Material entry in Content.resource.materials.Entries)
+                    //    {
+                    //        if (strings.FirstOrDefault(o => o.Text == entry.Name) == null)
+                    //            strings.Add(new ListViewItem() { Text = entry.Name });
+                    //    }
+                    //    break;
+                    //case AssetList.Type.TEXTURE:
+                    //    foreach (Textures.TEX4 entry in Content.resource.textures.Entries)
+                    //    {
+                    //        if (strings.FirstOrDefault(o => o.Text == entry.Name) == null)
+                    //            strings.Add(new ListViewItem() { Text = entry.Name });
+                    //    }
+                    //    foreach (Textures.TEX4 entry in Content.resource.textures_global.Entries)
+                    //    {
+                    //        if (strings.FirstOrDefault(o => o.Text == entry.Name) == null)
+                    //            strings.Add(new ListViewItem() { Text = entry.Name });
+                    //    }
+                    //    break;
+                    //case AssetList.Type.ANIMATION:
+                    //    //TODO: This is NOT the correct way to populate this field, as it'll give us ALL anim strings, not just animations.
+                    //    //      We should populate it by parsing the contents of ANIMATIONS.PAK, loading skeletons relative to animations, and then populating animations relative to the selected skeleton.
+                    //    foreach (KeyValuePair<uint, string> entry in Singleton.AnimationStrings.Entries)
+                    //    {
+                    //        if (strings.FirstOrDefault(o => o.Text == entry.Value) == null)
+                    //            strings.Add(new ListViewItem() { Text = entry.Value });
+                    //    }
+                    //    break;
                 }
                 strings.OrderBy(o => o.Text);
                 _content.items = strings.ToArray();
@@ -165,8 +262,20 @@ namespace CommandsEditor
 
             Search();
             clearSearchBtn.Visible = false;
-            ShowMetadata.Visible = _type == AssetList.Type.SOUND_EVENT;
+            ShowMetadata.Visible = _content.type == EnumStringType.SOUND_EVENT;
             strings.ListViewItemSorter = _sorter;
+        }
+
+        private static List<string> ParseXML(string file, string path, string attribute)
+        {
+            XDocument xml = System.IO.Path.GetExtension(file) == ".BML" ? XDocument.Load(new XmlNodeReader(new BML(SharedData.pathToAI + "/DATA/" + file).Content)) : XDocument.Load(File.ReadAllText(file));
+            foreach (var elem in xml.Descendants())
+                elem.Name = elem.Name.LocalName;
+            List<XElement> entries = xml.XPathSelectElements(path).ToList();
+            List<string> strings = new List<string>();
+            foreach (XElement entry in entries)
+                strings.Add(entry.Attribute(attribute).Value);
+            return strings;
         }
 
         private void SelectSpecialString_Load(object sender, EventArgs e)
@@ -175,7 +284,7 @@ namespace CommandsEditor
             for (int i = 0; i < strings.Items.Count; i++)
             {
                 strings.Items[i].Selected = false;
-                if (strings.Items[i].Text == _defaultVal)
+                if (strings.Items[i].Text == _defaultVal.value)
                 {
                     selectedIndex = i;
                     strings.Items[i].Selected = true;
@@ -251,28 +360,10 @@ namespace CommandsEditor
 
             public string level = "";
 
-            public Type assets = Type.NONE;
-            public string args = "";
+            public EnumStringType type;
 
             public ListViewItem[] items = null;
             public bool use_desc_column = false;
-
-            public enum Type
-            {
-                NONE,
-
-                TEXTURE,
-                MATERIAL,
-
-                SOUND_DIALOGUE,
-                SOUND_BANK,
-                SOUND_EVENT,
-                SOUND_REVERB,
-
-                ANIMATION,
-
-                LOCALISED_STRING,
-            }
         }
 
         private void ShowMetadata_Click(object sender, EventArgs e)

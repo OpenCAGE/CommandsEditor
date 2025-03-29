@@ -12,9 +12,8 @@ namespace CommandsEditor.UserControls
 {
     public partial class GUI_StringVariant_AssetDropdown : ParameterUserControl
     {
-        cString _stringVal = null;
-        AssetList.Type _assetType;
-        string _args;
+        cEnumString _stringVal = null;
+        bool _allowTypeSelect = false;
 
         public GUI_StringVariant_AssetDropdown() : base()
         {
@@ -23,11 +22,10 @@ namespace CommandsEditor.UserControls
             this.deleteToolStripMenuItem.Click += new EventHandler(deleteToolStripMenuItem_Click);
         }
 
-        public void PopulateUI(cString cString, string paramID, AssetList.Type assets, string args = "")
+        public void PopulateUI(cEnumString cString, string paramID, bool allowTypeSelect)
         {
             _stringVal = cString;
-            _assetType = assets;
-            _args = args;
+            _allowTypeSelect = allowTypeSelect;
 
             label1.Text = paramID;
             textBox1.Text = cString.value;
@@ -51,7 +49,7 @@ namespace CommandsEditor.UserControls
                 _popup.Close();
             }
 
-            _popup = new SelectSpecialString(label1.Text, _stringVal.value, _assetType, _args);
+            _popup = new SelectSpecialString(label1.Text, _stringVal, _allowTypeSelect);
             _popup.OnSelected += OnStringSelected;
             _popup.Show();
         }
