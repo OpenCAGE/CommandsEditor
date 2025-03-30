@@ -307,17 +307,22 @@ namespace CommandsEditor
 
                 CompositeUtils.LinkCommands(commands);
                 EntityUtils.LinkCommands(commands);
+                ParameterUtils.LinkCommands(commands);
 
                 for (int x = 0; x < commands.Entries.Count; x++)
                 {
-                    for (int i = 0; i < commands.Entries[x].functions.Count; i++)
-                    {
-                        //EntityUtils.ApplyDefaults(commands.Entries[x].functions[i], true, false);
-                    }
-                    for (int i = 0; i < commands.Entries[x].proxies.Count; i++)
-                    {
-                        //EntityUtils.ApplyDefaults(commands.Entries[x].proxies[i], true, false);
-                    }
+                    CommandsUtils.PurgeDeadLinks(commands, commands.Entries[x]);
+                }
+                for (int x = 0; x < commands.Entries.Count; x++)
+                {
+                    CommandsUtils.PurgeDeadLinks(commands, commands.Entries[x]);
+                }
+
+                for (int x = 0; x < commands.Entries.Count; x++)
+                {
+                    List<Entity> entities = commands.Entries[x].GetEntities();
+                    for (int i = 0; i < entities.Count; i++)
+                        ParameterUtils.AddAllDefaultParameters(entities[i], commands.Entries[x], false, ParameterVariant.PARAMETER);
                 }
 
                 commands.Save();
