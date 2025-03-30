@@ -71,13 +71,16 @@ namespace CommandsEditor
                             strings.Add(new ListViewItem() { Text = str });
                         break;
                     case EnumStringType.ANIMATION:
-                        //TODO: Should go over every ANIMATION_SET entry and load in the AnimClipDB - i think this will give the anim names looking them up via the string db?
-                        foreach (KeyValuePair<uint, string> entry in Singleton.AnimationStrings.Entries)
+                        foreach (KeyValuePair<string, HashSet<string>> animSets in Singleton.AllAnimations)
                         {
-                            if (strings.FirstOrDefault(o => o.Text == entry.Value) == null)
-                                strings.Add(new ListViewItem() { Text = entry.Value });
-                            //todo: add set to description
+                            foreach (string anim in animSets.Value)
+                            {
+                                ListViewItem item = new ListViewItem() { Text = anim };
+                                item.SubItems.Add(animSets.Key);
+                                strings.Add(item);
+                            }
                         }
+                        _content.use_desc_column = true;
                         break;
                     case EnumStringType.ANIMATION_SET:
                         foreach (string str in Singleton.AllAnimSets)
@@ -454,7 +457,13 @@ namespace CommandsEditor
                 }
                 if (ANIMATION_SET != null && ANIMATION_SET != "")
                 {
-                    //todo: filter the list by ANIMATION_SET (we should add it in the description column)
+                    List<ListViewItem> trimmedItems = new List<ListViewItem>();
+                    for (int i = 0; i < items.Length; i++)
+                    {
+                        if (items[i].SubItems[1].Text == ANIMATION_SET)
+                            trimmedItems.Add(items[i]);
+                    }
+                    items = trimmedItems.ToArray();
                 }
             }
 

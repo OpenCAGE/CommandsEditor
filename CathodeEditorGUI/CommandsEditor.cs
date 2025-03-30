@@ -322,7 +322,7 @@ namespace CommandsEditor
                 if (skeletonType?.InnerText == "MALE" || skeletonType?.InnerText == "FEMALENPC")
                 {
                     if (!Singleton.GenderedSkeletons.ContainsKey(skeletonType?.InnerText))
-                        Singleton.GenderedSkeletons.Add(skeletonType?.InnerText, new List<string>());
+                        Singleton.GenderedSkeletons.Add(skeletonType?.InnerText, new HashSet<string>());
                     Singleton.GenderedSkeletons[skeletonType?.InnerText].Add(skeleton);
                 }
                 File.Delete(skeleton);
@@ -338,31 +338,54 @@ namespace CommandsEditor
             Singleton.AnimationStrings_Debug = new AnimationStrings("ANIM_STRING_DB_DEBUG.BIN");
             File.Delete("ANIM_STRING_DB_DEBUG.BIN");
 
-            //Anim clip db
-            //File.WriteAllBytes("ANIM_CLIP_DB.BIN", animPAK.Entries.FirstOrDefault(o => o.Filename.Contains("ANIM_CLIP_DB.BIN")).Content);
-            //Singleton.AnimClipDB = new AnimClipDB("ANIM_CLIP_DB.BIN");
-            //File.Delete("ANIM_CLIP_DB.BIN");
-
             //Load all skeleton names
-            Singleton.AllSkeletons.Clear();
             List<PAK2.File> skeletonNames = animPAK.Entries.FindAll(o => o.Filename.Length > 24 && o.Filename.Substring(0, 24) == "DATA\\ANIM_SYS\\SKELE\\DEFS");
             for (int i = 0; i < skeletonNames.Count; i++)
                 Singleton.AllSkeletons.Add(Singleton.AnimationStrings_Debug.Entries[Convert.ToUInt32(Path.GetFileNameWithoutExtension(skeletonNames[i].Filename))]);
             Singleton.AllSkeletons.Sort();
 
             //Load all anim sets
-            Singleton.AllAnimSets.Clear();
             List<PAK2.File> animClipDbs = animPAK.Entries.FindAll(o => { string path = Path.GetFileName(o.Filename); if (path.Length < ("_ANIM_CLIP_DB.BIN").Length) return false; return path.Substring(path.Length - ("_ANIM_CLIP_DB.BIN").Length) == "_ANIM_CLIP_DB.BIN"; });
             for (int i = 0; i < animClipDbs.Count; i++)
                 Singleton.AllAnimSets.Add(Singleton.AnimationStrings_Debug.Entries[Convert.ToUInt32(Path.GetFileName(animClipDbs[i].Filename).Split('_')[0])]);
             Singleton.AllAnimSets.Sort();
+            //NOTE: Some of the above anim sets seemingly don't have any animations - the full list of anims is parsed below. Maybe we should only show ones with anims?
 
             //Load all anim trees
-            Singleton.AllAnimTrees.Clear();
             List<PAK2.File> animTreeDbs = animPAK.Entries.FindAll(o => { string path = Path.GetFileName(o.Filename); if (path.Length < ("_ANIM_TREE_DB.BIN").Length) return false; return path.Substring(path.Length - ("_ANIM_TREE_DB.BIN").Length) == "_ANIM_TREE_DB.BIN"; });
             for (int i = 0; i < animTreeDbs.Count; i++)
                 Singleton.AllAnimTrees.Add(Singleton.AnimationStrings_Debug.Entries[Convert.ToUInt32(Path.GetFileName(animTreeDbs[i].Filename).Split('_')[0])]);
             Singleton.AllAnimTrees.Sort();
+
+            //Load all animations by anim set
+            List<PAK2.File> streamedAnims = animPAK.Entries.FindAll(o => o.Filename.Length > 22 && o.Filename.Substring(0, 22) == "DATA\\ANIM_SYS\\STREAMED");
+            for (int i = 0; i < streamedAnims.Count; i++)
+            {
+                string[] filepathParts = Path.GetFileNameWithoutExtension(streamedAnims[i].Filename).Split('_');
+                string animationName = Singleton.AnimationStrings_Debug.Entries[Convert.ToUInt32(filepathParts[filepathParts.Length - 1])];
+                string animSetName = "";
+                using (BinaryReader reader = new BinaryReader(new MemoryStream(streamedAnims[i].Content)))
+                {
+                    reader.BaseStream.Position = 4;
+                    animSetName = Singleton.AnimationStrings_Debug.Entries[reader.ReadUInt32()];
+                }
+                if (animSetName == "FLOATMAN") continue; //NOTE: Skipping "FLOATMAN" as it seems to be the dialogue animations, which are just auto applied by Speech.
+                HashSet<string> anims;
+                if (!Singleton.AllAnimations.TryGetValue(animSetName, out anims))
+                {
+                    anims = new HashSet<string>();
+                    Singleton.AllAnimations.Add(animSetName, anims);
+                }
+                anims.Add(Path.GetFileName(animationName).ToLower());
+            }
+            foreach (KeyValuePair<string, HashSet<string>> anims in Singleton.AllAnimations)
+            {
+                List<string> animList = anims.Value.ToList(); 
+                animList.Sort();
+                anims.Value.Clear();
+                foreach (string anim in animList)
+                    anims.Value.Add(anim);
+            }
 
             Singleton.OnFinishedLazyLoadingStrings?.Invoke();
         }

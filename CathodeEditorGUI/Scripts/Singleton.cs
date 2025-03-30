@@ -18,10 +18,11 @@ namespace CommandsEditor
         public static Dictionary<string, TextDB> GlobalTextDBs = new Dictionary<string, TextDB>();
 
         //Animation content from ANIMATIONS.PAK
-        public static Dictionary<string, List<string>> GenderedSkeletons = new Dictionary<string, List<string>>();
         public static List<string> AllSkeletons = new List<string>();
         public static List<string> AllAnimSets = new List<string>();
         public static List<string> AllAnimTrees = new List<string>();
+        public static Dictionary<string, HashSet<string>> AllAnimations = new Dictionary<string, HashSet<string>>(); //Anim Set, Animations
+        public static Dictionary<string, HashSet<string>> GenderedSkeletons = new Dictionary<string, HashSet<string>>(); //Gender, Skeletons
 
         //Global animation strings
         public static AnimationStrings AnimationStrings;
