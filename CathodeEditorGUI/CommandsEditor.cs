@@ -344,16 +344,28 @@ namespace CommandsEditor
             //File.Delete("ANIM_CLIP_DB.BIN");
 
             //Load all skeleton names
+            Singleton.AllSkeletons.Clear();
             List<PAK2.File> skeletonNames = animPAK.Entries.FindAll(o => o.Filename.Length > 24 && o.Filename.Substring(0, 24) == "DATA\\ANIM_SYS\\SKELE\\DEFS");
             for (int i = 0; i < skeletonNames.Count; i++)
                 Singleton.AllSkeletons.Add(Singleton.AnimationStrings_Debug.Entries[Convert.ToUInt32(Path.GetFileNameWithoutExtension(skeletonNames[i].Filename))]);
             Singleton.AllSkeletons.Sort();
 
             //Load all anim sets
+            Singleton.AllAnimSets.Clear();
             List<PAK2.File> animClipDbs = animPAK.Entries.FindAll(o => { string path = Path.GetFileName(o.Filename); if (path.Length < ("_ANIM_CLIP_DB.BIN").Length) return false; return path.Substring(path.Length - ("_ANIM_CLIP_DB.BIN").Length) == "_ANIM_CLIP_DB.BIN"; });
             for (int i = 0; i < animClipDbs.Count; i++)
                 Singleton.AllAnimSets.Add(Singleton.AnimationStrings_Debug.Entries[Convert.ToUInt32(Path.GetFileName(animClipDbs[i].Filename).Split('_')[0])]);
             Singleton.AllAnimSets.Sort();
+
+            //Load all anim trees
+            Singleton.AllAnimTrees.Clear();
+            List<PAK2.File> animTreeDbs = animPAK.Entries.FindAll(o => { string path = Path.GetFileName(o.Filename); if (path.Length < ("_ANIM_TREE_DB.BIN").Length) return false; return path.Substring(path.Length - ("_ANIM_CLIP_DB.BIN").Length) == "_ANIM_CLIP_DB.BIN"; });
+            for (int i = 0; i < animClipDbs.Count; i++)
+                Singleton.AllAnimTrees.Add(Singleton.AnimationStrings_Debug.Entries[Convert.ToUInt32(Path.GetFileName(animClipDbs[i].Filename).Split('_')[0])]);
+            Singleton.AllAnimTrees.Sort();
+
+            foreach (string an in Singleton.AllAnimSets)
+                Console.WriteLine(Utilities.SoundHashedString("Music_All_Layers"));
 
             Singleton.OnFinishedLazyLoadingStrings?.Invoke();
         }

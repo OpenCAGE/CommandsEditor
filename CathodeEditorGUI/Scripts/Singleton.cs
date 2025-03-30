@@ -26,9 +26,10 @@ namespace CommandsEditor
         }
 
         //Animation content from ANIMATIONS.PAK
-        public static List<string> AllSkeletons = new List<string>();
         public static Dictionary<string, List<string>> GenderedSkeletons = new Dictionary<string, List<string>>();
+        public static List<string> AllSkeletons = new List<string>();
         public static List<string> AllAnimSets = new List<string>();
+        public static List<string> AllAnimTrees = new List<string>();
 
         //Global animation strings
         public static AnimationStrings AnimationStrings;

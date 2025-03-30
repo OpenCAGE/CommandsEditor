@@ -72,10 +72,16 @@ namespace CommandsEditor
                             strings.Add(new ListViewItem() { Text = str });
                         break;
                     case EnumStringType.ANIM_SET:
+                        foreach (string str in Singleton.AllAnimSets)
+                            strings.Add(new ListViewItem() { Text = str });
                         break;
                     case EnumStringType.ANIM_TREE_SET:
+                        foreach (string str in Singleton.AllAnimTrees)
+                            strings.Add(new ListViewItem() { Text = str });
                         break;
                     case EnumStringType.ATTRIBUTE_SET:
+                        foreach (string str in ParseXML("ATTRIBUTES/ATTRIBUTES.BML", "Attributes/Attribute", "Name"))
+                            strings.Add(new ListViewItem() { Text = str });
                         break;
                     case EnumStringType.BLUEPRINT_TYPE:
                         foreach (string str in ParseXML("GBL_ITEM.BML", "item_database/recipes/recipe", "name"))
@@ -145,6 +151,7 @@ namespace CommandsEditor
                         }
                         break;
                     case EnumStringType.SOUND_ARGUMENT:
+                        //TODO: This has such things as Combat, Suspect_Response, Escalate, Idle, Escalation -> where does it come from? Is it deprecated?
                         break;
                     case EnumStringType.SOUND_EVENT:
                         foreach (SoundEventData.Soundbank entry in Content.resource.sound_eventdata.Entries)
@@ -169,6 +176,7 @@ namespace CommandsEditor
                             strings.Add(new ListViewItem() { Text = str });
                         break;
                     case EnumStringType.SOUND_PARAMETER:
+                        //TODO: This is only set to Music_All_Layers -> it gets passed to SOUND_INTERFACE::convert_string_to_id. Perhaps deprecated? It has no get function.
                         break;
                     case EnumStringType.SOUND_REVERB:
                         foreach (string entry in Content.resource.sound_environmentdata.Entries)
@@ -176,10 +184,13 @@ namespace CommandsEditor
                                 strings.Add(new ListViewItem() { Text = entry });
                         break;
                     case EnumStringType.SOUND_RTPC:
+                        //TODO: it seems this is handled the same as SOUND_PARAMETER in code. Has values set such as: Steam_Pressure, Steam_Size, Signal_Strength_Angle, Signal_Strength_Distance, Locker_Bypass, Explosion_Size, Flame_Jet_Size, Flare_Flicker_Amount, Distance_To_Beacon, cutting_tool_speed, TapeWow, Alien_KillTrap_Distance, Variable_Fire_Size, Control_Dial_Speed
                         break;
                     case EnumStringType.SOUND_STATE:
+                        //AK::SoundEngine::SetState ?
                         break;
                     case EnumStringType.SOUND_SWITCH:
+                        //AK::SoundEngine::SetSwitch ?
                         break;
                     case EnumStringType.SOUND_TORSO_GROUP:
                         foreach (string str in ParseXML("FOLEY_MATERIALS.XML", "foley_materials/torso", "id"))
@@ -266,7 +277,7 @@ namespace CommandsEditor
             strings.ListViewItemSorter = _sorter;
         }
 
-        private static List<string> ParseXML(string file, string path, string attribute)
+        private static List<string> ParseXML(string file, string path, string attribute, bool isNode = false)
         {
             XDocument xml = System.IO.Path.GetExtension(file) == ".BML" ? XDocument.Load(new XmlNodeReader(new BML(SharedData.pathToAI + "/DATA/" + file).Content)) : XDocument.Load(File.ReadAllText(file));
             foreach (var elem in xml.Descendants())
@@ -274,7 +285,7 @@ namespace CommandsEditor
             List<XElement> entries = xml.XPathSelectElements(path).ToList();
             List<string> strings = new List<string>();
             foreach (XElement entry in entries)
-                strings.Add(entry.Attribute(attribute).Value);
+                strings.Add(isNode ? entry.Element(attribute).Value : entry.Attribute(attribute).Value);
             return strings;
         }
 
