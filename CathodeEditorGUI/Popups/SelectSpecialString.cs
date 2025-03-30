@@ -479,6 +479,8 @@ namespace CommandsEditor
             if (strings.SelectedItems.Count == 0)
                 return;
 
+            //TODO: if Animation, maybe we also want to update AnimationSet?
+
             OnSelected?.Invoke(strings.SelectedItems[0].Text);
             this.Close();
         }
