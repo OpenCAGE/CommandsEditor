@@ -19,7 +19,6 @@ using System.Windows.Shapes;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
-using static CATHODE.Scripting.TriggerSequence;
 
 namespace CommandsEditor
 {
@@ -71,11 +70,20 @@ namespace CommandsEditor
                         foreach (string str in ParseXML("AWARDS/MAIN_AWARD_LIST.BML", "awards/stat", "stat_id"))
                             strings.Add(new ListViewItem() { Text = str });
                         break;
-                    case EnumStringType.ANIM_SET:
+                    case EnumStringType.ANIMATION:
+                        //TODO: Should go over every ANIMATION_SET entry and load in the AnimClipDB - i think this will give the anim names looking them up via the string db?
+                        foreach (KeyValuePair<uint, string> entry in Singleton.AnimationStrings.Entries)
+                        {
+                            if (strings.FirstOrDefault(o => o.Text == entry.Value) == null)
+                                strings.Add(new ListViewItem() { Text = entry.Value });
+                            //todo: add set to description
+                        }
+                        break;
+                    case EnumStringType.ANIMATION_SET:
                         foreach (string str in Singleton.AllAnimSets)
                             strings.Add(new ListViewItem() { Text = str });
                         break;
-                    case EnumStringType.ANIM_TREE_SET:
+                    case EnumStringType.ANIMATION_TREE_SET:
                         foreach (string str in Singleton.AllAnimTrees)
                             strings.Add(new ListViewItem() { Text = str });
                         break;
@@ -85,10 +93,6 @@ namespace CommandsEditor
                         break;
                     case EnumStringType.BLUEPRINT_TYPE:
                         foreach (string str in ParseXML("GBL_ITEM.BML", "item_database/recipes/recipe", "name"))
-                            strings.Add(new ListViewItem() { Text = str });
-                        break;
-                    case EnumStringType.CHR_SKELETON_SET:
-                        foreach (string str in Singleton.AllSkeletons)
                             strings.Add(new ListViewItem() { Text = str });
                         break;
                     case EnumStringType.GAME_VARIABLE:
@@ -116,6 +120,13 @@ namespace CommandsEditor
                         foreach (string str in ParseXML("GBL_ITEM.BML", "item_database/map_available_keyframes/map_keyframe", "name"))
                             strings.Add(new ListViewItem() { Text = str });
                         break;
+                    case EnumStringType.MATERIAL:
+                        foreach (Materials.Material entry in Content.resource.materials.Entries)
+                        {
+                            if (strings.FirstOrDefault(o => o.Text == entry.Name) == null)
+                                strings.Add(new ListViewItem() { Text = entry.Name });
+                        }
+                        break;
                     case EnumStringType.NOSTROMO_LOG_ID:
                         {
                             List<string> uids = ParseXML("GBL_ITEM.BML", "item_database/journal_nostromo_entries/log_entry", "uid");
@@ -123,7 +134,7 @@ namespace CommandsEditor
                             for (int i = 0; i < uids.Count; i++)
                             {
                                 ListViewItem item = new ListViewItem() { Text = uids[i] };
-                                item.SubItems.Add(Singleton.TryLocalise(headers[i]));
+                                item.SubItems.Add(headers[i].TryLocalise());
                                 strings.Add(item);
                             }
                             _content.use_desc_column = true;
@@ -144,14 +155,23 @@ namespace CommandsEditor
                             for (int i = 0; i < uids.Count; i++)
                             {
                                 ListViewItem item = new ListViewItem() { Text = uids[i] };
-                                item.SubItems.Add(Singleton.TryLocalise(headers[i]));
+                                item.SubItems.Add(headers[i].TryLocalise());
                                 strings.Add(item);
                             }
                             _content.use_desc_column = true;
                         }
                         break;
+                    case EnumStringType.SKELETON_SET:
+                        foreach (string str in Singleton.AllSkeletons)
+                            strings.Add(new ListViewItem() { Text = str });
+                        break;
                     case EnumStringType.SOUND_ARGUMENT:
                         //TODO: This has such things as Combat, Suspect_Response, Escalate, Idle, Escalation -> where does it come from? Is it deprecated?
+                        break;
+                    case EnumStringType.SOUND_BANK:
+                        foreach (string entry in Content.resource.sound_bankdata.Entries)
+                            if (strings.FirstOrDefault(o => o.Text == entry) == null)
+                                strings.Add(new ListViewItem() { Text = entry });
                         break;
                     case EnumStringType.SOUND_EVENT:
                         foreach (SoundEventData.Soundbank entry in Content.resource.sound_eventdata.Entries)
@@ -161,7 +181,7 @@ namespace CommandsEditor
                                 if (strings.FirstOrDefault(o => o.Text == e.name) == null)
                                 {
                                     strings.Add(new ListViewItem() { Text = e.name });
-                                    string localised = Singleton.TryLocalise(e.name);
+                                    string localised = e.name.TryLocalise();
                                     if (localised != e.name)
                                         strings[strings.Count - 1].SubItems.Add(localised);
                                 }
@@ -198,17 +218,117 @@ namespace CommandsEditor
                         foreach (string str in ParseXML("FOLEY_MATERIALS.XML", "foley_materials/torso", "id"))
                             strings.Add(new ListViewItem() { Text = str });
                         break;
+                    case EnumStringType.STRING_OBJECTIVES:
+                        foreach (KeyValuePair<string, TextDB> entries in Content.resource.text_dbs)
+                        {
+                            if (!(entries.Key.Length > 3 && entries.Key.Substring(0, 3).ToUpper() == "DLC")) 
+                                continue;
+
+                            foreach (KeyValuePair<string, string> entry in entries.Value.Entries)
+                            {
+                                if (strings.FirstOrDefault(o => o.Text == entry.Key) == null)
+                                {
+                                    ListViewItem item = new ListViewItem() { Text = entry.Key };
+                                    item.SubItems.Add(entry.Value);
+                                    strings.Add(item);
+                                }
+                            }
+                        }
+                        foreach (KeyValuePair<string, string> entry in Singleton.GlobalTextDBs["OBJECTIVES"].Entries)
+                        {
+                            if (strings.FirstOrDefault(o => o.Text == entry.Key) == null)
+                            {
+                                ListViewItem item = new ListViewItem() { Text = entry.Key };
+                                item.SubItems.Add(entry.Value);
+                                strings.Add(item);
+                            }
+                        }
+                        _content.use_desc_column = true;
+                        break;
+                    case EnumStringType.STRING_TERMINAL:
+                        foreach (KeyValuePair<string, TextDB> entries in Content.resource.text_dbs)
+                        {
+                            if (!(entries.Key.Length > 3 && entries.Key.Substring(0, 3).ToUpper() == "DLC") &&
+                                !(entries.Key.Length > 2 && entries.Key.Substring(0, 2).ToUpper() == "T0") && entries.Key != "UI") 
+                                continue;
+
+                            foreach (KeyValuePair<string, string> entry in entries.Value.Entries)
+                            {
+                                if (strings.FirstOrDefault(o => o.Text == entry.Key) == null)
+                                {
+                                    ListViewItem item = new ListViewItem() { Text = entry.Key };
+                                    item.SubItems.Add(entry.Value);
+                                    strings.Add(item);
+                                }
+                            }
+                        }
+                        foreach (KeyValuePair<string, TextDB> entries in Singleton.GlobalTextDBs)
+                        {
+                            if (!(entries.Key.Length > 2 && entries.Key.Substring(0, 2).ToUpper() == "T0") && entries.Key != "UI")
+                                continue;
+
+                            foreach (KeyValuePair<string, string> entry in entries.Value.Entries)
+                            {
+                                if (strings.FirstOrDefault(o => o.Text == entry.Key) == null)
+                                {
+                                    ListViewItem item = new ListViewItem() { Text = entry.Key };
+                                    item.SubItems.Add(entry.Value);
+                                    strings.Add(item);
+                                }
+                            }
+                        }
+                        _content.use_desc_column = true;
+                        break;
+                    case EnumStringType.STRING_UI:
+                        foreach (KeyValuePair<string, TextDB> entries in Content.resource.text_dbs)
+                        {
+                            if (!(entries.Key.Length > 3 && entries.Key.Substring(0, 3).ToUpper() == "DLC") && entries.Key != "UI")
+                                continue;
+
+                            foreach (KeyValuePair<string, string> entry in entries.Value.Entries)
+                            {
+                                if (strings.FirstOrDefault(o => o.Text == entry.Key) == null)
+                                {
+                                    ListViewItem item = new ListViewItem() { Text = entry.Key };
+                                    item.SubItems.Add(entry.Value);
+                                    strings.Add(item);
+                                }
+                            }
+                        }
+                        foreach (KeyValuePair<string, TextDB> entries in Singleton.GlobalTextDBs)
+                        {
+                            if (entries.Key != "UI")
+                                continue;
+
+                            foreach (KeyValuePair<string, string> entry in entries.Value.Entries)
+                            {
+                                if (strings.FirstOrDefault(o => o.Text == entry.Key) == null)
+                                {
+                                    ListViewItem item = new ListViewItem() { Text = entry.Key };
+                                    item.SubItems.Add(entry.Value);
+                                    strings.Add(item);
+                                }
+                            }
+                        }
+                        _content.use_desc_column = true;
+                        break;
+                    case EnumStringType.TEXTURE:
+                        foreach (Textures.TEX4 entry in Content.resource.textures.Entries)
+                        {
+                            if (strings.FirstOrDefault(o => o.Text == entry.Name) == null)
+                                strings.Add(new ListViewItem() { Text = entry.Name });
+                        }
+                        foreach (Textures.TEX4 entry in Content.resource.textures_global.Entries)
+                        {
+                            if (strings.FirstOrDefault(o => o.Text == entry.Name) == null)
+                                strings.Add(new ListViewItem() { Text = entry.Name });
+                        }
+                        break;
                     case EnumStringType.TUTORIAL_ENTRY_ID:
                         foreach (string str in ParseXML("TUTORIAL_ENTRIES.XML", "localisation_entries/localisation_entry", "id"))
                             strings.Add(new ListViewItem() { Text = str });
                         break;
 
-
-                    //case EnumStringType.SOUND_BANK:
-                    //    foreach (string entry in Content.resource.sound_bankdata.Entries)
-                    //        if (strings.FirstOrDefault(o => o.Text == entry) == null)
-                    //            strings.Add(new ListViewItem() { Text = entry });
-                    //    break;
                     //case EnumStringType.SOUND_DIALOGUE:
                     //    foreach (SoundDialogueLookups.Sound entry in Content.resource.sound_dialoguelookups.Entries)
                     //    {
@@ -219,53 +339,6 @@ namespace CommandsEditor
                     //        }
                     //    }
                     //    _content.use_desc_column = true;
-                    //    break;
-                    //case AssetList.Type.LOCALISED_STRING:
-                    //    string[] argsSplit = args.Split('/');
-                    //    foreach (string arg in argsSplit)
-                    //    {
-                    //        foreach (KeyValuePair<string, Strings> entry in Singleton.Strings)
-                    //        {
-                    //            if (arg != "" && arg != entry.Key) continue;
-                    //            foreach (KeyValuePair<string, string> e in entry.Value.Entries)
-                    //            {
-                    //                if (strings.FirstOrDefault(o => o.Text == e.Key) == null)
-                    //                {
-                    //                    strings.Add(new ListViewItem() { Text = e.Key });
-                    //                    strings[strings.Count - 1].SubItems.Add(e.Value);
-                    //                }
-                    //            }
-                    //        }
-                    //    }
-                    //    _content.use_desc_column = true;
-                    //    break;
-                    //case AssetList.Type.MATERIAL:
-                    //    foreach (Materials.Material entry in Content.resource.materials.Entries)
-                    //    {
-                    //        if (strings.FirstOrDefault(o => o.Text == entry.Name) == null)
-                    //            strings.Add(new ListViewItem() { Text = entry.Name });
-                    //    }
-                    //    break;
-                    //case AssetList.Type.TEXTURE:
-                    //    foreach (Textures.TEX4 entry in Content.resource.textures.Entries)
-                    //    {
-                    //        if (strings.FirstOrDefault(o => o.Text == entry.Name) == null)
-                    //            strings.Add(new ListViewItem() { Text = entry.Name });
-                    //    }
-                    //    foreach (Textures.TEX4 entry in Content.resource.textures_global.Entries)
-                    //    {
-                    //        if (strings.FirstOrDefault(o => o.Text == entry.Name) == null)
-                    //            strings.Add(new ListViewItem() { Text = entry.Name });
-                    //    }
-                    //    break;
-                    //case AssetList.Type.ANIMATION:
-                    //    //TODO: This is NOT the correct way to populate this field, as it'll give us ALL anim strings, not just animations.
-                    //    //      We should populate it by parsing the contents of ANIMATIONS.PAK, loading skeletons relative to animations, and then populating animations relative to the selected skeleton.
-                    //    foreach (KeyValuePair<uint, string> entry in Singleton.AnimationStrings.Entries)
-                    //    {
-                    //        if (strings.FirstOrDefault(o => o.Text == entry.Value) == null)
-                    //            strings.Add(new ListViewItem() { Text = entry.Value });
-                    //    }
                     //    break;
                 }
                 strings.OrderBy(o => o.Text);
@@ -353,12 +426,42 @@ namespace CommandsEditor
             //Search();
         }
 
+        string ANIMATION_SET = null;
         private void Search()
         {
+            ListViewItem[] items = _content.items;
+            if (_content.type == EnumStringType.ANIMATION)
+            {
+                //Try and get the AnimationSet to filter this list by. If it doesn't exist, we'll show all.
+                if (ANIMATION_SET == null)
+                {
+                    ANIMATION_SET = "";
+                    Entity animEntity = Singleton.Editor?.CommandsDisplay?.CompositeDisplay?.EntityDisplay?.Entity;
+                    if (animEntity != null)
+                    {
+                        Parameter animEntityAnimSet = animEntity.GetParameter("AnimationSet");
+                        if (animEntityAnimSet?.content != null)
+                        {
+                            switch (animEntityAnimSet.content.dataType)
+                            {
+                                case DataType.STRING:
+                                case DataType.ENUM_STRING:
+                                    ANIMATION_SET = ((cString)animEntityAnimSet.content).value;
+                                    break;
+                            }
+                        }
+                    }
+                }
+                if (ANIMATION_SET != null && ANIMATION_SET != "")
+                {
+                    //todo: filter the list by ANIMATION_SET (we should add it in the description column)
+                }
+            }
+
             strings.BeginUpdate();
             strings.SuspendLayout();
             strings.Items.Clear();
-            strings.Items.AddRange(_content.items.Where(o => o.Text.ToUpper().Contains(search_box.Text.ToUpper()) || o.SubItems[o.SubItems.Count - 1].Text.ToUpper().Contains(search_box.Text.ToUpper())).ToList().ToArray());
+            strings.Items.AddRange(items.Where(o => o.Text.ToUpper().Contains(search_box.Text.ToUpper()) || o.SubItems[o.SubItems.Count - 1].Text.ToUpper().Contains(search_box.Text.ToUpper())).ToList().ToArray());
             strings.EndUpdate();
         }
 

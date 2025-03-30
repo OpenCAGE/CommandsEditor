@@ -16,6 +16,7 @@ using System.IO;
 using CATHODE.EXPERIMENTAL;
 using System.Windows.Shapes;
 using CathodeLib;
+using System.Xml.XPath;
 
 namespace CommandsEditor
 {
@@ -62,6 +63,8 @@ namespace CommandsEditor
                 public NavigationMesh navmesh;
                 public Traversals traversals;
             }
+
+            public Dictionary<string, TextDB> text_dbs = new Dictionary<string, TextDB>();
         }
 
         //UI stuff
@@ -112,26 +115,25 @@ namespace CommandsEditor
             CompositeUtils.LinkCommands(commands);
             ParameterModificationTracker.LinkCommands(commands);
 
-            //Cache entity list view items (TODO: do this on a thread and handle conflicts nicely)
-            /*
-            Dictionary<Entity, ListViewItem>[] listViewItems = new Dictionary<Entity, ListViewItem>[commands.Entries.Count];
-            Parallel.For(0, commands.Entries.Count, (i) =>
+            //Load the level-specific text databases
+            var textDBs = XDocument.Load(SharedData.pathToAI + "/DATA/level_text_databases.xml");
+            foreach (XElement levelDB in textDBs.XPathSelectElements("//level_text_databases/level"))
             {
-                List<Entity> entities = commands.Entries[(int)i].GetEntities();
-                ListViewItem[] compositeItems = new ListViewItem[entities.Count];
-                Parallel.For(0, entities.Count, (x) =>
-                {
-                    compositeItems[x] = GenerateListViewItem(entities[(int)x], commands.Entries[(int)i], CacheMethod.IGNORE_CACHE);
-                });
-                listViewItems[i] = new Dictionary<Entity, ListViewItem>();
-                for (int x = 0; x < compositeItems.Length; x++)
-                {
-                    listViewItems[i].Add(entities[x], compositeItems[x]);
-                }
-            });
-            for (int i = 0; i < commands.Entries.Count; i++)
-                composite_content_cache.Add(commands.Entries[i], listViewItems[i]);
-            */
+                if (levelDB.Attribute("name").Value.ToString().ToUpper() != System.IO.Path.GetFileName(level).ToUpper())
+                    continue;
+
+                var databases = levelDB.XPathSelectElements("text_database");
+                foreach (XElement database in databases)
+                    resource.text_dbs.Add(database.Attribute("name").Value, new TextDB(SharedData.pathToAI + "/DATA/TEXT/ENGLISH/" + database.Attribute("name").Value + ".TXT"));
+            }
+            string localDBFolder = SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + level + "/TEXT/";
+            string localDBNames = localDBFolder + "TEXT_DB_LIST.TXT";
+            if (File.Exists(localDBNames))
+            {
+                string[] localDBs = File.ReadAllLines(localDBNames);
+                foreach (string localDB in localDBs)
+                    resource.text_dbs.Add(localDB, new TextDB(localDBFolder + "/ENGLISH/" + localDB + ".TXT"));
+            }
         }
 
         ~LevelContent()

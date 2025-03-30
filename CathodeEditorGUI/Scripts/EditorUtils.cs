@@ -680,4 +680,25 @@ namespace CommandsEditor
             public byte[] patched;
         }
     }
+
+    //Various extensions
+    public static class EditorExtensions
+    {
+        /* Try and localise a string */
+        public static string TryLocalise(this string str)
+        {
+            //Check level-specific strings first, if a level is loaded
+            if (Singleton.Editor?.CommandsDisplay?.Content != null)
+                foreach (KeyValuePair<string, TextDB> entry in Singleton.Editor.CommandsDisplay.Content.resource.text_dbs)
+                    if (entry.Value.Entries.TryGetValue(str, out string localised))
+                        return localised;
+
+            //Check global strings
+            foreach (KeyValuePair<string, TextDB> entry in Singleton.GlobalTextDBs)
+                if (entry.Value.Entries.TryGetValue(str, out string localised))
+                    return localised;
+
+            return str;
+        }
+    }
 }

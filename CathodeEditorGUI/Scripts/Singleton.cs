@@ -15,15 +15,7 @@ namespace CommandsEditor
         public static CommandsEditor Editor;
 
         //Global localised string DBs for English
-        public static Dictionary<string, Strings> Strings = new Dictionary<string, Strings>();
-
-        public static string TryLocalise(string str)
-        {
-            foreach (KeyValuePair<string, Strings> entry in Strings)
-                if (entry.Value.Entries.TryGetValue(str, out string localised))
-                    return localised;
-            return str;
-        }
+        public static Dictionary<string, TextDB> GlobalTextDBs = new Dictionary<string, TextDB>();
 
         //Animation content from ANIMATIONS.PAK
         public static Dictionary<string, List<string>> GenderedSkeletons = new Dictionary<string, List<string>>();

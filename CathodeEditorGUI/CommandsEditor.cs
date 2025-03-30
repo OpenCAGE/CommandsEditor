@@ -239,13 +239,13 @@ namespace CommandsEditor
             //Populate localised text string databases (in English)
             List<string> textList = Directory.GetFiles(SharedData.pathToAI + "/DATA/TEXT/ENGLISH/", "*.TXT", SearchOption.AllDirectories).ToList<string>();
             {
-                Strings[] strings = new Strings[textList.Count];
+                TextDB[] strings = new TextDB[textList.Count];
                 Parallel.For(0, textList.Count, (i) =>
                 {
-                    strings[i] = new Strings(textList[i]);
+                    strings[i] = new TextDB(textList[i]);
                 });
                 for (int i = 0; i < textList.Count; i++)
-                    Singleton.Strings.Add(Path.GetFileNameWithoutExtension(textList[i]), strings[i]);
+                    Singleton.GlobalTextDBs.Add(Path.GetFileNameWithoutExtension(textList[i]), strings[i]);
             }
             //TODO: What about level specific text dbs?
 
