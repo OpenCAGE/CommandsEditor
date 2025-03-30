@@ -104,8 +104,11 @@ namespace CommandsEditor
                     }
                     for (int i = 0; i < options.Count; i++)
                     {
-                        //TODO: This assumes we can always get metadata... can we?
                         var metadata = ParameterUtils.GetParameterMetadata(ent, options[i].Text);
+
+                        if (metadata.Item1.Value == ParameterVariant.METHOD_FUNCTION)
+                            continue;
+
                         options[i].Checked = nodeOptions.FirstOrDefault(o => o.ShortGUID == ((ParameterListViewItemTag)options[i].Tag).ShortGUID) != null;
                         options[i].SubItems[1].Text = metadata.Item2.Value.ToString();
                         options[i].Group = GetGroupFromVariant(metadata.Item1.Value);
@@ -118,6 +121,11 @@ namespace CommandsEditor
                     for (int i = 0; i < options.Count; i++)
                     {
                         var metadata = ParameterUtils.GetParameterMetadata(ent, options[i].Text);
+
+                        //TODO: Maybe we don't want to show other things here too?
+                        if (metadata.Item1.Value == ParameterVariant.METHOD_FUNCTION || metadata.Item1.Value == ParameterVariant.TARGET_PIN)
+                            continue;
+
                         options[i].Checked = ent.GetParameter(options[i].Text) != null;
                         options[i].SubItems[1].Text = metadata.Item2.Value.ToString();
                         options[i].Group = GetGroupFromVariant(metadata.Item1.Value);

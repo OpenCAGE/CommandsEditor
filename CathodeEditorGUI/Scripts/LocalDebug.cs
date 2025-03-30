@@ -36,7 +36,7 @@ namespace CommandsEditor
                 var paramz = ParameterUtils.GetAllParameters((FunctionType)value);
                 foreach (var param in paramz)
                 {
-                    if (param.Item1.ToByteString() == param.Item2.ToString())
+                    if (param.Item1.ToByteString() == param.Item1.ToString())
                     {
                         throw new Exception("string missing");
                     }
