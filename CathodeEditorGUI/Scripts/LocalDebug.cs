@@ -300,7 +300,7 @@ namespace CommandsEditor
         {
 #if DEBUG
 
-            List<string> files = Directory.GetFiles("M:\\Modding\\Steam Projects\\steamapps\\common\\Alien Isolation\\data\\ENV\\PRODUCTION\\HAB_AIRPORT", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            List<string> files = Directory.GetFiles("M:\\Modding\\Steam Projects\\steamapps\\common\\Alien Isolation\\data\\ENV\\PRODUCTION\\hab_airport", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
             foreach (string file in files)
             {
                 Commands commands = new Commands(file);
@@ -322,7 +322,7 @@ namespace CommandsEditor
                 {
                     List<Entity> entities = commands.Entries[x].GetEntities();
                     for (int i = 0; i < entities.Count; i++)
-                        ParameterUtils.AddAllDefaultParameters(entities[i], commands.Entries[x], false, ParameterVariant.PARAMETER);
+                        ParameterUtils.AddAllDefaultParameters(entities[i], commands.Entries[x], false); //note: applying just PARAMETER seems fine. including the others results in minor issues.
                 }
 
                 commands.Save();
