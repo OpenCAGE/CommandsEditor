@@ -80,7 +80,7 @@ namespace CommandsEditor
                             strings.Add(new ListViewItem() { Text = str });
                         break;
                     case EnumStringType.ATTRIBUTE_SET:
-                        foreach (string str in ParseXML("ATTRIBUTES/ATTRIBUTES.BML", "Attributes/Attribute", "Name"))
+                        foreach (string str in ParseXML("CHR_INFO/ATTRIBUTES/ATTRIBUTES.BML", "Attributes/Attribute", "Name", true))
                             strings.Add(new ListViewItem() { Text = str });
                         break;
                     case EnumStringType.BLUEPRINT_TYPE:
@@ -161,7 +161,9 @@ namespace CommandsEditor
                                 if (strings.FirstOrDefault(o => o.Text == e.name) == null)
                                 {
                                     strings.Add(new ListViewItem() { Text = e.name });
-                                    strings[strings.Count - 1].SubItems.Add(Singleton.TryLocalise(e.name));
+                                    string localised = Singleton.TryLocalise(e.name);
+                                    if (localised != e.name)
+                                        strings[strings.Count - 1].SubItems.Add(localised);
                                 }
                             }
                         }
@@ -271,6 +273,12 @@ namespace CommandsEditor
                 _assetList.Add(_content);
             }
 
+            if (!_content.use_desc_column)
+            {
+                strings.Columns.RemoveAt(1);
+                strings.Columns[0].Width = 600;
+            }
+
             Search();
             clearSearchBtn.Visible = false;
             ShowMetadata.Visible = _content.type == EnumStringType.SOUND_EVENT;
@@ -279,7 +287,8 @@ namespace CommandsEditor
 
         private static List<string> ParseXML(string file, string path, string attribute, bool isNode = false)
         {
-            XDocument xml = System.IO.Path.GetExtension(file) == ".BML" ? XDocument.Load(new XmlNodeReader(new BML(SharedData.pathToAI + "/DATA/" + file).Content)) : XDocument.Load(File.ReadAllText(file));
+            file = SharedData.pathToAI + "/DATA/" + file;
+            XDocument xml = System.IO.Path.GetExtension(file) == ".BML" ? XDocument.Load(new XmlNodeReader(new BML(file).Content)) : XDocument.Load(file);
             foreach (var elem in xml.Descendants())
                 elem.Name = elem.Name.LocalName;
             List<XElement> entries = xml.XPathSelectElements(path).ToList();

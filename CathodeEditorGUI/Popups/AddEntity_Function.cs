@@ -140,7 +140,10 @@ namespace CommandsEditor
             Entity newEntity = _composite.AddFunction(function);
 
             if (addDefaultParams.Checked)
+            {
                 ParameterUtils.AddAllDefaultParameters(newEntity, _composite, true, ParameterVariant.STATE_PARAMETER | ParameterVariant.INPUT_PIN | ParameterVariant.PARAMETER);
+                newEntity.RemoveParameter("delete_me");
+            }
 
             EntityUtils.SetName(_composite, newEntity, entityName.Text);
             SettingsManager.SetString(Singleton.Settings.PreviouslySelectedFunctionType, function.ToString());

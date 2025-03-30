@@ -139,8 +139,8 @@ namespace CommandsEditor
 
             if (addDefaultParams.Checked)
             {
-                ParameterUtils.AddAllDefaultParameters(newEntity, _composite); //todo: don't want to apply all variants
-                newEntity.RemoveParameter("name");
+                ParameterUtils.AddAllDefaultParameters(newEntity, _composite, true, ParameterVariant.STATE_PARAMETER | ParameterVariant.INPUT_PIN | ParameterVariant.PARAMETER);
+                newEntity.RemoveParameter("delete_me");
             }
 
             Content.editor_utils.GenerateCompositeInstances(Content.commands);
