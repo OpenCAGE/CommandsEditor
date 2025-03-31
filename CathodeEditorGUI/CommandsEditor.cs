@@ -347,9 +347,43 @@ namespace CommandsEditor
             //Load all anim sets
             List<PAK2.File> animClipDbs = animPAK.Entries.FindAll(o => { string path = Path.GetFileName(o.Filename); if (path.Length < ("_ANIM_CLIP_DB.BIN").Length) return false; return path.Substring(path.Length - ("_ANIM_CLIP_DB.BIN").Length) == "_ANIM_CLIP_DB.BIN"; });
             for (int i = 0; i < animClipDbs.Count; i++)
-                Singleton.AllAnimSets.Add(Singleton.AnimationStrings_Debug.Entries[Convert.ToUInt32(Path.GetFileName(animClipDbs[i].Filename).Split('_')[0])]);
-            Singleton.AllAnimSets.Sort();
-            //NOTE: Some of the above anim sets seemingly don't have any animations - the full list of anims is parsed below. Maybe we should only show ones with anims?
+            {
+                uint animSetID = Convert.ToUInt32(Path.GetFileName(animClipDbs[i].Filename).Split('_')[0]);
+                string animSet = Singleton.AnimationStrings_Debug.Entries[animSetID];
+                HashSet<string> animations = new HashSet<string>();
+                using (BinaryReader reader = new BinaryReader(new MemoryStream(animClipDbs[i].Content)))
+                {
+                    //This fixes a weird thing where there's an unknown variable offset at the start
+                    int offset = 4;
+                    while (true)
+                    {
+                        reader.BaseStream.Position = offset;
+                        if (reader.ReadUInt32() == animSetID)
+                            break;
+                        offset += 1;
+                    }
+                    reader.BaseStream.Position += 4;
+
+                    int countAnimNames = reader.ReadInt32();
+                    int countAnimFileNames = reader.ReadInt32();
+                    for (int x = 0; x < countAnimNames; x++)
+                    {
+                        animations.Add(Singleton.AnimationStrings_Debug.Entries[reader.ReadUInt32()]);
+                        reader.BaseStream.Position += 4;
+                    }
+
+                    //TODO: There's more info here. Useful?
+                }
+                Singleton.AllAnimations.Add(animSet, animations);
+            }
+            foreach (KeyValuePair<string, HashSet<string>> anims in Singleton.AllAnimations)
+            {
+                List<string> animList = anims.Value.ToList();
+                animList.Sort();
+                anims.Value.Clear();
+                foreach (string anim in animList)
+                    anims.Value.Add(anim);
+            }
 
             //Load all anim trees
             List<PAK2.File> animTreeDbs = animPAK.Entries.FindAll(o => { string path = Path.GetFileName(o.Filename); if (path.Length < ("_ANIM_TREE_DB.BIN").Length) return false; return path.Substring(path.Length - ("_ANIM_TREE_DB.BIN").Length) == "_ANIM_TREE_DB.BIN"; });
@@ -357,8 +391,9 @@ namespace CommandsEditor
                 Singleton.AllAnimTrees.Add(Singleton.AnimationStrings_Debug.Entries[Convert.ToUInt32(Path.GetFileName(animTreeDbs[i].Filename).Split('_')[0])]);
             Singleton.AllAnimTrees.Sort();
 
-            //Load all animations by anim set
-            List<PAK2.File> streamedAnims = animPAK.Entries.FindAll(o => o.Filename.Length > 22 && o.Filename.Substring(0, 22) == "DATA\\ANIM_SYS\\STREAMED");
+            /*
+            //Load all animations by anim set (NOTE: no longer using this as the ID gives the filename, not the anim name, but keeping it for future reference)
+            List<PAK2.File> streamedAnims = animPAK.Entries.FindAll(o => o.Filename.Length > 24 && o.Filename.Substring(0, 24) == "DATA\\ANIM_SYS\\STREAMED64");
             for (int i = 0; i < streamedAnims.Count; i++)
             {
                 string[] filepathParts = Path.GetFileNameWithoutExtension(streamedAnims[i].Filename).Split('_');
@@ -378,14 +413,7 @@ namespace CommandsEditor
                 }
                 anims.Add(Path.GetFileName(animationName).ToLower());
             }
-            foreach (KeyValuePair<string, HashSet<string>> anims in Singleton.AllAnimations)
-            {
-                List<string> animList = anims.Value.ToList(); 
-                animList.Sort();
-                anims.Value.Clear();
-                foreach (string anim in animList)
-                    anims.Value.Add(anim);
-            }
+            */
 
             Singleton.OnFinishedLazyLoadingStrings?.Invoke();
         }

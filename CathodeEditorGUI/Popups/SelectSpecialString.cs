@@ -32,6 +32,8 @@ namespace CommandsEditor
         private AssetList _content = null;
         private ListViewColumnSorter _sorter = new ListViewColumnSorter();
 
+        private ListViewItem[] _filteredItems;
+
         public SelectSpecialString(string paramName, cEnumString enumString, bool allowTypeSelect) : base(WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION | WindowClosesOn.COMMANDS_RELOAD)
         {
             InitializeComponent();
@@ -83,8 +85,8 @@ namespace CommandsEditor
                         _content.use_desc_column = true;
                         break;
                     case EnumStringType.ANIMATION_SET:
-                        foreach (string str in Singleton.AllAnimSets)
-                            strings.Add(new ListViewItem() { Text = str });
+                        foreach (KeyValuePair<string, HashSet<string>> animSets in Singleton.AllAnimations)
+                            strings.Add(new ListViewItem() { Text = animSets.Key });
                         break;
                     case EnumStringType.ANIMATION_TREE_SET:
                         foreach (string str in Singleton.AllAnimTrees)
@@ -349,7 +351,55 @@ namespace CommandsEditor
                 _assetList.Add(_content);
             }
 
-            if (!_content.use_desc_column)
+            bool useDescColumn = _content.use_desc_column;
+            if (_content.type == EnumStringType.ANIMATION)
+            {
+                //Try and get the AnimationSet to filter this list by. If it doesn't exist, we'll show all.
+                string animSet = "";
+                Entity animEntity = Singleton.Editor?.CommandsDisplay?.CompositeDisplay?.EntityDisplay?.Entity;
+                if (animEntity != null)
+                {
+                    Parameter animEntityAnimSet = animEntity.GetParameter("AnimationSet");
+                    if (animEntityAnimSet?.content != null)
+                    {
+                        switch (animEntityAnimSet.content.dataType)
+                        {
+                            case DataType.STRING:
+                            case DataType.ENUM_STRING:
+                                animSet = ((cString)animEntityAnimSet.content).value;
+                                break;
+                        }
+                    }
+                }
+                List<ListViewItem> filteredItems = new List<ListViewItem>();
+                if (animSet != "")
+                {
+                    for (int i = 0; i < _content.items.Length; i++)
+                    {
+                        if (_content.items[i].SubItems[1].Text == animSet)
+                            filteredItems.Add(_content.items[i]);
+                    }
+                }
+                else
+                {
+                    List<string> addedAnims = new List<string>();
+                    for (int i = 0; i < _content.items.Length; i++)
+                    {
+                        if (addedAnims.Contains(_content.items[i].Text))
+                            continue;
+                        filteredItems.Add(_content.items[i]);
+                        addedAnims.Add(_content.items[i].Text);
+                    }
+                    useDescColumn = false;
+                }
+                _filteredItems = filteredItems.ToArray();
+            }
+            else
+            {
+                _filteredItems = _content.items;
+            }
+
+            if (!useDescColumn)
             {
                 strings.Columns.RemoveAt(1);
                 strings.Columns[0].Width = 600;
@@ -429,48 +479,12 @@ namespace CommandsEditor
             //Search();
         }
 
-        string ANIMATION_SET = null;
         private void Search()
         {
-            ListViewItem[] items = _content.items;
-            if (_content.type == EnumStringType.ANIMATION)
-            {
-                //Try and get the AnimationSet to filter this list by. If it doesn't exist, we'll show all.
-                if (ANIMATION_SET == null)
-                {
-                    ANIMATION_SET = "";
-                    Entity animEntity = Singleton.Editor?.CommandsDisplay?.CompositeDisplay?.EntityDisplay?.Entity;
-                    if (animEntity != null)
-                    {
-                        Parameter animEntityAnimSet = animEntity.GetParameter("AnimationSet");
-                        if (animEntityAnimSet?.content != null)
-                        {
-                            switch (animEntityAnimSet.content.dataType)
-                            {
-                                case DataType.STRING:
-                                case DataType.ENUM_STRING:
-                                    ANIMATION_SET = ((cString)animEntityAnimSet.content).value;
-                                    break;
-                            }
-                        }
-                    }
-                }
-                if (ANIMATION_SET != null && ANIMATION_SET != "")
-                {
-                    List<ListViewItem> trimmedItems = new List<ListViewItem>();
-                    for (int i = 0; i < items.Length; i++)
-                    {
-                        if (items[i].SubItems[1].Text == ANIMATION_SET)
-                            trimmedItems.Add(items[i]);
-                    }
-                    items = trimmedItems.ToArray();
-                }
-            }
-
             strings.BeginUpdate();
             strings.SuspendLayout();
             strings.Items.Clear();
-            strings.Items.AddRange(items.Where(o => o.Text.ToUpper().Contains(search_box.Text.ToUpper()) || o.SubItems[o.SubItems.Count - 1].Text.ToUpper().Contains(search_box.Text.ToUpper())).ToList().ToArray());
+            strings.Items.AddRange(_filteredItems.Where(o => o.Text.ToUpper().Contains(search_box.Text.ToUpper()) || o.SubItems[o.SubItems.Count - 1].Text.ToUpper().Contains(search_box.Text.ToUpper())).ToList().ToArray());
             strings.EndUpdate();
         }
 
