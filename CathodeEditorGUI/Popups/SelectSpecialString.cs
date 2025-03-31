@@ -170,9 +170,6 @@ namespace CommandsEditor
                         foreach (string str in Singleton.AllSkeletons)
                             strings.Add(new ListViewItem() { Text = str });
                         break;
-                    case EnumStringType.SOUND_ARGUMENT:
-                        //TODO: This has such things as Combat, Suspect_Response, Escalate, Idle, Escalation -> where does it come from? Is it deprecated?
-                        break;
                     case EnumStringType.SOUND_BANK:
                         foreach (string entry in Content.resource.sound_bankdata.Entries)
                             if (strings.FirstOrDefault(o => o.Text == entry) == null)
@@ -202,22 +199,10 @@ namespace CommandsEditor
                         foreach (string str in ParseXML("FOLEY_MATERIALS.XML", "foley_materials/leg", "id"))
                             strings.Add(new ListViewItem() { Text = str });
                         break;
-                    case EnumStringType.SOUND_PARAMETER:
-                        //TODO: This is only set to Music_All_Layers -> it gets passed to SOUND_INTERFACE::convert_string_to_id. Perhaps deprecated? It has no get function.
-                        break;
                     case EnumStringType.SOUND_REVERB:
                         foreach (string entry in Content.resource.sound_environmentdata.Entries)
                             if (strings.FirstOrDefault(o => o.Text == entry) == null)
                                 strings.Add(new ListViewItem() { Text = entry });
-                        break;
-                    case EnumStringType.SOUND_RTPC:
-                        //TODO: it seems this is handled the same as SOUND_PARAMETER in code. Has values set such as: Steam_Pressure, Steam_Size, Signal_Strength_Angle, Signal_Strength_Distance, Locker_Bypass, Explosion_Size, Flame_Jet_Size, Flare_Flicker_Amount, Distance_To_Beacon, cutting_tool_speed, TapeWow, Alien_KillTrap_Distance, Variable_Fire_Size, Control_Dial_Speed
-                        break;
-                    case EnumStringType.SOUND_STATE:
-                        //AK::SoundEngine::SetState ?
-                        break;
-                    case EnumStringType.SOUND_SWITCH:
-                        //AK::SoundEngine::SetSwitch ?
                         break;
                     case EnumStringType.SOUND_TORSO_GROUP:
                         foreach (string str in ParseXML("FOLEY_MATERIALS.XML", "foley_materials/torso", "id"))
