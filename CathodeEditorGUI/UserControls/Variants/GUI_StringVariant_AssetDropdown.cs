@@ -6,7 +6,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Forms;
 using CATHODE;
 using CATHODE.Scripting;
-using static CommandsEditor.SelectSpecialString;
+using static CommandsEditor.SelectEnumString;
 
 namespace CommandsEditor.UserControls
 {
@@ -40,7 +40,7 @@ namespace CommandsEditor.UserControls
             HighlightAsModified();
         }
 
-        SelectSpecialString _popup = null;
+        SelectEnumString _popup = null;
         private void SelectStr_Click(object sender, EventArgs e)
         {
             if (_popup != null)
@@ -49,7 +49,7 @@ namespace CommandsEditor.UserControls
                 _popup.Close();
             }
 
-            _popup = new SelectSpecialString(label1.Text, _stringVal, _allowTypeSelect);
+            _popup = new SelectEnumString(label1.Text, _stringVal, _allowTypeSelect);
             _popup.OnSelected += OnStringSelected;
             _popup.Show();
         }

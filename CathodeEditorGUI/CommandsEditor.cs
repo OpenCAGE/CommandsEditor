@@ -415,6 +415,10 @@ namespace CommandsEditor
             }
             */
 
+            //Load global enum strings (these depend on some anim content from above... bit messy)
+            Task.Factory.StartNew(() => EnumStringListViewItems.PopulateGlobalEntries());
+
+            Singleton.LoadedAnimationContent = true;
             Singleton.OnFinishedLazyLoadingStrings?.Invoke();
         }
 

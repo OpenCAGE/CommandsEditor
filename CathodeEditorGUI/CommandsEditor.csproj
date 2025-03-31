@@ -365,11 +365,11 @@
     <Compile Include="Popups\RenameComposite.Designer.cs">
       <DependentUpon>RenameComposite.cs</DependentUpon>
     </Compile>
-    <Compile Include="Popups\SelectSpecialString.cs">
+    <Compile Include="Popups\SelectEnumString.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Popups\SelectSpecialString.Designer.cs">
-      <DependentUpon>SelectSpecialString.cs</DependentUpon>
+    <Compile Include="Popups\SelectEnumString.Designer.cs">
+      <DependentUpon>SelectEnumString.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\ShowInstanceInfo.cs">
       <SubType>Form</SubType>
@@ -385,6 +385,7 @@
     </Compile>
     <Compile Include="Scripts\CompositePath.cs" />
     <Compile Include="Scripts\DirectXTexUtility.cs" />
+    <Compile Include="Scripts\EnumStringListViewItems.cs" />
     <Compile Include="Scripts\FlowgraphLayoutManager.cs" />
     <Compile Include="Scripts\InstancedResolver.cs" />
     <Compile Include="Scripts\LocalDebug_NEW.cs" />
@@ -804,8 +805,8 @@
     <EmbeddedResource Include="Popups\ShowCrossRefs.resx">
       <DependentUpon>ShowCrossRefs.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Popups\SelectSpecialString.resx">
-      <DependentUpon>SelectSpecialString.cs</DependentUpon>
+    <EmbeddedResource Include="Popups\SelectEnumString.resx">
+      <DependentUpon>SelectEnumString.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\ShowInstanceInfo.resx">
       <DependentUpon>ShowInstanceInfo.cs</DependentUpon>

@@ -303,7 +303,7 @@ namespace CommandsEditor
                                 resource.reds = new RenderableElements(renderablePath + "REDS.BIN");
                             break;
                         case 5:
-                            if (Singleton.AnimationStrings_Debug == null)
+                            if (!Singleton.LoadedAnimationContent)
                                 Singleton.OnFinishedLazyLoadingStrings += LoadThingsWithStrings;
                             else
                                 LoadThingsWithStrings();

@@ -22,6 +22,7 @@ namespace CommandsEditor
         public static List<string> AllAnimTrees = new List<string>();
         public static SortedDictionary<string, HashSet<string>> AllAnimations = new SortedDictionary<string, HashSet<string>>(); //Anim Set, Animations
         public static Dictionary<string, HashSet<string>> GenderedSkeletons = new Dictionary<string, HashSet<string>>(); //Gender, Skeletons
+        public static bool LoadedAnimationContent = false;
 
         //Global animation strings
         public static AnimationStrings AnimationStrings;

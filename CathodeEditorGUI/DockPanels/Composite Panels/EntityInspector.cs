@@ -19,7 +19,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
-using static CommandsEditor.SelectSpecialString;
+using static CommandsEditor.SelectEnumString;
 
 namespace CommandsEditor.DockPanels
 {
