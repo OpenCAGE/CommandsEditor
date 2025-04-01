@@ -34,7 +34,6 @@ namespace CommandsEditor
             public Models models = null;
             public Materials materials = null;
             public Textures textures = null;
-            public Textures textures_global = Singleton.GlobalTextures;
 
             public ShadersPAK shaders_legacy = null; //LEGACY
             public Shaders shaders_new = null; 

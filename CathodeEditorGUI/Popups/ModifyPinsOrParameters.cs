@@ -219,10 +219,15 @@ namespace CommandsEditor
                             if (existing == null || existing.content.dataType != type)
                             {
                                 ParameterData data = ParameterUtils.CreateDefaultParameterData(_inspector.Entity, _inspector.Composite, item.Text);
-                                _inspector.Entity.AddParameter(
-                                    ShortGuidUtils.Generate(item.Text),
-                                    data
-                                );
+                                if (data != null)
+                                {
+                                    _inspector.Entity.AddParameter(ShortGuidUtils.Generate(item.Text), data);
+                                }
+                                else
+                                {
+                                    //Data can be null if this is a custom parameter (e.g. CAGEAnimation) - use the type info from the list here instead.
+                                    _inspector.Entity.AddParameter(ShortGuidUtils.Generate(item.Text), (DataType)Enum.Parse(typeof(DataType), item.SubItems[1].Text));
+                                }
                             }
                         }
                         else
@@ -342,7 +347,18 @@ namespace CommandsEditor
 
         private void AddCustomEntry(ShortGuid guid, DataType datatype)
         {
-            ListViewItem item = new ListViewItem(guid.ToString());
+            string paramName = guid.ToString();
+
+            foreach (ListViewItem existingItem in _items)
+            {
+                if (existingItem.Text == paramName)
+                {
+                    MessageBox.Show("The parameter '" + paramName + "' is already available on this Entity!", "Parameter not added", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return;
+                }
+            }
+
+            ListViewItem item = new ListViewItem(paramName);
             item.SubItems.Add(datatype.ToString());
             item.Tag = new ParameterListViewItemTag() { ShortGUID = guid, Usage = ParameterVariant.PARAMETER };
             item.Checked = true;

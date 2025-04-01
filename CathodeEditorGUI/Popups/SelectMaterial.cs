@@ -1,6 +1,7 @@
 ﻿using CATHODE;
 using CATHODE.LEGACY;
 using CathodeLib;
+using CommandsEditor;
 using CommandsEditor.Popups.Base;
 using System;
 using System.Collections.Generic;
@@ -52,7 +53,7 @@ namespace AlienPAK
         {
             Console.WriteLine("UpdateTextureDropdown");
             List<string> textures = new List<string>();
-            Textures textureDB = global ? Content.resource.textures_global : Content.resource.textures;
+            Textures textureDB = global ? Singleton.GlobalTextures : Content.resource.textures;
             for (int i = 0; i < textureDB.Entries.Count; i++) textures.Add(textureDB.Entries[i].Name);
             textures.Add("NONE"); //temp holder for no texture
 
@@ -65,7 +66,7 @@ namespace AlienPAK
         private void OnTextureIndexChange(int index, bool global)
         {
             Console.WriteLine("OnTextureIndexChange");
-            Textures texDB = (global ? Content.resource.textures_global : Content.resource.textures);
+            Textures texDB = (global ? Singleton.GlobalTextures : Content.resource.textures);
             ShadersPAK.MaterialTextureContext textureInfo = _selectedMaterialMeta.textures[_controls.materialTextureSelection.SelectedIndex];
             if (textureInfo.TextureInfo == null)
             {
@@ -153,7 +154,7 @@ namespace AlienPAK
 
             UpdateTextureDropdown(mdlMetaDiff.TextureInfo.Source == Texture.TextureSource.GLOBAL);
 
-            Textures.TEX4 diff = (mdlMetaDiff.TextureInfo.Source == Texture.TextureSource.GLOBAL ? Content.resource.textures_global : Content.resource.textures).GetAtWriteIndex(mdlMetaDiff.TextureInfo.BinIndex);
+            Textures.TEX4 diff = (mdlMetaDiff.TextureInfo.Source == Texture.TextureSource.GLOBAL ? Singleton.GlobalTextures : Content.resource.textures).GetAtWriteIndex(mdlMetaDiff.TextureInfo.BinIndex);
             _controls.textureFile.Text = diff == null ? "NONE" : diff.Name;
             _controls.materialTexturePreview.Source = diff?.ToDDS()?.ToBitmap()?.ToImageSource();
         }

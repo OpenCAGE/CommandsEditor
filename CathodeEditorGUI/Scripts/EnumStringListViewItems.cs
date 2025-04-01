@@ -344,7 +344,7 @@ namespace CommandsEditor
                         if (items.FirstOrDefault(o => o.Text == entry.Name) == null)
                             items.Add(new ListViewItem() { Text = entry.Name });
                     }
-                    foreach (Textures.TEX4 entry in Singleton.Editor.CommandsDisplay.Content.resource.textures_global.Entries)
+                    foreach (Textures.TEX4 entry in Singleton.GlobalTextures.Entries)
                     {
                         if (items.FirstOrDefault(o => o.Text == entry.Name) == null)
                             items.Add(new ListViewItem() { Text = entry.Name });
