@@ -13,10 +13,15 @@ namespace CommandsEditor
         private List<Composite> _composites = new List<Composite>();
         private List<Entity> _entities = new List<Entity>();
 
+        public Action OnSteppedForwards;
+        public Action OnSteppedBackwards;
+
         public void StepForwards(Composite prevComp, Entity entityFollowed)
         {
             _composites.Add(prevComp);
             _entities.Add(entityFollowed);
+
+            OnSteppedForwards?.Invoke();
         }
 
         public bool StepBackwards(out Composite prevComp, out Entity entityFollowed)
@@ -33,6 +38,8 @@ namespace CommandsEditor
 
             _composites.RemoveAt(_composites.Count - 1);
             _entities.RemoveAt(_entities.Count - 1);
+
+            OnSteppedBackwards?.Invoke();
 
             return true;
         }

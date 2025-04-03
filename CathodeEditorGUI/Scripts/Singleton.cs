@@ -45,9 +45,11 @@ namespace CommandsEditor
 
         //Misc events
         public static Action OnCAGEAnimationEditorOpened;
-        public static Action OnFinishedLazyLoadingStrings;
+        public static Action OnFinishedLazyLoadingStrings; //todo; also add an event for loading textures to delay the new special string ui population
         public static Action<Entity, string> OnEntityRenamed;
         public static Action<Composite, string> OnCompositeRenamed;
+        public static Action<cTransform, Entity> OnEntityMoved;
+        public static Action<Entity> OnEntityDeleted;
 
         //Entity about to be / being added
         public static Action OnEntityAddPending;
@@ -55,7 +57,7 @@ namespace CommandsEditor
         public static Action OnCompositeAddPending;
         public static Action<Composite> OnCompositeAdded;
 
-        public static Action<Entity> OnEntityDeleted;
+        public static Action OnSaved;
 
         //Settings keys
         public static SettingsStrings Settings = new SettingsStrings();

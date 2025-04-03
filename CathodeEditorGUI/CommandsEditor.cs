@@ -47,8 +47,6 @@ namespace CommandsEditor
 
         private SelectLevel _levelSelect = null;
 
-        private WebSocketServer _server;
-        private WebsocketServer _serverLogic;
         private DiscordRpcClient _discord;
 
         private Dictionary<string, ToolStripMenuItem> _levelMenuItems = new Dictionary<string, ToolStripMenuItem>();
@@ -180,10 +178,6 @@ namespace CommandsEditor
             Height = SettingsManager.GetInteger(Singleton.Settings.WindowHeight, _defaultHeight);
             Resize += CommandsEditor_Resize;
             FormClosing += CommandsEditor_FormClosing;
-            
-            Singleton.OnEntitySelected += RefreshWebsocket;
-            Singleton.OnCompositeSelected += RefreshWebsocket;
-            Singleton.OnLevelLoaded += RefreshWebsocket;
 
             connectToUnity.Checked = !SettingsManager.GetBool(Singleton.Settings.ServerOpt); connectToUnity.PerformClick();
             showEntityIDs.Checked = !SettingsManager.GetBool(Singleton.Settings.EntIdOpt); showEntityIDs.PerformClick();
@@ -519,6 +513,7 @@ namespace CommandsEditor
         }
         private void ShowSaveMsg(bool saved)
         {
+            Singleton.OnSaved?.Invoke();
             if (saved)
             {
                 if (SettingsManager.GetBool(Singleton.Settings.ShowSavedMsgOpt))
@@ -619,97 +614,19 @@ namespace CommandsEditor
         {
             connectToUnity.Checked = !connectToUnity.Checked;
             SettingsManager.SetBool(Singleton.Settings.ServerOpt, connectToUnity.Checked);
-            RefreshWebsocket();
-        }
-        private bool StartWebsocket()
-        {
-            try
+            
+            if (connectToUnity.Checked)
             {
-                _server = new WebSocketServer("ws://localhost:1702");
-                _server.AddWebSocketService<WebsocketServer>("/commands_editor", (server) =>
+                if (!UnityConnection.Send.Start())
                 {
-                    _serverLogic = server;
-                    _serverLogic.OnClientConnect += RefreshWebsocket;
-                });
-                _server.Start();
-                return true;
-            }
-            catch
-            {
-                if (connectToUnity.Checked)
                     connectToUnity.PerformClick();
-
-                MessageBox.Show("Failed to initialise Unity connection.\nIs another instance of the script editor running?", "Connection failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;
-            }
-        }
-        private void RefreshWebsocket() => RefreshWebsocket(null);
-        private void RefreshWebsocket(object o)
-        {
-            if (!SettingsManager.GetBool(Singleton.Settings.ServerOpt))
-            {
-                if (_server != null)
-                    _server.Stop();
-                _server = null;
-                return;
+                    MessageBox.Show("Failed to initialise Unity connection.\nIs another instance of the script editor running?", "Connection failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
             else
             {
-                if (_server == null)
-                    StartWebsocket();
+                UnityConnection.Send.Stop();
             }
-
-            //Request the correct level
-            if (_commandsDisplay?.Content?.commands != null && _commandsDisplay.Content.commands.Loaded)
-            {
-                SendWebsocketData(new WebsocketServer.WSPacket { 
-                    type = WebsocketServer.MessageType.LOAD_LEVEL, 
-                    alien_path = SharedData.pathToAI, 
-                    level_name = _commandsDisplay.Content.level 
-                });
-            }
-
-            //Get active stuff
-            Composite composite = _commandsDisplay?.CompositeDisplay?.Composite;
-            Entity entity = _commandsDisplay?.CompositeDisplay?.EntityDisplay?.Entity;
-            Parameter position = entity?.GetParameter("position");
-
-            //Load composite
-            if (composite != null)
-            {
-                SendWebsocketData(new WebsocketServer.WSPacket
-                {
-                    type = WebsocketServer.MessageType.LOAD_COMPOSITE,
-                    composite_name = composite.shortGUID.ToByteString(),
-                    alien_path = SharedData.pathToAI,
-                    level_name = _commandsDisplay.Content.level
-                });
-            }
-
-            //Point to position of selected entity
-            if (position != null)
-            {
-                SendWebsocketData(new WebsocketServer.WSPacket
-                {
-                    type = WebsocketServer.MessageType.GO_TO_POSITION,
-                    position = ((cTransform)position.content).position
-                });
-            }
-
-            //Show name of entity
-            if (entity != null && composite != null)
-            {
-                SendWebsocketData(new WebsocketServer.WSPacket
-                {
-                    type = WebsocketServer.MessageType.SHOW_ENTITY_NAME,
-                    entity_name = EntityUtils.GetName(composite, entity)
-                });
-            }
-        }
-
-        private void SendWebsocketData(WebsocketServer.WSPacket content)
-        {
-            _server?.WebSocketServices["/commands_editor"].Sessions.Broadcast(JsonConvert.SerializeObject(content));
         }
 
         private void showEntityIDs_Click(object sender, EventArgs e)

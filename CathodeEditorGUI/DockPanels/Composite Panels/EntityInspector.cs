@@ -393,7 +393,7 @@ namespace CommandsEditor.DockPanels
                 {
                     case DataType.TRANSFORM:
                         parameterGUI = new GUI_TransformDataType();
-                        ((GUI_TransformDataType)parameterGUI).PopulateUI((cTransform)this_param, paramName);
+                        ((GUI_TransformDataType)parameterGUI).PopulateUI(_entity, (cTransform)this_param, paramName);
                         break;
                     case DataType.INTEGER:
                         parameterGUI = new GUI_NumericDataType();

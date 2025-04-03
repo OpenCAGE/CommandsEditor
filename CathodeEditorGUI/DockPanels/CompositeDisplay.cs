@@ -46,7 +46,7 @@ namespace CommandsEditor.DockPanels
         private EntityInspector _entityDisplay;
         public EntityInspector EntityDisplay => _entityDisplay;
 
-        private CompositePath _path = new CompositePath();
+        private CompositePath _path = null;
         public CompositePath Path => _path;
 
         public bool SupportsFlowgraphs => FlowgraphLayoutManager.IsCompatible(Composite);
