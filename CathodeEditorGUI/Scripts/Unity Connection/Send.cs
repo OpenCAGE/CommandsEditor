@@ -21,14 +21,11 @@ namespace CommandsEditor.UnityConnection
         public static bool Started => _server != null;
         public static bool Connected => _server != null && _server.WebSocketServices["/commands_editor"].Sessions.Count != 0;
 
-        private static bool _isDirty = false;
-
         static Send()
         {
             //TODO: This "dirty" logic should be split out to another class, and the editor UI should reflect if changes are made but it hasn't been saved.
 
             Singleton.OnLevelLoaded += LevelLoaded;
-            Singleton.OnSaved += LevelSaved;
             Singleton.OnCompositeSelected += CompositeSelected;
             //Singleton.OnCompositeDeleted; <- todo
             Singleton.OnEntitySelected += EntitySelected;
@@ -69,14 +66,7 @@ namespace CommandsEditor.UnityConnection
         /* A level has just been loaded -> load its data in Unity */
         private static void LevelLoaded(LevelContent content)
         {
-            _isDirty = false;
             SendData(GeneratePacket(PacketEvent.LEVEL_LOADED));
-        }
-
-        /* The level has been saved -> clear our dirty flag */
-        private static void LevelSaved()
-        {
-            _isDirty = false;
         }
 
         /* A composite has been loaded -> open it in the Unity scene */
@@ -101,8 +91,6 @@ namespace CommandsEditor.UnityConnection
         }
         private static void EntityMoved(cTransform transform, Entity entity)
         {
-            _isDirty = true;
-
             Packet p = GeneratePacket(PacketEvent.ENTITY_MOVED);
             p.position = transform.position;
             p.rotation = transform.rotation;
@@ -110,19 +98,17 @@ namespace CommandsEditor.UnityConnection
         }
         private static void EntityAdded(Entity entity)
         {
-            _isDirty = true;
             SendData(GeneratePacket(PacketEvent.ENTITY_ADDED));
         }
         private static void EntityDeleted(Entity entity)
         {
-            _isDirty = true;
             SendData(GeneratePacket(PacketEvent.ENTITY_DELETED));
         }
 
         /* Re-sync a new client with all current info */
         private static void SyncClient()
         {
-            if (_isDirty)
+            if (DirtyTracker.IsDirty)
             {
                 //TODO: Warn that there's likely going to be a mismatch between client and server.
             }
@@ -148,9 +134,10 @@ namespace CommandsEditor.UnityConnection
             {
                 List<CompositePath.CompAndEnt> richPath = Singleton.Editor.CommandsDisplay.CompositeDisplay.Path.GetPathRich(Singleton.Editor.CommandsDisplay.CompositeDisplay.Composite);
                 foreach (CompositePath.CompAndEnt entry in richPath)
-                    p.path.Add(entry.Entity.shortGUID.ToUInt32());
+                    if (entry.Entity != null)
+                        p.path.Add(entry.Entity.shortGUID.ToUInt32());
             }
-            p.dirty = _isDirty;
+            p.dirty = DirtyTracker.IsDirty;
             return p;
         }
 

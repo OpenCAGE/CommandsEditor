@@ -385,6 +385,7 @@
     </Compile>
     <Compile Include="Scripts\CompositePath.cs" />
     <Compile Include="Scripts\DirectXTexUtility.cs" />
+    <Compile Include="Scripts\DirtyTracker.cs" />
     <Compile Include="Scripts\EnumStringListViewItems.cs" />
     <Compile Include="Scripts\FlowgraphLayoutManager.cs" />
     <Compile Include="Scripts\InstancedResolver.cs" />

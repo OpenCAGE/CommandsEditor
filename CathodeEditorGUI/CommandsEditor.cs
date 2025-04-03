@@ -211,24 +211,25 @@ namespace CommandsEditor
             toolStripButton2.DropDown.Closing += DropDown_Closing;
 
             //Set title
-            this.Text = "OpenCAGE Commands Editor";
+            _baseTitle = "OpenCAGE Commands Editor";
             if (OpenCAGE.SettingsManager.GetBool("CONFIG_ShowPlatform") &&
                 OpenCAGE.SettingsManager.GetString("META_GameVersion") != "")
             {
                 switch (OpenCAGE.SettingsManager.GetString("META_GameVersion"))
                 {
                     case "STEAM":
-                        this.Text += " - Steam";
+                        _baseTitle += " - Steam";
                         break;
                     case "EPIC_GAMES_STORE":
-                        this.Text += " - Epic Games Store";
+                        _baseTitle += " - Epic Games Store";
                         break;
                     case "GOG":
-                        this.Text += " - GoG";
+                        _baseTitle += " - GoG";
                         break;
                 }
             }
-            _baseTitle = this.Text;
+            DirtyTracker.OnChanged += OnDirtyChanged;
+            UpdateTitle();
 
             //Populate localised text string databases (in English)
             List<string> textList = Directory.GetFiles(SharedData.pathToAI + "/DATA/TEXT/ENGLISH/", "*.TXT", SearchOption.AllDirectories).ToList<string>();
@@ -422,6 +423,18 @@ namespace CommandsEditor
             Singleton.GlobalTextures = new Textures(SharedData.pathToAI + "/DATA/ENV/GLOBAL/WORLD/GLOBAL_TEXTURES.ALL.PAK");
         }
 
+        private void OnDirtyChanged(bool dirty) => UpdateTitle();
+        private void UpdateTitle()
+        {
+            if (_commandsDisplay == null)
+                this.Text = _baseTitle;
+            else
+                this.Text = _baseTitle + " - " + _commandsDisplay.Content.level;
+
+            if (DirtyTracker.IsDirty)
+                this.Text += " [UNSAVED CHANGES]";
+        }
+
         private void loadLevel_Click(object sender, EventArgs e)
         {
             if (_levelSelect == null)
@@ -457,8 +470,6 @@ namespace CommandsEditor
             }
 #endif
 
-            this.Text = _baseTitle + " - " + level;
-
             statusText.Text = "Loading " + level + "...";
             statusStrip.Update();
 
@@ -481,6 +492,8 @@ namespace CommandsEditor
 
             //Sometimes get an error here which appears to be thread related (?) -> investigate next time
             _levelMenuItems[_commandsDisplay.Content.level].Checked = true;
+
+            UpdateTitle();
         }
 
         private void _commandsDisplay_Resize(object sender, EventArgs e)
