@@ -576,12 +576,14 @@ namespace CommandsEditor.DockPanels
 
         private void OnDeleteParam(Parameter param)
         {
+            Singleton.OnParameterModified?.Invoke();
             _entity.parameters.Remove(param);
             _compositeDisplay.ReloadEntity(_entity);
         }
 
         private void OnLinkEdited(Entity orig, Entity linked)
         {
+            Singleton.OnParameterModified?.Invoke();
             _compositeDisplay.ReloadEntity(orig);
             _compositeDisplay.ReloadEntity(linked);
         }
@@ -696,6 +698,7 @@ namespace CommandsEditor.DockPanels
         private void OnResourceEditorSaved(List<ResourceReference> resources)
         {
             ((FunctionEntity)Entity).resources = resources;
+            Singleton.OnResourceModified?.Invoke();
         }
 
         private void goToZone_Click(object sender, EventArgs e)

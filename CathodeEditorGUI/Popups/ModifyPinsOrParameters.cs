@@ -228,10 +228,20 @@ namespace CommandsEditor
                                     //Data can be null if this is a custom parameter (e.g. CAGEAnimation) - use the type info from the list here instead.
                                     _inspector.Entity.AddParameter(ShortGuidUtils.Generate(item.Text), (DataType)Enum.Parse(typeof(DataType), item.SubItems[1].Text));
                                 }
+                                Singleton.OnParameterModified?.Invoke();
+                                if (type == DataType.RESOURCE)
+                                    Singleton.OnResourceModified?.Invoke();
                             }
                         }
                         else
-                            _inspector.Entity.RemoveParameter(tag.ShortGUID);
+                        {
+                            if (_inspector.Entity.RemoveParameter(tag.ShortGUID))
+                            {
+                                Singleton.OnParameterModified?.Invoke();
+                                if ((DataType)Enum.Parse(typeof(DataType), item.SubItems[1].Text) == DataType.RESOURCE)
+                                    Singleton.OnResourceModified?.Invoke();
+                            }
+                        }
                         break;
                 }
             }

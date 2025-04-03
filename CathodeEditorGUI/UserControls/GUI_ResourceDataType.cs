@@ -48,6 +48,7 @@ namespace CommandsEditor.UserControls
         {
             resRef.value = resources;
             HighlightAsModified();
+            Singleton.OnResourceModified?.Invoke();
         }
         private void ResourceEditor_FormClosed(object sender, FormClosedEventArgs e)
         {

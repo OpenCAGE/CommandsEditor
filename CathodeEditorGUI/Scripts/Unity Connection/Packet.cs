@@ -13,11 +13,13 @@ namespace CommandsEditor.UnityConnection
 
         COMPOSITE_SELECTED,
         COMPOSITE_PATH_STEPPED,
+        COMPOSITE_DELETED,
 
         ENTITY_SELECTED,
         ENTITY_MOVED,
         ENTITY_DELETED,
         ENTITY_ADDED,
+        ENTITY_RESOURCE_MODIFIED,
 
         GENERIC_DATA_SYNC,
     }
@@ -45,6 +47,9 @@ namespace CommandsEditor.UnityConnection
         //Transform
         public Vector3 position = new Vector3();
         public Vector3 rotation = new Vector3();
+
+        //Renderable resource
+        public List<Tuple<int, int>> renderable = new List<Tuple<int, int>>(); //Model Index, Material Index
 
         //Track if things have changed
         public bool dirty = false;

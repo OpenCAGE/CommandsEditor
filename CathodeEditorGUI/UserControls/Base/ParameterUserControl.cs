@@ -46,6 +46,9 @@ namespace CommandsEditor.UserControls
         //override this and set the UI as bold. make sure to call the base so we can track.
         public virtual void HighlightAsModified(bool updateDatabase = true, Control fontToUpdate = null)
         {
+            if (_entityGUID != ShortGuid.Invalid)
+                Singleton.OnParameterModified?.Invoke();
+
 #if AUTO_POPULATE_PARAMS
             if (!_hasDoneSetup || _isModified || _compositeGUID.IsInvalid)
                 return;

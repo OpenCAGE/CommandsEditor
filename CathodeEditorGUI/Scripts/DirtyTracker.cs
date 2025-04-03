@@ -20,14 +20,15 @@ namespace CommandsEditor
             Singleton.OnLevelLoaded += MarkClean;
             Singleton.OnSaved += MarkClean;
 
-            //Singleton.OnCompositeDeleted; <- todo
+            Singleton.OnCompositeDeleted += MarkDirty;
             Singleton.OnCompositeRenamed += MarkDirty;
 
             Singleton.OnEntityAdded += MarkDirty;
             Singleton.OnEntityDeleted += MarkDirty;
             Singleton.OnEntityRenamed += MarkDirty;
 
-            //todo: need events for params being added/removed/modified
+            Singleton.OnResourceModified += MarkDirty;
+            Singleton.OnParameterModified += MarkDirty; //TODO: This doesn't track modifications for pins in flowgraph
         }
 
         private static void MarkClean(object a) => MarkClean();

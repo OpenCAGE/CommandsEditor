@@ -50,14 +50,16 @@ namespace CommandsEditor
         public static Action<Composite, string> OnCompositeRenamed;
         public static Action<cTransform, Entity> OnEntityMoved;
         public static Action<Entity> OnEntityDeleted;
+        public static Action<Composite> OnCompositeDeleted;
+        public static Action OnSaved;
+        public static Action OnParameterModified;
+        public static Action OnResourceModified;
 
         //Entity about to be / being added
         public static Action OnEntityAddPending;
         public static Action<Entity> OnEntityAdded;
         public static Action OnCompositeAddPending;
         public static Action<Composite> OnCompositeAdded;
-
-        public static Action OnSaved;
 
         //Settings keys
         public static SettingsStrings Settings = new SettingsStrings();
