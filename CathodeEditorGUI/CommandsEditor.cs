@@ -348,17 +348,7 @@ namespace CommandsEditor
                 HashSet<string> animations = new HashSet<string>();
                 using (BinaryReader reader = new BinaryReader(new MemoryStream(animClipDbs[i].Content)))
                 {
-                    //This fixes a weird thing where there's an unknown variable offset at the start
-                    int offset = 4;
-                    while (true)
-                    {
-                        reader.BaseStream.Position = offset;
-                        if (reader.ReadUInt32() == animSetID)
-                            break;
-                        offset += 1;
-                    }
-                    reader.BaseStream.Position += 4;
-
+                    reader.BaseStream.Position += 16;
                     int countAnimNames = reader.ReadInt32();
                     int countAnimFileNames = reader.ReadInt32();
                     for (int x = 0; x < countAnimNames; x++)
@@ -366,8 +356,7 @@ namespace CommandsEditor
                         animations.Add(Singleton.AnimationStrings_Debug.Entries[reader.ReadUInt32()]);
                         reader.BaseStream.Position += 4;
                     }
-
-                    //TODO: There's more info here. Useful?
+                    //TODO: There's more info here. Useful? Anim subsets?
                 }
                 Singleton.AllAnimations.Add(animSet, animations);
             }
