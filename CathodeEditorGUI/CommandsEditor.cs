@@ -287,8 +287,8 @@ namespace CommandsEditor
         {
             if (_commandsDisplay == null)
                 this.Text = _baseTitle;
-                this.Text = _baseTitle + " - " + _commandsDisplay.Content.level;
             else
+                this.Text = _baseTitle + " - " + _commandsDisplay.Content.level;
 
             if (DirtyTracker.IsDirty)
                 this.Text += " [UNSAVED CHANGES]";
