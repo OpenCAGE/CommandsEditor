@@ -31,7 +31,7 @@ namespace CommandsEditor.UnityConnection
             Singleton.OnSaved += LevelSaved;
             Singleton.OnCompositeSelected += CompositeSelected;
             Singleton.OnCompositeDeleted += CompositeDeleted;
-            Singleton.OnEntitySelected += EntitySelected;
+            Singleton.OnEntityReloaded += EntitySelected;
             Singleton.OnEntityMoved += EntityMoved;
             Singleton.OnEntityAdded += EntityAdded;
             Singleton.OnEntityDeleted += EntityDeleted;
@@ -141,7 +141,7 @@ namespace CommandsEditor.UnityConnection
                     {
                         for (int i = 0; i < resourceRef.count; i++)
                         {
-                            RenderableElements.Element element = Singleton.Editor.CommandsDisplay.Content.resource.reds.Entries[resourceRef.index];
+                            RenderableElements.Element element = Singleton.Editor.CommandsDisplay.Content.resource.reds.Entries[resourceRef.index + i];
                             p.renderable.Add(new Tuple<int, int>(element.ModelIndex, element.MaterialIndex));
                         }
                     }
