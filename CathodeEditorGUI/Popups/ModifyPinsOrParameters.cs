@@ -92,16 +92,7 @@ namespace CommandsEditor
                 case Mode.LINK_IN:
                 case Mode.LINK_OUT:
                     STNodeOption[] nodeOptions = _mode == Mode.LINK_IN ? _node.GetInputOptions() : _node.GetOutputOptions();
-                    for (int i = 0; i < nodeOptions.Length; i++)
-                    {
-                        if (options.FirstOrDefault(o => ((ParameterListViewItemTag)o.Tag).ShortGUID == nodeOptions[i].ShortGUID) == null)
-                        {
-                            ListViewItem item = new ListViewItem(nodeOptions[i].ShortGUID.ToString());
-                            item.SubItems.Add("FLOAT");
-                            item.Tag = new ParameterListViewItemTag() { ShortGUID = nodeOptions[i].ShortGUID, Usage = ParameterVariant.PARAMETER };
-                            options.Add(item);
-                        }
-                    }
+                    //Add all base-game ones
                     for (int i = 0; i < options.Count; i++)
                     {
                         var metadata = ParameterUtils.GetParameterMetadata(ent, options[i].Text);
@@ -115,9 +106,17 @@ namespace CommandsEditor
                         options[i].ImageIndex = 0;
                         _items.Add(options[i]);
                     }
+                    //Add any additional custom ones
+                    for (int i = 0; i < nodeOptions.Length; i++)
+                    {
+                        if (options.FirstOrDefault(o => ((ParameterListViewItemTag)o.Tag).ShortGUID == nodeOptions[i].ShortGUID) != null)
+                            continue;
+                        AddCustomEntry(nodeOptions[i].ShortGUID, DataType.FLOAT, _mode == Mode.LINK_IN ? ParameterVariant.INPUT_PIN : ParameterVariant.OUTPUT_PIN); //TODO: Should maybe allow selection of variant?
+                    }
                     break;
 
                 case Mode.PARAMETER:
+                    //Add all base-game ones
                     for (int i = 0; i < options.Count; i++)
                     {
                         var metadata = ParameterUtils.GetParameterMetadata(ent, options[i].Text);
@@ -132,6 +131,7 @@ namespace CommandsEditor
                         options[i].ImageIndex = 0;
                         _items.Add(options[i]);
                     }
+                    //Add any additional custom ones
                     for (int i = 0; i < ent.parameters.Count; i++)
                     {
                         if (options.FirstOrDefault(o => ((ParameterListViewItemTag)o.Tag).ShortGUID == ent.parameters[i].name && o.SubItems[1].Text == ent.parameters[i].content.dataType.ToString()) != null)
@@ -336,33 +336,39 @@ namespace CommandsEditor
                     break;
             }
         }
+
+        private bool IsNameValid(string name)
+        {
+            foreach (ListViewItem existingItem in _items)
+            {
+                if (existingItem.Text == name)
+                {
+                    MessageBox.Show("The parameter '" + name + "' is already available on this Entity!\nPlease pick a new name.", "Parameter exists", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return false;
+                }
+            }
+            return true;
+        }
+
         private void OnAddedCustomPin(string text)
         {
-            OnAddedCustomParam(text, DataType.FLOAT);
+            AddCustomEntry(ShortGuidUtils.Generate(text), DataType.FLOAT, _mode == Mode.LINK_IN ? ParameterVariant.INPUT_PIN : ParameterVariant.OUTPUT_PIN);
         }
         private void OnAddedCustomParam(string name, DataType datatype)
         {
             AddCustomEntry(ShortGuidUtils.Generate(name), datatype);
         }
 
-        private void AddCustomEntry(ShortGuid guid, DataType datatype)
+        private void AddCustomEntry(ShortGuid guid, DataType datatype, ParameterVariant variant = ParameterVariant.PARAMETER)
         {
             string paramName = guid.ToString();
 
-            foreach (ListViewItem existingItem in _items)
-            {
-                if (existingItem.Text == paramName)
-                {
-                    MessageBox.Show("The parameter '" + paramName + "' is already available on this Entity!", "Parameter not added", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                    return;
-                }
-            }
-
             ListViewItem item = new ListViewItem(paramName);
             item.SubItems.Add(datatype.ToString());
-            item.Tag = new ParameterListViewItemTag() { ShortGUID = guid, Usage = ParameterVariant.PARAMETER };
+            item.Tag = new ParameterListViewItemTag() { ShortGUID = guid, Usage = variant };
             item.Checked = true;
             item.SubItems[1].Text = datatype.ToString();
+            item.Group = GetGroupFromVariant(variant);
             item.ImageIndex = 0;
             item.Selected = true;
             _items.Add(item);
