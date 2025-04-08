@@ -362,11 +362,13 @@ namespace CommandsEditor
 
         private void OnAddedCustomPin(string text)
         {
-            AddCustomEntry(ShortGuidUtils.Generate(text), DataType.FLOAT, _mode == Mode.LINK_IN ? ParameterVariant.INPUT_PIN : ParameterVariant.OUTPUT_PIN);
+            if (IsNameValid(text)) 
+                AddCustomEntry(ShortGuidUtils.Generate(text), DataType.FLOAT, _mode == Mode.LINK_IN ? ParameterVariant.INPUT_PIN : ParameterVariant.OUTPUT_PIN);
         }
         private void OnAddedCustomParam(string name, DataType datatype)
         {
-            AddCustomEntry(ShortGuidUtils.Generate(name), datatype);
+            if (IsNameValid(name))
+                AddCustomEntry(ShortGuidUtils.Generate(name), datatype);
         }
 
         private void AddCustomEntry(ShortGuid guid, DataType datatype, ParameterVariant variant = ParameterVariant.PARAMETER)
