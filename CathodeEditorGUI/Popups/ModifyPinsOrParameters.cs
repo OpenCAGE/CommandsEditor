@@ -20,6 +20,7 @@ using OpenCAGE;
 using ST.Library.UI.NodeEditor;
 using WebSocketSharp;
 using static System.Net.Mime.MediaTypeNames;
+using static CATHODE.SkeleDB;
 using static CommandsEditor.EditorUtils;
 
 namespace CommandsEditor
@@ -229,17 +230,37 @@ namespace CommandsEditor
                                     _inspector.Entity.AddParameter(ShortGuidUtils.Generate(item.Text), (DataType)Enum.Parse(typeof(DataType), item.SubItems[1].Text));
                                 }
                                 Singleton.OnParameterModified?.Invoke();
-                                if (type == DataType.RESOURCE)
-                                    Singleton.OnResourceModified?.Invoke();
+                                switch (type)
+                                {
+                                    case DataType.RESOURCE:
+                                        Singleton.OnResourceModified?.Invoke();
+                                        break;
+                                    case DataType.TRANSFORM:
+                                        if (data != null && item.Text == "position")
+                                        {
+                                            cTransform transformVal = (cTransform)data;
+                                            Singleton.OnEntityMoved?.Invoke(transformVal, _inspector.Entity);
+                                        }
+                                        break;
+                                }
                             }
                         }
                         else
                         {
                             if (_inspector.Entity.RemoveParameter(tag.ShortGUID))
                             {
+                                DataType type = (DataType)Enum.Parse(typeof(DataType), item.SubItems[1].Text);
                                 Singleton.OnParameterModified?.Invoke();
-                                if ((DataType)Enum.Parse(typeof(DataType), item.SubItems[1].Text) == DataType.RESOURCE)
-                                    Singleton.OnResourceModified?.Invoke();
+                                switch (type)
+                                {
+                                    case DataType.RESOURCE:
+                                        Singleton.OnResourceModified?.Invoke();
+                                        break;
+                                    case DataType.TRANSFORM:
+                                        if (item.Text == "position")
+                                            Singleton.OnEntityMoved?.Invoke(new cTransform(), _inspector.Entity);
+                                        break;
+                                }
                             }
                         }
                         break;

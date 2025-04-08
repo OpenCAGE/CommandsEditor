@@ -35,6 +35,8 @@ namespace CommandsEditor.UserControls
         }
         public void PopulateUI(Entity entity, cTransform cTrans, string title, bool disableInput = false)
         {
+            _entity = entity;
+
             POSITION_VARIABLE_DUMMY.Text = title;
             transformVal = cTrans;
             this.deleteToolStripMenuItem.Text = "Delete '" + title + "'";

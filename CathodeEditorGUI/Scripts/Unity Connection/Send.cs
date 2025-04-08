@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Media.Animation;
 using WebSocketSharp.Server;
 
 namespace CommandsEditor.UnityConnection
@@ -17,7 +18,7 @@ namespace CommandsEditor.UnityConnection
     public static class Send
     {
         private static WebSocketServer _server;
-        private static Recieve _serverLogic;
+        private static Client _serverLogic;
 
         public static bool Started => _server != null;
         public static bool Connected => _server != null && _server.WebSocketServices["/commands_editor"].Sessions.Count != 0;
@@ -44,10 +45,10 @@ namespace CommandsEditor.UnityConnection
             try
             {
                 _server = new WebSocketServer("ws://localhost:1702");
-                _server.AddWebSocketService<Recieve>("/commands_editor", (server) =>
+                _server.AddWebSocketService<Client>("/commands_editor", (server) =>
                 {
                     _serverLogic = server;
-                    _serverLogic.OnClientConnect += SyncClient;
+                    _serverLogic.OnConnect += SyncClient;
                 });
                 _server.Start();
                 return true;
@@ -152,6 +153,8 @@ namespace CommandsEditor.UnityConnection
         /* Re-sync a new client with all current info */
         private static void SyncClient()
         {
+            Console.WriteLine("[WEBSOCKET] " + _server?.WebSocketServices["/commands_editor"].Sessions.Count + " clients connected!");
+
             if (_isDirty)
             {
                 //TODO: Warn that there's likely going to be a mismatch between client and server.

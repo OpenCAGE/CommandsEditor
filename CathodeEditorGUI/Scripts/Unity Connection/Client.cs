@@ -11,9 +11,10 @@ using WebSocketSharp.Server;
 
 namespace CommandsEditor.UnityConnection
 {
-    public class Recieve : WebSocketBehavior
+    public class Client : WebSocketBehavior
     {
-        public Action OnClientConnect;
+        public Action OnConnect;
+        public Action OnDisconnect;
 
         protected override void OnMessage(MessageEventArgs e)
         {
@@ -28,13 +29,24 @@ namespace CommandsEditor.UnityConnection
 
         protected override void OnOpen()
         {
+            Console.WriteLine("[WEBSOCKET] Client connected");
             SendMessage(new Packet(PacketEvent.GENERIC_DATA_SYNC));
-            OnClientConnect?.Invoke();
+            OnConnect?.Invoke();
             base.OnOpen();
+        }
+
+        protected override void OnClose(CloseEventArgs e)
+        {
+            Console.WriteLine("[WEBSOCKET] Client disconnected");
+            OnDisconnect?.Invoke();
+            base.OnClose(e);
         }
 
         public void SendMessage(Packet content)
         {
+#if DEBUG
+            Console.WriteLine("[WEBSOCKET] Sending " + content.packet_event + " data");
+#endif
             base.Send(JsonConvert.SerializeObject(content));
         }
     }

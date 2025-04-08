@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CommandsEditor.UnityConnection
 {
@@ -26,14 +22,14 @@ namespace CommandsEditor.UnityConnection
 
     public class Packet
     {
-        public Packet(PacketEvent packet_event)
+        public Packet(PacketEvent packet_event = PacketEvent.GENERIC_DATA_SYNC)
         {
             this.packet_event = packet_event;
         }
 
         //Packet metadata
         public PacketEvent packet_event;
-        public const int version = 3;
+        public int version = 3;
 
         //Setup metadata
         public string level_name = "";
@@ -45,8 +41,8 @@ namespace CommandsEditor.UnityConnection
         public uint entity = 0;
 
         //Transform
-        public Vector3 position = new Vector3();
-        public Vector3 rotation = new Vector3();
+        public System.Numerics.Vector3 position = new System.Numerics.Vector3();
+        public System.Numerics.Vector3 rotation = new System.Numerics.Vector3();
 
         //Renderable resource
         public List<Tuple<int, int>> renderable = new List<Tuple<int, int>>(); //Model Index, Material Index

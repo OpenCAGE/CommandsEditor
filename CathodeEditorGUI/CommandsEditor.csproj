@@ -613,7 +613,7 @@
     <Compile Include="Scripts\SettingsManager.cs" />
     <Compile Include="Scripts\Unity Connection\Packet.cs" />
     <Compile Include="Scripts\Unity Connection\Send.cs" />
-    <Compile Include="Scripts\Unity Connection\Recieve.cs" />
+    <Compile Include="Scripts\Unity Connection\Client.cs" />
     <Compile Include="Scripts\Singleton.cs" />
     <Compile Include="UserControls\Base\ParameterUserControl.cs">
       <SubType>UserControl</SubType>
