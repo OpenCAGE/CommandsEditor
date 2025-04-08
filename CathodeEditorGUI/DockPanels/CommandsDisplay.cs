@@ -80,18 +80,42 @@ namespace CommandsEditor.DockPanels
             Task.Factory.StartNew(() => _content.editor_utils.GenerateEntityNameCache(Singleton.Editor));
             Content.editor_utils.GenerateCompositeInstances(Content.commands);
 
-            if (!Singleton.LoadedAnimationContent)
-                Singleton.OnFinishedLazyLoadingStrings += LoadLevelSpecificEnumStrings;
-            else
-                LoadLevelSpecificEnumStrings();
-
             SelectCompositeAndReloadList(_content.commands.EntryPoints[0]);
             //Singleton.OnCompositeSelected?.Invoke(_content.commands.EntryPoints[0]); //need to call this again b/c the activation event doesn't fire here
+
+            if (!Singleton.LoadedAnimationContent)
+                Singleton.OnAnimationsLoaded += FinishedLoadingAnims;
+            else
+                FinishedLoadingAnims();
         }
         
-        private static void LoadLevelSpecificEnumStrings()
+        //VERY hacked-in thread waiters. This isn't particularly safe, but better than nothing. Needs reworking at some point.
+        private void FinishedLoadingAnims()
         {
-            //Load level specific enum strings
+            Singleton.OnAnimationsLoaded -= FinishedLoadingAnims;
+
+            if (!_content.resource.Loaded)
+                Singleton.OnLevelAssetsLoaded += FinishedLoadingLevelAssets;
+            else
+                FinishedLoadingLevelAssets(null);
+        }
+        private void FinishedLoadingLevelAssets(LevelContent content)
+        {
+            Singleton.OnAnimationsLoaded -= FinishedLoadingAnims;
+
+            if (!Singleton.LoadedGlobalAssets)
+                Singleton.OnGlobalAssetsLoaded += FinishedLoadingGlobalAssets;
+            else
+                FinishedLoadingGlobalAssets();
+        }
+        private void FinishedLoadingGlobalAssets()
+        {
+            Singleton.OnLevelAssetsLoaded -= FinishedLoadingLevelAssets;
+
+            //Everything should now be loaded globally and per-level.
+            Console.WriteLine("Finished loading anim data and level assets!");
+
+            Task.Factory.StartNew(() => EnumStringListViewItems.PopulateGlobalEntries()); //This only loads once, it's not expensive to call it again.
             Task.Factory.StartNew(() => EnumStringListViewItems.PopulateLevelSpecificEntries());
         }
 

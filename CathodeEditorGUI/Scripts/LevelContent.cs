@@ -31,6 +31,8 @@ namespace CommandsEditor
         public Resource resource = new Resource();
         public class Resource
         {
+            public bool Loaded = false;
+
             public Models models = null;
             public Materials materials = null;
             public Textures textures = null;
@@ -303,7 +305,7 @@ namespace CommandsEditor
                             break;
                         case 5:
                             if (!Singleton.LoadedAnimationContent)
-                                Singleton.OnFinishedLazyLoadingStrings += LoadThingsWithStrings;
+                                Singleton.OnAnimationsLoaded += LoadThingsWithStrings;
                             else
                                 LoadThingsWithStrings();
                             break;
@@ -372,7 +374,8 @@ namespace CommandsEditor
                             break;
                     }
                 });
-                Singleton.OnAssetsLoaded?.Invoke(this);
+                resource.Loaded = true;
+                Singleton.OnLevelAssetsLoaded?.Invoke(this);
 #if !CATHODE_FAIL_HARD
             }
             catch { }
@@ -382,7 +385,7 @@ namespace CommandsEditor
         {
             resource.env_animations = new EnvironmentAnimations(worldPath + "ENVIRONMENT_ANIMATION.DAT", Singleton.AnimationStrings_Debug);
 
-            Singleton.OnFinishedLazyLoadingStrings -= LoadThingsWithStrings;
+            Singleton.OnAnimationsLoaded -= LoadThingsWithStrings;
         }
 
         public enum CacheMethod
