@@ -194,7 +194,7 @@ namespace CommandsEditor
                         if (item.Checked)
                         {
                             //NOTE: Hijacking this to add relays as well. Maybe we should make this optional?
-                            if (item.Group.Name == ParameterVariant.METHOD_PIN.ToString())
+                            if (item?.Group != null && item.Group.Name == ParameterVariant.METHOD_PIN.ToString())
                             {
                                 ShortGuid relay = ParameterUtils.GetRelay(tag.ShortGUID);
                                 if (relay != ShortGuid.Invalid)
