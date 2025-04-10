@@ -8,7 +8,7 @@ namespace CommandsEditor.UnityConnection
         LEVEL_LOADED,
 
         COMPOSITE_SELECTED,
-        COMPOSITE_PATH_STEPPED,
+        COMPOSITE_RELOADED,
         COMPOSITE_DELETED,
 
         ENTITY_SELECTED,
@@ -36,9 +36,8 @@ namespace CommandsEditor.UnityConnection
         public string system_folder = "";
 
         //Selection metadata
-        public uint composite = 0;
-        public List<uint> path = new List<uint>(); 
-        public uint entity = 0;
+        public List<uint> path_entities = new List<uint>(); 
+        public List<uint> path_composites = new List<uint>();
 
         //Transform
         public System.Numerics.Vector3 position = new System.Numerics.Vector3();

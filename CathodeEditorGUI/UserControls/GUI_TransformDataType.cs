@@ -68,36 +68,54 @@ namespace CommandsEditor.UserControls
 
         private void POS_X_ValueChanged(object sender, EventArgs e)
         {
+            if (transformVal.position.X == (float)POS_X.Value)
+                return;
+
             transformVal.position.X = (float)POS_X.Value;
             ValueChanged();
         }
 
         private void POS_Y_ValueChanged(object sender, EventArgs e)
         {
+            if (transformVal.position.Y == (float)POS_Y.Value)
+                return;
+
             transformVal.position.Y = (float)POS_Y.Value;
             ValueChanged();
         }
 
         private void POS_Z_ValueChanged(object sender, EventArgs e)
         {
+            if (transformVal.position.Z == (float)POS_Z.Value)
+                return;
+
             transformVal.position.Z = (float)POS_Z.Value;
             ValueChanged();
         }
 
         private void ROT_X_ValueChanged(object sender, EventArgs e)
         {
+            if (transformVal.rotation.X == (float)ROT_X.Value)
+                return;
+
             transformVal.rotation.X = (float)ROT_X.Value;
             ValueChanged();
         }
 
         private void ROT_Y_ValueChanged(object sender, EventArgs e)
         {
+            if (transformVal.rotation.Y == (float)ROT_Y.Value)
+                return;
+
             transformVal.rotation.Y = (float)ROT_Y.Value;
             ValueChanged();
         }
 
         private void ROT_Z_ValueChanged(object sender, EventArgs e)
         {
+            if (transformVal.rotation.Z == (float)ROT_Z.Value)
+                return;
+
             transformVal.rotation.Z = (float)ROT_Z.Value;
             ValueChanged();
         }

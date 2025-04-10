@@ -1,6 +1,7 @@
 using CATHODE;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
+using CommandsEditor.DockPanels;
 using CommandsEditor.Popups;
 using System;
 using System.Collections.Generic;
@@ -73,6 +74,10 @@ namespace CommandsEditor
         public static Action OnSaved;
         public static Action OnParameterModified;
         public static Action OnResourceModified;
+
+        //Composite display events
+        public static Action<CompositeDisplay> OnCompositeDisplayOpening;
+        public static Action<CompositeDisplay> OnCompositeDisplayClosing;
 
         //Entity about to be / being added
         public static Action OnEntityAddPending;

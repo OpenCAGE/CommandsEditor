@@ -29,6 +29,7 @@ namespace CommandsEditor.UnityConnection
         {
             Singleton.OnLevelLoaded += LevelLoaded;
             Singleton.OnSaved += LevelSaved;
+            Singleton.OnCompositeReloaded += CompositeReloaded;
             Singleton.OnCompositeSelected += CompositeSelected;
             Singleton.OnCompositeDeleted += CompositeDeleted;
             Singleton.OnEntityReloaded += EntitySelected;
@@ -66,7 +67,7 @@ namespace CommandsEditor.UnityConnection
                 _server.Stop();
             _server = null;
         }
-        
+
         /* A level has just been loaded -> load its data in Unity */
         private static void LevelLoaded(LevelContent content)
         {
@@ -84,15 +85,10 @@ namespace CommandsEditor.UnityConnection
         private static void CompositeSelected(Composite composite)
         {
             SendData(GeneratePacket(PacketEvent.COMPOSITE_SELECTED));
-
-            //todo: need to unsub from old path when previous ui is closed
-            Singleton.Editor.CommandsDisplay.CompositeDisplay.Path.OnSteppedForwards += CompositePathStepped;
-            Singleton.Editor.CommandsDisplay.CompositeDisplay.Path.OnSteppedBackwards += CompositePathStepped;
         }
-        private static void CompositePathStepped()
+        private static void CompositeReloaded(Composite composite)
         {
-            //todo: contextual entities should highlight
-            SendData(GeneratePacket(PacketEvent.COMPOSITE_PATH_STEPPED));
+            SendData(GeneratePacket(PacketEvent.COMPOSITE_RELOADED));
         }
 
         /* Composite lifetime events -> sync them to Unity */
@@ -169,20 +165,25 @@ namespace CommandsEditor.UnityConnection
             Packet p = new Packet(packet_event);
             p.level_name = Singleton.Editor?.CommandsDisplay?.Content?.level;
             p.system_folder = SharedData.pathToAI;
-            if (Singleton.Editor?.CommandsDisplay?.CompositeDisplay?.Composite != null)
-            {
-                p.composite = Singleton.Editor.CommandsDisplay.CompositeDisplay.Composite.shortGUID.ToUInt32();
-            }
-            if (Singleton.Editor?.CommandsDisplay?.CompositeDisplay?.EntityDisplay?.Entity != null)
-            {
-                p.entity = Singleton.Editor.CommandsDisplay.CompositeDisplay.EntityDisplay.Entity.shortGUID.ToUInt32();
-            }
             if (Singleton.Editor?.CommandsDisplay?.CompositeDisplay != null)
             {
                 List<CompositePath.CompAndEnt> richPath = Singleton.Editor.CommandsDisplay.CompositeDisplay.Path.GetPathRich(Singleton.Editor.CommandsDisplay.CompositeDisplay.Composite);
                 foreach (CompositePath.CompAndEnt entry in richPath)
+                {
                     if (entry.Entity != null)
-                        p.path.Add(entry.Entity.shortGUID.ToUInt32());
+                    {
+                        p.path_entities.Add(entry.Entity.shortGUID.ToUInt32());
+                        p.path_composites.Add(entry.Composite.shortGUID.ToUInt32());
+                    }
+                }
+            }
+            if (Singleton.Editor?.CommandsDisplay?.CompositeDisplay?.EntityDisplay?.Entity != null)
+            {
+                p.path_entities.Add(Singleton.Editor.CommandsDisplay.CompositeDisplay.EntityDisplay.Entity.shortGUID.ToUInt32());
+            }
+            if (Singleton.Editor?.CommandsDisplay?.CompositeDisplay?.Composite != null)
+            {
+                p.path_composites.Add(Singleton.Editor.CommandsDisplay.CompositeDisplay.Composite.shortGUID.ToUInt32());
             }
             p.dirty = _isDirty; //NOTE: Not using the DirtyTracker here as we only care about changes that will visually affect the Unity editor.
             return p;
