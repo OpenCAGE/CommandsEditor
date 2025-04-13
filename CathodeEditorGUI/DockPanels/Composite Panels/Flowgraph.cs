@@ -395,6 +395,9 @@ namespace CommandsEditor
         //Regenerate the node's visual for the associated entity (sets name, colour, redraws)
         private void RegenerateNodeStyle(STNode node)
         {
+            if (node == null)
+                return;
+
             switch (node.Entity.variant)
             {
                 case EntityVariant.PROXY:

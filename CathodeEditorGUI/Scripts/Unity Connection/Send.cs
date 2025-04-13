@@ -29,6 +29,7 @@ namespace CommandsEditor.UnityConnection
         {
             Singleton.OnLevelLoaded += LevelLoaded;
             Singleton.OnSaved += LevelSaved;
+            Singleton.OnCompositeAdded += CompositeAdded;
             Singleton.OnCompositeReloaded += CompositeReloaded;
             Singleton.OnCompositeSelected += CompositeSelected;
             Singleton.OnCompositeDeleted += CompositeDeleted;
@@ -84,23 +85,38 @@ namespace CommandsEditor.UnityConnection
         /* A composite has been loaded -> open it in the Unity scene */
         private static void CompositeSelected(Composite composite)
         {
-            SendData(GeneratePacket(PacketEvent.COMPOSITE_SELECTED));
+            Packet p = GeneratePacket(PacketEvent.COMPOSITE_SELECTED);
+            p.composite = composite.shortGUID.ToUInt32();
+            SendData(p);
         }
         private static void CompositeReloaded(Composite composite)
         {
-            SendData(GeneratePacket(PacketEvent.COMPOSITE_RELOADED));
+            Packet p = GeneratePacket(PacketEvent.COMPOSITE_RELOADED);
+            p.composite = composite.shortGUID.ToUInt32();
+            SendData(p);
         }
 
         /* Composite lifetime events -> sync them to Unity */
+        private static void CompositeAdded(Composite composite)
+        {
+            Packet p = GeneratePacket(PacketEvent.COMPOSITE_ADDED);
+            p.composite = composite.shortGUID.ToUInt32();
+            SendData(p);
+        }
         private static void CompositeDeleted(Composite composite)
         {
-            SendData(GeneratePacket(PacketEvent.COMPOSITE_DELETED));
+            Packet p = GeneratePacket(PacketEvent.COMPOSITE_DELETED);
+            p.composite = composite.shortGUID.ToUInt32();
+            SendData(p);
         }
 
         /* Entity lifetime events -> sync them to Unity */
         private static void EntitySelected(Entity entity)
         {
-            SendData(GeneratePacket(PacketEvent.ENTITY_SELECTED));
+            Packet p = GeneratePacket(PacketEvent.ENTITY_SELECTED);
+            p.entity_variant = entity.variant;
+            p.entity = entity.shortGUID.ToUInt32();
+            SendData(p);
         }
         private static void EntityMoved(cTransform transform, Entity entity)
         {
@@ -109,17 +125,27 @@ namespace CommandsEditor.UnityConnection
             Packet p = GeneratePacket(PacketEvent.ENTITY_MOVED);
             p.position = transform.position;
             p.rotation = transform.rotation;
+            p.entity_variant = entity.variant;
+            p.entity = entity.shortGUID.ToUInt32();
+            SendData(p);
+        }
+        private static void EntityDeleted(Entity entity)
+        {
+            _isDirty = true;
+
+            Packet p = GeneratePacket(PacketEvent.ENTITY_DELETED);
+            p.entity_variant = entity.variant;
+            p.entity = entity.shortGUID.ToUInt32();
             SendData(p);
         }
         private static void EntityAdded(Entity entity)
         {
             _isDirty = true;
-            SendData(GeneratePacket(PacketEvent.ENTITY_ADDED));
-        }
-        private static void EntityDeleted(Entity entity)
-        {
-            _isDirty = true;
-            SendData(GeneratePacket(PacketEvent.ENTITY_DELETED));
+
+            Packet p = GeneratePacket(PacketEvent.ENTITY_ADDED);
+            p.entity_variant = entity.variant;
+            p.entity = entity.shortGUID.ToUInt32();
+            SendData(p);
         }
         private static void ResourceModified()
         {
@@ -179,11 +205,16 @@ namespace CommandsEditor.UnityConnection
             }
             if (Singleton.Editor?.CommandsDisplay?.CompositeDisplay?.EntityDisplay?.Entity != null)
             {
-                p.path_entities.Add(Singleton.Editor.CommandsDisplay.CompositeDisplay.EntityDisplay.Entity.shortGUID.ToUInt32());
+                Entity entity = Singleton.Editor.CommandsDisplay.CompositeDisplay.EntityDisplay.Entity;
+                p.path_entities.Add(entity.shortGUID.ToUInt32());
+                p.entity = entity.shortGUID.ToUInt32();
+                p.entity_variant = entity.variant;
             }
             if (Singleton.Editor?.CommandsDisplay?.CompositeDisplay?.Composite != null)
             {
-                p.path_composites.Add(Singleton.Editor.CommandsDisplay.CompositeDisplay.Composite.shortGUID.ToUInt32());
+                Composite composite = Singleton.Editor.CommandsDisplay.CompositeDisplay.Composite;
+                p.path_composites.Add(composite.shortGUID.ToUInt32());
+                p.composite = composite.shortGUID.ToUInt32();
             }
             p.dirty = _isDirty; //NOTE: Not using the DirtyTracker here as we only care about changes that will visually affect the Unity editor.
             return p;

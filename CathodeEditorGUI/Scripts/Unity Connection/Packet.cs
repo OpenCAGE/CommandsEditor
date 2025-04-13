@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CATHODE.Scripting;
+using System;
 using System.Collections.Generic;
 
 namespace CommandsEditor.UnityConnection
@@ -10,6 +11,7 @@ namespace CommandsEditor.UnityConnection
         COMPOSITE_SELECTED,
         COMPOSITE_RELOADED,
         COMPOSITE_DELETED,
+        COMPOSITE_ADDED,
 
         ENTITY_SELECTED,
         ENTITY_MOVED,
@@ -38,6 +40,8 @@ namespace CommandsEditor.UnityConnection
         //Selection metadata
         public List<uint> path_entities = new List<uint>(); 
         public List<uint> path_composites = new List<uint>();
+        public uint entity;
+        public uint composite;
 
         //Transform
         public System.Numerics.Vector3 position = new System.Numerics.Vector3();
@@ -45,6 +49,9 @@ namespace CommandsEditor.UnityConnection
 
         //Renderable resource
         public List<Tuple<int, int>> renderable = new List<Tuple<int, int>>(); //Model Index, Material Index
+
+        //Modified entity info
+        public EntityVariant entity_variant;
 
         //Track if things have changed
         public bool dirty = false;
