@@ -52,6 +52,7 @@ namespace CommandsEditor.UnityConnection
 
         //Modified entity info
         public EntityVariant entity_variant;
+        public uint entity_function; //For function entities
 
         //Track if things have changed
         public bool dirty = false;

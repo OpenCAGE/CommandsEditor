@@ -116,6 +116,8 @@ namespace CommandsEditor.UnityConnection
             Packet p = GeneratePacket(PacketEvent.ENTITY_SELECTED);
             p.entity_variant = entity.variant;
             p.entity = entity.shortGUID.ToUInt32();
+            if (entity.variant == EntityVariant.FUNCTION)
+                p.entity_function = ((FunctionEntity)entity).function.ToUInt32();
             SendData(p);
         }
         private static void EntityMoved(cTransform transform, Entity entity)
@@ -127,6 +129,8 @@ namespace CommandsEditor.UnityConnection
             p.rotation = transform.rotation;
             p.entity_variant = entity.variant;
             p.entity = entity.shortGUID.ToUInt32();
+            if (entity.variant == EntityVariant.FUNCTION)
+                p.entity_function = ((FunctionEntity)entity).function.ToUInt32();
             SendData(p);
         }
         private static void EntityDeleted(Entity entity)
@@ -136,6 +140,8 @@ namespace CommandsEditor.UnityConnection
             Packet p = GeneratePacket(PacketEvent.ENTITY_DELETED);
             p.entity_variant = entity.variant;
             p.entity = entity.shortGUID.ToUInt32();
+            if (entity.variant == EntityVariant.FUNCTION)
+                p.entity_function = ((FunctionEntity)entity).function.ToUInt32();
             SendData(p);
         }
         private static void EntityAdded(Entity entity)
@@ -145,6 +151,8 @@ namespace CommandsEditor.UnityConnection
             Packet p = GeneratePacket(PacketEvent.ENTITY_ADDED);
             p.entity_variant = entity.variant;
             p.entity = entity.shortGUID.ToUInt32();
+            if (entity.variant == EntityVariant.FUNCTION)
+                p.entity_function = ((FunctionEntity)entity).function.ToUInt32();
             SendData(p);
         }
         private static void ResourceModified()
@@ -209,6 +217,8 @@ namespace CommandsEditor.UnityConnection
                 p.path_entities.Add(entity.shortGUID.ToUInt32());
                 p.entity = entity.shortGUID.ToUInt32();
                 p.entity_variant = entity.variant;
+                if (entity.variant == EntityVariant.FUNCTION)
+                    p.entity_function = ((FunctionEntity)entity).function.ToUInt32();
             }
             if (Singleton.Editor?.CommandsDisplay?.CompositeDisplay?.Composite != null)
             {
