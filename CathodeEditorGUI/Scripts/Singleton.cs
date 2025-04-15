@@ -15,25 +15,6 @@ namespace CommandsEditor
 {
     public static class Singleton
     {
-        static Singleton()
-        {
-            //Populate localised text string databases (in English)
-            List<string> textList = Directory.GetFiles(SharedData.pathToAI + "/DATA/TEXT/ENGLISH/", "*.TXT", SearchOption.AllDirectories).ToList<string>();
-            {
-                TextDB[] strings = new TextDB[textList.Count];
-                Parallel.For(0, textList.Count, (i) =>
-                {
-                    strings[i] = new TextDB(textList[i]);
-                });
-                for (int i = 0; i < textList.Count; i++)
-                    GlobalTextDBs.Add(Path.GetFileNameWithoutExtension(textList[i]), strings[i]);
-            }
-
-            //Load bulky global data
-            Task.Factory.StartNew(() => LoadGlobalAssets());
-            Task.Factory.StartNew(() => LoadAnimData());
-        }
-
         public static CommandsEditor Editor;
 
         //Global localised string DBs for English
@@ -140,6 +121,26 @@ namespace CommandsEditor
         public static Action OnGlobalAssetsLoaded;
         public static bool LoadedGlobalAssets => _loadedGlobalAssets;
         private static bool _loadedGlobalAssets = false;
+
+        /* Load all shared global data */
+        public static void LoadGlobals()
+        {
+            //Populate localised text string databases (in English)
+            List<string> textList = Directory.GetFiles(SharedData.pathToAI + "/DATA/TEXT/ENGLISH/", "*.TXT", SearchOption.AllDirectories).ToList<string>();
+            {
+                TextDB[] strings = new TextDB[textList.Count];
+                Parallel.For(0, textList.Count, (i) =>
+                {
+                    strings[i] = new TextDB(textList[i]);
+                });
+                for (int i = 0; i < textList.Count; i++)
+                    GlobalTextDBs.Add(Path.GetFileNameWithoutExtension(textList[i]), strings[i]);
+            }
+
+            //Load bulky global data
+            Task.Factory.StartNew(() => LoadGlobalAssets());
+            Task.Factory.StartNew(() => LoadAnimData());
+        }
 
         /* Load anim data */
         private static void LoadAnimData()

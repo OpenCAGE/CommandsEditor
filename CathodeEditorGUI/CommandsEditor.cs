@@ -143,6 +143,7 @@ namespace CommandsEditor
             //return;
 
             Singleton.Editor = this;
+            Singleton.LoadGlobals();
 
             _discord = new DiscordRpcClient("1152999067207606392");
             _discord.Initialize();
