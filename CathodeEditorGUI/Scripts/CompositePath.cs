@@ -78,6 +78,7 @@ namespace CommandsEditor
             }
         }
 
+        // returns the path as a pretty string for UI
         public string GetPath(Composite currentComp)
         {
             string path = "";
@@ -89,6 +90,18 @@ namespace CommandsEditor
             return path;
         }
 
+        // returns the path as the entity IDs for use in scripting
+        public List<ShortGuid> GetPath()
+        {
+            List<ShortGuid> path = new List<ShortGuid>();
+            for (int i = 0; i < _entities.Count; i++)
+            {
+                path.Add(_entities[i].shortGUID);
+            }
+            return path;
+        }
+
+        // returns the path with Composite and Entity objects
         public List<CompAndEnt> GetPathRich(Composite currentComp)
         {
             List<CompAndEnt> rich = new List<CompAndEnt>();
