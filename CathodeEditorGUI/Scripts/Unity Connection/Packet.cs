@@ -38,7 +38,7 @@ namespace CommandsEditor.UnityConnection
         public string system_folder = "";
 
         //Selection metadata
-        public List<uint> path_entities = new List<uint>(); 
+        public List<uint> path_entities = new List<uint>();
         public List<uint> path_composites = new List<uint>();
         public uint entity;
         public uint composite;
@@ -53,6 +53,7 @@ namespace CommandsEditor.UnityConnection
         //Modified entity info
         public EntityVariant entity_variant;
         public uint entity_function; //For function entities
+        public List<uint> entity_pointed; //For alias/proxy entities
 
         //Track if things have changed
         public bool dirty = false;

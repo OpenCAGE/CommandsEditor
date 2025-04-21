@@ -113,46 +113,35 @@ namespace CommandsEditor.UnityConnection
         /* Entity lifetime events -> sync them to Unity */
         private static void EntitySelected(Entity entity)
         {
-            Packet p = GeneratePacket(PacketEvent.ENTITY_SELECTED);
-            p.entity_variant = entity.variant;
-            p.entity = entity.shortGUID.ToUInt32();
-            if (entity.variant == EntityVariant.FUNCTION)
-                p.entity_function = ((FunctionEntity)entity).function.ToUInt32();
-            SendData(p);
+            SendData(GeneratePacket(PacketEvent.ENTITY_SELECTED, entity));
         }
         private static void EntityMoved(cTransform transform, Entity entity)
         {
             _isDirty = true;
 
-            Packet p = GeneratePacket(PacketEvent.ENTITY_MOVED);
+            Packet p = GeneratePacket(PacketEvent.ENTITY_MOVED, entity);
             p.position = transform.position;
             p.rotation = transform.rotation;
-            p.entity_variant = entity.variant;
-            p.entity = entity.shortGUID.ToUInt32();
-            if (entity.variant == EntityVariant.FUNCTION)
-                p.entity_function = ((FunctionEntity)entity).function.ToUInt32();
             SendData(p);
         }
         private static void EntityDeleted(Entity entity)
         {
             _isDirty = true;
-
-            Packet p = GeneratePacket(PacketEvent.ENTITY_DELETED);
-            p.entity_variant = entity.variant;
-            p.entity = entity.shortGUID.ToUInt32();
-            if (entity.variant == EntityVariant.FUNCTION)
-                p.entity_function = ((FunctionEntity)entity).function.ToUInt32();
-            SendData(p);
+            SendData(GeneratePacket(PacketEvent.ENTITY_DELETED, entity));
         }
         private static void EntityAdded(Entity entity)
         {
             _isDirty = true;
-
-            Packet p = GeneratePacket(PacketEvent.ENTITY_ADDED);
-            p.entity_variant = entity.variant;
-            p.entity = entity.shortGUID.ToUInt32();
-            if (entity.variant == EntityVariant.FUNCTION)
-                p.entity_function = ((FunctionEntity)entity).function.ToUInt32();
+            Packet p = GeneratePacket(PacketEvent.ENTITY_ADDED, entity);
+            switch (entity.variant)
+            {
+                case EntityVariant.PROXY:
+                    p.entity_pointed = ((ProxyEntity)entity).proxy.pathUint;
+                    break;
+                case EntityVariant.ALIAS:
+                    p.entity_pointed = ((AliasEntity)entity).alias.pathUint;
+                    break;
+            }
             SendData(p);
         }
         private static void ResourceModified()
@@ -194,6 +183,15 @@ namespace CommandsEditor.UnityConnection
         }
 
         /* Create a Packet object containing useful metadata */
+        private static Packet GeneratePacket(PacketEvent packet_event, Entity entity)
+        {
+            Packet p = GeneratePacket(packet_event);
+            p.entity_variant = entity.variant;
+            p.entity = entity.shortGUID.ToUInt32();
+            if (entity.variant == EntityVariant.FUNCTION)
+                p.entity_function = ((FunctionEntity)entity).function.ToUInt32();
+            return p;
+        }
         private static Packet GeneratePacket(PacketEvent packet_event = PacketEvent.GENERIC_DATA_SYNC)
         {
             Packet p = new Packet(packet_event);
