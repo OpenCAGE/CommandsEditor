@@ -96,7 +96,7 @@ namespace CommandsEditor
                     //Add all base-game ones
                     for (int i = 0; i < options.Count; i++)
                     {
-                        var metadata = ParameterUtils.GetParameterMetadata(ent, options[i].Text);
+                        var metadata = ParameterUtils.GetParameterMetadata(ent, options[i].Text, comp);
 
                         if (metadata.Item1.Value == ParameterVariant.METHOD_FUNCTION)
                             continue;
@@ -120,7 +120,7 @@ namespace CommandsEditor
                     //Add all base-game ones
                     for (int i = 0; i < options.Count; i++)
                     {
-                        var metadata = ParameterUtils.GetParameterMetadata(ent, options[i].Text);
+                        var metadata = ParameterUtils.GetParameterMetadata(ent, options[i].Text, comp);
 
                         //TODO: Maybe we don't want to show other things here too?
                         if (metadata.Item1.Value == ParameterVariant.METHOD_FUNCTION || metadata.Item1.Value == ParameterVariant.TARGET_PIN)
