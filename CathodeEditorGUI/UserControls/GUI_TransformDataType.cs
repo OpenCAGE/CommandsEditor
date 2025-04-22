@@ -172,7 +172,7 @@ namespace CommandsEditor.UserControls
             transformVal.rotation.Z = transform.rotation.Z;
 
             UpdateUI();
-            HighlightAsModified();
+            ValueChanged();
         }
 
         public override void HighlightAsModified(bool updateDatabase = true, Control fontToUpdate = null)
