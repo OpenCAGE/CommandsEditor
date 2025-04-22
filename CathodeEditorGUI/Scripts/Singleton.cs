@@ -1,6 +1,7 @@
 using CATHODE;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
+using CommandsEditor.DockPanels;
 using CommandsEditor.Popups;
 using System;
 using System.Collections.Generic;
@@ -14,25 +15,6 @@ namespace CommandsEditor
 {
     public static class Singleton
     {
-        static Singleton()
-        {
-            //Populate localised text string databases (in English)
-            List<string> textList = Directory.GetFiles(SharedData.pathToAI + "/DATA/TEXT/ENGLISH/", "*.TXT", SearchOption.AllDirectories).ToList<string>();
-            {
-                TextDB[] strings = new TextDB[textList.Count];
-                Parallel.For(0, textList.Count, (i) =>
-                {
-                    strings[i] = new TextDB(textList[i]);
-                });
-                for (int i = 0; i < textList.Count; i++)
-                    GlobalTextDBs.Add(Path.GetFileNameWithoutExtension(textList[i]), strings[i]);
-            }
-
-            //Load bulky global data
-            Task.Factory.StartNew(() => LoadGlobalAssets());
-            Task.Factory.StartNew(() => LoadAnimData());
-        }
-
         public static CommandsEditor Editor;
 
         //Global localised string DBs for English
@@ -65,9 +47,18 @@ namespace CommandsEditor
 
         //Misc events
         public static Action OnCAGEAnimationEditorOpened;
-        public static Action<Entity> OnEntityDeleted;
         public static Action<Entity, string> OnEntityRenamed;
         public static Action<Composite, string> OnCompositeRenamed;
+        public static Action<cTransform, Entity> OnEntityMoved;
+        public static Action<Entity> OnEntityDeleted;
+        public static Action<Composite> OnCompositeDeleted;
+        public static Action OnSaved;
+        public static Action OnParameterModified;
+        public static Action OnResourceModified;
+
+        //Composite display events
+        public static Action<CompositeDisplay> OnCompositeDisplayOpening;
+        public static Action<CompositeDisplay> OnCompositeDisplayClosing;
 
         //Entity about to be / being added
         public static Action OnEntityAddPending;
@@ -130,6 +121,26 @@ namespace CommandsEditor
         public static Action OnGlobalAssetsLoaded;
         public static bool LoadedGlobalAssets => _loadedGlobalAssets;
         private static bool _loadedGlobalAssets = false;
+
+        /* Load all shared global data */
+        public static void LoadGlobals()
+        {
+            //Populate localised text string databases (in English)
+            List<string> textList = Directory.GetFiles(SharedData.pathToAI + "/DATA/TEXT/ENGLISH/", "*.TXT", SearchOption.AllDirectories).ToList<string>();
+            {
+                TextDB[] strings = new TextDB[textList.Count];
+                Parallel.For(0, textList.Count, (i) =>
+                {
+                    strings[i] = new TextDB(textList[i]);
+                });
+                for (int i = 0; i < textList.Count; i++)
+                    GlobalTextDBs.Add(Path.GetFileNameWithoutExtension(textList[i]), strings[i]);
+            }
+
+            //Load bulky global data
+            Task.Factory.StartNew(() => LoadGlobalAssets());
+            Task.Factory.StartNew(() => LoadAnimData());
+        }
 
         /* Load anim data */
         private static void LoadAnimData()

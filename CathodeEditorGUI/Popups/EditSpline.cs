@@ -68,7 +68,7 @@ namespace CommandsEditor
             }
             pointTransform.Visible = true;
             splineViewer.HighlightPoint(splinePoints.SelectedIndex);
-            pointTransform.PopulateUI(spline.splinePoints[splinePoints.SelectedIndex], "Spline Point " + splinePoints.SelectedIndex);
+            pointTransform.PopulateUI(null, spline.splinePoints[splinePoints.SelectedIndex], "Spline Point " + splinePoints.SelectedIndex);
         }
 
         private void addPoint_Click(object sender, EventArgs e)

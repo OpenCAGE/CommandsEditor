@@ -138,7 +138,7 @@
             1,
             0,
             0,
-            393216});
+            65536});
             this.POS_X.Location = new System.Drawing.Point(3, 3);
             this.POS_X.Maximum = new decimal(new int[] {
             1874919423,
@@ -164,7 +164,7 @@
             1,
             0,
             0,
-            393216});
+            65536});
             this.POS_Z.Location = new System.Drawing.Point(217, 3);
             this.POS_Z.Maximum = new decimal(new int[] {
             1874919423,
@@ -190,7 +190,7 @@
             1,
             0,
             0,
-            393216});
+            65536});
             this.POS_Y.Location = new System.Drawing.Point(110, 3);
             this.POS_Y.Maximum = new decimal(new int[] {
             1874919423,
@@ -233,7 +233,7 @@
             1,
             0,
             0,
-            393216});
+            65536});
             this.ROT_X.Location = new System.Drawing.Point(3, 3);
             this.ROT_X.Maximum = new decimal(new int[] {
             1874919423,
@@ -259,7 +259,7 @@
             1,
             0,
             0,
-            393216});
+            65536});
             this.ROT_Z.Location = new System.Drawing.Point(217, 3);
             this.ROT_Z.Maximum = new decimal(new int[] {
             1874919423,
@@ -285,7 +285,7 @@
             1,
             0,
             0,
-            393216});
+            65536});
             this.ROT_Y.Location = new System.Drawing.Point(110, 3);
             this.ROT_Y.Maximum = new decimal(new int[] {
             1874919423,

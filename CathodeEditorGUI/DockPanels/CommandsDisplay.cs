@@ -447,6 +447,8 @@ namespace CommandsEditor.DockPanels
             //Refresh UI
             ReloadList();
             Content.editor_utils.GenerateCompositeInstances(Content.commands);
+
+            Singleton.OnCompositeDeleted?.Invoke(composite);
         }
 
         private string _currentSearch = "";

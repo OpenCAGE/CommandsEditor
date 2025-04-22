@@ -394,7 +394,7 @@ namespace CommandsEditor.DockPanels
                 {
                     case DataType.TRANSFORM:
                         parameterGUI = new GUI_TransformDataType();
-                        ((GUI_TransformDataType)parameterGUI).PopulateUI((cTransform)this_param, paramName);
+                        ((GUI_TransformDataType)parameterGUI).PopulateUI(_entity, (cTransform)this_param, paramName);
                         break;
                     case DataType.INTEGER:
                         parameterGUI = new GUI_NumericDataType();
@@ -577,12 +577,18 @@ namespace CommandsEditor.DockPanels
 
         private void OnDeleteParam(Parameter param)
         {
+            if (param?.content != null && param.name == ShortGuidUtils.Generate("position") && param.content.dataType == DataType.TRANSFORM)
+                Singleton.OnEntityMoved?.Invoke(null, _entity);
+            if (param?.content != null && param.name == ShortGuidUtils.Generate("resource") && param.content.dataType == DataType.RESOURCE)
+                Singleton.OnResourceModified?.Invoke();
+            Singleton.OnParameterModified?.Invoke();
             _entity.parameters.Remove(param);
             _compositeDisplay.ReloadEntity(_entity);
         }
 
         private void OnLinkEdited(Entity orig, Entity linked)
         {
+            Singleton.OnParameterModified?.Invoke();
             _compositeDisplay.ReloadEntity(orig);
             _compositeDisplay.ReloadEntity(linked);
         }
@@ -697,6 +703,7 @@ namespace CommandsEditor.DockPanels
         private void OnResourceEditorSaved(List<ResourceReference> resources)
         {
             ((FunctionEntity)Entity).resources = resources;
+            Singleton.OnResourceModified?.Invoke();
         }
 
         private void goToZone_Click(object sender, EventArgs e)

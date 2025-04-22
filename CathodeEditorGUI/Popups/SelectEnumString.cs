@@ -98,6 +98,7 @@ namespace CommandsEditor
                         if (items.Item1[i].SubItems[1].Text == animSet)
                             filteredItems.Add(items.Item1[i]);
                     }
+                    useDescColumn = false;
                 }
                 else
                 {
@@ -109,7 +110,6 @@ namespace CommandsEditor
                         filteredItems.Add(items.Item1[i]);
                         addedAnims.Add(items.Item1[i].Text);
                     }
-                    useDescColumn = false;
                 }
                 _filteredItems = filteredItems.ToArray();
             }

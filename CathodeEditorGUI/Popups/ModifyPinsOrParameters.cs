@@ -20,6 +20,7 @@ using OpenCAGE;
 using ST.Library.UI.NodeEditor;
 using WebSocketSharp;
 using static System.Net.Mime.MediaTypeNames;
+using static CATHODE.SkeleDB;
 using static CommandsEditor.EditorUtils;
 
 namespace CommandsEditor
@@ -95,7 +96,7 @@ namespace CommandsEditor
                     //Add all base-game ones
                     for (int i = 0; i < options.Count; i++)
                     {
-                        var metadata = ParameterUtils.GetParameterMetadata(ent, options[i].Text);
+                        var metadata = ParameterUtils.GetParameterMetadata(ent, options[i].Text, comp);
 
                         if (metadata.Item1.Value == ParameterVariant.METHOD_FUNCTION)
                             continue;
@@ -119,7 +120,7 @@ namespace CommandsEditor
                     //Add all base-game ones
                     for (int i = 0; i < options.Count; i++)
                     {
-                        var metadata = ParameterUtils.GetParameterMetadata(ent, options[i].Text);
+                        var metadata = ParameterUtils.GetParameterMetadata(ent, options[i].Text, comp);
 
                         //TODO: Maybe we don't want to show other things here too?
                         if (metadata.Item1.Value == ParameterVariant.METHOD_FUNCTION || metadata.Item1.Value == ParameterVariant.TARGET_PIN)
@@ -193,7 +194,7 @@ namespace CommandsEditor
                         if (item.Checked)
                         {
                             //NOTE: Hijacking this to add relays as well. Maybe we should make this optional?
-                            if (item.Group.Name == ParameterVariant.METHOD_PIN.ToString())
+                            if (item?.Group != null && item.Group.Name == ParameterVariant.METHOD_PIN.ToString())
                             {
                                 ShortGuid relay = ParameterUtils.GetRelay(tag.ShortGUID);
                                 if (relay != ShortGuid.Invalid)
@@ -228,10 +229,40 @@ namespace CommandsEditor
                                     //Data can be null if this is a custom parameter (e.g. CAGEAnimation) - use the type info from the list here instead.
                                     _inspector.Entity.AddParameter(ShortGuidUtils.Generate(item.Text), (DataType)Enum.Parse(typeof(DataType), item.SubItems[1].Text));
                                 }
+                                Singleton.OnParameterModified?.Invoke();
+                                switch (type)
+                                {
+                                    case DataType.RESOURCE:
+                                        Singleton.OnResourceModified?.Invoke();
+                                        break;
+                                    case DataType.TRANSFORM:
+                                        if (data != null && item.Text == "position")
+                                        {
+                                            cTransform transformVal = (cTransform)data;
+                                            Singleton.OnEntityMoved?.Invoke(transformVal, _inspector.Entity);
+                                        }
+                                        break;
+                                }
                             }
                         }
                         else
-                            _inspector.Entity.RemoveParameter(tag.ShortGUID);
+                        {
+                            if (_inspector.Entity.RemoveParameter(tag.ShortGUID))
+                            {
+                                DataType type = (DataType)Enum.Parse(typeof(DataType), item.SubItems[1].Text);
+                                Singleton.OnParameterModified?.Invoke();
+                                switch (type)
+                                {
+                                    case DataType.RESOURCE:
+                                        Singleton.OnResourceModified?.Invoke();
+                                        break;
+                                    case DataType.TRANSFORM:
+                                        if (item.Text == "position")
+                                            Singleton.OnEntityMoved?.Invoke(null, _inspector.Entity);
+                                        break;
+                                }
+                            }
+                        }
                         break;
                 }
             }
@@ -352,11 +383,13 @@ namespace CommandsEditor
 
         private void OnAddedCustomPin(string text)
         {
-            AddCustomEntry(ShortGuidUtils.Generate(text), DataType.FLOAT, _mode == Mode.LINK_IN ? ParameterVariant.INPUT_PIN : ParameterVariant.OUTPUT_PIN);
+            if (IsNameValid(text)) 
+                AddCustomEntry(ShortGuidUtils.Generate(text), DataType.FLOAT, _mode == Mode.LINK_IN ? ParameterVariant.INPUT_PIN : ParameterVariant.OUTPUT_PIN);
         }
         private void OnAddedCustomParam(string name, DataType datatype)
         {
-            AddCustomEntry(ShortGuidUtils.Generate(name), datatype);
+            if (IsNameValid(name))
+                AddCustomEntry(ShortGuidUtils.Generate(name), datatype);
         }
 
         private void AddCustomEntry(ShortGuid guid, DataType datatype, ParameterVariant variant = ParameterVariant.PARAMETER)

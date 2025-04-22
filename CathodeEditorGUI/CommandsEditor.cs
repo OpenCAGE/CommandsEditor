@@ -47,8 +47,6 @@ namespace CommandsEditor
 
         private SelectLevel _levelSelect = null;
 
-        private WebSocketServer _server;
-        private WebsocketServer _serverLogic;
         private DiscordRpcClient _discord;
 
         private Dictionary<string, ToolStripMenuItem> _levelMenuItems = new Dictionary<string, ToolStripMenuItem>();
@@ -145,6 +143,7 @@ namespace CommandsEditor
             //return;
 
             Singleton.Editor = this;
+            Singleton.LoadGlobals();
 
             _discord = new DiscordRpcClient("1152999067207606392");
             _discord.Initialize();
@@ -180,10 +179,6 @@ namespace CommandsEditor
             Height = SettingsManager.GetInteger(Singleton.Settings.WindowHeight, _defaultHeight);
             Resize += CommandsEditor_Resize;
             FormClosing += CommandsEditor_FormClosing;
-            
-            Singleton.OnEntitySelected += RefreshWebsocket;
-            Singleton.OnCompositeSelected += RefreshWebsocket;
-            Singleton.OnLevelLoaded += RefreshWebsocket;
 
             connectToUnity.Checked = !SettingsManager.GetBool(Singleton.Settings.ServerOpt); connectToUnity.PerformClick();
             showEntityIDs.Checked = !SettingsManager.GetBool(Singleton.Settings.EntIdOpt); showEntityIDs.PerformClick();
@@ -217,24 +212,25 @@ namespace CommandsEditor
             toolStripButton2.DropDown.Closing += DropDown_Closing;
 
             //Set title
-            this.Text = "OpenCAGE Commands Editor";
+            _baseTitle = "OpenCAGE Commands Editor";
             if (OpenCAGE.SettingsManager.GetBool("CONFIG_ShowPlatform") &&
                 OpenCAGE.SettingsManager.GetString("META_GameVersion") != "")
             {
                 switch (OpenCAGE.SettingsManager.GetString("META_GameVersion"))
                 {
                     case "STEAM":
-                        this.Text += " - Steam";
+                        _baseTitle += " - Steam";
                         break;
                     case "EPIC_GAMES_STORE":
-                        this.Text += " - Epic Games Store";
+                        _baseTitle += " - Epic Games Store";
                         break;
                     case "GOG":
-                        this.Text += " - GoG";
+                        _baseTitle += " - GoG";
                         break;
                 }
             }
-            _baseTitle = this.Text;
+            DirtyTracker.OnChanged += OnDirtyChanged;
+            UpdateTitle();
 
             //Populate level list
             List<string> levels = Level.GetLevels(SharedData.pathToAI, true);
@@ -287,6 +283,18 @@ namespace CommandsEditor
             SettingsManager.SetString(Singleton.Settings.WindowState, WindowState.ToString());
         }
 
+        private void OnDirtyChanged(bool dirty) => UpdateTitle();
+        private void UpdateTitle()
+        {
+            if (_commandsDisplay == null)
+                this.Text = _baseTitle;
+            else
+                this.Text = _baseTitle + " - " + _commandsDisplay.Content.level;
+
+            if (DirtyTracker.IsDirty)
+                this.Text += " [UNSAVED CHANGES]";
+        }
+
         private void loadLevel_Click(object sender, EventArgs e)
         {
             if (_levelSelect == null)
@@ -322,8 +330,6 @@ namespace CommandsEditor
             }
 #endif
 
-            this.Text = _baseTitle + " - " + level;
-
             statusText.Text = "Loading " + level + "...";
             statusStrip.Update();
 
@@ -346,6 +352,8 @@ namespace CommandsEditor
 
             //Sometimes get an error here which appears to be thread related (?) -> investigate next time
             _levelMenuItems[_commandsDisplay.Content.level].Checked = true;
+
+            UpdateTitle();
         }
 
         private void _commandsDisplay_Resize(object sender, EventArgs e)
@@ -378,6 +386,7 @@ namespace CommandsEditor
         }
         private void ShowSaveMsg(bool saved)
         {
+            Singleton.OnSaved?.Invoke();
             if (saved)
             {
                 if (SettingsManager.GetBool(Singleton.Settings.ShowSavedMsgOpt))
@@ -478,97 +487,19 @@ namespace CommandsEditor
         {
             connectToUnity.Checked = !connectToUnity.Checked;
             SettingsManager.SetBool(Singleton.Settings.ServerOpt, connectToUnity.Checked);
-            RefreshWebsocket();
-        }
-        private bool StartWebsocket()
-        {
-            try
+            
+            if (connectToUnity.Checked)
             {
-                _server = new WebSocketServer("ws://localhost:1702");
-                _server.AddWebSocketService<WebsocketServer>("/commands_editor", (server) =>
+                if (!UnityConnection.Send.Start())
                 {
-                    _serverLogic = server;
-                    _serverLogic.OnClientConnect += RefreshWebsocket;
-                });
-                _server.Start();
-                return true;
-            }
-            catch
-            {
-                if (connectToUnity.Checked)
                     connectToUnity.PerformClick();
-
-                MessageBox.Show("Failed to initialise Unity connection.\nIs another instance of the script editor running?", "Connection failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;
-            }
-        }
-        private void RefreshWebsocket() => RefreshWebsocket(null);
-        private void RefreshWebsocket(object o)
-        {
-            if (!SettingsManager.GetBool(Singleton.Settings.ServerOpt))
-            {
-                if (_server != null)
-                    _server.Stop();
-                _server = null;
-                return;
+                    MessageBox.Show("Failed to initialise Unity connection.\nIs another instance of the script editor running?", "Connection failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
             else
             {
-                if (_server == null)
-                    StartWebsocket();
+                UnityConnection.Send.Stop();
             }
-
-            //Request the correct level
-            if (_commandsDisplay?.Content?.commands != null && _commandsDisplay.Content.commands.Loaded)
-            {
-                SendWebsocketData(new WebsocketServer.WSPacket { 
-                    type = WebsocketServer.MessageType.LOAD_LEVEL, 
-                    alien_path = SharedData.pathToAI, 
-                    level_name = _commandsDisplay.Content.level 
-                });
-            }
-
-            //Get active stuff
-            Composite composite = _commandsDisplay?.CompositeDisplay?.Composite;
-            Entity entity = _commandsDisplay?.CompositeDisplay?.EntityDisplay?.Entity;
-            Parameter position = entity?.GetParameter("position");
-
-            //Load composite
-            if (composite != null)
-            {
-                SendWebsocketData(new WebsocketServer.WSPacket
-                {
-                    type = WebsocketServer.MessageType.LOAD_COMPOSITE,
-                    composite_name = composite.shortGUID.ToByteString(),
-                    alien_path = SharedData.pathToAI,
-                    level_name = _commandsDisplay.Content.level
-                });
-            }
-
-            //Point to position of selected entity
-            if (position != null)
-            {
-                SendWebsocketData(new WebsocketServer.WSPacket
-                {
-                    type = WebsocketServer.MessageType.GO_TO_POSITION,
-                    position = ((cTransform)position.content).position
-                });
-            }
-
-            //Show name of entity
-            if (entity != null && composite != null)
-            {
-                SendWebsocketData(new WebsocketServer.WSPacket
-                {
-                    type = WebsocketServer.MessageType.SHOW_ENTITY_NAME,
-                    entity_name = EntityUtils.GetName(composite, entity)
-                });
-            }
-        }
-
-        private void SendWebsocketData(WebsocketServer.WSPacket content)
-        {
-            _server?.WebSocketServices["/commands_editor"].Sessions.Broadcast(JsonConvert.SerializeObject(content));
         }
 
         private void showEntityIDs_Click(object sender, EventArgs e)

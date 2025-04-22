@@ -22,7 +22,6 @@ namespace CommandsEditor
         public Action<Entity> OnFinalEntitySelected;
         public Action<List<Entity>> OnFinalEntitiesSelected;
         public Action<ShortGuid[]> OnHierarchyGenerated;
-        private List<ShortGuid> hierarchy = new List<ShortGuid>();
 
         private Entity selectedEntity = null;
         private Composite selectedComposite = null;
@@ -90,11 +89,7 @@ namespace CommandsEditor
         /* Load a composite into the UI */
         private void LoadComposite(Composite composite)
         {
-            if (selectedEntity != null)
-            {
-                hierarchy.Add(selectedEntity.shortGUID);
-                selectedEntity = null;
-            }
+            selectedEntity = null;
             if (!_multiselect)
                 SelectEntity.Enabled = false;
             FollowEntityThrough.Enabled = false;
@@ -131,6 +126,8 @@ namespace CommandsEditor
                     SettingsManager.SetBool(Singleton.Settings.PreviouslySearchedParamPopulationProxyOrAlias, applyDefaultParams.Checked);
 
                 //TODO: should use the proper hierarchy class here
+                List<ShortGuid> hierarchy = new List<ShortGuid>();
+                hierarchy.AddRange(_path.GetPath());
                 hierarchy.Add(selectedEntity.shortGUID);
                 hierarchy.Add(ShortGuid.Invalid);
                 OnHierarchyGenerated?.Invoke(hierarchy.ToArray());

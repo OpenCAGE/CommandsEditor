@@ -51,6 +51,8 @@ namespace CommandsEditor.DockPanels
 
         public bool SupportsFlowgraphs => FlowgraphLayoutManager.IsCompatible(Composite);
 
+        public Action<Composite> OnCompositeDisplayReloaded;
+
         private static Mutex _mut = new Mutex();
         private bool _canExportChildren = true;
         private bool _isSubbed = false;
@@ -78,6 +80,8 @@ namespace CommandsEditor.DockPanels
             _entityDisplay.Resize += _entityDisplay_Resize;
 
             this.FormClosed += CompositeDisplay_FormClosed;
+
+            Singleton.OnCompositeDisplayOpening?.Invoke(this);
         }
 
         private void _entityDisplay_Resize(object sender, EventArgs e)
@@ -103,6 +107,15 @@ namespace CommandsEditor.DockPanels
             pathDisplay.Text = _path.GetPath(_composite);
         }
 
+        private void OnCompsoiteDeleted(Composite composite)
+        {
+            if (!Populated)
+                return;
+
+            while (Path.AllComposites.Contains(composite) || _composite == composite)
+                LoadParent();
+        }
+
         //Saves and compiles all Flowgraph layouts for this Composite
         public void SaveAllFlowgraphs()
         {
@@ -125,6 +138,7 @@ namespace CommandsEditor.DockPanels
             {
                 _entityList.List.SelectedEntityChanged += LoadEntity;
                 Singleton.OnCompositeRenamed += OnCompositeRenamed;
+                Singleton.OnCompositeDeleted += OnCompsoiteDeleted;
                 Singleton.OnEntityAdded += ReloadUIForNewEntity;
                 _isSubbed = true;
             }
@@ -150,7 +164,7 @@ namespace CommandsEditor.DockPanels
 
             _entityList.List.Setup(composite, new CompositeEntityList.DisplayOptions() { ShowCheckboxes = true }, false);
             _entityList.Show(dockPanel, DockState.DockLeft);
-            _path = new CompositePath();
+            _path.Reset();
             this.Text = EditorUtils.GetCompositeName(composite);
 
             Reload(composite);
@@ -446,6 +460,8 @@ namespace CommandsEditor.DockPanels
             e.Cancel = true;
             EntityInspector display = (EntityInspector)sender;
             display.DepopulateUI();
+
+            Singleton.OnCompositeDisplayClosing?.Invoke(this);
         }
 
         public void CloseAllChildTabsExcept(Entity entity)

@@ -33,7 +33,7 @@ namespace CommandsEditor.UserControls
             label1.Text = paramID;
 
             numericUpDown1.DecimalPlaces = 6;
-            numericUpDown1.Increment = 0.000001M;
+            numericUpDown1.Increment = 0.1M;
             numericUpDown1.Maximum = (decimal)3.4E+28m;
             numericUpDown1.Minimum = (decimal)-3.4E+28m;
 
