@@ -258,7 +258,7 @@ namespace CommandsEditor
                                         break;
                                     case DataType.TRANSFORM:
                                         if (item.Text == "position")
-                                            Singleton.OnEntityMoved?.Invoke(new cTransform(), _inspector.Entity);
+                                            Singleton.OnEntityMoved?.Invoke(null, _inspector.Entity);
                                         break;
                                 }
                             }

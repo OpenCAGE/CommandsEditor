@@ -120,8 +120,12 @@ namespace CommandsEditor.UnityConnection
             _isDirty = true;
 
             Packet p = GeneratePacket(PacketEvent.ENTITY_MOVED, entity);
-            p.position = transform.position;
-            p.rotation = transform.rotation;
+            p.has_transform = transform != null;
+            if (p.has_transform)
+            {
+                p.position = transform.position;
+                p.rotation = transform.rotation;
+            }
             SendData(p);
         }
         private static void EntityDeleted(Entity entity)

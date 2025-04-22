@@ -578,7 +578,7 @@ namespace CommandsEditor.DockPanels
         private void OnDeleteParam(Parameter param)
         {
             if (param?.content != null && param.name == ShortGuidUtils.Generate("position") && param.content.dataType == DataType.TRANSFORM)
-                Singleton.OnEntityMoved?.Invoke(new cTransform(), _entity);
+                Singleton.OnEntityMoved?.Invoke(null, _entity);
             if (param?.content != null && param.name == ShortGuidUtils.Generate("resource") && param.content.dataType == DataType.RESOURCE)
                 Singleton.OnResourceModified?.Invoke();
             Singleton.OnParameterModified?.Invoke();

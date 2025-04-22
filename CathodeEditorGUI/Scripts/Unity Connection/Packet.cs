@@ -44,6 +44,7 @@ namespace CommandsEditor.UnityConnection
         public uint composite;
 
         //Transform
+        public bool has_transform = false;
         public System.Numerics.Vector3 position = new System.Numerics.Vector3();
         public System.Numerics.Vector3 rotation = new System.Numerics.Vector3();
 
