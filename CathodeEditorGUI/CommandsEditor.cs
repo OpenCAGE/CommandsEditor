@@ -181,6 +181,7 @@ namespace CommandsEditor
             FormClosing += CommandsEditor_FormClosing;
 
             connectToUnity.Checked = !SettingsManager.GetBool(Singleton.Settings.ServerOpt); connectToUnity.PerformClick();
+            focusOnSelectedToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.UNITY_FocusEntity); focusOnSelectedToolStripMenuItem.PerformClick();
             showEntityIDs.Checked = !SettingsManager.GetBool(Singleton.Settings.EntIdOpt); showEntityIDs.PerformClick();
             searchOnlyCompositeNames.Checked = !SettingsManager.GetBool(Singleton.Settings.CompNameOnlyOpt); searchOnlyCompositeNames.PerformClick();
             useTexturedModelViewExperimentalToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.ShowTexOpt); useTexturedModelViewExperimentalToolStripMenuItem.PerformClick();
@@ -500,6 +501,12 @@ namespace CommandsEditor
             {
                 UnityConnection.Send.Stop();
             }
+        }
+        private void focusOnSelectedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            focusOnSelectedToolStripMenuItem.Checked = !focusOnSelectedToolStripMenuItem.Checked;
+            SettingsManager.SetBool(Singleton.Settings.UNITY_FocusEntity, focusOnSelectedToolStripMenuItem.Checked);
+            UnityConnection.Send.SendReSyncPacket();
         }
 
         private void showEntityIDs_Click(object sender, EventArgs e)

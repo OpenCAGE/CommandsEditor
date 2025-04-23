@@ -69,6 +69,12 @@ namespace CommandsEditor.UnityConnection
             _server = null;
         }
 
+        /* Force-send a new generic packet to re-sync (ideal for settings changes) */
+        public static void SendReSyncPacket()
+        {
+            SendData(GeneratePacket());
+        }
+
         /* A level has just been loaded -> load its data in Unity */
         private static void LevelLoaded(LevelContent content)
         {
@@ -229,6 +235,7 @@ namespace CommandsEditor.UnityConnection
                 p.composite = composite.shortGUID.ToUInt32();
             }
             p.dirty = _isDirty; //NOTE: Not using the DirtyTracker here as we only care about changes that will visually affect the Unity editor.
+            p.focus_object = SettingsManager.GetBool(Singleton.Settings.UNITY_FocusEntity);
             return p;
         }
 

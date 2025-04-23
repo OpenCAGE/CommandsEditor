@@ -37,7 +37,6 @@ namespace CommandsEditor
             this.saveLevel = new System.Windows.Forms.ToolStripMenuItem();
             this.buildLevelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripDropDownButton();
-            this.connectToUnity = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.compositeViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showExplorerViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -53,6 +52,8 @@ namespace CommandsEditor
             this.keepFunctionUsesWindowOpenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.resetUILayoutsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.writeInstancedResourcesExperimentalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.levelViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.connectToUnity = new System.Windows.Forms.ToolStripMenuItem();
             this.helpBtn = new System.Windows.Forms.ToolStripButton();
             this.ShowControls = new System.Windows.Forms.ToolStripButton();
             this.DEBUG_RunChecks = new System.Windows.Forms.ToolStripButton();
@@ -64,6 +65,7 @@ namespace CommandsEditor
             this.statusText = new System.Windows.Forms.ToolStripStatusLabel();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.focusOnSelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -123,7 +125,7 @@ namespace CommandsEditor
             // 
             this.toolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripButton2.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.connectToUnity,
+            this.levelViewerToolStripMenuItem,
             this.toolStripSeparator2,
             this.compositeViewerToolStripMenuItem,
             this.entityDisplayToolStripMenuItem,
@@ -133,16 +135,6 @@ namespace CommandsEditor
             this.toolStripButton2.Name = "toolStripButton2";
             this.toolStripButton2.Size = new System.Drawing.Size(62, 22);
             this.toolStripButton2.Text = "Options";
-            // 
-            // connectToUnity
-            // 
-            this.connectToUnity.Checked = true;
-            this.connectToUnity.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.connectToUnity.Name = "connectToUnity";
-            this.connectToUnity.Size = new System.Drawing.Size(180, 22);
-            this.connectToUnity.Text = "Connect to Unity";
-            this.connectToUnity.ToolTipText = "Enable a websocket connection to the Unity Level Viewer.";
-            this.connectToUnity.Click += new System.EventHandler(this.connectToUnity_Click);
             // 
             // toolStripSeparator2
             // 
@@ -232,7 +224,7 @@ namespace CommandsEditor
             // showConfirmationWhenSavingToolStripMenuItem
             // 
             this.showConfirmationWhenSavingToolStripMenuItem.Name = "showConfirmationWhenSavingToolStripMenuItem";
-            this.showConfirmationWhenSavingToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
+            this.showConfirmationWhenSavingToolStripMenuItem.Size = new System.Drawing.Size(291, 22);
             this.showConfirmationWhenSavingToolStripMenuItem.Text = "Show Confirmation When Saving";
             this.showConfirmationWhenSavingToolStripMenuItem.ToolTipText = "If enabled, a confirmation will show after a successful save.";
             this.showConfirmationWhenSavingToolStripMenuItem.Click += new System.EventHandler(this.showConfirmationWhenSavingToolStripMenuItem_Click);
@@ -240,7 +232,7 @@ namespace CommandsEditor
             // useTexturedModelViewExperimentalToolStripMenuItem
             // 
             this.useTexturedModelViewExperimentalToolStripMenuItem.Name = "useTexturedModelViewExperimentalToolStripMenuItem";
-            this.useTexturedModelViewExperimentalToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
+            this.useTexturedModelViewExperimentalToolStripMenuItem.Size = new System.Drawing.Size(291, 22);
             this.useTexturedModelViewExperimentalToolStripMenuItem.Text = "Use Textured Model View (Experimental)";
             this.useTexturedModelViewExperimentalToolStripMenuItem.ToolTipText = "If enabled, the model previewer will try and find textures to render.";
             this.useTexturedModelViewExperimentalToolStripMenuItem.Click += new System.EventHandler(this.useTexturedModelViewExperimentalToolStripMenuItem_Click);
@@ -248,23 +240,42 @@ namespace CommandsEditor
             // keepFunctionUsesWindowOpenToolStripMenuItem
             // 
             this.keepFunctionUsesWindowOpenToolStripMenuItem.Name = "keepFunctionUsesWindowOpenToolStripMenuItem";
-            this.keepFunctionUsesWindowOpenToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
+            this.keepFunctionUsesWindowOpenToolStripMenuItem.Size = new System.Drawing.Size(291, 22);
             this.keepFunctionUsesWindowOpenToolStripMenuItem.Text = "Keep Function Uses Window Open";
             this.keepFunctionUsesWindowOpenToolStripMenuItem.Click += new System.EventHandler(this.keepFunctionUsesWindowOpenToolStripMenuItem_Click);
             // 
             // resetUILayoutsToolStripMenuItem
             // 
             this.resetUILayoutsToolStripMenuItem.Name = "resetUILayoutsToolStripMenuItem";
-            this.resetUILayoutsToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
+            this.resetUILayoutsToolStripMenuItem.Size = new System.Drawing.Size(291, 22);
             this.resetUILayoutsToolStripMenuItem.Text = "Reset UI Layouts";
             this.resetUILayoutsToolStripMenuItem.Click += new System.EventHandler(this.resetUILayoutsToolStripMenuItem_Click);
             // 
             // writeInstancedResourcesExperimentalToolStripMenuItem
             // 
             this.writeInstancedResourcesExperimentalToolStripMenuItem.Name = "writeInstancedResourcesExperimentalToolStripMenuItem";
-            this.writeInstancedResourcesExperimentalToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
+            this.writeInstancedResourcesExperimentalToolStripMenuItem.Size = new System.Drawing.Size(291, 22);
             this.writeInstancedResourcesExperimentalToolStripMenuItem.Text = "Write Instanced Resources (Experimental)";
             this.writeInstancedResourcesExperimentalToolStripMenuItem.Click += new System.EventHandler(this.writeInstancedResourcesExperimentalToolStripMenuItem_Click);
+            // 
+            // levelViewerToolStripMenuItem
+            // 
+            this.levelViewerToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.connectToUnity,
+            this.focusOnSelectedToolStripMenuItem});
+            this.levelViewerToolStripMenuItem.Name = "levelViewerToolStripMenuItem";
+            this.levelViewerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.levelViewerToolStripMenuItem.Text = "Level Viewer";
+            // 
+            // connectToUnity
+            // 
+            this.connectToUnity.Checked = true;
+            this.connectToUnity.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.connectToUnity.Name = "connectToUnity";
+            this.connectToUnity.Size = new System.Drawing.Size(201, 22);
+            this.connectToUnity.Text = "Connect to Level Viewer";
+            this.connectToUnity.ToolTipText = "Enable a websocket connection to the Unity Level Viewer.";
+            this.connectToUnity.Click += new System.EventHandler(this.connectToUnity_Click);
             // 
             // helpBtn
             // 
@@ -348,6 +359,15 @@ namespace CommandsEditor
             this.dockPanel.TabIndex = 5;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
             // 
+            // focusOnSelectedToolStripMenuItem
+            // 
+            this.focusOnSelectedToolStripMenuItem.Name = "focusOnSelectedToolStripMenuItem";
+            this.focusOnSelectedToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
+            this.focusOnSelectedToolStripMenuItem.Text = "Focus on Selected";
+            this.focusOnSelectedToolStripMenuItem.ToolTipText = "Enable to focus the Unity camera on the object selected in the Commands Editor au" +
+    "tomatically.";
+            this.focusOnSelectedToolStripMenuItem.Click += new System.EventHandler(this.focusOnSelectedToolStripMenuItem_Click);
+            // 
             // CommandsEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -382,7 +402,6 @@ namespace CommandsEditor
         private System.Windows.Forms.ToolStripMenuItem loadLevel;
         private System.Windows.Forms.ToolStripMenuItem saveLevel;
         private System.Windows.Forms.ToolStripDropDownButton toolStripButton2;
-        private System.Windows.Forms.ToolStripMenuItem connectToUnity;
         private System.Windows.Forms.ToolStripStatusLabel statusText;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolTip toolTip1;
@@ -406,5 +425,8 @@ namespace CommandsEditor
         private System.Windows.Forms.ToolStripMenuItem buildLevelToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem createFlowgraphNodeWhenEntityCreatedToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton ShowControls;
+        private System.Windows.Forms.ToolStripMenuItem levelViewerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem connectToUnity;
+        private System.Windows.Forms.ToolStripMenuItem focusOnSelectedToolStripMenuItem;
     }
 }

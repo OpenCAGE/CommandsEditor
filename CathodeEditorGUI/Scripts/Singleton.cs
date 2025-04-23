@@ -112,6 +112,7 @@ namespace CommandsEditor
             public readonly string EntityInspectorState = "CS_EntityInspectorState";
             public readonly string EntityInspectorWidth = "CS_EntityInspectorWidth";
             public readonly string PreviouslySearchedParamPopulationProxyOrAlias = "CS_PreviouslySearchedParamPopulationProxyOrAlias";
+            public readonly string UNITY_FocusEntity = "CS_UNITY_FocusEntity";
         }
 
         public static Action OnAnimationsLoaded;

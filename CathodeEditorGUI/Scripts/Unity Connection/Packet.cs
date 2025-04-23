@@ -31,7 +31,7 @@ namespace CommandsEditor.UnityConnection
 
         //Packet metadata
         public PacketEvent packet_event;
-        public int version = 3;
+        public int version = 4;
 
         //Setup metadata
         public string level_name = "";
@@ -58,5 +58,8 @@ namespace CommandsEditor.UnityConnection
 
         //Track if things have changed
         public bool dirty = false;
+
+        //Settings
+        public bool focus_object = false;
     }
 }
