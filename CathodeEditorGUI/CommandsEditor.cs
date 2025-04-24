@@ -180,8 +180,18 @@ namespace CommandsEditor
             Resize += CommandsEditor_Resize;
             FormClosing += CommandsEditor_FormClosing;
 
-            connectToUnity.Checked = !SettingsManager.GetBool(Singleton.Settings.ServerOpt); connectToUnity.PerformClick();
-            focusOnSelectedToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.UNITY_FocusEntity); focusOnSelectedToolStripMenuItem.PerformClick();
+            if (LevelViewerSetup.Installed)
+            {
+                setUpToolStripMenuItem.Visible = false;
+                connectToUnity.Checked = !SettingsManager.GetBool(Singleton.Settings.ServerOpt); connectToUnity.PerformClick();
+                focusOnSelectedToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.UNITY_FocusEntity); focusOnSelectedToolStripMenuItem.PerformClick();
+            }
+            else
+            {
+                connectToUnity.Visible = false;
+                focusOnSelectedToolStripMenuItem.Visible = false;
+            }
+
             showEntityIDs.Checked = !SettingsManager.GetBool(Singleton.Settings.EntIdOpt); showEntityIDs.PerformClick();
             searchOnlyCompositeNames.Checked = !SettingsManager.GetBool(Singleton.Settings.CompNameOnlyOpt); searchOnlyCompositeNames.PerformClick();
             useTexturedModelViewExperimentalToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.ShowTexOpt); useTexturedModelViewExperimentalToolStripMenuItem.PerformClick();
@@ -489,6 +499,8 @@ namespace CommandsEditor
             connectToUnity.Checked = !connectToUnity.Checked;
             SettingsManager.SetBool(Singleton.Settings.ServerOpt, connectToUnity.Checked);
             
+            //TODO: here, also launch Unity when enabled if it's not running already - and perhaps even close it when disabled if it is.
+
             if (connectToUnity.Checked)
             {
                 if (!UnityConnection.Send.Start())
