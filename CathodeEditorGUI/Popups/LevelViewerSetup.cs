@@ -17,18 +17,38 @@ namespace CommandsEditor
 {
     public partial class LevelViewerSetup: Form
     {
-        public LevelViewerSetup()
-        {
-            InitializeComponent();
-        }
+        public static Process UnityProcess;
 
         public static bool Installed
         {
             get
             {
-                string editorPath = GetUnityInstallPath();
+                string editorPath = InstallationPath;
                 return editorPath != "" && File.Exists(editorPath);
             }
+        }
+
+        public static string InstallationPath
+        {
+            get
+            {
+                using (RegistryKey regKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Unity Technologies\\Installer\\Unity 2022.3.9f1"))
+                {
+                    if (regKey != null)
+                    {
+                        var location = regKey.GetValue("Location x64") as string;
+                        if (!string.IsNullOrEmpty(location))
+                            return location + "\\Editor\\Unity.exe";
+                    }
+                }
+
+                return null;
+            }
+        }
+
+        public LevelViewerSetup()
+        {
+            InitializeComponent();
         }
 
         private void LevelViewerSetup_Load(object sender, EventArgs e)
@@ -110,21 +130,6 @@ namespace CommandsEditor
             }
 
             return Installed;
-        }
-
-        private static string GetUnityInstallPath()
-        {
-            using (RegistryKey regKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Unity Technologies\\Installer\\Unity 2022.3.9f1"))
-            {
-                if (regKey != null)
-                {
-                    var location = regKey.GetValue("Location x64") as string;
-                    if (!string.IsNullOrEmpty(location))
-                        return location + "\\Editor\\Unity.exe";
-                }
-            }
-
-            return null;
         }
     }
 }

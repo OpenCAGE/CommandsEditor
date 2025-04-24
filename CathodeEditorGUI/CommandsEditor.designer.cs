@@ -38,6 +38,8 @@ namespace CommandsEditor
             this.buildLevelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripDropDownButton();
             this.levelViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.setUpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openLevelViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.connectToUnity = new System.Windows.Forms.ToolStripMenuItem();
             this.focusOnSelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -66,7 +68,7 @@ namespace CommandsEditor
             this.statusText = new System.Windows.Forms.ToolStripStatusLabel();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.setUpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -141,11 +143,27 @@ namespace CommandsEditor
             // 
             this.levelViewerToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.setUpToolStripMenuItem,
+            this.openLevelViewerToolStripMenuItem,
+            this.toolStripSeparator1,
             this.connectToUnity,
             this.focusOnSelectedToolStripMenuItem});
             this.levelViewerToolStripMenuItem.Name = "levelViewerToolStripMenuItem";
             this.levelViewerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.levelViewerToolStripMenuItem.Text = "Level Viewer";
+            // 
+            // setUpToolStripMenuItem
+            // 
+            this.setUpToolStripMenuItem.Name = "setUpToolStripMenuItem";
+            this.setUpToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
+            this.setUpToolStripMenuItem.Text = "Set Up Level Viewer";
+            this.setUpToolStripMenuItem.Click += new System.EventHandler(this.setUpToolStripMenuItem_Click);
+            // 
+            // openLevelViewerToolStripMenuItem
+            // 
+            this.openLevelViewerToolStripMenuItem.Name = "openLevelViewerToolStripMenuItem";
+            this.openLevelViewerToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
+            this.openLevelViewerToolStripMenuItem.Text = "Open Level Viewer";
+            this.openLevelViewerToolStripMenuItem.Click += new System.EventHandler(this.openLevelViewerToolStripMenuItem_Click);
             // 
             // connectToUnity
             // 
@@ -254,7 +272,7 @@ namespace CommandsEditor
             // showConfirmationWhenSavingToolStripMenuItem
             // 
             this.showConfirmationWhenSavingToolStripMenuItem.Name = "showConfirmationWhenSavingToolStripMenuItem";
-            this.showConfirmationWhenSavingToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
+            this.showConfirmationWhenSavingToolStripMenuItem.Size = new System.Drawing.Size(291, 22);
             this.showConfirmationWhenSavingToolStripMenuItem.Text = "Show Confirmation When Saving";
             this.showConfirmationWhenSavingToolStripMenuItem.ToolTipText = "If enabled, a confirmation will show after a successful save.";
             this.showConfirmationWhenSavingToolStripMenuItem.Click += new System.EventHandler(this.showConfirmationWhenSavingToolStripMenuItem_Click);
@@ -262,7 +280,7 @@ namespace CommandsEditor
             // useTexturedModelViewExperimentalToolStripMenuItem
             // 
             this.useTexturedModelViewExperimentalToolStripMenuItem.Name = "useTexturedModelViewExperimentalToolStripMenuItem";
-            this.useTexturedModelViewExperimentalToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
+            this.useTexturedModelViewExperimentalToolStripMenuItem.Size = new System.Drawing.Size(291, 22);
             this.useTexturedModelViewExperimentalToolStripMenuItem.Text = "Use Textured Model View (Experimental)";
             this.useTexturedModelViewExperimentalToolStripMenuItem.ToolTipText = "If enabled, the model previewer will try and find textures to render.";
             this.useTexturedModelViewExperimentalToolStripMenuItem.Click += new System.EventHandler(this.useTexturedModelViewExperimentalToolStripMenuItem_Click);
@@ -270,21 +288,21 @@ namespace CommandsEditor
             // keepFunctionUsesWindowOpenToolStripMenuItem
             // 
             this.keepFunctionUsesWindowOpenToolStripMenuItem.Name = "keepFunctionUsesWindowOpenToolStripMenuItem";
-            this.keepFunctionUsesWindowOpenToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
+            this.keepFunctionUsesWindowOpenToolStripMenuItem.Size = new System.Drawing.Size(291, 22);
             this.keepFunctionUsesWindowOpenToolStripMenuItem.Text = "Keep Function Uses Window Open";
             this.keepFunctionUsesWindowOpenToolStripMenuItem.Click += new System.EventHandler(this.keepFunctionUsesWindowOpenToolStripMenuItem_Click);
             // 
             // resetUILayoutsToolStripMenuItem
             // 
             this.resetUILayoutsToolStripMenuItem.Name = "resetUILayoutsToolStripMenuItem";
-            this.resetUILayoutsToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
+            this.resetUILayoutsToolStripMenuItem.Size = new System.Drawing.Size(291, 22);
             this.resetUILayoutsToolStripMenuItem.Text = "Reset UI Layouts";
             this.resetUILayoutsToolStripMenuItem.Click += new System.EventHandler(this.resetUILayoutsToolStripMenuItem_Click);
             // 
             // writeInstancedResourcesExperimentalToolStripMenuItem
             // 
             this.writeInstancedResourcesExperimentalToolStripMenuItem.Name = "writeInstancedResourcesExperimentalToolStripMenuItem";
-            this.writeInstancedResourcesExperimentalToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
+            this.writeInstancedResourcesExperimentalToolStripMenuItem.Size = new System.Drawing.Size(291, 22);
             this.writeInstancedResourcesExperimentalToolStripMenuItem.Text = "Write Instanced Resources (Experimental)";
             this.writeInstancedResourcesExperimentalToolStripMenuItem.Click += new System.EventHandler(this.writeInstancedResourcesExperimentalToolStripMenuItem_Click);
             // 
@@ -370,11 +388,10 @@ namespace CommandsEditor
             this.dockPanel.TabIndex = 5;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
             // 
-            // setUpToolStripMenuItem
+            // toolStripSeparator1
             // 
-            this.setUpToolStripMenuItem.Name = "setUpToolStripMenuItem";
-            this.setUpToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
-            this.setUpToolStripMenuItem.Text = "Set Up";
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(198, 6);
             // 
             // CommandsEditor
             // 
@@ -437,5 +454,7 @@ namespace CommandsEditor
         private System.Windows.Forms.ToolStripMenuItem connectToUnity;
         private System.Windows.Forms.ToolStripMenuItem focusOnSelectedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem setUpToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openLevelViewerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
     }
 }

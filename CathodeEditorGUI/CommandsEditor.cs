@@ -180,17 +180,10 @@ namespace CommandsEditor
             Resize += CommandsEditor_Resize;
             FormClosing += CommandsEditor_FormClosing;
 
-            if (LevelViewerSetup.Installed)
-            {
-                setUpToolStripMenuItem.Visible = false;
-                connectToUnity.Checked = !SettingsManager.GetBool(Singleton.Settings.ServerOpt); connectToUnity.PerformClick();
-                focusOnSelectedToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.UNITY_FocusEntity); focusOnSelectedToolStripMenuItem.PerformClick();
-            }
-            else
-            {
-                connectToUnity.Visible = false;
-                focusOnSelectedToolStripMenuItem.Visible = false;
-            }
+            if (!SettingsManager.IsSet(Singleton.Settings.ServerOpt)) SettingsManager.SetBool(Singleton.Settings.ServerOpt, true);
+            connectToUnity.Checked = !SettingsManager.GetBool(Singleton.Settings.ServerOpt); connectToUnity.PerformClick();
+            focusOnSelectedToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.UNITY_FocusEntity); focusOnSelectedToolStripMenuItem.PerformClick();
+            ShowLevelViewerButton();
 
             showEntityIDs.Checked = !SettingsManager.GetBool(Singleton.Settings.EntIdOpt); showEntityIDs.PerformClick();
             searchOnlyCompositeNames.Checked = !SettingsManager.GetBool(Singleton.Settings.CompNameOnlyOpt); searchOnlyCompositeNames.PerformClick();
@@ -274,6 +267,7 @@ namespace CommandsEditor
 
         private void CommandsEditor_FormClosing(object sender, FormClosingEventArgs e)
         {
+            KillLevelViewer();
             SettingsManager.SetFloat(Singleton.Settings.SplitWidthMainBottom, (float)dockPanel.DockBottomPortion);
             SettingsManager.SetFloat(Singleton.Settings.SplitWidthMainRight, (float)dockPanel.DockRightPortion);
         }
@@ -494,12 +488,43 @@ namespace CommandsEditor
         }
 
         /* Websocket to Unity */
+        private void openLevelViewerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            KillLevelViewer();
+
+            LevelViewerSetup.UnityProcess = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = LevelViewerSetup.InstallationPath,
+                    Arguments = $"-projectPath \"{SettingsManager.GetString("PATH_GameRoot")}/DATA/MODTOOLS/REMOTE_ASSETS/levelviewer\"",
+                    UseShellExecute = false
+                },
+                EnableRaisingEvents = true
+            }; 
+            LevelViewerSetup.UnityProcess.Exited += UnityProcess_Exited;
+            LevelViewerSetup.UnityProcess.Start();
+
+            openLevelViewerToolStripMenuItem.Enabled = false;
+        }
+        private void UnityProcess_Exited(object sender, EventArgs e)
+        {
+            if (openLevelViewerToolStripMenuItem.GetCurrentParent().InvokeRequired)
+            {
+                openLevelViewerToolStripMenuItem.GetCurrentParent().Invoke(new Action(() =>
+                {
+                    openLevelViewerToolStripMenuItem.Enabled = true;
+                }));
+            }
+            else
+            {
+                openLevelViewerToolStripMenuItem.Enabled = true;
+            }
+        }
         private void connectToUnity_Click(object sender, EventArgs e)
         {
             connectToUnity.Checked = !connectToUnity.Checked;
             SettingsManager.SetBool(Singleton.Settings.ServerOpt, connectToUnity.Checked);
-            
-            //TODO: here, also launch Unity when enabled if it's not running already - and perhaps even close it when disabled if it is.
 
             if (connectToUnity.Checked)
             {
@@ -519,6 +544,23 @@ namespace CommandsEditor
             focusOnSelectedToolStripMenuItem.Checked = !focusOnSelectedToolStripMenuItem.Checked;
             SettingsManager.SetBool(Singleton.Settings.UNITY_FocusEntity, focusOnSelectedToolStripMenuItem.Checked);
             UnityConnection.Send.SendReSyncPacket();
+        }
+        private void setUpToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LevelViewerSetup setup = new LevelViewerSetup();
+            setup.Show();
+        }
+        private static void KillLevelViewer()
+        {
+            if (LevelViewerSetup.UnityProcess != null && !LevelViewerSetup.UnityProcess.HasExited)
+                LevelViewerSetup.UnityProcess.Kill();
+        }
+        private void ShowLevelViewerButton()
+        {
+            if (LevelViewerSetup.Installed)
+                setUpToolStripMenuItem.Visible = false;
+            else
+                openLevelViewerToolStripMenuItem.Visible = false;
         }
 
         private void showEntityIDs_Click(object sender, EventArgs e)
