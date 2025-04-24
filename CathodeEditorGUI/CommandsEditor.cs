@@ -547,8 +547,15 @@ namespace CommandsEditor
         }
         private void setUpToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            setUpToolStripMenuItem.Enabled = false;
             LevelViewerSetup setup = new LevelViewerSetup();
+            setup.FormClosed += Setup_FormClosed;
             setup.Show();
+        }
+        private void Setup_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            setUpToolStripMenuItem.Enabled = true;
+            ShowLevelViewerButton();
         }
         private static void KillLevelViewer()
         {
@@ -557,10 +564,8 @@ namespace CommandsEditor
         }
         private void ShowLevelViewerButton()
         {
-            if (LevelViewerSetup.Installed)
-                setUpToolStripMenuItem.Visible = false;
-            else
-                openLevelViewerToolStripMenuItem.Visible = false;
+            setUpToolStripMenuItem.Visible = !LevelViewerSetup.Installed;
+            openLevelViewerToolStripMenuItem.Visible = LevelViewerSetup.Installed;
         }
 
         private void showEntityIDs_Click(object sender, EventArgs e)
