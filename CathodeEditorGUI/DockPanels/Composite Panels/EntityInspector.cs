@@ -1,5 +1,6 @@
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
+using CathodeLib;
 using CommandsEditor.Properties;
 using CommandsEditor.UserControls;
 using OpenCAGE;
@@ -18,7 +19,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
-using static CommandsEditor.SelectSpecialString;
+using static CommandsEditor.SelectEnumString;
 
 namespace CommandsEditor.DockPanels
 {
@@ -175,8 +176,10 @@ namespace CommandsEditor.DockPanels
         public void Reload() => Reload(_displayingLinks);
         public void Reload(bool displayLinks)
         {
-#if DEBUG
+#if DO_ENTITY_PERF_CHECK
+            //TODO: The performance here is pretty poor. I should swap to using the PropertyGrid.
             Stopwatch timer = Stopwatch.StartNew();
+            Console.WriteLine("[ENTITY RELOAD] ** START **");
 #endif
 
             _displayingLinks = displayLinks;
@@ -203,9 +206,10 @@ namespace CommandsEditor.DockPanels
             goToZone.Enabled = false;
             hierarchyDisplay.Visible = false;
 
-            renameEntity.Visible = _entity != null && _entity.variant != EntityVariant.ALIAS && _entity.variant != EntityVariant.VARIABLE; //TODO: we should support variable renaming, but doing that requires managing renaming all links/params (including node links)
-            deleteEntity.Visible = _entity != null;
-            duplicateEntity.Visible = _entity != null;
+            //NOTE: These visibility options should be mirrored in EntityListContextMenu_Opening in EntityList
+            renameEntity.Enabled = _entity != null && _entity.variant != EntityVariant.ALIAS && _entity.variant != EntityVariant.VARIABLE; //TODO: we should support variable renaming, but doing that requires managing renaming all links/params (including node links)
+            duplicateEntity.Enabled = _entity != null && _entity.variant != EntityVariant.ALIAS && _entity.variant != EntityVariant.VARIABLE; //This works, but why would you ever want to?
+            deleteEntity.Enabled = _entity != null;
 
             ModifyParameters.Enabled = _entity != null;
             ModifyParameters_Link.Enabled = _entity != null;
@@ -213,7 +217,7 @@ namespace CommandsEditor.DockPanels
 
             if (_entity == null)
             {
-#if DEBUG
+#if DO_ENTITY_PERF_CHECK
                 timer.Stop();
 #endif
                 return;
@@ -245,8 +249,10 @@ namespace CommandsEditor.DockPanels
             entityParamGroup.Text = "Selected " + entityVariantStr + " Parameters";
 
             //TODO: change this text contextually based on the linked editor - and hide the button when one isn't available.
-            editFunction.Text = "Function"; 
+            editFunction.Text = "Function";
 
+            //TODO: we can correctly show the resources button now based on parameter info
+            CompositePinInfoTable.PinInfo variableInfo = null;
             string description = "";
             switch (_entity.variant)
             {
@@ -269,17 +275,17 @@ namespace CommandsEditor.DockPanels
                         jumpToComposite.Visible = false;
                         editEntityResources.Enabled = (Content.resource.models != null); //TODO: we can hide this button completely outside of this state
 
-                        ShortGuid thisFunction = ((FunctionEntity)_entity).function;
-                        description = CathodeEntityDatabase.GetEntity(thisFunction).className;
-
-                        FunctionType function = CommandsUtils.GetFunctionType(thisFunction);
+                        FunctionType function = CommandsUtils.GetFunctionType(((FunctionEntity)_entity).function);
+                        description = function.ToString();
                         editFunction.Enabled = function == FunctionType.CAGEAnimation || function == FunctionType.TriggerSequence || function == FunctionType.Character;
                     }
                     break;
                 case EntityVariant.VARIABLE:
-                    description = "DataType " + ((VariableEntity)_entity).type.ToString();
+                    variableInfo = CompositeUtils.GetParameterInfo(Composite, (VariableEntity)Entity);
+                    if (variableInfo == null)
+                        Console.WriteLine("Warning: Could not get parameter pin info!");
+                    description = (variableInfo != null ? variableInfo.PinTypeGUID.ToString() : ((VariableEntity)_entity).type.ToString());
                     selected_entity_name.Text = ShortGuidUtils.FindString(((VariableEntity)_entity).name);
-                    //renameSelectedNode.Enabled = false;
                     break;
                 case EntityVariant.PROXY:
                 case EntityVariant.ALIAS:
@@ -301,6 +307,10 @@ namespace CommandsEditor.DockPanels
             if (Content.mvr != null && Content.mvr.Entries.FindAll(o => o.entity.entity_id == this._entity.shortGUID).Count != 0)
                 editEntityMovers.Enabled = true;
 
+#if DO_ENTITY_PERF_CHECK
+            Console.WriteLine($"[ENTITY RELOAD] METADATA UPDATE COMPLETED: {timer.Elapsed.TotalMilliseconds} ms");
+#endif
+
             int current_ui_offset = 7;
             if (_displayingLinks)
             {
@@ -313,6 +323,8 @@ namespace CommandsEditor.DockPanels
                         if (link.linkedEntityID != _entity.shortGUID) continue;
                         GUI_Link parameterGUI = new GUI_Link(this);
                         parameterGUI.PopulateUI(link, false, ent.shortGUID);
+                        parameterGUI.TrackInstanceInfo(Composite.shortGUID, Entity.shortGUID, link.linkedParamID);
+                        parameterGUI.HighlightAsModified(false); //For now, marking all links as "modified", given that they likely won't be default vals
                         parameterGUI.GoToEntity += _compositeDisplay.LoadEntity;
                         parameterGUI.OnLinkEdited += OnLinkEdited;
                         parameterGUI.Location = new Point(15, current_ui_offset);
@@ -324,10 +336,57 @@ namespace CommandsEditor.DockPanels
                 }
             }
 
+#if DO_ENTITY_PERF_CHECK
+            Console.WriteLine($"[ENTITY RELOAD] LINK IN CONTROLS COMPLETED: {timer.Elapsed.TotalMilliseconds} ms");
+#endif
+
+#if AUTO_POPULATE_PARAMS
+            //make sure all defaults are applied to the entity so that we're showing everything
+            //TODO: this should also factor in links in/out - if a link already exists then we shouldn't add it as a param (or it should add it and highlight it as such)
+            if (!ParameterModificationTracker.IsDefaultsApplied(Composite.shortGUID, Entity.shortGUID))
+            {
+#if DEBUG
+                int count_pre_add = _entity.parameters.Count;
+#endif
+                switch (_entity.variant)
+                {
+                    case EntityVariant.FUNCTION:
+                        EntityUtils.ApplyDefaults((FunctionEntity)_entity, true, false);
+                        break;
+                    case EntityVariant.PROXY:
+                        EntityUtils.ApplyDefaults((ProxyEntity)_entity, true, false);
+                        break;
+                }
+                ParameterModificationTracker.SetDefaultsApplied(Composite.shortGUID, Entity.shortGUID);
+#if DEBUG
+                Console.WriteLine("Applied " + (_entity.parameters.Count - count_pre_add) + " defaults to entity.");
+#endif
+#if DO_ENTITY_PERF_CHECK
+                Console.WriteLine($"[ENTITY RELOAD] DEFAULTS APPLIED: {timer.Elapsed.TotalMilliseconds} ms");
+#endif
+            }
+#endif
+
+            //TODO: this should be grouped by the functiontype they came from if that applies here. e.g. if it came from a base class, show it in another group.
+            //TODO: if the type here is STRING, we should check to see if it's actually ENUM_STRING using ParameterUtils, then display the nice UI.
+
             //populate parameter inputs
+            //NOTE: some pins are listed as params, because they specify the "delay" for the pin to be activated (both in and out) - i should display this info differently.
+
             _entity.parameters = _entity.parameters.OrderBy(o => o.name.ToString()).ToList();
             for (int i = 0; i < _entity.parameters.Count; i++)
             {
+                //Use our metadata to update any wrongly typed cEnumStrings to get the nice UI
+                if (_entity.parameters[i].content.dataType == DataType.STRING)
+                {
+                    ParameterData data = ParameterUtils.CreateDefaultParameterData(Entity, Composite, _entity.parameters[i].name);
+                    if (data != null && data.dataType == DataType.ENUM_STRING)
+                    {
+                        ((cEnumString)data).value = ((cString)_entity.parameters[i].content).value;
+                        _entity.parameters[i].content = data;
+                    }
+                }
+
                 ParameterData this_param = _entity.parameters[i].content;
                 ParameterUserControl parameterGUI = null;
                 string paramName = _entity.parameters[i].name.ToString();
@@ -335,103 +394,21 @@ namespace CommandsEditor.DockPanels
                 {
                     case DataType.TRANSFORM:
                         parameterGUI = new GUI_TransformDataType();
-                        ((GUI_TransformDataType)parameterGUI).PopulateUI((cTransform)this_param, paramName);
+                        ((GUI_TransformDataType)parameterGUI).PopulateUI(_entity, (cTransform)this_param, paramName);
                         break;
                     case DataType.INTEGER:
                         parameterGUI = new GUI_NumericDataType();
                         ((GUI_NumericDataType)parameterGUI).PopulateUI_Int((cInteger)this_param, paramName);
                         break;
+                    case DataType.ENUM_STRING:
+                        parameterGUI = new GUI_StringVariant_AssetDropdown();
+                        ((GUI_StringVariant_AssetDropdown)parameterGUI).PopulateUI((cEnumString)this_param, paramName, false); //TODO: allow type selection?
+                        break;
                     case DataType.STRING:
-                        /*
-                        //TODO: handle this for proxies/aliases too...
-                        if (entity.variant == EntityVariant.FUNCTION)
-                        {
-                            CathodeEntityDatabase.ParameterDefinition? info = CathodeEntityDatabase.GetParametersFromEntity(((FunctionEntity)entity).function).FirstOrDefault(o => o.name == paramName);
-                            if (info != null)
-                            {
-                                switch (info.Value.datatype) //TODO: can we cast this to resource type enum?
-                                {
-                                    //TODO: use this instead of the hardcoded definitions below...
-                                    case "SOUND_REVERB":
-
-                                        break;
-                                }
-                            }
-                        }
-                        */
-
-                        AssetList.Type asset = AssetList.Type.NONE;
-                        string asset_arg = "";
-                        //TODO: We can figure out a lot of these from the iOS dump.
-                        //      For example - SoundEnvironmentMarker shows reverb_name as DataType SOUND_REVERB!
-                        switch (paramName)
-                        {
-                            //case "Animation":
-                            //    asset = AssetList.Type.ANIMATION;
-                            //    break;
-                            case "material":
-                                asset = AssetList.Type.MATERIAL;
-                                break;
-                            case "title":
-                            case "presence_id":
-                            case "map_description":
-                            case "content_title":
-                            case "folder_title":
-                            case "additional_info": //TODO: this is a good example of why we should handle this per-entity
-                                asset = AssetList.Type.LOCALISED_STRING;
-                                if (_entity.variant == EntityVariant.FUNCTION && CommandsUtils.GetFunctionType(((FunctionEntity)_entity).function).ToString().Contains("Objective"))
-                                    asset_arg = "OBJECTIVES";
-                                else if (_entity.variant == EntityVariant.FUNCTION && CommandsUtils.GetFunctionType(((FunctionEntity)_entity).function).ToString().Contains("Terminal"))
-                                    asset_arg = "T0001/UI"; //TODO: we should also support TEXT dbs in the level folder for DLC stuff
-                                else
-                                    asset_arg = "UI";
-                                break;
-                            case "title_id":
-                            case "message_id":
-                            case "unlocked_text":
-                            case "locked_text":
-                            case "action_text":
-                                asset = AssetList.Type.LOCALISED_STRING;
-                                asset_arg = "UI";
-                                break;
-                            case "sound_event":
-                            case "stop_sound_event":
-                            case "music_event":
-                            case "stop_event":
-                            case "line_01_event":
-                            case "line_02_event":
-                            case "line_03_event":
-                            case "line_04_event":
-                            case "line_05_event":
-                            case "line_06_event":
-                            case "line_07_event":
-                            case "line_08_event":
-                            case "line_09_event":
-                            case "line_10_event":
-                            case "on_enter_event":
-                            case "on_exit_event":
-                            case "music_start_event":
-                            case "music_end_event":
-                            case "music_restart_event":
-                                asset = AssetList.Type.SOUND_EVENT;
-                                break;
-                            case "reverb_name":
-                                asset = AssetList.Type.SOUND_REVERB;
-                                break;
-                            case "sound_bank":
-                                asset = AssetList.Type.SOUND_BANK;
-                                break;
-                        }
-                        if (asset != AssetList.Type.NONE)
-                        {
-                            parameterGUI = new GUI_StringVariant_AssetDropdown();
-                            ((GUI_StringVariant_AssetDropdown)parameterGUI).PopulateUI((cString)this_param, paramName, asset, asset_arg);
-                        }
-                        else
-                        {
-                            parameterGUI = new GUI_StringDataType();
-                            ((GUI_StringDataType)parameterGUI).PopulateUI((cString)this_param, paramName);
-                        }
+                        //TODO: Need an animation selector for the anim/skele pair
+                        //TODO: There are some string types which should actually be selected via the EnumString UI like map_description on SetSubObjective, or unlocked_text on UI_Icon
+                        parameterGUI = new GUI_StringDataType();
+                        ((GUI_StringDataType)parameterGUI).PopulateUI((cString)this_param, paramName);
                         break;
                     case DataType.BOOL:
                         parameterGUI = new GUI_BoolDataType();
@@ -442,6 +419,7 @@ namespace CommandsEditor.DockPanels
                         ((GUI_NumericDataType)parameterGUI).PopulateUI_Float((cFloat)this_param, paramName);
                         break;
                     case DataType.VECTOR:
+                        //TODO: Should add a "colour" flag to handle this nicer.
                         switch (paramName)
                         {
                             case "AMBIENT_LIGHTING_COLOUR":
@@ -476,14 +454,15 @@ namespace CommandsEditor.DockPanels
                         break;
                     case DataType.ENUM:
                         parameterGUI = new GUI_EnumDataType();
-                        ((GUI_EnumDataType)parameterGUI).PopulateUI((cEnum)this_param, paramName);
+                        ParameterData defaultData = ParameterUtils.CreateDefaultParameterData(Entity, Composite, paramName);
+                        ((GUI_EnumDataType)parameterGUI).PopulateUI((cEnum)this_param, paramName, defaultData == null || (defaultData.dataType == DataType.ENUM && ((cEnum)defaultData).enumID == ShortGuid.Invalid));
                         break;
                     case DataType.RESOURCE:
                         parameterGUI = new GUI_ResourceDataType();
                         ((GUI_ResourceDataType)parameterGUI).PopulateUI(this, (cResource)this_param, paramName);
                         break;
                     case DataType.SPLINE:
-                        parameterGUI = new GUI_SplineDataType(this);
+                        parameterGUI = new GUI_SplineDataType(_entity);
                         ((GUI_SplineDataType)parameterGUI).PopulateUI((cSpline)this_param, paramName);
                         break;
                 }
@@ -494,7 +473,71 @@ namespace CommandsEditor.DockPanels
                 parameterGUI.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
                 current_ui_offset += parameterGUI.Height + 6;
                 controls.Add(parameterGUI);
+
+#if AUTO_POPULATE_PARAMS
+                parameterGUI.TrackInstanceInfo(Composite.shortGUID, Entity.shortGUID, _entity.parameters[i].name);
+                //Note: we always mark variable entity parameters as "modified", because they have no defaults - they're by definition variable.
+                if (_entity.variant == EntityVariant.VARIABLE || ParameterModificationTracker.IsParameterModified(Composite.shortGUID, Entity.shortGUID, _entity.parameters[i].name))
+                    parameterGUI.HighlightAsModified(false);
+#endif
             }
+
+            /*
+            if (_entity.variant == EntityVariant.VARIABLE)
+            {
+                _entity.parameters = _entity.parameters.OrderBy(o => o.name.ToString()).ToList();
+
+                for (int i = 0; i < _entity.parameters.Count; i++)
+                {
+                    ParameterUserControl parameterGUI = ParameterGroup.GenerateUserControl(_entity, _entity.parameters[i]);
+                    parameterGUI.OnDeleted += OnDeleteParam;
+                    parameterGUI.Location = new Point(15, current_ui_offset);
+                    parameterGUI.Width = entity_params.Width - 30;
+                    parameterGUI.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
+                    current_ui_offset += parameterGUI.Height + 6;
+                    controls.Add(parameterGUI);
+                }
+            }
+            else
+            {
+                Dictionary<ShortGuid, List<Parameter>> parametersByImplementer = new Dictionary<ShortGuid, List<Parameter>>();
+                for (int i = 0; i < _entity.parameters.Count; i++)
+                {
+                    (ParameterVariant?, DataType?, ShortGuid) metadata = ParameterUtils.GetParameterMetadata(_entity, _entity.parameters[i].name);
+
+                    if (!parametersByImplementer.TryGetValue(metadata.Item3, out List<Parameter> parameters))
+                    {
+                        parameters = new List<Parameter>();
+                        parametersByImplementer.Add(metadata.Item3, parameters);
+                    }
+                    parameters.Add(_entity.parameters[i]);
+                }
+                foreach (KeyValuePair<ShortGuid, List<Parameter>> implementedParams in parametersByImplementer)
+                {
+                    //NOTE: functiontype can be null if it's a composite instance: need to look up the composite to get name for group
+                    ParameterGroup group = new ParameterGroup();
+                    if (CommandsUtils.FunctionTypeExists(implementedParams.Key))
+                    {
+                        group.SetTitle(((FunctionType)implementedParams.Key.ToUInt32()).ToString());
+                    }
+                    else
+                    {
+                        Composite comp = Content.commands.GetComposite(implementedParams.Key);
+                        if (comp != null)
+                            group.SetTitle(Path.GetFileName(comp.name));
+                    }
+                    foreach (Parameter p in implementedParams.Value)
+                    {
+                        group.AddParameter(ParameterGroup.GenerateUserControl(_entity, p));
+                    }
+                }
+            }
+            */
+
+
+#if DO_ENTITY_PERF_CHECK
+            Console.WriteLine($"[ENTITY RELOAD] PARAMETER CONTROLS COMPLETED: {timer.Elapsed.TotalMilliseconds} ms");
+#endif
 
             if (_displayingLinks)
             {
@@ -503,6 +546,8 @@ namespace CommandsEditor.DockPanels
                 {
                     GUI_Link parameterGUI = new GUI_Link(this);
                     parameterGUI.PopulateUI(_entity.childLinks[i], true);
+                    parameterGUI.TrackInstanceInfo(Composite.shortGUID, Entity.shortGUID, _entity.childLinks[i].thisParamID);
+                    parameterGUI.HighlightAsModified(false); //For now, marking all links as "modified", given that they likely won't be default vals
                     parameterGUI.GoToEntity += _compositeDisplay.LoadEntity;
                     parameterGUI.OnLinkEdited += OnLinkEdited;
                     parameterGUI.Location = new Point(15, current_ui_offset);
@@ -513,14 +558,17 @@ namespace CommandsEditor.DockPanels
                 }
             }
 
+#if DO_ENTITY_PERF_CHECK
+            Console.WriteLine($"[ENTITY RELOAD] LINK OUT CONTROLS COMPLETED: {timer.Elapsed.TotalMilliseconds} ms");
+#endif
+
             entity_params.SuspendLayout();
             entity_params.Controls.AddRange(controls.ToArray());
             entity_params.ResumeLayout();
 
-#if DEBUG
+#if DO_ENTITY_PERF_CHECK
             timer.Stop();
-            TimeSpan timeTaken = timer.Elapsed;
-            Console.WriteLine($"Entity reload taken: {timeTaken.TotalMilliseconds} ms");
+            Console.WriteLine($"[ENTITY RELOAD] ADDED CONTROLS TO WINDOW: {timer.Elapsed.TotalMilliseconds} ms");
 #endif
 
             Singleton.OnEntityReloaded?.Invoke(_entity);
@@ -529,12 +577,18 @@ namespace CommandsEditor.DockPanels
 
         private void OnDeleteParam(Parameter param)
         {
+            if (param?.content != null && param.name == ShortGuidUtils.Generate("position") && param.content.dataType == DataType.TRANSFORM)
+                Singleton.OnEntityMoved?.Invoke(null, _entity);
+            if (param?.content != null && param.name == ShortGuidUtils.Generate("resource") && param.content.dataType == DataType.RESOURCE)
+                Singleton.OnResourceModified?.Invoke();
+            Singleton.OnParameterModified?.Invoke();
             _entity.parameters.Remove(param);
             _compositeDisplay.ReloadEntity(_entity);
         }
 
         private void OnLinkEdited(Entity orig, Entity linked)
         {
+            Singleton.OnParameterModified?.Invoke();
             _compositeDisplay.ReloadEntity(orig);
             _compositeDisplay.ReloadEntity(linked);
         }
@@ -649,6 +703,7 @@ namespace CommandsEditor.DockPanels
         private void OnResourceEditorSaved(List<ResourceReference> resources)
         {
             ((FunctionEntity)Entity).resources = resources;
+            Singleton.OnResourceModified?.Invoke();
         }
 
         private void goToZone_Click(object sender, EventArgs e)

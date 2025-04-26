@@ -32,6 +32,8 @@ namespace CommandsEditor.UserControls
             GUID_VARIABLE_DUMMY.Text = paramID;
             resRef = cResource;
             this.deleteToolStripMenuItem.Text = "Delete '" + paramID + "'";
+
+            _hasDoneSetup = true;
         }
 
         /* Edit resources referenced by the resource param */
@@ -45,11 +47,18 @@ namespace CommandsEditor.UserControls
         private void OnResourceEditorSaved(List<ResourceReference> resources)
         {
             resRef.value = resources;
+            HighlightAsModified();
+            Singleton.OnResourceModified?.Invoke();
         }
         private void ResourceEditor_FormClosed(object sender, FormClosedEventArgs e)
         {
             this.BringToFront();
             this.Focus();
+        }
+
+        public override void HighlightAsModified(bool updateDatabase = true, Control fontToUpdate = null)
+        {
+            base.HighlightAsModified(updateDatabase, GUID_VARIABLE_DUMMY);
         }
     }
 }

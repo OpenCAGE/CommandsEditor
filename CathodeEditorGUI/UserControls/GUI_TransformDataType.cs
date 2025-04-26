@@ -11,6 +11,7 @@ using CATHODE.Scripting;
 using CATHODE;
 using CathodeLib;
 using Newtonsoft.Json;
+using CATHODE.Scripting.Internal;
 
 namespace CommandsEditor.UserControls
 {
@@ -19,6 +20,7 @@ namespace CommandsEditor.UserControls
         public Action OnValueChanged;
 
         cTransform transformVal = null;
+        Entity _entity = null;
 
         public GUI_TransformDataType()
         {
@@ -27,12 +29,14 @@ namespace CommandsEditor.UserControls
             this.deleteToolStripMenuItem.Click += new EventHandler(deleteToolStripMenuItem_Click);
         }
 
-        public void PopulateUI(cTransform cTrans, ShortGuid paramID)
+        public void PopulateUI(Entity entity, cTransform cTrans, ShortGuid paramID)
         {
-            PopulateUI(cTrans, ShortGuidUtils.FindString(paramID));
+            PopulateUI(entity, cTrans, ShortGuidUtils.FindString(paramID));
         }
-        public void PopulateUI(cTransform cTrans, string title, bool disableInput = false)
+        public void PopulateUI(Entity entity, cTransform cTrans, string title, bool disableInput = false)
         {
+            _entity = entity;
+
             POSITION_VARIABLE_DUMMY.Text = title;
             transformVal = cTrans;
             this.deleteToolStripMenuItem.Text = "Delete '" + title + "'";
@@ -48,6 +52,8 @@ namespace CommandsEditor.UserControls
                 ROT_Y.Enabled = false;
                 ROT_Z.Enabled = false;
             }
+
+            _hasDoneSetup = true;
         }
 
         private void UpdateUI()
@@ -62,38 +68,65 @@ namespace CommandsEditor.UserControls
 
         private void POS_X_ValueChanged(object sender, EventArgs e)
         {
+            if (transformVal.position.X == (float)POS_X.Value)
+                return;
+
             transformVal.position.X = (float)POS_X.Value;
-            OnValueChanged?.Invoke();
+            ValueChanged();
         }
 
         private void POS_Y_ValueChanged(object sender, EventArgs e)
         {
+            if (transformVal.position.Y == (float)POS_Y.Value)
+                return;
+
             transformVal.position.Y = (float)POS_Y.Value;
-            OnValueChanged?.Invoke();
+            ValueChanged();
         }
 
         private void POS_Z_ValueChanged(object sender, EventArgs e)
         {
+            if (transformVal.position.Z == (float)POS_Z.Value)
+                return;
+
             transformVal.position.Z = (float)POS_Z.Value;
-            OnValueChanged?.Invoke();
+            ValueChanged();
         }
 
         private void ROT_X_ValueChanged(object sender, EventArgs e)
         {
+            if (transformVal.rotation.X == (float)ROT_X.Value)
+                return;
+
             transformVal.rotation.X = (float)ROT_X.Value;
-            OnValueChanged?.Invoke();
+            ValueChanged();
         }
 
         private void ROT_Y_ValueChanged(object sender, EventArgs e)
         {
+            if (transformVal.rotation.Y == (float)ROT_Y.Value)
+                return;
+
             transformVal.rotation.Y = (float)ROT_Y.Value;
-            OnValueChanged?.Invoke();
+            ValueChanged();
         }
 
         private void ROT_Z_ValueChanged(object sender, EventArgs e)
         {
+            if (transformVal.rotation.Z == (float)ROT_Z.Value)
+                return;
+
             transformVal.rotation.Z = (float)ROT_Z.Value;
+            ValueChanged();
+        }
+
+        private void ValueChanged()
+        {
             OnValueChanged?.Invoke();
+            HighlightAsModified();
+
+            if (_entity != null)
+                Singleton.OnEntityMoved?.Invoke(transformVal, _entity);
         }
 
         private void copyTransformToolStripMenuItem_Click(object sender, EventArgs e)
@@ -139,6 +172,12 @@ namespace CommandsEditor.UserControls
             transformVal.rotation.Z = transform.rotation.Z;
 
             UpdateUI();
+            ValueChanged();
+        }
+
+        public override void HighlightAsModified(bool updateDatabase = true, Control fontToUpdate = null)
+        {
+            base.HighlightAsModified(updateDatabase, POSITION_VARIABLE_DUMMY);
         }
 
         [Serializable]

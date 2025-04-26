@@ -1,4 +1,4 @@
-﻿using CATHODE.Scripting;
+using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CommandsEditor.DockPanels;
 using CommandsEditor.Popups.Base;
@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Runtime.Remoting.Contexts;
 using System.Text;
@@ -21,7 +22,7 @@ namespace CommandsEditor
         private TreeUtility _treeUtility;
         private Composite _composite;
 
-        public AddEntity_CompositeInstance(Composite composite) : base(WindowClosesOn.NEW_COMPOSITE_SELECTION | WindowClosesOn.COMMANDS_RELOAD)
+        public AddEntity_CompositeInstance(Composite composite, bool flowgraphMode) : base(WindowClosesOn.NEW_COMPOSITE_SELECTION | WindowClosesOn.COMMANDS_RELOAD)
         {
             InitializeComponent();
 
@@ -39,6 +40,12 @@ namespace CommandsEditor
 
             addDefaultParams.Checked = SettingsManager.GetBool(Singleton.Settings.PreviouslySearchedParamPopulationComp, false);
             createNode.Checked = SettingsManager.GetBool(Singleton.Settings.MakeNodeWhenMakeEntity); 
+            createNode.Visible = flowgraphMode;
+
+#if AUTO_POPULATE_PARAMS
+            addDefaultParams.Checked = true;
+            addDefaultParams.Visible = false;
+#endif
         }
 
         private void searchText_TextChanged(object sender, EventArgs e)
@@ -80,6 +87,7 @@ namespace CommandsEditor
             Search();
         }
 
+        string _prevSelected = "";
         private void compositeTree_AfterSelect(object sender, TreeViewEventArgs e)
         {
             if (compositeTree.SelectedNode == null || compositeTree.SelectedNode.Tag == null)
@@ -88,6 +96,12 @@ namespace CommandsEditor
                 return;
             }
             compositeNameDisplay.Text = ((TreeItem)compositeTree.SelectedNode.Tag).String_Value;
+
+            if (entityName.Text == "" || _prevSelected == entityName.Text)
+            {
+                entityName.Text = Path.GetFileName(((TreeItem)compositeTree.SelectedNode.Tag).String_Value);
+                _prevSelected = entityName.Text;
+            }
         }
 
         private void createEntity_Click(object sender, EventArgs e)
@@ -120,11 +134,14 @@ namespace CommandsEditor
 
             Singleton.OnEntityAddPending?.Invoke();
 
-            Entity newEntity = _composite.AddFunction(comp, addDefaultParams.Checked);
+            Entity newEntity = _composite.AddFunction(comp);
             EntityUtils.SetName(_composite, newEntity, entityName.Text);
 
             if (addDefaultParams.Checked)
-                newEntity.RemoveParameter("name");
+            {
+                ParameterUtils.AddAllDefaultParameters(newEntity, _composite);
+                newEntity.RemoveParameter("delete_me");
+            }
 
             Content.editor_utils.GenerateCompositeInstances(Content.commands);
 

@@ -367,3 +367,4 @@ CathodeEditorGUI.pdb
 Build/*.xml
 Build/*.pdb
 Build/*.config
+Build/LocalDB/*

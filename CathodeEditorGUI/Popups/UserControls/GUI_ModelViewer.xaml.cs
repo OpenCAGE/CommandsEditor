@@ -60,7 +60,7 @@ namespace CommandsEditor.Popups.UserControls
                     ShadersPAK.MaterialTextureContext mdlMetaDiff = mdlMeta.textures.FirstOrDefault(o => o.Type == ShadersPAK.ShaderSlot.DIFFUSE_MAP);
                     if (mdlMetaDiff != null)
                     {
-                        Textures tex = mdlMetaDiff.TextureInfo.Source == CATHODE.Materials.Material.Texture.TextureSource.GLOBAL ? Content.resource.textures_global : Content.resource.textures;
+                        Textures tex = mdlMetaDiff.TextureInfo.Source == CATHODE.Materials.Material.Texture.TextureSource.GLOBAL ? Singleton.GlobalTextures : Content.resource.textures;
                         Textures.TEX4 diff = tex.GetAtWriteIndex(mdlMetaDiff.TextureInfo.BinIndex);
                         byte[] diffDDS = diff?.ToDDS();
                         DiffuseMaterial mat = new DiffuseMaterial(new ImageBrush(diffDDS?.ToBitmap()?.ToImageSource()));

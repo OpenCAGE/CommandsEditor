@@ -58,7 +58,7 @@ namespace CommandsEditor.DockPanels
             _content = new LevelContent(levelName);
             _treeUtility = new TreeUtility(treeView1);
 
-#if !DEBUG 
+#if !DEBUG
             DEBUG_LoadNextEmpty.Visible = false;
 #endif
 
@@ -82,6 +82,41 @@ namespace CommandsEditor.DockPanels
 
             SelectCompositeAndReloadList(_content.commands.EntryPoints[0]);
             //Singleton.OnCompositeSelected?.Invoke(_content.commands.EntryPoints[0]); //need to call this again b/c the activation event doesn't fire here
+
+            if (!Singleton.LoadedAnimationContent)
+                Singleton.OnAnimationsLoaded += FinishedLoadingAnims;
+            else
+                FinishedLoadingAnims();
+        }
+        
+        //VERY hacked-in thread waiters. This isn't particularly safe, but better than nothing. Needs reworking at some point.
+        private void FinishedLoadingAnims()
+        {
+            Singleton.OnAnimationsLoaded -= FinishedLoadingAnims;
+
+            if (!_content.resource.Loaded)
+                Singleton.OnLevelAssetsLoaded += FinishedLoadingLevelAssets;
+            else
+                FinishedLoadingLevelAssets(null);
+        }
+        private void FinishedLoadingLevelAssets(LevelContent content)
+        {
+            Singleton.OnAnimationsLoaded -= FinishedLoadingAnims;
+
+            if (!Singleton.LoadedGlobalAssets)
+                Singleton.OnGlobalAssetsLoaded += FinishedLoadingGlobalAssets;
+            else
+                FinishedLoadingGlobalAssets();
+        }
+        private void FinishedLoadingGlobalAssets()
+        {
+            Singleton.OnLevelAssetsLoaded -= FinishedLoadingLevelAssets;
+
+            //Everything should now be loaded globally and per-level.
+            Console.WriteLine("Finished loading anim data and level assets!");
+
+            Task.Factory.StartNew(() => EnumStringListViewItems.PopulateGlobalEntries()); //This only loads once, it's not expensive to call it again.
+            Task.Factory.StartNew(() => EnumStringListViewItems.PopulateLevelSpecificEntries());
         }
 
         private void CommandsDisplay_FormClosed(object sender, FormClosedEventArgs e)
@@ -412,6 +447,8 @@ namespace CommandsEditor.DockPanels
             //Refresh UI
             ReloadList();
             Content.editor_utils.GenerateCompositeInstances(Content.commands);
+
+            Singleton.OnCompositeDeleted?.Invoke(composite);
         }
 
         private string _currentSearch = "";

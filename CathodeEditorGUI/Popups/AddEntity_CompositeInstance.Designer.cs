@@ -48,7 +48,7 @@
             this.addDefaultParams.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.addDefaultParams.AutoSize = true;
-            this.addDefaultParams.Location = new System.Drawing.Point(15, 370);
+            this.addDefaultParams.Location = new System.Drawing.Point(107, 370);
             this.addDefaultParams.Name = "addDefaultParams";
             this.addDefaultParams.Size = new System.Drawing.Size(138, 17);
             this.addDefaultParams.TabIndex = 15;
@@ -162,7 +162,7 @@
             this.createNode.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.createNode.AutoSize = true;
-            this.createNode.Location = new System.Drawing.Point(159, 370);
+            this.createNode.Location = new System.Drawing.Point(15, 370);
             this.createNode.Name = "createNode";
             this.createNode.Size = new System.Drawing.Size(86, 17);
             this.createNode.TabIndex = 149;

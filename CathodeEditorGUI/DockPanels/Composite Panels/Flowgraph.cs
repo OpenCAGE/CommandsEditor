@@ -38,7 +38,6 @@ namespace CommandsEditor
             }
         }
 
-
         private Composite _composite;
         private int _spawnOffset = 0;
         private string _flowgraphName = "";
@@ -193,7 +192,7 @@ namespace CommandsEditor
                 CommandsUtils.PurgedComposites.purged.Add(composite.shortGUID);
 
             _composite = composite;
-            this.Text = "Flowgraph: " + flowgraphMeta.Name;
+            this.Text = flowgraphMeta.Name;
             _flowgraphName = flowgraphMeta.Name;
 
             stNodeEditor1.SuspendLayout();
@@ -303,7 +302,7 @@ namespace CommandsEditor
                 CommandsUtils.PurgedComposites.purged.Add(composite.shortGUID);
 
             _composite = composite;
-            this.Text = "Flowgraph: " + _composite.name;
+            this.Text = _composite.name;
 
             stNodeEditor1.SuspendLayout();
             stNodeEditor1.Nodes.Clear();
@@ -396,6 +395,9 @@ namespace CommandsEditor
         //Regenerate the node's visual for the associated entity (sets name, colour, redraws)
         private void RegenerateNodeStyle(STNode node)
         {
+            if (node == null)
+                return;
+
             switch (node.Entity.variant)
             {
                 case EntityVariant.PROXY:
@@ -782,6 +784,9 @@ namespace CommandsEditor
             toolStripSeparator1.Visible = node != null;
             deleteToolStripMenuItem.Visible = node != null;
             duplicateToolStripMenuItem.Visible = node != null;
+            toolStripSeparator2.Visible = node != null;
+            addAllPinsToolStripMenuItem.Visible = node != null;
+            removeUnusedPinsToolStripMenuItem.Visible = node != null;
 
             if (node != null)
             {
@@ -838,6 +843,48 @@ namespace CommandsEditor
         private void modifyPinsOut_Click(object sender, EventArgs e)
         {
             PinManager(ModifyPinsOrParameters.Mode.LINK_OUT);
+        }
+
+        //Add/remove batch pins in/out
+        private void addAllPinsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            STNode node = stNodeEditor1.GetHoveredNode();
+            List<(ShortGuid, ParameterVariant, DataType)> allParameters = ParameterUtils.GetAllParameters(_composite.GetEntityByID(node.ShortGUID), _composite);
+            foreach ((ShortGuid, ParameterVariant, DataType) parameter in allParameters)
+            {
+                switch (parameter.Item2)
+                {
+                    case ParameterVariant.STATE_PARAMETER:
+                    case ParameterVariant.INPUT_PIN:
+                    case ParameterVariant.PARAMETER:
+                        //case ParameterVariant.METHOD_FUNCTION:
+                        node.AddInputOption(parameter.Item1);
+                        break;
+                    case ParameterVariant.METHOD_PIN:
+                        node.AddInputOption(parameter.Item1);
+                        ShortGuid relay = ParameterUtils.GetRelay(parameter.Item1);
+                        if (relay != ShortGuid.Invalid)
+                            node.AddOutputOption(relay);
+                        break;
+                    case ParameterVariant.OUTPUT_PIN:
+                    case ParameterVariant.TARGET_PIN:
+                    case ParameterVariant.REFERENCE_PIN:
+                        node.AddOutputOption(parameter.Item1);
+                        break;
+                }
+            }
+        }
+        private void removeUnusedPinsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            STNode node = stNodeEditor1.GetHoveredNode();
+            STNodeOption[] ins = node.GetInputOptions();
+            for (int i = 0; i < ins.Length; i++)
+                if (ins[i].ConnectionCount == 0)
+                    node.RemoveInputOption(ins[i].ShortGUID);
+            STNodeOption[] outs = node.GetOutputOptions();
+            for (int i = 0; i < outs.Length; i++)
+                if (outs[i].ConnectionCount == 0)
+                    node.RemoveOutputOption(outs[i].ShortGUID);
         }
 
         //Delete right clicked node
@@ -910,7 +957,7 @@ namespace CommandsEditor
                 }
             }
             layouts.FirstOrDefault(o => o.Name == _flowgraphName).Name = name;
-            this.Text = "Flowgraph: " + name;
+            this.Text = name;
             _flowgraphName = name;
         }
         private void _renameFlowgraphPopup_FormClosed(object sender, FormClosedEventArgs e)

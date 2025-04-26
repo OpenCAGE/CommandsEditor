@@ -35,6 +35,7 @@
             this.pathDisplay = new System.Windows.Forms.TextBox();
             this.goBackOnPath = new System.Windows.Forms.Button();
             this.createNode = new System.Windows.Forms.CheckBox();
+            this.applyDefaultParams = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // FollowEntityThrough
@@ -107,11 +108,24 @@
             this.createNode.UseVisualStyleBackColor = true;
             this.createNode.CheckedChanged += new System.EventHandler(this.createNode_CheckedChanged);
             // 
+            // applyDefaultParams
+            // 
+            this.applyDefaultParams.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.applyDefaultParams.AutoSize = true;
+            this.applyDefaultParams.Location = new System.Drawing.Point(337, 759);
+            this.applyDefaultParams.Name = "applyDefaultParams";
+            this.applyDefaultParams.Size = new System.Drawing.Size(145, 17);
+            this.applyDefaultParams.TabIndex = 185;
+            this.applyDefaultParams.Text = "Apply Default Parameters";
+            this.applyDefaultParams.UseVisualStyleBackColor = true;
+            // 
             // SelectHierarchy
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(763, 792);
+            this.Controls.Add(this.applyDefaultParams);
             this.Controls.Add(this.createNode);
             this.Controls.Add(this.pathDisplay);
             this.Controls.Add(this.goBackOnPath);
@@ -134,5 +148,6 @@
         private System.Windows.Forms.TextBox pathDisplay;
         private System.Windows.Forms.Button goBackOnPath;
         private System.Windows.Forms.CheckBox createNode;
+        private System.Windows.Forms.CheckBox applyDefaultParams;
     }
 }

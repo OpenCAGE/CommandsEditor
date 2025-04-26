@@ -28,6 +28,156 @@ namespace CommandsEditor
 {
     public static class LocalDebug
     {
+        public static void DefaultsUnitTest()
+        {
+            var values = Enum.GetValues(typeof(FunctionType));
+            foreach (var value in values)
+            {
+                var paramz = ParameterUtils.GetAllParameters((FunctionType)value);
+                foreach (var param in paramz)
+                {
+                    if (param.Item1.ToByteString() == param.Item1.ToString())
+                    {
+                        throw new Exception("string missing");
+                    }
+                }
+            }
+        }
+
+        public static void ParameterCloneUnitTest()
+        {
+            Commands test = new Commands("M:\\Modding\\Steam Projects\\steamapps\\common\\Alien Isolation\\data\\ENV\\PRODUCTION\\BSP_LV426_PT02\\WORLD\\COMMANDS.PAK");
+            {
+                Parameter p = null;
+                for (int i = 0; i < test.Entries.Count; i++)
+                {
+                    p = test.Entries[i].GetEntities().FirstOrDefault(o => o.parameters.FirstOrDefault(x => x.content.dataType == DataType.SPLINE && ((cSpline)x.content).splinePoints.Count != 0) != null)?.parameters.FirstOrDefault(x => x.content.dataType == DataType.SPLINE && ((cSpline)x.content).splinePoints.Count != 0);
+                    if (p != null) break;
+                }
+                cSpline p0 = (cSpline)p.content;
+                cSpline p2 = (cSpline)p.content.Clone();
+                p2.splinePoints.Add(new cTransform());
+                if (p0.splinePoints.Count == p2.splinePoints.Count)
+                    throw new Exception("");
+                p2.splinePoints[0].position.X = 9999;
+                if (p0.splinePoints[0].position.X == p2.splinePoints[0].position.X)
+                    throw new Exception("");
+                p2.splinePoints[0].rotation.X = 9999;
+                if (p0.splinePoints[0].rotation.X == p2.splinePoints[0].rotation.X)
+                    throw new Exception("");
+            }
+            {
+                Parameter p = null;
+                for (int i = 0; i < test.Entries.Count; i++)
+                {
+                    p = test.Entries[i].GetEntities().FirstOrDefault(o => o.parameters.FirstOrDefault(x => x.content.dataType == DataType.BOOL) != null)?.parameters.FirstOrDefault(x => x.content.dataType == DataType.BOOL);
+                    if (p != null) break;
+                }
+                cBool p0 = (cBool)p.content;
+                cBool p2 = (cBool)p.content.Clone();
+                p2.value = !p2.value;
+                if (p0.value == p2.value)
+                    throw new Exception("");
+            }
+            {
+                Parameter p = null;
+                for (int i = 0; i < test.Entries.Count; i++)
+                {
+                    p = test.Entries[i].GetEntities().FirstOrDefault(o => o.parameters.FirstOrDefault(x => x.content.dataType == DataType.ENUM) != null)?.parameters.FirstOrDefault(x => x.content.dataType == DataType.ENUM);
+                    if (p != null) break;
+                }
+                cEnum p0 = (cEnum)p.content;
+                cEnum p2 = (cEnum)p.content.Clone();
+                p0.enumIndex = 999;
+                if (p0.enumIndex == p2.enumIndex)
+                    throw new Exception("");
+                p0.enumID = new ShortGuid(99999);
+                if (p0.enumID.ToUInt32() == p2.enumID.ToUInt32())
+                    throw new Exception("");
+            }
+            {
+                Parameter p = null;
+                for (int i = 0; i < test.Entries.Count; i++)
+                {
+                    p = test.Entries[i].GetEntities().FirstOrDefault(o => o.parameters.FirstOrDefault(x => x.content.dataType == DataType.TRANSFORM) != null)?.parameters.FirstOrDefault(x => x.content.dataType == DataType.TRANSFORM);
+                    if (p != null) break;
+                }
+                cTransform p0 = (cTransform)p.content;
+                cTransform p2 = (cTransform)p.content.Clone();
+                p2.position.X = 99999;
+                if (p0.position.X == p2.position.X)
+                    throw new Exception("");
+                p2.rotation.X = 99999;
+                if (p0.rotation.X == p2.rotation.X)
+                    throw new Exception("");
+            }
+            {
+                Parameter p = null;
+                for (int i = 0; i < test.Entries.Count; i++)
+                {
+                    p = test.Entries[i].GetEntities().FirstOrDefault(o => o.parameters.FirstOrDefault(x => x.content.dataType == DataType.INTEGER) != null)?.parameters.FirstOrDefault(x => x.content.dataType == DataType.INTEGER);
+                    if (p != null) break;
+                }
+                cInteger p0 = (cInteger)p.content;
+                cInteger p2 = (cInteger)p.content.Clone();
+                p2.value = 9999;
+                if (p0.value == p2.value)
+                    throw new Exception("");
+            }
+            {
+                Parameter p = null;
+                for (int i = 0; i < test.Entries.Count; i++)
+                {
+                    p = test.Entries[i].GetEntities().FirstOrDefault(o => o.parameters.FirstOrDefault(x => x.content.dataType == DataType.VECTOR) != null)?.parameters.FirstOrDefault(x => x.content.dataType == DataType.VECTOR);
+                    if (p != null) break;
+                }
+                cVector3 p0 = (cVector3)p.content;
+                cVector3 p2 = (cVector3)p.content.Clone();
+                p2.value.X = 9999;
+                if (p0.value.X == p2.value.X)
+                    throw new Exception("");
+            }
+            {
+                Parameter p = null;
+                for (int i = 0; i < test.Entries.Count; i++)
+                {
+                    p = test.Entries[i].GetEntities().FirstOrDefault(o => o.parameters.FirstOrDefault(x => x.content.dataType == DataType.RESOURCE && ((cResource)x.content).value.Count != 0) != null)?.parameters.FirstOrDefault(x => x.content.dataType == DataType.RESOURCE && ((cResource)x.content).value.Count != 0);
+                    if (p != null) break;
+                }
+                cResource p0 = (cResource)p.content;
+                cResource p2 = (cResource)p.content.Clone();
+                p2.value.Add(new ResourceReference());
+                if (p0.value.Count == p2.value.Count)
+                    throw new Exception("");
+                p2.value[0].entityID = new ShortGuid(99);
+                if (p0.value[0].entityID.ToUInt32() == p2.value[0].entityID.ToUInt32())
+                    throw new Exception("");
+                p2.value[0].index = 9999;
+                if (p0.value[0].index == p2.value[0].index)
+                    throw new Exception("");
+                p2.value[0].position.X = 9999;
+                if (p0.value[0].position.X == p2.value[0].position.X)
+                    throw new Exception("");
+                p2.value[0].rotation.X = 9999;
+                if (p0.value[0].rotation.X == p2.value[0].rotation.X)
+                    throw new Exception("");
+            }
+            {
+                Parameter p = null;
+                for (int i = 0; i < test.Entries.Count; i++)
+                {
+                    p = test.Entries[i].GetEntities().FirstOrDefault(o => o.parameters.FirstOrDefault(x => x.content.dataType == DataType.FLOAT) != null)?.parameters.FirstOrDefault(x => x.content.dataType == DataType.FLOAT);
+                    if (p != null) break;
+                }
+                cFloat p0 = (cFloat)p.content;
+                cFloat p2 = (cFloat)p.content.Clone();
+                p0.value = 1;
+                p2.value = 2;
+                if (p0.value == p2.value)
+                    throw new Exception("");
+            }
+        }
+
         public static void MAPTEST(string path)
         {
             /*
@@ -114,6 +264,69 @@ namespace CommandsEditor
 
             File.Delete(lights.Filepath);
             File.Delete(lightsAlpha.Filepath); //deleting this one causes significant visual changes (anything with alpha doesn't render, or render properly)
+#endif
+        }
+
+        public static void CheckAllParamInfo()
+        {
+#if DEBUG
+
+            List<string> files = Directory.GetFiles("M:\\Modding\\Steam Projects\\steamapps\\common\\Alien Isolation\\data\\ENV", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            List<string> dump = new List<string>();
+            dump.Add("PAK File,Composite Name,VariableEntity ShortGuid,VariableEntity Param Name");
+            foreach (string file in files)
+            {
+                Commands commands = new Commands(file);
+
+                ShortGuidUtils.LinkCommands(commands);
+                CompositeUtils.LinkCommands(commands);
+
+                for (int x = 0; x < commands.Entries.Count; x++)
+                {
+                    for (int i = 0; i < commands.Entries[x].variables.Count; i++)
+                    {
+                        if (CompositeUtils.GetParameterInfo(commands.Entries[x], commands.Entries[x].variables[i]) == null)
+                        {
+                            dump.Add(file + "," + commands.Entries[x].name + "," + commands.Entries[x].variables[i].shortGUID + "," + commands.Entries[x].variables[i].name);
+                        }
+                    }
+                }
+            }
+            File.WriteAllLines("missing_param_info.csv", dump);
+#endif
+        }
+
+        public static void ApplyAllDefaults()
+        {
+#if DEBUG
+
+            List<string> files = Directory.GetFiles("M:\\Modding\\Steam Projects\\steamapps\\common\\Alien Isolation\\data\\ENV\\PRODUCTION\\hab_airport", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            foreach (string file in files)
+            {
+                Commands commands = new Commands(file);
+
+                CompositeUtils.LinkCommands(commands);
+                EntityUtils.LinkCommands(commands);
+                ParameterUtils.LinkCommands(commands);
+
+                for (int x = 0; x < commands.Entries.Count; x++)
+                {
+                    CommandsUtils.PurgeDeadLinks(commands, commands.Entries[x]);
+                }
+                for (int x = 0; x < commands.Entries.Count; x++)
+                {
+                    CommandsUtils.PurgeDeadLinks(commands, commands.Entries[x]);
+                }
+
+                for (int x = 0; x < commands.Entries.Count; x++)
+                {
+                    List<Entity> entities = commands.Entries[x].GetEntities();
+                    for (int i = 0; i < entities.Count; i++)
+                        ParameterUtils.AddAllDefaultParameters(entities[i], commands.Entries[x], false); //note: applying just PARAMETER seems fine. including the others results in minor issues.
+                }
+
+                commands.Save();
+            }
 #endif
         }
 
@@ -1303,8 +1516,8 @@ namespace CommandsEditor
                         {
                             foreach (CAGEAnimation.Event.Keyframe keyData in key.keyframes)
                             {
-                                AddToListIfUnnamed(keyData.start);
-                                AddToListIfUnnamed(keyData.unk3);
+                                AddToListIfUnnamed(keyData.startEvent);
+                                AddToListIfUnnamed(keyData.reverseEvent);
                             }
                         }
                     }

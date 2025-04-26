@@ -1,4 +1,4 @@
-﻿using CATHODE.Scripting;
+using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CommandsEditor.DockPanels;
 using CommandsEditor.Popups.Base;
@@ -23,24 +23,19 @@ namespace CommandsEditor
 
         private ListViewColumnSorter _sorter = new ListViewColumnSorter();
 
-        public AddEntity_Function(Composite composite) : base (WindowClosesOn.NEW_COMPOSITE_SELECTION | WindowClosesOn.COMMANDS_RELOAD)
+        public AddEntity_Function(Composite composite, bool flowgraphMode) : base (WindowClosesOn.NEW_COMPOSITE_SELECTION | WindowClosesOn.COMMANDS_RELOAD)
         {
             InitializeComponent();
             _composite = composite;
             functionTypeList.ListViewItemSorter = _sorter;
 
-            List<CathodeEntityDatabase.EntityDefinition> entDefs = CathodeEntityDatabase.GetEntities();
-            for (int i = 0; i < entDefs.Count;i++)
+            foreach (FunctionType function in Enum.GetValues(typeof(FunctionType)))
             {
-                if (!Enum.TryParse(entDefs[i].className, out FunctionType type))
-                    continue;
+                FunctionType? inherited = EntityUtils.GetBaseFunction(function);
 
-                FunctionType inherited = EntityUtils.GetBaseFunction(type);
-
-                ListViewItem item = new ListViewItem(entDefs[i].className);
+                ListViewItem item = new ListViewItem(function.ToString());
                 item.ImageIndex = 0;
-                item.SubItems.Add(inherited.ToString());
-                item.Tag = entDefs[i];
+                item.SubItems.Add(inherited == null ? "" : inherited.Value.ToString());
 
                 _items.Add(item);
             }
@@ -52,6 +47,12 @@ namespace CommandsEditor
 
             addDefaultParams.Checked = SettingsManager.GetBool(Singleton.Settings.PreviouslySearchedParamPopulation, false);
             createNode.Checked = SettingsManager.GetBool(Singleton.Settings.MakeNodeWhenMakeEntity);
+            createNode.Visible = flowgraphMode;
+
+#if AUTO_POPULATE_PARAMS
+            addDefaultParams.Checked = true;
+            addDefaultParams.Visible = false;
+#endif
         }
 
         private void searchText_TextChanged(object sender, EventArgs e)
@@ -119,12 +120,7 @@ namespace CommandsEditor
                 return;
             }
 
-            CathodeEntityDatabase.EntityDefinition entDef = (CathodeEntityDatabase.EntityDefinition)functionTypeList.SelectedItems[0].Tag;
-            if (!Enum.TryParse(entDef.className, out FunctionType function))
-            {
-                MessageBox.Show("Failed to lookup function type.", "Invalid function type", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
+            FunctionType function = (FunctionType)Enum.Parse(typeof(FunctionType), functionTypeList.SelectedItems[0].Text);
 
             //A composite can only have one PhysicsSystem
             if (function == FunctionType.PhysicsSystem && _composite.functions.FirstOrDefault(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.PhysicsSystem)) != null)
@@ -141,20 +137,16 @@ namespace CommandsEditor
             }
 
             Singleton.OnEntityAddPending?.Invoke();
-            Entity newEntity = _composite.AddFunction(function, addDefaultParams.Checked);
+            Entity newEntity = _composite.AddFunction(function);
 
-            //TODO: currently we don't support these properly
             if (addDefaultParams.Checked)
             {
-                newEntity.parameters.RemoveAll(o => o.content.dataType == DataType.NONE); //TODO
-                newEntity.parameters.RemoveAll(o => o.content.dataType == DataType.RESOURCE); //TODO
-
-                if (function != FunctionType.Zone)
-                    newEntity.RemoveParameter("name");
+                ParameterUtils.AddAllDefaultParameters(newEntity, _composite);
+                newEntity.RemoveParameter("delete_me");
             }
 
             EntityUtils.SetName(_composite, newEntity, entityName.Text);
-            SettingsManager.SetString(Singleton.Settings.PreviouslySelectedFunctionType, entDef.className);
+            SettingsManager.SetString(Singleton.Settings.PreviouslySelectedFunctionType, function.ToString());
             SettingsManager.SetBool(Singleton.Settings.PreviouslySearchedParamPopulation, addDefaultParams.Checked);
 
             Singleton.OnEntityAdded?.Invoke(newEntity);
@@ -193,6 +185,15 @@ namespace CommandsEditor
         {
             if (createNode.Checked != SettingsManager.GetBool(Singleton.Settings.MakeNodeWhenMakeEntity))
                 Singleton.Editor.ToggleMakeNodeWhenMakeEntity();
+        }
+
+        private void functionTypeList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (functionTypeList.SelectedItems.Count == 0)
+                return;
+
+            if (entityName.Text == "" || Enum.TryParse<FunctionType>(entityName.Text, out FunctionType type))
+                entityName.Text = functionTypeList.SelectedItems[0].Text;
         }
     }
 }

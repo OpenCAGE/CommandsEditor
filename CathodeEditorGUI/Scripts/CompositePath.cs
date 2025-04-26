@@ -19,6 +19,7 @@ namespace CommandsEditor
             _entities.Add(entityFollowed);
         }
 
+        public bool StepBackwards() => StepBackwards(out Composite c, out Entity e);
         public bool StepBackwards(out Composite prevComp, out Entity entityFollowed)
         {
             if (_composites.Count == 0 || _entities.Count == 0)
@@ -35,6 +36,12 @@ namespace CommandsEditor
             _entities.RemoveAt(_entities.Count - 1);
 
             return true;
+        }
+
+        public void Reset()
+        {
+            _composites.Clear();
+            _entities.Clear();
         }
 
         public Composite PreviousComposite
@@ -71,6 +78,7 @@ namespace CommandsEditor
             }
         }
 
+        // returns the path as a pretty string for UI
         public string GetPath(Composite currentComp)
         {
             string path = "";
@@ -82,6 +90,18 @@ namespace CommandsEditor
             return path;
         }
 
+        // returns the path as the entity IDs for use in scripting
+        public List<ShortGuid> GetPath()
+        {
+            List<ShortGuid> path = new List<ShortGuid>();
+            for (int i = 0; i < _entities.Count; i++)
+            {
+                path.Add(_entities[i].shortGUID);
+            }
+            return path;
+        }
+
+        // returns the path with Composite and Entity objects
         public List<CompAndEnt> GetPathRich(Composite currentComp)
         {
             List<CompAndEnt> rich = new List<CompAndEnt>();

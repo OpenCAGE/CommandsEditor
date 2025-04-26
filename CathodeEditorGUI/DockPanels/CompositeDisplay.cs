@@ -51,6 +51,8 @@ namespace CommandsEditor.DockPanels
 
         public bool SupportsFlowgraphs => FlowgraphLayoutManager.IsCompatible(Composite);
 
+        public Action<Composite> OnCompositeDisplayReloaded;
+
         private static Mutex _mut = new Mutex();
         private bool _canExportChildren = true;
         private bool _isSubbed = false;
@@ -78,6 +80,8 @@ namespace CommandsEditor.DockPanels
             _entityDisplay.Resize += _entityDisplay_Resize;
 
             this.FormClosed += CompositeDisplay_FormClosed;
+
+            Singleton.OnCompositeDisplayOpening?.Invoke(this);
         }
 
         private void _entityDisplay_Resize(object sender, EventArgs e)
@@ -103,10 +107,13 @@ namespace CommandsEditor.DockPanels
             pathDisplay.Text = _path.GetPath(_composite);
         }
 
-        private void OnAddNewEntity(Entity entity)
+        private void OnCompsoiteDeleted(Composite composite)
         {
-            ReloadUIForNewEntity(entity);
-            LoadEntity(entity);
+            if (!Populated)
+                return;
+
+            while (Path.AllComposites.Contains(composite) || _composite == composite)
+                LoadParent();
         }
 
         //Saves and compiles all Flowgraph layouts for this Composite
@@ -131,7 +138,8 @@ namespace CommandsEditor.DockPanels
             {
                 _entityList.List.SelectedEntityChanged += LoadEntity;
                 Singleton.OnCompositeRenamed += OnCompositeRenamed;
-                Singleton.OnEntityAdded += OnAddNewEntity;
+                Singleton.OnCompositeDeleted += OnCompsoiteDeleted;
+                Singleton.OnEntityAdded += ReloadUIForNewEntity;
                 _isSubbed = true;
             }
 
@@ -156,7 +164,7 @@ namespace CommandsEditor.DockPanels
 
             _entityList.List.Setup(composite, new CompositeEntityList.DisplayOptions() { ShowCheckboxes = true }, false);
             _entityList.Show(dockPanel, DockState.DockLeft);
-            _path = new CompositePath();
+            _path.Reset();
             this.Text = EditorUtils.GetCompositeName(composite);
 
             Reload(composite);
@@ -175,7 +183,7 @@ namespace CommandsEditor.DockPanels
             _entityList.List.SelectedEntityChanged -= LoadEntity;
             //this.FormClosed -= CompositeDisplay_FormClosed;
             Singleton.OnCompositeRenamed -= OnCompositeRenamed;
-            Singleton.OnEntityAdded -= OnAddNewEntity;
+            Singleton.OnEntityAdded -= ReloadUIForNewEntity;
             _isSubbed = false;
 
             if (dialog_var != null)
@@ -433,7 +441,7 @@ namespace CommandsEditor.DockPanels
             if (entity == null) return;
 
             //First, make sure the list has the right entity selected, then exit early to avoid loading twice.
-            if (_entityList.List.SelectedEntity != entity)
+            if (_entityList.List.SelectedEntity == null || _entityList.List.SelectedEntity.shortGUID != entity.shortGUID)
             {
                 _entityList.List.SelectEntity(entity);
                 return;
@@ -452,6 +460,8 @@ namespace CommandsEditor.DockPanels
             e.Cancel = true;
             EntityInspector display = (EntityInspector)sender;
             display.DepopulateUI();
+
+            Singleton.OnCompositeDisplayClosing?.Invoke(this);
         }
 
         public void CloseAllChildTabsExcept(Entity entity)
@@ -771,7 +781,7 @@ namespace CommandsEditor.DockPanels
                 if (dialog_func != null)
                     dialog_func.Close();
 
-                dialog_func = new AddEntity_Function(Composite);
+                dialog_func = new AddEntity_Function(Composite, SupportsFlowgraphs);
                 dialog_func.Show();
                 dialog_func.Focus();
             }
@@ -780,7 +790,7 @@ namespace CommandsEditor.DockPanels
                 if (dialog_compinst != null)
                     dialog_compinst.Close();
 
-                dialog_compinst = new AddEntity_CompositeInstance(Composite);
+                dialog_compinst = new AddEntity_CompositeInstance(Composite, SupportsFlowgraphs);
                 dialog_compinst.Show();
                 dialog_compinst.Focus();
             }
@@ -799,7 +809,8 @@ namespace CommandsEditor.DockPanels
                             DisplayFunctions = true,
                             DisplayProxies = false,
                             DisplayVariables = false,
-                            ShowCreateNode = true,
+                            ShowCreateNode = SupportsFlowgraphs,
+                            ShowApplyDefaults = true,
                         });
                         dialog_hierarchy.Text = "Create Proxy";
                         break;
@@ -810,7 +821,8 @@ namespace CommandsEditor.DockPanels
                             DisplayFunctions = true,
                             DisplayProxies = true,
                             DisplayVariables = true,
-                            ShowCreateNode = true,
+                            ShowCreateNode = SupportsFlowgraphs,
+                            ShowApplyDefaults = true,
                         });
                         dialog_hierarchy.Text = "Create Alias";
                         break;
@@ -824,7 +836,7 @@ namespace CommandsEditor.DockPanels
                 if (dialog_var != null)
                     dialog_var.Close();
 
-                dialog_var = new AddEntity_Variable(Composite);
+                dialog_var = new AddEntity_Variable(Composite, SupportsFlowgraphs);
                 dialog_var.Show();
                 dialog_var.Focus();
             }
@@ -848,6 +860,9 @@ namespace CommandsEditor.DockPanels
                     ent = _composite.AddAlias(generatedHierarchy); //TODO: re-add "add default params"?
                     break;
             }
+
+            if (dialog_hierarchy.ApplyDefaultParams)
+                ParameterUtils.AddAllDefaultParameters(ent, _composite);
 
             Singleton.OnEntityAdded?.Invoke(ent);
         }

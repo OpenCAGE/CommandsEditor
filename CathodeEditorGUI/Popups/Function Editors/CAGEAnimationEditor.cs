@@ -201,8 +201,8 @@ namespace CommandsEditor
             CAGEAnimation.Event e = tracksEvent[key.Track];
             CAGEAnimation.Event.Keyframe keyData = new CAGEAnimation.Event.Keyframe();
             keyData.secondsSinceStart = key.Seconds;
-            keyData.start = ShortGuidUtils.Generate("");
-            keyData.unk3 = ShortGuidUtils.Generate("");
+            keyData.startEvent = ShortGuidUtils.Generate("");
+            keyData.reverseEvent = ShortGuidUtils.Generate("");
             e.keyframes.Add(keyData);
             keyframeHandlesEvent.Add(key, keyData);
             key.OnMoved += OnHandleMoved;
@@ -214,13 +214,13 @@ namespace CommandsEditor
         Keyframe activeEventHandle = null;
         private void OnHandleMoved(Keyframe handle, float time)
         {
-            if (keyframeHandlesAnim.ContainsKey(handle))
+            if (keyframeHandlesAnim.TryGetValue(handle, out CAGEAnimation.Animation.Keyframe animKeyframe))
             {
                 if (activeAnimHandle != null) activeAnimHandle.Highlight(false);
                 handle.Highlight();
                 activeAnimHandle = handle;
 
-                activeAnimKeyframe = keyframeHandlesAnim[handle];
+                activeAnimKeyframe = animKeyframe;
                 activeAnimKeyframe.secondsSinceStart = time;
                 animKeyframeData.Visible = true;
                 animKeyframeValue.Text = activeAnimKeyframe.paramValue.ToString();
@@ -229,17 +229,17 @@ namespace CommandsEditor
                 endVelX.Text = activeAnimKeyframe.endVelocity.X.ToString();
                 endVelY.Text = activeAnimKeyframe.endVelocity.Y.ToString();
             }
-            else if (keyframeHandlesEvent.ContainsKey(handle))
+            else if (keyframeHandlesEvent.TryGetValue(handle, out CAGEAnimation.Event.Keyframe eventKeyframe))
             {
                 if (activeEventHandle != null) activeEventHandle.Highlight(false);
                 handle.Highlight();
                 activeEventHandle = handle;
 
-                activeEventKeyframe = keyframeHandlesEvent[handle];
+                activeEventKeyframe = eventKeyframe;
                 activeEventKeyframe.secondsSinceStart = time;
                 eventKeyframeData.Visible = true;
-                eventParam1.Text = activeEventKeyframe.start.ToString();
-                eventParam2.Text = activeEventKeyframe.unk3.ToString();
+                eventParam1.Text = activeEventKeyframe.startEvent.ToString();
+                eventParam2.Text = activeEventKeyframe.reverseEvent.ToString();
             }
             else
             {
@@ -459,7 +459,7 @@ namespace CommandsEditor
             //Add new event trigger
             CAGEAnimation.Event eventTrigger = new CAGEAnimation.Event();
             eventTrigger.shortGUID = connectionID;
-            eventTrigger.keyframes.Add(new CAGEAnimation.Event.Keyframe() { secondsSinceStart = CalculateAnimLength(), start = ShortGuidUtils.Generate(""), unk3 = ShortGuidUtils.Generate("") }); 
+            eventTrigger.keyframes.Add(new CAGEAnimation.Event.Keyframe() { secondsSinceStart = CalculateAnimLength(), startEvent = ShortGuidUtils.Generate(""), reverseEvent = ShortGuidUtils.Generate("") }); 
             animEntity.events.Add(eventTrigger);
 
             SetupEventTimeline();
@@ -527,14 +527,14 @@ namespace CommandsEditor
         private void eventParam1_TextChanged(object sender, EventArgs e)
         {
             //Handle non-convertable param names
-            if (activeEventKeyframe.start.ToByteString() == eventParam1.Text) return;
-            activeEventKeyframe.start = ShortGuidUtils.Generate(eventParam1.Text);
+            if (activeEventKeyframe.startEvent.ToByteString() == eventParam1.Text) return;
+            activeEventKeyframe.startEvent = ShortGuidUtils.Generate(eventParam1.Text);
         }
         private void eventParam2_TextChanged(object sender, EventArgs e)
         {
             //Handle non-convertable param names
-            if (activeEventKeyframe.unk3.ToByteString() == eventParam2.Text) return;
-            activeEventKeyframe.unk3 = ShortGuidUtils.Generate(eventParam2.Text);
+            if (activeEventKeyframe.reverseEvent.ToByteString() == eventParam2.Text) return;
+            activeEventKeyframe.reverseEvent = ShortGuidUtils.Generate(eventParam2.Text);
         }
 
         private void entityList_SelectedIndexChanged(object sender, EventArgs e)

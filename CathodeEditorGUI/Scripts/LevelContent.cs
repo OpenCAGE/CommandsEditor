@@ -1,4 +1,6 @@
-﻿using CATHODE.Scripting;
+﻿#define USE_PRETTY_COMPOSITE_PATHS
+
+using CATHODE.Scripting;
 using CATHODE;
 using System;
 using System.Collections.Generic;
@@ -14,6 +16,7 @@ using System.IO;
 using CATHODE.EXPERIMENTAL;
 using System.Windows.Shapes;
 using CathodeLib;
+using System.Xml.XPath;
 
 namespace CommandsEditor
 {
@@ -28,10 +31,11 @@ namespace CommandsEditor
         public Resource resource = new Resource();
         public class Resource
         {
+            public bool Loaded = false;
+
             public Models models = null;
             public Materials materials = null;
             public Textures textures = null;
-            public Textures textures_global = Singleton.GlobalTextures;
 
             public ShadersPAK shaders_legacy = null; //LEGACY
             public Shaders shaders_new = null; 
@@ -60,6 +64,8 @@ namespace CommandsEditor
                 public NavigationMesh navmesh;
                 public Traversals traversals;
             }
+
+            public Dictionary<string, TextDB> text_dbs = new Dictionary<string, TextDB>();
         }
 
         //UI stuff
@@ -102,54 +108,41 @@ namespace CommandsEditor
             }
 
             //Link up commands to utils and cache some things
+            ParameterUtils.LinkCommands(commands);
             EntityUtils.LinkCommands(commands);
             ShortGuidUtils.LinkCommands(commands);
             CommandsUtils.LinkCommands(commands);
             FlowgraphLayoutManager.LinkCommands(commands);
             CompositeUtils.LinkCommands(commands);
+            ParameterModificationTracker.LinkCommands(commands);
 
-            //Cache entity list view items (TODO: do this on a thread and handle conflicts nicely)
-            /*
-            Dictionary<Entity, ListViewItem>[] listViewItems = new Dictionary<Entity, ListViewItem>[commands.Entries.Count];
-            Parallel.For(0, commands.Entries.Count, (i) =>
+            //Load the level-specific text databases
+            var textDBs = XDocument.Load(SharedData.pathToAI + "/DATA/level_text_databases.xml");
+            foreach (XElement levelDB in textDBs.XPathSelectElements("//level_text_databases/level"))
             {
-                List<Entity> entities = commands.Entries[(int)i].GetEntities();
-                ListViewItem[] compositeItems = new ListViewItem[entities.Count];
-                Parallel.For(0, entities.Count, (x) =>
-                {
-                    compositeItems[x] = GenerateListViewItem(entities[(int)x], commands.Entries[(int)i], CacheMethod.IGNORE_CACHE);
-                });
-                listViewItems[i] = new Dictionary<Entity, ListViewItem>();
-                for (int x = 0; x < compositeItems.Length; x++)
-                {
-                    listViewItems[i].Add(entities[x], compositeItems[x]);
-                }
-            });
-            for (int i = 0; i < commands.Entries.Count; i++)
-                composite_content_cache.Add(commands.Entries[i], listViewItems[i]);
-            */
+                if (levelDB.Attribute("name").Value.ToString().ToUpper() != System.IO.Path.GetFileName(level).ToUpper())
+                    continue;
 
-            //TEMP: Testing out new brute-forced ShortGuids
-            ShortGuidUtils.Generate("Win");
-            ShortGuidUtils.Generate("End");
-            ShortGuidUtils.Generate("Cut");
-            for (int i = 0; i < 26; i++)
-                ShortGuidUtils.Generate("cut" + i);
-            //ShortGuidUtils.Generate("temp");
-            //ShortGuidUtils.Generate("test");
-            //ShortGuidUtils.Generate("M01");
-            //ShortGuidUtils.Generate("M02");
-            //ShortGuidUtils.Generate("M03");
-            //ShortGuidUtils.Generate("TEST");
-            //ShortGuidUtils.Generate("CORE");
-            //ShortGuidUtils.Generate("left");
-            //ShortGuidUtils.Generate("back");
-            //ShortGuidUtils.Generate("bind");
-            //ShortGuidUtils.Generate("cam");
+                var databases = levelDB.XPathSelectElements("text_database");
+                foreach (XElement database in databases)
+                    resource.text_dbs.Add(database.Attribute("name").Value, new TextDB(SharedData.pathToAI + "/DATA/TEXT/ENGLISH/" + database.Attribute("name").Value + ".TXT"));
+            }
+            string localDBFolder = SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + level + "/TEXT/";
+            string localDBNames = localDBFolder + "TEXT_DB_LIST.TXT";
+            if (File.Exists(localDBNames))
+            {
+                string[] localDBs = File.ReadAllLines(localDBNames);
+                foreach (string localDB in localDBs)
+                    resource.text_dbs.Add(localDB, new TextDB(localDBFolder + "/ENGLISH/" + localDB + ".TXT"));
+            }
         }
 
         ~LevelContent()
         {
+            if (ParameterUtils.LinkedCommands == commands)
+            {
+                ParameterUtils.LinkCommands(null);
+            }
             if (EntityUtils.LinkedCommands == commands)
             {
                 EntityUtils.LinkCommands(null);
@@ -169,6 +162,10 @@ namespace CommandsEditor
             if (CompositeUtils.LinkedCommands == commands)
             {
                 CompositeUtils.LinkCommands(null);
+            }
+            if (ParameterModificationTracker.LinkedCommands == commands)
+            {
+                ParameterModificationTracker.LinkCommands(null);
             }
 
             resource = null;
@@ -248,7 +245,13 @@ namespace CommandsEditor
                             mvr = new Movers(worldPath + "MODELS.MVR");
                             break;
                         case 2:
+#if USE_PRETTY_COMPOSITE_PATHS
+                            Commands.UsePrettyPaths = true;
+#endif
                             commands = new Commands(worldPath + "COMMANDS.PAK");
+#if USE_PRETTY_COMPOSITE_PATHS
+                            Commands.UsePrettyPaths = false;
+#endif
                             commands.Entries = commands.Entries.OrderBy(o => o.name).ToList();
                             commands.EntryPoints[0].name = EditorUtils.GetCompositeName(commands.EntryPoints[0]);
                             break;
@@ -301,8 +304,8 @@ namespace CommandsEditor
                                 resource.reds = new RenderableElements(renderablePath + "REDS.BIN");
                             break;
                         case 5:
-                            if (Singleton.AnimationStrings_Debug == null)
-                                Singleton.OnFinishedLazyLoadingStrings += LoadThingsWithStrings;
+                            if (!Singleton.LoadedAnimationContent)
+                                Singleton.OnAnimationsLoaded += LoadThingsWithStrings;
                             else
                                 LoadThingsWithStrings();
                             break;
@@ -371,7 +374,8 @@ namespace CommandsEditor
                             break;
                     }
                 });
-                Singleton.OnAssetsLoaded?.Invoke(this);
+                resource.Loaded = true;
+                Singleton.OnLevelAssetsLoaded?.Invoke(this);
 #if !CATHODE_FAIL_HARD
             }
             catch { }
@@ -381,7 +385,7 @@ namespace CommandsEditor
         {
             resource.env_animations = new EnvironmentAnimations(worldPath + "ENVIRONMENT_ANIMATION.DAT", Singleton.AnimationStrings_Debug);
 
-            Singleton.OnFinishedLazyLoadingStrings -= LoadThingsWithStrings;
+            Singleton.OnAnimationsLoaded -= LoadThingsWithStrings;
         }
 
         public enum CacheMethod
@@ -395,9 +399,9 @@ namespace CommandsEditor
         {
             if (cacheMethod == CacheMethod.CHECK_OR_POPULATE_CACHE)
             {
-                if (composite_content_cache.ContainsKey(composite))
-                    if (composite_content_cache[composite].ContainsKey(entity))
-                        return composite_content_cache[composite][entity];
+                if (composite_content_cache.TryGetValue(composite, out Dictionary<Entity, ListViewItem> items))
+                    if (items.TryGetValue(entity, out ListViewItem cachedItem))
+                        return cachedItem;
             }
 
             ListViewItem item = new ListViewItem()
@@ -408,13 +412,14 @@ namespace CommandsEditor
             {
                 case EntityVariant.VARIABLE:
                     item.Text = ShortGuidUtils.FindString(((VariableEntity)entity).name);
-                    item.SubItems.Add(((VariableEntity)entity).type.ToString());
+                    CompositePinInfoTable.PinInfo variableInfo = CompositeUtils.GetParameterInfo(composite, (VariableEntity)entity);
+                    item.SubItems.Add(variableInfo != null ? variableInfo.PinTypeGUID.ToString() : ((VariableEntity)entity).type.ToString());
                     break;
                 case EntityVariant.FUNCTION:
                     item.Text = EntityUtils.GetName(composite.shortGUID, entity.shortGUID);
                     Composite funcComposite = commands.GetComposite(((FunctionEntity)entity).function);
                     if (funcComposite != null) item.SubItems.Add(EditorUtils.GetCompositeName(funcComposite));
-                    else item.SubItems.Add(CathodeEntityDatabase.GetEntity(((FunctionEntity)entity).function).className);
+                    else item.SubItems.Add(((FunctionType)(((FunctionEntity)entity).function.ToUInt32())).ToString());
                     break;
                 case EntityVariant.ALIAS:
                     CommandsUtils.ResolveHierarchy(commands, composite, ((AliasEntity)entity).alias.path, out Composite c, out string s, false);
@@ -445,21 +450,22 @@ namespace CommandsEditor
 
                 case CacheMethod.IGNORE_AND_OVERWRITE_CACHE:
                     //we want to write (or overwrite) the cache, so lets do that
-                    if (composite_content_cache.ContainsKey(composite))
+                    if (composite_content_cache.TryGetValue(composite, out Dictionary<Entity, ListViewItem> items))
                     {
-                        if (composite_content_cache[composite].ContainsKey(entity))
+                        if (items.ContainsKey(entity))
                         {
-                            composite_content_cache[composite][entity] = item;
+                            items[entity] = item;
                         }
                         else
                         {
-                            composite_content_cache[composite].Add(entity, item);
+                            items.Add(entity, item);
                         }
                     }
                     else
                     {
-                        composite_content_cache.Add(composite, new Dictionary<Entity, ListViewItem>());
-                        composite_content_cache[composite].Add(entity, item);
+                        Dictionary<Entity, ListViewItem> dict = new Dictionary<Entity, ListViewItem>();
+                        dict.Add(entity, item);
+                        composite_content_cache.Add(composite, dict);
                     }
                     break;
             }

@@ -153,6 +153,7 @@
             this.functionTypeList.UseCompatibleStateImageBehavior = false;
             this.functionTypeList.View = System.Windows.Forms.View.Details;
             this.functionTypeList.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.FunctionTypeList_ColumnClick);
+            this.functionTypeList.SelectedIndexChanged += new System.EventHandler(this.functionTypeList_SelectedIndexChanged);
             this.functionTypeList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.CreateEntityOnEnterKey);
             // 
             // funcHeader

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -20,6 +20,7 @@ using OpenCAGE;
 using ST.Library.UI.NodeEditor;
 using WebSocketSharp;
 using static System.Net.Mime.MediaTypeNames;
+using static CATHODE.SkeleDB;
 using static CommandsEditor.EditorUtils;
 
 namespace CommandsEditor
@@ -28,7 +29,6 @@ namespace CommandsEditor
     {
         public Action OnSaved;
 
-        private ParameterCreator _creator = null;
         private List<ListViewItem> _items = new List<ListViewItem>();
         private ListViewColumnSorter _sorter = new ListViewColumnSorter();
 
@@ -69,7 +69,6 @@ namespace CommandsEditor
         { 
             InitializeComponent();
             param_name.ListViewItemSorter = _sorter;
-            _creator = new ParameterCreator(ent, comp);
 
             switch (_mode)
             {
@@ -94,33 +93,46 @@ namespace CommandsEditor
                 case Mode.LINK_IN:
                 case Mode.LINK_OUT:
                     STNodeOption[] nodeOptions = _mode == Mode.LINK_IN ? _node.GetInputOptions() : _node.GetOutputOptions();
-                    for (int i = 0; i < nodeOptions.Length; i++)
-                    {
-                        if (options.FirstOrDefault(o => ((ParameterListViewItemTag)o.Tag).ShortGUID == nodeOptions[i].ShortGUID) == null)
-                        {
-                            ListViewItem item = new ListViewItem(nodeOptions[i].ShortGUID.ToString());
-                            item.SubItems.Add("FLOAT");
-                            item.Tag = new ParameterListViewItemTag() { ShortGUID = nodeOptions[i].ShortGUID, Usage = CathodeEntityDatabase.ParameterUsage.PARAMETER };
-                            options.Add(item);
-                        }
-                    }
+                    //Add all base-game ones
                     for (int i = 0; i < options.Count; i++)
                     {
+                        var metadata = ParameterUtils.GetParameterMetadata(ent, options[i].Text, comp);
+
+                        if (metadata.Item1.Value == ParameterVariant.METHOD_FUNCTION)
+                            continue;
+
                         options[i].Checked = nodeOptions.FirstOrDefault(o => o.ShortGUID == ((ParameterListViewItemTag)options[i].Tag).ShortGUID) != null;
-                        options[i].SubItems[1].Text = _creator.GetInfo(options[i].Text);
+                        options[i].SubItems[1].Text = metadata.Item2.Value.ToString();
+                        options[i].Group = GetGroupFromVariant(metadata.Item1.Value);
                         options[i].ImageIndex = 0;
                         _items.Add(options[i]);
+                    }
+                    //Add any additional custom ones
+                    for (int i = 0; i < nodeOptions.Length; i++)
+                    {
+                        if (options.FirstOrDefault(o => ((ParameterListViewItemTag)o.Tag).ShortGUID == nodeOptions[i].ShortGUID) != null)
+                            continue;
+                        AddCustomEntry(nodeOptions[i].ShortGUID, DataType.FLOAT, _mode == Mode.LINK_IN ? ParameterVariant.INPUT_PIN : ParameterVariant.OUTPUT_PIN); //TODO: Should maybe allow selection of variant?
                     }
                     break;
 
                 case Mode.PARAMETER:
+                    //Add all base-game ones
                     for (int i = 0; i < options.Count; i++)
                     {
+                        var metadata = ParameterUtils.GetParameterMetadata(ent, options[i].Text, comp);
+
+                        //TODO: Maybe we don't want to show other things here too?
+                        if (metadata.Item1.Value == ParameterVariant.METHOD_FUNCTION || metadata.Item1.Value == ParameterVariant.TARGET_PIN)
+                            continue;
+
                         options[i].Checked = ent.GetParameter(options[i].Text) != null;
-                        options[i].SubItems[1].Text = (ent.variant == EntityVariant.VARIABLE) ? ((VariableEntity)ent).type.ToString() : _creator.GetInfo(options[i].Text);
+                        options[i].SubItems[1].Text = metadata.Item2.Value.ToString();
+                        options[i].Group = GetGroupFromVariant(metadata.Item1.Value);
                         options[i].ImageIndex = 0;
                         _items.Add(options[i]);
                     }
+                    //Add any additional custom ones
                     for (int i = 0; i < ent.parameters.Count; i++)
                     {
                         if (options.FirstOrDefault(o => ((ParameterListViewItemTag)o.Tag).ShortGUID == ent.parameters[i].name && o.SubItems[1].Text == ent.parameters[i].content.dataType.ToString()) != null)
@@ -133,6 +145,15 @@ namespace CommandsEditor
             AddCustom.Visible = ent.variant != EntityVariant.VARIABLE;
 
             Search();
+        }
+
+        private ListViewGroup GetGroupFromVariant(ParameterVariant variant)
+        {
+            foreach (ListViewGroup group in param_name.Groups)
+                if (group.Name == variant.ToString())
+                    return group;
+
+            return null;
         }
 
         private void clearSearchBtn_Click(object sender, EventArgs e)
@@ -154,7 +175,7 @@ namespace CommandsEditor
             foreach (ListViewItem item in items)
             {
                 ParameterListViewItemTag tag = (ParameterListViewItemTag)item.Tag;
-                item.Group = param_name.Groups[(int)tag.Usage];
+                item.Group = GetGroupFromVariant(tag.Usage);
                 param_name.Items.Add(item);
             }
             param_name.EndUpdate();
@@ -164,14 +185,23 @@ namespace CommandsEditor
 
         private void createParams_Click(object sender, EventArgs e)
         {
-            foreach (ListViewItem item in param_name.Items)
+            foreach (ListViewItem item in _items)
             {
                 ParameterListViewItemTag tag = (ParameterListViewItemTag)item.Tag;
                 switch (_mode)
                 {
                     case Mode.LINK_IN:
                         if (item.Checked)
+                        {
+                            //NOTE: Hijacking this to add relays as well. Maybe we should make this optional?
+                            if (item?.Group != null && item.Group.Name == ParameterVariant.METHOD_PIN.ToString())
+                            {
+                                ShortGuid relay = ParameterUtils.GetRelay(tag.ShortGUID);
+                                if (relay != ShortGuid.Invalid)
+                                    _node.AddOutputOption(relay);
+                            }
                             _node.AddInputOption(tag.ShortGUID);
+                        }
                         else
                             _node.RemoveInputOption(tag.ShortGUID);
                         break;
@@ -188,10 +218,51 @@ namespace CommandsEditor
                             Parameter existing = _inspector.Entity.GetParameter(tag.ShortGUID);
                             DataType type = (DataType)Enum.Parse(typeof(DataType), item.SubItems[1].Text);
                             if (existing == null || existing.content.dataType != type)
-                                _creator.Create(item.Text, item.SubItems[1].Text);
+                            {
+                                ParameterData data = ParameterUtils.CreateDefaultParameterData(_inspector.Entity, _inspector.Composite, item.Text);
+                                if (data != null)
+                                {
+                                    _inspector.Entity.AddParameter(ShortGuidUtils.Generate(item.Text), data);
+                                }
+                                else
+                                {
+                                    //Data can be null if this is a custom parameter (e.g. CAGEAnimation) - use the type info from the list here instead.
+                                    _inspector.Entity.AddParameter(ShortGuidUtils.Generate(item.Text), (DataType)Enum.Parse(typeof(DataType), item.SubItems[1].Text));
+                                }
+                                Singleton.OnParameterModified?.Invoke();
+                                switch (type)
+                                {
+                                    case DataType.RESOURCE:
+                                        Singleton.OnResourceModified?.Invoke();
+                                        break;
+                                    case DataType.TRANSFORM:
+                                        if (data != null && item.Text == "position")
+                                        {
+                                            cTransform transformVal = (cTransform)data;
+                                            Singleton.OnEntityMoved?.Invoke(transformVal, _inspector.Entity);
+                                        }
+                                        break;
+                                }
+                            }
                         }
                         else
-                            _inspector.Entity.RemoveParameter(tag.ShortGUID);
+                        {
+                            if (_inspector.Entity.RemoveParameter(tag.ShortGUID))
+                            {
+                                DataType type = (DataType)Enum.Parse(typeof(DataType), item.SubItems[1].Text);
+                                Singleton.OnParameterModified?.Invoke();
+                                switch (type)
+                                {
+                                    case DataType.RESOURCE:
+                                        Singleton.OnResourceModified?.Invoke();
+                                        break;
+                                    case DataType.TRANSFORM:
+                                        if (item.Text == "position")
+                                            Singleton.OnEntityMoved?.Invoke(null, _inspector.Entity);
+                                        break;
+                                }
+                            }
+                        }
                         break;
                 }
             }
@@ -249,14 +320,17 @@ namespace CommandsEditor
 
         private void helpBtn_Click(object sender, EventArgs e)
         {
-            if (_creator.RootFunc != null)
+            if (_inspector.Entity.variant == EntityVariant.FUNCTION)
             {
-                string func = _creator.RootFunc.function.ToString();
-                if (func == _creator.RootFunc.function.ToByteString())
-                    Process.Start("https://opencage.co.uk/docs/cathode-entities/#CompositeInterface");
+                FunctionEntity funcEnt = (FunctionEntity)_inspector.Entity;
+                if (CommandsUtils.FunctionTypeExists(funcEnt.function))
+                    Process.Start("https://opencage.co.uk/docs/cathode-entities/#" + ((FunctionType)((FunctionEntity)_inspector.Entity).function.ToUInt32()).ToString());
                 else
-                    Process.Start("https://opencage.co.uk/docs/cathode-entities/#" + _creator.RootFunc.function.ToString());
+                    Process.Start("https://opencage.co.uk/docs/cathode-entities/#" + FunctionType.CompositeInterface.ToString());
+                return;
             }
+            else if (_inspector.Entity.variant == EntityVariant.PROXY)
+                Process.Start("https://opencage.co.uk/docs/cathode-entities/#" + FunctionType.ProxyInterface.ToString());
             else
                 Process.Start("https://opencage.co.uk/docs/cathode-entities/#entities");
         }
@@ -293,22 +367,41 @@ namespace CommandsEditor
                     break;
             }
         }
+
+        private bool IsNameValid(string name)
+        {
+            foreach (ListViewItem existingItem in _items)
+            {
+                if (existingItem.Text == name)
+                {
+                    MessageBox.Show("The parameter '" + name + "' is already available on this Entity!\nPlease pick a new name.", "Parameter exists", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return false;
+                }
+            }
+            return true;
+        }
+
         private void OnAddedCustomPin(string text)
         {
-            OnAddedCustomParam(text, DataType.FLOAT);
+            if (IsNameValid(text)) 
+                AddCustomEntry(ShortGuidUtils.Generate(text), DataType.FLOAT, _mode == Mode.LINK_IN ? ParameterVariant.INPUT_PIN : ParameterVariant.OUTPUT_PIN);
         }
         private void OnAddedCustomParam(string name, DataType datatype)
         {
-            AddCustomEntry(ShortGuidUtils.Generate(name), datatype);
+            if (IsNameValid(name))
+                AddCustomEntry(ShortGuidUtils.Generate(name), datatype);
         }
 
-        private void AddCustomEntry(ShortGuid guid, DataType datatype)
+        private void AddCustomEntry(ShortGuid guid, DataType datatype, ParameterVariant variant = ParameterVariant.PARAMETER)
         {
-            ListViewItem item = new ListViewItem(guid.ToString());
+            string paramName = guid.ToString();
+
+            ListViewItem item = new ListViewItem(paramName);
             item.SubItems.Add(datatype.ToString());
-            item.Tag = new ParameterListViewItemTag() { ShortGUID = guid, Usage = CathodeEntityDatabase.ParameterUsage.PARAMETER };
+            item.Tag = new ParameterListViewItemTag() { ShortGUID = guid, Usage = variant };
             item.Checked = true;
             item.SubItems[1].Text = datatype.ToString();
+            item.Group = GetGroupFromVariant(variant);
             item.ImageIndex = 0;
             item.Selected = true;
             _items.Add(item);

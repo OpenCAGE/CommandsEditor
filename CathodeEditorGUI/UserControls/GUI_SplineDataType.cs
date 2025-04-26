@@ -11,16 +11,17 @@ using CATHODE.Scripting;
 using CATHODE;
 using CathodeLib;
 using CommandsEditor.DockPanels;
+using CATHODE.Scripting.Internal;
 
 namespace CommandsEditor.UserControls
 {
     public partial class GUI_SplineDataType : ParameterUserControl
     {
-        private EntityInspector _entityDisplay;
+        private Entity _entity;
 
-        public GUI_SplineDataType(EntityInspector entityDisplay) : base()
+        public GUI_SplineDataType(Entity entity) : base()
         {
-            _entityDisplay = entityDisplay;
+            _entity = entity;
             InitializeComponent();
             this.ContextMenuStrip = contextMenuStrip1;
             this.deleteToolStripMenuItem.Click += new EventHandler(deleteToolStripMenuItem_Click);
@@ -32,11 +33,13 @@ namespace CommandsEditor.UserControls
             SPLINE_CONTAINER.Text = paramID;
             spline = cSpline;
             this.deleteToolStripMenuItem.Text = "Delete '" + paramID + "'";
+
+            _hasDoneSetup = true;
         }
 
         private void openSplineEditor_Click(object sender, EventArgs e)
         {
-            EditSpline splineEditor = new EditSpline(spline, _entityDisplay.Entity.GetParameter("loop"));
+            EditSpline splineEditor = new EditSpline(spline, _entity.GetParameter("loop"));
             splineEditor.Show();
             splineEditor.OnSaved += OnSplineEditorSaved;
             splineEditor.FormClosed += SplineEditor_FormClosed;
@@ -44,11 +47,17 @@ namespace CommandsEditor.UserControls
         private void OnSplineEditorSaved(cSpline newSpline)
         {
             spline.splinePoints = newSpline.splinePoints;
+            HighlightAsModified();
         }
         private void SplineEditor_FormClosed(object sender, FormClosedEventArgs e)
         {
             this.BringToFront();
             this.Focus();
+        }
+
+        public override void HighlightAsModified(bool updateDatabase = true, Control fontToUpdate = null)
+        {
+            base.HighlightAsModified(updateDatabase, SPLINE_CONTAINER);
         }
     }
 }

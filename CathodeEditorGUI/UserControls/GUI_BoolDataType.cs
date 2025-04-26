@@ -30,11 +30,19 @@ namespace CommandsEditor.UserControls
             checkBox1.Text = paramID;
             checkBox1.Checked = cBool.value;
             this.deleteToolStripMenuItem.Text = "Delete '" + paramID + "'";
+
+            _hasDoneSetup = true;
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             boolVal.value = checkBox1.Checked;
+            HighlightAsModified();
+        }
+
+        public override void HighlightAsModified(bool updateDatabase = true, Control fontToUpdate = null)
+        {
+            base.HighlightAsModified(updateDatabase, checkBox1);
         }
     }
 }

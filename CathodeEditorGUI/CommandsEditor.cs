@@ -47,8 +47,6 @@ namespace CommandsEditor
 
         private SelectLevel _levelSelect = null;
 
-        private WebSocketServer _server;
-        private WebsocketServer _serverLogic;
         private DiscordRpcClient _discord;
 
         private Dictionary<string, ToolStripMenuItem> _levelMenuItems = new Dictionary<string, ToolStripMenuItem>();
@@ -61,6 +59,9 @@ namespace CommandsEditor
 
         public CommandsEditor(string level = null)
         {
+            //LocalDebug.DefaultsUnitTest();
+            //LocalDebug.ApplyAllDefaults();
+
 #if DEBUG && DO_TEST_STUFF
             //List<string> lvls = Level.GetLevels(SharedData.pathToAI, true);
             //foreach (string lvl in lvls)
@@ -142,6 +143,7 @@ namespace CommandsEditor
             //return;
 
             Singleton.Editor = this;
+            Singleton.LoadGlobals();
 
             _discord = new DiscordRpcClient("1152999067207606392");
             _discord.Initialize();
@@ -177,12 +179,12 @@ namespace CommandsEditor
             Height = SettingsManager.GetInteger(Singleton.Settings.WindowHeight, _defaultHeight);
             Resize += CommandsEditor_Resize;
             FormClosing += CommandsEditor_FormClosing;
-            
-            Singleton.OnEntitySelected += RefreshWebsocket;
-            Singleton.OnCompositeSelected += RefreshWebsocket;
-            Singleton.OnLevelLoaded += RefreshWebsocket;
 
+            if (!SettingsManager.IsSet(Singleton.Settings.ServerOpt)) SettingsManager.SetBool(Singleton.Settings.ServerOpt, true);
             connectToUnity.Checked = !SettingsManager.GetBool(Singleton.Settings.ServerOpt); connectToUnity.PerformClick();
+            focusOnSelectedToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.UNITY_FocusEntity); focusOnSelectedToolStripMenuItem.PerformClick();
+            ShowLevelViewerButton();
+
             showEntityIDs.Checked = !SettingsManager.GetBool(Singleton.Settings.EntIdOpt); showEntityIDs.PerformClick();
             searchOnlyCompositeNames.Checked = !SettingsManager.GetBool(Singleton.Settings.CompNameOnlyOpt); searchOnlyCompositeNames.PerformClick();
             useTexturedModelViewExperimentalToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.ShowTexOpt); useTexturedModelViewExperimentalToolStripMenuItem.PerformClick();
@@ -214,42 +216,25 @@ namespace CommandsEditor
             toolStripButton2.DropDown.Closing += DropDown_Closing;
 
             //Set title
-            this.Text = "OpenCAGE Commands Editor";
+            _baseTitle = "OpenCAGE Commands Editor";
             if (OpenCAGE.SettingsManager.GetBool("CONFIG_ShowPlatform") &&
                 OpenCAGE.SettingsManager.GetString("META_GameVersion") != "")
             {
                 switch (OpenCAGE.SettingsManager.GetString("META_GameVersion"))
                 {
                     case "STEAM":
-                        this.Text += " - Steam";
+                        _baseTitle += " - Steam";
                         break;
                     case "EPIC_GAMES_STORE":
-                        this.Text += " - Epic Games Store";
+                        _baseTitle += " - Epic Games Store";
                         break;
                     case "GOG":
-                        this.Text += " - GoG";
+                        _baseTitle += " - GoG";
                         break;
                 }
             }
-            _baseTitle = this.Text;
-
-            //Populate localised text string databases (in English)
-            List<string> textList = Directory.GetFiles(SharedData.pathToAI + "/DATA/TEXT/ENGLISH/", "*.TXT", SearchOption.AllDirectories).ToList<string>();
-            {
-                Strings[] strings = new Strings[textList.Count];
-                Parallel.For(0, textList.Count, (i) =>
-                {
-                    strings[i] = new Strings(textList[i]);
-                });
-                for (int i = 0; i < textList.Count; i++)
-                    Singleton.Strings.Add(Path.GetFileNameWithoutExtension(textList[i]), strings[i]);
-            }
-
-            //Load animation data - this should be quick enough to not worry about waiting for the thread
-            Task.Factory.StartNew(() => LoadAnimData());
-
-            //Load global textures - same note as above
-            Task.Factory.StartNew(() => LoadGlobalTex());
+            DirtyTracker.OnChanged += OnDirtyChanged;
+            UpdateTitle();
 
             //Populate level list
             List<string> levels = Level.GetLevels(SharedData.pathToAI, true);
@@ -282,6 +267,7 @@ namespace CommandsEditor
 
         private void CommandsEditor_FormClosing(object sender, FormClosingEventArgs e)
         {
+            KillLevelViewer();
             SettingsManager.SetFloat(Singleton.Settings.SplitWidthMainBottom, (float)dockPanel.DockBottomPortion);
             SettingsManager.SetFloat(Singleton.Settings.SplitWidthMainRight, (float)dockPanel.DockRightPortion);
         }
@@ -302,63 +288,16 @@ namespace CommandsEditor
             SettingsManager.SetString(Singleton.Settings.WindowState, WindowState.ToString());
         }
 
-        /* Load anim data */
-        public void LoadAnimData()
+        private void OnDirtyChanged(bool dirty) => UpdateTitle();
+        private void UpdateTitle()
         {
-            //Load animation data
-            PAK2 animPAK = new PAK2(SharedData.pathToAI + "/DATA/GLOBAL/ANIMATION.PAK");
+            if (_commandsDisplay == null)
+                this.Text = _baseTitle;
+            else
+                this.Text = _baseTitle + " - " + _commandsDisplay.Content.level;
 
-            //Load all male/female skeletons
-            List<PAK2.File> skeletonDefs = animPAK.Entries.FindAll(o => o.Filename.Length > 17 && o.Filename.Substring(0, 17) == "DATA\\SKELETONDEFS");
-            for (int i = 0; i < skeletonDefs.Count; i++)
-            {
-                string skeleton = Path.GetFileNameWithoutExtension(skeletonDefs[i].Filename);
-                File.WriteAllBytes(skeleton, skeletonDefs[i].Content);
-                XmlNode skeletonType = new BML(skeleton).Content.SelectSingleNode("//SkeletonDef/LoResReferenceSkeleton");
-                if (skeletonType?.InnerText == "MALE" || skeletonType?.InnerText == "FEMALENPC")
-                {
-                    if (!Singleton.GenderedSkeletons.ContainsKey(skeletonType?.InnerText))
-                        Singleton.GenderedSkeletons.Add(skeletonType?.InnerText, new List<string>());
-                    Singleton.GenderedSkeletons[skeletonType?.InnerText].Add(skeleton);
-                }
-                File.Delete(skeleton);
-            }
-
-            //Anim string db
-            File.WriteAllBytes("ANIM_STRING_DB.BIN", animPAK.Entries.FirstOrDefault(o => o.Filename.Contains("ANIM_STRING_DB.BIN")).Content);
-            Singleton.AnimationStrings = new AnimationStrings("ANIM_STRING_DB.BIN");
-            File.Delete("ANIM_STRING_DB.BIN");
-
-            //Debug anim string db
-            File.WriteAllBytes("ANIM_STRING_DB_DEBUG.BIN", animPAK.Entries.FirstOrDefault(o => o.Filename.Contains("ANIM_STRING_DB_DEBUG.BIN")).Content);
-            Singleton.AnimationStrings_Debug = new AnimationStrings("ANIM_STRING_DB_DEBUG.BIN");
-            File.Delete("ANIM_STRING_DB_DEBUG.BIN");
-
-            //Anim clip db
-            //File.WriteAllBytes("ANIM_CLIP_DB.BIN", animPAK.Entries.FirstOrDefault(o => o.Filename.Contains("ANIM_CLIP_DB.BIN")).Content);
-            //Singleton.AnimClipDB = new AnimClipDB("ANIM_CLIP_DB.BIN");
-            //File.Delete("ANIM_CLIP_DB.BIN");
-
-            //Skeleton db
-            File.WriteAllBytes("DB.BIN", animPAK.Entries.FirstOrDefault(o => o.Filename.Contains("SKELE\\DB.BIN")).Content);
-            Singleton.SkeletonDB = new SkeleDB("DB.BIN", Singleton.AnimationStrings_Debug);
-            File.Delete("DB.BIN");
-
-            //Load all skeleton names
-            List<PAK2.File> skeletons = animPAK.Entries.FindAll(o => o.Filename.Length > 24 && o.Filename.Substring(0, 24) == "DATA\\ANIM_SYS\\SKELE\\DEFS");
-            for (int i = 0; i < skeletons.Count; i++)
-            {
-                Singleton.AllSkeletons.Add(Singleton.AnimationStrings_Debug.Entries[Convert.ToUInt32(Path.GetFileNameWithoutExtension(skeletons[i].Filename))]);
-            }
-            Singleton.AllSkeletons.Sort();
-
-            Singleton.OnFinishedLazyLoadingStrings?.Invoke();
-        }
-
-        /* Load global textures */
-        private void LoadGlobalTex()
-        {
-            Singleton.GlobalTextures = new Textures(SharedData.pathToAI + "/DATA/ENV/GLOBAL/WORLD/GLOBAL_TEXTURES.ALL.PAK");
+            if (DirtyTracker.IsDirty)
+                this.Text += " [UNSAVED CHANGES]";
         }
 
         private void loadLevel_Click(object sender, EventArgs e)
@@ -396,8 +335,6 @@ namespace CommandsEditor
             }
 #endif
 
-            this.Text = _baseTitle + " - " + level;
-
             statusText.Text = "Loading " + level + "...";
             statusStrip.Update();
 
@@ -420,6 +357,8 @@ namespace CommandsEditor
 
             //Sometimes get an error here which appears to be thread related (?) -> investigate next time
             _levelMenuItems[_commandsDisplay.Content.level].Checked = true;
+
+            UpdateTitle();
         }
 
         private void _commandsDisplay_Resize(object sender, EventArgs e)
@@ -452,6 +391,7 @@ namespace CommandsEditor
         }
         private void ShowSaveMsg(bool saved)
         {
+            Singleton.OnSaved?.Invoke();
             if (saved)
             {
                 if (SettingsManager.GetBool(Singleton.Settings.ShowSavedMsgOpt))
@@ -548,101 +488,84 @@ namespace CommandsEditor
         }
 
         /* Websocket to Unity */
+        private void openLevelViewerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            KillLevelViewer();
+
+            LevelViewerSetup.UnityProcess = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = LevelViewerSetup.InstallationPath,
+                    Arguments = $"-projectPath \"{SettingsManager.GetString("PATH_GameRoot")}/DATA/MODTOOLS/REMOTE_ASSETS/levelviewer\"",
+                    UseShellExecute = false
+                },
+                EnableRaisingEvents = true
+            }; 
+            LevelViewerSetup.UnityProcess.Exited += UnityProcess_Exited;
+            LevelViewerSetup.UnityProcess.Start();
+
+            openLevelViewerToolStripMenuItem.Enabled = false;
+        }
+        private void UnityProcess_Exited(object sender, EventArgs e)
+        {
+            if (openLevelViewerToolStripMenuItem.GetCurrentParent().InvokeRequired)
+            {
+                openLevelViewerToolStripMenuItem.GetCurrentParent().Invoke(new Action(() =>
+                {
+                    openLevelViewerToolStripMenuItem.Enabled = true;
+                }));
+            }
+            else
+            {
+                openLevelViewerToolStripMenuItem.Enabled = true;
+            }
+        }
         private void connectToUnity_Click(object sender, EventArgs e)
         {
             connectToUnity.Checked = !connectToUnity.Checked;
             SettingsManager.SetBool(Singleton.Settings.ServerOpt, connectToUnity.Checked);
-            RefreshWebsocket();
-        }
-        private bool StartWebsocket()
-        {
-            try
-            {
-                _server = new WebSocketServer("ws://localhost:1702");
-                _server.AddWebSocketService<WebsocketServer>("/commands_editor", (server) =>
-                {
-                    _serverLogic = server;
-                    _serverLogic.OnClientConnect += RefreshWebsocket;
-                });
-                _server.Start();
-                return true;
-            }
-            catch
-            {
-                if (connectToUnity.Checked)
-                    connectToUnity.PerformClick();
 
-                MessageBox.Show("Failed to initialise Unity connection.\nIs another instance of the script editor running?", "Connection failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;
-            }
-        }
-        private void RefreshWebsocket() => RefreshWebsocket(null);
-        private void RefreshWebsocket(object o)
-        {
-            if (!SettingsManager.GetBool(Singleton.Settings.ServerOpt))
+            if (connectToUnity.Checked)
             {
-                if (_server != null)
-                    _server.Stop();
-                _server = null;
-                return;
+                if (!UnityConnection.Send.Start())
+                {
+                    connectToUnity.PerformClick();
+                    MessageBox.Show("Failed to initialise Unity connection.\nIs another instance of the script editor running?", "Connection failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
             else
             {
-                if (_server == null)
-                    StartWebsocket();
-            }
-
-            //Request the correct level
-            if (_commandsDisplay?.Content?.commands != null && _commandsDisplay.Content.commands.Loaded)
-            {
-                SendWebsocketData(new WebsocketServer.WSPacket { 
-                    type = WebsocketServer.MessageType.LOAD_LEVEL, 
-                    alien_path = SharedData.pathToAI, 
-                    level_name = _commandsDisplay.Content.level 
-                });
-            }
-
-            //Get active stuff
-            Composite composite = _commandsDisplay?.CompositeDisplay?.Composite;
-            Entity entity = _commandsDisplay?.CompositeDisplay?.EntityDisplay?.Entity;
-            Parameter position = entity?.GetParameter("position");
-
-            //Load composite
-            if (composite != null)
-            {
-                SendWebsocketData(new WebsocketServer.WSPacket
-                {
-                    type = WebsocketServer.MessageType.LOAD_COMPOSITE,
-                    composite_name = composite.shortGUID.ToByteString(),
-                    alien_path = SharedData.pathToAI,
-                    level_name = _commandsDisplay.Content.level
-                });
-            }
-
-            //Point to position of selected entity
-            if (position != null)
-            {
-                SendWebsocketData(new WebsocketServer.WSPacket
-                {
-                    type = WebsocketServer.MessageType.GO_TO_POSITION,
-                    position = ((cTransform)position.content).position
-                });
-            }
-
-            //Show name of entity
-            if (entity != null && composite != null)
-            {
-                SendWebsocketData(new WebsocketServer.WSPacket
-                {
-                    type = WebsocketServer.MessageType.SHOW_ENTITY_NAME,
-                    entity_name = EntityUtils.GetName(composite, entity)
-                });
+                UnityConnection.Send.Stop();
             }
         }
-
-        private void SendWebsocketData(WebsocketServer.WSPacket content)
+        private void focusOnSelectedToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _server?.WebSocketServices["/commands_editor"].Sessions.Broadcast(JsonConvert.SerializeObject(content));
+            focusOnSelectedToolStripMenuItem.Checked = !focusOnSelectedToolStripMenuItem.Checked;
+            SettingsManager.SetBool(Singleton.Settings.UNITY_FocusEntity, focusOnSelectedToolStripMenuItem.Checked);
+            UnityConnection.Send.SendReSyncPacket();
+        }
+        private void setUpToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            setUpToolStripMenuItem.Enabled = false;
+            LevelViewerSetup setup = new LevelViewerSetup();
+            setup.FormClosed += Setup_FormClosed;
+            setup.Show();
+        }
+        private void Setup_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            setUpToolStripMenuItem.Enabled = true;
+            ShowLevelViewerButton();
+        }
+        private static void KillLevelViewer()
+        {
+            if (LevelViewerSetup.UnityProcess != null && !LevelViewerSetup.UnityProcess.HasExited)
+                LevelViewerSetup.UnityProcess.Kill();
+        }
+        private void ShowLevelViewerButton()
+        {
+            setUpToolStripMenuItem.Visible = !LevelViewerSetup.Installed;
+            openLevelViewerToolStripMenuItem.Visible = LevelViewerSetup.Installed;
         }
 
         private void showEntityIDs_Click(object sender, EventArgs e)

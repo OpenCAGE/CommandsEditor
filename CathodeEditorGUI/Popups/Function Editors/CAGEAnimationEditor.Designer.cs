@@ -252,9 +252,9 @@
             this.label9.AutoSize = true;
             this.label9.Location = new System.Drawing.Point(6, 53);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(34, 13);
+            this.label9.Size = new System.Drawing.Size(124, 13);
             this.label9.TabIndex = 24;
-            this.label9.Text = "????:";
+            this.label9.Text = "Reverse event to trigger:";
             // 
             // label8
             // 
@@ -407,8 +407,7 @@
             // 
             // CAGEAnimationEditor
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(1083, 620);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.editAnimLength);

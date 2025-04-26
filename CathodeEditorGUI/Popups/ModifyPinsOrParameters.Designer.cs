@@ -30,16 +30,15 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ModifyPinsOrParameters));
-            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Target", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("State", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("Input", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("Output", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup("Parameter", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup6 = new System.Windows.Forms.ListViewGroup("Internal", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup7 = new System.Windows.Forms.ListViewGroup("Reference", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup8 = new System.Windows.Forms.ListViewGroup("Method", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup9 = new System.Windows.Forms.ListViewGroup("Finished", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup10 = new System.Windows.Forms.ListViewGroup("Relay", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Reference Pin", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("Target Pin", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("State Parameter", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("Input Pin", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup("Output Pin", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup6 = new System.Windows.Forms.ListViewGroup("Parameter", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup7 = new System.Windows.Forms.ListViewGroup("Internal", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup8 = new System.Windows.Forms.ListViewGroup("Method Function", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup9 = new System.Windows.Forms.ListViewGroup("Method Pin", System.Windows.Forms.HorizontalAlignment.Left);
             this.createParams = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.searchText = new System.Windows.Forms.TextBox();
@@ -120,26 +119,24 @@
             this.funcHeader,
             this.inheritHeader});
             this.param_name.FullRowSelect = true;
-            listViewGroup1.Header = "Target";
-            listViewGroup1.Name = "Target";
-            listViewGroup2.Header = "State";
-            listViewGroup2.Name = "State";
-            listViewGroup3.Header = "Input";
-            listViewGroup3.Name = "Input";
-            listViewGroup4.Header = "Output";
-            listViewGroup4.Name = "Output";
-            listViewGroup5.Header = "Parameter";
-            listViewGroup5.Name = "Parameter";
-            listViewGroup6.Header = "Internal";
-            listViewGroup6.Name = "Internal";
-            listViewGroup7.Header = "Reference";
-            listViewGroup7.Name = "Reference";
-            listViewGroup8.Header = "Method";
-            listViewGroup8.Name = "Method";
-            listViewGroup9.Header = "Finished";
-            listViewGroup9.Name = "Finished";
-            listViewGroup10.Header = "Relay";
-            listViewGroup10.Name = "Relay";
+            listViewGroup1.Header = "Reference Pin";
+            listViewGroup1.Name = "REFERENCE_PIN";
+            listViewGroup2.Header = "Target Pin";
+            listViewGroup2.Name = "TARGET_PIN";
+            listViewGroup3.Header = "State Parameter";
+            listViewGroup3.Name = "STATE_PARAMETER";
+            listViewGroup4.Header = "Input Pin";
+            listViewGroup4.Name = "INPUT_PIN";
+            listViewGroup5.Header = "Output Pin";
+            listViewGroup5.Name = "OUTPUT_PIN";
+            listViewGroup6.Header = "Parameter";
+            listViewGroup6.Name = "PARAMETER";
+            listViewGroup7.Header = "Internal";
+            listViewGroup7.Name = "INTERNAL";
+            listViewGroup8.Header = "Method Function";
+            listViewGroup8.Name = "METHOD_FUNCTION";
+            listViewGroup9.Header = "Method Pin";
+            listViewGroup9.Name = "METHOD_PIN";
             this.param_name.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
             listViewGroup1,
             listViewGroup2,
@@ -149,8 +146,7 @@
             listViewGroup6,
             listViewGroup7,
             listViewGroup8,
-            listViewGroup9,
-            listViewGroup10});
+            listViewGroup9});
             this.param_name.HideSelection = false;
             this.param_name.LargeImageList = this.listIcons;
             this.param_name.Location = new System.Drawing.Point(15, 54);

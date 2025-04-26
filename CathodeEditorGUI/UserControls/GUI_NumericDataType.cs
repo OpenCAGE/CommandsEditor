@@ -28,10 +28,19 @@ namespace CommandsEditor.UserControls
 
         public void PopulateUI_Float(cFloat cFloat, string paramID)
         {
+            isIntInput = false;
             floatVal = cFloat;
             label1.Text = paramID;
-            textBox1.Text = cFloat.value.ToString();
+
+            numericUpDown1.DecimalPlaces = 6;
+            numericUpDown1.Increment = 0.1M;
+            numericUpDown1.Maximum = (decimal)3.4E+28m;
+            numericUpDown1.Minimum = (decimal)-3.4E+28m;
+
             this.deleteToolStripMenuItem.Text = "Delete '" + paramID + "'";
+            numericUpDown1.Value = (decimal)cFloat.value;
+
+            _hasDoneSetup = true;
         }
 
         public void PopulateUI_Int(cInteger cInt, string paramID)
@@ -39,43 +48,34 @@ namespace CommandsEditor.UserControls
             isIntInput = true;
             intVal = cInt;
             label1.Text = paramID;
-            textBox1.Text = cInt.value.ToString();
+
+            numericUpDown1.DecimalPlaces = 0;
+            numericUpDown1.Increment = 1;
+            numericUpDown1.Maximum = int.MaxValue;
+            numericUpDown1.Minimum = int.MinValue;
+
             this.deleteToolStripMenuItem.Text = "Delete '" + paramID + "'";
+            numericUpDown1.Value = (decimal)cInt.value;
+
+            _hasDoneSetup = true;
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
+        private void numericUpDown1_ValueChanged(object sender, EventArgs e)
         {
-            textBox1.Text = EditorUtils.ForceStringNumeric(textBox1.Text, !isIntInput);
             if (isIntInput)
             {
-                try
-                {
-                    intVal.value = Convert.ToInt32(textBox1.Text);
-                }
-                catch (OverflowException)
-                {
-                    if (textBox1.Text.StartsWith("-"))
-                        intVal.value = Int32.MinValue;
-                    else
-                        intVal.value = Int32.MaxValue;
-                    textBox1.Text = intVal.value.ToString();
-                }
+                intVal.value = (int)numericUpDown1.Value;
             }
             else
             {
-                try
-                {
-                    floatVal.value = Convert.ToSingle(textBox1.Text);
-                }
-                catch (OverflowException)
-                {
-                    if (textBox1.Text.StartsWith("-"))
-                        floatVal.value = float.MinValue;
-                    else
-                        floatVal.value = float.MaxValue;
-                    textBox1.Text = floatVal.value.ToString();
-                }
+                floatVal.value = (float)numericUpDown1.Value;
             }
+            HighlightAsModified();
+        }
+
+        public override void HighlightAsModified(bool updateDatabase = true, Control fontToUpdate = null)
+        {
+            base.HighlightAsModified(updateDatabase, label1);
         }
     }
 }

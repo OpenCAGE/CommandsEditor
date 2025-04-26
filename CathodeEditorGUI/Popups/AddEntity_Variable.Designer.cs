@@ -28,25 +28,30 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AddEntity_Variable));
-            this.createNewEntity = new System.Windows.Forms.Button();
+            this.createVariable = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.entityVariant = new System.Windows.Forms.ComboBox();
+            this.variableName = new System.Windows.Forms.TextBox();
+            this.variableType = new System.Windows.Forms.ComboBox();
             this.createNode = new System.Windows.Forms.CheckBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.variableEnumType = new System.Windows.Forms.ComboBox();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.variableEnumStringType = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
-            // createNewEntity
+            // createVariable
             // 
-            this.createNewEntity.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.createNewEntity.Location = new System.Drawing.Point(619, 65);
-            this.createNewEntity.Name = "createNewEntity";
-            this.createNewEntity.Size = new System.Drawing.Size(101, 23);
-            this.createNewEntity.TabIndex = 4;
-            this.createNewEntity.Text = "Create";
-            this.createNewEntity.UseVisualStyleBackColor = true;
-            this.createNewEntity.Click += new System.EventHandler(this.createEntity);
+            this.createVariable.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.createVariable.Location = new System.Drawing.Point(619, 96);
+            this.createVariable.Name = "createVariable";
+            this.createVariable.Size = new System.Drawing.Size(101, 23);
+            this.createVariable.TabIndex = 5;
+            this.createVariable.Text = "Create";
+            this.createVariable.UseVisualStyleBackColor = true;
+            this.createVariable.Click += new System.EventHandler(this.createEntity);
             // 
             // label2
             // 
@@ -66,53 +71,97 @@
             this.label1.TabIndex = 2;
             this.label1.Text = "Name";
             // 
-            // textBox1
+            // variableName
             // 
-            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox1.Location = new System.Drawing.Point(79, 12);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(641, 20);
-            this.textBox1.TabIndex = 1;
-            this.textBox1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnKeyDownHandler);
+            this.variableName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.variableName.Location = new System.Drawing.Point(79, 12);
+            this.variableName.Name = "variableName";
+            this.variableName.Size = new System.Drawing.Size(641, 20);
+            this.variableName.TabIndex = 1;
+            this.variableName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnKeyDownHandler);
             // 
-            // entityVariant
+            // variableType
             // 
-            this.entityVariant.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.entityVariant.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.entityVariant.FormattingEnabled = true;
-            this.entityVariant.Location = new System.Drawing.Point(79, 38);
-            this.entityVariant.Name = "entityVariant";
-            this.entityVariant.Size = new System.Drawing.Size(641, 21);
-            this.entityVariant.TabIndex = 0;
-            this.entityVariant.SelectedIndexChanged += new System.EventHandler(this.entityVariant_SelectedIndexChanged);
+            this.variableType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.variableType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.variableType.FormattingEnabled = true;
+            this.variableType.Location = new System.Drawing.Point(79, 38);
+            this.variableType.Name = "variableType";
+            this.variableType.Size = new System.Drawing.Size(641, 21);
+            this.variableType.TabIndex = 2;
+            this.variableType.SelectedIndexChanged += new System.EventHandler(this.entityVariant_SelectedIndexChanged);
             // 
             // createNode
             // 
             this.createNode.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.createNode.AutoSize = true;
-            this.createNode.Location = new System.Drawing.Point(79, 71);
+            this.createNode.Location = new System.Drawing.Point(79, 100);
             this.createNode.Name = "createNode";
             this.createNode.Size = new System.Drawing.Size(86, 17);
-            this.createNode.TabIndex = 183;
+            this.createNode.TabIndex = 4;
             this.createNode.Text = "Create Node";
             this.createNode.UseVisualStyleBackColor = true;
             this.createNode.CheckedChanged += new System.EventHandler(this.createNode_CheckedChanged);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(16, 68);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(57, 13);
+            this.label3.TabIndex = 185;
+            this.label3.Text = "Enum type";
+            // 
+            // variableEnumType
+            // 
+            this.variableEnumType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.variableEnumType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.variableEnumType.FormattingEnabled = true;
+            this.variableEnumType.Items.AddRange(new object[] {
+            "IN",
+            "OUT"});
+            this.variableEnumType.Location = new System.Drawing.Point(79, 65);
+            this.variableEnumType.Name = "variableEnumType";
+            this.variableEnumType.Size = new System.Drawing.Size(641, 21);
+            this.variableEnumType.TabIndex = 3;
+            this.toolTip1.SetToolTip(this.variableEnumType, "If creating an input/output enum type, you\'ll also need to select the type of enu" +
+        "m.");
+            this.variableEnumType.SelectedIndexChanged += new System.EventHandler(this.variableEnumType_SelectedIndexChanged);
+            // 
+            // variableEnumStringType
+            // 
+            this.variableEnumStringType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.variableEnumStringType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.variableEnumStringType.FormattingEnabled = true;
+            this.variableEnumStringType.Items.AddRange(new object[] {
+            "IN",
+            "OUT"});
+            this.variableEnumStringType.Location = new System.Drawing.Point(79, 65);
+            this.variableEnumStringType.Name = "variableEnumStringType";
+            this.variableEnumStringType.Size = new System.Drawing.Size(641, 21);
+            this.variableEnumStringType.TabIndex = 186;
+            this.toolTip1.SetToolTip(this.variableEnumStringType, "If creating an input/output enum string type, you\'ll also need to select the type" +
+        ".");
+            this.variableEnumStringType.SelectedIndexChanged += new System.EventHandler(this.variableEnumStringType_SelectedIndexChanged);
             // 
             // AddEntity_Variable
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(733, 102);
+            this.ClientSize = new System.Drawing.Size(733, 131);
+            this.Controls.Add(this.variableEnumStringType);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.variableEnumType);
             this.Controls.Add(this.createNode);
-            this.Controls.Add(this.createNewEntity);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.createVariable);
+            this.Controls.Add(this.variableName);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.entityVariant);
+            this.Controls.Add(this.variableType);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(1000, 141);
+            this.MaximumSize = new System.Drawing.Size(1000, 170);
             this.MinimumSize = new System.Drawing.Size(400, 141);
             this.Name = "AddEntity_Variable";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -123,11 +172,15 @@
         }
 
         #endregion
-        private System.Windows.Forms.ComboBox entityVariant;
-        private System.Windows.Forms.Button createNewEntity;
+        private System.Windows.Forms.ComboBox variableType;
+        private System.Windows.Forms.Button createVariable;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox variableName;
         private System.Windows.Forms.CheckBox createNode;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ComboBox variableEnumType;
+        private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.ComboBox variableEnumStringType;
     }
 }
