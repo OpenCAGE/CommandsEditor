@@ -822,6 +822,15 @@ namespace CommandsEditor.DockPanels
             ParameterUtils.AddAllDefaultParameters(Entity, Composite, false);
             if (!hasDeleteMe) Entity.RemoveParameter("delete_me");
             _compositeDisplay.ReloadEntity(Entity);
+
+            foreach (Parameter param in Entity.parameters)
+            {
+                if (param?.content != null && param.name == ShortGuidUtils.Generate("position") && param.content.dataType == DataType.TRANSFORM)
+                    Singleton.OnEntityMoved?.Invoke((cTransform)param.content, _entity);
+                if (param?.content != null && param.name == ShortGuidUtils.Generate("resource") && param.content.dataType == DataType.RESOURCE)
+                    Singleton.OnResourceModified?.Invoke();
+            }
+            Singleton.OnParameterModified?.Invoke();
         }
         private void applyAllDefaultsToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -830,6 +839,15 @@ namespace CommandsEditor.DockPanels
             ParameterUtils.AddAllDefaultParameters(Entity, Composite);
             Entity.RemoveParameter("delete_me");
             _compositeDisplay.ReloadEntity(Entity);
+
+            foreach (Parameter param in Entity.parameters)
+            {
+                if (param?.content != null && param.name == ShortGuidUtils.Generate("position") && param.content.dataType == DataType.TRANSFORM)
+                    Singleton.OnEntityMoved?.Invoke((cTransform)param.content, _entity);
+                if (param?.content != null && param.name == ShortGuidUtils.Generate("resource") && param.content.dataType == DataType.RESOURCE)
+                    Singleton.OnResourceModified?.Invoke();
+            }
+            Singleton.OnParameterModified?.Invoke();
         }
     }
 }
