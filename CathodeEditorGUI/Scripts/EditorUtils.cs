@@ -333,6 +333,12 @@ namespace CommandsEditor
             foreach ((ShortGuid, ParameterVariant, DataType) parameter in parameters)
             {
                 items.Add(parameter.Item1.ToString());
+                if (parameter.Item2 == ParameterVariant.METHOD_PIN)
+                {
+                    ShortGuid relay = ParameterUtils.GetRelay(parameter.Item1);
+                    if (relay != ShortGuid.Invalid)
+                        items.Add(relay.ToString());
+                }
             }
             items.Sort();
             return items;
