@@ -812,5 +812,23 @@ namespace CommandsEditor.DockPanels
         {
             _compositeDisplay.CloseAllChildTabsExcept(Entity);
         }
+
+        /* Apply defaults */
+        private void addUnsetParametersToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //Add only the parameters not already set
+            bool hasDeleteMe = Entity.GetParameter("delete_me") != null;
+            ParameterUtils.AddAllDefaultParameters(Entity, Composite, false);
+            if (!hasDeleteMe) Entity.RemoveParameter("delete_me");
+            _compositeDisplay.ReloadEntity(Entity);
+        }
+        private void applyAllDefaultsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //Add all defaults, overwriting the ones already set
+            Entity.parameters.Clear();
+            ParameterUtils.AddAllDefaultParameters(Entity, Composite);
+            Entity.RemoveParameter("delete_me");
+            _compositeDisplay.ReloadEntity(Entity);
+        }
     }
 }
