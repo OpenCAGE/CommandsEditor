@@ -158,6 +158,11 @@ namespace CommandsEditor
                 _discord.UpdateStartTime();
             };
 
+            if (SettingsManager.GetFloat(Singleton.Settings.NumericStep, -1.0f) == -1.0f)
+                SettingsManager.SetFloat(Singleton.Settings.NumericStep, 0.1f);
+            if (SettingsManager.GetFloat(Singleton.Settings.NumericStepRot, -1.0f) == -1.0f)
+                SettingsManager.SetFloat(Singleton.Settings.NumericStepRot, 1.0f);
+
             InitializeComponent();
             dockPanel.DockLeftPortion = SettingsManager.GetFloat(Singleton.Settings.CommandsSplitWidth, _defaultSplitterDistance);
             dockPanel.DockBottomPortion = SettingsManager.GetFloat(Singleton.Settings.SplitWidthMainBottom, _defaultSplitterDistance);
@@ -619,6 +624,17 @@ namespace CommandsEditor
         {
             nodeOpensEntity.Checked = !nodeOpensEntity.Checked;
             SettingsManager.SetBool(Singleton.Settings.OpenEntityFromNode, nodeOpensEntity.Checked);
+        }
+
+        SetNumericStep numericStepConfig = null;
+        private void setNumericStepToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (numericStepConfig != null)
+            {
+                numericStepConfig.Close();
+            }
+            numericStepConfig = new SetNumericStep();
+            numericStepConfig.Show();
         }
 
         public void ToggleMakeNodeWhenMakeEntity()

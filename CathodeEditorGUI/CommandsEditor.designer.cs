@@ -40,6 +40,7 @@ namespace CommandsEditor
             this.levelViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.setUpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openLevelViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.connectToUnity = new System.Windows.Forms.ToolStripMenuItem();
             this.focusOnSelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -68,7 +69,7 @@ namespace CommandsEditor
             this.statusText = new System.Windows.Forms.ToolStripStatusLabel();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.setNumericStepToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -164,6 +165,11 @@ namespace CommandsEditor
             this.openLevelViewerToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
             this.openLevelViewerToolStripMenuItem.Text = "Open Level Viewer";
             this.openLevelViewerToolStripMenuItem.Click += new System.EventHandler(this.openLevelViewerToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(198, 6);
             // 
             // connectToUnity
             // 
@@ -264,7 +270,8 @@ namespace CommandsEditor
             this.useTexturedModelViewExperimentalToolStripMenuItem,
             this.keepFunctionUsesWindowOpenToolStripMenuItem,
             this.resetUILayoutsToolStripMenuItem,
-            this.writeInstancedResourcesExperimentalToolStripMenuItem});
+            this.writeInstancedResourcesExperimentalToolStripMenuItem,
+            this.setNumericStepToolStripMenuItem});
             this.miscToolStripMenuItem.Name = "miscToolStripMenuItem";
             this.miscToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.miscToolStripMenuItem.Text = "Misc";
@@ -388,10 +395,12 @@ namespace CommandsEditor
             this.dockPanel.TabIndex = 5;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
             // 
-            // toolStripSeparator1
+            // setNumericStepToolStripMenuItem
             // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(198, 6);
+            this.setNumericStepToolStripMenuItem.Name = "setNumericStepToolStripMenuItem";
+            this.setNumericStepToolStripMenuItem.Size = new System.Drawing.Size(291, 22);
+            this.setNumericStepToolStripMenuItem.Text = "Set Numeric Step";
+            this.setNumericStepToolStripMenuItem.Click += new System.EventHandler(this.setNumericStepToolStripMenuItem_Click);
             // 
             // CommandsEditor
             // 
@@ -456,5 +465,6 @@ namespace CommandsEditor
         private System.Windows.Forms.ToolStripMenuItem setUpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openLevelViewerToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem setNumericStepToolStripMenuItem;
     }
 }

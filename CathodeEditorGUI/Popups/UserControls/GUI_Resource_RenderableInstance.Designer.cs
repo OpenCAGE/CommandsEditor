@@ -37,18 +37,18 @@
             this.modelInfoTextbox = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
-            this.ROT_Z = new System.Windows.Forms.NumericUpDown();
+            this.ROT_Z = new SmoothNumericUpDown();
             this.label11 = new System.Windows.Forms.Label();
-            this.ROT_Y = new System.Windows.Forms.NumericUpDown();
+            this.ROT_Y = new SmoothNumericUpDown();
             this.label12 = new System.Windows.Forms.Label();
-            this.ROT_X = new System.Windows.Forms.NumericUpDown();
+            this.ROT_X = new SmoothNumericUpDown();
             this.label7 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
-            this.POS_Z = new System.Windows.Forms.NumericUpDown();
+            this.POS_Z = new SmoothNumericUpDown();
             this.label3 = new System.Windows.Forms.Label();
-            this.POS_Y = new System.Windows.Forms.NumericUpDown();
+            this.POS_Y = new SmoothNumericUpDown();
             this.label4 = new System.Windows.Forms.Label();
-            this.POS_X = new System.Windows.Forms.NumericUpDown();
+            this.POS_X = new SmoothNumericUpDown();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ROT_Z)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ROT_Y)).BeginInit();
@@ -412,17 +412,17 @@
         private System.Windows.Forms.ListBox materials;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.NumericUpDown ROT_Z;
+        private SmoothNumericUpDown ROT_Z;
         private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.NumericUpDown ROT_Y;
+        private SmoothNumericUpDown ROT_Y;
         private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.NumericUpDown ROT_X;
+        private SmoothNumericUpDown ROT_X;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.NumericUpDown POS_Z;
+        private SmoothNumericUpDown POS_Z;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.NumericUpDown POS_Y;
+        private SmoothNumericUpDown POS_Y;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.NumericUpDown POS_X;
+        private SmoothNumericUpDown POS_X;
     }
 }

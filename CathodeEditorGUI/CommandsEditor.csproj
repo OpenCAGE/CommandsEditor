@@ -377,6 +377,12 @@
     <Compile Include="Popups\SelectEnumString.Designer.cs">
       <DependentUpon>SelectEnumString.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\SetNumericStep.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\SetNumericStep.Designer.cs">
+      <DependentUpon>SetNumericStep.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popups\ShowInstanceInfo.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -614,6 +620,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Scripts\ParameterModificationTracker.cs" />
+    <Compile Include="Scripts\SmoothNumericUpDown.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Scripts\ToolstripRendererExcs.cs" />
     <Compile Include="Scripts\TreeUtility.cs" />
     <Compile Include="Scripts\SettingsManager.cs" />
@@ -810,6 +819,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\SelectModel.resx">
       <DependentUpon>SelectModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\SetNumericStep.resx">
+      <DependentUpon>SetNumericStep.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\ShowCompositeUses.resx">
       <DependentUpon>ShowCompositeUses.cs</DependentUpon>

@@ -12,6 +12,7 @@ using CATHODE;
 using CathodeLib;
 using Newtonsoft.Json;
 using CATHODE.Scripting.Internal;
+using OpenCAGE;
 
 namespace CommandsEditor.UserControls
 {
@@ -27,6 +28,13 @@ namespace CommandsEditor.UserControls
             InitializeComponent();
             this.ContextMenuStrip = contextMenuStrip1;
             this.deleteToolStripMenuItem.Click += new EventHandler(deleteToolStripMenuItem_Click);
+
+            POS_X.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStep);
+            POS_Y.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStep);
+            POS_Z.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStep);
+            ROT_X.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStepRot);
+            ROT_Y.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStepRot);
+            ROT_Z.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStepRot);
         }
 
         public void PopulateUI(Entity entity, cTransform cTrans, ShortGuid paramID)

@@ -13,6 +13,7 @@ using CATHODE;
 using CATHODE.LEGACY;
 using System.Numerics;
 using AlienPAK;
+using OpenCAGE;
 
 namespace CommandsEditor.Popups.UserControls
 {
@@ -56,6 +57,13 @@ namespace CommandsEditor.Popups.UserControls
             this.Size = new Size(838, 232);
 
             _launchedWithPosAndRot = true;
+
+            POS_X.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStep);
+            POS_Y.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStep);
+            POS_Z.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStep);
+            ROT_X.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStepRot);
+            ROT_Y.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStepRot);
+            ROT_Z.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStepRot);
         }
         public void PopulateUI(int redsIndex, int redsCount)
         {

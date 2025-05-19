@@ -1,4 +1,5 @@
 ﻿using CATHODE.Scripting;
+using OpenCAGE;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -20,6 +21,13 @@ namespace CommandsEditor.Popups.UserControls
         public GUI_Resource_NavMeshBarrierResource() : base()
         {
             InitializeComponent();
+
+            POS_X.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStep);
+            POS_Y.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStep);
+            POS_Z.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStep);
+            ROT_X.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStepRot);
+            ROT_Y.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStepRot);
+            ROT_Z.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStepRot);
         }
 
         public void PopulateUI(Vector3 position, Vector3 rotation)

@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls.Primitives;
 using System.Windows.Forms;
 using CathodeLib;
+using OpenCAGE;
 
 namespace CommandsEditor.Popups.UserControls
 {
@@ -27,6 +28,13 @@ namespace CommandsEditor.Popups.UserControls
             //TODO: populate from PHYSICS.MAP
 
             //NOTE: when we save commands we populate this resource index from the system_index param, so we don't need to display anything in the gui
+
+            POS_X.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStep);
+            POS_Y.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStep);
+            POS_Z.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStep);
+            ROT_X.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStepRot);
+            ROT_Y.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStepRot);
+            ROT_Z.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStepRot);
         }
 
         public void PopulateUI(EntityInspector entDisplay, int physIndex)

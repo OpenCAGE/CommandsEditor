@@ -30,9 +30,9 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GUI_VectorDataType));
-            this.POS_Z_1 = new System.Windows.Forms.NumericUpDown();
-            this.POS_Y_1 = new System.Windows.Forms.NumericUpDown();
-            this.POS_X_1 = new System.Windows.Forms.NumericUpDown();
+            this.POS_Z_1 = new SmoothNumericUpDown();
+            this.POS_Y_1 = new SmoothNumericUpDown();
+            this.POS_X_1 = new SmoothNumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
             this.tableLayoutPanel9 = new System.Windows.Forms.TableLayoutPanel();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -225,9 +225,9 @@
         }
 
         #endregion
-        private System.Windows.Forms.NumericUpDown POS_Z_1;
-        private System.Windows.Forms.NumericUpDown POS_Y_1;
-        private System.Windows.Forms.NumericUpDown POS_X_1;
+        private SmoothNumericUpDown POS_Z_1;
+        private SmoothNumericUpDown POS_Y_1;
+        private SmoothNumericUpDown POS_X_1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel9;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;

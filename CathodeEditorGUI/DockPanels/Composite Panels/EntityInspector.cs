@@ -214,6 +214,7 @@ namespace CommandsEditor.DockPanels
             ModifyParameters.Enabled = _entity != null;
             ModifyParameters_Link.Enabled = _entity != null;
             addLinkOut.Enabled = _entity != null;
+            applyDefaultsToolStripMenuItem.Enabled = _entity != null;
 
             if (_entity == null)
             {

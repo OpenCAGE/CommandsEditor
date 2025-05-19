@@ -14,6 +14,7 @@ using CATHODE;
 using CommandsEditor.Popups.Base;
 using CommandsEditor.DockPanels;
 using CathodeLib;
+using OpenCAGE;
 
 namespace CommandsEditor
 {
@@ -39,6 +40,16 @@ namespace CommandsEditor
 #if !DEBUG
             DEBUG_clear.Visible = false;
 #endif
+
+            POS_X.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStep);
+            POS_Y.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStep);
+            POS_Z.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStep);
+            ROT_X.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStepRot);
+            ROT_Y.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStepRot);
+            ROT_Z.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStepRot);
+            SCALE_X.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStep);
+            SCALE_Y.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStep);
+            SCALE_Z.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStep);
         }
 
         private void PopulateUI(ShortGuid nodeID)

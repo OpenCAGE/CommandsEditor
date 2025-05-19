@@ -1,4 +1,5 @@
 ﻿using CATHODE.Scripting;
+using OpenCAGE;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -35,6 +36,13 @@ namespace CommandsEditor.Popups.UserControls
             ROT_Z.Value = (decimal)rotation.Z;
 
             enabledCheckbox.Checked = collisionID != new ShortGuid("FF-FF-FF-FF");
+
+            POS_X.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStep);
+            POS_Y.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStep);
+            POS_Z.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStep);
+            ROT_X.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStepRot);
+            ROT_Y.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStepRot);
+            ROT_Z.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStepRot);
         }
 
         private void enabledCheckbox_CheckedChanged(object sender, EventArgs e)
