@@ -29,19 +29,20 @@ namespace CommandsEditor
 
             InitializeComponent();
 
-            List<string> options = entityDisplay.Content.editor_utils.GenerateParameterListAsString(entityDisplay.Entity, entityDisplay.Composite);
             param_name.BeginUpdate();
-            for (int i = 0; i < options.Count; i++) param_name.Items.Add(options[i]);
+            param_name.Items.Clear();
+            param_name.Items.AddRange(entityDisplay.Content.editor_utils.GenerateParameterListAsString(entityDisplay.Entity, entityDisplay.Composite).ToArray());
             param_name.EndUpdate();
 
             param_datatype.BeginUpdate();
-            List<string> datatypes = new List<string>();
-            foreach (DataType datatype in Enum.GetValues(typeof(DataType)))
-                datatypes.Add(datatype.ToString());
-            datatypes.Sort();
             param_datatype.Items.Clear();
-            foreach (string datatype in datatypes)
-                param_datatype.Items.Add(datatype);
+            foreach (DataType datatype in EnumExtensions.GetValuesInDeclarationOrder<DataType>())
+            {
+                if (datatype == DataType.NONE)
+                    continue;
+
+                param_datatype.Items.Add(datatype.ToUIString());
+            }
             param_datatype.EndUpdate();
             param_datatype.SelectedIndex = 0;
 
@@ -54,7 +55,7 @@ namespace CommandsEditor
             if (param_name.Text == "") 
                 return;
 
-            OnSelected?.Invoke(param_name.Text, (DataType)Enum.Parse(typeof(DataType), param_datatype.Text));
+            OnSelected?.Invoke(param_name.Text, param_datatype.Text.ToDataType());
             this.Close();
         }
 
@@ -66,7 +67,7 @@ namespace CommandsEditor
         {
             (ParameterVariant?, DataType?, ShortGuid) metadata = ParameterUtils.GetParameterMetadata(_entityDisplay.Entity, param_name.Text, _entityDisplay.Composite);
             if (metadata.Item2 != null)
-                param_datatype.Text = metadata.Item2.ToString();
+                param_datatype.Text = metadata.Item2.Value.ToUIString();
         }
     }
 }

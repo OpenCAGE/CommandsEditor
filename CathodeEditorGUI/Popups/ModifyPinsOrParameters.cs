@@ -98,11 +98,11 @@ namespace CommandsEditor
                     {
                         var metadata = ParameterUtils.GetParameterMetadata(ent, options[i].Text, comp);
 
-                        if (metadata.Item1.Value == ParameterVariant.METHOD_FUNCTION)
+                        if (metadata.Item1 == null || metadata.Item1.Value == ParameterVariant.METHOD_FUNCTION)
                             continue;
 
                         options[i].Checked = nodeOptions.FirstOrDefault(o => o.ShortGUID == ((ParameterListViewItemTag)options[i].Tag).ShortGUID) != null;
-                        options[i].SubItems[1].Text = metadata.Item2.Value.ToString();
+                        options[i].SubItems[1].Text = metadata.Item2.Value.ToUIString();
                         options[i].Group = GetGroupFromVariant(metadata.Item1.Value);
                         options[i].ImageIndex = 0;
                         _items.Add(options[i]);
@@ -123,11 +123,11 @@ namespace CommandsEditor
                         var metadata = ParameterUtils.GetParameterMetadata(ent, options[i].Text, comp);
 
                         //TODO: Maybe we don't want to show other things here too?
-                        if (metadata.Item1.Value == ParameterVariant.METHOD_FUNCTION || metadata.Item1.Value == ParameterVariant.TARGET_PIN)
+                        if (metadata.Item1 == null || metadata.Item1.Value == ParameterVariant.METHOD_FUNCTION || metadata.Item1.Value == ParameterVariant.TARGET_PIN)
                             continue;
 
                         options[i].Checked = ent.GetParameter(options[i].Text) != null;
-                        options[i].SubItems[1].Text = metadata.Item2.Value.ToString();
+                        options[i].SubItems[1].Text = metadata.Item2.Value.ToUIString();
                         options[i].Group = GetGroupFromVariant(metadata.Item1.Value);
                         options[i].ImageIndex = 0;
                         _items.Add(options[i]);
@@ -216,7 +216,7 @@ namespace CommandsEditor
                         if (item.Checked)
                         {
                             Parameter existing = _inspector.Entity.GetParameter(tag.ShortGUID);
-                            DataType type = (DataType)Enum.Parse(typeof(DataType), item.SubItems[1].Text);
+                            DataType type = item.SubItems[1].Text.ToDataType();
                             if (existing == null || existing.content.dataType != type)
                             {
                                 ParameterData data = ParameterUtils.CreateDefaultParameterData(_inspector.Entity, _inspector.Composite, item.Text);
@@ -227,7 +227,7 @@ namespace CommandsEditor
                                 else
                                 {
                                     //Data can be null if this is a custom parameter (e.g. CAGEAnimation) - use the type info from the list here instead.
-                                    _inspector.Entity.AddParameter(ShortGuidUtils.Generate(item.Text), (DataType)Enum.Parse(typeof(DataType), item.SubItems[1].Text));
+                                    _inspector.Entity.AddParameter(ShortGuidUtils.Generate(item.Text), item.SubItems[1].Text.ToDataType());
                                 }
                                 Singleton.OnParameterModified?.Invoke();
                                 switch (type)
@@ -249,7 +249,7 @@ namespace CommandsEditor
                         {
                             if (_inspector.Entity.RemoveParameter(tag.ShortGUID))
                             {
-                                DataType type = (DataType)Enum.Parse(typeof(DataType), item.SubItems[1].Text);
+                                DataType type = item.SubItems[1].Text.ToDataType();
                                 Singleton.OnParameterModified?.Invoke();
                                 switch (type)
                                 {
@@ -397,10 +397,10 @@ namespace CommandsEditor
             string paramName = guid.ToString();
 
             ListViewItem item = new ListViewItem(paramName);
-            item.SubItems.Add(datatype.ToString());
+            item.SubItems.Add(datatype.ToUIString());
             item.Tag = new ParameterListViewItemTag() { ShortGUID = guid, Usage = variant };
             item.Checked = true;
-            item.SubItems[1].Text = datatype.ToString();
+            item.SubItems[1].Text = datatype.ToUIString();
             item.Group = GetGroupFromVariant(variant);
             item.ImageIndex = 0;
             item.Selected = true;

@@ -279,7 +279,7 @@ namespace CommandsEditor
             switch (entity.variant)
             {
                 case EntityVariant.VARIABLE:
-                    desc = "[" + ((VariableEntity)entity).type.ToString() + " VARIABLE] " + ShortGuidUtils.FindString(((VariableEntity)entity).name);
+                    desc = "[" + ((VariableEntity)entity).type.ToUIString() + "] " + ShortGuidUtils.FindString(((VariableEntity)entity).name);
                     break;
                 case EntityVariant.FUNCTION:
                     Composite funcComposite = _content.commands.GetComposite(((FunctionEntity)entity).function);
@@ -712,13 +712,13 @@ namespace CommandsEditor
     public static class EnumUI
     {
         static Dictionary<CompositePinType, string> _compositePinType = new Dictionary<CompositePinType, string>();
+        static Dictionary<DataType, string> _dataType = new Dictionary<DataType, string>();
 
         static EnumUI()
         {
             _compositePinType.Add(CompositePinType.CompositeMethodPin, "Method");
             _compositePinType.Add(CompositePinType.CompositeTargetPin, "Target");
             _compositePinType.Add(CompositePinType.CompositeReferencePin, "Reference");
-
             _compositePinType.Add(CompositePinType.CompositeOutputVariablePin, "Output Untyped");
             _compositePinType.Add(CompositePinType.CompositeOutputStringVariablePin, "Output String");
             _compositePinType.Add(CompositePinType.CompositeOutputBoolVariablePin, "Output Bool");
@@ -732,7 +732,6 @@ namespace CommandsEditor
             _compositePinType.Add(CompositePinType.CompositeOutputAnimationInfoVariablePin, "Output Animation Info");
             _compositePinType.Add(CompositePinType.CompositeOutputZoneLinkPtrVariablePin, "Output Zone Link Ptr");
             _compositePinType.Add(CompositePinType.CompositeOutputZonePtrVariablePin, "Output Zone Ptr");
-
             _compositePinType.Add(CompositePinType.CompositeInputVariablePin, "Input Untyped");
             _compositePinType.Add(CompositePinType.CompositeInputStringVariablePin, "Input String");
             _compositePinType.Add(CompositePinType.CompositeInputBoolVariablePin, "Input Bool");
@@ -747,17 +746,43 @@ namespace CommandsEditor
             _compositePinType.Add(CompositePinType.CompositeInputZoneLinkPtrVariablePin, "Input Zone Link Ptr");
             _compositePinType.Add(CompositePinType.CompositeInputZonePtrVariablePin, "Input Zone Ptr");
 
-            //TODO: include DataType enum here too
+            _dataType.Add(DataType.BOOL, "Bool");
+            _dataType.Add(DataType.INTEGER, "Integer");
+            _dataType.Add(DataType.FLOAT, "Float");
+            _dataType.Add(DataType.STRING, "String");
+            _dataType.Add(DataType.FILEPATH, "Filepath");
+            _dataType.Add(DataType.SPLINE, "Spline");
+            _dataType.Add(DataType.VECTOR, "Vector");
+            _dataType.Add(DataType.TRANSFORM, "Transform");
+            _dataType.Add(DataType.ENUM, "Enum");
+            _dataType.Add(DataType.ENUM_STRING, "Enum String");
+            _dataType.Add(DataType.RESOURCE, "Resource");
+            _dataType.Add(DataType.OBJECT, "Object");
+            _dataType.Add(DataType.ZONE, "Zone");
+            _dataType.Add(DataType.ZONE_LINK, "Zone Link");
+            _dataType.Add(DataType.RESOURCE_ID, "Resource ID");
+            _dataType.Add(DataType.REFERENCE_FRAME, "Reference Frame");
+            _dataType.Add(DataType.ANIMATION_INFO, "Animation Info");
+            _dataType.Add(DataType.COLOUR, "Colour");
+            _dataType.Add(DataType.NONE, "None");
         }
 
         public static string ToUIString(this CompositePinType type)
         {
             return _compositePinType[type];
         }
-
         public static CompositePinType ToCompositePinType(this string str)
         {
             return _compositePinType.FirstOrDefault(o => o.Value == str).Key;
+        }
+
+        public static string ToUIString(this DataType type)
+        {
+            return _dataType[type];
+        }
+        public static DataType ToDataType(this string str)
+        {
+            return _dataType.FirstOrDefault(o => o.Value == str).Key;
         }
     }
 
