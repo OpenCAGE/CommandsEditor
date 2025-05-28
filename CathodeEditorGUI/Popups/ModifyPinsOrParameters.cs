@@ -323,8 +323,8 @@ namespace CommandsEditor
             if (_inspector.Entity.variant == EntityVariant.FUNCTION)
             {
                 FunctionEntity funcEnt = (FunctionEntity)_inspector.Entity;
-                if (CommandsUtils.FunctionTypeExists(funcEnt.function))
-                    Process.Start("https://opencage.co.uk/docs/cathode-entities/#" + ((FunctionType)((FunctionEntity)_inspector.Entity).function.ToUInt32()).ToString());
+                if (funcEnt.function.IsFunctionType)
+                    Process.Start("https://opencage.co.uk/docs/cathode-entities/#" + ((FunctionEntity)_inspector.Entity).function.AsFunctionType.ToString());
                 else
                     Process.Start("https://opencage.co.uk/docs/cathode-entities/#" + FunctionType.CompositeInterface.ToString());
                 return;

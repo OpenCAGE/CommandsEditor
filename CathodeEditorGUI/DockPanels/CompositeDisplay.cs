@@ -369,7 +369,7 @@ namespace CommandsEditor.DockPanels
             bool found = false;
             Parallel.ForEach(comp.functions, (ent, state) =>
             {
-                if (_canExportChildren && !CommandsUtils.FunctionTypeExists(ent.function))
+                if (_canExportChildren && !ent.function.IsFunctionType)
                 {
                     Composite nestedComp = Content.commands.GetComposite(ent.function);
                     if (nestedComp != null)

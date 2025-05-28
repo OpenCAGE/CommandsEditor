@@ -714,7 +714,7 @@ namespace CommandsEditor
 
             for (int i = 0; i < composite.functions.Count; i++)
             {
-                if (CommandsUtils.FunctionTypeExists(composite.functions[i].function))
+                if (composite.functions[i].function.IsFunctionType)
                 {
                     //TODO: this assumes that entities don't have collision mappings in the resoure parameter and entity resources
                     ResourceReference collision = composite.functions[i].GetResource(ResourceType.COLLISION_MAPPING, true);

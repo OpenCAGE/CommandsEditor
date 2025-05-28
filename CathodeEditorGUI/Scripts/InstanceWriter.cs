@@ -65,14 +65,13 @@ namespace CommandsEditor.Scripts
                 }
             }
 
-            ShortGuid GUID_Zone = CommandsUtils.GetFunctionTypeGUID(FunctionType.Zone);
             ShortGuid GUID_composites = ShortGuidUtils.Generate("composites");
             ShortGuid GUID_reference = ShortGuidUtils.Generate("reference");
             for (int i = 0; i < content.commands.Entries.Count; i++)
             {
                 for (int x = 0; x < content.commands.Entries[i].functions.Count; x++)
                 {
-                    if (content.commands.Entries[i].functions[x].function != GUID_Zone)
+                    if (content.commands.Entries[i].functions[x].function != FunctionType.Zone)
                         continue;
 
                     List<EntityPath> zonePaths = content.editor_utils.GetHierarchiesForEntity(content.commands.Entries[i], content.commands.Entries[i].functions[x]);

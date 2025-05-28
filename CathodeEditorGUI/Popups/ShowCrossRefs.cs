@@ -128,7 +128,7 @@ namespace CommandsEditor
                         });
                         break;
                     case CurrentDisplay.TRIGGERSEQUENCES:
-                        List<FunctionEntity> triggerSequences = comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.TriggerSequence));
+                        List<FunctionEntity> triggerSequences = comp.functions.FindAll(o => o.function == FunctionType.TriggerSequence);
                         Parallel.ForEach(triggerSequences, (trigEnt) =>
                         {
                             TriggerSequence trig = (TriggerSequence)trigEnt;
@@ -140,7 +140,7 @@ namespace CommandsEditor
                         });
                         break;
                     case CurrentDisplay.CAGEANIMATIONS:
-                        List<FunctionEntity> cageAnims = comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.CAGEAnimation));
+                        List<FunctionEntity> cageAnims = comp.functions.FindAll(o => o.function == FunctionType.CAGEAnimation);
                         Parallel.ForEach(cageAnims, (animEnt) =>
                         {
                             CAGEAnimation anim = (CAGEAnimation)animEnt;

@@ -121,7 +121,7 @@ namespace CommandsEditor
             if (!recurse.Checked) return;
             foreach (FunctionEntity ent in composite.functions)
             {
-                if (CommandsUtils.FunctionTypeExists(ent.function)) continue;
+                if (ent.function.IsFunctionType) continue;
 
                 Composite nestedComp = Content.commands.GetComposite(ent.function);
                 if (nestedComp != null)

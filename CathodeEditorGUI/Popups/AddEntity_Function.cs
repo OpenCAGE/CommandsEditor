@@ -31,7 +31,7 @@ namespace CommandsEditor
 
             foreach (FunctionType function in Enum.GetValues(typeof(FunctionType)))
             {
-                FunctionType? inherited = EntityUtils.GetBaseFunction(function);
+                FunctionType? inherited = ParameterUtils.GetInheritedFunction(function);
 
                 ListViewItem item = new ListViewItem(function.ToString());
                 item.ImageIndex = 0;
@@ -123,14 +123,14 @@ namespace CommandsEditor
             FunctionType function = (FunctionType)Enum.Parse(typeof(FunctionType), functionTypeList.SelectedItems[0].Text);
 
             //A composite can only have one PhysicsSystem
-            if (function == FunctionType.PhysicsSystem && _composite.functions.FirstOrDefault(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.PhysicsSystem)) != null)
+            if (function == FunctionType.PhysicsSystem && _composite.functions.FirstOrDefault(o => o.function == FunctionType.PhysicsSystem) != null)
             {
                 MessageBox.Show("You are trying to add a PhysicsSystem entity to a composite that already has one applied.", "PhysicsSystem error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
             //A composite can only have one EnvironmentModelReference
-            if (function == FunctionType.EnvironmentModelReference && _composite.functions.FirstOrDefault(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.EnvironmentModelReference)) != null)
+            if (function == FunctionType.EnvironmentModelReference && _composite.functions.FirstOrDefault(o => o.function == FunctionType.EnvironmentModelReference) != null)
             {
                 MessageBox.Show("You are trying to add a EnvironmentModelReference entity to a composite that already has one applied.", "EnvironmentModelReference error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;

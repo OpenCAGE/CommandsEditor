@@ -408,9 +408,9 @@ namespace CommandsEditor
                     {
                         case EntityVariant.FUNCTION:
                             FunctionEntity function = (FunctionEntity)ent;
-                            if (CommandsUtils.FunctionTypeExists(function.function))
+                            if (function.function.IsFunctionType)
                             {
-                                node.SetName(EntityUtils.GetName(c, ent), node.Entity.variant + " TO: " + CommandsUtils.GetFunctionType(function.function).ToString());
+                                node.SetName(EntityUtils.GetName(c, ent), node.Entity.variant + " TO: " + function.function.AsFunctionType.ToString());
                             }
                             else
                                 node.SetName(EntityUtils.GetName(c, ent), node.Entity.variant + " TO: " + Path.GetFileName(Commands.GetComposite(function.function).name));
@@ -422,9 +422,9 @@ namespace CommandsEditor
                     break;
                 case EntityVariant.FUNCTION:
                     FunctionEntity funcEnt = (FunctionEntity)node.Entity;
-                    if (CommandsUtils.FunctionTypeExists(funcEnt.function))
+                    if (funcEnt.function.IsFunctionType)
                     {
-                        node.SetName(EntityUtils.GetName(_composite, node.Entity), CommandsUtils.GetFunctionType(funcEnt.function).ToString());
+                        node.SetName(EntityUtils.GetName(_composite, node.Entity), funcEnt.function.AsFunctionType.ToString());
                     }
                     else
                     {

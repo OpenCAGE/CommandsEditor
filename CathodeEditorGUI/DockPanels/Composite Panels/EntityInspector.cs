@@ -276,7 +276,7 @@ namespace CommandsEditor.DockPanels
                         jumpToComposite.Visible = false;
                         editEntityResources.Enabled = (Content.resource.models != null); //TODO: we can hide this button completely outside of this state
 
-                        FunctionType function = CommandsUtils.GetFunctionType(((FunctionEntity)_entity).function);
+                        FunctionType function = ((FunctionEntity)_entity).function.AsFunctionType;
                         description = function.ToString();
                         editFunction.Enabled = function == FunctionType.CAGEAnimation || function == FunctionType.TriggerSequence || function == FunctionType.Character;
                     }
@@ -728,8 +728,7 @@ namespace CommandsEditor.DockPanels
             else
             {
                 //Function Entity
-                FunctionType function = CommandsUtils.GetFunctionType(((FunctionEntity)Entity).function);
-                switch (function)
+                switch (((FunctionEntity)Entity).function.AsFunctionType)
                 {
                     case FunctionType.CAGEAnimation:
                         Singleton.OnCAGEAnimationEditorOpened?.Invoke();

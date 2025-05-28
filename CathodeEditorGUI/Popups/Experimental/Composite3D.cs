@@ -50,7 +50,7 @@ namespace CommandsEditor
                 Parameter position = entity.GetParameter("position");
                 cTransform globalPosition = ((cTransform)position?.content) + offset;
 
-                if (!CommandsUtils.FunctionTypeExists(entity.function))
+                if (!entity.function.IsFunctionType)
                     models.AddRange(LoadComposite(_compositeDisplay.Content.commands.GetComposite(entity.function), globalPosition));
 
                 Parameter resource = entity.GetParameter("resource");

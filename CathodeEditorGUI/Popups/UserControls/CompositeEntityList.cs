@@ -180,7 +180,7 @@ namespace CommandsEditor.Popups.UserControls
                     CompositePinInfoTable.PinInfo pinInfo = CompositeUtils.GetParameterInfo(_composite, (VariableEntity)entity);
                     if (pinInfo != null)
                     {
-                        switch ((CompositePinType)pinInfo.PinTypeGUID.ToUInt32())
+                        switch ((CompositePinType)pinInfo.PinTypeGUID.AsUInt32())
                         {
                             case CompositePinType.CompositeInputAnimationInfoVariablePin:
                             case CompositePinType.CompositeInputBoolVariablePin:
@@ -224,7 +224,7 @@ namespace CommandsEditor.Popups.UserControls
                     item.Group = composite_content.Groups[0];
                     break;
                 case EntityVariant.FUNCTION:
-                    if (!CommandsUtils.FunctionTypeExists(((FunctionEntity)entity).function))
+                    if (!((FunctionEntity)entity).function.IsFunctionType)
                     {
                         item.Group = composite_content.Groups[2];
                         item.ImageIndex = 2;

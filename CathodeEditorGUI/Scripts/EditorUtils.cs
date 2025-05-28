@@ -79,7 +79,7 @@ namespace CommandsEditor
 
             for (int i = 0; i < composite.functions.Count; i++)
             {
-                if (CommandsUtils.FunctionTypeExists(composite.functions[i].function)) continue;
+                if (composite.functions[i].function.IsFunctionType) continue;
 
                 if (ct.IsCancellationRequested) break;
 
@@ -192,12 +192,11 @@ namespace CommandsEditor
                 return (null, new EntityPath(new ShortGuid[1] { new ShortGuid("00-00-00-00") }), null);
             }
 
-            ShortGuid GUID_Zone = CommandsUtils.GetFunctionTypeGUID(FunctionType.Zone);
             for (int i = 0; i < commands.Entries.Count; i++)
             {
                 for (int x = 0; x < commands.Entries[i].functions.Count; x++)
                 {
-                    if (commands.Entries[i].functions[x].function != GUID_Zone)
+                    if (commands.Entries[i].functions[x].function != FunctionType.Zone)
                         continue;
 
                     List<EntityPath> zonePaths = GetHierarchiesForEntity(commands.Entries[i], commands.Entries[i].functions[x]);
@@ -286,7 +285,7 @@ namespace CommandsEditor
                     if (funcComposite != null)
                         desc = EntityUtils.GetName(composite.shortGUID, entity.shortGUID) + " (" + funcComposite.name + ")";
                     else
-                        desc = EntityUtils.GetName(composite.shortGUID, entity.shortGUID) + " (" + ((FunctionType)((FunctionEntity)entity).function.ToUInt32()).ToString() + ")";
+                        desc = EntityUtils.GetName(composite.shortGUID, entity.shortGUID) + " (" + ((FunctionType)((FunctionEntity)entity).function.AsUInt32()).ToString() + ")";
                     break;
                 case EntityVariant.ALIAS:
                     CommandsUtils.ResolveHierarchy(_content.commands, composite, ((AliasEntity)entity).alias.path, out Composite c, out string s, false);
@@ -422,7 +421,7 @@ namespace CommandsEditor
                     Entity ent = CommandsUtils.ResolveHierarchy(_content.commands, comp, alias.alias.path, out Composite compRef, out string str);
                     if (ent == entity) found = true;
                 });
-                List<FunctionEntity> triggerSequences = comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.TriggerSequence));
+                List<FunctionEntity> triggerSequences = comp.functions.FindAll(o => o.function == FunctionType.TriggerSequence);
                 Parallel.ForEach(triggerSequences, (trigEnt, status2) =>
                 {
                     if (found || ct.IsCancellationRequested)
@@ -438,7 +437,7 @@ namespace CommandsEditor
                         if (ent == entity) found = true;
                     });
                 });
-                List<FunctionEntity> cageAnims = comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.CAGEAnimation));
+                List<FunctionEntity> cageAnims = comp.functions.FindAll(o => o.function == FunctionType.CAGEAnimation);
                 Parallel.ForEach(cageAnims, (animEnt, status2) =>
                 {
                     if (found || ct.IsCancellationRequested)
@@ -470,7 +469,7 @@ namespace CommandsEditor
                 FunctionEntity toReturn = null;
                 ShortGuid compositesGUID = ShortGuidUtils.Generate("composites");
 
-                List<FunctionEntity> triggerSequences = comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.TriggerSequence));
+                List<FunctionEntity> triggerSequences = comp.functions.FindAll(o => o.function == FunctionType.TriggerSequence);
                 Parallel.ForEach(triggerSequences, (Action<FunctionEntity, ParallelLoopState>)((trigEnt, status) =>
                 {
                     TriggerSequence trig = (TriggerSequence)trigEnt;
@@ -478,7 +477,7 @@ namespace CommandsEditor
                     {
                         if (CommandsUtils.ResolveHierarchy((Commands)this._content.commands, comp, trigger.connectedEntity.path, out Composite compRef, out string str) == entity)
                         {
-                            List<FunctionEntity> zones = comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.Zone));
+                            List<FunctionEntity> zones = comp.functions.FindAll(o => o.function == FunctionType.Zone);
                             Parallel.ForEach(zones, (z, status3) =>
                             {
                                 Parallel.ForEach(z.childLinks, (link, status4) =>
@@ -533,7 +532,7 @@ namespace CommandsEditor
             List<ShortGuid> foundIDs = new List<ShortGuid>();
             foreach (Composite comp in _content.commands.Entries)
             {
-                List<FunctionEntity> triggerSequences = comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.TriggerSequence));
+                List<FunctionEntity> triggerSequences = comp.functions.FindAll(o => o.function == FunctionType.TriggerSequence);
                 foreach (FunctionEntity trigEnt in triggerSequences)
                 {
                     TriggerSequence trig = (TriggerSequence)trigEnt;
@@ -541,7 +540,7 @@ namespace CommandsEditor
                     {
                         if (CommandsUtils.ResolveHierarchy(_content.commands, comp, trigger.connectedEntity.path, out Composite compRef, out string str) == entity)
                         {
-                            List<FunctionEntity> zones = comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.Zone));
+                            List<FunctionEntity> zones = comp.functions.FindAll(o => o.function == FunctionType.Zone);
                             foreach (FunctionEntity z in zones)
                             {
                                 foreach (EntityConnector link in z.childLinks)

@@ -92,7 +92,7 @@ namespace CommandsEditor
                 if (p0.enumIndex == p2.enumIndex)
                     throw new Exception("");
                 p0.enumID = new ShortGuid(99999);
-                if (p0.enumID.ToUInt32() == p2.enumID.ToUInt32())
+                if (p0.enumID.AsUInt32() == p2.enumID.AsUInt32())
                     throw new Exception("");
             }
             {
@@ -150,7 +150,7 @@ namespace CommandsEditor
                 if (p0.value.Count == p2.value.Count)
                     throw new Exception("");
                 p2.value[0].entityID = new ShortGuid(99);
-                if (p0.value[0].entityID.ToUInt32() == p2.value[0].entityID.ToUInt32())
+                if (p0.value[0].entityID.AsUInt32() == p2.value[0].entityID.AsUInt32())
                     throw new Exception("");
                 p2.value[0].index = 9999;
                 if (p0.value[0].index == p2.value[0].index)

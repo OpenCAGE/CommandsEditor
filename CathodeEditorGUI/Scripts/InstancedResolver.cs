@@ -242,7 +242,7 @@ namespace CommandsEditor.Scripts
             {
                 for (int x = 0; x < content.commands.Entries[i].functions.Count; x++)
                 {
-                    if (content.commands.Entries[i].functions[x].function != CommandsUtils.GetFunctionTypeGUID(FunctionType.RadiosityProxy))
+                    if (content.commands.Entries[i].functions[x].function != FunctionType.RadiosityProxy)
                         continue;
 
                     Parameter parameter = content.commands.Entries[i].functions[x].GetParameter("resource");
@@ -409,7 +409,7 @@ namespace CommandsEditor.Scripts
                 //if (comp.functions[i].GetParentLinks(comp).FindAll(o => o.linkedParamID == GUID_deleted).Count != 0)
                 //    continue;
 
-                if (!CommandsUtils.FunctionTypeExists(comp.functions[i].function))
+                if (!comp.functions[i].function.IsFunctionType)
                 {
                     instances.Add(comp.functions[i]);
                     continue;

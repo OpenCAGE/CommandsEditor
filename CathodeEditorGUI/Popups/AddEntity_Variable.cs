@@ -53,6 +53,8 @@ namespace CommandsEditor
             variableName.Select();
         }
 
+
+
         private void createEntity(object sender, EventArgs e)
         {
             if (variableName.Text == "")
