@@ -92,7 +92,7 @@ namespace CommandsEditor
                 if (p0.enumIndex == p2.enumIndex)
                     throw new Exception("");
                 p0.enumID = new ShortGuid(99999);
-                if (p0.enumID.AsUInt32() == p2.enumID.AsUInt32())
+                if (p0.enumID.AsUInt32 == p2.enumID.AsUInt32)
                     throw new Exception("");
             }
             {
@@ -150,7 +150,7 @@ namespace CommandsEditor
                 if (p0.value.Count == p2.value.Count)
                     throw new Exception("");
                 p2.value[0].entityID = new ShortGuid(99);
-                if (p0.value[0].entityID.AsUInt32() == p2.value[0].entityID.AsUInt32())
+                if (p0.value[0].entityID.AsUInt32 == p2.value[0].entityID.AsUInt32)
                     throw new Exception("");
                 p2.value[0].index = 9999;
                 if (p0.value[0].index == p2.value[0].index)
@@ -425,7 +425,7 @@ namespace CommandsEditor
                 {
                     Parallel.ForEach(comp.functions, func =>
                     {
-                        if (func.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.Zone))
+                        if (func.function == FunctionType.Zone)
                         {
                             List<EntityConnector> parentLinks = func.GetParentLinks(comp);
                             if (parentLinks.FindAll(o => o.thisParamID == ShortGuidUtils.Generate("composites")).Count != 0)
@@ -752,7 +752,7 @@ namespace CommandsEditor
                         if (commands.GetComposite(ent.function) != null) continue;
                         //if (!CommandsUtils.FunctionTypeExists(ent.function)) continue; //NOT USING THIS ANYMORE AS DELETED FUNCTIONS COULD WILL NOT BE COUNTED FOR...
 
-                        string type = !CommandsUtils.FunctionTypeExists(ent.function) ? "DELETED FUNCTION OR COMPOSITE: " + ent.function.ToByteString() : CommandsUtils.GetFunctionType(ent.function).ToString();
+                        string type = !ent.function.IsFunctionType ? "DELETED FUNCTION OR COMPOSITE: " + ent.function.ToByteString() : ent.function.AsFunctionType.ToString();
                         if (!usesOfFunction.ContainsKey(type))
                         {
                             usesOfFunction.Add(type, new List<string>());
@@ -1305,7 +1305,7 @@ namespace CommandsEditor
                 {
                     Parallel.ForEach(comp.functions, ent =>
                     {
-                        if (comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.PhysicsModifyGravity)).Count != 0)
+                        if (comp.functions.FindAll(o => o.function == FunctionType.PhysicsModifyGravity).Count != 0)
                         {
                             Console.WriteLine(file + "\n\t" + comp.name);
                         }
@@ -1355,7 +1355,7 @@ namespace CommandsEditor
                 Commands phys = new Commands(file);
                 Parallel.ForEach(phys.Entries, comp =>
                 {
-                    List<FunctionEntity> ents = comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.CAGEAnimation));
+                    List<FunctionEntity> ents = comp.functions.FindAll(o => o.function == FunctionType.CAGEAnimation);
                     Parallel.ForEach(ents, ent =>
                     {
                         CAGEAnimation anim = (CAGEAnimation)ent;
@@ -1508,7 +1508,7 @@ namespace CommandsEditor
                 Commands phys = new Commands(file);
                 foreach (Composite comp in phys.Entries)
                 {
-                    List<FunctionEntity> anims = comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.CAGEAnimation));
+                    List<FunctionEntity> anims = comp.functions.FindAll(o => o.function == FunctionType.CAGEAnimation);
                     foreach (FunctionEntity ent in anims)
                     {
                         CAGEAnimation anim = (CAGEAnimation)ent;
@@ -1522,7 +1522,7 @@ namespace CommandsEditor
                         }
                     }
 
-                    List<FunctionEntity> trigs = comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.TriggerSequence));
+                    List<FunctionEntity> trigs = comp.functions.FindAll(o => o.function == FunctionType.TriggerSequence);
                     foreach (FunctionEntity ent in trigs)
                     {
                         TriggerSequence trig = (TriggerSequence)ent;
@@ -2330,7 +2330,7 @@ namespace CommandsEditor
                 {
                     string entityName = "ENT_" + cmd.Entries[i].functions[x].shortGUID.ToByteString().Replace('-', '_');
                     script.Add("FunctionEntity " + entityName + " = " + compositeName + ".AddFunction(");
-                    if (CommandsUtils.FunctionTypeExists(cmd.Entries[i].functions[x].function)) script[script.Count - 1] += "FunctionType." + CommandsUtils.GetFunctionType(cmd.Entries[i].functions[x].function) + ");";
+                    if (cmd.Entries[i].functions[x].function.IsFunctionType) script[script.Count - 1] += "FunctionType." + cmd.Entries[i].functions[x].function.AsFunctionType + ");";
                     else script[script.Count - 1] += "@\"" + cmd.GetComposite(cmd.Entries[i].functions[x].function).name + "\");";
 
                     for (int y = 0; y < cmd.Entries[i].functions[x].resources.Count; y++)

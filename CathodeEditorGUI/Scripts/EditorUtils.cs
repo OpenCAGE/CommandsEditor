@@ -10,6 +10,7 @@ using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -285,7 +286,7 @@ namespace CommandsEditor
                     if (funcComposite != null)
                         desc = EntityUtils.GetName(composite.shortGUID, entity.shortGUID) + " (" + funcComposite.name + ")";
                     else
-                        desc = EntityUtils.GetName(composite.shortGUID, entity.shortGUID) + " (" + ((FunctionType)((FunctionEntity)entity).function.AsUInt32()).ToString() + ")";
+                        desc = EntityUtils.GetName(composite.shortGUID, entity.shortGUID) + " (" + ((FunctionType)((FunctionEntity)entity).function.AsUInt32).ToString() + ")";
                     break;
                 case EntityVariant.ALIAS:
                     CommandsUtils.ResolveHierarchy(_content.commands, composite, ((AliasEntity)entity).alias.path, out Composite c, out string s, false);
@@ -704,6 +705,76 @@ namespace CommandsEditor
                     return localised;
 
             return str;
+        }
+    }
+
+    //Enum UI string converter
+    public static class EnumUI
+    {
+        static Dictionary<CompositePinType, string> _compositePinType = new Dictionary<CompositePinType, string>();
+
+        static EnumUI()
+        {
+            _compositePinType.Add(CompositePinType.CompositeMethodPin, "Method");
+            _compositePinType.Add(CompositePinType.CompositeTargetPin, "Target");
+            _compositePinType.Add(CompositePinType.CompositeReferencePin, "Reference");
+
+            _compositePinType.Add(CompositePinType.CompositeOutputVariablePin, "Output Untyped");
+            _compositePinType.Add(CompositePinType.CompositeOutputStringVariablePin, "Output String");
+            _compositePinType.Add(CompositePinType.CompositeOutputBoolVariablePin, "Output Bool");
+            _compositePinType.Add(CompositePinType.CompositeOutputFloatVariablePin, "Output Float");
+            _compositePinType.Add(CompositePinType.CompositeOutputIntVariablePin, "Output Integer");
+            _compositePinType.Add(CompositePinType.CompositeOutputPositionVariablePin, "Output Transform");
+            _compositePinType.Add(CompositePinType.CompositeOutputDirectionVariablePin, "Output Vector");
+            _compositePinType.Add(CompositePinType.CompositeOutputEnumVariablePin, "Output Enum");
+            _compositePinType.Add(CompositePinType.CompositeOutputEnumStringVariablePin, "Output Enum String");
+            _compositePinType.Add(CompositePinType.CompositeOutputObjectVariablePin, "Output Object");
+            _compositePinType.Add(CompositePinType.CompositeOutputAnimationInfoVariablePin, "Output Animation Info");
+            _compositePinType.Add(CompositePinType.CompositeOutputZoneLinkPtrVariablePin, "Output Zone Link Ptr");
+            _compositePinType.Add(CompositePinType.CompositeOutputZonePtrVariablePin, "Output Zone Ptr");
+
+            _compositePinType.Add(CompositePinType.CompositeInputVariablePin, "Input Untyped");
+            _compositePinType.Add(CompositePinType.CompositeInputStringVariablePin, "Input String");
+            _compositePinType.Add(CompositePinType.CompositeInputBoolVariablePin, "Input Bool");
+            _compositePinType.Add(CompositePinType.CompositeInputFloatVariablePin, "Input Float");
+            _compositePinType.Add(CompositePinType.CompositeInputIntVariablePin, "Input Integer");
+            _compositePinType.Add(CompositePinType.CompositeInputPositionVariablePin, "Input Transform");
+            _compositePinType.Add(CompositePinType.CompositeInputDirectionVariablePin, "Input Vector");
+            _compositePinType.Add(CompositePinType.CompositeInputEnumVariablePin, "Input Enum");
+            _compositePinType.Add(CompositePinType.CompositeInputEnumStringVariablePin, "Input Enum String");
+            _compositePinType.Add(CompositePinType.CompositeInputObjectVariablePin, "Input Object");
+            _compositePinType.Add(CompositePinType.CompositeInputAnimationInfoVariablePin, "Input Animation Info");
+            _compositePinType.Add(CompositePinType.CompositeInputZoneLinkPtrVariablePin, "Input Zone Link Ptr");
+            _compositePinType.Add(CompositePinType.CompositeInputZonePtrVariablePin, "Input Zone Ptr");
+
+            //TODO: include DataType enum here too
+        }
+
+        public static string ToUIString(this CompositePinType type)
+        {
+            return _compositePinType[type];
+        }
+
+        public static CompositePinType ToCompositePinType(this string str)
+        {
+            return _compositePinType.FirstOrDefault(o => o.Value == str).Key;
+        }
+    }
+
+    public static class EnumExtensions
+    {
+        public static IEnumerable<TEnum> GetValuesInDeclarationOrder<TEnum>() where TEnum : Enum
+        {
+            Type enumType = typeof(TEnum);
+            FieldInfo[] fields = enumType.GetFields(BindingFlags.Public | BindingFlags.Static);
+            return fields.OrderBy(f => f.MetadataToken).Select(f => (TEnum)f.GetValue(null));
+        }
+
+        public static IEnumerable<string> GetNamesInDeclarationOrder<TEnum>() where TEnum : Enum
+        {
+            Type enumType = typeof(TEnum);
+            FieldInfo[] fields = enumType.GetFields(BindingFlags.Public | BindingFlags.Static);
+            return fields.OrderBy(f => f.MetadataToken).Select(f => f.Name);
         }
     }
 }

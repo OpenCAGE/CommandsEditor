@@ -413,13 +413,13 @@ namespace CommandsEditor
                 case EntityVariant.VARIABLE:
                     item.Text = ShortGuidUtils.FindString(((VariableEntity)entity).name);
                     CompositePinInfoTable.PinInfo variableInfo = CompositeUtils.GetParameterInfo(composite, (VariableEntity)entity);
-                    item.SubItems.Add(variableInfo != null ? variableInfo.PinTypeGUID.ToString() : ((VariableEntity)entity).type.ToString());
+                    item.SubItems.Add(variableInfo != null ? ((CompositePinType)variableInfo.PinTypeGUID.AsUInt32).ToUIString() : ((VariableEntity)entity).type.ToString());
                     break;
                 case EntityVariant.FUNCTION:
                     item.Text = EntityUtils.GetName(composite.shortGUID, entity.shortGUID);
                     Composite funcComposite = commands.GetComposite(((FunctionEntity)entity).function);
                     if (funcComposite != null) item.SubItems.Add(EditorUtils.GetCompositeName(funcComposite));
-                    else item.SubItems.Add(((FunctionType)(((FunctionEntity)entity).function.AsUInt32())).ToString());
+                    else item.SubItems.Add(((FunctionType)(((FunctionEntity)entity).function.AsUInt32)).ToString());
                     break;
                 case EntityVariant.ALIAS:
                     CommandsUtils.ResolveHierarchy(commands, composite, ((AliasEntity)entity).alias.path, out Composite c, out string s, false);

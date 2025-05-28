@@ -90,6 +90,8 @@ namespace CommandsEditor.UserControls
                 comboBox2.Items.Add(entry.Name);
             comboBox2.EndUpdate();
             comboBox2.SelectedIndex = 0;
+
+            toolTip1.SetToolTip(comboBox2, enumDesc.Name + " values");
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)

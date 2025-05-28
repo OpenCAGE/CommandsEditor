@@ -43,7 +43,13 @@ namespace CommandsEditor
 
             variableType.BeginUpdate();
             variableType.Items.Clear();
-            variableType.Items.AddRange(Enum.GetNames(typeof(CompositePinType)).OrderBy(o => o).ToArray());
+            foreach (CompositePinType pinType in EnumExtensions.GetValuesInDeclarationOrder<CompositePinType>())
+            {
+                if (pinType == CompositePinType.CompositeInputVariablePin || pinType == CompositePinType.CompositeOutputVariablePin)
+                    continue;
+
+                variableType.Items.Add(pinType.ToUIString()); 
+            }
             variableType.EndUpdate();
             variableType.SelectedIndex = SettingsManager.GetInteger(Singleton.Settings.PrevVariableType);
 
@@ -52,8 +58,6 @@ namespace CommandsEditor
 
             variableName.Select();
         }
-
-
 
         private void createEntity(object sender, EventArgs e)
         {
@@ -76,7 +80,8 @@ namespace CommandsEditor
 
             DataType datatype = DataType.FLOAT;
             ShortGuid enumType = new ShortGuid(0);
-            switch ((CompositePinType)Enum.Parse(typeof(CompositePinType), variableType.SelectedItem.ToString()))
+            CompositePinType pinType = variableType.SelectedItem.ToString().ToCompositePinType();
+            switch (pinType)
             {
                 case CompositePinType.CompositeInputBoolVariablePin:
                 case CompositePinType.CompositeOutputBoolVariablePin:
@@ -136,7 +141,7 @@ namespace CommandsEditor
             CompositeUtils.SetParameterInfo(_composite, new CompositePinInfoTable.PinInfo()
             {
                 VariableGUID = newEntity.shortGUID,
-                PinTypeGUID = ShortGuidUtils.Generate(variableType.SelectedItem.ToString()),
+                PinTypeGUID = new ShortGuid((uint)pinType),
                 PinEnumTypeGUID = enumType
             });
             ParameterUtils.AddAllDefaultParameters(newEntity, _composite, true, ParameterVariant.REFERENCE_PIN | ParameterVariant.TARGET_PIN | ParameterVariant.STATE_PARAMETER | ParameterVariant.INPUT_PIN | ParameterVariant.OUTPUT_PIN | ParameterVariant.PARAMETER | ParameterVariant.INTERNAL | ParameterVariant.METHOD_FUNCTION | ParameterVariant.METHOD_PIN);
@@ -165,7 +170,7 @@ namespace CommandsEditor
 
         private void entityVariant_SelectedIndexChanged(object sender, EventArgs e)
         {
-            CompositePinType type = (CompositePinType)Enum.Parse(typeof(CompositePinType), variableType.SelectedItem.ToString());
+            CompositePinType type = variableType.SelectedItem.ToString().ToCompositePinType();
 
             bool isEnum = type == CompositePinType.CompositeInputEnumVariablePin || type == CompositePinType.CompositeOutputEnumVariablePin;
             variableEnumType.Enabled = isEnum;

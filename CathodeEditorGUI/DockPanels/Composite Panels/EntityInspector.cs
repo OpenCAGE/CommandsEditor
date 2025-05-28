@@ -285,7 +285,7 @@ namespace CommandsEditor.DockPanels
                     variableInfo = CompositeUtils.GetParameterInfo(Composite, (VariableEntity)Entity);
                     if (variableInfo == null)
                         Console.WriteLine("Warning: Could not get parameter pin info!");
-                    description = (variableInfo != null ? variableInfo.PinTypeGUID.ToString() : ((VariableEntity)_entity).type.ToString());
+                    description = (variableInfo != null ? ((CompositePinType)variableInfo.PinTypeGUID.AsUInt32).ToUIString() : ((VariableEntity)_entity).type.ToString());
                     selected_entity_name.Text = ShortGuidUtils.FindString(((VariableEntity)_entity).name);
                     break;
                 case EntityVariant.PROXY:

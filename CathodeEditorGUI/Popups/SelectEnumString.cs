@@ -58,7 +58,7 @@ namespace CommandsEditor
             else
             {
                 enumStringTypeSelect.Visible = false;
-                PopulateItems((EnumStringType)enumString.enumID.AsUInt32());
+                PopulateItems((EnumStringType)enumString.enumID.AsUInt32);
             }
 
             Search();
