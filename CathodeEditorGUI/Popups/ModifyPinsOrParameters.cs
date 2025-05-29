@@ -135,7 +135,7 @@ namespace CommandsEditor
                     //Add any additional custom ones
                     for (int i = 0; i < ent.parameters.Count; i++)
                     {
-                        if (options.FirstOrDefault(o => ((ParameterListViewItemTag)o.Tag).ShortGUID == ent.parameters[i].name && o.SubItems[1].Text == ent.parameters[i].content.dataType.ToString()) != null)
+                        if (options.FirstOrDefault(o => ((ParameterListViewItemTag)o.Tag).ShortGUID == ent.parameters[i].name && o.SubItems[1].Text == ent.parameters[i].content.dataType.ToUIString()) != null)
                             continue;
                         AddCustomEntry(ent.parameters[i].name, ent.parameters[i].content.dataType);
                     }
