@@ -105,7 +105,10 @@ namespace CommandsEditor
             (decimal yaw, decimal pitch, decimal roll) = rotation.ToYawPitchRoll();
             ROT_X.Value = pitch; ROT_Y.Value = yaw; ROT_Z.Value = roll;
 
-            type_dropdown.SelectedItem = mvr.instanceTypeFlags.ToString();
+            requiresScript.Checked = mvr.flags.requires_script;
+            isVisible.Checked = mvr.flags.visible;
+            isStationary.Checked = mvr.flags.stationary;
+
             hasLoaded = true;
         }
         private void saveMover_Click(object sender, EventArgs e)
@@ -124,8 +127,8 @@ namespace CommandsEditor
         {
             if (!hasLoaded || loadedMvrIndex == -1) return;
             Movers.MOVER_DESCRIPTOR mvr = Content.mvr.Entries[loadedMvrIndex];
-            mvr.renderable_element_count = (uint)renderable.SelectedMaterialIndexes.Count;
-            mvr.renderable_element_index = (uint)Content.resource.reds.Entries.Count;
+            mvr.renderable_element_count = renderable.SelectedMaterialIndexes.Count;
+            mvr.renderable_element_index = Content.resource.reds.Entries.Count;
 
             Vector3 scale = new Vector3((float)SCALE_X.Value, (float)SCALE_Y.Value, (float)SCALE_Z.Value);
             Vector3 position = new Vector3((float)POS_X.Value, (float)POS_Y.Value, (float)POS_Z.Value);
@@ -139,9 +142,9 @@ namespace CommandsEditor
                             Matrix4x4.CreateFromQuaternion(rotation) *
                             Matrix4x4.CreateTranslation(position);
 
-            mvr.instanceTypeFlags = (ushort)Convert.ToInt32(type_dropdown.SelectedItem.ToString());
-
-            Content.mvr.Entries[loadedMvrIndex] = mvr;
+            mvr.flags.requires_script = requiresScript.Checked;
+            mvr.flags.visible = isVisible.Checked;
+            mvr.flags.stationary = isStationary.Checked;
 
             for (int y = 0; y < renderable.SelectedMaterialIndexes.Count; y++)
             {
@@ -244,8 +247,6 @@ namespace CommandsEditor
 
            // mvr.entity = new CommandsEntityReference();
             //mvr.resource_index = -1;
-
-            Content.mvr.Entries[loadedMvrIndex] = mvr;
         }
     }
 }

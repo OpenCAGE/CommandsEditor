@@ -23,6 +23,7 @@ using System.Runtime.InteropServices;
 using static CATHODE.Scripting.EnumUtils;
 using CommandsEditor.UserControls;
 using CATHODE.EXPERIMENTAL;
+using static CATHODE.Movers;
 
 namespace CommandsEditor
 {
@@ -351,17 +352,16 @@ namespace CommandsEditor
 #endif
         }
 
-        public static void TestVisibilityMVR()
+        public static void TestMVR()
         {
 #if DEBUG
 
-            List<string> files = Directory.GetFiles("F:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\data_orig\\ENV\\Production", "MODELS.MVR", SearchOption.AllDirectories).ToList<string>();
+            List<string> files = Directory.GetFiles("M:\\Modding\\Steam Projects\\steamapps\\common\\Alien Isolation\\data\\ENV\\PRODUCTION", "MODELS.MVR", SearchOption.AllDirectories).ToList<string>();
             HashSet<uint> visibility_vars = new HashSet<uint>();
             foreach (string file in files)
             {
                 Movers movers = new Movers(file);
-                for (int i = 0; i < movers.Entries.Count; i++)
-                    visibility_vars.Add(movers.Entries[i].visibility);
+                movers.Save();
             }
             List<uint> visibility = new List<uint>(visibility_vars);
             foreach (var number in visibility)

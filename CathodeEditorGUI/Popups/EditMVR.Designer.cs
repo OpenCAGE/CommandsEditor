@@ -31,7 +31,6 @@ namespace CommandsEditor
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditMVR));
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.renderable = new Popups.UserControls.GUI_Resource_RenderableInstance();
-            this.label1 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.SCALE_Z = new SmoothNumericUpDown();
@@ -53,10 +52,11 @@ namespace CommandsEditor
             this.POS_Y = new SmoothNumericUpDown();
             this.label14 = new System.Windows.Forms.Label();
             this.POS_X = new SmoothNumericUpDown();
-            this.type_dropdown = new System.Windows.Forms.ComboBox();
-            this.label2 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.isStationary = new System.Windows.Forms.CheckBox();
+            this.isVisible = new System.Windows.Forms.CheckBox();
+            this.requiresScript = new System.Windows.Forms.CheckBox();
             this.DEBUG_clear = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.SCALE_Z)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SCALE_Y)).BeginInit();
@@ -87,15 +87,6 @@ namespace CommandsEditor
             this.renderable.Name = "renderable";
             this.renderable.Size = new System.Drawing.Size(838, 186);
             this.renderable.TabIndex = 2;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(555, 208);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(31, 13);
-            this.label1.TabIndex = 5;
-            this.label1.Text = "Type";
             // 
             // label8
             // 
@@ -466,34 +457,6 @@ namespace CommandsEditor
             -2147483648});
             this.POS_X.ValueChanged += new System.EventHandler(this.POS_X_ValueChanged);
             // 
-            // type_dropdown
-            // 
-            this.type_dropdown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.type_dropdown.FormattingEnabled = true;
-            this.type_dropdown.Items.AddRange(new object[] {
-            "0",
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7"});
-            this.type_dropdown.Location = new System.Drawing.Point(558, 224);
-            this.type_dropdown.Name = "type_dropdown";
-            this.type_dropdown.Size = new System.Drawing.Size(284, 21);
-            this.type_dropdown.TabIndex = 174;
-            this.type_dropdown.SelectedIndexChanged += new System.EventHandler(this.type_dropdown_SelectedIndexChanged);
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(555, 259);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(284, 52);
-            this.label2.TabIndex = 175;
-            this.label2.Text = resources.GetString("label2.Text");
-            // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.listBox1);
@@ -506,12 +469,12 @@ namespace CommandsEditor
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.isStationary);
+            this.groupBox2.Controls.Add(this.isVisible);
+            this.groupBox2.Controls.Add(this.requiresScript);
             this.groupBox2.Controls.Add(this.DEBUG_clear);
             this.groupBox2.Controls.Add(this.renderable);
-            this.groupBox2.Controls.Add(this.label1);
-            this.groupBox2.Controls.Add(this.label2);
             this.groupBox2.Controls.Add(this.SCALE_X);
-            this.groupBox2.Controls.Add(this.type_dropdown);
             this.groupBox2.Controls.Add(this.label12);
             this.groupBox2.Controls.Add(this.SCALE_Y);
             this.groupBox2.Controls.Add(this.label11);
@@ -538,6 +501,36 @@ namespace CommandsEditor
             this.groupBox2.TabIndex = 177;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Selected Mover Descriptor";
+            // 
+            // isStationary
+            // 
+            this.isStationary.AutoSize = true;
+            this.isStationary.Location = new System.Drawing.Point(720, 285);
+            this.isStationary.Name = "isStationary";
+            this.isStationary.Size = new System.Drawing.Size(73, 17);
+            this.isStationary.TabIndex = 180;
+            this.isStationary.Text = "Stationary";
+            this.isStationary.UseVisualStyleBackColor = true;
+            // 
+            // isVisible
+            // 
+            this.isVisible.AutoSize = true;
+            this.isVisible.Location = new System.Drawing.Point(720, 262);
+            this.isVisible.Name = "isVisible";
+            this.isVisible.Size = new System.Drawing.Size(98, 17);
+            this.isVisible.TabIndex = 179;
+            this.isVisible.Text = "Visible On Start";
+            this.isVisible.UseVisualStyleBackColor = true;
+            // 
+            // requiresScript
+            // 
+            this.requiresScript.AutoSize = true;
+            this.requiresScript.Location = new System.Drawing.Point(720, 239);
+            this.requiresScript.Name = "requiresScript";
+            this.requiresScript.Size = new System.Drawing.Size(98, 17);
+            this.requiresScript.TabIndex = 178;
+            this.requiresScript.Text = "Requires Script";
+            this.requiresScript.UseVisualStyleBackColor = true;
             // 
             // DEBUG_clear
             // 
@@ -582,7 +575,6 @@ namespace CommandsEditor
 
         private System.Windows.Forms.ListBox listBox1;
         private Popups.UserControls.GUI_Resource_RenderableInstance renderable;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label10;
         private SmoothNumericUpDown SCALE_Z;
@@ -604,10 +596,11 @@ namespace CommandsEditor
         private SmoothNumericUpDown POS_Y;
         private System.Windows.Forms.Label label14;
         private SmoothNumericUpDown POS_X;
-        private System.Windows.Forms.ComboBox type_dropdown;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Button DEBUG_clear;
+        private System.Windows.Forms.CheckBox isStationary;
+        private System.Windows.Forms.CheckBox isVisible;
+        private System.Windows.Forms.CheckBox requiresScript;
     }
 }
