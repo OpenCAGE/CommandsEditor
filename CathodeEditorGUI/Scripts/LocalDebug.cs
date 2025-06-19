@@ -1364,8 +1364,8 @@ namespace CommandsEditor
                         List<CAGEAnimation.Connection> prunedConnections = new List<CAGEAnimation.Connection>();
                         foreach (CAGEAnimation.Connection connection in anim.connections)
                         {
-                            List<CAGEAnimation.Animation> anim_target = anim.animations.FindAll(o => o.shortGUID == connection.keyframeID);
-                            List<CAGEAnimation.Event> event_target = anim.events.FindAll(o => o.shortGUID == connection.keyframeID);
+                            List<CAGEAnimation.FloatTrack> anim_target = anim.animations.FindAll(o => o.shortGUID == connection.target_track);
+                            List<CAGEAnimation.EventTrack> event_target = anim.events.FindAll(o => o.shortGUID == connection.target_track);
                             if (anim_target.Count == 0 && event_target.Count == 0) continue;
                             prunedConnections.Add(connection);
                         }
@@ -1373,8 +1373,8 @@ namespace CommandsEditor
 
                         foreach (CAGEAnimation.Connection connection in anim.connections)
                         {
-                            List<CAGEAnimation.Animation> anim_target = anim.animations.FindAll(o => o.shortGUID == connection.keyframeID);
-                            List<CAGEAnimation.Event> event_target = anim.events.FindAll(o => o.shortGUID == connection.keyframeID);
+                            List<CAGEAnimation.FloatTrack> anim_target = anim.animations.FindAll(o => o.shortGUID == connection.target_track);
+                            List<CAGEAnimation.EventTrack> event_target = anim.events.FindAll(o => o.shortGUID == connection.target_track);
 
                             //We expect to never point to both
                             if (anim_target.Count != 0 && event_target.Count != 0)
@@ -1386,7 +1386,7 @@ namespace CommandsEditor
                                 throw new Exception();
                             }
 
-                            if (connection.objectType == ObjectType.ENTITY)
+                            if (connection.binding_type == ObjectType.ENTITY)
                             {
                                 //ENTITY links always point to Animation keyframes
                                 if (anim_target.Count == 0 || event_target.Count != 0)
@@ -1395,16 +1395,16 @@ namespace CommandsEditor
                                 }
 
                                 //ENTITY links must always point to params, these appear to only be TRANSFORM or FLOAT in vanilla PAKs
-                                if (connection.parameterDataType != DataType.TRANSFORM &&
-                                    connection.parameterDataType != DataType.FLOAT)
+                                if (connection.target_param_type != DataType.TRANSFORM &&
+                                    connection.target_param_type != DataType.FLOAT)
                                 {
                                     throw new Exception();
                                 }
 
                                 //Check to make sure all TRANSFORM keys happen on the same intervals & are complete
-                                if (connection.parameterDataType == DataType.TRANSFORM)
+                                if (connection.target_param_type == DataType.TRANSFORM)
                                 {
-                                    List<CAGEAnimation.Connection> transform = anim.connections.FindAll(o => o.connectedEntity == connection.connectedEntity && o.parameterID.ToString() == "position");
+                                    List<CAGEAnimation.Connection> transform = anim.connections.FindAll(o => o.connectedEntity == connection.connectedEntity && o.target_param.ToString() == "position");
                                     if (transform.Count != 6 && transform.Count != 3 && transform.Count != 5) //x,y,z,Yaw,Pitch,Roll
                                     {
                                         throw new Exception();
@@ -1412,13 +1412,13 @@ namespace CommandsEditor
                                     List<float> keyframeIntervals = null;
                                     foreach (CAGEAnimation.Connection transformPart in transform)
                                     {
-                                        CAGEAnimation.Animation keyframes = anim.animations.FirstOrDefault(o => o.shortGUID == connection.keyframeID);
+                                        CAGEAnimation.FloatTrack keyframes = anim.animations.FirstOrDefault(o => o.shortGUID == connection.target_track);
                                         if (keyframeIntervals == null)
                                         {
                                             keyframeIntervals = new List<float>();
-                                            foreach (CAGEAnimation.Animation.Keyframe keyframe in keyframes.keyframes)
+                                            foreach (CAGEAnimation.FloatTrack.Keyframe keyframe in keyframes.keyframes)
                                             {
-                                                keyframeIntervals.Add(keyframe.secondsSinceStart);
+                                                keyframeIntervals.Add(keyframe.time);
                                             }
                                         }
                                         else
@@ -1429,7 +1429,7 @@ namespace CommandsEditor
                                             }
                                             for (int i = 0; i < keyframes.keyframes.Count; i++)
                                             {
-                                                if (keyframeIntervals[i] != keyframes.keyframes[i].secondsSinceStart)
+                                                if (keyframeIntervals[i] != keyframes.keyframes[i].time)
                                                 {
                                                     throw new Exception();
                                                 }
@@ -1439,22 +1439,22 @@ namespace CommandsEditor
                                 }
 
                                 //Check sub IDs for pointed datatypes
-                                if (connection.parameterDataType == DataType.TRANSFORM)
+                                if (connection.target_param_type == DataType.TRANSFORM)
                                 {
-                                    if (connection.parameterSubID.ToString() != "Yaw" &&
-                                        connection.parameterSubID.ToString() != "Pitch" &&
-                                        connection.parameterSubID.ToString() != "Roll" &&
-                                        connection.parameterSubID.ToString() != "x" &&
-                                        connection.parameterSubID.ToString() != "y" &&
-                                        connection.parameterSubID.ToString() != "z")
+                                    if (connection.target_sub_param.ToString() != "Yaw" &&
+                                        connection.target_sub_param.ToString() != "Pitch" &&
+                                        connection.target_sub_param.ToString() != "Roll" &&
+                                        connection.target_sub_param.ToString() != "x" &&
+                                        connection.target_sub_param.ToString() != "y" &&
+                                        connection.target_sub_param.ToString() != "z")
                                     {
                                         throw new Exception();
                                     }
                                     //TODO: validate that all these vals are modified at the same keyframe times (can simplify UI!)
                                 }
-                                if (connection.parameterDataType == DataType.FLOAT)
+                                if (connection.target_param_type == DataType.FLOAT)
                                 {
-                                    if (connection.parameterSubID.ToString() != "")
+                                    if (connection.target_sub_param.ToString() != "")
                                     {
                                         throw new Exception();
                                     }
@@ -1469,14 +1469,14 @@ namespace CommandsEditor
                                 }
 
                                 //CHARACTER links usually pair with MARKER links - check that
-                                if (connection.objectType == ObjectType.CHARACTER)
+                                if (connection.binding_type == ObjectType.CHARACTER)
                                 {
-                                    List<CAGEAnimation.Connection> pairedMarker = anim.connections.FindAll(o => o.objectType == ObjectType.MARKER && o.keyframeID == connection.keyframeID);
+                                    List<CAGEAnimation.Connection> pairedMarker = anim.connections.FindAll(o => o.binding_type == ObjectType.MARKER && o.target_track == connection.target_track);
                                     if (pairedMarker.Count != 1)
                                     {
                                         //throw new Exception();
                                     }
-                                    List<CAGEAnimation.Connection> duplicateCharRef = anim.connections.FindAll(o => o.objectType == ObjectType.CHARACTER && o.keyframeID == connection.keyframeID && o.shortGUID != connection.shortGUID);
+                                    List<CAGEAnimation.Connection> duplicateCharRef = anim.connections.FindAll(o => o.binding_type == ObjectType.CHARACTER && o.target_track == connection.target_track && o.binding_guid != connection.binding_guid);
                                     if (duplicateCharRef.Count != 0)
                                     {
                                         throw new Exception();
@@ -1484,9 +1484,9 @@ namespace CommandsEditor
                                 }
 
                                 //As we point to events and not parameters, this info should always be empty
-                                if (connection.parameterID.ToString() != "" ||
-                                    connection.parameterDataType != DataType.NONE ||
-                                    connection.parameterSubID.ToString() != "")
+                                if (connection.target_param.ToString() != "" ||
+                                    connection.target_param_type != DataType.NONE ||
+                                    connection.target_sub_param.ToString() != "")
                                 {
                                     throw new Exception();
                                 }
@@ -1512,12 +1512,12 @@ namespace CommandsEditor
                     foreach (FunctionEntity ent in anims)
                     {
                         CAGEAnimation anim = (CAGEAnimation)ent;
-                        foreach (CAGEAnimation.Event key in anim.events)
+                        foreach (CAGEAnimation.EventTrack key in anim.events)
                         {
-                            foreach (CAGEAnimation.Event.Keyframe keyData in key.keyframes)
+                            foreach (CAGEAnimation.EventTrack.Keyframe keyData in key.keyframes)
                             {
-                                AddToListIfUnnamed(keyData.startEvent);
-                                AddToListIfUnnamed(keyData.reverseEvent);
+                                AddToListIfUnnamed(keyData.forward);
+                                AddToListIfUnnamed(keyData.reverse);
                             }
                         }
                     }
@@ -1526,10 +1526,10 @@ namespace CommandsEditor
                     foreach (FunctionEntity ent in trigs)
                     {
                         TriggerSequence trig = (TriggerSequence)ent;
-                        foreach (TriggerSequence.Event e in trig.events)
+                        foreach (TriggerSequence.MethodEntry e in trig.methods)
                         {
-                            AddToListIfUnnamed(e.start);
-                            AddToListIfUnnamed(e.end);
+                            AddToListIfUnnamed(e.method);
+                            AddToListIfUnnamed(e.finished);
                         }
                     }
 

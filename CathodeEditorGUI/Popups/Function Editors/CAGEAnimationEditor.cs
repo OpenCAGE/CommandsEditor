@@ -19,11 +19,11 @@ namespace CommandsEditor
         float anim_length = 0;
         CAGEAnimation animEntity = null; //this is a unique instance we can write to
 
-        Dictionary<Keyframe, CAGEAnimation.Animation.Keyframe> keyframeHandlesAnim;
-        Dictionary<Keyframe, CAGEAnimation.Event.Keyframe> keyframeHandlesEvent;
+        Dictionary<Keyframe, CAGEAnimation.FloatTrack.Keyframe> keyframeHandlesAnim;
+        Dictionary<Keyframe, CAGEAnimation.EventTrack.Keyframe> keyframeHandlesEvent;
 
-        Dictionary<Track, CAGEAnimation.Animation> tracksAnim;
-        Dictionary<Track, CAGEAnimation.Event> tracksEvent;
+        Dictionary<Track, CAGEAnimation.FloatTrack> tracksAnim;
+        Dictionary<Track, CAGEAnimation.EventTrack> tracksEvent;
 
         List<EntityPath> entityListToHierarchies;
 
@@ -62,7 +62,7 @@ namespace CommandsEditor
             entityListToHierarchies = new List<EntityPath>();
             entityList.BeginUpdate();
             entityList.Items.Clear();
-            List<CAGEAnimation.Connection> connections = animEntity.connections.FindAll(o => o.objectType == ObjectType.ENTITY);
+            List<CAGEAnimation.Connection> connections = animEntity.connections.FindAll(o => o.binding_type == ObjectType.ENTITY);
             foreach (CAGEAnimation.Connection connection in connections)
             {
                 string connectionLink = connection.connectedEntity.GetAsString(Content.commands, _entityDisplay.Composite);
@@ -83,16 +83,16 @@ namespace CommandsEditor
             {
                 for (int x = 0; x < animEntity.animations[i].keyframes.Count; x++)
                 {
-                    if (animLength < animEntity.animations[i].keyframes[x].secondsSinceStart)
-                        animLength = animEntity.animations[i].keyframes[x].secondsSinceStart;
+                    if (animLength < animEntity.animations[i].keyframes[x].time)
+                        animLength = animEntity.animations[i].keyframes[x].time;
                 }
             }
             for (int i = 0; i < animEntity.events.Count; i++)
             {
                 for (int x = 0; x < animEntity.events[i].keyframes.Count; x++)
                 {
-                    if (animLength < animEntity.events[i].keyframes[x].secondsSinceStart)
-                        animLength = animEntity.events[i].keyframes[x].secondsSinceStart;
+                    if (animLength < animEntity.events[i].keyframes[x].time)
+                        animLength = animEntity.events[i].keyframes[x].time;
                 }
             }
             return animLength;
@@ -101,8 +101,8 @@ namespace CommandsEditor
         List<string> animTracks = new List<string>();
         private void SetupAnimTimeline()
         {
-            keyframeHandlesAnim = new Dictionary<Keyframe, CAGEAnimation.Animation.Keyframe>();
-            tracksAnim = new Dictionary<Track, CAGEAnimation.Animation>();
+            keyframeHandlesAnim = new Dictionary<Keyframe, CAGEAnimation.FloatTrack.Keyframe>();
+            tracksAnim = new Dictionary<Track, CAGEAnimation.FloatTrack>();
 
             activeAnimKeyframe = null;
             activeAnimHandle = null;
@@ -112,11 +112,11 @@ namespace CommandsEditor
 
             //Filter down anims to the selected entity in the dropdown
             if (entityList.SelectedIndex == -1) return;
-            List<CAGEAnimation.Animation> filteredAnims = new List<CAGEAnimation.Animation>();
+            List<CAGEAnimation.FloatTrack> filteredAnims = new List<CAGEAnimation.FloatTrack>();
             List<CAGEAnimation.Connection> filteredConnections = animEntity.connections.FindAll(o => o.connectedEntity == entityListToHierarchies[entityList.SelectedIndex]);
             for (int i = 0; i < filteredConnections.Count; i++)
             {
-                CAGEAnimation.Animation anim = animEntity.animations.FirstOrDefault(o => o.shortGUID == filteredConnections[i].keyframeID);
+                CAGEAnimation.FloatTrack anim = animEntity.animations.FirstOrDefault(o => o.shortGUID == filteredConnections[i].target_track);
                 if (anim != null) filteredAnims.Add(anim);
             }
 
@@ -127,14 +127,14 @@ namespace CommandsEditor
             animTimeline.Setup(0, anim_length, anim_step, 150);
             for (int i = 0; i < filteredAnims.Count; i++)
             {
-                CAGEAnimation.Connection connection = filteredConnections.FirstOrDefault(o => o.keyframeID == filteredAnims[i].shortGUID);
+                CAGEAnimation.Connection connection = filteredConnections.FirstOrDefault(o => o.target_track == filteredAnims[i].shortGUID);
                 for (int x = 0; x < filteredAnims[i].keyframes.Count; x++)
                 {
-                    CAGEAnimation.Animation.Keyframe keyframeData = filteredAnims[i].keyframes[x];
-                    string keyframeText = connection.parameterSubID.ToString() == "" ? connection.parameterID.ToString() : connection.parameterID.ToString() + " [" + connection.parameterSubID.ToString() + "]";
-                    Keyframe keyframeUI = animTimeline.AddKeyframe(keyframeData.secondsSinceStart, keyframeText);
+                    CAGEAnimation.FloatTrack.Keyframe keyframeData = filteredAnims[i].keyframes[x];
+                    string keyframeText = connection.target_sub_param.ToString() == "" ? connection.target_param.ToString() : connection.target_param.ToString() + " [" + connection.target_sub_param.ToString() + "]";
+                    Keyframe keyframeUI = animTimeline.AddKeyframe(keyframeData.time, keyframeText);
                     keyframeUI.OnMoved += OnHandleMoved;
-                    keyframeUI.HandleText = keyframeData.paramValue.ToString("0.00");
+                    keyframeUI.HandleText = keyframeData.value.Y.ToString("0.00");
                     keyframeHandlesAnim.Add(keyframeUI, keyframeData);
                     if (!tracksAnim.ContainsKey(keyframeUI.Track))
                     {
@@ -150,8 +150,8 @@ namespace CommandsEditor
         List<Entity> eventEntityIDs = new List<Entity>();
         private void SetupEventTimeline()
         {
-            keyframeHandlesEvent = new Dictionary<Keyframe, CAGEAnimation.Event.Keyframe>();
-            tracksEvent = new Dictionary<Track, CAGEAnimation.Event>();
+            keyframeHandlesEvent = new Dictionary<Keyframe, CAGEAnimation.EventTrack.Keyframe>();
+            tracksEvent = new Dictionary<Track, CAGEAnimation.EventTrack>();
 
             activeEventKeyframe = null;
             activeEventHandle = null;
@@ -168,12 +168,12 @@ namespace CommandsEditor
             for (int i = 0; i < animEntity.events.Count; i++)
             {
                 //TODO: Frequently CHARACTER and MARKER objects both point to the same Event object - need to handle this better!
-                CAGEAnimation.Connection connection = animEntity.connections.FirstOrDefault(o => o.keyframeID == animEntity.events[i].shortGUID);
+                CAGEAnimation.Connection connection = animEntity.connections.FirstOrDefault(o => o.target_track == animEntity.events[i].shortGUID);
                 for (int x = 0; x < animEntity.events[i].keyframes.Count; x++)
                 {
-                    CAGEAnimation.Event.Keyframe keyframeData = animEntity.events[i].keyframes[x];
+                    CAGEAnimation.EventTrack.Keyframe keyframeData = animEntity.events[i].keyframes[x];
                     string keyframeText = (connection == null) ? EntityUtils.GetName(_entityDisplay.Composite, animEntity) : connection.connectedEntity.GetAsString(Content.commands, _entityDisplay.Composite, false);
-                    Keyframe keyframeUI = eventTimeline.AddKeyframe(keyframeData.secondsSinceStart, keyframeText);
+                    Keyframe keyframeUI = eventTimeline.AddKeyframe(keyframeData.time, keyframeText);
                     keyframeUI.OnMoved += OnHandleMoved;
                     keyframeHandlesEvent.Add(keyframeUI, keyframeData);
                     if (!tracksEvent.ContainsKey(keyframeUI.Track))
@@ -189,57 +189,57 @@ namespace CommandsEditor
 
         private void OnKeyframeAddedToTrack_Anim(Keyframe key)
         {
-            CAGEAnimation.Animation e = tracksAnim[key.Track];
-            CAGEAnimation.Animation.Keyframe keyData = new CAGEAnimation.Animation.Keyframe();
-            keyData.secondsSinceStart = key.Seconds;
+            CAGEAnimation.FloatTrack e = tracksAnim[key.Track];
+            CAGEAnimation.FloatTrack.Keyframe keyData = new CAGEAnimation.FloatTrack.Keyframe();
+            keyData.time = key.Seconds;
             e.keyframes.Add(keyData);
             keyframeHandlesAnim.Add(key, keyData);
             key.OnMoved += OnHandleMoved;
         }
         private void OnKeyframeAddedToTrack_Event(Keyframe key)
         {
-            CAGEAnimation.Event e = tracksEvent[key.Track];
-            CAGEAnimation.Event.Keyframe keyData = new CAGEAnimation.Event.Keyframe();
-            keyData.secondsSinceStart = key.Seconds;
-            keyData.startEvent = ShortGuidUtils.Generate("");
-            keyData.reverseEvent = ShortGuidUtils.Generate("");
+            CAGEAnimation.EventTrack e = tracksEvent[key.Track];
+            CAGEAnimation.EventTrack.Keyframe keyData = new CAGEAnimation.EventTrack.Keyframe();
+            keyData.time = key.Seconds;
+            keyData.forward = ShortGuidUtils.Generate("");
+            keyData.reverse = ShortGuidUtils.Generate("");
             e.keyframes.Add(keyData);
             keyframeHandlesEvent.Add(key, keyData);
             key.OnMoved += OnHandleMoved;
         }
 
-        CAGEAnimation.Animation.Keyframe activeAnimKeyframe = null;
-        CAGEAnimation.Event.Keyframe activeEventKeyframe = null;
+        CAGEAnimation.FloatTrack.Keyframe activeAnimKeyframe = null;
+        CAGEAnimation.EventTrack.Keyframe activeEventKeyframe = null;
         Keyframe activeAnimHandle = null;
         Keyframe activeEventHandle = null;
         private void OnHandleMoved(Keyframe handle, float time)
         {
-            if (keyframeHandlesAnim.TryGetValue(handle, out CAGEAnimation.Animation.Keyframe animKeyframe))
+            if (keyframeHandlesAnim.TryGetValue(handle, out CAGEAnimation.FloatTrack.Keyframe animKeyframe))
             {
                 if (activeAnimHandle != null) activeAnimHandle.Highlight(false);
                 handle.Highlight();
                 activeAnimHandle = handle;
 
                 activeAnimKeyframe = animKeyframe;
-                activeAnimKeyframe.secondsSinceStart = time;
+                activeAnimKeyframe.time = time;
                 animKeyframeData.Visible = true;
-                animKeyframeValue.Text = activeAnimKeyframe.paramValue.ToString();
-                startVelX.Text = activeAnimKeyframe.startVelocity.X.ToString();
-                startVelY.Text = activeAnimKeyframe.startVelocity.Y.ToString();
-                endVelX.Text = activeAnimKeyframe.endVelocity.X.ToString();
-                endVelY.Text = activeAnimKeyframe.endVelocity.Y.ToString();
+                animKeyframeValue.Text = activeAnimKeyframe.value.Y.ToString(); //todo support X
+                startVelX.Text = activeAnimKeyframe.tan_in.X.ToString();
+                startVelY.Text = activeAnimKeyframe.tan_in.Y.ToString();
+                endVelX.Text = activeAnimKeyframe.tan_out.X.ToString();
+                endVelY.Text = activeAnimKeyframe.tan_out.Y.ToString();
             }
-            else if (keyframeHandlesEvent.TryGetValue(handle, out CAGEAnimation.Event.Keyframe eventKeyframe))
+            else if (keyframeHandlesEvent.TryGetValue(handle, out CAGEAnimation.EventTrack.Keyframe eventKeyframe))
             {
                 if (activeEventHandle != null) activeEventHandle.Highlight(false);
                 handle.Highlight();
                 activeEventHandle = handle;
 
                 activeEventKeyframe = eventKeyframe;
-                activeEventKeyframe.secondsSinceStart = time;
+                activeEventKeyframe.time = time;
                 eventKeyframeData.Visible = true;
-                eventParam1.Text = activeEventKeyframe.startEvent.ToString();
-                eventParam2.Text = activeEventKeyframe.reverseEvent.ToString();
+                eventParam1.Text = activeEventKeyframe.forward.ToString();
+                eventParam2.Text = activeEventKeyframe.reverse.ToString();
             }
             else
             {
@@ -293,7 +293,7 @@ namespace CommandsEditor
             //Creating a placeholder here that points to nothing so that the dropdown will pick it up - not ideal, but shouldn't affect anything
             CAGEAnimation.Connection newConnection = new CAGEAnimation.Connection();
             newConnection.connectedEntity.path = generatedHierarchy;
-            newConnection.objectType = ObjectType.ENTITY;
+            newConnection.binding_type = ObjectType.ENTITY;
             animEntity.connections.Add(newConnection);
 
             UpdateEntityList();
@@ -316,7 +316,7 @@ namespace CommandsEditor
         private void OnParameterSelected(Parameter param)
         {
             //Make sure the same parameter isn't being added twice for the same entity
-            if (animEntity.connections.FindAll(o => o.connectedEntity == entityListToHierarchies[entityList.SelectedIndex] && o.parameterID == param.name).Count != 0)
+            if (animEntity.connections.FindAll(o => o.connectedEntity == entityListToHierarchies[entityList.SelectedIndex] && o.target_param == param.name).Count != 0)
             {
                 MessageBox.Show("This parameter is already controlled by the CAGEAnimation!", "Parameter already selected", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 this.BringToFront();
@@ -326,8 +326,8 @@ namespace CommandsEditor
 
             CAGEAnimation.Connection connection = new CAGEAnimation.Connection();
             connection.connectedEntity.path = entityListToHierarchies[entityList.SelectedIndex].path;
-            connection.objectType = ObjectType.ENTITY;
-            connection.parameterDataType = param.content.dataType;
+            connection.binding_type = ObjectType.ENTITY;
+            connection.target_param_type = param.content.dataType;
 
             switch (param.content.dataType)
             {
@@ -375,21 +375,21 @@ namespace CommandsEditor
         }
         private void AddNewConnectionSet(CAGEAnimation.Connection conn, float defaultKeyValue, ShortGuid paramID, string subProp = "")
         {
-            CAGEAnimation.Animation.Keyframe keyStart = new CAGEAnimation.Animation.Keyframe();
-            keyStart.secondsSinceStart = 0.0f;
-            keyStart.paramValue = defaultKeyValue;
-            CAGEAnimation.Animation.Keyframe keyEnd = new CAGEAnimation.Animation.Keyframe();
-            keyEnd.secondsSinceStart = anim_length;
-            keyEnd.paramValue = defaultKeyValue;
-            CAGEAnimation.Animation anim = new CAGEAnimation.Animation();
+            CAGEAnimation.FloatTrack.Keyframe keyStart = new CAGEAnimation.FloatTrack.Keyframe();
+            keyStart.time = 0.0f;
+            keyStart.value.Y = defaultKeyValue;
+            CAGEAnimation.FloatTrack.Keyframe keyEnd = new CAGEAnimation.FloatTrack.Keyframe();
+            keyEnd.time = anim_length;
+            keyEnd.value.Y = defaultKeyValue;
+            CAGEAnimation.FloatTrack anim = new CAGEAnimation.FloatTrack();
             anim.shortGUID = ShortGuidUtils.GenerateRandom();
             anim.keyframes.Add(keyStart);
             anim.keyframes.Add(keyEnd);
             animEntity.animations.Add(anim);
-            conn.shortGUID = ShortGuidUtils.GenerateRandom();
-            conn.parameterID = paramID;
-            conn.parameterSubID = ShortGuidUtils.Generate(subProp);
-            conn.keyframeID = anim.shortGUID;
+            conn.binding_guid = ShortGuidUtils.GenerateRandom();
+            conn.target_param = paramID;
+            conn.target_sub_param = ShortGuidUtils.Generate(subProp);
+            conn.target_track = anim.shortGUID;
             animEntity.connections.Add(conn);
         }
 
@@ -408,7 +408,7 @@ namespace CommandsEditor
             List<CAGEAnimation.Connection> trimmedConnections = new List<CAGEAnimation.Connection>();
             for (int i = 0; i < animEntity.connections.Count; i++)
             {
-                if (animEntity.connections[i].keyframeID == animEntity.animations[index].shortGUID) continue;
+                if (animEntity.connections[i].target_track == animEntity.animations[index].shortGUID) continue;
                 trimmedConnections.Add(animEntity.connections[i]);
             }
             animEntity.connections = trimmedConnections;
@@ -448,18 +448,18 @@ namespace CommandsEditor
             else
             {
                 CAGEAnimation.Connection connection = new CAGEAnimation.Connection();
-                connection.shortGUID = ShortGuidUtils.GenerateRandom();
-                connection.keyframeID = ShortGuidUtils.GenerateRandom();
-                connection.objectType = ObjectType.CHARACTER; //TODO: not only do we need to calculate this, we also need the pairs for CHARACTER/MARKER
+                connection.binding_guid = ShortGuidUtils.GenerateRandom();
+                connection.target_track = ShortGuidUtils.GenerateRandom();
+                connection.binding_type = ObjectType.CHARACTER; //TODO: not only do we need to calculate this, we also need the pairs for CHARACTER/MARKER
                 connection.connectedEntity = hierarchy;
                 animEntity.connections.Add(connection);
-                connectionID = connection.keyframeID;
+                connectionID = connection.target_track;
             }
 
             //Add new event trigger
-            CAGEAnimation.Event eventTrigger = new CAGEAnimation.Event();
+            CAGEAnimation.EventTrack eventTrigger = new CAGEAnimation.EventTrack();
             eventTrigger.shortGUID = connectionID;
-            eventTrigger.keyframes.Add(new CAGEAnimation.Event.Keyframe() { secondsSinceStart = CalculateAnimLength(), startEvent = ShortGuidUtils.Generate(""), reverseEvent = ShortGuidUtils.Generate("") }); 
+            eventTrigger.keyframes.Add(new CAGEAnimation.EventTrack.Keyframe() { time = CalculateAnimLength(), forward = ShortGuidUtils.Generate(""), reverse = ShortGuidUtils.Generate("") }); 
             animEntity.events.Add(eventTrigger);
 
             SetupEventTimeline();
@@ -482,7 +482,7 @@ namespace CommandsEditor
             List<CAGEAnimation.Connection> trimmedConnections = new List<CAGEAnimation.Connection>();
             for (int i = 0; i < animEntity.connections.Count; i++)
             {
-                if (animEntity.connections[i].keyframeID == animEntity.events[index].shortGUID) continue;
+                if (animEntity.connections[i].target_track == animEntity.events[index].shortGUID) continue;
                 trimmedConnections.Add(animEntity.connections[i]);
             }
             animEntity.connections = trimmedConnections;
@@ -500,41 +500,41 @@ namespace CommandsEditor
         private void animKeyframeValue_TextChanged(object sender, EventArgs e)
         {
             animKeyframeValue.Text = EditorUtils.ForceStringNumeric(animKeyframeValue.Text, true);
-            activeAnimKeyframe.paramValue = Convert.ToSingle(animKeyframeValue.Text);
-            activeAnimHandle.HandleText = activeAnimKeyframe.paramValue.ToString("0.00");
+            activeAnimKeyframe.value.Y = Convert.ToSingle(animKeyframeValue.Text);
+            activeAnimHandle.HandleText = activeAnimKeyframe.value.Y.ToString("0.00");
         }
         private void startVelX_TextChanged(object sender, EventArgs e)
         {
             startVelX.Text = EditorUtils.ForceStringNumeric(startVelX.Text, true);
-            activeAnimKeyframe.startVelocity.X = Convert.ToSingle(startVelX.Text);
+            activeAnimKeyframe.tan_in.X = Convert.ToSingle(startVelX.Text);
         }
         private void startVelY_TextChanged(object sender, EventArgs e)
         {
             startVelY.Text = EditorUtils.ForceStringNumeric(startVelY.Text, true);
-            activeAnimKeyframe.startVelocity.Y = Convert.ToSingle(startVelY.Text);
+            activeAnimKeyframe.tan_in.Y = Convert.ToSingle(startVelY.Text);
         }
         private void endVelX_TextChanged(object sender, EventArgs e)
         {
             endVelX.Text = EditorUtils.ForceStringNumeric(endVelX.Text, true);
-            activeAnimKeyframe.endVelocity.X = Convert.ToSingle(endVelX.Text);
+            activeAnimKeyframe.tan_out.X = Convert.ToSingle(endVelX.Text);
         }
         private void endVelY_TextChanged(object sender, EventArgs e)
         {
             endVelY.Text = EditorUtils.ForceStringNumeric(endVelY.Text, true);
-            activeAnimKeyframe.endVelocity.Y = Convert.ToSingle(endVelY.Text);
+            activeAnimKeyframe.tan_out.Y = Convert.ToSingle(endVelY.Text);
         }
 
         private void eventParam1_TextChanged(object sender, EventArgs e)
         {
             //Handle non-convertable param names
-            if (activeEventKeyframe.startEvent.ToByteString() == eventParam1.Text) return;
-            activeEventKeyframe.startEvent = ShortGuidUtils.Generate(eventParam1.Text);
+            if (activeEventKeyframe.forward.ToByteString() == eventParam1.Text) return;
+            activeEventKeyframe.forward = ShortGuidUtils.Generate(eventParam1.Text);
         }
         private void eventParam2_TextChanged(object sender, EventArgs e)
         {
             //Handle non-convertable param names
-            if (activeEventKeyframe.reverseEvent.ToByteString() == eventParam2.Text) return;
-            activeEventKeyframe.reverseEvent = ShortGuidUtils.Generate(eventParam2.Text);
+            if (activeEventKeyframe.reverse.ToByteString() == eventParam2.Text) return;
+            activeEventKeyframe.reverse = ShortGuidUtils.Generate(eventParam2.Text);
         }
 
         private void entityList_SelectedIndexChanged(object sender, EventArgs e)

@@ -429,7 +429,7 @@ namespace CommandsEditor
                         status2.Stop();
 
                     TriggerSequence trig = (TriggerSequence)trigEnt;
-                    Parallel.ForEach(trig.entities, (trigger, status3) =>
+                    Parallel.ForEach(trig.sequence, (trigger, status3) =>
                     {
                         if (found || ct.IsCancellationRequested)
                             status3.Stop();
@@ -474,7 +474,7 @@ namespace CommandsEditor
                 Parallel.ForEach(triggerSequences, (Action<FunctionEntity, ParallelLoopState>)((trigEnt, status) =>
                 {
                     TriggerSequence trig = (TriggerSequence)trigEnt;
-                    Parallel.ForEach(trig.entities, (Action<TriggerSequence.Entity, ParallelLoopState>)((trigger, status2) =>
+                    Parallel.ForEach(trig.sequence, (Action<TriggerSequence.SequenceEntry, ParallelLoopState>)((trigger, status2) =>
                     {
                         if (CommandsUtils.ResolveHierarchy((Commands)this._content.commands, comp, trigger.connectedEntity.path, out Composite compRef, out string str) == entity)
                         {
@@ -537,7 +537,7 @@ namespace CommandsEditor
                 foreach (FunctionEntity trigEnt in triggerSequences)
                 {
                     TriggerSequence trig = (TriggerSequence)trigEnt;
-                    foreach (TriggerSequence.Entity trigger in trig.entities)
+                    foreach (TriggerSequence.SequenceEntry trigger in trig.sequence)
                     {
                         if (CommandsUtils.ResolveHierarchy(_content.commands, comp, trigger.connectedEntity.path, out Composite compRef, out string str) == entity)
                         {

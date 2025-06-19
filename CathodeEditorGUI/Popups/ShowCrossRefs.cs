@@ -132,7 +132,7 @@ namespace CommandsEditor
                         Parallel.ForEach(triggerSequences, (trigEnt) =>
                         {
                             TriggerSequence trig = (TriggerSequence)trigEnt;
-                            Parallel.ForEach(trig.entities, (trigger) =>
+                            Parallel.ForEach(trig.sequence, (trigger) =>
                             {
                                 Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, comp, trigger.connectedEntity.path, out Composite compRef, out string str, showIDs);
                                 if (ent == _entityDisplay.Entity) entityRefs.Add(new EntityRef() { composite = comp, entity = trig });

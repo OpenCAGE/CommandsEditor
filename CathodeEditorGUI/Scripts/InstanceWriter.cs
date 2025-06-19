@@ -97,9 +97,9 @@ namespace CommandsEditor.Scripts
                             ShortGuid zoneInstanceID = zoneInstanceIDs[p];
                             if (linked is TriggerSequence linkedTrigSeq)
                             {
-                                for (int e = 0; e < linkedTrigSeq.entities.Count; e++)
+                                for (int e = 0; e < linkedTrigSeq.sequence.Count; e++)
                                 {
-                                    FunctionEntity func = ResolveHierarchyToFunction(linkedTrigSeq.entities[e].connectedEntity.path, content.commands, content.commands.Entries[i]);
+                                    FunctionEntity func = ResolveHierarchyToFunction(linkedTrigSeq.sequence[e].connectedEntity.path, content.commands, content.commands.Entries[i]);
                                     if (func == null) continue;
                                     Composite comp = content.commands.Entries.FirstOrDefault(o => o.shortGUID == func.function);
                                     if (comp == null) continue;

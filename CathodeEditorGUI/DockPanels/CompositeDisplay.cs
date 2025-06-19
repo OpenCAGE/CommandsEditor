@@ -526,16 +526,16 @@ namespace CommandsEditor.DockPanels
                     {
                         case "TriggerSequence":
                             TriggerSequence triggerSequence = (TriggerSequence)entities[i];
-                            List<TriggerSequence.Entity> triggers = new List<TriggerSequence.Entity>();
-                            for (int x = 0; x < triggerSequence.entities.Count; x++)
+                            List<TriggerSequence.SequenceEntry> triggers = new List<TriggerSequence.SequenceEntry>();
+                            for (int x = 0; x < triggerSequence.sequence.Count; x++)
                             {
-                                if (triggerSequence.entities[x].connectedEntity.path.Length < 2 ||
-                                    triggerSequence.entities[x].connectedEntity.path[triggerSequence.entities[x].connectedEntity.path.Length - 2] != entity.shortGUID)
+                                if (triggerSequence.sequence[x].connectedEntity.path.Length < 2 ||
+                                    triggerSequence.sequence[x].connectedEntity.path[triggerSequence.sequence[x].connectedEntity.path.Length - 2] != entity.shortGUID)
                                 {
-                                    triggers.Add(triggerSequence.entities[x]);
+                                    triggers.Add(triggerSequence.sequence[x]);
                                 }
                             }
-                            triggerSequence.entities = triggers;
+                            triggerSequence.sequence = triggers;
                             break;
                         case "CAGEAnimation":
                             CAGEAnimation cageAnim = (CAGEAnimation)entities[i];
