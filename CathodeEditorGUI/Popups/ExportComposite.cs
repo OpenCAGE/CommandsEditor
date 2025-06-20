@@ -194,9 +194,9 @@ namespace CommandsEditor
                                 destModel.Components[z].LODs[m].Submeshes[p].MaterialLibraryIndex = 0;
 
                                 //TODO: these are unknown
-                                destModel.Components[z].LODs[m].Submeshes[p].UnknownIndex = -1;
-                                destModel.Components[z].LODs[m].Submeshes[p].CollisionIndex_ = -1;
-                                destModel.Components[z].LODs[m].Submeshes[p].HeadRelated_ = -1;
+                                destModel.Components[z].LODs[m].Submeshes[p].CollisionProxy = -1;
+                                destModel.Components[z].LODs[m].Submeshes[p].WeightedCollisionIndex = -1;
+                                destModel.Components[z].LODs[m].Submeshes[p].MorphAnimSet = -1;
                             }
                         }
                     }

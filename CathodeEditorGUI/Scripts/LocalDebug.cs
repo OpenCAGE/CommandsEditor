@@ -357,15 +357,15 @@ namespace CommandsEditor
 #if DEBUG
 
             List<string> files = Directory.GetFiles("M:\\Modding\\Steam Projects\\steamapps\\common\\Alien Isolation\\data\\ENV\\PRODUCTION", "MODELS.MVR", SearchOption.AllDirectories).ToList<string>();
-            HashSet<uint> visibility_vars = new HashSet<uint>();
             foreach (string file in files)
             {
                 Movers movers = new Movers(file);
-                movers.Save();
+                for (int i = 0; i < movers.Entries.Count; i++)
+                {
+                    Console.WriteLine(movers.Entries[i].emissive_flags);
+                }
+                //movers.Save();
             }
-            List<uint> visibility = new List<uint>(visibility_vars);
-            foreach (var number in visibility)
-                Console.WriteLine(number);
 #endif
         }
 

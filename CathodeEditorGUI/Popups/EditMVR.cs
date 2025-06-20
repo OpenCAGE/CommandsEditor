@@ -15,6 +15,8 @@ using CommandsEditor.Popups.Base;
 using CommandsEditor.DockPanels;
 using CathodeLib;
 using OpenCAGE;
+using System.Windows;
+using static CATHODE.Movers;
 
 namespace CommandsEditor
 {
@@ -105,23 +107,46 @@ namespace CommandsEditor
             (decimal yaw, decimal pitch, decimal roll) = rotation.ToYawPitchRoll();
             ROT_X.Value = pitch; ROT_Y.Value = yaw; ROT_Z.Value = roll;
 
+            //NOTE: Obviously, all these values actually come from the scripting (e.g. disable_size_culling is the cull flag).
+            //      Really we should write all this data automatically, and update the entities appropriately.
+            //      I need to write a sanity checker that re-populates the Commands data with the things that got stripped, but are in MVR.
+
+            Console.WriteLine("Emissive Flags: " + mvr.emissive_flags.ToString());
+
+            emReplaceTint.Checked = mvr.emissive_flags.HasFlag(EmissiveFlag.ReplaceTint);
+            emReplaceIntensity.Checked = mvr.emissive_flags.HasFlag(EmissiveFlag.ReplaceIntensity);
+            emMasterOff.Checked = mvr.emissive_flags.HasFlag(EmissiveFlag.MasterOff);
+
+            Console.WriteLine("Cull Flags: " + mvr.cull_flags.ToString());
+
+            cfDontShadows.Checked = mvr.cull_flags.HasFlag(CullFlag.NO_CAST_SHADOWS);
+            cfDontRender.Checked = mvr.cull_flags.HasFlag(CullFlag.NO_RENDER);
+            cfReflections.Checked = mvr.cull_flags.HasFlag(CullFlag.INCLUDE_IN_REFLECTIVE);
+            cfNoSize.Checked = mvr.cull_flags.HasFlag(CullFlag.NO_SIZE_CULLING); 
+            cfNoTorch.Checked = mvr.cull_flags.HasFlag(CullFlag.NO_CAST_TORCH_SHADOW);
+            cfAlwaysPass.Checked = mvr.cull_flags.HasFlag(CullFlag.ALWAYS_PASS);
+
             requiresScript.Checked = mvr.flags.requires_script;
             isVisible.Checked = mvr.flags.visible;
             isStationary.Checked = mvr.flags.stationary;
+
+            emTint.BackColor = Color.FromArgb((int)mvr.emissive_tint.X, (int)mvr.emissive_tint.Y, (int)mvr.emissive_tint.Z);
+            emIntensityMultiplier.Value = (decimal)mvr.emissive_intensity_multiplier;
+            emRadiosityMultiplier.Value = (decimal)mvr.emissive_radiosity_multiplier;
 
             hasLoaded = true;
         }
         private void saveMover_Click(object sender, EventArgs e)
         {
-            SaveMVR();
+            //SaveMVR();
         }
         private void OnMaterialSelected(int submeshIndex, int materialIndex)
         {
-            SaveMVR();
+            //SaveMVR();
         }
         private void OnModelSelected(int modelPakIndex)
         {
-            SaveMVR();
+            //SaveMVR();
         }
         private void SaveMVR()
         {
@@ -142,10 +167,6 @@ namespace CommandsEditor
                             Matrix4x4.CreateFromQuaternion(rotation) *
                             Matrix4x4.CreateTranslation(position);
 
-            mvr.flags.requires_script = requiresScript.Checked;
-            mvr.flags.visible = isVisible.Checked;
-            mvr.flags.stationary = isStationary.Checked;
-
             for (int y = 0; y < renderable.SelectedMaterialIndexes.Count; y++)
             {
                 RenderableElements.Element newRed = new RenderableElements.Element();
@@ -159,6 +180,27 @@ namespace CommandsEditor
                 }
                 Content.resource.reds.Entries.Add(newRed);
             }
+
+            mvr.emissive_flags = EmissiveFlag.None;
+            if (emReplaceTint.Checked) mvr.emissive_flags |= EmissiveFlag.ReplaceTint;
+            if (emReplaceIntensity.Checked) mvr.emissive_flags |= EmissiveFlag.ReplaceIntensity;
+            if (emMasterOff.Checked) mvr.emissive_flags |= EmissiveFlag.MasterOff;
+
+            mvr.cull_flags = CullFlag.DEFAULT;
+            if (cfDontShadows.Checked) mvr.cull_flags |= CullFlag.NO_CAST_SHADOWS;
+            if (cfDontRender.Checked) mvr.cull_flags |= CullFlag.NO_RENDER;
+            if (cfReflections.Checked) mvr.cull_flags |= CullFlag.INCLUDE_IN_REFLECTIVE;
+            if (cfNoSize.Checked) mvr.cull_flags |= CullFlag.NO_SIZE_CULLING;
+            if (cfNoTorch.Checked) mvr.cull_flags |= CullFlag.NO_CAST_TORCH_SHADOW;
+            if (cfAlwaysPass.Checked) mvr.cull_flags |= CullFlag.ALWAYS_PASS;
+
+            mvr.flags.requires_script = requiresScript.Checked;
+            mvr.flags.visible = isVisible.Checked;
+            mvr.flags.stationary = isStationary.Checked;
+
+            mvr.emissive_tint = new Vector3(emTint.BackColor.R, emTint.BackColor.G, emTint.BackColor.B);
+            mvr.emissive_intensity_multiplier = (float)emIntensityMultiplier.Value;
+            mvr.emissive_radiosity_multiplier = (float)emRadiosityMultiplier.Value;
 
             Console.WriteLine("SAVED");
             //MessageBox.Show("Saved changes for mover " + loadedMvrIndex + "!", "Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -247,6 +289,19 @@ namespace CommandsEditor
 
            // mvr.entity = new CommandsEntityReference();
             //mvr.resource_index = -1;
+        }
+
+        private void openColourPicker_Click(object sender, EventArgs e)
+        {
+            ColorDialog colourPicker = new ColorDialog();
+            colourPicker.Color = emTint.BackColor;
+            if (colourPicker.ShowDialog() == DialogResult.OK)
+                emTint.BackColor = colourPicker.Color;
+        }
+
+        private void doSave_Click(object sender, EventArgs e)
+        {
+            SaveMVR();
         }
     }
 }
