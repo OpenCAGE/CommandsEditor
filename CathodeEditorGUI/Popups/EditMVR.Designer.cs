@@ -545,6 +545,12 @@ namespace CommandsEditor
             // 
             // emRadiosityMultiplier
             // 
+            this.emRadiosityMultiplier.DecimalPlaces = 5;
+            this.emRadiosityMultiplier.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
             this.emRadiosityMultiplier.Location = new System.Drawing.Point(287, 28);
             this.emRadiosityMultiplier.Name = "emRadiosityMultiplier";
             this.emRadiosityMultiplier.Size = new System.Drawing.Size(120, 20);
@@ -561,6 +567,12 @@ namespace CommandsEditor
             // 
             // emIntensityMultiplier
             // 
+            this.emIntensityMultiplier.DecimalPlaces = 5;
+            this.emIntensityMultiplier.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
             this.emIntensityMultiplier.Location = new System.Drawing.Point(140, 28);
             this.emIntensityMultiplier.Name = "emIntensityMultiplier";
             this.emIntensityMultiplier.Size = new System.Drawing.Size(120, 20);
