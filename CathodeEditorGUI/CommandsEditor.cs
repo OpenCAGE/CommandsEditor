@@ -59,6 +59,8 @@ namespace CommandsEditor
 
         public CommandsEditor(string level = null)
         {
+            //LocalDebug.TestLights();
+
             //LocalDebug.DefaultsUnitTest();
             //LocalDebug.ApplyAllDefaults();
 
@@ -211,6 +213,9 @@ namespace CommandsEditor
             if (!SettingsManager.IsSet(Singleton.Settings.AutoHideCompositeDisplay)) SettingsManager.SetBool(Singleton.Settings.AutoHideCompositeDisplay, true);
             autoHideExplorerViewToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.AutoHideCompositeDisplay); autoHideExplorerViewToolStripMenuItem.PerformClick();
 
+            if (!SettingsManager.IsSet(Singleton.Settings.SavePakAndBin)) SettingsManager.SetBool(Singleton.Settings.SavePakAndBin, true);
+            savePAKAndBINToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.SavePakAndBin); savePAKAndBINToolStripMenuItem.PerformClick();
+
             //Fixes for dodgy top dropdowns
             compositeViewerToolStripMenuItem.MouseHover += (sender, e) => { ((ToolStripMenuItem)sender).PerformClick(); };
             compositeViewerToolStripMenuItem.DropDown.Closing += DropDown_Closing;
@@ -301,8 +306,10 @@ namespace CommandsEditor
             else
                 this.Text = _baseTitle + " - " + _commandsDisplay.Content.level;
 
+#if USE_DIRTY_TRACKER
             if (DirtyTracker.IsDirty)
                 this.Text += " [UNSAVED CHANGES]";
+#endif
         }
 
         private void loadLevel_Click(object sender, EventArgs e)
@@ -447,6 +454,14 @@ namespace CommandsEditor
                 return false;
             }
 #endif
+
+            if (SettingsManager.GetBool(Singleton.Settings.SavePakAndBin))
+            {
+                string ext = "BIN";
+                if (Path.GetExtension(_commandsDisplay.Content.commands.Filepath).ToUpper() == ".BIN")
+                    ext = "PAK";
+                _commandsDisplay.Content.commands.Save(_commandsDisplay.Content.commands.Filepath.Substring(0, _commandsDisplay.Content.commands.Filepath.Length - 3) + ext, false);
+            }
 
             if (SettingsManager.GetBool(Singleton.Settings.ExperimentalResourceStuff))
             {
@@ -645,6 +660,12 @@ namespace CommandsEditor
         {
             createFlowgraphNodeWhenEntityCreatedToolStripMenuItem.Checked = !createFlowgraphNodeWhenEntityCreatedToolStripMenuItem.Checked;
             SettingsManager.SetBool(Singleton.Settings.MakeNodeWhenMakeEntity, createFlowgraphNodeWhenEntityCreatedToolStripMenuItem.Checked);
+        }
+
+        private void savePAKAndBINToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            savePAKAndBINToolStripMenuItem.Checked = !savePAKAndBINToolStripMenuItem.Checked;
+            SettingsManager.SetBool(Singleton.Settings.SavePakAndBin, savePAKAndBINToolStripMenuItem.Checked);
         }
 
         private void resetUILayoutsToolStripMenuItem_Click(object sender, EventArgs e)

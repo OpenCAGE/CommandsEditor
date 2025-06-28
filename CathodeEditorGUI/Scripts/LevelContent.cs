@@ -1,6 +1,4 @@
-﻿#define USE_PRETTY_COMPOSITE_PATHS
-
-using CATHODE.Scripting;
+﻿using CATHODE.Scripting;
 using CATHODE;
 using System;
 using System.Collections.Generic;
@@ -247,11 +245,10 @@ namespace CommandsEditor
                         case 2:
 #if USE_PRETTY_COMPOSITE_PATHS
                             Commands.UsePrettyPaths = true;
-#endif
-                            commands = new Commands(worldPath + "COMMANDS.PAK");
-#if USE_PRETTY_COMPOSITE_PATHS
+#else
                             Commands.UsePrettyPaths = false;
 #endif
+                            commands = new Commands(File.Exists(worldPath + "COMMANDS.PAK") ? worldPath + "COMMANDS.PAK" : worldPath + "COMMANDS.BIN"); //Favour PAK for legacy mod support
                             commands.Entries = commands.Entries.OrderBy(o => o.name).ToList();
                             commands.EntryPoints[0].name = EditorUtils.GetCompositeName(commands.EntryPoints[0]);
                             break;

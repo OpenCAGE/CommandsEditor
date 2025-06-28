@@ -115,6 +115,7 @@ namespace CommandsEditor
             public readonly string UNITY_FocusEntity = "CS_UNITY_FocusEntity";
             public readonly string NumericStep = "CS_NumericStep";
             public readonly string NumericStepRot = "CS_NumericStepRot";
+            public readonly string SavePakAndBin = "CS_SavePakAndBin";
         }
 
         public static Action OnAnimationsLoaded;

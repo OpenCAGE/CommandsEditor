@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="packages\Costura.Fody.5.8.0-alpha0098\build\Costura.Fody.props" Condition="Exists('packages\Costura.Fody.5.8.0-alpha0098\build\Costura.Fody.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
@@ -23,7 +23,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <OutputPath>..\Build\</OutputPath>
-    <DefineConstants>DEBUG;CATHODE_FAIL_HARD;DO_ENTITY_PERF_CHECK</DefineConstants>
+    <DefineConstants>DEBUG;CATHODE_FAIL_HARD;DO_ENTITY_PERF_CHECK;USE_PRETTY_COMPOSITE_PATHS;USE_DIRTY_TRACKER</DefineConstants>
     <Prefer32Bit>false</Prefer32Bit>
     <Optimize>false</Optimize>
   </PropertyGroup>
@@ -32,8 +32,7 @@
     <OutputPath>..\Build\</OutputPath>
     <Prefer32Bit>false</Prefer32Bit>
     <Optimize>true</Optimize>
-    <DefineConstants>
-    </DefineConstants>
+    <DefineConstants>USE_PRETTY_COMPOSITE_PATHS</DefineConstants>
   </PropertyGroup>
   <ItemGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <Reference Include="CathodeLib">

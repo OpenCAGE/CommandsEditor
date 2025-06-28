@@ -58,6 +58,7 @@ namespace CommandsEditor
             this.keepFunctionUsesWindowOpenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.resetUILayoutsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.writeInstancedResourcesExperimentalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.setNumericStepToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpBtn = new System.Windows.Forms.ToolStripButton();
             this.ShowControls = new System.Windows.Forms.ToolStripButton();
             this.DEBUG_RunChecks = new System.Windows.Forms.ToolStripButton();
@@ -69,7 +70,7 @@ namespace CommandsEditor
             this.statusText = new System.Windows.Forms.ToolStripStatusLabel();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.setNumericStepToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.savePAKAndBINToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -106,7 +107,7 @@ namespace CommandsEditor
             // loadLevel
             // 
             this.loadLevel.Name = "loadLevel";
-            this.loadLevel.Size = new System.Drawing.Size(168, 22);
+            this.loadLevel.Size = new System.Drawing.Size(180, 22);
             this.loadLevel.Text = "Load Level";
             // 
             // saveLevel
@@ -114,14 +115,14 @@ namespace CommandsEditor
             this.saveLevel.Name = "saveLevel";
             this.saveLevel.ShortcutKeyDisplayString = "Ctrl+S";
             this.saveLevel.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveLevel.Size = new System.Drawing.Size(168, 22);
+            this.saveLevel.Size = new System.Drawing.Size(180, 22);
             this.saveLevel.Text = "Save Level";
             this.saveLevel.Click += new System.EventHandler(this.saveLevel_Click);
             // 
             // buildLevelToolStripMenuItem
             // 
             this.buildLevelToolStripMenuItem.Name = "buildLevelToolStripMenuItem";
-            this.buildLevelToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
+            this.buildLevelToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.buildLevelToolStripMenuItem.Text = "Build Level";
             this.buildLevelToolStripMenuItem.Click += new System.EventHandler(this.buildLevelToolStripMenuItem_Click);
             // 
@@ -271,7 +272,8 @@ namespace CommandsEditor
             this.keepFunctionUsesWindowOpenToolStripMenuItem,
             this.resetUILayoutsToolStripMenuItem,
             this.writeInstancedResourcesExperimentalToolStripMenuItem,
-            this.setNumericStepToolStripMenuItem});
+            this.setNumericStepToolStripMenuItem,
+            this.savePAKAndBINToolStripMenuItem});
             this.miscToolStripMenuItem.Name = "miscToolStripMenuItem";
             this.miscToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.miscToolStripMenuItem.Text = "Misc";
@@ -312,6 +314,13 @@ namespace CommandsEditor
             this.writeInstancedResourcesExperimentalToolStripMenuItem.Size = new System.Drawing.Size(291, 22);
             this.writeInstancedResourcesExperimentalToolStripMenuItem.Text = "Write Instanced Resources (Experimental)";
             this.writeInstancedResourcesExperimentalToolStripMenuItem.Click += new System.EventHandler(this.writeInstancedResourcesExperimentalToolStripMenuItem_Click);
+            // 
+            // setNumericStepToolStripMenuItem
+            // 
+            this.setNumericStepToolStripMenuItem.Name = "setNumericStepToolStripMenuItem";
+            this.setNumericStepToolStripMenuItem.Size = new System.Drawing.Size(291, 22);
+            this.setNumericStepToolStripMenuItem.Text = "Set Numeric Step";
+            this.setNumericStepToolStripMenuItem.Click += new System.EventHandler(this.setNumericStepToolStripMenuItem_Click);
             // 
             // helpBtn
             // 
@@ -395,12 +404,12 @@ namespace CommandsEditor
             this.dockPanel.TabIndex = 5;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
             // 
-            // setNumericStepToolStripMenuItem
+            // savePAKAndBINToolStripMenuItem
             // 
-            this.setNumericStepToolStripMenuItem.Name = "setNumericStepToolStripMenuItem";
-            this.setNumericStepToolStripMenuItem.Size = new System.Drawing.Size(291, 22);
-            this.setNumericStepToolStripMenuItem.Text = "Set Numeric Step";
-            this.setNumericStepToolStripMenuItem.Click += new System.EventHandler(this.setNumericStepToolStripMenuItem_Click);
+            this.savePAKAndBINToolStripMenuItem.Name = "savePAKAndBINToolStripMenuItem";
+            this.savePAKAndBINToolStripMenuItem.Size = new System.Drawing.Size(291, 22);
+            this.savePAKAndBINToolStripMenuItem.Text = "Save Commands PAK and BIN";
+            this.savePAKAndBINToolStripMenuItem.Click += new System.EventHandler(this.savePAKAndBINToolStripMenuItem_Click);
             // 
             // CommandsEditor
             // 
@@ -466,5 +475,6 @@ namespace CommandsEditor
         private System.Windows.Forms.ToolStripMenuItem openLevelViewerToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem setNumericStepToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem savePAKAndBINToolStripMenuItem;
     }
 }
