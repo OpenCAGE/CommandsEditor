@@ -191,7 +191,7 @@ namespace CommandsEditor
                             for (int p = 0; p < destModel.Components[z].LODs[m].Submeshes.Count; p++)
                             {
                                 //TODO: setting mtl index to zero until we copy materials.
-                                destModel.Components[z].LODs[m].Submeshes[p].MaterialLibraryIndex = 0;
+                                destModel.Components[z].LODs[m].Submeshes[p].MaterialLibraryIndex = 0; //<- todo: perhaps i should copy this material too for completeness, rather than just the instanced one via reds?
 
                                 //TODO: these are unknown
                                 destModel.Components[z].LODs[m].Submeshes[p].CollisionProxy = -1;
@@ -211,6 +211,31 @@ namespace CommandsEditor
 
                 //Get its index in the destination and write to renderable
                 renderable.ModelIndex = lvl.Models.GetWriteIndex(destModel.Components[origComponentIndex].LODs[origLODIndex].Submeshes[origSubmeshIndex]);
+                #endregion
+
+                #region Copy Weighted Collision
+                //If this submesh has a weighted collision (a hitbox), check to see if it exists in the other level already
+                for (int z = 0; z < origModel.Components.Count; z++)
+                {
+                    for (int m = 0; m < origModel.Components[z].LODs.Count; m++)
+                    {
+                        for (int p = 0; p < origModel.Components[z].LODs[m].Submeshes.Count; p++)
+                        {
+                            if (origModel.Components[z].LODs[m].Submeshes[p].WeightedCollisionIndex != -1)
+                            {
+                                Collisions.WeightedCollision collision = Content.resource.weighted_collisions.Entries[origModel.Components[z].LODs[m].Submeshes[p].WeightedCollisionIndex];
+                                Collisions.WeightedCollision destCollision = lvl.WeightedCollisions.Entries.FirstOrDefault(o => o == collision);
+                                if (destCollision == null)
+                                {
+                                    //If it doesn't already exist, copy it over
+                                    lvl.WeightedCollisions.Entries.Add(collision);
+                                    destCollision = collision;
+                                }
+                                destModel.Components[z].LODs[m].Submeshes[p].WeightedCollisionIndex = lvl.WeightedCollisions.Entries.IndexOf(destCollision);
+                            }
+                        }
+                    }
+                }
                 #endregion
 
                 #region Find Material & Associated Textures/Shaders

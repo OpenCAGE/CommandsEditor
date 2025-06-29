@@ -1,4 +1,4 @@
-﻿using CATHODE.Scripting;
+using CATHODE.Scripting;
 using CATHODE;
 using System;
 using System.Collections.Generic;
@@ -39,6 +39,7 @@ namespace CommandsEditor
             public Shaders shaders_new = null; 
 
             public RenderableElements reds = null;
+            public Collisions weighted_collisions = null;
 
             public Resources resources = null;
             public EnvironmentAnimations env_animations = null;
@@ -328,7 +329,7 @@ namespace CommandsEditor
                             resource.character_accessories = new CharacterAccessorySets(worldPath + "CHARACTERACCESSORYSETS.BIN");
                             break;
                         case 13:
-                            // --
+                            resource.weighted_collisions = new Collisions(worldPath + "COLLISION.BIN");
                             break;
                         case 14:
                             resource.path_barrier_resources = new PathBarrierResources(worldPath + "PATH_BARRIER_RESOURCES");

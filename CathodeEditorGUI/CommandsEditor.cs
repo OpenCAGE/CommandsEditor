@@ -486,6 +486,8 @@ namespace CommandsEditor
                 _commandsDisplay.Content.resource.character_accessories.Save();
             if (_commandsDisplay.Content.resource.reds != null && _commandsDisplay.Content.resource.reds.Entries != null)
                 _commandsDisplay.Content.resource.reds.Save();
+            if (_commandsDisplay.Content.resource.weighted_collisions != null && _commandsDisplay.Content.resource.weighted_collisions.Entries != null)
+                _commandsDisplay.Content.resource.weighted_collisions.Save();
             if (_commandsDisplay.Content.resource.env_animations != null && _commandsDisplay.Content.resource.env_animations.Entries != null)
                 _commandsDisplay.Content.resource.env_animations.Save();
             if (_commandsDisplay.Content.resource.collision_maps != null && _commandsDisplay.Content.resource.collision_maps.Entries != null)
