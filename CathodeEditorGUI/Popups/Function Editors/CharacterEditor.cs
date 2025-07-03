@@ -12,7 +12,7 @@ namespace CommandsEditor
     public partial class CharacterEditor : BaseWindow
     {
         private List<EntityPath> _hierarchies = new List<EntityPath>();
-        private CharacterAccessorySets.Entry _accessories;
+        private CharacterAccessorySets.CharacterAttributes _accessories;
 
         private EntityInspector _entityDisplay;
 
@@ -25,7 +25,7 @@ namespace CommandsEditor
                 gender.Items.Add(skeletons.Key);
 
             shirtDecal.Items.Clear();
-            foreach (CharacterAccessorySets.Entry.Decal decal in Enum.GetValues(typeof(CharacterAccessorySets.Entry.Decal)))
+            foreach (CharacterAccessorySets.CharacterAttributes.AssetType decal in Enum.GetValues(typeof(CharacterAccessorySets.CharacterAttributes.AssetType)))
                 shirtDecal.Items.Add(decal);
 
             RefreshUI(ShortGuid.Invalid);
@@ -75,17 +75,17 @@ namespace CommandsEditor
             ShortGuid hierarchyID = _hierarchies[characterInstances.SelectedIndex].GenerateCompositeInstanceID();
             _accessories = Content.resource.character_accessories.Entries.FirstOrDefault(o => o.character.composite_instance_id == hierarchyID);
 
-            shirtComposite.Text = Content.commands.GetComposite(_accessories.shirt_composite)?.name;
-            trousersComposite.Text = Content.commands.GetComposite(_accessories.trousers_composite)?.name;
-            shoesComposite.Text = Content.commands.GetComposite(_accessories.shoes_composite)?.name;
-            headComposite.Text = Content.commands.GetComposite(_accessories.head_composite)?.name;
-            armsComposite.Text = Content.commands.GetComposite(_accessories.arms_composite)?.name;
-            collisionComposite.Text = Content.commands.GetComposite(_accessories.collision_composite)?.name;
+            shirtComposite.Text = Content.commands.GetComposite(_accessories.components.Torso.Composite)?.name;
+            trousersComposite.Text = Content.commands.GetComposite(_accessories.components.Legs.Composite)?.name;
+            shoesComposite.Text = Content.commands.GetComposite(_accessories.components.Shoes.Composite)?.name;
+            headComposite.Text = Content.commands.GetComposite(_accessories.components.Head.Composite)?.name;
+            armsComposite.Text = Content.commands.GetComposite(_accessories.components.Arms.Composite)?.name;
+            collisionComposite.Text = Content.commands.GetComposite(_accessories.components.Collision.Composite)?.name;
 
-            gender.Text = _accessories.body_skeleton;
+            gender.Text = _accessories.gender_skeleton;
             RefreshSkeletonsForGender();
             bodyTypes.Text = _accessories.face_skeleton;
-            shirtDecal.SelectedIndex = (int)_accessories.decal;
+            shirtDecal.SelectedIndex = (int)_accessories.asset_type;
         }
 
         private void addNewCharacter_Click(object sender, EventArgs e)
@@ -102,7 +102,7 @@ namespace CommandsEditor
         }
         private void OnCharacterInstanceSelected(ShortGuid instance)
         {
-            Content.resource.character_accessories.Entries.Add(new CharacterAccessorySets.Entry()
+            Content.resource.character_accessories.Entries.Add(new CharacterAccessorySets.CharacterAttributes()
             {
                 character = new EntityHandle() { entity_id = _entityDisplay.Entity.shortGUID, composite_instance_id = instance }
             });
@@ -123,7 +123,7 @@ namespace CommandsEditor
         private void OnNewHeadSelected(Composite comp)
         {
             headComposite.Text = comp.name;
-            _accessories.head_composite = comp.shortGUID;
+            _accessories.components.Head.Composite = comp.shortGUID;
         }
         private void selectNewShirt_Click(object sender, EventArgs e)
         {
@@ -132,7 +132,7 @@ namespace CommandsEditor
         private void OnNewShirtSelected(Composite comp)
         {
             shirtComposite.Text = comp.name;
-            _accessories.shirt_composite = comp.shortGUID;
+            _accessories.components.Torso.Composite = comp.shortGUID;
         }
         private void selectNewArms_Click(object sender, EventArgs e)
         {
@@ -141,7 +141,7 @@ namespace CommandsEditor
         private void OnNewArmsSelected(Composite comp)
         {
             armsComposite.Text = comp.name;
-            _accessories.arms_composite = comp.shortGUID;
+            _accessories.components.Arms.Composite = comp.shortGUID;
         }
         private void selectNewTrousers_Click(object sender, EventArgs e)
         {
@@ -150,7 +150,7 @@ namespace CommandsEditor
         private void OnNewTrousersSelected(Composite comp)
         {
             trousersComposite.Text = comp.name;
-            _accessories.trousers_composite = comp.shortGUID;
+            _accessories.components.Legs.Composite = comp.shortGUID;
         }
         private void selectNewShoes_Click(object sender, EventArgs e)
         {
@@ -159,7 +159,7 @@ namespace CommandsEditor
         private void OnNewShoesSelected(Composite comp)
         {
             shoesComposite.Text = comp.name;
-            _accessories.shoes_composite = comp.shortGUID;
+            _accessories.components.Shoes.Composite = comp.shortGUID;
         }
         private void selectNewCollision_Click(object sender, EventArgs e)
         {
@@ -168,12 +168,12 @@ namespace CommandsEditor
         private void OnNewCollisionSelected(Composite comp)
         {
             collisionComposite.Text = comp.name;
-            _accessories.collision_composite = comp.shortGUID;
+            _accessories.components.Collision.Composite = comp.shortGUID;
         }
 
         private void gender_SelectedIndexChanged(object sender, EventArgs e)
         {
-            _accessories.body_skeleton = gender.Text;
+            _accessories.gender_skeleton = gender.Text;
             RefreshSkeletonsForGender();
         }
 
@@ -184,7 +184,7 @@ namespace CommandsEditor
 
         private void shirtDecal_SelectedIndexChanged(object sender, EventArgs e)
         {
-            _accessories.decal = (CharacterAccessorySets.Entry.Decal)shirtDecal.SelectedIndex;
+            _accessories.asset_type = (CharacterAccessorySets.CharacterAttributes.AssetType)shirtDecal.SelectedIndex;
         }
     }
 }
