@@ -85,29 +85,29 @@ namespace CommandsEditor.Scripts
             {
                 CollisionMaps.Entry item = _content.resource.collision_maps.Entries[x];
 
-                (Composite comp, EntityPath path) = _content.editor_utils.GetCompositeFromInstanceID(_content.commands, item.entity.composite_instance_id);
+                (Composite comp, EntityPath path) = _content.editor_utils.GetCompositeFromInstanceID(_content.commands, item.Entity.composite_instance_id);
                 if (comp != null)
                 {
-                    Entity ent = comp?.GetEntityByID(item.entity.entity_id);
+                    Entity ent = comp?.GetEntityByID(item.Entity.entity_id);
                     if (ent == null)
                     {
                         Console.WriteLine("Failed to resolve entity for path: " + path.GetAsString());
                     }
                     else
                     {
-                        debug.Add("[" + item.id.ToByteString() + "] " + path.GetAsString(content.commands, comp) + " -> " + EntityUtils.GetName(comp, ent));
+                        debug.Add("[" + item.ID.ToByteString() + "] " + path.GetAsString(content.commands, comp) + " -> " + EntityUtils.GetName(comp, ent));
                     }
                 }
                 else
                 {
                     //Console.WriteLine("COLLISION Failed to resolve path for entry " + x);
-                    if (item.entity.composite_instance_id != new ShortGuid(0))
+                    if (item.Entity.composite_instance_id != new ShortGuid(0))
                     {
-                        Console.WriteLine("\tComposite instance was set: " + item.entity.composite_instance_id.ToByteString());
+                        Console.WriteLine("\tComposite instance was set: " + item.Entity.composite_instance_id.ToByteString());
                     }
                     foreach (Composite comp2 in _content.commands.Entries)
                     {
-                        FunctionEntity ent2 = comp2.functions.FirstOrDefault(o => o.shortGUID == item.entity.entity_id);
+                        FunctionEntity ent2 = comp2.functions.FirstOrDefault(o => o.shortGUID == item.Entity.entity_id);
                         if (ent2 == null) continue;
                         Console.WriteLine("\tFound entity in " + comp2.name + " -> " + EntityUtils.GetName(comp2, ent2));
                     }
@@ -520,9 +520,9 @@ namespace CommandsEditor.Scripts
             //Make a new entry for the instance
             _content.resource.collision_maps.Entries.Add(new CollisionMaps.Entry()
             {
-                id = resourceID,
-                entity = compositeInstanceReference,
-                zone_id = zoneID
+                ID = resourceID,
+                Entity = compositeInstanceReference,
+                ZoneID = zoneID
             });
         }
     }

@@ -83,7 +83,7 @@ namespace CommandsEditor
                     case ResourceType.COLLISION_MAPPING:
                         {
                             //TODO: Pass this info through, and handle making new instances...
-                            Content.resource.collision_maps.Entries.FindAll(o => o.entity.entity_id == resources[i].entityID);
+                            Content.resource.collision_maps.Entries.FindAll(o => o.Entity.entity_id == resources[i].entityID);
 
                             resourceGroup = new GUI_Resource_CollisionMapping();
                             ((GUI_Resource_CollisionMapping)resourceGroup).PopulateUI(resources[i].position, resources[i].rotation, resources[i].entityID);

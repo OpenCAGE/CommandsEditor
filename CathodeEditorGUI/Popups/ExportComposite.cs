@@ -194,7 +194,7 @@ namespace CommandsEditor
                                 destModel.Components[z].LODs[m].Submeshes[p].MaterialLibraryIndex = 0; //<- todo: perhaps i should copy this material too for completeness, rather than just the instanced one via reds?
 
                                 //TODO: these are unknown
-                                destModel.Components[z].LODs[m].Submeshes[p].CollisionProxy = -1;
+                                destModel.Components[z].LODs[m].Submeshes[p].CollisionProxyIndex = -1;
                                 destModel.Components[z].LODs[m].Submeshes[p].WeightedCollisionIndex = -1;
                                 destModel.Components[z].LODs[m].Submeshes[p].MorphAnimSet = -1;
                             }

@@ -280,10 +280,10 @@ namespace CommandsEditor
 
             for (int i = 0; i < Content.resource.collision_maps.Entries.Count; i++)
             {
-                Console.WriteLine(Content.resource.collision_maps.Entries[i].zone_id);
+                Console.WriteLine(Content.resource.collision_maps.Entries[i].ZoneID);
             }
 
-            Content.resource.collision_maps.Entries.FirstOrDefault(o => o.entity == mvr.entity).entity = new EntityHandle();
+            Content.resource.collision_maps.Entries.FirstOrDefault(o => o.Entity == mvr.entity).Entity = new EntityHandle();
 
             mvr.entity = new EntityHandle();
 

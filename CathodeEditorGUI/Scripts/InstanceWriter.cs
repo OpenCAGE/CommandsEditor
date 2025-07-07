@@ -52,9 +52,9 @@ namespace CommandsEditor.Scripts
 
                     content.resource.collision_maps.Entries.Add(new CollisionMaps.Entry()
                     {
-                        id = resourceID,
-                        entity = new EntityHandle() { entity_id = content.commands.Entries[i].functions[x].shortGUID, composite_instance_id = ShortGuid.Invalid },
-                        zone_id = ShortGuid.Invalid
+                        ID = resourceID,
+                        Entity = new EntityHandle() { entity_id = content.commands.Entries[i].functions[x].shortGUID, composite_instance_id = ShortGuid.Invalid },
+                        ZoneID = ShortGuid.Invalid
                     });
 
                     content.resource.resources.Entries.Add(new Resources.Resource()
@@ -130,9 +130,9 @@ namespace CommandsEditor.Scripts
 
                                         content.resource.collision_maps.Entries.Add(new CollisionMaps.Entry()
                                         {
-                                            id = resourceID,
-                                            entity = instanceInfo,
-                                            zone_id = zoneInstanceID
+                                            ID = resourceID,
+                                            Entity = instanceInfo,
+                                            ZoneID = zoneInstanceID
                                         });
 
                                         content.resource.resources.Entries.Add(new Resources.Resource()

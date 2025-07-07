@@ -286,17 +286,17 @@ namespace CommandsEditor.Scripts
             if (DO_COLLISION)
             {
                 if (ORDER)
-                    content.resource.collision_maps.Entries = content.resource.collision_maps.Entries.OrderBy(o => o.entity.composite_instance_id).ThenBy(o => o.entity.entity_id).ThenBy(o => o.zone_id).ToList();
+                    content.resource.collision_maps.Entries = content.resource.collision_maps.Entries.OrderBy(o => o.Entity.composite_instance_id).ThenBy(o => o.Entity.entity_id).ThenBy(o => o.ZoneID).ToList();
 
                 foreach (var entry in content.resource.collision_maps.Entries)
                 {
                     resource_index++;
 
-                    (Composite entComp, EntityPath entPath) = content.editor_utils.GetCompositeFromInstanceID(content.commands, entry.entity.composite_instance_id);
-                    Entity entEnt = entComp?.GetEntityByID(entry.entity.entity_id);
-                    (Composite zoneComp1, EntityPath zonePath1, Entity zoneEnt1) = content.editor_utils.GetZoneFromInstanceID(content.commands, entry.zone_id);
+                    (Composite entComp, EntityPath entPath) = content.editor_utils.GetCompositeFromInstanceID(content.commands, entry.Entity.composite_instance_id);
+                    Entity entEnt = entComp?.GetEntityByID(entry.Entity.entity_id);
+                    (Composite zoneComp1, EntityPath zonePath1, Entity zoneEnt1) = content.editor_utils.GetZoneFromInstanceID(content.commands, entry.ZoneID);
 
-                    string convertedResoureName = "[" + resource_index + "] " + entry.id;
+                    string convertedResoureName = "[" + resource_index + "] " + entry.ID;
 
                     if (entComp != null)
                         convertedResoureName += "\n\t Entity Composite: " + entComp.name;
@@ -317,7 +317,7 @@ namespace CommandsEditor.Scripts
                     }
                     else
                     {
-                        convertedResoureName += "\n\t Primary Zone: " + entry.zone_id.ToByteString();
+                        convertedResoureName += "\n\t Primary Zone: " + entry.ZoneID.ToByteString();
                         if (zoneComp1 != null)
                             convertedResoureName += "\n\t Primary Zone Composite: " + zoneComp1.name;
                         if (zonePath1 != null)

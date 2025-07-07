@@ -748,9 +748,9 @@ namespace CommandsEditor
 
                     CollisionMaps.Entry collisionMap = new CollisionMaps.Entry()
                     {
-                        id = collision.resource_id,
-                        collision_index = collision.index,
-                        entity = new EntityHandle()
+                        ID = collision.resource_id,
+                        CollisionProxyIndex = collision.index,
+                        Entity = new EntityHandle()
                         {
                             entity_id = composite.functions[i].shortGUID
                             //TODO: generate composite guid
@@ -818,13 +818,13 @@ namespace CommandsEditor
                 Dictionary<ShortGuid, Tuple<List<int>, List<CollisionMaps.Entry>>> collisionmapindexes = new Dictionary<ShortGuid, Tuple<List<int>, List<CollisionMaps.Entry>>>();
                 foreach (var collisionmap in content.resource.collision_maps.Entries)
                 {
-                    if (!collisionmapindexes.ContainsKey(collisionmap.entity.entity_id))
-                        collisionmapindexes.Add(collisionmap.entity.entity_id, new Tuple<List<int>, List<CollisionMaps.Entry>>(new List<int>(), new List<CollisionMaps.Entry>()));
+                    if (!collisionmapindexes.ContainsKey(collisionmap.Entity.entity_id))
+                        collisionmapindexes.Add(collisionmap.Entity.entity_id, new Tuple<List<int>, List<CollisionMaps.Entry>>(new List<int>(), new List<CollisionMaps.Entry>()));
 
-                    if (!collisionmapindexes[collisionmap.entity.entity_id].Item1.Contains(collisionmap.collision_index))
+                    if (!collisionmapindexes[collisionmap.Entity.entity_id].Item1.Contains(collisionmap.CollisionProxyIndex))
                     {
-                        collisionmapindexes[collisionmap.entity.entity_id].Item1.Add(collisionmap.collision_index);
-                        collisionmapindexes[collisionmap.entity.entity_id].Item2.Add(collisionmap);
+                        collisionmapindexes[collisionmap.Entity.entity_id].Item1.Add(collisionmap.CollisionProxyIndex);
+                        collisionmapindexes[collisionmap.Entity.entity_id].Item2.Add(collisionmap);
                     }
                 }
 
@@ -837,21 +837,21 @@ namespace CommandsEditor
 
                         foreach (var item in indexes.Value.Item2)
                         {
-                            (Composite entComp, EntityPath entPath) = content.editor_utils.GetCompositeFromInstanceID(content.commands, item.entity.composite_instance_id);
-                            Entity entEnt = entComp?.GetEntityByID(item.entity.entity_id);
-                            (Composite zoneComp1, EntityPath zonePath1, Entity zoneEnt1) = content.editor_utils.GetZoneFromInstanceID(content.commands, item.zone_id);
+                            (Composite entComp, EntityPath entPath) = content.editor_utils.GetCompositeFromInstanceID(content.commands, item.Entity.composite_instance_id);
+                            Entity entEnt = entComp?.GetEntityByID(item.Entity.entity_id);
+                            (Composite zoneComp1, EntityPath zonePath1, Entity zoneEnt1) = content.editor_utils.GetZoneFromInstanceID(content.commands, item.ZoneID);
 
-                            string convertedResoureName = "[" + content.resource.collision_maps.Entries.IndexOf(item) + "] " + item.id.ToString() + " -> " + item.id.ToByteString() + " [" + item.collision_index + "]";
+                            string convertedResoureName = "[" + content.resource.collision_maps.Entries.IndexOf(item) + "] " + item.ID.ToString() + " -> " + item.ID.ToByteString() + " [" + item.CollisionProxyIndex + "]";
 
                             foreach (Composite comp in content.commands.Entries)
                             {
-                                Entity ent = comp.GetEntityByID(item.entity.entity_id);
+                                Entity ent = comp.GetEntityByID(item.Entity.entity_id);
                                 if (ent != null)
                                 {
                                     convertedResoureName += "\n\t Entity LOOKUP found in " + comp.name + " [" + comp.shortGUID.ToByteString() + "] -> " + ShortGuidUtils.Generate(EntityUtils.GetName(comp, ent) + " [" + ent.shortGUID.ToByteString() + "]");
                                 }
                             }
-                            convertedResoureName += "\n\t Entity INSTANCEID: " + item.entity.composite_instance_id.ToByteString();
+                            convertedResoureName += "\n\t Entity INSTANCEID: " + item.Entity.composite_instance_id.ToByteString();
 
                             if (entComp != null)
                                 convertedResoureName += "\n\t Entity Composite: " + entComp.name;
@@ -872,7 +872,7 @@ namespace CommandsEditor
                             }
                             else
                             {
-                                convertedResoureName += "\n\t Primary Zone: " + item.zone_id.ToByteString() + " -> " + item.zone_id.ToString();
+                                convertedResoureName += "\n\t Primary Zone: " + item.ZoneID.ToByteString() + " -> " + item.ZoneID.ToString();
                                 if (zoneComp1 != null)
                                     convertedResoureName += "\n\t Primary Zone Composite: " + zoneComp1.name;
                                 if (zonePath1 != null)
