@@ -24,9 +24,31 @@ namespace CommandsEditor
             foreach (KeyValuePair<string, HashSet<string>> skeletons in Singleton.GenderedSkeletons)
                 gender.Items.Add(skeletons.Key);
 
-            shirtDecal.Items.Clear();
-            foreach (CharacterAccessorySets.CharacterAttributes.AssetType decal in Enum.GetValues(typeof(CharacterAccessorySets.CharacterAttributes.AssetType)))
-                shirtDecal.Items.Add(decal);
+            assetType.Items.Clear();
+            foreach (CharacterAccessorySets.CharacterAttributes.AssetType entry in Enum.GetValues(typeof(CharacterAccessorySets.CharacterAttributes.AssetType)))
+                assetType.Items.Add(entry);
+            voiceActor.Items.Clear();
+            foreach (CharacterAccessorySets.CharacterAttributes.VoiceActor entry in Enum.GetValues(typeof(CharacterAccessorySets.CharacterAttributes.VoiceActor)))
+                voiceActor.Items.Add(entry);
+            genderAttr.Items.Clear();
+            foreach (CharacterAccessorySets.CharacterAttributes.Gender entry in Enum.GetValues(typeof(CharacterAccessorySets.CharacterAttributes.Gender)))
+                genderAttr.Items.Add(entry);
+            ethnicityAttr.Items.Clear();
+            foreach (CharacterAccessorySets.CharacterAttributes.Ethnicity entry in Enum.GetValues(typeof(CharacterAccessorySets.CharacterAttributes.Ethnicity)))
+                ethnicityAttr.Items.Add(entry);
+            buildAttr.Items.Clear();
+            foreach (CharacterAccessorySets.CharacterAttributes.Build entry in Enum.GetValues(typeof(CharacterAccessorySets.CharacterAttributes.Build)))
+                buildAttr.Items.Add(entry);
+
+            foleyFootwear.Items.Clear();
+            foreach (CharacterAccessorySets.CharacterAttributes.FoleySounds.Type entry in Enum.GetValues(typeof(CharacterAccessorySets.CharacterAttributes.FoleySounds.Type)))
+                foleyFootwear.Items.Add(entry);
+            foleyLeg.Items.Clear();
+            foreach (CharacterAccessorySets.CharacterAttributes.FoleySounds.Type entry in Enum.GetValues(typeof(CharacterAccessorySets.CharacterAttributes.FoleySounds.Type)))
+                foleyLeg.Items.Add(entry);
+            foleyTorso.Items.Clear();
+            foreach (CharacterAccessorySets.CharacterAttributes.FoleySounds.Type entry in Enum.GetValues(typeof(CharacterAccessorySets.CharacterAttributes.FoleySounds.Type)))
+                foleyTorso.Items.Add(entry);
 
             RefreshUI(ShortGuid.Invalid);
         }
@@ -57,7 +79,14 @@ namespace CommandsEditor
             selectNewCollision.Enabled = characterInstances.Items.Count != 0;
             bodyTypes.Enabled = characterInstances.Items.Count != 0;
             gender.Enabled = characterInstances.Items.Count != 0;
-            shirtDecal.Enabled = characterInstances.Items.Count != 0;
+            assetType.Enabled = characterInstances.Items.Count != 0;
+            voiceActor.Enabled = characterInstances.Items.Count != 0;
+            genderAttr.Enabled = characterInstances.Items.Count != 0;
+            ethnicityAttr.Enabled = characterInstances.Items.Count != 0;
+            buildAttr.Enabled = characterInstances.Items.Count != 0;
+            foleyFootwear.Enabled = characterInstances.Items.Count != 0;
+            foleyLeg.Enabled = characterInstances.Items.Count != 0;
+            foleyTorso.Enabled = characterInstances.Items.Count != 0;
 
             if (characterInstances.Items.Count != 0)
                 characterInstances.SelectedIndex = toSelect;
@@ -85,7 +114,14 @@ namespace CommandsEditor
             gender.Text = _accessories.gender_skeleton;
             RefreshSkeletonsForGender();
             bodyTypes.Text = _accessories.face_skeleton;
-            shirtDecal.SelectedIndex = (int)_accessories.asset_type;
+            assetType.SelectedIndex = (int)_accessories.asset_type;
+            voiceActor.SelectedIndex = (int)_accessories.voice_actor;
+            genderAttr.SelectedIndex = (int)_accessories.gender;
+            ethnicityAttr.SelectedIndex = (int)_accessories.ethnicity;
+            buildAttr.SelectedIndex = (int)_accessories.build;
+            foleyFootwear.SelectedIndex = (int)_accessories.foley.Footwear;
+            foleyLeg.SelectedIndex = (int)_accessories.foley.Leg;
+            foleyTorso.SelectedIndex = (int)_accessories.foley.Torso;
         }
 
         private void addNewCharacter_Click(object sender, EventArgs e)
@@ -184,7 +220,42 @@ namespace CommandsEditor
 
         private void shirtDecal_SelectedIndexChanged(object sender, EventArgs e)
         {
-            _accessories.asset_type = (CharacterAccessorySets.CharacterAttributes.AssetType)shirtDecal.SelectedIndex;
+            _accessories.asset_type = (CharacterAccessorySets.CharacterAttributes.AssetType)assetType.SelectedIndex;
+        }
+
+        private void voiceActor_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _accessories.voice_actor = (CharacterAccessorySets.CharacterAttributes.VoiceActor)voiceActor.SelectedIndex;
+        }
+
+        private void genderAttr_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _accessories.gender = (CharacterAccessorySets.CharacterAttributes.Gender)gender.SelectedIndex;
+        }
+
+        private void ethnicityAttr_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _accessories.ethnicity = (CharacterAccessorySets.CharacterAttributes.Ethnicity)ethnicityAttr.SelectedIndex;
+        }
+
+        private void buildAttr_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _accessories.build = (CharacterAccessorySets.CharacterAttributes.Build)buildAttr.SelectedIndex;
+        }
+
+        private void foleyTorso_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _accessories.foley.Torso = (CharacterAccessorySets.CharacterAttributes.FoleySounds.Type)foleyTorso.SelectedIndex;
+        }
+
+        private void foleyLeg_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _accessories.foley.Leg = (CharacterAccessorySets.CharacterAttributes.FoleySounds.Type)foleyLeg.SelectedIndex;
+        }
+
+        private void foleyFootwear_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _accessories.foley.Footwear = (CharacterAccessorySets.CharacterAttributes.FoleySounds.Type)foleyLeg.SelectedIndex;
         }
     }
 }
