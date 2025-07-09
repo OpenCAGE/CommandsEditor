@@ -24,7 +24,7 @@ using System.Windows.Shapes;
 using WebSocketSharp;
 using WeifenLuo.WinFormsUI.Docking;
 using static CathodeLib.CompositeFlowgraphCompatibilityTable;
-using static CathodeLib.CompositeFlowgraphsTable;
+using static CathodeLib.CompositeFlowgraphTable;
 using Path = System.IO.Path;
 
 namespace CommandsEditor.DockPanels

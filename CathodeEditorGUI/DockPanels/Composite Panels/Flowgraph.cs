@@ -10,7 +10,7 @@ using OpenCAGE;
 using WeifenLuo.WinFormsUI.Docking;
 using System.Xml.Linq;
 using CATHODE;
-using static CathodeLib.CompositeFlowgraphsTable;
+using static CathodeLib.CompositeFlowgraphTable;
 using CommandsEditor.Popups.UserControls;
 using System.IO;
 using CathodeLib;
