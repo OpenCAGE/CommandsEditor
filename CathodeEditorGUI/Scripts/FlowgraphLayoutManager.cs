@@ -32,12 +32,12 @@ namespace CommandsEditor
             get
             {
 #if DEBUG
-                //if (DEBUG_UsePreDefinedTable)
-                //{
+                if (DEBUG_UsePreDefinedTable)
+                { 
                     return CustomTable.Vanilla.CompositeFlowgraphs;
-                //}
+                }
 #endif
-                //return _userDefinedLayouts;
+                return _userDefinedLayouts;
             }
         }
 

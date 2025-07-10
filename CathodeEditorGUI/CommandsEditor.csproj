@@ -924,7 +924,6 @@
     <None Include="Images\Entity Icons\d_Prefab Icon.ico" />
     <None Include="Images\Entity Icons\AnimatorController Icon.ico" />
     <None Include="Images\Entity Icons\LightProbeProxyVolume Gizmo inv.ico" />
-    <None Include="Resources\flowgraphs.bin" />
     <None Include="Resources\_2560px_Arrow_east_svg.png" />
   </ItemGroup>
   <ItemGroup>
