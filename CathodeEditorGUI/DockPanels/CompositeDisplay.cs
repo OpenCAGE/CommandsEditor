@@ -862,7 +862,7 @@ namespace CommandsEditor.DockPanels
             }
 
             if (dialog_hierarchy.ApplyDefaultParams)
-                ParameterUtils.AddAllDefaultParameters(ent, _composite);
+                Content.commands.Utils.AddAllDefaultParameters(ent, _composite);
 
             Singleton.OnEntityAdded?.Invoke(ent);
         }

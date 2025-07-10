@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using CATHODE.Scripting;
 using CathodeLib;
+using static CathodeLib.CathodeEnumTable;
 
 namespace CommandsEditor.UserControls
 {
@@ -54,25 +55,25 @@ namespace CommandsEditor.UserControls
                 if (enumVal.enumID == ShortGuid.Invalid)
                 {
                     //if this entity has no default enum applied, apply one
-                    EnumUtils.EnumDescriptor enumDesc = EnumUtils.GetEnum(ShortGuidUtils.Generate(comboBox1.Text));
-                    EnumUtils.EnumDescriptor.Entry enumEntry = enumDesc.Entries.FirstOrDefault(o => o.Index == -1);
+                    EnumDescriptor enumDesc = Content.commands.Utils.GetEnum(ShortGuidUtils.Generate(comboBox1.Text));
+                    EnumDescriptor.Entry enumEntry = enumDesc.Entries.FirstOrDefault(o => o.Index == -1);
                     comboBox2.SelectedItem = enumEntry.Name;
                 }
                 else
                 {
                     comboBox1.SelectedItem = enumVal.enumID.ToString();
-                    EnumUtils.EnumDescriptor enumDesc = EnumUtils.GetEnum(enumVal.enumID);
-                    EnumUtils.EnumDescriptor.Entry enumEntry = enumDesc.Entries.FirstOrDefault(o => o.Index == enumVal.enumIndex);
+                    EnumDescriptor enumDesc = Content.commands.Utils.GetEnum(enumVal.enumID);
+                    EnumDescriptor.Entry enumEntry = enumDesc.Entries.FirstOrDefault(o => o.Index == enumVal.enumIndex);
                     comboBox2.SelectedItem = enumEntry.Name;
                 }
             }
             else
             {
-                EnumUtils.EnumDescriptor enumDesc = EnumUtils.GetEnum(cEnum.enumID);
+                EnumDescriptor enumDesc = Content.commands.Utils.GetEnum(cEnum.enumID);
                 comboBox1.Items.Add(enumDesc.Name);
                 comboBox1.Text = enumDesc.Name;
 
-                EnumUtils.EnumDescriptor.Entry enumEntry = enumDesc.Entries.FirstOrDefault(o => o.Index == cEnum.enumIndex);
+                EnumDescriptor.Entry enumEntry = enumDesc.Entries.FirstOrDefault(o => o.Index == cEnum.enumIndex);
                 if (enumEntry == null)
                     MessageBox.Show("Failed to match index " + cEnum.enumIndex + " for " + enumDesc.Name + "!\nThis behaviour is unexpected.\nPlease report this on GitHub!", "Error!!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 else
@@ -82,11 +83,11 @@ namespace CommandsEditor.UserControls
             _hasDoneSetup = true;
         }
 
-        private void UpdateEnumOptions(EnumUtils.EnumDescriptor enumDesc)
+        private void UpdateEnumOptions(EnumDescriptor enumDesc)
         {
             comboBox2.BeginUpdate();
             comboBox2.Items.Clear();
-            foreach (EnumUtils.EnumDescriptor.Entry entry in enumDesc.Entries)
+            foreach (EnumDescriptor.Entry entry in enumDesc.Entries)
                 comboBox2.Items.Add(entry.Name);
             comboBox2.EndUpdate();
             comboBox2.SelectedIndex = 0;
@@ -96,22 +97,22 @@ namespace CommandsEditor.UserControls
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            EnumUtils.EnumDescriptor enumDesc = EnumUtils.GetEnum(comboBox1.Text);
+            EnumDescriptor enumDesc = Content.commands.Utils.GetEnum(comboBox1.Text);
             UpdateEnumOptions(enumDesc);
         }
 
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
-            EnumUtils.EnumDescriptor enumDesc = EnumUtils.GetEnum(comboBox1.Text);
+            EnumDescriptor enumDesc = Content.commands.Utils.GetEnum(comboBox1.Text);
             UpdateEnum(enumDesc);
         }
 
-        private void UpdateEnum(EnumUtils.EnumDescriptor enumDesc)
+        private void UpdateEnum(EnumDescriptor enumDesc)
         {
             if (!_hasDoneSetup)
                 return;
 
-            EnumUtils.EnumDescriptor.Entry enumEntry = enumDesc.Entries.FirstOrDefault(o => o.Name == comboBox2.SelectedItem.ToString());
+            EnumDescriptor.Entry enumEntry = enumDesc.Entries.FirstOrDefault(o => o.Name == comboBox2.SelectedItem.ToString());
             enumVal.enumID = enumDesc.ID;
             enumVal.enumIndex = enumEntry.Index;
             HighlightAsModified();

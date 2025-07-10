@@ -329,13 +329,13 @@ namespace CommandsEditor
         {
             List<string> items = new List<string>();
             if (entity == null) return items;
-            List<(ShortGuid, ParameterVariant, DataType)> parameters = ParameterUtils.GetAllParameters(entity, composite);
+            List<(ShortGuid, ParameterVariant, DataType)> parameters = _content.commands.Utils.GetAllParameters(entity, composite);
             foreach ((ShortGuid, ParameterVariant, DataType) parameter in parameters)
             {
                 items.Add(parameter.Item1.ToString());
                 if (parameter.Item2 == ParameterVariant.METHOD_PIN)
                 {
-                    ShortGuid relay = ParameterUtils.GetRelay(parameter.Item1);
+                    ShortGuid relay = _content.commands.Utils.GetRelay(parameter.Item1);
                     if (relay != ShortGuid.Invalid)
                         items.Add(relay.ToString());
                 }
@@ -347,7 +347,7 @@ namespace CommandsEditor
         {
             List<ListViewItem> items = new List<ListViewItem>();
             if (entity == null) return items;
-            List<(ShortGuid, ParameterVariant, DataType)> parameters = ParameterUtils.GetAllParameters(entity, composite);
+            List<(ShortGuid, ParameterVariant, DataType)> parameters = _content.commands.Utils.GetAllParameters(entity, composite);
             foreach ((ShortGuid, ParameterVariant,DataType) parameter in parameters)
             {
                 items.Add(ParameterDefinitionToListViewItem(parameter.Item1, parameter.Item3, parameter.Item2));

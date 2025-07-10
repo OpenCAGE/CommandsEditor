@@ -849,7 +849,7 @@ namespace CommandsEditor
         private void addAllPinsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             STNode node = stNodeEditor1.GetHoveredNode();
-            List<(ShortGuid, ParameterVariant, DataType)> allParameters = ParameterUtils.GetAllParameters(_composite.GetEntityByID(node.ShortGUID), _composite);
+            List<(ShortGuid, ParameterVariant, DataType)> allParameters = Commands.Utils.GetAllParameters(_composite.GetEntityByID(node.ShortGUID), _composite);
             foreach ((ShortGuid, ParameterVariant, DataType) parameter in allParameters)
             {
                 switch (parameter.Item2)
@@ -862,7 +862,7 @@ namespace CommandsEditor
                         break;
                     case ParameterVariant.METHOD_PIN:
                         node.AddInputOption(parameter.Item1);
-                        ShortGuid relay = ParameterUtils.GetRelay(parameter.Item1);
+                        ShortGuid relay = Commands.Utils.GetRelay(parameter.Item1);
                         if (relay != ShortGuid.Invalid)
                             node.AddOutputOption(relay);
                         break;

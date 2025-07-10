@@ -31,7 +31,7 @@ namespace CommandsEditor
 
             foreach (FunctionType function in Enum.GetValues(typeof(FunctionType)))
             {
-                FunctionType? inherited = ParameterUtils.GetInheritedFunction(function);
+                FunctionType? inherited = Content.commands.Utils.GetInheritedFunction(function);
 
                 ListViewItem item = new ListViewItem(function.ToString());
                 item.ImageIndex = 0;
@@ -141,7 +141,7 @@ namespace CommandsEditor
 
             if (addDefaultParams.Checked)
             {
-                ParameterUtils.AddAllDefaultParameters(newEntity, _composite);
+                Content.commands.Utils.AddAllDefaultParameters(newEntity, _composite);
                 newEntity.RemoveParameter("delete_me");
             }
 

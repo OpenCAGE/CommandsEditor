@@ -380,7 +380,7 @@ namespace CommandsEditor.DockPanels
                 //Use our metadata to update any wrongly typed cEnumStrings to get the nice UI
                 if (_entity.parameters[i].content.dataType == DataType.STRING)
                 {
-                    ParameterData data = ParameterUtils.CreateDefaultParameterData(Entity, Composite, _entity.parameters[i].name);
+                    ParameterData data = Content.commands.Utils.CreateDefaultParameterData(Entity, Composite, _entity.parameters[i].name);
                     if (data != null && data.dataType == DataType.ENUM_STRING)
                     {
                         ((cEnumString)data).value = ((cString)_entity.parameters[i].content).value;
@@ -455,7 +455,7 @@ namespace CommandsEditor.DockPanels
                         break;
                     case DataType.ENUM:
                         parameterGUI = new GUI_EnumDataType();
-                        ParameterData defaultData = ParameterUtils.CreateDefaultParameterData(Entity, Composite, paramName);
+                        ParameterData defaultData = Content.commands.Utils.CreateDefaultParameterData(Entity, Composite, paramName);
                         ((GUI_EnumDataType)parameterGUI).PopulateUI((cEnum)this_param, paramName, defaultData == null || (defaultData.dataType == DataType.ENUM && ((cEnum)defaultData).enumID == ShortGuid.Invalid));
                         break;
                     case DataType.RESOURCE:
@@ -818,7 +818,7 @@ namespace CommandsEditor.DockPanels
         {
             //Add only the parameters not already set
             bool hasDeleteMe = Entity.GetParameter("delete_me") != null;
-            ParameterUtils.AddAllDefaultParameters(Entity, Composite, false);
+            Content.commands.Utils.AddAllDefaultParameters(Entity, Composite, false);
             if (!hasDeleteMe) Entity.RemoveParameter("delete_me");
             _compositeDisplay.ReloadEntity(Entity);
 
@@ -835,7 +835,7 @@ namespace CommandsEditor.DockPanels
         {
             //Add all defaults, overwriting the ones already set
             Entity.parameters.Clear();
-            ParameterUtils.AddAllDefaultParameters(Entity, Composite);
+            Content.commands.Utils.AddAllDefaultParameters(Entity, Composite);
             Entity.RemoveParameter("delete_me");
             _compositeDisplay.ReloadEntity(Entity);
 

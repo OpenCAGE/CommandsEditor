@@ -96,7 +96,7 @@ namespace CommandsEditor
                     //Add all base-game ones
                     for (int i = 0; i < options.Count; i++)
                     {
-                        var metadata = ParameterUtils.GetParameterMetadata(ent, options[i].Text, comp);
+                        var metadata = Content.commands.Utils.GetParameterMetadata(ent, options[i].Text, comp);
 
                         if (metadata.Item1 == null || metadata.Item1.Value == ParameterVariant.METHOD_FUNCTION)
                             continue;
@@ -120,7 +120,7 @@ namespace CommandsEditor
                     //Add all base-game ones
                     for (int i = 0; i < options.Count; i++)
                     {
-                        var metadata = ParameterUtils.GetParameterMetadata(ent, options[i].Text, comp);
+                        var metadata = Content.commands.Utils.GetParameterMetadata(ent, options[i].Text, comp);
 
                         //TODO: Maybe we don't want to show other things here too?
                         if (metadata.Item1 == null || metadata.Item1.Value == ParameterVariant.METHOD_FUNCTION || metadata.Item1.Value == ParameterVariant.TARGET_PIN)
@@ -196,7 +196,7 @@ namespace CommandsEditor
                             //NOTE: Hijacking this to add relays as well. Maybe we should make this optional?
                             if (item?.Group != null && item.Group.Name == ParameterVariant.METHOD_PIN.ToString())
                             {
-                                ShortGuid relay = ParameterUtils.GetRelay(tag.ShortGUID);
+                                ShortGuid relay = Content.commands.Utils.GetRelay(tag.ShortGUID);
                                 if (relay != ShortGuid.Invalid)
                                     _node.AddOutputOption(relay);
                             }
@@ -219,7 +219,7 @@ namespace CommandsEditor
                             DataType type = item.SubItems[1].Text.ToDataType();
                             if (existing == null || existing.content.dataType != type)
                             {
-                                ParameterData data = ParameterUtils.CreateDefaultParameterData(_inspector.Entity, _inspector.Composite, item.Text);
+                                ParameterData data = Content.commands.Utils.CreateDefaultParameterData(_inspector.Entity, _inspector.Composite, item.Text);
                                 if (data != null)
                                 {
                                     _inspector.Entity.AddParameter(ShortGuidUtils.Generate(item.Text), data);

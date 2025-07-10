@@ -139,7 +139,7 @@ namespace CommandsEditor
 
             if (addDefaultParams.Checked)
             {
-                ParameterUtils.AddAllDefaultParameters(newEntity, _composite);
+                Content.commands.Utils.AddAllDefaultParameters(newEntity, _composite);
                 newEntity.RemoveParameter("delete_me");
             }
 
