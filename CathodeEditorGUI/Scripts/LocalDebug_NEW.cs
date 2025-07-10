@@ -96,7 +96,7 @@ namespace CommandsEditor.Scripts
                     }
                     if (entEnt != null && entComp != null)
                     {
-                        convertedResoureName += "\n\t Entity Entity: " + entEnt.shortGUID + " -> " + EntityUtils.GetName(entComp, entEnt);
+                        convertedResoureName += "\n\t Entity Entity: " + entEnt.shortGUID + " -> " + content.commands.Utils.GetEntityName(entComp, entEnt);
                         wroteSomething = true;
                     }
 
@@ -108,7 +108,7 @@ namespace CommandsEditor.Scripts
                         {
                             Entity ent2 = comp2.GetEntityByID(entry.entity.entity_id);
                             if (ent2 == null) continue;
-                            convertedResoureName += "\n\t\t[ENTITY ID FOUND IN " + comp2.name + ": " + ShortGuidUtils.Generate(EntityUtils.GetName(comp2, ent2)) + "]";
+                            convertedResoureName += "\n\t\t[ENTITY ID FOUND IN " + comp2.name + ": " + ShortGuidUtils.Generate(content.commands.Utils.GetEntityName(comp2, ent2)) + "]";
 
                             convertedResoureName += content.editor_utils.GetAllZonesForEntity(ent2);
 
@@ -134,7 +134,7 @@ namespace CommandsEditor.Scripts
                         if (zoneEnt1 != null && zoneComp1 == null)
                             convertedResoureName += "\n\t Primary Zone Entity: " + zoneEnt1.shortGUID + " -> can't resolve name";
                         if (zoneEnt1 != null && zoneComp1 != null)
-                            convertedResoureName += "\n\t Primary Zone Entity: " + zoneEnt1.shortGUID + " -> " + EntityUtils.GetName(zoneComp1, zoneEnt1);
+                            convertedResoureName += "\n\t Primary Zone Entity: " + zoneEnt1.shortGUID + " -> " + content.commands.Utils.GetEntityName(zoneComp1, zoneEnt1);
                     }
 
                     if (zonePath2 != null && zonePath2.path.Length == 2 && zonePath2.path[0] == new ShortGuid("01-00-00-00"))
@@ -155,7 +155,7 @@ namespace CommandsEditor.Scripts
                         if (zoneEnt2 != null && zoneComp2 == null)
                             convertedResoureName += "\n\t Secondary Zone Entity: " + zoneEnt2.shortGUID + " -> can't resolve name";
                         if (zoneEnt2 != null && zoneComp2 != null)
-                            convertedResoureName += "\n\t Secondary Zone Entity: " + zoneEnt2.shortGUID + " -> " + EntityUtils.GetName(zoneComp2, zoneEnt2);
+                            convertedResoureName += "\n\t Secondary Zone Entity: " + zoneEnt2.shortGUID + " -> " + content.commands.Utils.GetEntityName(zoneComp2, zoneEnt2);
                     }
 
                     resources_dump.Add(convertedResoureName);
@@ -184,7 +184,7 @@ namespace CommandsEditor.Scripts
                         Entity ent = comp.GetEntityByID(entry.resource_id);
                         if (ent != null)
                         {
-                            convertedResoureName = EntityUtils.GetName(comp, ent);
+                            convertedResoureName = content.commands.Utils.GetEntityName(comp, ent);
                             if (convertedResoureName != entry.resource_id.ToByteString())
                             {
                                 convertedResoureName += " [CONVERTED FROM ENTITY - " + ent.variant + "]";
@@ -224,7 +224,7 @@ namespace CommandsEditor.Scripts
                             {
                                 Entity ent2 = comp2.GetEntityByID(entry.resource_id);
                                 if (ent2 == null) continue;
-                                convertedResoureName += "\n\t[ENTITY ID FOUND IN " + comp2.name + ": " + ShortGuidUtils.Generate(EntityUtils.GetName(comp2, ent2)) + "]";
+                                convertedResoureName += "\n\t[ENTITY ID FOUND IN " + comp2.name + ": " + ShortGuidUtils.Generate(content.commands.Utils.GetEntityName(comp2, ent2)) + "]";
                                 break;
                             }
 
@@ -244,7 +244,7 @@ namespace CommandsEditor.Scripts
                                     {
                                         if (resRef.resource_id == entry.resource_id)
                                         {
-                                            convertedResoureName += "\n\t[RESOURCE ID FOUND IN " + comp2.name + ": " + ShortGuidUtils.Generate(EntityUtils.GetName(comp2, funcEnt)) + "] (" + resRef.resource_type + ")";
+                                            convertedResoureName += "\n\t[RESOURCE ID FOUND IN " + comp2.name + ": " + ShortGuidUtils.Generate(content.commands.Utils.GetEntityName(comp2, funcEnt)) + "] (" + resRef.resource_type + ")";
                                             ll++;
                                             if (ll > 3)
                                             {
@@ -305,7 +305,7 @@ namespace CommandsEditor.Scripts
                     if (entEnt != null && entComp == null)
                         convertedResoureName += "\n\t Entity Entity: " + entEnt.shortGUID + " -> can't resolve name";
                     if (entEnt != null && entComp != null)
-                        convertedResoureName += "\n\t Entity Entity: " + entEnt.shortGUID + " -> " + EntityUtils.GetName(entComp, entEnt);
+                        convertedResoureName += "\n\t Entity Entity: " + entEnt.shortGUID + " -> " + content.commands.Utils.GetEntityName(entComp, entEnt);
 
                     if (zonePath1 != null && zonePath1.path.Length == 2 && zonePath1.path[0] == new ShortGuid("01-00-00-00"))
                     {
@@ -325,7 +325,7 @@ namespace CommandsEditor.Scripts
                         if (zoneEnt1 != null && zoneComp1 == null)
                             convertedResoureName += "\n\t Primary Zone Entity: " + zoneEnt1.shortGUID + " -> can't resolve name";
                         if (zoneEnt1 != null && zoneComp1 != null)
-                            convertedResoureName += "\n\t Primary Zone Entity: " + zoneEnt1.shortGUID + " -> " + EntityUtils.GetName(zoneComp1, zoneEnt1);
+                            convertedResoureName += "\n\t Primary Zone Entity: " + zoneEnt1.shortGUID + " -> " + content.commands.Utils.GetEntityName(zoneComp1, zoneEnt1);
                     }
 
                     resources_dump.Add(convertedResoureName);
@@ -359,7 +359,7 @@ namespace CommandsEditor.Scripts
                     if (entEnt != null && entComp == null)
                         convertedResoureName += "\n\t Parent Entity Entity: " + entEnt.shortGUID + " -> can't resolve name";
                     if (entEnt != null && entComp != null)
-                        convertedResoureName += "\n\t Parent Entity Entity: " + entEnt.shortGUID + " -> " + EntityUtils.GetName(entComp, entEnt);
+                        convertedResoureName += "\n\t Parent Entity Entity: " + entEnt.shortGUID + " -> " + content.commands.Utils.GetEntityName(entComp, entEnt);
 
                     if (entCompParent != null)
                         convertedResoureName += "\n\t Composite Composite: " + entCompParent.name;

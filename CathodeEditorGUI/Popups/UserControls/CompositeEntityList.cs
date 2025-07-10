@@ -177,7 +177,7 @@ namespace CommandsEditor.Popups.UserControls
             switch (entity.variant)
             {
                 case EntityVariant.VARIABLE:
-                    CompositePinInfoTable.PinInfo pinInfo = CompositeUtils.GetParameterInfo(_composite, (VariableEntity)entity);
+                    CompositePinInfoTable.PinInfo pinInfo = Content.commands.Utils.GetParameterInfo(_composite, (VariableEntity)entity);
                     if (pinInfo != null)
                     {
                         switch ((CompositePinType)pinInfo.PinTypeGUID.AsUInt32)

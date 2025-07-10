@@ -280,13 +280,12 @@ namespace CommandsEditor
                 Commands commands = new Commands(file);
 
                 ShortGuidUtils.LinkCommands(commands);
-                CompositeUtils.LinkCommands(commands);
 
                 for (int x = 0; x < commands.Entries.Count; x++)
                 {
                     for (int i = 0; i < commands.Entries[x].variables.Count; i++)
                     {
-                        if (CompositeUtils.GetParameterInfo(commands.Entries[x], commands.Entries[x].variables[i]) == null)
+                        if (commands.Utils.GetParameterInfo(commands.Entries[x], commands.Entries[x].variables[i]) == null)
                         {
                             dump.Add(file + "," + commands.Entries[x].name + "," + commands.Entries[x].variables[i].shortGUID + "," + commands.Entries[x].variables[i].name);
                         }
@@ -306,17 +305,15 @@ namespace CommandsEditor
             {
                 Commands commands = new Commands(file);
 
-                CompositeUtils.LinkCommands(commands);
-                EntityUtils.LinkCommands(commands);
                 ParameterUtils.LinkCommands(commands);
 
                 for (int x = 0; x < commands.Entries.Count; x++)
                 {
-                    CommandsUtils.PurgeDeadLinks(commands, commands.Entries[x]);
+                    commands.Utils.PurgeDeadLinks(commands.Entries[x]);
                 }
                 for (int x = 0; x < commands.Entries.Count; x++)
                 {
-                    CommandsUtils.PurgeDeadLinks(commands, commands.Entries[x]);
+                    commands.Utils.PurgeDeadLinks(commands.Entries[x]);
                 }
 
                 for (int x = 0; x < commands.Entries.Count; x++)
@@ -340,11 +337,11 @@ namespace CommandsEditor
             {
                 Commands commands = new Commands(file);
                 for (int x = 0; x < commands.Entries.Count; x++)
-                    CommandsUtils.PurgeDeadLinks(commands, commands.Entries[x]);
+                    commands.Utils.PurgeDeadLinks(commands.Entries[x]);
 
                 for (int x = 0; x < commands.Entries.Count; x++)
                 {
-                    if (CommandsUtils.PurgeDeadLinks(commands, commands.Entries[x])) {
+                    if (commands.Utils.PurgeDeadLinks(commands.Entries[x])) {
                         string sdfsddf = "";
                     }
                 }
@@ -564,7 +561,6 @@ namespace CommandsEditor
                 output.Add("====================");
 
                 Commands commands = new Commands(file);
-                EntityUtils.LinkCommands(commands);
                 ShortGuidUtils.LinkCommands(commands);
 
                 foreach (Composite composite in commands.Entries)
@@ -572,7 +568,7 @@ namespace CommandsEditor
                     if (OnlyDoOneComp != "" && composite.name != OnlyDoOneComp)
                         continue;
 
-                    CommandsUtils.PurgeDeadLinks(commands, composite);
+                    commands.Utils.PurgeDeadLinks(composite);
 
                     List<Entity> entities = composite.GetEntities();
                     List<Entity> checkedEnts = new List<Entity>();
@@ -704,11 +700,11 @@ namespace CommandsEditor
                         Parameter AnimationSet = func.GetParameter("AnimationSet");
                         if (AnimationSet == null && Animation != null)
                         {
-                            Console.WriteLine(comp.name + " -> " + EntityUtils.GetName(comp, func) + " (" + func.function.ToString() + ")" + "\n\tWARNING: Found Animation without AnimationSet\n\n");
+                            Console.WriteLine(comp.name + " -> " + commands.Utils.GetEntityName(comp, func) + " (" + func.function.ToString() + ")" + "\n\tWARNING: Found Animation without AnimationSet\n\n");
                         }
                         if (AnimationSet != null && Animation == null)
                         {
-                            Console.WriteLine(comp.name + " -> " + EntityUtils.GetName(comp, func) + " (" + func.function.ToString() + ")" + "\n\tWARNING: Found AnimationSet without Animation\n\n");
+                            Console.WriteLine(comp.name + " -> " + commands.Utils.GetEntityName(comp, func) + " (" + func.function.ToString() + ")" + "\n\tWARNING: Found AnimationSet without Animation\n\n");
                         }
                         if (AnimationSet != null && Animation != null)
                         {
@@ -888,7 +884,7 @@ namespace CommandsEditor
                         Parallel.ForEach(ent.parameters, param =>
                         {
                             if (param.content.dataType == DataType.ENUM)
-                                Console.WriteLine(file + "," + comp.name + "," + EntityUtils.GetName(comp, ent) + "," + param.name + "," + ((cEnum)param.content).enumID.ToString() + "," + ((cEnum)param.content).enumIndex);
+                                Console.WriteLine(file + "," + comp.name + "," + phys.Utils.GetEntityName(comp, ent) + "," + param.name + "," + ((cEnum)param.content).enumID.ToString() + "," + ((cEnum)param.content).enumIndex);
                             //if (param.content.dataType == DataType.ENUM)
                             //    enumUI.PopulateUI((cEnum)param.content, file + "," + comp.name + "," + EntityUtils.GetName(comp, ent) + "," + param.name.ToString() + ",");
                         });
@@ -1330,7 +1326,7 @@ namespace CommandsEditor
                     {
                         Parallel.ForEach(comp.functions.FindAll(o => o.function == id), ent =>
                         {
-                            Console.WriteLine(file + "\n\t" + comp.name + "\n\t\t" + EntityUtils.GetName(comp, ent));
+                            Console.WriteLine(file + "\n\t" + comp.name + "\n\t\t" + phys.Utils.GetEntityName(comp, ent));
 
                             //Parallel.ForEach(ent.parameters, param =>
                             //{

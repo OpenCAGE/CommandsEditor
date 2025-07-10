@@ -80,7 +80,7 @@ namespace CommandsEditor
         //Checks the given composite against the layout DB to see if the links/entities match
         public static void EvaluateCompatibility(Composite composite)
         {
-            int links = CompositeUtils.CountLinks(composite);
+            int links = _commands.Utils.CountLinks(composite);
             if (links == 0)
             {
                 //If the composite has no links, regardless of if it diverges from the saved layouts, allow it
@@ -197,11 +197,11 @@ namespace CommandsEditor
 
         private static void LoadCustomFlowgraphs(string filepath)
         {
-            _userDefinedLayouts = (CompositeFlowgraphTable)CustomTable.ReadTable(filepath, CustomEndTables.COMPOSITE_FLOWGRAPHS);
+            _userDefinedLayouts = (CompositeFlowgraphTable)CustomTable.ReadTable(filepath, CustomTableType.COMPOSITE_FLOWGRAPHS);
             if (_userDefinedLayouts == null) _userDefinedLayouts = new CompositeFlowgraphTable();
             Console.WriteLine("Loaded " + _userDefinedLayouts.flowgraphs.Count + " custom flowgraph layouts!");
             
-            _compatibility = (CompositeFlowgraphCompatibilityTable)CustomTable.ReadTable(filepath, CustomEndTables.COMPOSITE_FLOWGRAPH_COMPATIBILITY_INFO);
+            _compatibility = (CompositeFlowgraphCompatibilityTable)CustomTable.ReadTable(filepath, CustomTableType.COMPOSITE_FLOWGRAPH_COMPATIBILITY_INFO);
             if (_compatibility == null) _compatibility = new CompositeFlowgraphCompatibilityTable();
             Console.WriteLine("Loaded " + _compatibility.compatibility_info.Count + " flowgraph compatibility definitions!");
 
@@ -219,10 +219,10 @@ namespace CommandsEditor
 
         private static void SaveCustomFlowgraphs(string filepath)
         {
-            CustomTable.WriteTable(filepath, CustomEndTables.COMPOSITE_FLOWGRAPHS, _userDefinedLayouts);
+            CustomTable.WriteTable(filepath, CustomTableType.COMPOSITE_FLOWGRAPHS, _userDefinedLayouts);
             Console.WriteLine("Saved " + _userDefinedLayouts.flowgraphs.Count + " custom flowgraph layouts!");
 
-            CustomTable.WriteTable(filepath, CustomEndTables.COMPOSITE_FLOWGRAPH_COMPATIBILITY_INFO, _compatibility);
+            CustomTable.WriteTable(filepath, CustomTableType.COMPOSITE_FLOWGRAPH_COMPATIBILITY_INFO, _compatibility);
             Console.WriteLine("Saved " + _compatibility.compatibility_info.Count + " flowgraph compatibility definitions!");
         }
     }

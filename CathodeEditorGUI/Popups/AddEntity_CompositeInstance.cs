@@ -135,7 +135,7 @@ namespace CommandsEditor
             Singleton.OnEntityAddPending?.Invoke();
 
             Entity newEntity = _composite.AddFunction(comp);
-            EntityUtils.SetName(_composite, newEntity, entityName.Text);
+            Content.commands.Utils.SetEntityName(_composite, newEntity, entityName.Text);
 
             if (addDefaultParams.Checked)
             {

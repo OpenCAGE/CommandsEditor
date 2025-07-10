@@ -172,7 +172,7 @@ namespace CommandsEditor
                 for (int x = 0; x < animEntity.events[i].keyframes.Count; x++)
                 {
                     CAGEAnimation.EventTrack.Keyframe keyframeData = animEntity.events[i].keyframes[x];
-                    string keyframeText = (connection == null) ? EntityUtils.GetName(_entityDisplay.Composite, animEntity) : connection.connectedEntity.GetAsString(Content.commands, _entityDisplay.Composite, false);
+                    string keyframeText = (connection == null) ? Content.commands.Utils.GetEntityName(_entityDisplay.Composite, animEntity) : connection.connectedEntity.GetAsString(Content.commands, _entityDisplay.Composite, false);
                     Keyframe keyframeUI = eventTimeline.AddKeyframe(keyframeData.time, keyframeText);
                     keyframeUI.OnMoved += OnHandleMoved;
                     keyframeHandlesEvent.Add(keyframeUI, keyframeData);

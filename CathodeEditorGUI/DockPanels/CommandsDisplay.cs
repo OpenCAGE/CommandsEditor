@@ -442,7 +442,7 @@ namespace CommandsEditor.DockPanels
 
             //Remove the composite
             Content.commands.Entries.Remove(composite);
-            CommandsUtils.PurgedComposites.purged.Clear(); //TODO: we should smartly remove from this list, rather than removing all
+            Content.commands.Utils.PurgedComposites.purged.Clear(); //TODO: we should smartly remove from this list, rather than removing all
 
             //Refresh UI
             ReloadList();
@@ -767,7 +767,7 @@ namespace CommandsEditor.DockPanels
             }
 
             FlowgraphLayoutManager.DEBUG_UsePreDefinedTable = true;
-            List<Composite> ordered = Content.commands.Entries.OrderBy(o => CompositeUtils.CountLinks(o)).Where(o => CompositeUtils.CountLinks(o) != 0 && !FlowgraphLayoutManager.HasLayout(o)).ToList();
+            List<Composite> ordered = Content.commands.Entries.OrderBy(o => Content.commands.Utils.CountLinks(o)).Where(o => Content.commands.Utils.CountLinks(o) != 0 && !FlowgraphLayoutManager.HasLayout(o)).ToList();
             for (int i = 0; i < ordered.Count; i++)
                 Console.WriteLine(ordered[i].name);
             Console.WriteLine("Still " + ordered.Count + " to go in this PAK (count includes those not purged, so may be lower)");

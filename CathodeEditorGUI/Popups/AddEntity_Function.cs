@@ -145,7 +145,7 @@ namespace CommandsEditor
                 newEntity.RemoveParameter("delete_me");
             }
 
-            EntityUtils.SetName(_composite, newEntity, entityName.Text);
+            Content.commands.Utils.SetEntityName(_composite, newEntity, entityName.Text);
             SettingsManager.SetString(Singleton.Settings.PreviouslySelectedFunctionType, function.ToString());
             SettingsManager.SetBool(Singleton.Settings.PreviouslySearchedParamPopulation, addDefaultParams.Checked);
 

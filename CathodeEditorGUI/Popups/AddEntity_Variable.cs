@@ -138,7 +138,7 @@ namespace CommandsEditor
             Singleton.OnEntityAddPending?.Invoke();
             ShortGuid entityID = ShortGuidUtils.GenerateRandom();
             VariableEntity newEntity = _composite.AddVariable(variableName.Text, datatype);
-            CompositeUtils.SetParameterInfo(_composite, new CompositePinInfoTable.PinInfo()
+            Content.commands.Utils.SetParameterInfo(_composite, new CompositePinInfoTable.PinInfo()
             {
                 VariableGUID = newEntity.shortGUID,
                 PinTypeGUID = new ShortGuid((uint)pinType),

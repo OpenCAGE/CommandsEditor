@@ -108,11 +108,8 @@ namespace CommandsEditor
 
             //Link up commands to utils and cache some things
             ParameterUtils.LinkCommands(commands);
-            EntityUtils.LinkCommands(commands);
             ShortGuidUtils.LinkCommands(commands);
-            CommandsUtils.LinkCommands(commands);
             FlowgraphLayoutManager.LinkCommands(commands);
-            CompositeUtils.LinkCommands(commands);
             ParameterModificationTracker.LinkCommands(commands);
 
             //Load the level-specific text databases
@@ -142,25 +139,13 @@ namespace CommandsEditor
             {
                 ParameterUtils.LinkCommands(null);
             }
-            if (EntityUtils.LinkedCommands == commands)
-            {
-                EntityUtils.LinkCommands(null);
-            }
             if (ShortGuidUtils.LinkedCommands == commands)
             {
                 ShortGuidUtils.LinkCommands(null);
             }
-            if (CommandsUtils.LinkedCommands == commands)
-            {
-                CommandsUtils.LinkCommands(null);
-            }
             if (FlowgraphLayoutManager.LinkedCommands == commands)
             {
                 FlowgraphLayoutManager.LinkCommands(null);
-            }
-            if (CompositeUtils.LinkedCommands == commands)
-            {
-                CompositeUtils.LinkCommands(null);
             }
             if (ParameterModificationTracker.LinkedCommands == commands)
             {
@@ -210,7 +195,7 @@ namespace CommandsEditor
 
             foreach (Composite composite in content.commands.Entries)
                 foreach (Entity entity in composite.GetEntities())
-                    ShortGuidUtils.Generate(EntityUtils.GetName(composite, entity));
+                    ShortGuidUtils.Generate(content.commands.Utils.GetEntityName(composite, entity));
 
             foreach (Models.CS2 cs2 in content.resource.models.Entries)
             {
@@ -223,9 +208,9 @@ namespace CommandsEditor
             foreach (Materials.Material material in content.resource.materials.Entries)
                 ShortGuidUtils.Generate(material.Name);
 
-            List<string> entNames = EntityUtils.GetAllVanillaNames();
-            foreach (string entName in entNames)
-                ShortGuidUtils.Generate(entName);
+            //List<string> entNames = EntityUtils.GetAllVanillaNames();
+            //foreach (string entName in entNames)
+            //    ShortGuidUtils.Generate(entName);
 
             return content;
         }
@@ -410,23 +395,23 @@ namespace CommandsEditor
             {
                 case EntityVariant.VARIABLE:
                     item.Text = ShortGuidUtils.FindString(((VariableEntity)entity).name);
-                    CompositePinInfoTable.PinInfo variableInfo = CompositeUtils.GetParameterInfo(composite, (VariableEntity)entity);
+                    CompositePinInfoTable.PinInfo variableInfo = commands.Utils.GetParameterInfo(composite, (VariableEntity)entity);
                     item.SubItems.Add(variableInfo != null ? ((CompositePinType)variableInfo.PinTypeGUID.AsUInt32).ToUIString() : ((VariableEntity)entity).type.ToUIString());
                     break;
                 case EntityVariant.FUNCTION:
-                    item.Text = EntityUtils.GetName(composite.shortGUID, entity.shortGUID);
+                    item.Text = commands.Utils.GetEntityName(composite.shortGUID, entity.shortGUID);
                     Composite funcComposite = commands.GetComposite(((FunctionEntity)entity).function);
                     if (funcComposite != null) item.SubItems.Add(EditorUtils.GetCompositeName(funcComposite));
                     else item.SubItems.Add(((FunctionType)(((FunctionEntity)entity).function.AsUInt32)).ToString());
                     break;
                 case EntityVariant.ALIAS:
-                    CommandsUtils.ResolveHierarchy(commands, composite, ((AliasEntity)entity).alias.path, out Composite c, out string s, false);
+                    commands.Utils.ResolveHierarchy(composite, ((AliasEntity)entity).alias.path, out Composite c, out string s, false);
                     item.Text = s;
                     item.SubItems.Add("");
                     break;
                 case EntityVariant.PROXY:
-                    CommandsUtils.ResolveHierarchy(commands, composite, ((ProxyEntity)entity).proxy.path, out Composite c2, out string s2, false);
-                    item.Text = EntityUtils.GetName(composite.shortGUID, entity.shortGUID);
+                    commands.Utils.ResolveHierarchy(composite, ((ProxyEntity)entity).proxy.path, out Composite c2, out string s2, false);
+                    item.Text = commands.Utils.GetEntityName(composite.shortGUID, entity.shortGUID);
                     item.SubItems.Add(s2);
                     break;
             }

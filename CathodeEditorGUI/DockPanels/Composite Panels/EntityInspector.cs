@@ -258,7 +258,7 @@ namespace CommandsEditor.DockPanels
             switch (_entity.variant)
             {
                 case EntityVariant.FUNCTION:
-                    selected_entity_name.Text = EntityUtils.GetName(Composite.shortGUID, _entity.shortGUID);
+                    selected_entity_name.Text = Content.commands.Utils.GetEntityName(Composite.shortGUID, _entity.shortGUID);
 
                     //Composite Instance
                     if (_entityCompositePtr != null)
@@ -282,7 +282,7 @@ namespace CommandsEditor.DockPanels
                     }
                     break;
                 case EntityVariant.VARIABLE:
-                    variableInfo = CompositeUtils.GetParameterInfo(Composite, (VariableEntity)Entity);
+                    variableInfo = Content.commands.Utils.GetParameterInfo(Composite, (VariableEntity)Entity);
                     if (variableInfo == null)
                         Console.WriteLine("Warning: Could not get parameter pin info!");
                     description = (variableInfo != null ? ((CompositePinType)variableInfo.PinTypeGUID.AsUInt32).ToUIString() : ((VariableEntity)_entity).type.ToUIString());
@@ -292,13 +292,13 @@ namespace CommandsEditor.DockPanels
                 case EntityVariant.ALIAS:
                     hierarchyDisplay.Visible = true;
                     ShortGuid[] entityHierarchy = _entity.variant == EntityVariant.PROXY ? ((ProxyEntity)_entity).proxy.path : ((AliasEntity)_entity).alias.path;
-                    Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, Composite, entityHierarchy, out Composite comp, out string hierarchy, SettingsManager.GetBool("CS_ShowEntityIDs"));
+                    Entity ent = Content.commands.Utils.ResolveHierarchy(Composite, entityHierarchy, out Composite comp, out string hierarchy, SettingsManager.GetBool("CS_ShowEntityIDs"));
                     hierarchyDisplay.Text = hierarchy;
                     jumpToComposite.Visible = true;
-                    selected_entity_name.Text = (_entity.variant == EntityVariant.PROXY ? "Proxy to " : "Alias of ") + EntityUtils.GetName(comp, ent);
+                    selected_entity_name.Text = (_entity.variant == EntityVariant.PROXY ? "Proxy to " : "Alias of ") + Content.commands.Utils.GetEntityName(comp, ent);
                     break;
                 default:
-                    selected_entity_name.Text = EntityUtils.GetName(Composite.shortGUID, _entity.shortGUID);
+                    selected_entity_name.Text = Content.commands.Utils.GetEntityName(Composite.shortGUID, _entity.shortGUID);
                     break;
             }
             selected_entity_type_description.Text = description;
@@ -764,7 +764,7 @@ namespace CommandsEditor.DockPanels
             {
                 case EntityVariant.PROXY:
                     //Proxies forward directly to the entity they point to, breaking us out of the hierarchy.
-                    Entity entity = CommandsUtils.ResolveHierarchy(Content.commands, Composite, ((ProxyEntity)Entity).proxy.path, out Composite flow, out string hierarchy);
+                    Entity entity = Content.commands.Utils.ResolveHierarchy(Composite, ((ProxyEntity)Entity).proxy.path, out Composite flow, out string hierarchy);
                     if (MessageBox.Show("Jumping to a proxy will break you out of your composite.\nAre you sure?", "About to follow proxy...", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                         _compositeDisplay.CommandsDisplay.LoadCompositeAndEntity(flow, entity);
                     break;

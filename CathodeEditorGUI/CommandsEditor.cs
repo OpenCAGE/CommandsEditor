@@ -21,6 +21,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.Remoting.Contexts;
@@ -775,15 +776,15 @@ namespace CommandsEditor
         {
             for (int i = 0; i < Singleton.Editor.CommandsDisplay.Content.commands.Entries.Count; i++)
             {
-                CommandsUtils.PurgeDeadLinks(Singleton.Editor.CommandsDisplay.Content.commands, Singleton.Editor.CommandsDisplay.Content.commands.Entries[i], true);
+                _commandsDisplay.Content.commands.Utils.PurgeDeadLinks(_commandsDisplay.Content.commands.Entries[i], true);
             }
             for (int i = 0; i < Singleton.Editor.CommandsDisplay.Content.commands.Entries.Count; i++)
             {
-                CommandsUtils.PurgeDeadLinks(Singleton.Editor.CommandsDisplay.Content.commands, Singleton.Editor.CommandsDisplay.Content.commands.Entries[i], true);
+                _commandsDisplay.Content.commands.Utils.PurgeDeadLinks(_commandsDisplay.Content.commands.Entries[i], true);
             }
             for (int i = 0; i < Singleton.Editor.CommandsDisplay.Content.commands.Entries.Count; i++)
             {
-                CommandsUtils.PurgeDeadLinks(Singleton.Editor.CommandsDisplay.Content.commands, Singleton.Editor.CommandsDisplay.Content.commands.Entries[i], true);
+                _commandsDisplay.Content.commands.Utils.PurgeDeadLinks(_commandsDisplay.Content.commands.Entries[i], true);
             }
 
             return;
@@ -848,7 +849,7 @@ namespace CommandsEditor
                                 Entity ent = comp.GetEntityByID(item.Entity.entity_id);
                                 if (ent != null)
                                 {
-                                    convertedResoureName += "\n\t Entity LOOKUP found in " + comp.name + " [" + comp.shortGUID.ToByteString() + "] -> " + ShortGuidUtils.Generate(EntityUtils.GetName(comp, ent) + " [" + ent.shortGUID.ToByteString() + "]");
+                                    convertedResoureName += "\n\t Entity LOOKUP found in " + comp.name + " [" + comp.shortGUID.ToByteString() + "] -> " + ShortGuidUtils.Generate(content.commands.Utils.GetEntityName(comp, ent) + " [" + ent.shortGUID.ToByteString() + "]");
                                 }
                             }
                             convertedResoureName += "\n\t Entity INSTANCEID: " + item.Entity.composite_instance_id.ToByteString();
@@ -860,7 +861,7 @@ namespace CommandsEditor
                             if (entEnt != null && entComp == null)
                                 convertedResoureName += "\n\t Entity Entity: " + entEnt.shortGUID + " -> can't resolve name";
                             if (entEnt != null && entComp != null)
-                                convertedResoureName += "\n\t Entity Entity: " + entEnt.shortGUID + " -> " + EntityUtils.GetName(entComp, entEnt);
+                                convertedResoureName += "\n\t Entity Entity: " + entEnt.shortGUID + " -> " + content.commands.Utils.GetEntityName(entComp, entEnt);
 
                             if (zonePath1 != null && zonePath1.path.Length == 2 && zonePath1.path[0] == new ShortGuid("01-00-00-00"))
                             {
@@ -880,7 +881,7 @@ namespace CommandsEditor
                                 if (zoneEnt1 != null && zoneComp1 == null)
                                     convertedResoureName += "\n\t Primary Zone Entity: " + zoneEnt1.shortGUID + " -> can't resolve name";
                                 if (zoneEnt1 != null && zoneComp1 != null)
-                                    convertedResoureName += "\n\t Primary Zone Entity: " + zoneEnt1.shortGUID + " -> " + EntityUtils.GetName(zoneComp1, zoneEnt1);
+                                    convertedResoureName += "\n\t Primary Zone Entity: " + zoneEnt1.shortGUID + " -> " + content.commands.Utils.GetEntityName(zoneComp1, zoneEnt1);
                             }
 
 

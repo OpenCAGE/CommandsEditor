@@ -284,17 +284,17 @@ namespace CommandsEditor
                 case EntityVariant.FUNCTION:
                     Composite funcComposite = _content.commands.GetComposite(((FunctionEntity)entity).function);
                     if (funcComposite != null)
-                        desc = EntityUtils.GetName(composite.shortGUID, entity.shortGUID) + " (" + funcComposite.name + ")";
+                        desc = _content.commands.Utils.GetEntityName(composite.shortGUID, entity.shortGUID) + " (" + funcComposite.name + ")";
                     else
-                        desc = EntityUtils.GetName(composite.shortGUID, entity.shortGUID) + " (" + ((FunctionType)((FunctionEntity)entity).function.AsUInt32).ToString() + ")";
+                        desc = _content.commands.Utils.GetEntityName(composite.shortGUID, entity.shortGUID) + " (" + ((FunctionType)((FunctionEntity)entity).function.AsUInt32).ToString() + ")";
                     break;
                 case EntityVariant.ALIAS:
-                    CommandsUtils.ResolveHierarchy(_content.commands, composite, ((AliasEntity)entity).alias.path, out Composite c, out string s, false);
+                    _content.commands.Utils.ResolveHierarchy(composite, ((AliasEntity)entity).alias.path, out Composite c, out string s, false);
                     desc = "[ALIAS] " + s;
                     break;
                 case EntityVariant.PROXY:
-                    CommandsUtils.ResolveHierarchy(_content.commands, composite, ((ProxyEntity)entity).proxy.path, out Composite c2, out string s2, false);
-                    desc = "[PROXY] " + EntityUtils.GetName(composite.shortGUID, entity.shortGUID) + " (" + s2 + ")";
+                    _content.commands.Utils.ResolveHierarchy(composite, ((ProxyEntity)entity).proxy.path, out Composite c2, out string s2, false);
+                    desc = "[PROXY] " + _content.commands.Utils.GetEntityName(composite.shortGUID, entity.shortGUID) + " (" + s2 + ")";
                     break;
             }
             bool showID = SettingsManager.GetBool(Singleton.Settings.EntIdOpt);
@@ -411,7 +411,7 @@ namespace CommandsEditor
                 {
                     if (found || ct.IsCancellationRequested)
                         status2.Stop();
-                    Entity ent = CommandsUtils.ResolveHierarchy(_content.commands, comp, prox.proxy.path, out Composite compRef, out string str);
+                    Entity ent = _content.commands.Utils.ResolveHierarchy(comp, prox.proxy.path, out Composite compRef, out string str);
                     if (ent == entity) found = true;
                 });
                 Parallel.ForEach(comp.aliases, (alias, status2) =>
@@ -419,7 +419,7 @@ namespace CommandsEditor
                     if (found || ct.IsCancellationRequested)
                         status2.Stop();
 
-                    Entity ent = CommandsUtils.ResolveHierarchy(_content.commands, comp, alias.alias.path, out Composite compRef, out string str);
+                    Entity ent = _content.commands.Utils.ResolveHierarchy(comp, alias.alias.path, out Composite compRef, out string str);
                     if (ent == entity) found = true;
                 });
                 List<FunctionEntity> triggerSequences = comp.functions.FindAll(o => o.function == FunctionType.TriggerSequence);
@@ -434,7 +434,7 @@ namespace CommandsEditor
                         if (found || ct.IsCancellationRequested)
                             status3.Stop();
 
-                        Entity ent = CommandsUtils.ResolveHierarchy(_content.commands, comp, trigger.connectedEntity.path, out Composite compRef, out string str);
+                        Entity ent = _content.commands.Utils.ResolveHierarchy(comp, trigger.connectedEntity.path, out Composite compRef, out string str);
                         if (ent == entity) found = true;
                     });
                 });
@@ -450,7 +450,7 @@ namespace CommandsEditor
                         if (found || ct.IsCancellationRequested)
                             status3.Stop();
 
-                        Entity ent = CommandsUtils.ResolveHierarchy(_content.commands, comp, connection.connectedEntity.path, out Composite compRef, out string str);
+                        Entity ent = _content.commands.Utils.ResolveHierarchy(comp, connection.connectedEntity.path, out Composite compRef, out string str);
                         if (ent == entity) found = true;
                     });
                 });
@@ -476,7 +476,7 @@ namespace CommandsEditor
                     TriggerSequence trig = (TriggerSequence)trigEnt;
                     Parallel.ForEach(trig.sequence, (Action<TriggerSequence.SequenceEntry, ParallelLoopState>)((trigger, status2) =>
                     {
-                        if (CommandsUtils.ResolveHierarchy((Commands)this._content.commands, comp, trigger.connectedEntity.path, out Composite compRef, out string str) == entity)
+                        if (_content.commands.Utils.ResolveHierarchy(comp, trigger.connectedEntity.path, out Composite compRef, out string str) == entity)
                         {
                             List<FunctionEntity> zones = comp.functions.FindAll(o => o.function == FunctionType.Zone);
                             Parallel.ForEach(zones, (z, status3) =>
@@ -539,7 +539,7 @@ namespace CommandsEditor
                     TriggerSequence trig = (TriggerSequence)trigEnt;
                     foreach (TriggerSequence.SequenceEntry trigger in trig.sequence)
                     {
-                        if (CommandsUtils.ResolveHierarchy(_content.commands, comp, trigger.connectedEntity.path, out Composite compRef, out string str) == entity)
+                        if (_content.commands.Utils.ResolveHierarchy(comp, trigger.connectedEntity.path, out Composite compRef, out string str) == entity)
                         {
                             List<FunctionEntity> zones = comp.functions.FindAll(o => o.function == FunctionType.Zone);
                             foreach (FunctionEntity z in zones)

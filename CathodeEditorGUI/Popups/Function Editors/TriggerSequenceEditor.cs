@@ -29,7 +29,7 @@ namespace CommandsEditor
             _triggerSequence = (TriggerSequence)_entityDisplay.Entity;
 
             entityTriggerDelay.Text = "0.0";
-            this.Text = "TriggerSequence Editor: " + EntityUtils.GetName(_entityDisplay.Composite.shortGUID, _triggerSequence.shortGUID);
+            this.Text = "TriggerSequence Editor: " + Content.commands.Utils.GetEntityName(_entityDisplay.Composite.shortGUID, _triggerSequence.shortGUID);
             selectedEntityDetails.Visible = false;
             selectedTriggerDetails.Visible = false;
 
@@ -46,7 +46,7 @@ namespace CommandsEditor
                 ListViewItem item = new ListViewItem();
 
                 string thisHierarchy;
-                CommandsUtils.ResolveHierarchy(Content.commands, _entityDisplay.Composite, _triggerSequence.sequence[i].connectedEntity.path, out Composite comp, out thisHierarchy, SettingsManager.GetBool("CS_ShowEntityIDs"));
+                Content.commands.Utils.ResolveHierarchy(_entityDisplay.Composite, _triggerSequence.sequence[i].connectedEntity.path, out Composite comp, out thisHierarchy, SettingsManager.GetBool("CS_ShowEntityIDs"));
                 item.Text = thisHierarchy;
 
                 item.SubItems.Add(_triggerSequence.sequence[i].timing + "s");
@@ -99,7 +99,7 @@ namespace CommandsEditor
 
             int index = entity_list.SelectedItems[0].Index;
 
-            CommandsUtils.ResolveHierarchy(Content.commands, _entityDisplay.Composite, _triggerSequence.sequence[index].connectedEntity.path, out Composite comp, out string thisHierarchy, SettingsManager.GetBool("CS_ShowEntityIDs"));
+            Content.commands.Utils.ResolveHierarchy(_entityDisplay.Composite, _triggerSequence.sequence[index].connectedEntity.path, out Composite comp, out string thisHierarchy, SettingsManager.GetBool("CS_ShowEntityIDs"));
 
             entityHierarchy.Text = thisHierarchy;
             entityTriggerDelay.Text = _triggerSequence.sequence[index].timing.ToString();
@@ -287,7 +287,7 @@ namespace CommandsEditor
             if (MessageBox.Show("Going to this entity will close the TriggerSequence editor.\nAre you sure you want to continue?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
 
-            Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, _entityDisplay.Composite, _triggerSequence.sequence[entity_list.SelectedItems[0].Index].connectedEntity.path, out Composite comp, out string h);
+            Entity ent = Content.commands.Utils.ResolveHierarchy(_entityDisplay.Composite, _triggerSequence.sequence[entity_list.SelectedItems[0].Index].connectedEntity.path, out Composite comp, out string h);
             if (comp == null || ent == null)
             {
                 MessageBox.Show("Failed to resolve entity! Can not load to it.", "Entity pointer corrupted!", MessageBoxButtons.OK, MessageBoxIcon.Error);

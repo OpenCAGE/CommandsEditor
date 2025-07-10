@@ -188,8 +188,8 @@ namespace CommandsEditor
 
         public bool ShowFlowgraph(Composite composite, FlowgraphMeta flowgraphMeta)
         {
-            if (CommandsUtils.PurgeDeadLinks(Commands, composite))
-                CommandsUtils.PurgedComposites.purged.Add(composite.shortGUID);
+            if (Commands.Utils.PurgeDeadLinks(composite))
+                Commands.Utils.PurgedComposites.purged.Add(composite.shortGUID);
 
             _composite = composite;
             this.Text = flowgraphMeta.Name;
@@ -298,8 +298,8 @@ namespace CommandsEditor
         //This is for local use only: populates all nodes from a composite without a layout
         public void PopulateDefaultEntities(Composite composite)
         {
-            if (CommandsUtils.PurgeDeadLinks(Commands, composite))
-                CommandsUtils.PurgedComposites.purged.Add(composite.shortGUID);
+            if (Commands.Utils.PurgeDeadLinks(composite))
+                Commands.Utils.PurgedComposites.purged.Add(composite.shortGUID);
 
             _composite = composite;
             this.Text = _composite.name;
@@ -402,7 +402,7 @@ namespace CommandsEditor
             {
                 case EntityVariant.PROXY:
                 case EntityVariant.ALIAS:
-                    Entity ent = CommandsUtils.ResolveHierarchy(Commands, _composite, (node.Entity.variant == EntityVariant.PROXY) ? ((ProxyEntity)node.Entity).proxy.path : ((AliasEntity)node.Entity).alias.path, out Composite c, out string s);
+                    Entity ent = Commands.Utils.ResolveHierarchy(_composite, (node.Entity.variant == EntityVariant.PROXY) ? ((ProxyEntity)node.Entity).proxy.path : ((AliasEntity)node.Entity).alias.path, out Composite c, out string s);
                     node.SetColour(node.Entity.variant == EntityVariant.PROXY ? Color.LightGreen : Color.Orange, Color.Black);
                     switch (ent.variant)
                     {
@@ -410,10 +410,10 @@ namespace CommandsEditor
                             FunctionEntity function = (FunctionEntity)ent;
                             if (function.function.IsFunctionType)
                             {
-                                node.SetName(EntityUtils.GetName(c, ent), node.Entity.variant + " TO: " + function.function.AsFunctionType.ToString());
+                                node.SetName(Commands.Utils.GetEntityName(c, ent), node.Entity.variant + " TO: " + function.function.AsFunctionType.ToString());
                             }
                             else
-                                node.SetName(EntityUtils.GetName(c, ent), node.Entity.variant + " TO: " + Path.GetFileName(Commands.GetComposite(function.function).name));
+                                node.SetName(Commands.Utils.GetEntityName(c, ent), node.Entity.variant + " TO: " + Path.GetFileName(Commands.GetComposite(function.function).name));
                             break;
                         case EntityVariant.VARIABLE:
                             node.SetName(node.Entity.variant + " TO: " + ((VariableEntity)ent).name.ToString());
@@ -424,12 +424,12 @@ namespace CommandsEditor
                     FunctionEntity funcEnt = (FunctionEntity)node.Entity;
                     if (funcEnt.function.IsFunctionType)
                     {
-                        node.SetName(EntityUtils.GetName(_composite, node.Entity), funcEnt.function.AsFunctionType.ToString());
+                        node.SetName(Commands.Utils.GetEntityName(_composite, node.Entity), funcEnt.function.AsFunctionType.ToString());
                     }
                     else
                     {
                         node.SetColour(Color.Blue, Color.White);
-                        node.SetName(EntityUtils.GetName(_composite, node.Entity), Path.GetFileName(Commands.GetComposite(funcEnt.function).name));
+                        node.SetName(Commands.Utils.GetEntityName(_composite, node.Entity), Path.GetFileName(Commands.GetComposite(funcEnt.function).name));
                     }
                     break;
                 case EntityVariant.VARIABLE:

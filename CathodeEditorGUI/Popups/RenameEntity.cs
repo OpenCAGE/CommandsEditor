@@ -34,7 +34,7 @@ namespace CommandsEditor
                     entity_name.Text = ShortGuidUtils.FindString(((VariableEntity)_entity).name);
                     break;
                 default:
-                    entity_name.Text = EntityUtils.GetName(_composite, _entity);
+                    entity_name.Text = Content.commands.Utils.GetEntityName(_composite, _entity);
                     break;
             }
         }
@@ -50,7 +50,7 @@ namespace CommandsEditor
                     ((VariableEntity)_entity).name = ShortGuidUtils.Generate(entity_name.Text);
                     break;
                 default:
-                    EntityUtils.SetName(_composite, _entity, entity_name.Text);
+                    Content.commands.Utils.SetEntityName(_composite, _entity, entity_name.Text);
                     break;
             }
 

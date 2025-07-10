@@ -121,7 +121,7 @@ namespace CommandsEditor.DockPanels
         {
             if (Composite != null && SupportsFlowgraphs)
             {
-                CompositeUtils.ClearAllLinks(_composite);
+                Content.commands.Utils.ClearAllLinks(_composite);
                 for (int i = 0; i < _flowgraphs.Count; i++)
                     if (_flowgraphs[i] != null)
                         _flowgraphs[i].SaveAndCompile();
@@ -238,11 +238,11 @@ namespace CommandsEditor.DockPanels
             _composite = composite;
 
             //Remove dead links and empty aliases on first time
-            if (!CommandsUtils.PurgedComposites.purged.Contains(_composite.shortGUID))
+            if (!Content.commands.Utils.PurgedComposites.purged.Contains(_composite.shortGUID))
             {
                 //Clear out any dead links
-                CommandsUtils.PurgeDeadLinks(Content.commands, _composite);
-                CommandsUtils.PurgedComposites.purged.Add(_composite.shortGUID);
+                Content.commands.Utils.PurgeDeadLinks(_composite);
+                Content.commands.Utils.PurgedComposites.purged.Add(_composite.shortGUID);
 
                 //Clear out any aliases with no parameters/links
                 List<AliasEntity> aliasPurged = new List<AliasEntity>();
@@ -554,7 +554,7 @@ namespace CommandsEditor.DockPanels
                 }
             }
 
-            CommandsUtils.PurgedComposites.purged.Clear(); //TODO: we should smartly remove from this list, rather than removing all
+            Content.commands.Utils.PurgedComposites.purged.Clear(); //TODO: we should smartly remove from this list, rather than removing all
 
             if (_entityDisplay.Entity == entity && _entityDisplay.Populated)
                 _entityDisplay.Close();
@@ -619,10 +619,10 @@ namespace CommandsEditor.DockPanels
             newEnt.shortGUID = ShortGuidUtils.GenerateRandom();
             if (newEnt.variant != EntityVariant.VARIABLE)
             {
-                EntityUtils.SetName(
+                Content.commands.Utils.SetEntityName(
                         Composite.shortGUID,
                         newEnt.shortGUID,
-                        EntityUtils.GetName(Composite.shortGUID, entity.shortGUID) + "_clone");
+                        Content.commands.Utils.GetEntityName(Composite.shortGUID, entity.shortGUID) + "_clone");
 
                 //TODO: not using the below, because really we should check every entity's name to get the index to append.
                 /*
@@ -854,7 +854,7 @@ namespace CommandsEditor.DockPanels
                     hierarchy.AddRange(generatedHierarchy);
                     ent = _composite.AddProxy(Content.commands, hierarchy.ToArray()); //TODO: re-add "add default params"
                     Entity pointedEnt = ((ProxyEntity)ent).proxy.GetPointedEntity(Content.commands, out Composite pointedComp);
-                    EntityUtils.SetName(_composite, ent, EntityUtils.GetName(pointedComp, pointedEnt) + " Proxy");
+                    Content.commands.Utils.SetEntityName(_composite, ent, Content.commands.Utils.GetEntityName(pointedComp, pointedEnt) + " Proxy");
                     break;
                 case EntityVariant.ALIAS:
                     ent = _composite.AddAlias(generatedHierarchy); //TODO: re-add "add default params"?

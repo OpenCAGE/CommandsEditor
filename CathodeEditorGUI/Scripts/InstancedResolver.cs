@@ -48,7 +48,7 @@ namespace CommandsEditor.Scripts
                 }
                 else
                 {
-                    debug.Add(path.GetAsString(content.commands, comp) + "\n\t" + EntityUtils.GetName(comp, ents[0]));
+                    debug.Add(path.GetAsString(content.commands, comp) + "\n\t" + content.commands.Utils.GetEntityName(comp, ents[0]));
                 }
 
                 //This gives us the entity that instanced the composite instance above (kinda weird, why do we need to know this?)
@@ -95,7 +95,7 @@ namespace CommandsEditor.Scripts
                     }
                     else
                     {
-                        debug.Add("[" + item.ID.ToByteString() + "] " + path.GetAsString(content.commands, comp) + " -> " + EntityUtils.GetName(comp, ent));
+                        debug.Add("[" + item.ID.ToByteString() + "] " + path.GetAsString(content.commands, comp) + " -> " + _content.commands.Utils.GetEntityName(comp, ent));
                     }
                 }
                 else
@@ -109,7 +109,7 @@ namespace CommandsEditor.Scripts
                     {
                         FunctionEntity ent2 = comp2.functions.FirstOrDefault(o => o.shortGUID == item.Entity.entity_id);
                         if (ent2 == null) continue;
-                        Console.WriteLine("\tFound entity in " + comp2.name + " -> " + EntityUtils.GetName(comp2, ent2));
+                        Console.WriteLine("\tFound entity in " + comp2.name + " -> " + _content.commands.Utils.GetEntityName(comp2, ent2));
                     }
                 }
 
@@ -193,7 +193,7 @@ namespace CommandsEditor.Scripts
                     }
                     else
                     {
-                        debug.Add(path.GetAsString(_content.commands, comp, false) + " -> [" + entry.resource_id.ToString() + "] " + EntityUtils.GetName(comp, ent));
+                        debug.Add(path.GetAsString(_content.commands, comp, false) + " -> [" + entry.resource_id.ToString() + "] " + _content.commands.Utils.GetEntityName(comp, ent));
                     }
                 }
                 else
@@ -208,7 +208,7 @@ namespace CommandsEditor.Scripts
                     {
                         FunctionEntity ent2 = comp2.functions.FirstOrDefault(o => o.shortGUID == entry.resource_id);
                         if (ent2 == null) continue;
-                        Console.WriteLine("\tFound entity in " + comp2.name + " -> " + EntityUtils.GetName(comp2, ent2));
+                        Console.WriteLine("\tFound entity in " + comp2.name + " -> " + _content.commands.Utils.GetEntityName(comp2, ent2));
                     }
 
                     List<Movers.MOVER_DESCRIPTOR> mvrs = _content.mvr.Entries.FindAll(o => o.resource_index == x);
@@ -258,7 +258,7 @@ namespace CommandsEditor.Scripts
                             new ResourceReference()
                             {
                                 resource_type = ResourceType.RENDERABLE_INSTANCE,
-                                resource_id = ShortGuidUtils.Generate(EntityUtils.GetName(content.commands.Entries[i], content.commands.Entries[i].functions[x]))
+                                resource_id = ShortGuidUtils.Generate(content.commands.Utils.GetEntityName(content.commands.Entries[i], content.commands.Entries[i].functions[x]))
                             });
                     }
                     else
@@ -460,7 +460,7 @@ namespace CommandsEditor.Scripts
             //}
 
             //Get instance info
-            (Vector3 position, Quaternion rotation) = CommandsUtils.CalculateInstancedPosition(hierarchy);
+            (Vector3 position, Quaternion rotation) = _content.commands.Utils.CalculateInstancedPosition(hierarchy);
             ShortGuid compositeInstanceID = hierarchy.GenerateCompositeInstanceID();
             hierarchy.GoBackOneStep();
             EntityHandle compositeInstanceReference = new EntityHandle()

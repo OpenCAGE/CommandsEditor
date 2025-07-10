@@ -48,7 +48,7 @@ namespace CommandsEditor.Scripts
                     ResourceReference resource = content.commands.Entries[i].functions[x].GetResource(ResourceType.COLLISION_MAPPING, true);
                     if (resource == null) continue;
 
-                    ShortGuid resourceID = ShortGuidUtils.Generate(EntityUtils.GetName(content.commands.Entries[i], content.commands.Entries[i].functions[x]));
+                    ShortGuid resourceID = ShortGuidUtils.Generate(content.commands.Utils.GetEntityName(content.commands.Entries[i], content.commands.Entries[i].functions[x]));
 
                     content.resource.collision_maps.Entries.Add(new CollisionMaps.Entry()
                     {
@@ -126,7 +126,7 @@ namespace CommandsEditor.Scripts
                                             composite_instance_id = path.GenerateCompositeInstanceID()
                                         };
 
-                                        ShortGuid resourceID = ShortGuidUtils.Generate(EntityUtils.GetName(comp, func));
+                                        ShortGuid resourceID = ShortGuidUtils.Generate(content.commands.Utils.GetEntityName(comp, func));
 
                                         content.resource.collision_maps.Entries.Add(new CollisionMaps.Entry()
                                         {

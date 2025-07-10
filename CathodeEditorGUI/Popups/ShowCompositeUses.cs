@@ -63,7 +63,7 @@ namespace CommandsEditor
                 foreach (FunctionEntity ent in comp.functions.FindAll(o => o.function == guid))
                 {
                     entities.Add(new EntityRef() { composite = comp, entity = ent });
-                    referenceList.Items.Add(comp.name + ": " + EntityUtils.GetName(comp.shortGUID, ent.shortGUID));
+                    referenceList.Items.Add(comp.name + ": " + Content.commands.Utils.GetEntityName(comp.shortGUID, ent.shortGUID));
                 }
             }
             Text = _baseText + " - " + (entityVariant.Text != "" ? entityVariant.Text + " " : "") + "(" + entities.Count + ")";
