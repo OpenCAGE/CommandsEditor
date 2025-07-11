@@ -29,8 +29,61 @@ namespace CommandsEditor
 {
     public static class LocalDebug
     {
+        public static void TestEntityNames()
+        {
+#if DEBUG
+            List<string> files = Directory.GetFiles("C:\\Program Files (x86)\\Steam\\steamapps\\common\\Alien Isolation\\data\\ENV", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            List<string> unnamed = new List<string>();
+            foreach (string file in files)
+            {
+                unnamed.Add("***\n"+ file + "\n***");
+
+                Commands commands = new Commands(file);
+                ShortGuidUtils.LinkCommands(commands);
+                foreach (Composite comp in commands.Entries)
+                {
+                    commands.Utils.PurgeDeadLinks(comp);
+
+                    foreach (Entity ent in comp.GetEntities())
+                    {
+                        if (ent.variant == EntityVariant.ALIAS)
+                            continue;
+                        if (ent.variant == EntityVariant.FUNCTION)
+                        {
+                            FunctionType func = ((FunctionEntity)ent).function.AsFunctionType;
+                            if (func == FunctionType.ModelReference || 
+                                func == FunctionType.RadiosityProxy || 
+                                func == FunctionType.EnvironmentModelReference || 
+                                func == FunctionType.PhysicsSystem)
+                                continue;
+                        }
+
+                        string name = commands.Utils.GetEntityName(comp, ent);
+                        if (name == ent.shortGUID.ToByteString())
+                        {
+                            string type = ent.variant.ToString();
+                            if (ent.variant == EntityVariant.FUNCTION)
+                            {
+                                Composite comp2 = commands.GetComposite(((FunctionEntity)ent).function);
+                                if (comp2 != null)
+                                    type += " " + comp2.name;
+                                else
+                                    type += " " + ((FunctionEntity)ent).function.AsFunctionType.ToString();
+                            }
+                            unnamed.Add(comp.name + " -> [" + type + "] " + ent.shortGUID.ToByteString());
+                        }
+                    }
+                }
+
+                unnamed.Add("\n\n");
+            }
+            File.WriteAllLines("unnamed.txt", unnamed);
+#endif
+        }
+
         public static void DefaultsUnitTest(Commands cmd)
         {
+#if DEBUG
             var values = Enum.GetValues(typeof(FunctionType));
             foreach (var value in values)
             {
@@ -43,10 +96,12 @@ namespace CommandsEditor
                     }
                 }
             }
+#endif
         }
 
         public static void ParameterCloneUnitTest()
         {
+#if DEBUG
             Commands test = new Commands("M:\\Modding\\Steam Projects\\steamapps\\common\\Alien Isolation\\data\\ENV\\PRODUCTION\\BSP_LV426_PT02\\WORLD\\COMMANDS.PAK");
             {
                 Parameter p = null;
@@ -177,6 +232,7 @@ namespace CommandsEditor
                 if (p0.value == p2.value)
                     throw new Exception("");
             }
+#endif
         }
 
         public static void MAPTEST(string path)
@@ -272,7 +328,7 @@ namespace CommandsEditor
         {
 #if DEBUG
 
-            List<string> files = Directory.GetFiles("M:\\Modding\\Steam Projects\\steamapps\\common\\Alien Isolation\\data\\ENV", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            List<string> files = Directory.GetFiles("C:\\Program Files (x86)\\Steam\\steamapps\\common\\Alien Isolation\\data\\ENV", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
             List<string> dump = new List<string>();
             dump.Add("PAK File,Composite Name,VariableEntity ShortGuid,VariableEntity Param Name");
             foreach (string file in files)

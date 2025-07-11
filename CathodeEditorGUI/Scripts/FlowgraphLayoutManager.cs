@@ -1,17 +1,18 @@
 //#define DO_PRE_FLIGHT_CHECKS
 // ^ Enable this define to sanity check the vanilla node DB for any dodgy entries.
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using CATHODE;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CathodeLib;
 using ST.Library.UI.NodeEditor;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using static CathodeLib.CompositeFlowgraphTable;
 
 namespace CommandsEditor
@@ -21,6 +22,7 @@ namespace CommandsEditor
     //Handles loading vanilla/custom flowgraph layouts, and saving custom layouts
     public class FlowgraphLayoutManager
     {
+        private static CompositeFlowgraphTable _preDefinedLayouts = new CompositeFlowgraphTable();
         private static CompositeFlowgraphTable _userDefinedLayouts = new CompositeFlowgraphTable();
         private static CompositeFlowgraphCompatibilityTable _compatibility = new CompositeFlowgraphCompatibilityTable();
 
@@ -34,7 +36,7 @@ namespace CommandsEditor
 #if DEBUG
                 if (DEBUG_UsePreDefinedTable)
                 { 
-                    return CustomTable.Vanilla.CompositeFlowgraphs;
+                    return _preDefinedLayouts;
                 }
 #endif
                 return _userDefinedLayouts;
@@ -46,6 +48,18 @@ namespace CommandsEditor
 
         static FlowgraphLayoutManager()
         {
+            byte[] content = Properties.Resources.flowgraphs;
+            if (File.Exists("LocalDB\\flowgraphs.dat"))
+                content = File.ReadAllBytes("LocalDB\\flowgraphs.dat");
+
+            using (MemoryStream stream = new MemoryStream())
+            using (GZipStream compressedStream = new GZipStream(new MemoryStream(content), CompressionMode.Decompress))
+            {
+                compressedStream.CopyTo(stream);
+                content = stream.ToArray();
+            }
+            _preDefinedLayouts = (CompositeFlowgraphTable)CustomTable.ReadTable(content, CustomTableType.COMPOSITE_FLOWGRAPHS);
+
             //Always add new composites into the compatibility table
             Singleton.OnCompositeAdded += AddToCompatibilityTable;
         }
@@ -208,11 +222,11 @@ namespace CommandsEditor
             //Copy the default layouts over for composites in this Commands if they don't already exist
             if (_userDefinedLayouts.flowgraphs.Count == 0)
             {
-                for (int i = 0; i < CustomTable.Vanilla.CompositeFlowgraphs.flowgraphs.Count; i++)
+                for (int i = 0; i < _preDefinedLayouts.flowgraphs.Count; i++)
                 {
-                    if (_commands.Entries.FirstOrDefault(o => o.shortGUID == CustomTable.Vanilla.CompositeFlowgraphs.flowgraphs[i].CompositeGUID) == null)
+                    if (_commands.Entries.FirstOrDefault(o => o.shortGUID == _preDefinedLayouts.flowgraphs[i].CompositeGUID) == null)
                         continue;
-                    _userDefinedLayouts.flowgraphs.Add(CustomTable.Vanilla.CompositeFlowgraphs.flowgraphs[i].Copy());
+                    _userDefinedLayouts.flowgraphs.Add(_preDefinedLayouts.flowgraphs[i].Copy());
                 }
             }
         }
