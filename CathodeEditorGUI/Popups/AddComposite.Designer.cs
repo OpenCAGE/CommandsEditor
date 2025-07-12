@@ -61,7 +61,7 @@
             this.label1.TabIndex = 2;
             this.label1.Text = "Composite Name";
             // 
-            // AddGeneric
+            // AddComposite
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -72,7 +72,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.Name = "AddGeneric";
+            this.Name = "AddComposite";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Create New Composite In Folder";
             this.ResumeLayout(false);

@@ -102,7 +102,7 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Modify Resource References";
             // 
-            // CathodeEditorGUI_AddOrEditResource
+            // AddOrEditResource
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -113,7 +113,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.Name = "CathodeEditorGUI_AddOrEditResource";
+            this.Name = "AddOrEditResource";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Resource Reference Editor";
             this.groupBox1.ResumeLayout(false);

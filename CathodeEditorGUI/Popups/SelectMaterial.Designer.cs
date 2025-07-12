@@ -45,10 +45,10 @@
             this.materialList.TabIndex = 21;
             this.materialList.SelectedIndexChanged += new System.EventHandler(this.materialList_SelectedIndexChanged);
             // 
-            // selectMaterial
+            // selectMaterialBtn
             // 
             this.selectMaterialBtn.Location = new System.Drawing.Point(693, 639);
-            this.selectMaterialBtn.Name = "selectMaterial";
+            this.selectMaterialBtn.Name = "selectMaterialBtn";
             this.selectMaterialBtn.Size = new System.Drawing.Size(140, 30);
             this.selectMaterialBtn.TabIndex = 22;
             this.selectMaterialBtn.Text = "Use This Material";
@@ -74,7 +74,7 @@
             this.elementHost1.Text = "elementHost1";
             this.elementHost1.Child = this.materialEditorControlsWPF1;
             // 
-            // MaterialEditor
+            // SelectMaterial
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -86,7 +86,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.Name = "MaterialEditor";
+            this.Name = "SelectMaterial";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Material Editor";
             this.ResumeLayout(false);

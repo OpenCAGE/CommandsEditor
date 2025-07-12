@@ -1,4 +1,4 @@
-﻿namespace CommandsEditor
+namespace CommandsEditor
 {
     partial class AddEntity_Function
     {

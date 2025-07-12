@@ -30,16 +30,16 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TriggerSequenceEditor));
-            System.Windows.Forms.ListViewGroup listViewGroup11 = new System.Windows.Forms.ListViewGroup("Target", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup12 = new System.Windows.Forms.ListViewGroup("State", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup13 = new System.Windows.Forms.ListViewGroup("Input", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup14 = new System.Windows.Forms.ListViewGroup("Output", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup15 = new System.Windows.Forms.ListViewGroup("Parameter", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup16 = new System.Windows.Forms.ListViewGroup("Internal", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup17 = new System.Windows.Forms.ListViewGroup("Reference", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup18 = new System.Windows.Forms.ListViewGroup("Method", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup19 = new System.Windows.Forms.ListViewGroup("Finished", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup20 = new System.Windows.Forms.ListViewGroup("Relay", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Target", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("State", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("Input", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("Output", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup("Parameter", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup6 = new System.Windows.Forms.ListViewGroup("Internal", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup7 = new System.Windows.Forms.ListViewGroup("Reference", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup8 = new System.Windows.Forms.ListViewGroup("Method", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup9 = new System.Windows.Forms.ListViewGroup("Finished", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup10 = new System.Windows.Forms.ListViewGroup("Relay", System.Windows.Forms.HorizontalAlignment.Left);
             this.trigger_list = new System.Windows.Forms.ListBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.button2 = new System.Windows.Forms.Button();
@@ -140,37 +140,37 @@
             this.funcHeader,
             this.inheritHeader});
             this.entity_list.FullRowSelect = true;
-            listViewGroup11.Header = "Target";
-            listViewGroup11.Name = "Target";
-            listViewGroup12.Header = "State";
-            listViewGroup12.Name = "State";
-            listViewGroup13.Header = "Input";
-            listViewGroup13.Name = "Input";
-            listViewGroup14.Header = "Output";
-            listViewGroup14.Name = "Output";
-            listViewGroup15.Header = "Parameter";
-            listViewGroup15.Name = "Parameter";
-            listViewGroup16.Header = "Internal";
-            listViewGroup16.Name = "Internal";
-            listViewGroup17.Header = "Reference";
-            listViewGroup17.Name = "Reference";
-            listViewGroup18.Header = "Method";
-            listViewGroup18.Name = "Method";
-            listViewGroup19.Header = "Finished";
-            listViewGroup19.Name = "Finished";
-            listViewGroup20.Header = "Relay";
-            listViewGroup20.Name = "Relay";
+            listViewGroup1.Header = "Target";
+            listViewGroup1.Name = "Target";
+            listViewGroup2.Header = "State";
+            listViewGroup2.Name = "State";
+            listViewGroup3.Header = "Input";
+            listViewGroup3.Name = "Input";
+            listViewGroup4.Header = "Output";
+            listViewGroup4.Name = "Output";
+            listViewGroup5.Header = "Parameter";
+            listViewGroup5.Name = "Parameter";
+            listViewGroup6.Header = "Internal";
+            listViewGroup6.Name = "Internal";
+            listViewGroup7.Header = "Reference";
+            listViewGroup7.Name = "Reference";
+            listViewGroup8.Header = "Method";
+            listViewGroup8.Name = "Method";
+            listViewGroup9.Header = "Finished";
+            listViewGroup9.Name = "Finished";
+            listViewGroup10.Header = "Relay";
+            listViewGroup10.Name = "Relay";
             this.entity_list.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup11,
-            listViewGroup12,
-            listViewGroup13,
-            listViewGroup14,
-            listViewGroup15,
-            listViewGroup16,
-            listViewGroup17,
-            listViewGroup18,
-            listViewGroup19,
-            listViewGroup20});
+            listViewGroup1,
+            listViewGroup2,
+            listViewGroup3,
+            listViewGroup4,
+            listViewGroup5,
+            listViewGroup6,
+            listViewGroup7,
+            listViewGroup8,
+            listViewGroup9,
+            listViewGroup10});
             this.entity_list.HideSelection = false;
             this.entity_list.Location = new System.Drawing.Point(6, 19);
             this.entity_list.MultiSelect = false;

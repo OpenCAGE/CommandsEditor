@@ -1,4 +1,4 @@
-﻿namespace CommandsEditor.Popups
+namespace CommandsEditor.Popups
 {
     partial class SelectFunctionType
     {
