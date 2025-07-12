@@ -39,7 +39,6 @@ namespace CommandsEditor
                 unnamed.Add("***\n"+ file + "\n***");
 
                 Commands commands = new Commands(file);
-                ShortGuidUtils.LinkCommands(commands);
                 foreach (Composite comp in commands.Entries)
                 {
                     commands.Utils.PurgeDeadLinks(comp);
@@ -335,8 +334,6 @@ namespace CommandsEditor
             {
                 Commands commands = new Commands(file);
 
-                ShortGuidUtils.LinkCommands(commands);
-
                 for (int x = 0; x < commands.Entries.Count; x++)
                 {
                     for (int i = 0; i < commands.Entries[x].variables.Count; i++)
@@ -615,7 +612,6 @@ namespace CommandsEditor
                 output.Add("====================");
 
                 Commands commands = new Commands(file);
-                ShortGuidUtils.LinkCommands(commands);
 
                 foreach (Composite composite in commands.Entries)
                 {

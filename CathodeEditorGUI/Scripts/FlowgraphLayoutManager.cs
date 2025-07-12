@@ -167,17 +167,20 @@ namespace CommandsEditor
 #if DEBUG
         private static void SaveVanillaDB()
         {
-            Console.WriteLine("WARNING: Saving vanilla DB is currently disabled, and to be fixed or deprecated!!");
-            return;
-
             string vanillaFlowgraphDBPath = System.Reflection.Assembly.GetEntryAssembly().Location;
             vanillaFlowgraphDBPath = vanillaFlowgraphDBPath.Substring(0, vanillaFlowgraphDBPath.Length - Path.GetFileName(vanillaFlowgraphDBPath).Length);
-            vanillaFlowgraphDBPath += "../CathodeEditorGUI/Resources/flowgraphs.bin";
+            vanillaFlowgraphDBPath += "../CathodeEditorGUI/Resources/flowgraphs.dat";
             using (BinaryWriter writer = new BinaryWriter(File.OpenWrite(vanillaFlowgraphDBPath)))
             {
                 writer.BaseStream.SetLength(0);
-                //_preDefinedLayouts.Write(writer);
+                _preDefinedLayouts.Write(writer);
                 writer.Close();
+            }
+            byte[] content = File.ReadAllBytes(vanillaFlowgraphDBPath);
+            File.Delete(vanillaFlowgraphDBPath);
+            using (GZipStream gzipStream = new GZipStream(File.OpenWrite(vanillaFlowgraphDBPath), CompressionMode.Compress))
+            {
+                gzipStream.Write(content, 0, content.Length);
             }
         }
 #endif

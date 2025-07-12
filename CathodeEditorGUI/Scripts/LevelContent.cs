@@ -107,7 +107,6 @@ namespace CommandsEditor
             }
 
             //Link up commands to utils and cache some things
-            ShortGuidUtils.LinkCommands(commands);
             FlowgraphLayoutManager.LinkCommands(commands);
             ParameterModificationTracker.LinkCommands(commands);
 
@@ -134,10 +133,6 @@ namespace CommandsEditor
 
         ~LevelContent()
         {
-            if (ShortGuidUtils.LinkedCommands == commands)
-            {
-                ShortGuidUtils.LinkCommands(null);
-            }
             if (FlowgraphLayoutManager.LinkedCommands == commands)
             {
                 FlowgraphLayoutManager.LinkCommands(null);
