@@ -495,6 +495,8 @@ namespace CommandsEditor
                 _commandsDisplay.Content.resource.collision_maps.Save();
             if (_commandsDisplay.Content.mvr != null && _commandsDisplay.Content.mvr.Entries != null)
                 _commandsDisplay.Content.mvr.Save();
+            if (_commandsDisplay.Content.resource.sound_zones != null && _commandsDisplay.Content.resource.sound_zones.Entries != null)
+                _commandsDisplay.Content.resource.sound_zones.Save();
 
             return true;
         }

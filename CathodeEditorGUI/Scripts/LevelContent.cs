@@ -54,6 +54,8 @@ namespace CommandsEditor
             public SoundDialogueLookups sound_dialoguelookups = null;
             public SoundEventData sound_eventdata = null;
             public SoundEnvironmentData sound_environmentdata = null;
+            public SoundLoadZones sound_zones = null;
+            public SoundFlashModels sound_flashmodels = null;
 
             public CharacterAccessorySets character_accessories = null;
 
@@ -288,17 +290,13 @@ namespace CommandsEditor
                         case 7:
                             resource.physics_maps = new PhysicsMaps(worldPath + "PHYSICS.MAP");
                             break;
-                        case 8:
-                            resource.sound_bankdata = new SoundBankData(worldPath + "SOUNDBANKDATA.DAT");
-                            break;
-                        case 9:
-                            resource.sound_dialoguelookups = new SoundDialogueLookups(worldPath + "SOUNDDIALOGUELOOKUPS.DAT");
-                            break;
-                        case 10:
-                            resource.sound_eventdata = new SoundEventData(worldPath + "SOUNDEVENTDATA.DAT");
-                            break;
                         case 11:
+                            resource.sound_bankdata = new SoundBankData(worldPath + "SOUNDBANKDATA.DAT");
+                            resource.sound_dialoguelookups = new SoundDialogueLookups(worldPath + "SOUNDDIALOGUELOOKUPS.DAT");
+                            resource.sound_eventdata = new SoundEventData(worldPath + "SOUNDEVENTDATA.DAT");
                             resource.sound_environmentdata = new SoundEnvironmentData(worldPath + "SOUNDENVIRONMENTDATA.DAT");
+                            resource.sound_zones = new SoundLoadZones(worldPath + "SOUNDLOADZONES.DAT");
+                            resource.sound_flashmodels = new SoundFlashModels(worldPath + "SOUNDFLASHMODELS.DAT");
                             break;
                         case 12:
                             resource.character_accessories = new CharacterAccessorySets(worldPath + "CHARACTERACCESSORYSETS.BIN");
