@@ -355,6 +355,12 @@
     <Compile Include="Popups\RenameGeneric.Designer.cs">
       <DependentUpon>RenameGeneric.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\SelectFunctionType.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\SelectFunctionType.Designer.cs">
+      <DependentUpon>SelectFunctionType.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popups\SelectMaterial.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -393,6 +399,12 @@
     </Compile>
     <Compile Include="Popups\UserControls\CompositeEntityList.Designer.cs">
       <DependentUpon>CompositeEntityList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\UserControls\FunctionTypeList.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Popups\UserControls\FunctionTypeList.Designer.cs">
+      <DependentUpon>FunctionTypeList.cs</DependentUpon>
     </Compile>
     <Compile Include="Scripts\CompositePath.cs" />
     <Compile Include="Scripts\DirectXTexUtility.cs" />
@@ -756,6 +768,9 @@
     <EmbeddedResource Include="Popups\RenameGeneric.resx">
       <DependentUpon>RenameGeneric.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Popups\SelectFunctionType.resx">
+      <DependentUpon>SelectFunctionType.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Popups\SelectMaterial.resx">
       <DependentUpon>SelectMaterial.cs</DependentUpon>
     </EmbeddedResource>
@@ -836,6 +851,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\UserControls\CompositeEntityList.resx">
       <DependentUpon>CompositeEntityList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\UserControls\FunctionTypeList.resx">
+      <DependentUpon>FunctionTypeList.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\UserControls\GUI_Resource_AnimatedModel.resx">
       <DependentUpon>GUI_Resource_AnimatedModel.cs</DependentUpon>

@@ -1,4 +1,4 @@
-using CATHODE.Scripting;
+﻿using CATHODE.Scripting;
 using CATHODE;
 using System;
 using System.Collections.Generic;

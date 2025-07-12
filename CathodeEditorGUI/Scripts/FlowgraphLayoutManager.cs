@@ -48,12 +48,13 @@ namespace CommandsEditor
 
         static FlowgraphLayoutManager()
         {
-            byte[] content = Properties.Resources.flowgraphs;
+            byte[] contentCompressed = Properties.Resources.flowgraphs;
             if (File.Exists("LocalDB\\flowgraphs.dat"))
-                content = File.ReadAllBytes("LocalDB\\flowgraphs.dat");
+                contentCompressed = File.ReadAllBytes("LocalDB\\flowgraphs.dat");
+            byte[] content = null;
 
             using (MemoryStream stream = new MemoryStream())
-            using (GZipStream compressedStream = new GZipStream(new MemoryStream(content), CompressionMode.Decompress))
+            using (GZipStream compressedStream = new GZipStream(new MemoryStream(contentCompressed), CompressionMode.Decompress))
             {
                 compressedStream.CopyTo(stream);
                 content = stream.ToArray();
@@ -167,6 +168,8 @@ namespace CommandsEditor
 #if DEBUG
         private static void SaveVanillaDB()
         {
+            return;
+
             string vanillaFlowgraphDBPath = System.Reflection.Assembly.GetEntryAssembly().Location;
             vanillaFlowgraphDBPath = vanillaFlowgraphDBPath.Substring(0, vanillaFlowgraphDBPath.Length - Path.GetFileName(vanillaFlowgraphDBPath).Length);
             vanillaFlowgraphDBPath += "../CathodeEditorGUI/Resources/flowgraphs.dat";

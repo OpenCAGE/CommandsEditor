@@ -410,10 +410,38 @@ namespace CommandsEditor
                 Movers movers = new Movers(file);
                 for (int i = 0; i < movers.Entries.Count; i++)
                 {
-                    Console.WriteLine(movers.Entries[i].emissive_flags);
+                    Matrix4x4.Decompose(movers.Entries[i].transform, out Vector3 scale, out System.Numerics.Quaternion rotation, out Vector3 position);
+                    if (scale.X < 0.99 || scale.X > 1.01 ||
+                        scale.Y < 0.99 || scale.Y > 1.01 || 
+                        scale.Z < 0.99 || scale.Z > 1.01)
+                    {
+                        Console.WriteLine(scale);
+                    }
                 }
                 //movers.Save();
             }
+#endif
+        }
+
+        public static void TestLights()
+        {
+#if DEBUG
+
+            List<string> files = Directory.GetFiles("M:\\Modding\\Steam Projects\\steamapps\\common\\Alien Isolation\\data\\ENV\\PRODUCTION", "lights.bin", SearchOption.AllDirectories).ToList<string>();
+            foreach (string file in files)
+            {
+                Lights lights = new Lights(file);
+                lights.Sun.enabled = true;
+                lights.Sun.colour = new Vector3(1, 1, 1);
+                lights.Sun.direction = new Vector3(0, 90, 0);
+                lights.Sun.feature_flags |= Lights.LightFeature.LensFlare;
+                lights.Sun.feature_flags |= Lights.LightFeature.NoClip;
+                lights.Sun.feature_flags |= Lights.LightFeature.Specular;
+                lights.Sun.feature_flags = 0;
+                lights.Save();
+            }
+
+            string sdffsd = "";
 #endif
         }
 

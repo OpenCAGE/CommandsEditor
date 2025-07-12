@@ -27,23 +27,9 @@ namespace CommandsEditor
         {
             InitializeComponent();
             _composite = composite;
-            functionTypeList.ListViewItemSorter = _sorter;
 
-            foreach (FunctionType function in Enum.GetValues(typeof(FunctionType)))
-            {
-                FunctionType? inherited = Content.commands.Utils.GetInheritedFunction(function);
-
-                ListViewItem item = new ListViewItem(function.ToString());
-                item.ImageIndex = 0;
-                item.SubItems.Add(inherited == null ? "" : inherited.Value.ToString());
-
-                _items.Add(item);
-            }
-
-            searchText.Text = SettingsManager.GetString(Singleton.Settings.PreviouslySearchedFunctionType);
-            Search();
-
-            SelectFuncType(SettingsManager.GetString(Singleton.Settings.PreviouslySelectedFunctionType));
+            functionTypeList1.Setup();
+            functionTypeList1.SelectedItemChanged += functionTypeList_SelectedIndexChanged;
 
             addDefaultParams.Checked = SettingsManager.GetBool(Singleton.Settings.PreviouslySearchedParamPopulation, false);
             createNode.Checked = SettingsManager.GetBool(Singleton.Settings.MakeNodeWhenMakeEntity);
@@ -55,58 +41,6 @@ namespace CommandsEditor
 #endif
         }
 
-        private void searchText_TextChanged(object sender, EventArgs e)
-        {
-            Search();
-        }
-
-        private void Search()
-        {
-            string selected = functionTypeList.SelectedItems.Count > 0 ? functionTypeList.SelectedItems[0].Text : "";
-
-            functionTypeList.BeginUpdate();
-            functionTypeList.Items.Clear();
-            functionTypeList.Items.AddRange(_items.Where(o => o.Text.ToUpper().Contains(searchText.Text.ToUpper())).ToList().ToArray());
-            functionTypeList.EndUpdate();
-
-            SelectFuncType(selected);
-
-            typesCount.Text = "Showing " + functionTypeList.Items.Count;
-            SettingsManager.SetString(Singleton.Settings.PreviouslySearchedFunctionType, searchText.Text);
-        }
-
-        private void clearSearchBtn_Click(object sender, EventArgs e)
-        {
-            searchText.Text = "";
-            Search();
-        }
-
-        private void FunctionTypeList_ColumnClick(object sender, System.Windows.Forms.ColumnClickEventArgs e)
-        {
-            // Determine if the clicked column is already the column that is being sorted.
-            if (e.Column == _sorter.SortColumn)
-            {
-                // Reverse the current sort direction for this column.
-                if (_sorter.Order == SortOrder.Ascending)
-                {
-                    _sorter.Order = SortOrder.Descending;
-                }
-                else
-                {
-                    _sorter.Order = SortOrder.Ascending;
-                }
-            }
-            else
-            {
-                // Set the column number that is to be sorted; default to ascending.
-                _sorter.SortColumn = e.Column;
-                _sorter.Order = SortOrder.Ascending;
-            }
-
-            // Perform the sort with these new sort options.
-            this.functionTypeList.Sort();
-        }
-
         private void createEntity_Click(object sender, EventArgs e)
         {
             if (entityName.Text == "")
@@ -114,13 +48,13 @@ namespace CommandsEditor
                 MessageBox.Show("Please enter an entity name!", "No name.", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-            if (functionTypeList.SelectedItems.Count == 0)
+            if (functionTypeList1.SelectedItem == null)
             {
                 MessageBox.Show("Please select a function type!", "No type.", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            FunctionType function = (FunctionType)Enum.Parse(typeof(FunctionType), functionTypeList.SelectedItems[0].Text);
+            FunctionType function = (FunctionType)Enum.Parse(typeof(FunctionType), functionTypeList1.SelectedItem.Text);
 
             //A composite can only have one PhysicsSystem
             if (function == FunctionType.PhysicsSystem && _composite.functions.FirstOrDefault(o => o.function == FunctionType.PhysicsSystem) != null)
@@ -159,23 +93,6 @@ namespace CommandsEditor
                 createEntity.PerformClick();
         }
 
-        private void SelectFuncType(string type)
-        {
-            if (type == "")
-            {
-                return;
-            }
-
-            for (int i = 0; i < functionTypeList.Items.Count; i++)
-            {
-                if (functionTypeList.Items[i].Text == type)
-                {
-                    functionTypeList.Items[i].Selected = true;
-                    break;
-                }
-            }
-        }
-
         private void helpBtn_Click(object sender, EventArgs e)
         {
             Process.Start("https://opencage.co.uk/docs/cathode-entities/#entities");
@@ -187,13 +104,13 @@ namespace CommandsEditor
                 Singleton.Editor.ToggleMakeNodeWhenMakeEntity();
         }
 
-        private void functionTypeList_SelectedIndexChanged(object sender, EventArgs e)
+        private void functionTypeList_SelectedIndexChanged()
         {
-            if (functionTypeList.SelectedItems.Count == 0)
+            if (functionTypeList1.SelectedItem == null)
                 return;
-
+            
             if (entityName.Text == "" || Enum.TryParse<FunctionType>(entityName.Text, out FunctionType type))
-                entityName.Text = functionTypeList.SelectedItems[0].Text;
+                entityName.Text = functionTypeList1.SelectedItem.Text;
         }
     }
 }
