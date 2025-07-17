@@ -112,6 +112,30 @@ namespace CommandsEditor
             FlowgraphLayoutManager.LinkCommands(commands);
             ParameterModificationTracker.LinkCommands(commands);
 
+            //Correct all Entity names that are actually pointers to resources
+            foreach (Composite comp in commands.Entries)
+            {
+                foreach (FunctionEntity func in comp.functions)
+                {
+                    if (func.function.AsFunctionType == FunctionType.EnvironmentModelReference)
+                    {
+                        //Lookup skeleton name
+                    }
+                    else if (func.function.AsFunctionType == FunctionType.PhysicsSystem)
+                    {
+                        //Lookup Havok name
+                    }
+                    else if (func.function.AsFunctionType == FunctionType.ModelReference)
+                    {
+                        //If no renderable, or renderable can't be looked up, delete?
+                    }
+                    else if (func.function.AsFunctionType == FunctionType.RadiosityProxy)
+                    {
+                        //Delete? I think these are always unresolvable in retail?
+                    }
+                }
+            }
+
             //Load the level-specific text databases
             var textDBs = XDocument.Load(SharedData.pathToAI + "/DATA/level_text_databases.xml");
             foreach (XElement levelDB in textDBs.XPathSelectElements("//level_text_databases/level"))

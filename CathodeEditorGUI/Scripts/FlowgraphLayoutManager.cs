@@ -226,14 +226,19 @@ namespace CommandsEditor
             Console.WriteLine("Loaded " + _compatibility.compatibility_info.Count + " flowgraph compatibility definitions!");
 
             //Copy the default layouts over for composites in this Commands if they don't already exist
+            FlowgraphMeta.SupportedLevel level = (FlowgraphMeta.SupportedLevel)Enum.Parse(typeof(FlowgraphMeta.SupportedLevel), Path.GetFileName(_commands.EntryPoints[0].name).ToUpper()); //TODO: should really have a global level name based on what's loading, rather than this.
             if (_userDefinedLayouts.flowgraphs.Count == 0)
             {
+                int count = 0;
                 for (int i = 0; i < _preDefinedLayouts.flowgraphs.Count; i++)
                 {
+                    if (!_preDefinedLayouts.flowgraphs[i].SupportedLevels.HasFlag(level))
+                        continue;
                     if (_commands.Entries.FirstOrDefault(o => o.shortGUID == _preDefinedLayouts.flowgraphs[i].CompositeGUID) == null)
                         continue;
                     _userDefinedLayouts.flowgraphs.Add(_preDefinedLayouts.flowgraphs[i].Copy());
                 }
+                Console.WriteLine("Applied " + count + " suitable flowgraph layouts, of the " + _preDefinedLayouts.flowgraphs.Count + " available!");
             }
         }
 

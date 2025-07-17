@@ -854,12 +854,14 @@ namespace CommandsEditor
             {
                 switch (parameter.Item2)
                 {
-                    case ParameterVariant.STATE_PARAMETER:
                     case ParameterVariant.INPUT_PIN:
                     case ParameterVariant.PARAMETER:
-                        //case ParameterVariant.METHOD_FUNCTION:
-                        node.AddInputOption(parameter.Item1);
+                    case ParameterVariant.STATE_PARAMETER:
+                        node.AddTopOption(parameter.Item1);
                         break;
+                    //case ParameterVariant.METHOD_FUNCTION:
+                    //    node.AddInputOption(parameter.Item1);
+                    //    break;
                     case ParameterVariant.METHOD_PIN:
                         node.AddInputOption(parameter.Item1);
                         ShortGuid relay = Commands.Utils.GetRelay(parameter.Item1);
@@ -868,8 +870,10 @@ namespace CommandsEditor
                         break;
                     case ParameterVariant.OUTPUT_PIN:
                     case ParameterVariant.TARGET_PIN:
-                    case ParameterVariant.REFERENCE_PIN:
                         node.AddOutputOption(parameter.Item1);
+                        break;
+                    case ParameterVariant.REFERENCE_PIN:
+                        node.AddBottomOption(parameter.Item1);
                         break;
                 }
             }
@@ -885,6 +889,14 @@ namespace CommandsEditor
             for (int i = 0; i < outs.Length; i++)
                 if (outs[i].ConnectionCount == 0)
                     node.RemoveOutputOption(outs[i].ShortGUID);
+            STNodeOption[] ups = node.GetTopOptions();
+            for (int i = 0; i < ups.Length; i++)
+                if (ups[i].ConnectionCount == 0)
+                    node.RemoveTopOption(ups[i].ShortGUID);
+            STNodeOption[] downs = node.GetBottomOptions();
+            for (int i = 0; i < downs.Length; i++)
+                if (downs[i].ConnectionCount == 0)
+                    node.RemoveBottomOption(downs[i].ShortGUID);
         }
 
         //Delete right clicked node
