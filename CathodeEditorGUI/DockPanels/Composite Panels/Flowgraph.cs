@@ -620,7 +620,7 @@ namespace CommandsEditor
                 duplicated.AddOutputOption(outs[i].ShortGUID);
             STNodeOption[] ups = node.GetTopOptions();
             for (int i = 0; i < ups.Length; i++)
-                duplicated.AddTopOption(ups[i].ShortGUID);
+                duplicated.AddTopOption(ups[i].ShortGUID, ups[i].Style);
             STNodeOption[] downs = node.GetBottomOptions();
             for (int i = 0; i < downs.Length; i++)
                 duplicated.AddBottomOption(downs[i].ShortGUID);
