@@ -1,24 +1,25 @@
+using CATHODE;
+using CATHODE.Scripting;
+using CATHODE.Scripting.Internal;
+using CathodeLib;
+using CommandsEditor.Popups.UserControls;
+using OpenCAGE;
+using ST.Library.UI.NodeEditor;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Windows.Forms;
-using ST.Library.UI.NodeEditor;
-using CATHODE.Scripting.Internal;
-using CATHODE.Scripting;
-using OpenCAGE;
-using WeifenLuo.WinFormsUI.Docking;
-using System.Xml.Linq;
-using CATHODE;
-using static CathodeLib.CompositeFlowgraphTable;
-using CommandsEditor.Popups.UserControls;
-using System.IO;
-using CathodeLib;
-using System.Windows.Media.Media3D;
-using System.Windows.Controls;
 using System.ComponentModel.Design;
-using static CommandsEditor.ModifyPinsOrParameters;
 using System.Diagnostics;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Windows.Controls;
+using System.Windows.Forms;
+using System.Windows.Media.Media3D;
+using System.Xml.Linq;
+using WeifenLuo.WinFormsUI.Docking;
+using static CathodeLib.CompositeFlowgraphTable;
+using static CathodeLib.CompositePinInfoTable;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace CommandsEditor
 {
@@ -199,6 +200,9 @@ namespace CommandsEditor
 
                 nodes[i] = EntityToNode(entity, true);
                 nodes[i].SetPosition(flowgraphMeta.Nodes[i].Position);
+                
+                //TEMP
+                AddAllPins(nodes[i]);
 
                 foreach (ShortGuid pin in flowgraphMeta.Nodes[i].PinsIn)
                     nodes[i].AddInputOption(pin);
@@ -208,6 +212,8 @@ namespace CommandsEditor
                 nodes[i].NodeID = flowgraphMeta.Nodes[i].NodeID;
             }
 
+            Console.WriteLine(flowgraphMeta.Name);
+
             //Populate connections
             List<EntityConnector> populatedConnections = new List<EntityConnector>();
             for (int i = 0; i < flowgraphMeta.Nodes.Count; i++)
@@ -216,8 +222,10 @@ namespace CommandsEditor
                 {
                     STNode connectedNode = nodes.FirstOrDefault(o => o.NodeID == connectionMeta.ConnectedNodeID && o.ShortGUID == connectionMeta.ConnectedEntityGUID);
 
-                    STNodeOption pinOut = nodes[i].AddOutputOption(connectionMeta.ParameterGUID);
-                    STNodeOption pinIn = connectedNode.AddInputOption(connectionMeta.ConnectedParameterGUID);
+                    STNodeOption pinOut = nodes[i].GetOption(connectionMeta.ParameterGUID);
+                    STNodeOption pinIn = connectedNode.GetOption(connectionMeta.ConnectedParameterGUID);
+
+                    Console.WriteLine(nodes[i].Title + " [" + pinOut.Text + "] " + pinOut.Location + " -> " + connectedNode.Title + " [" + pinIn.Text + "] " + pinIn.Location);
                     ConnectionStatus status = pinOut.ConnectOption(pinIn);
 
                     if (status != ConnectionStatus.Connected)
@@ -235,6 +243,12 @@ namespace CommandsEditor
                     }
                     populatedConnections.Add(connector);
                 }
+            }
+
+            //TEMP
+            for (int i = 0; i < flowgraphMeta.Nodes.Count; i++)
+            {
+                RemoveUnusedPins(nodes[i]);
             }
 
             //Sanity check that our Composite doesn't contain any additional links/entities that we didn't populate in the flowgraph but should've
@@ -359,9 +373,7 @@ namespace CommandsEditor
                     VariableEntity varEnt = (VariableEntity)node.Entity;
                     node.SetColour(Color.Red, Color.PaleVioletRed, Color.White);
                     node.SetName(varEnt.name.ToString());
-                    //todo: location of pin should depend on variable metadata
-                    node.AddInputOption(varEnt.name);
-                    node.AddOutputOption(varEnt.name);
+                    AddAllPins(node);
                     break;
             }
             node.Recompute();
@@ -465,38 +477,103 @@ namespace CommandsEditor
         private void addAllPinsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             STNode node = stNodeEditor1.GetHoveredNode();
-            List<(ShortGuid, ParameterVariant, DataType)> allParameters = Commands.Utils.GetAllParameters(_composite.GetEntityByID(node.ShortGUID), _composite);
-            foreach ((ShortGuid, ParameterVariant, DataType) parameter in allParameters)
+            AddAllPins(node);
+        }
+
+        private void AddAllPins(STNode node)
+        {
+            Entity entity = _composite.GetEntityByID(node.ShortGUID);
+            switch (entity.variant)
             {
-                switch (parameter.Item2)
-                {
-                    case ParameterVariant.INPUT_PIN:
-                    case ParameterVariant.PARAMETER:
-                    case ParameterVariant.STATE_PARAMETER:
-                        node.AddTopOption(parameter.Item1);
-                        break;
-                    //case ParameterVariant.METHOD_FUNCTION:
-                    //    node.AddInputOption(parameter.Item1);
-                    //    break;
-                    case ParameterVariant.METHOD_PIN:
-                        node.AddInputOption(parameter.Item1);
-                        ShortGuid relay = Commands.Utils.GetRelay(parameter.Item1);
-                        if (relay != ShortGuid.Invalid)
-                            node.AddOutputOption(relay);
-                        break;
-                    case ParameterVariant.OUTPUT_PIN:
-                    case ParameterVariant.TARGET_PIN:
-                        node.AddOutputOption(parameter.Item1);
-                        break;
-                    case ParameterVariant.REFERENCE_PIN:
-                        node.AddBottomOption(parameter.Item1);
-                        break;
-                }
+                case EntityVariant.VARIABLE:
+                    VariableEntity varEnt = (VariableEntity)entity;
+                    PinInfo info = Commands.Utils.GetParameterInfo(_composite, varEnt);
+                    switch (info.PinTypeGUID.AsCompositePinType)
+                    {
+                        case CompositePinType.CompositeInputAnimationInfoVariablePin:
+                        case CompositePinType.CompositeInputBoolVariablePin:
+                        case CompositePinType.CompositeInputDirectionVariablePin:
+                        case CompositePinType.CompositeInputFloatVariablePin:
+                        case CompositePinType.CompositeInputIntVariablePin:
+                        case CompositePinType.CompositeInputObjectVariablePin:
+                        case CompositePinType.CompositeInputPositionVariablePin:
+                        case CompositePinType.CompositeInputStringVariablePin:
+                        case CompositePinType.CompositeInputVariablePin:
+                        case CompositePinType.CompositeInputZoneLinkPtrVariablePin:
+                        case CompositePinType.CompositeInputZonePtrVariablePin:
+                        case CompositePinType.CompositeInputEnumVariablePin:
+                        case CompositePinType.CompositeInputEnumStringVariablePin:
+                        case CompositePinType.CompositeOutputAnimationInfoVariablePin:
+                        case CompositePinType.CompositeOutputBoolVariablePin:
+                        case CompositePinType.CompositeOutputDirectionVariablePin:
+                        case CompositePinType.CompositeOutputFloatVariablePin:
+                        case CompositePinType.CompositeOutputIntVariablePin:
+                        case CompositePinType.CompositeOutputObjectVariablePin:
+                        case CompositePinType.CompositeOutputPositionVariablePin:
+                        case CompositePinType.CompositeOutputStringVariablePin:
+                        case CompositePinType.CompositeOutputVariablePin:
+                        case CompositePinType.CompositeOutputZoneLinkPtrVariablePin:
+                        case CompositePinType.CompositeOutputZonePtrVariablePin:
+                        case CompositePinType.CompositeOutputEnumVariablePin:
+                        case CompositePinType.CompositeOutputEnumStringVariablePin:
+                            node.AddBottomOption(varEnt.name);
+                            break;
+                        case CompositePinType.CompositeMethodPin:
+                            node.AddOutputOption(varEnt.name);
+                            break;
+                        case CompositePinType.CompositeTargetPin:
+                            node.AddInputOption(varEnt.name);
+                            break;
+                        case CompositePinType.CompositeReferencePin:
+                            node.AddTopOption(varEnt.name);
+                            break;
+                    }
+                    break;
+                default:
+                    List<(ShortGuid, ParameterVariant, DataType)> allParameters = Commands.Utils.GetAllParameters(entity, _composite);
+                    foreach ((ShortGuid, ParameterVariant, DataType) parameter in allParameters)
+                    {
+                        string param = parameter.Item1.ToString();
+                        if (param == "delete_me" || param == "enable" || param == "disable" || param == "position") 
+                            continue;
+
+                        switch (parameter.Item2)
+                        {
+                            case ParameterVariant.INPUT_PIN:
+                            case ParameterVariant.PARAMETER:
+                            case ParameterVariant.STATE_PARAMETER:
+                                node.AddTopOption(parameter.Item1);
+                                break;
+                            //case ParameterVariant.METHOD_FUNCTION:
+                            //    node.AddInputOption(parameter.Item1);
+                            //    break;
+                            case ParameterVariant.METHOD_PIN:
+                                node.AddInputOption(parameter.Item1);
+                                ShortGuid relay = Commands.Utils.GetRelay(parameter.Item1);
+                                if (relay != ShortGuid.Invalid)
+                                    node.AddOutputOption(relay);
+                                break;
+                            case ParameterVariant.OUTPUT_PIN:
+                            case ParameterVariant.TARGET_PIN:
+                                node.AddOutputOption(parameter.Item1);
+                                break;
+                            case ParameterVariant.REFERENCE_PIN:
+                                node.AddBottomOption(parameter.Item1);
+                                break;
+                        }
+                    }
+                    break;
             }
         }
+
         private void removeUnusedPinsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             STNode node = stNodeEditor1.GetHoveredNode();
+            RemoveUnusedPins(node);
+        }
+
+        private static void RemoveUnusedPins(STNode node)
+        {
             STNodeOption[] ins = node.GetInputOptions();
             for (int i = 0; i < ins.Length; i++)
                 if (ins[i].ConnectionCount == 0)
@@ -539,10 +616,21 @@ namespace CommandsEditor
             STNodeOption[] outs = node.GetOutputOptions();
             for (int i = 0; i < outs.Length; i++)
                 duplicated.AddOutputOption(outs[i].ShortGUID);
+            STNodeOption[] ups = node.GetTopOptions();
+            for (int i = 0; i < ups.Length; i++)
+                duplicated.AddTopOption(ups[i].ShortGUID);
+            STNodeOption[] downs = node.GetBottomOptions();
+            for (int i = 0; i < downs.Length; i++)
+                duplicated.AddBottomOption(downs[i].ShortGUID);
 
             duplicated.SetPosition(new Point(node.Location.X + 15, node.Location.Y + 15));
 
             return duplicated;
+        }
+
+        private void AddConnection(STNode node)
+        {
+
         }
 
         private void TabStripContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)

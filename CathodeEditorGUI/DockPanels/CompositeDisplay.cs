@@ -17,6 +17,7 @@ using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
 using System.Windows.Media.Animation;
@@ -65,7 +66,8 @@ namespace CommandsEditor.DockPanels
 
             InitializeComponent();
 
-            dockPanel.ShowDocumentIcon = true;
+            dockPanel.ShowDocumentIcon = false; //todo: tabs should be smaller
+            dockPanel.DocumentTabStripLocation = DocumentTabStripLocation.Bottom;
 
             dockPanel.DockLeftPortion = SettingsManager.GetFloat(Singleton.Settings.EntityListWidth, 0.25f);
             dockPanel.DockRightPortion = SettingsManager.GetFloat(Singleton.Settings.EntityInspectorWidth, 0.25f);

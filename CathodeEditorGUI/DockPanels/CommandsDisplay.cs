@@ -1,4 +1,4 @@
-using CATHODE.Scripting;
+﻿using CATHODE.Scripting;
 using CATHODE;
 using System;
 using System.Collections.Generic;
@@ -84,7 +84,7 @@ namespace CommandsEditor.DockPanels
             else
                 FinishedLoadingAnims();
         }
-        
+
         //VERY hacked-in thread waiters. This isn't particularly safe, but better than nothing. Needs reworking at some point.
         private void FinishedLoadingAnims()
         {
@@ -359,7 +359,7 @@ namespace CommandsEditor.DockPanels
         }
         public CompositeDisplay LoadComposite(Composite composite)
         {
-            if (composite == null) 
+            if (composite == null)
                 return null;
 
             if (_compositeDisplay?.Composite == composite)
@@ -503,7 +503,7 @@ namespace CommandsEditor.DockPanels
         {
             if (e.Button == MouseButtons.Right)
             {
-                var lv = sender as System.Windows.Forms.ListView; 
+                var lv = sender as System.Windows.Forms.ListView;
                 var item = lv.HitTest(e.Location).Item;
 
                 deleteFolderToolStripMenuItem.Enabled = item != null;
@@ -573,7 +573,7 @@ namespace CommandsEditor.DockPanels
                     if (_content.commands.Entries[i].name.Length >= folderFullPath.Length && _content.commands.Entries[i].name.Substring(0, folderFullPath.Length) == folderFullPath)
                         toDelete.Add(_content.commands.Entries[i]);
 
-                if (MessageBox.Show("Are you sure you want to delete this folder, including the " + toDelete.Count + " composites it contains?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) 
+                if (MessageBox.Show("Are you sure you want to delete this folder, including the " + toDelete.Count + " composites it contains?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     return;
 
                 for (int i = 0; i < toDelete.Count; i++)
@@ -738,42 +738,10 @@ namespace CommandsEditor.DockPanels
         private void entity_search_box_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
-            { 
+            {
                 entity_search_btn.PerformClick();
                 e.SuppressKeyPress = true;
             }
-        }
-
-        private static List<Composite> _toSkip = new List<Composite>();
-
-        private void DEBUG_LoadNextEmpty_Click(object sender, EventArgs e)
-        {
-            DEBUG_LoadNextToConstruct();
-        }
-        public void DEBUG_LoadNextToConstruct()
-        {
-#if !DEBUG
-            MessageBox.Show("This should not be reached in production code...");
-            return;
-#endif
-
-            if (FlowgraphLayoutManager.DEBUG_IsUnfinished)
-            {
-                _toSkip.Add(CompositeDisplay.Composite);
-            }
-
-            FlowgraphLayoutManager.DEBUG_UsePreDefinedTable = true;
-            List<Composite> ordered = Content.commands.Entries.OrderBy(o => Content.commands.Utils.CountLinks(o)).Where(o => Content.commands.Utils.CountLinks(o) != 0 && !FlowgraphLayoutManager.HasLayout(o)).ToList();
-            for (int i = 0; i < ordered.Count; i++)
-                Console.WriteLine(ordered[i].name);
-            Console.WriteLine("Still " + ordered.Count + " to go in this PAK (count includes those not purged, so may be lower)");
-            FlowgraphLayoutManager.DEBUG_UsePreDefinedTable = false;
-
-            int index = 0;
-            while (_toSkip.Contains(ordered[index]))
-                index++;
-                
-            LoadComposite(ordered[index]);
         }
     }
 }

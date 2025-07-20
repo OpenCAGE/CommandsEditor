@@ -60,7 +60,6 @@ namespace CommandsEditor.DockPanels
             this.createComposite = new System.Windows.Forms.ToolStripButton();
             this.createFolder = new System.Windows.Forms.ToolStripButton();
             this.findFunctionUses = new System.Windows.Forms.ToolStripButton();
-            this.DEBUG_LoadNextEmpty = new System.Windows.Forms.ToolStripButton();
             this.FileTreeContextMenuNew = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
@@ -97,7 +96,7 @@ namespace CommandsEditor.DockPanels
             this.entity_search_box.Name = "entity_search_box";
             this.entity_search_box.Size = new System.Drawing.Size(282, 20);
             this.entity_search_box.TabIndex = 159;
-            this.entity_search_box.KeyDown += new KeyEventHandler(entity_search_box_KeyDown);
+            this.entity_search_box.KeyDown += new System.Windows.Forms.KeyEventHandler(this.entity_search_box_KeyDown);
             // 
             // entity_search_btn
             // 
@@ -313,8 +312,7 @@ namespace CommandsEditor.DockPanels
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.createComposite,
             this.createFolder,
-            this.findFunctionUses,
-            this.DEBUG_LoadNextEmpty});
+            this.findFunctionUses});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(1513, 25);
@@ -348,16 +346,6 @@ namespace CommandsEditor.DockPanels
             this.findFunctionUses.Size = new System.Drawing.Size(127, 22);
             this.findFunctionUses.Text = "Find Function Uses";
             this.findFunctionUses.Click += new System.EventHandler(this.findFunctionUses_Click);
-            // 
-            // DEBUG_LoadNextEmpty
-            // 
-            this.DEBUG_LoadNextEmpty.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.DEBUG_LoadNextEmpty.Image = ((System.Drawing.Image)(resources.GetObject("DEBUG_LoadNextEmpty.Image")));
-            this.DEBUG_LoadNextEmpty.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.DEBUG_LoadNextEmpty.Name = "DEBUG_LoadNextEmpty";
-            this.DEBUG_LoadNextEmpty.Size = new System.Drawing.Size(237, 22);
-            this.DEBUG_LoadNextEmpty.Text = "DEBUG: Load Next Flowgraph To Construct";
-            this.DEBUG_LoadNextEmpty.Click += new System.EventHandler(this.DEBUG_LoadNextEmpty_Click);
             // 
             // FileTreeContextMenuNew
             // 
@@ -472,7 +460,6 @@ namespace CommandsEditor.DockPanels
         private ToolStripButton createFolder;
         private ToolStripButton createComposite;
         private ToolStripButton findFunctionUses;
-        private ToolStripButton DEBUG_LoadNextEmpty;
         private ContextMenuStrip FileTreeContextMenuNew;
         private ToolStripMenuItem toolStripMenuItem1;
         private ToolStripMenuItem toolStripMenuItem2;
