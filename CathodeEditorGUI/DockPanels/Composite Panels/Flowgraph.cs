@@ -525,7 +525,7 @@ namespace CommandsEditor
                             node.AddInputOption(varEnt.name);
                             break;
                         case CompositePinType.CompositeReferencePin:
-                            node.AddTopOption(varEnt.name);
+                            node.AddTopOption(varEnt.name, PinStyle.ArrowDown);
                             break;
                     }
                     break;
@@ -542,7 +542,7 @@ namespace CommandsEditor
                             case ParameterVariant.INPUT_PIN:
                             case ParameterVariant.PARAMETER:
                             case ParameterVariant.STATE_PARAMETER:
-                                node.AddTopOption(parameter.Item1);
+                                node.AddTopOption(parameter.Item1, PinStyle.ArrowDown);
                                 break;
                             //case ParameterVariant.METHOD_FUNCTION:
                             //    node.AddInputOption(parameter.Item1);
@@ -554,6 +554,8 @@ namespace CommandsEditor
                                     node.AddOutputOption(relay);
                                 break;
                             case ParameterVariant.OUTPUT_PIN:
+                                node.AddTopOption(parameter.Item1, PinStyle.ArrowUp);
+                                break;
                             case ParameterVariant.TARGET_PIN:
                                 node.AddOutputOption(parameter.Item1);
                                 break;
