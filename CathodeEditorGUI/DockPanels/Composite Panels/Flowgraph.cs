@@ -51,21 +51,6 @@ namespace CommandsEditor
             stNodeEditor1.AllowSameOwnerConnections = true;
             stNodeEditor1.SelectedChanged += Owner_SelectedChanged;
 
-#if !DEBUG
-            SaveFlowgraph.Visible = false;
-            AutoCalc.Visible = false;
-            AutoCalcAdjacents.Visible = false;
-            RemoveEmpties.Visible = false;
-            ResetFG.Visible = false;
-            SaveFlowgraphUnfinished.Visible = false;
-            SplitConnected.Visible = false;
-            SplitInHalf.Visible = false;
-            DuplicateForAllConnections.Visible = false;
-            AutoCalcAndSplit.Visible = false;
-#endif
-
-            DEBUG_UnfinishedWarning.Visible = false;
-
             //todo: i feel like these events should come from the compositedisplay?
             Singleton.OnEntitySelected += OnEntitySelectedGlobally;
             Singleton.OnEntityAdded += OnEntityAddedGlobally;
@@ -287,71 +272,8 @@ namespace CommandsEditor
             stNodeEditor1.ResumeLayout();
             stNodeEditor1.Invalidate();
 
-#if DEBUG
-            DEBUG_UnfinishedWarning.Visible = flowgraphMeta.IsUnfinished;
-#endif
-
             return true;
         }
-
-#if DEBUG
-        //This is for local use only: populates all nodes from a composite without a layout
-        public void PopulateDefaultEntities(Composite composite)
-        {
-            if (Commands.Utils.PurgeDeadLinks(composite))
-                Commands.Utils.PurgedComposites.purged.Add(composite.shortGUID);
-
-            _composite = composite;
-            this.Text = _composite.name;
-
-            stNodeEditor1.SuspendLayout();
-            stNodeEditor1.Nodes.Clear();
-            _spawnOffset = 0;
-
-            List<Entity> entities = _composite.GetEntities();
-            for (int i = 0; i < entities.Count; i++)
-            {
-                if (!entities[i].HasLinks(_composite))
-                    continue;
-
-                STNode mainNode = EntityToNode(entities[i]);
-
-                for (int x = 0; x < entities[i].childLinks.Count; x++)
-                {
-                    Entity childEnt = composite.GetEntityByID(entities[i].childLinks[x].linkedEntityID);
-                    if (childEnt == null)
-                        continue;
-
-                    STNode childNode = EntityToNode(childEnt);
-                    STNodeOption linkIn = childNode.AddInputOption(entities[i].childLinks[x].linkedParamID);
-                    STNodeOption linkOut = mainNode.AddOutputOption(entities[i].childLinks[x].thisParamID);
-                    ConnectionStatus status = linkIn.ConnectOption(linkOut);
-                    if (status != ConnectionStatus.Connected)
-                    {
-                        Console.WriteLine("WARNING! Could not create connection!");
-                    }
-                }
-            }
-
-            foreach (STNode node in stNodeEditor1.Nodes)
-                node.Recompute();
-
-            stNodeEditor1.ResumeLayout();
-            stNodeEditor1.Invalidate();
-
-            int height = 10;
-            foreach (STNode node in stNodeEditor1.Nodes)
-            {
-                node.SetPosition(new Point(0, height));
-                height += node.Height + 10;
-            }
-            
-            DEBUG_UnfinishedWarning.Visible = false;
-
-            this.Text = "UNSAVED with " + stNodeEditor1.Nodes.Count + " nodes";
-            _flowgraphName = Path.GetFileName(_composite.name);
-        }
-#endif
 
         protected override void OnLoad(EventArgs e)
         {
@@ -403,7 +325,7 @@ namespace CommandsEditor
                 case EntityVariant.PROXY:
                 case EntityVariant.ALIAS:
                     Entity ent = Commands.Utils.ResolveHierarchy(_composite, (node.Entity.variant == EntityVariant.PROXY) ? ((ProxyEntity)node.Entity).proxy.path : ((AliasEntity)node.Entity).alias.path, out Composite c, out string s);
-                    node.SetColour(node.Entity.variant == EntityVariant.PROXY ? Color.LightGreen : Color.Orange, Color.Black);
+                    node.SetColour(node.Entity.variant == EntityVariant.PROXY ? Color.LightGreen : Color.Orange, node.Entity.variant == EntityVariant.PROXY ? Color.Green : Color.OrangeRed, Color.White);
                     switch (ent.variant)
                     {
                         case EntityVariant.FUNCTION:
@@ -424,18 +346,20 @@ namespace CommandsEditor
                     FunctionEntity funcEnt = (FunctionEntity)node.Entity;
                     if (funcEnt.function.IsFunctionType)
                     {
+                        node.SetColour(Color.DodgerBlue, Color.Blue, Color.White);
                         node.SetName(Commands.Utils.GetEntityName(_composite, node.Entity), funcEnt.function.AsFunctionType.ToString());
                     }
                     else
                     {
-                        node.SetColour(Color.Blue, Color.White);
+                        node.SetColour(Color.Blue, Color.DodgerBlue, Color.White);
                         node.SetName(Commands.Utils.GetEntityName(_composite, node.Entity), Path.GetFileName(Commands.GetComposite(funcEnt.function).name));
                     }
                     break;
                 case EntityVariant.VARIABLE:
                     VariableEntity varEnt = (VariableEntity)node.Entity;
-                    node.SetColour(Color.Red, Color.White);
+                    node.SetColour(Color.Red, Color.PaleVioletRed, Color.White);
                     node.SetName(varEnt.name.ToString());
+                    //todo: location of pin should depend on variable metadata
                     node.AddInputOption(varEnt.name);
                     node.AddOutputOption(varEnt.name);
                     break;
@@ -464,314 +388,6 @@ namespace CommandsEditor
                     }
                 }
             }
-        }
-
-        private void SaveFlowgraph_Click(object sender, EventArgs e)
-        {
-#if DEBUG
-            FlowgraphLayoutManager.DEBUG_UsePreDefinedTable = true; 
-            FlowgraphMeta layout = FlowgraphLayoutManager.SaveLayout(stNodeEditor1, _composite, _flowgraphName);
-            Console.WriteLine("Saved predefined flowgraph layout: " + layout.Name);
-            FlowgraphLayoutManager.DEBUG_UsePreDefinedTable = false;
-
-            //TODO: should validate that the connections havent changed really before loading another to make sure we're not saving a dodgy layout
-
-            Singleton.Editor.CommandsDisplay.DEBUG_LoadNextToConstruct();
-#endif
-        }
-
-        private void SaveFlowgraphUnfinished_Click(object sender, EventArgs e)
-        {
-            FlowgraphLayoutManager.DEBUG_IsUnfinished = true;
-            SaveFlowgraph_Click(null, null);
-            FlowgraphLayoutManager.DEBUG_IsUnfinished = false;
-        }
-
-        private void ResetFG_Click(object sender, EventArgs e)
-        {
-#if DEBUG
-            PopulateDefaultEntities(_composite);
-#endif
-        }
-
-        private void AutoCalc_Click(object sender, EventArgs e)
-        {
-            if (stNodeEditor1.GetSelectedNode().Length != 1)
-            {
-                Console.WriteLine("SELECT ONE NODE");
-                return;
-            }
-
-            TestAlignNode(stNodeEditor1.GetSelectedNode()[0]);
-        }
-        private void TestAlignNode(STNode origNode)
-        {
-            //Compute node sizes
-            int inputStackedHeight = 0;
-            foreach (STNodeOption input in origNode.GetInputOptions()) //inputs on this node
-            {
-                foreach (STNodeOption output in input.GetConnectedOption()) //connected to output on other node
-                {
-                    STNode connectedNode = output.Owner;
-                    inputStackedHeight += connectedNode.Height + 10;
-                }
-            }
-            int outputStackedHeight = 0;
-            foreach (STNodeOption output in origNode.GetOutputOptions()) //outputs on this node
-            {
-                foreach (STNodeOption input in output.GetConnectedOption()) //connected to input on other node
-                {
-                    STNode connectedNode = input.Owner;
-                    outputStackedHeight += connectedNode.Height + 10;
-                }
-            }
-
-            //Set node positions
-            int height = (this.Size.Height / 2) - (inputStackedHeight / 2) - 20;
-            foreach (STNodeOption input in origNode.GetInputOptions()) //inputs on this node
-            {
-                foreach (STNodeOption output in input.GetConnectedOption()) //connected to output on other node
-                {
-                    STNode connectedNode = output.Owner;
-                    //connectedNode.SetPosition(new Point(10, height));
-                    connectedNode.SetPosition(new Point(250 - connectedNode.Width, height));
-                    height += connectedNode.Height + 10;
-                }
-            }
-            height = (this.Size.Height / 2) - (outputStackedHeight / 2) - 20;
-            foreach (STNodeOption output in origNode.GetOutputOptions()) //outputs on this node
-            {
-                foreach (STNodeOption input in output.GetConnectedOption()) //connected to input on other node
-                {
-                    STNode connectedNode = input.Owner;
-                    //connectedNode.SetPosition(new Point(this.Size.Width - connectedNode.Width - 50, height));
-                    connectedNode.SetPosition(new Point(this.Size.Width - 250, height));
-                    height += connectedNode.Height + 10;
-                }
-            }
-            origNode.SetPosition(new Point((this.Size.Width / 2) - (origNode.Width / 2) - 10, (this.Size.Height / 2) - (((outputStackedHeight > inputStackedHeight) ? outputStackedHeight : inputStackedHeight) / 2) - 20));
-        }
-
-        List<STNode> positionedNodes = new List<STNode>();
-        private void AutoCalcAdjacents_Click(object sender, EventArgs e)
-        {
-            if (stNodeEditor1.GetSelectedNode().Length != 1)
-                return;
-
-            positionedNodes.Clear();
-            int currentY = stNodeEditor1.GetSelectedNode()[0].Location.Y; 
-            PositionNode(stNodeEditor1.GetSelectedNode()[0], ref currentY, false);
-        }
-        private int PositionNode(STNode node, ref int currentY, bool doSplits)
-        {
-            if (positionedNodes.Contains(node))
-                return 0;
-
-            positionedNodes.Add(node);
-
-            STNodeOption[] outputs = node.GetOutputOptions();
-            STNodeOption[] inputs = node.GetInputOptions();
-            int nodeWidthSpacing = 60;
-            int nodeHeightSpacing = 20;
-
-            int subtreeHeight = 0;
-            int initialY = currentY;
-            int stackedHeight = 0;
-
-            for (int x = 0; x < outputs.Length; x++)
-            {
-                var connectedOptions = outputs[x].GetConnectedOption();
-                for (int i = 0; i < connectedOptions.Count; i++)
-                {
-                    STNode connectedNode = connectedOptions[i].Owner;
-
-                    if (doSplits)
-                    {
-                        //If the node's connected option is "reference" and it meets criteria, duplicate it
-                        if (connectedOptions[i].ShortGUID == ShortGuidUtils.Generate("reference") && connectedOptions[i].ConnectionCount > 1)
-                        {
-                            //if (connectedNode.GetInputOptions().Length > 1 || connectedNode.GetOutputOptions().Length != 0 || (connectedNode.GetInputOptions().Length == 1 && connectedNode.GetInputOptions()[0].GetConnectedOption().Count != 1 && connectedNode.GetOutputOptions().Length == 0))
-                            {
-                                connectedNode = DuplicateNode(connectedNode);
-                                outputs[x].DisconnectOption(connectedOptions[i]);
-                                outputs[x].ConnectOption(connectedNode.GetInputOptions().FirstOrDefault(o => o.ShortGUID == connectedOptions[i].ShortGUID));
-                            }
-                        }
-
-                        //If the connected node is a variable and the connection has multiple links, duplicate it
-                        if (connectedNode.Entity.variant == EntityVariant.VARIABLE && connectedOptions[i].ConnectionCount > 1)
-                        {
-                            connectedNode = DuplicateNode(connectedNode);
-                            outputs[x].DisconnectOption(connectedOptions[i]);
-                            outputs[x].ConnectOption(connectedNode.GetInputOptions().FirstOrDefault(o => o.ShortGUID == connectedOptions[i].ShortGUID));
-                        }
-
-                        RemoveEmpties_Click(null, null);
-
-                        //This is the end of the chain
-                        /*
-                        if (connectedNode.GetOutputOptions().Length == 0)
-                        {
-                            //If the node's connected option is "reference" and it has more than one other input, 
-                            if (connectedOptions[i].ShortGUID == ShortGuidUtils.Generate("reference"))
-                            {
-                                if (connectedNode.GetInputOptions().Length > 1)
-                                {
-                                    connectedNode = DuplicateNode(connectedNode);
-                                }
-                            }
-                        }
-                        */
-                    }
-
-                    if (positionedNodes.Contains(connectedNode))
-                        continue;
-
-                    //if only one input, or if input is reference, and has multiple connections, and no outputs?
-                    //duplicate node and use that as connected
-
-                    int targetY = initialY + stackedHeight;
-                    connectedNode.SetPosition(new Point(node.Location.X + node.Width + nodeWidthSpacing, targetY));
-
-                    int thisHeightSpacing = nodeHeightSpacing;
-                    if (i + 1 < connectedOptions.Count && connectedOptions[i + 1].Owner.Entity.variant == EntityVariant.VARIABLE)
-                        thisHeightSpacing = 5;
-                    if (x + 1 < outputs.Length && outputs[x + 1].GetConnectedOption().Count != 0 && outputs[x + 1].GetConnectedOption()[0].Owner.Entity.variant == EntityVariant.VARIABLE && connectedNode.Entity.variant == EntityVariant.VARIABLE)
-                        thisHeightSpacing = 5;
-
-                    int childSubtreeHeight = PositionNode(connectedNode, ref targetY, doSplits);
-                    stackedHeight += childSubtreeHeight + thisHeightSpacing;
-
-                    subtreeHeight = Math.Max(subtreeHeight, stackedHeight);
-                }
-            }
-
-            if (outputs.Length > 0)
-                node.SetPosition(new Point(node.Location.X, initialY)); 
-
-            return Math.Max(subtreeHeight, node.Height);
-        }
-
-        private void AutoCalcAndSplit_Click(object sender, EventArgs e)
-        {
-            if (stNodeEditor1.GetSelectedNode().Length != 1)
-                return;
-
-            positionedNodes.Clear();
-            int currentY = stNodeEditor1.GetSelectedNode()[0].Location.Y;
-            PositionNode(stNodeEditor1.GetSelectedNode()[0], ref currentY, true);
-        }
-
-        private void SplitConnected_Click(object sender, EventArgs e)
-        {
-            if (stNodeEditor1.GetSelectedNode().Length != 1)
-                return;
-
-            STNode node = stNodeEditor1.GetSelectedNode()[0];
-            STNodeOption[] inputs = node.GetInputOptions();
-            STNodeOption[] outputs = node.GetOutputOptions();
-
-            if (outputs.Length != 1)
-                return;
-
-            if (outputs[0].GetConnectedOption().Count != 1)
-                return;
-
-            STNodeOption connectedOption = outputs[0].GetConnectedOption()[0];
-            STNode duplicated = DuplicateNode(connectedOption.Owner);
-
-            connectedOption.DisconnectOption(outputs[0]);
-            duplicated.GetInputOptions().FirstOrDefault(o => o.ShortGUID == connectedOption.ShortGUID).ConnectOption(outputs[0]);
-
-            duplicated.SetPosition(new Point(node.Location.X + node.Width + 60, node.Location.Y));
-        }
-
-        private void SplitInHalf_Click(object sender, EventArgs e)
-        {
-            if (stNodeEditor1.GetSelectedNode().Length != 1)
-                return;
-
-            STNode node = stNodeEditor1.GetSelectedNode()[0];
-            STNodeOption[] outputs = node.GetOutputOptions();
-
-            STNode duplicated = DuplicateNode(node);
-            duplicated.SetPosition(new Point(node.Location.X + 20, node.Location.Y + 20));
-
-            for (int i = 0; i < outputs.Length; i++)
-            {
-                List<STNodeOption> connections = outputs[i].GetConnectedOption();
-                for (int x = 0; x < connections.Count; x++)
-                {
-                    STNodeOption connectedOption = connections[x];
-                    connectedOption.DisconnectOption(outputs[i]);
-                    duplicated.GetOutputOptions().FirstOrDefault(o => o.ShortGUID == outputs[i].ShortGUID).ConnectOption(connectedOption);
-                }
-            }
-        }
-
-        private void RemoveEmpties_Click(object sender, EventArgs e)
-        {
-            foreach (STNode node in stNodeEditor1.Nodes)
-            {
-                List<ShortGuid> toRemove = new List<ShortGuid>();
-                foreach (STNodeOption option in node.GetInputOptions()) 
-                {
-                    if (option.GetConnectedOption().Count == 0)
-                        toRemove.Add(option.ShortGUID);
-                }
-                for (int x = 0; x < toRemove.Count; x++)
-                    node.RemoveInputOption(toRemove[x]);
-                toRemove.Clear();
-                foreach (STNodeOption option in node.GetOutputOptions())
-                {
-                    if (option.GetConnectedOption().Count == 0)
-                        toRemove.Add(option.ShortGUID);
-                }
-                for (int x = 0; x < toRemove.Count; x++)
-                    node.RemoveOutputOption(toRemove[x]);
-            }
-        }
-
-        private void DuplicateForAllConnections_Click(object sender, EventArgs e)
-        {
-            if (stNodeEditor1.GetSelectedNode().Length != 1)
-                return;
-
-            STNode node = stNodeEditor1.GetSelectedNode()[0];
-
-            int duplicateCount = 0;
-
-            STNodeOption[] inputs = node.GetInputOptions();
-            for (int i = 0; i < inputs.Length; i++)
-            {
-                var connectedOptions = inputs[i].GetConnectedOption();
-                for (int x = 0; x < connectedOptions.Count; x++)
-                {
-                    STNode newNode = DuplicateNode(node);
-                    inputs[i].DisconnectOption(connectedOptions[x]);
-                    newNode.GetInputOptions().FirstOrDefault(o => o.ShortGUID == inputs[i].ShortGUID).ConnectOption(connectedOptions[x]);
-
-                    duplicateCount++;
-                    newNode.SetPosition(new Point(node.Location.X + (duplicateCount * 10), node.Location.Y + (duplicateCount * 10)));
-                }
-            }
-
-            STNodeOption[] outputs = node.GetOutputOptions();
-            for (int i = 0; i < outputs.Length; i++)
-            {
-                var connectedOptions = outputs[i].GetConnectedOption();
-                for (int x = 0; x < connectedOptions.Count; x++)
-                {
-                    STNode newNode = DuplicateNode(node);
-                    outputs[i].DisconnectOption(connectedOptions[x]);
-                    newNode.GetOutputOptions().FirstOrDefault(o => o.ShortGUID == outputs[i].ShortGUID).ConnectOption(connectedOptions[x]);
-
-                    duplicateCount++;
-                    newNode.SetPosition(new Point(node.Location.X + (duplicateCount * 10), node.Location.Y + (duplicateCount * 10)));
-                }
-            }
-
-            stNodeEditor1.Nodes.Remove(node);
         }
 
         //disable entity-related actions on the context menu if no entity is selected

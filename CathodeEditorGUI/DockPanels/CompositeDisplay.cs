@@ -309,19 +309,6 @@ namespace CommandsEditor.DockPanels
             if (SupportsFlowgraphs)
             {
                 List<FlowgraphMeta> layouts = FlowgraphLayoutManager.GetLayouts(Composite);
-
-#if DEBUG
-                //TEMP HACK TEMP HACK (we need there to be always ONE entry here while i populate the db. once that's done, this should be reworked)
-                if (layouts.Count == 0)
-                {
-                    Flowgraph flowgraph = new Flowgraph();
-                    _flowgraphs.Add(flowgraph);
-
-                    flowgraph.Show(dockPanel, DockState.Document);
-                    flowgraph.PopulateDefaultEntities(Composite); 
-                }
-#endif
-
                 for (int i = 0; i < layouts.Count; i++)
                 {
                     CreateFlowgraphWindow(layouts[i]);

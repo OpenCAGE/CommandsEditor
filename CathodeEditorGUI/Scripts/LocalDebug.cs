@@ -31,6 +31,7 @@ namespace CommandsEditor
     {
         public static void DumpCommandsToJson(string path, string dir)
         {
+#if DEBUG
             List<string> files = Directory.GetFiles(path, "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
             Directory.CreateDirectory(dir);
             foreach (string file in files)
@@ -39,6 +40,7 @@ namespace CommandsEditor
                 string lvl = Path.GetFileName(cmd.EntryPoints[0].name);
                 File.WriteAllText(dir + "/commands_" + lvl + ".json", JsonConvert.SerializeObject(cmd.Entries, Newtonsoft.Json.Formatting.Indented));
             }
+#endif
         }
 
         public static void TestEntityNames()

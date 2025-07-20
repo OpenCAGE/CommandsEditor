@@ -26,23 +26,6 @@ namespace CommandsEditor
         private static CompositeFlowgraphTable _userDefinedLayouts = new CompositeFlowgraphTable();
         private static CompositeFlowgraphCompatibilityTable _compatibility = new CompositeFlowgraphCompatibilityTable();
 
-        //TODO: remove this once i'm done populating the layout database!!
-        public static bool DEBUG_IsUnfinished = false;
-        public static bool DEBUG_UsePreDefinedTable = false;
-        private static CompositeFlowgraphTable Table
-        {
-            get
-            {
-#if DEBUG
-                if (DEBUG_UsePreDefinedTable)
-                { 
-                    return _preDefinedLayouts;
-                }
-#endif
-                return _userDefinedLayouts;
-            }
-        }
-
         public static Commands LinkedCommands => _commands;
         private static Commands _commands;
 
@@ -118,11 +101,6 @@ namespace CommandsEditor
                     //SetCompatibilityInfo(composite, false);
                 }
             }
-
-#if DEBUG
-            //In debug mode, we should always allow flowgraphs, so that new layouts can be made
-            SetCompatibilityInfo(composite, true);
-#endif
         }
 
         //Checks to see if the given flowgraph is compatible with the Flowgraph system (make sure this has been evaluated first using the method above)
@@ -140,62 +118,35 @@ namespace CommandsEditor
         //Checks to see if there is at least one finished flowgraph for the given composite
         public static bool HasLayout(Composite composite)
         {
-            return Table.flowgraphs.FirstOrDefault(o => o.CompositeGUID == composite.shortGUID && !o.IsUnfinished) != null;
+            return _userDefinedLayouts.flowgraphs.FirstOrDefault(o => o.CompositeGUID == composite.shortGUID && !o.IsUnfinished) != null;
         }
 
         //Gets all flowgraph layouts for the given composite
         public static List<FlowgraphMeta> GetLayouts(Composite composite)
         {
-            return Table.flowgraphs.FindAll(o => o.CompositeGUID == composite.shortGUID);
+            return _userDefinedLayouts.flowgraphs.FindAll(o => o.CompositeGUID == composite.shortGUID);
         }
 
         //Save/add layout to db
         public static FlowgraphMeta SaveLayout(STNodeEditor editor, Composite composite, string name) //NOTE: passing no editor here will produce an empty layout, which could be destructive!
         {
             FlowgraphMeta flowgraphMeta = editor == null ? new FlowgraphMeta() { Name = name, CompositeGUID = composite.shortGUID } : editor.AsFlowgraphMeta(composite, name);
-            FlowgraphMeta existingFGM = Table.flowgraphs.FirstOrDefault(o => o.Name == flowgraphMeta.Name && o.CompositeGUID == flowgraphMeta.CompositeGUID);
+            FlowgraphMeta existingFGM = _userDefinedLayouts.flowgraphs.FirstOrDefault(o => o.Name == flowgraphMeta.Name && o.CompositeGUID == flowgraphMeta.CompositeGUID);
             if (existingFGM != null)
-                Table.flowgraphs[Table.flowgraphs.IndexOf(existingFGM)] = flowgraphMeta;
+                _userDefinedLayouts.flowgraphs[_userDefinedLayouts.flowgraphs.IndexOf(existingFGM)] = flowgraphMeta;
             else
-                Table.flowgraphs.Add(flowgraphMeta);
-
-#if DEBUG
-            SaveVanillaDB();
-#endif
-
+                _userDefinedLayouts.flowgraphs.Add(flowgraphMeta);
             return flowgraphMeta;
         }
-#if DEBUG
-        private static void SaveVanillaDB()
-        {
-            return;
-
-            string vanillaFlowgraphDBPath = System.Reflection.Assembly.GetEntryAssembly().Location;
-            vanillaFlowgraphDBPath = vanillaFlowgraphDBPath.Substring(0, vanillaFlowgraphDBPath.Length - Path.GetFileName(vanillaFlowgraphDBPath).Length);
-            vanillaFlowgraphDBPath += "../CathodeEditorGUI/Resources/flowgraphs.dat";
-            using (BinaryWriter writer = new BinaryWriter(File.OpenWrite(vanillaFlowgraphDBPath)))
-            {
-                writer.BaseStream.SetLength(0);
-                _preDefinedLayouts.Write(writer);
-                writer.Close();
-            }
-            byte[] content = File.ReadAllBytes(vanillaFlowgraphDBPath);
-            File.Delete(vanillaFlowgraphDBPath);
-            using (GZipStream gzipStream = new GZipStream(File.OpenWrite(vanillaFlowgraphDBPath), CompressionMode.Compress))
-            {
-                gzipStream.Write(content, 0, content.Length);
-            }
-        }
-#endif
 
         //Remove a layout from the DB
         public static void RemoveLayout(Composite composite, string name)
         {
-            Table.flowgraphs.RemoveAll(o => o.CompositeGUID == composite.shortGUID && o.Name == name);
+            _userDefinedLayouts.flowgraphs.RemoveAll(o => o.CompositeGUID == composite.shortGUID && o.Name == name);
         }
         public static void RemoveAllLayouts(Composite composite)
         {
-            Table.flowgraphs.RemoveAll(o => o.CompositeGUID == composite.shortGUID);
+            _userDefinedLayouts.flowgraphs.RemoveAll(o => o.CompositeGUID == composite.shortGUID);
         }
 
         public static void LinkCommands(Commands commands)
@@ -264,7 +215,7 @@ namespace CommandsEditor
             flowgraphMeta.Name = name;
 
             flowgraphMeta.UsesShortenedNames = true;
-            flowgraphMeta.IsUnfinished = FlowgraphLayoutManager.DEBUG_IsUnfinished;
+            flowgraphMeta.IsUnfinished = false; //now unused
 
             flowgraphMeta.CanvasPosition = editor.CanvasOffset;
             flowgraphMeta.CanvasScale = editor.CanvasScale;
