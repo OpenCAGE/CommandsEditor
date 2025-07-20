@@ -1,4 +1,4 @@
-﻿using CATHODE.Scripting;
+using CATHODE.Scripting;
 using CATHODE;
 using System;
 using System.Collections.Generic;
@@ -57,10 +57,6 @@ namespace CommandsEditor.DockPanels
 
             _content = new LevelContent(levelName);
             _treeUtility = new TreeUtility(treeView1);
-
-#if !DEBUG
-            DEBUG_LoadNextEmpty.Visible = false;
-#endif
 
             Singleton.OnCompositeRenamed += OnCompositeRenamed;
         }
