@@ -28,28 +28,24 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Parameters", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("Functions", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("Composite Instances", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("Proxies", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup("Aliases", System.Windows.Forms.HorizontalAlignment.Left);
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ShowCrossRefs));
-            this.referenceList = new System.Windows.Forms.ListBox();
             this.label = new System.Windows.Forms.Label();
             this.jumpToEntity = new System.Windows.Forms.Button();
             this.showLinkedProxies = new System.Windows.Forms.Button();
             this.showLinkedOverrides = new System.Windows.Forms.Button();
             this.showLinkedTriggerSequences = new System.Windows.Forms.Button();
             this.showLinkedCageAnimations = new System.Windows.Forms.Button();
+            this.entityList = new System.Windows.Forms.ListView();
+            this.EntityName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.EntityType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.entityListIcons = new System.Windows.Forms.ImageList(this.components);
             this.SuspendLayout();
-            // 
-            // referenceList
-            // 
-            this.referenceList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.referenceList.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.referenceList.FormattingEnabled = true;
-            this.referenceList.HorizontalScrollbar = true;
-            this.referenceList.Location = new System.Drawing.Point(132, 29);
-            this.referenceList.Name = "referenceList";
-            this.referenceList.Size = new System.Drawing.Size(738, 381);
-            this.referenceList.TabIndex = 146;
             // 
             // label
             // 
@@ -63,7 +59,7 @@
             // jumpToEntity
             // 
             this.jumpToEntity.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.jumpToEntity.Location = new System.Drawing.Point(723, 416);
+            this.jumpToEntity.Location = new System.Drawing.Point(724, 416);
             this.jumpToEntity.Name = "jumpToEntity";
             this.jumpToEntity.Size = new System.Drawing.Size(147, 23);
             this.jumpToEntity.TabIndex = 150;
@@ -111,18 +107,77 @@
             this.showLinkedCageAnimations.UseVisualStyleBackColor = true;
             this.showLinkedCageAnimations.Click += new System.EventHandler(this.showLinkedCageAnimations_Click);
             // 
+            // entityList
+            // 
+            this.entityList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.entityList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.EntityName,
+            this.EntityType});
+            this.entityList.FullRowSelect = true;
+            listViewGroup1.Header = "Parameters";
+            listViewGroup1.Name = "Variables";
+            listViewGroup2.Header = "Functions";
+            listViewGroup2.Name = "Functions";
+            listViewGroup3.Header = "Composite Instances";
+            listViewGroup3.Name = "Composites";
+            listViewGroup4.Header = "Proxies";
+            listViewGroup4.Name = "Proxies";
+            listViewGroup5.Header = "Aliases";
+            listViewGroup5.Name = "Aliases";
+            this.entityList.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
+            listViewGroup1,
+            listViewGroup2,
+            listViewGroup3,
+            listViewGroup4,
+            listViewGroup5});
+            this.entityList.HideSelection = false;
+            this.entityList.LabelWrap = false;
+            this.entityList.LargeImageList = this.entityListIcons;
+            this.entityList.Location = new System.Drawing.Point(132, 29);
+            this.entityList.MultiSelect = false;
+            this.entityList.Name = "entityList";
+            this.entityList.Size = new System.Drawing.Size(738, 381);
+            this.entityList.SmallImageList = this.entityListIcons;
+            this.entityList.TabIndex = 178;
+            this.entityList.UseCompatibleStateImageBehavior = false;
+            this.entityList.View = System.Windows.Forms.View.Details;
+            // 
+            // EntityName
+            // 
+            this.EntityName.Text = "Name";
+            this.EntityName.Width = 509;
+            // 
+            // EntityType
+            // 
+            this.EntityType.Text = "Type";
+            this.EntityType.Width = 163;
+            // 
+            // entityListIcons
+            // 
+            this.entityListIcons.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("entityListIcons.ImageStream")));
+            this.entityListIcons.TransparentColor = System.Drawing.Color.Transparent;
+            this.entityListIcons.Images.SetKeyName(0, "AnimatorController Icon.png");
+            this.entityListIcons.Images.SetKeyName(1, "d_ScriptableObject Icon braces only.png");
+            this.entityListIcons.Images.SetKeyName(2, "d_PrefabVariant Icon.png");
+            this.entityListIcons.Images.SetKeyName(3, "d_ScriptableObject Icon.png");
+            this.entityListIcons.Images.SetKeyName(4, "AreaEffector2D Icon.ico");
+            this.entityListIcons.Images.SetKeyName(5, "variable left.png");
+            this.entityListIcons.Images.SetKeyName(6, "variable right.png");
+            // 
             // ShowCrossRefs
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(882, 448);
+            this.Controls.Add(this.entityList);
             this.Controls.Add(this.showLinkedCageAnimations);
             this.Controls.Add(this.showLinkedTriggerSequences);
             this.Controls.Add(this.showLinkedOverrides);
             this.Controls.Add(this.showLinkedProxies);
             this.Controls.Add(this.jumpToEntity);
             this.Controls.Add(this.label);
-            this.Controls.Add(this.referenceList);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ShowCrossRefs";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -133,12 +188,15 @@
         }
 
         #endregion
-        private System.Windows.Forms.ListBox referenceList;
         private System.Windows.Forms.Label label;
         private System.Windows.Forms.Button jumpToEntity;
         private System.Windows.Forms.Button showLinkedProxies;
         private System.Windows.Forms.Button showLinkedOverrides;
         private System.Windows.Forms.Button showLinkedTriggerSequences;
         private System.Windows.Forms.Button showLinkedCageAnimations;
+        private System.Windows.Forms.ListView entityList;
+        private System.Windows.Forms.ColumnHeader EntityName;
+        private System.Windows.Forms.ColumnHeader EntityType;
+        private System.Windows.Forms.ImageList entityListIcons;
     }
 }

@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using WebSocketSharp;
 
 namespace CommandsEditor
 {
@@ -29,6 +30,13 @@ namespace CommandsEditor
             _entityDisplay = entityDisplay;
             InitializeComponent();
 
+            bool hasID = entityList.Columns.ContainsKey("ID");
+            bool showID = SettingsManager.GetBool(Singleton.Settings.EntIdOpt);
+            if (showID && !hasID)
+                entityList.Columns.Add(new ColumnHeader() { Name = "ID", Text = "ID", Width = 100 });
+            else if (!showID && hasID)
+                entityList.Columns.RemoveByKey("ID");
+
             Parallel.For(0, 5, (i) =>
             {
                 _entityRefs.Add((CurrentDisplay)i, GetEntityRefs((CurrentDisplay)i));
@@ -44,8 +52,8 @@ namespace CommandsEditor
 
         private void jumpToEntity_Click(object sender, EventArgs e)
         {
-            if (referenceList.SelectedIndex == -1) return;
-            OnEntitySelected?.Invoke(_entityRefs[_currentDisplay][referenceList.SelectedIndex].composite, _entityRefs[_currentDisplay][referenceList.SelectedIndex].entity);
+            if (entityList.SelectedItems.Count == 0) return;
+            OnEntitySelected?.Invoke(_entityRefs[_currentDisplay][entityList.SelectedItems[0].Index].composite, _entityRefs[_currentDisplay][entityList.SelectedItems[0].Index].entity);
             this.Close();
         }
 
@@ -95,13 +103,29 @@ namespace CommandsEditor
             }
             label.Text += " pointing to this entity:";
 
-            referenceList.BeginUpdate();
-            referenceList.Items.Clear();
-
+            entityList.BeginUpdate();
+            entityList.Items.Clear();
+            entityList.Groups.Clear();
+            Dictionary<Composite, ListViewGroup> compGroups = new Dictionary<Composite, ListViewGroup>();
             foreach (EntityRef entityRef in _entityRefs[display])
-                referenceList.Items.Add(_entityDisplay.Content.editor_utils.GenerateEntityName(entityRef.entity, entityRef.composite));
+            {
+                ListViewItem item = (ListViewItem)Content.GenerateListViewItem(entityRef.entity, entityRef.composite).Clone();
+                if (compGroups.TryGetValue(entityRef.composite, out ListViewGroup g))
+                {
+                    item.Group = g;
+                }
+                else
+                {
+                    ListViewGroup group = new ListViewGroup() { Header = entityRef.composite.name };
+                    entityList.Groups.Add(group);
+                    compGroups.Add(entityRef.composite, group);
+                    item.Group = group;
+                }
+                item.ImageIndex = EditorUtils.GetIndexesForListViewItem(entityRef.entity, entityRef.composite, Content.commands).Item1;
+                entityList.Items.Add(item);
+            }
+            entityList.EndUpdate();
 
-            referenceList.EndUpdate();
             Cursor.Current = Cursors.Default;
         }
 
