@@ -150,7 +150,7 @@ namespace CommandsEditor
             this.connectToUnity,
             this.focusOnSelectedToolStripMenuItem});
             this.levelViewerToolStripMenuItem.Name = "levelViewerToolStripMenuItem";
-            this.levelViewerToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.levelViewerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.levelViewerToolStripMenuItem.Text = "Level Viewer";
             // 
             // setUpToolStripMenuItem
@@ -194,7 +194,7 @@ namespace CommandsEditor
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(170, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
             // 
             // compositeViewerToolStripMenuItem
             // 
@@ -203,7 +203,7 @@ namespace CommandsEditor
             this.autoHideExplorerViewToolStripMenuItem,
             this.searchOnlyCompositeNames});
             this.compositeViewerToolStripMenuItem.Name = "compositeViewerToolStripMenuItem";
-            this.compositeViewerToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.compositeViewerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.compositeViewerToolStripMenuItem.Text = "Composite Display";
             // 
             // showExplorerViewToolStripMenuItem
@@ -239,7 +239,7 @@ namespace CommandsEditor
             this.nodeOpensEntity,
             this.createFlowgraphNodeWhenEntityCreatedToolStripMenuItem});
             this.entityDisplayToolStripMenuItem.Name = "entityDisplayToolStripMenuItem";
-            this.entityDisplayToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.entityDisplayToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.entityDisplayToolStripMenuItem.Text = "Entity Display";
             // 
             // showEntityIDs
@@ -275,13 +275,13 @@ namespace CommandsEditor
             this.setNumericStepToolStripMenuItem,
             this.savePAKAndBINToolStripMenuItem});
             this.miscToolStripMenuItem.Name = "miscToolStripMenuItem";
-            this.miscToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.miscToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.miscToolStripMenuItem.Text = "Misc";
             // 
             // showConfirmationWhenSavingToolStripMenuItem
             // 
             this.showConfirmationWhenSavingToolStripMenuItem.Name = "showConfirmationWhenSavingToolStripMenuItem";
-            this.showConfirmationWhenSavingToolStripMenuItem.Size = new System.Drawing.Size(291, 22);
+            this.showConfirmationWhenSavingToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
             this.showConfirmationWhenSavingToolStripMenuItem.Text = "Show Confirmation When Saving";
             this.showConfirmationWhenSavingToolStripMenuItem.ToolTipText = "If enabled, a confirmation will show after a successful save.";
             this.showConfirmationWhenSavingToolStripMenuItem.Click += new System.EventHandler(this.showConfirmationWhenSavingToolStripMenuItem_Click);
@@ -289,7 +289,7 @@ namespace CommandsEditor
             // useTexturedModelViewExperimentalToolStripMenuItem
             // 
             this.useTexturedModelViewExperimentalToolStripMenuItem.Name = "useTexturedModelViewExperimentalToolStripMenuItem";
-            this.useTexturedModelViewExperimentalToolStripMenuItem.Size = new System.Drawing.Size(291, 22);
+            this.useTexturedModelViewExperimentalToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
             this.useTexturedModelViewExperimentalToolStripMenuItem.Text = "Use Textured Model View (Experimental)";
             this.useTexturedModelViewExperimentalToolStripMenuItem.ToolTipText = "If enabled, the model previewer will try and find textures to render.";
             this.useTexturedModelViewExperimentalToolStripMenuItem.Click += new System.EventHandler(this.useTexturedModelViewExperimentalToolStripMenuItem_Click);
@@ -297,35 +297,35 @@ namespace CommandsEditor
             // keepFunctionUsesWindowOpenToolStripMenuItem
             // 
             this.keepFunctionUsesWindowOpenToolStripMenuItem.Name = "keepFunctionUsesWindowOpenToolStripMenuItem";
-            this.keepFunctionUsesWindowOpenToolStripMenuItem.Size = new System.Drawing.Size(291, 22);
-            this.keepFunctionUsesWindowOpenToolStripMenuItem.Text = "Keep Function Uses Window Open";
+            this.keepFunctionUsesWindowOpenToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
+            this.keepFunctionUsesWindowOpenToolStripMenuItem.Text = "Keep Global Search Window Open";
             this.keepFunctionUsesWindowOpenToolStripMenuItem.Click += new System.EventHandler(this.keepFunctionUsesWindowOpenToolStripMenuItem_Click);
             // 
             // resetUILayoutsToolStripMenuItem
             // 
             this.resetUILayoutsToolStripMenuItem.Name = "resetUILayoutsToolStripMenuItem";
-            this.resetUILayoutsToolStripMenuItem.Size = new System.Drawing.Size(291, 22);
+            this.resetUILayoutsToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
             this.resetUILayoutsToolStripMenuItem.Text = "Reset UI Layouts";
             this.resetUILayoutsToolStripMenuItem.Click += new System.EventHandler(this.resetUILayoutsToolStripMenuItem_Click);
             // 
             // writeInstancedResourcesExperimentalToolStripMenuItem
             // 
             this.writeInstancedResourcesExperimentalToolStripMenuItem.Name = "writeInstancedResourcesExperimentalToolStripMenuItem";
-            this.writeInstancedResourcesExperimentalToolStripMenuItem.Size = new System.Drawing.Size(291, 22);
+            this.writeInstancedResourcesExperimentalToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
             this.writeInstancedResourcesExperimentalToolStripMenuItem.Text = "Write Instanced Resources (Experimental)";
             this.writeInstancedResourcesExperimentalToolStripMenuItem.Click += new System.EventHandler(this.writeInstancedResourcesExperimentalToolStripMenuItem_Click);
             // 
             // setNumericStepToolStripMenuItem
             // 
             this.setNumericStepToolStripMenuItem.Name = "setNumericStepToolStripMenuItem";
-            this.setNumericStepToolStripMenuItem.Size = new System.Drawing.Size(291, 22);
+            this.setNumericStepToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
             this.setNumericStepToolStripMenuItem.Text = "Set Numeric Step";
             this.setNumericStepToolStripMenuItem.Click += new System.EventHandler(this.setNumericStepToolStripMenuItem_Click);
             // 
             // savePAKAndBINToolStripMenuItem
             // 
             this.savePAKAndBINToolStripMenuItem.Name = "savePAKAndBINToolStripMenuItem";
-            this.savePAKAndBINToolStripMenuItem.Size = new System.Drawing.Size(291, 22);
+            this.savePAKAndBINToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
             this.savePAKAndBINToolStripMenuItem.Text = "Save Commands PAK and BIN";
             this.savePAKAndBINToolStripMenuItem.Click += new System.EventHandler(this.savePAKAndBINToolStripMenuItem_Click);
             // 

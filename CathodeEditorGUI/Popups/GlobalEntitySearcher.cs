@@ -146,6 +146,7 @@ namespace CommandsEditor
                 MessageBox.Show("Please enter a search term!", "Empty search", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
+            SettingsManager.SetString(Singleton.Settings.PrevEntNameSearch, name);
 
             _entityComposites.Clear();
 
