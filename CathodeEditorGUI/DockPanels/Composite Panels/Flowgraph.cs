@@ -339,7 +339,7 @@ namespace CommandsEditor
                 case EntityVariant.PROXY:
                 case EntityVariant.ALIAS:
                     Entity ent = Commands.Utils.ResolveHierarchy(_composite, (node.Entity.variant == EntityVariant.PROXY) ? ((ProxyEntity)node.Entity).proxy.path : ((AliasEntity)node.Entity).alias.path, out Composite c, out string s);
-                    node.SetColour(node.Entity.variant == EntityVariant.PROXY ? Color.LightGreen : Color.Orange, node.Entity.variant == EntityVariant.PROXY ? Color.Green : Color.OrangeRed, Color.White);
+                    node.SetColour(node.Entity.variant == EntityVariant.PROXY ? Color.LightGreen : Color.Orange, node.Entity.variant == EntityVariant.PROXY ? Color.Green : Color.OrangeRed, Color.Black);
                     switch (ent.variant)
                     {
                         case EntityVariant.FUNCTION:

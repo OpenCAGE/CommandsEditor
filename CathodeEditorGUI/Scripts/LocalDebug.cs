@@ -38,7 +38,13 @@ namespace CommandsEditor
             {
                 Commands cmd = new Commands(file);
                 string lvl = Path.GetFileName(cmd.EntryPoints[0].name);
-                File.WriteAllText(dir + "/commands_" + lvl + ".json", JsonConvert.SerializeObject(cmd.Entries, Newtonsoft.Json.Formatting.Indented));
+                cmd.EntryPoints[0].name = lvl;
+                foreach (Composite comp in cmd.Entries)
+                {
+                    string outPath = dir + "/" + lvl + "/" + comp.name.Replace(':', '_') + ".json";
+                    Directory.CreateDirectory(outPath.Substring(0, outPath.Length - Path.GetFileName(outPath).Length));
+                    File.WriteAllText(outPath, JsonConvert.SerializeObject(comp, Newtonsoft.Json.Formatting.Indented, new ShortGuidConverter()));
+                }
             }
 #endif
         }
@@ -1893,6 +1899,36 @@ namespace CommandsEditor
 #else
             return null;
 #endif
+        }
+    }
+
+    public class ShortGuidConverter : JsonConverter
+    {
+        public override bool CanConvert(Type objectType)
+        {
+            // This converter can only handle the ShortGuid type.
+            return objectType == typeof(ShortGuid);
+        }
+
+        /// <summary>
+        /// Writes the ShortGuid to JSON as its integer value.
+        /// </summary>
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            var shortGuid = (ShortGuid)value;
+            // Write the value from the AsUInt32 property to the JSON output
+            writer.WriteValue(shortGuid.AsUInt32);
+        }
+
+        /// <summary>
+        /// Reads an integer from JSON to create a ShortGuid.
+        /// </summary>
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            // Read the raw value from the JSON (should be an integer)
+            var uintValue = Convert.ToUInt32(reader.Value);
+            // Create a new ShortGuid using the constructor that takes a uint
+            return new ShortGuid(uintValue);
         }
     }
 }
