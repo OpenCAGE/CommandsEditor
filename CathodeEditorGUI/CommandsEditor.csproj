@@ -487,11 +487,11 @@
     <Compile Include="Popups\SelectLevel.Designer.cs">
       <DependentUpon>SelectLevel.cs</DependentUpon>
     </Compile>
-    <Compile Include="Popups\ShowCompositeUses.cs">
+    <Compile Include="Popups\GlobalEntitySearcher.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Popups\ShowCompositeUses.Designer.cs">
-      <DependentUpon>ShowCompositeUses.cs</DependentUpon>
+    <Compile Include="Popups\GlobalEntitySearcher.Designer.cs">
+      <DependentUpon>GlobalEntitySearcher.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\UserControls\GUI_Resource_Default.cs">
       <SubType>UserControl</SubType>
@@ -836,8 +836,8 @@
     <EmbeddedResource Include="Popups\SetNumericStep.resx">
       <DependentUpon>SetNumericStep.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Popups\ShowCompositeUses.resx">
-      <DependentUpon>ShowCompositeUses.cs</DependentUpon>
+    <EmbeddedResource Include="Popups\GlobalEntitySearcher.resx">
+      <DependentUpon>GlobalEntitySearcher.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\ShowCrossRefs.resx">
       <DependentUpon>ShowCrossRefs.cs</DependentUpon>

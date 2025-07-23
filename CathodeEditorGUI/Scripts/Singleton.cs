@@ -116,6 +116,7 @@ namespace CommandsEditor
             public readonly string NumericStep = "CS_NumericStep";
             public readonly string NumericStepRot = "CS_NumericStepRot";
             public readonly string SavePakAndBin = "CS_SavePakAndBin";
+            public readonly string PrevEntNameSearch = "CS_PrevEntNameSearch";
         }
 
         public static Action OnAnimationsLoaded;

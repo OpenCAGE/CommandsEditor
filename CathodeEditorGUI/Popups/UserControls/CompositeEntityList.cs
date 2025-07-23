@@ -171,80 +171,10 @@ namespace CommandsEditor.Popups.UserControls
                     return;
             }
 
+            (int imageIndex, int groupIndex) = EditorUtils.GetIndexesForListViewItem(entity, _composite, Content.commands);
             ListViewItem item = (ListViewItem)Content.GenerateListViewItem(entity, _composite).Clone();
-
-            //Keep these indexes in sync with ListViewGroup 
-            switch (entity.variant)
-            {
-                case EntityVariant.VARIABLE:
-                    CompositePinInfoTable.PinInfo pinInfo = Content.commands.Utils.GetParameterInfo(_composite, (VariableEntity)entity);
-                    if (pinInfo != null)
-                    {
-                        switch ((CompositePinType)pinInfo.PinTypeGUID.AsUInt32)
-                        {
-                            case CompositePinType.CompositeInputAnimationInfoVariablePin:
-                            case CompositePinType.CompositeInputBoolVariablePin:
-                            case CompositePinType.CompositeInputDirectionVariablePin:
-                            case CompositePinType.CompositeInputFloatVariablePin:
-                            case CompositePinType.CompositeInputIntVariablePin:
-                            case CompositePinType.CompositeInputObjectVariablePin:
-                            case CompositePinType.CompositeInputPositionVariablePin:
-                            case CompositePinType.CompositeInputStringVariablePin:
-                            case CompositePinType.CompositeInputVariablePin:
-                            case CompositePinType.CompositeInputZoneLinkPtrVariablePin:
-                            case CompositePinType.CompositeInputZonePtrVariablePin:
-                            case CompositePinType.CompositeInputEnumVariablePin:
-                            case CompositePinType.CompositeInputEnumStringVariablePin:
-                            case CompositePinType.CompositeMethodPin:
-                                item.ImageIndex = 6; 
-                                break;
-                            case CompositePinType.CompositeOutputAnimationInfoVariablePin:
-                            case CompositePinType.CompositeOutputBoolVariablePin:
-                            case CompositePinType.CompositeOutputDirectionVariablePin:
-                            case CompositePinType.CompositeOutputFloatVariablePin:
-                            case CompositePinType.CompositeOutputIntVariablePin:
-                            case CompositePinType.CompositeOutputObjectVariablePin:
-                            case CompositePinType.CompositeOutputPositionVariablePin:
-                            case CompositePinType.CompositeOutputStringVariablePin:
-                            case CompositePinType.CompositeOutputVariablePin:
-                            case CompositePinType.CompositeOutputZoneLinkPtrVariablePin:
-                            case CompositePinType.CompositeOutputZonePtrVariablePin:
-                            case CompositePinType.CompositeOutputEnumVariablePin:
-                            case CompositePinType.CompositeOutputEnumStringVariablePin:
-                            case CompositePinType.CompositeTargetPin:
-                            case CompositePinType.CompositeReferencePin:
-                                item.ImageIndex = 5;
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        item.ImageIndex = 0;
-                    }
-                    item.Group = composite_content.Groups[0];
-                    break;
-                case EntityVariant.FUNCTION:
-                    if (!((FunctionEntity)entity).function.IsFunctionType)
-                    {
-                        item.Group = composite_content.Groups[2];
-                        item.ImageIndex = 2;
-                    }
-                    else
-                    {
-                        item.Group = composite_content.Groups[1];
-                        item.ImageIndex = 1;
-                    }
-                    break;
-                case EntityVariant.PROXY:
-                    item.Group = composite_content.Groups[3];
-                    item.ImageIndex = 3;
-                    break;
-                case EntityVariant.ALIAS:
-                    item.Group = composite_content.Groups[4];
-                    item.ImageIndex = 4;
-                    break;
-            }
-
+            item.ImageIndex = imageIndex;
+            item.Group = composite_content.Groups[groupIndex];
             composite_content.Items.Add(item);
         }
 

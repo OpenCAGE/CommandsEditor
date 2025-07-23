@@ -407,7 +407,7 @@ namespace CommandsEditor
             {
                 case EntityVariant.VARIABLE:
                     item.Text = ShortGuidUtils.FindString(((VariableEntity)entity).name);
-                    CompositePinInfoTable.PinInfo variableInfo = commands.Utils.GetParameterInfo(composite, (VariableEntity)entity);
+                    CompositePinInfoTable.PinInfo variableInfo = commands.Utils.GetPinInfo(composite, (VariableEntity)entity);
                     item.SubItems.Add(variableInfo != null ? ((CompositePinType)variableInfo.PinTypeGUID.AsUInt32).ToUIString() : ((VariableEntity)entity).type.ToUIString());
                     break;
                 case EntityVariant.FUNCTION:

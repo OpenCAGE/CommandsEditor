@@ -401,6 +401,85 @@ namespace CommandsEditor
             return cont[cont.Length - 1];
         }
 
+        /* Utility: get the image/group index for an entity, for populating ListViewItems */
+        public static (int, int) GetIndexesForListViewItem(Entity entity, Composite composite, Commands commands)
+        {
+            //Keep these indexes in sync with ListViewGroup 
+            int imageIndex = 0;
+            int groupIndex = 0;
+            switch (entity.variant)
+            {
+                case EntityVariant.VARIABLE:
+                    CompositePinInfoTable.PinInfo pinInfo = commands.Utils.GetPinInfo(composite, (VariableEntity)entity);
+                    if (pinInfo != null)
+                    {
+                        switch ((CompositePinType)pinInfo.PinTypeGUID.AsUInt32)
+                        {
+                            case CompositePinType.CompositeInputAnimationInfoVariablePin:
+                            case CompositePinType.CompositeInputBoolVariablePin:
+                            case CompositePinType.CompositeInputDirectionVariablePin:
+                            case CompositePinType.CompositeInputFloatVariablePin:
+                            case CompositePinType.CompositeInputIntVariablePin:
+                            case CompositePinType.CompositeInputObjectVariablePin:
+                            case CompositePinType.CompositeInputPositionVariablePin:
+                            case CompositePinType.CompositeInputStringVariablePin:
+                            case CompositePinType.CompositeInputVariablePin:
+                            case CompositePinType.CompositeInputZoneLinkPtrVariablePin:
+                            case CompositePinType.CompositeInputZonePtrVariablePin:
+                            case CompositePinType.CompositeInputEnumVariablePin:
+                            case CompositePinType.CompositeInputEnumStringVariablePin:
+                            case CompositePinType.CompositeMethodPin:
+                                imageIndex = 6;
+                                break;
+                            case CompositePinType.CompositeOutputAnimationInfoVariablePin:
+                            case CompositePinType.CompositeOutputBoolVariablePin:
+                            case CompositePinType.CompositeOutputDirectionVariablePin:
+                            case CompositePinType.CompositeOutputFloatVariablePin:
+                            case CompositePinType.CompositeOutputIntVariablePin:
+                            case CompositePinType.CompositeOutputObjectVariablePin:
+                            case CompositePinType.CompositeOutputPositionVariablePin:
+                            case CompositePinType.CompositeOutputStringVariablePin:
+                            case CompositePinType.CompositeOutputVariablePin:
+                            case CompositePinType.CompositeOutputZoneLinkPtrVariablePin:
+                            case CompositePinType.CompositeOutputZonePtrVariablePin:
+                            case CompositePinType.CompositeOutputEnumVariablePin:
+                            case CompositePinType.CompositeOutputEnumStringVariablePin:
+                            case CompositePinType.CompositeTargetPin:
+                            case CompositePinType.CompositeReferencePin:
+                                imageIndex = 5;
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        imageIndex = 0;
+                    }
+                    groupIndex = 0;
+                    break;
+                case EntityVariant.FUNCTION:
+                    if (!((FunctionEntity)entity).function.IsFunctionType)
+                    {
+                        groupIndex = 2;
+                        imageIndex = 2;
+                    }
+                    else
+                    {
+                        groupIndex = 1;
+                        imageIndex = 1;
+                    }
+                    break;
+                case EntityVariant.PROXY:
+                    groupIndex = 3;
+                    imageIndex = 3;
+                    break;
+                case EntityVariant.ALIAS:
+                    groupIndex = 4;
+                    imageIndex = 4;
+                    break;
+            }
+            return (imageIndex, groupIndex);
+        }
+
         /* Utility: work out if any proxies/overrides reference the currently selected entity */
         public bool IsEntityReferencedExternally(Entity entity, CancellationToken ct)
         {

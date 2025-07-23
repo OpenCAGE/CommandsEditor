@@ -212,7 +212,7 @@ namespace CommandsEditor
                 nodes[i].NodeID = flowgraphMeta.Nodes[i].NodeID;
             }
 
-            Console.WriteLine(flowgraphMeta.Name);
+            Console.WriteLine("Loading Flowgraph: " + flowgraphMeta.Name);
 
             //Populate connections
             List<EntityConnector> populatedConnections = new List<EntityConnector>();
@@ -487,7 +487,7 @@ namespace CommandsEditor
             {
                 case EntityVariant.VARIABLE:
                     VariableEntity varEnt = (VariableEntity)entity;
-                    PinInfo info = Commands.Utils.GetParameterInfo(_composite, varEnt);
+                    PinInfo info = Commands.Utils.GetPinInfo(_composite, varEnt);
                     switch (info.PinTypeGUID.AsCompositePinType)
                     {
                         case CompositePinType.CompositeInputAnimationInfoVariablePin:

@@ -59,6 +59,7 @@ namespace CommandsEditor.DockPanels
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.createComposite = new System.Windows.Forms.ToolStripButton();
             this.createFolder = new System.Windows.Forms.ToolStripButton();
+            this.findNameUses = new System.Windows.Forms.ToolStripButton();
             this.findFunctionUses = new System.Windows.Forms.ToolStripButton();
             this.FileTreeContextMenuNew = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -312,7 +313,8 @@ namespace CommandsEditor.DockPanels
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.createComposite,
             this.createFolder,
-            this.findFunctionUses});
+            this.findFunctionUses,
+            this.findNameUses});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(1513, 25);
@@ -337,14 +339,24 @@ namespace CommandsEditor.DockPanels
             this.createFolder.Text = "Create Folder";
             this.createFolder.Click += new System.EventHandler(this.createFolder_Click);
             // 
+            // findNameUses
+            // 
+            this.findNameUses.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.findNameUses.Image = ((System.Drawing.Image)(resources.GetObject("findNameUses.Image")));
+            this.findNameUses.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.findNameUses.Name = "findNameUses";
+            this.findNameUses.Size = new System.Drawing.Size(113, 22);
+            this.findNameUses.Text = "Search By Name";
+            this.findNameUses.Click += new System.EventHandler(this.findNameUses_Click);
+            // 
             // findFunctionUses
             // 
             this.findFunctionUses.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.findFunctionUses.Image = ((System.Drawing.Image)(resources.GetObject("findFunctionUses.Image")));
             this.findFunctionUses.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.findFunctionUses.Name = "findFunctionUses";
-            this.findFunctionUses.Size = new System.Drawing.Size(127, 22);
-            this.findFunctionUses.Text = "Find Function Uses";
+            this.findFunctionUses.Size = new System.Drawing.Size(155, 22);
+            this.findFunctionUses.Text = "Search By Function Type";
             this.findFunctionUses.Click += new System.EventHandler(this.findFunctionUses_Click);
             // 
             // FileTreeContextMenuNew
@@ -467,5 +479,6 @@ namespace CommandsEditor.DockPanels
         private ToolStripSeparator toolStripSeparator3;
         private ToolStripMenuItem toolStripMenuItem4;
         private ToolStripMenuItem toolStripMenuItem5;
+        private ToolStripButton findNameUses;
     }
 }

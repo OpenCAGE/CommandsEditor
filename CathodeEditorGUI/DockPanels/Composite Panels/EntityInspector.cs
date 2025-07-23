@@ -282,7 +282,7 @@ namespace CommandsEditor.DockPanels
                     }
                     break;
                 case EntityVariant.VARIABLE:
-                    variableInfo = Content.commands.Utils.GetParameterInfo(Composite, (VariableEntity)Entity);
+                    variableInfo = Content.commands.Utils.GetPinInfo(Composite, (VariableEntity)Entity);
                     if (variableInfo == null)
                         Console.WriteLine("Warning: Could not get parameter pin info!");
                     description = (variableInfo != null ? ((CompositePinType)variableInfo.PinTypeGUID.AsUInt32).ToUIString() : ((VariableEntity)_entity).type.ToUIString());

@@ -1,6 +1,6 @@
 ﻿namespace CommandsEditor
 {
-    partial class ShowCompositeUses
+    partial class GlobalEntitySearcher
     {
         /// <summary>
         /// Required designer variable.
@@ -34,7 +34,7 @@
             System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("Composite Instances", System.Windows.Forms.HorizontalAlignment.Left);
             System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("Proxies", System.Windows.Forms.HorizontalAlignment.Left);
             System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup("Aliases", System.Windows.Forms.HorizontalAlignment.Left);
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ShowCompositeUses));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GlobalEntitySearcher));
             this.label = new System.Windows.Forms.Label();
             this.jumpToEntity = new System.Windows.Forms.Button();
             this.entityVariant = new System.Windows.Forms.ComboBox();
@@ -43,6 +43,7 @@
             this.EntityName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.EntityType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.entityListIcons = new System.Windows.Forms.ImageList(this.components);
+            this.nameSearchBox = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // label
@@ -147,11 +148,19 @@
             this.entityListIcons.Images.SetKeyName(5, "variable left.png");
             this.entityListIcons.Images.SetKeyName(6, "variable right.png");
             // 
+            // nameSearchBox
+            // 
+            this.nameSearchBox.Location = new System.Drawing.Point(15, 12);
+            this.nameSearchBox.Name = "nameSearchBox";
+            this.nameSearchBox.Size = new System.Drawing.Size(600, 20);
+            this.nameSearchBox.TabIndex = 178;
+            // 
             // ShowCompositeUses
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(761, 499);
+            this.Controls.Add(this.nameSearchBox);
             this.Controls.Add(this.entityList);
             this.Controls.Add(this.searchFunctionTypes);
             this.Controls.Add(this.entityVariant);
@@ -175,5 +184,6 @@
         private System.Windows.Forms.ColumnHeader EntityName;
         private System.Windows.Forms.ColumnHeader EntityType;
         private System.Windows.Forms.ImageList entityListIcons;
+        private System.Windows.Forms.TextBox nameSearchBox;
     }
 }

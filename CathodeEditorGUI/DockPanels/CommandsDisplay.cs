@@ -135,10 +135,10 @@ namespace CommandsEditor.DockPanels
                 _addFolderDialog.FormClosed -= addFolderDialogClosed;
                 _addFolderDialog.OnFolderAdded -= SelectCompositeAndReloadList;
             }
-            if (_functionUsesDialog != null)
+            if (_globalEntitySearch != null)
             {
-                _functionUsesDialog.OnEntitySelected -= LoadCompositeAndEntity;
-                _functionUsesDialog.FormClosed -= _functionUsesDialog_FormClosed;
+                _globalEntitySearch.OnEntitySelected -= LoadCompositeAndEntity;
+                _globalEntitySearch.FormClosed -= _globalEntitySearch_FormClosed;
             }
 
             _content = null;
@@ -715,24 +715,33 @@ namespace CommandsEditor.DockPanels
             folderToolStripMenuItem_Click(null, null);
         }
 
-        ShowCompositeUses _functionUsesDialog = null;
         private void findFunctionUses_Click(object sender, EventArgs e)
         {
-            if (_functionUsesDialog != null)
+            ShowSearchWindow(GlobalEntitySearcher.SearchMode.BY_FUNCTION);
+        }
+        private void findNameUses_Click(object sender, EventArgs e)
+        {
+            ShowSearchWindow(GlobalEntitySearcher.SearchMode.BY_NAME);
+        }
+
+        GlobalEntitySearcher _globalEntitySearch = null;
+        private void ShowSearchWindow(GlobalEntitySearcher.SearchMode mode)
+        {
+            if (_globalEntitySearch != null)
             {
-                _functionUsesDialog.Focus();
-                _functionUsesDialog.BringToFront();
+                _globalEntitySearch.Focus();
+                _globalEntitySearch.BringToFront();
                 return;
             }
 
-            _functionUsesDialog = new ShowCompositeUses();
-            _functionUsesDialog.Show();
-            _functionUsesDialog.OnEntitySelected += LoadCompositeAndEntity;
-            _functionUsesDialog.FormClosed += _functionUsesDialog_FormClosed;
+            _globalEntitySearch = new GlobalEntitySearcher(mode);
+            _globalEntitySearch.Show();
+            _globalEntitySearch.OnEntitySelected += LoadCompositeAndEntity;
+            _globalEntitySearch.FormClosed += _globalEntitySearch_FormClosed;
         }
-        private void _functionUsesDialog_FormClosed(object sender, FormClosedEventArgs e)
+        private void _globalEntitySearch_FormClosed(object sender, FormClosedEventArgs e)
         {
-            _functionUsesDialog = null;
+            _globalEntitySearch = null;
         }
 
         private void entity_search_box_KeyDown(object sender, KeyEventArgs e)

@@ -358,7 +358,7 @@ namespace CommandsEditor
                 {
                     for (int i = 0; i < commands.Entries[x].variables.Count; i++)
                     {
-                        if (commands.Utils.GetParameterInfo(commands.Entries[x], commands.Entries[x].variables[i]) == null)
+                        if (commands.Utils.GetPinInfo(commands.Entries[x], commands.Entries[x].variables[i]) == null)
                         {
                             dump.Add(file + "," + commands.Entries[x].name + "," + commands.Entries[x].variables[i].shortGUID + "," + commands.Entries[x].variables[i].name);
                         }
