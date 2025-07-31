@@ -215,7 +215,7 @@ namespace CommandsEditor
             flowgraphMeta.CompositeGUID = composite.shortGUID;
             flowgraphMeta.Name = name;
 
-            flowgraphMeta.CanvasPosition = editor.CanvasOffset;
+            flowgraphMeta.CanvasPosition = editor.CanvasCenter;
             flowgraphMeta.CanvasScale = editor.CanvasScale;
             flowgraphMeta.Nodes = new List<FlowgraphMeta.NodeMeta>();
             for (int i = 0; i < editor.Nodes.Count; i++)

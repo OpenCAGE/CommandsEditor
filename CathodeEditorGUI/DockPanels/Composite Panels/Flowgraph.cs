@@ -129,6 +129,8 @@ namespace CommandsEditor
             stNodeEditor1.AddSelectedNode(node);
             node.SetSelected(true, true);
             stNodeEditor1.SetActiveNode(node);
+
+            stNodeEditor1.CenterCanvasOn(node.Location.X, node.Location.Y, true);
         }
 
         private void DeselectAllNodes()
@@ -254,7 +256,7 @@ namespace CommandsEditor
 
             //Correctly respect the scale/position of the saved flowgraph
             stNodeEditor1.ScaleCanvas(flowgraphMeta.CanvasScale, 0, 0);
-            stNodeEditor1.MoveCanvas(flowgraphMeta.CanvasPosition.X, flowgraphMeta.CanvasPosition.Y, false, CanvasMoveArgs.All);
+            stNodeEditor1.CenterCanvasOn(flowgraphMeta.CanvasPosition.X, flowgraphMeta.CanvasPosition.Y, false);
 
             //Recompute all nodes -> this is kinda expensive and not ideal, but I think it's needed to make sure everything draws nicely.
             foreach (STNode node in stNodeEditor1.Nodes)
