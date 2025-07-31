@@ -1,34 +1,326 @@
 using CATHODE;
+using CATHODE.EXPERIMENTAL;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CathodeLib;
+using CommandsEditor.UserControls;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Numerics;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using System.Numerics;
-using System.Diagnostics;
-using System.Security.Cryptography;
 using System.Windows.Forms.Design;
-using System.CodeDom;
-using System.Windows.Media.Media3D;
-using static CATHODE.Models;
 using System.Windows.Media.Animation;
-using System.Collections.Specialized;
-using System.Runtime.InteropServices;
-using CommandsEditor.UserControls;
-using CATHODE.EXPERIMENTAL;
+using System.Windows.Media.Media3D;
+using System.Xml.Linq;
+using WebSocketSharp;
+using static CATHODE.Models;
 using static CATHODE.Movers;
 using static CathodeLib.CathodeEnumTable;
+using static CathodeLib.CompositeFlowgraphTable;
 
 namespace CommandsEditor
 {
     public static class LocalDebug
     {
+        public static void ProxyTester()
+        {
+            Directory.Delete("ProxyTest", true);
+            List<string> files = Directory.GetFiles("C:\\Program Files (x86)\\Steam\\steamapps\\common\\Alien Isolation\\DATA\\ENV", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            foreach (string file in files)
+            {
+                bool warn = false;
+                Commands commandsRetail = new Commands(file);
+                List<string> output = new List<string>();
+                foreach (Composite comp in commandsRetail.Entries)
+                {
+                    foreach (ProxyEntity p in comp.proxies)
+                    {
+                        output.Add("***************************");
+                        output.Add("New Proxy Found:");
+                        for (int i = 0; i < p.proxy.path.Length; i++)
+                        {
+                            output.Add("[" + i + "] " + p.proxy.path[i].ToByteString());
+                        }
+
+                        output.Add("");
+
+                        Entity pointedE = commandsRetail.Utils.ResolveHierarchy(comp, p.proxy.path, out Composite compContanied, out string Str);
+                        output.Add("Using My Resolver:");
+                        output.Add(Str);
+
+                        output.Add("");
+
+                        int resolved = 0;
+                        if (p.proxy.path.Length >= 1)
+                        {
+                            Composite test = commandsRetail.GetComposite(p.proxy.path[0]);
+                            if (test != null)
+                            {
+                                output.Add("0 -> COMPOSITE: " + test.name);
+                                resolved++;
+                            }
+                            else
+                            {
+                                output.Add("Could not resolve proxy start");
+                            }
+
+                            for (int i = 0; i < p.proxy.path.Length; i++)
+                            {
+                                bool found = false;
+                                foreach (Composite c in commandsRetail.Entries)
+                                {
+                                    string name = commandsRetail.Utils.GetEntityName(c.shortGUID, p.proxy.path[i]);
+                                    if (name != p.proxy.path[i].ToByteString())
+                                    {
+                                        output.Add(i + " -> [" + c.shortGUID.ToByteString() + "] " + c.name + " -> [" + p.proxy.path[i] + "] " + name);
+                                        resolved++;
+                                        found = true;
+                                        break;
+                                    }
+                                }
+                                if (!found && i != 0)
+                                {
+                                    foreach (Composite c in commandsRetail.Entries)
+                                    {
+                                        foreach (Entity e in c.GetEntities())
+                                        {
+                                            if (e.shortGUID == p.proxy.path[i])
+                                            {
+                                                output.Add(i + " -> [" + c.shortGUID.ToByteString() + "] " + c.name + " -> [" + p.proxy.path[i] + "] " + e.shortGUID.ToByteString() + " (NAME NOT RESOLVABLE - TYPE = " + e.variant + ")");
+                                                resolved++;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (resolved != p.proxy.path.Length - 1)
+                            {
+                                output.Add("\n\nWARNING - COULD NOT RESOLVE ALL AS EXPECTED! ");
+                                warn = true;
+                            }
+                        }
+                        else
+                        {
+                            output.Add("EMPTY PROXY!!!?!?");
+                        }
+
+                        output.Add("***************************");
+                        output.Add("");
+
+                        if (p.shortGUID == new ShortGuid("C3-0D-91-BC"))
+                        {
+                            continue;
+
+
+                            //string str1 = commandsRetail.Utils.GetEntityName(comp, p);
+                            //
+                            ////<cmd entity="5277f91500001703ef7cbb350adeb6f6" property="" attribute="proxy_target" time="01ced99641b04f64">{659759aaf4097af46d75b5b05c23a5ef^507d47bd00002d335ef5df7d13aac93b^51347058000072157a04bc5c2621da9c}</cmd>
+                            //
+                            //CATHODE.Scripting.Composite path_entry_one = commandsRetail.GetComposite(p.proxy.path[0]); //ok, so first resolves to composite MISSIONS_Torrens
+                            //(Composite test55, EntityPath path22) = content.editor_utils.GetCompositeFromInstanceID(commandsRetail, p.proxy.path[1]);
+                            ////second doesn't resolve to anything, but is used in THREE torrens proxies (and nowehre else)
+                            //Entity path_entry_three = path_entry_one.GetEntityByID(p.proxy.path[2]); // third resolves to an entity within the composite pointed to by entry one
+                            //
+                            //
+                            //
+                            //bool valid = p.proxy.IsPathValid(commandsRetail, comp);
+                            //Entity entP = p.proxy.GetPointedEntity(commandsRetail, comp);
+                            //
+                            //CATHODE.Scripting.Composite com = commandsRetail.GetComposite(new ShortGuid("56-38-F8-99"));
+                            //
+                            //Entity pointedEnt = commandsRetail.Utils.ResolveHierarchy(comp, p.proxy.path, out CATHODE.Scripting.Composite containedComp, out string str);
+                            //
+                            //CATHODE.Scripting.Composite comp1 = commandsRetail.GetComposite(p.proxy.path[0]);
+                            //CATHODE.Scripting.Composite comp2 = commandsRetail.GetComposite(p.proxy.path[1]);
+                            //CATHODE.Scripting.Composite comp3 = commandsRetail.GetComposite(p.proxy.path[2]);
+                            //CATHODE.Scripting.Composite comp4 = commandsRetail.GetComposite(p.proxy.path[3]);
+                            //
+                            //Entity ent1 = comp1.GetEntityByID(p.proxy.path[1]);
+                            //
+                            //
+                            ////FunctionEntity ent2 = (FunctionEntity)ent1.GetEntityByID(p.proxy.path[1]);
+                            ////FunctionEntity ent3 = (FunctionEntity)commandsRetail.GetComposite(ent2.function).GetEntityByID(p.proxy.path[2]);
+                            ////FunctionEntity ent4 = (FunctionEntity)commandsRetail.GetComposite(ent3.function).GetEntityByID(p.proxy.path[3]);
+                            //
+                            //string ffsd = "";
+                        }
+                    }
+                }
+                Directory.CreateDirectory("ProxyTest");
+                File.WriteAllLines("ProxyTest/" + Path.GetFileName(commandsRetail.EntryPoints[0].name) + (warn ? " [!]" : "") + ".txt", output);
+            }
+        }
+
+        public static void CheckAllFlowgraphLayouts()
+        {
+            List<string> files = Directory.GetFiles("C:\\Program Files (x86)\\Steam\\steamapps\\common\\Alien Isolation\\DATA\\ENV", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            foreach (string file in files)
+            {
+                List<string> output = new List<string>();
+                Commands commands = new Commands(file);
+                CompositeFlowgraphTable.FlowgraphMeta.SupportedLevel level = (CompositeFlowgraphTable.FlowgraphMeta.SupportedLevel)Enum.Parse(typeof(CompositeFlowgraphTable.FlowgraphMeta.SupportedLevel), Path.GetFileName(commands.EntryPoints[0].name).ToUpper());           
+                foreach (Composite composite in commands.Entries)
+                {
+
+                    var metas = FlowgraphLayoutManager.PreDefinedLayouts.flowgraphs.FindAll(o => o.CompositeGUID == composite.shortGUID && o.SupportedLevels.HasFlag(level));
+
+                    List<LinkData> flowgraphLinks = new List<LinkData>();
+                    for (int i = 0; i < metas.Count; i++)
+                    {
+                        for (int x = 0; x < metas[i].Nodes.Count; x++)
+                        {
+                            for (int y = 0; y < metas[i].Nodes[x].Connections.Count; y++)
+                            {
+                                flowgraphLinks.Add(new LinkData(
+                                    metas[i].Nodes[x].EntityGUID,
+                                    metas[i].Nodes[x].Connections[y].ParameterGUID,
+                                    metas[i].Nodes[x].Connections[y].ConnectedEntityGUID,
+                                    metas[i].Nodes[x].Connections[y].ConnectedParameterGUID)
+                                );
+                            }
+                        }
+                    }
+
+                    List<Entity> entities = composite.GetEntities();
+                    List<LinkData> compositeLinks = new List<LinkData>();
+                    for (int i = 0; i < entities.Count; i++)
+                    {
+                        //clear out any dead links first
+                        List<EntityConnector> trimmedChildren = new List<EntityConnector>();
+                        foreach (EntityConnector connector in entities[i].childLinks)
+                        {
+                            if (composite.GetEntityByID(connector.linkedEntityID) == null)
+                                continue;
+                            trimmedChildren.Add(connector);
+                        }
+
+                        for (int x = 0; x < trimmedChildren.Count; x++)
+                        {
+                            compositeLinks.Add(new LinkData(
+                                entities[i].shortGUID,
+                                trimmedChildren[x].thisParamID,
+                                trimmedChildren[x].linkedEntityID,
+                                trimmedChildren[x].linkedParamID)
+                            );
+                        }
+                    }
+
+                    flowgraphLinks = flowgraphLinks.OrderBy(o => o.In.ParameterID.ToString()).ThenBy(o => o.Out.ParameterID.ToString()).ThenBy(o => o.In.EntityID.ToByteString()).ThenBy(o => o.Out.EntityID.ToByteString()).ToList();
+                    compositeLinks = compositeLinks.OrderBy(o => o.In.ParameterID.ToString()).ThenBy(o => o.Out.ParameterID.ToString()).ThenBy(o => o.In.EntityID.ToByteString()).ThenBy(o => o.Out.EntityID.ToByteString()).ToList();
+
+                    Directory.CreateDirectory(level + "/source/" + composite.name.Replace(':', '_'));
+                    Directory.CreateDirectory(level + "/retail/" + composite.name.Replace(':', '_'));
+                    File.WriteAllText(level + "/source/" + composite.name.Replace(':', '_') + "/links.json", JsonConvert.SerializeObject(flowgraphLinks, Newtonsoft.Json.Formatting.Indented, new ShortGuidConverter()));
+                    File.WriteAllText(level + "/retail/" + composite.name.Replace(':', '_') + "/links.json", JsonConvert.SerializeObject(compositeLinks, Newtonsoft.Json.Formatting.Indented, new ShortGuidConverter()));
+
+                    if (flowgraphLinks.Count != compositeLinks.Count)
+                    {
+                        //Entity fgIn = composite.GetEntityByID(flowgraphLinks[i].In.EntityID);
+                        //Entity fgOut = composite.GetEntityByID(flowgraphLinks[i].Out.EntityID);
+                        //string fgInP = flowgraphLinks[i].In.ParameterID.ToString();
+                        //string fgOutP = flowgraphLinks[i].Out.ParameterID.ToString();
+                        //string fgInN = Singleton.Editor.CommandsDisplay.Content.commands.Utils.GetEntityName(composite, fgIn);
+                        //string fgOutN = Singleton.Editor.CommandsDisplay.Content.commands.Utils.GetEntityName(composite, fgOut);
+
+                        output.Add(composite.name + "\n\t" + flowgraphLinks.Count + " vs retail " + compositeLinks.Count + " [" + ((flowgraphLinks.Count > compositeLinks.Count) ? "SMALLER" : "LARGER") + "]");
+                    }
+
+                    //for (int i = 0; i < flowgraphLinks.Count; i++)
+                    //{
+                    //    if (flowgraphLinks[i] != compositeLinks[i])
+                    //    {
+                    //    }
+                    //}
+                }
+                Directory.CreateDirectory("summary");
+                File.WriteAllLines("summary/" + level + ".txt", output);
+            }
+        }
+
+        //quick copied from flowgraphlayoutmanager
+        struct LinkData
+        {
+            public LinkData(ShortGuid EntityID, ShortGuid ParameterID, ShortGuid LinkedEntityID, ShortGuid LinkedParameterID)
+            {
+                Out = new Parameter() { EntityID = EntityID, ParameterID = ParameterID };
+                In = new Parameter() { EntityID = LinkedEntityID, ParameterID = LinkedParameterID };
+            }
+
+            public Parameter Out;
+            public Parameter In;
+
+            public struct Parameter
+            {
+                public ShortGuid EntityID;
+                public ShortGuid ParameterID;
+
+                public static bool operator ==(Parameter left, Parameter right)
+                {
+                    return left.Equals(right);
+                }
+
+                public static bool operator !=(Parameter left, Parameter right)
+                {
+                    return !(left == right);
+                }
+
+                public override bool Equals(object obj)
+                {
+                    if (obj is Parameter other)
+                    {
+                        return EntityID.Equals(other.EntityID) && ParameterID.Equals(other.ParameterID);
+                    }
+                    return false;
+                }
+
+                public override int GetHashCode()
+                {
+                    int hashCode = -1506387652;
+                    hashCode = hashCode * -1521134295 + EntityID.GetHashCode();
+                    hashCode = hashCode * -1521134295 + ParameterID.GetHashCode();
+                    return hashCode;
+                }
+            }
+
+            public static bool operator ==(LinkData left, LinkData right)
+            {
+                return left.Equals(right);
+            }
+
+            public static bool operator !=(LinkData left, LinkData right)
+            {
+                return !(left == right);
+            }
+
+            public override bool Equals(object obj)
+            {
+                if (obj is LinkData other)
+                {
+                    return Out == other.Out && In == other.In;
+                }
+                return false;
+            }
+
+            public override int GetHashCode()
+            {
+                int hashCode = 1047395477;
+                hashCode = hashCode * -1521134295 + Out.GetHashCode();
+                hashCode = hashCode * -1521134295 + In.GetHashCode();
+                return hashCode;
+            }
+        }
+
         public static void DumpCommandsToJson(string path, string dir)
         {
 #if DEBUG
@@ -465,21 +757,31 @@ namespace CommandsEditor
 #endif
         }
 
-        public static void DoCheckOnNodegraph()
+        public static void TestAllFlowgraphs()
         {
 #if DEBUG
 
-            List<string> files = Directory.GetFiles("F:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\data_orig\\ENV\\Production", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            List<string> files = Directory.GetFiles("C:\\Program Files (x86)\\Steam\\steamapps\\common\\Alien Isolation\\DATA\\ENV", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
             foreach (string file in files)
             {
                 Commands commands = new Commands(file);
-                commands.EntryPoints[0].name = EditorUtils.GetCompositeName(commands.EntryPoints[0]);
-                Flowgraph flowgraph = new Flowgraph();
-                flowgraph.Show();
-                //flowgraph.DEBUG_LoadAll_Test(commands);
-                flowgraph.Hide();
-                flowgraph.Dispose();
+                FlowgraphLayoutManager.LinkCommands(commands);
+                foreach (Composite comp in commands.Entries)
+                {
+                    List<FlowgraphMeta> layouts = FlowgraphLayoutManager.GetLayouts(comp);
+                    foreach (FlowgraphMeta layout in layouts)
+                    {
+                        Flowgraph flowgraph = new Flowgraph();
+                        flowgraph._commands = commands;
+                        flowgraph.Show();
+                        flowgraph.ShowFlowgraph(comp, layout);
+                        flowgraph.Hide();
+                        flowgraph.Dispose();
+                    }
+                }
             }
+
+            string sdfsdf = "";
 #endif
         }
 

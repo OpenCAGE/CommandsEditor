@@ -172,7 +172,8 @@ namespace CommandsEditor
             }
         }
 
-        public bool ShowFlowgraph(Composite composite, FlowgraphMeta flowgraphMeta)
+        //NOTE: This assumes you've already checked with FlowgraphLayoutManager that LinksMatch!
+        public void ShowFlowgraph(Composite composite, FlowgraphMeta flowgraphMeta)
         {
             if (Commands.Utils.PurgeDeadLinks(composite))
                 Commands.Utils.PurgedComposites.purged.Add(composite.shortGUID);
@@ -186,107 +187,84 @@ namespace CommandsEditor
             _spawnOffset = 0;
 
             //Populate nodes for entities
-            List<Entity> populatedEntities = new List<Entity>();
-            STNode[] nodes = new STNode[flowgraphMeta.Nodes.Count];
+            List<Tuple<Entity, FlowgraphMeta.NodeMeta>> entities = new List<Tuple<Entity, FlowgraphMeta.NodeMeta>>();
             for (int i = 0; i < flowgraphMeta.Nodes.Count; i++)
             {
                 Entity entity = composite.GetEntityByID(flowgraphMeta.Nodes[i].EntityGUID);
                 if (entity == null)
-                {
-                    //Our composite mismatches the flowgraph layout, the user must have modified the content with an older version of the script editor.
-                    return false;
-                }
-                populatedEntities.Add(entity);
-
-                nodes[i] = EntityToNode(entity, true);
-                nodes[i].SetPosition(flowgraphMeta.Nodes[i].Position);
+                    continue; //If an entity doesn't exist, this should've already been deemed acceptable by FlowgraphLayoutManager.
+                entities.Add(new Tuple<Entity, FlowgraphMeta.NodeMeta>(entity, flowgraphMeta.Nodes[i]));
+            }
+            STNode[] nodes = new STNode[entities.Count];
+            for (int i = 0; i < entities.Count; i++)
+            {
+                nodes[i] = EntityToNode(entities[i].Item1);
+                nodes[i].SetPosition(entities[i].Item2.Position);
                 
-                //TEMP
+                // !!TODO!!
+                // This is a temporary solution to position the pins in the right place: add them all, link them up, then remove ones without links.
+                // It's REALLY not ideal as it adds a lot of overhead adding and removing things for no reason, but it's the quickest hack fix for now.
+                // I should instead check the type of pin it should be when linking, and add it then, like how I add the in/out links for dynamic things (TriggerSeq/CAGEAnim).
                 AddAllPins(nodes[i]);
 
-                foreach (ShortGuid pin in flowgraphMeta.Nodes[i].PinsIn)
+                foreach (ShortGuid pin in entities[i].Item2.PinsIn)
                     nodes[i].AddInputOption(pin);
-                foreach (ShortGuid pin in flowgraphMeta.Nodes[i].PinsOut)
+                foreach (ShortGuid pin in entities[i].Item2.PinsOut)
                     nodes[i].AddOutputOption(pin);
 
-                nodes[i].NodeID = flowgraphMeta.Nodes[i].NodeID;
+                nodes[i].NodeID = entities[i].Item2.NodeID;
             }
 
             Console.WriteLine("Loading Flowgraph: " + flowgraphMeta.Name);
 
             //Populate connections
-            List<EntityConnector> populatedConnections = new List<EntityConnector>();
-            for (int i = 0; i < flowgraphMeta.Nodes.Count; i++)
+            for (int i = 0; i < entities.Count; i++)
             {
-                foreach (FlowgraphMeta.NodeMeta.ConnectionMeta connectionMeta in flowgraphMeta.Nodes[i].Connections)
+                foreach (FlowgraphMeta.NodeMeta.ConnectionMeta connectionMeta in entities[i].Item2.Connections)
                 {
                     STNode connectedNode = nodes.FirstOrDefault(o => o.NodeID == connectionMeta.ConnectedNodeID && o.ShortGUID == connectionMeta.ConnectedEntityGUID);
 
-                    STNodeOption pinOut = nodes[i].GetOption(connectionMeta.ParameterGUID);
-                    STNodeOption pinIn = connectedNode.GetOption(connectionMeta.ConnectedParameterGUID);
-
-                    Console.WriteLine(nodes[i].Title + " [" + pinOut.Text + "] " + pinOut.Location + " -> " + connectedNode.Title + " [" + pinIn.Text + "] " + pinIn.Location);
-                    ConnectionStatus status = pinOut.ConnectOption(pinIn);
-
-                    if (status != ConnectionStatus.Connected)
-                    {
-                        Console.WriteLine("WARNING! Could not create connection!");
-                        return false;
-                    }
-
                     EntityConnector connector = nodes[i].Entity.childLinks.FirstOrDefault(o => o.thisParamID == connectionMeta.ParameterGUID && o.linkedParamID == connectionMeta.ConnectedParameterGUID && o.linkedEntityID == connectedNode.ShortGUID);
-                    if (connector.ID.IsInvalid)
+                    if (!connector.ID.IsInvalid) //NOTE: This condition should never fail if the layout has been checked by FlowgraphLayoutManager!
                     {
-                        //Our composite mismatches the flowgraph layout, the user must have modified the content with an older version of the script editor.
-                        Console.WriteLine("Unexpected extra connection that isn't in PAK!!");
-                        return false;
+                        STNodeOption pinOut = nodes[i].GetOption(connectionMeta.ParameterGUID);
+                        if (pinOut == null) pinOut = nodes[i].AddOutputOption(connectionMeta.ParameterGUID);
+                        STNodeOption pinIn = connectedNode.GetOption(connectionMeta.ConnectedParameterGUID);
+                        if (pinIn == null) pinIn = connectedNode.AddInputOption(connectionMeta.ConnectedParameterGUID);
+
+                        ConnectionStatus status = pinOut.ConnectOption(pinIn);
+                        if (status != ConnectionStatus.Connected)
+                        {
+                            //NOTE: We hit this for some in the base game, but it SHOULDN'T be a problem -> links that can't connect won't logically work.
+                            Console.WriteLine("WARNING: Could not create the following connection..."); 
+                            Console.WriteLine("\t" + nodes[i].Title + " [" + pinOut.Text + "] " + pinOut.Location + " -> " + connectedNode.Title + " [" + pinIn.Text + "] " + pinIn.Location);
+                        }
                     }
-                    populatedConnections.Add(connector);
+#if DEBUG
+                    else
+                    {
+                        throw new Exception("Invalid flowgraph layout loaded!!");
+                    }
+#endif
                 }
             }
 
-            //TEMP
+            //TODO: This is the other half of the temporary hack found above, we now want to remove unconnected pins so our nodes aren't huge.
             for (int i = 0; i < flowgraphMeta.Nodes.Count; i++)
             {
                 RemoveUnusedPins(nodes[i]);
-            }
-
-            //Sanity check that our Composite doesn't contain any additional links/entities that we didn't populate in the flowgraph but should've
-            List<Entity> entities = composite.GetEntities();
-            foreach (Entity entity in entities)
-            {
-                if (entity.childLinks.Count == 0)
-                    continue;
-
-                foreach (EntityConnector connection in entity.childLinks)
-                {
-                    if (!populatedConnections.Contains(connection))
-                    {
-                        Console.WriteLine("Failed to find connection from " + entity.shortGUID + " to " + connection.linkedEntityID.ToByteString() + ": '" + connection.thisParamID + "' [" + connection.thisParamID.ToByteString() + "] -> '" + connection.linkedParamID + "' [" + connection.linkedParamID.ToByteString() + "]");
-                        //Our composite mismatches the flowgraph layout, the user must have modified the content with an older version of the script editor.
-                        return false;
-                    }
-                }
-
-                if (!populatedEntities.Contains(entity))
-                {
-                    //Our composite mismatches the flowgraph layout, the user must have modified the content with an older version of the script editor.
-                    Console.WriteLine("missing entity with links");
-                    return false;
-                }
             }
 
             //Correctly respect the scale/position of the saved flowgraph
             stNodeEditor1.ScaleCanvas(flowgraphMeta.CanvasScale, 0, 0);
             stNodeEditor1.MoveCanvas(flowgraphMeta.CanvasPosition.X, flowgraphMeta.CanvasPosition.Y, false, CanvasMoveArgs.All);
 
+            //Recompute all nodes -> this is kinda expensive and not ideal, but I think it's needed to make sure everything draws nicely.
             foreach (STNode node in stNodeEditor1.Nodes)
                 node.Recompute();
 
             stNodeEditor1.ResumeLayout();
             stNodeEditor1.Invalidate();
-
-            return true;
         }
 
         protected override void OnLoad(EventArgs e)
@@ -295,35 +273,17 @@ namespace CommandsEditor
             stNodeEditor1.LoadAssembly(Application.ExecutablePath);
         }
 
-        private STNode EntityToNode(Entity entity, bool allowDuplicate = false)
+        private STNode EntityToNode(Entity entity)
         {
             if (entity == null)
                 return null;
 
-            //TODO: once the layout db is fully populated, this "allowDuplicate" thing can be removed as we will never not want duplicates enabled
-            STNode node = null;
-            if (!allowDuplicate)
-            {
-                foreach (STNode n in stNodeEditor1.Nodes)
-                {
-                    if (n.ShortGUID != entity.shortGUID)
-                        continue;
-
-                    node = n;
-                    break;
-                }
-            }
-
-            if (node == null)
-            {
-                node = new STNode();
-                node.Entity = entity;
-                RegenerateNodeStyle(node);
-                stNodeEditor1.Nodes.Add(node);
-
-                node.SetPosition(new Point(0, _spawnOffset));
-                _spawnOffset += node.Height + 10;
-            }
+            STNode node = new STNode();
+            node.Entity = entity;
+            RegenerateNodeStyle(node);
+            stNodeEditor1.Nodes.Add(node);
+            node.SetPosition(new Point(0, _spawnOffset));
+            _spawnOffset += node.Height + 10;
 
             return node;
         }
@@ -445,7 +405,7 @@ namespace CommandsEditor
         {
             for (int i = 0; i < ent.Count; i++)
             {
-                STNode node = EntityToNode(ent[i], true);
+                STNode node = EntityToNode(ent[i]);
                 Point offsetSpawnPos = new Point(_nodeSpawnPosition.X + (i * 20), _nodeSpawnPosition.Y + (i * 20));
                 node.SetPosition(offsetSpawnPos);
             }
@@ -533,9 +493,9 @@ namespace CommandsEditor
                     List<(ShortGuid, ParameterVariant, DataType)> allParameters = Commands.Utils.GetAllParameters(entity, _composite);
                     foreach ((ShortGuid, ParameterVariant, DataType) parameter in allParameters)
                     {
-                        string param = parameter.Item1.ToString();
-                        if (param == "delete_me" || param == "enable" || param == "disable" || param == "position") 
-                            continue;
+                        //string param = parameter.Item1.ToString();
+                        //if (param == "delete_me" || param == "enable" || param == "disable" || param == "position") 
+                        //    continue;
 
                         switch (parameter.Item2)
                         {
@@ -563,6 +523,8 @@ namespace CommandsEditor
                                 node.AddBottomOption(parameter.Item1);
                                 break;
                         }
+
+                        //todo: need to include custom ones for triggerseq and cageanim
                     }
                     break;
             }
@@ -610,7 +572,7 @@ namespace CommandsEditor
         }
         private STNode DuplicateNode(STNode node)
         {
-            STNode duplicated = EntityToNode(node.Entity, true);
+            STNode duplicated = EntityToNode(node.Entity);
 
             STNodeOption[] ins = node.GetInputOptions();
             for (int i = 0; i < ins.Length; i++)

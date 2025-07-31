@@ -1,4 +1,4 @@
-﻿namespace CommandsEditor.Popups.UserControls
+namespace CommandsEditor.Popups.UserControls
 {
     partial class FunctionTypeList
     {
@@ -103,7 +103,7 @@
             this.searchText.Location = new System.Drawing.Point(2, 22);
             this.searchText.Name = "searchText";
             this.searchText.Size = new System.Drawing.Size(607, 20);
-            this.searchText.TabIndex = 181;
+            this.searchText.TabIndex = 0;
             this.searchText.TextChanged += new System.EventHandler(this.searchText_TextChanged);
             // 
             // label2

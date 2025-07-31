@@ -5,6 +5,7 @@ using CATHODE;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CathodeLib;
+using Newtonsoft.Json;
 using ST.Library.UI.NodeEditor;
 using System;
 using System.Collections.Generic;
@@ -180,7 +181,6 @@ namespace CommandsEditor
             FlowgraphMeta.SupportedLevel level = (FlowgraphMeta.SupportedLevel)Enum.Parse(typeof(FlowgraphMeta.SupportedLevel), Path.GetFileName(_commands.EntryPoints[0].name).ToUpper()); //TODO: should really have a global level name based on what's loading, rather than this.
             if (_userDefinedLayouts.flowgraphs.Count == 0)
             {
-                int count = 0;
                 for (int i = 0; i < _preDefinedLayouts.flowgraphs.Count; i++)
                 {
                     if (!_preDefinedLayouts.flowgraphs[i].SupportedLevels.HasFlag(level))
@@ -189,7 +189,7 @@ namespace CommandsEditor
                         continue;
                     _userDefinedLayouts.flowgraphs.Add(_preDefinedLayouts.flowgraphs[i].Copy());
                 }
-                Console.WriteLine("Applied " + count + " suitable flowgraph layouts, of the " + _preDefinedLayouts.flowgraphs.Count + " available!");
+                Console.WriteLine("Applied " + _userDefinedLayouts.flowgraphs.Count + " suitable flowgraph layouts, of the " + _preDefinedLayouts.flowgraphs.Count + " available!");
             }
         }
 
@@ -283,27 +283,79 @@ namespace CommandsEditor
             List<LinkData> compositeLinks = new List<LinkData>();
             for (int i = 0; i < entities.Count; i++)
             {
-                for (int x = 0; x < entities[i].childLinks.Count; x++)
+                //Ignore any links that point to missing entities!
+                List<EntityConnector> trimmedChildren = new List<EntityConnector>();
+                foreach (EntityConnector connector in entities[i].childLinks)
+                {
+                    if (composite.GetEntityByID(connector.linkedEntityID) == null)
+                        continue;
+                    trimmedChildren.Add(connector);
+                }
+
+                for (int x = 0; x < trimmedChildren.Count; x++)
                 {
                     compositeLinks.Add(new LinkData(
                         entities[i].shortGUID,
-                        entities[i].childLinks[x].thisParamID,
-                        entities[i].childLinks[x].linkedEntityID,
-                        entities[i].childLinks[x].linkedParamID)
+                        trimmedChildren[x].thisParamID,
+                        trimmedChildren[x].linkedEntityID,
+                        trimmedChildren[x].linkedParamID)
                     );
                 }
             }
 
+            //Do we have the same number of links?
             if (flowgraphLinks.Count != compositeLinks.Count)
             {
                 return false;
             }
 
+            //Now we know we have the same number of links, do the links match? 
             flowgraphLinks = flowgraphLinks.OrderBy(o => o.In.ParameterID.ToString()).ThenBy(o => o.Out.ParameterID.ToString()).ThenBy(o => o.In.EntityID.ToByteString()).ThenBy(o => o.Out.EntityID.ToByteString()).ToList();
             compositeLinks = compositeLinks.OrderBy(o => o.In.ParameterID.ToString()).ThenBy(o => o.Out.ParameterID.ToString()).ThenBy(o => o.In.EntityID.ToByteString()).ThenBy(o => o.Out.EntityID.ToByteString()).ToList();
             for (int i = 0; i < flowgraphLinks.Count; i++)
+            {
                 if (flowgraphLinks[i] != compositeLinks[i])
+                {
+#if DEBUG
+                    // If in debug mode, output both lists of links so I can easily diff them if needed.
+                    string dirName = "FGLayoutCheck/" + Path.GetFileName(composite.name.Replace(":", "_"));
+                    Directory.CreateDirectory(dirName);
+                    File.WriteAllText(dirName + "/FLOWGRAPH LINKS.json", JsonConvert.SerializeObject(flowgraphLinks, Newtonsoft.Json.Formatting.Indented, new ShortGuidConverter()));
+                    File.WriteAllText(dirName + "/COMPOSITE LINKS.json", JsonConvert.SerializeObject(compositeLinks, Newtonsoft.Json.Formatting.Indented, new ShortGuidConverter()));
+#endif
                     return false;
+                }
+            }
+
+            //Finally, double check that there aren't any entities missing from the composite.
+            for (int i = 0; i < metas.Count; i++)
+            {
+                for (int x = 0; x < metas[i].Nodes.Count; x++)
+                {
+                    if (composite.GetEntityByID(metas[i].Nodes[x].EntityGUID) == null)
+                    {
+                        //If one is missing, check to see if it has any links in/out -> if it doesn't, it's fine, we're not losing anything important.
+                        //Just be aware, the Flowgraph UI will need to be able to handle null entities safely.
+
+                        if (metas[i].Nodes[x].Connections.Count != 0)
+                            return false;
+
+                        //This may seem like a ridiculous level of loops, but really, we should RARELY (or ideally never) get here. 
+                        for (int p = 0; p < metas.Count; p++)
+                        {
+                            for (int c = 0; c < metas[p].Nodes.Count; c++)
+                            {
+                                for (int y = 0; y < metas[p].Nodes[c].Connections.Count; y++)
+                                {
+                                    if (metas[p].Nodes[c].Connections[y].ConnectedEntityGUID == metas[i].Nodes[x].EntityGUID)
+                                        return false;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
             return true;
         }
 
