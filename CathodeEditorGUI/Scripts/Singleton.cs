@@ -117,6 +117,7 @@ namespace CommandsEditor
             public readonly string NumericStepRot = "CS_NumericStepRot";
             public readonly string SavePakAndBin = "CS_SavePakAndBin";
             public readonly string PrevEntNameSearch = "CS_PrevEntNameSearch";
+            public readonly string PopulateAllPinsOnCreateNode = "CS_PopulateAllPinsOnCreateNode";
         }
 
         public static Action OnAnimationsLoaded;

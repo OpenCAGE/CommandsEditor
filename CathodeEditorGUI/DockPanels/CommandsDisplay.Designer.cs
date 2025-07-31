@@ -59,8 +59,8 @@ namespace CommandsEditor.DockPanels
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.createComposite = new System.Windows.Forms.ToolStripButton();
             this.createFolder = new System.Windows.Forms.ToolStripButton();
-            this.findNameUses = new System.Windows.Forms.ToolStripButton();
             this.findFunctionUses = new System.Windows.Forms.ToolStripButton();
+            this.findNameUses = new System.Windows.Forms.ToolStripButton();
             this.FileTreeContextMenuNew = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
@@ -339,16 +339,6 @@ namespace CommandsEditor.DockPanels
             this.createFolder.Text = "Create Folder";
             this.createFolder.Click += new System.EventHandler(this.createFolder_Click);
             // 
-            // findNameUses
-            // 
-            this.findNameUses.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.findNameUses.Image = ((System.Drawing.Image)(resources.GetObject("findNameUses.Image")));
-            this.findNameUses.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.findNameUses.Name = "findNameUses";
-            this.findNameUses.Size = new System.Drawing.Size(113, 22);
-            this.findNameUses.Text = "Search By Name";
-            this.findNameUses.Click += new System.EventHandler(this.findNameUses_Click);
-            // 
             // findFunctionUses
             // 
             this.findFunctionUses.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
@@ -358,6 +348,16 @@ namespace CommandsEditor.DockPanels
             this.findFunctionUses.Size = new System.Drawing.Size(155, 22);
             this.findFunctionUses.Text = "Search By Function Type";
             this.findFunctionUses.Click += new System.EventHandler(this.findFunctionUses_Click);
+            // 
+            // findNameUses
+            // 
+            this.findNameUses.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.findNameUses.Image = ((System.Drawing.Image)(resources.GetObject("findNameUses.Image")));
+            this.findNameUses.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.findNameUses.Name = "findNameUses";
+            this.findNameUses.Size = new System.Drawing.Size(113, 22);
+            this.findNameUses.Text = "Search By Name";
+            this.findNameUses.Click += new System.EventHandler(this.findNameUses_Click);
             // 
             // FileTreeContextMenuNew
             // 
@@ -382,16 +382,16 @@ namespace CommandsEditor.DockPanels
             // 
             this.toolStripMenuItem2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripMenuItem2.Image")));
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(132, 22);
-            this.toolStripMenuItem2.Text = "Composite";
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItem2.Text = "New Composite";
             this.toolStripMenuItem2.Click += new System.EventHandler(this.createCompositeViaTreeView_Click);
             // 
             // toolStripMenuItem3
             // 
             this.toolStripMenuItem3.Image = ((System.Drawing.Image)(resources.GetObject("toolStripMenuItem3.Image")));
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(132, 22);
-            this.toolStripMenuItem3.Text = "Folder";
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItem3.Text = "New Folder";
             this.toolStripMenuItem3.Click += new System.EventHandler(this.createFolderViaTreeView_Click);
             // 
             // toolStripSeparator3

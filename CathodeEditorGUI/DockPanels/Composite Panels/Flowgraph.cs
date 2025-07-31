@@ -148,7 +148,9 @@ namespace CommandsEditor
         {
             if (SettingsManager.GetBool(Singleton.Settings.MakeNodeWhenMakeEntity))
             {
-                STNode node = EntityToNode(entity); 
+                STNode node = EntityToNode(entity);
+                if (SettingsManager.GetBool(Singleton.Settings.PopulateAllPinsOnCreateNode))
+                    AddAllPins(node);
                 SelectNode(node);
             }
         }
@@ -207,11 +209,6 @@ namespace CommandsEditor
                 // I should instead check the type of pin it should be when linking, and add it then, like how I add the in/out links for dynamic things (TriggerSeq/CAGEAnim).
                 AddAllPins(nodes[i]);
 
-                foreach (ShortGuid pin in entities[i].Item2.PinsIn)
-                    nodes[i].AddInputOption(pin);
-                foreach (ShortGuid pin in entities[i].Item2.PinsOut)
-                    nodes[i].AddOutputOption(pin);
-
                 nodes[i].NodeID = entities[i].Item2.NodeID;
             }
 
@@ -220,7 +217,7 @@ namespace CommandsEditor
             //Populate connections
             for (int i = 0; i < entities.Count; i++)
             {
-                foreach (FlowgraphMeta.NodeMeta.ConnectionMeta connectionMeta in entities[i].Item2.Connections)
+                foreach (FlowgraphMeta.NodeMeta.ConnectionMeta connectionMeta in entities[i].Item2.ConnectionsOut)
                 {
                     STNode connectedNode = nodes.FirstOrDefault(o => o.NodeID == connectionMeta.ConnectedNodeID && o.ShortGUID == connectionMeta.ConnectedEntityGUID);
 
@@ -383,6 +380,7 @@ namespace CommandsEditor
             }
 
             addNodeToolStripMenuItem.Visible = node == null;
+            createToolStripMenuItem.Visible = node == null;
         }
 
         //Add new node (via context menu strip)
@@ -408,6 +406,8 @@ namespace CommandsEditor
                 STNode node = EntityToNode(ent[i]);
                 Point offsetSpawnPos = new Point(_nodeSpawnPosition.X + (i * 20), _nodeSpawnPosition.Y + (i * 20));
                 node.SetPosition(offsetSpawnPos);
+                if (SettingsManager.GetBool(Singleton.Settings.PopulateAllPinsOnCreateNode))
+                    AddAllPins(node);
             }
         }
 
@@ -589,6 +589,10 @@ namespace CommandsEditor
 
             duplicated.SetPosition(new Point(node.Location.X + 15, node.Location.Y + 15));
 
+            //TODO: do we really want to *modify* a duplicated node like this?
+            if (SettingsManager.GetBool(Singleton.Settings.PopulateAllPinsOnCreateNode))
+                AddAllPins(node);
+
             return duplicated;
         }
 
@@ -647,6 +651,28 @@ namespace CommandsEditor
         private void createNewFlowgraphToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Singleton.Editor.CommandsDisplay.CompositeDisplay.CreateFlowgraph();
+        }
+
+        //todo: should position node in a nicer way when an entity is created here.
+        private void createParameterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Singleton.Editor.CommandsDisplay.CompositeDisplay.CreateEntity(EntityVariant.VARIABLE);
+        }
+        private void createFunctionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Singleton.Editor.CommandsDisplay.CompositeDisplay.CreateEntity(EntityVariant.FUNCTION);
+        }
+        private void createInstanceOfCompositeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Singleton.Editor.CommandsDisplay.CompositeDisplay.CreateEntity(EntityVariant.FUNCTION, true);
+        }
+        private void createProxyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Singleton.Editor.CommandsDisplay.CompositeDisplay.CreateEntity(EntityVariant.PROXY);
+        }
+        private void createAliasToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            Singleton.Editor.CommandsDisplay.CompositeDisplay.CreateEntity(EntityVariant.ALIAS);
         }
     }
 }

@@ -14,6 +14,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using static CathodeLib.CompositeFlowgraphTable;
 
 namespace CommandsEditor
@@ -119,7 +120,7 @@ namespace CommandsEditor
         //Checks to see if there is at least one finished flowgraph for the given composite
         public static bool HasLayout(Composite composite)
         {
-            return _userDefinedLayouts.flowgraphs.FirstOrDefault(o => o.CompositeGUID == composite.shortGUID && !o.IsUnfinished) != null;
+            return _userDefinedLayouts.flowgraphs.FirstOrDefault(o => o.CompositeGUID == composite.shortGUID) != null;
         }
 
         //Gets all flowgraph layouts for the given composite
@@ -214,9 +215,6 @@ namespace CommandsEditor
             flowgraphMeta.CompositeGUID = composite.shortGUID;
             flowgraphMeta.Name = name;
 
-            flowgraphMeta.UsesShortenedNames = true;
-            flowgraphMeta.IsUnfinished = false; //now unused
-
             flowgraphMeta.CanvasPosition = editor.CanvasOffset;
             flowgraphMeta.CanvasScale = editor.CanvasScale;
             flowgraphMeta.Nodes = new List<FlowgraphMeta.NodeMeta>();
@@ -229,21 +227,14 @@ namespace CommandsEditor
 
                 nodeMeta.Position = node.Location;
 
-                STNodeOption[] ins = node.GetInputOptions();
                 STNodeOption[] outs = node.GetOutputOptions();
-
-                for (int y = 0; y < ins.Length; y++)
-                    nodeMeta.PinsIn.Add(ins[y].ShortGUID);
-                for (int y = 0; y < outs.Length; y++)
-                    nodeMeta.PinsOut.Add(outs[y].ShortGUID);
-
                 for (int y = 0; y < outs.Length; y++)
                 {
                     List<STNodeOption> connections = outs[y].GetConnectedOption();
                     for (int z = 0; z < connections.Count; z++)
                     {
                         STNode connectedNode = connections[z].Owner;
-                        nodeMeta.Connections.Add(new FlowgraphMeta.NodeMeta.ConnectionMeta()
+                        nodeMeta.ConnectionsOut.Add(new FlowgraphMeta.NodeMeta.ConnectionMeta()
                         {
                             ParameterGUID = outs[y].ShortGUID,
                             ConnectedEntityGUID = connectedNode.ShortGUID,
@@ -267,13 +258,13 @@ namespace CommandsEditor
             {
                 for (int x = 0; x < metas[i].Nodes.Count; x++)
                 {
-                    for (int y = 0; y < metas[i].Nodes[x].Connections.Count; y++)
+                    for (int y = 0; y < metas[i].Nodes[x].ConnectionsOut.Count; y++)
                     {
                         flowgraphLinks.Add(new LinkData(
                             metas[i].Nodes[x].EntityGUID,
-                            metas[i].Nodes[x].Connections[y].ParameterGUID,
-                            metas[i].Nodes[x].Connections[y].ConnectedEntityGUID,
-                            metas[i].Nodes[x].Connections[y].ConnectedParameterGUID)
+                            metas[i].Nodes[x].ConnectionsOut[y].ParameterGUID,
+                            metas[i].Nodes[x].ConnectionsOut[y].ConnectedEntityGUID,
+                            metas[i].Nodes[x].ConnectionsOut[y].ConnectedParameterGUID)
                         );
                     }
                 }
@@ -337,7 +328,7 @@ namespace CommandsEditor
                         //If one is missing, check to see if it has any links in/out -> if it doesn't, it's fine, we're not losing anything important.
                         //Just be aware, the Flowgraph UI will need to be able to handle null entities safely.
 
-                        if (metas[i].Nodes[x].Connections.Count != 0)
+                        if (metas[i].Nodes[x].ConnectionsOut.Count != 0)
                             return false;
 
                         //This may seem like a ridiculous level of loops, but really, we should RARELY (or ideally never) get here. 
@@ -345,9 +336,9 @@ namespace CommandsEditor
                         {
                             for (int c = 0; c < metas[p].Nodes.Count; c++)
                             {
-                                for (int y = 0; y < metas[p].Nodes[c].Connections.Count; y++)
+                                for (int y = 0; y < metas[p].Nodes[c].ConnectionsOut.Count; y++)
                                 {
-                                    if (metas[p].Nodes[c].Connections[y].ConnectedEntityGUID == metas[i].Nodes[x].EntityGUID)
+                                    if (metas[p].Nodes[c].ConnectionsOut[y].ConnectedEntityGUID == metas[i].Nodes[x].EntityGUID)
                                         return false;
                                 }
                             }

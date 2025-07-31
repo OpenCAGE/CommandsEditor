@@ -111,7 +111,7 @@ namespace CommandsEditor
             this.functionTypeList1.Location = new System.Drawing.Point(13, 60);
             this.functionTypeList1.Name = "functionTypeList1";
             this.functionTypeList1.Size = new System.Drawing.Size(630, 280);
-            this.functionTypeList1.TabIndex = 183;
+            this.functionTypeList1.TabIndex = 0;
             // 
             // AddEntity_Function
             // 

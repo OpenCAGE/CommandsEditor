@@ -75,7 +75,7 @@
             this.copyToolStripMenuItem,
             this.pasteToolStripMenuItem});
             this.EntityListContextMenu.Name = "EntityListContextMenu";
-            this.EntityListContextMenu.Size = new System.Drawing.Size(125, 148);
+            this.EntityListContextMenu.Size = new System.Drawing.Size(181, 170);
             this.EntityListContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.EntityListContextMenu_Opening);
             // 
             // createToolStripMenuItem
@@ -87,59 +87,59 @@
             this.createProxyToolStripMenuItem,
             this.createAliasToolStripMenuItem1});
             this.createToolStripMenuItem.Name = "createToolStripMenuItem";
-            this.createToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
-            this.createToolStripMenuItem.Text = "Create";
+            this.createToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.createToolStripMenuItem.Text = "Create Entity";
             // 
             // createParameterToolStripMenuItem
             // 
             this.createParameterToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("createParameterToolStripMenuItem.Image")));
             this.createParameterToolStripMenuItem.Name = "createParameterToolStripMenuItem";
-            this.createParameterToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
-            this.createParameterToolStripMenuItem.Text = "Create Parameter";
+            this.createParameterToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.createParameterToolStripMenuItem.Text = "New Parameter";
             this.createParameterToolStripMenuItem.Click += new System.EventHandler(this.createParameterToolStripMenuItem_Click);
             // 
             // createFunctionToolStripMenuItem
             // 
             this.createFunctionToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("createFunctionToolStripMenuItem.Image")));
             this.createFunctionToolStripMenuItem.Name = "createFunctionToolStripMenuItem";
-            this.createFunctionToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
-            this.createFunctionToolStripMenuItem.Text = "Create Function";
+            this.createFunctionToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.createFunctionToolStripMenuItem.Text = "New Function";
             this.createFunctionToolStripMenuItem.Click += new System.EventHandler(this.createFunctionToolStripMenuItem_Click);
             // 
             // createInstanceOfCompositeToolStripMenuItem
             // 
             this.createInstanceOfCompositeToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("createInstanceOfCompositeToolStripMenuItem.Image")));
             this.createInstanceOfCompositeToolStripMenuItem.Name = "createInstanceOfCompositeToolStripMenuItem";
-            this.createInstanceOfCompositeToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
-            this.createInstanceOfCompositeToolStripMenuItem.Text = "Create Instance of Composite";
+            this.createInstanceOfCompositeToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.createInstanceOfCompositeToolStripMenuItem.Text = "New Instance of Composite";
             this.createInstanceOfCompositeToolStripMenuItem.Click += new System.EventHandler(this.createInstanceOfCompositeToolStripMenuItem_Click);
             // 
             // createProxyToolStripMenuItem
             // 
             this.createProxyToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("createProxyToolStripMenuItem.Image")));
             this.createProxyToolStripMenuItem.Name = "createProxyToolStripMenuItem";
-            this.createProxyToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
-            this.createProxyToolStripMenuItem.Text = "Create Proxy";
+            this.createProxyToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.createProxyToolStripMenuItem.Text = "New Proxy";
             this.createProxyToolStripMenuItem.Click += new System.EventHandler(this.createProxyToolStripMenuItem_Click);
             // 
             // createAliasToolStripMenuItem1
             // 
             this.createAliasToolStripMenuItem1.Image = ((System.Drawing.Image)(resources.GetObject("createAliasToolStripMenuItem1.Image")));
             this.createAliasToolStripMenuItem1.Name = "createAliasToolStripMenuItem1";
-            this.createAliasToolStripMenuItem1.Size = new System.Drawing.Size(230, 22);
-            this.createAliasToolStripMenuItem1.Text = "Create Alias";
+            this.createAliasToolStripMenuItem1.Size = new System.Drawing.Size(220, 22);
+            this.createAliasToolStripMenuItem1.Text = "New Alias";
             this.createAliasToolStripMenuItem1.Click += new System.EventHandler(this.createAliasToolStripMenuItem1_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(121, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
             // 
             // deleteToolStripMenuItem
             // 
             this.deleteToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("deleteToolStripMenuItem.Image")));
             this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.deleteToolStripMenuItem.Text = "Delete";
             this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
             // 
@@ -147,7 +147,7 @@
             // 
             this.renameToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("renameToolStripMenuItem.Image")));
             this.renameToolStripMenuItem.Name = "renameToolStripMenuItem";
-            this.renameToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.renameToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.renameToolStripMenuItem.Text = "Rename";
             this.renameToolStripMenuItem.Click += new System.EventHandler(this.renameToolStripMenuItem_Click);
             // 
@@ -155,27 +155,27 @@
             // 
             this.duplicateToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("duplicateToolStripMenuItem.Image")));
             this.duplicateToolStripMenuItem.Name = "duplicateToolStripMenuItem";
-            this.duplicateToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.duplicateToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.duplicateToolStripMenuItem.Text = "Duplicate";
             this.duplicateToolStripMenuItem.Click += new System.EventHandler(this.duplicateToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(121, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
             this.toolStripSeparator2.Visible = false;
             // 
             // copyToolStripMenuItem
             // 
             this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
-            this.copyToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.copyToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.copyToolStripMenuItem.Text = "Copy";
             this.copyToolStripMenuItem.Visible = false;
             // 
             // pasteToolStripMenuItem
             // 
             this.pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
-            this.pasteToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.pasteToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.pasteToolStripMenuItem.Text = "Paste";
             this.pasteToolStripMenuItem.Visible = false;
             // 

@@ -125,8 +125,6 @@ namespace CommandsEditor
 
                             //string str1 = commandsRetail.Utils.GetEntityName(comp, p);
                             //
-                            ////<cmd entity="5277f91500001703ef7cbb350adeb6f6" property="" attribute="proxy_target" time="01ced99641b04f64">{659759aaf4097af46d75b5b05c23a5ef^507d47bd00002d335ef5df7d13aac93b^51347058000072157a04bc5c2621da9c}</cmd>
-                            //
                             //CATHODE.Scripting.Composite path_entry_one = commandsRetail.GetComposite(p.proxy.path[0]); //ok, so first resolves to composite MISSIONS_Torrens
                             //(Composite test55, EntityPath path22) = content.editor_utils.GetCompositeFromInstanceID(commandsRetail, p.proxy.path[1]);
                             ////second doesn't resolve to anything, but is used in THREE torrens proxies (and nowehre else)
@@ -180,13 +178,13 @@ namespace CommandsEditor
                     {
                         for (int x = 0; x < metas[i].Nodes.Count; x++)
                         {
-                            for (int y = 0; y < metas[i].Nodes[x].Connections.Count; y++)
+                            for (int y = 0; y < metas[i].Nodes[x].ConnectionsOut.Count; y++)
                             {
                                 flowgraphLinks.Add(new LinkData(
                                     metas[i].Nodes[x].EntityGUID,
-                                    metas[i].Nodes[x].Connections[y].ParameterGUID,
-                                    metas[i].Nodes[x].Connections[y].ConnectedEntityGUID,
-                                    metas[i].Nodes[x].Connections[y].ConnectedParameterGUID)
+                                    metas[i].Nodes[x].ConnectionsOut[y].ParameterGUID,
+                                    metas[i].Nodes[x].ConnectionsOut[y].ConnectedEntityGUID,
+                                    metas[i].Nodes[x].ConnectionsOut[y].ConnectedParameterGUID)
                                 );
                             }
                         }

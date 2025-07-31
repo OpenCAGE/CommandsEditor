@@ -217,6 +217,9 @@ namespace CommandsEditor
             if (!SettingsManager.IsSet(Singleton.Settings.SavePakAndBin)) SettingsManager.SetBool(Singleton.Settings.SavePakAndBin, true);
             savePAKAndBINToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.SavePakAndBin); savePAKAndBINToolStripMenuItem.PerformClick();
 
+            if (!SettingsManager.IsSet(Singleton.Settings.PopulateAllPinsOnCreateNode)) SettingsManager.SetBool(Singleton.Settings.PopulateAllPinsOnCreateNode, true);
+            populateAllNodePinsWhenCreatedToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.PopulateAllPinsOnCreateNode); populateAllNodePinsWhenCreatedToolStripMenuItem.PerformClick();
+
             //Fixes for dodgy top dropdowns
             compositeViewerToolStripMenuItem.MouseHover += (sender, e) => { ((ToolStripMenuItem)sender).PerformClick(); };
             compositeViewerToolStripMenuItem.DropDown.Closing += DropDown_Closing;
@@ -671,6 +674,12 @@ namespace CommandsEditor
         {
             savePAKAndBINToolStripMenuItem.Checked = !savePAKAndBINToolStripMenuItem.Checked;
             SettingsManager.SetBool(Singleton.Settings.SavePakAndBin, savePAKAndBINToolStripMenuItem.Checked);
+        }
+
+        private void populateAllNodePinsWhenCreatedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            populateAllNodePinsWhenCreatedToolStripMenuItem.Checked = !populateAllNodePinsWhenCreatedToolStripMenuItem.Checked;
+            SettingsManager.SetBool(Singleton.Settings.PopulateAllPinsOnCreateNode, populateAllNodePinsWhenCreatedToolStripMenuItem.Checked);
         }
 
         private void resetUILayoutsToolStripMenuItem_Click(object sender, EventArgs e)

@@ -71,6 +71,7 @@ namespace CommandsEditor
             this.statusText = new System.Windows.Forms.ToolStripStatusLabel();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.populateAllNodePinsWhenCreatedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -237,7 +238,8 @@ namespace CommandsEditor
             this.entityDisplayToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.showEntityIDs,
             this.nodeOpensEntity,
-            this.createFlowgraphNodeWhenEntityCreatedToolStripMenuItem});
+            this.createFlowgraphNodeWhenEntityCreatedToolStripMenuItem,
+            this.populateAllNodePinsWhenCreatedToolStripMenuItem});
             this.entityDisplayToolStripMenuItem.Name = "entityDisplayToolStripMenuItem";
             this.entityDisplayToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.entityDisplayToolStripMenuItem.Text = "Entity Display";
@@ -411,6 +413,13 @@ namespace CommandsEditor
             this.dockPanel.TabIndex = 5;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
             // 
+            // populateAllNodePinsWhenCreatedToolStripMenuItem
+            // 
+            this.populateAllNodePinsWhenCreatedToolStripMenuItem.Name = "populateAllNodePinsWhenCreatedToolStripMenuItem";
+            this.populateAllNodePinsWhenCreatedToolStripMenuItem.Size = new System.Drawing.Size(310, 22);
+            this.populateAllNodePinsWhenCreatedToolStripMenuItem.Text = "Populate All Node Pins When Created";
+            this.populateAllNodePinsWhenCreatedToolStripMenuItem.Click += new System.EventHandler(this.populateAllNodePinsWhenCreatedToolStripMenuItem_Click);
+            // 
             // CommandsEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -476,5 +485,6 @@ namespace CommandsEditor
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem setNumericStepToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem savePAKAndBINToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem populateAllNodePinsWhenCreatedToolStripMenuItem;
     }
 }
