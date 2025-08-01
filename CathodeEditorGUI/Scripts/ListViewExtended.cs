@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Forms;
@@ -80,12 +80,10 @@ namespace ListViewGroupCollapse
                     {
                         group.IGroupId = GrpId.Value;
                         SendMessage(lstvwgrp.ListView.Handle, LVM_SETGROUPINFO, GrpId.Value, group);
-                        SendMessage(lstvwgrp.ListView.Handle, LVM_SETGROUPINFO, GrpId.Value, group);
                     }
                     else
                     {
                         group.IGroupId = gIndex;
-                        SendMessage(lstvwgrp.ListView.Handle, LVM_SETGROUPINFO, gIndex, group);
                         SendMessage(lstvwgrp.ListView.Handle, LVM_SETGROUPINFO, gIndex, group);
                     }
                     lstvwgrp.ListView.Refresh();
@@ -147,8 +145,6 @@ namespace ListViewGroupCollapse
 
         protected override void WndProc(ref Message m)
         {
-            if (m.Msg == WM_LBUTTONUP)
-                base.DefWndProc(ref m);
             base.WndProc(ref m);
         }
     }
