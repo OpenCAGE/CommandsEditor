@@ -76,14 +76,14 @@ namespace CommandsEditor
 
         static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
         {
-            File.WriteAllText(SharedData.pathToAI + "commands_editor_crashlog.txt", "Application_ThreadException\n" + e.Exception.ToString());
+            File.WriteAllText(SharedData.pathToAI + "/commands_editor_crashlog.txt", "Application_ThreadException\n" + e.Exception.ToString());
             MessageBox.Show("A critical error occurred and was logged. The script editor will now close. Please share the contents of the generated 'commands_editor_crashlog.txt' in your Alien: Isolation directory to GitHub.");
             Application.Exit();
         }
 
         static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            File.WriteAllText(SharedData.pathToAI + "commands_editor_crashlog.txt", "CurrentDomain_UnhandledException\n" + ((Exception)e.ExceptionObject).ToString());
+            File.WriteAllText(SharedData.pathToAI + "/commands_editor_crashlog.txt", "CurrentDomain_UnhandledException\n" + ((Exception)e.ExceptionObject).ToString());
             MessageBox.Show("A critical error occurred and was logged. The script editor will now close. Please share the contents of the generated 'commands_editor_crashlog.txt' in your Alien: Isolation directory to GitHub.");
             Application.Exit();
         }
