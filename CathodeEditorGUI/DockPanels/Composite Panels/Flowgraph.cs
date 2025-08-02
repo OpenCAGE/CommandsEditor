@@ -255,9 +255,32 @@ namespace CommandsEditor
             }
 
             //TODO: This is the other half of the temporary hack found above, we now want to remove unconnected pins so our nodes aren't huge.
-            for (int i = 0; i < flowgraphMeta.Nodes.Count; i++)
+            for (int i = 0; i < nodes.Length; i++)
             {
                 RemoveUnusedPins(nodes[i]);
+            }
+
+            //Add in any pins that weren't linked, but added by the user
+            for (int i = 0; i < entities.Count; i++)
+            {
+                foreach (FlowgraphMeta.NodeMeta.UnlinkedPinMeta pinMeta in entities[i].Item2.UnlinkedPins)
+                {
+                    switch ((PinLocation)pinMeta.PinLocation)
+                    {
+                        case PinLocation.Left:
+                            nodes[i].AddInputOption(pinMeta.ParameterGUID);
+                            break;
+                        case PinLocation.Right:
+                            nodes[i].AddOutputOption(pinMeta.ParameterGUID);
+                            break;
+                        case PinLocation.Top:
+                            nodes[i].AddTopOption(pinMeta.ParameterGUID, (PinStyle)pinMeta.PinStyle);
+                            break;
+                        case PinLocation.Bottom:
+                            nodes[i].AddBottomOption(pinMeta.ParameterGUID);
+                            break;
+                    }
+                }
             }
 
             //Correctly respect the scale/position of the saved flowgraph

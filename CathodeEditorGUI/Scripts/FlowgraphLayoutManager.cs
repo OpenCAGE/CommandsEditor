@@ -15,6 +15,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using static CATHODE.Scripting.CAGEAnimation;
 using static CathodeLib.CompositeFlowgraphTable;
 
 namespace CommandsEditor
@@ -211,8 +212,6 @@ namespace CommandsEditor
         /* Convert a STNodeEditor graph to a FlowgraphMeta object for saving */
         public static FlowgraphMeta AsFlowgraphMeta(this STNodeEditor editor, Composite composite, string name)
         {
-            // default name = Path.GetFileName(composite.name)
-
             FlowgraphMeta flowgraphMeta = new FlowgraphMeta();
             flowgraphMeta.CompositeGUID = composite.shortGUID;
             flowgraphMeta.Name = name;
@@ -229,11 +228,13 @@ namespace CommandsEditor
 
                 nodeMeta.Position = node.Location;
 
+                //Check the pins we care about storing links for
                 List<STNodeOption> options = node.GetOutputOptions().ToList();
                 options.AddRange(node.GetTopOptions());
                 for (int y = 0; y < options.Count; y++)
                 {
                     List<STNodeOption> connections = options[y].GetConnectedOption();
+                    //Store the links (ones that go out)
                     for (int z = 0; z < connections.Count; z++)
                     {
                         STNode connectedNode = connections[z].Owner;
@@ -243,6 +244,34 @@ namespace CommandsEditor
                             ConnectedEntityGUID = connectedNode.ShortGUID,
                             ConnectedNodeID = editor.Nodes.IndexOf(connectedNode),
                             ConnectedParameterGUID = connections[z].ShortGUID,
+                        });
+                    }
+                    //If there were no links, remember the pin anyway
+                    if (connections.Count == 0)
+                    {
+                        nodeMeta.UnlinkedPins.Add(new FlowgraphMeta.NodeMeta.UnlinkedPinMeta()
+                        {
+                            ParameterGUID = options[y].ShortGUID,
+                            PinLocation = (byte)options[y].Location,
+                            PinStyle = (byte)options[y].Style,
+                        });
+                    }
+                }
+
+                //Check the pins we don't care about storing links for
+                options = node.GetInputOptions().ToList();
+                options.AddRange(node.GetBottomOptions());
+                for (int y = 0; y < options.Count; y++)
+                {
+                    List<STNodeOption> connections = options[y].GetConnectedOption();
+                    //If there were no links, remember the pin
+                    if (connections.Count == 0)
+                    {
+                        nodeMeta.UnlinkedPins.Add(new FlowgraphMeta.NodeMeta.UnlinkedPinMeta()
+                        {
+                            ParameterGUID = options[y].ShortGUID,
+                            PinLocation = (byte)options[y].Location,
+                            PinStyle = (byte)options[y].Style,
                         });
                     }
                 }
