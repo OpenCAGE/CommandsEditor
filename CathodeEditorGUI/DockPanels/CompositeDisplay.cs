@@ -799,7 +799,7 @@ namespace CommandsEditor.DockPanels
         AddEntity_Function dialog_func = null;
         AddEntity_CompositeInstance dialog_compinst = null;
         SelectHierarchy dialog_hierarchy = null; EntityVariant dialog_hierarchy_entvar;
-        public void CreateEntity(EntityVariant variant = EntityVariant.FUNCTION, bool composite = false)
+        public Popups.Base.BaseWindow CreateEntity(EntityVariant variant = EntityVariant.FUNCTION, bool composite = false)
         {
             if (variant == EntityVariant.FUNCTION && !composite)
             {
@@ -809,6 +809,8 @@ namespace CommandsEditor.DockPanels
                 dialog_func = new AddEntity_Function(Composite, SupportsFlowgraphs);
                 dialog_func.Show();
                 dialog_func.Focus();
+
+                return dialog_func;
             }
             else if (variant == EntityVariant.FUNCTION && composite)
             {
@@ -818,6 +820,8 @@ namespace CommandsEditor.DockPanels
                 dialog_compinst = new AddEntity_CompositeInstance(Composite, SupportsFlowgraphs);
                 dialog_compinst.Show();
                 dialog_compinst.Focus();
+
+                return dialog_compinst;
             }
             else if (variant == EntityVariant.PROXY || variant == EntityVariant.ALIAS)
             {
@@ -855,6 +859,8 @@ namespace CommandsEditor.DockPanels
                 dialog_hierarchy.OnHierarchyGenerated += OnNewEntityHierarchyGenerated;
                 dialog_hierarchy.Show();
                 dialog_hierarchy.Focus();
+
+                return dialog_hierarchy;
             }
             else if (variant == EntityVariant.VARIABLE)
             {
@@ -864,7 +870,10 @@ namespace CommandsEditor.DockPanels
                 dialog_var = new AddEntity_Variable(Composite, SupportsFlowgraphs);
                 dialog_var.Show();
                 dialog_var.Focus();
+
+                return dialog_var;
             }
+            return null; 
         }
         private void OnNewEntityHierarchyGenerated(ShortGuid[] generatedHierarchy)
         {

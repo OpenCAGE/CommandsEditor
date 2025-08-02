@@ -2,6 +2,7 @@ using CATHODE;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CathodeLib;
+using CommandsEditor.Popups.Base;
 using CommandsEditor.Popups.UserControls;
 using OpenCAGE;
 using ST.Library.UI.NodeEditor;
@@ -149,11 +150,17 @@ namespace CommandsEditor
         {
             if (SettingsManager.GetBool(Singleton.Settings.MakeNodeWhenMakeEntity))
             {
-                STNode node = EntityToNode(entity);
-                if (SettingsManager.GetBool(Singleton.Settings.PopulateAllPinsOnCreateNode))
-                    AddAllPins(node);
-                SelectNode(node);
+                AddNodeForEntityAndSelect(entity);
             }
+        }
+
+        private STNode AddNodeForEntityAndSelect(Entity entity)
+        {
+            STNode node = EntityToNode(entity);
+            if (SettingsManager.GetBool(Singleton.Settings.PopulateAllPinsOnCreateNode))
+                AddAllPins(node);
+            SelectNode(node);
+            return node;
         }
 
         private void OnEntityDeletedGlobally(Entity entity)
@@ -408,14 +415,16 @@ namespace CommandsEditor
         {
             STNode node = stNodeEditor1.GetHoveredNode();
 
-            modifyPinsIn.Visible = node != null;
-            modifyPinsOut.Visible = node != null;
-            toolStripSeparator1.Visible = node != null;
+            modifyPinsIn.Visible = false; //node != null;
+            modifyPinsOut.Visible = false; //node != null;        <- i'm disabling adding in/out links in favour of adding all. i don't think this'll come back, but leaving the logic in-case.
+            toolStripSeparator2.Visible = false; //node != null;
             deleteToolStripMenuItem.Visible = node != null;
             duplicateToolStripMenuItem.Visible = node != null;
-            toolStripSeparator2.Visible = node != null;
+            toolStripSeparator1.Visible = node != null;
             addAllPinsToolStripMenuItem.Visible = node != null;
             removeUnusedPinsToolStripMenuItem.Visible = node != null;
+            toolStripSeparator4.Visible = node != null;
+            deleteEntityToolStripMenuItem.Visible = node != null;
 
             if (node != null)
             {
@@ -453,6 +462,16 @@ namespace CommandsEditor
                 if (SettingsManager.GetBool(Singleton.Settings.PopulateAllPinsOnCreateNode))
                     AddAllPins(node);
             }
+        }
+
+        //delete the whole entity and associated nodes
+        private void deleteEntityToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            STNode node = stNodeEditor1.GetHoveredNode();
+            if (node == null) return;
+            Entity entity = _composite.GetEntityByID(node.ShortGUID);
+            if (entity == null) return;
+            Singleton.Editor.CommandsDisplay.CompositeDisplay.DeleteEntity(entity);
         }
 
         ModifyPinsOrParameters _pinManager = null;
@@ -538,7 +557,7 @@ namespace CommandsEditor
                     foreach ((ShortGuid, ParameterVariant, DataType) parameter in allParameters)
                     {
                         //string param = parameter.Item1.ToString();
-                        //if (param == "delete_me" || param == "enable" || param == "disable" || param == "position") //TODO: these are defined in DATA/cage_entity_annotations.xml -> should be dumped from there.
+                        //if (param == "delete_me" || param == "enable" || param == "disable" || param == "position") 
                         //    continue;
 
                         switch (parameter.Item2)
@@ -667,8 +686,8 @@ namespace CommandsEditor
             duplicated.SetPosition(new Point(node.Location.X + 15, node.Location.Y + 15));
 
             //TODO: do we really want to *modify* a duplicated node like this?
-            if (SettingsManager.GetBool(Singleton.Settings.PopulateAllPinsOnCreateNode))
-                AddAllPins(node);
+            //if (SettingsManager.GetBool(Singleton.Settings.PopulateAllPinsOnCreateNode))
+            //    AddAllPins(node);
 
             return duplicated;
         }
@@ -730,26 +749,47 @@ namespace CommandsEditor
             Singleton.Editor.CommandsDisplay.CompositeDisplay.CreateFlowgraph();
         }
 
-        //todo: should position node in a nicer way when an entity is created here.
+        //Welcome to the world of hacks
+        PointF _createEntViaPopupPos = new PointF();
+        BaseWindow _prevEntCreatePopup = null;
         private void createParameterToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Singleton.Editor.CommandsDisplay.CompositeDisplay.CreateEntity(EntityVariant.VARIABLE);
+            ListenForEntCreatePopup(Singleton.Editor.CommandsDisplay.CompositeDisplay.CreateEntity(EntityVariant.VARIABLE));
         }
         private void createFunctionToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Singleton.Editor.CommandsDisplay.CompositeDisplay.CreateEntity(EntityVariant.FUNCTION);
+            ListenForEntCreatePopup(Singleton.Editor.CommandsDisplay.CompositeDisplay.CreateEntity(EntityVariant.FUNCTION));
         }
         private void createInstanceOfCompositeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Singleton.Editor.CommandsDisplay.CompositeDisplay.CreateEntity(EntityVariant.FUNCTION, true);
+            ListenForEntCreatePopup(Singleton.Editor.CommandsDisplay.CompositeDisplay.CreateEntity(EntityVariant.FUNCTION, true));
         }
         private void createProxyToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Singleton.Editor.CommandsDisplay.CompositeDisplay.CreateEntity(EntityVariant.PROXY);
+            ListenForEntCreatePopup(Singleton.Editor.CommandsDisplay.CompositeDisplay.CreateEntity(EntityVariant.PROXY));
         }
         private void createAliasToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            Singleton.Editor.CommandsDisplay.CompositeDisplay.CreateEntity(EntityVariant.ALIAS);
+            ListenForEntCreatePopup(Singleton.Editor.CommandsDisplay.CompositeDisplay.CreateEntity(EntityVariant.ALIAS));
+        }
+        private void ListenForEntCreatePopup(BaseWindow window)
+        {
+            _prevEntCreatePopup = window;
+            _prevEntCreatePopup.FormClosed += EntityCreationPopupClosed;
+            _createEntViaPopupPos = stNodeEditor1.MousePositionInCanvas;
+            Singleton.OnEntityAdded += OnEntityAddedViaPopup;
+            Singleton.OnEntityAdded -= OnEntityAddedGlobally;
+        }
+        private void OnEntityAddedViaPopup(Entity entity)
+        {
+            EntityCreationPopupClosed(null, null);
+            AddNodeForEntityAndSelect(entity).SetPosition(new Point((int)_createEntViaPopupPos.X, (int)_createEntViaPopupPos.Y));
+        }
+        private void EntityCreationPopupClosed(object sender, FormClosedEventArgs e)
+        {
+            Singleton.OnEntityAdded -= OnEntityAddedViaPopup;
+            Singleton.OnEntityAdded += OnEntityAddedGlobally;
+            _prevEntCreatePopup.FormClosed -= EntityCreationPopupClosed;
         }
     }
 }

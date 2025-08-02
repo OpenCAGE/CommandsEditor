@@ -49,6 +49,8 @@ namespace CommandsEditor
             this.renameFGToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.createNewFlowgraphToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteEntityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.nodeContextMenu.SuspendLayout();
             this.TabStripContextMenu.SuspendLayout();
             this.SuspendLayout();
@@ -64,10 +66,12 @@ namespace CommandsEditor
             this.toolStripSeparator1,
             this.deleteToolStripMenuItem,
             this.duplicateToolStripMenuItem,
+            this.toolStripSeparator4,
+            this.deleteEntityToolStripMenuItem,
             this.createToolStripMenuItem,
             this.addNodeToolStripMenuItem});
             this.nodeContextMenu.Name = "EntityListContextMenu";
-            this.nodeContextMenu.Size = new System.Drawing.Size(186, 192);
+            this.nodeContextMenu.Size = new System.Drawing.Size(186, 242);
             this.nodeContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // modifyPinsIn
@@ -249,6 +253,19 @@ namespace CommandsEditor
             this.createNewFlowgraphToolStripMenuItem.Text = "Create New Flowgraph";
             this.createNewFlowgraphToolStripMenuItem.Click += new System.EventHandler(this.createNewFlowgraphToolStripMenuItem_Click);
             // 
+            // deleteEntityToolStripMenuItem
+            // 
+            this.deleteEntityToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("deleteEntityToolStripMenuItem.Image")));
+            this.deleteEntityToolStripMenuItem.Name = "deleteEntityToolStripMenuItem";
+            this.deleteEntityToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.deleteEntityToolStripMenuItem.Text = "Delete Entity";
+            this.deleteEntityToolStripMenuItem.Click += new System.EventHandler(this.deleteEntityToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(182, 6);
+            // 
             // Flowgraph
             // 
             this.AllowEndUserDocking = false;
@@ -294,6 +311,8 @@ namespace CommandsEditor
         private System.Windows.Forms.ToolStripMenuItem createInstanceOfCompositeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem createProxyToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem createAliasToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem deleteEntityToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
     }
 }
 
