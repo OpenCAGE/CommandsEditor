@@ -229,16 +229,17 @@ namespace CommandsEditor
 
                 nodeMeta.Position = node.Location;
 
-                STNodeOption[] outs = node.GetOutputOptions();
-                for (int y = 0; y < outs.Length; y++)
+                List<STNodeOption> options = node.GetOutputOptions().ToList();
+                options.AddRange(node.GetTopOptions());
+                for (int y = 0; y < options.Count; y++)
                 {
-                    List<STNodeOption> connections = outs[y].GetConnectedOption();
+                    List<STNodeOption> connections = options[y].GetConnectedOption();
                     for (int z = 0; z < connections.Count; z++)
                     {
                         STNode connectedNode = connections[z].Owner;
                         nodeMeta.ConnectionsOut.Add(new FlowgraphMeta.NodeMeta.ConnectionMeta()
                         {
-                            ParameterGUID = outs[y].ShortGUID,
+                            ParameterGUID = options[y].ShortGUID,
                             ConnectedEntityGUID = connectedNode.ShortGUID,
                             ConnectedNodeID = editor.Nodes.IndexOf(connectedNode),
                             ConnectedParameterGUID = connections[z].ShortGUID,

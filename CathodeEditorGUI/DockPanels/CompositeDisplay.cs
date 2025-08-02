@@ -135,7 +135,7 @@ namespace CommandsEditor.DockPanels
                         newCount += _flowgraphs[i].SaveAndCompile();
                     }
                 }
-                Debug.Log("Composite Display", "Created " + newCount + " links from flowgraph pages!");
+                Debug.Log("Composite Display", System.IO.Path.GetFileName(Composite.name) + " -> Created " + newCount + " links from flowgraph pages!");
 #if DEBUG
                 if (ogCount != newCount)
                 {
