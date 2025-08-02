@@ -1,4 +1,4 @@
-﻿using CATHODE.Scripting;
+using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CommandsEditor.DockPanels;
 using CommandsEditor.Popups.Base;
@@ -12,6 +12,9 @@ using System.Windows.Forms;
 
 namespace CommandsEditor
 {
+    //NOTE: There's LOTS that needs changing here, for one, track types are not handled correctly leading to garbage data.
+    //      I think the STRING track_type on keyframes is for events, and GUID is for CMD_PlayAnimation and PlayEnvironmentAnimation links. Should show that better.
+
     public partial class CAGEAnimationEditor : BaseWindow
     {
         public Action<CAGEAnimation> OnSaved;

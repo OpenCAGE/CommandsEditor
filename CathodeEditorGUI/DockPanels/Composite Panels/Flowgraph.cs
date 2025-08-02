@@ -227,9 +227,18 @@ namespace CommandsEditor
                     if (!connector.ID.IsInvalid) //NOTE: This condition should never fail if the layout has been checked by FlowgraphLayoutManager!
                     {
                         STNodeOption pinOut = nodes[i].GetOption(connectionMeta.ParameterGUID);
-                        if (pinOut == null) pinOut = nodes[i].AddOutputOption(connectionMeta.ParameterGUID);
                         STNodeOption pinIn = connectedNode.GetOption(connectionMeta.ConnectedParameterGUID);
-                        if (pinIn == null) pinIn = connectedNode.AddInputOption(connectionMeta.ConnectedParameterGUID);
+
+                        if (pinIn == null)
+                        {
+                            Console.WriteLine("WARNING: Adding input option for " + nodes[i].Title + ", as AddAllPins missed it...");
+                            pinIn = connectedNode.AddInputOption(connectionMeta.ConnectedParameterGUID);
+                        }
+                        if (pinOut == null)
+                        {
+                            Console.WriteLine("WARNING: Adding output option for " + nodes[i].Title + ", as AddAllPins missed it...");
+                            pinOut = nodes[i].AddOutputOption(connectionMeta.ParameterGUID);
+                        }
 
                         ConnectionStatus status = pinOut.ConnectOption(pinIn);
                         if (status != ConnectionStatus.Connected)
@@ -526,7 +535,36 @@ namespace CommandsEditor
                                 break;
                         }
 
-                        //todo: need to include custom ones for triggerseq and cageanim
+                        if (entity.variant == EntityVariant.FUNCTION)
+                        {
+                            FunctionEntity func = (FunctionEntity)entity;
+                            switch (func.function.AsFunctionType)
+                            {
+                                case FunctionType.CAGEAnimation:
+                                    CAGEAnimation cageAnim = (CAGEAnimation)func;
+                                    foreach (CAGEAnimation.EventTrack track in cageAnim.events)
+                                    {
+                                        foreach (CAGEAnimation.EventTrack.Keyframe keyframe in track.keyframes)
+                                        {
+                                            if (keyframe.track_type != CAGEAnimation.TrackType.STRING)
+                                                continue;
+
+                                            node.AddOutputOption(keyframe.forward);
+                                            node.AddOutputOption(keyframe.reverse);
+                                        }
+                                    }
+                                    break;
+                                case FunctionType.TriggerSequence:
+                                    TriggerSequence triggerSeq = (TriggerSequence)func;
+                                    foreach (TriggerSequence.MethodEntry method in triggerSeq.methods)
+                                    {
+                                        node.AddInputOption(method.method);
+                                        node.AddOutputOption(method.relay);
+                                        node.AddOutputOption(method.finished);
+                                    }
+                                    break;
+                            }
+                        }
                     }
                     break;
             }
@@ -540,6 +578,10 @@ namespace CommandsEditor
 
         private static void RemoveUnusedPins(STNode node)
         {
+            //Variable entities only ever have the right pins added
+            if (node.Entity.variant == EntityVariant.VARIABLE)
+                return;
+
             STNodeOption[] ins = node.GetInputOptions();
             for (int i = 0; i < ins.Length; i++)
                 if (ins[i].ConnectionCount == 0)

@@ -162,6 +162,7 @@ namespace CommandsEditor
 
         public static void CheckAllFlowgraphLayouts()
         {
+#if FG_TEST
             List<string> files = Directory.GetFiles("C:\\Program Files (x86)\\Steam\\steamapps\\common\\Alien Isolation\\DATA\\ENV", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
             foreach (string file in files)
             {
@@ -317,6 +318,7 @@ namespace CommandsEditor
                 hashCode = hashCode * -1521134295 + In.GetHashCode();
                 return hashCode;
             }
+#endif
         }
 
         public static void DumpCommandsToJson(string path, string dir)
