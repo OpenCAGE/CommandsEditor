@@ -28,6 +28,8 @@ namespace CommandsEditor
         private Commands _commands;
         private Composite _composite;
         private int _spawnOffset = 0;
+
+        public string FlowgraphName => _flowgraphName;
         private string _flowgraphName = "";
 
         [Obsolete("Designer only", true)]

@@ -15,6 +15,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Xml.Linq;
 using static CATHODE.Scripting.CAGEAnimation;
 using static CathodeLib.CompositeFlowgraphTable;
 
@@ -28,6 +29,7 @@ namespace CommandsEditor
         private static CompositeFlowgraphTable _preDefinedLayouts = new CompositeFlowgraphTable();
         private static CompositeFlowgraphTable _userDefinedLayouts = new CompositeFlowgraphTable();
         private static CompositeFlowgraphCompatibilityTable _compatibility = new CompositeFlowgraphCompatibilityTable();
+        private static CompositePageHistoryTable _history = new CompositePageHistoryTable();
 
         public static Commands LinkedCommands => _commands;
         private static Commands _commands;
@@ -154,6 +156,25 @@ namespace CommandsEditor
             _userDefinedLayouts.flowgraphs.RemoveAll(o => o.CompositeGUID == composite.shortGUID);
         }
 
+        //Remember the page that was last selected
+        public static void SetSelectedPage(Composite composite, string name)
+        {
+            if (_history.last_composite_page.ContainsKey(composite.shortGUID))
+            {
+                _history.last_composite_page[composite.shortGUID] = name;
+            }
+            else
+            {
+                _history.last_composite_page.Add(composite.shortGUID, name);
+            }
+        }
+        public static string GetSelectedPage(Composite composite)
+        {
+            if (_history.last_composite_page.TryGetValue(composite.shortGUID, out string name))
+                return name;
+            return null;
+        }
+
         public static void LinkCommands(Commands commands)
         {
             if (_commands != null)
@@ -181,6 +202,10 @@ namespace CommandsEditor
             if (_compatibility == null) _compatibility = new CompositeFlowgraphCompatibilityTable();
             Debug.Log("Flowgraph Manager", "Loaded " + _compatibility.compatibility_info.Count + " flowgraph compatibility definitions!");
 
+            _history = (CompositePageHistoryTable)CustomTable.ReadTable(filepath, CustomTableType.COMPOSITE_PAGE_HISTORY);
+            if (_history == null) _history = new CompositePageHistoryTable();
+            Debug.Log("Flowgraph Manager", "Loaded " + _history.last_composite_page.Count + " previously opened pages!");
+
             //Copy the default layouts over for composites in this Commands if they don't already exist
             FlowgraphMeta.SupportedLevel level = (FlowgraphMeta.SupportedLevel)Enum.Parse(typeof(FlowgraphMeta.SupportedLevel), Path.GetFileName(_commands.EntryPoints[0].name).ToUpper()); //TODO: should really have a global level name based on what's loading, rather than this.
             if (_userDefinedLayouts.flowgraphs.Count == 0)
@@ -204,6 +229,9 @@ namespace CommandsEditor
 
             CustomTable.WriteTable(filepath, CustomTableType.COMPOSITE_FLOWGRAPH_COMPATIBILITY_INFO, _compatibility);
             Debug.Log("Flowgraph Manager", "Saved " + _compatibility.compatibility_info.Count + " flowgraph compatibility definitions!");
+
+            CustomTable.WriteTable(filepath, CustomTableType.COMPOSITE_PAGE_HISTORY, _history);
+            Debug.Log("Flowgraph Manager", "Saved " + _history.last_composite_page.Count + " previously opened pages!");
         }
     }
 

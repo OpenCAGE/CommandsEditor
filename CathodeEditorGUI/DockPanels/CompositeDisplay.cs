@@ -146,6 +146,8 @@ namespace CommandsEditor.DockPanels
                     Debug.Log("Composite Display", "The number of links matches the previous count of " + ogCount);
                 }
 #endif
+
+                FlowgraphLayoutManager.SetSelectedPage(Composite, _flowgraphs.FirstOrDefault(o => o.Visible).FlowgraphName);
             }
         }
 
@@ -342,6 +344,9 @@ namespace CommandsEditor.DockPanels
                 {
                     CreateFlowgraphWindow(layouts[i]);
                 }
+                string prevLoaded = FlowgraphLayoutManager.GetSelectedPage(Composite);
+                if (prevLoaded != null)
+                    _flowgraphs.FirstOrDefault(o => o.FlowgraphName == prevLoaded)?.Show();
             }
             createFlowgraph.Visible = SupportsFlowgraphs;
 

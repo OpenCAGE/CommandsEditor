@@ -17,6 +17,8 @@ using System.Windows.Forms;
 
 namespace CommandsEditor
 {
+    //TODO: I should add pins to all TriggerSequence nodes for any new methods that are added here.
+
     public partial class TriggerSequenceEditor : BaseWindow
     {
         TriggerSequence _triggerSequence = null;
