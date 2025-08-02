@@ -129,7 +129,7 @@ namespace CommandsEditor
             node.SetSelected(true, true);
             stNodeEditor1.SetActiveNode(node);
 
-            stNodeEditor1.CenterCanvasOn(node.Location.X, node.Location.Y, true);
+            stNodeEditor1.CenterCanvasOn(node.Location.X + (node.Width / 2), node.Location.Y + (node.Height / 2), true);
         }
 
         private void DeselectAllNodes()
