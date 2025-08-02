@@ -51,6 +51,7 @@ namespace CommandsEditor
         public static Action<Composite, string> OnCompositeRenamed;
         public static Action<cTransform, Entity> OnEntityMoved;
         public static Action<Entity> OnEntityDeleted;
+        public static Action<Entity, Composite> OnEntityDeletePending;
         public static Action<Composite> OnCompositeDeleted;
         public static Action OnSaved;
         public static Action OnParameterModified;

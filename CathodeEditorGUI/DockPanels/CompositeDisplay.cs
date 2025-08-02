@@ -516,6 +516,8 @@ namespace CommandsEditor.DockPanels
         {
             if (ask && MessageBox.Show("Are you sure you want to remove this entity?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
 
+            Singleton.OnEntityDeletePending?.Invoke(entity, Composite);
+
             switch (entity.variant)
             {
                 case EntityVariant.VARIABLE:

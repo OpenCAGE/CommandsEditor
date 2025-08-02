@@ -51,6 +51,9 @@ namespace CommandsEditor
 
             //Always add new composites into the compatibility table
             Singleton.OnCompositeAdded += AddToCompatibilityTable;
+
+            //Make sure to delete any nodes and links to entities the user deletes to avoid causing false incompability flags
+            Singleton.OnEntityDeletePending += OnEntityDeletePending;
         }
         private static void AddToCompatibilityTable(Composite composite)
         {
@@ -60,6 +63,48 @@ namespace CommandsEditor
                 composite_id = composite.shortGUID,
                 flowgraphs_supported = true
             });
+        }
+        private static void OnEntityDeletePending(Entity entity, Composite composite)
+        {
+            foreach (FlowgraphMeta flowgraphMeta in _userDefinedLayouts.flowgraphs)
+            {
+                Composite comp = _commands.GetComposite(flowgraphMeta.CompositeGUID);
+                if (comp == null) continue;
+
+                //Remove any nodes that are for the deleted entity, or point to the deleted entity
+                List<FlowgraphMeta.NodeMeta> trimmedNodes = new List<FlowgraphMeta.NodeMeta>();
+                foreach (FlowgraphMeta.NodeMeta node in flowgraphMeta.Nodes)
+                {
+                    Entity ent = comp.GetEntityByID(node.EntityGUID);
+                    if (ent == entity) continue;
+                    switch (ent.variant)
+                    {
+                        case EntityVariant.ALIAS:
+                            if (((AliasEntity)ent).alias.GetPointedEntity(_commands) == entity)
+                                continue;
+                            break;
+                        case EntityVariant.PROXY:
+                            if (((ProxyEntity)ent).proxy.GetPointedEntity(_commands) == entity)
+                                continue;
+                            break;
+                    }
+                    trimmedNodes.Add(node);
+                }
+                flowgraphMeta.Nodes = trimmedNodes;
+
+                //Remove any connections that pointed to now removed nodes
+                foreach (FlowgraphMeta.NodeMeta node in flowgraphMeta.Nodes)
+                {
+                    List<FlowgraphMeta.NodeMeta.ConnectionMeta> trimmedConnections = new List<FlowgraphMeta.NodeMeta.ConnectionMeta>();
+                    foreach (FlowgraphMeta.NodeMeta.ConnectionMeta connection in node.ConnectionsOut)
+                    {
+                        if (flowgraphMeta.Nodes.FirstOrDefault(o => o.NodeID == connection.ConnectedNodeID) == null)
+                            continue;
+                        trimmedConnections.Add(connection);
+                    }
+                    node.ConnectionsOut = trimmedConnections;
+                }
+            }
         }
 
         //Sets if the given composite supports flowgraphs: a composite wouldn't support flowgraphs if it diverges from the saved layout, or has no layout defined
