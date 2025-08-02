@@ -51,6 +51,7 @@ namespace CommandsEditor
             this.createNewFlowgraphToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteEntityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.addNodeForSelectedEntityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.nodeContextMenu.SuspendLayout();
             this.TabStripContextMenu.SuspendLayout();
             this.SuspendLayout();
@@ -69,16 +70,17 @@ namespace CommandsEditor
             this.toolStripSeparator4,
             this.deleteEntityToolStripMenuItem,
             this.createToolStripMenuItem,
+            this.addNodeForSelectedEntityToolStripMenuItem,
             this.addNodeToolStripMenuItem});
             this.nodeContextMenu.Name = "EntityListContextMenu";
-            this.nodeContextMenu.Size = new System.Drawing.Size(186, 242);
+            this.nodeContextMenu.Size = new System.Drawing.Size(237, 264);
             this.nodeContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // modifyPinsIn
             // 
             this.modifyPinsIn.Image = ((System.Drawing.Image)(resources.GetObject("modifyPinsIn.Image")));
             this.modifyPinsIn.Name = "modifyPinsIn";
-            this.modifyPinsIn.Size = new System.Drawing.Size(185, 22);
+            this.modifyPinsIn.Size = new System.Drawing.Size(236, 22);
             this.modifyPinsIn.Text = "Modify Pins In";
             this.modifyPinsIn.Click += new System.EventHandler(this.modifyPinsIn_Click);
             // 
@@ -188,8 +190,8 @@ namespace CommandsEditor
             // 
             this.addNodeToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("addNodeToolStripMenuItem.Image")));
             this.addNodeToolStripMenuItem.Name = "addNodeToolStripMenuItem";
-            this.addNodeToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
-            this.addNodeToolStripMenuItem.Text = "Add Node(s)";
+            this.addNodeToolStripMenuItem.Size = new System.Drawing.Size(236, 22);
+            this.addNodeToolStripMenuItem.Text = "Add Node For Multiple Entities";
             this.addNodeToolStripMenuItem.Click += new System.EventHandler(this.addNodeToolStripMenuItem_Click);
             // 
             // stNodeEditor1
@@ -266,6 +268,14 @@ namespace CommandsEditor
             this.toolStripSeparator4.Name = "toolStripSeparator4";
             this.toolStripSeparator4.Size = new System.Drawing.Size(182, 6);
             // 
+            // addNodeForSelectedEntityToolStripMenuItem
+            // 
+            this.addNodeForSelectedEntityToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("addNodeForSelectedEntityToolStripMenuItem.Image")));
+            this.addNodeForSelectedEntityToolStripMenuItem.Name = "addNodeForSelectedEntityToolStripMenuItem";
+            this.addNodeForSelectedEntityToolStripMenuItem.Size = new System.Drawing.Size(236, 22);
+            this.addNodeForSelectedEntityToolStripMenuItem.Text = "Add Node For Selected Entity";
+            this.addNodeForSelectedEntityToolStripMenuItem.Click += new System.EventHandler(this.addNodeForSelectedEntityToolStripMenuItem_Click);
+            // 
             // Flowgraph
             // 
             this.AllowEndUserDocking = false;
@@ -313,6 +323,7 @@ namespace CommandsEditor
         private System.Windows.Forms.ToolStripMenuItem createAliasToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem deleteEntityToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+        private System.Windows.Forms.ToolStripMenuItem addNodeForSelectedEntityToolStripMenuItem;
     }
 }
 

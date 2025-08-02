@@ -434,9 +434,11 @@ namespace CommandsEditor
 
             addNodeToolStripMenuItem.Visible = node == null;
             createToolStripMenuItem.Visible = node == null;
+            addNodeForSelectedEntityToolStripMenuItem.Visible = node == null;
+            addNodeForSelectedEntityToolStripMenuItem.Enabled = Singleton.Editor?.CommandsDisplay?.CompositeDisplay?.EntityDisplay?.Entity != null;
         }
 
-        //Add new node (via context menu strip)
+        //Add new nodes batch select
         Point _nodeSpawnPosition = new Point();
         private void addNodeToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -462,6 +464,14 @@ namespace CommandsEditor
                 if (SettingsManager.GetBool(Singleton.Settings.PopulateAllPinsOnCreateNode))
                     AddAllPins(node);
             }
+        }
+
+        //add new node for the selected entity, if one's selected
+        private void addNodeForSelectedEntityToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Entity selectedEntity = Singleton.Editor?.CommandsDisplay?.CompositeDisplay?.EntityDisplay?.Entity;
+            if (selectedEntity == null) return;
+            AddNodeForEntityAndSelect(selectedEntity).SetPosition(new Point((int)stNodeEditor1.MousePositionInCanvas.X, (int)stNodeEditor1.MousePositionInCanvas.Y));
         }
 
         //delete the whole entity and associated nodes
