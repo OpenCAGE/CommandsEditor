@@ -151,6 +151,8 @@ namespace CommandsEditor
         /* Load anim data */
         private static void LoadAnimData()
         {
+            Debug.Log("Asset Loader", "Loading anim data");
+
             //Load animation data
             PAK2 animPAK = new PAK2(SharedData.pathToAI + "/DATA/GLOBAL/ANIMATION.PAK");
 

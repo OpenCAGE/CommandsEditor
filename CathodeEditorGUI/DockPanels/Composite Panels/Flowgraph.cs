@@ -272,7 +272,7 @@ namespace CommandsEditor
             stNodeEditor1.Invalidate();
 
 #if DEBUG
-            Debug.Log("Flowgraph", "" + flowgraphMeta.Name + " loaded in " + timer.ElapsedMilliseconds + "ms with " + stNodeEditor1.Nodes.Count + " nodes on graph, of " + flowgraphMeta.Nodes.Count + " in layout");
+            Debug.Log("Flowgraph", "" + flowgraphMeta.Name + " loaded in " + timer.ElapsedMilliseconds + "ms with " + stNodeEditor1.Nodes.Count + " nodes on graph, of " + flowgraphMeta.Nodes.Count + " in layout (" + (flowgraphMeta.Nodes.Count - stNodeEditor1.Nodes.Count) + " missing)");
 #endif
         }
 
@@ -350,25 +350,30 @@ namespace CommandsEditor
 
         //Saves the Flowgraph's layout, and compiles the links back to commands
         //NOTE: This assumes that you have already cleared all childLinks in the composite already. That can be done by using CompositeUtils.ClearAllLinks
-        public void SaveAndCompile()
+        public int SaveAndCompile()
         {
             FlowgraphMeta layout = FlowgraphLayoutManager.SaveLayout(stNodeEditor1, _composite, _flowgraphName);
             Debug.Log("Flowgraph", "Stored layout: " + layout.Name);
 
             //Re-generate connections using the content in the nodegraph
+            int count = 0;
             foreach (STNode node in stNodeEditor1.Nodes)
             {
-                STNodeOption[] options = node.GetOutputOptions();
-                for (int y = 0; y < options.Length; y++)
+                List<STNodeOption> options = node.GetOutputOptions().ToList();
+                options.AddRange(node.GetTopOptions());
+                for (int y = 0; y < options.Count; y++)
                 {
                     List<STNodeOption> connections = options[y].GetConnectedOption();
                     for (int z = 0; z < connections.Count; z++)
                     {
                         STNode connectedNode = connections[z].Owner;
                         node.Entity.AddParameterLink(options[y].ShortGUID, connectedNode.ShortGUID, connections[z].ShortGUID);
+                        count++;
                     }
                 }
             }
+            Debug.Log("Flowgraph", "Layout " + layout.Name + " generated " + count + " connections");
+            return count;
         }
 
         //disable entity-related actions on the context menu if no entity is selected

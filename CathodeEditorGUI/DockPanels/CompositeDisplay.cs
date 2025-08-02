@@ -123,17 +123,36 @@ namespace CommandsEditor.DockPanels
         {
             if (Composite != null && SupportsFlowgraphs)
             {
+#if DEBUG
+                int ogCount = Content.commands.Utils.CountLinks(_composite);
+#endif
+                int newCount = 0;
                 Content.commands.Utils.ClearAllLinks(_composite);
                 for (int i = 0; i < _flowgraphs.Count; i++)
+                {
                     if (_flowgraphs[i] != null)
-                        _flowgraphs[i].SaveAndCompile();
+                    {
+                        newCount += _flowgraphs[i].SaveAndCompile();
+                    }
+                }
+                Debug.Log("Composite Display", "Created " + newCount + " links from flowgraph pages!");
+#if DEBUG
+                if (ogCount != newCount)
+                {
+                    Debug.Log("Composite Display", "WARNING: Previously had " + ogCount + " links, now have " + newCount + " (difference of " + Math.Abs(ogCount - newCount) + "). If you did not change any layouts, this could be an error!");
+                }
+                else
+                {
+                    Debug.Log("Composite Display", "The number of links matches the previous count of " + ogCount);
+                }
+#endif
             }
         }
 
         /* Call this to show the CompositeDisplay with the requested Composite content */
         public void PopulateUI(Composite composite)
         {
-            Debug.Log("Composite Display", "Loading " + composite.shortGUID.ToByteString() + " (" + composite.name + ")");
+            Debug.Log("Composite Display", "PopulateUI called for " + composite.shortGUID.ToByteString() + " (" + composite.name + ")");
 
             //If we're changing composite, we should store the flowgraph layouts from the previous one
             SaveAllFlowgraphs();
@@ -233,6 +252,7 @@ namespace CommandsEditor.DockPanels
 
         private void Reload(Composite composite)
         {
+            Debug.Log("Composite Display", "Private Reload called for " + composite.shortGUID.ToByteString() + " (" + composite.name + ")");
             Cursor.Current = Cursors.WaitCursor;
 
             //No need to find uses of entry point - it's the entry point
@@ -298,11 +318,11 @@ namespace CommandsEditor.DockPanels
         /* Reload this display */
         public void Reload(bool alsoReloadEntities = true)
         {
+            Debug.Log("Composite Display", "Public Reload called for " + _composite.shortGUID.ToByteString() + " (" + _composite.name + ")");
+
             //Figure out if the composite supports flowgraphs: it won't if there's no layout defined, or if the composite has diverged from vanilla
-            if (!FlowgraphLayoutManager.HasCompatibilityInfo(Composite))
-            {
+            if (!FlowgraphLayoutManager.HasCompatibilityInfo(_composite))
                 FlowgraphLayoutManager.EvaluateCompatibility(_composite);
-            }
 
             _entityList.List.LoadComposite(Composite);
             if (alsoReloadEntities) ReloadAllEntities();

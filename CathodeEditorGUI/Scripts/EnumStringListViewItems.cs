@@ -28,12 +28,13 @@ namespace CommandsEditor
             if (_globalEntries.Count > 0)
                 return;
 
+            Debug.Log("Asset Loader - Global", "Starting to populate");
             foreach (EnumStringType type in Enum.GetValues(typeof(EnumStringType)))
             {
                 if (!IsTypeGlobal(type)) continue;
                 AddItems(type, _globalEntries);
             }
-            Debug.Log("Enum Strings", "Finished populating global!");
+            Debug.Log("Asset Loader - Global", "Finished populating");
         }
 
         /* Populate all enum strings for the loaded level */
@@ -44,6 +45,8 @@ namespace CommandsEditor
                 _levelSpecificEntries.Clear();
                 return;
             }
+
+            Debug.Log("Asset Loader - Level", "Starting to populate");
 
             //Populate DisplayModel every time, as it may change during editor runtime
             AddItems(EnumStringType.DISPLAY_MODEL, _levelSpecificEntries);
@@ -59,7 +62,7 @@ namespace CommandsEditor
                 if (IsTypeGlobal(type)) continue;
                 AddItems(type, _levelSpecificEntries);
             }
-            Debug.Log("Enum Strings", "Finished populating level!");
+            Debug.Log("Asset Loader - Level", "Finished populating");
         }
 
         /* Get the items for a given type (the bool is if the desc column should show) */
