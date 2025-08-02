@@ -615,7 +615,21 @@ namespace CommandsEditor.DockPanels
                 switch (i)
                 {
                     case 0:
-                        isPointedTo = mainInst.Content.editor_utils.IsEntityReferencedExternally(ent, ct);
+                        foreach (Flowgraph flowgraph in mainInst.CompositeDisplay.Flowgraphs)
+                        {
+                            foreach (STNode node in flowgraph.Nodegraph.Nodes)
+                            {
+                                if (node.Entity.shortGUID == ent.shortGUID)
+                                {
+                                    isPointedTo = true;
+                                    break;
+                                }
+                            }
+                            if (isPointedTo)
+                                break;
+                        }
+                        if (!isPointedTo)
+                            isPointedTo = mainInst.Content.editor_utils.IsEntityReferencedExternally(ent, ct);
                         break;
                     case 1:
                         mainInst.Content.editor_utils.TryFindZoneForEntity(ent, mainInst.Composite, out zoneComp, out zoneEnt, ct);
@@ -694,6 +708,7 @@ namespace CommandsEditor.DockPanels
             ShowCrossRefs crossRefs = new ShowCrossRefs(this);
             crossRefs.Show();
             crossRefs.OnEntitySelected += _compositeDisplay.CommandsDisplay.LoadCompositeAndEntity;
+            crossRefs.OnFlowgraphSelected += _compositeDisplay.SelectEntityOnFlowgraph;
         }
 
         private void editEntityResources_Click(object sender, EventArgs e)

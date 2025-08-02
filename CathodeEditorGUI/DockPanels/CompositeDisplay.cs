@@ -42,6 +42,8 @@ namespace CommandsEditor.DockPanels
         public Composite Composite => _composite;
 
         private EntityList _entityList;
+
+        public List<Flowgraph> Flowgraphs => _flowgraphs; //Really, I'd rather not expose this, but it's handy to be able to see flowgraph data that has been modified during the session. It should be treated as read only!
         private List<Flowgraph> _flowgraphs = new List<Flowgraph>();
 
         private EntityInspector _entityDisplay;
@@ -982,6 +984,14 @@ namespace CommandsEditor.DockPanels
             _flowgraphs.Add(flowgraph);
             flowgraph.Show(dockPanel, DockState.Document);
             flowgraph.ShowFlowgraph(Composite, meta);
+        }
+
+        public void SelectEntityOnFlowgraph(string flowgraph, Entity entity)
+        {
+            Flowgraph fg = _flowgraphs.FirstOrDefault(o => o.FlowgraphName == flowgraph);
+            if (fg == null) return;
+            fg.Show();
+            fg.SelectAllNodesForEntity(entity);
         }
     }
 }

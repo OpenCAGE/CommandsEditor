@@ -32,6 +32,8 @@ namespace CommandsEditor
         public string FlowgraphName => _flowgraphName;
         private string _flowgraphName = "";
 
+        public STNodeEditor Nodegraph => stNodeEditor1; //This should be treated as read only. Only the Flowgraph UI should modify it directly.
+
         [Obsolete("Designer only", true)]
         public Flowgraph()
         {
@@ -102,7 +104,7 @@ namespace CommandsEditor
             Singleton.OnEntitySelected?.Invoke(ent); //need to call this again b/c the activation event doesn't fire here
         }
 
-        private void SelectAllNodesForEntity(Entity entity)
+        public void SelectAllNodesForEntity(Entity entity)
         {
             DeselectAllNodes();
 

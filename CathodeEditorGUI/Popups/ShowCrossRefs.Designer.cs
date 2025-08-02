@@ -45,6 +45,10 @@
             this.EntityName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.EntityType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.entityListIcons = new System.Windows.Forms.ImageList(this.components);
+            this.showFlowgraphs = new System.Windows.Forms.Button();
+            this.flowgraphList = new System.Windows.Forms.ListView();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SuspendLayout();
             // 
             // label
@@ -52,9 +56,9 @@
             this.label.AutoSize = true;
             this.label.Location = new System.Drawing.Point(129, 11);
             this.label.Name = "label";
-            this.label.Size = new System.Drawing.Size(143, 13);
+            this.label.Size = new System.Drawing.Size(139, 13);
             this.label.TabIndex = 148;
-            this.label.Text = "Proxies pointing to this entity:";
+            this.label.Text = "Nodes created for this entity";
             // 
             // jumpToEntity
             // 
@@ -69,7 +73,7 @@
             // 
             // showLinkedProxies
             // 
-            this.showLinkedProxies.Location = new System.Drawing.Point(10, 29);
+            this.showLinkedProxies.Location = new System.Drawing.Point(12, 76);
             this.showLinkedProxies.Name = "showLinkedProxies";
             this.showLinkedProxies.Size = new System.Drawing.Size(114, 41);
             this.showLinkedProxies.TabIndex = 151;
@@ -79,7 +83,7 @@
             // 
             // showLinkedOverrides
             // 
-            this.showLinkedOverrides.Location = new System.Drawing.Point(10, 76);
+            this.showLinkedOverrides.Location = new System.Drawing.Point(12, 123);
             this.showLinkedOverrides.Name = "showLinkedOverrides";
             this.showLinkedOverrides.Size = new System.Drawing.Size(114, 41);
             this.showLinkedOverrides.TabIndex = 152;
@@ -89,7 +93,7 @@
             // 
             // showLinkedTriggerSequences
             // 
-            this.showLinkedTriggerSequences.Location = new System.Drawing.Point(10, 123);
+            this.showLinkedTriggerSequences.Location = new System.Drawing.Point(12, 170);
             this.showLinkedTriggerSequences.Name = "showLinkedTriggerSequences";
             this.showLinkedTriggerSequences.Size = new System.Drawing.Size(114, 41);
             this.showLinkedTriggerSequences.TabIndex = 153;
@@ -99,7 +103,7 @@
             // 
             // showLinkedCageAnimations
             // 
-            this.showLinkedCageAnimations.Location = new System.Drawing.Point(10, 170);
+            this.showLinkedCageAnimations.Location = new System.Drawing.Point(12, 217);
             this.showLinkedCageAnimations.Name = "showLinkedCageAnimations";
             this.showLinkedCageAnimations.Size = new System.Drawing.Size(114, 41);
             this.showLinkedCageAnimations.TabIndex = 154;
@@ -166,11 +170,54 @@
             this.entityListIcons.Images.SetKeyName(5, "variable left.png");
             this.entityListIcons.Images.SetKeyName(6, "variable right.png");
             // 
+            // showFlowgraphs
+            // 
+            this.showFlowgraphs.Location = new System.Drawing.Point(12, 29);
+            this.showFlowgraphs.Name = "showFlowgraphs";
+            this.showFlowgraphs.Size = new System.Drawing.Size(114, 41);
+            this.showFlowgraphs.TabIndex = 179;
+            this.showFlowgraphs.Text = "Flowgraphs";
+            this.showFlowgraphs.UseVisualStyleBackColor = true;
+            this.showFlowgraphs.Click += new System.EventHandler(this.showFlowgraphs_Click);
+            // 
+            // flowgraphList
+            // 
+            this.flowgraphList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.flowgraphList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1,
+            this.columnHeader2});
+            this.flowgraphList.FullRowSelect = true;
+            this.flowgraphList.GridLines = true;
+            this.flowgraphList.HideSelection = false;
+            this.flowgraphList.LabelWrap = false;
+            this.flowgraphList.Location = new System.Drawing.Point(132, 29);
+            this.flowgraphList.MultiSelect = false;
+            this.flowgraphList.Name = "flowgraphList";
+            this.flowgraphList.ShowGroups = false;
+            this.flowgraphList.Size = new System.Drawing.Size(738, 381);
+            this.flowgraphList.TabIndex = 180;
+            this.flowgraphList.UseCompatibleStateImageBehavior = false;
+            this.flowgraphList.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "Flowgraph Name";
+            this.columnHeader1.Width = 417;
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "Number Of Nodes";
+            this.columnHeader2.Width = 170;
+            // 
             // ShowCrossRefs
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(882, 448);
+            this.Controls.Add(this.flowgraphList);
+            this.Controls.Add(this.showFlowgraphs);
             this.Controls.Add(this.entityList);
             this.Controls.Add(this.showLinkedCageAnimations);
             this.Controls.Add(this.showLinkedTriggerSequences);
@@ -181,7 +228,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ShowCrossRefs";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "External References";
+            this.Text = "Entity References";
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -198,5 +245,9 @@
         private System.Windows.Forms.ColumnHeader EntityName;
         private System.Windows.Forms.ColumnHeader EntityType;
         private System.Windows.Forms.ImageList entityListIcons;
+        private System.Windows.Forms.Button showFlowgraphs;
+        private System.Windows.Forms.ListView flowgraphList;
+        private System.Windows.Forms.ColumnHeader columnHeader1;
+        private System.Windows.Forms.ColumnHeader columnHeader2;
     }
 }
