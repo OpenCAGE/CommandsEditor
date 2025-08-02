@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 using static CommandsEditor.SelectEnumString;
+using static System.Windows.Forms.LinkLabel;
 
 namespace CommandsEditor.DockPanels
 {
@@ -64,7 +65,7 @@ namespace CommandsEditor.DockPanels
 
         private void EntityInspector_DockStateChanged(object sender, EventArgs e)
         {
-            Console.WriteLine(DockState);
+            Debug.Log("Entity Inspector", "Dock state changed to " + DockState);
             if (DockState == DockState.Unknown || DockState == DockState.Hidden)
                 return;
 
@@ -179,7 +180,7 @@ namespace CommandsEditor.DockPanels
 #if DO_ENTITY_PERF_CHECK
             //TODO: The performance here is pretty poor. I should swap to using the PropertyGrid.
             Stopwatch timer = Stopwatch.StartNew();
-            Console.WriteLine("[ENTITY RELOAD] ** START **");
+            Debug.Log("Entity Inspector", "** RELOAD START **");
 #endif
 
             _displayingLinks = displayLinks;
@@ -284,7 +285,7 @@ namespace CommandsEditor.DockPanels
                 case EntityVariant.VARIABLE:
                     variableInfo = Content.commands.Utils.GetPinInfo(Composite, (VariableEntity)Entity);
                     if (variableInfo == null)
-                        Console.WriteLine("Warning: Could not get parameter pin info!");
+                        Debug.Log("Entity Inspector", "Warning: Could not get parameter pin info!");
                     description = (variableInfo != null ? ((CompositePinType)variableInfo.PinTypeGUID.AsUInt32).ToUIString() : ((VariableEntity)_entity).type.ToUIString());
                     selected_entity_name.Text = ShortGuidUtils.FindString(((VariableEntity)_entity).name);
                     break;
@@ -309,7 +310,7 @@ namespace CommandsEditor.DockPanels
                 editEntityMovers.Enabled = true;
 
 #if DO_ENTITY_PERF_CHECK
-            Console.WriteLine($"[ENTITY RELOAD] METADATA UPDATE COMPLETED: {timer.Elapsed.TotalMilliseconds} ms");
+            Debug.Log("Entity Inspector", $"METADATA UPDATE COMPLETED: {timer.Elapsed.TotalMilliseconds} ms");
 #endif
 
             int current_ui_offset = 7;
@@ -338,7 +339,7 @@ namespace CommandsEditor.DockPanels
             }
 
 #if DO_ENTITY_PERF_CHECK
-            Console.WriteLine($"[ENTITY RELOAD] LINK IN CONTROLS COMPLETED: {timer.Elapsed.TotalMilliseconds} ms");
+            Debug.Log("Entity Inspector", $"LINK IN CONTROLS COMPLETED: {timer.Elapsed.TotalMilliseconds} ms");
 #endif
 
 #if AUTO_POPULATE_PARAMS
@@ -360,10 +361,10 @@ namespace CommandsEditor.DockPanels
                 }
                 ParameterModificationTracker.SetDefaultsApplied(Composite.shortGUID, Entity.shortGUID);
 #if DEBUG
-                Console.WriteLine("Applied " + (_entity.parameters.Count - count_pre_add) + " defaults to entity.");
+                Debug.Log("Entity Inspector", "Applied " + (_entity.parameters.Count - count_pre_add) + " defaults to entity.");
 #endif
 #if DO_ENTITY_PERF_CHECK
-                Console.WriteLine($"[ENTITY RELOAD] DEFAULTS APPLIED: {timer.Elapsed.TotalMilliseconds} ms");
+                Debug.Log("Entity Inspector", $"DEFAULTS APPLIED: {timer.Elapsed.TotalMilliseconds} ms");
 #endif
             }
 #endif
@@ -537,7 +538,7 @@ namespace CommandsEditor.DockPanels
 
 
 #if DO_ENTITY_PERF_CHECK
-            Console.WriteLine($"[ENTITY RELOAD] PARAMETER CONTROLS COMPLETED: {timer.Elapsed.TotalMilliseconds} ms");
+            Debug.Log("Entity Inspector", $"PARAMETER CONTROLS COMPLETED: {timer.Elapsed.TotalMilliseconds} ms");
 #endif
 
             if (_displayingLinks)
@@ -560,7 +561,7 @@ namespace CommandsEditor.DockPanels
             }
 
 #if DO_ENTITY_PERF_CHECK
-            Console.WriteLine($"[ENTITY RELOAD] LINK OUT CONTROLS COMPLETED: {timer.Elapsed.TotalMilliseconds} ms");
+            Debug.Log("Entity Inspector", $"LINK OUT CONTROLS COMPLETED: {timer.Elapsed.TotalMilliseconds} ms");
 #endif
 
             entity_params.SuspendLayout();
@@ -569,7 +570,7 @@ namespace CommandsEditor.DockPanels
 
 #if DO_ENTITY_PERF_CHECK
             timer.Stop();
-            Console.WriteLine($"[ENTITY RELOAD] ADDED CONTROLS TO WINDOW: {timer.Elapsed.TotalMilliseconds} ms");
+            Debug.Log("Entity Inspector", $"ADDED CONTROLS TO WINDOW: {timer.Elapsed.TotalMilliseconds} ms");
 #endif
 
             Singleton.OnEntityReloaded?.Invoke(_entity);

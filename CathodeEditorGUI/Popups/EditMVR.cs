@@ -111,13 +111,13 @@ namespace CommandsEditor
             //      Really we should write all this data automatically, and update the entities appropriately.
             //      I need to write a sanity checker that re-populates the Commands data with the things that got stripped, but are in MVR.
 
-            Console.WriteLine("Emissive Flags: " + mvr.emissive_flags.ToString());
+            Debug.Log("MVR", "Emissive Flags: " + mvr.emissive_flags.ToString());
 
             emReplaceTint.Checked = mvr.emissive_flags.HasFlag(EmissiveFlag.ReplaceTint);
             emReplaceIntensity.Checked = mvr.emissive_flags.HasFlag(EmissiveFlag.ReplaceIntensity);
             emMasterOff.Checked = mvr.emissive_flags.HasFlag(EmissiveFlag.MasterOff);
 
-            Console.WriteLine("Cull Flags: " + mvr.cull_flags.ToString());
+            Debug.Log("MVR", "Cull Flags: " + mvr.cull_flags.ToString());
 
             cfDontShadows.Checked = mvr.cull_flags.HasFlag(CullFlag.NO_CAST_SHADOWS);
             cfDontRender.Checked = mvr.cull_flags.HasFlag(CullFlag.NO_RENDER);
@@ -202,7 +202,7 @@ namespace CommandsEditor
             mvr.emissive_intensity_multiplier = (float)emIntensityMultiplier.Value;
             mvr.emissive_radiosity_multiplier = (float)emRadiosityMultiplier.Value;
 
-            Console.WriteLine("SAVED");
+            Debug.Log("MVR", "SAVED");
             //MessageBox.Show("Saved changes for mover " + loadedMvrIndex + "!", "Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
@@ -280,7 +280,7 @@ namespace CommandsEditor
 
             for (int i = 0; i < Content.resource.collision_maps.Entries.Count; i++)
             {
-                Console.WriteLine(Content.resource.collision_maps.Entries[i].ZoneID);
+                Debug.Log("MVR", Content.resource.collision_maps.Entries[i].ZoneID.ToByteString());
             }
 
             Content.resource.collision_maps.Entries.FirstOrDefault(o => o.Entity == mvr.entity).Entity = new EntityHandle();

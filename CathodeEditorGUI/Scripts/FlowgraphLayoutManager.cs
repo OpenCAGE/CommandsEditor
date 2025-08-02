@@ -80,27 +80,29 @@ namespace CommandsEditor
         //Checks the given composite against the layout DB to see if the links/entities match
         public static void EvaluateCompatibility(Composite composite)
         {
-            int links = _commands.Utils.CountLinks(composite);
-            if (links == 0)
+            Debug.Log("Flowgraph Manager", "Calculating flowgraph compatibility...");
+
+            //If there are links, make sure they match up with the stored layout (if there is one)
+            bool hasLayout = HasLayout(composite);
+            if (hasLayout)
             {
-                //If the composite has no links, regardless of if it diverges from the saved layouts, allow it
-                RemoveAllLayouts(composite);
-                SaveLayout(null, composite, Path.GetFileName(composite.name));
-                SetCompatibilityInfo(composite, true);
+                Debug.Log("Flowgraph Manager", "Page(s) exist, checking to see if links match");
+                SetCompatibilityInfo(composite, GetLayouts(composite).LinksMatch(composite));
             }
             else
             {
-                //If there are links, make sure they match up with the stored layout (if there is one)
-                bool hasLayout = HasLayout(composite);
-                if (hasLayout)
+                int links = _commands.Utils.CountLinks(composite);
+                if (links == 0)
                 {
-                    SetCompatibilityInfo(composite, GetLayouts(composite).LinksMatch(composite));
+                    Debug.Log("Flowgraph Manager", "No page exists, but composite has no links, so adding default page");
+                    RemoveAllLayouts(composite);
+                    SaveLayout(null, composite, Path.GetFileName(composite.name));
+                    SetCompatibilityInfo(composite, true);
                 }
                 else
                 {
-                    //NOTE: No longer writing compatibility info for Composites with no layouts defined, as it means it'll work nicer with future updates.
-                    //Console.WriteLine("Flowgraphs are not supported as no layout has been defined yet!");
-                    //SetCompatibilityInfo(composite, false);
+                    Debug.Log("Flowgraph Manager", "No page exists, but composite has links defined");
+                    SetCompatibilityInfo(composite, false);
                 }
             }
         }
@@ -172,11 +174,11 @@ namespace CommandsEditor
         {
             _userDefinedLayouts = (CompositeFlowgraphTable)CustomTable.ReadTable(filepath, CustomTableType.COMPOSITE_FLOWGRAPHS);
             if (_userDefinedLayouts == null) _userDefinedLayouts = new CompositeFlowgraphTable();
-            Console.WriteLine("Loaded " + _userDefinedLayouts.flowgraphs.Count + " custom flowgraph layouts!");
+            Debug.Log("Flowgraph Manager", "Loaded " + _userDefinedLayouts.flowgraphs.Count + " custom flowgraph layouts!");
             
             _compatibility = (CompositeFlowgraphCompatibilityTable)CustomTable.ReadTable(filepath, CustomTableType.COMPOSITE_FLOWGRAPH_COMPATIBILITY_INFO);
             if (_compatibility == null) _compatibility = new CompositeFlowgraphCompatibilityTable();
-            Console.WriteLine("Loaded " + _compatibility.compatibility_info.Count + " flowgraph compatibility definitions!");
+            Debug.Log("Flowgraph Manager", "Loaded " + _compatibility.compatibility_info.Count + " flowgraph compatibility definitions!");
 
             //Copy the default layouts over for composites in this Commands if they don't already exist
             FlowgraphMeta.SupportedLevel level = (FlowgraphMeta.SupportedLevel)Enum.Parse(typeof(FlowgraphMeta.SupportedLevel), Path.GetFileName(_commands.EntryPoints[0].name).ToUpper()); //TODO: should really have a global level name based on what's loading, rather than this.
@@ -190,17 +192,17 @@ namespace CommandsEditor
                         continue;
                     _userDefinedLayouts.flowgraphs.Add(_preDefinedLayouts.flowgraphs[i].Copy());
                 }
-                Console.WriteLine("Applied " + _userDefinedLayouts.flowgraphs.Count + " suitable flowgraph layouts, of the " + _preDefinedLayouts.flowgraphs.Count + " available!");
+                Debug.Log("Flowgraph Manager", "Applied " + _userDefinedLayouts.flowgraphs.Count + " suitable flowgraph layouts, of the " + _preDefinedLayouts.flowgraphs.Count + " available!");
             }
         }
 
         private static void SaveCustomFlowgraphs(string filepath)
         {
             CustomTable.WriteTable(filepath, CustomTableType.COMPOSITE_FLOWGRAPHS, _userDefinedLayouts);
-            Console.WriteLine("Saved " + _userDefinedLayouts.flowgraphs.Count + " custom flowgraph layouts!");
+            Debug.Log("Flowgraph Manager", "Saved " + _userDefinedLayouts.flowgraphs.Count + " custom flowgraph layouts!");
 
             CustomTable.WriteTable(filepath, CustomTableType.COMPOSITE_FLOWGRAPH_COMPATIBILITY_INFO, _compatibility);
-            Console.WriteLine("Saved " + _compatibility.compatibility_info.Count + " flowgraph compatibility definitions!");
+            Debug.Log("Flowgraph Manager", "Saved " + _compatibility.compatibility_info.Count + " flowgraph compatibility definitions!");
         }
     }
 

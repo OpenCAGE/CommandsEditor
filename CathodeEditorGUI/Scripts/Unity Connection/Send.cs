@@ -182,7 +182,7 @@ namespace CommandsEditor.UnityConnection
         /* Re-sync a new client with all current info */
         private static void SyncClient()
         {
-            Console.WriteLine("[WEBSOCKET] " + _server?.WebSocketServices["/commands_editor"].Sessions.Count + " clients connected!");
+            Debug.Log("Websocket", _server?.WebSocketServices[" / commands_editor"].Sessions.Count + " clients connected!");
 
             if (_isDirty)
             {

@@ -39,7 +39,7 @@ namespace CommandsEditor
             if (allowFollowThrough && displayOptions.ShowCheckboxes)
             {
                 //TODO: the multiselect functionality has expanded this modal past the point it was designed for - needs refactoring
-                Console.WriteLine("WARNING: Does not support following through and checkboxes! Checkboxes are only intended for multiselect entity selection (aka node creation)");
+                Debug.Log("Select Hierarchy", "WARNING: Does not support following through and checkboxes! Checkboxes are only intended for multiselect entity selection (aka node creation)");
                 displayOptions.ShowCheckboxes = false;
             }
             _multiselect = displayOptions.ShowCheckboxes;

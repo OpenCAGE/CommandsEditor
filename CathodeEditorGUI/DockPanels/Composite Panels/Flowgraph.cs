@@ -25,26 +25,21 @@ namespace CommandsEditor
 {
     public partial class Flowgraph : DockContent
     {
-        //protected LevelContent Content => Singleton.Editor?.CommandsDisplay?.Content;
-
-        private Commands _commands; //only for testing
-        private Commands Commands
-        {
-            get
-            {
-                if (_commands == null)
-                    return Singleton.Editor?.CommandsDisplay?.Content.commands;
-                else
-                    return _commands;
-            }
-        }
-
+        private Commands _commands;
         private Composite _composite;
         private int _spawnOffset = 0;
         private string _flowgraphName = "";
 
+        [Obsolete("Designer only", true)]
         public Flowgraph()
         {
+            InitializeComponent();
+        }
+
+        public Flowgraph(Commands commands)
+        {
+            _commands = commands;
+
             InitializeComponent();
             this.FormClosed += EntityFlowgraph_FormClosed;
 
@@ -124,7 +119,7 @@ namespace CommandsEditor
         private void SelectNode(STNode node)
         {
             _previouslySelectedEntity = node.Entity;
-            Console.WriteLine("SelectNode: " + node.Title + " - " + node.Guid);
+            Debug.Log("Flowgraph", "Select node: " + node.Title + " - " + node.Guid);
 
             stNodeEditor1.AddSelectedNode(node);
             node.SetSelected(true, true);
@@ -179,8 +174,13 @@ namespace CommandsEditor
         //NOTE: This assumes you've already checked with FlowgraphLayoutManager that LinksMatch!
         public void ShowFlowgraph(Composite composite, FlowgraphMeta flowgraphMeta)
         {
-            if (Commands.Utils.PurgeDeadLinks(composite))
-                Commands.Utils.PurgedComposites.purged.Add(composite.shortGUID);
+#if DEBUG
+            Stopwatch timer = Stopwatch.StartNew();
+            Debug.Log("Flowgraph", "Loading: " + flowgraphMeta.Name);
+#endif
+
+            if (_commands.Utils.PurgeDeadLinks(composite))
+                _commands.Utils.PurgedComposites.purged.Add(composite.shortGUID);
 
             _composite = composite;
             this.Text = flowgraphMeta.Name;
@@ -214,8 +214,6 @@ namespace CommandsEditor
                 nodes[i].NodeID = entities[i].Item2.NodeID;
             }
 
-            Console.WriteLine("Loading Flowgraph: " + flowgraphMeta.Name);
-
             //Populate connections
             for (int i = 0; i < entities.Count; i++)
             {
@@ -231,12 +229,12 @@ namespace CommandsEditor
 
                         if (pinIn == null)
                         {
-                            Console.WriteLine("WARNING: Adding input option for " + nodes[i].Title + ", as AddAllPins missed it...");
+                            Debug.Log("Flowgraph", "WARNING: Adding input option for " + nodes[i].Title + ", as AddAllPins missed it...");
                             pinIn = connectedNode.AddInputOption(connectionMeta.ConnectedParameterGUID);
                         }
                         if (pinOut == null)
                         {
-                            Console.WriteLine("WARNING: Adding output option for " + nodes[i].Title + ", as AddAllPins missed it...");
+                            Debug.Log("Flowgraph", "WARNING: Adding output option for " + nodes[i].Title + ", as AddAllPins missed it...");
                             pinOut = nodes[i].AddOutputOption(connectionMeta.ParameterGUID);
                         }
 
@@ -244,8 +242,7 @@ namespace CommandsEditor
                         if (status != ConnectionStatus.Connected)
                         {
                             //NOTE: We hit this for some in the base game, but it SHOULDN'T be a problem -> links that can't connect won't logically work.
-                            Console.WriteLine("WARNING: Could not create the following connection..."); 
-                            Console.WriteLine("\t" + nodes[i].Title + " [" + pinOut.Text + "] " + pinOut.Location + " -> " + connectedNode.Title + " [" + pinIn.Text + "] " + pinIn.Location);
+                            Debug.Log("Flowgraph", "WARNING: Could not create the following connection...\n\t" + nodes[i].Title + " [" + pinOut.Text + "] " + pinOut.Location + " -> " + connectedNode.Title + " [" + pinIn.Text + "] " + pinIn.Location);
                         }
                     }
 #if DEBUG
@@ -273,6 +270,10 @@ namespace CommandsEditor
 
             stNodeEditor1.ResumeLayout();
             stNodeEditor1.Invalidate();
+
+#if DEBUG
+            Debug.Log("Flowgraph", "" + flowgraphMeta.Name + " loaded in " + timer.ElapsedMilliseconds + "ms with " + stNodeEditor1.Nodes.Count + " nodes on graph, of " + flowgraphMeta.Nodes.Count + " in layout");
+#endif
         }
 
         protected override void OnLoad(EventArgs e)
@@ -306,7 +307,7 @@ namespace CommandsEditor
             {
                 case EntityVariant.PROXY:
                 case EntityVariant.ALIAS:
-                    Entity ent = Commands.Utils.ResolveHierarchy(_composite, (node.Entity.variant == EntityVariant.PROXY) ? ((ProxyEntity)node.Entity).proxy.path : ((AliasEntity)node.Entity).alias.path, out Composite c, out string s);
+                    Entity ent = _commands.Utils.ResolveHierarchy(_composite, (node.Entity.variant == EntityVariant.PROXY) ? ((ProxyEntity)node.Entity).proxy.path : ((AliasEntity)node.Entity).alias.path, out Composite c, out string s);
                     node.SetColour(node.Entity.variant == EntityVariant.PROXY ? Color.LightGreen : Color.Orange, node.Entity.variant == EntityVariant.PROXY ? Color.Green : Color.OrangeRed, Color.Black);
                     switch (ent.variant)
                     {
@@ -314,10 +315,10 @@ namespace CommandsEditor
                             FunctionEntity function = (FunctionEntity)ent;
                             if (function.function.IsFunctionType)
                             {
-                                node.SetName(Commands.Utils.GetEntityName(c, ent), node.Entity.variant + " TO: " + function.function.AsFunctionType.ToString());
+                                node.SetName(_commands.Utils.GetEntityName(c, ent), node.Entity.variant + " TO: " + function.function.AsFunctionType.ToString());
                             }
                             else
-                                node.SetName(Commands.Utils.GetEntityName(c, ent), node.Entity.variant + " TO: " + Path.GetFileName(Commands.GetComposite(function.function).name));
+                                node.SetName(_commands.Utils.GetEntityName(c, ent), node.Entity.variant + " TO: " + Path.GetFileName(_commands.GetComposite(function.function).name));
                             break;
                         case EntityVariant.VARIABLE:
                             node.SetName(node.Entity.variant + " TO: " + ((VariableEntity)ent).name.ToString());
@@ -329,12 +330,12 @@ namespace CommandsEditor
                     if (funcEnt.function.IsFunctionType)
                     {
                         node.SetColour(Color.DodgerBlue, Color.Blue, Color.White);
-                        node.SetName(Commands.Utils.GetEntityName(_composite, node.Entity), funcEnt.function.AsFunctionType.ToString());
+                        node.SetName(_commands.Utils.GetEntityName(_composite, node.Entity), funcEnt.function.AsFunctionType.ToString());
                     }
                     else
                     {
                         node.SetColour(Color.Blue, Color.DodgerBlue, Color.White);
-                        node.SetName(Commands.Utils.GetEntityName(_composite, node.Entity), Path.GetFileName(Commands.GetComposite(funcEnt.function).name));
+                        node.SetName(_commands.Utils.GetEntityName(_composite, node.Entity), Path.GetFileName(_commands.GetComposite(funcEnt.function).name));
                     }
                     break;
                 case EntityVariant.VARIABLE:
@@ -352,7 +353,7 @@ namespace CommandsEditor
         public void SaveAndCompile()
         {
             FlowgraphMeta layout = FlowgraphLayoutManager.SaveLayout(stNodeEditor1, _composite, _flowgraphName);
-            //Console.WriteLine("Stored flowgraph layout: " + layout.Name);
+            Debug.Log("Flowgraph", "Stored layout: " + layout.Name);
 
             //Re-generate connections using the content in the nodegraph
             foreach (STNode node in stNodeEditor1.Nodes)
@@ -458,7 +459,7 @@ namespace CommandsEditor
             {
                 case EntityVariant.VARIABLE:
                     VariableEntity varEnt = (VariableEntity)entity;
-                    PinInfo info = Commands.Utils.GetPinInfo(_composite, varEnt);
+                    PinInfo info = _commands.Utils.GetPinInfo(_composite, varEnt);
                     switch (info.PinTypeGUID.AsCompositePinType)
                     {
                         case CompositePinType.CompositeInputAnimationInfoVariablePin:
@@ -501,11 +502,11 @@ namespace CommandsEditor
                     }
                     break;
                 default:
-                    List<(ShortGuid, ParameterVariant, DataType)> allParameters = Commands.Utils.GetAllParameters(entity, _composite);
+                    List<(ShortGuid, ParameterVariant, DataType)> allParameters = _commands.Utils.GetAllParameters(entity, _composite);
                     foreach ((ShortGuid, ParameterVariant, DataType) parameter in allParameters)
                     {
                         //string param = parameter.Item1.ToString();
-                        //if (param == "delete_me" || param == "enable" || param == "disable" || param == "position") 
+                        //if (param == "delete_me" || param == "enable" || param == "disable" || param == "position") //TODO: these are defined in DATA/cage_entity_annotations.xml -> should be dumped from there.
                         //    continue;
 
                         switch (parameter.Item2)
@@ -520,7 +521,7 @@ namespace CommandsEditor
                             //    break;
                             case ParameterVariant.METHOD_PIN:
                                 node.AddInputOption(parameter.Item1);
-                                ShortGuid relay = Commands.Utils.GetRelay(parameter.Item1);
+                                ShortGuid relay = _commands.Utils.GetRelay(parameter.Item1);
                                 if (relay != ShortGuid.Invalid)
                                     node.AddOutputOption(relay);
                                 break;

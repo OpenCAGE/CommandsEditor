@@ -109,7 +109,7 @@ namespace CommandsEditor.DockPanels
             Singleton.OnLevelAssetsLoaded -= FinishedLoadingLevelAssets;
 
             //Everything should now be loaded globally and per-level.
-            Console.WriteLine("Finished loading anim data and level assets!");
+            Debug.Log("Asset Loader", "Finished loading anim data and level assets!");
 
             Task.Factory.StartNew(() => EnumStringListViewItems.PopulateGlobalEntries()); //This only loads once, it's not expensive to call it again.
             Task.Factory.StartNew(() => EnumStringListViewItems.PopulateLevelSpecificEntries());

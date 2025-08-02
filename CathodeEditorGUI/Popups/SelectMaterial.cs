@@ -51,21 +51,21 @@ namespace AlienPAK
 
         private void UpdateTextureDropdown(bool global, bool changeIndex = false)
         {
-            Console.WriteLine("UpdateTextureDropdown");
+            Debug.Log("Material Selector", "UpdateTextureDropdown");
             List<string> textures = new List<string>();
             Textures textureDB = global ? Singleton.GlobalTextures : Content.resource.textures;
             for (int i = 0; i < textureDB.Entries.Count; i++) textures.Add(textureDB.Entries[i].Name);
             textures.Add("NONE"); //temp holder for no texture
 
             if (!changeIndex) return;
-            Console.WriteLine(" --> UPDATING INDEX");
+            Debug.Log("Material Selector", " --> UPDATING INDEX");
             _controls.textureFile.Text = "";
             OnTextureIndexChange(0, global);
         }
 
         private void OnTextureIndexChange(int index, bool global)
         {
-            Console.WriteLine("OnTextureIndexChange");
+            Debug.Log("Material Selector", "OnTextureIndexChange");
             Textures texDB = (global ? Singleton.GlobalTextures : Content.resource.textures);
             ShadersPAK.MaterialTextureContext textureInfo = _selectedMaterialMeta.textures[_controls.materialTextureSelection.SelectedIndex];
             if (textureInfo.TextureInfo == null)
@@ -89,7 +89,7 @@ namespace AlienPAK
 
         private void PopulateUI(Materials.Material material = null)
         {
-            Console.WriteLine("PopulateUI");
+            Debug.Log("Material Selector", "PopulateUI");
             _sortedMaterials.Clear();
             _sortedMaterials.AddRange(Content.resource.materials.Entries);
             _sortedMaterials = _sortedMaterials.OrderBy(o => o.Name).ToList();
@@ -106,13 +106,13 @@ namespace AlienPAK
 
         private void OnMaterialTextureIndexSelected(int index)
         {
-            Console.WriteLine("OnMaterialTextureIndexSelected");
+            Debug.Log("Material Selector", "OnMaterialTextureIndexSelected");
             ShowTextureForMaterial(_controls.materialTextureSelection.SelectedIndex);
         }
 
         private void materialList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Console.WriteLine("materialList_SelectedIndexChanged");
+            Debug.Log("Material Selector", "materialList_SelectedIndexChanged");
             _selectedMaterialMeta = null;
             _selectedMaterialShader = null;
             if (materialList.SelectedIndex == -1)
@@ -141,7 +141,7 @@ namespace AlienPAK
 
         private void ShowTextureForMaterial(int index)
         {
-            Console.WriteLine("ShowTextureForMaterial");
+            Debug.Log("Material Selector", "ShowTextureForMaterial");
             _controls.materialTexturePreview.Source = null;
             if (index == -1) return;
             ShadersPAK.MaterialTextureContext mdlMetaDiff = _selectedMaterialMeta.textures[index];

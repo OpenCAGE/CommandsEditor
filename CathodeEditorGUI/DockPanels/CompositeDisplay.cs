@@ -133,6 +133,8 @@ namespace CommandsEditor.DockPanels
         /* Call this to show the CompositeDisplay with the requested Composite content */
         public void PopulateUI(Composite composite)
         {
+            Debug.Log("Composite Display", "Loading " + composite.shortGUID.ToByteString() + " (" + composite.name + ")");
+
             //If we're changing composite, we should store the flowgraph layouts from the previous one
             SaveAllFlowgraphs();
 
@@ -262,7 +264,7 @@ namespace CommandsEditor.DockPanels
                 }
                 if (_composite.aliases.Count != aliasPurged.Count)
                 {
-                    Console.WriteLine("Purged " + (_composite.aliases.Count - aliasPurged.Count) + " empty aliases");
+                    Debug.Log("Composite Display", "Purged " + (_composite.aliases.Count - aliasPurged.Count) + " empty aliases");
                     _composite.aliases = aliasPurged;
                 }
             }
@@ -299,7 +301,6 @@ namespace CommandsEditor.DockPanels
             //Figure out if the composite supports flowgraphs: it won't if there's no layout defined, or if the composite has diverged from vanilla
             if (!FlowgraphLayoutManager.HasCompatibilityInfo(Composite))
             {
-                Console.WriteLine("Calculating flowgraph compatibility...");
                 FlowgraphLayoutManager.EvaluateCompatibility(_composite);
             }
 
@@ -312,9 +313,11 @@ namespace CommandsEditor.DockPanels
             _flowgraphs.Clear();
 
             //If we support flowgraphs, load them
+            Debug.Log("Composite Display", "Flowgraphs " + (SupportsFlowgraphs ? "Supported!" : "Not supported!"));
             if (SupportsFlowgraphs)
             {
                 List<FlowgraphMeta> layouts = FlowgraphLayoutManager.GetLayouts(Composite);
+                Debug.Log("Composite Display", "Found " + layouts.Count + " flowgraph layout(s)");
                 for (int i = 0; i < layouts.Count; i++)
                 {
                     CreateFlowgraphWindow(layouts[i]);
@@ -950,7 +953,7 @@ namespace CommandsEditor.DockPanels
 
         private void CreateFlowgraphWindow(FlowgraphMeta meta)
         {
-            Flowgraph flowgraph = new Flowgraph();
+            Flowgraph flowgraph = new Flowgraph(Content.commands);
             _flowgraphs.Add(flowgraph);
             flowgraph.Show(dockPanel, DockState.Document);
             flowgraph.ShowFlowgraph(Composite, meta);

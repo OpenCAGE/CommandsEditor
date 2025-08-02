@@ -33,7 +33,7 @@ namespace CommandsEditor
                 if (!IsTypeGlobal(type)) continue;
                 AddItems(type, _globalEntries);
             }
-            Console.WriteLine("[ENUM STRINGS] Finished populating global!");
+            Debug.Log("Enum Strings", "Finished populating global!");
         }
 
         /* Populate all enum strings for the loaded level */
@@ -59,7 +59,7 @@ namespace CommandsEditor
                 if (IsTypeGlobal(type)) continue;
                 AddItems(type, _levelSpecificEntries);
             }
-            Console.WriteLine("[ENUM STRINGS] Finished populating level!");
+            Debug.Log("Enum Strings", "Finished populating level!");
         }
 
         /* Get the items for a given type (the bool is if the desc column should show) */

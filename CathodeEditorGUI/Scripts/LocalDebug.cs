@@ -771,8 +771,7 @@ namespace CommandsEditor
                     List<FlowgraphMeta> layouts = FlowgraphLayoutManager.GetLayouts(comp);
                     foreach (FlowgraphMeta layout in layouts)
                     {
-                        Flowgraph flowgraph = new Flowgraph();
-                        flowgraph._commands = commands;
+                        Flowgraph flowgraph = new Flowgraph(commands);
                         flowgraph.Show();
                         flowgraph.ShowFlowgraph(comp, layout);
                         flowgraph.Hide();

@@ -799,7 +799,7 @@ namespace CommandsEditor
             }
 
             return;
-            Flowgraph window = new Flowgraph();
+            Flowgraph window = new Flowgraph(_commandsDisplay.Content.commands);
             window.Show();
             //window.DEBUG_LoadAll_Test(CommandsDisplay.Content.commands);
             window.Close();

@@ -122,16 +122,16 @@ namespace CommandsEditor
                         }
                     }
                 }
-                Console.WriteLine("Generated info for " + _parameterTracker.modified_params.Count + " composites with parameter modifications!");
+                Debug.Log("Modification Tracker", "Generated info for " + _parameterTracker.modified_params.Count + " composites with parameter modifications!");
             }
             else
             {
-                Console.WriteLine("Loaded info for " + _parameterTracker.modified_params.Count + " composites with parameter modifications!");
+                Debug.Log("Modification Tracker", "Loaded info for " + _parameterTracker.modified_params.Count + " composites with parameter modifications!");
             }
 
             _defaultsTracker = (EntityAppliedDefaultsTable)CustomTable.ReadTable(filepath, CustomTableType.ENTITY_APPLIED_DEFAULTS);
             if (_defaultsTracker == null) _defaultsTracker = new EntityAppliedDefaultsTable();
-            Console.WriteLine("Loaded " + _defaultsTracker.applied_defaults.Count + " composites with defaults applied!");
+            Debug.Log("Modification Tracker", "Loaded " + _defaultsTracker.applied_defaults.Count + " composites with defaults applied!");
         }
         private static HashSet<ShortGuid> PopulateModified(Entity entity)
         {
@@ -146,10 +146,10 @@ namespace CommandsEditor
         private static void SaveModifications(string filepath)
         {
             CustomTable.WriteTable(filepath, CustomTableType.COMPOSITE_PARAMETER_MODIFICATION, _parameterTracker);
-            Console.WriteLine("Saved info for " + _parameterTracker.modified_params.Count + " composites with parameter modifications!");
+            Debug.Log("Modification Tracker", "Saved info for " + _parameterTracker.modified_params.Count + " composites with parameter modifications!");
 
             CustomTable.WriteTable(filepath, CustomTableType.ENTITY_APPLIED_DEFAULTS, _defaultsTracker);
-            Console.WriteLine("Saved " + _defaultsTracker.applied_defaults.Count + " composites with defaults applied!");
+            Debug.Log("Modification Tracker", "Saved " + _defaultsTracker.applied_defaults.Count + " composites with defaults applied!");
         }
     }
 }

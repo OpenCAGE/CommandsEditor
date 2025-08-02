@@ -70,7 +70,7 @@ namespace CommandsEditor.Popups.UserControls
                 }
                 catch (Exception ex2)
                 {
-                    Console.WriteLine(ex2.ToString());
+                    Debug.Log("Model Viewer", ex2.ToString());
                 }
             }
 
