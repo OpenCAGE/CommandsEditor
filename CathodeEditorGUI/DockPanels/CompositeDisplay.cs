@@ -5,6 +5,7 @@ using CathodeLib;
 using CommandsEditor.Popups.UserControls;
 using ListViewGroupCollapse;
 using OpenCAGE;
+using ST.Library.UI.NodeEditor;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -505,6 +506,19 @@ namespace CommandsEditor.DockPanels
             GlobalEntitySearcher uses = new GlobalEntitySearcher(GlobalEntitySearcher.SearchMode.BY_COMPOSITE, Composite);
             uses.Show();
             uses.OnEntitySelected += _commandsDisplay.LoadCompositeAndEntity;
+        }
+
+        public bool AnyFlowgraphsContainEntity(Entity entity)
+        {
+            foreach (Flowgraph flowgraph in _flowgraphs)
+            {
+                foreach (STNode node in flowgraph.Nodegraph.Nodes)
+                {
+                    if (node.Entity.shortGUID == entity.shortGUID)
+                        return true;
+                }
+            }
+            return false;
         }
 
         private void deleteComposite_Click(object sender, EventArgs e)

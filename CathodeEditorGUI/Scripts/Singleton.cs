@@ -119,6 +119,7 @@ namespace CommandsEditor
             public readonly string SavePakAndBin = "CS_SavePakAndBin";
             public readonly string PrevEntNameSearch = "CS_PrevEntNameSearch";
             public readonly string PopulateAllPinsOnCreateNode = "CS_PopulateAllPinsOnCreateNode";
+            public readonly string OptionToDeleteEntityWithNode = "CS_OptionToDeleteEntityWithNode";
         }
 
         public static Action OnAnimationsLoaded;

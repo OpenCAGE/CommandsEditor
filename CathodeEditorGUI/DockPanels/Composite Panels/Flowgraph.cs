@@ -696,9 +696,22 @@ namespace CommandsEditor
         //Delete right clicked node
         private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //TODO: confirmation?
             STNode node = stNodeEditor1.GetHoveredNode();
+            if (node == null) return;
+            Entity ent = node.Entity;
+
             stNodeEditor1.Nodes.Remove(node);
+
+            if (SettingsManager.GetBool(Singleton.Settings.OptionToDeleteEntityWithNode))
+            {
+                if (Singleton.Editor.CommandsDisplay.CompositeDisplay != null && !Singleton.Editor.CommandsDisplay.CompositeDisplay.AnyFlowgraphsContainEntity(ent))
+                {
+                    if (MessageBox.Show("All nodes have been removed for this entity, would you like to delete the entity too?", "No nodes for entity", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                    {
+                        Singleton.Editor.CommandsDisplay.CompositeDisplay.DeleteEntity(ent, false);
+                    }
+                }
+            }
         }
 
         //Duplicate the right clicked node

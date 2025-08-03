@@ -615,19 +615,7 @@ namespace CommandsEditor.DockPanels
                 switch (i)
                 {
                     case 0:
-                        foreach (Flowgraph flowgraph in mainInst.CompositeDisplay.Flowgraphs)
-                        {
-                            foreach (STNode node in flowgraph.Nodegraph.Nodes)
-                            {
-                                if (node.Entity.shortGUID == ent.shortGUID)
-                                {
-                                    isPointedTo = true;
-                                    break;
-                                }
-                            }
-                            if (isPointedTo)
-                                break;
-                        }
+                        isPointedTo = mainInst.CompositeDisplay.AnyFlowgraphsContainEntity(ent);
                         if (!isPointedTo)
                             isPointedTo = mainInst.Content.editor_utils.IsEntityReferencedExternally(ent, ct);
                         break;
