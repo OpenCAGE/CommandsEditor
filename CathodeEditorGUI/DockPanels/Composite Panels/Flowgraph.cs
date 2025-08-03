@@ -437,10 +437,11 @@ namespace CommandsEditor
         private void ContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
         {
             STNode node = stNodeEditor1.GetHoveredNode();
+            (STNodeOption linkIn, STNodeOption linkOut) = stNodeEditor1.GetHoveredLink();
 
-            modifyPinsIn.Visible = false; //node != null;
-            modifyPinsOut.Visible = false; //node != null;        <- i'm disabling adding in/out links in favour of adding all. i don't think this'll come back, but leaving the logic in-case.
-            toolStripSeparator2.Visible = false; //node != null;
+            modifyPinsIn.Visible = false; //_rightClickedNode != null;
+            modifyPinsOut.Visible = false; //_rightClickedNode != null;        <- i'm disabling adding in/out links in favour of adding all. i don't think this'll come back, but leaving the logic in-case.
+            toolStripSeparator2.Visible = false; //_rightClickedNode != null;
             deleteToolStripMenuItem.Visible = node != null;
             duplicateToolStripMenuItem.Visible = node != null;
             toolStripSeparator1.Visible = node != null;
@@ -455,10 +456,12 @@ namespace CommandsEditor
                 modifyPinsOut.Enabled = node.Entity.variant != EntityVariant.VARIABLE;
             }
 
-            addNodeToolStripMenuItem.Visible = node == null;
-            createToolStripMenuItem.Visible = node == null;
-            addNodeForSelectedEntityToolStripMenuItem.Visible = node == null;
+            addNodeToolStripMenuItem.Visible = node == null && linkIn == null;
+            createToolStripMenuItem.Visible = node == null && linkIn == null;
+            addNodeForSelectedEntityToolStripMenuItem.Visible = node == null && linkIn == null;
             addNodeForSelectedEntityToolStripMenuItem.Enabled = Singleton.Editor?.CommandsDisplay?.CompositeDisplay?.EntityDisplay?.Entity != null;
+
+            deleteLinkToolStripMenuItem.Visible = linkIn != null;
         }
 
         //Add new nodes batch select
@@ -683,6 +686,11 @@ namespace CommandsEditor
             for (int i = 0; i < downs.Length; i++)
                 if (downs[i].ConnectionCount == 0)
                     node.RemoveBottomOption(downs[i].ShortGUID);
+        }
+
+        private void deleteLinkToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            stNodeEditor1.RemoveHoveredLink();
         }
 
         //Delete right clicked node
