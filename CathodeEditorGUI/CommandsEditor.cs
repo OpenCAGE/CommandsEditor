@@ -744,7 +744,7 @@ namespace CommandsEditor
         {
             Singleton.OnEntityAdded -= DEBUG_EntAdded;
             ((cTransform)ent.GetParameter("position").content).position.Z = -35;
-            _commandsDisplay.CompositeDisplay.LoadEntity(ent);
+            _commandsDisplay.CompositeDisplay.LoadEntity(ent, true);
 
             Save();
             Process.Start(SharedData.pathToAI + "\\AI.exe");

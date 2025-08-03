@@ -124,7 +124,7 @@ namespace CommandsEditor
             if (ent == _previouslySelectedEntity) return;
             _previouslySelectedEntity = ent;
 
-            Singleton.Editor.CommandsDisplay?.CompositeDisplay?.LoadEntity(ent);
+            Singleton.Editor.CommandsDisplay?.CompositeDisplay?.LoadEntity(ent, false);
             Singleton.OnEntitySelected?.Invoke(ent); //need to call this again b/c the activation event doesn't fire here
         }
 

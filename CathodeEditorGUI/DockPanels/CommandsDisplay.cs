@@ -397,7 +397,7 @@ namespace CommandsEditor.DockPanels
         public void LoadCompositeAndEntity(Composite composite, Entity entity)
         {
             CompositeDisplay panel = LoadComposite(composite);
-            panel?.LoadEntity(entity);
+            panel?.LoadEntity(entity, true);
         }
 
         public void DeleteComposite(Composite composite, bool prompt = true)

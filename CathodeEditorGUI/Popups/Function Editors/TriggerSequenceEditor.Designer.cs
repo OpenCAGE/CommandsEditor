@@ -319,7 +319,7 @@
             // 
             // saveTrigger
             // 
-            this.saveTrigger.Location = new System.Drawing.Point(361, 68);
+            this.saveTrigger.Location = new System.Drawing.Point(369, 68);
             this.saveTrigger.Name = "saveTrigger";
             this.saveTrigger.Size = new System.Drawing.Size(92, 23);
             this.saveTrigger.TabIndex = 7;

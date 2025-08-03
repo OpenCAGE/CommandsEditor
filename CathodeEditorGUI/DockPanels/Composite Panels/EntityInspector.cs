@@ -153,7 +153,7 @@ namespace CommandsEditor.DockPanels
                 if (entity_params.Controls[i] is GUI_Link)
                 {
                     GUI_Link link = (GUI_Link)entity_params.Controls[i];
-                    link.GoToEntity -= _compositeDisplay.LoadEntity;
+                    link.GoToEntity -= _compositeDisplay.LoadEntityAndFocusNode;
                     link.OnLinkEdited -= OnLinkEdited;
                 }
                 entity_params.Controls[i].Dispose();
@@ -327,7 +327,7 @@ namespace CommandsEditor.DockPanels
                         parameterGUI.PopulateUI(link, false, ent.shortGUID);
                         parameterGUI.TrackInstanceInfo(Composite.shortGUID, Entity.shortGUID, link.linkedParamID);
                         parameterGUI.HighlightAsModified(false); //For now, marking all links as "modified", given that they likely won't be default vals
-                        parameterGUI.GoToEntity += _compositeDisplay.LoadEntity;
+                        parameterGUI.GoToEntity += _compositeDisplay.LoadEntityAndFocusNode;
                         parameterGUI.OnLinkEdited += OnLinkEdited;
                         parameterGUI.Location = new Point(15, current_ui_offset);
                         parameterGUI.Width = entity_params.Width - 30;
@@ -550,7 +550,7 @@ namespace CommandsEditor.DockPanels
                     parameterGUI.PopulateUI(_entity.childLinks[i], true);
                     parameterGUI.TrackInstanceInfo(Composite.shortGUID, Entity.shortGUID, _entity.childLinks[i].thisParamID);
                     parameterGUI.HighlightAsModified(false); //For now, marking all links as "modified", given that they likely won't be default vals
-                    parameterGUI.GoToEntity += _compositeDisplay.LoadEntity;
+                    parameterGUI.GoToEntity += _compositeDisplay.LoadEntityAndFocusNode;
                     parameterGUI.OnLinkEdited += OnLinkEdited;
                     parameterGUI.Location = new Point(15, current_ui_offset);
                     parameterGUI.Width = entity_params.Width - 30;
@@ -733,7 +733,7 @@ namespace CommandsEditor.DockPanels
             if (Composite != zoneCompositeForSelectedEntity)
                 display = _compositeDisplay.CommandsDisplay.LoadComposite(zoneCompositeForSelectedEntity);
 
-            display.LoadEntity(zoneEntityForSelectedEntity);
+            display.LoadEntity(zoneEntityForSelectedEntity, true);
         }
 
         ShowCompositeInstanceOverrides _instanceOverridesDialog = null;
@@ -809,7 +809,7 @@ namespace CommandsEditor.DockPanels
                     ShortGuid[] aliasPath = ((AliasEntity)Entity).alias.path;
                     for (int i = 0; i < aliasPath.Length - 2; i++)
                         _compositeDisplay.LoadChild(Content.commands.GetComposite(((FunctionEntity)Composite.GetEntityByID(aliasPath[i])).function), Composite.GetEntityByID(aliasPath[i]));
-                    _compositeDisplay.LoadEntity(Composite.GetEntityByID(aliasPath[aliasPath.Length - 2]));
+                    _compositeDisplay.LoadEntity(Composite.GetEntityByID(aliasPath[aliasPath.Length - 2]), true);
                     return;
             }
 

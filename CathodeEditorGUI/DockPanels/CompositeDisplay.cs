@@ -164,7 +164,7 @@ namespace CommandsEditor.DockPanels
 
             if (!_isSubbed)
             {
-                _entityList.List.SelectedEntityChanged += LoadEntity;
+                _entityList.List.SelectedEntityChanged += LoadEntityAndFocusNode;
                 Singleton.OnCompositeRenamed += OnCompositeRenamed;
                 Singleton.OnCompositeDeleted += OnCompsoiteDeleted;
                 Singleton.OnEntityAdded += ReloadUIForNewEntity;
@@ -208,7 +208,7 @@ namespace CommandsEditor.DockPanels
 
         private void CompositeDisplay_FormClosed(object sender, FormClosedEventArgs e)
         {
-            _entityList.List.SelectedEntityChanged -= LoadEntity;
+            _entityList.List.SelectedEntityChanged -= LoadEntityAndFocusNode;
             //this.FormClosed -= CompositeDisplay_FormClosed;
             Singleton.OnCompositeRenamed -= OnCompositeRenamed;
             Singleton.OnEntityAdded -= ReloadUIForNewEntity;
@@ -316,7 +316,7 @@ namespace CommandsEditor.DockPanels
             if (_path.StepBackwards(out Composite composite, out Entity entity))
             {
                 Reload(composite);
-                LoadEntity(entity);
+                LoadEntity(entity, true);
             }
         }
 
@@ -452,30 +452,74 @@ namespace CommandsEditor.DockPanels
         {
             if (newEnt == null) return;
             _entityList.List.AddNewEntity(newEnt);
-            LoadEntity(newEnt);
+            LoadEntity(newEnt, false);
         }
 
         /* Load an entity into the composite tabs UI */
-        public void LoadEntity(ShortGuid guid)
+        public void LoadEntityDontFocusNode(ShortGuid guid) => LoadEntity(guid, false);
+        public void LoadEntityAndFocusNode(ShortGuid guid) => LoadEntity(guid, true);
+        public void LoadEntity(ShortGuid guid, bool focusNode)
         {
-            LoadEntity(Composite.GetEntityByID(guid));
+            LoadEntity(Composite.GetEntityByID(guid), focusNode);
         }
-        public void LoadEntity(Entity entity)
+        public void LoadEntityDontFocusNode(Entity entity) => LoadEntity(entity, false);
+        public void LoadEntityAndFocusNode(Entity entity) => LoadEntity(entity, true);
+        public void LoadEntity(Entity entity, bool focusNode)
         {
             if (entity == null) return;
-
-            //First, make sure the list has the right entity selected, then exit early to avoid loading twice.
-            if (_entityList.List.SelectedEntity == null || _entityList.List.SelectedEntity.shortGUID != entity.shortGUID)
-            {
-                _entityList.List.SelectEntity(entity);
-                return;
-            }
 
 #if DEBUG
             _entityDisplay.PopulateUI(entity, true); //NOTE: always showing links in debug view to make validating things easier
 #else
             _entityDisplay.PopulateUI(entity, !SupportsFlowgraphs);
 #endif
+
+            //Check to see if there's a node for the entity on the current page - if not, check other pages, and load the first one that has one
+            if (SupportsFlowgraphs && focusNode)
+            {
+                Flowgraph activePage = _flowgraphs.FirstOrDefault(o => o.Visible);
+                bool found = false;
+                if (activePage != null)
+                {
+                    foreach (STNode node in activePage.Nodegraph.Nodes)
+                    {
+                        if (node.Entity == entity)
+                        {
+                            found = true;
+                            activePage.SelectAllNodesForEntity(entity);
+                            break;
+                        }
+                    }
+                }
+                if (!found)
+                {
+                    foreach (Flowgraph flowgraph in _flowgraphs)
+                    {
+                        if (flowgraph.Visible)
+                            continue;
+                        foreach (STNode node in flowgraph.Nodegraph.Nodes)
+                        {
+                            if (node.Entity == entity)
+                            {
+                                found = true;
+                                flowgraph.Show();
+                                flowgraph.SelectAllNodesForEntity(entity);
+                                break;
+                            }
+                        }
+                        if (found)
+                            break;
+                    }
+                }
+            }
+
+            //Make sure the entity is selected in the list view too, but don't handle the event, else we'll get called again
+            if (_entityList.List.SelectedEntity == null || _entityList.List.SelectedEntity.shortGUID != entity.shortGUID)
+            {
+                _entityList.List.SelectedEntityChanged -= LoadEntityAndFocusNode;
+                _entityList.List.SelectEntity(entity);
+                _entityList.List.SelectedEntityChanged += LoadEntityAndFocusNode;
+            }
 
             _entityList.List.FocusOnList();
         }
