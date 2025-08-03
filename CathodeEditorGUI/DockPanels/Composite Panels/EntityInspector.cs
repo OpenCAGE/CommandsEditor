@@ -693,7 +693,7 @@ namespace CommandsEditor.DockPanels
 
         private void showOverridesAndProxies_Click(object sender, EventArgs e)
         {
-            ShowCrossRefs crossRefs = new ShowCrossRefs(this);
+            ShowCrossRefs crossRefs = new ShowCrossRefs(Entity);
             crossRefs.Show();
             crossRefs.OnEntitySelected += _compositeDisplay.CommandsDisplay.LoadCompositeAndEntity;
             crossRefs.OnFlowgraphSelected += _compositeDisplay.SelectEntityOnFlowgraph;

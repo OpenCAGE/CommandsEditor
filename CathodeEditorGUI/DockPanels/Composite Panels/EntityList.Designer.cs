@@ -46,6 +46,8 @@
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pasteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.findReferencesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.EntityListContextMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -73,9 +75,11 @@
             this.duplicateToolStripMenuItem,
             this.toolStripSeparator2,
             this.copyToolStripMenuItem,
-            this.pasteToolStripMenuItem});
+            this.pasteToolStripMenuItem,
+            this.toolStripSeparator3,
+            this.findReferencesToolStripMenuItem});
             this.EntityListContextMenu.Name = "EntityListContextMenu";
-            this.EntityListContextMenu.Size = new System.Drawing.Size(181, 170);
+            this.EntityListContextMenu.Size = new System.Drawing.Size(181, 198);
             this.EntityListContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.EntityListContextMenu_Opening);
             // 
             // createToolStripMenuItem
@@ -179,6 +183,19 @@
             this.pasteToolStripMenuItem.Text = "Paste";
             this.pasteToolStripMenuItem.Visible = false;
             // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(177, 6);
+            // 
+            // findReferencesToolStripMenuItem
+            // 
+            this.findReferencesToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("findReferencesToolStripMenuItem.Image")));
+            this.findReferencesToolStripMenuItem.Name = "findReferencesToolStripMenuItem";
+            this.findReferencesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.findReferencesToolStripMenuItem.Text = "Find References";
+            this.findReferencesToolStripMenuItem.Click += new System.EventHandler(this.findReferencesToolStripMenuItem_Click);
+            // 
             // EntityList
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -213,5 +230,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pasteToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private System.Windows.Forms.ToolStripMenuItem findReferencesToolStripMenuItem;
     }
 }

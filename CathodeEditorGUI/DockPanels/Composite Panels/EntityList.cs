@@ -117,5 +117,17 @@ namespace CommandsEditor.DockPanels
         {
             Singleton.Editor.CommandsDisplay.CompositeDisplay.DuplicateEntity(List.SelectedEntity);
         }
+
+        ShowCrossRefs _crossRefsDialog = null;
+        private void findReferencesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_crossRefsDialog != null)
+                _crossRefsDialog.Close();
+
+            _crossRefsDialog = new ShowCrossRefs(List.SelectedEntity);
+            _crossRefsDialog.Show();
+            _crossRefsDialog.OnEntitySelected += Singleton.Editor.CommandsDisplay.LoadCompositeAndEntity;
+            _crossRefsDialog.OnFlowgraphSelected += Singleton.Editor.CommandsDisplay.CompositeDisplay.SelectEntityOnFlowgraph;
+        }
     }
 }

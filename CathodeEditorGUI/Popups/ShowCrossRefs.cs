@@ -25,11 +25,11 @@ namespace CommandsEditor
         private CurrentDisplay _currentDisplay = CurrentDisplay.FLOWGRAPHS;
         private Dictionary<CurrentDisplay, SynchronizedCollection<EntityRef>> _entityRefs = new Dictionary<CurrentDisplay, SynchronizedCollection<EntityRef>>();
 
-        private EntityInspector _entityDisplay;
+        private Entity _entity;
 
-        public ShowCrossRefs(EntityInspector entityDisplay) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
+        public ShowCrossRefs(Entity entity) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
-            _entityDisplay = entityDisplay;
+            _entity = entity;
             InitializeComponent();
 
             bool hasID = entityList.Columns.ContainsKey("ID");
@@ -176,7 +176,7 @@ namespace CommandsEditor
                 {
                     foreach (STNode node in flowgraph.Nodegraph.Nodes)
                     {
-                        if (node.Entity.shortGUID != _entityDisplay.Entity.shortGUID)
+                        if (node.Entity.shortGUID != _entity.shortGUID)
                             continue;
 
                         EntityRef entRef = entityRefs.FirstOrDefault(o => o.flowgraph_name == flowgraph.FlowgraphName);
@@ -184,7 +184,7 @@ namespace CommandsEditor
                         {
                             entRef = new EntityRef();
                             entRef.flowgraph_name = flowgraph.FlowgraphName;
-                            entRef.entity = _entityDisplay.Entity;
+                            entRef.entity = _entity;
                             entityRefs.Add(entRef);
                         }
                         entRef.flowgraph_node_count++;
@@ -201,14 +201,14 @@ namespace CommandsEditor
                             Parallel.ForEach(comp.proxies, (prox) =>
                             {
                                 Entity ent = Content.commands.Utils.ResolveHierarchy(comp, prox.proxy.path, out Composite compRef, out string str, showIDs);
-                                if (ent == _entityDisplay.Entity) entityRefs.Add(new EntityRef() { composite = comp, entity = prox });
+                                if (ent == _entity) entityRefs.Add(new EntityRef() { composite = comp, entity = prox });
                             });
                             break;
                         case CurrentDisplay.ALIASES:
                             Parallel.ForEach(comp.aliases, (alias) =>
                             {
                                 Entity ent = Content.commands.Utils.ResolveHierarchy(comp, alias.alias.path, out Composite compRef, out string str, showIDs);
-                                if (ent == _entityDisplay.Entity) entityRefs.Add(new EntityRef() { composite = comp, entity = alias });
+                                if (ent == _entity) entityRefs.Add(new EntityRef() { composite = comp, entity = alias });
                             });
                             break;
                         case CurrentDisplay.TRIGGERSEQUENCES:
@@ -219,7 +219,7 @@ namespace CommandsEditor
                                 Parallel.ForEach(trig.sequence, (trigger) =>
                                 {
                                     Entity ent = Content.commands.Utils.ResolveHierarchy(comp, trigger.connectedEntity.path, out Composite compRef, out string str, showIDs);
-                                    if (ent == _entityDisplay.Entity) entityRefs.Add(new EntityRef() { composite = comp, entity = trig });
+                                    if (ent == _entity) entityRefs.Add(new EntityRef() { composite = comp, entity = trig });
                                 });
                             });
                             break;
@@ -231,7 +231,7 @@ namespace CommandsEditor
                                 Parallel.ForEach(anim.connections, (connection) =>
                                 {
                                     Entity ent = Content.commands.Utils.ResolveHierarchy(comp, connection.connectedEntity.path, out Composite compRef, out string str, showIDs);
-                                    if (ent == _entityDisplay.Entity) entityRefs.Add(new EntityRef() { composite = comp, entity = anim });
+                                    if (ent == _entity) entityRefs.Add(new EntityRef() { composite = comp, entity = anim });
                                 });
                             });
                             break;
