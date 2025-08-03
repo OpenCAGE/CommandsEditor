@@ -674,36 +674,52 @@ namespace CommandsEditor.DockPanels
         }
 
         /* Add a new link out */
+        AddOrEditLink _linkDialog = null;
         private void addLinkOut_Click(object sender, EventArgs e)
         {
-            AddOrEditLink add_link = new AddOrEditLink(this);
-            add_link.Show();
-            add_link.OnSaved += Reload;
+            if (_linkDialog != null)
+                _linkDialog.Close();
+
+            _linkDialog = new AddOrEditLink(this);
+            _linkDialog.Show();
+            _linkDialog.OnSaved += Reload;
         }
         private void createLinkToolStripMenuItem_Click(object sender, EventArgs e)
         {
             addLinkOut_Click(null, null);
         }
 
+        EditMVR _mvrDialog = null;
         private void editEntityMovers_Click(object sender, EventArgs e)
         {
-            EditMVR moverEditor = new EditMVR(this);
-            moverEditor.Show();
+            if (_mvrDialog != null)
+                _mvrDialog.Close();
+
+            _mvrDialog = new EditMVR(this);
+            _mvrDialog.Show();
         }
 
+        ShowCrossRefs _crossRefsDialog = null;
         private void showOverridesAndProxies_Click(object sender, EventArgs e)
         {
-            ShowCrossRefs crossRefs = new ShowCrossRefs(Entity);
-            crossRefs.Show();
-            crossRefs.OnEntitySelected += _compositeDisplay.CommandsDisplay.LoadCompositeAndEntity;
-            crossRefs.OnFlowgraphSelected += _compositeDisplay.SelectEntityOnFlowgraph;
+            if (_crossRefsDialog != null)
+                _crossRefsDialog.Close();
+
+            _crossRefsDialog = new ShowCrossRefs(Entity);
+            _crossRefsDialog.Show();
+            _crossRefsDialog.OnEntitySelected += _compositeDisplay.CommandsDisplay.LoadCompositeAndEntity;
+            _crossRefsDialog.OnFlowgraphSelected += _compositeDisplay.SelectEntityOnFlowgraph;
         }
 
+        AddOrEditResource _resourceDialog = null;
         private void editEntityResources_Click(object sender, EventArgs e)
         {
-            AddOrEditResource resourceEditor = new AddOrEditResource(this); 
-            resourceEditor.Show();
-            resourceEditor.OnSaved += OnResourceEditorSaved;
+            if (_resourceDialog != null)
+                _resourceDialog.Close();
+
+            _resourceDialog = new AddOrEditResource(this);
+            _resourceDialog.Show();
+            _resourceDialog.OnSaved += OnResourceEditorSaved;
         }
         private void OnResourceEditorSaved(List<ResourceReference> resources)
         {
@@ -720,14 +736,20 @@ namespace CommandsEditor.DockPanels
             display.LoadEntity(zoneEntityForSelectedEntity);
         }
 
+        ShowCompositeInstanceOverrides _instanceOverridesDialog = null;
+        CAGEAnimationEditor _cageAnimDialog = null;
+        TriggerSequenceEditor _triggerSeqDialog = null;
+        CharacterEditor _charEditorDialog = null;
         private void editFunction_Click(object sender, EventArgs e)
         {
             if (Entity.variant != EntityVariant.FUNCTION) return;
             if (_entityCompositePtr != null)
             {
                 //Composite Instance
-                ShowCompositeInstanceOverrides overrideDisplay = new ShowCompositeInstanceOverrides(this);
-                overrideDisplay.Show();
+                if (_instanceOverridesDialog != null)
+                    _instanceOverridesDialog.Close();
+                _instanceOverridesDialog = new ShowCompositeInstanceOverrides(this);
+                _instanceOverridesDialog.Show();
             }
             else
             {
@@ -736,18 +758,24 @@ namespace CommandsEditor.DockPanels
                 {
                     case FunctionType.CAGEAnimation:
                         Singleton.OnCAGEAnimationEditorOpened?.Invoke();
-                        CAGEAnimationEditor cageAnimationEditor = new CAGEAnimationEditor(this);
-                        cageAnimationEditor.Show();
-                        cageAnimationEditor.OnSaved += CAGEAnimationEditor_OnSaved;
+                        if (_cageAnimDialog != null)
+                            _cageAnimDialog.Close();
+                        _cageAnimDialog = new CAGEAnimationEditor(this);
+                        _cageAnimDialog.Show();
+                        _cageAnimDialog.OnSaved += CAGEAnimationEditor_OnSaved;
                         break;
                     case FunctionType.TriggerSequence:
-                        TriggerSequenceEditor triggerSequenceEditor = new TriggerSequenceEditor(this);
-                        triggerSequenceEditor.Show();
+                        if (_triggerSeqDialog != null)
+                            _triggerSeqDialog.Close();
+                        _triggerSeqDialog = new TriggerSequenceEditor(this);
+                        _triggerSeqDialog.Show();
                         break;
                     case FunctionType.Character:
                         //TODO: I think this is only valid for entities with "custom_character_type" set - but working that out requires a complex parse of connected entities. So ignoring for now.
-                        CharacterEditor characterEditor = new CharacterEditor(this);
-                        characterEditor.Show();
+                        if (_charEditorDialog != null)
+                            _charEditorDialog.Close();
+                        _charEditorDialog = new CharacterEditor(this);
+                        _charEditorDialog.Show();
                         break;
                 }
             }
@@ -797,10 +825,14 @@ namespace CommandsEditor.DockPanels
             _compositeDisplay.DuplicateEntity(Entity);
         }
 
+        RenameEntity _renameDialog = null;
         private void renameEntity_Click(object sender, EventArgs e)
         {
-            RenameEntity rename_entity = new RenameEntity(this.Entity, this.Composite);
-            rename_entity.Show();
+            if (_renameDialog != null)
+                _renameDialog.Close();
+
+            _renameDialog = new RenameEntity(this.Entity, this.Composite);
+            _renameDialog.Show();
         }
 
         /* Context menu close entity */
