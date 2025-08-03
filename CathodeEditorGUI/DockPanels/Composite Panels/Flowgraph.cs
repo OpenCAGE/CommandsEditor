@@ -29,6 +29,7 @@ namespace CommandsEditor
         private Commands _commands;
         private Composite _composite;
         private int _spawnOffset = 0;
+        private bool _subscribedToEntEvents = false;
 
         public string FlowgraphName => _flowgraphName;
         private string _flowgraphName = "";
@@ -46,17 +47,51 @@ namespace CommandsEditor
             _commands = commands;
 
             InitializeComponent();
-            this.FormClosed += EntityFlowgraph_FormClosed;
+            this.VisibleChanged += Flowgraph_VisibleChanged;
+            this.FormClosed += Flowgraph_FormClosed;
 
             stNodeEditor1.LoadAssembly(Application.ExecutablePath);
             stNodeEditor1.AllowSameOwnerConnections = true;
             stNodeEditor1.SelectedChanged += Owner_SelectedChanged;
 
             //todo: i feel like these events should come from the compositedisplay?
-            Singleton.OnEntitySelected += OnEntitySelectedGlobally;
-            Singleton.OnEntityAdded += OnEntityAddedGlobally;
             Singleton.OnEntityDeleted += OnEntityDeletedGlobally;
             Singleton.OnEntityRenamed += OnEntityRenamedGlobally;
+        }
+
+        private void Flowgraph_VisibleChanged(object sender, EventArgs e)
+        {
+            //Only add/select entities on the visible page
+            if (this.Visible)
+            {
+                if (_subscribedToEntEvents)
+                    return;
+
+                _subscribedToEntEvents = true;
+                Singleton.OnEntitySelected += OnEntitySelectedGlobally;
+                Singleton.OnEntityAdded += OnEntityAddedGlobally;
+            }
+            else
+            {
+                _subscribedToEntEvents = false;
+                Singleton.OnEntitySelected -= OnEntitySelectedGlobally;
+                Singleton.OnEntityAdded -= OnEntityAddedGlobally;
+            }
+        }
+
+        private void Flowgraph_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            this.VisibleChanged -= Flowgraph_VisibleChanged;
+            this.FormClosed -= Flowgraph_FormClosed;
+
+            stNodeEditor1.SelectedChanged -= Owner_SelectedChanged;
+            Singleton.OnEntitySelected -= OnEntitySelectedGlobally;
+            Singleton.OnEntityAdded -= OnEntityAddedGlobally;
+            Singleton.OnEntityDeleted -= OnEntityDeletedGlobally;
+            Singleton.OnEntityRenamed -= OnEntityRenamedGlobally;
+
+            if (_renameFlowgraphPopup != null)
+                _renameFlowgraphPopup.FormClosed -= _renameFlowgraphPopup_FormClosed;
         }
 
         private void OnEntitySelectedGlobally(Entity entity)
@@ -74,18 +109,6 @@ namespace CommandsEditor
                     continue;
                 RegenerateNodeStyle(node);
             }
-        }
-
-        private void EntityFlowgraph_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            stNodeEditor1.SelectedChanged -= Owner_SelectedChanged;
-            Singleton.OnEntitySelected -= OnEntitySelectedGlobally;
-            Singleton.OnEntityAdded -= OnEntityAddedGlobally;
-            Singleton.OnEntityDeleted -= OnEntityDeletedGlobally;
-            Singleton.OnEntityRenamed -= OnEntityRenamedGlobally;
-
-            if (_renameFlowgraphPopup != null)
-                _renameFlowgraphPopup.FormClosed -= _renameFlowgraphPopup_FormClosed;
         }
 
         private Entity _previouslySelectedEntity = null;
