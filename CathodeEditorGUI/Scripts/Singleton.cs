@@ -162,8 +162,7 @@ namespace CommandsEditor
             for (int i = 0; i < skeletonDefs.Count; i++)
             {
                 string skeleton = Path.GetFileNameWithoutExtension(skeletonDefs[i].Filename);
-                File.WriteAllBytes(skeleton, skeletonDefs[i].Content);
-                XmlNode skeletonType = new BML(skeleton).Content.SelectSingleNode("//SkeletonDef/LoResReferenceSkeleton");
+                XmlNode skeletonType = new BML(skeletonDefs[i].Content).Content.SelectSingleNode("//SkeletonDef/LoResReferenceSkeleton");
                 if (skeletonType?.InnerText == "MALE" || skeletonType?.InnerText == "FEMALENPC")
                 {
                     if (!GenderedSkeletons.ContainsKey(skeletonType?.InnerText))
@@ -173,15 +172,9 @@ namespace CommandsEditor
                 File.Delete(skeleton);
             }
 
-            //Anim string db
-            File.WriteAllBytes("ANIM_STRING_DB.BIN", animPAK.Entries.FirstOrDefault(o => o.Filename.Contains("ANIM_STRING_DB.BIN")).Content);
-            AnimationStrings = new AnimationStrings("ANIM_STRING_DB.BIN");
-            File.Delete("ANIM_STRING_DB.BIN");
-
-            //Debug anim string db
-            File.WriteAllBytes("ANIM_STRING_DB_DEBUG.BIN", animPAK.Entries.FirstOrDefault(o => o.Filename.Contains("ANIM_STRING_DB_DEBUG.BIN")).Content);
-            AnimationStrings_Debug = new AnimationStrings("ANIM_STRING_DB_DEBUG.BIN");
-            File.Delete("ANIM_STRING_DB_DEBUG.BIN");
+            //Anim string dbs
+            AnimationStrings = new AnimationStrings(animPAK.Entries.FirstOrDefault(o => o.Filename.Contains("ANIM_STRING_DB.BIN")).Content);
+            AnimationStrings_Debug = new AnimationStrings(animPAK.Entries.FirstOrDefault(o => o.Filename.Contains("ANIM_STRING_DB_DEBUG.BIN")).Content);
 
             //Load all skeleton names
             List<PAK2.File> skeletonNames = animPAK.Entries.FindAll(o => o.Filename.Length > 24 && o.Filename.Substring(0, 24) == "DATA\\ANIM_SYS\\SKELE\\DEFS");
