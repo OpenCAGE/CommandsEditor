@@ -112,11 +112,9 @@ namespace CommandsEditor
         }
 
         private Entity _previouslySelectedEntity = null;
+        private bool _selectedNodeChanged = false;
         private void Owner_SelectedChanged(object sender, EventArgs e)
         {
-            if (!SettingsManager.GetBool(Singleton.Settings.OpenEntityFromNode))
-                return;
-
             STNode[] nodes = stNodeEditor1.GetSelectedNode();
             if (nodes.Length != 1) return;
 
@@ -124,12 +122,17 @@ namespace CommandsEditor
             if (ent == _previouslySelectedEntity) return;
             _previouslySelectedEntity = ent;
 
+            _selectedNodeChanged = true;
             Singleton.Editor.CommandsDisplay?.CompositeDisplay?.LoadEntity(ent, false);
             Singleton.OnEntitySelected?.Invoke(ent); //need to call this again b/c the activation event doesn't fire here
+            _selectedNodeChanged = false;
         }
 
         public void SelectAllNodesForEntity(Entity entity)
         {
+            if (_selectedNodeChanged) //TEMPORARY HACK FIX FOR DE-SELECTION RACE CONDITION BUG
+                return;
+
             DeselectAllNodes();
 
             if (entity == null)

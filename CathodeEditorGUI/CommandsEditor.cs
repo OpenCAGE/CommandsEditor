@@ -199,9 +199,6 @@ namespace CommandsEditor
             keepFunctionUsesWindowOpenToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.KeepUsesWindowOpen); keepFunctionUsesWindowOpenToolStripMenuItem.PerformClick();
             writeInstancedResourcesExperimentalToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.ExperimentalResourceStuff); writeInstancedResourcesExperimentalToolStripMenuItem.PerformClick();
 
-            if (!SettingsManager.IsSet(Singleton.Settings.OpenEntityFromNode)) SettingsManager.SetBool(Singleton.Settings.OpenEntityFromNode, true);
-            nodeOpensEntity.Checked = !SettingsManager.GetBool(Singleton.Settings.OpenEntityFromNode); nodeOpensEntity.PerformClick();
-
             if (!SettingsManager.IsSet(Singleton.Settings.MakeNodeWhenMakeEntity)) SettingsManager.SetBool(Singleton.Settings.MakeNodeWhenMakeEntity, true);
             createFlowgraphNodeWhenEntityCreatedToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.MakeNodeWhenMakeEntity); createFlowgraphNodeWhenEntityCreatedToolStripMenuItem.PerformClick();
 
@@ -644,12 +641,6 @@ namespace CommandsEditor
         {
             keepFunctionUsesWindowOpenToolStripMenuItem.Checked = !keepFunctionUsesWindowOpenToolStripMenuItem.Checked;
             SettingsManager.SetBool(Singleton.Settings.KeepUsesWindowOpen, keepFunctionUsesWindowOpenToolStripMenuItem.Checked);
-        }
-
-        private void nodeOpensEntity_Click(object sender, EventArgs e)
-        {
-            nodeOpensEntity.Checked = !nodeOpensEntity.Checked;
-            SettingsManager.SetBool(Singleton.Settings.OpenEntityFromNode, nodeOpensEntity.Checked);
         }
 
         SetNumericStep numericStepConfig = null;
