@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -76,7 +76,14 @@ namespace OpenCAGE
         }
         static private void Save()
         {
-            File.WriteAllText(_configPath, _jsonConfig.ToString(Formatting.Indented));
+            try
+            {
+                File.WriteAllText(_configPath, _jsonConfig.ToString(Formatting.Indented));
+            }
+            catch (Exception e)
+            {
+                CommandsEditor.Debug.Log("Settings Manager", "Failed to save! " + e.Message);
+            }
         }
     }
 }
