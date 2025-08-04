@@ -727,20 +727,7 @@ namespace CommandsEditor
         private STNode DuplicateNode(STNode node)
         {
             STNode duplicated = EntityToNode(node.Entity);
-
-            STNodeOption[] ins = node.GetInputOptions();
-            for (int i = 0; i < ins.Length; i++)
-                duplicated.AddInputOption(ins[i].ShortGUID);
-            STNodeOption[] outs = node.GetOutputOptions();
-            for (int i = 0; i < outs.Length; i++)
-                duplicated.AddOutputOption(outs[i].ShortGUID);
-            STNodeOption[] ups = node.GetTopOptions();
-            for (int i = 0; i < ups.Length; i++)
-                duplicated.AddTopOption(ups[i].ShortGUID, ups[i].Style);
-            STNodeOption[] downs = node.GetBottomOptions();
-            for (int i = 0; i < downs.Length; i++)
-                duplicated.AddBottomOption(downs[i].ShortGUID);
-
+            SetSameOptions(node, duplicated);
             duplicated.SetPosition(new Point(node.Location.X + 15, node.Location.Y + 15));
 
             //TODO: do we really want to *modify* a duplicated node like this?
@@ -748,6 +735,37 @@ namespace CommandsEditor
             //    AddAllPins(node);
 
             return duplicated;
+        }
+        private void SetSameOptions(STNode toCopyFrom, STNode toApplyTo)
+        {
+            {
+                STNodeOption[] ins = toApplyTo.GetInputOptions();
+                for (int i = 0; i < ins.Length; i++)
+                    toApplyTo.RemoveInputOption(ins[i].ShortGUID);
+                STNodeOption[] outs = toApplyTo.GetOutputOptions();
+                for (int i = 0; i < outs.Length; i++)
+                    toApplyTo.RemoveOutputOption(outs[i].ShortGUID);
+                STNodeOption[] ups = toApplyTo.GetTopOptions();
+                for (int i = 0; i < ups.Length; i++)
+                    toApplyTo.RemoveTopOption(ups[i].ShortGUID);
+                STNodeOption[] downs = toApplyTo.GetBottomOptions();
+                for (int i = 0; i < downs.Length; i++)
+                    toApplyTo.RemoveBottomOption(downs[i].ShortGUID);
+            }
+            {
+                STNodeOption[] ins = toCopyFrom.GetInputOptions();
+                for (int i = 0; i < ins.Length; i++)
+                    toApplyTo.AddInputOption(ins[i].ShortGUID);
+                STNodeOption[] outs = toCopyFrom.GetOutputOptions();
+                for (int i = 0; i < outs.Length; i++)
+                    toApplyTo.AddOutputOption(outs[i].ShortGUID);
+                STNodeOption[] ups = toCopyFrom.GetTopOptions();
+                for (int i = 0; i < ups.Length; i++)
+                    toApplyTo.AddTopOption(ups[i].ShortGUID, ups[i].Style);
+                STNodeOption[] downs = toCopyFrom.GetBottomOptions();
+                for (int i = 0; i < downs.Length; i++)
+                    toApplyTo.AddBottomOption(downs[i].ShortGUID);
+            }
         }
 
         private void duplicateEntityToolStripMenuItem_Click(object sender, EventArgs e)
@@ -758,13 +776,10 @@ namespace CommandsEditor
 
             Singleton.OnEntityAdded -= OnEntityAddedGlobally;
             Entity newEnt = Singleton.Editor.CommandsDisplay.CompositeDisplay.AddCopyOfEntity(ent);
-            AddNodeForEntityAndSelect(newEnt).SetPosition(new Point((int)stNodeEditor1.MousePositionInCanvas.X, (int)stNodeEditor1.MousePositionInCanvas.Y));
+            STNode newNode = AddNodeForEntityAndSelect(newEnt);
+            SetSameOptions(node, newNode);
+            newNode.SetPosition(new Point((int)stNodeEditor1.MousePositionInCanvas.X, (int)stNodeEditor1.MousePositionInCanvas.Y));
             Singleton.OnEntityAdded += OnEntityAddedGlobally;
-        }
-
-        private void AddConnection(STNode node)
-        {
-
         }
 
         private void TabStripContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
