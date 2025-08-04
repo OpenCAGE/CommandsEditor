@@ -452,6 +452,7 @@ namespace CommandsEditor
             removeUnusedPinsToolStripMenuItem.Visible = node != null;
             toolStripSeparator4.Visible = node != null;
             deleteEntityToolStripMenuItem.Visible = node != null;
+            duplicateEntityToolStripMenuItem.Visible = node != null;
 
             if (node != null)
             {
@@ -747,6 +748,18 @@ namespace CommandsEditor
             //    AddAllPins(node);
 
             return duplicated;
+        }
+
+        private void duplicateEntityToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            STNode node = stNodeEditor1.GetHoveredNode();
+            Entity ent = node?.Entity;
+            if (ent == null) return;
+
+            Singleton.OnEntityAdded -= OnEntityAddedGlobally;
+            Entity newEnt = Singleton.Editor.CommandsDisplay.CompositeDisplay.AddCopyOfEntity(ent);
+            AddNodeForEntityAndSelect(newEnt).SetPosition(new Point((int)stNodeEditor1.MousePositionInCanvas.X, (int)stNodeEditor1.MousePositionInCanvas.Y));
+            Singleton.OnEntityAdded += OnEntityAddedGlobally;
         }
 
         private void AddConnection(STNode node)

@@ -657,7 +657,7 @@ namespace CommandsEditor.DockPanels
             AddCopyOfEntity(entity);
         }
 
-        public void AddCopyOfEntity(Entity entity)
+        public Entity AddCopyOfEntity(Entity entity)
         {
             Singleton.OnEntityAddPending?.Invoke();
             Entity newEnt = MakeCopyOfEntity(entity);
@@ -678,6 +678,8 @@ namespace CommandsEditor.DockPanels
             }
             Content.editor_utils.GenerateCompositeInstances(Content.commands);
             Singleton.OnEntityAdded?.Invoke(newEnt);
+
+            return newEnt;
         }
 
         private Entity MakeCopyOfEntity(Entity entity)
