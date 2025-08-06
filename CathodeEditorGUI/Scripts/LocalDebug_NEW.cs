@@ -86,7 +86,7 @@ namespace CommandsEditor.Scripts
                     }
                     if (entPath != null)
                     {
-                        convertedResoureName += "\n\t Entity Instance: " + entPath.GetAsString(content.commands, content.commands.EntryPoints[0], true);
+                        convertedResoureName += "\n\t Entity Instance: " + entPath.ToString(content.commands, content.commands.EntryPoints[0], true);
                         wroteSomething = true;
                     }
                     if (entEnt != null && entComp == null)
@@ -130,7 +130,7 @@ namespace CommandsEditor.Scripts
                         if (zoneComp1 != null)
                             convertedResoureName += "\n\t Primary Zone Composite: " + zoneComp1.name;
                         if (zonePath1 != null)
-                            convertedResoureName += "\n\t Primary Zone Instance: " + zonePath1.GetAsString(content.commands, content.commands.EntryPoints[0], true);
+                            convertedResoureName += "\n\t Primary Zone Instance: " + zonePath1.ToString(content.commands, content.commands.EntryPoints[0], true);
                         if (zoneEnt1 != null && zoneComp1 == null)
                             convertedResoureName += "\n\t Primary Zone Entity: " + zoneEnt1.shortGUID + " -> can't resolve name";
                         if (zoneEnt1 != null && zoneComp1 != null)
@@ -151,7 +151,7 @@ namespace CommandsEditor.Scripts
                         if (zoneComp2 != null)
                             convertedResoureName += "\n\t Secondary Zone Composite: " + zoneComp2.name;
                         if (zonePath2 != null)
-                            convertedResoureName += "\n\t Secondary Zone Instance: " + zonePath2.GetAsString(content.commands, content.commands.EntryPoints[0], true);
+                            convertedResoureName += "\n\t Secondary Zone Instance: " + zonePath2.ToString(content.commands, content.commands.EntryPoints[0], true);
                         if (zoneEnt2 != null && zoneComp2 == null)
                             convertedResoureName += "\n\t Secondary Zone Entity: " + zoneEnt2.shortGUID + " -> can't resolve name";
                         if (zoneEnt2 != null && zoneComp2 != null)
@@ -210,7 +210,7 @@ namespace CommandsEditor.Scripts
 
                     if (comp == null && path != null)
                     {
-                        resources_dump.Add(convertedResoureName + "\n\tINSTANCE: NULL COMPOSITE NAME!! (" + path.GetAsString() + ")");
+                        resources_dump.Add(convertedResoureName + "\n\tINSTANCE: NULL COMPOSITE NAME!! (" + path.ToString() + ")");
                     }
                     else if (comp != null && path == null)
                     {
@@ -271,7 +271,7 @@ namespace CommandsEditor.Scripts
                     }
                     else
                     {
-                        resources_dump.Add(convertedResoureName + "\n\tINSTANCE: " + comp.name + " (" + path.GetAsString(content.commands, content.commands.EntryPoints[0], true) + ")");
+                        resources_dump.Add(convertedResoureName + "\n\tINSTANCE: " + comp.name + " (" + path.ToString(content.commands, content.commands.EntryPoints[0], true) + ")");
 
                         //Console.WriteLine("INSTANCE: " + comp.name + " (" + path.GetAsString(content.commands, content.commands.EntryPoints[0], true) + ")");
                     }
@@ -301,7 +301,7 @@ namespace CommandsEditor.Scripts
                     if (entComp != null)
                         convertedResoureName += "\n\t Entity Composite: " + entComp.name;
                     if (entPath != null)
-                        convertedResoureName += "\n\t Entity Instance: " + entPath.GetAsString(content.commands, content.commands.EntryPoints[0], true);
+                        convertedResoureName += "\n\t Entity Instance: " + entPath.ToString(content.commands, content.commands.EntryPoints[0], true);
                     if (entEnt != null && entComp == null)
                         convertedResoureName += "\n\t Entity Entity: " + entEnt.shortGUID + " -> can't resolve name";
                     if (entEnt != null && entComp != null)
@@ -321,7 +321,7 @@ namespace CommandsEditor.Scripts
                         if (zoneComp1 != null)
                             convertedResoureName += "\n\t Primary Zone Composite: " + zoneComp1.name;
                         if (zonePath1 != null)
-                            convertedResoureName += "\n\t Primary Zone Instance: " + zonePath1.GetAsString(content.commands, content.commands.EntryPoints[0], true);
+                            convertedResoureName += "\n\t Primary Zone Instance: " + zonePath1.ToString(content.commands, content.commands.EntryPoints[0], true);
                         if (zoneEnt1 != null && zoneComp1 == null)
                             convertedResoureName += "\n\t Primary Zone Entity: " + zoneEnt1.shortGUID + " -> can't resolve name";
                         if (zoneEnt1 != null && zoneComp1 != null)
@@ -355,7 +355,7 @@ namespace CommandsEditor.Scripts
                     if (entComp != null)
                         convertedResoureName += "\n\t Parent Entity Composite: " + entComp.name;
                     if (entPath != null)
-                        convertedResoureName += "\n\t Parent Entity Instance: " + entPath.GetAsString(content.commands, content.commands.EntryPoints[0], true);
+                        convertedResoureName += "\n\t Parent Entity Instance: " + entPath.ToString(content.commands, content.commands.EntryPoints[0], true);
                     if (entEnt != null && entComp == null)
                         convertedResoureName += "\n\t Parent Entity Entity: " + entEnt.shortGUID + " -> can't resolve name";
                     if (entEnt != null && entComp != null)
@@ -364,7 +364,7 @@ namespace CommandsEditor.Scripts
                     if (entCompParent != null)
                         convertedResoureName += "\n\t Composite Composite: " + entCompParent.name;
                     if (entPathParent != null)
-                        convertedResoureName += "\n\t Composite Instance: " + entPathParent.GetAsString(content.commands, content.commands.EntryPoints[0], true);
+                        convertedResoureName += "\n\t Composite Instance: " + entPathParent.ToString(content.commands, content.commands.EntryPoints[0], true);
 
                     resources_dump.Add(convertedResoureName);
                 }

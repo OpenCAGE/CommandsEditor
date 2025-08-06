@@ -80,11 +80,11 @@ namespace CommandsEditor
                     switch (ent.variant)
                     {
                         case EntityVariant.ALIAS:
-                            if (((AliasEntity)ent).alias.GetPointedEntity(_commands) == entity)
+                            if (_commands.Utils.GetResolvedTarget(_commands.Utils.ResolveAlias((AliasEntity)ent, comp)).Item2 == entity)
                                 continue;
                             break;
                         case EntityVariant.PROXY:
-                            if (((ProxyEntity)ent).proxy.GetPointedEntity(_commands) == entity)
+                            if (_commands.Utils.GetResolvedTarget(_commands.Utils.ResolveProxy((ProxyEntity)ent)).Item2 == entity)
                                 continue;
                             break;
                     }

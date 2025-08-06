@@ -48,17 +48,17 @@ namespace CommandsEditor.Scripts
                 }
                 else
                 {
-                    debug.Add(path.GetAsString(content.commands, comp) + "\n\t" + content.commands.Utils.GetEntityName(comp, ents[0]));
+                    debug.Add(path.ToString(content.commands, comp) + "\n\t" + content.commands.Utils.GetEntityName(comp, ents[0]));
                 }
 
                 //This gives us the entity that instanced the composite instance above (kinda weird, why do we need to know this?)
                 EntityPath parentPath = _content.editor_utils.GetHierarchyFromHandle(item.entity);
                 if (parentPath != null)
                 {
-                    Entity parentEnt = path.GetPointedEntity(_content.commands, out Composite parentComp);
+                    (Composite parentComp, Entity parentEnt) = content.commands.Utils.GetResolvedTarget(content.commands.Utils.ResolveAliasOrProxy(path, _content.commands.EntryPoints[0]));
                     if (parentEnt == null)
                     {
-                        Console.WriteLine("Failed to resolve parent entity for path: " + parentPath.GetAsString());
+                        Console.WriteLine("Failed to resolve parent entity for path: " + parentPath.ToString());
                     }
                 }
                 else
@@ -91,11 +91,11 @@ namespace CommandsEditor.Scripts
                     Entity ent = comp?.GetEntityByID(item.Entity.entity_id);
                     if (ent == null)
                     {
-                        Console.WriteLine("Failed to resolve entity for path: " + path.GetAsString());
+                        Console.WriteLine("Failed to resolve entity for path: " + path.ToString());
                     }
                     else
                     {
-                        debug.Add("[" + item.ID.ToByteString() + "] " + path.GetAsString(content.commands, comp) + " -> " + _content.commands.Utils.GetEntityName(comp, ent));
+                        debug.Add("[" + item.ID.ToByteString() + "] " + path.ToString(content.commands, comp) + " -> " + _content.commands.Utils.GetEntityName(comp, ent));
                     }
                 }
                 else
@@ -132,14 +132,14 @@ namespace CommandsEditor.Scripts
                 EntityPath path = _content.editor_utils.GetHierarchyFromHandle(_content.mvr.Entries[x].entity);
                 if (path != null)
                 {
-                    Entity ent = path.GetPointedEntity(_content.commands, out Composite comp);
+                    (Composite comp, Entity ent) = content.commands.Utils.GetResolvedTarget(content.commands.Utils.ResolveAliasOrProxy(path, _content.commands.EntryPoints[0]));
                     if (ent == null)
                     {
-                        Console.WriteLine("Failed to resolve entity for path: " + path.GetAsString());
+                        Console.WriteLine("Failed to resolve entity for path: " + path.ToString());
                     }
                     else
                     {
-                        debug.Add(path.GetAsString(content.commands, comp));
+                        debug.Add(path.ToString(content.commands, comp));
                     }
                 }
                 else
@@ -189,11 +189,11 @@ namespace CommandsEditor.Scripts
                     if (ent == null)
                     {
                         Console.WriteLine("Could not find resource for index " + x + " -> " + entry.resource_id.ToString() + " [" + entry.resource_id.ToByteString() + "]");
-                        Console.WriteLine("\t" + comp.name + "\n\t\t" + path.GetAsString(_content.commands, comp, true));
+                        Console.WriteLine("\t" + comp.name + "\n\t\t" + path.ToString(_content.commands, comp, true));
                     }
                     else
                     {
-                        debug.Add(path.GetAsString(_content.commands, comp, false) + " -> [" + entry.resource_id.ToString() + "] " + _content.commands.Utils.GetEntityName(comp, ent));
+                        debug.Add(path.ToString(_content.commands, comp, false) + " -> [" + entry.resource_id.ToString() + "] " + _content.commands.Utils.GetEntityName(comp, ent));
                     }
                 }
                 else

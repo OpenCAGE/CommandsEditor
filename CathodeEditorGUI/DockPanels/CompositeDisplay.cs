@@ -946,12 +946,12 @@ namespace CommandsEditor.DockPanels
                     List<ShortGuid> hierarchy = new List<ShortGuid>();
                     hierarchy.Add(Content.commands.EntryPoints[0].shortGUID);
                     hierarchy.AddRange(generatedHierarchy);
-                    ent = _composite.AddProxy(Content.commands, hierarchy.ToArray()); //TODO: re-add "add default params"
-                    Entity pointedEnt = ((ProxyEntity)ent).proxy.GetPointedEntity(Content.commands, out Composite pointedComp);
+                    ent = _composite.AddProxy(Content.commands, hierarchy.ToArray());
+                    (Composite pointedComp, Entity pointedEnt) = Content.commands.Utils.GetResolvedTarget(Content.commands.Utils.ResolveProxy((ProxyEntity)ent));
                     Content.commands.Utils.SetEntityName(_composite, ent, Content.commands.Utils.GetEntityName(pointedComp, pointedEnt) + " Proxy");
                     break;
                 case EntityVariant.ALIAS:
-                    ent = _composite.AddAlias(generatedHierarchy); //TODO: re-add "add default params"?
+                    ent = _composite.AddAlias(generatedHierarchy); 
                     break;
             }
 

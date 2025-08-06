@@ -12,6 +12,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Forms;
 using WebSocketSharp;
 
@@ -200,15 +201,15 @@ namespace CommandsEditor
                         case CurrentDisplay.PROXIES:
                             Parallel.ForEach(comp.proxies, (prox) =>
                             {
-                                Entity ent = Content.commands.Utils.ResolveHierarchy(comp, prox.proxy.path, out Composite compRef, out string str, showIDs);
-                                if (ent == _entity) entityRefs.Add(new EntityRef() { composite = comp, entity = prox });
+                                if (Content.commands.Utils.GetResolvedTarget(Content.commands.Utils.ResolveProxy(prox)).Item2 == _entity) 
+                                    entityRefs.Add(new EntityRef() { composite = comp, entity = prox });
                             });
                             break;
                         case CurrentDisplay.ALIASES:
                             Parallel.ForEach(comp.aliases, (alias) =>
                             {
-                                Entity ent = Content.commands.Utils.ResolveHierarchy(comp, alias.alias.path, out Composite compRef, out string str, showIDs);
-                                if (ent == _entity) entityRefs.Add(new EntityRef() { composite = comp, entity = alias });
+                                if (Content.commands.Utils.GetResolvedTarget(Content.commands.Utils.ResolveAlias(alias, comp)).Item2 == _entity) 
+                                    entityRefs.Add(new EntityRef() { composite = comp, entity = alias });
                             });
                             break;
                         case CurrentDisplay.TRIGGERSEQUENCES:
@@ -218,8 +219,8 @@ namespace CommandsEditor
                                 TriggerSequence trig = (TriggerSequence)trigEnt;
                                 Parallel.ForEach(trig.sequence, (trigger) =>
                                 {
-                                    Entity ent = Content.commands.Utils.ResolveHierarchy(comp, trigger.connectedEntity.path, out Composite compRef, out string str, showIDs);
-                                    if (ent == _entity) entityRefs.Add(new EntityRef() { composite = comp, entity = trig });
+                                    if (Content.commands.Utils.GetResolvedTarget(Content.commands.Utils.ResolveAlias(trigger.connectedEntity.path, comp)).Item2 == _entity)
+                                        entityRefs.Add(new EntityRef() { composite = comp, entity = trig });
                                 });
                             });
                             break;
@@ -230,8 +231,8 @@ namespace CommandsEditor
                                 CAGEAnimation anim = (CAGEAnimation)animEnt;
                                 Parallel.ForEach(anim.connections, (connection) =>
                                 {
-                                    Entity ent = Content.commands.Utils.ResolveHierarchy(comp, connection.connectedEntity.path, out Composite compRef, out string str, showIDs);
-                                    if (ent == _entity) entityRefs.Add(new EntityRef() { composite = comp, entity = anim });
+                                    if (Content.commands.Utils.GetResolvedTarget(Content.commands.Utils.ResolveAlias(connection.connectedEntity.path, comp)).Item2 == _entity)
+                                        entityRefs.Add(new EntityRef() { composite = comp, entity = anim });
                                 });
                             });
                             break;

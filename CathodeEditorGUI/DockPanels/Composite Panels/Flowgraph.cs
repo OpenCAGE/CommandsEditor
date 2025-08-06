@@ -367,7 +367,7 @@ namespace CommandsEditor
             {
                 case EntityVariant.PROXY:
                 case EntityVariant.ALIAS:
-                    Entity ent = _commands.Utils.ResolveHierarchy(_composite, (node.Entity.variant == EntityVariant.PROXY) ? ((ProxyEntity)node.Entity).proxy.path : ((AliasEntity)node.Entity).alias.path, out Composite c, out string s);
+                    (Composite comp, Entity ent) = _commands.Utils.GetResolvedTarget(_commands.Utils.ResolveAliasOrProxy(node.Entity, _composite));
                     node.SetColour(node.Entity.variant == EntityVariant.PROXY ? Color.LightGreen : Color.Orange, node.Entity.variant == EntityVariant.PROXY ? Color.Green : Color.OrangeRed, Color.Black);
                     switch (ent.variant)
                     {
@@ -375,10 +375,10 @@ namespace CommandsEditor
                             FunctionEntity function = (FunctionEntity)ent;
                             if (function.function.IsFunctionType)
                             {
-                                node.SetName(_commands.Utils.GetEntityName(c, ent), node.Entity.variant + " TO: " + function.function.AsFunctionType.ToString());
+                                node.SetName(_commands.Utils.GetEntityName(comp, ent), node.Entity.variant + " TO: " + function.function.AsFunctionType.ToString());
                             }
                             else
-                                node.SetName(_commands.Utils.GetEntityName(c, ent), node.Entity.variant + " TO: " + Path.GetFileName(_commands.GetComposite(function.function).name));
+                                node.SetName(_commands.Utils.GetEntityName(comp, ent), node.Entity.variant + " TO: " + Path.GetFileName(_commands.GetComposite(function.function).name));
                             break;
                         case EntityVariant.VARIABLE:
                             node.SetName(node.Entity.variant + " TO: " + ((VariableEntity)ent).name.ToString());

@@ -289,12 +289,10 @@ namespace CommandsEditor
                         desc = _content.commands.Utils.GetEntityName(composite.shortGUID, entity.shortGUID) + " (" + ((FunctionType)((FunctionEntity)entity).function.AsUInt32).ToString() + ")";
                     break;
                 case EntityVariant.ALIAS:
-                    _content.commands.Utils.ResolveHierarchy(composite, ((AliasEntity)entity).alias.path, out Composite c, out string s, false);
-                    desc = "[ALIAS] " + s;
+                    desc = "[ALIAS] " + _content.commands.Utils.GetResolvedAsString(_content.commands.Utils.ResolveAlias((AliasEntity)entity, composite), false);
                     break;
                 case EntityVariant.PROXY:
-                    _content.commands.Utils.ResolveHierarchy(composite, ((ProxyEntity)entity).proxy.path, out Composite c2, out string s2, false);
-                    desc = "[PROXY] " + _content.commands.Utils.GetEntityName(composite.shortGUID, entity.shortGUID) + " (" + s2 + ")";
+                    desc = "[PROXY] " + _content.commands.Utils.GetEntityName(composite.shortGUID, entity.shortGUID) + " (" + _content.commands.Utils.GetResolvedAsString(_content.commands.Utils.ResolveProxy((ProxyEntity)entity), false) + ")";
                     break;
             }
             bool showID = SettingsManager.GetBool(Singleton.Settings.EntIdOpt);
@@ -490,16 +488,15 @@ namespace CommandsEditor
                 {
                     if (found || ct.IsCancellationRequested)
                         status2.Stop();
-                    Entity ent = _content.commands.Utils.ResolveHierarchy(comp, prox.proxy.path, out Composite compRef, out string str);
-                    if (ent == entity) found = true;
+                    if (_content.commands.Utils.GetResolvedTarget(_content.commands.Utils.ResolveProxy(prox)).Item2 == entity) 
+                        found = true;
                 });
                 Parallel.ForEach(comp.aliases, (alias, status2) =>
                 {
                     if (found || ct.IsCancellationRequested)
                         status2.Stop();
-
-                    Entity ent = _content.commands.Utils.ResolveHierarchy(comp, alias.alias.path, out Composite compRef, out string str);
-                    if (ent == entity) found = true;
+                    if (_content.commands.Utils.GetResolvedTarget(_content.commands.Utils.ResolveAlias(alias, comp)).Item2 == entity) 
+                        found = true;
                 });
                 List<FunctionEntity> triggerSequences = comp.functions.FindAll(o => o.function == FunctionType.TriggerSequence);
                 Parallel.ForEach(triggerSequences, (trigEnt, status2) =>
@@ -512,9 +509,8 @@ namespace CommandsEditor
                     {
                         if (found || ct.IsCancellationRequested)
                             status3.Stop();
-
-                        Entity ent = _content.commands.Utils.ResolveHierarchy(comp, trigger.connectedEntity.path, out Composite compRef, out string str);
-                        if (ent == entity) found = true;
+                        if (_content.commands.Utils.GetResolvedTarget(_content.commands.Utils.ResolveAlias(trigger.connectedEntity.path, comp)).Item2 == entity)
+                            found = true;
                     });
                 });
                 List<FunctionEntity> cageAnims = comp.functions.FindAll(o => o.function == FunctionType.CAGEAnimation);
@@ -528,9 +524,8 @@ namespace CommandsEditor
                     {
                         if (found || ct.IsCancellationRequested)
                             status3.Stop();
-
-                        Entity ent = _content.commands.Utils.ResolveHierarchy(comp, connection.connectedEntity.path, out Composite compRef, out string str);
-                        if (ent == entity) found = true;
+                        if (_content.commands.Utils.GetResolvedTarget(_content.commands.Utils.ResolveAlias(connection.connectedEntity.path, comp)).Item2 == entity) 
+                            found = true;
                     });
                 });
 

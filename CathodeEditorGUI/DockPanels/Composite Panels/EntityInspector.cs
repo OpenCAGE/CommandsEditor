@@ -292,9 +292,9 @@ namespace CommandsEditor.DockPanels
                 case EntityVariant.PROXY:
                 case EntityVariant.ALIAS:
                     hierarchyDisplay.Visible = true;
-                    ShortGuid[] entityHierarchy = _entity.variant == EntityVariant.PROXY ? ((ProxyEntity)_entity).proxy.path : ((AliasEntity)_entity).alias.path;
-                    Entity ent = Content.commands.Utils.ResolveHierarchy(Composite, entityHierarchy, out Composite comp, out string hierarchy, SettingsManager.GetBool("CS_ShowEntityIDs"));
-                    hierarchyDisplay.Text = hierarchy;
+                    List<Tuple<Composite, Entity>> resolvedHierarchy = Content.commands.Utils.ResolveAliasOrProxy(_entity, Composite);
+                    (Composite comp, Entity ent) = Content.commands.Utils.GetResolvedTarget(resolvedHierarchy);
+                    hierarchyDisplay.Text = Content.commands.Utils.GetResolvedAsString(resolvedHierarchy, SettingsManager.GetBool("CS_ShowEntityIDs"));
                     jumpToComposite.Visible = true;
                     selected_entity_name.Text = (_entity.variant == EntityVariant.PROXY ? "Proxy to " : "Alias of ") + Content.commands.Utils.GetEntityName(comp, ent);
                     break;
@@ -796,9 +796,9 @@ namespace CommandsEditor.DockPanels
             {
                 case EntityVariant.PROXY:
                     //Proxies forward directly to the entity they point to, breaking us out of the hierarchy.
-                    Entity entity = Content.commands.Utils.ResolveHierarchy(Composite, ((ProxyEntity)Entity).proxy.path, out Composite flow, out string hierarchy);
+                    (Composite composite, Entity entity) = Content.commands.Utils.GetResolvedTarget(Content.commands.Utils.ResolveProxy((ProxyEntity)_entity));
                     if (MessageBox.Show("Jumping to a proxy will break you out of your composite.\nAre you sure?", "About to follow proxy...", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
-                        _compositeDisplay.CommandsDisplay.LoadCompositeAndEntity(flow, entity);
+                        _compositeDisplay.CommandsDisplay.LoadCompositeAndEntity(composite, entity);
                     break;
                 case EntityVariant.FUNCTION:
                     //Composite instances take us a step down the hierarchy.

@@ -27,7 +27,7 @@ namespace CommandsEditor
             for (int i = 0; i < hierarchies.Count; i++)
             {
                 if (existing.Contains(hierarchies[i].GenerateCompositeInstanceID())) continue;
-                instances.Items.Add(hierarchies[i].GetAsString(Content.commands, editor.Composite, false));
+                instances.Items.Add(hierarchies[i].ToString(Content.commands, editor.Composite, false));
                 _hierarchies.Add(hierarchies[i]);
             }
 

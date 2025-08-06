@@ -868,7 +868,7 @@ namespace CommandsEditor
                             if (entComp != null)
                                 convertedResoureName += "\n\t Entity Composite: " + entComp.name;
                             if (entPath != null)
-                                convertedResoureName += "\n\t Entity Instance: " + entPath.GetAsString(content.commands, content.commands.EntryPoints[0], true);
+                                convertedResoureName += "\n\t Entity Instance: " + entPath.ToString(content.commands, content.commands.EntryPoints[0], true);
                             if (entEnt != null && entComp == null)
                                 convertedResoureName += "\n\t Entity Entity: " + entEnt.shortGUID + " -> can't resolve name";
                             if (entEnt != null && entComp != null)
@@ -888,7 +888,7 @@ namespace CommandsEditor
                                 if (zoneComp1 != null)
                                     convertedResoureName += "\n\t Primary Zone Composite: " + zoneComp1.name;
                                 if (zonePath1 != null)
-                                    convertedResoureName += "\n\t Primary Zone Instance: " + zonePath1.GetAsString(content.commands, content.commands.EntryPoints[0], true);
+                                    convertedResoureName += "\n\t Primary Zone Instance: " + zonePath1.ToString(content.commands, content.commands.EntryPoints[0], true);
                                 if (zoneEnt1 != null && zoneComp1 == null)
                                     convertedResoureName += "\n\t Primary Zone Entity: " + zoneEnt1.shortGUID + " -> can't resolve name";
                                 if (zoneEnt1 != null && zoneComp1 != null)

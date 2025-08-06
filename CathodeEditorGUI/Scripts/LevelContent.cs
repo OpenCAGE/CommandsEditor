@@ -417,14 +417,12 @@ namespace CommandsEditor
                     else item.SubItems.Add(((FunctionType)(((FunctionEntity)entity).function.AsUInt32)).ToString());
                     break;
                 case EntityVariant.ALIAS:
-                    commands.Utils.ResolveHierarchy(composite, ((AliasEntity)entity).alias.path, out Composite c, out string s, false);
-                    item.Text = s;
+                    item.Text = commands.Utils.GetResolvedAsString(commands.Utils.ResolveAlias((AliasEntity)entity, composite), false);
                     item.SubItems.Add("");
                     break;
                 case EntityVariant.PROXY:
-                    commands.Utils.ResolveHierarchy(composite, ((ProxyEntity)entity).proxy.path, out Composite c2, out string s2, false);
-                    item.Text = commands.Utils.GetEntityName(composite.shortGUID, entity.shortGUID);
-                    item.SubItems.Add(s2);
+                    item.Text = commands.Utils.GetEntityName(composite.shortGUID, entity.shortGUID); 
+                    item.SubItems.Add(commands.Utils.GetResolvedAsString(commands.Utils.ResolveProxy((ProxyEntity)entity), false));
                     break;
             }
             item.SubItems.Add(entity.shortGUID.ToByteString());

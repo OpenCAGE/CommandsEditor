@@ -69,7 +69,7 @@ namespace CommandsEditor.Popups.UserControls
                 EntityPath pathShort = hierarchyMap.Key.Copy();
                 pathShort.GoBackOneStep(); //TODO: is this right? i've converted this to the new path stuff and it needs testing.
                 //Array.Resize(ref pathShort.path, pathShort.path.Length - 1);
-                instances.Items.Add(pathShort.GetAsString(Content.commands, entDisplay.Composite, false));
+                instances.Items.Add(pathShort.ToString(Content.commands, entDisplay.Composite, false));
             }
         }
 
