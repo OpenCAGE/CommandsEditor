@@ -368,7 +368,7 @@ namespace CommandsEditor
                 case EntityVariant.PROXY:
                 case EntityVariant.ALIAS:
                     (Composite comp, Entity ent) = _commands.Utils.GetResolvedTarget(_commands.Utils.ResolveAliasOrProxy(node.Entity, _composite));
-                    node.SetColour(node.Entity.variant == EntityVariant.PROXY ? Color.LightGreen : Color.Orange, node.Entity.variant == EntityVariant.PROXY ? Color.Green : Color.OrangeRed, Color.Black);
+                    node.SetColour(node.Entity.variant == EntityVariant.PROXY ? Color.FromArgb(35, 196, 22) : Color.FromArgb(255, 114, 30), node.Entity.variant == EntityVariant.PROXY ? Color.FromArgb(9, 153, 72) : Color.FromArgb(196, 76, 29), Color.White); // #23c416, #099948 / #ff721e, #c44c1d
                     switch (ent.variant)
                     {
                         case EntityVariant.FUNCTION:
@@ -389,12 +389,12 @@ namespace CommandsEditor
                     FunctionEntity funcEnt = (FunctionEntity)node.Entity;
                     if (funcEnt.function.IsFunctionType)
                     {
-                        node.SetColour(Color.DodgerBlue, Color.Blue, Color.White);
+                        node.SetColour(Color.FromArgb(30, 144, 255), Color.FromArgb(10, 109, 157), Color.White); // #1e90ff, #0a6d9d
                         node.SetName(_commands.Utils.GetEntityName(_composite, node.Entity), funcEnt.function.AsFunctionType.ToString());
                     }
                     else
                     {
-                        node.SetColour(Color.Blue, Color.DodgerBlue, Color.White);
+                        node.SetColour(Color.FromArgb(195, 30, 255), Color.FromArgb(118, 10, 157), Color.White); // #c31eff, #760a9d
                         node.SetName(_commands.Utils.GetEntityName(_composite, node.Entity), Path.GetFileName(_commands.GetComposite(funcEnt.function).name));
                     }
                     break;
