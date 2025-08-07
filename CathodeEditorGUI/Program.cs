@@ -56,6 +56,11 @@ namespace CommandsEditor
             Thread.CurrentThread.CurrentUICulture = newCulture;
             Thread.CurrentThread.CurrentCulture = newCulture;
 
+            //Advanced error handlers for silent exceptions
+            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+            Application.ThreadException += Application_ThreadException;
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+
             //Run app
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
@@ -67,6 +72,22 @@ namespace CommandsEditor
             if (_args.TryGetValue(name, out string arg))
                 return arg;
             return null;
+        }
+
+        static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
+        {
+            Directory.CreateDirectory(SharedData.pathToAI + "/DATA/MODTOOLS/");
+            File.WriteAllText(SharedData.pathToAI + "/DATA/MODTOOLS/commands_editor_error.log", "Application_ThreadException\n" + e.Exception.ToString());
+            MessageBox.Show("A critical error occurred and was logged. The script editor will now close. Please share the contents of the generated 'commands_editor_crashlog.txt' in your Alien: Isolation directory to GitHub.");
+            Application.Exit();
+        }
+
+        static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            Directory.CreateDirectory(SharedData.pathToAI + "/DATA/MODTOOLS/");
+            File.WriteAllText(SharedData.pathToAI + "/DATA/MODTOOLS/commands_editor_error.log", "CurrentDomain_UnhandledException\n" + ((Exception)e.ExceptionObject).ToString());
+            MessageBox.Show("A critical error occurred and was logged. The script editor will now close. Please share the contents of the generated 'commands_editor_crashlog.txt' in your Alien: Isolation directory to GitHub.");
+            Application.Exit();
         }
     }
 }
