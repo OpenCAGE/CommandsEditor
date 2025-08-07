@@ -167,21 +167,21 @@ namespace CommandsEditor.Scripts
                 if (comp != null)
                 {
                     FunctionEntity ent = null;
-                    for (int i = 0; i < comp.functions.Count; i++)
+                    foreach (var function in comp.functions_dictionary.Values)
                     {
-                        if (comp.functions[i].resources.FindAll(o => o.resource_id == entry.resource_id).Count != 0)
+                        if (function.resources.FindAll(o => o.resource_id == entry.resource_id).Count != 0)
                         {
-                            ent = comp.functions[i];
+                            ent = function;
                             break;
                         }
 
-                        Parameter resourceParam = comp.functions[i].GetParameter(resourceShortGUID);
+                        Parameter resourceParam = function.GetParameter(resourceShortGUID);
                         if (resourceParam != null && resourceParam.content != null && resourceParam.content.dataType == DataType.RESOURCE)
                         {
                             cResource resource = (cResource)resourceParam.content;
                             if (resource.shortGUID == entry.resource_id)
                             {
-                                ent = comp.functions[i];
+                                ent = function;
                                 break;
                             }
                         }
@@ -240,16 +240,16 @@ namespace CommandsEditor.Scripts
             // I'm adding RENDERABLE_INSTANCE back to RadiosityProxy just so that we can find it for RESOURCES.BIN, but really that resource gets stripped out & isn't written to MVR.
             for (int i = 0; i < content.commands.Entries.Count; i++)
             {
-                for (int x = 0; x < content.commands.Entries[i].functions.Count; x++)
+                foreach (var function in content.commands.Entries[i].functions_dictionary.Values)
                 {
-                    if (content.commands.Entries[i].functions[x].function != FunctionType.RadiosityProxy)
+                    if (function.function != FunctionType.RadiosityProxy)
                         continue;
 
-                    Parameter parameter = content.commands.Entries[i].functions[x].GetParameter("resource");
+                    Parameter parameter = function.GetParameter("resource");
                     if (parameter == null || parameter.content.dataType != DataType.RESOURCE)
                     {
                         Console.WriteLine("Adding new cResource parameter"); //I'm not expecting to hit this.
-                        parameter = content.commands.Entries[i].functions[x].AddParameter("resource", DataType.RESOURCE);
+                        parameter = function.AddParameter("resource", DataType.RESOURCE);
                     }
                     cResource parameterResource = (cResource)parameter.content;
                     if (parameterResource.GetResource(ResourceType.RENDERABLE_INSTANCE) == null)
@@ -258,7 +258,7 @@ namespace CommandsEditor.Scripts
                             new ResourceReference()
                             {
                                 resource_type = ResourceType.RENDERABLE_INSTANCE,
-                                resource_id = ShortGuidUtils.Generate(content.commands.Utils.GetEntityName(content.commands.Entries[i], content.commands.Entries[i].functions[x]))
+                                resource_id = ShortGuidUtils.Generate(content.commands.Utils.GetEntityName(content.commands.Entries[i], function))
                             });
                     }
                     else
@@ -396,27 +396,27 @@ namespace CommandsEditor.Scripts
                 return;
 
             List<FunctionEntity> instances = new List<FunctionEntity>();
-            for (int i = 0; i < comp.functions.Count; i++)
+            foreach (var function in comp.functions_dictionary.Values)
             {
 
-                //Parameter deleted = comp.functions[i].GetParameter(GUID_deleted);
+                //Parameter deleted = function.GetParameter(GUID_deleted);
                 //if (deleted != null && ((cBool)deleted.content).value == true)
                 //    continue;
                 //
-                //if (comp.functions[i].childLinks.FindAll(o => o.thisParamID == GUID_deleted).Count != 0)
+                //if (function.childLinks.FindAll(o => o.thisParamID == GUID_deleted).Count != 0)
                 //    continue;
                 //
-                //if (comp.functions[i].GetParentLinks(comp).FindAll(o => o.linkedParamID == GUID_deleted).Count != 0)
+                //if (function.GetParentLinks(comp).FindAll(o => o.linkedParamID == GUID_deleted).Count != 0)
                 //    continue;
 
-                if (!comp.functions[i].function.IsFunctionType)
+                if (!function.function.IsFunctionType)
                 {
-                    instances.Add(comp.functions[i]);
+                    instances.Add(function);
                     continue;
                 }
 
-                List<ResourceReference> resources = comp.functions[i].resources;
-                Parameter resourceParam = comp.functions[i].GetParameter(GUID_resource);
+                List<ResourceReference> resources = function.resources;
+                Parameter resourceParam = function.GetParameter(GUID_resource);
                 if (resourceParam != null && resourceParam.content != null && resourceParam.content.dataType == DataType.RESOURCE)
                     resources.AddRange(((cResource)resourceParam.content).value);
 

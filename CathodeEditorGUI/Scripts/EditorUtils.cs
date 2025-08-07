@@ -78,16 +78,16 @@ namespace CommandsEditor
 
             _compositeInstancePaths[composite.shortGUID].Add(new Tuple<ShortGuid, ShortGuid[]>(hierarchy.GenerateCompositeInstanceID(false), hierarchy.ToArray()));
 
-            for (int i = 0; i < composite.functions.Count; i++)
+            foreach (var function in composite.functions_dictionary.Values)
             {
-                if (composite.functions[i].function.IsFunctionType) continue;
+                if (function.function.IsFunctionType) continue;
 
                 if (ct.IsCancellationRequested) break;
 
                 List<ShortGuid> newHierarchy = new List<ShortGuid>(hierarchy.ConvertAll(x => x));
-                newHierarchy.Add(composite.functions[i].shortGUID);
+                newHierarchy.Add(function.shortGUID);
 
-                Composite newComposite = commands.GetComposite(composite.functions[i].function);
+                Composite newComposite = commands.GetComposite(function.function);
                 if (newComposite != null) GenerateCompositeInstancesRecursive(commands, newComposite, newHierarchy, ct);
             }
         }
@@ -195,17 +195,17 @@ namespace CommandsEditor
 
             for (int i = 0; i < commands.Entries.Count; i++)
             {
-                for (int x = 0; x < commands.Entries[i].functions.Count; x++)
+                foreach (var function in commands.Entries[i].functions_dictionary.Values)
                 {
-                    if (commands.Entries[i].functions[x].function != FunctionType.Zone)
+                    if (function.function != FunctionType.Zone)
                         continue;
 
-                    List<EntityPath> zonePaths = GetHierarchiesForEntity(commands.Entries[i], commands.Entries[i].functions[x]);
+                    List<EntityPath> zonePaths = GetHierarchiesForEntity(commands.Entries[i], function);
                     for (int p = 0; p < zonePaths.Count; p++)
                     {
                         if (zonePaths[p].GenerateZoneID() == instanceID)
                         {
-                            return (commands.Entries[i], zonePaths[p], commands.Entries[i].functions[x]);
+                            return (commands.Entries[i], zonePaths[p], function);
                         }
                     }
                 }
@@ -498,7 +498,7 @@ namespace CommandsEditor
                     if (_content.commands.Utils.GetResolvedTarget(_content.commands.Utils.ResolveAlias(alias, comp)).Item2 == entity) 
                         found = true;
                 });
-                List<FunctionEntity> triggerSequences = comp.functions.FindAll(o => o.function == FunctionType.TriggerSequence);
+                List<FunctionEntity> triggerSequences = comp.GetFunctionEntitiesOfType(FunctionType.TriggerSequence);
                 Parallel.ForEach(triggerSequences, (trigEnt, status2) =>
                 {
                     if (found || ct.IsCancellationRequested)
@@ -513,7 +513,7 @@ namespace CommandsEditor
                             found = true;
                     });
                 });
-                List<FunctionEntity> cageAnims = comp.functions.FindAll(o => o.function == FunctionType.CAGEAnimation);
+                List<FunctionEntity> cageAnims = comp.GetFunctionEntitiesOfType(FunctionType.CAGEAnimation);
                 Parallel.ForEach(cageAnims, (animEnt, status2) =>
                 {
                     if (found || ct.IsCancellationRequested)
@@ -544,7 +544,7 @@ namespace CommandsEditor
                 FunctionEntity toReturn = null;
                 ShortGuid compositesGUID = ShortGuidUtils.Generate("composites");
 
-                List<FunctionEntity> triggerSequences = comp.functions.FindAll(o => o.function == FunctionType.TriggerSequence);
+                List<FunctionEntity> triggerSequences = comp.GetFunctionEntitiesOfType(FunctionType.TriggerSequence);
                 Parallel.ForEach(triggerSequences, (Action<FunctionEntity, ParallelLoopState>)((trigEnt, status) =>
                 {
                     TriggerSequence trig = (TriggerSequence)trigEnt;

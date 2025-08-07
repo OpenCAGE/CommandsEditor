@@ -28,9 +28,9 @@ namespace CommandsEditor.Scripts
             for (int i = 0; i < content.commands.Entries.Count; i++)
             {
                 Dictionary<ShortGuid, Composite> compInstances = new Dictionary<ShortGuid, Composite>();
-                for (int x = 0; x < content.commands.Entries[i].functions.Count; x++)
-                    if (!CommandsUtils.FunctionTypeExists(content.commands.Entries[i].functions[x].function))
-                        compInstances.Add(content.commands.Entries[i].functions[x].shortGUID, content.commands.GetComposite(content.commands.Entries[i].functions[x].function));
+                foreach (var function in content.commands.Entries[i].functions_dictionary.Values)
+                    if (!CommandsUtils.FunctionTypeExists(function.function))
+                        compInstances.Add(function.shortGUID, content.commands.GetComposite(function.function));
                 cachedCompInstances.Add(content.commands.Entries[i].shortGUID, compInstances);
             }
             
@@ -43,17 +43,17 @@ namespace CommandsEditor.Scripts
 
             for (int i = 0; i < content.commands.Entries.Count; i++)
             {
-                for (int x = 0; x < content.commands.Entries[i].functions.Count; x++)
+                foreach (var function in content.commands.Entries[i].functions_dictionary.Values)
                 {
-                    ResourceReference resource = content.commands.Entries[i].functions[x].GetResource(ResourceType.COLLISION_MAPPING, true);
+                    ResourceReference resource = function.GetResource(ResourceType.COLLISION_MAPPING, true);
                     if (resource == null) continue;
 
-                    ShortGuid resourceID = ShortGuidUtils.Generate(content.commands.Utils.GetEntityName(content.commands.Entries[i], content.commands.Entries[i].functions[x]));
+                    ShortGuid resourceID = ShortGuidUtils.Generate(content.commands.Utils.GetEntityName(content.commands.Entries[i], function));
 
                     content.resource.collision_maps.Entries.Add(new CollisionMaps.Entry()
                     {
                         ID = resourceID,
-                        Entity = new EntityHandle() { entity_id = content.commands.Entries[i].functions[x].shortGUID, composite_instance_id = ShortGuid.Invalid },
+                        Entity = new EntityHandle() { entity_id = function.shortGUID, composite_instance_id = ShortGuid.Invalid },
                         ZoneID = ShortGuid.Invalid
                     });
 
@@ -69,23 +69,23 @@ namespace CommandsEditor.Scripts
             ShortGuid GUID_reference = ShortGuidUtils.Generate("reference");
             for (int i = 0; i < content.commands.Entries.Count; i++)
             {
-                for (int x = 0; x < content.commands.Entries[i].functions.Count; x++)
+                foreach (var function in content.commands.Entries[i].functions_dictionary.Values)
                 {
-                    if (content.commands.Entries[i].functions[x].function != FunctionType.Zone)
+                    if (function.function != FunctionType.Zone)
                         continue;
 
-                    List<EntityPath> zonePaths = content.editor_utils.GetHierarchiesForEntity(content.commands.Entries[i], content.commands.Entries[i].functions[x]);
+                    List<EntityPath> zonePaths = content.editor_utils.GetHierarchiesForEntity(content.commands.Entries[i], function);
                     List<ShortGuid> zoneInstanceIDs = new List<ShortGuid>();
                     for (int p = 0; p < zonePaths.Count; p++)
                         zoneInstanceIDs.Add(zonePaths[p].GenerateZoneID());
 
-                    List<EntityConnector> compositesParams = content.commands.Entries[i].functions[x].childLinks.FindAll(o => o.thisParamID == GUID_composites && o.linkedParamID == GUID_reference);
+                    List<EntityConnector> compositesParams = function.childLinks.FindAll(o => o.thisParamID == GUID_composites && o.linkedParamID == GUID_reference);
                     for (int z = 0; z < compositesParams.Count; z++)
                     {
-                        FunctionEntity linked = content.commands.Entries[i].functions.FirstOrDefault(o => o.shortGUID == compositesParams[z].linkedEntityID);
+                        FunctionEntity linked = content.commands.Entries[i].functions_dictionary.Values.FirstOrDefault(o => o.shortGUID == compositesParams[z].linkedEntityID);
                         if (linked == null)
                         {
-                            AliasEntity linkedAlias = content.commands.Entries[x].aliases.FirstOrDefault(o => o.shortGUID == compositesParams[z].linkedEntityID);
+                            AliasEntity linkedAlias = content.commands.Entries[i].aliases.FirstOrDefault(o => o.shortGUID == compositesParams[z].linkedEntityID);
                             if (linkedAlias != null)
                                 linked = ResolveHierarchyToFunction(linkedAlias.alias.path, content.commands, content.commands.Entries[i]);
                         }
@@ -105,11 +105,11 @@ namespace CommandsEditor.Scripts
                                     if (comp == null) continue;
 
                                     List<FunctionEntity> resourceEnts = new List<FunctionEntity>();
-                                    for (int l = 0; l < comp.functions.Count; l++)
+                                    foreach (var resFunc in comp.functions_dictionary.Values)
                                     {
-                                        ResourceReference resource = comp.functions[l].GetResource(ResourceType.COLLISION_MAPPING, true);
+                                        ResourceReference resource = resFunc.GetResource(ResourceType.COLLISION_MAPPING, true);
                                         if (resource == null) continue;
-                                        resourceEnts.Add(comp.functions[l]);
+                                        resourceEnts.Add(resFunc);
                                     }
 
                                     if (resourceEnts.Count == 0) continue;

@@ -111,17 +111,17 @@ namespace CommandsEditor
             int min_collision_index = 999999;
             for (int x = 0; x < content.commands.Entries.Count; x++)
             {
-                for (int i = 0; i < content.commands.Entries[x].functions.Count; i++)
+                foreach (var function in content.commands.Entries[x].functions_dictionary.Values)
                 {
-                    for (int z = 0; z < content.commands.Entries[x].functions[i].resources.Count; z++)
+                    for (int z = 0; z < function.resources.Count; z++)
                     {
-                        if (content.commands.Entries[x].functions[i].resources[z].resource_type != ResourceType.COLLISION_MAPPING)
+                        if (function.resources[z].resource_type != ResourceType.COLLISION_MAPPING)
                             continue;
-                        if (content.commands.Entries[x].functions[i].resources[z].index != -1 && min_collision_index > content.commands.Entries[x].functions[i].resources[z].index)
-                            min_collision_index = content.commands.Entries[x].functions[i].resources[z].index;
+                        if (function.resources[z].index != -1 && min_collision_index > function.resources[z].index)
+                            min_collision_index = function.resources[z].index;
                     }
 
-                    Parameter resourceParam = content.commands.Entries[x].functions[i].GetParameter("resource");
+                    Parameter resourceParam = function.GetParameter("resource");
                     if (resourceParam != null && resourceParam.content != null && resourceParam.content.dataType == DataType.RESOURCE)
                     {
                         cResource resource = (cResource)resourceParam.content;
@@ -747,12 +747,12 @@ namespace CommandsEditor
             if (composite == null)
                 return;
 
-            for (int i = 0; i < composite.functions.Count; i++)
+            foreach (var function in composite.functions_dictionary.Values)
             {
-                if (composite.functions[i].function.IsFunctionType)
+                if (function.function.IsFunctionType)
                 {
                     //TODO: this assumes that entities don't have collision mappings in the resoure parameter and entity resources
-                    ResourceReference collision = composite.functions[i].GetResource(ResourceType.COLLISION_MAPPING, true);
+                    ResourceReference collision = function.GetResource(ResourceType.COLLISION_MAPPING, true);
                     if (collision == null)
                         continue;
 
@@ -764,21 +764,21 @@ namespace CommandsEditor
                         CollisionProxyIndex = collision.index,
                         Entity = new EntityHandle()
                         {
-                            entity_id = composite.functions[i].shortGUID
+                            entity_id = function.shortGUID
                             //TODO: generate composite guid
                         }
                     };
 
                     //collision.resource_id
 
-                    //switch (CommandsUtils.GetFunctionType(composite.functions[i].function))
+                    //switch (CommandsUtils.GetFunctionType(function.function))
                     //{
                     //    case FunctionType.
                     //}
                 }
                 else
                 {
-                    SaveCollisionMaps(_commandsDisplay.Content.commands.GetComposite(composite.functions[i].function));
+                    SaveCollisionMaps(_commandsDisplay.Content.commands.GetComposite(function.function));
                 }
             }
         }

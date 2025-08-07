@@ -563,16 +563,16 @@ namespace CommandsEditor.DockPanels
             switch (entity.variant)
             {
                 case EntityVariant.VARIABLE:
-                    Composite.variables.Remove((VariableEntity)entity);
+                    Composite.RemoveVariable(entity.shortGUID);
                     break;
                 case EntityVariant.FUNCTION:
-                    Composite.functions.Remove((FunctionEntity)entity);
+                    Composite.RemoveFunction(entity.shortGUID);
                     break;
                 case EntityVariant.ALIAS:
-                    Composite.aliases.Remove((AliasEntity)entity);
+                    Composite.RemoveAlias(entity.shortGUID);
                     break;
                 case EntityVariant.PROXY:
-                    Composite.proxies.Remove((ProxyEntity)entity);
+                    Composite.RemoveProxy(entity.shortGUID);
                     break;
             }
 
