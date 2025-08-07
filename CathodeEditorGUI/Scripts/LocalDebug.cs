@@ -648,11 +648,11 @@ namespace CommandsEditor
 
                 for (int x = 0; x < commands.Entries.Count; x++)
                 {
-                    for (int i = 0; i < commands.Entries[x].variables.Count; i++)
+                    foreach (var variable in commands.Entries[x].variables_dictionary.Values)
                     {
-                        if (commands.Utils.GetPinInfo(commands.Entries[x], commands.Entries[x].variables[i]) == null)
+                        if (commands.Utils.GetPinInfo(commands.Entries[x], variable) == null)
                         {
-                            dump.Add(file + "," + commands.Entries[x].name + "," + commands.Entries[x].variables[i].shortGUID + "," + commands.Entries[x].variables[i].name);
+                            dump.Add(file + "," + commands.Entries[x].name + "," + variable.shortGUID + "," + variable.name);
                         }
                     }
                 }
@@ -1304,9 +1304,9 @@ namespace CommandsEditor
                 Commands phys = new Commands(file);
                 Parallel.ForEach(phys.Entries, comp =>
                 {
-                    Parallel.ForEach(comp.functions, ent =>
+                    Parallel.ForEach(comp.functions_dictionary.Values, ent =>
                     {
-                        if (comp.functions.FindAll(o => o.function == FunctionType.PhysicsModifyGravity).Count != 0)
+                        if (comp.functions_dictionary.Values.Count(o => o.function == FunctionType.PhysicsModifyGravity) != 0)
                         {
                             Console.WriteLine(file + "\n\t" + comp.name);
                         }
@@ -1329,7 +1329,7 @@ namespace CommandsEditor
                     ShortGuid id = gui.shortGUID;
                     Parallel.ForEach(phys.Entries, comp =>
                     {
-                        Parallel.ForEach(comp.functions.FindAll(o => o.function == id), ent =>
+                        Parallel.ForEach(comp.functions_dictionary.Values.Where(o => o.function == id), ent =>
                         {
                             Console.WriteLine(file + "\n\t" + comp.name + "\n\t\t" + phys.Utils.GetEntityName(comp, ent));
 
@@ -1356,7 +1356,7 @@ namespace CommandsEditor
                 Commands phys = new Commands(file);
                 Parallel.ForEach(phys.Entries, comp =>
                 {
-                    List<FunctionEntity> ents = comp.functions.FindAll(o => o.function == FunctionType.CAGEAnimation);
+                    List<FunctionEntity> ents = comp.functions_dictionary.Values.Where(o => o.function == FunctionType.CAGEAnimation).ToList();
                     Parallel.ForEach(ents, ent =>
                     {
                         CAGEAnimation anim = (CAGEAnimation)ent;
@@ -1509,7 +1509,7 @@ namespace CommandsEditor
                 Commands phys = new Commands(file);
                 foreach (Composite comp in phys.Entries)
                 {
-                    List<FunctionEntity> anims = comp.functions.FindAll(o => o.function == FunctionType.CAGEAnimation);
+                    List<FunctionEntity> anims = comp.functions_dictionary.Values.Where(o => o.function == FunctionType.CAGEAnimation).ToList();
                     foreach (FunctionEntity ent in anims)
                     {
                         CAGEAnimation anim = (CAGEAnimation)ent;
@@ -1523,7 +1523,7 @@ namespace CommandsEditor
                         }
                     }
 
-                    List<FunctionEntity> trigs = comp.functions.FindAll(o => o.function == FunctionType.TriggerSequence);
+                    List<FunctionEntity> trigs = comp.functions_dictionary.Values.Where(o => o.function == FunctionType.TriggerSequence).ToList();
                     foreach (FunctionEntity ent in trigs)
                     {
                         TriggerSequence trig = (TriggerSequence)ent;
@@ -1955,10 +1955,10 @@ namespace CommandsEditor
                 string[] towrite = new string[200];
                 for (int i = 0; i < editor.Editor.commands.Entries.Count; i++)
                 {
-                    for (int x = 0; x < editor.Editor.commands.Entries[i].functions.Count; x++)
+                    foreach (var function in editor.Editor.commands.Entries[i].functions_dictionary.Values)
                     {
-                        if (!CommandsUtils.FunctionTypeExists(editor.Editor.commands.Entries[i].functions[x].function)) continue;
-                        FunctionType type = CommandsUtils.GetFunctionType(editor.Editor.commands.Entries[i].functions[x].function);
+                        if (!CommandsUtils.FunctionTypeExists(function.function)) continue;
+                        FunctionType type = CommandsUtils.GetFunctionType(function.function);
                         switch (type)
                         {
                             case FunctionType.CameraShake:
@@ -2006,7 +2006,7 @@ namespace CommandsEditor
                                 //Console.WriteLine(rr.Count);
 
 
-                                Console.WriteLine(editor.Editor.commands.Entries[i].name + " -> " + editor.Editor.commands.Entries[i].functions[x].shortGUID + " -> " + type);
+                                Console.WriteLine(editor.Editor.commands.Entries[i].name + " -> " + function.shortGUID + " -> " + type);
 
                                 //for (int y = 0; y < CurrentInstance.commandsPAK.Composites[i].functions[x].resources.Count; y++)
                                 //{
@@ -2052,11 +2052,11 @@ namespace CommandsEditor
                 /*
                 foreach (Composite comp in cmd.Composites)
                 {
-                    int numberOfFunctionNodes = comp.functions.FindAll(o => CommandsUtils.FunctionTypeExists(o.function)).Count;
-                    int numberOfFunctionNodesIncludingCompositeRefs = comp.functions.Count;
+                    int numberOfFunctionNodes = comp.functions_dictionary.Values.Count(o => CommandsUtils.FunctionTypeExists(o.function));
+                    int numberOfFunctionNodesIncludingCompositeRefs = comp.functions_dictionary.Count;
 
                     int numberOfExcludedNodes = 0;
-                    numberOfExcludedNodes += comp.functions.FindAll(o => o.resources.Count != 0).Count;
+                    numberOfExcludedNodes += comp.functions_dictionary.Values.Count(o => o.resources.Count != 0);
 
                     //numberOfExcludedNodes += comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.Zone)).Count;
                     //numberOfExcludedNodes += comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.TriggerSequence)).Count;
@@ -2079,7 +2079,7 @@ namespace CommandsEditor
                     if (comp.unk1 != numberOfFunctionNodes || comp.unk2 != numberOfFunctionNodesIncludingCompositeRefs)
                     {
                         Dictionary<string, int> counts = new Dictionary<string, int>();
-                        foreach (FunctionEntity ent in comp.functions.FindAll(o => CommandsUtils.FunctionTypeExists(o.function)))
+                        foreach (FunctionEntity ent in comp.functions_dictionary.Values.Where(o => CommandsUtils.FunctionTypeExists(o.function)))
                         {
                             if (!counts.ContainsKey(ent.function.ToString()))
                                 counts.Add(ent.function.ToString(), 0);
@@ -2107,42 +2107,42 @@ namespace CommandsEditor
                 string compositeName = "COMP_" + cmd.Entries[i].shortGUID.ToByteString().Replace('-', '_');
                 script.Add("Composite " + compositeName + " = cmd.AddComposite(@\"" + cmd.Entries[i].name + "\");");
 
-                for (int x = 0; x < cmd.Entries[i].functions.Count; x++)
+                foreach (var function in cmd.Entries[i].functions_dictionary.Values)
                 {
-                    string entityName = "ENT_" + cmd.Entries[i].functions[x].shortGUID.ToByteString().Replace('-', '_');
+                    string entityName = "ENT_" + function.shortGUID.ToByteString().Replace('-', '_');
                     script.Add("FunctionEntity " + entityName + " = " + compositeName + ".AddFunction(");
-                    if (cmd.Entries[i].functions[x].function.IsFunctionType) script[script.Count - 1] += "FunctionType." + cmd.Entries[i].functions[x].function.AsFunctionType + ");";
-                    else script[script.Count - 1] += "@\"" + cmd.GetComposite(cmd.Entries[i].functions[x].function).name + "\");";
+                    if (function.function.IsFunctionType) script[script.Count - 1] += "FunctionType." + function.function.AsFunctionType + ");";
+                    else script[script.Count - 1] += "@\"" + cmd.GetComposite(function.function).name + "\");";
 
-                    for (int y = 0; y < cmd.Entries[i].functions[x].resources.Count; y++)
+                    for (int y = 0; y < function.resources.Count; y++)
                     {
-                        string resourceName = "RES_" + cmd.Entries[i].functions[x].resources[y].GetHashCode().ToString().Replace('-', '_');
-                        switch (cmd.Entries[i].functions[x].resources[y].resource_type)
+                        string resourceName = "RES_" + function.resources[y].GetHashCode().ToString().Replace('-', '_');
+                        switch (function.resources[y].resource_type)
                         {
                             case ResourceType.RENDERABLE_INSTANCE:
-                                script.Add("ResourceReference " + resourceName + " = " + entityName + ".AddResource(ResourceType." + cmd.Entries[i].functions[x].resources[y].resource_type + ");");
-                                Vector3 pos = cmd.Entries[i].functions[x].resources[y].position;
+                                script.Add("ResourceReference " + resourceName + " = " + entityName + ".AddResource(ResourceType." + function.resources[y].resource_type + ");");
+                                Vector3 pos = function.resources[y].position;
                                 script.Add(resourceName + ".position = new Vector3(" + pos.X + "f, " + pos.Y + "f, " + pos.Z + "f);");
-                                Vector3 rot = cmd.Entries[i].functions[x].resources[y].rotation;
+                                Vector3 rot = function.resources[y].rotation;
                                 script.Add(resourceName + ".rotation = new Vector3(" + rot.X + "f, " + rot.Y + "f, " + rot.Z + "f);");
-                                script.Add(resourceName + ".index = " + cmd.Entries[i].functions[x].resources[y].index + ";");
-                                script.Add(resourceName + ".count = " + cmd.Entries[i].functions[x].resources[y].count + ";");
+                                script.Add(resourceName + ".index = " + function.resources[y].index + ";");
+                                script.Add(resourceName + ".count = " + function.resources[y].count + ";");
                                 break;
                             default:
                                 throw new Exception("Unhandled resource");
                         }
                     }
                 }
-                for (int x = 0; x < cmd.Entries[i].variables.Count; x++)
+                foreach (var variable in cmd.Entries[i].variables_dictionary.Values)
                 {
-                    string entityName = "ENT_" + cmd.Entries[i].variables[x].shortGUID.ToByteString().Replace('-', '_');
-                    script.Add("VariableEntity " + entityName + " = " + compositeName + ".AddVariable(\"" + ShortGuidUtils.FindString(cmd.Entries[i].variables[x].name) + "\", DataType." + cmd.Entries[i].variables[x].type.ToString() + ");");
+                    string entityName = "ENT_" + variable.shortGUID.ToByteString().Replace('-', '_');
+                    script.Add("VariableEntity " + entityName + " = " + compositeName + ".AddVariable(\"" + ShortGuidUtils.FindString(variable.name) + "\", DataType." + variable.type.ToString() + ");");
                 }
-                for (int x = 0; x < cmd.Entries[i].proxies.Count; x++)
+                foreach (var proxy in cmd.Entries[i].proxies_dictionary.Values)
                 {
                     throw new Exception("Unhandled proxy");
                 }
-                for (int x = 0; x < cmd.Entries[i].aliases.Count; x++)
+                foreach (var alias in cmd.Entries[i].aliases_dictionary.Values)
                 {
                     throw new Exception("Unhandled alias");
                 }

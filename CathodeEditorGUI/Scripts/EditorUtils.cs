@@ -607,7 +607,7 @@ namespace CommandsEditor
             List<ShortGuid> foundIDs = new List<ShortGuid>();
             foreach (Composite comp in _content.commands.Entries)
             {
-                List<FunctionEntity> triggerSequences = comp.functions.FindAll(o => o.function == FunctionType.TriggerSequence);
+                List<FunctionEntity> triggerSequences = comp.functions_dictionary.Values.Where(o => o.function == FunctionType.TriggerSequence).ToList();
                 foreach (FunctionEntity trigEnt in triggerSequences)
                 {
                     TriggerSequence trig = (TriggerSequence)trigEnt;
@@ -615,7 +615,7 @@ namespace CommandsEditor
                     {
                         if (_content.commands.Utils.ResolveHierarchy(comp, trigger.connectedEntity.path, out Composite compRef, out string str) == entity)
                         {
-                            List<FunctionEntity> zones = comp.functions.FindAll(o => o.function == FunctionType.Zone);
+                            List<FunctionEntity> zones = comp.functions_dictionary.Values.Where(o => o.function == FunctionType.Zone).ToList();
                             foreach (FunctionEntity z in zones)
                             {
                                 foreach (EntityConnector link in z.childLinks)

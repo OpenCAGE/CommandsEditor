@@ -62,7 +62,7 @@ namespace CommandsEditor
             //Update cached ListViewItems that instance this composite
             Content.commands.Entries.ForEach(composite =>
             {
-                composite.functions.FindAll(o => o.function == _composite.shortGUID).ForEach(function => 
+                composite.functions_dictionary.Values.Where(o => o.function == _composite.shortGUID).ToList().ForEach(function => 
                 {
                     Content.GenerateListViewItem(function, composite, LevelContent.CacheMethod.IGNORE_AND_OVERWRITE_CACHE);
                 });
