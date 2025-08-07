@@ -276,22 +276,6 @@ namespace CommandsEditor.DockPanels
                 //Clear out any dead links
                 Content.commands.Utils.PurgeDeadLinks(_composite);
                 Content.commands.Utils.PurgedComposites.purged.Add(_composite.shortGUID);
-
-                //Clear out any aliases with no parameters/links
-                List<AliasEntity> aliasPurged = new List<AliasEntity>();
-                for (int x = 0; x < _composite.aliases.Count; x++)
-                {
-                    if (_composite.aliases[x].childLinks.Count == 0 &&
-                        _composite.aliases[x].parameters.Count == 0 &&
-                        _composite.aliases[x].GetParentLinks(_composite).Count == 0)
-                        continue;
-                    aliasPurged.Add(_composite.aliases[x]);
-                }
-                if (_composite.aliases.Count != aliasPurged.Count)
-                {
-                    Debug.Log("Composite Display", "Purged " + (_composite.aliases.Count - aliasPurged.Count) + " empty aliases");
-                    _composite.aliases = aliasPurged;
-                }
             }
 
             CloseAllChildTabs();
@@ -664,16 +648,16 @@ namespace CommandsEditor.DockPanels
             switch (newEnt.variant)
             {
                 case EntityVariant.FUNCTION:
-                    Composite.functions.Add((FunctionEntity)newEnt);
+                    Composite.functions_dictionary.Add(((FunctionEntity)newEnt).shortGUID, (FunctionEntity)newEnt);
                     break;
                 case EntityVariant.VARIABLE:
-                    Composite.variables.Add((VariableEntity)newEnt);
+                    Composite.variables_dictionary.Add(((VariableEntity)newEnt).shortGUID, (VariableEntity)newEnt);
                     break;
                 case EntityVariant.PROXY:
-                    Composite.proxies.Add((ProxyEntity)newEnt);
+                    Composite.proxies_dictionary.Add(((ProxyEntity)newEnt).shortGUID, (ProxyEntity)newEnt);
                     break;
                 case EntityVariant.ALIAS:
-                    Composite.aliases.Add((AliasEntity)newEnt);
+                    Composite.aliases_dictionary.Add(((AliasEntity)newEnt).shortGUID, (AliasEntity)newEnt);
                     break;
             }
             Content.editor_utils.GenerateCompositeInstances(Content.commands);

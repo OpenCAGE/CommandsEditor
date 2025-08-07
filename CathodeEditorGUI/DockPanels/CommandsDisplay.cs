@@ -418,23 +418,72 @@ namespace CommandsEditor.DockPanels
             //Remove any entities or links that reference this composite
             for (int i = 0; i < Content.commands.Entries.Count; i++)
             {
-                List<FunctionEntity> prunedFunctionEntities = new List<FunctionEntity>();
-                for (int x = 0; x < Content.commands.Entries[i].functions.Count; x++)
+                var compositeEntry = Content.commands.Entries[i];
+                var functionsToKeep = new List<FunctionEntity>();
+                
+                // Collect functions that should be kept (not referencing the deleted composite)
+                foreach (var function in compositeEntry.functions)
                 {
-                    if (Content.commands.Entries[i].functions[x].function == composite.shortGUID) continue;
-                    List<EntityConnector> prunedEntityLinks = new List<EntityConnector>();
-                    for (int l = 0; l < Content.commands.Entries[i].functions[x].childLinks.Count; l++)
+                    if (function.function == composite.shortGUID) continue;
+                    
+                    // Prune child links that reference the deleted composite
+                    var prunedEntityLinks = new List<EntityConnector>();
+                    foreach (var link in function.childLinks)
                     {
-                        Entity linkedEntity = Content.commands.Entries[i].GetEntityByID(Content.commands.Entries[i].functions[x].childLinks[l].linkedEntityID);
-                        if (linkedEntity != null && linkedEntity.variant == EntityVariant.FUNCTION) if (((FunctionEntity)linkedEntity).function == composite.shortGUID) continue;
-                        prunedEntityLinks.Add(Content.commands.Entries[i].functions[x].childLinks[l]);
+                        Entity linkedEntity = compositeEntry.GetEntityByID(link.linkedEntityID);
+                        if (linkedEntity != null && linkedEntity.variant == EntityVariant.FUNCTION) 
+                        {
+                            if (((FunctionEntity)linkedEntity).function == composite.shortGUID) continue;
+                        }
+                        prunedEntityLinks.Add(link);
                     }
-                    Content.commands.Entries[i].functions[x].childLinks = prunedEntityLinks;
-                    prunedFunctionEntities.Add(Content.commands.Entries[i].functions[x]);
+                    function.childLinks = prunedEntityLinks;
+                    functionsToKeep.Add(function);
                 }
-                Content.commands.Entries[i].functions = prunedFunctionEntities;
+                
+                // Clear the functions dictionary and add back only the functions to keep
+                compositeEntry.functions_dictionary.Clear();
+                foreach (var function in functionsToKeep)
+                {
+                    compositeEntry.functions_dictionary[function.shortGUID] = function;
+                }
             }
-            //TODO: remove proxies etc that also reference any of the removed entities
+
+            // Remove aliases and proxies that reference the deleted composite
+            for (int i = 0; i < Content.commands.Entries.Count; i++)
+            {
+                var compositeEntry = Content.commands.Entries[i];
+                var aliasesToRemove = new List<ShortGuid>();
+                var proxiesToRemove = new List<ShortGuid>();
+
+                // Check aliases - remove those that can't be resolved after the composite deletion
+                foreach (var alias in compositeEntry.aliases)
+                {
+                    if (!Content.commands.Utils.CouldResolve(Content.commands.Utils.ResolveAlias(alias, compositeEntry)))
+                    {
+                        aliasesToRemove.Add(alias.shortGUID);
+                    }
+                }
+
+                // Check proxies - remove those that can't be resolved after the composite deletion
+                foreach (var proxy in compositeEntry.proxies)
+                {
+                    if (!Content.commands.Utils.CouldResolve(Content.commands.Utils.ResolveProxy(proxy)))
+                    {
+                        proxiesToRemove.Add(proxy.shortGUID);
+                    }
+                }
+
+                // Remove the invalid aliases and proxies
+                foreach (var aliasGuid in aliasesToRemove)
+                {
+                    compositeEntry.aliases_dictionary.Remove(aliasGuid);
+                }
+                foreach (var proxyGuid in proxiesToRemove)
+                {
+                    compositeEntry.proxies_dictionary.Remove(proxyGuid);
+                }
+            }
 
             //Remove the composite
             Content.commands.Entries.Remove(composite);

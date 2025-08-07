@@ -44,7 +44,7 @@ namespace CommandsEditor
             List<GUI_ModelViewer.Model> models = new List<GUI_ModelViewer.Model>();
             if (comp == null) return models;
 
-            List<FunctionEntity> entities = comp.functions;
+            ReadOnlyEntityCollection<FunctionEntity> entities = comp.functions;
             foreach (FunctionEntity entity in entities)
             {
                 Parameter position = entity.GetParameter("position");
