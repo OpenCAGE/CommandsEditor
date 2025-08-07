@@ -13,8 +13,10 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Forms;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Media3D;
 using System.Xml.Linq;
 using WeifenLuo.WinFormsUI.Docking;
@@ -241,15 +243,16 @@ namespace CommandsEditor
             {
                 nodes[i] = EntityToNode(entities[i].Item1);
                 nodes[i].SetPosition(entities[i].Item2.Position);
-                
-                // !!TODO!!
-                // This is a temporary solution to position the pins in the right place: add them all, link them up, then remove ones without links.
-                // It's REALLY not ideal as it adds a lot of overhead adding and removing things for no reason, but it's the quickest hack fix for now.
-                // I should instead check the type of pin it should be when linking, and add it then, like how I add the in/out links for dynamic things (TriggerSeq/CAGEAnim).
-                AddAllPins(nodes[i]);
-
                 nodes[i].NodeID = entities[i].Item2.NodeID;
             }
+            Parallel.ForEach(nodes, (node) =>
+            {
+                // !!TODO!!
+                // This is a temporary solution: adding all the pins means they're in the right place, then we can link them up, and remove the unused ones.
+                // It's REALLY not ideal as it adds a lot of overhead adding and removing things for no reason, but it's the quickest hack fix for now.
+                // I should instead check the type of pin it should be when linking, and add it then, like how I add the in/out links for dynamic things (TriggerSeq/CAGEAnim).
+                AddAllPins(node);
+            });
 
             //Populate connections
             for (int i = 0; i < entities.Count; i++)
@@ -292,10 +295,10 @@ namespace CommandsEditor
             }
 
             //TODO: This is the other half of the temporary hack found above, we now want to remove unconnected pins so our nodes aren't huge.
-            for (int i = 0; i < nodes.Length; i++)
+            Parallel.ForEach(nodes, (node) =>
             {
-                RemoveUnusedPins(nodes[i]);
-            }
+                RemoveUnusedPins(node);
+            });
 
             //Add in any pins that weren't linked, but added by the user
             for (int i = 0; i < entities.Count; i++)
@@ -543,6 +546,7 @@ namespace CommandsEditor
             AddAllPins(node);
         }
 
+        //add all possible pins to a given node
         private void AddAllPins(STNode node)
         {
             Entity entity = _composite.GetEntityByID(node.ShortGUID);
@@ -596,10 +600,6 @@ namespace CommandsEditor
                     List<(ShortGuid, ParameterVariant, DataType)> allParameters = _commands.Utils.GetAllParameters(entity, _composite);
                     foreach ((ShortGuid, ParameterVariant, DataType) parameter in allParameters)
                     {
-                        //string param = parameter.Item1.ToString();
-                        //if (param == "delete_me" || param == "enable" || param == "disable" || param == "position") 
-                        //    continue;
-
                         switch (parameter.Item2)
                         {
                             case ParameterVariant.INPUT_PIN:
@@ -607,9 +607,6 @@ namespace CommandsEditor
                             case ParameterVariant.STATE_PARAMETER:
                                 node.AddTopOption(parameter.Item1, PinStyle.ArrowDown);
                                 break;
-                            //case ParameterVariant.METHOD_FUNCTION:
-                            //    node.AddInputOption(parameter.Item1);
-                            //    break;
                             case ParameterVariant.METHOD_PIN:
                                 node.AddInputOption(parameter.Item1);
                                 ShortGuid relay = _commands.Utils.GetRelay(parameter.Item1);
@@ -654,6 +651,43 @@ namespace CommandsEditor
                                         node.AddOutputOption(method.relay);
                                         node.AddOutputOption(method.finished);
                                     }
+                                    HashSet<ShortGuid> newTopOptions = new HashSet<ShortGuid>();
+                                    HashSet<ShortGuid> checkedFunctionTypes = new HashSet<ShortGuid>();
+                                    HashSet<ShortGuid> checkedEntityGuids = new HashSet<ShortGuid>();
+                                    foreach (TriggerSequence.SequenceEntry entry in triggerSeq.sequence)
+                                    {
+                                        ShortGuid entryEntityGuid = entry.connectedEntity.GetPointedEntityID();
+                                        if (checkedEntityGuids.Contains(entryEntityGuid))
+                                            continue;
+                                        checkedEntityGuids.Add(entryEntityGuid);
+
+                                        (Composite entryComp, Entity entryEnt) = _commands.Utils.GetResolvedTarget(_commands.Utils.ResolveAlias(entry.connectedEntity, _composite));
+                                        if (entryEnt == null) continue;
+
+                                        if (entryEnt.variant == EntityVariant.FUNCTION)
+                                        {
+                                            ShortGuid entryFunction = ((FunctionEntity)entryEnt).function;
+                                            if (checkedFunctionTypes.Contains(entryFunction))
+                                                continue;
+                                            checkedFunctionTypes.Add(entryFunction);
+                                        }
+
+                                        List<(ShortGuid, ParameterVariant, DataType)> allParametersEntry = _commands.Utils.GetAllParameters(entryEnt, entryComp);
+                                        foreach ((ShortGuid, ParameterVariant, DataType) parameterEntry in allParametersEntry)
+                                        {
+                                            switch (parameterEntry.Item2)
+                                            {
+                                                //TODO: need to verify it is actually these three, and not just parameters
+                                                case ParameterVariant.INPUT_PIN:
+                                                case ParameterVariant.PARAMETER:
+                                                case ParameterVariant.STATE_PARAMETER:
+                                                    newTopOptions.Add(parameterEntry.Item1);
+                                                    break;
+                                            }
+                                        }
+                                    }
+                                    foreach (ShortGuid topOption in newTopOptions)
+                                        node.AddTopOption(topOption, PinStyle.ArrowDown);
                                     break;
                             }
                         }
