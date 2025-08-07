@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -78,7 +79,8 @@ namespace CommandsEditor
         {
             Directory.CreateDirectory(SharedData.pathToAI + "/DATA/MODTOOLS/");
             File.WriteAllText(SharedData.pathToAI + "/DATA/MODTOOLS/commands_editor_error.log", "Application_ThreadException\n" + e.Exception.ToString());
-            MessageBox.Show("A critical error occurred and was logged. The script editor will now close. Please share the contents of the generated 'commands_editor_crashlog.txt' in your Alien: Isolation directory to GitHub.");
+            MessageBox.Show("A critical error occurred and was logged. The script editor will now close. Please share the contents of the generated log to GitHub.");
+            Process.Start(SharedData.pathToAI + "/DATA/MODTOOLS/commands_editor_error.log");
             Application.Exit();
         }
 
@@ -86,7 +88,8 @@ namespace CommandsEditor
         {
             Directory.CreateDirectory(SharedData.pathToAI + "/DATA/MODTOOLS/");
             File.WriteAllText(SharedData.pathToAI + "/DATA/MODTOOLS/commands_editor_error.log", "CurrentDomain_UnhandledException\n" + ((Exception)e.ExceptionObject).ToString());
-            MessageBox.Show("A critical error occurred and was logged. The script editor will now close. Please share the contents of the generated 'commands_editor_crashlog.txt' in your Alien: Isolation directory to GitHub.");
+            MessageBox.Show("A critical error occurred and was logged. The script editor will now close. Please share the contents of the generated log to GitHub.");
+            Process.Start(SharedData.pathToAI + "/DATA/MODTOOLS/commands_editor_error.log");
             Application.Exit();
         }
     }
