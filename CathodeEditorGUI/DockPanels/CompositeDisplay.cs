@@ -124,7 +124,7 @@ namespace CommandsEditor.DockPanels
         //Saves and compiles all Flowgraph layouts for this Composite
         public void SaveAllFlowgraphs()
         {
-            if (Composite != null && SupportsFlowgraphs)
+            if (Composite != null && Content != null && Content.commands != null && Content.commands.Utils != null && SupportsFlowgraphs)
             {
 #if DEBUG
                 int ogCount = Content.commands.Utils.CountLinks(_composite);
@@ -150,7 +150,11 @@ namespace CommandsEditor.DockPanels
                 }
 #endif
 
-                FlowgraphLayoutManager.SetSelectedPage(Composite, _flowgraphs.FirstOrDefault(o => o.Visible).FlowgraphName);
+                var visibleFlowgraph = _flowgraphs.FirstOrDefault(o => o.Visible);
+                if (visibleFlowgraph != null)
+                {
+                    FlowgraphLayoutManager.SetSelectedPage(Composite, visibleFlowgraph.FlowgraphName);
+                }
             }
         }
 
