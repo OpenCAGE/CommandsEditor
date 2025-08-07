@@ -244,15 +244,13 @@ namespace CommandsEditor
                 nodes[i] = EntityToNode(entities[i].Item1);
                 nodes[i].SetPosition(entities[i].Item2.Position);
                 nodes[i].NodeID = entities[i].Item2.NodeID;
-            }
-            Parallel.ForEach(nodes, (node) =>
-            {
+
                 // !!TODO!!
                 // This is a temporary solution: adding all the pins means they're in the right place, then we can link them up, and remove the unused ones.
                 // It's REALLY not ideal as it adds a lot of overhead adding and removing things for no reason, but it's the quickest hack fix for now.
                 // I should instead check the type of pin it should be when linking, and add it then, like how I add the in/out links for dynamic things (TriggerSeq/CAGEAnim).
-                AddAllPins(node);
-            });
+                AddAllPins(nodes[i]);
+            }
 
             //Populate connections
             for (int i = 0; i < entities.Count; i++)
@@ -295,10 +293,10 @@ namespace CommandsEditor
             }
 
             //TODO: This is the other half of the temporary hack found above, we now want to remove unconnected pins so our nodes aren't huge.
-            Parallel.ForEach(nodes, (node) =>
+            for (int i = 0; i < nodes.Length; i++)
             {
-                RemoveUnusedPins(node);
-            });
+                RemoveUnusedPins(nodes[i]);
+            }
 
             //Add in any pins that weren't linked, but added by the user
             for (int i = 0; i < entities.Count; i++)
