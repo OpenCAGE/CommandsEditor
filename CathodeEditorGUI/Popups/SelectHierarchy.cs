@@ -118,7 +118,10 @@ namespace CommandsEditor
         {
             if (_multiselect)
             {
-                OnFinalEntitiesSelected?.Invoke(compositeEntityList1.CheckedEntities);
+                List<Entity> entities = compositeEntityList1.CheckedEntities;
+                if (entities.Count == 0 && compositeEntityList1.SelectedEntity != null)
+                    entities.Add(compositeEntityList1.SelectedEntity);
+                OnFinalEntitiesSelected?.Invoke(entities);
             }
             else
             {
