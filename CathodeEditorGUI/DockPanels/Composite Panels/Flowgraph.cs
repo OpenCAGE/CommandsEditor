@@ -15,6 +15,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Forms;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Media3D;
@@ -208,6 +209,31 @@ namespace CommandsEditor
             {
                 stNodeEditor1.Nodes.Remove(nodes[i]);
             }
+        }
+
+        private int CountNodesForEntity(Entity entity)
+        {
+            int count = 0;
+            foreach (STNode node in stNodeEditor1.Nodes)
+            {
+                if (node.Entity == entity)
+                    count++;
+            }
+            return count;
+        }
+        private bool HasMultipleNodesForEntity(Entity entity)
+        {
+            bool foundOnce = false;
+            foreach (STNode node in stNodeEditor1.Nodes)
+            {
+                if (node.Entity == entity)
+                {
+                    if (foundOnce)
+                        return true;
+                    foundOnce = true;
+                }
+            }
+            return false;
         }
 
         //NOTE: This assumes you've already checked with FlowgraphLayoutManager that LinksMatch!
@@ -454,11 +480,15 @@ namespace CommandsEditor
             toolStripSeparator4.Visible = node != null;
             deleteEntityToolStripMenuItem.Visible = node != null;
             duplicateEntityToolStripMenuItem.Visible = node != null;
+            toolStripSeparator5.Visible = node != null;
+            findReferencesToolStripMenuItem.Visible = node != null;
+            goToNextNodeInFlowgraphToolStripMenuItem.Visible = node != null;
 
             if (node != null)
             {
                 modifyPinsIn.Enabled = node.Entity.variant != EntityVariant.VARIABLE;
                 modifyPinsOut.Enabled = node.Entity.variant != EntityVariant.VARIABLE;
+                goToNextNodeInFlowgraphToolStripMenuItem.Enabled = HasMultipleNodesForEntity(node.Entity);
             }
 
             addNodeToolStripMenuItem.Visible = node == null && linkIn == null;
@@ -907,6 +937,58 @@ namespace CommandsEditor
             Singleton.OnEntityAdded -= OnEntityAddedViaPopup;
             Singleton.OnEntityAdded += OnEntityAddedGlobally;
             _prevEntCreatePopup.FormClosed -= EntityCreationPopupClosed;
+        }
+
+        ShowCrossRefs _crossRefsDialog = null;
+        private void findReferencesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_crossRefsDialog != null)
+                _crossRefsDialog.Close();
+
+            STNode node = stNodeEditor1.GetHoveredNode();
+            if (node == null || node.Entity == null)
+                return;
+
+            _crossRefsDialog = new ShowCrossRefs(node.Entity);
+            _crossRefsDialog.Show();
+            _crossRefsDialog.OnEntitySelected += Singleton.Editor.CommandsDisplay.LoadCompositeAndEntity;
+            _crossRefsDialog.OnFlowgraphSelected += Singleton.Editor.CommandsDisplay.CompositeDisplay.SelectEntityOnFlowgraph;
+        }
+        private void goToNextNodeInFlowgraphToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            STNode startNode = stNodeEditor1.GetHoveredNode();
+            if (startNode == null || startNode.Entity == null)
+                return;
+
+            bool startListening = false;
+            foreach (STNode node in stNodeEditor1.Nodes)
+            {
+                if (node == startNode)
+                {
+                    startListening = true;
+                    continue;
+                }
+
+                if (!startListening)
+                    continue;
+
+                if (node.Entity == startNode.Entity)
+                {
+                    SelectNode(node);
+                    return;
+                }
+            }
+            foreach (STNode node in stNodeEditor1.Nodes)
+            {
+                if (node.Entity == startNode.Entity)
+                {
+                    SelectNode(node);
+                    return;
+                }
+
+                if (node == startNode)
+                    break;
+            }
         }
     }
 }

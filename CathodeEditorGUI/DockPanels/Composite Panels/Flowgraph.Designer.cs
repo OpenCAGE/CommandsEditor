@@ -54,6 +54,9 @@ namespace CommandsEditor
             this.renameFGToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.createNewFlowgraphToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.goToNextNodeInFlowgraphToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.findReferencesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.nodeContextMenu.SuspendLayout();
             this.TabStripContextMenu.SuspendLayout();
             this.SuspendLayout();
@@ -69,6 +72,9 @@ namespace CommandsEditor
             this.toolStripSeparator1,
             this.deleteToolStripMenuItem,
             this.duplicateToolStripMenuItem,
+            this.toolStripSeparator5,
+            this.findReferencesToolStripMenuItem,
+            this.goToNextNodeInFlowgraphToolStripMenuItem,
             this.toolStripSeparator4,
             this.deleteEntityToolStripMenuItem,
             this.duplicateEntityToolStripMenuItem,
@@ -77,7 +83,7 @@ namespace CommandsEditor
             this.addNodeToolStripMenuItem,
             this.deleteLinkToolStripMenuItem});
             this.nodeContextMenu.Name = "EntityListContextMenu";
-            this.nodeContextMenu.Size = new System.Drawing.Size(229, 308);
+            this.nodeContextMenu.Size = new System.Drawing.Size(229, 358);
             this.nodeContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // modifyPinsIn
@@ -296,6 +302,29 @@ namespace CommandsEditor
             this.createNewFlowgraphToolStripMenuItem.Text = "Create New Flowgraph";
             this.createNewFlowgraphToolStripMenuItem.Click += new System.EventHandler(this.createNewFlowgraphToolStripMenuItem_Click);
             // 
+            // goToNextNodeInFlowgraphToolStripMenuItem
+            // 
+            this.goToNextNodeInFlowgraphToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("goToNextNodeInFlowgraphToolStripMenuItem.Image")));
+            this.goToNextNodeInFlowgraphToolStripMenuItem.Name = "goToNextNodeInFlowgraphToolStripMenuItem";
+            this.goToNextNodeInFlowgraphToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
+            this.goToNextNodeInFlowgraphToolStripMenuItem.Text = "Go To Entity\'s Next Node";
+            this.goToNextNodeInFlowgraphToolStripMenuItem.ToolTipText = "Select this to jump to the next node for this entity within the current flowgraph" +
+    ".";
+            this.goToNextNodeInFlowgraphToolStripMenuItem.Click += new System.EventHandler(this.goToNextNodeInFlowgraphToolStripMenuItem_Click);
+            // 
+            // findReferencesToolStripMenuItem
+            // 
+            this.findReferencesToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("findReferencesToolStripMenuItem.Image")));
+            this.findReferencesToolStripMenuItem.Name = "findReferencesToolStripMenuItem";
+            this.findReferencesToolStripMenuItem.Size = new System.Drawing.Size(236, 22);
+            this.findReferencesToolStripMenuItem.Text = "Find References";
+            this.findReferencesToolStripMenuItem.Click += new System.EventHandler(this.findReferencesToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator5
+            // 
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(233, 6);
+            // 
             // Flowgraph
             // 
             this.AllowEndUserDocking = false;
@@ -346,6 +375,9 @@ namespace CommandsEditor
         private System.Windows.Forms.ToolStripMenuItem addNodeForSelectedEntityToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deleteLinkToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem duplicateEntityToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem goToNextNodeInFlowgraphToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem findReferencesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
     }
 }
 
