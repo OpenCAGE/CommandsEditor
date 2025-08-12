@@ -55,7 +55,7 @@ namespace CommandsEditor.Scripts
                 EntityPath parentPath = _content.editor_utils.GetHierarchyFromHandle(item.entity);
                 if (parentPath != null)
                 {
-                    (Composite parentComp, Entity parentEnt) = content.commands.Utils.GetResolvedTarget(content.commands.Utils.ResolveAliasOrProxy(path, _content.commands.EntryPoints[0]));
+                    (Composite parentComp, Entity parentEnt) = content.commands.Utils.GetResolvedTarget(content.commands.Utils.ResolveHierarchy(path));
                     if (parentEnt == null)
                     {
                         Console.WriteLine("Failed to resolve parent entity for path: " + parentPath.ToString());
@@ -132,7 +132,7 @@ namespace CommandsEditor.Scripts
                 EntityPath path = _content.editor_utils.GetHierarchyFromHandle(_content.mvr.Entries[x].entity);
                 if (path != null)
                 {
-                    (Composite comp, Entity ent) = content.commands.Utils.GetResolvedTarget(content.commands.Utils.ResolveAliasOrProxy(path, _content.commands.EntryPoints[0]));
+                    (Composite comp, Entity ent) = content.commands.Utils.GetResolvedTarget(content.commands.Utils.ResolveHierarchy(path));
                     if (ent == null)
                     {
                         Console.WriteLine("Failed to resolve entity for path: " + path.ToString());

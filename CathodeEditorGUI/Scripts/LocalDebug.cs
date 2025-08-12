@@ -54,9 +54,9 @@ namespace CommandsEditor
 
                         output.Add("");
 
-                        Entity pointedE = commandsRetail.Utils.ResolveHierarchy(comp, p.proxy.path, out Composite compContanied, out string Str);
-                        output.Add("Using My Resolver:");
-                        output.Add(Str);
+                        //Entity pointedE = commandsRetail.Utils.ResolveHierarchy(comp, p.proxy.path, out Composite compContanied, out string Str);
+                        //output.Add("Using My Resolver:");
+                        //output.Add(Str);
 
                         output.Add("");
 

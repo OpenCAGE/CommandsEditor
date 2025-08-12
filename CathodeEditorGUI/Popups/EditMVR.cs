@@ -78,7 +78,7 @@ namespace CommandsEditor
             listBox1.Items.Clear();
             for (int i = 0; i < hierarchies.Length; i++)
             {
-                listBox1.Items.Add(hierarchies[i] == null ? _mvrListIndexes[i].ToString() + " [unresolvable]" : hierarchies[i].ToString(Content.commands, _entityDisplay.Composite, false));
+                listBox1.Items.Add(hierarchies[i] == null ? _mvrListIndexes[i].ToString() + " [unresolvable]" : Content.commands.Utils.GetResolvedAsString(Content.commands.Utils.ResolveHierarchy(hierarchies[i])));
             }
             listBox1.EndUpdate();
             if (listBox1.Items.Count != 0) listBox1.SelectedIndex = 0;

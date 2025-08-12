@@ -550,7 +550,7 @@ namespace CommandsEditor
                     TriggerSequence trig = (TriggerSequence)trigEnt;
                     Parallel.ForEach(trig.sequence, (Action<TriggerSequence.SequenceEntry, ParallelLoopState>)((trigger, status2) =>
                     {
-                        if (_content.commands.Utils.ResolveHierarchy(comp, trigger.connectedEntity.path, out Composite compRef, out string str) == entity)
+                        if (_content.commands.Utils.GetResolvedTarget(_content.commands.Utils.ResolveAlias(trigger.connectedEntity.path, comp)).Item2 == entity)
                         {
                             List<FunctionEntity> zones = comp.functions.FindAll(o => o.function == FunctionType.Zone);
                             Parallel.ForEach(zones, (z, status3) =>
@@ -613,7 +613,7 @@ namespace CommandsEditor
                     TriggerSequence trig = (TriggerSequence)trigEnt;
                     foreach (TriggerSequence.SequenceEntry trigger in trig.sequence)
                     {
-                        if (_content.commands.Utils.ResolveHierarchy(comp, trigger.connectedEntity.path, out Composite compRef, out string str) == entity)
+                        if (_content.commands.Utils.GetResolvedTarget(_content.commands.Utils.ResolveAlias(trigger.connectedEntity.path, comp)).Item2 == entity)
                         {
                             List<FunctionEntity> zones = comp.functions_dictionary.Values.Where(o => o.function == FunctionType.Zone).ToList();
                             foreach (FunctionEntity z in zones)
