@@ -155,7 +155,7 @@ namespace CommandsEditor
             entityList.Groups.Clear();
             foreach (Composite comp in Content.commands.Entries)
             {
-                List<Entity> ents = comp.GetEntities().FindAll(o => Content.commands.Utils.GetEntityName(comp, o).ToUpper().Contains(name.ToUpper()));
+                List<Entity> ents = comp.GetEntities().FindAll(o => Content.commands.Utils.GetEntityName(comp, o).ToUpper().Replace(" ", "").Contains(name.ToUpper().Replace(" ", "")));
                 if (ents.Count == 0)
                     continue;
                 entityList.Groups.Add(new ListViewGroup() { Header = comp.name });

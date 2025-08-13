@@ -171,7 +171,7 @@ namespace CommandsEditor
         {
             param_name.BeginUpdate();
             param_name.Items.Clear();
-            ListViewItem[] items = _items.Where(o => o.Text.ToUpper().Contains(searchText.Text.ToUpper())).ToList().ToArray();
+            ListViewItem[] items = _items.Where(o => o.Text.ToUpper().Replace(" ", "").Contains(searchText.Text.ToUpper().Replace(" ", ""))).ToList().ToArray();
             foreach (ListViewItem item in items)
             {
                 ParameterListViewItemTag tag = (ParameterListViewItemTag)item.Tag;

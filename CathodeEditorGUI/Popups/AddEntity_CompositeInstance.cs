@@ -67,7 +67,7 @@ namespace CommandsEditor
                     name = nameSplit[nameSplit.Length - 1];
                 }
 
-                if (!name.ToUpper().Contains(searchText.Text.Replace('\\', '/').ToUpper())) 
+                if (!name.ToUpper().Replace(" ", "").Contains(searchText.Text.Replace('\\', '/').Replace(" ", "").ToUpper())) 
                     continue;
 
                 filteredCompositeNames.Add(Content.commands.Entries[i].name.Replace('\\', '/'));

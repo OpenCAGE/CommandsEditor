@@ -499,11 +499,12 @@ namespace CommandsEditor.DockPanels
         private string _currentSearch = "";
         private void entity_search_btn_Click(object sender, EventArgs e)
         {
-            if (entity_search_box.Text == _currentSearch) return;
+            string newSearch = entity_search_box.Text.Replace('\\', '/').ToUpper().Replace(" ", "");
+            if (newSearch == _currentSearch) return;
 
             List<string> filteredCompositeNames = new List<string>();
             List<Composite> filteredComposites = new List<Composite>();
-            _currentSearch = entity_search_box.Text.Replace('\\', '/').ToUpper();
+            _currentSearch = newSearch;
             for (int i = 0; i < _content.commands.Entries.Count; i++)
             {
                 string name = _content.commands.Entries[i].name.Replace('\\', '/');
@@ -514,7 +515,7 @@ namespace CommandsEditor.DockPanels
                     name = nameSplit[nameSplit.Length - 1];
                 }
 
-                if (!name.ToUpper().Contains(_currentSearch)) continue;
+                if (!name.ToUpper().Replace(" ", "").Contains(_currentSearch)) continue;
 
                 filteredCompositeNames.Add(_content.commands.Entries[i].name.Replace('\\', '/'));
                 filteredComposites.Add(_content.commands.Entries[i]);

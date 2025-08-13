@@ -188,7 +188,7 @@ namespace CommandsEditor
             strings.BeginUpdate();
             strings.SuspendLayout();
             strings.Items.Clear();
-            strings.Items.AddRange(_filteredItems.Where(o => o.Text.ToUpper().Contains(search_box.Text.ToUpper()) || o.SubItems[o.SubItems.Count - 1].Text.ToUpper().Contains(search_box.Text.ToUpper())).ToList().ToArray());
+            strings.Items.AddRange(_filteredItems.Where(o => o.Text.ToUpper().Replace(" ", "").Contains(search_box.Text.ToUpper().Replace(" ", "")) || o.SubItems[o.SubItems.Count - 1].Text.ToUpper().Replace(" ", "").Contains(search_box.Text.ToUpper().Replace(" ", ""))).ToList().ToArray());
             strings.EndUpdate();
         }
 

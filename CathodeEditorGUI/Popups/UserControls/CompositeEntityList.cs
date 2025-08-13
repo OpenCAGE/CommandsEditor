@@ -252,7 +252,7 @@ namespace CommandsEditor.Popups.UserControls
                     ListViewItem item = Content.GenerateListViewItem(allEntities[i], _composite);
                     for (int x = 0; x < item.SubItems.Count; x++)
                     {
-                        if (!item.SubItems[x].Text.ToUpper().Contains(_currentSearch.ToUpper()))
+                        if (!item.SubItems[x].Text.ToUpper().Replace(" ", "").Contains(_currentSearch.ToUpper().Replace(" ", "")))
                             continue;
 
                         //If entity IDs column is hidden, we should ignore it in the search

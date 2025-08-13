@@ -69,7 +69,7 @@ namespace CommandsEditor.Popups.UserControls
 
             functionTypes.BeginUpdate();
             functionTypes.Items.Clear();
-            functionTypes.Items.AddRange(_items.Where(o => o.Text.ToUpper().Contains(searchText.Text.ToUpper())).ToList().ToArray());
+            functionTypes.Items.AddRange(_items.Where(o => o.Text.ToUpper().Replace(" ", "").Contains(searchText.Text.ToUpper().Replace(" ", ""))).ToList().ToArray());
             functionTypes.EndUpdate();
 
             SelectFuncType(selected);
