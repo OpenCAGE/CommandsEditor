@@ -70,7 +70,7 @@ namespace CommandsEditor
 
             characterInstances.Items.Clear();
             for (int i = 0; i < _hierarchies.Count; i++)
-                characterInstances.Items.Add(_hierarchies[i].ToString(Content.commands, _entityDisplay.Composite, false));
+                characterInstances.Items.Add(Content.commands.Utils.GetResolvedAsString(Content.commands.Utils.ResolveAlias(_hierarchies[i], _entityDisplay.Composite), false));
 
             selectNewHead.Enabled = characterInstances.Items.Count != 0;
             selectNewShirt.Enabled = characterInstances.Items.Count != 0;

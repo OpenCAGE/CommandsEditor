@@ -70,7 +70,7 @@ namespace CommandsEditor
             List<CAGEAnimation.Connection> connections = animEntity.connections.FindAll(o => o.binding_type == ObjectType.ENTITY);
             foreach (CAGEAnimation.Connection connection in connections)
             {
-                string connectionLink = connection.connectedEntity.ToString(Content.commands, _entityDisplay.Composite);
+                string connectionLink = Content.commands.Utils.GetResolvedAsString(Content.commands.Utils.ResolveAlias(connection.connectedEntity, _entityDisplay.Composite));
                 if (!entityList.Items.Contains(connectionLink))
                 {
                     entityList.Items.Add(connectionLink);
@@ -177,7 +177,7 @@ namespace CommandsEditor
                 for (int x = 0; x < animEntity.events[i].keyframes.Count; x++)
                 {
                     CAGEAnimation.EventTrack.Keyframe keyframeData = animEntity.events[i].keyframes[x];
-                    string keyframeText = (connection == null) ? Content.commands.Utils.GetEntityName(_entityDisplay.Composite, animEntity) : connection.connectedEntity.ToString(Content.commands, _entityDisplay.Composite, false);
+                    string keyframeText = (connection == null) ? Content.commands.Utils.GetEntityName(_entityDisplay.Composite, animEntity) : Content.commands.Utils.GetResolvedAsString(Content.commands.Utils.ResolveAlias(connection.connectedEntity, _entityDisplay.Composite), false);
                     Keyframe keyframeUI = eventTimeline.AddKeyframe(keyframeData.time, keyframeText);
                     keyframeUI.OnMoved += OnHandleMoved;
                     keyframeHandlesEvent.Add(keyframeUI, keyframeData);

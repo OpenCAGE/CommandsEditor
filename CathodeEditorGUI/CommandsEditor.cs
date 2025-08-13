@@ -60,6 +60,10 @@ namespace CommandsEditor
 
         public CommandsEditor(string level = null)
         {
+            //LocalDebug.CheckFlowgraphsNew();
+
+            //string sfsdf = "";
+
             //LocalDebug.TestLights();
 
             //LocalDebug.DefaultsUnitTest();

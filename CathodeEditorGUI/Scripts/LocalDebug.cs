@@ -3,6 +3,7 @@ using CATHODE.EXPERIMENTAL;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CathodeLib;
+using CommandsEditor.DockPanels;
 using CommandsEditor.UserControls;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -16,6 +17,7 @@ using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
+using System.Security.RightsManagement;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms.Design;
@@ -32,6 +34,44 @@ namespace CommandsEditor
 {
     public static class LocalDebug
     {
+        public static void CheckFlowgraphsNew()
+        {
+            string env = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Alien Isolation\\DATA\\ENV";
+            if (Directory.Exists(env + "/PRODUCTION/DLC/BSPNOSTROMO_RIPLEY/WORLD"))
+                Directory.Delete(env + "/PRODUCTION/DLC/BSPNOSTROMO_RIPLEY/WORLD", true);
+            if (Directory.Exists(env + "/PRODUCTION/DLC/BSPNOSTROMO_TWOTWEAMS/WORLD"))
+                Directory.Delete(env + "/PRODUCTION/DLC/BSPNOSTROMO_TWOTWEAMS/WORLD", true);
+            List<string> files = Directory.GetFiles(env, "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            List<string> output = new List<string>();
+            foreach (string file in files)
+            {
+                output.Add("Unsupported in " + file);
+                Commands cmd = new Commands(file);
+                FlowgraphLayoutManager.LinkCommands(cmd);
+                foreach (Composite comp in cmd.Entries)
+                {
+                    cmd.Utils.PurgeDeadLinks(comp);
+                    cmd.Utils.PurgeDeadLinks(comp);
+                }
+                foreach (Composite comp in cmd.Entries)
+                {
+                    cmd.Utils.PurgeDeadLinks(comp);
+                    cmd.Utils.PurgeDeadLinks(comp);
+                }
+                foreach (Composite comp in cmd.Entries)
+                {
+                    cmd.Utils.PurgeDeadLinks(comp);
+                    FlowgraphLayoutManager.EvaluateCompatibility(comp);
+                    if (!FlowgraphLayoutManager.IsCompatible(comp))
+                    {
+                        output.Add("\t - " + comp.name);
+                    }
+                }
+                output.Add("");
+            }
+            File.WriteAllLines("unsupported.log", output);
+        }
+
         public static void ProxyTester()
         {
             Directory.Delete("ProxyTest", true);
@@ -2216,9 +2256,7 @@ namespace CommandsEditor
         /// </summary>
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            var shortGuid = (ShortGuid)value;
-            // Write the value from the AsUInt32 property to the JSON output
-            writer.WriteValue(shortGuid.AsUInt32);
+            writer.WriteValue(((ShortGuid)value).ToByteString());
         }
 
         /// <summary>
@@ -2226,10 +2264,7 @@ namespace CommandsEditor
         /// </summary>
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            // Read the raw value from the JSON (should be an integer)
-            var uintValue = Convert.ToUInt32(reader.Value);
-            // Create a new ShortGuid using the constructor that takes a uint
-            return new ShortGuid(uintValue);
+            return new ShortGuid(reader.Value.ToString());
         }
     }
 }

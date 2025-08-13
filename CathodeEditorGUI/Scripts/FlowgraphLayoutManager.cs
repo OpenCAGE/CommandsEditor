@@ -142,14 +142,14 @@ namespace CommandsEditor
                 int links = _commands.Utils.CountLinks(composite);
                 if (links == 0)
                 {
-                    Debug.Log("Flowgraph Manager", "No page exists, but composite has no links, so adding default page");
+                    Debug.Log("Flowgraph Manager", "No page exists, but composite has no links, so adding default page - supported!");
                     RemoveAllLayouts(composite);
                     SaveLayout(null, composite, Path.GetFileName(composite.name));
                     SetCompatibilityInfo(composite, true);
                 }
                 else
                 {
-                    Debug.Log("Flowgraph Manager", "No page exists, but composite has links defined");
+                    Debug.Log("Flowgraph Manager", "No page exists, but composite has links defined - unsupported!");
                     SetCompatibilityInfo(composite, false);
                 }
             }
@@ -402,6 +402,16 @@ namespace CommandsEditor
             //Do we have the same number of links?
             if (flowgraphLinks.Count != compositeLinks.Count)
             {
+                Debug.Log("Flowgraph Manager", "Link count mismatch in page(s) for " + composite.name);
+#if DEBUG
+                // If in debug mode, output both lists of links so I can easily diff them if needed.
+                string dirName = "FGLayoutCheck/" + Path.GetFileName(composite.name.Replace(":", "_"));
+                Directory.CreateDirectory(dirName);
+                flowgraphLinks = flowgraphLinks.OrderBy(o => o.In.ParameterID.ToString()).ThenBy(o => o.Out.ParameterID.ToString()).ThenBy(o => o.In.EntityID.ToByteString()).ThenBy(o => o.Out.EntityID.ToByteString()).ToList();
+                compositeLinks = compositeLinks.OrderBy(o => o.In.ParameterID.ToString()).ThenBy(o => o.Out.ParameterID.ToString()).ThenBy(o => o.In.EntityID.ToByteString()).ThenBy(o => o.Out.EntityID.ToByteString()).ToList();
+                File.WriteAllText(dirName + "/FLOWGRAPH LINKS.json", JsonConvert.SerializeObject(flowgraphLinks, Newtonsoft.Json.Formatting.Indented, new ShortGuidConverter()));
+                File.WriteAllText(dirName + "/COMPOSITE LINKS.json", JsonConvert.SerializeObject(compositeLinks, Newtonsoft.Json.Formatting.Indented, new ShortGuidConverter()));
+#endif
                 return false;
             }
 
@@ -412,6 +422,7 @@ namespace CommandsEditor
             {
                 if (flowgraphLinks[i] != compositeLinks[i])
                 {
+                    Debug.Log("Flowgraph Manager", "Link mismatch at index " + i + " in page(s) for " + composite.name);
 #if DEBUG
                     // If in debug mode, output both lists of links so I can easily diff them if needed.
                     string dirName = "FGLayoutCheck/" + Path.GetFileName(composite.name.Replace(":", "_"));
@@ -434,7 +445,10 @@ namespace CommandsEditor
                         //Just be aware, the Flowgraph UI will need to be able to handle null entities safely.
 
                         if (metas[i].Nodes[x].ConnectionsOut.Count != 0)
+                        {
+                            Debug.Log("Flowgraph Manager", "Failed to look up entity " + metas[i].Nodes[x].EntityGUID.ToByteString() + " with connections out for " + composite.name);
                             return false;
+                        }
 
                         //This may seem like a ridiculous level of loops, but really, we should RARELY (or ideally never) get here. 
                         for (int p = 0; p < metas.Count; p++)
@@ -444,7 +458,10 @@ namespace CommandsEditor
                                 for (int y = 0; y < metas[p].Nodes[c].ConnectionsOut.Count; y++)
                                 {
                                     if (metas[p].Nodes[c].ConnectionsOut[y].ConnectedEntityGUID == metas[i].Nodes[x].EntityGUID)
+                                    {
+                                        Debug.Log("Flowgraph Manager", "Failed to look up entity " + metas[i].Nodes[x].EntityGUID.ToByteString() + " with connections in for " + composite.name);
                                         return false;
+                                    }
                                 }
                             }
                         }
@@ -452,6 +469,7 @@ namespace CommandsEditor
                 }
             }
 
+            Debug.Log("Flowgraph Manager", "Links match for " + composite.name);
             return true;
         }
 
