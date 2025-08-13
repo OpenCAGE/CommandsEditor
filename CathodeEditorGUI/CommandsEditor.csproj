@@ -355,6 +355,12 @@
     <Compile Include="Popups\RenameGeneric.Designer.cs">
       <DependentUpon>RenameGeneric.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\SelectDestinationPin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\SelectDestinationPin.Designer.cs">
+      <DependentUpon>SelectDestinationPin.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popups\SelectFunctionType.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -516,6 +522,7 @@
     </Compile>
     <Compile Include="Scripts\LocalDebug.cs" />
     <Compile Include="Scripts\Logger.cs" />
+    <Compile Include="Scripts\NodeUtils.cs" />
     <Compile Include="Scripts\ObjectExtensions.cs" />
     <Compile Include="Popups\AddOrEditResource.cs">
       <SubType>Form</SubType>
@@ -767,6 +774,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\RenameGeneric.resx">
       <DependentUpon>RenameGeneric.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\SelectDestinationPin.resx">
+      <DependentUpon>SelectDestinationPin.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\SelectFunctionType.resx">
       <DependentUpon>SelectFunctionType.cs</DependentUpon>

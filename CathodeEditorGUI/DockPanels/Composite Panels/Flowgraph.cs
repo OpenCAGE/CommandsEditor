@@ -2,6 +2,7 @@ using CATHODE;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CathodeLib;
+using CommandsEditor.Popups;
 using CommandsEditor.Popups.Base;
 using CommandsEditor.Popups.UserControls;
 using OpenCAGE;
@@ -56,6 +57,7 @@ namespace CommandsEditor
             stNodeEditor1.LoadAssembly(Application.ExecutablePath);
             stNodeEditor1.AllowSameOwnerConnections = true;
             stNodeEditor1.SelectedChanged += Owner_SelectedChanged;
+            stNodeEditor1.PinToNodeConnected += StNodeEditor1_PinToNodeConnected;
 
             //todo: i feel like these events should come from the compositedisplay?
             Singleton.OnEntityDeleted += OnEntityDeletedGlobally;
@@ -173,6 +175,18 @@ namespace CommandsEditor
             }
             stNodeEditor1.SetActiveNode(null);
             stNodeEditor1.RemoveAllSelectedNodes();
+        }
+
+        //if a line is dragged from a pin to a node: allow user to select the pin to connect to
+        SelectDestinationPin _destPinSelector = null;
+        private void StNodeEditor1_PinToNodeConnected(object sender, STNodeEditorPinToNodeEventArgs e)
+        {
+            if (_destPinSelector != null)
+                _destPinSelector.Close();
+
+            _destPinSelector = new SelectDestinationPin();
+            _destPinSelector.Show();
+            _destPinSelector.PopulateOptions(e.ToNode, e.FromPin);
         }
 
         private void OnEntityAddedGlobally(Entity entity)
@@ -577,151 +591,7 @@ namespace CommandsEditor
         //add all possible pins to a given node
         private void AddAllPins(STNode node)
         {
-            Entity entity = _composite.GetEntityByID(node.ShortGUID);
-            switch (entity.variant)
-            {
-                case EntityVariant.VARIABLE:
-                    VariableEntity varEnt = (VariableEntity)entity;
-                    PinInfo info = _commands.Utils.GetPinInfo(_composite, varEnt);
-                    switch (info.PinTypeGUID.AsCompositePinType)
-                    {
-                        case CompositePinType.CompositeInputAnimationInfoVariablePin:
-                        case CompositePinType.CompositeInputBoolVariablePin:
-                        case CompositePinType.CompositeInputDirectionVariablePin:
-                        case CompositePinType.CompositeInputFloatVariablePin:
-                        case CompositePinType.CompositeInputIntVariablePin:
-                        case CompositePinType.CompositeInputObjectVariablePin:
-                        case CompositePinType.CompositeInputPositionVariablePin:
-                        case CompositePinType.CompositeInputStringVariablePin:
-                        case CompositePinType.CompositeInputVariablePin:
-                        case CompositePinType.CompositeInputZoneLinkPtrVariablePin:
-                        case CompositePinType.CompositeInputZonePtrVariablePin:
-                        case CompositePinType.CompositeInputEnumVariablePin:
-                        case CompositePinType.CompositeInputEnumStringVariablePin:
-                        case CompositePinType.CompositeOutputAnimationInfoVariablePin:
-                        case CompositePinType.CompositeOutputBoolVariablePin:
-                        case CompositePinType.CompositeOutputDirectionVariablePin:
-                        case CompositePinType.CompositeOutputFloatVariablePin:
-                        case CompositePinType.CompositeOutputIntVariablePin:
-                        case CompositePinType.CompositeOutputObjectVariablePin:
-                        case CompositePinType.CompositeOutputPositionVariablePin:
-                        case CompositePinType.CompositeOutputStringVariablePin:
-                        case CompositePinType.CompositeOutputVariablePin:
-                        case CompositePinType.CompositeOutputZoneLinkPtrVariablePin:
-                        case CompositePinType.CompositeOutputZonePtrVariablePin:
-                        case CompositePinType.CompositeOutputEnumVariablePin:
-                        case CompositePinType.CompositeOutputEnumStringVariablePin:
-                            node.AddBottomOption(varEnt.name);
-                            break;
-                        case CompositePinType.CompositeMethodPin:
-                            node.AddOutputOption(varEnt.name);
-                            break;
-                        case CompositePinType.CompositeTargetPin:
-                            node.AddInputOption(varEnt.name);
-                            break;
-                        case CompositePinType.CompositeReferencePin:
-                            node.AddTopOption(varEnt.name, PinStyle.ArrowDown);
-                            break;
-                    }
-                    break;
-                default:
-                    List<(ShortGuid, ParameterVariant, DataType)> allParameters = _commands.Utils.GetAllParameters(entity, _composite);
-                    foreach ((ShortGuid, ParameterVariant, DataType) parameter in allParameters)
-                    {
-                        switch (parameter.Item2)
-                        {
-                            case ParameterVariant.INPUT_PIN:
-                            case ParameterVariant.PARAMETER:
-                            case ParameterVariant.STATE_PARAMETER:
-                                node.AddTopOption(parameter.Item1, PinStyle.ArrowDown);
-                                break;
-                            case ParameterVariant.METHOD_PIN:
-                                node.AddInputOption(parameter.Item1);
-                                ShortGuid relay = _commands.Utils.GetRelay(parameter.Item1);
-                                if (relay != ShortGuid.Invalid)
-                                    node.AddOutputOption(relay);
-                                break;
-                            case ParameterVariant.OUTPUT_PIN:
-                                node.AddTopOption(parameter.Item1, PinStyle.ArrowUp);
-                                break;
-                            case ParameterVariant.TARGET_PIN:
-                                node.AddOutputOption(parameter.Item1);
-                                break;
-                            case ParameterVariant.REFERENCE_PIN:
-                                node.AddBottomOption(parameter.Item1);
-                                break;
-                        }
-
-                        if (entity.variant == EntityVariant.FUNCTION)
-                        {
-                            FunctionEntity func = (FunctionEntity)entity;
-                            switch (func.function.AsFunctionType)
-                            {
-                                case FunctionType.CAGEAnimation:
-                                    CAGEAnimation cageAnim = (CAGEAnimation)func;
-                                    foreach (CAGEAnimation.EventTrack track in cageAnim.events)
-                                    {
-                                        foreach (CAGEAnimation.EventTrack.Keyframe keyframe in track.keyframes)
-                                        {
-                                            if (keyframe.track_type != CAGEAnimation.TrackType.STRING)
-                                                continue;
-
-                                            node.AddOutputOption(keyframe.forward);
-                                            node.AddOutputOption(keyframe.reverse);
-                                        }
-                                    }
-                                    break;
-                                case FunctionType.TriggerSequence:
-                                    TriggerSequence triggerSeq = (TriggerSequence)func;
-                                    foreach (TriggerSequence.MethodEntry method in triggerSeq.methods)
-                                    {
-                                        node.AddInputOption(method.method);
-                                        node.AddOutputOption(method.relay);
-                                        node.AddOutputOption(method.finished);
-                                    }
-                                    HashSet<ShortGuid> newTopOptions = new HashSet<ShortGuid>();
-                                    HashSet<ShortGuid> checkedFunctionTypes = new HashSet<ShortGuid>();
-                                    HashSet<ShortGuid> checkedEntityGuids = new HashSet<ShortGuid>();
-                                    foreach (TriggerSequence.SequenceEntry entry in triggerSeq.sequence)
-                                    {
-                                        ShortGuid entryEntityGuid = entry.connectedEntity.GetPointedEntityID();
-                                        if (checkedEntityGuids.Contains(entryEntityGuid))
-                                            continue;
-                                        checkedEntityGuids.Add(entryEntityGuid);
-
-                                        (Composite entryComp, Entity entryEnt) = _commands.Utils.GetResolvedTarget(_commands.Utils.ResolveAlias(entry.connectedEntity, _composite));
-                                        if (entryEnt == null) continue;
-
-                                        if (entryEnt.variant == EntityVariant.FUNCTION)
-                                        {
-                                            ShortGuid entryFunction = ((FunctionEntity)entryEnt).function;
-                                            if (checkedFunctionTypes.Contains(entryFunction))
-                                                continue;
-                                            checkedFunctionTypes.Add(entryFunction);
-                                        }
-
-                                        List<(ShortGuid, ParameterVariant, DataType)> allParametersEntry = _commands.Utils.GetAllParameters(entryEnt, entryComp);
-                                        foreach ((ShortGuid, ParameterVariant, DataType) parameterEntry in allParametersEntry)
-                                        {
-                                            switch (parameterEntry.Item2)
-                                            {
-                                                //TODO: need to verify it is actually these three, and not just parameters
-                                                case ParameterVariant.INPUT_PIN:
-                                                case ParameterVariant.PARAMETER:
-                                                case ParameterVariant.STATE_PARAMETER:
-                                                    newTopOptions.Add(parameterEntry.Item1);
-                                                    break;
-                                            }
-                                        }
-                                    }
-                                    foreach (ShortGuid topOption in newTopOptions)
-                                        node.AddTopOption(topOption, PinStyle.ArrowDown);
-                                    break;
-                            }
-                        }
-                    }
-                    break;
-            }
+            node.AddAllPins(_composite, _commands);
         }
 
         private void removeUnusedPinsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -730,28 +600,9 @@ namespace CommandsEditor
             RemoveUnusedPins(node);
         }
 
-        private static void RemoveUnusedPins(STNode node)
+        private void RemoveUnusedPins(STNode node)
         {
-            //Variable entities only ever have the right pins added
-            if (node.Entity.variant == EntityVariant.VARIABLE)
-                return;
-
-            STNodeOption[] ins = node.GetInputOptions();
-            for (int i = 0; i < ins.Length; i++)
-                if (ins[i].ConnectionCount == 0)
-                    node.RemoveInputOption(ins[i].ShortGUID);
-            STNodeOption[] outs = node.GetOutputOptions();
-            for (int i = 0; i < outs.Length; i++)
-                if (outs[i].ConnectionCount == 0)
-                    node.RemoveOutputOption(outs[i].ShortGUID);
-            STNodeOption[] ups = node.GetTopOptions();
-            for (int i = 0; i < ups.Length; i++)
-                if (ups[i].ConnectionCount == 0)
-                    node.RemoveTopOption(ups[i].ShortGUID);
-            STNodeOption[] downs = node.GetBottomOptions();
-            for (int i = 0; i < downs.Length; i++)
-                if (downs[i].ConnectionCount == 0)
-                    node.RemoveBottomOption(downs[i].ShortGUID);
+            node.RemoveUnusedPins();
         }
 
         private void deleteLinkToolStripMenuItem_Click(object sender, EventArgs e)
