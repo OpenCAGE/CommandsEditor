@@ -20,7 +20,6 @@ using OpenCAGE;
 using System.IO;
 using System.Runtime.Remoting.Messaging;
 using ListViewItem = System.Windows.Forms.ListViewItem;
-using ListViewGroupCollapse;
 using System.Threading;
 using System.Windows.Media.Animation;
 using CathodeLib;

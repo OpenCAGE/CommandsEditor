@@ -417,6 +417,9 @@
     <Compile Include="Scripts\DirtyTracker.cs" />
     <Compile Include="Scripts\EnumStringListViewItems.cs" />
     <Compile Include="Scripts\FlowgraphLayoutManager.cs" />
+    <Compile Include="Scripts\GroupedListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Scripts\InstancedResolver.cs" />
     <Compile Include="Scripts\LocalDebug_NEW.cs" />
     <Compile Include="Scripts\InstanceWriter.cs" />
