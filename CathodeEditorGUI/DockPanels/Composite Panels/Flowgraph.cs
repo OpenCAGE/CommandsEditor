@@ -193,16 +193,15 @@ namespace CommandsEditor
         {
             if (SettingsManager.GetBool(Singleton.Settings.MakeNodeWhenMakeEntity))
             {
-                AddNodeForEntityAndSelect(entity);
+                SelectNode(AddNodeForEntity(entity));
             }
         }
 
-        private STNode AddNodeForEntityAndSelect(Entity entity)
+        private STNode AddNodeForEntity(Entity entity)
         {
             STNode node = EntityToNode(entity);
             if (SettingsManager.GetBool(Singleton.Settings.PopulateAllPinsOnCreateNode))
                 AddAllPins(node);
-            SelectNode(node);
             return node;
         }
 
@@ -546,7 +545,9 @@ namespace CommandsEditor
         {
             Entity selectedEntity = Singleton.Editor?.CommandsDisplay?.CompositeDisplay?.EntityDisplay?.Entity;
             if (selectedEntity == null) return;
-            AddNodeForEntityAndSelect(selectedEntity).SetPosition(new Point((int)stNodeEditor1.MousePositionInCanvas.X, (int)stNodeEditor1.MousePositionInCanvas.Y));
+            STNode node = AddNodeForEntity(selectedEntity);
+            node.SetPosition(new Point((int)stNodeEditor1.MousePositionInCanvas.X, (int)stNodeEditor1.MousePositionInCanvas.Y));
+            SelectNode(node);
         }
 
         //delete the whole entity and associated nodes
@@ -635,20 +636,16 @@ namespace CommandsEditor
         private void duplicateToolStripMenuItem_Click(object sender, EventArgs e)
         {
             STNode node = stNodeEditor1.GetHoveredNode();
-            DuplicateNode(node);
-        }
-        private STNode DuplicateNode(STNode node)
-        {
             STNode duplicated = EntityToNode(node.Entity);
             SetSameOptions(node, duplicated);
             duplicated.SetPosition(new Point(node.Location.X + 15, node.Location.Y + 15));
+            SelectNode(duplicated);
 
             //TODO: do we really want to *modify* a duplicated node like this?
             //if (SettingsManager.GetBool(Singleton.Settings.PopulateAllPinsOnCreateNode))
             //    AddAllPins(node);
-
-            return duplicated;
         }
+
         private void SetSameOptions(STNode toCopyFrom, STNode toApplyTo)
         {
             {
@@ -689,9 +686,10 @@ namespace CommandsEditor
 
             Singleton.OnEntityAdded -= OnEntityAddedGlobally;
             Entity newEnt = Singleton.Editor.CommandsDisplay.CompositeDisplay.AddCopyOfEntity(ent);
-            STNode newNode = AddNodeForEntityAndSelect(newEnt);
+            STNode newNode = AddNodeForEntity(newEnt);
             SetSameOptions(node, newNode);
             newNode.SetPosition(new Point((int)stNodeEditor1.MousePositionInCanvas.X, (int)stNodeEditor1.MousePositionInCanvas.Y));
+            SelectNode(newNode);
             Singleton.OnEntityAdded += OnEntityAddedGlobally;
         }
 
@@ -781,7 +779,9 @@ namespace CommandsEditor
         private void OnEntityAddedViaPopup(Entity entity)
         {
             EntityCreationPopupClosed(null, null);
-            AddNodeForEntityAndSelect(entity).SetPosition(new Point((int)_createEntViaPopupPos.X, (int)_createEntViaPopupPos.Y));
+            STNode node = AddNodeForEntity(entity);
+            node.SetPosition(new Point((int)_createEntViaPopupPos.X, (int)_createEntViaPopupPos.Y));
+            SelectNode(node);
         }
         private void EntityCreationPopupClosed(object sender, FormClosedEventArgs e)
         {
