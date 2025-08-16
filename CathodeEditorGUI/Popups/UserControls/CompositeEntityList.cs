@@ -2,7 +2,6 @@
 using CATHODE.Scripting.Internal;
 using CathodeLib;
 using CommandsEditor.UserControls;
-using ListViewGroupCollapse;
 using OpenCAGE;
 using System;
 using System.Collections.Generic;

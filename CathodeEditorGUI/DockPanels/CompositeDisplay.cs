@@ -3,7 +3,6 @@ using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CathodeLib;
 using CommandsEditor.Popups.UserControls;
-using ListViewGroupCollapse;
 using OpenCAGE;
 using ST.Library.UI.NodeEditor;
 using System;
