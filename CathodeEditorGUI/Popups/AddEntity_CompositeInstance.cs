@@ -126,7 +126,7 @@ namespace CommandsEditor
             }
 
             //Check logic errors (we can't have cyclical references)
-            if (comp == _composite)
+            if (comp == _composite /*|| GetChildInstancedComposites(_composite).Contains(_composite)*/)
             {
                 MessageBox.Show("You cannot create an entity which instances the composite it is contained with - this will result in an infinite loop at runtime! Please check your logic!.", "Logic error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -150,6 +150,19 @@ namespace CommandsEditor
 
             Singleton.OnEntityAdded?.Invoke(newEntity);
             this.Close();
+        }
+
+        private List<Composite> GetChildInstancedComposites(Composite composite)
+        {
+            List<Composite> instances = new List<Composite>();
+            foreach (FunctionEntity ent in composite.functions_dictionary.Values)
+            {
+                Composite instance = Content.commands.GetComposite(ent.function);
+                if (instance == null) continue;
+                instances.Add(instance);
+                instances.AddRange(GetChildInstancedComposites(instance));
+            }
+            return instances;
         }
 
         private void CreateEntityOnEnterKey(object sender, KeyEventArgs e)
