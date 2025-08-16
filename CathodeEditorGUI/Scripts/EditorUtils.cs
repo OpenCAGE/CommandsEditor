@@ -295,7 +295,7 @@ namespace CommandsEditor
                     desc = "[PROXY] " + _content.commands.Utils.GetEntityName(composite.shortGUID, entity.shortGUID) + " (" + _content.commands.Utils.GetResolvedAsString(_content.commands.Utils.ResolveProxy((ProxyEntity)entity), false) + ")";
                     break;
             }
-            bool showID = SettingsManager.GetBool(Singleton.Settings.EntIdOpt);
+            bool showID = SettingsManager.GetBool(Singleton.Settings.ShowShortGuids);
             return (showID ? "[" + entity.shortGUID.ToByteString() + "] " : "") + desc;
         }
 

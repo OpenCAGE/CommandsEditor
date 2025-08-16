@@ -38,7 +38,7 @@ namespace CommandsEditor
             searchFunctionTypes.Visible = false;
 
             bool hasID = entityList.Columns.ContainsKey("ID");
-            bool showID = SettingsManager.GetBool(Singleton.Settings.EntIdOpt);
+            bool showID = SettingsManager.GetBool(Singleton.Settings.ShowShortGuids);
             if (showID && !hasID)
                 entityList.Columns.Add(new ColumnHeader() { Name = "ID", Text = "ID", Width = 100 });
             else if (!showID && hasID)

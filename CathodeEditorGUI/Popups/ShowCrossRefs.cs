@@ -34,7 +34,7 @@ namespace CommandsEditor
             InitializeComponent();
 
             bool hasID = entityList.Columns.ContainsKey("ID");
-            bool showID = SettingsManager.GetBool(Singleton.Settings.EntIdOpt);
+            bool showID = SettingsManager.GetBool(Singleton.Settings.ShowShortGuids);
             if (showID && !hasID)
                 entityList.Columns.Add(new ColumnHeader() { Name = "ID", Text = "ID", Width = 100 });
             else if (!showID && hasID)
@@ -169,7 +169,7 @@ namespace CommandsEditor
 
         private SynchronizedCollection<EntityRef> GetEntityRefs(CurrentDisplay display)
         {
-            bool showIDs = SettingsManager.GetBool(Singleton.Settings.EntIdOpt);
+            bool showIDs = SettingsManager.GetBool(Singleton.Settings.ShowShortGuids);
             SynchronizedCollection<EntityRef> entityRefs = new SynchronizedCollection<EntityRef>();
             if (display == CurrentDisplay.FLOWGRAPHS)
             {

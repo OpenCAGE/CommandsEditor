@@ -50,6 +50,7 @@ namespace CommandsEditor
             this.searchOnlyCompositeNames = new System.Windows.Forms.ToolStripMenuItem();
             this.entityDisplayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showEntityIDs = new System.Windows.Forms.ToolStripMenuItem();
+            this.createFlowgraphNodeWhenEntityCreatedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.populateAllNodePinsWhenCreatedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.giveOptionToDeleteEntityWhenNoNodesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.miscToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -71,7 +72,6 @@ namespace CommandsEditor
             this.statusText = new System.Windows.Forms.ToolStripStatusLabel();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.createFlowgraphNodeWhenEntityCreatedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -247,22 +247,29 @@ namespace CommandsEditor
             // showEntityIDs
             // 
             this.showEntityIDs.Name = "showEntityIDs";
-            this.showEntityIDs.Size = new System.Drawing.Size(312, 22);
-            this.showEntityIDs.Text = "Show Entity IDs";
+            this.showEntityIDs.Size = new System.Drawing.Size(311, 22);
+            this.showEntityIDs.Text = "Show ShortGuids";
             this.showEntityIDs.ToolTipText = "Show entity IDs within the editor UI.";
             this.showEntityIDs.Click += new System.EventHandler(this.showEntityIDs_Click);
+            // 
+            // createFlowgraphNodeWhenEntityCreatedToolStripMenuItem
+            // 
+            this.createFlowgraphNodeWhenEntityCreatedToolStripMenuItem.Name = "createFlowgraphNodeWhenEntityCreatedToolStripMenuItem";
+            this.createFlowgraphNodeWhenEntityCreatedToolStripMenuItem.Size = new System.Drawing.Size(311, 22);
+            this.createFlowgraphNodeWhenEntityCreatedToolStripMenuItem.Text = "Create Flowgraph Node When Entity Created";
+            this.createFlowgraphNodeWhenEntityCreatedToolStripMenuItem.Click += new System.EventHandler(this.createFlowgraphNodeWhenEntityCreatedToolStripMenuItem_Click);
             // 
             // populateAllNodePinsWhenCreatedToolStripMenuItem
             // 
             this.populateAllNodePinsWhenCreatedToolStripMenuItem.Name = "populateAllNodePinsWhenCreatedToolStripMenuItem";
-            this.populateAllNodePinsWhenCreatedToolStripMenuItem.Size = new System.Drawing.Size(312, 22);
+            this.populateAllNodePinsWhenCreatedToolStripMenuItem.Size = new System.Drawing.Size(311, 22);
             this.populateAllNodePinsWhenCreatedToolStripMenuItem.Text = "Populate All Node Pins When Created";
             this.populateAllNodePinsWhenCreatedToolStripMenuItem.Click += new System.EventHandler(this.populateAllNodePinsWhenCreatedToolStripMenuItem_Click);
             // 
             // giveOptionToDeleteEntityWhenNoNodesToolStripMenuItem
             // 
             this.giveOptionToDeleteEntityWhenNoNodesToolStripMenuItem.Name = "giveOptionToDeleteEntityWhenNoNodesToolStripMenuItem";
-            this.giveOptionToDeleteEntityWhenNoNodesToolStripMenuItem.Size = new System.Drawing.Size(312, 22);
+            this.giveOptionToDeleteEntityWhenNoNodesToolStripMenuItem.Size = new System.Drawing.Size(311, 22);
             this.giveOptionToDeleteEntityWhenNoNodesToolStripMenuItem.Text = "Give Option To Delete Entity When No Nodes";
             this.giveOptionToDeleteEntityWhenNoNodesToolStripMenuItem.Click += new System.EventHandler(this.giveOptionToDeleteEntityWhenNoNodesToolStripMenuItem_Click);
             // 
@@ -283,7 +290,7 @@ namespace CommandsEditor
             // showConfirmationWhenSavingToolStripMenuItem
             // 
             this.showConfirmationWhenSavingToolStripMenuItem.Name = "showConfirmationWhenSavingToolStripMenuItem";
-            this.showConfirmationWhenSavingToolStripMenuItem.Size = new System.Drawing.Size(291, 22);
+            this.showConfirmationWhenSavingToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
             this.showConfirmationWhenSavingToolStripMenuItem.Text = "Show Confirmation When Saving";
             this.showConfirmationWhenSavingToolStripMenuItem.ToolTipText = "If enabled, a confirmation will show after a successful save.";
             this.showConfirmationWhenSavingToolStripMenuItem.Click += new System.EventHandler(this.showConfirmationWhenSavingToolStripMenuItem_Click);
@@ -291,7 +298,7 @@ namespace CommandsEditor
             // useTexturedModelViewExperimentalToolStripMenuItem
             // 
             this.useTexturedModelViewExperimentalToolStripMenuItem.Name = "useTexturedModelViewExperimentalToolStripMenuItem";
-            this.useTexturedModelViewExperimentalToolStripMenuItem.Size = new System.Drawing.Size(291, 22);
+            this.useTexturedModelViewExperimentalToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
             this.useTexturedModelViewExperimentalToolStripMenuItem.Text = "Use Textured Model View (Experimental)";
             this.useTexturedModelViewExperimentalToolStripMenuItem.ToolTipText = "If enabled, the model previewer will try and find textures to render.";
             this.useTexturedModelViewExperimentalToolStripMenuItem.Click += new System.EventHandler(this.useTexturedModelViewExperimentalToolStripMenuItem_Click);
@@ -299,35 +306,35 @@ namespace CommandsEditor
             // keepFunctionUsesWindowOpenToolStripMenuItem
             // 
             this.keepFunctionUsesWindowOpenToolStripMenuItem.Name = "keepFunctionUsesWindowOpenToolStripMenuItem";
-            this.keepFunctionUsesWindowOpenToolStripMenuItem.Size = new System.Drawing.Size(291, 22);
+            this.keepFunctionUsesWindowOpenToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
             this.keepFunctionUsesWindowOpenToolStripMenuItem.Text = "Keep Global Search Window Open";
             this.keepFunctionUsesWindowOpenToolStripMenuItem.Click += new System.EventHandler(this.keepFunctionUsesWindowOpenToolStripMenuItem_Click);
             // 
             // resetUILayoutsToolStripMenuItem
             // 
             this.resetUILayoutsToolStripMenuItem.Name = "resetUILayoutsToolStripMenuItem";
-            this.resetUILayoutsToolStripMenuItem.Size = new System.Drawing.Size(291, 22);
+            this.resetUILayoutsToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
             this.resetUILayoutsToolStripMenuItem.Text = "Reset UI Layouts";
             this.resetUILayoutsToolStripMenuItem.Click += new System.EventHandler(this.resetUILayoutsToolStripMenuItem_Click);
             // 
             // writeInstancedResourcesExperimentalToolStripMenuItem
             // 
             this.writeInstancedResourcesExperimentalToolStripMenuItem.Name = "writeInstancedResourcesExperimentalToolStripMenuItem";
-            this.writeInstancedResourcesExperimentalToolStripMenuItem.Size = new System.Drawing.Size(291, 22);
+            this.writeInstancedResourcesExperimentalToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
             this.writeInstancedResourcesExperimentalToolStripMenuItem.Text = "Write Instanced Resources (Experimental)";
             this.writeInstancedResourcesExperimentalToolStripMenuItem.Click += new System.EventHandler(this.writeInstancedResourcesExperimentalToolStripMenuItem_Click);
             // 
             // setNumericStepToolStripMenuItem
             // 
             this.setNumericStepToolStripMenuItem.Name = "setNumericStepToolStripMenuItem";
-            this.setNumericStepToolStripMenuItem.Size = new System.Drawing.Size(291, 22);
+            this.setNumericStepToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
             this.setNumericStepToolStripMenuItem.Text = "Set Numeric Step";
             this.setNumericStepToolStripMenuItem.Click += new System.EventHandler(this.setNumericStepToolStripMenuItem_Click);
             // 
             // savePAKAndBINToolStripMenuItem
             // 
             this.savePAKAndBINToolStripMenuItem.Name = "savePAKAndBINToolStripMenuItem";
-            this.savePAKAndBINToolStripMenuItem.Size = new System.Drawing.Size(291, 22);
+            this.savePAKAndBINToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
             this.savePAKAndBINToolStripMenuItem.Text = "Save Commands PAK and BIN";
             this.savePAKAndBINToolStripMenuItem.Click += new System.EventHandler(this.savePAKAndBINToolStripMenuItem_Click);
             // 
@@ -412,13 +419,6 @@ namespace CommandsEditor
             this.dockPanel.Size = new System.Drawing.Size(1581, 757);
             this.dockPanel.TabIndex = 5;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
-            // 
-            // createFlowgraphNodeWhenEntityCreatedToolStripMenuItem
-            // 
-            this.createFlowgraphNodeWhenEntityCreatedToolStripMenuItem.Name = "createFlowgraphNodeWhenEntityCreatedToolStripMenuItem";
-            this.createFlowgraphNodeWhenEntityCreatedToolStripMenuItem.Size = new System.Drawing.Size(312, 22);
-            this.createFlowgraphNodeWhenEntityCreatedToolStripMenuItem.Text = "Create Flowgraph Node When Entity Created";
-            this.createFlowgraphNodeWhenEntityCreatedToolStripMenuItem.Click += new System.EventHandler(this.createFlowgraphNodeWhenEntityCreatedToolStripMenuItem_Click);
             // 
             // CommandsEditor
             // 

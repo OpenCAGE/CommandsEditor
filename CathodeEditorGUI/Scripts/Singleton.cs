@@ -73,7 +73,7 @@ namespace CommandsEditor
         {
             public readonly string ServerOpt = "CE_ConnectToUnity";
             public readonly string NodeOpt = "CS_NodeView";
-            public readonly string EntIdOpt = "CS_ShowEntityIDs";
+            public readonly string ShowShortGuids = "CS_ShowEntityIDs";
             public readonly string InstOpt = "CS_InstanceMode";
             public readonly string CompNameOnlyOpt = "CS_SearchOnlyCompName";
             public readonly string UseEntityTabs = "CS_UseEntityTabs";

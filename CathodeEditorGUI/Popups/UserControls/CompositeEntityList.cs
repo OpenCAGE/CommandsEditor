@@ -186,7 +186,7 @@ namespace CommandsEditor.Popups.UserControls
         private void PopulateEntities(List<Entity> entities)
         {
             bool hasID = composite_content.Columns.ContainsKey("ID");
-            bool showID = SettingsManager.GetBool(Singleton.Settings.EntIdOpt);
+            bool showID = SettingsManager.GetBool(Singleton.Settings.ShowShortGuids);
             if (showID && !hasID)
                 composite_content.Columns.Add(new ColumnHeader() { Name = "ID", Text = "ID", Width = 100 });
             else if (!showID && hasID)
@@ -255,7 +255,7 @@ namespace CommandsEditor.Popups.UserControls
                             continue;
 
                         //If entity IDs column is hidden, we should ignore it in the search
-                        if (x == item.SubItems.Count - 1 && !SettingsManager.GetBool(Singleton.Settings.EntIdOpt))
+                        if (x == item.SubItems.Count - 1 && !SettingsManager.GetBool(Singleton.Settings.ShowShortGuids))
                             continue;
 
                         filteredEntities.Add(allEntities[i]);

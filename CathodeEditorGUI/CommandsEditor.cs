@@ -197,7 +197,7 @@ namespace CommandsEditor
             focusOnSelectedToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.UNITY_FocusEntity); focusOnSelectedToolStripMenuItem.PerformClick();
             ShowLevelViewerButton();
 
-            showEntityIDs.Checked = !SettingsManager.GetBool(Singleton.Settings.EntIdOpt); showEntityIDs.PerformClick();
+            showEntityIDs.Checked = !SettingsManager.GetBool(Singleton.Settings.ShowShortGuids); showEntityIDs.PerformClick();
             searchOnlyCompositeNames.Checked = !SettingsManager.GetBool(Singleton.Settings.CompNameOnlyOpt); searchOnlyCompositeNames.PerformClick();
             useTexturedModelViewExperimentalToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.ShowTexOpt); useTexturedModelViewExperimentalToolStripMenuItem.PerformClick();
             keepFunctionUsesWindowOpenToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.KeepUsesWindowOpen); keepFunctionUsesWindowOpenToolStripMenuItem.PerformClick();
@@ -603,7 +603,7 @@ namespace CommandsEditor
         private void showEntityIDs_Click(object sender, EventArgs e)
         {
             showEntityIDs.Checked = !showEntityIDs.Checked;
-            SettingsManager.SetBool(Singleton.Settings.EntIdOpt, showEntityIDs.Checked);
+            SettingsManager.SetBool(Singleton.Settings.ShowShortGuids, showEntityIDs.Checked);
 
             _commandsDisplay?.Reload(true);
             //TODO: also reload hierarchy cache
