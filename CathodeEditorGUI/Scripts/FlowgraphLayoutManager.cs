@@ -252,18 +252,20 @@ namespace CommandsEditor
             Debug.Log("Flowgraph Manager", "Loaded " + _history.last_composite_page.Count + " previously opened pages!");
 
             //Copy the default layouts over for composites in this Commands if they don't already exist
-            FlowgraphMeta.SupportedLevel level = (FlowgraphMeta.SupportedLevel)Enum.Parse(typeof(FlowgraphMeta.SupportedLevel), Path.GetFileName(_commands.EntryPoints[0].name).ToUpper()); //TODO: should really have a global level name based on what's loading, rather than this.
-            if (_userDefinedLayouts.flowgraphs.Count == 0)
+            if (Enum.TryParse(Path.GetFileName(_commands.EntryPoints[0].name).ToUpper(), out FlowgraphMeta.SupportedLevel level))
             {
-                for (int i = 0; i < _preDefinedLayouts.flowgraphs.Count; i++)
+                if (_userDefinedLayouts.flowgraphs.Count == 0)
                 {
-                    if (!_preDefinedLayouts.flowgraphs[i].SupportedLevels.HasFlag(level))
-                        continue;
-                    if (_commands.Entries.FirstOrDefault(o => o.shortGUID == _preDefinedLayouts.flowgraphs[i].CompositeGUID) == null)
-                        continue;
-                    _userDefinedLayouts.flowgraphs.Add(_preDefinedLayouts.flowgraphs[i].Copy());
+                    for (int i = 0; i < _preDefinedLayouts.flowgraphs.Count; i++)
+                    {
+                        if (!_preDefinedLayouts.flowgraphs[i].SupportedLevels.HasFlag(level))
+                            continue;
+                        if (_commands.Entries.FirstOrDefault(o => o.shortGUID == _preDefinedLayouts.flowgraphs[i].CompositeGUID) == null)
+                            continue;
+                        _userDefinedLayouts.flowgraphs.Add(_preDefinedLayouts.flowgraphs[i].Copy());
+                    }
+                    Debug.Log("Flowgraph Manager", "Applied " + _userDefinedLayouts.flowgraphs.Count + " suitable flowgraph layouts, of the " + _preDefinedLayouts.flowgraphs.Count + " available!");
                 }
-                Debug.Log("Flowgraph Manager", "Applied " + _userDefinedLayouts.flowgraphs.Count + " suitable flowgraph layouts, of the " + _preDefinedLayouts.flowgraphs.Count + " available!");
             }
         }
 
