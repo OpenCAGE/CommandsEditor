@@ -60,9 +60,23 @@ namespace CommandsEditor
             {
                 var metadata = Content.commands.Utils.GetParameterMetadata(ent, options[i].Text, comp);
 
-                //TODO: Maybe we don't want to show other things here too?
-                if (metadata.Item1 == null || metadata.Item1.Value == ParameterVariant.METHOD_FUNCTION || metadata.Item1.Value == ParameterVariant.TARGET_PIN)
+                if (metadata.Item1 == null)
                     continue;
+
+                //If the composite supports flowgraphs, we should only show a filtered list of parameters (not the event pins)
+                if (Singleton.Editor.CommandsDisplay.CompositeDisplay.SupportsFlowgraphs)
+                {
+                    switch (metadata.Item1)
+                    {
+                        case ParameterVariant.REFERENCE_PIN:
+                        case ParameterVariant.TARGET_PIN:
+                        case ParameterVariant.INTERNAL:
+                        case ParameterVariant.METHOD_FUNCTION:
+                        case ParameterVariant.METHOD_PIN:
+                        case ParameterVariant.OUTPUT_PIN:
+                            continue;
+                    }
+                }
 
                 options[i].Checked = ent.GetParameter(options[i].Text) != null;
                 options[i].SubItems[1].Text = metadata.Item2.Value.ToUIString();

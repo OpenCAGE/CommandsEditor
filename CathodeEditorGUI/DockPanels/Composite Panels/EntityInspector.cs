@@ -383,7 +383,6 @@ namespace CommandsEditor.DockPanels
                     switch (parameter.Item2)
                     {
                         case ParameterVariant.INPUT_PIN:
-                        case ParameterVariant.OUTPUT_PIN:
                         case ParameterVariant.PARAMETER:
                         case ParameterVariant.STATE_PARAMETER:
                             visibleParams.Add(parameter.Item1);
