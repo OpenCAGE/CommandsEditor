@@ -283,12 +283,14 @@ namespace CommandsEditor
                 nodes[i] = EntityToNode(entities[i].Item1);
                 nodes[i].SetPosition(entities[i].Item2.Position);
                 nodes[i].NodeID = entities[i].Item2.NodeID;
+            }
 
-                // !!TODO!!
-                // This is a temporary solution: adding all the pins means they're in the right place, then we can link them up, and remove the unused ones.
-                // It's REALLY not ideal as it adds a lot of overhead adding and removing things for no reason, but it's the quickest hack fix for now.
-                // I should instead check the type of pin it should be when linking, and add it then, like how I add the in/out links for dynamic things (TriggerSeq/CAGEAnim).
-                AddAllPins(nodes[i]);
+            //Add only the pins needed for connections and user-added pins
+            for (int i = 0; i < entities.Count; i++)
+            {
+                nodes[i].AddPinsForConnections(composite, _commands, 
+                    entities[i].Item2.ConnectionsOut, 
+                    entities[i].Item2.UnlinkedPins);
             }
 
             //Populate connections
@@ -301,17 +303,20 @@ namespace CommandsEditor
                     EntityConnector connector = nodes[i].Entity.childLinks.FirstOrDefault(o => o.thisParamID == connectionMeta.ParameterGUID && o.linkedParamID == connectionMeta.ConnectedParameterGUID && o.linkedEntityID == connectedNode.ShortGUID);
                     if (!connector.ID.IsInvalid) //NOTE: This condition should never fail if the layout has been checked by FlowgraphLayoutManager!
                     {
+                        //Add pins for both nodes in the connection if they don't exist
+                        nodes[i].AddPinsForConnection(connectedNode, connectionMeta.ParameterGUID, connectionMeta.ConnectedParameterGUID, composite, _commands);
+                        
                         STNodeOption pinOut = nodes[i].GetOption(connectionMeta.ParameterGUID);
                         STNodeOption pinIn = connectedNode.GetOption(connectionMeta.ConnectedParameterGUID);
 
                         if (pinIn == null)
                         {
-                            Debug.Log("Flowgraph", "WARNING: Adding input option for " + nodes[i].Title + ", as AddAllPins missed it...");
+                            Debug.Log("Flowgraph", "WARNING: Adding input option for " + connectedNode.Title + ", as pin was not found...");
                             pinIn = connectedNode.AddInputOption(connectionMeta.ConnectedParameterGUID);
                         }
                         if (pinOut == null)
                         {
-                            Debug.Log("Flowgraph", "WARNING: Adding output option for " + nodes[i].Title + ", as AddAllPins missed it...");
+                            Debug.Log("Flowgraph", "WARNING: Adding output option for " + nodes[i].Title + ", as pin was not found...");
                             pinOut = nodes[i].AddOutputOption(connectionMeta.ParameterGUID);
                         }
 
@@ -331,45 +336,19 @@ namespace CommandsEditor
                 }
             }
 
-            //TODO: This is the other half of the temporary hack found above, we now want to remove unconnected pins so our nodes aren't huge.
-            for (int i = 0; i < nodes.Length; i++)
-            {
-                RemoveUnusedPins(nodes[i]);
-            }
-
-            //Add in any pins that weren't linked, but added by the user
-            for (int i = 0; i < entities.Count; i++)
-            {
-                foreach (FlowgraphMeta.NodeMeta.UnlinkedPinMeta pinMeta in entities[i].Item2.UnlinkedPins)
-                {
-                    switch ((PinLocation)pinMeta.PinLocation)
-                    {
-                        case PinLocation.Left:
-                            nodes[i].AddInputOption(pinMeta.ParameterGUID);
-                            break;
-                        case PinLocation.Right:
-                            nodes[i].AddOutputOption(pinMeta.ParameterGUID);
-                            break;
-                        case PinLocation.Top:
-                            nodes[i].AddTopOption(pinMeta.ParameterGUID, (PinStyle)pinMeta.PinStyle);
-                            break;
-                        case PinLocation.Bottom:
-                            nodes[i].AddBottomOption(pinMeta.ParameterGUID);
-                            break;
-                    }
-                }
-            }
-
-            //Correctly respect the scale/position of the saved flowgraph
-            stNodeEditor1.ScaleCanvas(flowgraphMeta.CanvasScale, 0, 0);
-            stNodeEditor1.CenterCanvasOn(flowgraphMeta.CanvasPosition.X, flowgraphMeta.CanvasPosition.Y, false);
-
-            //Recompute all nodes -> this is kinda expensive and not ideal, but I think it's needed to make sure everything draws nicely.
             foreach (STNode node in stNodeEditor1.Nodes)
-                node.Recompute();
-
+            {
+                node.EnsureProperNodeSizing();
+            }
             stNodeEditor1.ResumeLayout();
             stNodeEditor1.Invalidate();
+
+            //Correctly respect the scale/position of the saved flowgraph after layout is complete to ensure correct window dimensions
+            this.BeginInvoke(new Action(() =>
+            {
+                stNodeEditor1.ScaleCanvas(flowgraphMeta.CanvasScale, 0, 0);
+                stNodeEditor1.CenterCanvasOn(flowgraphMeta.CanvasPosition.X, flowgraphMeta.CanvasPosition.Y, false);
+            }));
 
 #if DEBUG
             Debug.Log("Flowgraph", "" + flowgraphMeta.Name + " loaded in " + timer.ElapsedMilliseconds + "ms with " + stNodeEditor1.Nodes.Count + " nodes on graph, of " + flowgraphMeta.Nodes.Count + " in layout (" + (flowgraphMeta.Nodes.Count - stNodeEditor1.Nodes.Count) + " missing)");

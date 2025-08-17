@@ -330,10 +330,19 @@ namespace CommandsEditor.DockPanels
             {
                 List<FlowgraphMeta> layouts = FlowgraphLayoutManager.GetLayouts(Composite);
                 Debug.Log("Composite Display", "Found " + layouts.Count + " flowgraph layout(s)");
-                for (int i = 0; i < layouts.Count; i++)
+                dockPanel.SuspendLayout(true);
+                try
                 {
-                    CreateFlowgraphWindow(layouts[i]);
+                    for (int i = 0; i < layouts.Count; i++)
+                    {
+                        CreateFlowgraphWindow(layouts[i]);
+                    }
                 }
+                finally
+                {
+                    dockPanel.ResumeLayout(true, true);
+                }
+                
                 string prevLoaded = FlowgraphLayoutManager.GetSelectedPage(Composite);
                 if (prevLoaded != null)
                     _flowgraphs.FirstOrDefault(o => o.FlowgraphName == prevLoaded)?.Show();
