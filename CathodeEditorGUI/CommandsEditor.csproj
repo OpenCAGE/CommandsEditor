@@ -394,6 +394,12 @@
     <Compile Include="Popups\SetNumericStep.Designer.cs">
       <DependentUpon>SetNumericStep.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\SetPinDelay.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\SetPinDelay.Designer.cs">
+      <DependentUpon>SetPinDelay.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popups\ShowInstanceInfo.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -849,6 +855,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\GlobalEntitySearcher.resx">
       <DependentUpon>GlobalEntitySearcher.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\SetPinDelay.resx">
+      <DependentUpon>SetPinDelay.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\ShowCrossRefs.resx">
       <DependentUpon>ShowCrossRefs.cs</DependentUpon>

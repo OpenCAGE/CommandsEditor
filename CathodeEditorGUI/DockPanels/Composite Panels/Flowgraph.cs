@@ -22,6 +22,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Media3D;
 using System.Xml.Linq;
 using WeifenLuo.WinFormsUI.Docking;
+using static CATHODE.EXPERIMENTAL.Lights;
 using static CathodeLib.CompositeFlowgraphTable;
 using static CathodeLib.CompositePinInfoTable;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
@@ -338,6 +339,7 @@ namespace CommandsEditor
 
             foreach (STNode node in stNodeEditor1.Nodes)
             {
+                UpdatePinDelayTexts(node);
                 node.EnsureProperNodeSizing();
             }
             stNodeEditor1.ResumeLayout();
@@ -460,35 +462,38 @@ namespace CommandsEditor
         {
             STNode node = stNodeEditor1.GetHoveredNode();
             (STNodeOption linkIn, STNodeOption linkOut) = stNodeEditor1.GetHoveredLink();
+            STNodeOption hoveredPin = stNodeEditor1.GetHoveredPin();
 
             modifyPinsIn.Visible = false; //_rightClickedNode != null;
             modifyPinsOut.Visible = false; //_rightClickedNode != null;        <- i'm disabling adding in/out links in favour of adding all. i don't think this'll come back, but leaving the logic in-case.
             toolStripSeparator2.Visible = false; //_rightClickedNode != null;
-            deleteToolStripMenuItem.Visible = node != null;
-            duplicateToolStripMenuItem.Visible = node != null;
-            toolStripSeparator1.Visible = node != null;
-            addAllPinsToolStripMenuItem.Visible = node != null;
-            removeUnusedPinsToolStripMenuItem.Visible = node != null;
-            toolStripSeparator4.Visible = node != null;
-            deleteEntityToolStripMenuItem.Visible = node != null;
-            duplicateEntityToolStripMenuItem.Visible = node != null;
-            toolStripSeparator5.Visible = node != null;
-            findReferencesToolStripMenuItem.Visible = node != null;
-            goToNextNodeInFlowgraphToolStripMenuItem.Visible = node != null;
+            deleteToolStripMenuItem.Visible = node != null && hoveredPin == null;
+            duplicateToolStripMenuItem.Visible = node != null && hoveredPin == null;
+            toolStripSeparator1.Visible = node != null && hoveredPin == null;
+            addAllPinsToolStripMenuItem.Visible = node != null && hoveredPin == null;
+            removeUnusedPinsToolStripMenuItem.Visible = node != null && hoveredPin == null;
+            toolStripSeparator4.Visible = node != null && hoveredPin == null;
+            deleteEntityToolStripMenuItem.Visible = node != null && hoveredPin == null;
+            duplicateEntityToolStripMenuItem.Visible = node != null && hoveredPin == null;
+            toolStripSeparator5.Visible = node != null && hoveredPin == null;
+            findReferencesToolStripMenuItem.Visible = node != null && hoveredPin == null;
+            goToNextNodeInFlowgraphToolStripMenuItem.Visible = node != null && hoveredPin == null;
 
-            if (node != null)
+            if (node != null && hoveredPin == null)
             {
                 modifyPinsIn.Enabled = node.Entity.variant != EntityVariant.VARIABLE;
                 modifyPinsOut.Enabled = node.Entity.variant != EntityVariant.VARIABLE;
                 goToNextNodeInFlowgraphToolStripMenuItem.Enabled = HasMultipleNodesForEntity(node.Entity);
             }
 
-            addNodeToolStripMenuItem.Visible = node == null && linkIn == null;
-            createToolStripMenuItem.Visible = node == null && linkIn == null;
-            addNodeForSelectedEntityToolStripMenuItem.Visible = node == null && linkIn == null;
+            addNodeToolStripMenuItem.Visible = node == null && linkIn == null && hoveredPin == null;
+            createToolStripMenuItem.Visible = node == null && linkIn == null && hoveredPin == null;
+            addNodeForSelectedEntityToolStripMenuItem.Visible = node == null && linkIn == null && hoveredPin == null;
             addNodeForSelectedEntityToolStripMenuItem.Enabled = Singleton.Editor?.CommandsDisplay?.CompositeDisplay?.EntityDisplay?.Entity != null;
 
             deleteLinkToolStripMenuItem.Visible = linkIn != null;
+
+            setDelayToolStripMenuItem.Visible = hoveredPin != null;
         }
 
         //Add new nodes batch select
@@ -572,6 +577,22 @@ namespace CommandsEditor
         private void AddAllPins(STNode node)
         {
             node.AddAllPins(_composite, _commands);
+            UpdatePinDelayTexts(node);
+        }
+
+        //set all delay texts on a node
+        private void UpdatePinDelayTexts(STNode node)
+        {
+            foreach (STNodeOption inputPin in node.GetInputOptions())
+            {
+                float delay = GetDelayForParameter(node.Entity, inputPin.Text);
+                inputPin.LeftText = delay == 0.0f ? "" : delay.ToString();
+            }
+            foreach (STNodeOption outputPin in node.GetOutputOptions())
+            {
+                float delay = GetDelayForParameter(node.Entity, outputPin.Text);
+                outputPin.RightText = delay == 0.0f ? "" : delay.ToString();
+            }
         }
 
         private void removeUnusedPinsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -688,7 +709,11 @@ namespace CommandsEditor
         private void renameFGToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (_renameFlowgraphPopup != null)
+            {
+                _renameFlowgraphPopup.OnRenamed -= OnRenameFlowgraph;
+                _renameFlowgraphPopup.FormClosed -= _renameFlowgraphPopup_FormClosed;
                 _renameFlowgraphPopup.Close();
+            }
 
             _renameFlowgraphPopup = new RenameGeneric(_flowgraphName, new RenameGeneric.RenameGenericContent()
             {
@@ -773,7 +798,11 @@ namespace CommandsEditor
         private void findReferencesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (_crossRefsDialog != null)
+            {
+                _crossRefsDialog.OnEntitySelected -= Singleton.Editor.CommandsDisplay.LoadCompositeAndEntity;
+                _crossRefsDialog.OnFlowgraphSelected -= Singleton.Editor.CommandsDisplay.CompositeDisplay.SelectEntityOnFlowgraph;
                 _crossRefsDialog.Close();
+            }
 
             STNode node = stNodeEditor1.GetHoveredNode();
             if (node == null || node.Entity == null)
@@ -819,6 +848,55 @@ namespace CommandsEditor
                 if (node == startNode)
                     break;
             }
+        }
+
+        SetPinDelay _pinDelayDialog = null;
+        private void setDelayToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_pinDelayDialog != null)
+            {
+                _pinDelayDialog.OnDelaySet -= OnPinDelaySet;
+                _pinDelayDialog.Close();
+            }
+
+            STNodeOption pin = stNodeEditor1.GetHoveredPin();
+            if (pin == null || pin?.Owner?.Entity == null)
+                return;
+
+            _pinDelayDialog = new SetPinDelay(pin.Owner.Entity, pin.Text, GetDelayForParameter(pin.Owner.Entity, pin.Text), pin.Location);
+            _pinDelayDialog.Show();
+            _pinDelayDialog.OnDelaySet += OnPinDelaySet;
+        }
+        private void OnPinDelaySet(Entity entity, string parameter, float delay, PinLocation location)
+        {
+            entity.RemoveParameter(parameter);
+            entity.AddParameter(parameter, new cFloat(delay), location == PinLocation.Left ? ParameterVariant.METHOD_PIN : ParameterVariant.TARGET_PIN);
+
+            foreach (STNode node in stNodeEditor1.Nodes)
+            {
+                if (node.Entity != entity)
+                    continue;
+                UpdatePinDelayTexts(node);
+            }
+        }
+
+        private float GetDelayForParameter(Entity entity, string parameter)
+        {
+            float delay = 0.0f;
+            Parameter delayParam = entity.GetParameter(parameter);
+            if (delayParam != null && delayParam.content != null)
+            {
+                switch (delayParam.content.dataType)
+                {
+                    case DataType.FLOAT:
+                        delay = ((cFloat)delayParam.content).value;
+                        break;
+                    case DataType.INTEGER:
+                        delay = ((cInteger)delayParam.content).value;
+                        break;
+                }
+            }
+            return delay;
         }
     }
 }
