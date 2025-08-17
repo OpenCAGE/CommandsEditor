@@ -494,6 +494,7 @@ namespace CommandsEditor
             deleteLinkToolStripMenuItem.Visible = linkIn != null;
 
             setDelayToolStripMenuItem.Visible = hoveredPin != null;
+            clearDelayToolStripMenuItem.Visible = hoveredPin != null;
         }
 
         //Add new nodes batch select
@@ -897,6 +898,16 @@ namespace CommandsEditor
                 }
             }
             return delay;
+        }
+
+        private void clearDelayToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            STNodeOption pin = stNodeEditor1.GetHoveredPin();
+            if (pin == null || pin?.Owner?.Entity == null)
+                return;
+
+            pin.Owner.Entity.RemoveParameter(pin.Text);
+            UpdatePinDelayTexts(pin.Owner);
         }
     }
 }

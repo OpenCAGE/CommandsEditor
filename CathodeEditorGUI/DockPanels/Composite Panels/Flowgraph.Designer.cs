@@ -51,13 +51,14 @@ namespace CommandsEditor
             this.addNodeForSelectedEntityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteLinkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.setDelayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stNodeEditor1 = new ST.Library.UI.NodeEditor.STNodeEditor();
             this.TabStripContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.deleteFGToolstripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.renameFGToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.createNewFlowgraphToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.setDelayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.clearDelayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.nodeContextMenu.SuspendLayout();
             this.TabStripContextMenu.SuspendLayout();
             this.SuspendLayout();
@@ -83,9 +84,10 @@ namespace CommandsEditor
             this.addNodeForSelectedEntityToolStripMenuItem,
             this.addNodeToolStripMenuItem,
             this.deleteLinkToolStripMenuItem,
-            this.setDelayToolStripMenuItem});
+            this.setDelayToolStripMenuItem,
+            this.clearDelayToolStripMenuItem});
             this.nodeContextMenu.Name = "EntityListContextMenu";
-            this.nodeContextMenu.Size = new System.Drawing.Size(229, 380);
+            this.nodeContextMenu.Size = new System.Drawing.Size(229, 402);
             this.nodeContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // modifyPinsIn
@@ -266,6 +268,14 @@ namespace CommandsEditor
             this.deleteLinkToolStripMenuItem.Text = "Delete Link";
             this.deleteLinkToolStripMenuItem.Click += new System.EventHandler(this.deleteLinkToolStripMenuItem_Click);
             // 
+            // setDelayToolStripMenuItem
+            // 
+            this.setDelayToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("setDelayToolStripMenuItem.Image")));
+            this.setDelayToolStripMenuItem.Name = "setDelayToolStripMenuItem";
+            this.setDelayToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
+            this.setDelayToolStripMenuItem.Text = "Set Delay";
+            this.setDelayToolStripMenuItem.Click += new System.EventHandler(this.setDelayToolStripMenuItem_Click);
+            // 
             // stNodeEditor1
             // 
             this.stNodeEditor1.AllowDrop = true;
@@ -327,13 +337,13 @@ namespace CommandsEditor
             this.createNewFlowgraphToolStripMenuItem.Text = "Create New Flowgraph";
             this.createNewFlowgraphToolStripMenuItem.Click += new System.EventHandler(this.createNewFlowgraphToolStripMenuItem_Click);
             // 
-            // setDelayToolStripMenuItem
+            // clearDelayToolStripMenuItem
             // 
-            this.setDelayToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("setDelayToolStripMenuItem.Image")));
-            this.setDelayToolStripMenuItem.Name = "setDelayToolStripMenuItem";
-            this.setDelayToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
-            this.setDelayToolStripMenuItem.Text = "Set Delay";
-            this.setDelayToolStripMenuItem.Click += new System.EventHandler(this.setDelayToolStripMenuItem_Click);
+            this.clearDelayToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("clearDelayToolStripMenuItem.Image")));
+            this.clearDelayToolStripMenuItem.Name = "clearDelayToolStripMenuItem";
+            this.clearDelayToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
+            this.clearDelayToolStripMenuItem.Text = "Clear Delay";
+            this.clearDelayToolStripMenuItem.Click += new System.EventHandler(this.clearDelayToolStripMenuItem_Click);
             // 
             // Flowgraph
             // 
@@ -389,6 +399,7 @@ namespace CommandsEditor
         private System.Windows.Forms.ToolStripMenuItem findReferencesToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripMenuItem setDelayToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem clearDelayToolStripMenuItem;
     }
 }
 

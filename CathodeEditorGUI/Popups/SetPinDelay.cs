@@ -36,6 +36,8 @@ namespace CommandsEditor.Popups
             numericUpDown1.Minimum = (decimal)-3.4E+28m;
 
             numericUpDown1.Value = (decimal)currentDelay;
+
+            this.Text = "Set '" + parameter + "' Delay";
         }
 
         private void button1_Click(object sender, EventArgs e)
