@@ -369,6 +369,29 @@ namespace CommandsEditor.DockPanels
             }
 #endif
 
+            //figure out what parameters we should show - the input/output pin values are 'delay' values for the pins shown on the flowgraph, not actual parameters
+            List<ShortGuid> visibleParams = new List<ShortGuid>();
+            bool filterParams = CompositeDisplay.SupportsFlowgraphs;
+#if DEBUG
+            filterParams = false; //not filtering in debug mode, like how we always show links
+#endif
+            if (filterParams) 
+            {
+                List<(ShortGuid, ParameterVariant, DataType)> allParameters = Content.commands.Utils.GetAllParameters(Entity, Composite);
+                foreach ((ShortGuid, ParameterVariant, DataType) parameter in allParameters)
+                {
+                    switch (parameter.Item2)
+                    {
+                        case ParameterVariant.INPUT_PIN:
+                        case ParameterVariant.OUTPUT_PIN:
+                        case ParameterVariant.PARAMETER:
+                        case ParameterVariant.STATE_PARAMETER:
+                            visibleParams.Add(parameter.Item1);
+                            break;
+                    }
+                }
+            }
+
             //TODO: this should be grouped by the functiontype they came from if that applies here. e.g. if it came from a base class, show it in another group.
             //TODO: if the type here is STRING, we should check to see if it's actually ENUM_STRING using ParameterUtils, then display the nice UI.
 
@@ -378,6 +401,12 @@ namespace CommandsEditor.DockPanels
             _entity.parameters = _entity.parameters.OrderBy(o => o.name.ToString()).ToList();
             for (int i = 0; i < _entity.parameters.Count; i++)
             {
+                if (filterParams && !visibleParams.Contains(_entity.parameters[i].name))
+                {
+                    Debug.Log("Entity Inspector", "Skipping parameter: " + _entity.parameters[i].name);
+                    continue;
+                }
+
                 //Use our metadata to update any wrongly typed cEnumStrings to get the nice UI
                 if (_entity.parameters[i].content.dataType == DataType.STRING)
                 {
