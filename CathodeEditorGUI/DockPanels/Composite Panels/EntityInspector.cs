@@ -684,7 +684,7 @@ namespace CommandsEditor.DockPanels
             createLinkToolStripMenuItem.Visible = DisplayingLinks;
         }
 
-        ModifyPinsOrParameters add_parameter;
+        ModifyParameters add_parameter;
         private void ModifyParameters_Click(object sender, EventArgs e)
         {
             if (add_parameter != null)
@@ -693,7 +693,7 @@ namespace CommandsEditor.DockPanels
                 add_parameter.Close();
             }
             
-            add_parameter = new ModifyPinsOrParameters(this);
+            add_parameter = new ModifyParameters(this);
             add_parameter.Show();
             add_parameter.OnSaved += Reload;
         }

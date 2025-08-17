@@ -337,11 +337,11 @@
     <Compile Include="Popups\LevelViewerSetup.Designer.cs">
       <DependentUpon>LevelViewerSetup.cs</DependentUpon>
     </Compile>
-    <Compile Include="Popups\ModifyPinsOrParameters.cs">
+    <Compile Include="Popups\ModifyParameters.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Popups\ModifyPinsOrParameters.Designer.cs">
-      <DependentUpon>ModifyPinsOrParameters.cs</DependentUpon>
+    <Compile Include="Popups\ModifyParameters.Designer.cs">
+      <DependentUpon>ModifyParameters.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\Function Editors\ShowCompositeInstanceOverrides.cs">
       <SubType>Form</SubType>
@@ -769,8 +769,8 @@
     <EmbeddedResource Include="Popups\LevelViewerSetup.resx">
       <DependentUpon>LevelViewerSetup.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Popups\ModifyPinsOrParameters.resx">
-      <DependentUpon>ModifyPinsOrParameters.cs</DependentUpon>
+    <EmbeddedResource Include="Popups\ModifyParameters.resx">
+      <DependentUpon>ModifyParameters.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\InstanceSelection.resx">
       <DependentUpon>InstanceSelection.cs</DependentUpon>

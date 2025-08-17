@@ -28,9 +28,6 @@ namespace CommandsEditor
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Flowgraph));
             this.nodeContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.modifyPinsIn = new System.Windows.Forms.ToolStripMenuItem();
-            this.modifyPinsOut = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.addAllPinsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.removeUnusedPinsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -52,13 +49,13 @@ namespace CommandsEditor
             this.addNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteLinkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.setDelayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.clearDelayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stNodeEditor1 = new ST.Library.UI.NodeEditor.STNodeEditor();
             this.TabStripContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.deleteFGToolstripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.renameFGToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.createNewFlowgraphToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.clearDelayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.nodeContextMenu.SuspendLayout();
             this.TabStripContextMenu.SuspendLayout();
             this.SuspendLayout();
@@ -66,9 +63,6 @@ namespace CommandsEditor
             // nodeContextMenu
             // 
             this.nodeContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.modifyPinsIn,
-            this.modifyPinsOut,
-            this.toolStripSeparator2,
             this.addAllPinsToolStripMenuItem,
             this.removeUnusedPinsToolStripMenuItem,
             this.toolStripSeparator1,
@@ -87,29 +81,8 @@ namespace CommandsEditor
             this.setDelayToolStripMenuItem,
             this.clearDelayToolStripMenuItem});
             this.nodeContextMenu.Name = "EntityListContextMenu";
-            this.nodeContextMenu.Size = new System.Drawing.Size(229, 402);
+            this.nodeContextMenu.Size = new System.Drawing.Size(229, 330);
             this.nodeContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
-            // 
-            // modifyPinsIn
-            // 
-            this.modifyPinsIn.Image = ((System.Drawing.Image)(resources.GetObject("modifyPinsIn.Image")));
-            this.modifyPinsIn.Name = "modifyPinsIn";
-            this.modifyPinsIn.Size = new System.Drawing.Size(228, 22);
-            this.modifyPinsIn.Text = "Modify Pins In";
-            this.modifyPinsIn.Click += new System.EventHandler(this.modifyPinsIn_Click);
-            // 
-            // modifyPinsOut
-            // 
-            this.modifyPinsOut.Image = ((System.Drawing.Image)(resources.GetObject("modifyPinsOut.Image")));
-            this.modifyPinsOut.Name = "modifyPinsOut";
-            this.modifyPinsOut.Size = new System.Drawing.Size(228, 22);
-            this.modifyPinsOut.Text = "Modify Pins Out";
-            this.modifyPinsOut.Click += new System.EventHandler(this.modifyPinsOut_Click);
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(225, 6);
             // 
             // addAllPinsToolStripMenuItem
             // 
@@ -276,6 +249,14 @@ namespace CommandsEditor
             this.setDelayToolStripMenuItem.Text = "Set Delay";
             this.setDelayToolStripMenuItem.Click += new System.EventHandler(this.setDelayToolStripMenuItem_Click);
             // 
+            // clearDelayToolStripMenuItem
+            // 
+            this.clearDelayToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("clearDelayToolStripMenuItem.Image")));
+            this.clearDelayToolStripMenuItem.Name = "clearDelayToolStripMenuItem";
+            this.clearDelayToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
+            this.clearDelayToolStripMenuItem.Text = "Clear Delay";
+            this.clearDelayToolStripMenuItem.Click += new System.EventHandler(this.clearDelayToolStripMenuItem_Click);
+            // 
             // stNodeEditor1
             // 
             this.stNodeEditor1.AllowDrop = true;
@@ -337,14 +318,6 @@ namespace CommandsEditor
             this.createNewFlowgraphToolStripMenuItem.Text = "Create New Flowgraph";
             this.createNewFlowgraphToolStripMenuItem.Click += new System.EventHandler(this.createNewFlowgraphToolStripMenuItem_Click);
             // 
-            // clearDelayToolStripMenuItem
-            // 
-            this.clearDelayToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("clearDelayToolStripMenuItem.Image")));
-            this.clearDelayToolStripMenuItem.Name = "clearDelayToolStripMenuItem";
-            this.clearDelayToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
-            this.clearDelayToolStripMenuItem.Text = "Clear Delay";
-            this.clearDelayToolStripMenuItem.Click += new System.EventHandler(this.clearDelayToolStripMenuItem_Click);
-            // 
             // Flowgraph
             // 
             this.AllowEndUserDocking = false;
@@ -374,14 +347,11 @@ namespace CommandsEditor
         private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem duplicateToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addNodeToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem modifyPinsIn;
-        private System.Windows.Forms.ToolStripMenuItem modifyPinsOut;
         private System.Windows.Forms.ContextMenuStrip TabStripContextMenu;
         private System.Windows.Forms.ToolStripMenuItem deleteFGToolstripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem renameFGToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem createNewFlowgraphToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem addAllPinsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem removeUnusedPinsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem createToolStripMenuItem;

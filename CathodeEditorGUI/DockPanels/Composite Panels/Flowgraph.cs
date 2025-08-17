@@ -464,9 +464,6 @@ namespace CommandsEditor
             (STNodeOption linkIn, STNodeOption linkOut) = stNodeEditor1.GetHoveredLink();
             STNodeOption hoveredPin = stNodeEditor1.GetHoveredPin();
 
-            modifyPinsIn.Visible = false; //_rightClickedNode != null;
-            modifyPinsOut.Visible = false; //_rightClickedNode != null;        <- i'm disabling adding in/out links in favour of adding all. i don't think this'll come back, but leaving the logic in-case.
-            toolStripSeparator2.Visible = false; //_rightClickedNode != null;
             deleteToolStripMenuItem.Visible = node != null && hoveredPin == null;
             duplicateToolStripMenuItem.Visible = node != null && hoveredPin == null;
             toolStripSeparator1.Visible = node != null && hoveredPin == null;
@@ -480,11 +477,7 @@ namespace CommandsEditor
             goToNextNodeInFlowgraphToolStripMenuItem.Visible = node != null && hoveredPin == null;
 
             if (node != null && hoveredPin == null)
-            {
-                modifyPinsIn.Enabled = node.Entity.variant != EntityVariant.VARIABLE;
-                modifyPinsOut.Enabled = node.Entity.variant != EntityVariant.VARIABLE;
                 goToNextNodeInFlowgraphToolStripMenuItem.Enabled = HasMultipleNodesForEntity(node.Entity);
-            }
 
             addNodeToolStripMenuItem.Visible = node == null && linkIn == null && hoveredPin == null;
             createToolStripMenuItem.Visible = node == null && linkIn == null && hoveredPin == null;
@@ -543,28 +536,6 @@ namespace CommandsEditor
             Entity entity = _composite.GetEntityByID(node.ShortGUID);
             if (entity == null) return;
             Singleton.Editor.CommandsDisplay.CompositeDisplay.DeleteEntity(entity);
-        }
-
-        ModifyPinsOrParameters _pinManager = null;
-        private void PinManager(ModifyPinsOrParameters.Mode mode)
-        {
-            STNode node = stNodeEditor1.GetHoveredNode();
-
-            if (_pinManager != null)
-                _pinManager.Close();
-
-            _pinManager = new ModifyPinsOrParameters(node, mode);
-            _pinManager.Show();
-        }
-
-        //Add/remove pins in/out 
-        private void modifyPinsIn_Click(object sender, EventArgs e)
-        {
-            PinManager(ModifyPinsOrParameters.Mode.LINK_IN);
-        }
-        private void modifyPinsOut_Click(object sender, EventArgs e)
-        {
-            PinManager(ModifyPinsOrParameters.Mode.LINK_OUT);
         }
 
         //Add/remove batch pins in/out
