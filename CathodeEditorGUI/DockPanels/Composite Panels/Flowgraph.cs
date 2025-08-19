@@ -75,29 +75,32 @@ namespace CommandsEditor
 
                 _subscribedToEntEvents = true;
                 Singleton.OnEntitySelected += OnEntitySelectedGlobally;
-                Singleton.OnEntityAdded += OnEntityAddedGlobally;
             }
             else
             {
                 _subscribedToEntEvents = false;
                 Singleton.OnEntitySelected -= OnEntitySelectedGlobally;
-                Singleton.OnEntityAdded -= OnEntityAddedGlobally;
             }
+            Singleton.OnEntityAdded -= OnEntityAddedViaPopup;
         }
 
         private void Flowgraph_FormClosed(object sender, FormClosedEventArgs e)
         {
+            Debug.Log("Flowgraph", this.Text + " -> CLOSING!");
+
             this.VisibleChanged -= Flowgraph_VisibleChanged;
             this.FormClosed -= Flowgraph_FormClosed;
 
             stNodeEditor1.SelectedChanged -= Owner_SelectedChanged;
             Singleton.OnEntitySelected -= OnEntitySelectedGlobally;
-            Singleton.OnEntityAdded -= OnEntityAddedGlobally;
             Singleton.OnEntityDeleted -= OnEntityDeletedGlobally;
             Singleton.OnEntityRenamed -= OnEntityRenamedGlobally;
+            Singleton.OnEntityAdded -= OnEntityAddedViaPopup;
 
             if (_renameFlowgraphPopup != null)
                 _renameFlowgraphPopup.FormClosed -= _renameFlowgraphPopup_FormClosed;
+
+            this.Dispose();
         }
 
         private void OnEntitySelectedGlobally(Entity entity)
@@ -188,14 +191,6 @@ namespace CommandsEditor
             _destPinSelector = new SelectDestinationPin();
             _destPinSelector.Show();
             _destPinSelector.PopulateOptions(e.ToNode, e.FromPin);
-        }
-
-        private void OnEntityAddedGlobally(Entity entity)
-        {
-            if (SettingsManager.GetBool(Singleton.Settings.MakeNodeWhenMakeEntity))
-            {
-                SelectNode(AddNodeForEntity(entity));
-            }
         }
 
         private STNode AddNodeForEntity(Entity entity)
@@ -658,13 +653,11 @@ namespace CommandsEditor
             Entity ent = node?.Entity;
             if (ent == null) return;
 
-            Singleton.OnEntityAdded -= OnEntityAddedGlobally;
             Entity newEnt = Singleton.Editor.CommandsDisplay.CompositeDisplay.AddCopyOfEntity(ent);
             STNode newNode = AddNodeForEntity(newEnt);
             SetSameOptions(node, newNode);
             newNode.SetPosition(new Point((int)stNodeEditor1.MousePositionInCanvas.X, (int)stNodeEditor1.MousePositionInCanvas.Y));
             SelectNode(newNode);
-            Singleton.OnEntityAdded += OnEntityAddedGlobally;
         }
 
         private void TabStripContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
@@ -748,11 +741,13 @@ namespace CommandsEditor
         }
         private void ListenForEntCreatePopup(BaseWindow window)
         {
+            if (_prevEntCreatePopup != null)
+                _prevEntCreatePopup.Close();
+
             _prevEntCreatePopup = window;
             _prevEntCreatePopup.FormClosed += EntityCreationPopupClosed;
             _createEntViaPopupPos = stNodeEditor1.MousePositionInCanvas;
             Singleton.OnEntityAdded += OnEntityAddedViaPopup;
-            Singleton.OnEntityAdded -= OnEntityAddedGlobally;
         }
         private void OnEntityAddedViaPopup(Entity entity)
         {
@@ -764,7 +759,6 @@ namespace CommandsEditor
         private void EntityCreationPopupClosed(object sender, FormClosedEventArgs e)
         {
             Singleton.OnEntityAdded -= OnEntityAddedViaPopup;
-            Singleton.OnEntityAdded += OnEntityAddedGlobally;
             _prevEntCreatePopup.FormClosed -= EntityCreationPopupClosed;
         }
 

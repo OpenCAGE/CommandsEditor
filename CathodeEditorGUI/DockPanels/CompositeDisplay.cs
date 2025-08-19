@@ -894,7 +894,6 @@ namespace CommandsEditor.DockPanels
                             DisplayFunctions = true,
                             DisplayProxies = false,
                             DisplayVariables = false,
-                            ShowCreateNode = SupportsFlowgraphs,
                             ShowApplyDefaults = true,
                         });
                         dialog_hierarchy.Text = "Create Proxy";
@@ -906,7 +905,6 @@ namespace CommandsEditor.DockPanels
                             DisplayFunctions = true,
                             DisplayProxies = true,
                             DisplayVariables = true,
-                            ShowCreateNode = SupportsFlowgraphs,
                             ShowApplyDefaults = true,
                         });
                         dialog_hierarchy.Text = "Create Alias";

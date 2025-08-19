@@ -203,9 +203,6 @@ namespace CommandsEditor
             keepFunctionUsesWindowOpenToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.KeepUsesWindowOpen); keepFunctionUsesWindowOpenToolStripMenuItem.PerformClick();
             writeInstancedResourcesExperimentalToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.ExperimentalResourceStuff); writeInstancedResourcesExperimentalToolStripMenuItem.PerformClick();
 
-            if (!SettingsManager.IsSet(Singleton.Settings.MakeNodeWhenMakeEntity)) SettingsManager.SetBool(Singleton.Settings.MakeNodeWhenMakeEntity, true);
-            createFlowgraphNodeWhenEntityCreatedToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.MakeNodeWhenMakeEntity); createFlowgraphNodeWhenEntityCreatedToolStripMenuItem.PerformClick();
-
             if (!SettingsManager.IsSet(Singleton.Settings.ShowSavedMsgOpt)) SettingsManager.SetBool(Singleton.Settings.ShowSavedMsgOpt, true);
             showConfirmationWhenSavingToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.ShowSavedMsgOpt); showConfirmationWhenSavingToolStripMenuItem.PerformClick();
 
@@ -664,16 +661,6 @@ namespace CommandsEditor
             }
             numericStepConfig = new SetNumericStep();
             numericStepConfig.Show();
-        }
-
-        public void ToggleMakeNodeWhenMakeEntity()
-        {
-            createFlowgraphNodeWhenEntityCreatedToolStripMenuItem.PerformClick();
-        }
-        private void createFlowgraphNodeWhenEntityCreatedToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            createFlowgraphNodeWhenEntityCreatedToolStripMenuItem.Checked = !createFlowgraphNodeWhenEntityCreatedToolStripMenuItem.Checked;
-            SettingsManager.SetBool(Singleton.Settings.MakeNodeWhenMakeEntity, createFlowgraphNodeWhenEntityCreatedToolStripMenuItem.Checked);
         }
 
         private void savePAKAndBINToolStripMenuItem_Click(object sender, EventArgs e)

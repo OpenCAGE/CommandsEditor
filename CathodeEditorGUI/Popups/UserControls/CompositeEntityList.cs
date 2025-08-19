@@ -291,8 +291,6 @@ namespace CommandsEditor.Popups.UserControls
         public class DisplayOptions
         {
             public bool ShowCheckboxes = false;
-
-            public bool ShowCreateNode = false;
             public bool ShowApplyDefaults = false;
 
             public bool DisplayAliases = true;

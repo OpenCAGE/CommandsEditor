@@ -53,9 +53,6 @@ namespace CommandsEditor
             variableType.EndUpdate();
             variableType.SelectedIndex = SettingsManager.GetInteger(Singleton.Settings.PrevVariableType);
 
-            createNode.Checked = SettingsManager.GetBool(Singleton.Settings.MakeNodeWhenMakeEntity);
-            createNode.Visible = flowgraphMode;
-
             variableName.Select();
         }
 
@@ -160,12 +157,6 @@ namespace CommandsEditor
         {
             if (e.KeyCode == Keys.Enter)
                 createVariable.PerformClick();
-        }
-
-        private void createNode_CheckedChanged(object sender, EventArgs e)
-        {
-            if (createNode.Checked != SettingsManager.GetBool(Singleton.Settings.MakeNodeWhenMakeEntity))
-                Singleton.Editor.ToggleMakeNodeWhenMakeEntity();
         }
 
         private void entityVariant_SelectedIndexChanged(object sender, EventArgs e)

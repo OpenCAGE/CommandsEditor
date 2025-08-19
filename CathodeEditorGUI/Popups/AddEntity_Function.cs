@@ -32,8 +32,6 @@ namespace CommandsEditor
             functionTypeList1.SelectedItemChanged += functionTypeList_SelectedIndexChanged;
 
             addDefaultParams.Checked = SettingsManager.GetBool(Singleton.Settings.PreviouslySearchedParamPopulation, false);
-            createNode.Checked = SettingsManager.GetBool(Singleton.Settings.MakeNodeWhenMakeEntity);
-            createNode.Visible = flowgraphMode;
 
 #if AUTO_POPULATE_PARAMS
             addDefaultParams.Checked = true;
@@ -96,12 +94,6 @@ namespace CommandsEditor
         private void helpBtn_Click(object sender, EventArgs e)
         {
             Process.Start("https://opencage.co.uk/docs/cathode-entities/#entities");
-        }
-
-        private void createNode_CheckedChanged(object sender, EventArgs e)
-        {
-            if (createNode.Checked != SettingsManager.GetBool(Singleton.Settings.MakeNodeWhenMakeEntity))
-                Singleton.Editor.ToggleMakeNodeWhenMakeEntity();
         }
 
         private void functionTypeList_SelectedIndexChanged()

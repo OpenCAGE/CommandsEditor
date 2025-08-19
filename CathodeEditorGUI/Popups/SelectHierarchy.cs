@@ -55,14 +55,6 @@ namespace CommandsEditor
             LoadComposite(startingComposite);
             FollowEntityThrough.Visible = allowFollowThrough;
 
-            if (displayOptions.ShowCreateNode)
-            {
-                createNode.Checked = SettingsManager.GetBool(Singleton.Settings.MakeNodeWhenMakeEntity);
-            }
-            else
-            {
-                createNode.Visible = false;
-            }
             if (displayOptions.ShowApplyDefaults)
             {
                 applyDefaultParams.Checked = SettingsManager.GetBool(Singleton.Settings.PreviouslySearchedParamPopulationProxyOrAlias);
@@ -145,12 +137,6 @@ namespace CommandsEditor
             {
                 LoadComposite(composite);
             }
-        }
-
-        private void createNode_CheckedChanged(object sender, EventArgs e)
-        {
-            if (createNode.Checked != SettingsManager.GetBool(Singleton.Settings.MakeNodeWhenMakeEntity))
-                Singleton.Editor.ToggleMakeNodeWhenMakeEntity();
         }
     }
 }

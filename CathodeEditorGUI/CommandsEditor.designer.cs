@@ -50,7 +50,6 @@ namespace CommandsEditor
             this.searchOnlyCompositeNames = new System.Windows.Forms.ToolStripMenuItem();
             this.entityDisplayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showEntityIDs = new System.Windows.Forms.ToolStripMenuItem();
-            this.createFlowgraphNodeWhenEntityCreatedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.populateAllNodePinsWhenCreatedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.giveOptionToDeleteEntityWhenNoNodesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.miscToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -237,7 +236,6 @@ namespace CommandsEditor
             // 
             this.entityDisplayToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.showEntityIDs,
-            this.createFlowgraphNodeWhenEntityCreatedToolStripMenuItem,
             this.populateAllNodePinsWhenCreatedToolStripMenuItem,
             this.giveOptionToDeleteEntityWhenNoNodesToolStripMenuItem});
             this.entityDisplayToolStripMenuItem.Name = "entityDisplayToolStripMenuItem";
@@ -251,13 +249,6 @@ namespace CommandsEditor
             this.showEntityIDs.Text = "Show ShortGuids";
             this.showEntityIDs.ToolTipText = "Show entity IDs within the editor UI.";
             this.showEntityIDs.Click += new System.EventHandler(this.showEntityIDs_Click);
-            // 
-            // createFlowgraphNodeWhenEntityCreatedToolStripMenuItem
-            // 
-            this.createFlowgraphNodeWhenEntityCreatedToolStripMenuItem.Name = "createFlowgraphNodeWhenEntityCreatedToolStripMenuItem";
-            this.createFlowgraphNodeWhenEntityCreatedToolStripMenuItem.Size = new System.Drawing.Size(311, 22);
-            this.createFlowgraphNodeWhenEntityCreatedToolStripMenuItem.Text = "Create Flowgraph Node When Entity Created";
-            this.createFlowgraphNodeWhenEntityCreatedToolStripMenuItem.Click += new System.EventHandler(this.createFlowgraphNodeWhenEntityCreatedToolStripMenuItem_Click);
             // 
             // populateAllNodePinsWhenCreatedToolStripMenuItem
             // 
@@ -485,6 +476,5 @@ namespace CommandsEditor
         private System.Windows.Forms.ToolStripMenuItem savePAKAndBINToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem populateAllNodePinsWhenCreatedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem giveOptionToDeleteEntityWhenNoNodesToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem createFlowgraphNodeWhenEntityCreatedToolStripMenuItem;
     }
 }

@@ -35,7 +35,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this.variableName = new System.Windows.Forms.TextBox();
             this.variableType = new System.Windows.Forms.ComboBox();
-            this.createNode = new System.Windows.Forms.CheckBox();
             this.label3 = new System.Windows.Forms.Label();
             this.variableEnumType = new System.Windows.Forms.ComboBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
@@ -91,19 +90,6 @@
             this.variableType.TabIndex = 2;
             this.variableType.SelectedIndexChanged += new System.EventHandler(this.entityVariant_SelectedIndexChanged);
             // 
-            // createNode
-            // 
-            this.createNode.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.createNode.AutoSize = true;
-            this.createNode.Location = new System.Drawing.Point(55, 100);
-            this.createNode.Name = "createNode";
-            this.createNode.Size = new System.Drawing.Size(86, 17);
-            this.createNode.TabIndex = 4;
-            this.createNode.Text = "Create Node";
-            this.createNode.UseVisualStyleBackColor = true;
-            this.createNode.CheckedChanged += new System.EventHandler(this.createNode_CheckedChanged);
-            // 
             // label3
             // 
             this.label3.AutoSize = true;
@@ -153,7 +139,6 @@
             this.Controls.Add(this.variableEnumStringType);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.variableEnumType);
-            this.Controls.Add(this.createNode);
             this.Controls.Add(this.createVariable);
             this.Controls.Add(this.variableName);
             this.Controls.Add(this.label2);
@@ -177,7 +162,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox variableName;
-        private System.Windows.Forms.CheckBox createNode;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ComboBox variableEnumType;
         private System.Windows.Forms.ToolTip toolTip1;

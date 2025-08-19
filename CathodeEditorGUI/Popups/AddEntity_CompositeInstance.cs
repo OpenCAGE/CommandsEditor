@@ -39,8 +39,6 @@ namespace CommandsEditor
                 _treeUtility.SelectNode(funcToSelect);
 
             addDefaultParams.Checked = SettingsManager.GetBool(Singleton.Settings.PreviouslySearchedParamPopulationComp, false);
-            createNode.Checked = SettingsManager.GetBool(Singleton.Settings.MakeNodeWhenMakeEntity); 
-            createNode.Visible = flowgraphMode;
 
 #if AUTO_POPULATE_PARAMS
             addDefaultParams.Checked = true;
@@ -169,12 +167,6 @@ namespace CommandsEditor
         {
             if (e.KeyCode == Keys.Enter)
                 createEntity.PerformClick();
-        }
-
-        private void createNode_CheckedChanged(object sender, EventArgs e)
-        {
-            if (createNode.Checked != SettingsManager.GetBool(Singleton.Settings.MakeNodeWhenMakeEntity))
-                Singleton.Editor.ToggleMakeNodeWhenMakeEntity();
         }
     }
 }

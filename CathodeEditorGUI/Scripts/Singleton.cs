@@ -101,7 +101,6 @@ namespace CommandsEditor
             public readonly string PreviouslySearchedCompInstType = "CS_PreviouslySearchedCompInstType";
             public readonly string PreviouslySearchedParamPopulationComp = "CS_PreviouslySearchedParamPopulationComp";
             public readonly string ExperimentalResourceStuff = "CS_EnableExperimentalResourceSaving";
-            public readonly string MakeNodeWhenMakeEntity = "CS_MakeNodeWhenMakeEntity";
             public readonly string PrevFuncUsesSearch = "CS_PrevFuncUsesSearch";
             public readonly string PrevVariableType = "CS_PrevVariableTypeNew";
             public readonly string PrevVariableType_Enum = "CS_PrevVariableTypeEnum";

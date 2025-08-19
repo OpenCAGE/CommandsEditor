@@ -34,7 +34,6 @@ namespace CommandsEditor
             this.entityName = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.helpBtn = new System.Windows.Forms.Button();
-            this.createNode = new System.Windows.Forms.CheckBox();
             this.functionTypeList1 = new Popups.UserControls.FunctionTypeList();
             this.SuspendLayout();
             // 
@@ -93,19 +92,6 @@ namespace CommandsEditor
             this.helpBtn.UseVisualStyleBackColor = true;
             this.helpBtn.Click += new System.EventHandler(this.helpBtn_Click);
             // 
-            // createNode
-            // 
-            this.createNode.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.createNode.AutoSize = true;
-            this.createNode.Location = new System.Drawing.Point(159, 364);
-            this.createNode.Name = "createNode";
-            this.createNode.Size = new System.Drawing.Size(86, 17);
-            this.createNode.TabIndex = 182;
-            this.createNode.Text = "Create Node";
-            this.createNode.UseVisualStyleBackColor = true;
-            this.createNode.CheckedChanged += new System.EventHandler(this.createNode_CheckedChanged);
-            // 
             // functionTypeList1
             // 
             this.functionTypeList1.Location = new System.Drawing.Point(13, 60);
@@ -119,7 +105,6 @@ namespace CommandsEditor
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(653, 400);
             this.Controls.Add(this.functionTypeList1);
-            this.Controls.Add(this.createNode);
             this.Controls.Add(this.helpBtn);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.addDefaultParams);
@@ -141,7 +126,6 @@ namespace CommandsEditor
         private System.Windows.Forms.TextBox entityName;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button helpBtn;
-        private System.Windows.Forms.CheckBox createNode;
         private Popups.UserControls.FunctionTypeList functionTypeList1;
     }
 }
