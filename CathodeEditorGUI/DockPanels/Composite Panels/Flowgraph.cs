@@ -460,6 +460,9 @@ namespace CommandsEditor
             (STNodeOption linkIn, STNodeOption linkOut) = stNodeEditor1.GetHoveredLink();
             STNodeOption hoveredPin = stNodeEditor1.GetHoveredPin();
 
+            if (hoveredPin?.Location == PinLocation.Top || hoveredPin?.Location == PinLocation.Bottom)
+                hoveredPin = null; //Only allow right click on in/out pins
+
             deleteToolStripMenuItem.Visible = node != null && hoveredPin == null;
             duplicateToolStripMenuItem.Visible = node != null && hoveredPin == null;
             toolStripSeparator1.Visible = node != null && hoveredPin == null;
@@ -484,6 +487,7 @@ namespace CommandsEditor
 
             setDelayToolStripMenuItem.Visible = hoveredPin != null;
             clearDelayToolStripMenuItem.Visible = hoveredPin != null;
+            clearDelayToolStripMenuItem.Enabled = hoveredPin != null && (hoveredPin.LeftText != "" || hoveredPin.RightText != "");
         }
 
         //Add new nodes batch select
