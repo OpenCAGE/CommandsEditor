@@ -648,6 +648,8 @@ namespace CommandsEditor
                 for (int i = 0; i < downs.Length; i++)
                     toApplyTo.AddBottomOption(downs[i].ShortGUID);
             }
+
+            UpdatePinDelayTexts(toApplyTo);
         }
 
         private void duplicateEntityToolStripMenuItem_Click(object sender, EventArgs e)
