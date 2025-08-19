@@ -389,12 +389,13 @@ namespace CommandsEditor
                     {
                         case EntityVariant.FUNCTION:
                             FunctionEntity function = (FunctionEntity)ent;
+                            string entName = _commands.Utils.GetEntityName(node.Entity.variant == EntityVariant.PROXY ? _composite : comp, node.Entity.variant == EntityVariant.PROXY ? node.Entity : ent); //proxies have custom names, aliases don't
                             if (function.function.IsFunctionType)
                             {
-                                node.SetName(_commands.Utils.GetEntityName(comp, ent), node.Entity.variant + " TO: " + function.function.AsFunctionType.ToString());
+                                node.SetName(entName, node.Entity.variant + " TO: " + function.function.AsFunctionType.ToString());
                             }
                             else
-                                node.SetName(_commands.Utils.GetEntityName(comp, ent), node.Entity.variant + " TO: " + Path.GetFileName(_commands.GetComposite(function.function).name));
+                                node.SetName(entName, node.Entity.variant + " TO: " + Path.GetFileName(_commands.GetComposite(function.function).name));
                             break;
                         case EntityVariant.VARIABLE:
                             node.SetName(node.Entity.variant + " TO: " + ((VariableEntity)ent).name.ToString());
