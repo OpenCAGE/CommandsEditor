@@ -36,15 +36,20 @@ namespace CommandsEditor.Popups
             listView1.BeginUpdate();
 
             listView1.Groups.Clear();
-            listView1.Groups.Add(new ListViewGroup("Left"));
-            listView1.Groups.Add(new ListViewGroup("Top In"));
-            listView1.Groups.Add(new ListViewGroup("Top Out"));
-            listView1.Groups.Add(new ListViewGroup("Right"));
-            listView1.Groups.Add(new ListViewGroup("Bottom"));
+            listView1.Groups.Add(new ListViewGroup("Location: Left"));
+            listView1.Groups.Add(new ListViewGroup("Location: Top (In)"));
+            listView1.Groups.Add(new ListViewGroup("Location: Top (Out)"));
+            listView1.Groups.Add(new ListViewGroup("Location: Right"));
+            listView1.Groups.Add(new ListViewGroup("Location: Bottom"));
 
             listView1.Items.Clear();
             foreach (STNodeOption opt in hackGetAllOptions.GetAllOptions())
             {
+                bool connectable = _comingFrom.CanConnect(opt) == ConnectionStatus.Connected;
+
+                if (!connectable)
+                    continue;
+
                 ListViewItem item = new ListViewItem(opt.Text);
                 switch (opt.Location)
                 {
@@ -65,6 +70,7 @@ namespace CommandsEditor.Popups
                         item.Group = listView1.Groups[4];
                         break;
                 }
+                //item.ForeColor = connectable ? Color.Green : Color.Red;
                 item.Tag = opt.Location;
                 listView1.Items.Add(item);
             }
