@@ -101,6 +101,8 @@ namespace CommandsEditor
             //It gets more complicated: RESOURCES.BIN is populated based on the result of COMMANDS (e.g. if an entity has "deleted" applied, it won't be listed there)
             //No clue how I'm gonna be able to rewrite the thing without building the entire scripting logic into the compiler -_-
 
+            // ^ need to look into "offline_only" entities and ones implemented offline, and reconstruct similar logic here.
+
 
             LevelContent content = LevelContent.DEBUG_LoadUnthreadedAndPopulateShortGuids(level);
 

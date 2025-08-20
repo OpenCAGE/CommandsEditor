@@ -70,12 +70,13 @@ namespace CommandsEditor
                     {
                         case ParameterVariant.REFERENCE_PIN:
                         case ParameterVariant.TARGET_PIN:
-                        case ParameterVariant.INTERNAL:
+                        //case ParameterVariant.INTERNAL:  //NOTE: shouldn't really be showing internal, but until I handle some of the values better, I need to still (e.g. resources, spline points, etc)
                         case ParameterVariant.METHOD_FUNCTION:
                         case ParameterVariant.METHOD_PIN:
                         case ParameterVariant.OUTPUT_PIN:
                             continue;
                     }
+                    //NOTE: This same switch case is found in EntityInspector popup window, keep in sync!
                 }
 
                 options[i].Checked = ent.GetParameter(options[i].Text) != null;

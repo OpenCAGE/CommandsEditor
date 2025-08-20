@@ -382,12 +382,14 @@ namespace CommandsEditor.DockPanels
                 {
                     switch (parameter.Item2)
                     {
+                        case ParameterVariant.INTERNAL: //NOTE: shouldn't really be showing internal, but until I handle some of the values better, I need to still (e.g. resources, spline points, etc)
                         case ParameterVariant.INPUT_PIN:
                         case ParameterVariant.PARAMETER:
                         case ParameterVariant.STATE_PARAMETER:
                             visibleParams.Add(parameter.Item1);
                             break;
                     }
+                    //NOTE: This same switch case is found in ModifyParameters popup window, keep in sync!
                 }
             }
 
