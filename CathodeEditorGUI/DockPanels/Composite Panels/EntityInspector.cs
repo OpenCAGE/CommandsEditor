@@ -437,8 +437,6 @@ namespace CommandsEditor.DockPanels
                         ((GUI_StringVariant_AssetDropdown)parameterGUI).PopulateUI((cEnumString)this_param, paramName, false); //TODO: allow type selection?
                         break;
                     case DataType.STRING:
-                        //TODO: Need an animation selector for the anim/skele pair
-                        //TODO: There are some string types which should actually be selected via the EnumString UI like map_description on SetSubObjective, or unlocked_text on UI_Icon
                         parameterGUI = new GUI_StringDataType();
                         ((GUI_StringDataType)parameterGUI).PopulateUI((cString)this_param, paramName);
                         break;

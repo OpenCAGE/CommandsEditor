@@ -1,5 +1,4 @@
-//#define DO_PRE_FLIGHT_CHECKS
-// ^ Enable this define to sanity check the vanilla node DB for any dodgy entries.
+//#define DO_DUMP
 
 using CATHODE;
 using CATHODE.Scripting;
@@ -21,8 +20,6 @@ using static CathodeLib.CompositeFlowgraphTable;
 
 namespace CommandsEditor
 {
-    //NOTE: There seem to be instances where this is not saving: jumping into child composites, and enabling/disabling GUIDs
-
     //Handles loading vanilla/custom flowgraph layouts, and saving custom layouts
     public class FlowgraphLayoutManager
     {
@@ -48,6 +45,22 @@ namespace CommandsEditor
                 content = stream.ToArray();
             }
             _preDefinedLayouts = (CompositeFlowgraphTable)CustomTable.ReadTable(content, CustomTableType.COMPOSITE_FLOWGRAPHS);
+
+#if DEBUG && DO_DUMP
+            foreach (FlowgraphMeta layout in _preDefinedLayouts.flowgraphs)
+            {
+                layout.Nodes = layout.Nodes.OrderBy(o => o.EntityGUID).ThenBy(o => o.NodeID).ToList();
+                foreach (FlowgraphMeta.NodeMeta node in layout.Nodes)
+                {
+                    node.ConnectionsOut = node.ConnectionsOut.OrderBy(o => o.ConnectedEntityGUID).ThenBy(o => o.ConnectedNodeID).ThenBy(o => o.ConnectedParameterGUID).ToList();
+                    node.UnlinkedPins = node.UnlinkedPins.OrderBy(o => o.ParameterGUID).ToList();
+                }
+
+                string outPath = "Layouts/" + layout.CompositeGUID + "/" + layout.Name + ".json";
+                Directory.CreateDirectory(outPath.Substring(0, outPath.Length - Path.GetFileName(outPath).Length));
+                File.WriteAllText(outPath, JsonConvert.SerializeObject(layout, Newtonsoft.Json.Formatting.Indented, new ShortGuidConverter()));
+            }
+#endif
 
             //Always add new composites into the compatibility table
             Singleton.OnCompositeAdded += AddToCompatibilityTable;
@@ -76,7 +89,7 @@ namespace CommandsEditor
                 foreach (FlowgraphMeta.NodeMeta node in flowgraphMeta.Nodes)
                 {
                     Entity ent = comp.GetEntityByID(node.EntityGUID);
-                    if (ent == entity) continue;
+                    if (ent == null || ent == entity) continue;
                     switch (ent.variant)
                     {
                         case EntityVariant.ALIAS:
