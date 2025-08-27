@@ -542,7 +542,18 @@ namespace CommandsEditor
         private void addAllPinsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             STNode node = stNodeEditor1.GetHoveredNode();
+
+            Point currentCenter = node.Location;
+            currentCenter.X += node.Width / 2;
+            currentCenter.Y += node.Height / 2;
+
             AddAllPins(node);
+
+            Point newCenter = node.Location;
+            newCenter.X += node.Width / 2;
+            newCenter.Y += node.Height / 2;
+
+            node.SetPosition(new Point(node.Location.X + (currentCenter.X - newCenter.X), node.Location.Y + (currentCenter.Y - newCenter.Y)));
         }
 
         //add all possible pins to a given node
@@ -570,12 +581,11 @@ namespace CommandsEditor
         private void removeUnusedPinsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             STNode node = stNodeEditor1.GetHoveredNode();
-            RemoveUnusedPins(node);
-        }
-
-        private void RemoveUnusedPins(STNode node)
-        {
+            Point newPos = node.Location;
+            newPos.X += node.Width / 2;
+            newPos.Y += node.Height / 2;
             node.RemoveUnusedPins();
+            node.SetPosition(newPos);
         }
 
         private void deleteLinkToolStripMenuItem_Click(object sender, EventArgs e)
