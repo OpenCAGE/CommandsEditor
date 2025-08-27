@@ -77,18 +77,17 @@ namespace CommandsEditor
 
         static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
         {
-            Directory.CreateDirectory(SharedData.pathToAI + "/DATA/MODTOOLS/");
-            File.WriteAllText(SharedData.pathToAI + "/DATA/MODTOOLS/commands_editor_error.log", "Application_ThreadException\n" + e.Exception.ToString());
-            MessageBox.Show("A critical error occurred and was logged. The script editor will now close. Please share the contents of the generated log to GitHub.");
-            Process.Start(SharedData.pathToAI + "/DATA/MODTOOLS/commands_editor_error.log");
-            Application.Exit();
+            HandleError("Application_ThreadException\n" + e.Exception.ToString());
         }
-
         static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
+            HandleError("CurrentDomain_UnhandledException\n" + ((Exception)e.ExceptionObject).ToString());
+        }
+        static void HandleError(string error)
+        {
             Directory.CreateDirectory(SharedData.pathToAI + "/DATA/MODTOOLS/");
-            File.WriteAllText(SharedData.pathToAI + "/DATA/MODTOOLS/commands_editor_error.log", "CurrentDomain_UnhandledException\n" + ((Exception)e.ExceptionObject).ToString());
-            MessageBox.Show("A critical error occurred and was logged. The script editor will now close. Please share the contents of the generated log to GitHub.");
+            File.WriteAllText(SharedData.pathToAI + "/DATA/MODTOOLS/commands_editor_error.log", error);
+            MessageBox.Show("A critical error occurred and was logged. The script editor will now close. Please share the contents of the generated log to GitHub.", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             Process.Start(SharedData.pathToAI + "/DATA/MODTOOLS/commands_editor_error.log");
             Application.Exit();
         }
