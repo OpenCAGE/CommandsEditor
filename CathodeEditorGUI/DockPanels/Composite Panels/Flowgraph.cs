@@ -628,7 +628,7 @@ namespace CommandsEditor
             //    AddAllPins(node);
         }
 
-        private void SetSameOptions(STNode toCopyFrom, STNode toApplyTo)
+        private void SetSameOptions(STNode toCopyFrom, STNode toApplyTo, bool alsoKeepConnections = true)
         {
             {
                 STNodeOption[] ins = toApplyTo.GetInputOptions();
@@ -647,16 +647,48 @@ namespace CommandsEditor
             {
                 STNodeOption[] ins = toCopyFrom.GetInputOptions();
                 for (int i = 0; i < ins.Length; i++)
-                    toApplyTo.AddInputOption(ins[i].ShortGUID);
+                {
+                    STNodeOption newOpt = toApplyTo.AddInputOption(ins[i].ShortGUID);
+                    if (alsoKeepConnections)
+                    {
+                        List<STNodeOption> connections = ins[i].GetConnectedOption();
+                        for (int x = 0; x < connections.Count; x++)
+                            newOpt.ConnectOption(connections[x]);
+                    }
+                }
                 STNodeOption[] outs = toCopyFrom.GetOutputOptions();
                 for (int i = 0; i < outs.Length; i++)
-                    toApplyTo.AddOutputOption(outs[i].ShortGUID);
+                {
+                    STNodeOption newOpt = toApplyTo.AddOutputOption(outs[i].ShortGUID);
+                    if (alsoKeepConnections)
+                    {
+                        List<STNodeOption> connections = outs[i].GetConnectedOption();
+                        for (int x = 0; x < connections.Count; x++)
+                            newOpt.ConnectOption(connections[x]);
+                    }
+                }
                 STNodeOption[] ups = toCopyFrom.GetTopOptions();
                 for (int i = 0; i < ups.Length; i++)
-                    toApplyTo.AddTopOption(ups[i].ShortGUID, ups[i].Style);
+                {
+                    STNodeOption newOpt = toApplyTo.AddTopOption(ups[i].ShortGUID, ups[i].Style);
+                    if (alsoKeepConnections)
+                    {
+                        List<STNodeOption> connections = ups[i].GetConnectedOption();
+                        for (int x = 0; x < connections.Count; x++)
+                            newOpt.ConnectOption(connections[x]);
+                    }
+                }
                 STNodeOption[] downs = toCopyFrom.GetBottomOptions();
                 for (int i = 0; i < downs.Length; i++)
-                    toApplyTo.AddBottomOption(downs[i].ShortGUID);
+                {
+                    STNodeOption newOpt = toApplyTo.AddBottomOption(downs[i].ShortGUID);
+                    if (alsoKeepConnections)
+                    {
+                        List<STNodeOption> connections = downs[i].GetConnectedOption();
+                        for (int x = 0; x < connections.Count; x++)
+                            newOpt.ConnectOption(connections[x]);
+                    }
+                }
             }
 
             UpdatePinDelayTexts(toApplyTo);
