@@ -57,10 +57,12 @@ namespace CommandsEditor
             Thread.CurrentThread.CurrentUICulture = newCulture;
             Thread.CurrentThread.CurrentCulture = newCulture;
 
+#if !DEBUG
             //Advanced error handlers for silent exceptions
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
             Application.ThreadException += Application_ThreadException;
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+#endif
 
             //Run app
             Application.EnableVisualStyles();
