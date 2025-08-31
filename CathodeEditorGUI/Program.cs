@@ -98,7 +98,7 @@ namespace CommandsEditor
                 await UploadCrashLog(error, logPath);
             }).Wait();
 
-            MessageBox.Show("A crash log has been generated!\nPlease report your issue to GitHub!", "OpenCAGE Error Handler", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("A crash log has been generated!\nPlease report your issue to GitHub!\nMake sure to include any steps and modified files.", "OpenCAGE Error Handler", MessageBoxButtons.OK, MessageBoxIcon.Information);
             Process.Start(logPath);
             Process.Start("https://github.com/MattFiler/OpenCAGE/issues/new");
             Application.Exit();
