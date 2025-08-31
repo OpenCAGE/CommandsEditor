@@ -175,6 +175,7 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Management" />
     <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
     </Reference>
@@ -647,6 +648,7 @@
     <Compile Include="Scripts\SmoothNumericUpDown.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Scripts\SystemInfo.cs" />
     <Compile Include="Scripts\ToolstripRendererExcs.cs" />
     <Compile Include="Scripts\TreeUtility.cs" />
     <Compile Include="Scripts\SettingsManager.cs" />
