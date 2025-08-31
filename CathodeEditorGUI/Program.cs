@@ -87,10 +87,12 @@ namespace CommandsEditor
         }
         static void HandleError(string error)
         {
-            Directory.CreateDirectory(SharedData.pathToAI + "/DATA/MODTOOLS/");
-            File.WriteAllText(SharedData.pathToAI + "/DATA/MODTOOLS/commands_editor_error.log", error);
+            string logPath = SharedData.pathToAI + "/DATA/MODTOOLS/LOGS/CECrash_" + DateTime.Now.ToString("ddMMyy-HHmmss") + ".log";
+            Directory.CreateDirectory(SharedData.pathToAI + "/DATA/MODTOOLS/LOGS");
+
+            File.WriteAllText(logPath, error);
             MessageBox.Show("A critical error occurred and was logged. The script editor will now close. Please share the contents of the generated log to GitHub.", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            Process.Start(SharedData.pathToAI + "/DATA/MODTOOLS/commands_editor_error.log");
+            Process.Start(logPath);
             Application.Exit();
         }
     }
