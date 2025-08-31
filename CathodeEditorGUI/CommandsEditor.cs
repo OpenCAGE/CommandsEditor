@@ -548,9 +548,13 @@ namespace CommandsEditor
         }
         private void UnityProcess_Exited(object sender, EventArgs e)
         {
-            if (openLevelViewerToolStripMenuItem.GetCurrentParent().InvokeRequired)
+            if (openLevelViewerToolStripMenuItem == null)
+                return;
+
+            var parent = openLevelViewerToolStripMenuItem.GetCurrentParent();
+            if (parent != null && parent.InvokeRequired)
             {
-                openLevelViewerToolStripMenuItem.GetCurrentParent().Invoke(new Action(() =>
+                parent.Invoke(new Action(() =>
                 {
                     openLevelViewerToolStripMenuItem.Enabled = true;
                 }));
