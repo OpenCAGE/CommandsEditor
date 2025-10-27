@@ -18,6 +18,8 @@ using WebSocketSharp;
 
 namespace CommandsEditor
 {
+    //See crash logs: loads of crashes here :(
+
     public partial class ShowCrossRefs : BaseWindow
     {
         public Action<Composite, Entity> OnEntitySelected;

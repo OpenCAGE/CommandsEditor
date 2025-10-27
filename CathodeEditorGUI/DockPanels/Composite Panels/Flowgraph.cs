@@ -618,14 +618,15 @@ namespace CommandsEditor
         private void duplicateToolStripMenuItem_Click(object sender, EventArgs e)
         {
             STNode node = stNodeEditor1.GetHoveredNode();
+            DuplicateNode(node);
+        }
+
+        private void DuplicateNode(STNode node)
+        {
             STNode duplicated = EntityToNode(node.Entity);
             SetSameOptions(node, duplicated);
             duplicated.SetPosition(new Point(node.Location.X + 15, node.Location.Y + 15));
             SelectNode(duplicated);
-
-            //TODO: do we really want to *modify* a duplicated node like this?
-            //if (SettingsManager.GetBool(Singleton.Settings.PopulateAllPinsOnCreateNode))
-            //    AddAllPins(node);
         }
 
         private void SetSameOptions(STNode toCopyFrom, STNode toApplyTo, bool alsoKeepConnections = true)
@@ -705,6 +706,8 @@ namespace CommandsEditor
             SetSameOptions(node, newNode);
             newNode.SetPosition(new Point((int)stNodeEditor1.MousePositionInCanvas.X, (int)stNodeEditor1.MousePositionInCanvas.Y));
             SelectNode(newNode);
+
+            //note to self: this is wrong. we need to maske sure we duplicate all the nodes and connections across all flowgraphs
         }
 
         private void TabStripContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
