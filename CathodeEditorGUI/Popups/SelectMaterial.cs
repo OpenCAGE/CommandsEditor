@@ -1,4 +1,4 @@
-﻿using CATHODE;
+using CATHODE;
 using CATHODE.LEGACY;
 using CATHODE.ShaderTypes;
 using CathodeLib;
@@ -42,10 +42,11 @@ namespace AlienPAK
             InitializeComponent();
 
             this.Text = "Select Material";
-            duplicateMaterial.Visible = false;
 
             _controls = (MaterialEditorControlsWPF)elementHost1.Child;
             _controls.OnMaterialTextureIndexSelected += OnMaterialTextureIndexSelected;
+            _controls.OnFeatureSelected += OnFeatureSelected;
+            _controls.OnParameterSelected += OnParameterSelected;
 
             _sortedMaterials.Clear();
             _sortedMaterials.AddRange(Content.resource.materials.Entries);
@@ -63,42 +64,63 @@ namespace AlienPAK
 
         private void materialList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            _controls.fileNameText.Text = "";
-            _controls.shaderName.Text = "";
-
             _controls.materialTextureSelection.Items.Clear();
             _materialTextures.Clear();
+            _controls.featureSelection.Items.Clear();
+            _controls.parameterSelection.Items.Clear();
+            _controls.featureDetailsPanel.Children.Clear();
+            _controls.parameterDetailsPanel.Children.Clear();
+            _controls.shaderType.Text = "";
 
             if (materialList.SelectedIndex == -1) return;
 
             Materials.Material material = _sortedMaterials[materialList.SelectedIndex];
             Shaders.Shader shader = Content.resource.shaders.Entries[material.ShaderIndex];
 
+            _controls.shaderType.Text = shader.Ubershader.ToString();
+
             List<string> samplers = ShaderUtility.GetSamplers(shader.Ubershader);
             foreach (string sampler in samplers)
             {
                 int samplerIndex = ShaderUtility.GetShaderFunctionalityIndex(shader.Ubershader, ShaderIndexType.SAMPLERS, sampler).Value;
+                if (samplerIndex >= shader.SamplerRemaps.Count) continue;
 
-                if (shader.SamplerRemaps.Count > samplerIndex)
+                int diffuseMapIndex = shader.SamplerRemaps[samplerIndex];
+                if (diffuseMapIndex != 255)
                 {
-                    int diffuseMapIndex = shader.SamplerRemaps[samplerIndex];
-                    if (diffuseMapIndex != 255)
+                    TexturePtr ptr = material.TextureReferences[diffuseMapIndex];
+                    if (ptr != null && ptr.Index != -1)
                     {
-                        TexturePtr ptr = material.TextureReferences[diffuseMapIndex];
-                        if (ptr != null && ptr.Index != -1)
-                        {
-                            _controls.materialTextureSelection.Items.Add(sampler);
-                            _materialTextures.Add((ptr.Location == TexturePtr.Source.GLOBAL ? Singleton.GlobalTextures : Content.resource.textures).GetAtWriteIndex(ptr.Index));
-                        }
+                        _controls.materialTextureSelection.Items.Add(sampler);
+                        _materialTextures.Add((ptr.Location == TexturePtr.Source.GLOBAL ? Singleton.GlobalTextures : Content.resource.textures).GetAtWriteIndex(ptr.Index));
                     }
                 }
             }
-
-            _controls.fileNameText.Text = _sortedMaterials[materialList.SelectedIndex].Name;
-            _controls.shaderName.Text = shader.Ubershader.ToString();
-
             if (_controls.materialTextureSelection.Items.Count != 0)
                 _controls.materialTextureSelection.SelectedIndex = 0;
+
+            List<string> features = ShaderUtility.GetFeatures(shader.Ubershader);
+            foreach (string feature in features)
+            {
+                _controls.featureSelection.Items.Add(feature);
+            }
+            if (_controls.featureSelection.Items.Count != 0)
+                _controls.featureSelection.SelectedIndex = 0;
+
+            List<string> parameters = ShaderUtility.GetParameters(shader.Ubershader);
+            foreach (string parameter in parameters)
+            {
+                int parameterIndex = ShaderUtility.GetShaderFunctionalityIndex(shader.Ubershader, ShaderIndexType.PARAMETERS, parameter).Value;
+                if (parameterIndex >= shader.PixelShaderParameterRemaps.Count) continue;
+
+                int remappedIndex = shader.PixelShaderParameterRemaps[parameterIndex];
+                if (remappedIndex != 255 && remappedIndex < material.PixelShaderConstants.Count)
+                {
+                    _controls.parameterSelection.Items.Add(parameter);
+                }
+            }
+            if (_controls.parameterSelection.Items.Count != 0)
+                _controls.parameterSelection.SelectedIndex = 0;
 
             OnMaterialTextureIndexSelected();
         }
@@ -113,6 +135,93 @@ namespace AlienPAK
             Textures.TEX4 texture = _materialTextures[_controls.materialTextureSelection.SelectedIndex];
             _controls.textureFile.Text = texture.Name;
             _controls.materialTexturePreview.Source = texture?.ToDDS()?.ToBitmap()?.ToImageSource();
+        }
+
+        private void OnFeatureSelected(string featureName)
+        {
+            _controls.featureDetailsPanel.Children.Clear();
+
+            if (materialList.SelectedIndex == -1) return;
+
+            Materials.Material material = _sortedMaterials[materialList.SelectedIndex];
+            Shaders.Shader shader = Content.resource.shaders.Entries[material.ShaderIndex];
+
+            int featureIndex = ShaderUtility.GetShaderFunctionalityIndex(shader.Ubershader, ShaderIndexType.FEATURES, featureName).Value;
+            bool isEnabled = (shader.UbershaderFeatureFlags & (1L << featureIndex)) != 0;
+
+            System.Windows.Controls.CheckBox checkBox = new System.Windows.Controls.CheckBox
+            {
+                Content = "Enabled",
+                IsChecked = isEnabled,
+                IsEnabled = false 
+            };
+            _controls.featureDetailsPanel.Children.Add(checkBox);
+        }
+
+        private void OnParameterSelected(string parameterName)
+        {
+            _controls.parameterDetailsPanel.Children.Clear();
+
+            if (materialList.SelectedIndex == -1) return;
+
+            Materials.Material material = _sortedMaterials[materialList.SelectedIndex];
+            Shaders.Shader shader = Content.resource.shaders.Entries[material.ShaderIndex];
+
+            int parameterIndex = ShaderUtility.GetShaderFunctionalityIndex(shader.Ubershader, ShaderIndexType.PARAMETERS, parameterName).Value;
+            UberShaderParameterType parameterType = ShaderUtility.GetParameterType(shader.Ubershader, parameterName).Value;
+            int remappedIndex = shader.PixelShaderParameterRemaps[parameterIndex];
+            int floatCount = GetFloatCountForParameterType(parameterType);
+
+            TextBlock textBlock = new TextBlock { Margin = new System.Windows.Thickness(0, 0, 0, 5) };
+            if (floatCount == 1)
+            {
+                float value = material.PixelShaderConstants[remappedIndex];
+                textBlock.Text = parameterType == UberShaderParameterType.Int ? ((int)value).ToString() : value.ToString("F6");
+            }
+            else if (floatCount == 2)
+            {
+                float x = material.PixelShaderConstants[remappedIndex];
+                float y = remappedIndex + 1 < material.PixelShaderConstants.Count ? material.PixelShaderConstants[remappedIndex + 1] : 0;
+                textBlock.Text = $"X: {x:F6}, Y: {y:F6}";
+            }
+            else if (floatCount == 3)
+            {
+                float x = material.PixelShaderConstants[remappedIndex];
+                float y = remappedIndex + 1 < material.PixelShaderConstants.Count ? material.PixelShaderConstants[remappedIndex + 1] : 0;
+                float z = remappedIndex + 2 < material.PixelShaderConstants.Count ? material.PixelShaderConstants[remappedIndex + 2] : 0;
+                textBlock.Text = $"X: {x:F6}, Y: {y:F6}, Z: {z:F6}";
+            }
+            else if (floatCount == 4)
+            {
+                float x = material.PixelShaderConstants[remappedIndex];
+                float y = remappedIndex + 1 < material.PixelShaderConstants.Count ? material.PixelShaderConstants[remappedIndex + 1] : 0;
+                float z = remappedIndex + 2 < material.PixelShaderConstants.Count ? material.PixelShaderConstants[remappedIndex + 2] : 0;
+                float w = remappedIndex + 3 < material.PixelShaderConstants.Count ? material.PixelShaderConstants[remappedIndex + 3] : 0;
+                textBlock.Text = $"X: {x:F6}, Y: {y:F6}, Z: {z:F6}, W: {w:F6}";
+            }
+            _controls.parameterDetailsPanel.Children.Add(textBlock);
+        }
+
+        private int GetFloatCountForParameterType(UberShaderParameterType parameterType)
+        {
+            switch (parameterType)
+            {
+                case UberShaderParameterType.Float:
+                case UberShaderParameterType.Half:
+                case UberShaderParameterType.Int:
+                    return 1;
+                case UberShaderParameterType.Float2:
+                case UberShaderParameterType.Half2:
+                    return 2;
+                case UberShaderParameterType.Float3:
+                case UberShaderParameterType.Half3:
+                    return 3;
+                case UberShaderParameterType.Float4:
+                case UberShaderParameterType.Half4:
+                    return 4;
+                default:
+                    return 1;
+            }
         }
 
         private void selectMaterial_Click(object sender, EventArgs e)

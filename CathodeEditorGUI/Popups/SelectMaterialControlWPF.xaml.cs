@@ -23,6 +23,8 @@ namespace AlienPAK
     public partial class MaterialEditorControlsWPF : UserControl
     {
         public Action<int> OnMaterialTextureIndexSelected;
+        public Action<string> OnFeatureSelected;
+        public Action<string> OnParameterSelected;
 
         public MaterialEditorControlsWPF()
         {
@@ -37,6 +39,18 @@ namespace AlienPAK
         private void MaterialTextureSelected(object sender, EventArgs e)
         {
             OnMaterialTextureIndexSelected?.Invoke(materialTextureSelection.SelectedIndex);
+        }
+
+        private void FeatureSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (featureSelection.SelectedItem != null)
+                OnFeatureSelected?.Invoke(featureSelection.SelectedItem.ToString());
+        }
+
+        private void ParameterSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (parameterSelection.SelectedItem != null)
+                OnParameterSelected?.Invoke(parameterSelection.SelectedItem.ToString());
         }
     }
 }
