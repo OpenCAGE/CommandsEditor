@@ -34,12 +34,20 @@
             this.modelPreviewArea = new System.Windows.Forms.GroupBox();
             this.selectModelBtn = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.useMaterials = new System.Windows.Forms.CheckBox();
+            this.submeshFilterGroup = new System.Windows.Forms.GroupBox();
+            this.submeshFilterPanel = new System.Windows.Forms.Panel();
             this.modelPreviewArea.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
+            this.splitContainer2.Panel1.SuspendLayout();
+            this.splitContainer2.Panel2.SuspendLayout();
+            this.splitContainer2.SuspendLayout();
+            this.submeshFilterGroup.SuspendLayout();
             this.SuspendLayout();
             // 
             // modelRendererHost
@@ -104,10 +112,47 @@
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.modelPreviewArea);
+            this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
             this.splitContainer1.Size = new System.Drawing.Size(1057, 632);
             this.splitContainer1.SplitterDistance = 352;
             this.splitContainer1.TabIndex = 104;
+            // 
+            // splitContainer2
+            // 
+            this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer2.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer2.Name = "splitContainer2";
+            // 
+            // splitContainer2.Panel1
+            // 
+            this.splitContainer2.Panel1.Controls.Add(this.modelPreviewArea);
+            // 
+            // splitContainer2.Panel2
+            // 
+            this.splitContainer2.Panel2.Controls.Add(this.submeshFilterGroup);
+            this.splitContainer2.Size = new System.Drawing.Size(701, 632);
+            this.splitContainer2.SplitterDistance = 500;
+            this.splitContainer2.TabIndex = 0;
+            // 
+            // submeshFilterGroup
+            // 
+            this.submeshFilterGroup.Controls.Add(this.submeshFilterPanel);
+            this.submeshFilterGroup.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.submeshFilterGroup.Location = new System.Drawing.Point(0, 0);
+            this.submeshFilterGroup.Name = "submeshFilterGroup";
+            this.submeshFilterGroup.Size = new System.Drawing.Size(197, 632);
+            this.submeshFilterGroup.TabIndex = 0;
+            this.submeshFilterGroup.TabStop = false;
+            this.submeshFilterGroup.Text = "Render Filter";
+            // 
+            // submeshFilterPanel
+            // 
+            this.submeshFilterPanel.AutoScroll = true;
+            this.submeshFilterPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.submeshFilterPanel.Location = new System.Drawing.Point(3, 16);
+            this.submeshFilterPanel.Name = "submeshFilterPanel";
+            this.submeshFilterPanel.Size = new System.Drawing.Size(191, 613);
+            this.submeshFilterPanel.TabIndex = 0;
             // 
             // useMaterials
             // 
@@ -137,6 +182,11 @@
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            this.splitContainer2.Panel1.ResumeLayout(false);
+            this.splitContainer2.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
+            this.splitContainer2.ResumeLayout(false);
+            this.submeshFilterGroup.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -148,6 +198,9 @@
         private System.Windows.Forms.GroupBox modelPreviewArea;
         private System.Windows.Forms.Button selectModelBtn;
         private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.SplitContainer splitContainer2;
         private System.Windows.Forms.CheckBox useMaterials;
+        private System.Windows.Forms.GroupBox submeshFilterGroup;
+        private System.Windows.Forms.Panel submeshFilterPanel;
     }
 }

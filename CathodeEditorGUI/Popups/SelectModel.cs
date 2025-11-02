@@ -16,9 +16,6 @@ using System.Windows.Forms;
 
 namespace CommandsEditor
 {
-    //TODO: The logic here is really crap. Need to bring over the new improvements made for AlienPAK.
-
-
     public partial class SelectModel : BaseWindow
     {
         GUI_ModelViewer modelViewer = null;
@@ -26,6 +23,12 @@ namespace CommandsEditor
 
         public int SelectedModelIndex = -1;
         public List<int> SelectedModelMaterialIndexes = new List<int>();
+
+        private Dictionary<int, GUI_ModelViewer.Model> allSubmeshes = new Dictionary<int, GUI_ModelViewer.Model>();
+        private List<CheckBox> submeshCheckboxes = new List<CheckBox>();
+        private Dictionary<CheckBox, int> checkboxToModelIndex = new Dictionary<CheckBox, int>();
+        private Dictionary<int, List<CheckBox>> lodToCheckboxes = new Dictionary<int, List<CheckBox>>();
+        private Dictionary<int, GroupBox> lodGroups = new Dictionary<int, GroupBox>();
 
         public SelectModel(int defaultModelIndex = -1) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
@@ -66,6 +69,9 @@ namespace CommandsEditor
 
         private void SelectModel_Disposed(object sender, EventArgs e)
         {
+            ClearSubmeshCheckboxes();
+            allSubmeshes.Clear();
+            
             treeHelper?.ForceClearTree();
             treeHelper = null;
 
@@ -108,13 +114,167 @@ namespace CommandsEditor
             if (i == -1)
                 return;
 
-            List<GUI_ModelViewer.Model> models = new List<GUI_ModelViewer.Model>();
+            ClearSubmeshCheckboxes();
+
+            allSubmeshes.Clear();
             Models.CS2.Component component = Content.resource.models.FindModelComponentForSubmesh(Content.resource.models.GetAtWriteIndex(i));
+            
+            int highestLODIndex = 0;
+            if (component.LODs.Count > 0)
+                highestLODIndex = 0; 
+            
             for (int x = 0; x < component.LODs.Count; x++)
+                CreateLODGroup(x, component.LODs[x].Name);
+            
+            for (int x = 0; x < component.LODs.Count; x++)
+            {
+                int yOffset = 0;
                 for (int y = 0; y < component.LODs[x].Submeshes.Count; y++)
-                    models.Add(new GUI_ModelViewer.Model(Content.resource.models.GetWriteIndex(component.LODs[x].Submeshes[y])));
-            modelViewer.ShowModel(models);
+                {
+                    int modelIndex = Content.resource.models.GetWriteIndex(component.LODs[x].Submeshes[y]);
+                    allSubmeshes[modelIndex] = new GUI_ModelViewer.Model(modelIndex);
+                    
+                    bool isEnabled = (x == highestLODIndex);
+                    CreateSubmeshCheckbox(modelIndex, x, y, component.LODs[x].Submeshes.Count, isEnabled, yOffset);
+                    yOffset += 25;
+                }
+            }
+
+            UpdateLODGroupLayouts();
+            UpdateFilteredModel();
             modelPreviewArea.Text = GenerateNodeTag(i);
+        }
+
+        private void ClearSubmeshCheckboxes()
+        {
+            foreach (CheckBox cb in submeshCheckboxes)
+            {
+                cb.CheckedChanged -= SubmeshCheckbox_CheckedChanged;
+                checkboxToModelIndex.Remove(cb);
+                cb.Dispose();
+            }
+            submeshCheckboxes.Clear();
+            checkboxToModelIndex.Clear();
+            
+            foreach (var lodGroup in lodGroups.Values)
+            {
+                lodGroup.Dispose();
+            }
+            lodGroups.Clear();
+            lodToCheckboxes.Clear();
+            submeshFilterPanel.Controls.Clear();
+        }
+
+        private void CreateLODGroup(int lodIndex, string lodName)
+        {
+            GroupBox lodGroup = new GroupBox();
+            lodGroup.Text = string.IsNullOrEmpty(lodName) ? $"LOD {lodIndex}" : $"LOD {lodIndex} - {lodName}";
+            lodGroup.AutoSize = false;
+            lodGroup.Width = 185;
+            
+            Button selectAllBtn = new Button();
+            selectAllBtn.Text = "Select All";
+            selectAllBtn.Size = new Size(80, 23);
+            selectAllBtn.Location = new Point(5, 15);
+            selectAllBtn.Tag = lodIndex;
+            selectAllBtn.Click += (s, e) => {
+                int lod = (int)((Button)s).Tag;
+                SetLODCheckboxesState(lod, true);
+            };
+            
+            Button deselectAllBtn = new Button();
+            deselectAllBtn.Text = "Deselect All";
+            deselectAllBtn.Size = new Size(80, 23);
+            deselectAllBtn.Location = new Point(90, 15);
+            deselectAllBtn.Tag = lodIndex;
+            deselectAllBtn.Click += (s, e) => {
+                int lod = (int)((Button)s).Tag;
+                SetLODCheckboxesState(lod, false);
+            };
+            
+            lodGroup.Controls.Add(selectAllBtn);
+            lodGroup.Controls.Add(deselectAllBtn);
+            
+            lodGroups[lodIndex] = lodGroup;
+            lodToCheckboxes[lodIndex] = new List<CheckBox>();
+        }
+
+        private void SetLODCheckboxesState(int lodIndex, bool state)
+        {
+            if (lodToCheckboxes.ContainsKey(lodIndex))
+            {
+                foreach (CheckBox cb in lodToCheckboxes[lodIndex])
+                    cb.CheckedChanged -= SubmeshCheckbox_CheckedChanged;
+                foreach (CheckBox cb in lodToCheckboxes[lodIndex])
+                    cb.Checked = state;
+                foreach (CheckBox cb in lodToCheckboxes[lodIndex])
+                    cb.CheckedChanged += SubmeshCheckbox_CheckedChanged;
+                
+                UpdateFilteredModel();
+            }
+        }
+
+        private void CreateSubmeshCheckbox(int modelIndex, int lodIndex, int submeshIndex, int totalSubmeshes, bool isChecked, int yOffset)
+        {
+            CheckBox checkbox = new CheckBox();
+            checkbox.AutoSize = true;
+            checkbox.Checked = isChecked;
+            
+            GroupBox lodGroup = lodGroups[lodIndex];
+            checkbox.Location = new Point(10, 45 + yOffset);
+            checkbox.Text = $"Submesh {submeshIndex} (Index {modelIndex})";
+            checkbox.Tag = modelIndex;
+            
+            checkbox.CheckedChanged += SubmeshCheckbox_CheckedChanged;
+            
+            submeshCheckboxes.Add(checkbox);
+            checkboxToModelIndex[checkbox] = modelIndex;
+            lodToCheckboxes[lodIndex].Add(checkbox);
+            lodGroup.Controls.Add(checkbox);
+        }
+
+        private void UpdateLODGroupLayouts()
+        {
+            int currentYPos = 5;
+            foreach (var kvp in lodGroups.OrderBy(x => x.Key))
+            {
+                int lodIndex = kvp.Key;
+                GroupBox lodGroup = kvp.Value;
+                
+                int checkboxCount = lodToCheckboxes[lodIndex].Count;
+                int groupHeight = 45 + (checkboxCount * 25) + 5; 
+                lodGroup.Height = groupHeight;
+                lodGroup.Location = new Point(5, currentYPos);
+                
+                currentYPos += groupHeight + 5; 
+                
+                submeshFilterPanel.Controls.Add(lodGroup);
+            }
+        }
+
+        private void SubmeshCheckbox_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateFilteredModel();
+        }
+
+        private void UpdateFilteredModel()
+        {
+            if (allSubmeshes.Count == 0)
+                return;
+
+            List<GUI_ModelViewer.Model> filteredModels = new List<GUI_ModelViewer.Model>();
+            
+            foreach (CheckBox cb in submeshCheckboxes)
+            {
+                if (cb.Checked && checkboxToModelIndex.ContainsKey(cb))
+                {
+                    int modelIndex = checkboxToModelIndex[cb];
+                    if (allSubmeshes.ContainsKey(modelIndex))
+                        filteredModels.Add(allSubmeshes[modelIndex]);
+                }
+            }
+
+            modelViewer.ShowModel(filteredModels);
         }
 
         private void selectModel_Click(object sender, EventArgs e)
@@ -133,7 +293,7 @@ namespace CommandsEditor
         private void useMaterials_CheckedChanged(object sender, EventArgs e)
         {
             SettingsManager.SetBool(Singleton.Settings.ShowTexOpt, useMaterials.Checked);
-            ShowModel(SelectedModelIndex);
+            UpdateFilteredModel();
         }
     }
 }
