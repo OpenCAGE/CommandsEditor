@@ -31,7 +31,7 @@ namespace AlienPAK
             DirectXTexUtility.DXGIFormat format;
             switch (texture.Format)
             {
-                case Textures.TextureFormat.A32R32G32B32F: 
+                case Textures.TextureFormat.A32R32G32B32F:
                     format = DirectXTexUtility.DXGIFormat.R32G32B32A32FLOAT;
                     break;
                 case Textures.TextureFormat.A16R16G16B16:
@@ -156,25 +156,18 @@ namespace AlienPAK
         /* Convert a CS2 submesh to GeometryModel3D */
         public static GeometryModel3D ToGeometryModel3D(this CS2.Component.LOD.Submesh submesh)
         {
-            Int32Collection indices = new Int32Collection();
-            Point3DCollection vertices = new Point3DCollection();
-            Vector3DCollection normals = new Vector3DCollection();
-            List<Vector4> binormals = new List<Vector4>();
-            List<Vector4> tangents = new List<Vector4>();
-            List<System.Drawing.Color> colours = new List<System.Drawing.Color>();
-            PointCollection[] uvs = new PointCollection[0];
-
-            List<Vector4> boneIndexes = new List<Vector4>();
-            List<Vector4> boneWeights = new List<Vector4>();
-
             if (submesh.Data.Length == 0)
                 return new GeometryModel3D();
 
+            Int32Collection indices = new Int32Collection();
+            Point3DCollection vertices = new Point3DCollection();
+            PointCollection[] uvs = new PointCollection[0];
+
             using (BinaryReader reader = new BinaryReader(new MemoryStream(submesh.Data)))
             {
-                for (int i = 0; i < submesh.VertexFormatFull.Elements.Count; ++i)
+                for (int i = 0; i < submesh.VertexFormatFull.Attributes.Count; ++i)
                 {
-                    if (i == submesh.VertexFormatFull.Elements.Count - 1)
+                    if (i == submesh.VertexFormatFull.Attributes.Count - 1)
                     {
                         for (int x = 0; x < submesh.IndexCount; x++)
                             indices.Add(reader.ReadUInt16());
@@ -183,41 +176,22 @@ namespace AlienPAK
 
                     for (int x = 0; x < submesh.VertexCount; ++x)
                     {
-                        for (int y = 0; y < submesh.VertexFormatFull.Elements[i].Count; ++y)
+                        for (int y = 0; y < submesh.VertexFormatFull.Attributes[i].Count; ++y)
                         {
-                            AlienVBF.Element f = submesh.VertexFormatFull.Elements[i][y];
-                            Vector4 v = ReadVertexData(reader, f.Type);
+                            VertexFormat.Attribute attr = submesh.VertexFormatFull.Attributes[i][y];
+                            Vector4 v = ReadVertexData(reader, attr.Type);
 
-                            switch (f.Usage)
+                            switch (attr.Usage)
                             {
-                                case VertexFormatUsage.POSITION:
+                                case VertexFormat.Usage.Position:
                                     vertices.Add(new Point3D(v.X * submesh.VertexScale, v.Y * submesh.VertexScale, v.Z * submesh.VertexScale));
                                     break;
-                                case VertexFormatUsage.BLENDWEIGHT:
-                                    boneWeights.Add(v);
-                                    break;
-                                case VertexFormatUsage.BLENDINDICES:
-                                    boneIndexes.Add(v);
-                                    break;
-                                case VertexFormatUsage.NORMAL:
-                                    normals.Add(new Vector3D(v.X, v.Y, v.W));
-                                    Console.WriteLine("Normal is type " + f.Type);
-                                    break;
-                                case VertexFormatUsage.TEXCOORD:
-                                    if (f.VariantIndex >= uvs.Length)
-                                        Array.Resize(ref uvs, f.VariantIndex + 1);
-                                    if (uvs[f.VariantIndex] == null)
-                                        uvs[f.VariantIndex] = new PointCollection();
-                                    uvs[f.VariantIndex].Add(new System.Windows.Point(v.X * 16.0f, v.Y * 16.0f));
-                                    break;
-                                case VertexFormatUsage.TANGENT:
-                                    tangents.Add(v);
-                                    break;
-                                case VertexFormatUsage.BINORMAL:
-                                    binormals.Add(v);
-                                    break;
-                                case VertexFormatUsage.COLOR:
-                                    colours.Add(System.Drawing.Color.FromArgb((int)(v.W * 255), (int)(v.X * 255), (int)(v.Y * 255), (int)(v.Z * 255)));
+                                case VertexFormat.Usage.TexCoord:
+                                    if (attr.Index >= uvs.Length)
+                                        Array.Resize(ref uvs, attr.Index + 1);
+                                    if (uvs[attr.Index] == null)
+                                        uvs[attr.Index] = new PointCollection();
+                                    uvs[attr.Index].Add(new System.Windows.Point(v.X * 16.0f, v.Y * 16.0f));
                                     break;
                             }
                         }
@@ -238,57 +212,52 @@ namespace AlienPAK
                 }
             }
 
+            MeshGeometry3D geometry = new MeshGeometry3D
+            {
+                Positions = vertices,
+                TriangleIndices = indices,
+                TextureCoordinates = uv,
+            };
             return new GeometryModel3D
             {
-                Geometry = new MeshGeometry3D
-                {
-                    Positions = vertices,
-                    TriangleIndices = indices,
-                    Normals = normals,
-                    TextureCoordinates = uv,
-                },
+                Geometry = geometry,
                 Material = new DiffuseMaterial(new SolidColorBrush(Color.FromRgb(255, 255, 0))),
                 BackMaterial = new DiffuseMaterial(new SolidColorBrush(Color.FromRgb(255, 255, 0)))
             };
         }
 
-        private static Vector4 ReadVertexData(BinaryReader reader, VertexFormatType type)
+        private static Vector4 ReadVertexData(BinaryReader reader, VertexFormat.Type type)
         {
             switch (type)
             {
-                case VertexFormatType.FLOAT1:
+                case VertexFormat.Type.FP32_1:
                     return new Vector4(reader.ReadSingle(), 0, 0, 0);
-                case VertexFormatType.FLOAT2:
+                case VertexFormat.Type.FP32_2:
                     return new Vector4(reader.ReadSingle(), reader.ReadSingle(), 0, 0);
-                case VertexFormatType.FLOAT3:
+                case VertexFormat.Type.FP32_3:
                     return new Vector4(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle(), 0);
-                case VertexFormatType.FLOAT4:
+                case VertexFormat.Type.FP32_4:
                     return new Vector4(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
-                case VertexFormatType.COLOUR:
+                case VertexFormat.Type.Color:
                     uint data = reader.ReadUInt32();
                     return new Vector4((float)((data & 0xFF000000) >> 24) / 255.0f, (float)((data & 0x00FF0000) >> 16) / 255.0f, (float)((data & 0x0000FF00) >> 8) / 255.0f, (float)((data & 0x000000FF) >> 0) / 255.0f);
-                case VertexFormatType.UBYTE4:
+                case VertexFormat.Type.U8_4:
                     return new Vector4(reader.ReadByte(), reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
-                case VertexFormatType.SHORT2:
+                case VertexFormat.Type.S16_2:
                     return new Vector4(reader.ReadInt16(), reader.ReadInt16(), 0, 0);
-                case VertexFormatType.SHORT4:
+                case VertexFormat.Type.S16_4:
                     return new Vector4(reader.ReadInt16(), reader.ReadInt16(), reader.ReadInt16(), reader.ReadInt16());
-                case VertexFormatType.UBYTE4N:
+                case VertexFormat.Type.U8_4N:
                     return new Vector4((float)reader.ReadByte() / 255.0f, (float)reader.ReadByte() / 255.0f, (float)reader.ReadByte() / 255.0f, (float)reader.ReadByte() / 255.0f);
-                case VertexFormatType.SHORT2N:
+                case VertexFormat.Type.S16_2N:
                     return new Vector4((float)reader.ReadInt16() / (float)Int16.MaxValue, (float)reader.ReadInt16() / (float)Int16.MaxValue, 0, 0);
-                case VertexFormatType.SHORT4N:
+                case VertexFormat.Type.S16_4N:
                     return new Vector4((float)reader.ReadInt16() / (float)Int16.MaxValue, (float)reader.ReadInt16() / (float)Int16.MaxValue, (float)reader.ReadInt16() / (float)Int16.MaxValue, (float)reader.ReadInt16() / (float)Int16.MaxValue);
-                case VertexFormatType.USHORT2N:
+                case VertexFormat.Type.U16_2N:
                     return new Vector4((float)reader.ReadUInt16() / (float)UInt16.MaxValue, (float)reader.ReadUInt16() / (float)UInt16.MaxValue, 0, 0);
-                case VertexFormatType.USHORT4N:
+                case VertexFormat.Type.U16_4N:
                     return new Vector4((float)reader.ReadUInt16() / (float)UInt16.MaxValue, (float)reader.ReadUInt16() / (float)UInt16.MaxValue, (float)reader.ReadUInt16() / (float)UInt16.MaxValue, (float)reader.ReadUInt16() / (float)UInt16.MaxValue);
-                case VertexFormatType.DEC3N:
-                    //NOTE - this is not working how i expected! need to investigate.
-                    Vector4 v = new Vector4(reader.ReadByte(), reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
-                    v /= (float)Int16.MaxValue;
-                    v = Vector4.Normalize(v);
-                    return v;
+                case VertexFormat.Type.Dec3N:
                     uint val = reader.ReadUInt32();
                     short sx = (short)((val >> 20) & 0x3ff);
                     short sy = (short)((val >> 10) & 0x3ff);
