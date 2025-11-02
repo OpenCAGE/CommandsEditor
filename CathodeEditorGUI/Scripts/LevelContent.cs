@@ -35,8 +35,7 @@ namespace CommandsEditor
             public Materials materials = null;
             public Textures textures = null;
 
-            public ShadersPAK shaders_legacy = null; //LEGACY
-            public Shaders shaders_new = null; 
+            public Shaders shaders = null; 
 
             public RenderableElements reds = null;
             public Collisions weighted_collisions = null;
@@ -292,8 +291,7 @@ namespace CommandsEditor
                             resource.textures = new Textures(renderablePath + "LEVEL_TEXTURES.ALL.PAK");
                             break;
                         case 3:
-                            resource.shaders_legacy = new ShadersPAK(renderablePath + "LEVEL_SHADERS_DX11.PAK"); 
-                            resource.shaders_new = new Shaders(renderablePath + "LEVEL_SHADERS_DX11.PAK"); 
+                            resource.shaders = new Shaders(renderablePath + "LEVEL_SHADERS_DX11.PAK"); 
                             break;
                         case 4:
                             //TODO: this is weird... why does it seem to differ?

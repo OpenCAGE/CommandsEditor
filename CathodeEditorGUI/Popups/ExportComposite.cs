@@ -270,7 +270,7 @@ namespace CommandsEditor
                 }
 
                 //Copy shader 
-                Shaders.Shader shader = Content.resource.shaders_new.Entries[material.ShaderIndex].Copy();
+                Shaders.Shader shader = Content.resource.shaders.Entries[material.ShaderIndex].Copy();
                 lvl.Shaders.Entries.Add(shader);
                 material.ShaderIndex = lvl.Shaders.Entries.Count - 1;
                 material.EnvironmentMapIndex = 255;
