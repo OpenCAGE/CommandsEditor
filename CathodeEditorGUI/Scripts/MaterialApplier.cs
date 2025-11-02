@@ -24,7 +24,7 @@ namespace CommandsEditor.Scripts
                 System.Windows.Media.Color tintColor = GetDiffuseTint(material, shader);
 
                 float uvScale = GetDiffuseUvScale(material, shader);
-                if (uvScale != 1.0f && geometryModel.Geometry is MeshGeometry3D meshGeometry && meshGeometry.TextureCoordinates != null)
+                if (geometryModel.Geometry is MeshGeometry3D meshGeometry && meshGeometry.TextureCoordinates != null)
                 {
                     PointCollection scaledUVs = new PointCollection();
                     foreach (System.Windows.Point uv in meshGeometry.TextureCoordinates)

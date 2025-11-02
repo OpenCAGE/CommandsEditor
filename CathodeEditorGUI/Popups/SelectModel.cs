@@ -146,8 +146,10 @@ namespace CommandsEditor
             }
 
             UpdateLODGroupLayouts();
-            UpdateFilteredModel(true); // Zoom extents on initial load
+            UpdateFilteredModel(true); 
             modelPreviewArea.Text = GenerateNodeTag(i);
+
+            Debug.Log("Model Viewer", "Showing model at index " + i);
         }
 
         private void ClearSubmeshCheckboxes()
