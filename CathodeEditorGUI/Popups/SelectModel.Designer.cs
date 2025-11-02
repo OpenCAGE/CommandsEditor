@@ -32,10 +32,10 @@
             this.modelRendererHost = new System.Windows.Forms.Integration.ElementHost();
             this.FileTree = new System.Windows.Forms.TreeView();
             this.modelPreviewArea = new System.Windows.Forms.GroupBox();
+            this.useMaterials = new System.Windows.Forms.CheckBox();
             this.selectModelBtn = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-            this.useMaterials = new System.Windows.Forms.CheckBox();
             this.submeshFilterGroup = new System.Windows.Forms.GroupBox();
             this.submeshFilterPanel = new System.Windows.Forms.Panel();
             this.modelPreviewArea.SuspendLayout();
@@ -55,7 +55,7 @@
             this.modelRendererHost.Dock = System.Windows.Forms.DockStyle.Fill;
             this.modelRendererHost.Location = new System.Drawing.Point(3, 16);
             this.modelRendererHost.Name = "modelRendererHost";
-            this.modelRendererHost.Size = new System.Drawing.Size(692, 610);
+            this.modelRendererHost.Size = new System.Drawing.Size(487, 610);
             this.modelRendererHost.TabIndex = 0;
             this.modelRendererHost.Text = "elementHost1";
             this.modelRendererHost.Child = null;
@@ -82,15 +82,26 @@
             this.modelPreviewArea.Controls.Add(this.modelRendererHost);
             this.modelPreviewArea.Location = new System.Drawing.Point(3, 3);
             this.modelPreviewArea.Name = "modelPreviewArea";
-            this.modelPreviewArea.Size = new System.Drawing.Size(698, 629);
+            this.modelPreviewArea.Size = new System.Drawing.Size(493, 629);
             this.modelPreviewArea.TabIndex = 103;
             this.modelPreviewArea.TabStop = false;
             this.modelPreviewArea.Text = "groupBox1";
             // 
+            // useMaterials
+            // 
+            this.useMaterials.AutoSize = true;
+            this.useMaterials.Location = new System.Drawing.Point(6, 606);
+            this.useMaterials.Name = "useMaterials";
+            this.useMaterials.Size = new System.Drawing.Size(111, 17);
+            this.useMaterials.TabIndex = 2;
+            this.useMaterials.Text = "Use Material Data";
+            this.useMaterials.UseVisualStyleBackColor = true;
+            this.useMaterials.CheckedChanged += new System.EventHandler(this.useMaterials_CheckedChanged);
+            // 
             // selectModelBtn
             // 
             this.selectModelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.selectModelBtn.Location = new System.Drawing.Point(549, 579);
+            this.selectModelBtn.Location = new System.Drawing.Point(344, 579);
             this.selectModelBtn.Name = "selectModelBtn";
             this.selectModelBtn.Size = new System.Drawing.Size(134, 35);
             this.selectModelBtn.TabIndex = 1;
@@ -120,6 +131,8 @@
             // splitContainer2
             // 
             this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer2.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
+            this.splitContainer2.IsSplitterFixed = true;
             this.splitContainer2.Location = new System.Drawing.Point(0, 0);
             this.splitContainer2.Name = "splitContainer2";
             // 
@@ -131,7 +144,8 @@
             // 
             this.splitContainer2.Panel2.Controls.Add(this.submeshFilterGroup);
             this.splitContainer2.Size = new System.Drawing.Size(701, 632);
-            this.splitContainer2.SplitterDistance = 500;
+            this.splitContainer2.SplitterDistance = 499;
+            this.splitContainer2.SplitterWidth = 5;
             this.splitContainer2.TabIndex = 0;
             // 
             // submeshFilterGroup
@@ -153,17 +167,6 @@
             this.submeshFilterPanel.Name = "submeshFilterPanel";
             this.submeshFilterPanel.Size = new System.Drawing.Size(191, 613);
             this.submeshFilterPanel.TabIndex = 0;
-            // 
-            // useMaterials
-            // 
-            this.useMaterials.AutoSize = true;
-            this.useMaterials.Location = new System.Drawing.Point(6, 606);
-            this.useMaterials.Name = "useMaterials";
-            this.useMaterials.Size = new System.Drawing.Size(111, 17);
-            this.useMaterials.TabIndex = 2;
-            this.useMaterials.Text = "Use Material Data";
-            this.useMaterials.UseVisualStyleBackColor = true;
-            this.useMaterials.CheckedChanged += new System.EventHandler(this.useMaterials_CheckedChanged);
             // 
             // SelectModel
             // 

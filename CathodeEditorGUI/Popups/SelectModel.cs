@@ -1,4 +1,4 @@
-﻿using AlienPAK;
+using AlienPAK;
 using CATHODE;
 using CATHODE.LEGACY;
 using CommandsEditor.Popups.Base;
@@ -33,6 +33,11 @@ namespace CommandsEditor
         public SelectModel(int defaultModelIndex = -1) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             InitializeComponent();
+
+            splitContainer2.FixedPanel = FixedPanel.Panel2;
+            splitContainer2.IsSplitterFixed = true;
+            splitContainer2.Resize += SplitContainer2_Resize;
+            UpdateFilterPanelWidth();
 
             useMaterials.Checked = SettingsManager.GetBool(Singleton.Settings.ShowTexOpt);
 
@@ -141,7 +146,7 @@ namespace CommandsEditor
             }
 
             UpdateLODGroupLayouts();
-            UpdateFilteredModel();
+            UpdateFilteredModel(true); // Zoom extents on initial load
             modelPreviewArea.Text = GenerateNodeTag(i);
         }
 
@@ -259,6 +264,11 @@ namespace CommandsEditor
 
         private void UpdateFilteredModel()
         {
+            UpdateFilteredModel(false);
+        }
+
+        private void UpdateFilteredModel(bool zoomExtents)
+        {
             if (allSubmeshes.Count == 0)
                 return;
 
@@ -274,7 +284,7 @@ namespace CommandsEditor
                 }
             }
 
-            modelViewer.ShowModel(filteredModels);
+            modelViewer.ShowModel(filteredModels, zoomExtents);
         }
 
         private void selectModel_Click(object sender, EventArgs e)
@@ -294,6 +304,22 @@ namespace CommandsEditor
         {
             SettingsManager.SetBool(Singleton.Settings.ShowTexOpt, useMaterials.Checked);
             UpdateFilteredModel();
+        }
+
+        private void SplitContainer2_Resize(object sender, EventArgs e)
+        {
+            UpdateFilterPanelWidth();
+        }
+
+        private void UpdateFilterPanelWidth()
+        {
+            const int filterPanelWidth = 220;
+            const int splitterWidth = 5;
+            
+            if (splitContainer2.Width > filterPanelWidth + splitterWidth)
+            {
+                splitContainer2.SplitterDistance = splitContainer2.Width - filterPanelWidth - splitterWidth;
+            }
         }
     }
 }

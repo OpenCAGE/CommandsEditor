@@ -1,4 +1,4 @@
-﻿using AlienPAK;
+using AlienPAK;
 using CATHODE;
 using CATHODE.LEGACY;
 using CATHODE.Scripting;
@@ -37,16 +37,23 @@ namespace CommandsEditor.Popups.UserControls
 
         public void ShowModel(List<Model> models)
         {
+            ShowModel(models, true);
+        }
+
+        public void ShowModel(List<Model> models, bool zoomExtents)
+        {
             Model3DGroup group = new Model3DGroup();
             for (int i = 0; i < models.Count; i++)
                 group.Children.Add(OffsetModel(models[i].modelIndex, models[i].position, models[i].rotation, models[i].materialIndex));
             modelPreview.Content = group;
 
-            myView.ModelUpDirection = new Vector3D(0, 1, 0);
-            myView.Camera.UpDirection = new Vector3D(0, 1, 0);
-            myView.Camera.LookDirection = new Vector3D(-0.5, -0.5, 1);
-
-            myView.ZoomExtents();
+            if (zoomExtents)
+            {
+                myView.ModelUpDirection = new Vector3D(0, 1, 0);
+                myView.Camera.UpDirection = new Vector3D(0, 1, 0);
+                myView.Camera.LookDirection = new Vector3D(-0.5, -0.5, 1);
+                myView.ZoomExtents();
+            }
         }
         
         private Model3DGroup OffsetModel(int modelIndex, Vector3D position, Vector3D rotation, int materialIndex)
