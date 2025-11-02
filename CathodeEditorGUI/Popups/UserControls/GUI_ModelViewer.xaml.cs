@@ -56,12 +56,12 @@ namespace CommandsEditor.Popups.UserControls
             {
                 try
                 {
-                    ShadersPAK.ShaderMaterialMetadata mdlMeta = Content.resource.shaders_legacy.GetMaterialMetadataFromShader(Content.resource.materials.GetAtWriteIndex(materialIndex == -1 ? submesh.MaterialLibraryIndex : materialIndex));
+                    ShadersPAK.ShaderMaterialMetadata mdlMeta = Content.resource.shaders_legacy.GetMaterialMetadataFromShader(Content.resource.materials.GetAtWriteIndex(materialIndex == -1 ? submesh.MaterialIndex : materialIndex));
                     ShadersPAK.MaterialTextureContext mdlMetaDiff = mdlMeta.textures.FirstOrDefault(o => o.Type == ShadersPAK.ShaderSlot.DIFFUSE_MAP);
                     if (mdlMetaDiff != null)
                     {
-                        Textures tex = mdlMetaDiff.TextureInfo.Source == CATHODE.Materials.Material.Texture.TextureSource.GLOBAL ? Singleton.GlobalTextures : Content.resource.textures;
-                        Textures.TEX4 diff = tex.GetAtWriteIndex(mdlMetaDiff.TextureInfo.BinIndex);
+                        Textures tex = mdlMetaDiff.TextureInfo.Location == TexturePtr.Source.GLOBAL ? Singleton.GlobalTextures : Content.resource.textures;
+                        Textures.TEX4 diff = tex.GetAtWriteIndex(mdlMetaDiff.TextureInfo.Index);
                         byte[] diffDDS = diff?.ToDDS();
                         DiffuseMaterial mat = new DiffuseMaterial(new ImageBrush(diffDDS?.ToBitmap()?.ToImageSource()));
                         submeshGeo.Material = mat;
@@ -76,7 +76,7 @@ namespace CommandsEditor.Popups.UserControls
 
             //Get transform data
             Transform3DGroup transform = new Transform3DGroup();
-            transform.Children.Add(new ScaleTransform3D(submesh.ScaleFactor, submesh.ScaleFactor, submesh.ScaleFactor));
+            transform.Children.Add(new ScaleTransform3D(submesh.VertexScale, submesh.VertexScale, submesh.VertexScale));
             System.Numerics.Quaternion q = System.Numerics.Quaternion.CreateFromYawPitchRoll((float)(rotation.Y * Math.PI / 180.0f), (float)(rotation.X * Math.PI / 180.0f), (float)(rotation.Z * Math.PI / 180.0f));
             transform.Children.Add(new RotateTransform3D(new QuaternionRotation3D(new System.Windows.Media.Media3D.Quaternion(q.X, q.Y, q.Z, q.W))));
             transform.Children.Add(new TranslateTransform3D(position.X, position.Y, position.Z));

@@ -26,29 +26,29 @@ namespace CommandsEditor
                 gender.Items.Add(skeletons.Key);
 
             assetType.Items.Clear();
-            foreach (CharacterAsset entry in Enum.GetValues(typeof(CharacterAsset)))
+            foreach (CUSTOM_CHARACTER_ASSETS entry in Enum.GetValues(typeof(CUSTOM_CHARACTER_ASSETS)))
                 assetType.Items.Add(entry);
             voiceActor.Items.Clear();
-            foreach (VoiceActor entry in Enum.GetValues(typeof(VoiceActor)))
+            foreach (DIALOGUE_VOICE_ACTOR entry in Enum.GetValues(typeof(DIALOGUE_VOICE_ACTOR)))
                 voiceActor.Items.Add(entry);
             genderAttr.Items.Clear();
-            foreach (CharacterGender entry in Enum.GetValues(typeof(CharacterGender)))
+            foreach (CUSTOM_CHARACTER_GENDER entry in Enum.GetValues(typeof(CUSTOM_CHARACTER_GENDER)))
                 genderAttr.Items.Add(entry);
             ethnicityAttr.Items.Clear();
-            foreach (CharacterEthnicity entry in Enum.GetValues(typeof(CharacterEthnicity)))
+            foreach (CUSTOM_CHARACTER_ETHNICITY entry in Enum.GetValues(typeof(CUSTOM_CHARACTER_ETHNICITY)))
                 ethnicityAttr.Items.Add(entry);
             buildAttr.Items.Clear();
-            foreach (CharacterBuild entry in Enum.GetValues(typeof(CharacterBuild)))
+            foreach (CUSTOM_CHARACTER_BUILD entry in Enum.GetValues(typeof(CUSTOM_CHARACTER_BUILD)))
                 buildAttr.Items.Add(entry);
 
             foleyFootwear.Items.Clear();
-            foreach (FoleySound entry in Enum.GetValues(typeof(FoleySound)))
+            foreach (CHARACTER_FOLEY_SOUND entry in Enum.GetValues(typeof(CHARACTER_FOLEY_SOUND)))
                 foleyFootwear.Items.Add(entry);
             foleyLeg.Items.Clear();
-            foreach (FoleySound entry in Enum.GetValues(typeof(FoleySound)))
+            foreach (CHARACTER_FOLEY_SOUND entry in Enum.GetValues(typeof(CHARACTER_FOLEY_SOUND)))
                 foleyLeg.Items.Add(entry);
             foleyTorso.Items.Clear();
-            foreach (FoleySound entry in Enum.GetValues(typeof(FoleySound)))
+            foreach (CHARACTER_FOLEY_SOUND entry in Enum.GetValues(typeof(CHARACTER_FOLEY_SOUND)))
                 foleyTorso.Items.Add(entry);
 
             RefreshUI(ShortGuid.Invalid);
@@ -221,42 +221,42 @@ namespace CommandsEditor
 
         private void shirtDecal_SelectedIndexChanged(object sender, EventArgs e)
         {
-            _accessories.asset_type = (CharacterAsset)assetType.SelectedIndex;
+            _accessories.asset_type = (CUSTOM_CHARACTER_ASSETS)assetType.SelectedIndex;
         }
 
         private void voiceActor_SelectedIndexChanged(object sender, EventArgs e)
         {
-            _accessories.voice_actor = (VoiceActor)voiceActor.SelectedIndex;
+            _accessories.voice_actor = (DIALOGUE_VOICE_ACTOR)voiceActor.SelectedIndex;
         }
 
         private void genderAttr_SelectedIndexChanged(object sender, EventArgs e)
         {
-            _accessories.gender = (CharacterGender)gender.SelectedIndex;
+            _accessories.gender = (CUSTOM_CHARACTER_GENDER)gender.SelectedIndex;
         }
 
         private void ethnicityAttr_SelectedIndexChanged(object sender, EventArgs e)
         {
-            _accessories.ethnicity = (CharacterEthnicity)ethnicityAttr.SelectedIndex;
+            _accessories.ethnicity = (CUSTOM_CHARACTER_ETHNICITY)ethnicityAttr.SelectedIndex;
         }
 
         private void buildAttr_SelectedIndexChanged(object sender, EventArgs e)
         {
-            _accessories.build = (CharacterBuild)buildAttr.SelectedIndex;
+            _accessories.build = (CUSTOM_CHARACTER_BUILD)buildAttr.SelectedIndex;
         }
 
         private void foleyTorso_SelectedIndexChanged(object sender, EventArgs e)
         {
-            _accessories.foley.Torso = (FoleySound)foleyTorso.SelectedIndex;
+            _accessories.foley.Torso = (CHARACTER_FOLEY_SOUND)foleyTorso.SelectedIndex;
         }
 
         private void foleyLeg_SelectedIndexChanged(object sender, EventArgs e)
         {
-            _accessories.foley.Leg = (FoleySound)foleyLeg.SelectedIndex;
+            _accessories.foley.Leg = (CHARACTER_FOLEY_SOUND)foleyLeg.SelectedIndex;
         }
 
         private void foleyFootwear_SelectedIndexChanged(object sender, EventArgs e)
         {
-            _accessories.foley.Footwear = (FoleySound)foleyLeg.SelectedIndex;
+            _accessories.foley.Footwear = (CHARACTER_FOLEY_SOUND)foleyLeg.SelectedIndex;
         }
     }
 }

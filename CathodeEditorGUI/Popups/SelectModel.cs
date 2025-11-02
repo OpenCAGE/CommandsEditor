@@ -121,7 +121,7 @@ namespace CommandsEditor
             Models.CS2.Component component = Content.resource.models.FindModelComponentForSubmesh(Content.resource.models.GetAtWriteIndex(SelectedModelIndex));
             for (int x = 0; x < component.LODs.Count; x++)
                 for (int i = 0; i < component.LODs[x].Submeshes.Count; i++)
-                    SelectedModelMaterialIndexes.Add(component.LODs[x].Submeshes[i].MaterialLibraryIndex);
+                    SelectedModelMaterialIndexes.Add(component.LODs[x].Submeshes[i].MaterialIndex);
             
             this.Close();
         }

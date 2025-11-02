@@ -70,7 +70,7 @@ namespace AlienPAK
             ShadersPAK.MaterialTextureContext textureInfo = _selectedMaterialMeta.textures[_controls.materialTextureSelection.SelectedIndex];
             if (textureInfo.TextureInfo == null)
             {
-                Texture tex = new Texture();
+                TexturePtr tex = new TexturePtr();
                 textureInfo.TextureInfo = tex;
                 _sortedMaterials[materialList.SelectedIndex].TextureReferences[_controls.materialTextureSelection.SelectedIndex] = tex;
             }
@@ -81,8 +81,8 @@ namespace AlienPAK
             }
             else
             {
-                textureInfo.TextureInfo.BinIndex = texDB.GetWriteIndex(texDB.Entries[index]);
-                textureInfo.TextureInfo.Source = global ? Texture.TextureSource.GLOBAL : Texture.TextureSource.LEVEL;
+                textureInfo.TextureInfo.Index = texDB.GetWriteIndex(texDB.Entries[index]);
+                textureInfo.TextureInfo.Location = global ? TexturePtr.Source.GLOBAL : TexturePtr.Source.LEVEL;
             }
             ShowTextureForMaterial(_controls.materialTextureSelection.SelectedIndex);
         }
@@ -152,9 +152,9 @@ namespace AlienPAK
                 return;
             }
 
-            UpdateTextureDropdown(mdlMetaDiff.TextureInfo.Source == Texture.TextureSource.GLOBAL);
+            UpdateTextureDropdown(mdlMetaDiff.TextureInfo.Location == TexturePtr.Source.GLOBAL);
 
-            Textures.TEX4 diff = (mdlMetaDiff.TextureInfo.Source == Texture.TextureSource.GLOBAL ? Singleton.GlobalTextures : Content.resource.textures).GetAtWriteIndex(mdlMetaDiff.TextureInfo.BinIndex);
+            Textures.TEX4 diff = (mdlMetaDiff.TextureInfo.Location == TexturePtr.Source.GLOBAL ? Singleton.GlobalTextures : Content.resource.textures).GetAtWriteIndex(mdlMetaDiff.TextureInfo.Index);
             _controls.textureFile.Text = diff == null ? "NONE" : diff.Name;
             _controls.materialTexturePreview.Source = diff?.ToDDS()?.ToBitmap()?.ToImageSource();
         }

@@ -191,7 +191,7 @@ namespace CommandsEditor
                             for (int p = 0; p < destModel.Components[z].LODs[m].Submeshes.Count; p++)
                             {
                                 //TODO: setting mtl index to zero until we copy materials.
-                                destModel.Components[z].LODs[m].Submeshes[p].MaterialLibraryIndex = 0; //<- todo: perhaps i should copy this material too for completeness, rather than just the instanced one via reds?
+                                destModel.Components[z].LODs[m].Submeshes[p].MaterialIndex = 0; //<- todo: perhaps i should copy this material too for completeness, rather than just the instanced one via reds?
 
                                 //TODO: these are unknown
                                 destModel.Components[z].LODs[m].Submeshes[p].CollisionProxyIndex = -1;
@@ -243,12 +243,12 @@ namespace CommandsEditor
                 Materials.Material material = Content.resource.materials.GetAtWriteIndex(Content.resource.reds.Entries[x].MaterialIndex).Copy();
 
                 //Copy textures if they don't exist in the destination level & save so our indexes are updated
-                for (int z = 0; z < material.TextureReferences.Length; z++)
+                for (int z = 0; z < material.TextureReferences.Count; z++)
                 {
                     if (material.TextureReferences[z] == null) continue;
-                    if (material.TextureReferences[z].Source == Materials.Material.Texture.TextureSource.GLOBAL) continue;
+                    if (material.TextureReferences[z].Location == TexturePtr.Source.GLOBAL) continue;
 
-                    Textures.TEX4 origTex = Content.resource.textures.GetAtWriteIndex(material.TextureReferences[z].BinIndex);
+                    Textures.TEX4 origTex = Content.resource.textures.GetAtWriteIndex(material.TextureReferences[z].Index);
                     Textures.TEX4 destTex = lvl.Textures.Entries.FirstOrDefault(o => o.Name == origTex.Name);
                     if (destTex == null)
                     {
@@ -259,38 +259,21 @@ namespace CommandsEditor
                 lvl.Save();
 
                 //Get all destination level texture indexes & set to material
-                for (int z = 0; z < material.TextureReferences.Length; z++)
+                for (int z = 0; z < material.TextureReferences.Count; z++)
                 {
                     if (material.TextureReferences[z] == null) continue;
-                    if (material.TextureReferences[z].Source == Materials.Material.Texture.TextureSource.GLOBAL) continue;
+                    if (material.TextureReferences[z].Location == TexturePtr.Source.GLOBAL) continue;
 
-                    Textures.TEX4 origTex = Content.resource.textures.GetAtWriteIndex(material.TextureReferences[z].BinIndex);
+                    Textures.TEX4 origTex = Content.resource.textures.GetAtWriteIndex(material.TextureReferences[z].Index);
                     Textures.TEX4 destTex = lvl.Textures.Entries.FirstOrDefault(o => o.Name == origTex.Name);
-                    material.TextureReferences[z].BinIndex = lvl.Textures.GetWriteIndex(destTex);
+                    material.TextureReferences[z].Index = lvl.Textures.GetWriteIndex(destTex);
                 }
 
                 //Copy shader 
                 Shaders.Shader shader = Content.resource.shaders_new.Entries[material.ShaderIndex].Copy();
                 lvl.Shaders.Entries.Add(shader);
                 material.ShaderIndex = lvl.Shaders.Entries.Count - 1;
-
-                //Copy over CST data to the destination level and update the pointer
-                for (int z = 0; z < material.ConstantBuffers.Length; z++)
-                {
-                    byte[] cstData = Content.resource.materials.CSTData[z];
-                    using (BinaryReader reader = new BinaryReader(new MemoryStream(cstData)))
-                    {
-                        reader.BaseStream.Position = material.ConstantBuffers[z].Offset * 4;
-                        MemoryStream stream = new MemoryStream();
-                        using (BinaryWriter writer = new BinaryWriter(stream))
-                        {
-                            writer.Write(lvl.Materials.CSTData[z]);
-                            material.ConstantBuffers[z].Offset = (int)writer.BaseStream.Position / 4;
-                            writer.Write(reader.ReadBytes(material.ConstantBuffers[z].Length * 4));
-                        }
-                        lvl.Materials.CSTData[z] = stream.ToArray();
-                    }
-                }
+                material.EnvironmentMapIndex = 255;
 
                 //Write material & update indexes
                 lvl.Materials.Entries.Add(material);
