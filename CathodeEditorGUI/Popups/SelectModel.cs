@@ -177,7 +177,7 @@ namespace CommandsEditor
             GroupBox lodGroup = new GroupBox();
             lodGroup.Text = string.IsNullOrEmpty(lodName) ? $"LOD {lodIndex}" : $"LOD {lodIndex} - {lodName}";
             lodGroup.AutoSize = false;
-            lodGroup.Width = 185;
+            lodGroup.Width = 207;
             
             Button selectAllBtn = new Button();
             selectAllBtn.Text = "Select All";
