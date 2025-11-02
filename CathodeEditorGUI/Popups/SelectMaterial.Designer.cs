@@ -63,11 +63,10 @@
             this.duplicateMaterial.TabIndex = 23;
             this.duplicateMaterial.Text = "Duplicate Selected  Material";
             this.duplicateMaterial.UseVisualStyleBackColor = true;
-            this.duplicateMaterial.Click += new System.EventHandler(this.duplicateMaterial_Click);
             // 
             // elementHost1
             // 
-            this.elementHost1.Location = new System.Drawing.Point(391, 2);
+            this.elementHost1.Location = new System.Drawing.Point(391, 6);
             this.elementHost1.Name = "elementHost1";
             this.elementHost1.Size = new System.Drawing.Size(450, 676);
             this.elementHost1.TabIndex = 20;
@@ -78,7 +77,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(845, 681);
+            this.ClientSize = new System.Drawing.Size(841, 681);
             this.Controls.Add(this.duplicateMaterial);
             this.Controls.Add(this.selectMaterialBtn);
             this.Controls.Add(this.materialList);

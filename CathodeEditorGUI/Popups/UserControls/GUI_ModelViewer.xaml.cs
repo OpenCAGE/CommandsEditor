@@ -148,27 +148,29 @@ namespace CommandsEditor.Popups.UserControls
                         if (diffuseMapIndex != 255)
                         {
                             TexturePtr ptr = material.TextureReferences[diffuseMapIndex];
-
-                            Textures tex = ptr.Location == TexturePtr.Source.GLOBAL ? Singleton.GlobalTextures : Content.resource.textures;
-                            Textures.TEX4 diff = tex.GetAtWriteIndex(ptr.Index);
-                            byte[] diffDDS = diff?.ToDDS();
-                            ImageBrush brush = new ImageBrush(diffDDS?.ToBitmap()?.ToImageSource());
-
-                            float uvScale = 1.0f;
-                            if (diffuseUvMult != -1)
+                            if (ptr != null && ptr.Index != -1)
                             {
-                                if (shader.PixelShaderParameterRemaps.Count > diffuseUvMult)
+                                Textures tex = ptr.Location == TexturePtr.Source.GLOBAL ? Singleton.GlobalTextures : Content.resource.textures;
+                                Textures.TEX4 diff = tex.GetAtWriteIndex(ptr.Index);
+                                byte[] diffDDS = diff?.ToDDS();
+                                ImageBrush brush = new ImageBrush(diffDDS?.ToBitmap()?.ToImageSource());
+
+                                float uvScale = 1.0f;
+                                if (diffuseUvMult != -1)
                                 {
-                                    if (shader.PixelShaderParameterRemaps[diffuseUvMult] != 255)
+                                    if (shader.PixelShaderParameterRemaps.Count > diffuseUvMult)
                                     {
-                                        uvScale = material.PixelShaderConstants[shader.PixelShaderParameterRemaps[diffuseUvMult]];
+                                        if (shader.PixelShaderParameterRemaps[diffuseUvMult] != 255)
+                                        {
+                                            uvScale = material.PixelShaderConstants[shader.PixelShaderParameterRemaps[diffuseUvMult]];
+                                        }
                                     }
                                 }
-                            }
-                            brush.Transform = new ScaleTransform(uvScale, uvScale);
+                                brush.Transform = new ScaleTransform(uvScale, uvScale);
 
-                            DiffuseMaterial mat = new DiffuseMaterial(brush);
-                            submeshGeo.Material = mat;
+                                DiffuseMaterial mat = new DiffuseMaterial(brush);
+                                submeshGeo.Material = mat;
+                            }
                         }
                     }
                 }
