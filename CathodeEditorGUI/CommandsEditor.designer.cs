@@ -290,7 +290,7 @@ namespace CommandsEditor
             // 
             this.useTexturedModelViewExperimentalToolStripMenuItem.Name = "useTexturedModelViewExperimentalToolStripMenuItem";
             this.useTexturedModelViewExperimentalToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
-            this.useTexturedModelViewExperimentalToolStripMenuItem.Text = "Use Textured Model View (Experimental)";
+            this.useTexturedModelViewExperimentalToolStripMenuItem.Text = "Use Textured Model View";
             this.useTexturedModelViewExperimentalToolStripMenuItem.ToolTipText = "If enabled, the model previewer will try and find textures to render.";
             this.useTexturedModelViewExperimentalToolStripMenuItem.Click += new System.EventHandler(this.useTexturedModelViewExperimentalToolStripMenuItem_Click);
             // 

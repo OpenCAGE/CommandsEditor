@@ -3,6 +3,7 @@ using CATHODE;
 using CATHODE.LEGACY;
 using CommandsEditor.Popups.Base;
 using CommandsEditor.Popups.UserControls;
+using OpenCAGE;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -29,6 +30,8 @@ namespace CommandsEditor
         public SelectModel(int defaultModelIndex = -1) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             InitializeComponent();
+
+            useMaterials.Checked = SettingsManager.GetBool(Singleton.Settings.ShowTexOpt);
 
             treeHelper = new TreeUtility(FileTree, true);
             List<string> allModelFileNames = new List<string>();
@@ -96,14 +99,15 @@ namespace CommandsEditor
         private void FileTree_AfterSelect(object sender, TreeViewEventArgs e)
         {
             if (((TreeItem)FileTree.SelectedNode.Tag).Item_Type != TreeItemType.EXPORTABLE_FILE) return;
-
-            string test = ((TreeItem)FileTree.SelectedNode.Tag).String_Value;
-            int index = Convert.ToInt32(test);
-            ShowModel(index);
+            SelectedModelIndex = Convert.ToInt32(((TreeItem)FileTree.SelectedNode.Tag).String_Value);
+            ShowModel(SelectedModelIndex);
         }
 
         private void ShowModel(int i)
         {
+            if (i == -1)
+                return;
+
             List<GUI_ModelViewer.Model> models = new List<GUI_ModelViewer.Model>();
             Models.CS2.Component component = Content.resource.models.FindModelComponentForSubmesh(Content.resource.models.GetAtWriteIndex(i));
             for (int x = 0; x < component.LODs.Count; x++)
@@ -124,6 +128,12 @@ namespace CommandsEditor
                     SelectedModelMaterialIndexes.Add(component.LODs[x].Submeshes[i].MaterialIndex);
             
             this.Close();
+        }
+
+        private void useMaterials_CheckedChanged(object sender, EventArgs e)
+        {
+            SettingsManager.SetBool(Singleton.Settings.ShowTexOpt, useMaterials.Checked);
+            ShowModel(SelectedModelIndex);
         }
     }
 }

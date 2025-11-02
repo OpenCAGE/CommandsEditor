@@ -34,6 +34,7 @@
             this.modelPreviewArea = new System.Windows.Forms.GroupBox();
             this.selectModelBtn = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.useMaterials = new System.Windows.Forms.CheckBox();
             this.modelPreviewArea.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -68,6 +69,7 @@
             this.modelPreviewArea.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.modelPreviewArea.Controls.Add(this.useMaterials);
             this.modelPreviewArea.Controls.Add(this.selectModelBtn);
             this.modelPreviewArea.Controls.Add(this.modelRendererHost);
             this.modelPreviewArea.Location = new System.Drawing.Point(3, 3);
@@ -107,6 +109,17 @@
             this.splitContainer1.SplitterDistance = 352;
             this.splitContainer1.TabIndex = 104;
             // 
+            // useMaterials
+            // 
+            this.useMaterials.AutoSize = true;
+            this.useMaterials.Location = new System.Drawing.Point(6, 606);
+            this.useMaterials.Name = "useMaterials";
+            this.useMaterials.Size = new System.Drawing.Size(111, 17);
+            this.useMaterials.TabIndex = 2;
+            this.useMaterials.Text = "Use Material Data";
+            this.useMaterials.UseVisualStyleBackColor = true;
+            this.useMaterials.CheckedChanged += new System.EventHandler(this.useMaterials_CheckedChanged);
+            // 
             // SelectModel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -119,6 +132,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Select Model";
             this.modelPreviewArea.ResumeLayout(false);
+            this.modelPreviewArea.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
@@ -134,5 +148,6 @@
         private System.Windows.Forms.GroupBox modelPreviewArea;
         private System.Windows.Forms.Button selectModelBtn;
         private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.CheckBox useMaterials;
     }
 }
