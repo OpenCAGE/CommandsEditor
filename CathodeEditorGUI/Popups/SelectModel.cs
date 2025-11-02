@@ -53,9 +53,7 @@ namespace CommandsEditor
                     {
                         foreach (Models.CS2.Component.LOD.Submesh submesh in lod.Submeshes)
                         {
-                            if (lod.Name == "") allModelFileNames.Add(mesh.Name.Replace('\\', '/'));
-                            else allModelFileNames.Add(mesh.Name.Replace('\\', '/') + "/" + lod.Name.Replace('\\', '/'));
-
+                            allModelFileNames.Add(CreateTagForMesh(mesh, lod, submesh));
                             allModelTagsNames.Add(Content.resource.models.GetWriteIndex(submesh).ToString());
                         }
                     }
@@ -95,10 +93,21 @@ namespace CommandsEditor
 
             if (mesh == null || submesh == null) return ""; //we currently skip empty submeshes, e.g. ballistics
 
+            return CreateTagForMesh(mesh, lod, submesh);
+        }
+
+        private string CreateTagForMesh(Models.CS2 mesh, Models.CS2.Component.LOD lod, Models.CS2.Component.LOD.Submesh submesh)
+        {
+            string tag = "";
             if (lod.Name == "")
-                return mesh.Name.Replace('\\', '/');
+                tag = mesh.Name.Replace('\\', '/');
             else
-                return mesh.Name.Replace('\\', '/') + "/" + lod.Name.Replace('\\', '/');
+                tag = mesh.Name.Replace('\\', '/') + "/" + lod.Name.Replace('\\', '/');
+
+            if (tag.Length > 0 && tag[0] == '/')
+                tag = tag.Substring(1);
+
+            return tag;
         }
 
         private void SelectModelNode(int pakIndex)
