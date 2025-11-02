@@ -184,7 +184,7 @@ namespace AlienPAK
                             switch (attr.Usage)
                             {
                                 case VertexFormat.Usage.Position:
-                                    vertices.Add(new Point3D(v.X * submesh.VertexScale, v.Y * submesh.VertexScale, v.Z * submesh.VertexScale));
+                                    vertices.Add(new Point3D(v.X * submesh.VertexScale, v.Y * submesh.VertexScale, -v.Z * submesh.VertexScale));
                                     break;
                                 case VertexFormat.Usage.TexCoord:
                                     if (attr.Index >= uvs.Length)
@@ -202,6 +202,17 @@ namespace AlienPAK
 
             if (vertices.Count == 0) return new GeometryModel3D();
 
+            Int32Collection reversedIndices = new Int32Collection();
+            for (int i = 0; i < indices.Count; i += 3)
+            {
+                if (i + 2 < indices.Count)
+                {
+                    reversedIndices.Add(indices[i]);
+                    reversedIndices.Add(indices[i + 2]);
+                    reversedIndices.Add(indices[i + 1]);
+                }
+            }
+
             PointCollection uv = new PointCollection();
             for (int i = 0; i < uvs.Length; i++)
             {
@@ -215,7 +226,7 @@ namespace AlienPAK
             MeshGeometry3D geometry = new MeshGeometry3D
             {
                 Positions = vertices,
-                TriangleIndices = indices,
+                TriangleIndices = reversedIndices,
                 TextureCoordinates = uv,
             };
             return new GeometryModel3D

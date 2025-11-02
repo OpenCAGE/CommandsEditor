@@ -1,4 +1,4 @@
-using AlienPAK;
+﻿using AlienPAK;
 using CATHODE;
 using CATHODE.LEGACY;
 using CATHODE.Scripting;
@@ -51,7 +51,7 @@ namespace CommandsEditor.Popups.UserControls
             {
                 myView.ModelUpDirection = new Vector3D(0, 1, 0);
                 myView.Camera.UpDirection = new Vector3D(0, 1, 0);
-                myView.Camera.LookDirection = new Vector3D(-0.5, -0.5, 1);
+                myView.Camera.LookDirection = new Vector3D(-0.5, -0.5, -1.0f);
                 myView.ZoomExtents();
             }
         }
