@@ -1,12 +1,13 @@
-using CATHODE.Scripting;
 using CATHODE;
+using CATHODE.EXPERIMENTAL;
+using CATHODE.Scripting;
+using CATHODE.Scripting.Internal;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CATHODE.Scripting.Internal;
 
 namespace CommandsEditor.Scripts
 {
@@ -14,6 +15,31 @@ namespace CommandsEditor.Scripts
 
     public static class LocalDebug_NEW
     {
+        //Proof of concept of removing all instanced data from a level, populating the level with only Commands (excluding collisions)
+        public static void StripInstancedData(string pathToLevel)
+        {
+            //Clear out the movers - these are the instanced objects populated from offline data
+            Movers mvr = new Movers(pathToLevel + "WORLD\\MODELS.MVR");
+            mvr.Entries.Clear();
+            mvr.Save();
+
+            //Strip out radiosity data: this references instanced movers, so we need to get rid of it
+            File.WriteAllBytes(pathToLevel + "WORLD/RADIOSITY_COLLISION_MAPPING.BIN", new byte[4]);
+            File.WriteAllBytes(pathToLevel + "RENDERABLE/RADIOSITY_RUNTIME.BIN", new byte[0]);
+            File.Delete(pathToLevel + "RENDERABLE/RADIOSITY_INSTANCE_MAP.TXT");
+
+            //Strip out environment map pointers, these hook up to movers, so are now void
+            EnvironmentMaps envm = new EnvironmentMaps(pathToLevel + "WORLD\\ENVIRONMENTMAP.BIN");
+            envm.Entries.Clear();
+            envm.Save();
+
+            //Strip out light info, again, these point to movers, so get rid
+            Lights lgt = new Lights(pathToLevel + "WORLD\\LIGHTS.BIN");
+            lgt.Indexes.Clear();
+            lgt.Values.Clear();
+            lgt.Save();
+        }
+
         [Obsolete("This function is safe to use but not performant. It's intended for test code only.")]
         public static void DEBUG_DumpAllInstancedStuff(string level, string outputdir)
         {
