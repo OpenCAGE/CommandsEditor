@@ -1,4 +1,4 @@
-﻿using OpenCAGE;
+using OpenCAGE;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -20,6 +20,7 @@ namespace CommandsEditor
     static class Program
     {
         static Dictionary<string, string> _args;
+        static Stopwatch _timer;
 
         /// <summary>
         /// The main entry point for the application.
@@ -63,6 +64,7 @@ namespace CommandsEditor
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
             Application.ThreadException += Application_ThreadException;
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            _timer = Stopwatch.StartNew();
 #endif
 
             //Run app
@@ -123,8 +125,9 @@ namespace CommandsEditor
                 error += "\n Application Version: " + version;
                 content.Add(new StringContent(platform), "game_version");
                 error += "\n Game Version: " + platform;
-                content.Add(new StringContent(time), "datetime");
+                content.Add(new StringContent(time + " for " + _timer.Elapsed.ToString(@"dd\.hh\:mm\:ss")), "datetime");
                 error += "\n Crash Time: " + time;
+                error += "\n Uptime: " + _timer.Elapsed.ToString(@"dd\.hh\:mm\:ss");
 
                 error += "\n **** ";
 
