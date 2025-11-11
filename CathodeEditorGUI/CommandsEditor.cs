@@ -186,6 +186,8 @@ namespace CommandsEditor
             DEBUG_RunChecks.Visible = false;
             DEBUG_LaunchGame.Visible = false;
             buildLevelToolStripMenuItem.Visible = false;
+            DEBUG_ReloadLevel.Visible = false;
+            connectToRuntimeUtils.Visible = false;
 #endif
 
             WindowState = SettingsManager.GetString(Singleton.Settings.WindowState, "Normal") == "Maximized" ? FormWindowState.Maximized : FormWindowState.Normal;
@@ -196,6 +198,17 @@ namespace CommandsEditor
 
             if (!SettingsManager.IsSet(Singleton.Settings.ServerOpt)) SettingsManager.SetBool(Singleton.Settings.ServerOpt, true);
             connectToUnity.Checked = !SettingsManager.GetBool(Singleton.Settings.ServerOpt); connectToUnity.PerformClick();
+            
+            if (!SettingsManager.IsSet(Singleton.Settings.RuntimeUtilsOpt)) SettingsManager.SetBool(Singleton.Settings.RuntimeUtilsOpt, false);
+            connectToRuntimeUtils.Checked = SettingsManager.GetBool(Singleton.Settings.RuntimeUtilsOpt);
+            if (connectToRuntimeUtils.Checked)
+            {
+                if (!RuntimeUtilsConnection.Send.Start())
+                {
+                    connectToRuntimeUtils.Checked = false;
+                    SettingsManager.SetBool(Singleton.Settings.RuntimeUtilsOpt, false);
+                }
+            }
             focusOnSelectedToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.UNITY_FocusEntity); focusOnSelectedToolStripMenuItem.PerformClick();
             ShowLevelViewerButton();
 
@@ -587,6 +600,24 @@ namespace CommandsEditor
             focusOnSelectedToolStripMenuItem.Checked = !focusOnSelectedToolStripMenuItem.Checked;
             SettingsManager.SetBool(Singleton.Settings.UNITY_FocusEntity, focusOnSelectedToolStripMenuItem.Checked);
             UnityConnection.Send.SendReSyncPacket();
+        }
+        private void connectToRuntimeUtils_Click(object sender, EventArgs e)
+        {
+            connectToRuntimeUtils.Checked = !connectToRuntimeUtils.Checked;
+            SettingsManager.SetBool(Singleton.Settings.RuntimeUtilsOpt, connectToRuntimeUtils.Checked);
+
+            if (connectToRuntimeUtils.Checked)
+            {
+                if (!RuntimeUtilsConnection.Send.Start())
+                {
+                    connectToRuntimeUtils.PerformClick();
+                    MessageBox.Show("Failed to connect to RuntimeUtils server.\nIs the game running with the RuntimeUtils DLL loaded?", "Connection failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            else
+            {
+                RuntimeUtilsConnection.Send.Stop();
+            }
         }
         private void setUpToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1216,6 +1247,17 @@ namespace CommandsEditor
         private void _controlsWindow_FormClosed(object sender, FormClosedEventArgs e)
         {
             _controlsWindow = null;
+        }
+
+        private void DEBUG_ReloadLevel_Click(object sender, EventArgs e)
+        {
+            if (!RuntimeUtilsConnection.Send.Connected)
+            {
+                MessageBox.Show("Cannot reload level - not connected to RuntimeUtils", "Not connected", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            RuntimeUtilsConnection.Send.SendData(new RuntimeUtilsConnection.Packet() { load_level = "Production/HAB_Airport" });
         }
     }
 }

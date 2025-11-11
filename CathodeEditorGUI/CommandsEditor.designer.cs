@@ -71,6 +71,8 @@ namespace CommandsEditor
             this.statusText = new System.Windows.Forms.ToolStripStatusLabel();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.connectToRuntimeUtils = new System.Windows.Forms.ToolStripMenuItem();
+            this.DEBUG_ReloadLevel = new System.Windows.Forms.ToolStripButton();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -84,7 +86,8 @@ namespace CommandsEditor
             this.ShowControls,
             this.DEBUG_RunChecks,
             this.DEBUG_DoorPhysEnt,
-            this.DEBUG_LaunchGame});
+            this.DEBUG_LaunchGame,
+            this.DEBUG_ReloadLevel});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Size = new System.Drawing.Size(1581, 25);
@@ -148,7 +151,8 @@ namespace CommandsEditor
             this.openLevelViewerToolStripMenuItem,
             this.toolStripSeparator1,
             this.connectToUnity,
-            this.focusOnSelectedToolStripMenuItem});
+            this.focusOnSelectedToolStripMenuItem,
+            this.connectToRuntimeUtils});
             this.levelViewerToolStripMenuItem.Name = "levelViewerToolStripMenuItem";
             this.levelViewerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.levelViewerToolStripMenuItem.Text = "Level Viewer";
@@ -156,28 +160,28 @@ namespace CommandsEditor
             // setUpToolStripMenuItem
             // 
             this.setUpToolStripMenuItem.Name = "setUpToolStripMenuItem";
-            this.setUpToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
+            this.setUpToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
             this.setUpToolStripMenuItem.Text = "Set Up Level Viewer";
             this.setUpToolStripMenuItem.Click += new System.EventHandler(this.setUpToolStripMenuItem_Click);
             // 
             // openLevelViewerToolStripMenuItem
             // 
             this.openLevelViewerToolStripMenuItem.Name = "openLevelViewerToolStripMenuItem";
-            this.openLevelViewerToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
+            this.openLevelViewerToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
             this.openLevelViewerToolStripMenuItem.Text = "Open Level Viewer";
             this.openLevelViewerToolStripMenuItem.Click += new System.EventHandler(this.openLevelViewerToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(198, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(204, 6);
             // 
             // connectToUnity
             // 
             this.connectToUnity.Checked = true;
             this.connectToUnity.CheckState = System.Windows.Forms.CheckState.Checked;
             this.connectToUnity.Name = "connectToUnity";
-            this.connectToUnity.Size = new System.Drawing.Size(201, 22);
+            this.connectToUnity.Size = new System.Drawing.Size(207, 22);
             this.connectToUnity.Text = "Connect to Level Viewer";
             this.connectToUnity.ToolTipText = "Enable a websocket connection to the Unity Level Viewer.";
             this.connectToUnity.Click += new System.EventHandler(this.connectToUnity_Click);
@@ -185,7 +189,7 @@ namespace CommandsEditor
             // focusOnSelectedToolStripMenuItem
             // 
             this.focusOnSelectedToolStripMenuItem.Name = "focusOnSelectedToolStripMenuItem";
-            this.focusOnSelectedToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
+            this.focusOnSelectedToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
             this.focusOnSelectedToolStripMenuItem.Text = "Focus on Selected";
             this.focusOnSelectedToolStripMenuItem.ToolTipText = "Enable to focus the Unity camera on the object selected in the Commands Editor au" +
     "tomatically.";
@@ -245,7 +249,7 @@ namespace CommandsEditor
             // showEntityIDs
             // 
             this.showEntityIDs.Name = "showEntityIDs";
-            this.showEntityIDs.Size = new System.Drawing.Size(311, 22);
+            this.showEntityIDs.Size = new System.Drawing.Size(312, 22);
             this.showEntityIDs.Text = "Show ShortGuids";
             this.showEntityIDs.ToolTipText = "Show entity IDs within the editor UI.";
             this.showEntityIDs.Click += new System.EventHandler(this.showEntityIDs_Click);
@@ -253,14 +257,14 @@ namespace CommandsEditor
             // populateAllNodePinsWhenCreatedToolStripMenuItem
             // 
             this.populateAllNodePinsWhenCreatedToolStripMenuItem.Name = "populateAllNodePinsWhenCreatedToolStripMenuItem";
-            this.populateAllNodePinsWhenCreatedToolStripMenuItem.Size = new System.Drawing.Size(311, 22);
+            this.populateAllNodePinsWhenCreatedToolStripMenuItem.Size = new System.Drawing.Size(312, 22);
             this.populateAllNodePinsWhenCreatedToolStripMenuItem.Text = "Populate All Node Pins When Created";
             this.populateAllNodePinsWhenCreatedToolStripMenuItem.Click += new System.EventHandler(this.populateAllNodePinsWhenCreatedToolStripMenuItem_Click);
             // 
             // giveOptionToDeleteEntityWhenNoNodesToolStripMenuItem
             // 
             this.giveOptionToDeleteEntityWhenNoNodesToolStripMenuItem.Name = "giveOptionToDeleteEntityWhenNoNodesToolStripMenuItem";
-            this.giveOptionToDeleteEntityWhenNoNodesToolStripMenuItem.Size = new System.Drawing.Size(311, 22);
+            this.giveOptionToDeleteEntityWhenNoNodesToolStripMenuItem.Size = new System.Drawing.Size(312, 22);
             this.giveOptionToDeleteEntityWhenNoNodesToolStripMenuItem.Text = "Give Option To Delete Entity When No Nodes";
             this.giveOptionToDeleteEntityWhenNoNodesToolStripMenuItem.Click += new System.EventHandler(this.giveOptionToDeleteEntityWhenNoNodesToolStripMenuItem_Click);
             // 
@@ -281,7 +285,7 @@ namespace CommandsEditor
             // showConfirmationWhenSavingToolStripMenuItem
             // 
             this.showConfirmationWhenSavingToolStripMenuItem.Name = "showConfirmationWhenSavingToolStripMenuItem";
-            this.showConfirmationWhenSavingToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
+            this.showConfirmationWhenSavingToolStripMenuItem.Size = new System.Drawing.Size(291, 22);
             this.showConfirmationWhenSavingToolStripMenuItem.Text = "Show Confirmation When Saving";
             this.showConfirmationWhenSavingToolStripMenuItem.ToolTipText = "If enabled, a confirmation will show after a successful save.";
             this.showConfirmationWhenSavingToolStripMenuItem.Click += new System.EventHandler(this.showConfirmationWhenSavingToolStripMenuItem_Click);
@@ -289,7 +293,7 @@ namespace CommandsEditor
             // useTexturedModelViewExperimentalToolStripMenuItem
             // 
             this.useTexturedModelViewExperimentalToolStripMenuItem.Name = "useTexturedModelViewExperimentalToolStripMenuItem";
-            this.useTexturedModelViewExperimentalToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
+            this.useTexturedModelViewExperimentalToolStripMenuItem.Size = new System.Drawing.Size(291, 22);
             this.useTexturedModelViewExperimentalToolStripMenuItem.Text = "Use Textured Model View";
             this.useTexturedModelViewExperimentalToolStripMenuItem.ToolTipText = "If enabled, the model previewer will try and find textures to render.";
             this.useTexturedModelViewExperimentalToolStripMenuItem.Click += new System.EventHandler(this.useTexturedModelViewExperimentalToolStripMenuItem_Click);
@@ -297,35 +301,35 @@ namespace CommandsEditor
             // keepFunctionUsesWindowOpenToolStripMenuItem
             // 
             this.keepFunctionUsesWindowOpenToolStripMenuItem.Name = "keepFunctionUsesWindowOpenToolStripMenuItem";
-            this.keepFunctionUsesWindowOpenToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
+            this.keepFunctionUsesWindowOpenToolStripMenuItem.Size = new System.Drawing.Size(291, 22);
             this.keepFunctionUsesWindowOpenToolStripMenuItem.Text = "Keep Global Search Window Open";
             this.keepFunctionUsesWindowOpenToolStripMenuItem.Click += new System.EventHandler(this.keepFunctionUsesWindowOpenToolStripMenuItem_Click);
             // 
             // resetUILayoutsToolStripMenuItem
             // 
             this.resetUILayoutsToolStripMenuItem.Name = "resetUILayoutsToolStripMenuItem";
-            this.resetUILayoutsToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
+            this.resetUILayoutsToolStripMenuItem.Size = new System.Drawing.Size(291, 22);
             this.resetUILayoutsToolStripMenuItem.Text = "Reset UI Layouts";
             this.resetUILayoutsToolStripMenuItem.Click += new System.EventHandler(this.resetUILayoutsToolStripMenuItem_Click);
             // 
             // writeInstancedResourcesExperimentalToolStripMenuItem
             // 
             this.writeInstancedResourcesExperimentalToolStripMenuItem.Name = "writeInstancedResourcesExperimentalToolStripMenuItem";
-            this.writeInstancedResourcesExperimentalToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
+            this.writeInstancedResourcesExperimentalToolStripMenuItem.Size = new System.Drawing.Size(291, 22);
             this.writeInstancedResourcesExperimentalToolStripMenuItem.Text = "Write Instanced Resources (Experimental)";
             this.writeInstancedResourcesExperimentalToolStripMenuItem.Click += new System.EventHandler(this.writeInstancedResourcesExperimentalToolStripMenuItem_Click);
             // 
             // setNumericStepToolStripMenuItem
             // 
             this.setNumericStepToolStripMenuItem.Name = "setNumericStepToolStripMenuItem";
-            this.setNumericStepToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
+            this.setNumericStepToolStripMenuItem.Size = new System.Drawing.Size(291, 22);
             this.setNumericStepToolStripMenuItem.Text = "Set Numeric Step";
             this.setNumericStepToolStripMenuItem.Click += new System.EventHandler(this.setNumericStepToolStripMenuItem_Click);
             // 
             // savePAKAndBINToolStripMenuItem
             // 
             this.savePAKAndBINToolStripMenuItem.Name = "savePAKAndBINToolStripMenuItem";
-            this.savePAKAndBINToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
+            this.savePAKAndBINToolStripMenuItem.Size = new System.Drawing.Size(291, 22);
             this.savePAKAndBINToolStripMenuItem.Text = "Save Commands PAK and BIN";
             this.savePAKAndBINToolStripMenuItem.Click += new System.EventHandler(this.savePAKAndBINToolStripMenuItem_Click);
             // 
@@ -411,6 +415,24 @@ namespace CommandsEditor
             this.dockPanel.TabIndex = 5;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
             // 
+            // connectToRuntimeUtils
+            // 
+            this.connectToRuntimeUtils.Name = "connectToRuntimeUtils";
+            this.connectToRuntimeUtils.Size = new System.Drawing.Size(207, 22);
+            this.connectToRuntimeUtils.Text = "Connect to Runtime Utils";
+            this.connectToRuntimeUtils.ToolTipText = "Enable a websocket connection to the Runtime Utils";
+            this.connectToRuntimeUtils.Click += new System.EventHandler(this.connectToRuntimeUtils_Click);
+            // 
+            // DEBUG_ReloadLevel
+            // 
+            this.DEBUG_ReloadLevel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.DEBUG_ReloadLevel.Image = ((System.Drawing.Image)(resources.GetObject("DEBUG_ReloadLevel.Image")));
+            this.DEBUG_ReloadLevel.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.DEBUG_ReloadLevel.Name = "DEBUG_ReloadLevel";
+            this.DEBUG_ReloadLevel.Size = new System.Drawing.Size(120, 22);
+            this.DEBUG_ReloadLevel.Text = "DEBUG: Reload Level";
+            this.DEBUG_ReloadLevel.Click += new System.EventHandler(this.DEBUG_ReloadLevel_Click);
+            // 
             // CommandsEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -476,5 +498,7 @@ namespace CommandsEditor
         private System.Windows.Forms.ToolStripMenuItem savePAKAndBINToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem populateAllNodePinsWhenCreatedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem giveOptionToDeleteEntityWhenNoNodesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem connectToRuntimeUtils;
+        private System.Windows.Forms.ToolStripButton DEBUG_ReloadLevel;
     }
 }

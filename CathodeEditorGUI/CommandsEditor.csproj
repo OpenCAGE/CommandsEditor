@@ -646,6 +646,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Scripts\ParameterModificationTracker.cs" />
+    <Compile Include="Scripts\RuntimeUtils Connection\Packet.cs" />
     <Compile Include="Scripts\SmoothNumericUpDown.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -656,6 +657,8 @@
     <Compile Include="Scripts\Unity Connection\Packet.cs" />
     <Compile Include="Scripts\Unity Connection\Send.cs" />
     <Compile Include="Scripts\Unity Connection\Client.cs" />
+    <Compile Include="Scripts\RuntimeUtils Connection\Client.cs" />
+    <Compile Include="Scripts\RuntimeUtils Connection\Send.cs" />
     <Compile Include="Scripts\Singleton.cs" />
     <Compile Include="UserControls\Base\ParameterUserControl.cs">
       <SubType>UserControl</SubType>

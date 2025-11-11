@@ -309,7 +309,7 @@ namespace CommandsEditor.DockPanels
             this.Text = selected_entity_name.Text;
 
             //show mvr editor button if this entity has a mvr link
-            if (Content.mvr != null && Content.mvr.Entries.FindAll(o => o.entity?.entity_id == this._entity.shortGUID).Count != 0)
+            if (Content.mvr != null && Content.mvr.Entries.FirstOrDefault(o => o.entity?.entity_id == this._entity.shortGUID) != null)
                 editEntityMovers.Enabled = true;
 
 #if DO_ENTITY_PERF_CHECK
