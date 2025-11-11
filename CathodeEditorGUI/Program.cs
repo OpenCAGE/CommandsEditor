@@ -121,13 +121,15 @@ namespace CommandsEditor
                     version = "Standalone: " + Application.ProductVersion;
                 string platform = SettingsManager.GetString("META_GameVersion");
                 string time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                string uptime = _timer.Elapsed.ToString(@"dd\.hh\:mm\:ss");
                 content.Add(new StringContent(version), "application_version");
                 error += "\n Application Version: " + version;
                 content.Add(new StringContent(platform), "game_version");
                 error += "\n Game Version: " + platform;
-                content.Add(new StringContent(time + " for " + _timer.Elapsed.ToString(@"dd\.hh\:mm\:ss")), "datetime");
+                content.Add(new StringContent(time), "datetime");
                 error += "\n Crash Time: " + time;
-                error += "\n Uptime: " + _timer.Elapsed.ToString(@"dd\.hh\:mm\:ss");
+                content.Add(new StringContent(uptime), "uptime");
+                error += "\n Uptime: " + uptime;
 
                 error += "\n **** ";
 
