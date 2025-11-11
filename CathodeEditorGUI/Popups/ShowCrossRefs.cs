@@ -26,7 +26,7 @@ namespace CommandsEditor
         public Action<string, Entity> OnFlowgraphSelected;
 
         private CurrentDisplay _currentDisplay = CurrentDisplay.FLOWGRAPHS;
-        private Dictionary<CurrentDisplay, SynchronizedCollection<EntityRef>> _entityRefs = new Dictionary<CurrentDisplay, SynchronizedCollection<EntityRef>>();
+        private SynchronizedCollection<EntityRef>[] _entityRefs;
 
         private Entity _entity;
 
@@ -42,16 +42,18 @@ namespace CommandsEditor
             else if (!showID && hasID)
                 entityList.Columns.RemoveByKey("ID");
 
-            Parallel.For(0, 5, (i) =>
+            int displayTypes = Enum.GetValues(typeof(CurrentDisplay)).Length;
+            _entityRefs = new SynchronizedCollection<EntityRef>[displayTypes];
+            Parallel.For(0, displayTypes, (i) =>
             {
-                _entityRefs.Add((CurrentDisplay)i, GetEntityRefs((CurrentDisplay)i));
+                _entityRefs[i] = GetEntityRefs((CurrentDisplay)i);
             });
 
-            showFlowgraphs.Text = "Flowgraphs (" + _entityRefs[CurrentDisplay.FLOWGRAPHS].Count + ")";
-            showLinkedProxies.Text = "Proxies (" + _entityRefs[CurrentDisplay.PROXIES].Count + ")";
-            showLinkedOverrides.Text = "Aliases (" + _entityRefs[CurrentDisplay.ALIASES].Count + ")";
-            showLinkedCageAnimations.Text = "CAGEAnimations (" + _entityRefs[CurrentDisplay.CAGEANIMATIONS].Count + ")";
-            showLinkedTriggerSequences.Text = "TriggerSequences (" + _entityRefs[CurrentDisplay.TRIGGERSEQUENCES].Count + ")";
+            showFlowgraphs.Text = "Flowgraphs (" + _entityRefs[(int)CurrentDisplay.FLOWGRAPHS].Count + ")";
+            showLinkedProxies.Text = "Proxies (" + _entityRefs[(int)CurrentDisplay.PROXIES].Count + ")";
+            showLinkedOverrides.Text = "Aliases (" + _entityRefs[(int)CurrentDisplay.ALIASES].Count + ")";
+            showLinkedCageAnimations.Text = "CAGEAnimations (" + _entityRefs[(int)CurrentDisplay.CAGEANIMATIONS].Count + ")";
+            showLinkedTriggerSequences.Text = "TriggerSequences (" + _entityRefs[(int)CurrentDisplay.TRIGGERSEQUENCES].Count + ")";
 
             UpdateUI(CurrentDisplay.FLOWGRAPHS);
         }
@@ -61,12 +63,12 @@ namespace CommandsEditor
             if (_currentDisplay == CurrentDisplay.FLOWGRAPHS)
             {
                 if (flowgraphList.SelectedItems.Count == 0) return;
-                OnFlowgraphSelected?.Invoke(_entityRefs[_currentDisplay][flowgraphList.SelectedItems[0].Index].flowgraph_name, _entityRefs[_currentDisplay][flowgraphList.SelectedItems[0].Index].entity);
+                OnFlowgraphSelected?.Invoke(_entityRefs[(int)_currentDisplay][flowgraphList.SelectedItems[0].Index].flowgraph_name, _entityRefs[(int)_currentDisplay][flowgraphList.SelectedItems[0].Index].entity);
             }
             else
             {
                 if (entityList.SelectedItems.Count == 0) return;
-                OnEntitySelected?.Invoke(_entityRefs[_currentDisplay][entityList.SelectedItems[0].Index].composite, _entityRefs[_currentDisplay][entityList.SelectedItems[0].Index].entity);
+                OnEntitySelected?.Invoke(_entityRefs[(int)_currentDisplay][entityList.SelectedItems[0].Index].composite, _entityRefs[(int)_currentDisplay][entityList.SelectedItems[0].Index].entity);
             }
             this.Close();
         }
@@ -107,15 +109,16 @@ namespace CommandsEditor
             showLinkedTriggerSequences.Enabled = display != CurrentDisplay.TRIGGERSEQUENCES;
             showLinkedCageAnimations.Enabled = display != CurrentDisplay.CAGEANIMATIONS;
 
-            label.Text = _entityRefs[display].Count + " ";
+            SynchronizedCollection<EntityRef> entityRefs = _entityRefs[(int)display];
+            label.Text = entityRefs.Count + " ";
 
             if (_currentDisplay == CurrentDisplay.FLOWGRAPHS)
             {
-                label.Text += "flowgraph" + (_entityRefs[display].Count > 1 ? "s" : "") + " within this composite " + (_entityRefs[display].Count > 1 ? "have" : "has") + " nodes for this entity:"; //important note - only showing pages within the current composite (for now), not aliased pages or proxied pages
+                label.Text += "flowgraph" + (entityRefs.Count > 1 ? "s" : "") + " within this composite " + (entityRefs.Count > 1 ? "have" : "has") + " nodes for this entity:"; //important note - only showing pages within the current composite (for now), not aliased pages or proxied pages
 
                 flowgraphList.BeginUpdate();
                 flowgraphList.Items.Clear();
-                foreach (EntityRef entityRef in _entityRefs[display])
+                foreach (EntityRef entityRef in entityRefs)
                 {
                     ListViewItem item = new ListViewItem(entityRef.flowgraph_name);
                     item.SubItems.Add(entityRef.flowgraph_node_count.ToString());
@@ -146,7 +149,7 @@ namespace CommandsEditor
                 entityList.Items.Clear();
                 entityList.Groups.Clear();
                 Dictionary<Composite, ListViewGroup> compGroups = new Dictionary<Composite, ListViewGroup>();
-                foreach (EntityRef entityRef in _entityRefs[_currentDisplay])
+                foreach (EntityRef entityRef in entityRefs)
                 {
                     ListViewItem item = (ListViewItem)Content.GenerateListViewItem(entityRef.entity, entityRef.composite).Clone();
                     if (compGroups.TryGetValue(entityRef.composite, out ListViewGroup g))
