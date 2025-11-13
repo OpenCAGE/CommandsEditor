@@ -75,8 +75,8 @@ namespace CommandsEditor
             //{
             //    if (Directory.Exists(SharedData.pathToAI + "\\DATA_orig"))
             //    {
-            //        Directory.Delete(SharedData.pathToAI + "\\DATA\\ENV\\PRODUCTION\\" + lvl, true);
-            //        CopyFilesRecursively(SharedData.pathToAI + "\\DATA_orig\\ENV\\PRODUCTION\\" + lvl, SharedData.pathToAI + "\\DATA\\ENV\\PRODUCTION\\" + lvl);
+            //        Directory.Delete(SharedData.pathToAI + "\\DATA\\ENV\\" + lvl, true);
+            //        CopyFilesRecursively(SharedData.pathToAI + "\\DATA_orig\\ENV\\" + lvl, SharedData.pathToAI + "\\DATA\\ENV\\" + lvl);
             //    }
             //
             //    InstancedResolver.Read(LevelContent.DEBUG_LoadUnthreadedAndPopulateShortGuids(lvl));
@@ -87,8 +87,8 @@ namespace CommandsEditor
 
             if (Directory.Exists(SharedData.pathToAI + "\\DATA_orig"))
             {
-                Directory.Delete(SharedData.pathToAI + "\\DATA\\ENV\\PRODUCTION\\" + level, true);
-                CopyFilesRecursively(SharedData.pathToAI + "\\DATA_orig\\ENV\\PRODUCTION\\" + level, SharedData.pathToAI + "\\DATA\\ENV\\PRODUCTION\\" + level);
+                Directory.Delete(SharedData.pathToAI + "\\DATA\\ENV\\" + level, true);
+                CopyFilesRecursively(SharedData.pathToAI + "\\DATA_orig\\ENV\\" + level, SharedData.pathToAI + "\\DATA\\ENV\\" + level);
             }
 
 
@@ -322,9 +322,14 @@ namespace CommandsEditor
         private void UpdateTitle()
         {
             if (_commandsDisplay == null)
+            {
                 this.Text = _baseTitle;
+            }
             else
-                this.Text = _baseTitle + " - " + _commandsDisplay.Content.level;
+            {
+                string[] levelBits = _commandsDisplay.Content.level.Split('/');
+                this.Text = _baseTitle + " - " + levelBits[levelBits.Length - 1] + " (" + _commandsDisplay.Content.level.Substring(0, _commandsDisplay.Content.level.Length - levelBits[levelBits.Length - 1].Length).TrimEnd('/') + ")";
+            }
 
 #if USE_DIRTY_TRACKER
             if (DirtyTracker.IsDirty)
@@ -362,8 +367,8 @@ namespace CommandsEditor
 #if DEBUG
             if (Directory.Exists(SharedData.pathToAI + "\\DATA_orig"))
             {
-                Directory.Delete(SharedData.pathToAI + "\\DATA\\ENV\\PRODUCTION\\" + level, true);
-                CopyFilesRecursively(SharedData.pathToAI + "\\DATA_orig\\ENV\\PRODUCTION\\" + level, SharedData.pathToAI + "\\DATA\\ENV\\PRODUCTION\\" + level);
+                Directory.Delete(SharedData.pathToAI + "\\DATA\\ENV\\" + level, true);
+                CopyFilesRecursively(SharedData.pathToAI + "\\DATA_orig\\ENV\\" + level, SharedData.pathToAI + "\\DATA\\ENV\\" + level);
             }
 #endif
 
@@ -1153,8 +1158,8 @@ namespace CommandsEditor
             //    List<string> levels = Level.GetLevels(SharedData.pathToAI, true);
             //    foreach (string level in levels)
             //    {
-            //        Directory.Delete("E:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\" + level, true);
-            //        CopyFilesRecursively("F:\\Alien Isolation Versions\\Alien Isolation PC Final\\DATA\\ENV\\PRODUCTION\\" + level, "E:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\PRODUCTION\\" + level);
+            //        Directory.Delete("E:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\" + level, true);
+            //        CopyFilesRecursively("F:\\Alien Isolation Versions\\Alien Isolation PC Final\\DATA\\ENV\\" + level, "E:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\" + level);
             //
             //        try
             //        {

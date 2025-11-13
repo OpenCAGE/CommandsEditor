@@ -44,7 +44,7 @@ namespace CommandsEditor
         {
             Log("Loading data for " + levelList.SelectedItem.ToString() + "...");
             Global gbl = new Global() { AnimationStrings_Debug = Singleton.AnimationStrings_Debug };
-            Level lvl = new Level(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + levelList.SelectedItem.ToString(), gbl);
+            Level lvl = new Level(SharedData.pathToAI + "/DATA/ENV/" + levelList.SelectedItem.ToString(), gbl);
 
             Log("Starting export...");
             AddCompositesRecursively(_composite, lvl);

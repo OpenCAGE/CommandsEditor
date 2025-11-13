@@ -81,7 +81,7 @@ namespace CommandsEditor
         {
             level = levelName;
 
-            string path = SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + level + "/";
+            string path = SharedData.pathToAI + "/DATA/ENV/" + level + "/";
             worldPath = path + "WORLD/";
 
             //The game has two hard-coded _PATCH overrides. We should use RENDERABLE from the non-patched folder.
@@ -146,7 +146,7 @@ namespace CommandsEditor
                 foreach (XElement database in databases)
                     resource.text_dbs.Add(database.Attribute("name").Value, new TextDB(SharedData.pathToAI + "/DATA/TEXT/ENGLISH/" + database.Attribute("name").Value + ".TXT"));
             }
-            string localDBFolder = SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + level + "/TEXT/";
+            string localDBFolder = SharedData.pathToAI + "/DATA/ENV/" + level + "/TEXT/";
             string localDBNames = localDBFolder + "TEXT_DB_LIST.TXT";
             if (File.Exists(localDBNames))
             {
