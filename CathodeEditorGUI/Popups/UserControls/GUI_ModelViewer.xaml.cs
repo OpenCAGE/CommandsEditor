@@ -1,6 +1,5 @@
 ﻿using AlienPAK;
 using CATHODE;
-using CATHODE.LEGACY;
 using CATHODE.Scripting;
 using CATHODE.ShaderTypes;
 using CathodeLib;
@@ -44,7 +43,7 @@ namespace CommandsEditor.Popups.UserControls
         {
             Model3DGroup group = new Model3DGroup();
             for (int i = 0; i < models.Count; i++)
-                group.Children.Add(OffsetModel(models[i].modelIndex, models[i].position, models[i].rotation, models[i].materialIndex));
+                group.Children.Add(OffsetModel(models[i].Submesh, models[i].Position, models[i].Rotation, models[i].Material));
             modelPreview.Content = group;
 
             if (zoomExtents)
@@ -56,19 +55,12 @@ namespace CommandsEditor.Popups.UserControls
             }
         }
         
-        private Model3DGroup OffsetModel(int modelIndex, Vector3D position, Vector3D rotation, int materialIndex)
+        private Model3DGroup OffsetModel(Models.CS2.Component.LOD.Submesh submesh, Vector3D position, Vector3D rotation, Materials.Material material)
         {
-            //Get mesh data
-            Models.CS2.Component.LOD.Submesh submesh = Content.resource.models.GetAtWriteIndex(modelIndex);
+            //Get mesh and material data
             GeometryModel3D submeshGeo = submesh.ToGeometryModel3D();
-
-            //Get material & texture data
             if (SettingsManager.GetBool(Singleton.Settings.ShowTexOpt))
-            {
-                Materials.Material material = Content.resource.materials.GetAtWriteIndex(materialIndex == -1 ? submesh.MaterialIndex : materialIndex);
-                Shaders.Shader shader = Content.resource.shaders.Entries[material.ShaderIndex];
-                MaterialApplier.ApplyMaterial(submeshGeo, material, shader, Content.resource.textures);
-            }
+                MaterialApplier.ApplyMaterial(submeshGeo, material, Content.Level.Textures);
 
             //Get transform data
             Transform3DGroup transform = new Transform3DGroup();
@@ -86,27 +78,27 @@ namespace CommandsEditor.Popups.UserControls
 
         public class Model
         {
-            public Model(int modelIndex, int materialIndex = -1)
+            public Model(Models.CS2.Component.LOD.Submesh submesh, Materials.Material material = null)
             {
-                Create(modelIndex, new Vector3D(0, 0, 0), new Vector3D(0, 0, 0), materialIndex);
+                Create(submesh, new Vector3D(0, 0, 0), new Vector3D(0, 0, 0), material == null ? submesh.Material : material);
             }
-            public Model(int modelIndex, cTransform transform, int materialIndex = -1)
+            public Model(Models.CS2.Component.LOD.Submesh submesh, cTransform transform, Materials.Material material = null)
             {
-                Create(modelIndex, new Vector3D(transform.position.X, transform.position.Y, transform.position.Z), new Vector3D(transform.rotation.X, transform.rotation.Y, transform.rotation.Z), materialIndex);
-            }
-
-            private void Create(int modelIndex, Vector3D position, Vector3D rotation, int materialIndex)
-            {
-                this.modelIndex = modelIndex;
-                this.materialIndex = materialIndex;
-                this.position = position;
-                this.rotation = rotation;
+                Create(submesh, new Vector3D(transform.position.X, transform.position.Y, transform.position.Z), new Vector3D(transform.rotation.X, transform.rotation.Y, transform.rotation.Z), material == null ? submesh.Material : material);
             }
 
-            public int modelIndex;
-            public int materialIndex;
-            public Vector3D position;
-            public Vector3D rotation;
+            private void Create(Models.CS2.Component.LOD.Submesh submesh, Vector3D position, Vector3D rotation, Materials.Material material)
+            {
+                this.Submesh = submesh;
+                this.Material = material;
+                this.Position = position;
+                this.Rotation = rotation;
+            }
+
+            public Models.CS2.Component.LOD.Submesh Submesh;
+            public Materials.Material Material;
+            public Vector3D Position;
+            public Vector3D Rotation;
         }
     }
 }

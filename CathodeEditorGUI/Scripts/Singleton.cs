@@ -1,6 +1,7 @@
 using CATHODE;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
+using CathodeLib;
 using CommandsEditor.DockPanels;
 using CommandsEditor.Popups;
 using System;
@@ -31,7 +32,7 @@ namespace CommandsEditor
         public static AnimationStrings AnimationStrings_Debug;
 
         //Global assets
-        public static Textures GlobalTextures;
+        public static Global Global;
 
         //Load events
         public static Action<LevelContent> OnLevelLoaded;
@@ -144,18 +145,17 @@ namespace CommandsEditor
                     GlobalTextDBs.Add(Path.GetFileNameWithoutExtension(textList[i]), strings[i]);
             }
 
-            //Load bulky global data
-            Task.Factory.StartNew(() => LoadGlobalAssets());
-            Task.Factory.StartNew(() => LoadAnimData());
-        }
-
-        /* Load anim data */
-        private static void LoadAnimData()
-        {
             Debug.Log("Asset Loader", "Loading anim data");
 
             //Load animation data
             PAK2 animPAK = new PAK2(SharedData.pathToAI + "/DATA/GLOBAL/ANIMATION.PAK");
+
+            //Create global
+            Global = new Global()
+            {
+                Textures = new Textures(SharedData.pathToAI + "\\DATA\\ENV\\GLOBAL\\WORLD\\GLOBAL_TEXTURES.ALL.PAK"),
+                AnimationStrings_Debug = new AnimationStrings(animPAK.Entries.FirstOrDefault(o => o.Filename.Contains("ANIM_STRING_DB_DEBUG.BIN")).Content)
+            };
 
             //Load all male/female skeletons
             List<PAK2.File> skeletonDefs = animPAK.Entries.FindAll(o => o.Filename.Length > 17 && o.Filename.Substring(0, 17) == "DATA\\SKELETONDEFS");
@@ -255,12 +255,6 @@ namespace CommandsEditor
 
             _loadedAnimationContent = true;
             OnAnimationsLoaded?.Invoke();
-        }
-
-        /* Load global assets */
-        private static void LoadGlobalAssets()
-        {
-            GlobalTextures = new Textures(SharedData.pathToAI + "/DATA/ENV/GLOBAL/WORLD/GLOBAL_TEXTURES.ALL.PAK");
             _loadedGlobalAssets = true;
             OnGlobalAssetsLoaded?.Invoke();
         }

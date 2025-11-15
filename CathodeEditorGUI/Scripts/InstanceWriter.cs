@@ -14,6 +14,7 @@ using System.Windows;
 
 namespace CommandsEditor.Scripts
 {
+#if NO
     public class InstanceWriter
     {
         public InstanceWriter()
@@ -39,7 +40,7 @@ namespace CommandsEditor.Scripts
             content.resource.collision_maps.Entries.Clear();
 
             for (int i= 0; i < 18; i++)
-                content.resource.collision_maps.Entries.Add(new CollisionMaps.Entry());
+                content.resource.collision_maps.Entries.Add(new CollisionMaps.COLLISION_MAPPING());
 
             for (int i = 0; i < content.commands.Entries.Count; i++)
             {
@@ -50,9 +51,9 @@ namespace CommandsEditor.Scripts
 
                     ShortGuid resourceID = ShortGuidUtils.Generate(content.commands.Utils.GetEntityName(content.commands.Entries[i], function));
 
-                    content.resource.collision_maps.Entries.Add(new CollisionMaps.Entry()
+                    content.resource.collision_maps.Entries.Add(new CollisionMaps.COLLISION_MAPPING()
                     {
-                        ID = resourceID,
+                        ResourceGUID = resourceID,
                         Entity = new EntityHandle() { entity_id = function.shortGUID, composite_instance_id = ShortGuid.Invalid },
                         ZoneID = ShortGuid.Invalid
                     });
@@ -74,7 +75,7 @@ namespace CommandsEditor.Scripts
                     if (function.function != FunctionType.Zone)
                         continue;
 
-                    List<EntityPath> zonePaths = content.editor_utils.GetHierarchiesForEntity(content.commands.Entries[i], function);
+                    List<EntityPath> zonePaths = content.EditorUtils.GetHierarchiesForEntity(content.commands.Entries[i], function);
                     List<ShortGuid> zoneInstanceIDs = new List<ShortGuid>();
                     for (int p = 0; p < zonePaths.Count; p++)
                         zoneInstanceIDs.Add(zonePaths[p].GenerateZoneID());
@@ -128,9 +129,9 @@ namespace CommandsEditor.Scripts
 
                                         ShortGuid resourceID = ShortGuidUtils.Generate(content.commands.Utils.GetEntityName(comp, func));
 
-                                        content.resource.collision_maps.Entries.Add(new CollisionMaps.Entry()
+                                        content.resource.collision_maps.Entries.Add(new CollisionMaps.COLLISION_MAPPING()
                                         {
-                                            ID = resourceID,
+                                            ResourceGUID = resourceID,
                                             Entity = instanceInfo,
                                             ZoneID = zoneInstanceID
                                         });
@@ -153,7 +154,7 @@ namespace CommandsEditor.Scripts
                 }
             }
 
-            content.resource.collision_maps.Save();
+            content.Level.CollisionMaps.Save();
 
             string sdfdf = "";
 
@@ -197,4 +198,5 @@ namespace CommandsEditor.Scripts
         }
 
     }
+#endif
 }

@@ -170,7 +170,7 @@ namespace CommandsEditor.Popups.UserControls
                     return;
             }
 
-            (int imageIndex, int groupIndex) = EditorUtils.GetIndexesForListViewItem(entity, _composite, Content.commands);
+            (int imageIndex, int groupIndex) = EditorUtils.GetIndexesForListViewItem(entity, _composite, Content.Level.Commands);
             ListViewItem item = (ListViewItem)Content.GenerateListViewItem(entity, _composite).Clone();
             item.ImageIndex = imageIndex;
             item.Group = composite_content.Groups[groupIndex];

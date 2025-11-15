@@ -101,7 +101,7 @@ namespace CommandsEditor
 
                     if (!_isModelTree)
                     {
-                        EditorUtils.CompositeType type = Content.editor_utils.GetCompositeType(ThisTag.String_Value);
+                        EditorUtils.CompositeType type = Content.EditorUtils.GetCompositeType(ThisTag.String_Value);
                         FileNode.ImageIndex = type == EditorUtils.CompositeType.IS_GENERIC_COMPOSITE ? 1 : type == EditorUtils.CompositeType.IS_ROOT ? 3 : type == EditorUtils.CompositeType.IS_DISPLAY_MODEL ? 5 : 4;
                     }
                     else

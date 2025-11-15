@@ -75,7 +75,7 @@ namespace CommandsEditor
             FollowEntityThrough.Enabled = false;
 
             if (selectedEntity.variant != EntityVariant.FUNCTION) return;
-            FollowEntityThrough.Enabled = Content.commands.GetComposite(((FunctionEntity)selectedEntity).function) != null;
+            FollowEntityThrough.Enabled = Content.Level.Commands.GetComposite(((FunctionEntity)selectedEntity).function) != null;
         }
 
         /* Load a composite into the UI */
@@ -98,7 +98,7 @@ namespace CommandsEditor
             if (selectedEntity == null) return;
             if (selectedEntity.variant != EntityVariant.FUNCTION) return;
 
-            Composite composite = Content.commands.GetComposite(((FunctionEntity)selectedEntity).function);
+            Composite composite = Content.Level.Commands.GetComposite(((FunctionEntity)selectedEntity).function);
             if (composite == null) return;
 
             _path.StepForwards(selectedComposite, selectedEntity);

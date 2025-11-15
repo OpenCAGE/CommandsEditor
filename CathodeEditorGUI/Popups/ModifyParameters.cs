@@ -54,11 +54,11 @@ namespace CommandsEditor
             label2.Text = "Parameters";
             createParams.Text = "Set Parameters";
 
-            List<ListViewItem> options = Singleton.Editor.CommandsDisplay.Content.editor_utils.GenerateParameterListAsListViewItem(ent, comp);
+            List<ListViewItem> options = Singleton.Editor.CommandsDisplay.Content.EditorUtils.GenerateParameterListAsListViewItem(ent, comp);
             //Add all base-game ones
             for (int i = 0; i < options.Count; i++)
             {
-                var metadata = Content.commands.Utils.GetParameterMetadata(ent, options[i].Text, comp);
+                var metadata = Content.Level.Commands.Utils.GetParameterMetadata(ent, options[i].Text, comp);
 
                 if (metadata.Item1 == null)
                     continue;
@@ -145,7 +145,7 @@ namespace CommandsEditor
                     DataType type = item.SubItems[1].Text.ToDataType();
                     if (existing == null || existing.content.dataType != type)
                     {
-                        ParameterData data = Content.commands.Utils.CreateDefaultParameterData(_inspector.Entity, _inspector.Composite, item.Text);
+                        ParameterData data = Content.Level.Commands.Utils.CreateDefaultParameterData(_inspector.Entity, _inspector.Composite, item.Text);
                         if (data != null)
                         {
                             _inspector.Entity.AddParameter(ShortGuidUtils.Generate(item.Text), data);

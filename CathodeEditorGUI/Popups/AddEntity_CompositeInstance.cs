@@ -29,7 +29,7 @@ namespace CommandsEditor
             _treeUtility = new TreeUtility(compositeTree);
             _composite = composite;
 
-            _treeUtility.UpdateFileTree(Content.commands.GetCompositeNames().ToList());
+            _treeUtility.UpdateFileTree(Content.Level.Commands.GetCompositeNames().ToList());
 
             searchText.Text = SettingsManager.GetString(Singleton.Settings.PreviouslySearchedCompInstType);
             Search();
@@ -55,9 +55,9 @@ namespace CommandsEditor
         {
             List<string> filteredCompositeNames = new List<string>();
             List<Composite> filteredComposites = new List<Composite>();
-            for (int i = 0; i < Content.commands.Entries.Count; i++)
+            for (int i = 0; i < Content.Level.Commands.Entries.Count; i++)
             {
-                string name = Content.commands.Entries[i].name.Replace('\\', '/');
+                string name = Content.Level.Commands.Entries[i].name.Replace('\\', '/');
 
                 if (SettingsManager.GetBool(Singleton.Settings.CompNameOnlyOpt) == true)
                 {
@@ -68,8 +68,8 @@ namespace CommandsEditor
                 if (!name.ToUpper().Replace(" ", "").Contains(searchText.Text.Replace('\\', '/').Replace(" ", "").ToUpper())) 
                     continue;
 
-                filteredCompositeNames.Add(Content.commands.Entries[i].name.Replace('\\', '/'));
-                filteredComposites.Add(Content.commands.Entries[i]);
+                filteredCompositeNames.Add(Content.Level.Commands.Entries[i].name.Replace('\\', '/'));
+                filteredComposites.Add(Content.Level.Commands.Entries[i]);
             }
             _treeUtility.UpdateFileTree(filteredCompositeNames);
 
@@ -116,7 +116,7 @@ namespace CommandsEditor
             }
 
             TreeItem item = (TreeItem)compositeTree.SelectedNode.Tag;
-            Composite comp = Content.commands.GetComposite(item.String_Value);
+            Composite comp = Content.Level.Commands.GetComposite(item.String_Value);
             if (item.Item_Type != TreeItemType.EXPORTABLE_FILE || comp == null)
             {
                 MessageBox.Show("Failed to lookup composite.", "Invalid composite", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -133,15 +133,15 @@ namespace CommandsEditor
             Singleton.OnEntityAddPending?.Invoke();
 
             Entity newEntity = _composite.AddFunction(comp);
-            Content.commands.Utils.SetEntityName(_composite, newEntity, entityName.Text);
+            Content.Level.Commands.Utils.SetEntityName(_composite, newEntity, entityName.Text);
 
             if (addDefaultParams.Checked)
             {
-                Content.commands.Utils.AddAllDefaultParameters(newEntity, _composite);
+                Content.Level.Commands.Utils.AddAllDefaultParameters(newEntity, _composite);
                 newEntity.RemoveParameter("delete_me");
             }
 
-            Content.editor_utils.GenerateCompositeInstances(Content.commands);
+            Content.EditorUtils.GenerateCompositeInstances(Content.Level.Commands);
 
             SettingsManager.SetString(Singleton.Settings.PreviouslySelectedCompInstType, item.String_Value);
             SettingsManager.SetBool(Singleton.Settings.PreviouslySearchedParamPopulationComp, addDefaultParams.Checked);
@@ -155,7 +155,7 @@ namespace CommandsEditor
             List<Composite> instances = new List<Composite>();
             foreach (FunctionEntity ent in composite.functions_dictionary.Values)
             {
-                Composite instance = Content.commands.GetComposite(ent.function);
+                Composite instance = Content.Level.Commands.GetComposite(ent.function);
                 if (instance == null) continue;
                 instances.Add(instance);
                 instances.AddRange(GetChildInstancedComposites(instance));

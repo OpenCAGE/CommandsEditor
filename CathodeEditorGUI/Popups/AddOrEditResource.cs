@@ -41,7 +41,7 @@ namespace CommandsEditor
 
             InitializeComponent();
 
-            this.Text += " - " + Content.editor_utils.GenerateEntityName(entDisplay.Entity, entDisplay.Composite);
+            this.Text += " - " + Content.EditorUtils.GenerateEntityName(entDisplay.Entity, entDisplay.Composite);
             resourceType.SelectedIndex = 0;
 
             RefreshUI();
@@ -77,13 +77,14 @@ namespace CommandsEditor
                     case ResourceType.ANIMATED_MODEL:
                         {
                             resourceGroup = new GUI_Resource_AnimatedModel();
-                            ((GUI_Resource_AnimatedModel)resourceGroup).PopulateUI(Content.resource.env_animations.Entries.FirstOrDefault(o => o.ResourceIndex == resources[i].index));
+                            ((GUI_Resource_AnimatedModel)resourceGroup).PopulateUI(resources[i].AnimatedModel);
                             break;
                         }
                     case ResourceType.COLLISION_MAPPING:
                         {
                             //TODO: Pass this info through, and handle making new instances...
-                            Content.resource.collision_maps.Entries.FindAll(o => o.Entity.entity_id == resources[i].entityID);
+                            Content.Level.CollisionMaps.Entries.FindAll(o => o.Entity.entity_id == resources[i].entityID);
+                            var colmap = resources[i].CollisionMapping; //todo!!!!!
 
                             resourceGroup = new GUI_Resource_CollisionMapping();
                             ((GUI_Resource_CollisionMapping)resourceGroup).PopulateUI(resources[i].position, resources[i].rotation, resources[i].entityID);
@@ -98,14 +99,14 @@ namespace CommandsEditor
                     case ResourceType.RENDERABLE_INSTANCE:
                         {
                             resourceGroup = new GUI_Resource_RenderableInstance();
-                            ((GUI_Resource_RenderableInstance)resourceGroup).PopulateUI(resources[i].position, resources[i].rotation, resources[i].index, resources[i].count);
+                            ((GUI_Resource_RenderableInstance)resourceGroup).PopulateUI(resources[i].position, resources[i].rotation, resources[i].RenderableInstance);
                             break;
                         }
                         /*
                     case ResourceType.DYNAMIC_PHYSICS_SYSTEM:
                         {
                             //TODO: Pass this info through, and handle making new instances...
-                            Content.resource.physics_maps.Entries.FindAll(o => o.entity.entity_id == resources[i].collisionID);
+                            Content.Level.PhysicsMaps.Entries.FindAll(o => o.entity.entity_id == resources[i].collisionID);
 
                             resourceGroup = new GUI_Resource_DynamicPhysicsSystem();
                             ((GUI_Resource_DynamicPhysicsSystem)resourceGroup).PopulateUI(_entDisplay, resources[i].index); 
@@ -151,36 +152,19 @@ namespace CommandsEditor
             ResourceReference newReference = new ResourceReference();
             newReference.resource_id = guid_parent;
             newReference.resource_type = type;
-            switch (newReference.resource_type)
-            {
-                case ResourceType.DYNAMIC_PHYSICS_SYSTEM:
-                case ResourceType.RENDERABLE_INSTANCE:
-                case ResourceType.ANIMATED_MODEL: 
-                    newReference.index = 0;
-                    break;            
-                case ResourceType.EXCLUSIVE_MASTER_STATE_RESOURCE:
-                    //TODO: this defines the MASTER_STATE which flips us between the STATE_x folders for navmeshes, etc -> how do we know the state index?
-                case ResourceType.NAV_MESH_BARRIER_RESOURCE:      
-                case ResourceType.TRAVERSAL_SEGMENT:              //Sure this one doesn't use startIndex?
-                case ResourceType.COLLISION_MAPPING:              //Sure this one doesn't use startIndex?
-                    //This type just uses the default values
-                    break;
-            }
 
             //We now auto create ANIMATED_MODEL entries. We should probs do the same for others too.
             if (newReference.resource_type == ResourceType.ANIMATED_MODEL)
             {
-                if (Content.resource.env_animations.Entries.Count == 0)
+                if (Content.Level.EnvironmentAnimations.Entries.Count == 0)
                 {
                     MessageBox.Show("Cannot add ANIMATED_MODEL for a level with no Environment Animations!");
                     return;
                 }
 
-                EnvironmentAnimations.EnvironmentAnimation anim = new EnvironmentAnimations.EnvironmentAnimation();
-                anim.ResourceIndex = Content.resource.env_animations.Entries[Content.resource.env_animations.Entries.Count - 1].ResourceIndex + 1;
-                Content.resource.env_animations.Entries.Add(anim);
-
-                newReference.index = anim.ResourceIndex;
+                newReference.AnimatedModel = new EnvironmentAnimations.EnvironmentAnimation();
+                newReference.AnimatedModel.ResourceIndex = Content.Level.EnvironmentAnimations.Entries[Content.Level.EnvironmentAnimations.Entries.Count - 1].ResourceIndex + 1;
+                Content.Level.EnvironmentAnimations.Entries.Add(newReference.AnimatedModel);
             }
 
             resources.Add(newReference);
@@ -242,22 +226,7 @@ namespace CommandsEditor
                             GUI_Resource_RenderableInstance ui = (GUI_Resource_RenderableInstance)resource_panel.Controls[i];
                             resourceRef.position = ui.Position;
                             resourceRef.rotation = ui.Rotation;
-                            resourceRef.count = ui.SelectedMaterialIndexes.Count;
-                            resourceRef.index = Content.resource.reds.Entries.Count;
-
-                            for (int y = 0; y < ui.SelectedMaterialIndexes.Count; y++)
-                            {
-                                RenderableElements.Element newRed = new RenderableElements.Element();
-                                newRed.ModelIndex = ui.SelectedModelIndex + y; //assumes sequential write
-                                newRed.MaterialIndex = ui.SelectedMaterialIndexes[y];
-                                if (y == 0)
-                                {
-                                    newRed.LODIndex = Content.resource.reds.Entries.Count;
-                                    //newRed.LODCount = (byte)ui.SelectedMaterialIndexes.Count;
-                                    newRed.LODCount = 0; //TODO!!
-                                }
-                                Content.resource.reds.Entries.Add(newRed);
-                            }
+                            resourceRef.RenderableInstance = ui.GetAsRenderableElements();
                             break;
                         }
                 }

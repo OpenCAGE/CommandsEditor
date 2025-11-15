@@ -48,9 +48,9 @@ namespace CommandsEditor
                 }
             }
 
-            for (int i = 0; i < _commands.Content.commands.Entries.Count; i++)
+            for (int i = 0; i < _commands.Content.Level.Commands.Entries.Count; i++)
             {
-                if (_commands.Content.commands.Entries[i].name.Replace("\\", "/") == path)
+                if (_commands.Content.Level.Commands.Entries[i].name.Replace("\\", "/") == path)
                 {
                     MessageBox.Show("Failed to create composite.\nA composite with this name already exists.", "Composite already exists", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
@@ -59,7 +59,7 @@ namespace CommandsEditor
 
             Singleton.OnCompositeAddPending?.Invoke();
 
-            Composite comp = _commands.Content.commands.AddComposite(path.Replace("/", "\\"));
+            Composite comp = _commands.Content.Level.Commands.AddComposite(path.Replace("/", "\\"));
 
             Singleton.OnCompositeAdded?.Invoke(comp);
             OnCompositeAdded?.Invoke(comp);

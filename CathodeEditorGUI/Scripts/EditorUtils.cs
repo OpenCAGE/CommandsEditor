@@ -23,10 +23,10 @@ namespace CommandsEditor
     //Wrappers around CathodeLib utils, and some utils for formatting strings
     public class EditorUtils
     {
-        private LevelContent _content;
+        private LevelContent Content;
         public EditorUtils(LevelContent content)
         {
-            _content = content;
+            Content = content;
         }
 
         /* Some additional composite info for rich display in editor */
@@ -45,9 +45,9 @@ namespace CommandsEditor
         public CompositeType GetCompositeType(string composite)
         {
             string c = composite.Replace('/', '\\');
-            if (_content.commands.EntryPoints[0].name.Replace('/', '\\') == c) return CompositeType.IS_ROOT;
-            if (_content.commands.EntryPoints[1].name.Replace('/', '\\') == c) return CompositeType.IS_PAUSE_MENU;
-            if (_content.commands.EntryPoints[2].name.Replace('/', '\\') == c) return CompositeType.IS_GLOBAL;
+            if (Content.Level.Commands.EntryPoints[0].name.Replace('/', '\\') == c) return CompositeType.IS_ROOT;
+            if (Content.Level.Commands.EntryPoints[1].name.Replace('/', '\\') == c) return CompositeType.IS_PAUSE_MENU;
+            if (Content.Level.Commands.EntryPoints[2].name.Replace('/', '\\') == c) return CompositeType.IS_GLOBAL;
             if (c.Length > ("DisplayModel:").Length && c.Substring(0, ("DisplayModel:").Length) == "DisplayModel:") return CompositeType.IS_DISPLAY_MODEL;
             return CompositeType.IS_GENERIC_COMPOSITE;
         }
@@ -65,9 +65,9 @@ namespace CommandsEditor
             _prevTaskToken = new CancellationTokenSource();
 
             if (runOnThread)
-                Task.Run(() => _content.editor_utils.GenerateCompositeInstancesRecursive(commands, commands.EntryPoints[0], new List<ShortGuid>(), _prevTaskToken.Token), _prevTaskToken.Token);
+                Task.Run(() => Content.EditorUtils.GenerateCompositeInstancesRecursive(commands, commands.EntryPoints[0], new List<ShortGuid>(), _prevTaskToken.Token), _prevTaskToken.Token);
             else
-                _content.editor_utils.GenerateCompositeInstancesRecursive(commands, commands.EntryPoints[0], new List<ShortGuid>(), _prevTaskToken.Token);
+                Content.EditorUtils.GenerateCompositeInstancesRecursive(commands, commands.EntryPoints[0], new List<ShortGuid>(), _prevTaskToken.Token);
         }
         private void GenerateCompositeInstancesRecursive(Commands commands, Composite composite, List<ShortGuid> hierarchy, CancellationToken ct)
         {
@@ -250,7 +250,7 @@ namespace CommandsEditor
         /* Utility: generate nice entity name to display in UI */
         public string GenerateEntityName(Entity entity, Composite composite, bool regenCache = false)
         {
-            if (_content.commands == null)
+            if (Content.Level.Commands == null)
                 return entity.shortGUID.ToByteString();
 
             if (hasFinishedCachingEntityNames && regenCache)
@@ -282,17 +282,17 @@ namespace CommandsEditor
                     desc = "[" + ((VariableEntity)entity).type.ToUIString() + "] " + ShortGuidUtils.FindString(((VariableEntity)entity).name);
                     break;
                 case EntityVariant.FUNCTION:
-                    Composite funcComposite = _content.commands.GetComposite(((FunctionEntity)entity).function);
+                    Composite funcComposite = Content.Level.Commands.GetComposite(((FunctionEntity)entity).function);
                     if (funcComposite != null)
-                        desc = _content.commands.Utils.GetEntityName(composite.shortGUID, entity.shortGUID) + " (" + funcComposite.name + ")";
+                        desc = Content.Level.Commands.Utils.GetEntityName(composite.shortGUID, entity.shortGUID) + " (" + funcComposite.name + ")";
                     else
-                        desc = _content.commands.Utils.GetEntityName(composite.shortGUID, entity.shortGUID) + " (" + ((FunctionType)((FunctionEntity)entity).function.AsUInt32).ToString() + ")";
+                        desc = Content.Level.Commands.Utils.GetEntityName(composite.shortGUID, entity.shortGUID) + " (" + ((FunctionType)((FunctionEntity)entity).function.AsUInt32).ToString() + ")";
                     break;
                 case EntityVariant.ALIAS:
-                    desc = "[ALIAS] " + _content.commands.Utils.GetResolvedAsString(_content.commands.Utils.ResolveAlias((AliasEntity)entity, composite), false);
+                    desc = "[ALIAS] " + Content.Level.Commands.Utils.GetResolvedAsString(Content.Level.Commands.Utils.ResolveAlias((AliasEntity)entity, composite), false);
                     break;
                 case EntityVariant.PROXY:
-                    desc = "[PROXY] " + _content.commands.Utils.GetEntityName(composite.shortGUID, entity.shortGUID) + " (" + _content.commands.Utils.GetResolvedAsString(_content.commands.Utils.ResolveProxy((ProxyEntity)entity), false) + ")";
+                    desc = "[PROXY] " + Content.Level.Commands.Utils.GetEntityName(composite.shortGUID, entity.shortGUID) + " (" + Content.Level.Commands.Utils.GetResolvedAsString(Content.Level.Commands.Utils.ResolveProxy((ProxyEntity)entity), false) + ")";
                     break;
             }
             bool showID = SettingsManager.GetBool(Singleton.Settings.ShowShortGuids);
@@ -304,13 +304,13 @@ namespace CommandsEditor
         private Dictionary<ShortGuid, Dictionary<ShortGuid, string>> cachedEntityName = new Dictionary<ShortGuid, Dictionary<ShortGuid, string>>();
         public void GenerateEntityNameCache(CommandsEditor mainInst)
         {
-            if (_content.commands == null) return;
+            if (Content.Level.Commands == null) return;
             hasFinishedCachingEntityNames = false;
             mainInst?.EnableLoadingOfPaks(false, "Generating caches...");
             cachedEntityName.Clear();
-            for (int i = 0; i < _content.commands.Entries.Count; i++)
+            for (int i = 0; i < Content.Level.Commands.Entries.Count; i++)
             {
-                Composite comp = _content.commands.Entries[i];
+                Composite comp = Content.Level.Commands.Entries[i];
                 if (!cachedEntityName.ContainsKey(comp.shortGUID))
                     cachedEntityName.Add(comp.shortGUID, new Dictionary<ShortGuid, string>());
                 List<Entity> ents = comp.GetEntities();
@@ -327,13 +327,13 @@ namespace CommandsEditor
         {
             List<string> items = new List<string>();
             if (entity == null) return items;
-            List<(ShortGuid, ParameterVariant, DataType)> parameters = _content.commands.Utils.GetAllParameters(entity, composite);
+            List<(ShortGuid, ParameterVariant, DataType)> parameters = Content.Level.Commands.Utils.GetAllParameters(entity, composite);
             foreach ((ShortGuid, ParameterVariant, DataType) parameter in parameters)
             {
                 items.Add(parameter.Item1.ToString());
                 if (parameter.Item2 == ParameterVariant.METHOD_PIN)
                 {
-                    ShortGuid relay = _content.commands.Utils.GetRelay(parameter.Item1);
+                    ShortGuid relay = Content.Level.Commands.Utils.GetRelay(parameter.Item1);
                     if (relay != ShortGuid.Invalid)
                         items.Add(relay.ToString());
                 }
@@ -345,7 +345,7 @@ namespace CommandsEditor
         {
             List<ListViewItem> items = new List<ListViewItem>();
             if (entity == null) return items;
-            List<(ShortGuid, ParameterVariant, DataType)> parameters = _content.commands.Utils.GetAllParameters(entity, composite);
+            List<(ShortGuid, ParameterVariant, DataType)> parameters = Content.Level.Commands.Utils.GetAllParameters(entity, composite);
             foreach ((ShortGuid, ParameterVariant,DataType) parameter in parameters)
             {
                 items.Add(ParameterDefinitionToListViewItem(parameter.Item1, parameter.Item3, parameter.Item2));
@@ -482,20 +482,20 @@ namespace CommandsEditor
         public bool IsEntityReferencedExternally(Entity entity, CancellationToken ct)
         {
             bool found = false;
-            Parallel.ForEach(_content.commands.Entries, (comp, status) =>
+            Parallel.ForEach(Content.Level.Commands.Entries, (comp, status) =>
             {
                 Parallel.ForEach(comp.proxies, (prox, status2) =>
                 {
                     if (found || ct.IsCancellationRequested)
                         status2.Stop();
-                    if (_content.commands.Utils.GetResolvedTarget(_content.commands.Utils.ResolveProxy(prox)).Item2 == entity) 
+                    if (Content.Level.Commands.Utils.GetResolvedTarget(Content.Level.Commands.Utils.ResolveProxy(prox)).Item2 == entity) 
                         found = true;
                 });
                 Parallel.ForEach(comp.aliases, (alias, status2) =>
                 {
                     if (found || ct.IsCancellationRequested)
                         status2.Stop();
-                    if (_content.commands.Utils.GetResolvedTarget(_content.commands.Utils.ResolveAlias(alias, comp)).Item2 == entity) 
+                    if (Content.Level.Commands.Utils.GetResolvedTarget(Content.Level.Commands.Utils.ResolveAlias(alias, comp)).Item2 == entity) 
                         found = true;
                 });
                 List<FunctionEntity> triggerSequences = comp.GetFunctionEntitiesOfType(FunctionType.TriggerSequence);
@@ -509,7 +509,7 @@ namespace CommandsEditor
                     {
                         if (found || ct.IsCancellationRequested)
                             status3.Stop();
-                        if (_content.commands.Utils.GetResolvedTarget(_content.commands.Utils.ResolveAlias(trigger.connectedEntity.path, comp)).Item2 == entity)
+                        if (Content.Level.Commands.Utils.GetResolvedTarget(Content.Level.Commands.Utils.ResolveAlias(trigger.connectedEntity.path, comp)).Item2 == entity)
                             found = true;
                     });
                 });
@@ -524,7 +524,7 @@ namespace CommandsEditor
                     {
                         if (found || ct.IsCancellationRequested)
                             status3.Stop();
-                        if (_content.commands.Utils.GetResolvedTarget(_content.commands.Utils.ResolveAlias(connection.connectedEntity.path, comp)).Item2 == entity) 
+                        if (Content.Level.Commands.Utils.GetResolvedTarget(Content.Level.Commands.Utils.ResolveAlias(connection.connectedEntity.path, comp)).Item2 == entity) 
                             found = true;
                     });
                 });
@@ -550,7 +550,7 @@ namespace CommandsEditor
                     TriggerSequence trig = (TriggerSequence)trigEnt;
                     Parallel.ForEach(trig.sequence, (Action<TriggerSequence.SequenceEntry, ParallelLoopState>)((trigger, status2) =>
                     {
-                        if (_content.commands.Utils.GetResolvedTarget(_content.commands.Utils.ResolveAlias(trigger.connectedEntity.path, comp)).Item2 == entity)
+                        if (Content.Level.Commands.Utils.GetResolvedTarget(Content.Level.Commands.Utils.ResolveAlias(trigger.connectedEntity.path, comp)).Item2 == entity)
                         {
                             List<FunctionEntity> zones = comp.functions.FindAll(o => o.function == FunctionType.Zone);
                             Parallel.ForEach(zones, (z, status3) =>
@@ -591,7 +591,7 @@ namespace CommandsEditor
             zone = findZone(composite);
             if (zone != null) return;
 
-            foreach (Composite comp in _content.commands.Entries)
+            foreach (Composite comp in Content.Level.Commands.Entries)
             {
                 composite = comp;
                 zone = findZone(composite);
@@ -605,7 +605,7 @@ namespace CommandsEditor
             ShortGuid compositesGUID = ShortGuidUtils.Generate("composites");
             string toReturn = "";
             List<ShortGuid> foundIDs = new List<ShortGuid>();
-            foreach (Composite comp in _content.commands.Entries)
+            foreach (Composite comp in Content.Level.Commands.Entries)
             {
                 List<FunctionEntity> triggerSequences = comp.functions_dictionary.Values.Where(o => o.function == FunctionType.TriggerSequence).ToList();
                 foreach (FunctionEntity trigEnt in triggerSequences)
@@ -613,7 +613,7 @@ namespace CommandsEditor
                     TriggerSequence trig = (TriggerSequence)trigEnt;
                     foreach (TriggerSequence.SequenceEntry trigger in trig.sequence)
                     {
-                        if (_content.commands.Utils.GetResolvedTarget(_content.commands.Utils.ResolveAlias(trigger.connectedEntity.path, comp)).Item2 == entity)
+                        if (Content.Level.Commands.Utils.GetResolvedTarget(Content.Level.Commands.Utils.ResolveAlias(trigger.connectedEntity.path, comp)).Item2 == entity)
                         {
                             List<FunctionEntity> zones = comp.functions_dictionary.Values.Where(o => o.function == FunctionType.Zone).ToList();
                             foreach (FunctionEntity z in zones)
@@ -640,28 +640,6 @@ namespace CommandsEditor
                 }
             }
             return toReturn;
-        }
-
-        [Obsolete("This function is safe to use but not performant. It's intended for test code only.")]
-        public string PrettyPrintMoverRenderable(Movers.MOVER_DESCRIPTOR mvr)
-        {
-            if (mvr == null)
-                return "";
-
-            string output = "";
-            for (int x = 0; x < mvr.renderable_element_count; x++)
-            {
-                var reds = _content.resource.reds.Entries[(int)mvr.renderable_element_index];
-
-                var submesh = _content.resource.models.GetAtWriteIndex(reds.ModelIndex);
-                var model = _content.resource.models.FindModelForSubmesh(submesh);
-                var component = _content.resource.models.FindModelComponentForSubmesh(submesh);
-                var lod = _content.resource.models.FindModelLODForSubmesh(submesh);
-                var material = _content.resource.materials.GetAtWriteIndex(reds.MaterialIndex);
-
-                output += model?.Name + " (" + lod?.Name + ") -> " + material?.Name + "\n";
-            }
-            return output;
         }
 
         //Util: patch the game exe to launch to the specified map (handy for debugging)
@@ -767,13 +745,13 @@ namespace CommandsEditor
         /* Try and localise a string */
         public static string TryLocalise(this string str)
         {
-            //Check level-specific strings first, if a level is loaded
+            //Check English level-specific strings first, if a level is loaded
             if (Singleton.Editor?.CommandsDisplay?.Content != null)
-                foreach (KeyValuePair<string, TextDB> entry in Singleton.Editor.CommandsDisplay.Content.resource.text_dbs)
+                foreach (KeyValuePair<string, TextDB> entry in Singleton.Editor.CommandsDisplay.Content.Level.Strings["ENGLISH"])
                     if (entry.Value.Entries.TryGetValue(str, out string localised))
                         return localised;
 
-            //Check global strings
+            //Check English global strings
             foreach (KeyValuePair<string, TextDB> entry in Singleton.GlobalTextDBs)
                 if (entry.Value.Entries.TryGetValue(str, out string localised))
                     return localised;

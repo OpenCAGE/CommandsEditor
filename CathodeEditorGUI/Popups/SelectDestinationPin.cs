@@ -31,7 +31,7 @@ namespace CommandsEditor.Popups
             //Hack: create a new node based off the current node's entity and add all pins to it, so that we can know all options to list
             STNode hackGetAllOptions = new STNode();
             hackGetAllOptions.Entity = node.Entity;
-            hackGetAllOptions.AddAllPins(Singleton.Editor.CommandsDisplay.CompositeDisplay.Composite, Content.commands);
+            hackGetAllOptions.AddAllPins(Singleton.Editor.CommandsDisplay.CompositeDisplay.Composite, Content.Level.Commands);
 
             listView1.BeginUpdate();
 

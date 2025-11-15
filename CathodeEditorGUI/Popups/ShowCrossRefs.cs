@@ -163,7 +163,7 @@ namespace CommandsEditor
                         compGroups.Add(entityRef.composite, group);
                         item.Group = group;
                     }
-                    item.ImageIndex = EditorUtils.GetIndexesForListViewItem(entityRef.entity, entityRef.composite, Content.commands).Item1;
+                    item.ImageIndex = EditorUtils.GetIndexesForListViewItem(entityRef.entity, entityRef.composite, Content.Level.Commands).Item1;
                     entityList.Items.Add(item);
                 }
                 entityList.EndUpdate();
@@ -199,21 +199,21 @@ namespace CommandsEditor
             }
             else
             {
-                Parallel.ForEach(Content.commands.Entries, (comp) =>
+                Parallel.ForEach(Content.Level.Commands.Entries, (comp) =>
                 {
                     switch (display)
                     {
                         case CurrentDisplay.PROXIES:
                             Parallel.ForEach(comp.proxies, (prox) =>
                             {
-                                if (Content.commands.Utils.GetResolvedTarget(Content.commands.Utils.ResolveProxy(prox)).Item2 == _entity) 
+                                if (Content.Level.Commands.Utils.GetResolvedTarget(Content.Level.Commands.Utils.ResolveProxy(prox)).Item2 == _entity) 
                                     entityRefs.Add(new EntityRef() { composite = comp, entity = prox });
                             });
                             break;
                         case CurrentDisplay.ALIASES:
                             Parallel.ForEach(comp.aliases, (alias) =>
                             {
-                                if (Content.commands.Utils.GetResolvedTarget(Content.commands.Utils.ResolveAlias(alias, comp)).Item2 == _entity) 
+                                if (Content.Level.Commands.Utils.GetResolvedTarget(Content.Level.Commands.Utils.ResolveAlias(alias, comp)).Item2 == _entity) 
                                     entityRefs.Add(new EntityRef() { composite = comp, entity = alias });
                             });
                             break;
@@ -224,7 +224,7 @@ namespace CommandsEditor
                                 TriggerSequence trig = (TriggerSequence)trigEnt;
                                 Parallel.ForEach(trig.sequence, (trigger) =>
                                 {
-                                    if (Content.commands.Utils.GetResolvedTarget(Content.commands.Utils.ResolveAlias(trigger.connectedEntity.path, comp)).Item2 == _entity)
+                                    if (Content.Level.Commands.Utils.GetResolvedTarget(Content.Level.Commands.Utils.ResolveAlias(trigger.connectedEntity.path, comp)).Item2 == _entity)
                                         entityRefs.Add(new EntityRef() { composite = comp, entity = trig });
                                 });
                             });
@@ -236,7 +236,7 @@ namespace CommandsEditor
                                 CAGEAnimation anim = (CAGEAnimation)animEnt;
                                 Parallel.ForEach(anim.connections, (connection) =>
                                 {
-                                    if (Content.commands.Utils.GetResolvedTarget(Content.commands.Utils.ResolveAlias(connection.connectedEntity.path, comp)).Item2 == _entity)
+                                    if (Content.Level.Commands.Utils.GetResolvedTarget(Content.Level.Commands.Utils.ResolveAlias(connection.connectedEntity.path, comp)).Item2 == _entity)
                                         entityRefs.Add(new EntityRef() { composite = comp, entity = anim });
                                 });
                             });

@@ -14,6 +14,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Forms;
 using CathodeLib;
 using OpenCAGE;
+using CathodeLib.ObjectExtensions;
 
 namespace CommandsEditor.Popups.UserControls
 {
@@ -40,11 +41,11 @@ namespace CommandsEditor.Popups.UserControls
         public void PopulateUI(EntityInspector entDisplay, int physIndex)
         {
             _hierarchies.Clear();
-            List<EntityPath> hierarchies = entDisplay.Content.editor_utils.GetHierarchiesForEntity(entDisplay.Composite, entDisplay.Entity);
+            List<EntityPath> hierarchies = entDisplay.Content.EditorUtils.GetHierarchiesForEntity(entDisplay.Composite, entDisplay.Entity);
             for (int i = 0; i < hierarchies.Count; i++)
             {
                 ShortGuid instance = hierarchies[i].GenerateCompositeInstanceID();
-                List<CATHODE.PhysicsMaps.Entry> physMaps = Content.resource.physics_maps.Entries.FindAll(o => o.composite_instance_id == instance);
+                List<CATHODE.PhysicsMaps.Entry> physMaps = Content.Level.PhysicsMaps.Entries.FindAll(o => o.composite_instance_id == instance);
                 if (physMaps.Count != 1)
                 {
                     MessageBox.Show(
@@ -69,7 +70,7 @@ namespace CommandsEditor.Popups.UserControls
                 EntityPath pathShort = hierarchyMap.Key.Copy();
                 pathShort.GoBackOneStep(); //TODO: is this right? i've converted this to the new path stuff and it needs testing.
                 //Array.Resize(ref pathShort.path, pathShort.path.Length - 1);
-                instances.Items.Add(pathShort.ToString(Content.commands, entDisplay.Composite, false));
+                instances.Items.Add(pathShort.ToString(Content.Level.Commands, entDisplay.Composite, false));
             }
         }
 

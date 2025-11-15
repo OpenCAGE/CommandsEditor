@@ -31,7 +31,7 @@ namespace CommandsEditor
 
             param_name.BeginUpdate();
             param_name.Items.Clear();
-            param_name.Items.AddRange(entityDisplay.Content.editor_utils.GenerateParameterListAsString(entityDisplay.Entity, entityDisplay.Composite).ToArray());
+            param_name.Items.AddRange(entityDisplay.Content.EditorUtils.GenerateParameterListAsString(entityDisplay.Entity, entityDisplay.Composite).ToArray());
             param_name.EndUpdate();
 
             param_datatype.BeginUpdate();
@@ -65,7 +65,7 @@ namespace CommandsEditor
         }
         private void param_name_SelectedIndexChanged(object sender, EventArgs e)
         {
-            (ParameterVariant?, DataType?, ShortGuid) metadata = Content.commands.Utils.GetParameterMetadata(_entityDisplay.Entity, param_name.Text, _entityDisplay.Composite);
+            (ParameterVariant?, DataType?, ShortGuid) metadata = Content.Level.Commands.Utils.GetParameterMetadata(_entityDisplay.Entity, param_name.Text, _entityDisplay.Composite);
             if (metadata.Item2 != null)
                 param_datatype.Text = metadata.Item2.Value.ToUIString();
         }

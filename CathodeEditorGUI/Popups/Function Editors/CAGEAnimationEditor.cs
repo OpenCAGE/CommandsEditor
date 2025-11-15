@@ -1,5 +1,6 @@
 ﻿using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
+using CathodeLib.ObjectExtensions;
 using CommandsEditor.DockPanels;
 using CommandsEditor.Popups.Base;
 using CommandsEditor.Popups.UserControls;
@@ -70,7 +71,7 @@ namespace CommandsEditor
             List<CAGEAnimation.Connection> connections = animEntity.connections.FindAll(o => o.binding_type == ObjectType.ENTITY);
             foreach (CAGEAnimation.Connection connection in connections)
             {
-                string connectionLink = Content.commands.Utils.GetResolvedAsString(Content.commands.Utils.ResolveAlias(connection.connectedEntity, _entityDisplay.Composite));
+                string connectionLink = Content.Level.Commands.Utils.GetResolvedAsString(Content.Level.Commands.Utils.ResolveAlias(connection.connectedEntity, _entityDisplay.Composite));
                 if (!entityList.Items.Contains(connectionLink))
                 {
                     entityList.Items.Add(connectionLink);
@@ -177,7 +178,7 @@ namespace CommandsEditor
                 for (int x = 0; x < animEntity.events[i].keyframes.Count; x++)
                 {
                     CAGEAnimation.EventTrack.Keyframe keyframeData = animEntity.events[i].keyframes[x];
-                    string keyframeText = (connection == null) ? Content.commands.Utils.GetEntityName(_entityDisplay.Composite, animEntity) : Content.commands.Utils.GetResolvedAsString(Content.commands.Utils.ResolveAlias(connection.connectedEntity, _entityDisplay.Composite), false);
+                    string keyframeText = (connection == null) ? Content.Level.Commands.Utils.GetEntityName(_entityDisplay.Composite, animEntity) : Content.Level.Commands.Utils.GetResolvedAsString(Content.Level.Commands.Utils.ResolveAlias(connection.connectedEntity, _entityDisplay.Composite), false);
                     Keyframe keyframeUI = eventTimeline.AddKeyframe(keyframeData.time, keyframeText);
                     keyframeUI.OnMoved += OnHandleMoved;
                     keyframeHandlesEvent.Add(keyframeUI, keyframeData);
@@ -185,7 +186,7 @@ namespace CommandsEditor
                     {
                         tracksEvent.Add(keyframeUI.Track, animEntity.events[i]);
                         eventTracks.Add(keyframeText);
-                        eventEntityIDs.Add(connection == null ? animEntity : Content.commands.Utils.GetResolvedTarget(Content.commands.Utils.ResolveAlias(connection.connectedEntity, _entityDisplay.Composite)).Item2);
+                        eventEntityIDs.Add(connection == null ? animEntity : Content.Level.Commands.Utils.GetResolvedTarget(Content.Level.Commands.Utils.ResolveAlias(connection.connectedEntity, _entityDisplay.Composite)).Item2);
                     }
                 }
             }
@@ -312,7 +313,7 @@ namespace CommandsEditor
             if (entityList.SelectedIndex == -1) return;
             try
             {
-                CAGEAnimation_SelectParameter paramSelector = new CAGEAnimation_SelectParameter(Content.commands.Utils.GetResolvedTarget(Content.commands.Utils.ResolveAlias(entityListToHierarchies[entityList.SelectedIndex], _entityDisplay.Composite)).Item2);
+                CAGEAnimation_SelectParameter paramSelector = new CAGEAnimation_SelectParameter(Content.Level.Commands.Utils.GetResolvedTarget(Content.Level.Commands.Utils.ResolveAlias(entityListToHierarchies[entityList.SelectedIndex], _entityDisplay.Composite)).Item2);
                 paramSelector.OnParamSelected += OnParameterSelected;
                 paramSelector.Show();
             }
@@ -438,7 +439,7 @@ namespace CommandsEditor
         {
             EntityPath hierarchy = new EntityPath(generatedHierarchy);
 
-            if (eventEntityIDs.Contains(Content.commands.Utils.GetResolvedTarget(Content.commands.Utils.ResolveAlias(hierarchy, _entityDisplay.Composite)).Item2))
+            if (eventEntityIDs.Contains(Content.Level.Commands.Utils.GetResolvedTarget(Content.Level.Commands.Utils.ResolveAlias(hierarchy, _entityDisplay.Composite)).Item2))
             {
                 MessageBox.Show("This entity already has an event track added!", "Already added", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -446,7 +447,7 @@ namespace CommandsEditor
 
             //Add new connection
             ShortGuid connectionID;
-            if (Content.commands.Utils.GetResolvedTarget(Content.commands.Utils.ResolveAlias(hierarchy, _entityDisplay.Composite)).Item2 == animEntity)
+            if (Content.Level.Commands.Utils.GetResolvedTarget(Content.Level.Commands.Utils.ResolveAlias(hierarchy, _entityDisplay.Composite)).Item2 == animEntity)
             {
                 connectionID = ShortGuidUtils.GenerateRandom();
             }

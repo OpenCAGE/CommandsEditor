@@ -52,9 +52,9 @@ namespace CommandsEditor
             AddItems(EnumStringType.DISPLAY_MODEL, _levelSpecificEntries);
 
             //Only populate other entries if this is a new level
-            if (_loadedLevel == Singleton.Editor.CommandsDisplay.Content.level)
+            if (_loadedLevel == Singleton.Editor.CommandsDisplay.Content.Level.Name)
                 return;
-            _loadedLevel = Singleton.Editor.CommandsDisplay.Content.level;
+            _loadedLevel = Singleton.Editor.CommandsDisplay.Content.Level.Name;
 
             _levelSpecificEntries.Clear();
             foreach (EnumStringType type in Enum.GetValues(typeof(EnumStringType)))
@@ -137,8 +137,8 @@ namespace CommandsEditor
                         items.Add(new ListViewItem() { Text = str });
                     break;
                 case EnumStringType.DISPLAY_MODEL:
-                    foreach (Composite composite in Singleton.Editor.CommandsDisplay.Content.commands.Entries)
-                        if (Singleton.Editor.CommandsDisplay.Content.editor_utils.GetCompositeType(composite) == EditorUtils.CompositeType.IS_DISPLAY_MODEL)
+                    foreach (Composite composite in Singleton.Editor.CommandsDisplay.Content.Level.Commands.Entries)
+                        if (Singleton.Editor.CommandsDisplay.Content.EditorUtils.GetCompositeType(composite) == EditorUtils.CompositeType.IS_DISPLAY_MODEL)
                             items.Add(new ListViewItem() { Text = composite.name.Substring(("DisplayModel:").Length) });
                     break;
                 case EnumStringType.GAME_VARIABLE:
@@ -167,7 +167,7 @@ namespace CommandsEditor
                         items.Add(new ListViewItem() { Text = str });
                     break;
                 case EnumStringType.MATERIAL:
-                    foreach (Materials.Material entry in Singleton.Editor.CommandsDisplay.Content.resource.materials.Entries)
+                    foreach (Materials.Material entry in Singleton.Editor.CommandsDisplay.Content.Level.Materials.Entries)
                     {
                         if (items.FirstOrDefault(o => o.Text == entry.Name) == null)
                             items.Add(new ListViewItem() { Text = entry.Name });
@@ -212,12 +212,12 @@ namespace CommandsEditor
                         items.Add(new ListViewItem() { Text = str });
                     break;
                 case EnumStringType.SOUND_BANK:
-                    foreach (string entry in Singleton.Editor.CommandsDisplay.Content.resource.sound_bankdata.Entries)
-                        if (items.FirstOrDefault(o => o.Text == entry) == null)
-                            items.Add(new ListViewItem() { Text = entry });
+                    foreach (SoundBankData.SoundBank entry in Singleton.Editor.CommandsDisplay.Content.Level.SoundBankData.Entries)
+                        if (items.FirstOrDefault(o => o.Text == entry.Name) == null)
+                            items.Add(new ListViewItem() { Text = entry.Name });
                     break;
                 case EnumStringType.SOUND_EVENT:
-                    foreach (SoundEventData.Soundbank entry in Singleton.Editor.CommandsDisplay.Content.resource.sound_eventdata.Entries)
+                    foreach (SoundEventData.Soundbank entry in Singleton.Editor.CommandsDisplay.Content.Level.SoundEventData.Entries)
                     {
                         foreach (SoundEventData.Soundbank.Event e in entry.events)
                         {
@@ -241,7 +241,7 @@ namespace CommandsEditor
                         items.Add(new ListViewItem() { Text = str });
                     break;
                 case EnumStringType.SOUND_REVERB:
-                    foreach (string entry in Singleton.Editor.CommandsDisplay.Content.resource.sound_environmentdata.Entries)
+                    foreach (string entry in Singleton.Editor.CommandsDisplay.Content.Level.SoundEnvironmentData.Entries)
                         if (items.FirstOrDefault(o => o.Text == entry) == null)
                             items.Add(new ListViewItem() { Text = entry });
                     break;
@@ -250,7 +250,7 @@ namespace CommandsEditor
                         items.Add(new ListViewItem() { Text = str });
                     break;
                 case EnumStringType.STRING_OBJECTIVES:
-                    foreach (KeyValuePair<string, TextDB> entries in Singleton.Editor.CommandsDisplay.Content.resource.text_dbs)
+                    foreach (KeyValuePair<string, TextDB> entries in Singleton.Editor.CommandsDisplay.Content.Level.Strings["ENGLISH"])
                     {
                         if (!(entries.Key.Length > 3 && entries.Key.Substring(0, 3).ToUpper() == "DLC"))
                             continue;
@@ -277,7 +277,7 @@ namespace CommandsEditor
                     useDescColumn = true;
                     break;
                 case EnumStringType.STRING_TERMINAL:
-                    foreach (KeyValuePair<string, TextDB> entries in Singleton.Editor.CommandsDisplay.Content.resource.text_dbs)
+                    foreach (KeyValuePair<string, TextDB> entries in Singleton.Editor.CommandsDisplay.Content.Level.Strings["ENGLISH"])
                     {
                         if (!(entries.Key.Length > 3 && entries.Key.Substring(0, 3).ToUpper() == "DLC") &&
                             !(entries.Key.Length > 2 && entries.Key.Substring(0, 2).ToUpper() == "T0") && entries.Key != "UI")
@@ -311,7 +311,7 @@ namespace CommandsEditor
                     useDescColumn = true;
                     break;
                 case EnumStringType.STRING_UI:
-                    foreach (KeyValuePair<string, TextDB> entries in Singleton.Editor.CommandsDisplay.Content.resource.text_dbs)
+                    foreach (KeyValuePair<string, TextDB> entries in Singleton.Editor.CommandsDisplay.Content.Level.Strings["ENGLISH"])
                     {
                         if (!(entries.Key.Length > 3 && entries.Key.Substring(0, 3).ToUpper() == "DLC") && entries.Key != "UI")
                             continue;
@@ -344,12 +344,12 @@ namespace CommandsEditor
                     useDescColumn = true;
                     break;
                 case EnumStringType.TEXTURE:
-                    foreach (Textures.TEX4 entry in Singleton.Editor.CommandsDisplay.Content.resource.textures.Entries)
+                    foreach (Textures.TEX4 entry in Singleton.Editor.CommandsDisplay.Content.Level.Textures.Entries)
                     {
                         if (items.FirstOrDefault(o => o.Text == entry.Name) == null)
                             items.Add(new ListViewItem() { Text = entry.Name });
                     }
-                    foreach (Textures.TEX4 entry in Singleton.GlobalTextures.Entries)
+                    foreach (Textures.TEX4 entry in Singleton.Global.Textures.Entries)
                     {
                         if (items.FirstOrDefault(o => o.Text == entry.Name) == null)
                             items.Add(new ListViewItem() { Text = entry.Name });

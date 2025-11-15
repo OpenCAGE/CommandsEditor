@@ -79,7 +79,6 @@ namespace CommandsEditor
             this.emMasterOff = new System.Windows.Forms.CheckBox();
             this.emReplaceTint = new System.Windows.Forms.CheckBox();
             this.emReplaceIntensity = new System.Windows.Forms.CheckBox();
-            this.DEBUG_clear = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.SCALE_Z)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SCALE_Y)).BeginInit();
@@ -167,7 +166,6 @@ namespace CommandsEditor
             2328306,
             0,
             -2147483648});
-            this.SCALE_Z.ValueChanged += new System.EventHandler(this.SCALE_Z_ValueChanged);
             // 
             // label11
             // 
@@ -205,7 +203,6 @@ namespace CommandsEditor
             2328306,
             0,
             -2147483648});
-            this.SCALE_Y.ValueChanged += new System.EventHandler(this.SCALE_Y_ValueChanged);
             // 
             // label12
             // 
@@ -243,7 +240,6 @@ namespace CommandsEditor
             2328306,
             0,
             -2147483648});
-            this.SCALE_X.ValueChanged += new System.EventHandler(this.SCALE_X_ValueChanged);
             // 
             // label3
             // 
@@ -290,7 +286,6 @@ namespace CommandsEditor
             0,
             0,
             -2147483648});
-            this.ROT_Z.ValueChanged += new System.EventHandler(this.ROT_Z_ValueChanged);
             // 
             // label5
             // 
@@ -328,7 +323,6 @@ namespace CommandsEditor
             0,
             0,
             -2147483648});
-            this.ROT_Y.ValueChanged += new System.EventHandler(this.ROT_Y_ValueChanged);
             // 
             // label6
             // 
@@ -366,7 +360,6 @@ namespace CommandsEditor
             0,
             0,
             -2147483648});
-            this.ROT_X.ValueChanged += new System.EventHandler(this.ROT_X_ValueChanged);
             // 
             // label7
             // 
@@ -413,7 +406,6 @@ namespace CommandsEditor
             2328306,
             0,
             -2147483648});
-            this.POS_Z.ValueChanged += new System.EventHandler(this.POS_Z_ValueChanged);
             // 
             // label13
             // 
@@ -451,7 +443,6 @@ namespace CommandsEditor
             2328306,
             0,
             -2147483648});
-            this.POS_Y.ValueChanged += new System.EventHandler(this.POS_Y_ValueChanged);
             // 
             // label14
             // 
@@ -489,7 +480,6 @@ namespace CommandsEditor
             2328306,
             0,
             -2147483648});
-            this.POS_X.ValueChanged += new System.EventHandler(this.POS_X_ValueChanged);
             // 
             // groupBox1
             // 
@@ -509,7 +499,6 @@ namespace CommandsEditor
             this.groupBox2.Controls.Add(this.groupBox5);
             this.groupBox2.Controls.Add(this.groupBox4);
             this.groupBox2.Controls.Add(this.groupBox3);
-            this.groupBox2.Controls.Add(this.DEBUG_clear);
             this.groupBox2.Controls.Add(this.renderable);
             this.groupBox2.Location = new System.Drawing.Point(12, 217);
             this.groupBox2.Name = "groupBox2";
@@ -800,16 +789,6 @@ namespace CommandsEditor
             this.emReplaceIntensity.Text = "Replace Intensity";
             this.emReplaceIntensity.UseVisualStyleBackColor = true;
             // 
-            // DEBUG_clear
-            // 
-            this.DEBUG_clear.Location = new System.Drawing.Point(738, 158);
-            this.DEBUG_clear.Name = "DEBUG_clear";
-            this.DEBUG_clear.Size = new System.Drawing.Size(75, 23);
-            this.DEBUG_clear.TabIndex = 177;
-            this.DEBUG_clear.Text = "clear";
-            this.DEBUG_clear.UseVisualStyleBackColor = true;
-            this.DEBUG_clear.Click += new System.EventHandler(this.DEBUG_clear_Click);
-            // 
             // EditMVR
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -878,7 +857,6 @@ namespace CommandsEditor
         private SmoothNumericUpDown POS_X;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.Button DEBUG_clear;
         private System.Windows.Forms.CheckBox isStationary;
         private System.Windows.Forms.CheckBox isVisible;
         private System.Windows.Forms.CheckBox requiresScript;

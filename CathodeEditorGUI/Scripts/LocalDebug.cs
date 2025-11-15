@@ -34,6 +34,7 @@ namespace CommandsEditor
 {
     public static class LocalDebug
     {
+#if NO
         public static void CheckFlowgraphsNew()
         {
             string env = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Alien Isolation\\DATA\\ENV";
@@ -269,8 +270,8 @@ namespace CommandsEditor
                         //Entity fgOut = composite.GetEntityByID(flowgraphLinks[i].Out.EntityID);
                         //string fgInP = flowgraphLinks[i].In.ParameterID.ToString();
                         //string fgOutP = flowgraphLinks[i].Out.ParameterID.ToString();
-                        //string fgInN = Singleton.Editor.CommandsDisplay.Content.commands.Utils.GetEntityName(composite, fgIn);
-                        //string fgOutN = Singleton.Editor.CommandsDisplay.Content.commands.Utils.GetEntityName(composite, fgOut);
+                        //string fgInN = Singleton.Editor.CommandsDisplay.Content.Level.Commands.Utils.GetEntityName(composite, fgIn);
+                        //string fgOutN = Singleton.Editor.CommandsDisplay.Content.Level.Commands.Utils.GetEntityName(composite, fgOut);
 
                         output.Add(composite.name + "\n\t" + flowgraphLinks.Count + " vs retail " + compositeLinks.Count + " [" + ((flowgraphLinks.Count > compositeLinks.Count) ? "SMALLER" : "LARGER") + "]");
                     }
@@ -559,8 +560,17 @@ namespace CommandsEditor
                 p2.value[0].entityID = new ShortGuid(99);
                 if (p0.value[0].entityID.AsUInt32 == p2.value[0].entityID.AsUInt32)
                     throw new Exception("");
-                p2.value[0].index = 9999;
-                if (p0.value[0].index == p2.value[0].index)
+                p2.value[0].AnimatedModel = null;
+                if (p0.value[0].AnimatedModel == p2.value[0].AnimatedModel)
+                    throw new Exception("");
+                p2.value[0].CollisionMapping = null;
+                if (p0.value[0].CollisionMapping == p2.value[0].CollisionMapping)
+                    throw new Exception("");
+                p2.value[0].DynamicPhysicsSystem = null;
+                if (p0.value[0].DynamicPhysicsSystem == p2.value[0].DynamicPhysicsSystem)
+                    throw new Exception("");
+                p2.value[0].RenderableInstance = null;
+                if (p0.value[0].RenderableInstance == p2.value[0].AnimatedModel)
                     throw new Exception("");
                 p2.value[0].position.X = 9999;
                 if (p0.value[0].position.X == p2.value[0].position.X)
@@ -651,6 +661,7 @@ namespace CommandsEditor
             string breakhere = "";
         }
 
+        /*
         public static void mvr_test()
         {
 #if DEBUG
@@ -674,6 +685,7 @@ namespace CommandsEditor
             File.Delete(lightsAlpha.Filepath); //deleting this one causes significant visual changes (anything with alpha doesn't render, or render properly)
 #endif
         }
+        */
 
         public static void CheckAllParamInfo()
         {
@@ -752,6 +764,7 @@ namespace CommandsEditor
 #endif
         }
 
+        /*
         public static void TestMVR()
         {
 #if DEBUG
@@ -774,6 +787,7 @@ namespace CommandsEditor
             }
 #endif
         }
+        */
 
         public static void TestLights()
         {
@@ -1874,6 +1888,7 @@ namespace CommandsEditor
 #endif
         }
 
+        /*
         public static void TestAllPhysMap()
         {
 #if DEBUG
@@ -1890,6 +1905,7 @@ namespace CommandsEditor
             }
 #endif
         }
+        */
 
         private static void WriteVert(float x, float y, float z, BinaryWriter writer)
         {
@@ -2241,6 +2257,7 @@ namespace CommandsEditor
             return null;
 #endif
         }
+#endif
     }
 
     public class ShortGuidConverter : JsonConverter

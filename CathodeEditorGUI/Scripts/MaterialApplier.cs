@@ -12,18 +12,18 @@ namespace CommandsEditor.Scripts
 {
     public static class MaterialApplier
     {
-        public static void ApplyMaterial(GeometryModel3D geometryModel, Materials.Material material, Shaders.Shader shader, Textures textures)
+        public static void ApplyMaterial(GeometryModel3D geometryModel, Materials.Material material, Textures textures)
         {
-            if (geometryModel == null || material == null || shader == null)
+            if (geometryModel == null || material == null || material.Shader == null)
                 return;
 
-            ImageBrush brush = GetDiffuseTextureBrush(material, shader, textures);
+            ImageBrush brush = GetDiffuseTextureBrush(material, textures);
             
             if (brush != null)
             {
-                System.Windows.Media.Color tintColor = GetDiffuseTint(material, shader);
+                System.Windows.Media.Color tintColor = GetDiffuseTint(material);
 
-                float uvScale = GetDiffuseUvScale(material, shader);
+                float uvScale = GetDiffuseUvScale(material);
                 if (geometryModel.Geometry is MeshGeometry3D meshGeometry && meshGeometry.TextureCoordinates != null)
                 {
                     PointCollection scaledUVs = new PointCollection();
@@ -38,21 +38,21 @@ namespace CommandsEditor.Scripts
                     brush.ViewportUnits = BrushMappingMode.Absolute;
                 }
 
-                bool hasAlphaBlending = HasAlphaBlendingEnabled(shader);
+                bool hasAlphaBlending = HasAlphaBlendingEnabled(material.Shader);
                 if (!hasAlphaBlending)
                 {
                     brush.Opacity = 1.0;
                 }
 
-                Material mat = CreateMaterialWithEffects(brush, material, shader, tintColor);
+                Material mat = CreateMaterialWithEffects(brush, material, tintColor);
                 SetMaterialsWithBackface(geometryModel, mat);
             }
         }
 
-        private static ImageBrush GetDiffuseTextureBrush(Materials.Material material, Shaders.Shader shader, Textures textures)
+        private static ImageBrush GetDiffuseTextureBrush(Materials.Material material, Textures textures)
         {
             int diffuseMap = -1;
-            switch (shader.Ubershader)
+            switch (material.Shader.Ubershader)
             {
                 case SHADER_LIST.CA_ENVIRONMENT:
                     diffuseMap = (int)CA_ENVIRONMENT.SAMPLERS.DIFFUSE_MAP;
@@ -119,31 +119,24 @@ namespace CommandsEditor.Scripts
                     break;
             }
 
-            if (diffuseMap != -1 && diffuseMap < shader.SamplerRemaps.Count)
+            if (diffuseMap != -1 && diffuseMap < material.Shader.SamplerRemaps.Count)
             {
-                int diffuseMapIndex = shader.SamplerRemaps[diffuseMap];
+                int diffuseMapIndex = material.Shader.SamplerRemaps[diffuseMap];
                 if (diffuseMapIndex != 255 && diffuseMapIndex < material.TextureReferences.Count)
                 {
-                    TexturePtr ptr = material.TextureReferences[diffuseMapIndex];
-                    if (ptr != null && ptr.Index != -1)
-                    {
-                        Textures tex = ptr.Location == TexturePtr.Source.GLOBAL ? Singleton.GlobalTextures : textures;
-                        Textures.TEX4 diff = tex.GetAtWriteIndex(ptr.Index);
-                        byte[] diffDDS = diff?.ToDDS();
-                        ImageSource imageSource = diffDDS?.ToBitmap()?.ToImageSource();
-                        if (imageSource != null)
-                            return new ImageBrush(imageSource);
-                    }
+                    ImageSource imageSource = material.TextureReferences[diffuseMapIndex]?.Texture?.ToDDS()?.ToBitmap()?.ToImageSource();
+                    if (imageSource != null)
+                        return new ImageBrush(imageSource);
                 }
             }
 
             return null;
         }
 
-        private static float GetDiffuseUvScale(Materials.Material material, Shaders.Shader shader)
+        private static float GetDiffuseUvScale(Materials.Material material)
         {
             int diffuseUvMult = -1;
-            switch (shader.Ubershader)
+            switch (material.Shader.Ubershader)
             {
                 case SHADER_LIST.CA_ENVIRONMENT:
                     diffuseUvMult = (int)CA_ENVIRONMENT.PARAMETERS.DIFFUSE_UV_MULT;
@@ -183,9 +176,9 @@ namespace CommandsEditor.Scripts
                     break;
             }
 
-            if (diffuseUvMult != -1 && diffuseUvMult < shader.PixelShaderParameterRemaps.Count)
+            if (diffuseUvMult != -1 && diffuseUvMult < material.Shader.PixelShaderParameterRemaps.Count)
             {
-                int remappedIndex = shader.PixelShaderParameterRemaps[diffuseUvMult];
+                int remappedIndex = material.Shader.PixelShaderParameterRemaps[diffuseUvMult];
                 if (remappedIndex != 255 && remappedIndex < material.PixelShaderConstants.Count)
                 {
                     return material.PixelShaderConstants[remappedIndex];
@@ -195,10 +188,10 @@ namespace CommandsEditor.Scripts
             return 1.0f;
         }
 
-        private static System.Windows.Media.Color GetDiffuseTint(Materials.Material material, Shaders.Shader shader)
+        private static System.Windows.Media.Color GetDiffuseTint(Materials.Material material)
         {
             int diffuseTint = -1;
-            switch (shader.Ubershader)
+            switch (material.Shader.Ubershader)
             {
                 case SHADER_LIST.CA_ENVIRONMENT:
                     diffuseTint = (int)CA_ENVIRONMENT.PARAMETERS.DIFFUSE_TINT;
@@ -238,14 +231,14 @@ namespace CommandsEditor.Scripts
                     break;
             }
 
-            if (diffuseTint != -1 && diffuseTint < shader.PixelShaderParameterRemaps.Count)
+            if (diffuseTint != -1 && diffuseTint < material.Shader.PixelShaderParameterRemaps.Count)
             {
-                int remappedIndex = shader.PixelShaderParameterRemaps[diffuseTint];
+                int remappedIndex = material.Shader.PixelShaderParameterRemaps[diffuseTint];
                 if (remappedIndex != 255 && remappedIndex < material.PixelShaderConstants.Count)
                 {
-                    UberShaderParameterType? parameterType = ShaderUtility.GetParameterType(shader.Ubershader, "DIFFUSE_TINT");
-                    if (parameterType == null && shader.Ubershader == SHADER_LIST.CA_EFFECT)
-                        parameterType = ShaderUtility.GetParameterType(shader.Ubershader, "COLOUR_TINT");
+                    UberShaderParameterType? parameterType = ShaderUtility.GetParameterType(material.Shader.Ubershader, "DIFFUSE_TINT");
+                    if (parameterType == null && material.Shader.Ubershader == SHADER_LIST.CA_EFFECT)
+                        parameterType = ShaderUtility.GetParameterType(material.Shader.Ubershader, "COLOUR_TINT");
 
                     if (parameterType.HasValue)
                     {
@@ -293,14 +286,14 @@ namespace CommandsEditor.Scripts
             return System.Windows.Media.Colors.Transparent;
         }
 
-        private static Material CreateMaterialWithEffects(ImageBrush brush, Materials.Material material, Shaders.Shader shader, System.Windows.Media.Color diffuseTintColor)
+        private static Material CreateMaterialWithEffects(ImageBrush brush, Materials.Material material, System.Windows.Media.Color diffuseTintColor)
         {
             DiffuseMaterial diffuseMat = new DiffuseMaterial(brush);
             diffuseMat.AmbientColor = System.Windows.Media.Colors.White;
 
             bool needsTinting = !IsColorTransparentOrWhite(diffuseTintColor);
-            System.Windows.Media.Color emissiveTintColor = GetEmissiveTint(material, shader);
-            float emissiveMult = GetEmissiveMult(material, shader);
+            System.Windows.Media.Color emissiveTintColor = GetEmissiveTint(material);
+            float emissiveMult = GetEmissiveMult(material);
             bool needsEmissive = !IsColorTransparentOrWhite(emissiveTintColor) || emissiveMult > 0.1f;
 
             if (!needsTinting && !needsEmissive)
@@ -378,10 +371,10 @@ namespace CommandsEditor.Scripts
                    (color.A == 0 && color.R == 0 && color.G == 0 && color.B == 0);
         }
 
-        private static float GetEmissiveMult(Materials.Material material, Shaders.Shader shader)
+        private static float GetEmissiveMult(Materials.Material material)
         {
             int emissiveMult = -1;
-            switch (shader.Ubershader)
+            switch (material.Shader.Ubershader)
             {
                 case SHADER_LIST.CA_ENVIRONMENT:
                     emissiveMult = (int)CA_ENVIRONMENT.PARAMETERS.EMISSIVE_MULT;
@@ -394,9 +387,9 @@ namespace CommandsEditor.Scripts
                     break;
             }
 
-            if (emissiveMult != -1 && emissiveMult < shader.PixelShaderParameterRemaps.Count)
+            if (emissiveMult != -1 && emissiveMult < material.Shader.PixelShaderParameterRemaps.Count)
             {
-                int remappedIndex = shader.PixelShaderParameterRemaps[emissiveMult];
+                int remappedIndex = material.Shader.PixelShaderParameterRemaps[emissiveMult];
                 if (remappedIndex != 255 && remappedIndex < material.PixelShaderConstants.Count)
                 {
                     return material.PixelShaderConstants[remappedIndex];
@@ -434,10 +427,10 @@ namespace CommandsEditor.Scripts
             return false;
         }
 
-        private static System.Windows.Media.Color GetEmissiveTint(Materials.Material material, Shaders.Shader shader)
+        private static System.Windows.Media.Color GetEmissiveTint(Materials.Material material)
         {
             int emissiveTint = -1;
-            switch (shader.Ubershader)
+            switch (material.Shader.Ubershader)
             {
                 case SHADER_LIST.CA_ENVIRONMENT:
                     emissiveTint = (int)CA_ENVIRONMENT.PARAMETERS.EMISSIVE_TINT;
@@ -450,12 +443,12 @@ namespace CommandsEditor.Scripts
                     break;
             }
 
-            if (emissiveTint != -1 && emissiveTint < shader.PixelShaderParameterRemaps.Count)
+            if (emissiveTint != -1 && emissiveTint < material.Shader.PixelShaderParameterRemaps.Count)
             {
-                int remappedIndex = shader.PixelShaderParameterRemaps[emissiveTint];
+                int remappedIndex = material.Shader.PixelShaderParameterRemaps[emissiveTint];
                 if (remappedIndex != 255 && remappedIndex < material.PixelShaderConstants.Count)
                 {
-                    UberShaderParameterType? parameterType = ShaderUtility.GetParameterType(shader.Ubershader, "EMISSIVE_TINT");
+                    UberShaderParameterType? parameterType = ShaderUtility.GetParameterType(material.Shader.Ubershader, "EMISSIVE_TINT");
                     if (parameterType.HasValue)
                     {
                         float r = 0, g = 0, b = 0, a = 1.0f;

@@ -4,6 +4,7 @@ using CATHODE;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CathodeLib;
+using CathodeLib.ObjectExtensions;
 using Newtonsoft.Json;
 using ST.Library.UI.NodeEditor;
 using System;

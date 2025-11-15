@@ -227,18 +227,18 @@ namespace CommandsEditor
             string selectedString = strings.SelectedItems[0].Text;
 
             string msg = "This event is contained within the following soundbanks:\n";
-            foreach (SoundEventData.Soundbank entry in Content.resource.sound_eventdata.Entries)
+            foreach (SoundEventData.Soundbank entry in Content.Level.SoundEventData.Entries)
             {
                 if (entry.events.FirstOrDefault(o => o.name == selectedString) == null)
                     continue;
 
                 string soundbankName = entry.id.ToString();
-                for (int i = 0; i < Content.resource.sound_bankdata.Entries.Count; i++)
+                for (int i = 0; i < Content.Level.SoundBankData.Entries.Count; i++)
                 {
-                    if (Utilities.SoundHashedString(Content.resource.sound_bankdata.Entries[i]) != entry.id)
+                    if (Utilities.SoundHashedString(Content.Level.SoundBankData.Entries[i].Name) != entry.id)
                         continue;
 
-                    soundbankName = Content.resource.sound_bankdata.Entries[i];
+                    soundbankName = Content.Level.SoundBankData.Entries[i].Name;
                     break;
                 }
 

@@ -2,10 +2,10 @@
 
 using CATHODE;
 using CATHODE.EXPERIMENTAL;
-using CATHODE.LEGACY;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CathodeLib;
+using CathodeLib.ObjectExtensions;
 using CommandsEditor.DockPanels;
 using CommandsEditor.Popups;
 using CommandsEditor.Properties;
@@ -161,7 +161,7 @@ namespace CommandsEditor
             Singleton.OnCompositeSelected += delegate (Composite composite)
             {
                 RichPresence newPresence = _discord.CurrentPresence.Copy();
-                newPresence.Details = "Level: " + _commandsDisplay?.Content?.level;
+                newPresence.Details = "Level: " + _commandsDisplay?.Content?.Level?.Name;
                 newPresence.State = "Composite: " + EditorUtils.GetCompositeName(composite);
                 _discord.SetPresence(newPresence);
                 _discord.UpdateStartTime();
@@ -327,8 +327,8 @@ namespace CommandsEditor
             }
             else
             {
-                string[] levelBits = _commandsDisplay.Content.level.Split('/');
-                this.Text = _baseTitle + " - " + levelBits[levelBits.Length - 1] + " (" + _commandsDisplay.Content.level.Substring(0, _commandsDisplay.Content.level.Length - levelBits[levelBits.Length - 1].Length).TrimEnd('/') + ")";
+                string[] levelBits = _commandsDisplay.Content.Level.Name.Split('/');
+                this.Text = _baseTitle + " - " + levelBits[levelBits.Length - 1] + " (" + _commandsDisplay.Content.Level.Name.Substring(0, _commandsDisplay.Content.Level.Name.Length - levelBits[levelBits.Length - 1].Length).TrimEnd('/') + ")";
             }
 
 #if USE_DIRTY_TRACKER
@@ -380,7 +380,7 @@ namespace CommandsEditor
             //Close all existing
             if (_commandsDisplay != null)
             {
-                _levelMenuItems[_commandsDisplay.Content.level].Checked = false;
+                _levelMenuItems[_commandsDisplay.Content.Level.Name].Checked = false;
 
                 _commandsDisplay.CloseAllChildTabs();
                 _commandsDisplay.Close();
@@ -393,7 +393,7 @@ namespace CommandsEditor
             UpdateCommandsDisplayDockState();
 
             //Sometimes get an error here which appears to be thread related (?) -> investigate next time
-            _levelMenuItems[_commandsDisplay.Content.level].Checked = true;
+            _levelMenuItems[_commandsDisplay.Content.Level.Name].Checked = true;
 
             UpdateTitle();
         }
@@ -445,52 +445,20 @@ namespace CommandsEditor
 
         private bool Save()
         {
-            bool saved = false;
-#if !CATHODE_FAIL_HARD
-            byte[] backup = null;
-            try
-            {
-                backup = File.ReadAllBytes(_commandsDisplay.Content.commands.Filepath);
-#endif
-                saved = _commandsDisplay.Content.commands.Save();
-#if !CATHODE_FAIL_HARD
-            }
-            catch (Exception ex)
-            {
-                try
-                {
-                    if (backup != null)
-                        File.WriteAllBytes(_commandsDisplay.Content.commands.Filepath, backup);
-                }
-                catch { }
-
-                return false;
-            }
-
-            if (!saved)
-            {
-                try
-                {
-                    if (backup != null)
-                        File.WriteAllBytes(_commandsDisplay.Content.commands.Filepath, backup);
-                }
-                catch { }
-
-                return false;
-            }
-#endif
+            _commandsDisplay.Content.Level.Save();
+            //TODO: take a backup first
 
             if (SettingsManager.GetBool(Singleton.Settings.SavePakAndBin))
             {
                 string ext = "BIN";
-                if (Path.GetExtension(_commandsDisplay.Content.commands.Filepath).ToUpper() == ".BIN")
+                if (Path.GetExtension(_commandsDisplay.Content.Level.Commands.Filepath).ToUpper() == ".BIN")
                     ext = "PAK";
-                _commandsDisplay.Content.commands.Save(_commandsDisplay.Content.commands.Filepath.Substring(0, _commandsDisplay.Content.commands.Filepath.Length - 3) + ext, false);
+                _commandsDisplay.Content.Level.Commands.Save(_commandsDisplay.Content.Level.Commands.Filepath.Substring(0, _commandsDisplay.Content.Level.Commands.Filepath.Length - 3) + ext, false);
             }
 
             if (SettingsManager.GetBool(Singleton.Settings.ExperimentalResourceStuff))
             {
-                //Commands cmd = _commandsDisplay.Content.commands;
+                //Commands cmd = _commandsDisplay.Content.Level.Commands;
                 //foreach (Composite comp in cmd.Entries)
                 //{
                 //    List<FunctionEntity> soundLoadBanks = comp.GetFunctionEntitiesOfType(FunctionType.SoundLoadBank);
@@ -500,35 +468,6 @@ namespace CommandsEditor
                 //    }
                 //}
             }
-
-
-#if DEBUG
-            DebugSaveFunc();
-#endif
-
-
-            if (_commandsDisplay.Content.resource.lights != null)
-                _commandsDisplay.Content.resource.lights.Save();
-            if (_commandsDisplay.Content.resource.env_maps != null && _commandsDisplay.Content.resource.env_maps.Entries != null)
-                _commandsDisplay.Content.resource.env_maps.Save();
-            if (_commandsDisplay.Content.resource.physics_maps != null && _commandsDisplay.Content.resource.physics_maps.Entries != null)
-                _commandsDisplay.Content.resource.physics_maps.Save();
-            if (_commandsDisplay.Content.resource.resources != null && _commandsDisplay.Content.resource.resources.Entries != null)
-                _commandsDisplay.Content.resource.resources.Save();
-            if (_commandsDisplay.Content.resource.character_accessories != null && _commandsDisplay.Content.resource.character_accessories.Entries != null)
-                _commandsDisplay.Content.resource.character_accessories.Save();
-            if (_commandsDisplay.Content.resource.reds != null && _commandsDisplay.Content.resource.reds.Entries != null)
-                _commandsDisplay.Content.resource.reds.Save();
-            if (_commandsDisplay.Content.resource.weighted_collisions != null && _commandsDisplay.Content.resource.weighted_collisions.Entries != null)
-                _commandsDisplay.Content.resource.weighted_collisions.Save();
-            if (_commandsDisplay.Content.resource.env_animations != null && _commandsDisplay.Content.resource.env_animations.Entries != null)
-                _commandsDisplay.Content.resource.env_animations.Save();
-            if (_commandsDisplay.Content.resource.collision_maps != null && _commandsDisplay.Content.resource.collision_maps.Entries != null)
-                _commandsDisplay.Content.resource.collision_maps.Save();
-            if (_commandsDisplay.Content.mvr != null && _commandsDisplay.Content.mvr.Entries != null)
-                _commandsDisplay.Content.mvr.Save();
-            if (_commandsDisplay.Content.resource.sound_zones != null && _commandsDisplay.Content.resource.sound_zones.Entries != null)
-                _commandsDisplay.Content.resource.sound_zones.Save();
 
             return true;
         }
@@ -782,7 +721,7 @@ namespace CommandsEditor
             Process.Start(SharedData.pathToAI + "\\AI.exe");
         }
 
-        List<CollisionMaps.Entry> entries = new List<CollisionMaps.Entry>();
+        List<CollisionMaps.COLLISION_MAPPING> entries = new List<CollisionMaps.COLLISION_MAPPING>();
         private void SaveCollisionMaps(Composite composite)
         {
             if (composite == null)
@@ -799,10 +738,10 @@ namespace CommandsEditor
 
                     //TODO: need to make sure "collision_index" is the same for every entry with the same entity, then we can show it
 
-                    CollisionMaps.Entry collisionMap = new CollisionMaps.Entry()
+                    CollisionMaps.COLLISION_MAPPING collisionMap = new CollisionMaps.COLLISION_MAPPING()
                     {
-                        ID = collision.resource_id,
-                        CollisionProxyIndex = collision.index,
+                        ResourceGUID = collision.resource_id,
+                        //CollisionProxyIndex = collision.index,
                         Entity = new EntityHandle()
                         {
                             entity_id = function.shortGUID
@@ -819,403 +758,14 @@ namespace CommandsEditor
                 }
                 else
                 {
-                    SaveCollisionMaps(_commandsDisplay.Content.commands.GetComposite(function.function));
+                    SaveCollisionMaps(_commandsDisplay.Content.Level.Commands.GetComposite(function.function));
                 }
             }
         }
 
         private void DEBUG_RunChecks_Click(object sender, EventArgs e)
         {
-            for (int i = 0; i < Singleton.Editor.CommandsDisplay.Content.commands.Entries.Count; i++)
-            {
-                _commandsDisplay.Content.commands.Utils.PurgeDeadLinks(_commandsDisplay.Content.commands.Entries[i], true);
-            }
-            for (int i = 0; i < Singleton.Editor.CommandsDisplay.Content.commands.Entries.Count; i++)
-            {
-                _commandsDisplay.Content.commands.Utils.PurgeDeadLinks(_commandsDisplay.Content.commands.Entries[i], true);
-            }
-            for (int i = 0; i < Singleton.Editor.CommandsDisplay.Content.commands.Entries.Count; i++)
-            {
-                _commandsDisplay.Content.commands.Utils.PurgeDeadLinks(_commandsDisplay.Content.commands.Entries[i], true);
-            }
 
-            return;
-            Flowgraph window = new Flowgraph(_commandsDisplay.Content.commands);
-            window.Show();
-            //window.DEBUG_LoadAll_Test(CommandsDisplay.Content.commands);
-            window.Close();
-
-
-            return;
-
-            LocalDebug_NEW.DEBUG_DumpAllInstancedStuff(_commandsDisplay.Content.level, "FINAL_ORDERED");
-            return;
-
-            LocalDebug_NEW.DEBUG_DumpAllInstancedStuff("DLC/SALVAGEMODE2", "FINAL");
-            LocalDebug_NEW.DEBUG_DumpAllInstancedStuff("TECH_COMMS", "FINAL");
-            LocalDebug_NEW.DEBUG_DumpAllInstancedStuff("TECH_HUB", "FINAL");
-            LocalDebug_NEW.DEBUG_DumpAllInstancedStuff("TECH_MUTHRCORE", "FINAL");
-            LocalDebug_NEW.DEBUG_DumpAllInstancedStuff("TECH_RND", "FINAL");
-            LocalDebug_NEW.DEBUG_DumpAllInstancedStuff("TECH_RND_HZDLAB", "FINAL");
-            return;
-
-            List<string> levels = Level.GetLevels(SharedData.pathToAI, true);
-            //levels.Clear();
-            //levels.Add("DLC/CHALLENGEMAP3");
-            foreach (string level in levels)
-            {
-                Console.WriteLine("LOADING: " + level);
-
-                LevelContent content = LevelContent.DEBUG_LoadUnthreadedAndPopulateShortGuids(level);
-
-                Dictionary<ShortGuid, Tuple<List<int>, List<CollisionMaps.Entry>>> collisionmapindexes = new Dictionary<ShortGuid, Tuple<List<int>, List<CollisionMaps.Entry>>>();
-                foreach (var collisionmap in content.resource.collision_maps.Entries)
-                {
-                    if (!collisionmapindexes.ContainsKey(collisionmap.Entity.entity_id))
-                        collisionmapindexes.Add(collisionmap.Entity.entity_id, new Tuple<List<int>, List<CollisionMaps.Entry>>(new List<int>(), new List<CollisionMaps.Entry>()));
-
-                    if (!collisionmapindexes[collisionmap.Entity.entity_id].Item1.Contains(collisionmap.CollisionProxyIndex))
-                    {
-                        collisionmapindexes[collisionmap.Entity.entity_id].Item1.Add(collisionmap.CollisionProxyIndex);
-                        collisionmapindexes[collisionmap.Entity.entity_id].Item2.Add(collisionmap);
-                    }
-                }
-
-                foreach (KeyValuePair<ShortGuid, Tuple<List<int>, List<CollisionMaps.Entry>>> indexes in collisionmapindexes)
-                {
-                    if (indexes.Value.Item1.Count != 1)
-                    {
-                        Console.WriteLine("---");
-                        Console.WriteLine(indexes.Value.Item1.Count + " -> " + indexes.Value.Item1.Contains(-1));
-
-                        foreach (var item in indexes.Value.Item2)
-                        {
-                            (Composite entComp, EntityPath entPath) = content.editor_utils.GetCompositeFromInstanceID(content.commands, item.Entity.composite_instance_id);
-                            Entity entEnt = entComp?.GetEntityByID(item.Entity.entity_id);
-                            (Composite zoneComp1, EntityPath zonePath1, Entity zoneEnt1) = content.editor_utils.GetZoneFromInstanceID(content.commands, item.ZoneID);
-
-                            string convertedResoureName = "[" + content.resource.collision_maps.Entries.IndexOf(item) + "] " + item.ID.ToString() + " -> " + item.ID.ToByteString() + " [" + item.CollisionProxyIndex + "]";
-
-                            foreach (Composite comp in content.commands.Entries)
-                            {
-                                Entity ent = comp.GetEntityByID(item.Entity.entity_id);
-                                if (ent != null)
-                                {
-                                    convertedResoureName += "\n\t Entity LOOKUP found in " + comp.name + " [" + comp.shortGUID.ToByteString() + "] -> " + ShortGuidUtils.Generate(content.commands.Utils.GetEntityName(comp, ent) + " [" + ent.shortGUID.ToByteString() + "]");
-                                }
-                            }
-                            convertedResoureName += "\n\t Entity INSTANCEID: " + item.Entity.composite_instance_id.ToByteString();
-
-                            if (entComp != null)
-                                convertedResoureName += "\n\t Entity Composite: " + entComp.name;
-                            if (entPath != null)
-                                convertedResoureName += "\n\t Entity Instance: " + entPath.ToString(content.commands, content.commands.EntryPoints[0], true);
-                            if (entEnt != null && entComp == null)
-                                convertedResoureName += "\n\t Entity Entity: " + entEnt.shortGUID + " -> can't resolve name";
-                            if (entEnt != null && entComp != null)
-                                convertedResoureName += "\n\t Entity Entity: " + entEnt.shortGUID + " -> " + content.commands.Utils.GetEntityName(entComp, entEnt);
-
-                            if (zonePath1 != null && zonePath1.path.Length == 2 && zonePath1.path[0] == new ShortGuid("01-00-00-00"))
-                            {
-                                convertedResoureName += "\n\t Primary Zone: GLOBAL ZONE";
-                            }
-                            else if (zonePath1 != null && zonePath1.path.Length == 1 && zonePath1.path[0] == new ShortGuid("00-00-00-00"))
-                            {
-                                convertedResoureName += "\n\t Primary Zone: ZERO ZONE";
-                            }
-                            else
-                            {
-                                convertedResoureName += "\n\t Primary Zone: " + item.ZoneID.ToByteString() + " -> " + item.ZoneID.ToString();
-                                if (zoneComp1 != null)
-                                    convertedResoureName += "\n\t Primary Zone Composite: " + zoneComp1.name;
-                                if (zonePath1 != null)
-                                    convertedResoureName += "\n\t Primary Zone Instance: " + zonePath1.ToString(content.commands, content.commands.EntryPoints[0], true);
-                                if (zoneEnt1 != null && zoneComp1 == null)
-                                    convertedResoureName += "\n\t Primary Zone Entity: " + zoneEnt1.shortGUID + " -> can't resolve name";
-                                if (zoneEnt1 != null && zoneComp1 != null)
-                                    convertedResoureName += "\n\t Primary Zone Entity: " + zoneEnt1.shortGUID + " -> " + content.commands.Utils.GetEntityName(zoneComp1, zoneEnt1);
-                            }
-
-
-                            Console.WriteLine(convertedResoureName);
-                            continue;
-                        }
-                        
-                        
-                       // string fscfsdf = "";
-                    }
-                }
-            }
-
-
-
-            return;
-
-            SaveCollisionMaps(_commandsDisplay.Content.commands.EntryPoints[0]);
-
-
-
-            return;
-
-            ShortGuid aa = ShortGuidUtils.Generate("AnimatedModel");
-            ShortGuid bb = ShortGuidUtils.Generate("DYNAMIC_PHYSICS_SYSTEM");
-            ShortGuid cc = ShortGuidUtils.Generate("resource");
-
-
-            //tex names?
-
-
-            /*
-            var ccc = _commandsDisplay.Content.commands.Entries.FirstOrDefault(o => o.name == "AYZ\\FX_LIBRARY\\WALL_DECALS\\HOSPITAL\\FX_WALL_DECAL_CORNER_INT_TYPE1");
-            var cccc = ccc.functions.FirstOrDefault(o => o.shortGUID == new ShortGuid("BB-DA-BE-62")); //new ShortGuid("5E-0C-AC-7A")
-            List<EntityPath> pathscccc = _commandsDisplay.Content.editor_utils.GetHierarchiesForEntity(ccc, cccc);
-            var fgdfg = pathscccc[0].GenerateInstance();
-            var fgdf1g = pathscccc[0].GeneratePathHash();
-
-
-
-
-            foreach (var entry in _commandsDisplay.Content.resource.resources.Entries)
-            {
-                (Composite comp, EntityPath path) = _commandsDisplay.Content.editor_utils.GetCompositeFromInstanceID(_commandsDisplay.Content.commands, entry.composite_instance_id);
-
-                if (comp == null && path == null)
-                {
-                    List<Tuple<Entity, Composite>> foundEntities = new List<Tuple<Entity, Composite>>();
-                    foreach (Composite comp2 in _commandsDisplay.Content.commands.Entries)
-                    {
-                        Entity ent2 = comp2.GetEntityByID(entry.resource_id);
-                        if (ent2 == null) continue;
-                        foundEntities.Add(new Tuple<Entity, Composite>(ent2, comp2));
-                    }
-
-
-                    if (foundEntities.Count == 1)
-                    {
-                        List<EntityPath> paths = _commandsDisplay.Content.editor_utils.GetHierarchiesForEntity(foundEntities[0].Item2, foundEntities[0].Item1);
-                        if (paths.Count == 1)
-                        {
-                            List<Tuple<Entity, Composite, ResourceReference>> foundResources = new List<Tuple<Entity, Composite, ResourceReference>>();
-                            foreach (Composite comp2 in _commandsDisplay.Content.commands.Entries)
-                            {
-                                foreach (FunctionEntity funcEnt in comp2.functions)
-                                {
-                                    List<ResourceReference> resRefs = funcEnt.resources;
-                                    Parameter resParam = funcEnt.GetParameter("resource");
-                                    if (resParam != null && resParam.content != null && resParam.content.dataType == DataType.RESOURCE)
-                                    {
-                                        resRefs.AddRange(((cResource)resParam.content).value);
-                                    }
-
-                                    foreach (ResourceReference resRef in resRefs)
-                                    {
-                                        if (resRef.resource_id == entry.resource_id)
-                                        {
-                                            foundResources.Add(new Tuple<Entity, Composite, ResourceReference>(funcEnt, comp2, resRef));
-                                        }
-                                    }
-                                }
-                            }
-
-                            string breakhere = "";
-                        }
-                    }
-                }
-            }
-
-
-
-            var test1 = _commandsDisplay.Content.mvr.Entries.FirstOrDefault(o => o.entity.composite_instance_id == new ShortGuid("EE-61-70-F2"));
-
-            for (int i = 0; i < test1.renderable_element_count; i++) 
-            {
-                var test5 = _commandsDisplay.Content.resource.reds.Entries[(int)test1.renderable_element_index + i];
-
-                var test6 = _commandsDisplay.Content.resource.models.GetAtWriteIndex(test5.ModelIndex);
-                var test61 = _commandsDisplay.Content.resource.models.FindModelForSubmesh(test6);
-                var test62 = _commandsDisplay.Content.resource.models.FindModelComponentForSubmesh(test6);
-                var test63 = _commandsDisplay.Content.resource.models.FindModelLODForSubmesh(test6);
-                var test7 = _commandsDisplay.Content.resource.materials.GetAtWriteIndex(test5.MaterialIndex);
-
-                string sdfsdf = "";
-            }
-
-            var test2 = _commandsDisplay.Content.resource.collision_maps.Entries.FirstOrDefault(o => o.entity.composite_instance_id == new ShortGuid("EE-61-70-F2"));
-            var test3 = _commandsDisplay.Content.resource.resources.Entries.FirstOrDefault(o => o.composite_instance_id == new ShortGuid("EE-61-70-F2"));
-
-            return;
-            */
-
-            //LocalDebug_NEW.DEBUG_DumpAllInstancedStuff("BSP_LV426_PT01");
-            //return;
-
-            //LocalDebug_NEW.DEBUG_DumpAllInstancedStuff("SOLACE");
-            //return;
-
-            //try
-            //{
-            //    SharedData.pathToAI = "F:\\Alien Isolation Versions\\Alien Isolation PC DVD\\Converted\\214491";
-            //    List<string> levels = Level.GetLevels(SharedData.pathToAI, true);
-            //    foreach (string level in levels)
-            //    {
-            //        try
-            //        {
-            //            LocalDebug_NEW.DEBUG_DumpAllInstancedStuff(level, "PRELOAD");
-            //        }
-            //        catch { }
-            //    }
-            //}
-            //catch { }
-
-            SharedData.pathToAI = "F:\\Alien Isolation Versions\\Alien Isolation PC Final";
-            Parallel.For(0, 2, i =>
-            {
-                switch (i)
-                {
-                    case 0:
-                        try
-                        {
-                            LocalDebug_NEW.DEBUG_DumpAllInstancedStuff("DLC/CHALLENGEMAP11", "FINAL");
-                        }
-                        catch { }
-                        break;
-                    case 1:
-                        try
-                        {
-                            LocalDebug_NEW.DEBUG_DumpAllInstancedStuff("DLC/CHALLENGEMAP14", "FINAL");
-                        }
-                        catch { }
-                        break;
-                }
-            });
-            Parallel.For(0, 2, i =>
-            {
-                switch (i)
-                {
-                    case 0:
-                        try
-                        {
-                            LocalDebug_NEW.DEBUG_DumpAllInstancedStuff("DLC/SALVAGEMODE2", "FINAL");
-                        }
-                        catch { }
-                        break;
-                    case 1:
-                        try
-                        {
-                            LocalDebug_NEW.DEBUG_DumpAllInstancedStuff("TECH_COMMS", "FINAL");
-                        }
-                        catch { }
-                        break;
-                }
-            });
-            Parallel.For(0, 2, i =>
-            {
-                switch (i)
-                {
-                    case 0:
-                        try
-                        {
-                            LocalDebug_NEW.DEBUG_DumpAllInstancedStuff("TECH_HUB", "FINAL");
-                        }
-                        catch { }
-                        break;
-                    case 1:
-                        try
-                        {
-                            LocalDebug_NEW.DEBUG_DumpAllInstancedStuff("TECH_MUTHRCORE", "FINAL");
-                        }
-                        catch { }
-                        break;
-                }
-            });
-            Parallel.For(0, 2, i =>
-            {
-                switch (i)
-                {
-                    case 0:
-                        try
-                        {
-                            LocalDebug_NEW.DEBUG_DumpAllInstancedStuff("TECH_RND", "FINAL");
-                        }
-                        catch { }
-                        break;
-                    case 1:
-                        try
-                        {
-                            LocalDebug_NEW.DEBUG_DumpAllInstancedStuff("TECH_RND_HZDLAB", "FINAL");
-                        }
-                        catch { }
-                        break;
-                }
-            });
-
-
-            return;
-
-            //try
-            //{
-            //    //SharedData.pathToAI = "F:\\Alien Isolation Versions\\Alien Isolation PC Final";
-            //    List<string> levels = Level.GetLevels(SharedData.pathToAI, true);
-            //    foreach (string level in levels)
-            //    {
-            //        Directory.Delete("E:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\" + level, true);
-            //        CopyFilesRecursively("F:\\Alien Isolation Versions\\Alien Isolation PC Final\\DATA\\ENV\\" + level, "E:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\DATA\\ENV\\" + level);
-            //
-            //        try
-            //        {
-            //            LocalDebug_NEW.DEBUG_DumpAllInstancedStuff(level, "FINAL");
-            //        }
-            //        catch { }
-            //    }
-            //}
-            //catch { }
-            //return;
-
-
-            //InstanceWriter test = new InstanceWriter();
-            //test.WriteInstances(_commandsDisplay.Content);
-
-            //LocalDebug.checkprefabinstances();
-            return;
-
-            List<EntityPath> zoneHandles = _commandsDisplay.Content.editor_utils.GetHierarchiesForEntity(_commandsDisplay.CompositeDisplay.Composite, _commandsDisplay.CompositeDisplay.EntityDisplay.Entity);
-            for (int i = 0; i < zoneHandles.Count; i++)
-            {
-                ShortGuid zoneID = zoneHandles[i].GenerateZoneID();
-                ShortGuid instanceID = zoneHandles[i].GenerateCompositeInstanceID();
-
-                string sdfsdf = "";
-            }
-
-
-            //LocalDebug.checkphysicssystempositions();
-        }
-        
-
-        void DebugSaveFunc()
-        {
-            return;
-
-            _commandsDisplay.Content.resource.lights.Indexes.Clear();
-            _commandsDisplay.Content.resource.lights.Values.Clear();
-            for (int i = 0; i < _commandsDisplay.Content.mvr.Entries.Count; i++)
-            {
-                _commandsDisplay.Content.mvr.Entries[i].environment_map_index = -1;
-                //_commandsDisplay.Content.mvr.Entries[i].resource_index = -1;
-            }
-            _commandsDisplay.Content.resource.env_maps.Entries.Clear();
-
-            //_commandsDisplay.Content.resource.collision_maps.Entries.Clear();
-            //_commandsDisplay.Content.resource.physics_maps.Entries.Clear();
-            //_commandsDisplay.Content.resource.resources.Entries.Clear();
-
-            //note - can remove 130 entries from the end before it crashes on SOLACE
-            //note - can remove 11 entries from the end before it crashes on BSP_TORRENS
-            int removeCount = 11;
-            _commandsDisplay.Content.mvr.Entries.RemoveRange(_commandsDisplay.Content.mvr.Entries.Count - removeCount, removeCount);
-
-            //note - i can do this on BSP_LV426_PT01 - why doesn't it work on solace?
-            //_commandsDisplay.Content.mvr.Entries.Clear();
         }
 
         private void CopyFilesRecursively(string sourcePath, string targetPath)
@@ -1232,7 +782,7 @@ namespace CommandsEditor
 
         private void DEBUG_LaunchGame_Click(object sender, EventArgs e)
         {
-            EditorUtils.PatchLaunchMode(_commandsDisplay.Content.level);
+            EditorUtils.PatchLaunchMode(_commandsDisplay.Content.Level.Name);
             Process.Start(SettingsManager.GetString("PATH_GameRoot") + "AI.exe");
         }
 

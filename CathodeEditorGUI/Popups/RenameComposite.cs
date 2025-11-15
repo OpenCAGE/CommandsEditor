@@ -46,9 +46,9 @@ namespace CommandsEditor
                 }
             }
 
-            for (int i = 0; i < Content.commands.Entries.Count; i++)
+            for (int i = 0; i < Content.Level.Commands.Entries.Count; i++)
             {
-                if (Content.commands.Entries[i].name.Replace("\\", "/") == path)
+                if (Content.Level.Commands.Entries[i].name.Replace("\\", "/") == path)
                 {
                     MessageBox.Show("Failed to create composite.\nA composite with this name already exists.", "Composite already exists", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
@@ -60,7 +60,7 @@ namespace CommandsEditor
             _composite.name = path.Replace("/", "\\");
 
             //Update cached ListViewItems that instance this composite
-            Content.commands.Entries.ForEach(composite =>
+            Content.Level.Commands.Entries.ForEach(composite =>
             {
                 composite.functions_dictionary.Values.Where(o => o.function == _composite.shortGUID).ToList().ForEach(function => 
                 {

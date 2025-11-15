@@ -10,7 +10,6 @@ using System.Windows.Forms;
 using CATHODE.Scripting;
 using CathodeLib;
 using CATHODE;
-using CATHODE.LEGACY;
 using System.Numerics;
 
 namespace CommandsEditor.Popups.UserControls

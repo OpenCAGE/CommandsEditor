@@ -531,7 +531,6 @@
     <Compile Include="Scripts\LocalDebug.cs" />
     <Compile Include="Scripts\Logger.cs" />
     <Compile Include="Scripts\NodeUtils.cs" />
-    <Compile Include="Scripts\ObjectExtensions.cs" />
     <Compile Include="Popups\AddOrEditResource.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -133,7 +133,7 @@ namespace CommandsEditor
 
                 error += "\n **** ";
 
-                string level = Singleton.Editor?.CommandsDisplay?.Content?.level;
+                string level = Singleton.Editor?.CommandsDisplay?.Content?.Level?.Name;
                 CATHODE.Scripting.Composite composite = Singleton.Editor?.CommandsDisplay?.CompositeDisplay?.Composite;
                 CATHODE.Scripting.Internal.Entity entity = Singleton.Editor?.CommandsDisplay?.CompositeDisplay?.EntityDisplay?.Entity;
                 content.Add(new StringContent(level == null ? "Unknown/None" : level), "current_level");

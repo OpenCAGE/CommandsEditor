@@ -168,10 +168,13 @@ namespace CommandsEditor.UnityConnection
                     ResourceReference resourceRef = ((cResource)resource.content).GetResource(ResourceType.RENDERABLE_INSTANCE);
                     if (resourceRef != null)
                     {
-                        for (int i = 0; i < resourceRef.count; i++)
+                        for (int i = 0; i < resourceRef.RenderableInstance.Count; i++)
                         {
-                            RenderableElements.Element element = Singleton.Editor.CommandsDisplay.Content.resource.reds.Entries[resourceRef.index + i];
-                            p.renderable.Add(new Tuple<int, int>(element.ModelIndex, element.MaterialIndex));
+                            //TODO: this is less than ideal. the indexes change when we save. how can we better handle this?
+                            p.renderable.Add(new Tuple<int, int>(
+                                Singleton.Editor.CommandsDisplay.Content.Level.Models.GetWriteIndex(resourceRef.RenderableInstance[i].Model),
+                                Singleton.Editor.CommandsDisplay.Content.Level.Materials.GetWriteIndex(resourceRef.RenderableInstance[i].Material)
+                            ));
                         }
                     }
                 }
@@ -205,7 +208,7 @@ namespace CommandsEditor.UnityConnection
         private static Packet GeneratePacket(PacketEvent packet_event = PacketEvent.GENERIC_DATA_SYNC)
         {
             Packet p = new Packet(packet_event);
-            p.level_name = Singleton.Editor?.CommandsDisplay?.Content?.level;
+            p.level_name = Singleton.Editor?.CommandsDisplay?.Content?.Level?.Name;
             p.system_folder = SharedData.pathToAI;
             if (Singleton.Editor?.CommandsDisplay?.CompositeDisplay != null)
             {

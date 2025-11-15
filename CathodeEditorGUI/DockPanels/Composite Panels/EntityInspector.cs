@@ -108,7 +108,7 @@ namespace CommandsEditor.DockPanels
                 this.Show();
             
             _entity = entity;
-            _entityCompositePtr = _entity.variant == EntityVariant.FUNCTION ? Content.commands.GetComposite(((FunctionEntity)_entity).function) : null;
+            _entityCompositePtr = _entity.variant == EntityVariant.FUNCTION ? Content.Level.Commands.GetComposite(((FunctionEntity)_entity).function) : null;
 
             switch (_entity.variant)
             {
@@ -116,7 +116,7 @@ namespace CommandsEditor.DockPanels
                     this.Icon = Resources.AnimatorController_Icon;
                     break;
                 case EntityVariant.FUNCTION:
-                    if (Content.commands.GetComposite(((FunctionEntity)_entity).function) == null)
+                    if (Content.Level.Commands.GetComposite(((FunctionEntity)_entity).function) == null)
                         this.Icon = Resources.d_ScriptableObject_Icon_braces_only;
                     else
                         this.Icon = Resources.d_PrefabVariant_Icon;
@@ -262,7 +262,7 @@ namespace CommandsEditor.DockPanels
             switch (_entity.variant)
             {
                 case EntityVariant.FUNCTION:
-                    selected_entity_name.Text = Content.commands.Utils.GetEntityName(Composite.shortGUID, _entity.shortGUID);
+                    selected_entity_name.Text = Content.Level.Commands.Utils.GetEntityName(Composite.shortGUID, _entity.shortGUID);
 
                     //Composite Instance
                     if (_entityCompositePtr != null)
@@ -278,7 +278,7 @@ namespace CommandsEditor.DockPanels
                     else
                     {
                         jumpToComposite.Visible = false;
-                        editEntityResources.Enabled = (Content.resource.models != null); //TODO: we can hide this button completely outside of this state
+                        editEntityResources.Enabled = (Content.Level.Models != null); //TODO: we can hide this button completely outside of this state
 
                         FunctionType function = ((FunctionEntity)_entity).function.AsFunctionType;
                         description = function.ToString();
@@ -286,7 +286,7 @@ namespace CommandsEditor.DockPanels
                     }
                     break;
                 case EntityVariant.VARIABLE:
-                    variableInfo = Content.commands.Utils.GetPinInfo(Composite, (VariableEntity)Entity);
+                    variableInfo = Content.Level.Commands.Utils.GetPinInfo(Composite, (VariableEntity)Entity);
                     if (variableInfo == null)
                         Debug.Log("Entity Inspector", "Warning: Could not get parameter pin info!");
                     description = (variableInfo != null ? ((CompositePinType)variableInfo.PinTypeGUID.AsUInt32).ToUIString() : ((VariableEntity)_entity).type.ToUIString());
@@ -295,21 +295,21 @@ namespace CommandsEditor.DockPanels
                 case EntityVariant.PROXY:
                 case EntityVariant.ALIAS:
                     hierarchyDisplay.Visible = true;
-                    List<Tuple<Composite, Entity>> resolvedHierarchy = Content.commands.Utils.ResolveAliasOrProxy(_entity, Composite);
-                    (Composite comp, Entity ent) = Content.commands.Utils.GetResolvedTarget(resolvedHierarchy);
-                    hierarchyDisplay.Text = Content.commands.Utils.GetResolvedAsString(resolvedHierarchy, SettingsManager.GetBool("CS_ShowEntityIDs"));
+                    List<Tuple<Composite, Entity>> resolvedHierarchy = Content.Level.Commands.Utils.ResolveAliasOrProxy(_entity, Composite);
+                    (Composite comp, Entity ent) = Content.Level.Commands.Utils.GetResolvedTarget(resolvedHierarchy);
+                    hierarchyDisplay.Text = Content.Level.Commands.Utils.GetResolvedAsString(resolvedHierarchy, SettingsManager.GetBool("CS_ShowEntityIDs"));
                     jumpToComposite.Visible = true;
-                    selected_entity_name.Text = (_entity.variant == EntityVariant.PROXY ? "Proxy to " : "Alias of ") + Content.commands.Utils.GetEntityName(comp, ent);
+                    selected_entity_name.Text = (_entity.variant == EntityVariant.PROXY ? "Proxy to " : "Alias of ") + Content.Level.Commands.Utils.GetEntityName(comp, ent);
                     break;
                 default:
-                    selected_entity_name.Text = Content.commands.Utils.GetEntityName(Composite.shortGUID, _entity.shortGUID);
+                    selected_entity_name.Text = Content.Level.Commands.Utils.GetEntityName(Composite.shortGUID, _entity.shortGUID);
                     break;
             }
             selected_entity_type_description.Text = description;
             this.Text = selected_entity_name.Text;
 
             //show mvr editor button if this entity has a mvr link
-            if (Content.mvr != null && Content.mvr.Entries.FirstOrDefault(o => o.entity?.entity_id == this._entity.shortGUID) != null)
+            if (Content.Level.Movers != null && Content.Level.Movers.Entries.FirstOrDefault(o => o.entity?.entity_id == this._entity.shortGUID) != null)
                 editEntityMovers.Enabled = true;
 
 #if DO_ENTITY_PERF_CHECK
@@ -380,7 +380,7 @@ namespace CommandsEditor.DockPanels
 #endif
             if (filterParams) 
             {
-                List<(ShortGuid, ParameterVariant, DataType)> allParameters = Content.commands.Utils.GetAllParameters(Entity, Composite);
+                List<(ShortGuid, ParameterVariant, DataType)> allParameters = Content.Level.Commands.Utils.GetAllParameters(Entity, Composite);
                 foreach ((ShortGuid, ParameterVariant, DataType) parameter in allParameters)
                 {
                     switch (parameter.Item2)
@@ -409,7 +409,7 @@ namespace CommandsEditor.DockPanels
                 //Use our metadata to update any wrongly typed cEnumStrings to get the nice UI
                 if (_entity.parameters[i].content.dataType == DataType.STRING)
                 {
-                    ParameterData data = Content.commands.Utils.CreateDefaultParameterData(Entity, Composite, _entity.parameters[i].name);
+                    ParameterData data = Content.Level.Commands.Utils.CreateDefaultParameterData(Entity, Composite, _entity.parameters[i].name);
                     if (data != null && data.dataType == DataType.ENUM_STRING)
                     {
                         ((cEnumString)data).value = ((cString)_entity.parameters[i].content).value;
@@ -482,7 +482,7 @@ namespace CommandsEditor.DockPanels
                         break;
                     case DataType.ENUM:
                         parameterGUI = new GUI_EnumDataType();
-                        ParameterData defaultData = Content.commands.Utils.CreateDefaultParameterData(Entity, Composite, paramName);
+                        ParameterData defaultData = Content.Level.Commands.Utils.CreateDefaultParameterData(Entity, Composite, paramName);
                         ((GUI_EnumDataType)parameterGUI).PopulateUI((cEnum)this_param, paramName, defaultData == null || (defaultData.dataType == DataType.ENUM && ((cEnum)defaultData).enumID == ShortGuid.Invalid));
                         break;
                     case DataType.RESOURCE:
@@ -590,10 +590,10 @@ namespace CommandsEditor.DockPanels
                     case 0:
                         isPointedTo = mainInst.CompositeDisplay.AnyFlowgraphsContainEntity(ent);
                         if (!isPointedTo)
-                            isPointedTo = mainInst.Content.editor_utils.IsEntityReferencedExternally(ent, ct);
+                            isPointedTo = mainInst.Content.EditorUtils.IsEntityReferencedExternally(ent, ct);
                         break;
                     case 1:
-                        mainInst.Content.editor_utils.TryFindZoneForEntity(ent, mainInst.Composite, out zoneComp, out zoneEnt, ct);
+                        mainInst.Content.EditorUtils.TryFindZoneForEntity(ent, mainInst.Composite, out zoneComp, out zoneEnt, ct);
                         break;
                 }
             });
@@ -769,19 +769,19 @@ namespace CommandsEditor.DockPanels
             {
                 case EntityVariant.PROXY:
                     //Proxies forward directly to the entity they point to, breaking us out of the hierarchy.
-                    (Composite composite, Entity entity) = Content.commands.Utils.GetResolvedTarget(Content.commands.Utils.ResolveProxy((ProxyEntity)_entity));
+                    (Composite composite, Entity entity) = Content.Level.Commands.Utils.GetResolvedTarget(Content.Level.Commands.Utils.ResolveProxy((ProxyEntity)_entity));
                     if (MessageBox.Show("Jumping to a proxy will break you out of your composite.\nAre you sure?", "About to follow proxy...", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                         _compositeDisplay.CommandsDisplay.LoadCompositeAndEntity(composite, entity);
                     break;
                 case EntityVariant.FUNCTION:
                     //Composite instances take us a step down the hierarchy.
-                    _compositeDisplay.LoadChild(Content.commands.GetComposite(selected_entity_type_description.Text), Entity);
+                    _compositeDisplay.LoadChild(Content.Level.Commands.GetComposite(selected_entity_type_description.Text), Entity);
                     return;
                 case EntityVariant.ALIAS:
                     //Aliases take us (potentially) multiple steps down the hierarchy.
                     ShortGuid[] aliasPath = ((AliasEntity)Entity).alias.path;
                     for (int i = 0; i < aliasPath.Length - 2; i++)
-                        _compositeDisplay.LoadChild(Content.commands.GetComposite(((FunctionEntity)Composite.GetEntityByID(aliasPath[i])).function), Composite.GetEntityByID(aliasPath[i]));
+                        _compositeDisplay.LoadChild(Content.Level.Commands.GetComposite(((FunctionEntity)Composite.GetEntityByID(aliasPath[i])).function), Composite.GetEntityByID(aliasPath[i]));
                     _compositeDisplay.LoadEntity(Composite.GetEntityByID(aliasPath[aliasPath.Length - 2]), true);
                     return;
             }
@@ -827,7 +827,7 @@ namespace CommandsEditor.DockPanels
         {
             //Add only the parameters not already set
             bool hasDeleteMe = Entity.GetParameter("delete_me") != null;
-            Content.commands.Utils.AddAllDefaultParameters(Entity, Composite, false);
+            Content.Level.Commands.Utils.AddAllDefaultParameters(Entity, Composite, false);
             if (!hasDeleteMe) Entity.RemoveParameter("delete_me");
             _compositeDisplay.ReloadEntity(Entity);
 
@@ -844,7 +844,7 @@ namespace CommandsEditor.DockPanels
         {
             //Add all defaults, overwriting the ones already set
             Entity.parameters.Clear();
-            Content.commands.Utils.AddAllDefaultParameters(Entity, Composite);
+            Content.Level.Commands.Utils.AddAllDefaultParameters(Entity, Composite);
             Entity.RemoveParameter("delete_me");
             _compositeDisplay.ReloadEntity(Entity);
 

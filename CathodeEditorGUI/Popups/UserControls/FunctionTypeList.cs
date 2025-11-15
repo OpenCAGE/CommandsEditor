@@ -31,7 +31,7 @@ namespace CommandsEditor.Popups.UserControls
 
             foreach (FunctionType function in Enum.GetValues(typeof(FunctionType)))
             {
-                FunctionType? inherited = Singleton.Editor.CommandsDisplay.Content.commands.Utils.GetInheritedFunction(function);
+                FunctionType? inherited = Singleton.Editor.CommandsDisplay.Content.Level.Commands.Utils.GetInheritedFunction(function);
 
                 ListViewItem item = new ListViewItem(function.ToString());
                 item.ImageIndex = 0;

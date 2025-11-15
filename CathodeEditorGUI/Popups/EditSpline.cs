@@ -1,4 +1,5 @@
 ﻿using CATHODE.Scripting;
+using CathodeLib.ObjectExtensions;
 using CommandsEditor.Popups.Base;
 using CommandsEditor.Popups.UserControls;
 using System;

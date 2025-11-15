@@ -116,7 +116,7 @@ namespace CommandsEditor
             entityList.BeginUpdate();
             entityList.Items.Clear();
             entityList.Groups.Clear();
-            foreach (Composite comp in Content.commands.Entries)
+            foreach (Composite comp in Content.Level.Commands.Entries)
             {
                 List<FunctionEntity> funcs = comp.functions.FindAll(o => o.function == functionGuid);
                 if (funcs.Count == 0)
@@ -153,9 +153,9 @@ namespace CommandsEditor
             entityList.BeginUpdate();
             entityList.Items.Clear();
             entityList.Groups.Clear();
-            foreach (Composite comp in Content.commands.Entries)
+            foreach (Composite comp in Content.Level.Commands.Entries)
             {
-                List<Entity> ents = comp.GetEntities().FindAll(o => Content.commands.Utils.GetEntityName(comp, o).ToUpper().Replace(" ", "").Contains(name.ToUpper().Replace(" ", "")));
+                List<Entity> ents = comp.GetEntities().FindAll(o => Content.Level.Commands.Utils.GetEntityName(comp, o).ToUpper().Replace(" ", "").Contains(name.ToUpper().Replace(" ", "")));
                 if (ents.Count == 0)
                     continue;
                 entityList.Groups.Add(new ListViewGroup() { Header = comp.name });
@@ -163,7 +163,7 @@ namespace CommandsEditor
                 {
                     ListViewItem item = (ListViewItem)Content.GenerateListViewItem(ent, comp).Clone();
                     item.Group = entityList.Groups[entityList.Groups.Count - 1];
-                    item.ImageIndex = EditorUtils.GetIndexesForListViewItem(ent, comp, Content.commands).Item1;
+                    item.ImageIndex = EditorUtils.GetIndexesForListViewItem(ent, comp, Content.Level.Commands).Item1;
                     entityList.Items.Add(item);
                     _entityComposites.Add(ent, comp);
                 }

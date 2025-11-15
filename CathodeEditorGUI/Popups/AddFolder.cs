@@ -48,9 +48,9 @@ namespace CommandsEditor
 
             path += "/";
 
-            for (int i = 0; i < _commands.Content.commands.Entries.Count; i++)
+            for (int i = 0; i < _commands.Content.Level.Commands.Entries.Count; i++)
             {
-                string[] thisPathParts = _commands.Content.commands.Entries[i].name.Replace("\\", "/").Split('/');
+                string[] thisPathParts = _commands.Content.Level.Commands.Entries[i].name.Replace("\\", "/").Split('/');
                 if (thisPathParts.Length != pathParts.Length) continue;
 
                 bool isMatch = true;
@@ -70,7 +70,7 @@ namespace CommandsEditor
                 }
             }
 
-            Composite comp = _commands.Content.commands.AddComposite(path.Replace("/", "\\"));
+            Composite comp = _commands.Content.Level.Commands.AddComposite(path.Replace("/", "\\"));
             OnFolderAdded?.Invoke(comp);
             this.Close();
         }

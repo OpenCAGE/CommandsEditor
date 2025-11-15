@@ -9,6 +9,7 @@ using System;
 using System.Windows.Forms.Design;
 using System.IO;
 using System.Windows.Forms;
+using CathodeLib.ObjectExtensions;
 
 namespace CommandsEditor
 {
@@ -24,7 +25,7 @@ namespace CommandsEditor
 
             levelList.BeginUpdate();
             levelList.Items.AddRange(Level.GetLevels(SharedData.pathToAI, true).ToArray());
-            levelList.Items.Remove(Content.level);
+            levelList.Items.Remove(Content.Level.Name);
             levelList.EndUpdate();
 
             levelList.SelectedIndex = 0;
@@ -43,8 +44,7 @@ namespace CommandsEditor
         private void export_Click(object sender, System.EventArgs e)
         {
             Log("Loading data for " + levelList.SelectedItem.ToString() + "...");
-            Global gbl = new Global() { AnimationStrings_Debug = Singleton.AnimationStrings_Debug };
-            Level lvl = new Level(SharedData.pathToAI + "/DATA/ENV/" + levelList.SelectedItem.ToString(), gbl);
+            Level lvl = new Level(SharedData.pathToAI + "/DATA/ENV/" + levelList.SelectedItem.ToString(), Singleton.Global);
 
             Log("Starting export...");
             AddCompositesRecursively(_composite, lvl);
@@ -123,7 +123,7 @@ namespace CommandsEditor
             {
                 if (ent.function.IsFunctionType) continue;
 
-                Composite nestedComp = Content.commands.GetComposite(ent.function);
+                Composite nestedComp = Content.Level.Commands.GetComposite(ent.function);
                 if (nestedComp != null)
                     AddCompositesRecursively(nestedComp, lvl);
             }
@@ -144,160 +144,25 @@ namespace CommandsEditor
 
         private void CopyRenderableInstance(Level lvl, ResourceReference resourceRef)
         {
-            Log("Exporting " + resourceRef.count + " RENDERABLE_INSTANCE resource(s)...");
+            Log("Exporting " + resourceRef.RenderableInstance.Count + " RENDERABLE_INSTANCE resource(s)...");
 
-            int newIndex = lvl.RenderableElements.Entries.Count;
-            for (int x = resourceRef.index; x < resourceRef.index + resourceRef.count; x++)
+            for (int i = 0; i < resourceRef.RenderableInstance.Count; i++)
             {
-                //Create the REDs entry in the destination level
-                RenderableElements.Element renderable = new RenderableElements.Element();
-                lvl.RenderableElements.Entries.Add(renderable);
-
-                #region Copy Model
-                //Find the submesh and associated LOD/CS2 that the original REDs points to
-                Models.CS2.Component.LOD.Submesh origSubmesh = Content.resource.models.GetAtWriteIndex(Content.resource.reds.Entries[x].ModelIndex);
-                Models.CS2.Component.LOD origLOD = Content.resource.models.FindModelLODForSubmesh(origSubmesh);
-                Models.CS2.Component origComponent = Content.resource.models.FindModelComponentForSubmesh(origSubmesh);
-                Models.CS2 origModel = Content.resource.models.FindModelForSubmesh(origSubmesh);
-
-                //Check to see if the LOD exists in the destination level
-                Models.CS2 destModel = null;
-                List<Models.CS2> matchingDuplicates = lvl.Models.Entries.FindAll(o => o.Name == origModel.Name);
-                for (int m = 0; m < matchingDuplicates.Count; m++)
-                {
-                    for (int z = 0; z < matchingDuplicates[m].Components.Count; z++)
-                    {
-                        for (int p = 0; p < matchingDuplicates[m].Components[z].LODs.Count; p++)
-                        {
-                            if (matchingDuplicates[m].Components[z].LODs[p].Name == origLOD.Name)
-                            {
-                                destModel = matchingDuplicates[m];
-                                break;
-                            }
-                        }
-                        if (destModel != null) break;
-                    }
-                    if (destModel != null) break;
-                }
-
-                //If it doesn't exist, copy the entire CS2 across & save so our write indexes are updated
-                if (destModel == null)
-                {
-                    destModel = origModel.Copy();
-                    for (int z = 0; z < destModel.Components.Count; z++)
-                    {
-                        for (int m = 0; m < destModel.Components[z].LODs.Count; m++)
-                        {
-                            for (int p = 0; p < destModel.Components[z].LODs[m].Submeshes.Count; p++)
-                            {
-                                //TODO: setting mtl index to zero until we copy materials.
-                                destModel.Components[z].LODs[m].Submeshes[p].MaterialIndex = 0; //<- todo: perhaps i should copy this material too for completeness, rather than just the instanced one via reds?
-
-                                //TODO: these are unknown
-                                destModel.Components[z].LODs[m].Submeshes[p].CollisionProxyIndex = -1;
-                                destModel.Components[z].LODs[m].Submeshes[p].WeightedCollisionIndex = -1;
-                                destModel.Components[z].LODs[m].Submeshes[p].MorphAnimSet = -1;
-                            }
-                        }
-                    }
-                    lvl.Models.Entries.Add(destModel);
-                    lvl.Save();
-                }
-
-                //Make sure to point to the same submesh
-                int origComponentIndex = origModel.Components.IndexOf(origComponent);
-                int origLODIndex = origModel.Components[origComponentIndex].LODs.IndexOf(origLOD);
-                int origSubmeshIndex = origModel.Components[origComponentIndex].LODs[origLODIndex].Submeshes.IndexOf(origSubmesh);
-
-                //Get its index in the destination and write to renderable
-                renderable.ModelIndex = lvl.Models.GetWriteIndex(destModel.Components[origComponentIndex].LODs[origLODIndex].Submeshes[origSubmeshIndex]);
-                #endregion
-
-                #region Copy Weighted Collision
-                //If this submesh has a weighted collision (a hitbox), check to see if it exists in the other level already
-                for (int z = 0; z < origModel.Components.Count; z++)
-                {
-                    for (int m = 0; m < origModel.Components[z].LODs.Count; m++)
-                    {
-                        for (int p = 0; p < origModel.Components[z].LODs[m].Submeshes.Count; p++)
-                        {
-                            if (origModel.Components[z].LODs[m].Submeshes[p].WeightedCollisionIndex != -1)
-                            {
-                                Collisions.WeightedCollision collision = Content.resource.weighted_collisions.Entries[origModel.Components[z].LODs[m].Submeshes[p].WeightedCollisionIndex];
-                                Collisions.WeightedCollision destCollision = lvl.WeightedCollisions.Entries.FirstOrDefault(o => o == collision);
-                                if (destCollision == null)
-                                {
-                                    //If it doesn't already exist, copy it over
-                                    lvl.WeightedCollisions.Entries.Add(collision);
-                                    destCollision = collision;
-                                }
-                                destModel.Components[z].LODs[m].Submeshes[p].WeightedCollisionIndex = lvl.WeightedCollisions.Entries.IndexOf(destCollision);
-                            }
-                        }
-                    }
-                }
-                #endregion
-
-                #region Find Material & Associated Textures/Shaders
-                //Find the material that the original REDs points to & take a copy
-                Materials.Material material = Content.resource.materials.GetAtWriteIndex(Content.resource.reds.Entries[x].MaterialIndex).Copy();
-
-                //Copy textures if they don't exist in the destination level & save so our indexes are updated
-                for (int z = 0; z < material.TextureReferences.Count; z++)
-                {
-                    if (material.TextureReferences[z] == null) continue;
-                    if (material.TextureReferences[z].Location == TexturePtr.Source.GLOBAL) continue;
-
-                    Textures.TEX4 origTex = Content.resource.textures.GetAtWriteIndex(material.TextureReferences[z].Index);
-                    Textures.TEX4 destTex = lvl.Textures.Entries.FirstOrDefault(o => o.Name == origTex.Name);
-                    if (destTex == null)
-                    {
-                        destTex = origTex.Copy();
-                        lvl.Textures.Entries.Add(destTex);
-                    }
-                }
-                lvl.Save();
-
-                //Get all destination level texture indexes & set to material
-                for (int z = 0; z < material.TextureReferences.Count; z++)
-                {
-                    if (material.TextureReferences[z] == null) continue;
-                    if (material.TextureReferences[z].Location == TexturePtr.Source.GLOBAL) continue;
-
-                    Textures.TEX4 origTex = Content.resource.textures.GetAtWriteIndex(material.TextureReferences[z].Index);
-                    Textures.TEX4 destTex = lvl.Textures.Entries.FirstOrDefault(o => o.Name == origTex.Name);
-                    material.TextureReferences[z].Index = lvl.Textures.GetWriteIndex(destTex);
-                }
-
-                //Copy shader 
-                Shaders.Shader shader = Content.resource.shaders.Entries[material.ShaderIndex].Copy();
-                lvl.Shaders.Entries.Add(shader);
-                material.ShaderIndex = lvl.Shaders.Entries.Count - 1;
-                material.EnvironmentMapIndex = 255;
-
-                //Write material & update indexes
-                lvl.Materials.Entries.Add(material);
-                lvl.Save();
-                renderable.MaterialIndex = lvl.Materials.GetWriteIndex(material);
-                //destModel.Components[origComponentIndex].LODs[origLODIndex].Submeshes[origSubmeshIndex].MaterialLibraryIndex = renderable.MaterialIndex;
-                #endregion
+                resourceRef.RenderableInstance[i] = lvl.RenderableElements.AddEntry(resourceRef.RenderableInstance[i]);
             }
-            resourceRef.index = newIndex;
         }
 
         private void CopyAnimatedModel(Level lvl, ResourceReference resourceRef)
         {
             Log("Exporting ANIMATED_MODEL resource...");
 
+            //todo - should handle this plugin side
+
             //Get EnvironmentAnimation from base level and copy it
-            EnvironmentAnimations.EnvironmentAnimation anim = Content.resource.env_animations.Entries.FirstOrDefault(o => o.ResourceIndex == resourceRef.index).Copy();
+            EnvironmentAnimations.EnvironmentAnimation anim = lvl.EnvironmentAnimations.AddEntry(resourceRef.AnimatedModel);
 
-            //Update the ResourceIndex to suit the destination EnvironmentAnimation count
+            //Update the ResourceIndex to suit the destination EnvironmentAnimation count - TODO: would be good to just handle this at build time
             anim.ResourceIndex = lvl.EnvironmentAnimations.Entries[lvl.EnvironmentAnimations.Entries.Count - 1].ResourceIndex + 1;
-            resourceRef.index = anim.ResourceIndex;
-
-            //Add to dest level
-            lvl.EnvironmentAnimations.Entries.Add(anim);
         }
     }
 }

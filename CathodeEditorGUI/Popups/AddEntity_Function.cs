@@ -73,11 +73,11 @@ namespace CommandsEditor
 
             if (addDefaultParams.Checked)
             {
-                Content.commands.Utils.AddAllDefaultParameters(newEntity, _composite);
+                Content.Level.Commands.Utils.AddAllDefaultParameters(newEntity, _composite);
                 newEntity.RemoveParameter("delete_me");
             }
 
-            Content.commands.Utils.SetEntityName(_composite, newEntity, entityName.Text);
+            Content.Level.Commands.Utils.SetEntityName(_composite, newEntity, entityName.Text);
             SettingsManager.SetString(Singleton.Settings.PreviouslySelectedFunctionType, function.ToString());
             SettingsManager.SetBool(Singleton.Settings.PreviouslySearchedParamPopulation, addDefaultParams.Checked);
 

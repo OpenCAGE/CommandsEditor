@@ -32,7 +32,7 @@ namespace CommandsEditor
             _triggerSequence = (TriggerSequence)_entityDisplay.Entity;
 
             entityTriggerDelay.Text = "0.0";
-            this.Text = "TriggerSequence Editor: " + Content.commands.Utils.GetEntityName(_entityDisplay.Composite.shortGUID, _triggerSequence.shortGUID);
+            this.Text = "TriggerSequence Editor: " + Content.Level.Commands.Utils.GetEntityName(_entityDisplay.Composite.shortGUID, _triggerSequence.shortGUID);
             selectedEntityDetails.Visible = false;
             selectedTriggerDetails.Visible = false;
 
@@ -47,7 +47,7 @@ namespace CommandsEditor
             for (int i = 0; i < _triggerSequence.sequence.Count; i++)
             {
                 ListViewItem item = new ListViewItem();
-                item.Text = Content.commands.Utils.GetResolvedAsString(Content.commands.Utils.ResolveAlias(_triggerSequence.sequence[i].connectedEntity.path, _entityDisplay.Composite), SettingsManager.GetBool("CS_ShowEntityIDs"));
+                item.Text = Content.Level.Commands.Utils.GetResolvedAsString(Content.Level.Commands.Utils.ResolveAlias(_triggerSequence.sequence[i].connectedEntity.path, _entityDisplay.Composite), SettingsManager.GetBool("CS_ShowEntityIDs"));
                 item.SubItems.Add(_triggerSequence.sequence[i].timing + "s");
                 entity_list.Items.Add(item);
             }
@@ -97,7 +97,7 @@ namespace CommandsEditor
             }
 
             int index = entity_list.SelectedItems[0].Index;
-            entityHierarchy.Text = Content.commands.Utils.GetResolvedAsString(Content.commands.Utils.ResolveAlias(_triggerSequence.sequence[index].connectedEntity.path, _entityDisplay.Composite), SettingsManager.GetBool("CS_ShowEntityIDs"));
+            entityHierarchy.Text = Content.Level.Commands.Utils.GetResolvedAsString(Content.Level.Commands.Utils.ResolveAlias(_triggerSequence.sequence[index].connectedEntity.path, _entityDisplay.Composite), SettingsManager.GetBool("CS_ShowEntityIDs"));
             entityTriggerDelay.Text = _triggerSequence.sequence[index].timing.ToString();
             selectedEntityDetails.Visible = true;
         }
@@ -283,7 +283,7 @@ namespace CommandsEditor
             if (MessageBox.Show("Going to this entity will close the TriggerSequence editor.\nAre you sure you want to continue?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
 
-            (Composite comp, Entity ent) = Content.commands.Utils.GetResolvedTarget(Content.commands.Utils.ResolveAlias(_triggerSequence.sequence[entity_list.SelectedItems[0].Index].connectedEntity.path, _entityDisplay.Composite));
+            (Composite comp, Entity ent) = Content.Level.Commands.Utils.GetResolvedTarget(Content.Level.Commands.Utils.ResolveAlias(_triggerSequence.sequence[entity_list.SelectedItems[0].Index].connectedEntity.path, _entityDisplay.Composite));
             if (comp == null || ent == null)
             {
                 MessageBox.Show("Failed to resolve entity! Can not load to it.", "Entity pointer corrupted!", MessageBoxButtons.OK, MessageBoxIcon.Error);

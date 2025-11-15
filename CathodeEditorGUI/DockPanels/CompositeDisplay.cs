@@ -2,6 +2,7 @@ using CATHODE;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CathodeLib;
+using CathodeLib.ObjectExtensions;
 using CommandsEditor.Popups.UserControls;
 using OpenCAGE;
 using ST.Library.UI.NodeEditor;
@@ -123,13 +124,13 @@ namespace CommandsEditor.DockPanels
         //Saves and compiles all Flowgraph layouts for this Composite
         public void SaveAllFlowgraphs()
         {
-            if (Composite != null && Content != null && Content.commands != null && Content.commands.Utils != null && SupportsFlowgraphs)
+            if (Composite != null && Content != null && Content.Level.Commands != null && Content.Level.Commands.Utils != null && SupportsFlowgraphs)
             {
 #if DEBUG
-                int ogCount = Content.commands.Utils.CountLinks(_composite);
+                int ogCount = Content.Level.Commands.Utils.CountLinks(_composite);
 #endif
                 int newCount = 0;
-                Content.commands.Utils.ClearAllLinks(_composite);
+                Content.Level.Commands.Utils.ClearAllLinks(_composite);
                 for (int i = 0; i < _flowgraphs.Count; i++)
                 {
                     if (_flowgraphs[i] != null)
@@ -174,7 +175,7 @@ namespace CommandsEditor.DockPanels
                 _isSubbed = true;
             }
 
-            EditorUtils.CompositeType type = Content.editor_utils.GetCompositeType(composite);
+            EditorUtils.CompositeType type = Content.EditorUtils.GetCompositeType(composite);
             
             switch (type)
             {
@@ -264,21 +265,21 @@ namespace CommandsEditor.DockPanels
             Cursor.Current = Cursors.WaitCursor;
 
             //No need to find uses of entry point - it's the entry point
-            findUses.Visible = Content.commands.EntryPoints[0] != composite;
+            findUses.Visible = Content.Level.Commands.EntryPoints[0] != composite;
 
             //Shouldn't be able to delete/rename the entry point or PAUSEMENU/GLOBAL else it'll break stuff (e.g. commands.bin needs to search for them by name)
-            deleteComposite.Visible = !Content.commands.EntryPoints.Contains(composite);
+            deleteComposite.Visible = !Content.Level.Commands.EntryPoints.Contains(composite);
             renameComposite.Visible = deleteComposite.Visible;
 
             pathDisplay.Text = _path.GetPath(composite);
             _composite = composite;
 
             //Remove dead links and empty aliases on first time
-            if (!Content.commands.Utils.PurgedComposites.purged.Contains(_composite.shortGUID))
+            if (!Content.Level.Commands.Utils.PurgedComposites.purged.Contains(_composite.shortGUID))
             {
                 //Clear out any dead links
-                Content.commands.Utils.PurgeDeadLinks(_composite);
-                Content.commands.Utils.PurgedComposites.purged.Add(_composite.shortGUID);
+                Content.Level.Commands.Utils.PurgeDeadLinks(_composite);
+                Content.Level.Commands.Utils.PurgedComposites.purged.Add(_composite.shortGUID);
             }
 
             CloseAllChildTabs();
@@ -391,7 +392,7 @@ namespace CommandsEditor.DockPanels
             {
                 if (_canExportChildren && !ent.function.IsFunctionType)
                 {
-                    Composite nestedComp = Content.commands.GetComposite(ent.function);
+                    Composite nestedComp = Content.Level.Commands.GetComposite(ent.function);
                     if (nestedComp != null)
                     {
                         if (DoesCompositeContainResource(nestedComp))
@@ -633,7 +634,7 @@ namespace CommandsEditor.DockPanels
                 }
             }
 
-            Content.commands.Utils.PurgedComposites.purged.Clear(); //TODO: we should smartly remove from this list, rather than removing all
+            Content.Level.Commands.Utils.PurgedComposites.purged.Clear(); //TODO: we should smartly remove from this list, rather than removing all
 
             if (_entityDisplay.Entity == entity && _entityDisplay.Populated)
                 _entityDisplay.Close();
@@ -672,7 +673,7 @@ namespace CommandsEditor.DockPanels
                     Composite.aliases_dictionary.Add(((AliasEntity)newEnt).shortGUID, (AliasEntity)newEnt);
                     break;
             }
-            Content.editor_utils.GenerateCompositeInstances(Content.commands);
+            Content.EditorUtils.GenerateCompositeInstances(Content.Level.Commands);
             Singleton.OnEntityAdded?.Invoke(newEnt);
 
             return newEnt;
@@ -700,10 +701,10 @@ namespace CommandsEditor.DockPanels
             newEnt.shortGUID = ShortGuidUtils.GenerateRandom();
             if (newEnt.variant != EntityVariant.VARIABLE)
             {
-                Content.commands.Utils.SetEntityName(
+                Content.Level.Commands.Utils.SetEntityName(
                         Composite.shortGUID,
                         newEnt.shortGUID,
-                        Content.commands.Utils.GetEntityName(Composite.shortGUID, entity.shortGUID) + "_clone");
+                        Content.Level.Commands.Utils.GetEntityName(Composite.shortGUID, entity.shortGUID) + "_clone");
 
                 //TODO: not using the below, because really we should check every entity's name to get the index to append.
                 /*
@@ -749,14 +750,14 @@ namespace CommandsEditor.DockPanels
             //If entity is a composite instance, check to see if it should make a new PHYSICS.MAP entry
             if (entity.variant == EntityVariant.FUNCTION)
             {
-                Composite comp = Content.commands.GetComposite(((FunctionEntity)entity).function);
+                Composite comp = Content.Level.Commands.GetComposite(((FunctionEntity)entity).function);
 
                 //TODO: need to recurse into all child composite instances to find ALL contained PhysicsSystem functions, rather than just the layer below
                 FunctionEntity phys = comp?.functions.FirstOrDefault(o => o.function == FunctionType.PhysicsSystem);
                 if (phys != null)
                 {
                     List<ShortGuid> instancesEnt = new List<ShortGuid>();
-                    List<EntityPath> pathsEnt = Content.editor_utils.GetHierarchiesForEntity(Composite, entity);
+                    List<EntityPath> pathsEnt = Content.EditorUtils.GetHierarchiesForEntity(Composite, entity);
                     List<ShortGuid> instancesPhys = new List<ShortGuid>();
                     List<EntityPath> pathsPhys = new List<EntityPath>();
                     pathsEnt.ForEach(path => {
@@ -769,7 +770,7 @@ namespace CommandsEditor.DockPanels
                         instancesPhys.Add(pathPhys.GenerateCompositeInstanceID());
                     });
 
-                    List<PhysicsMaps.Entry> physMaps = Content.resource.physics_maps.Entries.FindAll(physMap =>
+                    List<PhysicsMaps.Entry> physMaps = Content.Level.PhysicsMaps.Entries.FindAll(physMap =>
                         instancesPhys.Contains(physMap.composite_instance_id) &&
                         physMap.entity.entity_id == entity.shortGUID &&
                         instancesEnt.Contains(physMap.entity.composite_instance_id)
@@ -783,17 +784,17 @@ namespace CommandsEditor.DockPanels
                         EntityPath newPathPhys = pathPhys.Copy();
                         newPathPhys.path[newPathPhys.path.Length - 3] = newEnt.shortGUID;
                         newPhysMap.composite_instance_id = newPathPhys.GenerateCompositeInstanceID();
-                        Content.resource.physics_maps.Entries.Add(newPhysMap);
-                        //Content.resource.physics_maps.Entries[Content.resource.physics_maps.Entries.IndexOf(physMap)] = newPhysMap;
+                        Content.Level.PhysicsMaps.Entries.Add(newPhysMap);
+                        //Content.Level.PhysicsMaps.Entries[Content.Level.PhysicsMaps.Entries.IndexOf(physMap)] = newPhysMap;
 
                         //TODO: need to set pos/rot properly
 
-                        Resources.Resource physRes = Content.resource.resources.Entries.FirstOrDefault(res => res.composite_instance_id == physMap.composite_instance_id);
+                        Resources.Resource physRes = Content.Level.Resources.Entries.FirstOrDefault(res => res.composite_instance_id == physMap.composite_instance_id);
                         Resources.Resource newPhysRes = physRes.Copy();
                         newPhysRes.composite_instance_id = newPhysMap.composite_instance_id;
-                        //newPhysRes.index = Content.resource.resources.Entries.Count;
-                        Content.resource.resources.Entries.Add(newPhysRes);
-                        //Content.resource.resources.Entries[Content.resource.resources.Entries.IndexOf(p)] = resPhys;
+                        //newPhysRes.index = Content.Level.Resources.Entries.Count;
+                        Content.Level.Resources.Entries.Add(newPhysRes);
+                        //Content.Level.Resources.Entries[Content.Level.Resources.Entries.IndexOf(p)] = resPhys;
                     });
                 }
             }
@@ -888,7 +889,7 @@ namespace CommandsEditor.DockPanels
                 switch (dialog_hierarchy_entvar)
                 {
                     case EntityVariant.PROXY:
-                        dialog_hierarchy = new SelectHierarchy(Content.commands.EntryPoints[0], new CompositeEntityList.DisplayOptions()
+                        dialog_hierarchy = new SelectHierarchy(Content.Level.Commands.EntryPoints[0], new CompositeEntityList.DisplayOptions()
                         {
                             DisplayAliases = false,
                             DisplayFunctions = true,
@@ -938,11 +939,11 @@ namespace CommandsEditor.DockPanels
             {
                 case EntityVariant.PROXY:
                     List<ShortGuid> hierarchy = new List<ShortGuid>();
-                    hierarchy.Add(Content.commands.EntryPoints[0].shortGUID);
+                    hierarchy.Add(Content.Level.Commands.EntryPoints[0].shortGUID);
                     hierarchy.AddRange(generatedHierarchy);
-                    ent = _composite.AddProxy(Content.commands, hierarchy.ToArray());
-                    (Composite pointedComp, Entity pointedEnt) = Content.commands.Utils.GetResolvedTarget(Content.commands.Utils.ResolveProxy((ProxyEntity)ent));
-                    Content.commands.Utils.SetEntityName(_composite, ent, Content.commands.Utils.GetEntityName(pointedComp, pointedEnt) + " Proxy");
+                    ent = _composite.AddProxy(Content.Level.Commands, hierarchy.ToArray());
+                    (Composite pointedComp, Entity pointedEnt) = Content.Level.Commands.Utils.GetResolvedTarget(Content.Level.Commands.Utils.ResolveProxy((ProxyEntity)ent));
+                    Content.Level.Commands.Utils.SetEntityName(_composite, ent, Content.Level.Commands.Utils.GetEntityName(pointedComp, pointedEnt) + " Proxy");
                     break;
                 case EntityVariant.ALIAS:
                     ent = _composite.AddAlias(generatedHierarchy); 
@@ -950,7 +951,7 @@ namespace CommandsEditor.DockPanels
             }
 
             if (dialog_hierarchy.ApplyDefaultParams)
-                Content.commands.Utils.AddAllDefaultParameters(ent, _composite);
+                Content.Level.Commands.Utils.AddAllDefaultParameters(ent, _composite);
 
             Singleton.OnEntityAdded?.Invoke(ent);
         }
@@ -1045,7 +1046,7 @@ namespace CommandsEditor.DockPanels
 
         private void CreateFlowgraphWindow(FlowgraphMeta meta)
         {
-            Flowgraph flowgraph = new Flowgraph(Content.commands);
+            Flowgraph flowgraph = new Flowgraph(Content.Level.Commands);
             _flowgraphs.Add(flowgraph);
             flowgraph.Show(dockPanel, DockState.Document);
             flowgraph.ShowFlowgraph(Composite, meta);

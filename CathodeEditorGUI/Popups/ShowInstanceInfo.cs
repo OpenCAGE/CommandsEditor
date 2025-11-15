@@ -58,8 +58,8 @@ namespace CommandsEditor
             cTransform globalTransform = new cTransform(finalPosition, finalEulerRotation);
 
             bool isFromRoot = 
-                (display.Path.PreviousComposite == null && display.Composite == Content.commands.EntryPoints[0]) ||         //Current composite is root
-                (display.Path.AllComposites.Count > 0 && display.Path.AllComposites[0] == Content.commands.EntryPoints[0]); //First composite in path is root
+                (display.Path.PreviousComposite == null && display.Composite == Content.Level.Commands.EntryPoints[0]) ||         //Current composite is root
+                (display.Path.AllComposites.Count > 0 && display.Path.AllComposites[0] == Content.Level.Commands.EntryPoints[0]); //First composite in path is root
 
             guI_TransformDataType1.PopulateUI(null, globalTransform, isFromRoot ? "Global Position" : "Relative Position", true);
         }

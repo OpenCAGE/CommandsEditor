@@ -55,21 +55,21 @@ namespace CommandsEditor.UserControls
                 if (enumVal.enumID == ShortGuid.Invalid)
                 {
                     //if this entity has no default enum applied, apply one
-                    EnumDescriptor enumDesc = Content.commands.Utils.GetEnum(ShortGuidUtils.Generate(comboBox1.Text));
+                    EnumDescriptor enumDesc = Content.Level.Commands.Utils.GetEnum(ShortGuidUtils.Generate(comboBox1.Text));
                     EnumDescriptor.Entry enumEntry = enumDesc.Entries.FirstOrDefault(o => o.Index == -1);
                     comboBox2.SelectedItem = enumEntry.Name;
                 }
                 else
                 {
                     comboBox1.SelectedItem = enumVal.enumID.ToString();
-                    EnumDescriptor enumDesc = Content.commands.Utils.GetEnum(enumVal.enumID);
+                    EnumDescriptor enumDesc = Content.Level.Commands.Utils.GetEnum(enumVal.enumID);
                     EnumDescriptor.Entry enumEntry = enumDesc.Entries.FirstOrDefault(o => o.Index == enumVal.enumIndex);
                     comboBox2.SelectedItem = enumEntry.Name;
                 }
             }
             else
             {
-                EnumDescriptor enumDesc = Content.commands.Utils.GetEnum(cEnum.enumID);
+                EnumDescriptor enumDesc = Content.Level.Commands.Utils.GetEnum(cEnum.enumID);
                 comboBox1.Items.Add(enumDesc.Name);
                 comboBox1.Text = enumDesc.Name;
 
@@ -97,13 +97,13 @@ namespace CommandsEditor.UserControls
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            EnumDescriptor enumDesc = Content.commands.Utils.GetEnum(comboBox1.Text);
+            EnumDescriptor enumDesc = Content.Level.Commands.Utils.GetEnum(comboBox1.Text);
             UpdateEnumOptions(enumDesc);
         }
 
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
-            EnumDescriptor enumDesc = Content.commands.Utils.GetEnum(comboBox1.Text);
+            EnumDescriptor enumDesc = Content.Level.Commands.Utils.GetEnum(comboBox1.Text);
             UpdateEnum(enumDesc);
         }
 
