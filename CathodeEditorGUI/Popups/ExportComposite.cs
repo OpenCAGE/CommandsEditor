@@ -146,10 +146,7 @@ namespace CommandsEditor
         {
             Log("Exporting " + resourceRef.RenderableInstance.Count + " RENDERABLE_INSTANCE resource(s)...");
 
-            for (int i = 0; i < resourceRef.RenderableInstance.Count; i++)
-            {
-                resourceRef.RenderableInstance[i] = lvl.RenderableElements.AddEntry(resourceRef.RenderableInstance[i]);
-            }
+            resourceRef.RenderableInstance = lvl.RenderableElements.AddEntry(resourceRef.RenderableInstance);
         }
 
         private void CopyAnimatedModel(Level lvl, ResourceReference resourceRef)
