@@ -43,6 +43,7 @@ namespace CommandsEditor
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.connectToUnity = new System.Windows.Forms.ToolStripMenuItem();
             this.focusOnSelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.connectToRuntimeUtils = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.compositeViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showExplorerViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -60,19 +61,17 @@ namespace CommandsEditor
             this.writeInstancedResourcesExperimentalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.setNumericStepToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.savePAKAndBINToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openGameOnSaveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpBtn = new System.Windows.Forms.ToolStripButton();
             this.ShowControls = new System.Windows.Forms.ToolStripButton();
-            this.DEBUG_RunChecks = new System.Windows.Forms.ToolStripButton();
             this.DEBUG_DoorPhysEnt = new System.Windows.Forms.ToolStripButton();
-            this.DEBUG_LaunchGame = new System.Windows.Forms.ToolStripButton();
+            this.DEBUG_ReloadLevel = new System.Windows.Forms.ToolStripButton();
             this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
             this.vS2015LightTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.statusText = new System.Windows.Forms.ToolStripStatusLabel();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.connectToRuntimeUtils = new System.Windows.Forms.ToolStripMenuItem();
-            this.DEBUG_ReloadLevel = new System.Windows.Forms.ToolStripButton();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -84,9 +83,7 @@ namespace CommandsEditor
             this.toolStripButton2,
             this.helpBtn,
             this.ShowControls,
-            this.DEBUG_RunChecks,
             this.DEBUG_DoorPhysEnt,
-            this.DEBUG_LaunchGame,
             this.DEBUG_ReloadLevel});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
@@ -154,7 +151,7 @@ namespace CommandsEditor
             this.focusOnSelectedToolStripMenuItem,
             this.connectToRuntimeUtils});
             this.levelViewerToolStripMenuItem.Name = "levelViewerToolStripMenuItem";
-            this.levelViewerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.levelViewerToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.levelViewerToolStripMenuItem.Text = "Level Viewer";
             // 
             // setUpToolStripMenuItem
@@ -195,10 +192,18 @@ namespace CommandsEditor
     "tomatically.";
             this.focusOnSelectedToolStripMenuItem.Click += new System.EventHandler(this.focusOnSelectedToolStripMenuItem_Click);
             // 
+            // connectToRuntimeUtils
+            // 
+            this.connectToRuntimeUtils.Name = "connectToRuntimeUtils";
+            this.connectToRuntimeUtils.Size = new System.Drawing.Size(207, 22);
+            this.connectToRuntimeUtils.Text = "Connect to Runtime Utils";
+            this.connectToRuntimeUtils.ToolTipText = "Enable a websocket connection to the Runtime Utils";
+            this.connectToRuntimeUtils.Click += new System.EventHandler(this.connectToRuntimeUtils_Click);
+            // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(170, 6);
             // 
             // compositeViewerToolStripMenuItem
             // 
@@ -207,7 +212,7 @@ namespace CommandsEditor
             this.autoHideExplorerViewToolStripMenuItem,
             this.searchOnlyCompositeNames});
             this.compositeViewerToolStripMenuItem.Name = "compositeViewerToolStripMenuItem";
-            this.compositeViewerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.compositeViewerToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.compositeViewerToolStripMenuItem.Text = "Composite Display";
             // 
             // showExplorerViewToolStripMenuItem
@@ -243,7 +248,7 @@ namespace CommandsEditor
             this.populateAllNodePinsWhenCreatedToolStripMenuItem,
             this.giveOptionToDeleteEntityWhenNoNodesToolStripMenuItem});
             this.entityDisplayToolStripMenuItem.Name = "entityDisplayToolStripMenuItem";
-            this.entityDisplayToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.entityDisplayToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.entityDisplayToolStripMenuItem.Text = "Entity Display";
             // 
             // showEntityIDs
@@ -277,9 +282,10 @@ namespace CommandsEditor
             this.resetUILayoutsToolStripMenuItem,
             this.writeInstancedResourcesExperimentalToolStripMenuItem,
             this.setNumericStepToolStripMenuItem,
-            this.savePAKAndBINToolStripMenuItem});
+            this.savePAKAndBINToolStripMenuItem,
+            this.openGameOnSaveToolStripMenuItem});
             this.miscToolStripMenuItem.Name = "miscToolStripMenuItem";
-            this.miscToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.miscToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.miscToolStripMenuItem.Text = "Misc";
             // 
             // showConfirmationWhenSavingToolStripMenuItem
@@ -333,6 +339,13 @@ namespace CommandsEditor
             this.savePAKAndBINToolStripMenuItem.Text = "Save Commands PAK and BIN";
             this.savePAKAndBINToolStripMenuItem.Click += new System.EventHandler(this.savePAKAndBINToolStripMenuItem_Click);
             // 
+            // openGameOnSaveToolStripMenuItem
+            // 
+            this.openGameOnSaveToolStripMenuItem.Name = "openGameOnSaveToolStripMenuItem";
+            this.openGameOnSaveToolStripMenuItem.Size = new System.Drawing.Size(291, 22);
+            this.openGameOnSaveToolStripMenuItem.Text = "Open Game On Save";
+            this.openGameOnSaveToolStripMenuItem.Click += new System.EventHandler(this.openGameOnSaveToolStripMenuItem_Click);
+            // 
             // helpBtn
             // 
             this.helpBtn.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
@@ -354,16 +367,6 @@ namespace CommandsEditor
             this.ShowControls.Text = "Controls";
             this.ShowControls.Click += new System.EventHandler(this.ShowControls_Click);
             // 
-            // DEBUG_RunChecks
-            // 
-            this.DEBUG_RunChecks.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.DEBUG_RunChecks.Image = ((System.Drawing.Image)(resources.GetObject("DEBUG_RunChecks.Image")));
-            this.DEBUG_RunChecks.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.DEBUG_RunChecks.Name = "DEBUG_RunChecks";
-            this.DEBUG_RunChecks.Size = new System.Drawing.Size(146, 22);
-            this.DEBUG_RunChecks.Text = "DEBUG: Check Flowgraph";
-            this.DEBUG_RunChecks.Click += new System.EventHandler(this.DEBUG_RunChecks_Click);
-            // 
             // DEBUG_DoorPhysEnt
             // 
             this.DEBUG_DoorPhysEnt.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
@@ -372,17 +375,16 @@ namespace CommandsEditor
             this.DEBUG_DoorPhysEnt.Name = "DEBUG_DoorPhysEnt";
             this.DEBUG_DoorPhysEnt.Size = new System.Drawing.Size(157, 22);
             this.DEBUG_DoorPhysEnt.Text = "DEBUG: Load Door Phys Ent";
-            this.DEBUG_DoorPhysEnt.Click += new System.EventHandler(this.DEBUG_DoorPhysEnt_Click);
             // 
-            // DEBUG_LaunchGame
+            // DEBUG_ReloadLevel
             // 
-            this.DEBUG_LaunchGame.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.DEBUG_LaunchGame.Image = ((System.Drawing.Image)(resources.GetObject("DEBUG_LaunchGame.Image")));
-            this.DEBUG_LaunchGame.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.DEBUG_LaunchGame.Name = "DEBUG_LaunchGame";
-            this.DEBUG_LaunchGame.Size = new System.Drawing.Size(127, 22);
-            this.DEBUG_LaunchGame.Text = "DEBUG: Launch Game";
-            this.DEBUG_LaunchGame.Click += new System.EventHandler(this.DEBUG_LaunchGame_Click);
+            this.DEBUG_ReloadLevel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.DEBUG_ReloadLevel.Image = ((System.Drawing.Image)(resources.GetObject("DEBUG_ReloadLevel.Image")));
+            this.DEBUG_ReloadLevel.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.DEBUG_ReloadLevel.Name = "DEBUG_ReloadLevel";
+            this.DEBUG_ReloadLevel.Size = new System.Drawing.Size(120, 22);
+            this.DEBUG_ReloadLevel.Text = "DEBUG: Reload Level";
+            this.DEBUG_ReloadLevel.Click += new System.EventHandler(this.DEBUG_ReloadLevel_Click);
             // 
             // statusStrip
             // 
@@ -414,24 +416,6 @@ namespace CommandsEditor
             this.dockPanel.Size = new System.Drawing.Size(1581, 757);
             this.dockPanel.TabIndex = 5;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
-            // 
-            // connectToRuntimeUtils
-            // 
-            this.connectToRuntimeUtils.Name = "connectToRuntimeUtils";
-            this.connectToRuntimeUtils.Size = new System.Drawing.Size(207, 22);
-            this.connectToRuntimeUtils.Text = "Connect to Runtime Utils";
-            this.connectToRuntimeUtils.ToolTipText = "Enable a websocket connection to the Runtime Utils";
-            this.connectToRuntimeUtils.Click += new System.EventHandler(this.connectToRuntimeUtils_Click);
-            // 
-            // DEBUG_ReloadLevel
-            // 
-            this.DEBUG_ReloadLevel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.DEBUG_ReloadLevel.Image = ((System.Drawing.Image)(resources.GetObject("DEBUG_ReloadLevel.Image")));
-            this.DEBUG_ReloadLevel.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.DEBUG_ReloadLevel.Name = "DEBUG_ReloadLevel";
-            this.DEBUG_ReloadLevel.Size = new System.Drawing.Size(120, 22);
-            this.DEBUG_ReloadLevel.Text = "DEBUG: Reload Level";
-            this.DEBUG_ReloadLevel.Click += new System.EventHandler(this.DEBUG_ReloadLevel_Click);
             // 
             // CommandsEditor
             // 
@@ -483,9 +467,7 @@ namespace CommandsEditor
         private System.Windows.Forms.ToolStripMenuItem keepFunctionUsesWindowOpenToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem resetUILayoutsToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton DEBUG_DoorPhysEnt;
-        private System.Windows.Forms.ToolStripButton DEBUG_RunChecks;
         private System.Windows.Forms.ToolStripMenuItem writeInstancedResourcesExperimentalToolStripMenuItem;
-        private System.Windows.Forms.ToolStripButton DEBUG_LaunchGame;
         private System.Windows.Forms.ToolStripMenuItem buildLevelToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton ShowControls;
         private System.Windows.Forms.ToolStripMenuItem levelViewerToolStripMenuItem;
@@ -500,5 +482,6 @@ namespace CommandsEditor
         private System.Windows.Forms.ToolStripMenuItem giveOptionToDeleteEntityWhenNoNodesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem connectToRuntimeUtils;
         private System.Windows.Forms.ToolStripButton DEBUG_ReloadLevel;
+        private System.Windows.Forms.ToolStripMenuItem openGameOnSaveToolStripMenuItem;
     }
 }

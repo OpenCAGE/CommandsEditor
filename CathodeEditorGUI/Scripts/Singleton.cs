@@ -120,6 +120,7 @@ namespace CommandsEditor
             public readonly string PrevEntNameSearch = "CS_PrevEntNameSearch";
             public readonly string PopulateAllPinsOnCreateNode = "CS_PopulateAllPinsOnCreateNode";
             public readonly string OptionToDeleteEntityWithNode = "CS_OptionToDeleteEntityWithNode";
+            public readonly string LaunchGameWhenSaved = "CS_LaunchGameWhenSaved";
         }
 
         public static Action OnAnimationsLoaded;

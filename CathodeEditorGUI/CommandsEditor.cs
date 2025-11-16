@@ -217,6 +217,7 @@ namespace CommandsEditor
             useTexturedModelViewExperimentalToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.ShowTexOpt); useTexturedModelViewExperimentalToolStripMenuItem.PerformClick();
             keepFunctionUsesWindowOpenToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.KeepUsesWindowOpen); keepFunctionUsesWindowOpenToolStripMenuItem.PerformClick();
             writeInstancedResourcesExperimentalToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.ExperimentalResourceStuff); writeInstancedResourcesExperimentalToolStripMenuItem.PerformClick();
+            openGameOnSaveToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.LaunchGameWhenSaved); openGameOnSaveToolStripMenuItem.PerformClick();
 
             if (!SettingsManager.IsSet(Singleton.Settings.ShowSavedMsgOpt)) SettingsManager.SetBool(Singleton.Settings.ShowSavedMsgOpt, true);
             showConfirmationWhenSavingToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.ShowSavedMsgOpt); showConfirmationWhenSavingToolStripMenuItem.PerformClick();
@@ -445,8 +446,20 @@ namespace CommandsEditor
 
         private bool Save()
         {
-            _commandsDisplay.Content.Level.Save();
+            //Close alien down if it's open, it conflicts with our write locks!
+            List<Process> allProcesses = new List<Process>(Process.GetProcessesByName("AI"));
+            for (int x = 0; x < allProcesses.Count; x++)
+            {
+                try
+                {
+                    allProcesses[x].Kill();
+                    allProcesses[x].WaitForExit();
+                }
+                catch { }
+            }
+
             //TODO: take a backup first
+            _commandsDisplay.Content.Level.Save();
 
             if (SettingsManager.GetBool(Singleton.Settings.SavePakAndBin))
             {
@@ -467,6 +480,47 @@ namespace CommandsEditor
                 //        string fdsdfsdf = "";
                 //    }
                 //}
+            }
+
+            if (SettingsManager.GetBool(Singleton.Settings.LaunchGameWhenSaved))
+            {
+                PatchManager.Platform platform;
+                switch (OpenCAGE.SettingsManager.GetString("META_GameVersion"))
+                {
+                    case "STEAM":
+                        platform = PatchManager.Platform.STEAM;
+                        break;
+                    case "EPIC_GAMES_STORE":
+                        platform = PatchManager.Platform.EPIC_GAMES_STORE;
+                        break;
+                    case "GOG":
+                        platform = PatchManager.Platform.GOG;
+                        break;
+                    default:
+                        return true;
+                }
+
+                PatchManager.PatchLaunchMode(platform, SharedData.pathToAI, _commandsDisplay.Content.Level.Name);
+                PatchManager.PatchFileIntegrityCheck(platform, SharedData.pathToAI);
+                PatchManager.PatchPopupMessage(platform, SharedData.pathToAI);
+                PatchManager.UpdateLevelListInPackages(platform, SharedData.pathToAI);
+
+                PatchManager.PatchSkipFrontendFlag(platform, SharedData.pathToAI, SettingsManager.GetBool("OPT_SkipFE"));
+                PatchManager.PatchNoUIFlag(platform, SharedData.pathToAI, SettingsManager.GetBool("OPT_HudDisabled"));
+                PatchManager.PatchMemReplayLogFlag(platform, SharedData.pathToAI, SettingsManager.GetBool("OPT_Mem_Replay_Logs"));
+                PatchManager.PatchUIPerfFlag(platform, SharedData.pathToAI, SettingsManager.GetBool("OPT_cUIEnabled_UIPerf"));
+
+                if (platform == PatchManager.Platform.STEAM)
+                {
+                    Process.Start("steam://rungameid/214490");
+                }
+                else
+                {
+                    ProcessStartInfo alienProcess = new ProcessStartInfo();
+                    alienProcess.WorkingDirectory = SettingsManager.GetString("PATH_GameRoot");
+                    alienProcess.FileName = SettingsManager.GetString("PATH_GameRoot") + "/AI.exe";
+                    Process.Start(alienProcess);
+                }
             }
 
             return true;
@@ -697,30 +751,6 @@ namespace CommandsEditor
             Process.Start("https://opencage.co.uk/docs/");
         }
 
-        private void DEBUG_DoorPhysEnt_Click(object sender, EventArgs e)
-        {
-            _commandsDisplay.LoadComposite(new ShortGuid("30-2E-B7-25"));
-            _commandsDisplay.CompositeDisplay.Composite.GetEntityByID(new ShortGuid("88-2E-34-D5")).AddParameter("position", new cTransform(new Vector3(-0.4999240f, 0.0003948f, -40.0000000f), new Vector3(0,0,0)));
-
-            _commandsDisplay.LoadComposite(new ShortGuid("7A-40-D8-07"));
-            _commandsDisplay.CompositeDisplay.Composite.GetEntityByID(new ShortGuid("A4-94-3A-1F")).AddParameter("Animation", new cString(""));
-            _commandsDisplay.CompositeDisplay.DeleteEntity(_commandsDisplay.CompositeDisplay.Composite.GetEntityByID(new ShortGuid("62-05-5E-F3")), false);
-            //_commandsDisplay.CompositeDisplay.Composite.RemoveAllFunctionEntitiesOfType(FunctionType.Zone);
-
-            _commandsDisplay.LoadComposite(new ShortGuid("83-AD-A3-18"));
-            Singleton.OnEntityAdded += DEBUG_EntAdded;
-            _commandsDisplay.CompositeDisplay.AddCopyOfEntity(_commandsDisplay.CompositeDisplay.Composite.GetEntityByID(new ShortGuid("6C-05-BE-DF")));
-        }
-        private void DEBUG_EntAdded(Entity ent)
-        {
-            Singleton.OnEntityAdded -= DEBUG_EntAdded;
-            ((cTransform)ent.GetParameter("position").content).position.Z = -35;
-            _commandsDisplay.CompositeDisplay.LoadEntity(ent, true);
-
-            Save();
-            Process.Start(SharedData.pathToAI + "\\AI.exe");
-        }
-
         List<CollisionMaps.COLLISION_MAPPING> entries = new List<CollisionMaps.COLLISION_MAPPING>();
         private void SaveCollisionMaps(Composite composite)
         {
@@ -763,11 +793,6 @@ namespace CommandsEditor
             }
         }
 
-        private void DEBUG_RunChecks_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void CopyFilesRecursively(string sourcePath, string targetPath)
         {
             foreach (string dirPath in Directory.GetDirectories(sourcePath, "*", SearchOption.AllDirectories))
@@ -778,12 +803,6 @@ namespace CommandsEditor
             {
                 File.Copy(newPath, newPath.Replace(sourcePath, targetPath), true);
             }
-        }
-
-        private void DEBUG_LaunchGame_Click(object sender, EventArgs e)
-        {
-            EditorUtils.PatchLaunchMode(_commandsDisplay.Content.Level.Name);
-            Process.Start(SettingsManager.GetString("PATH_GameRoot") + "AI.exe");
         }
 
         ControlsWindow _controlsWindow = null;
@@ -813,6 +832,12 @@ namespace CommandsEditor
             }
 
             RuntimeUtilsConnection.Send.SendData(new RuntimeUtilsConnection.Packet() { load_level = "Production/HAB_Airport" });
+        }
+
+        private void openGameOnSaveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            openGameOnSaveToolStripMenuItem.Checked = !openGameOnSaveToolStripMenuItem.Checked;
+            SettingsManager.SetBool(Singleton.Settings.LaunchGameWhenSaved, openGameOnSaveToolStripMenuItem.Checked);
         }
     }
 }
