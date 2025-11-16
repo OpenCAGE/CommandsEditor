@@ -117,6 +117,8 @@ namespace CommandsEditor
                 }
             }
 
+            //TODO: Also take across associated OpenCAGE metadata!
+
             //If the user opted to recurse, follow any composite instances through, and copy those too
             if (!recurse.Checked) return;
             foreach (FunctionEntity ent in composite.functions)
@@ -145,7 +147,7 @@ namespace CommandsEditor
         private void CopyRenderableInstance(Level lvl, ResourceReference resourceRef)
         {
             Log("Exporting " + resourceRef.RenderableInstance.Count + " RENDERABLE_INSTANCE resource(s)...");
-            resourceRef.RenderableInstance = lvl.RenderableElements.AddEntry(resourceRef.RenderableInstance);
+            resourceRef.RenderableInstance = lvl.RenderableElements.AddEntry(resourceRef.RenderableInstance, Content.Level.Models);
         }
 
         private void CopyAnimatedModel(Level lvl, ResourceReference resourceRef)
