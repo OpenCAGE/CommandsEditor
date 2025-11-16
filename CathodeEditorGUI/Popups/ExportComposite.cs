@@ -82,7 +82,6 @@ namespace CommandsEditor
                 //Check to see if we should copy resources to the destination, and point to them if we do
                 foreach (FunctionEntity ent in copiedComp.functions)
                 {
-                    ent.resources.RemoveAll(o => o.resource_type == ResourceType.COLLISION_MAPPING); //TEMP: remove all collision mappings for now
                     for (int i = 0; i < ent.resources.Count; i++)
                     {
                         switch (ent.resources[i].resource_type)
@@ -93,6 +92,9 @@ namespace CommandsEditor
                             case ResourceType.RENDERABLE_INSTANCE:
                                 CopyRenderableInstance(lvl, ent.resources[i]);
                                 break;
+                            case ResourceType.COLLISION_MAPPING:
+                                CopyCollisionResource(lvl, ent.resources[i]);
+                                break;
                         }
                     }
 
@@ -100,7 +102,6 @@ namespace CommandsEditor
                     if (resources != null)
                     {
                         List<ResourceReference> resourceRefs = ((cResource)resources.content).value;
-                        resourceRefs.RemoveAll(o => o.resource_type == ResourceType.COLLISION_MAPPING); //TEMP: remove all collision mappings for now
                         for (int i = 0; i < resourceRefs.Count; i++)
                         {
                             switch (resourceRefs[i].resource_type)
@@ -110,6 +111,9 @@ namespace CommandsEditor
                                     break;
                                 case ResourceType.RENDERABLE_INSTANCE:
                                     CopyRenderableInstance(lvl, resourceRefs[i]);
+                                    break;
+                                case ResourceType.COLLISION_MAPPING:
+                                    CopyCollisionResource(lvl, resourceRefs[i]);
                                     break;
                             }
                         }
@@ -156,6 +160,12 @@ namespace CommandsEditor
             int resourceIndex = lvl.EnvironmentAnimations.Entries.Count;
             resourceRef.AnimatedModel = lvl.EnvironmentAnimations.AddEntry(resourceRef.AnimatedModel);
             resourceRef.AnimatedModel.ResourceIndex = resourceIndex; //TODO: would be good to just handle this at build time
+        }
+
+        private void CopyCollisionResource(Level lvl, ResourceReference resourceRef)
+        {
+            Log("Exporting COLLISION_MAPPING resource...");
+            resourceRef.CollisionMapping = lvl.CollisionMaps.AddEntry(resourceRef.CollisionMapping);
         }
     }
 }
