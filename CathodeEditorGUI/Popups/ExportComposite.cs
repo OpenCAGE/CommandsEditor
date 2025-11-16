@@ -145,21 +145,15 @@ namespace CommandsEditor
         private void CopyRenderableInstance(Level lvl, ResourceReference resourceRef)
         {
             Log("Exporting " + resourceRef.RenderableInstance.Count + " RENDERABLE_INSTANCE resource(s)...");
-
             resourceRef.RenderableInstance = lvl.RenderableElements.AddEntry(resourceRef.RenderableInstance);
         }
 
         private void CopyAnimatedModel(Level lvl, ResourceReference resourceRef)
         {
             Log("Exporting ANIMATED_MODEL resource...");
-
-            //todo - should handle this plugin side
-
-            //Get EnvironmentAnimation from base level and copy it
-            EnvironmentAnimations.EnvironmentAnimation anim = lvl.EnvironmentAnimations.AddEntry(resourceRef.AnimatedModel);
-
-            //Update the ResourceIndex to suit the destination EnvironmentAnimation count - TODO: would be good to just handle this at build time
-            anim.ResourceIndex = lvl.EnvironmentAnimations.Entries[lvl.EnvironmentAnimations.Entries.Count - 1].ResourceIndex + 1;
+            int resourceIndex = lvl.EnvironmentAnimations.Entries.Count;
+            resourceRef.AnimatedModel = lvl.EnvironmentAnimations.AddEntry(resourceRef.AnimatedModel);
+            resourceRef.AnimatedModel.ResourceIndex = resourceIndex; //TODO: would be good to just handle this at build time
         }
     }
 }
