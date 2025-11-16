@@ -86,6 +86,7 @@ namespace CommandsEditor.UnityConnection
         private static void LevelSaved()
         {
             _isDirty = false;
+            SendData(GeneratePacket(PacketEvent.LEVEL_LOADED)); //NEW: Fire another loaded event to reload write indexes on the Unity side.
         }
 
         /* A composite has been loaded -> open it in the Unity scene */

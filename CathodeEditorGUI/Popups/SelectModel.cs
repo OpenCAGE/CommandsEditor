@@ -48,7 +48,7 @@ namespace CommandsEditor
 
             foreach (Models.CS2 mesh in Content.Level.Models.Entries)
             {
-                foreach (Models.CS2.Component component in mesh.Components) //todo - i only populate per component, so should i render them differently too? probably. see the screengrab of an example potential issue.
+                foreach (Models.CS2.Component component in mesh.Components)
                 {
                     foreach (Models.CS2.Component.LOD lod in component.LODs)
                     {
@@ -66,7 +66,7 @@ namespace CommandsEditor
             modelRendererHost.Child = modelViewer;
 
             if (defaultSubmesh != null)
-                SelectModelNode(Content.Level.Models.GetWriteIndex(defaultSubmesh)); //todo: we should be using object refs here not indexes
+                SelectModelNode(Content.Level.Models.GetWriteIndex(defaultSubmesh));
 
             this.Disposed += SelectModel_Disposed;
         }
