@@ -183,8 +183,6 @@ namespace CommandsEditor
 
 #if !DEBUG
             DEBUG_DoorPhysEnt.Visible = false;
-            DEBUG_RunChecks.Visible = false;
-            DEBUG_LaunchGame.Visible = false;
             buildLevelToolStripMenuItem.Visible = false;
             DEBUG_ReloadLevel.Visible = false;
             connectToRuntimeUtils.Visible = false;
