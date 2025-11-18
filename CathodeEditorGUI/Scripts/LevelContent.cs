@@ -1,4 +1,4 @@
-﻿using CATHODE;
+using CATHODE;
 using CATHODE.EXPERIMENTAL;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
@@ -96,8 +96,6 @@ namespace CommandsEditor
             {
                 if (Level?.Commands != null)
                 {
-                    Level.Commands.Utils?.Unsubscribe();
-
                     if (FlowgraphLayoutManager.LinkedCommands == Level.Commands)
                     {
                         FlowgraphLayoutManager.LinkCommands(null);

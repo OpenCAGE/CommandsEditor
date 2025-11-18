@@ -160,6 +160,8 @@ namespace CommandsEditor
                 };
                 imageScrollViewer.Content = texturePreview;
                 
+                /*
+                 * TODO!
                 System.Windows.Controls.Button pickTextureButton = new System.Windows.Controls.Button
                 {
                     Content = "Pick Texture...",
@@ -167,6 +169,7 @@ namespace CommandsEditor
                     Tag = i
                 };
                 pickTextureButton.Click += (s, args) => OnPickTexture();
+                */
                 
                 TextBlock detailsText = new TextBlock
                 {
@@ -202,7 +205,7 @@ namespace CommandsEditor
                 
                 tabContent.Children.Add(textureFileText);
                 tabContent.Children.Add(imageScrollViewer);
-                tabContent.Children.Add(pickTextureButton);
+                //tabContent.Children.Add(pickTextureButton); todo
                 tabContent.Children.Add(detailsText);
                 
                 TabItem tabItem = new TabItem
