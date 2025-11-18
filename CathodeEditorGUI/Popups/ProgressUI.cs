@@ -39,11 +39,12 @@ namespace CommandsEditor
 
             this.FormClosing -= ProgressUI_FormClosing;
 
-            if (_level == null)
-                return;
-
-            _level.OnLoadTick -= UpdateProgressBar;
-            _level.OnSaveTick -= UpdateProgressBar;
+            if (_level != null)
+            {
+                _level.OnLoadTick -= UpdateProgressBar;
+                _level.OnSaveTick -= UpdateProgressBar;
+                _level = null;
+            }
         }
 
         public void ShowLevelLoading(Level level) => ShowLevel(level, true);

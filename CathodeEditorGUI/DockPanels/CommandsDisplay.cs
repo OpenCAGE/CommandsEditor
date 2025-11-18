@@ -65,6 +65,18 @@ namespace CommandsEditor.DockPanels
             ReloadList();
         }
 
+        private void ClearTreeNodeTags(TreeNode node)
+        {
+            if (node.Tag != null)
+            {
+                node.Tag = null;
+            }
+            foreach (TreeNode child in node.Nodes)
+            {
+                ClearTreeNodeTags(child);
+            }
+        }
+
         private void CommandsDisplay_Load(object sender, EventArgs e)
         {
             if (Enum.TryParse<View>(SettingsManager.GetString(Singleton.Settings.FileBrowserViewOpt), out View view))
@@ -108,6 +120,28 @@ namespace CommandsEditor.DockPanels
                 _globalEntitySearch.FormClosed -= _globalEntitySearch_FormClosed;
             }
 
+            if (listView1 != null)
+            {
+                foreach (ListViewItem item in listView1.Items)
+                {
+                    if (item.Tag != null)
+                    {
+                        item.Tag = null; 
+                    }
+                }
+                listView1.Items.Clear();
+            }
+            
+            if (treeView1 != null)
+            {
+                foreach (TreeNode node in treeView1.Nodes)
+                {
+                    ClearTreeNodeTags(node);
+                }
+                treeView1.Nodes.Clear();
+            }
+
+            _content?.Dispose();
             _content = null;
 
             _treeUtility?.ForceClearTree();

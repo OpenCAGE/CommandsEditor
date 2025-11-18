@@ -163,14 +163,7 @@ namespace CommandsEditor
             _discord.Initialize();
             _discord.SetPresence(new RichPresence() { Assets = new Assets() { LargeImageKey = "icon" } });
 
-            Singleton.OnCompositeSelected += delegate (Composite composite)
-            {
-                RichPresence newPresence = _discord.CurrentPresence.Copy();
-                newPresence.Details = "Level: " + _commandsDisplay?.Content?.Level?.Name;
-                newPresence.State = "Composite: " + EditorUtils.GetCompositeName(composite);
-                _discord.SetPresence(newPresence);
-                _discord.UpdateStartTime();
-            };
+            Singleton.OnCompositeSelected += OnCompositeSelectedForDiscord;
 
             if (SettingsManager.GetFloat(Singleton.Settings.NumericStep, -1.0f) == -1.0f)
                 SettingsManager.SetFloat(Singleton.Settings.NumericStep, 0.1f);
@@ -321,6 +314,15 @@ namespace CommandsEditor
             SettingsManager.SetString(Singleton.Settings.WindowState, WindowState.ToString());
         }
 
+        private void OnCompositeSelectedForDiscord(Composite composite)
+        {
+            RichPresence newPresence = _discord.CurrentPresence.Copy();
+            newPresence.Details = "Level: " + (_commandsDisplay?.Content?.Level?.Name ?? "No Level");
+            newPresence.State = "Composite: " + EditorUtils.GetCompositeName(composite);
+            _discord.SetPresence(newPresence);
+            _discord.UpdateStartTime();
+        }
+
         private void OnDirtyChanged(bool dirty) => UpdateTitle();
         private void UpdateTitle()
         {
@@ -378,10 +380,17 @@ namespace CommandsEditor
             if (_commandsDisplay != null)
             {
                 Singleton.Editor.DockPanel.ActiveAutoHideContent = null;
-                _levelMenuItems[_commandsDisplay.Content.Level.Name].Checked = false;
+                string oldLevelName = _commandsDisplay.Content?.Level?.Name;
+                if (oldLevelName != null)
+                    _levelMenuItems[oldLevelName].Checked = false;
 
                 _commandsDisplay.CloseAllChildTabs();
                 _commandsDisplay.Close();
+                //_commandsDisplay.Dispose();
+                _commandsDisplay = null;
+                
+                GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true);
+                GC.WaitForPendingFinalizers();
             }
 
             _commandsDisplay = new CommandsDisplay(level);

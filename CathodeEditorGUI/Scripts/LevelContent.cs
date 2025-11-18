@@ -18,8 +18,10 @@ using System.Xml.XPath;
 
 namespace CommandsEditor
 {
-    public class LevelContent
+    public class LevelContent : IDisposable
     {
+        private bool _disposed = false;
+        
         public Level Level;
         public Dictionary<Composite, Dictionary<Entity, ListViewItem>> composite_content_cache = new Dictionary<Composite, Dictionary<Entity, ListViewItem>>();
         public EditorUtils EditorUtils = null; //TODO: this should really be refactored. hacked in legacy stuff.
@@ -79,21 +81,154 @@ namespace CommandsEditor
             Singleton.OnLevelLoaded?.Invoke(this);
         }
 
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            if (disposing)
+            {
+                if (Level?.Commands != null)
+                {
+                    Level.Commands.Utils?.Unsubscribe();
+
+                    if (FlowgraphLayoutManager.LinkedCommands == Level.Commands)
+                    {
+                        FlowgraphLayoutManager.LinkCommands(null);
+                    }
+                    if (ParameterModificationTracker.LinkedCommands == Level.Commands)
+                    {
+                        ParameterModificationTracker.LinkCommands(null);
+                    }
+                }
+
+                if (composite_content_cache != null)
+                {
+                    foreach (var compositeDict in composite_content_cache.Values)
+                    {
+                        if (compositeDict != null)
+                        {
+                            foreach (var kvp in compositeDict)
+                            {
+                                if (kvp.Value != null && kvp.Value.Tag != null)
+                                {
+                                    kvp.Value.Tag = null;
+                                }
+                            }
+                            compositeDict.Clear();
+                        }
+                    }
+                    composite_content_cache.Clear();
+                }
+
+                EditorUtils = null;
+
+                if (Level != null)
+                {
+                    Level.OnLoadTick = null;
+                    Level.OnSaveTick = null;
+                    
+                    if (Level.Textures != null)
+                    {
+                        foreach (var tex in Level.Textures.Entries)
+                        {
+                            if (tex?.TexturePersistent?.Content != null)
+                                tex.TexturePersistent.Content = null;
+                            if (tex?.TextureStreamed?.Content != null)
+                                tex.TextureStreamed.Content = null;
+                        }
+                        Level.Textures.Entries.Clear();
+                    }
+                    
+                    if (Level.Models != null)
+                    {
+                        foreach (var model in Level.Models.Entries)
+                        {
+                            foreach (var component in model?.Components ?? new List<CATHODE.Models.CS2.Component>())
+                            {
+                                foreach (var lod in component?.LODs ?? new List<CATHODE.Models.CS2.Component.LOD>())
+                                {
+                                    foreach (var submesh in lod?.Submeshes ?? new List<CATHODE.Models.CS2.Component.LOD.Submesh>())
+                                    {
+                                        if (submesh?.Data != null)
+                                            submesh.Data = null;
+                                    }
+                                }
+                            }
+                        }
+                        Level.Models.Entries.Clear();
+                    }
+                    
+                    if (Level.Shaders != null)
+                    {
+                        foreach (var shader in Level.Shaders.Entries)
+                        {
+                            if (shader != null)
+                            {
+                                shader.VertexShader = null;
+                                shader.PixelShader = null;
+                                shader.HullShader = null;
+                                shader.DomainShader = null;
+                                shader.GeometryShader = null;
+                                shader.ComputeShader = null;
+                            }
+                        }
+                        Level.Shaders.Entries.Clear();
+                    }
+                    
+                    Level.Commands = null;
+                    Level.Models = null;
+                    Level.Materials = null;
+                    Level.Textures = null;
+                    Level.Shaders = null;
+                    Level.Resources = null;
+                    Level.Movers = null;
+                    Level.CollisionMaps = null;
+                    Level.EnvironmentMaps = null;
+                    Level.Lights = null;
+                    Level.SoundEventData = null;
+                    Level.SoundBankData = null;
+                    Level.WeightedCollisions = null;
+                    Level.MorphTargetDB = null;
+                    Level.MaterialMaps = null;
+                    Level.MaterialMappings = null;
+                    Level.RenderableElements = null;
+                    Level.PathBarrierResources = null;
+                    Level.SoundFlashModels = null;
+                    Level.RadInstanceMap = null;
+                    Level.AlphaLight = null;
+                    Level.AccessorySets = null;
+                    Level.EnvironmentAnimations = null;
+                    Level.PhysicsMaps = null;
+                    Level.SoundNodeNetwork = null;
+                    Level.SoundDialogueLookups = null;
+                    Level.SoundEnvironmentData = null;
+                    Level.SoundLoadZones = null;
+                    Level.StateResources?.Clear();
+                    Level.StateResources = null;
+                    Level.Strings?.Clear();
+                    Level.Strings = null;
+                    
+                    Level = null;
+                }
+                
+                GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true);
+                GC.WaitForPendingFinalizers();
+                GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true);
+            }
+
+            _disposed = true;
+        }
+
         ~LevelContent()
         {
-            if (FlowgraphLayoutManager.LinkedCommands == Level.Commands)
-            {
-                FlowgraphLayoutManager.LinkCommands(null);
-            }
-            if (ParameterModificationTracker.LinkedCommands == Level.Commands)
-            {
-                ParameterModificationTracker.LinkCommands(null);
-            }
-
-            Level = null;
-            EditorUtils = null;
-
-            composite_content_cache.Clear();
+            Dispose(false);
         }
 
         //FOR TESTING ONLY!! Loads a LevelContent object for the given level on the current thread, and generates ShortGuids for every string.
@@ -160,6 +295,9 @@ namespace CommandsEditor
 
         public ListViewItem GenerateListViewItem(Entity entity, Composite composite, CacheMethod cacheMethod = CacheMethod.CHECK_OR_POPULATE_CACHE)
         {
+            if (_disposed || Level?.Commands == null)
+                throw new ObjectDisposedException(nameof(LevelContent));
+
             if (cacheMethod == CacheMethod.CHECK_OR_POPULATE_CACHE)
             {
                 if (composite_content_cache.TryGetValue(composite, out Dictionary<Entity, ListViewItem> items))
