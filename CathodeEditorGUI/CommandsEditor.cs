@@ -413,6 +413,8 @@ namespace CommandsEditor
                 _commandsDisplay.Resize += _commandsDisplay_Resize;
                 _commandsDisplay.FormClosed += _commandsDisplay_FormClosed;
                 _commandsDisplay.UpdateDockState();
+
+                Singleton.Editor.BringToFront();
             }));
         }
 

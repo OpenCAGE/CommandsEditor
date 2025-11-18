@@ -46,7 +46,6 @@ namespace CommandsEditor
         {
             Log("Loading data for " + levelList.SelectedItem.ToString() + "...");
             Level lvl = new Level(SharedData.pathToAI + "/DATA/ENV/" + levelList.SelectedItem.ToString(), Singleton.Global);
-            lvl.Load();
 
             Log("Starting export...");
             AddCompositesRecursively(_composite, lvl);
@@ -84,8 +83,7 @@ namespace CommandsEditor
                 dest = null;
             }
 
-            //TODO: reduce duplication here 
-
+            //Copy composite and bring over the resources referenced by it
             if (dest == null)
             {
                 //We need to add the composite to the new location
@@ -93,45 +91,14 @@ namespace CommandsEditor
                 Composite copiedComp = composite.Copy();
                 lvl.Commands.Entries.Add(copiedComp);
 
-                //Check to see if we should copy resources to the destination, and point to them if we do
                 foreach (FunctionEntity ent in copiedComp.functions)
                 {
-                    for (int i = 0; i < ent.resources.Count; i++)
-                    {
-                        switch (ent.resources[i].resource_type)
-                        {
-                            case ResourceType.ANIMATED_MODEL:
-                                CopyAnimatedModel(lvl, ent.resources[i]);
-                                break;
-                            case ResourceType.RENDERABLE_INSTANCE:
-                                CopyRenderableInstance(lvl, ent.resources[i]);
-                                break;
-                            case ResourceType.COLLISION_MAPPING:
-                                CopyCollisionResource(lvl, ent.resources[i]);
-                                break;
-                        }
-                    }
+                    if (ent.resources != null)
+                        CopyResourcesToLevel(ent.resources, lvl);
 
                     Parameter resources = ent.GetParameter("resource");
                     if (resources != null)
-                    {
-                        List<ResourceReference> resourceRefs = ((cResource)resources.content).value;
-                        for (int i = 0; i < resourceRefs.Count; i++)
-                        {
-                            switch (resourceRefs[i].resource_type)
-                            {
-                                case ResourceType.ANIMATED_MODEL:
-                                    CopyAnimatedModel(lvl, resourceRefs[i]);
-                                    break;
-                                case ResourceType.RENDERABLE_INSTANCE:
-                                    CopyRenderableInstance(lvl, resourceRefs[i]);
-                                    break;
-                                case ResourceType.COLLISION_MAPPING:
-                                    CopyCollisionResource(lvl, resourceRefs[i]);
-                                    break;
-                            }
-                        }
-                    }
+                        CopyResourcesToLevel(((cResource)resources.content).value, lvl);
                 }
             }
 
@@ -149,6 +116,33 @@ namespace CommandsEditor
             }
         }
 
+        private void CopyResourcesToLevel(List<ResourceReference> resourceRefs, Level lvl)
+        {
+            for (int i = 0; i < resourceRefs.Count; i++)
+            {
+                switch (resourceRefs[i].resource_type)
+                {
+                    case ResourceType.ANIMATED_MODEL:
+                        Log("Exporting ANIMATED_MODEL resource...");
+                        int resourceIndex = lvl.EnvironmentAnimations.Entries.Count;
+                        resourceRefs[i].AnimatedModel = lvl.EnvironmentAnimations.AddEntry(resourceRefs[i].AnimatedModel);
+                        resourceRefs[i].AnimatedModel.ResourceIndex = resourceIndex; //TODO: would be good to just handle this at build time
+                        break;
+                    case ResourceType.RENDERABLE_INSTANCE:
+                        Log("Exporting " + resourceRefs[i].RenderableInstance.Count + " RENDERABLE_INSTANCE resource(s)...");
+                        resourceRefs[i].RenderableInstance = lvl.RenderableElements.AddEntry(resourceRefs[i].RenderableInstance, Content.Level.Models);
+                        break;
+                    case ResourceType.COLLISION_MAPPING:
+                        Log("Exporting COLLISION_MAPPING resource...");
+                        resourceRefs[i].CollisionMapping = lvl.CollisionMaps.AddEntry(resourceRefs[i].CollisionMapping);
+                        break;
+                    default:
+                        Log("Skipping " + resourceRefs[i].resource_type + " resource!");
+                        break;
+                }
+            }
+        }
+
         private List<string> log = new List<string>();
         private void Log(string msg)
         {
@@ -160,26 +154,6 @@ namespace CommandsEditor
                 richTextBox1.Text += log[i] + "\n";
             }
             richTextBox1.Refresh();
-        }
-
-        private void CopyRenderableInstance(Level lvl, ResourceReference resourceRef)
-        {
-            Log("Exporting " + resourceRef.RenderableInstance.Count + " RENDERABLE_INSTANCE resource(s)...");
-            resourceRef.RenderableInstance = lvl.RenderableElements.AddEntry(resourceRef.RenderableInstance, Content.Level.Models);
-        }
-
-        private void CopyAnimatedModel(Level lvl, ResourceReference resourceRef)
-        {
-            Log("Exporting ANIMATED_MODEL resource...");
-            int resourceIndex = lvl.EnvironmentAnimations.Entries.Count;
-            resourceRef.AnimatedModel = lvl.EnvironmentAnimations.AddEntry(resourceRef.AnimatedModel);
-            resourceRef.AnimatedModel.ResourceIndex = resourceIndex; //TODO: would be good to just handle this at build time
-        }
-
-        private void CopyCollisionResource(Level lvl, ResourceReference resourceRef)
-        {
-            Log("Exporting COLLISION_MAPPING resource...");
-            resourceRef.CollisionMapping = lvl.CollisionMaps.AddEntry(resourceRef.CollisionMapping);
         }
     }
 }

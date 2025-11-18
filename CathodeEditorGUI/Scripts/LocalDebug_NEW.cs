@@ -20,7 +20,6 @@ namespace CommandsEditor.Scripts
         public static void StripInstancedData(string pathToLevel, Global global)
         {
             Level level = new Level(pathToLevel, global);
-            level.Load();
 
             //Clear out the movers - these are the instanced objects populated from offline data
             level.Movers.Entries.Clear();

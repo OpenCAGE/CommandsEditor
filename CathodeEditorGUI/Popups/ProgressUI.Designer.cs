@@ -51,6 +51,7 @@
             this.MinimizeBox = false;
             this.Name = "ProgressUI";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.TopMost = true;
             this.ResumeLayout(false);
 
         }

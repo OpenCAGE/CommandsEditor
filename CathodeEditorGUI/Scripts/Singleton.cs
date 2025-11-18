@@ -152,11 +152,7 @@ namespace CommandsEditor
             PAK2 animPAK = new PAK2(SharedData.pathToAI + "/DATA/GLOBAL/ANIMATION.PAK");
 
             //Create global
-            Global = new Global()
-            {
-                Textures = new Textures(SharedData.pathToAI + "\\DATA\\ENV\\GLOBAL\\WORLD\\GLOBAL_TEXTURES.ALL.PAK"),
-                AnimationStrings_Debug = new AnimationStrings(animPAK.Entries.FirstOrDefault(o => o.Filename.Contains("ANIM_STRING_DB_DEBUG.BIN")).Content)
-            };
+            Global = new Global(SharedData.pathToAI + "\\DATA\\ENV\\GLOBAL\\", animPAK);
 
             //Load all male/female skeletons
             List<PAK2.File> skeletonDefs = animPAK.Entries.FindAll(o => o.Filename.Length > 17 && o.Filename.Substring(0, 17) == "DATA\\SKELETONDEFS");

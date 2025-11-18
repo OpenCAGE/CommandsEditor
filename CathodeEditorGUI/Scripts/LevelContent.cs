@@ -26,7 +26,7 @@ namespace CommandsEditor
 
         public LevelContent(string levelName)
         {
-            Level = new Level(SharedData.pathToAI + "/DATA/ENV/" + levelName + "/", Singleton.Global);
+            Level = new Level(SharedData.pathToAI + "/DATA/ENV/" + levelName + "/", Singleton.Global, false);
         }
 
         public void Load()
