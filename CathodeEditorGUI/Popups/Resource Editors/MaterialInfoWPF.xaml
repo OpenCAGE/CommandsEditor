@@ -1,38 +1,39 @@
-<UserControl x:Class="AlienPAK.MaterialEditorControlsWPF"
+<UserControl x:Class="CommandsEditor.MaterialInfoWPF"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:HelixToolkit="clr-namespace:HelixToolkit.Wpf;assembly=HelixToolkit.Wpf"
-             xmlns:local="clr-namespace:AlienPAK"
+             xmlns:local="clr-namespace:CommandsEditor"
              mc:Ignorable="d" 
              d:DesignHeight="1000" d:DesignWidth="450">
-    <Grid Width="450">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-        <StackPanel>
-            <GroupBox x:Name="materialPreviewGroup" Header="Samplers" Margin="0 0 0 10">
-                <StackPanel>
-                    <ComboBox x:Name="materialTextureSelection" DropDownClosed="MaterialTextureSelected" Margin="10 10 10 0"></ComboBox>
-                    <TextBlock x:Name="textureFile" Margin="10 10 10 0">text</TextBlock>
-                    <Image x:Name="materialTexturePreview" Source="/icon.ico" Stretch="Uniform" Margin="10" MaxHeight="450" />
-                </StackPanel>
+            <GroupBox x:Name="materialPreviewGroup" Header="Samplers" Margin="0 0 0 10" Grid.Row="0">
+                <TabControl x:Name="samplerTabControl" Margin="10" TabStripPlacement="Top" SelectionChanged="SamplerTabControl_SelectionChanged" />
             </GroupBox>
 
-            <GroupBox x:Name="featureGroup" Header="Features" Margin="0 0 0 10">
-                <StackPanel>
-                    <ComboBox x:Name="featureSelection" Margin="10 10 10 0" SelectionChanged="FeatureSelectionChanged"></ComboBox>
+            <GroupBox x:Name="featureGroup" Header="Features" Margin="0 0 0 10" Grid.Row="1">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="600">
                     <StackPanel x:Name="featureDetailsPanel" Margin="10"></StackPanel>
-                </StackPanel>
+                </ScrollViewer>
             </GroupBox>
 
-            <GroupBox x:Name="parameterGroup" Header="Parameters" Margin="0 0 0 10">
+            <GroupBox x:Name="parameterGroup" Header="Parameters" Margin="0 0 0 10" Grid.Row="2">
                 <StackPanel>
                     <ComboBox x:Name="parameterSelection" Margin="10 10 10 0" SelectionChanged="ParameterSelectionChanged"></ComboBox>
                     <StackPanel x:Name="parameterDetailsPanel" Margin="10"></StackPanel>
                 </StackPanel>
             </GroupBox>
 
-            <StackPanel>
+            <StackPanel Grid.Row="3">
                 <WrapPanel Margin="10">
                     <StackPanel>
                         <WrapPanel>
@@ -46,6 +47,6 @@
                     </StackPanel>
                 </WrapPanel>
             </StackPanel>
-        </StackPanel>
-    </Grid>
+        </Grid>
+    </ScrollViewer>
 </UserControl>

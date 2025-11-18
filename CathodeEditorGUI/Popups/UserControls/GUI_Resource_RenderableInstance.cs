@@ -92,7 +92,7 @@ namespace CommandsEditor.Popups.UserControls
 
         private void editModel_Click(object sender, EventArgs e)
         {
-            SelectModel selectModel = new SelectModel(_selectedModelParent);
+            EditModel selectModel = new EditModel(_selectedModelParent);
             selectModel.Show();
             selectModel.OnModelSelected += ModelSelected;
         }
@@ -105,7 +105,7 @@ namespace CommandsEditor.Popups.UserControls
         }
 
         private int _selectedIndex = -1;
-        private SelectMaterial _matEditor = null;
+        private EditMaterial _matEditor = null;
 
         private void editMaterial_Click(object sender, EventArgs e)
         {
@@ -116,7 +116,7 @@ namespace CommandsEditor.Popups.UserControls
             if (_matEditor != null)
                 _matEditor.Close();
 
-            _matEditor = new SelectMaterial(_selectedMaterials[materials.SelectedIndex]);
+            _matEditor = new EditMaterial(_selectedMaterials[materials.SelectedIndex]);
             _matEditor.FormClosed += Editor_FormClosed;
             _matEditor.OnMaterialSelected += MaterialSelected;
             _matEditor.Show();

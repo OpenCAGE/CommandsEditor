@@ -15,18 +15,20 @@ using System.Windows.Media;
 using System.Numerics;
 using CommandsEditor;
 
-namespace AlienPAK
+namespace CommandsEditor
 {
     /// <summary>
     /// Interaction logic for MaterialEditorControlsWPF.xaml
     /// </summary>
-    public partial class MaterialEditorControlsWPF : UserControl
+    public partial class MaterialInfoWPF : UserControl
     {
-        public Action<int> OnMaterialTextureIndexSelected;
-        public Action<string> OnFeatureSelected;
+        public Action<int> OnSamplerSelected;
         public Action<string> OnParameterSelected;
+        public Action OnPickTexture;
 
-        public MaterialEditorControlsWPF()
+        public TabControl SamplerTabControl => samplerTabControl;
+
+        public MaterialInfoWPF()
         {
             InitializeComponent();
         }
@@ -36,15 +38,10 @@ namespace AlienPAK
             materialPreviewGroup.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
         }
 
-        private void MaterialTextureSelected(object sender, EventArgs e)
+        private void SamplerTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            OnMaterialTextureIndexSelected?.Invoke(materialTextureSelection.SelectedIndex);
-        }
-
-        private void FeatureSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (featureSelection.SelectedItem != null)
-                OnFeatureSelected?.Invoke(featureSelection.SelectedItem.ToString());
+            if (samplerTabControl.SelectedIndex >= 0)
+                OnSamplerSelected?.Invoke(samplerTabControl.SelectedIndex);
         }
 
         private void ParameterSelectionChanged(object sender, SelectionChangedEventArgs e)

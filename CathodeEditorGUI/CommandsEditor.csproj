@@ -179,8 +179,8 @@
     <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
     </Reference>
-    <Reference Include="System.Net.Http, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>packages\System.Net.Http.4.3.0\lib\net46\System.Net.Http.dll</HintPath>
+    <Reference Include="System.Net.Http, Version=4.1.1.3, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Net.Http.4.3.4\lib\net46\System.Net.Http.dll</HintPath>
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
@@ -243,7 +243,7 @@
     </Reference>
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Text.RegularExpressions, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>packages\System.Text.RegularExpressions.4.3.0\lib\net463\System.Text.RegularExpressions.dll</HintPath>
+      <HintPath>packages\System.Text.RegularExpressions.4.3.1\lib\net463\System.Text.RegularExpressions.dll</HintPath>
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
@@ -362,6 +362,12 @@
     <Compile Include="Popups\ProgressUI.Designer.cs">
       <DependentUpon>ProgressUI.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\Resource Editors\EditMaterial.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\Resource Editors\EditMaterial.Designer.cs">
+      <DependentUpon>EditMaterial.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popups\SelectDestinationPin.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -374,14 +380,8 @@
     <Compile Include="Popups\SelectFunctionType.Designer.cs">
       <DependentUpon>SelectFunctionType.cs</DependentUpon>
     </Compile>
-    <Compile Include="Popups\SelectMaterial.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Popups\SelectMaterial.Designer.cs">
-      <DependentUpon>SelectMaterial.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Popups\SelectMaterialControlWPF.xaml.cs">
-      <DependentUpon>SelectMaterialControlWPF.xaml</DependentUpon>
+    <Compile Include="Popups\Resource Editors\MaterialInfoWPF.xaml.cs">
+      <DependentUpon>MaterialInfoWPF.xaml</DependentUpon>
     </Compile>
     <Compile Include="Popups\RenameComposite.cs">
       <SubType>Form</SubType>
@@ -598,10 +598,10 @@
     <Compile Include="Popups\RenameEntity.Designer.cs">
       <DependentUpon>RenameEntity.cs</DependentUpon>
     </Compile>
-    <Compile Include="Popups\SelectModel.cs">
+    <Compile Include="Popups\Resource Editors\SelectModel.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Popups\SelectModel.Designer.cs">
+    <Compile Include="Popups\Resource Editors\SelectModel.Designer.cs">
       <DependentUpon>SelectModel.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\ShowCrossRefs.cs">
@@ -795,14 +795,14 @@
     <EmbeddedResource Include="Popups\ProgressUI.resx">
       <DependentUpon>ProgressUI.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Resource Editors\EditMaterial.resx">
+      <DependentUpon>EditMaterial.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Popups\SelectDestinationPin.resx">
       <DependentUpon>SelectDestinationPin.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\SelectFunctionType.resx">
       <DependentUpon>SelectFunctionType.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Popups\SelectMaterial.resx">
-      <DependentUpon>SelectMaterial.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\RenameComposite.resx">
       <DependentUpon>RenameComposite.cs</DependentUpon>
@@ -861,7 +861,7 @@
     <EmbeddedResource Include="Popups\SelectLevel.resx">
       <DependentUpon>SelectLevel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Popups\SelectModel.resx">
+    <EmbeddedResource Include="Popups\Resource Editors\SelectModel.resx">
       <DependentUpon>SelectModel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\SetNumericStep.resx">
@@ -997,7 +997,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Popups\SelectMaterialControlWPF.xaml">
+    <Page Include="Popups\Resource Editors\MaterialInfoWPF.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

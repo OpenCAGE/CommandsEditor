@@ -16,7 +16,7 @@ using static CATHODE.Models.CS2.Component.LOD;
 
 namespace CommandsEditor
 {
-    public partial class SelectModel : BaseWindow
+    public partial class EditModel : BaseWindow
     {
         GUI_ModelViewer modelViewer = null;
         TreeUtility treeHelper;
@@ -31,7 +31,7 @@ namespace CommandsEditor
 
         public Action<Models.CS2.Component> OnModelSelected;
 
-        public SelectModel(Models.CS2.Component.LOD.Submesh defaultSubmesh = null) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
+        public EditModel(Models.CS2.Component.LOD.Submesh defaultSubmesh = null) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             InitializeComponent();
 
