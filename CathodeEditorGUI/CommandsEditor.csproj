@@ -598,11 +598,11 @@
     <Compile Include="Popups\RenameEntity.Designer.cs">
       <DependentUpon>RenameEntity.cs</DependentUpon>
     </Compile>
-    <Compile Include="Popups\Resource Editors\SelectModel.cs">
+    <Compile Include="Popups\Resource Editors\EditModel.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Popups\Resource Editors\SelectModel.Designer.cs">
-      <DependentUpon>SelectModel.cs</DependentUpon>
+    <Compile Include="Popups\Resource Editors\EditModel.Designer.cs">
+      <DependentUpon>EditModel.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\ShowCrossRefs.cs">
       <SubType>Form</SubType>
@@ -610,7 +610,7 @@
     <Compile Include="Popups\ShowCrossRefs.Designer.cs">
       <DependentUpon>ShowCrossRefs.cs</DependentUpon>
     </Compile>
-    <Compile Include="Popups\UserControls\GUI_ModelViewer.xaml.cs">
+    <Compile Include="Popups\Resource Editors\GUI_ModelViewer.xaml.cs">
       <DependentUpon>GUI_ModelViewer.xaml</DependentUpon>
     </Compile>
     <Compile Include="Popups\UserControls\GUI_Resource_AnimatedModel.cs">
@@ -861,8 +861,8 @@
     <EmbeddedResource Include="Popups\SelectLevel.resx">
       <DependentUpon>SelectLevel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Popups\Resource Editors\SelectModel.resx">
-      <DependentUpon>SelectModel.cs</DependentUpon>
+    <EmbeddedResource Include="Popups\Resource Editors\EditModel.resx">
+      <DependentUpon>EditModel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\SetNumericStep.resx">
       <DependentUpon>SetNumericStep.cs</DependentUpon>
@@ -1005,7 +1005,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Popups\UserControls\GUI_ModelViewer.xaml">
+    <Page Include="Popups\Resource Editors\GUI_ModelViewer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
