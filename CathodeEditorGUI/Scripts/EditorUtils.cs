@@ -306,7 +306,7 @@ namespace CommandsEditor
         {
             if (Content.Level.Commands == null) return;
             hasFinishedCachingEntityNames = false;
-            mainInst?.EnableLoadingOfPaks(false, "Generating caches...");
+            mainInst?.EnableButtons(false, "Generating caches...");
             cachedEntityName.Clear();
             for (int i = 0; i < Content.Level.Commands.Entries.Count; i++)
             {
@@ -318,7 +318,7 @@ namespace CommandsEditor
                     if (!cachedEntityName[comp.shortGUID].ContainsKey(ents[x].shortGUID))
                         cachedEntityName[comp.shortGUID].Add(ents[x].shortGUID, GenerateEntityNameInternal(ents[x], comp));
             }
-            mainInst?.EnableLoadingOfPaks(true, "");
+            mainInst?.EnableButtons(true, "");
             hasFinishedCachingEntityNames = true;
         }
 

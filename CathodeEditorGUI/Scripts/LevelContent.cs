@@ -21,14 +21,15 @@ namespace CommandsEditor
     public class LevelContent
     {
         public Level Level;
-
-        //UI stuff
         public Dictionary<Composite, Dictionary<Entity, ListViewItem>> composite_content_cache = new Dictionary<Composite, Dictionary<Entity, ListViewItem>>();
-
-        //TODO: this should really be refactored. hacked in legacy stuff.
-        public EditorUtils EditorUtils = null;
+        public EditorUtils EditorUtils = null; //TODO: this should really be refactored. hacked in legacy stuff.
 
         public LevelContent(string levelName)
+        {
+            Level = new Level(SharedData.pathToAI + "/DATA/ENV/" + levelName + "/", Singleton.Global);
+        }
+
+        public void Load()
         {
 #if USE_PRETTY_COMPOSITE_PATHS
             Commands.UsePrettyPaths = true;
@@ -36,8 +37,7 @@ namespace CommandsEditor
             Commands.UsePrettyPaths = false;
 #endif
 
-            Level = new Level(SharedData.pathToAI + "/DATA/ENV/" + levelName + "/", Singleton.Global);
-
+            Level.Load();
             if (!Level.Commands.Loaded || Level.Commands.EntryPoints == null || Level.Commands.EntryPoints[0] == null)
             {
                 MessageBox.Show("Failed to load Commands data.\nPlease reset your game files.", "Load failed", MessageBoxButtons.OK, MessageBoxIcon.Error);

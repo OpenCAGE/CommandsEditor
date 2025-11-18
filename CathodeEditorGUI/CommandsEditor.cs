@@ -52,6 +52,8 @@ namespace CommandsEditor
 
         private Dictionary<string, ToolStripMenuItem> _levelMenuItems = new Dictionary<string, ToolStripMenuItem>();
 
+        private Thread _loadThread = null;
+
         private float _defaultSplitterDistance = 0.25f;
         private int _defaultWidth;
         private int _defaultHeight;
@@ -151,6 +153,8 @@ namespace CommandsEditor
             //*/
             //return;
 
+            InitializeComponent();
+
             Singleton.Editor = this;
             Singleton.LoadGlobals();
 
@@ -172,7 +176,6 @@ namespace CommandsEditor
             if (SettingsManager.GetFloat(Singleton.Settings.NumericStepRot, -1.0f) == -1.0f)
                 SettingsManager.SetFloat(Singleton.Settings.NumericStepRot, 1.0f);
 
-            InitializeComponent();
             dockPanel.DockLeftPortion = SettingsManager.GetFloat(Singleton.Settings.CommandsSplitWidth, _defaultSplitterDistance);
             dockPanel.DockBottomPortion = SettingsManager.GetFloat(Singleton.Settings.SplitWidthMainBottom, _defaultSplitterDistance);
             dockPanel.DockRightPortion = SettingsManager.GetFloat(Singleton.Settings.SplitWidthMainRight, _defaultSplitterDistance);
@@ -371,14 +374,10 @@ namespace CommandsEditor
             }
 #endif
 
-            statusText.Text = "Loading " + level + "...";
-            statusStrip.Update();
-
-            _levelSelect = null;
-
             //Close all existing
             if (_commandsDisplay != null)
             {
+                Singleton.Editor.DockPanel.ActiveAutoHideContent = null;
                 _levelMenuItems[_commandsDisplay.Content.Level.Name].Checked = false;
 
                 _commandsDisplay.CloseAllChildTabs();
@@ -387,14 +386,34 @@ namespace CommandsEditor
 
             //Load new
             _commandsDisplay = new CommandsDisplay(level);
-            _commandsDisplay.Resize += _commandsDisplay_Resize;
-            _commandsDisplay.FormClosed += _commandsDisplay_FormClosed;
-            UpdateCommandsDisplayDockState();
+            Singleton.OnLevelLoaded += ShowCommandsDisplayWhenLoaded;
+            _loadThread = new Thread(ThreadedLevelLoader);
+            _loadThread.Start();
 
-            //Sometimes get an error here which appears to be thread related (?) -> investigate next time
+            //Update UI
             _levelMenuItems[_commandsDisplay.Content.Level.Name].Checked = true;
-
             UpdateTitle();
+        }
+
+        private void ThreadedLevelLoader()
+        {
+            EnableButtons(false, "Loading " + _commandsDisplay.Content.Level.Name + "...");
+
+            ProgressUI loadUI = new ProgressUI();
+            loadUI.ShowLevelLoading(_commandsDisplay.Content.Level);
+            _commandsDisplay.Content.Load();
+            loadUI.Close();
+        }
+
+        private void ShowCommandsDisplayWhenLoaded(LevelContent content)
+        {
+            Singleton.OnLevelLoaded -= ShowCommandsDisplayWhenLoaded;
+
+            Singleton.Editor.BeginInvoke(new Action(() => {
+                _commandsDisplay.Resize += _commandsDisplay_Resize;
+                _commandsDisplay.FormClosed += _commandsDisplay_FormClosed;
+                _commandsDisplay.UpdateDockState();
+            }));
         }
 
         private void _commandsDisplay_Resize(object sender, EventArgs e)
@@ -412,38 +431,6 @@ namespace CommandsEditor
         {
             if (_commandsDisplay == null) return;
 
-            Cursor.Current = Cursors.WaitCursor;
-            statusText.Text = "Saving...";
-            statusStrip.Update();
-
-            if (_commandsDisplay.CompositeDisplay != null)
-                _commandsDisplay.CompositeDisplay.SaveAllFlowgraphs();
-            
-            bool saved = Save();
-            statusText.Text = "";
-            Cursor.Current = Cursors.Default;
-
-            ShowSaveMsg(saved);
-        }
-        private void ShowSaveMsg(bool saved)
-        {
-            Singleton.OnSaved?.Invoke();
-            if (saved)
-            {
-                if (SettingsManager.GetBool(Singleton.Settings.ShowSavedMsgOpt))
-                    MessageBox.Show("Saved changes!", "Saved.", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            else
-                MessageBox.Show("Failed to save changes!", "Failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-
-        private void buildLevelToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            //TODO: save but save with all the instanced stuff
-        }
-
-        private bool Save()
-        {
             //Close alien down if it's open, it conflicts with our write locks!
             List<Process> allProcesses = new List<Process>(Process.GetProcessesByName("AI"));
             for (int x = 0; x < allProcesses.Count; x++)
@@ -455,6 +442,16 @@ namespace CommandsEditor
                 }
                 catch { }
             }
+
+            Cursor.Current = Cursors.WaitCursor;
+            statusText.Text = "Saving...";
+            statusStrip.Update();
+
+            ProgressUI saveUI = new ProgressUI();
+            saveUI.ShowLevelSaving(_commandsDisplay.Content.Level);
+
+            if (_commandsDisplay.CompositeDisplay != null)
+                _commandsDisplay.CompositeDisplay.SaveAllFlowgraphs();
 
             //TODO: take a backup first
             _commandsDisplay.Content.Level.Save();
@@ -495,7 +492,7 @@ namespace CommandsEditor
                         platform = PatchManager.Platform.GOG;
                         break;
                     default:
-                        return true;
+                        throw new Exception("Unsupported platform!");
                 }
 
                 PatchManager.PatchLaunchMode(platform, SharedData.pathToAI, _commandsDisplay.Content.Level.Name);
@@ -521,16 +518,38 @@ namespace CommandsEditor
                 }
             }
 
-            return true;
+            statusText.Text = "";
+            Cursor.Current = Cursors.Default;
+            saveUI.Hide();
+
+            Singleton.OnSaved?.Invoke();
+            //if (saved)
+            //{
+                if (SettingsManager.GetBool(Singleton.Settings.ShowSavedMsgOpt))
+                    MessageBox.Show("Saved changes!", "Saved.", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            //}
+            //else
+            //    MessageBox.Show("Failed to save changes!", "Failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
-        /* Enable the option to load */
-        public void EnableLoadingOfPaks(bool shouldEnable, string text)
+        private void buildLevelToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //TODO: save but save with all the instanced stuff
+        }
+
+        public void EnableButtons(bool shouldEnable, string text)
         {
             try
             {
-                toolStrip?.Invoke(new Action(() => { toolStrip.Enabled = shouldEnable; }));
-                statusStrip?.Invoke(new Action(() => { statusText.Text = text; }));
+                if (toolStrip.InvokeRequired)
+                    toolStrip.Invoke(new Action(() => { toolStrip.Enabled = shouldEnable; toolStrip.Refresh(); }));
+                else
+                    toolStrip.Enabled = shouldEnable; toolStrip.Refresh();
+
+                if (statusStrip.InvokeRequired)
+                    statusStrip.Invoke(new Action(() => { statusText.Text = text; statusStrip.Update(); }));
+                else
+                    statusText.Text = text; statusStrip.Update();
             }
             catch { }
         }

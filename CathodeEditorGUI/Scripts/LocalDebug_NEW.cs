@@ -19,8 +19,10 @@ namespace CommandsEditor.Scripts
         //Proof of concept of removing all instanced data from a level, populating the level with only Commands (excluding collisions)
         public static void StripInstancedData(string pathToLevel, Global global)
         {
-            //Clear out the movers - these are the instanced objects populated from offline data
             Level level = new Level(pathToLevel, global);
+            level.Load();
+
+            //Clear out the movers - these are the instanced objects populated from offline data
             level.Movers.Entries.Clear();
             level.Movers.Save();
 
@@ -36,6 +38,7 @@ namespace CommandsEditor.Scripts
             //Strip out light info, again, these point to movers, so get rid
             level.Lights.Indexes.Clear();
             level.Lights.Values.Clear();
+
             level.Lights.Save();
         }
 

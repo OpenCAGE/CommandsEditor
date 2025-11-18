@@ -46,6 +46,7 @@ namespace CommandsEditor
         {
             Log("Loading data for " + levelList.SelectedItem.ToString() + "...");
             Level lvl = new Level(SharedData.pathToAI + "/DATA/ENV/" + levelList.SelectedItem.ToString(), Singleton.Global);
+            lvl.Load();
 
             Log("Starting export...");
             AddCompositesRecursively(_composite, lvl);
