@@ -116,7 +116,6 @@ namespace CommandsEditor
                 if (samplerIndex < material.Shader.SamplerRemaps.Count)
                     textureRefIndex = material.Shader.SamplerRemaps[samplerIndex];
 
-                //Check if this sampler has a texture assigned
                 bool hasTexture = false;
                 Textures.TEX4 texture = null;
                 if (textureRefIndex != 255 && textureRefIndex < material.TextureReferences.Count)
@@ -132,17 +131,14 @@ namespace CommandsEditor
                 if (hasTexture && firstSamplerWithTextureIndex == -1)
                     firstSamplerWithTextureIndex = _controls.SamplerTabControl.Items.Count;
 
-                // Create tab header - just the sampler name, bold if it has a texture
                 TextBlock tabHeader = new System.Windows.Controls.TextBlock
                 {
                     Text = sampler,
                     FontWeight = hasTexture ? System.Windows.FontWeights.Bold : System.Windows.FontWeights.Normal
                 };
 
-                // Create tab content with texture preview and details
                 StackPanel tabContent = new StackPanel { Margin = new System.Windows.Thickness(10) };
                 
-                // Texture preview section
                 TextBlock textureFileText = new TextBlock 
                 { 
                     Text = $"Sampler: {sampler}",

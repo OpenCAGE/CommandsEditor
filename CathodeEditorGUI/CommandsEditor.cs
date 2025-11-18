@@ -53,6 +53,7 @@ namespace CommandsEditor
         private Dictionary<string, ToolStripMenuItem> _levelMenuItems = new Dictionary<string, ToolStripMenuItem>();
 
         private Thread _loadThread = null;
+        private ProgressUI _progressUI = null;
 
         private float _defaultSplitterDistance = 0.25f;
         private int _defaultWidth;
@@ -374,7 +375,6 @@ namespace CommandsEditor
             }
 #endif
 
-            //Close all existing
             if (_commandsDisplay != null)
             {
                 Singleton.Editor.DockPanel.ActiveAutoHideContent = null;
@@ -384,25 +384,47 @@ namespace CommandsEditor
                 _commandsDisplay.Close();
             }
 
-            //Load new
             _commandsDisplay = new CommandsDisplay(level);
             Singleton.OnLevelLoaded += ShowCommandsDisplayWhenLoaded;
+
+            _progressUI = new ProgressUI();
+            _progressUI.ShowLevelLoading(_commandsDisplay.Content.Level);
+            _progressUI.BringToFront();
+            this.BringToFront();
+            this.Activate();
+            EnableButtons(false, "Loading " + _commandsDisplay.Content.Level.Name + "...");
+
             _loadThread = new Thread(ThreadedLevelLoader);
             _loadThread.Start();
 
-            //Update UI
             _levelMenuItems[_commandsDisplay.Content.Level.Name].Checked = true;
             UpdateTitle();
         }
 
         private void ThreadedLevelLoader()
         {
-            EnableButtons(false, "Loading " + _commandsDisplay.Content.Level.Name + "...");
+            try
+            {
+                _commandsDisplay.Content.Load();
+            }
+            catch
+            {
+                this.BeginInvoke(new Action(() =>
+                {
+                    CloseProgressUI();
+                    EnableButtons(true, "");
+                }));
+            }
+        }
 
-            ProgressUI loadUI = new ProgressUI();
-            loadUI.ShowLevelLoading(_commandsDisplay.Content.Level);
-            _commandsDisplay.Content.Load();
-            loadUI.Close();
+        private void CloseProgressUI()
+        {
+            if (_progressUI != null && !_progressUI.IsDisposed)
+            {
+                _progressUI.Close();
+                _progressUI.Dispose();
+                _progressUI = null;
+            }
         }
 
         private void ShowCommandsDisplayWhenLoaded(LevelContent content)
@@ -410,11 +432,19 @@ namespace CommandsEditor
             Singleton.OnLevelLoaded -= ShowCommandsDisplayWhenLoaded;
 
             Singleton.Editor.BeginInvoke(new Action(() => {
+                //Close progress UI first
+                CloseProgressUI();
+                EnableButtons(true, "");
+
                 _commandsDisplay.Resize += _commandsDisplay_Resize;
                 _commandsDisplay.FormClosed += _commandsDisplay_FormClosed;
                 _commandsDisplay.UpdateDockState();
 
+                //Ensure main window comes to front and gets focus
+                Singleton.Editor.WindowState = FormWindowState.Normal;
                 Singleton.Editor.BringToFront();
+                Singleton.Editor.Activate();
+                Singleton.Editor.Focus();
             }));
         }
 
@@ -449,8 +479,8 @@ namespace CommandsEditor
             statusText.Text = "Saving...";
             statusStrip.Update();
 
-            ProgressUI saveUI = new ProgressUI();
-            saveUI.ShowLevelSaving(_commandsDisplay.Content.Level);
+            _progressUI = new ProgressUI();
+            _progressUI.ShowLevelSaving(_commandsDisplay.Content.Level);
 
             if (_commandsDisplay.CompositeDisplay != null)
                 _commandsDisplay.CompositeDisplay.SaveAllFlowgraphs();
@@ -522,7 +552,7 @@ namespace CommandsEditor
 
             statusText.Text = "";
             Cursor.Current = Cursors.Default;
-            saveUI.Hide();
+            CloseProgressUI();
 
             Singleton.OnSaved?.Invoke();
             //if (saved)
