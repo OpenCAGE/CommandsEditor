@@ -73,6 +73,15 @@ namespace AlienPAK
                 case Textures.TextureFormat.R16F:
                     format = DirectXTexUtility.DXGIFormat.R16FLOAT;
                     break;
+                case Textures.TextureFormat.ASTC4X4:
+                    format = DirectXTexUtility.DXGIFormat.ASTC4X4UNORM;
+                    break;
+                case Textures.TextureFormat.ASTC8X8:
+                    format = DirectXTexUtility.DXGIFormat.ASTC8X8UNORM;
+                    break;
+                case Textures.TextureFormat.ASTC12X12:
+                    format = DirectXTexUtility.DXGIFormat.ASTC12X12UNORM;
+                    break;
                 default:
                     format = DirectXTexUtility.DXGIFormat.UNKNOWN;
                     break;

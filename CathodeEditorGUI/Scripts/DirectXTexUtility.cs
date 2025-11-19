@@ -156,6 +156,11 @@ namespace DirectXTex
             P8 = 113,
             A8P8 = 114,
             B4G4R4A4UNORM = 115,
+
+            ASTC4X4UNORM = 134,
+            ASTC8X8UNORM = 162,
+            ASTC12X12UNORM = 186,
+
             FORCEUINT = 0xffffffff
         }
 
