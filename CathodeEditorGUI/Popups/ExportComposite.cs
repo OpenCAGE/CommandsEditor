@@ -44,26 +44,32 @@ namespace CommandsEditor
 
         private void export_Click(object sender, System.EventArgs e)
         {
-            Log("Loading data for " + levelList.SelectedItem.ToString() + "...");
-            Level lvl = new Level(SharedData.pathToAI + "/DATA/ENV/" + levelList.SelectedItem.ToString(), Singleton.Global);
+            //TODO: chuck this on a thread and show progress properly.
 
-            Log("Starting export...");
-            AddCompositesRecursively(_composite, lvl);
-            
-            //Close alien down if it's open, it conflicts with our write locks!
-            List<Process> allProcesses = new List<Process>(Process.GetProcessesByName("AI"));
-            for (int x = 0; x < allProcesses.Count; x++)
             {
-                try
-                {
-                    allProcesses[x].Kill();
-                    allProcesses[x].WaitForExit();
-                }
-                catch { }
-            }
+                Log("Loading data for " + levelList.SelectedItem.ToString() + "...");
+                Level lvl = new Level(SharedData.pathToAI + "/DATA/ENV/" + levelList.SelectedItem.ToString(), Singleton.Global);
 
-            Log("Performing final save for " + levelList.SelectedItem.ToString() + "...");
-            lvl.Save();
+                Log("Starting export...");
+                AddCompositesRecursively(_composite, lvl);
+
+                //Close alien down if it's open, it conflicts with our write locks!
+                List<Process> allProcesses = new List<Process>(Process.GetProcessesByName("AI"));
+                for (int x = 0; x < allProcesses.Count; x++)
+                {
+                    try
+                    {
+                        allProcesses[x].Kill();
+                        allProcesses[x].WaitForExit();
+                    }
+                    catch { }
+                }
+
+                Log("Performing final save for " + levelList.SelectedItem.ToString() + "...");
+                lvl.Save();
+            }
+            GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true);
+            GC.WaitForPendingFinalizers();
 
             MessageBox.Show("Finished porting '" + _composite.name + "' to '" + levelList.SelectedItem.ToString() + "'!", "Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
 

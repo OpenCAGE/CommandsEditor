@@ -440,8 +440,8 @@ namespace CommandsEditor
         {
             Singleton.OnLevelLoaded -= ShowCommandsDisplayWhenLoaded;
 
-            Singleton.Editor.BeginInvoke(new Action(() => {
-                //Close progress UI first
+            Singleton.Editor.BeginInvoke(new Action(() => 
+            {
                 CloseProgressUI();
                 EnableButtons(true, "");
 
@@ -449,8 +449,6 @@ namespace CommandsEditor
                 _commandsDisplay.FormClosed += _commandsDisplay_FormClosed;
                 _commandsDisplay.UpdateDockState();
 
-                //Ensure main window comes to front and gets focus
-                Singleton.Editor.WindowState = FormWindowState.Normal;
                 Singleton.Editor.BringToFront();
                 Singleton.Editor.Activate();
                 Singleton.Editor.Focus();
