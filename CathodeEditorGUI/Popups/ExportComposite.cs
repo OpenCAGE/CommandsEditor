@@ -131,16 +131,16 @@ namespace CommandsEditor
                     case ResourceType.ANIMATED_MODEL:
                         Log("Exporting ANIMATED_MODEL resource...");
                         int resourceIndex = lvl.EnvironmentAnimations.Entries.Count;
-                        resourceRefs[i].AnimatedModel = lvl.EnvironmentAnimations.AddEntry(resourceRefs[i].AnimatedModel);
+                        resourceRefs[i].AnimatedModel = lvl.EnvironmentAnimations.ImportEntry(resourceRefs[i].AnimatedModel);
                         resourceRefs[i].AnimatedModel.ResourceIndex = resourceIndex; //TODO: would be good to just handle this at build time
                         break;
                     case ResourceType.RENDERABLE_INSTANCE:
                         Log("Exporting " + resourceRefs[i].RenderableInstance.Count + " RENDERABLE_INSTANCE resource(s)...");
-                        resourceRefs[i].RenderableInstance = lvl.RenderableElements.AddEntry(resourceRefs[i].RenderableInstance, Content.Level.Models);
+                        resourceRefs[i].RenderableInstance = lvl.RenderableElements.ImportEntry(resourceRefs[i].RenderableInstance, Content.Level.Models);
                         break;
                     case ResourceType.COLLISION_MAPPING:
                         Log("Exporting COLLISION_MAPPING resource...");
-                        resourceRefs[i].CollisionMapping = lvl.CollisionMaps.AddEntry(resourceRefs[i].CollisionMapping);
+                        resourceRefs[i].CollisionMapping = lvl.CollisionMaps.ImportEntry(resourceRefs[i].CollisionMapping);
                         break;
                     default:
                         Log("Skipping " + resourceRefs[i].resource_type + " resource!");

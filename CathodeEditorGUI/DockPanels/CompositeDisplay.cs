@@ -387,6 +387,8 @@ namespace CommandsEditor.DockPanels
             allowedTypes.Add(ResourceType.RENDERABLE_INSTANCE);
             allowedTypes.Add(ResourceType.COLLISION_MAPPING);
 
+            //note - only unsupported now is DNYAMIC_PHYSICS_SYSTEM
+
             bool found = false;
             Parallel.ForEach(comp.functions, (ent, state) =>
             {

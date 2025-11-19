@@ -1,4 +1,4 @@
-using CATHODE;
+﻿using CATHODE;
 using CATHODE.EXPERIMENTAL;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Shapes;
@@ -25,6 +26,8 @@ namespace CommandsEditor
         public Level Level;
         public Dictionary<Composite, Dictionary<Entity, ListViewItem>> composite_content_cache = new Dictionary<Composite, Dictionary<Entity, ListViewItem>>();
         public EditorUtils EditorUtils = null; //TODO: this should really be refactored. hacked in legacy stuff.
+
+        private Thread _globalUpdateThread = null;
 
         public LevelContent(string levelName)
         {
@@ -42,17 +45,27 @@ namespace CommandsEditor
             Level.Load();
             if (!Level.Commands.Loaded || Level.Commands.EntryPoints == null || Level.Commands.EntryPoints[0] == null)
             {
-                MessageBox.Show("Failed to load Commands data.\nPlease reset your game files.", "Load failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Failed to load the level.\nPlease reset your game files!", "Load failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             Level.Commands.Entries = Level.Commands.Entries.OrderBy(o => o.name).ToList();
             Level.Commands.EntryPoints[0].name = EditorUtils.GetCompositeName(Level.Commands.EntryPoints[0]);
 
+            //Import Global stuff, if required
+#if IMPORT_GLOBAL_ASSETS
+            _globalUpdateThread = new Thread(() => {
+                Level.ImportFromGlobal();
+
+                //TODO: should ensure AI is closed before doing this!
+                Singleton.Global.Textures.Entries.Clear();
+                Singleton.Global.Textures.Save();
+            });
+            _globalUpdateThread.Start();
+#endif
+
             //Link up commands to utils and cache some things
             FlowgraphLayoutManager.LinkCommands(Level.Commands);
             ParameterModificationTracker.LinkCommands(Level.Commands);
-
-            //TODO: if we detect this texture PAK hasn't been patched to pull in GLOBAL data, do that now. Util in Level maybe?
 
             //Correct all Entity names that are actually pointers to resources
             foreach (Composite comp in Level.Commands.Entries)
@@ -94,6 +107,12 @@ namespace CommandsEditor
 
             if (disposing)
             {
+                if (_globalUpdateThread != null)
+                {
+                    _globalUpdateThread.Abort();
+                    _globalUpdateThread = null;
+                }
+
                 if (Level?.Commands != null)
                 {
                     if (FlowgraphLayoutManager.LinkedCommands == Level.Commands)
