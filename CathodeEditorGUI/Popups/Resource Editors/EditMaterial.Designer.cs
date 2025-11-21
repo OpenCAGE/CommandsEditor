@@ -1,4 +1,4 @@
-﻿namespace CommandsEditor
+namespace CommandsEditor
 {
     partial class EditMaterial
     {
@@ -87,6 +87,7 @@
             this.Name = "EditMaterial";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Material Editor";
+            this.Load += new System.EventHandler(this.EditMaterial_Load);
             this.ResumeLayout(false);
 
         }

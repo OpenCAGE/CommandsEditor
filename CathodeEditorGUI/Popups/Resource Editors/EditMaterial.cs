@@ -59,8 +59,7 @@ namespace CommandsEditor
             materialList.Columns.Add("Material Name", 360);
             
             var groupedMaterials = _sortedMaterials.Where(m => m.Shader != null).GroupBy(m => m.Shader.Ubershader).OrderBy(g => g.Key.ToString());
-            
-            int itemIndex = 0;
+
             foreach (var group in groupedMaterials)
             {
                 string groupName = group.Key.ToString();
@@ -73,18 +72,21 @@ namespace CommandsEditor
                     item.Group = listGroup;
                     item.Tag = mat;
                     materialList.Items.Add(item);
-                    
+
                     if (mat == material)
-                    {
                         item.Selected = true;
-                        item.EnsureVisible();
-                    }
-                    
-                    itemIndex++;
                 }
             }
-            
             materialList.EndUpdate();
+        }
+
+        private void EditMaterial_Load(object sender, EventArgs e)
+        {
+            if (materialList.SelectedItems.Count > 0)
+            {
+                materialList.SelectedItems[0].EnsureVisible();
+                materialList.EnsureVisible(materialList.SelectedItems[0].Index);
+            }
         }
 
         private void materialList_SelectedIndexChanged(object sender, EventArgs e)

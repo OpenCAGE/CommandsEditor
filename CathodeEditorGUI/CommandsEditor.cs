@@ -449,7 +449,7 @@ namespace CommandsEditor
                 _commandsDisplay.FormClosed += _commandsDisplay_FormClosed;
                 _commandsDisplay.UpdateDockState();
 
-                Singleton.Editor.BringToFront();
+                //Singleton.Editor.BringToFront();
                 Singleton.Editor.Activate();
                 Singleton.Editor.Focus();
             }));

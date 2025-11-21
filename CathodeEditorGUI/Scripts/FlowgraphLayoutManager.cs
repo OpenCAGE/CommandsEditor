@@ -1,4 +1,5 @@
 //#define DO_DUMP
+//#define DISABLE_FLOWGRAPHS
 
 using CATHODE;
 using CATHODE.Scripting;
@@ -142,6 +143,11 @@ namespace CommandsEditor
         //Checks the given composite against the layout DB to see if the links/entities match
         public static void EvaluateCompatibility(Composite composite)
         {
+#if DISABLE_FLOWGRAPHS
+            SetCompatibilityInfo(composite, false);
+            return;
+#endif
+
             Debug.Log("Flowgraph Manager", "Calculating flowgraph compatibility...");
 
             //If there are links, make sure they match up with the stored layout (if there is one)
