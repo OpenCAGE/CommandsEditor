@@ -75,52 +75,25 @@ namespace CommandsEditor
                 switch (resources[i].resource_type)
                 {
                     case ResourceType.ANIMATED_MODEL:
-                        {
-                            resourceGroup = new GUI_Resource_AnimatedModel();
-                            ((GUI_Resource_AnimatedModel)resourceGroup).PopulateUI(resources[i].AnimatedModel);
-                            break;
-                        }
+                        if (resources[i].AnimatedModel == null)
+                            continue;
+                        resourceGroup = new GUI_Resource_AnimatedModel();
+                        break;
                     case ResourceType.COLLISION_MAPPING:
-                        {
-                            //TODO: Pass this info through, and handle making new instances...
-                            Content.Level.CollisionMaps.Entries.FindAll(o => o.Entity.entity_id == resources[i].entityID);
-                            var colmap = resources[i].CollisionMapping; //todo!!!!!
-
-                            resourceGroup = new GUI_Resource_CollisionMapping();
-                            ((GUI_Resource_CollisionMapping)resourceGroup).PopulateUI(resources[i].position, resources[i].rotation, resources[i].entityID);
-                            break;
-                        }
-                    case ResourceType.NAV_MESH_BARRIER_RESOURCE:
-                        {
-                            resourceGroup = new GUI_Resource_NavMeshBarrierResource();
-                            ((GUI_Resource_NavMeshBarrierResource)resourceGroup).PopulateUI(resources[i].position, resources[i].rotation);
-                            break;
-                        }
+                        if (resources[i].CollisionMapping == null)
+                            continue;
+                        resourceGroup = new GUI_Resource_CollisionMapping();
+                        break;
                     case ResourceType.RENDERABLE_INSTANCE:
-                        {
-                            resourceGroup = new GUI_Resource_RenderableInstance();
-                            ((GUI_Resource_RenderableInstance)resourceGroup).PopulateUI(resources[i].position, resources[i].rotation, resources[i].RenderableInstance);
-                            break;
-                        }
-                        /*
-                    case ResourceType.DYNAMIC_PHYSICS_SYSTEM:
-                        {
-                            //TODO: Pass this info through, and handle making new instances...
-                            Content.Level.PhysicsMaps.Entries.FindAll(o => o.entity.entity_id == resources[i].collisionID);
-
-                            resourceGroup = new GUI_Resource_DynamicPhysicsSystem();
-                            ((GUI_Resource_DynamicPhysicsSystem)resourceGroup).PopulateUI(_entDisplay, resources[i].index); 
-                            break;
-                        }
-                        */
+                        if (resources[i].RenderableInstance == null)
+                            continue;
+                        resourceGroup = new GUI_Resource_RenderableInstance();
+                        break;
                     default:
-                        {
-                            resourceGroup = new GUI_Resource_Default();
-                            ((GUI_Resource_Default)resourceGroup).PopulateUI(resources[i].resource_type);
-                            break;
-                        }
+                        resourceGroup = new GUI_Resource_Default();
+                        break;
                 }
-                resourceGroup.ResourceReference = resources[i];
+                resourceGroup.PopulateUI(resources[i]);
                 resourceGroup.Location = new Point(15, current_ui_offset);
                 current_ui_offset += resourceGroup.Height + 6;
                 resource_panel.Controls.Add(resourceGroup);
@@ -130,6 +103,8 @@ namespace CommandsEditor
         /* Add a new resource reference to the list */
         private void addResource_Click(object sender, EventArgs e)
         {
+            //todo - this should be handled better - in particular, if you make a ModelReference entity for example, the appropriate resources should be added by default
+
             ResourceType type = (ResourceType)Enum.Parse(typeof(ResourceType), resourceType.Items[resourceType.SelectedIndex].ToString());
 
             //If we don't have EntityDisplay, we can't make DynamicPhysicsSystem: this is the result of this editor being made in a crap way. really we should probs implicitly handle the resource parameter
@@ -191,9 +166,10 @@ namespace CommandsEditor
             }
         }
 
-        /* Save all changes back out */
+        //this needs removing
         private void SaveChanges_Click(object sender, EventArgs e)
         {
+            /*
             List<ResourceReference> newResourceReferences = new List<ResourceReference>();
             for (int i = 0; i < resource_panel.Controls.Count; i++)
             {
@@ -233,6 +209,7 @@ namespace CommandsEditor
                 newResourceReferences.Add(resourceRef);
             }
             resources = newResourceReferences;
+            */
             OnSaved?.Invoke(resources);
             this.Close();
         }

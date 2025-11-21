@@ -10,6 +10,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Numerics;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -30,6 +31,13 @@ namespace CommandsEditor.Popups.UserControls
         {
             InitializeComponent();
 
+            POS_X.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStep);
+            POS_Y.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStep);
+            POS_Z.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStep);
+            ROT_X.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStepRot);
+            ROT_Y.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStepRot);
+            ROT_Z.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStepRot);
+
             this.Disposed += GUI_Resource_RenderableInstance_Disposed;
         }
         private void GUI_Resource_RenderableInstance_Disposed(object sender, EventArgs e)
@@ -37,29 +45,21 @@ namespace CommandsEditor.Popups.UserControls
             _matEditor?.Close();
         }
 
-        public void PopulateUI(Vector3 position, Vector3 rotation, List<RenderableElements.Element> renderables)
+        public override void PopulateUI(ResourceReference resource)
         {
-            POS_X.Value = (decimal)position.X;
-            POS_Y.Value = (decimal)position.Y;
-            POS_Z.Value = (decimal)position.Z;
+            POS_X.Value = (decimal)resource.position.X;
+            POS_Y.Value = (decimal)resource.position.Y;
+            POS_Z.Value = (decimal)resource.position.Z;
+            ROT_X.Value = (decimal)resource.rotation.X;
+            ROT_Y.Value = (decimal)resource.rotation.Y;
+            ROT_Z.Value = (decimal)resource.rotation.Z;
 
-            ROT_X.Value = (decimal)rotation.X;
-            ROT_Y.Value = (decimal)rotation.Y;
-            ROT_Z.Value = (decimal)rotation.Z;
-
-            PopulateUI(renderables);
+            PopulateUI(resource.RenderableInstance);
 
             groupBox1.Size = new Size(832, 227);
             this.Size = new Size(838, 232);
 
             _launchedWithPosAndRot = true;
-
-            POS_X.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStep);
-            POS_Y.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStep);
-            POS_Z.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStep);
-            ROT_X.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStepRot);
-            ROT_Y.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStepRot);
-            ROT_Z.Increment = (decimal)SettingsManager.GetFloat(Singleton.Settings.NumericStepRot);
         }
         public void PopulateUI(List<RenderableElements.Element> renderables)
         {

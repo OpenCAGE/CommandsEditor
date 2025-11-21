@@ -1,4 +1,5 @@
-﻿using CATHODE.Scripting;
+﻿using CATHODE;
+using CATHODE.Scripting;
 using CommandsEditor.UserControls;
 using System;
 using System.Collections.Generic;
@@ -14,13 +15,16 @@ namespace CommandsEditor.Popups.UserControls
 {
     public partial class ResourceUserControl : UserControl
     {
-        public ResourceReference ResourceReference;
-
         protected LevelContent Content => Singleton.Editor?.CommandsDisplay?.Content;
 
         public ResourceUserControl()
         {
             InitializeComponent();
+        }
+
+        public virtual void PopulateUI(ResourceReference resource)
+        {
+
         }
     }
 }

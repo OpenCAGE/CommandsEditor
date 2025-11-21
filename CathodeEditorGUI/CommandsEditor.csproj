@@ -326,6 +326,12 @@
     <Compile Include="Popups\ControlsWindow.Designer.cs">
       <DependentUpon>ControlsWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\Resource Editors\EditMaterialMapping.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\Resource Editors\EditMaterialMapping.Designer.cs">
+      <DependentUpon>EditMaterialMapping.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popups\ExportComposite.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -522,12 +528,6 @@
     <Compile Include="Popups\UserControls\GUI_Resource_Default.Designer.cs">
       <DependentUpon>GUI_Resource_Default.cs</DependentUpon>
     </Compile>
-    <Compile Include="Popups\UserControls\GUI_Resource_DynamicPhysicsSystem.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Popups\UserControls\GUI_Resource_DynamicPhysicsSystem.Designer.cs">
-      <DependentUpon>GUI_Resource_DynamicPhysicsSystem.cs</DependentUpon>
-    </Compile>
     <Compile Include="Popups\UserControls\GUI_SplineViewer.xaml.cs">
       <DependentUpon>GUI_SplineViewer.xaml</DependentUpon>
     </Compile>
@@ -624,12 +624,6 @@
     </Compile>
     <Compile Include="Popups\UserControls\GUI_Resource_CollisionMapping.Designer.cs">
       <DependentUpon>GUI_Resource_CollisionMapping.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Popups\UserControls\GUI_Resource_NavMeshBarrierResource.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Popups\UserControls\GUI_Resource_NavMeshBarrierResource.Designer.cs">
-      <DependentUpon>GUI_Resource_NavMeshBarrierResource.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\UserControls\GUI_Resource_RenderableInstance.cs">
       <SubType>UserControl</SubType>
@@ -774,6 +768,9 @@
     <EmbeddedResource Include="Popups\ControlsWindow.resx">
       <DependentUpon>ControlsWindow.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Resource Editors\EditMaterialMapping.resx">
+      <DependentUpon>EditMaterialMapping.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Popups\ExportComposite.resx">
       <DependentUpon>ExportComposite.cs</DependentUpon>
     </EmbeddedResource>
@@ -893,12 +890,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\UserControls\GUI_Resource_CollisionMapping.resx">
       <DependentUpon>GUI_Resource_CollisionMapping.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Popups\UserControls\GUI_Resource_DynamicPhysicsSystem.resx">
-      <DependentUpon>GUI_Resource_DynamicPhysicsSystem.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Popups\UserControls\GUI_Resource_NavMeshBarrierResource.resx">
-      <DependentUpon>GUI_Resource_NavMeshBarrierResource.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\UserControls\GUI_Resource_Default.resx">
       <DependentUpon>GUI_Resource_Default.cs</DependentUpon>

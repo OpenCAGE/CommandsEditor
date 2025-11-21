@@ -21,9 +21,9 @@ namespace CommandsEditor.Popups.UserControls
             InitializeComponent();
         }
 
-        public void PopulateUI(ResourceType type)
+        public override void PopulateUI(ResourceReference resource)
         {
-            groupBox1.Text = type.ToString();
+            groupBox1.Text = resource.resource_type.ToString();
         }
     }
 }
