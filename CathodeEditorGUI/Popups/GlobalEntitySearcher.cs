@@ -147,6 +147,7 @@ namespace CommandsEditor
                 return;
             }
             SettingsManager.SetString(Singleton.Settings.PrevEntNameSearch, name);
+            bool showID = SettingsManager.GetBool(Singleton.Settings.ShowShortGuids);
 
             _entityComposites.Clear();
 
@@ -155,7 +156,7 @@ namespace CommandsEditor
             entityList.Groups.Clear();
             foreach (Composite comp in Content.Level.Commands.Entries)
             {
-                List<Entity> ents = comp.GetEntities().FindAll(o => Content.Level.Commands.Utils.GetEntityName(comp, o).ToUpper().Replace(" ", "").Contains(name.ToUpper().Replace(" ", "")));
+                List<Entity> ents = comp.GetEntities().FindAll(o => Content.Level.Commands.Utils.GetEntityName(comp, o).ToUpper().Replace(" ", "").Contains(name.ToUpper().Replace(" ", "")) || (showID && o.shortGUID.ToByteString().Replace("-", "").Contains(name.Replace("-", ""))));
                 if (ents.Count == 0)
                     continue;
                 entityList.Groups.Add(new ListViewGroup() { Header = comp.name });
