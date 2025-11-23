@@ -22,7 +22,9 @@ namespace CommandsEditor.Popups.UserControls
         public Vector3 Position { get { return new Vector3((float)POS_X.Value, (float)POS_Y.Value, (float)POS_Z.Value); } }
         public Vector3 Rotation { get { return new Vector3((float)ROT_X.Value, (float)ROT_Y.Value, (float)ROT_Z.Value); } }
 
+        private ResourceReference _resourceRef;
         private COLLISION_MAPPING _currentCollisionMapping;
+
         private Dictionary<CheckBox, CollisionFlags> _flagCheckboxes = new Dictionary<CheckBox, CollisionFlags>();
         private Dictionary<CheckBox, CollisionFlags> _flagMasks = new Dictionary<CheckBox, CollisionFlags>();
 
@@ -117,6 +119,9 @@ namespace CommandsEditor.Popups.UserControls
 
         public override void PopulateUI(ResourceReference resource)
         {
+            _currentCollisionMapping = resource.CollisionMapping;
+            _resourceRef = resource;
+
             //TODO: can we deprecate these?
             POS_X.Value = (decimal)resource.position.X;
             POS_Y.Value = (decimal)resource.position.Y;
@@ -124,8 +129,6 @@ namespace CommandsEditor.Popups.UserControls
             ROT_X.Value = (decimal)resource.rotation.X;
             ROT_Y.Value = (decimal)resource.rotation.Y;
             ROT_Z.Value = (decimal)resource.rotation.Z;
-
-            _currentCollisionMapping = resource.CollisionMapping;
 
             CollisionFlags flags = _currentCollisionMapping.Flags;
             foreach (var kvp in _flagCheckboxes)
@@ -182,6 +185,37 @@ namespace CommandsEditor.Popups.UserControls
         {
             _currentCollisionMapping.MaterialMapping = null;
             materialMappingName.Text = _currentCollisionMapping?.MaterialMapping?.Name;
+        }
+
+        private void POS_X_ValueChanged(object sender, EventArgs e)
+        {
+            _resourceRef.position.X = (float)POS_X.Value;
+            Singleton.OnResourceModified?.Invoke();
+        }
+        private void POS_Y_ValueChanged(object sender, EventArgs e)
+        {
+            _resourceRef.position.Y = (float)POS_Y.Value;
+            Singleton.OnResourceModified?.Invoke();
+        }
+        private void POS_Z_ValueChanged(object sender, EventArgs e)
+        {
+            _resourceRef.position.Z = (float)POS_Z.Value;
+            Singleton.OnResourceModified?.Invoke();
+        }
+        private void ROT_X_ValueChanged(object sender, EventArgs e)
+        {
+            _resourceRef.rotation.X = (float)ROT_X.Value;
+            Singleton.OnResourceModified?.Invoke();
+        }
+        private void ROT_Y_ValueChanged(object sender, EventArgs e)
+        {
+            _resourceRef.rotation.Y = (float)ROT_Y.Value;
+            Singleton.OnResourceModified?.Invoke();
+        }
+        private void ROT_Z_ValueChanged(object sender, EventArgs e)
+        {
+            _resourceRef.rotation.Z = (float)ROT_Z.Value;
+            Singleton.OnResourceModified?.Invoke();
         }
     }
 }

@@ -22,6 +22,7 @@ namespace CommandsEditor.Popups.UserControls
         public Vector3 Position { get { return new Vector3((float)POS_X.Value, (float)POS_Y.Value, (float)POS_Z.Value); } }
         public Vector3 Rotation { get { return new Vector3((float)ROT_X.Value, (float)ROT_Y.Value, (float)ROT_Z.Value); } }
 
+        private ResourceReference _resourceRef;
         private Models.CS2.Component.LOD.Submesh _selectedModelParent = null;
         private List<Materials.Material> _selectedMaterials = new List<Materials.Material>();
 
@@ -47,6 +48,8 @@ namespace CommandsEditor.Popups.UserControls
 
         public override void PopulateUI(ResourceReference resource)
         {
+            _resourceRef = resource;
+
             POS_X.Value = (decimal)resource.position.X;
             POS_Y.Value = (decimal)resource.position.Y;
             POS_Z.Value = (decimal)resource.position.Z;
@@ -54,12 +57,8 @@ namespace CommandsEditor.Popups.UserControls
             ROT_Y.Value = (decimal)resource.rotation.Y;
             ROT_Z.Value = (decimal)resource.rotation.Z;
 
-            PopulateUI(resource.RenderableInstance);
-
-            groupBox1.Size = new Size(832, 227);
-            this.Size = new Size(838, 232);
-
             _launchedWithPosAndRot = true;
+            PopulateUI(resource.RenderableInstance);
         }
         public void PopulateUI(List<RenderableElements.Element> renderables)
         {
@@ -85,6 +84,7 @@ namespace CommandsEditor.Popups.UserControls
 
             if (!_launchedWithPosAndRot)
             {
+                // this hides the position/rotation controls 
                 groupBox1.Size = new Size(832, 180);
                 this.Size = new Size(838, 186);
             }
@@ -102,6 +102,8 @@ namespace CommandsEditor.Popups.UserControls
             this.Focus();
 
             PopulateUI(model.ToRenderableElements());
+
+            UpdateResource();
         }
 
         private int _selectedIndex = -1;
@@ -135,6 +137,15 @@ namespace CommandsEditor.Popups.UserControls
             _selectedMaterials[_selectedIndex] = material;
             materials.Items[_selectedIndex] = material.Name;
             materials.SelectedIndex = _selectedIndex;
+
+            UpdateResource();
+        }
+
+        private void UpdateResource()
+        {
+            if (_resourceRef == null) return;
+            _resourceRef.RenderableInstance = GetAsRenderableElements();
+            Singleton.OnResourceModified?.Invoke();
         }
 
         public List<RenderableElements.Element> GetAsRenderableElements()
@@ -147,6 +158,43 @@ namespace CommandsEditor.Popups.UserControls
                 reds[i].Material = _selectedMaterials[i];
             }
             return reds;
+        }
+
+        private void POS_X_ValueChanged(object sender, EventArgs e)
+        {
+            if (_resourceRef == null) return;
+            _resourceRef.position.X = (float)POS_X.Value;
+            Singleton.OnResourceModified?.Invoke();
+        }
+        private void POS_Y_ValueChanged(object sender, EventArgs e)
+        {
+            if (_resourceRef == null) return;
+            _resourceRef.position.Y = (float)POS_Y.Value;
+            Singleton.OnResourceModified?.Invoke();
+        }
+        private void POS_Z_ValueChanged(object sender, EventArgs e)
+        {
+            if (_resourceRef == null) return;
+            _resourceRef.position.Z = (float)POS_Z.Value;
+            Singleton.OnResourceModified?.Invoke();
+        }
+        private void ROT_X_ValueChanged(object sender, EventArgs e)
+        {
+            if (_resourceRef == null) return;
+            _resourceRef.rotation.X = (float)ROT_X.Value;
+            Singleton.OnResourceModified?.Invoke();
+        }
+        private void ROT_Y_ValueChanged(object sender, EventArgs e)
+        {
+            if (_resourceRef == null) return;
+            _resourceRef.rotation.Y = (float)ROT_Y.Value;
+            Singleton.OnResourceModified?.Invoke();
+        }
+        private void ROT_Z_ValueChanged(object sender, EventArgs e)
+        {
+            if (_resourceRef == null) return;
+            _resourceRef.rotation.Z = (float)ROT_Z.Value;
+            Singleton.OnResourceModified?.Invoke();
         }
     }
 }

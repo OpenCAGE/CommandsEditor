@@ -232,6 +232,7 @@
             // 
             // btnClearMaterialMapping
             // 
+            this.btnClearMaterialMapping.Enabled = false;
             this.btnClearMaterialMapping.Location = new System.Drawing.Point(345, 71);
             this.btnClearMaterialMapping.Name = "btnClearMaterialMapping";
             this.btnClearMaterialMapping.Size = new System.Drawing.Size(75, 23);
@@ -242,6 +243,7 @@
             // 
             // btnSetMaterialMapping
             // 
+            this.btnSetMaterialMapping.Enabled = false;
             this.btnSetMaterialMapping.Location = new System.Drawing.Point(321, 47);
             this.btnSetMaterialMapping.Name = "btnSetMaterialMapping";
             this.btnSetMaterialMapping.Size = new System.Drawing.Size(100, 23);
@@ -261,6 +263,7 @@
             // 
             // btnSetMaterial
             // 
+            this.btnSetMaterial.Enabled = false;
             this.btnSetMaterial.Location = new System.Drawing.Point(320, 22);
             this.btnSetMaterial.Name = "btnSetMaterial";
             this.btnSetMaterial.Size = new System.Drawing.Size(100, 23);
@@ -305,6 +308,7 @@
             2328306,
             0,
             -2147483648});
+            this.ROT_Z.ValueChanged += new System.EventHandler(this.ROT_Z_ValueChanged);
             // 
             // groupBoxProperties
             // 
@@ -330,6 +334,7 @@
             // 
             // numericCollisionProxyIndex
             // 
+            this.numericCollisionProxyIndex.Enabled = false;
             this.numericCollisionProxyIndex.Location = new System.Drawing.Point(304, 20);
             this.numericCollisionProxyIndex.Maximum = new decimal(new int[] {
             32767,
@@ -356,6 +361,7 @@
             // 
             // numericIndex
             // 
+            this.numericIndex.Enabled = false;
             this.numericIndex.Location = new System.Drawing.Point(48, 20);
             this.numericIndex.Maximum = new decimal(new int[] {
             2147483647,
@@ -407,6 +413,7 @@
             2328306,
             0,
             -2147483648});
+            this.POS_X.ValueChanged += new System.EventHandler(this.POS_X_ValueChanged);
             // 
             // ROT_Y
             // 
@@ -435,6 +442,7 @@
             2328306,
             0,
             -2147483648});
+            this.ROT_Y.ValueChanged += new System.EventHandler(this.ROT_Y_ValueChanged);
             // 
             // POS_Z
             // 
@@ -463,6 +471,7 @@
             2328306,
             0,
             -2147483648});
+            this.POS_Z.ValueChanged += new System.EventHandler(this.POS_Z_ValueChanged);
             // 
             // label3
             // 
@@ -518,6 +527,7 @@
             2328306,
             0,
             -2147483648});
+            this.POS_Y.ValueChanged += new System.EventHandler(this.POS_Y_ValueChanged);
             // 
             // ROT_X
             // 
@@ -546,6 +556,7 @@
             2328306,
             0,
             -2147483648});
+            this.ROT_X.ValueChanged += new System.EventHandler(this.ROT_X_ValueChanged);
             // 
             // label7
             // 
@@ -571,7 +582,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.groupBox1);
             this.Name = "GUI_Resource_CollisionMapping";
-            this.Size = new System.Drawing.Size(838, 691);
+            this.Size = new System.Drawing.Size(838, 400);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBoxFlags.ResumeLayout(false);

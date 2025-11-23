@@ -14,6 +14,7 @@ using System.Windows.Interop;
 using CommandsEditor.Popups.Base;
 using CATHODE.EXPERIMENTAL;
 using CommandsEditor.DockPanels;
+using CATHODE.Scripting.Internal;
 
 namespace CommandsEditor
 {
@@ -21,22 +22,18 @@ namespace CommandsEditor
 
     public partial class AddOrEditResource : BaseWindow
     {
-        public Action<List<ResourceReference>> OnSaved;
-        
-        private List<ResourceReference> resources = null;
         private ShortGuid guid_parent;
         private int current_ui_offset = 7;
 
         private EntityInspector _entDisplay = null;
 
+        private FunctionEntity _entity = null;
+        private cResource _parameter = null;
+
         public AddOrEditResource(EntityInspector entDisplay) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             _entDisplay = entDisplay;
-
-            List<ResourceReference> resRefs = ((FunctionEntity)entDisplay.Entity).resources;
-            ResourceReference[] copy = new ResourceReference[resRefs.Count];
-            resRefs.CopyTo(copy);
-            resources = copy.ToList<ResourceReference>();
+            _entity = (FunctionEntity)entDisplay.Entity;
             guid_parent = entDisplay.Entity.shortGUID;
 
             InitializeComponent();
@@ -47,14 +44,11 @@ namespace CommandsEditor
             RefreshUI();
         }
 
-        public AddOrEditResource(EntityInspector entDisplay, List<ResourceReference> resRefs, ShortGuid parent, string windowTitle) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
+        public AddOrEditResource(EntityInspector entDisplay, cResource parameter, string windowTitle) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             _entDisplay = entDisplay;
-
-            ResourceReference[] copy = new ResourceReference[resRefs.Count];
-            resRefs.CopyTo(copy);
-            resources = copy.ToList<ResourceReference>();
-            guid_parent = parent;
+            _parameter = parameter;
+            guid_parent = parameter.shortGUID;
 
             InitializeComponent();
 
@@ -69,6 +63,7 @@ namespace CommandsEditor
             current_ui_offset = 7;
             resource_panel.Controls.Clear();
 
+            List<ResourceReference> resources = (_parameter != null) ? _parameter.value : _entity.resources;
             for (int i = 0; i < resources.Count; i++)
             {
                 ResourceUserControl resourceGroup = null;
@@ -115,6 +110,7 @@ namespace CommandsEditor
             }
 
             //A resource reference list can only ever point to one of a type
+            List<ResourceReference> resources = (_parameter != null) ? _parameter.value : _entity.resources;
             for (int i = 0; i < resources.Count; i++)
             {
                 if (resources[i].resource_type == type)
@@ -141,9 +137,15 @@ namespace CommandsEditor
                 newReference.AnimatedModel.ResourceIndex = Content.Level.EnvironmentAnimations.Entries[Content.Level.EnvironmentAnimations.Entries.Count - 1].ResourceIndex + 1;
                 Content.Level.EnvironmentAnimations.Entries.Add(newReference.AnimatedModel);
             }
+            
+            if (newReference.resource_type == ResourceType.COLLISION_MAPPING)
+            {
+                newReference.CollisionMapping = new CollisionMaps.COLLISION_MAPPING();
+                //TODO
+                Content.Level.CollisionMaps.Entries.Add(newReference.CollisionMapping);
+            }
 
-            resources.Add(newReference);
-
+            ((_parameter != null) ? _parameter.value : _entity.resources).Add(newReference);
             RefreshUI();
         }
 
@@ -151,7 +153,7 @@ namespace CommandsEditor
         private void deleteResource_Click(object sender, EventArgs e)
         {
             ResourceType type = (ResourceType)Enum.Parse(typeof(ResourceType), resourceType.Items[resourceType.SelectedIndex].ToString());
-            ResourceReference reference = resources.FirstOrDefault(o => o.resource_type == type);
+            ResourceReference reference = ((_parameter != null) ? _parameter.value : _entity.resources).FirstOrDefault(o => o.resource_type == type);
             if (reference == null)
             {
                 MessageBox.Show("Resource type " + type + " is not referenced!\nThere is nothing to delete.", "Type not referenced!", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -160,58 +162,10 @@ namespace CommandsEditor
             {
                 if (MessageBox.Show("You are about to remove resource reference for type " + type + ".\nThis is a destructive action - are you sure?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
-                    resources.Remove(reference);
+                    ((_parameter != null) ? _parameter.value : _entity.resources).Remove(reference);
                     RefreshUI();
                 }
             }
-        }
-
-        //this needs removing
-        private void SaveChanges_Click(object sender, EventArgs e)
-        {
-            /*
-            List<ResourceReference> newResourceReferences = new List<ResourceReference>();
-            for (int i = 0; i < resource_panel.Controls.Count; i++)
-            {
-                ResourceReference resourceRef = ((ResourceUserControl)resource_panel.Controls[i]).ResourceReference;
-                switch (resourceRef.resource_type)
-                {
-                    case ResourceType.ANIMATED_MODEL:
-                        {
-                            GUI_Resource_AnimatedModel ui = (GUI_Resource_AnimatedModel)resource_panel.Controls[i];
-                            //resourceRef.index = ui.EnvironmentAnimIndex; <- we now just use direct objects rather than index
-                            break;
-                        }
-                    case ResourceType.COLLISION_MAPPING:
-                        {
-                            GUI_Resource_CollisionMapping ui = (GUI_Resource_CollisionMapping)resource_panel.Controls[i];
-                            resourceRef.position = ui.Position;
-                            resourceRef.rotation = ui.Rotation;
-                            resourceRef.entityID = ui.CollisionEnabled ? _entDisplay.Entity.shortGUID : new ShortGuid("FF-FF-FF-FF");
-                            break;
-                        }
-                    case ResourceType.NAV_MESH_BARRIER_RESOURCE:
-                        {
-                            GUI_Resource_NavMeshBarrierResource ui = (GUI_Resource_NavMeshBarrierResource)resource_panel.Controls[i];
-                            resourceRef.position = ui.Position;
-                            resourceRef.rotation = ui.Rotation;
-                            break;
-                        }
-                    case ResourceType.RENDERABLE_INSTANCE:
-                        {
-                            GUI_Resource_RenderableInstance ui = (GUI_Resource_RenderableInstance)resource_panel.Controls[i];
-                            resourceRef.position = ui.Position;
-                            resourceRef.rotation = ui.Rotation;
-                            resourceRef.RenderableInstance = ui.GetAsRenderableElements();
-                            break;
-                        }
-                }
-                newResourceReferences.Add(resourceRef);
-            }
-            resources = newResourceReferences;
-            */
-            OnSaved?.Invoke(resources);
-            this.Close();
         }
     }
 }

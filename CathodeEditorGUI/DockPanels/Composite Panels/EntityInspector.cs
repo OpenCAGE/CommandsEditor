@@ -692,12 +692,6 @@ namespace CommandsEditor.DockPanels
 
             _resourceDialog = new AddOrEditResource(this);
             _resourceDialog.Show();
-            _resourceDialog.OnSaved += OnResourceEditorSaved;
-        }
-        private void OnResourceEditorSaved(List<ResourceReference> resources)
-        {
-            ((FunctionEntity)Entity).resources = resources;
-            Singleton.OnResourceModified?.Invoke();
         }
 
         private void goToZone_Click(object sender, EventArgs e)
