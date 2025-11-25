@@ -72,7 +72,7 @@ namespace CommandsEditor
             SanityCheckPhysMapsInternal("dlc/SALVAGEMODE1");
             SanityCheckPhysMapsInternal("dlc/SALVAGEMODE2");
         }
-        private static void SanityCheckPhysMapsInternal(string level)
+        public static void SanityCheckPhysMapsInternal(string level)
         {
             Level lvll = Utilities.LoadLevel(SharedData.pathToAI, "Production/" + level);
 
@@ -94,7 +94,10 @@ namespace CommandsEditor
             for (int i = 0; i < lvll.Commands.Entries.Count; i++)
                 lvll.Commands.Utils.PurgeDeadLinks(lvll.Commands.Entries[i]);
 
-            InstanceWriter.DoStuff(lvll);
+            Instancing inst = new Instancing(lvll);
+            inst.GenerateInstances();
+            lvll.PhysicsMaps.Entries.Clear();
+            inst.ProcessInstances();
 
             lvll.PhysicsMaps.Entries.Sort();
             physMaps = new
