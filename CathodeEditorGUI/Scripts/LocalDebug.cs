@@ -34,6 +34,171 @@ namespace CommandsEditor
 {
     public static class LocalDebug
     {
+        public static void SanityCheckPhysMaps()
+        {
+            Directory.CreateDirectory("PHYSMAPS/ORIG");
+            Directory.CreateDirectory("PHYSMAPS/NEW");
+
+            SanityCheckPhysMapsInternal("bsp_lv426_pt01");
+            SanityCheckPhysMapsInternal("BSP_LV426_PT02");
+            SanityCheckPhysMapsInternal("BSP_Torrens");
+            SanityCheckPhysMapsInternal("eng_alien_nest");
+            SanityCheckPhysMapsInternal("eng_reactorcore");
+            SanityCheckPhysMapsInternal("ENG_TOWPLATFORM");
+            SanityCheckPhysMapsInternal("FRONTEND");
+            SanityCheckPhysMapsInternal("HAB_AIRPORT");
+            SanityCheckPhysMapsInternal("HAB_CORPORATEPENT");
+            SanityCheckPhysMapsInternal("HAB_SHOPPINGCENTRE");
+            SanityCheckPhysMapsInternal("sci_androidlab");
+            SanityCheckPhysMapsInternal("SCI_HOSPITALLOWER");
+            SanityCheckPhysMapsInternal("sci_hospitalupper");
+            SanityCheckPhysMapsInternal("sci_hub");
+            SanityCheckPhysMapsInternal("solace");
+            SanityCheckPhysMapsInternal("TECH_COMMS");
+            SanityCheckPhysMapsInternal("TECH_HUB");
+            SanityCheckPhysMapsInternal("TECH_MUTHRCORE");
+            SanityCheckPhysMapsInternal("TECH_RND");
+            SanityCheckPhysMapsInternal("tech_rnd_hzdlab");
+            SanityCheckPhysMapsInternal("dlc/CHALLENGEMAP1");
+            SanityCheckPhysMapsInternal("dlc/CHALLENGEMAP3");
+            SanityCheckPhysMapsInternal("dlc/CHALLENGEMAP4");
+            SanityCheckPhysMapsInternal("dlc/CHALLENGEMAP5");
+            SanityCheckPhysMapsInternal("dlc/CHALLENGEMAP7");
+            SanityCheckPhysMapsInternal("dlc/CHALLENGEMAP9");
+            SanityCheckPhysMapsInternal("dlc/CHALLENGEMAP11");
+            SanityCheckPhysMapsInternal("dlc/CHALLENGEMAP12");
+            SanityCheckPhysMapsInternal("dlc/CHALLENGEMAP14");
+            SanityCheckPhysMapsInternal("dlc/CHALLENGEMAP16");
+            SanityCheckPhysMapsInternal("dlc/SALVAGEMODE1");
+            SanityCheckPhysMapsInternal("dlc/SALVAGEMODE2");
+        }
+        private static void SanityCheckPhysMapsInternal(string level)
+        {
+            Level lvll = Utilities.LoadLevel(SharedData.pathToAI, "Production/" + level);
+
+            lvll.PhysicsMaps.Entries.Sort();
+            var physMaps = new
+            {
+                Entries = lvll.PhysicsMaps.Entries.Select(e => new
+                {
+                    e.physics_system_index,
+                    e.resource_type,
+                    e.composite_instance_id,
+                    e.entity
+                }).ToList()
+            };
+            File.WriteAllText("PHYSMAPS/ORIG/" + level.Replace("/", "_") + ".json", JsonConvert.SerializeObject(physMaps, Formatting.Indented, new ShortGuidConverter()));
+
+            for (int i = 0; i < lvll.Commands.Entries.Count; i++)
+                lvll.Commands.Utils.PurgeDeadLinks(lvll.Commands.Entries[i]);
+            for (int i = 0; i < lvll.Commands.Entries.Count; i++)
+                lvll.Commands.Utils.PurgeDeadLinks(lvll.Commands.Entries[i]);
+
+            InstanceWriter.DoStuff(lvll);
+
+            lvll.PhysicsMaps.Entries.Sort();
+            physMaps = new
+            {
+                Entries = lvll.PhysicsMaps.Entries.Select(e => new
+                {
+                    e.physics_system_index,
+                    e.resource_type,
+                    e.composite_instance_id,
+                    e.entity
+                }).ToList()
+            };
+            File.WriteAllText("PHYSMAPS/NEW/" + level.Replace("/", "_") + ".json", JsonConvert.SerializeObject(physMaps, Formatting.Indented, new ShortGuidConverter()));
+
+            GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true);
+            GC.WaitForPendingFinalizers();
+        }
+
+        public static void SanityCheckResourceTransforms()
+        {
+            SanityCheckResourceTransformsInternal("Production/bsp_lv426_pt01");
+            SanityCheckResourceTransformsInternal("Production/BSP_LV426_PT02");
+            SanityCheckResourceTransformsInternal("Production/BSP_Torrens");
+            SanityCheckResourceTransformsInternal("Production/eng_alien_nest");
+            SanityCheckResourceTransformsInternal("Production/eng_reactorcore");
+            SanityCheckResourceTransformsInternal("Production/ENG_TOWPLATFORM");
+            SanityCheckResourceTransformsInternal("Production/FRONTEND");
+            SanityCheckResourceTransformsInternal("Production/HAB_AIRPORT");
+            SanityCheckResourceTransformsInternal("Production/HAB_CORPORATEPENT");
+            SanityCheckResourceTransformsInternal("Production/HAB_SHOPPINGCENTRE");
+            SanityCheckResourceTransformsInternal("Production/sci_androidlab");
+            SanityCheckResourceTransformsInternal("Production/SCI_HOSPITALLOWER");
+            SanityCheckResourceTransformsInternal("Production/sci_hospitalupper");
+            SanityCheckResourceTransformsInternal("Production/sci_hub");
+            SanityCheckResourceTransformsInternal("Production/solace");
+            SanityCheckResourceTransformsInternal("Production/TECH_COMMS");
+            SanityCheckResourceTransformsInternal("Production/TECH_HUB");
+            SanityCheckResourceTransformsInternal("Production/TECH_MUTHRCORE");
+            SanityCheckResourceTransformsInternal("Production/TECH_RND");
+            SanityCheckResourceTransformsInternal("Production/tech_rnd_hzdlab");
+            SanityCheckResourceTransformsInternal("Production/dlc/CHALLENGEMAP1");
+            SanityCheckResourceTransformsInternal("Production/dlc/CHALLENGEMAP3");
+            SanityCheckResourceTransformsInternal("Production/dlc/CHALLENGEMAP4");
+            SanityCheckResourceTransformsInternal("Production/dlc/CHALLENGEMAP5");
+            SanityCheckResourceTransformsInternal("Production/dlc/CHALLENGEMAP7");
+            SanityCheckResourceTransformsInternal("Production/dlc/CHALLENGEMAP9");
+            SanityCheckResourceTransformsInternal("Production/dlc/CHALLENGEMAP11");
+            SanityCheckResourceTransformsInternal("Production/dlc/CHALLENGEMAP12");
+            SanityCheckResourceTransformsInternal("Production/dlc/CHALLENGEMAP14");
+            SanityCheckResourceTransformsInternal("Production/dlc/CHALLENGEMAP16");
+            SanityCheckResourceTransformsInternal("Production/dlc/SALVAGEMODE1");
+            SanityCheckResourceTransformsInternal("Production/dlc/SALVAGEMODE2");
+        }
+        private static void SanityCheckResourceTransformsInternal(string level)
+        {
+            Level lvl = Utilities.LoadLevel(SharedData.pathToAI, level);
+            foreach (Composite composite in lvl.Commands.Entries)
+            {
+                foreach (FunctionEntity function in composite.functions)
+                {
+                    Parameter p = function.GetParameter("position");
+                    cTransform t;
+                    if (p != null)
+                        t = (cTransform)p.content;
+                    else
+                        t = new cTransform();
+
+                    foreach (ResourceReference resource in function.resources)
+                    {
+                        if (resource.resource_type != ResourceType.DYNAMIC_PHYSICS_SYSTEM)
+                            continue;
+
+                        if (t.position != resource.position)
+                        {
+                            string sdfsdfffffd = "";
+                        }
+                        if (t.rotation != resource.rotation)
+                        {
+                            string sdfsdffddfffd = "";
+                        }
+                    }
+
+                    Parameter pR = function.GetParameter("resource");
+                    if (pR?.content?.dataType == DataType.RESOURCE)
+                    {
+                        foreach (ResourceReference resource in ((cResource)pR.content).value)
+                        {
+                            if (resource.resource_type != ResourceType.DYNAMIC_PHYSICS_SYSTEM)
+                                continue;
+
+                            if (t.position != resource.position)
+                            {
+                                string sdfsdfffffd = "";
+                            }
+                            if (t.rotation != resource.rotation)
+                            {
+                                string sdfsdffddfffd = "";
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
 #if NO
         public static void CheckFlowgraphsNew()
         {
