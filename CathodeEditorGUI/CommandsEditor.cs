@@ -8,7 +8,6 @@ using CathodeLib;
 using CathodeLib.ObjectExtensions;
 using CommandsEditor.DockPanels;
 using CommandsEditor.Popups;
-using CommandsEditor.Properties;
 using CommandsEditor.Scripts;
 using CommandsEditor.UserControls;
 using DiscordRPC;
@@ -492,6 +491,14 @@ namespace CommandsEditor
             if (_commandsDisplay.CompositeDisplay != null)
                 _commandsDisplay.CompositeDisplay.SaveAllFlowgraphs();
 
+            if (SettingsManager.GetBool(Singleton.Settings.ExperimentalResourceStuff))
+            {
+                Instancing inst = new Instancing(_commandsDisplay.Content.Level);
+                inst.GenerateInstances();
+                _commandsDisplay.Content.Level.PhysicsMaps.Entries.Clear();
+                inst.ProcessInstances();
+            }
+
             //TODO: take a backup first
             _commandsDisplay.Content.Level.Save();
 
@@ -501,19 +508,6 @@ namespace CommandsEditor
                 if (Path.GetExtension(_commandsDisplay.Content.Level.Commands.Filepath).ToUpper() == ".BIN")
                     ext = "PAK";
                 _commandsDisplay.Content.Level.Commands.Save(_commandsDisplay.Content.Level.Commands.Filepath.Substring(0, _commandsDisplay.Content.Level.Commands.Filepath.Length - 3) + ext, false);
-            }
-
-            if (SettingsManager.GetBool(Singleton.Settings.ExperimentalResourceStuff))
-            {
-                //Commands cmd = _commandsDisplay.Content.Level.Commands;
-                //foreach (Composite comp in cmd.Entries)
-                //{
-                //    List<FunctionEntity> soundLoadBanks = comp.GetFunctionEntitiesOfType(FunctionType.SoundLoadBank);
-                //    foreach (FunctionEntity soundLoadBank in soundLoadBanks)
-                //    {
-                //        string fdsdfsdf = "";
-                //    }
-                //}
             }
 
             if (SettingsManager.GetBool(Singleton.Settings.LaunchGameWhenSaved))
@@ -569,11 +563,6 @@ namespace CommandsEditor
             //}
             //else
             //    MessageBox.Show("Failed to save changes!", "Failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-
-        private void buildLevelToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            //TODO: save but save with all the instanced stuff
         }
 
         public void EnableButtons(bool shouldEnable, string text)

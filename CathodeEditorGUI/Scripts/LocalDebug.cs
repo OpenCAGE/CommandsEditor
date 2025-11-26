@@ -22,7 +22,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms.Design;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Media3D;
 using System.Xml.Linq;
 using WebSocketSharp;
 using static CATHODE.Models;
@@ -77,17 +76,8 @@ namespace CommandsEditor
             Level lvll = Utilities.LoadLevel(SharedData.pathToAI, "Production/" + level);
 
             lvll.PhysicsMaps.Entries.Sort();
-            var physMaps = new
-            {
-                Entries = lvll.PhysicsMaps.Entries.Select(e => new
-                {
-                    e.physics_system_index,
-                    e.resource_type,
-                    e.composite_instance_id,
-                    e.entity
-                }).ToList()
-            };
-            File.WriteAllText("PHYSMAPS/ORIG/" + level.Replace("/", "_") + ".json", JsonConvert.SerializeObject(physMaps, Formatting.Indented, new ShortGuidConverter()));
+            var origEntries = lvll.PhysicsMaps.Entries.Select(e => new PhysMapEntry(e)).ToList();
+            File.WriteAllText("PHYSMAPS/ORIG/" + level.Replace("/", "_") + ".json", JsonConvert.SerializeObject(origEntries, Formatting.Indented, new ShortGuidConverter()));
 
             for (int i = 0; i < lvll.Commands.Entries.Count; i++)
                 lvll.Commands.Utils.PurgeDeadLinks(lvll.Commands.Entries[i]);
@@ -100,20 +90,47 @@ namespace CommandsEditor
             inst.ProcessInstances();
 
             lvll.PhysicsMaps.Entries.Sort();
-            physMaps = new
-            {
-                Entries = lvll.PhysicsMaps.Entries.Select(e => new
-                {
-                    e.physics_system_index,
-                    e.resource_type,
-                    e.composite_instance_id,
-                    e.entity
-                }).ToList()
-            };
-            File.WriteAllText("PHYSMAPS/NEW/" + level.Replace("/", "_") + ".json", JsonConvert.SerializeObject(physMaps, Formatting.Indented, new ShortGuidConverter()));
+            var newEntries = lvll.PhysicsMaps.Entries.Select(e => new PhysMapEntry(e)).ToList();
+            File.WriteAllText("PHYSMAPS/NEW/" + level.Replace("/", "_") + ".json", JsonConvert.SerializeObject(newEntries, Formatting.Indented, new ShortGuidConverter()));
+
+            //lvll.PhysicsMaps.Save();
 
             GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true);
             GC.WaitForPendingFinalizers();
+        }
+
+        //for writing out 
+        private class PhysMapEntry
+        {
+            public int physics_system_index;
+            public string resource_type;
+            public string composite_instance_id;
+            public EntityHandle entity;
+            public RoundedVec Position;
+            //todo - i think the rotation calculation may be incorrect
+
+            public PhysMapEntry(PhysicsMaps.Entry entry)
+            {
+                physics_system_index = entry.physics_system_index;
+                resource_type = entry.resource_type.ToByteString();
+                composite_instance_id = entry.composite_instance_id.ToByteString();
+                entity = entry.entity;
+                Position = new RoundedVec(entry.Position);
+            }
+
+            public class RoundedVec
+            {
+                public float X;
+                public float Y;
+                public float Z;
+
+                public RoundedVec(Vector3 v)
+                {
+                    X = (float)Math.Round(v.X, 2);
+                    Y = (float)Math.Round(v.Y, 2);
+                    Z = (float)Math.Round(v.Z, 2);
+                }
+            }
         }
 
         public static void SanityCheckResourceTransforms()

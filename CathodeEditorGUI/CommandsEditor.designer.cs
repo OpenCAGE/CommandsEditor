@@ -35,7 +35,6 @@ namespace CommandsEditor
             this.toolStripButton1 = new System.Windows.Forms.ToolStripDropDownButton();
             this.loadLevel = new System.Windows.Forms.ToolStripMenuItem();
             this.saveLevel = new System.Windows.Forms.ToolStripMenuItem();
-            this.buildLevelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripDropDownButton();
             this.levelViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.setUpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -96,8 +95,7 @@ namespace CommandsEditor
             this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.loadLevel,
-            this.saveLevel,
-            this.buildLevelToolStripMenuItem});
+            this.saveLevel});
             this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
             this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton1.Name = "toolStripButton1";
@@ -107,7 +105,7 @@ namespace CommandsEditor
             // loadLevel
             // 
             this.loadLevel.Name = "loadLevel";
-            this.loadLevel.Size = new System.Drawing.Size(168, 22);
+            this.loadLevel.Size = new System.Drawing.Size(180, 22);
             this.loadLevel.Text = "Load Level";
             // 
             // saveLevel
@@ -115,16 +113,9 @@ namespace CommandsEditor
             this.saveLevel.Name = "saveLevel";
             this.saveLevel.ShortcutKeyDisplayString = "Ctrl+S";
             this.saveLevel.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveLevel.Size = new System.Drawing.Size(168, 22);
+            this.saveLevel.Size = new System.Drawing.Size(180, 22);
             this.saveLevel.Text = "Save Level";
             this.saveLevel.Click += new System.EventHandler(this.saveLevel_Click);
-            // 
-            // buildLevelToolStripMenuItem
-            // 
-            this.buildLevelToolStripMenuItem.Name = "buildLevelToolStripMenuItem";
-            this.buildLevelToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
-            this.buildLevelToolStripMenuItem.Text = "Build Level";
-            this.buildLevelToolStripMenuItem.Click += new System.EventHandler(this.buildLevelToolStripMenuItem_Click);
             // 
             // toolStripButton2
             // 
@@ -468,7 +459,6 @@ namespace CommandsEditor
         private System.Windows.Forms.ToolStripMenuItem resetUILayoutsToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton DEBUG_DoorPhysEnt;
         private System.Windows.Forms.ToolStripMenuItem writeInstancedResourcesExperimentalToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem buildLevelToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton ShowControls;
         private System.Windows.Forms.ToolStripMenuItem levelViewerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem connectToUnity;
