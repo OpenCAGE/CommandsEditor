@@ -109,7 +109,7 @@ namespace CommandsEditor
             public RoundedVec Position;
             //todo - i think the rotation calculation may be incorrect
 
-            public PhysMapEntry(PhysicsMaps.Entry entry)
+            public PhysMapEntry(PhysicsMaps.DYNAMIC_PHYSICS_SYSTEM entry)
             {
                 physics_system_index = entry.physics_system_index;
                 resource_type = entry.resource_type.ToByteString();

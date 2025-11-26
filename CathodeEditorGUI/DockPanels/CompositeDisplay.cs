@@ -772,14 +772,14 @@ namespace CommandsEditor.DockPanels
                         instancesPhys.Add(pathPhys.GenerateCompositeInstanceID());
                     });
 
-                    List<PhysicsMaps.Entry> physMaps = Content.Level.PhysicsMaps.Entries.FindAll(physMap =>
+                    List<PhysicsMaps.DYNAMIC_PHYSICS_SYSTEM> physMaps = Content.Level.PhysicsMaps.Entries.FindAll(physMap =>
                         instancesPhys.Contains(physMap.composite_instance_id) &&
                         physMap.entity.entity_id == entity.shortGUID &&
                         instancesEnt.Contains(physMap.entity.composite_instance_id)
                     );
                     physMaps.ForEach(physMap =>
                     {
-                        PhysicsMaps.Entry newPhysMap = physMap.Copy();
+                        PhysicsMaps.DYNAMIC_PHYSICS_SYSTEM newPhysMap = physMap.Copy();
                         newPhysMap.entity.entity_id = newEnt.shortGUID;
 
                         EntityPath pathPhys = pathsPhys.FirstOrDefault(x => x.GenerateCompositeInstanceID() == physMap.composite_instance_id);
