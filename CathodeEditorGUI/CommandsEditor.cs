@@ -209,7 +209,7 @@ namespace CommandsEditor
             searchOnlyCompositeNames.Checked = !SettingsManager.GetBool(Singleton.Settings.CompNameOnlyOpt); searchOnlyCompositeNames.PerformClick();
             useTexturedModelViewExperimentalToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.ShowTexOpt); useTexturedModelViewExperimentalToolStripMenuItem.PerformClick();
             keepFunctionUsesWindowOpenToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.KeepUsesWindowOpen); keepFunctionUsesWindowOpenToolStripMenuItem.PerformClick();
-            writeInstancedResourcesExperimentalToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.ExperimentalResourceStuff); writeInstancedResourcesExperimentalToolStripMenuItem.PerformClick();
+            writeInstancedResourcesExperimentalToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.CompileInstances); writeInstancedResourcesExperimentalToolStripMenuItem.PerformClick();
             openGameOnSaveToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.LaunchGameWhenSaved); openGameOnSaveToolStripMenuItem.PerformClick();
 
             if (!SettingsManager.IsSet(Singleton.Settings.ShowSavedMsgOpt)) SettingsManager.SetBool(Singleton.Settings.ShowSavedMsgOpt, true);
@@ -490,7 +490,8 @@ namespace CommandsEditor
             if (_commandsDisplay.CompositeDisplay != null)
                 _commandsDisplay.CompositeDisplay.SaveAllFlowgraphs();
 
-            if (SettingsManager.GetBool(Singleton.Settings.ExperimentalResourceStuff))
+#if DEBUG
+            if (SettingsManager.GetBool(Singleton.Settings.CompileInstances))
             {
                 _commandsDisplay.Content.Level.Resources.Entries.Clear();
                 _commandsDisplay.Content.Level.PhysicsMaps.Entries.Clear();
@@ -500,6 +501,7 @@ namespace CommandsEditor
                 inst.GenerateInstances();
                 inst.ProcessInstances();
             }
+#endif
 
             //TODO: take a backup first
             _commandsDisplay.Content.Level.Save();
@@ -780,7 +782,7 @@ namespace CommandsEditor
         private void writeInstancedResourcesExperimentalToolStripMenuItem_Click(object sender, EventArgs e)
         {
             writeInstancedResourcesExperimentalToolStripMenuItem.Checked = !writeInstancedResourcesExperimentalToolStripMenuItem.Checked;
-            SettingsManager.SetBool(Singleton.Settings.ExperimentalResourceStuff, writeInstancedResourcesExperimentalToolStripMenuItem.Checked);
+            SettingsManager.SetBool(Singleton.Settings.CompileInstances, writeInstancedResourcesExperimentalToolStripMenuItem.Checked);
         }
 
         private void UpdateCommandsDisplayDockState()
