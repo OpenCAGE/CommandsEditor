@@ -179,7 +179,6 @@ namespace CommandsEditor
 
 #if !DEBUG
             DEBUG_DoorPhysEnt.Visible = false;
-            buildLevelToolStripMenuItem.Visible = false;
             DEBUG_ReloadLevel.Visible = false;
             connectToRuntimeUtils.Visible = false;
 #endif
@@ -493,9 +492,12 @@ namespace CommandsEditor
 
             if (SettingsManager.GetBool(Singleton.Settings.ExperimentalResourceStuff))
             {
+                _commandsDisplay.Content.Level.Resources.Entries.Clear();
+                _commandsDisplay.Content.Level.PhysicsMaps.Entries.Clear();
+                //todo - clear others when i write them
+
                 Instancing inst = new Instancing(_commandsDisplay.Content.Level);
                 inst.GenerateInstances();
-                _commandsDisplay.Content.Level.PhysicsMaps.Entries.Clear();
                 inst.ProcessInstances();
             }
 

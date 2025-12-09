@@ -3,7 +3,9 @@ using CATHODE.EXPERIMENTAL;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CathodeLib;
+using CathodeLib.ObjectExtensions;
 using CommandsEditor.DockPanels;
+using CommandsEditor.Scripts;
 using CommandsEditor.UserControls;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -24,6 +26,7 @@ using System.Windows.Forms.Design;
 using System.Windows.Media.Animation;
 using System.Xml.Linq;
 using WebSocketSharp;
+using static CATHODE.CollisionMaps;
 using static CATHODE.Models;
 using static CATHODE.Movers;
 using static CathodeLib.CathodeEnumTable;
@@ -33,6 +36,117 @@ namespace CommandsEditor
 {
     public static class LocalDebug
     {
+        public static void CheckWriteInstanced()
+        {
+            string levelToTest = "production/tech_rnd_hzdlab";
+
+            Level lvll = Utilities.LoadLevel(SharedData.pathToAI, levelToTest);
+
+            uint toFind = new ShortGuid("D9-FA-49-01").AsUInt32;
+            foreach (Composite composite in lvll.Commands.Entries)
+            {
+                if (composite.functions.FirstOrDefault(o => o.shortGUID.AsUInt32 == toFind) != null)
+                {
+                    var sdfsdf = composite.functions.FirstOrDefault(o => o.shortGUID.AsUInt32 == toFind);
+
+                    string fgsgdf = lvll.Commands.Utils.GetEntityName(composite, sdfsdf);
+
+                    string gsdfsd = "";
+                }
+            }
+
+            try { File.Delete("log.txt"); } catch { }
+            try { File.Delete("log2.txt"); } catch { }
+
+            for (int i = 0; i < lvll.Commands.Entries.Count; i++)
+                lvll.Commands.Utils.PurgeDeadLinks(lvll.Commands.Entries[i]);
+            for (int i = 0; i < lvll.Commands.Entries.Count; i++)
+                lvll.Commands.Utils.PurgeDeadLinks(lvll.Commands.Entries[i]);
+
+            lvll.PhysicsMaps.Save("PHYSICS.MAP_orig");
+            lvll.PhysicsMaps.Entries.Sort();
+            var physEntries = lvll.PhysicsMaps.Entries.Select(e => new PhysMapEntry(e)).ToList();
+            File.WriteAllText("physics.map_orig.json", JsonConvert.SerializeObject(physEntries, Newtonsoft.Json.Formatting.Indented, new ShortGuidConverter()));
+
+            lvll.CollisionMaps.Save("COLLISION.MAP_orig");
+            var colEntries = lvll.CollisionMaps.Entries.Select(e => new ColMapEntry(e)).ToList();
+            colEntries.Sort();
+            File.WriteAllText("COLLISION.map_orig.json", JsonConvert.SerializeObject(colEntries, Newtonsoft.Json.Formatting.Indented, new ShortGuidConverter()));
+
+            List<string> colmaps = new List<string>();
+            foreach (var entry in colEntries)
+            {
+                bool found = false;
+                foreach (var comp in lvll.Commands.Entries)
+                {
+                    Entity ent = comp.GetEntityByID(entry.Entity.entity_id);
+                    if (ent != null)
+                    {
+                        colmaps.Add(lvll.Commands.Utils.GetEntityName(comp, ent) + " in " + comp.name);
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found)
+                    colmaps.Add("Could not find entity: " + entry.Entity.entity_id.ToByteString());
+            }
+            File.WriteAllLines("colmaps_orig.txt", colmaps);
+
+            lvll.Resources.Entries.Clear();
+            lvll.PhysicsMaps.Entries.Clear();
+            lvll.CollisionMaps.Entries.Clear();
+
+            Instancing inst = new Instancing(lvll);
+            inst.GenerateInstances();
+            inst.ProcessInstances();
+
+            lvll.PhysicsMaps.Save("PHYSICS.MAP");
+            lvll.PhysicsMaps.Entries.Sort();
+            physEntries = lvll.PhysicsMaps.Entries.Select(e => new PhysMapEntry(e)).ToList();
+            File.WriteAllText("physics.map.json", JsonConvert.SerializeObject(physEntries, Newtonsoft.Json.Formatting.Indented, new ShortGuidConverter()));
+
+            lvll.CollisionMaps.Save("COLLISION.MAP");
+            colEntries = lvll.CollisionMaps.Entries.Select(e => new ColMapEntry(e)).ToList();
+            colEntries.Sort();
+            File.WriteAllText("COLLISION.map.json", JsonConvert.SerializeObject(colEntries, Newtonsoft.Json.Formatting.Indented, new ShortGuidConverter()));
+
+            colmaps = new List<string>();
+            foreach (var entry in colEntries)
+            {
+                bool found = false;
+                foreach (var comp in lvll.Commands.Entries)
+                {
+                    Entity ent = comp.GetEntityByID(entry.Entity.entity_id);
+                    if (ent != null)
+                    {
+                        colmaps.Add(lvll.Commands.Utils.GetEntityName(comp, ent) + " in " + comp.name);
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found)
+                    colmaps.Add("Could not find entity: " + entry.Entity.entity_id.ToByteString());
+            }
+            File.WriteAllLines("colmaps.txt", colmaps);
+
+            string[] ourLog = !File.Exists("log.txt") ? new string[0] : File.ReadAllLines("log.txt");
+
+            //try { File.Delete(repoDir + "\\Content\\Build\\Levels\\" + levelToTest + "\\debug_log.txt"); } catch { }
+
+            var ourLogSorted = ourLog.ToList();
+            ourLogSorted.Sort();
+            ourLogSorted.RemoveAll(o => o == "");
+            for (int i = 0; i < ourLogSorted.Count; i++)
+            {
+                //ourLogSorted[i] = ourLogSorted[i].Split('-')[2];
+            }
+
+            File.WriteAllLines("our_log.txt", ourLogSorted);
+
+            GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true);
+            GC.WaitForPendingFinalizers();
+        }
+
         public static void SanityCheckPhysMaps()
         {
             Directory.CreateDirectory("PHYSMAPS/ORIG");
