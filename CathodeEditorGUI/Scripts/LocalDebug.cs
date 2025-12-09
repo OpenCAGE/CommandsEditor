@@ -38,6 +38,7 @@ namespace CommandsEditor
     {
         public static void CheckWriteInstanced()
         {
+#if DEBUG
             string levelToTest = "production/tech_rnd_hzdlab";
 
             Level lvll = Utilities.LoadLevel(SharedData.pathToAI, levelToTest);
@@ -145,6 +146,7 @@ namespace CommandsEditor
 
             GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true);
             GC.WaitForPendingFinalizers();
+#endif
         }
 
         public static void SanityCheckPhysMaps()
@@ -217,7 +219,7 @@ namespace CommandsEditor
         private class PhysMapEntry
         {
             public int physics_system_index;
-            public string resource_type;
+            //public string resource_type;
             public string composite_instance_id;
             public EntityHandle entity;
             public RoundedVec Position;
@@ -226,7 +228,7 @@ namespace CommandsEditor
             public PhysMapEntry(PhysicsMaps.DYNAMIC_PHYSICS_SYSTEM entry)
             {
                 physics_system_index = entry.physics_system_index;
-                resource_type = entry.resource_type.ToByteString();
+                //resource_type = entry.resource_type.ToByteString();
                 composite_instance_id = entry.composite_instance_id.ToByteString();
                 entity = entry.entity;
                 Position = new RoundedVec(entry.Position);
