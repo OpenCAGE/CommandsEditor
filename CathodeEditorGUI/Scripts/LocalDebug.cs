@@ -149,13 +149,223 @@ namespace CommandsEditor
 #endif
         }
 
+        public static void SanityCheckResources()
+        {
+            Directory.Delete("RESOURCES", true);
+
+            Directory.CreateDirectory("RESOURCES/ORIG");
+            Directory.CreateDirectory("RESOURCES/NEW");
+
+            //SanityCheckResourcesInternal("bsp_lv426_pt01");
+            //SanityCheckResourcesInternal("BSP_LV426_PT02");
+            //SanityCheckResourcesInternal("BSP_Torrens");
+            //SanityCheckResourcesInternal("eng_alien_nest");
+            //SanityCheckResourcesInternal("eng_reactorcore");
+            //SanityCheckResourcesInternal("ENG_TOWPLATFORM");
+            //SanityCheckResourcesInternal("FRONTEND");
+            //SanityCheckResourcesInternal("HAB_AIRPORT");
+            //SanityCheckResourcesInternal("HAB_CORPORATEPENT");
+            //SanityCheckResourcesInternal("HAB_SHOPPINGCENTRE");
+            //SanityCheckResourcesInternal("sci_androidlab");
+            //SanityCheckResourcesInternal("SCI_HOSPITALLOWER");
+            //SanityCheckResourcesInternal("sci_hospitalupper");
+            //SanityCheckResourcesInternal("sci_hub");
+            //SanityCheckResourcesInternal("solace");
+            //SanityCheckResourcesInternal("TECH_COMMS");
+            //SanityCheckResourcesInternal("TECH_HUB");
+            //SanityCheckResourcesInternal("TECH_MUTHRCORE");
+            //SanityCheckResourcesInternal("TECH_RND");
+            SanityCheckResourcesInternal("tech_rnd_hzdlab");
+            SanityCheckResourcesInternal("dlc/CHALLENGEMAP1");
+            SanityCheckResourcesInternal("dlc/CHALLENGEMAP3");
+            SanityCheckResourcesInternal("dlc/CHALLENGEMAP4");
+            SanityCheckResourcesInternal("dlc/CHALLENGEMAP5");
+            SanityCheckResourcesInternal("dlc/CHALLENGEMAP7");
+            SanityCheckResourcesInternal("dlc/CHALLENGEMAP9");
+            SanityCheckResourcesInternal("dlc/CHALLENGEMAP11");
+            SanityCheckResourcesInternal("dlc/CHALLENGEMAP12");
+            SanityCheckResourcesInternal("dlc/CHALLENGEMAP14");
+            SanityCheckResourcesInternal("dlc/CHALLENGEMAP16");
+            SanityCheckResourcesInternal("dlc/SALVAGEMODE1");
+            SanityCheckResourcesInternal("dlc/SALVAGEMODE2");
+        }
+        public static void SanityCheckResourcesInternal(string level)
+        {
+            SharedData.pathToAI = "C:\\AlienData\\game\\pc\\";
+
+            Level lvll = Utilities.LoadLevel(SharedData.pathToAI, "Production/" + level);
+
+            lvll.Resources.Entries.Sort();
+            File.WriteAllText("RESOURCES/ORIG/" + level.Replace("/", "_") + ".json", JsonConvert.SerializeObject(lvll.Resources.Entries, Formatting.Indented, new ShortGuidConverter()));
+
+            for (int i = 0; i < lvll.Commands.Entries.Count; i++)
+                lvll.Commands.Utils.PurgeDeadLinks(lvll.Commands.Entries[i]);
+            for (int i = 0; i < lvll.Commands.Entries.Count; i++)
+                lvll.Commands.Utils.PurgeDeadLinks(lvll.Commands.Entries[i]);
+
+            Instancing inst = new Instancing(lvll);
+            inst.GenerateInstances();
+
+           // var entries = lvll.Resources.Entries.Copy();
+           lvll.Resources.Entries.Clear();
+            inst.ProcessInstances();
+
+          //  if (entries.Count != lvll.Resources.Entries.Count)
+          //  {
+          //      string gsdfds = "";
+          //  }
+
+            lvll.Resources.Entries.Sort();
+            File.WriteAllText("RESOURCES/NEW/" + level.Replace("/", "_") + ".json", JsonConvert.SerializeObject(lvll.Resources.Entries, Formatting.Indented, new ShortGuidConverter()));
+
+            if (!File.Exists(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + level + "/WORLD/RESOURCES_old.BIN"))
+                File.Copy(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + level + "/WORLD/RESOURCES.BIN", SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + level + "/WORLD/RESOURCES_old.BIN");
+
+            PAK2 animPAK = new PAK2(SharedData.pathToAI + "\\DATA\\GLOBAL\\ANIMATION.PAK");
+            LocalDebug_NEW.StripInstancedData(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + level + "/", new Global(SharedData.pathToAI + "/DATA/GLOBAL/", animPAK));
+            lvll.Resources.Save();
+
+            //List<string> bruh = new List<string>();
+            //foreach (FunctionType func in Instancing.funcz)
+            //{
+            //    bruh.Add(func.ToString());
+            //}
+            //bruh.Sort();
+            //File.WriteAllLines(level + ".txt", bruh);
+
+            GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true);
+            GC.WaitForPendingFinalizers();
+        }
+
+        public static void SanityCheckColMaps()
+        {
+            Directory.Delete("COLMAPS", true);
+
+            Directory.CreateDirectory("COLMAPS/ORIG");
+            Directory.CreateDirectory("COLMAPS/NEW");
+
+            SanityCheckColMapsInternal("bsp_lv426_pt01");
+            SanityCheckColMapsInternal("BSP_LV426_PT02");
+            SanityCheckColMapsInternal("BSP_Torrens");
+            SanityCheckColMapsInternal("eng_alien_nest");
+            SanityCheckColMapsInternal("eng_reactorcore");
+            SanityCheckColMapsInternal("ENG_TOWPLATFORM");
+            SanityCheckColMapsInternal("FRONTEND");
+            SanityCheckColMapsInternal("HAB_AIRPORT");
+            SanityCheckColMapsInternal("HAB_CORPORATEPENT");
+            SanityCheckColMapsInternal("HAB_SHOPPINGCENTRE");
+            SanityCheckColMapsInternal("sci_androidlab");
+            SanityCheckColMapsInternal("SCI_HOSPITALLOWER");
+            SanityCheckColMapsInternal("sci_hospitalupper");
+            SanityCheckColMapsInternal("sci_hub");
+            SanityCheckColMapsInternal("solace");
+            SanityCheckColMapsInternal("TECH_COMMS");
+            SanityCheckColMapsInternal("TECH_HUB");
+            SanityCheckColMapsInternal("TECH_MUTHRCORE");
+            SanityCheckColMapsInternal("TECH_RND");
+            SanityCheckColMapsInternal("tech_rnd_hzdlab");
+            SanityCheckColMapsInternal("dlc/CHALLENGEMAP1");
+            SanityCheckColMapsInternal("dlc/CHALLENGEMAP3");
+            SanityCheckColMapsInternal("dlc/CHALLENGEMAP4");
+            SanityCheckColMapsInternal("dlc/CHALLENGEMAP5");
+            SanityCheckColMapsInternal("dlc/CHALLENGEMAP7");
+            SanityCheckColMapsInternal("dlc/CHALLENGEMAP9");
+            SanityCheckColMapsInternal("dlc/CHALLENGEMAP11");
+            SanityCheckColMapsInternal("dlc/CHALLENGEMAP12");
+            SanityCheckColMapsInternal("dlc/CHALLENGEMAP14");
+            SanityCheckColMapsInternal("dlc/CHALLENGEMAP16");
+            SanityCheckColMapsInternal("dlc/SALVAGEMODE1");
+            SanityCheckColMapsInternal("dlc/SALVAGEMODE2");
+        }
+        public static void SanityCheckColMapsInternal(string level)
+        {
+            Level lvll = Utilities.LoadLevel(SharedData.pathToAI, "Production/" + level);
+
+            lvll.CollisionMaps.Entries.Sort();
+            var newEntries = lvll.CollisionMaps.Entries.OrderBy(o => o.ResourceGUID).ThenBy(o => o.Entity.entity_id).ThenBy(o => o.Entity.composite_instance_id).ThenBy(o => o.Index).ThenBy(o => o.CollisionProxyIndex).ToList().Select(e => new ColMapEntry(e)).ToList();
+            File.WriteAllText("COLMAPS/ORIG/" + level.Replace("/", "_") + ".json", JsonConvert.SerializeObject(newEntries, Formatting.Indented, new ShortGuidConverter()));
+
+            for (int i = 0; i < lvll.Commands.Entries.Count; i++)
+                lvll.Commands.Utils.PurgeDeadLinks(lvll.Commands.Entries[i]);
+            for (int i = 0; i < lvll.Commands.Entries.Count; i++)
+                lvll.Commands.Utils.PurgeDeadLinks(lvll.Commands.Entries[i]);
+
+            Instancing inst = new Instancing(lvll);
+            inst.GenerateInstances();
+            lvll.CollisionMaps.Entries.Clear();
+            inst.ProcessInstances();
+
+            newEntries = lvll.CollisionMaps.Entries.OrderBy(o => o.ResourceGUID).ThenBy(o => o.Entity.entity_id).ThenBy(o => o.Entity.composite_instance_id).ThenBy(o => o.Index).ThenBy(o => o.CollisionProxyIndex).ToList().Select(e => new ColMapEntry(e)).ToList();
+            File.WriteAllText("COLMAPS/NEW/" + level.Replace("/", "_") + ".json", JsonConvert.SerializeObject(newEntries, Formatting.Indented, new ShortGuidConverter()));
+
+            //lvll.CollisionMaps.Save();
+
+            GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true);
+            GC.WaitForPendingFinalizers();
+        }
+
+        //for writing out 
+        public class ColMapEntry : IComparable<ColMapEntry>
+        {
+            //public CollisionFlags Flags = 0;
+            //public int Index = -1; //Compound shape index for static and ballistic collision 
+
+            //public ShortGuid ResourceGUID = ShortGuid.Invalid; //This is the name of the entity hashed via ShortGuid
+            public EntityHandle Entity = new EntityHandle();
+
+            //public string MaterialName = null;
+
+            //public int CollisionProxyIndex = -1; // Index in COLLISION.HKX (hkpStaticCompoundShape)
+            //public string MaterialMappingName = null; //This remaps the material to the physics material for Havok
+
+            //public ShortGuid ZoneID = ShortGuid.Invalid; //this maps the entity to a zone ID. interestingly, this seems to be the point of truth for the zone rendering
+
+            public ColMapEntry(CollisionMaps.COLLISION_MAPPING entry)
+            {
+                //Flags = entry.Flags;
+                //Index = entry.Index;
+                //ResourceGUID = entry.ResourceGUID;
+                Entity = entry.Entity;
+                //MaterialName = entry?.Material?.Name;
+                //CollisionProxyIndex = entry.CollisionProxyIndex;
+                //MaterialMappingName = entry.MaterialMapping?.Name;
+                //ZoneID = entry.ZoneID;
+            }
+
+            public int CompareTo(ColMapEntry other)
+            {
+                if (other == null) return 1;
+
+                //int resourceGuidComparison = ResourceGUID.CompareTo(other.ResourceGUID);
+                //if (resourceGuidComparison != 0) return resourceGuidComparison;
+
+                int entityIdComparison = Entity.entity_id.CompareTo(other.Entity.entity_id);
+                if (entityIdComparison != 0) return entityIdComparison;
+
+                int compositeInstanceIdComparison = Entity.composite_instance_id.CompareTo(other.Entity.composite_instance_id);
+                /*if (compositeInstanceIdComparison != 0)*/ return compositeInstanceIdComparison;
+
+                //int indexComparison = Index.CompareTo(other.Index);
+                //if (indexComparison != 0) return indexComparison;
+
+                //compare zone
+                //compare flags
+                //compare mat mapping
+                //compare mat name
+
+                //return CollisionProxyIndex.CompareTo(other.CollisionProxyIndex);
+            }
+        }
+
         public static void SanityCheckPhysMaps()
         {
+            Directory.Delete("PHYSMAPS", true);
+
             Directory.CreateDirectory("PHYSMAPS/ORIG");
             Directory.CreateDirectory("PHYSMAPS/NEW");
 
-            SanityCheckPhysMapsInternal("bsp_lv426_pt01");
-            SanityCheckPhysMapsInternal("BSP_LV426_PT02");
+            //SanityCheckPhysMapsInternal("bsp_lv426_pt01");
+            //SanityCheckPhysMapsInternal("BSP_LV426_PT02");
             SanityCheckPhysMapsInternal("BSP_Torrens");
             SanityCheckPhysMapsInternal("eng_alien_nest");
             SanityCheckPhysMapsInternal("eng_reactorcore");
@@ -216,7 +426,7 @@ namespace CommandsEditor
         }
 
         //for writing out 
-        private class PhysMapEntry
+        public class PhysMapEntry
         {
             public int physics_system_index;
             //public string resource_type;
@@ -228,7 +438,6 @@ namespace CommandsEditor
             public PhysMapEntry(PhysicsMaps.DYNAMIC_PHYSICS_SYSTEM entry)
             {
                 physics_system_index = entry.physics_system_index;
-                //resource_type = entry.resource_type.ToByteString();
                 composite_instance_id = entry.composite_instance_id.ToByteString();
                 entity = entry.entity;
                 Position = new RoundedVec(entry.Position);
