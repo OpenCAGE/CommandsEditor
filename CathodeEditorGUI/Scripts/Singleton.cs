@@ -143,7 +143,7 @@ namespace CommandsEditor
                     strings[i] = new TextDB(textList[i]);
                 });
                 for (int i = 0; i < textList.Count; i++)
-                    GlobalTextDBs.Add(Path.GetFileNameWithoutExtension(textList[i]), strings[i]);
+                    GlobalTextDBs.Add(Path.GetFileNameWithoutExtension(textList[i].ToUpper()), strings[i]);
             }
 
             Debug.Log("Asset Loader", "Loading anim data");
