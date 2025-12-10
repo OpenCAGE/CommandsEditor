@@ -141,7 +141,7 @@ namespace CommandsEditor
         /* Get a composite (& instance path) from a given composite instance ID */
         public (Composite, EntityPath) GetCompositeFromInstanceID(Commands commands, ShortGuid instanceID)
         {
-            if (instanceID == ShortGuid.InitialiserBase)
+            if (instanceID == ShortGuid.InstanceGuid)
                 return (commands.EntryPoints[0], new EntityPath());
 
             (Composite compositeResult, EntityPath entityPathResult) = (null, null);
