@@ -440,9 +440,7 @@
     <Compile Include="Scripts\GroupedListView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Scripts\InstancedResolver.cs" />
     <Compile Include="Scripts\LocalDebug_NEW.cs" />
-    <Compile Include="Scripts\InstanceWriter.cs" />
     <Compile Include="Scripts\LevelContent.cs" />
     <Compile Include="Popups\Base\BaseWindow.cs">
       <SubType>Form</SubType>
@@ -650,7 +648,6 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Scripts\SystemInfo.cs" />
-    <Compile Include="Scripts\ToolstripRendererExcs.cs" />
     <Compile Include="Scripts\TreeUtility.cs" />
     <Compile Include="Scripts\SettingsManager.cs" />
     <Compile Include="Scripts\Unity Connection\Packet.cs" />

@@ -63,7 +63,6 @@ namespace CommandsEditor
             this.openGameOnSaveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpBtn = new System.Windows.Forms.ToolStripButton();
             this.ShowControls = new System.Windows.Forms.ToolStripButton();
-            this.DEBUG_DoorPhysEnt = new System.Windows.Forms.ToolStripButton();
             this.DEBUG_ReloadLevel = new System.Windows.Forms.ToolStripButton();
             this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
             this.vS2015LightTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
@@ -82,7 +81,6 @@ namespace CommandsEditor
             this.toolStripButton2,
             this.helpBtn,
             this.ShowControls,
-            this.DEBUG_DoorPhysEnt,
             this.DEBUG_ReloadLevel});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
@@ -105,7 +103,7 @@ namespace CommandsEditor
             // loadLevel
             // 
             this.loadLevel.Name = "loadLevel";
-            this.loadLevel.Size = new System.Drawing.Size(180, 22);
+            this.loadLevel.Size = new System.Drawing.Size(168, 22);
             this.loadLevel.Text = "Load Level";
             // 
             // saveLevel
@@ -113,7 +111,7 @@ namespace CommandsEditor
             this.saveLevel.Name = "saveLevel";
             this.saveLevel.ShortcutKeyDisplayString = "Ctrl+S";
             this.saveLevel.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveLevel.Size = new System.Drawing.Size(180, 22);
+            this.saveLevel.Size = new System.Drawing.Size(168, 22);
             this.saveLevel.Text = "Save Level";
             this.saveLevel.Click += new System.EventHandler(this.saveLevel_Click);
             // 
@@ -358,15 +356,6 @@ namespace CommandsEditor
             this.ShowControls.Text = "Controls";
             this.ShowControls.Click += new System.EventHandler(this.ShowControls_Click);
             // 
-            // DEBUG_DoorPhysEnt
-            // 
-            this.DEBUG_DoorPhysEnt.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.DEBUG_DoorPhysEnt.Image = ((System.Drawing.Image)(resources.GetObject("DEBUG_DoorPhysEnt.Image")));
-            this.DEBUG_DoorPhysEnt.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.DEBUG_DoorPhysEnt.Name = "DEBUG_DoorPhysEnt";
-            this.DEBUG_DoorPhysEnt.Size = new System.Drawing.Size(157, 22);
-            this.DEBUG_DoorPhysEnt.Text = "DEBUG: Load Door Phys Ent";
-            // 
             // DEBUG_ReloadLevel
             // 
             this.DEBUG_ReloadLevel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
@@ -457,7 +446,6 @@ namespace CommandsEditor
         private System.Windows.Forms.ToolStripMenuItem useTexturedModelViewExperimentalToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem keepFunctionUsesWindowOpenToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem resetUILayoutsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripButton DEBUG_DoorPhysEnt;
         private System.Windows.Forms.ToolStripMenuItem writeInstancedResourcesExperimentalToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton ShowControls;
         private System.Windows.Forms.ToolStripMenuItem levelViewerToolStripMenuItem;

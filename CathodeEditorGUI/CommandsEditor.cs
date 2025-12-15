@@ -62,96 +62,7 @@ namespace CommandsEditor
 
         public CommandsEditor(string level = null)
         {
-            //LocalDebug.CheckFlowgraphsNew();
-
-            //string sfsdf = "";
-
-            //LocalDebug.TestLights();
-
-            //LocalDebug.DefaultsUnitTest();
-            //LocalDebug.ApplyAllDefaults();
-
-#if DEBUG && DO_TEST_STUFF
-            //List<string> lvls = Level.GetLevels(SharedData.pathToAI, true);
-            //foreach (string lvl in lvls)
-            //{
-            //    if (Directory.Exists(SharedData.pathToAI + "\\DATA_orig"))
-            //    {
-            //        Directory.Delete(SharedData.pathToAI + "\\DATA\\ENV\\" + lvl, true);
-            //        CopyFilesRecursively(SharedData.pathToAI + "\\DATA_orig\\ENV\\" + lvl, SharedData.pathToAI + "\\DATA\\ENV\\" + lvl);
-            //    }
-            //
-            //    InstancedResolver.Read(LevelContent.DEBUG_LoadUnthreadedAndPopulateShortGuids(lvl));
-            //}
-
-
-            level = "TECH_RND_HZDLAB";
-
-            if (Directory.Exists(SharedData.pathToAI + "\\DATA_orig"))
-            {
-                Directory.Delete(SharedData.pathToAI + "\\DATA\\ENV\\" + level, true);
-                CopyFilesRecursively(SharedData.pathToAI + "\\DATA_orig\\ENV\\" + level, SharedData.pathToAI + "\\DATA\\ENV\\" + level);
-            }
-
-
-            //Level is populated by MVR
-            //MVR looks up the resource in COMMANDS via RESOURCES
-            //MVR properties are applied to renderables in COMMANDS via this link (applied properties are specified by the type enum, e.g. not all provide position etc)
-            //If no link has been made, both populate
-
-
-            //It gets more complicated: RESOURCES.BIN is populated based on the result of COMMANDS (e.g. if an entity has "deleted" applied, it won't be listed there)
-            //No clue how I'm gonna be able to rewrite the thing without building the entire scripting logic into the compiler -_-
-
-            // ^ need to look into "offline_only" entities and ones implemented offline, and reconstruct similar logic here.
-
-
-            LevelContent content = LevelContent.DEBUG_LoadUnthreadedAndPopulateShortGuids(level);
-
-            //File.Copy(content.mvr.Filepath, content.mvr.Filepath + " - Copy.MVR");
-            //content.mvr.Entries = content.mvr.Entries.OrderBy(o => o.resource_index).ToList();
-            //content.mvr.Save();
-
-            InstancedResolver.Read(content);
-            InstancedResolver.Write(content);
-            InstancedResolver.Read(content);
-
-            int min_collision_index = 999999;
-            for (int x = 0; x < content.commands.Entries.Count; x++)
-            {
-                foreach (var function in content.commands.Entries[x].functions_dictionary.Values)
-                {
-                    for (int z = 0; z < function.resources.Count; z++)
-                    {
-                        if (function.resources[z].resource_type != ResourceType.COLLISION_MAPPING)
-                            continue;
-                        if (function.resources[z].index != -1 && min_collision_index > function.resources[z].index)
-                            min_collision_index = function.resources[z].index;
-                    }
-
-                    Parameter resourceParam = function.GetParameter("resource");
-                    if (resourceParam != null && resourceParam.content != null && resourceParam.content.dataType == DataType.RESOURCE)
-                    {
-                        cResource resource = (cResource)resourceParam.content;
-                        for (int z = 0; z < resource.value.Count; z++)
-                        {
-                            if (resource.value[z].resource_type != ResourceType.COLLISION_MAPPING)
-                                continue;
-                            if (resource.value[z].index != -1 && min_collision_index > resource.value[z].index)
-                                min_collision_index = resource.value[z].index;
-                        }
-                    }
-                }
-            }
-            if (min_collision_index != 18)
-            {
-                //There are always 18 entries at the start of COLLISION.MAP which are empty for some reason, so we'd expect the min index to be 18
-                Console.WriteLine("Unexpected!");
-            }
-
-#endif
-            //*/
-            //return;
+            //LocalDebug.CheckWriteInstanced();
 
             InitializeComponent();
 
@@ -178,7 +89,6 @@ namespace CommandsEditor
             _defaultHeight = Height;
 
 #if !DEBUG
-            DEBUG_DoorPhysEnt.Visible = false;
             DEBUG_ReloadLevel.Visible = false;
             connectToRuntimeUtils.Visible = false;
 #endif
@@ -367,14 +277,6 @@ namespace CommandsEditor
                 return;
             level = level.ToUpper();
 
-#if DEBUG
-            if (Directory.Exists(SharedData.pathToAI + "\\DATA_orig"))
-            {
-                Directory.Delete(SharedData.pathToAI + "\\DATA\\ENV\\" + level, true);
-                CopyFilesRecursively(SharedData.pathToAI + "\\DATA_orig\\ENV\\" + level, SharedData.pathToAI + "\\DATA\\ENV\\" + level);
-            }
-#endif
-
             if (_commandsDisplay != null)
             {
                 Singleton.Editor.DockPanel.ActiveAutoHideContent = null;
@@ -384,7 +286,6 @@ namespace CommandsEditor
 
                 _commandsDisplay.CloseAllChildTabs();
                 _commandsDisplay.Close();
-                //_commandsDisplay.Dispose();
                 _commandsDisplay = null;
                 
                 GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true);
@@ -447,7 +348,6 @@ namespace CommandsEditor
                 _commandsDisplay.FormClosed += _commandsDisplay_FormClosed;
                 _commandsDisplay.UpdateDockState();
 
-                //Singleton.Editor.BringToFront();
                 Singleton.Editor.Activate();
                 Singleton.Editor.Focus();
             }));
@@ -798,60 +698,6 @@ namespace CommandsEditor
         private void helpBtn_Click(object sender, EventArgs e)
         {
             Process.Start("https://opencage.co.uk/docs/");
-        }
-
-        List<CollisionMaps.COLLISION_MAPPING> entries = new List<CollisionMaps.COLLISION_MAPPING>();
-        private void SaveCollisionMaps(Composite composite)
-        {
-            if (composite == null)
-                return;
-
-            foreach (var function in composite.functions_dictionary.Values)
-            {
-                if (function.function.IsFunctionType)
-                {
-                    //TODO: this assumes that entities don't have collision mappings in the resoure parameter and entity resources
-                    ResourceReference collision = function.GetResource(ResourceType.COLLISION_MAPPING, true);
-                    if (collision == null)
-                        continue;
-
-                    //TODO: need to make sure "collision_index" is the same for every entry with the same entity, then we can show it
-
-                    CollisionMaps.COLLISION_MAPPING collisionMap = new CollisionMaps.COLLISION_MAPPING()
-                    {
-                        ResourceGUID = collision.resource_id,
-                        //CollisionProxyIndex = collision.index,
-                        Entity = new EntityHandle()
-                        {
-                            entity_id = function.shortGUID
-                            //TODO: generate composite guid
-                        }
-                    };
-
-                    //collision.resource_id
-
-                    //switch (CommandsUtils.GetFunctionType(function.function))
-                    //{
-                    //    case FunctionType.
-                    //}
-                }
-                else
-                {
-                    SaveCollisionMaps(_commandsDisplay.Content.Level.Commands.GetComposite(function.function));
-                }
-            }
-        }
-
-        private void CopyFilesRecursively(string sourcePath, string targetPath)
-        {
-            foreach (string dirPath in Directory.GetDirectories(sourcePath, "*", SearchOption.AllDirectories))
-            {
-                Directory.CreateDirectory(dirPath.Replace(sourcePath, targetPath));
-            }
-            foreach (string newPath in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories))
-            {
-                File.Copy(newPath, newPath.Replace(sourcePath, targetPath), true);
-            }
         }
 
         ControlsWindow _controlsWindow = null;
