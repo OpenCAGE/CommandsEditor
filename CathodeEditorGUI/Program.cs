@@ -50,9 +50,11 @@ namespace CommandsEditor
             else
                 SharedData.pathToAI = Environment.CurrentDirectory;
 
+#if !DEBUG
             //Verify location
             if (!File.Exists(SharedData.pathToAI + "/AI.exe")) 
                 throw new Exception("This tool was launched incorrectly, or was not placed within the Alien: Isolation directory.");
+#endif
             
             //Make sure we're using the UK culture to format our numbers correctly
             CultureInfo newCulture = CultureInfo.CreateSpecificCulture("en-GB");

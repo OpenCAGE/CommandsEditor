@@ -414,6 +414,7 @@ namespace CommandsEditor
                 _commandsDisplay.Content.Level.Commands.Save(_commandsDisplay.Content.Level.Commands.Filepath.Substring(0, _commandsDisplay.Content.Level.Commands.Filepath.Length - 3) + ext, false);
             }
 
+#if !DEBUG
             if (SettingsManager.GetBool(Singleton.Settings.LaunchGameWhenSaved))
             {
                 PatchManager.Platform platform;
@@ -454,6 +455,7 @@ namespace CommandsEditor
                     Process.Start(alienProcess);
                 }
             }
+#endif
 
             statusText.Text = "";
             Cursor.Current = Cursors.Default;
