@@ -97,14 +97,20 @@ namespace CommandsEditor
 
             MessageBox.Show("A critical error occurred.\nPlease wait while a log is generated.", "OpenCAGE Error Handler", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-            Task.Run(async () =>
+            try
             {
-                await UploadCrashLog(error, logPath);
-            }).Wait();
+                Task.Run(async () =>
+                {
+                    await UploadCrashLog(error, logPath);
+                }).Wait();
 
-            MessageBox.Show("A crash log has been generated!\nPlease report your issue to GitHub!\nMake sure to include any steps and modified files.", "OpenCAGE Error Handler", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            Process.Start(logPath);
-            Process.Start("https://github.com/MattFiler/OpenCAGE/issues/new");
+                MessageBox.Show("Thanks, a log has been generated and auto-submitted.\nYou can find your logs within DATA/MODTOOLS/LOGS.", "OpenCAGE Error Handler", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch
+            {
+                MessageBox.Show("A log has been generated.\nYou can find it within DATA/MODTOOLS/LOGS, please submit it to GitHub!", "OpenCAGE Error Handler", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            
             Application.Exit();
         }
         static async Task UploadCrashLog(string error, string logPath)

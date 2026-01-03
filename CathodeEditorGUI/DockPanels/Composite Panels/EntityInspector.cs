@@ -183,6 +183,14 @@ namespace CommandsEditor.DockPanels
             Debug.Log("Entity Inspector", "** RELOAD START **");
 #endif
 
+            if (this.IsDisposed || this.Disposing || entity_params == null || entity_params.IsDisposed || entity_params.Disposing)
+            {
+#if DO_ENTITY_PERF_CHECK
+                timer.Stop();
+#endif
+                return;
+            }
+
             _displayingLinks = displayLinks;
             ModifyParameters.Visible = !_displayingLinks;
 
@@ -191,15 +199,30 @@ namespace CommandsEditor.DockPanels
             entityParamGroup.Text = "Selected Entity Parameters";
             selected_entity_type_description.Text = "";
             selected_entity_name.Text = "";
-            for (int i = 0; i < entity_params.Controls.Count; i++)
+            
+            for (int i = entity_params.Controls.Count - 1; i >= 0; i--)
             {
-                if (entity_params.Controls[i] == null)
-                    continue;
+                try
+                {
+                    Control ctrl = entity_params.Controls[i];
+                    if (ctrl == null || ctrl.IsDisposed)
+                        continue;
 
-                if (entity_params.Controls[i] is ParameterUserControl)
-                    ((ParameterUserControl)entity_params.Controls[i]).OnDeleted -= OnDeleteParam;
+                    if (ctrl is ParameterUserControl)
+                        ((ParameterUserControl)ctrl).OnDeleted -= OnDeleteParam;
+                    else if (ctrl is GUI_Link)
+                    {
+                        GUI_Link link = (GUI_Link)ctrl;
+                        link.GoToEntity -= _compositeDisplay.LoadEntityAndFocusNode;
+                        link.OnLinkEdited -= OnLinkEdited;
+                    }
 
-                entity_params.Controls[i].Dispose();
+                    ctrl.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    Debug.Log("Entity Inspector", $"Error disposing control: {ex.Message}");
+                }
             }
             entity_params.Controls.Clear();
             jumpToComposite.Visible = false;
@@ -537,9 +560,63 @@ namespace CommandsEditor.DockPanels
             Debug.Log("Entity Inspector", $"LINK OUT CONTROLS COMPLETED: {timer.Elapsed.TotalMilliseconds} ms");
 #endif
 
-            entity_params.SuspendLayout();
-            entity_params.Controls.AddRange(controls.ToArray());
-            entity_params.ResumeLayout();
+            if (this.IsDisposed || this.Disposing || entity_params == null || entity_params.IsDisposed || entity_params.Disposing)
+            {
+                foreach (Control ctrl in controls)
+                {
+                    try
+                    {
+                        if (ctrl != null && !ctrl.IsDisposed)
+                        {
+                            if (ctrl is ParameterUserControl)
+                                ((ParameterUserControl)ctrl).OnDeleted -= OnDeleteParam;
+                            else if (ctrl is GUI_Link)
+                            {
+                                GUI_Link link = (GUI_Link)ctrl;
+                                link.GoToEntity -= _compositeDisplay.LoadEntityAndFocusNode;
+                                link.OnLinkEdited -= OnLinkEdited;
+                            }
+                            ctrl.Dispose();
+                        }
+                    }
+                    catch { }
+                }
+#if DO_ENTITY_PERF_CHECK
+                timer.Stop();
+#endif
+                return;
+            }
+
+            try
+            {
+                entity_params.SuspendLayout();
+                entity_params.Controls.AddRange(controls.ToArray());
+                entity_params.ResumeLayout();
+            }
+            catch (Exception ex)
+            {
+                Debug.Log("Entity Inspector", $"Error adding controls: {ex.Message}");
+                foreach (Control ctrl in controls)
+                {
+                    try
+                    {
+                        if (ctrl != null && !ctrl.IsDisposed)
+                        {
+                            if (ctrl is ParameterUserControl)
+                                ((ParameterUserControl)ctrl).OnDeleted -= OnDeleteParam;
+                            else if (ctrl is GUI_Link)
+                            {
+                                GUI_Link link = (GUI_Link)ctrl;
+                                link.GoToEntity -= _compositeDisplay.LoadEntityAndFocusNode;
+                                link.OnLinkEdited -= OnLinkEdited;
+                            }
+                            ctrl.Dispose();
+                        }
+                    }
+                    catch { }
+                }
+                throw; 
+            }
 
 #if DO_ENTITY_PERF_CHECK
             timer.Stop();
