@@ -1,5 +1,3 @@
-//#define DO_TEST_STUFF
-
 using CATHODE;
 using CATHODE.EXPERIMENTAL;
 using CATHODE.Scripting;
@@ -291,6 +289,14 @@ namespace CommandsEditor
                 GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true);
                 GC.WaitForPendingFinalizers();
             }
+
+#if DEBUG
+            if (Directory.Exists(SharedData.pathToAI + "\\LatestBuiltData\\ENV"))
+            {
+                Directory.Delete(SharedData.pathToAI + "\\DATA\\ENV\\" + level, true);
+                CopyFilesRecursively(SharedData.pathToAI + "\\LatestBuiltData\\ENV\\" + level, SharedData.pathToAI + "\\DATA\\ENV\\" + level);
+            }
+#endif
 
             _commandsDisplay = new CommandsDisplay(level);
             Singleton.OnLevelLoaded += ShowCommandsDisplayWhenLoaded;
@@ -735,6 +741,18 @@ namespace CommandsEditor
         {
             openGameOnSaveToolStripMenuItem.Checked = !openGameOnSaveToolStripMenuItem.Checked;
             SettingsManager.SetBool(Singleton.Settings.LaunchGameWhenSaved, openGameOnSaveToolStripMenuItem.Checked);
+        }
+
+        private void CopyFilesRecursively(string sourcePath, string targetPath)
+        {
+            foreach (string dirPath in Directory.GetDirectories(sourcePath, "*", SearchOption.AllDirectories))
+            {
+                Directory.CreateDirectory(dirPath.Replace(sourcePath, targetPath));
+            }
+            foreach (string newPath in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories))
+            {
+                File.Copy(newPath, newPath.Replace(sourcePath, targetPath), true);
+            }
         }
     }
 }
