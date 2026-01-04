@@ -89,6 +89,7 @@ namespace CommandsEditor
 #if !DEBUG
             DEBUG_ReloadLevel.Visible = false;
             connectToRuntimeUtils.Visible = false;
+            texturesToolStripMenuItem.Visible = false;
 #endif
 
             WindowState = SettingsManager.GetString(Singleton.Settings.WindowState, "Normal") == "Maximized" ? FormWindowState.Maximized : FormWindowState.Normal;
@@ -753,6 +754,65 @@ namespace CommandsEditor
             {
                 File.Copy(newPath, newPath.Replace(sourcePath, targetPath), true);
             }
+        }
+
+        EditModel _modelEditor = null;
+        private void modelsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_modelEditor != null)
+            {
+                _modelEditor.FormClosed -= _modelEditor_FormClosed;
+                _modelEditor.Close();
+            }
+
+            _modelEditor = new EditModel();
+            _modelEditor.Show();
+            _modelEditor.FormClosed += _modelEditor_FormClosed;
+        }
+        private void _modelEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _modelEditor = null;
+        }
+
+        EditMaterial _materialEditor = null;
+        private void materialsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_materialEditor != null)
+            {
+                _materialEditor.FormClosed -= _materialEditor_FormClosed;
+                _materialEditor.Close();
+            }
+
+            _materialEditor = new EditMaterial();
+            _materialEditor.Show();
+            _materialEditor.FormClosed += _materialEditor_FormClosed;
+        }
+        private void _materialEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _materialEditor = null;
+        }
+
+        EditMaterialMapping _materialMappingEditor = null;
+        private void materialMappingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_materialMappingEditor != null)
+            {
+                _materialMappingEditor.FormClosed -= _materialMappingEditor_FormClosed;
+                _materialMappingEditor.Close();
+            }
+
+            _materialMappingEditor = new EditMaterialMapping();
+            _materialMappingEditor.Show();
+            _materialMappingEditor.FormClosed += _materialMappingEditor_FormClosed;
+        }
+        private void _materialMappingEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _materialMappingEditor = null;
+        }
+
+        private void texturesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
