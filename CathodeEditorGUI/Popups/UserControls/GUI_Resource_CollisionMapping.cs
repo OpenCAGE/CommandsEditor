@@ -166,7 +166,7 @@ namespace CommandsEditor.Popups.UserControls
 
         private void btnSetMaterialMapping_Click(object sender, EventArgs e)
         {
-            EditMaterialMapping editMaterialMapping = new EditMaterialMapping(_currentCollisionMapping.MaterialMapping);
+            EditMaterialMapping editMaterialMapping = new EditMaterialMapping(true, _currentCollisionMapping.MaterialMapping);
             editMaterialMapping.OnMaterialMappingSelected += SetMaterialMapping;
             editMaterialMapping.Show();
         }

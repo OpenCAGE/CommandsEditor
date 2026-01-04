@@ -35,18 +35,27 @@ namespace CommandsEditor
             this.columnTo = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.selectButton = new System.Windows.Forms.Button();
             this.splitContainer = new System.Windows.Forms.SplitContainer();
+            this.treeViewButtonPanel = new System.Windows.Forms.Panel();
+            this.addNewSetButton = new System.Windows.Forms.Button();
+            this.buttonPanel = new System.Windows.Forms.Panel();
+            this.addMappingButton = new System.Windows.Forms.Button();
+            this.removeMappingButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
             this.splitContainer.Panel2.SuspendLayout();
             this.splitContainer.SuspendLayout();
+            this.treeViewButtonPanel.SuspendLayout();
+            this.buttonPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // materialMappingTreeView
             // 
             this.materialMappingTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.materialMappingTreeView.FullRowSelect = true;
+            this.materialMappingTreeView.HideSelection = false;
             this.materialMappingTreeView.Location = new System.Drawing.Point(0, 0);
             this.materialMappingTreeView.Name = "materialMappingTreeView";
-            this.materialMappingTreeView.Size = new System.Drawing.Size(277, 450);
+            this.materialMappingTreeView.Size = new System.Drawing.Size(277, 420);
             this.materialMappingTreeView.TabIndex = 0;
             this.materialMappingTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.materialMappingTreeView_AfterSelect);
             // 
@@ -61,10 +70,12 @@ namespace CommandsEditor
             this.mappingsListView.HideSelection = false;
             this.mappingsListView.Location = new System.Drawing.Point(0, 0);
             this.mappingsListView.Name = "mappingsListView";
-            this.mappingsListView.Size = new System.Drawing.Size(704, 423);
+            this.mappingsListView.Size = new System.Drawing.Size(704, 420);
             this.mappingsListView.TabIndex = 0;
             this.mappingsListView.UseCompatibleStateImageBehavior = false;
             this.mappingsListView.View = System.Windows.Forms.View.Details;
+            this.mappingsListView.DoubleClick += new System.EventHandler(this.mappingsListView_DoubleClick);
+            this.mappingsListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.mappingsListView_KeyDown);
             // 
             // columnFrom
             // 
@@ -78,12 +89,12 @@ namespace CommandsEditor
             // 
             // selectButton
             // 
-            this.selectButton.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.selectButton.Location = new System.Drawing.Point(0, 423);
+            this.selectButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.selectButton.Location = new System.Drawing.Point(177, 3);
             this.selectButton.Name = "selectButton";
-            this.selectButton.Size = new System.Drawing.Size(704, 27);
+            this.selectButton.Size = new System.Drawing.Size(100, 24);
             this.selectButton.TabIndex = 1;
-            this.selectButton.Text = "Select";
+            this.selectButton.Text = "Select Set";
             this.selectButton.UseVisualStyleBackColor = true;
             this.selectButton.Click += new System.EventHandler(this.selectButton_Click);
             // 
@@ -96,14 +107,68 @@ namespace CommandsEditor
             // splitContainer.Panel1
             // 
             this.splitContainer.Panel1.Controls.Add(this.materialMappingTreeView);
+            this.splitContainer.Panel1.Controls.Add(this.treeViewButtonPanel);
             // 
             // splitContainer.Panel2
             // 
             this.splitContainer.Panel2.Controls.Add(this.mappingsListView);
-            this.splitContainer.Panel2.Controls.Add(this.selectButton);
+            this.splitContainer.Panel2.Controls.Add(this.buttonPanel);
             this.splitContainer.Size = new System.Drawing.Size(985, 450);
             this.splitContainer.SplitterDistance = 277;
             this.splitContainer.TabIndex = 0;
+            // 
+            // treeViewButtonPanel
+            // 
+            this.treeViewButtonPanel.Controls.Add(this.addNewSetButton);
+            this.treeViewButtonPanel.Controls.Add(this.selectButton);
+            this.treeViewButtonPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.treeViewButtonPanel.Location = new System.Drawing.Point(0, 420);
+            this.treeViewButtonPanel.Name = "treeViewButtonPanel";
+            this.treeViewButtonPanel.Size = new System.Drawing.Size(277, 30);
+            this.treeViewButtonPanel.TabIndex = 1;
+            // 
+            // addNewSetButton
+            // 
+            this.addNewSetButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.addNewSetButton.Location = new System.Drawing.Point(3, 3);
+            this.addNewSetButton.Name = "addNewSetButton";
+            this.addNewSetButton.Size = new System.Drawing.Size(100, 24);
+            this.addNewSetButton.TabIndex = 0;
+            this.addNewSetButton.Text = "Add New Set";
+            this.addNewSetButton.UseVisualStyleBackColor = true;
+            this.addNewSetButton.Click += new System.EventHandler(this.addNewSetButton_Click);
+            // 
+            // buttonPanel
+            // 
+            this.buttonPanel.Controls.Add(this.addMappingButton);
+            this.buttonPanel.Controls.Add(this.removeMappingButton);
+            this.buttonPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.buttonPanel.Location = new System.Drawing.Point(0, 420);
+            this.buttonPanel.Name = "buttonPanel";
+            this.buttonPanel.Size = new System.Drawing.Size(704, 30);
+            this.buttonPanel.TabIndex = 2;
+            // 
+            // addMappingButton
+            // 
+            this.addMappingButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.addMappingButton.Location = new System.Drawing.Point(495, 3);
+            this.addMappingButton.Name = "addMappingButton";
+            this.addMappingButton.Size = new System.Drawing.Size(100, 24);
+            this.addMappingButton.TabIndex = 0;
+            this.addMappingButton.Text = "Add Mapping";
+            this.addMappingButton.UseVisualStyleBackColor = true;
+            this.addMappingButton.Click += new System.EventHandler(this.addMappingButton_Click);
+            // 
+            // removeMappingButton
+            // 
+            this.removeMappingButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.removeMappingButton.Location = new System.Drawing.Point(601, 3);
+            this.removeMappingButton.Name = "removeMappingButton";
+            this.removeMappingButton.Size = new System.Drawing.Size(100, 24);
+            this.removeMappingButton.TabIndex = 1;
+            this.removeMappingButton.Text = "Remove Mapping";
+            this.removeMappingButton.UseVisualStyleBackColor = true;
+            this.removeMappingButton.Click += new System.EventHandler(this.removeMappingButton_Click);
             // 
             // EditMaterialMapping
             // 
@@ -119,6 +184,8 @@ namespace CommandsEditor
             this.splitContainer.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
             this.splitContainer.ResumeLayout(false);
+            this.treeViewButtonPanel.ResumeLayout(false);
+            this.buttonPanel.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -131,6 +198,11 @@ namespace CommandsEditor
         private System.Windows.Forms.ColumnHeader columnFrom;
         private System.Windows.Forms.ColumnHeader columnTo;
         private System.Windows.Forms.Button selectButton;
+        private System.Windows.Forms.Panel buttonPanel;
+        private System.Windows.Forms.Button addMappingButton;
+        private System.Windows.Forms.Button removeMappingButton;
+        private System.Windows.Forms.Button addNewSetButton;
+        private System.Windows.Forms.Panel treeViewButtonPanel;
     }
 }
 
