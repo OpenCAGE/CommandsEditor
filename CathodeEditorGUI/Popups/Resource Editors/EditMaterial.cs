@@ -36,7 +36,7 @@ namespace CommandsEditor
 
         public Action<Materials.Material> OnMaterialSelected;
 
-        public EditMaterial(Materials.Material material = null) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
+        public EditMaterial(Materials.Material material = null, bool showSelectBtn = true) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             InitializeComponent();
 
@@ -78,6 +78,8 @@ namespace CommandsEditor
                 }
             }
             materialList.EndUpdate();
+
+            selectMaterialBtn.Visible = showSelectBtn;
         }
 
         private void EditMaterial_Load(object sender, EventArgs e)

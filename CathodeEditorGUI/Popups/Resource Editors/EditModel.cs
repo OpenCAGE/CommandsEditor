@@ -30,7 +30,7 @@ namespace CommandsEditor
 
         public Action<Models.CS2.Component> OnModelSelected;
 
-        public EditModel(Models.CS2.Component.LOD.Submesh defaultSubmesh = null) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
+        public EditModel(Models.CS2.Component.LOD.Submesh defaultSubmesh = null, bool showSelectBtn = true) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             InitializeComponent();
 
@@ -70,8 +70,8 @@ namespace CommandsEditor
 
             if (defaultSubmesh != null)
                 SelectModelNode(Content.Level.Models.GetWriteIndex(defaultSubmesh));
-            else
-                selectModelBtn.Visible = false;
+            
+            selectModelBtn.Visible = showSelectBtn;
 
             this.Disposed += SelectModel_Disposed;
         }

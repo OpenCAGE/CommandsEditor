@@ -16,7 +16,7 @@ namespace CommandsEditor
         private Dictionary<int, MaterialMappings.MaterialMapping> _indexToMapping = new Dictionary<int, MaterialMappings.MaterialMapping>();
         private Dictionary<ListViewItem, MaterialMappings.MaterialMapping.Mapping> _listItemToMapping = new Dictionary<ListViewItem, MaterialMappings.MaterialMapping.Mapping>();
 
-        public EditMaterialMapping(bool showSelectBtn = false, MaterialMappings.MaterialMapping currentMapping = null) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
+        public EditMaterialMapping(MaterialMappings.MaterialMapping currentMapping = null, bool showSelectBtn = true) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             InitializeComponent();
             _currentMapping = currentMapping;

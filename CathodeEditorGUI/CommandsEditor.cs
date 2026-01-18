@@ -770,7 +770,7 @@ namespace CommandsEditor
                 _modelEditor.Close();
             }
 
-            _modelEditor = new EditModel();
+            _modelEditor = new EditModel(null, false);
             _modelEditor.Show();
             _modelEditor.FormClosed += _modelEditor_FormClosed;
         }
@@ -788,7 +788,7 @@ namespace CommandsEditor
                 _materialEditor.Close();
             }
 
-            _materialEditor = new EditMaterial();
+            _materialEditor = new EditMaterial(null, false);
             _materialEditor.Show();
             _materialEditor.FormClosed += _materialEditor_FormClosed;
         }
@@ -806,7 +806,7 @@ namespace CommandsEditor
                 _materialMappingEditor.Close();
             }
 
-            _materialMappingEditor = new EditMaterialMapping();
+            _materialMappingEditor = new EditMaterialMapping(null, false);
             _materialMappingEditor.Show();
             _materialMappingEditor.FormClosed += _materialMappingEditor_FormClosed;
         }
