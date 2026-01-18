@@ -1,5 +1,6 @@
 using AlienPAK;
 using CATHODE;
+using CathodeLib;
 using CommandsEditor.Popups.Base;
 using CommandsEditor.Popups.UserControls;
 using OpenCAGE;
@@ -19,8 +20,6 @@ namespace CommandsEditor
     {
         GUI_ModelViewer modelViewer = null;
         TreeUtility treeHelper;
-
-        private int _selectedModelIndex = -1;
 
         private Dictionary<Models.CS2.Component.LOD.Submesh, GUI_ModelViewer.Model> allSubmeshes = new Dictionary<Models.CS2.Component.LOD.Submesh, GUI_ModelViewer.Model>();
         private List<CheckBox> submeshCheckboxes = new List<CheckBox>();
@@ -118,46 +117,71 @@ namespace CommandsEditor
 
         private void FileTree_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (((TreeItem)FileTree.SelectedNode.Tag).Item_Type != TreeItemType.EXPORTABLE_FILE) return;
-            _selectedModelIndex = Convert.ToInt32(((TreeItem)FileTree.SelectedNode.Tag).String_Value);
-            ShowModel(_selectedModelIndex);
-        }
+            ClearSubmeshCheckboxes();
+            selectModelBtn.Enabled = false;
+            allSubmeshes.Clear();
+            modelPreviewArea.Text = "";
+            modelViewer.ShowModel(new List<GUI_ModelViewer.Model>());
 
-        private void ShowModel(int i)
-        {
-            if (i == -1)
+            int selectedModelIndex = Convert.ToInt32(((TreeItem)FileTree.SelectedNode.Tag).String_Value);
+            if (selectedModelIndex == -1)
                 return;
 
-            ClearSubmeshCheckboxes();
+            switch (((TreeItem)FileTree.SelectedNode.Tag).Item_Type)
+            {
+                case TreeItemType.EXPORTABLE_FILE:
+                    {
+                        //Shows an individual model component, which can be selected to be used as a RENDERABLE resource
+                        Models.CS2.Component component = Content.Level.Models.FindModelComponentForSubmesh(Content.Level.Models.GetAtWriteIndex(selectedModelIndex));
+                        AddComponent(component);
+                        modelPreviewArea.Text = GenerateNodeTag(selectedModelIndex);
+                        selectModelBtn.Enabled = true;
+                    }
+                    break;
+                case TreeItemType.DIRECTORY:
+                    {
+                        if (!(FileTree.SelectedNode.Nodes.Count > 0 && FileTree.SelectedNode.Nodes[0].Nodes.Count == 0))
+                            return;
 
-            allSubmeshes.Clear();
-            Models.CS2.Component component = Content.Level.Models.FindModelComponentForSubmesh(Content.Level.Models.GetAtWriteIndex(i));
-            
-            int highestLODIndex = 0;
-            if (component.LODs.Count > 0)
-                highestLODIndex = 0; 
-            
-            for (int x = 0; x < component.LODs.Count; x++)
-                CreateLODGroup(x, component.LODs[x].Name);
-            
+                        //Shows a combined model made up of multiple components, cannot be selected as a RENDERABLE resource
+                        Models.CS2.Component.LOD.Submesh submesh = Content.Level.Models.GetAtWriteIndex(selectedModelIndex);
+                        Models.CS2 mesh = Content.Level.Models.FindModelForSubmesh(submesh);
+                        int index = 0;
+                        foreach (Models.CS2.Component component in mesh.Components)
+                        {
+                            AddComponent(component, index);
+                            index += component.LODs.Count;
+                        }
+                        modelPreviewArea.Text = mesh.Name.Replace('\\', '/');
+                    }
+                    break;
+                default:
+                    return;
+            }
+
+            UpdateFilteredModel(true);
+            UpdateLODGroupLayouts();
+
+            Debug.Log("Model Viewer", "Showing from index " + selectedModelIndex);
+        }
+
+        private void AddComponent(Models.CS2.Component component, int baseIndex = 0)
+        {
+            for (int x = baseIndex; x < component.LODs.Count + baseIndex; x++)
+                CreateLODGroup(x, component.LODs[x - baseIndex].Name);
+
             for (int x = 0; x < component.LODs.Count; x++)
             {
                 int yOffset = 0;
                 for (int y = 0; y < component.LODs[x].Submeshes.Count; y++)
                 {
                     allSubmeshes[component.LODs[x].Submeshes[y]] = new GUI_ModelViewer.Model(component.LODs[x].Submeshes[y]);
-                    
-                    bool isEnabled = (x == highestLODIndex);
-                    CreateSubmeshCheckbox(component.LODs[x].Submeshes[y], x, y, component.LODs[x].Submeshes.Count, isEnabled, yOffset);
+
+                    bool isEnabled = (x == 0);
+                    CreateSubmeshCheckbox(component.LODs[x].Submeshes[y], x + baseIndex, y, component.LODs[x].Submeshes.Count, isEnabled, yOffset);
                     yOffset += 25;
                 }
             }
-
-            UpdateLODGroupLayouts();
-            UpdateFilteredModel(true); 
-            modelPreviewArea.Text = GenerateNodeTag(i);
-
-            Debug.Log("Model Viewer", "Showing model at index " + i);
         }
 
         private void ClearSubmeshCheckboxes()
@@ -183,22 +207,32 @@ namespace CommandsEditor
         private void CreateLODGroup(int lodIndex, string lodName)
         {
             GroupBox lodGroup = new GroupBox();
-            lodGroup.Text = "LOD " + lodIndex + (lodName != "" ? ": " + lodName : "");
+            lodGroup.Text = lodName;
             lodGroup.AutoSize = false;
             lodGroup.Width = 207;
             
             Button selectAllBtn = new Button();
             selectAllBtn.Text = "Show All";
-            selectAllBtn.Size = new Size(180, 23);
+            selectAllBtn.Size = new Size(80, 23);
             selectAllBtn.Location = new Point(5, 15);
             selectAllBtn.Tag = lodIndex;
             selectAllBtn.Click += (s, e) => {
-                UncheckAllLODs();
                 int lod = (int)((Button)s).Tag;
                 CheckAllSubmeshes(lod, true);
             };
             lodGroup.Controls.Add(selectAllBtn);
-            
+
+            Button deselectAllBtn = new Button();
+            deselectAllBtn.Text = "Hide All";
+            deselectAllBtn.Size = new Size(80, 23);
+            deselectAllBtn.Location = new Point(90, 15);
+            deselectAllBtn.Tag = lodIndex;
+            deselectAllBtn.Click += (s, e) => {
+                int lod = (int)((Button)s).Tag;
+                CheckAllSubmeshes(lod, false);
+            };
+            lodGroup.Controls.Add(deselectAllBtn);
+
             lodGroups[lodIndex] = lodGroup;
             lodToCheckboxes[lodIndex] = new List<CheckBox>();
         }
@@ -301,8 +335,8 @@ namespace CommandsEditor
 
         private void selectModel_Click(object sender, EventArgs e)
         {
-            _selectedModelIndex = Convert.ToInt32(((TreeItem)FileTree.SelectedNode.Tag).String_Value);
-            OnModelSelected?.Invoke(Content.Level.Models.FindModelComponentForSubmesh(Content.Level.Models.GetAtWriteIndex(_selectedModelIndex)));
+            int selectedModelIndex = Convert.ToInt32(((TreeItem)FileTree.SelectedNode.Tag).String_Value);
+            OnModelSelected?.Invoke(Content.Level.Models.FindModelComponentForSubmesh(Content.Level.Models.GetAtWriteIndex(selectedModelIndex)));
             this.Close();
         }
 
