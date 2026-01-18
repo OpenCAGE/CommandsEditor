@@ -57,6 +57,7 @@ namespace CommandsEditor
         public static Action OnSaved;
         public static Action OnParameterModified;
         public static Action OnResourceModified;
+        public static Action OnNodeStyleChanged;
 
         //Composite display events
         public static Action<CompositeDisplay> OnCompositeDisplayOpening;
@@ -121,6 +122,20 @@ namespace CommandsEditor
             public readonly string PopulateAllPinsOnCreateNode = "CS_PopulateAllPinsOnCreateNode";
             public readonly string OptionToDeleteEntityWithNode = "CS_OptionToDeleteEntityWithNode";
             public readonly string LaunchGameWhenSaved = "CS_LaunchGameWhenSaved";
+            public readonly string NodeColour_FunctionNode = "CS_NodeColour_FunctionNode";
+            public readonly string NodeColour_FunctionNodeBottom = "CS_NodeColour_FunctionNodeBottom";
+            public readonly string NodeColour_FunctionText = "CS_NodeColour_FunctionText";
+            public readonly string NodeColour_InstanceNode = "CS_NodeColour_InstanceNode";
+            public readonly string NodeColour_InstanceNodeBottom = "CS_NodeColour_InstanceNodeBottom";
+            public readonly string NodeColour_InstanceText = "CS_NodeColour_InstanceText";
+            public readonly string NodeColour_AliasNode = "CS_NodeColour_AliasNode";
+            public readonly string NodeColour_AliasNodeBottom = "CS_NodeColour_AliasNodeBottom";
+            public readonly string NodeColour_AliasText = "CS_NodeColour_AliasText";
+            public readonly string NodeColour_ProxyNode = "CS_NodeColour_ProxyNode";
+            public readonly string NodeColour_ProxyNodeBottom = "CS_NodeColour_ProxyNodeBottom";
+            public readonly string NodeColour_ProxyText = "CS_NodeColour_ProxyText";
+            public readonly string NodeColour_VariableNode = "CS_NodeColour_VariableNode";
+            public readonly string NodeColour_VariableText = "CS_NodeColour_VariableText";
         }
 
         public static Action OnAnimationsLoaded;

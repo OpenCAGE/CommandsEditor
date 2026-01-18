@@ -139,6 +139,39 @@ namespace CommandsEditor
             if (!SettingsManager.IsSet(Singleton.Settings.OptionToDeleteEntityWithNode)) SettingsManager.SetBool(Singleton.Settings.OptionToDeleteEntityWithNode, true);
             giveOptionToDeleteEntityWhenNoNodesToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.OptionToDeleteEntityWithNode); giveOptionToDeleteEntityWhenNoNodesToolStripMenuItem.PerformClick();
 
+            if (!SettingsManager.IsSet(Singleton.Settings.NodeColour_FunctionNode))
+                SettingsManager.SetInteger(Singleton.Settings.NodeColour_FunctionNode, Color.FromArgb(30, 144, 255).ToArgb());
+            if (!SettingsManager.IsSet(Singleton.Settings.NodeColour_FunctionNodeBottom))
+                SettingsManager.SetInteger(Singleton.Settings.NodeColour_FunctionNodeBottom, Color.FromArgb(10, 109, 157).ToArgb());
+            if (!SettingsManager.IsSet(Singleton.Settings.NodeColour_FunctionText))
+                SettingsManager.SetInteger(Singleton.Settings.NodeColour_FunctionText, Color.White.ToArgb());
+
+            if (!SettingsManager.IsSet(Singleton.Settings.NodeColour_AliasNode))
+                SettingsManager.SetInteger(Singleton.Settings.NodeColour_AliasNode, Color.FromArgb(255, 114, 30).ToArgb());
+            if (!SettingsManager.IsSet(Singleton.Settings.NodeColour_AliasNodeBottom))
+                SettingsManager.SetInteger(Singleton.Settings.NodeColour_AliasNodeBottom, Color.FromArgb(196, 76, 29).ToArgb());
+            if (!SettingsManager.IsSet(Singleton.Settings.NodeColour_AliasText))
+                SettingsManager.SetInteger(Singleton.Settings.NodeColour_AliasText, Color.White.ToArgb());
+
+            if (!SettingsManager.IsSet(Singleton.Settings.NodeColour_ProxyNode))
+                SettingsManager.SetInteger(Singleton.Settings.NodeColour_ProxyNode, Color.FromArgb(35, 196, 22).ToArgb());
+            if (!SettingsManager.IsSet(Singleton.Settings.NodeColour_ProxyNodeBottom))
+                SettingsManager.SetInteger(Singleton.Settings.NodeColour_ProxyNodeBottom, Color.FromArgb(9, 153, 72).ToArgb());
+            if (!SettingsManager.IsSet(Singleton.Settings.NodeColour_ProxyText))
+                SettingsManager.SetInteger(Singleton.Settings.NodeColour_ProxyText, Color.White.ToArgb());
+
+            if (!SettingsManager.IsSet(Singleton.Settings.NodeColour_InstanceNode))
+                SettingsManager.SetInteger(Singleton.Settings.NodeColour_InstanceNode, Color.FromArgb(195, 30, 255).ToArgb());
+            if (!SettingsManager.IsSet(Singleton.Settings.NodeColour_InstanceNodeBottom))
+                SettingsManager.SetInteger(Singleton.Settings.NodeColour_InstanceNodeBottom, Color.FromArgb(118, 10, 157).ToArgb());
+            if (!SettingsManager.IsSet(Singleton.Settings.NodeColour_InstanceText))
+                SettingsManager.SetInteger(Singleton.Settings.NodeColour_InstanceText, Color.White.ToArgb());
+
+            if (!SettingsManager.IsSet(Singleton.Settings.NodeColour_VariableNode))
+                SettingsManager.SetInteger(Singleton.Settings.NodeColour_VariableNode, Color.Red.ToArgb());
+            if (!SettingsManager.IsSet(Singleton.Settings.NodeColour_VariableText))
+                SettingsManager.SetInteger(Singleton.Settings.NodeColour_VariableText, Color.White.ToArgb());
+
             //Fixes for dodgy top dropdowns
             compositeViewerToolStripMenuItem.MouseHover += (sender, e) => { ((ToolStripMenuItem)sender).PerformClick(); };
             compositeViewerToolStripMenuItem.DropDown.Closing += DropDown_Closing;
@@ -826,6 +859,16 @@ namespace CommandsEditor
             materialsToolStripMenuItem.Enabled = _commandsDisplay?.Content?.Level != null;
             materialMappingsToolStripMenuItem.Enabled = _commandsDisplay?.Content?.Level != null;
             texturesToolStripMenuItem.Enabled = _commandsDisplay?.Content?.Level != null;
+        }
+
+        SetNodeColours _setNodeColours;
+        private void setNodeColoursToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_setNodeColours != null)
+                _setNodeColours.Close();
+
+            _setNodeColours = new SetNodeColours();
+            _setNodeColours.Show();
         }
     }
 }

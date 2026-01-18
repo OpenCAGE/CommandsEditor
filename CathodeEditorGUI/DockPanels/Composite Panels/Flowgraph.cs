@@ -63,6 +63,7 @@ namespace CommandsEditor
             //todo: i feel like these events should come from the compositedisplay?
             Singleton.OnEntityDeleted += OnEntityDeletedGlobally;
             Singleton.OnEntityRenamed += OnEntityRenamedGlobally;
+            Singleton.OnNodeStyleChanged += OnNodeStyleChanged;
         }
 
         private void Flowgraph_VisibleChanged(object sender, EventArgs e)
@@ -96,6 +97,7 @@ namespace CommandsEditor
             Singleton.OnEntityDeleted -= OnEntityDeletedGlobally;
             Singleton.OnEntityRenamed -= OnEntityRenamedGlobally;
             Singleton.OnEntityAdded -= OnEntityAddedViaPopup;
+            Singleton.OnNodeStyleChanged -= OnNodeStyleChanged;
 
             if (_renameFlowgraphPopup != null)
                 _renameFlowgraphPopup.FormClosed -= _renameFlowgraphPopup_FormClosed;
@@ -116,6 +118,14 @@ namespace CommandsEditor
             {
                 if (node.Entity.shortGUID != entity.shortGUID)
                     continue;
+                RegenerateNodeStyle(node);
+            }
+        }
+
+        private void OnNodeStyleChanged()
+        {
+            foreach (STNode node in stNodeEditor1.Nodes)
+            {
                 RegenerateNodeStyle(node);
             }
         }
@@ -384,7 +394,13 @@ namespace CommandsEditor
                 case EntityVariant.PROXY:
                 case EntityVariant.ALIAS:
                     (Composite comp, Entity ent) = _commands.Utils.GetResolvedTarget(_commands.Utils.ResolveAliasOrProxy(node.Entity, _composite));
-                    node.SetColour(node.Entity.variant == EntityVariant.PROXY ? Color.FromArgb(35, 196, 22) : Color.FromArgb(255, 114, 30), node.Entity.variant == EntityVariant.PROXY ? Color.FromArgb(9, 153, 72) : Color.FromArgb(196, 76, 29), Color.White); // #23c416, #099948 / #ff721e, #c44c1d
+                    node.SetColour(
+                        node.Entity.variant == EntityVariant.PROXY ? Color.FromArgb(SettingsManager.GetInteger(Singleton.Settings.NodeColour_ProxyNode)) : 
+                                                                     Color.FromArgb(SettingsManager.GetInteger(Singleton.Settings.NodeColour_AliasNode)), 
+                        node.Entity.variant == EntityVariant.PROXY ? Color.FromArgb(SettingsManager.GetInteger(Singleton.Settings.NodeColour_ProxyNodeBottom)) : 
+                                                                     Color.FromArgb(SettingsManager.GetInteger(Singleton.Settings.NodeColour_AliasNodeBottom)),
+                        node.Entity.variant == EntityVariant.PROXY ? Color.FromArgb(SettingsManager.GetInteger(Singleton.Settings.NodeColour_ProxyText)) : 
+                                                                     Color.FromArgb(SettingsManager.GetInteger(Singleton.Settings.NodeColour_AliasText))); 
                     switch (ent.variant)
                     {
                         case EntityVariant.FUNCTION:
@@ -406,18 +422,27 @@ namespace CommandsEditor
                     FunctionEntity funcEnt = (FunctionEntity)node.Entity;
                     if (funcEnt.function.IsFunctionType)
                     {
-                        node.SetColour(Color.FromArgb(30, 144, 255), Color.FromArgb(10, 109, 157), Color.White); // #1e90ff, #0a6d9d
+                        node.SetColour(
+                            Color.FromArgb(SettingsManager.GetInteger(Singleton.Settings.NodeColour_FunctionNode)), 
+                            Color.FromArgb(SettingsManager.GetInteger(Singleton.Settings.NodeColour_FunctionNodeBottom)),
+                            Color.FromArgb(SettingsManager.GetInteger(Singleton.Settings.NodeColour_FunctionText)));
                         node.SetName(_commands.Utils.GetEntityName(_composite, node.Entity), funcEnt.function.AsFunctionType.ToString());
                     }
                     else
                     {
-                        node.SetColour(Color.FromArgb(195, 30, 255), Color.FromArgb(118, 10, 157), Color.White); // #c31eff, #760a9d
+                        node.SetColour(
+                            Color.FromArgb(SettingsManager.GetInteger(Singleton.Settings.NodeColour_InstanceNode)),
+                            Color.FromArgb(SettingsManager.GetInteger(Singleton.Settings.NodeColour_InstanceNodeBottom)),
+                            Color.FromArgb(SettingsManager.GetInteger(Singleton.Settings.NodeColour_InstanceText)));
                         node.SetName(_commands.Utils.GetEntityName(_composite, node.Entity), Path.GetFileName(_commands.GetComposite(funcEnt.function).name));
                     }
                     break;
                 case EntityVariant.VARIABLE:
                     VariableEntity varEnt = (VariableEntity)node.Entity;
-                    node.SetColour(Color.Red, Color.PaleVioletRed, Color.White);
+                    node.SetColour(
+                        Color.FromArgb(SettingsManager.GetInteger(Singleton.Settings.NodeColour_VariableNode)),
+                        Color.FromArgb(SettingsManager.GetInteger(Singleton.Settings.NodeColour_VariableNode)),
+                        Color.FromArgb(SettingsManager.GetInteger(Singleton.Settings.NodeColour_VariableText)));
                     node.SetName(varEnt.name.ToString());
                     AddAllPins(node);
                     break;

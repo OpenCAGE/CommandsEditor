@@ -30,7 +30,6 @@ namespace CommandsEditor
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CommandsEditor));
-            this.vS2015DarkTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme();
             this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripDropDownButton();
             this.loadLevel = new System.Windows.Forms.ToolStripMenuItem();
@@ -69,12 +68,14 @@ namespace CommandsEditor
             this.helpBtn = new System.Windows.Forms.ToolStripButton();
             this.ShowControls = new System.Windows.Forms.ToolStripButton();
             this.DEBUG_ReloadLevel = new System.Windows.Forms.ToolStripButton();
-            this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
-            this.vS2015LightTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.statusText = new System.Windows.Forms.ToolStripStatusLabel();
-            this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
+            this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
+            this.vS2015DarkTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme();
+            this.vS2015LightTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
+            this.setNodeColoursToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -189,7 +190,7 @@ namespace CommandsEditor
             this.focusOnSelectedToolStripMenuItem,
             this.connectToRuntimeUtils});
             this.levelViewerToolStripMenuItem.Name = "levelViewerToolStripMenuItem";
-            this.levelViewerToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.levelViewerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.levelViewerToolStripMenuItem.Text = "Level Viewer";
             // 
             // setUpToolStripMenuItem
@@ -241,16 +242,17 @@ namespace CommandsEditor
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(170, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
             // 
             // compositeViewerToolStripMenuItem
             // 
             this.compositeViewerToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.showExplorerViewToolStripMenuItem,
             this.autoHideExplorerViewToolStripMenuItem,
-            this.searchOnlyCompositeNames});
+            this.searchOnlyCompositeNames,
+            this.setNodeColoursToolStripMenuItem});
             this.compositeViewerToolStripMenuItem.Name = "compositeViewerToolStripMenuItem";
-            this.compositeViewerToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.compositeViewerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.compositeViewerToolStripMenuItem.Text = "Composite Display";
             // 
             // showExplorerViewToolStripMenuItem
@@ -286,7 +288,7 @@ namespace CommandsEditor
             this.populateAllNodePinsWhenCreatedToolStripMenuItem,
             this.giveOptionToDeleteEntityWhenNoNodesToolStripMenuItem});
             this.entityDisplayToolStripMenuItem.Name = "entityDisplayToolStripMenuItem";
-            this.entityDisplayToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.entityDisplayToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.entityDisplayToolStripMenuItem.Text = "Entity Display";
             // 
             // showEntityIDs
@@ -323,7 +325,7 @@ namespace CommandsEditor
             this.savePAKAndBINToolStripMenuItem,
             this.openGameOnSaveToolStripMenuItem});
             this.miscToolStripMenuItem.Name = "miscToolStripMenuItem";
-            this.miscToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.miscToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.miscToolStripMenuItem.Text = "Misc";
             // 
             // showConfirmationWhenSavingToolStripMenuItem
@@ -446,6 +448,13 @@ namespace CommandsEditor
             this.dockPanel.TabIndex = 5;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
             // 
+            // setNodeColoursToolStripMenuItem
+            // 
+            this.setNodeColoursToolStripMenuItem.Name = "setNodeColoursToolStripMenuItem";
+            this.setNodeColoursToolStripMenuItem.Size = new System.Drawing.Size(258, 22);
+            this.setNodeColoursToolStripMenuItem.Text = "Set Node Colours";
+            this.setNodeColoursToolStripMenuItem.Click += new System.EventHandler(this.setNodeColoursToolStripMenuItem_Click);
+            // 
             // CommandsEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -515,5 +524,6 @@ namespace CommandsEditor
         private System.Windows.Forms.ToolStripMenuItem materialsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem materialMappingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem texturesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem setNodeColoursToolStripMenuItem;
     }
 }

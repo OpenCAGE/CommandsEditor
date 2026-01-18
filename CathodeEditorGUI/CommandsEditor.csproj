@@ -401,6 +401,12 @@
     <Compile Include="Popups\SelectEnumString.Designer.cs">
       <DependentUpon>SelectEnumString.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\SetNodeColours.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\SetNodeColours.Designer.cs">
+      <DependentUpon>SetNodeColours.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popups\SetNumericStep.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -857,6 +863,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\Resource Editors\EditModel.resx">
       <DependentUpon>EditModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\SetNodeColours.resx">
+      <DependentUpon>SetNodeColours.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\SetNumericStep.resx">
       <DependentUpon>SetNumericStep.cs</DependentUpon>
