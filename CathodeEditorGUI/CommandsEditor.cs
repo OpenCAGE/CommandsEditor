@@ -318,9 +318,12 @@ namespace CommandsEditor
 
         private void ThreadedLevelLoader()
         {
+#if !CATHODE_FAIL_HARD
             try
             {
+#endif
                 _commandsDisplay.Content.Load();
+#if !CATHODE_FAIL_HARD
             }
             catch
             {
@@ -328,8 +331,10 @@ namespace CommandsEditor
                 {
                     CloseProgressUI();
                     EnableButtons(true, "");
+                    //TODO: warn!
                 }));
             }
+#endif
         }
 
         private void CloseProgressUI()

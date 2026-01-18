@@ -12,7 +12,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static CATHODE.Models.CS2.Component.LOD;
 
 namespace CommandsEditor
 {
@@ -43,30 +42,36 @@ namespace CommandsEditor
             useMaterials.Checked = SettingsManager.GetBool(Singleton.Settings.ShowTexOpt);
 
             treeHelper = new TreeUtility(FileTree, true);
-            List<string> allModelFileNames = new List<string>();
-            List<string> allModelTagsNames = new List<string>();
-
-            foreach (Models.CS2 mesh in Content.Level.Models.Entries)
             {
-                foreach (Models.CS2.Component component in mesh.Components)
+                List<string> allModelFileNames = new List<string>();
+                List<string> allModelTagsNames = new List<string>();
+                foreach (Models.CS2 mesh in Content.Level.Models.Entries)
                 {
-                    foreach (Models.CS2.Component.LOD lod in component.LODs)
+                    foreach (Models.CS2.Component component in mesh.Components)
                     {
-                        foreach (Models.CS2.Component.LOD.Submesh submesh in lod.Submeshes)
-                        {
-                            allModelFileNames.Add(CreateTagForMesh(mesh, lod, submesh));
-                            allModelTagsNames.Add(Content.Level.Models.GetWriteIndex(submesh).ToString());
-                        }
+                        if (component.LODs.Count == 0)
+                            continue;
+
+                        Models.CS2.Component.LOD lod0 = component.LODs[0];
+
+                        if (lod0.Submeshes.Count == 0)
+                            continue;
+
+                        Models.CS2.Component.LOD.Submesh submesh0 = lod0.Submeshes[0];
+                        allModelFileNames.Add(CreateTagForMesh(mesh, submesh0, lod0, component));
+                        allModelTagsNames.Add(Content.Level.Models.GetWriteIndex(submesh0).ToString());
                     }
                 }
+                treeHelper.UpdateFileTree(allModelFileNames, null, allModelTagsNames);
             }
-            treeHelper.UpdateFileTree(allModelFileNames, null, allModelTagsNames);
 
             modelViewer = new GUI_ModelViewer();
             modelRendererHost.Child = modelViewer;
 
             if (defaultSubmesh != null)
                 SelectModelNode(Content.Level.Models.GetWriteIndex(defaultSubmesh));
+            else
+                selectModelBtn.Visible = false;
 
             this.Disposed += SelectModel_Disposed;
         }
@@ -89,25 +94,19 @@ namespace CommandsEditor
         {
             Models.CS2.Component.LOD.Submesh submesh = Content.Level.Models.GetAtWriteIndex(i);
             Models.CS2.Component.LOD lod = Content.Level.Models.FindModelLODForSubmesh(submesh);
-            //Models.CS2.Component component = Editor.resource.models.FindModelComponentForSubmesh(submesh);
+            Models.CS2.Component component = Content.Level.Models.FindModelComponentForSubmesh(submesh);
             Models.CS2 mesh = Content.Level.Models.FindModelForSubmesh(submesh);
 
             if (mesh == null || submesh == null) return ""; //we currently skip empty submeshes, e.g. ballistics
 
-            return CreateTagForMesh(mesh, lod, submesh);
+            return CreateTagForMesh(mesh, submesh, lod, component);
         }
 
-        private string CreateTagForMesh(Models.CS2 mesh, Models.CS2.Component.LOD lod, Models.CS2.Component.LOD.Submesh submesh)
+        private string CreateTagForMesh(Models.CS2 cs2, Models.CS2.Component.LOD.Submesh submesh, Models.CS2.Component.LOD lod, Models.CS2.Component component)
         {
-            string tag = "";
-            if (lod.Name == "")
-                tag = mesh.Name.Replace('\\', '/');
-            else
-                tag = mesh.Name.Replace('\\', '/') + "/" + lod.Name.Replace('\\', '/');
-
+            string tag = cs2.Name.Replace('\\', '/') + "/[" + cs2.Components.IndexOf(component).ToString("00") + "] " + lod.Name.Replace('\\', '/');
             if (tag.Length > 0 && tag[0] == '/')
                 tag = tag.Substring(1);
-
             return tag;
         }
 
@@ -184,38 +183,41 @@ namespace CommandsEditor
         private void CreateLODGroup(int lodIndex, string lodName)
         {
             GroupBox lodGroup = new GroupBox();
-            lodGroup.Text = string.IsNullOrEmpty(lodName) ? $"LOD {lodIndex}" : $"LOD {lodIndex} - {lodName}";
+            lodGroup.Text = "LOD " + lodIndex + (lodName != "" ? ": " + lodName : "");
             lodGroup.AutoSize = false;
             lodGroup.Width = 207;
             
             Button selectAllBtn = new Button();
-            selectAllBtn.Text = "Select All";
-            selectAllBtn.Size = new Size(80, 23);
+            selectAllBtn.Text = "Show All";
+            selectAllBtn.Size = new Size(180, 23);
             selectAllBtn.Location = new Point(5, 15);
             selectAllBtn.Tag = lodIndex;
             selectAllBtn.Click += (s, e) => {
+                UncheckAllLODs();
                 int lod = (int)((Button)s).Tag;
-                SetLODCheckboxesState(lod, true);
+                CheckAllSubmeshes(lod, true);
             };
-            
-            Button deselectAllBtn = new Button();
-            deselectAllBtn.Text = "Deselect All";
-            deselectAllBtn.Size = new Size(80, 23);
-            deselectAllBtn.Location = new Point(90, 15);
-            deselectAllBtn.Tag = lodIndex;
-            deselectAllBtn.Click += (s, e) => {
-                int lod = (int)((Button)s).Tag;
-                SetLODCheckboxesState(lod, false);
-            };
-            
             lodGroup.Controls.Add(selectAllBtn);
-            lodGroup.Controls.Add(deselectAllBtn);
             
             lodGroups[lodIndex] = lodGroup;
             lodToCheckboxes[lodIndex] = new List<CheckBox>();
         }
 
-        private void SetLODCheckboxesState(int lodIndex, bool state)
+        private void UncheckAllLODs()
+        {
+            foreach (KeyValuePair<int, List<CheckBox>> kvp in lodToCheckboxes)
+            {
+                foreach (CheckBox cb in kvp.Value)
+                    cb.CheckedChanged -= SubmeshCheckbox_CheckedChanged;
+                foreach (CheckBox cb in kvp.Value)
+                    cb.Checked = false;
+                foreach (CheckBox cb in kvp.Value)
+                    cb.CheckedChanged += SubmeshCheckbox_CheckedChanged;
+            }
+            UpdateFilteredModel();
+        }
+
+        private void CheckAllSubmeshes(int lodIndex, bool state)
         {
             if (lodToCheckboxes.ContainsKey(lodIndex))
             {
@@ -300,17 +302,7 @@ namespace CommandsEditor
         private void selectModel_Click(object sender, EventArgs e)
         {
             _selectedModelIndex = Convert.ToInt32(((TreeItem)FileTree.SelectedNode.Tag).String_Value);
-
             OnModelSelected?.Invoke(Content.Level.Models.FindModelComponentForSubmesh(Content.Level.Models.GetAtWriteIndex(_selectedModelIndex)));
-
-            //NOTE! interestingly I'm handling this as 'component' within cs2. is that right? seems incorrect.
-
-            //TODO: this is an example of code around models which is less than ideal with the new object refs. We should avoid the indexes. Need to support objects in Commands.
-            //Models.CS2.Component component = Content.Level.Models.FindModelComponentForSubmesh(Content.Level.Models.GetAtWriteIndex(_selectedModelIndex));
-            //for (int x = 0; x < component.LODs.Count; x++)
-            //    for (int i = 0; i < component.LODs[x].Submeshes.Count; i++)
-            //        SelectedModelMaterialIndexes.Add(Content.Level.Materials.GetWriteIndex(component.LODs[x].Submeshes[i].Material));
-
             this.Close();
         }
 
