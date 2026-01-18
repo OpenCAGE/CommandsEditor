@@ -623,8 +623,14 @@ namespace CommandsEditor
         {
             STNode node = stNodeEditor1.GetHoveredNode();
             if (node == null) return;
-            Entity ent = node.Entity;
 
+            if (SettingsManager.GetBool(Singleton.Settings.AskBeforeDeletingNode))
+            {
+                if (MessageBox.Show("Are you sure you want to remove this node?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) 
+                    return;
+            }
+
+            Entity ent = node.Entity;
             stNodeEditor1.Nodes.Remove(node);
 
             if (SettingsManager.GetBool(Singleton.Settings.OptionToDeleteEntityWithNode))

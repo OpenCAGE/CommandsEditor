@@ -139,6 +139,9 @@ namespace CommandsEditor
             if (!SettingsManager.IsSet(Singleton.Settings.OptionToDeleteEntityWithNode)) SettingsManager.SetBool(Singleton.Settings.OptionToDeleteEntityWithNode, true);
             giveOptionToDeleteEntityWhenNoNodesToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.OptionToDeleteEntityWithNode); giveOptionToDeleteEntityWhenNoNodesToolStripMenuItem.PerformClick();
 
+            if (!SettingsManager.IsSet(Singleton.Settings.AskBeforeDeletingNode)) SettingsManager.SetBool(Singleton.Settings.AskBeforeDeletingNode, true);
+            showConfirmationWhenDeletingNodeToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.AskBeforeDeletingNode); showConfirmationWhenDeletingNodeToolStripMenuItem.PerformClick();
+
             if (!SettingsManager.IsSet(Singleton.Settings.NodeColour_FunctionNode))
                 SettingsManager.SetInteger(Singleton.Settings.NodeColour_FunctionNode, Color.FromArgb(30, 144, 255).ToArgb());
             if (!SettingsManager.IsSet(Singleton.Settings.NodeColour_FunctionNodeBottom))
@@ -869,6 +872,12 @@ namespace CommandsEditor
 
             _setNodeColours = new SetNodeColours();
             _setNodeColours.Show();
+        }
+
+        private void showConfirmationWhenDeletingNodeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            showConfirmationWhenDeletingNodeToolStripMenuItem.Checked = !showConfirmationWhenDeletingNodeToolStripMenuItem.Checked;
+            SettingsManager.SetBool(Singleton.Settings.AskBeforeDeletingNode, showConfirmationWhenDeletingNodeToolStripMenuItem.Checked);
         }
     }
 }

@@ -136,6 +136,7 @@ namespace CommandsEditor
             public readonly string NodeColour_ProxyText = "CS_NodeColour_ProxyText";
             public readonly string NodeColour_VariableNode = "CS_NodeColour_VariableNode";
             public readonly string NodeColour_VariableText = "CS_NodeColour_VariableText";
+            public readonly string AskBeforeDeletingNode = "CS_AskBeforeDeletingNode";
         }
 
         public static Action OnAnimationsLoaded;
