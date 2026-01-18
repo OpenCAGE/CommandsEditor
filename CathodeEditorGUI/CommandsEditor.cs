@@ -819,5 +819,13 @@ namespace CommandsEditor
         {
 
         }
+
+        private void toolStripButton3_Click(object sender, EventArgs e)
+        {
+            modelsToolStripMenuItem.Enabled = _commandsDisplay?.Content?.Level != null;
+            materialsToolStripMenuItem.Enabled = _commandsDisplay?.Content?.Level != null;
+            materialMappingsToolStripMenuItem.Enabled = _commandsDisplay?.Content?.Level != null;
+            texturesToolStripMenuItem.Enabled = _commandsDisplay?.Content?.Level != null;
+        }
     }
 }

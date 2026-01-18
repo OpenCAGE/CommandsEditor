@@ -35,6 +35,11 @@ namespace CommandsEditor
             this.toolStripButton1 = new System.Windows.Forms.ToolStripDropDownButton();
             this.loadLevel = new System.Windows.Forms.ToolStripMenuItem();
             this.saveLevel = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripButton3 = new System.Windows.Forms.ToolStripDropDownButton();
+            this.modelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.materialsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.materialMappingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.texturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripDropDownButton();
             this.levelViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.setUpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -70,11 +75,6 @@ namespace CommandsEditor
             this.statusText = new System.Windows.Forms.ToolStripStatusLabel();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.toolStripButton3 = new System.Windows.Forms.ToolStripDropDownButton();
-            this.modelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.materialsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.materialMappingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.texturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -109,7 +109,7 @@ namespace CommandsEditor
             // loadLevel
             // 
             this.loadLevel.Name = "loadLevel";
-            this.loadLevel.Size = new System.Drawing.Size(180, 22);
+            this.loadLevel.Size = new System.Drawing.Size(168, 22);
             this.loadLevel.Text = "Load Level";
             // 
             // saveLevel
@@ -117,9 +117,52 @@ namespace CommandsEditor
             this.saveLevel.Name = "saveLevel";
             this.saveLevel.ShortcutKeyDisplayString = "Ctrl+S";
             this.saveLevel.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveLevel.Size = new System.Drawing.Size(180, 22);
+            this.saveLevel.Size = new System.Drawing.Size(168, 22);
             this.saveLevel.Text = "Save Level";
             this.saveLevel.Click += new System.EventHandler(this.saveLevel_Click);
+            // 
+            // toolStripButton3
+            // 
+            this.toolStripButton3.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripButton3.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.modelsToolStripMenuItem,
+            this.materialsToolStripMenuItem,
+            this.materialMappingsToolStripMenuItem,
+            this.texturesToolStripMenuItem});
+            this.toolStripButton3.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton3.Image")));
+            this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton3.Name = "toolStripButton3";
+            this.toolStripButton3.Size = new System.Drawing.Size(40, 22);
+            this.toolStripButton3.Text = "Edit";
+            this.toolStripButton3.Click += new System.EventHandler(this.toolStripButton3_Click);
+            // 
+            // modelsToolStripMenuItem
+            // 
+            this.modelsToolStripMenuItem.Name = "modelsToolStripMenuItem";
+            this.modelsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.modelsToolStripMenuItem.Text = "Models";
+            this.modelsToolStripMenuItem.Click += new System.EventHandler(this.modelsToolStripMenuItem_Click);
+            // 
+            // materialsToolStripMenuItem
+            // 
+            this.materialsToolStripMenuItem.Name = "materialsToolStripMenuItem";
+            this.materialsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.materialsToolStripMenuItem.Text = "Materials";
+            this.materialsToolStripMenuItem.Click += new System.EventHandler(this.materialsToolStripMenuItem_Click);
+            // 
+            // materialMappingsToolStripMenuItem
+            // 
+            this.materialMappingsToolStripMenuItem.Name = "materialMappingsToolStripMenuItem";
+            this.materialMappingsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.materialMappingsToolStripMenuItem.Text = "Material Mappings";
+            this.materialMappingsToolStripMenuItem.Click += new System.EventHandler(this.materialMappingsToolStripMenuItem_Click);
+            // 
+            // texturesToolStripMenuItem
+            // 
+            this.texturesToolStripMenuItem.Name = "texturesToolStripMenuItem";
+            this.texturesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.texturesToolStripMenuItem.Text = "Textures";
+            this.texturesToolStripMenuItem.Click += new System.EventHandler(this.texturesToolStripMenuItem_Click);
             // 
             // toolStripButton2
             // 
@@ -146,7 +189,7 @@ namespace CommandsEditor
             this.focusOnSelectedToolStripMenuItem,
             this.connectToRuntimeUtils});
             this.levelViewerToolStripMenuItem.Name = "levelViewerToolStripMenuItem";
-            this.levelViewerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.levelViewerToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.levelViewerToolStripMenuItem.Text = "Level Viewer";
             // 
             // setUpToolStripMenuItem
@@ -198,7 +241,7 @@ namespace CommandsEditor
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(170, 6);
             // 
             // compositeViewerToolStripMenuItem
             // 
@@ -207,7 +250,7 @@ namespace CommandsEditor
             this.autoHideExplorerViewToolStripMenuItem,
             this.searchOnlyCompositeNames});
             this.compositeViewerToolStripMenuItem.Name = "compositeViewerToolStripMenuItem";
-            this.compositeViewerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.compositeViewerToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.compositeViewerToolStripMenuItem.Text = "Composite Display";
             // 
             // showExplorerViewToolStripMenuItem
@@ -243,7 +286,7 @@ namespace CommandsEditor
             this.populateAllNodePinsWhenCreatedToolStripMenuItem,
             this.giveOptionToDeleteEntityWhenNoNodesToolStripMenuItem});
             this.entityDisplayToolStripMenuItem.Name = "entityDisplayToolStripMenuItem";
-            this.entityDisplayToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.entityDisplayToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.entityDisplayToolStripMenuItem.Text = "Entity Display";
             // 
             // showEntityIDs
@@ -280,7 +323,7 @@ namespace CommandsEditor
             this.savePAKAndBINToolStripMenuItem,
             this.openGameOnSaveToolStripMenuItem});
             this.miscToolStripMenuItem.Name = "miscToolStripMenuItem";
-            this.miscToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.miscToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.miscToolStripMenuItem.Text = "Misc";
             // 
             // showConfirmationWhenSavingToolStripMenuItem
@@ -402,48 +445,6 @@ namespace CommandsEditor
             this.dockPanel.Size = new System.Drawing.Size(1581, 757);
             this.dockPanel.TabIndex = 5;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
-            // 
-            // toolStripButton3
-            // 
-            this.toolStripButton3.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.toolStripButton3.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.modelsToolStripMenuItem,
-            this.materialsToolStripMenuItem,
-            this.materialMappingsToolStripMenuItem,
-            this.texturesToolStripMenuItem});
-            this.toolStripButton3.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton3.Image")));
-            this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton3.Name = "toolStripButton3";
-            this.toolStripButton3.Size = new System.Drawing.Size(40, 22);
-            this.toolStripButton3.Text = "Edit";
-            // 
-            // modelsToolStripMenuItem
-            // 
-            this.modelsToolStripMenuItem.Name = "modelsToolStripMenuItem";
-            this.modelsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.modelsToolStripMenuItem.Text = "Models";
-            this.modelsToolStripMenuItem.Click += new System.EventHandler(this.modelsToolStripMenuItem_Click);
-            // 
-            // materialsToolStripMenuItem
-            // 
-            this.materialsToolStripMenuItem.Name = "materialsToolStripMenuItem";
-            this.materialsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.materialsToolStripMenuItem.Text = "Materials";
-            this.materialsToolStripMenuItem.Click += new System.EventHandler(this.materialsToolStripMenuItem_Click);
-            // 
-            // materialMappingsToolStripMenuItem
-            // 
-            this.materialMappingsToolStripMenuItem.Name = "materialMappingsToolStripMenuItem";
-            this.materialMappingsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.materialMappingsToolStripMenuItem.Text = "Material Mappings";
-            this.materialMappingsToolStripMenuItem.Click += new System.EventHandler(this.materialMappingsToolStripMenuItem_Click);
-            // 
-            // texturesToolStripMenuItem
-            // 
-            this.texturesToolStripMenuItem.Name = "texturesToolStripMenuItem";
-            this.texturesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.texturesToolStripMenuItem.Text = "Textures";
-            this.texturesToolStripMenuItem.Click += new System.EventHandler(this.texturesToolStripMenuItem_Click);
             // 
             // CommandsEditor
             // 
