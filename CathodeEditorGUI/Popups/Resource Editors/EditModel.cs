@@ -240,7 +240,7 @@ namespace CommandsEditor
             
             GroupBox lodGroup = lodGroups[lodIndex];
             checkbox.Location = new Point(10, 45 + yOffset);
-            checkbox.Text = $"Submesh {submeshIndex}";
+            checkbox.Text = "Submesh " + submeshIndex + " (" + model.VertexCount + " verts)";
             checkbox.Tag = model;
             
             checkbox.CheckedChanged += SubmeshCheckbox_CheckedChanged;
