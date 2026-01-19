@@ -52,7 +52,6 @@ namespace CommandsEditor
             this.showExplorerViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.autoHideExplorerViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.searchOnlyCompositeNames = new System.Windows.Forms.ToolStripMenuItem();
-            this.setNodeColoursToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.entityDisplayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showEntityIDs = new System.Windows.Forms.ToolStripMenuItem();
             this.populateAllNodePinsWhenCreatedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -76,6 +75,7 @@ namespace CommandsEditor
             this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
             this.vS2015DarkTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme();
             this.vS2015LightTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
+            this.setNodeColoursToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showConfirmationWhenDeletingNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
@@ -250,9 +250,7 @@ namespace CommandsEditor
             this.compositeViewerToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.showExplorerViewToolStripMenuItem,
             this.autoHideExplorerViewToolStripMenuItem,
-            this.searchOnlyCompositeNames,
-            this.setNodeColoursToolStripMenuItem,
-            this.showConfirmationWhenDeletingNodeToolStripMenuItem});
+            this.searchOnlyCompositeNames});
             this.compositeViewerToolStripMenuItem.Name = "compositeViewerToolStripMenuItem";
             this.compositeViewerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.compositeViewerToolStripMenuItem.Text = "Composite Display";
@@ -260,7 +258,7 @@ namespace CommandsEditor
             // showExplorerViewToolStripMenuItem
             // 
             this.showExplorerViewToolStripMenuItem.Name = "showExplorerViewToolStripMenuItem";
-            this.showExplorerViewToolStripMenuItem.Size = new System.Drawing.Size(290, 22);
+            this.showExplorerViewToolStripMenuItem.Size = new System.Drawing.Size(258, 22);
             this.showExplorerViewToolStripMenuItem.Text = "Use File Browser Composite Viewer";
             this.showExplorerViewToolStripMenuItem.ToolTipText = "If enabled, the composite viewer will display a file browser style UI and dock to" +
     " the bottom of the window.";
@@ -269,7 +267,7 @@ namespace CommandsEditor
             // autoHideExplorerViewToolStripMenuItem
             // 
             this.autoHideExplorerViewToolStripMenuItem.Name = "autoHideExplorerViewToolStripMenuItem";
-            this.autoHideExplorerViewToolStripMenuItem.Size = new System.Drawing.Size(290, 22);
+            this.autoHideExplorerViewToolStripMenuItem.Size = new System.Drawing.Size(258, 22);
             this.autoHideExplorerViewToolStripMenuItem.Text = "Auto Hide Composite Viewer";
             this.autoHideExplorerViewToolStripMenuItem.ToolTipText = "If enabled, the composite viewer will automatically hide when not interacted with" +
     ".";
@@ -278,23 +276,18 @@ namespace CommandsEditor
             // searchOnlyCompositeNames
             // 
             this.searchOnlyCompositeNames.Name = "searchOnlyCompositeNames";
-            this.searchOnlyCompositeNames.Size = new System.Drawing.Size(290, 22);
+            this.searchOnlyCompositeNames.Size = new System.Drawing.Size(258, 22);
             this.searchOnlyCompositeNames.Text = "Search Only Composite Names";
             this.searchOnlyCompositeNames.ToolTipText = "Enable this option to exclude folder names from the composite search.";
             this.searchOnlyCompositeNames.Click += new System.EventHandler(this.searchOnlyCompositeNames_Click);
-            // 
-            // setNodeColoursToolStripMenuItem
-            // 
-            this.setNodeColoursToolStripMenuItem.Name = "setNodeColoursToolStripMenuItem";
-            this.setNodeColoursToolStripMenuItem.Size = new System.Drawing.Size(290, 22);
-            this.setNodeColoursToolStripMenuItem.Text = "Set Node Colours";
-            this.setNodeColoursToolStripMenuItem.Click += new System.EventHandler(this.setNodeColoursToolStripMenuItem_Click);
             // 
             // entityDisplayToolStripMenuItem
             // 
             this.entityDisplayToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.showEntityIDs,
             this.populateAllNodePinsWhenCreatedToolStripMenuItem,
+            this.setNodeColoursToolStripMenuItem,
+            this.showConfirmationWhenDeletingNodeToolStripMenuItem,
             this.giveOptionToDeleteEntityWhenNoNodesToolStripMenuItem});
             this.entityDisplayToolStripMenuItem.Name = "entityDisplayToolStripMenuItem";
             this.entityDisplayToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
@@ -457,10 +450,17 @@ namespace CommandsEditor
             this.dockPanel.TabIndex = 5;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
             // 
+            // setNodeColoursToolStripMenuItem
+            // 
+            this.setNodeColoursToolStripMenuItem.Name = "setNodeColoursToolStripMenuItem";
+            this.setNodeColoursToolStripMenuItem.Size = new System.Drawing.Size(312, 22);
+            this.setNodeColoursToolStripMenuItem.Text = "Set Node Colours";
+            this.setNodeColoursToolStripMenuItem.Click += new System.EventHandler(this.setNodeColoursToolStripMenuItem_Click);
+            // 
             // showConfirmationWhenDeletingNodeToolStripMenuItem
             // 
             this.showConfirmationWhenDeletingNodeToolStripMenuItem.Name = "showConfirmationWhenDeletingNodeToolStripMenuItem";
-            this.showConfirmationWhenDeletingNodeToolStripMenuItem.Size = new System.Drawing.Size(290, 22);
+            this.showConfirmationWhenDeletingNodeToolStripMenuItem.Size = new System.Drawing.Size(312, 22);
             this.showConfirmationWhenDeletingNodeToolStripMenuItem.Text = "Show Confirmation When Deleting Node";
             this.showConfirmationWhenDeletingNodeToolStripMenuItem.Click += new System.EventHandler(this.showConfirmationWhenDeletingNodeToolStripMenuItem_Click);
             // 
