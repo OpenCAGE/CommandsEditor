@@ -368,6 +368,50 @@ namespace CommandsEditor
             stNodeEditor1.LoadAssembly(Application.ExecutablePath);
         }
 
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (this.Visible)
+            {
+                Keys keyCode = keyData & Keys.KeyCode;
+
+                if (keyCode == Keys.Delete)
+                {
+                    deleteToolStripMenuItem_Click(null, null);
+                    deleteLinkToolStripMenuItem_Click(null, null);
+                    return true;
+                }
+                else if (keyCode == Keys.F1)
+                {
+                    duplicateToolStripMenuItem_Click(null, null);
+                    setDelayToolStripMenuItem_Click(null, null);
+                    return true;
+                }
+                else if (keyCode == Keys.F2)
+                {
+                    findReferencesToolStripMenuItem_Click(null, null);
+                    clearDelayToolStripMenuItem_Click(null, null);
+                    return true;
+                }
+                else if (keyCode == Keys.F3)
+                {
+                    goToNextNodeInFlowgraphToolStripMenuItem_Click(null, null);
+                    return true;
+                }
+                else if (keyCode == Keys.F4)
+                {
+                    addAllPinsToolStripMenuItem_Click(null, null);
+                    return true;
+                }
+                else if (keyCode == Keys.F5)
+                {
+                    removeUnusedPinsToolStripMenuItem_Click(null, null);
+                    return true;
+                }
+            }
+            
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
         private STNode EntityToNode(Entity entity)
         {
             if (entity == null)
@@ -567,7 +611,8 @@ namespace CommandsEditor
         private void addAllPinsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             STNode node = stNodeEditor1.GetHoveredNode();
-
+            if (node == null) return;
+            
             Point currentCenter = node.Location;
             currentCenter.X += node.Width / 2;
             currentCenter.Y += node.Height / 2;
@@ -606,6 +651,8 @@ namespace CommandsEditor
         private void removeUnusedPinsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             STNode node = stNodeEditor1.GetHoveredNode();
+            if (node == null) return;
+
             Point newPos = node.Location;
             newPos.X += node.Width / 2;
             newPos.Y += node.Height / 2;
@@ -649,6 +696,7 @@ namespace CommandsEditor
         private void duplicateToolStripMenuItem_Click(object sender, EventArgs e)
         {
             STNode node = stNodeEditor1.GetHoveredNode();
+            if (node == null) return;
             DuplicateNode(node);
         }
 

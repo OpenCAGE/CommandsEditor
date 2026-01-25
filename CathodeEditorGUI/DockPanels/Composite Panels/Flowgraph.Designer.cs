@@ -88,6 +88,8 @@ namespace CommandsEditor
             // 
             this.addAllPinsToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("addAllPinsToolStripMenuItem.Image")));
             this.addAllPinsToolStripMenuItem.Name = "addAllPinsToolStripMenuItem";
+            this.addAllPinsToolStripMenuItem.ShortcutKeyDisplayString = "F4";
+            this.addAllPinsToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F4;
             this.addAllPinsToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
             this.addAllPinsToolStripMenuItem.Text = "Add All Pins";
             this.addAllPinsToolStripMenuItem.Click += new System.EventHandler(this.addAllPinsToolStripMenuItem_Click);
@@ -96,6 +98,8 @@ namespace CommandsEditor
             // 
             this.removeUnusedPinsToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("removeUnusedPinsToolStripMenuItem.Image")));
             this.removeUnusedPinsToolStripMenuItem.Name = "removeUnusedPinsToolStripMenuItem";
+            this.removeUnusedPinsToolStripMenuItem.ShortcutKeyDisplayString = "F5";
+            this.removeUnusedPinsToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
             this.removeUnusedPinsToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
             this.removeUnusedPinsToolStripMenuItem.Text = "Remove Unused Pins";
             this.removeUnusedPinsToolStripMenuItem.Click += new System.EventHandler(this.removeUnusedPinsToolStripMenuItem_Click);
@@ -109,6 +113,8 @@ namespace CommandsEditor
             // 
             this.deleteToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("deleteToolStripMenuItem.Image")));
             this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
+            this.deleteToolStripMenuItem.ShortcutKeyDisplayString = "Del";
+            this.deleteToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
             this.deleteToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
             this.deleteToolStripMenuItem.Text = "Delete Node";
             this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
@@ -117,6 +123,8 @@ namespace CommandsEditor
             // 
             this.duplicateToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("duplicateToolStripMenuItem.Image")));
             this.duplicateToolStripMenuItem.Name = "duplicateToolStripMenuItem";
+            this.duplicateToolStripMenuItem.ShortcutKeyDisplayString = "F1";
+            this.duplicateToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F1;
             this.duplicateToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
             this.duplicateToolStripMenuItem.Text = "Duplicate Node";
             this.duplicateToolStripMenuItem.Click += new System.EventHandler(this.duplicateToolStripMenuItem_Click);
@@ -130,6 +138,8 @@ namespace CommandsEditor
             // 
             this.findReferencesToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("findReferencesToolStripMenuItem.Image")));
             this.findReferencesToolStripMenuItem.Name = "findReferencesToolStripMenuItem";
+            this.findReferencesToolStripMenuItem.ShortcutKeyDisplayString = "F2";
+            this.findReferencesToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F2;
             this.findReferencesToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
             this.findReferencesToolStripMenuItem.Text = "Find References";
             this.findReferencesToolStripMenuItem.Click += new System.EventHandler(this.findReferencesToolStripMenuItem_Click);
@@ -138,6 +148,8 @@ namespace CommandsEditor
             // 
             this.goToNextNodeInFlowgraphToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("goToNextNodeInFlowgraphToolStripMenuItem.Image")));
             this.goToNextNodeInFlowgraphToolStripMenuItem.Name = "goToNextNodeInFlowgraphToolStripMenuItem";
+            this.goToNextNodeInFlowgraphToolStripMenuItem.ShortcutKeyDisplayString = "F3";
+            this.goToNextNodeInFlowgraphToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F3;
             this.goToNextNodeInFlowgraphToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
             this.goToNextNodeInFlowgraphToolStripMenuItem.Text = "Go To Entity\'s Next Node";
             this.goToNextNodeInFlowgraphToolStripMenuItem.ToolTipText = "Select this to jump to the next node for this entity within the current flowgraph" +
@@ -237,6 +249,8 @@ namespace CommandsEditor
             // 
             this.deleteLinkToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("deleteLinkToolStripMenuItem.Image")));
             this.deleteLinkToolStripMenuItem.Name = "deleteLinkToolStripMenuItem";
+            this.deleteLinkToolStripMenuItem.ShortcutKeyDisplayString = "Del";
+            this.deleteLinkToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
             this.deleteLinkToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
             this.deleteLinkToolStripMenuItem.Text = "Delete Link";
             this.deleteLinkToolStripMenuItem.Click += new System.EventHandler(this.deleteLinkToolStripMenuItem_Click);
@@ -245,6 +259,8 @@ namespace CommandsEditor
             // 
             this.setDelayToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("setDelayToolStripMenuItem.Image")));
             this.setDelayToolStripMenuItem.Name = "setDelayToolStripMenuItem";
+            this.setDelayToolStripMenuItem.ShortcutKeyDisplayString = "F1";
+            this.setDelayToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F1;
             this.setDelayToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
             this.setDelayToolStripMenuItem.Text = "Set Delay";
             this.setDelayToolStripMenuItem.Click += new System.EventHandler(this.setDelayToolStripMenuItem_Click);
@@ -253,6 +269,8 @@ namespace CommandsEditor
             // 
             this.clearDelayToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("clearDelayToolStripMenuItem.Image")));
             this.clearDelayToolStripMenuItem.Name = "clearDelayToolStripMenuItem";
+            this.clearDelayToolStripMenuItem.ShortcutKeyDisplayString = "F2";
+            this.clearDelayToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F2;
             this.clearDelayToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
             this.clearDelayToolStripMenuItem.Text = "Clear Delay";
             this.clearDelayToolStripMenuItem.Click += new System.EventHandler(this.clearDelayToolStripMenuItem_Click);
@@ -286,7 +304,7 @@ namespace CommandsEditor
             this.toolStripSeparator3,
             this.createNewFlowgraphToolStripMenuItem});
             this.TabStripContextMenu.Name = "TabStripContextMenu";
-            this.TabStripContextMenu.Size = new System.Drawing.Size(195, 76);
+            this.TabStripContextMenu.Size = new System.Drawing.Size(195, 98);
             this.TabStripContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.TabStripContextMenu_Opening);
             // 
             // deleteFGToolstripMenuItem
