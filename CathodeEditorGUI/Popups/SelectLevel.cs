@@ -1,4 +1,4 @@
-﻿using CATHODE.Scripting;
+using CATHODE.Scripting;
 using CathodeLib;
 using CommandsEditor.DockPanels;
 using System;
@@ -26,8 +26,8 @@ namespace CommandsEditor.Popups
             env_list.Items.AddRange(Level.GetLevels(SharedData.pathToAI, true).ToArray());
             env_list.EndUpdate();
 
-            if (env_list.Items.Contains("FRONTEND")) 
-                env_list.SelectedItem = "FRONTEND";
+            if (env_list.Items.Contains("PRODUCTION/FRONTEND")) 
+                env_list.SelectedItem = "PRODUCTION/FRONTEND";
             else 
                 env_list.SelectedIndex = 0;
         }

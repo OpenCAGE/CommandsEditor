@@ -22,14 +22,14 @@ namespace CommandsEditor.UnityConnection
             switch (type)
             {
                 default:
-                    Console.WriteLine(e.Data.Substring(1));
+                    Debug.Log("Websocket", "Message: " + e.Data.Substring(1));
                     break;
             }
         }
 
         protected override void OnOpen()
         {
-            Console.WriteLine("[WEBSOCKET] Client connected");
+            Debug.Log("Websocket", "Client connected");
             SendMessage(new Packet(PacketEvent.GENERIC_DATA_SYNC));
             OnConnect?.Invoke();
             base.OnOpen();
@@ -37,7 +37,7 @@ namespace CommandsEditor.UnityConnection
 
         protected override void OnClose(CloseEventArgs e)
         {
-            Console.WriteLine("[WEBSOCKET] Client disconnected");
+            Debug.Log("Websocket", "Client disconnected");
             OnDisconnect?.Invoke();
             base.OnClose(e);
         }
@@ -45,7 +45,7 @@ namespace CommandsEditor.UnityConnection
         public void SendMessage(Packet content)
         {
 #if DEBUG
-            Console.WriteLine("[WEBSOCKET] Sending " + content.packet_event + " data");
+            Debug.Log("Websocket", "Sending " + content.packet_event + " data");
 #endif
             base.Send(JsonConvert.SerializeObject(content));
         }

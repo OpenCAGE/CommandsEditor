@@ -62,6 +62,9 @@
             this.closeAllBut = new System.Windows.Forms.ToolStripMenuItem();
             this.ModifyParameters = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.applyDefaultsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addUnsetParametersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.applyAllDefaultsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.entityInfoGroup.SuspendLayout();
             this.entityParamGroup.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
@@ -278,16 +281,17 @@
             // 
             this.contextMenuStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItem1,
-            this.createLinkToolStripMenuItem});
+            this.createLinkToolStripMenuItem,
+            this.applyDefaultsToolStripMenuItem});
             this.contextMenuStrip2.Name = "contextMenuStrip1";
-            this.contextMenuStrip2.Size = new System.Drawing.Size(175, 48);
+            this.contextMenuStrip2.Size = new System.Drawing.Size(181, 92);
             this.contextMenuStrip2.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip2_Opening);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripMenuItem1.Image")));
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(174, 22);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
             this.toolStripMenuItem1.Text = "Modify Parameters";
             this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
             // 
@@ -295,7 +299,7 @@
             // 
             this.createLinkToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("createLinkToolStripMenuItem.Image")));
             this.createLinkToolStripMenuItem.Name = "createLinkToolStripMenuItem";
-            this.createLinkToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.createLinkToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.createLinkToolStripMenuItem.Text = "Create Link";
             this.createLinkToolStripMenuItem.Click += new System.EventHandler(this.createLinkToolStripMenuItem_Click);
             // 
@@ -414,6 +418,33 @@
             this.ModifyParameters.UseVisualStyleBackColor = true;
             this.ModifyParameters.Click += new System.EventHandler(this.ModifyParameters_Click);
             // 
+            // applyDefaultsToolStripMenuItem
+            // 
+            this.applyDefaultsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.addUnsetParametersToolStripMenuItem,
+            this.applyAllDefaultsToolStripMenuItem});
+            this.applyDefaultsToolStripMenuItem.Name = "applyDefaultsToolStripMenuItem";
+            this.applyDefaultsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.applyDefaultsToolStripMenuItem.Text = "Apply Defaults";
+            // 
+            // addUnsetParametersToolStripMenuItem
+            // 
+            this.addUnsetParametersToolStripMenuItem.Name = "addUnsetParametersToolStripMenuItem";
+            this.addUnsetParametersToolStripMenuItem.Size = new System.Drawing.Size(278, 22);
+            this.addUnsetParametersToolStripMenuItem.Text = "Add Missing Parameter Defaults";
+            this.addUnsetParametersToolStripMenuItem.ToolTipText = "Selecting this will add the default values for all parameters currently not appli" +
+    "ed to the entity.";
+            this.addUnsetParametersToolStripMenuItem.Click += new System.EventHandler(this.addUnsetParametersToolStripMenuItem_Click);
+            // 
+            // applyAllDefaultsToolStripMenuItem
+            // 
+            this.applyAllDefaultsToolStripMenuItem.Name = "applyAllDefaultsToolStripMenuItem";
+            this.applyAllDefaultsToolStripMenuItem.Size = new System.Drawing.Size(278, 22);
+            this.applyAllDefaultsToolStripMenuItem.Text = "Apply All Defaults (Overwrites Existing)";
+            this.applyAllDefaultsToolStripMenuItem.ToolTipText = "Selecting this will apply all default parameters to this entity, overwriting the " +
+    "ones already set.";
+            this.applyAllDefaultsToolStripMenuItem.Click += new System.EventHandler(this.applyAllDefaultsToolStripMenuItem_Click);
+            // 
             // EntityInspector
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -424,11 +455,6 @@
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.entityInfoGroup);
             this.Controls.Add(this.entityParamGroup);
-            this.DockAreas = ((WeifenLuo.WinFormsUI.Docking.DockAreas)((((((WeifenLuo.WinFormsUI.Docking.DockAreas.Float | WeifenLuo.WinFormsUI.Docking.DockAreas.DockLeft) 
-            | WeifenLuo.WinFormsUI.Docking.DockAreas.DockRight) 
-            | WeifenLuo.WinFormsUI.Docking.DockAreas.DockTop) 
-            | WeifenLuo.WinFormsUI.Docking.DockAreas.DockBottom) 
-            | WeifenLuo.WinFormsUI.Docking.DockAreas.Document)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "EntityInspector";
             this.ShowHint = WeifenLuo.WinFormsUI.Docking.DockState.Document;
@@ -482,5 +508,8 @@
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem createLinkToolStripMenuItem;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.ToolStripMenuItem applyDefaultsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem addUnsetParametersToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem applyAllDefaultsToolStripMenuItem;
     }
 }

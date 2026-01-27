@@ -34,7 +34,7 @@ namespace CommandsEditor
                     entity_name.Text = ShortGuidUtils.FindString(((VariableEntity)_entity).name);
                     break;
                 default:
-                    entity_name.Text = EntityUtils.GetName(_composite, _entity);
+                    entity_name.Text = Content.Level.Commands.Utils.GetEntityName(_composite, _entity);
                     break;
             }
         }
@@ -50,7 +50,7 @@ namespace CommandsEditor
                     ((VariableEntity)_entity).name = ShortGuidUtils.Generate(entity_name.Text);
                     break;
                 default:
-                    EntityUtils.SetName(_composite, _entity, entity_name.Text);
+                    Content.Level.Commands.Utils.SetEntityName(_composite, _entity, entity_name.Text);
                     break;
             }
 
@@ -58,13 +58,13 @@ namespace CommandsEditor
             Content.GenerateListViewItem(_entity, _composite, LevelContent.CacheMethod.IGNORE_AND_OVERWRITE_CACHE);
 
             //Update cached proxy/alias ListViewItems that contain this entity
-            Content.commands.Entries.ForEach(composite =>
+            Content.Level.Commands.Entries.ForEach(composite =>
             {
-                composite.proxies.FindAll(o => o.proxy.path.Contains(_entity.shortGUID)).ForEach(proxy => 
+                composite.proxies_dictionary.Values.Where(o => o.proxy.path.Contains(_entity.shortGUID)).ToList().ForEach(proxy => 
                 {
                     Content.GenerateListViewItem(proxy, composite, LevelContent.CacheMethod.IGNORE_AND_OVERWRITE_CACHE);
                 });
-                composite.aliases.FindAll(o => o.alias.path.Contains(_entity.shortGUID)).ForEach(alias =>
+                composite.aliases_dictionary.Values.Where(o => o.alias.path.Contains(_entity.shortGUID)).ToList().ForEach(alias =>
                 {
                     Content.GenerateListViewItem(alias, composite, LevelContent.CacheMethod.IGNORE_AND_OVERWRITE_CACHE);
                 });

@@ -2,9 +2,10 @@ using CATHODE;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CathodeLib;
+using CathodeLib.ObjectExtensions;
 using CommandsEditor.Popups.UserControls;
-using ListViewGroupCollapse;
 using OpenCAGE;
+using ST.Library.UI.NodeEditor;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,6 +18,7 @@ using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
 using System.Windows.Media.Animation;
@@ -24,7 +26,7 @@ using System.Windows.Shapes;
 using WebSocketSharp;
 using WeifenLuo.WinFormsUI.Docking;
 using static CathodeLib.CompositeFlowgraphCompatibilityTable;
-using static CathodeLib.CompositeFlowgraphsTable;
+using static CathodeLib.CompositeFlowgraphTable;
 using Path = System.IO.Path;
 
 namespace CommandsEditor.DockPanels
@@ -41,6 +43,8 @@ namespace CommandsEditor.DockPanels
         public Composite Composite => _composite;
 
         private EntityList _entityList;
+
+        public List<Flowgraph> Flowgraphs => _flowgraphs; //Really, I'd rather not expose this, but it's handy to be able to see flowgraph data that has been modified during the session. It should be treated as read only!
         private List<Flowgraph> _flowgraphs = new List<Flowgraph>();
 
         private EntityInspector _entityDisplay;
@@ -65,7 +69,8 @@ namespace CommandsEditor.DockPanels
 
             InitializeComponent();
 
-            dockPanel.ShowDocumentIcon = true;
+            dockPanel.ShowDocumentIcon = false; //todo: tabs should be smaller
+            dockPanel.DocumentTabStripLocation = DocumentTabStripLocation.Bottom;
 
             dockPanel.DockLeftPortion = SettingsManager.GetFloat(Singleton.Settings.EntityListWidth, 0.25f);
             dockPanel.DockRightPortion = SettingsManager.GetFloat(Singleton.Settings.EntityInspectorWidth, 0.25f);
@@ -119,31 +124,58 @@ namespace CommandsEditor.DockPanels
         //Saves and compiles all Flowgraph layouts for this Composite
         public void SaveAllFlowgraphs()
         {
-            if (Composite != null && SupportsFlowgraphs)
+            if (Composite != null && Content != null && Content.Level.Commands != null && Content.Level.Commands.Utils != null && SupportsFlowgraphs)
             {
-                CompositeUtils.ClearAllLinks(_composite);
+#if DEBUG
+                int ogCount = Content.Level.Commands.Utils.CountLinks(_composite);
+#endif
+                int newCount = 0;
+                Content.Level.Commands.Utils.ClearAllLinks(_composite);
                 for (int i = 0; i < _flowgraphs.Count; i++)
+                {
                     if (_flowgraphs[i] != null)
-                        _flowgraphs[i].SaveAndCompile();
+                    {
+                        newCount += _flowgraphs[i].SaveAndCompile();
+                    }
+                }
+                Debug.Log("Composite Display", System.IO.Path.GetFileName(Composite.name) + " -> Created " + newCount + " links from flowgraph pages!");
+#if DEBUG
+                if (ogCount != newCount)
+                {
+                    Debug.Log("Composite Display", "WARNING: Previously had " + ogCount + " links, now have " + newCount + " (difference of " + Math.Abs(ogCount - newCount) + "). If you did not change any layouts, this could be an error!");
+                }
+                else
+                {
+                    Debug.Log("Composite Display", "The number of links matches the previous count of " + ogCount);
+                }
+#endif
+
+                var visibleFlowgraph = _flowgraphs.FirstOrDefault(o => o.Visible);
+                if (visibleFlowgraph != null)
+                {
+                    FlowgraphLayoutManager.SetSelectedPage(Composite, visibleFlowgraph.FlowgraphName);
+                }
             }
         }
 
         /* Call this to show the CompositeDisplay with the requested Composite content */
         public void PopulateUI(Composite composite)
         {
+            Debug.Log("Composite Display", "PopulateUI called for " + composite.shortGUID.ToByteString() + " (" + composite.name + ")");
+
             //If we're changing composite, we should store the flowgraph layouts from the previous one
             SaveAllFlowgraphs();
 
             if (!_isSubbed)
             {
-                _entityList.List.SelectedEntityChanged += LoadEntity;
+                _entityList.List.SelectedEntityChanged += LoadEntityAndFocusNode;
                 Singleton.OnCompositeRenamed += OnCompositeRenamed;
                 Singleton.OnCompositeDeleted += OnCompsoiteDeleted;
                 Singleton.OnEntityAdded += ReloadUIForNewEntity;
                 _isSubbed = true;
             }
 
-            EditorUtils.CompositeType type = Content.editor_utils.GetCompositeType(composite);
+            EditorUtils.CompositeType type = Content.EditorUtils.GetCompositeType(composite);
             
             switch (type)
             {
@@ -180,7 +212,7 @@ namespace CommandsEditor.DockPanels
 
         private void CompositeDisplay_FormClosed(object sender, FormClosedEventArgs e)
         {
-            _entityList.List.SelectedEntityChanged -= LoadEntity;
+            _entityList.List.SelectedEntityChanged -= LoadEntityAndFocusNode;
             //this.FormClosed -= CompositeDisplay_FormClosed;
             Singleton.OnCompositeRenamed -= OnCompositeRenamed;
             Singleton.OnEntityAdded -= ReloadUIForNewEntity;
@@ -229,36 +261,25 @@ namespace CommandsEditor.DockPanels
 
         private void Reload(Composite composite)
         {
+            Debug.Log("Composite Display", "Private Reload called for " + composite.shortGUID.ToByteString() + " (" + composite.name + ")");
             Cursor.Current = Cursors.WaitCursor;
 
-            findUses.Visible = Content.commands.EntryPoints[0] != composite;
-            deleteComposite.Visible = !Content.commands.EntryPoints.Contains(composite);
+            //No need to find uses of entry point - it's the entry point
+            findUses.Visible = Content.Level.Commands.EntryPoints[0] != composite;
+
+            //Shouldn't be able to delete/rename the entry point or PAUSEMENU/GLOBAL else it'll break stuff (e.g. commands.bin needs to search for them by name)
+            deleteComposite.Visible = !Content.Level.Commands.EntryPoints.Contains(composite);
+            renameComposite.Visible = deleteComposite.Visible;
 
             pathDisplay.Text = _path.GetPath(composite);
             _composite = composite;
 
             //Remove dead links and empty aliases on first time
-            if (!CommandsUtils.PurgedComposites.purged.Contains(_composite.shortGUID))
+            if (!Content.Level.Commands.Utils.PurgedComposites.purged.Contains(_composite.shortGUID))
             {
                 //Clear out any dead links
-                CommandsUtils.PurgeDeadLinks(Content.commands, _composite);
-                CommandsUtils.PurgedComposites.purged.Add(_composite.shortGUID);
-
-                //Clear out any aliases with no parameters/links
-                List<AliasEntity> aliasPurged = new List<AliasEntity>();
-                for (int x = 0; x < _composite.aliases.Count; x++)
-                {
-                    if (_composite.aliases[x].childLinks.Count == 0 &&
-                        _composite.aliases[x].parameters.Count == 0 &&
-                        _composite.aliases[x].GetParentLinks(_composite).Count == 0)
-                        continue;
-                    aliasPurged.Add(_composite.aliases[x]);
-                }
-                if (_composite.aliases.Count != aliasPurged.Count)
-                {
-                    Console.WriteLine("Purged " + (_composite.aliases.Count - aliasPurged.Count) + " empty aliases");
-                    _composite.aliases = aliasPurged;
-                }
+                Content.Level.Commands.Utils.PurgeDeadLinks(_composite);
+                Content.Level.Commands.Utils.PurgedComposites.purged.Add(_composite.shortGUID);
             }
 
             CloseAllChildTabs();
@@ -283,19 +304,18 @@ namespace CommandsEditor.DockPanels
             if (_path.StepBackwards(out Composite composite, out Entity entity))
             {
                 Reload(composite);
-                LoadEntity(entity);
+                LoadEntity(entity, true);
             }
         }
 
         /* Reload this display */
         public void Reload(bool alsoReloadEntities = true)
         {
+            Debug.Log("Composite Display", "Public Reload called for " + _composite.shortGUID.ToByteString() + " (" + _composite.name + ")");
+
             //Figure out if the composite supports flowgraphs: it won't if there's no layout defined, or if the composite has diverged from vanilla
-            if (!FlowgraphLayoutManager.HasCompatibilityInfo(Composite))
-            {
-                Console.WriteLine("Calculating flowgraph compatibility...");
+            if (!FlowgraphLayoutManager.HasCompatibilityInfo(_composite))
                 FlowgraphLayoutManager.EvaluateCompatibility(_composite);
-            }
 
             _entityList.List.LoadComposite(Composite);
             if (alsoReloadEntities) ReloadAllEntities();
@@ -306,26 +326,27 @@ namespace CommandsEditor.DockPanels
             _flowgraphs.Clear();
 
             //If we support flowgraphs, load them
+            Debug.Log("Composite Display", "Flowgraphs " + (SupportsFlowgraphs ? "Supported!" : "Not supported!"));
             if (SupportsFlowgraphs)
             {
                 List<FlowgraphMeta> layouts = FlowgraphLayoutManager.GetLayouts(Composite);
-
-#if DEBUG
-                //TEMP HACK TEMP HACK (we need there to be always ONE entry here while i populate the db. once that's done, this should be reworked)
-                if (layouts.Count == 0)
+                Debug.Log("Composite Display", "Found " + layouts.Count + " flowgraph layout(s)");
+                dockPanel.SuspendLayout(true);
+                try
                 {
-                    Flowgraph flowgraph = new Flowgraph();
-                    _flowgraphs.Add(flowgraph);
-
-                    flowgraph.Show(dockPanel, DockState.Document);
-                    flowgraph.PopulateDefaultEntities(Composite); 
+                    for (int i = 0; i < layouts.Count; i++)
+                    {
+                        CreateFlowgraphWindow(layouts[i]);
+                    }
                 }
-#endif
-
-                for (int i = 0; i < layouts.Count; i++)
+                finally
                 {
-                    CreateFlowgraphWindow(layouts[i]);
+                    dockPanel.ResumeLayout(true, true);
                 }
+                
+                string prevLoaded = FlowgraphLayoutManager.GetSelectedPage(Composite);
+                if (prevLoaded != null)
+                    _flowgraphs.FirstOrDefault(o => o.FlowgraphName == prevLoaded)?.Show();
             }
             createFlowgraph.Visible = SupportsFlowgraphs;
 
@@ -366,12 +387,14 @@ namespace CommandsEditor.DockPanels
             allowedTypes.Add(ResourceType.RENDERABLE_INSTANCE);
             allowedTypes.Add(ResourceType.COLLISION_MAPPING);
 
+            //note - only unsupported now is DNYAMIC_PHYSICS_SYSTEM
+
             bool found = false;
             Parallel.ForEach(comp.functions, (ent, state) =>
             {
-                if (_canExportChildren && !CommandsUtils.FunctionTypeExists(ent.function))
+                if (_canExportChildren && !ent.function.IsFunctionType)
                 {
-                    Composite nestedComp = Content.commands.GetComposite(ent.function);
+                    Composite nestedComp = Content.Level.Commands.GetComposite(ent.function);
                     if (nestedComp != null)
                     {
                         if (DoesCompositeContainResource(nestedComp))
@@ -428,30 +451,74 @@ namespace CommandsEditor.DockPanels
         {
             if (newEnt == null) return;
             _entityList.List.AddNewEntity(newEnt);
-            LoadEntity(newEnt);
+            LoadEntity(newEnt, false);
         }
 
         /* Load an entity into the composite tabs UI */
-        public void LoadEntity(ShortGuid guid)
+        public void LoadEntityDontFocusNode(ShortGuid guid) => LoadEntity(guid, false);
+        public void LoadEntityAndFocusNode(ShortGuid guid) => LoadEntity(guid, true);
+        public void LoadEntity(ShortGuid guid, bool focusNode)
         {
-            LoadEntity(Composite.GetEntityByID(guid));
+            LoadEntity(Composite.GetEntityByID(guid), focusNode);
         }
-        public void LoadEntity(Entity entity)
+        public void LoadEntityDontFocusNode(Entity entity) => LoadEntity(entity, false);
+        public void LoadEntityAndFocusNode(Entity entity) => LoadEntity(entity, true);
+        public void LoadEntity(Entity entity, bool focusNode)
         {
             if (entity == null) return;
-
-            //First, make sure the list has the right entity selected, then exit early to avoid loading twice.
-            if (_entityList.List.SelectedEntity == null || _entityList.List.SelectedEntity.shortGUID != entity.shortGUID)
-            {
-                _entityList.List.SelectEntity(entity);
-                return;
-            }
 
 #if DEBUG
             _entityDisplay.PopulateUI(entity, true); //NOTE: always showing links in debug view to make validating things easier
 #else
             _entityDisplay.PopulateUI(entity, !SupportsFlowgraphs);
 #endif
+
+            //Check to see if there's a node for the entity on the current page - if not, check other pages, and load the first one that has one
+            if (SupportsFlowgraphs && focusNode)
+            {
+                Flowgraph activePage = _flowgraphs.FirstOrDefault(o => o.Visible);
+                bool found = false;
+                if (activePage != null)
+                {
+                    foreach (STNode node in activePage.Nodegraph.Nodes)
+                    {
+                        if (node.Entity == entity)
+                        {
+                            found = true;
+                            activePage.SelectAllNodesForEntity(entity);
+                            break;
+                        }
+                    }
+                }
+                if (!found)
+                {
+                    foreach (Flowgraph flowgraph in _flowgraphs)
+                    {
+                        if (flowgraph.Visible)
+                            continue;
+                        foreach (STNode node in flowgraph.Nodegraph.Nodes)
+                        {
+                            if (node.Entity == entity)
+                            {
+                                found = true;
+                                flowgraph.Show();
+                                flowgraph.SelectAllNodesForEntity(entity);
+                                break;
+                            }
+                        }
+                        if (found)
+                            break;
+                    }
+                }
+            }
+
+            //Make sure the entity is selected in the list view too, but don't handle the event, else we'll get called again
+            if (_entityList.List.SelectedEntity == null || _entityList.List.SelectedEntity.shortGUID != entity.shortGUID)
+            {
+                _entityList.List.SelectedEntityChanged -= LoadEntityAndFocusNode;
+                _entityList.List.SelectEntity(entity);
+                _entityList.List.SelectedEntityChanged += LoadEntityAndFocusNode;
+            }
 
             _entityList.List.FocusOnList();
         }
@@ -479,9 +546,22 @@ namespace CommandsEditor.DockPanels
 
         private void findUses_Click(object sender, EventArgs e)
         {
-            ShowCompositeUses uses = new ShowCompositeUses(Composite);
+            GlobalEntitySearcher uses = new GlobalEntitySearcher(GlobalEntitySearcher.SearchMode.BY_COMPOSITE, Composite);
             uses.Show();
             uses.OnEntitySelected += _commandsDisplay.LoadCompositeAndEntity;
+        }
+
+        public bool AnyFlowgraphsContainEntity(Entity entity)
+        {
+            foreach (Flowgraph flowgraph in _flowgraphs)
+            {
+                foreach (STNode node in flowgraph.Nodegraph.Nodes)
+                {
+                    if (node.Entity.shortGUID == entity.shortGUID)
+                        return true;
+                }
+            }
+            return false;
         }
 
         private void deleteComposite_Click(object sender, EventArgs e)
@@ -493,19 +573,21 @@ namespace CommandsEditor.DockPanels
         {
             if (ask && MessageBox.Show("Are you sure you want to remove this entity?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
 
+            Singleton.OnEntityDeletePending?.Invoke(entity, Composite);
+
             switch (entity.variant)
             {
                 case EntityVariant.VARIABLE:
-                    Composite.variables.Remove((VariableEntity)entity);
+                    Composite.RemoveVariable(entity.shortGUID);
                     break;
                 case EntityVariant.FUNCTION:
-                    Composite.functions.Remove((FunctionEntity)entity);
+                    Composite.RemoveFunction(entity.shortGUID);
                     break;
                 case EntityVariant.ALIAS:
-                    Composite.aliases.Remove((AliasEntity)entity);
+                    Composite.RemoveAlias(entity.shortGUID);
                     break;
                 case EntityVariant.PROXY:
-                    Composite.proxies.Remove((ProxyEntity)entity);
+                    Composite.RemoveProxy(entity.shortGUID);
                     break;
             }
 
@@ -526,16 +608,16 @@ namespace CommandsEditor.DockPanels
                     {
                         case "TriggerSequence":
                             TriggerSequence triggerSequence = (TriggerSequence)entities[i];
-                            List<TriggerSequence.Entity> triggers = new List<TriggerSequence.Entity>();
-                            for (int x = 0; x < triggerSequence.entities.Count; x++)
+                            List<TriggerSequence.SequenceEntry> triggers = new List<TriggerSequence.SequenceEntry>();
+                            for (int x = 0; x < triggerSequence.sequence.Count; x++)
                             {
-                                if (triggerSequence.entities[x].connectedEntity.path.Length < 2 ||
-                                    triggerSequence.entities[x].connectedEntity.path[triggerSequence.entities[x].connectedEntity.path.Length - 2] != entity.shortGUID)
+                                if (triggerSequence.sequence[x].connectedEntity.path.Length < 2 ||
+                                    triggerSequence.sequence[x].connectedEntity.path[triggerSequence.sequence[x].connectedEntity.path.Length - 2] != entity.shortGUID)
                                 {
-                                    triggers.Add(triggerSequence.entities[x]);
+                                    triggers.Add(triggerSequence.sequence[x]);
                                 }
                             }
-                            triggerSequence.entities = triggers;
+                            triggerSequence.sequence = triggers;
                             break;
                         case "CAGEAnimation":
                             CAGEAnimation cageAnim = (CAGEAnimation)entities[i];
@@ -554,7 +636,7 @@ namespace CommandsEditor.DockPanels
                 }
             }
 
-            CommandsUtils.PurgedComposites.purged.Clear(); //TODO: we should smartly remove from this list, rather than removing all
+            Content.Level.Commands.Utils.PurgedComposites.purged.Clear(); //TODO: we should smartly remove from this list, rather than removing all
 
             if (_entityDisplay.Entity == entity && _entityDisplay.Populated)
                 _entityDisplay.Close();
@@ -574,27 +656,29 @@ namespace CommandsEditor.DockPanels
             AddCopyOfEntity(entity);
         }
 
-        public void AddCopyOfEntity(Entity entity)
+        public Entity AddCopyOfEntity(Entity entity)
         {
             Singleton.OnEntityAddPending?.Invoke();
             Entity newEnt = MakeCopyOfEntity(entity);
             switch (newEnt.variant)
             {
                 case EntityVariant.FUNCTION:
-                    Composite.functions.Add((FunctionEntity)newEnt);
+                    Composite.functions_dictionary.Add(((FunctionEntity)newEnt).shortGUID, (FunctionEntity)newEnt);
                     break;
                 case EntityVariant.VARIABLE:
-                    Composite.variables.Add((VariableEntity)newEnt);
+                    Composite.variables_dictionary.Add(((VariableEntity)newEnt).shortGUID, (VariableEntity)newEnt);
                     break;
                 case EntityVariant.PROXY:
-                    Composite.proxies.Add((ProxyEntity)newEnt);
+                    Composite.proxies_dictionary.Add(((ProxyEntity)newEnt).shortGUID, (ProxyEntity)newEnt);
                     break;
                 case EntityVariant.ALIAS:
-                    Composite.aliases.Add((AliasEntity)newEnt);
+                    Composite.aliases_dictionary.Add(((AliasEntity)newEnt).shortGUID, (AliasEntity)newEnt);
                     break;
             }
-            Content.editor_utils.GenerateCompositeInstances(Content.commands);
+            Content.EditorUtils.GenerateCompositeInstances(Content.Level.Commands);
             Singleton.OnEntityAdded?.Invoke(newEnt);
+
+            return newEnt;
         }
 
         private Entity MakeCopyOfEntity(Entity entity)
@@ -619,10 +703,10 @@ namespace CommandsEditor.DockPanels
             newEnt.shortGUID = ShortGuidUtils.GenerateRandom();
             if (newEnt.variant != EntityVariant.VARIABLE)
             {
-                EntityUtils.SetName(
+                Content.Level.Commands.Utils.SetEntityName(
                         Composite.shortGUID,
                         newEnt.shortGUID,
-                        EntityUtils.GetName(Composite.shortGUID, entity.shortGUID) + "_clone");
+                        Content.Level.Commands.Utils.GetEntityName(Composite.shortGUID, entity.shortGUID) + "_clone");
 
                 //TODO: not using the below, because really we should check every entity's name to get the index to append.
                 /*
@@ -668,14 +752,14 @@ namespace CommandsEditor.DockPanels
             //If entity is a composite instance, check to see if it should make a new PHYSICS.MAP entry
             if (entity.variant == EntityVariant.FUNCTION)
             {
-                Composite comp = Content.commands.GetComposite(((FunctionEntity)entity).function);
+                Composite comp = Content.Level.Commands.GetComposite(((FunctionEntity)entity).function);
 
                 //TODO: need to recurse into all child composite instances to find ALL contained PhysicsSystem functions, rather than just the layer below
-                FunctionEntity phys = comp?.functions.FirstOrDefault(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.PhysicsSystem));
+                FunctionEntity phys = comp?.functions.FirstOrDefault(o => o.function == FunctionType.PhysicsSystem);
                 if (phys != null)
                 {
                     List<ShortGuid> instancesEnt = new List<ShortGuid>();
-                    List<EntityPath> pathsEnt = Content.editor_utils.GetHierarchiesForEntity(Composite, entity);
+                    List<EntityPath> pathsEnt = Content.EditorUtils.GetHierarchiesForEntity(Composite, entity);
                     List<ShortGuid> instancesPhys = new List<ShortGuid>();
                     List<EntityPath> pathsPhys = new List<EntityPath>();
                     pathsEnt.ForEach(path => {
@@ -688,31 +772,31 @@ namespace CommandsEditor.DockPanels
                         instancesPhys.Add(pathPhys.GenerateCompositeInstanceID());
                     });
 
-                    List<PhysicsMaps.Entry> physMaps = Content.resource.physics_maps.Entries.FindAll(physMap =>
+                    List<PhysicsMaps.DYNAMIC_PHYSICS_SYSTEM> physMaps = Content.Level.PhysicsMaps.Entries.FindAll(physMap =>
                         instancesPhys.Contains(physMap.composite_instance_id) &&
                         physMap.entity.entity_id == entity.shortGUID &&
                         instancesEnt.Contains(physMap.entity.composite_instance_id)
                     );
                     physMaps.ForEach(physMap =>
                     {
-                        PhysicsMaps.Entry newPhysMap = physMap.Copy();
+                        PhysicsMaps.DYNAMIC_PHYSICS_SYSTEM newPhysMap = physMap.Copy();
                         newPhysMap.entity.entity_id = newEnt.shortGUID;
 
                         EntityPath pathPhys = pathsPhys.FirstOrDefault(x => x.GenerateCompositeInstanceID() == physMap.composite_instance_id);
                         EntityPath newPathPhys = pathPhys.Copy();
                         newPathPhys.path[newPathPhys.path.Length - 3] = newEnt.shortGUID;
                         newPhysMap.composite_instance_id = newPathPhys.GenerateCompositeInstanceID();
-                        Content.resource.physics_maps.Entries.Add(newPhysMap);
-                        //Content.resource.physics_maps.Entries[Content.resource.physics_maps.Entries.IndexOf(physMap)] = newPhysMap;
+                        Content.Level.PhysicsMaps.Entries.Add(newPhysMap);
+                        //Content.Level.PhysicsMaps.Entries[Content.Level.PhysicsMaps.Entries.IndexOf(physMap)] = newPhysMap;
 
                         //TODO: need to set pos/rot properly
 
-                        Resources.Resource physRes = Content.resource.resources.Entries.FirstOrDefault(res => res.composite_instance_id == physMap.composite_instance_id);
+                        Resources.Resource physRes = Content.Level.Resources.Entries.FirstOrDefault(res => res.composite_instance_id == physMap.composite_instance_id);
                         Resources.Resource newPhysRes = physRes.Copy();
                         newPhysRes.composite_instance_id = newPhysMap.composite_instance_id;
-                        //newPhysRes.index = Content.resource.resources.Entries.Count;
-                        Content.resource.resources.Entries.Add(newPhysRes);
-                        //Content.resource.resources.Entries[Content.resource.resources.Entries.IndexOf(p)] = resPhys;
+                        //newPhysRes.index = Content.Level.Resources.Entries.Count;
+                        Content.Level.Resources.Entries.Add(newPhysRes);
+                        //Content.Level.Resources.Entries[Content.Level.Resources.Entries.IndexOf(p)] = resPhys;
                     });
                 }
             }
@@ -774,7 +858,7 @@ namespace CommandsEditor.DockPanels
         AddEntity_Function dialog_func = null;
         AddEntity_CompositeInstance dialog_compinst = null;
         SelectHierarchy dialog_hierarchy = null; EntityVariant dialog_hierarchy_entvar;
-        public void CreateEntity(EntityVariant variant = EntityVariant.FUNCTION, bool composite = false)
+        public Popups.Base.BaseWindow CreateEntity(EntityVariant variant = EntityVariant.FUNCTION, bool composite = false)
         {
             if (variant == EntityVariant.FUNCTION && !composite)
             {
@@ -784,6 +868,8 @@ namespace CommandsEditor.DockPanels
                 dialog_func = new AddEntity_Function(Composite, SupportsFlowgraphs);
                 dialog_func.Show();
                 dialog_func.Focus();
+
+                return dialog_func;
             }
             else if (variant == EntityVariant.FUNCTION && composite)
             {
@@ -793,6 +879,8 @@ namespace CommandsEditor.DockPanels
                 dialog_compinst = new AddEntity_CompositeInstance(Composite, SupportsFlowgraphs);
                 dialog_compinst.Show();
                 dialog_compinst.Focus();
+
+                return dialog_compinst;
             }
             else if (variant == EntityVariant.PROXY || variant == EntityVariant.ALIAS)
             {
@@ -803,13 +891,12 @@ namespace CommandsEditor.DockPanels
                 switch (dialog_hierarchy_entvar)
                 {
                     case EntityVariant.PROXY:
-                        dialog_hierarchy = new SelectHierarchy(Content.commands.EntryPoints[0], new CompositeEntityList.DisplayOptions()
+                        dialog_hierarchy = new SelectHierarchy(Content.Level.Commands.EntryPoints[0], new CompositeEntityList.DisplayOptions()
                         {
                             DisplayAliases = false,
                             DisplayFunctions = true,
                             DisplayProxies = false,
                             DisplayVariables = false,
-                            ShowCreateNode = SupportsFlowgraphs,
                             ShowApplyDefaults = true,
                         });
                         dialog_hierarchy.Text = "Create Proxy";
@@ -821,7 +908,6 @@ namespace CommandsEditor.DockPanels
                             DisplayFunctions = true,
                             DisplayProxies = true,
                             DisplayVariables = true,
-                            ShowCreateNode = SupportsFlowgraphs,
                             ShowApplyDefaults = true,
                         });
                         dialog_hierarchy.Text = "Create Alias";
@@ -830,6 +916,8 @@ namespace CommandsEditor.DockPanels
                 dialog_hierarchy.OnHierarchyGenerated += OnNewEntityHierarchyGenerated;
                 dialog_hierarchy.Show();
                 dialog_hierarchy.Focus();
+
+                return dialog_hierarchy;
             }
             else if (variant == EntityVariant.VARIABLE)
             {
@@ -839,7 +927,10 @@ namespace CommandsEditor.DockPanels
                 dialog_var = new AddEntity_Variable(Composite, SupportsFlowgraphs);
                 dialog_var.Show();
                 dialog_var.Focus();
+
+                return dialog_var;
             }
+            return null; 
         }
         private void OnNewEntityHierarchyGenerated(ShortGuid[] generatedHierarchy)
         {
@@ -850,19 +941,19 @@ namespace CommandsEditor.DockPanels
             {
                 case EntityVariant.PROXY:
                     List<ShortGuid> hierarchy = new List<ShortGuid>();
-                    hierarchy.Add(Content.commands.EntryPoints[0].shortGUID);
+                    hierarchy.Add(Content.Level.Commands.EntryPoints[0].shortGUID);
                     hierarchy.AddRange(generatedHierarchy);
-                    ent = _composite.AddProxy(Content.commands, hierarchy.ToArray()); //TODO: re-add "add default params"
-                    Entity pointedEnt = ((ProxyEntity)ent).proxy.GetPointedEntity(Content.commands, out Composite pointedComp);
-                    EntityUtils.SetName(_composite, ent, EntityUtils.GetName(pointedComp, pointedEnt) + " Proxy");
+                    ent = _composite.AddProxy(Content.Level.Commands, hierarchy.ToArray());
+                    (Composite pointedComp, Entity pointedEnt) = Content.Level.Commands.Utils.GetResolvedTarget(Content.Level.Commands.Utils.ResolveProxy((ProxyEntity)ent));
+                    Content.Level.Commands.Utils.SetEntityName(_composite, ent, Content.Level.Commands.Utils.GetEntityName(pointedComp, pointedEnt) + " Proxy");
                     break;
                 case EntityVariant.ALIAS:
-                    ent = _composite.AddAlias(generatedHierarchy); //TODO: re-add "add default params"?
+                    ent = _composite.AddAlias(generatedHierarchy); 
                     break;
             }
 
             if (dialog_hierarchy.ApplyDefaultParams)
-                ParameterUtils.AddAllDefaultParameters(ent, _composite);
+                Content.Level.Commands.Utils.AddAllDefaultParameters(ent, _composite);
 
             Singleton.OnEntityAdded?.Invoke(ent);
         }
@@ -957,10 +1048,18 @@ namespace CommandsEditor.DockPanels
 
         private void CreateFlowgraphWindow(FlowgraphMeta meta)
         {
-            Flowgraph flowgraph = new Flowgraph();
+            Flowgraph flowgraph = new Flowgraph(Content.Level.Commands);
             _flowgraphs.Add(flowgraph);
             flowgraph.Show(dockPanel, DockState.Document);
             flowgraph.ShowFlowgraph(Composite, meta);
+        }
+
+        public void SelectEntityOnFlowgraph(string flowgraph, Entity entity)
+        {
+            Flowgraph fg = _flowgraphs.FirstOrDefault(o => o.FlowgraphName == flowgraph);
+            if (fg == null) return;
+            fg.Show();
+            fg.SelectAllNodesForEntity(entity);
         }
     }
 }

@@ -46,7 +46,7 @@ namespace CommandsEditor.UserControls
                 this.deleteToolStripMenuItem.Text = "Delete '" + ShortGuidUtils.FindString(link.linkedParamID) + "'";
             }
 
-            textBox1.Text = Content.editor_utils.GenerateEntityName(_linkedEntity, _entityDisplay.Composite);
+            textBox1.Text = Content.EditorUtils.GenerateEntityName(_linkedEntity, _entityDisplay.Composite);
 
             _hasDoneSetup = true;
         }

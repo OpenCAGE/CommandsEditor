@@ -50,14 +50,28 @@
             this.collisionComposite = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label15 = new System.Windows.Forms.Label();
+            this.foleyFootwear = new System.Windows.Forms.ComboBox();
+            this.label14 = new System.Windows.Forms.Label();
+            this.foleyLeg = new System.Windows.Forms.ComboBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.buildAttr = new System.Windows.Forms.ComboBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.foleyTorso = new System.Windows.Forms.ComboBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.ethnicityAttr = new System.Windows.Forms.ComboBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.genderAttr = new System.Windows.Forms.ComboBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.voiceActor = new System.Windows.Forms.ComboBox();
+            this.gender = new System.Windows.Forms.ComboBox();
             this.label8 = new System.Windows.Forms.Label();
-            this.shirtDecal = new System.Windows.Forms.ComboBox();
+            this.assetType = new System.Windows.Forms.ComboBox();
             this.label7 = new System.Windows.Forms.Label();
             this.bodyTypes = new System.Windows.Forms.ComboBox();
             this.characterInstances = new System.Windows.Forms.ComboBox();
             this.addNewCharacter = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.gender = new System.Windows.Forms.ComboBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -253,41 +267,198 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.label15);
+            this.groupBox2.Controls.Add(this.foleyFootwear);
+            this.groupBox2.Controls.Add(this.label14);
+            this.groupBox2.Controls.Add(this.foleyLeg);
+            this.groupBox2.Controls.Add(this.label13);
+            this.groupBox2.Controls.Add(this.buildAttr);
+            this.groupBox2.Controls.Add(this.label12);
+            this.groupBox2.Controls.Add(this.foleyTorso);
+            this.groupBox2.Controls.Add(this.label11);
+            this.groupBox2.Controls.Add(this.ethnicityAttr);
+            this.groupBox2.Controls.Add(this.label10);
+            this.groupBox2.Controls.Add(this.genderAttr);
+            this.groupBox2.Controls.Add(this.label9);
+            this.groupBox2.Controls.Add(this.voiceActor);
             this.groupBox2.Controls.Add(this.gender);
             this.groupBox2.Controls.Add(this.label8);
-            this.groupBox2.Controls.Add(this.shirtDecal);
+            this.groupBox2.Controls.Add(this.assetType);
             this.groupBox2.Controls.Add(this.label7);
             this.groupBox2.Controls.Add(this.bodyTypes);
             this.groupBox2.Location = new System.Drawing.Point(12, 325);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(654, 128);
+            this.groupBox2.Size = new System.Drawing.Size(654, 240);
             this.groupBox2.TabIndex = 19;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Metadata";
             // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(331, 186);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(82, 13);
+            this.label15.TabIndex = 35;
+            this.label15.Text = "Foley: Footwear";
+            // 
+            // foleyFootwear
+            // 
+            this.foleyFootwear.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.foleyFootwear.FormattingEnabled = true;
+            this.foleyFootwear.Location = new System.Drawing.Point(331, 202);
+            this.foleyFootwear.Name = "foleyFootwear";
+            this.foleyFootwear.Size = new System.Drawing.Size(302, 21);
+            this.foleyFootwear.TabIndex = 34;
+            this.foleyFootwear.SelectedIndexChanged += new System.EventHandler(this.foleyFootwear_SelectedIndexChanged);
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(19, 186);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(56, 13);
+            this.label14.TabIndex = 33;
+            this.label14.Text = "Foley: Leg";
+            // 
+            // foleyLeg
+            // 
+            this.foleyLeg.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.foleyLeg.FormattingEnabled = true;
+            this.foleyLeg.Location = new System.Drawing.Point(19, 202);
+            this.foleyLeg.Name = "foleyLeg";
+            this.foleyLeg.Size = new System.Drawing.Size(302, 21);
+            this.foleyLeg.TabIndex = 32;
+            this.foleyLeg.SelectedIndexChanged += new System.EventHandler(this.foleyLeg_SelectedIndexChanged);
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(19, 146);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(30, 13);
+            this.label13.TabIndex = 31;
+            this.label13.Text = "Build";
+            // 
+            // buildAttr
+            // 
+            this.buildAttr.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.buildAttr.FormattingEnabled = true;
+            this.buildAttr.Location = new System.Drawing.Point(19, 162);
+            this.buildAttr.Name = "buildAttr";
+            this.buildAttr.Size = new System.Drawing.Size(302, 21);
+            this.buildAttr.TabIndex = 30;
+            this.buildAttr.SelectedIndexChanged += new System.EventHandler(this.buildAttr_SelectedIndexChanged);
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(331, 146);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(65, 13);
+            this.label12.TabIndex = 29;
+            this.label12.Text = "Foley: Torso";
+            // 
+            // foleyTorso
+            // 
+            this.foleyTorso.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.foleyTorso.FormattingEnabled = true;
+            this.foleyTorso.Location = new System.Drawing.Point(331, 162);
+            this.foleyTorso.Name = "foleyTorso";
+            this.foleyTorso.Size = new System.Drawing.Size(302, 21);
+            this.foleyTorso.TabIndex = 28;
+            this.foleyTorso.SelectedIndexChanged += new System.EventHandler(this.foleyTorso_SelectedIndexChanged);
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(331, 106);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(47, 13);
+            this.label11.TabIndex = 27;
+            this.label11.Text = "Ethnicity";
+            // 
+            // ethnicityAttr
+            // 
+            this.ethnicityAttr.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ethnicityAttr.FormattingEnabled = true;
+            this.ethnicityAttr.Location = new System.Drawing.Point(331, 122);
+            this.ethnicityAttr.Name = "ethnicityAttr";
+            this.ethnicityAttr.Size = new System.Drawing.Size(302, 21);
+            this.ethnicityAttr.TabIndex = 26;
+            this.ethnicityAttr.SelectedIndexChanged += new System.EventHandler(this.ethnicityAttr_SelectedIndexChanged);
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(19, 106);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(42, 13);
+            this.label10.TabIndex = 25;
+            this.label10.Text = "Gender";
+            // 
+            // genderAttr
+            // 
+            this.genderAttr.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.genderAttr.FormattingEnabled = true;
+            this.genderAttr.Location = new System.Drawing.Point(19, 122);
+            this.genderAttr.Name = "genderAttr";
+            this.genderAttr.Size = new System.Drawing.Size(302, 21);
+            this.genderAttr.TabIndex = 24;
+            this.genderAttr.SelectedIndexChanged += new System.EventHandler(this.genderAttr_SelectedIndexChanged);
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(331, 66);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(62, 13);
+            this.label9.TabIndex = 23;
+            this.label9.Text = "Voice Actor";
+            // 
+            // voiceActor
+            // 
+            this.voiceActor.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.voiceActor.FormattingEnabled = true;
+            this.voiceActor.Location = new System.Drawing.Point(331, 82);
+            this.voiceActor.Name = "voiceActor";
+            this.voiceActor.Size = new System.Drawing.Size(302, 21);
+            this.voiceActor.TabIndex = 22;
+            this.voiceActor.SelectedIndexChanged += new System.EventHandler(this.voiceActor_SelectedIndexChanged);
+            // 
+            // gender
+            // 
+            this.gender.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.gender.FormattingEnabled = true;
+            this.gender.Location = new System.Drawing.Point(481, 42);
+            this.gender.Name = "gender";
+            this.gender.Size = new System.Drawing.Size(152, 21);
+            this.gender.TabIndex = 21;
+            this.gender.SelectedIndexChanged += new System.EventHandler(this.gender_SelectedIndexChanged);
+            // 
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(19, 69);
+            this.label8.Location = new System.Drawing.Point(19, 66);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(64, 13);
+            this.label8.Size = new System.Drawing.Size(60, 13);
             this.label8.TabIndex = 20;
-            this.label8.Text = "Shirt Decals";
+            this.label8.Text = "Asset Type";
             // 
-            // shirtDecal
+            // assetType
             // 
-            this.shirtDecal.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.shirtDecal.FormattingEnabled = true;
-            this.shirtDecal.Location = new System.Drawing.Point(19, 85);
-            this.shirtDecal.Name = "shirtDecal";
-            this.shirtDecal.Size = new System.Drawing.Size(614, 21);
-            this.shirtDecal.TabIndex = 19;
-            this.shirtDecal.SelectedIndexChanged += new System.EventHandler(this.shirtDecal_SelectedIndexChanged);
+            this.assetType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.assetType.FormattingEnabled = true;
+            this.assetType.Location = new System.Drawing.Point(19, 82);
+            this.assetType.Name = "assetType";
+            this.assetType.Size = new System.Drawing.Size(302, 21);
+            this.assetType.TabIndex = 19;
+            this.assetType.SelectedIndexChanged += new System.EventHandler(this.shirtDecal_SelectedIndexChanged);
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(19, 29);
+            this.label7.Location = new System.Drawing.Point(19, 26);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(49, 13);
             this.label7.TabIndex = 18;
@@ -297,7 +468,7 @@
             // 
             this.bodyTypes.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.bodyTypes.FormattingEnabled = true;
-            this.bodyTypes.Location = new System.Drawing.Point(19, 45);
+            this.bodyTypes.Location = new System.Drawing.Point(19, 42);
             this.bodyTypes.Name = "bodyTypes";
             this.bodyTypes.Size = new System.Drawing.Size(456, 21);
             this.bodyTypes.TabIndex = 12;
@@ -326,21 +497,11 @@
             this.addNewCharacter.UseVisualStyleBackColor = true;
             this.addNewCharacter.Click += new System.EventHandler(this.addNewCharacter_Click);
             // 
-            // gender
-            // 
-            this.gender.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.gender.FormattingEnabled = true;
-            this.gender.Location = new System.Drawing.Point(481, 45);
-            this.gender.Name = "gender";
-            this.gender.Size = new System.Drawing.Size(152, 21);
-            this.gender.TabIndex = 21;
-            this.gender.SelectedIndexChanged += new System.EventHandler(this.gender_SelectedIndexChanged);
-            // 
             // CharacterEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(678, 463);
+            this.ClientSize = new System.Drawing.Size(678, 575);
             this.Controls.Add(this.addNewCharacter);
             this.Controls.Add(this.characterInstances);
             this.Controls.Add(this.groupBox2);
@@ -386,8 +547,22 @@
         private System.Windows.Forms.Button addNewCharacter;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.ComboBox shirtDecal;
+        private System.Windows.Forms.ComboBox assetType;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.ComboBox gender;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.ComboBox foleyLeg;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.ComboBox buildAttr;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.ComboBox foleyTorso;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.ComboBox ethnicityAttr;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.ComboBox genderAttr;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.ComboBox voiceActor;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.ComboBox foleyFootwear;
     }
 }

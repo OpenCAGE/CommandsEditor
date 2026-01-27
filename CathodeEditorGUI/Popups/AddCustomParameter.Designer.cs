@@ -92,7 +92,7 @@
             this.param_datatype.Size = new System.Drawing.Size(641, 21);
             this.param_datatype.TabIndex = 0;
             // 
-            // AddParameter
+            // AddCustomParameter
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -105,7 +105,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.Name = "AddParameter";
+            this.Name = "AddCustomParameter";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "New Parameter";
             this.ResumeLayout(false);

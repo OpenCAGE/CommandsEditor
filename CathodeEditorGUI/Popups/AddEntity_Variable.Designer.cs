@@ -35,7 +35,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this.variableName = new System.Windows.Forms.TextBox();
             this.variableType = new System.Windows.Forms.ComboBox();
-            this.createNode = new System.Windows.Forms.CheckBox();
             this.label3 = new System.Windows.Forms.Label();
             this.variableEnumType = new System.Windows.Forms.ComboBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
@@ -56,16 +55,16 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(23, 41);
+            this.label2.Location = new System.Drawing.Point(18, 41);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(50, 13);
+            this.label2.Size = new System.Drawing.Size(31, 13);
             this.label2.TabIndex = 3;
-            this.label2.Text = "Datatype";
+            this.label2.Text = "Type";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(38, 15);
+            this.label1.Location = new System.Drawing.Point(14, 15);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(35, 13);
             this.label1.TabIndex = 2;
@@ -74,9 +73,9 @@
             // variableName
             // 
             this.variableName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.variableName.Location = new System.Drawing.Point(79, 12);
+            this.variableName.Location = new System.Drawing.Point(55, 12);
             this.variableName.Name = "variableName";
-            this.variableName.Size = new System.Drawing.Size(641, 20);
+            this.variableName.Size = new System.Drawing.Size(665, 20);
             this.variableName.TabIndex = 1;
             this.variableName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnKeyDownHandler);
             // 
@@ -85,33 +84,20 @@
             this.variableType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.variableType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.variableType.FormattingEnabled = true;
-            this.variableType.Location = new System.Drawing.Point(79, 38);
+            this.variableType.Location = new System.Drawing.Point(55, 38);
             this.variableType.Name = "variableType";
-            this.variableType.Size = new System.Drawing.Size(641, 21);
+            this.variableType.Size = new System.Drawing.Size(665, 21);
             this.variableType.TabIndex = 2;
             this.variableType.SelectedIndexChanged += new System.EventHandler(this.entityVariant_SelectedIndexChanged);
-            // 
-            // createNode
-            // 
-            this.createNode.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.createNode.AutoSize = true;
-            this.createNode.Location = new System.Drawing.Point(79, 100);
-            this.createNode.Name = "createNode";
-            this.createNode.Size = new System.Drawing.Size(86, 17);
-            this.createNode.TabIndex = 4;
-            this.createNode.Text = "Create Node";
-            this.createNode.UseVisualStyleBackColor = true;
-            this.createNode.CheckedChanged += new System.EventHandler(this.createNode_CheckedChanged);
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(16, 68);
+            this.label3.Location = new System.Drawing.Point(15, 68);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(57, 13);
+            this.label3.Size = new System.Drawing.Size(34, 13);
             this.label3.TabIndex = 185;
-            this.label3.Text = "Enum type";
+            this.label3.Text = "Enum";
             // 
             // variableEnumType
             // 
@@ -121,9 +107,9 @@
             this.variableEnumType.Items.AddRange(new object[] {
             "IN",
             "OUT"});
-            this.variableEnumType.Location = new System.Drawing.Point(79, 65);
+            this.variableEnumType.Location = new System.Drawing.Point(55, 65);
             this.variableEnumType.Name = "variableEnumType";
-            this.variableEnumType.Size = new System.Drawing.Size(641, 21);
+            this.variableEnumType.Size = new System.Drawing.Size(665, 21);
             this.variableEnumType.TabIndex = 3;
             this.toolTip1.SetToolTip(this.variableEnumType, "If creating an input/output enum type, you\'ll also need to select the type of enu" +
         "m.");
@@ -137,9 +123,9 @@
             this.variableEnumStringType.Items.AddRange(new object[] {
             "IN",
             "OUT"});
-            this.variableEnumStringType.Location = new System.Drawing.Point(79, 65);
+            this.variableEnumStringType.Location = new System.Drawing.Point(55, 65);
             this.variableEnumStringType.Name = "variableEnumStringType";
-            this.variableEnumStringType.Size = new System.Drawing.Size(641, 21);
+            this.variableEnumStringType.Size = new System.Drawing.Size(665, 21);
             this.variableEnumStringType.TabIndex = 186;
             this.toolTip1.SetToolTip(this.variableEnumStringType, "If creating an input/output enum string type, you\'ll also need to select the type" +
         ".");
@@ -153,7 +139,6 @@
             this.Controls.Add(this.variableEnumStringType);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.variableEnumType);
-            this.Controls.Add(this.createNode);
             this.Controls.Add(this.createVariable);
             this.Controls.Add(this.variableName);
             this.Controls.Add(this.label2);
@@ -177,7 +162,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox variableName;
-        private System.Windows.Forms.CheckBox createNode;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ComboBox variableEnumType;
         private System.Windows.Forms.ToolTip toolTip1;

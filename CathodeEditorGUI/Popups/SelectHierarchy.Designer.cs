@@ -1,4 +1,4 @@
-﻿namespace CommandsEditor
+namespace CommandsEditor
 {
     partial class SelectHierarchy
     {
@@ -34,7 +34,6 @@
             this.compositeEntityList1 = new Popups.UserControls.CompositeEntityList();
             this.pathDisplay = new System.Windows.Forms.TextBox();
             this.goBackOnPath = new System.Windows.Forms.Button();
-            this.createNode = new System.Windows.Forms.CheckBox();
             this.applyDefaultParams = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
@@ -95,25 +94,12 @@
             this.goBackOnPath.UseVisualStyleBackColor = true;
             this.goBackOnPath.Click += new System.EventHandler(this.goBackOnPath_Click);
             // 
-            // createNode
-            // 
-            this.createNode.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.createNode.AutoSize = true;
-            this.createNode.Location = new System.Drawing.Point(488, 759);
-            this.createNode.Name = "createNode";
-            this.createNode.Size = new System.Drawing.Size(86, 17);
-            this.createNode.TabIndex = 184;
-            this.createNode.Text = "Create Node";
-            this.createNode.UseVisualStyleBackColor = true;
-            this.createNode.CheckedChanged += new System.EventHandler(this.createNode_CheckedChanged);
-            // 
             // applyDefaultParams
             // 
             this.applyDefaultParams.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.applyDefaultParams.AutoSize = true;
-            this.applyDefaultParams.Location = new System.Drawing.Point(337, 759);
+            this.applyDefaultParams.Location = new System.Drawing.Point(429, 759);
             this.applyDefaultParams.Name = "applyDefaultParams";
             this.applyDefaultParams.Size = new System.Drawing.Size(145, 17);
             this.applyDefaultParams.TabIndex = 185;
@@ -126,7 +112,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(763, 792);
             this.Controls.Add(this.applyDefaultParams);
-            this.Controls.Add(this.createNode);
             this.Controls.Add(this.pathDisplay);
             this.Controls.Add(this.goBackOnPath);
             this.Controls.Add(this.compositeEntityList1);
@@ -147,7 +132,6 @@
         private Popups.UserControls.CompositeEntityList compositeEntityList1;
         private System.Windows.Forms.TextBox pathDisplay;
         private System.Windows.Forms.Button goBackOnPath;
-        private System.Windows.Forms.CheckBox createNode;
         private System.Windows.Forms.CheckBox applyDefaultParams;
     }
 }

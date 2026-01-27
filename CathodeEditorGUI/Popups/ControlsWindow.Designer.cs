@@ -98,7 +98,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(795, 568);
+            this.tabPage2.Size = new System.Drawing.Size(489, 272);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Model Viewer Controls";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -115,7 +115,7 @@
             this.ModelViewerControls.Location = new System.Drawing.Point(3, 3);
             this.ModelViewerControls.MultiSelect = false;
             this.ModelViewerControls.Name = "ModelViewerControls";
-            this.ModelViewerControls.Size = new System.Drawing.Size(789, 562);
+            this.ModelViewerControls.Size = new System.Drawing.Size(483, 266);
             this.ModelViewerControls.TabIndex = 177;
             this.ModelViewerControls.UseCompatibleStateImageBehavior = false;
             this.ModelViewerControls.View = System.Windows.Forms.View.Details;

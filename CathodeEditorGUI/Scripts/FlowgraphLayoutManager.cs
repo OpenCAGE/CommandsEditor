@@ -1,91 +1,74 @@
-//#define DO_PRE_FLIGHT_CHECKS
-// ^ Enable this define to sanity check the vanilla node DB for any dodgy entries.
+//#define DO_DUMP
+//#define DISABLE_FLOWGRAPHS
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using CATHODE;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CathodeLib;
+using CathodeLib.ObjectExtensions;
+using Newtonsoft.Json;
 using ST.Library.UI.NodeEditor;
-using static CathodeLib.CompositeFlowgraphsTable;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Controls;
+using System.Xml.Linq;
+using static CATHODE.Scripting.CAGEAnimation;
+using static CathodeLib.CompositeFlowgraphTable;
 
 namespace CommandsEditor
 {
-    //NOTE: There seem to be instances where this is not saving: jumping into child composites, and enabling/disabling GUIDs
-
     //Handles loading vanilla/custom flowgraph layouts, and saving custom layouts
     public class FlowgraphLayoutManager
     {
-        private static CompositeFlowgraphsTable _preDefinedLayouts;
-        private static CompositeFlowgraphsTable _userDefinedLayouts;
-
-        private static CompositeFlowgraphCompatibilityTable _compatibility;
-
-        //TODO: remove this once i'm done populating the layout database!!
-        public static bool DEBUG_IsUnfinished = false;
-        public static bool DEBUG_UsePreDefinedTable = false;
-        private static CompositeFlowgraphsTable Table
-        {
-            get
-            {
-#if DEBUG
-                if (DEBUG_UsePreDefinedTable)
-                {
-                    return _preDefinedLayouts;
-                }
-#endif
-                return _userDefinedLayouts;
-            }
-        }
+        private static CompositeFlowgraphTable _preDefinedLayouts = new CompositeFlowgraphTable();
+        private static CompositeFlowgraphTable _userDefinedLayouts = new CompositeFlowgraphTable();
+        private static CompositeFlowgraphCompatibilityTable _compatibility = new CompositeFlowgraphCompatibilityTable();
+        private static CompositePageHistoryTable _history = new CompositePageHistoryTable();
 
         public static Commands LinkedCommands => _commands;
         private static Commands _commands;
 
         static FlowgraphLayoutManager()
         {
-            _preDefinedLayouts = new CompositeFlowgraphsTable();
-            _userDefinedLayouts = new CompositeFlowgraphsTable();
+            byte[] contentCompressed = Properties.Resources.flowgraphs;
+            if (File.Exists("LocalDB\\flowgraphs.dat"))
+                contentCompressed = File.ReadAllBytes("LocalDB\\flowgraphs.dat");
+            byte[] content = null;
 
-            byte[] dbContent = Properties.Resources.flowgraphs; //todo: need to fix for unity
-            if (File.Exists("LocalDB/flowgraphs.bin"))
-                dbContent = File.ReadAllBytes("LocalDB/flowgraphs.bin");
+            using (MemoryStream stream = new MemoryStream())
+            using (GZipStream compressedStream = new GZipStream(new MemoryStream(contentCompressed), CompressionMode.Decompress))
+            {
+                compressedStream.CopyTo(stream);
+                content = stream.ToArray();
+            }
+            _preDefinedLayouts = (CompositeFlowgraphTable)CustomTable.ReadTable(content, CustomTableType.COMPOSITE_FLOWGRAPHS);
 
-            using (BinaryReader reader = new BinaryReader(new MemoryStream(dbContent)))
+#if DEBUG && DO_DUMP
+            foreach (FlowgraphMeta layout in _preDefinedLayouts.flowgraphs)
             {
-                _preDefinedLayouts.Read(reader);
-            }
-#if DEBUG && DO_PRE_FLIGHT_CHECKS
-            //For sanity: make sure the vanilla db doesn't contain any empty flowgraphs
-            List<FlowgraphMeta> trimmed = new List<FlowgraphMeta>();
-            for (int i = 0; i < _preDefinedLayouts.flowgraphs.Count; i++)
-            {
-                if (_preDefinedLayouts.flowgraphs[i].Nodes.Count != 0)
-                    trimmed.Add(_preDefinedLayouts.flowgraphs[i]);
-            }
-            List<FlowgraphMeta> trimmed2 = new List<FlowgraphMeta>();
-            for (int i = 0; i < trimmed.Count; i++)
-            {
-                int connections = 0;
-                for (int x = 0; x < trimmed[i].Nodes.Count; x++)
+                layout.Nodes = layout.Nodes.OrderBy(o => o.EntityGUID).ThenBy(o => o.NodeID).ToList();
+                foreach (FlowgraphMeta.NodeMeta node in layout.Nodes)
                 {
-                    connections += trimmed[i].Nodes[x].Connections.Count;
+                    node.ConnectionsOut = node.ConnectionsOut.OrderBy(o => o.ConnectedEntityGUID).ThenBy(o => o.ConnectedNodeID).ThenBy(o => o.ConnectedParameterGUID).ToList();
+                    node.UnlinkedPins = node.UnlinkedPins.OrderBy(o => o.ParameterGUID).ToList();
                 }
-                if (connections != 0)
-                    trimmed2.Add(trimmed[i]);
+
+                string outPath = "Layouts/" + layout.CompositeGUID + "/" + layout.Name + ".json";
+                Directory.CreateDirectory(outPath.Substring(0, outPath.Length - Path.GetFileName(outPath).Length));
+                File.WriteAllText(outPath, JsonConvert.SerializeObject(layout, Newtonsoft.Json.Formatting.Indented, new ShortGuidConverter()));
             }
-            //TODO: should run through all the ones flagged as pre node title shortening and make sure they look ok
-            Console.WriteLine("FlowgraphLayoutManager found " + (_preDefinedLayouts.flowgraphs.Count - trimmed2.Count) + " invalid predefined flowgraph definitions");
-            _preDefinedLayouts.flowgraphs = trimmed2;
-            SaveVanillaDB();
 #endif
 
             //Always add new composites into the compatibility table
             Singleton.OnCompositeAdded += AddToCompatibilityTable;
+
+            //Make sure to delete any nodes and links to entities the user deletes to avoid causing false incompability flags
+            Singleton.OnEntityDeletePending += OnEntityDeletePending;
         }
         private static void AddToCompatibilityTable(Composite composite)
         {
@@ -95,6 +78,48 @@ namespace CommandsEditor
                 composite_id = composite.shortGUID,
                 flowgraphs_supported = true
             });
+        }
+        private static void OnEntityDeletePending(Entity entity, Composite composite)
+        {
+            foreach (FlowgraphMeta flowgraphMeta in _userDefinedLayouts.flowgraphs)
+            {
+                Composite comp = _commands.GetComposite(flowgraphMeta.CompositeGUID);
+                if (comp == null) continue;
+
+                //Remove any nodes that are for the deleted entity, or point to the deleted entity
+                List<FlowgraphMeta.NodeMeta> trimmedNodes = new List<FlowgraphMeta.NodeMeta>();
+                foreach (FlowgraphMeta.NodeMeta node in flowgraphMeta.Nodes)
+                {
+                    Entity ent = comp.GetEntityByID(node.EntityGUID);
+                    if (ent == null || ent == entity) continue;
+                    switch (ent.variant)
+                    {
+                        case EntityVariant.ALIAS:
+                            if (_commands.Utils.GetResolvedTarget(_commands.Utils.ResolveAlias((AliasEntity)ent, comp)).Item2 == entity)
+                                continue;
+                            break;
+                        case EntityVariant.PROXY:
+                            if (_commands.Utils.GetResolvedTarget(_commands.Utils.ResolveProxy((ProxyEntity)ent)).Item2 == entity)
+                                continue;
+                            break;
+                    }
+                    trimmedNodes.Add(node);
+                }
+                flowgraphMeta.Nodes = trimmedNodes;
+
+                //Remove any connections that pointed to now removed nodes
+                foreach (FlowgraphMeta.NodeMeta node in flowgraphMeta.Nodes)
+                {
+                    List<FlowgraphMeta.NodeMeta.ConnectionMeta> trimmedConnections = new List<FlowgraphMeta.NodeMeta.ConnectionMeta>();
+                    foreach (FlowgraphMeta.NodeMeta.ConnectionMeta connection in node.ConnectionsOut)
+                    {
+                        if (flowgraphMeta.Nodes.FirstOrDefault(o => o.NodeID == connection.ConnectedNodeID) == null)
+                            continue;
+                        trimmedConnections.Add(connection);
+                    }
+                    node.ConnectionsOut = trimmedConnections;
+                }
+            }
         }
 
         //Sets if the given composite supports flowgraphs: a composite wouldn't support flowgraphs if it diverges from the saved layout, or has no layout defined
@@ -118,34 +143,36 @@ namespace CommandsEditor
         //Checks the given composite against the layout DB to see if the links/entities match
         public static void EvaluateCompatibility(Composite composite)
         {
-            int links = CompositeUtils.CountLinks(composite);
-            if (links == 0)
+#if DISABLE_FLOWGRAPHS
+            SetCompatibilityInfo(composite, false);
+            return;
+#endif
+
+            Debug.Log("Flowgraph Manager", "Calculating flowgraph compatibility...");
+
+            //If there are links, make sure they match up with the stored layout (if there is one)
+            bool hasLayout = HasLayout(composite);
+            if (hasLayout)
             {
-                //If the composite has no links, regardless of if it diverges from the saved layouts, allow it
-                RemoveAllLayouts(composite);
-                SaveLayout(null, composite, Path.GetFileName(composite.name));
-                SetCompatibilityInfo(composite, true);
+                Debug.Log("Flowgraph Manager", "Page(s) exist, checking to see if links match");
+                SetCompatibilityInfo(composite, GetLayouts(composite).LinksMatch(composite));
             }
             else
             {
-                //If there are links, make sure they match up with the stored layout (if there is one)
-                bool hasLayout = HasLayout(composite);
-                if (hasLayout)
+                int links = _commands.Utils.CountLinks(composite);
+                if (links == 0)
                 {
-                    SetCompatibilityInfo(composite, GetLayouts(composite).LinksMatch(composite));
+                    Debug.Log("Flowgraph Manager", "No page exists, but composite has no links, so adding default page - supported!");
+                    RemoveAllLayouts(composite);
+                    SaveLayout(null, composite, Path.GetFileName(composite.name));
+                    SetCompatibilityInfo(composite, true);
                 }
                 else
                 {
-                    //NOTE: No longer writing compatibility info for Composites with no layouts defined, as it means it'll work nicer with future updates.
-                    //Console.WriteLine("Flowgraphs are not supported as no layout has been defined yet!");
-                    //SetCompatibilityInfo(composite, false);
+                    Debug.Log("Flowgraph Manager", "No page exists, but composite has links defined - unsupported!");
+                    SetCompatibilityInfo(composite, false);
                 }
             }
-
-#if DEBUG
-            //In debug mode, we should always allow flowgraphs, so that new layouts can be made
-            SetCompatibilityInfo(composite, true);
-#endif
         }
 
         //Checks to see if the given flowgraph is compatible with the Flowgraph system (make sure this has been evaluated first using the method above)
@@ -163,54 +190,54 @@ namespace CommandsEditor
         //Checks to see if there is at least one finished flowgraph for the given composite
         public static bool HasLayout(Composite composite)
         {
-            return Table.flowgraphs.FirstOrDefault(o => o.CompositeGUID == composite.shortGUID && !o.IsUnfinished) != null;
+            return _userDefinedLayouts.flowgraphs.FirstOrDefault(o => o.CompositeGUID == composite.shortGUID) != null;
         }
 
         //Gets all flowgraph layouts for the given composite
         public static List<FlowgraphMeta> GetLayouts(Composite composite)
         {
-            return Table.flowgraphs.FindAll(o => o.CompositeGUID == composite.shortGUID);
+            return _userDefinedLayouts.flowgraphs.FindAll(o => o.CompositeGUID == composite.shortGUID);
         }
 
         //Save/add layout to db
         public static FlowgraphMeta SaveLayout(STNodeEditor editor, Composite composite, string name) //NOTE: passing no editor here will produce an empty layout, which could be destructive!
         {
             FlowgraphMeta flowgraphMeta = editor == null ? new FlowgraphMeta() { Name = name, CompositeGUID = composite.shortGUID } : editor.AsFlowgraphMeta(composite, name);
-            FlowgraphMeta existingFGM = Table.flowgraphs.FirstOrDefault(o => o.Name == flowgraphMeta.Name && o.CompositeGUID == flowgraphMeta.CompositeGUID);
+            FlowgraphMeta existingFGM = _userDefinedLayouts.flowgraphs.FirstOrDefault(o => o.Name == flowgraphMeta.Name && o.CompositeGUID == flowgraphMeta.CompositeGUID);
             if (existingFGM != null)
-                Table.flowgraphs[Table.flowgraphs.IndexOf(existingFGM)] = flowgraphMeta;
+                _userDefinedLayouts.flowgraphs[_userDefinedLayouts.flowgraphs.IndexOf(existingFGM)] = flowgraphMeta;
             else
-                Table.flowgraphs.Add(flowgraphMeta);
-
-#if DEBUG
-            SaveVanillaDB();
-#endif
-
+                _userDefinedLayouts.flowgraphs.Add(flowgraphMeta);
             return flowgraphMeta;
         }
-#if DEBUG
-        private static void SaveVanillaDB()
-        {
-            string vanillaFlowgraphDBPath = System.Reflection.Assembly.GetEntryAssembly().Location;
-            vanillaFlowgraphDBPath = vanillaFlowgraphDBPath.Substring(0, vanillaFlowgraphDBPath.Length - Path.GetFileName(vanillaFlowgraphDBPath).Length);
-            vanillaFlowgraphDBPath += "../CathodeEditorGUI/Resources/flowgraphs.bin";
-            using (BinaryWriter writer = new BinaryWriter(File.OpenWrite(vanillaFlowgraphDBPath)))
-            {
-                writer.BaseStream.SetLength(0);
-                _preDefinedLayouts.Write(writer);
-                writer.Close();
-            }
-        }
-#endif
 
         //Remove a layout from the DB
         public static void RemoveLayout(Composite composite, string name)
         {
-            Table.flowgraphs.RemoveAll(o => o.CompositeGUID == composite.shortGUID && o.Name == name);
+            _userDefinedLayouts.flowgraphs.RemoveAll(o => o.CompositeGUID == composite.shortGUID && o.Name == name);
         }
         public static void RemoveAllLayouts(Composite composite)
         {
-            Table.flowgraphs.RemoveAll(o => o.CompositeGUID == composite.shortGUID);
+            _userDefinedLayouts.flowgraphs.RemoveAll(o => o.CompositeGUID == composite.shortGUID);
+        }
+
+        //Remember the page that was last selected
+        public static void SetSelectedPage(Composite composite, string name)
+        {
+            if (_history.last_composite_page.ContainsKey(composite.shortGUID))
+            {
+                _history.last_composite_page[composite.shortGUID] = name;
+            }
+            else
+            {
+                _history.last_composite_page.Add(composite.shortGUID, name);
+            }
+        }
+        public static string GetSelectedPage(Composite composite)
+        {
+            if (_history.last_composite_page.TryGetValue(composite.shortGUID, out string name))
+                return name;
+            return null;
         }
 
         public static void LinkCommands(Commands commands)
@@ -232,33 +259,46 @@ namespace CommandsEditor
 
         private static void LoadCustomFlowgraphs(string filepath)
         {
-            _userDefinedLayouts = (CompositeFlowgraphsTable)CustomTable.ReadTable(filepath, CustomEndTables.COMPOSITE_FLOWGRAPHS);
-            if (_userDefinedLayouts == null) _userDefinedLayouts = new CompositeFlowgraphsTable();
-            Console.WriteLine("Loaded " + _userDefinedLayouts.flowgraphs.Count + " custom flowgraph layouts!");
+            _userDefinedLayouts = (CompositeFlowgraphTable)CustomTable.ReadTable(filepath, CustomTableType.COMPOSITE_FLOWGRAPHS);
+            if (_userDefinedLayouts == null) _userDefinedLayouts = new CompositeFlowgraphTable();
+            Debug.Log("Flowgraph Manager", "Loaded " + _userDefinedLayouts.flowgraphs.Count + " custom flowgraph layouts!");
             
-            _compatibility = (CompositeFlowgraphCompatibilityTable)CustomTable.ReadTable(filepath, CustomEndTables.COMPOSITE_FLOWGRAPH_COMPATIBILITY_INFO);
+            _compatibility = (CompositeFlowgraphCompatibilityTable)CustomTable.ReadTable(filepath, CustomTableType.COMPOSITE_FLOWGRAPH_COMPATIBILITY_INFO);
             if (_compatibility == null) _compatibility = new CompositeFlowgraphCompatibilityTable();
-            Console.WriteLine("Loaded " + _compatibility.compatibility_info.Count + " flowgraph compatibility definitions!");
+            Debug.Log("Flowgraph Manager", "Loaded " + _compatibility.compatibility_info.Count + " flowgraph compatibility definitions!");
+
+            _history = (CompositePageHistoryTable)CustomTable.ReadTable(filepath, CustomTableType.COMPOSITE_PAGE_HISTORY);
+            if (_history == null) _history = new CompositePageHistoryTable();
+            Debug.Log("Flowgraph Manager", "Loaded " + _history.last_composite_page.Count + " previously opened pages!");
 
             //Copy the default layouts over for composites in this Commands if they don't already exist
-            if (_userDefinedLayouts.flowgraphs.Count == 0)
+            if (Enum.TryParse(Path.GetFileName(_commands.EntryPoints[0].name).ToUpper(), out FlowgraphMeta.SupportedLevel level))
             {
-                for (int i = 0; i < _preDefinedLayouts.flowgraphs.Count; i++)
+                if (_userDefinedLayouts.flowgraphs.Count == 0)
                 {
-                    if (_commands.Entries.FirstOrDefault(o => o.shortGUID == _preDefinedLayouts.flowgraphs[i].CompositeGUID) == null)
-                        continue;
-                    _userDefinedLayouts.flowgraphs.Add(_preDefinedLayouts.flowgraphs[i].Copy());
+                    for (int i = 0; i < _preDefinedLayouts.flowgraphs.Count; i++)
+                    {
+                        if (!_preDefinedLayouts.flowgraphs[i].SupportedLevels.HasFlag(level))
+                            continue;
+                        if (_commands.Entries.FirstOrDefault(o => o.shortGUID == _preDefinedLayouts.flowgraphs[i].CompositeGUID) == null)
+                            continue;
+                        _userDefinedLayouts.flowgraphs.Add(_preDefinedLayouts.flowgraphs[i].Copy());
+                    }
+                    Debug.Log("Flowgraph Manager", "Applied " + _userDefinedLayouts.flowgraphs.Count + " suitable flowgraph layouts, of the " + _preDefinedLayouts.flowgraphs.Count + " available!");
                 }
             }
         }
 
         private static void SaveCustomFlowgraphs(string filepath)
         {
-            CustomTable.WriteTable(filepath, CustomEndTables.COMPOSITE_FLOWGRAPHS, _userDefinedLayouts);
-            Console.WriteLine("Saved " + _userDefinedLayouts.flowgraphs.Count + " custom flowgraph layouts!");
+            CustomTable.WriteTable(filepath, CustomTableType.COMPOSITE_FLOWGRAPHS, _userDefinedLayouts);
+            Debug.Log("Flowgraph Manager", "Saved " + _userDefinedLayouts.flowgraphs.Count + " custom flowgraph layouts!");
 
-            CustomTable.WriteTable(filepath, CustomEndTables.COMPOSITE_FLOWGRAPH_COMPATIBILITY_INFO, _compatibility);
-            Console.WriteLine("Saved " + _compatibility.compatibility_info.Count + " flowgraph compatibility definitions!");
+            CustomTable.WriteTable(filepath, CustomTableType.COMPOSITE_FLOWGRAPH_COMPATIBILITY_INFO, _compatibility);
+            Debug.Log("Flowgraph Manager", "Saved " + _compatibility.compatibility_info.Count + " flowgraph compatibility definitions!");
+
+            CustomTable.WriteTable(filepath, CustomTableType.COMPOSITE_PAGE_HISTORY, _history);
+            Debug.Log("Flowgraph Manager", "Saved " + _history.last_composite_page.Count + " previously opened pages!");
         }
     }
 
@@ -267,16 +307,11 @@ namespace CommandsEditor
         /* Convert a STNodeEditor graph to a FlowgraphMeta object for saving */
         public static FlowgraphMeta AsFlowgraphMeta(this STNodeEditor editor, Composite composite, string name)
         {
-            // default name = Path.GetFileName(composite.name)
-
             FlowgraphMeta flowgraphMeta = new FlowgraphMeta();
             flowgraphMeta.CompositeGUID = composite.shortGUID;
             flowgraphMeta.Name = name;
 
-            flowgraphMeta.UsesShortenedNames = true;
-            flowgraphMeta.IsUnfinished = FlowgraphLayoutManager.DEBUG_IsUnfinished;
-
-            flowgraphMeta.CanvasPosition = editor.CanvasOffset;
+            flowgraphMeta.CanvasPosition = editor.CanvasCenter;
             flowgraphMeta.CanvasScale = editor.CanvasScale;
             flowgraphMeta.Nodes = new List<FlowgraphMeta.NodeMeta>();
             for (int i = 0; i < editor.Nodes.Count; i++)
@@ -288,26 +323,50 @@ namespace CommandsEditor
 
                 nodeMeta.Position = node.Location;
 
-                STNodeOption[] ins = node.GetInputOptions();
-                STNodeOption[] outs = node.GetOutputOptions();
-
-                for (int y = 0; y < ins.Length; y++)
-                    nodeMeta.PinsIn.Add(ins[y].ShortGUID);
-                for (int y = 0; y < outs.Length; y++)
-                    nodeMeta.PinsOut.Add(outs[y].ShortGUID);
-
-                for (int y = 0; y < outs.Length; y++)
+                //Check the pins we care about storing links for
+                List<STNodeOption> options = node.GetOutputOptions().ToList();
+                options.AddRange(node.GetTopOptions());
+                for (int y = 0; y < options.Count; y++)
                 {
-                    List<STNodeOption> connections = outs[y].GetConnectedOption();
+                    List<STNodeOption> connections = options[y].GetConnectedOption();
+                    //Store the links (ones that go out)
                     for (int z = 0; z < connections.Count; z++)
                     {
                         STNode connectedNode = connections[z].Owner;
-                        nodeMeta.Connections.Add(new FlowgraphMeta.NodeMeta.ConnectionMeta()
+                        nodeMeta.ConnectionsOut.Add(new FlowgraphMeta.NodeMeta.ConnectionMeta()
                         {
-                            ParameterGUID = outs[y].ShortGUID,
+                            ParameterGUID = options[y].ShortGUID,
                             ConnectedEntityGUID = connectedNode.ShortGUID,
                             ConnectedNodeID = editor.Nodes.IndexOf(connectedNode),
                             ConnectedParameterGUID = connections[z].ShortGUID,
+                        });
+                    }
+                    //If there were no links, remember the pin anyway
+                    if (connections.Count == 0)
+                    {
+                        nodeMeta.UnlinkedPins.Add(new FlowgraphMeta.NodeMeta.UnlinkedPinMeta()
+                        {
+                            ParameterGUID = options[y].ShortGUID,
+                            PinLocation = (byte)options[y].Location,
+                            PinStyle = (byte)options[y].Style,
+                        });
+                    }
+                }
+
+                //Check the pins we don't care about storing links for
+                options = node.GetInputOptions().ToList();
+                options.AddRange(node.GetBottomOptions());
+                for (int y = 0; y < options.Count; y++)
+                {
+                    List<STNodeOption> connections = options[y].GetConnectedOption();
+                    //If there were no links, remember the pin
+                    if (connections.Count == 0)
+                    {
+                        nodeMeta.UnlinkedPins.Add(new FlowgraphMeta.NodeMeta.UnlinkedPinMeta()
+                        {
+                            ParameterGUID = options[y].ShortGUID,
+                            PinLocation = (byte)options[y].Location,
+                            PinStyle = (byte)options[y].Style,
                         });
                     }
                 }
@@ -326,13 +385,13 @@ namespace CommandsEditor
             {
                 for (int x = 0; x < metas[i].Nodes.Count; x++)
                 {
-                    for (int y = 0; y < metas[i].Nodes[x].Connections.Count; y++)
+                    for (int y = 0; y < metas[i].Nodes[x].ConnectionsOut.Count; y++)
                     {
                         flowgraphLinks.Add(new LinkData(
                             metas[i].Nodes[x].EntityGUID,
-                            metas[i].Nodes[x].Connections[y].ParameterGUID,
-                            metas[i].Nodes[x].Connections[y].ConnectedEntityGUID,
-                            metas[i].Nodes[x].Connections[y].ConnectedParameterGUID)
+                            metas[i].Nodes[x].ConnectionsOut[y].ParameterGUID,
+                            metas[i].Nodes[x].ConnectionsOut[y].ConnectedEntityGUID,
+                            metas[i].Nodes[x].ConnectionsOut[y].ConnectedParameterGUID)
                         );
                     }
                 }
@@ -342,27 +401,97 @@ namespace CommandsEditor
             List<LinkData> compositeLinks = new List<LinkData>();
             for (int i = 0; i < entities.Count; i++)
             {
-                for (int x = 0; x < entities[i].childLinks.Count; x++)
+                //Ignore any links that point to missing entities!
+                List<EntityConnector> trimmedChildren = new List<EntityConnector>();
+                foreach (EntityConnector connector in entities[i].childLinks)
+                {
+                    if (composite.GetEntityByID(connector.linkedEntityID) == null)
+                        continue;
+                    trimmedChildren.Add(connector);
+                }
+
+                for (int x = 0; x < trimmedChildren.Count; x++)
                 {
                     compositeLinks.Add(new LinkData(
                         entities[i].shortGUID,
-                        entities[i].childLinks[x].thisParamID,
-                        entities[i].childLinks[x].linkedEntityID,
-                        entities[i].childLinks[x].linkedParamID)
+                        trimmedChildren[x].thisParamID,
+                        trimmedChildren[x].linkedEntityID,
+                        trimmedChildren[x].linkedParamID)
                     );
                 }
             }
 
+            //Do we have the same number of links?
             if (flowgraphLinks.Count != compositeLinks.Count)
             {
+                Debug.Log("Flowgraph Manager", "Link count mismatch in page(s) for " + composite.name);
+#if DEBUG
+                // If in debug mode, output both lists of links so I can easily diff them if needed.
+                string dirName = "FGLayoutCheck/" + Path.GetFileName(composite.name.Replace(":", "_"));
+                Directory.CreateDirectory(dirName);
+                flowgraphLinks = flowgraphLinks.OrderBy(o => o.In.ParameterID.ToString()).ThenBy(o => o.Out.ParameterID.ToString()).ThenBy(o => o.In.EntityID.ToByteString()).ThenBy(o => o.Out.EntityID.ToByteString()).ToList();
+                compositeLinks = compositeLinks.OrderBy(o => o.In.ParameterID.ToString()).ThenBy(o => o.Out.ParameterID.ToString()).ThenBy(o => o.In.EntityID.ToByteString()).ThenBy(o => o.Out.EntityID.ToByteString()).ToList();
+                File.WriteAllText(dirName + "/FLOWGRAPH LINKS.json", JsonConvert.SerializeObject(flowgraphLinks, Newtonsoft.Json.Formatting.Indented, new ShortGuidConverter()));
+                File.WriteAllText(dirName + "/COMPOSITE LINKS.json", JsonConvert.SerializeObject(compositeLinks, Newtonsoft.Json.Formatting.Indented, new ShortGuidConverter()));
+#endif
                 return false;
             }
 
+            //Now we know we have the same number of links, do the links match? 
             flowgraphLinks = flowgraphLinks.OrderBy(o => o.In.ParameterID.ToString()).ThenBy(o => o.Out.ParameterID.ToString()).ThenBy(o => o.In.EntityID.ToByteString()).ThenBy(o => o.Out.EntityID.ToByteString()).ToList();
             compositeLinks = compositeLinks.OrderBy(o => o.In.ParameterID.ToString()).ThenBy(o => o.Out.ParameterID.ToString()).ThenBy(o => o.In.EntityID.ToByteString()).ThenBy(o => o.Out.EntityID.ToByteString()).ToList();
             for (int i = 0; i < flowgraphLinks.Count; i++)
+            {
                 if (flowgraphLinks[i] != compositeLinks[i])
+                {
+                    Debug.Log("Flowgraph Manager", "Link mismatch at index " + i + " in page(s) for " + composite.name);
+#if DEBUG
+                    // If in debug mode, output both lists of links so I can easily diff them if needed.
+                    string dirName = "FGLayoutCheck/" + Path.GetFileName(composite.name.Replace(":", "_"));
+                    Directory.CreateDirectory(dirName);
+                    File.WriteAllText(dirName + "/FLOWGRAPH LINKS.json", JsonConvert.SerializeObject(flowgraphLinks, Newtonsoft.Json.Formatting.Indented, new ShortGuidConverter()));
+                    File.WriteAllText(dirName + "/COMPOSITE LINKS.json", JsonConvert.SerializeObject(compositeLinks, Newtonsoft.Json.Formatting.Indented, new ShortGuidConverter()));
+#endif
                     return false;
+                }
+            }
+
+            //Finally, double check that there aren't any entities missing from the composite.
+            for (int i = 0; i < metas.Count; i++)
+            {
+                for (int x = 0; x < metas[i].Nodes.Count; x++)
+                {
+                    if (composite.GetEntityByID(metas[i].Nodes[x].EntityGUID) == null)
+                    {
+                        //If one is missing, check to see if it has any links in/out -> if it doesn't, it's fine, we're not losing anything important.
+                        //Just be aware, the Flowgraph UI will need to be able to handle null entities safely.
+
+                        if (metas[i].Nodes[x].ConnectionsOut.Count != 0)
+                        {
+                            Debug.Log("Flowgraph Manager", "Failed to look up entity " + metas[i].Nodes[x].EntityGUID.ToByteString() + " with connections out for " + composite.name);
+                            return false;
+                        }
+
+                        //This may seem like a ridiculous level of loops, but really, we should RARELY (or ideally never) get here. 
+                        for (int p = 0; p < metas.Count; p++)
+                        {
+                            for (int c = 0; c < metas[p].Nodes.Count; c++)
+                            {
+                                for (int y = 0; y < metas[p].Nodes[c].ConnectionsOut.Count; y++)
+                                {
+                                    if (metas[p].Nodes[c].ConnectionsOut[y].ConnectedEntityGUID == metas[i].Nodes[x].EntityGUID)
+                                    {
+                                        Debug.Log("Flowgraph Manager", "Failed to look up entity " + metas[i].Nodes[x].EntityGUID.ToByteString() + " with connections in for " + composite.name);
+                                        return false;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            Debug.Log("Flowgraph Manager", "Links match for " + composite.name);
             return true;
         }
 

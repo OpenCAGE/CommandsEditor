@@ -1,39 +1,955 @@
 using CATHODE;
+using CATHODE.EXPERIMENTAL;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CathodeLib;
+using CathodeLib.ObjectExtensions;
+using CommandsEditor.DockPanels;
+using CommandsEditor.Scripts;
+using CommandsEditor.UserControls;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Numerics;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using System.Security.RightsManagement;
 using System.Text;
 using System.Threading.Tasks;
-using System.Numerics;
-using System.Diagnostics;
-using System.Security.Cryptography;
 using System.Windows.Forms.Design;
-using System.CodeDom;
-using System.Windows.Media.Media3D;
-using static CATHODE.Models;
 using System.Windows.Media.Animation;
-using System.Collections.Specialized;
-using System.Runtime.InteropServices;
-using static CATHODE.Scripting.EnumUtils;
-using CommandsEditor.UserControls;
-using CATHODE.EXPERIMENTAL;
+using System.Xml.Linq;
+using WebSocketSharp;
+using static CATHODE.CollisionMaps;
+using static CATHODE.Models;
+using static CATHODE.Movers;
+using static CathodeLib.CathodeEnumTable;
+using static CathodeLib.CompositeFlowgraphTable;
 
 namespace CommandsEditor
 {
     public static class LocalDebug
     {
-        public static void DefaultsUnitTest()
+        public static void CheckWriteInstanced()
         {
+#if DEBUG
+            string levelToTest = "production/tech_rnd_hzdlab";
+
+            Level lvll = Utilities.LoadLevel(SharedData.pathToAI, levelToTest);
+
+            uint toFind = new ShortGuid("D9-FA-49-01").AsUInt32;
+            foreach (Composite composite in lvll.Commands.Entries)
+            {
+                if (composite.functions.FirstOrDefault(o => o.shortGUID.AsUInt32 == toFind) != null)
+                {
+                    var sdfsdf = composite.functions.FirstOrDefault(o => o.shortGUID.AsUInt32 == toFind);
+
+                    string fgsgdf = lvll.Commands.Utils.GetEntityName(composite, sdfsdf);
+
+                    string gsdfsd = "";
+                }
+            }
+
+            try { File.Delete("log.txt"); } catch { }
+            try { File.Delete("log2.txt"); } catch { }
+
+            for (int i = 0; i < lvll.Commands.Entries.Count; i++)
+                lvll.Commands.Utils.PurgeDeadLinks(lvll.Commands.Entries[i]);
+            for (int i = 0; i < lvll.Commands.Entries.Count; i++)
+                lvll.Commands.Utils.PurgeDeadLinks(lvll.Commands.Entries[i]);
+
+            lvll.PhysicsMaps.Save("PHYSICS.MAP_orig");
+            lvll.PhysicsMaps.Entries.Sort();
+            var physEntries = lvll.PhysicsMaps.Entries.Select(e => new PhysMapEntry(e)).ToList();
+            File.WriteAllText("physics.map_orig.json", JsonConvert.SerializeObject(physEntries, Newtonsoft.Json.Formatting.Indented, new ShortGuidConverter()));
+
+            lvll.CollisionMaps.Save("COLLISION.MAP_orig");
+            var colEntries = lvll.CollisionMaps.Entries.Select(e => new ColMapEntry(e)).ToList();
+            colEntries.Sort();
+            File.WriteAllText("COLLISION.map_orig.json", JsonConvert.SerializeObject(colEntries, Newtonsoft.Json.Formatting.Indented, new ShortGuidConverter()));
+
+            List<string> colmaps = new List<string>();
+            foreach (var entry in colEntries)
+            {
+                bool found = false;
+                foreach (var comp in lvll.Commands.Entries)
+                {
+                    Entity ent = comp.GetEntityByID(entry.Entity.entity_id);
+                    if (ent != null)
+                    {
+                        colmaps.Add(lvll.Commands.Utils.GetEntityName(comp, ent) + " in " + comp.name);
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found)
+                    colmaps.Add("Could not find entity: " + entry.Entity.entity_id.ToByteString());
+            }
+            File.WriteAllLines("colmaps_orig.txt", colmaps);
+
+            lvll.Resources.Entries.Clear();
+            lvll.PhysicsMaps.Entries.Clear();
+            lvll.CollisionMaps.Entries.Clear();
+
+            Instancing inst = new Instancing(lvll);
+            inst.GenerateInstances();
+            inst.ProcessInstances();
+
+            lvll.PhysicsMaps.Save("PHYSICS.MAP");
+            lvll.PhysicsMaps.Entries.Sort();
+            physEntries = lvll.PhysicsMaps.Entries.Select(e => new PhysMapEntry(e)).ToList();
+            File.WriteAllText("physics.map.json", JsonConvert.SerializeObject(physEntries, Newtonsoft.Json.Formatting.Indented, new ShortGuidConverter()));
+
+            lvll.CollisionMaps.Save("COLLISION.MAP");
+            colEntries = lvll.CollisionMaps.Entries.Select(e => new ColMapEntry(e)).ToList();
+            colEntries.Sort();
+            File.WriteAllText("COLLISION.map.json", JsonConvert.SerializeObject(colEntries, Newtonsoft.Json.Formatting.Indented, new ShortGuidConverter()));
+
+            colmaps = new List<string>();
+            foreach (var entry in colEntries)
+            {
+                bool found = false;
+                foreach (var comp in lvll.Commands.Entries)
+                {
+                    Entity ent = comp.GetEntityByID(entry.Entity.entity_id);
+                    if (ent != null)
+                    {
+                        colmaps.Add(lvll.Commands.Utils.GetEntityName(comp, ent) + " in " + comp.name);
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found)
+                    colmaps.Add("Could not find entity: " + entry.Entity.entity_id.ToByteString());
+            }
+            File.WriteAllLines("colmaps.txt", colmaps);
+
+            string[] ourLog = !File.Exists("log.txt") ? new string[0] : File.ReadAllLines("log.txt");
+
+            //try { File.Delete(repoDir + "\\Content\\Build\\Levels\\" + levelToTest + "\\debug_log.txt"); } catch { }
+
+            var ourLogSorted = ourLog.ToList();
+            ourLogSorted.Sort();
+            ourLogSorted.RemoveAll(o => o == "");
+            for (int i = 0; i < ourLogSorted.Count; i++)
+            {
+                //ourLogSorted[i] = ourLogSorted[i].Split('-')[2];
+            }
+
+            File.WriteAllLines("our_log.txt", ourLogSorted);
+
+            GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true);
+            GC.WaitForPendingFinalizers();
+#endif
+        }
+
+        public static void SanityCheckResources()
+        {
+            Directory.Delete("RESOURCES", true);
+
+            Directory.CreateDirectory("RESOURCES/ORIG");
+            Directory.CreateDirectory("RESOURCES/NEW");
+
+            //SanityCheckResourcesInternal("bsp_lv426_pt01");
+            //SanityCheckResourcesInternal("BSP_LV426_PT02");
+            //SanityCheckResourcesInternal("BSP_Torrens");
+            //SanityCheckResourcesInternal("eng_alien_nest");
+            //SanityCheckResourcesInternal("eng_reactorcore");
+            //SanityCheckResourcesInternal("ENG_TOWPLATFORM");
+            //SanityCheckResourcesInternal("FRONTEND");
+            //SanityCheckResourcesInternal("HAB_AIRPORT");
+            //SanityCheckResourcesInternal("HAB_CORPORATEPENT");
+            //SanityCheckResourcesInternal("HAB_SHOPPINGCENTRE");
+            //SanityCheckResourcesInternal("sci_androidlab");
+            //SanityCheckResourcesInternal("SCI_HOSPITALLOWER");
+            //SanityCheckResourcesInternal("sci_hospitalupper");
+            //SanityCheckResourcesInternal("sci_hub");
+            //SanityCheckResourcesInternal("solace");
+            //SanityCheckResourcesInternal("TECH_COMMS");
+            //SanityCheckResourcesInternal("TECH_HUB");
+            //SanityCheckResourcesInternal("TECH_MUTHRCORE");
+            //SanityCheckResourcesInternal("TECH_RND");
+            SanityCheckResourcesInternal("tech_rnd_hzdlab");
+            SanityCheckResourcesInternal("dlc/CHALLENGEMAP1");
+            SanityCheckResourcesInternal("dlc/CHALLENGEMAP3");
+            SanityCheckResourcesInternal("dlc/CHALLENGEMAP4");
+            SanityCheckResourcesInternal("dlc/CHALLENGEMAP5");
+            SanityCheckResourcesInternal("dlc/CHALLENGEMAP7");
+            SanityCheckResourcesInternal("dlc/CHALLENGEMAP9");
+            SanityCheckResourcesInternal("dlc/CHALLENGEMAP11");
+            SanityCheckResourcesInternal("dlc/CHALLENGEMAP12");
+            SanityCheckResourcesInternal("dlc/CHALLENGEMAP14");
+            SanityCheckResourcesInternal("dlc/CHALLENGEMAP16");
+            SanityCheckResourcesInternal("dlc/SALVAGEMODE1");
+            SanityCheckResourcesInternal("dlc/SALVAGEMODE2");
+        }
+        public static void SanityCheckResourcesInternal(string level)
+        {
+            SharedData.pathToAI = "C:\\AlienData\\game\\pc\\";
+
+            Level lvll = Utilities.LoadLevel(SharedData.pathToAI, "Production/" + level);
+
+            lvll.Resources.Entries.Sort();
+            File.WriteAllText("RESOURCES/ORIG/" + level.Replace("/", "_") + ".json", JsonConvert.SerializeObject(lvll.Resources.Entries, Formatting.Indented, new ShortGuidConverter()));
+
+            for (int i = 0; i < lvll.Commands.Entries.Count; i++)
+                lvll.Commands.Utils.PurgeDeadLinks(lvll.Commands.Entries[i]);
+            for (int i = 0; i < lvll.Commands.Entries.Count; i++)
+                lvll.Commands.Utils.PurgeDeadLinks(lvll.Commands.Entries[i]);
+
+            Instancing inst = new Instancing(lvll);
+            inst.GenerateInstances();
+
+           // var entries = lvll.Resources.Entries.Copy();
+           lvll.Resources.Entries.Clear();
+            inst.ProcessInstances();
+
+          //  if (entries.Count != lvll.Resources.Entries.Count)
+          //  {
+          //      string gsdfds = "";
+          //  }
+
+            lvll.Resources.Entries.Sort();
+            File.WriteAllText("RESOURCES/NEW/" + level.Replace("/", "_") + ".json", JsonConvert.SerializeObject(lvll.Resources.Entries, Formatting.Indented, new ShortGuidConverter()));
+
+            if (!File.Exists(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + level + "/WORLD/RESOURCES_old.BIN"))
+                File.Copy(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + level + "/WORLD/RESOURCES.BIN", SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + level + "/WORLD/RESOURCES_old.BIN");
+
+            PAK2 animPAK = new PAK2(SharedData.pathToAI + "\\DATA\\GLOBAL\\ANIMATION.PAK");
+            LocalDebug_NEW.StripInstancedData(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + level + "/", new Global(SharedData.pathToAI + "/DATA/GLOBAL/", animPAK));
+            lvll.Resources.Save();
+
+            //List<string> bruh = new List<string>();
+            //foreach (FunctionType func in Instancing.funcz)
+            //{
+            //    bruh.Add(func.ToString());
+            //}
+            //bruh.Sort();
+            //File.WriteAllLines(level + ".txt", bruh);
+
+            GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true);
+            GC.WaitForPendingFinalizers();
+        }
+
+        public static void SanityCheckColMaps()
+        {
+            Directory.Delete("COLMAPS", true);
+
+            Directory.CreateDirectory("COLMAPS/ORIG");
+            Directory.CreateDirectory("COLMAPS/NEW");
+
+            SanityCheckColMapsInternal("bsp_lv426_pt01");
+            SanityCheckColMapsInternal("BSP_LV426_PT02");
+            SanityCheckColMapsInternal("BSP_Torrens");
+            SanityCheckColMapsInternal("eng_alien_nest");
+            SanityCheckColMapsInternal("eng_reactorcore");
+            SanityCheckColMapsInternal("ENG_TOWPLATFORM");
+            SanityCheckColMapsInternal("FRONTEND");
+            SanityCheckColMapsInternal("HAB_AIRPORT");
+            SanityCheckColMapsInternal("HAB_CORPORATEPENT");
+            SanityCheckColMapsInternal("HAB_SHOPPINGCENTRE");
+            SanityCheckColMapsInternal("sci_androidlab");
+            SanityCheckColMapsInternal("SCI_HOSPITALLOWER");
+            SanityCheckColMapsInternal("sci_hospitalupper");
+            SanityCheckColMapsInternal("sci_hub");
+            SanityCheckColMapsInternal("solace");
+            SanityCheckColMapsInternal("TECH_COMMS");
+            SanityCheckColMapsInternal("TECH_HUB");
+            SanityCheckColMapsInternal("TECH_MUTHRCORE");
+            SanityCheckColMapsInternal("TECH_RND");
+            SanityCheckColMapsInternal("tech_rnd_hzdlab");
+            SanityCheckColMapsInternal("dlc/CHALLENGEMAP1");
+            SanityCheckColMapsInternal("dlc/CHALLENGEMAP3");
+            SanityCheckColMapsInternal("dlc/CHALLENGEMAP4");
+            SanityCheckColMapsInternal("dlc/CHALLENGEMAP5");
+            SanityCheckColMapsInternal("dlc/CHALLENGEMAP7");
+            SanityCheckColMapsInternal("dlc/CHALLENGEMAP9");
+            SanityCheckColMapsInternal("dlc/CHALLENGEMAP11");
+            SanityCheckColMapsInternal("dlc/CHALLENGEMAP12");
+            SanityCheckColMapsInternal("dlc/CHALLENGEMAP14");
+            SanityCheckColMapsInternal("dlc/CHALLENGEMAP16");
+            SanityCheckColMapsInternal("dlc/SALVAGEMODE1");
+            SanityCheckColMapsInternal("dlc/SALVAGEMODE2");
+        }
+        public static void SanityCheckColMapsInternal(string level)
+        {
+            Level lvll = Utilities.LoadLevel(SharedData.pathToAI, "Production/" + level);
+
+            lvll.CollisionMaps.Entries.Sort();
+            var newEntries = lvll.CollisionMaps.Entries.OrderBy(o => o.ResourceGUID).ThenBy(o => o.Entity.entity_id).ThenBy(o => o.Entity.composite_instance_id).ThenBy(o => o.Index).ThenBy(o => o.CollisionProxyIndex).ToList().Select(e => new ColMapEntry(e)).ToList();
+            File.WriteAllText("COLMAPS/ORIG/" + level.Replace("/", "_") + ".json", JsonConvert.SerializeObject(newEntries, Formatting.Indented, new ShortGuidConverter()));
+
+            for (int i = 0; i < lvll.Commands.Entries.Count; i++)
+                lvll.Commands.Utils.PurgeDeadLinks(lvll.Commands.Entries[i]);
+            for (int i = 0; i < lvll.Commands.Entries.Count; i++)
+                lvll.Commands.Utils.PurgeDeadLinks(lvll.Commands.Entries[i]);
+
+            Instancing inst = new Instancing(lvll);
+            inst.GenerateInstances();
+            lvll.CollisionMaps.Entries.Clear();
+            inst.ProcessInstances();
+
+            newEntries = lvll.CollisionMaps.Entries.OrderBy(o => o.ResourceGUID).ThenBy(o => o.Entity.entity_id).ThenBy(o => o.Entity.composite_instance_id).ThenBy(o => o.Index).ThenBy(o => o.CollisionProxyIndex).ToList().Select(e => new ColMapEntry(e)).ToList();
+            File.WriteAllText("COLMAPS/NEW/" + level.Replace("/", "_") + ".json", JsonConvert.SerializeObject(newEntries, Formatting.Indented, new ShortGuidConverter()));
+
+            //lvll.CollisionMaps.Save();
+
+            GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true);
+            GC.WaitForPendingFinalizers();
+        }
+
+        //for writing out 
+        public class ColMapEntry : IComparable<ColMapEntry>
+        {
+            //public CollisionFlags Flags = 0;
+            //public int Index = -1; //Compound shape index for static and ballistic collision 
+
+            //public ShortGuid ResourceGUID = ShortGuid.Invalid; //This is the name of the entity hashed via ShortGuid
+            public EntityHandle Entity = new EntityHandle();
+
+            //public string MaterialName = null;
+
+            //public int CollisionProxyIndex = -1; // Index in COLLISION.HKX (hkpStaticCompoundShape)
+            //public string MaterialMappingName = null; //This remaps the material to the physics material for Havok
+
+            //public ShortGuid ZoneID = ShortGuid.Invalid; //this maps the entity to a zone ID. interestingly, this seems to be the point of truth for the zone rendering
+
+            public ColMapEntry(CollisionMaps.COLLISION_MAPPING entry)
+            {
+                //Flags = entry.Flags;
+                //Index = entry.Index;
+                //ResourceGUID = entry.ResourceGUID;
+                Entity = entry.Entity;
+                //MaterialName = entry?.Material?.Name;
+                //CollisionProxyIndex = entry.CollisionProxyIndex;
+                //MaterialMappingName = entry.MaterialMapping?.Name;
+                //ZoneID = entry.ZoneID;
+            }
+
+            public int CompareTo(ColMapEntry other)
+            {
+                if (other == null) return 1;
+
+                //int resourceGuidComparison = ResourceGUID.CompareTo(other.ResourceGUID);
+                //if (resourceGuidComparison != 0) return resourceGuidComparison;
+
+                int entityIdComparison = Entity.entity_id.CompareTo(other.Entity.entity_id);
+                if (entityIdComparison != 0) return entityIdComparison;
+
+                int compositeInstanceIdComparison = Entity.composite_instance_id.CompareTo(other.Entity.composite_instance_id);
+                /*if (compositeInstanceIdComparison != 0)*/ return compositeInstanceIdComparison;
+
+                //int indexComparison = Index.CompareTo(other.Index);
+                //if (indexComparison != 0) return indexComparison;
+
+                //compare zone
+                //compare flags
+                //compare mat mapping
+                //compare mat name
+
+                //return CollisionProxyIndex.CompareTo(other.CollisionProxyIndex);
+            }
+        }
+
+        public static void SanityCheckPhysMaps()
+        {
+            Directory.Delete("PHYSMAPS", true);
+
+            Directory.CreateDirectory("PHYSMAPS/ORIG");
+            Directory.CreateDirectory("PHYSMAPS/NEW");
+
+            //SanityCheckPhysMapsInternal("bsp_lv426_pt01");
+            //SanityCheckPhysMapsInternal("BSP_LV426_PT02");
+            SanityCheckPhysMapsInternal("BSP_Torrens");
+            SanityCheckPhysMapsInternal("eng_alien_nest");
+            SanityCheckPhysMapsInternal("eng_reactorcore");
+            SanityCheckPhysMapsInternal("ENG_TOWPLATFORM");
+            SanityCheckPhysMapsInternal("FRONTEND");
+            SanityCheckPhysMapsInternal("HAB_AIRPORT");
+            SanityCheckPhysMapsInternal("HAB_CORPORATEPENT");
+            SanityCheckPhysMapsInternal("HAB_SHOPPINGCENTRE");
+            SanityCheckPhysMapsInternal("sci_androidlab");
+            SanityCheckPhysMapsInternal("SCI_HOSPITALLOWER");
+            SanityCheckPhysMapsInternal("sci_hospitalupper");
+            SanityCheckPhysMapsInternal("sci_hub");
+            SanityCheckPhysMapsInternal("solace");
+            SanityCheckPhysMapsInternal("TECH_COMMS");
+            SanityCheckPhysMapsInternal("TECH_HUB");
+            SanityCheckPhysMapsInternal("TECH_MUTHRCORE");
+            SanityCheckPhysMapsInternal("TECH_RND");
+            SanityCheckPhysMapsInternal("tech_rnd_hzdlab");
+            SanityCheckPhysMapsInternal("dlc/CHALLENGEMAP1");
+            SanityCheckPhysMapsInternal("dlc/CHALLENGEMAP3");
+            SanityCheckPhysMapsInternal("dlc/CHALLENGEMAP4");
+            SanityCheckPhysMapsInternal("dlc/CHALLENGEMAP5");
+            SanityCheckPhysMapsInternal("dlc/CHALLENGEMAP7");
+            SanityCheckPhysMapsInternal("dlc/CHALLENGEMAP9");
+            SanityCheckPhysMapsInternal("dlc/CHALLENGEMAP11");
+            SanityCheckPhysMapsInternal("dlc/CHALLENGEMAP12");
+            SanityCheckPhysMapsInternal("dlc/CHALLENGEMAP14");
+            SanityCheckPhysMapsInternal("dlc/CHALLENGEMAP16");
+            SanityCheckPhysMapsInternal("dlc/SALVAGEMODE1");
+            SanityCheckPhysMapsInternal("dlc/SALVAGEMODE2");
+        }
+        public static void SanityCheckPhysMapsInternal(string level)
+        {
+            Level lvll = Utilities.LoadLevel(SharedData.pathToAI, "Production/" + level);
+
+            lvll.PhysicsMaps.Entries.Sort();
+            var origEntries = lvll.PhysicsMaps.Entries.Select(e => new PhysMapEntry(e)).ToList();
+            File.WriteAllText("PHYSMAPS/ORIG/" + level.Replace("/", "_") + ".json", JsonConvert.SerializeObject(origEntries, Formatting.Indented, new ShortGuidConverter()));
+
+            for (int i = 0; i < lvll.Commands.Entries.Count; i++)
+                lvll.Commands.Utils.PurgeDeadLinks(lvll.Commands.Entries[i]);
+            for (int i = 0; i < lvll.Commands.Entries.Count; i++)
+                lvll.Commands.Utils.PurgeDeadLinks(lvll.Commands.Entries[i]);
+
+            Instancing inst = new Instancing(lvll);
+            inst.GenerateInstances();
+            lvll.PhysicsMaps.Entries.Clear();
+            inst.ProcessInstances();
+
+            lvll.PhysicsMaps.Entries.Sort();
+            var newEntries = lvll.PhysicsMaps.Entries.Select(e => new PhysMapEntry(e)).ToList();
+            File.WriteAllText("PHYSMAPS/NEW/" + level.Replace("/", "_") + ".json", JsonConvert.SerializeObject(newEntries, Formatting.Indented, new ShortGuidConverter()));
+
+            //lvll.PhysicsMaps.Save();
+
+            GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true);
+            GC.WaitForPendingFinalizers();
+        }
+
+        //for writing out 
+        public class PhysMapEntry
+        {
+            public int physics_system_index;
+            //public string resource_type;
+            public string composite_instance_id;
+            public EntityHandle entity;
+            public RoundedVec Position;
+            //todo - i think the rotation calculation may be incorrect
+
+            public PhysMapEntry(PhysicsMaps.DYNAMIC_PHYSICS_SYSTEM entry)
+            {
+                physics_system_index = entry.physics_system_index;
+                composite_instance_id = entry.composite_instance_id.ToByteString();
+                entity = entry.entity;
+                Position = new RoundedVec(entry.Position);
+            }
+
+            public class RoundedVec
+            {
+                public float X;
+                public float Y;
+                public float Z;
+
+                public RoundedVec(Vector3 v)
+                {
+                    X = (float)Math.Round(v.X, 2);
+                    Y = (float)Math.Round(v.Y, 2);
+                    Z = (float)Math.Round(v.Z, 2);
+                }
+            }
+        }
+
+        public static void SanityCheckResourceTransforms()
+        {
+            SanityCheckResourceTransformsInternal("Production/bsp_lv426_pt01");
+            SanityCheckResourceTransformsInternal("Production/BSP_LV426_PT02");
+            SanityCheckResourceTransformsInternal("Production/BSP_Torrens");
+            SanityCheckResourceTransformsInternal("Production/eng_alien_nest");
+            SanityCheckResourceTransformsInternal("Production/eng_reactorcore");
+            SanityCheckResourceTransformsInternal("Production/ENG_TOWPLATFORM");
+            SanityCheckResourceTransformsInternal("Production/FRONTEND");
+            SanityCheckResourceTransformsInternal("Production/HAB_AIRPORT");
+            SanityCheckResourceTransformsInternal("Production/HAB_CORPORATEPENT");
+            SanityCheckResourceTransformsInternal("Production/HAB_SHOPPINGCENTRE");
+            SanityCheckResourceTransformsInternal("Production/sci_androidlab");
+            SanityCheckResourceTransformsInternal("Production/SCI_HOSPITALLOWER");
+            SanityCheckResourceTransformsInternal("Production/sci_hospitalupper");
+            SanityCheckResourceTransformsInternal("Production/sci_hub");
+            SanityCheckResourceTransformsInternal("Production/solace");
+            SanityCheckResourceTransformsInternal("Production/TECH_COMMS");
+            SanityCheckResourceTransformsInternal("Production/TECH_HUB");
+            SanityCheckResourceTransformsInternal("Production/TECH_MUTHRCORE");
+            SanityCheckResourceTransformsInternal("Production/TECH_RND");
+            SanityCheckResourceTransformsInternal("Production/tech_rnd_hzdlab");
+            SanityCheckResourceTransformsInternal("Production/dlc/CHALLENGEMAP1");
+            SanityCheckResourceTransformsInternal("Production/dlc/CHALLENGEMAP3");
+            SanityCheckResourceTransformsInternal("Production/dlc/CHALLENGEMAP4");
+            SanityCheckResourceTransformsInternal("Production/dlc/CHALLENGEMAP5");
+            SanityCheckResourceTransformsInternal("Production/dlc/CHALLENGEMAP7");
+            SanityCheckResourceTransformsInternal("Production/dlc/CHALLENGEMAP9");
+            SanityCheckResourceTransformsInternal("Production/dlc/CHALLENGEMAP11");
+            SanityCheckResourceTransformsInternal("Production/dlc/CHALLENGEMAP12");
+            SanityCheckResourceTransformsInternal("Production/dlc/CHALLENGEMAP14");
+            SanityCheckResourceTransformsInternal("Production/dlc/CHALLENGEMAP16");
+            SanityCheckResourceTransformsInternal("Production/dlc/SALVAGEMODE1");
+            SanityCheckResourceTransformsInternal("Production/dlc/SALVAGEMODE2");
+        }
+        private static void SanityCheckResourceTransformsInternal(string level)
+        {
+            Level lvl = Utilities.LoadLevel(SharedData.pathToAI, level);
+            foreach (Composite composite in lvl.Commands.Entries)
+            {
+                foreach (FunctionEntity function in composite.functions)
+                {
+                    Parameter p = function.GetParameter("position");
+                    cTransform t;
+                    if (p != null)
+                        t = (cTransform)p.content;
+                    else
+                        t = new cTransform();
+
+                    foreach (ResourceReference resource in function.resources)
+                    {
+                        if (resource.resource_type != ResourceType.DYNAMIC_PHYSICS_SYSTEM)
+                            continue;
+
+                        if (t.position != resource.position)
+                        {
+                            string sdfsdfffffd = "";
+                        }
+                        if (t.rotation != resource.rotation)
+                        {
+                            string sdfsdffddfffd = "";
+                        }
+                    }
+
+                    Parameter pR = function.GetParameter("resource");
+                    if (pR?.content?.dataType == DataType.RESOURCE)
+                    {
+                        foreach (ResourceReference resource in ((cResource)pR.content).value)
+                        {
+                            if (resource.resource_type != ResourceType.DYNAMIC_PHYSICS_SYSTEM)
+                                continue;
+
+                            if (t.position != resource.position)
+                            {
+                                string sdfsdfffffd = "";
+                            }
+                            if (t.rotation != resource.rotation)
+                            {
+                                string sdfsdffddfffd = "";
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+#if NO
+        public static void CheckFlowgraphsNew()
+        {
+            string env = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Alien Isolation\\DATA\\ENV";
+            if (Directory.Exists(env + "/PRODUCTION/DLC/BSPNOSTROMO_RIPLEY/WORLD"))
+                Directory.Delete(env + "/PRODUCTION/DLC/BSPNOSTROMO_RIPLEY/WORLD", true);
+            if (Directory.Exists(env + "/PRODUCTION/DLC/BSPNOSTROMO_TWOTWEAMS/WORLD"))
+                Directory.Delete(env + "/PRODUCTION/DLC/BSPNOSTROMO_TWOTWEAMS/WORLD", true);
+            List<string> files = Directory.GetFiles(env, "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            List<string> output = new List<string>();
+            foreach (string file in files)
+            {
+                output.Add("Unsupported in " + file);
+                Commands cmd = new Commands(file);
+                FlowgraphLayoutManager.LinkCommands(cmd);
+                foreach (Composite comp in cmd.Entries)
+                {
+                    cmd.Utils.PurgeDeadLinks(comp);
+                    cmd.Utils.PurgeDeadLinks(comp);
+                }
+                foreach (Composite comp in cmd.Entries)
+                {
+                    cmd.Utils.PurgeDeadLinks(comp);
+                    cmd.Utils.PurgeDeadLinks(comp);
+                }
+                foreach (Composite comp in cmd.Entries)
+                {
+                    cmd.Utils.PurgeDeadLinks(comp);
+                    FlowgraphLayoutManager.EvaluateCompatibility(comp);
+                    if (!FlowgraphLayoutManager.IsCompatible(comp))
+                    {
+                        output.Add("\t - " + comp.name);
+                    }
+                }
+                output.Add("");
+            }
+            File.WriteAllLines("unsupported.log", output);
+        }
+
+        public static void ProxyTester()
+        {
+            Directory.Delete("ProxyTest", true);
+            List<string> files = Directory.GetFiles("C:\\Program Files (x86)\\Steam\\steamapps\\common\\Alien Isolation\\DATA\\ENV", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            foreach (string file in files)
+            {
+                bool warn = false;
+                Commands commandsRetail = new Commands(file);
+                List<string> output = new List<string>();
+                foreach (Composite comp in commandsRetail.Entries)
+                {
+                    foreach (ProxyEntity p in comp.proxies)
+                    {
+                        output.Add("***************************");
+                        output.Add("New Proxy Found:");
+                        for (int i = 0; i < p.proxy.path.Length; i++)
+                        {
+                            output.Add("[" + i + "] " + p.proxy.path[i].ToByteString());
+                        }
+
+                        output.Add("");
+
+                        //Entity pointedE = commandsRetail.Utils.ResolveHierarchy(comp, p.proxy.path, out Composite compContanied, out string Str);
+                        //output.Add("Using My Resolver:");
+                        //output.Add(Str);
+
+                        output.Add("");
+
+                        int resolved = 0;
+                        if (p.proxy.path.Length >= 1)
+                        {
+                            Composite test = commandsRetail.GetComposite(p.proxy.path[0]);
+                            if (test != null)
+                            {
+                                output.Add("0 -> COMPOSITE: " + test.name);
+                                resolved++;
+                            }
+                            else
+                            {
+                                output.Add("Could not resolve proxy start");
+                            }
+
+                            for (int i = 0; i < p.proxy.path.Length; i++)
+                            {
+                                bool found = false;
+                                foreach (Composite c in commandsRetail.Entries)
+                                {
+                                    string name = commandsRetail.Utils.GetEntityName(c.shortGUID, p.proxy.path[i]);
+                                    if (name != p.proxy.path[i].ToByteString())
+                                    {
+                                        output.Add(i + " -> [" + c.shortGUID.ToByteString() + "] " + c.name + " -> [" + p.proxy.path[i] + "] " + name);
+                                        resolved++;
+                                        found = true;
+                                        break;
+                                    }
+                                }
+                                if (!found && i != 0)
+                                {
+                                    foreach (Composite c in commandsRetail.Entries)
+                                    {
+                                        foreach (Entity e in c.GetEntities())
+                                        {
+                                            if (e.shortGUID == p.proxy.path[i])
+                                            {
+                                                output.Add(i + " -> [" + c.shortGUID.ToByteString() + "] " + c.name + " -> [" + p.proxy.path[i] + "] " + e.shortGUID.ToByteString() + " (NAME NOT RESOLVABLE - TYPE = " + e.variant + ")");
+                                                resolved++;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (resolved != p.proxy.path.Length - 1)
+                            {
+                                output.Add("\n\nWARNING - COULD NOT RESOLVE ALL AS EXPECTED! ");
+                                warn = true;
+                            }
+                        }
+                        else
+                        {
+                            output.Add("EMPTY PROXY!!!?!?");
+                        }
+
+                        output.Add("***************************");
+                        output.Add("");
+
+                        if (p.shortGUID == new ShortGuid("C3-0D-91-BC"))
+                        {
+                            continue;
+
+
+                            //string str1 = commandsRetail.Utils.GetEntityName(comp, p);
+                            //
+                            //CATHODE.Scripting.Composite path_entry_one = commandsRetail.GetComposite(p.proxy.path[0]); //ok, so first resolves to composite MISSIONS_Torrens
+                            //(Composite test55, EntityPath path22) = content.editor_utils.GetCompositeFromInstanceID(commandsRetail, p.proxy.path[1]);
+                            ////second doesn't resolve to anything, but is used in THREE torrens proxies (and nowehre else)
+                            //Entity path_entry_three = path_entry_one.GetEntityByID(p.proxy.path[2]); // third resolves to an entity within the composite pointed to by entry one
+                            //
+                            //
+                            //
+                            //bool valid = p.proxy.IsPathValid(commandsRetail, comp);
+                            //Entity entP = p.proxy.GetPointedEntity(commandsRetail, comp);
+                            //
+                            //CATHODE.Scripting.Composite com = commandsRetail.GetComposite(new ShortGuid("56-38-F8-99"));
+                            //
+                            //Entity pointedEnt = commandsRetail.Utils.ResolveHierarchy(comp, p.proxy.path, out CATHODE.Scripting.Composite containedComp, out string str);
+                            //
+                            //CATHODE.Scripting.Composite comp1 = commandsRetail.GetComposite(p.proxy.path[0]);
+                            //CATHODE.Scripting.Composite comp2 = commandsRetail.GetComposite(p.proxy.path[1]);
+                            //CATHODE.Scripting.Composite comp3 = commandsRetail.GetComposite(p.proxy.path[2]);
+                            //CATHODE.Scripting.Composite comp4 = commandsRetail.GetComposite(p.proxy.path[3]);
+                            //
+                            //Entity ent1 = comp1.GetEntityByID(p.proxy.path[1]);
+                            //
+                            //
+                            ////FunctionEntity ent2 = (FunctionEntity)ent1.GetEntityByID(p.proxy.path[1]);
+                            ////FunctionEntity ent3 = (FunctionEntity)commandsRetail.GetComposite(ent2.function).GetEntityByID(p.proxy.path[2]);
+                            ////FunctionEntity ent4 = (FunctionEntity)commandsRetail.GetComposite(ent3.function).GetEntityByID(p.proxy.path[3]);
+                            //
+                            //string ffsd = "";
+                        }
+                    }
+                }
+                Directory.CreateDirectory("ProxyTest");
+                File.WriteAllLines("ProxyTest/" + Path.GetFileName(commandsRetail.EntryPoints[0].name) + (warn ? " [!]" : "") + ".txt", output);
+            }
+        }
+
+        public static void CheckAllFlowgraphLayouts()
+        {
+#if FG_TEST
+            List<string> files = Directory.GetFiles("C:\\Program Files (x86)\\Steam\\steamapps\\common\\Alien Isolation\\DATA\\ENV", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            foreach (string file in files)
+            {
+                List<string> output = new List<string>();
+                Commands commands = new Commands(file);
+                CompositeFlowgraphTable.FlowgraphMeta.SupportedLevel level = (CompositeFlowgraphTable.FlowgraphMeta.SupportedLevel)Enum.Parse(typeof(CompositeFlowgraphTable.FlowgraphMeta.SupportedLevel), Path.GetFileName(commands.EntryPoints[0].name).ToUpper());           
+                foreach (Composite composite in commands.Entries)
+                {
+
+                    var metas = FlowgraphLayoutManager.PreDefinedLayouts.flowgraphs.FindAll(o => o.CompositeGUID == composite.shortGUID && o.SupportedLevels.HasFlag(level));
+
+                    List<LinkData> flowgraphLinks = new List<LinkData>();
+                    for (int i = 0; i < metas.Count; i++)
+                    {
+                        for (int x = 0; x < metas[i].Nodes.Count; x++)
+                        {
+                            for (int y = 0; y < metas[i].Nodes[x].ConnectionsOut.Count; y++)
+                            {
+                                flowgraphLinks.Add(new LinkData(
+                                    metas[i].Nodes[x].EntityGUID,
+                                    metas[i].Nodes[x].ConnectionsOut[y].ParameterGUID,
+                                    metas[i].Nodes[x].ConnectionsOut[y].ConnectedEntityGUID,
+                                    metas[i].Nodes[x].ConnectionsOut[y].ConnectedParameterGUID)
+                                );
+                            }
+                        }
+                    }
+
+                    List<Entity> entities = composite.GetEntities();
+                    List<LinkData> compositeLinks = new List<LinkData>();
+                    for (int i = 0; i < entities.Count; i++)
+                    {
+                        //clear out any dead links first
+                        List<EntityConnector> trimmedChildren = new List<EntityConnector>();
+                        foreach (EntityConnector connector in entities[i].childLinks)
+                        {
+                            if (composite.GetEntityByID(connector.linkedEntityID) == null)
+                                continue;
+                            trimmedChildren.Add(connector);
+                        }
+
+                        for (int x = 0; x < trimmedChildren.Count; x++)
+                        {
+                            compositeLinks.Add(new LinkData(
+                                entities[i].shortGUID,
+                                trimmedChildren[x].thisParamID,
+                                trimmedChildren[x].linkedEntityID,
+                                trimmedChildren[x].linkedParamID)
+                            );
+                        }
+                    }
+
+                    flowgraphLinks = flowgraphLinks.OrderBy(o => o.In.ParameterID.ToString()).ThenBy(o => o.Out.ParameterID.ToString()).ThenBy(o => o.In.EntityID.ToByteString()).ThenBy(o => o.Out.EntityID.ToByteString()).ToList();
+                    compositeLinks = compositeLinks.OrderBy(o => o.In.ParameterID.ToString()).ThenBy(o => o.Out.ParameterID.ToString()).ThenBy(o => o.In.EntityID.ToByteString()).ThenBy(o => o.Out.EntityID.ToByteString()).ToList();
+
+                    Directory.CreateDirectory(level + "/source/" + composite.name.Replace(':', '_'));
+                    Directory.CreateDirectory(level + "/retail/" + composite.name.Replace(':', '_'));
+                    File.WriteAllText(level + "/source/" + composite.name.Replace(':', '_') + "/links.json", JsonConvert.SerializeObject(flowgraphLinks, Newtonsoft.Json.Formatting.Indented, new ShortGuidConverter()));
+                    File.WriteAllText(level + "/retail/" + composite.name.Replace(':', '_') + "/links.json", JsonConvert.SerializeObject(compositeLinks, Newtonsoft.Json.Formatting.Indented, new ShortGuidConverter()));
+
+                    if (flowgraphLinks.Count != compositeLinks.Count)
+                    {
+                        //Entity fgIn = composite.GetEntityByID(flowgraphLinks[i].In.EntityID);
+                        //Entity fgOut = composite.GetEntityByID(flowgraphLinks[i].Out.EntityID);
+                        //string fgInP = flowgraphLinks[i].In.ParameterID.ToString();
+                        //string fgOutP = flowgraphLinks[i].Out.ParameterID.ToString();
+                        //string fgInN = Singleton.Editor.CommandsDisplay.Content.Level.Commands.Utils.GetEntityName(composite, fgIn);
+                        //string fgOutN = Singleton.Editor.CommandsDisplay.Content.Level.Commands.Utils.GetEntityName(composite, fgOut);
+
+                        output.Add(composite.name + "\n\t" + flowgraphLinks.Count + " vs retail " + compositeLinks.Count + " [" + ((flowgraphLinks.Count > compositeLinks.Count) ? "SMALLER" : "LARGER") + "]");
+                    }
+
+                    //for (int i = 0; i < flowgraphLinks.Count; i++)
+                    //{
+                    //    if (flowgraphLinks[i] != compositeLinks[i])
+                    //    {
+                    //    }
+                    //}
+                }
+                Directory.CreateDirectory("summary");
+                File.WriteAllLines("summary/" + level + ".txt", output);
+            }
+        }
+
+        //quick copied from flowgraphlayoutmanager
+        struct LinkData
+        {
+            public LinkData(ShortGuid EntityID, ShortGuid ParameterID, ShortGuid LinkedEntityID, ShortGuid LinkedParameterID)
+            {
+                Out = new Parameter() { EntityID = EntityID, ParameterID = ParameterID };
+                In = new Parameter() { EntityID = LinkedEntityID, ParameterID = LinkedParameterID };
+            }
+
+            public Parameter Out;
+            public Parameter In;
+
+            public struct Parameter
+            {
+                public ShortGuid EntityID;
+                public ShortGuid ParameterID;
+
+                public static bool operator ==(Parameter left, Parameter right)
+                {
+                    return left.Equals(right);
+                }
+
+                public static bool operator !=(Parameter left, Parameter right)
+                {
+                    return !(left == right);
+                }
+
+                public override bool Equals(object obj)
+                {
+                    if (obj is Parameter other)
+                    {
+                        return EntityID.Equals(other.EntityID) && ParameterID.Equals(other.ParameterID);
+                    }
+                    return false;
+                }
+
+                public override int GetHashCode()
+                {
+                    int hashCode = -1506387652;
+                    hashCode = hashCode * -1521134295 + EntityID.GetHashCode();
+                    hashCode = hashCode * -1521134295 + ParameterID.GetHashCode();
+                    return hashCode;
+                }
+            }
+
+            public static bool operator ==(LinkData left, LinkData right)
+            {
+                return left.Equals(right);
+            }
+
+            public static bool operator !=(LinkData left, LinkData right)
+            {
+                return !(left == right);
+            }
+
+            public override bool Equals(object obj)
+            {
+                if (obj is LinkData other)
+                {
+                    return Out == other.Out && In == other.In;
+                }
+                return false;
+            }
+
+            public override int GetHashCode()
+            {
+                int hashCode = 1047395477;
+                hashCode = hashCode * -1521134295 + Out.GetHashCode();
+                hashCode = hashCode * -1521134295 + In.GetHashCode();
+                return hashCode;
+            }
+#endif
+        }
+
+        public static void DumpCommandsToJson(string path, string dir)
+        {
+#if DEBUG
+            List<string> files = Directory.GetFiles(path, "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            Directory.CreateDirectory(dir);
+            foreach (string file in files)
+            {
+                Commands cmd = new Commands(file);
+                string lvl = Path.GetFileName(cmd.EntryPoints[0].name);
+                cmd.EntryPoints[0].name = lvl;
+                foreach (Composite comp in cmd.Entries)
+                {
+                    string outPath = dir + "/" + lvl + "/" + comp.name.Replace(':', '_') + ".json";
+                    Directory.CreateDirectory(outPath.Substring(0, outPath.Length - Path.GetFileName(outPath).Length));
+                    File.WriteAllText(outPath, JsonConvert.SerializeObject(comp, Newtonsoft.Json.Formatting.Indented, new ShortGuidConverter()));
+                }
+            }
+#endif
+        }
+
+        public static void TestEntityNames()
+        {
+#if DEBUG
+            List<string> files = Directory.GetFiles("C:\\Program Files (x86)\\Steam\\steamapps\\common\\Alien Isolation\\data\\ENV", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            List<string> unnamed = new List<string>();
+            foreach (string file in files)
+            {
+                unnamed.Add("***\n"+ file + "\n***");
+
+                Commands commands = new Commands(file);
+                foreach (Composite comp in commands.Entries)
+                {
+                    commands.Utils.PurgeDeadLinks(comp);
+
+                    foreach (Entity ent in comp.GetEntities())
+                    {
+                        if (ent.variant == EntityVariant.ALIAS)
+                            continue;
+                        if (ent.variant == EntityVariant.FUNCTION)
+                        {
+                            FunctionType func = ((FunctionEntity)ent).function.AsFunctionType;
+                            if (func == FunctionType.ModelReference || 
+                                func == FunctionType.RadiosityProxy || 
+                                func == FunctionType.EnvironmentModelReference || 
+                                func == FunctionType.PhysicsSystem)
+                                continue;
+                        }
+
+                        string name = commands.Utils.GetEntityName(comp, ent);
+                        if (name == ent.shortGUID.ToByteString())
+                        {
+                            string type = ent.variant.ToString();
+                            if (ent.variant == EntityVariant.FUNCTION)
+                            {
+                                Composite comp2 = commands.GetComposite(((FunctionEntity)ent).function);
+                                if (comp2 != null)
+                                    type += " " + comp2.name;
+                                else
+                                    type += " " + ((FunctionEntity)ent).function.AsFunctionType.ToString();
+                            }
+                            unnamed.Add(comp.name + " -> [" + type + "] " + ent.shortGUID.ToByteString());
+                        }
+                    }
+                }
+
+                unnamed.Add("\n\n");
+            }
+            File.WriteAllLines("unnamed.txt", unnamed);
+#endif
+        }
+
+        public static void DefaultsUnitTest(Commands cmd)
+        {
+#if DEBUG
             var values = Enum.GetValues(typeof(FunctionType));
             foreach (var value in values)
             {
-                var paramz = ParameterUtils.GetAllParameters((FunctionType)value);
+                var paramz = cmd.Utils.GetAllParameters((FunctionType)value);
                 foreach (var param in paramz)
                 {
                     if (param.Item1.ToByteString() == param.Item1.ToString())
@@ -42,10 +958,12 @@ namespace CommandsEditor
                     }
                 }
             }
+#endif
         }
 
         public static void ParameterCloneUnitTest()
         {
+#if DEBUG
             Commands test = new Commands("M:\\Modding\\Steam Projects\\steamapps\\common\\Alien Isolation\\data\\ENV\\PRODUCTION\\BSP_LV426_PT02\\WORLD\\COMMANDS.PAK");
             {
                 Parameter p = null;
@@ -92,7 +1010,7 @@ namespace CommandsEditor
                 if (p0.enumIndex == p2.enumIndex)
                     throw new Exception("");
                 p0.enumID = new ShortGuid(99999);
-                if (p0.enumID.ToUInt32() == p2.enumID.ToUInt32())
+                if (p0.enumID.AsUInt32 == p2.enumID.AsUInt32)
                     throw new Exception("");
             }
             {
@@ -150,10 +1068,19 @@ namespace CommandsEditor
                 if (p0.value.Count == p2.value.Count)
                     throw new Exception("");
                 p2.value[0].entityID = new ShortGuid(99);
-                if (p0.value[0].entityID.ToUInt32() == p2.value[0].entityID.ToUInt32())
+                if (p0.value[0].entityID.AsUInt32 == p2.value[0].entityID.AsUInt32)
                     throw new Exception("");
-                p2.value[0].index = 9999;
-                if (p0.value[0].index == p2.value[0].index)
+                p2.value[0].AnimatedModel = null;
+                if (p0.value[0].AnimatedModel == p2.value[0].AnimatedModel)
+                    throw new Exception("");
+                p2.value[0].CollisionMapping = null;
+                if (p0.value[0].CollisionMapping == p2.value[0].CollisionMapping)
+                    throw new Exception("");
+                p2.value[0].DynamicPhysicsSystem = null;
+                if (p0.value[0].DynamicPhysicsSystem == p2.value[0].DynamicPhysicsSystem)
+                    throw new Exception("");
+                p2.value[0].RenderableInstance = null;
+                if (p0.value[0].RenderableInstance == p2.value[0].AnimatedModel)
                     throw new Exception("");
                 p2.value[0].position.X = 9999;
                 if (p0.value[0].position.X == p2.value[0].position.X)
@@ -176,6 +1103,7 @@ namespace CommandsEditor
                 if (p0.value == p2.value)
                     throw new Exception("");
             }
+#endif
         }
 
         public static void MAPTEST(string path)
@@ -243,6 +1171,7 @@ namespace CommandsEditor
             string breakhere = "";
         }
 
+        /*
         public static void mvr_test()
         {
 #if DEBUG
@@ -266,28 +1195,26 @@ namespace CommandsEditor
             File.Delete(lightsAlpha.Filepath); //deleting this one causes significant visual changes (anything with alpha doesn't render, or render properly)
 #endif
         }
+        */
 
         public static void CheckAllParamInfo()
         {
 #if DEBUG
 
-            List<string> files = Directory.GetFiles("M:\\Modding\\Steam Projects\\steamapps\\common\\Alien Isolation\\data\\ENV", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            List<string> files = Directory.GetFiles("C:\\Program Files (x86)\\Steam\\steamapps\\common\\Alien Isolation\\data\\ENV", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
             List<string> dump = new List<string>();
             dump.Add("PAK File,Composite Name,VariableEntity ShortGuid,VariableEntity Param Name");
             foreach (string file in files)
             {
                 Commands commands = new Commands(file);
 
-                ShortGuidUtils.LinkCommands(commands);
-                CompositeUtils.LinkCommands(commands);
-
                 for (int x = 0; x < commands.Entries.Count; x++)
                 {
-                    for (int i = 0; i < commands.Entries[x].variables.Count; i++)
+                    foreach (var variable in commands.Entries[x].variables_dictionary.Values)
                     {
-                        if (CompositeUtils.GetParameterInfo(commands.Entries[x], commands.Entries[x].variables[i]) == null)
+                        if (commands.Utils.GetPinInfo(commands.Entries[x], variable) == null)
                         {
-                            dump.Add(file + "," + commands.Entries[x].name + "," + commands.Entries[x].variables[i].shortGUID + "," + commands.Entries[x].variables[i].name);
+                            dump.Add(file + "," + commands.Entries[x].name + "," + variable.shortGUID + "," + variable.name);
                         }
                     }
                 }
@@ -305,24 +1232,20 @@ namespace CommandsEditor
             {
                 Commands commands = new Commands(file);
 
-                CompositeUtils.LinkCommands(commands);
-                EntityUtils.LinkCommands(commands);
-                ParameterUtils.LinkCommands(commands);
-
                 for (int x = 0; x < commands.Entries.Count; x++)
                 {
-                    CommandsUtils.PurgeDeadLinks(commands, commands.Entries[x]);
+                    commands.Utils.PurgeDeadLinks(commands.Entries[x]);
                 }
                 for (int x = 0; x < commands.Entries.Count; x++)
                 {
-                    CommandsUtils.PurgeDeadLinks(commands, commands.Entries[x]);
+                    commands.Utils.PurgeDeadLinks(commands.Entries[x]);
                 }
 
                 for (int x = 0; x < commands.Entries.Count; x++)
                 {
                     List<Entity> entities = commands.Entries[x].GetEntities();
                     for (int i = 0; i < entities.Count; i++)
-                        ParameterUtils.AddAllDefaultParameters(entities[i], commands.Entries[x], false); //note: applying just PARAMETER seems fine. including the others results in minor issues.
+                        commands.Utils.AddAllDefaultParameters(entities[i], commands.Entries[x], false); //note: applying just PARAMETER seems fine. including the others results in minor issues.
                 }
 
                 commands.Save();
@@ -339,11 +1262,11 @@ namespace CommandsEditor
             {
                 Commands commands = new Commands(file);
                 for (int x = 0; x < commands.Entries.Count; x++)
-                    CommandsUtils.PurgeDeadLinks(commands, commands.Entries[x]);
+                    commands.Utils.PurgeDeadLinks(commands.Entries[x]);
 
                 for (int x = 0; x < commands.Entries.Count; x++)
                 {
-                    if (CommandsUtils.PurgeDeadLinks(commands, commands.Entries[x])) {
+                    if (commands.Utils.PurgeDeadLinks(commands.Entries[x])) {
                         string sdfsddf = "";
                     }
                 }
@@ -351,39 +1274,77 @@ namespace CommandsEditor
 #endif
         }
 
-        public static void TestVisibilityMVR()
+        /*
+        public static void TestMVR()
         {
 #if DEBUG
 
-            List<string> files = Directory.GetFiles("F:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\data_orig\\ENV\\Production", "MODELS.MVR", SearchOption.AllDirectories).ToList<string>();
-            HashSet<uint> visibility_vars = new HashSet<uint>();
+            List<string> files = Directory.GetFiles("M:\\Modding\\Steam Projects\\steamapps\\common\\Alien Isolation\\data\\ENV\\PRODUCTION", "MODELS.MVR", SearchOption.AllDirectories).ToList<string>();
             foreach (string file in files)
             {
                 Movers movers = new Movers(file);
                 for (int i = 0; i < movers.Entries.Count; i++)
-                    visibility_vars.Add(movers.Entries[i].visibility);
+                {
+                    Matrix4x4.Decompose(movers.Entries[i].transform, out Vector3 scale, out System.Numerics.Quaternion rotation, out Vector3 position);
+                    if (scale.X < 0.99 || scale.X > 1.01 ||
+                        scale.Y < 0.99 || scale.Y > 1.01 || 
+                        scale.Z < 0.99 || scale.Z > 1.01)
+                    {
+                        Console.WriteLine(scale);
+                    }
+                }
+                //movers.Save();
             }
-            List<uint> visibility = new List<uint>(visibility_vars);
-            foreach (var number in visibility)
-                Console.WriteLine(number);
 #endif
         }
+        */
 
-        public static void DoCheckOnNodegraph()
+        public static void TestLights()
         {
 #if DEBUG
 
-            List<string> files = Directory.GetFiles("F:\\SteamLibrary\\steamapps\\common\\Alien Isolation\\data_orig\\ENV\\Production", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            List<string> files = Directory.GetFiles("M:\\Modding\\Steam Projects\\steamapps\\common\\Alien Isolation\\data\\ENV\\PRODUCTION", "lights.bin", SearchOption.AllDirectories).ToList<string>();
+            foreach (string file in files)
+            {
+                Lights lights = new Lights(file);
+                lights.Sun.enabled = true;
+                lights.Sun.colour = new Vector3(1, 1, 1);
+                lights.Sun.direction = new Vector3(0, 90, 0);
+                lights.Sun.feature_flags |= Lights.LightFeature.LensFlare;
+                lights.Sun.feature_flags |= Lights.LightFeature.NoClip;
+                lights.Sun.feature_flags |= Lights.LightFeature.Specular;
+                lights.Sun.feature_flags = 0;
+                lights.Save();
+            }
+
+            string sdffsd = "";
+#endif
+        }
+
+        public static void TestAllFlowgraphs()
+        {
+#if DEBUG
+
+            List<string> files = Directory.GetFiles("C:\\Program Files (x86)\\Steam\\steamapps\\common\\Alien Isolation\\DATA\\ENV", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
             foreach (string file in files)
             {
                 Commands commands = new Commands(file);
-                commands.EntryPoints[0].name = EditorUtils.GetCompositeName(commands.EntryPoints[0]);
-                Flowgraph flowgraph = new Flowgraph();
-                flowgraph.Show();
-                //flowgraph.DEBUG_LoadAll_Test(commands);
-                flowgraph.Hide();
-                flowgraph.Dispose();
+                FlowgraphLayoutManager.LinkCommands(commands);
+                foreach (Composite comp in commands.Entries)
+                {
+                    List<FlowgraphMeta> layouts = FlowgraphLayoutManager.GetLayouts(comp);
+                    foreach (FlowgraphMeta layout in layouts)
+                    {
+                        Flowgraph flowgraph = new Flowgraph(commands);
+                        flowgraph.Show();
+                        flowgraph.ShowFlowgraph(comp, layout);
+                        flowgraph.Hide();
+                        flowgraph.Dispose();
+                    }
+                }
             }
+
+            string sdfsdf = "";
 #endif
         }
 
@@ -425,7 +1386,7 @@ namespace CommandsEditor
                 {
                     Parallel.ForEach(comp.functions, func =>
                     {
-                        if (func.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.Zone))
+                        if (func.function == FunctionType.Zone)
                         {
                             List<EntityConnector> parentLinks = func.GetParentLinks(comp);
                             if (parentLinks.FindAll(o => o.thisParamID == ShortGuidUtils.Generate("composites")).Count != 0)
@@ -564,15 +1525,13 @@ namespace CommandsEditor
                 output.Add("====================");
 
                 Commands commands = new Commands(file);
-                EntityUtils.LinkCommands(commands);
-                ShortGuidUtils.LinkCommands(commands);
 
                 foreach (Composite composite in commands.Entries)
                 {
                     if (OnlyDoOneComp != "" && composite.name != OnlyDoOneComp)
                         continue;
 
-                    CommandsUtils.PurgeDeadLinks(commands, composite);
+                    commands.Utils.PurgeDeadLinks(composite);
 
                     List<Entity> entities = composite.GetEntities();
                     List<Entity> checkedEnts = new List<Entity>();
@@ -704,11 +1663,11 @@ namespace CommandsEditor
                         Parameter AnimationSet = func.GetParameter("AnimationSet");
                         if (AnimationSet == null && Animation != null)
                         {
-                            Console.WriteLine(comp.name + " -> " + EntityUtils.GetName(comp, func) + " (" + func.function.ToString() + ")" + "\n\tWARNING: Found Animation without AnimationSet\n\n");
+                            Console.WriteLine(comp.name + " -> " + commands.Utils.GetEntityName(comp, func) + " (" + func.function.ToString() + ")" + "\n\tWARNING: Found Animation without AnimationSet\n\n");
                         }
                         if (AnimationSet != null && Animation == null)
                         {
-                            Console.WriteLine(comp.name + " -> " + EntityUtils.GetName(comp, func) + " (" + func.function.ToString() + ")" + "\n\tWARNING: Found AnimationSet without Animation\n\n");
+                            Console.WriteLine(comp.name + " -> " + commands.Utils.GetEntityName(comp, func) + " (" + func.function.ToString() + ")" + "\n\tWARNING: Found AnimationSet without Animation\n\n");
                         }
                         if (AnimationSet != null && Animation != null)
                         {
@@ -752,7 +1711,7 @@ namespace CommandsEditor
                         if (commands.GetComposite(ent.function) != null) continue;
                         //if (!CommandsUtils.FunctionTypeExists(ent.function)) continue; //NOT USING THIS ANYMORE AS DELETED FUNCTIONS COULD WILL NOT BE COUNTED FOR...
 
-                        string type = !CommandsUtils.FunctionTypeExists(ent.function) ? "DELETED FUNCTION OR COMPOSITE: " + ent.function.ToByteString() : CommandsUtils.GetFunctionType(ent.function).ToString();
+                        string type = !ent.function.IsFunctionType ? "DELETED FUNCTION OR COMPOSITE: " + ent.function.ToByteString() : ent.function.AsFunctionType.ToString();
                         if (!usesOfFunction.ContainsKey(type))
                         {
                             usesOfFunction.Add(type, new List<string>());
@@ -888,7 +1847,7 @@ namespace CommandsEditor
                         Parallel.ForEach(ent.parameters, param =>
                         {
                             if (param.content.dataType == DataType.ENUM)
-                                Console.WriteLine(file + "," + comp.name + "," + EntityUtils.GetName(comp, ent) + "," + param.name + "," + ((cEnum)param.content).enumID.ToString() + "," + ((cEnum)param.content).enumIndex);
+                                Console.WriteLine(file + "," + comp.name + "," + phys.Utils.GetEntityName(comp, ent) + "," + param.name + "," + ((cEnum)param.content).enumID.ToString() + "," + ((cEnum)param.content).enumIndex);
                             //if (param.content.dataType == DataType.ENUM)
                             //    enumUI.PopulateUI((cEnum)param.content, file + "," + comp.name + "," + EntityUtils.GetName(comp, ent) + "," + param.name.ToString() + ",");
                         });
@@ -899,400 +1858,6 @@ namespace CommandsEditor
         }
 
 
-        public static void SyncEnumValuesAndDump()
-        {
-#if DEBUG
-            List<EnumDescriptor> lookup_enum = new List<EnumDescriptor>();
-
-            EnumDescriptor _AGGRESSION_GAIN = GetEnum("AGGRESSION_GAIN");
-            foreach (EnumDescriptor.Entry e in _AGGRESSION_GAIN.Entries) e.Index = (int)((AGGRESSION_GAIN)Enum.Parse(typeof(AGGRESSION_GAIN), e.Name));
-            lookup_enum.Add(_AGGRESSION_GAIN);
-            EnumDescriptor _ALERTNESS_STATE = GetEnum("ALERTNESS_STATE");
-            foreach (EnumDescriptor.Entry e in _ALERTNESS_STATE.Entries) e.Index = (int)((ALERTNESS_STATE)Enum.Parse(typeof(ALERTNESS_STATE), e.Name));
-            lookup_enum.Add(_ALERTNESS_STATE);
-            EnumDescriptor _ALIEN_DEVELOPMENT_MANAGER_STAGES = GetEnum("ALIEN_DEVELOPMENT_MANAGER_STAGES");
-            foreach (EnumDescriptor.Entry e in _ALIEN_DEVELOPMENT_MANAGER_STAGES.Entries) e.Index = (int)((ALIEN_DEVELOPMENT_MANAGER_STAGES)Enum.Parse(typeof(ALIEN_DEVELOPMENT_MANAGER_STAGES), e.Name));
-            lookup_enum.Add(_ALIEN_DEVELOPMENT_MANAGER_STAGES);
-            EnumDescriptor _ALLIANCE_GROUP = GetEnum("ALLIANCE_GROUP");
-            foreach (EnumDescriptor.Entry e in _ALLIANCE_GROUP.Entries) e.Index = (int)((ALLIANCE_GROUP)Enum.Parse(typeof(ALLIANCE_GROUP), e.Name));
-            lookup_enum.Add(_ALLIANCE_GROUP);
-            EnumDescriptor _ALLIANCE_STANCE = GetEnum("ALLIANCE_STANCE");
-            foreach (EnumDescriptor.Entry e in _ALLIANCE_STANCE.Entries) e.Index = (int)((ALLIANCE_STANCE)Enum.Parse(typeof(ALLIANCE_STANCE), e.Name));
-            lookup_enum.Add(_ALLIANCE_STANCE);
-            EnumDescriptor _AMBUSH_TYPE = GetEnum("AMBUSH_TYPE");
-            foreach (EnumDescriptor.Entry e in _AMBUSH_TYPE.Entries) e.Index = (int)((AMBUSH_TYPE)Enum.Parse(typeof(AMBUSH_TYPE), e.Name));
-            lookup_enum.Add(_AMBUSH_TYPE);
-            EnumDescriptor _AMMO_TYPE = GetEnum("AMMO_TYPE");
-            foreach (EnumDescriptor.Entry e in _AMMO_TYPE.Entries) e.Index = (int)((AMMO_TYPE)Enum.Parse(typeof(AMMO_TYPE), e.Name));
-            lookup_enum.Add(_AMMO_TYPE);
-            EnumDescriptor _ANIM_MODE = GetEnum("ANIM_MODE");
-            foreach (EnumDescriptor.Entry e in _ANIM_MODE.Entries) e.Index = (int)((ANIM_MODE)Enum.Parse(typeof(ANIM_MODE), e.Name));
-            lookup_enum.Add(_ANIM_MODE);
-            EnumDescriptor _ANIMATION_EFFECT_TYPE = GetEnum("ANIMATION_EFFECT_TYPE");
-            foreach (EnumDescriptor.Entry e in _ANIMATION_EFFECT_TYPE.Entries) e.Index = (int)((ANIMATION_EFFECT_TYPE)Enum.Parse(typeof(ANIMATION_EFFECT_TYPE), e.Name));
-            lookup_enum.Add(_ANIMATION_EFFECT_TYPE);
-            EnumDescriptor _AREA_SWEEP_TYPE = GetEnum("AREA_SWEEP_TYPE");
-            foreach (EnumDescriptor.Entry e in _AREA_SWEEP_TYPE.Entries) e.Index = (int)((AREA_SWEEP_TYPE)Enum.Parse(typeof(AREA_SWEEP_TYPE), e.Name));
-            lookup_enum.Add(_AREA_SWEEP_TYPE);
-            EnumDescriptor _AUTODETECT = GetEnum("AUTODETECT");
-            foreach (EnumDescriptor.Entry e in _AUTODETECT.Entries) e.Index = (int)((AUTODETECT)Enum.Parse(typeof(AUTODETECT), e.Name));
-            lookup_enum.Add(_AUTODETECT);
-            EnumDescriptor _BEHAVIOR_TREE_BRANCH_TYPE = GetEnum("BEHAVIOR_TREE_BRANCH_TYPE");
-            foreach (EnumDescriptor.Entry e in _BEHAVIOR_TREE_BRANCH_TYPE.Entries) e.Index = (int)((BEHAVIOR_TREE_BRANCH_TYPE)Enum.Parse(typeof(BEHAVIOR_TREE_BRANCH_TYPE), e.Name));
-            lookup_enum.Add(_BEHAVIOR_TREE_BRANCH_TYPE);
-            EnumDescriptor _BEHAVIOUR_MOOD_SET = GetEnum("BEHAVIOUR_MOOD_SET");
-            foreach (EnumDescriptor.Entry e in _BEHAVIOUR_MOOD_SET.Entries) e.Index = (int)((BEHAVIOUR_MOOD_SET)Enum.Parse(typeof(BEHAVIOUR_MOOD_SET), e.Name));
-            lookup_enum.Add(_BEHAVIOUR_MOOD_SET);
-            EnumDescriptor _BEHAVIOUR_TREE_FLAGS = GetEnum("BEHAVIOUR_TREE_FLAGS");
-            foreach (EnumDescriptor.Entry e in _BEHAVIOUR_TREE_FLAGS.Entries) e.Index = (int)((BEHAVIOUR_TREE_FLAGS)Enum.Parse(typeof(BEHAVIOUR_TREE_FLAGS), e.Name));
-            lookup_enum.Add(_BEHAVIOUR_TREE_FLAGS);
-            EnumDescriptor _BLEND_MODE = GetEnum("BLEND_MODE");
-            foreach (EnumDescriptor.Entry e in _BLEND_MODE.Entries) e.Index = (int)((BLEND_MODE)Enum.Parse(typeof(BLEND_MODE), e.Name));
-            lookup_enum.Add(_BLEND_MODE);
-            EnumDescriptor _BLUEPRINT_LEVEL = GetEnum("BLUEPRINT_LEVEL");
-            foreach (EnumDescriptor.Entry e in _BLUEPRINT_LEVEL.Entries) e.Index = (int)((BLUEPRINT_LEVEL)Enum.Parse(typeof(BLUEPRINT_LEVEL), e.Name));
-            lookup_enum.Add(_BLUEPRINT_LEVEL);
-            EnumDescriptor _BUTTON_TYPE = GetEnum("BUTTON_TYPE");
-            foreach (EnumDescriptor.Entry e in _BUTTON_TYPE.Entries) e.Index = (int)((BUTTON_TYPE)Enum.Parse(typeof(BUTTON_TYPE), e.Name));
-            lookup_enum.Add(_BUTTON_TYPE);
-            EnumDescriptor _CAMERA_PATH_CLASS = GetEnum("CAMERA_PATH_CLASS");
-            foreach (EnumDescriptor.Entry e in _CAMERA_PATH_CLASS.Entries) e.Index = (int)((CAMERA_PATH_CLASS)Enum.Parse(typeof(CAMERA_PATH_CLASS), e.Name));
-            lookup_enum.Add(_CAMERA_PATH_CLASS);
-            EnumDescriptor _CAMERA_PATH_TYPE = GetEnum("CAMERA_PATH_TYPE");
-            foreach (EnumDescriptor.Entry e in _CAMERA_PATH_TYPE.Entries) e.Index = (int)((CAMERA_PATH_TYPE)Enum.Parse(typeof(CAMERA_PATH_TYPE), e.Name));
-            lookup_enum.Add(_CAMERA_PATH_TYPE);
-            EnumDescriptor _CHARACTER_CLASS = GetEnum("CHARACTER_CLASS");
-            foreach (EnumDescriptor.Entry e in _CHARACTER_CLASS.Entries) e.Index = (int)((CHARACTER_CLASS)Enum.Parse(typeof(CHARACTER_CLASS), e.Name));
-            lookup_enum.Add(_CHARACTER_CLASS);
-            EnumDescriptor _CHARACTER_CLASS_COMBINATION = GetEnum("CHARACTER_CLASS_COMBINATION");
-            foreach (EnumDescriptor.Entry e in _CHARACTER_CLASS_COMBINATION.Entries) e.Index = (int)((CHARACTER_CLASS_COMBINATION)Enum.Parse(typeof(CHARACTER_CLASS_COMBINATION), e.Name));
-            lookup_enum.Add(_CHARACTER_CLASS_COMBINATION);
-            EnumDescriptor _CHARACTER_FOLEY_SOUND = GetEnum("CHARACTER_FOLEY_SOUND");
-            foreach (EnumDescriptor.Entry e in _CHARACTER_FOLEY_SOUND.Entries) e.Index = (int)((CHARACTER_FOLEY_SOUND)Enum.Parse(typeof(CHARACTER_FOLEY_SOUND), e.Name));
-            lookup_enum.Add(_CHARACTER_FOLEY_SOUND);
-            EnumDescriptor _CHARACTER_NODE = GetEnum("CHARACTER_NODE");
-            foreach (EnumDescriptor.Entry e in _CHARACTER_NODE.Entries) e.Index = (int)((CHARACTER_NODE)Enum.Parse(typeof(CHARACTER_NODE), e.Name));
-            lookup_enum.Add(_CHARACTER_NODE);
-            EnumDescriptor _CHARACTER_STANCE = GetEnum("CHARACTER_STANCE");
-            foreach (EnumDescriptor.Entry e in _CHARACTER_STANCE.Entries) e.Index = (int)((CHARACTER_STANCE)Enum.Parse(typeof(CHARACTER_STANCE), e.Name));
-            lookup_enum.Add(_CHARACTER_STANCE);
-            EnumDescriptor _CHECKPOINT_TYPE = GetEnum("CHECKPOINT_TYPE");
-            foreach (EnumDescriptor.Entry e in _CHECKPOINT_TYPE.Entries) e.Index = (int)((CHECKPOINT_TYPE)Enum.Parse(typeof(CHECKPOINT_TYPE), e.Name));
-            lookup_enum.Add(_CHECKPOINT_TYPE);
-            EnumDescriptor _CI_MESSAGE_TYPE = GetEnum("CI_MESSAGE_TYPE");
-            foreach (EnumDescriptor.Entry e in _CI_MESSAGE_TYPE.Entries) e.Index = (int)((CI_MESSAGE_TYPE)Enum.Parse(typeof(CI_MESSAGE_TYPE), e.Name));
-            lookup_enum.Add(_CI_MESSAGE_TYPE);
-            EnumDescriptor _CLIPPING_PLANES_PRESETS = GetEnum("CLIPPING_PLANES_PRESETS");
-            foreach (EnumDescriptor.Entry e in _CLIPPING_PLANES_PRESETS.Entries) e.Index = (int)((CLIPPING_PLANES_PRESETS)Enum.Parse(typeof(CLIPPING_PLANES_PRESETS), e.Name));
-            lookup_enum.Add(_CLIPPING_PLANES_PRESETS);
-            EnumDescriptor _COLLISION_TYPE = GetEnum("COLLISION_TYPE");
-            foreach (EnumDescriptor.Entry e in _COLLISION_TYPE.Entries) e.Index = (int)((COLLISION_TYPE)Enum.Parse(typeof(COLLISION_TYPE), e.Name));
-            lookup_enum.Add(_COLLISION_TYPE);
-            EnumDescriptor _COMBAT_BEHAVIOUR = GetEnum("COMBAT_BEHAVIOUR");
-            foreach (EnumDescriptor.Entry e in _COMBAT_BEHAVIOUR.Entries) e.Index = (int)((COMBAT_BEHAVIOUR)Enum.Parse(typeof(COMBAT_BEHAVIOUR), e.Name));
-            lookup_enum.Add(_COMBAT_BEHAVIOUR);
-            EnumDescriptor _CUSTOM_CHARACTER_ACCESSORY_OVERRIDE = GetEnum("CUSTOM_CHARACTER_ACCESSORY_OVERRIDE");
-            foreach (EnumDescriptor.Entry e in _CUSTOM_CHARACTER_ACCESSORY_OVERRIDE.Entries) e.Index = (int)((CUSTOM_CHARACTER_ACCESSORY_OVERRIDE)Enum.Parse(typeof(CUSTOM_CHARACTER_ACCESSORY_OVERRIDE), e.Name));
-            lookup_enum.Add(_CUSTOM_CHARACTER_ACCESSORY_OVERRIDE);
-            EnumDescriptor _CUSTOM_CHARACTER_ASSETS = GetEnum("CUSTOM_CHARACTER_ASSETS");
-            foreach (EnumDescriptor.Entry e in _CUSTOM_CHARACTER_ASSETS.Entries) e.Index = (int)((CUSTOM_CHARACTER_ASSETS)Enum.Parse(typeof(CUSTOM_CHARACTER_ASSETS), e.Name));
-            lookup_enum.Add(_CUSTOM_CHARACTER_ASSETS);
-            EnumDescriptor _CUSTOM_CHARACTER_POPULATION = GetEnum("CUSTOM_CHARACTER_POPULATION");
-            foreach (EnumDescriptor.Entry e in _CUSTOM_CHARACTER_POPULATION.Entries) e.Index = (int)((CUSTOM_CHARACTER_POPULATION)Enum.Parse(typeof(CUSTOM_CHARACTER_POPULATION), e.Name));
-            lookup_enum.Add(_CUSTOM_CHARACTER_POPULATION);
-            EnumDescriptor _CUSTOM_CHARACTER_TYPE = GetEnum("CUSTOM_CHARACTER_TYPE");
-            foreach (EnumDescriptor.Entry e in _CUSTOM_CHARACTER_TYPE.Entries) e.Index = (int)((CUSTOM_CHARACTER_TYPE)Enum.Parse(typeof(CUSTOM_CHARACTER_TYPE), e.Name));
-            lookup_enum.Add(_CUSTOM_CHARACTER_TYPE);
-            EnumDescriptor _DAMAGE_EFFECTS = GetEnum("DAMAGE_EFFECTS");
-            foreach (EnumDescriptor.Entry e in _DAMAGE_EFFECTS.Entries) e.Index = (int)((DAMAGE_EFFECTS)Enum.Parse(typeof(DAMAGE_EFFECTS), e.Name));
-            lookup_enum.Add(_DAMAGE_EFFECTS);
-            EnumDescriptor _DAMAGE_MODE = GetEnum("DAMAGE_MODE");
-            foreach (EnumDescriptor.Entry e in _DAMAGE_MODE.Entries) e.Index = (int)((DAMAGE_MODE)Enum.Parse(typeof(DAMAGE_MODE), e.Name));
-            lookup_enum.Add(_DAMAGE_MODE);
-            EnumDescriptor _DEATH_STYLE = GetEnum("DEATH_STYLE");
-            foreach (EnumDescriptor.Entry e in _DEATH_STYLE.Entries) e.Index = (int)((DEATH_STYLE)Enum.Parse(typeof(DEATH_STYLE), e.Name));
-            lookup_enum.Add(_DEATH_STYLE);
-            EnumDescriptor _DIALOGUE_NPC_EVENT = GetEnum("DIALOGUE_NPC_EVENT");
-            foreach (EnumDescriptor.Entry e in _DIALOGUE_NPC_EVENT.Entries) e.Index = (int)((DIALOGUE_NPC_EVENT)Enum.Parse(typeof(DIALOGUE_NPC_EVENT), e.Name));
-            lookup_enum.Add(_DIALOGUE_NPC_EVENT);
-            EnumDescriptor _DIALOGUE_VOICE_ACTOR = GetEnum("DIALOGUE_VOICE_ACTOR");
-            foreach (EnumDescriptor.Entry e in _DIALOGUE_VOICE_ACTOR.Entries) e.Index = (int)((DIALOGUE_VOICE_ACTOR)Enum.Parse(typeof(DIALOGUE_VOICE_ACTOR), e.Name));
-            lookup_enum.Add(_DIALOGUE_VOICE_ACTOR);
-            EnumDescriptor _DIFFICULTY_SETTING_TYPE = GetEnum("DIFFICULTY_SETTING_TYPE");
-            foreach (EnumDescriptor.Entry e in _DIFFICULTY_SETTING_TYPE.Entries) e.Index = (int)((DIFFICULTY_SETTING_TYPE)Enum.Parse(typeof(DIFFICULTY_SETTING_TYPE), e.Name));
-            lookup_enum.Add(_DIFFICULTY_SETTING_TYPE);
-            EnumDescriptor _DOOR_MECHANISM = GetEnum("DOOR_MECHANISM");
-            foreach (EnumDescriptor.Entry e in _DOOR_MECHANISM.Entries) e.Index = (int)((DOOR_MECHANISM)Enum.Parse(typeof(DOOR_MECHANISM), e.Name));
-            lookup_enum.Add(_DOOR_MECHANISM);
-            EnumDescriptor _DUCK_HEIGHT = GetEnum("DUCK_HEIGHT");
-            foreach (EnumDescriptor.Entry e in _DUCK_HEIGHT.Entries) e.Index = (int)((DUCK_HEIGHT)Enum.Parse(typeof(DUCK_HEIGHT), e.Name));
-            lookup_enum.Add(_DUCK_HEIGHT);
-            EnumDescriptor _ENEMY_TYPE = GetEnum("ENEMY_TYPE");
-            foreach (EnumDescriptor.Entry e in _ENEMY_TYPE.Entries) e.Index = (int)((ENEMY_TYPE)Enum.Parse(typeof(ENEMY_TYPE), e.Name));
-            lookup_enum.Add(_ENEMY_TYPE);
-            EnumDescriptor _ENVIRONMENT_ARCHETYPE = GetEnum("ENVIRONMENT_ARCHETYPE");
-            foreach (EnumDescriptor.Entry e in _ENVIRONMENT_ARCHETYPE.Entries) e.Index = (int)((ENVIRONMENT_ARCHETYPE)Enum.Parse(typeof(ENVIRONMENT_ARCHETYPE), e.Name));
-            lookup_enum.Add(_ENVIRONMENT_ARCHETYPE);
-            EnumDescriptor _EQUIPMENT_SLOT = GetEnum("EQUIPMENT_SLOT");
-            foreach (EnumDescriptor.Entry e in _EQUIPMENT_SLOT.Entries) e.Index = (int)((EQUIPMENT_SLOT)Enum.Parse(typeof(EQUIPMENT_SLOT), e.Name));
-            lookup_enum.Add(_EQUIPMENT_SLOT);
-            EnumDescriptor _EXIT_WAYPOINT = GetEnum("EXIT_WAYPOINT");
-            foreach (EnumDescriptor.Entry e in _EXIT_WAYPOINT.Entries) e.Index = (int)((EXIT_WAYPOINT)Enum.Parse(typeof(EXIT_WAYPOINT), e.Name));
-            lookup_enum.Add(_EXIT_WAYPOINT);
-            EnumDescriptor _FLASH_INVOKE_TYPE = GetEnum("FLASH_INVOKE_TYPE");
-            foreach (EnumDescriptor.Entry e in _FLASH_INVOKE_TYPE.Entries) e.Index = (int)((FLASH_INVOKE_TYPE)Enum.Parse(typeof(FLASH_INVOKE_TYPE), e.Name));
-            lookup_enum.Add(_FLASH_INVOKE_TYPE);
-            EnumDescriptor _FLASH_SCRIPT_RENDER_TYPE = GetEnum("FLASH_SCRIPT_RENDER_TYPE");
-            foreach (EnumDescriptor.Entry e in _FLASH_SCRIPT_RENDER_TYPE.Entries) e.Index = (int)((FLASH_SCRIPT_RENDER_TYPE)Enum.Parse(typeof(FLASH_SCRIPT_RENDER_TYPE), e.Name));
-            lookup_enum.Add(_FLASH_SCRIPT_RENDER_TYPE);
-            EnumDescriptor _FOG_BOX_TYPE = GetEnum("FOG_BOX_TYPE");
-            foreach (EnumDescriptor.Entry e in _FOG_BOX_TYPE.Entries) e.Index = (int)((FOG_BOX_TYPE)Enum.Parse(typeof(FOG_BOX_TYPE), e.Name));
-            lookup_enum.Add(_FOG_BOX_TYPE);
-            EnumDescriptor _FOLDER_LOCK_TYPE = GetEnum("FOLDER_LOCK_TYPE");
-            foreach (EnumDescriptor.Entry e in _FOLDER_LOCK_TYPE.Entries) e.Index = (int)((FOLDER_LOCK_TYPE)Enum.Parse(typeof(FOLDER_LOCK_TYPE), e.Name));
-            lookup_enum.Add(_FOLDER_LOCK_TYPE);
-            EnumDescriptor _FOLLOW_CAMERA_MODIFIERS = GetEnum("FOLLOW_CAMERA_MODIFIERS");
-            foreach (EnumDescriptor.Entry e in _FOLLOW_CAMERA_MODIFIERS.Entries) e.Index = (int)((FOLLOW_CAMERA_MODIFIERS)Enum.Parse(typeof(FOLLOW_CAMERA_MODIFIERS), e.Name));
-            lookup_enum.Add(_FOLLOW_CAMERA_MODIFIERS);
-            EnumDescriptor _FOLLOW_TYPE = GetEnum("FOLLOW_TYPE");
-            foreach (EnumDescriptor.Entry e in _FOLLOW_TYPE.Entries) e.Index = (int)((FOLLOW_TYPE)Enum.Parse(typeof(FOLLOW_TYPE), e.Name));
-            lookup_enum.Add(_FOLLOW_TYPE);
-            EnumDescriptor _FRONTEND_STATE = GetEnum("FRONTEND_STATE");
-            foreach (EnumDescriptor.Entry e in _FRONTEND_STATE.Entries) e.Index = (int)((FRONTEND_STATE)Enum.Parse(typeof(FRONTEND_STATE), e.Name));
-            lookup_enum.Add(_FRONTEND_STATE);
-            EnumDescriptor _GAME_CLIP = GetEnum("GAME_CLIP");
-            foreach (EnumDescriptor.Entry e in _GAME_CLIP.Entries) e.Index = (int)((GAME_CLIP)Enum.Parse(typeof(GAME_CLIP), e.Name));
-            lookup_enum.Add(_GAME_CLIP);
-            EnumDescriptor _GATING_TOOL_TYPE = GetEnum("GATING_TOOL_TYPE");
-            foreach (EnumDescriptor.Entry e in _GATING_TOOL_TYPE.Entries) e.Index = (int)((GATING_TOOL_TYPE)Enum.Parse(typeof(GATING_TOOL_TYPE), e.Name));
-            lookup_enum.Add(_GATING_TOOL_TYPE);
-            EnumDescriptor _IDLE = GetEnum("IDLE");
-            foreach (EnumDescriptor.Entry e in _IDLE.Entries) e.Index = (int)((IDLE)Enum.Parse(typeof(IDLE), e.Name));
-            lookup_enum.Add(_IDLE);
-            EnumDescriptor _IDLE_STYLE = GetEnum("IDLE_STYLE");
-            foreach (EnumDescriptor.Entry e in _IDLE_STYLE.Entries) e.Index = (int)((IDLE_STYLE)Enum.Parse(typeof(IDLE_STYLE), e.Name));
-            lookup_enum.Add(_IDLE_STYLE);
-            EnumDescriptor _IMPACT_CHARACTER_BODY_LOCATION_TYPE = GetEnum("IMPACT_CHARACTER_BODY_LOCATION_TYPE");
-            foreach (EnumDescriptor.Entry e in _IMPACT_CHARACTER_BODY_LOCATION_TYPE.Entries) e.Index = (int)((IMPACT_CHARACTER_BODY_LOCATION_TYPE)Enum.Parse(typeof(IMPACT_CHARACTER_BODY_LOCATION_TYPE), e.Name));
-            lookup_enum.Add(_IMPACT_CHARACTER_BODY_LOCATION_TYPE);
-            EnumDescriptor _INPUT_DEVICE_TYPE = GetEnum("INPUT_DEVICE_TYPE");
-            foreach (EnumDescriptor.Entry e in _INPUT_DEVICE_TYPE.Entries) e.Index = (int)((INPUT_DEVICE_TYPE)Enum.Parse(typeof(INPUT_DEVICE_TYPE), e.Name));
-            lookup_enum.Add(_INPUT_DEVICE_TYPE);
-            EnumDescriptor _LEVER_TYPE = GetEnum("LEVER_TYPE");
-            foreach (EnumDescriptor.Entry e in _LEVER_TYPE.Entries) e.Index = (int)((LEVER_TYPE)Enum.Parse(typeof(LEVER_TYPE), e.Name));
-            lookup_enum.Add(_LEVER_TYPE);
-            EnumDescriptor _LIGHT_ADAPTATION_MECHANISM = GetEnum("LIGHT_ADAPTATION_MECHANISM");
-            foreach (EnumDescriptor.Entry e in _LIGHT_ADAPTATION_MECHANISM.Entries) e.Index = (int)((LIGHT_ADAPTATION_MECHANISM)Enum.Parse(typeof(LIGHT_ADAPTATION_MECHANISM), e.Name));
-            lookup_enum.Add(_LIGHT_ADAPTATION_MECHANISM);
-            EnumDescriptor _LIGHT_ANIM = GetEnum("LIGHT_ANIM");
-            foreach (EnumDescriptor.Entry e in _LIGHT_ANIM.Entries) e.Index = (int)((LIGHT_ANIM)Enum.Parse(typeof(LIGHT_ANIM), e.Name));
-            lookup_enum.Add(_LIGHT_ANIM);
-            EnumDescriptor _LIGHT_FADE_TYPE = GetEnum("LIGHT_FADE_TYPE");
-            foreach (EnumDescriptor.Entry e in _LIGHT_FADE_TYPE.Entries) e.Index = (int)((LIGHT_FADE_TYPE)Enum.Parse(typeof(LIGHT_FADE_TYPE), e.Name));
-            lookup_enum.Add(_LIGHT_FADE_TYPE);
-            EnumDescriptor _LIGHT_TRANSITION = GetEnum("LIGHT_TRANSITION");
-            foreach (EnumDescriptor.Entry e in _LIGHT_TRANSITION.Entries) e.Index = (int)((LIGHT_TRANSITION)Enum.Parse(typeof(LIGHT_TRANSITION), e.Name));
-            lookup_enum.Add(_LIGHT_TRANSITION);
-            EnumDescriptor _LIGHT_TYPE = GetEnum("LIGHT_TYPE");
-            foreach (EnumDescriptor.Entry e in _LIGHT_TYPE.Entries) e.Index = (int)((LIGHT_TYPE)Enum.Parse(typeof(LIGHT_TYPE), e.Name));
-            lookup_enum.Add(_LIGHT_TYPE);
-            EnumDescriptor _LOCOMOTION_STATE = GetEnum("LOCOMOTION_STATE");
-            foreach (EnumDescriptor.Entry e in _LOCOMOTION_STATE.Entries) e.Index = (int)((LOCOMOTION_STATE)Enum.Parse(typeof(LOCOMOTION_STATE), e.Name));
-            lookup_enum.Add(_LOCOMOTION_STATE);
-            EnumDescriptor _LOCOMOTION_TARGET_SPEED = GetEnum("LOCOMOTION_TARGET_SPEED");
-            foreach (EnumDescriptor.Entry e in _LOCOMOTION_TARGET_SPEED.Entries) e.Index = (int)((LOCOMOTION_TARGET_SPEED)Enum.Parse(typeof(LOCOMOTION_TARGET_SPEED), e.Name));
-            lookup_enum.Add(_LOCOMOTION_TARGET_SPEED);
-            EnumDescriptor _LOOK_SPEED = GetEnum("LOOK_SPEED");
-            foreach (EnumDescriptor.Entry e in _LOOK_SPEED.Entries) e.Index = (int)((LOOK_SPEED)Enum.Parse(typeof(LOOK_SPEED), e.Name));
-            lookup_enum.Add(_LOOK_SPEED);
-            EnumDescriptor _MAP_ICON_TYPE = GetEnum("MAP_ICON_TYPE");
-            foreach (EnumDescriptor.Entry e in _MAP_ICON_TYPE.Entries) e.Index = (int)((MAP_ICON_TYPE)Enum.Parse(typeof(MAP_ICON_TYPE), e.Name));
-            lookup_enum.Add(_MAP_ICON_TYPE);
-            EnumDescriptor _MELEE_ATTACK_TYPE = GetEnum("MELEE_ATTACK_TYPE");
-            foreach (EnumDescriptor.Entry e in _MELEE_ATTACK_TYPE.Entries) e.Index = (int)((MELEE_ATTACK_TYPE)Enum.Parse(typeof(MELEE_ATTACK_TYPE), e.Name));
-            lookup_enum.Add(_MELEE_ATTACK_TYPE);
-            EnumDescriptor _MELEE_CONTEXT_TYPE = GetEnum("MELEE_CONTEXT_TYPE");
-            foreach (EnumDescriptor.Entry e in _MELEE_CONTEXT_TYPE.Entries) e.Index = (int)((MELEE_CONTEXT_TYPE)Enum.Parse(typeof(MELEE_CONTEXT_TYPE), e.Name));
-            lookup_enum.Add(_MELEE_CONTEXT_TYPE);
-            EnumDescriptor _MOOD = GetEnum("MOOD");
-            foreach (EnumDescriptor.Entry e in _MOOD.Entries) e.Index = (int)((MOOD)Enum.Parse(typeof(MOOD), e.Name));
-            lookup_enum.Add(_MOOD);
-            EnumDescriptor _MOOD_INTENSITY = GetEnum("MOOD_INTENSITY");
-            foreach (EnumDescriptor.Entry e in _MOOD_INTENSITY.Entries) e.Index = (int)((MOOD_INTENSITY)Enum.Parse(typeof(MOOD_INTENSITY), e.Name));
-            lookup_enum.Add(_MOOD_INTENSITY);
-            EnumDescriptor _MOVE = GetEnum("MOVE");
-            foreach (EnumDescriptor.Entry e in _MOVE.Entries) e.Index = (int)((MOVE)Enum.Parse(typeof(MOVE), e.Name));
-            lookup_enum.Add(_MOVE);
-            EnumDescriptor _MUSIC_RTPC_MODE = GetEnum("MUSIC_RTPC_MODE");
-            foreach (EnumDescriptor.Entry e in _MUSIC_RTPC_MODE.Entries) e.Index = (int)((MUSIC_RTPC_MODE)Enum.Parse(typeof(MUSIC_RTPC_MODE), e.Name));
-            lookup_enum.Add(_MUSIC_RTPC_MODE);
-            EnumDescriptor _NAV_MESH_AREA_TYPE = GetEnum("NAV_MESH_AREA_TYPE");
-            foreach (EnumDescriptor.Entry e in _NAV_MESH_AREA_TYPE.Entries) e.Index = (int)((NAV_MESH_AREA_TYPE)Enum.Parse(typeof(NAV_MESH_AREA_TYPE), e.Name));
-            lookup_enum.Add(_NAV_MESH_AREA_TYPE);
-            EnumDescriptor _NOISE_TYPE = GetEnum("NOISE_TYPE");
-            foreach (EnumDescriptor.Entry e in _NOISE_TYPE.Entries) e.Index = (int)((NOISE_TYPE)Enum.Parse(typeof(NOISE_TYPE), e.Name));
-            lookup_enum.Add(_NOISE_TYPE);
-            EnumDescriptor _NPC_AGGRO_LEVEL = GetEnum("NPC_AGGRO_LEVEL");
-            foreach (EnumDescriptor.Entry e in _NPC_AGGRO_LEVEL.Entries) e.Index = (int)((NPC_AGGRO_LEVEL)Enum.Parse(typeof(NPC_AGGRO_LEVEL), e.Name));
-            lookup_enum.Add(_NPC_AGGRO_LEVEL);
-            EnumDescriptor _NPC_COMBAT_STATE = GetEnum("NPC_COMBAT_STATE");
-            foreach (EnumDescriptor.Entry e in _NPC_COMBAT_STATE.Entries) e.Index = (int)((NPC_COMBAT_STATE)Enum.Parse(typeof(NPC_COMBAT_STATE), e.Name));
-            lookup_enum.Add(_NPC_COMBAT_STATE);
-            EnumDescriptor _NPC_COVER_REQUEST_TYPE = GetEnum("NPC_COVER_REQUEST_TYPE");
-            foreach (EnumDescriptor.Entry e in _NPC_COVER_REQUEST_TYPE.Entries) e.Index = (int)((NPC_COVER_REQUEST_TYPE)Enum.Parse(typeof(NPC_COVER_REQUEST_TYPE), e.Name));
-            lookup_enum.Add(_NPC_COVER_REQUEST_TYPE);
-            EnumDescriptor _NPC_GUN_AIM_MODE = GetEnum("NPC_GUN_AIM_MODE");
-            foreach (EnumDescriptor.Entry e in _NPC_GUN_AIM_MODE.Entries) e.Index = (int)((NPC_GUN_AIM_MODE)Enum.Parse(typeof(NPC_GUN_AIM_MODE), e.Name));
-            lookup_enum.Add(_NPC_GUN_AIM_MODE);
-            EnumDescriptor _ORIENTATION_AXIS = GetEnum("ORIENTATION_AXIS");
-            foreach (EnumDescriptor.Entry e in _ORIENTATION_AXIS.Entries) e.Index = (int)((ORIENTATION_AXIS)Enum.Parse(typeof(ORIENTATION_AXIS), e.Name));
-            lookup_enum.Add(_ORIENTATION_AXIS);
-            EnumDescriptor _PATH_DRIVEN_TYPE = GetEnum("PATH_DRIVEN_TYPE");
-            foreach (EnumDescriptor.Entry e in _PATH_DRIVEN_TYPE.Entries) e.Index = (int)((PATH_DRIVEN_TYPE)Enum.Parse(typeof(PATH_DRIVEN_TYPE), e.Name));
-            lookup_enum.Add(_PATH_DRIVEN_TYPE);
-            EnumDescriptor _PICKUP_CATEGORY = GetEnum("PICKUP_CATEGORY");
-            foreach (EnumDescriptor.Entry e in _PICKUP_CATEGORY.Entries) e.Index = (int)((PICKUP_CATEGORY)Enum.Parse(typeof(PICKUP_CATEGORY), e.Name));
-            lookup_enum.Add(_PICKUP_CATEGORY);
-            EnumDescriptor _PLATFORM_TYPE = GetEnum("PLATFORM_TYPE");
-            foreach (EnumDescriptor.Entry e in _PLATFORM_TYPE.Entries) e.Index = (int)((PLATFORM_TYPE)Enum.Parse(typeof(PLATFORM_TYPE), e.Name));
-            lookup_enum.Add(_PLATFORM_TYPE);
-            EnumDescriptor _PLAYER_INVENTORY_SET = GetEnum("PLAYER_INVENTORY_SET");
-            foreach (EnumDescriptor.Entry e in _PLAYER_INVENTORY_SET.Entries) e.Index = (int)((PLAYER_INVENTORY_SET)Enum.Parse(typeof(PLAYER_INVENTORY_SET), e.Name));
-            lookup_enum.Add(_PLAYER_INVENTORY_SET);
-            EnumDescriptor _POPUP_MESSAGE_ICON = GetEnum("POPUP_MESSAGE_ICON");
-            foreach (EnumDescriptor.Entry e in _POPUP_MESSAGE_ICON.Entries) e.Index = (int)((POPUP_MESSAGE_ICON)Enum.Parse(typeof(POPUP_MESSAGE_ICON), e.Name));
-            lookup_enum.Add(_POPUP_MESSAGE_ICON);
-            EnumDescriptor _POPUP_MESSAGE_SOUND = GetEnum("POPUP_MESSAGE_SOUND");
-            foreach (EnumDescriptor.Entry e in _POPUP_MESSAGE_SOUND.Entries) e.Index = (int)((POPUP_MESSAGE_SOUND)Enum.Parse(typeof(POPUP_MESSAGE_SOUND), e.Name));
-            lookup_enum.Add(_POPUP_MESSAGE_SOUND);
-            EnumDescriptor _PRIORITY = GetEnum("PRIORITY");
-            foreach (EnumDescriptor.Entry e in _PRIORITY.Entries) e.Index = (int)((PRIORITY)Enum.Parse(typeof(PRIORITY), e.Name));
-            lookup_enum.Add(_PRIORITY);
-            EnumDescriptor _RANGE_TEST_SHAPE = GetEnum("RANGE_TEST_SHAPE");
-            foreach (EnumDescriptor.Entry e in _RANGE_TEST_SHAPE.Entries) e.Index = (int)((RANGE_TEST_SHAPE)Enum.Parse(typeof(RANGE_TEST_SHAPE), e.Name));
-            lookup_enum.Add(_RANGE_TEST_SHAPE);
-            EnumDescriptor _RAYCAST_PRIORITY = GetEnum("RAYCAST_PRIORITY");
-            foreach (EnumDescriptor.Entry e in _RAYCAST_PRIORITY.Entries) e.Index = (int)((RAYCAST_PRIORITY)Enum.Parse(typeof(RAYCAST_PRIORITY), e.Name));
-            lookup_enum.Add(_RAYCAST_PRIORITY);
-            EnumDescriptor _RESPAWN_MODE = GetEnum("RESPAWN_MODE");
-            foreach (EnumDescriptor.Entry e in _RESPAWN_MODE.Entries) e.Index = (int)((RESPAWN_MODE)Enum.Parse(typeof(RESPAWN_MODE), e.Name));
-            lookup_enum.Add(_RESPAWN_MODE);
-            EnumDescriptor _REWIRE_SYSTEM_NAME = GetEnum("REWIRE_SYSTEM_NAME");
-            foreach (EnumDescriptor.Entry e in _REWIRE_SYSTEM_NAME.Entries) e.Index = (int)((REWIRE_SYSTEM_NAME)Enum.Parse(typeof(REWIRE_SYSTEM_NAME), e.Name));
-            lookup_enum.Add(_REWIRE_SYSTEM_NAME);
-            EnumDescriptor _REWIRE_SYSTEM_TYPE = GetEnum("REWIRE_SYSTEM_TYPE");
-            foreach (EnumDescriptor.Entry e in _REWIRE_SYSTEM_TYPE.Entries) e.Index = (int)((REWIRE_SYSTEM_TYPE)Enum.Parse(typeof(REWIRE_SYSTEM_TYPE), e.Name));
-            lookup_enum.Add(_REWIRE_SYSTEM_TYPE);
-            EnumDescriptor _SECONDARY_ANIMATION_LAYER = GetEnum("SECONDARY_ANIMATION_LAYER");
-            foreach (EnumDescriptor.Entry e in _SECONDARY_ANIMATION_LAYER.Entries) e.Index = (int)((SECONDARY_ANIMATION_LAYER)Enum.Parse(typeof(SECONDARY_ANIMATION_LAYER), e.Name));
-            lookup_enum.Add(_SECONDARY_ANIMATION_LAYER);
-            EnumDescriptor _SENSE_SET = GetEnum("SENSE_SET");
-            foreach (EnumDescriptor.Entry e in _SENSE_SET.Entries) e.Index = (int)((SENSE_SET)Enum.Parse(typeof(SENSE_SET), e.Name));
-            lookup_enum.Add(_SENSE_SET);
-            EnumDescriptor _SENSORY_TYPE = GetEnum("SENSORY_TYPE");
-            foreach (EnumDescriptor.Entry e in _SENSORY_TYPE.Entries) e.Index = (int)((SENSORY_TYPE)Enum.Parse(typeof(SENSORY_TYPE), e.Name));
-            lookup_enum.Add(_SENSORY_TYPE);
-            EnumDescriptor _SHAKE_TYPE = GetEnum("SHAKE_TYPE");
-            foreach (EnumDescriptor.Entry e in _SHAKE_TYPE.Entries) e.Index = (int)((SHAKE_TYPE)Enum.Parse(typeof(SHAKE_TYPE), e.Name));
-            lookup_enum.Add(_SHAKE_TYPE);
-            EnumDescriptor _SIDE = GetEnum("SIDE");
-            foreach (EnumDescriptor.Entry e in _SIDE.Entries) e.Index = (int)((SIDE)Enum.Parse(typeof(SIDE), e.Name));
-            lookup_enum.Add(_SIDE);
-            EnumDescriptor _SOUND_POOL = GetEnum("SOUND_POOL");
-            foreach (EnumDescriptor.Entry e in _SOUND_POOL.Entries) e.Index = (int)((SOUND_POOL)Enum.Parse(typeof(SOUND_POOL), e.Name));
-            lookup_enum.Add(_SOUND_POOL);
-            EnumDescriptor _SPEECH_PRIORITY = GetEnum("SPEECH_PRIORITY");
-            foreach (EnumDescriptor.Entry e in _SPEECH_PRIORITY.Entries) e.Index = (int)((SPEECH_PRIORITY)Enum.Parse(typeof(SPEECH_PRIORITY), e.Name));
-            lookup_enum.Add(_SPEECH_PRIORITY);
-            EnumDescriptor _STEAL_CAMERA_TYPE = GetEnum("STEAL_CAMERA_TYPE");
-            foreach (EnumDescriptor.Entry e in _STEAL_CAMERA_TYPE.Entries) e.Index = (int)((STEAL_CAMERA_TYPE)Enum.Parse(typeof(STEAL_CAMERA_TYPE), e.Name));
-            lookup_enum.Add(_STEAL_CAMERA_TYPE);
-            EnumDescriptor _SUB_OBJECTIVE_TYPE = GetEnum("SUB_OBJECTIVE_TYPE");
-            foreach (EnumDescriptor.Entry e in _SUB_OBJECTIVE_TYPE.Entries) e.Index = (int)((SUB_OBJECTIVE_TYPE)Enum.Parse(typeof(SUB_OBJECTIVE_TYPE), e.Name));
-            lookup_enum.Add(_SUB_OBJECTIVE_TYPE);
-            EnumDescriptor _SUSPICIOUS_ITEM = GetEnum("SUSPICIOUS_ITEM");
-            foreach (EnumDescriptor.Entry e in _SUSPICIOUS_ITEM.Entries) e.Index = (int)((SUSPICIOUS_ITEM)Enum.Parse(typeof(SUSPICIOUS_ITEM), e.Name));
-            lookup_enum.Add(_SUSPICIOUS_ITEM);
-            EnumDescriptor _SUSPICIOUS_ITEM_BEHAVIOUR_TREE_PRIORITY = GetEnum("SUSPICIOUS_ITEM_BEHAVIOUR_TREE_PRIORITY");
-            foreach (EnumDescriptor.Entry e in _SUSPICIOUS_ITEM_BEHAVIOUR_TREE_PRIORITY.Entries) e.Index = (int)((SUSPICIOUS_ITEM_BEHAVIOUR_TREE_PRIORITY)Enum.Parse(typeof(SUSPICIOUS_ITEM_BEHAVIOUR_TREE_PRIORITY), e.Name));
-            lookup_enum.Add(_SUSPICIOUS_ITEM_BEHAVIOUR_TREE_PRIORITY);
-            EnumDescriptor _SUSPICIOUS_ITEM_REACTION = GetEnum("SUSPICIOUS_ITEM_REACTION");
-            foreach (EnumDescriptor.Entry e in _SUSPICIOUS_ITEM_REACTION.Entries) e.Index = (int)((SUSPICIOUS_ITEM_REACTION)Enum.Parse(typeof(SUSPICIOUS_ITEM_REACTION), e.Name));
-            lookup_enum.Add(_SUSPICIOUS_ITEM_REACTION);
-            EnumDescriptor _SUSPICIOUS_ITEM_STAGE = GetEnum("SUSPICIOUS_ITEM_STAGE");
-            foreach (EnumDescriptor.Entry e in _SUSPICIOUS_ITEM_STAGE.Entries) e.Index = (int)((SUSPICIOUS_ITEM_STAGE)Enum.Parse(typeof(SUSPICIOUS_ITEM_STAGE), e.Name));
-            lookup_enum.Add(_SUSPICIOUS_ITEM_STAGE);
-            EnumDescriptor _SUSPICIOUS_ITEM_TRIGGER = GetEnum("SUSPICIOUS_ITEM_TRIGGER");
-            foreach (EnumDescriptor.Entry e in _SUSPICIOUS_ITEM_TRIGGER.Entries) e.Index = (int)((SUSPICIOUS_ITEM_TRIGGER)Enum.Parse(typeof(SUSPICIOUS_ITEM_TRIGGER), e.Name));
-            lookup_enum.Add(_SUSPICIOUS_ITEM_TRIGGER);
-            EnumDescriptor _TASK_CHARACTER_CLASS_FILTER = GetEnum("TASK_CHARACTER_CLASS_FILTER");
-            foreach (EnumDescriptor.Entry e in _TASK_CHARACTER_CLASS_FILTER.Entries) e.Index = (int)((TASK_CHARACTER_CLASS_FILTER)Enum.Parse(typeof(TASK_CHARACTER_CLASS_FILTER), e.Name));
-            lookup_enum.Add(_TASK_CHARACTER_CLASS_FILTER);
-            EnumDescriptor _TASK_OPERATION_MODE = GetEnum("TASK_OPERATION_MODE");
-            foreach (EnumDescriptor.Entry e in _TASK_OPERATION_MODE.Entries) e.Index = (int)((TASK_OPERATION_MODE)Enum.Parse(typeof(TASK_OPERATION_MODE), e.Name));
-            lookup_enum.Add(_TASK_OPERATION_MODE);
-            EnumDescriptor _TASK_PRIORITY = GetEnum("TASK_PRIORITY");
-            foreach (EnumDescriptor.Entry e in _TASK_PRIORITY.Entries) e.Index = (int)((TASK_PRIORITY)Enum.Parse(typeof(TASK_PRIORITY), e.Name));
-            lookup_enum.Add(_TASK_PRIORITY);
-            EnumDescriptor _TERMINAL_LOCATION = GetEnum("TERMINAL_LOCATION");
-            foreach (EnumDescriptor.Entry e in _TERMINAL_LOCATION.Entries) e.Index = (int)((TERMINAL_LOCATION)Enum.Parse(typeof(TERMINAL_LOCATION), e.Name));
-            lookup_enum.Add(_TERMINAL_LOCATION);
-            EnumDescriptor _TEXT_ALIGNMENT = GetEnum("TEXT_ALIGNMENT");
-            foreach (EnumDescriptor.Entry e in _TEXT_ALIGNMENT.Entries) e.Index = (int)((TEXT_ALIGNMENT)Enum.Parse(typeof(TEXT_ALIGNMENT), e.Name));
-            lookup_enum.Add(_TEXT_ALIGNMENT);
-            EnumDescriptor _THRESHOLD_QUALIFIER = GetEnum("THRESHOLD_QUALIFIER");
-            foreach (EnumDescriptor.Entry e in _THRESHOLD_QUALIFIER.Entries) e.Index = (int)((THRESHOLD_QUALIFIER)Enum.Parse(typeof(THRESHOLD_QUALIFIER), e.Name));
-            lookup_enum.Add(_THRESHOLD_QUALIFIER);
-            EnumDescriptor _TRANSITION_DIRECTION = GetEnum("TRANSITION_DIRECTION");
-            foreach (EnumDescriptor.Entry e in _TRANSITION_DIRECTION.Entries) e.Index = (int)((TRANSITION_DIRECTION)Enum.Parse(typeof(TRANSITION_DIRECTION), e.Name));
-            lookup_enum.Add(_TRANSITION_DIRECTION);
-            EnumDescriptor _TRAVERSAL_ANIMS = GetEnum("TRAVERSAL_ANIMS");
-            foreach (EnumDescriptor.Entry e in _TRAVERSAL_ANIMS.Entries) e.Index = (int)((TRAVERSAL_ANIMS)Enum.Parse(typeof(TRAVERSAL_ANIMS), e.Name));
-            lookup_enum.Add(_TRAVERSAL_ANIMS);
-            EnumDescriptor _UI_ICON_ICON = GetEnum("UI_ICON_ICON");
-            foreach (EnumDescriptor.Entry e in _UI_ICON_ICON.Entries) e.Index = (int)((UI_ICON_ICON)Enum.Parse(typeof(UI_ICON_ICON), e.Name));
-            lookup_enum.Add(_UI_ICON_ICON);
-            EnumDescriptor _UI_KEYGATE_TYPE = GetEnum("UI_KEYGATE_TYPE");
-            foreach (EnumDescriptor.Entry e in _UI_KEYGATE_TYPE.Entries) e.Index = (int)((UI_KEYGATE_TYPE)Enum.Parse(typeof(UI_KEYGATE_TYPE), e.Name));
-            lookup_enum.Add(_UI_KEYGATE_TYPE);
-            EnumDescriptor _VIEWCONE_TYPE = GetEnum("VIEWCONE_TYPE");
-            foreach (EnumDescriptor.Entry e in _VIEWCONE_TYPE.Entries) e.Index = (int)((VIEWCONE_TYPE)Enum.Parse(typeof(VIEWCONE_TYPE), e.Name));
-            lookup_enum.Add(_VIEWCONE_TYPE);
-            EnumDescriptor _WAVE_SHAPE = GetEnum("WAVE_SHAPE");
-            foreach (EnumDescriptor.Entry e in _WAVE_SHAPE.Entries) e.Index = (int)((WAVE_SHAPE)Enum.Parse(typeof(WAVE_SHAPE), e.Name));
-            lookup_enum.Add(_WAVE_SHAPE);
-            EnumDescriptor _WEAPON_HANDEDNESS = GetEnum("WEAPON_HANDEDNESS");
-            foreach (EnumDescriptor.Entry e in _WEAPON_HANDEDNESS.Entries) e.Index = (int)((WEAPON_HANDEDNESS)Enum.Parse(typeof(WEAPON_HANDEDNESS), e.Name));
-            lookup_enum.Add(_WEAPON_HANDEDNESS);
-            EnumDescriptor _WEAPON_IMPACT_EFFECT_ORIENTATION = GetEnum("WEAPON_IMPACT_EFFECT_ORIENTATION");
-            foreach (EnumDescriptor.Entry e in _WEAPON_IMPACT_EFFECT_ORIENTATION.Entries) e.Index = (int)((WEAPON_IMPACT_EFFECT_ORIENTATION)Enum.Parse(typeof(WEAPON_IMPACT_EFFECT_ORIENTATION), e.Name));
-            lookup_enum.Add(_WEAPON_IMPACT_EFFECT_ORIENTATION);
-            EnumDescriptor _WEAPON_IMPACT_EFFECT_TYPE = GetEnum("WEAPON_IMPACT_EFFECT_TYPE");
-            foreach (EnumDescriptor.Entry e in _WEAPON_IMPACT_EFFECT_TYPE.Entries) e.Index = (int)((WEAPON_IMPACT_EFFECT_TYPE)Enum.Parse(typeof(WEAPON_IMPACT_EFFECT_TYPE), e.Name));
-            lookup_enum.Add(_WEAPON_IMPACT_EFFECT_TYPE);
-            EnumDescriptor _WEAPON_IMPACT_FILTER_ORIENTATION = GetEnum("WEAPON_IMPACT_FILTER_ORIENTATION");
-            foreach (EnumDescriptor.Entry e in _WEAPON_IMPACT_FILTER_ORIENTATION.Entries) e.Index = (int)((WEAPON_IMPACT_FILTER_ORIENTATION)Enum.Parse(typeof(WEAPON_IMPACT_FILTER_ORIENTATION), e.Name));
-            lookup_enum.Add(_WEAPON_IMPACT_FILTER_ORIENTATION);
-            EnumDescriptor _WEAPON_TYPE = GetEnum("WEAPON_TYPE");
-            foreach (EnumDescriptor.Entry e in _WEAPON_TYPE.Entries) e.Index = (int)((WEAPON_TYPE)Enum.Parse(typeof(WEAPON_TYPE), e.Name));
-            lookup_enum.Add(_WEAPON_TYPE);
-
-            BinaryWriter writer = new BinaryWriter(File.OpenWrite("out_enums.bin"));
-            writer.Write(lookup_enum.Count);
-            foreach (EnumDescriptor e in lookup_enum)
-            {
-                Utilities.Write<ShortGuid>(writer, e.ID);
-                writer.Write(e.Name);
-                writer.Write(e.Entries.Count);
-                for (int i = 0; i < e.Entries.Count; i++)
-                {
-                    writer.Write(e.Entries[i].Name);
-                    writer.Write(e.Entries[i].Index);
-                }
-            }
-            writer.Close();
-#endif
-        }
 
         public static void CommandsTest()
         {
@@ -1303,9 +1868,9 @@ namespace CommandsEditor
                 Commands phys = new Commands(file);
                 Parallel.ForEach(phys.Entries, comp =>
                 {
-                    Parallel.ForEach(comp.functions, ent =>
+                    Parallel.ForEach(comp.functions_dictionary.Values, ent =>
                     {
-                        if (comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.PhysicsModifyGravity)).Count != 0)
+                        if (comp.functions_dictionary.Values.Count(o => o.function == FunctionType.PhysicsModifyGravity) != 0)
                         {
                             Console.WriteLine(file + "\n\t" + comp.name);
                         }
@@ -1328,9 +1893,9 @@ namespace CommandsEditor
                     ShortGuid id = gui.shortGUID;
                     Parallel.ForEach(phys.Entries, comp =>
                     {
-                        Parallel.ForEach(comp.functions.FindAll(o => o.function == id), ent =>
+                        Parallel.ForEach(comp.functions_dictionary.Values.Where(o => o.function == id), ent =>
                         {
-                            Console.WriteLine(file + "\n\t" + comp.name + "\n\t\t" + EntityUtils.GetName(comp, ent));
+                            Console.WriteLine(file + "\n\t" + comp.name + "\n\t\t" + phys.Utils.GetEntityName(comp, ent));
 
                             //Parallel.ForEach(ent.parameters, param =>
                             //{
@@ -1355,7 +1920,7 @@ namespace CommandsEditor
                 Commands phys = new Commands(file);
                 Parallel.ForEach(phys.Entries, comp =>
                 {
-                    List<FunctionEntity> ents = comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.CAGEAnimation));
+                    List<FunctionEntity> ents = comp.functions_dictionary.Values.Where(o => o.function == FunctionType.CAGEAnimation).ToList();
                     Parallel.ForEach(ents, ent =>
                     {
                         CAGEAnimation anim = (CAGEAnimation)ent;
@@ -1364,8 +1929,8 @@ namespace CommandsEditor
                         List<CAGEAnimation.Connection> prunedConnections = new List<CAGEAnimation.Connection>();
                         foreach (CAGEAnimation.Connection connection in anim.connections)
                         {
-                            List<CAGEAnimation.Animation> anim_target = anim.animations.FindAll(o => o.shortGUID == connection.keyframeID);
-                            List<CAGEAnimation.Event> event_target = anim.events.FindAll(o => o.shortGUID == connection.keyframeID);
+                            List<CAGEAnimation.FloatTrack> anim_target = anim.animations.FindAll(o => o.shortGUID == connection.target_track);
+                            List<CAGEAnimation.EventTrack> event_target = anim.events.FindAll(o => o.shortGUID == connection.target_track);
                             if (anim_target.Count == 0 && event_target.Count == 0) continue;
                             prunedConnections.Add(connection);
                         }
@@ -1373,8 +1938,8 @@ namespace CommandsEditor
 
                         foreach (CAGEAnimation.Connection connection in anim.connections)
                         {
-                            List<CAGEAnimation.Animation> anim_target = anim.animations.FindAll(o => o.shortGUID == connection.keyframeID);
-                            List<CAGEAnimation.Event> event_target = anim.events.FindAll(o => o.shortGUID == connection.keyframeID);
+                            List<CAGEAnimation.FloatTrack> anim_target = anim.animations.FindAll(o => o.shortGUID == connection.target_track);
+                            List<CAGEAnimation.EventTrack> event_target = anim.events.FindAll(o => o.shortGUID == connection.target_track);
 
                             //We expect to never point to both
                             if (anim_target.Count != 0 && event_target.Count != 0)
@@ -1386,7 +1951,7 @@ namespace CommandsEditor
                                 throw new Exception();
                             }
 
-                            if (connection.objectType == ObjectType.ENTITY)
+                            if (connection.binding_type == ObjectType.ENTITY)
                             {
                                 //ENTITY links always point to Animation keyframes
                                 if (anim_target.Count == 0 || event_target.Count != 0)
@@ -1395,16 +1960,16 @@ namespace CommandsEditor
                                 }
 
                                 //ENTITY links must always point to params, these appear to only be TRANSFORM or FLOAT in vanilla PAKs
-                                if (connection.parameterDataType != DataType.TRANSFORM &&
-                                    connection.parameterDataType != DataType.FLOAT)
+                                if (connection.target_param_type != DataType.TRANSFORM &&
+                                    connection.target_param_type != DataType.FLOAT)
                                 {
                                     throw new Exception();
                                 }
 
                                 //Check to make sure all TRANSFORM keys happen on the same intervals & are complete
-                                if (connection.parameterDataType == DataType.TRANSFORM)
+                                if (connection.target_param_type == DataType.TRANSFORM)
                                 {
-                                    List<CAGEAnimation.Connection> transform = anim.connections.FindAll(o => o.connectedEntity == connection.connectedEntity && o.parameterID.ToString() == "position");
+                                    List<CAGEAnimation.Connection> transform = anim.connections.FindAll(o => o.connectedEntity == connection.connectedEntity && o.target_param.ToString() == "position");
                                     if (transform.Count != 6 && transform.Count != 3 && transform.Count != 5) //x,y,z,Yaw,Pitch,Roll
                                     {
                                         throw new Exception();
@@ -1412,13 +1977,13 @@ namespace CommandsEditor
                                     List<float> keyframeIntervals = null;
                                     foreach (CAGEAnimation.Connection transformPart in transform)
                                     {
-                                        CAGEAnimation.Animation keyframes = anim.animations.FirstOrDefault(o => o.shortGUID == connection.keyframeID);
+                                        CAGEAnimation.FloatTrack keyframes = anim.animations.FirstOrDefault(o => o.shortGUID == connection.target_track);
                                         if (keyframeIntervals == null)
                                         {
                                             keyframeIntervals = new List<float>();
-                                            foreach (CAGEAnimation.Animation.Keyframe keyframe in keyframes.keyframes)
+                                            foreach (CAGEAnimation.FloatTrack.Keyframe keyframe in keyframes.keyframes)
                                             {
-                                                keyframeIntervals.Add(keyframe.secondsSinceStart);
+                                                keyframeIntervals.Add(keyframe.time);
                                             }
                                         }
                                         else
@@ -1429,7 +1994,7 @@ namespace CommandsEditor
                                             }
                                             for (int i = 0; i < keyframes.keyframes.Count; i++)
                                             {
-                                                if (keyframeIntervals[i] != keyframes.keyframes[i].secondsSinceStart)
+                                                if (keyframeIntervals[i] != keyframes.keyframes[i].time)
                                                 {
                                                     throw new Exception();
                                                 }
@@ -1439,22 +2004,22 @@ namespace CommandsEditor
                                 }
 
                                 //Check sub IDs for pointed datatypes
-                                if (connection.parameterDataType == DataType.TRANSFORM)
+                                if (connection.target_param_type == DataType.TRANSFORM)
                                 {
-                                    if (connection.parameterSubID.ToString() != "Yaw" &&
-                                        connection.parameterSubID.ToString() != "Pitch" &&
-                                        connection.parameterSubID.ToString() != "Roll" &&
-                                        connection.parameterSubID.ToString() != "x" &&
-                                        connection.parameterSubID.ToString() != "y" &&
-                                        connection.parameterSubID.ToString() != "z")
+                                    if (connection.target_sub_param.ToString() != "Yaw" &&
+                                        connection.target_sub_param.ToString() != "Pitch" &&
+                                        connection.target_sub_param.ToString() != "Roll" &&
+                                        connection.target_sub_param.ToString() != "x" &&
+                                        connection.target_sub_param.ToString() != "y" &&
+                                        connection.target_sub_param.ToString() != "z")
                                     {
                                         throw new Exception();
                                     }
                                     //TODO: validate that all these vals are modified at the same keyframe times (can simplify UI!)
                                 }
-                                if (connection.parameterDataType == DataType.FLOAT)
+                                if (connection.target_param_type == DataType.FLOAT)
                                 {
-                                    if (connection.parameterSubID.ToString() != "")
+                                    if (connection.target_sub_param.ToString() != "")
                                     {
                                         throw new Exception();
                                     }
@@ -1469,14 +2034,14 @@ namespace CommandsEditor
                                 }
 
                                 //CHARACTER links usually pair with MARKER links - check that
-                                if (connection.objectType == ObjectType.CHARACTER)
+                                if (connection.binding_type == ObjectType.CHARACTER)
                                 {
-                                    List<CAGEAnimation.Connection> pairedMarker = anim.connections.FindAll(o => o.objectType == ObjectType.MARKER && o.keyframeID == connection.keyframeID);
+                                    List<CAGEAnimation.Connection> pairedMarker = anim.connections.FindAll(o => o.binding_type == ObjectType.MARKER && o.target_track == connection.target_track);
                                     if (pairedMarker.Count != 1)
                                     {
                                         //throw new Exception();
                                     }
-                                    List<CAGEAnimation.Connection> duplicateCharRef = anim.connections.FindAll(o => o.objectType == ObjectType.CHARACTER && o.keyframeID == connection.keyframeID && o.shortGUID != connection.shortGUID);
+                                    List<CAGEAnimation.Connection> duplicateCharRef = anim.connections.FindAll(o => o.binding_type == ObjectType.CHARACTER && o.target_track == connection.target_track && o.binding_guid != connection.binding_guid);
                                     if (duplicateCharRef.Count != 0)
                                     {
                                         throw new Exception();
@@ -1484,9 +2049,9 @@ namespace CommandsEditor
                                 }
 
                                 //As we point to events and not parameters, this info should always be empty
-                                if (connection.parameterID.ToString() != "" ||
-                                    connection.parameterDataType != DataType.NONE ||
-                                    connection.parameterSubID.ToString() != "")
+                                if (connection.target_param.ToString() != "" ||
+                                    connection.target_param_type != DataType.NONE ||
+                                    connection.target_sub_param.ToString() != "")
                                 {
                                     throw new Exception();
                                 }
@@ -1508,28 +2073,28 @@ namespace CommandsEditor
                 Commands phys = new Commands(file);
                 foreach (Composite comp in phys.Entries)
                 {
-                    List<FunctionEntity> anims = comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.CAGEAnimation));
+                    List<FunctionEntity> anims = comp.functions_dictionary.Values.Where(o => o.function == FunctionType.CAGEAnimation).ToList();
                     foreach (FunctionEntity ent in anims)
                     {
                         CAGEAnimation anim = (CAGEAnimation)ent;
-                        foreach (CAGEAnimation.Event key in anim.events)
+                        foreach (CAGEAnimation.EventTrack key in anim.events)
                         {
-                            foreach (CAGEAnimation.Event.Keyframe keyData in key.keyframes)
+                            foreach (CAGEAnimation.EventTrack.Keyframe keyData in key.keyframes)
                             {
-                                AddToListIfUnnamed(keyData.startEvent);
-                                AddToListIfUnnamed(keyData.reverseEvent);
+                                AddToListIfUnnamed(keyData.forward);
+                                AddToListIfUnnamed(keyData.reverse);
                             }
                         }
                     }
 
-                    List<FunctionEntity> trigs = comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.TriggerSequence));
+                    List<FunctionEntity> trigs = comp.functions_dictionary.Values.Where(o => o.function == FunctionType.TriggerSequence).ToList();
                     foreach (FunctionEntity ent in trigs)
                     {
                         TriggerSequence trig = (TriggerSequence)ent;
-                        foreach (TriggerSequence.Event e in trig.events)
+                        foreach (TriggerSequence.MethodEntry e in trig.methods)
                         {
-                            AddToListIfUnnamed(e.start);
-                            AddToListIfUnnamed(e.end);
+                            AddToListIfUnnamed(e.method);
+                            AddToListIfUnnamed(e.finished);
                         }
                     }
 
@@ -1833,6 +2398,7 @@ namespace CommandsEditor
 #endif
         }
 
+        /*
         public static void TestAllPhysMap()
         {
 #if DEBUG
@@ -1849,6 +2415,7 @@ namespace CommandsEditor
             }
 #endif
         }
+        */
 
         private static void WriteVert(float x, float y, float z, BinaryWriter writer)
         {
@@ -1920,226 +2487,6 @@ namespace CommandsEditor
         }
 #endif
 
-        public static void DumpCathodeEntities()
-        {
-#if DEBUG
-            List<string> all_datatypes = new List<string>();
-            List<string> all_types = new List<string>();
-
-            List<string> content = File.ReadAllLines(@"C:\Users\mattf\Downloads\all_nodes_with_params.html").ToList<string>(); //https://myfiles.mattfiler.co.uk/all_nodes_with_params.html
-            List<string> content2 = File.ReadAllLines(@"C:\Users\mattf\Downloads\all_nodes_with_params1.html").ToList<string>(); //https://myfiles.mattfiler.co.uk/all_nodes_with_params1.html
-            List<EntityDef> ents = new List<EntityDef>();
-            EntityDef currentEnt = null;
-            for (int i = 0; i < content.Count; i++)
-            {
-                if (content[i].Length > 3 && content[i].Substring(0, 3) == "<h3")
-                {
-                    if (currentEnt != null)
-                    {
-                        ents.Add(currentEnt);
-                    }
-                    currentEnt = new EntityDef();
-                    string split = content[i].Split('>')[1];
-                    currentEnt.title = split.Substring(0, split.Length - 4);
-                }
-                else if (content[i].Length > 3 && content[i].Substring(0, 3) == "<li")
-                {
-                    string type_s = (content[i].Split('[')[1].Split(']')[0]).ToUpper();
-                    if (type_s == "RESOURCE") continue;
-
-                    Enum.TryParse(type_s, out ParameterVariant type);
-                    if (!currentEnt.stuff.ContainsKey(type)) currentEnt.stuff.Add(type, new List<ParameterDef>());
-
-                    string split = content[i].Split(']')[1];
-                    if (split.Contains("["))
-                    {
-                        split = split.Split('[')[0];
-                        split = split.Substring(1, split.Length - 2);
-                    }
-                    else
-                    {
-                        split = split.Substring(1, split.Length - 6);
-                    }
-                    string[] split2_l = content[i].Split(new string[] { "DataType: " }, StringSplitOptions.None);
-                    string[] split_3 = content2[i].Split(new string[] { "DefaultVal: " }, StringSplitOptions.None);
-                    string datatype = (split2_l.Length > 1) ? split2_l[1].Substring(0, split2_l[1].Length - 6) : "";
-                    string defaultval = (split_3.Length > 1) ? split_3[1].Substring(0, split_3[1].Length - 6) : "";
-
-                    currentEnt.stuff[type].Add(new ParameterDef() { datatype = datatype, name = split, defaultval = defaultval });
-
-                    if (!all_types.Contains(type.ToString()))
-                        all_types.Add(type.ToString());
-                    if (!all_datatypes.Contains(datatype))
-                        all_datatypes.Add(datatype);
-
-                }
-            }
-            ents.Add(currentEnt);
-
-            List<string> type_dump = new List<string>();
-            type_dump.Add("{\"data\":[");
-            foreach (EntityDef def in ents)
-            {
-                if (def.title == @"n:\\content\\build\\library\\archetypes\\gameplay\\gcip_worldpickup")
-                    def.title = "GCIP_WorldPickup";
-                if (def.title == @"n:\\content\\build\\library\\ayz\\animation\\logichelpers\\playforminduration")
-                    def.title = "PlayForMinDuration";
-                if (def.title == @"n:\\content\\build\\library\\archetypes\\script\\gameplay\\torch_control")
-                    def.title = "Torch_Control";
-
-                type_dump.Add("{\"type\": \"" + def.title + "\", \"data\": {");
-                foreach (var val in def.stuff)
-                {
-                    type_dump.Add("\"" + val.Key + "\": [");
-                    foreach (ParameterDef valu in val.Value)
-                    {
-                        type_dump.Add("\"" + valu.name + "\", ");
-                    }
-                    if (val.Value.Count != 0) type_dump[type_dump.Count - 1] = type_dump[type_dump.Count - 1].Substring(0, type_dump[type_dump.Count - 1].Length - 2);
-                    type_dump.Add("], ");
-                }
-                if (def.stuff.Count != 0) type_dump[type_dump.Count - 1] = "]";
-                type_dump.Add("}},");
-            }
-            if (ents.Count != 0) type_dump[type_dump.Count - 1] = "}}";
-            type_dump.Add("]}");
-            string ffff = "";
-            for (int i = 0; i < type_dump.Count; i++)
-                ffff += type_dump[i];
-            File.WriteAllText("types.json", JObject.Parse(ffff).ToString(Formatting.Indented));
-
-            List<string> resource_types = new List<string>();
-
-            List<string> scripting = new List<string>();
-            foreach (EntityDef def in ents)
-            {
-                if (def.title == @"n:\\content\\build\\library\\archetypes\\gameplay\\gcip_worldpickup")
-                    def.title = "GCIP_WorldPickup";
-                if (def.title == @"n:\\content\\build\\library\\ayz\\animation\\logichelpers\\playforminduration")
-                    def.title = "PlayForMinDuration";
-                if (def.title == @"n:\\content\\build\\library\\archetypes\\script\\gameplay\\torch_control")
-                    def.title = "Torch_Control";
-
-                if (def.stuff.Count != 0)
-                {
-                    scripting.Add("case FunctionType." + def.title + ":");
-                    if (def.title == "CAGEAnimation") scripting.Add("\tnewEntity = new CAGEAnimation(thisID);");
-                    if (def.title == "TriggerSequence") scripting.Add("\tnewEntity = new TriggerSequence(thisID);");
-                }
-                foreach (var val in def.stuff)
-                {
-                    foreach (ParameterDef valu in val.Value)
-                    {
-                        if (valu.name == "resource")
-                        {
-                            if (def.title != "ModelReference" && def.title != "EnvironmentModelReference")
-                                scripting.Add("\tnewEntity.AddResource(ResourceType." + valu.datatype + ");");
-                        }
-                        else
-                        {
-                            string defaults = "";
-                            string type = "";
-                            defaults = valu.defaultval;
-                            switch (valu.datatype)
-                            {
-                                case "":
-                                case "Object":
-                                case "ZonePtr":
-                                case "ZoneLinkPtr":
-                                case "ResourceID":
-                                case "ReferenceFramePtr":
-                                case "AnimationInfoPtr":
-                                    type = "ParameterData"; //TODO
-                                    defaults = "";
-                                    break;
-
-                                case "int":
-                                    type = "cInteger";
-                                    break;
-                                case "bool":
-                                    type = "cBool";
-                                    break;
-                                case "float":
-                                    type = "cFloat";
-                                    if (defaults != "") defaults += "f";
-                                    break;
-                                case "String":
-                                    type = "cString";
-                                    defaults = "\"" + defaults + "\"";
-                                    break;
-                                case "Position":
-                                    type = "cTransform";
-                                    break;
-                                case "FilePath":
-                                    type = "cString";
-                                    break;
-                                case "SPLINE":
-                                case "SplineData":
-                                    type = "cSpline";
-                                    if (defaults == "0") defaults = "";
-                                    break;
-                                case "Direction":
-                                    type = "cVector3";
-                                    if (defaults == "0") defaults = "";
-                                    if (defaults == "default_Direction") defaults = "";
-                                    break;
-                                case "Enum":
-                                    type = "cEnum";
-                                    if (defaults == "0xffffffff00000000") defaults = "";
-                                    break;
-                                default:
-                                    type = "cEnum";
-                                    string[] spl = valu.defaultval.Split('(');
-                                    if (spl.Length > 1) defaults = "EnumType." + spl[0].Substring(0, spl[0].Length - 1) + ", " + spl[1].Substring(0, spl[1].Length - 1);
-                                    else
-                                    {
-                                        if (EnumUtils.GetEnum(ShortGuidUtils.Generate(valu.datatype)) == null)
-                                        {
-                                            type = "cResource";
-                                            defaults = "new ResourceReference[]{ new ResourceReference(ResourceType." + valu.datatype + ") }.ToList<ResourceReference>(), newEntity.shortGUID";
-                                            if (!resource_types.Contains(valu.datatype.ToString()))
-                                                resource_types.Add(valu.datatype.ToString());
-                                        }
-                                        else
-                                        {
-                                            defaults = "\"" + valu.datatype + "\", 0";
-                                        }
-                                    }
-                                    break;
-                            }
-                            if (defaults.Length > ("NEON_fmov").Length && defaults.Substring(0, ("NEON_fmov").Length) == "NEON_fmov") defaults = "";
-                            scripting.Add("\tnewEntity.AddParameter(\"" + valu.name + "\", new " + type + "(" + defaults + "), ParameterVariant." + val.Key + "); //" + valu.datatype);
-                        }
-                    }
-                }
-                if (def.stuff.Count != 0)
-                {
-                    if (def.title == "ModelReference")
-                    {
-                        scripting.Add("\tcResource resourceData = new cResource(newEntity.shortGUID);");
-                        scripting.Add("\tresourceData.AddResource(ResourceType.RENDERABLE_INSTANCE);");
-                        scripting.Add("\tnewEntity.parameters.Add(new Parameter(\"resource\", resourceData, ParameterVariant.INTERNAL));");
-                    }
-                    if (def.title == "EnvironmentModelReference")
-                    {
-                        scripting.Add("\tcResource resourceData2 = new cResource(newEntity.shortGUID);");
-                        scripting.Add("\tresourceData2.AddResource(ResourceType.ANIMATED_MODEL);");
-                        scripting.Add("\tnewEntity.parameters.Add(new Parameter(\"resource\", resourceData2, ParameterVariant.INTERNAL));");
-                    }
-                    if (def.title == "PhysicsSystem") scripting.Add("\tnewEntity.AddResource(ResourceType.DYNAMIC_PHYSICS_SYSTEM).startIndex = 0;");
-                    scripting.Add("break;");
-                }
-            }
-            File.WriteAllLines("out.cs", scripting);
-
-            Console.WriteLine(JsonConvert.SerializeObject(all_types, Formatting.Indented));
-            Console.WriteLine(JsonConvert.SerializeObject(all_datatypes, Formatting.Indented));
-            Console.WriteLine(JsonConvert.SerializeObject(resource_types, Formatting.Indented));
-
-            string bleh = JsonConvert.SerializeObject(ents, Formatting.Indented);
-            File.WriteAllText("out.json", bleh);
-#endif
-        }
 
         public static void FindAllNodesInCommands(CommandsEditor editor)
         {
@@ -2174,10 +2521,10 @@ namespace CommandsEditor
                 string[] towrite = new string[200];
                 for (int i = 0; i < editor.Editor.commands.Entries.Count; i++)
                 {
-                    for (int x = 0; x < editor.Editor.commands.Entries[i].functions.Count; x++)
+                    foreach (var function in editor.Editor.commands.Entries[i].functions_dictionary.Values)
                     {
-                        if (!CommandsUtils.FunctionTypeExists(editor.Editor.commands.Entries[i].functions[x].function)) continue;
-                        FunctionType type = CommandsUtils.GetFunctionType(editor.Editor.commands.Entries[i].functions[x].function);
+                        if (!CommandsUtils.FunctionTypeExists(function.function)) continue;
+                        FunctionType type = CommandsUtils.GetFunctionType(function.function);
                         switch (type)
                         {
                             case FunctionType.CameraShake:
@@ -2225,7 +2572,7 @@ namespace CommandsEditor
                                 //Console.WriteLine(rr.Count);
 
 
-                                Console.WriteLine(editor.Editor.commands.Entries[i].name + " -> " + editor.Editor.commands.Entries[i].functions[x].shortGUID + " -> " + type);
+                                Console.WriteLine(editor.Editor.commands.Entries[i].name + " -> " + function.shortGUID + " -> " + type);
 
                                 //for (int y = 0; y < CurrentInstance.commandsPAK.Composites[i].functions[x].resources.Count; y++)
                                 //{
@@ -2271,11 +2618,11 @@ namespace CommandsEditor
                 /*
                 foreach (Composite comp in cmd.Composites)
                 {
-                    int numberOfFunctionNodes = comp.functions.FindAll(o => CommandsUtils.FunctionTypeExists(o.function)).Count;
-                    int numberOfFunctionNodesIncludingCompositeRefs = comp.functions.Count;
+                    int numberOfFunctionNodes = comp.functions_dictionary.Values.Count(o => CommandsUtils.FunctionTypeExists(o.function));
+                    int numberOfFunctionNodesIncludingCompositeRefs = comp.functions_dictionary.Count;
 
                     int numberOfExcludedNodes = 0;
-                    numberOfExcludedNodes += comp.functions.FindAll(o => o.resources.Count != 0).Count;
+                    numberOfExcludedNodes += comp.functions_dictionary.Values.Count(o => o.resources.Count != 0);
 
                     //numberOfExcludedNodes += comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.Zone)).Count;
                     //numberOfExcludedNodes += comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.TriggerSequence)).Count;
@@ -2298,7 +2645,7 @@ namespace CommandsEditor
                     if (comp.unk1 != numberOfFunctionNodes || comp.unk2 != numberOfFunctionNodesIncludingCompositeRefs)
                     {
                         Dictionary<string, int> counts = new Dictionary<string, int>();
-                        foreach (FunctionEntity ent in comp.functions.FindAll(o => CommandsUtils.FunctionTypeExists(o.function)))
+                        foreach (FunctionEntity ent in comp.functions_dictionary.Values.Where(o => CommandsUtils.FunctionTypeExists(o.function)))
                         {
                             if (!counts.ContainsKey(ent.function.ToString()))
                                 counts.Add(ent.function.ToString(), 0);
@@ -2326,42 +2673,42 @@ namespace CommandsEditor
                 string compositeName = "COMP_" + cmd.Entries[i].shortGUID.ToByteString().Replace('-', '_');
                 script.Add("Composite " + compositeName + " = cmd.AddComposite(@\"" + cmd.Entries[i].name + "\");");
 
-                for (int x = 0; x < cmd.Entries[i].functions.Count; x++)
+                foreach (var function in cmd.Entries[i].functions_dictionary.Values)
                 {
-                    string entityName = "ENT_" + cmd.Entries[i].functions[x].shortGUID.ToByteString().Replace('-', '_');
+                    string entityName = "ENT_" + function.shortGUID.ToByteString().Replace('-', '_');
                     script.Add("FunctionEntity " + entityName + " = " + compositeName + ".AddFunction(");
-                    if (CommandsUtils.FunctionTypeExists(cmd.Entries[i].functions[x].function)) script[script.Count - 1] += "FunctionType." + CommandsUtils.GetFunctionType(cmd.Entries[i].functions[x].function) + ");";
-                    else script[script.Count - 1] += "@\"" + cmd.GetComposite(cmd.Entries[i].functions[x].function).name + "\");";
+                    if (function.function.IsFunctionType) script[script.Count - 1] += "FunctionType." + function.function.AsFunctionType + ");";
+                    else script[script.Count - 1] += "@\"" + cmd.GetComposite(function.function).name + "\");";
 
-                    for (int y = 0; y < cmd.Entries[i].functions[x].resources.Count; y++)
+                    for (int y = 0; y < function.resources.Count; y++)
                     {
-                        string resourceName = "RES_" + cmd.Entries[i].functions[x].resources[y].GetHashCode().ToString().Replace('-', '_');
-                        switch (cmd.Entries[i].functions[x].resources[y].resource_type)
+                        string resourceName = "RES_" + function.resources[y].GetHashCode().ToString().Replace('-', '_');
+                        switch (function.resources[y].resource_type)
                         {
                             case ResourceType.RENDERABLE_INSTANCE:
-                                script.Add("ResourceReference " + resourceName + " = " + entityName + ".AddResource(ResourceType." + cmd.Entries[i].functions[x].resources[y].resource_type + ");");
-                                Vector3 pos = cmd.Entries[i].functions[x].resources[y].position;
+                                script.Add("ResourceReference " + resourceName + " = " + entityName + ".AddResource(ResourceType." + function.resources[y].resource_type + ");");
+                                Vector3 pos = function.resources[y].position;
                                 script.Add(resourceName + ".position = new Vector3(" + pos.X + "f, " + pos.Y + "f, " + pos.Z + "f);");
-                                Vector3 rot = cmd.Entries[i].functions[x].resources[y].rotation;
+                                Vector3 rot = function.resources[y].rotation;
                                 script.Add(resourceName + ".rotation = new Vector3(" + rot.X + "f, " + rot.Y + "f, " + rot.Z + "f);");
-                                script.Add(resourceName + ".index = " + cmd.Entries[i].functions[x].resources[y].index + ";");
-                                script.Add(resourceName + ".count = " + cmd.Entries[i].functions[x].resources[y].count + ";");
+                                script.Add(resourceName + ".index = " + function.resources[y].index + ";");
+                                script.Add(resourceName + ".count = " + function.resources[y].count + ";");
                                 break;
                             default:
                                 throw new Exception("Unhandled resource");
                         }
                     }
                 }
-                for (int x = 0; x < cmd.Entries[i].variables.Count; x++)
+                foreach (var variable in cmd.Entries[i].variables_dictionary.Values)
                 {
-                    string entityName = "ENT_" + cmd.Entries[i].variables[x].shortGUID.ToByteString().Replace('-', '_');
-                    script.Add("VariableEntity " + entityName + " = " + compositeName + ".AddVariable(\"" + ShortGuidUtils.FindString(cmd.Entries[i].variables[x].name) + "\", DataType." + cmd.Entries[i].variables[x].type.ToString() + ");");
+                    string entityName = "ENT_" + variable.shortGUID.ToByteString().Replace('-', '_');
+                    script.Add("VariableEntity " + entityName + " = " + compositeName + ".AddVariable(\"" + ShortGuidUtils.FindString(variable.name) + "\", DataType." + variable.type.ToString() + ");");
                 }
-                for (int x = 0; x < cmd.Entries[i].proxies.Count; x++)
+                foreach (var proxy in cmd.Entries[i].proxies_dictionary.Values)
                 {
                     throw new Exception("Unhandled proxy");
                 }
-                for (int x = 0; x < cmd.Entries[i].aliases.Count; x++)
+                foreach (var alias in cmd.Entries[i].aliases_dictionary.Values)
                 {
                     throw new Exception("Unhandled alias");
                 }
@@ -2419,6 +2766,32 @@ namespace CommandsEditor
 #else
             return null;
 #endif
+        }
+#endif
+    }
+
+    public class ShortGuidConverter : JsonConverter
+    {
+        public override bool CanConvert(Type objectType)
+        {
+            // This converter can only handle the ShortGuid type.
+            return objectType == typeof(ShortGuid);
+        }
+
+        /// <summary>
+        /// Writes the ShortGuid to JSON as its integer value.
+        /// </summary>
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            writer.WriteValue(((ShortGuid)value).ToByteString());
+        }
+
+        /// <summary>
+        /// Reads an integer from JSON to create a ShortGuid.
+        /// </summary>
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            return new ShortGuid(reader.Value.ToString());
         }
     }
 }

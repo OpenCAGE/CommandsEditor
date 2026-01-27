@@ -30,7 +30,6 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AddEntity_CompositeInstance));
-            this.addDefaultParams = new System.Windows.Forms.CheckBox();
             this.createEntity = new System.Windows.Forms.Button();
             this.entityName = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -40,20 +39,8 @@
             this.compositeTree = new System.Windows.Forms.TreeView();
             this.imageList = new System.Windows.Forms.ImageList(this.components);
             this.compositeNameDisplay = new System.Windows.Forms.TextBox();
-            this.createNode = new System.Windows.Forms.CheckBox();
+            this.addDefaultParams = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
-            // 
-            // addDefaultParams
-            // 
-            this.addDefaultParams.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.addDefaultParams.AutoSize = true;
-            this.addDefaultParams.Location = new System.Drawing.Point(107, 370);
-            this.addDefaultParams.Name = "addDefaultParams";
-            this.addDefaultParams.Size = new System.Drawing.Size(138, 17);
-            this.addDefaultParams.TabIndex = 15;
-            this.addDefaultParams.Text = "Add Default Parameters";
-            this.addDefaultParams.UseVisualStyleBackColor = true;
             // 
             // createEntity
             // 
@@ -157,25 +144,23 @@
             this.compositeNameDisplay.Size = new System.Drawing.Size(626, 20);
             this.compositeNameDisplay.TabIndex = 148;
             // 
-            // createNode
+            // addDefaultParams
             // 
-            this.createNode.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.addDefaultParams.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.createNode.AutoSize = true;
-            this.createNode.Location = new System.Drawing.Point(15, 370);
-            this.createNode.Name = "createNode";
-            this.createNode.Size = new System.Drawing.Size(86, 17);
-            this.createNode.TabIndex = 149;
-            this.createNode.Text = "Create Node";
-            this.createNode.UseVisualStyleBackColor = true;
-            this.createNode.CheckedChanged += new System.EventHandler(this.createNode_CheckedChanged);
+            this.addDefaultParams.AutoSize = true;
+            this.addDefaultParams.Location = new System.Drawing.Point(15, 370);
+            this.addDefaultParams.Name = "addDefaultParams";
+            this.addDefaultParams.Size = new System.Drawing.Size(138, 17);
+            this.addDefaultParams.TabIndex = 15;
+            this.addDefaultParams.Text = "Add Default Parameters";
+            this.addDefaultParams.UseVisualStyleBackColor = true;
             // 
             // AddEntity_CompositeInstance
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(653, 406);
-            this.Controls.Add(this.createNode);
             this.Controls.Add(this.compositeNameDisplay);
             this.Controls.Add(this.clearSearchBtn);
             this.Controls.Add(this.label1);
@@ -195,8 +180,6 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.CheckBox addDefaultParams;
         private System.Windows.Forms.Button createEntity;
         private System.Windows.Forms.TextBox entityName;
         private System.Windows.Forms.Label label2;
@@ -206,6 +189,6 @@
         private System.Windows.Forms.TreeView compositeTree;
         private System.Windows.Forms.ImageList imageList;
         private System.Windows.Forms.TextBox compositeNameDisplay;
-        private System.Windows.Forms.CheckBox createNode;
+        private System.Windows.Forms.CheckBox addDefaultParams;
     }
 }

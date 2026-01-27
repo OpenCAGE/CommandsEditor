@@ -10,7 +10,6 @@ using System.Windows.Forms;
 using CATHODE.Scripting;
 using CathodeLib;
 using CATHODE;
-using CATHODE.LEGACY;
 using System.Numerics;
 
 namespace CommandsEditor.Popups.UserControls
@@ -22,9 +21,9 @@ namespace CommandsEditor.Popups.UserControls
             InitializeComponent();
         }
 
-        public void PopulateUI(ResourceType type)
+        public override void PopulateUI(ResourceReference resource)
         {
-            groupBox1.Text = type.ToString();
+            groupBox1.Text = resource.resource_type.ToString();
         }
     }
 }

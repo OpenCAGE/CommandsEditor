@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 using static CommandsEditor.SelectEnumString;
+using static System.Windows.Forms.LinkLabel;
 
 namespace CommandsEditor.DockPanels
 {
@@ -64,7 +65,7 @@ namespace CommandsEditor.DockPanels
 
         private void EntityInspector_DockStateChanged(object sender, EventArgs e)
         {
-            Console.WriteLine(DockState);
+            Debug.Log("Entity Inspector", "Dock state changed to " + DockState);
             if (DockState == DockState.Unknown || DockState == DockState.Hidden)
                 return;
 
@@ -107,7 +108,7 @@ namespace CommandsEditor.DockPanels
                 this.Show();
             
             _entity = entity;
-            _entityCompositePtr = _entity.variant == EntityVariant.FUNCTION ? Content.commands.GetComposite(((FunctionEntity)_entity).function) : null;
+            _entityCompositePtr = _entity.variant == EntityVariant.FUNCTION ? Content.Level.Commands.GetComposite(((FunctionEntity)_entity).function) : null;
 
             switch (_entity.variant)
             {
@@ -115,7 +116,7 @@ namespace CommandsEditor.DockPanels
                     this.Icon = Resources.AnimatorController_Icon;
                     break;
                 case EntityVariant.FUNCTION:
-                    if (Content.commands.GetComposite(((FunctionEntity)_entity).function) == null)
+                    if (Content.Level.Commands.GetComposite(((FunctionEntity)_entity).function) == null)
                         this.Icon = Resources.d_ScriptableObject_Icon_braces_only;
                     else
                         this.Icon = Resources.d_PrefabVariant_Icon;
@@ -152,7 +153,7 @@ namespace CommandsEditor.DockPanels
                 if (entity_params.Controls[i] is GUI_Link)
                 {
                     GUI_Link link = (GUI_Link)entity_params.Controls[i];
-                    link.GoToEntity -= _compositeDisplay.LoadEntity;
+                    link.GoToEntity -= _compositeDisplay.LoadEntityAndFocusNode;
                     link.OnLinkEdited -= OnLinkEdited;
                 }
                 entity_params.Controls[i].Dispose();
@@ -179,8 +180,16 @@ namespace CommandsEditor.DockPanels
 #if DO_ENTITY_PERF_CHECK
             //TODO: The performance here is pretty poor. I should swap to using the PropertyGrid.
             Stopwatch timer = Stopwatch.StartNew();
-            Console.WriteLine("[ENTITY RELOAD] ** START **");
+            Debug.Log("Entity Inspector", "** RELOAD START **");
 #endif
+
+            if (this.IsDisposed || this.Disposing || entity_params == null || entity_params.IsDisposed || entity_params.Disposing)
+            {
+#if DO_ENTITY_PERF_CHECK
+                timer.Stop();
+#endif
+                return;
+            }
 
             _displayingLinks = displayLinks;
             ModifyParameters.Visible = !_displayingLinks;
@@ -190,12 +199,30 @@ namespace CommandsEditor.DockPanels
             entityParamGroup.Text = "Selected Entity Parameters";
             selected_entity_type_description.Text = "";
             selected_entity_name.Text = "";
-            for (int i = 0; i < entity_params.Controls.Count; i++)
+            
+            for (int i = entity_params.Controls.Count - 1; i >= 0; i--)
             {
-                if (entity_params.Controls[i] is ParameterUserControl)
-                    ((ParameterUserControl)entity_params.Controls[i]).OnDeleted -= OnDeleteParam;
+                try
+                {
+                    Control ctrl = entity_params.Controls[i];
+                    if (ctrl == null || ctrl.IsDisposed)
+                        continue;
 
-                entity_params.Controls[i].Dispose();
+                    if (ctrl is ParameterUserControl)
+                        ((ParameterUserControl)ctrl).OnDeleted -= OnDeleteParam;
+                    else if (ctrl is GUI_Link)
+                    {
+                        GUI_Link link = (GUI_Link)ctrl;
+                        link.GoToEntity -= _compositeDisplay.LoadEntityAndFocusNode;
+                        link.OnLinkEdited -= OnLinkEdited;
+                    }
+
+                    ctrl.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    Debug.Log("Entity Inspector", $"Error disposing control: {ex.Message}");
+                }
             }
             entity_params.Controls.Clear();
             jumpToComposite.Visible = false;
@@ -214,6 +241,7 @@ namespace CommandsEditor.DockPanels
             ModifyParameters.Enabled = _entity != null;
             ModifyParameters_Link.Enabled = _entity != null;
             addLinkOut.Enabled = _entity != null;
+            applyDefaultsToolStripMenuItem.Enabled = _entity != null;
 
             if (_entity == null)
             {
@@ -257,7 +285,7 @@ namespace CommandsEditor.DockPanels
             switch (_entity.variant)
             {
                 case EntityVariant.FUNCTION:
-                    selected_entity_name.Text = EntityUtils.GetName(Composite.shortGUID, _entity.shortGUID);
+                    selected_entity_name.Text = Content.Level.Commands.Utils.GetEntityName(Composite.shortGUID, _entity.shortGUID);
 
                     //Composite Instance
                     if (_entityCompositePtr != null)
@@ -273,42 +301,42 @@ namespace CommandsEditor.DockPanels
                     else
                     {
                         jumpToComposite.Visible = false;
-                        editEntityResources.Enabled = (Content.resource.models != null); //TODO: we can hide this button completely outside of this state
+                        editEntityResources.Enabled = (Content.Level.Models != null); //TODO: we can hide this button completely outside of this state
 
-                        FunctionType function = CommandsUtils.GetFunctionType(((FunctionEntity)_entity).function);
+                        FunctionType function = ((FunctionEntity)_entity).function.AsFunctionType;
                         description = function.ToString();
                         editFunction.Enabled = function == FunctionType.CAGEAnimation || function == FunctionType.TriggerSequence || function == FunctionType.Character;
                     }
                     break;
                 case EntityVariant.VARIABLE:
-                    variableInfo = CompositeUtils.GetParameterInfo(Composite, (VariableEntity)Entity);
+                    variableInfo = Content.Level.Commands.Utils.GetPinInfo(Composite, (VariableEntity)Entity);
                     if (variableInfo == null)
-                        Console.WriteLine("Warning: Could not get parameter pin info!");
-                    description = (variableInfo != null ? variableInfo.PinTypeGUID.ToString() : ((VariableEntity)_entity).type.ToString());
+                        Debug.Log("Entity Inspector", "Warning: Could not get parameter pin info!");
+                    description = (variableInfo != null ? ((CompositePinType)variableInfo.PinTypeGUID.AsUInt32).ToUIString() : ((VariableEntity)_entity).type.ToUIString());
                     selected_entity_name.Text = ShortGuidUtils.FindString(((VariableEntity)_entity).name);
                     break;
                 case EntityVariant.PROXY:
                 case EntityVariant.ALIAS:
                     hierarchyDisplay.Visible = true;
-                    ShortGuid[] entityHierarchy = _entity.variant == EntityVariant.PROXY ? ((ProxyEntity)_entity).proxy.path : ((AliasEntity)_entity).alias.path;
-                    Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, Composite, entityHierarchy, out Composite comp, out string hierarchy, SettingsManager.GetBool("CS_ShowEntityIDs"));
-                    hierarchyDisplay.Text = hierarchy;
+                    List<Tuple<Composite, Entity>> resolvedHierarchy = Content.Level.Commands.Utils.ResolveAliasOrProxy(_entity, Composite);
+                    (Composite comp, Entity ent) = Content.Level.Commands.Utils.GetResolvedTarget(resolvedHierarchy);
+                    hierarchyDisplay.Text = Content.Level.Commands.Utils.GetResolvedAsString(resolvedHierarchy, SettingsManager.GetBool("CS_ShowEntityIDs"));
                     jumpToComposite.Visible = true;
-                    selected_entity_name.Text = (_entity.variant == EntityVariant.PROXY ? "Proxy to " : "Alias of ") + EntityUtils.GetName(comp, ent);
+                    selected_entity_name.Text = (_entity.variant == EntityVariant.PROXY ? "Proxy to " : "Alias of ") + Content.Level.Commands.Utils.GetEntityName(comp, ent);
                     break;
                 default:
-                    selected_entity_name.Text = EntityUtils.GetName(Composite.shortGUID, _entity.shortGUID);
+                    selected_entity_name.Text = Content.Level.Commands.Utils.GetEntityName(Composite.shortGUID, _entity.shortGUID);
                     break;
             }
             selected_entity_type_description.Text = description;
             this.Text = selected_entity_name.Text;
 
             //show mvr editor button if this entity has a mvr link
-            if (Content.mvr != null && Content.mvr.Entries.FindAll(o => o.entity.entity_id == this._entity.shortGUID).Count != 0)
+            if (Content.Level.Movers != null && Content.Level.Movers.Entries.FirstOrDefault(o => o.entity?.entity_id == this._entity.shortGUID) != null)
                 editEntityMovers.Enabled = true;
 
 #if DO_ENTITY_PERF_CHECK
-            Console.WriteLine($"[ENTITY RELOAD] METADATA UPDATE COMPLETED: {timer.Elapsed.TotalMilliseconds} ms");
+            Debug.Log("Entity Inspector", $"METADATA UPDATE COMPLETED: {timer.Elapsed.TotalMilliseconds} ms");
 #endif
 
             int current_ui_offset = 7;
@@ -325,7 +353,7 @@ namespace CommandsEditor.DockPanels
                         parameterGUI.PopulateUI(link, false, ent.shortGUID);
                         parameterGUI.TrackInstanceInfo(Composite.shortGUID, Entity.shortGUID, link.linkedParamID);
                         parameterGUI.HighlightAsModified(false); //For now, marking all links as "modified", given that they likely won't be default vals
-                        parameterGUI.GoToEntity += _compositeDisplay.LoadEntity;
+                        parameterGUI.GoToEntity += _compositeDisplay.LoadEntityAndFocusNode;
                         parameterGUI.OnLinkEdited += OnLinkEdited;
                         parameterGUI.Location = new Point(15, current_ui_offset);
                         parameterGUI.Width = entity_params.Width - 30;
@@ -337,7 +365,7 @@ namespace CommandsEditor.DockPanels
             }
 
 #if DO_ENTITY_PERF_CHECK
-            Console.WriteLine($"[ENTITY RELOAD] LINK IN CONTROLS COMPLETED: {timer.Elapsed.TotalMilliseconds} ms");
+            Debug.Log("Entity Inspector", $"LINK IN CONTROLS COMPLETED: {timer.Elapsed.TotalMilliseconds} ms");
 #endif
 
 #if AUTO_POPULATE_PARAMS
@@ -359,27 +387,52 @@ namespace CommandsEditor.DockPanels
                 }
                 ParameterModificationTracker.SetDefaultsApplied(Composite.shortGUID, Entity.shortGUID);
 #if DEBUG
-                Console.WriteLine("Applied " + (_entity.parameters.Count - count_pre_add) + " defaults to entity.");
+                Debug.Log("Entity Inspector", "Applied " + (_entity.parameters.Count - count_pre_add) + " defaults to entity.");
 #endif
 #if DO_ENTITY_PERF_CHECK
-                Console.WriteLine($"[ENTITY RELOAD] DEFAULTS APPLIED: {timer.Elapsed.TotalMilliseconds} ms");
+                Debug.Log("Entity Inspector", $"DEFAULTS APPLIED: {timer.Elapsed.TotalMilliseconds} ms");
 #endif
             }
 #endif
 
-            //TODO: this should be grouped by the functiontype they came from if that applies here. e.g. if it came from a base class, show it in another group.
-            //TODO: if the type here is STRING, we should check to see if it's actually ENUM_STRING using ParameterUtils, then display the nice UI.
+            //figure out what parameters we should show - the input/output pin values are 'delay' values for the pins shown on the flowgraph, not actual parameters
+            List<ShortGuid> visibleParams = new List<ShortGuid>();
+            bool filterParams = CompositeDisplay.SupportsFlowgraphs;
+#if DEBUG
+            filterParams = false; //not filtering in debug mode, like how we always show links
+#endif
+            if (filterParams) 
+            {
+                List<(ShortGuid, ParameterVariant, DataType)> allParameters = Content.Level.Commands.Utils.GetAllParameters(Entity, Composite);
+                foreach ((ShortGuid, ParameterVariant, DataType) parameter in allParameters)
+                {
+                    switch (parameter.Item2)
+                    {
+                        case ParameterVariant.INTERNAL: //NOTE: shouldn't really be showing internal, but until I handle some of the values better, I need to still (e.g. resources, spline points, etc)
+                        case ParameterVariant.INPUT_PIN:
+                        case ParameterVariant.PARAMETER:
+                        case ParameterVariant.STATE_PARAMETER:
+                            visibleParams.Add(parameter.Item1);
+                            break;
+                    }
+                    //NOTE: This same switch case is found in ModifyParameters popup window, keep in sync!
+                }
+            }
 
-            //populate parameter inputs
-            //NOTE: some pins are listed as params, because they specify the "delay" for the pin to be activated (both in and out) - i should display this info differently.
-
+            //populate parameters
             _entity.parameters = _entity.parameters.OrderBy(o => o.name.ToString()).ToList();
             for (int i = 0; i < _entity.parameters.Count; i++)
             {
+                if (filterParams && !visibleParams.Contains(_entity.parameters[i].name))
+                {
+                    Debug.Log("Entity Inspector", "Skipping parameter: " + _entity.parameters[i].name);
+                    continue;
+                }
+
                 //Use our metadata to update any wrongly typed cEnumStrings to get the nice UI
                 if (_entity.parameters[i].content.dataType == DataType.STRING)
                 {
-                    ParameterData data = ParameterUtils.CreateDefaultParameterData(Entity, Composite, _entity.parameters[i].name);
+                    ParameterData data = Content.Level.Commands.Utils.CreateDefaultParameterData(Entity, Composite, _entity.parameters[i].name);
                     if (data != null && data.dataType == DataType.ENUM_STRING)
                     {
                         ((cEnumString)data).value = ((cString)_entity.parameters[i].content).value;
@@ -405,8 +458,6 @@ namespace CommandsEditor.DockPanels
                         ((GUI_StringVariant_AssetDropdown)parameterGUI).PopulateUI((cEnumString)this_param, paramName, false); //TODO: allow type selection?
                         break;
                     case DataType.STRING:
-                        //TODO: Need an animation selector for the anim/skele pair
-                        //TODO: There are some string types which should actually be selected via the EnumString UI like map_description on SetSubObjective, or unlocked_text on UI_Icon
                         parameterGUI = new GUI_StringDataType();
                         ((GUI_StringDataType)parameterGUI).PopulateUI((cString)this_param, paramName);
                         break;
@@ -454,7 +505,7 @@ namespace CommandsEditor.DockPanels
                         break;
                     case DataType.ENUM:
                         parameterGUI = new GUI_EnumDataType();
-                        ParameterData defaultData = ParameterUtils.CreateDefaultParameterData(Entity, Composite, paramName);
+                        ParameterData defaultData = Content.Level.Commands.Utils.CreateDefaultParameterData(Entity, Composite, paramName);
                         ((GUI_EnumDataType)parameterGUI).PopulateUI((cEnum)this_param, paramName, defaultData == null || (defaultData.dataType == DataType.ENUM && ((cEnum)defaultData).enumID == ShortGuid.Invalid));
                         break;
                     case DataType.RESOURCE:
@@ -482,61 +533,8 @@ namespace CommandsEditor.DockPanels
 #endif
             }
 
-            /*
-            if (_entity.variant == EntityVariant.VARIABLE)
-            {
-                _entity.parameters = _entity.parameters.OrderBy(o => o.name.ToString()).ToList();
-
-                for (int i = 0; i < _entity.parameters.Count; i++)
-                {
-                    ParameterUserControl parameterGUI = ParameterGroup.GenerateUserControl(_entity, _entity.parameters[i]);
-                    parameterGUI.OnDeleted += OnDeleteParam;
-                    parameterGUI.Location = new Point(15, current_ui_offset);
-                    parameterGUI.Width = entity_params.Width - 30;
-                    parameterGUI.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
-                    current_ui_offset += parameterGUI.Height + 6;
-                    controls.Add(parameterGUI);
-                }
-            }
-            else
-            {
-                Dictionary<ShortGuid, List<Parameter>> parametersByImplementer = new Dictionary<ShortGuid, List<Parameter>>();
-                for (int i = 0; i < _entity.parameters.Count; i++)
-                {
-                    (ParameterVariant?, DataType?, ShortGuid) metadata = ParameterUtils.GetParameterMetadata(_entity, _entity.parameters[i].name);
-
-                    if (!parametersByImplementer.TryGetValue(metadata.Item3, out List<Parameter> parameters))
-                    {
-                        parameters = new List<Parameter>();
-                        parametersByImplementer.Add(metadata.Item3, parameters);
-                    }
-                    parameters.Add(_entity.parameters[i]);
-                }
-                foreach (KeyValuePair<ShortGuid, List<Parameter>> implementedParams in parametersByImplementer)
-                {
-                    //NOTE: functiontype can be null if it's a composite instance: need to look up the composite to get name for group
-                    ParameterGroup group = new ParameterGroup();
-                    if (CommandsUtils.FunctionTypeExists(implementedParams.Key))
-                    {
-                        group.SetTitle(((FunctionType)implementedParams.Key.ToUInt32()).ToString());
-                    }
-                    else
-                    {
-                        Composite comp = Content.commands.GetComposite(implementedParams.Key);
-                        if (comp != null)
-                            group.SetTitle(Path.GetFileName(comp.name));
-                    }
-                    foreach (Parameter p in implementedParams.Value)
-                    {
-                        group.AddParameter(ParameterGroup.GenerateUserControl(_entity, p));
-                    }
-                }
-            }
-            */
-
-
 #if DO_ENTITY_PERF_CHECK
-            Console.WriteLine($"[ENTITY RELOAD] PARAMETER CONTROLS COMPLETED: {timer.Elapsed.TotalMilliseconds} ms");
+            Debug.Log("Entity Inspector", $"PARAMETER CONTROLS COMPLETED: {timer.Elapsed.TotalMilliseconds} ms");
 #endif
 
             if (_displayingLinks)
@@ -548,7 +546,7 @@ namespace CommandsEditor.DockPanels
                     parameterGUI.PopulateUI(_entity.childLinks[i], true);
                     parameterGUI.TrackInstanceInfo(Composite.shortGUID, Entity.shortGUID, _entity.childLinks[i].thisParamID);
                     parameterGUI.HighlightAsModified(false); //For now, marking all links as "modified", given that they likely won't be default vals
-                    parameterGUI.GoToEntity += _compositeDisplay.LoadEntity;
+                    parameterGUI.GoToEntity += _compositeDisplay.LoadEntityAndFocusNode;
                     parameterGUI.OnLinkEdited += OnLinkEdited;
                     parameterGUI.Location = new Point(15, current_ui_offset);
                     parameterGUI.Width = entity_params.Width - 30;
@@ -559,16 +557,70 @@ namespace CommandsEditor.DockPanels
             }
 
 #if DO_ENTITY_PERF_CHECK
-            Console.WriteLine($"[ENTITY RELOAD] LINK OUT CONTROLS COMPLETED: {timer.Elapsed.TotalMilliseconds} ms");
+            Debug.Log("Entity Inspector", $"LINK OUT CONTROLS COMPLETED: {timer.Elapsed.TotalMilliseconds} ms");
 #endif
 
-            entity_params.SuspendLayout();
-            entity_params.Controls.AddRange(controls.ToArray());
-            entity_params.ResumeLayout();
+            if (this.IsDisposed || this.Disposing || entity_params == null || entity_params.IsDisposed || entity_params.Disposing)
+            {
+                foreach (Control ctrl in controls)
+                {
+                    try
+                    {
+                        if (ctrl != null && !ctrl.IsDisposed)
+                        {
+                            if (ctrl is ParameterUserControl)
+                                ((ParameterUserControl)ctrl).OnDeleted -= OnDeleteParam;
+                            else if (ctrl is GUI_Link)
+                            {
+                                GUI_Link link = (GUI_Link)ctrl;
+                                link.GoToEntity -= _compositeDisplay.LoadEntityAndFocusNode;
+                                link.OnLinkEdited -= OnLinkEdited;
+                            }
+                            ctrl.Dispose();
+                        }
+                    }
+                    catch { }
+                }
+#if DO_ENTITY_PERF_CHECK
+                timer.Stop();
+#endif
+                return;
+            }
+
+            try
+            {
+                entity_params.SuspendLayout();
+                entity_params.Controls.AddRange(controls.ToArray());
+                entity_params.ResumeLayout();
+            }
+            catch (Exception ex)
+            {
+                Debug.Log("Entity Inspector", $"Error adding controls: {ex.Message}");
+                foreach (Control ctrl in controls)
+                {
+                    try
+                    {
+                        if (ctrl != null && !ctrl.IsDisposed)
+                        {
+                            if (ctrl is ParameterUserControl)
+                                ((ParameterUserControl)ctrl).OnDeleted -= OnDeleteParam;
+                            else if (ctrl is GUI_Link)
+                            {
+                                GUI_Link link = (GUI_Link)ctrl;
+                                link.GoToEntity -= _compositeDisplay.LoadEntityAndFocusNode;
+                                link.OnLinkEdited -= OnLinkEdited;
+                            }
+                            ctrl.Dispose();
+                        }
+                    }
+                    catch { }
+                }
+                throw; 
+            }
 
 #if DO_ENTITY_PERF_CHECK
             timer.Stop();
-            Console.WriteLine($"[ENTITY RELOAD] ADDED CONTROLS TO WINDOW: {timer.Elapsed.TotalMilliseconds} ms");
+            Debug.Log("Entity Inspector", $"ADDED CONTROLS TO WINDOW: {timer.Elapsed.TotalMilliseconds} ms");
 #endif
 
             Singleton.OnEntityReloaded?.Invoke(_entity);
@@ -613,10 +665,12 @@ namespace CommandsEditor.DockPanels
                 switch (i)
                 {
                     case 0:
-                        isPointedTo = mainInst.Content.editor_utils.IsEntityReferencedExternally(ent, ct);
+                        isPointedTo = mainInst.CompositeDisplay.AnyFlowgraphsContainEntity(ent);
+                        if (!isPointedTo)
+                            isPointedTo = mainInst.Content.EditorUtils.IsEntityReferencedExternally(ent, ct);
                         break;
                     case 1:
-                        mainInst.Content.editor_utils.TryFindZoneForEntity(ent, mainInst.Composite, out zoneComp, out zoneEnt, ct);
+                        mainInst.Content.EditorUtils.TryFindZoneForEntity(ent, mainInst.Composite, out zoneComp, out zoneEnt, ct);
                         break;
                 }
             });
@@ -651,7 +705,7 @@ namespace CommandsEditor.DockPanels
             createLinkToolStripMenuItem.Visible = DisplayingLinks;
         }
 
-        ModifyPinsOrParameters add_parameter;
+        ModifyParameters add_parameter;
         private void ModifyParameters_Click(object sender, EventArgs e)
         {
             if (add_parameter != null)
@@ -660,7 +714,7 @@ namespace CommandsEditor.DockPanels
                 add_parameter.Close();
             }
             
-            add_parameter = new ModifyPinsOrParameters(this);
+            add_parameter = new ModifyParameters(this);
             add_parameter.Show();
             add_parameter.OnSaved += Reload;
         }
@@ -670,40 +724,51 @@ namespace CommandsEditor.DockPanels
         }
 
         /* Add a new link out */
+        AddOrEditLink _linkDialog = null;
         private void addLinkOut_Click(object sender, EventArgs e)
         {
-            AddOrEditLink add_link = new AddOrEditLink(this);
-            add_link.Show();
-            add_link.OnSaved += Reload;
+            if (_linkDialog != null)
+                _linkDialog.Close();
+
+            _linkDialog = new AddOrEditLink(this);
+            _linkDialog.Show();
+            _linkDialog.OnSaved += Reload;
         }
         private void createLinkToolStripMenuItem_Click(object sender, EventArgs e)
         {
             addLinkOut_Click(null, null);
         }
 
+        EditMVR _mvrDialog = null;
         private void editEntityMovers_Click(object sender, EventArgs e)
         {
-            EditMVR moverEditor = new EditMVR(this);
-            moverEditor.Show();
+            if (_mvrDialog != null)
+                _mvrDialog.Close();
+
+            _mvrDialog = new EditMVR(this);
+            _mvrDialog.Show();
         }
 
+        ShowCrossRefs _crossRefsDialog = null;
         private void showOverridesAndProxies_Click(object sender, EventArgs e)
         {
-            ShowCrossRefs crossRefs = new ShowCrossRefs(this);
-            crossRefs.Show();
-            crossRefs.OnEntitySelected += _compositeDisplay.CommandsDisplay.LoadCompositeAndEntity;
+            if (_crossRefsDialog != null)
+                _crossRefsDialog.Close();
+
+            _crossRefsDialog = new ShowCrossRefs(Entity);
+            _crossRefsDialog.Show();
+            _crossRefsDialog.OnEntitySelected += _compositeDisplay.CommandsDisplay.LoadCompositeAndEntity;
+            _crossRefsDialog.OnFlowgraphSelected += _compositeDisplay.SelectEntityOnFlowgraph;
         }
 
+        AddOrEditResource _resourceDialog = null;
         private void editEntityResources_Click(object sender, EventArgs e)
         {
-            AddOrEditResource resourceEditor = new AddOrEditResource(this); 
-            resourceEditor.Show();
-            resourceEditor.OnSaved += OnResourceEditorSaved;
-        }
-        private void OnResourceEditorSaved(List<ResourceReference> resources)
-        {
-            ((FunctionEntity)Entity).resources = resources;
-            Singleton.OnResourceModified?.Invoke();
+            if (_resourceDialog != null)
+                _resourceDialog.Close();
+
+            _resourceDialog = new AddOrEditResource(this);
+            _resourceDialog.Show();
         }
 
         private void goToZone_Click(object sender, EventArgs e)
@@ -712,38 +777,49 @@ namespace CommandsEditor.DockPanels
             if (Composite != zoneCompositeForSelectedEntity)
                 display = _compositeDisplay.CommandsDisplay.LoadComposite(zoneCompositeForSelectedEntity);
 
-            display.LoadEntity(zoneEntityForSelectedEntity);
+            display.LoadEntity(zoneEntityForSelectedEntity, true);
         }
 
+        ShowCompositeInstanceOverrides _instanceOverridesDialog = null;
+        CAGEAnimationEditor _cageAnimDialog = null;
+        TriggerSequenceEditor _triggerSeqDialog = null;
+        CharacterEditor _charEditorDialog = null;
         private void editFunction_Click(object sender, EventArgs e)
         {
             if (Entity.variant != EntityVariant.FUNCTION) return;
             if (_entityCompositePtr != null)
             {
                 //Composite Instance
-                ShowCompositeInstanceOverrides overrideDisplay = new ShowCompositeInstanceOverrides(this);
-                overrideDisplay.Show();
+                if (_instanceOverridesDialog != null)
+                    _instanceOverridesDialog.Close();
+                _instanceOverridesDialog = new ShowCompositeInstanceOverrides(this);
+                _instanceOverridesDialog.Show();
             }
             else
             {
                 //Function Entity
-                FunctionType function = CommandsUtils.GetFunctionType(((FunctionEntity)Entity).function);
-                switch (function)
+                switch (((FunctionEntity)Entity).function.AsFunctionType)
                 {
                     case FunctionType.CAGEAnimation:
                         Singleton.OnCAGEAnimationEditorOpened?.Invoke();
-                        CAGEAnimationEditor cageAnimationEditor = new CAGEAnimationEditor(this);
-                        cageAnimationEditor.Show();
-                        cageAnimationEditor.OnSaved += CAGEAnimationEditor_OnSaved;
+                        if (_cageAnimDialog != null)
+                            _cageAnimDialog.Close();
+                        _cageAnimDialog = new CAGEAnimationEditor(this);
+                        _cageAnimDialog.Show();
+                        _cageAnimDialog.OnSaved += CAGEAnimationEditor_OnSaved;
                         break;
                     case FunctionType.TriggerSequence:
-                        TriggerSequenceEditor triggerSequenceEditor = new TriggerSequenceEditor(this);
-                        triggerSequenceEditor.Show();
+                        if (_triggerSeqDialog != null)
+                            _triggerSeqDialog.Close();
+                        _triggerSeqDialog = new TriggerSequenceEditor(this);
+                        _triggerSeqDialog.Show();
                         break;
                     case FunctionType.Character:
                         //TODO: I think this is only valid for entities with "custom_character_type" set - but working that out requires a complex parse of connected entities. So ignoring for now.
-                        CharacterEditor characterEditor = new CharacterEditor(this);
-                        characterEditor.Show();
+                        if (_charEditorDialog != null)
+                            _charEditorDialog.Close();
+                        _charEditorDialog = new CharacterEditor(this);
+                        _charEditorDialog.Show();
                         break;
                 }
             }
@@ -764,20 +840,20 @@ namespace CommandsEditor.DockPanels
             {
                 case EntityVariant.PROXY:
                     //Proxies forward directly to the entity they point to, breaking us out of the hierarchy.
-                    Entity entity = CommandsUtils.ResolveHierarchy(Content.commands, Composite, ((ProxyEntity)Entity).proxy.path, out Composite flow, out string hierarchy);
+                    (Composite composite, Entity entity) = Content.Level.Commands.Utils.GetResolvedTarget(Content.Level.Commands.Utils.ResolveProxy((ProxyEntity)_entity));
                     if (MessageBox.Show("Jumping to a proxy will break you out of your composite.\nAre you sure?", "About to follow proxy...", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
-                        _compositeDisplay.CommandsDisplay.LoadCompositeAndEntity(flow, entity);
+                        _compositeDisplay.CommandsDisplay.LoadCompositeAndEntity(composite, entity);
                     break;
                 case EntityVariant.FUNCTION:
                     //Composite instances take us a step down the hierarchy.
-                    _compositeDisplay.LoadChild(Content.commands.GetComposite(selected_entity_type_description.Text), Entity);
+                    _compositeDisplay.LoadChild(Content.Level.Commands.GetComposite(selected_entity_type_description.Text), Entity);
                     return;
                 case EntityVariant.ALIAS:
                     //Aliases take us (potentially) multiple steps down the hierarchy.
                     ShortGuid[] aliasPath = ((AliasEntity)Entity).alias.path;
                     for (int i = 0; i < aliasPath.Length - 2; i++)
-                        _compositeDisplay.LoadChild(Content.commands.GetComposite(((FunctionEntity)Composite.GetEntityByID(aliasPath[i])).function), Composite.GetEntityByID(aliasPath[i]));
-                    _compositeDisplay.LoadEntity(Composite.GetEntityByID(aliasPath[aliasPath.Length - 2]));
+                        _compositeDisplay.LoadChild(Content.Level.Commands.GetComposite(((FunctionEntity)Composite.GetEntityByID(aliasPath[i])).function), Composite.GetEntityByID(aliasPath[i]));
+                    _compositeDisplay.LoadEntity(Composite.GetEntityByID(aliasPath[aliasPath.Length - 2]), true);
                     return;
             }
 
@@ -793,10 +869,14 @@ namespace CommandsEditor.DockPanels
             _compositeDisplay.DuplicateEntity(Entity);
         }
 
+        RenameEntity _renameDialog = null;
         private void renameEntity_Click(object sender, EventArgs e)
         {
-            RenameEntity rename_entity = new RenameEntity(this.Entity, this.Composite);
-            rename_entity.Show();
+            if (_renameDialog != null)
+                _renameDialog.Close();
+
+            _renameDialog = new RenameEntity(this.Entity, this.Composite);
+            _renameDialog.Show();
         }
 
         /* Context menu close entity */
@@ -811,6 +891,42 @@ namespace CommandsEditor.DockPanels
         private void closeAllBut_Click(object sender, EventArgs e)
         {
             _compositeDisplay.CloseAllChildTabsExcept(Entity);
+        }
+
+        /* Apply defaults */
+        private void addUnsetParametersToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //Add only the parameters not already set
+            bool hasDeleteMe = Entity.GetParameter("delete_me") != null;
+            Content.Level.Commands.Utils.AddAllDefaultParameters(Entity, Composite, false);
+            if (!hasDeleteMe) Entity.RemoveParameter("delete_me");
+            _compositeDisplay.ReloadEntity(Entity);
+
+            foreach (Parameter param in Entity.parameters)
+            {
+                if (param?.content != null && param.name == ShortGuidUtils.Generate("position") && param.content.dataType == DataType.TRANSFORM)
+                    Singleton.OnEntityMoved?.Invoke((cTransform)param.content, _entity);
+                if (param?.content != null && param.name == ShortGuidUtils.Generate("resource") && param.content.dataType == DataType.RESOURCE)
+                    Singleton.OnResourceModified?.Invoke();
+            }
+            Singleton.OnParameterModified?.Invoke();
+        }
+        private void applyAllDefaultsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //Add all defaults, overwriting the ones already set
+            Entity.parameters.Clear();
+            Content.Level.Commands.Utils.AddAllDefaultParameters(Entity, Composite);
+            Entity.RemoveParameter("delete_me");
+            _compositeDisplay.ReloadEntity(Entity);
+
+            foreach (Parameter param in Entity.parameters)
+            {
+                if (param?.content != null && param.name == ShortGuidUtils.Generate("position") && param.content.dataType == DataType.TRANSFORM)
+                    Singleton.OnEntityMoved?.Invoke((cTransform)param.content, _entity);
+                if (param?.content != null && param.name == ShortGuidUtils.Generate("resource") && param.content.dataType == DataType.RESOURCE)
+                    Singleton.OnResourceModified?.Invoke();
+            }
+            Singleton.OnParameterModified?.Invoke();
         }
     }
 }

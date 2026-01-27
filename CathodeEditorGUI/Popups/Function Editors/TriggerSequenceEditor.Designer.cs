@@ -44,12 +44,13 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.button2 = new System.Windows.Forms.Button();
             this.moveDown = new System.Windows.Forms.Button();
-            this.entity_list = new System.Windows.Forms.ListView();
+            this.entity_list = new GroupedListView();
             this.funcHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.inheritHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.addNewTrigger = new System.Windows.Forms.Button();
             this.moveUp = new System.Windows.Forms.Button();
             this.selectedEntityDetails = new System.Windows.Forms.GroupBox();
+            this.button3 = new System.Windows.Forms.Button();
             this.entityTriggerDelay = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.entityHierarchy = new System.Windows.Forms.TextBox();
@@ -58,8 +59,6 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.selectedTriggerDetails = new System.Windows.Forms.GroupBox();
             this.saveTrigger = new System.Windows.Forms.Button();
-            this.triggerEndParam = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
             this.triggerStartParam = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -68,7 +67,6 @@
             this.button1 = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.button3 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.selectedEntityDetails.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -233,6 +231,17 @@
             this.selectedEntityDetails.TabStop = false;
             this.selectedEntityDetails.Text = "Selected Entity Details";
             // 
+            // button3
+            // 
+            this.button3.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.button3.Location = new System.Drawing.Point(287, 41);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(68, 23);
+            this.button3.TabIndex = 7;
+            this.button3.Text = "Go To";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
             // entityTriggerDelay
             // 
             this.entityTriggerDelay.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
@@ -299,42 +308,24 @@
             // 
             this.selectedTriggerDetails.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.selectedTriggerDetails.Controls.Add(this.saveTrigger);
-            this.selectedTriggerDetails.Controls.Add(this.triggerEndParam);
-            this.selectedTriggerDetails.Controls.Add(this.label4);
             this.selectedTriggerDetails.Controls.Add(this.triggerStartParam);
             this.selectedTriggerDetails.Controls.Add(this.label5);
             this.selectedTriggerDetails.Location = new System.Drawing.Point(707, 13);
             this.selectedTriggerDetails.Name = "selectedTriggerDetails";
-            this.selectedTriggerDetails.Size = new System.Drawing.Size(481, 147);
+            this.selectedTriggerDetails.Size = new System.Drawing.Size(481, 109);
             this.selectedTriggerDetails.TabIndex = 7;
             this.selectedTriggerDetails.TabStop = false;
             this.selectedTriggerDetails.Text = "Selected Trigger Details";
             // 
             // saveTrigger
             // 
-            this.saveTrigger.Location = new System.Drawing.Point(369, 108);
+            this.saveTrigger.Location = new System.Drawing.Point(369, 68);
             this.saveTrigger.Name = "saveTrigger";
             this.saveTrigger.Size = new System.Drawing.Size(92, 23);
             this.saveTrigger.TabIndex = 7;
             this.saveTrigger.Text = "Save";
             this.saveTrigger.UseVisualStyleBackColor = true;
             this.saveTrigger.Click += new System.EventHandler(this.saveTrigger_Click);
-            // 
-            // triggerEndParam
-            // 
-            this.triggerEndParam.Location = new System.Drawing.Point(17, 82);
-            this.triggerEndParam.Name = "triggerEndParam";
-            this.triggerEndParam.Size = new System.Drawing.Size(444, 20);
-            this.triggerEndParam.TabIndex = 6;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(16, 66);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(146, 13);
-            this.label4.TabIndex = 5;
-            this.label4.Text = "Parameter To Trigger On End";
             // 
             // triggerStartParam
             // 
@@ -348,9 +339,9 @@
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(16, 26);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(149, 13);
+            this.label5.Size = new System.Drawing.Size(107, 13);
             this.label5.TabIndex = 2;
-            this.label5.Text = "Parameter To Trigger On Start";
+            this.label5.Text = "Parameter To Trigger";
             // 
             // label3
             // 
@@ -416,17 +407,6 @@
             this.splitContainer1.SplitterDistance = 318;
             this.splitContainer1.TabIndex = 7;
             // 
-            // button3
-            // 
-            this.button3.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.button3.Location = new System.Drawing.Point(287, 41);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(68, 23);
-            this.button3.TabIndex = 7;
-            this.button3.Text = "Go To";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
-            // 
             // TriggerSequenceEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -469,8 +449,6 @@
         private System.Windows.Forms.TextBox entityTriggerDelay;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.GroupBox selectedTriggerDetails;
-        private System.Windows.Forms.TextBox triggerEndParam;
-        private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox triggerStartParam;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label3;

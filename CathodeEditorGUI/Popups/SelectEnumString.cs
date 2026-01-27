@@ -58,7 +58,7 @@ namespace CommandsEditor
             else
             {
                 enumStringTypeSelect.Visible = false;
-                PopulateItems((EnumStringType)enumString.enumID.ToUInt32());
+                PopulateItems((EnumStringType)enumString.enumID.AsUInt32);
             }
 
             Search();
@@ -188,7 +188,7 @@ namespace CommandsEditor
             strings.BeginUpdate();
             strings.SuspendLayout();
             strings.Items.Clear();
-            strings.Items.AddRange(_filteredItems.Where(o => o.Text.ToUpper().Contains(search_box.Text.ToUpper()) || o.SubItems[o.SubItems.Count - 1].Text.ToUpper().Contains(search_box.Text.ToUpper())).ToList().ToArray());
+            strings.Items.AddRange(_filteredItems.Where(o => o.Text.ToUpper().Replace(" ", "").Contains(search_box.Text.ToUpper().Replace(" ", "")) || o.SubItems[o.SubItems.Count - 1].Text.ToUpper().Replace(" ", "").Contains(search_box.Text.ToUpper().Replace(" ", ""))).ToList().ToArray());
             strings.EndUpdate();
         }
 
@@ -227,18 +227,18 @@ namespace CommandsEditor
             string selectedString = strings.SelectedItems[0].Text;
 
             string msg = "This event is contained within the following soundbanks:\n";
-            foreach (SoundEventData.Soundbank entry in Content.resource.sound_eventdata.Entries)
+            foreach (SoundEventData.Soundbank entry in Content.Level.SoundEventData.Entries)
             {
                 if (entry.events.FirstOrDefault(o => o.name == selectedString) == null)
                     continue;
 
                 string soundbankName = entry.id.ToString();
-                for (int i = 0; i < Content.resource.sound_bankdata.Entries.Count; i++)
+                for (int i = 0; i < Content.Level.SoundBankData.Entries.Count; i++)
                 {
-                    if (Utilities.SoundHashedString(Content.resource.sound_bankdata.Entries[i]) != entry.id)
+                    if (Utilities.SoundHashedString(Content.Level.SoundBankData.Entries[i].Name) != entry.id)
                         continue;
 
-                    soundbankName = Content.resource.sound_bankdata.Entries[i];
+                    soundbankName = Content.Level.SoundBankData.Entries[i].Name;
                     break;
                 }
 

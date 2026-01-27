@@ -1,16 +1,18 @@
-﻿using System;
+﻿using CATHODE;
+using CATHODE.Scripting;
+using CathodeLib;
+using CathodeLib.ObjectExtensions;
+using CommandsEditor.DockPanels;
+using CommandsEditor.Properties;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using CATHODE.Scripting;
-using CATHODE;
-using CathodeLib;
-using CommandsEditor.DockPanels;
 
 namespace CommandsEditor.UserControls
 {
@@ -37,23 +39,24 @@ namespace CommandsEditor.UserControls
         }
 
         /* Edit resources referenced by the resource param */
+        List<ResourceReference> _origResources = new List<ResourceReference>();
         private void openResourceEditor_Click(object sender, EventArgs e)
         {
-            AddOrEditResource resourceEditor = new AddOrEditResource(_entDisplay, resRef.value, resRef.shortGUID, GUID_VARIABLE_DUMMY.Text);
+            _origResources.Clear();
+            for (int i = 0; i < resRef.value.Count; i++)
+                _origResources.Add(resRef.value[i].Copy());
+
+            AddOrEditResource resourceEditor = new AddOrEditResource(_entDisplay, resRef, GUID_VARIABLE_DUMMY.Text);
             resourceEditor.Show();
-            resourceEditor.OnSaved += OnResourceEditorSaved;
             resourceEditor.FormClosed += ResourceEditor_FormClosed;
-        }
-        private void OnResourceEditorSaved(List<ResourceReference> resources)
-        {
-            resRef.value = resources;
-            HighlightAsModified();
-            Singleton.OnResourceModified?.Invoke();
         }
         private void ResourceEditor_FormClosed(object sender, FormClosedEventArgs e)
         {
             this.BringToFront();
             this.Focus();
+
+            if (_origResources.Count != resRef.value.Count || !_origResources.SequenceEqual(resRef.value))
+                HighlightAsModified();
         }
 
         public override void HighlightAsModified(bool updateDatabase = true, Control fontToUpdate = null)

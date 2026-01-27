@@ -1,5 +1,6 @@
 ﻿using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
+using OpenCAGE;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -84,9 +85,9 @@ namespace CommandsEditor
             string path = "";
             for (int i = 0; i < _composites.Count; i++)
             {
-                path += EditorUtils.GetCompositeName(_composites[i]) + " > ";
+                path += (SettingsManager.GetBool(Singleton.Settings.ShowShortGuids) ? "[" + _composites[i].shortGUID.ToByteString() + "] " : "") + EditorUtils.GetCompositeName(_composites[i]) + " > ";
             }
-            path += EditorUtils.GetCompositeName(currentComp);
+            path += (SettingsManager.GetBool(Singleton.Settings.ShowShortGuids) ? "[" + currentComp.shortGUID.ToByteString() + "] " : "") + EditorUtils.GetCompositeName(currentComp);
             return path;
         }
 

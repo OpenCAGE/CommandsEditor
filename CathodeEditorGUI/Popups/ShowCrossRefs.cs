@@ -3,6 +3,7 @@ using CATHODE.Scripting.Internal;
 using CommandsEditor.DockPanels;
 using CommandsEditor.Popups.Base;
 using OpenCAGE;
+using ST.Library.UI.NodeEditor;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,44 +12,71 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Forms;
+using WebSocketSharp;
 
 namespace CommandsEditor
 {
+    //See crash logs: loads of crashes here :(
+
     public partial class ShowCrossRefs : BaseWindow
     {
         public Action<Composite, Entity> OnEntitySelected;
+        public Action<string, Entity> OnFlowgraphSelected;
 
-        private CurrentDisplay _currentDisplay = CurrentDisplay.PROXIES;
-        private Dictionary<CurrentDisplay, SynchronizedCollection<EntityRef>> _entityRefs = new Dictionary<CurrentDisplay, SynchronizedCollection<EntityRef>>();
+        private CurrentDisplay _currentDisplay = CurrentDisplay.FLOWGRAPHS;
+        private SynchronizedCollection<EntityRef>[] _entityRefs;
 
-        private EntityInspector _entityDisplay;
+        private Entity _entity;
 
-        public ShowCrossRefs(EntityInspector entityDisplay) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
+        public ShowCrossRefs(Entity entity) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
-            _entityDisplay = entityDisplay;
+            _entity = entity;
             InitializeComponent();
 
-            Parallel.For(0, 5, (i) =>
+            bool hasID = entityList.Columns.ContainsKey("ID");
+            bool showID = SettingsManager.GetBool(Singleton.Settings.ShowShortGuids);
+            if (showID && !hasID)
+                entityList.Columns.Add(new ColumnHeader() { Name = "ID", Text = "ID", Width = 100 });
+            else if (!showID && hasID)
+                entityList.Columns.RemoveByKey("ID");
+
+            int displayTypes = Enum.GetValues(typeof(CurrentDisplay)).Length;
+            _entityRefs = new SynchronizedCollection<EntityRef>[displayTypes];
+            Parallel.For(0, displayTypes, (i) =>
             {
-                _entityRefs.Add((CurrentDisplay)i, GetEntityRefs((CurrentDisplay)i));
+                _entityRefs[i] = GetEntityRefs((CurrentDisplay)i);
             });
 
-            showLinkedProxies.Text = "Proxies (" + _entityRefs[CurrentDisplay.PROXIES].Count + ")";
-            showLinkedOverrides.Text = "Aliases (" + _entityRefs[CurrentDisplay.ALIASES].Count + ")";
-            showLinkedCageAnimations.Text = "CAGEAnimations (" + _entityRefs[CurrentDisplay.CAGEANIMATIONS].Count + ")";
-            showLinkedTriggerSequences.Text = "TriggerSequences (" + _entityRefs[CurrentDisplay.TRIGGERSEQUENCES].Count + ")";
+            showFlowgraphs.Text = "Flowgraphs (" + _entityRefs[(int)CurrentDisplay.FLOWGRAPHS].Count + ")";
+            showLinkedProxies.Text = "Proxies (" + _entityRefs[(int)CurrentDisplay.PROXIES].Count + ")";
+            showLinkedOverrides.Text = "Aliases (" + _entityRefs[(int)CurrentDisplay.ALIASES].Count + ")";
+            showLinkedCageAnimations.Text = "CAGEAnimations (" + _entityRefs[(int)CurrentDisplay.CAGEANIMATIONS].Count + ")";
+            showLinkedTriggerSequences.Text = "TriggerSequences (" + _entityRefs[(int)CurrentDisplay.TRIGGERSEQUENCES].Count + ")";
 
-            showLinkedProxies.PerformClick();
+            UpdateUI(CurrentDisplay.FLOWGRAPHS);
         }
 
         private void jumpToEntity_Click(object sender, EventArgs e)
         {
-            if (referenceList.SelectedIndex == -1) return;
-            OnEntitySelected?.Invoke(_entityRefs[_currentDisplay][referenceList.SelectedIndex].composite, _entityRefs[_currentDisplay][referenceList.SelectedIndex].entity);
+            if (_currentDisplay == CurrentDisplay.FLOWGRAPHS)
+            {
+                if (flowgraphList.SelectedItems.Count == 0) return;
+                OnFlowgraphSelected?.Invoke(_entityRefs[(int)_currentDisplay][flowgraphList.SelectedItems[0].Index].flowgraph_name, _entityRefs[(int)_currentDisplay][flowgraphList.SelectedItems[0].Index].entity);
+            }
+            else
+            {
+                if (entityList.SelectedItems.Count == 0) return;
+                OnEntitySelected?.Invoke(_entityRefs[(int)_currentDisplay][entityList.SelectedItems[0].Index].composite, _entityRefs[(int)_currentDisplay][entityList.SelectedItems[0].Index].entity);
+            }
             this.Close();
         }
 
+        private void showFlowgraphs_Click(object sender, EventArgs e)
+        {
+            UpdateUI(CurrentDisplay.FLOWGRAPHS);
+        }
         private void showLinkedProxies_Click(object sender, EventArgs e)
         {
             UpdateUI(CurrentDisplay.PROXIES);
@@ -72,102 +100,169 @@ namespace CommandsEditor
 
             _currentDisplay = display;
 
+            entityList.Visible = _currentDisplay != CurrentDisplay.FLOWGRAPHS;
+            flowgraphList.Visible = _currentDisplay == CurrentDisplay.FLOWGRAPHS;
+
+            showFlowgraphs.Enabled = display != CurrentDisplay.FLOWGRAPHS;
             showLinkedProxies.Enabled = display != CurrentDisplay.PROXIES;
             showLinkedOverrides.Enabled = display != CurrentDisplay.ALIASES;
             showLinkedTriggerSequences.Enabled = display != CurrentDisplay.TRIGGERSEQUENCES;
             showLinkedCageAnimations.Enabled = display != CurrentDisplay.CAGEANIMATIONS;
 
-            label.Text = _entityRefs[display].Count + " ";
-            switch (display)
+            SynchronizedCollection<EntityRef> entityRefs = _entityRefs[(int)display];
+            label.Text = entityRefs.Count + " ";
+
+            if (_currentDisplay == CurrentDisplay.FLOWGRAPHS)
             {
-                case CurrentDisplay.PROXIES:
-                    label.Text += "Proxies";
-                    break;
-                case CurrentDisplay.ALIASES:
-                    label.Text += "Aliases";
-                    break;
-                case CurrentDisplay.TRIGGERSEQUENCES:
-                    label.Text += "TriggerSequences";
-                    break;
-                case CurrentDisplay.CAGEANIMATIONS:
-                    label.Text += "CAGEAnimations";
-                    break;
+                label.Text += "flowgraph" + (entityRefs.Count > 1 ? "s" : "") + " within this composite " + (entityRefs.Count > 1 ? "have" : "has") + " nodes for this entity:"; //important note - only showing pages within the current composite (for now), not aliased pages or proxied pages
+
+                flowgraphList.BeginUpdate();
+                flowgraphList.Items.Clear();
+                foreach (EntityRef entityRef in entityRefs)
+                {
+                    ListViewItem item = new ListViewItem(entityRef.flowgraph_name);
+                    item.SubItems.Add(entityRef.flowgraph_node_count.ToString());
+                    flowgraphList.Items.Add(item);
+                }
+                flowgraphList.EndUpdate();
             }
-            label.Text += " pointing to this entity:";
+            else
+            {
+                switch (_currentDisplay)
+                {
+                    case CurrentDisplay.PROXIES:
+                        label.Text += "Proxies";
+                        break;
+                    case CurrentDisplay.ALIASES:
+                        label.Text += "Aliases";
+                        break;
+                    case CurrentDisplay.TRIGGERSEQUENCES:
+                        label.Text += "TriggerSequences";
+                        break;
+                    case CurrentDisplay.CAGEANIMATIONS:
+                        label.Text += "CAGEAnimations";
+                        break;
+                }
+                label.Text += " pointing to this entity:";
 
-            referenceList.BeginUpdate();
-            referenceList.Items.Clear();
+                entityList.BeginUpdate();
+                entityList.Items.Clear();
+                entityList.Groups.Clear();
+                Dictionary<Composite, ListViewGroup> compGroups = new Dictionary<Composite, ListViewGroup>();
+                foreach (EntityRef entityRef in entityRefs)
+                {
+                    ListViewItem item = (ListViewItem)Content.GenerateListViewItem(entityRef.entity, entityRef.composite).Clone();
+                    if (compGroups.TryGetValue(entityRef.composite, out ListViewGroup g))
+                    {
+                        item.Group = g;
+                    }
+                    else
+                    {
+                        ListViewGroup group = new ListViewGroup() { Header = entityRef.composite.name };
+                        entityList.Groups.Add(group);
+                        compGroups.Add(entityRef.composite, group);
+                        item.Group = group;
+                    }
+                    item.ImageIndex = EditorUtils.GetIndexesForListViewItem(entityRef.entity, entityRef.composite, Content.Level.Commands).Item1;
+                    entityList.Items.Add(item);
+                }
+                entityList.EndUpdate();
+            }
 
-            foreach (EntityRef entityRef in _entityRefs[display])
-                referenceList.Items.Add(_entityDisplay.Content.editor_utils.GenerateEntityName(entityRef.entity, entityRef.composite));
-
-            referenceList.EndUpdate();
             Cursor.Current = Cursors.Default;
         }
 
         private SynchronizedCollection<EntityRef> GetEntityRefs(CurrentDisplay display)
         {
-            bool showIDs = SettingsManager.GetBool(Singleton.Settings.EntIdOpt);
+            bool showIDs = SettingsManager.GetBool(Singleton.Settings.ShowShortGuids);
             SynchronizedCollection<EntityRef> entityRefs = new SynchronizedCollection<EntityRef>();
-            Parallel.ForEach(Content.commands.Entries, (comp) =>
+            if (display == CurrentDisplay.FLOWGRAPHS)
             {
-                switch (display)
+                foreach (Flowgraph flowgraph in Singleton.Editor.CommandsDisplay.CompositeDisplay.Flowgraphs)
                 {
-                    case CurrentDisplay.PROXIES:
-                        Parallel.ForEach(comp.proxies, (prox) =>
+                    foreach (STNode node in flowgraph.Nodegraph.Nodes)
+                    {
+                        if (node.Entity.shortGUID != _entity.shortGUID)
+                            continue;
+
+                        EntityRef entRef = entityRefs.FirstOrDefault(o => o.flowgraph_name == flowgraph.FlowgraphName);
+                        if (entRef == null)
                         {
-                            Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, comp, prox.proxy.path, out Composite compRef, out string str, showIDs);
-                            if (ent == _entityDisplay.Entity) entityRefs.Add(new EntityRef() { composite = comp, entity = prox });
-                        });
-                        break;
-                    case CurrentDisplay.ALIASES:
-                        Parallel.ForEach(comp.aliases, (alias) =>
-                        {
-                            Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, comp, alias.alias.path, out Composite compRef, out string str, showIDs);
-                            if (ent == _entityDisplay.Entity) entityRefs.Add(new EntityRef() { composite = comp, entity = alias });
-                        });
-                        break;
-                    case CurrentDisplay.TRIGGERSEQUENCES:
-                        List<FunctionEntity> triggerSequences = comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.TriggerSequence));
-                        Parallel.ForEach(triggerSequences, (trigEnt) =>
-                        {
-                            TriggerSequence trig = (TriggerSequence)trigEnt;
-                            Parallel.ForEach(trig.entities, (trigger) =>
-                            {
-                                Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, comp, trigger.connectedEntity.path, out Composite compRef, out string str, showIDs);
-                                if (ent == _entityDisplay.Entity) entityRefs.Add(new EntityRef() { composite = comp, entity = trig });
-                            });
-                        });
-                        break;
-                    case CurrentDisplay.CAGEANIMATIONS:
-                        List<FunctionEntity> cageAnims = comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.CAGEAnimation));
-                        Parallel.ForEach(cageAnims, (animEnt) =>
-                        {
-                            CAGEAnimation anim = (CAGEAnimation)animEnt;
-                            Parallel.ForEach(anim.connections, (connection) =>
-                            {
-                                Entity ent = CommandsUtils.ResolveHierarchy(Content.commands, comp, connection.connectedEntity.path, out Composite compRef, out string str, showIDs);
-                                if (ent == _entityDisplay.Entity) entityRefs.Add(new EntityRef() { composite = comp, entity = anim });
-                            });
-                        });
-                        break;
+                            entRef = new EntityRef();
+                            entRef.flowgraph_name = flowgraph.FlowgraphName;
+                            entRef.entity = _entity;
+                            entityRefs.Add(entRef);
+                        }
+                        entRef.flowgraph_node_count++;
+                    }
                 }
-            });
+            }
+            else
+            {
+                Parallel.ForEach(Content.Level.Commands.Entries, (comp) =>
+                {
+                    switch (display)
+                    {
+                        case CurrentDisplay.PROXIES:
+                            Parallel.ForEach(comp.proxies, (prox) =>
+                            {
+                                if (Content.Level.Commands.Utils.GetResolvedTarget(Content.Level.Commands.Utils.ResolveProxy(prox)).Item2 == _entity) 
+                                    entityRefs.Add(new EntityRef() { composite = comp, entity = prox });
+                            });
+                            break;
+                        case CurrentDisplay.ALIASES:
+                            Parallel.ForEach(comp.aliases, (alias) =>
+                            {
+                                if (Content.Level.Commands.Utils.GetResolvedTarget(Content.Level.Commands.Utils.ResolveAlias(alias, comp)).Item2 == _entity) 
+                                    entityRefs.Add(new EntityRef() { composite = comp, entity = alias });
+                            });
+                            break;
+                        case CurrentDisplay.TRIGGERSEQUENCES:
+                            List<FunctionEntity> triggerSequences = comp.functions_dictionary.Values.Where(o => o.function == FunctionType.TriggerSequence).ToList();
+                            Parallel.ForEach(triggerSequences, (trigEnt) =>
+                            {
+                                TriggerSequence trig = (TriggerSequence)trigEnt;
+                                Parallel.ForEach(trig.sequence, (trigger) =>
+                                {
+                                    if (Content.Level.Commands.Utils.GetResolvedTarget(Content.Level.Commands.Utils.ResolveAlias(trigger.connectedEntity.path, comp)).Item2 == _entity)
+                                        entityRefs.Add(new EntityRef() { composite = comp, entity = trig });
+                                });
+                            });
+                            break;
+                        case CurrentDisplay.CAGEANIMATIONS:
+                            List<FunctionEntity> cageAnims = comp.functions_dictionary.Values.Where(o => o.function == FunctionType.CAGEAnimation).ToList();
+                            Parallel.ForEach(cageAnims, (animEnt) =>
+                            {
+                                CAGEAnimation anim = (CAGEAnimation)animEnt;
+                                Parallel.ForEach(anim.connections, (connection) =>
+                                {
+                                    if (Content.Level.Commands.Utils.GetResolvedTarget(Content.Level.Commands.Utils.ResolveAlias(connection.connectedEntity.path, comp)).Item2 == _entity)
+                                        entityRefs.Add(new EntityRef() { composite = comp, entity = anim });
+                                });
+                            });
+                            break;
+                    }
+                });
+            }
             return entityRefs;
         }
 
         private enum CurrentDisplay
         {
+            FLOWGRAPHS,
             PROXIES,
             ALIASES,
             TRIGGERSEQUENCES,
             CAGEANIMATIONS,
         }
 
-        private struct EntityRef
+        private class EntityRef
         {
             public Entity entity;
             public Composite composite;
+
+            public string flowgraph_name;
+            public int flowgraph_node_count;
         }
     }
 }

@@ -30,7 +30,6 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AddOrEditResource));
             this.resource_panel = new System.Windows.Forms.Panel();
-            this.SaveChanges = new System.Windows.Forms.Button();
             this.addResource = new System.Windows.Forms.Button();
             this.deleteResource = new System.Windows.Forms.Button();
             this.resourceType = new System.Windows.Forms.ComboBox();
@@ -45,16 +44,6 @@
             this.resource_panel.Name = "resource_panel";
             this.resource_panel.Size = new System.Drawing.Size(915, 538);
             this.resource_panel.TabIndex = 1;
-            // 
-            // SaveChanges
-            // 
-            this.SaveChanges.Location = new System.Drawing.Point(741, 556);
-            this.SaveChanges.Name = "SaveChanges";
-            this.SaveChanges.Size = new System.Drawing.Size(186, 75);
-            this.SaveChanges.TabIndex = 3;
-            this.SaveChanges.Text = "Save All Changes";
-            this.SaveChanges.UseVisualStyleBackColor = true;
-            this.SaveChanges.Click += new System.EventHandler(this.SaveChanges_Click);
             // 
             // addResource
             // 
@@ -81,10 +70,10 @@
             this.resourceType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.resourceType.FormattingEnabled = true;
             this.resourceType.Items.AddRange(new object[] {
-            "ANIMATED_MODEL",
-            "COLLISION_MAPPING",
             "RENDERABLE_INSTANCE",
-            "NAV_MESH_BARRIER_RESOURCE"});
+            "COLLISION_MAPPING",
+            "ANIMATED_MODEL",
+            "DYNAMIC_PHYSICS_SYSTEM"});
             this.resourceType.Location = new System.Drawing.Point(6, 19);
             this.resourceType.Name = "resourceType";
             this.resourceType.Size = new System.Drawing.Size(302, 21);
@@ -102,18 +91,17 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Modify Resource References";
             // 
-            // CathodeEditorGUI_AddOrEditResource
+            // AddOrEditResource
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(936, 643);
             this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.SaveChanges);
             this.Controls.Add(this.resource_panel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.Name = "CathodeEditorGUI_AddOrEditResource";
+            this.Name = "AddOrEditResource";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Resource Reference Editor";
             this.groupBox1.ResumeLayout(false);
@@ -124,7 +112,6 @@
         #endregion
 
         private System.Windows.Forms.Panel resource_panel;
-        private System.Windows.Forms.Button SaveChanges;
         private System.Windows.Forms.Button addResource;
         private System.Windows.Forms.Button deleteResource;
         private System.Windows.Forms.ComboBox resourceType;

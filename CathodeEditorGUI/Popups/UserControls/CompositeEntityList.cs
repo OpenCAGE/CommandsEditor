@@ -2,7 +2,6 @@
 using CATHODE.Scripting.Internal;
 using CathodeLib;
 using CommandsEditor.UserControls;
-using ListViewGroupCollapse;
 using OpenCAGE;
 using System;
 using System.Collections.Generic;
@@ -171,80 +170,10 @@ namespace CommandsEditor.Popups.UserControls
                     return;
             }
 
+            (int imageIndex, int groupIndex) = EditorUtils.GetIndexesForListViewItem(entity, _composite, Content.Level.Commands);
             ListViewItem item = (ListViewItem)Content.GenerateListViewItem(entity, _composite).Clone();
-
-            //Keep these indexes in sync with ListViewGroup 
-            switch (entity.variant)
-            {
-                case EntityVariant.VARIABLE:
-                    CompositePinInfoTable.PinInfo pinInfo = CompositeUtils.GetParameterInfo(_composite, (VariableEntity)entity);
-                    if (pinInfo != null)
-                    {
-                        switch ((CompositePinType)pinInfo.PinTypeGUID.ToUInt32())
-                        {
-                            case CompositePinType.CompositeInputAnimationInfoVariablePin:
-                            case CompositePinType.CompositeInputBoolVariablePin:
-                            case CompositePinType.CompositeInputDirectionVariablePin:
-                            case CompositePinType.CompositeInputFloatVariablePin:
-                            case CompositePinType.CompositeInputIntVariablePin:
-                            case CompositePinType.CompositeInputObjectVariablePin:
-                            case CompositePinType.CompositeInputPositionVariablePin:
-                            case CompositePinType.CompositeInputStringVariablePin:
-                            case CompositePinType.CompositeInputVariablePin:
-                            case CompositePinType.CompositeInputZoneLinkPtrVariablePin:
-                            case CompositePinType.CompositeInputZonePtrVariablePin:
-                            case CompositePinType.CompositeInputEnumVariablePin:
-                            case CompositePinType.CompositeInputEnumStringVariablePin:
-                            case CompositePinType.CompositeMethodPin:
-                                item.ImageIndex = 6; 
-                                break;
-                            case CompositePinType.CompositeOutputAnimationInfoVariablePin:
-                            case CompositePinType.CompositeOutputBoolVariablePin:
-                            case CompositePinType.CompositeOutputDirectionVariablePin:
-                            case CompositePinType.CompositeOutputFloatVariablePin:
-                            case CompositePinType.CompositeOutputIntVariablePin:
-                            case CompositePinType.CompositeOutputObjectVariablePin:
-                            case CompositePinType.CompositeOutputPositionVariablePin:
-                            case CompositePinType.CompositeOutputStringVariablePin:
-                            case CompositePinType.CompositeOutputVariablePin:
-                            case CompositePinType.CompositeOutputZoneLinkPtrVariablePin:
-                            case CompositePinType.CompositeOutputZonePtrVariablePin:
-                            case CompositePinType.CompositeOutputEnumVariablePin:
-                            case CompositePinType.CompositeOutputEnumStringVariablePin:
-                            case CompositePinType.CompositeTargetPin:
-                            case CompositePinType.CompositeReferencePin:
-                                item.ImageIndex = 5;
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        item.ImageIndex = 0;
-                    }
-                    item.Group = composite_content.Groups[0];
-                    break;
-                case EntityVariant.FUNCTION:
-                    if (!CommandsUtils.FunctionTypeExists(((FunctionEntity)entity).function))
-                    {
-                        item.Group = composite_content.Groups[2];
-                        item.ImageIndex = 2;
-                    }
-                    else
-                    {
-                        item.Group = composite_content.Groups[1];
-                        item.ImageIndex = 1;
-                    }
-                    break;
-                case EntityVariant.PROXY:
-                    item.Group = composite_content.Groups[3];
-                    item.ImageIndex = 3;
-                    break;
-                case EntityVariant.ALIAS:
-                    item.Group = composite_content.Groups[4];
-                    item.ImageIndex = 4;
-                    break;
-            }
-
+            item.ImageIndex = imageIndex;
+            item.Group = composite_content.Groups[groupIndex];
             composite_content.Items.Add(item);
         }
 
@@ -257,7 +186,7 @@ namespace CommandsEditor.Popups.UserControls
         private void PopulateEntities(List<Entity> entities)
         {
             bool hasID = composite_content.Columns.ContainsKey("ID");
-            bool showID = SettingsManager.GetBool(Singleton.Settings.EntIdOpt);
+            bool showID = SettingsManager.GetBool(Singleton.Settings.ShowShortGuids);
             if (showID && !hasID)
                 composite_content.Columns.Add(new ColumnHeader() { Name = "ID", Text = "ID", Width = 100 });
             else if (!showID && hasID)
@@ -322,11 +251,11 @@ namespace CommandsEditor.Popups.UserControls
                     ListViewItem item = Content.GenerateListViewItem(allEntities[i], _composite);
                     for (int x = 0; x < item.SubItems.Count; x++)
                     {
-                        if (!item.SubItems[x].Text.ToUpper().Contains(_currentSearch.ToUpper()))
+                        if (!item.SubItems[x].Text.ToUpper().Replace(" ", "").Contains(_currentSearch.ToUpper().Replace(" ", "")))
                             continue;
 
                         //If entity IDs column is hidden, we should ignore it in the search
-                        if (x == item.SubItems.Count - 1 && !SettingsManager.GetBool(Singleton.Settings.EntIdOpt))
+                        if (x == item.SubItems.Count - 1 && !SettingsManager.GetBool(Singleton.Settings.ShowShortGuids))
                             continue;
 
                         filteredEntities.Add(allEntities[i]);
@@ -362,8 +291,6 @@ namespace CommandsEditor.Popups.UserControls
         public class DisplayOptions
         {
             public bool ShowCheckboxes = false;
-
-            public bool ShowCreateNode = false;
             public bool ShowApplyDefaults = false;
 
             public bool DisplayAliases = true;

@@ -20,7 +20,6 @@ using OpenCAGE;
 using System.IO;
 using System.Runtime.Remoting.Messaging;
 using ListViewItem = System.Windows.Forms.ListViewItem;
-using ListViewGroupCollapse;
 using System.Threading;
 using System.Windows.Media.Animation;
 using CathodeLib;
@@ -58,10 +57,6 @@ namespace CommandsEditor.DockPanels
             _content = new LevelContent(levelName);
             _treeUtility = new TreeUtility(treeView1);
 
-#if !DEBUG
-            DEBUG_LoadNextEmpty.Visible = false;
-#endif
-
             Singleton.OnCompositeRenamed += OnCompositeRenamed;
         }
 
@@ -70,52 +65,32 @@ namespace CommandsEditor.DockPanels
             ReloadList();
         }
 
+        private void ClearTreeNodeTags(TreeNode node)
+        {
+            if (node.Tag != null)
+            {
+                node.Tag = null;
+            }
+            foreach (TreeNode child in node.Nodes)
+            {
+                ClearTreeNodeTags(child);
+            }
+        }
+
         private void CommandsDisplay_Load(object sender, EventArgs e)
         {
             if (Enum.TryParse<View>(SettingsManager.GetString(Singleton.Settings.FileBrowserViewOpt), out View view))
                 SetViewMode(view);
 
             //TODO: these utils should be moved into LevelContent and made less generic. makes no sense anymore.
-            _content.editor_utils = new EditorUtils(_content);
-            Task.Factory.StartNew(() => _content.editor_utils.GenerateEntityNameCache(Singleton.Editor));
-            Content.editor_utils.GenerateCompositeInstances(Content.commands);
+            _content.EditorUtils = new EditorUtils(_content);
+            Task.Factory.StartNew(() => _content.EditorUtils.GenerateEntityNameCache(Singleton.Editor));
+            Content.EditorUtils.GenerateCompositeInstances(Content.Level.Commands);
 
-            SelectCompositeAndReloadList(_content.commands.EntryPoints[0]);
-            //Singleton.OnCompositeSelected?.Invoke(_content.commands.EntryPoints[0]); //need to call this again b/c the activation event doesn't fire here
+            SelectCompositeAndReloadList(Content.Level.Commands.EntryPoints[0]);
+            //Singleton.OnCompositeSelected?.Invoke(Content.Level.Commands.EntryPoints[0]); //need to call this again b/c the activation event doesn't fire here
 
-            if (!Singleton.LoadedAnimationContent)
-                Singleton.OnAnimationsLoaded += FinishedLoadingAnims;
-            else
-                FinishedLoadingAnims();
-        }
-        
-        //VERY hacked-in thread waiters. This isn't particularly safe, but better than nothing. Needs reworking at some point.
-        private void FinishedLoadingAnims()
-        {
-            Singleton.OnAnimationsLoaded -= FinishedLoadingAnims;
-
-            if (!_content.resource.Loaded)
-                Singleton.OnLevelAssetsLoaded += FinishedLoadingLevelAssets;
-            else
-                FinishedLoadingLevelAssets(null);
-        }
-        private void FinishedLoadingLevelAssets(LevelContent content)
-        {
-            Singleton.OnAnimationsLoaded -= FinishedLoadingAnims;
-
-            if (!Singleton.LoadedGlobalAssets)
-                Singleton.OnGlobalAssetsLoaded += FinishedLoadingGlobalAssets;
-            else
-                FinishedLoadingGlobalAssets();
-        }
-        private void FinishedLoadingGlobalAssets()
-        {
-            Singleton.OnLevelAssetsLoaded -= FinishedLoadingLevelAssets;
-
-            //Everything should now be loaded globally and per-level.
-            Console.WriteLine("Finished loading anim data and level assets!");
-
-            Task.Factory.StartNew(() => EnumStringListViewItems.PopulateGlobalEntries()); //This only loads once, it's not expensive to call it again.
+            Task.Factory.StartNew(() => EnumStringListViewItems.PopulateGlobalEntries());
             Task.Factory.StartNew(() => EnumStringListViewItems.PopulateLevelSpecificEntries());
         }
 
@@ -139,12 +114,34 @@ namespace CommandsEditor.DockPanels
                 _addFolderDialog.FormClosed -= addFolderDialogClosed;
                 _addFolderDialog.OnFolderAdded -= SelectCompositeAndReloadList;
             }
-            if (_functionUsesDialog != null)
+            if (_globalEntitySearch != null)
             {
-                _functionUsesDialog.OnEntitySelected -= LoadCompositeAndEntity;
-                _functionUsesDialog.FormClosed -= _functionUsesDialog_FormClosed;
+                _globalEntitySearch.OnEntitySelected -= LoadCompositeAndEntity;
+                _globalEntitySearch.FormClosed -= _globalEntitySearch_FormClosed;
             }
 
+            if (listView1 != null)
+            {
+                foreach (ListViewItem item in listView1.Items)
+                {
+                    if (item.Tag != null)
+                    {
+                        item.Tag = null; 
+                    }
+                }
+                listView1.Items.Clear();
+            }
+            
+            if (treeView1 != null)
+            {
+                foreach (TreeNode node in treeView1.Nodes)
+                {
+                    ClearTreeNodeTags(node);
+                }
+                treeView1.Nodes.Clear();
+            }
+
+            _content?.Dispose();
             _content = null;
 
             _treeUtility?.ForceClearTree();
@@ -168,7 +165,7 @@ namespace CommandsEditor.DockPanels
 
         public void SelectCompositeAndReloadList(Composite composite)
         {
-            Content.commands.Entries = Content.commands.Entries.OrderBy(o => o.name).ToList();
+            Content.Level.Commands.Entries = Content.Level.Commands.Entries.OrderBy(o => o.name).ToList();
             ReloadList();
             SelectComposite(composite);
         }
@@ -178,7 +175,7 @@ namespace CommandsEditor.DockPanels
         {
             if (updateListViewToo)
             {
-                _treeUtility.UpdateFileTree(_content.commands.GetCompositeNames().ToList());
+                _treeUtility.UpdateFileTree(Content.Level.Commands.GetCompositeNames().ToList());
             }
 
             listView1.Items.Clear();
@@ -187,7 +184,7 @@ namespace CommandsEditor.DockPanels
             bool currentPathIsRoot = currentPathSplit.Length == 1 && currentPathSplit[0] == "";
 
             List<string> items = new List<string>();
-            foreach (Composite composite in _content.commands.Entries)
+            foreach (Composite composite in Content.Level.Commands.Entries)
             {
                 //Make sure this folder/composite should be visible at the current folder path
                 string name = composite.name.Replace('\\', '/');
@@ -212,7 +209,7 @@ namespace CommandsEditor.DockPanels
                 string text = nameSplit[currentPathIsRoot ? 0 : currentPathSplit.Length];
                 if (text == "") continue;
 
-                EditorUtils.CompositeType type = Content.editor_utils.GetCompositeType(composite);
+                EditorUtils.CompositeType type = Content.EditorUtils.GetCompositeType(composite);
 
                 //Make sure this hasn't already been added
                 if (items.Contains(text)) continue;
@@ -355,15 +352,15 @@ namespace CommandsEditor.DockPanels
 
         public CompositeDisplay LoadComposite(string name)
         {
-            return LoadComposite(_content.commands.GetComposite(name));
+            return LoadComposite(Content.Level.Commands.GetComposite(name));
         }
         public CompositeDisplay LoadComposite(ShortGuid guid)
         {
-            return LoadComposite(_content.commands.GetComposite(guid));
+            return LoadComposite(Content.Level.Commands.GetComposite(guid));
         }
         public CompositeDisplay LoadComposite(Composite composite)
         {
-            if (composite == null) 
+            if (composite == null)
                 return null;
 
             if (_compositeDisplay?.Composite == composite)
@@ -395,20 +392,20 @@ namespace CommandsEditor.DockPanels
 
         public void LoadCompositeAndEntity(ShortGuid compositeGUID, ShortGuid entityGUID)
         {
-            Composite composite = _content.commands.GetComposite(compositeGUID);
+            Composite composite = Content.Level.Commands.GetComposite(compositeGUID);
             LoadCompositeAndEntity(composite, composite?.GetEntityByID(entityGUID));
         }
         public void LoadCompositeAndEntity(Composite composite, Entity entity)
         {
             CompositeDisplay panel = LoadComposite(composite);
-            panel?.LoadEntity(entity);
+            panel?.LoadEntity(entity, true);
         }
 
         public void DeleteComposite(Composite composite, bool prompt = true)
         {
-            for (int i = 0; i < Content.commands.EntryPoints.Count(); i++)
+            for (int i = 0; i < Content.Level.Commands.EntryPoints.Count(); i++)
             {
-                if (composite.shortGUID == Content.commands.EntryPoints[i].shortGUID)
+                if (composite.shortGUID == Content.Level.Commands.EntryPoints[i].shortGUID)
                 {
                     MessageBox.Show("Cannot delete a composite which is the root, global, or pause menu!", "Cannot delete.", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
@@ -420,33 +417,82 @@ namespace CommandsEditor.DockPanels
                 CloseAllChildTabs();
 
             //Remove any entities or links that reference this composite
-            for (int i = 0; i < Content.commands.Entries.Count; i++)
+            for (int i = 0; i < Content.Level.Commands.Entries.Count; i++)
             {
-                List<FunctionEntity> prunedFunctionEntities = new List<FunctionEntity>();
-                for (int x = 0; x < Content.commands.Entries[i].functions.Count; x++)
+                var compositeEntry = Content.Level.Commands.Entries[i];
+                var functionsToKeep = new List<FunctionEntity>();
+                
+                // Collect functions that should be kept (not referencing the deleted composite)
+                foreach (var function in compositeEntry.functions)
                 {
-                    if (Content.commands.Entries[i].functions[x].function == composite.shortGUID) continue;
-                    List<EntityConnector> prunedEntityLinks = new List<EntityConnector>();
-                    for (int l = 0; l < Content.commands.Entries[i].functions[x].childLinks.Count; l++)
+                    if (function.function == composite.shortGUID) continue;
+                    
+                    // Prune child links that reference the deleted composite
+                    var prunedEntityLinks = new List<EntityConnector>();
+                    foreach (var link in function.childLinks)
                     {
-                        Entity linkedEntity = Content.commands.Entries[i].GetEntityByID(Content.commands.Entries[i].functions[x].childLinks[l].linkedEntityID);
-                        if (linkedEntity != null && linkedEntity.variant == EntityVariant.FUNCTION) if (((FunctionEntity)linkedEntity).function == composite.shortGUID) continue;
-                        prunedEntityLinks.Add(Content.commands.Entries[i].functions[x].childLinks[l]);
+                        Entity linkedEntity = compositeEntry.GetEntityByID(link.linkedEntityID);
+                        if (linkedEntity != null && linkedEntity.variant == EntityVariant.FUNCTION) 
+                        {
+                            if (((FunctionEntity)linkedEntity).function == composite.shortGUID) continue;
+                        }
+                        prunedEntityLinks.Add(link);
                     }
-                    Content.commands.Entries[i].functions[x].childLinks = prunedEntityLinks;
-                    prunedFunctionEntities.Add(Content.commands.Entries[i].functions[x]);
+                    function.childLinks = prunedEntityLinks;
+                    functionsToKeep.Add(function);
                 }
-                Content.commands.Entries[i].functions = prunedFunctionEntities;
+                
+                // Clear the functions dictionary and add back only the functions to keep
+                compositeEntry.functions_dictionary.Clear();
+                foreach (var function in functionsToKeep)
+                {
+                    compositeEntry.functions_dictionary[function.shortGUID] = function;
+                }
             }
-            //TODO: remove proxies etc that also reference any of the removed entities
+
+            // Remove aliases and proxies that reference the deleted composite
+            for (int i = 0; i < Content.Level.Commands.Entries.Count; i++)
+            {
+                var compositeEntry = Content.Level.Commands.Entries[i];
+                var aliasesToRemove = new List<ShortGuid>();
+                var proxiesToRemove = new List<ShortGuid>();
+
+                // Check aliases - remove those that can't be resolved after the composite deletion
+                foreach (var alias in compositeEntry.aliases)
+                {
+                    if (!Content.Level.Commands.Utils.CouldResolve(Content.Level.Commands.Utils.ResolveAlias(alias, compositeEntry)))
+                    {
+                        aliasesToRemove.Add(alias.shortGUID);
+                    }
+                }
+
+                // Check proxies - remove those that can't be resolved after the composite deletion
+                foreach (var proxy in compositeEntry.proxies)
+                {
+                    if (!Content.Level.Commands.Utils.CouldResolve(Content.Level.Commands.Utils.ResolveProxy(proxy)))
+                    {
+                        proxiesToRemove.Add(proxy.shortGUID);
+                    }
+                }
+
+                // Remove the invalid aliases and proxies
+                foreach (var aliasGuid in aliasesToRemove)
+                {
+                    compositeEntry.aliases_dictionary.Remove(aliasGuid);
+                }
+                foreach (var proxyGuid in proxiesToRemove)
+                {
+                    compositeEntry.proxies_dictionary.Remove(proxyGuid);
+                }
+            }
 
             //Remove the composite
-            Content.commands.Entries.Remove(composite);
-            CommandsUtils.PurgedComposites.purged.Clear(); //TODO: we should smartly remove from this list, rather than removing all
+            Content.Level.Commands.Entries.Remove(composite);
+            Content.Level.Commands.Utils.PurgedComposites.purged.Clear(); //TODO: we should smartly remove from this list, rather than removing all
 
             //Refresh UI
             ReloadList();
-            Content.editor_utils.GenerateCompositeInstances(Content.commands);
+            Content.EditorUtils.GenerateCompositeInstances(Content.Level.Commands);
 
             Singleton.OnCompositeDeleted?.Invoke(composite);
         }
@@ -454,14 +500,15 @@ namespace CommandsEditor.DockPanels
         private string _currentSearch = "";
         private void entity_search_btn_Click(object sender, EventArgs e)
         {
-            if (entity_search_box.Text == _currentSearch) return;
+            string newSearch = entity_search_box.Text.Replace('\\', '/').ToUpper().Replace(" ", "");
+            if (newSearch == _currentSearch) return;
 
             List<string> filteredCompositeNames = new List<string>();
             List<Composite> filteredComposites = new List<Composite>();
-            _currentSearch = entity_search_box.Text.Replace('\\', '/').ToUpper();
-            for (int i = 0; i < _content.commands.Entries.Count; i++)
+            _currentSearch = newSearch;
+            for (int i = 0; i < Content.Level.Commands.Entries.Count; i++)
             {
-                string name = _content.commands.Entries[i].name.Replace('\\', '/');
+                string name = Content.Level.Commands.Entries[i].name.Replace('\\', '/');
 
                 if (SettingsManager.GetBool(Singleton.Settings.CompNameOnlyOpt) == true)
                 {
@@ -469,10 +516,10 @@ namespace CommandsEditor.DockPanels
                     name = nameSplit[nameSplit.Length - 1];
                 }
 
-                if (!name.ToUpper().Contains(_currentSearch)) continue;
+                if (!name.ToUpper().Replace(" ", "").Contains(_currentSearch)) continue;
 
-                filteredCompositeNames.Add(_content.commands.Entries[i].name.Replace('\\', '/'));
-                filteredComposites.Add(_content.commands.Entries[i]);
+                filteredCompositeNames.Add(Content.Level.Commands.Entries[i].name.Replace('\\', '/'));
+                filteredComposites.Add(Content.Level.Commands.Entries[i]);
             }
 
             _treeUtility.UpdateFileTree(filteredCompositeNames);
@@ -486,7 +533,7 @@ namespace CommandsEditor.DockPanels
                 pathDisplay.Text = "";
                 foreach (Composite composite in filteredComposites)
                 {
-                    bool isRoot = _content.commands.EntryPoints[0] == composite;
+                    bool isRoot = Content.Level.Commands.EntryPoints[0] == composite;
                     listView1.Items.Add(new ListViewItem()
                     {
                         Text = Path.GetFileName(composite.name),
@@ -507,7 +554,7 @@ namespace CommandsEditor.DockPanels
         {
             if (e.Button == MouseButtons.Right)
             {
-                var lv = sender as System.Windows.Forms.ListView; 
+                var lv = sender as System.Windows.Forms.ListView;
                 var item = lv.HitTest(e.Location).Item;
 
                 deleteFolderToolStripMenuItem.Enabled = item != null;
@@ -543,7 +590,7 @@ namespace CommandsEditor.DockPanels
                     switch (item.Item_Type)
                     {
                         case TreeItemType.EXPORTABLE_FILE:
-                            Composite c = Content.commands.GetComposite(item.String_Value);
+                            Composite c = Content.Level.Commands.GetComposite(item.String_Value);
                             int nameLength = EditorUtils.GetCompositeName(c).Length;
                             _currentDisplayFolderPath = (c.name.Length != nameLength ? c.name.Substring(0, c.name.Length - nameLength - 1) : "");
                             break;
@@ -573,11 +620,11 @@ namespace CommandsEditor.DockPanels
                 else folderFullPath = _currentDisplayFolderPath + "/" + content.FolderName;
 
                 List<Composite> toDelete = new List<Composite>();
-                for (int i = 0; i < _content.commands.Entries.Count; i++)
-                    if (_content.commands.Entries[i].name.Length >= folderFullPath.Length && _content.commands.Entries[i].name.Substring(0, folderFullPath.Length) == folderFullPath)
-                        toDelete.Add(_content.commands.Entries[i]);
+                for (int i = 0; i < Content.Level.Commands.Entries.Count; i++)
+                    if (Content.Level.Commands.Entries[i].name.Length >= folderFullPath.Length && Content.Level.Commands.Entries[i].name.Substring(0, folderFullPath.Length) == folderFullPath)
+                        toDelete.Add(Content.Level.Commands.Entries[i]);
 
-                if (MessageBox.Show("Are you sure you want to delete this folder, including the " + toDelete.Count + " composites it contains?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) 
+                if (MessageBox.Show("Are you sure you want to delete this folder, including the " + toDelete.Count + " composites it contains?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     return;
 
                 for (int i = 0; i < toDelete.Count; i++)
@@ -597,7 +644,7 @@ namespace CommandsEditor.DockPanels
             switch (item.Item_Type)
             {
                 case TreeItemType.EXPORTABLE_FILE:
-                    DeleteComposite(Content.commands.GetComposite(item.String_Value));
+                    DeleteComposite(Content.Level.Commands.GetComposite(item.String_Value));
                     break;
                 case TreeItemType.DIRECTORY:
                     //TODO
@@ -628,7 +675,7 @@ namespace CommandsEditor.DockPanels
             switch (item.Item_Type)
             {
                 case TreeItemType.EXPORTABLE_FILE:
-                    RenameComposite(Content.commands.GetComposite(item.String_Value));
+                    RenameComposite(Content.Level.Commands.GetComposite(item.String_Value));
                     break;
                 case TreeItemType.DIRECTORY:
                     //TODO
@@ -719,65 +766,42 @@ namespace CommandsEditor.DockPanels
             folderToolStripMenuItem_Click(null, null);
         }
 
-        ShowCompositeUses _functionUsesDialog = null;
         private void findFunctionUses_Click(object sender, EventArgs e)
         {
-            if (_functionUsesDialog != null)
+            ShowSearchWindow(GlobalEntitySearcher.SearchMode.BY_FUNCTION);
+        }
+        private void findNameUses_Click(object sender, EventArgs e)
+        {
+            ShowSearchWindow(GlobalEntitySearcher.SearchMode.BY_NAME);
+        }
+
+        GlobalEntitySearcher _globalEntitySearch = null;
+        private void ShowSearchWindow(GlobalEntitySearcher.SearchMode mode)
+        {
+            if (_globalEntitySearch != null)
             {
-                _functionUsesDialog.Focus();
-                _functionUsesDialog.BringToFront();
+                _globalEntitySearch.Focus();
+                _globalEntitySearch.BringToFront();
                 return;
             }
 
-            _functionUsesDialog = new ShowCompositeUses();
-            _functionUsesDialog.Show();
-            _functionUsesDialog.OnEntitySelected += LoadCompositeAndEntity;
-            _functionUsesDialog.FormClosed += _functionUsesDialog_FormClosed;
+            _globalEntitySearch = new GlobalEntitySearcher(mode);
+            _globalEntitySearch.Show();
+            _globalEntitySearch.OnEntitySelected += LoadCompositeAndEntity;
+            _globalEntitySearch.FormClosed += _globalEntitySearch_FormClosed;
         }
-        private void _functionUsesDialog_FormClosed(object sender, FormClosedEventArgs e)
+        private void _globalEntitySearch_FormClosed(object sender, FormClosedEventArgs e)
         {
-            _functionUsesDialog = null;
+            _globalEntitySearch = null;
         }
 
         private void entity_search_box_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
-            { 
+            {
                 entity_search_btn.PerformClick();
                 e.SuppressKeyPress = true;
             }
-        }
-
-        private static List<Composite> _toSkip = new List<Composite>();
-
-        private void DEBUG_LoadNextEmpty_Click(object sender, EventArgs e)
-        {
-            DEBUG_LoadNextToConstruct();
-        }
-        public void DEBUG_LoadNextToConstruct()
-        {
-#if !DEBUG
-            MessageBox.Show("This should not be reached in production code...");
-            return;
-#endif
-
-            if (FlowgraphLayoutManager.DEBUG_IsUnfinished)
-            {
-                _toSkip.Add(CompositeDisplay.Composite);
-            }
-
-            FlowgraphLayoutManager.DEBUG_UsePreDefinedTable = true;
-            List<Composite> ordered = Content.commands.Entries.OrderBy(o => CompositeUtils.CountLinks(o)).Where(o => CompositeUtils.CountLinks(o) != 0 && !FlowgraphLayoutManager.HasLayout(o)).ToList();
-            for (int i = 0; i < ordered.Count; i++)
-                Console.WriteLine(ordered[i].name);
-            Console.WriteLine("Still " + ordered.Count + " to go in this PAK (count includes those not purged, so may be lower)");
-            FlowgraphLayoutManager.DEBUG_UsePreDefinedTable = false;
-
-            int index = 0;
-            while (_toSkip.Contains(ordered[index]))
-                index++;
-                
-            LoadComposite(ordered[index]);
         }
     }
 }

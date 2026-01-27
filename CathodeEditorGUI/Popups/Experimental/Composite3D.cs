@@ -44,21 +44,21 @@ namespace CommandsEditor
             List<GUI_ModelViewer.Model> models = new List<GUI_ModelViewer.Model>();
             if (comp == null) return models;
 
-            List<FunctionEntity> entities = comp.functions;
+            ReadOnlyEntityCollection<FunctionEntity> entities = comp.functions;
             foreach (FunctionEntity entity in entities)
             {
                 Parameter position = entity.GetParameter("position");
                 cTransform globalPosition = ((cTransform)position?.content) + offset;
 
-                if (!CommandsUtils.FunctionTypeExists(entity.function))
-                    models.AddRange(LoadComposite(_compositeDisplay.Content.commands.GetComposite(entity.function), globalPosition));
+                if (!entity.function.IsFunctionType)
+                    models.AddRange(LoadComposite(_compositeDisplay.Content.Level.Commands.GetComposite(entity.function), globalPosition));
 
                 Parameter resource = entity.GetParameter("resource");
                 if (resource == null) continue;
                 List<ResourceReference> resourceRefs = ((cResource)(resource.content)).value;
                 foreach (ResourceReference resourceRef in resourceRefs.Where(o => o.resource_type == ResourceType.RENDERABLE_INSTANCE))
-                    for (int i = 0; i < resourceRef.count; i++)
-                        models.Add(new GUI_ModelViewer.Model(_compositeDisplay.Content.resource.reds.Entries[resourceRef.index + i].ModelIndex, globalPosition));
+                    for (int i = 0; i < resourceRef.RenderableInstance.Count; i++)
+                        models.Add(new GUI_ModelViewer.Model(resourceRef.RenderableInstance[i].Model, globalPosition));
             }
             return models;
         }

@@ -1,4 +1,5 @@
 ﻿using CATHODE;
+using CATHODE.Scripting;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,7 +14,9 @@ namespace CommandsEditor.Popups.UserControls
 {
     public partial class GUI_Resource_AnimatedModel : ResourceUserControl
     {
-        private EnvironmentAnimations.EnvironmentAnimation _envAnimInfo = null;
+        //this is done, for now, but the EnvironmentAnimations parser needs completing 
+
+        private EnvironmentAnimations.EnvironmentAnimation _envAnim = null;
 
         public GUI_Resource_AnimatedModel() : base()
         {
@@ -28,21 +31,20 @@ namespace CommandsEditor.Popups.UserControls
             skeletonList.EndUpdate();
         }
 
-        //NOTE TO SELF: This writes to the original env anim obj, which goes against the thing of having a save button in the UI.
-
-        public void PopulateUI(EnvironmentAnimations.EnvironmentAnimation animInfo)
+        public override void PopulateUI(ResourceReference resource)
         {
-            _envAnimInfo = animInfo;
+            _envAnim = resource.AnimatedModel;
 
-            if (animInfo.SkeletonName == "")
+            if (_envAnim.SkeletonName == "")
                 skeletonList.SelectedIndex = 0;
             else
-                skeletonList.SelectedItem = animInfo.SkeletonName;
+                skeletonList.SelectedItem = _envAnim.SkeletonName;
         }
 
         private void animatedModelIndex_SelectedIndexChanged(object sender, EventArgs e)
         {
-            _envAnimInfo.SkeletonName = skeletonList.SelectedItem.ToString();
+            _envAnim.SkeletonName = skeletonList.SelectedItem.ToString();
+            Singleton.OnResourceModified?.Invoke();
         }
     }
 }

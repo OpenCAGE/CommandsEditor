@@ -71,6 +71,7 @@ namespace CommandsEditor.DockPanels
             deleteToolStripMenuItem.Enabled = hasSelectedEntity;
             renameToolStripMenuItem.Enabled = hasSelectedEntity && compositeEntityList1.SelectedEntity.variant != EntityVariant.ALIAS && compositeEntityList1.SelectedEntity.variant != EntityVariant.VARIABLE;
             duplicateToolStripMenuItem.Enabled = hasSelectedEntity && compositeEntityList1.SelectedEntity.variant != EntityVariant.ALIAS && compositeEntityList1.SelectedEntity.variant != EntityVariant.VARIABLE;
+            findReferencesToolStripMenuItem.Enabled = hasSelectedEntity && compositeEntityList1.SelectedEntity.variant != EntityVariant.ALIAS && compositeEntityList1.SelectedEntity.variant != EntityVariant.VARIABLE;
         }
 
         //Temporarily hijacked these options here: they should be handled in CompositeDisplay really...
@@ -116,6 +117,18 @@ namespace CommandsEditor.DockPanels
         private void duplicateToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Singleton.Editor.CommandsDisplay.CompositeDisplay.DuplicateEntity(List.SelectedEntity);
+        }
+
+        ShowCrossRefs _crossRefsDialog = null;
+        private void findReferencesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_crossRefsDialog != null)
+                _crossRefsDialog.Close();
+
+            _crossRefsDialog = new ShowCrossRefs(List.SelectedEntity);
+            _crossRefsDialog.Show();
+            _crossRefsDialog.OnEntitySelected += Singleton.Editor.CommandsDisplay.LoadCompositeAndEntity;
+            _crossRefsDialog.OnFlowgraphSelected += Singleton.Editor.CommandsDisplay.CompositeDisplay.SelectEntityOnFlowgraph;
         }
     }
 }

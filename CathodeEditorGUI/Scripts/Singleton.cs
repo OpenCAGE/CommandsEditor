@@ -1,6 +1,7 @@
 using CATHODE;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
+using CathodeLib;
 using CommandsEditor.DockPanels;
 using CommandsEditor.Popups;
 using System;
@@ -31,7 +32,7 @@ namespace CommandsEditor
         public static AnimationStrings AnimationStrings_Debug;
 
         //Global assets
-        public static Textures GlobalTextures;
+        public static Global Global;
 
         //Load events
         public static Action<LevelContent> OnLevelLoaded;
@@ -51,10 +52,12 @@ namespace CommandsEditor
         public static Action<Composite, string> OnCompositeRenamed;
         public static Action<cTransform, Entity> OnEntityMoved;
         public static Action<Entity> OnEntityDeleted;
+        public static Action<Entity, Composite> OnEntityDeletePending;
         public static Action<Composite> OnCompositeDeleted;
         public static Action OnSaved;
         public static Action OnParameterModified;
         public static Action OnResourceModified;
+        public static Action OnNodeStyleChanged;
 
         //Composite display events
         public static Action<CompositeDisplay> OnCompositeDisplayOpening;
@@ -72,7 +75,7 @@ namespace CommandsEditor
         {
             public readonly string ServerOpt = "CE_ConnectToUnity";
             public readonly string NodeOpt = "CS_NodeView";
-            public readonly string EntIdOpt = "CS_ShowEntityIDs";
+            public readonly string ShowShortGuids = "CS_ShowEntityIDs";
             public readonly string InstOpt = "CS_InstanceMode";
             public readonly string CompNameOnlyOpt = "CS_SearchOnlyCompName";
             public readonly string UseEntityTabs = "CS_UseEntityTabs";
@@ -82,7 +85,6 @@ namespace CommandsEditor
             public readonly string EnableFileBrowser = "CS_FileBrowserEnabled";
             public readonly string AutoHideCompositeDisplay = "CS_FileBrowserAutoHide";
             public readonly string KeepUsesWindowOpen = "CS_KeepUsesWindowOpen";
-            public readonly string OpenEntityFromNode = "CS_OpenEntityFromNode";
             public readonly string EntitySplitWidth = "CS_EntitySplitWidth";
             public readonly string CompositeSplitWidth = "CS_CompositeSplitWidth";
             public readonly string CommandsSplitWidth = "CS_CommandsSplitWidth";
@@ -100,8 +102,7 @@ namespace CommandsEditor
             public readonly string PreviouslySelectedCompInstType = "CS_PreviouslySelectedCompInstType";
             public readonly string PreviouslySearchedCompInstType = "CS_PreviouslySearchedCompInstType";
             public readonly string PreviouslySearchedParamPopulationComp = "CS_PreviouslySearchedParamPopulationComp";
-            public readonly string ExperimentalResourceStuff = "CS_EnableExperimentalResourceSaving";
-            public readonly string MakeNodeWhenMakeEntity = "CS_MakeNodeWhenMakeEntity";
+            public readonly string CompileInstances = "CS_CompileInstances";
             public readonly string PrevFuncUsesSearch = "CS_PrevFuncUsesSearch";
             public readonly string PrevVariableType = "CS_PrevVariableTypeNew";
             public readonly string PrevVariableType_Enum = "CS_PrevVariableTypeEnum";
@@ -113,6 +114,29 @@ namespace CommandsEditor
             public readonly string EntityInspectorWidth = "CS_EntityInspectorWidth";
             public readonly string PreviouslySearchedParamPopulationProxyOrAlias = "CS_PreviouslySearchedParamPopulationProxyOrAlias";
             public readonly string UNITY_FocusEntity = "CS_UNITY_FocusEntity";
+            public readonly string RuntimeUtilsOpt = "CE_ConnectToRuntimeUtils";
+            public readonly string NumericStep = "CS_NumericStep";
+            public readonly string NumericStepRot = "CS_NumericStepRot";
+            public readonly string SavePakAndBin = "CS_SavePakAndBin";
+            public readonly string PrevEntNameSearch = "CS_PrevEntNameSearch";
+            public readonly string PopulateAllPinsOnCreateNode = "CS_PopulateAllPinsOnCreateNode";
+            public readonly string OptionToDeleteEntityWithNode = "CS_OptionToDeleteEntityWithNode";
+            public readonly string LaunchGameWhenSaved = "CS_LaunchGameWhenSaved";
+            public readonly string NodeColour_FunctionNode = "CS_NodeColour_FunctionNode";
+            public readonly string NodeColour_FunctionNodeBottom = "CS_NodeColour_FunctionNodeBottom";
+            public readonly string NodeColour_FunctionText = "CS_NodeColour_FunctionText";
+            public readonly string NodeColour_InstanceNode = "CS_NodeColour_InstanceNode";
+            public readonly string NodeColour_InstanceNodeBottom = "CS_NodeColour_InstanceNodeBottom";
+            public readonly string NodeColour_InstanceText = "CS_NodeColour_InstanceText";
+            public readonly string NodeColour_AliasNode = "CS_NodeColour_AliasNode";
+            public readonly string NodeColour_AliasNodeBottom = "CS_NodeColour_AliasNodeBottom";
+            public readonly string NodeColour_AliasText = "CS_NodeColour_AliasText";
+            public readonly string NodeColour_ProxyNode = "CS_NodeColour_ProxyNode";
+            public readonly string NodeColour_ProxyNodeBottom = "CS_NodeColour_ProxyNodeBottom";
+            public readonly string NodeColour_ProxyText = "CS_NodeColour_ProxyText";
+            public readonly string NodeColour_VariableNode = "CS_NodeColour_VariableNode";
+            public readonly string NodeColour_VariableText = "CS_NodeColour_VariableText";
+            public readonly string AskBeforeDeletingNode = "CS_AskBeforeDeletingNode";
         }
 
         public static Action OnAnimationsLoaded;
@@ -135,27 +159,23 @@ namespace CommandsEditor
                     strings[i] = new TextDB(textList[i]);
                 });
                 for (int i = 0; i < textList.Count; i++)
-                    GlobalTextDBs.Add(Path.GetFileNameWithoutExtension(textList[i]), strings[i]);
+                    GlobalTextDBs.Add(Path.GetFileNameWithoutExtension(textList[i].ToUpper()), strings[i]);
             }
 
-            //Load bulky global data
-            Task.Factory.StartNew(() => LoadGlobalAssets());
-            Task.Factory.StartNew(() => LoadAnimData());
-        }
+            Debug.Log("Asset Loader", "Loading anim data");
 
-        /* Load anim data */
-        private static void LoadAnimData()
-        {
             //Load animation data
             PAK2 animPAK = new PAK2(SharedData.pathToAI + "/DATA/GLOBAL/ANIMATION.PAK");
+
+            //Create global
+            Global = new Global(SharedData.pathToAI + "\\DATA\\ENV\\GLOBAL\\", animPAK);
 
             //Load all male/female skeletons
             List<PAK2.File> skeletonDefs = animPAK.Entries.FindAll(o => o.Filename.Length > 17 && o.Filename.Substring(0, 17) == "DATA\\SKELETONDEFS");
             for (int i = 0; i < skeletonDefs.Count; i++)
             {
                 string skeleton = Path.GetFileNameWithoutExtension(skeletonDefs[i].Filename);
-                File.WriteAllBytes(skeleton, skeletonDefs[i].Content);
-                XmlNode skeletonType = new BML(skeleton).Content.SelectSingleNode("//SkeletonDef/LoResReferenceSkeleton");
+                XmlNode skeletonType = new BML(skeletonDefs[i].Content).Content.SelectSingleNode("//SkeletonDef/LoResReferenceSkeleton");
                 if (skeletonType?.InnerText == "MALE" || skeletonType?.InnerText == "FEMALENPC")
                 {
                     if (!GenderedSkeletons.ContainsKey(skeletonType?.InnerText))
@@ -165,15 +185,9 @@ namespace CommandsEditor
                 File.Delete(skeleton);
             }
 
-            //Anim string db
-            File.WriteAllBytes("ANIM_STRING_DB.BIN", animPAK.Entries.FirstOrDefault(o => o.Filename.Contains("ANIM_STRING_DB.BIN")).Content);
-            AnimationStrings = new AnimationStrings("ANIM_STRING_DB.BIN");
-            File.Delete("ANIM_STRING_DB.BIN");
-
-            //Debug anim string db
-            File.WriteAllBytes("ANIM_STRING_DB_DEBUG.BIN", animPAK.Entries.FirstOrDefault(o => o.Filename.Contains("ANIM_STRING_DB_DEBUG.BIN")).Content);
-            AnimationStrings_Debug = new AnimationStrings("ANIM_STRING_DB_DEBUG.BIN");
-            File.Delete("ANIM_STRING_DB_DEBUG.BIN");
+            //Anim string dbs
+            AnimationStrings = new AnimationStrings(animPAK.Entries.FirstOrDefault(o => o.Filename.Contains("ANIM_STRING_DB.BIN")).Content);
+            AnimationStrings_Debug = new AnimationStrings(animPAK.Entries.FirstOrDefault(o => o.Filename.Contains("ANIM_STRING_DB_DEBUG.BIN")).Content);
 
             //Load all skeleton names
             List<PAK2.File> skeletonNames = animPAK.Entries.FindAll(o => o.Filename.Length > 24 && o.Filename.Substring(0, 24) == "DATA\\ANIM_SYS\\SKELE\\DEFS");
@@ -254,12 +268,6 @@ namespace CommandsEditor
 
             _loadedAnimationContent = true;
             OnAnimationsLoaded?.Invoke();
-        }
-
-        /* Load global assets */
-        private static void LoadGlobalAssets()
-        {
-            GlobalTextures = new Textures(SharedData.pathToAI + "/DATA/ENV/GLOBAL/WORLD/GLOBAL_TEXTURES.ALL.PAK");
             _loadedGlobalAssets = true;
             OnGlobalAssetsLoaded?.Invoke();
         }

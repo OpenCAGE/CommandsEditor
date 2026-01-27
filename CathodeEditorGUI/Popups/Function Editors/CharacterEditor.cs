@@ -1,8 +1,10 @@
 ﻿using CATHODE;
+using CATHODE.Enums;
 using CATHODE.Scripting;
 using CathodeLib;
 using CommandsEditor.DockPanels;
 using CommandsEditor.Popups.Base;
+using OpenCAGE;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +14,7 @@ namespace CommandsEditor
     public partial class CharacterEditor : BaseWindow
     {
         private List<EntityPath> _hierarchies = new List<EntityPath>();
-        private CharacterAccessorySets.Entry _accessories;
+        private CharacterAccessorySets.CharacterAttributes _accessories;
 
         private EntityInspector _entityDisplay;
 
@@ -24,9 +26,31 @@ namespace CommandsEditor
             foreach (KeyValuePair<string, HashSet<string>> skeletons in Singleton.GenderedSkeletons)
                 gender.Items.Add(skeletons.Key);
 
-            shirtDecal.Items.Clear();
-            foreach (CharacterAccessorySets.Entry.Decal decal in Enum.GetValues(typeof(CharacterAccessorySets.Entry.Decal)))
-                shirtDecal.Items.Add(decal);
+            assetType.Items.Clear();
+            foreach (CUSTOM_CHARACTER_ASSETS entry in Enum.GetValues(typeof(CUSTOM_CHARACTER_ASSETS)))
+                assetType.Items.Add(entry);
+            voiceActor.Items.Clear();
+            foreach (DIALOGUE_VOICE_ACTOR entry in Enum.GetValues(typeof(DIALOGUE_VOICE_ACTOR)))
+                voiceActor.Items.Add(entry);
+            genderAttr.Items.Clear();
+            foreach (CUSTOM_CHARACTER_GENDER entry in Enum.GetValues(typeof(CUSTOM_CHARACTER_GENDER)))
+                genderAttr.Items.Add(entry);
+            ethnicityAttr.Items.Clear();
+            foreach (CUSTOM_CHARACTER_ETHNICITY entry in Enum.GetValues(typeof(CUSTOM_CHARACTER_ETHNICITY)))
+                ethnicityAttr.Items.Add(entry);
+            buildAttr.Items.Clear();
+            foreach (CUSTOM_CHARACTER_BUILD entry in Enum.GetValues(typeof(CUSTOM_CHARACTER_BUILD)))
+                buildAttr.Items.Add(entry);
+
+            foleyFootwear.Items.Clear();
+            foreach (CHARACTER_FOLEY_SOUND entry in Enum.GetValues(typeof(CHARACTER_FOLEY_SOUND)))
+                foleyFootwear.Items.Add(entry);
+            foleyLeg.Items.Clear();
+            foreach (CHARACTER_FOLEY_SOUND entry in Enum.GetValues(typeof(CHARACTER_FOLEY_SOUND)))
+                foleyLeg.Items.Add(entry);
+            foleyTorso.Items.Clear();
+            foreach (CHARACTER_FOLEY_SOUND entry in Enum.GetValues(typeof(CHARACTER_FOLEY_SOUND)))
+                foleyTorso.Items.Add(entry);
 
             RefreshUI(ShortGuid.Invalid);
         }
@@ -36,18 +60,18 @@ namespace CommandsEditor
             int toSelect = 0;
 
             _hierarchies.Clear();
-            List<EntityPath> hierarchies = _entityDisplay.Content.editor_utils.GetHierarchiesForEntity(_entityDisplay.Composite, _entityDisplay.Entity);
+            List<EntityPath> hierarchies = _entityDisplay.Content.EditorUtils.GetHierarchiesForEntity(_entityDisplay.Composite, _entityDisplay.Entity);
             for (int i = 0; i < hierarchies.Count; i++)
             {
                 ShortGuid instance = hierarchies[i].GenerateCompositeInstanceID();
-                if (Content.resource.character_accessories.Entries.FirstOrDefault(o => o.character.composite_instance_id == instance) == null) continue;
+                if (Content.Level.AccessorySets.Entries.FirstOrDefault(o => o.character.composite_instance_id == instance) == null) continue;
                 if (toSelect == 0 && instance == selected) toSelect = _hierarchies.Count;
                 _hierarchies.Add(hierarchies[i]);
             }
 
             characterInstances.Items.Clear();
             for (int i = 0; i < _hierarchies.Count; i++)
-                characterInstances.Items.Add(_hierarchies[i].GetAsString(Content.commands, _entityDisplay.Composite, false));
+                characterInstances.Items.Add(Content.Level.Commands.Utils.GetResolvedAsString(Content.Level.Commands.Utils.ResolveHierarchy(_hierarchies[i]), SettingsManager.GetBool("CS_ShowEntityIDs")));
 
             selectNewHead.Enabled = characterInstances.Items.Count != 0;
             selectNewShirt.Enabled = characterInstances.Items.Count != 0;
@@ -57,7 +81,14 @@ namespace CommandsEditor
             selectNewCollision.Enabled = characterInstances.Items.Count != 0;
             bodyTypes.Enabled = characterInstances.Items.Count != 0;
             gender.Enabled = characterInstances.Items.Count != 0;
-            shirtDecal.Enabled = characterInstances.Items.Count != 0;
+            assetType.Enabled = characterInstances.Items.Count != 0;
+            voiceActor.Enabled = characterInstances.Items.Count != 0;
+            genderAttr.Enabled = characterInstances.Items.Count != 0;
+            ethnicityAttr.Enabled = characterInstances.Items.Count != 0;
+            buildAttr.Enabled = characterInstances.Items.Count != 0;
+            foleyFootwear.Enabled = characterInstances.Items.Count != 0;
+            foleyLeg.Enabled = characterInstances.Items.Count != 0;
+            foleyTorso.Enabled = characterInstances.Items.Count != 0;
 
             if (characterInstances.Items.Count != 0)
                 characterInstances.SelectedIndex = toSelect;
@@ -73,19 +104,26 @@ namespace CommandsEditor
         private void characterInstances_SelectedIndexChanged(object sender, EventArgs e)
         {
             ShortGuid hierarchyID = _hierarchies[characterInstances.SelectedIndex].GenerateCompositeInstanceID();
-            _accessories = Content.resource.character_accessories.Entries.FirstOrDefault(o => o.character.composite_instance_id == hierarchyID);
+            _accessories = Content.Level.AccessorySets.Entries.FirstOrDefault(o => o.character.composite_instance_id == hierarchyID);
 
-            shirtComposite.Text = Content.commands.GetComposite(_accessories.shirt_composite)?.name;
-            trousersComposite.Text = Content.commands.GetComposite(_accessories.trousers_composite)?.name;
-            shoesComposite.Text = Content.commands.GetComposite(_accessories.shoes_composite)?.name;
-            headComposite.Text = Content.commands.GetComposite(_accessories.head_composite)?.name;
-            armsComposite.Text = Content.commands.GetComposite(_accessories.arms_composite)?.name;
-            collisionComposite.Text = Content.commands.GetComposite(_accessories.collision_composite)?.name;
+            shirtComposite.Text = Content.Level.Commands.GetComposite(_accessories.components.Torso.Composite)?.name;
+            trousersComposite.Text = Content.Level.Commands.GetComposite(_accessories.components.Legs.Composite)?.name;
+            shoesComposite.Text = Content.Level.Commands.GetComposite(_accessories.components.Shoes.Composite)?.name;
+            headComposite.Text = Content.Level.Commands.GetComposite(_accessories.components.Head.Composite)?.name;
+            armsComposite.Text = Content.Level.Commands.GetComposite(_accessories.components.Arms.Composite)?.name;
+            collisionComposite.Text = Content.Level.Commands.GetComposite(_accessories.components.Collision.Composite)?.name;
 
-            gender.Text = _accessories.body_skeleton;
+            gender.Text = _accessories.gender_skeleton;
             RefreshSkeletonsForGender();
             bodyTypes.Text = _accessories.face_skeleton;
-            shirtDecal.SelectedIndex = (int)_accessories.decal;
+            assetType.SelectedIndex = (int)_accessories.asset_type;
+            voiceActor.SelectedIndex = (int)_accessories.voice_actor;
+            genderAttr.SelectedIndex = (int)_accessories.gender;
+            ethnicityAttr.SelectedIndex = (int)_accessories.ethnicity;
+            buildAttr.SelectedIndex = (int)_accessories.build;
+            foleyFootwear.SelectedIndex = (int)_accessories.foley.Footwear;
+            foleyLeg.SelectedIndex = (int)_accessories.foley.Leg;
+            foleyTorso.SelectedIndex = (int)_accessories.foley.Torso;
         }
 
         private void addNewCharacter_Click(object sender, EventArgs e)
@@ -102,7 +140,7 @@ namespace CommandsEditor
         }
         private void OnCharacterInstanceSelected(ShortGuid instance)
         {
-            Content.resource.character_accessories.Entries.Add(new CharacterAccessorySets.Entry()
+            Content.Level.AccessorySets.Entries.Add(new CharacterAccessorySets.CharacterAttributes()
             {
                 character = new EntityHandle() { entity_id = _entityDisplay.Entity.shortGUID, composite_instance_id = instance }
             });
@@ -123,7 +161,7 @@ namespace CommandsEditor
         private void OnNewHeadSelected(Composite comp)
         {
             headComposite.Text = comp.name;
-            _accessories.head_composite = comp.shortGUID;
+            _accessories.components.Head.Composite = comp.shortGUID;
         }
         private void selectNewShirt_Click(object sender, EventArgs e)
         {
@@ -132,7 +170,7 @@ namespace CommandsEditor
         private void OnNewShirtSelected(Composite comp)
         {
             shirtComposite.Text = comp.name;
-            _accessories.shirt_composite = comp.shortGUID;
+            _accessories.components.Torso.Composite = comp.shortGUID;
         }
         private void selectNewArms_Click(object sender, EventArgs e)
         {
@@ -141,7 +179,7 @@ namespace CommandsEditor
         private void OnNewArmsSelected(Composite comp)
         {
             armsComposite.Text = comp.name;
-            _accessories.arms_composite = comp.shortGUID;
+            _accessories.components.Arms.Composite = comp.shortGUID;
         }
         private void selectNewTrousers_Click(object sender, EventArgs e)
         {
@@ -150,7 +188,7 @@ namespace CommandsEditor
         private void OnNewTrousersSelected(Composite comp)
         {
             trousersComposite.Text = comp.name;
-            _accessories.trousers_composite = comp.shortGUID;
+            _accessories.components.Legs.Composite = comp.shortGUID;
         }
         private void selectNewShoes_Click(object sender, EventArgs e)
         {
@@ -159,7 +197,7 @@ namespace CommandsEditor
         private void OnNewShoesSelected(Composite comp)
         {
             shoesComposite.Text = comp.name;
-            _accessories.shoes_composite = comp.shortGUID;
+            _accessories.components.Shoes.Composite = comp.shortGUID;
         }
         private void selectNewCollision_Click(object sender, EventArgs e)
         {
@@ -168,12 +206,12 @@ namespace CommandsEditor
         private void OnNewCollisionSelected(Composite comp)
         {
             collisionComposite.Text = comp.name;
-            _accessories.collision_composite = comp.shortGUID;
+            _accessories.components.Collision.Composite = comp.shortGUID;
         }
 
         private void gender_SelectedIndexChanged(object sender, EventArgs e)
         {
-            _accessories.body_skeleton = gender.Text;
+            _accessories.gender_skeleton = gender.Text;
             RefreshSkeletonsForGender();
         }
 
@@ -184,7 +222,42 @@ namespace CommandsEditor
 
         private void shirtDecal_SelectedIndexChanged(object sender, EventArgs e)
         {
-            _accessories.decal = (CharacterAccessorySets.Entry.Decal)shirtDecal.SelectedIndex;
+            _accessories.asset_type = (CUSTOM_CHARACTER_ASSETS)assetType.SelectedIndex;
+        }
+
+        private void voiceActor_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _accessories.voice_actor = (DIALOGUE_VOICE_ACTOR)voiceActor.SelectedIndex;
+        }
+
+        private void genderAttr_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _accessories.gender = (CUSTOM_CHARACTER_GENDER)gender.SelectedIndex;
+        }
+
+        private void ethnicityAttr_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _accessories.ethnicity = (CUSTOM_CHARACTER_ETHNICITY)ethnicityAttr.SelectedIndex;
+        }
+
+        private void buildAttr_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _accessories.build = (CUSTOM_CHARACTER_BUILD)buildAttr.SelectedIndex;
+        }
+
+        private void foleyTorso_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _accessories.foley.Torso = (CHARACTER_FOLEY_SOUND)foleyTorso.SelectedIndex;
+        }
+
+        private void foleyLeg_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _accessories.foley.Leg = (CHARACTER_FOLEY_SOUND)foleyLeg.SelectedIndex;
+        }
+
+        private void foleyFootwear_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _accessories.foley.Footwear = (CHARACTER_FOLEY_SOUND)foleyLeg.SelectedIndex;
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using CATHODE.Scripting;
 using CommandsEditor.DockPanels;
 using CommandsEditor.Popups.Base;
+using OpenCAGE;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -23,11 +24,11 @@ namespace CommandsEditor
         {
             InitializeComponent(); 
             
-            List<EntityPath> hierarchies = editor.Content.editor_utils.GetHierarchiesForEntity(editor.Composite, editor.Entity);
+            List<EntityPath> hierarchies = editor.Content.EditorUtils.GetHierarchiesForEntity(editor.Composite, editor.Entity);
             for (int i = 0; i < hierarchies.Count; i++)
             {
                 if (existing.Contains(hierarchies[i].GenerateCompositeInstanceID())) continue;
-                instances.Items.Add(hierarchies[i].GetAsString(Content.commands, editor.Composite, false));
+                instances.Items.Add(Content.Level.Commands.Utils.GetResolvedAsString(Content.Level.Commands.Utils.ResolveHierarchy(hierarchies[i]), SettingsManager.GetBool("CS_ShowEntityIDs")));
                 _hierarchies.Add(hierarchies[i]);
             }
 

@@ -1,197 +1,269 @@
-﻿#define USE_PRETTY_COMPOSITE_PATHS
-
+﻿using CATHODE;
+using CATHODE.EXPERIMENTAL;
 using CATHODE.Scripting;
-using CATHODE;
+using CATHODE.Scripting.Internal;
+using CathodeLib;
+using Newtonsoft.Json;
+using OpenCAGE;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using CATHODE.Scripting.Internal;
-using OpenCAGE;
-using CATHODE.LEGACY;
-using System.Xml.Linq;
-using System.IO;
-using CATHODE.EXPERIMENTAL;
 using System.Windows.Shapes;
-using CathodeLib;
+using System.Xml.Linq;
 using System.Xml.XPath;
 
 namespace CommandsEditor
 {
-    public class LevelContent
+    public class LevelContent : IDisposable
     {
-        //Level descriptors & scripting
-        public string level = "";
-        public Commands commands = null;
-        public Movers mvr = null;
+        private bool _disposed = false;
+        
+        public Level Level;
+        public Dictionary<Composite, Dictionary<Entity, ListViewItem>> composite_content_cache = new Dictionary<Composite, Dictionary<Entity, ListViewItem>>();
+        public EditorUtils EditorUtils = null; //TODO: this should really be refactored. hacked in legacy stuff.
 
-        //Level-specific assets and various DBs
-        public Resource resource = new Resource();
-        public class Resource
+        private Thread _globalUpdateThread = null;
+
+        public LevelContent(string levelName)
         {
-            public bool Loaded = false;
-
-            public Models models = null;
-            public Materials materials = null;
-            public Textures textures = null;
-
-            public ShadersPAK shaders_legacy = null; //LEGACY
-            public Shaders shaders_new = null; 
-
-            public RenderableElements reds = null;
-
-            public Resources resources = null;
-            public EnvironmentAnimations env_animations = null;
-            public CollisionMaps collision_maps = null;
-            public PhysicsMaps physics_maps = null;
-            public PathBarrierResources path_barrier_resources = null;
-
-            public EnvironmentMaps env_maps = null;
-            public Lights lights = null;
-
-            public SoundBankData sound_bankdata = null;
-            public SoundDialogueLookups sound_dialoguelookups = null;
-            public SoundEventData sound_eventdata = null;
-            public SoundEnvironmentData sound_environmentdata = null;
-
-            public CharacterAccessorySets character_accessories = null;
-
-            public List<MasterState> master_states = new List<MasterState>();
-            public class MasterState
-            {
-                public NavigationMesh navmesh;
-                public Traversals traversals;
-            }
-
-            public Dictionary<string, TextDB> text_dbs = new Dictionary<string, TextDB>();
+            Level = new Level(SharedData.pathToAI + "/DATA/ENV/" + levelName + "/", Singleton.Global, false);
         }
 
-        //UI stuff
-        public Dictionary<Composite, Dictionary<Entity, ListViewItem>> composite_content_cache = new Dictionary<Composite, Dictionary<Entity, ListViewItem>>();
-
-        //TODO: this should really be refactored. hacked in legacy stuff.
-        public EditorUtils editor_utils = null;
-
-        private string worldPath = "";
-        private string renderablePath = "";
-
-        public LevelContent(string levelName, bool loadAssetsOnThread = true)
+        public void Load()
         {
-            level = levelName;
+#if USE_PRETTY_COMPOSITE_PATHS
+            Commands.UsePrettyPaths = true;
+#else
+            Commands.UsePrettyPaths = false;
+#endif
 
-            string path = SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + level + "/";
-            worldPath = path + "WORLD/";
-
-            //The game has two hard-coded _PATCH overrides. We should use RENDERABLE from the non-patched folder.
-            switch (level)
+            Level.Load();
+            if (!Level.Commands.Loaded || Level.Commands.EntryPoints == null || Level.Commands.EntryPoints[0] == null)
             {
-                case "DLC/BSPNOSTROMO_RIPLEY_PATCH":
-                case "DLC/BSPNOSTROMO_TWOTEAMS_PATCH":
-                    renderablePath = path.Replace(level, level.Substring(0, level.Length - ("_PATCH").Length)) + "RENDERABLE/";
-                    break;
-                default:
-                    renderablePath = path + "RENDERABLE/";
-                    break;
-            }
-
-            if (loadAssetsOnThread)
-                Task.Factory.StartNew(() => LoadAssets());
-            else
-                LoadAssets();
-
-            if (!LoadCommands())
-            {
-                MessageBox.Show("Failed to load Commands data.\nPlease reset your game files.", "Load failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Failed to load the level.\nPlease reset your game files!", "Load failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+            Level.Commands.Entries = Level.Commands.Entries.OrderBy(o => o.name).ToList();
+            Level.Commands.EntryPoints[0].name = EditorUtils.GetCompositeName(Level.Commands.EntryPoints[0]);
+
+            //Import Global stuff, if required
+#if IMPORT_GLOBAL_ASSETS
+            _globalUpdateThread = new Thread(() => {
+                Level.ImportFromGlobal();
+
+                //TODO: should ensure AI is closed before doing this!
+                Singleton.Global.Textures.Entries.Clear();
+                Singleton.Global.Textures.Save();
+            });
+            _globalUpdateThread.Start();
+#endif
 
             //Link up commands to utils and cache some things
-            ParameterUtils.LinkCommands(commands);
-            EntityUtils.LinkCommands(commands);
-            ShortGuidUtils.LinkCommands(commands);
-            CommandsUtils.LinkCommands(commands);
-            FlowgraphLayoutManager.LinkCommands(commands);
-            CompositeUtils.LinkCommands(commands);
-            ParameterModificationTracker.LinkCommands(commands);
+            FlowgraphLayoutManager.LinkCommands(Level.Commands);
+            ParameterModificationTracker.LinkCommands(Level.Commands);
 
-            //Load the level-specific text databases
-            var textDBs = XDocument.Load(SharedData.pathToAI + "/DATA/level_text_databases.xml");
-            foreach (XElement levelDB in textDBs.XPathSelectElements("//level_text_databases/level"))
+            //Correct all Entity names that are actually pointers to resources
+            foreach (Composite comp in Level.Commands.Entries)
             {
-                if (levelDB.Attribute("name").Value.ToString().ToUpper() != System.IO.Path.GetFileName(level).ToUpper())
-                    continue;
+                foreach (FunctionEntity func in comp.functions)
+                {
+                    if (func.function.AsFunctionType == FunctionType.EnvironmentModelReference)
+                    {
+                        //Lookup skeleton name
+                    }
+                    else if (func.function.AsFunctionType == FunctionType.PhysicsSystem)
+                    {
+                        //Lookup Havok name
+                    }
+                    else if (func.function.AsFunctionType == FunctionType.ModelReference)
+                    {
+                        //If no renderable, or renderable can't be looked up, delete?
+                    }
+                    else if (func.function.AsFunctionType == FunctionType.RadiosityProxy)
+                    {
+                        //Delete? I think these are always unresolvable in retail?
+                    }
+                }
+            }
 
-                var databases = levelDB.XPathSelectElements("text_database");
-                foreach (XElement database in databases)
-                    resource.text_dbs.Add(database.Attribute("name").Value, new TextDB(SharedData.pathToAI + "/DATA/TEXT/ENGLISH/" + database.Attribute("name").Value + ".TXT"));
-            }
-            string localDBFolder = SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + level + "/TEXT/";
-            string localDBNames = localDBFolder + "TEXT_DB_LIST.TXT";
-            if (File.Exists(localDBNames))
+            Singleton.OnLevelLoaded?.Invoke(this);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            if (disposing)
             {
-                string[] localDBs = File.ReadAllLines(localDBNames);
-                foreach (string localDB in localDBs)
-                    resource.text_dbs.Add(localDB, new TextDB(localDBFolder + "/ENGLISH/" + localDB + ".TXT"));
+                if (_globalUpdateThread != null)
+                {
+                    _globalUpdateThread.Abort();
+                    _globalUpdateThread = null;
+                }
+
+                if (Level?.Commands != null)
+                {
+                    if (FlowgraphLayoutManager.LinkedCommands == Level.Commands)
+                    {
+                        FlowgraphLayoutManager.LinkCommands(null);
+                    }
+                    if (ParameterModificationTracker.LinkedCommands == Level.Commands)
+                    {
+                        ParameterModificationTracker.LinkCommands(null);
+                    }
+                }
+
+                if (composite_content_cache != null)
+                {
+                    foreach (var compositeDict in composite_content_cache.Values)
+                    {
+                        if (compositeDict != null)
+                        {
+                            foreach (var kvp in compositeDict)
+                            {
+                                if (kvp.Value != null && kvp.Value.Tag != null)
+                                {
+                                    kvp.Value.Tag = null;
+                                }
+                            }
+                            compositeDict.Clear();
+                        }
+                    }
+                    composite_content_cache.Clear();
+                }
+
+                EditorUtils = null;
+
+                if (Level != null)
+                {
+                    Level.OnLoadTick = null;
+                    Level.OnSaveTick = null;
+                    
+                    if (Level.Textures != null)
+                    {
+                        foreach (var tex in Level.Textures.Entries)
+                        {
+                            if (tex?.TexturePersistent?.Content != null)
+                                tex.TexturePersistent.Content = null;
+                            if (tex?.TextureStreamed?.Content != null)
+                                tex.TextureStreamed.Content = null;
+                        }
+                        Level.Textures.Entries.Clear();
+                    }
+                    
+                    if (Level.Models != null)
+                    {
+                        foreach (var model in Level.Models.Entries)
+                        {
+                            foreach (var component in model?.Components ?? new List<CATHODE.Models.CS2.Component>())
+                            {
+                                foreach (var lod in component?.LODs ?? new List<CATHODE.Models.CS2.Component.LOD>())
+                                {
+                                    foreach (var submesh in lod?.Submeshes ?? new List<CATHODE.Models.CS2.Component.LOD.Submesh>())
+                                    {
+                                        if (submesh?.Data != null)
+                                            submesh.Data = null;
+                                    }
+                                }
+                            }
+                        }
+                        Level.Models.Entries.Clear();
+                    }
+                    
+                    if (Level.Shaders != null)
+                    {
+                        foreach (var shader in Level.Shaders.Entries)
+                        {
+                            if (shader != null)
+                            {
+                                shader.VertexShader = null;
+                                shader.PixelShader = null;
+                                shader.HullShader = null;
+                                shader.DomainShader = null;
+                                shader.GeometryShader = null;
+                                shader.ComputeShader = null;
+                            }
+                        }
+                        Level.Shaders.Entries.Clear();
+                    }
+                    
+                    Level.Commands = null;
+                    Level.Models = null;
+                    Level.Materials = null;
+                    Level.Textures = null;
+                    Level.Shaders = null;
+                    Level.Resources = null;
+                    Level.Movers = null;
+                    Level.CollisionMaps = null;
+                    Level.EnvironmentMaps = null;
+                    Level.Lights = null;
+                    Level.SoundEventData = null;
+                    Level.SoundBankData = null;
+                    Level.WeightedCollisions = null;
+                    Level.MorphTargetDB = null;
+                    Level.MaterialMaps = null;
+                    Level.MaterialMappings = null;
+                    Level.RenderableElements = null;
+                    Level.PathBarrierResources = null;
+                    Level.SoundFlashModels = null;
+                    Level.RadInstanceMap = null;
+                    Level.AlphaLight = null;
+                    Level.AccessorySets = null;
+                    Level.EnvironmentAnimations = null;
+                    Level.PhysicsMaps = null;
+                    Level.SoundNodeNetwork = null;
+                    Level.SoundDialogueLookups = null;
+                    Level.SoundEnvironmentData = null;
+                    Level.SoundLoadZones = null;
+                    Level.StateResources?.Clear();
+                    Level.StateResources = null;
+                    Level.Strings?.Clear();
+                    Level.Strings = null;
+                    
+                    Level = null;
+                }
+                
+                GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true);
+                GC.WaitForPendingFinalizers();
+                GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true);
             }
+
+            _disposed = true;
         }
 
         ~LevelContent()
         {
-            if (ParameterUtils.LinkedCommands == commands)
-            {
-                ParameterUtils.LinkCommands(null);
-            }
-            if (EntityUtils.LinkedCommands == commands)
-            {
-                EntityUtils.LinkCommands(null);
-            }
-            if (ShortGuidUtils.LinkedCommands == commands)
-            {
-                ShortGuidUtils.LinkCommands(null);
-            }
-            if (CommandsUtils.LinkedCommands == commands)
-            {
-                CommandsUtils.LinkCommands(null);
-            }
-            if (FlowgraphLayoutManager.LinkedCommands == commands)
-            {
-                FlowgraphLayoutManager.LinkCommands(null);
-            }
-            if (CompositeUtils.LinkedCommands == commands)
-            {
-                CompositeUtils.LinkCommands(null);
-            }
-            if (ParameterModificationTracker.LinkedCommands == commands)
-            {
-                ParameterModificationTracker.LinkCommands(null);
-            }
-
-            resource = null;
-            commands = null;
-            mvr = null;
-            editor_utils = null;
-
-            composite_content_cache.Clear();
+            Dispose(false);
         }
 
         //FOR TESTING ONLY!! Loads a LevelContent object for the given level on the current thread, and generates ShortGuids for every string.
         [Obsolete("This function is safe to use but not performant. It's intended for test code only.")]
         public static LevelContent DEBUG_LoadUnthreadedAndPopulateShortGuids(string level)
         {
-            LevelContent content = new LevelContent(level, false);
+            LevelContent content = new LevelContent(level);
 
-            content.editor_utils = new EditorUtils(content);
-            content.editor_utils.GenerateEntityNameCache(Singleton.Editor);
-            content.editor_utils.GenerateCompositeInstances(content.commands, false);
+            content.EditorUtils = new EditorUtils(content);
+            content.EditorUtils.GenerateEntityNameCache(Singleton.Editor);
+            content.EditorUtils.GenerateCompositeInstances(content.Level.Commands, false);
 
             //TODO: maybe we want this to happen normally??
-            for (int i = 0; i < content.resource.sound_eventdata.Entries.Count; i++)
+            for (int i = 0; i < content.Level.SoundEventData.Entries.Count; i++)
             {
-                for (int x = 0; x < content.resource.sound_eventdata.Entries[i].events.Count; x++)
+                for (int x = 0; x < content.Level.SoundEventData.Entries[i].events.Count; x++)
                 {
-                    ShortGuidUtils.Generate(content.resource.sound_eventdata.Entries[i].events[x].name);
+                    ShortGuidUtils.Generate(content.Level.SoundEventData.Entries[i].events[x].name);
                 }
             }
             foreach (ParameterVariant enumValue in Enum.GetValues(typeof(ParameterVariant)))
@@ -209,11 +281,11 @@ namespace CommandsEditor
 
             ShortGuidUtils.Generate("AnimatedModel");
 
-            foreach (Composite composite in content.commands.Entries)
+            foreach (Composite composite in content.Level.Commands.Entries)
                 foreach (Entity entity in composite.GetEntities())
-                    ShortGuidUtils.Generate(EntityUtils.GetName(composite, entity));
+                    ShortGuidUtils.Generate(content.Level.Commands.Utils.GetEntityName(composite, entity));
 
-            foreach (Models.CS2 cs2 in content.resource.models.Entries)
+            foreach (Models.CS2 cs2 in content.Level.Models.Entries)
             {
                 ShortGuidUtils.Generate(cs2.Name);
                 foreach (Models.CS2.Component component in cs2.Components)
@@ -221,171 +293,14 @@ namespace CommandsEditor
                         ShortGuidUtils.Generate(lod.Name);
             }
 
-            foreach (Materials.Material material in content.resource.materials.Entries)
+            foreach (Materials.Material material in content.Level.Materials.Entries)
                 ShortGuidUtils.Generate(material.Name);
 
-            List<string> entNames = EntityUtils.GetAllVanillaNames();
-            foreach (string entName in entNames)
-                ShortGuidUtils.Generate(entName);
+            //List<string> entNames = EntityUtils.GetAllVanillaNames();
+            //foreach (string entName in entNames)
+            //    ShortGuidUtils.Generate(entName);
 
             return content;
-        }
-
-        private bool LoadCommands()
-        {
-#if !CATHODE_FAIL_HARD
-            try
-            {
-#endif
-                Parallel.For(0, 3, (i) =>
-                {
-                    switch (i)
-                    {
-                        case 1:
-                            mvr = new Movers(worldPath + "MODELS.MVR");
-                            break;
-                        case 2:
-#if USE_PRETTY_COMPOSITE_PATHS
-                            Commands.UsePrettyPaths = true;
-#endif
-                            commands = new Commands(worldPath + "COMMANDS.PAK");
-#if USE_PRETTY_COMPOSITE_PATHS
-                            Commands.UsePrettyPaths = false;
-#endif
-                            commands.Entries = commands.Entries.OrderBy(o => o.name).ToList();
-                            commands.EntryPoints[0].name = EditorUtils.GetCompositeName(commands.EntryPoints[0]);
-                            break;
-                    }
-                });
-
-                if (!commands.Loaded || commands.EntryPoints == null || commands.EntryPoints[0] == null)
-                    return false;
-
-                Singleton.OnLevelLoaded?.Invoke(this);
-                return true;
-#if !CATHODE_FAIL_HARD
-            }
-            catch
-            {
-                return false;
-            }
-#endif
-        }
-
-        private void LoadAssets()
-        {
-#if !CATHODE_FAIL_HARD
-            try
-            {
-#endif
-                resource.resources = new Resources(worldPath + "RESOURCES.BIN");
-                Parallel.For(0, 18, (i) =>
-                {
-                    switch (i)
-                    {
-                        case 0:
-                            resource.models = new Models(renderablePath + "LEVEL_MODELS.PAK");
-                            break;
-                        case 1:
-                            resource.materials = new Materials(renderablePath + "LEVEL_MODELS.MTL");
-                            break;
-                        case 2:
-                            resource.textures = new Textures(renderablePath + "LEVEL_TEXTURES.ALL.PAK");
-                            break;
-                        case 3:
-                            resource.shaders_legacy = new ShadersPAK(renderablePath + "LEVEL_SHADERS_DX11.PAK"); 
-                            resource.shaders_new = new Shaders(renderablePath + "LEVEL_SHADERS_DX11.PAK"); 
-                            break;
-                        case 4:
-                            //TODO: this is weird... why does it seem to differ?
-                            if (File.Exists(worldPath + "REDS.BIN"))
-                                resource.reds = new RenderableElements(worldPath + "REDS.BIN");
-                            else
-                                resource.reds = new RenderableElements(renderablePath + "REDS.BIN");
-                            break;
-                        case 5:
-                            if (!Singleton.LoadedAnimationContent)
-                                Singleton.OnAnimationsLoaded += LoadThingsWithStrings;
-                            else
-                                LoadThingsWithStrings();
-                            break;
-                        case 6:
-                            resource.collision_maps = new CollisionMaps(worldPath + "COLLISION.MAP");
-                            break;
-                        case 7:
-                            resource.physics_maps = new PhysicsMaps(worldPath + "PHYSICS.MAP");
-                            break;
-                        case 8:
-                            resource.sound_bankdata = new SoundBankData(worldPath + "SOUNDBANKDATA.DAT");
-                            break;
-                        case 9:
-                            resource.sound_dialoguelookups = new SoundDialogueLookups(worldPath + "SOUNDDIALOGUELOOKUPS.DAT");
-                            break;
-                        case 10:
-                            resource.sound_eventdata = new SoundEventData(worldPath + "SOUNDEVENTDATA.DAT");
-                            break;
-                        case 11:
-                            resource.sound_environmentdata = new SoundEnvironmentData(worldPath + "SOUNDENVIRONMENTDATA.DAT");
-                            break;
-                        case 12:
-                            resource.character_accessories = new CharacterAccessorySets(worldPath + "CHARACTERACCESSORYSETS.BIN");
-                            break;
-                        case 13:
-                            // --
-                            break;
-                        case 14:
-                            resource.path_barrier_resources = new PathBarrierResources(worldPath + "PATH_BARRIER_RESOURCES");
-                            break;
-                        case 15:
-                            resource.env_maps = new EnvironmentMaps(worldPath + "ENVIRONMENTMAP.BIN");
-                            break;
-                        case 16:
-                            resource.lights = new Lights(worldPath + "LIGHTS.BIN");
-                            break;
-                        case 17:
-                            int stateCount = 1; // we always implicitly have one state (the default state: state zero)
-                            using (BinaryReader reader = new BinaryReader(File.OpenRead(worldPath + "EXCLUSIVE_MASTER_RESOURCE_INDICES")))
-                            {
-                                reader.BaseStream.Position = 4;  // version: 1
-                                int states = reader.ReadInt32(); // number of changeable states
-                                stateCount += states;
-                                for (int x = 0; x < states; x++)
-                                {
-                                    int resourceIndex = reader.ReadInt32();
-                                    Resources.Resource r = resource.resources.Entries[resourceIndex]; //TODO: this gives you the instance of the ExclusiveMaster entity - use the info.
-                                    //get the instance of the entity
-                                    //apply the state index to the resource info in one of the -1s
-                                    //use that in the ui
-                                }
-                            }
-                            for (int x = 0; x < stateCount; x++)
-                            {
-                                resource.master_states.Add(new Resource.MasterState()
-                                {
-                                    navmesh = new NavigationMesh(worldPath + "STATE_" + x + "/NAV_MESH"),
-                                    traversals = new Traversals(worldPath + "STATE_" + x + "/TRAVERSAL")
-                                });
-                                // WORLD STATE RESOURCES TODO:
-                                //  - ASSAULT_POSITIONS
-                                //  - COVER
-                                //  - CRAWL_SPACE_SPOTTING_POSITIONS
-                                //  - SPOTTING_POSITIONS
-                            }
-                            break;
-                    }
-                });
-                resource.Loaded = true;
-                Singleton.OnLevelAssetsLoaded?.Invoke(this);
-#if !CATHODE_FAIL_HARD
-            }
-            catch { }
-#endif
-        }
-        private void LoadThingsWithStrings()
-        {
-            resource.env_animations = new EnvironmentAnimations(worldPath + "ENVIRONMENT_ANIMATION.DAT", Singleton.AnimationStrings_Debug);
-
-            Singleton.OnAnimationsLoaded -= LoadThingsWithStrings;
         }
 
         public enum CacheMethod
@@ -397,6 +312,9 @@ namespace CommandsEditor
 
         public ListViewItem GenerateListViewItem(Entity entity, Composite composite, CacheMethod cacheMethod = CacheMethod.CHECK_OR_POPULATE_CACHE)
         {
+            if (_disposed || Level?.Commands == null)
+                throw new ObjectDisposedException(nameof(LevelContent));
+
             if (cacheMethod == CacheMethod.CHECK_OR_POPULATE_CACHE)
             {
                 if (composite_content_cache.TryGetValue(composite, out Dictionary<Entity, ListViewItem> items))
@@ -412,24 +330,22 @@ namespace CommandsEditor
             {
                 case EntityVariant.VARIABLE:
                     item.Text = ShortGuidUtils.FindString(((VariableEntity)entity).name);
-                    CompositePinInfoTable.PinInfo variableInfo = CompositeUtils.GetParameterInfo(composite, (VariableEntity)entity);
-                    item.SubItems.Add(variableInfo != null ? variableInfo.PinTypeGUID.ToString() : ((VariableEntity)entity).type.ToString());
+                    CompositePinInfoTable.PinInfo variableInfo = Level.Commands.Utils.GetPinInfo(composite, (VariableEntity)entity);
+                    item.SubItems.Add(variableInfo != null ? ((CompositePinType)variableInfo.PinTypeGUID.AsUInt32).ToUIString() : ((VariableEntity)entity).type.ToUIString());
                     break;
                 case EntityVariant.FUNCTION:
-                    item.Text = EntityUtils.GetName(composite.shortGUID, entity.shortGUID);
-                    Composite funcComposite = commands.GetComposite(((FunctionEntity)entity).function);
+                    item.Text = Level.Commands.Utils.GetEntityName(composite.shortGUID, entity.shortGUID);
+                    Composite funcComposite = Level.Commands.GetComposite(((FunctionEntity)entity).function);
                     if (funcComposite != null) item.SubItems.Add(EditorUtils.GetCompositeName(funcComposite));
-                    else item.SubItems.Add(((FunctionType)(((FunctionEntity)entity).function.ToUInt32())).ToString());
+                    else item.SubItems.Add(((FunctionType)(((FunctionEntity)entity).function.AsUInt32)).ToString());
                     break;
                 case EntityVariant.ALIAS:
-                    CommandsUtils.ResolveHierarchy(commands, composite, ((AliasEntity)entity).alias.path, out Composite c, out string s, false);
-                    item.Text = s;
+                    item.Text = Level.Commands.Utils.GetResolvedAsString(Level.Commands.Utils.ResolveAlias((AliasEntity)entity, composite), SettingsManager.GetBool("CS_ShowEntityIDs"));
                     item.SubItems.Add("");
                     break;
                 case EntityVariant.PROXY:
-                    CommandsUtils.ResolveHierarchy(commands, composite, ((ProxyEntity)entity).proxy.path, out Composite c2, out string s2, false);
-                    item.Text = EntityUtils.GetName(composite.shortGUID, entity.shortGUID);
-                    item.SubItems.Add(s2);
+                    item.Text = Level.Commands.Utils.GetEntityName(composite.shortGUID, entity.shortGUID); 
+                    item.SubItems.Add(Level.Commands.Utils.GetResolvedAsString(Level.Commands.Utils.ResolveProxy((ProxyEntity)entity), SettingsManager.GetBool("CS_ShowEntityIDs")));
                     break;
             }
             item.SubItems.Add(entity.shortGUID.ToByteString());

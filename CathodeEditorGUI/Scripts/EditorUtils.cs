@@ -10,6 +10,7 @@ using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -22,10 +23,10 @@ namespace CommandsEditor
     //Wrappers around CathodeLib utils, and some utils for formatting strings
     public class EditorUtils
     {
-        private LevelContent _content;
+        private LevelContent Content;
         public EditorUtils(LevelContent content)
         {
-            _content = content;
+            Content = content;
         }
 
         /* Some additional composite info for rich display in editor */
@@ -44,9 +45,9 @@ namespace CommandsEditor
         public CompositeType GetCompositeType(string composite)
         {
             string c = composite.Replace('/', '\\');
-            if (_content.commands.EntryPoints[0].name.Replace('/', '\\') == c) return CompositeType.IS_ROOT;
-            if (_content.commands.EntryPoints[1].name.Replace('/', '\\') == c) return CompositeType.IS_PAUSE_MENU;
-            if (_content.commands.EntryPoints[2].name.Replace('/', '\\') == c) return CompositeType.IS_GLOBAL;
+            if (Content.Level.Commands.EntryPoints[0].name.Replace('/', '\\') == c) return CompositeType.IS_ROOT;
+            if (Content.Level.Commands.EntryPoints[1].name.Replace('/', '\\') == c) return CompositeType.IS_PAUSE_MENU;
+            if (Content.Level.Commands.EntryPoints[2].name.Replace('/', '\\') == c) return CompositeType.IS_GLOBAL;
             if (c.Length > ("DisplayModel:").Length && c.Substring(0, ("DisplayModel:").Length) == "DisplayModel:") return CompositeType.IS_DISPLAY_MODEL;
             return CompositeType.IS_GENERIC_COMPOSITE;
         }
@@ -64,9 +65,9 @@ namespace CommandsEditor
             _prevTaskToken = new CancellationTokenSource();
 
             if (runOnThread)
-                Task.Run(() => _content.editor_utils.GenerateCompositeInstancesRecursive(commands, commands.EntryPoints[0], new List<ShortGuid>(), _prevTaskToken.Token), _prevTaskToken.Token);
+                Task.Run(() => Content.EditorUtils.GenerateCompositeInstancesRecursive(commands, commands.EntryPoints[0], new List<ShortGuid>(), _prevTaskToken.Token), _prevTaskToken.Token);
             else
-                _content.editor_utils.GenerateCompositeInstancesRecursive(commands, commands.EntryPoints[0], new List<ShortGuid>(), _prevTaskToken.Token);
+                Content.EditorUtils.GenerateCompositeInstancesRecursive(commands, commands.EntryPoints[0], new List<ShortGuid>(), _prevTaskToken.Token);
         }
         private void GenerateCompositeInstancesRecursive(Commands commands, Composite composite, List<ShortGuid> hierarchy, CancellationToken ct)
         {
@@ -77,16 +78,16 @@ namespace CommandsEditor
 
             _compositeInstancePaths[composite.shortGUID].Add(new Tuple<ShortGuid, ShortGuid[]>(hierarchy.GenerateCompositeInstanceID(false), hierarchy.ToArray()));
 
-            for (int i = 0; i < composite.functions.Count; i++)
+            foreach (var function in composite.functions_dictionary.Values)
             {
-                if (CommandsUtils.FunctionTypeExists(composite.functions[i].function)) continue;
+                if (function.function.IsFunctionType) continue;
 
                 if (ct.IsCancellationRequested) break;
 
                 List<ShortGuid> newHierarchy = new List<ShortGuid>(hierarchy.ConvertAll(x => x));
-                newHierarchy.Add(composite.functions[i].shortGUID);
+                newHierarchy.Add(function.shortGUID);
 
-                Composite newComposite = commands.GetComposite(composite.functions[i].function);
+                Composite newComposite = commands.GetComposite(function.function);
                 if (newComposite != null) GenerateCompositeInstancesRecursive(commands, newComposite, newHierarchy, ct);
             }
         }
@@ -140,7 +141,7 @@ namespace CommandsEditor
         /* Get a composite (& instance path) from a given composite instance ID */
         public (Composite, EntityPath) GetCompositeFromInstanceID(Commands commands, ShortGuid instanceID)
         {
-            if (instanceID == ShortGuid.InitialiserBase)
+            if (instanceID == ShortGuid.InstanceGuid)
                 return (commands.EntryPoints[0], new EntityPath());
 
             (Composite compositeResult, EntityPath entityPathResult) = (null, null);
@@ -192,20 +193,19 @@ namespace CommandsEditor
                 return (null, new EntityPath(new ShortGuid[1] { new ShortGuid("00-00-00-00") }), null);
             }
 
-            ShortGuid GUID_Zone = CommandsUtils.GetFunctionTypeGUID(FunctionType.Zone);
             for (int i = 0; i < commands.Entries.Count; i++)
             {
-                for (int x = 0; x < commands.Entries[i].functions.Count; x++)
+                foreach (var function in commands.Entries[i].functions_dictionary.Values)
                 {
-                    if (commands.Entries[i].functions[x].function != GUID_Zone)
+                    if (function.function != FunctionType.Zone)
                         continue;
 
-                    List<EntityPath> zonePaths = GetHierarchiesForEntity(commands.Entries[i], commands.Entries[i].functions[x]);
+                    List<EntityPath> zonePaths = GetHierarchiesForEntity(commands.Entries[i], function);
                     for (int p = 0; p < zonePaths.Count; p++)
                     {
                         if (zonePaths[p].GenerateZoneID() == instanceID)
                         {
-                            return (commands.Entries[i], zonePaths[p], commands.Entries[i].functions[x]);
+                            return (commands.Entries[i], zonePaths[p], function);
                         }
                     }
                 }
@@ -250,7 +250,7 @@ namespace CommandsEditor
         /* Utility: generate nice entity name to display in UI */
         public string GenerateEntityName(Entity entity, Composite composite, bool regenCache = false)
         {
-            if (_content.commands == null)
+            if (Content.Level.Commands == null)
                 return entity.shortGUID.ToByteString();
 
             if (hasFinishedCachingEntityNames && regenCache)
@@ -279,25 +279,23 @@ namespace CommandsEditor
             switch (entity.variant)
             {
                 case EntityVariant.VARIABLE:
-                    desc = "[" + ((VariableEntity)entity).type.ToString() + " VARIABLE] " + ShortGuidUtils.FindString(((VariableEntity)entity).name);
+                    desc = "[" + ((VariableEntity)entity).type.ToUIString() + "] " + ShortGuidUtils.FindString(((VariableEntity)entity).name);
                     break;
                 case EntityVariant.FUNCTION:
-                    Composite funcComposite = _content.commands.GetComposite(((FunctionEntity)entity).function);
+                    Composite funcComposite = Content.Level.Commands.GetComposite(((FunctionEntity)entity).function);
                     if (funcComposite != null)
-                        desc = EntityUtils.GetName(composite.shortGUID, entity.shortGUID) + " (" + funcComposite.name + ")";
+                        desc = Content.Level.Commands.Utils.GetEntityName(composite.shortGUID, entity.shortGUID) + " (" + funcComposite.name + ")";
                     else
-                        desc = EntityUtils.GetName(composite.shortGUID, entity.shortGUID) + " (" + ((FunctionType)((FunctionEntity)entity).function.ToUInt32()).ToString() + ")";
+                        desc = Content.Level.Commands.Utils.GetEntityName(composite.shortGUID, entity.shortGUID) + " (" + ((FunctionType)((FunctionEntity)entity).function.AsUInt32).ToString() + ")";
                     break;
                 case EntityVariant.ALIAS:
-                    CommandsUtils.ResolveHierarchy(_content.commands, composite, ((AliasEntity)entity).alias.path, out Composite c, out string s, false);
-                    desc = "[ALIAS] " + s;
+                    desc = "[ALIAS] " + Content.Level.Commands.Utils.GetResolvedAsString(Content.Level.Commands.Utils.ResolveAlias((AliasEntity)entity, composite), SettingsManager.GetBool("CS_ShowEntityIDs"));
                     break;
                 case EntityVariant.PROXY:
-                    CommandsUtils.ResolveHierarchy(_content.commands, composite, ((ProxyEntity)entity).proxy.path, out Composite c2, out string s2, false);
-                    desc = "[PROXY] " + EntityUtils.GetName(composite.shortGUID, entity.shortGUID) + " (" + s2 + ")";
+                    desc = "[PROXY] " + Content.Level.Commands.Utils.GetEntityName(composite.shortGUID, entity.shortGUID) + " (" + Content.Level.Commands.Utils.GetResolvedAsString(Content.Level.Commands.Utils.ResolveProxy((ProxyEntity)entity), SettingsManager.GetBool("CS_ShowEntityIDs")) + ")";
                     break;
             }
-            bool showID = SettingsManager.GetBool(Singleton.Settings.EntIdOpt);
+            bool showID = SettingsManager.GetBool(Singleton.Settings.ShowShortGuids);
             return (showID ? "[" + entity.shortGUID.ToByteString() + "] " : "") + desc;
         }
 
@@ -306,13 +304,13 @@ namespace CommandsEditor
         private Dictionary<ShortGuid, Dictionary<ShortGuid, string>> cachedEntityName = new Dictionary<ShortGuid, Dictionary<ShortGuid, string>>();
         public void GenerateEntityNameCache(CommandsEditor mainInst)
         {
-            if (_content.commands == null) return;
+            if (Content.Level.Commands == null) return;
             hasFinishedCachingEntityNames = false;
-            mainInst?.EnableLoadingOfPaks(false, "Generating caches...");
+            mainInst?.EnableButtons(false, "Generating caches...");
             cachedEntityName.Clear();
-            for (int i = 0; i < _content.commands.Entries.Count; i++)
+            for (int i = 0; i < Content.Level.Commands.Entries.Count; i++)
             {
-                Composite comp = _content.commands.Entries[i];
+                Composite comp = Content.Level.Commands.Entries[i];
                 if (!cachedEntityName.ContainsKey(comp.shortGUID))
                     cachedEntityName.Add(comp.shortGUID, new Dictionary<ShortGuid, string>());
                 List<Entity> ents = comp.GetEntities();
@@ -320,7 +318,7 @@ namespace CommandsEditor
                     if (!cachedEntityName[comp.shortGUID].ContainsKey(ents[x].shortGUID))
                         cachedEntityName[comp.shortGUID].Add(ents[x].shortGUID, GenerateEntityNameInternal(ents[x], comp));
             }
-            mainInst?.EnableLoadingOfPaks(true, "");
+            mainInst?.EnableButtons(true, "");
             hasFinishedCachingEntityNames = true;
         }
 
@@ -329,10 +327,16 @@ namespace CommandsEditor
         {
             List<string> items = new List<string>();
             if (entity == null) return items;
-            List<(ShortGuid, ParameterVariant, DataType)> parameters = ParameterUtils.GetAllParameters(entity, composite);
+            List<(ShortGuid, ParameterVariant, DataType)> parameters = Content.Level.Commands.Utils.GetAllParameters(entity, composite);
             foreach ((ShortGuid, ParameterVariant, DataType) parameter in parameters)
             {
                 items.Add(parameter.Item1.ToString());
+                if (parameter.Item2 == ParameterVariant.METHOD_PIN)
+                {
+                    ShortGuid relay = Content.Level.Commands.Utils.GetRelay(parameter.Item1);
+                    if (relay != ShortGuid.Invalid)
+                        items.Add(relay.ToString());
+                }
             }
             items.Sort();
             return items;
@@ -341,7 +345,7 @@ namespace CommandsEditor
         {
             List<ListViewItem> items = new List<ListViewItem>();
             if (entity == null) return items;
-            List<(ShortGuid, ParameterVariant, DataType)> parameters = ParameterUtils.GetAllParameters(entity, composite);
+            List<(ShortGuid, ParameterVariant, DataType)> parameters = Content.Level.Commands.Utils.GetAllParameters(entity, composite);
             foreach ((ShortGuid, ParameterVariant,DataType) parameter in parameters)
             {
                 items.Add(ParameterDefinitionToListViewItem(parameter.Item1, parameter.Item3, parameter.Item2));
@@ -395,44 +399,121 @@ namespace CommandsEditor
             return cont[cont.Length - 1];
         }
 
+        /* Utility: get the image/group index for an entity, for populating ListViewItems */
+        public static (int, int) GetIndexesForListViewItem(Entity entity, Composite composite, Commands commands)
+        {
+            //Keep these indexes in sync with ListViewGroup 
+            int imageIndex = 0;
+            int groupIndex = 0;
+            switch (entity.variant)
+            {
+                case EntityVariant.VARIABLE:
+                    CompositePinInfoTable.PinInfo pinInfo = commands.Utils.GetPinInfo(composite, (VariableEntity)entity);
+                    if (pinInfo != null)
+                    {
+                        switch ((CompositePinType)pinInfo.PinTypeGUID.AsUInt32)
+                        {
+                            case CompositePinType.CompositeInputAnimationInfoVariablePin:
+                            case CompositePinType.CompositeInputBoolVariablePin:
+                            case CompositePinType.CompositeInputDirectionVariablePin:
+                            case CompositePinType.CompositeInputFloatVariablePin:
+                            case CompositePinType.CompositeInputIntVariablePin:
+                            case CompositePinType.CompositeInputObjectVariablePin:
+                            case CompositePinType.CompositeInputPositionVariablePin:
+                            case CompositePinType.CompositeInputStringVariablePin:
+                            case CompositePinType.CompositeInputVariablePin:
+                            case CompositePinType.CompositeInputZoneLinkPtrVariablePin:
+                            case CompositePinType.CompositeInputZonePtrVariablePin:
+                            case CompositePinType.CompositeInputEnumVariablePin:
+                            case CompositePinType.CompositeInputEnumStringVariablePin:
+                            case CompositePinType.CompositeMethodPin:
+                                imageIndex = 6;
+                                break;
+                            case CompositePinType.CompositeOutputAnimationInfoVariablePin:
+                            case CompositePinType.CompositeOutputBoolVariablePin:
+                            case CompositePinType.CompositeOutputDirectionVariablePin:
+                            case CompositePinType.CompositeOutputFloatVariablePin:
+                            case CompositePinType.CompositeOutputIntVariablePin:
+                            case CompositePinType.CompositeOutputObjectVariablePin:
+                            case CompositePinType.CompositeOutputPositionVariablePin:
+                            case CompositePinType.CompositeOutputStringVariablePin:
+                            case CompositePinType.CompositeOutputVariablePin:
+                            case CompositePinType.CompositeOutputZoneLinkPtrVariablePin:
+                            case CompositePinType.CompositeOutputZonePtrVariablePin:
+                            case CompositePinType.CompositeOutputEnumVariablePin:
+                            case CompositePinType.CompositeOutputEnumStringVariablePin:
+                            case CompositePinType.CompositeTargetPin:
+                            case CompositePinType.CompositeReferencePin:
+                                imageIndex = 5;
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        imageIndex = 0;
+                    }
+                    groupIndex = 0;
+                    break;
+                case EntityVariant.FUNCTION:
+                    if (!((FunctionEntity)entity).function.IsFunctionType)
+                    {
+                        groupIndex = 2;
+                        imageIndex = 2;
+                    }
+                    else
+                    {
+                        groupIndex = 1;
+                        imageIndex = 1;
+                    }
+                    break;
+                case EntityVariant.PROXY:
+                    groupIndex = 3;
+                    imageIndex = 3;
+                    break;
+                case EntityVariant.ALIAS:
+                    groupIndex = 4;
+                    imageIndex = 4;
+                    break;
+            }
+            return (imageIndex, groupIndex);
+        }
+
         /* Utility: work out if any proxies/overrides reference the currently selected entity */
         public bool IsEntityReferencedExternally(Entity entity, CancellationToken ct)
         {
             bool found = false;
-            Parallel.ForEach(_content.commands.Entries, (comp, status) =>
+            Parallel.ForEach(Content.Level.Commands.Entries, (comp, status) =>
             {
                 Parallel.ForEach(comp.proxies, (prox, status2) =>
                 {
                     if (found || ct.IsCancellationRequested)
                         status2.Stop();
-                    Entity ent = CommandsUtils.ResolveHierarchy(_content.commands, comp, prox.proxy.path, out Composite compRef, out string str);
-                    if (ent == entity) found = true;
+                    if (Content.Level.Commands.Utils.GetResolvedTarget(Content.Level.Commands.Utils.ResolveProxy(prox)).Item2 == entity) 
+                        found = true;
                 });
                 Parallel.ForEach(comp.aliases, (alias, status2) =>
                 {
                     if (found || ct.IsCancellationRequested)
                         status2.Stop();
-
-                    Entity ent = CommandsUtils.ResolveHierarchy(_content.commands, comp, alias.alias.path, out Composite compRef, out string str);
-                    if (ent == entity) found = true;
+                    if (Content.Level.Commands.Utils.GetResolvedTarget(Content.Level.Commands.Utils.ResolveAlias(alias, comp)).Item2 == entity) 
+                        found = true;
                 });
-                List<FunctionEntity> triggerSequences = comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.TriggerSequence));
+                List<FunctionEntity> triggerSequences = comp.GetFunctionEntitiesOfType(FunctionType.TriggerSequence);
                 Parallel.ForEach(triggerSequences, (trigEnt, status2) =>
                 {
                     if (found || ct.IsCancellationRequested)
                         status2.Stop();
 
                     TriggerSequence trig = (TriggerSequence)trigEnt;
-                    Parallel.ForEach(trig.entities, (trigger, status3) =>
+                    Parallel.ForEach(trig.sequence, (trigger, status3) =>
                     {
                         if (found || ct.IsCancellationRequested)
                             status3.Stop();
-
-                        Entity ent = CommandsUtils.ResolveHierarchy(_content.commands, comp, trigger.connectedEntity.path, out Composite compRef, out string str);
-                        if (ent == entity) found = true;
+                        if (Content.Level.Commands.Utils.GetResolvedTarget(Content.Level.Commands.Utils.ResolveAlias(trigger.connectedEntity.path, comp)).Item2 == entity)
+                            found = true;
                     });
                 });
-                List<FunctionEntity> cageAnims = comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.CAGEAnimation));
+                List<FunctionEntity> cageAnims = comp.GetFunctionEntitiesOfType(FunctionType.CAGEAnimation);
                 Parallel.ForEach(cageAnims, (animEnt, status2) =>
                 {
                     if (found || ct.IsCancellationRequested)
@@ -443,9 +524,8 @@ namespace CommandsEditor
                     {
                         if (found || ct.IsCancellationRequested)
                             status3.Stop();
-
-                        Entity ent = CommandsUtils.ResolveHierarchy(_content.commands, comp, connection.connectedEntity.path, out Composite compRef, out string str);
-                        if (ent == entity) found = true;
+                        if (Content.Level.Commands.Utils.GetResolvedTarget(Content.Level.Commands.Utils.ResolveAlias(connection.connectedEntity.path, comp)).Item2 == entity) 
+                            found = true;
                     });
                 });
 
@@ -464,15 +544,15 @@ namespace CommandsEditor
                 FunctionEntity toReturn = null;
                 ShortGuid compositesGUID = ShortGuidUtils.Generate("composites");
 
-                List<FunctionEntity> triggerSequences = comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.TriggerSequence));
+                List<FunctionEntity> triggerSequences = comp.GetFunctionEntitiesOfType(FunctionType.TriggerSequence);
                 Parallel.ForEach(triggerSequences, (Action<FunctionEntity, ParallelLoopState>)((trigEnt, status) =>
                 {
                     TriggerSequence trig = (TriggerSequence)trigEnt;
-                    Parallel.ForEach(trig.entities, (Action<TriggerSequence.Entity, ParallelLoopState>)((trigger, status2) =>
+                    Parallel.ForEach(trig.sequence, (Action<TriggerSequence.SequenceEntry, ParallelLoopState>)((trigger, status2) =>
                     {
-                        if (CommandsUtils.ResolveHierarchy((Commands)this._content.commands, comp, trigger.connectedEntity.path, out Composite compRef, out string str) == entity)
+                        if (Content.Level.Commands.Utils.GetResolvedTarget(Content.Level.Commands.Utils.ResolveAlias(trigger.connectedEntity.path, comp)).Item2 == entity)
                         {
-                            List<FunctionEntity> zones = comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.Zone));
+                            List<FunctionEntity> zones = comp.functions.FindAll(o => o.function == FunctionType.Zone);
                             Parallel.ForEach(zones, (z, status3) =>
                             {
                                 Parallel.ForEach(z.childLinks, (link, status4) =>
@@ -511,7 +591,7 @@ namespace CommandsEditor
             zone = findZone(composite);
             if (zone != null) return;
 
-            foreach (Composite comp in _content.commands.Entries)
+            foreach (Composite comp in Content.Level.Commands.Entries)
             {
                 composite = comp;
                 zone = findZone(composite);
@@ -525,17 +605,17 @@ namespace CommandsEditor
             ShortGuid compositesGUID = ShortGuidUtils.Generate("composites");
             string toReturn = "";
             List<ShortGuid> foundIDs = new List<ShortGuid>();
-            foreach (Composite comp in _content.commands.Entries)
+            foreach (Composite comp in Content.Level.Commands.Entries)
             {
-                List<FunctionEntity> triggerSequences = comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.TriggerSequence));
+                List<FunctionEntity> triggerSequences = comp.functions_dictionary.Values.Where(o => o.function == FunctionType.TriggerSequence).ToList();
                 foreach (FunctionEntity trigEnt in triggerSequences)
                 {
                     TriggerSequence trig = (TriggerSequence)trigEnt;
-                    foreach (TriggerSequence.Entity trigger in trig.entities)
+                    foreach (TriggerSequence.SequenceEntry trigger in trig.sequence)
                     {
-                        if (CommandsUtils.ResolveHierarchy(_content.commands, comp, trigger.connectedEntity.path, out Composite compRef, out string str) == entity)
+                        if (Content.Level.Commands.Utils.GetResolvedTarget(Content.Level.Commands.Utils.ResolveAlias(trigger.connectedEntity.path, comp)).Item2 == entity)
                         {
-                            List<FunctionEntity> zones = comp.functions.FindAll(o => o.function == CommandsUtils.GetFunctionTypeGUID(FunctionType.Zone));
+                            List<FunctionEntity> zones = comp.functions_dictionary.Values.Where(o => o.function == FunctionType.Zone).ToList();
                             foreach (FunctionEntity z in zones)
                             {
                                 foreach (EntityConnector link in z.childLinks)
@@ -561,124 +641,6 @@ namespace CommandsEditor
             }
             return toReturn;
         }
-
-        [Obsolete("This function is safe to use but not performant. It's intended for test code only.")]
-        public string PrettyPrintMoverRenderable(Movers.MOVER_DESCRIPTOR mvr)
-        {
-            if (mvr == null)
-                return "";
-
-            string output = "";
-            for (int x = 0; x < mvr.renderable_element_count; x++)
-            {
-                var reds = _content.resource.reds.Entries[(int)mvr.renderable_element_index];
-
-                var submesh = _content.resource.models.GetAtWriteIndex(reds.ModelIndex);
-                var model = _content.resource.models.FindModelForSubmesh(submesh);
-                var component = _content.resource.models.FindModelComponentForSubmesh(submesh);
-                var lod = _content.resource.models.FindModelLODForSubmesh(submesh);
-                var material = _content.resource.materials.GetAtWriteIndex(reds.MaterialIndex);
-
-                output += model?.Name + " (" + lod?.Name + ") -> " + material?.Name + "\n";
-            }
-            return output;
-        }
-
-        //Util: patch the game exe to launch to the specified map (handy for debugging)
-        public static bool PatchLaunchMode(string MapName = "Frontend")
-        {
-            //This is the level the benchmark function loads into - we can overwrite it to change
-            byte[] mapStringByteArray = { 0x54, 0x45, 0x43, 0x48, 0x5F, 0x52, 0x4E, 0x44, 0x5F, 0x48, 0x5A, 0x44, 0x4C, 0x41, 0x42, 0x00, 0x00, 0x65, 0x6E, 0x67, 0x69, 0x6E, 0x65, 0x5F, 0x73, 0x65, 0x74, 0x74, 0x69, 0x6E, 0x67, 0x73 };
-
-            //These are the original/edited setters in the benchmark function to enable benchmark mode - if we're just loading a level, we want to change them
-            List<PatchBytes> benchmarkPatches = new List<PatchBytes>();
-            switch (SettingsManager.GetString("META_GameVersion"))
-            {
-                case "STEAM":
-                    benchmarkPatches.Add(new PatchBytes(3842041, new byte[] { 0xe3, 0x48, 0x26 }, new byte[] { 0x13, 0x3c, 0x28 }));
-                    benchmarkPatches.Add(new PatchBytes(3842068, new byte[] { 0xce, 0x0c, 0x6f }, new byte[] { 0x26, 0x0f, 0x64 }));
-                    benchmarkPatches.Add(new PatchBytes(3842146, new byte[] { 0xcb, 0x0c, 0x6f }, new byte[] { 0x26, 0x0f, 0x64 }));
-                    //benchmarkPatches.Add(new PatchBytes(3842846, new byte[] { 0x4e, 0x4c, 0x56 }, new byte[] { 0xce, 0xc1, 0x6f })); //skip_frontend
-                    //benchmarkPatches.Add(new PatchBytes(4047697, new byte[] { 0x1b, 0x2c, 0x53 }, new byte[] { 0x9b, 0xa1, 0x6c })); //skip_frontend
-                    break;
-                case "EPIC_GAMES_STORE":
-                    benchmarkPatches.Add(new PatchBytes(3911321, new byte[] { 0x13, 0x5f, 0x1a }, new byte[] { 0x23, 0x43, 0x1c }));
-                    benchmarkPatches.Add(new PatchBytes(3911348, new byte[] { 0xee, 0xd1, 0x70 }, new byte[] { 0xe6, 0xce, 0x65 }));
-                    benchmarkPatches.Add(new PatchBytes(3911426, new byte[] { 0xeb, 0xd1, 0x70 }, new byte[] { 0xe6, 0xce, 0x65 }));
-                    //benchmarkPatches.Add(new PatchBytes(3912126, new byte[] { 0x7e, 0xbf, 0x5f, 0x00 }, new byte[] { 0x1e, 0x5b, 0xf3, 0xff })); //skip_frontend
-                    //benchmarkPatches.Add(new PatchBytes(4117408, new byte[] { 0x9c, 0x9d, 0x5c, 0x00 }, new byte[] { 0x3c, 0x39, 0xf0, 0xff })); //skip_frontend
-                    break;
-                case "GOG":
-                    benchmarkPatches.Add(new PatchBytes(3842217, new byte[] { 0x33, 0x4b, 0x26 }, new byte[] { 0x13, 0x3c, 0x28 }));
-                    benchmarkPatches.Add(new PatchBytes(3842244, new byte[] { 0x0e, 0xaf, 0x70 }, new byte[] { 0x26, 0xaf, 0x65 }));
-                    benchmarkPatches.Add(new PatchBytes(3842322, new byte[] { 0x0b, 0xaf, 0x70 }, new byte[] { 0x26, 0xaf, 0x65 }));
-                    //benchmarkPatches.Add(new PatchBytes(3843022, new byte[] { 0x0e, 0x43, 0x04 }, new byte[] { 0x8e, 0x29, 0x0b })); //skip_frontend
-                    //benchmarkPatches.Add(new PatchBytes(4047514, new byte[] { 0x42, 0x24, 0x01 }, new byte[] { 0xc2, 0x0a, 0x08 })); //skip_frontend
-                    break;
-            }
-
-            //Frontend acts as a reset
-            bool shouldPatch = true;
-            if (MapName.ToUpper() == "FRONTEND")
-            {
-                MapName = "Tech_RnD_HzdLab";
-                shouldPatch = false;
-            }
-
-            //Update vanilla byte array with selection
-            for (int i = 0; i < MapName.Length; i++)
-            {
-                mapStringByteArray[i] = (byte)MapName[i];
-            }
-            mapStringByteArray[MapName.Length] = 0x00;
-
-            //Edit game EXE with selected option & hack out the benchmark mode
-            try
-            {
-                using (BinaryWriter writer = new BinaryWriter(File.OpenWrite(SettingsManager.GetString("PATH_GameRoot") + "/AI.exe")))
-                {
-                    for (int i = 0; i < benchmarkPatches.Count; i++)
-                    {
-                        writer.BaseStream.Position = benchmarkPatches[i].offset;
-                        if (shouldPatch) writer.Write(benchmarkPatches[i].patched);
-                        else writer.Write(benchmarkPatches[i].original);
-                    }
-                    switch (SettingsManager.GetString("META_GameVersion"))
-                    {
-                        case "STEAM":
-                            writer.BaseStream.Position = 15676275;
-                            break;
-                        case "EPIC_GAMES_STORE":
-                            writer.BaseStream.Position = 15773411;
-                            break;
-                        case "GOG":
-                            writer.BaseStream.Position = 15773451;
-                            break;
-                    }
-                    if (writer.BaseStream.Position != 0)
-                        writer.Write(mapStringByteArray);
-                }
-                return true;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("PatchManager::PatchLaunchMode - " + e.ToString());
-                return false;
-            }
-        }
-
-        struct PatchBytes
-        {
-            public PatchBytes(int _o, byte[] _orig, byte[] _patch)
-            {
-                offset = _o;
-                original = _orig;
-                patched = _patch;
-            }
-            public int offset;
-            public byte[] original;
-            public byte[] patched;
-        }
     }
 
     //Various extensions
@@ -687,18 +649,113 @@ namespace CommandsEditor
         /* Try and localise a string */
         public static string TryLocalise(this string str)
         {
-            //Check level-specific strings first, if a level is loaded
+            //Check English level-specific strings first, if a level is loaded
             if (Singleton.Editor?.CommandsDisplay?.Content != null)
-                foreach (KeyValuePair<string, TextDB> entry in Singleton.Editor.CommandsDisplay.Content.resource.text_dbs)
+                foreach (KeyValuePair<string, TextDB> entry in Singleton.Editor.CommandsDisplay.Content.Level.Strings["ENGLISH"])
                     if (entry.Value.Entries.TryGetValue(str, out string localised))
                         return localised;
 
-            //Check global strings
+            //Check English global strings
             foreach (KeyValuePair<string, TextDB> entry in Singleton.GlobalTextDBs)
                 if (entry.Value.Entries.TryGetValue(str, out string localised))
                     return localised;
 
             return str;
+        }
+    }
+
+    //Enum UI string converter
+    public static class EnumUI
+    {
+        static Dictionary<CompositePinType, string> _compositePinType = new Dictionary<CompositePinType, string>();
+        static Dictionary<DataType, string> _dataType = new Dictionary<DataType, string>();
+
+        static EnumUI()
+        {
+            _compositePinType.Add(CompositePinType.CompositeMethodPin, "Method");
+            _compositePinType.Add(CompositePinType.CompositeTargetPin, "Target");
+            _compositePinType.Add(CompositePinType.CompositeReferencePin, "Reference");
+            _compositePinType.Add(CompositePinType.CompositeOutputVariablePin, "Output Untyped");
+            _compositePinType.Add(CompositePinType.CompositeOutputStringVariablePin, "Output String");
+            _compositePinType.Add(CompositePinType.CompositeOutputBoolVariablePin, "Output Bool");
+            _compositePinType.Add(CompositePinType.CompositeOutputFloatVariablePin, "Output Float");
+            _compositePinType.Add(CompositePinType.CompositeOutputIntVariablePin, "Output Integer");
+            _compositePinType.Add(CompositePinType.CompositeOutputPositionVariablePin, "Output Transform");
+            _compositePinType.Add(CompositePinType.CompositeOutputDirectionVariablePin, "Output Vector");
+            _compositePinType.Add(CompositePinType.CompositeOutputEnumVariablePin, "Output Enum");
+            _compositePinType.Add(CompositePinType.CompositeOutputEnumStringVariablePin, "Output Enum String");
+            _compositePinType.Add(CompositePinType.CompositeOutputObjectVariablePin, "Output Object");
+            _compositePinType.Add(CompositePinType.CompositeOutputAnimationInfoVariablePin, "Output Animation Info");
+            _compositePinType.Add(CompositePinType.CompositeOutputZoneLinkPtrVariablePin, "Output Zone Link Ptr");
+            _compositePinType.Add(CompositePinType.CompositeOutputZonePtrVariablePin, "Output Zone Ptr");
+            _compositePinType.Add(CompositePinType.CompositeInputVariablePin, "Input Untyped");
+            _compositePinType.Add(CompositePinType.CompositeInputStringVariablePin, "Input String");
+            _compositePinType.Add(CompositePinType.CompositeInputBoolVariablePin, "Input Bool");
+            _compositePinType.Add(CompositePinType.CompositeInputFloatVariablePin, "Input Float");
+            _compositePinType.Add(CompositePinType.CompositeInputIntVariablePin, "Input Integer");
+            _compositePinType.Add(CompositePinType.CompositeInputPositionVariablePin, "Input Transform");
+            _compositePinType.Add(CompositePinType.CompositeInputDirectionVariablePin, "Input Vector");
+            _compositePinType.Add(CompositePinType.CompositeInputEnumVariablePin, "Input Enum");
+            _compositePinType.Add(CompositePinType.CompositeInputEnumStringVariablePin, "Input Enum String");
+            _compositePinType.Add(CompositePinType.CompositeInputObjectVariablePin, "Input Object");
+            _compositePinType.Add(CompositePinType.CompositeInputAnimationInfoVariablePin, "Input Animation Info");
+            _compositePinType.Add(CompositePinType.CompositeInputZoneLinkPtrVariablePin, "Input Zone Link Ptr");
+            _compositePinType.Add(CompositePinType.CompositeInputZonePtrVariablePin, "Input Zone Ptr");
+
+            _dataType.Add(DataType.BOOL, "Bool");
+            _dataType.Add(DataType.INTEGER, "Integer");
+            _dataType.Add(DataType.FLOAT, "Float");
+            _dataType.Add(DataType.STRING, "String");
+            _dataType.Add(DataType.FILEPATH, "Filepath");
+            _dataType.Add(DataType.SPLINE, "Spline");
+            _dataType.Add(DataType.VECTOR, "Vector");
+            _dataType.Add(DataType.TRANSFORM, "Transform");
+            _dataType.Add(DataType.ENUM, "Enum");
+            _dataType.Add(DataType.ENUM_STRING, "Enum String");
+            _dataType.Add(DataType.RESOURCE, "Resource");
+            _dataType.Add(DataType.OBJECT, "Object");
+            _dataType.Add(DataType.ZONE, "Zone");
+            _dataType.Add(DataType.ZONE_LINK, "Zone Link");
+            _dataType.Add(DataType.RESOURCE_ID, "Resource ID");
+            _dataType.Add(DataType.REFERENCE_FRAME, "Reference Frame");
+            _dataType.Add(DataType.ANIMATION_INFO, "Animation Info");
+            _dataType.Add(DataType.COLOUR, "Colour");
+            _dataType.Add(DataType.NONE, "None");
+        }
+
+        public static string ToUIString(this CompositePinType type)
+        {
+            return _compositePinType[type];
+        }
+        public static CompositePinType ToCompositePinType(this string str)
+        {
+            return _compositePinType.FirstOrDefault(o => o.Value == str).Key;
+        }
+
+        public static string ToUIString(this DataType type)
+        {
+            return _dataType[type];
+        }
+        public static DataType ToDataType(this string str)
+        {
+            return _dataType.FirstOrDefault(o => o.Value == str).Key;
+        }
+    }
+
+    public static class EnumExtensions
+    {
+        public static IEnumerable<TEnum> GetValuesInDeclarationOrder<TEnum>() where TEnum : Enum
+        {
+            Type enumType = typeof(TEnum);
+            FieldInfo[] fields = enumType.GetFields(BindingFlags.Public | BindingFlags.Static);
+            return fields.OrderBy(f => f.MetadataToken).Select(f => (TEnum)f.GetValue(null));
+        }
+
+        public static IEnumerable<string> GetNamesInDeclarationOrder<TEnum>() where TEnum : Enum
+        {
+            Type enumType = typeof(TEnum);
+            FieldInfo[] fields = enumType.GetFields(BindingFlags.Public | BindingFlags.Static);
+            return fields.OrderBy(f => f.MetadataToken).Select(f => f.Name);
         }
     }
 }

@@ -39,7 +39,7 @@ namespace CommandsEditor
             if (allowFollowThrough && displayOptions.ShowCheckboxes)
             {
                 //TODO: the multiselect functionality has expanded this modal past the point it was designed for - needs refactoring
-                Console.WriteLine("WARNING: Does not support following through and checkboxes! Checkboxes are only intended for multiselect entity selection (aka node creation)");
+                Debug.Log("Select Hierarchy", "WARNING: Does not support following through and checkboxes! Checkboxes are only intended for multiselect entity selection (aka node creation)");
                 displayOptions.ShowCheckboxes = false;
             }
             _multiselect = displayOptions.ShowCheckboxes;
@@ -55,14 +55,6 @@ namespace CommandsEditor
             LoadComposite(startingComposite);
             FollowEntityThrough.Visible = allowFollowThrough;
 
-            if (displayOptions.ShowCreateNode)
-            {
-                createNode.Checked = SettingsManager.GetBool(Singleton.Settings.MakeNodeWhenMakeEntity);
-            }
-            else
-            {
-                createNode.Visible = false;
-            }
             if (displayOptions.ShowApplyDefaults)
             {
                 applyDefaultParams.Checked = SettingsManager.GetBool(Singleton.Settings.PreviouslySearchedParamPopulationProxyOrAlias);
@@ -83,7 +75,7 @@ namespace CommandsEditor
             FollowEntityThrough.Enabled = false;
 
             if (selectedEntity.variant != EntityVariant.FUNCTION) return;
-            FollowEntityThrough.Enabled = Content.commands.GetComposite(((FunctionEntity)selectedEntity).function) != null;
+            FollowEntityThrough.Enabled = Content.Level.Commands.GetComposite(((FunctionEntity)selectedEntity).function) != null;
         }
 
         /* Load a composite into the UI */
@@ -106,7 +98,7 @@ namespace CommandsEditor
             if (selectedEntity == null) return;
             if (selectedEntity.variant != EntityVariant.FUNCTION) return;
 
-            Composite composite = Content.commands.GetComposite(((FunctionEntity)selectedEntity).function);
+            Composite composite = Content.Level.Commands.GetComposite(((FunctionEntity)selectedEntity).function);
             if (composite == null) return;
 
             _path.StepForwards(selectedComposite, selectedEntity);
@@ -118,7 +110,10 @@ namespace CommandsEditor
         {
             if (_multiselect)
             {
-                OnFinalEntitiesSelected?.Invoke(compositeEntityList1.CheckedEntities);
+                List<Entity> entities = compositeEntityList1.CheckedEntities;
+                if (entities.Count == 0 && compositeEntityList1.SelectedEntity != null)
+                    entities.Add(compositeEntityList1.SelectedEntity);
+                OnFinalEntitiesSelected?.Invoke(entities);
             }
             else
             {
@@ -142,12 +137,6 @@ namespace CommandsEditor
             {
                 LoadComposite(composite);
             }
-        }
-
-        private void createNode_CheckedChanged(object sender, EventArgs e)
-        {
-            if (createNode.Checked != SettingsManager.GetBool(Singleton.Settings.MakeNodeWhenMakeEntity))
-                Singleton.Editor.ToggleMakeNodeWhenMakeEntity();
         }
     }
 }

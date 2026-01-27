@@ -31,7 +31,7 @@ namespace CommandsEditor.UnityConnection
 
         //Packet metadata
         public PacketEvent packet_event;
-        public int version = 4;
+        public const int version = 4;
 
         //Setup metadata
         public string level_name = "";

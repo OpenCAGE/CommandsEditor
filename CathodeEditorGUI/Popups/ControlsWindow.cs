@@ -24,7 +24,7 @@ namespace CommandsEditor.Popups
             AddControl(FlowgraphControls, "Create Link", "Drag Left Mouse Between Node Pins");
             AddControl(FlowgraphControls, "Remove Link", "Right Click Link");
             AddControl(FlowgraphControls, "Create Node", "Right Click Canvas");
-            AddControl(FlowgraphControls, "Create Node Pin", "Right Click Node");
+            AddControl(FlowgraphControls, "Manage Node", "Right Click Node");
 
             //Model viewer controls
             AddControl(ModelViewerControls, "Zoom In/Out", "Scrollwheel Up/Down");

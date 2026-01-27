@@ -362,9 +362,5 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
-CathodeEditorGUI.exe.config
-CathodeEditorGUI.pdb
-Build/*.xml
-Build/*.pdb
-Build/*.config
-Build/LocalDB/*
+Build/*
+!Build/CommandsEditor.exe

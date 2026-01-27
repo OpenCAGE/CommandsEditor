@@ -27,92 +27,95 @@ namespace CommandsEditor
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Flowgraph));
-            this.SaveFlowgraph = new System.Windows.Forms.Button();
             this.nodeContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.modifyPinsIn = new System.Windows.Forms.ToolStripMenuItem();
-            this.modifyPinsOut = new System.Windows.Forms.ToolStripMenuItem();
+            this.addAllPinsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.removeUnusedPinsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.duplicateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+            this.findReferencesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.goToNextNodeInFlowgraphToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.deleteEntityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.duplicateEntityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.createToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.createParameterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.createFunctionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.createInstanceOfCompositeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.createProxyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.createAliasToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.addNodeForSelectedEntityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.AutoCalc = new System.Windows.Forms.Button();
-            this.RemoveEmpties = new System.Windows.Forms.Button();
+            this.deleteLinkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.setDelayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.clearDelayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stNodeEditor1 = new ST.Library.UI.NodeEditor.STNodeEditor();
-            this.SaveFlowgraphUnfinished = new System.Windows.Forms.Button();
-            this.ResetFG = new System.Windows.Forms.Button();
             this.TabStripContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.deleteFGToolstripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.renameFGToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.createNewFlowgraphToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.AutoCalcAdjacents = new System.Windows.Forms.Button();
-            this.SplitConnected = new System.Windows.Forms.Button();
-            this.SplitInHalf = new System.Windows.Forms.Button();
-            this.DuplicateForAllConnections = new System.Windows.Forms.Button();
-            this.AutoCalcAndSplit = new System.Windows.Forms.Button();
-            this.DEBUG_UnfinishedWarning = new System.Windows.Forms.Label();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.addAllPinsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.removeUnusedPinsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.nodeContextMenu.SuspendLayout();
             this.TabStripContextMenu.SuspendLayout();
             this.SuspendLayout();
             // 
-            // SaveFlowgraph
-            // 
-            this.SaveFlowgraph.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.SaveFlowgraph.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.SaveFlowgraph.ForeColor = System.Drawing.Color.IndianRed;
-            this.SaveFlowgraph.Location = new System.Drawing.Point(1257, 1);
-            this.SaveFlowgraph.Name = "SaveFlowgraph";
-            this.SaveFlowgraph.Size = new System.Drawing.Size(254, 38);
-            this.SaveFlowgraph.TabIndex = 2;
-            this.SaveFlowgraph.Text = "Save to pre-defined DB and load next";
-            this.SaveFlowgraph.UseVisualStyleBackColor = true;
-            this.SaveFlowgraph.Click += new System.EventHandler(this.SaveFlowgraph_Click);
-            // 
             // nodeContextMenu
             // 
             this.nodeContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.modifyPinsIn,
-            this.modifyPinsOut,
-            this.toolStripSeparator2,
             this.addAllPinsToolStripMenuItem,
             this.removeUnusedPinsToolStripMenuItem,
             this.toolStripSeparator1,
             this.deleteToolStripMenuItem,
             this.duplicateToolStripMenuItem,
-            this.addNodeToolStripMenuItem});
+            this.toolStripSeparator5,
+            this.findReferencesToolStripMenuItem,
+            this.goToNextNodeInFlowgraphToolStripMenuItem,
+            this.toolStripSeparator4,
+            this.deleteEntityToolStripMenuItem,
+            this.duplicateEntityToolStripMenuItem,
+            this.createToolStripMenuItem,
+            this.addNodeForSelectedEntityToolStripMenuItem,
+            this.addNodeToolStripMenuItem,
+            this.deleteLinkToolStripMenuItem,
+            this.setDelayToolStripMenuItem,
+            this.clearDelayToolStripMenuItem});
             this.nodeContextMenu.Name = "EntityListContextMenu";
-            this.nodeContextMenu.Size = new System.Drawing.Size(186, 192);
+            this.nodeContextMenu.Size = new System.Drawing.Size(229, 330);
             this.nodeContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
-            // modifyPinsIn
+            // addAllPinsToolStripMenuItem
             // 
-            this.modifyPinsIn.Image = ((System.Drawing.Image)(resources.GetObject("modifyPinsIn.Image")));
-            this.modifyPinsIn.Name = "modifyPinsIn";
-            this.modifyPinsIn.Size = new System.Drawing.Size(185, 22);
-            this.modifyPinsIn.Text = "Modify Pins In";
-            this.modifyPinsIn.Click += new System.EventHandler(this.modifyPinsIn_Click);
+            this.addAllPinsToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("addAllPinsToolStripMenuItem.Image")));
+            this.addAllPinsToolStripMenuItem.Name = "addAllPinsToolStripMenuItem";
+            this.addAllPinsToolStripMenuItem.ShortcutKeyDisplayString = "F4";
+            this.addAllPinsToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F4;
+            this.addAllPinsToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
+            this.addAllPinsToolStripMenuItem.Text = "Add All Pins";
+            this.addAllPinsToolStripMenuItem.Click += new System.EventHandler(this.addAllPinsToolStripMenuItem_Click);
             // 
-            // modifyPinsOut
+            // removeUnusedPinsToolStripMenuItem
             // 
-            this.modifyPinsOut.Image = ((System.Drawing.Image)(resources.GetObject("modifyPinsOut.Image")));
-            this.modifyPinsOut.Name = "modifyPinsOut";
-            this.modifyPinsOut.Size = new System.Drawing.Size(185, 22);
-            this.modifyPinsOut.Text = "Modify Pins Out";
-            this.modifyPinsOut.Click += new System.EventHandler(this.modifyPinsOut_Click);
+            this.removeUnusedPinsToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("removeUnusedPinsToolStripMenuItem.Image")));
+            this.removeUnusedPinsToolStripMenuItem.Name = "removeUnusedPinsToolStripMenuItem";
+            this.removeUnusedPinsToolStripMenuItem.ShortcutKeyDisplayString = "F5";
+            this.removeUnusedPinsToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
+            this.removeUnusedPinsToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
+            this.removeUnusedPinsToolStripMenuItem.Text = "Remove Unused Pins";
+            this.removeUnusedPinsToolStripMenuItem.Click += new System.EventHandler(this.removeUnusedPinsToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(182, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(225, 6);
             // 
             // deleteToolStripMenuItem
             // 
             this.deleteToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("deleteToolStripMenuItem.Image")));
             this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.deleteToolStripMenuItem.ShortcutKeyDisplayString = "Del";
+            this.deleteToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
             this.deleteToolStripMenuItem.Text = "Delete Node";
             this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
             // 
@@ -120,43 +123,157 @@ namespace CommandsEditor
             // 
             this.duplicateToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("duplicateToolStripMenuItem.Image")));
             this.duplicateToolStripMenuItem.Name = "duplicateToolStripMenuItem";
-            this.duplicateToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.duplicateToolStripMenuItem.ShortcutKeyDisplayString = "F1";
+            this.duplicateToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F1;
+            this.duplicateToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
             this.duplicateToolStripMenuItem.Text = "Duplicate Node";
             this.duplicateToolStripMenuItem.Click += new System.EventHandler(this.duplicateToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator5
+            // 
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(225, 6);
+            // 
+            // findReferencesToolStripMenuItem
+            // 
+            this.findReferencesToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("findReferencesToolStripMenuItem.Image")));
+            this.findReferencesToolStripMenuItem.Name = "findReferencesToolStripMenuItem";
+            this.findReferencesToolStripMenuItem.ShortcutKeyDisplayString = "F2";
+            this.findReferencesToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F2;
+            this.findReferencesToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
+            this.findReferencesToolStripMenuItem.Text = "Find References";
+            this.findReferencesToolStripMenuItem.Click += new System.EventHandler(this.findReferencesToolStripMenuItem_Click);
+            // 
+            // goToNextNodeInFlowgraphToolStripMenuItem
+            // 
+            this.goToNextNodeInFlowgraphToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("goToNextNodeInFlowgraphToolStripMenuItem.Image")));
+            this.goToNextNodeInFlowgraphToolStripMenuItem.Name = "goToNextNodeInFlowgraphToolStripMenuItem";
+            this.goToNextNodeInFlowgraphToolStripMenuItem.ShortcutKeyDisplayString = "F3";
+            this.goToNextNodeInFlowgraphToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F3;
+            this.goToNextNodeInFlowgraphToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
+            this.goToNextNodeInFlowgraphToolStripMenuItem.Text = "Go To Entity\'s Next Node";
+            this.goToNextNodeInFlowgraphToolStripMenuItem.ToolTipText = "Select this to jump to the next node for this entity within the current flowgraph" +
+    ".";
+            this.goToNextNodeInFlowgraphToolStripMenuItem.Click += new System.EventHandler(this.goToNextNodeInFlowgraphToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(225, 6);
+            // 
+            // deleteEntityToolStripMenuItem
+            // 
+            this.deleteEntityToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("deleteEntityToolStripMenuItem.Image")));
+            this.deleteEntityToolStripMenuItem.Name = "deleteEntityToolStripMenuItem";
+            this.deleteEntityToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
+            this.deleteEntityToolStripMenuItem.Text = "Delete Entity";
+            this.deleteEntityToolStripMenuItem.Click += new System.EventHandler(this.deleteEntityToolStripMenuItem_Click);
+            // 
+            // duplicateEntityToolStripMenuItem
+            // 
+            this.duplicateEntityToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("duplicateEntityToolStripMenuItem.Image")));
+            this.duplicateEntityToolStripMenuItem.Name = "duplicateEntityToolStripMenuItem";
+            this.duplicateEntityToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
+            this.duplicateEntityToolStripMenuItem.Text = "Duplicate Entity";
+            this.duplicateEntityToolStripMenuItem.Click += new System.EventHandler(this.duplicateEntityToolStripMenuItem_Click);
+            // 
+            // createToolStripMenuItem
+            // 
+            this.createToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.createParameterToolStripMenuItem,
+            this.createFunctionToolStripMenuItem,
+            this.createInstanceOfCompositeToolStripMenuItem,
+            this.createProxyToolStripMenuItem,
+            this.createAliasToolStripMenuItem1});
+            this.createToolStripMenuItem.Name = "createToolStripMenuItem";
+            this.createToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
+            this.createToolStripMenuItem.Text = "Create Entity";
+            // 
+            // createParameterToolStripMenuItem
+            // 
+            this.createParameterToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("createParameterToolStripMenuItem.Image")));
+            this.createParameterToolStripMenuItem.Name = "createParameterToolStripMenuItem";
+            this.createParameterToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.createParameterToolStripMenuItem.Text = "New Parameter";
+            this.createParameterToolStripMenuItem.Click += new System.EventHandler(this.createParameterToolStripMenuItem_Click);
+            // 
+            // createFunctionToolStripMenuItem
+            // 
+            this.createFunctionToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("createFunctionToolStripMenuItem.Image")));
+            this.createFunctionToolStripMenuItem.Name = "createFunctionToolStripMenuItem";
+            this.createFunctionToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.createFunctionToolStripMenuItem.Text = "New Function";
+            this.createFunctionToolStripMenuItem.Click += new System.EventHandler(this.createFunctionToolStripMenuItem_Click);
+            // 
+            // createInstanceOfCompositeToolStripMenuItem
+            // 
+            this.createInstanceOfCompositeToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("createInstanceOfCompositeToolStripMenuItem.Image")));
+            this.createInstanceOfCompositeToolStripMenuItem.Name = "createInstanceOfCompositeToolStripMenuItem";
+            this.createInstanceOfCompositeToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.createInstanceOfCompositeToolStripMenuItem.Text = "New Instance of Composite";
+            this.createInstanceOfCompositeToolStripMenuItem.Click += new System.EventHandler(this.createInstanceOfCompositeToolStripMenuItem_Click);
+            // 
+            // createProxyToolStripMenuItem
+            // 
+            this.createProxyToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("createProxyToolStripMenuItem.Image")));
+            this.createProxyToolStripMenuItem.Name = "createProxyToolStripMenuItem";
+            this.createProxyToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.createProxyToolStripMenuItem.Text = "New Proxy";
+            this.createProxyToolStripMenuItem.Click += new System.EventHandler(this.createProxyToolStripMenuItem_Click);
+            // 
+            // createAliasToolStripMenuItem1
+            // 
+            this.createAliasToolStripMenuItem1.Image = ((System.Drawing.Image)(resources.GetObject("createAliasToolStripMenuItem1.Image")));
+            this.createAliasToolStripMenuItem1.Name = "createAliasToolStripMenuItem1";
+            this.createAliasToolStripMenuItem1.Size = new System.Drawing.Size(220, 22);
+            this.createAliasToolStripMenuItem1.Text = "New Alias";
+            this.createAliasToolStripMenuItem1.Click += new System.EventHandler(this.createAliasToolStripMenuItem1_Click);
+            // 
+            // addNodeForSelectedEntityToolStripMenuItem
+            // 
+            this.addNodeForSelectedEntityToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("addNodeForSelectedEntityToolStripMenuItem.Image")));
+            this.addNodeForSelectedEntityToolStripMenuItem.Name = "addNodeForSelectedEntityToolStripMenuItem";
+            this.addNodeForSelectedEntityToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
+            this.addNodeForSelectedEntityToolStripMenuItem.Text = "Add Node For Selected Entity";
+            this.addNodeForSelectedEntityToolStripMenuItem.Click += new System.EventHandler(this.addNodeForSelectedEntityToolStripMenuItem_Click);
             // 
             // addNodeToolStripMenuItem
             // 
             this.addNodeToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("addNodeToolStripMenuItem.Image")));
             this.addNodeToolStripMenuItem.Name = "addNodeToolStripMenuItem";
-            this.addNodeToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.addNodeToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
             this.addNodeToolStripMenuItem.Text = "Add Node(s)";
             this.addNodeToolStripMenuItem.Click += new System.EventHandler(this.addNodeToolStripMenuItem_Click);
             // 
-            // AutoCalc
+            // deleteLinkToolStripMenuItem
             // 
-            this.AutoCalc.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.AutoCalc.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.AutoCalc.ForeColor = System.Drawing.Color.IndianRed;
-            this.AutoCalc.Location = new System.Drawing.Point(0, 661);
-            this.AutoCalc.Name = "AutoCalc";
-            this.AutoCalc.Size = new System.Drawing.Size(123, 38);
-            this.AutoCalc.TabIndex = 3;
-            this.AutoCalc.Text = "Auto Calc";
-            this.AutoCalc.UseVisualStyleBackColor = true;
-            this.AutoCalc.Click += new System.EventHandler(this.AutoCalc_Click);
+            this.deleteLinkToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("deleteLinkToolStripMenuItem.Image")));
+            this.deleteLinkToolStripMenuItem.Name = "deleteLinkToolStripMenuItem";
+            this.deleteLinkToolStripMenuItem.ShortcutKeyDisplayString = "Del";
+            this.deleteLinkToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
+            this.deleteLinkToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
+            this.deleteLinkToolStripMenuItem.Text = "Delete Link";
+            this.deleteLinkToolStripMenuItem.Click += new System.EventHandler(this.deleteLinkToolStripMenuItem_Click);
             // 
-            // RemoveEmpties
+            // setDelayToolStripMenuItem
             // 
-            this.RemoveEmpties.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.RemoveEmpties.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.RemoveEmpties.ForeColor = System.Drawing.Color.IndianRed;
-            this.RemoveEmpties.Location = new System.Drawing.Point(123, 661);
-            this.RemoveEmpties.Name = "RemoveEmpties";
-            this.RemoveEmpties.Size = new System.Drawing.Size(123, 38);
-            this.RemoveEmpties.TabIndex = 4;
-            this.RemoveEmpties.Text = "Remove Empties";
-            this.RemoveEmpties.UseVisualStyleBackColor = true;
-            this.RemoveEmpties.Click += new System.EventHandler(this.RemoveEmpties_Click);
+            this.setDelayToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("setDelayToolStripMenuItem.Image")));
+            this.setDelayToolStripMenuItem.Name = "setDelayToolStripMenuItem";
+            this.setDelayToolStripMenuItem.ShortcutKeyDisplayString = "F1";
+            this.setDelayToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F1;
+            this.setDelayToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
+            this.setDelayToolStripMenuItem.Text = "Set Delay";
+            this.setDelayToolStripMenuItem.Click += new System.EventHandler(this.setDelayToolStripMenuItem_Click);
+            // 
+            // clearDelayToolStripMenuItem
+            // 
+            this.clearDelayToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("clearDelayToolStripMenuItem.Image")));
+            this.clearDelayToolStripMenuItem.Name = "clearDelayToolStripMenuItem";
+            this.clearDelayToolStripMenuItem.ShortcutKeyDisplayString = "F2";
+            this.clearDelayToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F2;
+            this.clearDelayToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
+            this.clearDelayToolStripMenuItem.Text = "Clear Delay";
+            this.clearDelayToolStripMenuItem.Click += new System.EventHandler(this.clearDelayToolStripMenuItem_Click);
             // 
             // stNodeEditor1
             // 
@@ -179,32 +296,6 @@ namespace CommandsEditor
             this.stNodeEditor1.TabIndex = 1;
             this.stNodeEditor1.Text = "stNodeEditor1";
             // 
-            // SaveFlowgraphUnfinished
-            // 
-            this.SaveFlowgraphUnfinished.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.SaveFlowgraphUnfinished.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.SaveFlowgraphUnfinished.ForeColor = System.Drawing.Color.IndianRed;
-            this.SaveFlowgraphUnfinished.Location = new System.Drawing.Point(1099, 1);
-            this.SaveFlowgraphUnfinished.Name = "SaveFlowgraphUnfinished";
-            this.SaveFlowgraphUnfinished.Size = new System.Drawing.Size(158, 38);
-            this.SaveFlowgraphUnfinished.TabIndex = 5;
-            this.SaveFlowgraphUnfinished.Text = "Save as Unfinished";
-            this.SaveFlowgraphUnfinished.UseVisualStyleBackColor = true;
-            this.SaveFlowgraphUnfinished.Click += new System.EventHandler(this.SaveFlowgraphUnfinished_Click);
-            // 
-            // ResetFG
-            // 
-            this.ResetFG.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.ResetFG.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ResetFG.ForeColor = System.Drawing.Color.IndianRed;
-            this.ResetFG.Location = new System.Drawing.Point(1354, 661);
-            this.ResetFG.Name = "ResetFG";
-            this.ResetFG.Size = new System.Drawing.Size(158, 38);
-            this.ResetFG.TabIndex = 6;
-            this.ResetFG.Text = "Reset";
-            this.ResetFG.UseVisualStyleBackColor = true;
-            this.ResetFG.Click += new System.EventHandler(this.ResetFG_Click);
-            // 
             // TabStripContextMenu
             // 
             this.TabStripContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -213,7 +304,7 @@ namespace CommandsEditor
             this.toolStripSeparator3,
             this.createNewFlowgraphToolStripMenuItem});
             this.TabStripContextMenu.Name = "TabStripContextMenu";
-            this.TabStripContextMenu.Size = new System.Drawing.Size(195, 76);
+            this.TabStripContextMenu.Size = new System.Drawing.Size(195, 98);
             this.TabStripContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.TabStripContextMenu_Opening);
             // 
             // deleteFGToolstripMenuItem
@@ -245,102 +336,6 @@ namespace CommandsEditor
             this.createNewFlowgraphToolStripMenuItem.Text = "Create New Flowgraph";
             this.createNewFlowgraphToolStripMenuItem.Click += new System.EventHandler(this.createNewFlowgraphToolStripMenuItem_Click);
             // 
-            // AutoCalcAdjacents
-            // 
-            this.AutoCalcAdjacents.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.AutoCalcAdjacents.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.AutoCalcAdjacents.ForeColor = System.Drawing.Color.IndianRed;
-            this.AutoCalcAdjacents.Location = new System.Drawing.Point(246, 661);
-            this.AutoCalcAdjacents.Name = "AutoCalcAdjacents";
-            this.AutoCalcAdjacents.Size = new System.Drawing.Size(123, 38);
-            this.AutoCalcAdjacents.TabIndex = 7;
-            this.AutoCalcAdjacents.Text = "Auto Calc Adjacents";
-            this.AutoCalcAdjacents.UseVisualStyleBackColor = true;
-            this.AutoCalcAdjacents.Click += new System.EventHandler(this.AutoCalcAdjacents_Click);
-            // 
-            // SplitConnected
-            // 
-            this.SplitConnected.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.SplitConnected.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.SplitConnected.ForeColor = System.Drawing.Color.IndianRed;
-            this.SplitConnected.Location = new System.Drawing.Point(492, 661);
-            this.SplitConnected.Name = "SplitConnected";
-            this.SplitConnected.Size = new System.Drawing.Size(123, 38);
-            this.SplitConnected.TabIndex = 8;
-            this.SplitConnected.Text = "Turn Child Into New Node";
-            this.SplitConnected.UseVisualStyleBackColor = true;
-            this.SplitConnected.Click += new System.EventHandler(this.SplitConnected_Click);
-            // 
-            // SplitInHalf
-            // 
-            this.SplitInHalf.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.SplitInHalf.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.SplitInHalf.ForeColor = System.Drawing.Color.IndianRed;
-            this.SplitInHalf.Location = new System.Drawing.Point(615, 661);
-            this.SplitInHalf.Name = "SplitInHalf";
-            this.SplitInHalf.Size = new System.Drawing.Size(123, 38);
-            this.SplitInHalf.TabIndex = 9;
-            this.SplitInHalf.Text = "Split In Half";
-            this.SplitInHalf.UseVisualStyleBackColor = true;
-            this.SplitInHalf.Click += new System.EventHandler(this.SplitInHalf_Click);
-            // 
-            // DuplicateForAllConnections
-            // 
-            this.DuplicateForAllConnections.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.DuplicateForAllConnections.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.DuplicateForAllConnections.ForeColor = System.Drawing.Color.IndianRed;
-            this.DuplicateForAllConnections.Location = new System.Drawing.Point(738, 661);
-            this.DuplicateForAllConnections.Name = "DuplicateForAllConnections";
-            this.DuplicateForAllConnections.Size = new System.Drawing.Size(123, 38);
-            this.DuplicateForAllConnections.TabIndex = 10;
-            this.DuplicateForAllConnections.Text = "Split All Connections";
-            this.DuplicateForAllConnections.UseVisualStyleBackColor = true;
-            this.DuplicateForAllConnections.Click += new System.EventHandler(this.DuplicateForAllConnections_Click);
-            // 
-            // AutoCalcAndSplit
-            // 
-            this.AutoCalcAndSplit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.AutoCalcAndSplit.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.AutoCalcAndSplit.ForeColor = System.Drawing.Color.IndianRed;
-            this.AutoCalcAndSplit.Location = new System.Drawing.Point(369, 661);
-            this.AutoCalcAndSplit.Name = "AutoCalcAndSplit";
-            this.AutoCalcAndSplit.Size = new System.Drawing.Size(123, 38);
-            this.AutoCalcAndSplit.TabIndex = 11;
-            this.AutoCalcAndSplit.Text = "Auto Calc And Split";
-            this.AutoCalcAndSplit.UseVisualStyleBackColor = true;
-            this.AutoCalcAndSplit.Click += new System.EventHandler(this.AutoCalcAndSplit_Click);
-            // 
-            // DEBUG_UnfinishedWarning
-            // 
-            this.DEBUG_UnfinishedWarning.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.DEBUG_UnfinishedWarning.AutoSize = true;
-            this.DEBUG_UnfinishedWarning.Location = new System.Drawing.Point(1437, 40);
-            this.DEBUG_UnfinishedWarning.Name = "DEBUG_UnfinishedWarning";
-            this.DEBUG_UnfinishedWarning.Size = new System.Drawing.Size(73, 13);
-            this.DEBUG_UnfinishedWarning.TabIndex = 12;
-            this.DEBUG_UnfinishedWarning.Text = "UNFINISHED";
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(182, 6);
-            // 
-            // addAllPinsToolStripMenuItem
-            // 
-            this.addAllPinsToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("addAllPinsToolStripMenuItem.Image")));
-            this.addAllPinsToolStripMenuItem.Name = "addAllPinsToolStripMenuItem";
-            this.addAllPinsToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
-            this.addAllPinsToolStripMenuItem.Text = "Add All Pins";
-            this.addAllPinsToolStripMenuItem.Click += new System.EventHandler(this.addAllPinsToolStripMenuItem_Click);
-            // 
-            // removeUnusedPinsToolStripMenuItem
-            // 
-            this.removeUnusedPinsToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("removeUnusedPinsToolStripMenuItem.Image")));
-            this.removeUnusedPinsToolStripMenuItem.Name = "removeUnusedPinsToolStripMenuItem";
-            this.removeUnusedPinsToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
-            this.removeUnusedPinsToolStripMenuItem.Text = "Remove Unused Pins";
-            this.removeUnusedPinsToolStripMenuItem.Click += new System.EventHandler(this.removeUnusedPinsToolStripMenuItem_Click);
-            // 
             // Flowgraph
             // 
             this.AllowEndUserDocking = false;
@@ -349,17 +344,6 @@ namespace CommandsEditor
             this.ClientSize = new System.Drawing.Size(1512, 699);
             this.CloseButton = false;
             this.CloseButtonVisible = false;
-            this.Controls.Add(this.DEBUG_UnfinishedWarning);
-            this.Controls.Add(this.AutoCalcAndSplit);
-            this.Controls.Add(this.DuplicateForAllConnections);
-            this.Controls.Add(this.SplitInHalf);
-            this.Controls.Add(this.SplitConnected);
-            this.Controls.Add(this.AutoCalcAdjacents);
-            this.Controls.Add(this.ResetFG);
-            this.Controls.Add(this.SaveFlowgraphUnfinished);
-            this.Controls.Add(this.RemoveEmpties);
-            this.Controls.Add(this.AutoCalc);
-            this.Controls.Add(this.SaveFlowgraph);
             this.Controls.Add(this.stNodeEditor1);
             this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -371,38 +355,39 @@ namespace CommandsEditor
             this.nodeContextMenu.ResumeLayout(false);
             this.TabStripContextMenu.ResumeLayout(false);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
         private ST.Library.UI.NodeEditor.STNodeEditor stNodeEditor1;
-        private System.Windows.Forms.Button SaveFlowgraph;
         private System.Windows.Forms.ContextMenuStrip nodeContextMenu;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem duplicateToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addNodeToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem modifyPinsIn;
-        private System.Windows.Forms.ToolStripMenuItem modifyPinsOut;
-        private System.Windows.Forms.Button AutoCalc;
-        private System.Windows.Forms.Button RemoveEmpties;
-        private System.Windows.Forms.Button SaveFlowgraphUnfinished;
-        private System.Windows.Forms.Button ResetFG;
         private System.Windows.Forms.ContextMenuStrip TabStripContextMenu;
         private System.Windows.Forms.ToolStripMenuItem deleteFGToolstripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem renameFGToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem createNewFlowgraphToolStripMenuItem;
-        private System.Windows.Forms.Button AutoCalcAdjacents;
-        private System.Windows.Forms.Button SplitConnected;
-        private System.Windows.Forms.Button SplitInHalf;
-        private System.Windows.Forms.Button DuplicateForAllConnections;
-        private System.Windows.Forms.Button AutoCalcAndSplit;
-        private System.Windows.Forms.Label DEBUG_UnfinishedWarning;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem addAllPinsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem removeUnusedPinsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem createToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem createParameterToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem createFunctionToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem createInstanceOfCompositeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem createProxyToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem createAliasToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem deleteEntityToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+        private System.Windows.Forms.ToolStripMenuItem addNodeForSelectedEntityToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem deleteLinkToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem duplicateEntityToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem goToNextNodeInFlowgraphToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem findReferencesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+        private System.Windows.Forms.ToolStripMenuItem setDelayToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem clearDelayToolStripMenuItem;
     }
 }
 

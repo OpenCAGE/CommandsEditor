@@ -86,19 +86,20 @@ namespace CommandsEditor.UnityConnection
         private static void LevelSaved()
         {
             _isDirty = false;
+            SendData(GeneratePacket(PacketEvent.LEVEL_LOADED)); //NEW: Fire another loaded event to reload write indexes on the Unity side.
         }
 
         /* A composite has been loaded -> open it in the Unity scene */
         private static void CompositeSelected(Composite composite)
         {
             Packet p = GeneratePacket(PacketEvent.COMPOSITE_SELECTED);
-            p.composite = composite.shortGUID.ToUInt32();
+            p.composite = composite.shortGUID.AsUInt32;
             SendData(p);
         }
         private static void CompositeReloaded(Composite composite)
         {
             Packet p = GeneratePacket(PacketEvent.COMPOSITE_RELOADED);
-            p.composite = composite.shortGUID.ToUInt32();
+            p.composite = composite.shortGUID.AsUInt32;
             SendData(p);
         }
 
@@ -106,13 +107,13 @@ namespace CommandsEditor.UnityConnection
         private static void CompositeAdded(Composite composite)
         {
             Packet p = GeneratePacket(PacketEvent.COMPOSITE_ADDED);
-            p.composite = composite.shortGUID.ToUInt32();
+            p.composite = composite.shortGUID.AsUInt32;
             SendData(p);
         }
         private static void CompositeDeleted(Composite composite)
         {
             Packet p = GeneratePacket(PacketEvent.COMPOSITE_DELETED);
-            p.composite = composite.shortGUID.ToUInt32();
+            p.composite = composite.shortGUID.AsUInt32;
             SendData(p);
         }
 
@@ -168,10 +169,13 @@ namespace CommandsEditor.UnityConnection
                     ResourceReference resourceRef = ((cResource)resource.content).GetResource(ResourceType.RENDERABLE_INSTANCE);
                     if (resourceRef != null)
                     {
-                        for (int i = 0; i < resourceRef.count; i++)
+                        for (int i = 0; i < resourceRef.RenderableInstance.Count; i++)
                         {
-                            RenderableElements.Element element = Singleton.Editor.CommandsDisplay.Content.resource.reds.Entries[resourceRef.index + i];
-                            p.renderable.Add(new Tuple<int, int>(element.ModelIndex, element.MaterialIndex));
+                            //TODO: this is less than ideal. the indexes change when we save. how can we better handle this?
+                            p.renderable.Add(new Tuple<int, int>(
+                                Singleton.Editor.CommandsDisplay.Content.Level.Models.GetWriteIndex(resourceRef.RenderableInstance[i].Model),
+                                Singleton.Editor.CommandsDisplay.Content.Level.Materials.GetWriteIndex(resourceRef.RenderableInstance[i].Material)
+                            ));
                         }
                     }
                 }
@@ -182,7 +186,7 @@ namespace CommandsEditor.UnityConnection
         /* Re-sync a new client with all current info */
         private static void SyncClient()
         {
-            Console.WriteLine("[WEBSOCKET] " + _server?.WebSocketServices["/commands_editor"].Sessions.Count + " clients connected!");
+            Debug.Log("Websocket", _server?.WebSocketServices["/commands_editor"].Sessions.Count + " clients connected!");
 
             if (_isDirty)
             {
@@ -197,15 +201,15 @@ namespace CommandsEditor.UnityConnection
         {
             Packet p = GeneratePacket(packet_event);
             p.entity_variant = entity.variant;
-            p.entity = entity.shortGUID.ToUInt32();
+            p.entity = entity.shortGUID.AsUInt32;
             if (entity.variant == EntityVariant.FUNCTION)
-                p.entity_function = ((FunctionEntity)entity).function.ToUInt32();
+                p.entity_function = ((FunctionEntity)entity).function.AsUInt32;
             return p;
         }
         private static Packet GeneratePacket(PacketEvent packet_event = PacketEvent.GENERIC_DATA_SYNC)
         {
             Packet p = new Packet(packet_event);
-            p.level_name = Singleton.Editor?.CommandsDisplay?.Content?.level;
+            p.level_name = Singleton.Editor?.CommandsDisplay?.Content?.Level?.Name;
             p.system_folder = SharedData.pathToAI;
             if (Singleton.Editor?.CommandsDisplay?.CompositeDisplay != null)
             {
@@ -214,25 +218,25 @@ namespace CommandsEditor.UnityConnection
                 {
                     if (entry.Entity != null)
                     {
-                        p.path_entities.Add(entry.Entity.shortGUID.ToUInt32());
-                        p.path_composites.Add(entry.Composite.shortGUID.ToUInt32());
+                        p.path_entities.Add(entry.Entity.shortGUID.AsUInt32);
+                        p.path_composites.Add(entry.Composite.shortGUID.AsUInt32);
                     }
                 }
             }
             if (Singleton.Editor?.CommandsDisplay?.CompositeDisplay?.EntityDisplay?.Entity != null)
             {
                 Entity entity = Singleton.Editor.CommandsDisplay.CompositeDisplay.EntityDisplay.Entity;
-                p.path_entities.Add(entity.shortGUID.ToUInt32());
-                p.entity = entity.shortGUID.ToUInt32();
+                p.path_entities.Add(entity.shortGUID.AsUInt32);
+                p.entity = entity.shortGUID.AsUInt32;
                 p.entity_variant = entity.variant;
                 if (entity.variant == EntityVariant.FUNCTION)
-                    p.entity_function = ((FunctionEntity)entity).function.ToUInt32();
+                    p.entity_function = ((FunctionEntity)entity).function.AsUInt32;
             }
             if (Singleton.Editor?.CommandsDisplay?.CompositeDisplay?.Composite != null)
             {
                 Composite composite = Singleton.Editor.CommandsDisplay.CompositeDisplay.Composite;
-                p.path_composites.Add(composite.shortGUID.ToUInt32());
-                p.composite = composite.shortGUID.ToUInt32();
+                p.path_composites.Add(composite.shortGUID.AsUInt32);
+                p.composite = composite.shortGUID.AsUInt32;
             }
             p.dirty = _isDirty; //NOTE: Not using the DirtyTracker here as we only care about changes that will visually affect the Unity editor.
             p.focus_object = SettingsManager.GetBool(Singleton.Settings.UNITY_FocusEntity);

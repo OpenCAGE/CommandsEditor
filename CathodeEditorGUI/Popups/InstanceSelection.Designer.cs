@@ -52,7 +52,7 @@
             this.instances.Size = new System.Drawing.Size(746, 21);
             this.instances.TabIndex = 21;
             // 
-            // Character_InstanceSelection
+            // InstanceSelection
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -62,7 +62,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.Name = "Character_InstanceSelection";
+            this.Name = "InstanceSelection";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Add New Instance Reference";
             this.ResumeLayout(false);
