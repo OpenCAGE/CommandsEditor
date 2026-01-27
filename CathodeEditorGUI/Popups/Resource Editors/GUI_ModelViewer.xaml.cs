@@ -60,7 +60,7 @@ namespace CommandsEditor.Popups.UserControls
             //Get mesh and material data
             GeometryModel3D submeshGeo = submesh.ToGeometryModel3D();
             if (SettingsManager.GetBool(Singleton.Settings.ShowTexOpt))
-                MaterialApplier.ApplyMaterial(submeshGeo, material, Content.Level.Textures);
+                MaterialApplier.ApplyMaterial(submeshGeo, material);
 
             //Get transform data
             Transform3DGroup transform = new Transform3DGroup();
