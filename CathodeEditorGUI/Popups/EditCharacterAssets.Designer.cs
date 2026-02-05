@@ -42,8 +42,11 @@ namespace CommandsEditor.Popups
             this.decalImageList = new System.Windows.Forms.ImageList(this.components);
             this.saveBtn = new System.Windows.Forms.Button();
             this.primaryColourList = new System.Windows.Forms.ListView();
+            this.primaryColourImageList = new System.Windows.Forms.ImageList(this.components);
             this.secondaryColourList = new System.Windows.Forms.ListView();
+            this.secondaryColourImageList = new System.Windows.Forms.ImageList(this.components);
             this.tertiaryColourList = new System.Windows.Forms.ListView();
+            this.tertiaryColourImageList = new System.Windows.Forms.ImageList(this.components);
             this.addNewTertiary = new System.Windows.Forms.Button();
             this.removeSelectedTertiary = new System.Windows.Forms.Button();
             this.removeSelectedSecondary = new System.Windows.Forms.Button();
@@ -182,29 +185,53 @@ namespace CommandsEditor.Popups
             // primaryColourList
             // 
             this.primaryColourList.HideSelection = false;
+            this.primaryColourList.LargeImageList = this.primaryColourImageList;
             this.primaryColourList.Location = new System.Drawing.Point(6, 19);
             this.primaryColourList.Name = "primaryColourList";
             this.primaryColourList.Size = new System.Drawing.Size(204, 73);
             this.primaryColourList.TabIndex = 8;
             this.primaryColourList.UseCompatibleStateImageBehavior = false;
+            this.primaryColourList.View = System.Windows.Forms.View.LargeIcon;
+            // 
+            // primaryColourImageList
+            // 
+            this.primaryColourImageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
+            this.primaryColourImageList.ImageSize = new System.Drawing.Size(24, 24);
+            this.primaryColourImageList.TransparentColor = System.Drawing.Color.Transparent;
             // 
             // secondaryColourList
             // 
             this.secondaryColourList.HideSelection = false;
+            this.secondaryColourList.LargeImageList = this.secondaryColourImageList;
             this.secondaryColourList.Location = new System.Drawing.Point(6, 19);
             this.secondaryColourList.Name = "secondaryColourList";
             this.secondaryColourList.Size = new System.Drawing.Size(205, 73);
             this.secondaryColourList.TabIndex = 9;
             this.secondaryColourList.UseCompatibleStateImageBehavior = false;
+            this.secondaryColourList.View = System.Windows.Forms.View.LargeIcon;
+            // 
+            // secondaryColourImageList
+            // 
+            this.secondaryColourImageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
+            this.secondaryColourImageList.ImageSize = new System.Drawing.Size(24, 24);
+            this.secondaryColourImageList.TransparentColor = System.Drawing.Color.Transparent;
             // 
             // tertiaryColourList
             // 
             this.tertiaryColourList.HideSelection = false;
+            this.tertiaryColourList.LargeImageList = this.tertiaryColourImageList;
             this.tertiaryColourList.Location = new System.Drawing.Point(6, 19);
             this.tertiaryColourList.Name = "tertiaryColourList";
             this.tertiaryColourList.Size = new System.Drawing.Size(206, 73);
             this.tertiaryColourList.TabIndex = 10;
             this.tertiaryColourList.UseCompatibleStateImageBehavior = false;
+            this.tertiaryColourList.View = System.Windows.Forms.View.LargeIcon;
+            // 
+            // tertiaryColourImageList
+            // 
+            this.tertiaryColourImageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
+            this.tertiaryColourImageList.ImageSize = new System.Drawing.Size(24, 24);
+            this.tertiaryColourImageList.TransparentColor = System.Drawing.Color.Transparent;
             // 
             // addNewTertiary
             // 
@@ -304,8 +331,11 @@ namespace CommandsEditor.Popups
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.ListView primaryColourList;
+        private System.Windows.Forms.ImageList primaryColourImageList;
         private System.Windows.Forms.ListView tertiaryColourList;
+        private System.Windows.Forms.ImageList tertiaryColourImageList;
         private System.Windows.Forms.ListView secondaryColourList;
+        private System.Windows.Forms.ImageList secondaryColourImageList;
         private System.Windows.Forms.Button removeSelectedPrimary;
         private System.Windows.Forms.Button addNewPrimary;
         private System.Windows.Forms.Button removeSelectedTertiary;

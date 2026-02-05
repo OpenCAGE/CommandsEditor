@@ -53,17 +53,16 @@ namespace CommandsEditor.Popups
 
         private void ReloadUI()
         {
-            SetColourPreview(ColourType.PRIMARY, primaryColourList);
-            SetColourPreview(ColourType.SECONDARY, secondaryColourList);
-            SetColourPreview(ColourType.TERTIARY, tertiaryColourList);
+            SetColourPreview(ColourType.PRIMARY, primaryColourList, primaryColourImageList);
+            SetColourPreview(ColourType.SECONDARY, secondaryColourList, secondaryColourImageList);
+            SetColourPreview(ColourType.TERTIARY, tertiaryColourList, tertiaryColourImageList);
 
             decalList.BeginUpdate();
             decalList.Items.Clear();
             decalImageList.Images.Clear();
-            int iconSize = Math.Max(16, decalImageList.ImageSize.Width);
             foreach (string decal in _assetDefinition.Decals)
             {
-                Bitmap thumb = CreateDecalThumbnail(decal, iconSize);
+                Bitmap thumb = CreateDecalThumbnail(decal, Math.Max(16, decalImageList.ImageSize.Width));
                 try
                 {
                     decalImageList.Images.Add(thumb);
@@ -105,15 +104,23 @@ namespace CommandsEditor.Popups
             return thumb;
         }
 
-        private void SetColourPreview(ColourType colourType, ListView ui)
+        private void SetColourPreview(ColourType colourType, ListView ui, ImageList imageList)
         {
             ui.BeginUpdate();
             ui.Items.Clear();
+            imageList.Images.Clear();
             List<Vector3> colours = _assetDefinition.Tints[colourType];
             foreach (Vector3 colour in colours)
             {
-                //todo - need to make big square
-                ui.Items.Add(new ListViewItem(" ") { BackColor = Color.FromArgb(255, (int)(colours[0].X * 255.0f), (int)(colours[0].Y * 255.0f), (int)(colours[0].Z * 255.0f)) });
+                Color c = Color.FromArgb(255, (int)(colour.X * 255.0f), (int)(colour.Y * 255.0f), (int)(colour.Z * 255.0f));
+                using (Bitmap bmp = new Bitmap(imageList.ImageSize.Width, imageList.ImageSize.Width, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
+                {
+                    using (var g = Graphics.FromImage(bmp))
+                        g.Clear(c);
+                    imageList.Images.Add(bmp);
+                }
+                int imageIndex = imageList.Images.Count - 1;
+                ui.Items.Add(new ListViewItem(string.Empty, imageIndex) { BackColor = c });
             }
             ui.EndUpdate();
         }
