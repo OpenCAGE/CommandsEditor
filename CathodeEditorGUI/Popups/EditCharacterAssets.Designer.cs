@@ -1,4 +1,4 @@
-﻿namespace CommandsEditor.Popups
+namespace CommandsEditor.Popups
 {
     partial class EditCharacterAssets
     {
@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditCharacterAssets));
             this.assetSetList = new System.Windows.Forms.ComboBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -38,6 +39,7 @@
             this.removeSelectedDecal = new System.Windows.Forms.Button();
             this.addNewDecal = new System.Windows.Forms.Button();
             this.decalList = new System.Windows.Forms.ListView();
+            this.decalImageList = new System.Windows.Forms.ImageList(this.components);
             this.saveBtn = new System.Windows.Forms.Button();
             this.primaryColourList = new System.Windows.Forms.ListView();
             this.secondaryColourList = new System.Windows.Forms.ListView();
@@ -153,11 +155,19 @@
             // decalList
             // 
             this.decalList.HideSelection = false;
+            this.decalList.LargeImageList = this.decalImageList;
             this.decalList.Location = new System.Drawing.Point(6, 19);
             this.decalList.Name = "decalList";
             this.decalList.Size = new System.Drawing.Size(395, 351);
             this.decalList.TabIndex = 0;
             this.decalList.UseCompatibleStateImageBehavior = false;
+            this.decalList.View = System.Windows.Forms.View.LargeIcon;
+            // 
+            // decalImageList
+            // 
+            this.decalImageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
+            this.decalImageList.ImageSize = new System.Drawing.Size(64, 64);
+            this.decalImageList.TransparentColor = System.Drawing.Color.Transparent;
             // 
             // saveBtn
             // 
@@ -290,6 +300,7 @@
         private System.Windows.Forms.ListView decalList;
         private System.Windows.Forms.Button removeSelectedDecal;
         private System.Windows.Forms.Button addNewDecal;
+        private System.Windows.Forms.ImageList decalImageList;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.ListView primaryColourList;

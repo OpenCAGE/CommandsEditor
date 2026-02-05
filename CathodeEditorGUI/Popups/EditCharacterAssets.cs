@@ -1,4 +1,4 @@
-﻿using AlienPAK;
+using AlienPAK;
 using CATHODE;
 using CATHODE.Enums;
 using CommandsEditor.Popups.Base;
@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -36,6 +37,11 @@ namespace CommandsEditor.Popups
             assetSetList.Items.RemoveAt(assetSetList.Items.Count - 1);
             assetSetList.EndUpdate();
 
+            this.Load += EditCharacterAssets_Load;
+        }
+
+        private void EditCharacterAssets_Load(object sender, EventArgs e)
+        {
             assetSetList.SelectedIndex = 0;
         }
 
@@ -53,12 +59,50 @@ namespace CommandsEditor.Popups
 
             decalList.BeginUpdate();
             decalList.Items.Clear();
+            decalImageList.Images.Clear();
+            int iconSize = Math.Max(16, decalImageList.ImageSize.Width);
             foreach (string decal in _assetDefinition.Decals)
             {
-                Bitmap texture = Content.Level.Textures.Entries.FirstOrDefault(o => o.Name.ToUpper() == decal.ToUpper())?.ToBitmap();
-                decalList.Items.Add(new ListViewItem(decal)); //todo - show pic
+                Bitmap thumb = CreateDecalThumbnail(decal, iconSize);
+                try
+                {
+                    decalImageList.Images.Add(thumb);
+                    decalList.Items.Add(new ListViewItem(decal, decalImageList.Images.Count - 1));
+                }
+                finally
+                {
+                    thumb?.Dispose();
+                }
             }
             decalList.EndUpdate();
+        }
+
+        private Bitmap CreateDecalThumbnail(string decal, int iconSize)
+        {
+            Bitmap thumb = new Bitmap(iconSize, iconSize, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            Bitmap texture = Content.Level.Textures.Entries.FirstOrDefault(o => o.Name.ToUpper() == decal.ToUpper())?.ToBitmap();
+            if (texture != null && texture.Width > 0 && texture.Height > 0)
+            {
+                try
+                {
+                    using (var g = Graphics.FromImage(thumb))
+                    {
+                        g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                        g.DrawImage(texture, 0, 0, iconSize, iconSize);
+                    }
+                }
+                finally
+                {
+                    texture.Dispose();
+                }
+            }
+            else
+            {
+                texture?.Dispose();
+                using (var g = Graphics.FromImage(thumb))
+                    g.Clear(Color.LightGray);
+            }
+            return thumb;
         }
 
         private void SetColourPreview(ColourType colourType, ListView ui)
