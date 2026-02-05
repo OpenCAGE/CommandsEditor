@@ -380,6 +380,12 @@
     <Compile Include="Popups\Resource Editors\EditMaterial.Designer.cs">
       <DependentUpon>EditMaterial.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\Resource Editors\EditTexture.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\Resource Editors\EditTexture.Designer.cs">
+      <DependentUpon>EditTexture.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popups\SelectDestinationPin.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -806,6 +812,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\Resource Editors\EditMaterial.resx">
       <DependentUpon>EditMaterial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Resource Editors\EditTexture.resx">
+      <DependentUpon>EditTexture.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\SelectDestinationPin.resx">
       <DependentUpon>SelectDestinationPin.cs</DependentUpon>

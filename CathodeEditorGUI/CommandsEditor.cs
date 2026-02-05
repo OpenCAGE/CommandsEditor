@@ -89,7 +89,6 @@ namespace CommandsEditor
 #if !DEBUG
             DEBUG_ReloadLevel.Visible = false;
             connectToRuntimeUtils.Visible = false;
-            texturesToolStripMenuItem.Visible = false;
 #endif
 
             WindowState = SettingsManager.GetString(Singleton.Settings.WindowState, "Normal") == "Maximized" ? FormWindowState.Maximized : FormWindowState.Normal;
@@ -851,9 +850,22 @@ namespace CommandsEditor
             _materialMappingEditor = null;
         }
 
+        EditTexture _textureEditor = null;
         private void texturesToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (_textureEditor != null)
+            {
+                _textureEditor.FormClosed -= _textureEditor_FormClosed;
+                _textureEditor.Close();
+            }
 
+            _textureEditor = new EditTexture(null, false);
+            _textureEditor.Show();
+            _textureEditor.FormClosed += _textureEditor_FormClosed;
+        }
+        private void _textureEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _textureEditor = null;
         }
 
         private void toolStripButton3_Click(object sender, EventArgs e)

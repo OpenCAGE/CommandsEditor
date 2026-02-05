@@ -39,11 +39,25 @@ namespace CommandsEditor.Popups
             assetSetList.EndUpdate();
 
             this.Load += EditCharacterAssets_Load;
+            this.FormClosing += EditCharacterAssets_FormClosing;
         }
 
         private void EditCharacterAssets_Load(object sender, EventArgs e)
         {
             assetSetList.SelectedIndex = 0;
+        }
+
+        private void EditCharacterAssets_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            this.Load -= EditCharacterAssets_Load;
+            this.FormClosing -= EditCharacterAssets_FormClosing;
+
+            if (_selectTexture != null)
+            {
+                _selectTexture.OnTextureSelected -= OnDecalSelected;
+                _selectTexture.Close();
+                _selectTexture = null;
+            }
         }
 
         private void assetSetList_SelectedIndexChanged(object sender, EventArgs e)
@@ -176,10 +190,26 @@ namespace CommandsEditor.Popups
             }
         }
 
+        EditTexture _selectTexture = null;
         private void addNewDecal_Click(object sender, EventArgs e)
         {
-            //todo - pick texture
-            MessageBox.Show("This feature is coming soon!");
+            if (_selectTexture != null)
+            {
+                _selectTexture.OnTextureSelected -= OnDecalSelected;
+                _selectTexture.Close();
+                _selectTexture = null;
+            }
+            _selectTexture = new EditTexture();
+            _selectTexture.Show();
+            _selectTexture.OnTextureSelected += OnDecalSelected;
+        }
+        private void OnDecalSelected(Textures.TEX4 texture)
+        {
+            if (texture == null)
+                return;
+
+            _assetDefinition.Decals.Add(texture.Name);
+            ReloadUI();
         }
 
         private void removeSelectedDecal_Click(object sender, EventArgs e)

@@ -55,7 +55,7 @@
             this.modelRendererHost.Dock = System.Windows.Forms.DockStyle.Fill;
             this.modelRendererHost.Location = new System.Drawing.Point(3, 16);
             this.modelRendererHost.Name = "modelRendererHost";
-            this.modelRendererHost.Size = new System.Drawing.Size(484, 610);
+            this.modelRendererHost.Size = new System.Drawing.Size(483, 610);
             this.modelRendererHost.TabIndex = 0;
             this.modelRendererHost.Text = "elementHost1";
             this.modelRendererHost.Child = null;
@@ -82,7 +82,7 @@
             this.modelPreviewArea.Controls.Add(this.modelRendererHost);
             this.modelPreviewArea.Location = new System.Drawing.Point(3, 3);
             this.modelPreviewArea.Name = "modelPreviewArea";
-            this.modelPreviewArea.Size = new System.Drawing.Size(490, 629);
+            this.modelPreviewArea.Size = new System.Drawing.Size(489, 629);
             this.modelPreviewArea.TabIndex = 103;
             this.modelPreviewArea.TabStop = false;
             // 
@@ -101,7 +101,7 @@
             // 
             this.selectModelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.selectModelBtn.Enabled = false;
-            this.selectModelBtn.Location = new System.Drawing.Point(341, 579);
+            this.selectModelBtn.Location = new System.Drawing.Point(340, 579);
             this.selectModelBtn.Name = "selectModelBtn";
             this.selectModelBtn.Size = new System.Drawing.Size(134, 35);
             this.selectModelBtn.TabIndex = 1;
@@ -144,7 +144,7 @@
             // 
             this.splitContainer2.Panel2.Controls.Add(this.submeshFilterGroup);
             this.splitContainer2.Size = new System.Drawing.Size(701, 632);
-            this.splitContainer2.SplitterDistance = 496;
+            this.splitContainer2.SplitterDistance = 495;
             this.splitContainer2.SplitterWidth = 5;
             this.splitContainer2.TabIndex = 0;
             // 
@@ -154,7 +154,7 @@
             this.submeshFilterGroup.Dock = System.Windows.Forms.DockStyle.Fill;
             this.submeshFilterGroup.Location = new System.Drawing.Point(0, 0);
             this.submeshFilterGroup.Name = "submeshFilterGroup";
-            this.submeshFilterGroup.Size = new System.Drawing.Size(200, 632);
+            this.submeshFilterGroup.Size = new System.Drawing.Size(201, 632);
             this.submeshFilterGroup.TabIndex = 0;
             this.submeshFilterGroup.TabStop = false;
             this.submeshFilterGroup.Text = "Render Filter";
@@ -165,7 +165,7 @@
             this.submeshFilterPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.submeshFilterPanel.Location = new System.Drawing.Point(3, 16);
             this.submeshFilterPanel.Name = "submeshFilterPanel";
-            this.submeshFilterPanel.Size = new System.Drawing.Size(194, 613);
+            this.submeshFilterPanel.Size = new System.Drawing.Size(195, 613);
             this.submeshFilterPanel.TabIndex = 0;
             // 
             // EditModel
