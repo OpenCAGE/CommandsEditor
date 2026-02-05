@@ -2,6 +2,7 @@ using AlienPAK;
 using CATHODE;
 using CATHODE.Enums;
 using CommandsEditor.Popups.Base;
+using OpenCAGE;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -66,7 +67,7 @@ namespace CommandsEditor.Popups
                 try
                 {
                     decalImageList.Images.Add(thumb);
-                    decalList.Items.Add(new ListViewItem(decal, decalImageList.Images.Count - 1));
+                    decalList.Items.Add(new ListViewItem(decal, decalImageList.Images.Count - 1) { Tag = decal });
                 }
                 finally
                 {
@@ -120,49 +121,73 @@ namespace CommandsEditor.Popups
                     imageList.Images.Add(bmp);
                 }
                 int imageIndex = imageList.Images.Count - 1;
-                ui.Items.Add(new ListViewItem(string.Empty, imageIndex) { BackColor = c });
+                ui.Items.Add(new ListViewItem(string.Empty, imageIndex) { BackColor = c, Tag = colour });
             }
             ui.EndUpdate();
         }
 
         private void addNewPrimary_Click(object sender, EventArgs e)
         {
-
+            PickNewColour(ColourType.PRIMARY);
         }
 
         private void removeSelectedPrimary_Click(object sender, EventArgs e)
         {
-
+            if (primaryColourList.SelectedItems.Count == 0)
+                return;
+            _assetDefinition.Tints[ColourType.PRIMARY].Remove((Vector3)primaryColourList.SelectedItems[0].Tag);
+            ReloadUI();
         }
 
         private void addNewSecondary_Click(object sender, EventArgs e)
         {
-
+            PickNewColour(ColourType.SECONDARY);
         }
 
         private void removeSelectedSecondary_Click(object sender, EventArgs e)
         {
-
+            if (secondaryColourList.SelectedItems.Count == 0)
+                return;
+            _assetDefinition.Tints[ColourType.SECONDARY].Remove((Vector3)secondaryColourList.SelectedItems[0].Tag);
+            ReloadUI();
         }
 
         private void addNewTertiary_Click(object sender, EventArgs e)
         {
-
+            PickNewColour(ColourType.TERTIARY);
         }
 
         private void removeSelectedTertiary_Click(object sender, EventArgs e)
         {
+            if (tertiaryColourList.SelectedItems.Count == 0)
+                return;
+            _assetDefinition.Tints[ColourType.TERTIARY].Remove((Vector3)tertiaryColourList.SelectedItems[0].Tag);
+            ReloadUI();
+        }
 
+        private void PickNewColour(ColourType type)
+        {
+            ColorDialog colourPicker = new ColorDialog();
+            colourPicker.CustomColors = SettingsManager.GetIntegerArray(Singleton.Settings.CustomColours);
+            if (colourPicker.ShowDialog() == DialogResult.OK)
+            {
+                _assetDefinition.Tints[type].Add(new Vector3(colourPicker.Color.R / 255.0f, colourPicker.Color.G / 255.0f, colourPicker.Color.B / 255.0f));
+                ReloadUI();
+            }
         }
 
         private void addNewDecal_Click(object sender, EventArgs e)
         {
-
+            //todo - pick texture
+            MessageBox.Show("This feature is coming soon!");
         }
 
         private void removeSelectedDecal_Click(object sender, EventArgs e)
         {
-
+            if (decalList.SelectedItems.Count == 0)
+                return;
+            _assetDefinition.Decals.Remove((string)decalList.SelectedItems[0].Tag);
+            ReloadUI();
         }
 
         private void saveBtn_Click(object sender, EventArgs e)
