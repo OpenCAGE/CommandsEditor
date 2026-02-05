@@ -12,12 +12,12 @@ namespace CommandsEditor.Scripts
 {
     public static class MaterialApplier
     {
-        public static void ApplyMaterial(GeometryModel3D geometryModel, Materials.Material material, Textures textures)
+        public static void ApplyMaterial(GeometryModel3D geometryModel, Materials.Material material)
         {
             if (geometryModel == null || material == null || material.Shader == null)
                 return;
 
-            ImageBrush brush = GetDiffuseTextureBrush(material, textures);
+            ImageBrush brush = GetDiffuseTextureBrush(material);
             
             if (brush != null)
             {
@@ -49,7 +49,7 @@ namespace CommandsEditor.Scripts
             }
         }
 
-        private static ImageBrush GetDiffuseTextureBrush(Materials.Material material, Textures textures)
+        private static ImageBrush GetDiffuseTextureBrush(Materials.Material material)
         {
             int diffuseMap = -1;
             switch (material.Shader.Ubershader)

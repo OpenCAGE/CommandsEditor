@@ -3,6 +3,7 @@ using CATHODE.Enums;
 using CATHODE.Scripting;
 using CathodeLib;
 using CommandsEditor.DockPanels;
+using CommandsEditor.Popups;
 using CommandsEditor.Popups.Base;
 using OpenCAGE;
 using System;
@@ -53,6 +54,16 @@ namespace CommandsEditor
                 foleyTorso.Items.Add(entry);
 
             RefreshUI(ShortGuid.Invalid);
+
+            this.FormClosing += CharacterEditor_FormClosing;
+        }
+
+        private void CharacterEditor_FormClosing(object sender, System.Windows.Forms.FormClosingEventArgs e)
+        {
+            this.FormClosing -= CharacterEditor_FormClosing;
+
+            _assetEditor?.Close();
+            _assetEditor = null;
         }
 
         private void RefreshUI(ShortGuid selected)
@@ -258,6 +269,18 @@ namespace CommandsEditor
         private void foleyFootwear_SelectedIndexChanged(object sender, EventArgs e)
         {
             _accessories.foley.Footwear = (CHARACTER_FOLEY_SOUND)foleyLeg.SelectedIndex;
+        }
+
+        EditCharacterAssets _assetEditor = null;
+        private void editAssetTypes_Click(object sender, EventArgs e)
+        {
+            if (_assetEditor != null)
+            {
+                _assetEditor.Close();
+                _assetEditor = null;
+            }
+            _assetEditor = new EditCharacterAssets();
+            _assetEditor.Show();
         }
     }
 }

@@ -72,6 +72,7 @@
             this.characterInstances = new System.Windows.Forms.ComboBox();
             this.addNewCharacter = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.editAssetTypes = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -267,6 +268,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.editAssetTypes);
             this.groupBox2.Controls.Add(this.label15);
             this.groupBox2.Controls.Add(this.foleyFootwear);
             this.groupBox2.Controls.Add(this.label14);
@@ -451,7 +453,7 @@
             this.assetType.FormattingEnabled = true;
             this.assetType.Location = new System.Drawing.Point(19, 82);
             this.assetType.Name = "assetType";
-            this.assetType.Size = new System.Drawing.Size(302, 21);
+            this.assetType.Size = new System.Drawing.Size(223, 21);
             this.assetType.TabIndex = 19;
             this.assetType.SelectedIndexChanged += new System.EventHandler(this.shirtDecal_SelectedIndexChanged);
             // 
@@ -496,6 +498,16 @@
         "differently.");
             this.addNewCharacter.UseVisualStyleBackColor = true;
             this.addNewCharacter.Click += new System.EventHandler(this.addNewCharacter_Click);
+            // 
+            // editAssetTypes
+            // 
+            this.editAssetTypes.Location = new System.Drawing.Point(248, 81);
+            this.editAssetTypes.Name = "editAssetTypes";
+            this.editAssetTypes.Size = new System.Drawing.Size(77, 23);
+            this.editAssetTypes.TabIndex = 18;
+            this.editAssetTypes.Text = "Edit";
+            this.editAssetTypes.UseVisualStyleBackColor = true;
+            this.editAssetTypes.Click += new System.EventHandler(this.editAssetTypes_Click);
             // 
             // CharacterEditor
             // 
@@ -564,5 +576,6 @@
         private System.Windows.Forms.ComboBox voiceActor;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.ComboBox foleyFootwear;
+        private System.Windows.Forms.Button editAssetTypes;
     }
 }
