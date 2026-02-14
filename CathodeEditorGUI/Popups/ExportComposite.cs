@@ -25,7 +25,7 @@ namespace CommandsEditor
             InitializeComponent();
 
             levelList.BeginUpdate();
-            levelList.Items.AddRange(Level.GetLevels(SharedData.pathToAI, true).ToArray());
+            levelList.Items.AddRange(Level.GetLevels(SharedData.pathToAI).ToArray());
             levelList.Items.Remove(Content.Level.Name);
             levelList.EndUpdate();
 
