@@ -205,7 +205,7 @@ namespace CommandsEditor
             UpdateTitle();
 
             //Populate level list
-            List<string> levels = Level.GetLevels(SharedData.pathToAI, true);
+            List<string> levels = Level.GetLevels(SharedData.pathToAI);
             for (int i = 0; i < levels.Count; i++)
             {
                 ToolStripMenuItem levelItem = new ToolStripMenuItem(levels[i]);

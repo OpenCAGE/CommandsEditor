@@ -23,7 +23,7 @@ namespace CommandsEditor.Popups
             InitializeComponent();
 
             env_list.BeginUpdate();
-            env_list.Items.AddRange(Level.GetLevels(SharedData.pathToAI, true).ToArray());
+            env_list.Items.AddRange(Level.GetLevels(SharedData.pathToAI).ToArray());
             env_list.EndUpdate();
 
             if (env_list.Items.Contains("PRODUCTION/FRONTEND")) 

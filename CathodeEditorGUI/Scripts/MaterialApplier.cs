@@ -1,27 +1,119 @@
-using AlienPAK;
 using CATHODE;
 using CATHODE.ShaderTypes;
-using CathodeLib;
-using OpenCAGE;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 
-namespace CommandsEditor.Scripts
+namespace AlienPAK
 {
+
     public static class MaterialApplier
     {
+        public static Textures.TEX4 GetDiffuseTexture(Materials.Material material)
+        {
+            if (material == null || material.Shader == null) return null;
+            int diffuseMap = GetDiffuseMapSamplerIndex(material.Shader);
+            if (diffuseMap == -1 || diffuseMap >= material.Shader.SamplerRemaps.Count) return null;
+            int diffuseMapIndex = material.Shader.SamplerRemaps[diffuseMap];
+            if (diffuseMapIndex == 255 || diffuseMapIndex >= material.TextureReferences.Count) return null;
+            return material.TextureReferences[diffuseMapIndex]?.Texture;
+        }
+
+        public static Textures.TEX4 GetNormalMapTexture(Materials.Material material)
+        {
+            if (material == null || material.Shader == null) return null;
+            int normalMap = GetNormalMapSamplerIndex(material.Shader);
+            if (normalMap == -1 || normalMap >= material.Shader.SamplerRemaps.Count) return null;
+            int normalMapIndex = material.Shader.SamplerRemaps[normalMap];
+            if (normalMapIndex == 255 || normalMapIndex >= material.TextureReferences.Count) return null;
+            return material.TextureReferences[normalMapIndex]?.Texture;
+        }
+
+        public static void GetDiffuseTintForExport(Materials.Material material, out float r, out float g, out float b)
+        {
+            r = g = b = 1.0f;
+            if (material == null || material.Shader == null) return;
+            System.Windows.Media.Color c = GetDiffuseTint(material);
+            r = c.R / 255f;
+            g = c.G / 255f;
+            b = c.B / 255f;
+        }
+
+        private static int GetDiffuseMapSamplerIndex(Shaders.Shader shader)
+        {
+            switch (shader.Ubershader)
+            {
+                case SHADER_LIST.CA_ENVIRONMENT: return (int)CA_ENVIRONMENT.SAMPLERS.DIFFUSE_MAP;
+                case SHADER_LIST.CA_DECAL_ENVIRONMENT: return (int)CA_DECAL_ENVIRONMENT.SAMPLERS.DIFFUSE_MAP;
+                case SHADER_LIST.CA_CHARACTER: return (int)CA_CHARACTER.SAMPLERS.DIFFUSE_MAP;
+                case SHADER_LIST.CA_SKIN: return (int)CA_SKIN.SAMPLERS.DIFFUSE_MAP;
+                case SHADER_LIST.CA_HAIR: return (int)CA_HAIR.SAMPLERS.DIFFUSE_MAP;
+                case SHADER_LIST.CA_EYE: return (int)CA_EYE.SAMPLERS.IRIS_MAP;
+                case SHADER_LIST.CA_SKIN_OCCLUSION: return (int)CA_SKIN_OCCLUSION.SAMPLERS.DIFFUSE_MAP;
+                case SHADER_LIST.CA_DECAL: return (int)CA_DECAL.SAMPLERS.DIFFUSE_MAP;
+                case SHADER_LIST.CA_FOGPLANE: return (int)CA_FOGPLANE.SAMPLERS.DIFFUSE_MAP_0;
+                case SHADER_LIST.CA_EFFECT: return (int)CA_EFFECT.SAMPLERS.DIFFUSE_MAP_0;
+                case SHADER_LIST.CA_LIQUID_ENVIRONMENT: return (int)CA_LIQUID_ENVIRONMENT.SAMPLERS.LIQUIFLOW_DISTORTION_MAP;
+                case SHADER_LIST.CA_LIQUID_CHARACTER: return (int)CA_LIQUID_CHARACTER.SAMPLERS.LIQUIFLOW_DISTORTION_MAP;
+                case SHADER_LIST.CA_SKYDOME: return (int)CA_SKYDOME.SAMPLERS.SKYDOME_MAP;
+                case SHADER_LIST.CA_SURFACE_EFFECTS: return (int)CA_SURFACE_EFFECTS.SAMPLERS.DIFFUSE_MAP;
+                case SHADER_LIST.CA_EFFECT_OVERLAY: return (int)CA_EFFECT_OVERLAY.SAMPLERS.TEXTURE_MAP;
+                case SHADER_LIST.CA_TERRAIN: return (int)CA_TERRAIN.SAMPLERS.DIFFUSE_MAP;
+                case SHADER_LIST.CA_PLANET: return (int)CA_PLANET.SAMPLERS.TERRAIN_MAP;
+                case SHADER_LIST.CA_LIGHTMAP_ENVIRONMENT: return (int)CA_LIGHTMAP_ENVIRONMENT.SAMPLERS.DIFFUSE_MAP;
+                case SHADER_LIST.CA_STREAMER: return (int)CA_STREAMER.SAMPLERS.DIFFUSE_MAP;
+                case SHADER_LIST.CA_LOW_LOD_CHARACTER: return (int)CA_LOW_LOD_CHARACTER.SAMPLERS.DIFFUSE_MAP;
+                case SHADER_LIST.CA_CAMERA_MAP: return (int)CA_CAMERA_MAP.SAMPLERS.DIFFUSE_MAP;
+                default: return -1;
+            }
+        }
+
+        private static int GetNormalMapSamplerIndex(Shaders.Shader shader)
+        {
+            switch (shader.Ubershader)
+            {
+                case SHADER_LIST.CA_ENVIRONMENT: return (int)CA_ENVIRONMENT.SAMPLERS.NORMAL_MAP;
+                case SHADER_LIST.CA_DECAL_ENVIRONMENT: return (int)CA_DECAL_ENVIRONMENT.SAMPLERS.NORMAL_MAP;
+                case SHADER_LIST.CA_CHARACTER: return (int)CA_CHARACTER.SAMPLERS.NORMAL_MAP;
+                case SHADER_LIST.CA_SKIN: return (int)CA_SKIN.SAMPLERS.NORMAL_MAP;
+                case SHADER_LIST.CA_HAIR: return (int)CA_HAIR.SAMPLERS.NORMAL_MAP;
+                case SHADER_LIST.CA_DECAL: return (int)CA_DECAL.SAMPLERS.NORMAL_MAP;
+                case SHADER_LIST.CA_SURFACE_EFFECTS: return (int)CA_SURFACE_EFFECTS.SAMPLERS.NORMAL_MAP;
+                case SHADER_LIST.CA_TERRAIN: return (int)CA_TERRAIN.SAMPLERS.NORMAL_MAP;
+                case SHADER_LIST.CA_LIGHTMAP_ENVIRONMENT: return (int)CA_LIGHTMAP_ENVIRONMENT.SAMPLERS.NORMAL_MAP;
+                case SHADER_LIST.CA_STREAMER: return (int)CA_STREAMER.SAMPLERS.NORMAL_MAP;
+                case SHADER_LIST.CA_LOW_LOD_CHARACTER: return (int)CA_LOW_LOD_CHARACTER.SAMPLERS.NORMAL_MAP;
+                case SHADER_LIST.CA_LIQUID_ENVIRONMENT: return (int)CA_LIQUID_ENVIRONMENT.SAMPLERS.NORMAL_MAP;
+                case SHADER_LIST.CA_LIQUID_CHARACTER: return (int)CA_LIQUID_CHARACTER.SAMPLERS.NORMAL_MAP;
+                default: return -1;
+            }
+        }
+
         public static void ApplyMaterial(GeometryModel3D geometryModel, Materials.Material material)
         {
             if (geometryModel == null || material == null || material.Shader == null)
                 return;
 
             ImageBrush brush = GetDiffuseTextureBrush(material);
-            
+
             if (brush != null)
             {
                 System.Windows.Media.Color tintColor = GetDiffuseTint(material);
+                if (!IsColorTransparentOrWhite(tintColor))
+                {
+                    ImageSource tintedSource = ApplyTintToImageSource(brush.ImageSource, tintColor);
+                    if (tintedSource != null)
+                    {
+                        brush = new ImageBrush(tintedSource);
+                        tintColor = System.Windows.Media.Colors.White;
+                    }
+                }
 
                 float uvScale = GetDiffuseUvScale(material);
                 if (geometryModel.Geometry is MeshGeometry3D meshGeometry && meshGeometry.TextureCoordinates != null)
@@ -32,7 +124,7 @@ namespace CommandsEditor.Scripts
                         scaledUVs.Add(new System.Windows.Point(uv.X * uvScale, uv.Y * uvScale));
                     }
                     meshGeometry.TextureCoordinates = scaledUVs;
-                    
+
                     brush.TileMode = TileMode.Tile;
                     brush.Viewport = new Rect(0, 0, 1, 1);
                     brush.ViewportUnits = BrushMappingMode.Absolute;
@@ -46,91 +138,74 @@ namespace CommandsEditor.Scripts
 
                 Material mat = CreateMaterialWithEffects(brush, material, tintColor);
                 SetMaterialsWithBackface(geometryModel, mat);
+
+                ImageBrush normalMapBrush = GetNormalMapTextureBrush(material);
+                if (normalMapBrush != null)
+                {
+                    normalMapBrush.TileMode = TileMode.Tile;
+                    normalMapBrush.Viewport = new Rect(0, 0, 1, 1);
+                    normalMapBrush.ViewportUnits = BrushMappingMode.Absolute;
+                    SetMaterialTextureBrushes(geometryModel, new MaterialTextureBrushes { DiffuseBrush = brush, NormalMapBrush = normalMapBrush });
+                }
             }
+        }
+
+        public class MaterialTextureBrushes
+        {
+            public ImageBrush DiffuseBrush { get; set; }
+            public ImageBrush NormalMapBrush { get; set; }
+        }
+
+        public static readonly DependencyProperty MaterialTextureBrushesProperty = DependencyProperty.RegisterAttached("MaterialTextureBrushes", typeof(MaterialTextureBrushes), typeof(MaterialApplier), new PropertyMetadata(null));
+        public static void SetMaterialTextureBrushes(Model3D element, MaterialTextureBrushes value) { element?.SetValue(MaterialTextureBrushesProperty, value); }
+        public static MaterialTextureBrushes GetMaterialTextureBrushes(Model3D element) { return (MaterialTextureBrushes)(element?.GetValue(MaterialTextureBrushesProperty)); }
+
+        public static ImageBrush GetNormalMapTextureBrush(Materials.Material material)
+        {
+            Textures.TEX4 tex = GetNormalMapTexture(material);
+            ImageSource imageSource = tex?.ToDDS()?.ToBitmap()?.ToImageSource();
+            return imageSource != null ? new ImageBrush(imageSource) : null;
         }
 
         private static ImageBrush GetDiffuseTextureBrush(Materials.Material material)
         {
-            int diffuseMap = -1;
-            switch (material.Shader.Ubershader)
+            Textures.TEX4 tex = GetDiffuseTexture(material);
+            ImageSource imageSource = tex?.ToDDS()?.ToBitmap()?.ToImageSource();
+            return imageSource != null ? new ImageBrush(imageSource) : null;
+        }
+
+        private static ImageSource ApplyTintToImageSource(ImageSource source, System.Windows.Media.Color tint)
+        {
+            if (source == null) return null;
+            BitmapSource bitmap = source as BitmapSource;
+            if (bitmap == null) return source;
+
+            if (bitmap.Format != System.Windows.Media.PixelFormats.Bgra32)
             {
-                case SHADER_LIST.CA_ENVIRONMENT:
-                    diffuseMap = (int)CA_ENVIRONMENT.SAMPLERS.DIFFUSE_MAP;
-                    break;
-                case SHADER_LIST.CA_DECAL_ENVIRONMENT:
-                    diffuseMap = (int)CA_DECAL_ENVIRONMENT.SAMPLERS.DIFFUSE_MAP;
-                    break;
-                case SHADER_LIST.CA_CHARACTER:
-                    diffuseMap = (int)CA_CHARACTER.SAMPLERS.DIFFUSE_MAP;
-                    break;
-                case SHADER_LIST.CA_SKIN:
-                    diffuseMap = (int)CA_SKIN.SAMPLERS.DIFFUSE_MAP;
-                    break;
-                case SHADER_LIST.CA_HAIR:
-                    diffuseMap = (int)CA_HAIR.SAMPLERS.DIFFUSE_MAP;
-                    break;
-                case SHADER_LIST.CA_EYE:
-                    diffuseMap = (int)CA_EYE.SAMPLERS.IRIS_MAP;
-                    break;
-                case SHADER_LIST.CA_SKIN_OCCLUSION:
-                    diffuseMap = (int)CA_SKIN_OCCLUSION.SAMPLERS.DIFFUSE_MAP;
-                    break;
-                case SHADER_LIST.CA_DECAL:
-                    diffuseMap = (int)CA_DECAL.SAMPLERS.DIFFUSE_MAP;
-                    break;
-                case SHADER_LIST.CA_FOGPLANE:
-                    diffuseMap = (int)CA_FOGPLANE.SAMPLERS.DIFFUSE_MAP_0;
-                    break;
-                case SHADER_LIST.CA_EFFECT:
-                    diffuseMap = (int)CA_EFFECT.SAMPLERS.DIFFUSE_MAP_0;
-                    break;
-                case SHADER_LIST.CA_LIQUID_ENVIRONMENT:
-                    diffuseMap = (int)CA_LIQUID_ENVIRONMENT.SAMPLERS.LIQUIFLOW_DISTORTION_MAP;
-                    break;
-                case SHADER_LIST.CA_LIQUID_CHARACTER:
-                    diffuseMap = (int)CA_LIQUID_CHARACTER.SAMPLERS.LIQUIFLOW_DISTORTION_MAP;
-                    break;
-                case SHADER_LIST.CA_SKYDOME:
-                    diffuseMap = (int)CA_SKYDOME.SAMPLERS.SKYDOME_MAP;
-                    break;
-                case SHADER_LIST.CA_SURFACE_EFFECTS:
-                    diffuseMap = (int)CA_SURFACE_EFFECTS.SAMPLERS.DIFFUSE_MAP;
-                    break;
-                case SHADER_LIST.CA_EFFECT_OVERLAY:
-                    diffuseMap = (int)CA_EFFECT_OVERLAY.SAMPLERS.TEXTURE_MAP;
-                    break;
-                case SHADER_LIST.CA_TERRAIN:
-                    diffuseMap = (int)CA_TERRAIN.SAMPLERS.DIFFUSE_MAP;
-                    break;
-                case SHADER_LIST.CA_PLANET:
-                    diffuseMap = (int)CA_PLANET.SAMPLERS.TERRAIN_MAP;
-                    break;
-                case SHADER_LIST.CA_LIGHTMAP_ENVIRONMENT:
-                    diffuseMap = (int)CA_LIGHTMAP_ENVIRONMENT.SAMPLERS.DIFFUSE_MAP;
-                    break;
-                case SHADER_LIST.CA_STREAMER:
-                    diffuseMap = (int)CA_STREAMER.SAMPLERS.DIFFUSE_MAP;
-                    break;
-                case SHADER_LIST.CA_LOW_LOD_CHARACTER:
-                    diffuseMap = (int)CA_LOW_LOD_CHARACTER.SAMPLERS.DIFFUSE_MAP;
-                    break;
-                case SHADER_LIST.CA_CAMERA_MAP:
-                    diffuseMap = (int)CA_CAMERA_MAP.SAMPLERS.DIFFUSE_MAP;
-                    break;
+                var converted = new FormatConvertedBitmap(bitmap, System.Windows.Media.PixelFormats.Bgra32, null, 0);
+                converted.Freeze();
+                bitmap = converted;
             }
 
-            if (diffuseMap != -1 && diffuseMap < material.Shader.SamplerRemaps.Count)
+            int w = bitmap.PixelWidth;
+            int h = bitmap.PixelHeight;
+            int stride = (w * 4 + 3) & ~3;
+            byte[] pixels = new byte[h * stride];
+            bitmap.CopyPixels(pixels, stride, 0);
+
+            float tr = tint.R / 255f, tg = tint.G / 255f, tb = tint.B / 255f, ta = tint.A / 255f;
+            for (int i = 0; i < pixels.Length; i += 4)
             {
-                int diffuseMapIndex = material.Shader.SamplerRemaps[diffuseMap];
-                if (diffuseMapIndex != 255 && diffuseMapIndex < material.TextureReferences.Count)
-                {
-                    ImageSource imageSource = material.TextureReferences[diffuseMapIndex]?.Texture?.ToDDS()?.ToBitmap()?.ToImageSource();
-                    if (imageSource != null)
-                        return new ImageBrush(imageSource);
-                }
+                pixels[i] = (byte)Math.Max(0, Math.Min(255, (int)(pixels[i] * tb)));
+                pixels[i + 1] = (byte)Math.Max(0, Math.Min(255, (int)(pixels[i + 1] * tg)));
+                pixels[i + 2] = (byte)Math.Max(0, Math.Min(255, (int)(pixels[i + 2] * tr)));
+                pixels[i + 3] = (byte)Math.Max(0, Math.Min(255, (int)(pixels[i + 3] * ta)));
             }
 
-            return null;
+            var result = new WriteableBitmap(w, h, bitmap.DpiX, bitmap.DpiY, System.Windows.Media.PixelFormats.Bgra32, null);
+            result.WritePixels(new Int32Rect(0, 0, w, h), pixels, stride, 0);
+            result.Freeze();
+            return result;
         }
 
         private static float GetDiffuseUvScale(Materials.Material material)
@@ -304,7 +379,7 @@ namespace CommandsEditor.Scripts
 
             if (needsTinting)
             {
-                float tintIntensity = 0.15f; 
+                float tintIntensity = 0.15f;
                 System.Windows.Media.Color emissiveTint = System.Windows.Media.Color.FromArgb(
                     (byte)(diffuseTintColor.A * 0.5f),
                     (byte)Math.Min(255, (int)(diffuseTintColor.R * tintIntensity)),
@@ -323,7 +398,7 @@ namespace CommandsEditor.Scripts
 
                 if (emissiveMult <= 0)
                     emissiveMult = 1.0f;
-                
+
                 emissiveMult = Math.Min(emissiveMult, 3.0f);
 
                 System.Windows.Media.Color finalEmissive = System.Windows.Media.Color.FromArgb(
@@ -339,11 +414,11 @@ namespace CommandsEditor.Scripts
 
             return materialGroup;
         }
-        
+
         private static void SetMaterialsWithBackface(GeometryModel3D geometryModel, Material frontMaterial)
         {
             geometryModel.Material = frontMaterial;
-            
+
             if (frontMaterial is DiffuseMaterial frontDiffuse)
             {
                 DiffuseMaterial backMaterial = new DiffuseMaterial(frontDiffuse.Brush);
@@ -496,4 +571,3 @@ namespace CommandsEditor.Scripts
         }
     }
 }
-
