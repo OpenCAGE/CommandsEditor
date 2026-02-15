@@ -217,7 +217,7 @@ namespace CommandsEditor
                     Level.MaterialMappings = null;
                     Level.RenderableElements = null;
                     Level.PathBarrierResources = null;
-                    Level.SoundFlashModels = null;
+                    //Level.SoundFlashModels = null;
                     Level.RadInstanceMap = null;
                     Level.AlphaLight = null;
                     Level.AccessorySets = null;

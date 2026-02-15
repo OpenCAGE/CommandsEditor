@@ -55,6 +55,8 @@ namespace CommandsEditor
             this.entityDisplayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showEntityIDs = new System.Windows.Forms.ToolStripMenuItem();
             this.populateAllNodePinsWhenCreatedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.setNodeColoursToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showConfirmationWhenDeletingNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.giveOptionToDeleteEntityWhenNoNodesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.miscToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showConfirmationWhenSavingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -75,8 +77,7 @@ namespace CommandsEditor
             this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
             this.vS2015DarkTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme();
             this.vS2015LightTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
-            this.setNodeColoursToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.showConfirmationWhenDeletingNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.galaxyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -130,7 +131,8 @@ namespace CommandsEditor
             this.modelsToolStripMenuItem,
             this.materialsToolStripMenuItem,
             this.materialMappingsToolStripMenuItem,
-            this.texturesToolStripMenuItem});
+            this.texturesToolStripMenuItem,
+            this.galaxyToolStripMenuItem});
             this.toolStripButton3.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton3.Image")));
             this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton3.Name = "toolStripButton3";
@@ -191,7 +193,7 @@ namespace CommandsEditor
             this.focusOnSelectedToolStripMenuItem,
             this.connectToRuntimeUtils});
             this.levelViewerToolStripMenuItem.Name = "levelViewerToolStripMenuItem";
-            this.levelViewerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.levelViewerToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.levelViewerToolStripMenuItem.Text = "Level Viewer";
             // 
             // setUpToolStripMenuItem
@@ -243,7 +245,7 @@ namespace CommandsEditor
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(170, 6);
             // 
             // compositeViewerToolStripMenuItem
             // 
@@ -252,7 +254,7 @@ namespace CommandsEditor
             this.autoHideExplorerViewToolStripMenuItem,
             this.searchOnlyCompositeNames});
             this.compositeViewerToolStripMenuItem.Name = "compositeViewerToolStripMenuItem";
-            this.compositeViewerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.compositeViewerToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.compositeViewerToolStripMenuItem.Text = "Composite Display";
             // 
             // showExplorerViewToolStripMenuItem
@@ -290,7 +292,7 @@ namespace CommandsEditor
             this.showConfirmationWhenDeletingNodeToolStripMenuItem,
             this.giveOptionToDeleteEntityWhenNoNodesToolStripMenuItem});
             this.entityDisplayToolStripMenuItem.Name = "entityDisplayToolStripMenuItem";
-            this.entityDisplayToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.entityDisplayToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.entityDisplayToolStripMenuItem.Text = "Entity Display";
             // 
             // showEntityIDs
@@ -307,6 +309,20 @@ namespace CommandsEditor
             this.populateAllNodePinsWhenCreatedToolStripMenuItem.Size = new System.Drawing.Size(312, 22);
             this.populateAllNodePinsWhenCreatedToolStripMenuItem.Text = "Populate All Node Pins When Created";
             this.populateAllNodePinsWhenCreatedToolStripMenuItem.Click += new System.EventHandler(this.populateAllNodePinsWhenCreatedToolStripMenuItem_Click);
+            // 
+            // setNodeColoursToolStripMenuItem
+            // 
+            this.setNodeColoursToolStripMenuItem.Name = "setNodeColoursToolStripMenuItem";
+            this.setNodeColoursToolStripMenuItem.Size = new System.Drawing.Size(312, 22);
+            this.setNodeColoursToolStripMenuItem.Text = "Set Node Colours";
+            this.setNodeColoursToolStripMenuItem.Click += new System.EventHandler(this.setNodeColoursToolStripMenuItem_Click);
+            // 
+            // showConfirmationWhenDeletingNodeToolStripMenuItem
+            // 
+            this.showConfirmationWhenDeletingNodeToolStripMenuItem.Name = "showConfirmationWhenDeletingNodeToolStripMenuItem";
+            this.showConfirmationWhenDeletingNodeToolStripMenuItem.Size = new System.Drawing.Size(312, 22);
+            this.showConfirmationWhenDeletingNodeToolStripMenuItem.Text = "Show Confirmation When Deleting Node";
+            this.showConfirmationWhenDeletingNodeToolStripMenuItem.Click += new System.EventHandler(this.showConfirmationWhenDeletingNodeToolStripMenuItem_Click);
             // 
             // giveOptionToDeleteEntityWhenNoNodesToolStripMenuItem
             // 
@@ -327,7 +343,7 @@ namespace CommandsEditor
             this.savePAKAndBINToolStripMenuItem,
             this.openGameOnSaveToolStripMenuItem});
             this.miscToolStripMenuItem.Name = "miscToolStripMenuItem";
-            this.miscToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.miscToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.miscToolStripMenuItem.Text = "Misc";
             // 
             // showConfirmationWhenSavingToolStripMenuItem
@@ -450,19 +466,12 @@ namespace CommandsEditor
             this.dockPanel.TabIndex = 5;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
             // 
-            // setNodeColoursToolStripMenuItem
+            // galaxyToolStripMenuItem
             // 
-            this.setNodeColoursToolStripMenuItem.Name = "setNodeColoursToolStripMenuItem";
-            this.setNodeColoursToolStripMenuItem.Size = new System.Drawing.Size(312, 22);
-            this.setNodeColoursToolStripMenuItem.Text = "Set Node Colours";
-            this.setNodeColoursToolStripMenuItem.Click += new System.EventHandler(this.setNodeColoursToolStripMenuItem_Click);
-            // 
-            // showConfirmationWhenDeletingNodeToolStripMenuItem
-            // 
-            this.showConfirmationWhenDeletingNodeToolStripMenuItem.Name = "showConfirmationWhenDeletingNodeToolStripMenuItem";
-            this.showConfirmationWhenDeletingNodeToolStripMenuItem.Size = new System.Drawing.Size(312, 22);
-            this.showConfirmationWhenDeletingNodeToolStripMenuItem.Text = "Show Confirmation When Deleting Node";
-            this.showConfirmationWhenDeletingNodeToolStripMenuItem.Click += new System.EventHandler(this.showConfirmationWhenDeletingNodeToolStripMenuItem_Click);
+            this.galaxyToolStripMenuItem.Name = "galaxyToolStripMenuItem";
+            this.galaxyToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.galaxyToolStripMenuItem.Text = "Galaxy";
+            this.galaxyToolStripMenuItem.Click += new System.EventHandler(this.galaxyToolStripMenuItem_Click);
             // 
             // CommandsEditor
             // 
@@ -535,5 +544,6 @@ namespace CommandsEditor
         private System.Windows.Forms.ToolStripMenuItem texturesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem setNodeColoursToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem showConfirmationWhenDeletingNodeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem galaxyToolStripMenuItem;
     }
 }
