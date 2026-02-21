@@ -193,11 +193,9 @@ namespace CommandsEditor.Popups
 
             Content.Level.GalaxyDefinition.Name = textBoxName.Text ?? "";
             Content.Level.GalaxyDefinition.StarCount = (int)numericUpDown1.Value;
-            Content.Level.GalaxyDefinition.Save();
-            Content.Level.GalaxyItems.Generate(Content.Level.GalaxyDefinition);
-            Content.Level.GalaxyItems.Save();
-
-            MessageBox.Show("Successfully regenerated galaxy!", "Galaxy Generated", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            
+            if (Content.Level.GalaxyItems.Generate(Content.Level.GalaxyDefinition))
+                MessageBox.Show("Successfully regenerated galaxy!", "Galaxy Generated", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }
