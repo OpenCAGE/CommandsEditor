@@ -868,12 +868,31 @@ namespace CommandsEditor
             _textureEditor = null;
         }
 
+        GalaxyEditor _galaxyEditor = null;
+        private void galaxyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_galaxyEditor != null)
+            {
+                _galaxyEditor.FormClosed -= _galaxyEditor_FormClosed;
+                _galaxyEditor.Close();
+            }
+
+            _galaxyEditor = new GalaxyEditor();
+            _galaxyEditor.Show();
+            _galaxyEditor.FormClosed += _galaxyEditor_FormClosed;
+        }
+        private void _galaxyEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _galaxyEditor = null;
+        }
+
         private void toolStripButton3_Click(object sender, EventArgs e)
         {
             modelsToolStripMenuItem.Enabled = _commandsDisplay?.Content?.Level != null;
             materialsToolStripMenuItem.Enabled = _commandsDisplay?.Content?.Level != null;
             materialMappingsToolStripMenuItem.Enabled = _commandsDisplay?.Content?.Level != null;
             texturesToolStripMenuItem.Enabled = _commandsDisplay?.Content?.Level != null;
+            galaxyToolStripMenuItem.Enabled = _commandsDisplay?.Content?.Level != null;
         }
 
         SetNodeColours _setNodeColours;

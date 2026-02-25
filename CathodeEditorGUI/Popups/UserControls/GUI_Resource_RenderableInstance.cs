@@ -157,6 +157,7 @@ namespace CommandsEditor.Popups.UserControls
                 //NOTE: Currently only remapping TOP LOD materials. Wrong wrong wrong!!
                 reds[i].Material = _selectedMaterials[i];
             }
+            Content.Level.RenderableElements.Entries.AddRange(reds);
             return reds;
         }
 

@@ -332,6 +332,12 @@
     <Compile Include="Popups\EditCharacterAssets.Designer.cs">
       <DependentUpon>EditCharacterAssets.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\GalaxyEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\GalaxyEditor.Designer.cs">
+      <DependentUpon>GalaxyEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popups\Resource Editors\EditMaterialMapping.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -785,6 +791,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\EditCharacterAssets.resx">
       <DependentUpon>EditCharacterAssets.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\GalaxyEditor.resx">
+      <DependentUpon>GalaxyEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\Resource Editors\EditMaterialMapping.resx">
       <DependentUpon>EditMaterialMapping.cs</DependentUpon>

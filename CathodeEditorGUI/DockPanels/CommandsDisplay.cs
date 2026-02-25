@@ -1,4 +1,4 @@
-﻿using CATHODE.Scripting;
+using CATHODE.Scripting;
 using CATHODE;
 using System;
 using System.Collections.Generic;
@@ -141,6 +141,9 @@ namespace CommandsEditor.DockPanels
                 treeView1.Nodes.Clear();
             }
 
+            _compositeDisplay?.Close();
+            _renderer?.Close();
+
             _content?.Dispose();
             _content = null;
 
@@ -148,9 +151,6 @@ namespace CommandsEditor.DockPanels
             _treeUtility = null;
 
             _prevTaskToken?.Cancel();
-
-            _compositeDisplay?.Close();
-            _renderer?.Close();
 
             _addCompositeDialog?.Close();
             _addFolderDialog?.Close();
