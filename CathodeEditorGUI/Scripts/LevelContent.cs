@@ -1,4 +1,4 @@
-﻿using CATHODE;
+using CATHODE;
 using CATHODE.EXPERIMENTAL;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
@@ -150,94 +150,13 @@ namespace CommandsEditor
                 {
                     Level.OnLoadTick = null;
                     Level.OnSaveTick = null;
-                    
-                    if (Level.Textures != null)
-                    {
-                        foreach (var tex in Level.Textures.Entries)
-                        {
-                            if (tex?.TexturePersistent?.Content != null)
-                                tex.TexturePersistent.Content = null;
-                            if (tex?.TextureStreamed?.Content != null)
-                                tex.TextureStreamed.Content = null;
-                        }
-                        Level.Textures.Entries.Clear();
-                    }
-                    
-                    if (Level.Models != null)
-                    {
-                        foreach (var model in Level.Models.Entries)
-                        {
-                            foreach (var component in model?.Components ?? new List<CATHODE.Models.CS2.Component>())
-                            {
-                                foreach (var lod in component?.LODs ?? new List<CATHODE.Models.CS2.Component.LOD>())
-                                {
-                                    foreach (var submesh in lod?.Submeshes ?? new List<CATHODE.Models.CS2.Component.LOD.Submesh>())
-                                    {
-                                        if (submesh?.Data != null)
-                                            submesh.Data = null;
-                                    }
-                                }
-                            }
-                        }
-                        Level.Models.Entries.Clear();
-                    }
-                    
-                    if (Level.Shaders != null)
-                    {
-                        foreach (var shader in Level.Shaders.Entries)
-                        {
-                            if (shader != null)
-                            {
-                                shader.VertexShader = null;
-                                shader.PixelShader = null;
-                                shader.HullShader = null;
-                                shader.DomainShader = null;
-                                shader.GeometryShader = null;
-                                shader.ComputeShader = null;
-                            }
-                        }
-                        Level.Shaders.Entries.Clear();
-                    }
-                    
-                    Level.Commands = null;
-                    Level.Models = null;
-                    Level.Materials = null;
-                    Level.Textures = null;
-                    Level.Shaders = null;
-                    Level.Resources = null;
-                    Level.Movers = null;
-                    Level.CollisionMaps = null;
-                    Level.EnvironmentMaps = null;
-                    Level.Lights = null;
-                    Level.SoundEventData = null;
-                    Level.SoundBankData = null;
-                    Level.WeightedCollisions = null;
-                    Level.MorphTargetDB = null;
-                    Level.MaterialMaps = null;
-                    Level.MaterialMappings = null;
-                    Level.RenderableElements = null;
-                    Level.PathBarrierResources = null;
-                    //Level.SoundFlashModels = null;
-                    Level.RadInstanceMap = null;
-                    Level.AlphaLight = null;
-                    Level.AccessorySets = null;
-                    Level.EnvironmentAnimations = null;
-                    Level.PhysicsMaps = null;
-                    Level.SoundNodeNetwork = null;
-                    Level.SoundDialogueLookups = null;
-                    Level.SoundEnvironmentData = null;
-                    Level.SoundLoadZones = null;
-                    Level.StateResources?.Clear();
-                    Level.StateResources = null;
-                    Level.Strings?.Clear();
-                    Level.Strings = null;
-                    
                     Level = null;
                 }
                 
                 GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true);
                 GC.WaitForPendingFinalizers();
                 GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true);
+                GC.WaitForPendingFinalizers();
             }
 
             _disposed = true;
