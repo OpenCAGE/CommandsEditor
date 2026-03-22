@@ -1,5 +1,6 @@
 using CATHODE;
 using CATHODE.Scripting;
+using CATHODE.Scripting.Internal;
 using CathodeLib;
 using CathodeLib.ObjectExtensions;
 using CommandsEditor.DockPanels;
@@ -16,7 +17,8 @@ namespace CommandsEditor
 {
     public partial class ExportComposite : BaseWindow
     {
-        Composite _composite;
+        private Composite _composite;
+        private CompositeFlowgraphTable _fgLayouts;
 
         public ExportComposite(Composite composite, bool canExportChildren) : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
@@ -49,6 +51,8 @@ namespace CommandsEditor
             {
                 Log("Loading data for " + levelList.SelectedItem.ToString() + "...");
                 Level lvl = new Level(SharedData.pathToAI + "/DATA/ENV/" + levelList.SelectedItem.ToString(), Singleton.Global);
+                _fgLayouts = (CompositeFlowgraphTable)CustomTable.ReadTable(lvl.Commands.Filepath, CustomTableType.COMPOSITE_FLOWGRAPHS);
+                if (_fgLayouts == null) _fgLayouts = new CompositeFlowgraphTable();
 
                 Log("Starting export...");
                 AddCompositesRecursively(_composite, lvl);
@@ -67,6 +71,7 @@ namespace CommandsEditor
 
                 Log("Performing final save for " + levelList.SelectedItem.ToString() + "...");
                 lvl.Save();
+                CustomTable.WriteTable(lvl.Commands.Filepath, CustomTableType.COMPOSITE_FLOWGRAPHS, _fgLayouts);
             }
             GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true);
             GC.WaitForPendingFinalizers();
@@ -107,13 +112,16 @@ namespace CommandsEditor
                         CopyResourcesToLevel(((cResource)resources.content).value, lvl);
                 }
 
-                //Bring over metadata
+                //Bring over generic metadata
                 lvl.Commands.Utils.AddCustomEntityNames(copiedComp, Content.Level.Commands.Utils.GetAllCustomEntityNames(composite));
                 lvl.Commands.Utils.AddCustomPinInfos(copiedComp, Content.Level.Commands.Utils.GetAllCustomPinInfo(composite));
                 lvl.Commands.Utils.SetModificationInfo(Content.Level.Commands.Utils.GetModificationInfo(composite));
                 lvl.Commands.Utils.PurgedComposites.purged.Remove(copiedComp.shortGUID); //mark for re-purge
 
-                //TODO: Flowgraph metadata
+                //Bring over flowgraph layouts
+                List<CompositeFlowgraphTable.FlowgraphMeta> layouts = FlowgraphLayoutManager.GetLayouts(composite);
+                _fgLayouts.flowgraphs.RemoveAll(o => o.CompositeGUID == composite.shortGUID);
+                _fgLayouts.flowgraphs.AddRange(layouts);
             }
 
             //If the user opted to recurse, follow any composite instances through, and copy those too
