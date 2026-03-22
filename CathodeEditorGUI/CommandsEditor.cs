@@ -462,44 +462,45 @@ namespace CommandsEditor
             }
 
 #if !DEBUG
-            if (SettingsManager.GetBool(Singleton.Settings.LaunchGameWhenSaved))
+            PatchManager.Platform? platform = null;
+            switch (OpenCAGE.SettingsManager.GetString("META_GameVersion"))
             {
-                PatchManager.Platform platform;
-                switch (OpenCAGE.SettingsManager.GetString("META_GameVersion"))
-                {
-                    case "STEAM":
-                        platform = PatchManager.Platform.STEAM;
-                        break;
-                    case "EPIC_GAMES_STORE":
-                        platform = PatchManager.Platform.EPIC_GAMES_STORE;
-                        break;
-                    case "GOG":
-                        platform = PatchManager.Platform.GOG;
-                        break;
-                    default:
-                        throw new Exception("Unsupported platform!");
-                }
+                case "STEAM":
+                    platform = PatchManager.Platform.STEAM;
+                    break;
+                case "EPIC_GAMES_STORE":
+                    platform = PatchManager.Platform.EPIC_GAMES_STORE;
+                    break;
+                case "GOG":
+                    platform = PatchManager.Platform.GOG;
+                    break;
+            }
+            if (platform.HasValue)
+            {
+                PatchManager.PatchFileIntegrityCheck(platform.Value, SharedData.pathToAI);
+                PatchManager.PatchPopupMessage(platform.Value, SharedData.pathToAI);
+                PatchManager.UpdateLevelListInPackages(platform.Value, SharedData.pathToAI);
 
-                PatchManager.PatchLaunchMode(platform, SharedData.pathToAI, _commandsDisplay.Content.Level.Name);
-                PatchManager.PatchFileIntegrityCheck(platform, SharedData.pathToAI);
-                PatchManager.PatchPopupMessage(platform, SharedData.pathToAI);
-                PatchManager.UpdateLevelListInPackages(platform, SharedData.pathToAI);
+                PatchManager.PatchSkipFrontendFlag(platform.Value, SharedData.pathToAI, SettingsManager.GetBool("OPT_SkipFE"));
+                PatchManager.PatchNoUIFlag(platform.Value, SharedData.pathToAI, SettingsManager.GetBool("OPT_HudDisabled"));
+                PatchManager.PatchMemReplayLogFlag(platform.Value, SharedData.pathToAI, SettingsManager.GetBool("OPT_Mem_Replay_Logs"));
+                PatchManager.PatchUIPerfFlag(platform.Value, SharedData.pathToAI, SettingsManager.GetBool("OPT_cUIEnabled_UIPerf"));
 
-                PatchManager.PatchSkipFrontendFlag(platform, SharedData.pathToAI, SettingsManager.GetBool("OPT_SkipFE"));
-                PatchManager.PatchNoUIFlag(platform, SharedData.pathToAI, SettingsManager.GetBool("OPT_HudDisabled"));
-                PatchManager.PatchMemReplayLogFlag(platform, SharedData.pathToAI, SettingsManager.GetBool("OPT_Mem_Replay_Logs"));
-                PatchManager.PatchUIPerfFlag(platform, SharedData.pathToAI, SettingsManager.GetBool("OPT_cUIEnabled_UIPerf"));
+                if (SettingsManager.GetBool(Singleton.Settings.LaunchGameWhenSaved))
+                {
+                    PatchManager.PatchLaunchMode(platform.Value, SharedData.pathToAI, _commandsDisplay.Content.Level.Name);
 
-                if (platform == PatchManager.Platform.STEAM)
-                {
-                    Process.Start("steam://rungameid/214490");
-                }
-                else
-                {
-                    ProcessStartInfo alienProcess = new ProcessStartInfo();
-                    alienProcess.WorkingDirectory = SettingsManager.GetString("PATH_GameRoot");
-                    alienProcess.FileName = SettingsManager.GetString("PATH_GameRoot") + "/AI.exe";
-                    Process.Start(alienProcess);
+                    if (platform.Value == PatchManager.Platform.STEAM)
+                    {
+                        Process.Start("steam://rungameid/214490");
+                    }
+                    else
+                    {
+                        ProcessStartInfo alienProcess = new ProcessStartInfo();
+                        alienProcess.WorkingDirectory = SettingsManager.GetString("PATH_GameRoot");
+                        alienProcess.FileName = SettingsManager.GetString("PATH_GameRoot") + "/AI.exe";
+                        Process.Start(alienProcess);
+                    }
                 }
             }
 #endif
