@@ -1,16 +1,16 @@
-using CATHODE.Scripting;
-using System.Collections.Generic;
-using CommandsEditor.Popups.Base;
-using CommandsEditor.DockPanels;
-using CathodeLib;
 using CATHODE;
-using System.Linq;
-using System;
-using System.Windows.Forms.Design;
-using System.IO;
-using System.Windows.Forms;
+using CATHODE.Scripting;
+using CathodeLib;
 using CathodeLib.ObjectExtensions;
+using CommandsEditor.DockPanels;
+using CommandsEditor.Popups.Base;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Windows.Forms;
+using System.Windows.Forms.Design;
 
 namespace CommandsEditor
 {
@@ -106,9 +106,15 @@ namespace CommandsEditor
                     if (resources != null)
                         CopyResourcesToLevel(((cResource)resources.content).value, lvl);
                 }
-            }
 
-            //TODO: Also take across associated OpenCAGE metadata!
+                //Bring over metadata
+                lvl.Commands.Utils.AddCustomEntityNames(copiedComp, Content.Level.Commands.Utils.GetAllCustomEntityNames(composite));
+                lvl.Commands.Utils.AddCustomPinInfos(copiedComp, Content.Level.Commands.Utils.GetAllCustomPinInfo(composite));
+                lvl.Commands.Utils.SetModificationInfo(Content.Level.Commands.Utils.GetModificationInfo(composite));
+                lvl.Commands.Utils.PurgedComposites.purged.Remove(copiedComp.shortGUID); //mark for re-purge
+
+                //TODO: Flowgraph metadata
+            }
 
             //If the user opted to recurse, follow any composite instances through, and copy those too
             if (!recurse.Checked) return;
