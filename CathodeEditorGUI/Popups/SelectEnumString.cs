@@ -36,6 +36,9 @@ namespace CommandsEditor
         {
             InitializeComponent();
 
+            Singleton.OnEnumStringUIShown?.Invoke(this);
+            Singleton.OnEnumStringUIShown += OnAnotherEnumStringWindowShown;
+
             _defaultVal = enumString;
             this.Text = "Select for '" + paramName + "'";
 
@@ -64,6 +67,23 @@ namespace CommandsEditor
             Search();
             clearSearchBtn.Visible = false;
             strings.ListViewItemSorter = _sorter;
+
+            this.FormClosing += SelectEnumString_FormClosing;
+        }
+
+        private void SelectEnumString_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Singleton.OnEnumStringUIShown -= OnAnotherEnumStringWindowShown;
+        }
+
+        private void OnAnotherEnumStringWindowShown(SelectEnumString window)
+        {
+            //Ensure only one of these windows is open at once as we share the listviewitems.
+            if (window != this)
+            {
+                OnSelected = null;
+                base.Close();
+            }
         }
 
         private void PopulateItems(EnumStringType type)
