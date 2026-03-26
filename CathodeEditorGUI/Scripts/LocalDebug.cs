@@ -149,6 +149,17 @@ namespace CommandsEditor
 #endif
         }
 
+        public static void GetExclusiveMasters(string level)
+        {
+            LevelContent content = LevelContent.DEBUG_LoadUnthreadedAndPopulateShortGuids(level);
+            for (int i = 1; i < content.Level.StateResources.Count; i++)
+            {
+                (Composite comp, EntityPath path) = content.EditorUtils.GetCompositeFromInstanceID(content.Level.Commands, content.Level.StateResources[i].Resource.composite_instance_id);
+                Entity ent = comp.GetEntityByID(content.Level.StateResources[i].Resource.resource_id);
+                Console.WriteLine(comp.name + " -> " + content.Level.Commands.Utils.GetEntityName(comp, ent));
+            }
+        }
+
         public static void SanityCheckResources()
         {
             Directory.Delete("RESOURCES", true);

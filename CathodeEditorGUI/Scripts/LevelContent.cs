@@ -172,6 +172,7 @@ namespace CommandsEditor
         public static LevelContent DEBUG_LoadUnthreadedAndPopulateShortGuids(string level)
         {
             LevelContent content = new LevelContent(level);
+            content.Level.Load();
 
             content.EditorUtils = new EditorUtils(content);
             content.EditorUtils.GenerateEntityNameCache(Singleton.Editor);
