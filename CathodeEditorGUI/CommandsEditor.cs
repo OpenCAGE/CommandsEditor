@@ -67,6 +67,9 @@ namespace CommandsEditor
             Singleton.Editor = this;
             Singleton.LoadGlobals();
 
+            //LocalDebug.GetExclusiveMasters("production/tech_comms");
+            //LocalDebug.GetExclusiveMasters("production/hab_airport");
+
             _discord = new DiscordRpcClient("1152999067207606392");
             _discord.Initialize();
             _discord.SetPresence(new RichPresence() { Assets = new Assets() { LargeImageKey = "icon" } });

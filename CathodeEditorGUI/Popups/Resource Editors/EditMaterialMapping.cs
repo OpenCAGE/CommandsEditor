@@ -43,22 +43,22 @@ namespace CommandsEditor
             List<string> tags = new List<string>();
             _indexToMapping.Clear();
 
-            for (int i = 0; i < Content.Level.MaterialMaps.Entries.Count; i++)
+            for (int i = 0; i < Content.Level.MaterialMappings.Entries.Count; i++)
             {
-                string filePath = Content.Level.MaterialMaps.Entries[i].Name.Replace('\\', '/');
+                string filePath = Content.Level.MaterialMappings.Entries[i].Name.Replace('\\', '/');
                 if (filePath.Length > 0 && filePath[0] == '/')
                     filePath = filePath.Substring(1);
 
                 filePaths.Add(filePath);
                 tags.Add(i.ToString());
-                _indexToMapping[i] = Content.Level.MaterialMaps.Entries[i];
+                _indexToMapping[i] = Content.Level.MaterialMappings.Entries[i];
             }
 
             treeHelper.UpdateFileTree(filePaths, null, tags);
 
             if (_currentMapping != null)
             {
-                int index = Content.Level.MaterialMaps.Entries.IndexOf(_currentMapping);
+                int index = Content.Level.MaterialMappings.Entries.IndexOf(_currentMapping);
                 if (index >= 0 && index < filePaths.Count)
                 {
                     treeHelper.SelectNode(filePaths[index]);
@@ -142,7 +142,7 @@ namespace CommandsEditor
             if (string.IsNullOrEmpty(name))
                 return;
 
-            if (Content.Level.MaterialMaps.Entries.Any(m => m.Name.Equals(name, StringComparison.OrdinalIgnoreCase)))
+            if (Content.Level.MaterialMappings.Entries.Any(m => m.Name.Equals(name, StringComparison.OrdinalIgnoreCase)))
             {
                 MessageBox.Show("A material mapping set with this name already exists.", "Duplicate Name", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
@@ -154,11 +154,11 @@ namespace CommandsEditor
                 Mappings = new List<MaterialMappings.MaterialMapping.Mapping>()
             };
 
-            Content.Level.MaterialMaps.Entries.Add(newMapping);
-            Content.Level.MaterialMaps.Save();
+            Content.Level.MaterialMappings.Entries.Add(newMapping);
+            Content.Level.MaterialMappings.Save();
             PopulateTreeView();
             
-            int index = Content.Level.MaterialMaps.Entries.IndexOf(newMapping);
+            int index = Content.Level.MaterialMappings.Entries.IndexOf(newMapping);
             if (index >= 0)
             {
                 string filePath = newMapping.Name.Replace('\\', '/');
@@ -201,7 +201,7 @@ namespace CommandsEditor
             };
 
             selectedMapping.Mappings.Add(newMapping);
-            Content.Level.MaterialMaps.Save();
+            Content.Level.MaterialMappings.Save();
             UpdateMappingsPanel();
         }
 
@@ -232,7 +232,7 @@ namespace CommandsEditor
             {
                 var mapping = _listItemToMapping[selectedItem];
                 selectedMapping.Mappings.Remove(mapping);
-                Content.Level.MaterialMaps.Save();
+                Content.Level.MaterialMappings.Save();
                 UpdateMappingsPanel();
             }
         }
@@ -268,7 +268,7 @@ namespace CommandsEditor
 
             mapping.from = result.Item1;
             mapping.to = result.Item2;
-            Content.Level.MaterialMaps.Save();
+            Content.Level.MaterialMappings.Save();
             UpdateMappingsPanel();
         }
 
