@@ -1,0 +1,6 @@
+<Project>
+  <PropertyGroup>
+    <!-- WinForms ImageList.ImageStream in .resx uses binary serialization; MSB3825 is expected until designer migrates. -->
+    <GenerateResourceWarnOnBinaryFormatterUse>false</GenerateResourceWarnOnBinaryFormatterUse>
+  </PropertyGroup>
+</Project>
