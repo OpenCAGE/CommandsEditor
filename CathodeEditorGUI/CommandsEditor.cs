@@ -456,7 +456,7 @@ namespace CommandsEditor
             //TODO: take a backup first
             _commandsDisplay.Content.Level.Save();
 
-            if (SettingsManager.GetBool(Singleton.Settings.SavePakAndBin))
+            if (!_commandsDisplay.Content.Level.Commands.Compressed && SettingsManager.GetBool(Singleton.Settings.SavePakAndBin))
             {
                 string ext = "BIN";
                 if (Path.GetExtension(_commandsDisplay.Content.Level.Commands.Filepath).ToUpper() == ".BIN")
@@ -913,6 +913,11 @@ namespace CommandsEditor
         {
             showConfirmationWhenDeletingNodeToolStripMenuItem.Checked = !showConfirmationWhenDeletingNodeToolStripMenuItem.Checked;
             SettingsManager.SetBool(Singleton.Settings.AskBeforeDeletingNode, showConfirmationWhenDeletingNodeToolStripMenuItem.Checked);
+        }
+
+        private void miscToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            savePAKAndBINToolStripMenuItem.Enabled = _commandsDisplay?.Content?.Level?.Commands != null && _commandsDisplay.Content.Level.Commands.Compressed;
         }
     }
 }
