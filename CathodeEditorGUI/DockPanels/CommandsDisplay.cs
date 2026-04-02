@@ -18,7 +18,6 @@ using WebSocketSharp;
 using CommandsEditor.Popups;
 using OpenCAGE;
 using System.IO;
-using System.Runtime.Remoting.Messaging;
 using ListViewItem = System.Windows.Forms.ListViewItem;
 using System.Threading;
 using System.Windows.Media.Animation;

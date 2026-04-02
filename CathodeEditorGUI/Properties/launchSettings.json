@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "CommandsEditor": {
+      "commandName": "Project",
+      "commandLineArgs": "-pathToAI=\"C:\\\\Program Files (x86)\\\\Steam\\\\steamapps\\\\common\\\\Alien Isolation\" -level=\"production/hab_airport\""
+    }
+  }
+}

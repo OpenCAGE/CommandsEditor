@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using Color = System.Windows.Media.Color;
+using UserControl = System.Windows.Controls.UserControl;
 
 namespace CommandsEditor
 {
@@ -132,7 +134,7 @@ namespace CommandsEditor
             }
 
             // Size & place the controls
-            Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+            Measure(new System.Windows.Size(double.PositiveInfinity, double.PositiveInfinity));
             Arrange(new Rect(0, 0, width, height));
 
             _border = new Border();

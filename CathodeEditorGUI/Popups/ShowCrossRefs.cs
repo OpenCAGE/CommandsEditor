@@ -2,6 +2,7 @@
 using CATHODE.Scripting.Internal;
 using CommandsEditor.DockPanels;
 using CommandsEditor.Popups.Base;
+using CoreWCF.Collections.Generic;
 using OpenCAGE;
 using ST.Library.UI.NodeEditor;
 using System;

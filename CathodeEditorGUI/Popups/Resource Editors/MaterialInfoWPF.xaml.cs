@@ -14,6 +14,7 @@ using System.Windows.Media.Media3D;
 using System.Windows.Media;
 using System.Numerics;
 using CommandsEditor;
+using UserControl = System.Windows.Controls.UserControl;
 
 namespace CommandsEditor
 {
@@ -26,7 +27,7 @@ namespace CommandsEditor
         public Action<string> OnParameterSelected;
         public Action OnPickTexture;
 
-        public TabControl SamplerTabControl => samplerTabControl;
+        public System.Windows.Controls.TabControl SamplerTabControl => samplerTabControl;
 
         public MaterialInfoWPF()
         {

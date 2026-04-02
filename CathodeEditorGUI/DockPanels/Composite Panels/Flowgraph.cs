@@ -55,7 +55,7 @@ namespace CommandsEditor
             this.VisibleChanged += Flowgraph_VisibleChanged;
             this.FormClosed += Flowgraph_FormClosed;
 
-            stNodeEditor1.LoadAssembly(Application.ExecutablePath);
+            //stNodeEditor1.LoadAssembly(Application.ExecutablePath);
             stNodeEditor1.AllowSameOwnerConnections = true;
             stNodeEditor1.SelectedChanged += Owner_SelectedChanged;
             stNodeEditor1.PinToNodeConnected += StNodeEditor1_PinToNodeConnected;
@@ -365,7 +365,7 @@ namespace CommandsEditor
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            stNodeEditor1.LoadAssembly(Application.ExecutablePath);
+            //stNodeEditor1.LoadAssembly(Application.ExecutablePath);
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)

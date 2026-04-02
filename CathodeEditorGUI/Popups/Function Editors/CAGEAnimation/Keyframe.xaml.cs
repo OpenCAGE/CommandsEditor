@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Controls;
 using System.Windows.Input;
+using UserControl = System.Windows.Controls.UserControl;
 
 namespace CommandsEditor
 {
@@ -50,12 +51,12 @@ namespace CommandsEditor
             OnMoved?.Invoke(this, seconds);
         }
 
-        private void TimelineElement_MouseEnter(object sender, MouseEventArgs e)
+        private void TimelineElement_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
             if (!highlighted) diamond.Opacity = 0.7;
             primed = true;
         }
-        private void TimelineElement_MouseLeave(object sender, MouseEventArgs e)
+        private void TimelineElement_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
             if (!highlighted) diamond.Opacity = 0.5;
             primed = false;
@@ -75,7 +76,7 @@ namespace CommandsEditor
             }
         }
 
-        private void Parent_MouseMove(object sender, MouseEventArgs e)
+        private void Parent_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
         {
             double diff = mouseXInitial - Mouse.GetPosition(parent).X;
             Canvas.SetLeft(this, canvasLeft - diff);

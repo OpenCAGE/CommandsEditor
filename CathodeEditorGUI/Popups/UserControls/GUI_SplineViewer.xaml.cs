@@ -10,6 +10,7 @@ using System.Net.NetworkInformation;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using UserControl = System.Windows.Controls.UserControl;
 
 namespace CommandsEditor.Popups.UserControls
 {
