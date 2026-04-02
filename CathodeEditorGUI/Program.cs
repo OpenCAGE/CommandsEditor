@@ -20,7 +20,7 @@ namespace CommandsEditor
     static class Program
     {
         static Dictionary<string, string> _args;
-        static Stopwatch _timer;
+        static Stopwatch _timer = null;
 
         /// <summary>
         /// The main entry point for the application.
@@ -129,7 +129,7 @@ namespace CommandsEditor
                     version = "Standalone: " + Application.ProductVersion;
                 string platform = SettingsManager.GetString("META_GameVersion");
                 string time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-                string uptime = _timer.Elapsed.ToString(@"dd\.hh\:mm\:ss");
+                string uptime = _timer == null ? "" : _timer.Elapsed.ToString(@"dd\.hh\:mm\:ss");
                 content.Add(new StringContent(version), "application_version");
                 error += "\n Application Version: " + version;
                 content.Add(new StringContent(platform), "game_version");
