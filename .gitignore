@@ -364,3 +364,4 @@ FodyWeavers.xsd
 
 Build/*
 !Build/CommandsEditor.exe
+CathodeEditorGUI/Properties/launchSettings.json
