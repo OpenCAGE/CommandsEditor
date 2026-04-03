@@ -274,18 +274,17 @@ namespace CommandsEditor
             //Copy the default layouts over for composites in this Commands if they don't already exist
             if (Enum.TryParse(Path.GetFileName(_commands.EntryPoints[0].name).ToUpper(), out FlowgraphMeta.SupportedLevel level))
             {
-                if (_userDefinedLayouts.flowgraphs.Count == 0)
+                for (int i = 0; i < _preDefinedLayouts.flowgraphs.Count; i++)
                 {
-                    for (int i = 0; i < _preDefinedLayouts.flowgraphs.Count; i++)
-                    {
-                        if (!_preDefinedLayouts.flowgraphs[i].SupportedLevels.HasFlag(level))
-                            continue;
-                        if (_commands.Entries.FirstOrDefault(o => o.shortGUID == _preDefinedLayouts.flowgraphs[i].CompositeGUID) == null)
-                            continue;
-                        _userDefinedLayouts.flowgraphs.Add(_preDefinedLayouts.flowgraphs[i].Copy());
-                    }
-                    Debug.Log("Flowgraph Manager", "Applied " + _userDefinedLayouts.flowgraphs.Count + " suitable flowgraph layouts, of the " + _preDefinedLayouts.flowgraphs.Count + " available!");
+                    if (!_preDefinedLayouts.flowgraphs[i].SupportedLevels.HasFlag(level))
+                        continue;
+                    if (_commands.Entries.FirstOrDefault(o => o.shortGUID == _preDefinedLayouts.flowgraphs[i].CompositeGUID) == null)
+                        continue;
+                    if (_userDefinedLayouts.flowgraphs.FirstOrDefault(o => o.CompositeGUID == _preDefinedLayouts.flowgraphs[i].CompositeGUID) != null)
+                        continue;
+                    _userDefinedLayouts.flowgraphs.Add(_preDefinedLayouts.flowgraphs[i].Copy());
                 }
+                Debug.Log("Flowgraph Manager", "Applied " + _userDefinedLayouts.flowgraphs.Count + " suitable flowgraph layouts, of the " + _preDefinedLayouts.flowgraphs.Count + " available!");
             }
         }
 
