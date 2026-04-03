@@ -296,6 +296,15 @@ namespace CommandsEditor
                     case PatchManager.Platform.WINDOWS_STORE:
                         title += " - Windows Store";
                         break;
+                    case PatchManager.Platform.SWITCH:
+                        title += " - Nintendo Switch";
+                        break;
+                    case PatchManager.Platform.IOS_ANDROID:
+                        title += " - Mobile";
+                        break;
+                    case PatchManager.Platform.MAC_LINUX:
+                        title += " - Mac/Linux";
+                        break;
                     default:
                         title += " - Unknown Platform";
                         break;
