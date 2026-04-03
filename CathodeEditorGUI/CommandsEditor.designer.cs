@@ -68,8 +68,8 @@ namespace CommandsEditor
             this.setNumericStepToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.savePAKAndBINToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openGameOnSaveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.controlsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpBtn = new System.Windows.Forms.ToolStripButton();
-            this.ShowControls = new System.Windows.Forms.ToolStripButton();
             this.DEBUG_ReloadLevel = new System.Windows.Forms.ToolStripButton();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.statusText = new System.Windows.Forms.ToolStripStatusLabel();
@@ -78,6 +78,9 @@ namespace CommandsEditor
             this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
             this.vS2015DarkTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme();
             this.vS2015LightTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
+            this.uIToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.animationsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.launchGameBtn = new System.Windows.Forms.ToolStripButton();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -89,8 +92,8 @@ namespace CommandsEditor
             this.toolStripButton3,
             this.toolStripButton2,
             this.helpBtn,
-            this.ShowControls,
-            this.DEBUG_ReloadLevel});
+            this.DEBUG_ReloadLevel,
+            this.launchGameBtn});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Padding = new System.Windows.Forms.Padding(0, 0, 2, 0);
@@ -113,7 +116,7 @@ namespace CommandsEditor
             // loadLevel
             // 
             this.loadLevel.Name = "loadLevel";
-            this.loadLevel.Size = new System.Drawing.Size(168, 22);
+            this.loadLevel.Size = new System.Drawing.Size(180, 22);
             this.loadLevel.Text = "Load Level";
             // 
             // saveLevel
@@ -121,7 +124,7 @@ namespace CommandsEditor
             this.saveLevel.Name = "saveLevel";
             this.saveLevel.ShortcutKeyDisplayString = "Ctrl+S";
             this.saveLevel.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveLevel.Size = new System.Drawing.Size(168, 22);
+            this.saveLevel.Size = new System.Drawing.Size(180, 22);
             this.saveLevel.Text = "Save Level";
             this.saveLevel.Click += new System.EventHandler(this.saveLevel_Click);
             // 
@@ -133,7 +136,9 @@ namespace CommandsEditor
             this.materialsToolStripMenuItem,
             this.materialMappingsToolStripMenuItem,
             this.texturesToolStripMenuItem,
-            this.galaxyToolStripMenuItem});
+            this.galaxyToolStripMenuItem,
+            this.uIToolStripMenuItem,
+            this.animationsToolStripMenuItem});
             this.toolStripButton3.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton3.Image")));
             this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton3.Name = "toolStripButton3";
@@ -184,7 +189,8 @@ namespace CommandsEditor
             this.toolStripSeparator2,
             this.compositeViewerToolStripMenuItem,
             this.entityDisplayToolStripMenuItem,
-            this.miscToolStripMenuItem});
+            this.miscToolStripMenuItem,
+            this.controlsToolStripMenuItem});
             this.toolStripButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton2.Image")));
             this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton2.Name = "toolStripButton2";
@@ -413,6 +419,13 @@ namespace CommandsEditor
             this.openGameOnSaveToolStripMenuItem.Text = "Open Game On Save";
             this.openGameOnSaveToolStripMenuItem.Click += new System.EventHandler(this.openGameOnSaveToolStripMenuItem_Click);
             // 
+            // controlsToolStripMenuItem
+            // 
+            this.controlsToolStripMenuItem.Name = "controlsToolStripMenuItem";
+            this.controlsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.controlsToolStripMenuItem.Text = "Controls";
+            this.controlsToolStripMenuItem.Click += new System.EventHandler(this.controlsToolStripMenuItem_Click);
+            // 
             // helpBtn
             // 
             this.helpBtn.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
@@ -423,16 +436,6 @@ namespace CommandsEditor
             this.helpBtn.Size = new System.Drawing.Size(23, 22);
             this.helpBtn.Text = "Help";
             this.helpBtn.Click += new System.EventHandler(this.helpBtn_Click);
-            // 
-            // ShowControls
-            // 
-            this.ShowControls.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.ShowControls.Image = ((System.Drawing.Image)(resources.GetObject("ShowControls.Image")));
-            this.ShowControls.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.ShowControls.Name = "ShowControls";
-            this.ShowControls.Size = new System.Drawing.Size(56, 22);
-            this.ShowControls.Text = "Controls";
-            this.ShowControls.Click += new System.EventHandler(this.ShowControls_Click);
             // 
             // DEBUG_ReloadLevel
             // 
@@ -476,6 +479,30 @@ namespace CommandsEditor
             this.dockPanel.Size = new System.Drawing.Size(2372, 1190);
             this.dockPanel.TabIndex = 5;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
+            // 
+            // uIToolStripMenuItem
+            // 
+            this.uIToolStripMenuItem.Name = "uIToolStripMenuItem";
+            this.uIToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.uIToolStripMenuItem.Text = "UI";
+            this.uIToolStripMenuItem.Click += new System.EventHandler(this.uIToolStripMenuItem_Click);
+            // 
+            // animationsToolStripMenuItem
+            // 
+            this.animationsToolStripMenuItem.Name = "animationsToolStripMenuItem";
+            this.animationsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.animationsToolStripMenuItem.Text = "Animations";
+            this.animationsToolStripMenuItem.Click += new System.EventHandler(this.animationsToolStripMenuItem_Click);
+            // 
+            // launchGameBtn
+            // 
+            this.launchGameBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.launchGameBtn.Image = ((System.Drawing.Image)(resources.GetObject("launchGameBtn.Image")));
+            this.launchGameBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.launchGameBtn.Name = "launchGameBtn";
+            this.launchGameBtn.Size = new System.Drawing.Size(84, 22);
+            this.launchGameBtn.Text = "Launch Game";
+            this.launchGameBtn.Click += new System.EventHandler(this.launchGameBtn_Click);
             // 
             // CommandsEditor
             // 
@@ -528,7 +555,6 @@ namespace CommandsEditor
         private System.Windows.Forms.ToolStripMenuItem keepFunctionUsesWindowOpenToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem resetUILayoutsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem writeInstancedResourcesExperimentalToolStripMenuItem;
-        private System.Windows.Forms.ToolStripButton ShowControls;
         private System.Windows.Forms.ToolStripMenuItem levelViewerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem connectToUnity;
         private System.Windows.Forms.ToolStripMenuItem focusOnSelectedToolStripMenuItem;
@@ -550,5 +576,9 @@ namespace CommandsEditor
         private System.Windows.Forms.ToolStripMenuItem setNodeColoursToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem showConfirmationWhenDeletingNodeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem galaxyToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem controlsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem uIToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem animationsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripButton launchGameBtn;
     }
 }

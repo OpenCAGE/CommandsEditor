@@ -353,6 +353,12 @@
     <Compile Include="Popups\GalaxyEditor.Designer.cs">
       <DependentUpon>GalaxyEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\LaunchGame.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\LaunchGame.Designer.cs">
+      <DependentUpon>LaunchGame.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popups\Resource Editors\EditMaterialMapping.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -810,6 +816,9 @@
     <EmbeddedResource Include="Popups\GalaxyEditor.resx">
       <DependentUpon>GalaxyEditor.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Popups\LaunchGame.resx">
+      <DependentUpon>LaunchGame.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Popups\Resource Editors\EditMaterialMapping.resx">
       <DependentUpon>EditMaterialMapping.cs</DependentUpon>
     </EmbeddedResource>
@@ -996,6 +1005,14 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <EmbeddedResource Include="UI_Mods\GAMEOVERMENU.GFX" />
+    <EmbeddedResource Include="UI_Mods\GAMEOVERMENU_MOD.GFX" />
+    <EmbeddedResource Include="UI_Mods\LOADINGSCREEN.GFX" />
+    <EmbeddedResource Include="UI_Mods\LOADINGSCREEN_MOD.GFX" />
+    <EmbeddedResource Include="UI_Mods\NEWFRONTENDMENU.GFX" />
+    <EmbeddedResource Include="UI_Mods\NEWFRONTENDMENU_MOD.GFX" />
+    <EmbeddedResource Include="UI_Mods\PAUSEMENU.GFX" />
+    <EmbeddedResource Include="UI_Mods\PAUSEMENU_MOD.GFX" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -92,6 +92,9 @@ namespace CommandsEditor
 #if !DEBUG
             DEBUG_ReloadLevel.Visible = false;
             connectToRuntimeUtils.Visible = false;
+
+            uIToolStripMenuItem.Enabled = false;
+            animationsToolStripMenuItem.Enabled = false;
 #endif
 
             WindowState = SettingsManager.GetString(Singleton.Settings.WindowState, "Normal") == "Maximized" ? FormWindowState.Maximized : FormWindowState.Normal;
@@ -753,24 +756,6 @@ namespace CommandsEditor
             Process.Start("https://opencage.co.uk/docs/");
         }
 
-        ControlsWindow _controlsWindow = null;
-        private void ShowControls_Click(object sender, EventArgs e)
-        {
-            if (_controlsWindow != null)
-            {
-                _controlsWindow.FormClosed -= _controlsWindow_FormClosed;
-                _controlsWindow.Close();
-            }
-
-            _controlsWindow = new ControlsWindow();
-            _controlsWindow.Show();
-            _controlsWindow.FormClosed += _controlsWindow_FormClosed;
-        }
-        private void _controlsWindow_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            _controlsWindow = null;
-        }
-
         private void DEBUG_ReloadLevel_Click(object sender, EventArgs e)
         {
             if (!RuntimeUtilsConnection.Send.Connected)
@@ -918,6 +903,52 @@ namespace CommandsEditor
         private void miscToolStripMenuItem_Click(object sender, EventArgs e)
         {
             savePAKAndBINToolStripMenuItem.Enabled = _commandsDisplay?.Content?.Level?.Commands != null && _commandsDisplay.Content.Level.Commands.Compressed;
+        }
+
+        ControlsWindow _controlsWindow = null;
+        private void controlsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_controlsWindow != null)
+            {
+                _controlsWindow.FormClosed -= _controlsWindow_FormClosed;
+                _controlsWindow.Close();
+            }
+
+            _controlsWindow = new ControlsWindow();
+            _controlsWindow.Show();
+            _controlsWindow.FormClosed += _controlsWindow_FormClosed;
+        }
+        private void _controlsWindow_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _controlsWindow = null;
+        }
+
+        LaunchGame _launchGamePopup = null;
+        private void launchGameBtn_Click(object sender, EventArgs e)
+        {
+            if (_launchGamePopup != null)
+            {
+                _launchGamePopup.FormClosed -= _launchGamePopup_FormClosed;
+                _launchGamePopup.Close();
+            }
+
+            _launchGamePopup = new LaunchGame();
+            _launchGamePopup.Show();
+            _launchGamePopup.FormClosed += _launchGamePopup_FormClosed;
+        }
+        private void _launchGamePopup_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _launchGamePopup = null;
+        }
+
+        private void uIToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //todo
+        }
+
+        private void animationsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //todo
         }
     }
 }
