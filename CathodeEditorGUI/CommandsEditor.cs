@@ -101,6 +101,19 @@ namespace CommandsEditor
             animationsToolStripMenuItem.Visible = false;
             configurationsToolStripMenuItem.Visible = false;
 #endif
+            
+            //Launch game is only supported by certain platforms due to having to patch the binary
+            switch (Singleton.Platform)
+            {
+                case PatchManager.Platform.STEAM:
+                case PatchManager.Platform.EPIC_GAMES_STORE:
+                case PatchManager.Platform.GOG:
+                    launchGameBtn.Visible = true;
+                    break;
+                default:
+                    launchGameBtn.Visible = false;
+                    break;
+            }
 
             WindowState = SettingsManager.GetString(Singleton.Settings.WindowState, "Normal") == "Maximized" ? FormWindowState.Maximized : FormWindowState.Normal;
             Width = SettingsManager.GetInteger(Singleton.Settings.WindowWidth, _defaultWidth);
