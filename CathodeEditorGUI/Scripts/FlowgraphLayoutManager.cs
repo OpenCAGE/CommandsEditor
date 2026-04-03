@@ -284,7 +284,7 @@ namespace CommandsEditor
                         continue;
                     _userDefinedLayouts.flowgraphs.Add(_preDefinedLayouts.flowgraphs[i].Copy());
                 }
-                Debug.Log("Flowgraph Manager", "Applied " + _userDefinedLayouts.flowgraphs.Count + " suitable flowgraph layouts, of the " + _preDefinedLayouts.flowgraphs.Count + " available!");
+                Debug.Log("Flowgraph Manager", "Applied " + _userDefinedLayouts.flowgraphs.Count + " suitable new flowgraph layouts, of the " + _preDefinedLayouts.flowgraphs.Count + " available!");
             }
         }
 
