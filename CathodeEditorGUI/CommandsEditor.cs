@@ -94,9 +94,12 @@ namespace CommandsEditor
 #if !DEBUG
             DEBUG_ReloadLevel.Visible = false;
             connectToRuntimeUtils.Visible = false;
-
-            uIToolStripMenuItem.Enabled = false;
-            animationsToolStripMenuItem.Enabled = false;
+            
+            // wip
+            materialPropertiesToolStripMenuItem.Visible = false;
+            uIToolStripMenuItem.Visible = false;
+            animationsToolStripMenuItem.Visible = false;
+            configurationsToolStripMenuItem.Visible = false;
 #endif
 
             WindowState = SettingsManager.GetString(Singleton.Settings.WindowState, "Normal") == "Maximized" ? FormWindowState.Maximized : FormWindowState.Normal;
@@ -273,6 +276,9 @@ namespace CommandsEditor
                         break;
                     case PatchManager.Platform.WINDOWS_STORE:
                         title += " - Windows Store";
+                        break;
+                    default:
+                        title + " - Unknown Platform";
                         break;
                 }
             }
@@ -896,7 +902,12 @@ namespace CommandsEditor
 
         private void miscToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            savePAKAndBINToolStripMenuItem.Enabled = _commandsDisplay?.Content?.Level?.Commands != null && _commandsDisplay.Content.Level.Commands.Compressed;
+            //NOTE: When in compressed mode, we ALWAYS save in the BIN format, so hide this option in that case.
+            savePAKAndBINToolStripMenuItem.Visible = _commandsDisplay?.Content?.Level?.Commands != null && _commandsDisplay.Content.Level.Commands.Compressed;
+
+            //NOTE: We don't actually allow this to be changed (even though it could be done) because it's not much use, for now at least. Maybe some sort of conversion between compressed and uncompressed levels in future.
+            writeCompressedToolStripMenuItem.Checked = _commandsDisplay?.Content?.Level?.Commands != null && _commandsDisplay.Content.Level.Commands.Compressed;
+            writeCompressedToolStripMenuItem.Enabled = false; 
         }
 
         ControlsWindow _controlsWindow = null;
