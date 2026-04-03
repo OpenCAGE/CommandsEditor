@@ -24,16 +24,8 @@ namespace CommandsEditor
         string _cinematicToolDLL = "";
         string _utilPath = "";
 
-        /* On init, if we are trying to launch to a map, skip GUI */
-        public LaunchGame(string level = null, string launchDirectly = null)
+        public LaunchGame()
         {
-            if (level != null && launchDirectly != null)
-            {
-                LaunchToMap(level);
-                this.Close();
-                return;
-            }
-
             InitializeComponent();
 
             //Close the game down before we do anything
@@ -55,49 +47,21 @@ namespace CommandsEditor
             _utilPath = Singleton.PathToAI + "/DATA/MODTOOLS/REMOTE_ASSETS/runtimeutils";
 
             enableCinematicTools.Checked = SettingsManager.GetBool("OPT_CinematicTools");
-            enableCinematicTools.Enabled = Singleton.Platform == PatchManager.Platform.STEAM && File.Exists(_cinematicToolDLL);
-
             enableRuntimeUtils.Checked = SettingsManager.GetBool("OPT_Runtime_Utils");
-            enableRuntimeUtils.Enabled = Singleton.Platform == PatchManager.Platform.STEAM && Directory.Exists(_utilPath);
-
             disableUI.Checked = SettingsManager.GetBool("OPT_HudDisabled");
-            disableUI.Enabled = Singleton.Platform != PatchManager.Platform.WINDOWS_STORE;
-
             skipFrontend.Checked = SettingsManager.GetBool("OPT_SkipFE");
-            skipFrontend.Enabled = Singleton.Platform != PatchManager.Platform.WINDOWS_STORE;
-
             enableUIPerf.Checked = SettingsManager.GetBool("OPT_cUIEnabled_UIPerf");
-            enableUIPerf.Enabled = Singleton.Platform != PatchManager.Platform.WINDOWS_STORE;
-
             enableMemReplayLogs.Checked = SettingsManager.GetBool("OPT_Mem_Replay_Logs");
-            enableMemReplayLogs.Enabled = Singleton.Platform != PatchManager.Platform.WINDOWS_STORE;
-
             patchCurrentGen.Checked = SettingsManager.GetBool("OPT_PatchCurrentGen");
-            patchCurrentGen.Enabled = Singleton.Platform != PatchManager.Platform.WINDOWS_STORE;
-
             UIMOD_DebugCheckpoints.Checked = SettingsManager.GetBool("UIOPT_PAUSEMENU");
             UIMOD_MapName.Checked = SettingsManager.GetBool("UIOPT_LOADINGSCREEN");
             UIMOD_MapSelection.Checked = SettingsManager.GetBool("UIOPT_NEWFRONTENDMENU");
             UIMOD_ReturnFrontend.Checked = SettingsManager.GetBool("UIOPT_GAMEOVERMENU");
 
-            if (SettingsManager.GetString("OPT_LoadToMap") == "") 
-                SettingsManager.SetString("OPT_LoadToMap", "Production/Frontend");
+            enableCinematicTools.Enabled = Singleton.Platform == PatchManager.Platform.STEAM && File.Exists(_cinematicToolDLL);
+            enableRuntimeUtils.Enabled = Singleton.Platform == PatchManager.Platform.STEAM && Directory.Exists(_utilPath);
 
-            string loadedLevel = Singleton.Editor?.CommandsDisplay?.Content?.Level?.Name;
-            if (loadedLevel == null) loadedLevel = SettingsManager.GetString("OPT_LoadToMap");
-
-            levelList.Items.AddRange(Level.GetLevels(Singleton.PathToAI).ToArray());
-            levelList.SelectedItem = loadedLevel;
-            if (levelList.SelectedIndex == -1)
-            {
-                if (levelList.Items.Contains("PRODUCTION/FRONTEND")) levelList.SelectedItem = "PRODUCTION/FRONTEND";
-                else levelList.SelectedIndex = 0;
-            }
-            if (level != null)
-            {
-                levelList.SelectedItem = level;
-            }
-            levelList.Enabled = Singleton.Platform != PatchManager.Platform.WINDOWS_STORE;
+            EditorUtils.PopulateLevelDropdown(levelList);
         }
 
         /* Load game with given map name */

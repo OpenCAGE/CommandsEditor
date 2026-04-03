@@ -390,6 +390,24 @@ namespace CommandsEditor
             return editedText;
         }
 
+        /* Populates a combobox with available levels and selects the appropriate one - you should update OPT_LoadToMap on selected change */
+        public static void PopulateLevelDropdown(ComboBox dropdown)
+        {
+            string toSelect = Singleton.Editor?.CommandsDisplay?.Content?.Level?.Name;
+            if (toSelect == null) toSelect = SettingsManager.GetString(Singleton.Settings.LastSelectedLevel);
+
+            dropdown.BeginUpdate();
+            dropdown.Items.Clear();
+            dropdown.Items.AddRange(Level.GetLevels(Singleton.PathToAI).ToArray());
+            dropdown.SelectedItem = toSelect.ToUpper();
+            if (dropdown.SelectedIndex == -1)
+            {
+                if (dropdown.Items.Contains("PRODUCTION/FRONTEND")) dropdown.SelectedItem = "PRODUCTION/FRONTEND";
+                else dropdown.SelectedIndex = 0;
+            }
+            dropdown.EndUpdate();
+        }
+
         /* Utility: get composite name */
         public static string GetCompositeName(Composite comp)
         {

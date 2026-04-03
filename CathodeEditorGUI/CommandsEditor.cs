@@ -221,6 +221,8 @@ namespace CommandsEditor
             //If we have been launched to a level, load that
             if (level != null)
                 OnLevelSelected(level);
+            else
+                loadLevel_Click(null, null);
         }
 
         //keep dropdown open if cursor is inside it 
@@ -321,9 +323,6 @@ namespace CommandsEditor
                 _levelSelect.FormClosed += OnLevelSelectClosed;
                 _levelSelect.OnLevelSelected += OnLevelSelected;
             }
-
-            _levelSelect.BringToFront();
-            _levelSelect.Focus();
         }
         private void OnLevelSelectClosed(object sender, FormClosedEventArgs e)
         {

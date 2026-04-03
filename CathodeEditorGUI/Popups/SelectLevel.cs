@@ -21,15 +21,7 @@ namespace CommandsEditor.Popups
         public SelectLevel()
         {
             InitializeComponent();
-
-            env_list.BeginUpdate();
-            env_list.Items.AddRange(Level.GetLevels(Singleton.PathToAI).ToArray());
-            env_list.EndUpdate();
-
-            if (env_list.Items.Contains("PRODUCTION/FRONTEND")) 
-                env_list.SelectedItem = "PRODUCTION/FRONTEND";
-            else 
-                env_list.SelectedIndex = 0;
+            EditorUtils.PopulateLevelDropdown(env_list);
         }
 
         private void load_commands_pak_Click(object sender, EventArgs e)

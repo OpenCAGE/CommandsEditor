@@ -143,6 +143,7 @@ namespace CommandsEditor
             public readonly string NodeColour_VariableText = "CS_NodeColour_VariableText";
             public readonly string AskBeforeDeletingNode = "CS_AskBeforeDeletingNode";
             public readonly string ShowGamePlatform = "CONFIG_ShowPlatform";
+            public readonly string LastSelectedLevel = "OPT_LoadToMap";
         }
 
         public static Action OnAnimationsLoaded;
