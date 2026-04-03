@@ -223,6 +223,7 @@ namespace CommandsEditor
 
         private void CommandsEditor_FormClosing(object sender, FormClosingEventArgs e)
         {
+            KillBehaviourTreeEditor();
             KillLevelViewer();
             SettingsManager.SetFloat(Singleton.Settings.SplitWidthMainBottom, (float)dockPanel.DockBottomPortion);
             SettingsManager.SetFloat(Singleton.Settings.SplitWidthMainRight, (float)dockPanel.DockRightPortion);
@@ -947,7 +948,29 @@ namespace CommandsEditor
         Process _behaviourEditor = null;
         private void behaviourTreesToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            KillBehaviourTreeEditor();
 
+            string editorPath = Singleton.PathToAI + "/DATA/MODTOOLS/REMOTE_ASSETS/legendplugin/";
+            _behaviourEditor = Process.Start(new ProcessStartInfo
+                {
+                    FileName = editorPath + "BehaviourTreeEditor.exe",
+                    Arguments = "-pathToAI=\"" + Singleton.PathToAI + "\"",
+                    WorkingDirectory = editorPath,
+                }
+            );
+        }
+
+        private void KillBehaviourTreeEditor()
+        {
+            if (_behaviourEditor != null)
+            {
+                try
+                {
+                    _behaviourEditor?.Kill();
+                    _behaviourEditor?.Close();
+                }
+                catch { }
+            }
         }
     }
 }
