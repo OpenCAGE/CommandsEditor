@@ -56,8 +56,6 @@ namespace CommandsEditor
         private int _defaultWidth;
         private int _defaultHeight;
 
-        private string _baseTitle = "";
-
         public CommandsEditor(string level = null)
         {
             //LocalDebug.CheckWriteInstanced();
@@ -75,6 +73,10 @@ namespace CommandsEditor
             _discord.SetPresence(new RichPresence() { Assets = new Assets() { LargeImageKey = "icon" } });
 
             Singleton.OnCompositeSelected += OnCompositeSelectedForDiscord;
+
+#if USE_DIRTY_TRACKER
+            DirtyTracker.OnChanged += OnDirtyChanged;
+#endif
 
             if (SettingsManager.GetFloat(Singleton.Settings.NumericStep, -1.0f) == -1.0f)
                 SettingsManager.SetFloat(Singleton.Settings.NumericStep, 0.1f);
@@ -125,6 +127,7 @@ namespace CommandsEditor
             keepFunctionUsesWindowOpenToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.KeepUsesWindowOpen); keepFunctionUsesWindowOpenToolStripMenuItem.PerformClick();
             writeInstancedResourcesExperimentalToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.CompileInstances); writeInstancedResourcesExperimentalToolStripMenuItem.PerformClick();
             openGameOnSaveToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.LaunchGameWhenSaved); openGameOnSaveToolStripMenuItem.PerformClick();
+            showGamePlatformToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.ShowGamePlatform); showGamePlatformToolStripMenuItem.PerformClick();
 
             if (!SettingsManager.IsSet(Singleton.Settings.ShowSavedMsgOpt)) SettingsManager.SetBool(Singleton.Settings.ShowSavedMsgOpt, true);
             showConfirmationWhenSavingToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.ShowSavedMsgOpt); showConfirmationWhenSavingToolStripMenuItem.PerformClick();
@@ -188,29 +191,6 @@ namespace CommandsEditor
             miscToolStripMenuItem.MouseHover += (sender, e) => { ((ToolStripMenuItem)sender).PerformClick(); };
             miscToolStripMenuItem.DropDown.Closing += DropDown_Closing;
             toolStripButton2.DropDown.Closing += DropDown_Closing;
-
-            //Set title
-            _baseTitle = "OpenCAGE Commands Editor";
-            if (OpenCAGE.SettingsManager.GetBool("CONFIG_ShowPlatform"))
-            {
-                switch (Singleton.Platform)
-                {
-                    case PatchManager.Platform.STEAM:
-                        _baseTitle += " - Steam";
-                        break;
-                    case PatchManager.Platform.EPIC_GAMES_STORE:
-                        _baseTitle += " - Epic Games Store";
-                        break;
-                    case PatchManager.Platform.GOG:
-                        _baseTitle += " - GoG";
-                        break;
-                    case PatchManager.Platform.WINDOWS_STORE:
-                        _baseTitle += " - Windows Store";
-                        break;
-                }
-            }
-            DirtyTracker.OnChanged += OnDirtyChanged;
-            UpdateTitle();
 
             //Populate level list
             List<string> levels = Level.GetLevels(Singleton.PathToAI);
@@ -276,14 +256,34 @@ namespace CommandsEditor
         private void OnDirtyChanged(bool dirty) => UpdateTitle();
         private void UpdateTitle()
         {
+            string title = "OpenCAGE Commands Editor";
+            if (SettingsManager.GetBool(Singleton.Settings.ShowGamePlatform))
+            {
+                switch (Singleton.Platform)
+                {
+                    case PatchManager.Platform.STEAM:
+                        title += " - Steam";
+                        break;
+                    case PatchManager.Platform.EPIC_GAMES_STORE:
+                        title += " - Epic Games Store";
+                        break;
+                    case PatchManager.Platform.GOG:
+                        title += " - GoG";
+                        break;
+                    case PatchManager.Platform.WINDOWS_STORE:
+                        title += " - Windows Store";
+                        break;
+                }
+            }
+
             if (_commandsDisplay == null)
             {
-                this.Text = _baseTitle;
+                this.Text = title;
             }
             else
             {
                 string[] levelBits = _commandsDisplay.Content.Level.Name.Split('/');
-                this.Text = _baseTitle + " - " + levelBits[levelBits.Length - 1] + " (" + _commandsDisplay.Content.Level.Name.Substring(0, _commandsDisplay.Content.Level.Name.Length - levelBits[levelBits.Length - 1].Length).TrimEnd('/') + ")";
+                this.Text = title + " - " + levelBits[levelBits.Length - 1] + " (" + _commandsDisplay.Content.Level.Name.Substring(0, _commandsDisplay.Content.Level.Name.Length - levelBits[levelBits.Length - 1].Length).TrimEnd('/') + ")";
             }
 
 #if USE_DIRTY_TRACKER
@@ -757,6 +757,13 @@ namespace CommandsEditor
         {
             openGameOnSaveToolStripMenuItem.Checked = !openGameOnSaveToolStripMenuItem.Checked;
             SettingsManager.SetBool(Singleton.Settings.LaunchGameWhenSaved, openGameOnSaveToolStripMenuItem.Checked);
+        }
+
+        private void showGamePlatformToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            showGamePlatformToolStripMenuItem.Checked = !showGamePlatformToolStripMenuItem.Checked;
+            SettingsManager.SetBool(Singleton.Settings.ShowGamePlatform, showGamePlatformToolStripMenuItem.Checked);
+            UpdateTitle();
         }
 
         private void CopyFilesRecursively(string sourcePath, string targetPath)

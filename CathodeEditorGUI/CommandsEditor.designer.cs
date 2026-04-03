@@ -77,11 +77,12 @@ namespace CommandsEditor
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.statusText = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.behaviourTreesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
             this.vS2015DarkTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme();
             this.vS2015LightTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
-            this.behaviourTreesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showGamePlatformToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -223,7 +224,7 @@ namespace CommandsEditor
             this.focusOnSelectedToolStripMenuItem,
             this.connectToRuntimeUtils});
             this.levelViewerToolStripMenuItem.Name = "levelViewerToolStripMenuItem";
-            this.levelViewerToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.levelViewerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.levelViewerToolStripMenuItem.Text = "Level Viewer";
             // 
             // setUpToolStripMenuItem
@@ -275,7 +276,7 @@ namespace CommandsEditor
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(170, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
             // 
             // compositeViewerToolStripMenuItem
             // 
@@ -284,7 +285,7 @@ namespace CommandsEditor
             this.autoHideExplorerViewToolStripMenuItem,
             this.searchOnlyCompositeNames});
             this.compositeViewerToolStripMenuItem.Name = "compositeViewerToolStripMenuItem";
-            this.compositeViewerToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.compositeViewerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.compositeViewerToolStripMenuItem.Text = "Composite Display";
             // 
             // showExplorerViewToolStripMenuItem
@@ -322,7 +323,7 @@ namespace CommandsEditor
             this.showConfirmationWhenDeletingNodeToolStripMenuItem,
             this.giveOptionToDeleteEntityWhenNoNodesToolStripMenuItem});
             this.entityDisplayToolStripMenuItem.Name = "entityDisplayToolStripMenuItem";
-            this.entityDisplayToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.entityDisplayToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.entityDisplayToolStripMenuItem.Text = "Entity Display";
             // 
             // showEntityIDs
@@ -371,9 +372,10 @@ namespace CommandsEditor
             this.writeInstancedResourcesExperimentalToolStripMenuItem,
             this.setNumericStepToolStripMenuItem,
             this.savePAKAndBINToolStripMenuItem,
-            this.openGameOnSaveToolStripMenuItem});
+            this.openGameOnSaveToolStripMenuItem,
+            this.showGamePlatformToolStripMenuItem});
             this.miscToolStripMenuItem.Name = "miscToolStripMenuItem";
-            this.miscToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.miscToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.miscToolStripMenuItem.Text = "Misc";
             this.miscToolStripMenuItem.Click += new System.EventHandler(this.miscToolStripMenuItem_Click);
             // 
@@ -438,7 +440,7 @@ namespace CommandsEditor
             // controlsToolStripMenuItem
             // 
             this.controlsToolStripMenuItem.Name = "controlsToolStripMenuItem";
-            this.controlsToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.controlsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.controlsToolStripMenuItem.Text = "Controls";
             this.controlsToolStripMenuItem.Click += new System.EventHandler(this.controlsToolStripMenuItem_Click);
             // 
@@ -491,6 +493,13 @@ namespace CommandsEditor
             this.statusText.Name = "statusText";
             this.statusText.Size = new System.Drawing.Size(0, 17);
             // 
+            // behaviourTreesToolStripMenuItem
+            // 
+            this.behaviourTreesToolStripMenuItem.Name = "behaviourTreesToolStripMenuItem";
+            this.behaviourTreesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.behaviourTreesToolStripMenuItem.Text = "Behaviour Trees";
+            this.behaviourTreesToolStripMenuItem.Click += new System.EventHandler(this.behaviourTreesToolStripMenuItem_Click);
+            // 
             // dockPanel
             // 
             this.dockPanel.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -506,12 +515,12 @@ namespace CommandsEditor
             this.dockPanel.TabIndex = 5;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
             // 
-            // behaviourTreesToolStripMenuItem
+            // showGamePlatformToolStripMenuItem
             // 
-            this.behaviourTreesToolStripMenuItem.Name = "behaviourTreesToolStripMenuItem";
-            this.behaviourTreesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.behaviourTreesToolStripMenuItem.Text = "Behaviour Trees";
-            this.behaviourTreesToolStripMenuItem.Click += new System.EventHandler(this.behaviourTreesToolStripMenuItem_Click);
+            this.showGamePlatformToolStripMenuItem.Name = "showGamePlatformToolStripMenuItem";
+            this.showGamePlatformToolStripMenuItem.Size = new System.Drawing.Size(291, 22);
+            this.showGamePlatformToolStripMenuItem.Text = "Show Game Platform";
+            this.showGamePlatformToolStripMenuItem.Click += new System.EventHandler(this.showGamePlatformToolStripMenuItem_Click);
             // 
             // CommandsEditor
             // 
@@ -590,5 +599,6 @@ namespace CommandsEditor
         private System.Windows.Forms.ToolStripMenuItem animationsToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton launchGameBtn;
         private System.Windows.Forms.ToolStripMenuItem behaviourTreesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem showGamePlatformToolStripMenuItem;
     }
 }
