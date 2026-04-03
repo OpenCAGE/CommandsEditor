@@ -427,8 +427,8 @@ namespace CommandsEditor
             {
                 try
                 {
-                    allProcesses[x].Kill();
-                    allProcesses[x].WaitForExit();
+                    allProcesses[x]?.Kill();
+                    allProcesses[x]?.WaitForExit();
                 }
                 catch { }
             }

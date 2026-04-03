@@ -1018,6 +1018,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="CinematicToolsInjector\Build\CinematicToolsInjector.exe" />
     <Content Include="icon.ico" />
     <None Include="Images\Entity Icons\globe.ico" />
     <None Include="Images\Entity Icons\Avatar Icon.ico" />
