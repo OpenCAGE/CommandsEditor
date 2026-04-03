@@ -278,7 +278,7 @@ namespace CommandsEditor
                         title += " - Windows Store";
                         break;
                     default:
-                        title + " - Unknown Platform";
+                        title += " - Unknown Platform";
                         break;
                 }
             }
