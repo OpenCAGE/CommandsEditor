@@ -46,16 +46,28 @@ namespace CommandsEditor
 
         private void export_Click(object sender, System.EventArgs e)
         {
-            //TODO: chuck this on a thread and show progress properly.
-
             {
-                Log("Loading data for " + levelList.SelectedItem.ToString() + "...");
-                Level lvl = new Level(Singleton.PathToAI + "/DATA/ENV/" + levelList.SelectedItem.ToString(), Singleton.Global);
+                Level lvl = new Level(Singleton.PathToAI + "/DATA/ENV/" + levelList.SelectedItem.ToString(), Singleton.Global, false);
+                {
+                    ProgressUI loadProgress = new ProgressUI();
+                    loadProgress.ShowLevelLoading(lvl);
+                    loadProgress.BringToFront();
+                    lvl.Load();
+                    loadProgress.Close();
+                    loadProgress.Dispose();
+                }
+
                 _fgLayouts = (CompositeFlowgraphTable)CustomTable.ReadTable(lvl.Commands.Filepath, CustomTableType.COMPOSITE_FLOWGRAPHS);
                 if (_fgLayouts == null) _fgLayouts = new CompositeFlowgraphTable();
 
-                Log("Starting export...");
-                AddCompositesRecursively(_composite, lvl);
+                {
+                    ProgressUI exportProgress = new ProgressUI();
+                    exportProgress.ShowTransferring("Porting content...");
+                    exportProgress.BringToFront();
+                    AddCompositesRecursively(_composite, lvl, exportProgress);
+                    exportProgress.Close();
+                    exportProgress.Dispose();
+                }
 
                 //Close alien down if it's open, it conflicts with our write locks!
                 List<Process> allProcesses = new List<Process>(Process.GetProcessesByName("AI"));
@@ -69,8 +81,14 @@ namespace CommandsEditor
                     catch { }
                 }
 
-                Log("Performing final save for " + levelList.SelectedItem.ToString() + "...");
-                lvl.Save();
+                {
+                    ProgressUI saveProgress = new ProgressUI();
+                    saveProgress.ShowLevelSaving(lvl);
+                    saveProgress.BringToFront();
+                    lvl.Save();
+                    saveProgress.Close();
+                    saveProgress.Dispose();
+                }
                 CustomTable.WriteTable(lvl.Commands.Filepath, CustomTableType.COMPOSITE_FLOWGRAPHS, _fgLayouts);
             }
             GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true);
@@ -81,7 +99,7 @@ namespace CommandsEditor
             this.Close();
         }
 
-        private void AddCompositesRecursively(Composite composite, Level lvl)
+        private void AddCompositesRecursively(Composite composite, Level lvl, ProgressUI ui)
         {
             //Check to see if the composite already exists at our destination
             Composite dest = lvl.Commands.Entries.FirstOrDefault(o => o.shortGUID == composite.shortGUID);
@@ -98,18 +116,18 @@ namespace CommandsEditor
             if (dest == null)
             {
                 //We need to add the composite to the new location
-                Log("Copying " + composite.name);
                 Composite copiedComp = composite.Copy();
                 lvl.Commands.Entries.Add(copiedComp);
+                ui.DoRefresh();
 
                 foreach (FunctionEntity ent in copiedComp.functions)
                 {
                     if (ent.resources != null)
-                        CopyResourcesToLevel(ent.resources, lvl);
+                        CopyResourcesToLevel(ent.resources, lvl, ui);
 
                     Parameter resources = ent.GetParameter("resource");
                     if (resources != null)
-                        CopyResourcesToLevel(((cResource)resources.content).value, lvl);
+                        CopyResourcesToLevel(((cResource)resources.content).value, lvl, ui);
                 }
 
                 //Bring over generic metadata
@@ -132,48 +150,33 @@ namespace CommandsEditor
 
                 Composite nestedComp = Content.Level.Commands.GetComposite(ent.function);
                 if (nestedComp != null)
-                    AddCompositesRecursively(nestedComp, lvl);
+                    AddCompositesRecursively(nestedComp, lvl, ui);
             }
         }
 
-        private void CopyResourcesToLevel(List<ResourceReference> resourceRefs, Level lvl)
+        private void CopyResourcesToLevel(List<ResourceReference> resourceRefs, Level lvl, ProgressUI ui)
         {
             for (int i = 0; i < resourceRefs.Count; i++)
             {
                 switch (resourceRefs[i].resource_type)
                 {
                     case ResourceType.ANIMATED_MODEL:
-                        Log("Exporting ANIMATED_MODEL resource...");
                         int resourceIndex = lvl.EnvironmentAnimations.Entries.Count;
                         resourceRefs[i].AnimatedModel = lvl.EnvironmentAnimations.ImportEntry(resourceRefs[i].AnimatedModel);
                         resourceRefs[i].AnimatedModel.ResourceIndex = resourceIndex; //TODO: would be good to just handle this at build time
                         break;
                     case ResourceType.RENDERABLE_INSTANCE:
-                        Log("Exporting " + resourceRefs[i].RenderableInstance.Count + " RENDERABLE_INSTANCE resource(s)...");
                         resourceRefs[i].RenderableInstance = lvl.RenderableElements.ImportEntry(resourceRefs[i].RenderableInstance, Content.Level.Models);
                         break;
                     case ResourceType.COLLISION_MAPPING:
-                        Log("Exporting COLLISION_MAPPING resource...");
                         resourceRefs[i].CollisionMapping = lvl.CollisionMaps.ImportEntry(resourceRefs[i].CollisionMapping);
                         break;
                     default:
-                        Log("Skipping " + resourceRefs[i].resource_type + " resource!");
+                        Debug.Log("Porting", "Skipping resource type: " + resourceRefs[i].resource_type.ToString());
                         break;
                 }
+                ui.DoRefresh();
             }
-        }
-
-        private List<string> log = new List<string>();
-        private void Log(string msg)
-        {
-            log.Add("[" + DateTime.Now.ToString("HH:mm:ss") + "] " + msg);
-
-            richTextBox1.Text = "";
-            for (int i = log.Count - 1;  i >= 0; i--)
-            {
-                richTextBox1.Text += log[i] + "\n";
-            }
-            richTextBox1.Refresh();
         }
     }
 }

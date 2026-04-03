@@ -5,6 +5,8 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -66,12 +68,14 @@ namespace CommandsEditor
             if (progressBar1.InvokeRequired)
             {
                 progressBar1.BeginInvoke(new Action(() => {
+                    progressBar1.Style = ProgressBarStyle.Continuous;
                     progressBar1.Value = 0;
                     progressBar1.Refresh();
                 }));
             }
             else
             {
+                progressBar1.Style = ProgressBarStyle.Continuous;
                 progressBar1.Value = 0;
                 progressBar1.Refresh();
             }
@@ -82,6 +86,21 @@ namespace CommandsEditor
                 _level.OnSaveTick += UpdateProgressBar;
 
             this.Show();
+        }
+
+        public void ShowTransferring(string titlebar)
+        {
+            this.Text = titlebar;
+
+            progressBar1.Style = ProgressBarStyle.Marquee;
+            progressBar1.Refresh();
+
+            this.Show();
+        }
+
+        public void DoRefresh()
+        {
+            progressBar1.Refresh();
         }
 
         private void UpdateProgressBar()

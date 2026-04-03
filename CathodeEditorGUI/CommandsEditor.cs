@@ -94,14 +94,14 @@ namespace CommandsEditor
 #if !DEBUG
             DEBUG_ReloadLevel.Visible = false;
             connectToRuntimeUtils.Visible = false;
-            
+
             // wip
             materialPropertiesToolStripMenuItem.Visible = false;
             uIToolStripMenuItem.Visible = false;
             animationsToolStripMenuItem.Visible = false;
             configurationsToolStripMenuItem.Visible = false;
 #endif
-            
+
             //Launch game is only supported by certain platforms due to having to patch the binary
             switch (Singleton.Platform)
             {
@@ -120,10 +120,39 @@ namespace CommandsEditor
             Height = SettingsManager.GetInteger(Singleton.Settings.WindowHeight, _defaultHeight);
             Resize += CommandsEditor_Resize;
             FormClosing += CommandsEditor_FormClosing;
+            SetupOptions();
 
+            //Fixes for dodgy top dropdowns
+            compositeViewerToolStripMenuItem.MouseHover += (sender, e) => { ((ToolStripMenuItem)sender).PerformClick(); };
+            compositeViewerToolStripMenuItem.DropDown.Closing += DropDown_Closing;
+            entityDisplayToolStripMenuItem.MouseHover += (sender, e) => { ((ToolStripMenuItem)sender).PerformClick(); };
+            entityDisplayToolStripMenuItem.DropDown.Closing += DropDown_Closing;
+            miscToolStripMenuItem.MouseHover += (sender, e) => { ((ToolStripMenuItem)sender).PerformClick(); };
+            miscToolStripMenuItem.DropDown.Closing += DropDown_Closing;
+            toolStripButton2.DropDown.Closing += DropDown_Closing;
+
+            //Populate level list
+            List<string> levels = Level.GetLevels(Singleton.PathToAI);
+            for (int i = 0; i < levels.Count; i++)
+            {
+                ToolStripMenuItem levelItem = new ToolStripMenuItem(levels[i]);
+                levelItem.Click += OnLevelSelected;
+                loadLevel.DropDownItems.Add(levelItem);
+                _levelMenuItems.Add(levels[i], levelItem);
+            }
+
+            //If we have been launched to a level, load that
+            if (level != null)
+                OnLevelSelected(level);
+            else
+                loadLevel_Click(null, null);
+        }
+
+        private void SetupOptions()
+        {
             if (!SettingsManager.IsSet(Singleton.Settings.ServerOpt)) SettingsManager.SetBool(Singleton.Settings.ServerOpt, true);
             connectToUnity.Checked = !SettingsManager.GetBool(Singleton.Settings.ServerOpt); connectToUnity.PerformClick();
-            
+
             if (!SettingsManager.IsSet(Singleton.Settings.RuntimeUtilsOpt)) SettingsManager.SetBool(Singleton.Settings.RuntimeUtilsOpt, false);
             connectToRuntimeUtils.Checked = SettingsManager.GetBool(Singleton.Settings.RuntimeUtilsOpt);
             if (connectToRuntimeUtils.Checked)
@@ -198,31 +227,6 @@ namespace CommandsEditor
                 SettingsManager.SetInteger(Singleton.Settings.NodeColour_VariableNode, Color.Red.ToArgb());
             if (!SettingsManager.IsSet(Singleton.Settings.NodeColour_VariableText))
                 SettingsManager.SetInteger(Singleton.Settings.NodeColour_VariableText, Color.White.ToArgb());
-
-            //Fixes for dodgy top dropdowns
-            compositeViewerToolStripMenuItem.MouseHover += (sender, e) => { ((ToolStripMenuItem)sender).PerformClick(); };
-            compositeViewerToolStripMenuItem.DropDown.Closing += DropDown_Closing;
-            entityDisplayToolStripMenuItem.MouseHover += (sender, e) => { ((ToolStripMenuItem)sender).PerformClick(); };
-            entityDisplayToolStripMenuItem.DropDown.Closing += DropDown_Closing;
-            miscToolStripMenuItem.MouseHover += (sender, e) => { ((ToolStripMenuItem)sender).PerformClick(); };
-            miscToolStripMenuItem.DropDown.Closing += DropDown_Closing;
-            toolStripButton2.DropDown.Closing += DropDown_Closing;
-
-            //Populate level list
-            List<string> levels = Level.GetLevels(Singleton.PathToAI);
-            for (int i = 0; i < levels.Count; i++)
-            {
-                ToolStripMenuItem levelItem = new ToolStripMenuItem(levels[i]);
-                levelItem.Click += OnLevelSelected;
-                loadLevel.DropDownItems.Add(levelItem);
-                _levelMenuItems.Add(levels[i], levelItem);
-            }
-
-            //If we have been launched to a level, load that
-            if (level != null)
-                OnLevelSelected(level);
-            else
-                loadLevel_Click(null, null);
         }
 
         //keep dropdown open if cursor is inside it 
