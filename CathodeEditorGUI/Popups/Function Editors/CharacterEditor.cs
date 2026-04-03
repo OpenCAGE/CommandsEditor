@@ -82,7 +82,7 @@ namespace CommandsEditor
 
             characterInstances.Items.Clear();
             for (int i = 0; i < _hierarchies.Count; i++)
-                characterInstances.Items.Add(Content.Level.Commands.Utils.GetResolvedAsString(Content.Level.Commands.Utils.ResolveHierarchy(_hierarchies[i]), SettingsManager.GetBool("CS_ShowEntityIDs")));
+                characterInstances.Items.Add(Content.Level.Commands.Utils.GetResolvedAsString(Content.Level.Commands.Utils.ResolveHierarchy(_hierarchies[i]), SettingsManager.GetBool(Singleton.Settings.ShowShortGuids)));
 
             selectNewHead.Enabled = characterInstances.Items.Count != 0;
             selectNewShirt.Enabled = characterInstances.Items.Count != 0;

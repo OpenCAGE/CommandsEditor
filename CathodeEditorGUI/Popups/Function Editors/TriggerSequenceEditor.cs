@@ -47,7 +47,7 @@ namespace CommandsEditor
             for (int i = 0; i < _triggerSequence.sequence.Count; i++)
             {
                 ListViewItem item = new ListViewItem();
-                item.Text = Content.Level.Commands.Utils.GetResolvedAsString(Content.Level.Commands.Utils.ResolveAlias(_triggerSequence.sequence[i].connectedEntity.path, _entityDisplay.Composite), SettingsManager.GetBool("CS_ShowEntityIDs"));
+                item.Text = Content.Level.Commands.Utils.GetResolvedAsString(Content.Level.Commands.Utils.ResolveAlias(_triggerSequence.sequence[i].connectedEntity.path, _entityDisplay.Composite), SettingsManager.GetBool(Singleton.Settings.ShowShortGuids));
                 item.SubItems.Add(_triggerSequence.sequence[i].timing + "s");
                 entity_list.Items.Add(item);
             }
@@ -97,7 +97,7 @@ namespace CommandsEditor
             }
 
             int index = entity_list.SelectedItems[0].Index;
-            entityHierarchy.Text = Content.Level.Commands.Utils.GetResolvedAsString(Content.Level.Commands.Utils.ResolveAlias(_triggerSequence.sequence[index].connectedEntity.path, _entityDisplay.Composite), SettingsManager.GetBool("CS_ShowEntityIDs"));
+            entityHierarchy.Text = Content.Level.Commands.Utils.GetResolvedAsString(Content.Level.Commands.Utils.ResolveAlias(_triggerSequence.sequence[index].connectedEntity.path, _entityDisplay.Composite), SettingsManager.GetBool(Singleton.Settings.ShowShortGuids));
             entityTriggerDelay.Text = _triggerSequence.sequence[index].timing.ToString();
             selectedEntityDetails.Visible = true;
         }

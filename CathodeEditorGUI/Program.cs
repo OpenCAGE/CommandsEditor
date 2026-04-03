@@ -1,3 +1,4 @@
+using CathodeLib;
 using OpenCAGE;
 using System;
 using System.Collections.Generic;
@@ -12,11 +13,6 @@ using System.Windows.Forms;
 
 namespace CommandsEditor
 {
-    public static class SharedData
-    {
-        public static string pathToAI = "";
-    }
-
     static class Program
     {
         static Dictionary<string, string> _args;
@@ -46,16 +42,18 @@ namespace CommandsEditor
 
             //Set path to AI
             if (GetArgument("pathToAI") != null)
-                SharedData.pathToAI = GetArgument("pathToAI");
+                Singleton.PathToAI = GetArgument("pathToAI");
             else
-                SharedData.pathToAI = Environment.CurrentDirectory;
+                Singleton.PathToAI = Environment.CurrentDirectory;
 
 #if !DEBUG
             //Verify location
-            if (!File.Exists(SharedData.pathToAI + "/AI.exe")) 
+            if (!File.Exists(Singleton.PathToAI + "/AI.exe")) 
                 throw new Exception("This tool was launched incorrectly, or was not placed within the Alien: Isolation directory.");
 #endif
-            
+
+            Singleton.Platform = PatchManager.GetPlatform(Singleton.PathToAI);
+
             //Make sure we're using the UK culture to format our numbers correctly
             CultureInfo newCulture = CultureInfo.CreateSpecificCulture("en-GB");
             Thread.CurrentThread.CurrentUICulture = newCulture;
@@ -92,8 +90,8 @@ namespace CommandsEditor
         }
         static void HandleError(string error)
         {
-            string logPath = SharedData.pathToAI + "/DATA/MODTOOLS/LOGS/CECrash_" + DateTime.Now.ToString("ddMMyy-HHmmss") + ".log";
-            Directory.CreateDirectory(SharedData.pathToAI + "/DATA/MODTOOLS/LOGS");
+            string logPath = Singleton.PathToAI + "/DATA/MODTOOLS/LOGS/CECrash_" + DateTime.Now.ToString("ddMMyy-HHmmss") + ".log";
+            Directory.CreateDirectory(Singleton.PathToAI + "/DATA/MODTOOLS/LOGS");
 
             MessageBox.Show("A critical error occurred.\nPlease wait while a log is generated.", "OpenCAGE Error Handler", MessageBoxButtons.OK, MessageBoxIcon.Error);
 

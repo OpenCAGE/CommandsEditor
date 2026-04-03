@@ -18,6 +18,10 @@ namespace CommandsEditor
     {
         public static CommandsEditor Editor;
 
+        //Metadata
+        public static string PathToAI;
+        public static PatchManager.Platform Platform;
+
         //Global localised string DBs for English
         public static Dictionary<string, TextDB> GlobalTextDBs = new Dictionary<string, TextDB>();
 
@@ -152,7 +156,7 @@ namespace CommandsEditor
         public static void LoadGlobals()
         {
             //Populate localised text string databases (in English)
-            List<string> textList = Directory.GetFiles(SharedData.pathToAI + "/DATA/TEXT/ENGLISH/", "*.TXT", SearchOption.AllDirectories).ToList<string>();
+            List<string> textList = Directory.GetFiles(Singleton.PathToAI + "/DATA/TEXT/ENGLISH/", "*.TXT", SearchOption.AllDirectories).ToList<string>();
             {
                 TextDB[] strings = new TextDB[textList.Count];
                 Parallel.For(0, textList.Count, (i) =>
@@ -166,10 +170,10 @@ namespace CommandsEditor
             Debug.Log("Asset Loader", "Loading anim data");
 
             //Load animation data
-            PAK2 animPAK = new PAK2(SharedData.pathToAI + "/DATA/GLOBAL/ANIMATION.PAK");
+            PAK2 animPAK = new PAK2(Singleton.PathToAI + "/DATA/GLOBAL/ANIMATION.PAK");
 
             //Create global
-            Global = new Global(SharedData.pathToAI + "\\DATA\\ENV\\GLOBAL\\", animPAK);
+            Global = new Global(Singleton.PathToAI + "\\DATA\\ENV\\GLOBAL\\", animPAK);
 
             //Load all male/female skeletons
             List<PAK2.File> skeletonDefs = animPAK.Entries.FindAll(o => o.Filename.Length > 17 && o.Filename.Substring(0, 17) == "DATA\\SKELETONDEFS");

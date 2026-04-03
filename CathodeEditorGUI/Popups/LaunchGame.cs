@@ -24,9 +24,6 @@ namespace CommandsEditor
         string _cinematicToolDLL = "";
         string _utilPath = "";
 
-        PatchManager.Platform _platform;
-        string _gamePath;
-
         /* On init, if we are trying to launch to a map, skip GUI */
         public LaunchGame(string level = null, string launchDirectly = null)
         {
@@ -38,25 +35,6 @@ namespace CommandsEditor
             }
 
             InitializeComponent();
-
-            //Get the game version
-            switch (OpenCAGE.SettingsManager.GetString("META_GameVersion"))
-            {
-                case "STEAM":
-                    _platform = PatchManager.Platform.STEAM;
-                    break;
-                case "EPIC_GAMES_STORE":
-                    _platform = PatchManager.Platform.EPIC_GAMES_STORE;
-                    break;
-                case "GOG":
-                    _platform = PatchManager.Platform.GOG;
-                    break;
-                default:
-                    MessageBox.Show("Your game version is unsupported!", "Unsupported", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Application.Exit();
-                    return;
-            }
-            _gamePath = SettingsManager.GetString("PATH_GameRoot");
 
             //Close the game down before we do anything
             List<Process> allProcesses = new List<Process>(Process.GetProcessesByName("AI"));
@@ -71,31 +49,31 @@ namespace CommandsEditor
                 catch { }
             }
 
-            PatchManager.PerformRecommendedPatches(_platform, _gamePath);
+            PatchManager.PerformRecommendedPatches(Singleton.Platform, Singleton.PathToAI);
 
-            _cinematicToolDLL = _gamePath + "/DATA/MODTOOLS/REMOTE_ASSETS/cinematictools/CT_AlienIsolation.dll";
-            _utilPath = _gamePath + "/DATA/MODTOOLS/REMOTE_ASSETS/runtimeutils";
+            _cinematicToolDLL = Singleton.PathToAI + "/DATA/MODTOOLS/REMOTE_ASSETS/cinematictools/CT_AlienIsolation.dll";
+            _utilPath = Singleton.PathToAI + "/DATA/MODTOOLS/REMOTE_ASSETS/runtimeutils";
 
             enableCinematicTools.Checked = SettingsManager.GetBool("OPT_CinematicTools");
-            enableCinematicTools.Enabled = _platform == PatchManager.Platform.STEAM && File.Exists(_cinematicToolDLL);
+            enableCinematicTools.Enabled = Singleton.Platform == PatchManager.Platform.STEAM && File.Exists(_cinematicToolDLL);
 
             enableRuntimeUtils.Checked = SettingsManager.GetBool("OPT_Runtime_Utils");
-            enableRuntimeUtils.Enabled = _platform == PatchManager.Platform.STEAM && Directory.Exists(_utilPath);
+            enableRuntimeUtils.Enabled = Singleton.Platform == PatchManager.Platform.STEAM && Directory.Exists(_utilPath);
 
             disableUI.Checked = SettingsManager.GetBool("OPT_HudDisabled");
-            disableUI.Enabled = _platform != PatchManager.Platform.WINDOWS_STORE;
+            disableUI.Enabled = Singleton.Platform != PatchManager.Platform.WINDOWS_STORE;
 
             skipFrontend.Checked = SettingsManager.GetBool("OPT_SkipFE");
-            skipFrontend.Enabled = _platform != PatchManager.Platform.WINDOWS_STORE;
+            skipFrontend.Enabled = Singleton.Platform != PatchManager.Platform.WINDOWS_STORE;
 
             enableUIPerf.Checked = SettingsManager.GetBool("OPT_cUIEnabled_UIPerf");
-            enableUIPerf.Enabled = _platform != PatchManager.Platform.WINDOWS_STORE;
+            enableUIPerf.Enabled = Singleton.Platform != PatchManager.Platform.WINDOWS_STORE;
 
             enableMemReplayLogs.Checked = SettingsManager.GetBool("OPT_Mem_Replay_Logs");
-            enableMemReplayLogs.Enabled = _platform != PatchManager.Platform.WINDOWS_STORE;
+            enableMemReplayLogs.Enabled = Singleton.Platform != PatchManager.Platform.WINDOWS_STORE;
 
             patchCurrentGen.Checked = SettingsManager.GetBool("OPT_PatchCurrentGen");
-            patchCurrentGen.Enabled = _platform != PatchManager.Platform.WINDOWS_STORE;
+            patchCurrentGen.Enabled = Singleton.Platform != PatchManager.Platform.WINDOWS_STORE;
 
             UIMOD_DebugCheckpoints.Checked = SettingsManager.GetBool("UIOPT_PAUSEMENU");
             UIMOD_MapName.Checked = SettingsManager.GetBool("UIOPT_LOADINGSCREEN");
@@ -108,7 +86,7 @@ namespace CommandsEditor
             string loadedLevel = Singleton.Editor?.CommandsDisplay?.Content?.Level?.Name;
             if (loadedLevel == null) loadedLevel = SettingsManager.GetString("OPT_LoadToMap");
 
-            levelList.Items.AddRange(Level.GetLevels(_gamePath).ToArray());
+            levelList.Items.AddRange(Level.GetLevels(Singleton.PathToAI).ToArray());
             levelList.SelectedItem = loadedLevel;
             if (levelList.SelectedIndex == -1)
             {
@@ -119,7 +97,7 @@ namespace CommandsEditor
             {
                 levelList.SelectedItem = level;
             }
-            levelList.Enabled = _platform != PatchManager.Platform.WINDOWS_STORE;
+            levelList.Enabled = Singleton.Platform != PatchManager.Platform.WINDOWS_STORE;
         }
 
         /* Load game with given map name */
@@ -131,24 +109,24 @@ namespace CommandsEditor
                 return false;
             }
 
-            bool patchLaunch = PatchManager.PatchLaunchMode(_platform, _gamePath, MapName);
-            bool patchIntegrity = PatchManager.PatchFileIntegrityCheck(_platform, _gamePath);
-            bool patchMsg = PatchManager.PatchPopupMessage(_platform, _gamePath);
+            bool patchLaunch = PatchManager.PatchLaunchMode(Singleton.Platform, Singleton.PathToAI, MapName);
+            bool patchIntegrity = PatchManager.PatchFileIntegrityCheck(Singleton.Platform, Singleton.PathToAI);
+            bool patchMsg = PatchManager.PatchPopupMessage(Singleton.Platform, Singleton.PathToAI);
             if (!patchLaunch || !patchIntegrity || !patchMsg)
                 MessageBox.Show("Failed to set level loading values in AI.exe!\nIs the game already open?", "Failed to patch binary.", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
-            PatchManager.UpdateLevelListInPackages(_platform, _gamePath);
+            PatchManager.UpdateLevelListInPackages(Singleton.Platform, Singleton.PathToAI);
 
             //Start game process 
-            if (_platform == PatchManager.Platform.STEAM)
+            if (Singleton.Platform == PatchManager.Platform.STEAM)
             {
                 Process.Start("steam://rungameid/214490");
             }
             else
             {
                 ProcessStartInfo alienProcess = new ProcessStartInfo();
-                alienProcess.WorkingDirectory = _gamePath;
-                alienProcess.FileName = _gamePath + "/AI.exe";
+                alienProcess.WorkingDirectory = Singleton.PathToAI;
+                alienProcess.FileName = Singleton.PathToAI + "/AI.exe";
                 Process.Start(alienProcess);
             }
             return true;
@@ -158,8 +136,8 @@ namespace CommandsEditor
         private void LaunchGame_Click(object sender, EventArgs e)
         {
             //Copy/delete runtime utils as requested
-            string rtUtilASI = _gamePath + "OpenCAGE_Utils.asi";
-            string rtUtilDLL = _gamePath + "d3d11.dll";
+            string rtUtilASI = Singleton.PathToAI + "OpenCAGE_Utils.asi";
+            string rtUtilDLL = Singleton.PathToAI + "d3d11.dll";
             if (SettingsManager.GetBool("OPT_Runtime_Utils"))
             {
                 try
@@ -190,7 +168,7 @@ namespace CommandsEditor
             //Enable Cinematic Tools if requested
             if (SettingsManager.GetBool("OPT_CinematicTools"))
             {
-                string injectorExe = _gamePath + "/DATA/MODTOOLS/CinematicTools.exe";
+                string injectorExe = Singleton.PathToAI + "/DATA/MODTOOLS/CinematicTools.exe";
                 try
                 {
                     File.WriteAllBytes(injectorExe, Properties.Resources.CinematicToolsInjector);
@@ -235,7 +213,7 @@ namespace CommandsEditor
         private void enableUIPerf_CheckedChanged(object sender, EventArgs e)
         {
             SettingsManager.SetBool("OPT_cUIEnabled_UIPerf", enableUIPerf.Checked);
-            if (!PatchManager.PatchUIPerfFlag(_platform, _gamePath, enableUIPerf.Checked))
+            if (!PatchManager.PatchUIPerfFlag(Singleton.Platform, Singleton.PathToAI, enableUIPerf.Checked))
                 MessageBox.Show("Failed to set cUI UI perf option.\nIs Alien: Isolation open?", "Couldn't write!", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
@@ -243,7 +221,7 @@ namespace CommandsEditor
         private void enableMemReplayLogs_CheckedChanged(object sender, EventArgs e)
         {
             SettingsManager.SetBool("OPT_Mem_Replay_Logs", enableMemReplayLogs.Checked);
-            if (!PatchManager.PatchMemReplayLogFlag(_platform, _gamePath, enableMemReplayLogs.Checked))
+            if (!PatchManager.PatchMemReplayLogFlag(Singleton.Platform, Singleton.PathToAI, enableMemReplayLogs.Checked))
                 MessageBox.Show("Failed to set memory logging option.\nIs Alien: Isolation open?", "Couldn't write!", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
@@ -257,7 +235,7 @@ namespace CommandsEditor
         private void disableUI_CheckedChanged(object sender, EventArgs e)
         {
             SettingsManager.SetBool("OPT_HudDisabled", disableUI.Checked);
-            if (!PatchManager.PatchNoUIFlag(_platform, _gamePath, disableUI.Checked))
+            if (!PatchManager.PatchNoUIFlag(Singleton.Platform, Singleton.PathToAI, disableUI.Checked))
                 MessageBox.Show("Failed to set HUD disabled option.\nIs Alien: Isolation open?", "Couldn't write!", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
@@ -265,7 +243,7 @@ namespace CommandsEditor
         private void skipFrontend_CheckedChanged(object sender, EventArgs e)
         {
             SettingsManager.SetBool("OPT_SkipFE", skipFrontend.Checked);
-            if (!PatchManager.PatchSkipFrontendFlag(_platform, _gamePath, skipFrontend.Checked))
+            if (!PatchManager.PatchSkipFrontendFlag(Singleton.Platform, Singleton.PathToAI, skipFrontend.Checked))
                 MessageBox.Show("Failed to set skip frontend option.\nIs Alien: Isolation open?", "Couldn't write!", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
@@ -273,7 +251,7 @@ namespace CommandsEditor
         private void patchCurrentGen_CheckedChanged(object sender, EventArgs e)
         {
             SettingsManager.SetBool("OPT_PatchCurrentGen", patchCurrentGen.Checked);
-            if (!PatchManager.DisableCurrentGenOptimisations(_platform, _gamePath, patchCurrentGen.Checked))
+            if (!PatchManager.DisableCurrentGenOptimisations(Singleton.Platform, Singleton.PathToAI, patchCurrentGen.Checked))
                 MessageBox.Show("Failed to set optimisation patch option.\nIs Alien: Isolation open?", "Couldn't write!", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
@@ -298,7 +276,7 @@ namespace CommandsEditor
         private void UpdateUI(string file, bool modded)
         {
             if (uiPAK == null)
-                uiPAK = new PAK2(_gamePath + "/DATA/UI.PAK");
+                uiPAK = new PAK2(Singleton.PathToAI + "/DATA/UI.PAK");
 
             using (MemoryStream stream = new MemoryStream())
             using (BinaryReader reader = new BinaryReader(stream))

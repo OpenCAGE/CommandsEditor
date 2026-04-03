@@ -27,7 +27,7 @@ namespace CommandsEditor.Popups
         {
             InitializeComponent();
 
-            _assetData = new CustomCharacterAssetData(SharedData.pathToAI + "/DATA/CHR_INFO/CUSTOMCHARACTERASSETDATA.BIN");
+            _assetData = new CustomCharacterAssetData(Singleton.PathToAI + "/DATA/CHR_INFO/CUSTOMCHARACTERASSETDATA.BIN");
 
             assetSetList.BeginUpdate();
             assetSetList.Items.Clear();

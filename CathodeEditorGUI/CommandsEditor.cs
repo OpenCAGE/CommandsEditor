@@ -191,19 +191,21 @@ namespace CommandsEditor
 
             //Set title
             _baseTitle = "OpenCAGE Commands Editor";
-            if (OpenCAGE.SettingsManager.GetBool("CONFIG_ShowPlatform") &&
-                OpenCAGE.SettingsManager.GetString("META_GameVersion") != "")
+            if (OpenCAGE.SettingsManager.GetBool("CONFIG_ShowPlatform"))
             {
-                switch (OpenCAGE.SettingsManager.GetString("META_GameVersion"))
+                switch (Singleton.Platform)
                 {
-                    case "STEAM":
+                    case PatchManager.Platform.STEAM:
                         _baseTitle += " - Steam";
                         break;
-                    case "EPIC_GAMES_STORE":
+                    case PatchManager.Platform.EPIC_GAMES_STORE:
                         _baseTitle += " - Epic Games Store";
                         break;
-                    case "GOG":
+                    case PatchManager.Platform.GOG:
                         _baseTitle += " - GoG";
+                        break;
+                    case PatchManager.Platform.WINDOWS_STORE:
+                        _baseTitle += " - Windows Store";
                         break;
                 }
             }
@@ -211,7 +213,7 @@ namespace CommandsEditor
             UpdateTitle();
 
             //Populate level list
-            List<string> levels = Level.GetLevels(SharedData.pathToAI);
+            List<string> levels = Level.GetLevels(Singleton.PathToAI);
             for (int i = 0; i < levels.Count; i++)
             {
                 ToolStripMenuItem levelItem = new ToolStripMenuItem(levels[i]);
@@ -333,10 +335,10 @@ namespace CommandsEditor
             }
 
 #if DEBUG
-            if (Directory.Exists(SharedData.pathToAI + "\\LatestBuiltData\\ENV"))
+            if (Directory.Exists(Singleton.PathToAI + "\\LatestBuiltData\\ENV"))
             {
-                Directory.Delete(SharedData.pathToAI + "\\DATA\\ENV\\" + level, true);
-                CopyFilesRecursively(SharedData.pathToAI + "\\LatestBuiltData\\ENV\\" + level, SharedData.pathToAI + "\\DATA\\ENV\\" + level);
+                Directory.Delete(Singleton.PathToAI + "\\DATA\\ENV\\" + level, true);
+                CopyFilesRecursively(Singleton.PathToAI + "\\LatestBuiltData\\ENV\\" + level, Singleton.PathToAI + "\\DATA\\ENV\\" + level);
             }
 #endif
 
@@ -468,45 +470,29 @@ namespace CommandsEditor
             }
 
 #if !DEBUG
-            PatchManager.Platform? platform = null;
-            switch (OpenCAGE.SettingsManager.GetString("META_GameVersion"))
-            {
-                case "STEAM":
-                    platform = PatchManager.Platform.STEAM;
-                    break;
-                case "EPIC_GAMES_STORE":
-                    platform = PatchManager.Platform.EPIC_GAMES_STORE;
-                    break;
-                case "GOG":
-                    platform = PatchManager.Platform.GOG;
-                    break;
-            }
-            if (platform.HasValue)
-            {
-                PatchManager.PatchFileIntegrityCheck(platform.Value, SharedData.pathToAI);
-                PatchManager.PatchPopupMessage(platform.Value, SharedData.pathToAI);
-                PatchManager.UpdateLevelListInPackages(platform.Value, SharedData.pathToAI);
+            PatchManager.PatchFileIntegrityCheck(Singleton.Platform, Singleton.PathToAI);
+            PatchManager.PatchPopupMessage(Singleton.Platform, Singleton.PathToAI);
+            PatchManager.UpdateLevelListInPackages(Singleton.Platform, Singleton.PathToAI);
 
-                PatchManager.PatchSkipFrontendFlag(platform.Value, SharedData.pathToAI, SettingsManager.GetBool("OPT_SkipFE"));
-                PatchManager.PatchNoUIFlag(platform.Value, SharedData.pathToAI, SettingsManager.GetBool("OPT_HudDisabled"));
-                PatchManager.PatchMemReplayLogFlag(platform.Value, SharedData.pathToAI, SettingsManager.GetBool("OPT_Mem_Replay_Logs"));
-                PatchManager.PatchUIPerfFlag(platform.Value, SharedData.pathToAI, SettingsManager.GetBool("OPT_cUIEnabled_UIPerf"));
+            PatchManager.PatchSkipFrontendFlag(Singleton.Platform, Singleton.PathToAI, SettingsManager.GetBool("OPT_SkipFE"));
+            PatchManager.PatchNoUIFlag(Singleton.Platform, Singleton.PathToAI, SettingsManager.GetBool("OPT_HudDisabled"));
+            PatchManager.PatchMemReplayLogFlag(Singleton.Platform, Singleton.PathToAI, SettingsManager.GetBool("OPT_Mem_Replay_Logs"));
+            PatchManager.PatchUIPerfFlag(Singleton.Platform, Singleton.PathToAI, SettingsManager.GetBool("OPT_cUIEnabled_UIPerf"));
 
-                if (SettingsManager.GetBool(Singleton.Settings.LaunchGameWhenSaved))
+            if (SettingsManager.GetBool(Singleton.Settings.LaunchGameWhenSaved))
+            {
+                PatchManager.PatchLaunchMode(Singleton.Platform, Singleton.PathToAI, _commandsDisplay.Content.Level.Name);
+
+                if (Singleton.Platform == PatchManager.Platform.STEAM)
                 {
-                    PatchManager.PatchLaunchMode(platform.Value, SharedData.pathToAI, _commandsDisplay.Content.Level.Name);
-
-                    if (platform.Value == PatchManager.Platform.STEAM)
-                    {
-                        Process.Start("steam://rungameid/214490");
-                    }
-                    else
-                    {
-                        ProcessStartInfo alienProcess = new ProcessStartInfo();
-                        alienProcess.WorkingDirectory = SettingsManager.GetString("PATH_GameRoot");
-                        alienProcess.FileName = SettingsManager.GetString("PATH_GameRoot") + "/AI.exe";
-                        Process.Start(alienProcess);
-                    }
+                    Process.Start("steam://rungameid/214490");
+                }
+                else
+                {
+                    ProcessStartInfo alienProcess = new ProcessStartInfo();
+                    alienProcess.WorkingDirectory = Singleton.PathToAI;
+                    alienProcess.FileName = Singleton.PathToAI + "/AI.exe";
+                    Process.Start(alienProcess);
                 }
             }
 #endif
@@ -552,7 +538,7 @@ namespace CommandsEditor
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = LevelViewerSetup.InstallationPath,
-                    Arguments = $"-projectPath \"{SettingsManager.GetString("PATH_GameRoot")}/DATA/MODTOOLS/REMOTE_ASSETS/levelviewer\"",
+                    Arguments = $"-projectPath \"{Singleton.PathToAI}/DATA/MODTOOLS/REMOTE_ASSETS/levelviewer\"",
                     UseShellExecute = false
                 },
                 EnableRaisingEvents = true
@@ -949,6 +935,12 @@ namespace CommandsEditor
         private void animationsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //todo
+        }
+
+        Process _behaviourEditor = null;
+        private void behaviourTreesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

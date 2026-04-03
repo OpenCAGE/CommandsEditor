@@ -31,7 +31,7 @@ namespace CommandsEditor
 
         public LevelContent(string levelName)
         {
-            Level = new Level(SharedData.pathToAI + "/DATA/ENV/" + levelName + "/", Singleton.Global, false);
+            Level = new Level(Singleton.PathToAI + "/DATA/ENV/" + levelName + "/", Singleton.Global, false);
         }
 
         public void Load()
@@ -260,12 +260,12 @@ namespace CommandsEditor
                     else item.SubItems.Add(((FunctionType)(((FunctionEntity)entity).function.AsUInt32)).ToString());
                     break;
                 case EntityVariant.ALIAS:
-                    item.Text = Level.Commands.Utils.GetResolvedAsString(Level.Commands.Utils.ResolveAlias((AliasEntity)entity, composite), SettingsManager.GetBool("CS_ShowEntityIDs"));
+                    item.Text = Level.Commands.Utils.GetResolvedAsString(Level.Commands.Utils.ResolveAlias((AliasEntity)entity, composite), SettingsManager.GetBool(Singleton.Settings.ShowShortGuids));
                     item.SubItems.Add("");
                     break;
                 case EntityVariant.PROXY:
                     item.Text = Level.Commands.Utils.GetEntityName(composite.shortGUID, entity.shortGUID); 
-                    item.SubItems.Add(Level.Commands.Utils.GetResolvedAsString(Level.Commands.Utils.ResolveProxy((ProxyEntity)entity), SettingsManager.GetBool("CS_ShowEntityIDs")));
+                    item.SubItems.Add(Level.Commands.Utils.GetResolvedAsString(Level.Commands.Utils.ResolveProxy((ProxyEntity)entity), SettingsManager.GetBool(Singleton.Settings.ShowShortGuids)));
                     break;
             }
             item.SubItems.Add(entity.shortGUID.ToByteString());

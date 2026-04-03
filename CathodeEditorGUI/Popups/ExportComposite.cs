@@ -27,7 +27,7 @@ namespace CommandsEditor
             InitializeComponent();
 
             levelList.BeginUpdate();
-            levelList.Items.AddRange(Level.GetLevels(SharedData.pathToAI).ToArray());
+            levelList.Items.AddRange(Level.GetLevels(Singleton.PathToAI).ToArray());
             levelList.Items.Remove(Content.Level.Name);
             levelList.EndUpdate();
 
@@ -50,7 +50,7 @@ namespace CommandsEditor
 
             {
                 Log("Loading data for " + levelList.SelectedItem.ToString() + "...");
-                Level lvl = new Level(SharedData.pathToAI + "/DATA/ENV/" + levelList.SelectedItem.ToString(), Singleton.Global);
+                Level lvl = new Level(Singleton.PathToAI + "/DATA/ENV/" + levelList.SelectedItem.ToString(), Singleton.Global);
                 _fgLayouts = (CompositeFlowgraphTable)CustomTable.ReadTable(lvl.Commands.Filepath, CustomTableType.COMPOSITE_FLOWGRAPHS);
                 if (_fgLayouts == null) _fgLayouts = new CompositeFlowgraphTable();
 

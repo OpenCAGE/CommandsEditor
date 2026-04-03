@@ -41,7 +41,7 @@ namespace CommandsEditor
 #if DEBUG
             string levelToTest = "production/tech_rnd_hzdlab";
 
-            Level lvll = Utilities.LoadLevel(SharedData.pathToAI, levelToTest);
+            Level lvll = Utilities.LoadLevel(Singleton.PathToAI, levelToTest);
 
             uint toFind = new ShortGuid("D9-FA-49-01").AsUInt32;
             foreach (Composite composite in lvll.Commands.Entries)
@@ -202,9 +202,9 @@ namespace CommandsEditor
         }
         public static void SanityCheckResourcesInternal(string level)
         {
-            SharedData.pathToAI = "C:\\AlienData\\game\\pc\\";
+            Singleton.PathToAI = "C:\\AlienData\\game\\pc\\";
 
-            Level lvll = Utilities.LoadLevel(SharedData.pathToAI, "Production/" + level);
+            Level lvll = Utilities.LoadLevel(Singleton.PathToAI, "Production/" + level);
 
             lvll.Resources.Entries.Sort();
             File.WriteAllText("RESOURCES/ORIG/" + level.Replace("/", "_") + ".json", JsonConvert.SerializeObject(lvll.Resources.Entries, Formatting.Indented, new ShortGuidConverter()));
@@ -229,11 +229,11 @@ namespace CommandsEditor
             lvll.Resources.Entries.Sort();
             File.WriteAllText("RESOURCES/NEW/" + level.Replace("/", "_") + ".json", JsonConvert.SerializeObject(lvll.Resources.Entries, Formatting.Indented, new ShortGuidConverter()));
 
-            if (!File.Exists(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + level + "/WORLD/RESOURCES_old.BIN"))
-                File.Copy(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + level + "/WORLD/RESOURCES.BIN", SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + level + "/WORLD/RESOURCES_old.BIN");
+            if (!File.Exists(Singleton.PathToAI + "/DATA/ENV/PRODUCTION/" + level + "/WORLD/RESOURCES_old.BIN"))
+                File.Copy(Singleton.PathToAI + "/DATA/ENV/PRODUCTION/" + level + "/WORLD/RESOURCES.BIN", Singleton.PathToAI + "/DATA/ENV/PRODUCTION/" + level + "/WORLD/RESOURCES_old.BIN");
 
-            PAK2 animPAK = new PAK2(SharedData.pathToAI + "\\DATA\\GLOBAL\\ANIMATION.PAK");
-            LocalDebug_NEW.StripInstancedData(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + level + "/", new Global(SharedData.pathToAI + "/DATA/GLOBAL/", animPAK));
+            PAK2 animPAK = new PAK2(Singleton.PathToAI + "\\DATA\\GLOBAL\\ANIMATION.PAK");
+            LocalDebug_NEW.StripInstancedData(Singleton.PathToAI + "/DATA/ENV/PRODUCTION/" + level + "/", new Global(Singleton.PathToAI + "/DATA/GLOBAL/", animPAK));
             lvll.Resources.Save();
 
             //List<string> bruh = new List<string>();
@@ -290,7 +290,7 @@ namespace CommandsEditor
         }
         public static void SanityCheckColMapsInternal(string level)
         {
-            Level lvll = Utilities.LoadLevel(SharedData.pathToAI, "Production/" + level);
+            Level lvll = Utilities.LoadLevel(Singleton.PathToAI, "Production/" + level);
 
             lvll.CollisionMaps.Entries.Sort();
             var newEntries = lvll.CollisionMaps.Entries.OrderBy(o => o.ResourceGUID).ThenBy(o => o.Entity.entity_id).ThenBy(o => o.Entity.composite_instance_id).ThenBy(o => o.Index).ThenBy(o => o.CollisionProxyIndex).ToList().Select(e => new ColMapEntry(e)).ToList();
@@ -410,7 +410,7 @@ namespace CommandsEditor
         }
         public static void SanityCheckPhysMapsInternal(string level)
         {
-            Level lvll = Utilities.LoadLevel(SharedData.pathToAI, "Production/" + level);
+            Level lvll = Utilities.LoadLevel(Singleton.PathToAI, "Production/" + level);
 
             lvll.PhysicsMaps.Entries.Sort();
             var origEntries = lvll.PhysicsMaps.Entries.Select(e => new PhysMapEntry(e)).ToList();
@@ -506,7 +506,7 @@ namespace CommandsEditor
         }
         private static void SanityCheckResourceTransformsInternal(string level)
         {
-            Level lvl = Utilities.LoadLevel(SharedData.pathToAI, level);
+            Level lvl = Utilities.LoadLevel(Singleton.PathToAI, level);
             foreach (Composite composite in lvl.Commands.Entries)
             {
                 foreach (FunctionEntity function in composite.functions)
@@ -1188,11 +1188,11 @@ namespace CommandsEditor
 #if DEBUG
             string level = "tech_rnd";
 
-            Movers mvr = new Movers(SharedData.pathToAI + "\\data\\ENV\\PRODUCTION\\" + level + "\\WORLD\\MODELS.MVR");
-            Lights lights = new Lights(SharedData.pathToAI + "\\data\\ENV\\PRODUCTION\\" + level + "\\WORLD\\LIGHTS.BIN");
-            AlphaLightLevel lightsAlpha = new AlphaLightLevel(SharedData.pathToAI + "\\data\\ENV\\PRODUCTION\\" + level + "\\WORLD\\ALPHALIGHT_LEVEL.BIN");
-            EnvironmentMaps env = new EnvironmentMaps(SharedData.pathToAI + "\\data\\ENV\\PRODUCTION\\" + level + "\\WORLD\\ENVIRONMENTMAP.BIN");
-            //Resources res = new Resources(SharedData.pathToAI + "\\data\\ENV\\PRODUCTION\\" + level + "\\WORLD\\RESOURCES.BIN");
+            Movers mvr = new Movers(Singleton.PathToAI + "\\data\\ENV\\PRODUCTION\\" + level + "\\WORLD\\MODELS.MVR");
+            Lights lights = new Lights(Singleton.PathToAI + "\\data\\ENV\\PRODUCTION\\" + level + "\\WORLD\\LIGHTS.BIN");
+            AlphaLightLevel lightsAlpha = new AlphaLightLevel(Singleton.PathToAI + "\\data\\ENV\\PRODUCTION\\" + level + "\\WORLD\\ALPHALIGHT_LEVEL.BIN");
+            EnvironmentMaps env = new EnvironmentMaps(Singleton.PathToAI + "\\data\\ENV\\PRODUCTION\\" + level + "\\WORLD\\ENVIRONMENTMAP.BIN");
+            //Resources res = new Resources(Singleton.PathToAI + "\\data\\ENV\\PRODUCTION\\" + level + "\\WORLD\\RESOURCES.BIN");
 
             mvr.Entries.Clear();
             env.Entries.Clear();
@@ -1775,7 +1775,7 @@ namespace CommandsEditor
         public static void TestOrders()
         {
 #if DEBUG
-            List<string> files = Directory.GetFiles(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            List<string> files = Directory.GetFiles(Singleton.PathToAI + "/DATA/ENV/PRODUCTION/", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
             GUI_EnumDataType enumUI = new GUI_EnumDataType();
             Parallel.ForEach(files, file =>
             {
@@ -1846,7 +1846,7 @@ namespace CommandsEditor
         public static void TestNewEnumDropdowns()
         {
 #if DEBUG
-            List<string> files = Directory.GetFiles(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            List<string> files = Directory.GetFiles(Singleton.PathToAI + "/DATA/ENV/PRODUCTION/", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
             GUI_EnumDataType enumUI = new GUI_EnumDataType();
             Parallel.ForEach(files, file =>
             {
@@ -1873,7 +1873,7 @@ namespace CommandsEditor
         public static void CommandsTest()
         {
 #if DEBUG
-            List<string> files = Directory.GetFiles(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            List<string> files = Directory.GetFiles(Singleton.PathToAI + "/DATA/ENV/PRODUCTION/", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
             Parallel.ForEach(files, file =>
             {
                 Commands phys = new Commands(file);
@@ -1894,7 +1894,7 @@ namespace CommandsEditor
         public static void CheckMissingCageAnimParams()
         {
 #if DEBUG
-            List<string> files = Directory.GetFiles(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            List<string> files = Directory.GetFiles(Singleton.PathToAI + "/DATA/ENV/PRODUCTION/", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
             Parallel.ForEach(files, file =>
             {
                 Commands phys = new Commands(file);
@@ -1925,7 +1925,7 @@ namespace CommandsEditor
         public static void SanityCheckCAGEAnimation()
         {
 #if DEBUG
-            List<string> files = Directory.GetFiles(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            List<string> files = Directory.GetFiles(Singleton.PathToAI + "/DATA/ENV/PRODUCTION/", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
             Parallel.ForEach(files, file =>
             {
                 Commands phys = new Commands(file);
@@ -2078,7 +2078,7 @@ namespace CommandsEditor
         public static void DumpAllUnnamedParams()
         {
 #if DEBUG
-            List<string> files = Directory.GetFiles(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            List<string> files = Directory.GetFiles(Singleton.PathToAI + "/DATA/ENV/PRODUCTION/", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
             foreach (string file in files)
             {
                 Commands phys = new Commands(file);
@@ -2222,7 +2222,7 @@ namespace CommandsEditor
             model.Submeshes[0].IndexCount = 48;
             model.Submeshes[0].VertexCount = 8;
 
-            CathodeLib.Level lvl = new Level(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/opencage/");
+            CathodeLib.Level lvl = new Level(Singleton.PathToAI + "/DATA/ENV/PRODUCTION/opencage/");
             /*
             CS2 model = lvl.AllModels.Entries.FirstOrDefault(o => o.Name == "SomeTestShit");
             if (model == null)
@@ -2283,12 +2283,12 @@ namespace CommandsEditor
         public static void LoadAllFileTests()
         {
 #if DEBUG
-            //Models mdls = new Models(SharedData.pathToAI + "\\DATA\\ENV\\PRODUCTION\\BSP_TORRENS\\RENDERABLE\\LEVEL_MODELS.PAK");
+            //Models mdls = new Models(Singleton.PathToAI + "\\DATA\\ENV\\PRODUCTION\\BSP_TORRENS\\RENDERABLE\\LEVEL_MODELS.PAK");
             //mdls.Save();
             /*
             CathodeModels mdls_old = new CathodeModels(
-                SharedData.pathToAI + "\\DATA\\ENV\\PRODUCTION\\BSP_TORRENS\\RENDERABLE\\MODELS_LEVEL.BIN",
-                SharedData.pathToAI + "\\DATA\\ENV\\PRODUCTION\\BSP_TORRENS\\RENDERABLE\\LEVEL_MODELS.PAK");
+                Singleton.PathToAI + "\\DATA\\ENV\\PRODUCTION\\BSP_TORRENS\\RENDERABLE\\MODELS_LEVEL.BIN",
+                Singleton.PathToAI + "\\DATA\\ENV\\PRODUCTION\\BSP_TORRENS\\RENDERABLE\\LEVEL_MODELS.PAK");
 
             int binIndex = 0;
             for (int i = 0; i < mdls.Entries.Count; i++)
@@ -2324,14 +2324,14 @@ namespace CommandsEditor
 
             //string sdffds = "";
 
-            //Models mdls = new Models(SharedData.pathToAI + "\\DATA\\ENV\\PRODUCTION\\ENG_ALIEN_NEST\\RENDERABLE\\LEVEL_MODELS.PAK");
+            //Models mdls = new Models(Singleton.PathToAI + "\\DATA\\ENV\\PRODUCTION\\ENG_ALIEN_NEST\\RENDERABLE\\LEVEL_MODELS.PAK");
             //mdls.Save();
-            ////Textures tex34 = new Textures(SharedData.pathToAI + "\\DATA\\ENV\\PRODUCTION\\BSP_LV426_PT01\\RENDERABLE\\LEVEL_TEXTURES.ALL.PAK");
+            ////Textures tex34 = new Textures(Singleton.PathToAI + "\\DATA\\ENV\\PRODUCTION\\BSP_LV426_PT01\\RENDERABLE\\LEVEL_TEXTURES.ALL.PAK");
             ////tex34.Save();
             //return;
 
             /*
-            List<string> files = Directory.GetFiles(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/", "LEVEL_TEXTURES.ALL.PAK", SearchOption.AllDirectories).ToList<string>();
+            List<string> files = Directory.GetFiles(Singleton.PathToAI + "/DATA/ENV/PRODUCTION/", "LEVEL_TEXTURES.ALL.PAK", SearchOption.AllDirectories).ToList<string>();
             Textures texBase = new Textures("LEVEL_TEXTURES.ALL.PAK");
             foreach (string file in files)
             {
@@ -2355,7 +2355,7 @@ namespace CommandsEditor
             */
 
             /*
-            List<string> files = Directory.GetFiles(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/", "LEVEL_MODELS.PAK", SearchOption.AllDirectories).ToList<string>();
+            List<string> files = Directory.GetFiles(Singleton.PathToAI + "/DATA/ENV/PRODUCTION/", "LEVEL_MODELS.PAK", SearchOption.AllDirectories).ToList<string>();
             //Models texBase = new Models("LEVEL_MODELS.PAK");
             List<AlienVBF> formats = new List<AlienVBF>();
             foreach (string file in files)
@@ -2413,7 +2413,7 @@ namespace CommandsEditor
         public static void TestAllPhysMap()
         {
 #if DEBUG
-            List<string> files = Directory.GetFiles(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/", "LEVEL_MODELS.PAK", SearchOption.AllDirectories).ToList<string>();
+            List<string> files = Directory.GetFiles(Singleton.PathToAI + "/DATA/ENV/PRODUCTION/", "LEVEL_MODELS.PAK", SearchOption.AllDirectories).ToList<string>();
             foreach (string file in files)
             {
                 Models phys = new Models(file);
@@ -2503,7 +2503,7 @@ namespace CommandsEditor
         {
 #if DEBUG
             /*
-            List<string> mapList = Directory.GetFiles(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            List<string> mapList = Directory.GetFiles(Singleton.PathToAI + "/DATA/ENV/PRODUCTION/", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
             for (int i = 0; i < mapList.Count; i++)
             {
                 string[] fileSplit = mapList[i].Split(new[] { "PRODUCTION" }, StringSplitOptions.None);
@@ -2516,11 +2516,11 @@ namespace CommandsEditor
             {
                 //if (env_list.Items[mm].ToString() != "BSP_TORRENS") continue;
 
-                editor.Editor.commands = new Commands(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + mapList[mm].ToString() + "/WORLD/COMMANDS.PAK");
+                editor.Editor.commands = new Commands(Singleton.PathToAI + "/DATA/ENV/PRODUCTION/" + mapList[mm].ToString() + "/WORLD/COMMANDS.PAK");
                 Console.WriteLine("Loading: " + editor.Editor.commands.Filepath + "...");
                 //CurrentInstance.compositeLookup = new EntityNameLookup(CurrentInstance.commandsPAK);
 
-                //EnvironmentAnimationDatabase db = new EnvironmentAnimationDatabase(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/" + env_list.Items[mm].ToString() + "/WORLD/ENVIRONMENT_ANIMATION.DAT");
+                //EnvironmentAnimationDatabase db = new EnvironmentAnimationDatabase(Singleton.PathToAI + "/DATA/ENV/PRODUCTION/" + env_list.Items[mm].ToString() + "/WORLD/ENVIRONMENT_ANIMATION.DAT");
                 //Console.WriteLine(db.Header.MatrixCount0);
                 //Console.WriteLine(db.Header.MatrixCount1);
                 //Console.WriteLine(db.Header.EntryCount1);
@@ -2620,7 +2620,7 @@ namespace CommandsEditor
         {
 #if DEBUG
             List<string> pairs = new List<string>();
-            List<string> commandsFiles = Directory.GetFiles(SharedData.pathToAI + "/DATA/ENV/PRODUCTION/", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
+            List<string> commandsFiles = Directory.GetFiles(Singleton.PathToAI + "/DATA/ENV/PRODUCTION/", "COMMANDS.PAK", SearchOption.AllDirectories).ToList<string>();
             for (int i = 0; i < commandsFiles.Count; i++)
             {
                 Console.WriteLine(commandsFiles[i]);

@@ -72,7 +72,7 @@ namespace CommandsEditor
             List<CAGEAnimation.Connection> connections = animEntity.connections.FindAll(o => o.binding_type == ObjectType.ENTITY);
             foreach (CAGEAnimation.Connection connection in connections)
             {
-                string connectionLink = Content.Level.Commands.Utils.GetResolvedAsString(Content.Level.Commands.Utils.ResolveAlias(connection.connectedEntity, _entityDisplay.Composite), SettingsManager.GetBool("CS_ShowEntityIDs"));
+                string connectionLink = Content.Level.Commands.Utils.GetResolvedAsString(Content.Level.Commands.Utils.ResolveAlias(connection.connectedEntity, _entityDisplay.Composite), SettingsManager.GetBool(Singleton.Settings.ShowShortGuids));
                 if (!entityList.Items.Contains(connectionLink))
                 {
                     entityList.Items.Add(connectionLink);
@@ -179,7 +179,7 @@ namespace CommandsEditor
                 for (int x = 0; x < animEntity.events[i].keyframes.Count; x++)
                 {
                     CAGEAnimation.EventTrack.Keyframe keyframeData = animEntity.events[i].keyframes[x];
-                    string keyframeText = (connection == null) ? Content.Level.Commands.Utils.GetEntityName(_entityDisplay.Composite, animEntity) : Content.Level.Commands.Utils.GetResolvedAsString(Content.Level.Commands.Utils.ResolveAlias(connection.connectedEntity, _entityDisplay.Composite), SettingsManager.GetBool("CS_ShowEntityIDs"));
+                    string keyframeText = (connection == null) ? Content.Level.Commands.Utils.GetEntityName(_entityDisplay.Composite, animEntity) : Content.Level.Commands.Utils.GetResolvedAsString(Content.Level.Commands.Utils.ResolveAlias(connection.connectedEntity, _entityDisplay.Composite), SettingsManager.GetBool(Singleton.Settings.ShowShortGuids));
                     Keyframe keyframeUI = eventTimeline.AddKeyframe(keyframeData.time, keyframeText);
                     keyframeUI.OnMoved += OnHandleMoved;
                     keyframeHandlesEvent.Add(keyframeUI, keyframeData);

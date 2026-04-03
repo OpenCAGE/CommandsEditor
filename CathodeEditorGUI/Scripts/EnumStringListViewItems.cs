@@ -391,7 +391,7 @@ namespace CommandsEditor
                 return new List<string>();
             }
 
-            file = SharedData.pathToAI + "/DATA/" + file;
+            file = Singleton.PathToAI + "/DATA/" + file;
             XDocument xml = System.IO.Path.GetExtension(file) == ".BML" ? XDocument.Load(new XmlNodeReader(new BML(file).Content)) : XDocument.Load(file);
             foreach (var elem in xml.Descendants())
                 elem.Name = elem.Name.LocalName;

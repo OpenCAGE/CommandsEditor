@@ -210,7 +210,7 @@ namespace CommandsEditor.UnityConnection
         {
             Packet p = new Packet(packet_event);
             p.level_name = Singleton.Editor?.CommandsDisplay?.Content?.Level?.Name;
-            p.system_folder = SharedData.pathToAI;
+            p.system_folder = Singleton.PathToAI;
             if (Singleton.Editor?.CommandsDisplay?.CompositeDisplay != null)
             {
                 List<CompositePath.CompAndEnt> richPath = Singleton.Editor.CommandsDisplay.CompositeDisplay.Path.GetPathRich(Singleton.Editor.CommandsDisplay.CompositeDisplay.Composite);
