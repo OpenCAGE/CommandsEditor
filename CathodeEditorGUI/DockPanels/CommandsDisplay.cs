@@ -557,8 +557,10 @@ namespace CommandsEditor.DockPanels
                 var lv = sender as System.Windows.Forms.ListView;
                 var item = lv.HitTest(e.Location).Item;
 
-                deleteFolderToolStripMenuItem.Enabled = item != null;
-                renameToolStripMenuItem.Enabled = item != null;
+                bool canModify = item != null && item.Tag != null && (((ListViewItemContent)item.Tag).Composite != null && !Content.Level.Commands.EntryPoints.Contains(((ListViewItemContent)item.Tag).Composite));
+
+                deleteFolderToolStripMenuItem.Enabled = canModify;
+                renameToolStripMenuItem.Enabled = canModify;
 
                 if (item != null)
                     lv.FocusedItem = item;
@@ -577,8 +579,11 @@ namespace CommandsEditor.DockPanels
                 var lv = sender as System.Windows.Forms.TreeView;
                 _rightClickedNode = lv.HitTest(e.Location).Node;
 
-                toolStripMenuItem4.Enabled = _rightClickedNode != null;
-                toolStripMenuItem5.Enabled = _rightClickedNode != null;
+                Composite comp = _rightClickedNode != null && _rightClickedNode.Tag != null ? Content.Level.Commands.GetComposite(((TreeItem)_rightClickedNode.Tag).String_Value) : null;
+                bool canModify = comp != null && !Content.Level.Commands.EntryPoints.Contains(comp);
+
+                toolStripMenuItem4.Enabled = canModify;
+                toolStripMenuItem5.Enabled = canModify;
 
                 if (_rightClickedNode == null)
                 {
