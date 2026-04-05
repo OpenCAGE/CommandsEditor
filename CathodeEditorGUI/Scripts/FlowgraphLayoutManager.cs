@@ -32,6 +32,7 @@ namespace CommandsEditor
 
         public static Commands LinkedCommands => _commands;
         private static Commands _commands;
+        private static LevelContent _content;
 
         static FlowgraphLayoutManager()
         {
@@ -240,7 +241,7 @@ namespace CommandsEditor
             return null;
         }
 
-        public static void LinkCommands(Commands commands)
+        public static void LinkCommands(LevelContent content)
         {
             if (_commands != null)
             {
@@ -248,7 +249,8 @@ namespace CommandsEditor
                 _commands.OnSaveSuccess -= SaveCustomFlowgraphs;
             }
 
-            _commands = commands;
+            _commands = content?.Level?.Commands;
+            _content = content;
             if (_commands == null) return;
 
             _commands.OnLoadSuccess += LoadCustomFlowgraphs;
@@ -272,7 +274,7 @@ namespace CommandsEditor
             Debug.Log("Flowgraph Manager", "Loaded " + _history.last_composite_page.Count + " previously opened pages!");
 
             //Copy the default layouts over for composites in this Commands if they don't already exist
-            if (Enum.TryParse(Path.GetFileName(_commands.EntryPoints[0].name).ToUpper(), out FlowgraphMeta.SupportedLevel level))
+            if (Enum.TryParse(Path.GetFileName(_content.Level.Name).ToUpper(), out FlowgraphMeta.SupportedLevel level))
             {
                 List<FlowgraphMeta> newFlowgraphs = new List<FlowgraphMeta>();
                 for (int i = 0; i < _preDefinedLayouts.flowgraphs.Count; i++)

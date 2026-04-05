@@ -64,7 +64,7 @@ namespace CommandsEditor
 #endif
 
             //Link up commands to utils and cache some things
-            FlowgraphLayoutManager.LinkCommands(Level.Commands);
+            FlowgraphLayoutManager.LinkCommands(this);
             ParameterModificationTracker.LinkCommands(Level.Commands);
 
             //Correct all Entity names that are actually pointers to resources
