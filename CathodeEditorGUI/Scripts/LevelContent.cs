@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,6 +28,8 @@ namespace CommandsEditor
         public Dictionary<Composite, Dictionary<Entity, ListViewItem>> composite_content_cache = new Dictionary<Composite, Dictionary<Entity, ListViewItem>>();
         public EditorUtils EditorUtils = null; //TODO: this should really be refactored. hacked in legacy stuff.
 
+        public bool IsVanilla = false; //The user has not yet saved this level using OpenCAGE
+
         private Thread _globalUpdateThread = null;
 
         public LevelContent(string levelName)
@@ -36,12 +39,6 @@ namespace CommandsEditor
 
         public void Load()
         {
-#if USE_PRETTY_COMPOSITE_PATHS
-            Commands.UsePrettyPaths = true;
-#else
-            Commands.UsePrettyPaths = false;
-#endif
-
             Level.Load();
             if (!Level.Commands.Loaded || Level.Commands.EntryPoints == null || Level.Commands.EntryPoints[0] == null)
             {
@@ -49,7 +46,6 @@ namespace CommandsEditor
                 return;
             }
             Level.Commands.Entries = Level.Commands.Entries.OrderBy(o => o.name).ToList();
-            Level.Commands.EntryPoints[0].name = EditorUtils.GetCompositeName(Level.Commands.EntryPoints[0]);
 
             //Import Global stuff, if required
 #if IMPORT_GLOBAL_ASSETS
@@ -66,6 +62,18 @@ namespace CommandsEditor
             //Link up commands to utils and cache some things
             FlowgraphLayoutManager.LinkCommands(this);
             ParameterModificationTracker.LinkCommands(Level.Commands);
+
+            //If we're loading for the first time...
+            if (IsVanilla)
+            {
+#if USE_PRETTY_COMPOSITE_PATHS
+                //Tidy up composite names so things look nicer
+                Level.Commands.Utils.SetPrettyNames();
+#endif
+
+                //Correct the root composite name
+                Level.Commands.EntryPoints[0].name = EditorUtils.GetCompositeName(Level.Commands.EntryPoints[0]);
+            }
 
             //Correct all Entity names that are actually pointers to resources
             foreach (Composite comp in Level.Commands.Entries)
@@ -92,6 +100,12 @@ namespace CommandsEditor
             }
 
             Singleton.OnLevelLoaded?.Invoke(this);
+        }
+
+        public void Save()
+        {
+            Level.Save();
+            IsVanilla = false;
         }
 
         public void Dispose()

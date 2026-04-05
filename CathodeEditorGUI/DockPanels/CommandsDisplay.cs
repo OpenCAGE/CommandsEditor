@@ -557,10 +557,9 @@ namespace CommandsEditor.DockPanels
                 var lv = sender as System.Windows.Forms.ListView;
                 var item = lv.HitTest(e.Location).Item;
 
-                bool canModify = item != null && item.Tag != null && (((ListViewItemContent)item.Tag).Composite != null && !Content.Level.Commands.EntryPoints.Contains(((ListViewItemContent)item.Tag).Composite));
-
-                deleteFolderToolStripMenuItem.Enabled = canModify;
-                renameToolStripMenuItem.Enabled = canModify;
+                Composite comp = item != null && item.Tag != null ? ((ListViewItemContent)item.Tag).Composite : null;
+                deleteFolderToolStripMenuItem.Enabled = comp != null && !Content.Level.Commands.EntryPoints.Contains(comp);
+                renameToolStripMenuItem.Enabled = comp != null && (Content.Level.Commands.EntryPoints[0] == comp || !Content.Level.Commands.EntryPoints.Contains(comp));
 
                 if (item != null)
                     lv.FocusedItem = item;
@@ -580,10 +579,8 @@ namespace CommandsEditor.DockPanels
                 _rightClickedNode = lv.HitTest(e.Location).Node;
 
                 Composite comp = _rightClickedNode != null && _rightClickedNode.Tag != null ? Content.Level.Commands.GetComposite(((TreeItem)_rightClickedNode.Tag).String_Value) : null;
-                bool canModify = comp != null && !Content.Level.Commands.EntryPoints.Contains(comp);
-
-                toolStripMenuItem4.Enabled = canModify;
-                toolStripMenuItem5.Enabled = canModify;
+                toolStripMenuItem4.Enabled = comp != null && !Content.Level.Commands.EntryPoints.Contains(comp);
+                toolStripMenuItem5.Enabled = comp != null && (Content.Level.Commands.EntryPoints[0] == comp || !Content.Level.Commands.EntryPoints.Contains(comp));
 
                 if (_rightClickedNode == null)
                 {

@@ -491,7 +491,7 @@ namespace CommandsEditor
 #endif
 
             //TODO: take a backup first
-            _commandsDisplay.Content.Level.Save();
+            _commandsDisplay.Content.Save();
 
             if (!_commandsDisplay.Content.Level.Commands.Compressed && SettingsManager.GetBool(Singleton.Settings.SavePakAndBin))
             {

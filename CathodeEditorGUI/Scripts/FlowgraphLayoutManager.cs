@@ -273,6 +273,8 @@ namespace CommandsEditor
             if (_history == null) _history = new CompositePageHistoryTable();
             Debug.Log("Flowgraph Manager", "Loaded " + _history.last_composite_page.Count + " previously opened pages!");
 
+            _content.IsVanilla = _userDefinedLayouts.flowgraphs.Count + _compatibility.compatibility_info.Count + _history.last_composite_page.Count == 0;
+
             //Copy the default layouts over for composites in this Commands if they don't already exist
             if (Enum.TryParse(Path.GetFileName(_content.Level.Name).ToUpper(), out FlowgraphMeta.SupportedLevel level))
             {

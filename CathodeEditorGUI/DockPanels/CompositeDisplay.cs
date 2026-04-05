@@ -267,9 +267,10 @@ namespace CommandsEditor.DockPanels
             //No need to find uses of entry point - it's the entry point
             findUses.Visible = Content.Level.Commands.EntryPoints[0] != composite;
 
-            //Shouldn't be able to delete/rename the entry point or PAUSEMENU/GLOBAL else it'll break stuff (e.g. commands.bin needs to search for them by name)
+            //Shouldn't be able to delete the root/PAUSEMENU/GLOBAL else it'll break stuff
             deleteComposite.Visible = !Content.Level.Commands.EntryPoints.Contains(composite);
-            renameComposite.Visible = deleteComposite.Visible;
+            //Similarly, shouldn't be able to rename PAUSEMENU/GLOBAL as their names are used in code
+            renameComposite.Visible = Content.Level.Commands.EntryPoints[1] != composite && Content.Level.Commands.EntryPoints[2] != composite;
 
             pathDisplay.Text = _path.GetPath(composite);
             _composite = composite;
