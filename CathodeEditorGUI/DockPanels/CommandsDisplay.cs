@@ -44,7 +44,7 @@ namespace CommandsEditor.DockPanels
         AddComposite _addCompositeDialog = null;
         AddFolder _addFolderDialog = null;
 
-        private int _defaultSplitterDistance = 330;
+        private int _defaultSplitterDistance = 324;
 
         public CommandsDisplay(string levelName)
         {

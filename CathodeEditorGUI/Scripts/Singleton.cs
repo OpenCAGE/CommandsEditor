@@ -91,7 +91,7 @@ namespace CommandsEditor
             public readonly string AutoHideCompositeDisplay = "CS_FileBrowserAutoHide";
             public readonly string KeepUsesWindowOpen = "CS_KeepUsesWindowOpen";
             public readonly string EntitySplitWidth = "CS_EntitySplitWidth";
-            public readonly string CompositeSplitWidth = "CS_CompositeSplitWidth";
+            public readonly string CompositeSplitWidth = "CS_CompositeSplitWidth2";
             public readonly string CommandsSplitWidth = "CS_CommandsSplitWidth";
             public readonly string WindowWidth = "CS_WindowWidth";
             public readonly string WindowHeight = "CS_WindowHeight";
