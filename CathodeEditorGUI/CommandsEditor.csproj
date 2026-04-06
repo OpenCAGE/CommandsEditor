@@ -365,6 +365,18 @@
     <Compile Include="Popups\Configuration Editors\LoadMovieEditor.Designer.cs">
       <DependentUpon>LoadMovieEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\Configuration Editors\AmmoEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\AmmoEditor.Designer.cs">
+      <DependentUpon>AmmoEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\RadiosityEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\RadiosityEditor.Designer.cs">
+      <DependentUpon>RadiosityEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popups\ControlsWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -851,6 +863,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\Configuration Editors\LoadMovieEditor.resx">
       <DependentUpon>LoadMovieEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Configuration Editors\AmmoEditor.resx">
+      <DependentUpon>AmmoEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Configuration Editors\RadiosityEditor.resx">
+      <DependentUpon>RadiosityEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\ControlsWindow.resx">
       <DependentUpon>ControlsWindow.cs</DependentUpon>

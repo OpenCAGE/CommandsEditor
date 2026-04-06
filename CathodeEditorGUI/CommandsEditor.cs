@@ -1062,6 +1062,42 @@ namespace CommandsEditor
         {
             _blueprintEditor = null;
         }
+
+        AmmoEditor _ammoEditor = null;
+        private void ammoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_ammoEditor != null)
+            {
+                _ammoEditor.FormClosed -= _ammoEditor_FormClosed;
+                _ammoEditor.Close();
+            }
+
+            _ammoEditor = new AmmoEditor();
+            _ammoEditor.Show();
+            _ammoEditor.FormClosed += _ammoEditor_FormClosed;
+        }
+        private void _ammoEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _ammoEditor = null;
+        }
+
+        RadiosityEditor _radiosityEditor = null;
+        private void radiosityToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_radiosityEditor != null)
+            {
+                _radiosityEditor.FormClosed -= _radiosityEditor_FormClosed;
+                _radiosityEditor.Close();
+            }
+
+            _radiosityEditor = new RadiosityEditor();
+            _radiosityEditor.Show();
+            _radiosityEditor.FormClosed += _radiosityEditor_FormClosed;
+        }
+        private void _radiosityEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _radiosityEditor = null;
+        }
         #endregion
     }
 }
