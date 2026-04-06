@@ -99,7 +99,6 @@ namespace CommandsEditor
             materialPropertiesToolStripMenuItem.Visible = false;
             uIToolStripMenuItem.Visible = false;
             animationsToolStripMenuItem.Visible = false;
-            configurationsToolStripMenuItem.Visible = false;
 #endif
 
             //Launch game is only supported by certain platforms due to having to patch the binary
@@ -1008,5 +1007,61 @@ namespace CommandsEditor
                 catch { }
             }
         }
+
+        #region Config Editors
+        HackingEditor _hackToolEditor = null;
+        private void hackToolDifficultiesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_hackToolEditor != null)
+            {
+                _hackToolEditor.FormClosed -= _hackToolEditor_FormClosed;
+                _hackToolEditor.Close();
+            }
+
+            _hackToolEditor = new HackingEditor();
+            _hackToolEditor.Show();
+            _hackToolEditor.FormClosed += _hackToolEditor_FormClosed;
+        }
+        private void _hackToolEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _hackToolEditor = null;
+        }
+
+        LoadMovieEditor _loadMovieEditor = null;
+        private void loadscreenMoviesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_loadMovieEditor != null)
+            {
+                _loadMovieEditor.FormClosed -= _loadMovieEditor_FormClosed;
+                _loadMovieEditor.Close();
+            }
+
+            _loadMovieEditor = new LoadMovieEditor();
+            _loadMovieEditor.Show();
+            _loadMovieEditor.FormClosed += _loadMovieEditor_FormClosed;
+        }
+        private void _loadMovieEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _loadMovieEditor = null;
+        }
+
+        BlueprintEditor _blueprintEditor = null;
+        private void blueprintRecipesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_blueprintEditor != null)
+            {
+                _blueprintEditor.FormClosed -= _blueprintEditor_FormClosed;
+                _blueprintEditor.Close();
+            }
+
+            _blueprintEditor = new BlueprintEditor();
+            _blueprintEditor.Show();
+            _blueprintEditor.FormClosed += _blueprintEditor_FormClosed;
+        }
+        private void _blueprintEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _blueprintEditor = null;
+        }
+        #endregion
     }
 }

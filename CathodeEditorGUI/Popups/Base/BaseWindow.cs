@@ -19,10 +19,12 @@ namespace CommandsEditor.Popups.Base
 
         private WindowClosesOn _closesOn;
 
-        [Obsolete("Designer only", true)]
         public BaseWindow()
         {
             InitializeComponent();
+
+            this.BringToFront();
+            this.Focus();
         }
 
         public BaseWindow(WindowClosesOn config)

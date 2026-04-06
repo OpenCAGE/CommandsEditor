@@ -1,0 +1,431 @@
+﻿namespace CommandsEditor
+{
+    partial class HackingEditor
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Windows Form Designer generated code
+
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HackingEditor));
+            this.btnSave = new System.Windows.Forms.Button();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.hackDifficulties = new System.Windows.Forms.ComboBox();
+            this.lvl1Max = new System.Windows.Forms.ComboBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.lvl99Max = new System.Windows.Forms.ComboBox();
+            this.lvl3Max = new System.Windows.Forms.ComboBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.lvl0Max = new System.Windows.Forms.ComboBox();
+            this.lvl2Max = new System.Windows.Forms.ComboBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.timer_countdown_seconds = new System.Windows.Forms.NumericUpDown();
+            this.number_of_alarms = new System.Windows.Forms.NumericUpDown();
+            this.number_of_rounds = new System.Windows.Forms.NumericUpDown();
+            this.length_of_keycode = new System.Windows.Forms.NumericUpDown();
+            this.selection_angle_increase_in_deg = new System.Windows.Forms.NumericUpDown();
+            this.outer_selection_angle_in_deg = new System.Windows.Forms.NumericUpDown();
+            this.inner_selection_angle_in_deg = new System.Windows.Forms.NumericUpDown();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.timer_countdown_seconds)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.number_of_alarms)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.number_of_rounds)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.length_of_keycode)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.selection_angle_increase_in_deg)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.outer_selection_angle_in_deg)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.inner_selection_angle_in_deg)).BeginInit();
+            this.SuspendLayout();
+            // 
+            // btnSave
+            // 
+            this.btnSave.Location = new System.Drawing.Point(284, 378);
+            this.btnSave.Name = "btnSave";
+            this.btnSave.Size = new System.Drawing.Size(136, 33);
+            this.btnSave.TabIndex = 319;
+            this.btnSave.Text = "Save";
+            this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            // 
+            // hackDifficulties
+            // 
+            this.hackDifficulties.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.hackDifficulties.FormattingEnabled = true;
+            this.hackDifficulties.Location = new System.Drawing.Point(6, 36);
+            this.hackDifficulties.Name = "hackDifficulties";
+            this.hackDifficulties.Size = new System.Drawing.Size(397, 21);
+            this.hackDifficulties.TabIndex = 318;
+            this.toolTip1.SetToolTip(this.hackDifficulties, "All available hacking game difficulty levels.");
+            this.hackDifficulties.SelectedIndexChanged += new System.EventHandler(this.hackDifficulties_SelectedIndexChanged);
+            // 
+            // lvl1Max
+            // 
+            this.lvl1Max.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.lvl1Max.FormattingEnabled = true;
+            this.lvl1Max.Location = new System.Drawing.Point(15, 67);
+            this.lvl1Max.Name = "lvl1Max";
+            this.lvl1Max.Size = new System.Drawing.Size(187, 21);
+            this.lvl1Max.TabIndex = 328;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(12, 51);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(132, 13);
+            this.label11.TabIndex = 329;
+            this.label11.Text = "Tool Level 1 Max Difficulty";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(222, 11);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(132, 13);
+            this.label9.TabIndex = 327;
+            this.label9.Text = "Tool Level 3 Max Difficulty";
+            // 
+            // lvl99Max
+            // 
+            this.lvl99Max.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.lvl99Max.FormattingEnabled = true;
+            this.lvl99Max.Location = new System.Drawing.Point(225, 67);
+            this.lvl99Max.Name = "lvl99Max";
+            this.lvl99Max.Size = new System.Drawing.Size(187, 21);
+            this.lvl99Max.TabIndex = 330;
+            // 
+            // lvl3Max
+            // 
+            this.lvl3Max.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.lvl3Max.FormattingEnabled = true;
+            this.lvl3Max.Location = new System.Drawing.Point(225, 27);
+            this.lvl3Max.Name = "lvl3Max";
+            this.lvl3Max.Size = new System.Drawing.Size(187, 21);
+            this.lvl3Max.TabIndex = 326;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(222, 51);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(138, 13);
+            this.label10.TabIndex = 331;
+            this.label10.Text = "Tool Level 99 Max Difficulty";
+            // 
+            // lvl0Max
+            // 
+            this.lvl0Max.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.lvl0Max.FormattingEnabled = true;
+            this.lvl0Max.Location = new System.Drawing.Point(15, 27);
+            this.lvl0Max.Name = "lvl0Max";
+            this.lvl0Max.Size = new System.Drawing.Size(187, 21);
+            this.lvl0Max.TabIndex = 324;
+            // 
+            // lvl2Max
+            // 
+            this.lvl2Max.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.lvl2Max.FormattingEnabled = true;
+            this.lvl2Max.Location = new System.Drawing.Point(15, 107);
+            this.lvl2Max.Name = "lvl2Max";
+            this.lvl2Max.Size = new System.Drawing.Size(187, 21);
+            this.lvl2Max.TabIndex = 332;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(214, 146);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(147, 13);
+            this.label6.TabIndex = 243;
+            this.label6.Text = "Timer Countdown In Seconds";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(3, 146);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(174, 13);
+            this.label5.TabIndex = 241;
+            this.label5.Text = "Selection Angle Increase (Degrees)";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(3, 107);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(159, 13);
+            this.label3.TabIndex = 239;
+            this.label3.Text = "Outer Selection Angle (Degrees)";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(213, 68);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(99, 13);
+            this.label2.TabIndex = 324;
+            this.label2.Text = "Length Of Keycode";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(3, 68);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(157, 13);
+            this.label1.TabIndex = 237;
+            this.label1.Text = "Inner Selection Angle (Degrees)";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(214, 107);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(92, 13);
+            this.label4.TabIndex = 326;
+            this.label4.Text = "Number Of Alarms";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(3, 185);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(98, 13);
+            this.label7.TabIndex = 328;
+            this.label7.Text = "Number Of Rounds";
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.timer_countdown_seconds);
+            this.groupBox2.Controls.Add(this.number_of_alarms);
+            this.groupBox2.Controls.Add(this.number_of_rounds);
+            this.groupBox2.Controls.Add(this.length_of_keycode);
+            this.groupBox2.Controls.Add(this.selection_angle_increase_in_deg);
+            this.groupBox2.Controls.Add(this.outer_selection_angle_in_deg);
+            this.groupBox2.Controls.Add(this.inner_selection_angle_in_deg);
+            this.groupBox2.Controls.Add(this.label12);
+            this.groupBox2.Controls.Add(this.label7);
+            this.groupBox2.Controls.Add(this.hackDifficulties);
+            this.groupBox2.Controls.Add(this.label4);
+            this.groupBox2.Controls.Add(this.label1);
+            this.groupBox2.Controls.Add(this.label2);
+            this.groupBox2.Controls.Add(this.label3);
+            this.groupBox2.Controls.Add(this.label5);
+            this.groupBox2.Controls.Add(this.label6);
+            this.groupBox2.Location = new System.Drawing.Point(9, 140);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(411, 232);
+            this.groupBox2.TabIndex = 323;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Difficulty Settings";
+            // 
+            // timer_countdown_seconds
+            // 
+            this.timer_countdown_seconds.Location = new System.Drawing.Point(216, 163);
+            this.timer_countdown_seconds.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.timer_countdown_seconds.Name = "timer_countdown_seconds";
+            this.timer_countdown_seconds.Size = new System.Drawing.Size(187, 20);
+            this.timer_countdown_seconds.TabIndex = 338;
+            // 
+            // number_of_alarms
+            // 
+            this.number_of_alarms.Location = new System.Drawing.Point(216, 123);
+            this.number_of_alarms.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.number_of_alarms.Name = "number_of_alarms";
+            this.number_of_alarms.Size = new System.Drawing.Size(187, 20);
+            this.number_of_alarms.TabIndex = 340;
+            // 
+            // number_of_rounds
+            // 
+            this.number_of_rounds.Location = new System.Drawing.Point(6, 201);
+            this.number_of_rounds.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.number_of_rounds.Name = "number_of_rounds";
+            this.number_of_rounds.Size = new System.Drawing.Size(187, 20);
+            this.number_of_rounds.TabIndex = 337;
+            // 
+            // length_of_keycode
+            // 
+            this.length_of_keycode.Location = new System.Drawing.Point(216, 84);
+            this.length_of_keycode.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.length_of_keycode.Name = "length_of_keycode";
+            this.length_of_keycode.Size = new System.Drawing.Size(187, 20);
+            this.length_of_keycode.TabIndex = 339;
+            // 
+            // selection_angle_increase_in_deg
+            // 
+            this.selection_angle_increase_in_deg.Location = new System.Drawing.Point(6, 163);
+            this.selection_angle_increase_in_deg.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.selection_angle_increase_in_deg.Name = "selection_angle_increase_in_deg";
+            this.selection_angle_increase_in_deg.Size = new System.Drawing.Size(187, 20);
+            this.selection_angle_increase_in_deg.TabIndex = 336;
+            // 
+            // outer_selection_angle_in_deg
+            // 
+            this.outer_selection_angle_in_deg.Location = new System.Drawing.Point(6, 123);
+            this.outer_selection_angle_in_deg.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.outer_selection_angle_in_deg.Name = "outer_selection_angle_in_deg";
+            this.outer_selection_angle_in_deg.Size = new System.Drawing.Size(187, 20);
+            this.outer_selection_angle_in_deg.TabIndex = 335;
+            // 
+            // inner_selection_angle_in_deg
+            // 
+            this.inner_selection_angle_in_deg.Location = new System.Drawing.Point(6, 84);
+            this.inner_selection_angle_in_deg.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.inner_selection_angle_in_deg.Name = "inner_selection_angle_in_deg";
+            this.inner_selection_angle_in_deg.Size = new System.Drawing.Size(187, 20);
+            this.inner_selection_angle_in_deg.TabIndex = 334;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(3, 20);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(76, 13);
+            this.label12.TabIndex = 330;
+            this.label12.Text = "Difficulty Level";
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(12, 91);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(132, 13);
+            this.label13.TabIndex = 333;
+            this.label13.Text = "Tool Level 2 Max Difficulty";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(12, 11);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(132, 13);
+            this.label8.TabIndex = 325;
+            this.label8.Text = "Tool Level 0 Max Difficulty";
+            // 
+            // HackingEditor
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(429, 423);
+            this.Controls.Add(this.groupBox2);
+            this.Controls.Add(this.label13);
+            this.Controls.Add(this.btnSave);
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.lvl2Max);
+            this.Controls.Add(this.lvl1Max);
+            this.Controls.Add(this.lvl0Max);
+            this.Controls.Add(this.label11);
+            this.Controls.Add(this.label10);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.lvl3Max);
+            this.Controls.Add(this.lvl99Max);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Name = "HackingEditor";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Hack Tool Editor";
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.timer_countdown_seconds)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.number_of_alarms)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.number_of_rounds)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.length_of_keycode)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.selection_angle_increase_in_deg)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.outer_selection_angle_in_deg)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.inner_selection_angle_in_deg)).EndInit();
+            this.ResumeLayout(false);
+            this.PerformLayout();
+
+        }
+
+        #endregion
+        private System.Windows.Forms.Button btnSave;
+        private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.ComboBox lvl1Max;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.ComboBox lvl99Max;
+        private System.Windows.Forms.ComboBox lvl3Max;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.ComboBox lvl0Max;
+        private System.Windows.Forms.ComboBox lvl2Max;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.ComboBox hackDifficulties;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.NumericUpDown timer_countdown_seconds;
+        private System.Windows.Forms.NumericUpDown number_of_alarms;
+        private System.Windows.Forms.NumericUpDown number_of_rounds;
+        private System.Windows.Forms.NumericUpDown length_of_keycode;
+        private System.Windows.Forms.NumericUpDown selection_angle_increase_in_deg;
+        private System.Windows.Forms.NumericUpDown outer_selection_angle_in_deg;
+        private System.Windows.Forms.NumericUpDown inner_selection_angle_in_deg;
+    }
+}
