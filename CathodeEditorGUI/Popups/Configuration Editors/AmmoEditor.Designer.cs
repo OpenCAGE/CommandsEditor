@@ -1082,7 +1082,6 @@
             // 
             // saveRange
             // 
-            this.saveRange.Enabled = false;
             this.saveRange.Location = new System.Drawing.Point(589, 164);
             this.saveRange.Name = "saveRange";
             this.saveRange.Size = new System.Drawing.Size(84, 36);

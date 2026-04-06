@@ -341,6 +341,12 @@
     <Compile Include="Popups\Configuration Editors\BlueprintEditor.Designer.cs">
       <DependentUpon>BlueprintEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\Configuration Editors\GlobalConstantsEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\GlobalConstantsEditor.Designer.cs">
+      <DependentUpon>GlobalConstantsEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popups\Configuration Editors\Popups\BlueprintEditorDocs.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -851,6 +857,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\Configuration Editors\BlueprintEditor.resx">
       <DependentUpon>BlueprintEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Configuration Editors\GlobalConstantsEditor.resx">
+      <DependentUpon>GlobalConstantsEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\Configuration Editors\Popups\BlueprintEditorDocs.resx">
       <DependentUpon>BlueprintEditorDocs.cs</DependentUpon>

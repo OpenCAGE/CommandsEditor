@@ -1098,6 +1098,24 @@ namespace CommandsEditor
         {
             _radiosityEditor = null;
         }
+
+        GlobalConstantsEditor _globalConstEditor = null;
+        private void globalConstantsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_globalConstEditor != null)
+            {
+                _globalConstEditor.FormClosed -= _globalConstEditor_FormClosed;
+                _globalConstEditor.Close();
+            }
+
+            _globalConstEditor = new GlobalConstantsEditor();
+            _globalConstEditor.Show();
+            _globalConstEditor.FormClosed += _globalConstEditor_FormClosed;
+        }
+        private void _globalConstEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _globalConstEditor = null;
+        }
         #endregion
     }
 }
