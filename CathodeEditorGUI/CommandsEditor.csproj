@@ -347,6 +347,12 @@
     <Compile Include="Popups\Configuration Editors\GlobalConstantsEditor.Designer.cs">
       <DependentUpon>GlobalConstantsEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\Configuration Editors\LocomotionEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\LocomotionEditor.Designer.cs">
+      <DependentUpon>LocomotionEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popups\Configuration Editors\Popups\BlueprintEditorDocs.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -382,6 +388,18 @@
     </Compile>
     <Compile Include="Popups\Configuration Editors\RadiosityEditor.Designer.cs">
       <DependentUpon>RadiosityEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\User Controls\SteeringBoundary.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\User Controls\SteeringBoundary.Designer.cs">
+      <DependentUpon>SteeringBoundary.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\User Controls\SteeringBoundarySet.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\User Controls\SteeringBoundarySet.Designer.cs">
+      <DependentUpon>SteeringBoundarySet.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\ControlsWindow.cs">
       <SubType>Form</SubType>
@@ -861,6 +879,9 @@
     <EmbeddedResource Include="Popups\Configuration Editors\GlobalConstantsEditor.resx">
       <DependentUpon>GlobalConstantsEditor.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Configuration Editors\LocomotionEditor.resx">
+      <DependentUpon>LocomotionEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Popups\Configuration Editors\Popups\BlueprintEditorDocs.resx">
       <DependentUpon>BlueprintEditorDocs.cs</DependentUpon>
     </EmbeddedResource>
@@ -878,6 +899,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\Configuration Editors\RadiosityEditor.resx">
       <DependentUpon>RadiosityEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Configuration Editors\User Controls\SteeringBoundary.resx">
+      <DependentUpon>SteeringBoundary.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Configuration Editors\User Controls\SteeringBoundarySet.resx">
+      <DependentUpon>SteeringBoundarySet.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\ControlsWindow.resx">
       <DependentUpon>ControlsWindow.cs</DependentUpon>

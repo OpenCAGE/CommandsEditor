@@ -49,6 +49,7 @@ namespace CommandsEditor
             this.loadscreenMoviesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hackToolDifficultiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.radiosityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.globalConstantsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.charactersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.inventoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.blueprintRecipesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -94,7 +95,7 @@ namespace CommandsEditor
             this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
             this.vS2015DarkTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme();
             this.vS2015LightTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
-            this.globalConstantsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.locomotionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -266,8 +267,17 @@ namespace CommandsEditor
             this.radiosityToolStripMenuItem.Text = "Radiosity";
             this.radiosityToolStripMenuItem.Click += new System.EventHandler(this.radiosityToolStripMenuItem_Click);
             // 
+            // globalConstantsToolStripMenuItem
+            // 
+            this.globalConstantsToolStripMenuItem.Name = "globalConstantsToolStripMenuItem";
+            this.globalConstantsToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+            this.globalConstantsToolStripMenuItem.Text = "Global Constants";
+            this.globalConstantsToolStripMenuItem.Click += new System.EventHandler(this.globalConstantsToolStripMenuItem_Click);
+            // 
             // charactersToolStripMenuItem
             // 
+            this.charactersToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.locomotionToolStripMenuItem});
             this.charactersToolStripMenuItem.Name = "charactersToolStripMenuItem";
             this.charactersToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.charactersToolStripMenuItem.Text = "Characters";
@@ -617,12 +627,12 @@ namespace CommandsEditor
             this.dockPanel.TabIndex = 5;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
             // 
-            // globalConstantsToolStripMenuItem
+            // locomotionToolStripMenuItem
             // 
-            this.globalConstantsToolStripMenuItem.Name = "globalConstantsToolStripMenuItem";
-            this.globalConstantsToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
-            this.globalConstantsToolStripMenuItem.Text = "Global Constants";
-            this.globalConstantsToolStripMenuItem.Click += new System.EventHandler(this.globalConstantsToolStripMenuItem_Click);
+            this.locomotionToolStripMenuItem.Name = "locomotionToolStripMenuItem";
+            this.locomotionToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.locomotionToolStripMenuItem.Text = "Locomotion";
+            this.locomotionToolStripMenuItem.Click += new System.EventHandler(this.locomotionToolStripMenuItem_Click);
             // 
             // CommandsEditor
             // 
@@ -713,5 +723,6 @@ namespace CommandsEditor
         private System.Windows.Forms.ToolStripMenuItem ammoToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem radiosityToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem globalConstantsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem locomotionToolStripMenuItem;
     }
 }

@@ -104,6 +104,7 @@ namespace CommandsEditor
 
                 if (i != 0)
                     Console.WriteLine("Inherited " + parentVal + " " + val + " value of " + checkbox.Checked + " from " + configs[i].Filepath);
+                break;
             }
         }
         private void SetNumber(List<BML> configs, NumericUpDown updown, string parentVal, string val)
@@ -116,6 +117,7 @@ namespace CommandsEditor
 
                 if (i != 0)
                     Console.WriteLine("Inherited " + parentVal + " " + val + " value of " + updown.Value + " from " + configs[i].Filepath);
+                break;
             }
         }
 

@@ -1116,6 +1116,24 @@ namespace CommandsEditor
         {
             _globalConstEditor = null;
         }
+
+        LocomotionEditor _locomotionEditor = null;
+        private void locomotionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_locomotionEditor != null)
+            {
+                _locomotionEditor.FormClosed -= _locomotionEditor_FormClosed;
+                _locomotionEditor.Close();
+            }
+
+            _locomotionEditor = new LocomotionEditor();
+            _locomotionEditor.Show();
+            _locomotionEditor.FormClosed += _locomotionEditor_FormClosed;
+        }
+        private void _locomotionEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _locomotionEditor = null;
+        }
         #endregion
     }
 }
