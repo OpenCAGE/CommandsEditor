@@ -311,6 +311,15 @@
     <Compile Include="DockPanels\Composite Panels\EntityInspector.Designer.cs">
       <DependentUpon>EntityInspector.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\About.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\About.Designer.cs">
+      <DependentUpon>About.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\AboutWPF.xaml.cs">
+      <DependentUpon>AboutWPF.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Popups\AddEntity_CompositeInstance.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -860,6 +869,9 @@
     <EmbeddedResource Include="DockPanels\Composite Panels\EntityInspector.resx">
       <DependentUpon>EntityInspector.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Popups\About.resx">
+      <DependentUpon>About.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Popups\AddEntity_CompositeInstance.resx">
       <DependentUpon>AddEntity_CompositeInstance.cs</DependentUpon>
     </EmbeddedResource>
@@ -1094,6 +1106,8 @@
     <EmbeddedResource Include="UserControls\GUI_VectorDataType.resx">
       <DependentUpon>GUI_VectorDataType.cs</DependentUpon>
     </EmbeddedResource>
+    <Resource Include="Fonts\Isolation_Isolation.ttf" />
+    <Resource Include="Fonts\JixellationBold_Jixellation.ttf" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -1117,6 +1131,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Images\bluesky.png" />
+    <Resource Include="Images\discord.png" />
+    <Resource Include="Images\docs.png" />
+    <Resource Include="Images\github.png" />
+    <Resource Include="Images\x.png" />
+    <Resource Include="Images\about_logo.png" />
+    <Resource Include="Images\about_bg.png" />
     <None Include="CinematicToolsInjector\Build\CinematicToolsInjector.exe" />
     <Content Include="icon.ico" />
     <None Include="Images\Entity Icons\globe.ico" />
@@ -1137,6 +1158,10 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Popups\AboutWPF.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Popups\Function Editors\CAGEAnimation\Keyframe.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

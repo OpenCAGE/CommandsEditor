@@ -1,5 +1,6 @@
 ﻿using CATHODE;
 using CATHODE.Enums;
+using CommandsEditor.Popups.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,11 +11,11 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace CommandsEditor
 {
-    public partial class LocomotionEditor : DockContent
+    public partial class LocomotionEditor : BaseWindow
     {
         List<BML> _selectedCharacter;
 
-        public LocomotionEditor()
+        public LocomotionEditor() : base()
         {
             InitializeComponent();
 

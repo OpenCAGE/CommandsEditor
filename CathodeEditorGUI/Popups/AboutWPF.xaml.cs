@@ -1,0 +1,56 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+
+namespace CommandsEditor.Popups
+{
+    /// <summary>
+    /// Interaction logic for AboutWPF.xaml
+    /// </summary>
+    public partial class AboutWPF : UserControl
+    {
+        public AboutWPF()
+        {
+            InitializeComponent();
+        }
+
+        public void SetVersion(string version)
+        {
+            VersionText.Content = "[BRANCH] Version " + version;
+        }
+
+        private void GithubButtonClick(object sender, RoutedEventArgs e)
+        {
+            Process.Start("https://github.com/MattFiler/OpenCAGE");
+        }
+        private void DocsButtonClick(object sender, RoutedEventArgs e)
+        {
+            Process.Start("https://opencage.co.uk/docs/");
+        }
+        private void DiscordButtonClick(object sender, RoutedEventArgs e)
+        {
+            Process.Start("https://discord.gg/JJ4ECu9hpY");
+        }
+        private void TwitterButtonClick(object sender, RoutedEventArgs e)
+        {
+            Process.Start("https://twitter.com/MattFiler");
+        }
+        private void BlueskyButtonClick(object sender, RoutedEventArgs e)
+        {
+            Process.Start("https://bsky.app/profile/mattfiler.co.uk");
+        }
+
+    }
+}

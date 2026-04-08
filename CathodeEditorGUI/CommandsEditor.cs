@@ -1135,5 +1135,23 @@ namespace CommandsEditor
             _locomotionEditor = null;
         }
         #endregion
+
+        private About _aboutWindow = null;
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_aboutWindow != null)
+            {
+                _aboutWindow.FormClosed -= _aboutWindow_FormClosed;
+                _aboutWindow.Close();
+            }
+
+            _aboutWindow = new About();
+            _aboutWindow.Show();
+            _aboutWindow.FormClosed += _aboutWindow_FormClosed;
+        }
+        private void _aboutWindow_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _aboutWindow = null;
+        }
     }
 }

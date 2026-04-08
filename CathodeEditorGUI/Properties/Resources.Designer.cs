@@ -181,6 +181,26 @@ namespace CommandsEditor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Isolation_Isolation {
+            get {
+                object obj = ResourceManager.GetObject("Isolation_Isolation", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] JixellationBold_Jixellation {
+            get {
+                object obj = ResourceManager.GetObject("JixellationBold_Jixellation", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         internal static System.Drawing.Icon LightProbeProxyVolume_Gizmo_inv {
