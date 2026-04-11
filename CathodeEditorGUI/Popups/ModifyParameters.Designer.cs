@@ -44,7 +44,7 @@
             this.searchText = new System.Windows.Forms.TextBox();
             this.clearSearchBtn = new System.Windows.Forms.Button();
             this.typesCount = new System.Windows.Forms.Label();
-            this.param_name = new GroupedListView();
+            this.param_name = new System.Windows.Forms.ListView();
             this.funcHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.inheritHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.listIcons = new System.Windows.Forms.ImageList(this.components);

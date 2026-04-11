@@ -65,7 +65,9 @@ namespace CommandsEditor
             //LocalDebug.CheckWriteInstanced();
 
             InitializeComponent();
-            //_dm = new DarkModeCS(this);
+#if USE_DARK_MODE
+            _dm = new DarkModeCS(this);
+#endif
 
             Singleton.Editor = this;
             Singleton.LoadGlobals();

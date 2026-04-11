@@ -41,7 +41,7 @@
             this.showLinkedOverrides = new System.Windows.Forms.Button();
             this.showLinkedTriggerSequences = new System.Windows.Forms.Button();
             this.showLinkedCageAnimations = new System.Windows.Forms.Button();
-            this.entityList = new GroupedListView();
+            this.entityList = new System.Windows.Forms.ListView();
             this.EntityName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.EntityType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.entityListIcons = new System.Windows.Forms.ImageList(this.components);

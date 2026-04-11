@@ -5,12 +5,11 @@ using System.ComponentModel;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Diagnostics;
-using System.Xml.Linq;
-
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace DarkModeForms
 {
@@ -185,9 +184,46 @@ namespace DarkModeForms
         public const int WM_THEMECHANGED = 0x031A;
         public const int GWLP_WNDPROC = -4;
 
+        private const int WM_NOTIFY = 0x004E;
+        /// <summary>Reflected WM_NOTIFY to the control (commctl OCM_NOTIFY).</summary>
+        private const int OCM_NOTIFY = 0x2000 + WM_NOTIFY;
+
+        private const int NM_CUSTOMDRAW = -12;
+        private const int CDDS_PREPAINT = 0x00000001;
+        private const int CDDS_ITEMPREPAINT = 0x00010001;
+        /// <summary>commctrl.h: LVCDI_GROUP (not LVCDI_REPORTSUBITEM).</summary>
+        private const uint LVCDI_GROUP = 0x00000001;
+        private const int CDRF_DODEFAULT = 0x00000000;
+        private const int CDRF_NEWFONT = 0x00000002;
+        private const int CDRF_NOTIFYITEMDRAW = 0x00000020;
+
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, [MarshalAs(UnmanagedType.LPWStr)] string lParam);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("user32.dll")]
+        private static extern bool RedrawWindow(IntPtr hWnd, IntPtr lprcUpdate, IntPtr hrgnUpdate, uint flags);
+
+        private const uint RDW_INVALIDATE = 0x0001;
+        private const uint RDW_ERASE = 0x0004;
+        private const uint RDW_UPDATENOW = 0x0100;
+        private const uint RDW_ALLCHILDREN = 0x0080;
+
+        private const int LVM_FIRST = 0x1000;
+        private const int LVM_GETHEADER = LVM_FIRST + 31;
+        private const int LVM_SETBKCOLOR = LVM_FIRST + 4;
+        private const int LVM_SETTEXTBKCOLOR = LVM_FIRST + 38;
+        private const int LVM_SETTEXTCOLOR = LVM_FIRST + 36;
+
+        private const int HDM_FIRST = 0x1200;
+        private const int HDM_SETBKCOLOR = HDM_FIRST + 29;
+        private const int HDM_SETTEXTCOLOR = HDM_FIRST + 28;
+
+        /// <summary>Sent with LVM_SETBKCOLOR / LVM_SETTEXTBKCOLOR / LVM_SETTEXTCOLOR to use control defaults.</summary>
+        private static readonly IntPtr LVM_COLOR_DEFAULT = (IntPtr)(-1);
 
         [DllImport("DwmApi")]
         public static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, int[] attrValue, int attrSize);
@@ -197,6 +233,18 @@ namespace DarkModeForms
 
         [DllImport("uxtheme.dll", CharSet = CharSet.Unicode)]
         private static extern int SetWindowTheme(IntPtr hWnd, string pszSubAppName, string pszSubIdList);
+
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        private delegate IntPtr LVGroupSubclassProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam, UIntPtr uIdSubclass, UIntPtr dwRefData);
+
+        [DllImport("comctl32.dll", EntryPoint = "SetWindowSubclass", SetLastError = true)]
+        private static extern bool SetWindowSubclass(IntPtr hWnd, LVGroupSubclassProc pfnSubclass, UIntPtr uIdSubclass, UIntPtr dwRefData);
+
+        [DllImport("comctl32.dll", EntryPoint = "RemoveWindowSubclass", SetLastError = true)]
+        private static extern bool RemoveWindowSubclass(IntPtr hWnd, LVGroupSubclassProc pfnSubclass, UIntPtr uIdSubclass);
+
+        [DllImport("comctl32.dll", EntryPoint = "DefSubclassProc")]
+        private static extern IntPtr DefSubclassProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam, UIntPtr uIdSubclass, UIntPtr dwRefData);
 
         [DllImport("dwmapi.dll", EntryPoint = "#127")]
         public static extern void DwmGetColorizationParameters(ref DWMCOLORIZATIONcolors colors);
@@ -211,18 +259,6 @@ namespace DarkModeForms
           int nWidthEllipse, // height of ellipse
           int nHeightEllipse // width of ellipse
         );
-
-        [DllImport("user32")]
-        private static extern IntPtr GetDC(IntPtr hwnd);
-
-        [DllImport("user32")]
-        private static extern IntPtr ReleaseDC(IntPtr hwnd, IntPtr hdc);
-
-        private static IntPtr GetHeaderControl(ListView list)
-        {
-            const int LVM_GETHEADER = 0x1000 + 31;
-            return SendMessage(list.Handle, LVM_GETHEADER, IntPtr.Zero, "");
-        }
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         private delegate IntPtr WndProc(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
@@ -285,6 +321,11 @@ namespace DarkModeForms
         private IntPtr formHandle;
         private bool applyingTheme; // Flag to prevent recursion
         private bool isFormLoaded = false;
+
+        /// <summary>Owner-draw hooks so Details column headers can use a real dark fill (SysHeader32 often stays white).</summary>
+        private static readonly Dictionary<ListView, ListViewDetailsDarkHeaderPaint> ListViewDarkHeaderPainters =
+            new Dictionary<ListView, ListViewDetailsDarkHeaderPaint>();
+
         #endregion
 
 
@@ -464,7 +505,20 @@ namespace DarkModeForms
                 //prevent applying a theme multiple times to the same control
                 //without this, it happens at least is some MDI forms
                 //if the Control already has the current theme, exit (otherwise we are going to re-theme it)
-                if (info.LastThemeAppliedIsDark == IsDarkMode) return;
+                if (info.LastThemeAppliedIsDark == IsDarkMode)
+                {
+                    // ListView (including GroupedListView) may get a new native handle or group chrome after layout;
+                    // native colors must be reapplied even when the logical theme mode did not change.
+                    if (control is ListView)
+                    {
+                        ListView lvSkip = (ListView)control;
+                        if (lvSkip.IsHandleCreated)
+                            ThemeListViewNative(lvSkip);
+                        else
+                            lvSkip.BeginInvoke(new MethodInvoker(() => ThemeListViewNative(lvSkip)));
+                    }
+                    return;
+                }
 
                 //we remember it will soon have the current theme
                 info.LastThemeAppliedIsDark = IsDarkMode;
@@ -476,9 +530,6 @@ namespace DarkModeForms
                 //we remember it will soon have the current theme
                 controlStatusStorage.RegisterProcessedControl(control, IsDarkMode);
             }
-
-            BorderStyle BStyle = (IsDarkMode ? BorderStyle.FixedSingle : BorderStyle.Fixed3D);
-            FlatStyle FStyle = (IsDarkMode ? FlatStyle.Flat : FlatStyle.Standard);
 
             if (controlHandleCreated == null) controlHandleCreated = (sender, e) =>
             {
@@ -500,38 +551,15 @@ namespace DarkModeForms
             control.GetType().GetProperty("BackColor")?.SetValue(control, OScolors.Control);
             control.GetType().GetProperty("ForeColor")?.SetValue(control, OScolors.TextActive);
 
-            /* Here we Finetune individual Controls  */
-            if (control is Label lbl)
+            /* Per-control theming (colors + Windows dark visual styles only; no layout overrides). */
+            if (control is Label)
             {
-                control.GetType().GetProperty("BackColor")?.SetValue(control, control.Parent.BackColor);
-                control.GetType().GetProperty("BorderStyle")?.SetValue(control, BorderStyle.None);
-                control.Paint += (sender, e) =>
-                {
-                    if (control.Enabled == false && IsDarkMode)
-                    {
-                        e.Graphics.Clear(control.Parent.BackColor);
-                        e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
-
-                        using (Brush B = new SolidBrush(control.ForeColor))
-                        {
-                            //StringFormat sf = lbl.CreateStringFormat();
-                            MethodInfo mi = lbl.GetType().GetMethod("CreateStringFormat", BindingFlags.NonPublic | BindingFlags.Instance);
-                            StringFormat sf = mi.Invoke(lbl, new object[] { }) as StringFormat;
-
-                            e.Graphics.DrawString(lbl.Text, lbl.Font, B, new PointF(1, 0), sf);
-                        }
-                    }
-                };
+                control.GetType().GetProperty("BackColor")?.SetValue(control, control.Parent?.BackColor ?? OScolors.Background);
             }
             if (control is LinkLabel)
             {
                 control.GetType().GetProperty("LinkColor")?.SetValue(control, OScolors.AccentLight);
                 control.GetType().GetProperty("VisitedLinkColor")?.SetValue(control, OScolors.Primary);
-            }
-            if (control is TextBox)
-            {
-                //SetRoundBorders(tb, 4, OScolors.SurfaceDark, 1);
-                control.GetType().GetProperty("BorderStyle")?.SetValue(control, BStyle);
             }
             if (control is NumericUpDown)
             {
@@ -541,112 +569,44 @@ namespace DarkModeForms
             }
             if (control is Button)
             {
-                var button = control as Button;
-                button.FlatStyle = IsDarkMode ? FlatStyle.Flat : FlatStyle.Standard;
-                button.FlatAppearance.CheckedBackColor = OScolors.Accent;
-                button.BackColor = OScolors.Control;
-                button.FlatAppearance.BorderColor = (OwnerForm.AcceptButton == button) ?
-                  OScolors.Accent : OScolors.Control;
+                ((Button)control).UseVisualStyleBackColor = false;
             }
-            if (control is ComboBox comboBox)
+            if (control is ComboBox)
             {
-                // Fixing a glitch that makes all instances of the ComboBox showing as having a Selected value, even when they dont
-                if (comboBox.DropDownStyle != ComboBoxStyle.DropDownList)
-                {
-                    comboBox.SelectionStart = comboBox.Text.Length;
-                }
-                //control.BeginInvoke(() => (control as ComboBox).SelectionLength = 0);
-                control.BeginInvoke(new Action(() =>
-                {
-                    if (!((ComboBox)control).DropDownStyle.Equals(ComboBoxStyle.DropDownList))
-                        ((ComboBox)control).SelectionLength = 0;
-                }));
-
-                // Fixes a glitch showing the Combo Backgroud white when the control is Disabled:
-                if (!control.Enabled && IsDarkMode)
-                {
-                    comboBox.DropDownStyle = ComboBoxStyle.DropDownList;
-                }
-
-                // Apply Windows Color Mode:
                 Mode = IsDarkMode ? "DarkMode_CFD" : "ClearMode_CFD";
                 SetWindowTheme(control.Handle, Mode, null);
             }
             if (control is Panel)
             {
-                var panel = control as Panel;
-                // Process the panel within the container
+                Panel panel = (Panel)control;
                 panel.BackColor = OScolors.Background;
-                panel.BorderStyle = BorderStyle.None;
-                if (!(panel.Parent is TabControl) || !(panel.Parent is TableLayoutPanel))
+                if (RoundedPanels && !(panel.Parent is TabControl) && !(panel.Parent is TableLayoutPanel))
                 {
-                    if (RoundedPanels)
-                    {
-                        SetRoundBorders(panel, 6, OScolors.SurfaceDark, 1);
-                    }
+                    SetRoundBorders(panel, 6, OScolors.SurfaceDark, 1);
                 }
             }
             if (control is GroupBox)
             {
-                control.GetType().GetProperty("BackColor")?.SetValue(control, control.Parent.BackColor);
+                control.GetType().GetProperty("BackColor")?.SetValue(control, control.Parent?.BackColor ?? OScolors.Background);
                 control.GetType().GetProperty("ForeColor")?.SetValue(control, OScolors.TextActive);
-                control.Paint += (sender, e) =>
-                {
-                    if (control.Enabled == false && IsDarkMode)
-                    {
-                        var radio = (sender as GroupBox);
-                        Brush B = new SolidBrush(control.ForeColor);
-
-                        e.Graphics.DrawString(radio.Text, radio.Font,
-                          B, new PointF(6, 0));
-                    }
-                };
             }
             if (control is TableLayoutPanel)
             {
-                control.GetType().GetProperty("BackColor")?.SetValue(control, control.Parent.BackColor);
+                control.GetType().GetProperty("BackColor")?.SetValue(control, control.Parent?.BackColor ?? OScolors.Background);
                 control.GetType().GetProperty("ForeColor")?.SetValue(control, OScolors.TextInactive);
-                control.GetType().GetProperty("BorderStyle")?.SetValue(control, BorderStyle.None);
             }
             if (control is TabControl)
             {
-                var tab = control as TabControl;
+                TabControl tab = (TabControl)control;
                 tab.Appearance = TabAppearance.Normal;
-                tab.DrawMode = TabDrawMode.OwnerDrawFixed;
-                tab.DrawItem += (sender, e) =>
+                tab.DrawMode = TabDrawMode.Normal;
+                tab.BackColor = OScolors.Background;
+                tab.ForeColor = OScolors.TextInactive;
+                foreach (TabPage tabPage in tab.TabPages)
                 {
-                    //Draw the background of the main control
-                    using (SolidBrush backColor = new SolidBrush(tab.Parent.BackColor))
-                    {
-                        e.Graphics.FillRectangle(backColor, tab.ClientRectangle);
-                    }
-
-                    using (Brush tabBack = new SolidBrush(OScolors.Surface))
-                    {
-                        for (int i = 0; i < tab.TabPages.Count; i++)
-                        {
-                            TabPage tabPage = tab.TabPages[i];
-                            tabPage.BackColor = OScolors.Surface;
-                            tabPage.BorderStyle = BorderStyle.FixedSingle;
-
-                            tabPage.ControlAdded -= tabPageAdded; //prevent uncontrolled multiple addition
-                            tabPage.ControlAdded += tabPageAdded;
-
-                            var tabRect = tab.GetTabRect(i);
-
-                            bool IsSelected = (tab.SelectedIndex == i);
-                            if (IsSelected)
-                            {
-                                e.Graphics.FillRectangle(tabBack, tabRect);
-                                TextRenderer.DrawText(e.Graphics, tabPage.Text, tabPage.Font, tabRect, OScolors.TextActive);
-                            }
-                            else
-                            {
-                                TextRenderer.DrawText(e.Graphics, tabPage.Text, tabPage.Font, tabRect, OScolors.TextInactive);
-                            }
-                        }
-                    }
-                };
+                    tabPage.BackColor = OScolors.Surface;
+                    tabPage.ForeColor = OScolors.TextActive;
+                }
             }
             //if (control is FlatTabControl)
             //{
@@ -659,41 +619,18 @@ namespace DarkModeForms
             //}
             if (control is PictureBox)
             {
-                control.GetType().GetProperty("BackColor")?.SetValue(control, control.Parent.BackColor);
+                control.GetType().GetProperty("BackColor")?.SetValue(control, control.Parent?.BackColor ?? OScolors.Background);
                 control.GetType().GetProperty("ForeColor")?.SetValue(control, OScolors.TextActive);
-                control.GetType().GetProperty("BorderStyle")?.SetValue(control, BorderStyle.None);
             }
             if (control is CheckBox)
             {
-                control.GetType().GetProperty("BackColor")?.SetValue(control, control.Parent.BackColor);
+                control.GetType().GetProperty("BackColor")?.SetValue(control, control.Parent?.BackColor ?? OScolors.Background);
                 control.ForeColor = control.Enabled ? OScolors.TextActive : OScolors.TextInactive;
-                control.Paint += (sender, e) =>
-                {
-                    if (control.Enabled == false && IsDarkMode)
-                    {
-                        var radio = (sender as CheckBox);
-                        Brush B = new SolidBrush(control.ForeColor);
-
-                        e.Graphics.DrawString(radio.Text, radio.Font,
-                          B, new PointF(16, 0));
-                    }
-                };
             }
             if (control is RadioButton)
             {
-                control.GetType().GetProperty("BackColor")?.SetValue(control, control.Parent.BackColor);
+                control.GetType().GetProperty("BackColor")?.SetValue(control, control.Parent?.BackColor ?? OScolors.Background);
                 control.ForeColor = control.Enabled ? OScolors.TextActive : OScolors.TextInactive;
-                control.Paint += (sender, e) =>
-                {
-                    if (control.Enabled == false && IsDarkMode)
-                    {
-                        var radio = (sender as RadioButton);
-                        Brush B = new SolidBrush(control.ForeColor);
-
-                        e.Graphics.DrawString(radio.Text, radio.Font,
-                          B, new PointF(16, 0));
-                    }
-                };
             }
             if (control is MenuStrip)
             {
@@ -710,7 +647,7 @@ namespace DarkModeForms
             }
             if (control is ToolStripPanel) //<- empty area around ToolStrip
             {
-                control.GetType().GetProperty("BackColor")?.SetValue(control, control.Parent.BackColor);
+                control.GetType().GetProperty("BackColor")?.SetValue(control, control.Parent?.BackColor ?? OScolors.Background);
             }
             if (control is ToolStripDropDown)
             {
@@ -746,118 +683,18 @@ namespace DarkModeForms
             }
             if (control is ListView)
             {
-                var lView = control as ListView;
-                //Mode = IsDarkMode ? "DarkMode_ItemsView" : "ClearMode_ItemsView";
-                Mode = IsDarkMode ? "DarkMode_Explorer" : "ClearMode_Explorer";
-                SetWindowTheme(control.Handle, Mode, null);
-
-
-                if (lView.View == View.Details)
-                {
-                    //lView.BackColor = OScolors.Surface;
-                    if (lView.Items.Count > 0) lView.Items[0].UseItemStyleForSubItems = false;
-                    lView.OwnerDraw = true;
-                    lView.DrawColumnHeader += (sender, e) =>
-                    {
-                        //e.DrawDefault = true;
-                        //e.DrawBackground();
-                        //e.DrawText();
-
-                        //Draws the Column's Text
-                        using (SolidBrush backBrush = new SolidBrush(OScolors.ControlLight))
-                        {
-                            using (SolidBrush foreBrush = new SolidBrush(OScolors.TextActive))
-                            {
-                                using (var sf = new StringFormat())
-                                {
-                                    sf.Alignment = StringAlignment.Center;
-                                    e.Graphics.FillRectangle(backBrush, e.Bounds);
-                                    e.Graphics.DrawString(e.Header.Text, lView.Font, foreBrush, e.Bounds, sf);
-                                }
-                            }
-                        }
-                    };
-                    lView.DrawItem += (sender, e) => { e.DrawDefault = true; };
-                    lView.DrawSubItem += (sender, e) =>
-                    {
-                        e.DrawDefault = true;
-
-                        //IntPtr headerControl = GetHeaderControl(lView);
-                        //IntPtr hdc = GetDC(headerControl);
-                        //Rectangle rc = new Rectangle(
-                        //  e.Bounds.Right, //<- Right instead of Left - offsets the rectangle
-                        //  e.Bounds.Top,
-                        //  e.Bounds.Width,
-                        //  e.Bounds.Height
-                        //);
-                        //rc.Width += 200;
-
-                        //using (SolidBrush backBrush = new SolidBrush(OScolors.ControlLight))
-                        //{
-                        //	e.Graphics.FillRectangle(backBrush, rc);
-                        //}
-
-                        //ReleaseDC(headerControl, hdc);
-
-                    };
-
-                    Mode = IsDarkMode ? "DarkMode_Explorer" : "ClearMode_Explorer";
-                    SetWindowTheme(control.Handle, Mode, null);
-                }
-
-            }
-            if (control is TreeView)
-            {
-                control.GetType().GetProperty("BorderStyle")?.SetValue(control, BorderStyle.None);
-                //tree.DrawNode += (object? sender, DrawTreeNodeEventArgs e) =>
-                //{
-                //  if (e.Node.ImageIndex != -1)
-                //  {
-                //	Image image = tree.ImageList.Images[e.Node.ImageIndex];
-                //	using (Graphics g = Graphics.FromImage(image))
-                //	{
-                //	  g.InterpolationMode = InterpolationMode.HighQualityBilinear;
-                //	  g.CompositingQuality = CompositingQuality.HighQuality;
-                //	  g.SmoothingMode = SmoothingMode.HighQuality;
-
-                //	  g.DrawImage(DarkModeCS.ChangeToColor(image, OScolors.TextInactive), new Point(0,0));
-                //	}
-                //	tree.ImageList.Images[e.Node.ImageIndex] = image;
-                //  }
-                //  tree.Invalidate();
-                //};
+                ListView listView = (ListView)control;
+                if (listView.IsHandleCreated)
+                    ThemeListViewNative(listView);
+                else
+                    listView.BeginInvoke(new MethodInvoker(() => ThemeListViewNative(listView)));
             }
             if (control is DataGridView)
             {
                 var grid = control as DataGridView;
                 grid.EnableHeadersVisualStyles = false;
-                grid.BorderStyle = BorderStyle.FixedSingle;
                 grid.BackgroundColor = OScolors.Control;
                 grid.GridColor = OScolors.Control;
-
-                //paint the bottom right corner where the scrollbars meet
-                grid.Paint += (sender, e) =>
-                {
-                    DataGridView dgv = sender as DataGridView;
-
-                    //get the value of dgv.HorizontalScrollBar protected property
-                    HScrollBar hs = (HScrollBar)typeof(DataGridView).GetProperty("HorizontalScrollBar", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(dgv);
-                    if (hs.Visible)
-                    {
-                        //get the value of dgv.VerticalScrollBar protected property
-                        VScrollBar vs = (VScrollBar)typeof(DataGridView).GetProperty("VerticalScrollBar", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(dgv);
-
-                        if (vs.Visible)
-                        {
-                            //only when both the scrollbars are visible, do the actual painting
-                            Brush brush = new SolidBrush(OScolors.SurfaceDark);
-                            var w = vs.Size.Width;
-                            var h = hs.Size.Height;
-                            e.Graphics.FillRectangle(brush, dgv.ClientRectangle.X + dgv.ClientRectangle.Width - w - 1,
-                              dgv.ClientRectangle.Y + dgv.ClientRectangle.Height - h - 1, w, h);
-                        }
-                    }
-                };
 
                 grid.DefaultCellStyle.BackColor = OScolors.Surface;
                 grid.DefaultCellStyle.ForeColor = OScolors.TextActive;
@@ -872,15 +709,15 @@ namespace DarkModeForms
                 grid.RowHeadersDefaultCellStyle.SelectionBackColor = OScolors.Surface;
                 grid.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
             }
-            if (control is RichTextBox richText)
+            if (control is RichTextBox)
             {
-                richText.BackColor = richText.Parent.BackColor;
-                richText.BorderStyle = BorderStyle.None;
+                RichTextBox richText = (RichTextBox)control;
+                richText.BackColor = richText.Parent != null ? richText.Parent.BackColor : OScolors.Control;
             }
-            if (control is FlowLayoutPanel flowLayout)
+            if (control is FlowLayoutPanel)
             {
-                flowLayout.BackColor = flowLayout.Parent.BackColor;
-                flowLayout.BorderStyle = BorderStyle.None;
+                FlowLayoutPanel flowLayout = (FlowLayoutPanel)control;
+                flowLayout.BackColor = flowLayout.Parent != null ? flowLayout.Parent.BackColor : OScolors.Background;
             }
 
 
@@ -894,11 +731,6 @@ namespace DarkModeForms
                 // Recursively process its children
                 ThemeControl(childControl);
             }
-        }
-
-        private void tabPageAdded(object _s, ControlEventArgs _e)
-        {
-            ThemeControl(_e.Control);
         }
 
         /// <summary>
@@ -1155,6 +987,167 @@ namespace DarkModeForms
             tsmi.DropDownOpening -= Tsmi_DropDownOpening;
         }
 
+        /// <summary>
+        /// Re-apply ListView / header native colors (e.g. after changing groups or columns at runtime).
+        /// </summary>
+        public void RefreshThemedListView(ListView listView)
+        {
+            if (listView == null || OScolors == null)
+                return;
+            if (listView.IsHandleCreated)
+                ThemeListViewNative(listView);
+            else
+                listView.BeginInvoke(new MethodInvoker(() => ThemeListViewNative(listView)));
+        }
+
+        /// <summary>
+        /// Walks parent <see cref="Form"/>s to find a <see cref="DarkModeCS"/> field (e.g. on the main shell) when the list is hosted under docked document content,
+        /// where <see cref="Control.FindForm"/> returns the document form, not the themed owner window.
+        /// </summary>
+        public static void TryRefreshThemedListView(ListView listView)
+        {
+            if (listView == null)
+                return;
+            for (Control walk = listView; walk != null; walk = walk.Parent)
+            {
+                Form host = walk as Form;
+                if (host == null)
+                    continue;
+                DarkModeCS dm = FindDarkModeCsOnForm(host);
+                if (dm != null)
+                {
+                    dm.RefreshThemedListView(listView);
+                    return;
+                }
+            }
+        }
+
+        private static DarkModeCS FindDarkModeCsOnForm(Form form)
+        {
+            if (form == null)
+                return null;
+            Type t = form.GetType();
+            while (t != null)
+            {
+                foreach (FieldInfo fi in t.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+                {
+                    if (fi.FieldType != typeof(DarkModeCS))
+                        continue;
+                    DarkModeCS dm = fi.GetValue(form) as DarkModeCS;
+                    if (dm != null)
+                        return dm;
+                }
+                t = t.BaseType;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// ListView ignores generic WinForms theming for the client area and SysHeader32; apply Explorer dark theme plus commctrl colors.
+        /// </summary>
+        /// <param name="lv">Target list view.</param>
+        /// <param name="layoutFollowUp">Second pass after layout when <see cref="ListView.Groups"/> are used (commctrl paints group chrome late).</param>
+        private void ThemeListViewNative(ListView lv, bool layoutFollowUp = false)
+        {
+            if (lv == null || lv.IsDisposed || !lv.IsHandleCreated)
+                return;
+
+            ListViewGroupTextHook.Remove(lv);
+
+            string theme = IsDarkMode ? "DarkMode_Explorer" : "ClearMode_Explorer";
+            SetWindowTheme(lv.Handle, theme, null);
+
+            Color listBg;
+            Color listFg;
+            Color headerBg;
+            Color headerFg;
+
+            if (IsDarkMode)
+            {
+                listBg = OScolors.Surface;
+                listFg = OScolors.TextActive;
+                headerBg = OScolors.ControlLight;
+                headerFg = OScolors.TextActive;
+            }
+            else
+            {
+                listBg = SystemColors.Window;
+                listFg = SystemColors.WindowText;
+                headerBg = SystemColors.Control;
+                headerFg = SystemColors.ControlText;
+            }
+
+            lv.BackColor = listBg;
+            lv.ForeColor = listFg;
+
+            IntPtr crefListBg = (IntPtr)(uint)ColorTranslator.ToWin32(listBg);
+            IntPtr crefListFg = (IntPtr)(uint)ColorTranslator.ToWin32(listFg);
+
+            if (IsDarkMode)
+            {
+                SendMessage(lv.Handle, LVM_SETBKCOLOR, IntPtr.Zero, crefListBg);
+                SendMessage(lv.Handle, LVM_SETTEXTBKCOLOR, IntPtr.Zero, crefListBg);
+                SendMessage(lv.Handle, LVM_SETTEXTCOLOR, IntPtr.Zero, crefListFg);
+            }
+            else
+            {
+                SendMessage(lv.Handle, LVM_SETBKCOLOR, IntPtr.Zero, LVM_COLOR_DEFAULT);
+                SendMessage(lv.Handle, LVM_SETTEXTBKCOLOR, IntPtr.Zero, LVM_COLOR_DEFAULT);
+                SendMessage(lv.Handle, LVM_SETTEXTCOLOR, IntPtr.Zero, LVM_COLOR_DEFAULT);
+            }
+
+            IntPtr hHeader = SendMessage(lv.Handle, LVM_GETHEADER, IntPtr.Zero, IntPtr.Zero);
+            if (IsDarkMode && lv.View == View.Details)
+            {
+                EnsureDarkDetailsColumnHeaderPaint(lv, headerBg, headerFg);
+            }
+            else
+            {
+                RemoveDarkDetailsColumnHeaderPaint(lv);
+                if (hHeader != IntPtr.Zero)
+                {
+                    SetWindowTheme(hHeader, theme, null);
+                    if (IsDarkMode)
+                    {
+                        SendMessage(hHeader, HDM_SETBKCOLOR, IntPtr.Zero, (IntPtr)(uint)ColorTranslator.ToWin32(headerBg));
+                        SendMessage(hHeader, HDM_SETTEXTCOLOR, IntPtr.Zero, (IntPtr)(uint)ColorTranslator.ToWin32(headerFg));
+                    }
+                    else
+                    {
+                        SendMessage(hHeader, HDM_SETBKCOLOR, IntPtr.Zero, LVM_COLOR_DEFAULT);
+                        SendMessage(hHeader, HDM_SETTEXTCOLOR, IntPtr.Zero, LVM_COLOR_DEFAULT);
+                    }
+
+                    RedrawWindow(hHeader, IntPtr.Zero, IntPtr.Zero, RDW_INVALIDATE | RDW_ERASE | RDW_UPDATENOW);
+                }
+            }
+
+            if (IsDarkMode && !lv.VirtualMode)
+            {
+                foreach (ListViewItem item in lv.Items)
+                {
+                    item.UseItemStyleForSubItems = true;
+                    item.BackColor = listBg;
+                    item.ForeColor = listFg;
+                }
+            }
+
+            lv.Invalidate(true);
+            RedrawWindow(lv.Handle, IntPtr.Zero, IntPtr.Zero, RDW_INVALIDATE | RDW_ERASE | RDW_UPDATENOW | RDW_ALLCHILDREN);
+
+            if (IsDarkMode && lv.Groups.Count > 0)
+                ListViewGroupTextHook.Ensure(lv, listFg, listBg);
+
+            if (IsDarkMode && !layoutFollowUp && lv.Groups.Count > 0)
+            {
+                lv.BeginInvoke(new MethodInvoker(() =>
+                {
+                    if (!lv.IsDisposed && lv.IsHandleCreated)
+                        ThemeListViewNative(lv, true);
+                }));
+            }
+        }
+
         /// <summary>Attemps to apply Window's Dark Style to the Control and all its childs.</summary>
         /// <param name="control"></param>
         private static void ApplySystemDarkTheme(Control control = null, bool IsDarkMode = true)
@@ -1180,10 +1173,7 @@ namespace DarkModeForms
                 DwmSetWindowAttribute(control.Handle, (int)DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE, DarkModeOn, 4);
 
             foreach (Control child in control.Controls)
-            {
-                if (child.Controls.Count != 0)
-                    ApplySystemDarkTheme(child, IsDarkMode);
-            }
+                ApplySystemDarkTheme(child, IsDarkMode);
         }
 
         private static bool IsWindows10orGreater()
@@ -1243,6 +1233,236 @@ namespace DarkModeForms
             path.AddArc(rect.X, rect.Bottom - curveSize, curveSize, curveSize, 90, 90);
             path.CloseFigure();
             return path;
+        }
+
+        /// <summary>
+        /// comctl32 <see cref="SetWindowSubclass"/> for OCM_NOTIFY / NM_CUSTOMDRAW group headers, plus optional managed <see cref="ListView.WndProc"/> path (<see cref="TryReflectListViewGroupCustomDraw"/>).
+        /// Do not use <see cref="NativeWindow.AssignHandle"/> on a WinForms <see cref="ListView"/> handle — it detaches the control's own native window and breaks selection/hover painting.
+        /// </summary>
+        private static class ListViewGroupTextHook
+        {
+            private static readonly Dictionary<ListView, GroupColorState> Table = new Dictionary<ListView, GroupColorState>();
+            /// <summary>Unique subclass id for this hook (arbitrary).</summary>
+            private static readonly UIntPtr SubclassId = (UIntPtr)unchecked((int)0x4F434547);
+            private static readonly LVGroupSubclassProc SubclassThunk = ListViewGroupSubclassWndProc;
+
+            private sealed class GroupColorState
+            {
+                public int ClrText;
+                public int ClrTextBk;
+            }
+
+            private static int NmhCodeOffset => IntPtr.Size == 8 ? 16 : 8;
+            private static int NmcdDwDrawStageOffset => IntPtr.Size == 8 ? 24 : 12;
+            private static int NmlvClrTextOffset => IntPtr.Size == 8 ? 80 : 48;
+            private static int NmlvClrTextBkOffset => IntPtr.Size == 8 ? 84 : 52;
+            private static int NmlvDwItemTypeOffset => IntPtr.Size == 8 ? 92 : 60;
+
+            /// <summary>Apply NM_CUSTOMDRAW group header colors; <paramref name="p"/> is NMLVCUSTOMDRAW*.</summary>
+            private static bool TryApplyGroupHeaderColors(IntPtr p, GroupColorState state, out IntPtr returnResult)
+            {
+                returnResult = IntPtr.Zero;
+                if (Marshal.ReadInt32(p, NmhCodeOffset) != NM_CUSTOMDRAW)
+                    return false;
+                int stage = Marshal.ReadInt32(p, NmcdDwDrawStageOffset);
+                if (stage == CDDS_PREPAINT)
+                {
+                    returnResult = (IntPtr)CDRF_NOTIFYITEMDRAW;
+                    return true;
+                }
+                if ((stage & CDDS_ITEMPREPAINT) == CDDS_ITEMPREPAINT)
+                {
+                    uint dwItemType = unchecked((uint)Marshal.ReadInt32(p, NmlvDwItemTypeOffset));
+                    if (dwItemType == LVCDI_GROUP)
+                    {
+                        Marshal.WriteInt32(p, NmlvClrTextOffset, state.ClrText);
+                        Marshal.WriteInt32(p, NmlvClrTextBkOffset, state.ClrTextBk);
+                        returnResult = (IntPtr)CDRF_NEWFONT;
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            private static IntPtr ListViewGroupSubclassWndProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam, UIntPtr uIdSubclass, UIntPtr dwRefData)
+            {
+                if (msg == OCM_NOTIFY && lParam != IntPtr.Zero)
+                {
+                    IntPtr p = lParam;
+                    IntPtr hwndFrom = Marshal.ReadIntPtr(p, 0);
+                    if (hwndFrom != IntPtr.Zero && hwndFrom != hWnd)
+                        return DefSubclassProc(hWnd, msg, wParam, lParam, uIdSubclass, dwRefData);
+                    ListView lv = Control.FromHandle(hWnd) as ListView;
+                    if (lv != null && Table.TryGetValue(lv, out GroupColorState state))
+                    {
+                        if (TryApplyGroupHeaderColors(p, state, out IntPtr res))
+                            return res;
+                    }
+                }
+                return DefSubclassProc(hWnd, msg, wParam, lParam, uIdSubclass, dwRefData);
+            }
+
+            /// <summary>Handle reflected WM_NOTIFY in <see cref="ListView.WndProc"/> when the comctl subclass does not run first.</summary>
+            internal static bool TryProcessReflect(ref Message m, ListView lv)
+            {
+                if (m.Msg != OCM_NOTIFY || m.LParam == IntPtr.Zero || lv == null)
+                    return false;
+                if (!Table.TryGetValue(lv, out GroupColorState state))
+                    return false;
+                if (!TryApplyGroupHeaderColors(m.LParam, state, out IntPtr res))
+                    return false;
+                m.Result = res;
+                return true;
+            }
+
+            public static void Ensure(ListView lv, Color clrText, Color clrTextBk)
+            {
+                if (lv == null || !lv.IsHandleCreated)
+                    return;
+                if (!Table.TryGetValue(lv, out GroupColorState state))
+                {
+                    state = new GroupColorState();
+                    Table.Add(lv, state);
+                    lv.Disposed += OnListDisposed;
+                }
+                state.ClrText = ColorTranslator.ToWin32(clrText);
+                state.ClrTextBk = ColorTranslator.ToWin32(clrTextBk);
+                IntPtr h = lv.Handle;
+                RemoveWindowSubclass(h, SubclassThunk, SubclassId);
+                SetWindowSubclass(h, SubclassThunk, SubclassId, UIntPtr.Zero);
+            }
+
+            public static void Remove(ListView lv)
+            {
+                if (lv == null)
+                    return;
+                if (!Table.TryGetValue(lv, out GroupColorState _))
+                    return;
+                lv.Disposed -= OnListDisposed;
+                if (lv.IsHandleCreated)
+                    RemoveWindowSubclass(lv.Handle, SubclassThunk, SubclassId);
+                Table.Remove(lv);
+            }
+
+            private static void OnListDisposed(object sender, EventArgs e)
+            {
+                Remove(sender as ListView);
+            }
+        }
+
+        /// <summary>
+        /// Call from <see cref="ListView.WndProc"/> on a grouped list so reflected <c>OCM_NOTIFY</c> / NM_CUSTOMDRAW runs on the WinForms path.
+        /// </summary>
+        internal static bool TryReflectListViewGroupCustomDraw(ref Message m, ListView lv)
+        {
+            return ListViewGroupTextHook.TryProcessReflect(ref m, lv);
+        }
+
+        private static void EnsureDarkDetailsColumnHeaderPaint(ListView lv, Color headerBg, Color headerFg)
+        {
+            if (lv == null)
+                return;
+            if (!ListViewDarkHeaderPainters.TryGetValue(lv, out ListViewDetailsDarkHeaderPaint hook))
+            {
+                hook = new ListViewDetailsDarkHeaderPaint(lv);
+                ListViewDarkHeaderPainters.Add(lv, hook);
+            }
+            hook.SetColors(headerBg, headerFg);
+            hook.Attach();
+        }
+
+        private static void RemoveDarkDetailsColumnHeaderPaint(ListView lv)
+        {
+            if (lv == null)
+                return;
+            if (!ListViewDarkHeaderPainters.TryGetValue(lv, out ListViewDetailsDarkHeaderPaint hook))
+                return;
+            hook.Detach();
+            ListViewDarkHeaderPainters.Remove(lv);
+        }
+
+        /// <summary>OwnerDraw column headers only; rows still use <see cref="DrawListViewItemEventArgs.DrawDefault"/>.</summary>
+        private sealed class ListViewDetailsDarkHeaderPaint
+        {
+            private readonly ListView _lv;
+            private Color _headerBg;
+            private Color _headerFg;
+            private bool _attached;
+            private bool _disposedSubscribed;
+
+            public ListViewDetailsDarkHeaderPaint(ListView lv)
+            {
+                _lv = lv;
+            }
+
+            public void SetColors(Color headerBg, Color headerFg)
+            {
+                _headerBg = headerBg;
+                _headerFg = headerFg;
+            }
+
+            public void Attach()
+            {
+                if (_attached)
+                {
+                    _lv.Invalidate();
+                    return;
+                }
+                _lv.OwnerDraw = true;
+                _lv.DrawColumnHeader += OnDrawColumnHeader;
+                _lv.DrawItem += OnDrawItem;
+                _lv.DrawSubItem += OnDrawSubItem;
+                _attached = true;
+                if (!_disposedSubscribed)
+                {
+                    _lv.Disposed += OnListDisposed;
+                    _disposedSubscribed = true;
+                }
+            }
+
+            public void Detach()
+            {
+                if (_disposedSubscribed)
+                {
+                    _lv.Disposed -= OnListDisposed;
+                    _disposedSubscribed = false;
+                }
+                if (!_attached)
+                    return;
+                _lv.DrawColumnHeader -= OnDrawColumnHeader;
+                _lv.DrawItem -= OnDrawItem;
+                _lv.DrawSubItem -= OnDrawSubItem;
+                _lv.OwnerDraw = false;
+                _attached = false;
+            }
+
+            private void OnListDisposed(object sender, EventArgs e)
+            {
+                Detach();
+                ListViewDarkHeaderPainters.Remove(_lv);
+            }
+
+            private void OnDrawColumnHeader(object sender, DrawListViewColumnHeaderEventArgs e)
+            {
+                using (SolidBrush brush = new SolidBrush(_headerBg))
+                    e.Graphics.FillRectangle(brush, e.Bounds);
+                TextFormatFlags tf = TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.SingleLine;
+                Rectangle textBounds = e.Bounds;
+                textBounds.X += 4;
+                TextRenderer.DrawText(e.Graphics, e.Header.Text, e.Font, textBounds, _headerFg, tf);
+                using (Pen pen = new Pen(ControlPaint.Dark(_headerBg)))
+                    e.Graphics.DrawLine(pen, e.Bounds.Right - 1, e.Bounds.Top, e.Bounds.Right - 1, e.Bounds.Bottom - 1);
+            }
+
+            private static void OnDrawItem(object sender, DrawListViewItemEventArgs e)
+            {
+                e.DrawDefault = true;
+            }
+
+            private static void OnDrawSubItem(object sender, DrawListViewSubItemEventArgs e)
+            {
+                e.DrawDefault = true;
+            }
         }
 
         #endregion Private Methods
@@ -1423,7 +1643,8 @@ namespace DarkModeForms
 
             ToolStrip toolStrip = button.Owner;
 
-            if (!(button.Owner.GetItemAt(button.Bounds.X, button.Bounds.Bottom + 1) is ToolStripButton nextItem))
+            ToolStripItem nextItem = button.Owner.GetItemAt(button.Bounds.X, button.Bounds.Bottom + 1);
+            if (!(nextItem is ToolStripButton))
             {
                 g.DrawLine(
                   BordersPencil,

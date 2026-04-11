@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using DarkModeForms;
 
 namespace CommandsEditor
 {
@@ -10,6 +11,20 @@ namespace CommandsEditor
     /// </summary>
     public class GroupedListView : ListView
     {
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            // DockContent is a Form: FindForm() would stop there without a DarkModeCS; defer and walk ancestors.
+            BeginInvoke(new MethodInvoker(() => DarkModeCS.TryRefreshThemedListView(this)));
+        }
+
+        protected override void WndProc(ref Message m)
+        {
+            if (DarkModeCS.TryReflectListViewGroupCustomDraw(ref m, this))
+                return;
+            base.WndProc(ref m);
+        }
+
         protected override void OnKeyDown(KeyEventArgs e)
         {
             // Handle arrow key navigation for grouped ListViews

@@ -24,7 +24,9 @@ namespace CommandsEditor.Popups.Base
         public BaseWindow()
         {
             InitializeComponent();
+#if USE_DARK_MODE
             _dm = new DarkModeCS(this);
+#endif
 
             this.BringToFront();
             this.Focus();
@@ -33,7 +35,9 @@ namespace CommandsEditor.Popups.Base
         public BaseWindow(WindowClosesOn config)
         {
             InitializeComponent();
+#if USE_DARK_MODE
             _dm = new DarkModeCS(this);
+#endif
 
             _closesOn = config;
 

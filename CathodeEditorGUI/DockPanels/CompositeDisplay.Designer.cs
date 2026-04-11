@@ -212,7 +212,7 @@ namespace CommandsEditor.DockPanels
             this.dockPanel.ShowAutoHideContentOnHover = false;
             this.dockPanel.Size = new System.Drawing.Size(1615, 773);
             this.dockPanel.TabIndex = 178;
-            this.dockPanel.Theme = this.vS2015DarkTheme1;
+            this.dockPanel.Theme = this.vS2015BlueTheme1;
             // 
             // imageList
             // 
