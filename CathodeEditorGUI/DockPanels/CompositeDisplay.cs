@@ -256,6 +256,7 @@ namespace CommandsEditor.DockPanels
             entityListIcons.Images.Clear();
             entityListIcons.Dispose();
 
+            vS2015DarkTheme1.Dispose();
             vS2015BlueTheme1.Dispose();
         }
 

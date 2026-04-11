@@ -1,28 +1,29 @@
-using CATHODE.Scripting;
 using CATHODE;
+using CATHODE.Scripting;
+using CATHODE.Scripting.Internal;
+using CathodeLib;
+using CommandsEditor.Popups;
+using DarkModeForms;
+using OpenCAGE;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using WeifenLuo.WinFormsUI.Docking;
-using CATHODE.Scripting.Internal;
-using System.Windows.Controls;
-using System.Xml.Linq;
-using System.Windows.Interop;
-using WebSocketSharp;
-using CommandsEditor.Popups;
-using OpenCAGE;
 using System.IO;
+using System.Linq;
 using System.Runtime.Remoting.Messaging;
-using ListViewItem = System.Windows.Forms.ListViewItem;
+using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Controls;
+using System.Windows.Forms;
+using System.Windows.Interop;
 using System.Windows.Media.Animation;
-using CathodeLib;
+using System.Xml.Linq;
+using WebSocketSharp;
+using WeifenLuo.WinFormsUI.Docking;
+using ListViewItem = System.Windows.Forms.ListViewItem;
 
 namespace CommandsEditor.DockPanels
 {

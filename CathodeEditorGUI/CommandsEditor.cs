@@ -8,6 +8,7 @@ using CommandsEditor.DockPanels;
 using CommandsEditor.Popups;
 using CommandsEditor.Scripts;
 using CommandsEditor.UserControls;
+using DarkModeForms;
 using DiscordRPC;
 using Newtonsoft.Json;
 using OpenCAGE;
@@ -17,6 +18,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -56,11 +58,14 @@ namespace CommandsEditor
         private int _defaultWidth;
         private int _defaultHeight;
 
+        private DarkModeCS _dm;
+
         public CommandsEditor(string level = null)
         {
             //LocalDebug.CheckWriteInstanced();
 
             InitializeComponent();
+            //_dm = new DarkModeCS(this);
 
             Singleton.Editor = this;
             Singleton.LoadGlobals();

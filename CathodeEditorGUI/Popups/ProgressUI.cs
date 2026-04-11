@@ -1,4 +1,5 @@
 using CathodeLib;
+using CommandsEditor.Popups.Base;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,12 +17,12 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace CommandsEditor
 {
-    public partial class ProgressUI : Form
+    public partial class ProgressUI : BaseWindow
     {
         private int _counter = 0;
         private Level _level;
 
-        public ProgressUI()
+        public ProgressUI() : base()
         {
             InitializeComponent();
 

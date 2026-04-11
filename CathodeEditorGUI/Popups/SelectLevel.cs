@@ -1,6 +1,7 @@
 using CATHODE.Scripting;
 using CathodeLib;
 using CommandsEditor.DockPanels;
+using CommandsEditor.Popups.Base;
 using OpenCAGE;
 using System;
 using System.Collections.Generic;
@@ -15,11 +16,11 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace CommandsEditor.Popups
 {
-    public partial class SelectLevel : Form
+    public partial class SelectLevel : BaseWindow
     {
         public Action<string> OnLevelSelected;
 
-        public SelectLevel()
+        public SelectLevel() : base()
         {
             InitializeComponent();
             EditorUtils.PopulateLevelDropdown(env_list);

@@ -551,6 +551,7 @@
     <Compile Include="Popups\UserControls\FunctionTypeList.Designer.cs">
       <DependentUpon>FunctionTypeList.cs</DependentUpon>
     </Compile>
+    <Compile Include="Scripts\DarkModeCS.cs" />
     <Compile Include="Scripts\MaterialApplier.cs" />
     <Compile Include="Scripts\CompositePath.cs" />
     <Compile Include="Scripts\DirectXTexUtility.cs" />
