@@ -134,9 +134,9 @@
             this.label18.AutoSize = true;
             this.label18.Location = new System.Drawing.Point(3, 0);
             this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(76, 13);
+            this.label18.Size = new System.Drawing.Size(99, 13);
             this.label18.TabIndex = 527;
-            this.label18.Text = "Linear Velocity";
+            this.label18.Text = "Max Linear Velocity";
             // 
             // maxAngularWarping
             // 

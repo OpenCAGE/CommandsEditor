@@ -43,6 +43,7 @@
             this.steeringBoundarySet2 = new SteeringBoundarySet();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.steeringBoundarySet3 = new SteeringBoundarySet();
+            this.helpBtn = new System.Windows.Forms.Button();
             this.groupBox4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.permittedLocomotionModulation)).BeginInit();
             this.tabControl1.SuspendLayout();
@@ -168,11 +169,24 @@
             this.steeringBoundarySet3.Size = new System.Drawing.Size(419, 242);
             this.steeringBoundarySet3.TabIndex = 532;
             // 
+            // helpBtn
+            // 
+            this.helpBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.helpBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.helpBtn.Image = ((System.Drawing.Image)(resources.GetObject("helpBtn.Image")));
+            this.helpBtn.Location = new System.Drawing.Point(440, 0);
+            this.helpBtn.Name = "helpBtn";
+            this.helpBtn.Size = new System.Drawing.Size(20, 20);
+            this.helpBtn.TabIndex = 533;
+            this.helpBtn.UseVisualStyleBackColor = true;
+            this.helpBtn.Click += new System.EventHandler(this.helpBtn_Click);
+            // 
             // LocomotionEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(460, 441);
+            this.Controls.Add(this.helpBtn);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.characters);
@@ -208,5 +222,6 @@
         private SteeringBoundarySet steeringBoundarySet2;
         private System.Windows.Forms.TabPage tabPage3;
         private SteeringBoundarySet steeringBoundarySet3;
+        private System.Windows.Forms.Button helpBtn;
     }
 }

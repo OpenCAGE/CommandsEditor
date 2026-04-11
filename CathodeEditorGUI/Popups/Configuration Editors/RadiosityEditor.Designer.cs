@@ -37,8 +37,6 @@
             this.label34 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.gRadiosityAlbedoSaturationAmount = new System.Windows.Forms.NumericUpDown();
             this.gRadiositySpecularGlossScale = new System.Windows.Forms.NumericUpDown();
@@ -46,10 +44,8 @@
             this.gRadiosityEmissiveSurfaceScale = new System.Windows.Forms.NumericUpDown();
             this.gRadiosityAlbedoOverbrightAmount = new System.Windows.Forms.NumericUpDown();
             this.gRadiosityFirstBounceScale = new System.Windows.Forms.NumericUpDown();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.gDeferredEmissiveSurfaceExponent = new System.Windows.Forms.NumericUpDown();
-            this.gDeferredEmissiveSurfaceScale = new System.Windows.Forms.NumericUpDown();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.helpBtn = new System.Windows.Forms.Button();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gRadiosityAlbedoSaturationAmount)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gRadiositySpecularGlossScale)).BeginInit();
@@ -57,14 +53,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.gRadiosityEmissiveSurfaceScale)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gRadiosityAlbedoOverbrightAmount)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gRadiosityFirstBounceScale)).BeginInit();
-            this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.gDeferredEmissiveSurfaceExponent)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gDeferredEmissiveSurfaceScale)).BeginInit();
             this.SuspendLayout();
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(485, 213);
+            this.btnSave.Location = new System.Drawing.Point(293, 173);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(136, 33);
             this.btnSave.TabIndex = 410;
@@ -111,7 +104,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(401, 25);
+            this.label4.Location = new System.Drawing.Point(16, 105);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(130, 13);
             this.label4.TabIndex = 422;
@@ -120,29 +113,11 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(401, 64);
+            this.label5.Location = new System.Drawing.Point(208, 104);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(108, 13);
             this.label5.TabIndex = 424;
             this.label5.Text = "Specular Gloss Scale";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(16, 22);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(118, 13);
-            this.label7.TabIndex = 427;
-            this.label7.Text = "Emissive Surface Scale";
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(16, 61);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(136, 13);
-            this.label8.TabIndex = 429;
-            this.label8.Text = "Emissive Surface Exponent";
             // 
             // groupBox2
             // 
@@ -160,7 +135,7 @@
             this.groupBox2.Controls.Add(this.label5);
             this.groupBox2.Location = new System.Drawing.Point(12, 12);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(609, 117);
+            this.groupBox2.Size = new System.Drawing.Size(417, 155);
             this.groupBox2.TabIndex = 431;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Radiosity Lighting Settings";
@@ -168,7 +143,7 @@
             // gRadiosityAlbedoSaturationAmount
             // 
             this.gRadiosityAlbedoSaturationAmount.DecimalPlaces = 6;
-            this.gRadiosityAlbedoSaturationAmount.Location = new System.Drawing.Point(404, 41);
+            this.gRadiosityAlbedoSaturationAmount.Location = new System.Drawing.Point(19, 121);
             this.gRadiosityAlbedoSaturationAmount.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -181,7 +156,7 @@
             // gRadiositySpecularGlossScale
             // 
             this.gRadiositySpecularGlossScale.DecimalPlaces = 6;
-            this.gRadiositySpecularGlossScale.Location = new System.Drawing.Point(404, 81);
+            this.gRadiositySpecularGlossScale.Location = new System.Drawing.Point(211, 121);
             this.gRadiositySpecularGlossScale.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -243,51 +218,24 @@
             this.gRadiosityFirstBounceScale.Size = new System.Drawing.Size(187, 20);
             this.gRadiosityFirstBounceScale.TabIndex = 435;
             // 
-            // groupBox1
+            // helpBtn
             // 
-            this.groupBox1.Controls.Add(this.gDeferredEmissiveSurfaceExponent);
-            this.groupBox1.Controls.Add(this.label7);
-            this.groupBox1.Controls.Add(this.gDeferredEmissiveSurfaceScale);
-            this.groupBox1.Controls.Add(this.label8);
-            this.groupBox1.Location = new System.Drawing.Point(12, 135);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(224, 111);
-            this.groupBox1.TabIndex = 432;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Deferred Lighting Settings";
-            // 
-            // gDeferredEmissiveSurfaceExponent
-            // 
-            this.gDeferredEmissiveSurfaceExponent.DecimalPlaces = 6;
-            this.gDeferredEmissiveSurfaceExponent.Location = new System.Drawing.Point(19, 77);
-            this.gDeferredEmissiveSurfaceExponent.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.gDeferredEmissiveSurfaceExponent.Name = "gDeferredEmissiveSurfaceExponent";
-            this.gDeferredEmissiveSurfaceExponent.Size = new System.Drawing.Size(187, 20);
-            this.gDeferredEmissiveSurfaceExponent.TabIndex = 434;
-            // 
-            // gDeferredEmissiveSurfaceScale
-            // 
-            this.gDeferredEmissiveSurfaceScale.DecimalPlaces = 6;
-            this.gDeferredEmissiveSurfaceScale.Location = new System.Drawing.Point(19, 38);
-            this.gDeferredEmissiveSurfaceScale.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.gDeferredEmissiveSurfaceScale.Name = "gDeferredEmissiveSurfaceScale";
-            this.gDeferredEmissiveSurfaceScale.Size = new System.Drawing.Size(187, 20);
-            this.gDeferredEmissiveSurfaceScale.TabIndex = 433;
+            this.helpBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.helpBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.helpBtn.Image = ((System.Drawing.Image)(resources.GetObject("helpBtn.Image")));
+            this.helpBtn.Location = new System.Drawing.Point(420, 0);
+            this.helpBtn.Name = "helpBtn";
+            this.helpBtn.Size = new System.Drawing.Size(20, 20);
+            this.helpBtn.TabIndex = 476;
+            this.helpBtn.UseVisualStyleBackColor = true;
+            this.helpBtn.Click += new System.EventHandler(this.helpBtn_Click);
             // 
             // RadiosityEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(633, 260);
-            this.Controls.Add(this.groupBox1);
+            this.ClientSize = new System.Drawing.Size(440, 217);
+            this.Controls.Add(this.helpBtn);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.btnSave);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -305,10 +253,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.gRadiosityEmissiveSurfaceScale)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gRadiosityAlbedoOverbrightAmount)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gRadiosityFirstBounceScale)).EndInit();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.gDeferredEmissiveSurfaceExponent)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gDeferredEmissiveSurfaceScale)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -321,18 +265,14 @@
         private System.Windows.Forms.Label label34;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Label label8;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.ToolTip toolTip1;
-        private System.Windows.Forms.NumericUpDown gDeferredEmissiveSurfaceScale;
-        private System.Windows.Forms.NumericUpDown gDeferredEmissiveSurfaceExponent;
         private System.Windows.Forms.NumericUpDown gRadiosityFirstBounceScale;
         private System.Windows.Forms.NumericUpDown gRadiosityEmissiveSurfaceScale;
         private System.Windows.Forms.NumericUpDown gRadiosityAlbedoOverbrightAmount;
         private System.Windows.Forms.NumericUpDown gRadiosityMultiBounceScale;
         private System.Windows.Forms.NumericUpDown gRadiosityAlbedoSaturationAmount;
         private System.Windows.Forms.NumericUpDown gRadiositySpecularGlossScale;
+        private System.Windows.Forms.Button helpBtn;
     }
 }

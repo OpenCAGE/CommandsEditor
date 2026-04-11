@@ -1,5 +1,6 @@
 ﻿using CommandsEditor.Popups.Base;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -25,8 +26,6 @@ namespace CommandsEditor
             gRadiosityAlbedoOverbrightAmount.Text = lightingData[4];
             gRadiosityAlbedoSaturationAmount.Text = lightingData[5];
             gRadiositySpecularGlossScale.Text = lightingData[6];
-            gDeferredEmissiveSurfaceScale.Text = lightingData[7];
-            gDeferredEmissiveSurfaceExponent.Text = lightingData[8];
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -39,8 +38,13 @@ namespace CommandsEditor
                 "gRadiosityAlbedoOverbrightAmount=" + gRadiosityAlbedoOverbrightAmount.Text + Environment.NewLine +
                 "gRadiosityAlbedoSaturationAmount=" + gRadiosityAlbedoSaturationAmount.Text + Environment.NewLine +
                 "gRadiositySpecularGlossScale=" + gRadiositySpecularGlossScale.Text + Environment.NewLine +
-                "gDeferredEmissiveSurfaceScale=" + gDeferredEmissiveSurfaceScale.Text + Environment.NewLine +
-                "gDeferredEmissiveSurfaceExponent=" + gDeferredEmissiveSurfaceExponent.Text);
+                "gDeferredEmissiveSurfaceScale=1.487500" + Environment.NewLine +
+                "gDeferredEmissiveSurfaceExponent=0.563500");
+        }
+
+        private void helpBtn_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://opencage.co.uk/docs/configs/radiosity");
         }
     }
 }

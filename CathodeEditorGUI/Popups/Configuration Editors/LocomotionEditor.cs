@@ -3,6 +3,7 @@ using CATHODE.Enums;
 using CommandsEditor.Popups.Base;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
@@ -111,6 +112,11 @@ namespace CommandsEditor
                 current = match;
             }
             return (XmlElement)current;
+        }
+
+        private void helpBtn_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://opencage.co.uk/docs/configs/locomotion");
         }
     }
 }
