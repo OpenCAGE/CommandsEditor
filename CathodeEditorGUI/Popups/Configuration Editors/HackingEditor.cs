@@ -2,6 +2,7 @@
 using CommandsEditor.Popups.Base;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Linq;
@@ -123,6 +124,11 @@ namespace CommandsEditor
             max.SetAttribute("tool_level", toolLvl);
             max.SetAttribute("max_difficulty", maxDiff);
             parent.AppendChild(max);
+        }
+
+        private void helpBtn_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://opencage.co.uk/docs/configs/hack-tool-difficulties");
         }
     }
 }

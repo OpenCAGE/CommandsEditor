@@ -50,6 +50,7 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.helpBtn = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.interaction_distance_threshold)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.min_time_between_squad_shots_lower_bound)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.min_time_between_squad_shots_upper_bound)).BeginInit();
@@ -301,11 +302,24 @@
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Interactions";
             // 
+            // helpBtn
+            // 
+            this.helpBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.helpBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.helpBtn.Image = ((System.Drawing.Image)(resources.GetObject("helpBtn.Image")));
+            this.helpBtn.Location = new System.Drawing.Point(440, 0);
+            this.helpBtn.Name = "helpBtn";
+            this.helpBtn.Size = new System.Drawing.Size(20, 20);
+            this.helpBtn.TabIndex = 371;
+            this.helpBtn.UseVisualStyleBackColor = true;
+            this.helpBtn.Click += new System.EventHandler(this.helpBtn_Click);
+            // 
             // GlobalConstantsEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(460, 254);
+            this.Controls.Add(this.helpBtn);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
@@ -359,5 +373,6 @@
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.Button helpBtn;
     }
 }

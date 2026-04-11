@@ -3,6 +3,7 @@ using CATHODE.Enums;
 using CommandsEditor.Popups.Base;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Linq;
@@ -244,6 +245,11 @@ namespace CommandsEditor
 
             _selectedAmmo[0].Content = doc;
             _selectedAmmo[0].Save();
+        }
+
+        private void helpBtn_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://opencage.co.uk/docs/configs/ammo");
         }
     }
 }

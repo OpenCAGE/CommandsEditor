@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -54,6 +55,11 @@ namespace CommandsEditor
 
             _globalConstants.Content = doc;
             _globalConstants.Save();
+        }
+
+        private void helpBtn_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://opencage.co.uk/docs/configs/global-constants");
         }
     }
 }
