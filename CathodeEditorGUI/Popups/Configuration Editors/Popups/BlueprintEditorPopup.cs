@@ -36,7 +36,7 @@ namespace CommandsEditor
                 labelToChange.Text = "Core Resource";
             }
 
-            if (formLoadType == 2)
+            else if (formLoadType == 2)
             {
                 //NEW ITEM THAT WILL BE OUTPUT
                 RESOURCES_NEW.Items.Clear();
@@ -58,9 +58,15 @@ namespace CommandsEditor
                 //"large_medikit"});
                 labelToChange.Text = "Craftable Item";
             }
+
+            else
+            {
+                throw new Exception("");
+            }
+
+            RESOURCES_NEW.SelectedIndex = 0;
         }
 
-        //Send to other form
         private void btnSave_Click(object sender, EventArgs e)
         {
             BlueprintEditor blueprintForm = (BlueprintEditor)Application.OpenForms["BlueprintEditor"];
@@ -69,7 +75,6 @@ namespace CommandsEditor
             this.Close();
         }
 
-        //Open docs
         private void openItemDocs_Click(object sender, EventArgs e)
         {
             BlueprintEditorDocs openDocs = new BlueprintEditorDocs();

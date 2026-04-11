@@ -32,18 +32,19 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.RESOURCES_NEW = new System.Windows.Forms.ComboBox();
             this.labelToChange = new System.Windows.Forms.Label();
-            this.QUANTITY_NEW = new System.Windows.Forms.TextBox();
             this.label40 = new System.Windows.Forms.Label();
             this.btnSave = new System.Windows.Forms.Button();
             this.openItemDocs = new System.Windows.Forms.Button();
+            this.QUANTITY_NEW = new System.Windows.Forms.NumericUpDown();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.QUANTITY_NEW)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.QUANTITY_NEW);
             this.groupBox1.Controls.Add(this.RESOURCES_NEW);
             this.groupBox1.Controls.Add(this.labelToChange);
-            this.groupBox1.Controls.Add(this.QUANTITY_NEW);
             this.groupBox1.Controls.Add(this.label40);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
@@ -72,13 +73,6 @@
             this.labelToChange.TabIndex = 237;
             this.labelToChange.Text = "PLACEHOLDER";
             // 
-            // QUANTITY_NEW
-            // 
-            this.QUANTITY_NEW.Location = new System.Drawing.Point(230, 42);
-            this.QUANTITY_NEW.Name = "QUANTITY_NEW";
-            this.QUANTITY_NEW.Size = new System.Drawing.Size(187, 20);
-            this.QUANTITY_NEW.TabIndex = 244;
-            // 
             // label40
             // 
             this.label40.AutoSize = true;
@@ -104,9 +98,21 @@
             this.openItemDocs.Name = "openItemDocs";
             this.openItemDocs.Size = new System.Drawing.Size(129, 21);
             this.openItemDocs.TabIndex = 329;
-            this.openItemDocs.Text = "Item Documentation";
+            this.openItemDocs.Text = "Item Info";
             this.openItemDocs.UseVisualStyleBackColor = true;
             this.openItemDocs.Click += new System.EventHandler(this.openItemDocs_Click);
+            // 
+            // QUANTITY_NEW
+            // 
+            this.QUANTITY_NEW.Location = new System.Drawing.Point(230, 41);
+            this.QUANTITY_NEW.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.QUANTITY_NEW.Name = "QUANTITY_NEW";
+            this.QUANTITY_NEW.Size = new System.Drawing.Size(187, 20);
+            this.QUANTITY_NEW.TabIndex = 356;
             // 
             // BlueprintEditorPopup
             // 
@@ -116,7 +122,7 @@
             this.Controls.Add(this.openItemDocs);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.btnSave);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "BlueprintEditorPopup";
@@ -124,6 +130,7 @@
             this.Text = "Blueprint Recipe Editor";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.QUANTITY_NEW)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -132,10 +139,10 @@
 
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Label labelToChange;
-        private System.Windows.Forms.TextBox QUANTITY_NEW;
         private System.Windows.Forms.Label label40;
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.ComboBox RESOURCES_NEW;
         private System.Windows.Forms.Button openItemDocs;
+        private System.Windows.Forms.NumericUpDown QUANTITY_NEW;
     }
 }

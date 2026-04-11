@@ -3,6 +3,7 @@ using CATHODE.Animations;
 using CommandsEditor.Popups.Base;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 using System.Xml;
@@ -149,6 +150,11 @@ namespace CommandsEditor
 
             movieList.Items.Remove(item);
             movieList.Items.Insert(index, item);
+        }
+
+        private void helpBtn_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://opencage.co.uk/docs/configs/loadscreen-movies");
         }
     }
 }

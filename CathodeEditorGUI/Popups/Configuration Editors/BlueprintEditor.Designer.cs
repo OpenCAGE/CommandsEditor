@@ -30,40 +30,60 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BlueprintEditor));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.blueprintInput = new System.Windows.Forms.ListView();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.removeInputItem = new System.Windows.Forms.Button();
             this.addNewItemRequired = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.craft_quantity = new System.Windows.Forms.ListBox();
-            this.craft_itemname = new System.Windows.Forms.ListBox();
             this.btnSave = new System.Windows.Forms.Button();
             this.blueprints = new System.Windows.Forms.ComboBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.blueprintOutput = new System.Windows.Forms.ListView();
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.removeOutputItem = new System.Windows.Forms.Button();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.output_quantity = new System.Windows.Forms.ListBox();
-            this.output_itemname = new System.Windows.Forms.ListBox();
             this.addNewOutputItem = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
+            this.helpBtn = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.blueprintInput);
             this.groupBox1.Controls.Add(this.removeInputItem);
             this.groupBox1.Controls.Add(this.addNewItemRequired);
-            this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Controls.Add(this.craft_quantity);
-            this.groupBox1.Controls.Add(this.craft_itemname);
             this.groupBox1.Location = new System.Drawing.Point(12, 39);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(241, 234);
             this.groupBox1.TabIndex = 328;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Blueprint Required Items To Craft";
+            // 
+            // blueprintInput
+            // 
+            this.blueprintInput.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1,
+            this.columnHeader2});
+            this.blueprintInput.FullRowSelect = true;
+            this.blueprintInput.HideSelection = false;
+            this.blueprintInput.Location = new System.Drawing.Point(8, 21);
+            this.blueprintInput.MultiSelect = false;
+            this.blueprintInput.Name = "blueprintInput";
+            this.blueprintInput.Size = new System.Drawing.Size(224, 175);
+            this.blueprintInput.TabIndex = 338;
+            this.blueprintInput.UseCompatibleStateImageBehavior = false;
+            this.blueprintInput.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "Item Name";
+            this.columnHeader1.Width = 145;
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "Quantity";
             // 
             // removeInputItem
             // 
@@ -85,47 +105,13 @@
             this.addNewItemRequired.UseVisualStyleBackColor = true;
             this.addNewItemRequired.Click += new System.EventHandler(this.addNewItemRequired_Click);
             // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(171, 21);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(46, 13);
-            this.label2.TabIndex = 334;
-            this.label2.Text = "Quantity";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(4, 21);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(58, 13);
-            this.label1.TabIndex = 333;
-            this.label1.Text = "Item Name";
-            // 
-            // craft_quantity
-            // 
-            this.craft_quantity.FormattingEnabled = true;
-            this.craft_quantity.Location = new System.Drawing.Point(174, 37);
-            this.craft_quantity.Name = "craft_quantity";
-            this.craft_quantity.Size = new System.Drawing.Size(60, 160);
-            this.craft_quantity.TabIndex = 332;
-            // 
-            // craft_itemname
-            // 
-            this.craft_itemname.FormattingEnabled = true;
-            this.craft_itemname.Location = new System.Drawing.Point(6, 37);
-            this.craft_itemname.Name = "craft_itemname";
-            this.craft_itemname.Size = new System.Drawing.Size(162, 160);
-            this.craft_itemname.TabIndex = 331;
-            // 
             // btnSave
             // 
             this.btnSave.Location = new System.Drawing.Point(364, 279);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(136, 33);
             this.btnSave.TabIndex = 326;
-            this.btnSave.Text = "Save Blueprint";
+            this.btnSave.Text = "Save";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
@@ -141,11 +127,8 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.blueprintOutput);
             this.groupBox3.Controls.Add(this.removeOutputItem);
-            this.groupBox3.Controls.Add(this.label3);
-            this.groupBox3.Controls.Add(this.label4);
-            this.groupBox3.Controls.Add(this.output_quantity);
-            this.groupBox3.Controls.Add(this.output_itemname);
             this.groupBox3.Controls.Add(this.addNewOutputItem);
             this.groupBox3.Location = new System.Drawing.Point(259, 39);
             this.groupBox3.Name = "groupBox3";
@@ -153,6 +136,30 @@
             this.groupBox3.TabIndex = 335;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Blueprint Output When Crafted";
+            // 
+            // blueprintOutput
+            // 
+            this.blueprintOutput.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader3,
+            this.columnHeader4});
+            this.blueprintOutput.FullRowSelect = true;
+            this.blueprintOutput.HideSelection = false;
+            this.blueprintOutput.Location = new System.Drawing.Point(8, 22);
+            this.blueprintOutput.MultiSelect = false;
+            this.blueprintOutput.Name = "blueprintOutput";
+            this.blueprintOutput.Size = new System.Drawing.Size(225, 175);
+            this.blueprintOutput.TabIndex = 339;
+            this.blueprintOutput.UseCompatibleStateImageBehavior = false;
+            this.blueprintOutput.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Text = "Item Name";
+            this.columnHeader3.Width = 145;
+            // 
+            // columnHeader4
+            // 
+            this.columnHeader4.Text = "Quantity";
             // 
             // removeOutputItem
             // 
@@ -163,40 +170,6 @@
             this.removeOutputItem.Text = "Remove Selected";
             this.removeOutputItem.UseVisualStyleBackColor = true;
             this.removeOutputItem.Click += new System.EventHandler(this.removeOutputItem_Click);
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(171, 21);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(46, 13);
-            this.label3.TabIndex = 334;
-            this.label3.Text = "Quantity";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(4, 21);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(58, 13);
-            this.label4.TabIndex = 333;
-            this.label4.Text = "Item Name";
-            // 
-            // output_quantity
-            // 
-            this.output_quantity.FormattingEnabled = true;
-            this.output_quantity.Location = new System.Drawing.Point(174, 37);
-            this.output_quantity.Name = "output_quantity";
-            this.output_quantity.Size = new System.Drawing.Size(60, 160);
-            this.output_quantity.TabIndex = 332;
-            // 
-            // output_itemname
-            // 
-            this.output_itemname.FormattingEnabled = true;
-            this.output_itemname.Location = new System.Drawing.Point(6, 37);
-            this.output_itemname.Name = "output_itemname";
-            this.output_itemname.Size = new System.Drawing.Size(162, 160);
-            this.output_itemname.TabIndex = 331;
             // 
             // addNewOutputItem
             // 
@@ -218,11 +191,24 @@
             this.label5.Text = "It\'s recommended to stick to existing item input requirements\r\nas the UI will nee" +
     "d to be modded to support new components.\r\n";
             // 
+            // helpBtn
+            // 
+            this.helpBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.helpBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.helpBtn.Image = ((System.Drawing.Image)(resources.GetObject("helpBtn.Image")));
+            this.helpBtn.Location = new System.Drawing.Point(490, 1);
+            this.helpBtn.Name = "helpBtn";
+            this.helpBtn.Size = new System.Drawing.Size(20, 20);
+            this.helpBtn.TabIndex = 373;
+            this.helpBtn.UseVisualStyleBackColor = true;
+            this.helpBtn.Click += new System.EventHandler(this.helpBtn_Click);
+            // 
             // BlueprintEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(510, 322);
+            this.Controls.Add(this.helpBtn);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox1);
@@ -235,9 +221,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Blueprint Recipe Editor";
             this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -249,17 +233,16 @@
         private System.Windows.Forms.ComboBox blueprints;
         private System.Windows.Forms.Button removeInputItem;
         private System.Windows.Forms.Button addNewItemRequired;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ListBox craft_quantity;
-        private System.Windows.Forms.ListBox craft_itemname;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.Button removeOutputItem;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.ListBox output_quantity;
-        private System.Windows.Forms.ListBox output_itemname;
         private System.Windows.Forms.Button addNewOutputItem;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Button helpBtn;
+        private System.Windows.Forms.ListView blueprintInput;
+        private System.Windows.Forms.ColumnHeader columnHeader1;
+        private System.Windows.Forms.ColumnHeader columnHeader2;
+        private System.Windows.Forms.ListView blueprintOutput;
+        private System.Windows.Forms.ColumnHeader columnHeader3;
+        private System.Windows.Forms.ColumnHeader columnHeader4;
     }
 }

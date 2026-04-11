@@ -2,7 +2,7 @@
 using CommandsEditor.Popups.Base;
 using System;
 using System.Collections.Generic;
-using System.Windows.Controls;
+using System.Diagnostics;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Linq;
@@ -39,79 +39,73 @@ namespace CommandsEditor
             }
 
             var recipes = _gblItem.Content["item_database"]["recipes"];
+            blueprintInput.BeginUpdate();
+            blueprintOutput.BeginUpdate();
             foreach (XmlElement recipe in recipes)
             {
                 if (recipe.GetAttribute("name") != blueprints.Text)
                     continue;
 
-                craft_itemname.Items.Clear();
-                craft_quantity.Items.Clear();
-                output_itemname.Items.Clear();
-                output_quantity.Items.Clear();
+                blueprintInput.Items.Clear();
+                blueprintOutput.Items.Clear();
 
                 var inputs = recipe["input"];
                 foreach (XmlElement input in inputs)
                 {
-                    craft_itemname.Items.Add(input.GetAttribute("name"));
-                    craft_quantity.Items.Add(input.GetAttribute("quantity"));
+                    ListViewItem item = new ListViewItem(input.GetAttribute("name"));
+                    item.SubItems.Add(input.GetAttribute("quantity"));
+                    blueprintInput.Items.Add(item);
                 }
 
                 var outputs = recipe["output"];
                 foreach (XmlElement output in outputs)
                 {
-                    output_itemname.Items.Add(output.GetAttribute("name"));
-                    output_quantity.Items.Add(output.GetAttribute("quantity"));
+                    ListViewItem item = new ListViewItem(output.GetAttribute("name"));
+                    item.SubItems.Add(output.GetAttribute("quantity"));
+                    blueprintOutput.Items.Add(item);
                 }
             }
+            blueprintInput.EndUpdate();
+            blueprintOutput.EndUpdate();
         }
 
-        //Add new required item
         private void addNewItemRequired_Click(object sender, EventArgs e)
         {
             BlueprintEditorPopup editorPopup = new BlueprintEditorPopup(1);
             editorPopup.Show();
         }
 
-        //add new output item
         private void button3_Click(object sender, EventArgs e)
         {
             BlueprintEditorPopup editorPopup = new BlueprintEditorPopup(2);
             editorPopup.Show();
         }
 
-        //Get data from other forms and add to listboxes
         public void getDataFromPopup(string NEW_QUANTITY, string NEW_ITEM, int DATA_TYPE)
         {
+            ListViewItem item = new ListViewItem(NEW_ITEM);
+            item.SubItems.Add(NEW_QUANTITY);
+
             if (DATA_TYPE == 1)
-            {
-                craft_itemname.Items.Add(NEW_ITEM);
-                craft_quantity.Items.Add(NEW_QUANTITY);
-            }
+                blueprintInput.Items.Add(item);
             else
-            {
-                output_itemname.Items.Add(NEW_ITEM);
-                output_quantity.Items.Add(NEW_QUANTITY);
-            }
+                blueprintOutput.Items.Add(item);
         }
 
-        //remove data from listbox OUTPUT
-        private void removeOutputItem_Click(object sender, EventArgs e)
-        {
-            if (output_itemname.SelectedIndex == -1)
-                return;
-
-            output_quantity.Items.RemoveAt(output_itemname.SelectedIndex);
-            output_itemname.Items.RemoveAt(output_itemname.SelectedIndex);
-        }
-
-        //remove data from listbox INPUT
         private void removeInputItem_Click(object sender, EventArgs e)
         {
-            if (craft_itemname.SelectedIndex == -1)
+            if (blueprintInput.SelectedItems.Count == 0)
                 return;
 
-            craft_quantity.Items.RemoveAt(craft_itemname.SelectedIndex);
-            craft_itemname.Items.RemoveAt(craft_itemname.SelectedIndex);
+            blueprintInput.Items.Remove(blueprintInput.SelectedItems[0]);
+        }
+
+        private void removeOutputItem_Click(object sender, EventArgs e)
+        {
+            if (blueprintOutput.SelectedItems.Count == 0)
+                return;
+
+            blueprintOutput.Items.Remove(blueprintOutput.SelectedItems[0]);
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -134,13 +128,13 @@ namespace CommandsEditor
                 recipe.SetAttribute("name", blueprints.Text);
 
                 List<Tuple<string, string>> inputItems = new List<Tuple<string, string>>();
-                for (int i = 0; i < craft_itemname.Items.Count; i++)
-                    inputItems.Add(new Tuple<string, string>(craft_itemname.Items[i].ToString(), craft_quantity.Items[i].ToString()));
+                for (int i = 0; i < blueprintInput.Items.Count; i++)
+                    inputItems.Add(new Tuple<string, string>(blueprintInput.Items[i].Text, blueprintInput.Items[i].SubItems[1].Text));
                 AddRecipeParts(doc, "input", inputItems, recipe);
 
                 List<Tuple<string, string>> outputItems = new List<Tuple<string, string>>();
-                for (int i = 0; i < output_itemname.Items.Count; i++)
-                    outputItems.Add(new Tuple<string, string>(output_itemname.Items[i].ToString(), output_quantity.Items[i].ToString()));
+                for (int i = 0; i < blueprintOutput.Items.Count; i++)
+                    outputItems.Add(new Tuple<string, string>(blueprintOutput.Items[i].Text, blueprintOutput.Items[i].SubItems[1].Text));
                 AddRecipeParts(doc, "output", outputItems, recipe);
             }
 
@@ -159,6 +153,11 @@ namespace CommandsEditor
                 type.AppendChild(itemElement);
             }
             parent.AppendChild(type);
+        }
+
+        private void helpBtn_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://opencage.co.uk/docs/configs/blueprint-recipes");
         }
     }
 }
