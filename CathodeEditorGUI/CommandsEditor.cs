@@ -1141,6 +1141,24 @@ namespace CommandsEditor
         {
             _locomotionEditor = null;
         }
+
+        AlienConfigEditor _alienConfigEditor = null;
+        private void alienConfigsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_alienConfigEditor != null)
+            {
+                _alienConfigEditor.FormClosed -= _alienConfigEditor_FormClosed;
+                _alienConfigEditor.Close();
+            }
+
+            _alienConfigEditor = new AlienConfigEditor();
+            _alienConfigEditor.Show();
+            _alienConfigEditor.FormClosed += _alienConfigEditor_FormClosed;
+        }
+        private void _alienConfigEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _alienConfigEditor = null;
+        }
         #endregion
 
         private About _aboutWindow = null;
