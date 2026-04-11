@@ -33,7 +33,6 @@
             this.label22 = new System.Windows.Forms.Label();
             this.btnSave = new System.Windows.Forms.Button();
             this.classSelection = new System.Windows.Forms.ComboBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.npc_accuracy_multiplier = new System.Windows.Forms.NumericUpDown();
             this.fixed_accuracy = new System.Windows.Forms.NumericUpDown();
             this.max_accuracy_radius_at_10_metres = new System.Windows.Forms.NumericUpDown();
@@ -46,22 +45,17 @@
             this.damage_rays_blocked_by_characters = new System.Windows.Forms.CheckBox();
             this.is_fuel = new System.Windows.Forms.CheckBox();
             this.label15 = new System.Windows.Forms.Label();
-            this.label27 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
             this.label23 = new System.Windows.Forms.Label();
             this.label28 = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
-            this.label17 = new System.Windows.Forms.Label();
             this.label18 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.Flamethrower = new System.Windows.Forms.CheckBox();
             this.Projectile = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.min_distance = new System.Windows.Forms.NumericUpDown();
-            this.label4 = new System.Windows.Forms.Label();
             this.label26 = new System.Windows.Forms.Label();
             this.damageRanges = new System.Windows.Forms.ComboBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
@@ -70,7 +64,6 @@
             this.impulse_fall_off_power = new System.Windows.Forms.NumericUpDown();
             this.character_wavefront_speed = new System.Windows.Forms.NumericUpDown();
             this.has_physics_response = new System.Windows.Forms.CheckBox();
-            this.label30 = new System.Windows.Forms.Label();
             this.label34 = new System.Windows.Forms.Label();
             this.label35 = new System.Windows.Forms.Label();
             this.label32 = new System.Windows.Forms.Label();
@@ -115,7 +108,10 @@
             this.saveRange = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.groupBox1.SuspendLayout();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.groupBox8 = new System.Windows.Forms.GroupBox();
             ((System.ComponentModel.ISupportInitialize)(this.npc_accuracy_multiplier)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.fixed_accuracy)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.max_accuracy_radius_at_10_metres)).BeginInit();
@@ -145,6 +141,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.vsAndroid)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.vsPlayer)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.vs_NPC)).BeginInit();
+            this.groupBox5.SuspendLayout();
+            this.groupBox6.SuspendLayout();
+            this.groupBox7.SuspendLayout();
+            this.groupBox8.SuspendLayout();
             this.SuspendLayout();
             // 
             // label22
@@ -157,7 +157,7 @@
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(555, 585);
+            this.btnSave.Location = new System.Drawing.Point(555, 559);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(136, 33);
             this.btnSave.TabIndex = 410;
@@ -175,42 +175,10 @@
             this.classSelection.TabIndex = 409;
             this.classSelection.SelectedIndexChanged += new System.EventHandler(this.classSelection_SelectedIndexChanged);
             // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.npc_accuracy_multiplier);
-            this.groupBox1.Controls.Add(this.fixed_accuracy);
-            this.groupBox1.Controls.Add(this.max_accuracy_radius_at_10_metres);
-            this.groupBox1.Controls.Add(this.min_accuracy_radius_at_10_metres);
-            this.groupBox1.Controls.Add(this.damage_rays_per_shot);
-            this.groupBox1.Controls.Add(this.projectile_units_consumed_per_shot);
-            this.groupBox1.Controls.Add(this.fuel_units_consumed_per_second_if_firing);
-            this.groupBox1.Controls.Add(this.fuel_units_consumed_per_second_if_switched_on);
-            this.groupBox1.Controls.Add(this.use_fixed_accuracy);
-            this.groupBox1.Controls.Add(this.damage_rays_blocked_by_characters);
-            this.groupBox1.Controls.Add(this.is_fuel);
-            this.groupBox1.Controls.Add(this.label15);
-            this.groupBox1.Controls.Add(this.label27);
-            this.groupBox1.Controls.Add(this.label14);
-            this.groupBox1.Controls.Add(this.label23);
-            this.groupBox1.Controls.Add(this.label28);
-            this.groupBox1.Controls.Add(this.label16);
-            this.groupBox1.Controls.Add(this.label17);
-            this.groupBox1.Controls.Add(this.label18);
-            this.groupBox1.Controls.Add(this.label13);
-            this.groupBox1.Controls.Add(this.label11);
-            this.groupBox1.Controls.Add(this.label5);
-            this.groupBox1.Controls.Add(this.label8);
-            this.groupBox1.Location = new System.Drawing.Point(232, 40);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(459, 286);
-            this.groupBox1.TabIndex = 413;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Weapon Data";
-            // 
             // npc_accuracy_multiplier
             // 
             this.npc_accuracy_multiplier.DecimalPlaces = 3;
-            this.npc_accuracy_multiplier.Location = new System.Drawing.Point(17, 121);
+            this.npc_accuracy_multiplier.Location = new System.Drawing.Point(16, 104);
             this.npc_accuracy_multiplier.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -223,7 +191,7 @@
             // fixed_accuracy
             // 
             this.fixed_accuracy.DecimalPlaces = 3;
-            this.fixed_accuracy.Location = new System.Drawing.Point(17, 83);
+            this.fixed_accuracy.Location = new System.Drawing.Point(16, 66);
             this.fixed_accuracy.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -236,7 +204,7 @@
             // max_accuracy_radius_at_10_metres
             // 
             this.max_accuracy_radius_at_10_metres.DecimalPlaces = 3;
-            this.max_accuracy_radius_at_10_metres.Location = new System.Drawing.Point(151, 159);
+            this.max_accuracy_radius_at_10_metres.Location = new System.Drawing.Point(150, 142);
             this.max_accuracy_radius_at_10_metres.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -249,7 +217,7 @@
             // min_accuracy_radius_at_10_metres
             // 
             this.min_accuracy_radius_at_10_metres.DecimalPlaces = 3;
-            this.min_accuracy_radius_at_10_metres.Location = new System.Drawing.Point(17, 159);
+            this.min_accuracy_radius_at_10_metres.Location = new System.Drawing.Point(16, 142);
             this.min_accuracy_radius_at_10_metres.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -261,7 +229,7 @@
             // 
             // damage_rays_per_shot
             // 
-            this.damage_rays_per_shot.Location = new System.Drawing.Point(17, 232);
+            this.damage_rays_per_shot.Location = new System.Drawing.Point(15, 40);
             this.damage_rays_per_shot.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -273,7 +241,7 @@
             // 
             // projectile_units_consumed_per_shot
             // 
-            this.projectile_units_consumed_per_shot.Location = new System.Drawing.Point(238, 59);
+            this.projectile_units_consumed_per_shot.Location = new System.Drawing.Point(14, 58);
             this.projectile_units_consumed_per_shot.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -285,7 +253,7 @@
             // 
             // fuel_units_consumed_per_second_if_firing
             // 
-            this.fuel_units_consumed_per_second_if_firing.Location = new System.Drawing.Point(238, 159);
+            this.fuel_units_consumed_per_second_if_firing.Location = new System.Drawing.Point(16, 61);
             this.fuel_units_consumed_per_second_if_firing.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -297,7 +265,7 @@
             // 
             // fuel_units_consumed_per_second_if_switched_on
             // 
-            this.fuel_units_consumed_per_second_if_switched_on.Location = new System.Drawing.Point(238, 198);
+            this.fuel_units_consumed_per_second_if_switched_on.Location = new System.Drawing.Point(16, 100);
             this.fuel_units_consumed_per_second_if_switched_on.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -310,7 +278,7 @@
             // use_fixed_accuracy
             // 
             this.use_fixed_accuracy.AutoSize = true;
-            this.use_fixed_accuracy.Location = new System.Drawing.Point(14, 41);
+            this.use_fixed_accuracy.Location = new System.Drawing.Point(17, 24);
             this.use_fixed_accuracy.Name = "use_fixed_accuracy";
             this.use_fixed_accuracy.Size = new System.Drawing.Size(121, 17);
             this.use_fixed_accuracy.TabIndex = 435;
@@ -320,7 +288,7 @@
             // damage_rays_blocked_by_characters
             // 
             this.damage_rays_blocked_by_characters.AutoSize = true;
-            this.damage_rays_blocked_by_characters.Location = new System.Drawing.Point(18, 257);
+            this.damage_rays_blocked_by_characters.Location = new System.Drawing.Point(15, 66);
             this.damage_rays_blocked_by_characters.Name = "damage_rays_blocked_by_characters";
             this.damage_rays_blocked_by_characters.Size = new System.Drawing.Size(134, 17);
             this.damage_rays_blocked_by_characters.TabIndex = 434;
@@ -330,7 +298,7 @@
             // is_fuel
             // 
             this.is_fuel.AutoSize = true;
-            this.is_fuel.Location = new System.Drawing.Point(238, 120);
+            this.is_fuel.Location = new System.Drawing.Point(16, 22);
             this.is_fuel.Name = "is_fuel";
             this.is_fuel.Size = new System.Drawing.Size(57, 17);
             this.is_fuel.TabIndex = 433;
@@ -340,26 +308,16 @@
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(73, 162);
+            this.label15.Location = new System.Drawing.Point(72, 145);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(77, 13);
             this.label15.TabIndex = 419;
             this.label15.Text = "Min -------> Max";
             // 
-            // label27
-            // 
-            this.label27.AutoSize = true;
-            this.label27.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label27.Location = new System.Drawing.Point(227, 16);
-            this.label27.Name = "label27";
-            this.label27.Size = new System.Drawing.Size(136, 20);
-            this.label27.TabIndex = 426;
-            this.label27.Text = "Projectile Settings";
-            // 
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(14, 104);
+            this.label14.Location = new System.Drawing.Point(13, 87);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(121, 13);
             this.label14.TabIndex = 422;
@@ -368,82 +326,52 @@
             // label23
             // 
             this.label23.AutoSize = true;
-            this.label23.Location = new System.Drawing.Point(235, 182);
+            this.label23.Location = new System.Drawing.Point(13, 84);
             this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(197, 13);
+            this.label23.Size = new System.Drawing.Size(168, 13);
             this.label23.TabIndex = 421;
-            this.label23.Text = "Fuel Consumed Per Second (When Idle)";
+            this.label23.Text = "Consumed Per Second When Idle";
             // 
             // label28
             // 
             this.label28.AutoSize = true;
-            this.label28.Location = new System.Drawing.Point(235, 42);
+            this.label28.Location = new System.Drawing.Point(11, 41);
             this.label28.Name = "label28";
-            this.label28.Size = new System.Drawing.Size(127, 13);
+            this.label28.Size = new System.Drawing.Size(76, 13);
             this.label28.TabIndex = 427;
-            this.label28.Text = "Projectiles Used Per Shot";
+            this.label28.Text = "Used Per Shot";
             // 
             // label16
             // 
             this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(14, 143);
+            this.label16.Location = new System.Drawing.Point(13, 126);
             this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(151, 13);
+            this.label16.Size = new System.Drawing.Size(149, 13);
             this.label16.TabIndex = 416;
-            this.label16.Text = "Accuracy Radius At 10 Meters";
-            // 
-            // label17
-            // 
-            this.label17.AutoSize = true;
-            this.label17.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label17.Location = new System.Drawing.Point(227, 92);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(103, 20);
-            this.label17.TabIndex = 416;
-            this.label17.Text = "Fuel Settings";
+            this.label16.Text = "Base Aiming Accuracy Radius";
             // 
             // label18
             // 
             this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(235, 143);
+            this.label18.Location = new System.Drawing.Point(13, 45);
             this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(205, 13);
+            this.label18.Size = new System.Drawing.Size(176, 13);
             this.label18.TabIndex = 417;
-            this.label18.Text = "Fuel Consumed Per Second (When Firing)";
+            this.label18.Text = "Consumed Per Second When Firing";
             // 
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(14, 65);
+            this.label13.Location = new System.Drawing.Point(13, 48);
             this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(119, 13);
+            this.label13.Size = new System.Drawing.Size(80, 13);
             this.label13.TabIndex = 419;
-            this.label13.Text = "Fixed Accuracy Amount";
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label11.Location = new System.Drawing.Point(6, 16);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(74, 20);
-            this.label11.TabIndex = 416;
-            this.label11.Text = "Accuracy";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(6, 194);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(110, 20);
-            this.label5.TabIndex = 421;
-            this.label5.Text = "Damage Rays";
+            this.label13.Text = "Fixed Accuracy";
             // 
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(14, 216);
+            this.label8.Location = new System.Drawing.Point(12, 24);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(118, 13);
             this.label8.TabIndex = 417;
@@ -452,41 +380,38 @@
             // Flamethrower
             // 
             this.Flamethrower.AutoSize = true;
-            this.Flamethrower.Enabled = false;
-            this.Flamethrower.Location = new System.Drawing.Point(245, 342);
+            this.Flamethrower.Location = new System.Drawing.Point(79, 22);
             this.Flamethrower.Name = "Flamethrower";
-            this.Flamethrower.Size = new System.Drawing.Size(89, 17);
+            this.Flamethrower.Size = new System.Drawing.Size(100, 17);
             this.Flamethrower.TabIndex = 432;
-            this.Flamethrower.Text = "Flamethrower";
+            this.Flamethrower.Text = "Is Flamethrower";
             this.Flamethrower.UseVisualStyleBackColor = true;
             // 
             // Projectile
             // 
             this.Projectile.AutoSize = true;
-            this.Projectile.Enabled = false;
-            this.Projectile.Location = new System.Drawing.Point(341, 342);
+            this.Projectile.Location = new System.Drawing.Point(14, 21);
             this.Projectile.Name = "Projectile";
-            this.Projectile.Size = new System.Drawing.Size(69, 17);
+            this.Projectile.Size = new System.Drawing.Size(80, 17);
             this.Projectile.TabIndex = 431;
-            this.Projectile.Text = "Projectile";
+            this.Projectile.Text = "Is Projectile";
             this.Projectile.UseVisualStyleBackColor = true;
             // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.min_distance);
-            this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Controls.Add(this.label26);
-            this.groupBox2.Location = new System.Drawing.Point(12, 275);
+            this.groupBox2.Location = new System.Drawing.Point(12, 260);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(214, 91);
+            this.groupBox2.Size = new System.Drawing.Size(214, 80);
             this.groupBox2.TabIndex = 414;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Damage Values";
+            this.groupBox2.Text = "Damage Ranges";
             // 
             // min_distance
             // 
             this.min_distance.DecimalPlaces = 3;
-            this.min_distance.Location = new System.Drawing.Point(17, 57);
+            this.min_distance.Location = new System.Drawing.Point(17, 41);
             this.min_distance.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -496,20 +421,10 @@
             this.min_distance.Size = new System.Drawing.Size(187, 20);
             this.min_distance.TabIndex = 479;
             // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(6, 18);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(137, 20);
-            this.label4.TabIndex = 416;
-            this.label4.Text = "Damage Distance";
-            // 
             // label26
             // 
             this.label26.AutoSize = true;
-            this.label26.Location = new System.Drawing.Point(14, 41);
+            this.label26.Location = new System.Drawing.Point(14, 25);
             this.label26.Name = "label26";
             this.label26.Size = new System.Drawing.Size(136, 13);
             this.label26.TabIndex = 417;
@@ -532,22 +447,21 @@
             this.groupBox3.Controls.Add(this.impulse_fall_off_power);
             this.groupBox3.Controls.Add(this.character_wavefront_speed);
             this.groupBox3.Controls.Add(this.has_physics_response);
-            this.groupBox3.Controls.Add(this.label30);
             this.groupBox3.Controls.Add(this.label34);
             this.groupBox3.Controls.Add(this.label35);
             this.groupBox3.Controls.Add(this.label32);
             this.groupBox3.Controls.Add(this.label33);
-            this.groupBox3.Location = new System.Drawing.Point(12, 40);
+            this.groupBox3.Location = new System.Drawing.Point(12, 45);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(214, 229);
+            this.groupBox3.Size = new System.Drawing.Size(214, 209);
             this.groupBox3.TabIndex = 415;
             this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Physics on Impact";
+            this.groupBox3.Text = "Impact Physics";
             // 
             // impulse_radius
             // 
             this.impulse_radius.DecimalPlaces = 3;
-            this.impulse_radius.Location = new System.Drawing.Point(17, 82);
+            this.impulse_radius.Location = new System.Drawing.Point(14, 60);
             this.impulse_radius.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -560,7 +474,7 @@
             // impulse_at_centre_of_blast
             // 
             this.impulse_at_centre_of_blast.DecimalPlaces = 3;
-            this.impulse_at_centre_of_blast.Location = new System.Drawing.Point(17, 121);
+            this.impulse_at_centre_of_blast.Location = new System.Drawing.Point(14, 99);
             this.impulse_at_centre_of_blast.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -573,7 +487,7 @@
             // impulse_fall_off_power
             // 
             this.impulse_fall_off_power.DecimalPlaces = 3;
-            this.impulse_fall_off_power.Location = new System.Drawing.Point(17, 159);
+            this.impulse_fall_off_power.Location = new System.Drawing.Point(14, 137);
             this.impulse_fall_off_power.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -586,7 +500,7 @@
             // character_wavefront_speed
             // 
             this.character_wavefront_speed.DecimalPlaces = 3;
-            this.character_wavefront_speed.Location = new System.Drawing.Point(17, 199);
+            this.character_wavefront_speed.Location = new System.Drawing.Point(14, 177);
             this.character_wavefront_speed.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -599,27 +513,17 @@
             // has_physics_response
             // 
             this.has_physics_response.AutoSize = true;
-            this.has_physics_response.Location = new System.Drawing.Point(17, 42);
+            this.has_physics_response.Location = new System.Drawing.Point(14, 20);
             this.has_physics_response.Name = "has_physics_response";
             this.has_physics_response.Size = new System.Drawing.Size(135, 17);
             this.has_physics_response.TabIndex = 430;
             this.has_physics_response.Text = "Has Physics Response";
             this.has_physics_response.UseVisualStyleBackColor = true;
             // 
-            // label30
-            // 
-            this.label30.AutoSize = true;
-            this.label30.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label30.Location = new System.Drawing.Point(6, 16);
-            this.label30.Name = "label30";
-            this.label30.Size = new System.Drawing.Size(125, 20);
-            this.label30.TabIndex = 419;
-            this.label30.Text = "Physics Settings";
-            // 
             // label34
             // 
             this.label34.AutoSize = true;
-            this.label34.Location = new System.Drawing.Point(14, 183);
+            this.label34.Location = new System.Drawing.Point(11, 161);
             this.label34.Name = "label34";
             this.label34.Size = new System.Drawing.Size(140, 13);
             this.label34.TabIndex = 428;
@@ -628,16 +532,16 @@
             // label35
             // 
             this.label35.AutoSize = true;
-            this.label35.Location = new System.Drawing.Point(14, 144);
+            this.label35.Location = new System.Drawing.Point(11, 122);
             this.label35.Name = "label35";
-            this.label35.Size = new System.Drawing.Size(112, 13);
+            this.label35.Size = new System.Drawing.Size(107, 13);
             this.label35.TabIndex = 426;
-            this.label35.Text = "Impulse Fall Off Power";
+            this.label35.Text = "Impulse Falloff Power";
             // 
             // label32
             // 
             this.label32.AutoSize = true;
-            this.label32.Location = new System.Drawing.Point(14, 66);
+            this.label32.Location = new System.Drawing.Point(11, 44);
             this.label32.Name = "label32";
             this.label32.Size = new System.Drawing.Size(79, 13);
             this.label32.TabIndex = 422;
@@ -646,7 +550,7 @@
             // label33
             // 
             this.label33.AutoSize = true;
-            this.label33.Location = new System.Drawing.Point(14, 105);
+            this.label33.Location = new System.Drawing.Point(11, 83);
             this.label33.Name = "label33";
             this.label33.Size = new System.Drawing.Size(130, 13);
             this.label33.TabIndex = 424;
@@ -693,7 +597,7 @@
             this.groupBox4.Controls.Add(this.label1);
             this.groupBox4.Controls.Add(this.saveRange);
             this.groupBox4.Controls.Add(this.label6);
-            this.groupBox4.Location = new System.Drawing.Point(12, 372);
+            this.groupBox4.Location = new System.Drawing.Point(12, 346);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(679, 207);
             this.groupBox4.TabIndex = 430;
@@ -929,9 +833,9 @@
             this.label46.AutoSize = true;
             this.label46.Location = new System.Drawing.Point(468, 164);
             this.label46.Name = "label46";
-            this.label46.Size = new System.Drawing.Size(43, 13);
+            this.label46.Size = new System.Drawing.Size(86, 13);
             this.label46.TabIndex = 449;
-            this.label46.Text = "Physics";
+            this.label46.Text = "Physics Damage";
             // 
             // label47
             // 
@@ -1099,19 +1003,77 @@
             this.label6.TabIndex = 417;
             this.label6.Text = "NPC";
             // 
+            // groupBox5
+            // 
+            this.groupBox5.Controls.Add(this.npc_accuracy_multiplier);
+            this.groupBox5.Controls.Add(this.use_fixed_accuracy);
+            this.groupBox5.Controls.Add(this.fixed_accuracy);
+            this.groupBox5.Controls.Add(this.label13);
+            this.groupBox5.Controls.Add(this.max_accuracy_radius_at_10_metres);
+            this.groupBox5.Controls.Add(this.label16);
+            this.groupBox5.Controls.Add(this.label14);
+            this.groupBox5.Controls.Add(this.min_accuracy_radius_at_10_metres);
+            this.groupBox5.Controls.Add(this.label15);
+            this.groupBox5.Location = new System.Drawing.Point(473, 45);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(218, 179);
+            this.groupBox5.TabIndex = 431;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "Accuracy";
+            // 
+            // groupBox6
+            // 
+            this.groupBox6.Controls.Add(this.label8);
+            this.groupBox6.Controls.Add(this.damage_rays_blocked_by_characters);
+            this.groupBox6.Controls.Add(this.damage_rays_per_shot);
+            this.groupBox6.Location = new System.Drawing.Point(476, 230);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(215, 97);
+            this.groupBox6.TabIndex = 432;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "Damage Rays";
+            // 
+            // groupBox7
+            // 
+            this.groupBox7.Controls.Add(this.is_fuel);
+            this.groupBox7.Controls.Add(this.Flamethrower);
+            this.groupBox7.Controls.Add(this.label18);
+            this.groupBox7.Controls.Add(this.label23);
+            this.groupBox7.Controls.Add(this.fuel_units_consumed_per_second_if_firing);
+            this.groupBox7.Controls.Add(this.fuel_units_consumed_per_second_if_switched_on);
+            this.groupBox7.Location = new System.Drawing.Point(241, 140);
+            this.groupBox7.Name = "groupBox7";
+            this.groupBox7.Size = new System.Drawing.Size(217, 133);
+            this.groupBox7.TabIndex = 433;
+            this.groupBox7.TabStop = false;
+            this.groupBox7.Text = "Fuel";
+            // 
+            // groupBox8
+            // 
+            this.groupBox8.Controls.Add(this.Projectile);
+            this.groupBox8.Controls.Add(this.label28);
+            this.groupBox8.Controls.Add(this.projectile_units_consumed_per_shot);
+            this.groupBox8.Location = new System.Drawing.Point(241, 45);
+            this.groupBox8.Name = "groupBox8";
+            this.groupBox8.Size = new System.Drawing.Size(215, 89);
+            this.groupBox8.TabIndex = 474;
+            this.groupBox8.TabStop = false;
+            this.groupBox8.Text = "Projectiles";
+            // 
             // AmmoEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(701, 627);
+            this.ClientSize = new System.Drawing.Size(701, 602);
+            this.Controls.Add(this.groupBox8);
+            this.Controls.Add(this.groupBox7);
+            this.Controls.Add(this.groupBox6);
+            this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.Projectile);
-            this.Controls.Add(this.Flamethrower);
             this.Controls.Add(this.label22);
             this.Controls.Add(this.classSelection);
-            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.btnSave);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -1119,8 +1081,6 @@
             this.Name = "AmmoEditor";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Ammo Editor";
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.npc_accuracy_multiplier)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.fixed_accuracy)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.max_accuracy_radius_at_10_metres)).EndInit();
@@ -1153,6 +1113,14 @@
             ((System.ComponentModel.ISupportInitialize)(this.vsAndroid)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.vsPlayer)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.vs_NPC)).EndInit();
+            this.groupBox5.ResumeLayout(false);
+            this.groupBox5.PerformLayout();
+            this.groupBox6.ResumeLayout(false);
+            this.groupBox6.PerformLayout();
+            this.groupBox7.ResumeLayout(false);
+            this.groupBox7.PerformLayout();
+            this.groupBox8.ResumeLayout(false);
+            this.groupBox8.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1162,25 +1130,18 @@
         private System.Windows.Forms.Label label22;
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.ComboBox classSelection;
-        private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.Label label15;
-        private System.Windows.Forms.Label label27;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label23;
         private System.Windows.Forms.Label label28;
         private System.Windows.Forms.Label label16;
-        private System.Windows.Forms.Label label17;
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label26;
         private System.Windows.Forms.ComboBox damageRanges;
-        private System.Windows.Forms.Label label30;
         private System.Windows.Forms.Label label34;
         private System.Windows.Forms.Label label35;
         private System.Windows.Forms.Label label32;
@@ -1244,5 +1205,9 @@
         private System.Windows.Forms.NumericUpDown impulse_at_centre_of_blast;
         private System.Windows.Forms.NumericUpDown impulse_fall_off_power;
         private System.Windows.Forms.NumericUpDown character_wavefront_speed;
+        private System.Windows.Forms.GroupBox groupBox5;
+        private System.Windows.Forms.GroupBox groupBox6;
+        private System.Windows.Forms.GroupBox groupBox7;
+        private System.Windows.Forms.GroupBox groupBox8;
     }
 }
