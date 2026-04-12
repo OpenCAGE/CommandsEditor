@@ -585,7 +585,7 @@
             this.groupBox4.Controls.Add(this.label6);
             this.groupBox4.Location = new System.Drawing.Point(12, 346);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(679, 207);
+            this.groupBox4.Size = new System.Drawing.Size(679, 215);
             this.groupBox4.TabIndex = 430;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Damage Range Settings";
@@ -1052,7 +1052,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(701, 561);
+            this.ClientSize = new System.Drawing.Size(701, 572);
             this.Controls.Add(this.helpBtn);
             this.Controls.Add(this.groupBox8);
             this.Controls.Add(this.groupBox7);

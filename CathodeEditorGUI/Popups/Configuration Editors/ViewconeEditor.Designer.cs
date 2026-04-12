@@ -33,7 +33,7 @@
             this.viewconeSets = new System.Windows.Forms.ComboBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.viewCone1 = new CommandsEditor.ConfigEditors.ViewCone();
+            this.viewCone1 = new ViewCone();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.helpBtn = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
