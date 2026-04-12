@@ -48,8 +48,10 @@ namespace CommandsEditor.ConfigEditors
                     continue;
                 checkbox.Checked = leaf.InnerText.ToUpper() == "TRUE";
 
+#if DEBUG
                 if (i != 0)
                     Console.WriteLine("Inherited " + pathLabel + " value of " + checkbox.Checked + " from " + configs[i].Filepath);
+#endif
                 break;
             }
         }
@@ -66,8 +68,30 @@ namespace CommandsEditor.ConfigEditors
                     continue;
                 updown.Value = Convert.ToDecimal(leaf.InnerText);
 
+#if DEBUG
                 if (i != 0)
                     Console.WriteLine("Inherited " + pathLabel + " value of " + updown.Value + " from " + configs[i].Filepath);
+#endif
+                break;
+            }
+        }
+
+        public static void SetCombo(List<BML> configs, ComboBox combo, params string[] elementPath)
+        {
+            if (elementPath == null || elementPath.Length == 0)
+                return;
+            string pathLabel = string.Join("/", elementPath);
+            for (int i = 0; i < configs.Count; i++)
+            {
+                XmlElement leaf = TryGetDescendant(configs[i].Content, elementPath);
+                if (leaf?.InnerText == null)
+                    continue;
+                combo.Text = leaf.InnerText;
+
+#if DEBUG
+                if (i != 0)
+                    Console.WriteLine("Inherited " + pathLabel + " value of " + combo.Text + " from " + configs[i].Filepath);
+#endif
                 break;
             }
         }
@@ -84,8 +108,10 @@ namespace CommandsEditor.ConfigEditors
                     continue;
                 textbox.Text = leaf.InnerText;
 
+#if DEBUG
                 if (i != 0)
                     Console.WriteLine("Inherited " + pathLabel + " value of " + textbox.Text + " from " + configs[i].Filepath);
+#endif
                 break;
             }
         }
