@@ -8,7 +8,7 @@ using System.Xml;
 using System.Xml.Linq;
 using WeifenLuo.WinFormsUI.Docking;
 
-namespace CommandsEditor
+namespace CommandsEditor.ConfigEditors
 {
     public partial class AlienConfigEditor : BaseWindow
     {

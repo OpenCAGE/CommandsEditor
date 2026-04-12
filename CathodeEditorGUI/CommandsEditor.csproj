@@ -404,6 +404,24 @@
     <Compile Include="Popups\Configuration Editors\RadiosityEditor.Designer.cs">
       <DependentUpon>RadiosityEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\Configuration Editors\SenseEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\SenseEditor.Designer.cs">
+      <DependentUpon>SenseEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\User Controls\Sense.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\User Controls\Sense.Designer.cs">
+      <DependentUpon>Sense.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\User Controls\SenseSet.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\User Controls\SenseSet.Designer.cs">
+      <DependentUpon>SenseSet.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popups\Configuration Editors\User Controls\SteeringBoundary.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -933,6 +951,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\Configuration Editors\RadiosityEditor.resx">
       <DependentUpon>RadiosityEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Configuration Editors\SenseEditor.resx">
+      <DependentUpon>SenseEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Configuration Editors\User Controls\Sense.resx">
+      <DependentUpon>Sense.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Configuration Editors\User Controls\SenseSet.resx">
+      <DependentUpon>SenseSet.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\Configuration Editors\User Controls\SteeringBoundary.resx">
       <DependentUpon>SteeringBoundary.cs</DependentUpon>

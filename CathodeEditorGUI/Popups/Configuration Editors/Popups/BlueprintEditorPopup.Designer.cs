@@ -1,4 +1,4 @@
-﻿namespace CommandsEditor
+﻿namespace CommandsEditor.ConfigEditors
 {
     partial class BlueprintEditorPopup
     {

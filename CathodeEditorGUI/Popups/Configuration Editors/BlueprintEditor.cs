@@ -10,7 +10,7 @@ using System.Xml.XPath;
 using WeifenLuo.WinFormsUI.Docking;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
-namespace CommandsEditor
+namespace CommandsEditor.ConfigEditors
 {
     public partial class BlueprintEditor : BaseWindow
     {

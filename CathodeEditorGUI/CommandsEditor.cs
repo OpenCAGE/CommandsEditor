@@ -4,6 +4,7 @@ using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CathodeLib;
 using CathodeLib.ObjectExtensions;
+using CommandsEditor.ConfigEditors;
 using CommandsEditor.DockPanels;
 using CommandsEditor.Popups;
 using CommandsEditor.Scripts;

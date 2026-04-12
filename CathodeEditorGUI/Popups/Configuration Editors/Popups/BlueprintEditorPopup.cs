@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommandsEditor.Popups.Base;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -8,13 +9,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace CommandsEditor
+namespace CommandsEditor.ConfigEditors
 {
-    public partial class BlueprintEditorPopup : Form
+    public partial class BlueprintEditorPopup : BaseWindow
     {
         int formType = 0;
 
-        public BlueprintEditorPopup(int formLoadType)
+        public BlueprintEditorPopup(int formLoadType) : base()
         {
             InitializeComponent();
 

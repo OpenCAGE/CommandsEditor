@@ -11,7 +11,7 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 using WeifenLuo.WinFormsUI.Docking;
 
-namespace CommandsEditor
+namespace CommandsEditor.ConfigEditors
 {
     public partial class ViewconeEditor : BaseWindow
     {

@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
-namespace CommandsEditor
+namespace CommandsEditor.ConfigEditors
 {
     public partial class RadiosityEditor : BaseWindow
     {

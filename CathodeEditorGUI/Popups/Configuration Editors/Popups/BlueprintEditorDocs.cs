@@ -1,10 +1,11 @@
-﻿using System.Windows.Forms;
+﻿using CommandsEditor.Popups.Base;
+using System.Windows.Forms;
 
-namespace CommandsEditor
+namespace CommandsEditor.ConfigEditors
 {
-    public partial class BlueprintEditorDocs : Form
+    public partial class BlueprintEditorDocs : BaseWindow
     {
-        public BlueprintEditorDocs()
+        public BlueprintEditorDocs() : base()
         {
             InitializeComponent();
         }

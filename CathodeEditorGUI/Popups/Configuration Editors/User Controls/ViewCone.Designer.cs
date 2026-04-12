@@ -1,4 +1,4 @@
-﻿namespace CommandsEditor
+﻿namespace CommandsEditor.ConfigEditors
 {
     partial class ViewCone
     {
@@ -29,16 +29,23 @@
         private void InitializeComponent()
         {
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.Light_meter_fully_lit_level = new System.Windows.Forms.NumericUpDown();
+            this.Light_meter_partially_lit_level = new System.Windows.Forms.NumericUpDown();
+            this.Light_meter_dark_level = new System.Windows.Forms.NumericUpDown();
             this.label31 = new System.Windows.Forms.Label();
             this.label29 = new System.Windows.Forms.Label();
             this.label30 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.HorizontalAngle = new System.Windows.Forms.NumericUpDown();
+            this.VerticalAngle = new System.Windows.Forms.NumericUpDown();
+            this.Length = new System.Windows.Forms.NumericUpDown();
             this.label16 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
+            this.SmokeLengthModifier = new System.Windows.Forms.NumericUpDown();
+            this.label9 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
@@ -57,16 +64,16 @@
             this.label21 = new System.Windows.Forms.Label();
             this.ExposureEffectUpper = new System.Windows.Forms.NumericUpDown();
             this.ExposureEffectLower = new System.Windows.Forms.NumericUpDown();
-            this.SmokeLengthModifier = new System.Windows.Forms.NumericUpDown();
-            this.Light_meter_fully_lit_level = new System.Windows.Forms.NumericUpDown();
-            this.Light_meter_partially_lit_level = new System.Windows.Forms.NumericUpDown();
-            this.Light_meter_dark_level = new System.Windows.Forms.NumericUpDown();
-            this.HorizontalAngle = new System.Windows.Forms.NumericUpDown();
-            this.VerticalAngle = new System.Windows.Forms.NumericUpDown();
-            this.Length = new System.Windows.Forms.NumericUpDown();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.groupBox3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.Light_meter_fully_lit_level)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Light_meter_partially_lit_level)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Light_meter_dark_level)).BeginInit();
             this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.HorizontalAngle)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VerticalAngle)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Length)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.SmokeLengthModifier)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MovementEffectLower)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MovementEffectUpper)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.StanceEffectUpper)).BeginInit();
@@ -77,13 +84,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.SmokeEffectLower)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ExposureEffectUpper)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ExposureEffectLower)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.SmokeLengthModifier)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.Light_meter_fully_lit_level)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.Light_meter_partially_lit_level)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.Light_meter_dark_level)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.HorizontalAngle)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.VerticalAngle)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.Length)).BeginInit();
             this.groupBox4.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -101,6 +101,45 @@
             this.groupBox3.TabIndex = 468;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Light Meter";
+            // 
+            // Light_meter_fully_lit_level
+            // 
+            this.Light_meter_fully_lit_level.DecimalPlaces = 3;
+            this.Light_meter_fully_lit_level.Location = new System.Drawing.Point(15, 115);
+            this.Light_meter_fully_lit_level.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.Light_meter_fully_lit_level.Name = "Light_meter_fully_lit_level";
+            this.Light_meter_fully_lit_level.Size = new System.Drawing.Size(185, 20);
+            this.Light_meter_fully_lit_level.TabIndex = 490;
+            // 
+            // Light_meter_partially_lit_level
+            // 
+            this.Light_meter_partially_lit_level.DecimalPlaces = 3;
+            this.Light_meter_partially_lit_level.Location = new System.Drawing.Point(15, 75);
+            this.Light_meter_partially_lit_level.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.Light_meter_partially_lit_level.Name = "Light_meter_partially_lit_level";
+            this.Light_meter_partially_lit_level.Size = new System.Drawing.Size(185, 20);
+            this.Light_meter_partially_lit_level.TabIndex = 491;
+            // 
+            // Light_meter_dark_level
+            // 
+            this.Light_meter_dark_level.DecimalPlaces = 3;
+            this.Light_meter_dark_level.Location = new System.Drawing.Point(15, 36);
+            this.Light_meter_dark_level.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.Light_meter_dark_level.Name = "Light_meter_dark_level";
+            this.Light_meter_dark_level.Size = new System.Drawing.Size(185, 20);
+            this.Light_meter_dark_level.TabIndex = 492;
             // 
             // label31
             // 
@@ -146,6 +185,45 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Cone Size";
             // 
+            // HorizontalAngle
+            // 
+            this.HorizontalAngle.DecimalPlaces = 3;
+            this.HorizontalAngle.Location = new System.Drawing.Point(227, 36);
+            this.HorizontalAngle.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.HorizontalAngle.Name = "HorizontalAngle";
+            this.HorizontalAngle.Size = new System.Drawing.Size(185, 20);
+            this.HorizontalAngle.TabIndex = 493;
+            // 
+            // VerticalAngle
+            // 
+            this.VerticalAngle.DecimalPlaces = 3;
+            this.VerticalAngle.Location = new System.Drawing.Point(14, 36);
+            this.VerticalAngle.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.VerticalAngle.Name = "VerticalAngle";
+            this.VerticalAngle.Size = new System.Drawing.Size(185, 20);
+            this.VerticalAngle.TabIndex = 494;
+            // 
+            // Length
+            // 
+            this.Length.DecimalPlaces = 3;
+            this.Length.Location = new System.Drawing.Point(14, 76);
+            this.Length.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.Length.Name = "Length";
+            this.Length.Size = new System.Drawing.Size(185, 20);
+            this.Length.TabIndex = 495;
+            // 
             // label16
             // 
             this.label16.AutoSize = true;
@@ -173,6 +251,28 @@
             this.label15.TabIndex = 459;
             this.label15.Text = "Vertical Angle";
             // 
+            // SmokeLengthModifier
+            // 
+            this.SmokeLengthModifier.DecimalPlaces = 3;
+            this.SmokeLengthModifier.Location = new System.Drawing.Point(227, 76);
+            this.SmokeLengthModifier.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.SmokeLengthModifier.Name = "SmokeLengthModifier";
+            this.SmokeLengthModifier.Size = new System.Drawing.Size(186, 20);
+            this.SmokeLengthModifier.TabIndex = 489;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(224, 60);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(116, 13);
+            this.label9.TabIndex = 454;
+            this.label9.Text = "Smoke Length Modifier";
+            // 
             // label11
             // 
             this.label11.AutoSize = true;
@@ -190,15 +290,6 @@
             this.label1.Size = new System.Drawing.Size(40, 13);
             this.label1.TabIndex = 438;
             this.label1.Text = "Smoke";
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(224, 60);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(126, 13);
-            this.label9.TabIndex = 454;
-            this.label9.Text = "Smoke Length Threshold";
             // 
             // label7
             // 
@@ -402,97 +493,6 @@
             this.ExposureEffectLower.Size = new System.Drawing.Size(48, 20);
             this.ExposureEffectLower.TabIndex = 487;
             // 
-            // SmokeLengthModifier
-            // 
-            this.SmokeLengthModifier.DecimalPlaces = 3;
-            this.SmokeLengthModifier.Location = new System.Drawing.Point(227, 76);
-            this.SmokeLengthModifier.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.SmokeLengthModifier.Name = "SmokeLengthModifier";
-            this.SmokeLengthModifier.Size = new System.Drawing.Size(186, 20);
-            this.SmokeLengthModifier.TabIndex = 489;
-            // 
-            // Light_meter_fully_lit_level
-            // 
-            this.Light_meter_fully_lit_level.DecimalPlaces = 3;
-            this.Light_meter_fully_lit_level.Location = new System.Drawing.Point(15, 115);
-            this.Light_meter_fully_lit_level.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.Light_meter_fully_lit_level.Name = "Light_meter_fully_lit_level";
-            this.Light_meter_fully_lit_level.Size = new System.Drawing.Size(185, 20);
-            this.Light_meter_fully_lit_level.TabIndex = 490;
-            // 
-            // Light_meter_partially_lit_level
-            // 
-            this.Light_meter_partially_lit_level.DecimalPlaces = 3;
-            this.Light_meter_partially_lit_level.Location = new System.Drawing.Point(15, 75);
-            this.Light_meter_partially_lit_level.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.Light_meter_partially_lit_level.Name = "Light_meter_partially_lit_level";
-            this.Light_meter_partially_lit_level.Size = new System.Drawing.Size(185, 20);
-            this.Light_meter_partially_lit_level.TabIndex = 491;
-            // 
-            // Light_meter_dark_level
-            // 
-            this.Light_meter_dark_level.DecimalPlaces = 3;
-            this.Light_meter_dark_level.Location = new System.Drawing.Point(15, 36);
-            this.Light_meter_dark_level.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.Light_meter_dark_level.Name = "Light_meter_dark_level";
-            this.Light_meter_dark_level.Size = new System.Drawing.Size(185, 20);
-            this.Light_meter_dark_level.TabIndex = 492;
-            // 
-            // HorizontalAngle
-            // 
-            this.HorizontalAngle.DecimalPlaces = 3;
-            this.HorizontalAngle.Location = new System.Drawing.Point(227, 36);
-            this.HorizontalAngle.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.HorizontalAngle.Name = "HorizontalAngle";
-            this.HorizontalAngle.Size = new System.Drawing.Size(185, 20);
-            this.HorizontalAngle.TabIndex = 493;
-            // 
-            // VerticalAngle
-            // 
-            this.VerticalAngle.DecimalPlaces = 3;
-            this.VerticalAngle.Location = new System.Drawing.Point(14, 36);
-            this.VerticalAngle.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.VerticalAngle.Name = "VerticalAngle";
-            this.VerticalAngle.Size = new System.Drawing.Size(185, 20);
-            this.VerticalAngle.TabIndex = 494;
-            // 
-            // Length
-            // 
-            this.Length.DecimalPlaces = 3;
-            this.Length.Location = new System.Drawing.Point(14, 76);
-            this.Length.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.Length.Name = "Length";
-            this.Length.Size = new System.Drawing.Size(185, 20);
-            this.Length.TabIndex = 495;
-            // 
             // groupBox4
             // 
             this.groupBox4.Controls.Add(this.label13);
@@ -533,8 +533,15 @@
             this.Size = new System.Drawing.Size(442, 354);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.Light_meter_fully_lit_level)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Light_meter_partially_lit_level)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Light_meter_dark_level)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.HorizontalAngle)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VerticalAngle)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Length)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.SmokeLengthModifier)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.MovementEffectLower)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.MovementEffectUpper)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.StanceEffectUpper)).EndInit();
@@ -545,13 +552,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.SmokeEffectLower)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ExposureEffectUpper)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ExposureEffectLower)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.SmokeLengthModifier)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.Light_meter_fully_lit_level)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.Light_meter_partially_lit_level)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.Light_meter_dark_level)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.HorizontalAngle)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.VerticalAngle)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.Length)).EndInit();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             this.ResumeLayout(false);
