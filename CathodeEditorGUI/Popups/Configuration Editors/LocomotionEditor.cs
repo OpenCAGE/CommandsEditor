@@ -48,9 +48,9 @@ namespace CommandsEditor.ConfigEditors
                 _selectedCharacter.Add(new BML(Singleton.PathToAI + "\\DATA\\CHR_INFO\\ATTRIBUTES\\" + template + ".BML"));
             }
 
-            SetNumber(_selectedCharacter, capsuleRadius, "Locomotion", "capsuleRadius");
-            SetNumber(_selectedCharacter, capsuleHeight, "Locomotion", "capsuleHeight");
-            SetNumber(_selectedCharacter, permittedLocomotionModulation, "Locomotion", "permittedLocomotionModulation");
+            ConfigEditorUtils.SetNumber(_selectedCharacter, capsuleRadius, "Locomotion", "capsuleRadius");
+            ConfigEditorUtils.SetNumber(_selectedCharacter, capsuleHeight, "Locomotion", "capsuleHeight");
+            ConfigEditorUtils.SetNumber(_selectedCharacter, permittedLocomotionModulation, "Locomotion", "permittedLocomotionModulation");
 
             var boundaries = _selectedCharacter[0].Content["Attribute"]["Locomotion"]["SteeringControls"];
             int i = 0;
@@ -62,27 +62,13 @@ namespace CommandsEditor.ConfigEditors
             tabControl1.SelectedIndex = 0;
         }
 
-        private void SetNumber(List<BML> configs, NumericUpDown updown, string parentVal, string val)
-        {
-            for (int i = 0; i < configs.Count; i++)
-            {
-                if (configs[i].Content["Attribute"][parentVal]?[val]?.InnerText == null)
-                    continue;
-                updown.Value = Convert.ToDecimal(configs[i].Content["Attribute"][parentVal][val].InnerText);
-
-                if (i != 0)
-                    Console.WriteLine("Inherited " + parentVal + " " + val + " value of " + updown.Value + " from " + configs[i].Filepath);
-                break;
-            }
-        }
-
         private void btnSave_Click(object sender, EventArgs e)
         {
             var doc = _selectedCharacter[0].Content;
 
-            EnsureChildElements(doc, "Attribute", "Locomotion", "capsuleRadius").InnerText = capsuleRadius.Text;
-            EnsureChildElements(doc, "Attribute", "Locomotion", "capsuleHeight").InnerText = capsuleHeight.Text;
-            EnsureChildElements(doc, "Attribute", "Locomotion", "permittedLocomotionModulation").InnerText = permittedLocomotionModulation.Text;
+            ConfigEditorUtils.EnsureChildElements(doc, "Attribute", "Locomotion", "capsuleRadius").InnerText = capsuleRadius.Text;
+            ConfigEditorUtils.EnsureChildElements(doc, "Attribute", "Locomotion", "capsuleHeight").InnerText = capsuleHeight.Text;
+            ConfigEditorUtils.EnsureChildElements(doc, "Attribute", "Locomotion", "permittedLocomotionModulation").InnerText = permittedLocomotionModulation.Text;
 
             foreach (TabPage page in tabControl1.TabPages)
             {
@@ -91,31 +77,6 @@ namespace CommandsEditor.ConfigEditors
 
             _selectedCharacter[0].Content = doc;
             _selectedCharacter[0].Save();
-        }
-
-        private XmlElement EnsureChildElements(XmlNode parent, params string[] localNames)
-        {
-            XmlNode current = parent;
-            XmlDocument document = parent as XmlDocument ?? parent.OwnerDocument;
-            foreach (string name in localNames)
-            {
-                XmlElement match = null;
-                foreach (XmlNode child in current.ChildNodes)
-                {
-                    if (child is XmlElement el && el.LocalName == name)
-                    {
-                        match = el;
-                        break;
-                    }
-                }
-                if (match == null)
-                {
-                    match = document.CreateElement(name);
-                    current.AppendChild(match);
-                }
-                current = match;
-            }
-            return (XmlElement)current;
         }
 
         private void helpBtn_Click(object sender, EventArgs e)

@@ -356,6 +356,7 @@
     <Compile Include="Popups\Configuration Editors\BlueprintEditor.Designer.cs">
       <DependentUpon>BlueprintEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\Configuration Editors\ConfigEditorUtils.cs" />
     <Compile Include="Popups\Configuration Editors\GlobalConstantsEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -421,6 +422,12 @@
     </Compile>
     <Compile Include="Popups\Configuration Editors\User Controls\SenseSet.Designer.cs">
       <DependentUpon>SenseSet.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\User Controls\SenseType.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\User Controls\SenseType.Designer.cs">
+      <DependentUpon>SenseType.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\Configuration Editors\User Controls\SteeringBoundary.cs">
       <SubType>UserControl</SubType>
@@ -960,6 +967,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\Configuration Editors\User Controls\SenseSet.resx">
       <DependentUpon>SenseSet.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Configuration Editors\User Controls\SenseType.resx">
+      <DependentUpon>SenseType.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\Configuration Editors\User Controls\SteeringBoundary.resx">
       <DependentUpon>SteeringBoundary.cs</DependentUpon>

@@ -1178,6 +1178,29 @@ namespace CommandsEditor
         {
             _viewconeEditor = null;
         }
+
+        SenseEditor _senseEditor = null;
+        private void sensesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_senseEditor != null)
+            {
+                _senseEditor.FormClosed -= _senseEditor_FormClosed;
+                _senseEditor.Close();
+            }
+
+            _senseEditor = new SenseEditor();
+            _senseEditor.Show();
+            _senseEditor.FormClosed += _senseEditor_FormClosed;
+        }
+        private void _senseEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _senseEditor = null;
+        }
+
+        private void attributesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //todo
+        }
         #endregion
 
         private About _aboutWindow = null;

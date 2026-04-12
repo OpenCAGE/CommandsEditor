@@ -49,6 +49,7 @@ namespace CommandsEditor
             this.loadscreenMoviesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hackToolDifficultiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.radiosityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.viewconesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.globalConstantsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.charactersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.locomotionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -99,7 +100,8 @@ namespace CommandsEditor
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
             this.vS2015DarkTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme();
-            this.viewconesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sensesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.attributesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -135,7 +137,7 @@ namespace CommandsEditor
             // loadLevel
             // 
             this.loadLevel.Name = "loadLevel";
-            this.loadLevel.Size = new System.Drawing.Size(180, 22);
+            this.loadLevel.Size = new System.Drawing.Size(168, 22);
             this.loadLevel.Text = "Load Level";
             // 
             // saveLevel
@@ -143,7 +145,7 @@ namespace CommandsEditor
             this.saveLevel.Name = "saveLevel";
             this.saveLevel.ShortcutKeyDisplayString = "Ctrl+S";
             this.saveLevel.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveLevel.Size = new System.Drawing.Size(180, 22);
+            this.saveLevel.Size = new System.Drawing.Size(168, 22);
             this.saveLevel.Text = "Save Level";
             this.saveLevel.Click += new System.EventHandler(this.saveLevel_Click);
             // 
@@ -273,6 +275,13 @@ namespace CommandsEditor
             this.radiosityToolStripMenuItem.Text = "Radiosity";
             this.radiosityToolStripMenuItem.Click += new System.EventHandler(this.radiosityToolStripMenuItem_Click);
             // 
+            // viewconesToolStripMenuItem
+            // 
+            this.viewconesToolStripMenuItem.Name = "viewconesToolStripMenuItem";
+            this.viewconesToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+            this.viewconesToolStripMenuItem.Text = "Viewcones";
+            this.viewconesToolStripMenuItem.Click += new System.EventHandler(this.viewconesToolStripMenuItem_Click);
+            // 
             // globalConstantsToolStripMenuItem
             // 
             this.globalConstantsToolStripMenuItem.Name = "globalConstantsToolStripMenuItem";
@@ -284,7 +293,9 @@ namespace CommandsEditor
             // 
             this.charactersToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.locomotionToolStripMenuItem,
-            this.alienConfigsToolStripMenuItem});
+            this.alienConfigsToolStripMenuItem,
+            this.sensesToolStripMenuItem,
+            this.attributesToolStripMenuItem});
             this.charactersToolStripMenuItem.Name = "charactersToolStripMenuItem";
             this.charactersToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.charactersToolStripMenuItem.Text = "Characters";
@@ -673,12 +684,19 @@ namespace CommandsEditor
             this.dockPanel.TabIndex = 5;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
             // 
-            // viewconesToolStripMenuItem
+            // sensesToolStripMenuItem
             // 
-            this.viewconesToolStripMenuItem.Name = "viewconesToolStripMenuItem";
-            this.viewconesToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
-            this.viewconesToolStripMenuItem.Text = "Viewcones";
-            this.viewconesToolStripMenuItem.Click += new System.EventHandler(this.viewconesToolStripMenuItem_Click);
+            this.sensesToolStripMenuItem.Name = "sensesToolStripMenuItem";
+            this.sensesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.sensesToolStripMenuItem.Text = "Senses";
+            this.sensesToolStripMenuItem.Click += new System.EventHandler(this.sensesToolStripMenuItem_Click);
+            // 
+            // attributesToolStripMenuItem
+            // 
+            this.attributesToolStripMenuItem.Name = "attributesToolStripMenuItem";
+            this.attributesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.attributesToolStripMenuItem.Text = "Attributes";
+            this.attributesToolStripMenuItem.Click += new System.EventHandler(this.attributesToolStripMenuItem_Click);
             // 
             // CommandsEditor
             // 
@@ -774,5 +792,7 @@ namespace CommandsEditor
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem alienConfigsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem viewconesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem sensesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem attributesToolStripMenuItem;
     }
 }
