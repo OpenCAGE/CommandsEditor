@@ -48,6 +48,8 @@ namespace CommandsEditor
                 _selectedCharacter.Add(new BML(Singleton.PathToAI + "\\DATA\\CHR_INFO\\ATTRIBUTES\\" + template + ".BML"));
             }
 
+            SetNumber(_selectedCharacter, capsuleRadius, "Locomotion", "capsuleRadius");
+            SetNumber(_selectedCharacter, capsuleHeight, "Locomotion", "capsuleHeight");
             SetNumber(_selectedCharacter, permittedLocomotionModulation, "Locomotion", "permittedLocomotionModulation");
 
             var boundaries = _selectedCharacter[0].Content["Attribute"]["Locomotion"]["SteeringControls"];
@@ -78,6 +80,8 @@ namespace CommandsEditor
         {
             var doc = _selectedCharacter[0].Content;
 
+            EnsureChildElements(doc, "Attribute", "Locomotion", "capsuleRadius").InnerText = capsuleRadius.Text;
+            EnsureChildElements(doc, "Attribute", "Locomotion", "capsuleHeight").InnerText = capsuleHeight.Text;
             EnsureChildElements(doc, "Attribute", "Locomotion", "permittedLocomotionModulation").InnerText = permittedLocomotionModulation.Text;
 
             foreach (TabPage page in tabControl1.TabPages)
