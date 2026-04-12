@@ -1197,9 +1197,22 @@ namespace CommandsEditor
             _senseEditor = null;
         }
 
+        AttributesEditor _attributesEditor = null;
         private void attributesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //todo
+            if (_attributesEditor != null)
+            {
+                _attributesEditor.FormClosed -= _attributesEditor_FormClosed;
+                _attributesEditor.Close();
+            }
+
+            _attributesEditor = new AttributesEditor();
+            _attributesEditor.Show();
+            _attributesEditor.FormClosed += _attributesEditor_FormClosed;
+        }
+        private void _attributesEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _attributesEditor = null;
         }
         #endregion
 

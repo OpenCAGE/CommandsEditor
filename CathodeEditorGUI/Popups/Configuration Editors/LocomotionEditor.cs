@@ -20,8 +20,8 @@ namespace CommandsEditor.ConfigEditors
         {
             InitializeComponent();
 
-            BML ammoTypes = new BML(Singleton.PathToAI + "\\DATA\\CHR_INFO\\ATTRIBUTES\\ATTRIBUTES.BML");
-            var attributes = ammoTypes.Content["Attributes"];
+            BML attributeTypes = new BML(Singleton.PathToAI + "\\DATA\\CHR_INFO\\ATTRIBUTES\\ATTRIBUTES.BML");
+            var attributes = attributeTypes.Content["Attributes"];
             characters.BeginUpdate();
             foreach (XmlElement attribute in attributes)
             {

@@ -350,6 +350,12 @@
     <Compile Include="Popups\Configuration Editors\AlienConfigEditor.Designer.cs">
       <DependentUpon>AlienConfigEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\Configuration Editors\AttributesEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\AttributesEditor.Designer.cs">
+      <DependentUpon>AttributesEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popups\Configuration Editors\BlueprintEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -931,6 +937,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\Configuration Editors\AlienConfigEditor.resx">
       <DependentUpon>AlienConfigEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Configuration Editors\AttributesEditor.resx">
+      <DependentUpon>AttributesEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\Configuration Editors\BlueprintEditor.resx">
       <DependentUpon>BlueprintEditor.cs</DependentUpon>
