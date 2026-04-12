@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LoadMovieEditor));
             this.btnSave = new System.Windows.Forms.Button();
             this.moviePlaylists = new System.Windows.Forms.ComboBox();
@@ -37,7 +36,6 @@
             this.loop = new System.Windows.Forms.CheckBox();
             this.allowSkip = new System.Windows.Forms.CheckBox();
             this.shuffle = new System.Windows.Forms.CheckBox();
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.addMovie = new System.Windows.Forms.Button();
             this.removeMovie = new System.Windows.Forms.Button();
             this.moveMovieUp = new System.Windows.Forms.Button();
@@ -59,7 +57,6 @@
             this.btnSave.Size = new System.Drawing.Size(136, 33);
             this.btnSave.TabIndex = 326;
             this.btnSave.Text = "Save";
-            this.toolTip1.SetToolTip(this.btnSave, "Save playlist settings.");
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
@@ -72,7 +69,6 @@
             this.moviePlaylists.Name = "moviePlaylists";
             this.moviePlaylists.Size = new System.Drawing.Size(439, 21);
             this.moviePlaylists.TabIndex = 325;
-            this.toolTip1.SetToolTip(this.moviePlaylists, "All movie playlists.");
             this.moviePlaylists.SelectedIndexChanged += new System.EventHandler(this.moviePlaylists_SelectedIndexChanged);
             // 
             // groupBox1
@@ -136,7 +132,6 @@
             this.addMovie.Size = new System.Drawing.Size(121, 28);
             this.addMovie.TabIndex = 347;
             this.addMovie.Text = "Add New";
-            this.toolTip1.SetToolTip(this.addMovie, "Add a new movie to the playlist (opens a file input window).");
             this.addMovie.UseVisualStyleBackColor = true;
             this.addMovie.Click += new System.EventHandler(this.addMovie_Click);
             // 
@@ -148,7 +143,6 @@
             this.removeMovie.Size = new System.Drawing.Size(80, 28);
             this.removeMovie.TabIndex = 349;
             this.removeMovie.Text = "Remove";
-            this.toolTip1.SetToolTip(this.removeMovie, "Remove the selected movie from the loaded playlist.");
             this.removeMovie.UseVisualStyleBackColor = true;
             this.removeMovie.Click += new System.EventHandler(this.removeMovie_Click);
             // 
@@ -160,7 +154,6 @@
             this.moveMovieUp.Size = new System.Drawing.Size(80, 28);
             this.moveMovieUp.TabIndex = 350;
             this.moveMovieUp.Text = "Move Up";
-            this.toolTip1.SetToolTip(this.moveMovieUp, "Add a new movie to the playlist (opens a file input window).");
             this.moveMovieUp.UseVisualStyleBackColor = true;
             this.moveMovieUp.Click += new System.EventHandler(this.moveMovieUp_Click);
             // 
@@ -172,7 +165,6 @@
             this.moveMovieDown.Size = new System.Drawing.Size(80, 28);
             this.moveMovieDown.TabIndex = 351;
             this.moveMovieDown.Text = "Move Down";
-            this.toolTip1.SetToolTip(this.moveMovieDown, "Add a new movie to the playlist (opens a file input window).");
             this.moveMovieDown.UseVisualStyleBackColor = true;
             this.moveMovieDown.Click += new System.EventHandler(this.moveMovieDown_Click);
             // 
@@ -258,7 +250,6 @@
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.ComboBox moviePlaylists;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Button addMovie;
         private System.Windows.Forms.Button removeMovie;
         private System.Windows.Forms.GroupBox groupBox3;

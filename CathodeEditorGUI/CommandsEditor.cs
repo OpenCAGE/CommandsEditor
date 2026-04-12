@@ -1159,6 +1159,24 @@ namespace CommandsEditor
         {
             _alienConfigEditor = null;
         }
+
+        ViewconeEditor _viewconeEditor = null;
+        private void viewconesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_viewconeEditor != null)
+            {
+                _viewconeEditor.FormClosed -= _viewconeEditor_FormClosed;
+                _viewconeEditor.Close();
+            }
+
+            _viewconeEditor = new ViewconeEditor();
+            _viewconeEditor.Show();
+            _viewconeEditor.FormClosed += _viewconeEditor_FormClosed;
+        }
+        private void _viewconeEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _viewconeEditor = null;
+        }
         #endregion
 
         private About _aboutWindow = null;

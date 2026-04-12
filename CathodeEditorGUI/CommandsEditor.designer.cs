@@ -52,6 +52,7 @@ namespace CommandsEditor
             this.globalConstantsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.charactersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.locomotionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.alienConfigsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.inventoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.blueprintRecipesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ammoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -98,7 +99,7 @@ namespace CommandsEditor
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
             this.vS2015DarkTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme();
-            this.alienConfigsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.viewconesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -134,7 +135,7 @@ namespace CommandsEditor
             // loadLevel
             // 
             this.loadLevel.Name = "loadLevel";
-            this.loadLevel.Size = new System.Drawing.Size(168, 22);
+            this.loadLevel.Size = new System.Drawing.Size(180, 22);
             this.loadLevel.Text = "Load Level";
             // 
             // saveLevel
@@ -142,7 +143,7 @@ namespace CommandsEditor
             this.saveLevel.Name = "saveLevel";
             this.saveLevel.ShortcutKeyDisplayString = "Ctrl+S";
             this.saveLevel.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveLevel.Size = new System.Drawing.Size(168, 22);
+            this.saveLevel.Size = new System.Drawing.Size(180, 22);
             this.saveLevel.Text = "Save Level";
             this.saveLevel.Click += new System.EventHandler(this.saveLevel_Click);
             // 
@@ -282,7 +283,8 @@ namespace CommandsEditor
             // 
             this.charactersToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.locomotionToolStripMenuItem,
-            this.alienConfigsToolStripMenuItem});
+            this.alienConfigsToolStripMenuItem,
+            this.viewconesToolStripMenuItem});
             this.charactersToolStripMenuItem.Name = "charactersToolStripMenuItem";
             this.charactersToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.charactersToolStripMenuItem.Text = "Characters";
@@ -293,6 +295,13 @@ namespace CommandsEditor
             this.locomotionToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.locomotionToolStripMenuItem.Text = "Locomotion";
             this.locomotionToolStripMenuItem.Click += new System.EventHandler(this.locomotionToolStripMenuItem_Click);
+            // 
+            // alienConfigsToolStripMenuItem
+            // 
+            this.alienConfigsToolStripMenuItem.Name = "alienConfigsToolStripMenuItem";
+            this.alienConfigsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.alienConfigsToolStripMenuItem.Text = "Alien Configs";
+            this.alienConfigsToolStripMenuItem.Click += new System.EventHandler(this.alienConfigsToolStripMenuItem_Click);
             // 
             // inventoryToolStripMenuItem
             // 
@@ -664,12 +673,12 @@ namespace CommandsEditor
             this.dockPanel.TabIndex = 5;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
             // 
-            // alienConfigsToolStripMenuItem
+            // viewconesToolStripMenuItem
             // 
-            this.alienConfigsToolStripMenuItem.Name = "alienConfigsToolStripMenuItem";
-            this.alienConfigsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.alienConfigsToolStripMenuItem.Text = "Alien Configs";
-            this.alienConfigsToolStripMenuItem.Click += new System.EventHandler(this.alienConfigsToolStripMenuItem_Click);
+            this.viewconesToolStripMenuItem.Name = "viewconesToolStripMenuItem";
+            this.viewconesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.viewconesToolStripMenuItem.Text = "Viewcones";
+            this.viewconesToolStripMenuItem.Click += new System.EventHandler(this.viewconesToolStripMenuItem_Click);
             // 
             // CommandsEditor
             // 
@@ -764,5 +773,6 @@ namespace CommandsEditor
         private System.Windows.Forms.ToolStripMenuItem documentationToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem alienConfigsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem viewconesToolStripMenuItem;
     }
 }

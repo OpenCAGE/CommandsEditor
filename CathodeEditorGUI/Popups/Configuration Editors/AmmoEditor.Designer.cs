@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AmmoEditor));
             this.label22 = new System.Windows.Forms.Label();
             this.btnSave = new System.Windows.Forms.Button();
@@ -107,7 +106,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this.saveRange = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
@@ -1185,7 +1183,6 @@
         private System.Windows.Forms.ComboBox Damage_2;
         private System.Windows.Forms.ComboBox Damage_1;
         private System.Windows.Forms.Label label49;
-        private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Label label24;
         private System.Windows.Forms.CheckBox Projectile;
         private System.Windows.Forms.CheckBox damage_rays_blocked_by_characters;

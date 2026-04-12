@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RadiosityEditor));
             this.btnSave = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
@@ -44,7 +43,6 @@
             this.gRadiosityEmissiveSurfaceScale = new System.Windows.Forms.NumericUpDown();
             this.gRadiosityAlbedoOverbrightAmount = new System.Windows.Forms.NumericUpDown();
             this.gRadiosityFirstBounceScale = new System.Windows.Forms.NumericUpDown();
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.helpBtn = new System.Windows.Forms.Button();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gRadiosityAlbedoSaturationAmount)).BeginInit();
@@ -266,7 +264,6 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.NumericUpDown gRadiosityFirstBounceScale;
         private System.Windows.Forms.NumericUpDown gRadiosityEmissiveSurfaceScale;
         private System.Windows.Forms.NumericUpDown gRadiosityAlbedoOverbrightAmount;

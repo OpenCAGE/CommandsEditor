@@ -28,10 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HackingEditor));
             this.btnSave = new System.Windows.Forms.Button();
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.hackDifficulties = new System.Windows.Forms.ComboBox();
             this.lvl1Max = new System.Windows.Forms.ComboBox();
             this.label11 = new System.Windows.Forms.Label();
@@ -90,7 +88,6 @@
             this.hackDifficulties.Name = "hackDifficulties";
             this.hackDifficulties.Size = new System.Drawing.Size(397, 21);
             this.hackDifficulties.TabIndex = 318;
-            this.toolTip1.SetToolTip(this.hackDifficulties, "All available hacking game difficulty levels.");
             this.hackDifficulties.SelectedIndexChanged += new System.EventHandler(this.hackDifficulties_SelectedIndexChanged);
             // 
             // lvl1Max
@@ -427,7 +424,6 @@
 
         #endregion
         private System.Windows.Forms.Button btnSave;
-        private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.ComboBox lvl1Max;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label label9;

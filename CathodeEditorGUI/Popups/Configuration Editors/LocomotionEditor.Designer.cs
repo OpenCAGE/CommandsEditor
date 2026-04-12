@@ -28,14 +28,16 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LocomotionEditor));
             this.characters = new System.Windows.Forms.ComboBox();
             this.btnSave = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.permittedLocomotionModulation = new System.Windows.Forms.NumericUpDown();
+            this.capsuleHeight = new System.Windows.Forms.NumericUpDown();
             this.capsuleRadius = new System.Windows.Forms.NumericUpDown();
             this.label34 = new System.Windows.Forms.Label();
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.steeringBoundarySet1 = new SteeringBoundarySet();
@@ -44,18 +46,14 @@
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.steeringBoundarySet3 = new SteeringBoundarySet();
             this.helpBtn = new System.Windows.Forms.Button();
-            this.capsuleHeight = new System.Windows.Forms.NumericUpDown();
-            this.permittedLocomotionModulation = new System.Windows.Forms.NumericUpDown();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
             this.groupBox4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.permittedLocomotionModulation)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.capsuleHeight)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.capsuleRadius)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.tabPage3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.capsuleHeight)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.permittedLocomotionModulation)).BeginInit();
             this.SuspendLayout();
             // 
             // characters
@@ -92,6 +90,50 @@
             this.groupBox4.TabIndex = 528;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Misc Locomotion Settings";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(223, 21);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(79, 13);
+            this.label2.TabIndex = 519;
+            this.label2.Text = "Capsule Height";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(13, 62);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(117, 13);
+            this.label1.TabIndex = 518;
+            this.label1.Text = "Locomotion Modulation";
+            // 
+            // permittedLocomotionModulation
+            // 
+            this.permittedLocomotionModulation.DecimalPlaces = 3;
+            this.permittedLocomotionModulation.Location = new System.Drawing.Point(16, 78);
+            this.permittedLocomotionModulation.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.permittedLocomotionModulation.Name = "permittedLocomotionModulation";
+            this.permittedLocomotionModulation.Size = new System.Drawing.Size(187, 20);
+            this.permittedLocomotionModulation.TabIndex = 517;
+            // 
+            // capsuleHeight
+            // 
+            this.capsuleHeight.DecimalPlaces = 3;
+            this.capsuleHeight.Location = new System.Drawing.Point(226, 37);
+            this.capsuleHeight.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.capsuleHeight.Name = "capsuleHeight";
+            this.capsuleHeight.Size = new System.Drawing.Size(187, 20);
+            this.capsuleHeight.TabIndex = 516;
             // 
             // capsuleRadius
             // 
@@ -191,50 +233,6 @@
             this.helpBtn.UseVisualStyleBackColor = true;
             this.helpBtn.Click += new System.EventHandler(this.helpBtn_Click);
             // 
-            // capsuleHeight
-            // 
-            this.capsuleHeight.DecimalPlaces = 3;
-            this.capsuleHeight.Location = new System.Drawing.Point(226, 37);
-            this.capsuleHeight.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.capsuleHeight.Name = "capsuleHeight";
-            this.capsuleHeight.Size = new System.Drawing.Size(187, 20);
-            this.capsuleHeight.TabIndex = 516;
-            // 
-            // permittedLocomotionModulation
-            // 
-            this.permittedLocomotionModulation.DecimalPlaces = 3;
-            this.permittedLocomotionModulation.Location = new System.Drawing.Point(16, 78);
-            this.permittedLocomotionModulation.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.permittedLocomotionModulation.Name = "permittedLocomotionModulation";
-            this.permittedLocomotionModulation.Size = new System.Drawing.Size(187, 20);
-            this.permittedLocomotionModulation.TabIndex = 517;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(13, 62);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(117, 13);
-            this.label1.TabIndex = 518;
-            this.label1.Text = "Locomotion Modulation";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(223, 21);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(79, 13);
-            this.label2.TabIndex = 519;
-            this.label2.Text = "Capsule Height";
-            // 
             // LocomotionEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -253,13 +251,13 @@
             this.Text = "Locomotion Editor";
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.permittedLocomotionModulation)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.capsuleHeight)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.capsuleRadius)).EndInit();
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.capsuleHeight)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.permittedLocomotionModulation)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -269,7 +267,6 @@
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.Label label34;
-        private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.NumericUpDown capsuleRadius;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;

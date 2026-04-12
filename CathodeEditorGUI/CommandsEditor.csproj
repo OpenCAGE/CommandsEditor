@@ -416,6 +416,18 @@
     <Compile Include="Popups\Configuration Editors\User Controls\SteeringBoundarySet.Designer.cs">
       <DependentUpon>SteeringBoundarySet.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\Configuration Editors\User Controls\ViewCone.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\User Controls\ViewCone.Designer.cs">
+      <DependentUpon>ViewCone.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\ViewconeEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\ViewconeEditor.Designer.cs">
+      <DependentUpon>ViewconeEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popups\ControlsWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -927,6 +939,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\Configuration Editors\User Controls\SteeringBoundarySet.resx">
       <DependentUpon>SteeringBoundarySet.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Configuration Editors\User Controls\ViewCone.resx">
+      <DependentUpon>ViewCone.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Configuration Editors\ViewconeEditor.resx">
+      <DependentUpon>ViewconeEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\ControlsWindow.resx">
       <DependentUpon>ControlsWindow.cs</DependentUpon>
