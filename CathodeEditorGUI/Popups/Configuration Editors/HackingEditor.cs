@@ -43,8 +43,7 @@ namespace CommandsEditor.ConfigEditors
                 else if (level.GetAttribute("tool_level") == "99")
                     lvl99Max.SelectedItem = level.GetAttribute("max_difficulty");
             }
-
-            hackDifficulties.SelectedIndex = 0;
+            this.FormClosing += HackingEditor_FormClosing;
         }
 
         private void PopulateDifficulties(ComboBox combo, XmlElement difficulties)
@@ -57,8 +56,23 @@ namespace CommandsEditor.ConfigEditors
             combo.EndUpdate();
         }
 
+        private void HackingEditor_Load(object sender, EventArgs e)
+        {
+            for (int i = 0; i < hackDifficulties.Items.Count; i++)
+                hackDifficulties.SelectedIndex = i;
+            hackDifficulties.SelectedIndex = 0;
+        }
+
+        private void HackingEditor_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            ConfigEditorUtils.Unsubscribe(this.Controls, Save);
+            this.FormClosing -= HackingEditor_FormClosing;
+        }
+
         private void hackDifficulties_SelectedIndexChanged(object sender, EventArgs e)
         {
+            ConfigEditorUtils.Unsubscribe(this.Controls, Save);
+
             var difficulites = _gblItem.Content["item_database"]["hacking_game_difficulties"];
             foreach (XmlElement difficulty in difficulites)
             {
@@ -73,9 +87,11 @@ namespace CommandsEditor.ConfigEditors
                 number_of_alarms.Text = difficulty.GetAttribute("number_of_alarms");
                 timer_countdown_seconds.Text = difficulty.GetAttribute("timer_countdown_seconds");
             }
+
+            ConfigEditorUtils.Subscribe(this.Controls, Save);
         }
 
-        private void btnSave_Click(object sender, EventArgs e)
+        private void Save(object sender, EventArgs e)
         {
             var doc = _gblItem.Content;
 

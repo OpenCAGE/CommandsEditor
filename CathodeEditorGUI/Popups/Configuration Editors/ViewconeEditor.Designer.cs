@@ -30,11 +30,10 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ViewconeEditor));
             this.label22 = new System.Windows.Forms.Label();
-            this.btnSave = new System.Windows.Forms.Button();
             this.viewconeSets = new System.Windows.Forms.ComboBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.viewCone1 = new ViewCone();
+            this.viewCone1 = new CommandsEditor.ConfigEditors.ViewCone();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.helpBtn = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
@@ -48,16 +47,6 @@
             this.label22.Name = "label22";
             this.label22.Size = new System.Drawing.Size(0, 13);
             this.label22.TabIndex = 411;
-            // 
-            // btnSave
-            // 
-            this.btnSave.Location = new System.Drawing.Point(321, 422);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(136, 33);
-            this.btnSave.TabIndex = 410;
-            this.btnSave.Text = "Save";
-            this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // viewconeSets
             // 
@@ -123,11 +112,10 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(468, 466);
+            this.ClientSize = new System.Drawing.Size(468, 427);
             this.Controls.Add(this.helpBtn);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.label22);
-            this.Controls.Add(this.btnSave);
             this.Controls.Add(this.viewconeSets);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -135,6 +123,7 @@
             this.Name = "ViewconeEditor";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Viewcone Editor";
+            this.Load += new System.EventHandler(this.ViewconeEditor_Load);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -144,7 +133,6 @@
 
         #endregion
         private System.Windows.Forms.Label label22;
-        private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.ComboBox viewconeSets;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;

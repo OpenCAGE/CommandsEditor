@@ -26,9 +26,18 @@ namespace CommandsEditor.ConfigEditors
             gRadiosityAlbedoOverbrightAmount.Text = lightingData[4];
             gRadiosityAlbedoSaturationAmount.Text = lightingData[5];
             gRadiositySpecularGlossScale.Text = lightingData[6];
+
+            ConfigEditorUtils.Subscribe(this.Controls, Save);
+            this.FormClosing += RadiosityEditor_FormClosing;
         }
 
-        private void btnSave_Click(object sender, EventArgs e)
+        private void RadiosityEditor_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            ConfigEditorUtils.Unsubscribe(this.Controls, Save);
+            this.FormClosing -= RadiosityEditor_FormClosing;
+        }
+
+        private void Save(object sender, EventArgs e)
         {
             File.WriteAllText(Singleton.PathToAI + @"\DATA\RADIOSITY_SETTINGS.TXT", 
                 "settings_file_version=1" + Environment.NewLine +

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using static System.Windows.Forms.Form;
 
 namespace CommandsEditor.ConfigEditors
 {
@@ -128,6 +129,42 @@ namespace CommandsEditor.ConfigEditors
                 current = current[name];
             }
             return current as XmlElement;
+        }
+
+        public static void Subscribe(Control.ControlCollection controls, EventHandler handler)
+        {
+            foreach (Control c in controls)
+            {
+                if (c is TextBox tb)
+                    tb.TextChanged += handler;
+                else if (c is ComboBox cb)
+                    cb.SelectedIndexChanged += handler;
+                else if (c is CheckBox chk)
+                    chk.CheckedChanged += handler;
+                else if (c is NumericUpDown nud)
+                    nud.ValueChanged += handler;
+
+                if (c.HasChildren)
+                    Subscribe(c.Controls, handler);
+            }
+        }
+
+        public static void Unsubscribe(Control.ControlCollection controls, EventHandler handler)
+        {
+            foreach (Control c in controls)
+            {
+                if (c is TextBox tb)
+                    tb.TextChanged -= handler;
+                else if (c is ComboBox cb)
+                    cb.SelectedIndexChanged -= handler;
+                else if (c is CheckBox chk)
+                    chk.CheckedChanged -= handler;
+                else if (c is NumericUpDown nud)
+                    nud.ValueChanged -= handler;
+
+                if (c.HasChildren)
+                    Unsubscribe(c.Controls, handler);
+            }
         }
     }
 }

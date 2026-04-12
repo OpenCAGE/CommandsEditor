@@ -147,7 +147,6 @@
             this.label54 = new System.Windows.Forms.Label();
             this.hiding_max_search_time = new System.Windows.Forms.NumericUpDown();
             this.label55 = new System.Windows.Forms.Label();
-            this.btnSave = new System.Windows.Forms.Button();
             this.helpBtn = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Health_Regeneration_Rate)).BeginInit();
@@ -1580,16 +1579,6 @@
             this.label55.TabIndex = 481;
             this.label55.Text = "Max Search Time";
             // 
-            // btnSave
-            // 
-            this.btnSave.Location = new System.Drawing.Point(790, 591);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(136, 33);
-            this.btnSave.TabIndex = 538;
-            this.btnSave.Text = "Save";
-            this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
-            // 
             // helpBtn
             // 
             this.helpBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -1608,7 +1597,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(935, 633);
             this.Controls.Add(this.helpBtn);
-            this.Controls.Add(this.btnSave);
             this.Controls.Add(this.groupBox13);
             this.Controls.Add(this.groupBox12);
             this.Controls.Add(this.groupBox11);
@@ -1625,6 +1613,7 @@
             this.Name = "AttributesEditor";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Attributes Editor";
+            this.Load += new System.EventHandler(this.AttributesEditor_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Health_Regeneration_Rate)).EndInit();
@@ -1822,7 +1811,6 @@
         private System.Windows.Forms.Label label54;
         private System.Windows.Forms.NumericUpDown hiding_max_search_time;
         private System.Windows.Forms.Label label55;
-        private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Button helpBtn;
     }
 }

@@ -30,7 +30,6 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AmmoEditor));
             this.label22 = new System.Windows.Forms.Label();
-            this.btnSave = new System.Windows.Forms.Button();
             this.classSelection = new System.Windows.Forms.ComboBox();
             this.npc_accuracy_multiplier = new System.Windows.Forms.NumericUpDown();
             this.fixed_accuracy = new System.Windows.Forms.NumericUpDown();
@@ -104,7 +103,6 @@
             this.label20 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.saveRange = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
@@ -153,16 +151,6 @@
             this.label22.Name = "label22";
             this.label22.Size = new System.Drawing.Size(0, 13);
             this.label22.TabIndex = 411;
-            // 
-            // btnSave
-            // 
-            this.btnSave.Location = new System.Drawing.Point(555, 559);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(136, 33);
-            this.btnSave.TabIndex = 410;
-            this.btnSave.Text = "Save";
-            this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // classSelection
             // 
@@ -594,7 +582,6 @@
             this.groupBox4.Controls.Add(this.label20);
             this.groupBox4.Controls.Add(this.label2);
             this.groupBox4.Controls.Add(this.label1);
-            this.groupBox4.Controls.Add(this.saveRange);
             this.groupBox4.Controls.Add(this.label6);
             this.groupBox4.Location = new System.Drawing.Point(12, 346);
             this.groupBox4.Name = "groupBox4";
@@ -983,16 +970,6 @@
             this.label1.TabIndex = 419;
             this.label1.Text = "Player";
             // 
-            // saveRange
-            // 
-            this.saveRange.Location = new System.Drawing.Point(589, 164);
-            this.saveRange.Name = "saveRange";
-            this.saveRange.Size = new System.Drawing.Size(84, 36);
-            this.saveRange.TabIndex = 416;
-            this.saveRange.Text = "Save";
-            this.saveRange.UseVisualStyleBackColor = true;
-            this.saveRange.Click += new System.EventHandler(this.saveRange_Click);
-            // 
             // label6
             // 
             this.label6.AutoSize = true;
@@ -1075,7 +1052,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(701, 602);
+            this.ClientSize = new System.Drawing.Size(701, 561);
             this.Controls.Add(this.helpBtn);
             this.Controls.Add(this.groupBox8);
             this.Controls.Add(this.groupBox7);
@@ -1086,13 +1063,13 @@
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.label22);
             this.Controls.Add(this.classSelection);
-            this.Controls.Add(this.btnSave);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "AmmoEditor";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Ammo Editor";
+            this.Load += new System.EventHandler(this.AmmoEditor_Load);
             ((System.ComponentModel.ISupportInitialize)(this.npc_accuracy_multiplier)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.fixed_accuracy)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.max_accuracy_radius_at_10_metres)).EndInit();
@@ -1140,7 +1117,6 @@
 
         #endregion
         private System.Windows.Forms.Label label22;
-        private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.ComboBox classSelection;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.GroupBox groupBox3;
@@ -1177,7 +1153,6 @@
         private System.Windows.Forms.Label label20;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button saveRange;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.ComboBox Damage_3;
         private System.Windows.Forms.ComboBox Damage_2;

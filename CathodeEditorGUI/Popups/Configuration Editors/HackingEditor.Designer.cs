@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HackingEditor));
-            this.btnSave = new System.Windows.Forms.Button();
             this.hackDifficulties = new System.Windows.Forms.ComboBox();
             this.lvl1Max = new System.Windows.Forms.ComboBox();
             this.label11 = new System.Windows.Forms.Label();
@@ -69,16 +68,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.inner_selection_angle_in_deg)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // btnSave
-            // 
-            this.btnSave.Location = new System.Drawing.Point(297, 416);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(136, 33);
-            this.btnSave.TabIndex = 319;
-            this.btnSave.Text = "Save";
-            this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // hackDifficulties
             // 
@@ -396,17 +385,17 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(442, 458);
+            this.ClientSize = new System.Drawing.Size(442, 421);
             this.Controls.Add(this.helpBtn);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.btnSave);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "HackingEditor";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Hack Tool Editor";
+            this.Load += new System.EventHandler(this.HackingEditor_Load);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timer_countdown_seconds)).EndInit();
@@ -423,7 +412,6 @@
         }
 
         #endregion
-        private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.ComboBox lvl1Max;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label label9;

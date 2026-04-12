@@ -23,12 +23,12 @@ namespace CommandsEditor.ConfigEditors
         {
             InitializeComponent();
 
-            BML ammoTypes = new BML(Singleton.PathToAI + "\\DATA\\VIEW_CONE_SETS\\VIEWCONESETS.BML");
-            var viewconeSets = ammoTypes.Content["ViewconeSets"];
-            this.viewconeSets.BeginUpdate();
-            foreach (XmlElement viewconeSet in viewconeSets)
+            BML viewconeTypes = new BML(Singleton.PathToAI + "\\DATA\\VIEW_CONE_SETS\\VIEWCONESETS.BML");
+            var viewcones = viewconeTypes.Content["ViewconeSets"];
+            viewconeSets.BeginUpdate();
+            foreach (XmlElement viewcone in viewcones)
             {
-                string name = viewconeSet["Name"].InnerText;
+                string name = viewcone["Name"].InnerText;
                 switch (name)
                 {
                     case "VIEWCONESET_STANDARD":
@@ -40,14 +40,27 @@ namespace CommandsEditor.ConfigEditors
                         // It appears the game skips any other than the ones above, so ignore them.
                         continue;
                 }
-                this.viewconeSets.Items.Add(name);
+                viewconeSets.Items.Add(name);
             }
-            this.viewconeSets.EndUpdate();
-            this.viewconeSets.SelectedIndex = 0;
+            viewconeSets.EndUpdate();
+
+            this.FormClosing += ViewconeEditor_FormClosing;
+        }
+
+        private void ViewconeEditor_Load(object sender, EventArgs e)
+        {
+            viewconeSets.SelectedIndex = 0;
+        }
+
+        private void ViewconeEditor_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            ConfigEditorUtils.Unsubscribe(this.Controls, Save);
+            this.FormClosing -= ViewconeEditor_FormClosing;
         }
 
         private void viewconeSets_SelectedIndexChanged(object sender, EventArgs e)
         {
+            ConfigEditorUtils.Unsubscribe(this.Controls, Save);
             tabControl1.SuspendLayout();
 
             _activeSet = new BML(Singleton.PathToAI + "\\DATA\\VIEW_CONE_SETS\\" + viewconeSets.Text + ".BML");
@@ -65,9 +78,10 @@ namespace CommandsEditor.ConfigEditors
             }
 
             tabControl1.ResumeLayout();
+            ConfigEditorUtils.Subscribe(this.Controls, Save);
         }
         
-        private void btnSave_Click(object sender, EventArgs e)
+        private void Save(object sender, EventArgs e)
         {
             var doc = _activeSet.Content;
 

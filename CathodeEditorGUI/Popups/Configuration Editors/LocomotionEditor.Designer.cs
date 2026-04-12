@@ -30,7 +30,6 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LocomotionEditor));
             this.characters = new System.Windows.Forms.ComboBox();
-            this.btnSave = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
@@ -65,16 +64,6 @@
             this.characters.Size = new System.Drawing.Size(434, 21);
             this.characters.TabIndex = 523;
             this.characters.SelectedIndexChanged += new System.EventHandler(this.characters_SelectedIndexChanged);
-            // 
-            // btnSave
-            // 
-            this.btnSave.Location = new System.Drawing.Point(312, 442);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(136, 33);
-            this.btnSave.TabIndex = 518;
-            this.btnSave.Text = "Save";
-            this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // groupBox4
             // 
@@ -237,18 +226,18 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(460, 487);
+            this.ClientSize = new System.Drawing.Size(460, 443);
             this.Controls.Add(this.helpBtn);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.characters);
-            this.Controls.Add(this.btnSave);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "LocomotionEditor";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Locomotion Editor";
+            this.Load += new System.EventHandler(this.LocomotionEditor_Load);
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.permittedLocomotionModulation)).EndInit();
@@ -264,7 +253,6 @@
 
         #endregion
         private System.Windows.Forms.ComboBox characters;
-        private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.Label label34;
         private System.Windows.Forms.NumericUpDown capsuleRadius;

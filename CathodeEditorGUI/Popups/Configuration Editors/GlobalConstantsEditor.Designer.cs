@@ -37,7 +37,6 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
-            this.btnSave = new System.Windows.Forms.Button();
             this.interaction_distance_threshold = new System.Windows.Forms.NumericUpDown();
             this.min_time_between_squad_shots_lower_bound = new System.Windows.Forms.NumericUpDown();
             this.min_time_between_squad_shots_upper_bound = new System.Windows.Forms.NumericUpDown();
@@ -136,16 +135,6 @@
             this.label8.Size = new System.Drawing.Size(99, 13);
             this.label8.TabIndex = 356;
             this.label8.Text = "Full Light Threshold";
-            // 
-            // btnSave
-            // 
-            this.btnSave.Location = new System.Drawing.Point(314, 207);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(136, 33);
-            this.btnSave.TabIndex = 358;
-            this.btnSave.Text = "Save";
-            this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // interaction_distance_threshold
             // 
@@ -318,13 +307,12 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(460, 254);
+            this.ClientSize = new System.Drawing.Size(460, 251);
             this.Controls.Add(this.helpBtn);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.btnSave);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
@@ -360,7 +348,6 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.NumericUpDown interaction_distance_threshold;
         private System.Windows.Forms.NumericUpDown min_time_between_squad_shots_lower_bound;
         private System.Windows.Forms.NumericUpDown min_time_between_squad_shots_upper_bound;

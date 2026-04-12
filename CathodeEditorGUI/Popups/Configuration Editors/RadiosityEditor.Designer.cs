@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RadiosityEditor));
-            this.btnSave = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label35 = new System.Windows.Forms.Label();
@@ -52,16 +51,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.gRadiosityAlbedoOverbrightAmount)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gRadiosityFirstBounceScale)).BeginInit();
             this.SuspendLayout();
-            // 
-            // btnSave
-            // 
-            this.btnSave.Location = new System.Drawing.Point(293, 173);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(136, 33);
-            this.btnSave.TabIndex = 410;
-            this.btnSave.Text = "Save";
-            this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // label2
             // 
@@ -232,10 +221,9 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(440, 217);
+            this.ClientSize = new System.Drawing.Size(440, 177);
             this.Controls.Add(this.helpBtn);
             this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.btnSave);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
@@ -256,7 +244,6 @@
         }
 
         #endregion
-        private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label35;

@@ -35,9 +35,18 @@ namespace CommandsEditor.ConfigEditors
 
             min_time_suspicious_reaction_loop.Text = _globalConstants.Content["GlobalConstants"]["suspicious_item_reaction"]["min_time_suspicious_reaction_loop"].InnerText;
             max_time_suspicious_reaction_loop.Text = _globalConstants.Content["GlobalConstants"]["suspicious_item_reaction"]["max_time_suspicious_reaction_loop"].InnerText;
+
+            ConfigEditorUtils.Subscribe(this.Controls, Save);
+            this.FormClosing += GlobalConstantsEditor_FormClosing;
         }
 
-        private void btnSave_Click(object sender, EventArgs e)
+        private void GlobalConstantsEditor_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            ConfigEditorUtils.Unsubscribe(this.Controls, Save);
+            this.FormClosing -= GlobalConstantsEditor_FormClosing;
+        }
+
+        private void Save(object sender, EventArgs e)
         {
             var doc = _globalConstants.Content;
 

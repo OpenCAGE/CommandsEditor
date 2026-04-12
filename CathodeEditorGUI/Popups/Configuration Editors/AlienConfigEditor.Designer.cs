@@ -30,7 +30,6 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AlienConfigEditor));
             this.label22 = new System.Windows.Forms.Label();
-            this.btnSave = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.classSelection = new System.Windows.Forms.ComboBox();
@@ -140,16 +139,6 @@
             this.label22.Name = "label22";
             this.label22.Size = new System.Drawing.Size(0, 13);
             this.label22.TabIndex = 194;
-            // 
-            // btnSave
-            // 
-            this.btnSave.Location = new System.Drawing.Point(579, 418);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(136, 33);
-            this.btnSave.TabIndex = 185;
-            this.btnSave.Text = "Save";
-            this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // label3
             // 
@@ -994,7 +983,6 @@
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.label22);
-            this.Controls.Add(this.btnSave);
             this.Controls.Add(this.classSelection);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -1002,6 +990,7 @@
             this.Name = "AlienConfigEditor";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Alien Configuration Editor";
+            this.Load += new System.EventHandler(this.AlienConfigEditor_Load);
             this.groupBox3.ResumeLayout(false);
             this.groupBox5.ResumeLayout(false);
             this.groupBox5.PerformLayout();
@@ -1052,7 +1041,6 @@
 
         #endregion
         private System.Windows.Forms.Label label22;
-        private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ComboBox classSelection;

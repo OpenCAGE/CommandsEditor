@@ -28,11 +28,27 @@ namespace CommandsEditor.ConfigEditors
                 characters.Items.Add(attribute["Name"].InnerText);
             }
             characters.EndUpdate();
+
+            this.FormClosing += LocomotionEditor_FormClosing;
+        }
+
+        private void LocomotionEditor_Load(object sender, EventArgs e)
+        {
+            for (int i = 0; i < characters.Items.Count; i++)
+                characters.SelectedIndex = i;
             characters.SelectedIndex = 0;
+        }
+
+        private void LocomotionEditor_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            ConfigEditorUtils.Unsubscribe(this.Controls, Save);
+            this.FormClosing -= LocomotionEditor_FormClosing;
         }
 
         private void characters_SelectedIndexChanged(object sender, EventArgs e)
         {
+            ConfigEditorUtils.Unsubscribe(this.Controls, Save);
+
             _selectedCharacter = new List<BML>();
             _selectedCharacter.Add(new BML(Singleton.PathToAI + "\\DATA\\CHR_INFO\\ATTRIBUTES\\" + characters.Text + ".BML"));
             while (true)
@@ -54,9 +70,11 @@ namespace CommandsEditor.ConfigEditors
                 i++;
             }
             tabControl1.SelectedIndex = 0;
+
+            ConfigEditorUtils.Subscribe(this.Controls, Save);
         }
 
-        private void btnSave_Click(object sender, EventArgs e)
+        private void Save(object sender, EventArgs e)
         {
             var doc = _selectedCharacter[0].Content;
 
