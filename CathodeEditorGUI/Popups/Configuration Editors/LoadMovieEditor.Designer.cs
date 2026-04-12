@@ -63,7 +63,6 @@
             // moviePlaylists
             // 
             this.moviePlaylists.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.moviePlaylists.Enabled = false;
             this.moviePlaylists.FormattingEnabled = true;
             this.moviePlaylists.Location = new System.Drawing.Point(12, 12);
             this.moviePlaylists.Name = "moviePlaylists";
@@ -126,7 +125,6 @@
             // 
             // addMovie
             // 
-            this.addMovie.Enabled = false;
             this.addMovie.Location = new System.Drawing.Point(6, 197);
             this.addMovie.Name = "addMovie";
             this.addMovie.Size = new System.Drawing.Size(121, 28);
@@ -137,7 +135,6 @@
             // 
             // removeMovie
             // 
-            this.removeMovie.Enabled = false;
             this.removeMovie.Location = new System.Drawing.Point(181, 197);
             this.removeMovie.Name = "removeMovie";
             this.removeMovie.Size = new System.Drawing.Size(80, 28);
@@ -148,7 +145,6 @@
             // 
             // moveMovieUp
             // 
-            this.moveMovieUp.Enabled = false;
             this.moveMovieUp.Location = new System.Drawing.Point(267, 197);
             this.moveMovieUp.Name = "moveMovieUp";
             this.moveMovieUp.Size = new System.Drawing.Size(80, 28);
@@ -159,7 +155,6 @@
             // 
             // moveMovieDown
             // 
-            this.moveMovieDown.Enabled = false;
             this.moveMovieDown.Location = new System.Drawing.Point(353, 197);
             this.moveMovieDown.Name = "moveMovieDown";
             this.moveMovieDown.Size = new System.Drawing.Size(80, 28);

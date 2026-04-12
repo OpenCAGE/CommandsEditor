@@ -69,9 +69,6 @@ namespace CommandsEditor.ConfigEditors
         
         private void btnSave_Click(object sender, EventArgs e)
         {
-            if (_activeSet == null)
-                return;
-
             var doc = _activeSet.Content;
 
             doc["ViewconeSet"]["ViewconeSettings"].RemoveAll();

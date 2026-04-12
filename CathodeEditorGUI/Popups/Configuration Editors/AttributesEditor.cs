@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -17,6 +18,8 @@ namespace CommandsEditor.ConfigEditors
 {
     public partial class AttributesEditor : BaseWindow
     {
+        List<BML> _selectedCharacter;
+
         public AttributesEditor() : base()
         {
             InitializeComponent();
@@ -70,17 +73,31 @@ namespace CommandsEditor.ConfigEditors
 
         private void characters_SelectedIndexChanged(object sender, EventArgs e)
         {
+            _selectedCharacter = new List<BML>();
+            _selectedCharacter.Add(new BML(Singleton.PathToAI + "\\DATA\\CHR_INFO\\ATTRIBUTES\\" + characters.Text + ".BML"));
+            while (true)
+            {
+                string template = _selectedCharacter[_selectedCharacter.Count - 1].Content["Attribute"]["Template_Name"]?.InnerText;
+                if (template == null || template == "") break;
+                _selectedCharacter.Add(new BML(Singleton.PathToAI + "\\DATA\\CHR_INFO\\ATTRIBUTES\\" + template + ".BML"));
+            }
 
+            //ConfigEditorUtils.SetNumber(_selectedCharacter, permittedLocomotionModulation, "Attribute", "Locomotion", "permittedLocomotionModulation");
         }
 
         private void btnSave_Click(object sender, EventArgs e)
         {
+            var doc = _selectedCharacter[0].Content;
 
+            //ConfigEditorUtils.EnsureChildElements(doc, "Attribute", "Locomotion", "capsuleRadius").InnerText = capsuleRadius.Text;
+
+            _selectedCharacter[0].Content = doc;
+            _selectedCharacter[0].Save();
         }
 
         private void helpBtn_Click(object sender, EventArgs e)
         {
-            Process.Start("https://opencage.co.uk/docs/configs/blueprint-recipes");
+            Process.Start("https://opencage.co.uk/docs/configs/attributes");
         }
     }
 }

@@ -59,12 +59,6 @@ namespace CommandsEditor.ConfigEditors
 
         private void hackDifficulties_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (hackDifficulties.Text == "")
-            {
-                MessageBox.Show("Please select a difficulty level first.");
-                return;
-            }
-
             var difficulites = _gblItem.Content["item_database"]["hacking_game_difficulties"];
             foreach (XmlElement difficulty in difficulites)
             {
@@ -83,12 +77,6 @@ namespace CommandsEditor.ConfigEditors
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            if (hackDifficulties.Text == "")
-            {
-                MessageBox.Show("Please load a difficulty level first.");
-                return;
-            }
-
             var doc = _gblItem.Content;
 
             var gatingLevels = doc["item_database"]["hacking_gating_levels"];

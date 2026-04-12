@@ -32,12 +32,6 @@ namespace CommandsEditor.ConfigEditors
 
         private void blueprints_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (blueprints.Text == "")
-            {
-                MessageBox.Show("Please select a blueprint first.");
-                return;
-            }
-
             var recipes = _gblItem.Content["item_database"]["recipes"];
             blueprintInput.BeginUpdate();
             blueprintOutput.BeginUpdate();
@@ -110,12 +104,6 @@ namespace CommandsEditor.ConfigEditors
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            if (blueprints.Text == "")
-            {
-                MessageBox.Show("Please select a blueprint first.");
-                return;
-            }
-
             var doc = _gblItem.Content;
 
             var recipes = doc["item_database"]["recipes"];

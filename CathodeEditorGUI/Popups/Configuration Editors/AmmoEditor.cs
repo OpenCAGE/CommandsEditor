@@ -49,12 +49,6 @@ namespace CommandsEditor.ConfigEditors
 
         private void classSelection_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (classSelection.Text == "")
-            {
-                MessageBox.Show("Please select an ammo type first.");
-                return;
-            }
-
             _selectedAmmo = new List<BML>();
             _selectedAmmo.Add(new BML(Singleton.PathToAI + "\\DATA\\WEAPON_INFO\\AMMO\\" + classSelection.Text + ".BML"));
             while (true)
@@ -64,21 +58,21 @@ namespace CommandsEditor.ConfigEditors
                 _selectedAmmo.Add(new BML(Singleton.PathToAI + "\\DATA\\WEAPON_INFO\\AMMO\\" + template + ".BML"));
             }
 
-            ConfigEditorUtils.SetCheckbox(_selectedAmmo, Projectile, "Hand_Weapon_Data", "Projectile");
-            ConfigEditorUtils.SetCheckbox(_selectedAmmo, Flamethrower, "Hand_Weapon_Data", "Flamethrower");
-            ConfigEditorUtils.SetNumber(_selectedAmmo, damage_rays_per_shot, "Hand_Weapon_Data", "damage_rays_per_shot");
-            ConfigEditorUtils.SetCheckbox(_selectedAmmo, damage_rays_blocked_by_characters, "Hand_Weapon_Data", "damage_rays_blocked_by_characters");
-            ConfigEditorUtils.SetCheckbox(_selectedAmmo, use_fixed_accuracy, "Hand_Weapon_Data", "use_fixed_accuracy");
-            ConfigEditorUtils.SetNumber(_selectedAmmo, fixed_accuracy, "Hand_Weapon_Data", "fixed_accuracy");
-            ConfigEditorUtils.SetNumber(_selectedAmmo, npc_accuracy_multiplier, "Hand_Weapon_Data", "npc_accuracy_multiplier");
-            ConfigEditorUtils.SetNumber(_selectedAmmo, min_accuracy_radius_at_10_metres, "Hand_Weapon_Data", "min_accuracy_radius_at_10_metres");
-            ConfigEditorUtils.SetNumber(_selectedAmmo, max_accuracy_radius_at_10_metres, "Hand_Weapon_Data", "max_accuracy_radius_at_10_metres");
-            ConfigEditorUtils.SetCheckbox(_selectedAmmo, is_fuel, "Hand_Weapon_Data", "is_fuel");
-            ConfigEditorUtils.SetNumber(_selectedAmmo, fuel_units_consumed_per_second_if_firing, "Hand_Weapon_Data", "fuel_units_consumed_per_second_if_firing");
-            ConfigEditorUtils.SetNumber(_selectedAmmo, fuel_units_consumed_per_second_if_switched_on, "Hand_Weapon_Data", "fuel_units_consumed_per_second_if_switched_on");
-            ConfigEditorUtils.SetNumber(_selectedAmmo, projectile_units_consumed_per_shot, "Hand_Weapon_Data", "projectile_units_consumed_per_shot");
+            ConfigEditorUtils.SetCheckbox(_selectedAmmo, Projectile, "Ammo", "Hand_Weapon_Data", "Projectile");
+            ConfigEditorUtils.SetCheckbox(_selectedAmmo, Flamethrower, "Ammo", "Hand_Weapon_Data", "Flamethrower");
+            ConfigEditorUtils.SetNumber(_selectedAmmo, damage_rays_per_shot, "Ammo", "Hand_Weapon_Data", "damage_rays_per_shot");
+            ConfigEditorUtils.SetCheckbox(_selectedAmmo, damage_rays_blocked_by_characters, "Ammo", "Hand_Weapon_Data", "damage_rays_blocked_by_characters");
+            ConfigEditorUtils.SetCheckbox(_selectedAmmo, use_fixed_accuracy, "Ammo", "Hand_Weapon_Data", "use_fixed_accuracy");
+            ConfigEditorUtils.SetNumber(_selectedAmmo, fixed_accuracy, "Ammo", "Hand_Weapon_Data", "fixed_accuracy");
+            ConfigEditorUtils.SetNumber(_selectedAmmo, npc_accuracy_multiplier, "Ammo", "Hand_Weapon_Data", "npc_accuracy_multiplier");
+            ConfigEditorUtils.SetNumber(_selectedAmmo, min_accuracy_radius_at_10_metres, "Ammo", "Hand_Weapon_Data", "min_accuracy_radius_at_10_metres");
+            ConfigEditorUtils.SetNumber(_selectedAmmo, max_accuracy_radius_at_10_metres, "Ammo", "Hand_Weapon_Data", "max_accuracy_radius_at_10_metres");
+            ConfigEditorUtils.SetCheckbox(_selectedAmmo, is_fuel, "Ammo", "Hand_Weapon_Data", "is_fuel");
+            ConfigEditorUtils.SetNumber(_selectedAmmo, fuel_units_consumed_per_second_if_firing, "Ammo", "Hand_Weapon_Data", "fuel_units_consumed_per_second_if_firing");
+            ConfigEditorUtils.SetNumber(_selectedAmmo, fuel_units_consumed_per_second_if_switched_on, "Ammo", "Hand_Weapon_Data", "fuel_units_consumed_per_second_if_switched_on");
+            ConfigEditorUtils.SetNumber(_selectedAmmo, projectile_units_consumed_per_shot, "Ammo", "Hand_Weapon_Data", "projectile_units_consumed_per_shot");
 
-            ConfigEditorUtils.SetNumber(_selectedAmmo, min_distance, "damage_ranges", "min_distance");
+            ConfigEditorUtils.SetNumber(_selectedAmmo, min_distance, "Ammo", "damage_ranges", "min_distance");
             damageRanges.BeginUpdate();
             damageRanges.Items.Clear();
             foreach (XmlElement range_damage in _selectedAmmo[0].Content["Ammo"]["damage_ranges"]["range_damage_list"])
@@ -88,21 +82,15 @@ namespace CommandsEditor.ConfigEditors
             damageRanges.EndUpdate();
             damageRanges.SelectedIndex = 0;
 
-            ConfigEditorUtils.SetCheckbox(_selectedAmmo, has_physics_response, "Physics_response_at_impact_point", "has_physics_response");
-            ConfigEditorUtils.SetNumber(_selectedAmmo, impulse_radius, "Physics_response_at_impact_point", "impulse_radius");
-            ConfigEditorUtils.SetNumber(_selectedAmmo, impulse_at_centre_of_blast, "Physics_response_at_impact_point", "impulse_at_centre_of_blast");
-            ConfigEditorUtils.SetNumber(_selectedAmmo, impulse_fall_off_power, "Physics_response_at_impact_point", "impulse_fall_off_power");
-            ConfigEditorUtils.SetNumber(_selectedAmmo, character_wavefront_speed, "Physics_response_at_impact_point", "character_wavefront_speed");
+            ConfigEditorUtils.SetCheckbox(_selectedAmmo, has_physics_response, "Ammo", "Physics_response_at_impact_point", "has_physics_response");
+            ConfigEditorUtils.SetNumber(_selectedAmmo, impulse_radius, "Ammo", "Physics_response_at_impact_point", "impulse_radius");
+            ConfigEditorUtils.SetNumber(_selectedAmmo, impulse_at_centre_of_blast, "Ammo", "Physics_response_at_impact_point", "impulse_at_centre_of_blast");
+            ConfigEditorUtils.SetNumber(_selectedAmmo, impulse_fall_off_power, "Ammo", "Physics_response_at_impact_point", "impulse_fall_off_power");
+            ConfigEditorUtils.SetNumber(_selectedAmmo, character_wavefront_speed, "Ammo", "Physics_response_at_impact_point", "character_wavefront_speed");
         }
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            if (classSelection.Text == "")
-            {
-                MessageBox.Show("Please select an ammo type first.");
-                return;
-            }
-
             var doc = _selectedAmmo[0].Content;
             XmlElement ammo = doc["Ammo"];
 
@@ -134,9 +122,6 @@ namespace CommandsEditor.ConfigEditors
 
         private void damageRanges_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (damageRanges.Text == "")
-                return;
-
             foreach (XmlElement range_damage in _selectedAmmo[0].Content["Ammo"]["damage_ranges"]["range_damage_list"]) 
             {
                 if (range_damage.GetAttribute("range") != damageRanges.Text)
@@ -163,9 +148,6 @@ namespace CommandsEditor.ConfigEditors
 
         private void saveRange_Click(object sender, EventArgs e)
         {
-            if (damageRanges.Text == "")
-                return;
-
             var doc = _selectedAmmo[0].Content;
 
             foreach (XmlElement range_damage in doc["Ammo"]["damage_ranges"]["range_damage_list"])

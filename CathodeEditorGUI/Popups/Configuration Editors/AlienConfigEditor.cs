@@ -31,12 +31,6 @@ namespace CommandsEditor.ConfigEditors
 
         private void classSelection_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (classSelection.Text == "")
-            {
-                MessageBox.Show("Please select a configuration.");
-                return;
-            }
-
             _selectedConfig = new List<BML>();
             _selectedConfig.Add(new BML(Singleton.PathToAI + "\\DATA\\ALIENCONFIGS\\" + classSelection.Text + ".BML"));
             while (true)
@@ -46,43 +40,37 @@ namespace CommandsEditor.ConfigEditors
                 _selectedConfig.Add(new BML(Singleton.PathToAI + "\\DATA\\ALIENCONFIGS\\" + template + ".BML"));
             }
 
-            ConfigEditorUtils.SetNumber(_selectedConfig, decrease_sweep_duration, "AreaSweep", "decrease_sweep_duration");
-            ConfigEditorUtils.SetNumber(_selectedConfig, increase_sweep_duration, "AreaSweep", "increase_sweep_duration");
-            ConfigEditorUtils.SetNumber(_selectedConfig, near_target_exclusion_radius_first_stalk_min, "AreaSweep", "near_target_exclusion_radius_first_stalk_min");
-            ConfigEditorUtils.SetNumber(_selectedConfig, near_target_exclusion_radius_first_stalk_max, "AreaSweep", "near_target_exclusion_radius_first_stalk_max");
-            ConfigEditorUtils.SetNumber(_selectedConfig, near_target_exclusion_radius_subsequent_stalk_min, "AreaSweep", "near_target_exclusion_radius_subsequent_stalk_min");
-            ConfigEditorUtils.SetNumber(_selectedConfig, near_target_exclusion_radius_subsequent_stalk_max, "AreaSweep", "near_target_exclusion_radius_subsequent_stalk_max");
-            ConfigEditorUtils.SetNumber(_selectedConfig, near_objective_exclusion_radius_first_stalk_min, "AreaSweep", "near_objective_exclusion_radius_first_stalk_min");
-            ConfigEditorUtils.SetNumber(_selectedConfig, near_objective_exclusion_radius_first_stalk_max, "AreaSweep", "near_objective_exclusion_radius_first_stalk_max");
-            ConfigEditorUtils.SetNumber(_selectedConfig, near_objective_exclusion_radius_subsequent_stalk_min, "AreaSweep", "near_objective_exclusion_radius_subsequent_stalk_min");
-            ConfigEditorUtils.SetNumber(_selectedConfig, near_objective_exclusion_radius_subsequent_stalk_max, "AreaSweep", "near_objective_exclusion_radius_subsequent_stalk_max");
-            ConfigEditorUtils.SetNumber(_selectedConfig, menace_gauge_decrease_time, "AreaSweep", "menace_gauge_decrease_time");
-            ConfigEditorUtils.SetNumber(_selectedConfig, meance_deemed_time, "AreaSweep", "meance_deemed_time");
-            ConfigEditorUtils.SetNumber(_selectedConfig, max_menaces, "AreaSweep", "max_menaces");
-            ConfigEditorUtils.SetNumber(_selectedConfig, menace_gauge_seconds_to_fill, "AreaSweep", "menace_gauge_seconds_to_fill");
-            ConfigEditorUtils.SetNumber(_selectedConfig, sweep_box_half_width, "AreaSweep", "sweep_box_half_width");
-            ConfigEditorUtils.SetNumber(_selectedConfig, sweep_box_min_half_length, "AreaSweep", "sweep_box_min_half_length");
-            ConfigEditorUtils.SetNumber(_selectedConfig, Vent_Attract_Time_Min, "AreaSweep", "Vent_Attract_Time_Min");
-            ConfigEditorUtils.SetNumber(_selectedConfig, Vent_Attract_Time_Max, "AreaSweep", "Vent_Attract_Time_Max");
+            ConfigEditorUtils.SetNumber(_selectedConfig, decrease_sweep_duration, "AlienConfig", "AreaSweep", "decrease_sweep_duration");
+            ConfigEditorUtils.SetNumber(_selectedConfig, increase_sweep_duration, "AlienConfig", "AreaSweep", "increase_sweep_duration");
+            ConfigEditorUtils.SetNumber(_selectedConfig, near_target_exclusion_radius_first_stalk_min, "AlienConfig", "AreaSweep", "near_target_exclusion_radius_first_stalk_min");
+            ConfigEditorUtils.SetNumber(_selectedConfig, near_target_exclusion_radius_first_stalk_max, "AlienConfig", "AreaSweep", "near_target_exclusion_radius_first_stalk_max");
+            ConfigEditorUtils.SetNumber(_selectedConfig, near_target_exclusion_radius_subsequent_stalk_min, "AlienConfig", "AreaSweep", "near_target_exclusion_radius_subsequent_stalk_min");
+            ConfigEditorUtils.SetNumber(_selectedConfig, near_target_exclusion_radius_subsequent_stalk_max, "AlienConfig", "AreaSweep", "near_target_exclusion_radius_subsequent_stalk_max");
+            ConfigEditorUtils.SetNumber(_selectedConfig, near_objective_exclusion_radius_first_stalk_min, "AlienConfig", "AreaSweep", "near_objective_exclusion_radius_first_stalk_min");
+            ConfigEditorUtils.SetNumber(_selectedConfig, near_objective_exclusion_radius_first_stalk_max, "AlienConfig", "AreaSweep", "near_objective_exclusion_radius_first_stalk_max");
+            ConfigEditorUtils.SetNumber(_selectedConfig, near_objective_exclusion_radius_subsequent_stalk_min, "AlienConfig", "AreaSweep", "near_objective_exclusion_radius_subsequent_stalk_min");
+            ConfigEditorUtils.SetNumber(_selectedConfig, near_objective_exclusion_radius_subsequent_stalk_max, "AlienConfig", "AreaSweep", "near_objective_exclusion_radius_subsequent_stalk_max");
+            ConfigEditorUtils.SetNumber(_selectedConfig, menace_gauge_decrease_time, "AlienConfig", "AreaSweep", "menace_gauge_decrease_time");
+            ConfigEditorUtils.SetNumber(_selectedConfig, meance_deemed_time, "AlienConfig", "AreaSweep", "meance_deemed_time");
+            ConfigEditorUtils.SetNumber(_selectedConfig, max_menaces, "AlienConfig", "AreaSweep", "max_menaces");
+            ConfigEditorUtils.SetNumber(_selectedConfig, menace_gauge_seconds_to_fill, "AlienConfig", "AreaSweep", "menace_gauge_seconds_to_fill");
+            ConfigEditorUtils.SetNumber(_selectedConfig, sweep_box_half_width, "AlienConfig", "AreaSweep", "sweep_box_half_width");
+            ConfigEditorUtils.SetNumber(_selectedConfig, sweep_box_min_half_length, "AlienConfig", "AreaSweep", "sweep_box_min_half_length");
+            ConfigEditorUtils.SetNumber(_selectedConfig, Vent_Attract_Time_Min, "AlienConfig", "AreaSweep", "Vent_Attract_Time_Min");
+            ConfigEditorUtils.SetNumber(_selectedConfig, Vent_Attract_Time_Max, "AlienConfig", "AreaSweep", "Vent_Attract_Time_Max");
 
-            ConfigEditorUtils.SetNumber(_selectedConfig, role_timeout_min, "BackstageAreaSweep", "role_timeout_min");
-            ConfigEditorUtils.SetNumber(_selectedConfig, role_timeout_max, "BackstageAreaSweep", "role_timeout_max");
-            ConfigEditorUtils.SetNumber(_selectedConfig, min_distance, "BackstageAreaSweep", "min_distance");
-            ConfigEditorUtils.SetNumber(_selectedConfig, max_distance, "BackstageAreaSweep", "max_distance");
-            ConfigEditorUtils.SetNumber(_selectedConfig, min_idle_time, "BackstageAreaSweep", "min_idle_time");
-            ConfigEditorUtils.SetNumber(_selectedConfig, max_idle_time, "BackstageAreaSweep", "max_idle_time");
-            ConfigEditorUtils.SetNumber(_selectedConfig, killtrap_time, "BackstageAreaSweep", "killtrap_time");
-            ConfigEditorUtils.SetNumber(_selectedConfig, ambush_timeout, "BackstageAreaSweep", "ambush_timeout");
+            ConfigEditorUtils.SetNumber(_selectedConfig, role_timeout_min, "AlienConfig", "BackstageAreaSweep", "role_timeout_min");
+            ConfigEditorUtils.SetNumber(_selectedConfig, role_timeout_max, "AlienConfig", "BackstageAreaSweep", "role_timeout_max");
+            ConfigEditorUtils.SetNumber(_selectedConfig, min_distance, "AlienConfig", "BackstageAreaSweep", "min_distance");
+            ConfigEditorUtils.SetNumber(_selectedConfig, max_distance, "AlienConfig", "BackstageAreaSweep", "max_distance");
+            ConfigEditorUtils.SetNumber(_selectedConfig, min_idle_time, "AlienConfig", "BackstageAreaSweep", "min_idle_time");
+            ConfigEditorUtils.SetNumber(_selectedConfig, max_idle_time, "AlienConfig", "BackstageAreaSweep", "max_idle_time");
+            ConfigEditorUtils.SetNumber(_selectedConfig, killtrap_time, "AlienConfig", "BackstageAreaSweep", "killtrap_time");
+            ConfigEditorUtils.SetNumber(_selectedConfig, ambush_timeout, "AlienConfig", "BackstageAreaSweep", "ambush_timeout");
         }
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            if (classSelection.Text == "")
-            {
-                MessageBox.Show("Please select an ammo type first.");
-                return;
-            }
-
             var doc = _selectedConfig[0].Content;
             XmlElement ammo = doc["AlienConfig"];
 

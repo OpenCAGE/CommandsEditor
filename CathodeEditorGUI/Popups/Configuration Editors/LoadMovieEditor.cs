@@ -35,22 +35,6 @@ namespace CommandsEditor.ConfigEditors
 
         private void moviePlaylists_SelectedIndexChanged(object sender, EventArgs e)
         {
-            endWhenLoaded.Enabled = moviePlaylists.Text != "";
-            allowSkip.Enabled = moviePlaylists.Text != "";
-            shuffle.Enabled = moviePlaylists.Text != "";
-            loop.Enabled = moviePlaylists.Text != "";
-            movieList.Enabled = moviePlaylists.Text != "";
-            addMovie.Enabled = moviePlaylists.Text != "";
-            removeMovie.Enabled = moviePlaylists.Text != "";
-            moveMovieUp.Enabled = moviePlaylists.Text != "";
-            moveMovieDown.Enabled = moviePlaylists.Text != "";
-
-            if (moviePlaylists.Text == "")
-            {
-                MessageBox.Show("Please select a movie playlist first.");
-                return;
-            }
-
             var playlists = _gblItem.Content["item_database"]["movie_playlists"];
             foreach (XmlElement playlist in playlists)
             {
@@ -72,12 +56,6 @@ namespace CommandsEditor.ConfigEditors
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            if (moviePlaylists.Text == "")
-            {
-                MessageBox.Show("Please select a movie playlist first.");
-                return;
-            }
-
             var doc = _gblItem.Content;
 
             var playlists = doc["item_database"]["movie_playlists"];

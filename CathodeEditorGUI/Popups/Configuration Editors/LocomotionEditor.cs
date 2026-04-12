@@ -33,12 +33,6 @@ namespace CommandsEditor.ConfigEditors
 
         private void characters_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (characters.Text == "")
-            {
-                MessageBox.Show("Please select a character class.");
-                return;
-            }
-
             _selectedCharacter = new List<BML>();
             _selectedCharacter.Add(new BML(Singleton.PathToAI + "\\DATA\\CHR_INFO\\ATTRIBUTES\\" + characters.Text + ".BML"));
             while (true)
@@ -48,9 +42,9 @@ namespace CommandsEditor.ConfigEditors
                 _selectedCharacter.Add(new BML(Singleton.PathToAI + "\\DATA\\CHR_INFO\\ATTRIBUTES\\" + template + ".BML"));
             }
 
-            ConfigEditorUtils.SetNumber(_selectedCharacter, capsuleRadius, "Locomotion", "capsuleRadius");
-            ConfigEditorUtils.SetNumber(_selectedCharacter, capsuleHeight, "Locomotion", "capsuleHeight");
-            ConfigEditorUtils.SetNumber(_selectedCharacter, permittedLocomotionModulation, "Locomotion", "permittedLocomotionModulation");
+            ConfigEditorUtils.SetNumber(_selectedCharacter, capsuleRadius, "Attribute", "Locomotion", "capsuleRadius");
+            ConfigEditorUtils.SetNumber(_selectedCharacter, capsuleHeight, "Attribute", "Locomotion", "capsuleHeight");
+            ConfigEditorUtils.SetNumber(_selectedCharacter, permittedLocomotionModulation, "Attribute", "Locomotion", "permittedLocomotionModulation");
 
             var boundaries = _selectedCharacter[0].Content["Attribute"]["Locomotion"]["SteeringControls"];
             int i = 0;
