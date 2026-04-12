@@ -246,6 +246,7 @@ namespace CommandsEditor
             this.loadscreenMoviesToolStripMenuItem,
             this.hackToolDifficultiesToolStripMenuItem,
             this.radiosityToolStripMenuItem,
+            this.viewconesToolStripMenuItem,
             this.globalConstantsToolStripMenuItem});
             this.coreGameToolStripMenuItem.Name = "coreGameToolStripMenuItem";
             this.coreGameToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
@@ -283,8 +284,7 @@ namespace CommandsEditor
             // 
             this.charactersToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.locomotionToolStripMenuItem,
-            this.alienConfigsToolStripMenuItem,
-            this.viewconesToolStripMenuItem});
+            this.alienConfigsToolStripMenuItem});
             this.charactersToolStripMenuItem.Name = "charactersToolStripMenuItem";
             this.charactersToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.charactersToolStripMenuItem.Text = "Characters";
@@ -676,7 +676,7 @@ namespace CommandsEditor
             // viewconesToolStripMenuItem
             // 
             this.viewconesToolStripMenuItem.Name = "viewconesToolStripMenuItem";
-            this.viewconesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.viewconesToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
             this.viewconesToolStripMenuItem.Text = "Viewcones";
             this.viewconesToolStripMenuItem.Click += new System.EventHandler(this.viewconesToolStripMenuItem_Click);
             // 

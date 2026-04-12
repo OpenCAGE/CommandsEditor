@@ -65,7 +65,7 @@
             this.ClientSize = new System.Drawing.Size(400, 43);
             this.Controls.Add(this.load_commands_pak);
             this.Controls.Add(this.env_list);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimumSize = new System.Drawing.Size(416, 82);
