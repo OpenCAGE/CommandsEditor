@@ -1307,8 +1307,43 @@ namespace CommandsEditor
             _permaSoundbankEditor = null;
         }
 
+        SkinShadingEditor _skinShadingEditor = null;
+        private void skinShadingToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_skinShadingEditor != null)
+            {
+                _skinShadingEditor.FormClosed -= _skinShadingEditor_FormClosed;
+                _skinShadingEditor.Close();
+            }
+
+            _skinShadingEditor = new SkinShadingEditor();
+            _skinShadingEditor.Show();
+            _skinShadingEditor.FormClosed += _skinShadingEditor_FormClosed;
+        }
+        private void _skinShadingEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _skinShadingEditor = null;
+        }
+
+        HairShadingEditor _hairShadingEditor = null;
+        private void hairShadingToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_hairShadingEditor != null)
+            {
+                _hairShadingEditor.FormClosed -= _hairShadingEditor_FormClosed;
+                _hairShadingEditor.Close();
+            }
+
+            _hairShadingEditor = new HairShadingEditor();
+            _hairShadingEditor.Show();
+            _hairShadingEditor.FormClosed += _hairShadingEditor_FormClosed;
+        }
+        private void _hairShadingEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _hairShadingEditor = null;
+        }
+
         //todo: have no placeholder or old editor for:
-        //  - uifilecachelist
         //  - level_text_databases (there is a temp one for this, but unfinished)
         //  - font_config
         //  - input
