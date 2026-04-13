@@ -54,6 +54,9 @@ namespace CommandsEditor
             this.charactersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.locomotionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.alienConfigsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sensesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.attributesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.voiceMappingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.inventoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.blueprintRecipesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ammoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -100,8 +103,7 @@ namespace CommandsEditor
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
             this.vS2015DarkTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme();
-            this.sensesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.attributesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.assetSetsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -295,7 +297,9 @@ namespace CommandsEditor
             this.locomotionToolStripMenuItem,
             this.alienConfigsToolStripMenuItem,
             this.sensesToolStripMenuItem,
-            this.attributesToolStripMenuItem});
+            this.attributesToolStripMenuItem,
+            this.voiceMappingsToolStripMenuItem,
+            this.assetSetsToolStripMenuItem});
             this.charactersToolStripMenuItem.Name = "charactersToolStripMenuItem";
             this.charactersToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.charactersToolStripMenuItem.Text = "Characters";
@@ -313,6 +317,27 @@ namespace CommandsEditor
             this.alienConfigsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.alienConfigsToolStripMenuItem.Text = "Alien Configs";
             this.alienConfigsToolStripMenuItem.Click += new System.EventHandler(this.alienConfigsToolStripMenuItem_Click);
+            // 
+            // sensesToolStripMenuItem
+            // 
+            this.sensesToolStripMenuItem.Name = "sensesToolStripMenuItem";
+            this.sensesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.sensesToolStripMenuItem.Text = "Senses";
+            this.sensesToolStripMenuItem.Click += new System.EventHandler(this.sensesToolStripMenuItem_Click);
+            // 
+            // attributesToolStripMenuItem
+            // 
+            this.attributesToolStripMenuItem.Name = "attributesToolStripMenuItem";
+            this.attributesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.attributesToolStripMenuItem.Text = "Attributes";
+            this.attributesToolStripMenuItem.Click += new System.EventHandler(this.attributesToolStripMenuItem_Click);
+            // 
+            // voiceMappingsToolStripMenuItem
+            // 
+            this.voiceMappingsToolStripMenuItem.Name = "voiceMappingsToolStripMenuItem";
+            this.voiceMappingsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.voiceMappingsToolStripMenuItem.Text = "Voice Mappings";
+            this.voiceMappingsToolStripMenuItem.Click += new System.EventHandler(this.voiceMappingsToolStripMenuItem_Click);
             // 
             // inventoryToolStripMenuItem
             // 
@@ -684,19 +709,12 @@ namespace CommandsEditor
             this.dockPanel.TabIndex = 5;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
             // 
-            // sensesToolStripMenuItem
+            // assetSetsToolStripMenuItem
             // 
-            this.sensesToolStripMenuItem.Name = "sensesToolStripMenuItem";
-            this.sensesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.sensesToolStripMenuItem.Text = "Senses";
-            this.sensesToolStripMenuItem.Click += new System.EventHandler(this.sensesToolStripMenuItem_Click);
-            // 
-            // attributesToolStripMenuItem
-            // 
-            this.attributesToolStripMenuItem.Name = "attributesToolStripMenuItem";
-            this.attributesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.attributesToolStripMenuItem.Text = "Attributes";
-            this.attributesToolStripMenuItem.Click += new System.EventHandler(this.attributesToolStripMenuItem_Click);
+            this.assetSetsToolStripMenuItem.Name = "assetSetsToolStripMenuItem";
+            this.assetSetsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.assetSetsToolStripMenuItem.Text = "Asset Sets";
+            this.assetSetsToolStripMenuItem.Click += new System.EventHandler(this.assetSetsToolStripMenuItem_Click);
             // 
             // CommandsEditor
             // 
@@ -794,5 +812,7 @@ namespace CommandsEditor
         private System.Windows.Forms.ToolStripMenuItem viewconesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem sensesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem attributesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem voiceMappingsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem assetSetsToolStripMenuItem;
     }
 }

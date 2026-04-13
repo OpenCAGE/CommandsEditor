@@ -1,6 +1,6 @@
-namespace CommandsEditor.Popups
+namespace CommandsEditor.ConfigEditors
 {
-    partial class EditCharacterAssets
+    partial class CharacterAssetEditor
     {
         /// <summary>
         /// Required designer variable.
@@ -29,30 +29,30 @@ namespace CommandsEditor.Popups
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditCharacterAssets));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CharacterAssetEditor));
             this.assetSetList = new System.Windows.Forms.ComboBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.removeSelectedTertiary = new System.Windows.Forms.Button();
+            this.addNewTertiary = new System.Windows.Forms.Button();
+            this.tertiaryColourList = new System.Windows.Forms.ListView();
+            this.tertiaryColourImageList = new System.Windows.Forms.ImageList(this.components);
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.removeSelectedSecondary = new System.Windows.Forms.Button();
+            this.secondaryColourList = new System.Windows.Forms.ListView();
+            this.secondaryColourImageList = new System.Windows.Forms.ImageList(this.components);
+            this.addNewSecondary = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.removeSelectedPrimary = new System.Windows.Forms.Button();
+            this.primaryColourList = new System.Windows.Forms.ListView();
+            this.primaryColourImageList = new System.Windows.Forms.ImageList(this.components);
+            this.addNewPrimary = new System.Windows.Forms.Button();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.removeSelectedDecal = new System.Windows.Forms.Button();
             this.addNewDecal = new System.Windows.Forms.Button();
             this.decalList = new System.Windows.Forms.ListView();
             this.decalImageList = new System.Windows.Forms.ImageList(this.components);
             this.saveBtn = new System.Windows.Forms.Button();
-            this.primaryColourList = new System.Windows.Forms.ListView();
-            this.primaryColourImageList = new System.Windows.Forms.ImageList(this.components);
-            this.secondaryColourList = new System.Windows.Forms.ListView();
-            this.secondaryColourImageList = new System.Windows.Forms.ImageList(this.components);
-            this.tertiaryColourList = new System.Windows.Forms.ListView();
-            this.tertiaryColourImageList = new System.Windows.Forms.ImageList(this.components);
-            this.addNewTertiary = new System.Windows.Forms.Button();
-            this.removeSelectedTertiary = new System.Windows.Forms.Button();
-            this.removeSelectedSecondary = new System.Windows.Forms.Button();
-            this.addNewSecondary = new System.Windows.Forms.Button();
-            this.removeSelectedPrimary = new System.Windows.Forms.Button();
-            this.addNewPrimary = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -96,6 +96,42 @@ namespace CommandsEditor.Popups
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Tertiary";
             // 
+            // removeSelectedTertiary
+            // 
+            this.removeSelectedTertiary.Location = new System.Drawing.Point(112, 96);
+            this.removeSelectedTertiary.Name = "removeSelectedTertiary";
+            this.removeSelectedTertiary.Size = new System.Drawing.Size(100, 23);
+            this.removeSelectedTertiary.TabIndex = 8;
+            this.removeSelectedTertiary.Text = "Remove Selected";
+            this.removeSelectedTertiary.UseVisualStyleBackColor = true;
+            this.removeSelectedTertiary.Click += new System.EventHandler(this.removeSelectedTertiary_Click);
+            // 
+            // addNewTertiary
+            // 
+            this.addNewTertiary.Location = new System.Drawing.Point(6, 96);
+            this.addNewTertiary.Name = "addNewTertiary";
+            this.addNewTertiary.Size = new System.Drawing.Size(100, 23);
+            this.addNewTertiary.TabIndex = 8;
+            this.addNewTertiary.Text = "Add New";
+            this.addNewTertiary.UseVisualStyleBackColor = true;
+            this.addNewTertiary.Click += new System.EventHandler(this.addNewTertiary_Click);
+            // 
+            // tertiaryColourList
+            // 
+            this.tertiaryColourList.HideSelection = false;
+            this.tertiaryColourList.LargeImageList = this.tertiaryColourImageList;
+            this.tertiaryColourList.Location = new System.Drawing.Point(6, 19);
+            this.tertiaryColourList.Name = "tertiaryColourList";
+            this.tertiaryColourList.Size = new System.Drawing.Size(206, 73);
+            this.tertiaryColourList.TabIndex = 10;
+            this.tertiaryColourList.UseCompatibleStateImageBehavior = false;
+            // 
+            // tertiaryColourImageList
+            // 
+            this.tertiaryColourImageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
+            this.tertiaryColourImageList.ImageSize = new System.Drawing.Size(24, 24);
+            this.tertiaryColourImageList.TransparentColor = System.Drawing.Color.Transparent;
+            // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.removeSelectedSecondary);
@@ -109,6 +145,42 @@ namespace CommandsEditor.Popups
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Secondary";
             // 
+            // removeSelectedSecondary
+            // 
+            this.removeSelectedSecondary.Location = new System.Drawing.Point(112, 96);
+            this.removeSelectedSecondary.Name = "removeSelectedSecondary";
+            this.removeSelectedSecondary.Size = new System.Drawing.Size(100, 23);
+            this.removeSelectedSecondary.TabIndex = 11;
+            this.removeSelectedSecondary.Text = "Remove Selected";
+            this.removeSelectedSecondary.UseVisualStyleBackColor = true;
+            this.removeSelectedSecondary.Click += new System.EventHandler(this.removeSelectedSecondary_Click);
+            // 
+            // secondaryColourList
+            // 
+            this.secondaryColourList.HideSelection = false;
+            this.secondaryColourList.LargeImageList = this.secondaryColourImageList;
+            this.secondaryColourList.Location = new System.Drawing.Point(6, 19);
+            this.secondaryColourList.Name = "secondaryColourList";
+            this.secondaryColourList.Size = new System.Drawing.Size(205, 73);
+            this.secondaryColourList.TabIndex = 9;
+            this.secondaryColourList.UseCompatibleStateImageBehavior = false;
+            // 
+            // secondaryColourImageList
+            // 
+            this.secondaryColourImageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
+            this.secondaryColourImageList.ImageSize = new System.Drawing.Size(24, 24);
+            this.secondaryColourImageList.TransparentColor = System.Drawing.Color.Transparent;
+            // 
+            // addNewSecondary
+            // 
+            this.addNewSecondary.Location = new System.Drawing.Point(6, 96);
+            this.addNewSecondary.Name = "addNewSecondary";
+            this.addNewSecondary.Size = new System.Drawing.Size(100, 23);
+            this.addNewSecondary.TabIndex = 12;
+            this.addNewSecondary.Text = "Add New";
+            this.addNewSecondary.UseVisualStyleBackColor = true;
+            this.addNewSecondary.Click += new System.EventHandler(this.addNewSecondary_Click);
+            // 
             // groupBox4
             // 
             this.groupBox4.Controls.Add(this.removeSelectedPrimary);
@@ -121,6 +193,42 @@ namespace CommandsEditor.Popups
             this.groupBox4.TabIndex = 3;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Primary";
+            // 
+            // removeSelectedPrimary
+            // 
+            this.removeSelectedPrimary.Location = new System.Drawing.Point(111, 96);
+            this.removeSelectedPrimary.Name = "removeSelectedPrimary";
+            this.removeSelectedPrimary.Size = new System.Drawing.Size(100, 23);
+            this.removeSelectedPrimary.TabIndex = 11;
+            this.removeSelectedPrimary.Text = "Remove Selected";
+            this.removeSelectedPrimary.UseVisualStyleBackColor = true;
+            this.removeSelectedPrimary.Click += new System.EventHandler(this.removeSelectedPrimary_Click);
+            // 
+            // primaryColourList
+            // 
+            this.primaryColourList.HideSelection = false;
+            this.primaryColourList.LargeImageList = this.primaryColourImageList;
+            this.primaryColourList.Location = new System.Drawing.Point(6, 19);
+            this.primaryColourList.Name = "primaryColourList";
+            this.primaryColourList.Size = new System.Drawing.Size(204, 73);
+            this.primaryColourList.TabIndex = 8;
+            this.primaryColourList.UseCompatibleStateImageBehavior = false;
+            // 
+            // primaryColourImageList
+            // 
+            this.primaryColourImageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
+            this.primaryColourImageList.ImageSize = new System.Drawing.Size(24, 24);
+            this.primaryColourImageList.TransparentColor = System.Drawing.Color.Transparent;
+            // 
+            // addNewPrimary
+            // 
+            this.addNewPrimary.Location = new System.Drawing.Point(5, 96);
+            this.addNewPrimary.Name = "addNewPrimary";
+            this.addNewPrimary.Size = new System.Drawing.Size(100, 23);
+            this.addNewPrimary.TabIndex = 12;
+            this.addNewPrimary.Text = "Add New";
+            this.addNewPrimary.UseVisualStyleBackColor = true;
+            this.addNewPrimary.Click += new System.EventHandler(this.addNewPrimary_Click);
             // 
             // groupBox5
             // 
@@ -164,7 +272,6 @@ namespace CommandsEditor.Popups
             this.decalList.Size = new System.Drawing.Size(395, 351);
             this.decalList.TabIndex = 0;
             this.decalList.UseCompatibleStateImageBehavior = false;
-            this.decalList.View = System.Windows.Forms.View.LargeIcon;
             // 
             // decalImageList
             // 
@@ -182,118 +289,7 @@ namespace CommandsEditor.Popups
             this.saveBtn.UseVisualStyleBackColor = true;
             this.saveBtn.Click += new System.EventHandler(this.saveBtn_Click);
             // 
-            // primaryColourList
-            // 
-            this.primaryColourList.HideSelection = false;
-            this.primaryColourList.LargeImageList = this.primaryColourImageList;
-            this.primaryColourList.Location = new System.Drawing.Point(6, 19);
-            this.primaryColourList.Name = "primaryColourList";
-            this.primaryColourList.Size = new System.Drawing.Size(204, 73);
-            this.primaryColourList.TabIndex = 8;
-            this.primaryColourList.UseCompatibleStateImageBehavior = false;
-            this.primaryColourList.View = System.Windows.Forms.View.LargeIcon;
-            // 
-            // primaryColourImageList
-            // 
-            this.primaryColourImageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
-            this.primaryColourImageList.ImageSize = new System.Drawing.Size(24, 24);
-            this.primaryColourImageList.TransparentColor = System.Drawing.Color.Transparent;
-            // 
-            // secondaryColourList
-            // 
-            this.secondaryColourList.HideSelection = false;
-            this.secondaryColourList.LargeImageList = this.secondaryColourImageList;
-            this.secondaryColourList.Location = new System.Drawing.Point(6, 19);
-            this.secondaryColourList.Name = "secondaryColourList";
-            this.secondaryColourList.Size = new System.Drawing.Size(205, 73);
-            this.secondaryColourList.TabIndex = 9;
-            this.secondaryColourList.UseCompatibleStateImageBehavior = false;
-            this.secondaryColourList.View = System.Windows.Forms.View.LargeIcon;
-            // 
-            // secondaryColourImageList
-            // 
-            this.secondaryColourImageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
-            this.secondaryColourImageList.ImageSize = new System.Drawing.Size(24, 24);
-            this.secondaryColourImageList.TransparentColor = System.Drawing.Color.Transparent;
-            // 
-            // tertiaryColourList
-            // 
-            this.tertiaryColourList.HideSelection = false;
-            this.tertiaryColourList.LargeImageList = this.tertiaryColourImageList;
-            this.tertiaryColourList.Location = new System.Drawing.Point(6, 19);
-            this.tertiaryColourList.Name = "tertiaryColourList";
-            this.tertiaryColourList.Size = new System.Drawing.Size(206, 73);
-            this.tertiaryColourList.TabIndex = 10;
-            this.tertiaryColourList.UseCompatibleStateImageBehavior = false;
-            this.tertiaryColourList.View = System.Windows.Forms.View.LargeIcon;
-            // 
-            // tertiaryColourImageList
-            // 
-            this.tertiaryColourImageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
-            this.tertiaryColourImageList.ImageSize = new System.Drawing.Size(24, 24);
-            this.tertiaryColourImageList.TransparentColor = System.Drawing.Color.Transparent;
-            // 
-            // addNewTertiary
-            // 
-            this.addNewTertiary.Location = new System.Drawing.Point(6, 96);
-            this.addNewTertiary.Name = "addNewTertiary";
-            this.addNewTertiary.Size = new System.Drawing.Size(100, 23);
-            this.addNewTertiary.TabIndex = 8;
-            this.addNewTertiary.Text = "Add New";
-            this.addNewTertiary.UseVisualStyleBackColor = true;
-            this.addNewTertiary.Click += new System.EventHandler(this.addNewTertiary_Click);
-            // 
-            // removeSelectedTertiary
-            // 
-            this.removeSelectedTertiary.Location = new System.Drawing.Point(112, 96);
-            this.removeSelectedTertiary.Name = "removeSelectedTertiary";
-            this.removeSelectedTertiary.Size = new System.Drawing.Size(100, 23);
-            this.removeSelectedTertiary.TabIndex = 8;
-            this.removeSelectedTertiary.Text = "Remove Selected";
-            this.removeSelectedTertiary.UseVisualStyleBackColor = true;
-            this.removeSelectedTertiary.Click += new System.EventHandler(this.removeSelectedTertiary_Click);
-            // 
-            // removeSelectedSecondary
-            // 
-            this.removeSelectedSecondary.Location = new System.Drawing.Point(112, 96);
-            this.removeSelectedSecondary.Name = "removeSelectedSecondary";
-            this.removeSelectedSecondary.Size = new System.Drawing.Size(100, 23);
-            this.removeSelectedSecondary.TabIndex = 11;
-            this.removeSelectedSecondary.Text = "Remove Selected";
-            this.removeSelectedSecondary.UseVisualStyleBackColor = true;
-            this.removeSelectedSecondary.Click += new System.EventHandler(this.removeSelectedSecondary_Click);
-            // 
-            // addNewSecondary
-            // 
-            this.addNewSecondary.Location = new System.Drawing.Point(6, 96);
-            this.addNewSecondary.Name = "addNewSecondary";
-            this.addNewSecondary.Size = new System.Drawing.Size(100, 23);
-            this.addNewSecondary.TabIndex = 12;
-            this.addNewSecondary.Text = "Add New";
-            this.addNewSecondary.UseVisualStyleBackColor = true;
-            this.addNewSecondary.Click += new System.EventHandler(this.addNewSecondary_Click);
-            // 
-            // removeSelectedPrimary
-            // 
-            this.removeSelectedPrimary.Location = new System.Drawing.Point(111, 96);
-            this.removeSelectedPrimary.Name = "removeSelectedPrimary";
-            this.removeSelectedPrimary.Size = new System.Drawing.Size(100, 23);
-            this.removeSelectedPrimary.TabIndex = 11;
-            this.removeSelectedPrimary.Text = "Remove Selected";
-            this.removeSelectedPrimary.UseVisualStyleBackColor = true;
-            this.removeSelectedPrimary.Click += new System.EventHandler(this.removeSelectedPrimary_Click);
-            // 
-            // addNewPrimary
-            // 
-            this.addNewPrimary.Location = new System.Drawing.Point(5, 96);
-            this.addNewPrimary.Name = "addNewPrimary";
-            this.addNewPrimary.Size = new System.Drawing.Size(100, 23);
-            this.addNewPrimary.TabIndex = 12;
-            this.addNewPrimary.Text = "Add New";
-            this.addNewPrimary.UseVisualStyleBackColor = true;
-            this.addNewPrimary.Click += new System.EventHandler(this.addNewPrimary_Click);
-            // 
-            // EditCharacterAssets
+            // CharacterAssetEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -302,10 +298,10 @@ namespace CommandsEditor.Popups
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.assetSetList);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.Name = "EditCharacterAssets";
+            this.Name = "CharacterAssetEditor";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Edit Character Asset Sets";
             this.groupBox1.ResumeLayout(false);

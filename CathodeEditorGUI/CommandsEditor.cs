@@ -7,6 +7,7 @@ using CathodeLib.ObjectExtensions;
 using CommandsEditor.ConfigEditors;
 using CommandsEditor.DockPanels;
 using CommandsEditor.Popups;
+using CommandsEditor.Popups.Configuration_Editors;
 using CommandsEditor.Scripts;
 using CommandsEditor.UserControls;
 using DarkModeForms;
@@ -1213,6 +1214,42 @@ namespace CommandsEditor
         private void _attributesEditor_FormClosed(object sender, FormClosedEventArgs e)
         {
             _attributesEditor = null;
+        }
+
+        VoiceMappingEditor _voiceMapEditor = null;
+        private void voiceMappingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_voiceMapEditor != null)
+            {
+                _voiceMapEditor.FormClosed -= _voiceMapEditor_FormClosed;
+                _voiceMapEditor.Close();
+            }
+
+            _voiceMapEditor = new VoiceMappingEditor();
+            _voiceMapEditor.Show();
+            _voiceMapEditor.FormClosed += _voiceMapEditor_FormClosed;
+        }
+        private void _voiceMapEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _voiceMapEditor = null;
+        }
+
+        CharacterAssetEditor _charAssetEditor = null;
+        private void assetSetsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_charAssetEditor != null)
+            {
+                _charAssetEditor.FormClosed -= _charAssetEditor_FormClosed;
+                _charAssetEditor.Close();
+            }
+
+            _charAssetEditor = new CharacterAssetEditor();
+            _charAssetEditor.Show();
+            _charAssetEditor.FormClosed += _charAssetEditor_FormClosed;
+        }
+        private void _charAssetEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _charAssetEditor = null;
         }
         #endregion
 

@@ -459,17 +459,23 @@
     <Compile Include="Popups\Configuration Editors\ViewconeEditor.Designer.cs">
       <DependentUpon>ViewconeEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\Configuration Editors\VoiceMappingEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\VoiceMappingEditor.Designer.cs">
+      <DependentUpon>VoiceMappingEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popups\ControlsWindow.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Popups\ControlsWindow.Designer.cs">
       <DependentUpon>ControlsWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Popups\EditCharacterAssets.cs">
+    <Compile Include="Popups\Configuration Editors\CharacterAssetEditor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Popups\EditCharacterAssets.Designer.cs">
-      <DependentUpon>EditCharacterAssets.cs</DependentUpon>
+    <Compile Include="Popups\Configuration Editors\CharacterAssetEditor.Designer.cs">
+      <DependentUpon>CharacterAssetEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\GalaxyEditor.cs">
       <SubType>Form</SubType>
@@ -992,11 +998,14 @@
     <EmbeddedResource Include="Popups\Configuration Editors\ViewconeEditor.resx">
       <DependentUpon>ViewconeEditor.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Configuration Editors\VoiceMappingEditor.resx">
+      <DependentUpon>VoiceMappingEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Popups\ControlsWindow.resx">
       <DependentUpon>ControlsWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Popups\EditCharacterAssets.resx">
-      <DependentUpon>EditCharacterAssets.cs</DependentUpon>
+    <EmbeddedResource Include="Popups\Configuration Editors\CharacterAssetEditor.resx">
+      <DependentUpon>CharacterAssetEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\GalaxyEditor.resx">
       <DependentUpon>GalaxyEditor.cs</DependentUpon>

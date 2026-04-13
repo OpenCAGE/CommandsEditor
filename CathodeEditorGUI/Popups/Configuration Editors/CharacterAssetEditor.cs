@@ -16,14 +16,14 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using static CATHODE.CustomCharacterAssetData;
 
-namespace CommandsEditor.Popups
+namespace CommandsEditor.ConfigEditors
 {
-    public partial class EditCharacterAssets : BaseWindow
+    public partial class CharacterAssetEditor : BaseWindow
     {
         CustomCharacterAssetData _assetData;
         CustomCharacterAssetData.AssetDefinition _assetDefinition = null;
 
-        public EditCharacterAssets() : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
+        public CharacterAssetEditor() : base(WindowClosesOn.COMMANDS_RELOAD | WindowClosesOn.NEW_ENTITY_SELECTION | WindowClosesOn.NEW_COMPOSITE_SELECTION)
         {
             InitializeComponent();
 

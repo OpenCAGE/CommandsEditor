@@ -2,6 +2,7 @@
 using CATHODE.Enums;
 using CATHODE.Scripting;
 using CathodeLib;
+using CommandsEditor.ConfigEditors;
 using CommandsEditor.DockPanels;
 using CommandsEditor.Popups;
 using CommandsEditor.Popups.Base;
@@ -271,7 +272,7 @@ namespace CommandsEditor
             _accessories.foley.Footwear = (CHARACTER_FOLEY_SOUND)foleyLeg.SelectedIndex;
         }
 
-        EditCharacterAssets _assetEditor = null;
+        CharacterAssetEditor _assetEditor = null;
         private void editAssetTypes_Click(object sender, EventArgs e)
         {
             if (_assetEditor != null)
@@ -279,7 +280,7 @@ namespace CommandsEditor
                 _assetEditor.Close();
                 _assetEditor = null;
             }
-            _assetEditor = new EditCharacterAssets();
+            _assetEditor = new CharacterAssetEditor();
             _assetEditor.Show();
         }
     }
