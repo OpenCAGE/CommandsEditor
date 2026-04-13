@@ -143,6 +143,8 @@ namespace CommandsEditor.ConfigEditors
                     chk.CheckedChanged += handler;
                 else if (c is NumericUpDown nud)
                     nud.ValueChanged += handler;
+                else if (c is TrackBar tbr)
+                    tbr.ValueChanged += handler;
 
                 if (c.HasChildren)
                     Subscribe(c.Controls, handler);
@@ -161,6 +163,8 @@ namespace CommandsEditor.ConfigEditors
                     chk.CheckedChanged -= handler;
                 else if (c is NumericUpDown nud)
                     nud.ValueChanged -= handler;
+                else if (c is TrackBar tbr)
+                    tbr.ValueChanged -= handler;
 
                 if (c.HasChildren)
                     Unsubscribe(c.Controls, handler);

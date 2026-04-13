@@ -50,6 +50,14 @@
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.helpBtn = new System.Windows.Forms.Button();
+            this.glowColour = new System.Windows.Forms.PictureBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.setGlowColour = new System.Windows.Forms.Button();
+            this.label4 = new System.Windows.Forms.Label();
+            this.glowRate = new System.Windows.Forms.NumericUpDown();
+            this.glowPower = new System.Windows.Forms.NumericUpDown();
+            this.label6 = new System.Windows.Forms.Label();
+            this.colourAlpha = new System.Windows.Forms.TrackBar();
             ((System.ComponentModel.ISupportInitialize)(this.interaction_distance_threshold)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.min_time_between_squad_shots_lower_bound)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.min_time_between_squad_shots_upper_bound)).BeginInit();
@@ -62,6 +70,10 @@
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.glowColour)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.glowRate)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.glowPower)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.colourAlpha)).BeginInit();
             this.SuspendLayout();
             // 
             // label10
@@ -138,6 +150,7 @@
             // 
             // interaction_distance_threshold
             // 
+            this.interaction_distance_threshold.DecimalPlaces = 5;
             this.interaction_distance_threshold.Location = new System.Drawing.Point(13, 37);
             this.interaction_distance_threshold.Maximum = new decimal(new int[] {
             1000,
@@ -247,7 +260,7 @@
             this.groupBox1.Controls.Add(this.stealth_light_meter_full_dark_threshold);
             this.groupBox1.Controls.Add(this.label8);
             this.groupBox1.Controls.Add(this.stealth_light_meter_full_light_threshold);
-            this.groupBox1.Location = new System.Drawing.Point(237, 12);
+            this.groupBox1.Location = new System.Drawing.Point(231, 90);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(213, 148);
             this.groupBox1.TabIndex = 367;
@@ -260,7 +273,7 @@
             this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Controls.Add(this.min_time_between_squad_shots_lower_bound);
             this.groupBox2.Controls.Add(this.min_time_between_squad_shots_upper_bound);
-            this.groupBox2.Location = new System.Drawing.Point(12, 12);
+            this.groupBox2.Location = new System.Drawing.Point(231, 12);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(213, 72);
             this.groupBox2.TabIndex = 368;
@@ -273,7 +286,7 @@
             this.groupBox3.Controls.Add(this.label9);
             this.groupBox3.Controls.Add(this.min_time_suspicious_reaction_loop);
             this.groupBox3.Controls.Add(this.max_time_suspicious_reaction_loop);
-            this.groupBox3.Location = new System.Drawing.Point(12, 90);
+            this.groupBox3.Location = new System.Drawing.Point(12, 12);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(213, 72);
             this.groupBox3.TabIndex = 369;
@@ -282,14 +295,22 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.glowPower);
+            this.groupBox4.Controls.Add(this.label6);
+            this.groupBox4.Controls.Add(this.glowRate);
+            this.groupBox4.Controls.Add(this.label4);
+            this.groupBox4.Controls.Add(this.colourAlpha);
+            this.groupBox4.Controls.Add(this.setGlowColour);
+            this.groupBox4.Controls.Add(this.label1);
+            this.groupBox4.Controls.Add(this.glowColour);
             this.groupBox4.Controls.Add(this.interaction_distance_threshold);
             this.groupBox4.Controls.Add(this.label34);
-            this.groupBox4.Location = new System.Drawing.Point(12, 168);
+            this.groupBox4.Location = new System.Drawing.Point(12, 90);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(213, 72);
+            this.groupBox4.Size = new System.Drawing.Size(213, 248);
             this.groupBox4.TabIndex = 370;
             this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Interactions";
+            this.groupBox4.Text = "UI_Icon";
             // 
             // helpBtn
             // 
@@ -303,11 +324,91 @@
             this.helpBtn.UseVisualStyleBackColor = true;
             this.helpBtn.Click += new System.EventHandler(this.helpBtn_Click);
             // 
+            // glowColour
+            // 
+            this.glowColour.Location = new System.Drawing.Point(13, 79);
+            this.glowColour.Name = "glowColour";
+            this.glowColour.Size = new System.Drawing.Size(35, 35);
+            this.glowColour.TabIndex = 360;
+            this.glowColour.TabStop = false;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(11, 63);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(64, 13);
+            this.label1.TabIndex = 361;
+            this.label1.Text = "Glow Colour";
+            // 
+            // setGlowColour
+            // 
+            this.setGlowColour.Location = new System.Drawing.Point(55, 79);
+            this.setGlowColour.Name = "setGlowColour";
+            this.setGlowColour.Size = new System.Drawing.Size(145, 35);
+            this.setGlowColour.TabIndex = 362;
+            this.setGlowColour.Text = "Set Colour";
+            this.setGlowColour.UseVisualStyleBackColor = true;
+            this.setGlowColour.Click += new System.EventHandler(this.setGlowColour_Click);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(10, 159);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(57, 13);
+            this.label4.TabIndex = 363;
+            this.label4.Text = "Glow Rate";
+            // 
+            // glowRate
+            // 
+            this.glowRate.DecimalPlaces = 5;
+            this.glowRate.Location = new System.Drawing.Point(13, 175);
+            this.glowRate.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.glowRate.Name = "glowRate";
+            this.glowRate.Size = new System.Drawing.Size(187, 20);
+            this.glowRate.TabIndex = 364;
+            // 
+            // glowPower
+            // 
+            this.glowPower.DecimalPlaces = 5;
+            this.glowPower.Location = new System.Drawing.Point(13, 214);
+            this.glowPower.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.glowPower.Name = "glowPower";
+            this.glowPower.Size = new System.Drawing.Size(187, 20);
+            this.glowPower.TabIndex = 366;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(10, 198);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(64, 13);
+            this.label6.TabIndex = 365;
+            this.label6.Text = "Glow Power";
+            // 
+            // colourAlpha
+            // 
+            this.colourAlpha.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.colourAlpha.Location = new System.Drawing.Point(13, 122);
+            this.colourAlpha.Maximum = 100;
+            this.colourAlpha.Name = "colourAlpha";
+            this.colourAlpha.Size = new System.Drawing.Size(187, 45);
+            this.colourAlpha.TabIndex = 372;
+            // 
             // GlobalConstantsEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(460, 251);
+            this.ClientSize = new System.Drawing.Size(460, 349);
             this.Controls.Add(this.helpBtn);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
@@ -335,6 +436,10 @@
             this.groupBox3.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.glowColour)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.glowRate)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.glowPower)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.colourAlpha)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -361,5 +466,13 @@
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.Button helpBtn;
+        private System.Windows.Forms.Button setGlowColour;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.PictureBox glowColour;
+        private System.Windows.Forms.NumericUpDown glowPower;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.NumericUpDown glowRate;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TrackBar colourAlpha;
     }
 }
