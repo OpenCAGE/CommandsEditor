@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommandsEditor.Popups.Base;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -10,9 +11,9 @@ using System.Windows.Forms;
 
 namespace CommandsEditor.Popups.Configuration_Editors
 {
-    public partial class VoiceMappingEditor : Form
+    public partial class VoiceMappingEditor : BaseWindow
     {
-        public VoiceMappingEditor()
+        public VoiceMappingEditor() : base()
         {
             InitializeComponent();
             // CUSTOMCHARACTERVOICETYPEMAPPINGS.BIN in CHR_INFO -> it's an XML file

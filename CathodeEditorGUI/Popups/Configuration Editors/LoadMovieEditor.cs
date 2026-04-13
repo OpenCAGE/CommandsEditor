@@ -87,13 +87,13 @@ namespace CommandsEditor.ConfigEditors
 
         private void addMovie_Click(object sender, EventArgs e)
         {
-            OpenFileDialog selectGameFile = new OpenFileDialog();
-            selectGameFile.InitialDirectory = Singleton.PathToAI + @"\DATA\UI\MOVIES\";
-            selectGameFile.Filter = "Movie|*.USM";
-            if (selectGameFile.ShowDialog() == DialogResult.OK && selectGameFile.FileName != "")
-            {
-                movieList.Items.Add("Movies/" + Path.GetFileName(selectGameFile.FileName));
-            }
+            MovieSelectorPopup popup = new MovieSelectorPopup();
+            popup.Show();
+            popup.OnMovieSelected += OnMovieSelected;
+        }
+        private void OnMovieSelected(string movie)
+        {
+            movieList.Items.Add("Movies/" + movie);
         }
 
         private void removeMovie_Click(object sender, EventArgs e)

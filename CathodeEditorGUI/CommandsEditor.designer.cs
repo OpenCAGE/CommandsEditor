@@ -38,7 +38,6 @@ namespace CommandsEditor
             this.modelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.materialsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.materialMappingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.materialPropertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.texturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.galaxyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.uIToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -51,12 +50,15 @@ namespace CommandsEditor
             this.radiosityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewconesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.globalConstantsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.physicalMaterialsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.scriptReadableVariablesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.charactersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.locomotionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.alienConfigsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sensesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.attributesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.voiceMappingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.assetSetsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.inventoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.blueprintRecipesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ammoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -103,7 +105,7 @@ namespace CommandsEditor
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
             this.vS2015DarkTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme();
-            this.assetSetsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.permanentSoundbanksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -158,7 +160,6 @@ namespace CommandsEditor
             this.modelsToolStripMenuItem,
             this.materialsToolStripMenuItem,
             this.materialMappingsToolStripMenuItem,
-            this.materialPropertiesToolStripMenuItem,
             this.texturesToolStripMenuItem,
             this.galaxyToolStripMenuItem,
             this.uIToolStripMenuItem,
@@ -192,12 +193,6 @@ namespace CommandsEditor
             this.materialMappingsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.materialMappingsToolStripMenuItem.Text = "Material Mappings";
             this.materialMappingsToolStripMenuItem.Click += new System.EventHandler(this.materialMappingsToolStripMenuItem_Click);
-            // 
-            // materialPropertiesToolStripMenuItem
-            // 
-            this.materialPropertiesToolStripMenuItem.Name = "materialPropertiesToolStripMenuItem";
-            this.materialPropertiesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.materialPropertiesToolStripMenuItem.Text = "Material Properties";
             // 
             // texturesToolStripMenuItem
             // 
@@ -251,7 +246,10 @@ namespace CommandsEditor
             this.hackToolDifficultiesToolStripMenuItem,
             this.radiosityToolStripMenuItem,
             this.viewconesToolStripMenuItem,
-            this.globalConstantsToolStripMenuItem});
+            this.globalConstantsToolStripMenuItem,
+            this.physicalMaterialsToolStripMenuItem,
+            this.scriptReadableVariablesToolStripMenuItem,
+            this.permanentSoundbanksToolStripMenuItem});
             this.coreGameToolStripMenuItem.Name = "coreGameToolStripMenuItem";
             this.coreGameToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.coreGameToolStripMenuItem.Text = "Core Game";
@@ -259,37 +257,51 @@ namespace CommandsEditor
             // loadscreenMoviesToolStripMenuItem
             // 
             this.loadscreenMoviesToolStripMenuItem.Name = "loadscreenMoviesToolStripMenuItem";
-            this.loadscreenMoviesToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+            this.loadscreenMoviesToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
             this.loadscreenMoviesToolStripMenuItem.Text = "Loadscreen Movies";
             this.loadscreenMoviesToolStripMenuItem.Click += new System.EventHandler(this.loadscreenMoviesToolStripMenuItem_Click);
             // 
             // hackToolDifficultiesToolStripMenuItem
             // 
             this.hackToolDifficultiesToolStripMenuItem.Name = "hackToolDifficultiesToolStripMenuItem";
-            this.hackToolDifficultiesToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+            this.hackToolDifficultiesToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
             this.hackToolDifficultiesToolStripMenuItem.Text = "Hack Tool Difficulties";
             this.hackToolDifficultiesToolStripMenuItem.Click += new System.EventHandler(this.hackToolDifficultiesToolStripMenuItem_Click);
             // 
             // radiosityToolStripMenuItem
             // 
             this.radiosityToolStripMenuItem.Name = "radiosityToolStripMenuItem";
-            this.radiosityToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+            this.radiosityToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
             this.radiosityToolStripMenuItem.Text = "Radiosity";
             this.radiosityToolStripMenuItem.Click += new System.EventHandler(this.radiosityToolStripMenuItem_Click);
             // 
             // viewconesToolStripMenuItem
             // 
             this.viewconesToolStripMenuItem.Name = "viewconesToolStripMenuItem";
-            this.viewconesToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+            this.viewconesToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
             this.viewconesToolStripMenuItem.Text = "Viewcones";
             this.viewconesToolStripMenuItem.Click += new System.EventHandler(this.viewconesToolStripMenuItem_Click);
             // 
             // globalConstantsToolStripMenuItem
             // 
             this.globalConstantsToolStripMenuItem.Name = "globalConstantsToolStripMenuItem";
-            this.globalConstantsToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+            this.globalConstantsToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
             this.globalConstantsToolStripMenuItem.Text = "Global Constants";
             this.globalConstantsToolStripMenuItem.Click += new System.EventHandler(this.globalConstantsToolStripMenuItem_Click);
+            // 
+            // physicalMaterialsToolStripMenuItem
+            // 
+            this.physicalMaterialsToolStripMenuItem.Name = "physicalMaterialsToolStripMenuItem";
+            this.physicalMaterialsToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+            this.physicalMaterialsToolStripMenuItem.Text = "Physical Materials";
+            this.physicalMaterialsToolStripMenuItem.Click += new System.EventHandler(this.physicalMaterialsToolStripMenuItem_Click);
+            // 
+            // scriptReadableVariablesToolStripMenuItem
+            // 
+            this.scriptReadableVariablesToolStripMenuItem.Name = "scriptReadableVariablesToolStripMenuItem";
+            this.scriptReadableVariablesToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+            this.scriptReadableVariablesToolStripMenuItem.Text = "Script Readable Variables";
+            this.scriptReadableVariablesToolStripMenuItem.Click += new System.EventHandler(this.scriptReadableVariablesToolStripMenuItem_Click);
             // 
             // charactersToolStripMenuItem
             // 
@@ -307,37 +319,44 @@ namespace CommandsEditor
             // locomotionToolStripMenuItem
             // 
             this.locomotionToolStripMenuItem.Name = "locomotionToolStripMenuItem";
-            this.locomotionToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.locomotionToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
             this.locomotionToolStripMenuItem.Text = "Locomotion";
             this.locomotionToolStripMenuItem.Click += new System.EventHandler(this.locomotionToolStripMenuItem_Click);
             // 
             // alienConfigsToolStripMenuItem
             // 
             this.alienConfigsToolStripMenuItem.Name = "alienConfigsToolStripMenuItem";
-            this.alienConfigsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.alienConfigsToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
             this.alienConfigsToolStripMenuItem.Text = "Alien Configs";
             this.alienConfigsToolStripMenuItem.Click += new System.EventHandler(this.alienConfigsToolStripMenuItem_Click);
             // 
             // sensesToolStripMenuItem
             // 
             this.sensesToolStripMenuItem.Name = "sensesToolStripMenuItem";
-            this.sensesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.sensesToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
             this.sensesToolStripMenuItem.Text = "Senses";
             this.sensesToolStripMenuItem.Click += new System.EventHandler(this.sensesToolStripMenuItem_Click);
             // 
             // attributesToolStripMenuItem
             // 
             this.attributesToolStripMenuItem.Name = "attributesToolStripMenuItem";
-            this.attributesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.attributesToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
             this.attributesToolStripMenuItem.Text = "Attributes";
             this.attributesToolStripMenuItem.Click += new System.EventHandler(this.attributesToolStripMenuItem_Click);
             // 
             // voiceMappingsToolStripMenuItem
             // 
             this.voiceMappingsToolStripMenuItem.Name = "voiceMappingsToolStripMenuItem";
-            this.voiceMappingsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.voiceMappingsToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
             this.voiceMappingsToolStripMenuItem.Text = "Voice Mappings";
             this.voiceMappingsToolStripMenuItem.Click += new System.EventHandler(this.voiceMappingsToolStripMenuItem_Click);
+            // 
+            // assetSetsToolStripMenuItem
+            // 
+            this.assetSetsToolStripMenuItem.Name = "assetSetsToolStripMenuItem";
+            this.assetSetsToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+            this.assetSetsToolStripMenuItem.Text = "Asset Sets";
+            this.assetSetsToolStripMenuItem.Click += new System.EventHandler(this.assetSetsToolStripMenuItem_Click);
             // 
             // inventoryToolStripMenuItem
             // 
@@ -351,14 +370,14 @@ namespace CommandsEditor
             // blueprintRecipesToolStripMenuItem
             // 
             this.blueprintRecipesToolStripMenuItem.Name = "blueprintRecipesToolStripMenuItem";
-            this.blueprintRecipesToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.blueprintRecipesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.blueprintRecipesToolStripMenuItem.Text = "Blueprint Recipes";
             this.blueprintRecipesToolStripMenuItem.Click += new System.EventHandler(this.blueprintRecipesToolStripMenuItem_Click);
             // 
             // ammoToolStripMenuItem
             // 
             this.ammoToolStripMenuItem.Name = "ammoToolStripMenuItem";
-            this.ammoToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.ammoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.ammoToolStripMenuItem.Text = "Ammo";
             this.ammoToolStripMenuItem.Click += new System.EventHandler(this.ammoToolStripMenuItem_Click);
             // 
@@ -709,12 +728,12 @@ namespace CommandsEditor
             this.dockPanel.TabIndex = 5;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
             // 
-            // assetSetsToolStripMenuItem
+            // permanentSoundbanksToolStripMenuItem
             // 
-            this.assetSetsToolStripMenuItem.Name = "assetSetsToolStripMenuItem";
-            this.assetSetsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.assetSetsToolStripMenuItem.Text = "Asset Sets";
-            this.assetSetsToolStripMenuItem.Click += new System.EventHandler(this.assetSetsToolStripMenuItem_Click);
+            this.permanentSoundbanksToolStripMenuItem.Name = "permanentSoundbanksToolStripMenuItem";
+            this.permanentSoundbanksToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+            this.permanentSoundbanksToolStripMenuItem.Text = "Permanent Soundbanks";
+            this.permanentSoundbanksToolStripMenuItem.Click += new System.EventHandler(this.permanentSoundbanksToolStripMenuItem_Click);
             // 
             // CommandsEditor
             // 
@@ -796,7 +815,6 @@ namespace CommandsEditor
         private System.Windows.Forms.ToolStripMenuItem coreGameToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem charactersToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem inventoryToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem materialPropertiesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem writeCompressedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadscreenMoviesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem hackToolDifficultiesToolStripMenuItem;
@@ -814,5 +832,8 @@ namespace CommandsEditor
         private System.Windows.Forms.ToolStripMenuItem attributesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem voiceMappingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem assetSetsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem physicalMaterialsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem scriptReadableVariablesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem permanentSoundbanksToolStripMenuItem;
     }
 }

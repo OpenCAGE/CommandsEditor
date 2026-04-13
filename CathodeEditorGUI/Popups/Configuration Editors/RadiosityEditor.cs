@@ -17,6 +17,8 @@ namespace CommandsEditor.ConfigEditors
 
         private void RadiosityEditor_Load(object sender, EventArgs e)
         {
+            //note - HAIR_SHADING_SETTINGS.TXT and SKIN_SHADING_SETTINGS.TXT are also used
+
             string[] lightingData = File.ReadAllLines(Singleton.PathToAI + @"\DATA\RADIOSITY_SETTINGS.TXT");
             for (int i = 0; i < lightingData.Length; i++) if (lightingData[i] != "") lightingData[i] = lightingData[i].Split('=')[1];
 

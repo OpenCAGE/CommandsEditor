@@ -108,6 +108,7 @@ namespace CommandsEditor
             materialPropertiesToolStripMenuItem.Visible = false;
             uIToolStripMenuItem.Visible = false;
             animationsToolStripMenuItem.Visible = false;
+            scriptReadableVariablesToolStripMenuItem.Visible = false;
 #endif
 
             //Launch game is only supported by certain platforms due to having to patch the binary
@@ -1251,6 +1252,68 @@ namespace CommandsEditor
         {
             _charAssetEditor = null;
         }
+
+        PhysicalMaterialEditor _physicalMatEditor = null;
+        private void physicalMaterialsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_physicalMatEditor != null)
+            {
+                _physicalMatEditor.FormClosed -= _physicalMatEditor_FormClosed;
+                _physicalMatEditor.Close();
+            }
+
+            _physicalMatEditor = new PhysicalMaterialEditor();
+            _physicalMatEditor.Show();
+            _physicalMatEditor.FormClosed += _physicalMatEditor_FormClosed;
+        }
+        private void _physicalMatEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _physicalMatEditor = null;
+        }
+
+        ScriptReadableVariableEditor _scriptVariableEditor = null;
+        private void scriptReadableVariablesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_scriptVariableEditor != null)
+            {
+                _scriptVariableEditor.FormClosed -= _scriptVariableEditor_FormClosed;
+                _scriptVariableEditor.Close();
+            }
+
+            _scriptVariableEditor = new ScriptReadableVariableEditor();
+            _scriptVariableEditor.Show();
+            _scriptVariableEditor.FormClosed += _scriptVariableEditor_FormClosed;
+        }
+        private void _scriptVariableEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _scriptVariableEditor = null;
+        }
+
+        PermanentSoundbankEditor _permaSoundbankEditor = null;
+        private void permanentSoundbanksToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_permaSoundbankEditor != null)
+            {
+                _permaSoundbankEditor.FormClosed -= _permaSoundbankEditor_FormClosed;
+                _permaSoundbankEditor.Close();
+            }
+
+            _permaSoundbankEditor = new PermanentSoundbankEditor();
+            _permaSoundbankEditor.Show();
+            _permaSoundbankEditor.FormClosed += _permaSoundbankEditor_FormClosed;
+        }
+        private void _permaSoundbankEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _permaSoundbankEditor = null;
+        }
+
+        //todo: have no placeholder or old editor for:
+        //  - uifilecachelist
+        //  - level_text_databases (there is a temp one for this, but unfinished)
+        //  - font_config
+        //  - input
+        //  - hair_shading_settings
+        //  - skin_shading_settings
         #endregion
 
         private About _aboutWindow = null;

@@ -375,6 +375,18 @@
     <Compile Include="Popups\Configuration Editors\LocomotionEditor.Designer.cs">
       <DependentUpon>LocomotionEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\Configuration Editors\PermanentSoundbankEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\PermanentSoundbankEditor.Designer.cs">
+      <DependentUpon>PermanentSoundbankEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\PhysicalMaterialEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\PhysicalMaterialEditor.Designer.cs">
+      <DependentUpon>PhysicalMaterialEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popups\Configuration Editors\Popups\BlueprintEditorDocs.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -405,11 +417,29 @@
     <Compile Include="Popups\Configuration Editors\AmmoEditor.Designer.cs">
       <DependentUpon>AmmoEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\Configuration Editors\Popups\MovieSelectorPopup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\Popups\MovieSelectorPopup.Designer.cs">
+      <DependentUpon>MovieSelectorPopup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\Popups\PermaSoundbankPopup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\Popups\PermaSoundbankPopup.Designer.cs">
+      <DependentUpon>PermaSoundbankPopup.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popups\Configuration Editors\RadiosityEditor.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Popups\Configuration Editors\RadiosityEditor.Designer.cs">
       <DependentUpon>RadiosityEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\ScriptReadableVariableEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\ScriptReadableVariableEditor.Designer.cs">
+      <DependentUpon>ScriptReadableVariableEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\Configuration Editors\SenseEditor.cs">
       <SubType>Form</SubType>
@@ -956,6 +986,12 @@
     <EmbeddedResource Include="Popups\Configuration Editors\LocomotionEditor.resx">
       <DependentUpon>LocomotionEditor.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Configuration Editors\PermanentSoundbankEditor.resx">
+      <DependentUpon>PermanentSoundbankEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Configuration Editors\PhysicalMaterialEditor.resx">
+      <DependentUpon>PhysicalMaterialEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Popups\Configuration Editors\Popups\BlueprintEditorDocs.resx">
       <DependentUpon>BlueprintEditorDocs.cs</DependentUpon>
     </EmbeddedResource>
@@ -971,8 +1007,17 @@
     <EmbeddedResource Include="Popups\Configuration Editors\AmmoEditor.resx">
       <DependentUpon>AmmoEditor.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Configuration Editors\Popups\MovieSelectorPopup.resx">
+      <DependentUpon>MovieSelectorPopup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Configuration Editors\Popups\PermaSoundbankPopup.resx">
+      <DependentUpon>PermaSoundbankPopup.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Popups\Configuration Editors\RadiosityEditor.resx">
       <DependentUpon>RadiosityEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Configuration Editors\ScriptReadableVariableEditor.resx">
+      <DependentUpon>ScriptReadableVariableEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\Configuration Editors\SenseEditor.resx">
       <DependentUpon>SenseEditor.cs</DependentUpon>
