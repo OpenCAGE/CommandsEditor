@@ -375,17 +375,11 @@
     <Compile Include="Popups\Configuration Editors\InputsEditor.Designer.cs">
       <DependentUpon>InputsEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="Popups\Configuration Editors\SkinShadingEditor.cs">
+    <Compile Include="Popups\Configuration Editors\HairAndSkinShadingEditor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Popups\Configuration Editors\SkinShadingEditor.Designer.cs">
-      <DependentUpon>SkinShadingEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Popups\Configuration Editors\HairShadingEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Popups\Configuration Editors\HairShadingEditor.Designer.cs">
-      <DependentUpon>HairShadingEditor.cs</DependentUpon>
+    <Compile Include="Popups\Configuration Editors\HairAndSkinShadingEditor.Designer.cs">
+      <DependentUpon>HairAndSkinShadingEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\Configuration Editors\LocomotionEditor.cs">
       <SubType>Form</SubType>
@@ -1004,11 +998,8 @@
     <EmbeddedResource Include="Popups\Configuration Editors\InputsEditor.resx">
       <DependentUpon>InputsEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Popups\Configuration Editors\SkinShadingEditor.resx">
-      <DependentUpon>SkinShadingEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Popups\Configuration Editors\HairShadingEditor.resx">
-      <DependentUpon>HairShadingEditor.cs</DependentUpon>
+    <EmbeddedResource Include="Popups\Configuration Editors\HairAndSkinShadingEditor.resx">
+      <DependentUpon>HairAndSkinShadingEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\Configuration Editors\LocomotionEditor.resx">
       <DependentUpon>LocomotionEditor.cs</DependentUpon>

@@ -1307,25 +1307,7 @@ namespace CommandsEditor
             _permaSoundbankEditor = null;
         }
 
-        SkinShadingEditor _skinShadingEditor = null;
-        private void skinShadingToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (_skinShadingEditor != null)
-            {
-                _skinShadingEditor.FormClosed -= _skinShadingEditor_FormClosed;
-                _skinShadingEditor.Close();
-            }
-
-            _skinShadingEditor = new SkinShadingEditor();
-            _skinShadingEditor.Show();
-            _skinShadingEditor.FormClosed += _skinShadingEditor_FormClosed;
-        }
-        private void _skinShadingEditor_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            _skinShadingEditor = null;
-        }
-
-        HairShadingEditor _hairShadingEditor = null;
+        HairAndSkinShadingEditor _hairShadingEditor = null;
         private void hairShadingToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (_hairShadingEditor != null)
@@ -1334,7 +1316,7 @@ namespace CommandsEditor
                 _hairShadingEditor.Close();
             }
 
-            _hairShadingEditor = new HairShadingEditor();
+            _hairShadingEditor = new HairAndSkinShadingEditor();
             _hairShadingEditor.Show();
             _hairShadingEditor.FormClosed += _hairShadingEditor_FormClosed;
         }

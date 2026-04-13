@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -56,6 +57,11 @@ namespace CommandsEditor.ConfigEditors
                 soundbanks.Add(permaSoundbanks.Items[i].ToString());
             }
             File.WriteAllLines(Singleton.PathToAI + @"\DATA\LIST_OF_PERMANENT_SOUND_BANKS.TXT", soundbanks);
+        }
+
+        private void helpBtn_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://opencage.co.uk/docs/configs/perma-soundbanks");
         }
     }
 }
