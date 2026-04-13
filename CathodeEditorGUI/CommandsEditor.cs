@@ -1343,12 +1343,27 @@ namespace CommandsEditor
             _hairShadingEditor = null;
         }
 
+        InputsEditor _inputsEditor = null;
+        private void inputsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_inputsEditor != null)
+            {
+                _inputsEditor.FormClosed -= _inputsEditor_FormClosed;
+                _inputsEditor.Close();
+            }
+
+            _inputsEditor = new InputsEditor();
+            _inputsEditor.Show();
+            _inputsEditor.FormClosed += _inputsEditor_FormClosed;
+        }
+        private void _inputsEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _inputsEditor = null;
+        }
+
         //todo: have no placeholder or old editor for:
         //  - level_text_databases (there is a temp one for this, but unfinished)
         //  - font_config
-        //  - input
-        //  - hair_shading_settings
-        //  - skin_shading_settings
         #endregion
 
         private About _aboutWindow = null;

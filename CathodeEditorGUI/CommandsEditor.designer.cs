@@ -53,6 +53,8 @@ namespace CommandsEditor
             this.physicalMaterialsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.scriptReadableVariablesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.permanentSoundbanksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.skinShadingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.hairShadingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.charactersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.locomotionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.alienConfigsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -106,8 +108,7 @@ namespace CommandsEditor
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
             this.vS2015DarkTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme();
-            this.skinShadingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.hairShadingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.inputsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -253,7 +254,8 @@ namespace CommandsEditor
             this.scriptReadableVariablesToolStripMenuItem,
             this.permanentSoundbanksToolStripMenuItem,
             this.skinShadingToolStripMenuItem,
-            this.hairShadingToolStripMenuItem});
+            this.hairShadingToolStripMenuItem,
+            this.inputsToolStripMenuItem});
             this.coreGameToolStripMenuItem.Name = "coreGameToolStripMenuItem";
             this.coreGameToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.coreGameToolStripMenuItem.Text = "Core Game";
@@ -314,6 +316,20 @@ namespace CommandsEditor
             this.permanentSoundbanksToolStripMenuItem.Text = "Permanent Soundbanks";
             this.permanentSoundbanksToolStripMenuItem.Click += new System.EventHandler(this.permanentSoundbanksToolStripMenuItem_Click);
             // 
+            // skinShadingToolStripMenuItem
+            // 
+            this.skinShadingToolStripMenuItem.Name = "skinShadingToolStripMenuItem";
+            this.skinShadingToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+            this.skinShadingToolStripMenuItem.Text = "Skin Shading";
+            this.skinShadingToolStripMenuItem.Click += new System.EventHandler(this.skinShadingToolStripMenuItem_Click);
+            // 
+            // hairShadingToolStripMenuItem
+            // 
+            this.hairShadingToolStripMenuItem.Name = "hairShadingToolStripMenuItem";
+            this.hairShadingToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+            this.hairShadingToolStripMenuItem.Text = "Hair Shading";
+            this.hairShadingToolStripMenuItem.Click += new System.EventHandler(this.hairShadingToolStripMenuItem_Click);
+            // 
             // charactersToolStripMenuItem
             // 
             this.charactersToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -330,42 +346,42 @@ namespace CommandsEditor
             // locomotionToolStripMenuItem
             // 
             this.locomotionToolStripMenuItem.Name = "locomotionToolStripMenuItem";
-            this.locomotionToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+            this.locomotionToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.locomotionToolStripMenuItem.Text = "Locomotion";
             this.locomotionToolStripMenuItem.Click += new System.EventHandler(this.locomotionToolStripMenuItem_Click);
             // 
             // alienConfigsToolStripMenuItem
             // 
             this.alienConfigsToolStripMenuItem.Name = "alienConfigsToolStripMenuItem";
-            this.alienConfigsToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+            this.alienConfigsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.alienConfigsToolStripMenuItem.Text = "Alien Configs";
             this.alienConfigsToolStripMenuItem.Click += new System.EventHandler(this.alienConfigsToolStripMenuItem_Click);
             // 
             // sensesToolStripMenuItem
             // 
             this.sensesToolStripMenuItem.Name = "sensesToolStripMenuItem";
-            this.sensesToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+            this.sensesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.sensesToolStripMenuItem.Text = "Senses";
             this.sensesToolStripMenuItem.Click += new System.EventHandler(this.sensesToolStripMenuItem_Click);
             // 
             // attributesToolStripMenuItem
             // 
             this.attributesToolStripMenuItem.Name = "attributesToolStripMenuItem";
-            this.attributesToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+            this.attributesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.attributesToolStripMenuItem.Text = "Attributes";
             this.attributesToolStripMenuItem.Click += new System.EventHandler(this.attributesToolStripMenuItem_Click);
             // 
             // voiceMappingsToolStripMenuItem
             // 
             this.voiceMappingsToolStripMenuItem.Name = "voiceMappingsToolStripMenuItem";
-            this.voiceMappingsToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+            this.voiceMappingsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.voiceMappingsToolStripMenuItem.Text = "Voice Mappings";
             this.voiceMappingsToolStripMenuItem.Click += new System.EventHandler(this.voiceMappingsToolStripMenuItem_Click);
             // 
             // assetSetsToolStripMenuItem
             // 
             this.assetSetsToolStripMenuItem.Name = "assetSetsToolStripMenuItem";
-            this.assetSetsToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+            this.assetSetsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.assetSetsToolStripMenuItem.Text = "Asset Sets";
             this.assetSetsToolStripMenuItem.Click += new System.EventHandler(this.assetSetsToolStripMenuItem_Click);
             // 
@@ -739,19 +755,12 @@ namespace CommandsEditor
             this.dockPanel.TabIndex = 5;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
             // 
-            // skinShadingToolStripMenuItem
+            // inputsToolStripMenuItem
             // 
-            this.skinShadingToolStripMenuItem.Name = "skinShadingToolStripMenuItem";
-            this.skinShadingToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
-            this.skinShadingToolStripMenuItem.Text = "Skin Shading";
-            this.skinShadingToolStripMenuItem.Click += new System.EventHandler(this.skinShadingToolStripMenuItem_Click);
-            // 
-            // hairShadingToolStripMenuItem
-            // 
-            this.hairShadingToolStripMenuItem.Name = "hairShadingToolStripMenuItem";
-            this.hairShadingToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
-            this.hairShadingToolStripMenuItem.Text = "Hair Shading";
-            this.hairShadingToolStripMenuItem.Click += new System.EventHandler(this.hairShadingToolStripMenuItem_Click);
+            this.inputsToolStripMenuItem.Name = "inputsToolStripMenuItem";
+            this.inputsToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+            this.inputsToolStripMenuItem.Text = "Inputs";
+            this.inputsToolStripMenuItem.Click += new System.EventHandler(this.inputsToolStripMenuItem_Click);
             // 
             // CommandsEditor
             // 
@@ -855,5 +864,6 @@ namespace CommandsEditor
         private System.Windows.Forms.ToolStripMenuItem permanentSoundbanksToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem skinShadingToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem hairShadingToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem inputsToolStripMenuItem;
     }
 }
