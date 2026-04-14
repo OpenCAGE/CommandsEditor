@@ -1,6 +1,7 @@
 ﻿using CATHODE;
 using CommandsEditor.Popups.Base;
 using System;
+using System.Diagnostics;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -58,6 +59,8 @@ namespace CommandsEditor.ConfigEditors
             if (materialList.SelectedIndex == -1)
                 return;
 
+            //note - the physical material is looked up by index, so removing any here will be problematic. should support that better.
+
             materialList.Items.RemoveAt(materialList.SelectedIndex);
             Save();
         }
@@ -76,6 +79,11 @@ namespace CommandsEditor.ConfigEditors
 
             _materialTypes.Content = doc;
             _materialTypes.Save();
+        }
+
+        private void helpBtn_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://opencage.co.uk/docs/configs/physical-materials");
         }
     }
 }
