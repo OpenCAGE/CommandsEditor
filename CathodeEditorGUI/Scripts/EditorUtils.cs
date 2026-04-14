@@ -64,9 +64,9 @@ namespace CommandsEditor
 
             _prevTaskToken = new CancellationTokenSource();
 
-            if (runOnThread)
-                Task.Run(() => Content.EditorUtils.GenerateCompositeInstancesRecursive(commands, commands.EntryPoints[0], new List<ShortGuid>(), _prevTaskToken.Token), _prevTaskToken.Token);
-            else
+            //if (runOnThread)
+            //    Task.Run(() => Content.EditorUtils.GenerateCompositeInstancesRecursive(commands, commands.EntryPoints[0], new List<ShortGuid>(), _prevTaskToken.Token), _prevTaskToken.Token);
+            //else
                 Content.EditorUtils.GenerateCompositeInstancesRecursive(commands, commands.EntryPoints[0], new List<ShortGuid>(), _prevTaskToken.Token);
         }
         private void GenerateCompositeInstancesRecursive(Commands commands, Composite composite, List<ShortGuid> hierarchy, CancellationToken ct)

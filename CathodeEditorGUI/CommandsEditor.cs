@@ -105,7 +105,6 @@ namespace CommandsEditor
             connectToRuntimeUtils.Visible = false;
 
             // wip
-            materialPropertiesToolStripMenuItem.Visible = false;
             uIToolStripMenuItem.Visible = false;
             animationsToolStripMenuItem.Visible = false;
             scriptReadableVariablesToolStripMenuItem.Visible = false;
@@ -1343,9 +1342,95 @@ namespace CommandsEditor
             _inputsEditor = null;
         }
 
-        //todo: have no placeholder or old editor for:
-        //  - level_text_databases (there is a temp one for this, but unfinished)
-        //  - font_config
+        LocalisationEditor _localisationEditor = null;
+        private void localisationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_localisationEditor != null)
+            {
+                _localisationEditor.FormClosed -= _localisationEditor_FormClosed;
+                _localisationEditor.Close();
+            }
+
+            _localisationEditor = new LocalisationEditor();
+            _localisationEditor.Show();
+            _localisationEditor.FormClosed += _localisationEditor_FormClosed;
+        }
+        private void _localisationEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _localisationEditor = null;
+        }
+
+        LevelTextDBEditor _levelTextDBEditor = null;
+        private void levelTextDBsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_levelTextDBEditor != null)
+            {
+                _levelTextDBEditor.FormClosed -= _levelTextDBEditor_FormClosed;
+                _levelTextDBEditor.Close();
+            }
+
+            _levelTextDBEditor = new LevelTextDBEditor();
+            _levelTextDBEditor.Show();
+            _levelTextDBEditor.FormClosed += _levelTextDBEditor_FormClosed;
+        }
+        private void _levelTextDBEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _levelTextDBEditor = null;
+        }
+
+        FontConfigEditor _fontConfigEditor = null;
+        private void fontConfigToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_fontConfigEditor != null)
+            {
+                _fontConfigEditor.FormClosed -= _fontConfigEditor_FormClosed;
+                _fontConfigEditor.Close();
+            }
+
+            _fontConfigEditor = new FontConfigEditor();
+            _fontConfigEditor.Show();
+            _fontConfigEditor.FormClosed += _fontConfigEditor_FormClosed;
+        }
+        private void _fontConfigEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _fontConfigEditor = null;
+        }
+
+        InventoryItemEditor _inventoryItemEditor = null;
+        private void inventoryItemsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_inventoryItemEditor != null)
+            {
+                _inventoryItemEditor.FormClosed -= _inventoryItemEditor_FormClosed;
+                _inventoryItemEditor.Close();
+            }
+
+            _inventoryItemEditor = new InventoryItemEditor();
+            _inventoryItemEditor.Show();
+            _inventoryItemEditor.FormClosed += _inventoryItemEditor_FormClosed;
+        }
+        private void _inventoryItemEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _inventoryItemEditor = null;
+        }
+
+        DifficultyEditor _difficultyEditor = null;
+        private void difficultyModifiersToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_difficultyEditor != null)
+            {
+                _difficultyEditor.FormClosed -= _difficultyEditor_FormClosed;
+                _difficultyEditor.Close();
+            }
+
+            _difficultyEditor = new DifficultyEditor();
+            _difficultyEditor.Show();
+            _difficultyEditor.FormClosed += _difficultyEditor_FormClosed;
+        }
+        private void _difficultyEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _difficultyEditor = null;
+        }
         #endregion
 
         private About _aboutWindow = null;

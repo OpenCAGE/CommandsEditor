@@ -281,9 +281,9 @@ namespace CommandsEditor.ConfigEditors
             // 
             // saveBtn
             // 
-            this.saveBtn.Location = new System.Drawing.Point(546, 458);
+            this.saveBtn.Location = new System.Drawing.Point(521, 458);
             this.saveBtn.Name = "saveBtn";
-            this.saveBtn.Size = new System.Drawing.Size(111, 23);
+            this.saveBtn.Size = new System.Drawing.Size(136, 33);
             this.saveBtn.TabIndex = 5;
             this.saveBtn.Text = "Save";
             this.saveBtn.UseVisualStyleBackColor = true;
@@ -293,7 +293,7 @@ namespace CommandsEditor.ConfigEditors
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(669, 490);
+            this.ClientSize = new System.Drawing.Size(669, 501);
             this.Controls.Add(this.saveBtn);
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.groupBox1);

@@ -363,11 +363,29 @@
       <DependentUpon>BlueprintEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\Configuration Editors\ConfigEditorUtils.cs" />
+    <Compile Include="Popups\Configuration Editors\DifficultyEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\DifficultyEditor.Designer.cs">
+      <DependentUpon>DifficultyEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\FontConfigEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\FontConfigEditor.Designer.cs">
+      <DependentUpon>FontConfigEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popups\Configuration Editors\GlobalConstantsEditor.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Popups\Configuration Editors\GlobalConstantsEditor.Designer.cs">
       <DependentUpon>GlobalConstantsEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\GraphicsEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\GraphicsEditor.Designer.cs">
+      <DependentUpon>GraphicsEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\Configuration Editors\InputsEditor.cs">
       <SubType>Form</SubType>
@@ -381,6 +399,25 @@
     <Compile Include="Popups\Configuration Editors\HairAndSkinShadingEditor.Designer.cs">
       <DependentUpon>HairAndSkinShadingEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\Configuration Editors\InventoryItemEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\InventoryItemEditor.Designer.cs">
+      <DependentUpon>InventoryItemEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\LevelTextDBEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\LevelTextDBEditor.Designer.cs">
+      <DependentUpon>LevelTextDBEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\LocalisationEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\LocalisationEditor.Designer.cs">
+      <DependentUpon>LocalisationEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\LocalisationHandler.cs" />
     <Compile Include="Popups\Configuration Editors\LocomotionEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -398,6 +435,12 @@
     </Compile>
     <Compile Include="Popups\Configuration Editors\PhysicalMaterialEditor.Designer.cs">
       <DependentUpon>PhysicalMaterialEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\Popups\AddLocalisedStringDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\Popups\AddLocalisedStringDialog.Designer.cs">
+      <DependentUpon>AddLocalisedStringDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\Configuration Editors\Popups\BlueprintEditorDocs.cs">
       <SubType>Form</SubType>
@@ -428,6 +471,12 @@
     </Compile>
     <Compile Include="Popups\Configuration Editors\AmmoEditor.Designer.cs">
       <DependentUpon>AmmoEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\Popups\GraphicsEditorPopup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\Popups\GraphicsEditorPopup.Designer.cs">
+      <DependentUpon>GraphicsEditorPopup.cs</DependentUpon>
     </Compile>
     <Compile Include="Popups\Configuration Editors\Popups\MovieSelectorPopup.cs">
       <SubType>Form</SubType>
@@ -992,14 +1041,32 @@
     <EmbeddedResource Include="Popups\Configuration Editors\BlueprintEditor.resx">
       <DependentUpon>BlueprintEditor.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Configuration Editors\DifficultyEditor.resx">
+      <DependentUpon>DifficultyEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Configuration Editors\FontConfigEditor.resx">
+      <DependentUpon>FontConfigEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Popups\Configuration Editors\GlobalConstantsEditor.resx">
       <DependentUpon>GlobalConstantsEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Configuration Editors\GraphicsEditor.resx">
+      <DependentUpon>GraphicsEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\Configuration Editors\InputsEditor.resx">
       <DependentUpon>InputsEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\Configuration Editors\HairAndSkinShadingEditor.resx">
       <DependentUpon>HairAndSkinShadingEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Configuration Editors\InventoryItemEditor.resx">
+      <DependentUpon>InventoryItemEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Configuration Editors\LevelTextDBEditor.resx">
+      <DependentUpon>LevelTextDBEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Configuration Editors\LocalisationEditor.resx">
+      <DependentUpon>LocalisationEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\Configuration Editors\LocomotionEditor.resx">
       <DependentUpon>LocomotionEditor.cs</DependentUpon>
@@ -1009,6 +1076,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\Configuration Editors\PhysicalMaterialEditor.resx">
       <DependentUpon>PhysicalMaterialEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Configuration Editors\Popups\AddLocalisedStringDialog.resx">
+      <DependentUpon>AddLocalisedStringDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\Configuration Editors\Popups\BlueprintEditorDocs.resx">
       <DependentUpon>BlueprintEditorDocs.cs</DependentUpon>
@@ -1024,6 +1094,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\Configuration Editors\AmmoEditor.resx">
       <DependentUpon>AmmoEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Configuration Editors\Popups\GraphicsEditorPopup.resx">
+      <DependentUpon>GraphicsEditorPopup.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\Configuration Editors\Popups\MovieSelectorPopup.resx">
       <DependentUpon>MovieSelectorPopup.cs</DependentUpon>
