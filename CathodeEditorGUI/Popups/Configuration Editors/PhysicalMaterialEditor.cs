@@ -17,10 +17,12 @@ namespace CommandsEditor.ConfigEditors
 
             _materialTypes = new BML(Singleton.PathToAI + "\\DATA\\MATERIAL_DATA\\MATERIALS.BML");
             var materials = _materialTypes.Content["Materials"];
+            materialList.BeginUpdate();
             foreach (XmlElement material in materials)
             {
                 materialList.Items.Add(material.GetAttribute("name"));
             }
+            materialList.EndUpdate();
         }
 
         AddNewPhysMaterial _addMat = null;

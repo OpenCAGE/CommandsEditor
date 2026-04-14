@@ -29,9 +29,7 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DifficultyEditor));
-            this.btnSave = new System.Windows.Forms.Button();
             this.classSelection = new System.Windows.Forms.ComboBox();
-            this.btnSelectClass = new System.Windows.Forms.Button();
             this.characterTypes = new System.Windows.Forms.ComboBox();
             this.loadNPC = new System.Windows.Forms.Button();
             this.viewconeSet = new System.Windows.Forms.ComboBox();
@@ -88,82 +86,108 @@
             this.visual_sense_exposure_effect_lower_modifier = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.visual_sense_exposure_effect_upper_modifier = new System.Windows.Forms.TextBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.groupBox11 = new System.Windows.Forms.GroupBox();
+            this.Vent_Attract_Time_Min = new System.Windows.Forms.NumericUpDown();
+            this.label39 = new System.Windows.Forms.Label();
+            this.label40 = new System.Windows.Forms.Label();
+            this.Vent_Attract_Time_Max = new System.Windows.Forms.NumericUpDown();
+            this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.groupBox10 = new System.Windows.Forms.GroupBox();
+            this.label46 = new System.Windows.Forms.Label();
+            this.label62 = new System.Windows.Forms.Label();
+            this.label63 = new System.Windows.Forms.Label();
+            this.label64 = new System.Windows.Forms.Label();
+            this.near_objective_exclusion_radius_subsequent_stalk_min_modifier = new System.Windows.Forms.NumericUpDown();
+            this.near_objective_exclusion_radius_subsequent_stalk_max_modifier = new System.Windows.Forms.NumericUpDown();
+            this.near_objective_exclusion_radius_first_stalk_min_modifier = new System.Windows.Forms.NumericUpDown();
+            this.near_objective_exclusion_radius_first_stalk_max_modifier = new System.Windows.Forms.NumericUpDown();
+            this.groupBox9 = new System.Windows.Forms.GroupBox();
+            this.label65 = new System.Windows.Forms.Label();
+            this.label66 = new System.Windows.Forms.Label();
+            this.label67 = new System.Windows.Forms.Label();
+            this.label68 = new System.Windows.Forms.Label();
+            this.near_target_exclusion_radius_subsequent_stalk_min_modifier = new System.Windows.Forms.NumericUpDown();
+            this.near_target_exclusion_radius_subsequent_stalk_max_modifier = new System.Windows.Forms.NumericUpDown();
+            this.near_target_exclusion_radius_first_stalk_min_modifier = new System.Windows.Forms.NumericUpDown();
+            this.near_target_exclusion_radius_first_stalk_max_modifier = new System.Windows.Forms.NumericUpDown();
+            this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.decrease_sweep_duration_modifier = new System.Windows.Forms.NumericUpDown();
+            this.sweep_box_half_width_modifier = new System.Windows.Forms.NumericUpDown();
+            this.sweep_box_half_length_modifier = new System.Windows.Forms.NumericUpDown();
+            this.label69 = new System.Windows.Forms.Label();
+            this.label70 = new System.Windows.Forms.Label();
+            this.label71 = new System.Windows.Forms.Label();
+            this.label72 = new System.Windows.Forms.Label();
+            this.increase_sweep_duration_modifier = new System.Windows.Forms.NumericUpDown();
+            this.groupBox12 = new System.Windows.Forms.GroupBox();
+            this.menace_gauge_decrease_time_modifier = new System.Windows.Forms.NumericUpDown();
+            this.meance_deemed_time_modifier = new System.Windows.Forms.NumericUpDown();
+            this.max_menaces_modifier = new System.Windows.Forms.NumericUpDown();
+            this.menace_gauge_seconds_to_fill_modifier = new System.Windows.Forms.NumericUpDown();
+            this.label73 = new System.Windows.Forms.Label();
+            this.label74 = new System.Windows.Forms.Label();
+            this.label75 = new System.Windows.Forms.Label();
+            this.label76 = new System.Windows.Forms.Label();
+            this.groupBox13 = new System.Windows.Forms.GroupBox();
+            this.groupBox14 = new System.Windows.Forms.GroupBox();
+            this.label77 = new System.Windows.Forms.Label();
+            this.label78 = new System.Windows.Forms.Label();
+            this.label79 = new System.Windows.Forms.Label();
+            this.label81 = new System.Windows.Forms.Label();
+            this.label82 = new System.Windows.Forms.Label();
+            this.backstage_area_sweep_min_idle_time_modifier = new System.Windows.Forms.NumericUpDown();
+            this.backstage_area_sweep_max_idle_time_modifier = new System.Windows.Forms.NumericUpDown();
+            this.backstage_area_sweep_min_distance_modifier = new System.Windows.Forms.NumericUpDown();
+            this.backstage_area_sweep_max_distance_modifier = new System.Windows.Forms.NumericUpDown();
+            this.backstage_area_sweep_role_timeout_modifier = new System.Windows.Forms.NumericUpDown();
+            this.groupBox15 = new System.Windows.Forms.GroupBox();
+            this.backstage_area_sweep_ambush_timeout_modifier = new System.Windows.Forms.NumericUpDown();
+            this.backstage_area_sweep_killtrap_time_modifier = new System.Windows.Forms.NumericUpDown();
+            this.label83 = new System.Windows.Forms.Label();
+            this.label84 = new System.Windows.Forms.Label();
+            this.label85 = new System.Windows.Forms.Label();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.backstage_area_sweep_ambush_timeout_mofisier = new System.Windows.Forms.TextBox();
-            this.label52 = new System.Windows.Forms.Label();
-            this.label16 = new System.Windows.Forms.Label();
-            this.label51 = new System.Windows.Forms.Label();
-            this.label25 = new System.Windows.Forms.Label();
-            this.backstage_area_sweep_killtrap_time_modifier = new System.Windows.Forms.TextBox();
-            this.backstage_area_sweep_max_idle_time_modifier = new System.Windows.Forms.TextBox();
-            this.label48 = new System.Windows.Forms.Label();
-            this.backstage_area_sweep_min_idle_time_modifier = new System.Windows.Forms.TextBox();
-            this.label47 = new System.Windows.Forms.Label();
-            this.label28 = new System.Windows.Forms.Label();
-            this.backstage_area_sweep_role_timeout_modifier = new System.Windows.Forms.TextBox();
-            this.label30 = new System.Windows.Forms.Label();
-            this.backstage_area_sweep_max_distance_modifier = new System.Windows.Forms.TextBox();
-            this.backstage_area_sweep_min_distance_modifier = new System.Windows.Forms.TextBox();
-            this.label31 = new System.Windows.Forms.Label();
-            this.groupBox6 = new System.Windows.Forms.GroupBox();
-            this.label32 = new System.Windows.Forms.Label();
-            this.label34 = new System.Windows.Forms.Label();
-            this.menace_gauge_decrease_time_modifier = new System.Windows.Forms.TextBox();
-            this.label35 = new System.Windows.Forms.Label();
-            this.menace_cool_down_time_modifier = new System.Windows.Forms.TextBox();
-            this.label36 = new System.Windows.Forms.Label();
-            this.meance_deemed_time_modifier = new System.Windows.Forms.TextBox();
-            this.label37 = new System.Windows.Forms.Label();
-            this.max_menaces_modifier = new System.Windows.Forms.TextBox();
-            this.label38 = new System.Windows.Forms.Label();
-            this.menace_gauge_seconds_to_fill_modifier = new System.Windows.Forms.TextBox();
-            this.label41 = new System.Windows.Forms.Label();
-            this.Vent_Attract_Time_Min = new System.Windows.Forms.TextBox();
-            this.Vent_Attract_Time_Max = new System.Windows.Forms.TextBox();
-            this.label42 = new System.Windows.Forms.Label();
-            this.label43 = new System.Windows.Forms.Label();
-            this.label44 = new System.Windows.Forms.Label();
-            this.increase_sweep_duration_modifier = new System.Windows.Forms.TextBox();
-            this.label45 = new System.Windows.Forms.Label();
-            this.decrease_sweep_duration_modifier = new System.Windows.Forms.TextBox();
-            this.label49 = new System.Windows.Forms.Label();
-            this.label50 = new System.Windows.Forms.Label();
-            this.near_target_exclusion_radius_first_stalk_min_modifier = new System.Windows.Forms.TextBox();
-            this.near_target_exclusion_radius_first_stalk_max_modifier = new System.Windows.Forms.TextBox();
-            this.label53 = new System.Windows.Forms.Label();
-            this.label54 = new System.Windows.Forms.Label();
-            this.near_target_exclusion_radius_subsequent_stalk_min_modifier = new System.Windows.Forms.TextBox();
-            this.near_target_exclusion_radius_subsequent_stalk_max_modifier = new System.Windows.Forms.TextBox();
-            this.label55 = new System.Windows.Forms.Label();
-            this.label56 = new System.Windows.Forms.Label();
-            this.near_objective_exclusion_radius_first_stalk_min_modifier = new System.Windows.Forms.TextBox();
-            this.near_objective_exclusion_radius_first_stalk_max_modifier = new System.Windows.Forms.TextBox();
-            this.label57 = new System.Windows.Forms.Label();
-            this.label58 = new System.Windows.Forms.Label();
-            this.near_objective_exclusion_radius_subsequent_stalk_min_modifier = new System.Windows.Forms.TextBox();
-            this.near_objective_exclusion_radius_subsequent_stalk_max_modifier = new System.Windows.Forms.TextBox();
-            this.label59 = new System.Windows.Forms.Label();
-            this.label60 = new System.Windows.Forms.Label();
-            this.sweep_box_half_width_modifier = new System.Windows.Forms.TextBox();
-            this.label61 = new System.Windows.Forms.Label();
-            this.sweep_box_half_length_modifier = new System.Windows.Forms.TextBox();
-            this.label33 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
+            this.groupBox2.SuspendLayout();
+            this.groupBox11.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.Vent_Attract_Time_Min)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Vent_Attract_Time_Max)).BeginInit();
+            this.groupBox8.SuspendLayout();
+            this.groupBox10.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.near_objective_exclusion_radius_subsequent_stalk_min_modifier)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.near_objective_exclusion_radius_subsequent_stalk_max_modifier)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.near_objective_exclusion_radius_first_stalk_min_modifier)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.near_objective_exclusion_radius_first_stalk_max_modifier)).BeginInit();
+            this.groupBox9.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.near_target_exclusion_radius_subsequent_stalk_min_modifier)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.near_target_exclusion_radius_subsequent_stalk_max_modifier)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.near_target_exclusion_radius_first_stalk_min_modifier)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.near_target_exclusion_radius_first_stalk_max_modifier)).BeginInit();
+            this.groupBox7.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.decrease_sweep_duration_modifier)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.sweep_box_half_width_modifier)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.sweep_box_half_length_modifier)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.increase_sweep_duration_modifier)).BeginInit();
+            this.groupBox12.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.menace_gauge_decrease_time_modifier)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.meance_deemed_time_modifier)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.max_menaces_modifier)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.menace_gauge_seconds_to_fill_modifier)).BeginInit();
+            this.groupBox13.SuspendLayout();
+            this.groupBox14.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.backstage_area_sweep_min_idle_time_modifier)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.backstage_area_sweep_max_idle_time_modifier)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.backstage_area_sweep_min_distance_modifier)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.backstage_area_sweep_max_distance_modifier)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.backstage_area_sweep_role_timeout_modifier)).BeginInit();
+            this.groupBox15.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.backstage_area_sweep_ambush_timeout_modifier)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.backstage_area_sweep_killtrap_time_modifier)).BeginInit();
             this.groupBox5.SuspendLayout();
-            this.groupBox6.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // btnSave
-            // 
-            this.btnSave.Location = new System.Drawing.Point(846, 686);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(136, 33);
-            this.btnSave.TabIndex = 410;
-            this.btnSave.Text = "Save";
-            this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // classSelection
             // 
@@ -179,16 +203,7 @@
             this.classSelection.Name = "classSelection";
             this.classSelection.Size = new System.Drawing.Size(849, 21);
             this.classSelection.TabIndex = 409;
-            // 
-            // btnSelectClass
-            // 
-            this.btnSelectClass.Location = new System.Drawing.Point(867, 12);
-            this.btnSelectClass.Name = "btnSelectClass";
-            this.btnSelectClass.Size = new System.Drawing.Size(115, 23);
-            this.btnSelectClass.TabIndex = 408;
-            this.btnSelectClass.Text = "Load Difficulty";
-            this.btnSelectClass.UseVisualStyleBackColor = true;
-            this.btnSelectClass.Click += new System.EventHandler(this.btnSelectClass_Click);
+            this.classSelection.SelectedIndexChanged += new System.EventHandler(this.classSelection_SelectedIndexChanged);
             // 
             // characterTypes
             // 
@@ -759,591 +774,855 @@
             this.visual_sense_exposure_effect_upper_modifier.Size = new System.Drawing.Size(49, 20);
             this.visual_sense_exposure_effect_upper_modifier.TabIndex = 422;
             // 
-            // groupBox5
+            // groupBox2
             // 
-            this.groupBox5.Controls.Add(this.backstage_area_sweep_ambush_timeout_mofisier);
-            this.groupBox5.Controls.Add(this.label52);
-            this.groupBox5.Controls.Add(this.label16);
-            this.groupBox5.Controls.Add(this.label51);
-            this.groupBox5.Controls.Add(this.label25);
-            this.groupBox5.Controls.Add(this.backstage_area_sweep_killtrap_time_modifier);
-            this.groupBox5.Controls.Add(this.backstage_area_sweep_max_idle_time_modifier);
-            this.groupBox5.Controls.Add(this.label48);
-            this.groupBox5.Controls.Add(this.backstage_area_sweep_min_idle_time_modifier);
-            this.groupBox5.Controls.Add(this.label47);
-            this.groupBox5.Controls.Add(this.label28);
-            this.groupBox5.Controls.Add(this.backstage_area_sweep_role_timeout_modifier);
-            this.groupBox5.Controls.Add(this.label30);
-            this.groupBox5.Controls.Add(this.backstage_area_sweep_max_distance_modifier);
-            this.groupBox5.Controls.Add(this.backstage_area_sweep_min_distance_modifier);
-            this.groupBox5.Controls.Add(this.label31);
-            this.groupBox5.Location = new System.Drawing.Point(706, 41);
-            this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(222, 285);
-            this.groupBox5.TabIndex = 421;
-            this.groupBox5.TabStop = false;
-            this.groupBox5.Text = "Backstage Alien Configuration Modifiers";
+            this.groupBox2.Controls.Add(this.groupBox11);
+            this.groupBox2.Controls.Add(this.groupBox8);
+            this.groupBox2.Controls.Add(this.groupBox7);
+            this.groupBox2.Controls.Add(this.groupBox12);
+            this.groupBox2.Location = new System.Drawing.Point(10, 19);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(467, 412);
+            this.groupBox2.TabIndex = 425;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Frontstage";
             // 
-            // backstage_area_sweep_ambush_timeout_mofisier
+            // groupBox11
             // 
-            this.backstage_area_sweep_ambush_timeout_mofisier.Enabled = false;
-            this.backstage_area_sweep_ambush_timeout_mofisier.Location = new System.Drawing.Point(17, 251);
-            this.backstage_area_sweep_ambush_timeout_mofisier.Name = "backstage_area_sweep_ambush_timeout_mofisier";
-            this.backstage_area_sweep_ambush_timeout_mofisier.Size = new System.Drawing.Size(187, 20);
-            this.backstage_area_sweep_ambush_timeout_mofisier.TabIndex = 406;
-            // 
-            // label52
-            // 
-            this.label52.AutoSize = true;
-            this.label52.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label52.Location = new System.Drawing.Point(6, 173);
-            this.label52.Name = "label52";
-            this.label52.Size = new System.Drawing.Size(119, 20);
-            this.label52.TabIndex = 350;
-            this.label52.Text = "Ambush Timers";
-            // 
-            // label16
-            // 
-            this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(14, 235);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(126, 13);
-            this.label16.TabIndex = 405;
-            this.label16.Text = "Ambush Timeout Modifier";
-            // 
-            // label51
-            // 
-            this.label51.AutoSize = true;
-            this.label51.Location = new System.Drawing.Point(14, 196);
-            this.label51.Name = "label51";
-            this.label51.Size = new System.Drawing.Size(104, 13);
-            this.label51.TabIndex = 351;
-            this.label51.Text = "Killtrap Time Modifier";
-            // 
-            // label25
-            // 
-            this.label25.AutoSize = true;
-            this.label25.Location = new System.Drawing.Point(73, 144);
-            this.label25.Name = "label25";
-            this.label25.Size = new System.Drawing.Size(77, 13);
-            this.label25.TabIndex = 404;
-            this.label25.Text = "Min -------> Max";
-            // 
-            // backstage_area_sweep_killtrap_time_modifier
-            // 
-            this.backstage_area_sweep_killtrap_time_modifier.Enabled = false;
-            this.backstage_area_sweep_killtrap_time_modifier.Location = new System.Drawing.Point(17, 212);
-            this.backstage_area_sweep_killtrap_time_modifier.Name = "backstage_area_sweep_killtrap_time_modifier";
-            this.backstage_area_sweep_killtrap_time_modifier.Size = new System.Drawing.Size(187, 20);
-            this.backstage_area_sweep_killtrap_time_modifier.TabIndex = 352;
-            // 
-            // backstage_area_sweep_max_idle_time_modifier
-            // 
-            this.backstage_area_sweep_max_idle_time_modifier.Enabled = false;
-            this.backstage_area_sweep_max_idle_time_modifier.Location = new System.Drawing.Point(156, 141);
-            this.backstage_area_sweep_max_idle_time_modifier.Name = "backstage_area_sweep_max_idle_time_modifier";
-            this.backstage_area_sweep_max_idle_time_modifier.Size = new System.Drawing.Size(49, 20);
-            this.backstage_area_sweep_max_idle_time_modifier.TabIndex = 403;
-            // 
-            // label48
-            // 
-            this.label48.AutoSize = true;
-            this.label48.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label48.Location = new System.Drawing.Point(6, 21);
-            this.label48.Name = "label48";
-            this.label48.Size = new System.Drawing.Size(138, 20);
-            this.label48.TabIndex = 356;
-            this.label48.Text = "Backstage Sweep";
-            // 
-            // backstage_area_sweep_min_idle_time_modifier
-            // 
-            this.backstage_area_sweep_min_idle_time_modifier.Enabled = false;
-            this.backstage_area_sweep_min_idle_time_modifier.Location = new System.Drawing.Point(18, 141);
-            this.backstage_area_sweep_min_idle_time_modifier.Name = "backstage_area_sweep_min_idle_time_modifier";
-            this.backstage_area_sweep_min_idle_time_modifier.Size = new System.Drawing.Size(49, 20);
-            this.backstage_area_sweep_min_idle_time_modifier.TabIndex = 402;
-            // 
-            // label47
-            // 
-            this.label47.AutoSize = true;
-            this.label47.Location = new System.Drawing.Point(14, 43);
-            this.label47.Name = "label47";
-            this.label47.Size = new System.Drawing.Size(121, 13);
-            this.label47.TabIndex = 357;
-            this.label47.Text = "Sweep Timeout Modifier";
-            // 
-            // label28
-            // 
-            this.label28.AutoSize = true;
-            this.label28.Location = new System.Drawing.Point(14, 125);
-            this.label28.Name = "label28";
-            this.label28.Size = new System.Drawing.Size(90, 13);
-            this.label28.TabIndex = 401;
-            this.label28.Text = "Idle Time Modifier";
-            // 
-            // backstage_area_sweep_role_timeout_modifier
-            // 
-            this.backstage_area_sweep_role_timeout_modifier.Enabled = false;
-            this.backstage_area_sweep_role_timeout_modifier.Location = new System.Drawing.Point(18, 59);
-            this.backstage_area_sweep_role_timeout_modifier.Name = "backstage_area_sweep_role_timeout_modifier";
-            this.backstage_area_sweep_role_timeout_modifier.Size = new System.Drawing.Size(187, 20);
-            this.backstage_area_sweep_role_timeout_modifier.TabIndex = 358;
-            // 
-            // label30
-            // 
-            this.label30.AutoSize = true;
-            this.label30.Location = new System.Drawing.Point(73, 103);
-            this.label30.Name = "label30";
-            this.label30.Size = new System.Drawing.Size(77, 13);
-            this.label30.TabIndex = 400;
-            this.label30.Text = "Min -------> Max";
-            // 
-            // backstage_area_sweep_max_distance_modifier
-            // 
-            this.backstage_area_sweep_max_distance_modifier.Enabled = false;
-            this.backstage_area_sweep_max_distance_modifier.Location = new System.Drawing.Point(156, 100);
-            this.backstage_area_sweep_max_distance_modifier.Name = "backstage_area_sweep_max_distance_modifier";
-            this.backstage_area_sweep_max_distance_modifier.Size = new System.Drawing.Size(49, 20);
-            this.backstage_area_sweep_max_distance_modifier.TabIndex = 399;
-            // 
-            // backstage_area_sweep_min_distance_modifier
-            // 
-            this.backstage_area_sweep_min_distance_modifier.Enabled = false;
-            this.backstage_area_sweep_min_distance_modifier.Location = new System.Drawing.Point(18, 100);
-            this.backstage_area_sweep_min_distance_modifier.Name = "backstage_area_sweep_min_distance_modifier";
-            this.backstage_area_sweep_min_distance_modifier.Size = new System.Drawing.Size(49, 20);
-            this.backstage_area_sweep_min_distance_modifier.TabIndex = 398;
-            // 
-            // label31
-            // 
-            this.label31.AutoSize = true;
-            this.label31.Location = new System.Drawing.Point(14, 84);
-            this.label31.Name = "label31";
-            this.label31.Size = new System.Drawing.Size(125, 13);
-            this.label31.TabIndex = 397;
-            this.label31.Text = "Sweep Distance Modifier";
-            // 
-            // groupBox6
-            // 
-            this.groupBox6.Controls.Add(this.label32);
-            this.groupBox6.Controls.Add(this.label34);
-            this.groupBox6.Controls.Add(this.menace_gauge_decrease_time_modifier);
-            this.groupBox6.Controls.Add(this.label35);
-            this.groupBox6.Controls.Add(this.menace_cool_down_time_modifier);
-            this.groupBox6.Controls.Add(this.label36);
-            this.groupBox6.Controls.Add(this.meance_deemed_time_modifier);
-            this.groupBox6.Controls.Add(this.label37);
-            this.groupBox6.Controls.Add(this.max_menaces_modifier);
-            this.groupBox6.Controls.Add(this.label38);
-            this.groupBox6.Controls.Add(this.menace_gauge_seconds_to_fill_modifier);
-            this.groupBox6.Controls.Add(this.label41);
-            this.groupBox6.Controls.Add(this.Vent_Attract_Time_Min);
-            this.groupBox6.Controls.Add(this.Vent_Attract_Time_Max);
-            this.groupBox6.Controls.Add(this.label42);
-            this.groupBox6.Controls.Add(this.label43);
-            this.groupBox6.Controls.Add(this.label44);
-            this.groupBox6.Controls.Add(this.increase_sweep_duration_modifier);
-            this.groupBox6.Controls.Add(this.label45);
-            this.groupBox6.Controls.Add(this.decrease_sweep_duration_modifier);
-            this.groupBox6.Controls.Add(this.label49);
-            this.groupBox6.Controls.Add(this.label50);
-            this.groupBox6.Controls.Add(this.near_target_exclusion_radius_first_stalk_min_modifier);
-            this.groupBox6.Controls.Add(this.near_target_exclusion_radius_first_stalk_max_modifier);
-            this.groupBox6.Controls.Add(this.label53);
-            this.groupBox6.Controls.Add(this.label54);
-            this.groupBox6.Controls.Add(this.near_target_exclusion_radius_subsequent_stalk_min_modifier);
-            this.groupBox6.Controls.Add(this.near_target_exclusion_radius_subsequent_stalk_max_modifier);
-            this.groupBox6.Controls.Add(this.label55);
-            this.groupBox6.Controls.Add(this.label56);
-            this.groupBox6.Controls.Add(this.near_objective_exclusion_radius_first_stalk_min_modifier);
-            this.groupBox6.Controls.Add(this.near_objective_exclusion_radius_first_stalk_max_modifier);
-            this.groupBox6.Controls.Add(this.label57);
-            this.groupBox6.Controls.Add(this.label58);
-            this.groupBox6.Controls.Add(this.near_objective_exclusion_radius_subsequent_stalk_min_modifier);
-            this.groupBox6.Controls.Add(this.near_objective_exclusion_radius_subsequent_stalk_max_modifier);
-            this.groupBox6.Controls.Add(this.label59);
-            this.groupBox6.Controls.Add(this.label60);
-            this.groupBox6.Controls.Add(this.sweep_box_half_width_modifier);
-            this.groupBox6.Controls.Add(this.label61);
-            this.groupBox6.Controls.Add(this.sweep_box_half_length_modifier);
-            this.groupBox6.Location = new System.Drawing.Point(65, 75);
-            this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(635, 251);
-            this.groupBox6.TabIndex = 420;
-            this.groupBox6.TabStop = false;
-            this.groupBox6.Text = "Frontstage Alien Configuration Modifiers";
-            // 
-            // label32
-            // 
-            this.label32.AutoSize = true;
-            this.label32.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label32.Location = new System.Drawing.Point(4, 20);
-            this.label32.Name = "label32";
-            this.label32.Size = new System.Drawing.Size(158, 20);
-            this.label32.TabIndex = 326;
-            this.label32.Text = "Alien Menace Guage";
-            // 
-            // label34
-            // 
-            this.label34.AutoSize = true;
-            this.label34.Location = new System.Drawing.Point(12, 43);
-            this.label34.Name = "label34";
-            this.label34.Size = new System.Drawing.Size(196, 13);
-            this.label34.TabIndex = 327;
-            this.label34.Text = "Menace Guage Decrease Time Modifier";
-            // 
-            // menace_gauge_decrease_time_modifier
-            // 
-            this.menace_gauge_decrease_time_modifier.Enabled = false;
-            this.menace_gauge_decrease_time_modifier.Location = new System.Drawing.Point(15, 59);
-            this.menace_gauge_decrease_time_modifier.Name = "menace_gauge_decrease_time_modifier";
-            this.menace_gauge_decrease_time_modifier.Size = new System.Drawing.Size(187, 20);
-            this.menace_gauge_decrease_time_modifier.TabIndex = 328;
-            // 
-            // label35
-            // 
-            this.label35.AutoSize = true;
-            this.label35.Location = new System.Drawing.Point(12, 82);
-            this.label35.Name = "label35";
-            this.label35.Size = new System.Drawing.Size(162, 13);
-            this.label35.TabIndex = 329;
-            this.label35.Text = "Menace Cooldown Time Modifier";
-            // 
-            // menace_cool_down_time_modifier
-            // 
-            this.menace_cool_down_time_modifier.Enabled = false;
-            this.menace_cool_down_time_modifier.Location = new System.Drawing.Point(15, 98);
-            this.menace_cool_down_time_modifier.Name = "menace_cool_down_time_modifier";
-            this.menace_cool_down_time_modifier.Size = new System.Drawing.Size(187, 20);
-            this.menace_cool_down_time_modifier.TabIndex = 330;
-            // 
-            // label36
-            // 
-            this.label36.AutoSize = true;
-            this.label36.Location = new System.Drawing.Point(12, 122);
-            this.label36.Name = "label36";
-            this.label36.Size = new System.Drawing.Size(155, 13);
-            this.label36.TabIndex = 331;
-            this.label36.Text = "Menace Deemed Time Modifier";
-            // 
-            // meance_deemed_time_modifier
-            // 
-            this.meance_deemed_time_modifier.Enabled = false;
-            this.meance_deemed_time_modifier.Location = new System.Drawing.Point(15, 138);
-            this.meance_deemed_time_modifier.Name = "meance_deemed_time_modifier";
-            this.meance_deemed_time_modifier.Size = new System.Drawing.Size(187, 20);
-            this.meance_deemed_time_modifier.TabIndex = 332;
-            // 
-            // label37
-            // 
-            this.label37.AutoSize = true;
-            this.label37.Location = new System.Drawing.Point(12, 161);
-            this.label37.Name = "label37";
-            this.label37.Size = new System.Drawing.Size(192, 13);
-            this.label37.TabIndex = 333;
-            this.label37.Text = "Maximum Number Of Menaces Modifier";
-            // 
-            // max_menaces_modifier
-            // 
-            this.max_menaces_modifier.Enabled = false;
-            this.max_menaces_modifier.Location = new System.Drawing.Point(15, 177);
-            this.max_menaces_modifier.Name = "max_menaces_modifier";
-            this.max_menaces_modifier.Size = new System.Drawing.Size(187, 20);
-            this.max_menaces_modifier.TabIndex = 334;
-            // 
-            // label38
-            // 
-            this.label38.AutoSize = true;
-            this.label38.Location = new System.Drawing.Point(12, 200);
-            this.label38.Name = "label38";
-            this.label38.Size = new System.Drawing.Size(197, 13);
-            this.label38.TabIndex = 335;
-            this.label38.Text = "Seconds To Fill Menace Guage Modifier";
-            // 
-            // menace_gauge_seconds_to_fill_modifier
-            // 
-            this.menace_gauge_seconds_to_fill_modifier.Enabled = false;
-            this.menace_gauge_seconds_to_fill_modifier.Location = new System.Drawing.Point(15, 216);
-            this.menace_gauge_seconds_to_fill_modifier.Name = "menace_gauge_seconds_to_fill_modifier";
-            this.menace_gauge_seconds_to_fill_modifier.Size = new System.Drawing.Size(187, 20);
-            this.menace_gauge_seconds_to_fill_modifier.TabIndex = 336;
-            // 
-            // label41
-            // 
-            this.label41.AutoSize = true;
-            this.label41.Location = new System.Drawing.Point(221, 200);
-            this.label41.Name = "label41";
-            this.label41.Size = new System.Drawing.Size(129, 13);
-            this.label41.TabIndex = 345;
-            this.label41.Text = "Vent Attract Time Modifier";
+            this.groupBox11.Controls.Add(this.Vent_Attract_Time_Min);
+            this.groupBox11.Controls.Add(this.label39);
+            this.groupBox11.Controls.Add(this.label40);
+            this.groupBox11.Controls.Add(this.Vent_Attract_Time_Max);
+            this.groupBox11.Location = new System.Drawing.Point(230, 273);
+            this.groupBox11.Name = "groupBox11";
+            this.groupBox11.Size = new System.Drawing.Size(231, 68);
+            this.groupBox11.TabIndex = 411;
+            this.groupBox11.TabStop = false;
+            this.groupBox11.Text = "Player In Vent";
             // 
             // Vent_Attract_Time_Min
             // 
-            this.Vent_Attract_Time_Min.Enabled = false;
-            this.Vent_Attract_Time_Min.Location = new System.Drawing.Point(225, 216);
+            this.Vent_Attract_Time_Min.DecimalPlaces = 2;
+            this.Vent_Attract_Time_Min.Location = new System.Drawing.Point(21, 36);
+            this.Vent_Attract_Time_Min.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.Vent_Attract_Time_Min.Minimum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            -2147483648});
             this.Vent_Attract_Time_Min.Name = "Vent_Attract_Time_Min";
             this.Vent_Attract_Time_Min.Size = new System.Drawing.Size(49, 20);
-            this.Vent_Attract_Time_Min.TabIndex = 346;
+            this.Vent_Attract_Time_Min.TabIndex = 450;
+            // 
+            // label39
+            // 
+            this.label39.AutoSize = true;
+            this.label39.Location = new System.Drawing.Point(76, 39);
+            this.label39.Name = "label39";
+            this.label39.Size = new System.Drawing.Size(77, 13);
+            this.label39.TabIndex = 348;
+            this.label39.Text = "Min -------> Max";
+            // 
+            // label40
+            // 
+            this.label40.AutoSize = true;
+            this.label40.Location = new System.Drawing.Point(17, 20);
+            this.label40.Name = "label40";
+            this.label40.Size = new System.Drawing.Size(89, 13);
+            this.label40.TabIndex = 345;
+            this.label40.Text = "Vent Attract Time";
             // 
             // Vent_Attract_Time_Max
             // 
-            this.Vent_Attract_Time_Max.Enabled = false;
-            this.Vent_Attract_Time_Max.Location = new System.Drawing.Point(363, 216);
+            this.Vent_Attract_Time_Max.DecimalPlaces = 2;
+            this.Vent_Attract_Time_Max.Location = new System.Drawing.Point(159, 36);
+            this.Vent_Attract_Time_Max.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.Vent_Attract_Time_Max.Minimum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            -2147483648});
             this.Vent_Attract_Time_Max.Name = "Vent_Attract_Time_Max";
             this.Vent_Attract_Time_Max.Size = new System.Drawing.Size(49, 20);
-            this.Vent_Attract_Time_Max.TabIndex = 347;
+            this.Vent_Attract_Time_Max.TabIndex = 421;
             // 
-            // label42
+            // groupBox8
             // 
-            this.label42.AutoSize = true;
-            this.label42.Location = new System.Drawing.Point(280, 219);
-            this.label42.Name = "label42";
-            this.label42.Size = new System.Drawing.Size(77, 13);
-            this.label42.TabIndex = 348;
-            this.label42.Text = "Min -------> Max";
+            this.groupBox8.Controls.Add(this.groupBox10);
+            this.groupBox8.Controls.Add(this.groupBox9);
+            this.groupBox8.Location = new System.Drawing.Point(230, 19);
+            this.groupBox8.Name = "groupBox8";
+            this.groupBox8.Size = new System.Drawing.Size(231, 248);
+            this.groupBox8.TabIndex = 410;
+            this.groupBox8.TabStop = false;
+            this.groupBox8.Text = "Search Exclusion Radius";
             // 
-            // label43
+            // groupBox10
             // 
-            this.label43.AutoSize = true;
-            this.label43.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label43.Location = new System.Drawing.Point(213, 20);
-            this.label43.Name = "label43";
-            this.label43.Size = new System.Drawing.Size(140, 20);
-            this.label43.TabIndex = 163;
-            this.label43.Text = "Frontstage Sweep";
+            this.groupBox10.Controls.Add(this.label46);
+            this.groupBox10.Controls.Add(this.label62);
+            this.groupBox10.Controls.Add(this.label63);
+            this.groupBox10.Controls.Add(this.label64);
+            this.groupBox10.Controls.Add(this.near_objective_exclusion_radius_subsequent_stalk_min_modifier);
+            this.groupBox10.Controls.Add(this.near_objective_exclusion_radius_subsequent_stalk_max_modifier);
+            this.groupBox10.Controls.Add(this.near_objective_exclusion_radius_first_stalk_min_modifier);
+            this.groupBox10.Controls.Add(this.near_objective_exclusion_radius_first_stalk_max_modifier);
+            this.groupBox10.Location = new System.Drawing.Point(6, 131);
+            this.groupBox10.Name = "groupBox10";
+            this.groupBox10.Size = new System.Drawing.Size(218, 107);
+            this.groupBox10.TabIndex = 410;
+            this.groupBox10.TabStop = false;
+            this.groupBox10.Text = "Near Objective";
             // 
-            // label44
+            // label46
             // 
-            this.label44.AutoSize = true;
-            this.label44.Location = new System.Drawing.Point(221, 43);
-            this.label44.Name = "label44";
-            this.label44.Size = new System.Drawing.Size(167, 13);
-            this.label44.TabIndex = 164;
-            this.label44.Text = "Sweep Duration Increase Modifier";
+            this.label46.AutoSize = true;
+            this.label46.Location = new System.Drawing.Point(70, 80);
+            this.label46.Name = "label46";
+            this.label46.Size = new System.Drawing.Size(77, 13);
+            this.label46.TabIndex = 325;
+            this.label46.Text = "Min -------> Max";
             // 
-            // increase_sweep_duration_modifier
+            // label62
             // 
-            this.increase_sweep_duration_modifier.Enabled = false;
-            this.increase_sweep_duration_modifier.Location = new System.Drawing.Point(224, 59);
-            this.increase_sweep_duration_modifier.Name = "increase_sweep_duration_modifier";
-            this.increase_sweep_duration_modifier.Size = new System.Drawing.Size(187, 20);
-            this.increase_sweep_duration_modifier.TabIndex = 165;
+            this.label62.AutoSize = true;
+            this.label62.Location = new System.Drawing.Point(11, 61);
+            this.label62.Name = "label62";
+            this.label62.Size = new System.Drawing.Size(91, 13);
+            this.label62.TabIndex = 322;
+            this.label62.Text = "Subsequent Stalk";
             // 
-            // label45
+            // label63
             // 
-            this.label45.AutoSize = true;
-            this.label45.Location = new System.Drawing.Point(221, 82);
-            this.label45.Name = "label45";
-            this.label45.Size = new System.Drawing.Size(172, 13);
-            this.label45.TabIndex = 166;
-            this.label45.Text = "Sweep Duration Decrease Modifier";
+            this.label63.AutoSize = true;
+            this.label63.Location = new System.Drawing.Point(70, 41);
+            this.label63.Name = "label63";
+            this.label63.Size = new System.Drawing.Size(77, 13);
+            this.label63.TabIndex = 321;
+            this.label63.Text = "Min -------> Max";
             // 
-            // decrease_sweep_duration_modifier
+            // label64
             // 
-            this.decrease_sweep_duration_modifier.Enabled = false;
-            this.decrease_sweep_duration_modifier.Location = new System.Drawing.Point(224, 98);
-            this.decrease_sweep_duration_modifier.Name = "decrease_sweep_duration_modifier";
-            this.decrease_sweep_duration_modifier.Size = new System.Drawing.Size(187, 20);
-            this.decrease_sweep_duration_modifier.TabIndex = 167;
-            // 
-            // label49
-            // 
-            this.label49.AutoSize = true;
-            this.label49.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label49.Location = new System.Drawing.Point(421, 21);
-            this.label49.Name = "label49";
-            this.label49.Size = new System.Drawing.Size(185, 20);
-            this.label49.TabIndex = 305;
-            this.label49.Text = "Search Exclusion Radius";
-            // 
-            // label50
-            // 
-            this.label50.AutoSize = true;
-            this.label50.Location = new System.Drawing.Point(429, 43);
-            this.label50.Name = "label50";
-            this.label50.Size = new System.Drawing.Size(170, 13);
-            this.label50.TabIndex = 310;
-            this.label50.Text = "Near Target On First Stalk Modifier";
-            // 
-            // near_target_exclusion_radius_first_stalk_min_modifier
-            // 
-            this.near_target_exclusion_radius_first_stalk_min_modifier.Enabled = false;
-            this.near_target_exclusion_radius_first_stalk_min_modifier.Location = new System.Drawing.Point(433, 59);
-            this.near_target_exclusion_radius_first_stalk_min_modifier.Name = "near_target_exclusion_radius_first_stalk_min_modifier";
-            this.near_target_exclusion_radius_first_stalk_min_modifier.Size = new System.Drawing.Size(49, 20);
-            this.near_target_exclusion_radius_first_stalk_min_modifier.TabIndex = 311;
-            // 
-            // near_target_exclusion_radius_first_stalk_max_modifier
-            // 
-            this.near_target_exclusion_radius_first_stalk_max_modifier.Enabled = false;
-            this.near_target_exclusion_radius_first_stalk_max_modifier.Location = new System.Drawing.Point(571, 59);
-            this.near_target_exclusion_radius_first_stalk_max_modifier.Name = "near_target_exclusion_radius_first_stalk_max_modifier";
-            this.near_target_exclusion_radius_first_stalk_max_modifier.Size = new System.Drawing.Size(49, 20);
-            this.near_target_exclusion_radius_first_stalk_max_modifier.TabIndex = 312;
-            // 
-            // label53
-            // 
-            this.label53.AutoSize = true;
-            this.label53.Location = new System.Drawing.Point(488, 62);
-            this.label53.Name = "label53";
-            this.label53.Size = new System.Drawing.Size(77, 13);
-            this.label53.TabIndex = 313;
-            this.label53.Text = "Min -------> Max";
-            // 
-            // label54
-            // 
-            this.label54.AutoSize = true;
-            this.label54.Location = new System.Drawing.Point(429, 82);
-            this.label54.Name = "label54";
-            this.label54.Size = new System.Drawing.Size(188, 13);
-            this.label54.TabIndex = 314;
-            this.label54.Text = "Near Target On Second Stalk Modifier";
-            // 
-            // near_target_exclusion_radius_subsequent_stalk_min_modifier
-            // 
-            this.near_target_exclusion_radius_subsequent_stalk_min_modifier.Enabled = false;
-            this.near_target_exclusion_radius_subsequent_stalk_min_modifier.Location = new System.Drawing.Point(433, 98);
-            this.near_target_exclusion_radius_subsequent_stalk_min_modifier.Name = "near_target_exclusion_radius_subsequent_stalk_min_modifier";
-            this.near_target_exclusion_radius_subsequent_stalk_min_modifier.Size = new System.Drawing.Size(49, 20);
-            this.near_target_exclusion_radius_subsequent_stalk_min_modifier.TabIndex = 315;
-            // 
-            // near_target_exclusion_radius_subsequent_stalk_max_modifier
-            // 
-            this.near_target_exclusion_radius_subsequent_stalk_max_modifier.Enabled = false;
-            this.near_target_exclusion_radius_subsequent_stalk_max_modifier.Location = new System.Drawing.Point(571, 98);
-            this.near_target_exclusion_radius_subsequent_stalk_max_modifier.Name = "near_target_exclusion_radius_subsequent_stalk_max_modifier";
-            this.near_target_exclusion_radius_subsequent_stalk_max_modifier.Size = new System.Drawing.Size(49, 20);
-            this.near_target_exclusion_radius_subsequent_stalk_max_modifier.TabIndex = 316;
-            // 
-            // label55
-            // 
-            this.label55.AutoSize = true;
-            this.label55.Location = new System.Drawing.Point(488, 101);
-            this.label55.Name = "label55";
-            this.label55.Size = new System.Drawing.Size(77, 13);
-            this.label55.TabIndex = 317;
-            this.label55.Text = "Min -------> Max";
-            // 
-            // label56
-            // 
-            this.label56.AutoSize = true;
-            this.label56.Location = new System.Drawing.Point(429, 122);
-            this.label56.Name = "label56";
-            this.label56.Size = new System.Drawing.Size(184, 13);
-            this.label56.TabIndex = 318;
-            this.label56.Text = "Near Objective On First Stalk Modifier";
-            // 
-            // near_objective_exclusion_radius_first_stalk_min_modifier
-            // 
-            this.near_objective_exclusion_radius_first_stalk_min_modifier.Enabled = false;
-            this.near_objective_exclusion_radius_first_stalk_min_modifier.Location = new System.Drawing.Point(433, 138);
-            this.near_objective_exclusion_radius_first_stalk_min_modifier.Name = "near_objective_exclusion_radius_first_stalk_min_modifier";
-            this.near_objective_exclusion_radius_first_stalk_min_modifier.Size = new System.Drawing.Size(49, 20);
-            this.near_objective_exclusion_radius_first_stalk_min_modifier.TabIndex = 319;
-            // 
-            // near_objective_exclusion_radius_first_stalk_max_modifier
-            // 
-            this.near_objective_exclusion_radius_first_stalk_max_modifier.Enabled = false;
-            this.near_objective_exclusion_radius_first_stalk_max_modifier.Location = new System.Drawing.Point(571, 138);
-            this.near_objective_exclusion_radius_first_stalk_max_modifier.Name = "near_objective_exclusion_radius_first_stalk_max_modifier";
-            this.near_objective_exclusion_radius_first_stalk_max_modifier.Size = new System.Drawing.Size(49, 20);
-            this.near_objective_exclusion_radius_first_stalk_max_modifier.TabIndex = 320;
-            this.near_objective_exclusion_radius_first_stalk_max_modifier.TextChanged += new System.EventHandler(this.near_objective_exclusion_radius_first_stalk_max_TextChanged);
-            // 
-            // label57
-            // 
-            this.label57.AutoSize = true;
-            this.label57.Location = new System.Drawing.Point(488, 141);
-            this.label57.Name = "label57";
-            this.label57.Size = new System.Drawing.Size(77, 13);
-            this.label57.TabIndex = 321;
-            this.label57.Text = "Min -------> Max";
-            // 
-            // label58
-            // 
-            this.label58.AutoSize = true;
-            this.label58.Location = new System.Drawing.Point(429, 161);
-            this.label58.Name = "label58";
-            this.label58.Size = new System.Drawing.Size(202, 13);
-            this.label58.TabIndex = 322;
-            this.label58.Text = "Near Objective On Second Stalk Modifier";
+            this.label64.AutoSize = true;
+            this.label64.Location = new System.Drawing.Point(11, 22);
+            this.label64.Name = "label64";
+            this.label64.Size = new System.Drawing.Size(53, 13);
+            this.label64.TabIndex = 318;
+            this.label64.Text = "First Stalk";
             // 
             // near_objective_exclusion_radius_subsequent_stalk_min_modifier
             // 
-            this.near_objective_exclusion_radius_subsequent_stalk_min_modifier.Enabled = false;
-            this.near_objective_exclusion_radius_subsequent_stalk_min_modifier.Location = new System.Drawing.Point(433, 177);
+            this.near_objective_exclusion_radius_subsequent_stalk_min_modifier.DecimalPlaces = 2;
+            this.near_objective_exclusion_radius_subsequent_stalk_min_modifier.Location = new System.Drawing.Point(15, 77);
+            this.near_objective_exclusion_radius_subsequent_stalk_min_modifier.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.near_objective_exclusion_radius_subsequent_stalk_min_modifier.Minimum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            -2147483648});
             this.near_objective_exclusion_radius_subsequent_stalk_min_modifier.Name = "near_objective_exclusion_radius_subsequent_stalk_min_modifier";
             this.near_objective_exclusion_radius_subsequent_stalk_min_modifier.Size = new System.Drawing.Size(49, 20);
-            this.near_objective_exclusion_radius_subsequent_stalk_min_modifier.TabIndex = 323;
+            this.near_objective_exclusion_radius_subsequent_stalk_min_modifier.TabIndex = 420;
             // 
             // near_objective_exclusion_radius_subsequent_stalk_max_modifier
             // 
-            this.near_objective_exclusion_radius_subsequent_stalk_max_modifier.Enabled = false;
-            this.near_objective_exclusion_radius_subsequent_stalk_max_modifier.Location = new System.Drawing.Point(571, 177);
+            this.near_objective_exclusion_radius_subsequent_stalk_max_modifier.DecimalPlaces = 2;
+            this.near_objective_exclusion_radius_subsequent_stalk_max_modifier.Location = new System.Drawing.Point(153, 78);
+            this.near_objective_exclusion_radius_subsequent_stalk_max_modifier.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.near_objective_exclusion_radius_subsequent_stalk_max_modifier.Minimum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            -2147483648});
             this.near_objective_exclusion_radius_subsequent_stalk_max_modifier.Name = "near_objective_exclusion_radius_subsequent_stalk_max_modifier";
             this.near_objective_exclusion_radius_subsequent_stalk_max_modifier.Size = new System.Drawing.Size(49, 20);
-            this.near_objective_exclusion_radius_subsequent_stalk_max_modifier.TabIndex = 324;
+            this.near_objective_exclusion_radius_subsequent_stalk_max_modifier.TabIndex = 419;
             // 
-            // label59
+            // near_objective_exclusion_radius_first_stalk_min_modifier
             // 
-            this.label59.AutoSize = true;
-            this.label59.Location = new System.Drawing.Point(488, 180);
-            this.label59.Name = "label59";
-            this.label59.Size = new System.Drawing.Size(77, 13);
-            this.label59.TabIndex = 325;
-            this.label59.Text = "Min -------> Max";
+            this.near_objective_exclusion_radius_first_stalk_min_modifier.DecimalPlaces = 2;
+            this.near_objective_exclusion_radius_first_stalk_min_modifier.Location = new System.Drawing.Point(15, 38);
+            this.near_objective_exclusion_radius_first_stalk_min_modifier.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.near_objective_exclusion_radius_first_stalk_min_modifier.Minimum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            -2147483648});
+            this.near_objective_exclusion_radius_first_stalk_min_modifier.Name = "near_objective_exclusion_radius_first_stalk_min_modifier";
+            this.near_objective_exclusion_radius_first_stalk_min_modifier.Size = new System.Drawing.Size(49, 20);
+            this.near_objective_exclusion_radius_first_stalk_min_modifier.TabIndex = 418;
             // 
-            // label60
+            // near_objective_exclusion_radius_first_stalk_max_modifier
             // 
-            this.label60.AutoSize = true;
-            this.label60.Location = new System.Drawing.Point(221, 122);
-            this.label60.Name = "label60";
-            this.label60.Size = new System.Drawing.Size(158, 13);
-            this.label60.TabIndex = 341;
-            this.label60.Text = "Half Sweep Area Width Modifier";
+            this.near_objective_exclusion_radius_first_stalk_max_modifier.DecimalPlaces = 2;
+            this.near_objective_exclusion_radius_first_stalk_max_modifier.Location = new System.Drawing.Point(153, 38);
+            this.near_objective_exclusion_radius_first_stalk_max_modifier.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.near_objective_exclusion_radius_first_stalk_max_modifier.Minimum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            -2147483648});
+            this.near_objective_exclusion_radius_first_stalk_max_modifier.Name = "near_objective_exclusion_radius_first_stalk_max_modifier";
+            this.near_objective_exclusion_radius_first_stalk_max_modifier.Size = new System.Drawing.Size(49, 20);
+            this.near_objective_exclusion_radius_first_stalk_max_modifier.TabIndex = 417;
+            // 
+            // groupBox9
+            // 
+            this.groupBox9.Controls.Add(this.label65);
+            this.groupBox9.Controls.Add(this.label66);
+            this.groupBox9.Controls.Add(this.label67);
+            this.groupBox9.Controls.Add(this.label68);
+            this.groupBox9.Controls.Add(this.near_target_exclusion_radius_subsequent_stalk_min_modifier);
+            this.groupBox9.Controls.Add(this.near_target_exclusion_radius_subsequent_stalk_max_modifier);
+            this.groupBox9.Controls.Add(this.near_target_exclusion_radius_first_stalk_min_modifier);
+            this.groupBox9.Controls.Add(this.near_target_exclusion_radius_first_stalk_max_modifier);
+            this.groupBox9.Location = new System.Drawing.Point(6, 18);
+            this.groupBox9.Name = "groupBox9";
+            this.groupBox9.Size = new System.Drawing.Size(218, 107);
+            this.groupBox9.TabIndex = 411;
+            this.groupBox9.TabStop = false;
+            this.groupBox9.Text = "Near Target";
+            // 
+            // label65
+            // 
+            this.label65.AutoSize = true;
+            this.label65.Location = new System.Drawing.Point(70, 78);
+            this.label65.Name = "label65";
+            this.label65.Size = new System.Drawing.Size(77, 13);
+            this.label65.TabIndex = 317;
+            this.label65.Text = "Min -------> Max";
+            // 
+            // label66
+            // 
+            this.label66.AutoSize = true;
+            this.label66.Location = new System.Drawing.Point(11, 59);
+            this.label66.Name = "label66";
+            this.label66.Size = new System.Drawing.Size(91, 13);
+            this.label66.TabIndex = 314;
+            this.label66.Text = "Subsequent Stalk";
+            // 
+            // label67
+            // 
+            this.label67.AutoSize = true;
+            this.label67.Location = new System.Drawing.Point(70, 39);
+            this.label67.Name = "label67";
+            this.label67.Size = new System.Drawing.Size(77, 13);
+            this.label67.TabIndex = 313;
+            this.label67.Text = "Min -------> Max";
+            // 
+            // label68
+            // 
+            this.label68.AutoSize = true;
+            this.label68.Location = new System.Drawing.Point(11, 20);
+            this.label68.Name = "label68";
+            this.label68.Size = new System.Drawing.Size(53, 13);
+            this.label68.TabIndex = 310;
+            this.label68.Text = "First Stalk";
+            // 
+            // near_target_exclusion_radius_subsequent_stalk_min_modifier
+            // 
+            this.near_target_exclusion_radius_subsequent_stalk_min_modifier.DecimalPlaces = 2;
+            this.near_target_exclusion_radius_subsequent_stalk_min_modifier.Location = new System.Drawing.Point(14, 75);
+            this.near_target_exclusion_radius_subsequent_stalk_min_modifier.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.near_target_exclusion_radius_subsequent_stalk_min_modifier.Minimum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            -2147483648});
+            this.near_target_exclusion_radius_subsequent_stalk_min_modifier.Name = "near_target_exclusion_radius_subsequent_stalk_min_modifier";
+            this.near_target_exclusion_radius_subsequent_stalk_min_modifier.Size = new System.Drawing.Size(49, 20);
+            this.near_target_exclusion_radius_subsequent_stalk_min_modifier.TabIndex = 416;
+            // 
+            // near_target_exclusion_radius_subsequent_stalk_max_modifier
+            // 
+            this.near_target_exclusion_radius_subsequent_stalk_max_modifier.DecimalPlaces = 2;
+            this.near_target_exclusion_radius_subsequent_stalk_max_modifier.Location = new System.Drawing.Point(153, 76);
+            this.near_target_exclusion_radius_subsequent_stalk_max_modifier.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.near_target_exclusion_radius_subsequent_stalk_max_modifier.Minimum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            -2147483648});
+            this.near_target_exclusion_radius_subsequent_stalk_max_modifier.Name = "near_target_exclusion_radius_subsequent_stalk_max_modifier";
+            this.near_target_exclusion_radius_subsequent_stalk_max_modifier.Size = new System.Drawing.Size(49, 20);
+            this.near_target_exclusion_radius_subsequent_stalk_max_modifier.TabIndex = 412;
+            // 
+            // near_target_exclusion_radius_first_stalk_min_modifier
+            // 
+            this.near_target_exclusion_radius_first_stalk_min_modifier.DecimalPlaces = 2;
+            this.near_target_exclusion_radius_first_stalk_min_modifier.Location = new System.Drawing.Point(14, 36);
+            this.near_target_exclusion_radius_first_stalk_min_modifier.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.near_target_exclusion_radius_first_stalk_min_modifier.Minimum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            -2147483648});
+            this.near_target_exclusion_radius_first_stalk_min_modifier.Name = "near_target_exclusion_radius_first_stalk_min_modifier";
+            this.near_target_exclusion_radius_first_stalk_min_modifier.Size = new System.Drawing.Size(49, 20);
+            this.near_target_exclusion_radius_first_stalk_min_modifier.TabIndex = 415;
+            // 
+            // near_target_exclusion_radius_first_stalk_max_modifier
+            // 
+            this.near_target_exclusion_radius_first_stalk_max_modifier.DecimalPlaces = 2;
+            this.near_target_exclusion_radius_first_stalk_max_modifier.Location = new System.Drawing.Point(153, 36);
+            this.near_target_exclusion_radius_first_stalk_max_modifier.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.near_target_exclusion_radius_first_stalk_max_modifier.Minimum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            -2147483648});
+            this.near_target_exclusion_radius_first_stalk_max_modifier.Name = "near_target_exclusion_radius_first_stalk_max_modifier";
+            this.near_target_exclusion_radius_first_stalk_max_modifier.Size = new System.Drawing.Size(49, 20);
+            this.near_target_exclusion_radius_first_stalk_max_modifier.TabIndex = 414;
+            // 
+            // groupBox7
+            // 
+            this.groupBox7.Controls.Add(this.decrease_sweep_duration_modifier);
+            this.groupBox7.Controls.Add(this.sweep_box_half_width_modifier);
+            this.groupBox7.Controls.Add(this.sweep_box_half_length_modifier);
+            this.groupBox7.Controls.Add(this.label69);
+            this.groupBox7.Controls.Add(this.label70);
+            this.groupBox7.Controls.Add(this.label71);
+            this.groupBox7.Controls.Add(this.label72);
+            this.groupBox7.Controls.Add(this.increase_sweep_duration_modifier);
+            this.groupBox7.Location = new System.Drawing.Point(6, 214);
+            this.groupBox7.Name = "groupBox7";
+            this.groupBox7.Size = new System.Drawing.Size(218, 192);
+            this.groupBox7.TabIndex = 410;
+            this.groupBox7.TabStop = false;
+            this.groupBox7.Text = "Sweep Range";
+            // 
+            // decrease_sweep_duration_modifier
+            // 
+            this.decrease_sweep_duration_modifier.DecimalPlaces = 3;
+            this.decrease_sweep_duration_modifier.Location = new System.Drawing.Point(15, 78);
+            this.decrease_sweep_duration_modifier.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.decrease_sweep_duration_modifier.Minimum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            -2147483648});
+            this.decrease_sweep_duration_modifier.Name = "decrease_sweep_duration_modifier";
+            this.decrease_sweep_duration_modifier.Size = new System.Drawing.Size(187, 20);
+            this.decrease_sweep_duration_modifier.TabIndex = 438;
             // 
             // sweep_box_half_width_modifier
             // 
-            this.sweep_box_half_width_modifier.Enabled = false;
-            this.sweep_box_half_width_modifier.Location = new System.Drawing.Point(224, 138);
+            this.sweep_box_half_width_modifier.DecimalPlaces = 3;
+            this.sweep_box_half_width_modifier.Location = new System.Drawing.Point(15, 118);
+            this.sweep_box_half_width_modifier.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.sweep_box_half_width_modifier.Minimum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            -2147483648});
             this.sweep_box_half_width_modifier.Name = "sweep_box_half_width_modifier";
             this.sweep_box_half_width_modifier.Size = new System.Drawing.Size(187, 20);
-            this.sweep_box_half_width_modifier.TabIndex = 342;
-            // 
-            // label61
-            // 
-            this.label61.AutoSize = true;
-            this.label61.Location = new System.Drawing.Point(221, 161);
-            this.label61.Name = "label61";
-            this.label61.Size = new System.Drawing.Size(163, 13);
-            this.label61.TabIndex = 343;
-            this.label61.Text = "Half Sweep Area Length Modifier";
+            this.sweep_box_half_width_modifier.TabIndex = 439;
             // 
             // sweep_box_half_length_modifier
             // 
-            this.sweep_box_half_length_modifier.Enabled = false;
-            this.sweep_box_half_length_modifier.Location = new System.Drawing.Point(224, 177);
+            this.sweep_box_half_length_modifier.DecimalPlaces = 3;
+            this.sweep_box_half_length_modifier.Location = new System.Drawing.Point(15, 157);
+            this.sweep_box_half_length_modifier.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.sweep_box_half_length_modifier.Minimum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            -2147483648});
             this.sweep_box_half_length_modifier.Name = "sweep_box_half_length_modifier";
             this.sweep_box_half_length_modifier.Size = new System.Drawing.Size(187, 20);
-            this.sweep_box_half_length_modifier.TabIndex = 344;
+            this.sweep_box_half_length_modifier.TabIndex = 440;
             // 
-            // label33
+            // label69
             // 
-            this.label33.AutoSize = true;
-            this.label33.Location = new System.Drawing.Point(136, 48);
-            this.label33.Name = "label33";
-            this.label33.Size = new System.Drawing.Size(313, 13);
-            this.label33.TabIndex = 422;
-            this.label33.Text = "note to self - i think menace_cool_down_time modifier is unused?";
+            this.label69.AutoSize = true;
+            this.label69.Location = new System.Drawing.Point(12, 23);
+            this.label69.Name = "label69";
+            this.label69.Size = new System.Drawing.Size(91, 13);
+            this.label69.TabIndex = 164;
+            this.label69.Text = "Increase Duration";
+            // 
+            // label70
+            // 
+            this.label70.AutoSize = true;
+            this.label70.Location = new System.Drawing.Point(12, 141);
+            this.label70.Name = "label70";
+            this.label70.Size = new System.Drawing.Size(93, 13);
+            this.label70.TabIndex = 343;
+            this.label70.Text = "Area Length (Half)";
+            // 
+            // label71
+            // 
+            this.label71.AutoSize = true;
+            this.label71.Location = new System.Drawing.Point(12, 102);
+            this.label71.Name = "label71";
+            this.label71.Size = new System.Drawing.Size(88, 13);
+            this.label71.TabIndex = 341;
+            this.label71.Text = "Area Width (Half)";
+            // 
+            // label72
+            // 
+            this.label72.AutoSize = true;
+            this.label72.Location = new System.Drawing.Point(12, 62);
+            this.label72.Name = "label72";
+            this.label72.Size = new System.Drawing.Size(96, 13);
+            this.label72.TabIndex = 166;
+            this.label72.Text = "Decrease Duration";
+            // 
+            // increase_sweep_duration_modifier
+            // 
+            this.increase_sweep_duration_modifier.DecimalPlaces = 3;
+            this.increase_sweep_duration_modifier.Location = new System.Drawing.Point(15, 38);
+            this.increase_sweep_duration_modifier.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.increase_sweep_duration_modifier.Minimum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            -2147483648});
+            this.increase_sweep_duration_modifier.Name = "increase_sweep_duration_modifier";
+            this.increase_sweep_duration_modifier.Size = new System.Drawing.Size(187, 20);
+            this.increase_sweep_duration_modifier.TabIndex = 413;
+            // 
+            // groupBox12
+            // 
+            this.groupBox12.Controls.Add(this.menace_gauge_decrease_time_modifier);
+            this.groupBox12.Controls.Add(this.meance_deemed_time_modifier);
+            this.groupBox12.Controls.Add(this.max_menaces_modifier);
+            this.groupBox12.Controls.Add(this.menace_gauge_seconds_to_fill_modifier);
+            this.groupBox12.Controls.Add(this.label73);
+            this.groupBox12.Controls.Add(this.label74);
+            this.groupBox12.Controls.Add(this.label75);
+            this.groupBox12.Controls.Add(this.label76);
+            this.groupBox12.Location = new System.Drawing.Point(6, 19);
+            this.groupBox12.Name = "groupBox12";
+            this.groupBox12.Size = new System.Drawing.Size(218, 189);
+            this.groupBox12.TabIndex = 0;
+            this.groupBox12.TabStop = false;
+            this.groupBox12.Text = "Menace Gauge";
+            // 
+            // menace_gauge_decrease_time_modifier
+            // 
+            this.menace_gauge_decrease_time_modifier.DecimalPlaces = 3;
+            this.menace_gauge_decrease_time_modifier.Location = new System.Drawing.Point(15, 36);
+            this.menace_gauge_decrease_time_modifier.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.menace_gauge_decrease_time_modifier.Minimum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            -2147483648});
+            this.menace_gauge_decrease_time_modifier.Name = "menace_gauge_decrease_time_modifier";
+            this.menace_gauge_decrease_time_modifier.Size = new System.Drawing.Size(187, 20);
+            this.menace_gauge_decrease_time_modifier.TabIndex = 434;
+            // 
+            // meance_deemed_time_modifier
+            // 
+            this.meance_deemed_time_modifier.DecimalPlaces = 3;
+            this.meance_deemed_time_modifier.Location = new System.Drawing.Point(15, 77);
+            this.meance_deemed_time_modifier.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.meance_deemed_time_modifier.Minimum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            -2147483648});
+            this.meance_deemed_time_modifier.Name = "meance_deemed_time_modifier";
+            this.meance_deemed_time_modifier.Size = new System.Drawing.Size(187, 20);
+            this.meance_deemed_time_modifier.TabIndex = 435;
+            // 
+            // max_menaces_modifier
+            // 
+            this.max_menaces_modifier.DecimalPlaces = 3;
+            this.max_menaces_modifier.Location = new System.Drawing.Point(15, 116);
+            this.max_menaces_modifier.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.max_menaces_modifier.Minimum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            -2147483648});
+            this.max_menaces_modifier.Name = "max_menaces_modifier";
+            this.max_menaces_modifier.Size = new System.Drawing.Size(187, 20);
+            this.max_menaces_modifier.TabIndex = 436;
+            // 
+            // menace_gauge_seconds_to_fill_modifier
+            // 
+            this.menace_gauge_seconds_to_fill_modifier.DecimalPlaces = 3;
+            this.menace_gauge_seconds_to_fill_modifier.Location = new System.Drawing.Point(15, 155);
+            this.menace_gauge_seconds_to_fill_modifier.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.menace_gauge_seconds_to_fill_modifier.Minimum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            -2147483648});
+            this.menace_gauge_seconds_to_fill_modifier.Name = "menace_gauge_seconds_to_fill_modifier";
+            this.menace_gauge_seconds_to_fill_modifier.Size = new System.Drawing.Size(187, 20);
+            this.menace_gauge_seconds_to_fill_modifier.TabIndex = 437;
+            // 
+            // label73
+            // 
+            this.label73.AutoSize = true;
+            this.label73.Location = new System.Drawing.Point(12, 22);
+            this.label73.Name = "label73";
+            this.label73.Size = new System.Drawing.Size(79, 13);
+            this.label73.TabIndex = 327;
+            this.label73.Text = "Decrease Time";
+            // 
+            // label74
+            // 
+            this.label74.AutoSize = true;
+            this.label74.Location = new System.Drawing.Point(12, 139);
+            this.label74.Name = "label74";
+            this.label74.Size = new System.Drawing.Size(80, 13);
+            this.label74.TabIndex = 335;
+            this.label74.Text = "Seconds To Fill";
+            // 
+            // label75
+            // 
+            this.label75.AutoSize = true;
+            this.label75.Location = new System.Drawing.Point(12, 100);
+            this.label75.Name = "label75";
+            this.label75.Size = new System.Drawing.Size(98, 13);
+            this.label75.TabIndex = 333;
+            this.label75.Text = "Maximum Menaces";
+            // 
+            // label76
+            // 
+            this.label76.AutoSize = true;
+            this.label76.Location = new System.Drawing.Point(12, 61);
+            this.label76.Name = "label76";
+            this.label76.Size = new System.Drawing.Size(73, 13);
+            this.label76.TabIndex = 331;
+            this.label76.Text = "Deemed Time";
+            // 
+            // groupBox13
+            // 
+            this.groupBox13.Controls.Add(this.groupBox14);
+            this.groupBox13.Controls.Add(this.groupBox15);
+            this.groupBox13.Location = new System.Drawing.Point(483, 19);
+            this.groupBox13.Name = "groupBox13";
+            this.groupBox13.Size = new System.Drawing.Size(230, 291);
+            this.groupBox13.TabIndex = 424;
+            this.groupBox13.TabStop = false;
+            this.groupBox13.Text = "Backstage";
+            // 
+            // groupBox14
+            // 
+            this.groupBox14.Controls.Add(this.label77);
+            this.groupBox14.Controls.Add(this.label78);
+            this.groupBox14.Controls.Add(this.label79);
+            this.groupBox14.Controls.Add(this.label81);
+            this.groupBox14.Controls.Add(this.label82);
+            this.groupBox14.Controls.Add(this.backstage_area_sweep_min_idle_time_modifier);
+            this.groupBox14.Controls.Add(this.backstage_area_sweep_max_idle_time_modifier);
+            this.groupBox14.Controls.Add(this.backstage_area_sweep_min_distance_modifier);
+            this.groupBox14.Controls.Add(this.backstage_area_sweep_max_distance_modifier);
+            this.groupBox14.Controls.Add(this.backstage_area_sweep_role_timeout_modifier);
+            this.groupBox14.Location = new System.Drawing.Point(6, 133);
+            this.groupBox14.Name = "groupBox14";
+            this.groupBox14.Size = new System.Drawing.Size(218, 153);
+            this.groupBox14.TabIndex = 409;
+            this.groupBox14.TabStop = false;
+            this.groupBox14.Text = "Sweep";
+            // 
+            // label77
+            // 
+            this.label77.AutoSize = true;
+            this.label77.Location = new System.Drawing.Point(12, 20);
+            this.label77.Name = "label77";
+            this.label77.Size = new System.Drawing.Size(45, 13);
+            this.label77.TabIndex = 357;
+            this.label77.Text = "Timeout";
+            // 
+            // label78
+            // 
+            this.label78.AutoSize = true;
+            this.label78.Location = new System.Drawing.Point(71, 121);
+            this.label78.Name = "label78";
+            this.label78.Size = new System.Drawing.Size(77, 13);
+            this.label78.TabIndex = 404;
+            this.label78.Text = "Min -------> Max";
+            // 
+            // label79
+            // 
+            this.label79.AutoSize = true;
+            this.label79.Location = new System.Drawing.Point(12, 61);
+            this.label79.Name = "label79";
+            this.label79.Size = new System.Drawing.Size(49, 13);
+            this.label79.TabIndex = 397;
+            this.label79.Text = "Distance";
+            // 
+            // label81
+            // 
+            this.label81.AutoSize = true;
+            this.label81.Location = new System.Drawing.Point(12, 102);
+            this.label81.Name = "label81";
+            this.label81.Size = new System.Drawing.Size(50, 13);
+            this.label81.TabIndex = 401;
+            this.label81.Text = "Idle Time";
+            // 
+            // label82
+            // 
+            this.label82.AutoSize = true;
+            this.label82.Location = new System.Drawing.Point(71, 80);
+            this.label82.Name = "label82";
+            this.label82.Size = new System.Drawing.Size(77, 13);
+            this.label82.TabIndex = 400;
+            this.label82.Text = "Min -------> Max";
+            // 
+            // backstage_area_sweep_min_idle_time_modifier
+            // 
+            this.backstage_area_sweep_min_idle_time_modifier.DecimalPlaces = 2;
+            this.backstage_area_sweep_min_idle_time_modifier.Location = new System.Drawing.Point(16, 119);
+            this.backstage_area_sweep_min_idle_time_modifier.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.backstage_area_sweep_min_idle_time_modifier.Minimum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            -2147483648});
+            this.backstage_area_sweep_min_idle_time_modifier.Name = "backstage_area_sweep_min_idle_time_modifier";
+            this.backstage_area_sweep_min_idle_time_modifier.Size = new System.Drawing.Size(49, 20);
+            this.backstage_area_sweep_min_idle_time_modifier.TabIndex = 427;
+            // 
+            // backstage_area_sweep_max_idle_time_modifier
+            // 
+            this.backstage_area_sweep_max_idle_time_modifier.DecimalPlaces = 2;
+            this.backstage_area_sweep_max_idle_time_modifier.Location = new System.Drawing.Point(154, 120);
+            this.backstage_area_sweep_max_idle_time_modifier.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.backstage_area_sweep_max_idle_time_modifier.Minimum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            -2147483648});
+            this.backstage_area_sweep_max_idle_time_modifier.Name = "backstage_area_sweep_max_idle_time_modifier";
+            this.backstage_area_sweep_max_idle_time_modifier.Size = new System.Drawing.Size(49, 20);
+            this.backstage_area_sweep_max_idle_time_modifier.TabIndex = 426;
+            // 
+            // backstage_area_sweep_min_distance_modifier
+            // 
+            this.backstage_area_sweep_min_distance_modifier.DecimalPlaces = 2;
+            this.backstage_area_sweep_min_distance_modifier.Location = new System.Drawing.Point(16, 77);
+            this.backstage_area_sweep_min_distance_modifier.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.backstage_area_sweep_min_distance_modifier.Minimum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            -2147483648});
+            this.backstage_area_sweep_min_distance_modifier.Name = "backstage_area_sweep_min_distance_modifier";
+            this.backstage_area_sweep_min_distance_modifier.Size = new System.Drawing.Size(49, 20);
+            this.backstage_area_sweep_min_distance_modifier.TabIndex = 425;
+            // 
+            // backstage_area_sweep_max_distance_modifier
+            // 
+            this.backstage_area_sweep_max_distance_modifier.DecimalPlaces = 2;
+            this.backstage_area_sweep_max_distance_modifier.Location = new System.Drawing.Point(154, 78);
+            this.backstage_area_sweep_max_distance_modifier.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.backstage_area_sweep_max_distance_modifier.Minimum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            -2147483648});
+            this.backstage_area_sweep_max_distance_modifier.Name = "backstage_area_sweep_max_distance_modifier";
+            this.backstage_area_sweep_max_distance_modifier.Size = new System.Drawing.Size(49, 20);
+            this.backstage_area_sweep_max_distance_modifier.TabIndex = 424;
+            // 
+            // backstage_area_sweep_role_timeout_modifier
+            // 
+            this.backstage_area_sweep_role_timeout_modifier.DecimalPlaces = 2;
+            this.backstage_area_sweep_role_timeout_modifier.Location = new System.Drawing.Point(16, 36);
+            this.backstage_area_sweep_role_timeout_modifier.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.backstage_area_sweep_role_timeout_modifier.Minimum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            -2147483648});
+            this.backstage_area_sweep_role_timeout_modifier.Name = "backstage_area_sweep_role_timeout_modifier";
+            this.backstage_area_sweep_role_timeout_modifier.Size = new System.Drawing.Size(187, 20);
+            this.backstage_area_sweep_role_timeout_modifier.TabIndex = 423;
+            // 
+            // groupBox15
+            // 
+            this.groupBox15.Controls.Add(this.backstage_area_sweep_ambush_timeout_modifier);
+            this.groupBox15.Controls.Add(this.backstage_area_sweep_killtrap_time_modifier);
+            this.groupBox15.Controls.Add(this.label83);
+            this.groupBox15.Controls.Add(this.label84);
+            this.groupBox15.Location = new System.Drawing.Point(6, 19);
+            this.groupBox15.Name = "groupBox15";
+            this.groupBox15.Size = new System.Drawing.Size(218, 108);
+            this.groupBox15.TabIndex = 0;
+            this.groupBox15.TabStop = false;
+            this.groupBox15.Text = "Vent Killtraps";
+            // 
+            // backstage_area_sweep_ambush_timeout_modifier
+            // 
+            this.backstage_area_sweep_ambush_timeout_modifier.DecimalPlaces = 3;
+            this.backstage_area_sweep_ambush_timeout_modifier.Location = new System.Drawing.Point(15, 75);
+            this.backstage_area_sweep_ambush_timeout_modifier.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.backstage_area_sweep_ambush_timeout_modifier.Minimum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            -2147483648});
+            this.backstage_area_sweep_ambush_timeout_modifier.Name = "backstage_area_sweep_ambush_timeout_modifier";
+            this.backstage_area_sweep_ambush_timeout_modifier.Size = new System.Drawing.Size(187, 20);
+            this.backstage_area_sweep_ambush_timeout_modifier.TabIndex = 441;
+            // 
+            // backstage_area_sweep_killtrap_time_modifier
+            // 
+            this.backstage_area_sweep_killtrap_time_modifier.DecimalPlaces = 3;
+            this.backstage_area_sweep_killtrap_time_modifier.Location = new System.Drawing.Point(15, 36);
+            this.backstage_area_sweep_killtrap_time_modifier.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.backstage_area_sweep_killtrap_time_modifier.Minimum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            -2147483648});
+            this.backstage_area_sweep_killtrap_time_modifier.Name = "backstage_area_sweep_killtrap_time_modifier";
+            this.backstage_area_sweep_killtrap_time_modifier.Size = new System.Drawing.Size(187, 20);
+            this.backstage_area_sweep_killtrap_time_modifier.TabIndex = 442;
+            // 
+            // label83
+            // 
+            this.label83.AutoSize = true;
+            this.label83.Location = new System.Drawing.Point(13, 20);
+            this.label83.Name = "label83";
+            this.label83.Size = new System.Drawing.Size(108, 13);
+            this.label83.TabIndex = 351;
+            this.label83.Text = "Killtrap After Seconds";
+            // 
+            // label84
+            // 
+            this.label84.AutoSize = true;
+            this.label84.Location = new System.Drawing.Point(13, 59);
+            this.label84.Name = "label84";
+            this.label84.Size = new System.Drawing.Size(120, 13);
+            this.label84.TabIndex = 405;
+            this.label84.Text = "Killtrap Ambush Timeout";
+            // 
+            // label85
+            // 
+            this.label85.AutoSize = true;
+            this.label85.Location = new System.Drawing.Point(1321, 226);
+            this.label85.Name = "label85";
+            this.label85.Size = new System.Drawing.Size(0, 13);
+            this.label85.TabIndex = 423;
+            // 
+            // groupBox5
+            // 
+            this.groupBox5.Controls.Add(this.groupBox2);
+            this.groupBox5.Controls.Add(this.groupBox13);
+            this.groupBox5.Location = new System.Drawing.Point(1089, 74);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(721, 441);
+            this.groupBox5.TabIndex = 426;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "Alien Config";
             // 
             // DifficultyEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(994, 731);
-            this.Controls.Add(this.label33);
+            this.ClientSize = new System.Drawing.Size(2124, 824);
             this.Controls.Add(this.groupBox5);
-            this.Controls.Add(this.groupBox6);
+            this.Controls.Add(this.label85);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox1);
@@ -1353,34 +1632,70 @@
             this.Controls.Add(this.loadViewconeSet);
             this.Controls.Add(this.characterTypes);
             this.Controls.Add(this.loadNPC);
-            this.Controls.Add(this.btnSave);
             this.Controls.Add(this.classSelection);
-            this.Controls.Add(this.btnSelectClass);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "DifficultyEditor";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Diffculty Editor";
+            this.Load += new System.EventHandler(this.DifficultyEditor_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox11.ResumeLayout(false);
+            this.groupBox11.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.Vent_Attract_Time_Min)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Vent_Attract_Time_Max)).EndInit();
+            this.groupBox8.ResumeLayout(false);
+            this.groupBox10.ResumeLayout(false);
+            this.groupBox10.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.near_objective_exclusion_radius_subsequent_stalk_min_modifier)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.near_objective_exclusion_radius_subsequent_stalk_max_modifier)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.near_objective_exclusion_radius_first_stalk_min_modifier)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.near_objective_exclusion_radius_first_stalk_max_modifier)).EndInit();
+            this.groupBox9.ResumeLayout(false);
+            this.groupBox9.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.near_target_exclusion_radius_subsequent_stalk_min_modifier)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.near_target_exclusion_radius_subsequent_stalk_max_modifier)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.near_target_exclusion_radius_first_stalk_min_modifier)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.near_target_exclusion_radius_first_stalk_max_modifier)).EndInit();
+            this.groupBox7.ResumeLayout(false);
+            this.groupBox7.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.decrease_sweep_duration_modifier)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.sweep_box_half_width_modifier)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.sweep_box_half_length_modifier)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.increase_sweep_duration_modifier)).EndInit();
+            this.groupBox12.ResumeLayout(false);
+            this.groupBox12.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.menace_gauge_decrease_time_modifier)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.meance_deemed_time_modifier)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.max_menaces_modifier)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.menace_gauge_seconds_to_fill_modifier)).EndInit();
+            this.groupBox13.ResumeLayout(false);
+            this.groupBox14.ResumeLayout(false);
+            this.groupBox14.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.backstage_area_sweep_min_idle_time_modifier)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.backstage_area_sweep_max_idle_time_modifier)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.backstage_area_sweep_min_distance_modifier)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.backstage_area_sweep_max_distance_modifier)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.backstage_area_sweep_role_timeout_modifier)).EndInit();
+            this.groupBox15.ResumeLayout(false);
+            this.groupBox15.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.backstage_area_sweep_ambush_timeout_modifier)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.backstage_area_sweep_killtrap_time_modifier)).EndInit();
             this.groupBox5.ResumeLayout(false);
-            this.groupBox5.PerformLayout();
-            this.groupBox6.ResumeLayout(false);
-            this.groupBox6.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-        private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.ComboBox classSelection;
-        private System.Windows.Forms.Button btnSelectClass;
         private System.Windows.Forms.ComboBox characterTypes;
         private System.Windows.Forms.Button loadNPC;
         private System.Windows.Forms.ComboBox viewconeSet;
@@ -1437,65 +1752,67 @@
         private System.Windows.Forms.TextBox attack_pace_modifier_per_npc;
         private System.Windows.Forms.Label label20;
         private System.Windows.Forms.TextBox suspicious_item_loop_scalar;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.GroupBox groupBox11;
+        private System.Windows.Forms.NumericUpDown Vent_Attract_Time_Min;
+        private System.Windows.Forms.Label label39;
+        private System.Windows.Forms.Label label40;
+        private System.Windows.Forms.NumericUpDown Vent_Attract_Time_Max;
+        private System.Windows.Forms.GroupBox groupBox8;
+        private System.Windows.Forms.GroupBox groupBox10;
+        private System.Windows.Forms.Label label46;
+        private System.Windows.Forms.Label label62;
+        private System.Windows.Forms.Label label63;
+        private System.Windows.Forms.Label label64;
+        private System.Windows.Forms.NumericUpDown near_objective_exclusion_radius_subsequent_stalk_min_modifier;
+        private System.Windows.Forms.NumericUpDown near_objective_exclusion_radius_subsequent_stalk_max_modifier;
+        private System.Windows.Forms.NumericUpDown near_objective_exclusion_radius_first_stalk_min_modifier;
+        private System.Windows.Forms.NumericUpDown near_objective_exclusion_radius_first_stalk_max_modifier;
+        private System.Windows.Forms.GroupBox groupBox9;
+        private System.Windows.Forms.Label label65;
+        private System.Windows.Forms.Label label66;
+        private System.Windows.Forms.Label label67;
+        private System.Windows.Forms.Label label68;
+        private System.Windows.Forms.NumericUpDown near_target_exclusion_radius_subsequent_stalk_min_modifier;
+        private System.Windows.Forms.NumericUpDown near_target_exclusion_radius_subsequent_stalk_max_modifier;
+        private System.Windows.Forms.NumericUpDown near_target_exclusion_radius_first_stalk_min_modifier;
+        private System.Windows.Forms.NumericUpDown near_target_exclusion_radius_first_stalk_max_modifier;
+        private System.Windows.Forms.GroupBox groupBox7;
+        private System.Windows.Forms.NumericUpDown decrease_sweep_duration_modifier;
+        private System.Windows.Forms.NumericUpDown sweep_box_half_width_modifier;
+        private System.Windows.Forms.NumericUpDown sweep_box_half_length_modifier;
+        private System.Windows.Forms.Label label69;
+        private System.Windows.Forms.Label label70;
+        private System.Windows.Forms.Label label71;
+        private System.Windows.Forms.Label label72;
+        private System.Windows.Forms.NumericUpDown increase_sweep_duration_modifier;
+        private System.Windows.Forms.GroupBox groupBox12;
+        private System.Windows.Forms.NumericUpDown menace_gauge_decrease_time_modifier;
+        private System.Windows.Forms.NumericUpDown meance_deemed_time_modifier;
+        private System.Windows.Forms.NumericUpDown max_menaces_modifier;
+        private System.Windows.Forms.NumericUpDown menace_gauge_seconds_to_fill_modifier;
+        private System.Windows.Forms.Label label73;
+        private System.Windows.Forms.Label label74;
+        private System.Windows.Forms.Label label75;
+        private System.Windows.Forms.Label label76;
+        private System.Windows.Forms.GroupBox groupBox13;
+        private System.Windows.Forms.GroupBox groupBox14;
+        private System.Windows.Forms.Label label77;
+        private System.Windows.Forms.Label label78;
+        private System.Windows.Forms.Label label79;
+        private System.Windows.Forms.Label label81;
+        private System.Windows.Forms.Label label82;
+        private System.Windows.Forms.NumericUpDown backstage_area_sweep_min_idle_time_modifier;
+        private System.Windows.Forms.NumericUpDown backstage_area_sweep_max_idle_time_modifier;
+        private System.Windows.Forms.NumericUpDown backstage_area_sweep_min_distance_modifier;
+        private System.Windows.Forms.NumericUpDown backstage_area_sweep_max_distance_modifier;
+        private System.Windows.Forms.NumericUpDown backstage_area_sweep_role_timeout_modifier;
+        private System.Windows.Forms.GroupBox groupBox15;
+        private System.Windows.Forms.NumericUpDown backstage_area_sweep_ambush_timeout_modifier;
+        private System.Windows.Forms.NumericUpDown backstage_area_sweep_killtrap_time_modifier;
+        private System.Windows.Forms.Label label83;
+        private System.Windows.Forms.Label label84;
+        private System.Windows.Forms.Label label85;
         private System.Windows.Forms.GroupBox groupBox5;
-        private System.Windows.Forms.TextBox backstage_area_sweep_ambush_timeout_mofisier;
-        private System.Windows.Forms.Label label52;
-        private System.Windows.Forms.Label label16;
-        private System.Windows.Forms.Label label51;
-        private System.Windows.Forms.Label label25;
-        private System.Windows.Forms.TextBox backstage_area_sweep_killtrap_time_modifier;
-        private System.Windows.Forms.TextBox backstage_area_sweep_max_idle_time_modifier;
-        private System.Windows.Forms.Label label48;
-        private System.Windows.Forms.TextBox backstage_area_sweep_min_idle_time_modifier;
-        private System.Windows.Forms.Label label47;
-        private System.Windows.Forms.Label label28;
-        private System.Windows.Forms.TextBox backstage_area_sweep_role_timeout_modifier;
-        private System.Windows.Forms.Label label30;
-        private System.Windows.Forms.TextBox backstage_area_sweep_max_distance_modifier;
-        private System.Windows.Forms.TextBox backstage_area_sweep_min_distance_modifier;
-        private System.Windows.Forms.Label label31;
-        private System.Windows.Forms.GroupBox groupBox6;
-        private System.Windows.Forms.Label label32;
-        private System.Windows.Forms.Label label34;
-        private System.Windows.Forms.TextBox menace_gauge_decrease_time_modifier;
-        private System.Windows.Forms.Label label35;
-        private System.Windows.Forms.TextBox menace_cool_down_time_modifier;
-        private System.Windows.Forms.Label label36;
-        private System.Windows.Forms.TextBox meance_deemed_time_modifier;
-        private System.Windows.Forms.Label label37;
-        private System.Windows.Forms.TextBox max_menaces_modifier;
-        private System.Windows.Forms.Label label38;
-        private System.Windows.Forms.TextBox menace_gauge_seconds_to_fill_modifier;
-        private System.Windows.Forms.Label label41;
-        private System.Windows.Forms.TextBox Vent_Attract_Time_Min;
-        private System.Windows.Forms.TextBox Vent_Attract_Time_Max;
-        private System.Windows.Forms.Label label42;
-        private System.Windows.Forms.Label label43;
-        private System.Windows.Forms.Label label44;
-        private System.Windows.Forms.TextBox increase_sweep_duration_modifier;
-        private System.Windows.Forms.Label label45;
-        private System.Windows.Forms.TextBox decrease_sweep_duration_modifier;
-        private System.Windows.Forms.Label label49;
-        private System.Windows.Forms.Label label50;
-        private System.Windows.Forms.TextBox near_target_exclusion_radius_first_stalk_min_modifier;
-        private System.Windows.Forms.TextBox near_target_exclusion_radius_first_stalk_max_modifier;
-        private System.Windows.Forms.Label label53;
-        private System.Windows.Forms.Label label54;
-        private System.Windows.Forms.TextBox near_target_exclusion_radius_subsequent_stalk_min_modifier;
-        private System.Windows.Forms.TextBox near_target_exclusion_radius_subsequent_stalk_max_modifier;
-        private System.Windows.Forms.Label label55;
-        private System.Windows.Forms.Label label56;
-        private System.Windows.Forms.TextBox near_objective_exclusion_radius_first_stalk_min_modifier;
-        private System.Windows.Forms.TextBox near_objective_exclusion_radius_first_stalk_max_modifier;
-        private System.Windows.Forms.Label label57;
-        private System.Windows.Forms.Label label58;
-        private System.Windows.Forms.TextBox near_objective_exclusion_radius_subsequent_stalk_min_modifier;
-        private System.Windows.Forms.TextBox near_objective_exclusion_radius_subsequent_stalk_max_modifier;
-        private System.Windows.Forms.Label label59;
-        private System.Windows.Forms.Label label60;
-        private System.Windows.Forms.TextBox sweep_box_half_width_modifier;
-        private System.Windows.Forms.Label label61;
-        private System.Windows.Forms.TextBox sweep_box_half_length_modifier;
-        private System.Windows.Forms.Label label33;
     }
 }
