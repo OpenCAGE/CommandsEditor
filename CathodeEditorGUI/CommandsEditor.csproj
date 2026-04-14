@@ -442,6 +442,12 @@
     <Compile Include="Popups\Configuration Editors\Popups\AddLocalisedStringDialog.Designer.cs">
       <DependentUpon>AddLocalisedStringDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\Configuration Editors\Popups\AddNewPhysMaterial.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\Popups\AddNewPhysMaterial.Designer.cs">
+      <DependentUpon>AddNewPhysMaterial.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popups\Configuration Editors\Popups\BlueprintEditorDocs.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1079,6 +1085,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\Configuration Editors\Popups\AddLocalisedStringDialog.resx">
       <DependentUpon>AddLocalisedStringDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Configuration Editors\Popups\AddNewPhysMaterial.resx">
+      <DependentUpon>AddNewPhysMaterial.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\Configuration Editors\Popups\BlueprintEditorDocs.resx">
       <DependentUpon>BlueprintEditorDocs.cs</DependentUpon>

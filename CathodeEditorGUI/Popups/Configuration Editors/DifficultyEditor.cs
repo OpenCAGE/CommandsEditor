@@ -18,10 +18,10 @@ namespace CommandsEditor.ConfigEditors
     public partial class DifficultyEditor : BaseWindow
     {
         //Load shared scripts
-        AYZ_AttributeEditors AlienAttribute = new AYZ_AttributeEditors();
+       // AYZ_AttributeEditors AlienAttribute = new AYZ_AttributeEditors();
         
-        XDocument _loadedDifficultyXml;
-        string gameBmlDirectory = @"\DATA\DIFFICULTYSETTINGS\";
+      //  XDocument _loadedDifficultyXml;
+       // string gameBmlDirectory = @"\DATA\DIFFICULTYSETTINGS\";
 
         public DifficultyEditor() : base()
         {
@@ -31,6 +31,7 @@ namespace CommandsEditor.ConfigEditors
         //Load difficulty
         private void btnSelectClass_Click(object sender, EventArgs e)
         {
+            /*
             //Update cursor and begin
             Cursor.Current = Cursors.WaitCursor;
 
@@ -117,11 +118,13 @@ namespace CommandsEditor.ConfigEditors
 
             //Update cursor and finish
             Cursor.Current = Cursors.Default;
+            */
         }
 
         //Load character type
         private void loadNPC_Click(object sender, EventArgs e)
         {
+            /*
             //Update cursor and begin
             Cursor.Current = Cursors.WaitCursor;
 
@@ -162,11 +165,13 @@ namespace CommandsEditor.ConfigEditors
 
             //Update cursor and finish
             Cursor.Current = Cursors.Default;
+            */
         }
 
         //Unlock viewcone type buttons
         private void loadViewconeSet_Click(object sender, EventArgs e)
         {
+            /*
             viewconeType.Enabled = true;
             loadViewconeType.Enabled = true;
 
@@ -174,11 +179,13 @@ namespace CommandsEditor.ConfigEditors
             AlienAttribute.disableInput(visual_sense_exposure_effect_upper_modifier, null);
             AlienAttribute.disableInput(visual_sense_stance_effect_lower_modifier, null);
             AlienAttribute.disableInput(visual_sense_stance_effect_upper_modifier, null);
+            */
         }
 
         //Load viewcone set/type
         private void button3_Click(object sender, EventArgs e)
         {
+            /*
             //Update cursor and begin
             Cursor.Current = Cursors.WaitCursor;
 
@@ -206,11 +213,13 @@ namespace CommandsEditor.ConfigEditors
 
             //Update cursor and finish
             Cursor.Current = Cursors.Default;
+            */
         }
 
         //Save
         private void btnSave_Click(object sender, EventArgs e)
         {
+            /*
             //Update cursor and begin
             Cursor.Current = Cursors.WaitCursor;
 
@@ -309,6 +318,7 @@ namespace CommandsEditor.ConfigEditors
 
             //Update cursor and finish
             Cursor.Current = Cursors.Default;
+            */
         }
 
 
