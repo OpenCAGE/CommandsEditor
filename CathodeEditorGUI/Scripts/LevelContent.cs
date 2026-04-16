@@ -14,7 +14,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows.Shapes;
 using System.Xml.Linq;
 using System.Xml.XPath;
 
@@ -68,7 +67,8 @@ namespace CommandsEditor
             {
 #if USE_PRETTY_COMPOSITE_PATHS
                 //Tidy up composite names so things look nicer
-                Level.Commands.Utils.SetPrettyNames();
+                if (Path.GetFileName(Level.Commands.Filepath.ToUpper()) == "COMMANDS.PAK")
+                    Level.Commands.Utils.SetPrettyNames();
 #endif
 
                 //Correct the root composite name
