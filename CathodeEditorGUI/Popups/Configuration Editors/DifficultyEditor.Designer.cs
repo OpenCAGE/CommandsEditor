@@ -148,6 +148,7 @@
             this.label84 = new System.Windows.Forms.Label();
             this.label85 = new System.Windows.Forms.Label();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.label16 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -1616,11 +1617,21 @@
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Alien Config";
             // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(1302, 588);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(283, 13);
+            this.label16.TabIndex = 427;
+            this.label16.Text = "todo - tab control to swap viewcones/senses/alien configs";
+            // 
             // DifficultyEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(2124, 824);
+            this.Controls.Add(this.label16);
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.label85);
             this.Controls.Add(this.groupBox4);
@@ -1814,5 +1825,6 @@
         private System.Windows.Forms.Label label84;
         private System.Windows.Forms.Label label85;
         private System.Windows.Forms.GroupBox groupBox5;
+        private System.Windows.Forms.Label label16;
     }
 }

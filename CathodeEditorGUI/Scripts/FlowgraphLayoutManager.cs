@@ -281,7 +281,7 @@ namespace CommandsEditor
                 List<FlowgraphMeta> newFlowgraphs = new List<FlowgraphMeta>();
                 for (int i = 0; i < _preDefinedLayouts.flowgraphs.Count; i++)
                 {
-                    if (!_preDefinedLayouts.flowgraphs[i].SupportedLevels.HasFlag(level))
+                    if (!_preDefinedLayouts.flowgraphs[i].AlwaysUse && !_preDefinedLayouts.flowgraphs[i].SupportedLevels.HasFlag(level))
                         continue;
                     if (_commands.Entries.FirstOrDefault(o => o.shortGUID == _preDefinedLayouts.flowgraphs[i].CompositeGUID) == null)
                         continue;

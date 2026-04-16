@@ -14,6 +14,8 @@ namespace CommandsEditor.ConfigEditors
 {
     public partial class InventoryItemEditor : BaseWindow
     {
+        //todo - this is OLD and needs updating!!
+
         CATHODE.BML _gblItem;
         XDocument _gblItemXML;
 

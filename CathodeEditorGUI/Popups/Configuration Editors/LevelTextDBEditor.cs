@@ -13,6 +13,8 @@ namespace CommandsEditor.ConfigEditors
 {
     public partial class LevelTextDBEditor : BaseWindow
     {
+        //todo - this is OLD and needs updating!!!
+
         HashSet<string> _availableGlobalDBs = new HashSet<string>();
         List<Level> _levels = new List<Level>();
         Level _selectedLevel = null;
