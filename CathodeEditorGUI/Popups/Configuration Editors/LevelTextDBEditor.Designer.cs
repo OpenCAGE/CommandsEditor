@@ -82,7 +82,7 @@
             this.Controls.Add(this.levelList);
             this.Controls.Add(this.SaveBtn);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::CommandsEditor.SharedFormIcon.Icon;
             this.MaximizeBox = false;
             this.Name = "LevelTextDBEditor";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

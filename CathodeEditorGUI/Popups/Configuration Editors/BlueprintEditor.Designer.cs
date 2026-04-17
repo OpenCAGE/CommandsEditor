@@ -215,7 +215,7 @@
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.blueprints);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::CommandsEditor.SharedFormIcon.Icon;
             this.MaximizeBox = false;
             this.Name = "BlueprintEditor";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

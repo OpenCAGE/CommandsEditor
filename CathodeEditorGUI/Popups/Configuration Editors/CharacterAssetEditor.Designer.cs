@@ -1,4 +1,4 @@
-namespace CommandsEditor.ConfigEditors
+﻿namespace CommandsEditor.ConfigEditors
 {
     partial class CharacterAssetEditor
     {
@@ -299,7 +299,7 @@ namespace CommandsEditor.ConfigEditors
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.assetSetList);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::CommandsEditor.SharedFormIcon.Icon;
             this.MaximizeBox = false;
             this.Name = "CharacterAssetEditor";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

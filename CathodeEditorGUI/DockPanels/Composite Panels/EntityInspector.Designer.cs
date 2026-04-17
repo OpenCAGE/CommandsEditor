@@ -455,7 +455,7 @@
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.entityInfoGroup);
             this.Controls.Add(this.entityParamGroup);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::CommandsEditor.SharedFormIcon.Icon;
             this.Name = "EntityInspector";
             this.ShowHint = WeifenLuo.WinFormsUI.Docking.DockState.Document;
             this.TabPageContextMenuStrip = this.contextMenuStrip1;

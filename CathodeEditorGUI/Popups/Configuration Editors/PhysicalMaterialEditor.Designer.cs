@@ -85,7 +85,7 @@
             this.Controls.Add(this.addNew);
             this.Controls.Add(this.materialList);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::CommandsEditor.SharedFormIcon.Icon;
             this.MaximizeBox = false;
             this.Name = "PhysicalMaterialEditor";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

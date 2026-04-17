@@ -1,4 +1,4 @@
-namespace CommandsEditor
+﻿namespace CommandsEditor
 {
     partial class CommandsEditor
     {
@@ -807,7 +807,7 @@ namespace CommandsEditor
             this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.toolStrip);
             this.DoubleBuffered = true;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::CommandsEditor.SharedFormIcon.Icon;
             this.IsMdiContainer = true;
             this.Name = "CommandsEditor";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

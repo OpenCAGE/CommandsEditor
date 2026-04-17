@@ -118,7 +118,7 @@
             this.Controls.Add(this.label22);
             this.Controls.Add(this.viewconeSets);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::CommandsEditor.SharedFormIcon.Icon;
             this.MaximizeBox = false;
             this.Name = "ViewconeEditor";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

@@ -225,7 +225,7 @@
             this.Controls.Add(this.showLinkedProxies);
             this.Controls.Add(this.jumpToEntity);
             this.Controls.Add(this.label);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::CommandsEditor.SharedFormIcon.Icon;
             this.Name = "ShowCrossRefs";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Entity References";

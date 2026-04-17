@@ -93,7 +93,7 @@
             this.ClientSize = new System.Drawing.Size(389, 587);
             this.Controls.Add(this.listView1);
             this.Controls.Add(this.button1);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::CommandsEditor.SharedFormIcon.Icon;
             this.Name = "SelectDestinationPin";
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

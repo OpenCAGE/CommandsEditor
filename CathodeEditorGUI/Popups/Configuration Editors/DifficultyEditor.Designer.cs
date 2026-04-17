@@ -1645,7 +1645,7 @@
             this.Controls.Add(this.loadNPC);
             this.Controls.Add(this.classSelection);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::CommandsEditor.SharedFormIcon.Icon;
             this.MaximizeBox = false;
             this.Name = "DifficultyEditor";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

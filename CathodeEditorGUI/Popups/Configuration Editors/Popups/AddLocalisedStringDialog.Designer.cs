@@ -1,4 +1,4 @@
-namespace CommandsEditor.ConfigEditors
+﻿namespace CommandsEditor.ConfigEditors
 {
     partial class AddLocalisedStringDialog
     {
@@ -416,7 +416,7 @@ namespace CommandsEditor.ConfigEditors
             this.ClientSize = new System.Drawing.Size(540, 520);
             this.Controls.Add(this.tableLayoutRoot);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::CommandsEditor.SharedFormIcon.Icon;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "AddLocalisedStringDialog";
@@ -468,3 +468,4 @@ namespace CommandsEditor.ConfigEditors
         private System.Windows.Forms.Button buttonCancel;
     }
 }
+

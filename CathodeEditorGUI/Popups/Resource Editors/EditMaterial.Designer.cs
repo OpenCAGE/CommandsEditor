@@ -82,7 +82,7 @@
             this.Controls.Add(this.selectMaterialBtn);
             this.Controls.Add(this.materialList);
             this.Controls.Add(this.elementHost1);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::CommandsEditor.SharedFormIcon.Icon;
             this.MinimumSize = new System.Drawing.Size(841, 600);
             this.Name = "EditMaterial";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

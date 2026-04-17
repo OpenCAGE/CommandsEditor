@@ -60,7 +60,7 @@
             this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.button1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::CommandsEditor.SharedFormIcon.Icon;
             this.MaximizeBox = false;
             this.Name = "PermaSoundbankPopup";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

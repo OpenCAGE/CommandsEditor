@@ -414,7 +414,7 @@
             this.ClientSize = new System.Drawing.Size(1217, 695);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.button1);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::CommandsEditor.SharedFormIcon.Icon;
             this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(2000, 2000);
             this.MinimumSize = new System.Drawing.Size(700, 690);

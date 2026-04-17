@@ -1,4 +1,4 @@
-namespace CommandsEditor
+﻿namespace CommandsEditor
 {
     partial class EditMaterialMapping
     {
@@ -176,7 +176,7 @@ namespace CommandsEditor
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(985, 450);
             this.Controls.Add(this.splitContainer);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::CommandsEditor.SharedFormIcon.Icon;
             this.Name = "EditMaterialMapping";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Edit Material Mapping";
@@ -205,4 +205,5 @@ namespace CommandsEditor
         private System.Windows.Forms.Panel treeViewButtonPanel;
     }
 }
+
 

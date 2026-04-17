@@ -170,7 +170,7 @@
             this.Controls.Add(this.entityName);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.compositeTree);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::CommandsEditor.SharedFormIcon.Icon;
             this.Name = "AddEntity_CompositeInstance";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Create Composite Instance Entity";
