@@ -1,5 +1,6 @@
 using CathodeLib;
 using CommandsEditor.Popups.Base;
+using Microsoft.WindowsAPICodePack.Taskbar;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -34,11 +35,7 @@ namespace CommandsEditor
 
         private void ProgressUI_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (e.CloseReason == CloseReason.UserClosing)
-            {
-                e.Cancel = true;
-                return;
-            }
+            TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.NoProgress, Singleton.Editor.Handle);
 
             this.FormClosing -= ProgressUI_FormClosing;
 
@@ -66,6 +63,8 @@ namespace CommandsEditor
 
             this.Text = (loading ? "Loading " : "Saving ") + level.Name + "...";
 
+            TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Indeterminate, Singleton.Editor.Handle);
+
             if (progressBar1.InvokeRequired)
             {
                 progressBar1.BeginInvoke(new Action(() => {
@@ -92,6 +91,8 @@ namespace CommandsEditor
         public void ShowTransferring(string titlebar)
         {
             this.Text = titlebar;
+
+            TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Indeterminate, this.Handle);
 
             progressBar1.Style = ProgressBarStyle.Marquee;
             progressBar1.Refresh();
