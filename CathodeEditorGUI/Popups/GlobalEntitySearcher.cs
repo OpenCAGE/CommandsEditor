@@ -81,6 +81,11 @@ namespace CommandsEditor
             }
         }
 
+        private void GlobalEntitySearcher_Load(object sender, EventArgs e)
+        {
+            nameSearchBox.Select();
+        }
+
         private void ShowCompositeUses_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (_funcSelector != null)
@@ -88,6 +93,12 @@ namespace CommandsEditor
                 _funcSelector.OnTypeSelected -= OnFunctionTypeSelected;
                 _funcSelector.Close();
             }
+        }
+
+        private void CreateEntityOnEnterKey(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+                searchFunctionTypes.PerformClick();
         }
 
         private void jumpToEntity_Click(object sender, EventArgs e)

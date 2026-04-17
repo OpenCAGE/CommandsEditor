@@ -154,8 +154,9 @@
             this.nameSearchBox.Name = "nameSearchBox";
             this.nameSearchBox.Size = new System.Drawing.Size(600, 20);
             this.nameSearchBox.TabIndex = 178;
+            this.nameSearchBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.CreateEntityOnEnterKey);
             // 
-            // ShowCompositeUses
+            // GlobalEntitySearcher
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -167,9 +168,10 @@
             this.Controls.Add(this.jumpToEntity);
             this.Controls.Add(this.label);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "ShowCompositeUses";
+            this.Name = "GlobalEntitySearcher";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Function Uses";
+            this.Load += new System.EventHandler(this.GlobalEntitySearcher_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
