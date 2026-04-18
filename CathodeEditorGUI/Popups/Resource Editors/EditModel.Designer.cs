@@ -1,4 +1,4 @@
-﻿namespace CommandsEditor
+namespace CommandsEditor
 {
     partial class EditModel
     {
@@ -30,12 +30,16 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditModel));
             this.modelRendererHost = new System.Windows.Forms.Integration.ElementHost();
+            this.editGeometryBtn = new System.Windows.Forms.Button();
+            this.exportCs2Btn = new System.Windows.Forms.Button();
+            this.importModelBtn = new System.Windows.Forms.Button();
             this.FileTree = new System.Windows.Forms.TreeView();
             this.modelPreviewArea = new System.Windows.Forms.GroupBox();
             this.useMaterials = new System.Windows.Forms.CheckBox();
             this.selectModelBtn = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.submeshFilterGroup = new System.Windows.Forms.GroupBox();
             this.submeshFilterPanel = new System.Windows.Forms.Panel();
             this.modelPreviewArea.SuspendLayout();
@@ -47,6 +51,7 @@
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
+            this.tableLayoutPanel2.SuspendLayout();
             this.submeshFilterGroup.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -55,20 +60,56 @@
             this.modelRendererHost.Dock = System.Windows.Forms.DockStyle.Fill;
             this.modelRendererHost.Location = new System.Drawing.Point(3, 16);
             this.modelRendererHost.Name = "modelRendererHost";
-            this.modelRendererHost.Size = new System.Drawing.Size(483, 610);
+            this.modelRendererHost.Size = new System.Drawing.Size(479, 610);
             this.modelRendererHost.TabIndex = 0;
             this.modelRendererHost.Text = "elementHost1";
             this.modelRendererHost.Child = null;
             // 
+            // editGeometryBtn
+            // 
+            this.editGeometryBtn.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.editGeometryBtn.Location = new System.Drawing.Point(3, 3);
+            this.editGeometryBtn.Name = "editGeometryBtn";
+            this.editGeometryBtn.Size = new System.Drawing.Size(196, 27);
+            this.editGeometryBtn.TabIndex = 2;
+            this.editGeometryBtn.Text = "Edit";
+            this.editGeometryBtn.UseVisualStyleBackColor = true;
+            this.editGeometryBtn.Click += new System.EventHandler(this.editGeometryBtn_Click);
+            // 
+            // exportCs2Btn
+            // 
+            this.exportCs2Btn.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.exportCs2Btn.Location = new System.Drawing.Point(3, 36);
+            this.exportCs2Btn.Name = "exportCs2Btn";
+            this.exportCs2Btn.Size = new System.Drawing.Size(196, 27);
+            this.exportCs2Btn.TabIndex = 1;
+            this.exportCs2Btn.Text = "Export";
+            this.exportCs2Btn.UseVisualStyleBackColor = true;
+            this.exportCs2Btn.Click += new System.EventHandler(this.exportCs2Btn_Click);
+            // 
+            // importModelBtn
+            // 
+            this.importModelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.importModelBtn.Location = new System.Drawing.Point(0, 602);
+            this.importModelBtn.Name = "importModelBtn";
+            this.importModelBtn.Size = new System.Drawing.Size(352, 29);
+            this.importModelBtn.TabIndex = 0;
+            this.importModelBtn.Text = "Import New";
+            this.importModelBtn.UseVisualStyleBackColor = true;
+            this.importModelBtn.Click += new System.EventHandler(this.importModelBtn_Click);
+            // 
             // FileTree
             // 
+            this.FileTree.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.FileTree.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.FileTree.Dock = System.Windows.Forms.DockStyle.Fill;
             this.FileTree.FullRowSelect = true;
             this.FileTree.HideSelection = false;
             this.FileTree.Location = new System.Drawing.Point(0, 0);
             this.FileTree.Name = "FileTree";
-            this.FileTree.Size = new System.Drawing.Size(352, 632);
+            this.FileTree.Size = new System.Drawing.Size(352, 597);
             this.FileTree.TabIndex = 100;
             this.FileTree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.FileTree_AfterSelect);
             // 
@@ -82,12 +123,13 @@
             this.modelPreviewArea.Controls.Add(this.modelRendererHost);
             this.modelPreviewArea.Location = new System.Drawing.Point(3, 3);
             this.modelPreviewArea.Name = "modelPreviewArea";
-            this.modelPreviewArea.Size = new System.Drawing.Size(489, 629);
+            this.modelPreviewArea.Size = new System.Drawing.Size(485, 629);
             this.modelPreviewArea.TabIndex = 103;
             this.modelPreviewArea.TabStop = false;
             // 
             // useMaterials
             // 
+            this.useMaterials.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.useMaterials.AutoSize = true;
             this.useMaterials.Location = new System.Drawing.Point(6, 606);
             this.useMaterials.Name = "useMaterials";
@@ -101,7 +143,7 @@
             // 
             this.selectModelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.selectModelBtn.Enabled = false;
-            this.selectModelBtn.Location = new System.Drawing.Point(340, 579);
+            this.selectModelBtn.Location = new System.Drawing.Point(336, 579);
             this.selectModelBtn.Name = "selectModelBtn";
             this.selectModelBtn.Size = new System.Drawing.Size(134, 35);
             this.selectModelBtn.TabIndex = 1;
@@ -119,6 +161,7 @@
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.importModelBtn);
             this.splitContainer1.Panel1.Controls.Add(this.FileTree);
             // 
             // splitContainer1.Panel2
@@ -142,19 +185,38 @@
             // 
             // splitContainer2.Panel2
             // 
+            this.splitContainer2.Panel2.Controls.Add(this.tableLayoutPanel2);
             this.splitContainer2.Panel2.Controls.Add(this.submeshFilterGroup);
             this.splitContainer2.Size = new System.Drawing.Size(701, 632);
-            this.splitContainer2.SplitterDistance = 495;
+            this.splitContainer2.SplitterDistance = 491;
             this.splitContainer2.SplitterWidth = 5;
             this.splitContainer2.TabIndex = 0;
             // 
+            // tableLayoutPanel2
+            // 
+            this.tableLayoutPanel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel2.ColumnCount = 1;
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel2.Controls.Add(this.exportCs2Btn, 0, 1);
+            this.tableLayoutPanel2.Controls.Add(this.editGeometryBtn, 0, 0);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 567);
+            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
+            this.tableLayoutPanel2.RowCount = 2;
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(202, 66);
+            this.tableLayoutPanel2.TabIndex = 190;
+            // 
             // submeshFilterGroup
             // 
+            this.submeshFilterGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.submeshFilterGroup.Controls.Add(this.submeshFilterPanel);
-            this.submeshFilterGroup.Dock = System.Windows.Forms.DockStyle.Fill;
             this.submeshFilterGroup.Location = new System.Drawing.Point(0, 0);
             this.submeshFilterGroup.Name = "submeshFilterGroup";
-            this.submeshFilterGroup.Size = new System.Drawing.Size(201, 632);
+            this.submeshFilterGroup.Size = new System.Drawing.Size(201, 564);
             this.submeshFilterGroup.TabIndex = 0;
             this.submeshFilterGroup.TabStop = false;
             this.submeshFilterGroup.Text = "Render Filter";
@@ -165,7 +227,7 @@
             this.submeshFilterPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.submeshFilterPanel.Location = new System.Drawing.Point(3, 16);
             this.submeshFilterPanel.Name = "submeshFilterPanel";
-            this.submeshFilterPanel.Size = new System.Drawing.Size(195, 613);
+            this.submeshFilterPanel.Size = new System.Drawing.Size(195, 545);
             this.submeshFilterPanel.TabIndex = 0;
             // 
             // EditModel
@@ -189,6 +251,7 @@
             this.splitContainer2.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
+            this.tableLayoutPanel2.ResumeLayout(false);
             this.submeshFilterGroup.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -197,6 +260,9 @@
         #endregion
 
         private System.Windows.Forms.Integration.ElementHost modelRendererHost;
+        private System.Windows.Forms.Button importModelBtn;
+        private System.Windows.Forms.Button exportCs2Btn;
+        private System.Windows.Forms.Button editGeometryBtn;
         private System.Windows.Forms.TreeView FileTree;
         private System.Windows.Forms.GroupBox modelPreviewArea;
         private System.Windows.Forms.Button selectModelBtn;
@@ -205,5 +271,6 @@
         private System.Windows.Forms.CheckBox useMaterials;
         private System.Windows.Forms.GroupBox submeshFilterGroup;
         private System.Windows.Forms.Panel submeshFilterPanel;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
     }
 }

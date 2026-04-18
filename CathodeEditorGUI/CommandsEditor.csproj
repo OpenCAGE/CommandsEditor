@@ -87,6 +87,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="AssimpNet, Version=5.0.0.0, Culture=neutral, PublicKeyToken=0d51b391f59f42a6, processorArchitecture=MSIL">
+      <HintPath>packages\AssimpNet.5.0.0-beta1\lib\net40\AssimpNet.dll</HintPath>
+    </Reference>
     <Reference Include="Costura, Version=5.7.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\Costura.Fody.5.7.0\lib\netstandard1.0\Costura.dll</HintPath>
     </Reference>
@@ -878,6 +881,24 @@
     <Compile Include="Popups\Resource Editors\EditModel.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Popups\Resource Editors\ModelEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\Resource Editors\ModelEditor.Designer.cs">
+      <DependentUpon>ModelEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\Resource Editors\ModelImportPreview.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\Resource Editors\ModelImportPreview.Designer.cs">
+      <DependentUpon>ModelImportPreview.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\Resource Editors\ModelEditorControlsWPF.xaml.cs">
+      <DependentUpon>ModelEditorControlsWPF.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\Resource Editors\ModelImportPreviewWPF.xaml.cs">
+      <DependentUpon>ModelImportPreviewWPF.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Popups\Resource Editors\EditModel.Designer.cs">
       <DependentUpon>EditModel.cs</DependentUpon>
     </Compile>
@@ -1261,6 +1282,12 @@
     <EmbeddedResource Include="Popups\Resource Editors\EditModel.resx">
       <DependentUpon>EditModel.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Resource Editors\ModelEditor.resx">
+      <DependentUpon>ModelEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Resource Editors\ModelImportPreview.resx">
+      <DependentUpon>ModelImportPreview.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Popups\SetNodeColours.resx">
       <DependentUpon>SetNodeColours.cs</DependentUpon>
     </EmbeddedResource>
@@ -1425,6 +1452,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Popups\Resource Editors\ModelEditorControlsWPF.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Popups\Resource Editors\ModelImportPreviewWPF.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -1436,6 +1471,8 @@
     <Error Condition="!Exists('packages\Fody.6.5.5\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Fody.6.5.5\build\Fody.targets'))" />
     <Error Condition="!Exists('packages\Costura.Fody.5.7.0\build\Costura.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Costura.Fody.5.7.0\build\Costura.Fody.props'))" />
     <Error Condition="!Exists('packages\Costura.Fody.5.7.0\build\Costura.Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Costura.Fody.5.7.0\build\Costura.Fody.targets'))" />
+    <Error Condition="!Exists('packages\AssimpNet.5.0.0-beta1\build\AssimpNet.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\AssimpNet.5.0.0-beta1\build\AssimpNet.targets'))" />
   </Target>
   <Import Project="packages\Costura.Fody.5.7.0\build\Costura.Fody.targets" Condition="Exists('packages\Costura.Fody.5.7.0\build\Costura.Fody.targets')" />
+  <Import Project="packages\AssimpNet.5.0.0-beta1\build\AssimpNet.targets" Condition="Exists('packages\AssimpNet.5.0.0-beta1\build\AssimpNet.targets')" />
 </Project>

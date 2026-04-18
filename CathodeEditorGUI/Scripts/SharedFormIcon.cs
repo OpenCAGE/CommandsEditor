@@ -3,11 +3,11 @@ using System.Windows.Forms;
 
 namespace CommandsEditor
 {
-    internal static class SharedFormIcon
+    public static class SharedFormIcon
     {
         private static Icon _icon;
 
-        internal static Icon Icon
+        public static Icon Icon
         {
             get
             {

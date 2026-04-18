@@ -1,3 +1,5 @@
+using Assimp;
+using Assimp.Configs;
 using CATHODE;
 using CathodeLib;
 using DirectXTex;
@@ -56,9 +58,6 @@ namespace AlienPAK
                 case Textures.TextureFormat.BC6H:
                 case Textures.TextureFormat.BC7:
                 case Textures.TextureFormat.R16F:
-                case Textures.TextureFormat.ASTC4X4:
-                case Textures.TextureFormat.ASTC8X8:
-                case Textures.TextureFormat.ASTC12X12:
                     theDDSHeader.mHeight = (uint)part.Height;
                     theDDSHeader.mWidth = (uint)part.Width;
                     theDDSHeader.mDepth = (uint)part.Depth;
@@ -87,9 +86,6 @@ namespace AlienPAK
                         case Textures.TextureFormat.BC6H: theDX10Header.mDXGIFormat = DXGI_FORMAT.DXGI_FORMAT_BC6H_UF16; break;
                         case Textures.TextureFormat.BC7: theDX10Header.mDXGIFormat = DXGI_FORMAT.DXGI_FORMAT_BC7_UNORM; break;
                         case Textures.TextureFormat.R16F: theDX10Header.mDXGIFormat = DXGI_FORMAT.DXGI_FORMAT_R16_FLOAT; break;
-                        case Textures.TextureFormat.ASTC4X4: theDX10Header.mDXGIFormat = DXGI_FORMAT.DXGI_FORMAT_ASTC_4X4_UNORM; break;
-                        case Textures.TextureFormat.ASTC8X8: theDX10Header.mDXGIFormat = DXGI_FORMAT.DXGI_FORMAT_ASTC_8X8_UNORM; break;
-                        case Textures.TextureFormat.ASTC12X12: theDX10Header.mDXGIFormat = DXGI_FORMAT.DXGI_FORMAT_ASTC_12X12_UNORM; break;
 
                         default:
                             throw new Exception("Unsupported");
@@ -184,21 +180,6 @@ namespace AlienPAK
                     case DXGI_FORMAT.DXGI_FORMAT_R16_FLOAT:
                         format = Textures.TextureFormat.R16F;
                         break;
-                    case DXGI_FORMAT.DXGI_FORMAT_ASTC_4X4_UNORM:
-                    case DXGI_FORMAT.DXGI_FORMAT_ASTC_4X4_UNORM_SRGB:
-                    case DXGI_FORMAT.DXGI_FORMAT_ASTC_4X4_TYPELESS:
-                        format = Textures.TextureFormat.ASTC4X4;
-                        break;
-                    case DXGI_FORMAT.DXGI_FORMAT_ASTC_8X8_UNORM:
-                    case DXGI_FORMAT.DXGI_FORMAT_ASTC_8X8_UNORM_SRGB:
-                    case DXGI_FORMAT.DXGI_FORMAT_ASTC_8X8_TYPELESS:
-                        format = Textures.TextureFormat.ASTC8X8;
-                        break;
-                    case DXGI_FORMAT.DXGI_FORMAT_ASTC_12X12_UNORM:
-                    case DXGI_FORMAT.DXGI_FORMAT_ASTC_12X12_UNORM_SRGB:
-                    case DXGI_FORMAT.DXGI_FORMAT_ASTC_12X12_TYPELESS:
-                        format = Textures.TextureFormat.ASTC12X12;
-                        break;
                     default:
                         return null;
                 }
@@ -264,14 +245,6 @@ namespace AlienPAK
             catch { return false; }
         }
 
-        /* ASTC LDR: one 128-bit (16-byte) block per footprint blockW×blockH texels. */
-        private static int GetAstcCompressedSurfaceSize(uint width, uint height, uint blockW, uint blockH)
-        {
-            uint blocksW = (width + blockW - 1) / blockW;
-            uint blocksH = (height + blockH - 1) / blockH;
-            return (int)(blocksW * blocksH * 16);
-        }
-
         /* Work out the total bytes for one face of a 2D texture (all mip levels). */
         private static int GetDdsFaceSize(uint width, uint height, uint mipCount, DXGI_FORMAT format)
         {
@@ -307,7 +280,7 @@ namespace AlienPAK
                 case DXGI_FORMAT.DXGI_FORMAT_R8G8B8A8_UNORM:
                     return (int)(width * height * 4);
                 case DXGI_FORMAT.DXGI_FORMAT_B8G8R8X8_UNORM:
-               //case DXGI_FORMAT.DXGI_FORMAT_R8G8B8_UNORM:
+                    //case DXGI_FORMAT.DXGI_FORMAT_R8G8B8_UNORM:
                     return (int)(width * height * 4);
                 case DXGI_FORMAT.DXGI_FORMAT_A8_UNORM:
                 case DXGI_FORMAT.DXGI_FORMAT_R8_UNORM:
@@ -318,18 +291,6 @@ namespace AlienPAK
                     return (int)(width * height * 16);
                 case DXGI_FORMAT.DXGI_FORMAT_R16G16B16A16_UNORM:
                     return (int)(width * height * 8);
-                case DXGI_FORMAT.DXGI_FORMAT_ASTC_4X4_UNORM:
-                case DXGI_FORMAT.DXGI_FORMAT_ASTC_4X4_UNORM_SRGB:
-                case DXGI_FORMAT.DXGI_FORMAT_ASTC_4X4_TYPELESS:
-                    return GetAstcCompressedSurfaceSize(width, height, 4, 4);
-                case DXGI_FORMAT.DXGI_FORMAT_ASTC_8X8_UNORM:
-                case DXGI_FORMAT.DXGI_FORMAT_ASTC_8X8_UNORM_SRGB:
-                case DXGI_FORMAT.DXGI_FORMAT_ASTC_8X8_TYPELESS:
-                    return GetAstcCompressedSurfaceSize(width, height, 8, 8);
-                case DXGI_FORMAT.DXGI_FORMAT_ASTC_12X12_UNORM:
-                case DXGI_FORMAT.DXGI_FORMAT_ASTC_12X12_UNORM_SRGB:
-                case DXGI_FORMAT.DXGI_FORMAT_ASTC_12X12_TYPELESS:
-                    return GetAstcCompressedSurfaceSize(width, height, 12, 12);
                 default:
                     return 0;
             }
@@ -452,129 +413,435 @@ namespace AlienPAK
             finally { DeleteObject(handle); }
         }
 
-        public static GeometryModel3D ToGeometryModel3D(this CS2.Component.LOD.Submesh submesh)
+        public static GeometryModel3D ToGeometryModel3D(this CS2.Component.LOD.Submesh submesh, bool applyMaterials = true)
         {
             if (submesh.Data.Length == 0)
                 return new GeometryModel3D();
 
-            Int32Collection indices = new Int32Collection();
-            Point3DCollection vertices = new Point3DCollection();
-            PointCollection[] uvs = new PointCollection[0];
+            cMesh cathodeMesh = ModelUtility.ToMesh(submesh);
+            if (cathodeMesh.Vertices.Count == 0) return new GeometryModel3D();
 
-            using (BinaryReader reader = new BinaryReader(new MemoryStream(submesh.Data)))
+            int[] indices = cathodeMesh.Indices.Select(x => (int)x).ToArray();
+            for (int i = 0; i + 2 < indices.Length; i += 3)
+            {
+                int a = indices[i], b = indices[i + 1], c = indices[i + 2];
+                indices[i] = a; indices[i + 1] = c; indices[i + 2] = b;
+            }
+
+            Point3DCollection vertices = new Point3DCollection();
+            PointCollection uvs = new PointCollection();
+            for (int i = 0; i < cathodeMesh.Vertices.Count; i++)
+            {
+                vertices.Add(new Point3D((float)cathodeMesh.Vertices[i].X, (float)cathodeMesh.Vertices[i].Y, -(float)cathodeMesh.Vertices[i].Z));
+            }
+            for (int i = 0; i < cathodeMesh.UVs.Length; i++)
+            {
+                if (cathodeMesh.UVs[i] == null) continue;
+
+                for (int x = 0; x < cathodeMesh.UVs[i].Count; x++)
+                {
+                    uvs.Add(new System.Windows.Point(cathodeMesh.UVs[i][x].X, cathodeMesh.UVs[i][x].Y));
+                }
+                break;
+            }
+
+            GeometryModel3D geometry = new GeometryModel3D()
+            {
+                Geometry = new MeshGeometry3D
+                {
+                    Positions = vertices,
+                    TriangleIndices = new Int32Collection(indices),
+                    TextureCoordinates = uvs,
+                }
+            };
+            if (applyMaterials)
+            {
+                MaterialApplier.ApplyMaterial(geometry, submesh.Material);
+            }
+            else
+            {
+                geometry.Material = new DiffuseMaterial(new SolidColorBrush(Color.FromRgb(255, 255, 0)));
+                geometry.BackMaterial = new DiffuseMaterial(new SolidColorBrush(Color.FromRgb(255, 255, 0)));
+            }
+            return geometry;
+        }
+
+        public static GeometryModel3D ToGeometryModel3D(this Assimp.Mesh mesh)
+        {
+            if (mesh == null || mesh.VertexCount == 0) return new GeometryModel3D();
+            int[] indices = mesh.GetIndices();
+            if (indices == null || indices.Length == 0) return new GeometryModel3D();
+            for (int i = 0; i + 2 < indices.Length; i += 3)
+            {
+                int a = indices[i], b = indices[i + 1], c = indices[i + 2];
+                indices[i] = a; indices[i + 1] = c; indices[i + 2] = b;
+            }
+            var vertices = new Point3DCollection();
+            for (int i = 0; i < mesh.Vertices.Count; i++)
+            {
+                var v = mesh.Vertices[i];
+                vertices.Add(new Point3D((double)v.X, (double)v.Y, -(double)v.Z));
+            }
+            var uvs = new PointCollection();
+            if (mesh.TextureCoordinateChannelCount > 0 && mesh.TextureCoordinateChannels[0].Count == mesh.VertexCount)
+            {
+                for (int i = 0; i < mesh.TextureCoordinateChannels[0].Count; i++)
+                {
+                    var uv = mesh.TextureCoordinateChannels[0][i];
+                    uvs.Add(new System.Windows.Point((double)uv.X, (double)uv.Y));
+                }
+            }
+            var geometry = new GeometryModel3D
+            {
+                Geometry = new MeshGeometry3D
+                {
+                    Positions = vertices,
+                    TriangleIndices = new Int32Collection(indices),
+                    TextureCoordinates = uvs.Count == vertices.Count ? uvs : null,
+                },
+                Material = new DiffuseMaterial(new SolidColorBrush(Color.FromRgb(200, 200, 200))),
+                BackMaterial = new DiffuseMaterial(new SolidColorBrush(Color.FromRgb(200, 200, 200))),
+            };
+            return geometry;
+        }
+
+        public static Assimp.Material ToAssimpMaterial(this Materials.Material cathodeMaterial, int materialIndex, string diffuseTextureFileName = null, string normalMapTextureFileName = null)
+        {
+            Assimp.Material mat = new Assimp.Material();
+            if (cathodeMaterial == null) return mat;
+
+            mat.Name = cathodeMaterial.Name;
+            float r, g, b;
+            MaterialApplier.GetDiffuseTintForExport(cathodeMaterial, out r, out g, out b);
+            mat.ColorDiffuse = new Assimp.Color4D(r, g, b, 1.0f);
+            if (!string.IsNullOrEmpty(diffuseTextureFileName))
+            {
+                Assimp.TextureSlot slot = new Assimp.TextureSlot();
+                slot.FilePath = diffuseTextureFileName;
+                slot.TextureType = Assimp.TextureType.Diffuse;
+                slot.TextureIndex = 0;
+                mat.AddMaterialTexture(slot);
+            }
+            if (!string.IsNullOrEmpty(normalMapTextureFileName))
+            {
+                Assimp.TextureSlot slot = new Assimp.TextureSlot();
+                slot.FilePath = normalMapTextureFileName;
+                slot.TextureType = Assimp.TextureType.Normals;
+                slot.TextureIndex = 0;
+                mat.AddMaterialTexture(slot);
+            }
+            return mat;
+        }
+
+        public static Mesh ToMesh(this CS2.Component.LOD.Submesh submesh, int materialIndex = 0)
+        {
+            cMesh cathodeMesh = ModelUtility.ToMesh(submesh);
+            Mesh assimpMesh = new Mesh();
+            assimpMesh.MaterialIndex = materialIndex;
+
+            int[] indices = cathodeMesh.Indices.Select(x => (int)x).ToArray();
+            for (int i = 0; i + 2 < indices.Length; i += 3)
+            {
+                int a = indices[i], b = indices[i + 1], c = indices[i + 2];
+                indices[i] = a; indices[i + 1] = c; indices[i + 2] = b;
+            }
+            if (!assimpMesh.SetIndices(indices, 3))
+            {
+                return assimpMesh;
+            }
+
+            for (int i = 0; i < cathodeMesh.Vertices.Count; i++)
+            {
+                assimpMesh.Vertices.Add(new Assimp.Vector3D((float)cathodeMesh.Vertices[i].X, (float)cathodeMesh.Vertices[i].Y, -(float)cathodeMesh.Vertices[i].Z));
+            }
+            for (int i = 0; i < cathodeMesh.Normals.Count; i++)
+            {
+                //assimpMesh.Normals.Add(new Assimp.Vector3D((float)cathodeMesh.Normals[i].X, (float)cathodeMesh.Normals[i].Y, (float)cathodeMesh.Normals[i].Z));
+            }
+            //binormals?
+            for (int i = 0; i < cathodeMesh.Tangents.Count; i++)
+            {
+                assimpMesh.Tangents.Add(new Assimp.Vector3D((float)cathodeMesh.Tangents[i].X, (float)cathodeMesh.Tangents[i].Y, -(float)cathodeMesh.Tangents[i].Z));
+            }
+            int exportedUVs = 0;
+            for (int i = 0; i < cathodeMesh.UVs.Length; i++)
+            {
+                if (cathodeMesh.UVs[i] == null) continue;
+
+                for (int x = 0; x < cathodeMesh.UVs[i].Count; x++)
+                {
+                    assimpMesh.TextureCoordinateChannels[exportedUVs].Add(new Assimp.Vector3D((float)cathodeMesh.UVs[i][x].X, 1.0f - (float)cathodeMesh.UVs[i][x].Y, 0));
+                }
+                assimpMesh.HasTextureCoords(exportedUVs);
+                assimpMesh.UVComponentCount[exportedUVs] = 2;
+                exportedUVs++;
+            }
+
+            /*
+            bool hasBoneData = cathodeMesh.BoneWeights.Count == cathodeMesh.Vertices.Count && cathodeMesh.BoneIndexes.Count == cathodeMesh.Vertices.Count;
+            if (hasBoneData)
+            {
+                List<List<Tuple<float, int>>> vertexBoneWeights = new List<List<Tuple<float, int>>>(cathodeMesh.Vertices.Count);
+                for (int v = 0; v < cathodeMesh.Vertices.Count; v++)
+                    vertexBoneWeights.Add(new List<Tuple<float, int>>());
+                for (int vertexIndex = 0; vertexIndex < cathodeMesh.Vertices.Count; vertexIndex++)
+                {
+                    Vector4 weights = cathodeMesh.BoneWeights[vertexIndex];
+                    Vector4 indices = cathodeMesh.BoneIndexes[vertexIndex];
+
+                    if (indices.X != 0 && weights.X != 0)
+                        vertexBoneWeights[vertexIndex].Add(new Tuple<float, int>(weights.X, Convert.ToInt32(indices.X)));
+                    if (indices.Y != 0 && weights.Y != 0)
+                        vertexBoneWeights[vertexIndex].Add(new Tuple<float, int>(weights.Y, Convert.ToInt32(indices.Y)));
+                    if (indices.Z != 0 && weights.Z != 0)
+                        vertexBoneWeights[vertexIndex].Add(new Tuple<float, int>(weights.Z, Convert.ToInt32(indices.Z)));
+                    if (indices.W != 0 && weights.W != 0)
+                        vertexBoneWeights[vertexIndex].Add(new Tuple<float, int>(weights.W, Convert.ToInt32(indices.W)));
+                }
+
+                Dictionary<int, List<Assimp.VertexWeight>> boneVertexWeights = new Dictionary<int, List<Assimp.VertexWeight>>();
+                for (int vertexIndex = 0; vertexIndex < vertexBoneWeights.Count; vertexIndex++)
+                {
+                    foreach (var entry in vertexBoneWeights[vertexIndex])
+                    {
+                        List<Assimp.VertexWeight> list;
+                        if (!boneVertexWeights.TryGetValue(entry.Item2, out list))
+                        {
+                            list = new List<Assimp.VertexWeight>();
+                            boneVertexWeights[entry.Item2] = list;
+                        }
+                        list.Add(new Assimp.VertexWeight(vertexIndex, entry.Item1));
+                    }
+                }
+
+                foreach (var kvp in boneVertexWeights.OrderBy(x => x.Key))
+                {
+                    var bone = new Assimp.Bone();
+                    bone.Name = "Bone_" + kvp.Key;
+                    bone.VertexWeights.AddRange(kvp.Value);
+                    assimpMesh.Bones.Add(bone);
+                }
+            }
+            */
+
+            return assimpMesh;
+        }
+
+        public static void ExportMesh(this Models.CS2 cs2, string filename)
+        {
+            string modelDir = Path.GetDirectoryName(filename);
+            string modelBase = Path.GetFileNameWithoutExtension(filename);
+            if (string.IsNullOrEmpty(modelBase)) modelBase = cs2.Name ?? "model";
+
+            List<Materials.Material> materials = new List<Materials.Material>();
+            Dictionary<Materials.Material, int> materialIndexes = new Dictionary<Materials.Material, int>();
+            foreach (var component in cs2.Components)
+            {
+                foreach (var lod in component.LODs)
+                {
+                    foreach (var submesh in lod.Submeshes)
+                    {
+                        if (submesh.Material != null && !materialIndexes.ContainsKey(submesh.Material))
+                        {
+                            materialIndexes[submesh.Material] = materials.Count;
+                            materials.Add(submesh.Material);
+                        }
+                    }
+                }
+            }
+
+            string[] diffuseFileNames = new string[materials.Count];
+            string[] normalMapFileNames = new string[materials.Count];
+            for (int i = 0; i < materials.Count; i++)
+            {
+                ExportModelSampler(MaterialApplier.GetDiffuseTexture(materials[i]), ref diffuseFileNames, i);
+                ExportModelSampler(MaterialApplier.GetNormalMapTexture(materials[i]), ref normalMapFileNames, i);
+            }
+
+            Scene scene = new Scene();
+            for (int matIdx = 0; matIdx < materials.Count; matIdx++)
+                scene.Materials.Add(materials[matIdx].ToAssimpMaterial(matIdx, diffuseFileNames[matIdx], normalMapFileNames[matIdx]));
+            if (scene.Materials.Count == 0)
+                scene.Materials.Add(new Assimp.Material());
+
+            scene.RootNode = new Node(cs2.Name);
+            for (int i = 0; i < cs2.Components.Count; i++)
+            {
+                Node componentNode = new Node(i.ToString());
+                scene.RootNode.Children.Add(componentNode);
+                for (int x = 0; x < cs2.Components[i].LODs.Count; x++)
+                {
+                    Node lodNode = new Node(cs2.Components[i].LODs[x].Name);
+                    componentNode.Children.Add(lodNode);
+                    for (int y = 0; y < cs2.Components[i].LODs[x].Submeshes.Count; y++)
+                    {
+                        Node submeshNode = new Node(y.ToString());
+                        lodNode.Children.Add(submeshNode);
+                        Materials.Material submeshMat = cs2.Components[i].LODs[x].Submeshes[y].Material;
+                        int meshMatIndex = (submeshMat != null && materialIndexes.ContainsKey(submeshMat)) ? materialIndexes[submeshMat] : 0;
+                        Mesh mesh = cs2.Components[i].LODs[x].Submeshes[y].ToMesh(meshMatIndex);
+                        mesh.Name = cs2.Name + " [" + x + "] -> " + lodNode.Name + " [" + i + "]";
+                        scene.Meshes.Add(mesh);
+                        submeshNode.MeshIndices.Add(scene.Meshes.Count - 1);
+                    }
+                }
+            }
+
+            using (AssimpContext exp = new AssimpContext())
+            {
+                exp.ExportFile(scene, filename, Path.GetExtension(filename).TrimStart('.').ToLowerInvariant());
+            }
+
+            void ExportModelSampler(Textures.TEX4 texture, ref string[] filenames, int index)
+            {
+                if (texture == null) return;
+
+                byte[] dds = texture.ToDDS();
+                if (dds != null && dds.Length > 0)
+                {
+                    string file = Path.GetFileName(texture.Name);
+                    string dir = modelDir + "/" + modelBase + " Textures/" + texture.Name.Substring(0, texture.Name.Length - file.Length);
+                    filenames[index] = dir + file + ".dds";
+                    Directory.CreateDirectory(dir);
+                    File.WriteAllBytes(filenames[index], dds);
+                }
+            }
+        }
+
+        public static CS2.Component.LOD.Submesh ToSubmesh(this Mesh mesh, ushort? customScaleFactor = null)
+        {
+            //We can't have more vertices than Int16.MaxValue as we won't be able to point to them
+            if (mesh.VertexCount > Int16.MaxValue) return null;
+
+            //All faces must be triangulated
+            foreach (Assimp.Face face in mesh.Faces) if (face.Indices.Count != 3) return null;
+
+            //Mesh must have some content
+            if (mesh.BoundingBox.Max == new Assimp.Vector3D(0, 0, 0)) return null;
+
+            CS2.Component.LOD.Submesh submesh = new CS2.Component.LOD.Submesh();
+            submesh.VertexCount = mesh.VertexCount;
+            int[] indices = mesh.GetIndices();
+            submesh.IndexCount = indices.Length;
+
+            //todo - allow selection of these flags!
+            submesh.RenderFlags = RenderingFlag.IS_FIRST_PERSON_LOD | RenderingFlag.HAS_FIRST_PERSON_LOD | RenderingFlag.IS_THIRD_PERSON_LOD | RenderingFlag.HAS_THIRD_PERSON_LOD | RenderingFlag.IS_SHADOW_CASTING | RenderingFlag.HAS_SHADOW_CASTING | RenderingFlag.IS_LEVEL_PACK;
+
+            //meshes must not exceed 1 unit in any direction -> TODO: we should validate customScaleFactor here...
+            submesh.VertexScale = customScaleFactor == null ? mesh.CalculateScaleFactor() : (ushort)customScaleFactor;
+
+            submesh.MaxBounds = new Vector3(mesh.BoundingBox.Max.X, mesh.BoundingBox.Max.Y, mesh.BoundingBox.Max.Z);
+            submesh.MinBounds = new Vector3(mesh.BoundingBox.Min.X, mesh.BoundingBox.Min.Y, mesh.BoundingBox.Min.Z);
+
+            //Example vertex format with vertices, UVs, normals, and a colour
+            //submesh.VertexFormat.Elements.Add(new List<AlienVBF.Element>() { new AlienVBF.Element(VBFE_InputType.VECTOR4_INT16_DIVMAX, VBFE_InputSlot.VERTEX), new AlienVBF.Element(VBFE_InputType.VECTOR2_INT16_DIV2048, VBFE_InputSlot.UV), new AlienVBF.Element(VBFE_InputType.INT32, VBFE_InputSlot.COLOUR) });
+            //submesh.VertexFormat.Elements.Add(new List<AlienVBF.Element>() { new AlienVBF.Element(VBFE_InputType.VECTOR3, VBFE_InputSlot.NORMAL) });
+            //submesh.VertexFormat.Elements.Add(new List<AlienVBF.Element>() { new AlienVBF.Element(VBFE_InputType.AlienVertexInputType_u16) });
+
+            //Example vertex format with just vertices
+            //submesh.VertexFormat.Elements.Add(new List<AlienVBF.Element>() { new AlienVBF.Element(VBFE_InputType.VECTOR4_INT16_DIVMAX, VBFE_InputSlot.VERTEX) });
+            //submesh.VertexFormat.Elements.Add(new List<AlienVBF.Element>() { new AlienVBF.Element(VBFE_InputType.AlienVertexInputType_u16) });
+
+            submesh.VertexFormatFull = new VertexFormat();
+            submesh.VertexFormatFull.Attributes.Add(new List<VertexFormat.Attribute>() { new VertexFormat.Attribute(VertexFormat.Type.S16_4N, VertexFormat.Usage.Position), new VertexFormat.Attribute(VertexFormat.Type.S16_2N, VertexFormat.Usage.TexCoord) });
+            submesh.VertexFormatFull.Attributes.Add(new List<VertexFormat.Attribute>() { new VertexFormat.Attribute(VertexFormat.Type.FP32_3, VertexFormat.Usage.Normal) });
+            submesh.VertexFormatFull.Attributes.Add(new List<VertexFormat.Attribute>() { new VertexFormat.Attribute(VertexFormat.Type.Unused) });
+
+            submesh.VertexFormatPartial = new VertexFormat();
+            submesh.VertexFormatPartial.Attributes.Add(new List<VertexFormat.Attribute>() { new VertexFormat.Attribute(VertexFormat.Type.S16_4N, VertexFormat.Usage.Position), new VertexFormat.Attribute(VertexFormat.Type.S16_2N, VertexFormat.Usage.TexCoord) });
+            submesh.VertexFormatPartial.Attributes.Add(new List<VertexFormat.Attribute>() { new VertexFormat.Attribute(VertexFormat.Type.Unused) });
+
+            MemoryStream ms = new MemoryStream();
+            using (BinaryWriter reader = new BinaryWriter(ms))
             {
                 for (int i = 0; i < submesh.VertexFormatFull.Attributes.Count; ++i)
                 {
                     if (i == submesh.VertexFormatFull.Attributes.Count - 1)
                     {
-                        for (int x = 0; x < submesh.IndexCount; x++)
-                            indices.Add(reader.ReadUInt16());
+                        for (int x = 0; x < indices.Length; x++)
+                            reader.Write((UInt16)indices[x]);
+
+                        Utilities.Align(reader, 16);
                         continue;
                     }
+
+                    //TEMP!! This should be reworked to the new logic
 
                     for (int x = 0; x < submesh.VertexCount; ++x)
                     {
                         for (int y = 0; y < submesh.VertexFormatFull.Attributes[i].Count; ++y)
                         {
-                            VertexFormat.Attribute attr = submesh.VertexFormatFull.Attributes[i][y];
-                            Vector4 v = ReadVertexData(reader, attr.Type);
-
-                            switch (attr.Usage)
+                            VertexFormat.Attribute format = submesh.VertexFormatFull.Attributes[i][y];
+                            switch (format.Type)
                             {
-                                case VertexFormat.Usage.Position:
-                                    vertices.Add(new Point3D(v.X * submesh.VertexScale, v.Y * submesh.VertexScale, -v.Z * submesh.VertexScale));
-                                    break;
-                                case VertexFormat.Usage.TexCoord:
-                                    if (attr.Index >= uvs.Length)
-                                        Array.Resize(ref uvs, attr.Index + 1);
-                                    if (uvs[attr.Index] == null)
-                                        uvs[attr.Index] = new PointCollection();
-                                    uvs[attr.Index].Add(new System.Windows.Point(v.X * 16.0f, v.Y * 16.0f));
-                                    break;
-                                //TODO: support more data
+                                case VertexFormat.Type.FP32_3:
+                                    {
+                                        switch (format.Usage)
+                                        {
+                                            case VertexFormat.Usage.Normal:
+                                                reader.Write((float)mesh.Normals[x].X);
+                                                reader.Write((float)mesh.Normals[x].Y);
+                                                reader.Write((float)mesh.Normals[x].Z);
+                                                break;
+                                        }
+                                        ;
+                                        break;
+                                    }
+                                case VertexFormat.Type.S16_2N:
+                                    {
+                                        switch (format.Usage)
+                                        {
+                                            case VertexFormat.Usage.TexCoord:
+                                                Vector2 v = new Vector2(mesh.TextureCoordinateChannels[format.Index][x].X, mesh.TextureCoordinateChannels[format.Index][x].Y);
+                                                v *= 2048.0f;
+                                                reader.Write((Int16)v.X);
+                                                reader.Write((Int16)v.Y);
+                                                break;
+                                        }
+                                        break;
+                                    }
+                                case VertexFormat.Type.S16_4N:
+                                    {
+                                        switch (format.Usage)
+                                        {
+                                            case VertexFormat.Usage.Position:
+                                                Vector4 v = new Vector4(mesh.Vertices[x].X, mesh.Vertices[x].Y, mesh.Vertices[x].Z, 0);
+                                                v /= submesh.VertexScale;
+                                                v *= (float)Int16.MaxValue;
+                                                reader.Write((Int16)v.X);
+                                                reader.Write((Int16)v.Y);
+                                                reader.Write((Int16)v.Z);
+                                                reader.Write((Int16)v.W); //-1,0,1
+                                                break;
+                                        }
+                                        break;
+                                    }
                             }
                         }
                     }
                     Utilities.Align(reader, 16);
                 }
             }
+            submesh.Data = ms.ToArray();
 
-            if (vertices.Count == 0) return new GeometryModel3D();
-
-            Int32Collection reversedIndices = new Int32Collection();
-            for (int i = 0; i < indices.Count; i += 3)
-            {
-                if (i + 2 < indices.Count)
-                {
-                    reversedIndices.Add(indices[i]);
-                    reversedIndices.Add(indices[i + 2]);
-                    reversedIndices.Add(indices[i + 1]);
-                }
-            }
-
-            PointCollection uv = new PointCollection();
-            for (int i = 0; i < uvs.Length; i++)
-            {
-                if (uvs[i] != null)
-                {
-                    uv = uvs[i];
-                    break;
-                }
-            }
-
-            MeshGeometry3D geometry = new MeshGeometry3D
-            {
-                Positions = vertices,
-                TriangleIndices = reversedIndices,
-                TextureCoordinates = uv,
-            };
-            return new GeometryModel3D
-            {
-                Geometry = geometry,
-                Material = new DiffuseMaterial(new SolidColorBrush(Color.FromRgb(255, 255, 0))),
-                BackMaterial = new DiffuseMaterial(new SolidColorBrush(Color.FromRgb(255, 255, 0)))
-            };
+            return submesh;
         }
 
-        private static Vector4 ReadVertexData(BinaryReader reader, VertexFormat.Type type)
+        public static ushort CalculateScaleFactor(this Mesh mesh)
         {
-            switch (type)
+            float x = Math.Max(Math.Abs(mesh.BoundingBox.Min.X), Math.Abs(mesh.BoundingBox.Max.X));
+            float y = Math.Max(Math.Abs(mesh.BoundingBox.Min.Y), Math.Abs(mesh.BoundingBox.Max.Y));
+            float z = Math.Max(Math.Abs(mesh.BoundingBox.Min.Z), Math.Abs(mesh.BoundingBox.Max.Z));
+            ushort scaleFactor = 1;
+            int i = 1;
+            while (true)
             {
-                case VertexFormat.Type.FP32_1:
-                    return new Vector4(reader.ReadSingle(), 0, 0, 0);
-                case VertexFormat.Type.FP32_2:
-                    return new Vector4(reader.ReadSingle(), reader.ReadSingle(), 0, 0);
-                case VertexFormat.Type.FP32_3:
-                    return new Vector4(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle(), 0);
-                case VertexFormat.Type.FP32_4:
-                    return new Vector4(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
-                case VertexFormat.Type.Color:
-                    uint data = reader.ReadUInt32();
-                    return new Vector4((float)((data & 0xFF000000) >> 24) / 255.0f, (float)((data & 0x00FF0000) >> 16) / 255.0f, (float)((data & 0x0000FF00) >> 8) / 255.0f, (float)((data & 0x000000FF) >> 0) / 255.0f);
-                case VertexFormat.Type.U8_4:
-                    return new Vector4(reader.ReadByte(), reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
-                case VertexFormat.Type.S16_2:
-                    return new Vector4(reader.ReadInt16(), reader.ReadInt16(), 0, 0);
-                case VertexFormat.Type.S16_4:
-                    return new Vector4(reader.ReadInt16(), reader.ReadInt16(), reader.ReadInt16(), reader.ReadInt16());
-                case VertexFormat.Type.U8_4N:
-                    return new Vector4((float)reader.ReadByte() / 255.0f, (float)reader.ReadByte() / 255.0f, (float)reader.ReadByte() / 255.0f, (float)reader.ReadByte() / 255.0f);
-                case VertexFormat.Type.S16_2N:
-                    return new Vector4((float)reader.ReadInt16() / (float)Int16.MaxValue, (float)reader.ReadInt16() / (float)Int16.MaxValue, 0, 0);
-                case VertexFormat.Type.S16_4N:
-                    return new Vector4((float)reader.ReadInt16() / (float)Int16.MaxValue, (float)reader.ReadInt16() / (float)Int16.MaxValue, (float)reader.ReadInt16() / (float)Int16.MaxValue, (float)reader.ReadInt16() / (float)Int16.MaxValue);
-                case VertexFormat.Type.U16_2N:
-                    return new Vector4((float)reader.ReadUInt16() / (float)UInt16.MaxValue, (float)reader.ReadUInt16() / (float)UInt16.MaxValue, 0, 0);
-                case VertexFormat.Type.U16_4N:
-                    return new Vector4((float)reader.ReadUInt16() / (float)UInt16.MaxValue, (float)reader.ReadUInt16() / (float)UInt16.MaxValue, (float)reader.ReadUInt16() / (float)UInt16.MaxValue, (float)reader.ReadUInt16() / (float)UInt16.MaxValue);
-                case VertexFormat.Type.Dec3N:
-                    uint val = reader.ReadUInt32();
-                    short sx = (short)((val >> 20) & 0x3ff);
-                    short sy = (short)((val >> 10) & 0x3ff);
-                    short sz = (short)((val) & 0x3ff);
-                    return new Vector4(((sx < 512) ? sx : (sx - 1024)) / 511.0f, ((sy < 512) ? sy : (sy - 1024)) / 511.0f, ((sz < 512) ? sz : (sz - 1024)) / 511.0f, 0);
+                if (x / (float)scaleFactor < 0.99f && y / (float)scaleFactor < 0.99f && z / (float)scaleFactor < 0.99f) break;
+                if (i == 1) scaleFactor = 4;
+                else scaleFactor = (ushort)(4 * i);
+                i++;
             }
-            throw new Exception("Unsupported VertexFormatType");
+            return scaleFactor;
         }
 
         public static string ForceStringNumeric(this string str, bool allowDots = false)
