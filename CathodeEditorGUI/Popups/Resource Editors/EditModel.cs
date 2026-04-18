@@ -43,19 +43,18 @@ namespace CommandsEditor
             useMaterials.Checked = SettingsManager.GetBool(Singleton.Settings.ShowTexOpt);
 
             treeHelper = new TreeUtility(FileTree, true);
-            RebuildModelFileTree();
+            RebuildModelFileTree(Content.Level.Models.FindModelLOD(defaultSubmesh));
             UpdateModelToolsState();
 
             modelViewer = new GUI_ModelViewer();
             modelRendererHost.Child = modelViewer;
 
-            if (defaultSubmesh != null)
-                SelectModelNode(Content.Level.Models.GetWriteIndex(defaultSubmesh));
-
             submeshFilterPanel.VerticalScroll.Visible = true;
             selectModelBtn.Visible = showSelectBtn;
 
             this.Disposed += SelectModel_Disposed;
+
+            //todo - reimplement delete button
         }
 
         private void SelectModel_Disposed(object sender, EventArgs e)
@@ -72,31 +71,28 @@ namespace CommandsEditor
                 modelRendererHost.Dispose();
         }
 
-        private string GenerateNodeTag(int i)
-        {
-            Models.CS2.Component.LOD.Submesh submesh = Content.Level.Models.GetAtWriteIndex(i);
-            Models.CS2.Component.LOD lod = Content.Level.Models.FindModelLODForSubmesh(submesh);
-            Models.CS2.Component component = Content.Level.Models.FindModelComponentForSubmesh(submesh);
-            Models.CS2 mesh = Content.Level.Models.FindModelForSubmesh(submesh);
-
-            if (mesh == null || submesh == null) return ""; //we currently skip empty submeshes, e.g. ballistics
-
-            return CreateTagForMesh(mesh, submesh, lod, component);
-        }
-
-        private string CreateTagForMesh(Models.CS2 cs2, Models.CS2.Component.LOD.Submesh submesh, Models.CS2.Component.LOD lod, Models.CS2.Component component)
+        private string CreateTagForMesh(Models.CS2 cs2, Models.CS2.Component.LOD lod, Models.CS2.Component component)
         {
             string tag = cs2.Name.Replace('\\', '/') + "/[" + cs2.Components.IndexOf(component).ToString("00") + "] " + lod.Name.Replace('\\', '/');
             if (tag.Length > 0 && tag[0] == '/')
                 tag = tag.Substring(1);
             return tag;
         }
+        private string CreateTagForMesh(Models.CS2.Component.LOD lod)
+        {
+            Models.CS2.Component component = Content.Level.Models.FindModelComponent(lod);
+            Models.CS2 cs2 = Content.Level.Models.FindModel(component);
+            string tag = cs2.Name.Replace('\\', '/') + "/[" + cs2.Components.IndexOf(component).ToString("00") + "] " + lod.Name.Replace('\\', '/');
+            if (tag.Length > 0 && tag[0] == '/')
+                tag = tag.Substring(1);
+            return tag;
+        }
 
-        private void RebuildModelFileTree()
+        private void RebuildModelFileTree(Models.CS2.Component.LOD selectedLOD = null)
         {
             if (Content?.Level?.Models == null || treeHelper == null) return;
             List<string> allModelFileNames = new List<string>();
-            List<string> allModelTagsNames = new List<string>();
+            List<Models.CS2.Component.LOD> allModelTagsModels = new List<Models.CS2.Component.LOD>();
             foreach (Models.CS2 mesh in Content.Level.Models.Entries)
             {
                 foreach (Models.CS2.Component component in mesh.Components)
@@ -109,12 +105,12 @@ namespace CommandsEditor
                     if (lod0.Submeshes.Count == 0)
                         continue;
 
-                    Models.CS2.Component.LOD.Submesh submesh0 = lod0.Submeshes[0];
-                    allModelFileNames.Add(CreateTagForMesh(mesh, submesh0, lod0, component));
-                    allModelTagsNames.Add(Content.Level.Models.GetWriteIndex(submesh0).ToString());
+                    allModelFileNames.Add(CreateTagForMesh(mesh, lod0, component));
+                    allModelTagsModels.Add(lod0);
                 }
             }
-            treeHelper.UpdateFileTree(allModelFileNames, null, allModelTagsNames);
+            treeHelper.UpdateFileTree(allModelFileNames, null, null, allModelTagsModels);
+            treeHelper.SelectNode(selectedLOD);
         }
 
         private void UpdateModelToolsState()
@@ -132,21 +128,14 @@ namespace CommandsEditor
             var tag = (TreeItem)FileTree.SelectedNode.Tag;
             if (tag.Item_Type == TreeItemType.EXPORTABLE_FILE)
             {
-                int idx = Convert.ToInt32(tag.String_Value);
-                if (idx < 0) return false;
-                var sub = Content.Level.Models.GetAtWriteIndex(idx);
-                var comp = Content.Level.Models.FindModelComponentForSubmesh(sub);
-                cs2 = Content.Level.Models.FindModelForComponent(comp);
+                cs2 = Content.Level.Models.FindModel(tag.Model_Value);
                 return cs2 != null;
             }
             if (tag.Item_Type == TreeItemType.DIRECTORY)
             {
                 if (!(FileTree.SelectedNode.Nodes.Count > 0 && FileTree.SelectedNode.Nodes[0].Nodes.Count == 0))
                     return false;
-                int idx = Convert.ToInt32(tag.String_Value);
-                if (idx < 0) return false;
-                var submesh = Content.Level.Models.GetAtWriteIndex(idx);
-                cs2 = Content.Level.Models.FindModelForSubmesh(submesh);
+                cs2 = Content.Level.Models.FindModel(tag.Model_Value);
                 return cs2 != null;
             }
             return false;
@@ -173,13 +162,16 @@ namespace CommandsEditor
                     MessageBox.Show("Failed to load model or no mesh data found. Ensure meshes are under the scene root.", "Import failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
+                Models.CS2.Component.LOD toSelect = null;
                 using (var previewForm = new ModelImportPreview(importScene, picker.FileName, Content.Level.Materials))
                 {
                     if (previewForm.ShowDialog(this) != DialogResult.OK || previewForm.ResultCs2 == null)
                         return;
                     Content.Level.Models.Entries.Add(previewForm.ResultCs2);
+                    if (previewForm.ResultCs2.Components.Count > 0 && previewForm.ResultCs2.Components[0].LODs.Count > 0)
+                        toSelect = previewForm.ResultCs2.Components[0].LODs[0];
                 }
-                RebuildModelFileTree();
+                RebuildModelFileTree(toSelect);
                 Singleton.OnResourceModified?.Invoke();
             }
             catch (Exception ex)
@@ -227,12 +219,6 @@ namespace CommandsEditor
             editor.Show(this);
         }
 
-        private void SelectModelNode(int pakIndex)
-        {
-            string thisTag = GenerateNodeTag(pakIndex);
-            treeHelper.SelectNode(thisTag);
-        }
-
         private void FileTree_AfterSelect(object sender, TreeViewEventArgs e)
         {
             ClearSubmeshCheckboxes();
@@ -245,16 +231,14 @@ namespace CommandsEditor
             {
                 if (FileTree.SelectedNode == null) return;
 
-                int selectedModelIndex = Convert.ToInt32(((TreeItem)FileTree.SelectedNode.Tag).String_Value);
-                if (selectedModelIndex == -1) return;
+                Models.CS2.Component.LOD lod = ((TreeItem)FileTree.SelectedNode.Tag).Model_Value;
 
                 switch (((TreeItem)FileTree.SelectedNode.Tag).Item_Type)
                 {
                     case TreeItemType.EXPORTABLE_FILE:
                         {
-                            Models.CS2.Component component = Content.Level.Models.FindModelComponentForSubmesh(Content.Level.Models.GetAtWriteIndex(selectedModelIndex));
-                            AddComponent(component);
-                            modelPreviewArea.Text = GenerateNodeTag(selectedModelIndex);
+                            AddComponent(Content.Level.Models.FindModelComponent(lod));
+                            modelPreviewArea.Text = CreateTagForMesh(lod);
                             selectModelBtn.Enabled = true;
                         }
                         break;
@@ -263,13 +247,12 @@ namespace CommandsEditor
                             if (!(FileTree.SelectedNode.Nodes.Count > 0 && FileTree.SelectedNode.Nodes[0].Nodes.Count == 0))
                                 return;
 
-                            Models.CS2.Component.LOD.Submesh submesh = Content.Level.Models.GetAtWriteIndex(selectedModelIndex);
-                            Models.CS2 mesh = Content.Level.Models.FindModelForSubmesh(submesh);
+                            Models.CS2 mesh = Content.Level.Models.FindModel(lod);
                             int index = 0;
-                            foreach (Models.CS2.Component component in mesh.Components)
+                            foreach (Models.CS2.Component c in mesh.Components)
                             {
-                                AddComponent(component, index);
-                                index += component.LODs.Count;
+                                AddComponent(c, index);
+                                index += c.LODs.Count;
                             }
                             modelPreviewArea.Text = mesh.Name.Replace('\\', '/');
                         }
@@ -280,8 +263,6 @@ namespace CommandsEditor
 
                 UpdateFilteredModel(true);
                 UpdateLODGroupLayouts();
-
-                Debug.Log("Model Viewer", "Showing from index " + selectedModelIndex);
             }
             finally
             {
@@ -461,7 +442,7 @@ namespace CommandsEditor
         private void selectModel_Click(object sender, EventArgs e)
         {
             int selectedModelIndex = Convert.ToInt32(((TreeItem)FileTree.SelectedNode.Tag).String_Value);
-            OnModelSelected?.Invoke(Content.Level.Models.FindModelComponentForSubmesh(Content.Level.Models.GetAtWriteIndex(selectedModelIndex)));
+            OnModelSelected?.Invoke(Content.Level.Models.FindModelComponent(Content.Level.Models.GetAtWriteIndex(selectedModelIndex)));
             this.Close();
         }
 

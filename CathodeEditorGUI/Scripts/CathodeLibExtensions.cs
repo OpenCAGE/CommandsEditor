@@ -733,20 +733,17 @@ namespace AlienPAK
             submesh.MaxBounds = new Vector3(mesh.BoundingBox.Max.X, mesh.BoundingBox.Max.Y, mesh.BoundingBox.Max.Z);
             submesh.MinBounds = new Vector3(mesh.BoundingBox.Min.X, mesh.BoundingBox.Min.Y, mesh.BoundingBox.Min.Z);
 
-            //Example vertex format with vertices, UVs, normals, and a colour
-            //submesh.VertexFormat.Elements.Add(new List<AlienVBF.Element>() { new AlienVBF.Element(VBFE_InputType.VECTOR4_INT16_DIVMAX, VBFE_InputSlot.VERTEX), new AlienVBF.Element(VBFE_InputType.VECTOR2_INT16_DIV2048, VBFE_InputSlot.UV), new AlienVBF.Element(VBFE_InputType.INT32, VBFE_InputSlot.COLOUR) });
-            //submesh.VertexFormat.Elements.Add(new List<AlienVBF.Element>() { new AlienVBF.Element(VBFE_InputType.VECTOR3, VBFE_InputSlot.NORMAL) });
-            //submesh.VertexFormat.Elements.Add(new List<AlienVBF.Element>() { new AlienVBF.Element(VBFE_InputType.AlienVertexInputType_u16) });
-
-            //Example vertex format with just vertices
-            //submesh.VertexFormat.Elements.Add(new List<AlienVBF.Element>() { new AlienVBF.Element(VBFE_InputType.VECTOR4_INT16_DIVMAX, VBFE_InputSlot.VERTEX) });
-            //submesh.VertexFormat.Elements.Add(new List<AlienVBF.Element>() { new AlienVBF.Element(VBFE_InputType.AlienVertexInputType_u16) });
-
+            //untested in game!!
             submesh.VertexFormatFull = new VertexFormat();
-            submesh.VertexFormatFull.Attributes.Add(new List<VertexFormat.Attribute>() { new VertexFormat.Attribute(VertexFormat.Type.S16_4N, VertexFormat.Usage.Position), new VertexFormat.Attribute(VertexFormat.Type.S16_2N, VertexFormat.Usage.TexCoord) });
-            submesh.VertexFormatFull.Attributes.Add(new List<VertexFormat.Attribute>() { new VertexFormat.Attribute(VertexFormat.Type.FP32_3, VertexFormat.Usage.Normal) });
+            submesh.VertexFormatFull.Attributes.Add(new List<VertexFormat.Attribute>() { new VertexFormat.Attribute(VertexFormat.Type.S16_4N, VertexFormat.Usage.Position) });
+            for (int i = 0; i < mesh.TextureCoordinateChannels.Length; i++)
+                if (mesh.TextureCoordinateChannels[i].Count > 0)
+                    submesh.VertexFormatFull.Attributes.Add(new List<VertexFormat.Attribute>() { new VertexFormat.Attribute(VertexFormat.Type.S16_2N, VertexFormat.Usage.TexCoord, i) });
+            if (mesh.Normals.Count > 0)
+                submesh.VertexFormatFull.Attributes.Add(new List<VertexFormat.Attribute>() { new VertexFormat.Attribute(VertexFormat.Type.FP32_3, VertexFormat.Usage.Normal) });
             submesh.VertexFormatFull.Attributes.Add(new List<VertexFormat.Attribute>() { new VertexFormat.Attribute(VertexFormat.Type.Unused) });
 
+            //is this right?
             submesh.VertexFormatPartial = new VertexFormat();
             submesh.VertexFormatPartial.Attributes.Add(new List<VertexFormat.Attribute>() { new VertexFormat.Attribute(VertexFormat.Type.S16_4N, VertexFormat.Usage.Position), new VertexFormat.Attribute(VertexFormat.Type.S16_2N, VertexFormat.Usage.TexCoord) });
             submesh.VertexFormatPartial.Attributes.Add(new List<VertexFormat.Attribute>() { new VertexFormat.Attribute(VertexFormat.Type.Unused) });
