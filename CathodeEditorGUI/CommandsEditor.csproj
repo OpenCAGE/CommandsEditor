@@ -893,6 +893,12 @@
     <Compile Include="Popups\Resource Editors\ModelImportPreview.Designer.cs">
       <DependentUpon>ModelImportPreview.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\Resource Editors\EditUI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popups\Resource Editors\EditUI.Designer.cs">
+      <DependentUpon>EditUI.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popups\Resource Editors\ModelEditorControlsWPF.xaml.cs">
       <DependentUpon>ModelEditorControlsWPF.xaml</DependentUpon>
     </Compile>
@@ -1287,6 +1293,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\Resource Editors\ModelImportPreview.resx">
       <DependentUpon>ModelImportPreview.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Resource Editors\EditUI.resx">
+      <DependentUpon>EditUI.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\SetNodeColours.resx">
       <DependentUpon>SetNodeColours.cs</DependentUpon>

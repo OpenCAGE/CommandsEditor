@@ -979,9 +979,23 @@ namespace CommandsEditor
             _launchGamePopup = null;
         }
 
+        EditUI _editUiPak = null;
         private void uIToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //todo
+            if (_editUiPak != null)
+            {
+                _editUiPak.FormClosed -= _editUiPak_FormClosed;
+                _editUiPak.Close();
+            }
+
+            _editUiPak = new EditUI();
+            _editUiPak.Show();
+            _editUiPak.FormClosed += _editUiPak_FormClosed;
+        }
+
+        private void _editUiPak_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _editUiPak = null;
         }
 
         private void animationsToolStripMenuItem_Click(object sender, EventArgs e)
