@@ -104,9 +104,6 @@ namespace CommandsEditor
             DEBUG_ReloadLevel.Visible = false;
             connectToRuntimeUtils.Visible = false;
 
-            // wip
-            uIToolStripMenuItem.Visible = false;
-            animationsToolStripMenuItem.Visible = false;
             scriptReadableVariablesToolStripMenuItem.Visible = false;
 #endif
 
