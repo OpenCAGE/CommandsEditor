@@ -235,6 +235,8 @@ namespace CommandsEditor
                 SettingsManager.SetInteger(Singleton.Settings.NodeColour_VariableNode, Color.Red.ToArgb());
             if (!SettingsManager.IsSet(Singleton.Settings.NodeColour_VariableText))
                 SettingsManager.SetInteger(Singleton.Settings.NodeColour_VariableText, Color.White.ToArgb());
+
+            versionToolStripMenuItem.Text = "Version " + ProductVersion;
         }
 
         //keep dropdown open if cursor is inside it 

@@ -27,6 +27,10 @@ namespace CommandsEditor
         public Action OnPickTexture;
 
         public TabControl SamplerTabControl => samplerTabControl;
+        public ComboBox ParameterSelection => parameterSelection;
+        public StackPanel ParameterDetailsPanel => parameterDetailsPanel;
+        public StackPanel FeatureDetailsPanel => featureDetailsPanel;
+        public System.Windows.Controls.TextBlock ShaderUbershaderText => shaderType;
 
         public MaterialInfoWPF()
         {

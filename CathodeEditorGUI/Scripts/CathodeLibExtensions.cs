@@ -37,8 +37,19 @@ namespace AlienPAK
         /* Convert a TEX4 to DDS */
         public static byte[] ToDDS(this Textures.TEX4 texture)
         {
-            Textures.TEX4.Texture part = texture?.TextureStreamed?.Content != null ? texture.TextureStreamed : texture?.TexturePersistent?.Content != null ? texture.TexturePersistent : null;
-            if (part == null) return null;
+            if (texture == null) return null;
+            Textures.TEX4.Texture part = texture.TextureStreamed?.Content != null ? texture.TextureStreamed
+                : texture.TexturePersistent?.Content != null ? texture.TexturePersistent : null;
+            return ToDDSFromPart(texture, part);
+        }
+        public static byte[] ToDDS(this Textures.TEX4 texture, Textures.TEX4.Texture part)
+        {
+            return ToDDSFromPart(texture, part);
+        }
+
+        private static byte[] ToDDSFromPart(Textures.TEX4 texture, Textures.TEX4.Texture part)
+        {
+            if (texture == null || part?.Content == null) return null;
             DDSHeader theDDSHeader = new DDSHeader();
             DX10Header theDX10Header = new DX10Header();
             MemoryStream ms = new MemoryStream();
@@ -191,6 +202,12 @@ namespace AlienPAK
         public static Bitmap ToBitmap(this Textures.TEX4 texture)
         {
             byte[] content = texture?.ToDDS();
+            return content?.ToBitmap();
+        }
+        public static Bitmap ToBitmap(this Textures.TEX4 texture, Textures.TEX4.Texture part)
+        {
+            if (texture == null) return null;
+            byte[] content = texture.ToDDS(part);
             return content?.ToBitmap();
         }
         public static Bitmap ToBitmap(this byte[] content)

@@ -105,6 +105,7 @@ namespace CommandsEditor
         public void Save()
         {
             Level.Save();
+            Singleton.Global?.Textures?.Save();
             IsVanilla = false;
         }
 

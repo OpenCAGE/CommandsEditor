@@ -352,20 +352,6 @@ namespace CommandsEditor
             lodToCheckboxes[lodIndex] = new List<CheckBox>();
         }
 
-        private void UncheckAllLODs()
-        {
-            foreach (KeyValuePair<int, List<CheckBox>> kvp in lodToCheckboxes)
-            {
-                foreach (CheckBox cb in kvp.Value)
-                    cb.CheckedChanged -= SubmeshCheckbox_CheckedChanged;
-                foreach (CheckBox cb in kvp.Value)
-                    cb.Checked = false;
-                foreach (CheckBox cb in kvp.Value)
-                    cb.CheckedChanged += SubmeshCheckbox_CheckedChanged;
-            }
-            UpdateFilteredModel();
-        }
-
         private void CheckAllSubmeshes(int lodIndex, bool state)
         {
             if (lodToCheckboxes.ContainsKey(lodIndex))
@@ -376,8 +362,8 @@ namespace CommandsEditor
                     cb.Checked = state;
                 foreach (CheckBox cb in lodToCheckboxes[lodIndex])
                     cb.CheckedChanged += SubmeshCheckbox_CheckedChanged;
-                
-                UpdateFilteredModel();
+
+                UpdateFilteredModel(false);
             }
         }
 
@@ -421,11 +407,6 @@ namespace CommandsEditor
 
         private void SubmeshCheckbox_CheckedChanged(object sender, EventArgs e)
         {
-            UpdateFilteredModel();
-        }
-
-        private void UpdateFilteredModel()
-        {
             UpdateFilteredModel(false);
         }
 
@@ -450,15 +431,14 @@ namespace CommandsEditor
 
         private void selectModel_Click(object sender, EventArgs e)
         {
-            int selectedModelIndex = Convert.ToInt32(((TreeItem)FileTree.SelectedNode.Tag).String_Value);
-            OnModelSelected?.Invoke(Content.Level.Models.FindModelComponent(Content.Level.Models.GetAtWriteIndex(selectedModelIndex)));
+            OnModelSelected?.Invoke(Content.Level.Models.FindModelComponent(((TreeItem)FileTree.SelectedNode.Tag).Model_Value));
             this.Close();
         }
 
         private void useMaterials_CheckedChanged(object sender, EventArgs e)
         {
             SettingsManager.SetBool(Singleton.Settings.ShowTexOpt, useMaterials.Checked);
-            UpdateFilteredModel();
+            UpdateFilteredModel(false);
         }
 
         private void SplitContainer2_Resize(object sender, EventArgs e)

@@ -206,7 +206,7 @@ namespace CommandsEditor
         {
             for (int i = 0; i < nodeCollection.Count; i++)
             {
-                if (((TreeItem)nodeCollection[i].Tag).Model_Value == lod)
+                if (nodeCollection[i].Nodes.Count == 0 && ((TreeItem)nodeCollection[i].Tag).Model_Value == lod)
                 {
                     _fileTree.SelectedNode = nodeCollection[i];
                     return;
