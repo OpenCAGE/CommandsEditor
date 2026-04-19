@@ -979,7 +979,7 @@ namespace CommandsEditor
             _launchGamePopup = null;
         }
 
-        EditUI _editUiPak = null;
+        EditPAK2 _editUiPak = null;
         private void uIToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (_editUiPak != null)
@@ -988,19 +988,34 @@ namespace CommandsEditor
                 _editUiPak.Close();
             }
 
-            _editUiPak = new EditUI();
+            _editUiPak = new EditPAK2();
             _editUiPak.Show();
+            _editUiPak.LoadPAK2("UI.PAK", "UI");
             _editUiPak.FormClosed += _editUiPak_FormClosed;
         }
-
         private void _editUiPak_FormClosed(object sender, FormClosedEventArgs e)
         {
             _editUiPak = null;
         }
 
+        //todo - eventually will want to expand this for anim trees and better handling of data (previews?)
+        EditPAK2 _editAnimations = null;
         private void animationsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //todo
+            if (_editAnimations != null)
+            {
+                _editAnimations.FormClosed -= _editAnimations_FormClosed ;
+                _editAnimations.Close();
+            }
+
+            _editAnimations = new EditPAK2();
+            _editAnimations.Show();
+            _editAnimations.LoadPAK2("GLOBAL/ANIMATION.PAK", "Animations");
+            _editAnimations.FormClosed += _editAnimations_FormClosed;
+        }
+        private void _editAnimations_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _editAnimations = null;
         }
 
         Process _behaviourEditor = null;

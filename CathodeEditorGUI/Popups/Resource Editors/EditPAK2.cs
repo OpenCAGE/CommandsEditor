@@ -10,33 +10,51 @@ using System.Windows.Forms;
 
 namespace CommandsEditor
 {
-    public partial class EditUI : BaseWindow
+    public partial class EditPAK2 : BaseWindow
     {
         PAK2 _archive;
 
-        public EditUI() : base(WindowClosesOn.NONE)
+        public EditPAK2() : base()
         {
             InitializeComponent();
+        }
 
-            _archive = new PAK2(Singleton.PathToAI + "/DATA/UI.PAK");
-
+        public void LoadPAK2(string pak, string title)
+        {
+            this.Text = "Edit " + title;
+            _archive = new PAK2(Singleton.PathToAI + "/DATA/" + pak);
             FillListFromArchive();
-            UpdateButtonState();
         }
 
         private void FillListFromArchive()
         {
+            listEntries.BeginUpdate();
             listEntries.Items.Clear();
-            if (_archive == null || !_archive.Loaded) return;
-
             foreach (PAK2.File entry in _archive.Entries.OrderBy(e => e.Filename, StringComparer.OrdinalIgnoreCase))
             {
+                if (searchTxt.Text != "" && NormalisePath(entry.Filename.ToUpper().Replace(" ", "")).Contains(NormalisePath(searchTxt.Text.Replace(" ", "").ToUpper())) == false)
+                    continue;
+
                 int len = entry.Content?.Length ?? 0;
                 var item = new ListViewItem(entry.Filename.Replace('\\', '/'));
                 item.SubItems.Add(len.ToString("N0"));
                 item.Tag = entry.Filename;
                 listEntries.Items.Add(item);
             }
+            listEntries.EndUpdate();
+
+            UpdateButtonState();
+        }
+
+        private void searchBtn_Click(object sender, EventArgs e)
+        {
+            FillListFromArchive();
+        }
+
+        private void SearchOnEnter(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+                searchBtn.PerformClick();
         }
 
         private void UpdateButtonState()
@@ -179,7 +197,6 @@ namespace CommandsEditor
             }
 
             FillListFromArchive();
-            UpdateButtonState();
             Save();
         }
 
@@ -192,16 +209,14 @@ namespace CommandsEditor
 
             _archive.Entries.RemoveAll(o => NormalisePath(o.Filename) == NormalisePath(fn));
             FillListFromArchive();
-            UpdateButtonState();
             Save();
         }
 
         private void btnExportAll_Click(object sender, EventArgs e)
         {
-            if (_archive == null || !_archive.Loaded) return;
             using (var fbd = new FolderBrowserDialog())
             {
-                fbd.Description = "Choose folder to export all UI files.";
+                fbd.Description = "Choose folder to export all files.";
                 if (fbd.ShowDialog() != DialogResult.OK) return;
 
                 string root = fbd.SelectedPath;

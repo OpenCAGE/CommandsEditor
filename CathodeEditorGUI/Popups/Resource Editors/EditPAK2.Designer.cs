@@ -1,6 +1,6 @@
 namespace CommandsEditor
 {
-    partial class EditUI
+    partial class EditPAK2
     {
         private System.ComponentModel.IContainer components = null;
 
@@ -15,6 +15,7 @@ namespace CommandsEditor
 
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditPAK2));
             this.listEntries = new System.Windows.Forms.ListView();
             this.colPath = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colSize = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -24,22 +25,26 @@ namespace CommandsEditor
             this.btnDelete = new System.Windows.Forms.Button();
             this.btnImport = new System.Windows.Forms.Button();
             this.btnExport = new System.Windows.Forms.Button();
+            this.searchBtn = new System.Windows.Forms.Button();
+            this.searchTxt = new System.Windows.Forms.TextBox();
             this.panelActions.SuspendLayout();
             this.SuspendLayout();
             // 
             // listEntries
             // 
+            this.listEntries.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.listEntries.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colPath,
             this.colSize});
-            this.listEntries.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listEntries.FullRowSelect = true;
             this.listEntries.GridLines = true;
             this.listEntries.HideSelection = false;
-            this.listEntries.Location = new System.Drawing.Point(0, 0);
+            this.listEntries.Location = new System.Drawing.Point(0, 37);
             this.listEntries.MultiSelect = false;
             this.listEntries.Name = "listEntries";
-            this.listEntries.Size = new System.Drawing.Size(884, 491);
+            this.listEntries.Size = new System.Drawing.Size(884, 454);
             this.listEntries.TabIndex = 1;
             this.listEntries.UseCompatibleStateImageBehavior = false;
             this.listEntries.View = System.Windows.Forms.View.Details;
@@ -120,21 +125,43 @@ namespace CommandsEditor
             this.btnExport.UseVisualStyleBackColor = true;
             this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
             // 
-            // EditUI
+            // searchBtn
+            // 
+            this.searchBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.searchBtn.Location = new System.Drawing.Point(753, 8);
+            this.searchBtn.Name = "searchBtn";
+            this.searchBtn.Size = new System.Drawing.Size(120, 22);
+            this.searchBtn.TabIndex = 5;
+            this.searchBtn.Text = "Search";
+            this.searchBtn.UseVisualStyleBackColor = true;
+            this.searchBtn.Click += new System.EventHandler(this.searchBtn_Click);
+            // 
+            // searchTxt
+            // 
+            this.searchTxt.Location = new System.Drawing.Point(12, 9);
+            this.searchTxt.Name = "searchTxt";
+            this.searchTxt.Size = new System.Drawing.Size(734, 20);
+            this.searchTxt.TabIndex = 6;
+            this.searchTxt.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SearchOnEnter);
+            // 
+            // EditPAK2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(884, 535);
+            this.Controls.Add(this.searchTxt);
+            this.Controls.Add(this.searchBtn);
             this.Controls.Add(this.listEntries);
             this.Controls.Add(this.panelActions);
-            this.Icon = global::CommandsEditor.SharedFormIcon.Icon;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(670, 417);
-            this.Name = "EditUI";
+            this.Name = "EditPAK2";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Edit UI";
             this.panelActions.ResumeLayout(false);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -148,5 +175,7 @@ namespace CommandsEditor
         private System.Windows.Forms.Button btnDelete;
         private System.Windows.Forms.Button btnExportAll;
         private System.Windows.Forms.Button btnReplace;
+        private System.Windows.Forms.Button searchBtn;
+        private System.Windows.Forms.TextBox searchTxt;
     }
 }
