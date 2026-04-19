@@ -364,4 +364,4 @@ FodyWeavers.xsd
 
 Build/*
 !Build/CommandsEditor.exe
-CathodeEditorGUI/CinematicToolsInjector/Build/CinematicToolsInjector.exe.config
+CathodeEditorGUI/Resources/CinematicToolsInjector.exe.config

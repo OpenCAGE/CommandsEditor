@@ -1402,6 +1402,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\CinematicToolsInjector.exe" />
     <None Include="Resources\assimp.dll" />
     <Resource Include="Images\bluesky.png" />
     <Resource Include="Images\discord.png" />
@@ -1410,7 +1411,6 @@
     <Resource Include="Images\x.png" />
     <Resource Include="Images\about_logo.png" />
     <Resource Include="Images\about_bg.png" />
-    <None Include="CinematicToolsInjector\Build\CinematicToolsInjector.exe" />
     <Content Include="icon.ico" />
     <None Include="Images\Entity Icons\globe.ico" />
     <None Include="Images\Entity Icons\Avatar Icon.ico" />
