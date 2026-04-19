@@ -24,7 +24,7 @@ namespace CommandsEditor
         {
             InitializeComponent();
 
-            _treeHelper = new TreeUtility(FileTree);
+            _treeHelper = new TreeUtility(FileTree, TreeType.SCRIPTS);
             _treeHelper.UpdateFileTree(Content.Level.Commands.GetCompositeNames().ToList());
             _treeHelper.SelectNode(starting == null || starting == "" ? Content.Level.Commands.EntryPoints[0].name : starting);
 

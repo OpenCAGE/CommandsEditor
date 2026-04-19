@@ -42,7 +42,7 @@ namespace CommandsEditor
 
             useMaterials.Checked = SettingsManager.GetBool(Singleton.Settings.ShowTexOpt);
 
-            treeHelper = new TreeUtility(FileTree, true);
+            treeHelper = new TreeUtility(FileTree, TreeType.MODELS);
             RebuildModelFileTree(Content.Level.Models.FindModelLOD(defaultSubmesh));
             UpdateModelToolsState();
 
@@ -53,8 +53,7 @@ namespace CommandsEditor
             selectModelBtn.Visible = showSelectBtn;
 
             this.Disposed += SelectModel_Disposed;
-
-            //todo - reimplement delete button
+            FileTree.ImageList = imageList1;
         }
 
         private void SelectModel_Disposed(object sender, EventArgs e)
@@ -118,6 +117,7 @@ namespace CommandsEditor
             bool canExportOrEdit = TryGetSelectedCs2(out _);
             exportCs2Btn.Enabled = canExportOrEdit;
             editGeometryBtn.Enabled = canExportOrEdit;
+            deleteBtn.Enabled = canExportOrEdit;
             importModelBtn.Enabled = Content?.Level?.Models != null;
         }
 
@@ -205,6 +205,15 @@ namespace CommandsEditor
             {
                 Cursor.Current = Cursors.Default;
             }
+        }
+
+        private void deleteBtn_Click(object sender, EventArgs e)
+        {
+            if (!TryGetSelectedCs2(out Models.CS2 cs2)) return;
+            if (MessageBox.Show("Are you sure you want to delete '" + cs2.Name + "'?", "About to delete...", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                return;
+            Content.Level.Models.Entries.Remove(cs2);
+            RebuildModelFileTree();
         }
 
         private void editGeometryBtn_Click(object sender, EventArgs e)

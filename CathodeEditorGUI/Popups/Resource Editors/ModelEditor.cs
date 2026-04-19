@@ -32,7 +32,7 @@ namespace AlienPAK
             InitializeComponent();
             Icon = SharedFormIcon.Icon;
 
-            _treeHelper = new TreeUtility(FileTree, true);
+            _treeHelper = new TreeUtility(FileTree, TreeType.MODELS);
             if (_model == null) return;
             this.Text = _model.Name;
 

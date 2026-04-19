@@ -56,7 +56,7 @@ namespace CommandsEditor.DockPanels
             this.Load += CommandsDisplay_Load;
 
             _content = new LevelContent(levelName);
-            _treeUtility = new TreeUtility(treeView1);
+            _treeUtility = new TreeUtility(treeView1, TreeType.SCRIPTS);
 
             Singleton.OnCompositeRenamed += OnCompositeRenamed;
         }

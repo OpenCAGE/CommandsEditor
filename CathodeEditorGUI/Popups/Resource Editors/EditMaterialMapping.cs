@@ -22,7 +22,7 @@ namespace CommandsEditor
             _currentMapping = currentMapping;
 
             selectButton.Visible = showSelectBtn;
-            treeHelper = new TreeUtility(materialMappingTreeView, false);
+            treeHelper = new TreeUtility(materialMappingTreeView, TreeType.GENERIC_FOLDER_AND_FILE);
 
             PopulateTreeView();
 

@@ -1,4 +1,4 @@
-﻿namespace CommandsEditor
+namespace CommandsEditor
 {
     partial class EditTexture
     {
@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditTexture));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.FileTree = new System.Windows.Forms.TreeView();
@@ -40,6 +41,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.texturePreview = new System.Windows.Forms.PictureBox();
             this.selectTextureBtn = new System.Windows.Forms.Button();
+            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -186,6 +188,14 @@
             this.selectTextureBtn.UseVisualStyleBackColor = true;
             this.selectTextureBtn.Click += new System.EventHandler(this.selectTextureBtn_Click);
             // 
+            // imageList1
+            // 
+            this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
+            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageList1.Images.SetKeyName(0, "Folder Icon.png");
+            this.imageList1.Images.SetKeyName(1, "file_icon.png");
+            this.imageList1.Images.SetKeyName(2, "FolderOpened Icon.png");
+            // 
             // EditTexture
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -220,5 +230,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label textureResolutionPersistent;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.ImageList imageList1;
     }
 }

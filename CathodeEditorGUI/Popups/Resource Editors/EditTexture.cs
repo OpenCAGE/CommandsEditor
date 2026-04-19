@@ -27,7 +27,7 @@ namespace CommandsEditor
         {
             InitializeComponent();
 
-            _treeHelper = new TreeUtility(FileTree, true);
+            _treeHelper = new TreeUtility(FileTree, TreeType.GENERIC_FOLDER_AND_FILE);
             {
                 List<string> textureNames = new List<string>();
                 for (int i = 0; i < Content.Level.Textures.Entries.Count; i++)
@@ -40,6 +40,7 @@ namespace CommandsEditor
             }
 
             selectTextureBtn.Visible = showSelectBtn;
+            FileTree.ImageList = imageList1;
         }
 
         private void FileTree_AfterSelect(object sender, TreeViewEventArgs e)

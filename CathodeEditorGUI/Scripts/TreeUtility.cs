@@ -8,17 +8,23 @@ namespace CommandsEditor
 {
     public enum TreeItemType
     {
-        EXPORTABLE_FILE, //An exportable file
-        LOADED_STRING, //A loaded string (WIP for COMMANDS.PAK)
-        PREVIEW_ONLY_FILE, //A read-only file (export not supported yet)
-        DIRECTORY //A parent directory listing
+        EXPORTABLE_FILE, 
+        DIRECTORY
     };
+
     public enum TreeItemIcon
     {
         FOLDER,
         FILE,
         FOLDER_OPEN
     };
+
+    public enum TreeType
+    {
+        MODELS,
+        SCRIPTS,
+        GENERIC_FOLDER_AND_FILE,
+    }
 
     public struct TreeItem
     {
@@ -29,13 +35,15 @@ namespace CommandsEditor
 
     class TreeUtility
     {
-        private TreeView _fileTree;
-        private bool _isModelTree;
+        protected LevelContent Content => Singleton.Editor?.CommandsDisplay?.Content;
 
-        public TreeUtility(TreeView tree, bool isModelTree = false)
+        private TreeView _fileTree;
+        private TreeType _treeType;
+
+        public TreeUtility(TreeView tree, TreeType treeType)
         {
             _fileTree = tree;
-            _isModelTree = isModelTree;
+            _treeType = treeType;
 
             _fileTree.AfterExpand += FileTree_AfterExpand;
             _fileTree.AfterCollapse += FileTree_AfterCollapse;
@@ -70,9 +78,11 @@ namespace CommandsEditor
             }
             _fileTree.Sort();
 
-            if (_isModelTree)
+            switch (_treeType)
             {
-                SetModelNodeIcons(_fileTree.Nodes);
+                case TreeType.MODELS:
+                    SetModelNodeIcons(_fileTree.Nodes);
+                    break;
             }
 
             _fileTree.EndUpdate();
@@ -120,7 +130,17 @@ namespace CommandsEditor
                     ThisTag.String_Value = tag != "" ? tag : ThisTag.String_Value.ToString().Substring(0, ThisTag.String_Value.ToString().Length - 1);
                     ThisTag.Model_Value = model;
 
-                    FileNode.ImageIndex = (int)TreeItemIcon.FILE;
+                    switch (_treeType)
+                    {
+                        case TreeType.SCRIPTS:
+                            EditorUtils.CompositeType type = Content.EditorUtils.GetCompositeType(ThisTag.String_Value);
+                            FileNode.ImageIndex = type == EditorUtils.CompositeType.IS_GENERIC_COMPOSITE ? 1 : type == EditorUtils.CompositeType.IS_ROOT ? 3 : type == EditorUtils.CompositeType.IS_DISPLAY_MODEL ? 5 : 4;
+                            break;
+                        case TreeType.MODELS:
+                        case TreeType.GENERIC_FOLDER_AND_FILE:
+                            FileNode.ImageIndex = (int)TreeItemIcon.FILE;
+                            break;
+                    }
                     FileNode.SelectedImageIndex = FileNode.ImageIndex;
 
                     ThisTag.Item_Type = TreeItemType.EXPORTABLE_FILE;
@@ -197,14 +217,14 @@ namespace CommandsEditor
 
         private void FileTree_AfterCollapse(object sender, TreeViewEventArgs e)
         {
-            if (_isModelTree && e.Node.Nodes.Count > 0 && e.Node.Nodes[0].Nodes.Count == 0) return;
+            if (_treeType == TreeType.MODELS && e.Node.Nodes.Count > 0 && e.Node.Nodes[0].Nodes.Count == 0) return;
             if (((TreeItem)e.Node.Tag).Item_Type != TreeItemType.DIRECTORY) return;
             e.Node.ImageIndex = (int)TreeItemIcon.FOLDER;
             e.Node.SelectedImageIndex = (int)TreeItemIcon.FOLDER;
         }
         private void FileTree_AfterExpand(object sender, TreeViewEventArgs e)
         {
-            if (_isModelTree && e.Node.Nodes.Count > 0 && e.Node.Nodes[0].Nodes.Count == 0) return;
+            if (_treeType == TreeType.MODELS && e.Node.Nodes.Count > 0 && e.Node.Nodes[0].Nodes.Count == 0) return;
             if (((TreeItem)e.Node.Tag).Item_Type != TreeItemType.DIRECTORY) return;
             e.Node.ImageIndex = (int)TreeItemIcon.FOLDER_OPEN;
             e.Node.SelectedImageIndex = (int)TreeItemIcon.FOLDER_OPEN;

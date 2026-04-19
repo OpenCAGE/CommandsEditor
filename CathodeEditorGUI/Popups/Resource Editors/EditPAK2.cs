@@ -159,7 +159,7 @@ namespace CommandsEditor
                 return;
             }
 
-            string defaultRel = "DATA/UI/" + Path.GetFileName(diskPath).Replace('\\', '/');
+            string defaultRel = Path.GetFileName(diskPath).Replace('\\', '/');
             string pakPath;
             using (var pathDlg = new Form())
             {

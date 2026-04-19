@@ -153,7 +153,7 @@ namespace CommandsEditor
             this.Controls.Add(this.searchBtn);
             this.Controls.Add(this.listEntries);
             this.Controls.Add(this.panelActions);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::CommandsEditor.SharedFormIcon.Icon;
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(670, 417);
             this.Name = "EditPAK2";

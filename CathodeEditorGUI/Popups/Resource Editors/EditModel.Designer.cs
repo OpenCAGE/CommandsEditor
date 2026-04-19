@@ -28,6 +28,7 @@ namespace CommandsEditor
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditModel));
             this.modelRendererHost = new System.Windows.Forms.Integration.ElementHost();
             this.editGeometryBtn = new System.Windows.Forms.Button();
@@ -40,8 +41,10 @@ namespace CommandsEditor
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.deleteBtn = new System.Windows.Forms.Button();
             this.submeshFilterGroup = new System.Windows.Forms.GroupBox();
             this.submeshFilterPanel = new System.Windows.Forms.Panel();
+            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.modelPreviewArea.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -60,7 +63,7 @@ namespace CommandsEditor
             this.modelRendererHost.Dock = System.Windows.Forms.DockStyle.Fill;
             this.modelRendererHost.Location = new System.Drawing.Point(3, 16);
             this.modelRendererHost.Name = "modelRendererHost";
-            this.modelRendererHost.Size = new System.Drawing.Size(479, 610);
+            this.modelRendererHost.Size = new System.Drawing.Size(477, 610);
             this.modelRendererHost.TabIndex = 0;
             this.modelRendererHost.Text = "elementHost1";
             this.modelRendererHost.Child = null;
@@ -70,7 +73,7 @@ namespace CommandsEditor
             this.editGeometryBtn.Dock = System.Windows.Forms.DockStyle.Fill;
             this.editGeometryBtn.Location = new System.Drawing.Point(3, 3);
             this.editGeometryBtn.Name = "editGeometryBtn";
-            this.editGeometryBtn.Size = new System.Drawing.Size(196, 27);
+            this.editGeometryBtn.Size = new System.Drawing.Size(196, 23);
             this.editGeometryBtn.TabIndex = 2;
             this.editGeometryBtn.Text = "Edit";
             this.editGeometryBtn.UseVisualStyleBackColor = true;
@@ -79,9 +82,9 @@ namespace CommandsEditor
             // exportCs2Btn
             // 
             this.exportCs2Btn.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.exportCs2Btn.Location = new System.Drawing.Point(3, 36);
+            this.exportCs2Btn.Location = new System.Drawing.Point(3, 32);
             this.exportCs2Btn.Name = "exportCs2Btn";
-            this.exportCs2Btn.Size = new System.Drawing.Size(196, 27);
+            this.exportCs2Btn.Size = new System.Drawing.Size(196, 23);
             this.exportCs2Btn.TabIndex = 1;
             this.exportCs2Btn.Text = "Export";
             this.exportCs2Btn.UseVisualStyleBackColor = true;
@@ -123,7 +126,7 @@ namespace CommandsEditor
             this.modelPreviewArea.Controls.Add(this.modelRendererHost);
             this.modelPreviewArea.Location = new System.Drawing.Point(3, 3);
             this.modelPreviewArea.Name = "modelPreviewArea";
-            this.modelPreviewArea.Size = new System.Drawing.Size(485, 629);
+            this.modelPreviewArea.Size = new System.Drawing.Size(483, 629);
             this.modelPreviewArea.TabIndex = 103;
             this.modelPreviewArea.TabStop = false;
             // 
@@ -143,7 +146,7 @@ namespace CommandsEditor
             // 
             this.selectModelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.selectModelBtn.Enabled = false;
-            this.selectModelBtn.Location = new System.Drawing.Point(336, 579);
+            this.selectModelBtn.Location = new System.Drawing.Point(334, 579);
             this.selectModelBtn.Name = "selectModelBtn";
             this.selectModelBtn.Size = new System.Drawing.Size(134, 35);
             this.selectModelBtn.TabIndex = 1;
@@ -188,7 +191,7 @@ namespace CommandsEditor
             this.splitContainer2.Panel2.Controls.Add(this.tableLayoutPanel2);
             this.splitContainer2.Panel2.Controls.Add(this.submeshFilterGroup);
             this.splitContainer2.Size = new System.Drawing.Size(701, 632);
-            this.splitContainer2.SplitterDistance = 491;
+            this.splitContainer2.SplitterDistance = 489;
             this.splitContainer2.SplitterWidth = 5;
             this.splitContainer2.TabIndex = 0;
             // 
@@ -198,15 +201,28 @@ namespace CommandsEditor
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel2.ColumnCount = 1;
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel2.Controls.Add(this.deleteBtn, 0, 2);
             this.tableLayoutPanel2.Controls.Add(this.exportCs2Btn, 0, 1);
             this.tableLayoutPanel2.Controls.Add(this.editGeometryBtn, 0, 0);
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 567);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 544);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            this.tableLayoutPanel2.RowCount = 2;
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(202, 66);
+            this.tableLayoutPanel2.RowCount = 3;
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(202, 89);
             this.tableLayoutPanel2.TabIndex = 190;
+            // 
+            // deleteBtn
+            // 
+            this.deleteBtn.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.deleteBtn.Location = new System.Drawing.Point(3, 61);
+            this.deleteBtn.Name = "deleteBtn";
+            this.deleteBtn.Size = new System.Drawing.Size(196, 25);
+            this.deleteBtn.TabIndex = 3;
+            this.deleteBtn.Text = "Delete";
+            this.deleteBtn.UseVisualStyleBackColor = true;
+            this.deleteBtn.Click += new System.EventHandler(this.deleteBtn_Click);
             // 
             // submeshFilterGroup
             // 
@@ -229,6 +245,14 @@ namespace CommandsEditor
             this.submeshFilterPanel.Name = "submeshFilterPanel";
             this.submeshFilterPanel.Size = new System.Drawing.Size(195, 545);
             this.submeshFilterPanel.TabIndex = 0;
+            // 
+            // imageList1
+            // 
+            this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
+            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageList1.Images.SetKeyName(0, "Folder Icon.png");
+            this.imageList1.Images.SetKeyName(1, "file_icon.png");
+            this.imageList1.Images.SetKeyName(2, "FolderOpened Icon.png");
             // 
             // EditModel
             // 
@@ -272,5 +296,7 @@ namespace CommandsEditor
         private System.Windows.Forms.GroupBox submeshFilterGroup;
         private System.Windows.Forms.Panel submeshFilterPanel;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+        private System.Windows.Forms.Button deleteBtn;
+        private System.Windows.Forms.ImageList imageList1;
     }
 }
