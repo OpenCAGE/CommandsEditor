@@ -1402,6 +1402,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\assimp.dll" />
     <Resource Include="Images\bluesky.png" />
     <Resource Include="Images\discord.png" />
     <Resource Include="Images\docs.png" />

@@ -1,3 +1,4 @@
+using Assimp;
 using CathodeLib;
 using OpenCAGE;
 using System;
@@ -5,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -65,6 +67,27 @@ namespace CommandsEditor
             Application.ThreadException += Application_ThreadException;
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             _timer = Stopwatch.StartNew();
+#endif
+
+            //DLL needs to be copied out for Assimp to work
+            string dllPath = "runtimes\\win-x64\\native\\assimp.dll";
+            if (!File.Exists(dllPath))
+            {
+                using (MemoryStream stream = new MemoryStream())
+                using (GZipStream compressedStream = new GZipStream(new MemoryStream(Properties.Resources.assimp), CompressionMode.Decompress))
+                {
+                    compressedStream.CopyTo(stream);
+                    Directory.CreateDirectory(Path.GetDirectoryName(dllPath));
+                    File.WriteAllBytes(dllPath, stream.ToArray());
+                }
+            }
+
+#if DEBUG
+            //Assimp logging
+            LogStream logstream = new LogStream(delegate (String msg, String userData) {
+                Console.WriteLine(msg);
+            });
+            logstream.Attach();
 #endif
 
             //Run app
