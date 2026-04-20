@@ -70,7 +70,28 @@ namespace CommandsEditor.ConfigEditors
         private void DifficultyEditor_Load(object sender, EventArgs e)
         {
             for (int i = 0; i < classSelection.Items.Count; i++)
+            {
                 classSelection.SelectedIndex = i;
+                SaveAlienConfig(null, EventArgs.Empty);
+
+                for (int x = 0; x < characterTypesSense.Items.Count; x++)
+                {
+                    characterTypesSense.SelectedIndex = x;
+                    SaveSenseConfig(null, EventArgs.Empty);
+                }
+
+                for (int x = 0; x < characterTypesAttribute.Items.Count; x++)
+                {
+                    characterTypesAttribute.SelectedIndex = x;
+                    SaveAttributeConfig(null, EventArgs.Empty);
+                }
+
+                for (int x = 0; x < viewconeSets.Items.Count; x++)
+                {
+                    viewconeSets.SelectedIndex = x;
+                    SaveViewconeConfig(null, EventArgs.Empty);
+                }
+            }
             classSelection.SelectedIndex = 0;
         }
 
@@ -169,22 +190,85 @@ namespace CommandsEditor.ConfigEditors
         
         private void SaveAlienConfig(object sender, EventArgs e)
         {
+            var doc = _selectedDifficulty[0].Content;
 
+            ConfigEditorUtils.EnsureChildElements(doc, "DifficultySetting", "Alien", "AlienConfig", "decrease_sweep_duration_modifier").InnerText = decrease_sweep_duration_modifier.Text;
+            ConfigEditorUtils.EnsureChildElements(doc, "DifficultySetting", "Alien", "AlienConfig", "increase_sweep_duration_modifier").InnerText = increase_sweep_duration_modifier.Text;
+            ConfigEditorUtils.EnsureChildElements(doc, "DifficultySetting", "Alien", "AlienConfig", "near_target_exclusion_radius_first_stalk_min_modifier").InnerText = near_target_exclusion_radius_first_stalk_min_modifier.Text;
+            ConfigEditorUtils.EnsureChildElements(doc, "DifficultySetting", "Alien", "AlienConfig", "near_target_exclusion_radius_first_stalk_max_modifier").InnerText = near_target_exclusion_radius_first_stalk_max_modifier.Text;
+            ConfigEditorUtils.EnsureChildElements(doc, "DifficultySetting", "Alien", "AlienConfig", "near_target_exclusion_radius_subsequent_stalk_min_modifier").InnerText = near_target_exclusion_radius_subsequent_stalk_min_modifier.Text;
+            ConfigEditorUtils.EnsureChildElements(doc, "DifficultySetting", "Alien", "AlienConfig", "near_target_exclusion_radius_subsequent_stalk_max_modifier").InnerText = near_target_exclusion_radius_subsequent_stalk_max_modifier.Text;
+            ConfigEditorUtils.EnsureChildElements(doc, "DifficultySetting", "Alien", "AlienConfig", "near_objective_exclusion_radius_first_stalk_min_modifier").InnerText = near_objective_exclusion_radius_first_stalk_min_modifier.Text;
+            ConfigEditorUtils.EnsureChildElements(doc, "DifficultySetting", "Alien", "AlienConfig", "near_objective_exclusion_radius_first_stalk_max_modifier").InnerText = near_objective_exclusion_radius_first_stalk_max_modifier.Text;
+            ConfigEditorUtils.EnsureChildElements(doc, "DifficultySetting", "Alien", "AlienConfig", "near_objective_exclusion_radius_subsequent_stalk_min_modifier").InnerText = near_objective_exclusion_radius_subsequent_stalk_min_modifier.Text;
+            ConfigEditorUtils.EnsureChildElements(doc, "DifficultySetting", "Alien", "AlienConfig", "near_objective_exclusion_radius_subsequent_stalk_max_modifier").InnerText = near_objective_exclusion_radius_subsequent_stalk_max_modifier.Text;
+            ConfigEditorUtils.EnsureChildElements(doc, "DifficultySetting", "Alien", "AlienConfig", "menace_gauge_decrease_time_modifier").InnerText = menace_gauge_decrease_time_modifier.Text;
+            ConfigEditorUtils.EnsureChildElements(doc, "DifficultySetting", "Alien", "AlienConfig", "meance_deemed_time_modifier").InnerText = meance_deemed_time_modifier.Text;
+            ConfigEditorUtils.EnsureChildElements(doc, "DifficultySetting", "Alien", "AlienConfig", "max_menaces_modifier").InnerText = max_menaces_modifier.Text;
+            ConfigEditorUtils.EnsureChildElements(doc, "DifficultySetting", "Alien", "AlienConfig", "menace_gauge_seconds_to_fill_modifier").InnerText = menace_gauge_seconds_to_fill_modifier.Text;
+            ConfigEditorUtils.EnsureChildElements(doc, "DifficultySetting", "Alien", "AlienConfig", "backstage_area_sweep_role_timeout_modifier").InnerText = backstage_area_sweep_role_timeout_modifier.Text;
+            ConfigEditorUtils.EnsureChildElements(doc, "DifficultySetting", "Alien", "AlienConfig", "backstage_area_sweep_min_distance_modifier").InnerText = backstage_area_sweep_min_distance_modifier.Text;
+            ConfigEditorUtils.EnsureChildElements(doc, "DifficultySetting", "Alien", "AlienConfig", "backstage_area_sweep_max_distance_modifier").InnerText = backstage_area_sweep_max_distance_modifier.Text;
+            ConfigEditorUtils.EnsureChildElements(doc, "DifficultySetting", "Alien", "AlienConfig", "backstage_area_sweep_min_idle_time_modifier").InnerText = backstage_area_sweep_min_idle_time_modifier.Text;
+            ConfigEditorUtils.EnsureChildElements(doc, "DifficultySetting", "Alien", "AlienConfig", "backstage_area_sweep_max_idle_time_modifier").InnerText = backstage_area_sweep_max_idle_time_modifier.Text;
+            ConfigEditorUtils.EnsureChildElements(doc, "DifficultySetting", "Alien", "AlienConfig", "backstage_area_sweep_killtrap_time_modifier").InnerText = backstage_area_sweep_killtrap_time_modifier.Text;
+            ConfigEditorUtils.EnsureChildElements(doc, "DifficultySetting", "Alien", "AlienConfig", "backstage_area_sweep_ambush_timeout_modifier").InnerText = backstage_area_sweep_ambush_timeout_modifier.Text;
+            ConfigEditorUtils.EnsureChildElements(doc, "DifficultySetting", "Alien", "AlienConfig", "sweep_box_half_length_modifier").InnerText = sweep_box_half_length_modifier.Text;
+            ConfigEditorUtils.EnsureChildElements(doc, "DifficultySetting", "Alien", "AlienConfig", "sweep_box_half_width_modifier").InnerText = sweep_box_half_width_modifier.Text;
+            ConfigEditorUtils.EnsureChildElements(doc, "DifficultySetting", "Alien", "AlienConfig", "Vent_Attract_Time_Min").InnerText = Vent_Attract_Time_Min.Text;
+            ConfigEditorUtils.EnsureChildElements(doc, "DifficultySetting", "Alien", "AlienConfig", "Vent_Attract_Time_Max").InnerText = Vent_Attract_Time_Max.Text;
+
+            _selectedDifficulty[0].Content = doc;
+            _selectedDifficulty[0].Save();
         }
 
         private void SaveSenseConfig(object sender, EventArgs e)
         {
+            var doc = _selectedDifficulty[0].Content;
 
+            ConfigEditorUtils.EnsureChildElements(doc, "DifficultySetting", "NPC_Generic", characterTypesSense.Text, "Senses", "max_hearing_distance_modifier").InnerText = max_hearing_distance_modifier.Text;
+            ConfigEditorUtils.EnsureChildElements(doc, "DifficultySetting", "NPC_Generic", characterTypesSense.Text, "Senses", "weapon_sound_sense_activation_modifier").InnerText = weapon_sound_sense_activation_modifier.Text;
+            ConfigEditorUtils.EnsureChildElements(doc, "DifficultySetting", "NPC_Generic", characterTypesSense.Text, "Senses", "weapon_sound_combined_sense_activation_modifier").InnerText = weapon_sound_combined_sense_activation_modifier.Text;
+            ConfigEditorUtils.EnsureChildElements(doc, "DifficultySetting", "NPC_Generic", characterTypesSense.Text, "Senses", "movement_sound_sense_activation_modifier").InnerText = movement_sound_sense_activation_modifier.Text;
+            ConfigEditorUtils.EnsureChildElements(doc, "DifficultySetting", "NPC_Generic", characterTypesSense.Text, "Senses", "movement_sound_combined_sense_activation_modifier").InnerText = movement_sound_combined_sense_activation_modifier.Text;
+            ConfigEditorUtils.EnsureChildElements(doc, "DifficultySetting", "NPC_Generic", characterTypesSense.Text, "Senses", "flash_light_sense_activation_modifier").InnerText = flash_light_sense_activation_modifier.Text;
+            ConfigEditorUtils.EnsureChildElements(doc, "DifficultySetting", "NPC_Generic", characterTypesSense.Text, "Senses", "flash_light_combined_sense_activation_modifier").InnerText = flash_light_combined_sense_activation_modifier.Text;
+            ConfigEditorUtils.EnsureChildElements(doc, "DifficultySetting", "NPC_Generic", characterTypesSense.Text, "Senses", "visual_sense_activation_modifier").InnerText = visual_sense_activation_modifier.Text;
+            ConfigEditorUtils.EnsureChildElements(doc, "DifficultySetting", "NPC_Generic", characterTypesSense.Text, "Senses", "visual_combined_sense_activation_modifier").InnerText = visual_combined_sense_activation_modifier.Text;
+
+            _selectedDifficulty[0].Content = doc;
+            _selectedDifficulty[0].Save();
         }
 
         private void SaveAttributeConfig(object sender, EventArgs e)
         {
+            var doc = _selectedDifficulty[0].Content;
 
+            ConfigEditorUtils.EnsureChildElements(doc, "DifficultySetting", "NPC_Generic", characterTypesAttribute.Text, "General", "damage_dealt_scalar").InnerText = damage_dealt_scalar.Text;
+            ConfigEditorUtils.EnsureChildElements(doc, "DifficultySetting", "NPC_Generic", characterTypesAttribute.Text, "General", "damage_received_scalar").InnerText = damage_received_scalar.Text;
+            ConfigEditorUtils.EnsureChildElements(doc, "DifficultySetting", "NPC_Generic", characterTypesAttribute.Text, "General", "attack_pace_modifier_per_npc").InnerText = attack_pace_modifier_per_npc.Text;
+            ConfigEditorUtils.EnsureChildElements(doc, "DifficultySetting", "NPC_Generic", characterTypesAttribute.Text, "General", "attack_pace_modifier_max").InnerText = attack_pace_modifier_max.Text;
+            ConfigEditorUtils.EnsureChildElements(doc, "DifficultySetting", "NPC_Generic", characterTypesAttribute.Text, "General", "shooting_in_cover_duration_modifier").InnerText = shooting_in_cover_duration_modifier.Text;
+            ConfigEditorUtils.EnsureChildElements(doc, "DifficultySetting", "NPC_Generic", characterTypesAttribute.Text, "General", "time_between_shots_scalar").InnerText = time_between_shots_scalar.Text;
+            ConfigEditorUtils.EnsureChildElements(doc, "DifficultySetting", "NPC_Generic", characterTypesAttribute.Text, "General", "suspicious_item_loop_scalar").InnerText = suspicious_item_loop_scalar.Text;
+
+            _selectedDifficulty[0].Content = doc;
+            _selectedDifficulty[0].Save();
         }
 
         private void SaveViewconeConfig(object sender, EventArgs e)
         {
+            var doc = _selectedDifficulty[0].Content;
+            XmlElement set = ConfigEditorUtils.EnsureChildElements(doc, "DifficultySetting", "ViewconeSets", viewconeSets.Text);
+            ConfigEditorUtils.EnsureChildElements(set, "Close");
+            ConfigEditorUtils.EnsureChildElements(set, "Focused");
+            ConfigEditorUtils.EnsureChildElements(set, "Normal");
+            ConfigEditorUtils.EnsureChildElements(set, "Peripheral");
 
+            viewconeDifficultySet1.Save(set);
+
+            _selectedDifficulty[0].Content = doc;
+            _selectedDifficulty[0].Save();
         }
     }
 }

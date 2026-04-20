@@ -1,4 +1,4 @@
-﻿using CATHODE;
+using CATHODE;
 using CommandsEditor.Popups.Base;
 using System;
 using System.Collections.Generic;
@@ -78,7 +78,10 @@ namespace CommandsEditor.ConfigEditors
         private void AttributesEditor_Load(object sender, EventArgs e)
         {
             for (int i = 0; i < characters.Items.Count; i++)
+            {
                 characters.SelectedIndex = i;
+                Save(null, EventArgs.Empty);
+            }
             characters.SelectedIndex = 0;
         }
 

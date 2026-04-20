@@ -1,4 +1,4 @@
-﻿using CATHODE;
+using CATHODE;
 using CATHODE.Enums;
 using CommandsEditor.Popups.Base;
 using System;
@@ -51,7 +51,10 @@ namespace CommandsEditor.ConfigEditors
         private void AmmoEditor_Load(object sender, EventArgs e)
         {
             for (int i = 0; i < classSelection.Items.Count; i++)
+            {
                 classSelection.SelectedIndex = i;
+                Save(null, EventArgs.Empty);
+            }
             classSelection.SelectedIndex = 0;
         }
 

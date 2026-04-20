@@ -1,4 +1,4 @@
-﻿using CATHODE;
+using CATHODE;
 using CommandsEditor.Popups.Base;
 using System;
 using System.Collections.Generic;
@@ -33,7 +33,10 @@ namespace CommandsEditor.ConfigEditors
         private void AlienConfigEditor_Load(object sender, EventArgs e)
         {
             for (int i = 0; i < classSelection.Items.Count; i++)
+            {
                 classSelection.SelectedIndex = i;
+                Save(null, EventArgs.Empty);
+            }
             classSelection.SelectedIndex = 0;
         }
 

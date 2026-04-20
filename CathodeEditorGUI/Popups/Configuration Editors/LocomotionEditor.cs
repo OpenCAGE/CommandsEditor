@@ -1,4 +1,4 @@
-﻿using CATHODE;
+using CATHODE;
 using CATHODE.Enums;
 using CommandsEditor.Popups.Base;
 using System;
@@ -35,7 +35,10 @@ namespace CommandsEditor.ConfigEditors
         private void LocomotionEditor_Load(object sender, EventArgs e)
         {
             for (int i = 0; i < characters.Items.Count; i++)
+            {
                 characters.SelectedIndex = i;
+                Save(null, EventArgs.Empty);
+            }
             characters.SelectedIndex = 0;
         }
 

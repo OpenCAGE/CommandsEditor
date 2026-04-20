@@ -113,7 +113,6 @@ namespace CommandsEditor
             localisationToolStripMenuItem.Visible = false;
             levelTextDBsToolStripMenuItem.Visible = false;
             fontConfigToolStripMenuItem.Visible = false;
-            difficultyModifiersToolStripMenuItem.Visible = false;
             aboutToolStripMenuItem.Visible = false;
             inventoryItemsToolStripMenuItem.Visible = false;
 #endif
