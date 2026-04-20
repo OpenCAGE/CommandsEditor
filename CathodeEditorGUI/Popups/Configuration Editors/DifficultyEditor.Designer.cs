@@ -1,4 +1,4 @@
-﻿namespace CommandsEditor.ConfigEditors
+namespace CommandsEditor.ConfigEditors
 {
     partial class DifficultyEditor
     {
@@ -29,63 +29,6 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DifficultyEditor));
-            this.classSelection = new System.Windows.Forms.ComboBox();
-            this.characterTypes = new System.Windows.Forms.ComboBox();
-            this.loadNPC = new System.Windows.Forms.Button();
-            this.viewconeSet = new System.Windows.Forms.ComboBox();
-            this.loadViewconeSet = new System.Windows.Forms.Button();
-            this.viewconeType = new System.Windows.Forms.ComboBox();
-            this.loadViewconeType = new System.Windows.Forms.Button();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label29 = new System.Windows.Forms.Label();
-            this.label27 = new System.Windows.Forms.Label();
-            this.label26 = new System.Windows.Forms.Label();
-            this.label24 = new System.Windows.Forms.Label();
-            this.label23 = new System.Windows.Forms.Label();
-            this.max_hearing_distance_modifier = new System.Windows.Forms.TextBox();
-            this.label22 = new System.Windows.Forms.Label();
-            this.label13 = new System.Windows.Forms.Label();
-            this.label14 = new System.Windows.Forms.Label();
-            this.flash_light_combined_sense_activation_modifier = new System.Windows.Forms.TextBox();
-            this.movement_sound_sense_activation_modifier = new System.Windows.Forms.TextBox();
-            this.label15 = new System.Windows.Forms.Label();
-            this.flash_light_sense_activation_modifier = new System.Windows.Forms.TextBox();
-            this.movement_sound_combined_sense_activation_modifier = new System.Windows.Forms.TextBox();
-            this.label17 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
-            this.weapon_sound_combined_sense_activation_modifier = new System.Windows.Forms.TextBox();
-            this.visual_sense_activation_modifier = new System.Windows.Forms.TextBox();
-            this.label10 = new System.Windows.Forms.Label();
-            this.weapon_sound_sense_activation_modifier = new System.Windows.Forms.TextBox();
-            this.visual_combined_sense_activation_modifier = new System.Windows.Forms.TextBox();
-            this.label11 = new System.Windows.Forms.Label();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.label21 = new System.Windows.Forms.Label();
-            this.attack_pace_modifier_max = new System.Windows.Forms.TextBox();
-            this.label18 = new System.Windows.Forms.Label();
-            this.time_between_shots_scalar = new System.Windows.Forms.TextBox();
-            this.label19 = new System.Windows.Forms.Label();
-            this.attack_pace_modifier_per_npc = new System.Windows.Forms.TextBox();
-            this.label20 = new System.Windows.Forms.Label();
-            this.suspicious_item_loop_scalar = new System.Windows.Forms.TextBox();
-            this.label8 = new System.Windows.Forms.Label();
-            this.shooting_in_cover_duration_modifier = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.attack_pace_modifier = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.damage_received_scalar = new System.Windows.Forms.TextBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.damage_dealt_scalar = new System.Windows.Forms.TextBox();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.visual_sense_stance_effect_lower_modifier = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.visual_sense_stance_effect_upper_modifier = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.visual_sense_exposure_effect_lower_modifier = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.visual_sense_exposure_effect_upper_modifier = new System.Windows.Forms.TextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.groupBox11 = new System.Windows.Forms.GroupBox();
             this.Vent_Attract_Time_Min = new System.Windows.Forms.NumericUpDown();
@@ -147,11 +90,52 @@
             this.label83 = new System.Windows.Forms.Label();
             this.label84 = new System.Windows.Forms.Label();
             this.label85 = new System.Windows.Forms.Label();
+            this.label22 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.viewconeSets = new System.Windows.Forms.ComboBox();
+            this.characterTypesSense = new System.Windows.Forms.ComboBox();
+            this.classSelection = new System.Windows.Forms.ComboBox();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.max_hearing_distance_modifier = new System.Windows.Forms.NumericUpDown();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.flash_light_combined_sense_activation_modifier = new System.Windows.Forms.NumericUpDown();
+            this.flash_light_sense_activation_modifier = new System.Windows.Forms.NumericUpDown();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.movement_sound_combined_sense_activation_modifier = new System.Windows.Forms.NumericUpDown();
+            this.movement_sound_sense_activation_modifier = new System.Windows.Forms.NumericUpDown();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.label16 = new System.Windows.Forms.Label();
-            this.groupBox1.SuspendLayout();
-            this.groupBox3.SuspendLayout();
-            this.groupBox4.SuspendLayout();
+            this.weapon_sound_combined_sense_activation_modifier = new System.Windows.Forms.NumericUpDown();
+            this.weapon_sound_sense_activation_modifier = new System.Windows.Forms.NumericUpDown();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.visual_combined_sense_activation_modifier = new System.Windows.Forms.NumericUpDown();
+            this.visual_sense_activation_modifier = new System.Windows.Forms.NumericUpDown();
+            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.shooting_in_cover_duration_modifier = new System.Windows.Forms.NumericUpDown();
+            this.suspicious_item_loop_scalar = new System.Windows.Forms.NumericUpDown();
+            this.damage_received_scalar = new System.Windows.Forms.NumericUpDown();
+            this.time_between_shots_scalar = new System.Windows.Forms.NumericUpDown();
+            this.label11 = new System.Windows.Forms.Label();
+            this.attack_pace_modifier_per_npc = new System.Windows.Forms.NumericUpDown();
+            this.attack_pace_modifier_max = new System.Windows.Forms.NumericUpDown();
+            this.label13 = new System.Windows.Forms.Label();
+            this.damage_dealt_scalar = new System.Windows.Forms.NumericUpDown();
+            this.characterTypesAttribute = new System.Windows.Forms.ComboBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label18 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label20 = new System.Windows.Forms.Label();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.viewconeDifficultySet1 = new Popups.Configuration_Editors.User_Controls.ViewconeDifficultySet();
             this.groupBox2.SuspendLayout();
             this.groupBox11.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Vent_Attract_Time_Min)).BeginInit();
@@ -187,593 +171,32 @@
             this.groupBox15.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.backstage_area_sweep_ambush_timeout_modifier)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.backstage_area_sweep_killtrap_time_modifier)).BeginInit();
+            this.tabControl1.SuspendLayout();
+            this.tabPage1.SuspendLayout();
+            this.tabPage2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.max_hearing_distance_modifier)).BeginInit();
+            this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.flash_light_combined_sense_activation_modifier)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.flash_light_sense_activation_modifier)).BeginInit();
+            this.groupBox6.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.movement_sound_combined_sense_activation_modifier)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.movement_sound_sense_activation_modifier)).BeginInit();
             this.groupBox5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.weapon_sound_combined_sense_activation_modifier)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.weapon_sound_sense_activation_modifier)).BeginInit();
+            this.groupBox4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.visual_combined_sense_activation_modifier)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.visual_sense_activation_modifier)).BeginInit();
+            this.tabPage4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.shooting_in_cover_duration_modifier)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.suspicious_item_loop_scalar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.damage_received_scalar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.time_between_shots_scalar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.attack_pace_modifier_per_npc)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.attack_pace_modifier_max)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.damage_dealt_scalar)).BeginInit();
+            this.tabPage3.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // classSelection
-            // 
-            this.classSelection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.classSelection.FormattingEnabled = true;
-            this.classSelection.Items.AddRange(new object[] {
-            "HARD",
-            "MEDIUM",
-            "EASY",
-            "NOVICE",
-            "IRON"});
-            this.classSelection.Location = new System.Drawing.Point(12, 13);
-            this.classSelection.Name = "classSelection";
-            this.classSelection.Size = new System.Drawing.Size(849, 21);
-            this.classSelection.TabIndex = 409;
-            this.classSelection.SelectedIndexChanged += new System.EventHandler(this.classSelection_SelectedIndexChanged);
-            // 
-            // characterTypes
-            // 
-            this.characterTypes.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.characterTypes.Enabled = false;
-            this.characterTypes.FormattingEnabled = true;
-            this.characterTypes.Items.AddRange(new object[] {
-            "ALIEN",
-            "ANDROID",
-            "CIVILIAN",
-            "SECURITY_GUARD",
-            "CUTSCENE",
-            "FACEHUGGER",
-            "SPACESUIT_NPC",
-            "RIOT_GUARD",
-            "ANDROID_HEAVY",
-            "MELEE_HUMAN",
-            "INNOCENT",
-            "CUTSCENE_ANDROID"});
-            this.characterTypes.Location = new System.Drawing.Point(12, 332);
-            this.characterTypes.Name = "characterTypes";
-            this.characterTypes.Size = new System.Drawing.Size(849, 21);
-            this.characterTypes.TabIndex = 415;
-            // 
-            // loadNPC
-            // 
-            this.loadNPC.Enabled = false;
-            this.loadNPC.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.loadNPC.Location = new System.Drawing.Point(867, 332);
-            this.loadNPC.Name = "loadNPC";
-            this.loadNPC.Size = new System.Drawing.Size(115, 23);
-            this.loadNPC.TabIndex = 414;
-            this.loadNPC.Text = "Load Character Type";
-            this.loadNPC.UseVisualStyleBackColor = true;
-            this.loadNPC.Click += new System.EventHandler(this.loadNPC_Click);
-            // 
-            // viewconeSet
-            // 
-            this.viewconeSet.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.viewconeSet.Enabled = false;
-            this.viewconeSet.FormattingEnabled = true;
-            this.viewconeSet.Items.AddRange(new object[] {
-            "VIEWCONESET_NONE",
-            "VIEWCONESET_STANDARD",
-            "VIEWCONESET_HUMAN",
-            "VIEWCONESET_SLEEPING",
-            "VIEWCONESET_ANDROID"});
-            this.viewconeSet.Location = new System.Drawing.Point(498, 556);
-            this.viewconeSet.Name = "viewconeSet";
-            this.viewconeSet.Size = new System.Drawing.Size(289, 21);
-            this.viewconeSet.TabIndex = 417;
-            // 
-            // loadViewconeSet
-            // 
-            this.loadViewconeSet.Enabled = false;
-            this.loadViewconeSet.Location = new System.Drawing.Point(793, 555);
-            this.loadViewconeSet.Name = "loadViewconeSet";
-            this.loadViewconeSet.Size = new System.Drawing.Size(135, 23);
-            this.loadViewconeSet.TabIndex = 416;
-            this.loadViewconeSet.Text = "Load Viewcone Set";
-            this.loadViewconeSet.UseVisualStyleBackColor = true;
-            this.loadViewconeSet.Click += new System.EventHandler(this.loadViewconeSet_Click);
-            // 
-            // viewconeType
-            // 
-            this.viewconeType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.viewconeType.Enabled = false;
-            this.viewconeType.FormattingEnabled = true;
-            this.viewconeType.Items.AddRange(new object[] {
-            "Focused",
-            "Close",
-            "Normal",
-            "Peripheral"});
-            this.viewconeType.Location = new System.Drawing.Point(498, 583);
-            this.viewconeType.Name = "viewconeType";
-            this.viewconeType.Size = new System.Drawing.Size(289, 21);
-            this.viewconeType.TabIndex = 419;
-            // 
-            // loadViewconeType
-            // 
-            this.loadViewconeType.Enabled = false;
-            this.loadViewconeType.Location = new System.Drawing.Point(793, 582);
-            this.loadViewconeType.Name = "loadViewconeType";
-            this.loadViewconeType.Size = new System.Drawing.Size(135, 23);
-            this.loadViewconeType.TabIndex = 418;
-            this.loadViewconeType.Text = "Load Viewcone Type";
-            this.loadViewconeType.UseVisualStyleBackColor = true;
-            this.loadViewconeType.Click += new System.EventHandler(this.button3_Click);
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.label29);
-            this.groupBox1.Controls.Add(this.label27);
-            this.groupBox1.Controls.Add(this.label26);
-            this.groupBox1.Controls.Add(this.label24);
-            this.groupBox1.Controls.Add(this.label23);
-            this.groupBox1.Controls.Add(this.max_hearing_distance_modifier);
-            this.groupBox1.Controls.Add(this.label22);
-            this.groupBox1.Controls.Add(this.label13);
-            this.groupBox1.Controls.Add(this.label14);
-            this.groupBox1.Controls.Add(this.flash_light_combined_sense_activation_modifier);
-            this.groupBox1.Controls.Add(this.movement_sound_sense_activation_modifier);
-            this.groupBox1.Controls.Add(this.label15);
-            this.groupBox1.Controls.Add(this.flash_light_sense_activation_modifier);
-            this.groupBox1.Controls.Add(this.movement_sound_combined_sense_activation_modifier);
-            this.groupBox1.Controls.Add(this.label17);
-            this.groupBox1.Controls.Add(this.label9);
-            this.groupBox1.Controls.Add(this.label12);
-            this.groupBox1.Controls.Add(this.weapon_sound_combined_sense_activation_modifier);
-            this.groupBox1.Controls.Add(this.visual_sense_activation_modifier);
-            this.groupBox1.Controls.Add(this.label10);
-            this.groupBox1.Controls.Add(this.weapon_sound_sense_activation_modifier);
-            this.groupBox1.Controls.Add(this.visual_combined_sense_activation_modifier);
-            this.groupBox1.Controls.Add(this.label11);
-            this.groupBox1.Location = new System.Drawing.Point(65, 360);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(427, 318);
-            this.groupBox1.TabIndex = 414;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Character Sense Modifiers";
-            // 
-            // label29
-            // 
-            this.label29.AutoSize = true;
-            this.label29.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label29.Location = new System.Drawing.Point(6, 253);
-            this.label29.Name = "label29";
-            this.label29.Size = new System.Drawing.Size(91, 20);
-            this.label29.TabIndex = 449;
-            this.label29.Text = "Misc Sense";
-            // 
-            // label27
-            // 
-            this.label27.AutoSize = true;
-            this.label27.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label27.Location = new System.Drawing.Point(6, 194);
-            this.label27.Name = "label27";
-            this.label27.Size = new System.Drawing.Size(127, 20);
-            this.label27.TabIndex = 448;
-            this.label27.Text = "Flashlight Sense";
-            // 
-            // label26
-            // 
-            this.label26.AutoSize = true;
-            this.label26.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label26.Location = new System.Drawing.Point(6, 135);
-            this.label26.Name = "label26";
-            this.label26.Size = new System.Drawing.Size(184, 20);
-            this.label26.TabIndex = 447;
-            this.label26.Text = "Movement Sound Sense";
-            // 
-            // label24
-            // 
-            this.label24.AutoSize = true;
-            this.label24.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label24.Location = new System.Drawing.Point(6, 77);
-            this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(170, 20);
-            this.label24.TabIndex = 446;
-            this.label24.Text = "Weapon Sound Sense";
-            // 
-            // label23
-            // 
-            this.label23.AutoSize = true;
-            this.label23.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label23.Location = new System.Drawing.Point(6, 18);
-            this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(102, 20);
-            this.label23.TabIndex = 420;
-            this.label23.Text = "Visual Sense";
-            // 
-            // max_hearing_distance_modifier
-            // 
-            this.max_hearing_distance_modifier.Enabled = false;
-            this.max_hearing_distance_modifier.Location = new System.Drawing.Point(15, 289);
-            this.max_hearing_distance_modifier.Name = "max_hearing_distance_modifier";
-            this.max_hearing_distance_modifier.Size = new System.Drawing.Size(187, 20);
-            this.max_hearing_distance_modifier.TabIndex = 445;
-            // 
-            // label22
-            // 
-            this.label22.AutoSize = true;
-            this.label22.Location = new System.Drawing.Point(12, 273);
-            this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(152, 13);
-            this.label22.TabIndex = 444;
-            this.label22.Text = "Max Hearing Distance Modifier";
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(221, 214);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(177, 13);
-            this.label13.TabIndex = 442;
-            this.label13.Text = "Combined Sense Activation Modifier";
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(12, 155);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(94, 13);
-            this.label14.TabIndex = 436;
-            this.label14.Text = "Activation Modifier";
-            // 
-            // flash_light_combined_sense_activation_modifier
-            // 
-            this.flash_light_combined_sense_activation_modifier.Enabled = false;
-            this.flash_light_combined_sense_activation_modifier.Location = new System.Drawing.Point(224, 230);
-            this.flash_light_combined_sense_activation_modifier.Name = "flash_light_combined_sense_activation_modifier";
-            this.flash_light_combined_sense_activation_modifier.Size = new System.Drawing.Size(187, 20);
-            this.flash_light_combined_sense_activation_modifier.TabIndex = 443;
-            // 
-            // movement_sound_sense_activation_modifier
-            // 
-            this.movement_sound_sense_activation_modifier.Enabled = false;
-            this.movement_sound_sense_activation_modifier.Location = new System.Drawing.Point(15, 171);
-            this.movement_sound_sense_activation_modifier.Name = "movement_sound_sense_activation_modifier";
-            this.movement_sound_sense_activation_modifier.Size = new System.Drawing.Size(187, 20);
-            this.movement_sound_sense_activation_modifier.TabIndex = 437;
-            // 
-            // label15
-            // 
-            this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(221, 155);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(177, 13);
-            this.label15.TabIndex = 440;
-            this.label15.Text = "Combined Sense Activation Modifier";
-            // 
-            // flash_light_sense_activation_modifier
-            // 
-            this.flash_light_sense_activation_modifier.Enabled = false;
-            this.flash_light_sense_activation_modifier.Location = new System.Drawing.Point(15, 230);
-            this.flash_light_sense_activation_modifier.Name = "flash_light_sense_activation_modifier";
-            this.flash_light_sense_activation_modifier.Size = new System.Drawing.Size(187, 20);
-            this.flash_light_sense_activation_modifier.TabIndex = 439;
-            // 
-            // movement_sound_combined_sense_activation_modifier
-            // 
-            this.movement_sound_combined_sense_activation_modifier.Enabled = false;
-            this.movement_sound_combined_sense_activation_modifier.Location = new System.Drawing.Point(224, 171);
-            this.movement_sound_combined_sense_activation_modifier.Name = "movement_sound_combined_sense_activation_modifier";
-            this.movement_sound_combined_sense_activation_modifier.Size = new System.Drawing.Size(187, 20);
-            this.movement_sound_combined_sense_activation_modifier.TabIndex = 441;
-            // 
-            // label17
-            // 
-            this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(12, 214);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(94, 13);
-            this.label17.TabIndex = 438;
-            this.label17.Text = "Activation Modifier";
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(221, 96);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(177, 13);
-            this.label9.TabIndex = 434;
-            this.label9.Text = "Combined Sense Activation Modifier";
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(12, 38);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(94, 13);
-            this.label12.TabIndex = 428;
-            this.label12.Text = "Activation Modifier";
-            // 
-            // weapon_sound_combined_sense_activation_modifier
-            // 
-            this.weapon_sound_combined_sense_activation_modifier.Enabled = false;
-            this.weapon_sound_combined_sense_activation_modifier.Location = new System.Drawing.Point(224, 112);
-            this.weapon_sound_combined_sense_activation_modifier.Name = "weapon_sound_combined_sense_activation_modifier";
-            this.weapon_sound_combined_sense_activation_modifier.Size = new System.Drawing.Size(187, 20);
-            this.weapon_sound_combined_sense_activation_modifier.TabIndex = 435;
-            // 
-            // visual_sense_activation_modifier
-            // 
-            this.visual_sense_activation_modifier.Enabled = false;
-            this.visual_sense_activation_modifier.Location = new System.Drawing.Point(15, 54);
-            this.visual_sense_activation_modifier.Name = "visual_sense_activation_modifier";
-            this.visual_sense_activation_modifier.Size = new System.Drawing.Size(187, 20);
-            this.visual_sense_activation_modifier.TabIndex = 429;
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(221, 38);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(177, 13);
-            this.label10.TabIndex = 432;
-            this.label10.Text = "Combined Sense Activation Modifier";
-            // 
-            // weapon_sound_sense_activation_modifier
-            // 
-            this.weapon_sound_sense_activation_modifier.Enabled = false;
-            this.weapon_sound_sense_activation_modifier.Location = new System.Drawing.Point(15, 112);
-            this.weapon_sound_sense_activation_modifier.Name = "weapon_sound_sense_activation_modifier";
-            this.weapon_sound_sense_activation_modifier.Size = new System.Drawing.Size(187, 20);
-            this.weapon_sound_sense_activation_modifier.TabIndex = 431;
-            // 
-            // visual_combined_sense_activation_modifier
-            // 
-            this.visual_combined_sense_activation_modifier.Enabled = false;
-            this.visual_combined_sense_activation_modifier.Location = new System.Drawing.Point(224, 54);
-            this.visual_combined_sense_activation_modifier.Name = "visual_combined_sense_activation_modifier";
-            this.visual_combined_sense_activation_modifier.Size = new System.Drawing.Size(187, 20);
-            this.visual_combined_sense_activation_modifier.TabIndex = 433;
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(12, 96);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(94, 13);
-            this.label11.TabIndex = 430;
-            this.label11.Text = "Activation Modifier";
-            // 
-            // groupBox3
-            // 
-            this.groupBox3.Controls.Add(this.label21);
-            this.groupBox3.Controls.Add(this.attack_pace_modifier_max);
-            this.groupBox3.Controls.Add(this.label18);
-            this.groupBox3.Controls.Add(this.time_between_shots_scalar);
-            this.groupBox3.Controls.Add(this.label19);
-            this.groupBox3.Controls.Add(this.attack_pace_modifier_per_npc);
-            this.groupBox3.Controls.Add(this.label20);
-            this.groupBox3.Controls.Add(this.suspicious_item_loop_scalar);
-            this.groupBox3.Controls.Add(this.label8);
-            this.groupBox3.Controls.Add(this.shooting_in_cover_duration_modifier);
-            this.groupBox3.Controls.Add(this.label7);
-            this.groupBox3.Controls.Add(this.attack_pace_modifier);
-            this.groupBox3.Controls.Add(this.label6);
-            this.groupBox3.Controls.Add(this.damage_received_scalar);
-            this.groupBox3.Controls.Add(this.label5);
-            this.groupBox3.Controls.Add(this.damage_dealt_scalar);
-            this.groupBox3.Location = new System.Drawing.Point(498, 360);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(430, 189);
-            this.groupBox3.TabIndex = 415;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Character Attribute Modifiers";
-            // 
-            // label21
-            // 
-            this.label21.AutoSize = true;
-            this.label21.Location = new System.Drawing.Point(221, 101);
-            this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(129, 13);
-            this.label21.TabIndex = 436;
-            this.label21.Text = "Attack Pace Modifier Max";
-            // 
-            // attack_pace_modifier_max
-            // 
-            this.attack_pace_modifier_max.Enabled = false;
-            this.attack_pace_modifier_max.Location = new System.Drawing.Point(224, 117);
-            this.attack_pace_modifier_max.Name = "attack_pace_modifier_max";
-            this.attack_pace_modifier_max.Size = new System.Drawing.Size(187, 20);
-            this.attack_pace_modifier_max.TabIndex = 437;
-            // 
-            // label18
-            // 
-            this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(221, 140);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(138, 13);
-            this.label18.TabIndex = 432;
-            this.label18.Text = "Time Between Shots Scalar";
-            // 
-            // time_between_shots_scalar
-            // 
-            this.time_between_shots_scalar.Enabled = false;
-            this.time_between_shots_scalar.Location = new System.Drawing.Point(224, 156);
-            this.time_between_shots_scalar.Name = "time_between_shots_scalar";
-            this.time_between_shots_scalar.Size = new System.Drawing.Size(187, 20);
-            this.time_between_shots_scalar.TabIndex = 433;
-            // 
-            // label19
-            // 
-            this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(221, 62);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(150, 13);
-            this.label19.TabIndex = 430;
-            this.label19.Text = "Attack Pace Modifier Per NPC";
-            // 
-            // attack_pace_modifier_per_npc
-            // 
-            this.attack_pace_modifier_per_npc.Enabled = false;
-            this.attack_pace_modifier_per_npc.Location = new System.Drawing.Point(224, 78);
-            this.attack_pace_modifier_per_npc.Name = "attack_pace_modifier_per_npc";
-            this.attack_pace_modifier_per_npc.Size = new System.Drawing.Size(187, 20);
-            this.attack_pace_modifier_per_npc.TabIndex = 431;
-            // 
-            // label20
-            // 
-            this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(12, 101);
-            this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(141, 13);
-            this.label20.TabIndex = 428;
-            this.label20.Text = "Suspicious Item Loop Scalar";
-            // 
-            // suspicious_item_loop_scalar
-            // 
-            this.suspicious_item_loop_scalar.Enabled = false;
-            this.suspicious_item_loop_scalar.Location = new System.Drawing.Point(15, 117);
-            this.suspicious_item_loop_scalar.Name = "suspicious_item_loop_scalar";
-            this.suspicious_item_loop_scalar.Size = new System.Drawing.Size(187, 20);
-            this.suspicious_item_loop_scalar.TabIndex = 429;
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(12, 140);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(175, 13);
-            this.label8.TabIndex = 426;
-            this.label8.Text = "Shooting In Cover Duration Modifier";
-            // 
-            // shooting_in_cover_duration_modifier
-            // 
-            this.shooting_in_cover_duration_modifier.Enabled = false;
-            this.shooting_in_cover_duration_modifier.Location = new System.Drawing.Point(15, 156);
-            this.shooting_in_cover_duration_modifier.Name = "shooting_in_cover_duration_modifier";
-            this.shooting_in_cover_duration_modifier.Size = new System.Drawing.Size(187, 20);
-            this.shooting_in_cover_duration_modifier.TabIndex = 427;
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(221, 23);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(106, 13);
-            this.label7.TabIndex = 424;
-            this.label7.Text = "Attack Pace Modifier";
-            // 
-            // attack_pace_modifier
-            // 
-            this.attack_pace_modifier.Enabled = false;
-            this.attack_pace_modifier.Location = new System.Drawing.Point(224, 39);
-            this.attack_pace_modifier.Name = "attack_pace_modifier";
-            this.attack_pace_modifier.Size = new System.Drawing.Size(187, 20);
-            this.attack_pace_modifier.TabIndex = 425;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(12, 62);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(129, 13);
-            this.label6.TabIndex = 422;
-            this.label6.Text = "Damage Received Scalar";
-            // 
-            // damage_received_scalar
-            // 
-            this.damage_received_scalar.Enabled = false;
-            this.damage_received_scalar.Location = new System.Drawing.Point(15, 78);
-            this.damage_received_scalar.Name = "damage_received_scalar";
-            this.damage_received_scalar.Size = new System.Drawing.Size(187, 20);
-            this.damage_received_scalar.TabIndex = 423;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(12, 23);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(108, 13);
-            this.label5.TabIndex = 420;
-            this.label5.Text = "Damage Dealt Scalar";
-            // 
-            // damage_dealt_scalar
-            // 
-            this.damage_dealt_scalar.Enabled = false;
-            this.damage_dealt_scalar.Location = new System.Drawing.Point(15, 39);
-            this.damage_dealt_scalar.Name = "damage_dealt_scalar";
-            this.damage_dealt_scalar.Size = new System.Drawing.Size(187, 20);
-            this.damage_dealt_scalar.TabIndex = 421;
-            // 
-            // groupBox4
-            // 
-            this.groupBox4.Controls.Add(this.label2);
-            this.groupBox4.Controls.Add(this.visual_sense_stance_effect_lower_modifier);
-            this.groupBox4.Controls.Add(this.label4);
-            this.groupBox4.Controls.Add(this.visual_sense_stance_effect_upper_modifier);
-            this.groupBox4.Controls.Add(this.label1);
-            this.groupBox4.Controls.Add(this.visual_sense_exposure_effect_lower_modifier);
-            this.groupBox4.Controls.Add(this.label3);
-            this.groupBox4.Controls.Add(this.visual_sense_exposure_effect_upper_modifier);
-            this.groupBox4.Location = new System.Drawing.Point(498, 610);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(430, 66);
-            this.groupBox4.TabIndex = 416;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Viewcone Type Modifiers";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(224, 19);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(143, 13);
-            this.label2.TabIndex = 424;
-            this.label2.Text = "Visual Stance Effect Modifier";
-            // 
-            // visual_sense_stance_effect_lower_modifier
-            // 
-            this.visual_sense_stance_effect_lower_modifier.Enabled = false;
-            this.visual_sense_stance_effect_lower_modifier.Location = new System.Drawing.Point(228, 35);
-            this.visual_sense_stance_effect_lower_modifier.Name = "visual_sense_stance_effect_lower_modifier";
-            this.visual_sense_stance_effect_lower_modifier.Size = new System.Drawing.Size(49, 20);
-            this.visual_sense_stance_effect_lower_modifier.TabIndex = 425;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(283, 38);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(77, 13);
-            this.label4.TabIndex = 427;
-            this.label4.Text = "Min -------> Max";
-            // 
-            // visual_sense_stance_effect_upper_modifier
-            // 
-            this.visual_sense_stance_effect_upper_modifier.Enabled = false;
-            this.visual_sense_stance_effect_upper_modifier.Location = new System.Drawing.Point(366, 35);
-            this.visual_sense_stance_effect_upper_modifier.Name = "visual_sense_stance_effect_upper_modifier";
-            this.visual_sense_stance_effect_upper_modifier.Size = new System.Drawing.Size(49, 20);
-            this.visual_sense_stance_effect_upper_modifier.TabIndex = 426;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(15, 19);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(122, 13);
-            this.label1.TabIndex = 420;
-            this.label1.Text = "Exposure Effect Modifier";
-            // 
-            // visual_sense_exposure_effect_lower_modifier
-            // 
-            this.visual_sense_exposure_effect_lower_modifier.Enabled = false;
-            this.visual_sense_exposure_effect_lower_modifier.Location = new System.Drawing.Point(19, 35);
-            this.visual_sense_exposure_effect_lower_modifier.Name = "visual_sense_exposure_effect_lower_modifier";
-            this.visual_sense_exposure_effect_lower_modifier.Size = new System.Drawing.Size(49, 20);
-            this.visual_sense_exposure_effect_lower_modifier.TabIndex = 421;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(74, 38);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(77, 13);
-            this.label3.TabIndex = 423;
-            this.label3.Text = "Min -------> Max";
-            // 
-            // visual_sense_exposure_effect_upper_modifier
-            // 
-            this.visual_sense_exposure_effect_upper_modifier.Enabled = false;
-            this.visual_sense_exposure_effect_upper_modifier.Location = new System.Drawing.Point(157, 35);
-            this.visual_sense_exposure_effect_upper_modifier.Name = "visual_sense_exposure_effect_upper_modifier";
-            this.visual_sense_exposure_effect_upper_modifier.Size = new System.Drawing.Size(49, 20);
-            this.visual_sense_exposure_effect_upper_modifier.TabIndex = 422;
             // 
             // groupBox2
             // 
@@ -781,7 +204,7 @@
             this.groupBox2.Controls.Add(this.groupBox8);
             this.groupBox2.Controls.Add(this.groupBox7);
             this.groupBox2.Controls.Add(this.groupBox12);
-            this.groupBox2.Location = new System.Drawing.Point(10, 19);
+            this.groupBox2.Location = new System.Drawing.Point(7, 6);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(467, 412);
             this.groupBox2.TabIndex = 425;
@@ -1370,7 +793,7 @@
             // 
             this.groupBox13.Controls.Add(this.groupBox14);
             this.groupBox13.Controls.Add(this.groupBox15);
-            this.groupBox13.Location = new System.Drawing.Point(483, 19);
+            this.groupBox13.Location = new System.Drawing.Point(480, 6);
             this.groupBox13.Name = "groupBox13";
             this.groupBox13.Size = new System.Drawing.Size(230, 291);
             this.groupBox13.TabIndex = 424;
@@ -1606,43 +1029,642 @@
             this.label85.Size = new System.Drawing.Size(0, 13);
             this.label85.TabIndex = 423;
             // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Location = new System.Drawing.Point(146, 351);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(152, 13);
+            this.label22.TabIndex = 444;
+            this.label22.Text = "Max Hearing Distance Modifier";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(12, 20);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(94, 13);
+            this.label12.TabIndex = 428;
+            this.label12.Text = "Activation Modifier";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(221, 20);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(177, 13);
+            this.label10.TabIndex = 432;
+            this.label10.Text = "Combined Sense Activation Modifier";
+            // 
+            // viewconeSets
+            // 
+            this.viewconeSets.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.viewconeSets.FormattingEnabled = true;
+            this.viewconeSets.Location = new System.Drawing.Point(122, 126);
+            this.viewconeSets.Name = "viewconeSets";
+            this.viewconeSets.Size = new System.Drawing.Size(455, 21);
+            this.viewconeSets.TabIndex = 417;
+            this.viewconeSets.SelectedIndexChanged += new System.EventHandler(this.viewconeSet_SelectedIndexChanged);
+            // 
+            // characterTypesSense
+            // 
+            this.characterTypesSense.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.characterTypesSense.FormattingEnabled = true;
+            this.characterTypesSense.Items.AddRange(new object[] {
+            "ALIEN",
+            "ANDROID",
+            "CIVILIAN",
+            "SECURITY_GUARD",
+            "CUTSCENE",
+            "FACEHUGGER",
+            "SPACESUIT_NPC",
+            "RIOT_GUARD",
+            "ANDROID_HEAVY",
+            "MELEE_HUMAN",
+            "INNOCENT",
+            "CUTSCENE_ANDROID"});
+            this.characterTypesSense.Location = new System.Drawing.Point(134, 30);
+            this.characterTypesSense.Name = "characterTypesSense";
+            this.characterTypesSense.Size = new System.Drawing.Size(424, 21);
+            this.characterTypesSense.TabIndex = 415;
+            this.characterTypesSense.SelectedIndexChanged += new System.EventHandler(this.characterTypesSense_SelectedIndexChanged);
+            // 
+            // classSelection
+            // 
+            this.classSelection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.classSelection.FormattingEnabled = true;
+            this.classSelection.Items.AddRange(new object[] {
+            "HARD",
+            "MEDIUM",
+            "EASY",
+            "NOVICE",
+            "IRON"});
+            this.classSelection.Location = new System.Drawing.Point(12, 13);
+            this.classSelection.Name = "classSelection";
+            this.classSelection.Size = new System.Drawing.Size(721, 21);
+            this.classSelection.TabIndex = 409;
+            this.classSelection.SelectedIndexChanged += new System.EventHandler(this.classSelection_SelectedIndexChanged);
+            // 
+            // tabControl1
+            // 
+            this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Controls.Add(this.tabPage4);
+            this.tabControl1.Controls.Add(this.tabPage3);
+            this.tabControl1.Location = new System.Drawing.Point(12, 40);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(725, 451);
+            this.tabControl1.TabIndex = 428;
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.groupBox2);
+            this.tabPage1.Controls.Add(this.groupBox13);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(717, 425);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "Alien Config";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Controls.Add(this.max_hearing_distance_modifier);
+            this.tabPage2.Controls.Add(this.groupBox1);
+            this.tabPage2.Controls.Add(this.groupBox6);
+            this.tabPage2.Controls.Add(this.groupBox5);
+            this.tabPage2.Controls.Add(this.label22);
+            this.tabPage2.Controls.Add(this.groupBox4);
+            this.tabPage2.Controls.Add(this.characterTypesSense);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(717, 425);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "Character Senses";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // max_hearing_distance_modifier
+            // 
+            this.max_hearing_distance_modifier.DecimalPlaces = 3;
+            this.max_hearing_distance_modifier.Location = new System.Drawing.Point(149, 367);
+            this.max_hearing_distance_modifier.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.max_hearing_distance_modifier.Minimum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            -2147483648});
+            this.max_hearing_distance_modifier.Name = "max_hearing_distance_modifier";
+            this.max_hearing_distance_modifier.Size = new System.Drawing.Size(187, 20);
+            this.max_hearing_distance_modifier.TabIndex = 451;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.flash_light_combined_sense_activation_modifier);
+            this.groupBox1.Controls.Add(this.flash_light_sense_activation_modifier);
+            this.groupBox1.Controls.Add(this.label7);
+            this.groupBox1.Controls.Add(this.label9);
+            this.groupBox1.Location = new System.Drawing.Point(134, 276);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(424, 67);
+            this.groupBox1.TabIndex = 450;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Flashlight Sense";
+            // 
+            // flash_light_combined_sense_activation_modifier
+            // 
+            this.flash_light_combined_sense_activation_modifier.DecimalPlaces = 3;
+            this.flash_light_combined_sense_activation_modifier.Location = new System.Drawing.Point(224, 36);
+            this.flash_light_combined_sense_activation_modifier.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.flash_light_combined_sense_activation_modifier.Minimum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            -2147483648});
+            this.flash_light_combined_sense_activation_modifier.Name = "flash_light_combined_sense_activation_modifier";
+            this.flash_light_combined_sense_activation_modifier.Size = new System.Drawing.Size(187, 20);
+            this.flash_light_combined_sense_activation_modifier.TabIndex = 436;
+            // 
+            // flash_light_sense_activation_modifier
+            // 
+            this.flash_light_sense_activation_modifier.DecimalPlaces = 3;
+            this.flash_light_sense_activation_modifier.Location = new System.Drawing.Point(15, 36);
+            this.flash_light_sense_activation_modifier.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.flash_light_sense_activation_modifier.Minimum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            -2147483648});
+            this.flash_light_sense_activation_modifier.Name = "flash_light_sense_activation_modifier";
+            this.flash_light_sense_activation_modifier.Size = new System.Drawing.Size(187, 20);
+            this.flash_light_sense_activation_modifier.TabIndex = 435;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(12, 20);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(94, 13);
+            this.label7.TabIndex = 428;
+            this.label7.Text = "Activation Modifier";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(221, 20);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(177, 13);
+            this.label9.TabIndex = 432;
+            this.label9.Text = "Combined Sense Activation Modifier";
+            // 
+            // groupBox6
+            // 
+            this.groupBox6.Controls.Add(this.movement_sound_combined_sense_activation_modifier);
+            this.groupBox6.Controls.Add(this.movement_sound_sense_activation_modifier);
+            this.groupBox6.Controls.Add(this.label3);
+            this.groupBox6.Controls.Add(this.label4);
+            this.groupBox6.Location = new System.Drawing.Point(134, 203);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(424, 67);
+            this.groupBox6.TabIndex = 438;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "Movement Sound Sense";
+            // 
+            // movement_sound_combined_sense_activation_modifier
+            // 
+            this.movement_sound_combined_sense_activation_modifier.DecimalPlaces = 3;
+            this.movement_sound_combined_sense_activation_modifier.Location = new System.Drawing.Point(224, 36);
+            this.movement_sound_combined_sense_activation_modifier.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.movement_sound_combined_sense_activation_modifier.Minimum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            -2147483648});
+            this.movement_sound_combined_sense_activation_modifier.Name = "movement_sound_combined_sense_activation_modifier";
+            this.movement_sound_combined_sense_activation_modifier.Size = new System.Drawing.Size(187, 20);
+            this.movement_sound_combined_sense_activation_modifier.TabIndex = 436;
+            // 
+            // movement_sound_sense_activation_modifier
+            // 
+            this.movement_sound_sense_activation_modifier.DecimalPlaces = 3;
+            this.movement_sound_sense_activation_modifier.Location = new System.Drawing.Point(15, 36);
+            this.movement_sound_sense_activation_modifier.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.movement_sound_sense_activation_modifier.Minimum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            -2147483648});
+            this.movement_sound_sense_activation_modifier.Name = "movement_sound_sense_activation_modifier";
+            this.movement_sound_sense_activation_modifier.Size = new System.Drawing.Size(187, 20);
+            this.movement_sound_sense_activation_modifier.TabIndex = 435;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(12, 20);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(94, 13);
+            this.label3.TabIndex = 428;
+            this.label3.Text = "Activation Modifier";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(221, 20);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(177, 13);
+            this.label4.TabIndex = 432;
+            this.label4.Text = "Combined Sense Activation Modifier";
+            // 
             // groupBox5
             // 
-            this.groupBox5.Controls.Add(this.groupBox2);
-            this.groupBox5.Controls.Add(this.groupBox13);
-            this.groupBox5.Location = new System.Drawing.Point(1089, 74);
+            this.groupBox5.Controls.Add(this.weapon_sound_combined_sense_activation_modifier);
+            this.groupBox5.Controls.Add(this.weapon_sound_sense_activation_modifier);
+            this.groupBox5.Controls.Add(this.label1);
+            this.groupBox5.Controls.Add(this.label2);
+            this.groupBox5.Location = new System.Drawing.Point(134, 130);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(721, 441);
-            this.groupBox5.TabIndex = 426;
+            this.groupBox5.Size = new System.Drawing.Size(424, 67);
+            this.groupBox5.TabIndex = 437;
             this.groupBox5.TabStop = false;
-            this.groupBox5.Text = "Alien Config";
+            this.groupBox5.Text = "Weapon Sound Sense";
             // 
-            // label16
+            // weapon_sound_combined_sense_activation_modifier
             // 
-            this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(1302, 588);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(283, 13);
-            this.label16.TabIndex = 427;
-            this.label16.Text = "todo - tab control to swap viewcones/senses/alien configs";
+            this.weapon_sound_combined_sense_activation_modifier.DecimalPlaces = 3;
+            this.weapon_sound_combined_sense_activation_modifier.Location = new System.Drawing.Point(224, 36);
+            this.weapon_sound_combined_sense_activation_modifier.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.weapon_sound_combined_sense_activation_modifier.Minimum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            -2147483648});
+            this.weapon_sound_combined_sense_activation_modifier.Name = "weapon_sound_combined_sense_activation_modifier";
+            this.weapon_sound_combined_sense_activation_modifier.Size = new System.Drawing.Size(187, 20);
+            this.weapon_sound_combined_sense_activation_modifier.TabIndex = 436;
+            // 
+            // weapon_sound_sense_activation_modifier
+            // 
+            this.weapon_sound_sense_activation_modifier.DecimalPlaces = 3;
+            this.weapon_sound_sense_activation_modifier.Location = new System.Drawing.Point(15, 36);
+            this.weapon_sound_sense_activation_modifier.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.weapon_sound_sense_activation_modifier.Minimum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            -2147483648});
+            this.weapon_sound_sense_activation_modifier.Name = "weapon_sound_sense_activation_modifier";
+            this.weapon_sound_sense_activation_modifier.Size = new System.Drawing.Size(187, 20);
+            this.weapon_sound_sense_activation_modifier.TabIndex = 435;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(12, 20);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(94, 13);
+            this.label1.TabIndex = 428;
+            this.label1.Text = "Activation Modifier";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(221, 20);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(177, 13);
+            this.label2.TabIndex = 432;
+            this.label2.Text = "Combined Sense Activation Modifier";
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.visual_combined_sense_activation_modifier);
+            this.groupBox4.Controls.Add(this.visual_sense_activation_modifier);
+            this.groupBox4.Controls.Add(this.label12);
+            this.groupBox4.Controls.Add(this.label10);
+            this.groupBox4.Location = new System.Drawing.Point(134, 57);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(424, 67);
+            this.groupBox4.TabIndex = 416;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Visual Sense";
+            // 
+            // visual_combined_sense_activation_modifier
+            // 
+            this.visual_combined_sense_activation_modifier.DecimalPlaces = 3;
+            this.visual_combined_sense_activation_modifier.Location = new System.Drawing.Point(224, 36);
+            this.visual_combined_sense_activation_modifier.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.visual_combined_sense_activation_modifier.Minimum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            -2147483648});
+            this.visual_combined_sense_activation_modifier.Name = "visual_combined_sense_activation_modifier";
+            this.visual_combined_sense_activation_modifier.Size = new System.Drawing.Size(187, 20);
+            this.visual_combined_sense_activation_modifier.TabIndex = 436;
+            // 
+            // visual_sense_activation_modifier
+            // 
+            this.visual_sense_activation_modifier.DecimalPlaces = 3;
+            this.visual_sense_activation_modifier.Location = new System.Drawing.Point(15, 36);
+            this.visual_sense_activation_modifier.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.visual_sense_activation_modifier.Minimum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            -2147483648});
+            this.visual_sense_activation_modifier.Name = "visual_sense_activation_modifier";
+            this.visual_sense_activation_modifier.Size = new System.Drawing.Size(187, 20);
+            this.visual_sense_activation_modifier.TabIndex = 435;
+            // 
+            // tabPage4
+            // 
+            this.tabPage4.Controls.Add(this.shooting_in_cover_duration_modifier);
+            this.tabPage4.Controls.Add(this.suspicious_item_loop_scalar);
+            this.tabPage4.Controls.Add(this.damage_received_scalar);
+            this.tabPage4.Controls.Add(this.time_between_shots_scalar);
+            this.tabPage4.Controls.Add(this.label11);
+            this.tabPage4.Controls.Add(this.attack_pace_modifier_per_npc);
+            this.tabPage4.Controls.Add(this.attack_pace_modifier_max);
+            this.tabPage4.Controls.Add(this.label13);
+            this.tabPage4.Controls.Add(this.damage_dealt_scalar);
+            this.tabPage4.Controls.Add(this.characterTypesAttribute);
+            this.tabPage4.Controls.Add(this.label5);
+            this.tabPage4.Controls.Add(this.label18);
+            this.tabPage4.Controls.Add(this.label6);
+            this.tabPage4.Controls.Add(this.label8);
+            this.tabPage4.Controls.Add(this.label20);
+            this.tabPage4.Location = new System.Drawing.Point(4, 22);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Size = new System.Drawing.Size(717, 425);
+            this.tabPage4.TabIndex = 3;
+            this.tabPage4.Text = "Character Attributes";
+            this.tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // shooting_in_cover_duration_modifier
+            // 
+            this.shooting_in_cover_duration_modifier.DecimalPlaces = 3;
+            this.shooting_in_cover_duration_modifier.Location = new System.Drawing.Point(144, 256);
+            this.shooting_in_cover_duration_modifier.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.shooting_in_cover_duration_modifier.Minimum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            -2147483648});
+            this.shooting_in_cover_duration_modifier.Name = "shooting_in_cover_duration_modifier";
+            this.shooting_in_cover_duration_modifier.Size = new System.Drawing.Size(185, 20);
+            this.shooting_in_cover_duration_modifier.TabIndex = 478;
+            // 
+            // suspicious_item_loop_scalar
+            // 
+            this.suspicious_item_loop_scalar.DecimalPlaces = 3;
+            this.suspicious_item_loop_scalar.Location = new System.Drawing.Point(144, 217);
+            this.suspicious_item_loop_scalar.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.suspicious_item_loop_scalar.Minimum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            -2147483648});
+            this.suspicious_item_loop_scalar.Name = "suspicious_item_loop_scalar";
+            this.suspicious_item_loop_scalar.Size = new System.Drawing.Size(185, 20);
+            this.suspicious_item_loop_scalar.TabIndex = 477;
+            // 
+            // damage_received_scalar
+            // 
+            this.damage_received_scalar.DecimalPlaces = 3;
+            this.damage_received_scalar.Location = new System.Drawing.Point(144, 178);
+            this.damage_received_scalar.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.damage_received_scalar.Minimum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            -2147483648});
+            this.damage_received_scalar.Name = "damage_received_scalar";
+            this.damage_received_scalar.Size = new System.Drawing.Size(185, 20);
+            this.damage_received_scalar.TabIndex = 476;
+            // 
+            // time_between_shots_scalar
+            // 
+            this.time_between_shots_scalar.DecimalPlaces = 3;
+            this.time_between_shots_scalar.Location = new System.Drawing.Point(345, 217);
+            this.time_between_shots_scalar.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.time_between_shots_scalar.Minimum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            -2147483648});
+            this.time_between_shots_scalar.Name = "time_between_shots_scalar";
+            this.time_between_shots_scalar.Size = new System.Drawing.Size(185, 20);
+            this.time_between_shots_scalar.TabIndex = 475;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(342, 240);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(108, 13);
+            this.label11.TabIndex = 471;
+            this.label11.Text = "Melee Attack Interval";
+            // 
+            // attack_pace_modifier_per_npc
+            // 
+            this.attack_pace_modifier_per_npc.DecimalPlaces = 3;
+            this.attack_pace_modifier_per_npc.Location = new System.Drawing.Point(347, 256);
+            this.attack_pace_modifier_per_npc.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.attack_pace_modifier_per_npc.Name = "attack_pace_modifier_per_npc";
+            this.attack_pace_modifier_per_npc.Size = new System.Drawing.Size(48, 20);
+            this.attack_pace_modifier_per_npc.TabIndex = 473;
+            // 
+            // attack_pace_modifier_max
+            // 
+            this.attack_pace_modifier_max.DecimalPlaces = 3;
+            this.attack_pace_modifier_max.Location = new System.Drawing.Point(484, 256);
+            this.attack_pace_modifier_max.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.attack_pace_modifier_max.Name = "attack_pace_modifier_max";
+            this.attack_pace_modifier_max.Size = new System.Drawing.Size(48, 20);
+            this.attack_pace_modifier_max.TabIndex = 474;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(401, 259);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(77, 13);
+            this.label13.TabIndex = 472;
+            this.label13.Text = "Min -------> Max";
+            // 
+            // damage_dealt_scalar
+            // 
+            this.damage_dealt_scalar.DecimalPlaces = 3;
+            this.damage_dealt_scalar.Location = new System.Drawing.Point(345, 178);
+            this.damage_dealt_scalar.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.damage_dealt_scalar.Minimum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            -2147483648});
+            this.damage_dealt_scalar.Name = "damage_dealt_scalar";
+            this.damage_dealt_scalar.Size = new System.Drawing.Size(185, 20);
+            this.damage_dealt_scalar.TabIndex = 436;
+            // 
+            // characterTypesAttribute
+            // 
+            this.characterTypesAttribute.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.characterTypesAttribute.FormattingEnabled = true;
+            this.characterTypesAttribute.Items.AddRange(new object[] {
+            "ALIEN",
+            "ANDROID",
+            "CIVILIAN",
+            "SECURITY_GUARD",
+            "CUTSCENE",
+            "FACEHUGGER",
+            "SPACESUIT_NPC",
+            "RIOT_GUARD",
+            "ANDROID_HEAVY",
+            "MELEE_HUMAN",
+            "INNOCENT",
+            "CUTSCENE_ANDROID"});
+            this.characterTypesAttribute.Location = new System.Drawing.Point(144, 128);
+            this.characterTypesAttribute.Name = "characterTypesAttribute";
+            this.characterTypesAttribute.Size = new System.Drawing.Size(386, 21);
+            this.characterTypesAttribute.TabIndex = 416;
+            this.characterTypesAttribute.SelectedIndexChanged += new System.EventHandler(this.characterTypesAttribute_SelectedIndexChanged);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(342, 162);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(108, 13);
+            this.label5.TabIndex = 420;
+            this.label5.Text = "Damage Dealt Scalar";
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(342, 201);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(138, 13);
+            this.label18.TabIndex = 432;
+            this.label18.Text = "Time Between Shots Scalar";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(141, 162);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(129, 13);
+            this.label6.TabIndex = 422;
+            this.label6.Text = "Damage Received Scalar";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(141, 241);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(175, 13);
+            this.label8.TabIndex = 426;
+            this.label8.Text = "Shooting In Cover Duration Modifier";
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(141, 201);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(141, 13);
+            this.label20.TabIndex = 428;
+            this.label20.Text = "Suspicious Item Loop Scalar";
+            // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.viewconeDifficultySet1);
+            this.tabPage3.Controls.Add(this.viewconeSets);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Size = new System.Drawing.Size(717, 425);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "Viewcones";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // viewconeDifficultySet1
+            // 
+            this.viewconeDifficultySet1.Location = new System.Drawing.Point(120, 153);
+            this.viewconeDifficultySet1.Name = "viewconeDifficultySet1";
+            this.viewconeDifficultySet1.Size = new System.Drawing.Size(460, 116);
+            this.viewconeDifficultySet1.TabIndex = 418;
             // 
             // DifficultyEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(2124, 824);
-            this.Controls.Add(this.label16);
-            this.Controls.Add(this.groupBox5);
+            this.ClientSize = new System.Drawing.Size(746, 501);
+            this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.label85);
-            this.Controls.Add(this.groupBox4);
-            this.Controls.Add(this.groupBox3);
-            this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.viewconeType);
-            this.Controls.Add(this.loadViewconeType);
-            this.Controls.Add(this.viewconeSet);
-            this.Controls.Add(this.loadViewconeSet);
-            this.Controls.Add(this.characterTypes);
-            this.Controls.Add(this.loadNPC);
             this.Controls.Add(this.classSelection);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = global::CommandsEditor.SharedFormIcon.Icon;
@@ -1651,12 +1673,6 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Diffculty Editor";
             this.Load += new System.EventHandler(this.DifficultyEditor_Load);
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
-            this.groupBox4.ResumeLayout(false);
-            this.groupBox4.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox11.ResumeLayout(false);
             this.groupBox11.PerformLayout();
@@ -1699,7 +1715,37 @@
             this.groupBox15.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.backstage_area_sweep_ambush_timeout_modifier)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.backstage_area_sweep_killtrap_time_modifier)).EndInit();
+            this.tabControl1.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
+            this.tabPage2.ResumeLayout(false);
+            this.tabPage2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.max_hearing_distance_modifier)).EndInit();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.flash_light_combined_sense_activation_modifier)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.flash_light_sense_activation_modifier)).EndInit();
+            this.groupBox6.ResumeLayout(false);
+            this.groupBox6.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.movement_sound_combined_sense_activation_modifier)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.movement_sound_sense_activation_modifier)).EndInit();
             this.groupBox5.ResumeLayout(false);
+            this.groupBox5.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.weapon_sound_combined_sense_activation_modifier)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.weapon_sound_sense_activation_modifier)).EndInit();
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.visual_combined_sense_activation_modifier)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.visual_sense_activation_modifier)).EndInit();
+            this.tabPage4.ResumeLayout(false);
+            this.tabPage4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.shooting_in_cover_duration_modifier)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.suspicious_item_loop_scalar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.damage_received_scalar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.time_between_shots_scalar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.attack_pace_modifier_per_npc)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.attack_pace_modifier_max)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.damage_dealt_scalar)).EndInit();
+            this.tabPage3.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1707,62 +1753,11 @@
 
         #endregion
         private System.Windows.Forms.ComboBox classSelection;
-        private System.Windows.Forms.ComboBox characterTypes;
-        private System.Windows.Forms.Button loadNPC;
-        private System.Windows.Forms.ComboBox viewconeSet;
-        private System.Windows.Forms.Button loadViewconeSet;
-        private System.Windows.Forms.ComboBox viewconeType;
-        private System.Windows.Forms.Button loadViewconeType;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.GroupBox groupBox4;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox visual_sense_stance_effect_lower_modifier;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox visual_sense_stance_effect_upper_modifier;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox visual_sense_exposure_effect_lower_modifier;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox visual_sense_exposure_effect_upper_modifier;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.TextBox shooting_in_cover_duration_modifier;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.TextBox attack_pace_modifier;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.TextBox damage_received_scalar;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.TextBox damage_dealt_scalar;
-        private System.Windows.Forms.Label label29;
-        private System.Windows.Forms.Label label27;
-        private System.Windows.Forms.Label label26;
-        private System.Windows.Forms.Label label24;
-        private System.Windows.Forms.Label label23;
-        private System.Windows.Forms.TextBox max_hearing_distance_modifier;
+        private System.Windows.Forms.ComboBox characterTypesSense;
+        private System.Windows.Forms.ComboBox viewconeSets;
         private System.Windows.Forms.Label label22;
-        private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.Label label14;
-        private System.Windows.Forms.TextBox flash_light_combined_sense_activation_modifier;
-        private System.Windows.Forms.TextBox movement_sound_sense_activation_modifier;
-        private System.Windows.Forms.Label label15;
-        private System.Windows.Forms.TextBox flash_light_sense_activation_modifier;
-        private System.Windows.Forms.TextBox movement_sound_combined_sense_activation_modifier;
-        private System.Windows.Forms.Label label17;
-        private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.TextBox weapon_sound_combined_sense_activation_modifier;
-        private System.Windows.Forms.TextBox visual_sense_activation_modifier;
         private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.TextBox weapon_sound_sense_activation_modifier;
-        private System.Windows.Forms.TextBox visual_combined_sense_activation_modifier;
-        private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.Label label21;
-        private System.Windows.Forms.TextBox attack_pace_modifier_max;
-        private System.Windows.Forms.Label label18;
-        private System.Windows.Forms.TextBox time_between_shots_scalar;
-        private System.Windows.Forms.Label label19;
-        private System.Windows.Forms.TextBox attack_pace_modifier_per_npc;
-        private System.Windows.Forms.Label label20;
-        private System.Windows.Forms.TextBox suspicious_item_loop_scalar;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.GroupBox groupBox11;
         private System.Windows.Forms.NumericUpDown Vent_Attract_Time_Min;
@@ -1824,7 +1819,45 @@
         private System.Windows.Forms.Label label83;
         private System.Windows.Forms.Label label84;
         private System.Windows.Forms.Label label85;
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.TabPage tabPage3;
+        private Popups.Configuration_Editors.User_Controls.ViewconeDifficultySet viewconeDifficultySet1;
+        private System.Windows.Forms.TabPage tabPage4;
+        private System.Windows.Forms.ComboBox characterTypesAttribute;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.GroupBox groupBox6;
+        private System.Windows.Forms.NumericUpDown movement_sound_combined_sense_activation_modifier;
+        private System.Windows.Forms.NumericUpDown movement_sound_sense_activation_modifier;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label4;
         private System.Windows.Forms.GroupBox groupBox5;
-        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.NumericUpDown weapon_sound_combined_sense_activation_modifier;
+        private System.Windows.Forms.NumericUpDown weapon_sound_sense_activation_modifier;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.NumericUpDown visual_combined_sense_activation_modifier;
+        private System.Windows.Forms.NumericUpDown visual_sense_activation_modifier;
+        private System.Windows.Forms.NumericUpDown max_hearing_distance_modifier;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.NumericUpDown flash_light_combined_sense_activation_modifier;
+        private System.Windows.Forms.NumericUpDown flash_light_sense_activation_modifier;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.NumericUpDown damage_dealt_scalar;
+        private System.Windows.Forms.NumericUpDown time_between_shots_scalar;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.NumericUpDown attack_pace_modifier_per_npc;
+        private System.Windows.Forms.NumericUpDown attack_pace_modifier_max;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.NumericUpDown shooting_in_cover_duration_modifier;
+        private System.Windows.Forms.NumericUpDown suspicious_item_loop_scalar;
+        private System.Windows.Forms.NumericUpDown damage_received_scalar;
     }
 }

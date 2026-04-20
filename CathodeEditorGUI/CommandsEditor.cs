@@ -101,10 +101,21 @@ namespace CommandsEditor
             _defaultHeight = Height;
 
 #if !DEBUG
+            //Dev options
             DEBUG_ReloadLevel.Visible = false;
             connectToRuntimeUtils.Visible = false;
-
+            
+            //WIP forms
+            inputsToolStripMenuItem.Visible = false;
             scriptReadableVariablesToolStripMenuItem.Visible = false;
+            voiceMappingsToolStripMenuItem.Visible = false;
+            sensesToolStripMenuItem.Visible = false;
+            localisationToolStripMenuItem.Visible = false;
+            levelTextDBsToolStripMenuItem.Visible = false;
+            fontConfigToolStripMenuItem.Visible = false;
+            difficultyModifiersToolStripMenuItem.Visible = false;
+            aboutToolStripMenuItem.Visible = false;
+            inventoryItemsToolStripMenuItem.Visible = false;
 #endif
 
             //Launch game is only supported by certain platforms due to having to patch the binary

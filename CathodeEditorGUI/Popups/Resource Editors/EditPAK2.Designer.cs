@@ -91,7 +91,7 @@ namespace CommandsEditor
             this.btnExportAll.Name = "btnExportAll";
             this.btnExportAll.Size = new System.Drawing.Size(120, 28);
             this.btnExportAll.TabIndex = 4;
-            this.btnExportAll.Text = "Export all…";
+            this.btnExportAll.Text = "Export All";
             this.btnExportAll.UseVisualStyleBackColor = true;
             this.btnExportAll.Click += new System.EventHandler(this.btnExportAll_Click);
             // 

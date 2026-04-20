@@ -25,6 +25,36 @@ namespace CommandsEditor.ConfigEditors
         {
             InitializeComponent();
 
+            BML viewconeTypes = new BML(Singleton.PathToAI + "\\DATA\\VIEW_CONE_SETS\\VIEWCONESETS.BML");
+            var viewcones = viewconeTypes.Content["ViewconeSets"];
+            viewconeSets.BeginUpdate();
+            foreach (XmlElement viewcone in viewcones)
+            {
+                string name = viewcone["Name"].InnerText;
+                switch (name)
+                {
+                    case "VIEWCONESET_STANDARD":
+                    case "VIEWCONESET_HUMAN":
+                    case "VIEWCONESET_SLEEPING": //unused? it doesnt have all sets.
+                    case "VIEWCONESET_ANDROID":
+                        break;
+                    default:
+                        // It appears the game skips any other than the ones above, so ignore them.
+                        continue;
+                }
+                viewconeSets.Items.Add(name);
+            }
+            viewconeSets.EndUpdate();
+
+            BML attributeTypes = new BML(Singleton.PathToAI + "\\DATA\\CHR_INFO\\ATTRIBUTES\\ATTRIBUTES.BML");
+            var attributes = attributeTypes.Content["Attributes"];
+            characterTypesSense.BeginUpdate();
+            foreach (XmlElement attribute in attributes)
+            {
+                characterTypesSense.Items.Add(attribute["Name"].InnerText);
+            }
+            characterTypesSense.EndUpdate();
+
             BML difficultySettingsTypes = new BML(Singleton.PathToAI + "\\DATA\\DIFFICULTYSETTINGS\\DIFFICULTYSETTINGS.BML");
             var difficultySettings = difficultySettingsTypes.Content["DifficultySettings"];
             classSelection.BeginUpdate();
@@ -46,14 +76,15 @@ namespace CommandsEditor.ConfigEditors
 
         private void DifficultyEditor_FormClosing(object sender, FormClosingEventArgs e)
         {
-            ConfigEditorUtils.Unsubscribe(this.Controls, Save);
+            ConfigEditorUtils.Unsubscribe(tabPage1.Controls, SaveAlienConfig);
+            ConfigEditorUtils.Unsubscribe(tabPage2.Controls, SaveSenseConfig);
+            ConfigEditorUtils.Unsubscribe(tabPage4.Controls, SaveAttributeConfig);
+            ConfigEditorUtils.Unsubscribe(viewconeDifficultySet1.Controls, SaveViewconeConfig);
             this.FormClosing -= DifficultyEditor_FormClosing;
         }
 
         private void classSelection_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ConfigEditorUtils.Unsubscribe(this.Controls, Save);
-
             _selectedDifficulty = new List<BML>();
             _selectedDifficulty.Add(new BML(Singleton.PathToAI + "\\DATA\\DIFFICULTYSETTINGS\\" + classSelection.Text + ".BML"));
             while (true)
@@ -63,6 +94,7 @@ namespace CommandsEditor.ConfigEditors
                 _selectedDifficulty.Add(new BML(Singleton.PathToAI + "\\DATA\\DIFFICULTYSETTINGS\\" + template + ".BML"));
             }
 
+            ConfigEditorUtils.Unsubscribe(tabPage1.Controls, SaveAlienConfig);
             ConfigEditorUtils.SetNumber(_selectedDifficulty, decrease_sweep_duration_modifier, "DifficultySetting", "Alien", "AlienConfig", "decrease_sweep_duration_modifier");
             ConfigEditorUtils.SetNumber(_selectedDifficulty, increase_sweep_duration_modifier, "DifficultySetting", "Alien", "AlienConfig", "increase_sweep_duration_modifier");
             ConfigEditorUtils.SetNumber(_selectedDifficulty, near_target_exclusion_radius_first_stalk_min_modifier, "DifficultySetting", "Alien", "AlienConfig", "near_target_exclusion_radius_first_stalk_min_modifier");
@@ -88,207 +120,71 @@ namespace CommandsEditor.ConfigEditors
             ConfigEditorUtils.SetNumber(_selectedDifficulty, sweep_box_half_width_modifier, "DifficultySetting", "Alien", "AlienConfig", "sweep_box_half_width_modifier");
             ConfigEditorUtils.SetNumber(_selectedDifficulty, Vent_Attract_Time_Min, "DifficultySetting", "Alien", "AlienConfig", "Vent_Attract_Time_Min");
             ConfigEditorUtils.SetNumber(_selectedDifficulty, Vent_Attract_Time_Max, "DifficultySetting", "Alien", "AlienConfig", "Vent_Attract_Time_Max");
+            ConfigEditorUtils.Subscribe(tabPage1.Controls, SaveAlienConfig);
 
-            ConfigEditorUtils.Subscribe(this.Controls, Save);
+            characterTypesSense.SelectedIndex = 0;
+            characterTypesSense_SelectedIndexChanged(null, null);
+
+            characterTypesAttribute.SelectedIndex = 0;
+            characterTypesAttribute_SelectedIndexChanged(null, null);
+
+            viewconeSets.SelectedIndex = 0;
+            viewconeSet_SelectedIndexChanged(null, null);
         }
 
-        //Load character type
-        private void loadNPC_Click(object sender, EventArgs e)
+        private void characterTypesSense_SelectedIndexChanged(object sender, EventArgs e)
         {
-            /*
-            //Update cursor and begin
-            Cursor.Current = Cursors.WaitCursor;
-
-            //Save selected config name
-            string selectedConfig = characterTypes.Text;
-
-            if (selectedConfig == "")
-            {
-                //No config selected, can't load anything
-                MessageBox.Show("Please select a character.");
-            }
-            else
-            {
-                //Load-in XML data
-                var ChrAttributeXML = _loadedDifficultyXml;
-
-                //Set NPC_Generic Senses Values
-                AlienAttribute.getNode("NPC_Generic/" + selectedConfig + "/Senses", "max_hearing_distance_modifier", ChrAttributeXML, max_hearing_distance_modifier, null);
-                AlienAttribute.getNode("NPC_Generic/" + selectedConfig + "/Senses", "visual_sense_activation_modifier", ChrAttributeXML, visual_sense_activation_modifier, null);
-                AlienAttribute.getNode("NPC_Generic/" + selectedConfig + "/Senses", "visual_combined_sense_activation_modifier", ChrAttributeXML, visual_combined_sense_activation_modifier, null);
-                AlienAttribute.getNode("NPC_Generic/" + selectedConfig + "/Senses", "weapon_sound_sense_activation_modifier", ChrAttributeXML, weapon_sound_sense_activation_modifier, null);
-                AlienAttribute.getNode("NPC_Generic/" + selectedConfig + "/Senses", "weapon_sound_combined_sense_activation_modifier", ChrAttributeXML, weapon_sound_combined_sense_activation_modifier, null);
-                AlienAttribute.getNode("NPC_Generic/" + selectedConfig + "/Senses", "movement_sound_sense_activation_modifier", ChrAttributeXML, movement_sound_sense_activation_modifier, null);
-                AlienAttribute.getNode("NPC_Generic/" + selectedConfig + "/Senses", "movement_sound_combined_sense_activation_modifier", ChrAttributeXML, movement_sound_combined_sense_activation_modifier, null);
-                AlienAttribute.getNode("NPC_Generic/" + selectedConfig + "/Senses", "flash_light_sense_activation_modifier", ChrAttributeXML, flash_light_sense_activation_modifier, null);
-                AlienAttribute.getNode("NPC_Generic/" + selectedConfig + "/Senses", "flash_light_combined_sense_activation_modifier", ChrAttributeXML, flash_light_combined_sense_activation_modifier, null);
-
-                //Set NPC_Generic General Values
-                AlienAttribute.getNode("NPC_Generic/" + selectedConfig + "/General", "damage_dealt_scalar", ChrAttributeXML, damage_dealt_scalar, null);
-                AlienAttribute.getNode("NPC_Generic/" + selectedConfig + "/General", "damage_received_scalar", ChrAttributeXML, damage_received_scalar, null);
-                AlienAttribute.getNode("NPC_Generic/" + selectedConfig + "/General", "suspicious_item_loop_scalar", ChrAttributeXML, suspicious_item_loop_scalar, null);
-                AlienAttribute.getNode("NPC_Generic/" + selectedConfig + "/General", "attack_pace_modifier", ChrAttributeXML, attack_pace_modifier, null);
-                AlienAttribute.getNode("NPC_Generic/" + selectedConfig + "/General", "attack_pace_modifier_per_npc", ChrAttributeXML, attack_pace_modifier_per_npc, null);
-                AlienAttribute.getNode("NPC_Generic/" + selectedConfig + "/General", "attack_pace_modifier_max", ChrAttributeXML, attack_pace_modifier_max, null);
-                AlienAttribute.getNode("NPC_Generic/" + selectedConfig + "/General", "shooting_in_cover_duration_modifier", ChrAttributeXML, shooting_in_cover_duration_modifier, null);
-                AlienAttribute.getNode("NPC_Generic/" + selectedConfig + "/General", "time_between_shots_scalar", ChrAttributeXML, time_between_shots_scalar, null);
-            }
-
-            //Update cursor and finish
-            Cursor.Current = Cursors.Default;
-            */
+            ConfigEditorUtils.Unsubscribe(tabPage2.Controls, SaveSenseConfig);
+            ConfigEditorUtils.SetNumber(_selectedDifficulty, max_hearing_distance_modifier, "DifficultySetting", "NPC_Generic", characterTypesSense.Text, "Senses", "max_hearing_distance_modifier");
+            ConfigEditorUtils.SetNumber(_selectedDifficulty, weapon_sound_sense_activation_modifier, "DifficultySetting", "NPC_Generic", characterTypesSense.Text, "Senses", "weapon_sound_sense_activation_modifier");
+            ConfigEditorUtils.SetNumber(_selectedDifficulty, weapon_sound_combined_sense_activation_modifier, "DifficultySetting", "NPC_Generic", characterTypesSense.Text, "Senses", "weapon_sound_combined_sense_activation_modifier");
+            ConfigEditorUtils.SetNumber(_selectedDifficulty, movement_sound_sense_activation_modifier, "DifficultySetting", "NPC_Generic", characterTypesSense.Text, "Senses", "movement_sound_sense_activation_modifier");
+            ConfigEditorUtils.SetNumber(_selectedDifficulty, movement_sound_combined_sense_activation_modifier, "DifficultySetting", "NPC_Generic", characterTypesSense.Text, "Senses", "movement_sound_combined_sense_activation_modifier");
+            ConfigEditorUtils.SetNumber(_selectedDifficulty, flash_light_sense_activation_modifier, "DifficultySetting", "NPC_Generic", characterTypesSense.Text, "Senses", "flash_light_sense_activation_modifier");
+            ConfigEditorUtils.SetNumber(_selectedDifficulty, flash_light_combined_sense_activation_modifier, "DifficultySetting", "NPC_Generic", characterTypesSense.Text, "Senses", "flash_light_combined_sense_activation_modifier");
+            ConfigEditorUtils.SetNumber(_selectedDifficulty, visual_sense_activation_modifier, "DifficultySetting", "NPC_Generic", characterTypesSense.Text, "Senses", "visual_sense_activation_modifier");
+            ConfigEditorUtils.SetNumber(_selectedDifficulty, visual_combined_sense_activation_modifier, "DifficultySetting", "NPC_Generic", characterTypesSense.Text, "Senses", "visual_combined_sense_activation_modifier");
+            ConfigEditorUtils.Subscribe(tabPage2.Controls, SaveSenseConfig);
         }
 
-        //Unlock viewcone type buttons
-        private void loadViewconeSet_Click(object sender, EventArgs e)
+        private void characterTypesAttribute_SelectedIndexChanged(object sender, EventArgs e)
         {
-            /*
-            viewconeType.Enabled = true;
-            loadViewconeType.Enabled = true;
-
-            AlienAttribute.disableInput(visual_sense_exposure_effect_lower_modifier, null);
-            AlienAttribute.disableInput(visual_sense_exposure_effect_upper_modifier, null);
-            AlienAttribute.disableInput(visual_sense_stance_effect_lower_modifier, null);
-            AlienAttribute.disableInput(visual_sense_stance_effect_upper_modifier, null);
-            */
+            ConfigEditorUtils.Unsubscribe(tabPage4.Controls, SaveAttributeConfig);
+            ConfigEditorUtils.SetNumber(_selectedDifficulty, damage_dealt_scalar, "DifficultySetting", "NPC_Generic", characterTypesAttribute.Text, "General", "damage_dealt_scalar");
+            ConfigEditorUtils.SetNumber(_selectedDifficulty, damage_received_scalar, "DifficultySetting", "NPC_Generic", characterTypesAttribute.Text, "General", "damage_received_scalar");
+            ConfigEditorUtils.SetNumber(_selectedDifficulty, attack_pace_modifier_per_npc, "DifficultySetting", "NPC_Generic", characterTypesAttribute.Text, "General", "attack_pace_modifier_per_npc");
+            ConfigEditorUtils.SetNumber(_selectedDifficulty, attack_pace_modifier_max, "DifficultySetting", "NPC_Generic", characterTypesAttribute.Text, "General", "attack_pace_modifier_max");
+            ConfigEditorUtils.SetNumber(_selectedDifficulty, shooting_in_cover_duration_modifier, "DifficultySetting", "NPC_Generic", characterTypesAttribute.Text, "General", "shooting_in_cover_duration_modifier");
+            ConfigEditorUtils.SetNumber(_selectedDifficulty, time_between_shots_scalar, "DifficultySetting", "NPC_Generic", characterTypesAttribute.Text, "General", "time_between_shots_scalar");
+            ConfigEditorUtils.SetNumber(_selectedDifficulty, suspicious_item_loop_scalar, "DifficultySetting", "NPC_Generic", characterTypesAttribute.Text, "General", "suspicious_item_loop_scalar");
+            ConfigEditorUtils.Subscribe(tabPage4.Controls, SaveAttributeConfig);
         }
 
-        //Load viewcone set/type
-        private void button3_Click(object sender, EventArgs e)
+        private void viewconeSet_SelectedIndexChanged(object sender, EventArgs e)
         {
-            /*
-            //Update cursor and begin
-            Cursor.Current = Cursors.WaitCursor;
+            ConfigEditorUtils.Unsubscribe(viewconeDifficultySet1.Controls, SaveViewconeConfig);
+            viewconeDifficultySet1.Populate(_selectedDifficulty, viewconeSets.Text);
+            ConfigEditorUtils.Subscribe(viewconeDifficultySet1.Controls, SaveViewconeConfig);
+        }
+        
+        private void SaveAlienConfig(object sender, EventArgs e)
+        {
 
-            //Save selected config name
-            string viewconeSetSaved = viewconeSet.Text;
-            string viewconeTypeSaved = viewconeType.Text;
-
-            if (viewconeTypeSaved == "")
-            {
-                //No config selected, can't load anything
-                MessageBox.Show("Please select a viewcone type.");
-            }
-            else
-            {
-                //Load-in XML data
-                var ChrAttributeXML = _loadedDifficultyXml;
-                
-                //Set viewcone Values
-                string viewconeXmlPath = "ViewconeSets/" + viewconeSetSaved + "/" + viewconeTypeSaved;
-                AlienAttribute.getNode(viewconeXmlPath, "visual_sense_exposure_effect_lower_modifier", ChrAttributeXML, visual_sense_exposure_effect_lower_modifier, null);
-                AlienAttribute.getNode(viewconeXmlPath, "visual_sense_exposure_effect_upper_modifier", ChrAttributeXML, visual_sense_exposure_effect_upper_modifier, null);
-                AlienAttribute.getNode(viewconeXmlPath, "visual_sense_stance_effect_lower_modifier", ChrAttributeXML, visual_sense_stance_effect_lower_modifier, null);
-                AlienAttribute.getNode(viewconeXmlPath, "visual_sense_stance_effect_upper_modifier", ChrAttributeXML, visual_sense_stance_effect_upper_modifier, null);
-            }
-
-            //Update cursor and finish
-            Cursor.Current = Cursors.Default;
-            */
         }
 
-        //Save
-        private void Save(object sender, EventArgs e)
+        private void SaveSenseConfig(object sender, EventArgs e)
         {
-            /*
-            //Update cursor and begin
-            Cursor.Current = Cursors.WaitCursor;
 
-            //Save selected config name
-            string selectedConfig = classSelection.Text;
+        }
 
-            //Save selected config name NPC
-            string selectedConfigNPC = characterTypes.Text;
+        private void SaveAttributeConfig(object sender, EventArgs e)
+        {
 
-            //Save selected config name
-            string viewconeSetSaved = viewconeSet.Text;
-            string viewconeTypeSaved = viewconeType.Text;
+        }
 
-            if (selectedConfig == "")
-            {
-                //No config selected, can't load anything
-                MessageBox.Show("Please select a difficulty.");
-            }
-            else
-            {
-                //Load-in XML data
-                var ChrAttributeXML = _loadedDifficultyXml;
+        private void SaveViewconeConfig(object sender, EventArgs e)
+        {
 
-                //save AlienConfig Values
-                AlienAttribute.setNode("Alien/AlienConfig", "decrease_sweep_duration_modifier", ChrAttributeXML, decrease_sweep_duration_modifier, null);
-                AlienAttribute.setNode("Alien/AlienConfig", "increase_sweep_duration_modifier", ChrAttributeXML, increase_sweep_duration_modifier, null);
-                AlienAttribute.setNode("Alien/AlienConfig", "near_target_exclusion_radius_first_stalk_min_modifier", ChrAttributeXML, near_target_exclusion_radius_first_stalk_min_modifier, null);
-                AlienAttribute.setNode("Alien/AlienConfig", "near_target_exclusion_radius_first_stalk_max_modifier", ChrAttributeXML, near_target_exclusion_radius_first_stalk_max_modifier, null);
-                AlienAttribute.setNode("Alien/AlienConfig", "near_target_exclusion_radius_subsequent_stalk_min_modifier", ChrAttributeXML, near_target_exclusion_radius_subsequent_stalk_min_modifier, null);
-                AlienAttribute.setNode("Alien/AlienConfig", "near_target_exclusion_radius_subsequent_stalk_max_modifier", ChrAttributeXML, near_target_exclusion_radius_subsequent_stalk_max_modifier, null);
-                AlienAttribute.setNode("Alien/AlienConfig", "near_objective_exclusion_radius_first_stalk_min_modifier", ChrAttributeXML, near_objective_exclusion_radius_first_stalk_min_modifier, null);
-                AlienAttribute.setNode("Alien/AlienConfig", "near_objective_exclusion_radius_first_stalk_max_modifier", ChrAttributeXML, near_objective_exclusion_radius_first_stalk_max_modifier, null);
-                AlienAttribute.setNode("Alien/AlienConfig", "near_objective_exclusion_radius_subsequent_stalk_min_modifier", ChrAttributeXML, near_objective_exclusion_radius_subsequent_stalk_min_modifier, null);
-                AlienAttribute.setNode("Alien/AlienConfig", "near_objective_exclusion_radius_subsequent_stalk_max_modifier", ChrAttributeXML, near_objective_exclusion_radius_subsequent_stalk_max_modifier, null);
-                AlienAttribute.setNode("Alien/AlienConfig", "menace_gauge_decrease_time_modifier", ChrAttributeXML, menace_gauge_decrease_time_modifier, null);
-                AlienAttribute.setNode("Alien/AlienConfig", "menace_cool_down_time_modifier", ChrAttributeXML, menace_cool_down_time_modifier, null);
-                AlienAttribute.setNode("Alien/AlienConfig", "meance_deemed_time_modifier", ChrAttributeXML, meance_deemed_time_modifier, null);
-                AlienAttribute.setNode("Alien/AlienConfig", "max_menaces_modifier", ChrAttributeXML, max_menaces_modifier, null);
-                AlienAttribute.setNode("Alien/AlienConfig", "menace_gauge_seconds_to_fill_modifier", ChrAttributeXML, menace_gauge_seconds_to_fill_modifier, null);
-                AlienAttribute.setNode("Alien/AlienConfig", "backstage_area_sweep_role_timeout_modifier", ChrAttributeXML, backstage_area_sweep_role_timeout_modifier, null);
-                AlienAttribute.setNode("Alien/AlienConfig", "backstage_area_sweep_min_distance_modifier", ChrAttributeXML, backstage_area_sweep_min_distance_modifier, null);
-                AlienAttribute.setNode("Alien/AlienConfig", "backstage_area_sweep_max_distance_modifier", ChrAttributeXML, backstage_area_sweep_max_distance_modifier, null);
-                AlienAttribute.setNode("Alien/AlienConfig", "backstage_area_sweep_min_idle_time_modifier", ChrAttributeXML, backstage_area_sweep_min_idle_time_modifier, null);
-                AlienAttribute.setNode("Alien/AlienConfig", "backstage_area_sweep_max_idle_time_modifier", ChrAttributeXML, backstage_area_sweep_max_idle_time_modifier, null);
-                AlienAttribute.setNode("Alien/AlienConfig", "backstage_area_sweep_killtrap_time_modifier", ChrAttributeXML, backstage_area_sweep_killtrap_time_modifier, null);
-                AlienAttribute.setNode("Alien/AlienConfig", "sweep_box_half_length_modifier", ChrAttributeXML, sweep_box_half_length_modifier, null);
-                AlienAttribute.setNode("Alien/AlienConfig", "sweep_box_half_width_modifier", ChrAttributeXML, sweep_box_half_width_modifier, null);
-                AlienAttribute.setNode("Alien/AlienConfig", "Vent_Attract_Time_Min", ChrAttributeXML, Vent_Attract_Time_Min, null);
-                AlienAttribute.setNode("Alien/AlienConfig", "Vent_Attract_Time_Max", ChrAttributeXML, Vent_Attract_Time_Max, null);
-
-                if (selectedConfigNPC != "")
-                {
-                    //save NPC_Generic Senses Values
-                    AlienAttribute.setNode("NPC_Generic/" + selectedConfigNPC + "/Senses", "max_hearing_distance_modifier", ChrAttributeXML, max_hearing_distance_modifier, null);
-                    AlienAttribute.setNode("NPC_Generic/" + selectedConfigNPC + "/Senses", "visual_sense_activation_modifier", ChrAttributeXML, visual_sense_activation_modifier, null);
-                    AlienAttribute.setNode("NPC_Generic/" + selectedConfigNPC + "/Senses", "visual_combined_sense_activation_modifier", ChrAttributeXML, visual_combined_sense_activation_modifier, null);
-                    AlienAttribute.setNode("NPC_Generic/" + selectedConfigNPC + "/Senses", "weapon_sound_sense_activation_modifier", ChrAttributeXML, weapon_sound_sense_activation_modifier, null);
-                    AlienAttribute.setNode("NPC_Generic/" + selectedConfigNPC + "/Senses", "weapon_sound_combined_sense_activation_modifier", ChrAttributeXML, weapon_sound_combined_sense_activation_modifier, null);
-                    AlienAttribute.setNode("NPC_Generic/" + selectedConfigNPC + "/Senses", "movement_sound_sense_activation_modifier", ChrAttributeXML, movement_sound_sense_activation_modifier, null);
-                    AlienAttribute.setNode("NPC_Generic/" + selectedConfigNPC + "/Senses", "movement_sound_combined_sense_activation_modifier", ChrAttributeXML, movement_sound_combined_sense_activation_modifier, null);
-                    AlienAttribute.setNode("NPC_Generic/" + selectedConfigNPC + "/Senses", "flash_light_sense_activation_modifier", ChrAttributeXML, flash_light_sense_activation_modifier, null);
-                    AlienAttribute.setNode("NPC_Generic/" + selectedConfigNPC + "/Senses", "flash_light_combined_sense_activation_modifier", ChrAttributeXML, flash_light_combined_sense_activation_modifier, null);
-
-                    //save NPC_Generic General Values
-                    AlienAttribute.setNode("NPC_Generic/" + selectedConfigNPC + "/General", "damage_dealt_scalar", ChrAttributeXML, damage_dealt_scalar, null);
-                    AlienAttribute.setNode("NPC_Generic/" + selectedConfigNPC + "/General", "damage_received_scalar", ChrAttributeXML, damage_received_scalar, null);
-                    AlienAttribute.setNode("NPC_Generic/" + selectedConfigNPC + "/General", "suspicious_item_loop_scalar", ChrAttributeXML, suspicious_item_loop_scalar, null);
-                    AlienAttribute.setNode("NPC_Generic/" + selectedConfigNPC + "/General", "attack_pace_modifier", ChrAttributeXML, attack_pace_modifier, null);
-                    AlienAttribute.setNode("NPC_Generic/" + selectedConfigNPC + "/General", "attack_pace_modifier_per_npc", ChrAttributeXML, attack_pace_modifier_per_npc, null);
-                    AlienAttribute.setNode("NPC_Generic/" + selectedConfigNPC + "/General", "attack_pace_modifier_max", ChrAttributeXML, attack_pace_modifier_max, null);
-                    AlienAttribute.setNode("NPC_Generic/" + selectedConfigNPC + "/General", "shooting_in_cover_duration_modifier", ChrAttributeXML, shooting_in_cover_duration_modifier, null);
-                    AlienAttribute.setNode("NPC_Generic/" + selectedConfigNPC + "/General", "time_between_shots_scalar", ChrAttributeXML, time_between_shots_scalar, null);
-                }
-
-                if (viewconeSetSaved != "" && viewconeTypeSaved != "")
-                {
-                    //save viewcone Values
-                    string viewconeXmlPath = "ViewconeSets/" + viewconeSetSaved + "/" + viewconeTypeSaved;
-                    AlienAttribute.setNode(viewconeXmlPath, "visual_sense_exposure_effect_lower_modifier", ChrAttributeXML, visual_sense_exposure_effect_lower_modifier, null);
-                    AlienAttribute.setNode(viewconeXmlPath, "visual_sense_exposure_effect_upper_modifier", ChrAttributeXML, visual_sense_exposure_effect_upper_modifier, null);
-                    AlienAttribute.setNode(viewconeXmlPath, "visual_sense_stance_effect_lower_modifier", ChrAttributeXML, visual_sense_stance_effect_lower_modifier, null);
-                    AlienAttribute.setNode(viewconeXmlPath, "visual_sense_stance_effect_upper_modifier", ChrAttributeXML, visual_sense_stance_effect_upper_modifier, null);
-                }
-
-                //Save values
-                if (AlienAttribute.saveXML(selectedConfig, gameBmlDirectory, ChrAttributeXML))
-                {
-                    MessageBox.Show("Saved configuration changes.");
-                }
-                else
-                {
-                    MessageBox.Show("An error occured while saving.");
-                }
-            }
-
-            //Update cursor and finish
-            Cursor.Current = Cursors.Default;
-            */
         }
     }
 }

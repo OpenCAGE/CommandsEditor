@@ -559,6 +559,18 @@
     <Compile Include="Popups\Configuration Editors\User Controls\ViewCone.Designer.cs">
       <DependentUpon>ViewCone.cs</DependentUpon>
     </Compile>
+    <Compile Include="Popups\Configuration Editors\User Controls\ViewconeDifficulty.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\User Controls\ViewconeDifficulty.Designer.cs">
+      <DependentUpon>ViewconeDifficulty.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\User Controls\ViewconeDifficultySet.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Popups\Configuration Editors\User Controls\ViewconeDifficultySet.Designer.cs">
+      <DependentUpon>ViewconeDifficultySet.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popups\Configuration Editors\ViewconeEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1173,6 +1185,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\Configuration Editors\User Controls\ViewCone.resx">
       <DependentUpon>ViewCone.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Configuration Editors\User Controls\ViewconeDifficulty.resx">
+      <DependentUpon>ViewconeDifficulty.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Popups\Configuration Editors\User Controls\ViewconeDifficultySet.resx">
+      <DependentUpon>ViewconeDifficultySet.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\Configuration Editors\ViewconeEditor.resx">
       <DependentUpon>ViewconeEditor.cs</DependentUpon>
