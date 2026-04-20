@@ -1070,19 +1070,6 @@ namespace CommandsEditor.ConfigEditors
             // 
             this.characterTypesSense.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.characterTypesSense.FormattingEnabled = true;
-            this.characterTypesSense.Items.AddRange(new object[] {
-            "ALIEN",
-            "ANDROID",
-            "CIVILIAN",
-            "SECURITY_GUARD",
-            "CUTSCENE",
-            "FACEHUGGER",
-            "SPACESUIT_NPC",
-            "RIOT_GUARD",
-            "ANDROID_HEAVY",
-            "MELEE_HUMAN",
-            "INNOCENT",
-            "CUTSCENE_ANDROID"});
             this.characterTypesSense.Location = new System.Drawing.Point(134, 30);
             this.characterTypesSense.Name = "characterTypesSense";
             this.characterTypesSense.Size = new System.Drawing.Size(424, 21);
@@ -1576,19 +1563,6 @@ namespace CommandsEditor.ConfigEditors
             // 
             this.characterTypesAttribute.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.characterTypesAttribute.FormattingEnabled = true;
-            this.characterTypesAttribute.Items.AddRange(new object[] {
-            "ALIEN",
-            "ANDROID",
-            "CIVILIAN",
-            "SECURITY_GUARD",
-            "CUTSCENE",
-            "FACEHUGGER",
-            "SPACESUIT_NPC",
-            "RIOT_GUARD",
-            "ANDROID_HEAVY",
-            "MELEE_HUMAN",
-            "INNOCENT",
-            "CUTSCENE_ANDROID"});
             this.characterTypesAttribute.Location = new System.Drawing.Point(144, 128);
             this.characterTypesAttribute.Name = "characterTypesAttribute";
             this.characterTypesAttribute.Size = new System.Drawing.Size(386, 21);
