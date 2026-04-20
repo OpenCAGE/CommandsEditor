@@ -1645,7 +1645,7 @@ namespace CommandsEditor.ConfigEditors
             this.MaximizeBox = false;
             this.Name = "DifficultyEditor";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Diffculty Editor";
+            this.Text = "Diffculty Settings Editor";
             this.Load += new System.EventHandler(this.DifficultyEditor_Load);
             this.groupBox2.ResumeLayout(false);
             this.groupBox11.ResumeLayout(false);

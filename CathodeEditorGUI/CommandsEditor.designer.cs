@@ -364,7 +364,7 @@ namespace CommandsEditor
             // 
             this.difficultyModifiersToolStripMenuItem.Name = "difficultyModifiersToolStripMenuItem";
             this.difficultyModifiersToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
-            this.difficultyModifiersToolStripMenuItem.Text = "Difficulty Modifiers";
+            this.difficultyModifiersToolStripMenuItem.Text = "Difficulty Settings";
             this.difficultyModifiersToolStripMenuItem.Click += new System.EventHandler(this.difficultyModifiersToolStripMenuItem_Click);
             // 
             // charactersToolStripMenuItem
