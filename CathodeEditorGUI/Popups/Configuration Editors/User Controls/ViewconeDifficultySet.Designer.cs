@@ -30,12 +30,12 @@
         {
             this.tabControlVC = new System.Windows.Forms.TabControl();
             this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.vc_Focused = new ConfigEditors.ViewconeDifficulty();
             this.tabPage5 = new System.Windows.Forms.TabPage();
-            this.vc_Close = new ConfigEditors.ViewconeDifficulty();
             this.tabPage6 = new System.Windows.Forms.TabPage();
-            this.vc_Normal = new ConfigEditors.ViewconeDifficulty();
             this.tabPage7 = new System.Windows.Forms.TabPage();
+            this.vc_Focused = new ConfigEditors.ViewconeDifficulty();
+            this.vc_Close = new ConfigEditors.ViewconeDifficulty();
+            this.vc_Normal = new ConfigEditors.ViewconeDifficulty();
             this.vc_Peripheral = new ConfigEditors.ViewconeDifficulty();
             this.tabControlVC.SuspendLayout();
             this.tabPage4.SuspendLayout();
@@ -53,7 +53,7 @@
             this.tabControlVC.Location = new System.Drawing.Point(3, 3);
             this.tabControlVC.Name = "tabControlVC";
             this.tabControlVC.SelectedIndex = 0;
-            this.tabControlVC.Size = new System.Drawing.Size(455, 111);
+            this.tabControlVC.Size = new System.Drawing.Size(428, 82);
             this.tabControlVC.TabIndex = 421;
             // 
             // tabPage4
@@ -62,17 +62,10 @@
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(447, 85);
+            this.tabPage4.Size = new System.Drawing.Size(420, 56);
             this.tabPage4.TabIndex = 0;
             this.tabPage4.Text = "Focused";
             this.tabPage4.UseVisualStyleBackColor = true;
-            // 
-            // vc_Focused
-            // 
-            this.vc_Focused.Location = new System.Drawing.Point(6, 6);
-            this.vc_Focused.Name = "vc_Focused";
-            this.vc_Focused.Size = new System.Drawing.Size(437, 74);
-            this.vc_Focused.TabIndex = 0;
             // 
             // tabPage5
             // 
@@ -85,13 +78,6 @@
             this.tabPage5.Text = "Close";
             this.tabPage5.UseVisualStyleBackColor = true;
             // 
-            // vc_Close
-            // 
-            this.vc_Close.Location = new System.Drawing.Point(6, 6);
-            this.vc_Close.Name = "vc_Close";
-            this.vc_Close.Size = new System.Drawing.Size(437, 74);
-            this.vc_Close.TabIndex = 1;
-            // 
             // tabPage6
             // 
             this.tabPage6.Controls.Add(this.vc_Normal);
@@ -102,13 +88,6 @@
             this.tabPage6.Text = "Normal";
             this.tabPage6.UseVisualStyleBackColor = true;
             // 
-            // vc_Normal
-            // 
-            this.vc_Normal.Location = new System.Drawing.Point(6, 6);
-            this.vc_Normal.Name = "vc_Normal";
-            this.vc_Normal.Size = new System.Drawing.Size(437, 74);
-            this.vc_Normal.TabIndex = 1;
-            // 
             // tabPage7
             // 
             this.tabPage7.Controls.Add(this.vc_Peripheral);
@@ -118,6 +97,27 @@
             this.tabPage7.TabIndex = 3;
             this.tabPage7.Text = "Peripheral";
             this.tabPage7.UseVisualStyleBackColor = true;
+            // 
+            // vc_Focused
+            // 
+            this.vc_Focused.Location = new System.Drawing.Point(6, 6);
+            this.vc_Focused.Name = "vc_Focused";
+            this.vc_Focused.Size = new System.Drawing.Size(414, 48);
+            this.vc_Focused.TabIndex = 0;
+            // 
+            // vc_Close
+            // 
+            this.vc_Close.Location = new System.Drawing.Point(6, 6);
+            this.vc_Close.Name = "vc_Close";
+            this.vc_Close.Size = new System.Drawing.Size(437, 74);
+            this.vc_Close.TabIndex = 1;
+            // 
+            // vc_Normal
+            // 
+            this.vc_Normal.Location = new System.Drawing.Point(6, 6);
+            this.vc_Normal.Name = "vc_Normal";
+            this.vc_Normal.Size = new System.Drawing.Size(437, 74);
+            this.vc_Normal.TabIndex = 1;
             // 
             // vc_Peripheral
             // 
@@ -132,7 +132,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.tabControlVC);
             this.Name = "ViewconeDifficultySet";
-            this.Size = new System.Drawing.Size(460, 116);
+            this.Size = new System.Drawing.Size(435, 89);
             this.tabControlVC.ResumeLayout(false);
             this.tabPage4.ResumeLayout(false);
             this.tabPage5.ResumeLayout(false);

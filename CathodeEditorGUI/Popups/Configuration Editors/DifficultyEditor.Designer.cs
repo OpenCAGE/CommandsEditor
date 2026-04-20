@@ -1061,9 +1061,9 @@ namespace CommandsEditor.ConfigEditors
             // 
             this.viewconeSets.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.viewconeSets.FormattingEnabled = true;
-            this.viewconeSets.Location = new System.Drawing.Point(122, 126);
+            this.viewconeSets.Location = new System.Drawing.Point(140, 137);
             this.viewconeSets.Name = "viewconeSets";
-            this.viewconeSets.Size = new System.Drawing.Size(455, 21);
+            this.viewconeSets.Size = new System.Drawing.Size(428, 21);
             this.viewconeSets.TabIndex = 417;
             this.viewconeSets.SelectedIndexChanged += new System.EventHandler(this.viewconeSet_SelectedIndexChanged);
             // 
@@ -1628,9 +1628,9 @@ namespace CommandsEditor.ConfigEditors
             // 
             // viewconeDifficultySet1
             // 
-            this.viewconeDifficultySet1.Location = new System.Drawing.Point(120, 153);
+            this.viewconeDifficultySet1.Location = new System.Drawing.Point(138, 164);
             this.viewconeDifficultySet1.Name = "viewconeDifficultySet1";
-            this.viewconeDifficultySet1.Size = new System.Drawing.Size(460, 116);
+            this.viewconeDifficultySet1.Size = new System.Drawing.Size(434, 89);
             this.viewconeDifficultySet1.TabIndex = 418;
             // 
             // helpBtn

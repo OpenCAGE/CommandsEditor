@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.visual_sense_stance_effect_lower_modifier = new System.Windows.Forms.NumericUpDown();
             this.visual_sense_stance_effect_upper_modifier = new System.Windows.Forms.NumericUpDown();
             this.visual_sense_exposure_effect_lower_modifier = new System.Windows.Forms.NumericUpDown();
@@ -37,34 +36,16 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.groupBox4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.visual_sense_stance_effect_lower_modifier)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.visual_sense_stance_effect_upper_modifier)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.visual_sense_exposure_effect_lower_modifier)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.visual_sense_exposure_effect_upper_modifier)).BeginInit();
             this.SuspendLayout();
             // 
-            // groupBox4
-            // 
-            this.groupBox4.Controls.Add(this.visual_sense_stance_effect_lower_modifier);
-            this.groupBox4.Controls.Add(this.visual_sense_stance_effect_upper_modifier);
-            this.groupBox4.Controls.Add(this.visual_sense_exposure_effect_lower_modifier);
-            this.groupBox4.Controls.Add(this.label2);
-            this.groupBox4.Controls.Add(this.visual_sense_exposure_effect_upper_modifier);
-            this.groupBox4.Controls.Add(this.label4);
-            this.groupBox4.Controls.Add(this.label1);
-            this.groupBox4.Controls.Add(this.label3);
-            this.groupBox4.Location = new System.Drawing.Point(3, 3);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(430, 66);
-            this.groupBox4.TabIndex = 417;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Viewcone Type Modifiers";
-            // 
             // visual_sense_stance_effect_lower_modifier
             // 
             this.visual_sense_stance_effect_lower_modifier.DecimalPlaces = 2;
-            this.visual_sense_stance_effect_lower_modifier.Location = new System.Drawing.Point(227, 36);
+            this.visual_sense_stance_effect_lower_modifier.Location = new System.Drawing.Point(218, 21);
             this.visual_sense_stance_effect_lower_modifier.Maximum = new decimal(new int[] {
             10000,
             0,
@@ -82,7 +63,7 @@
             // visual_sense_stance_effect_upper_modifier
             // 
             this.visual_sense_stance_effect_upper_modifier.DecimalPlaces = 2;
-            this.visual_sense_stance_effect_upper_modifier.Location = new System.Drawing.Point(365, 36);
+            this.visual_sense_stance_effect_upper_modifier.Location = new System.Drawing.Point(356, 21);
             this.visual_sense_stance_effect_upper_modifier.Maximum = new decimal(new int[] {
             10000,
             0,
@@ -100,7 +81,7 @@
             // visual_sense_exposure_effect_lower_modifier
             // 
             this.visual_sense_exposure_effect_lower_modifier.DecimalPlaces = 2;
-            this.visual_sense_exposure_effect_lower_modifier.Location = new System.Drawing.Point(18, 36);
+            this.visual_sense_exposure_effect_lower_modifier.Location = new System.Drawing.Point(9, 21);
             this.visual_sense_exposure_effect_lower_modifier.Maximum = new decimal(new int[] {
             10000,
             0,
@@ -118,7 +99,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(224, 19);
+            this.label2.Location = new System.Drawing.Point(215, 4);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(143, 13);
             this.label2.TabIndex = 424;
@@ -127,7 +108,7 @@
             // visual_sense_exposure_effect_upper_modifier
             // 
             this.visual_sense_exposure_effect_upper_modifier.DecimalPlaces = 2;
-            this.visual_sense_exposure_effect_upper_modifier.Location = new System.Drawing.Point(156, 36);
+            this.visual_sense_exposure_effect_upper_modifier.Location = new System.Drawing.Point(147, 21);
             this.visual_sense_exposure_effect_upper_modifier.Maximum = new decimal(new int[] {
             10000,
             0,
@@ -145,7 +126,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(283, 38);
+            this.label4.Location = new System.Drawing.Point(274, 23);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(77, 13);
             this.label4.TabIndex = 427;
@@ -154,7 +135,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(15, 19);
+            this.label1.Location = new System.Drawing.Point(6, 4);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(122, 13);
             this.label1.TabIndex = 420;
@@ -163,7 +144,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(74, 38);
+            this.label3.Location = new System.Drawing.Point(65, 23);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(77, 13);
             this.label3.TabIndex = 423;
@@ -173,22 +154,26 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.groupBox4);
+            this.Controls.Add(this.visual_sense_stance_effect_lower_modifier);
+            this.Controls.Add(this.visual_sense_stance_effect_upper_modifier);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.visual_sense_exposure_effect_lower_modifier);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.visual_sense_exposure_effect_upper_modifier);
             this.Name = "ViewconeDifficulty";
-            this.Size = new System.Drawing.Size(437, 74);
-            this.groupBox4.ResumeLayout(false);
-            this.groupBox4.PerformLayout();
+            this.Size = new System.Drawing.Size(414, 50);
             ((System.ComponentModel.ISupportInitialize)(this.visual_sense_stance_effect_lower_modifier)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.visual_sense_stance_effect_upper_modifier)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.visual_sense_exposure_effect_lower_modifier)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.visual_sense_exposure_effect_upper_modifier)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.NumericUpDown visual_sense_stance_effect_lower_modifier;
         private System.Windows.Forms.NumericUpDown visual_sense_stance_effect_upper_modifier;
         private System.Windows.Forms.NumericUpDown visual_sense_exposure_effect_lower_modifier;
