@@ -49,11 +49,14 @@ namespace CommandsEditor.ConfigEditors
             BML attributeTypes = new BML(Singleton.PathToAI + "\\DATA\\CHR_INFO\\ATTRIBUTES\\ATTRIBUTES.BML");
             var attributes = attributeTypes.Content["Attributes"];
             characterTypesSense.BeginUpdate();
+            characterTypesAttribute.BeginUpdate();
             foreach (XmlElement attribute in attributes)
             {
                 characterTypesSense.Items.Add(attribute["Name"].InnerText);
+                characterTypesAttribute.Items.Add(attribute["Name"].InnerText);
             }
             characterTypesSense.EndUpdate();
+            characterTypesAttribute.EndUpdate();
 
             BML difficultySettingsTypes = new BML(Singleton.PathToAI + "\\DATA\\DIFFICULTYSETTINGS\\DIFFICULTYSETTINGS.BML");
             var difficultySettings = difficultySettingsTypes.Content["DifficultySettings"];
