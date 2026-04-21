@@ -42,12 +42,15 @@ namespace CommandsEditor.ConfigEditors
             if (elementPath == null || elementPath.Length == 0)
                 return;
             string pathLabel = string.Join("/", elementPath);
+            bool foundValue = false;
             for (int i = 0; i < configs.Count; i++)
             {
                 XmlElement leaf = TryGetDescendant(configs[i].Content, elementPath);
                 if (leaf?.InnerText == null)
                     continue;
                 checkbox.Checked = leaf.InnerText.ToUpper() == "TRUE";
+                checkbox.Enabled = true;
+                foundValue = true;
 
 #if DEBUG
                 if (i != 0)
@@ -55,6 +58,9 @@ namespace CommandsEditor.ConfigEditors
 #endif
                 break;
             }
+
+            if (!foundValue)
+                checkbox.Enabled = false;
         }
 
         public static void SetNumber(List<BML> configs, NumericUpDown updown, params string[] elementPath)
@@ -62,12 +68,15 @@ namespace CommandsEditor.ConfigEditors
             if (elementPath == null || elementPath.Length == 0)
                 return;
             string pathLabel = string.Join("/", elementPath);
+            bool foundValue = false;
             for (int i = 0; i < configs.Count; i++)
             {
                 XmlElement leaf = TryGetDescendant(configs[i].Content, elementPath);
                 if (leaf?.InnerText == null)
                     continue;
                 updown.Value = Convert.ToDecimal(leaf.InnerText);
+                updown.Enabled = true;
+                foundValue = true;
 
 #if DEBUG
                 if (i != 0)
@@ -75,6 +84,9 @@ namespace CommandsEditor.ConfigEditors
 #endif
                 break;
             }
+
+            if (!foundValue)
+                updown.Enabled = false;
         }
 
         public static void SetCombo(List<BML> configs, ComboBox combo, params string[] elementPath)
@@ -82,12 +94,15 @@ namespace CommandsEditor.ConfigEditors
             if (elementPath == null || elementPath.Length == 0)
                 return;
             string pathLabel = string.Join("/", elementPath);
+            bool foundValue = false;
             for (int i = 0; i < configs.Count; i++)
             {
                 XmlElement leaf = TryGetDescendant(configs[i].Content, elementPath);
                 if (leaf?.InnerText == null)
                     continue;
                 combo.Text = leaf.InnerText;
+                combo.Enabled = true;
+                foundValue = true;
 
 #if DEBUG
                 if (i != 0)
@@ -95,6 +110,9 @@ namespace CommandsEditor.ConfigEditors
 #endif
                 break;
             }
+
+            if (!foundValue)
+                combo.Enabled = false;
         }
 
         public static void SetText(List<BML> configs, TextBox textbox, params string[] elementPath)
@@ -102,12 +120,15 @@ namespace CommandsEditor.ConfigEditors
             if (elementPath == null || elementPath.Length == 0)
                 return;
             string pathLabel = string.Join("/", elementPath);
+            bool foundValue = false;
             for (int i = 0; i < configs.Count; i++)
             {
                 XmlElement leaf = TryGetDescendant(configs[i].Content, elementPath);
                 if (leaf?.InnerText == null)
                     continue;
                 textbox.Text = leaf.InnerText;
+                textbox.Enabled = true;
+                foundValue = true;
 
 #if DEBUG
                 if (i != 0)
@@ -115,6 +136,9 @@ namespace CommandsEditor.ConfigEditors
 #endif
                 break;
             }
+
+            if (!foundValue)
+                textbox.Enabled = false;
         }
 
         private static XmlElement TryGetDescendant(XmlNode root, params string[] localNames)

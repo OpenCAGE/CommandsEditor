@@ -109,7 +109,6 @@ namespace CommandsEditor
             inputsToolStripMenuItem.Visible = false;
             scriptReadableVariablesToolStripMenuItem.Visible = false;
             voiceMappingsToolStripMenuItem.Visible = false;
-            sensesToolStripMenuItem.Visible = false;
             localisationToolStripMenuItem.Visible = false;
             levelTextDBsToolStripMenuItem.Visible = false;
             fontConfigToolStripMenuItem.Visible = false;
