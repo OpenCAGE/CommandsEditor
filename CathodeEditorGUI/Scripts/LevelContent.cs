@@ -105,7 +105,10 @@ namespace CommandsEditor
         public void Save()
         {
             Level.Save();
-            Singleton.Global?.Textures?.Save();
+#if !IMPORT_GLOBAL_ASSETS
+            //TODO - we can't actually save the global textures without re-saving every other level as it'll screw with indexes - need to make a utility to make this simpler.
+            //Singleton.Global?.Textures?.Save();
+#endif
             IsVanilla = false;
         }
 

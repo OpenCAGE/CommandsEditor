@@ -20,10 +20,6 @@ namespace CommandsEditor.Popups
             AboutWPF about = new AboutWPF();
             about.SetVersion(ProductVersion);
             aboutHost.Child = about;
-
-#if !DEBUG
-            this isnt finished
-#endif
         }
     }
 }
