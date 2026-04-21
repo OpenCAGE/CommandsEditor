@@ -114,7 +114,7 @@ namespace CommandsEditor
         private void entityVariant_SelectedIndexChanged(object sender, EventArgs e)
         {
             SettingsManager.SetInteger(Singleton.Settings.PrevFuncUsesSearch, entityVariant.SelectedIndex);
-            Search(ShortGuidUtils.Generate(entityVariant.Text));
+            Search(new ShortGuid((uint)Enum.Parse(typeof(FunctionType), entityVariant.Text))); 
         }
 
         private void Search(ShortGuid functionGuid)
