@@ -1487,5 +1487,10 @@ namespace CommandsEditor
         {
             _aboutWindow = null;
         }
+
+        private void documentationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://opencage.co.uk/docs/");
+        }
     }
 }
