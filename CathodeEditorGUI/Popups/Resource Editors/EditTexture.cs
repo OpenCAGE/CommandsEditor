@@ -286,7 +286,7 @@ namespace CommandsEditor
 
         private void TextureStateFlag_CheckedChanged(object sender, EventArgs e)
         {
-            if (_suppressFlagChange || _selectedTexture == null)
+            if (_suppressFlagChange || _selectedTexture == null || IsGlobalSourceSelected())
                 return;
             Textures.TextureStateFlag combined = 0;
             foreach (var pair in _stateFlagChecks)
@@ -301,7 +301,7 @@ namespace CommandsEditor
 
         private void TextureUsageFlag_CheckedChanged(object sender, EventArgs e)
         {
-            if (_suppressFlagChange || _selectedTexture == null)
+            if (_suppressFlagChange || _selectedTexture == null || IsGlobalSourceSelected())
                 return;
             Textures.TextureUsageFlag combined = 0;
             foreach (var pair in _usageFlagChecks)
@@ -339,19 +339,26 @@ namespace CommandsEditor
             }
         }
 
+        private bool IsGlobalSourceSelected()
+        {
+            return textureSourceCombo.SelectedIndex == 1;
+        }
+
         private void UpdateTextureToolsState()
         {
             bool file = FileTree.SelectedNode != null && ((TreeItem)FileTree.SelectedNode.Tag).Item_Type == TreeItemType.EXPORTABLE_FILE;
-            replaceTextureBtn.Enabled = file && _activeTextures != null;
-            deleteTextureBtn.Enabled = file && _activeTextures != null;
-            exportTextureBtn.Enabled = file && _activeTextures != null;
-            importTextureBtn.Enabled = _activeTextures != null;
-            exportAllTexturesBtn.Enabled = _activeTextures != null && _activeTextures.Entries != null && _activeTextures.Entries.Count > 0;
+            bool canEditTextures = _activeTextures != null && !IsGlobalSourceSelected();
+            replaceTextureBtn.Enabled = file && canEditTextures;
+            deleteTextureBtn.Enabled = file && canEditTextures;
+            exportTextureBtn.Enabled = file && canEditTextures;
+            importTextureBtn.Enabled = canEditTextures;
+            exportAllTexturesBtn.Enabled = canEditTextures && _activeTextures.Entries != null && _activeTextures.Entries.Count > 0;
+            SetFlagCheckboxesEnabled(file && canEditTextures);
         }
 
         private void importTextureBtn_Click(object sender, EventArgs e)
         {
-            if (_activeTextures == null)
+            if (_activeTextures == null || IsGlobalSourceSelected())
                 return;
 
             using (OpenFileDialog picker = new OpenFileDialog())
@@ -402,7 +409,7 @@ namespace CommandsEditor
 
         private void replaceTextureBtn_Click(object sender, EventArgs e)
         {
-            if (_activeTextures == null || FileTree.SelectedNode == null)
+            if (_activeTextures == null || IsGlobalSourceSelected() || FileTree.SelectedNode == null)
                 return;
             if (((TreeItem)FileTree.SelectedNode.Tag).Item_Type != TreeItemType.EXPORTABLE_FILE)
                 return;
@@ -446,7 +453,7 @@ namespace CommandsEditor
 
         private void deleteTextureBtn_Click(object sender, EventArgs e)
         {
-            if (_activeTextures == null || FileTree.SelectedNode == null)
+            if (_activeTextures == null || IsGlobalSourceSelected() || FileTree.SelectedNode == null)
                 return;
             if (((TreeItem)FileTree.SelectedNode.Tag).Item_Type != TreeItemType.EXPORTABLE_FILE)
                 return;
@@ -478,14 +485,14 @@ namespace CommandsEditor
 
         private void exportTextureBtn_Click(object sender, EventArgs e)
         {
-            if (FileTree.SelectedNode == null)
+            if (IsGlobalSourceSelected() || FileTree.SelectedNode == null)
                 return;
             ExportTextureNode(FileTree.SelectedNode, "");
         }
 
         private void exportAllTexturesBtn_Click(object sender, EventArgs e)
         {
-            if (_activeTextures?.Entries == null || _activeTextures.Entries.Count == 0)
+            if (IsGlobalSourceSelected() || _activeTextures?.Entries == null || _activeTextures.Entries.Count == 0)
                 return;
 
             using (FolderBrowserDialog folder = new FolderBrowserDialog())
