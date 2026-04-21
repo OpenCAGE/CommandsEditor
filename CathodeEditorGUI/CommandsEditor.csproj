@@ -523,12 +523,6 @@
     <Compile Include="Popups\Configuration Editors\SenseEditor.Designer.cs">
       <DependentUpon>SenseEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="Popups\Configuration Editors\User Controls\Sense.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Popups\Configuration Editors\User Controls\Sense.Designer.cs">
-      <DependentUpon>Sense.cs</DependentUpon>
-    </Compile>
     <Compile Include="Popups\Configuration Editors\User Controls\SenseSet.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -1167,9 +1161,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\Configuration Editors\SenseEditor.resx">
       <DependentUpon>SenseEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Popups\Configuration Editors\User Controls\Sense.resx">
-      <DependentUpon>Sense.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Popups\Configuration Editors\User Controls\SenseSet.resx">
       <DependentUpon>SenseSet.cs</DependentUpon>
