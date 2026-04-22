@@ -37,8 +37,8 @@ namespace CommandsEditor
         static FlowgraphLayoutManager()
         {
             byte[] contentCompressed = Properties.Resources.flowgraphs;
-            if (File.Exists("LocalDB\\flowgraphs.dat"))
-                contentCompressed = File.ReadAllBytes("LocalDB\\flowgraphs.dat");
+            if (File.Exists("data/info.dat"))
+                contentCompressed = File.ReadAllBytes("data/info.dat");
             byte[] content = null;
 
             using (MemoryStream stream = new MemoryStream())
@@ -276,22 +276,21 @@ namespace CommandsEditor
             _content.IsVanilla = _userDefinedLayouts.flowgraphs.Count + _compatibility.compatibility_info.Count + _history.last_composite_page.Count == 0;
 
             //Copy the default layouts over for composites in this Commands if they don't already exist
-            if (Enum.TryParse(Path.GetFileName(_content.Level.Name).ToUpper(), out FlowgraphMeta.SupportedLevel level))
+            FlowgraphMeta.SupportedLevel levelID;
+            bool hasLevelID = Enum.TryParse(Path.GetFileName(_content.Level.Name).ToUpper(), out levelID);
+            List<FlowgraphMeta> newFlowgraphs = new List<FlowgraphMeta>();
+            for (int i = 0; i < _preDefinedLayouts.flowgraphs.Count; i++)
             {
-                List<FlowgraphMeta> newFlowgraphs = new List<FlowgraphMeta>();
-                for (int i = 0; i < _preDefinedLayouts.flowgraphs.Count; i++)
-                {
-                    if (!_preDefinedLayouts.flowgraphs[i].AlwaysUse && !_preDefinedLayouts.flowgraphs[i].SupportedLevels.HasFlag(level))
-                        continue;
-                    if (_commands.Entries.FirstOrDefault(o => o.shortGUID == _preDefinedLayouts.flowgraphs[i].CompositeGUID) == null)
-                        continue;
-                    if (_userDefinedLayouts.flowgraphs.FirstOrDefault(o => o.CompositeGUID == _preDefinedLayouts.flowgraphs[i].CompositeGUID) != null)
-                        continue;
-                    newFlowgraphs.Add(_preDefinedLayouts.flowgraphs[i].Copy());
-                }
-                _userDefinedLayouts.flowgraphs.AddRange(newFlowgraphs);
-                Debug.Log("Flowgraph Manager", "Applied " + newFlowgraphs.Count + " suitable new flowgraph layouts, of the " + _preDefinedLayouts.flowgraphs.Count + " available!");
+                if (!_preDefinedLayouts.flowgraphs[i].AlwaysUse && (!hasLevelID || !_preDefinedLayouts.flowgraphs[i].SupportedLevels.HasFlag(levelID)))
+                    continue;
+                if (_commands.Entries.FirstOrDefault(o => o.shortGUID == _preDefinedLayouts.flowgraphs[i].CompositeGUID) == null)
+                    continue;
+                if (_userDefinedLayouts.flowgraphs.FirstOrDefault(o => o.CompositeGUID == _preDefinedLayouts.flowgraphs[i].CompositeGUID) != null)
+                    continue;
+                newFlowgraphs.Add(_preDefinedLayouts.flowgraphs[i].Copy());
             }
+            _userDefinedLayouts.flowgraphs.AddRange(newFlowgraphs);
+            Debug.Log("Flowgraph Manager", "Applied " + newFlowgraphs.Count + " suitable new flowgraph layouts, of the " + _preDefinedLayouts.flowgraphs.Count + " available!");
         }
 
         private static void SaveCustomFlowgraphs(string filepath)
