@@ -63,7 +63,7 @@ namespace CommandsEditor
             ParameterModificationTracker.LinkCommands(Level.Commands);
 
             //If we're loading for the first time...
-            if (IsVanilla)
+            if (!Level.Commands.Utils.Flags.HasBeenModified)
             {
 #if USE_PRETTY_COMPOSITE_PATHS
                 //Tidy up composite names so things look nicer
@@ -104,6 +104,7 @@ namespace CommandsEditor
 
         public void Save()
         {
+            Level.Commands.Utils.Flags.HasBeenModified = true;
             Level.Save();
 #if !IMPORT_GLOBAL_ASSETS
             //TODO - we can't actually save the global textures without re-saving every other level as it'll screw with indexes - need to make a utility to make this simpler.

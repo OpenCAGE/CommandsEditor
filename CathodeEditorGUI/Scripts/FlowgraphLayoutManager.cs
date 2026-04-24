@@ -279,6 +279,9 @@ namespace CommandsEditor
             FlowgraphMeta.SupportedLevel levelID;
             bool hasLevelID = Enum.TryParse(Path.GetFileName(_content.Level.Name).ToUpper(), out levelID);
             List<FlowgraphMeta> newFlowgraphs = new List<FlowgraphMeta>();
+#if DEBUG
+            HashSet<ShortGuid> mappedComps = new HashSet<ShortGuid>();
+#endif
             for (int i = 0; i < _preDefinedLayouts.flowgraphs.Count; i++)
             {
                 if (!_preDefinedLayouts.flowgraphs[i].AlwaysUse && (!hasLevelID || !_preDefinedLayouts.flowgraphs[i].SupportedLevels.HasFlag(levelID)))
@@ -288,9 +291,22 @@ namespace CommandsEditor
                 if (_userDefinedLayouts.flowgraphs.FirstOrDefault(o => o.CompositeGUID == _preDefinedLayouts.flowgraphs[i].CompositeGUID) != null)
                     continue;
                 newFlowgraphs.Add(_preDefinedLayouts.flowgraphs[i].Copy());
+#if DEBUG
+                mappedComps.Add(_preDefinedLayouts.flowgraphs[i].CompositeGUID);
+#endif
             }
             _userDefinedLayouts.flowgraphs.AddRange(newFlowgraphs);
-            Debug.Log("Flowgraph Manager", "Applied " + newFlowgraphs.Count + " suitable new flowgraph layouts, of the " + _preDefinedLayouts.flowgraphs.Count + " available!");
+#if DEBUG
+            Debug.Log("Flowgraph Manager", "Applied " + newFlowgraphs.Count + " suitable new flowgraph layouts, of the " + _preDefinedLayouts.flowgraphs.Count + " available.");
+            Debug.Log("Flowgraph Manager", (((float)mappedComps.Count / (float)_commands.Entries.Count) * 100.0f) + "% of the composites in this level have layouts!");
+            foreach (Composite comp in _commands.Entries)
+            {
+                if (mappedComps.Contains(comp.shortGUID))
+                    continue;
+                
+                Debug.Log("Flowgraph Manager", "NO LAYOUT FOR: " + comp.name);
+            }
+#endif
         }
 
         private static void SaveCustomFlowgraphs(string filepath)

@@ -108,8 +108,6 @@ namespace CommandsEditor
         private void UpdateProgressBar()
         {
             int currentCount = Interlocked.Increment(ref _counter);
-            Debug.Log("Progress Bar", "Counter set to " + currentCount);
-
             int progress = Math.Min(100, (currentCount * 100) / Level.NumberOfTicks);
             if (progressBar1.InvokeRequired)
             {
@@ -120,7 +118,6 @@ namespace CommandsEditor
                         {
                             progressBar1.Value = progress;
                             progressBar1.Refresh();
-                            Debug.Log("Progress Bar", "Setting bar to " + progress.ToString() + "%!");
                         }
                     }));
                 }
@@ -131,7 +128,6 @@ namespace CommandsEditor
                 {
                     progressBar1.Value = progress;
                     progressBar1.Refresh();
-                    Debug.Log("Progress Bar", "Setting bar to " + progress.ToString() + "%!");
                 }
             }
         }
