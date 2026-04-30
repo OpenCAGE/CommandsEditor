@@ -28,6 +28,8 @@ namespace CommandsEditor
         private Dictionary<CheckBox, Models.CS2.Component.LOD.Submesh> checkboxToModelIndex = new Dictionary<CheckBox, Models.CS2.Component.LOD.Submesh>();
         private Dictionary<int, List<CheckBox>> lodToCheckboxes = new Dictionary<int, List<CheckBox>>();
         private Dictionary<int, GroupBox> lodGroups = new Dictionary<int, GroupBox>();
+        private readonly List<(Models.CS2.Component.LOD.RenderingFlag flag, CheckBox cb)> _renderFlagChecks = new List<(Models.CS2.Component.LOD.RenderingFlag, CheckBox)>();
+        private bool _suppressRenderFlagChange;
 
         public Action<Models.CS2.Component> OnModelSelected;
 
@@ -41,6 +43,7 @@ namespace CommandsEditor
             UpdateFilterPanelWidth();
 
             useMaterials.Checked = SettingsManager.GetBool(Singleton.Settings.ShowTexOpt);
+            PopulateRenderFlagCheckboxes();
 
             treeHelper = new TreeUtility(FileTree, TreeType.MODELS);
             RebuildModelFileTree(Content.Level.Models.FindModelLOD(defaultSubmesh));
@@ -119,6 +122,7 @@ namespace CommandsEditor
             editGeometryBtn.Enabled = canExportOrEdit;
             deleteBtn.Enabled = canExportOrEdit;
             importModelBtn.Enabled = Content?.Level?.Models != null;
+            SetRenderFlagCheckboxesEnabled(canExportOrEdit && allSubmeshes.Count > 0);
         }
 
         private bool TryGetSelectedCs2(out Models.CS2 cs2)
@@ -235,6 +239,7 @@ namespace CommandsEditor
             allSubmeshes.Clear();
             modelPreviewArea.Text = "";
             modelViewer.ShowModel(new List<GUI_ModelViewer.Model>());
+            ResetRenderFlagCheckboxes();
 
             try
             {
@@ -272,6 +277,7 @@ namespace CommandsEditor
 
                 UpdateFilteredModel(true);
                 UpdateLODGroupLayouts();
+                ApplyRenderFlagsUiFromSelection();
             }
             finally
             {
@@ -455,6 +461,106 @@ namespace CommandsEditor
             {
                 splitContainer2.SplitterDistance = splitContainer2.Width - filterPanelWidth - splitterWidth;
             }
+        }
+
+        private void PopulateRenderFlagCheckboxes()
+        {
+            if (_renderFlagChecks.Count > 0)
+                return;
+
+            foreach (string name in Enum.GetNames(typeof(Models.CS2.Component.LOD.RenderingFlag)))
+            {
+                var flag = (Models.CS2.Component.LOD.RenderingFlag)Enum.Parse(typeof(Models.CS2.Component.LOD.RenderingFlag), name);
+                if (!IsPowerOfTwoEnumMember(flag))
+                    continue;
+
+                CheckBox cb = new CheckBox
+                {
+                    Text = name.Replace("_", " "),
+                    AutoSize = true,
+                    Margin = new Padding(0, 0, 8, 2),
+                    Enabled = false
+                };
+                cb.CheckedChanged += RenderFlag_CheckedChanged;
+                renderFlagsPanel.Controls.Add(cb);
+                _renderFlagChecks.Add((flag, cb));
+            }
+        }
+
+        private static bool IsPowerOfTwoEnumMember(Enum value)
+        {
+            ulong u = Convert.ToUInt64(value);
+            if (u == 0)
+                return false;
+            return (u & (u - 1)) == 0;
+        }
+
+        private List<Models.CS2.Component.LOD.Submesh> GetSelectedSubmeshes()
+        {
+            return allSubmeshes.Keys.ToList();
+        }
+
+        private void ApplyRenderFlagsUiFromSelection()
+        {
+            List<Models.CS2.Component.LOD.Submesh> selectedSubmeshes = GetSelectedSubmeshes();
+            if (selectedSubmeshes.Count == 0)
+            {
+                ResetRenderFlagCheckboxes();
+                return;
+            }
+
+            _suppressRenderFlagChange = true;
+            foreach (var pair in _renderFlagChecks)
+            {
+                bool allHaveFlag = selectedSubmeshes.All(submesh => submesh.RenderFlags.HasFlag(pair.flag));
+                pair.cb.Checked = allHaveFlag;
+            }
+            _suppressRenderFlagChange = false;
+            SetRenderFlagCheckboxesEnabled(true);
+        }
+
+        private void ResetRenderFlagCheckboxes()
+        {
+            _suppressRenderFlagChange = true;
+            foreach (var pair in _renderFlagChecks)
+            {
+                pair.cb.Checked = false;
+                pair.cb.Enabled = false;
+            }
+            _suppressRenderFlagChange = false;
+        }
+
+        private void SetRenderFlagCheckboxesEnabled(bool enabled)
+        {
+            foreach (var pair in _renderFlagChecks)
+                pair.cb.Enabled = enabled;
+        }
+
+        private void RenderFlag_CheckedChanged(object sender, EventArgs e)
+        {
+            if (_suppressRenderFlagChange)
+                return;
+
+            if (!(sender is CheckBox changedCheck))
+                return;
+
+            var changedPair = _renderFlagChecks.FirstOrDefault(x => x.cb == changedCheck);
+            if (changedPair.cb == null)
+                return;
+
+            List<Models.CS2.Component.LOD.Submesh> selectedSubmeshes = GetSelectedSubmeshes();
+            if (selectedSubmeshes.Count == 0)
+                return;
+
+            foreach (Models.CS2.Component.LOD.Submesh submesh in selectedSubmeshes)
+            {
+                if (changedCheck.Checked)
+                    submesh.RenderFlags |= changedPair.flag;
+                else
+                    submesh.RenderFlags &= ~changedPair.flag;
+            }
+
+            Singleton.OnResourceModified?.Invoke();
         }
     }
 }

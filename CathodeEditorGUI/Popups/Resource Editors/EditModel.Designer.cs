@@ -44,6 +44,8 @@ namespace CommandsEditor
             this.deleteBtn = new System.Windows.Forms.Button();
             this.submeshFilterGroup = new System.Windows.Forms.GroupBox();
             this.submeshFilterPanel = new System.Windows.Forms.Panel();
+            this.renderFlagsGroup = new System.Windows.Forms.GroupBox();
+            this.renderFlagsPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.modelPreviewArea.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -56,6 +58,7 @@ namespace CommandsEditor
             this.splitContainer2.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.submeshFilterGroup.SuspendLayout();
+            this.renderFlagsGroup.SuspendLayout();
             this.SuspendLayout();
             // 
             // modelRendererHost
@@ -189,6 +192,7 @@ namespace CommandsEditor
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.tableLayoutPanel2);
+            this.splitContainer2.Panel2.Controls.Add(this.renderFlagsGroup);
             this.splitContainer2.Panel2.Controls.Add(this.submeshFilterGroup);
             this.splitContainer2.Size = new System.Drawing.Size(701, 632);
             this.splitContainer2.SplitterDistance = 488;
@@ -232,7 +236,7 @@ namespace CommandsEditor
             this.submeshFilterGroup.Controls.Add(this.submeshFilterPanel);
             this.submeshFilterGroup.Location = new System.Drawing.Point(0, 0);
             this.submeshFilterGroup.Name = "submeshFilterGroup";
-            this.submeshFilterGroup.Size = new System.Drawing.Size(201, 541);
+            this.submeshFilterGroup.Size = new System.Drawing.Size(201, 340);
             this.submeshFilterGroup.TabIndex = 0;
             this.submeshFilterGroup.TabStop = false;
             this.submeshFilterGroup.Text = "Render Filter";
@@ -243,8 +247,33 @@ namespace CommandsEditor
             this.submeshFilterPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.submeshFilterPanel.Location = new System.Drawing.Point(3, 16);
             this.submeshFilterPanel.Name = "submeshFilterPanel";
-            this.submeshFilterPanel.Size = new System.Drawing.Size(195, 522);
+            this.submeshFilterPanel.Size = new System.Drawing.Size(195, 321);
             this.submeshFilterPanel.TabIndex = 0;
+            // 
+            // renderFlagsGroup
+            // 
+            this.renderFlagsGroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.renderFlagsGroup.Controls.Add(this.renderFlagsPanel);
+            this.renderFlagsGroup.Location = new System.Drawing.Point(0, 346);
+            this.renderFlagsGroup.Name = "renderFlagsGroup";
+            this.renderFlagsGroup.Size = new System.Drawing.Size(201, 192);
+            this.renderFlagsGroup.TabIndex = 191;
+            this.renderFlagsGroup.TabStop = false;
+            this.renderFlagsGroup.Text = "Render Flags";
+            // 
+            // renderFlagsPanel
+            // 
+            this.renderFlagsPanel.AutoScroll = true;
+            this.renderFlagsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.renderFlagsPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.renderFlagsPanel.Location = new System.Drawing.Point(3, 16);
+            this.renderFlagsPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.renderFlagsPanel.Name = "renderFlagsPanel";
+            this.renderFlagsPanel.Padding = new System.Windows.Forms.Padding(0, 2, 0, 2);
+            this.renderFlagsPanel.Size = new System.Drawing.Size(195, 173);
+            this.renderFlagsPanel.TabIndex = 0;
+            this.renderFlagsPanel.WrapContents = false;
             // 
             // imageList1
             // 
@@ -277,6 +306,7 @@ namespace CommandsEditor
             this.splitContainer2.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
             this.submeshFilterGroup.ResumeLayout(false);
+            this.renderFlagsGroup.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -298,5 +328,7 @@ namespace CommandsEditor
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.Button deleteBtn;
         private System.Windows.Forms.ImageList imageList1;
+        private System.Windows.Forms.GroupBox renderFlagsGroup;
+        private System.Windows.Forms.FlowLayoutPanel renderFlagsPanel;
     }
 }
