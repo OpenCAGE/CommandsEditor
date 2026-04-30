@@ -119,9 +119,9 @@ namespace CommandsEditor
             cfNoTorch.Checked = mvr.CullFlags.HasFlag(CullFlag.NO_CAST_TORCH_SHADOW);
             cfAlwaysPass.Checked = mvr.CullFlags.HasFlag(CullFlag.ALWAYS_PASS);
 
-            requiresScript.Checked = mvr.Flags.requires_script;
-            isVisible.Checked = mvr.Flags.visible;
-            isStationary.Checked = mvr.Flags.stationary;
+            requiresScript.Checked = mvr.Flags.RequiresScript;
+            isVisible.Checked = mvr.Flags.Visible;
+            isStationary.Checked = mvr.Flags.Stationary;
 
             emTint.BackColor = Color.FromArgb((int)mvr.EmissiveTint.X, (int)mvr.EmissiveTint.Y, (int)mvr.EmissiveTint.Z);
             emIntensityMultiplier.Value = (decimal)mvr.EmisiveIntensityMultiplier;
@@ -161,9 +161,9 @@ namespace CommandsEditor
             if (cfNoTorch.Checked) mvr.CullFlags |= CullFlag.NO_CAST_TORCH_SHADOW;
             if (cfAlwaysPass.Checked) mvr.CullFlags |= CullFlag.ALWAYS_PASS;
 
-            mvr.Flags.requires_script = requiresScript.Checked;
-            mvr.Flags.visible = isVisible.Checked;
-            mvr.Flags.stationary = isStationary.Checked;
+            mvr.Flags.RequiresScript = requiresScript.Checked;
+            mvr.Flags.Visible = isVisible.Checked;
+            mvr.Flags.Stationary = isStationary.Checked;
 
             mvr.EmissiveTint = new Vector3(emTint.BackColor.R, emTint.BackColor.G, emTint.BackColor.B);
             mvr.EmisiveIntensityMultiplier = (float)emIntensityMultiplier.Value;
