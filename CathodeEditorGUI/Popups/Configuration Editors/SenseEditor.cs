@@ -1,4 +1,4 @@
-﻿using CATHODE;
+using CATHODE;
 using CommandsEditor.Popups.Base;
 using System;
 using System.Collections.Generic;
