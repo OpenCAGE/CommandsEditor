@@ -28,10 +28,12 @@ namespace CommandsEditor.Popups.UserControls
     public partial class GUI_ModelViewer : UserControl
     {
         protected LevelContent Content => Singleton.Editor?.CommandsDisplay?.Content;
+        private readonly Model3DGroup _opaqueGroup = new Model3DGroup();
 
         public GUI_ModelViewer()
         {
             InitializeComponent();
+            modelPreview.Content = _opaqueGroup;
         }
 
         public void ShowModel(List<Model> models)
@@ -41,10 +43,7 @@ namespace CommandsEditor.Popups.UserControls
 
         public void ShowModel(List<Model> models, bool zoomExtents)
         {
-            Model3DGroup group = new Model3DGroup();
-            for (int i = 0; i < models.Count; i++)
-                group.Children.Add(OffsetModel(models[i].Submesh, models[i].Position, models[i].Rotation, models[i].Material));
-            modelPreview.Content = group;
+            RebuildSceneModels(models ?? new List<Model>());
 
             if (zoomExtents)
             {
@@ -72,6 +71,27 @@ namespace CommandsEditor.Popups.UserControls
             model.Transform = transform;
             model.Children.Add(submeshGeo);
             return model;
+        }
+
+        private void RebuildSceneModels(List<Model> models)
+        {
+            _opaqueGroup.Children.Clear();
+            transparentSorter.Children.Clear();
+
+            for (int i = 0; i < models.Count; i++)
+            {
+                Model3DGroup model = OffsetModel(models[i].Submesh, models[i].Position, models[i].Rotation, models[i].Material);
+                GeometryModel3D geometry = model.Children.OfType<GeometryModel3D>().FirstOrDefault();
+                bool isTransparent = MaterialApplier.GetIsTransparent(geometry);
+                if (isTransparent)
+                {
+                    transparentSorter.Children.Add(new ModelVisual3D { Content = model });
+                }
+                else
+                {
+                    _opaqueGroup.Children.Add(model);
+                }
+            }
         }
 
         public class Model

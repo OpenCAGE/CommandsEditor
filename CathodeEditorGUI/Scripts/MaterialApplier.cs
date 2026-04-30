@@ -15,6 +15,10 @@ namespace AlienPAK
 
     public static class MaterialApplier
     {
+        public static readonly DependencyProperty IsTransparentProperty = DependencyProperty.RegisterAttached("IsTransparent", typeof(bool), typeof(MaterialApplier), new PropertyMetadata(false));
+        public static void SetIsTransparent(Model3D element, bool value) { element?.SetValue(IsTransparentProperty, value); }
+        public static bool GetIsTransparent(Model3D element) { return element != null && (bool)element.GetValue(IsTransparentProperty); }
+
         public static Textures.TEX4 GetDiffuseTexture(Materials.Material material)
         {
             if (material == null || material.Shader == null) return null;
@@ -130,14 +134,15 @@ namespace AlienPAK
                     brush.ViewportUnits = BrushMappingMode.Absolute;
                 }
 
-                bool hasAlphaBlending = HasAlphaBlendingEnabled(material.Shader);
+                bool hasAlphaBlending = HasAlphaBlendingEnabled(material.Shader) || ImageSourceHasTransparency(brush.ImageSource);
                 if (!hasAlphaBlending)
                 {
                     brush.Opacity = 1.0;
                 }
+                SetIsTransparent(geometryModel, hasAlphaBlending);
 
                 Material mat = CreateMaterialWithEffects(brush, material, tintColor);
-                SetMaterialsWithBackface(geometryModel, mat);
+                SetMaterialsWithBackface(geometryModel, mat, hasAlphaBlending);
 
                 ImageBrush normalMapBrush = GetNormalMapTextureBrush(material);
                 if (normalMapBrush != null)
@@ -147,6 +152,10 @@ namespace AlienPAK
                     normalMapBrush.ViewportUnits = BrushMappingMode.Absolute;
                     SetMaterialTextureBrushes(geometryModel, new MaterialTextureBrushes { DiffuseBrush = brush, NormalMapBrush = normalMapBrush });
                 }
+            }
+            else
+            {
+                SetIsTransparent(geometryModel, false);
             }
         }
 
@@ -415,9 +424,15 @@ namespace AlienPAK
             return materialGroup;
         }
 
-        private static void SetMaterialsWithBackface(GeometryModel3D geometryModel, Material frontMaterial)
+        private static void SetMaterialsWithBackface(GeometryModel3D geometryModel, Material frontMaterial, bool isTransparent)
         {
             geometryModel.Material = frontMaterial;
+
+            if (isTransparent)
+            {
+                geometryModel.BackMaterial = null;
+                return;
+            }
 
             if (frontMaterial is DiffuseMaterial frontDiffuse)
             {
@@ -476,6 +491,9 @@ namespace AlienPAK
 
         private static bool HasAlphaBlendingEnabled(Shaders.Shader shader)
         {
+            if (shader == null)
+                return false;
+
             if ((shader.UbershaderRequirementFlags & (1L << (int)SHADER_REQUIREMENTS.FORCE_TO_ALPHA)) != 0 ||
                 (shader.UbershaderRequirementFlags & (1L << (int)SHADER_REQUIREMENTS.EARLY_ALPHA)) != 0 ||
                 (shader.UbershaderRequirementFlags & (1L << (int)SHADER_REQUIREMENTS.POST_ALPHA)) != 0 ||
@@ -500,6 +518,51 @@ namespace AlienPAK
             }
 
             return false;
+        }
+
+        //bit of a bodge - figure out if the image has any transparency to render it nicely
+        private static bool ImageSourceHasTransparency(ImageSource source)
+        {
+            BitmapSource bitmap = source as BitmapSource;
+            if (bitmap == null)
+                return false;
+
+            if (bitmap.Format != PixelFormats.Bgra32 && bitmap.Format != PixelFormats.Pbgra32)
+            {
+                bitmap = new FormatConvertedBitmap(bitmap, PixelFormats.Bgra32, null, 0);
+                bitmap.Freeze();
+            }
+
+            int width = bitmap.PixelWidth;
+            int height = bitmap.PixelHeight;
+            if (width <= 0 || height <= 0)
+                return false;
+
+            int stride = ((width * 32 + 31) / 32) * 4;
+            byte[] pixels = new byte[stride * height];
+            bitmap.CopyPixels(pixels, stride, 0);
+
+            int tested = 0;
+            int alphaPixels = 0;
+            byte minAlpha = byte.MaxValue;
+
+            for (int i = 3; i < pixels.Length; i += 16)
+            {
+                tested++;
+                byte a = pixels[i];
+                if (a < minAlpha)
+                    minAlpha = a;
+                if (a < 250)
+                    alphaPixels++;
+            }
+
+            if (tested == 0)
+                return false;
+
+            if (minAlpha <= 16)
+                return true;
+
+            return alphaPixels * 200 >= tested;
         }
 
         private static System.Windows.Media.Color GetEmissiveTint(Materials.Material material)
