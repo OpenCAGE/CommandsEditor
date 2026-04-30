@@ -350,9 +350,9 @@ namespace CommandsEditor
             bool canEditTextures = _activeTextures != null && !IsGlobalSourceSelected();
             replaceTextureBtn.Enabled = file && canEditTextures;
             deleteTextureBtn.Enabled = file && canEditTextures;
-            exportTextureBtn.Enabled = file && canEditTextures;
+            exportTextureBtn.Enabled = file;
             importTextureBtn.Enabled = canEditTextures;
-            exportAllTexturesBtn.Enabled = canEditTextures && _activeTextures.Entries != null && _activeTextures.Entries.Count > 0;
+            exportAllTexturesBtn.Enabled = _activeTextures.Entries != null && _activeTextures.Entries.Count > 0;
             SetFlagCheckboxesEnabled(file && canEditTextures);
         }
 
@@ -485,14 +485,21 @@ namespace CommandsEditor
 
         private void exportTextureBtn_Click(object sender, EventArgs e)
         {
-            if (IsGlobalSourceSelected() || FileTree.SelectedNode == null)
+            if (FileTree.SelectedNode == null)
                 return;
-            ExportTextureNode(FileTree.SelectedNode, "");
+            try
+            {
+                ExportTextureNode(FileTree.SelectedNode, "");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Failed to export!\n" + ex.Message, "Failed export!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void exportAllTexturesBtn_Click(object sender, EventArgs e)
         {
-            if (IsGlobalSourceSelected() || _activeTextures?.Entries == null || _activeTextures.Entries.Count == 0)
+            if (_activeTextures?.Entries == null || _activeTextures.Entries.Count == 0)
                 return;
 
             using (FolderBrowserDialog folder = new FolderBrowserDialog())
@@ -507,21 +514,25 @@ namespace CommandsEditor
                     return;
 
                 Cursor = Cursors.WaitCursor;
-                try
+                int errors = 0;
+                foreach (TreeNode node in FileTree.Nodes)
                 {
-                    foreach (TreeNode node in FileTree.Nodes)
+                    try
+                    {
                         ExportTextureNodeRecursive(node, folder.SelectedPath, ext);
-                    Process.Start(folder.SelectedPath);
-                    MessageBox.Show("Export complete.", "Textures", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        errors++;
+                    }
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.ToString(), "Export failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                finally
-                {
-                    Cursor = Cursors.Default;
-                }
+#if DEBUG
+                if (errors > 0)
+                    MessageBox.Show("Encountered " + errors + " errors!");
+#endif
+                Process.Start(folder.SelectedPath);
+                MessageBox.Show("Export complete.", "Textures", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Cursor = Cursors.Default;
             }
         }
 
