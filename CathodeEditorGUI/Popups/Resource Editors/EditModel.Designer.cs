@@ -42,10 +42,10 @@ namespace CommandsEditor
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.deleteBtn = new System.Windows.Forms.Button();
-            this.submeshFilterGroup = new System.Windows.Forms.GroupBox();
-            this.submeshFilterPanel = new System.Windows.Forms.Panel();
             this.renderFlagsGroup = new System.Windows.Forms.GroupBox();
             this.renderFlagsPanel = new System.Windows.Forms.FlowLayoutPanel();
+            this.submeshFilterGroup = new System.Windows.Forms.GroupBox();
+            this.submeshFilterPanel = new System.Windows.Forms.Panel();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.modelPreviewArea.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -57,8 +57,8 @@ namespace CommandsEditor
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
-            this.submeshFilterGroup.SuspendLayout();
             this.renderFlagsGroup.SuspendLayout();
+            this.submeshFilterGroup.SuspendLayout();
             this.SuspendLayout();
             // 
             // modelRendererHost
@@ -66,7 +66,7 @@ namespace CommandsEditor
             this.modelRendererHost.Dock = System.Windows.Forms.DockStyle.Fill;
             this.modelRendererHost.Location = new System.Drawing.Point(3, 16);
             this.modelRendererHost.Name = "modelRendererHost";
-            this.modelRendererHost.Size = new System.Drawing.Size(476, 610);
+            this.modelRendererHost.Size = new System.Drawing.Size(475, 610);
             this.modelRendererHost.TabIndex = 0;
             this.modelRendererHost.Text = "elementHost1";
             this.modelRendererHost.Child = null;
@@ -129,7 +129,7 @@ namespace CommandsEditor
             this.modelPreviewArea.Controls.Add(this.modelRendererHost);
             this.modelPreviewArea.Location = new System.Drawing.Point(3, 3);
             this.modelPreviewArea.Name = "modelPreviewArea";
-            this.modelPreviewArea.Size = new System.Drawing.Size(482, 629);
+            this.modelPreviewArea.Size = new System.Drawing.Size(481, 629);
             this.modelPreviewArea.TabIndex = 103;
             this.modelPreviewArea.TabStop = false;
             // 
@@ -149,7 +149,7 @@ namespace CommandsEditor
             // 
             this.selectModelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.selectModelBtn.Enabled = false;
-            this.selectModelBtn.Location = new System.Drawing.Point(333, 579);
+            this.selectModelBtn.Location = new System.Drawing.Point(332, 579);
             this.selectModelBtn.Name = "selectModelBtn";
             this.selectModelBtn.Size = new System.Drawing.Size(134, 35);
             this.selectModelBtn.TabIndex = 1;
@@ -195,7 +195,7 @@ namespace CommandsEditor
             this.splitContainer2.Panel2.Controls.Add(this.renderFlagsGroup);
             this.splitContainer2.Panel2.Controls.Add(this.submeshFilterGroup);
             this.splitContainer2.Size = new System.Drawing.Size(701, 632);
-            this.splitContainer2.SplitterDistance = 488;
+            this.splitContainer2.SplitterDistance = 487;
             this.splitContainer2.SplitterWidth = 5;
             this.splitContainer2.TabIndex = 0;
             // 
@@ -228,28 +228,6 @@ namespace CommandsEditor
             this.deleteBtn.UseVisualStyleBackColor = true;
             this.deleteBtn.Click += new System.EventHandler(this.deleteBtn_Click);
             // 
-            // submeshFilterGroup
-            // 
-            this.submeshFilterGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.submeshFilterGroup.Controls.Add(this.submeshFilterPanel);
-            this.submeshFilterGroup.Location = new System.Drawing.Point(0, 0);
-            this.submeshFilterGroup.Name = "submeshFilterGroup";
-            this.submeshFilterGroup.Size = new System.Drawing.Size(201, 340);
-            this.submeshFilterGroup.TabIndex = 0;
-            this.submeshFilterGroup.TabStop = false;
-            this.submeshFilterGroup.Text = "Render Filter";
-            // 
-            // submeshFilterPanel
-            // 
-            this.submeshFilterPanel.AutoScroll = true;
-            this.submeshFilterPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.submeshFilterPanel.Location = new System.Drawing.Point(3, 16);
-            this.submeshFilterPanel.Name = "submeshFilterPanel";
-            this.submeshFilterPanel.Size = new System.Drawing.Size(195, 321);
-            this.submeshFilterPanel.TabIndex = 0;
-            // 
             // renderFlagsGroup
             // 
             this.renderFlagsGroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -260,7 +238,7 @@ namespace CommandsEditor
             this.renderFlagsGroup.Size = new System.Drawing.Size(201, 192);
             this.renderFlagsGroup.TabIndex = 191;
             this.renderFlagsGroup.TabStop = false;
-            this.renderFlagsGroup.Text = "Render Flags";
+            this.renderFlagsGroup.Text = "Model Render Flags";
             // 
             // renderFlagsPanel
             // 
@@ -274,6 +252,28 @@ namespace CommandsEditor
             this.renderFlagsPanel.Size = new System.Drawing.Size(195, 173);
             this.renderFlagsPanel.TabIndex = 0;
             this.renderFlagsPanel.WrapContents = false;
+            // 
+            // submeshFilterGroup
+            // 
+            this.submeshFilterGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.submeshFilterGroup.Controls.Add(this.submeshFilterPanel);
+            this.submeshFilterGroup.Location = new System.Drawing.Point(0, 0);
+            this.submeshFilterGroup.Name = "submeshFilterGroup";
+            this.submeshFilterGroup.Size = new System.Drawing.Size(201, 340);
+            this.submeshFilterGroup.TabIndex = 0;
+            this.submeshFilterGroup.TabStop = false;
+            this.submeshFilterGroup.Text = "Preview Render Filter";
+            // 
+            // submeshFilterPanel
+            // 
+            this.submeshFilterPanel.AutoScroll = true;
+            this.submeshFilterPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.submeshFilterPanel.Location = new System.Drawing.Point(3, 16);
+            this.submeshFilterPanel.Name = "submeshFilterPanel";
+            this.submeshFilterPanel.Size = new System.Drawing.Size(195, 321);
+            this.submeshFilterPanel.TabIndex = 0;
             // 
             // imageList1
             // 
@@ -305,8 +305,8 @@ namespace CommandsEditor
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
-            this.submeshFilterGroup.ResumeLayout(false);
             this.renderFlagsGroup.ResumeLayout(false);
+            this.submeshFilterGroup.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
