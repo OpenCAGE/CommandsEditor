@@ -50,8 +50,8 @@ namespace CommandsEditor
 
 #if !DEBUG
             //Verify location
-            if (!File.Exists(Singleton.PathToAI + "/AI.exe")) 
-                throw new Exception("This tool was launched incorrectly, or was not placed within the Alien: Isolation directory.");
+            //if (!File.Exists(Singleton.PathToAI + "/AI.exe")) 
+            //    throw new Exception("This tool was launched incorrectly, or was not placed within the Alien: Isolation directory.");
 #endif
 
             Singleton.Platform = PatchManager.GetPlatform(Singleton.PathToAI);

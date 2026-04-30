@@ -65,14 +65,15 @@ namespace CommandsEditor
             //If we're loading for the first time...
             if (!Level.Commands.Utils.Flags.HasBeenModified)
             {
-#if USE_PRETTY_COMPOSITE_PATHS
-                //Tidy up composite names so things look nicer
+                //Tidy up composite names so things look nicer - only need to do this for PAK, BIN has this info
                 if (Path.GetFileName(Level.Commands.Filepath.ToUpper()) == "COMMANDS.PAK")
                     Level.Commands.Utils.SetPrettyNames();
-#endif
 
-                //Correct the root composite name
+                //Correct the root composite name - by default it's a full filepath which looks gross
                 Level.Commands.EntryPoints[0].name = EditorUtils.GetCompositeName(Level.Commands.EntryPoints[0]);
+
+                //Remember that we were modified so we don't do this again
+                Level.Commands.Utils.Flags.HasBeenModified = true;
             }
 
             //Correct all Entity names that are actually pointers to resources
@@ -104,7 +105,6 @@ namespace CommandsEditor
 
         public void Save()
         {
-            Level.Commands.Utils.Flags.HasBeenModified = true;
             Level.Save();
 #if !IMPORT_GLOBAL_ASSETS
             //TODO - we can't actually save the global textures without re-saving every other level as it'll screw with indexes - need to make a utility to make this simpler.

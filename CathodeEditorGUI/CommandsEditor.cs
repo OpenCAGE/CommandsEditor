@@ -383,11 +383,11 @@ namespace CommandsEditor
             }
 
 #if DEBUG
-            if (Directory.Exists(Singleton.PathToAI + "\\LatestBuiltData\\ENV"))
-            {
-                Directory.Delete(Singleton.PathToAI + "\\DATA\\ENV\\" + level, true);
-                CopyFilesRecursively(Singleton.PathToAI + "\\LatestBuiltData\\ENV\\" + level, Singleton.PathToAI + "\\DATA\\ENV\\" + level);
-            }
+            //if (Directory.Exists(Singleton.PathToAI + "\\LatestBuiltData\\ENV"))
+            //{
+            //    Directory.Delete(Singleton.PathToAI + "\\DATA\\ENV\\" + level, true);
+            //    CopyFilesRecursively(Singleton.PathToAI + "\\LatestBuiltData\\ENV\\" + level, Singleton.PathToAI + "\\DATA\\ENV\\" + level);
+            //}
 #endif
 
             _commandsDisplay = new CommandsDisplay(level);
