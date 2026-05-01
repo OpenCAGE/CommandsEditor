@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static CATHODE.EXPERIMENTAL.Lights;
 using static CathodeLib.CompositeFlowgraphTable;
 using static CathodeLib.CompositePinInfoTable;
 

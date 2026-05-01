@@ -22,7 +22,6 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Media3D;
 using System.Xml.Linq;
 using WeifenLuo.WinFormsUI.Docking;
-using static CATHODE.EXPERIMENTAL.Lights;
 using static CathodeLib.CompositeFlowgraphTable;
 using static CathodeLib.CompositePinInfoTable;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;

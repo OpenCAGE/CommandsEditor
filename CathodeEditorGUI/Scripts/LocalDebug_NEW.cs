@@ -32,61 +32,69 @@ namespace CommandsEditor.Scripts
 
                 switch (mvr.GetRenderableType())
                 {
-                    case RenderableInstanceType.LIGHT:
+                    case RenderableInstanceType.CHARACTER:
                         {
-                            var cpu_constants = mvr.RenderConstants.GetAs<Movers.MOVER_DESCRIPTOR.RENDER_CONSTANTS.DEFERRED_PARAMS>();
-                            var gpu_constants = mvr.GPUConstants.GetAs<Movers.MOVER_DESCRIPTOR.GPU_CONSTANTS.DEFERRED_GPU_CONSTANTS>();
+                            var gpu_constants = mvr.GPUConstants.GetAs<Movers.MOVER_DESCRIPTOR.GPU_CONSTANTS.CHARACTER_GPU_CONSTANTS>();
+                            var cpu_constants = mvr.RenderConstants.GetAs<Movers.MOVER_DESCRIPTOR.RENDER_CONSTANTS.MODEL_PARAMS>(); // i think only first two arrays are used here. verify.
 
-                            string gsdsdf = "";
+                            string asddfsf = "";
                         }
                         break;
                     case RenderableInstanceType.DYNAMICFX:
                     case RenderableInstanceType.DYNAMICFX_UNIQUE_MAT:
                         {
-                            var cpu_constants = mvr.RenderConstants.GetAs<Movers.MOVER_DESCRIPTOR.RENDER_CONSTANTS.DYNAMIC_PFX_PARAMS>();
-                            var cpu_constants2 = mvr.RenderConstants.GetAs<Movers.MOVER_DESCRIPTOR.RENDER_CONSTANTS.PARTICLE_PARAMS>();
-                            var gpu_constants = mvr.GPUConstants.GetAs<Movers.MOVER_DESCRIPTOR.GPU_CONSTANTS.GPU_PFX_CONSTANTS>();
-                            var gpu_constants2 = mvr.GPUConstants.GetAs<Movers.MOVER_DESCRIPTOR.GPU_CONSTANTS.GPU_PFX_COMPUTE_CONSTANTS>();
+                            {
+                                //For CPU particles
+                                var gpu_constants = mvr.GPUConstants.GetAs<Movers.MOVER_DESCRIPTOR.GPU_CONSTANTS.DYNAMIC_FX_GPU_CONSTANTS>();
+                                var cpu_constants = mvr.RenderConstants.GetAs<Movers.MOVER_DESCRIPTOR.RENDER_CONSTANTS.DYNAMIC_PFX_PARAMS>();
+                            }
+                            {
+                                //For GPU particles
+                                var gpu_constants = mvr.GPUConstants.GetAs<Movers.MOVER_DESCRIPTOR.GPU_CONSTANTS.PARTICLE_GPU_CONSTANTS>();
+                                var cpu_constants = mvr.RenderConstants.GetAs<Movers.MOVER_DESCRIPTOR.RENDER_CONSTANTS.PARTICLE_PARAMS>();
+                            }
 
                             string gsdsdf = "";
                         }
                         break;
-                    case RenderableInstanceType.ENVIRONMENT:
                     case RenderableInstanceType.ENVIRONMENT_EXTRA:
+                    case RenderableInstanceType.ENVIRONMENT:
                         {
-                            var cpu_constants = mvr.RenderConstants.GetAs<Movers.MOVER_DESCRIPTOR.RENDER_CONSTANTS.MODEL_PARAMS>(); // i think only first two arrays are used here. verify.
                             var gpu_constants = mvr.GPUConstants.GetAs<Movers.MOVER_DESCRIPTOR.GPU_CONSTANTS.ENVIRONMENT_GPU_CONSTANTS>();
+                            var cpu_constants = mvr.RenderConstants.GetAs<Movers.MOVER_DESCRIPTOR.RENDER_CONSTANTS.MODEL_PARAMS>(); // i think only first two arrays are used here. verify.
                         }
                         break;
-                    case RenderableInstanceType.CHARACTER:
+                    case RenderableInstanceType.FOGSPHERE:
                         {
-                            var cpu_constants = mvr.RenderConstants.GetAs<Movers.MOVER_DESCRIPTOR.RENDER_CONSTANTS.MODEL_PARAMS>(); //?
-                            var gpu_constants = mvr.GPUConstants.GetAs<Movers.MOVER_DESCRIPTOR.GPU_CONSTANTS.CHARACTER_GPU_CONSTANTS>();
+                            var gpu_constants = mvr.GPUConstants.GetAs<Movers.MOVER_DESCRIPTOR.GPU_CONSTANTS.FOGSPHERE_GPU_CONSTANTS>();
+                            var cpu_constants = mvr.RenderConstants.GetAs<Movers.MOVER_DESCRIPTOR.RENDER_CONSTANTS.MODEL_PARAMS>(); // i think only first two arrays are used here. verify.
 
-                            string asddfsf = "";
+                            string fgsdfd = "";
+                        }
+                        break;
+                    case RenderableInstanceType.LIGHT:
+                        {
+                            var gpu_constants = mvr.GPUConstants.GetAs<Movers.MOVER_DESCRIPTOR.GPU_CONSTANTS.DEFERRED_GPU_CONSTANTS>();
+                            var cpu_constants = mvr.RenderConstants.GetAs<Movers.MOVER_DESCRIPTOR.RENDER_CONSTANTS.DEFERRED_PARAMS>();
+
+                            string gsdsdf = "";
                         }
                         break;
                     case RenderableInstanceType.MISC:
                         {
-                            // ??
+                            // gpu_constants can be any!!
+                            var cpu_constants = mvr.RenderConstants.GetAs<Movers.MOVER_DESCRIPTOR.RENDER_CONSTANTS.MODEL_PARAMS>(); // i think only first two arrays are used here. verify.
+
+                            string fgsdfd = "";
                         }
                         break;
                     case RenderableInstanceType.PLANET:
                         {
                             // this reveals render_constants for this are empty (i don't think they are EVER set at build time?)
-                            var cpu_constants = mvr.RenderConstants.GetAs<Movers.MOVER_DESCRIPTOR.RENDER_CONSTANTS.PLANET_PARAMS>();
                             var gpu_constants = mvr.GPUConstants.GetAs<Movers.MOVER_DESCRIPTOR.GPU_CONSTANTS.PLANET_GPU_CONSTANTS>();
+                            var cpu_constants = mvr.RenderConstants.GetAs<Movers.MOVER_DESCRIPTOR.RENDER_CONSTANTS.PLANET_PARAMS>();
 
                             string sdfsdfsd = "";
-                        }
-                        break;
-                    case RenderableInstanceType.FOGSPHERE:
-                        {
-                            var cpu_constants = mvr.RenderConstants.GetAs<Movers.MOVER_DESCRIPTOR.RENDER_CONSTANTS.MODEL_PARAMS>(); // ?
-                            var gpu_constants = mvr.GPUConstants.GetAs<Movers.MOVER_DESCRIPTOR.GPU_CONSTANTS.FOGPLANE_GPU_CONSTANTS>();
-                            var gpu_constants2 = mvr.GPUConstants.GetAs<Movers.MOVER_DESCRIPTOR.GPU_CONSTANTS.FOGSPHERE_GPU_CONSTANTS>();
-
-                            string fgsdfd = "";
                         }
                         break;
                 }
