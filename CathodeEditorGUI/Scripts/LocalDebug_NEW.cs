@@ -34,10 +34,10 @@ namespace CommandsEditor.Scripts
                 {
                     case RenderableInstanceType.CHARACTER:
                         {
-                            var gpu_constants = mvr.GPUConstants.GetAs<Movers.MOVER_DESCRIPTOR.GPU_CONSTANTS.CHARACTER_GPU_CONSTANTS>();
+                            //gpu stuff is set at runtime based on character info
                             var cpu_constants = mvr.RenderConstants.GetAs<Movers.MOVER_DESCRIPTOR.RENDER_CONSTANTS.MODEL_PARAMS>(); // i think only first two arrays are used here. verify.
 
-                            string asddfsf = "";
+                            string gsdsdf = "";
                         }
                         break;
                     case RenderableInstanceType.DYNAMICFX:
@@ -90,11 +90,7 @@ namespace CommandsEditor.Scripts
                         break;
                     case RenderableInstanceType.PLANET:
                         {
-                            // this reveals render_constants for this are empty (i don't think they are EVER set at build time?)
-                            var gpu_constants = mvr.GPUConstants.GetAs<Movers.MOVER_DESCRIPTOR.GPU_CONSTANTS.PLANET_GPU_CONSTANTS>();
-                            var cpu_constants = mvr.RenderConstants.GetAs<Movers.MOVER_DESCRIPTOR.RENDER_CONSTANTS.PLANET_PARAMS>();
-
-                            string sdfsdfsd = "";
+                            //these are set at runtime
                         }
                         break;
                 }
@@ -112,24 +108,24 @@ namespace CommandsEditor.Scripts
         }
 
         //Proof of concept of removing all instanced data from a level, populating the level with only Commands (excluding collisions)
-        public static void StripInstancedData(string pathToLevel, Global global)
+        public static void StripInstancedData(string pathToAI, string level)
         {
-            Level level = new Level(pathToLevel, global);
+            Level lvl = Utilities.LoadLevel(pathToAI, level);
 
             //Clear out the movers - these are the instanced objects populated from offline data
-            level.Movers.Entries.Clear();
-            level.Movers.Save();
+            lvl.Movers.Entries.Clear();
+            lvl.Movers.Save();
 
             //Strip out radiosity data: this references instanced movers, so we need to get rid of it
-            File.WriteAllBytes(pathToLevel + "WORLD/RADIOSITY_COLLISION_MAPPING.BIN", new byte[4]);
-            File.WriteAllBytes(pathToLevel + "RENDERABLE/RADIOSITY_RUNTIME.BIN", new byte[0]);
-            File.Delete(pathToLevel + "RENDERABLE/RADIOSITY_INSTANCE_MAP.TXT");
+            File.WriteAllBytes(pathToAI + "/DATA/ENV/" + level + "/WORLD/RADIOSITY_COLLISION_MAPPING.BIN", new byte[4]);
+            File.WriteAllBytes(pathToAI + "/DATA/ENV/" + level + "/RENDERABLE/RADIOSITY_RUNTIME.BIN", new byte[0]);
+            File.Delete(pathToAI + "/DATA/ENV/" + level + "/RENDERABLE/RADIOSITY_INSTANCE_MAP.TXT");
 
             //Strip out light info, again, these point to movers, so get rid
-            level.Lights.Indexes.Clear();
-            level.Lights.Values.Clear();
+            lvl.Lights.Indexes.Clear();
+            lvl.Lights.Values.Clear();
 
-            level.Lights.Save();
+            lvl.Lights.Save();
         }
 
         /*

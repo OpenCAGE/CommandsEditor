@@ -96,6 +96,7 @@ namespace CommandsEditor
             lvll.Resources.Entries.Clear();
             lvll.PhysicsMaps.Entries.Clear();
             lvll.CollisionMaps.Entries.Clear();
+            lvll.Movers.Entries.Clear();
 
             Instancing inst = new Instancing(lvll);
             inst.GenerateInstances();
@@ -233,7 +234,7 @@ namespace CommandsEditor
                 File.Copy(Singleton.PathToAI + "/DATA/ENV/PRODUCTION/" + level + "/WORLD/RESOURCES.BIN", Singleton.PathToAI + "/DATA/ENV/PRODUCTION/" + level + "/WORLD/RESOURCES_old.BIN");
 
             PAK2 animPAK = new PAK2(Singleton.PathToAI + "\\DATA\\GLOBAL\\ANIMATION.PAK");
-            LocalDebug_NEW.StripInstancedData(Singleton.PathToAI + "/DATA/ENV/PRODUCTION/" + level + "/", new Global(Singleton.PathToAI + "/DATA/GLOBAL/", animPAK));
+            LocalDebug_NEW.StripInstancedData(Singleton.PathToAI, "Production/" + level);
             lvll.Resources.Save();
 
             //List<string> bruh = new List<string>();

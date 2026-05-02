@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using System.Xml.XPath;
+using static CathodeLib.CompositeFlowgraphTable;
 
 namespace CommandsEditor
 {
@@ -71,6 +72,45 @@ namespace CommandsEditor
 
                 //Correct the root composite name - by default it's a full filepath which looks gross
                 Level.Commands.EntryPoints[0].name = EditorUtils.GetCompositeName(Level.Commands.EntryPoints[0]);
+
+                //Apply material remappings
+                ShortGuid mapping = ShortGuidUtils.Generate("mapping");
+                FlowgraphMeta.SupportedLevel levelID;
+                bool hasLevelID = Enum.TryParse(Path.GetFileName(Level.Name).ToUpper(), out levelID);
+                foreach (MaterialMappingTable.Mapping map in CustomTable.Vanilla.MaterialMappings.Mappings)
+                {
+                    if (!map.AlwaysUse && (!hasLevelID || !map.SupportedLevels.HasFlag(levelID)))
+                        continue;
+
+                    Composite comp = Level.Commands.GetComposite(map.CompositeID);
+
+                    Entity ent = Level.Commands.GetComposite(map.CompositeID)?.GetEntityByID(map.EntityID);
+                    ent?.AddParameter(mapping, new cResource(null, map.MappingID));
+                }
+                foreach (MaterialMappingTable.MappingAlias map in CustomTable.Vanilla.MaterialMappings.MappingAliases)
+                {
+                    if (!map.AlwaysUse && (!hasLevelID || !map.SupportedLevels.HasFlag(levelID)))
+                        continue;
+
+                    EntityPath path = new EntityPath(map.EntityPath.ToArray());
+                    Composite comp = Level.Commands.GetComposite(map.CompositeID);
+                    if (comp == null)
+                        continue;
+                    bool didFind = false;
+                    foreach (KeyValuePair<ShortGuid, AliasEntity> alias in comp.aliases_dictionary)
+                    {
+                        if (alias.Value.alias == path)
+                        {
+                            didFind = true;
+                            alias.Value.AddParameter(mapping, new cResource(null, map.MappingID));
+                            break;
+                        }
+                    }
+                    if (!didFind)
+                    {
+                        comp.AddAlias(path.path).AddParameter(mapping, new cResource(null, map.MappingID));
+                    }
+                }
 
                 //Remember that we were modified so we don't do this again
                 Level.Commands.Utils.Flags.HasBeenModified = true;

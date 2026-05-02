@@ -975,6 +975,12 @@
     <Compile Include="UserControls\Base\ParameterUserControl.Designer.cs">
       <DependentUpon>ParameterUserControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\Variants\GUI_StringVariant_MappingSelect.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\Variants\GUI_StringVariant_MappingSelect.Designer.cs">
+      <DependentUpon>GUI_StringVariant_MappingSelect.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\Variants\GUI_StringVariant_AssetDropdown.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -1349,6 +1355,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\Variants\GUI_StringVariant_MappingSelect.resx">
+      <DependentUpon>GUI_StringVariant_MappingSelect.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserControls\Variants\GUI_StringVariant_AssetDropdown.resx">
       <DependentUpon>GUI_StringVariant_AssetDropdown.cs</DependentUpon>

@@ -124,7 +124,7 @@ namespace CommandsEditor
             isStationary.Checked = mvr.Flags.Stationary;
 
             emTint.BackColor = Color.FromArgb((int)mvr.EmissiveTint.X, (int)mvr.EmissiveTint.Y, (int)mvr.EmissiveTint.Z);
-            emIntensityMultiplier.Value = (decimal)mvr.EmisiveIntensityMultiplier;
+            emIntensityMultiplier.Value = (decimal)mvr.EmissiveIntensityMultiplier;
             emRadiosityMultiplier.Value = (decimal)mvr.EmissiveRadiosityMultiplier;
 
             hasLoaded = true;
@@ -166,7 +166,7 @@ namespace CommandsEditor
             mvr.Flags.Stationary = isStationary.Checked;
 
             mvr.EmissiveTint = new Vector3(emTint.BackColor.R, emTint.BackColor.G, emTint.BackColor.B);
-            mvr.EmisiveIntensityMultiplier = (float)emIntensityMultiplier.Value;
+            mvr.EmissiveIntensityMultiplier = (float)emIntensityMultiplier.Value;
             mvr.EmissiveRadiosityMultiplier = (float)emRadiosityMultiplier.Value;
 
             Debug.Log("MVR", "SAVED");
