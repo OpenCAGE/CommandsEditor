@@ -2,6 +2,7 @@ using CATHODE;
 using CommandsEditor.Popups.Base;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -190,7 +191,7 @@ namespace CommandsEditor
             if (selectedMapping == null)
                 return;
 
-            var result = ShowTwoInputDialog("Add Mapping", "From", "To");
+            var result = ShowMaterialPairDialog("Add Mapping");
             if (result == null)
                 return;
 
@@ -262,7 +263,7 @@ namespace CommandsEditor
 
             var mapping = _listItemToMapping[selectedItem];
 
-            var result = ShowTwoInputDialog("Edit Mapping", "From", "To", mapping.from ?? "", mapping.to ?? "");
+            var result = ShowMaterialPairDialog("Edit Mapping", mapping.from ?? "", mapping.to ?? "");
             if (result == null)
                 return;
 
@@ -278,6 +279,101 @@ namespace CommandsEditor
             {
                 removeMappingButton_Click(sender, e);
             }
+        }
+
+        private void selectFromMaterialButton_Click(object sender, EventArgs e)
+        {
+            if (!TryGetSelectedMapping(out var mapping, notifyIfMissing: true))
+                return;
+
+            ApplyPickedMaterialToMappingSide(mapping, fromSide: true);
+        }
+
+        private void selectToMaterialButton_Click(object sender, EventArgs e)
+        {
+            if (!TryGetSelectedMapping(out var mapping, notifyIfMissing: true))
+                return;
+
+            ApplyPickedMaterialToMappingSide(mapping, fromSide: false);
+        }
+
+        /// <summary>Opens Material Editor focused on the current side; confirming applies the picked material.</summary>
+        private void ApplyPickedMaterialToMappingSide(MaterialMappings.MaterialMapping.Mapping mapping, bool fromSide)
+        {
+            string currentName = fromSide ? mapping.from : mapping.to;
+            Materials.Material initial = ResolveMaterialFromLevel(currentName);
+            Materials.Material picked = ShowMaterialPickerDialog(this, initial);
+            if (picked == null || string.IsNullOrEmpty(picked.Name))
+                return;
+
+            if (fromSide)
+                mapping.from = picked.Name;
+            else
+                mapping.to = picked.Name;
+
+            Content.Level.MaterialMappings.Save();
+            UpdateMappingsPanel();
+            ReselectMappingRow(mapping);
+        }
+
+        private void ReselectMappingRow(MaterialMappings.MaterialMapping.Mapping mapping)
+        {
+            foreach (ListViewItem item in mappingsListView.Items)
+            {
+                if (_listItemToMapping.TryGetValue(item, out var m) && ReferenceEquals(m, mapping))
+                {
+                    item.Focused = true;
+                    item.Selected = true;
+                    item.EnsureVisible();
+                    mappingsListView.Focus();
+                    break;
+                }
+            }
+        }
+
+        private bool TryGetSelectedMapping(out MaterialMappings.MaterialMapping.Mapping mapping, bool notifyIfMissing = false)
+        {
+            mapping = null;
+            if (mappingsListView.SelectedItems.Count == 0)
+            {
+                if (notifyIfMissing)
+                    MessageBox.Show("Please select a mapping row first.", "No Selection", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return false;
+            }
+
+            ListViewItem selectedItem = mappingsListView.SelectedItems[0];
+            if (!_listItemToMapping.TryGetValue(selectedItem, out mapping) || mapping == null)
+            {
+                if (notifyIfMissing)
+                    MessageBox.Show("Please select a mapping row first.", "No Selection", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return false;
+            }
+
+            return true;
+        }
+
+        private Materials.Material ResolveMaterialFromLevel(string materialName)
+        {
+            if (string.IsNullOrWhiteSpace(materialName) || Content?.Level?.Materials?.Entries == null)
+                return null;
+
+            string trimmed = materialName.Trim();
+            return Content.Level.Materials.Entries.FirstOrDefault(m =>
+                m?.Name != null && m.Name.Equals(trimmed, StringComparison.OrdinalIgnoreCase));
+        }
+
+        private Materials.Material ShowMaterialPickerDialog(IWin32Window owner, Materials.Material initialMaterial = null)
+        {
+            Materials.Material chosen = null;
+            using (var editor = new EditMaterial(initialMaterial, showSelectBtn: true))
+            {
+                void OnPick(Materials.Material m) { chosen = m; }
+                editor.OnMaterialSelected += OnPick;
+                editor.ShowDialog(owner);
+                editor.OnMaterialSelected -= OnPick;
+            }
+
+            return chosen;
         }
 
         private string ShowInputDialog(string title, string labelText, string initialValue = "")
@@ -314,42 +410,65 @@ namespace CommandsEditor
             return null;
         }
 
-        private Tuple<string, string> ShowTwoInputDialog(string title, string label1, string label2, string initialValue1 = "", string initialValue2 = "")
+        /// <summary>Dialogs for entering From/To with optional Browse (Material Editor picker).</summary>
+        private Tuple<string, string> ShowMaterialPairDialog(string title, string initialFrom = "", string initialTo = "")
         {
             using (var dialog = new Form())
             {
                 dialog.Text = title;
-                dialog.Size = new System.Drawing.Size(450, 150);
+                dialog.ClientSize = new Size(512, 120);
                 dialog.StartPosition = FormStartPosition.CenterParent;
                 dialog.FormBorderStyle = FormBorderStyle.FixedDialog;
                 dialog.MaximizeBox = false;
                 dialog.MinimizeBox = false;
 
-                var labelFrom = new Label() { Text = label1 + ":", Left = 10, Top = 15, Width = 70 };
-                var textBoxFrom = new TextBox() { Left = 90, Top = 12, Width = 330, Text = initialValue1 };
-                var labelTo = new Label() { Text = label2 + ":", Left = 10, Top = 45, Width = 70 };
-                var textBoxTo = new TextBox() { Left = 90, Top = 42, Width = 330, Text = initialValue2 };
-                var okButton = new Button() { Text = "OK", Left = 270, Top = 75, Width = 70, DialogResult = DialogResult.OK };
-                var cancelButton = new Button() { Text = "Cancel", Left = 350, Top = 75, Width = 70, DialogResult = DialogResult.Cancel };
+                int row1 = 12;
+                int row2 = 44;
+                int rowButtons = 80;
+
+                var labelFrom = new Label { Text = "From:", Left = 12, Top = row1 + 3, Width = 44 };
+                var textBoxFrom = new TextBox { Left = 62, Top = row1 - 1, Width = 318, Text = initialFrom ?? "" };
+                var browseFrom = new Button { Text = "Browse...", Left = 386, Top = row1 - 2, Width = 94 };
+                browseFrom.Click += (_, __) =>
+                {
+                    var picked = ShowMaterialPickerDialog(dialog, ResolveMaterialFromLevel(textBoxFrom.Text));
+                    if (picked != null && !string.IsNullOrEmpty(picked.Name))
+                        textBoxFrom.Text = picked.Name;
+                };
+
+                var labelTo = new Label { Text = "To:", Left = 12, Top = row2 + 3, Width = 44 };
+                var textBoxTo = new TextBox { Left = 62, Top = row2 - 1, Width = 318, Text = initialTo ?? "" };
+                var browseTo = new Button { Text = "Browse...", Left = 386, Top = row2 - 2, Width = 94 };
+                browseTo.Click += (_, __) =>
+                {
+                    var picked = ShowMaterialPickerDialog(dialog, ResolveMaterialFromLevel(textBoxTo.Text));
+                    if (picked != null && !string.IsNullOrEmpty(picked.Name))
+                        textBoxTo.Text = picked.Name;
+                };
+
+                var okButton = new Button { Text = "OK", Left = 334, Top = rowButtons, Width = 74, DialogResult = DialogResult.OK };
+                var cancelButton = new Button { Text = "Cancel", Left = 414, Top = rowButtons, Width = 74, DialogResult = DialogResult.Cancel };
 
                 dialog.Controls.Add(labelFrom);
                 dialog.Controls.Add(textBoxFrom);
+                dialog.Controls.Add(browseFrom);
                 dialog.Controls.Add(labelTo);
                 dialog.Controls.Add(textBoxTo);
+                dialog.Controls.Add(browseTo);
                 dialog.Controls.Add(okButton);
                 dialog.Controls.Add(cancelButton);
+
                 dialog.AcceptButton = okButton;
                 dialog.CancelButton = cancelButton;
 
-                textBoxFrom.Select();
-                if (!string.IsNullOrEmpty(initialValue1))
-                    textBoxFrom.SelectAll();
+                dialog.Shown += (_, __) => { textBoxFrom.Focus(); };
 
                 if (dialog.ShowDialog(this) == DialogResult.OK)
                 {
                     return new Tuple<string, string>(textBoxFrom.Text.Trim(), textBoxTo.Text.Trim());
                 }
             }
+
             return null;
         }
     }
