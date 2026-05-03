@@ -447,6 +447,12 @@ namespace CommandsEditor.DockPanels
                 //HACK: We handle composite material mappings as a special type!
                 if (paramName == "mapping")
                 {
+                    if (this_param.dataType != DataType.RESOURCE)
+                    {
+                        _entity.parameters[i].content = new cResource(null, ShortGuid.Invalid);
+                        this_param = _entity.parameters[i].content;
+                    }
+
                     parameterGUI = new GUI_StringVariant_MappingSelect();
                     ((GUI_StringVariant_MappingSelect)parameterGUI).PopulateUI((cResource)this_param);
                 }

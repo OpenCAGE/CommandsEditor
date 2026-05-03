@@ -83,8 +83,7 @@ namespace CommandsEditor
                         continue;
 
                     Composite comp = Level.Commands.GetComposite(map.CompositeID);
-
-                    Entity ent = Level.Commands.GetComposite(map.CompositeID)?.GetEntityByID(map.EntityID);
+                    Entity ent = comp?.GetEntityByID(map.EntityID);
                     ent?.AddParameter(mapping, new cResource(null, map.MappingID));
                 }
                 foreach (MaterialMappingTable.MappingAlias map in CustomTable.Vanilla.MaterialMappings.MappingAliases)

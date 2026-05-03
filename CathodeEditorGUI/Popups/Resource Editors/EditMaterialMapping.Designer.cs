@@ -1,4 +1,4 @@
-﻿namespace CommandsEditor
+namespace CommandsEditor
 {
     partial class EditMaterialMapping
     {
@@ -159,7 +159,7 @@
             this.selectFromMaterialButton.Name = "selectFromMaterialButton";
             this.selectFromMaterialButton.Size = new System.Drawing.Size(100, 24);
             this.selectFromMaterialButton.TabIndex = 2;
-            this.selectFromMaterialButton.Text = "Select From";
+            this.selectFromMaterialButton.Text = "Edit From";
             this.selectFromMaterialButton.UseVisualStyleBackColor = true;
             this.selectFromMaterialButton.Click += new System.EventHandler(this.selectFromMaterialButton_Click);
             // 
@@ -170,7 +170,7 @@
             this.selectToMaterialButton.Name = "selectToMaterialButton";
             this.selectToMaterialButton.Size = new System.Drawing.Size(100, 24);
             this.selectToMaterialButton.TabIndex = 3;
-            this.selectToMaterialButton.Text = "Select To";
+            this.selectToMaterialButton.Text = "Edit To";
             this.selectToMaterialButton.UseVisualStyleBackColor = true;
             this.selectToMaterialButton.Click += new System.EventHandler(this.selectToMaterialButton_Click);
             // 
