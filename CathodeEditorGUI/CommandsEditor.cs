@@ -342,6 +342,11 @@ namespace CommandsEditor
 #endif
         }
 
+        public void LoadLevel(string level)
+        {
+            OnLevelSelected(level);
+        }
+
         private void loadLevel_Click(object sender, EventArgs e)
         {
             if (_levelSelect == null)
@@ -468,6 +473,11 @@ namespace CommandsEditor
 
         private void saveLevel_Click(object sender, EventArgs e)
         {
+            SaveLevel();
+        }
+
+        public void SaveLevel(bool successMsg = true)
+        {
             if (_commandsDisplay == null) return;
 
             //Close alien down if it's open, it conflicts with our write locks!
@@ -551,7 +561,7 @@ namespace CommandsEditor
             Singleton.OnSaved?.Invoke();
             //if (saved)
             //{
-                if (SettingsManager.GetBool(Singleton.Settings.ShowSavedMsgOpt))
+                if (SettingsManager.GetBool(Singleton.Settings.ShowSavedMsgOpt) && successMsg)
                     MessageBox.Show("Saved changes!", "Saved.", MessageBoxButtons.OK, MessageBoxIcon.Information);
             //}
             //else
@@ -1056,6 +1066,24 @@ namespace CommandsEditor
                 }
                 catch { }
             }
+        }
+
+        LevelBackupManager _levelBackups = null;
+        private void manageBackupsBtn_Click(object sender, EventArgs e)
+        {
+            if (_levelBackups != null)
+            {
+                _levelBackups.FormClosed -= _levelBackups_FormClosed;
+                _levelBackups.Close();
+            }
+
+            _levelBackups = new LevelBackupManager();
+            _levelBackups.Show();
+            _levelBackups.FormClosed += _levelBackups_FormClosed;
+        }
+        private void _levelBackups_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _levelBackups = null;
         }
 
         #region Config Editors

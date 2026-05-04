@@ -114,6 +114,7 @@ namespace CommandsEditor
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
             this.vS2015DarkTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme();
+            this.manageBackupsBtn = new System.Windows.Forms.ToolStripButton();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -128,6 +129,7 @@ namespace CommandsEditor
             this.helpBtn,
             this.toolStripButton4,
             this.DEBUG_ReloadLevel,
+            this.manageBackupsBtn,
             this.launchGameBtn});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
@@ -384,42 +386,42 @@ namespace CommandsEditor
             // locomotionToolStripMenuItem
             // 
             this.locomotionToolStripMenuItem.Name = "locomotionToolStripMenuItem";
-            this.locomotionToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.locomotionToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
             this.locomotionToolStripMenuItem.Text = "Locomotion";
             this.locomotionToolStripMenuItem.Click += new System.EventHandler(this.locomotionToolStripMenuItem_Click);
             // 
             // alienConfigsToolStripMenuItem
             // 
             this.alienConfigsToolStripMenuItem.Name = "alienConfigsToolStripMenuItem";
-            this.alienConfigsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.alienConfigsToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
             this.alienConfigsToolStripMenuItem.Text = "Alien Configs";
             this.alienConfigsToolStripMenuItem.Click += new System.EventHandler(this.alienConfigsToolStripMenuItem_Click);
             // 
             // sensesToolStripMenuItem
             // 
             this.sensesToolStripMenuItem.Name = "sensesToolStripMenuItem";
-            this.sensesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.sensesToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
             this.sensesToolStripMenuItem.Text = "Senses";
             this.sensesToolStripMenuItem.Click += new System.EventHandler(this.sensesToolStripMenuItem_Click);
             // 
             // attributesToolStripMenuItem
             // 
             this.attributesToolStripMenuItem.Name = "attributesToolStripMenuItem";
-            this.attributesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.attributesToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
             this.attributesToolStripMenuItem.Text = "Attributes";
             this.attributesToolStripMenuItem.Click += new System.EventHandler(this.attributesToolStripMenuItem_Click);
             // 
             // voiceMappingsToolStripMenuItem
             // 
             this.voiceMappingsToolStripMenuItem.Name = "voiceMappingsToolStripMenuItem";
-            this.voiceMappingsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.voiceMappingsToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
             this.voiceMappingsToolStripMenuItem.Text = "Voice Mappings";
             this.voiceMappingsToolStripMenuItem.Click += new System.EventHandler(this.voiceMappingsToolStripMenuItem_Click);
             // 
             // assetSetsToolStripMenuItem
             // 
             this.assetSetsToolStripMenuItem.Name = "assetSetsToolStripMenuItem";
-            this.assetSetsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.assetSetsToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
             this.assetSetsToolStripMenuItem.Text = "Asset Sets";
             this.assetSetsToolStripMenuItem.Click += new System.EventHandler(this.assetSetsToolStripMenuItem_Click);
             // 
@@ -436,21 +438,21 @@ namespace CommandsEditor
             // blueprintRecipesToolStripMenuItem
             // 
             this.blueprintRecipesToolStripMenuItem.Name = "blueprintRecipesToolStripMenuItem";
-            this.blueprintRecipesToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.blueprintRecipesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.blueprintRecipesToolStripMenuItem.Text = "Blueprint Recipes";
             this.blueprintRecipesToolStripMenuItem.Click += new System.EventHandler(this.blueprintRecipesToolStripMenuItem_Click);
             // 
             // ammoToolStripMenuItem
             // 
             this.ammoToolStripMenuItem.Name = "ammoToolStripMenuItem";
-            this.ammoToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.ammoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.ammoToolStripMenuItem.Text = "Ammo";
             this.ammoToolStripMenuItem.Click += new System.EventHandler(this.ammoToolStripMenuItem_Click);
             // 
             // inventoryItemsToolStripMenuItem
             // 
             this.inventoryItemsToolStripMenuItem.Name = "inventoryItemsToolStripMenuItem";
-            this.inventoryItemsToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.inventoryItemsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.inventoryItemsToolStripMenuItem.Text = "Inventory Items";
             this.inventoryItemsToolStripMenuItem.Click += new System.EventHandler(this.inventoryItemsToolStripMenuItem_Click);
             // 
@@ -812,6 +814,16 @@ namespace CommandsEditor
             this.dockPanel.TabIndex = 5;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
             // 
+            // manageBackupsBtn
+            // 
+            this.manageBackupsBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.manageBackupsBtn.Image = ((System.Drawing.Image)(resources.GetObject("manageBackupsBtn.Image")));
+            this.manageBackupsBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.manageBackupsBtn.Name = "manageBackupsBtn";
+            this.manageBackupsBtn.Size = new System.Drawing.Size(101, 22);
+            this.manageBackupsBtn.Text = "Manage Backups";
+            this.manageBackupsBtn.Click += new System.EventHandler(this.manageBackupsBtn_Click);
+            // 
             // CommandsEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -920,5 +932,6 @@ namespace CommandsEditor
         private System.Windows.Forms.ToolStripMenuItem showGamePlatformToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem writeCompressedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem controlsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripButton manageBackupsBtn;
     }
 }
