@@ -117,12 +117,12 @@ namespace CommandsEditor
                     if (Singleton.IsSteamworks && File.Exists(AppDomain.CurrentDomain.BaseDirectory + "/../Alien Isolation/AI.exe"))
                     {
                         Singleton.PathToAI = Path.GetFullPath(AppDomain.CurrentDomain.BaseDirectory + "/../Alien Isolation/");
-                        SettingsManager.SetString("PATH_GameRoot", Singleton.PathToAI);
+                        SettingsManager.SetString(Singleton.Settings.GameRoot, Singleton.PathToAI);
                     }
                     else if (File.Exists(AppDomain.CurrentDomain.BaseDirectory + "/AI.exe"))
                     {
                         Singleton.PathToAI = Path.GetFullPath(AppDomain.CurrentDomain.BaseDirectory);
-                        SettingsManager.SetString("PATH_GameRoot", Singleton.PathToAI);
+                        SettingsManager.SetString(Singleton.Settings.GameRoot, Singleton.PathToAI);
                     }
                     else
                     {
@@ -133,7 +133,7 @@ namespace CommandsEditor
                             if (dialog.ShowDialog() == DialogResult.OK)
                             {
                                 Singleton.PathToAI = Path.GetDirectoryName(dialog.FileName);
-                                SettingsManager.SetString("PATH_GameRoot", Singleton.PathToAI);
+                                SettingsManager.SetString(Singleton.Settings.GameRoot, Singleton.PathToAI);
                             }
                             else
                             {
@@ -146,7 +146,7 @@ namespace CommandsEditor
                 }
                 else
                 {
-                    Singleton.PathToAI = SettingsManager.GetString("PATH_GameRoot");
+                    Singleton.PathToAI = SettingsManager.GetString(Singleton.Settings.GameRoot);
                 }
 #if DEBUG
             }
@@ -253,8 +253,6 @@ namespace CommandsEditor
             {
                 MessageBox.Show("A new version of OpenCAGE is available!", "OpenCAGE Updater", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 UpdateManager.DoUpdate();
-                Application.Exit();
-                Environment.Exit(0);
                 return;
             }
             if (File.Exists("OpenCAGE Updater.exe"))

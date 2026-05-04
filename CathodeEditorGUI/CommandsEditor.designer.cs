@@ -107,6 +107,7 @@ namespace CommandsEditor
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.versionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.DEBUG_ReloadLevel = new System.Windows.Forms.ToolStripButton();
+            this.manageBackupsBtn = new System.Windows.Forms.ToolStripButton();
             this.launchGameBtn = new System.Windows.Forms.ToolStripButton();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.statusText = new System.Windows.Forms.ToolStripStatusLabel();
@@ -114,7 +115,7 @@ namespace CommandsEditor
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
             this.vS2015DarkTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme();
-            this.manageBackupsBtn = new System.Windows.Forms.ToolStripButton();
+            this.useStagingBranchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -187,56 +188,56 @@ namespace CommandsEditor
             // modelsToolStripMenuItem
             // 
             this.modelsToolStripMenuItem.Name = "modelsToolStripMenuItem";
-            this.modelsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.modelsToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.modelsToolStripMenuItem.Text = "Models";
             this.modelsToolStripMenuItem.Click += new System.EventHandler(this.modelsToolStripMenuItem_Click);
             // 
             // materialsToolStripMenuItem
             // 
             this.materialsToolStripMenuItem.Name = "materialsToolStripMenuItem";
-            this.materialsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.materialsToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.materialsToolStripMenuItem.Text = "Materials";
             this.materialsToolStripMenuItem.Click += new System.EventHandler(this.materialsToolStripMenuItem_Click);
             // 
             // materialMappingsToolStripMenuItem
             // 
             this.materialMappingsToolStripMenuItem.Name = "materialMappingsToolStripMenuItem";
-            this.materialMappingsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.materialMappingsToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.materialMappingsToolStripMenuItem.Text = "Material Mappings";
             this.materialMappingsToolStripMenuItem.Click += new System.EventHandler(this.materialMappingsToolStripMenuItem_Click);
             // 
             // texturesToolStripMenuItem
             // 
             this.texturesToolStripMenuItem.Name = "texturesToolStripMenuItem";
-            this.texturesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.texturesToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.texturesToolStripMenuItem.Text = "Textures";
             this.texturesToolStripMenuItem.Click += new System.EventHandler(this.texturesToolStripMenuItem_Click);
             // 
             // galaxyToolStripMenuItem
             // 
             this.galaxyToolStripMenuItem.Name = "galaxyToolStripMenuItem";
-            this.galaxyToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.galaxyToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.galaxyToolStripMenuItem.Text = "Galaxy";
             this.galaxyToolStripMenuItem.Click += new System.EventHandler(this.galaxyToolStripMenuItem_Click);
             // 
             // uIToolStripMenuItem
             // 
             this.uIToolStripMenuItem.Name = "uIToolStripMenuItem";
-            this.uIToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.uIToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.uIToolStripMenuItem.Text = "UI";
             this.uIToolStripMenuItem.Click += new System.EventHandler(this.uIToolStripMenuItem_Click);
             // 
             // animationsToolStripMenuItem
             // 
             this.animationsToolStripMenuItem.Name = "animationsToolStripMenuItem";
-            this.animationsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.animationsToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.animationsToolStripMenuItem.Text = "Animations";
             this.animationsToolStripMenuItem.Click += new System.EventHandler(this.animationsToolStripMenuItem_Click);
             // 
             // behaviourTreesToolStripMenuItem
             // 
             this.behaviourTreesToolStripMenuItem.Name = "behaviourTreesToolStripMenuItem";
-            this.behaviourTreesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.behaviourTreesToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.behaviourTreesToolStripMenuItem.Text = "Behaviour Trees";
             this.behaviourTreesToolStripMenuItem.Click += new System.EventHandler(this.behaviourTreesToolStripMenuItem_Click);
             // 
@@ -247,7 +248,7 @@ namespace CommandsEditor
             this.charactersToolStripMenuItem,
             this.inventoryToolStripMenuItem});
             this.configurationsToolStripMenuItem.Name = "configurationsToolStripMenuItem";
-            this.configurationsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.configurationsToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.configurationsToolStripMenuItem.Text = "Configurations";
             // 
             // coreGameToolStripMenuItem
@@ -268,7 +269,7 @@ namespace CommandsEditor
             this.fontConfigToolStripMenuItem,
             this.difficultyModifiersToolStripMenuItem});
             this.coreGameToolStripMenuItem.Name = "coreGameToolStripMenuItem";
-            this.coreGameToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.coreGameToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
             this.coreGameToolStripMenuItem.Text = "Core Game";
             // 
             // loadscreenMoviesToolStripMenuItem
@@ -379,7 +380,7 @@ namespace CommandsEditor
             this.voiceMappingsToolStripMenuItem,
             this.assetSetsToolStripMenuItem});
             this.charactersToolStripMenuItem.Name = "charactersToolStripMenuItem";
-            this.charactersToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.charactersToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
             this.charactersToolStripMenuItem.Text = "Characters";
             this.charactersToolStripMenuItem.Click += new System.EventHandler(this.charactersToolStripMenuItem_Click);
             // 
@@ -432,27 +433,27 @@ namespace CommandsEditor
             this.ammoToolStripMenuItem,
             this.inventoryItemsToolStripMenuItem});
             this.inventoryToolStripMenuItem.Name = "inventoryToolStripMenuItem";
-            this.inventoryToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.inventoryToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
             this.inventoryToolStripMenuItem.Text = "Inventory";
             // 
             // blueprintRecipesToolStripMenuItem
             // 
             this.blueprintRecipesToolStripMenuItem.Name = "blueprintRecipesToolStripMenuItem";
-            this.blueprintRecipesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.blueprintRecipesToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
             this.blueprintRecipesToolStripMenuItem.Text = "Blueprint Recipes";
             this.blueprintRecipesToolStripMenuItem.Click += new System.EventHandler(this.blueprintRecipesToolStripMenuItem_Click);
             // 
             // ammoToolStripMenuItem
             // 
             this.ammoToolStripMenuItem.Name = "ammoToolStripMenuItem";
-            this.ammoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.ammoToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
             this.ammoToolStripMenuItem.Text = "Ammo";
             this.ammoToolStripMenuItem.Click += new System.EventHandler(this.ammoToolStripMenuItem_Click);
             // 
             // inventoryItemsToolStripMenuItem
             // 
             this.inventoryItemsToolStripMenuItem.Name = "inventoryItemsToolStripMenuItem";
-            this.inventoryItemsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.inventoryItemsToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
             this.inventoryItemsToolStripMenuItem.Text = "Inventory Items";
             this.inventoryItemsToolStripMenuItem.Click += new System.EventHandler(this.inventoryItemsToolStripMenuItem_Click);
             // 
@@ -525,7 +526,8 @@ namespace CommandsEditor
             this.compositeViewerToolStripMenuItem,
             this.entityDisplayToolStripMenuItem,
             this.miscToolStripMenuItem,
-            this.controlsToolStripMenuItem});
+            this.controlsToolStripMenuItem,
+            this.useStagingBranchToolStripMenuItem});
             this.toolStripButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton2.Image")));
             this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton2.Name = "toolStripButton2";
@@ -539,7 +541,7 @@ namespace CommandsEditor
             this.autoHideExplorerViewToolStripMenuItem,
             this.searchOnlyCompositeNames});
             this.compositeViewerToolStripMenuItem.Name = "compositeViewerToolStripMenuItem";
-            this.compositeViewerToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.compositeViewerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.compositeViewerToolStripMenuItem.Text = "Composite Display";
             // 
             // showExplorerViewToolStripMenuItem
@@ -577,7 +579,7 @@ namespace CommandsEditor
             this.showConfirmationWhenDeletingNodeToolStripMenuItem,
             this.giveOptionToDeleteEntityWhenNoNodesToolStripMenuItem});
             this.entityDisplayToolStripMenuItem.Name = "entityDisplayToolStripMenuItem";
-            this.entityDisplayToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.entityDisplayToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.entityDisplayToolStripMenuItem.Text = "Entity Display";
             // 
             // showEntityIDs
@@ -630,7 +632,7 @@ namespace CommandsEditor
             this.showGamePlatformToolStripMenuItem,
             this.writeCompressedToolStripMenuItem});
             this.miscToolStripMenuItem.Name = "miscToolStripMenuItem";
-            this.miscToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.miscToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.miscToolStripMenuItem.Text = "Misc";
             this.miscToolStripMenuItem.Click += new System.EventHandler(this.miscToolStripMenuItem_Click);
             // 
@@ -708,7 +710,7 @@ namespace CommandsEditor
             // controlsToolStripMenuItem
             // 
             this.controlsToolStripMenuItem.Name = "controlsToolStripMenuItem";
-            this.controlsToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.controlsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.controlsToolStripMenuItem.Text = "Controls";
             this.controlsToolStripMenuItem.Click += new System.EventHandler(this.controlsToolStripMenuItem_Click);
             // 
@@ -773,6 +775,16 @@ namespace CommandsEditor
             this.DEBUG_ReloadLevel.Text = "DEBUG: Reload Level";
             this.DEBUG_ReloadLevel.Click += new System.EventHandler(this.DEBUG_ReloadLevel_Click);
             // 
+            // manageBackupsBtn
+            // 
+            this.manageBackupsBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.manageBackupsBtn.Image = ((System.Drawing.Image)(resources.GetObject("manageBackupsBtn.Image")));
+            this.manageBackupsBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.manageBackupsBtn.Name = "manageBackupsBtn";
+            this.manageBackupsBtn.Size = new System.Drawing.Size(101, 22);
+            this.manageBackupsBtn.Text = "Manage Backups";
+            this.manageBackupsBtn.Click += new System.EventHandler(this.manageBackupsBtn_Click);
+            // 
             // launchGameBtn
             // 
             this.launchGameBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
@@ -814,15 +826,12 @@ namespace CommandsEditor
             this.dockPanel.TabIndex = 5;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
             // 
-            // manageBackupsBtn
+            // useStagingBranchToolStripMenuItem
             // 
-            this.manageBackupsBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.manageBackupsBtn.Image = ((System.Drawing.Image)(resources.GetObject("manageBackupsBtn.Image")));
-            this.manageBackupsBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.manageBackupsBtn.Name = "manageBackupsBtn";
-            this.manageBackupsBtn.Size = new System.Drawing.Size(101, 22);
-            this.manageBackupsBtn.Text = "Manage Backups";
-            this.manageBackupsBtn.Click += new System.EventHandler(this.manageBackupsBtn_Click);
+            this.useStagingBranchToolStripMenuItem.Name = "useStagingBranchToolStripMenuItem";
+            this.useStagingBranchToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.useStagingBranchToolStripMenuItem.Text = "Use Staging Branch";
+            this.useStagingBranchToolStripMenuItem.Click += new System.EventHandler(this.useStagingBranchToolStripMenuItem_Click);
             // 
             // CommandsEditor
             // 
@@ -933,5 +942,6 @@ namespace CommandsEditor
         private System.Windows.Forms.ToolStripMenuItem writeCompressedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem controlsToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton manageBackupsBtn;
+        private System.Windows.Forms.ToolStripMenuItem useStagingBranchToolStripMenuItem;
     }
 }

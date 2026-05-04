@@ -12,7 +12,7 @@ namespace OpenCAGE
     static class SettingsManager
     {
         static JObject _jsonConfig = null;
-        static string _configPath = CommandsEditor.Singleton.PathToAI + "\\OpenCAGE Settings.json";
+        static string _configPath = "OpenCAGE Settings.json";
 
         static SettingsManager()
         {

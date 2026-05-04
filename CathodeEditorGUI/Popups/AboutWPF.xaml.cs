@@ -26,7 +26,7 @@ namespace CommandsEditor.Popups
         {
             InitializeComponent();
 
-            string branchText = ((Singleton.IsOfflineMode) ? Singleton.Platform.ToString() : SettingsManager.GetString("CONFIG_RemoteBranch"));
+            string branchText = ((Singleton.IsOfflineMode) ? Singleton.Platform.ToString() : SettingsManager.GetString(Singleton.Settings.RemoteBranch));
             try
             {
                 if (Singleton.IsSteamworks)

@@ -148,6 +148,10 @@ namespace CommandsEditor
             public readonly string AskBeforeDeletingNode = "CS_AskBeforeDeletingNode";
             public readonly string ShowGamePlatform = "CONFIG_ShowPlatform";
             public readonly string LastSelectedLevel = "OPT_LoadToMap";
+            public readonly string RemoteBranch = "CONFIG_RemoteBranch";
+            public readonly string GameRoot = "PATH_GameRoot";
+            public readonly string UseStagingBranch = "CONFIG_UseStagingBranch";
+            public readonly string SkipUpdate = "CONFIG_SkipUpdateCheck";
         }
 
         public static Action OnAnimationsLoaded;

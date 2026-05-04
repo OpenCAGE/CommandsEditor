@@ -60,6 +60,8 @@ namespace CommandsEditor
         private int _defaultWidth;
         private int _defaultHeight;
 
+        private bool _settingUp = true;
+
         private DarkModeCS _dm;
 
         public CommandsEditor(string level = null)
@@ -208,6 +210,8 @@ namespace CommandsEditor
             if (!SettingsManager.IsSet(Singleton.Settings.AskBeforeDeletingNode)) SettingsManager.SetBool(Singleton.Settings.AskBeforeDeletingNode, true);
             showConfirmationWhenDeletingNodeToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.AskBeforeDeletingNode); showConfirmationWhenDeletingNodeToolStripMenuItem.PerformClick();
 
+            useStagingBranchToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.UseStagingBranch); useStagingBranchToolStripMenuItem.PerformClick();
+
             if (!SettingsManager.IsSet(Singleton.Settings.NodeColour_FunctionNode))
                 SettingsManager.SetInteger(Singleton.Settings.NodeColour_FunctionNode, Color.FromArgb(30, 144, 255).ToArgb());
             if (!SettingsManager.IsSet(Singleton.Settings.NodeColour_FunctionNodeBottom))
@@ -242,6 +246,7 @@ namespace CommandsEditor
                 SettingsManager.SetInteger(Singleton.Settings.NodeColour_VariableText, Color.White.ToArgb());
 
             versionToolStripMenuItem.Text = "Version " + ProductVersion;
+            _settingUp = false;
         }
 
         //keep dropdown open if cursor is inside it 
@@ -1514,6 +1519,16 @@ namespace CommandsEditor
         private void documentationToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Process.Start("https://opencage.co.uk/docs/");
+        }
+
+        private void useStagingBranchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            useStagingBranchToolStripMenuItem.Checked = !useStagingBranchToolStripMenuItem.Checked;
+            SettingsManager.SetBool(Singleton.Settings.UseStagingBranch, useStagingBranchToolStripMenuItem.Checked);
+#if SHIP_BUILD
+            if (!_settingUp)
+                UpdateManager.DoUpdate();
+#endif
         }
     }
 }

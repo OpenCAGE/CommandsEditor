@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommandsEditor;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -6,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace OpenCAGE
 {
@@ -17,19 +19,19 @@ namespace OpenCAGE
 
         static public bool IsUpdateAvailable(string ProductVersion)
         {
-            if (SettingsManager.GetBool("CONFIG_SkipUpdateCheck")) return false;
+            if (SettingsManager.GetBool(Singleton.Settings.SkipUpdate)) return false;
             try
             {
-                if (SettingsManager.GetString("CONFIG_RemoteBranch") == "")
+                if (SettingsManager.GetString(Singleton.Settings.RemoteBranch) == "")
                 {
-                    if (SettingsManager.GetBool("CONFIG_UseStagingBranch"))
-                        SettingsManager.SetString("CONFIG_RemoteBranch", "staging");
+                    if (SettingsManager.GetBool(Singleton.Settings.UseStagingBranch))
+                        SettingsManager.SetString(Singleton.Settings.RemoteBranch, "staging");
                     else
-                        SettingsManager.SetString("CONFIG_RemoteBranch", "master");
+                        SettingsManager.SetString(Singleton.Settings.RemoteBranch, "master");
                 }
 
                 //Get current Github version
-                Stream webStream = _webClient.OpenRead("https://raw.githubusercontent.com/MattFiler/OpenCAGE/" + SettingsManager.GetString("CONFIG_RemoteBranch") + "/Source/OpenCAGE/Properties/AssemblyInfo.cs?v=" + ProductVersion + "&r=" + _random.Next(5000).ToString());
+                Stream webStream = _webClient.OpenRead("https://raw.githubusercontent.com/MattFiler/OpenCAGE/" + SettingsManager.GetString(Singleton.Settings.RemoteBranch) + "/Source/OpenCAGE/Properties/AssemblyInfo.cs?v=" + ProductVersion + "&r=" + _random.Next(5000).ToString());
                 string[] LatestVersionArray = new StreamReader(webStream).ReadToEnd().Split(new[] { "AssemblyFileVersion(\"" }, StringSplitOptions.None);
                 string LatestVersionNumber = LatestVersionArray[1].Substring(0, LatestVersionArray[1].Length - 4);
 
@@ -47,6 +49,8 @@ namespace OpenCAGE
         {
             File.WriteAllBytes("OpenCAGE Updater.exe", CommandsEditor.Properties.Resources.OpenCAGE_Updater);
             Process.Start("OpenCAGE Updater.exe");
+            Application.Exit();
+            Environment.Exit(0);
         }
 #endif
     }
