@@ -116,19 +116,30 @@ namespace CommandsEditor.ConfigEditors
                 case "weapon":
                     weapon.Visible = true;
                     weapon_type.Text = selectedElement.GetAttribute("weapon_type");
+                    if (weapon_type.Text == "") weapon_type.SelectedIndex = 0;
                     ConfigEditorUtils.Subscribe(weapon.Controls, Save);
                     break;
                 case "ammo":
                     ammo.Visible = true;
                     target_weapon.Text = selectedElement.GetAttribute("target_weapon");
-                    ammo_type.Text = ((AMMO_TYPE)Convert.ToInt32(selectedElement.GetAttribute("ammo_type"))).ToString();
+                    if (target_weapon.Text == "") target_weapon.SelectedIndex = 0;
+                    if (selectedElement.GetAttribute("ammo_type") == "")
+                        ammo_type.SelectedIndex = 0;
+                    else
+                        ammo_type.Text = ((AMMO_TYPE)Convert.ToInt32(selectedElement.GetAttribute("ammo_type"))).ToString();
                     ConfigEditorUtils.Subscribe(ammo.Controls, Save);
                     break;
                 case "medikit":
                     SetHeldInfo(selectedElement);
                     medikit.Visible = true;
-                    health_increase_percentage.Text = selectedElement.GetAttribute("health_increase_percentage");
-                    upgraded_health_increase_percentage.Text = selectedElement.GetAttribute("upgraded_health_increase_percentage");
+                    if (selectedElement.GetAttribute("health_increase_percentage") == "")
+                        health_increase_percentage.Value = 0;
+                    else
+                        health_increase_percentage.Text = selectedElement.GetAttribute("health_increase_percentage");
+                    if (selectedElement.GetAttribute("upgraded_health_increase_percentage") == "")
+                        upgraded_health_increase_percentage.Value = 0;
+                    else
+                        upgraded_health_increase_percentage.Text = selectedElement.GetAttribute("upgraded_health_increase_percentage");
                     ConfigEditorUtils.Subscribe(medikit.Controls, Save);
                     break;
                 case "ied":
@@ -178,7 +189,9 @@ namespace CommandsEditor.ConfigEditors
             droppable_when_held.Checked = selectedElement.GetAttribute("droppable_when_held") == "true";
             drop_when_consume.Checked = selectedElement.GetAttribute("drop_when_consume") == "true";
             consume_when.Text = selectedElement.GetAttribute("consume_when");
+            if (consume_when.Text == "") consume_when.SelectedIndex = 0;
             activated_by.Text = selectedElement.GetAttribute("activated_by");
+            if (activated_by.Text == "") activated_by.SelectedIndex = 0;
             if (selectedElement.GetAttribute("cancellable_duration_in_seconds") == "")
                 cancellable_duration_in_seconds.Value = 0;
             else
