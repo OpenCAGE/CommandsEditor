@@ -43,7 +43,9 @@ namespace CommandsEditor.ConfigEditors
                 else if (level.GetAttribute("tool_level") == "99")
                     lvl99Max.SelectedItem = level.GetAttribute("max_difficulty");
             }
+
             this.FormClosing += HackingEditor_FormClosing;
+            Singleton.OnResetConfigs += () => { this.Close(); };
         }
 
         private void PopulateDifficulties(ComboBox combo, XmlElement difficulties)

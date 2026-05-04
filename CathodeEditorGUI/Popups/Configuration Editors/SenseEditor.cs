@@ -31,6 +31,7 @@ namespace CommandsEditor.ConfigEditors
             characters.EndUpdate();
 
             this.FormClosing += SenseEditor_FormClosing;
+            Singleton.OnResetConfigs += () => { this.Close(); };
         }
 
         private void SenseEditor_Load(object sender, EventArgs e)

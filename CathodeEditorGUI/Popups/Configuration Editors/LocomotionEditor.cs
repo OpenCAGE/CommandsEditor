@@ -30,6 +30,7 @@ namespace CommandsEditor.ConfigEditors
             characters.EndUpdate();
 
             this.FormClosing += LocomotionEditor_FormClosing;
+            Singleton.OnResetConfigs += () => { this.Close(); };
         }
 
         private void LocomotionEditor_Load(object sender, EventArgs e)

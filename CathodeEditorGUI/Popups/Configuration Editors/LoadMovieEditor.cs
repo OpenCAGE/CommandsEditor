@@ -31,6 +31,8 @@ namespace CommandsEditor.ConfigEditors
             moviePlaylists.Enabled = playlists.ChildNodes.Count != 0;
             if (moviePlaylists.Enabled)
                 moviePlaylists.SelectedIndex = 0;
+
+            Singleton.OnResetConfigs += () => { this.Close(); };
         }
 
         private void moviePlaylists_SelectedIndexChanged(object sender, EventArgs e)

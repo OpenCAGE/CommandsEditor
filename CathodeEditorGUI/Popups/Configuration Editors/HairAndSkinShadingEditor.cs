@@ -46,6 +46,7 @@ namespace CommandsEditor.ConfigEditors
 
             ConfigEditorUtils.Subscribe(this.Controls, Save);
             this.FormClosing += HairAndSkinShadingEditor_FormClosing;
+            Singleton.OnResetConfigs += () => { this.Close(); };
         }
 
         private void HairAndSkinShadingEditor_FormClosing(object sender, FormClosingEventArgs e)

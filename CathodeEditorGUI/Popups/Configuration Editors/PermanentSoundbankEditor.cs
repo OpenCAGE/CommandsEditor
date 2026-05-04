@@ -26,6 +26,8 @@ namespace CommandsEditor.ConfigEditors
                 permaSoundbanks.Items.Add(soundbank);
             }
             permaSoundbanks.EndUpdate();
+
+            Singleton.OnResetConfigs += () => { this.Close(); };
         }
 
         private void addNew_Click(object sender, EventArgs e)

@@ -82,16 +82,7 @@ namespace CommandsEditor
                 return;
             }
 
-            List<Process> allProcesses = new List<Process>(Process.GetProcessesByName("AI"));
-            for (int x = 0; x < allProcesses.Count; x++)
-            {
-                try
-                {
-                    allProcesses[x]?.Kill();
-                    allProcesses[x]?.WaitForExit();
-                }
-                catch { }
-            }
+            EditorUtils.CloseAI();
 
             this.Cursor = Cursors.WaitCursor;
             if (level.RestoreBackup(level.Backups[backupList.SelectedItems[0].Index].ID))

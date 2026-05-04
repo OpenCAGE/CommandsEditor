@@ -46,6 +46,7 @@ namespace CommandsEditor.ConfigEditors
             classSelection.EndUpdate();
 
             this.FormClosing += AmmoEditor_FormClosing;
+            Singleton.OnResetConfigs += () => { this.Close(); };
         }
 
         private void AmmoEditor_Load(object sender, EventArgs e)

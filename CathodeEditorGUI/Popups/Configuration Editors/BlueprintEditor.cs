@@ -28,6 +28,8 @@ namespace CommandsEditor.ConfigEditors
                 blueprints.Items.Add(recipe.GetAttribute("name"));
             }
             blueprints.SelectedIndex = 0;
+
+            Singleton.OnResetConfigs += () => { this.Close(); };
         }
 
         private void blueprints_SelectedIndexChanged(object sender, EventArgs e)

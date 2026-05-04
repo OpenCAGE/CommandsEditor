@@ -1,4 +1,4 @@
-﻿namespace CommandsEditor.Popups
+namespace CommandsEditor.Popups
 {
     partial class ResetConfigs
     {
@@ -42,6 +42,7 @@
             this.resetPhysMats = new System.Windows.Forms.Button();
             this.resetGlobalConst = new System.Windows.Forms.Button();
             this.resetPermaBanks = new System.Windows.Forms.Button();
+            this.resetBehaviourTrees = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // resetGblItem
@@ -166,7 +167,7 @@
             // 
             // resetPermaBanks
             // 
-            this.resetPermaBanks.Location = new System.Drawing.Point(13, 456);
+            this.resetPermaBanks.Location = new System.Drawing.Point(12, 456);
             this.resetPermaBanks.Name = "resetPermaBanks";
             this.resetPermaBanks.Size = new System.Drawing.Size(434, 31);
             this.resetPermaBanks.TabIndex = 12;
@@ -174,11 +175,22 @@
             this.resetPermaBanks.UseVisualStyleBackColor = true;
             this.resetPermaBanks.Click += new System.EventHandler(this.resetPermaBanks_Click);
             // 
+            // resetBehaviourTrees
+            // 
+            this.resetBehaviourTrees.Location = new System.Drawing.Point(12, 493);
+            this.resetBehaviourTrees.Name = "resetBehaviourTrees";
+            this.resetBehaviourTrees.Size = new System.Drawing.Size(434, 31);
+            this.resetBehaviourTrees.TabIndex = 13;
+            this.resetBehaviourTrees.Text = "Reset Behaviour Trees";
+            this.resetBehaviourTrees.UseVisualStyleBackColor = true;
+            this.resetBehaviourTrees.Click += new System.EventHandler(this.resetBehaviourTrees_Click);
+            // 
             // ResetConfigs
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(459, 499);
+            this.ClientSize = new System.Drawing.Size(459, 536);
+            this.Controls.Add(this.resetBehaviourTrees);
             this.Controls.Add(this.resetPermaBanks);
             this.Controls.Add(this.resetGlobalConst);
             this.Controls.Add(this.resetPhysMats);
@@ -217,5 +229,6 @@
         private System.Windows.Forms.Button resetPhysMats;
         private System.Windows.Forms.Button resetGlobalConst;
         private System.Windows.Forms.Button resetPermaBanks;
+        private System.Windows.Forms.Button resetBehaviourTrees;
     }
 }

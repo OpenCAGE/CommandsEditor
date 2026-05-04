@@ -28,6 +28,7 @@ namespace CommandsEditor.ConfigEditors
             classSelection.EndUpdate();
 
             this.FormClosing += AlienConfigEditor_FormClosing;
+            Singleton.OnResetConfigs += () => { this.Close(); };
         }
 
         private void AlienConfigEditor_Load(object sender, EventArgs e)

@@ -63,6 +63,7 @@ namespace CommandsEditor
         public static Action OnResourceModified;
         public static Action OnNodeStyleChanged;
         public static Action<SelectEnumString> OnEnumStringUIShown;
+        public static Action OnResetConfigs;
 
         //Composite display events
         public static Action<CompositeDisplay> OnCompositeDisplayOpening;

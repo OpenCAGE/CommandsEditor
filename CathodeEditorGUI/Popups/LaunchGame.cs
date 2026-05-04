@@ -29,17 +29,7 @@ namespace CommandsEditor
             InitializeComponent();
 
             //Close the game down before we do anything
-            List<Process> allProcesses = new List<Process>(Process.GetProcessesByName("AI"));
-            allProcesses.AddRange(Process.GetProcessesByName("CinematicToolsInjector"));
-            for (int x = 0; x < allProcesses.Count; x++)
-            {
-                try
-                {
-                    allProcesses[x]?.Kill();
-                    allProcesses[x]?.WaitForExit();
-                }
-                catch { }
-            }
+            EditorUtils.CloseAI(new List<string>(new string[] { "CinematicToolsInjector" }));
 
             PatchManager.PerformRecommendedPatches(Singleton.Platform, Singleton.PathToAI);
 

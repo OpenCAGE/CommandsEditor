@@ -52,6 +52,7 @@ namespace CommandsEditor.ConfigEditors
 
             ConfigEditorUtils.Subscribe(this.Controls, Save);
             this.FormClosing += GlobalConstantsEditor_FormClosing;
+            Singleton.OnResetConfigs += () => { this.Close(); };
         }
 
         private void GlobalConstantsEditor_FormClosing(object sender, FormClosingEventArgs e)

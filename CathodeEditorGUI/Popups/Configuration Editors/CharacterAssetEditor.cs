@@ -40,6 +40,7 @@ namespace CommandsEditor.ConfigEditors
 
             this.Load += EditCharacterAssets_Load;
             this.FormClosing += EditCharacterAssets_FormClosing;
+            Singleton.OnResetConfigs += () => { this.Close(); };
         }
 
         private void EditCharacterAssets_Load(object sender, EventArgs e)

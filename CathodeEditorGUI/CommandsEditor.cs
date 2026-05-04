@@ -481,16 +481,7 @@ namespace CommandsEditor
             if (_commandsDisplay == null) return;
 
             //Close alien down if it's open, it conflicts with our write locks!
-            List<Process> allProcesses = new List<Process>(Process.GetProcessesByName("AI"));
-            for (int x = 0; x < allProcesses.Count; x++)
-            {
-                try
-                {
-                    allProcesses[x]?.Kill();
-                    allProcesses[x]?.WaitForExit();
-                }
-                catch { }
-            }
+            EditorUtils.CloseAI();
 
             Cursor.Current = Cursors.WaitCursor;
             statusText.Text = "Saving...";

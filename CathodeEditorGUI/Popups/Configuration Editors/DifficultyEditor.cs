@@ -69,6 +69,7 @@ namespace CommandsEditor.ConfigEditors
             classSelection.EndUpdate();
 
             this.FormClosing += DifficultyEditor_FormClosing;
+            Singleton.OnResetConfigs += () => { this.Close(); };
         }
 
         private void DifficultyEditor_Load(object sender, EventArgs e)

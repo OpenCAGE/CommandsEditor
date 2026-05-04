@@ -36,6 +36,8 @@ namespace CommandsEditor.ConfigEditors
             foreach (Level lvl in _levels)
                 levelList.Items.Add(lvl.name);
             levelList.EndUpdate();
+
+            Singleton.OnResetConfigs += () => { this.Close(); };
         }
 
         private void levelList_SelectedIndexChanged(object sender, EventArgs e)

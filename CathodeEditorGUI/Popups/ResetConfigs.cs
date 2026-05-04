@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.IO.Compression;
@@ -10,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml;
 
 namespace CommandsEditor.Popups
 {
@@ -27,8 +29,6 @@ namespace CommandsEditor.Popups
                 compressedStream.CopyTo(stream);
                 _backupFiles = new PAK2(stream.ToArray());
             }
-
-            string sdffsdf = "";
         }
 
         private void ResetFile(string file)
@@ -38,12 +38,16 @@ namespace CommandsEditor.Popups
 
         private void resetGblItem_Click(object sender, EventArgs e)
         {
+            Singleton.OnResetConfigs?.Invoke();
+            EditorUtils.CloseAI();
             ResetFile("GBL_ITEM.BML");
             MessageBox.Show("Successfully reverted!");
         }
 
         private void resetAlienConfigs_Click(object sender, EventArgs e)
         {
+            Singleton.OnResetConfigs?.Invoke();
+            EditorUtils.CloseAI();
             ResetFile("ALIENCONFIGS/ALIENCONFIGS.BML");
             ResetFile("ALIENCONFIGS/BACKSTAGEALERT.BML");
             ResetFile("ALIENCONFIGS/BACKSTAGEHOLD.BML");
@@ -62,11 +66,16 @@ namespace CommandsEditor.Popups
 
         private void resetRadiosity_Click(object sender, EventArgs e)
         {
+            Singleton.OnResetConfigs?.Invoke();
+            EditorUtils.CloseAI();
             ResetFile("RADIOSITY_SETTINGS.TXT");
+            MessageBox.Show("Successfully reverted!");
         }
 
         private void resetHairAndSkin_Click(object sender, EventArgs e)
         {
+            Singleton.OnResetConfigs?.Invoke();
+            EditorUtils.CloseAI();
             ResetFile("HAIR_SHADING_SETTINGS.TXT");
             ResetFile("SKIN_SHADING_SETTINGS.TXT");
             MessageBox.Show("Successfully reverted!");
@@ -74,12 +83,16 @@ namespace CommandsEditor.Popups
 
         private void resetGraphics_Click(object sender, EventArgs e)
         {
+            Singleton.OnResetConfigs?.Invoke();
+            EditorUtils.CloseAI();
             ResetFile("ENGINE_SETTINGS.XML");
             MessageBox.Show("Successfully reverted!");
         }
 
         private void resetDifficulties_Click(object sender, EventArgs e)
         {
+            Singleton.OnResetConfigs?.Invoke();
+            EditorUtils.CloseAI();
             ResetFile("DIFFICULTYSETTINGS/DIFFICULTYSETTINGS.BML");
             ResetFile("DIFFICULTYSETTINGS/EASY.BML");
             ResetFile("DIFFICULTYSETTINGS/HARD.BML");
@@ -91,6 +104,8 @@ namespace CommandsEditor.Popups
 
         private void resetViewcones_Click(object sender, EventArgs e)
         {
+            Singleton.OnResetConfigs?.Invoke();
+            EditorUtils.CloseAI();
             ResetFile("VIEW_CONE_SETS/VIEWCONESET_ANDROID.BML");
             ResetFile("VIEW_CONE_SETS/VIEWCONESET_HUMAN.BML");
             ResetFile("VIEW_CONE_SETS/VIEWCONESET_HUMAN_HEIGHTENED.BML");
@@ -103,6 +118,8 @@ namespace CommandsEditor.Popups
 
         private void resetAmmo_Click(object sender, EventArgs e)
         {
+            Singleton.OnResetConfigs?.Invoke();
+            EditorUtils.CloseAI();
             ResetFile("WEAPON_INFO/AMMO/ACID_BURST_LARGE.BML");
             ResetFile("WEAPON_INFO/AMMO/ACID_BURST_SMALL.BML");
             ResetFile("WEAPON_INFO/AMMO/AMMOTYPES.BML");
@@ -148,12 +165,16 @@ namespace CommandsEditor.Popups
 
         private void resetCharAssets_Click(object sender, EventArgs e)
         {
+            Singleton.OnResetConfigs?.Invoke();
+            EditorUtils.CloseAI();
             ResetFile("CHR_INFO/CUSTOMCHARACTERASSETDATA.BIN");
             MessageBox.Show("Successfully reverted!");
         }
 
         private void resetCharAttributes_Click(object sender, EventArgs e)
         {
+            Singleton.OnResetConfigs?.Invoke();
+            EditorUtils.CloseAI();
             ResetFile("CHR_INFO/ATTRIBUTES/ALIEN.BML");
             ResetFile("CHR_INFO/ATTRIBUTES/ANDROID.BML");
             ResetFile("CHR_INFO/ATTRIBUTES/ANDROID_HEAVY.BML");
@@ -175,12 +196,16 @@ namespace CommandsEditor.Popups
 
         private void resetPhysMats_Click(object sender, EventArgs e)
         {
+            Singleton.OnResetConfigs?.Invoke();
+            EditorUtils.CloseAI();
             ResetFile("MATERIAL_DATA/MATERIALS.BML");
             MessageBox.Show("Successfully reverted!");
         }
 
         private void resetGlobalConst_Click(object sender, EventArgs e)
         {
+            Singleton.OnResetConfigs?.Invoke();
+            EditorUtils.CloseAI();
             ResetFile("UI/SELECTIONOVERLAYPARAMS.BIN");
             ResetFile("GLOBALCONSTANTS.BML");
             MessageBox.Show("Successfully reverted!");
@@ -188,7 +213,28 @@ namespace CommandsEditor.Popups
 
         private void resetPermaBanks_Click(object sender, EventArgs e)
         {
+            Singleton.OnResetConfigs?.Invoke();
+            EditorUtils.CloseAI();
             ResetFile("LIST_OF_PERMANENT_SOUND_BANKS.TXT");
+            MessageBox.Show("Successfully reverted!");
+        }
+
+        private void resetBehaviourTrees_Click(object sender, EventArgs e)
+        {
+            EditorUtils.CloseAI(new List<string>(new string[] { "BehaviourTreeEditor" }));
+            ResetFile("BINARY_BEHAVIOR/_DIRECTORY_CONTENTS.BML");
+
+            string pathToFolder = Singleton.PathToAI + @"\DATA\BEHAVIOR\";
+            if (Directory.Exists(pathToFolder)) 
+                Directory.Delete(pathToFolder, true);
+            Directory.CreateDirectory(pathToFolder);
+
+            BML bml = new BML(Singleton.PathToAI + "/DATA/BINARY_BEHAVIOR/_DIRECTORY_CONTENTS.BML");
+            XmlDocument xml = bml.Content;
+            XmlNodeList files = xml.SelectNodes("//DIR/File");
+            foreach (XmlNode file in files)
+                File.WriteAllText(pathToFolder + file.Attributes["name"].Value.Substring(0, file.Attributes["name"].Value.Length - 3) + "xml", file.InnerXml);
+
             MessageBox.Show("Successfully reverted!");
         }
     }

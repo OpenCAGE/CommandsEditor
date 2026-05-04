@@ -23,6 +23,8 @@ namespace CommandsEditor.ConfigEditors
                 materialList.Items.Add(material.GetAttribute("name"));
             }
             materialList.EndUpdate();
+
+            Singleton.OnResetConfigs += () => { this.Close(); };
         }
 
         AddNewPhysMaterial _addMat = null;

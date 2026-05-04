@@ -161,6 +161,8 @@ namespace CommandsEditor.ConfigEditors
                         }
                 }
             }
+
+            Singleton.OnResetConfigs += () => { this.Close(); };
         }
 
         //Remove from list

@@ -45,6 +45,7 @@ namespace CommandsEditor.ConfigEditors
             viewconeSets.EndUpdate();
 
             this.FormClosing += ViewconeEditor_FormClosing;
+            Singleton.OnResetConfigs += () => { this.Close(); };
         }
 
         private void ViewconeEditor_Load(object sender, EventArgs e)

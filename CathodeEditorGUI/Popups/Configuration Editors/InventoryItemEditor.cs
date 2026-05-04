@@ -65,6 +65,7 @@ namespace CommandsEditor.ConfigEditors
                 listView.Items[0].Selected = true;
 
             this.FormClosing += InventoryItemEditor_FormClosing;
+            Singleton.OnResetConfigs += () => { this.Close(); };
         }
 
         private void InventoryItemEditor_FormClosing(object sender, FormClosingEventArgs e)

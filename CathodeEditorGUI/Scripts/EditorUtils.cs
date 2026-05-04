@@ -6,6 +6,7 @@ using CommandsEditor.DockPanels;
 using OpenCAGE;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
@@ -415,6 +416,28 @@ namespace CommandsEditor
                 return "";
             string[] cont = comp.name.Replace('\\', '/').Split('/');
             return cont[cont.Length - 1];
+        }
+
+        /* Utility: close the game down */
+        public static void CloseAI(List<string> additionalProcesses = null)
+        {
+            List<Process> allProcesses = new List<Process>(Process.GetProcessesByName("AI"));
+            if (additionalProcesses != null)
+            {
+                foreach (string additionalProcess in additionalProcesses)
+                {
+                    allProcesses.AddRange(Process.GetProcessesByName(additionalProcess));
+                }
+            }
+            for (int x = 0; x < allProcesses.Count; x++)
+            {
+                try
+                {
+                    allProcesses[x]?.Kill();
+                    allProcesses[x]?.WaitForExit();
+                }
+                catch { }
+            }
         }
 
         /* Utility: get the image/group index for an entity, for populating ListViewItems */

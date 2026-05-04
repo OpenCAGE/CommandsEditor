@@ -73,6 +73,7 @@ namespace CommandsEditor.ConfigEditors
             characters.EndUpdate();
 
             this.FormClosing += AttributesEditor_FormClosing;
+            Singleton.OnResetConfigs += () => { this.Close(); };
         }
 
         private void AttributesEditor_Load(object sender, EventArgs e)
