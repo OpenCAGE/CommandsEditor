@@ -1081,12 +1081,6 @@ namespace CommandsEditor.ConfigEditors
             // 
             this.classSelection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.classSelection.FormattingEnabled = true;
-            this.classSelection.Items.AddRange(new object[] {
-            "HARD",
-            "MEDIUM",
-            "EASY",
-            "NOVICE",
-            "IRON"});
             this.classSelection.Location = new System.Drawing.Point(12, 13);
             this.classSelection.Name = "classSelection";
             this.classSelection.Size = new System.Drawing.Size(721, 21);
