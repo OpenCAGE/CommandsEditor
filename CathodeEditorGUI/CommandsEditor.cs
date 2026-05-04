@@ -925,6 +925,11 @@ namespace CommandsEditor
             galaxyToolStripMenuItem.Enabled = _commandsDisplay?.Content?.Level != null;
         }
 
+        private void charactersToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            assetSetsToolStripMenuItem.Enabled = _commandsDisplay?.Content?.Level != null;
+        }
+
         SetNodeColours _setNodeColours;
         private void setNodeColoursToolStripMenuItem_Click(object sender, EventArgs e)
         {
