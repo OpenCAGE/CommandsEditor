@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LevelBackupManager));
             this.deleteSelectedBackups = new System.Windows.Forms.Button();
             this.removeSelectedBackup = new System.Windows.Forms.Button();
             this.levelList = new System.Windows.Forms.ComboBox();
@@ -40,6 +41,7 @@
             this.backupDates = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.backupContents = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.backupAllNow = new System.Windows.Forms.Button();
+            this.revertConfigs = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // deleteSelectedBackups
@@ -149,12 +151,22 @@
             this.backupAllNow.UseVisualStyleBackColor = true;
             this.backupAllNow.Click += new System.EventHandler(this.backupAllNow_Click);
             // 
+            // revertConfigs
+            // 
+            this.revertConfigs.Location = new System.Drawing.Point(198, 482);
+            this.revertConfigs.Name = "revertConfigs";
+            this.revertConfigs.Size = new System.Drawing.Size(180, 23);
+            this.revertConfigs.TabIndex = 12;
+            this.revertConfigs.Text = "Revert Configs";
+            this.revertConfigs.UseVisualStyleBackColor = true;
+            this.revertConfigs.Click += new System.EventHandler(this.revertConfigs_Click);
+            // 
             // LevelBackupManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(903, 514);
-            this.Icon = global::CommandsEditor.SharedFormIcon.Icon;
+            this.Controls.Add(this.revertConfigs);
             this.Controls.Add(this.backupAllNow);
             this.Controls.Add(this.backupList);
             this.Controls.Add(this.label2);
@@ -164,11 +176,12 @@
             this.Controls.Add(this.levelList);
             this.Controls.Add(this.removeSelectedBackup);
             this.Controls.Add(this.deleteSelectedBackups);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = global::CommandsEditor.SharedFormIcon.Icon;
             this.MaximizeBox = false;
             this.Name = "LevelBackupManager";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "OpenCAGE Level Backup Manager";
+            this.Text = "Backup Manager";
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -187,6 +200,7 @@
         private System.Windows.Forms.ColumnHeader backupDates;
         private System.Windows.Forms.Button backupAllNow;
         private System.Windows.Forms.ColumnHeader backupContents;
+        private System.Windows.Forms.Button revertConfigs;
     }
 }
 

@@ -19,6 +19,8 @@ namespace CommandsEditor.Popups.Configuration_Editors
             // CUSTOMCHARACTERVOICETYPEMAPPINGS.BIN in CHR_INFO -> it's an XML file
 
             // Note that there are also 2 other BIN files here that CathodeLib supports that aren't editable yet: CUSTOMCHARACTERASSETDATA is already used by EditCharacterAssets.
+
+            // todo - when i implement this i need to add it to the backup tool
         }
     }
 }

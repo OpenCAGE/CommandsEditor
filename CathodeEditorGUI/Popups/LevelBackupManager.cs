@@ -1,5 +1,7 @@
+using AlienPAK;
 using CathodeLib;
 using CommandsEditor.Backups;
+using CommandsEditor.Popups;
 using OpenCAGE;
 using System;
 using System.Collections.Generic;
@@ -171,6 +173,24 @@ namespace CommandsEditor
             if (levelName == "")
                 return true;
             return Singleton.Editor.CommandsDisplay.Content.Level.Name.ToUpper().Replace("\\", "/") == levelName.ToUpper().Replace("\\", "/");
+        }
+
+        ResetConfigs _configReset = null;
+        private void revertConfigs_Click(object sender, EventArgs e)
+        {
+            if (_configReset != null)
+            {
+                _configReset.FormClosed -= _configReset_FormClosed;
+                _configReset.Close();
+            }
+
+            _configReset = new ResetConfigs();
+            _configReset.Show();
+            _configReset.FormClosed += _configReset_FormClosed;
+        }
+        private void _configReset_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _configReset = null;
         }
     }
 }

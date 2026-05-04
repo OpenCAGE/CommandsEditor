@@ -8,6 +8,9 @@ namespace CommandsEditor.ConfigEditors
 {
     public partial class LocalisationEditor : BaseWindow
     {
+
+        // todo - when i implement this i need to add it to the backup tool (?)
+
         readonly LocalisationHandler _localisation = new LocalisationHandler();
         readonly TextBox[] _languageTextBoxes;
         List<LocalisedText> _allEnglishStrings = new List<LocalisedText>();

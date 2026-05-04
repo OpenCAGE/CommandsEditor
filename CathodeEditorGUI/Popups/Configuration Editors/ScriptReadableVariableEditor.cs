@@ -18,6 +18,8 @@ namespace CommandsEditor.ConfigEditors
             InitializeComponent();
 
             //SCRIPT_READABLE_VARIABLES.XML -> this is used by PACKAGES, where the values can be defined within script_variable_values, and then read by the ExternalVariableBool entity - useful?
+
+            // todo - when i implement this i need to add it to the backup tool
         }
     }
 }

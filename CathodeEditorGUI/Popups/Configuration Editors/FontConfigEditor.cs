@@ -16,6 +16,8 @@ namespace CommandsEditor.ConfigEditors
         public FontConfigEditor() : base()
         {
             InitializeComponent();
+
+            // todo - when i implement this i need to add it to the backup tool
         }
     }
 }
