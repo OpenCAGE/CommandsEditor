@@ -34,8 +34,8 @@ namespace CommandsEditor.Backups
         {
             _level = level;
 
-            LevelFolder = SettingsManager.GetString("PATH_GameRoot") + "/DATA/ENV/" + level;
-            BackupFolder = SettingsManager.GetString("PATH_GameRoot") + "/DATA/MODTOOLS/BACKUPS/" + level;
+            LevelFolder = Singleton.PathToAI + "/DATA/ENV/" + level;
+            BackupFolder = Singleton.PathToAI + "/DATA/MODTOOLS/BACKUPS/" + level;
 
             // This is a bit of a hack - when this logic was used in the old external tool it always removed 'PRODUCTION' from the filepath.
             // As such, to support that old logic and avoid throwing away backups, lets try to trim it off.
@@ -43,7 +43,7 @@ namespace CommandsEditor.Backups
             {
                 if (level.ToUpper().StartsWith("PRODUCTION"))
                 {
-                    string altBackupFolder = SettingsManager.GetString("PATH_GameRoot") + "/DATA/MODTOOLS/BACKUPS/" + level.Substring("PRODUCTION/".Length);
+                    string altBackupFolder = Singleton.PathToAI + "/DATA/MODTOOLS/BACKUPS/" + level.Substring("PRODUCTION/".Length);
                     if (Directory.Exists(altBackupFolder))
                         BackupFolder = altBackupFolder;
                 }

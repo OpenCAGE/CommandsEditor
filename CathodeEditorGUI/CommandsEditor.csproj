@@ -34,6 +34,14 @@
     <Optimize>true</Optimize>
     <DefineConstants>CATHODE_FAIL_HARD;USE_PRETTY_COMPOSITE_PATHS</DefineConstants>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ship|AnyCPU'">
+    <OutputPath>..\Build\</OutputPath>
+    <DefineConstants>CATHODE_FAIL_HARD;USE_PRETTY_COMPOSITE_PATHS;SHIP_BUILD</DefineConstants>
+    <Optimize>true</Optimize>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>7.3</LangVersion>
+  </PropertyGroup>
   <ItemGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <Reference Include="CathodeLib">
       <HintPath>..\CathodeLib\CathodeLib\bin\Debug\netstandard2.0\CathodeLib.dll</HintPath>
@@ -61,6 +69,32 @@
     </Reference>
   </ItemGroup>
   <ItemGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <Reference Include="CathodeLib">
+      <HintPath>..\CathodeLib\CathodeLib\bin\Release\netstandard2.0\CathodeLib.dll</HintPath>
+    </Reference>
+    <Reference Include="ST.Library.UI">
+      <HintPath>..\STNodeEditor\ST.Library.UI\bin\Release\ST.Library.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="WeifenLuo.WinFormsUI.Docking">
+      <HintPath>..\DockPanelSuite\WinFormsUI\bin\Release\net40\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
+    </Reference>
+    <Reference Include="WeifenLuo.WinFormsUI.Docking.ThemeVS2015">
+      <HintPath>..\DockPanelSuite\WinFormsUI\bin\Release\net40\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll</HintPath>
+    </Reference>
+    <Reference Include="WebsocketSharp">
+      <HintPath>lib\WebsocketSharp\websocket-sharp.dll</HintPath>
+    </Reference>
+    <Reference Include="HelixToolkit">
+      <HintPath>lib\HelixToolkit\Release\HelixToolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="HelixToolkit.Wpf">
+      <HintPath>lib\HelixToolkit\Release\HelixToolkit.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Logging.Abstractions">
+      <HintPath>lib\HelixToolkit\Release\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup Condition="'$(Configuration)|$(Platform)' == 'Ship|AnyCPU'">
     <Reference Include="CathodeLib">
       <HintPath>..\CathodeLib\CathodeLib\bin\Release\netstandard2.0\CathodeLib.dll</HintPath>
     </Reference>
@@ -124,6 +158,9 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="Steamworks.NET">
+      <HintPath>.\Steamworks.NET.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.2\System.dll</HintPath>
     </Reference>
@@ -731,6 +768,7 @@
       <DependentUpon>FunctionTypeList.cs</DependentUpon>
     </Compile>
     <Compile Include="Scripts\AlienLevel.cs" />
+    <Compile Include="Scripts\AnalyticsManager.cs" />
     <Compile Include="Scripts\DarkModeCS.cs" />
     <Compile Include="Scripts\MaterialApplier.cs" />
     <Compile Include="Scripts\CompositePath.cs" />
@@ -982,6 +1020,7 @@
     <Compile Include="Scripts\RuntimeUtils Connection\Client.cs" />
     <Compile Include="Scripts\RuntimeUtils Connection\Send.cs" />
     <Compile Include="Scripts\Singleton.cs" />
+    <Compile Include="Scripts\UpdateManager.cs" />
     <Compile Include="UserControls\Base\ParameterUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -1416,6 +1455,10 @@
     </EmbeddedResource>
     <Resource Include="Fonts\Isolation_Isolation.ttf" />
     <Resource Include="Fonts\JixellationBold_Jixellation.ttf" />
+    <None Include="debug_font\mini_font.fnt" />
+    <None Include="debug_font\mini_font_outlined.fnt" />
+    <None Include="debug_font\new_font.fnt" />
+    <None Include="debug_font\tiny_font.fnt" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -1439,6 +1482,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Updater\OpenCAGE Updater.exe" />
     <None Include="Resources\CinematicToolsInjector.exe" />
     <None Include="Resources\assimp.dll" />
     <Resource Include="Images\bluesky.png" />

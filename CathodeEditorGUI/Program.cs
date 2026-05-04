@@ -1,13 +1,17 @@
 using Assimp;
 using CathodeLib;
+using Newtonsoft.Json.Linq;
 using OpenCAGE;
+using Steamworks;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Net.Http;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -42,26 +46,12 @@ namespace CommandsEditor
                 }
             }
 
-            //Set path to AI
-            if (GetArgument("pathToAI") != null)
-                Singleton.PathToAI = GetArgument("pathToAI");
-            else
-                Singleton.PathToAI = Environment.CurrentDirectory;
-
-#if !DEBUG
-            //Verify location
-            //if (!File.Exists(Singleton.PathToAI + "/AI.exe")) 
-            //    throw new Exception("This tool was launched incorrectly, or was not placed within the Alien: Isolation directory.");
-#endif
-
-            Singleton.Platform = PatchManager.GetPlatform(Singleton.PathToAI);
-
             //Make sure we're using the UK culture to format our numbers correctly
             CultureInfo newCulture = CultureInfo.CreateSpecificCulture("en-GB");
             Thread.CurrentThread.CurrentUICulture = newCulture;
             Thread.CurrentThread.CurrentCulture = newCulture;
 
-#if !DEBUG
+#if SHIP_BUILD
             //Advanced error handlers for silent exceptions
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
             Application.ThreadException += Application_ThreadException;
@@ -89,6 +79,198 @@ namespace CommandsEditor
             });
             logstream.Attach();
 #endif
+
+#if SHIP_BUILD
+            Singleton.IsOfflineMode = args.Contains("-offline_mode") && File.Exists("Assets/assets.manifest");
+
+            if (File.Exists("steam_api64.dll") && File.Exists("Assets/assets.manifest"))
+            {
+                try
+                {
+                    Singleton.IsOfflineMode = true;
+                    Steamworks.SteamAPI.Init();
+                    if (Steamworks.SteamAPI.RestartAppIfNecessary((Steamworks.AppId_t)3367530))
+                    {
+                        Application.Exit();
+                        Environment.Exit(0);
+                        return;
+                    }
+                    Singleton.IsSteamworks = true;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Steamworks Exception: " + e.ToString());
+                }
+            }
+#endif
+
+#if DEBUG
+            if (GetArgument("pathToAI") != null)
+            {
+                Singleton.PathToAI = GetArgument("pathToAI");
+            }
+            else
+            {
+#endif
+                if (!File.Exists("OpenCAGE Settings.json"))
+                {
+                    if (Singleton.IsSteamworks && File.Exists(AppDomain.CurrentDomain.BaseDirectory + "/../Alien Isolation/AI.exe"))
+                    {
+                        Singleton.PathToAI = Path.GetFullPath(AppDomain.CurrentDomain.BaseDirectory + "/../Alien Isolation/");
+                        SettingsManager.SetString("PATH_GameRoot", Singleton.PathToAI);
+                    }
+                    else if (File.Exists(AppDomain.CurrentDomain.BaseDirectory + "/AI.exe"))
+                    {
+                        Singleton.PathToAI = Path.GetFullPath(AppDomain.CurrentDomain.BaseDirectory);
+                        SettingsManager.SetString("PATH_GameRoot", Singleton.PathToAI);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please locate your Alien: Isolation executable (AI.exe).", "OpenCAGE Setup", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        using (OpenFileDialog dialog = new OpenFileDialog())
+                        {
+                            dialog.Filter = "Applications (*.exe)|AI.exe";
+                            if (dialog.ShowDialog() == DialogResult.OK)
+                            {
+                                Singleton.PathToAI = Path.GetDirectoryName(dialog.FileName);
+                                SettingsManager.SetString("PATH_GameRoot", Singleton.PathToAI);
+                            }
+                            else
+                            {
+                                Application.Exit();
+                                Environment.Exit(0);
+                                return;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    Singleton.PathToAI = SettingsManager.GetString("PATH_GameRoot");
+                }
+#if DEBUG
+            }
+#endif
+
+#if SHIP_BUILD
+            //If the user is using offline mode, make sure REMOTE_ASSETS is up to date with our offline Assets folder
+            if (Singleton.IsOfflineMode)
+            {
+                string _gameAssetPath = Singleton.PathToAI + "\\DATA\\MODTOOLS\\REMOTE_ASSETS\\";
+                string _offlineAssetPath = AppDomain.CurrentDomain.BaseDirectory + "\\Assets\\";
+
+                if (!Directory.Exists(_offlineAssetPath) || !File.Exists(_offlineAssetPath + "assets.manifest"))
+                {
+                    MessageBox.Show("If using offline mode, please supply the Assets folder found on GitHub in the same folder as the OpenCAGE executable.", "Offline mode error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Application.Exit();
+                    return;
+                }
+
+                if (!File.Exists(_gameAssetPath + "assets.manifest"))
+                {
+                    Directory.CreateDirectory(_gameAssetPath);
+
+                    List<string> files = Directory.GetFiles(_offlineAssetPath, "*.archive", SearchOption.AllDirectories).ToList();
+                    files.Add(_offlineAssetPath + "assets.manifest");
+                    for (int i = 0; i < files.Count; i++)
+                        File.Copy(files[i], _gameAssetPath + Path.GetFileName(files[i]));
+                }
+                else
+                {
+                    JObject offlineManifest = JObject.Parse(File.ReadAllText(_offlineAssetPath + "assets.manifest"));
+                    JObject gameManifest = JObject.Parse(File.ReadAllText(_gameAssetPath + "assets.manifest"));
+                    foreach (JObject offlineArchive in offlineManifest["archives"])
+                    {
+                        bool upToDate = false;
+                        foreach (JObject gameArchive in gameManifest["archives"])
+                        {
+                            if (gameArchive["name"].Value<string>() != offlineArchive["name"].Value<string>())
+                                continue;
+
+                            if (gameArchive.ContainsKey("hash") && offlineArchive.ContainsKey("hash"))
+                                upToDate = (gameArchive["hash"].Value<string>() == offlineArchive["hash"].Value<string>());
+                            else
+                                upToDate = (gameArchive["size"].Value<int>() == offlineArchive["size"].Value<int>());
+                            break;
+                        }
+                        if (upToDate)
+                            continue;
+
+                        try
+                        {
+                            if (File.Exists(_gameAssetPath + offlineArchive["name"] + ".archive"))
+                                File.Delete(_gameAssetPath + offlineArchive["name"] + ".archive");
+
+                            File.Copy(_offlineAssetPath + offlineArchive["name"] + ".archive", _gameAssetPath + offlineArchive["name"] + ".archive");
+                        }
+                        catch { }
+                    }
+                    File.Copy(_offlineAssetPath + "assets.manifest", _gameAssetPath + "assets.manifest", true);
+                }
+
+                string[] archives = Directory.GetFiles(_gameAssetPath, "*.archive", SearchOption.TopDirectoryOnly);
+                if (archives.Length != 0)
+                {
+                    List<Process> allProcesses = new List<Process>(Process.GetProcessesByName("Unity"));
+                    List<string> processNames = new List<string>(Directory.GetFiles(_gameAssetPath, "*.exe", SearchOption.AllDirectories));
+                    for (int i = 0; i < processNames.Count; i++) allProcesses.AddRange(Process.GetProcessesByName(Path.GetFileNameWithoutExtension(processNames[i])));
+                    for (int i = 0; i < allProcesses.Count; i++) try { allProcesses[i].Kill(); } catch { }
+
+                    foreach (string archive in archives)
+                    {
+                        //Try delete the base directory to clear out old assets (if it exists)
+                        string directory = _gameAssetPath + "/" + Path.GetFileNameWithoutExtension(archive);
+                        try { Directory.Delete(directory, true); } catch { }
+                        try { Directory.Delete(directory, true); } catch { }
+
+                        //Extract out the new assets
+                        BinaryReader reader = new BinaryReader(File.OpenRead(archive));
+                        int file_count = reader.ReadInt32();
+                        for (int i = 0; i < file_count; i++)
+                        {
+                            string fileName = reader.ReadString();
+                            int fileLength = reader.ReadInt32();
+                            byte[] fileContent = reader.ReadBytes(fileLength);
+
+                            Directory.CreateDirectory((_gameAssetPath + fileName).Substring(0, (_gameAssetPath + fileName).Length - Path.GetFileName(_gameAssetPath + fileName).Length));
+                            if (File.Exists(_gameAssetPath + fileName)) File.Delete(_gameAssetPath + fileName);
+                            File.WriteAllBytes(_gameAssetPath + fileName, fileContent);
+                        }
+                        reader.Close();
+                        File.Delete(archive);
+                    }
+                }
+            }
+#endif
+
+            Singleton.Platform = PatchManager.GetPlatform(Singleton.PathToAI);
+            Singleton.Version = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion;
+            AnalyticsManager.LogAppStartup(Singleton.Version);
+
+            //Check for update, and launch updater if one is available
+#if SHIP_BUILD
+            if (!Singleton.IsOfflineMode && UpdateManager.IsUpdateAvailable(Singleton.Version))
+            {
+                MessageBox.Show("A new version of OpenCAGE is available!", "OpenCAGE Updater", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                UpdateManager.DoUpdate();
+                Application.Exit();
+                Environment.Exit(0);
+                return;
+            }
+            if (File.Exists("OpenCAGE Updater.exe"))
+                File.Delete("OpenCAGE Updater.exe");
+#endif
+
+            //If we haven't already, copy the debug_font into the game's directory
+            string debugFontDirectory = Singleton.PathToAI + "/DATA/debug_font/";
+            if (!Directory.Exists(debugFontDirectory))
+            {
+                Directory.CreateDirectory(debugFontDirectory);
+                File.WriteAllBytes(debugFontDirectory + "mini_font.fnt", Properties.Resources.mini_font);
+                File.WriteAllBytes(debugFontDirectory + "mini_font_outlined.fnt", Properties.Resources.mini_font_outlined);
+                File.WriteAllBytes(debugFontDirectory + "new_font.fnt", Properties.Resources.new_font);
+                File.WriteAllBytes(debugFontDirectory + "tiny_font.fnt", Properties.Resources.tiny_font);
+            }
 
             //Run app
             Application.EnableVisualStyles();
@@ -145,10 +327,10 @@ namespace CommandsEditor
 
                 error += "\n **** ";
 
-                string version = SettingsManager.GetString("OpenCAGE_Version");
+                string version = Singleton.Version;
                 if (version == "")
                     version = "Standalone: " + Application.ProductVersion;
-                string platform = SettingsManager.GetString("META_GameVersion");
+                string platform = Singleton.Platform.ToString();
                 string time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                 string uptime = _timer == null ? "" : _timer.Elapsed.ToString(@"dd\.hh\:mm\:ss");
                 content.Add(new StringContent(version), "application_version");

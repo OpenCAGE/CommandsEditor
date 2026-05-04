@@ -231,12 +231,62 @@ namespace CommandsEditor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] mini_font {
+            get {
+                object obj = ResourceManager.GetObject("mini_font", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] mini_font_outlined {
+            get {
+                object obj = ResourceManager.GetObject("mini_font_outlined", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] new_font {
+            get {
+                object obj = ResourceManager.GetObject("new_font", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] OpenCAGE_Updater {
+            get {
+                object obj = ResourceManager.GetObject("OpenCAGE_Updater", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         internal static System.Drawing.Icon root_composite {
             get {
                 object obj = ResourceManager.GetObject("root_composite", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] tiny_font {
+            get {
+                object obj = ResourceManager.GetObject("tiny_font", resourceCulture);
+                return ((byte[])(obj));
             }
         }
     }

@@ -363,5 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 
 Build/*
-!Build/CommandsEditor.exe
 CathodeEditorGUI/Resources/CinematicToolsInjector.exe.config

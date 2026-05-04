@@ -19,8 +19,11 @@ namespace CommandsEditor
         public static CommandsEditor Editor;
 
         //Metadata
-        public static string PathToAI;
-        public static PatchManager.Platform Platform;
+        public static string PathToAI = "";
+        public static PatchManager.Platform Platform = PatchManager.Platform.UNKNOWN;
+        public static bool IsOfflineMode = false;
+        public static bool IsSteamworks = false;
+        public static string Version = "";
 
         //Global localised string DBs for English
         public static Dictionary<string, TextDB> GlobalTextDBs = new Dictionary<string, TextDB>();

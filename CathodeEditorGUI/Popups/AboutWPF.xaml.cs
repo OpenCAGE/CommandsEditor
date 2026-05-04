@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenCAGE;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -24,11 +25,20 @@ namespace CommandsEditor.Popups
         public AboutWPF()
         {
             InitializeComponent();
-        }
 
-        public void SetVersion(string version)
-        {
-            VersionText.Content = "[BRANCH] Version " + version;
+            string branchText = ((Singleton.IsOfflineMode) ? Singleton.Platform.ToString() : SettingsManager.GetString("CONFIG_RemoteBranch"));
+            try
+            {
+                if (Singleton.IsSteamworks)
+                {
+                    Steamworks.SteamApps.GetCurrentBetaName(out string betaname, 100);
+                    if (betaname != "")
+                        branchText += " " + betaname.ToUpper();
+                }
+            }
+            catch { }
+
+            VersionText.Content = "[" + branchText + "] Version " + Singleton.Version;
         }
 
         private void GithubButtonClick(object sender, RoutedEventArgs e)

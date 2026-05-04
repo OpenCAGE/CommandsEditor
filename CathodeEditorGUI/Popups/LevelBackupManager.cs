@@ -21,7 +21,7 @@ namespace CommandsEditor
         {
             InitializeComponent();
 
-            if (!Directory.Exists(SettingsManager.GetString("PATH_GameRoot") + "/DATA/MODTOOLS/BACKUPS"))
+            if (!Directory.Exists(Singleton.PathToAI + "/DATA/MODTOOLS/BACKUPS"))
             {
                 MessageBox.Show("Welcome to the OpenCAGE Level Backup Manager! It is recommended to create a backup of all levels when they are in an unmodified state, to be able to revert back to later.", "Welcome!", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -139,7 +139,7 @@ namespace CommandsEditor
 
             this.Cursor = Cursors.WaitCursor;
 
-            List<string> levels = Level.GetLevels(SettingsManager.GetString("PATH_GameRoot"));
+            List<string> levels = Level.GetLevels(Singleton.PathToAI);
             //Parallel.ForEach(levels, (levelName) =>
             //{
             //    AlienLevel lvl = new AlienLevel(levelName);
