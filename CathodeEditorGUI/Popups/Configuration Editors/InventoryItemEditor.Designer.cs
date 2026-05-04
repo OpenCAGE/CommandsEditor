@@ -521,6 +521,7 @@ namespace CommandsEditor.ConfigEditors
             // 
             // cancellable_duration_in_seconds
             // 
+            this.cancellable_duration_in_seconds.DecimalPlaces = 2;
             this.cancellable_duration_in_seconds.Location = new System.Drawing.Point(16, 221);
             this.cancellable_duration_in_seconds.Maximum = new decimal(new int[] {
             10000,
