@@ -3,6 +3,7 @@ using CommandsEditor.Backups;
 using OpenCAGE;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 
@@ -79,23 +80,31 @@ namespace CommandsEditor
                 return;
             }
 
-            this.Cursor = Cursors.WaitCursor;
-            if (MessageBox.Show("Is Alien: Isolation closed?\nAre all mod tools are closed?", "About to restore...", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            List<Process> allProcesses = new List<Process>(Process.GetProcessesByName("AI"));
+            for (int x = 0; x < allProcesses.Count; x++)
             {
-                if (level.RestoreBackup(level.Backups[backupList.SelectedItems[0].Index].ID))
+                try
                 {
-                    RefreshList();
-                    MessageBox.Show("Backup successfully restored!", "Restored backup", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    if (IsLevelActivelyBeingEdited(level.Name))
-                    {
-                        if (MessageBox.Show("Would you like to reload the script editor?", "Reload level?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                            Singleton.Editor.LoadLevel(level.Name);
-                    }
+                    allProcesses[x]?.Kill();
+                    allProcesses[x]?.WaitForExit();
                 }
-                else
+                catch { }
+            }
+
+            this.Cursor = Cursors.WaitCursor;
+            if (level.RestoreBackup(level.Backups[backupList.SelectedItems[0].Index].ID))
+            {
+                RefreshList();
+                MessageBox.Show("Backup successfully restored!", "Restored backup", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                if (IsLevelActivelyBeingEdited(level.Name))
                 {
-                    MessageBox.Show("Failed to restore backup!\nPlease close anything that may be using the files within the level, and try again.", "Failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    if (MessageBox.Show("Would you like to reload the script editor?", "Reload level?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                        Singleton.Editor.LoadLevel(level.Name);
                 }
+            }
+            else
+            {
+                MessageBox.Show("Failed to restore backup!\nPlease close anything that may be using the files within the level, and try again.", "Failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             this.Cursor = Cursors.Default;
         }

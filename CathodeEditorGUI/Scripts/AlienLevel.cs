@@ -1,12 +1,13 @@
-﻿using System;
+﻿using OpenCAGE;
+using System;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using System.IO;
-using System.Security.Cryptography;
 using System.Windows.Forms.Design;
-using OpenCAGE;
 using System.Xml.Linq;
 
 namespace CommandsEditor.Backups
@@ -75,9 +76,15 @@ namespace CommandsEditor.Backups
                     Files.Add(file);
                 }
 
-                string revisionFile = BackupFolder + "/" + fileHash;
+                string revisionFile = BackupFolder + "/" + fileHash + ".gz";
                 if (!File.Exists(revisionFile))
-                    File.WriteAllBytes(revisionFile, File.ReadAllBytes(files[i]));
+                {
+                    using (GZipStream gzipStream = new GZipStream(File.Create(revisionFile), CompressionMode.Compress))
+                    {
+                        byte[] content = File.ReadAllBytes(files[i]);
+                        gzipStream.Write(content, 0, content.Length);
+                    }
+                }
                 if (!file.Revisions.Contains(fileHash))
                     file.Revisions.Add(fileHash);
 
@@ -137,7 +144,20 @@ namespace CommandsEditor.Backups
                             if (Files[i].Revisions[x] == backup.GUIDs[z])
                             {
                                 Directory.CreateDirectory(LevelFolder + "/" + Files[i].Name.Substring(0, Files[i].Name.Length - Path.GetFileName(Files[i].Name).Length));
-                                File.WriteAllBytes(LevelFolder + "/" + Files[i].Name, File.ReadAllBytes(BackupFolder + "/" + Files[i].Revisions[x]));
+                                if (File.Exists(BackupFolder + "/" + Files[i].Revisions[x]))
+                                {
+                                    //Support for legacy backups which didn't utilise compression
+                                    File.WriteAllBytes(LevelFolder + "/" + Files[i].Name, File.ReadAllBytes(BackupFolder + "/" + Files[i].Revisions[x]));
+                                }
+                                else
+                                {
+                                    using (MemoryStream stream = new MemoryStream())
+                                    using (GZipStream compressedStream = new GZipStream(File.OpenRead(BackupFolder + "/" + Files[i].Revisions[x] + ".gz"), CompressionMode.Decompress))
+                                    {
+                                        compressedStream.CopyTo(stream);
+                                        File.WriteAllBytes(LevelFolder + "/" + Files[i].Name, stream.ToArray());
+                                    }
+                                }
                             }
                         }
                     }
@@ -215,6 +235,8 @@ namespace CommandsEditor.Backups
                     {
                         if (File.Exists(BackupFolder + "/" + Files[i].Revisions[x]))
                             File.Delete(BackupFolder + "/" + Files[i].Revisions[x]);
+                        if (File.Exists(BackupFolder + "/" + Files[i].Revisions[x] + ".gz"))
+                            File.Delete(BackupFolder + "/" + Files[i].Revisions[x] + ".gz");
                         continue;
                     }
                     trimmedRevisions.Add(Files[i].Revisions[x]);
