@@ -36,7 +36,6 @@ namespace CommandsEditor.ConfigEditors
             System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup("Explosive", System.Windows.Forms.HorizontalAlignment.Left);
             System.Windows.Forms.ListViewGroup listViewGroup6 = new System.Windows.Forms.ListViewGroup("Light", System.Windows.Forms.HorizontalAlignment.Left);
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(InventoryItemEditor));
-            this.btnSave = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.listView = new System.Windows.Forms.ListView();
             this.ItemName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -86,6 +85,7 @@ namespace CommandsEditor.ConfigEditors
             this.upgraded_health_increase_percentage = new System.Windows.Forms.NumericUpDown();
             this.label18 = new System.Windows.Forms.Label();
             this.health_increase_percentage = new System.Windows.Forms.NumericUpDown();
+            this.helpBtn = new System.Windows.Forms.Button();
             this.baseObject.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.radial_menu_order_index)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.stack_limit)).BeginInit();
@@ -98,17 +98,6 @@ namespace CommandsEditor.ConfigEditors
             ((System.ComponentModel.ISupportInitialize)(this.upgraded_health_increase_percentage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.health_increase_percentage)).BeginInit();
             this.SuspendLayout();
-            // 
-            // btnSave
-            // 
-            this.btnSave.Location = new System.Drawing.Point(809, 527);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(496, 26);
-            this.btnSave.TabIndex = 354;
-            this.btnSave.Text = "Save Inventory Item";
-            this.toolTip1.SetToolTip(this.btnSave, "Save currently loaded inventory item.");
-            this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // listView
             // 
@@ -222,6 +211,11 @@ namespace CommandsEditor.ConfigEditors
             // radial_menu_order_index
             // 
             this.radial_menu_order_index.Location = new System.Drawing.Point(272, 235);
+            this.radial_menu_order_index.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
             this.radial_menu_order_index.Name = "radial_menu_order_index";
             this.radial_menu_order_index.Size = new System.Drawing.Size(115, 20);
             this.radial_menu_order_index.TabIndex = 14;
@@ -264,6 +258,11 @@ namespace CommandsEditor.ConfigEditors
             // stack_limit
             // 
             this.stack_limit.Location = new System.Drawing.Point(144, 235);
+            this.stack_limit.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
             this.stack_limit.Name = "stack_limit";
             this.stack_limit.Size = new System.Drawing.Size(115, 20);
             this.stack_limit.TabIndex = 11;
@@ -280,6 +279,11 @@ namespace CommandsEditor.ConfigEditors
             // default_quantity
             // 
             this.default_quantity.Location = new System.Drawing.Point(16, 235);
+            this.default_quantity.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
             this.default_quantity.Name = "default_quantity";
             this.default_quantity.Size = new System.Drawing.Size(115, 20);
             this.default_quantity.TabIndex = 9;
@@ -518,6 +522,11 @@ namespace CommandsEditor.ConfigEditors
             // cancellable_duration_in_seconds
             // 
             this.cancellable_duration_in_seconds.Location = new System.Drawing.Point(16, 221);
+            this.cancellable_duration_in_seconds.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
             this.cancellable_duration_in_seconds.Name = "cancellable_duration_in_seconds";
             this.cancellable_duration_in_seconds.Size = new System.Drawing.Size(374, 20);
             this.cancellable_duration_in_seconds.TabIndex = 9;
@@ -579,6 +588,11 @@ namespace CommandsEditor.ConfigEditors
             // upgraded_health_increase_percentage
             // 
             this.upgraded_health_increase_percentage.Location = new System.Drawing.Point(16, 79);
+            this.upgraded_health_increase_percentage.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
             this.upgraded_health_increase_percentage.Name = "upgraded_health_increase_percentage";
             this.upgraded_health_increase_percentage.Size = new System.Drawing.Size(374, 20);
             this.upgraded_health_increase_percentage.TabIndex = 11;
@@ -595,22 +609,39 @@ namespace CommandsEditor.ConfigEditors
             // health_increase_percentage
             // 
             this.health_increase_percentage.Location = new System.Drawing.Point(16, 40);
+            this.health_increase_percentage.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
             this.health_increase_percentage.Name = "health_increase_percentage";
             this.health_increase_percentage.Size = new System.Drawing.Size(374, 20);
             this.health_increase_percentage.TabIndex = 9;
+            // 
+            // helpBtn
+            // 
+            this.helpBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.helpBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.helpBtn.Image = ((System.Drawing.Image)(resources.GetObject("helpBtn.Image")));
+            this.helpBtn.Location = new System.Drawing.Point(734, 0);
+            this.helpBtn.Name = "helpBtn";
+            this.helpBtn.Size = new System.Drawing.Size(20, 20);
+            this.helpBtn.TabIndex = 373;
+            this.helpBtn.UseVisualStyleBackColor = true;
+            this.helpBtn.Click += new System.EventHandler(this.helpBtn_Click);
             // 
             // InventoryItemEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1362, 791);
+            this.ClientSize = new System.Drawing.Size(754, 709);
+            this.Controls.Add(this.helpBtn);
             this.Controls.Add(this.medikit);
             this.Controls.Add(this.held);
             this.Controls.Add(this.ammo);
             this.Controls.Add(this.weapon);
             this.Controls.Add(this.baseObject);
             this.Controls.Add(this.listView);
-            this.Controls.Add(this.btnSave);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = global::CommandsEditor.SharedFormIcon.Icon;
             this.MaximizeBox = false;
@@ -638,7 +669,6 @@ namespace CommandsEditor.ConfigEditors
         }
 
         #endregion
-        private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.ListView listView;
         private System.Windows.Forms.ColumnHeader ItemName;
@@ -688,5 +718,6 @@ namespace CommandsEditor.ConfigEditors
         private System.Windows.Forms.NumericUpDown upgraded_health_increase_percentage;
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.NumericUpDown health_increase_percentage;
+        private System.Windows.Forms.Button helpBtn;
     }
 }
