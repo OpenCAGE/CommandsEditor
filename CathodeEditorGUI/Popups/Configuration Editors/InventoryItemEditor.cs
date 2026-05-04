@@ -1,173 +1,184 @@
-﻿using CommandsEditor.Popups.Base;
+﻿using CATHODE;
+using CATHODE.Enums;
+using CommandsEditor.Popups.Base;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
-using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Linq;
-using System.Xml.XPath;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace CommandsEditor.ConfigEditors
 {
     public partial class InventoryItemEditor : BaseWindow
     {
-        //todo - this is OLD and needs updating!!
-
-        CATHODE.BML _gblItem;
-        XDocument _gblItemXML;
-
-        XElement _selectedElement;
+        private readonly BML _gblItem;
+        private XmlElement _selectedElement;
 
         public InventoryItemEditor() : base()
         {
             InitializeComponent();
 
-            _gblItem = new CATHODE.BML(Singleton.PathToAI + @"\DATA\GBL_ITEM.BML");
-            _gblItemXML = XDocument.Load(_gblItem.Content.CreateNavigator().ReadSubtree());
+            _gblItem = new BML(Singleton.PathToAI + @"\DATA\GBL_ITEM.BML");
 
-            ReloadUI();
-        }
-
-        private IEnumerable<XElement> GetElements(string parent, string child)
-        {
-            return _gblItemXML.Elements().Elements().FirstOrDefault(o => o.Name.LocalName == parent).Elements().Where(o => o.Name.LocalName == child);
-        }
-
-        private void ReloadUI()
-        {
-            listView.BeginUpdate();
-            keyframe.BeginUpdate();
-            held_object_name.BeginUpdate();
-            thrown_object_name.BeginUpdate();
-            special_slot.BeginUpdate();
-            target_weapon.BeginUpdate();
-
-            listView.Items.Clear();
-            keyframe.Items.Clear();
-            held_object_name.Items.Clear();
-            thrown_object_name.Items.Clear();
-            special_slot.Items.Clear();
-            target_weapon.Items.Clear();
-
-            //Parse all item configs
-            Action<string> parseItems = delegate (string groupName)
+            weapon_type.BeginUpdate();
+            foreach (WEAPON_TYPE type in Enum.GetValues(typeof(WEAPON_TYPE)))
             {
-                IEnumerable<XElement> items = GetElements("objects", groupName);
-                foreach (XElement item in items)
-                {
-                    string itemName = item.Attribute("name").Value.ToString();
-                    listView.Items.Add(new ListViewItem() { Name = itemName, Text = itemName, Group = listView.Groups[groupName] });
+                if ((int)type == -1)
+                    continue;
+                weapon_type.Items.Add(type.ToString());
+            }
+            weapon_type.EndUpdate();
 
-                    //Add available options to our attribute dropdowns, if they exist
-                    keyframe.Items.Add(itemName);
-                    if (groupName == "weapon") target_weapon.Items.Add(itemName);
-                    try { held_object_name.Items.Add(item.Attribute("held_object_name").Value.ToString()); } catch { }
-                    try { thrown_object_name.Items.Add(item.Attribute("thrown_object_name").Value.ToString()); } catch { }
-                }
-            };
-            parseItems("object");
-            //parseItems("object_held");
-            parseItems("weapon");
-            parseItems("ammo");
-            parseItems("medikit");
-            parseItems("ied");
-            parseItems("light");
+            ammo_type.BeginUpdate();
+            foreach (AMMO_TYPE type in Enum.GetValues(typeof(AMMO_TYPE)))
+            {
+                if ((int)type == -1)
+                    continue;
+                ammo_type.Items.Add(type.ToString());
+            }
+            ammo_type.EndUpdate();
 
-            //Add all available item slots to UI
-            IEnumerable<XElement> slots = GetElements("special_slots", "slot");
-            foreach (XElement slot in slots)
-                special_slot.Items.Add(slot.Attribute("name").Value.ToString());
+            Dictionary<string, ListViewGroup> groups = new Dictionary<string, ListViewGroup>();
+            foreach (ListViewGroup group in listView.Groups)
+            {
+                groups.Add(group.Name, group);
+            }
 
+            listView.BeginUpdate();
+            target_weapon.BeginUpdate();
+            var objects = _gblItem.Content["item_database"]["objects"];
+            foreach (XmlElement obj in objects)
+            {
+                listView.Items.Add(new ListViewItem() { Text = obj.GetAttribute("name"), Group = groups[obj.Name] });
+                if (obj.Name == "weapon")
+                    target_weapon.Items.Add(obj.GetAttribute("name")); // todo - this listbox needs updating if names change
+            }
             listView.EndUpdate();
-            keyframe.EndUpdate();
-            held_object_name.EndUpdate();
-            thrown_object_name.EndUpdate();
-            special_slot.EndUpdate();
             target_weapon.EndUpdate();
 
-            //If an element was previously selected, re-select it
-            if (_selectedElement != null)
-            {
-                listView.Items[_selectedElement.Attribute("name").Value.ToString()].Selected = true;
-                listView_SelectedIndexChanged(null, null);
-            }
+            listView.Items[0].Selected = true;
         }
 
         private void listView_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (listView.SelectedItems.Count != 1 || listView.SelectedItems[0].Group == null) return;
-            _selectedElement = null;
-
-            IEnumerable<XElement> objects = GetElements("objects", listView.SelectedItems[0].Group.Tag.ToString());
-            foreach (XElement el in objects)
-            {
-                if (el.Attribute("name").Value.ToString() == listView.SelectedItems[0].Text)
-                {
-                    _selectedElement = el;
-                    break;
-                }
-            }
-
-            if (_selectedElement == null)
-            {
-                MessageBox.Show("Failed to find item in database!", "Lookup fail.", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            if (listView.SelectedItems.Count != 1 || listView.SelectedItems[0].Group == null)
                 return;
+
+            string type = listView.SelectedItems[0].Group.Name;
+
+            var objects = _gblItem.Content["item_database"]["objects"];
+            foreach (XmlElement obj in objects)
+            {
+                if (obj.Name != type)
+                    continue;
+                if (obj.GetAttribute("name") != listView.SelectedItems[0].Text)
+                    continue;
+                _selectedElement = obj;
+                break;
             }
 
-            //TODO: handle default values here...
+            baseObject.Visible = false;
+            weapon.Visible = false;
+            ammo.Visible = false;
+            held.Visible = false;
+            medikit.Visible = false;
 
-            SetAttributeString("name", name, null);
-            SetAttributeString("thrown_object_name", null, thrown_object_name);
-            SetAttributeString("target_weapon", null, target_weapon);
-            SetAttributeString("ammo_type", ammo_type, null);
-            SetAttributeString("held_object_name", null, held_object_name);
-            SetAttributeString("keyframe", null, keyframe);
-            SetAttributeString("default_quantity", default_quantity, null);
-            SetAttributeString("stack_limit", stack_limit, null);
-            SetAttributeString("consume_when", null, consume_when);
-            SetAttributeString("composite", composite, null);
-            SetAttributeString("droppable_when_held", null, droppable_when_held);
-            SetAttributeString("special_slot", null, special_slot);
-            SetAttributeString("display_ammo_as_percentage", null, display_ammo_as_percentage);
-            SetAttributeString("vanish_when_collected", null, vanish_when_collected);
-            SetAttributeString("display_quantity", null, display_quantity);
-            SetAttributeString("radial_menu_order_index", radial_menu_order_index, null);
-            SetAttributeString("crafting_resource", null, crafting_resource);
-            SetAttributeString("localisation_tag", localisation_tag, null);
-            SetAttributeString("activated_by", null, activated_by);
-            SetAttributeString("health_increase_percentage", health_increase_percentage, null);
-            SetAttributeString("upgraded_health_increase_percentage", upgraded_health_increase_percentage, null);
-            SetAttributeString("drop_when_consume", null, drop_when_consume);
-            SetAttributeString("cancellable_duration_in_seconds", cancellable_duration_in_seconds, null);
+            SetObjectInfo();
+            switch (type)
+            {
+                case "weapon":
+                    weapon.Visible = true;
+                    weapon_type.Text = _selectedElement.GetAttribute("weapon_type");
+                    break;
+                case "ammo":
+                    ammo.Visible = true;
+                    target_weapon.Text = _selectedElement.GetAttribute("target_weapon");
+                    ammo_type.Text = ((AMMO_TYPE)Convert.ToInt32(_selectedElement.GetAttribute("ammo_type"))).ToString();
+                    break;
+                case "medikit":
+                    SetHeldInfo();
+                    medikit.Visible = true;
+                    health_increase_percentage.Text = _selectedElement.GetAttribute("health_increase_percentage");
+                    upgraded_health_increase_percentage.Text = _selectedElement.GetAttribute("upgraded_health_increase_percentage");
+                    break;
+                case "ied":
+                case "light":
+                    SetHeldInfo();
+                    break;
+            }
         }
 
-        //return attribute as string (and handle nulls)
+        private void SetObjectInfo()
+        {
+            baseObject.Visible = true;
+            name.Text = _selectedElement.GetAttribute("name");
+            localisation_tag.Text = _selectedElement.GetAttribute("localisation_tag");
+            if (localisation_tag.Text == "") localisation_tag.Text = name.Text;
+            keyframe.Text = _selectedElement.GetAttribute("keyframe");
+            if (keyframe.Text == "") keyframe.Text = name.Text;
+            vanish_when_collected.Checked = !(_selectedElement.GetAttribute("vanish_when_collected") == "true");
+            if (_selectedElement.GetAttribute("default_quantity") == "")
+                default_quantity.Value = 1;
+            else
+                default_quantity.Text = _selectedElement.GetAttribute("default_quantity");
+            if (_selectedElement.GetAttribute("stack_limit") == "")
+                stack_limit.Value = 1;
+            else
+                stack_limit.Text = _selectedElement.GetAttribute("stack_limit");
+            display_quantity.Checked = _selectedElement.GetAttribute("display_quantity") == "true";
+            if (_selectedElement.GetAttribute("radial_menu_order_index") == "")
+                radial_menu_order_index.Value = 0;
+            else
+                radial_menu_order_index.Text = _selectedElement.GetAttribute("radial_menu_order_index");
+            crafting_resource.Checked = _selectedElement.GetAttribute("crafting_resource") == "true";
+            if (_selectedElement.GetAttribute("composite") == "")
+                composite.Text = "Required_Assets/Pickups/" + name.Text;
+            else
+                composite.Text = "Required_Assets/Pickups/" + _selectedElement.GetAttribute("composite");
+            special_slot.Text = _selectedElement.GetAttribute("special_slot");
+        }
+        private void SetHeldInfo()
+        {
+            held.Visible = true;
+            held_object_name.Text = "Required_Assets/Archetypes/Equipment/" + _selectedElement.GetAttribute("held_object_name");
+            thrown_object_name.Text = "Required_Assets/Thrown/" + _selectedElement.GetAttribute("thrown_object_name");
+            droppable_when_held.Checked = _selectedElement.GetAttribute("droppable_when_held") == "true";
+            drop_when_consume.Checked = _selectedElement.GetAttribute("drop_when_consume") == "true";
+            consume_when.Text = _selectedElement.GetAttribute("consume_when");
+            activated_by.Text = _selectedElement.GetAttribute("activated_by");
+            if (_selectedElement.GetAttribute("cancellable_duration_in_seconds") == "")
+                cancellable_duration_in_seconds.Value = 0;
+            else
+                cancellable_duration_in_seconds.Text = _selectedElement.GetAttribute("cancellable_duration_in_seconds");
+        }
+
         private void SetAttributeString(string attributeName, TextBox textbox, ComboBox combobox)
         {
+            bool hasAttr = _selectedElement.HasAttribute(attributeName);
+
             if (textbox == null)
             {
-                try
+                if (hasAttr)
                 {
-                    combobox.Text = _selectedElement.Attribute(attributeName).Value.ToString();
+                    combobox.Text = _selectedElement.GetAttribute(attributeName);
                     combobox.Enabled = true;
                 }
-                catch
+                else
                 {
                     combobox.SelectedIndex = -1;
+                    combobox.Text = "";
                     combobox.Enabled = false;
                 }
             }
             else
             {
-                try
+                if (hasAttr)
                 {
-                    textbox.Text = _selectedElement.Attribute(attributeName).Value.ToString();
+                    textbox.Text = _selectedElement.GetAttribute(attributeName);
                     textbox.Enabled = true;
                 }
-                catch
+                else
                 {
                     textbox.Text = "";
                     textbox.Enabled = false;
@@ -175,7 +186,12 @@ namespace CommandsEditor.ConfigEditors
             }
         }
 
-        //Save
+        private static void SetAttributeIfPresent(XmlElement element, string attributeName, string value)
+        {
+            if (element.HasAttribute(attributeName))
+                element.SetAttribute(attributeName, value);
+        }
+
         private void btnSave_Click(object sender, EventArgs e)
         {
             if (_selectedElement == null)
@@ -184,38 +200,34 @@ namespace CommandsEditor.ConfigEditors
                 return;
             }
 
-            try { _selectedElement.Attribute("name").Value = name.Text; } catch { }
-            try { _selectedElement.Attribute("thrown_object_name").Value = thrown_object_name.Text; } catch { }
-            try { _selectedElement.Attribute("target_weapon").Value = target_weapon.Text; } catch { }
-            try { _selectedElement.Attribute("ammo_type").Value = ammo_type.Text; } catch { }
-            try { _selectedElement.Attribute("held_object_name").Value = held_object_name.Text; } catch { }
-            try { _selectedElement.Attribute("keyframe").Value = keyframe.Text; } catch { }
-            try { _selectedElement.Attribute("default_quantity").Value = default_quantity.Text; } catch { }
-            try { _selectedElement.Attribute("stack_limit").Value = stack_limit.Text; } catch { }
-            try { _selectedElement.Attribute("consume_when").Value = consume_when.Text; } catch { }
-            try { _selectedElement.Attribute("composite").Value = composite.Text; } catch { }
-            try { _selectedElement.Attribute("droppable_when_held").Value = droppable_when_held.Text; } catch { }
-            try { _selectedElement.Attribute("special_slot").Value = special_slot.Text; } catch { }
-            try { _selectedElement.Attribute("display_ammo_as_percentage").Value = display_ammo_as_percentage.Text; } catch { }
-            try { _selectedElement.Attribute("vanish_when_collected").Value = vanish_when_collected.Text; } catch { }
-            try { _selectedElement.Attribute("display_quantity").Value = display_quantity.Text; } catch { }
-            try { _selectedElement.Attribute("radial_menu_order_index").Value = radial_menu_order_index.Text; } catch { }
-            try { _selectedElement.Attribute("crafting_resource").Value = crafting_resource.Text; } catch { }
-            try { _selectedElement.Attribute("localisation_tag").Value = localisation_tag.Text; } catch { }
-            try { _selectedElement.Attribute("activated_by").Value = activated_by.Text; } catch { }
-            try { _selectedElement.Attribute("health_increase_percentage").Value = health_increase_percentage.Text; } catch { }
-            try { _selectedElement.Attribute("upgraded_health_increase_percentage").Value = upgraded_health_increase_percentage.Text; } catch { }
-            try { _selectedElement.Attribute("drop_when_consume").Value = drop_when_consume.Text; } catch { }
-            try { _selectedElement.Attribute("cancellable_duration_in_seconds").Value = cancellable_duration_in_seconds.Text; } catch { }
+            var doc = _gblItem.Content;
 
-            {
-                XmlDocument content = new XmlDocument();
-                content.LoadXml(_gblItemXML.ToString());
-                _gblItem.Content = content;
-            }
+            _selectedElement.SetAttribute("name", name.Text);
+            SetAttributeIfPresent(_selectedElement, "thrown_object_name", thrown_object_name.Text);
+            SetAttributeIfPresent(_selectedElement, "target_weapon", target_weapon.Text);
+            SetAttributeIfPresent(_selectedElement, "ammo_type", ammo_type.Text);
+            SetAttributeIfPresent(_selectedElement, "held_object_name", held_object_name.Text);
+            SetAttributeIfPresent(_selectedElement, "keyframe", keyframe.Text);
+            SetAttributeIfPresent(_selectedElement, "default_quantity", default_quantity.Text);
+            SetAttributeIfPresent(_selectedElement, "stack_limit", stack_limit.Text);
+            SetAttributeIfPresent(_selectedElement, "consume_when", consume_when.Text);
+            SetAttributeIfPresent(_selectedElement, "composite", composite.Text);
+            SetAttributeIfPresent(_selectedElement, "droppable_when_held", droppable_when_held.Text);
+            SetAttributeIfPresent(_selectedElement, "special_slot", special_slot.Text);
+            SetAttributeIfPresent(_selectedElement, "vanish_when_collected", vanish_when_collected.Text);
+            SetAttributeIfPresent(_selectedElement, "display_quantity", display_quantity.Text);
+            SetAttributeIfPresent(_selectedElement, "radial_menu_order_index", radial_menu_order_index.Text);
+            SetAttributeIfPresent(_selectedElement, "crafting_resource", crafting_resource.Text);
+            SetAttributeIfPresent(_selectedElement, "localisation_tag", localisation_tag.Text);
+            SetAttributeIfPresent(_selectedElement, "activated_by", activated_by.Text);
+            SetAttributeIfPresent(_selectedElement, "health_increase_percentage", health_increase_percentage.Text);
+            SetAttributeIfPresent(_selectedElement, "upgraded_health_increase_percentage", upgraded_health_increase_percentage.Text);
+            SetAttributeIfPresent(_selectedElement, "drop_when_consume", drop_when_consume.Text);
+            SetAttributeIfPresent(_selectedElement, "cancellable_duration_in_seconds", cancellable_duration_in_seconds.Text);
+
+            _gblItem.Content = doc;
             _gblItem.Save();
 
-            ReloadUI();
 
             MessageBox.Show("Saved new item configuration!", "Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }

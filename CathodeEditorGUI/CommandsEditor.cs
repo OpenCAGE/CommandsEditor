@@ -113,7 +113,6 @@ namespace CommandsEditor
             levelTextDBsToolStripMenuItem.Visible = false;
             fontConfigToolStripMenuItem.Visible = false;
             aboutToolStripMenuItem.Visible = false;
-            inventoryItemsToolStripMenuItem.Visible = false;
 #endif
 
             //Launch game is only supported by certain platforms due to having to patch the binary
