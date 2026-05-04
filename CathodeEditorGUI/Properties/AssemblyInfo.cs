@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("OpenCAGE Commands Editor")]
-[assembly: AssemblyDescription("A tool to browse and edit Alien: Isolation's Commands files.")]
+[assembly: AssemblyTitle("OpenCAGE")]
+[assembly: AssemblyDescription("An open-source set of community created tools for modifying Alien: Isolation.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Matt Filer")]
-[assembly: AssemblyProduct("OpenCAGE Commands Editor")]
-[assembly: AssemblyCopyright("Copyright © Matt Filer")]
+[assembly: AssemblyProduct("OpenCAGE")]
+[assembly: AssemblyCopyright("Copyright © Matt Filer 2017-26")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
