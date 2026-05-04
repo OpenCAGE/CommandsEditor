@@ -96,16 +96,16 @@
   </ItemGroup>
   <ItemGroup Condition="'$(Configuration)|$(Platform)' == 'Ship|AnyCPU'">
     <Reference Include="CathodeLib">
-      <HintPath>..\CathodeLib\CathodeLib\bin\Release\netstandard2.0\CathodeLib.dll</HintPath>
+      <HintPath>..\CathodeLib\CathodeLib\bin\Ship\netstandard2.0\CathodeLib.dll</HintPath>
     </Reference>
     <Reference Include="ST.Library.UI">
-      <HintPath>..\STNodeEditor\ST.Library.UI\bin\Release\ST.Library.UI.dll</HintPath>
+      <HintPath>..\STNodeEditor\ST.Library.UI\bin\Ship\ST.Library.UI.dll</HintPath>
     </Reference>
     <Reference Include="WeifenLuo.WinFormsUI.Docking">
-      <HintPath>..\DockPanelSuite\WinFormsUI\bin\Release\net40\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
+      <HintPath>..\DockPanelSuite\WinFormsUI\bin\Ship\net40\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
     </Reference>
     <Reference Include="WeifenLuo.WinFormsUI.Docking.ThemeVS2015">
-      <HintPath>..\DockPanelSuite\WinFormsUI\bin\Release\net40\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll</HintPath>
+      <HintPath>..\DockPanelSuite\WinFormsUI\bin\Ship\net40\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll</HintPath>
     </Reference>
     <Reference Include="WebsocketSharp">
       <HintPath>lib\WebsocketSharp\websocket-sharp.dll</HintPath>
@@ -126,6 +126,7 @@
     </Reference>
     <Reference Include="Costura, Version=5.7.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\Costura.Fody.5.7.0\lib\netstandard1.0\Costura.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="DiscordRPC, Version=1.2.1.24, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\DiscordRichPresence.1.2.1.24\lib\net45\DiscordRPC.dll</HintPath>
